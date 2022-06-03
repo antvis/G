@@ -1,5 +1,6 @@
 import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
@@ -11,6 +12,7 @@ const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
 const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -66,7 +68,7 @@ const rendererConfig = {
   renderer: 'canvas',
 };
 rendererFolder
-  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu'])
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
   .onChange((rendererName) => {
     let renderer;
     if (rendererName === 'canvas') {
@@ -77,6 +79,8 @@ rendererFolder
       renderer = webglRenderer;
     } else if (rendererName === 'webgpu') {
       renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
     }
     canvas.setRenderer(renderer);
   });

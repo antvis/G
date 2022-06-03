@@ -6,9 +6,7 @@ import RBush from 'rbush';
 import { CanvasRendererPlugin, RBushRoot } from './CanvasRendererPlugin';
 import type { RBushNodeAABB } from './components/RBushNode';
 import { RBushNode } from './components/RBushNode';
-import { LoadImagePlugin } from './LoadImagePlugin';
 import { GradientPool } from './shapes/GradientPool';
-import { ImagePool } from './shapes/ImagePool';
 import {
   CirclePath,
   EllipsePath,
@@ -48,7 +46,6 @@ export { PathGeneratorFactory, PathGenerator, RBushNode, RBushRoot, RBush };
 export type { RBushNodeAABB };
 
 const containerModule = Module((register) => {
-  register(ImagePool);
   register({ token: RBushRoot, useValue: new RBush<RBushNodeAABB>() });
 
   register(CircleRenderer);
@@ -92,7 +89,6 @@ const containerModule = Module((register) => {
   register(GradientPool);
 
   register(CanvasRendererPlugin);
-  register(LoadImagePlugin);
 });
 
 export class Plugin implements RendererPlugin {

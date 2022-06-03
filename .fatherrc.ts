@@ -10,6 +10,7 @@ export default {
     'g-math',
     'g',
     'g-layout-blocklike',
+    'g-plugin-image-loader',
     'g-plugin-dragndrop',
     'g-plugin-dom-interaction',
     'g-plugin-mobile-interaction',

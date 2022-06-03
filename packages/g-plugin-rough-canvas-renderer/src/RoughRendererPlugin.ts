@@ -27,5 +27,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       context.roughCanvas = rough.canvas(this.contextService.getDomElement() as HTMLCanvasElement);
     });
+
+    renderingService.hooks.destroy.tap(RoughRendererPlugin.tag, () => {});
   }
 }

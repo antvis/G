@@ -29,6 +29,7 @@
   "dependencies": {
     "@antv/g-plugin-canvas-picker": "^1.1.7",
     "@antv/g-plugin-canvas-renderer": "^1.1.7",
+    "@antv/g-plugin-image-loader": "^0.0.0",
     "@antv/g-plugin-mobile-interaction": "^0.1.7",
     "tslib": "^2.3.1"
   },

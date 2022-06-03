@@ -1,9 +1,10 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
-import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
+import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
+import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
+import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, CanvasRenderer, CanvasPicker, HTMLRenderer };
@@ -14,6 +15,7 @@ export class Renderer extends AbstractRenderer {
 
     // register Canvas2DContext
     this.registerPlugin(new ContextRegisterPlugin());
+    this.registerPlugin(new ImageLoader.Plugin());
     // enable rendering with Canvas2D API
     this.registerPlugin(new CanvasRenderer.Plugin());
     this.registerPlugin(new DomInteraction.Plugin());

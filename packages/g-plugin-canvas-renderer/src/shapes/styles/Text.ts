@@ -8,10 +8,6 @@ import { TextRendererContribution } from './interfaces';
   token: TextRendererContribution,
 })
 export class TextRenderer implements StyleRenderer {
-  hash(parsedStyle: any): string {
-    return '';
-  }
-
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedTextStyleProps,

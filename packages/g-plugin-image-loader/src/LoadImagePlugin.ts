@@ -1,19 +1,19 @@
-import { inject, singleton } from 'mana-syringe';
 import type {
   DisplayObject,
-  RenderingService,
-  RenderingPlugin,
   FederatedEvent,
   MutationEvent,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
 import {
-  Shape,
-  RenderingPluginContribution,
-  RenderingContext,
   ElementEvent,
   isString,
+  RenderingContext,
+  RenderingPluginContribution,
+  Shape,
 } from '@antv/g';
-import { ImagePool } from './shapes/ImagePool';
+import { inject, singleton } from 'mana-syringe';
+import { ImagePool } from './ImagePool';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {

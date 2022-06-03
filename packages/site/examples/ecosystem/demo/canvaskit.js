@@ -34,8 +34,10 @@ const circle = new Circle({
   },
 });
 
-// add a circle to canvas
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // add a circle to canvas
+  canvas.appendChild(circle);
+});
 
 // stats
 const stats = new Stats();

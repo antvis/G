@@ -29,7 +29,11 @@
     "README.md"
   ],
   "dependencies": {
+    "@antv/g-plugin-canvas-picker": "^1.1.7",
     "@antv/g-plugin-canvaskit-renderer": "^0.0.1",
+    "@antv/g-plugin-dom-interaction": "^1.1.7",
+    "@antv/g-plugin-html-renderer": "^1.1.7",
+    "@antv/g-plugin-image-loader": "^0.0.0",
     "canvaskit-wasm": "^0.34.0",
     "tslib": "^2.3.1"
   },

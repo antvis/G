@@ -1,7 +1,7 @@
 import type { ParsedImageStyleProps } from '@antv/g';
 import { isString } from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import { inject, singleton } from 'mana-syringe';
-import { ImagePool } from '../ImagePool';
 import type { StyleRenderer } from './interfaces';
 import { ImageRendererContribution } from './interfaces';
 
@@ -11,10 +11,6 @@ import { ImageRendererContribution } from './interfaces';
 export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
-
-  hash(parsedStyle: ParsedImageStyleProps): string {
-    return '';
-  }
 
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedImageStyleProps) {
     const { width, height, img } = parsedStyle;

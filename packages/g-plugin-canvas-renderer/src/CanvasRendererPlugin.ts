@@ -27,13 +27,13 @@ import {
   RenderReason,
   Shape,
 } from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
 import RBush from 'rbush';
 import type { RBushNodeAABB } from './components/RBushNode';
 import { RBushNode } from './components/RBushNode';
 import { GradientPool } from './shapes/GradientPool';
-import { ImagePool } from './shapes/ImagePool';
 import type { PathGenerator } from './shapes/paths';
 import { PathGeneratorFactory } from './shapes/paths';
 import type { StyleRenderer } from './shapes/styles';
@@ -97,10 +97,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private restoreStack: DisplayObject[] = [];
 
   private clearFullScreen = false;
-
-  private enableBatch = false;
-  private batchedStyleHash = '';
-  private batchedDisplayObject = null;
 
   private syncRTree() {
     // bounds changed, need re-inserting its children
@@ -318,10 +314,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
             }
           });
 
-        if (this.enableBatch && this.batchedStyleHash) {
-          this.flush(context, renderingService);
-        }
-
         // save dirty AABBs in last frame
         this.renderQueue.forEach((object) => {
           this.saveDirtyAABB(object);
@@ -371,29 +363,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private flush(context: CanvasRenderingContext2D, renderingService: RenderingService) {
-    if (this.batchedDisplayObject) {
-      const styleRenderer = this.styleRendererFactory(this.batchedDisplayObject.nodeName);
-      if (styleRenderer) {
-        // apply attributes to context
-        this.applyAttributesToContext(context, this.batchedDisplayObject, renderingService);
-
-        // close path first
-        context.closePath();
-        styleRenderer.render(
-          context,
-          this.batchedDisplayObject.parsedStyle,
-          this.batchedDisplayObject,
-        );
-
-        context.restore();
-      }
-
-      this.batchedStyleHash = '';
-      this.batchedDisplayObject = null;
-    }
-  }
-
   private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
     const context = this.contextService.getContext()!;
 
@@ -408,20 +377,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const nodeName = object.nodeName;
 
     const styleRenderer = this.styleRendererFactory(nodeName);
-
-    let startBatch = false;
-    if (this.enableBatch && styleRenderer) {
-      const hash = styleRenderer.hash(object.attributes);
-      if (this.batchedStyleHash && hash !== this.batchedStyleHash) {
-        this.flush(context, renderingService);
-      }
-
-      if (!this.batchedStyleHash) {
-        this.batchedStyleHash = hash;
-        this.batchedDisplayObject = object;
-        startBatch = true;
-      }
-    }
 
     // reset transformation
     context.save();
@@ -453,23 +408,18 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // fill & stroke
 
-    if (!this.enableBatch) {
-      context.save();
-      // apply attributes to context
-      this.applyAttributesToContext(context, object, renderingService);
-    }
+    context.save();
+    // apply attributes to context
+    this.applyAttributesToContext(context, object, renderingService);
 
     // apply anchor in local space
     this.useAnchor(context, object, () => {
       // generate path in local space
       const generatePath = this.pathGeneratorFactory(object.nodeName);
       if (generatePath) {
-        if (startBatch || !this.enableBatch) {
-          context.beginPath();
-        }
+        context.beginPath();
         generatePath(context, object.parsedStyle);
         if (
-          !this.enableBatch &&
           object.nodeName !== Shape.LINE &&
           object.nodeName !== Shape.PATH &&
           object.nodeName !== Shape.POLYLINE
@@ -479,15 +429,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
 
       // fill & stroke
-      if (styleRenderer && !this.enableBatch) {
+      if (styleRenderer) {
         styleRenderer.render(context, object.parsedStyle, object);
       }
     });
 
     // restore applied attributes, eg. shadowBlur shadowColor...
-    if (!this.enableBatch) {
-      context.restore();
-    }
+    context.restore();
 
     // finish rendering, clear dirty flag
     object.renderable.dirty = false;
