@@ -1,4 +1,4 @@
-import { ContextService, DisplayObject, isNil, ParsedPolygonStyleProps } from '@antv/g';
+import { ContextService, DisplayObject, ParsedPolygonStyleProps } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import {
   CanvasKitContext,
@@ -19,30 +19,35 @@ export class PolygonRenderer implements RendererContribution {
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = this.contextService.getContext();
-    const { canvas, fillPaint, strokePaint, shadowPaint } = context;
+    const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
 
-    const { shadowColor, shadowOffsetX, shadowOffsetY, defX, defY, points } =
+    const { shadowOffsetX, shadowOffsetY, defX, defY, points } =
       object.parsedStyle as ParsedPolygonStyleProps;
 
     const formattedPoints = points.points
       .map(([x, y]) => [x - defX, y - defY])
       .reduce<number[]>((prev, cur) => prev.concat(cur), []);
 
-    if (!isNil(shadowColor)) {
+    if (shadowFillPaint || shadowStrokePaint) {
       const path = new CanvasKit.Path();
       path.addPoly(
-        formattedPoints.map((x, i) =>
-          x + (i % 2) === 0 ? shadowOffsetX?.value || 0 : shadowOffsetY?.value || 0,
+        formattedPoints.map(
+          (x, i) =>
+            x + (i % 2 === 0 ? (shadowOffsetX?.value || 0) / 2 : (shadowOffsetY?.value || 0) / 2),
         ),
         true,
       );
-      canvas.drawPath(path, shadowPaint);
+      canvas.drawPath(path, fillPaint ? shadowFillPaint : shadowStrokePaint);
     }
 
     const path = new CanvasKit.Path();
     path.addPoly(formattedPoints, true);
 
-    canvas.drawPath(path, fillPaint);
-    canvas.drawPath(path, strokePaint);
+    if (fillPaint) {
+      canvas.drawPath(path, fillPaint);
+    }
+    if (strokePaint) {
+      canvas.drawPath(path, strokePaint);
+    }
   }
 }

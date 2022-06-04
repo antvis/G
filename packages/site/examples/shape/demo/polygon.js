@@ -99,6 +99,10 @@ const polygonConfig = {
   lineDashOffset: 0,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 polygonFolder.addColor(polygonConfig, 'fill').onChange((color) => {
   polygon.style.fill = color;
@@ -131,6 +135,18 @@ polygonFolder
   .onChange((cursor) => {
     polygon.style.cursor = cursor;
   });
+polygonFolder.addColor(polygonConfig, 'shadowColor').onChange((color) => {
+  polygon.attr('shadowColor', color);
+});
+polygonFolder.add(polygonConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  polygon.style.shadowBlur = shadowBlur;
+});
+polygonFolder.add(polygonConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  polygon.style.shadowOffsetX = shadowOffsetX;
+});
+polygonFolder.add(polygonConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  polygon.style.shadowOffsetY = shadowOffsetY;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

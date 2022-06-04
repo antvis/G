@@ -1,4 +1,4 @@
-import { ContextService, DisplayObject, isNil, ParsedPolylineStyleProps } from '@antv/g';
+import { ContextService, DisplayObject, ParsedPolylineStyleProps } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
 import {
   CanvasKitContext,
@@ -19,28 +19,32 @@ export class PolylineRenderer implements RendererContribution {
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = this.contextService.getContext();
-    const { canvas, strokePaint, shadowPaint } = context;
+    const { canvas, strokePaint, shadowStrokePaint } = context;
 
-    const { shadowColor, shadowOffsetX, shadowOffsetY, defX, defY, points } =
+    const { shadowOffsetX, shadowOffsetY, defX, defY, points } =
       object.parsedStyle as ParsedPolylineStyleProps;
 
     const formattedPoints = points.points
       .map(([x, y]) => [x - defX, y - defY])
       .reduce<number[]>((prev, cur) => prev.concat(cur), []);
 
-    if (!isNil(shadowColor)) {
+    if (shadowStrokePaint) {
       const path = new CanvasKit.Path();
       path.addPoly(
-        formattedPoints.map((x, i) =>
-          x + (i % 2) === 0 ? shadowOffsetX?.value || 0 : shadowOffsetY?.value || 0,
+        formattedPoints.map(
+          (x, i) =>
+            x + (i % 2 === 0 ? (shadowOffsetX?.value || 0) / 2 : (shadowOffsetY?.value || 0) / 2),
         ),
         false,
       );
-      canvas.drawPath(path, shadowPaint);
+      canvas.drawPath(path, shadowStrokePaint);
     }
 
     const path = new CanvasKit.Path();
     path.addPoly(formattedPoints, false);
-    canvas.drawPath(path, strokePaint);
+
+    if (strokePaint) {
+      canvas.drawPath(path, strokePaint);
+    }
   }
 }

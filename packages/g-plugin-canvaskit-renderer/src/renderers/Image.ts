@@ -26,8 +26,9 @@ export class ImageRenderer implements RendererContribution {
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { surface, CanvasKit } = this.contextService.getContext();
-    const { canvas, fillPaint } = context;
-    const { width, height, img } = object.parsedStyle as ParsedImageStyleProps;
+    const { canvas } = context;
+    const { width, height, img, fillOpacity, opacity } =
+      object.parsedStyle as ParsedImageStyleProps;
 
     let image: HTMLImageElement;
     let iw = width.value;
@@ -57,6 +58,11 @@ export class ImageRenderer implements RendererContribution {
       const srcRect = CanvasKit.XYWHRect(0, 0, image.width, image.height);
       const destRect = CanvasKit.XYWHRect(0, 0, iw, ih);
 
+      const fillPaint = new CanvasKit.Paint();
+      fillPaint.setAntiAlias(true);
+      fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
+      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+
       // @see https://github.com/google/skia/blob/4ff73144c35b993907a6e3738a7be81c0681e504/modules/canvaskit/tests/core.spec.js#L864
       canvas.drawImageRectOptions(
         decoded,
@@ -66,6 +72,8 @@ export class ImageRenderer implements RendererContribution {
         CanvasKit.MipmapMode.None,
         fillPaint,
       );
+
+      fillPaint.delete();
     }
   }
 }

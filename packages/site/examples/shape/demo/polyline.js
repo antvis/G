@@ -109,6 +109,10 @@ const lineConfig = {
   visible: true,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 lineFolder.add(lineConfig, 'firstPointX', 0, 200).onChange((firstPointX) => {
   const newPoints = [...points];
@@ -160,6 +164,18 @@ lineFolder
   .onChange((cursor) => {
     polyline.style.cursor = cursor;
   });
+lineFolder.addColor(lineConfig, 'shadowColor').onChange((color) => {
+  polyline.attr('shadowColor', color);
+});
+lineFolder.add(lineConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  polyline.style.shadowBlur = shadowBlur;
+});
+lineFolder.add(lineConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  polyline.style.shadowOffsetX = shadowOffsetX;
+});
+lineFolder.add(lineConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  polyline.style.shadowOffsetY = shadowOffsetY;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

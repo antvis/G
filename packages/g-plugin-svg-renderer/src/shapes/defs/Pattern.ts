@@ -37,7 +37,7 @@ export function createOrUpdateGradientAndPattern(
       $el?.setAttribute(name, `url(#${gradientId})`);
     } else {
       if (!existed) {
-        createGradient(document, $def, parsedColor, gradientId);
+        createGradient(document, object, $def, parsedColor, gradientId);
       }
       $el?.setAttribute(name, `url(#${gradientId})`);
     }
@@ -109,6 +109,7 @@ function createPattern(
 
 function createGradient(
   document: Document,
+  object: DisplayObject,
   $def: SVGDefsElement,
   parsedColor: CSSGradientValue,
   gradientId: string,
@@ -120,17 +121,25 @@ function createGradient(
     parsedColor.type === GradientPatternType.LinearGradient ? 'linearGradient' : 'radialGradient',
     document,
   );
+
+  const bounds = object.getGeometryBounds();
+  const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+  const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+
+  // @see https://github.com/antvis/g/issues/1025
+  $gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
   if (parsedColor.type === GradientPatternType.LinearGradient) {
     const { x0, y0, x1, y1 } = parsedColor.value as LinearGradient;
-    $gradient.setAttribute('x1', `${x0}`);
-    $gradient.setAttribute('y1', `${y0}`);
-    $gradient.setAttribute('x2', `${x1}`);
-    $gradient.setAttribute('y2', `${y1}`);
+    $gradient.setAttribute('x1', `${x0 * width}`);
+    $gradient.setAttribute('y1', `${y0 * height}`);
+    $gradient.setAttribute('x2', `${x1 * width}`);
+    $gradient.setAttribute('y2', `${y1 * height}`);
   } else {
+    const r = Math.sqrt(width * width + height * height) / 2;
     const { x0, y0, r1 } = parsedColor.value as RadialGradient;
-    $gradient.setAttribute('cx', `${x0}`);
-    $gradient.setAttribute('cy', `${y0}`);
-    $gradient.setAttribute('r', `${r1 / 2}`);
+    $gradient.setAttribute('cx', `${x0 * width}`);
+    $gradient.setAttribute('cy', `${y0 * height}`);
+    $gradient.setAttribute('r', `${r1 * r}`);
   }
 
   // add stops

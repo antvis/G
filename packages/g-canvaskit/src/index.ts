@@ -9,7 +9,11 @@ import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 export * from './CanvasKitContextService';
 
 interface CanvaskitRendererConfig extends RendererConfig {
-  wasmUrl?: string;
+  wasmDir?: string;
+  fonts?: {
+    name: string;
+    url: string;
+  }[];
 }
 
 export class Renderer extends AbstractRenderer {
@@ -19,12 +23,16 @@ export class Renderer extends AbstractRenderer {
     // register Canvas2DContext
     this.registerPlugin(
       new ContextRegisterPlugin({
-        wasmUrl: config?.wasmUrl,
+        wasmDir: config?.wasmDir || 'https://unpkg.com/canvaskit-wasm@0.34.0/bin/',
       }),
     );
     this.registerPlugin(new ImageLoader.Plugin());
     // enable rendering with Canvas2D API
-    this.registerPlugin(new CanvaskitRenderer.Plugin());
+    this.registerPlugin(
+      new CanvaskitRenderer.Plugin({
+        fonts: config?.fonts || [],
+      }),
+    );
     this.registerPlugin(new DomInteraction.Plugin());
     // enable picking with Canvas2D API
     // this.registerPlugin(new CanvasPicker.Plugin());

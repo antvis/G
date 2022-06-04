@@ -93,6 +93,10 @@ const ellipseConfig = {
   strokeOpacity: 1,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 ellipseFolder.add(ellipseConfig, 'cx', 0, 600).onChange((cx) => {
   ellipse.style.cx = cx;
@@ -132,6 +136,18 @@ ellipseFolder
   .onChange((cursor) => {
     ellipse.style.cursor = cursor;
   });
+ellipseFolder.addColor(ellipseConfig, 'shadowColor').onChange((color) => {
+  ellipse.attr('shadowColor', color);
+});
+ellipseFolder.add(ellipseConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  ellipse.style.shadowBlur = shadowBlur;
+});
+ellipseFolder.add(ellipseConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  ellipse.style.shadowOffsetX = shadowOffsetX;
+});
+ellipseFolder.add(ellipseConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  ellipse.style.shadowOffsetY = shadowOffsetY;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

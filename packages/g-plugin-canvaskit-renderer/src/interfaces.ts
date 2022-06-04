@@ -28,14 +28,30 @@ export const PolylineRendererContribution = Syringe.defineToken('PolylineRendere
 export const PolygonRendererContribution = Syringe.defineToken('PolygonRenderer', {
   multiple: false,
 });
+export const PathRendererContribution = Syringe.defineToken('PathRenderer', {
+  multiple: false,
+});
+export const TextRendererContribution = Syringe.defineToken('TextRenderer', {
+  multiple: false,
+});
 
 export const RendererContributionFactory = Syringe.defineToken('RendererContributionFactory');
 export interface RendererContributionContext {
   canvas: Canvas;
   fillPaint: Paint;
   strokePaint: Paint;
-  shadowPaint: Paint;
+  shadowFillPaint: Paint;
+  shadowStrokePaint: Paint;
 }
 export interface RendererContribution {
   render: (displayObject: DisplayObject, context: RendererContributionContext) => void;
+}
+
+export const CanvaskitRendererPluginOptions = Syringe.defineToken('CanvaskitRendererPluginOptions');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export interface CanvaskitRendererPluginOptions {
+  fonts: {
+    name: string;
+    url: string;
+  }[];
 }

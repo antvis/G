@@ -4,12 +4,10 @@ import type { CanvasKit } from 'canvaskit-wasm';
 import CanvasKitInit from 'canvaskit-wasm/bin/canvaskit.js';
 import { inject, singleton, Syringe } from 'mana-syringe';
 
-const CANVASKIT_CDN_URL = 'https://unpkg.com/canvaskit-wasm@0.34.0/bin/';
-
 export const ContextRegisterPluginOptions = Syringe.defineToken('ContextRegisterPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextRegisterPluginOptions {
-  wasmUrl: string;
+  wasmDir: string;
 }
 
 /**
@@ -119,8 +117,7 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
 
   private loadCanvaskit(): Promise<CanvasKit> {
     return CanvasKitInit({
-      locateFile: (file: string) =>
-        (this.contextRegisterPluginOptions.wasmUrl || CANVASKIT_CDN_URL) + file,
+      locateFile: (file: string) => this.contextRegisterPluginOptions.wasmDir + file,
     });
   }
 }

@@ -18,7 +18,13 @@ import {
 } from '@antv/g';
 import type { Canvas, CanvasKit, Paint } from 'canvaskit-wasm';
 import { inject, singleton } from 'mana-syringe';
-import { CanvasKitContext, RendererContribution, RendererContributionFactory } from './interfaces';
+import { FontLoader } from './FontLoader';
+import {
+  CanvasKitContext,
+  CanvaskitRendererPluginOptions,
+  RendererContribution,
+  RendererContributionFactory,
+} from './interfaces';
 
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
@@ -39,12 +45,25 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   @inject(RendererContributionFactory)
   private rendererContributionFactory: (tagName: Shape | string) => RendererContribution;
 
+  @inject(FontLoader)
+  private fontLoader: FontLoader;
+
+  @inject(CanvaskitRendererPluginOptions)
+  private canvaskitRendererPluginOptions: CanvaskitRendererPluginOptions;
+
   private destroyed = false;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tapPromise(CanvaskitRendererPlugin.tag, async () => {
       const canvasKitContext = this.contextService.getContext();
       const { surface, CanvasKit } = canvasKitContext;
+      const { fonts } = this.canvaskitRendererPluginOptions;
+
+      // load default fonts 'sans-serif', 'NotoSansCJK-Regular.ttf'
+      await Promise.all(
+        fonts.map(({ name, url }) => this.fontLoader.loadFont(CanvasKit, name, url)),
+      );
+
       const { background } = this.canvasConfig;
       const clearColor = parseColor(background) as CSSRGB;
 
@@ -177,74 +196,86 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       shadowColor,
     } = object.parsedStyle as ParsedBaseStyleProps;
 
-    const fillPaint = new CanvasKit.Paint();
-    fillPaint.setAntiAlias(true);
-    fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
-    if (fill instanceof CSSRGB && !fill.isNone) {
-      fillPaint.setColor(
-        CanvasKit.Color4f(
-          Number(fill.r) / 255,
-          Number(fill.g) / 255,
-          Number(fill.b) / 255,
-          Number(fill.alpha),
-        ),
-      );
-    } else if (fill instanceof CSSGradientValue) {
-      this.addGradient(object, fill, fillPaint, CanvasKit);
-    }
-    fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+    const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
+    const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
 
-    const strokePaint = new CanvasKit.Paint();
-    /**
-     * stroke
-     */
-    if (!isNil(lineWidth) && lineWidth.value > 0) {
-      strokePaint.setAntiAlias(true);
-      strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
-      if (stroke instanceof CSSRGB && !stroke.isNone) {
-        strokePaint.setColor(
+    let fillPaint: Paint = null;
+    let strokePaint: Paint = null;
+    let shadowFillPaint: Paint = null;
+    let shadowStrokePaint: Paint = null;
+
+    if (hasFill) {
+      fillPaint = new CanvasKit.Paint();
+      fillPaint.setAntiAlias(true);
+      fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
+      if (fill instanceof CSSRGB && !fill.isNone) {
+        fillPaint.setColor(
           CanvasKit.Color4f(
-            Number(stroke.r) / 255,
-            Number(stroke.g) / 255,
-            Number(stroke.b) / 255,
-            Number(stroke.alpha),
+            Number(fill.r) / 255,
+            Number(fill.g) / 255,
+            Number(fill.b) / 255,
+            Number(fill.alpha),
           ),
         );
-      } else if (stroke instanceof CSSGradientValue) {
-        this.addGradient(object, stroke, strokePaint, CanvasKit);
+      } else if (fill instanceof CSSGradientValue) {
+        this.addGradient(object, fill, fillPaint, CanvasKit);
       }
+      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+    }
 
-      strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
+    if (hasStroke) {
+      strokePaint = new CanvasKit.Paint();
+      /**
+       * stroke
+       */
+      if (!isNil(lineWidth) && lineWidth.value > 0) {
+        strokePaint.setAntiAlias(true);
+        strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
+        if (stroke instanceof CSSRGB && !stroke.isNone) {
+          strokePaint.setColor(
+            CanvasKit.Color4f(
+              Number(stroke.r) / 255,
+              Number(stroke.g) / 255,
+              Number(stroke.b) / 255,
+              Number(stroke.alpha),
+            ),
+          );
+        } else if (stroke instanceof CSSGradientValue) {
+          this.addGradient(object, stroke, strokePaint, CanvasKit);
+        }
 
-      strokePaint.setStrokeWidth(lineWidth.value);
-      const STROKE_CAP_MAP = {
-        butt: CanvasKit.StrokeCap.Butt,
-        round: CanvasKit.StrokeCap.Round,
-        square: CanvasKit.StrokeCap.Square,
-      };
-      strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap.value]);
-      const STROKE_JOIN_MAP = {
-        bevel: CanvasKit.StrokeJoin.Bevel,
-        round: CanvasKit.StrokeJoin.Round,
-        miter: CanvasKit.StrokeJoin.Miter,
-      };
-      strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin.value]);
-      strokePaint.setStrokeMiter(miterLimit);
+        strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
 
-      if (lineDash) {
-        strokePaint.setPathEffect(
-          CanvasKit.PathEffect.MakeDash(
-            lineDash.map((d) => d.value),
-            lineDashOffset?.value || 0,
-          ),
-        );
+        strokePaint.setStrokeWidth(lineWidth.value);
+        const STROKE_CAP_MAP = {
+          butt: CanvasKit.StrokeCap.Butt,
+          round: CanvasKit.StrokeCap.Round,
+          square: CanvasKit.StrokeCap.Square,
+        };
+        strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap.value]);
+        const STROKE_JOIN_MAP = {
+          bevel: CanvasKit.StrokeJoin.Bevel,
+          round: CanvasKit.StrokeJoin.Round,
+          miter: CanvasKit.StrokeJoin.Miter,
+        };
+        strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin.value]);
+        strokePaint.setStrokeMiter(miterLimit);
+
+        if (lineDash) {
+          strokePaint.setPathEffect(
+            CanvasKit.PathEffect.MakeDash(
+              lineDash.map((d) => d.value),
+              lineDashOffset?.value || 0,
+            ),
+          );
+        }
       }
     }
 
-    const shadowPaint = new CanvasKit.Paint();
-    if (!isNil(shadowColor)) {
-      shadowPaint.setAntiAlias(true);
-      shadowPaint.setColor(
+    if (hasFill && !isNil(shadowColor)) {
+      shadowFillPaint = fillPaint.copy();
+      shadowFillPaint.setAntiAlias(true);
+      shadowFillPaint.setColor(
         CanvasKit.Color4f(
           Number(shadowColor.r) / 255,
           Number(shadowColor.g) / 255,
@@ -252,9 +283,24 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      shadowPaint.setAlphaf(fillOpacity.value * opacity.value);
       const blurSigma = ((shadowBlur && shadowBlur.value) || 0) / 2;
-      shadowPaint.setMaskFilter(
+      shadowFillPaint.setMaskFilter(
+        CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
+      );
+    }
+    if (hasStroke && !isNil(shadowColor)) {
+      shadowStrokePaint = strokePaint.copy();
+      shadowStrokePaint.setAntiAlias(true);
+      shadowStrokePaint.setColor(
+        CanvasKit.Color4f(
+          Number(shadowColor.r) / 255,
+          Number(shadowColor.g) / 255,
+          Number(shadowColor.b) / 255,
+          Number(shadowColor.alpha),
+        ),
+      );
+      const blurSigma = ((shadowBlur && shadowBlur.value) || 0) / 2;
+      shadowStrokePaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
     }
@@ -262,14 +308,13 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     /**
      * world transform
      */
-    const origin = object.getOrigin();
     const [tx, ty] = object.getPosition();
     const [sx, sy] = object.getScale();
     const rot = object.getEulerAngles();
 
     // @see https://fiddle.skia.org/c/68b54cb7d3435f46e532e6d565a59c49
-    canvas.rotate(rot, tx + origin[0], ty + origin[1]);
     canvas.translate(tx, ty);
+    canvas.rotate(rot, 0, 0);
     canvas.scale(sx, sy);
 
     const contentBounds = object.getGeometryBounds();
@@ -287,12 +332,19 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     const renderer = this.rendererContributionFactory(object.nodeName);
     if (renderer) {
-      renderer.render(object, { fillPaint, strokePaint, shadowPaint, canvas });
+      renderer.render(object, {
+        fillPaint,
+        strokePaint,
+        shadowFillPaint,
+        shadowStrokePaint,
+        canvas,
+      });
     }
 
-    fillPaint.delete();
-    strokePaint.delete();
-    shadowPaint.delete();
+    fillPaint?.delete();
+    strokePaint?.delete();
+    shadowFillPaint?.delete();
+    shadowStrokePaint?.delete();
 
     canvas.restore();
   }

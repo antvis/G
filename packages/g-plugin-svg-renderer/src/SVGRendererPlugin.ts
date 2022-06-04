@@ -375,20 +375,26 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       // <foreignObject>
       if (object.nodeName === Shape.HTML) {
-        if (name === 'fill') {
-          $el.style.background = usedValue.toString();
-        } else if (name === 'stroke') {
-          $el.style['border-color'] = usedValue.toString();
-          $el.style['border-style'] = 'solid';
-        } else if (name === 'lineWidth') {
+        if (name === 'lineWidth') {
           $el.style['border-width'] = `${usedValue.value || 0}px`;
         } else if (name === 'lineDash') {
           $el.style['border-style'] = 'dashed';
         }
       }
 
-      if (name === 'fill' || name === 'stroke') {
-        createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
+      if (name === 'fill') {
+        if (object.nodeName === Shape.HTML) {
+          $el.style.background = usedValue.toString();
+        } else {
+          createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
+        }
+      } else if (name === 'stroke') {
+        if (object.nodeName === Shape.HTML) {
+          $el.style['border-color'] = usedValue.toString();
+          $el.style['border-style'] = 'solid';
+        } else {
+          createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
+        }
       } else if (name === 'visibility' && computedValue.value !== 'unset') {
         // use computed value
         // update `visibility` on <group>

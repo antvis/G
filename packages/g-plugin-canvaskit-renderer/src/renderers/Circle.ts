@@ -1,4 +1,4 @@
-import { DisplayObject, isNil, ParsedCircleStyleProps } from '@antv/g';
+import { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
 import { singleton } from 'mana-syringe';
 import {
   CircleRendererContribution,
@@ -11,20 +11,24 @@ import {
 })
 export class CircleRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
-    const { canvas, strokePaint, fillPaint, shadowPaint } = context;
-    const { r, shadowColor, shadowOffsetX, shadowOffsetY } =
-      object.parsedStyle as ParsedCircleStyleProps;
+    const { canvas, strokePaint, fillPaint, shadowFillPaint, shadowStrokePaint } = context;
+    const { r, shadowOffsetX, shadowOffsetY } = object.parsedStyle as ParsedCircleStyleProps;
 
-    if (!isNil(shadowColor)) {
+    if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawCircle(
         r.value + (shadowOffsetX?.value || 0) / 2,
         r.value + (shadowOffsetY?.value || 0) / 2,
         r.value,
-        shadowPaint,
+        shadowFillPaint || shadowStrokePaint,
       );
     }
 
-    canvas.drawCircle(r.value, r.value, r.value, fillPaint);
-    canvas.drawCircle(r.value, r.value, r.value, strokePaint);
+    if (fillPaint) {
+      canvas.drawCircle(r.value, r.value, r.value, fillPaint);
+    }
+
+    if (strokePaint) {
+      canvas.drawCircle(r.value, r.value, r.value, strokePaint);
+    }
   }
 }

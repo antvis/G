@@ -1,7 +1,9 @@
 import { Canvas, CanvasEvent, Group, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -9,6 +11,8 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const canvaskitRenderer = new CanvaskitRenderer();
+const webgpuRenderer = new WebGPURenderer();
 
 const canvas = new Canvas({
   container: 'container',
@@ -160,11 +164,23 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();
 
 const circleFolder = gui.addFolder('circle');
@@ -175,6 +191,10 @@ const circleConfig = {
   lineDashOffset: 0,
   anchorX: 0,
   anchorY: 0,
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
   circlePath.style.path = getCirclePath(0, 0, r, r);
@@ -194,6 +214,18 @@ circleFolder.add(circleConfig, 'anchorX', 0, 1).onChange((anchorX) => {
 });
 circleFolder.add(circleConfig, 'anchorY', 0, 1).onChange((anchorY) => {
   circlePath.style.anchor = [circleConfig.anchorX, anchorY];
+});
+circleFolder.addColor(circleConfig, 'shadowColor').onChange((color) => {
+  circlePath.attr('shadowColor', color);
+});
+circleFolder.add(circleConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  circlePath.style.shadowBlur = shadowBlur;
+});
+circleFolder.add(circleConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  circlePath.style.shadowOffsetX = shadowOffsetX;
+});
+circleFolder.add(circleConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  circlePath.style.shadowOffsetY = shadowOffsetY;
 });
 circleFolder.open();
 

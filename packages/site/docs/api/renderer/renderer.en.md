@@ -8,6 +8,7 @@ redirect_from:
 渲染器使用底层渲染 API 绘制各类图形，目前我们提供了以下渲染器，分别是：
 
 -   基于 Canvas2D 的 [g-canvas](/zh/docs/api/renderer/canvas)
+-   基于 Canvaskit / Skia 的 [g-canvaskit](/zh/docs/api/renderer/canvaskit)
 -   基于 SVG 的 [g-svg](/zh/docs/api/renderer/svg)
 -   基于 WebGL 2/1 的 [g-webgl](/zh/docs/api/renderer/webgl)
 -   基于 WebGPU 的 [g-webgpu](/zh/docs/api/renderer/webgpu)

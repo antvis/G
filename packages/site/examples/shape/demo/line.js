@@ -138,6 +138,10 @@ const lineConfig = {
   visible: true,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 lineFolder.add(lineConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((lineJoin) => {
   line1.style.lineJoin = lineJoin;
@@ -191,6 +195,18 @@ lineFolder
   .onChange((cursor) => {
     line1.style.cursor = cursor;
   });
+lineFolder.addColor(lineConfig, 'shadowColor').onChange((color) => {
+  line1.attr('shadowColor', color);
+});
+lineFolder.add(lineConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  line1.style.shadowBlur = shadowBlur;
+});
+lineFolder.add(lineConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  line1.style.shadowOffsetX = shadowOffsetX;
+});
+lineFolder.add(lineConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  line1.style.shadowOffsetY = shadowOffsetY;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
