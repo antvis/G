@@ -9,7 +9,19 @@ import Stats from 'stats.js';
  */
 
 // create a renderer
-const canvaskitRenderer = new CanvaskitRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({

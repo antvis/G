@@ -11,7 +11,19 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
-const canvaskitRenderer = new CanvaskitRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 const webgpuRenderer = new WebGPURenderer();
 
 const canvas = new Canvas({

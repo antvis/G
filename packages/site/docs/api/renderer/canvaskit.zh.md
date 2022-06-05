@@ -9,6 +9,9 @@ Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lot
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ" width="300" alt="draw text along path">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DI1kQ6A8qQ8AAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph decoration">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 
 # 使用方式
 
@@ -235,8 +238,173 @@ const text = {
 };
 ```
 
+## 沿路径绘制文本
+
+相较于 Canvas2D API 中的 [fillText](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillText)，CanvasKit 提供了沿指定路径绘制文本的能力。
+
+在该[示例](/zh/examples/plugins#canvaskit-text-along-path)中，我们可以沿 [Path](/zh/docs/api/basic/path) 绘制文本：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ" width="300" alt="draw text along path">
+
+我们可以使用 [alongPath]() 属性：
+
+```js
+const alongPath = new Path({
+    style: {
+        d: 'M 0,40 C 5.5555555555555545...',
+    },
+});
+
+const text = new Text({
+    style: {
+        fontFamily: 'sans-serif',
+        fontSize: 22,
+        fill: '#1890FF',
+        text: 'abcdefghijklmn这是测试文字',
+        alongPath,
+    },
+});
+```
+
 ## 文本段落
+
+CanvasKit 提供了增强的[段落绘制能力](https://skia.org/docs/user/modules/quickstart/#text-shaping)。
+
+### 修饰线
+
+在 CSS 中可以使用 [text-decoration](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 属性设置文本的修饰线外观。
+
+在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，我们使用下划线：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DI1kQ6A8qQ8AAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph decoration">
+
+```js
+const decoratedText = new Text({
+    style: {
+        fontFamily: 'sans-serif',
+        fontSize: 22,
+        fill: '#1890FF',
+        text: 'abcdefghijklmnopqrstuvwxyz这是测试文本',
+        wordWrap: true,
+        wordWrapWidth: 100,
+        decorationLine: 'underline',
+        decorationColor: 'red',
+        decorationStyle: 'wavy',
+        decorationThickness: 1.5,
+    },
+});
+```
+
+支持以下属性：
+
+-   decorationLine，对应 CSS [text-decoration-line](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-line) 属性。支持 `'none'` `'underline'` `'overline'` `'line-through'`
+-   decorationColor，对应 CSS [text-decoration-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-color) 属性
+-   decorationThickness，对应 CSS [text-decoration-thickness](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-thickness) 属性，目前仅支持 `number` 类型
+-   decorationStyle，对应 CSS [text-decoration-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) 属性。支持 `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
+
+### 文本截断
+
+在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，使用 `maxLines` 和 `ellipsis` 可以实现超出后截断并添加省略号的效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
+
+```js
+const text = new Text({
+    style: {
+        fontFamily: 'Roboto',
+        fontSize: 22,
+        fill: '#1890FF',
+        text: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
+        wordWrap: true,
+        wordWrapWidth: 100,
+        maxLines: 3,
+        ellipsis: '...',
+    },
+});
+```
+
+需要注意的是使用某些字体（例如 Noto）会出现下面奇怪的效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jjVTRaR7GPYAAAAAAAAAAAAAARQnAQ" width="160" alt="error ellipsis">
+
+原因是 Skia 会在省略号之后添加一个空白字符，而某些字体文件中缺失该字符就会展示 “tofu”，解决方案如下：
+
+-   https://github.com/flutter/flutter/issues/76473
+-   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
+
+### 文本方向
+
+使用 `direction` 可以指定文本方向从左向右或者从右向左，支持 `'ltr'` 和 `'rtl'`，默认为 `'ltr'`。下图为 `'rtl' 的效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8oWlSpL5hGAAAAAAAAAAAAAAARQnAQ" width="160" alt="text direction">
+
+### 前景 / 背景色
+
+使用 `foregroundColor` 和 `backgroundColor` 可以指定文本的前景和背景色：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OaRqRa-ZiAcAAAAAAAAAAAAAARQnAQ" width="160" alt="text background-color">
+
+### 阴影
+
+在 CSS 中可以使用 [text-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-shadow) 属性为文本添加多个阴影。
+
+我们支持通过 `shadows` 属性指定一组阴影，其中每一个阴影支持如下配置：
+
+-   color 阴影颜色
+-   blurRadius 默认为 0。值越大，模糊半径越大，阴影也就越淡
+-   offset 指定阴影相对文字的偏移量
+
+在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，我们指定了两个阴影：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9zeYRbfP_6oAAAAAAAAAAAAAARQnAQ" width="160" alt="text shadows">
+
+```js
+const shadowedText = new Text({
+    style: {
+        shadows: [
+            {
+                color: 'black',
+                blurRadius: 15,
+            },
+            {
+                color: 'red',
+                blurRadius: 5,
+                offset: [10, 10],
+            },
+        ],
+    },
+});
+```
+
+### 高级印刷功能
+
+可参考 CSS 中的 [font-feature-settings](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings) 属性，控制 OpenType 字体中的高级印刷功能。
+
+我们提供 `fontFeatures` 属性控制，它接受一个特性数组。在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，我们使用 Roboto 字体并开启了 small-cap 特性（注意首字母 D）：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g7gTKas4vYAAAAAAAAAAAAAARQnAQ" width="160" alt="text font-feature-settings">
+
+```js
+const fontFeaturesText = new Text({
+    style: {
+        fontFamily: 'Roboto',
+        fontSize: 22,
+        fill: '#1890FF',
+        text: 'Difficult waffles 0O 3.14',
+        fontFeatures: [
+            {
+                name: 'smcp',
+                value: 1,
+            },
+            {
+                name: 'zero',
+                value: 1,
+            },
+        ],
+    },
+});
+```
 
 # 性能
 
-CanvasKit 通过 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 进行绘制。
+CanvasKit 通过 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 进行绘制，在每一帧都会进行全量重绘。

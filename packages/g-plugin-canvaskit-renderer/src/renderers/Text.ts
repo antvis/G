@@ -1,5 +1,10 @@
-import type { CSSRGB, DisplayObject, ParsedTextStyleProps } from '@antv/g';
-import { ContextService } from '@antv/g';
+import {
+  ContextService,
+  CSSRGB,
+  DisplayObject,
+  ParsedPathStyleProps,
+  ParsedTextStyleProps,
+} from '@antv/g';
 import type { EmbindEnumEntity } from 'canvaskit-wasm';
 import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from '../FontLoader';
@@ -9,6 +14,7 @@ import type {
   RendererContributionContext,
 } from '../interfaces';
 import { TextRendererContribution } from '../interfaces';
+import { color2CanvaskitColor } from '../util';
 
 /**
  * One of the biggest features that CanvasKit offers over the HTML Canvas API is paragraph shaping.
@@ -39,31 +45,58 @@ export class TextRenderer implements RendererContribution {
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = this.contextService.getContext();
-    const { canvas, strokePaint, shadowStrokePaint } = context;
+    const { canvas } = context;
     const {
       text,
       fontSize,
+      fontFamily,
       fontWeight,
-      fontStyle,
-      lineWidth,
+      // fontStyle,
+      // lineWidth,
       textAlign,
       textBaseline,
-      lineJoin,
-      miterLimit = 0,
+      // lineJoin,
+      // miterLimit = 0,
       letterSpacing = 0,
-      stroke,
+      // stroke,
       fill,
-      fillOpacity,
-      strokeOpacity,
-      opacity,
-      metrics,
+      // fillOpacity,
+      // strokeOpacity,
+      // opacity,
+      // metrics,
       wordWrap,
       wordWrapWidth,
       dx,
       dy,
+      // @ts-ignore
+      alongPath,
+      // @ts-ignore
+      maxLines,
+      // @ts-ignore
+      ellipsis,
+      // @ts-ignore
+      decorationLine,
+      // @ts-ignore
+      decorationThickness,
+      // @ts-ignore
+      decorationStyle,
+      // @ts-ignore
+      decorationColor,
+      // @ts-ignore
+      direction,
+      // @ts-ignore
+      backgroundColor,
+      // @ts-ignore
+      foregroundColor,
+      // @ts-ignore
+      shadows,
+      // @ts-ignore
+      halfLeading,
+      // @ts-ignore
+      fontFeatures,
     } = object.parsedStyle as ParsedTextStyleProps;
 
-    const { font, lines, height, lineHeight, lineMetrics } = metrics;
+    // const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     const TEXT_ALIGN_MAP: Record<CanvasTextAlign, EmbindEnumEntity> = {
       left: CanvasKit.TextAlign.Left,
@@ -81,63 +114,174 @@ export class TextRenderer implements RendererContribution {
       top: undefined,
     };
 
-    const paraStyle = new CanvasKit.ParagraphStyle({
-      textStyle: {
-        // backgroundColor?: InputColor;
-        color: CanvasKit.Color4f(
-          Number((fill as CSSRGB).r) / 255,
-          Number((fill as CSSRGB).g) / 255,
-          Number((fill as CSSRGB).b) / 255,
-          Number((fill as CSSRGB).alpha),
-        ),
-        // decoration?: number;
-        // decorationColor?: InputColor;
-        // decorationThickness?: number;
-        // decorationStyle?: DecorationStyle;
-        fontFamilies: ['sans-serif'],
-        // fontFeatures?: TextFontFeatures[];
-        fontSize: fontSize.value,
-        // fontStyle: {
-        //   weight: {
-        //     value: Number(fontWeight.value),
-        //   },
-        //   // width?: FontWidth;
-        //   // slant?: FontSlant;
-        // },
-        // foregroundColor?: InputColor;
-        // heightMultiplier?: number;
-        // halfLeading?: boolean;
-        letterSpacing: letterSpacing,
-        // locale?: string;
-        // shadows?: TextShadow[];
-        textBaseline: TEXT_BASELINE_MAP[textBaseline.value],
-        // wordSpacing?: number;
-      },
-      textAlign: TEXT_ALIGN_MAP[textAlign.value],
-
-      // disableHinting?: boolean;
-      // ellipsis?: string;
-      // heightMultiplier?: number;
-      // maxLines?: number;
-      // strutStyle?: StrutStyle;
-      // textDirection?: TextDirection;
-      // textHeightBehavior?: TextHeightBehavior;
-    });
-
-    const fontSrc = this.fontLoader.getTypefaceFontProvider('sans-serif');
-    const builder = CanvasKit.ParagraphBuilder.MakeFromFontProvider(paraStyle, fontSrc);
-    builder.addText(text);
-    const paragraph = builder.build();
-
-    if (wordWrap) {
-      // width in pixels to use when wrapping text
-      paragraph.layout(wordWrapWidth);
-    } else {
-      paragraph.layout(Infinity);
+    let loadedFontFamily = fontFamily;
+    let fontSrc = this.fontLoader.getTypefaceFontProvider(fontFamily);
+    let typeface = this.fontLoader.getTypeface(fontFamily);
+    if (!fontSrc) {
+      // use default font
+      loadedFontFamily = 'sans-serif';
+      fontSrc = this.fontLoader.getTypefaceFontProvider(loadedFontFamily);
+      typeface = this.fontLoader.getTypeface(loadedFontFamily);
     }
-    canvas.drawParagraph(paragraph, 0, 0);
 
-    paragraph.delete();
-    builder.delete();
+    if (alongPath) {
+      const skPath = new CanvasKit.Path();
+      const { defX: x, defY: y, path: parsedPath } = alongPath.parsedStyle as ParsedPathStyleProps;
+
+      const { curve, zCommandIndexes } = parsedPath;
+      const pathCommand = [...curve];
+      zCommandIndexes.forEach((zIndex, index) => {
+        pathCommand.splice(zIndex + index, 1, ['Z']);
+      });
+
+      for (let i = 0; i < pathCommand.length; i++) {
+        const params = pathCommand[i]; // eg. M 100 200
+        const command = params[0];
+        // V,H,S,T 都在前面被转换成标准形式
+        switch (command) {
+          case 'M':
+            skPath.moveTo(params[1] - x, params[2] - y);
+            break;
+          case 'C':
+            skPath.cubicTo(
+              params[1] - x,
+              params[2] - y,
+              params[3] - x,
+              params[4] - y,
+              params[5] - x,
+              params[6] - y,
+            );
+            break;
+          case 'Z':
+            skPath.close();
+            break;
+          default:
+            break;
+        }
+      }
+
+      const textPaint = new CanvasKit.Paint();
+      textPaint.setAntiAlias(true);
+      textPaint.setStyle(CanvasKit.PaintStyle.Fill);
+      if (fill instanceof CSSRGB && !fill.isNone) {
+        textPaint.setColor(
+          CanvasKit.Color4f(
+            Number(fill.r) / 255,
+            Number(fill.g) / 255,
+            Number(fill.b) / 255,
+            Number(fill.alpha),
+          ),
+        );
+      }
+      const skFont = new CanvasKit.Font(typeface, fontSize.value);
+      const textblob = CanvasKit.TextBlob.MakeOnPath(text, skPath, skFont);
+      canvas.drawTextBlob(textblob, 0, 0, textPaint);
+    } else {
+      const DECORATION_MAP = {
+        none: CanvasKit.NoDecoration,
+        underline: CanvasKit.UnderlineDecoration,
+        overline: CanvasKit.OverlineDecoration,
+        'line-through': CanvasKit.LineThroughDecoration,
+      };
+      const DECORATION_STYLE_MAP = {
+        solid: CanvasKit.DecorationStyle.Solid,
+        double: CanvasKit.DecorationStyle.Double,
+        dotted: CanvasKit.DecorationStyle.Dotted,
+        dashed: CanvasKit.DecorationStyle.Dashed,
+        wavy: CanvasKit.DecorationStyle.Wavy,
+      };
+      const DIRECTION_MAP = {
+        ltr: CanvasKit.TextDirection.LTR,
+        rtl: CanvasKit.TextDirection.RTL,
+      };
+
+      const paraStyle = new CanvasKit.ParagraphStyle({
+        textStyle: {
+          backgroundColor: color2CanvaskitColor(CanvasKit, backgroundColor),
+          color: CanvasKit.Color4f(
+            Number((fill as CSSRGB).r) / 255,
+            Number((fill as CSSRGB).g) / 255,
+            Number((fill as CSSRGB).b) / 255,
+            Number((fill as CSSRGB).alpha),
+          ),
+          decoration: DECORATION_MAP[decorationLine || 'none'],
+          decorationColor: color2CanvaskitColor(CanvasKit, decorationColor),
+          decorationThickness,
+          decorationStyle: DECORATION_STYLE_MAP[decorationStyle || 'solid'],
+          fontFamilies: [loadedFontFamily],
+          fontFeatures,
+          fontSize: fontSize.value,
+          fontStyle: {
+            weight: {
+              value: Number(fontWeight.value),
+            },
+            // width?: FontWidth;
+            // slant?: FontSlant;
+          },
+          foregroundColor: color2CanvaskitColor(CanvasKit, foregroundColor || fill),
+          // heightMultiplier?: number;
+          halfLeading,
+          letterSpacing: letterSpacing,
+          // locale?: string;
+          shadows: (shadows || []).map(({ color, offset, blurRadius }) => {
+            return {
+              color: color2CanvaskitColor(CanvasKit, color),
+              offset,
+              blurRadius,
+            };
+          }),
+          textBaseline: TEXT_BASELINE_MAP[textBaseline.value],
+          // wordSpacing?: number;
+        },
+        textAlign: TEXT_ALIGN_MAP[textAlign.value],
+        // disableHinting?: boolean;
+        ellipsis,
+        // heightMultiplier?: number;
+        maxLines,
+        // strutStyle?: StrutStyle;
+        textDirection: DIRECTION_MAP[direction || 'ltr'],
+        // textHeightBehavior?: TextHeightBehavior;
+      });
+
+      const builder = CanvasKit.ParagraphBuilder.MakeFromFontProvider(paraStyle, fontSrc);
+      builder.addText(text);
+      const paragraph = builder.build();
+
+      if (wordWrap) {
+        // width in pixels to use when wrapping text
+        paragraph.layout(wordWrapWidth);
+      } else {
+        paragraph.layout(Infinity);
+      }
+
+      // account for textBaseline
+      const paragraphHeight = paragraph.getHeight();
+      const paragraphMaxWidth = paragraph.getMaxWidth();
+      let offsetX = 0;
+      // handle horizontal text align
+      if (textAlign.value === 'center') {
+        offsetX -= paragraphMaxWidth / 2;
+      } else if (textAlign.value === 'right' || textAlign.value === 'end') {
+        offsetX -= paragraphMaxWidth;
+      }
+      let linePositionY = 0;
+      // handle vertical text baseline
+      if (textBaseline.value === 'middle') {
+        linePositionY = -paragraphHeight / 2;
+      } else if (
+        textBaseline.value === 'bottom' ||
+        textBaseline.value === 'alphabetic' ||
+        textBaseline.value === 'ideographic'
+      ) {
+        linePositionY = -paragraphHeight;
+      } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+        linePositionY = 0;
+      }
+
+      canvas.drawParagraph(paragraph, offsetX + dx.value, linePositionY + dy.value);
+
+      paragraph.delete();
+      builder.delete();
+    }
   }
 }

@@ -15,7 +15,19 @@ const pattern = 'p(a) https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZC
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
-const canvaskitRenderer = new CanvaskitRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas

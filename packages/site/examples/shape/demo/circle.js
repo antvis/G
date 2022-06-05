@@ -12,7 +12,19 @@ const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
 const webgpuRenderer = new WebGPURenderer();
-const canvaskitRenderer = new CanvaskitRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({
