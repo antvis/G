@@ -1,4 +1,4 @@
-import { DisplayObject } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
 import type { Canvas, CanvasKit, Paint, Surface } from 'canvaskit-wasm';
 import { Syringe } from 'mana-syringe';
 

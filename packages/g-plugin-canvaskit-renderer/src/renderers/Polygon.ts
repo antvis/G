@@ -1,11 +1,12 @@
-import { ContextService, DisplayObject, ParsedPolygonStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedPolygonStyleProps } from '@antv/g';
+import { ContextService } from '@antv/g';
 import { inject, singleton } from 'mana-syringe';
-import {
+import type {
   CanvasKitContext,
-  PolygonRendererContribution,
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
+import { PolygonRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Path_addPoly

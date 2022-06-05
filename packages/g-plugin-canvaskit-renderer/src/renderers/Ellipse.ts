@@ -1,10 +1,7 @@
-import { DisplayObject, ParsedEllipseStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import {
-  EllipseRendererContribution,
-  RendererContribution,
-  RendererContributionContext,
-} from '../interfaces';
+import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { EllipseRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawOval

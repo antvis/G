@@ -1,4 +1,5 @@
-import { CSSRGB, CSSUnitValue, DisplayObject, isNil } from '@antv/g';
+import type { CSSRGB, CSSUnitValue, DisplayObject } from '@antv/g';
+import { isNil } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 
 const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';

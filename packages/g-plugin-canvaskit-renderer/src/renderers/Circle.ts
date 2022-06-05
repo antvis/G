@@ -1,10 +1,7 @@
-import { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import {
-  CircleRendererContribution,
-  RendererContribution,
-  RendererContributionContext,
-} from '../interfaces';
+import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { CircleRendererContribution } from '../interfaces';
 
 @singleton({
   token: CircleRendererContribution,

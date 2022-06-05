@@ -9,6 +9,7 @@ redirect_from:
 
 -   渲染相关
     -   [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    -   [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 基于 CanvasKit / Skia 渲染 2D 图形
     -   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
     -   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
     -   [g-plugin-html-renderer](/zh/docs/plugins/html-renderer) 渲染 DOM 元素

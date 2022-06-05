@@ -1,13 +1,14 @@
-import { ContextService, CSSRGB, DisplayObject, ParsedTextStyleProps } from '@antv/g';
-import { EmbindEnumEntity } from 'canvaskit-wasm';
+import type { CSSRGB, DisplayObject, ParsedTextStyleProps } from '@antv/g';
+import { ContextService } from '@antv/g';
+import type { EmbindEnumEntity } from 'canvaskit-wasm';
 import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from '../FontLoader';
-import {
+import type {
   CanvasKitContext,
   RendererContribution,
   RendererContributionContext,
-  TextRendererContribution,
 } from '../interfaces';
+import { TextRendererContribution } from '../interfaces';
 
 /**
  * One of the biggest features that CanvasKit offers over the HTML Canvas API is paragraph shaping.
@@ -132,7 +133,7 @@ export class TextRenderer implements RendererContribution {
       // width in pixels to use when wrapping text
       paragraph.layout(wordWrapWidth);
     } else {
-      paragraph.layout(400);
+      paragraph.layout(Infinity);
     }
     canvas.drawParagraph(paragraph, 0, 0);
 

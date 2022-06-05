@@ -1,8 +1,11 @@
-import { RendererPlugin, Shape } from '@antv/g';
+import type { RendererPlugin } from '@antv/g';
+import { Shape } from '@antv/g';
+import type { Canvas, InputRect } from 'canvaskit-wasm';
 import type { Syringe } from 'mana-syringe';
 import { Module } from 'mana-syringe';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
 import { FontLoader } from './FontLoader';
+import type { RendererContribution } from './interfaces';
 import {
   CanvaskitRendererPluginOptions,
   CircleRendererContribution,
@@ -13,7 +16,6 @@ import {
   PolygonRendererContribution,
   PolylineRendererContribution,
   RectRendererContribution,
-  RendererContribution,
   RendererContributionFactory,
   TextRendererContribution,
 } from './interfaces';
@@ -78,9 +80,12 @@ const containerModule = Module((register) => {
 export class Plugin implements RendererPlugin {
   name = 'canvaskit-renderer';
 
+  private container: Syringe.Container;
+
   constructor(private options: Partial<CanvaskitRendererPluginOptions> = {}) {}
 
   init(container: Syringe.Container): void {
+    this.container = container;
     container.register(CanvaskitRendererPluginOptions, {
       useValue: {
         fonts: [],
@@ -89,8 +94,17 @@ export class Plugin implements RendererPlugin {
     });
     container.load(containerModule, true);
   }
+
   destroy(container: Syringe.Container): void {
     container.remove(CanvaskitRendererPluginOptions);
     container.unload(containerModule);
+  }
+
+  playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
+    return this.container.get(CanvaskitRendererPlugin).playAnimation(name, jsonStr, bounds, assets);
+  }
+
+  createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
+    return this.container.get(CanvaskitRendererPlugin).createParticles(jsonStr, onFrame, assets);
   }
 }

@@ -1,10 +1,7 @@
-import { DisplayObject, ParsedRectStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedRectStyleProps } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import {
-  RectRendererContribution,
-  RendererContribution,
-  RendererContributionContext,
-} from '../interfaces';
+import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { RectRendererContribution } from '../interfaces';
 
 /**
  * should account for round rect(RRect)

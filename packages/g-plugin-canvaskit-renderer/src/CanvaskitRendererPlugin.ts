@@ -1,30 +1,35 @@
+import type {
+  DisplayObject,
+  LinearGradient,
+  ParsedBaseStyleProps,
+  RadialGradient,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import {
   CanvasConfig,
   ContextService,
   CSSGradientValue,
   CSSRGB,
-  DisplayObject,
   GradientPatternType,
   isNil,
-  LinearGradient,
   parseColor,
-  ParsedBaseStyleProps,
-  RadialGradient,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
-  RenderingService,
   Shape,
 } from '@antv/g';
-import type { Canvas, CanvasKit, Paint } from 'canvaskit-wasm';
+import type {
+  Canvas,
+  CanvasKit,
+  InputRect,
+  ManagedSkottieAnimation,
+  Paint,
+  Particles,
+} from 'canvaskit-wasm';
 import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from './FontLoader';
-import {
-  CanvasKitContext,
-  CanvaskitRendererPluginOptions,
-  RendererContribution,
-  RendererContributionFactory,
-} from './interfaces';
+import type { CanvasKitContext, RendererContribution } from './interfaces';
+import { CanvaskitRendererPluginOptions, RendererContributionFactory } from './interfaces';
 
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
@@ -53,6 +58,47 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
   private destroyed = false;
 
+  private animations: {
+    name: string;
+    jsonStr: string;
+    bounds: InputRect;
+    assets?: any;
+    duration: number;
+    size: Float32Array;
+    animation: ManagedSkottieAnimation;
+  }[] = [];
+
+  private particlesList: {
+    particles: Particles;
+    onFrame: (canvas: Canvas) => void;
+  }[] = [];
+
+  playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
+    const canvasKitContext = this.contextService.getContext();
+    const { CanvasKit } = canvasKitContext;
+    const animation = CanvasKit.MakeManagedAnimation(jsonStr, assets);
+    const duration = animation.duration() * 1000;
+    const size = animation.size();
+    this.animations.push({
+      name,
+      jsonStr,
+      bounds: bounds || CanvasKit.LTRBRect(0, 0, size[0], size[1]),
+      assets,
+      duration,
+      size,
+      animation,
+    });
+    return animation;
+  }
+
+  createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
+    const canvasKitContext = this.contextService.getContext();
+    const { CanvasKit } = canvasKitContext;
+    const particles = CanvasKit.MakeParticles(jsonStr, assets);
+    this.particlesList.push({ particles, onFrame });
+    return particles;
+  }
+
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tapPromise(CanvaskitRendererPlugin.tag, async () => {
       const canvasKitContext = this.contextService.getContext();
@@ -71,6 +117,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
       const dpr = this.contextService.getDPR();
       surface.getCanvas().scale(dpr, dpr);
+
+      const firstFrame = Date.now();
       const drawFrame = (canvas: Canvas) => {
         if (this.destroyed) {
           return;
@@ -85,6 +133,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           ),
         );
 
+        this.drawAnimations(canvas, firstFrame);
+        this.drawParticles(canvas);
         this.drawWithSurface(canvas, CanvasKit);
 
         surface.requestAnimationFrame(drawFrame);
@@ -94,6 +144,49 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(CanvaskitRendererPlugin.tag, () => {
       this.destroyed = true;
+      this.animations.forEach(({ animation }) => {
+        animation.delete();
+      });
+      this.animations = [];
+      this.particlesList.forEach(({ particles }) => {
+        particles.delete();
+      });
+      this.particlesList = [];
+    });
+  }
+
+  private drawAnimations(canvas: Canvas, firstFrame: number) {
+    const rectLeft = 0;
+    const rectTop = 1;
+    const rectRight = 2;
+    const rectBottom = 3;
+    this.animations.forEach(({ duration, animation, bounds }, i) => {
+      if (animation.isDeleted()) {
+        this.animations.splice(i, 1);
+      }
+
+      const seek = ((Date.now() - firstFrame) / duration) % 1.0;
+      const damage = animation.seek(seek);
+
+      if (damage[rectRight] > damage[rectLeft] && damage[rectBottom] > damage[rectTop]) {
+        animation.render(canvas, bounds);
+      }
+    });
+  }
+
+  private drawParticles(canvas: Canvas) {
+    this.particlesList.forEach(({ particles, onFrame }, i) => {
+      if (particles.isDeleted()) {
+        this.particlesList.splice(i, 1);
+      }
+
+      canvas.save();
+      if (onFrame) {
+        onFrame(canvas);
+      }
+      particles.update(Date.now() / 1000.0);
+      particles.draw(canvas);
+      canvas.restore();
     });
   }
 
@@ -139,7 +232,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       );
       paint.setShader(gradient);
     } else if (stroke.type === GradientPatternType.RadialGradient) {
-      const { x0, y0, x1, y1, r1, steps } = stroke.value as RadialGradient;
+      const { x0, y0, r1, steps } = stroke.value as RadialGradient;
       const r = Math.sqrt(width * width + height * height) / 2;
       const pos: number[] = [];
       const colors: Float32Array[] = [];

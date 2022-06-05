@@ -1,12 +1,13 @@
-import { ContextService, DisplayObject, ParsedPathStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps } from '@antv/g';
+import { ContextService } from '@antv/g';
 import { mat3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
-import {
+import type {
   CanvasKitContext,
-  PathRendererContribution,
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
+import { PathRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawPath

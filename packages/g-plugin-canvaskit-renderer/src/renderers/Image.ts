@@ -1,12 +1,13 @@
-import { ContextService, DisplayObject, isString, ParsedImageStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedImageStyleProps } from '@antv/g';
+import { ContextService, isString } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { inject, singleton } from 'mana-syringe';
-import {
+import type {
   CanvasKitContext,
-  ImageRendererContribution,
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
+import { ImageRendererContribution } from '../interfaces';
 
 /**
  * @see https://docs.flutter.dev/development/platform-integration/web-images#flutter-renderers-on-the-web

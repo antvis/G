@@ -5,6 +5,14 @@
   },
   "demos": [
     {
+      "filename": "skottie.js",
+      "title": {
+        "zh": "使用 Skottie 播放 Lottie 动画",
+        "en": "Use Skottie playing Lottie animations"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "rough.js",
       "title": {
         "zh": "使用 rough.js 手绘风格渲染",
@@ -102,6 +110,14 @@
         "zh": "使用 Yoga 排版引擎 - 对属性应用动画",
         "en": "Use Yoga layout engine - use animation"
       }
+    },
+    {
+      "filename": "canvaskit-particles.js",
+      "title": {
+        "zh": "使用 CanvasKit 绘制粒子",
+        "en": "Use CanvasKit drawing particles"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

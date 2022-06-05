@@ -18,12 +18,14 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 <p>
   <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
 
 </p>
 
@@ -45,7 +47,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
     -   [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
     -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvs2D 进行手绘风格渲染
     -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
-    -   [g-plugin-canvaskit](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+    -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
 -   拾取
     -   [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
     -   [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG

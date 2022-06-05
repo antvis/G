@@ -1,10 +1,7 @@
-import { DisplayObject, ParsedLineStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedLineStyleProps } from '@antv/g';
 import { singleton } from 'mana-syringe';
-import {
-  LineRendererContribution,
-  RendererContribution,
-  RendererContributionContext,
-} from '../interfaces';
+import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { LineRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawLine

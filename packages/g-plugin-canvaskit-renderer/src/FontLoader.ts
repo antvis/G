@@ -1,4 +1,4 @@
-import { CanvasKit, TypefaceFontProvider } from 'canvaskit-wasm';
+import type { CanvasKit, TypefaceFontProvider } from 'canvaskit-wasm';
 import { singleton } from 'mana-syringe';
 
 // const cdn = 'https://storage.googleapis.com/skia-cdn/misc/';
