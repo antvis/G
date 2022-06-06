@@ -21,16 +21,25 @@ const canvas = new Canvas({
 (async () => {
   const cdn = 'https://storage.googleapis.com/skia-cdn/misc/';
 
-  const [_, legoJSON, confettiJSON, drinkJSON, multiframeJSON, flightGif, onboardingJSON] =
-    await Promise.all([
-      canvas.ready,
-      fetch(cdn + 'lego_loader.json').then((response) => response.text()),
-      fetch(cdn + 'confetti.json').then((response) => response.text()),
-      fetch(cdn + 'drinks.json').then((response) => response.text()),
-      fetch(cdn + 'skottie_sample_multiframe.json').then((response) => response.text()),
-      fetch(cdn + 'flightAnim.gif').then((response) => response.arrayBuffer()),
-      fetch(cdn + 'onboarding.json').then((response) => response.text()),
-    ]);
+  const [
+    _,
+    legoJSON,
+    confettiJSON,
+    drinkJSON,
+    multiframeJSON,
+    flightGif,
+    onboardingJSON,
+    twitterJSON,
+  ] = await Promise.all([
+    canvas.ready,
+    fetch(cdn + 'lego_loader.json').then((response) => response.text()),
+    fetch(cdn + 'confetti.json').then((response) => response.text()),
+    fetch(cdn + 'drinks.json').then((response) => response.text()),
+    fetch(cdn + 'skottie_sample_multiframe.json').then((response) => response.text()),
+    fetch(cdn + 'flightAnim.gif').then((response) => response.arrayBuffer()),
+    fetch(cdn + 'onboarding.json').then((response) => response.text()),
+    fetch('/twitter-favorite-heart.json').then((response) => response.text()),
+  ]);
 
   plugin.playAnimation('sk_legos', legoJSON, [-100, -100, 300, 300]);
   plugin.playAnimation('sk_party', confettiJSON, [200, -100, 400, 400]);
@@ -39,4 +48,5 @@ const canvas = new Canvas({
     'image_0.png': flightGif,
   });
   plugin.playAnimation('sk_onboarding', onboardingJSON, [350, 0, 550, 200]);
+  plugin.playAnimation('sk_twitter', twitterJSON, [400, 200, 600, 400]);
 })();
