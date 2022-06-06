@@ -12,6 +12,7 @@ import {
   Camera,
   CanvasConfig,
   ContextService,
+  CSSRGB,
   DefaultCamera,
   ElementEvent,
   fromRotationTranslationScale,
@@ -197,6 +198,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.updateAttribute(object, [attrName]);
     };
 
+    const handleGeometryBoundsChanged = (e: MutationEvent) => {
+      const { document: doc } = this.canvasConfig;
+      const object = e.target as DisplayObject;
+      // @ts-ignore
+      const $el = object.elementSVG?.$el;
+
+      const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
+
+      if (fill && !(fill instanceof CSSRGB)) {
+        createOrUpdateGradientAndPattern(doc || document, this.$def, object, $el, fill, 'fill');
+      }
+      if (stroke && !(stroke instanceof CSSRGB)) {
+        createOrUpdateGradientAndPattern(doc || document, this.$def, object, $el, stroke, 'stroke');
+      }
+    };
+
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
       const { background, document } = this.canvasConfig;
 
@@ -223,6 +240,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      this.renderingContext.root.addEventListener(
+        ElementEvent.GEOMETRY_BOUNDS_CHANGED,
+        handleGeometryBoundsChanged,
+      );
     });
 
     renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
@@ -231,6 +252,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
+      );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.GEOMETRY_BOUNDS_CHANGED,
+        handleGeometryBoundsChanged,
       );
     });
 
@@ -386,14 +411,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (object.nodeName === Shape.HTML) {
           $el.style.background = usedValue.toString();
         } else {
-          createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
+          createOrUpdateGradientAndPattern(document, this.$def, object, $el, usedValue, usedName);
         }
       } else if (name === 'stroke') {
         if (object.nodeName === Shape.HTML) {
           $el.style['border-color'] = usedValue.toString();
           $el.style['border-style'] = 'solid';
         } else {
-          createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
+          createOrUpdateGradientAndPattern(document, this.$def, object, $el, usedValue, usedName);
         }
       } else if (name === 'visibility' && computedValue.value !== 'unset') {
         // use computed value
