@@ -34,8 +34,7 @@
   "peerDependencies": {
     "@antv/g": "^5.0.1",
     "@antv/g-canvas": "^1.1.4",
-    "@antv/g-webgl": "^1.1.4",
-    "mana-syringe": "^0.3.0"
+    "@antv/g-webgl": "^1.1.4"
   },
   "publishConfig": {
     "access": "public"

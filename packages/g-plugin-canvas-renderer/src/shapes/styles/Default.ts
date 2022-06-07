@@ -1,6 +1,5 @@
 import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
-import { isNil } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import { isNil, singleton } from '@antv/g';
 import type { StyleRenderer } from './interfaces';
 
 @singleton()

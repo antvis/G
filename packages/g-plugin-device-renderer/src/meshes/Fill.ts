@@ -1,18 +1,16 @@
-import { injectable } from 'mana-syringe';
 import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g';
-import { CSSRGB } from '@antv/g';
-import { Shape } from '@antv/g';
-import { vec3, mat4 } from 'gl-matrix';
-import { Format, VertexBufferFrequency } from '../platform';
-import meshVert from '../shader/mesh.vert';
-import meshFrag from '../shader/mesh.frag';
+import { CSSRGB, injectable, Shape } from '@antv/g';
+import { mat4, vec3 } from 'gl-matrix';
 import {
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from '../meshes/Instanced';
-import { Uniform, updateBuffer } from './Line';
+import { Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
+import meshFrag from '../shader/mesh.frag';
+import meshVert from '../shader/mesh.vert';
+import { Uniform, updateBuffer } from './Line';
 
 @injectable()
 export class FillMesh extends Instanced {

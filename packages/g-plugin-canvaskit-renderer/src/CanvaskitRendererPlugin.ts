@@ -8,6 +8,7 @@ import {
   DisplayObject,
   getEuler,
   GradientPatternType,
+  inject,
   isNil,
   LinearGradient,
   parseColor,
@@ -19,6 +20,7 @@ import {
   RenderingPluginContribution,
   RenderingService,
   Shape,
+  singleton,
 } from '@antv/g';
 import type {
   Canvas,
@@ -29,7 +31,6 @@ import type {
   Particles,
 } from 'canvaskit-wasm';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from './FontLoader';
 import type { CanvasKitContext, RendererContribution } from './interfaces';
 import { CanvaskitRendererPluginOptions, RendererContributionFactory } from './interfaces';

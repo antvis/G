@@ -1,8 +1,6 @@
-import type { RendererPlugin } from '@antv/g';
-import { Shape } from '@antv/g';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module, Shape } from '@antv/g';
 import type { Canvas, InputRect } from 'canvaskit-wasm';
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
 import { FontLoader } from './FontLoader';
 import type { RendererContribution } from './interfaces';

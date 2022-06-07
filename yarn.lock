@@ -142,6 +142,62 @@
     "@antv/util" "~2.0.0"
     gl-matrix "^3.0.0"
 
+"@antv/g-math@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-math/-/g-math-1.1.7.tgz#360d714bc8ec78057e0e4b535a9f1841f58334ae"
+  integrity sha512-r3lyP7RnxOvj+5SkN+he4Dni48rghy6OUKvlmLL2oHS0GmX5XDTBEymN4ljpuf9o/DhpqfQC/OZ1CyxHAlmdYQ==
+  dependencies:
+    gl-matrix "^3.1.0"
+    tslib "^2.3.1"
+
+"@antv/g-plugin-device-renderer@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-device-renderer/-/g-plugin-device-renderer-1.1.7.tgz#28348db0101b012fbac9dfb81873a21065567ed8"
+  integrity sha512-ecJG9DLUVdpD2EDXQ13QgeBsIOCthA4kqgLRJXCvBa0NN18ssOZy+tIW5R83Hm10X1/Rf0QhCxokA2WNQyC79A==
+  dependencies:
+    "@antv/g-shader-components" "^1.1.7"
+    "@mapbox/tiny-sdf" "^2.0.4"
+    "@types/offscreencanvas" "^2019.6.4"
+    "@webgpu/types" "^0.1.6"
+    earcut "^2.2.3"
+    eventemitter3 "^4.0.0"
+    regenerator-runtime "^0.13.9"
+    tslib "^2.3.1"
+
+"@antv/g-plugin-dom-interaction@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-dom-interaction/-/g-plugin-dom-interaction-1.1.7.tgz#9fb6d694396d9c6530642a880e79c7e767637e8a"
+  integrity sha512-ToxXdN/vnhWcIbKDWcWYceKKAVKqv/JRQ1Za3IVE+219EyR/+jr3I4O9IkN3a+MZpe9hKKNzag98vbD9xyPF/Q==
+  dependencies:
+    tslib "^2.3.1"
+
+"@antv/g-plugin-gpgpu@^1.0.14":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-gpgpu/-/g-plugin-gpgpu-1.1.7.tgz#e432f6969a6a586bd92c9d5aa2d5228094cfc37f"
+  integrity sha512-MtR9ysTLeofqRiJJC7K1yg75T8i4bZ3Mg5xZIFDs7Z04gD7jF81jeWHMaxV+kRQL8FBxovdONBb1oYxxxQEm+A==
+  dependencies:
+    tslib "^2.3.1"
+
+"@antv/g-plugin-html-renderer@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-html-renderer/-/g-plugin-html-renderer-1.1.7.tgz#b5645a564891dd6e71134e092a28b2f2e568bbec"
+  integrity sha512-rI99rLqFhXoH/aPs7oIAKjWXElRSMIbr7gLJWFIVz2RSo67tvAhSlaU4EaStwWDIE1dNTTAC8c+FQbe1NYg3Ug==
+  dependencies:
+    tslib "^2.3.1"
+
+"@antv/g-plugin-webgl-device@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-plugin-webgl-device/-/g-plugin-webgl-device-1.1.7.tgz#26d2ee33b4df5e11e74211a27bcaaca6a4e0e99e"
+  integrity sha512-vjT7mzWk1gkml0RHV8ylogPMAWQnDMyKBx3nvVwvp1Q4Lh4v2mDczwGsK3dtS4BpBoIGKQN+InyAtmo6aFaBNw==
+  dependencies:
+    eventemitter3 "^4.0.0"
+    tslib "^2.3.1"
+
+"@antv/g-shader-components@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-shader-components/-/g-shader-components-1.1.7.tgz#2ccec4d2f631f8535f7dbfd74e232b834b8712b5"
+  integrity sha512-NPxWeL33/sMp1yeSi/oUSlkVSeOTnRAWt7cEmA7rfK48NPuJHObdfaFkaJHri60jidp4ueef19EjeFhBYLuf8A==
+
 "@antv/g-svg@^0.5.1", "@antv/g-svg@^0.5.2":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@antv/g-svg/-/g-svg-0.5.6.tgz#70b2fa980c431b39ad3c5b4b53e36a1d60957d65"
@@ -152,6 +208,16 @@
     "@antv/util" "~2.0.0"
     detect-browser "^5.0.0"
     tslib "^2.0.3"
+
+"@antv/g-webgl@^1.0.19":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g-webgl/-/g-webgl-1.1.7.tgz#a13e85e97a0df54d291f82a3b5c576aaea5e4a54"
+  integrity sha512-G4PpmM6+qY4h5ZJdSTHkLNHPxj1bH/OHvQDPm9iEIOAMcFSESTICJBJ+LsrpD2T9pVLz+M5PtQVWUvTQs+9Siw==
+  dependencies:
+    "@antv/g-plugin-device-renderer" "^1.1.7"
+    "@antv/g-plugin-dom-interaction" "^1.1.7"
+    "@antv/g-plugin-html-renderer" "^1.1.7"
+    "@antv/g-plugin-webgl-device" "^1.1.7"
 
 "@antv/g-webgpu-core@^0.5.5", "@antv/g-webgpu-core@^0.5.6":
   version "0.5.6"
@@ -272,6 +338,22 @@
   integrity sha512-8xU96NISJ7G3Gwo6m1BTtqzfBeRd23BWcLDIpwX4v1KoE3NMHZlJkUaNvnKsoeoEoLNCDYBvTfBfEwV4C5gWfw==
   dependencies:
     "@antv/g6-pc" "0.6.4"
+
+"@antv/g@^5.0.16":
+  version "5.1.7"
+  resolved "https://registry.yarnpkg.com/@antv/g/-/g-5.1.7.tgz#498490c04f66822816e3aa2273166062be6211a4"
+  integrity sha512-yXKkDbXZVZ714IolyFeSuV/IncIns2oDLszGa/o3egk6odKvn8PBAEAKJrByW66IR4vv252r0i05Rgy62c51Kw==
+  dependencies:
+    "@antv/g-math" "^1.1.7"
+    "@antv/util" "^3.0.2"
+    "@types/offscreencanvas" "^2019.6.4"
+    d3-color "^1.4.0"
+    eventemitter3 "^4.0.0"
+    gl-matrix "^3.1.0"
+    mana-syringe "^0.3.0"
+    reflect-metadata "^0.1.13"
+    request-animation-frame-polyfill "^1.1.2"
+    tslib "^2.3.1"
 
 "@antv/gatsby-theme-antv@^1.1.15":
   version "1.1.17"

@@ -38,8 +38,7 @@
     "@types/offscreencanvas": "^2019.6.4"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

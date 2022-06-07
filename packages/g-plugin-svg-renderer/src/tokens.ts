@@ -1,5 +1,5 @@
 import type { DisplayObject } from '@antv/g';
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@antv/g';
 
 export const CreateElementContribution = Syringe.defineToken('CreateElementContribution', {
   multiple: false,

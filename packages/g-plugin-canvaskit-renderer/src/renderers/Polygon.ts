@@ -1,6 +1,5 @@
 import type { DisplayObject, ParsedPolygonStyleProps } from '@antv/g';
-import { ContextService } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { ContextService, inject, singleton } from '@antv/g';
 import type {
   CanvasKitContext,
   RendererContribution,

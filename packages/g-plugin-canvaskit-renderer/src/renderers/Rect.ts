@@ -1,5 +1,5 @@
 import type { DisplayObject, ParsedRectStyleProps } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
 import { RectRendererContribution } from '../interfaces';
 

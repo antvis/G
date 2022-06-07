@@ -1,4 +1,4 @@
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@antv/g';
 import type { SwapChain } from './platform';
 
 export const DeviceContribution = Syringe.defineToken('DeviceContribution');

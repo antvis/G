@@ -6,8 +6,7 @@ import type {
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
 } from '@antv/g';
-import { Shape } from '@antv/g';
-import { injectable } from 'mana-syringe';
+import { injectable, Shape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';

@@ -1,9 +1,17 @@
 import type { CanvasLike } from '@antv/g';
-import { CanvasConfig, ContextService, isBrowser, isString, setDOMSize } from '@antv/g';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  isBrowser,
+  isString,
+  setDOMSize,
+  singleton,
+  Syringe,
+} from '@antv/g';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKit } from 'canvaskit-wasm';
 import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
-import { inject, singleton, Syringe } from 'mana-syringe';
 
 export const ContextRegisterPluginOptions = Syringe.defineToken('ContextRegisterPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare

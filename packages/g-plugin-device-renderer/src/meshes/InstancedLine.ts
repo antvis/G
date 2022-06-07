@@ -1,6 +1,5 @@
 import type { CSSGradientValue, CSSRGB, DisplayObject, Line, ParsedLineStyleProps } from '@antv/g';
-import { Shape } from '@antv/g';
-import { injectable } from 'mana-syringe';
+import { injectable, Shape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';

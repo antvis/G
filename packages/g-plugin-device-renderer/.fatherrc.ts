@@ -18,7 +18,6 @@ export default {
     name: 'G.DeviceRenderer',
     globals: {
       '@antv/g': 'window.G',
-      'mana-syringe': 'window.G.ManaSyringe',
     },
   },
 };

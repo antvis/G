@@ -1,7 +1,6 @@
 import type { DisplayObject, ParsedPathStyleProps } from '@antv/g';
-import { ContextService } from '@antv/g';
+import { ContextService, inject, singleton } from '@antv/g';
 import { mat3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
 import type {
   CanvasKitContext,
   RendererContribution,

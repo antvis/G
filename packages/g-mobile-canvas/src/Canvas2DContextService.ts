@@ -1,5 +1,4 @@
-import { CanvasConfig, ContextService } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 import { isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })

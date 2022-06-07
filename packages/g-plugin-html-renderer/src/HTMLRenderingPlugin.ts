@@ -14,12 +14,13 @@ import {
   CSSRGB,
   ElementEvent,
   GradientPatternType,
+  inject,
   isString,
   RenderingContext,
   RenderingPluginContribution,
   Shape,
+  singleton,
 } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
 
 const HTML_PREFIX = 'g-html-';
 

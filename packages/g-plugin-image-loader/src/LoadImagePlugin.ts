@@ -7,12 +7,13 @@ import type {
 } from '@antv/g';
 import {
   ElementEvent,
+  inject,
   isString,
   RenderingContext,
   RenderingPluginContribution,
   Shape,
+  singleton,
 } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
 import { ImagePool } from './ImagePool';
 
 @singleton({ contrib: RenderingPluginContribution })

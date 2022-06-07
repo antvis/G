@@ -1,4 +1,4 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
 import { DefaultRenderer } from './Default';
 import { PathRendererContribution } from './interfaces';
 

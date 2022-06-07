@@ -3,7 +3,6 @@ export default {
     name: 'G.MobileCanvas2D',
     globals: {
       '@antv/g': 'window.G',
-      'mana-syringe': 'window.G.ManaSyringe',
     },
   },
 };

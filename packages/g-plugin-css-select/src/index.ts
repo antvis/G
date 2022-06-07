@@ -1,7 +1,5 @@
-import type { RendererPlugin } from '@antv/g';
-import { DefaultSceneGraphSelector } from '@antv/g';
-import type { Syringe } from 'mana-syringe';
-import { GlobalContainer } from 'mana-syringe';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { DefaultSceneGraphSelector, GlobalContainer } from '@antv/g';
 import { CSSSceneGraphSelector } from './CSSSceneGraphSelector';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 

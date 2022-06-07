@@ -2,11 +2,12 @@ import {
   ContextService,
   CSSRGB,
   DisplayObject,
+  inject,
   ParsedPathStyleProps,
   ParsedTextStyleProps,
+  singleton,
 } from '@antv/g';
 import type { EmbindEnumEntity, Typeface } from 'canvaskit-wasm';
-import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from '../FontLoader';
 import type {
   CanvasKitContext,

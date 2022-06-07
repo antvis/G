@@ -1,6 +1,5 @@
 import type { Pattern } from '@antv/g';
-import { CanvasConfig, isBrowser } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { CanvasConfig, inject, isBrowser, singleton } from '@antv/g';
 
 @singleton()
 export class ImagePool {

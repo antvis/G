@@ -1,7 +1,6 @@
 import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
-import { CSSRGB, UnitType } from '@antv/g';
+import { CSSRGB, inject, injectable, UnitType } from '@antv/g';
 import { mat4 } from 'gl-matrix';
-import { inject, injectable } from 'mana-syringe';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/text.frag';

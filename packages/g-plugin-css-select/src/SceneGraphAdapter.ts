@@ -1,5 +1,5 @@
-import { singleton } from 'mana-syringe';
 import type { IElement } from '@antv/g';
+import { singleton } from '@antv/g';
 import type { Adapter, Predicate } from 'css-select/lib/types';
 
 /**

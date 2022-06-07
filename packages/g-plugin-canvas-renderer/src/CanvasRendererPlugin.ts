@@ -23,18 +23,19 @@ import {
   fromRotationTranslationScale,
   getEuler,
   GradientPatternType,
+  inject,
   isNil,
   RBushRoot,
   RenderingContext,
   RenderingPluginContribution,
   RenderReason,
   Shape,
+  singleton,
 } from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
 import { GradientPool } from './shapes/GradientPool';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';

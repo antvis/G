@@ -1,14 +1,15 @@
-import { inject, singleton } from 'mana-syringe';
+import type { DisplayObject, FederatedEvent, RenderingPlugin, RenderingService } from '@antv/g';
 import {
+  AABB,
+  CanvasEvent,
   DisplayObjectPool,
+  ElementEvent,
+  inject,
+  RenderingContext,
   RenderingPluginContribution,
   SceneGraphService,
-  RenderingContext,
-  ElementEvent,
-  CanvasEvent,
-  AABB,
+  singleton,
 } from '@antv/g';
-import type { FederatedEvent, RenderingService, RenderingPlugin, DisplayObject } from '@antv/g';
 
 /**
  * PhysX runtime mode.

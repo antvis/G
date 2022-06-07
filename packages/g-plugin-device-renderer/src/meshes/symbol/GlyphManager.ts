@@ -1,5 +1,5 @@
+import { injectable } from '@antv/g';
 import TinySDF from '@mapbox/tiny-sdf';
-import { injectable } from 'mana-syringe';
 import type { Device, Texture } from '../../platform';
 import { Format, makeTextureDescriptor2D } from '../../platform';
 import type { StyleGlyph } from './AlphaImage';

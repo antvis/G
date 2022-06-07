@@ -1,5 +1,5 @@
 import type { DisplayObject } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
 
 @singleton()
 export class PickingIdGenerator {

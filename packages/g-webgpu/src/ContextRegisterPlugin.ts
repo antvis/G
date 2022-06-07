@@ -1,6 +1,5 @@
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
-import type { RendererPlugin } from '@antv/g';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module } from '@antv/g';
 import { WebGLContextService } from './WebGLContextService';
 
 const containerModule = Module((register) => {

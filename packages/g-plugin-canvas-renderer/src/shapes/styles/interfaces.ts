@@ -1,5 +1,5 @@
 import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@antv/g';
 
 export const StyleRendererFactory = Syringe.defineToken('StyleRendererFactory');
 export interface StyleRenderer {

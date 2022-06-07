@@ -17,13 +17,14 @@ import {
   ElementEvent,
   fromRotationTranslationScale,
   getEuler,
+  inject,
   RenderingContext,
   RenderingPluginContribution,
   RenderReason,
   Shape,
+  singleton,
 } from '@antv/g';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
 import { ElementSVG } from './components/ElementSVG';
 import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';

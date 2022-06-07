@@ -1,7 +1,7 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedRectStyleProps } from '@antv/g';
+import { singleton } from '@antv/g';
 import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 import { RectRendererContribution } from '@antv/g-plugin-canvas-renderer';
-import { singleton } from 'mana-syringe';
 import { generateRoughOptions } from '../util';
 
 @singleton({

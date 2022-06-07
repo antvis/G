@@ -1,5 +1,5 @@
+import { inject, singleton } from '@antv/g';
 import { DeviceContribution } from '@antv/g-plugin-device-renderer';
-import { inject, singleton } from 'mana-syringe';
 import { WebGLRendererPluginOptions } from './interfaces';
 import { Device_GL } from './platform/Device';
 

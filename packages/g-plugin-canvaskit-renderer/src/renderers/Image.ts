@@ -1,7 +1,6 @@
 import type { DisplayObject, ParsedImageStyleProps } from '@antv/g';
-import { ContextService, isString } from '@antv/g';
+import { ContextService, inject, isString, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
-import { inject, singleton } from 'mana-syringe';
 import type {
   CanvasKitContext,
   RendererContribution,

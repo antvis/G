@@ -1,5 +1,5 @@
+import { singleton } from '@antv/g';
 import type { CanvasKit, FontMgr, Typeface, TypefaceFontProvider } from 'canvaskit-wasm';
-import { singleton } from 'mana-syringe';
 
 // const cdn = 'https://storage.googleapis.com/skia-cdn/misc/';
 

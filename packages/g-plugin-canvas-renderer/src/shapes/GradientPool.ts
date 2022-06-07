@@ -1,6 +1,5 @@
 import type { LinearGradient, RadialGradient } from '@antv/g';
-import { GradientPatternType } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import { GradientPatternType, singleton } from '@antv/g';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;

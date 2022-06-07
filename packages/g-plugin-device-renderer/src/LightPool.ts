@@ -1,5 +1,5 @@
-import { singleton } from 'mana-syringe';
-import type { Light, Fog } from './lights';
+import { singleton } from '@antv/g';
+import type { Fog, Light } from './lights';
 
 @singleton()
 export class LightPool {

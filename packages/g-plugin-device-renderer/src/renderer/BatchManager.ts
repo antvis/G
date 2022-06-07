@@ -1,12 +1,12 @@
 import type { DisplayObject, RenderingService } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
-import type { Device } from '../platform';
-import { MeshFactory, RendererFactory } from '../tokens';
-import type { Batch } from './Batch';
+import { inject, singleton } from '@antv/g';
+import type { Renderable3D } from '../components/Renderable3D';
 import type { Instanced } from '../meshes/Instanced';
+import type { Device } from '../platform';
 import type { RenderInstList } from '../render';
 import { RenderHelper } from '../render';
-import type { Renderable3D } from '../components/Renderable3D';
+import { MeshFactory, RendererFactory } from '../tokens';
+import type { Batch } from './Batch';
 
 let stencilRefCounter = 1;
 

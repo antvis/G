@@ -4,8 +4,13 @@ import type {
   RenderingPlugin,
   RenderingService,
 } from '@antv/g';
-import { RenderingContext, RenderingPluginContribution, SceneGraphService } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import {
+  inject,
+  RenderingContext,
+  RenderingPluginContribution,
+  SceneGraphService,
+  singleton,
+} from '@antv/g';
 import { DragndropPluginOptions } from './tokens';
 
 @singleton({ contrib: RenderingPluginContribution })

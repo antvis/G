@@ -8,7 +8,7 @@ import type {
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
 } from '@antv/g';
-import { CanvasConfig, ContextService, Shape } from '@antv/g';
+import { CanvasConfig, ContextService, inject, Shape, singleton } from '@antv/g';
 import {
   CreateElementContribution,
   createSVGElement,
@@ -18,7 +18,6 @@ import {
   updateImageElementAttribute,
   updateTextElementAttribute,
 } from '@antv/g-plugin-svg-renderer';
-import { inject, singleton } from 'mana-syringe';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { formatPath, generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 

@@ -36,8 +36,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "@antv/g-plugin-device-renderer": "^1.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g-plugin-device-renderer": "^1.0.1"
   },
   "publishConfig": {
     "access": "public"

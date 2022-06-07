@@ -12,16 +12,18 @@ import type {
 import {
   CanvasConfig,
   DisplayObjectPool,
+  inject,
   OffscreenCanvasCreator,
   Point,
   RBush,
   RBushRoot,
   RenderingPluginContribution,
+  singleton,
+  Syringe,
 } from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
-import { inject, singleton, Syringe } from 'mana-syringe';
 
 export const PointInPathPickerFactory = Syringe.defineToken('PointInPathPicker');
 export type PointInPathPicker<T extends BaseStyleProps> = (

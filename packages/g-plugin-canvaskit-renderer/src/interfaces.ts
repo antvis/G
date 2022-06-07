@@ -1,6 +1,6 @@
 import type { DisplayObject } from '@antv/g';
+import { Syringe } from '@antv/g';
 import type { Canvas, CanvasKit, Paint, Surface } from 'canvaskit-wasm';
-import { Syringe } from 'mana-syringe';
 
 export interface CanvasKitContext {
   CanvasKit: CanvasKit;

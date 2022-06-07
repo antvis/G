@@ -1,4 +1,4 @@
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@antv/g';
 
 export const MatterJSPluginOptions = Syringe.defineToken('MatterJSPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare

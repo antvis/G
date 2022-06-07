@@ -15,7 +15,6 @@ export default {
     minFile: true,
     globals: {
       '@antv/g': 'window.G',
-      'mana-syringe': 'window.G.ManaSyringe',
       '@antv/g-plugin-device-renderer': 'window.G.DeviceRenderer',
     },
   },

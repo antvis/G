@@ -1,7 +1,5 @@
-import type { RendererPlugin } from '@antv/g';
-import { Shape } from '@antv/g';
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module, Shape } from '@antv/g';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import { GradientPool } from './shapes/GradientPool';
 import type { StyleRenderer } from './shapes/styles';

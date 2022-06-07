@@ -1,29 +1,29 @@
-import { inject, singleton } from 'mana-syringe';
 import type {
-  RenderingService,
-  RenderingPlugin,
-  MutationEvent,
   DisplayObject,
-  ParsedLineStyleProps,
+  FederatedEvent,
+  MutationEvent,
   ParsedCircleStyleProps,
-  ParsedRectStyleProps,
-  ParsedPolylineStyleProps,
+  ParsedLineStyleProps,
   ParsedPolygonStyleProps,
+  ParsedPolylineStyleProps,
+  ParsedRectStyleProps,
+  RenderingPlugin,
+  RenderingService,
 } from '@antv/g';
 import {
+  CanvasEvent,
+  deg2rad,
   DisplayObjectPool,
+  ElementEvent,
+  inject,
+  rad2deg,
+  RenderingContext,
   RenderingPluginContribution,
   SceneGraphService,
-  RenderingContext,
-  ElementEvent,
-  CanvasEvent,
   Shape,
-  rad2deg,
-  deg2rad,
+  singleton,
 } from '@antv/g';
-import type { FederatedEvent } from '@antv/g';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type Box2DFactory from 'box2d-wasm';
+import 'box2d-wasm';
 import { Box2DPluginOptions } from './tokens';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
 

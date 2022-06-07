@@ -10,11 +10,10 @@ import type {
   Polyline,
   Tuple4Number,
 } from '@antv/g';
-import { convertToPath, CSSRGB, parsePath, Shape } from '@antv/g';
+import { convertToPath, CSSRGB, injectable, parsePath, Shape } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
-import { injectable } from 'mana-syringe';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/line.frag';

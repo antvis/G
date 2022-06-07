@@ -1,6 +1,5 @@
-import { injectable } from 'mana-syringe';
 import type { DisplayObject } from '@antv/g';
-import { Shape } from '@antv/g';
+import { injectable, Shape } from '@antv/g';
 import type { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
 
