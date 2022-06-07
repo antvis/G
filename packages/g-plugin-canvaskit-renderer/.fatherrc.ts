@@ -4,6 +4,7 @@ export default {
     globals: {
       '@antv/g': 'window.G',
       'mana-syringe': 'window.G.ManaSyringe',
+      '@antv/g-plugin-image-loader': 'window.G.ImageLoader',
     },
   },
 };

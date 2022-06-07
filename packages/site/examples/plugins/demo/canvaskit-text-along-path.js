@@ -4,6 +4,9 @@ import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 /**
  * Draw text along a path.
  * @see https://fiddle.skia.org/c/@Canvas_drawTextRSXform
+ *
+ * TextStyle API:
+ * @see https://api.flutter.dev/flutter/painting/TextStyle-class.html
  */
 
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -41,8 +44,6 @@ const canvas = new Canvas({
       alongPath,
     },
   });
-
   text.translate(100, 100);
-
   canvas.appendChild(text);
 })();

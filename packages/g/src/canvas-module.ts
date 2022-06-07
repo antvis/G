@@ -1,4 +1,6 @@
 import { Contribution, Module } from 'mana-syringe';
+import RBush from 'rbush';
+import { RBushNodeAABB, RBushRoot } from './components';
 import { CullingPlugin, CullingStrategyContribution } from './plugins/CullingPlugin';
 import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { EventPlugin } from './plugins/EventPlugin';
@@ -10,6 +12,8 @@ export const containerModule = Module((register) => {
   Contribution.register(register, RenderingPluginContribution, { cache: false });
   // culling plugin
   Contribution.register(register, CullingStrategyContribution, { cache: false });
+
+  register({ token: RBushRoot, useValue: new RBush<RBushNodeAABB>() });
 
   // register built-in rendering plugins
   register(RenderingService);

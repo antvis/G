@@ -1,12 +1,13 @@
-import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
-import { CullingStrategyContribution } from './CullingPlugin';
-import { AABB, Mask } from '../shapes';
-import type { Plane } from '../shapes';
-import { DefaultCamera, Camera } from '../camera/Camera';
+import { inject, singleton } from 'mana-syringe';
+import RBush from 'rbush';
+import { Camera, DefaultCamera } from '../camera/Camera';
+import { RBushNodeAABB, RBushRoot } from '../components';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import type { Element } from '../dom';
+import type { Plane } from '../shapes';
+import { AABB, Mask } from '../shapes';
 import { Shape } from '../types';
+import { CullingStrategyContribution } from './CullingPlugin';
 
 // group is not a 2d shape
 const shape2D = [
@@ -27,6 +28,12 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
   @inject(DefaultCamera)
   private camera: Camera;
 
+  /**
+   * RBush used in dirty rectangle rendering
+   */
+  @inject(RBushRoot)
+  private rBush: RBush<RBushNodeAABB>;
+
   isVisible(object: DisplayObject) {
     // return true;
 
@@ -35,25 +42,31 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
       return true;
     }
 
-    const renderBounds = object.getRenderBounds();
+    const rBushNode = object.rBushNode;
+    // console.log(object, rBushNode.aabb);
 
-    if (AABB.isEmpty(renderBounds)) {
-      return false;
-    }
+    // const renderBounds = object.getRenderBounds();
 
-    // get VP matrix from camera
-    const frustum = this.camera.getFrustum();
+    // if (AABB.isEmpty(renderBounds)) {
+    //   return false;
+    // }
 
-    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
-    cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-      object,
-      renderBounds,
-      parentVisibilityPlaneMask || Mask.INDETERMINATE,
-      frustum.planes,
-    );
+    // this.rBush()
 
-    cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
+    // // get VP matrix from camera
+    // const frustum = this.camera.getFrustum();
 
+    // const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
+    // cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
+    //   object,
+    //   renderBounds,
+    //   parentVisibilityPlaneMask || Mask.INDETERMINATE,
+    //   frustum.planes,
+    // );
+
+    // cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
+
+    cullable.visible = true;
     return cullable.visible;
   }
 

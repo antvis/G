@@ -66,13 +66,6 @@
       }
     },
     {
-      "filename": "canvaskit.js",
-      "title": {
-        "zh": "使用 Canvaskit",
-        "en": "Use Canvaskit"
-      }
-    },
-    {
       "filename": "react-g.js",
       "title": {
         "zh": "ReactG",

@@ -169,7 +169,8 @@ export class DisplayObject<
       },
       {
         get: (target, name) => {
-          if (name in target) {
+          if (target[name] !== undefined) {
+            // if (name in target) {
             return target[name];
           }
           return this.getAttribute(name as keyof StyleProps);

@@ -298,7 +298,7 @@ export interface RendererConfig {
    */
   enableDirtyRectangleRendering: boolean;
 
-  enableDirtyRectangleRenderingDebug: boolean;
+  // enableDirtyRectangleRenderingDebug: boolean;
 
   /**
    * enable auto rendering

@@ -12,6 +12,7 @@ Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lot
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ" width="300" alt="draw text along path">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DI1kQ6A8qQ8AAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph decoration">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_q9uQLTx6ssAAAAAAAAAAAAAARQnAQ" width="160" alt="text emoji">
 
 # 使用方式
 
@@ -107,6 +108,14 @@ const canvaskitRenderer = new CanvaskitRenderer({
     ],
 });
 ```
+
+# 内置插件
+
+该渲染器内置了以下插件：
+
+-   [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
+-   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 拾取图形
+-   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 # 增强功能
 
@@ -266,6 +275,55 @@ const text = new Text({
 });
 ```
 
+## Emoji
+
+一般的字体是无法支持 Emoji 的：
+
+```js
+const emoji = new Text({
+    style: {
+        fontFamily: 'sans-serif',
+        fontSize: 30,
+        fill: 'black',
+        text: 'Emoji 🍕🍔🍟🥝🍱🕶🎩👩‍👩‍👦👩‍👩‍👧‍👧👩‍👩‍👦👩‍👩‍👧‍👧👩‍👩‍👦👩‍👩‍👧‍👧👩‍👩‍👦👩‍👩‍👧‍👧👩‍👩‍👦👩‍👩‍👧‍👧👩‍👩‍👦👩‍👩‍👧‍👧👩‍👩‍👦👩‍👩‍👧‍👧',
+    },
+});
+```
+
+例如 `NotoSansCJKsc-VF` 会展示如下效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ADTaRYju0GsAAAAAAAAAAAAAARQnAQ" width="160" alt="broken emoji">
+
+在该[示例](/zh/examples/plugins#canvaskit-emoji)中，我们加载支持 Emoji 的字体例如 [NotoColorEmoji](https://github.com/googlefonts/noto-emoji)，它也在 Android 和 Chrome 中使用：
+
+```js
+const canvaskitRenderer = new CanvaskitRenderer({
+    wasmDir: '/',
+    fonts: [
+        {
+            name: 'Roboto',
+            url: '/NotoSansCJKsc-VF.ttf',
+        },
+        {
+            name: 'Noto Color Emoji',
+            url: '/NotoColorEmoji.ttf',
+        },
+    ],
+});
+```
+
+此时就可以正常展示了，在 `fontFamily` 中指定两种字体：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_q9uQLTx6ssAAAAAAAAAAAAAARQnAQ" width="160" alt="text emoji">
+
+```js
+const emoji = new Text({
+    style: {
+        fontFamily: 'Roboto, Noto Color Emoji',
+    },
+});
+```
+
 ## 文本段落
 
 CanvasKit 提供了增强的[段落绘制能力](https://skia.org/docs/user/modules/quickstart/#text-shaping)。
@@ -376,6 +434,36 @@ const shadowedText = new Text({
 });
 ```
 
+### StrutStyle
+
+Strut（意为“支柱”）可以设置相对于 baseline 的最小行高。类似 CSS 中的 [line-height](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) 属性。
+
+在 SkParagraph 中可以通过 StrutStyle 进行配置，Flutter 中也有同名文档：https://api.flutter.dev/flutter/painting/StrutStyle-class.html
+
+我们会透传以下属性：
+
+-   strutEnabled 是否启用
+-   fontFamilies 字体，可以与 TextStyle 保持一致
+-   fontSize 字号
+-   heightMultiplier 行高高度系数
+-   leading 行与行之间的空隙
+-   halfLeading
+-   forceStrutHeight
+
+在该[示例](/zh/examples/plugins#canvaskit-paragraph)中我们以此控制行高和行间距：
+
+```js
+decoratedText.style.strutStyle = {
+    strutEnabled: false,
+    fontFamilies: ['sans-serif'],
+    fontSize: 22,
+    heightMultiplier: 1,
+    leading: 0,
+    halfLeading: false,
+    forceStrutHeight: false,
+};
+```
+
 ### 高级印刷功能
 
 可参考 CSS 中的 [font-feature-settings](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings) 属性，控制 OpenType 字体中的高级印刷功能。
@@ -404,6 +492,18 @@ const fontFeaturesText = new Text({
     },
 });
 ```
+
+### Harfbuzz
+
+Skia 本身是不包含 Harfbuzz 的： https://skia.org/docs/user/tips/
+
+但 CanvasKit 默认会将它打包进来：
+
+https://skia.googlesource.com/skia/+/main/modules/canvaskit/CHANGELOG.md#0_4_0_2019_02_25
+
+https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa1
+
+> Text shaping with ShapedText object and SkCanvas.drawText. At compile time, one can choose between using Harfbuzz/ICU (default) or a primitive one (“primitive_shaper”) which just does line breaking. Using Harfbuzz/ICU substantially increases code size (4.3 MB to 6.4 MB).
 
 # 性能
 

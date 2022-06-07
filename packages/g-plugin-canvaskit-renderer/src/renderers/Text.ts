@@ -5,7 +5,7 @@ import {
   ParsedPathStyleProps,
   ParsedTextStyleProps,
 } from '@antv/g';
-import type { EmbindEnumEntity } from 'canvaskit-wasm';
+import type { EmbindEnumEntity, Typeface } from 'canvaskit-wasm';
 import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from '../FontLoader';
 import type {
@@ -49,7 +49,7 @@ export class TextRenderer implements RendererContribution {
     const {
       text,
       fontSize,
-      fontFamily,
+      fontFamily: fontFamilies,
       fontWeight,
       // fontStyle,
       // lineWidth,
@@ -63,7 +63,6 @@ export class TextRenderer implements RendererContribution {
       // fillOpacity,
       // strokeOpacity,
       // opacity,
-      // metrics,
       wordWrap,
       wordWrapWidth,
       dx,
@@ -89,14 +88,20 @@ export class TextRenderer implements RendererContribution {
       // @ts-ignore
       foregroundColor,
       // @ts-ignore
+      wordSpacing,
+      // @ts-ignore
+      disableHinting,
+      // @ts-ignore
       shadows,
       // @ts-ignore
       halfLeading,
       // @ts-ignore
       fontFeatures,
+      // @ts-ignore
+      strutStyle,
+      // @ts-ignore
+      heightMultiplier,
     } = object.parsedStyle as ParsedTextStyleProps;
-
-    // const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     const TEXT_ALIGN_MAP: Record<CanvasTextAlign, EmbindEnumEntity> = {
       left: CanvasKit.TextAlign.Left,
@@ -114,15 +119,15 @@ export class TextRenderer implements RendererContribution {
       top: undefined,
     };
 
-    let loadedFontFamily = fontFamily;
-    let fontSrc = this.fontLoader.getTypefaceFontProvider(fontFamily);
-    let typeface = this.fontLoader.getTypeface(fontFamily);
-    if (!fontSrc) {
-      // use default font
-      loadedFontFamily = 'sans-serif';
-      fontSrc = this.fontLoader.getTypefaceFontProvider(loadedFontFamily);
-      typeface = this.fontLoader.getTypeface(loadedFontFamily);
-    }
+    // fontFamily
+    const loadedFontFamilies: string[] = [];
+    const loadedFontData: ArrayBuffer[] = [];
+    const loadedTypefaces: Typeface[] = [];
+    fontFamilies.split(',').forEach((fontFamily) => {
+      loadedFontFamilies.push(fontFamily.trim());
+      loadedFontData.push(this.fontLoader.getFontBuffer(fontFamily.trim()));
+      loadedTypefaces.push(this.fontLoader.getTypeface(fontFamily.trim()));
+    });
 
     if (alongPath) {
       const skPath = new CanvasKit.Path();
@@ -173,7 +178,7 @@ export class TextRenderer implements RendererContribution {
           ),
         );
       }
-      const skFont = new CanvasKit.Font(typeface, fontSize.value);
+      const skFont = new CanvasKit.Font(loadedTypefaces[0], fontSize.value);
       const textblob = CanvasKit.TextBlob.MakeOnPath(text, skPath, skFont);
       canvas.drawTextBlob(textblob, 0, 0, textPaint);
     } else {
@@ -208,7 +213,7 @@ export class TextRenderer implements RendererContribution {
           decorationColor: color2CanvaskitColor(CanvasKit, decorationColor),
           decorationThickness,
           decorationStyle: DECORATION_STYLE_MAP[decorationStyle || 'solid'],
-          fontFamilies: [loadedFontFamily],
+          fontFamilies: loadedFontFamilies,
           fontFeatures,
           fontSize: fontSize.value,
           fontStyle: {
@@ -219,9 +224,9 @@ export class TextRenderer implements RendererContribution {
             // slant?: FontSlant;
           },
           foregroundColor: color2CanvaskitColor(CanvasKit, foregroundColor || fill),
-          // heightMultiplier?: number;
+          heightMultiplier,
           halfLeading,
-          letterSpacing: letterSpacing,
+          letterSpacing,
           // locale?: string;
           shadows: (shadows || []).map(({ color, offset, blurRadius }) => {
             return {
@@ -231,19 +236,22 @@ export class TextRenderer implements RendererContribution {
             };
           }),
           textBaseline: TEXT_BASELINE_MAP[textBaseline.value],
-          // wordSpacing?: number;
+          wordSpacing,
         },
         textAlign: TEXT_ALIGN_MAP[textAlign.value],
-        // disableHinting?: boolean;
+        disableHinting,
         ellipsis,
-        // heightMultiplier?: number;
+        // heightMultiplier,
         maxLines,
-        // strutStyle?: StrutStyle;
+        strutStyle,
         textDirection: DIRECTION_MAP[direction || 'ltr'],
         // textHeightBehavior?: TextHeightBehavior;
       });
 
-      const builder = CanvasKit.ParagraphBuilder.MakeFromFontProvider(paraStyle, fontSrc);
+      // use cached font manager
+      const fontMgr = this.fontLoader.getOrCreateFontMgr(CanvasKit, loadedFontFamilies);
+
+      const builder = CanvasKit.ParagraphBuilder.Make(paraStyle, fontMgr);
       builder.addText(text);
       const paragraph = builder.build();
 
@@ -251,7 +259,7 @@ export class TextRenderer implements RendererContribution {
         // width in pixels to use when wrapping text
         paragraph.layout(wordWrapWidth);
       } else {
-        paragraph.layout(Infinity);
+        paragraph.layout(text.length * fontSize.value);
       }
 
       // account for textBaseline

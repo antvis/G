@@ -62,7 +62,7 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
 
     // making surface must after canvas init
     const CanvasKit = await this.loadCanvaskit();
-    const surface = CanvasKit.MakeCanvasSurface(this.$canvas as HTMLCanvasElement);
+    const surface = CanvasKit.MakeWebGLCanvasSurface(this.$canvas as HTMLCanvasElement);
     this.context = {
       surface,
       CanvasKit,

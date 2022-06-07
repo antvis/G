@@ -4,6 +4,7 @@ import type {
   Element,
   ParsedBaseStyleProps,
   PickingResult,
+  RBushNodeAABB,
   RenderingPlugin,
   RenderingService,
   Shape,
@@ -13,10 +14,12 @@ import {
   DisplayObjectPool,
   OffscreenCanvasCreator,
   Point,
+  RBush,
+  RBushRoot,
   RenderingPluginContribution,
 } from '@antv/g';
-import type { PathGenerator, RBushNodeAABB } from '@antv/g-plugin-canvas-renderer';
-import { PathGeneratorFactory, RBush, RBushRoot } from '@antv/g-plugin-canvas-renderer';
+import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
+import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, singleton, Syringe } from 'mana-syringe';
 
@@ -51,6 +54,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
   @inject(PathGeneratorFactory)
   private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
+  private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
 
   @inject(PointInPathPickerFactory)
   private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
@@ -165,7 +169,13 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     const context = this.offscreenCanvas.getOrCreateContext(
       this.canvasConfig.offscreenCanvas,
     ) as CanvasRenderingContext2D;
-    const generatePath = this.pathGeneratorFactory(displayObject.nodeName);
+
+    if (this.pathGeneratorFactoryCache[displayObject.nodeName] === undefined) {
+      this.pathGeneratorFactoryCache[displayObject.nodeName] = this.pathGeneratorFactory(
+        displayObject.nodeName,
+      );
+    }
+    const generatePath = this.pathGeneratorFactoryCache[displayObject.nodeName];
     if (generatePath) {
       generatePath(context, displayObject.parsedStyle);
     }

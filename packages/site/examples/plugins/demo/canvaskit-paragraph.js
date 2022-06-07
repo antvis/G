@@ -9,6 +9,9 @@ import Stats from 'stats.js';
  *
  * @see https://github.com/flutter/flutter/issues/76473
  * @see https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
+ *
+ * TextStyle API:
+ * @see https://api.flutter.dev/flutter/painting/TextStyle-class.html
  */
 
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -143,6 +146,10 @@ const canvas = new Canvas({
     foregroundColor: '#1890FF',
     shadows: [],
     halfLeading: false,
+    heightMultiplier: 1,
+    letterSpacing: 0,
+    wordSpacing: 0,
+    disableHinting: false,
   };
   folder.addColor(config, 'fill').onChange((fill) => {
     decoratedText.style.fill = fill;
@@ -158,6 +165,18 @@ const canvas = new Canvas({
   });
   folder.add(config, 'wordWrapWidth', 50, 200).onChange((wordWrapWidth) => {
     decoratedText.style.wordWrapWidth = wordWrapWidth;
+  });
+  folder.add(config, 'heightMultiplier', 0, 5).onChange((heightMultiplier) => {
+    decoratedText.style.heightMultiplier = heightMultiplier;
+  });
+  folder.add(config, 'letterSpacing', 0, 10).onChange((letterSpacing) => {
+    decoratedText.style.letterSpacing = letterSpacing;
+  });
+  folder.add(config, 'wordSpacing', 0, 10).onChange((wordSpacing) => {
+    decoratedText.style.wordSpacing = wordSpacing;
+  });
+  folder.add(config, 'disableHinting').onChange((disableHinting) => {
+    decoratedText.style.disableHinting = disableHinting;
   });
   folder.add(config, 'halfLeading').onChange((halfLeading) => {
     decoratedText.style.halfLeading = halfLeading;
@@ -180,5 +199,34 @@ const canvas = new Canvas({
     });
   folder.add(config, 'direction', ['ltr', 'rtl']).onChange((direction) => {
     decoratedText.style.direction = direction;
+  });
+
+  const strutFolder = gui.addFolder('StrutStyle');
+  const strutConfig = {
+    fontFamilies: ['sans-serif'],
+    strutEnabled: false,
+    fontSize: 22,
+    heightMultiplier: 1,
+    leading: 0,
+    halfLeading: false,
+    forceStrutHeight: false,
+  };
+  strutFolder.add(strutConfig, 'strutEnabled').onChange((strutEnabled) => {
+    decoratedText.style.strutStyle = strutConfig;
+  });
+  strutFolder.add(strutConfig, 'fontSize', 10, 40).onChange((fontSize) => {
+    decoratedText.style.strutStyle = strutConfig;
+  });
+  strutFolder.add(strutConfig, 'heightMultiplier', 0, 5).onChange((heightMultiplier) => {
+    decoratedText.style.strutStyle = strutConfig;
+  });
+  strutFolder.add(strutConfig, 'leading', 0, 10).onChange((heightMultiplier) => {
+    decoratedText.style.strutStyle = strutConfig;
+  });
+  strutFolder.add(strutConfig, 'halfLeading').onChange((halfLeading) => {
+    decoratedText.style.strutStyle = strutConfig;
+  });
+  strutFolder.add(strutConfig, 'forceStrutHeight').onChange((halfLeading) => {
+    decoratedText.style.strutStyle = strutConfig;
   });
 })();

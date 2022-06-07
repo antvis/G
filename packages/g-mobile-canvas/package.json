@@ -27,6 +27,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@antv/g-plugin-canvas-path-generator": "^0.0.0",
     "@antv/g-plugin-canvas-picker": "^1.1.7",
     "@antv/g-plugin-canvas-renderer": "^1.1.7",
     "@antv/g-plugin-image-loader": "^0.0.0",

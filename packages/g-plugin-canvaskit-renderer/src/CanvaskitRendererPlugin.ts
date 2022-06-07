@@ -1,21 +1,23 @@
-import type {
-  DisplayObject,
-  LinearGradient,
-  ParsedBaseStyleProps,
-  RadialGradient,
-  RenderingPlugin,
-  RenderingService,
-} from '@antv/g';
 import {
+  Camera,
   CanvasConfig,
   ContextService,
   CSSGradientValue,
   CSSRGB,
+  DefaultCamera,
+  DisplayObject,
+  getEuler,
   GradientPatternType,
   isNil,
+  LinearGradient,
   parseColor,
+  ParsedBaseStyleProps,
+  rad2deg,
+  RadialGradient,
   RenderingContext,
+  RenderingPlugin,
   RenderingPluginContribution,
+  RenderingService,
   Shape,
 } from '@antv/g';
 import type {
@@ -26,6 +28,7 @@ import type {
   Paint,
   Particles,
 } from 'canvaskit-wasm';
+import { mat4, quat, vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
 import { FontLoader } from './FontLoader';
 import type { CanvasKitContext, RendererContribution } from './interfaces';
@@ -46,6 +49,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
+
+  @inject(DefaultCamera)
+  private camera: Camera;
 
   @inject(RendererContributionFactory)
   private rendererContributionFactory: (tagName: Shape | string) => RendererContribution;
@@ -119,10 +125,17 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       surface.getCanvas().scale(dpr, dpr);
 
       const firstFrame = Date.now();
+      const tmpVec3 = vec3.create();
+      const tmpQuat = quat.create();
+
       const drawFrame = (canvas: Canvas) => {
-        if (this.destroyed) {
+        if (this.destroyed || surface.isDeleted()) {
           return;
         }
+
+        canvas.save();
+
+        this.applyCamera(canvas, tmpVec3, tmpQuat);
 
         canvas.clear(
           CanvasKit.Color4f(
@@ -136,6 +149,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         this.drawAnimations(canvas, firstFrame);
         this.drawParticles(canvas);
         this.drawWithSurface(canvas, CanvasKit);
+
+        canvas.restore();
 
         surface.requestAnimationFrame(drawFrame);
       };
@@ -152,7 +167,22 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         particles.delete();
       });
       this.particlesList = [];
+      this.fontLoader.destroy();
     });
+  }
+
+  private applyCamera(canvas: Canvas, tmpVec3: vec3, tmpQuat: quat) {
+    const transform = this.camera.getOrthoMatrix();
+    const [tx, ty] = mat4.getTranslation(tmpVec3, transform);
+    const [sx, sy] = mat4.getScaling(tmpVec3, transform);
+    const rotation = mat4.getRotation(tmpQuat, transform);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [eux, euy, euz] = getEuler(tmpVec3, rotation);
+    const rot = rad2deg(euz);
+
+    canvas.translate(tx, ty);
+    canvas.rotate(rot, 0, 0);
+    canvas.scale(sx, sy);
   }
 
   private drawAnimations(canvas: Canvas, firstFrame: number) {
