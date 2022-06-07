@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.1.7",
+  "version": "5.1.8-alpha.0",
   "description": "A core module implements DOM API.",
   "keywords": [
     "antv",
@@ -28,7 +28,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.1.7",
+    "@antv/g-math": "^1.1.8-alpha.0",
     "@antv/util": "^3.0.2",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
