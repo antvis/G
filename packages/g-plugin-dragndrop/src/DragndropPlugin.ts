@@ -96,9 +96,8 @@ export class DragndropPlugin implements RenderingPlugin {
         target.addEventListener(
           'pointerup',
           function () {
-            // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
-            event.type = 'dragend';
-            target.dispatchEvent(event);
+            // drop should fire before dragend
+            // @see https://javascript.tutorialink.com/is-there-a-defined-ordering-between-dragend-and-drop-events/
 
             if (currentDroppable) {
               // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event
@@ -106,6 +105,10 @@ export class DragndropPlugin implements RenderingPlugin {
               event.target = currentDroppable;
               currentDroppable.dispatchEvent(event);
             }
+
+            // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
+            event.type = 'dragend';
+            target.dispatchEvent(event);
 
             canvas.removeEventListener('pointermove', onMouseMove);
           },
