@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-svg",
-  "version": "0.1.8-alpha.1",
+  "version": "0.1.8",
   "description": "A renderer implemented by SVG in mobile environment",
   "keywords": [
     "antv",
@@ -29,7 +29,7 @@
   "dependencies": {
     "@antv/g-plugin-mobile-interaction": "^0.1.8-alpha.1",
     "@antv/g-plugin-svg-picker": "^1.1.8-alpha.1",
-    "@antv/g-plugin-svg-renderer": "^1.1.8-alpha.1",
+    "@antv/g-plugin-svg-renderer": "^1.1.8",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
