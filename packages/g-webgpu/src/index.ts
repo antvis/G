@@ -1,12 +1,12 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
-import * as WebGPUDevice from '@antv/g-plugin-webgpu-device';
+import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
+import * as WebGPUDevice from '@antv/g-plugin-webgpu-device';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
-export { DomInteraction, DeviceRenderer, WebGPUDevice };
+export { DomInteraction, DeviceRenderer, WebGPUDevice, HTMLRenderer };
 
 type WebGPURendererConfig = RendererConfig;
 

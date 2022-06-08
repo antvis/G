@@ -1,13 +1,12 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedCircleStyleProps } from '@antv/g';
 import { singleton } from '@antv/g';
-import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
-import { CircleRendererContribution } from '@antv/g-plugin-canvas-renderer';
+import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
 
 @singleton({
-  token: CircleRendererContribution,
+  token: CanvasRenderer.CircleRendererContribution,
 })
-export class CircleRenderer implements StyleRenderer {
+export class CircleRenderer implements CanvasRenderer.StyleRenderer {
   hash: (parsedStyle: ParsedBaseStyleProps) => string;
 
   render(

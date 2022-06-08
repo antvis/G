@@ -3,7 +3,7 @@ export default {
     name: 'G.RoughCanvasRenderer',
     globals: {
       '@antv/g': 'window.G',
-      '@antv/g-plugin-canvas-renderer': 'window.G.CanvasRenderer',
+      '@antv/g-canvas': 'window.G.Canvas2D',
     },
   },
 };

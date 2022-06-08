@@ -1,5 +1,4 @@
-import type { DisplayObject, ParsedRectStyleProps } from '@antv/g';
-import { singleton } from '@antv/g';
+import { clamp, DisplayObject, ParsedRectStyleProps, singleton } from '@antv/g';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
 import { RectRendererContribution } from '../interfaces';
 
@@ -20,19 +19,23 @@ export class RectRenderer implements RendererContribution {
     const { width, height, radius, shadowOffsetX, shadowOffsetY } =
       object.parsedStyle as ParsedRectStyleProps;
 
+    const [r1, r2, r3, r4] = radius.map((r) =>
+      clamp(r.value, 0, Math.min(width.value / 2, height.value / 2)),
+    );
+
     const rrect = [
       0,
       0,
       width.value,
       height.value,
-      radius[0].value,
-      radius[0].value,
-      radius[1].value,
-      radius[1].value,
-      radius[2].value,
-      radius[2].value,
-      radius[3].value,
-      radius[3].value,
+      r1[0],
+      r1[1],
+      r2[0],
+      r2[1],
+      r3[0],
+      r3[1],
+      r4[0],
+      r4[1],
     ];
 
     if (shadowFillPaint || shadowStrokePaint) {
@@ -42,14 +45,14 @@ export class RectRenderer implements RendererContribution {
           (shadowOffsetY?.value || 0) / 2,
           width.value + (shadowOffsetX?.value || 0) / 2,
           height.value + (shadowOffsetY?.value || 0) / 2,
-          radius[0].value,
-          radius[0].value,
-          radius[1].value,
-          radius[1].value,
-          radius[2].value,
-          radius[2].value,
-          radius[3].value,
-          radius[3].value,
+          r1[0],
+          r1[1],
+          r2[0],
+          r2[1],
+          r3[0],
+          r3[1],
+          r4[0],
+          r4[1],
         ],
         fillPaint ? shadowFillPaint : shadowStrokePaint,
       );

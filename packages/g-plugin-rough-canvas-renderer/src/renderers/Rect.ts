@@ -1,13 +1,12 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedRectStyleProps } from '@antv/g';
 import { singleton } from '@antv/g';
-import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
-import { RectRendererContribution } from '@antv/g-plugin-canvas-renderer';
+import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
 
 @singleton({
-  token: RectRendererContribution,
+  token: CanvasRenderer.RectRendererContribution,
 })
-export class RectRenderer implements StyleRenderer {
+export class RectRenderer implements CanvasRenderer.StyleRenderer {
   hash: (parsedStyle: ParsedBaseStyleProps) => string;
 
   render(

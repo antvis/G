@@ -12,10 +12,9 @@ export default {
   ],
   umd: {
     name: 'G.3D',
-    minFile: true,
     globals: {
       '@antv/g': 'window.G',
-      '@antv/g-plugin-device-renderer': 'window.G.DeviceRenderer',
+      '@antv/g-plugin-device-renderer': 'window.G.WebGL.DeviceRenderer',
     },
   },
 };

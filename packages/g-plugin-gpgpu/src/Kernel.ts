@@ -1,5 +1,4 @@
-import type { Buffer, Device, ComputePipeline } from '@antv/g-plugin-device-renderer';
-import { BufferUsage } from '@antv/g-plugin-device-renderer';
+import { DeviceRenderer } from '@antv/g-webgpu';
 import type { KernelBundle } from './interface';
 import { Target } from './interface';
 
@@ -34,20 +33,20 @@ export class Kernel {
   /**
    * underlying GPU device
    */
-  private device: Device;
+  private device: DeviceRenderer.Device;
 
-  private computePipeline: ComputePipeline;
+  private computePipeline: DeviceRenderer.ComputePipeline;
 
   private buffers: {
     name: string;
-    buffer: Buffer;
+    buffer: DeviceRenderer.Buffer;
     wordCount: number;
     group: number;
     binding: number;
     bindingType: 'uniform' | 'storage' | 'read-only-storage';
   }[] = [];
 
-  constructor(device: Device, { computeShader, bundle }: KernelOptions) {
+  constructor(device: DeviceRenderer.Device, { computeShader, bundle }: KernelOptions) {
     this.device = device;
     this.computeShader = computeShader;
     this.bundle = bundle;
@@ -96,12 +95,12 @@ export class Kernel {
    * set or update buffer by binding number,
    * it should match binding declared in compute shader
    */
-  setBinding(binding: number, buffer: Buffer) {
+  setBinding(binding: number, buffer: DeviceRenderer.Buffer) {
     // @ts-ignore
     const { usage } = buffer;
 
-    const isUniform = usage & BufferUsage.UNIFORM;
-    const isWritable = usage & BufferUsage.COPY_SRC;
+    const isUniform = usage & DeviceRenderer.BufferUsage.UNIFORM;
+    const isWritable = usage & DeviceRenderer.BufferUsage.COPY_SRC;
 
     // search by binding
     const existed = this.buffers.find((buffer) => buffer.binding === binding);
@@ -162,7 +161,7 @@ export class Kernel {
   /**
    * readback buffer async
    */
-  async readBuffer(buffer: Buffer): Promise<ArrayBufferView> {
+  async readBuffer(buffer: DeviceRenderer.Buffer): Promise<ArrayBufferView> {
     const readback = this.device.createReadback();
     return readback.readBuffer(buffer);
   }

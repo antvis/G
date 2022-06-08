@@ -1,12 +1,12 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
-import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
-import * as WebGLDevice from '@antv/g-plugin-webgl-device';
+import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
+import * as WebGLDevice from '@antv/g-plugin-webgl-device';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
-export { DomInteraction, DeviceRenderer, WebGLDevice };
+export { DomInteraction, DeviceRenderer, WebGLDevice, HTMLRenderer };
 
 interface WebGLRendererConfig extends RendererConfig {
   targets: ('webgl1' | 'webgl2')[];

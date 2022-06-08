@@ -1,13 +1,12 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedLineStyleProps } from '@antv/g';
 import { singleton } from '@antv/g';
-import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
-import { LineRendererContribution } from '@antv/g-plugin-canvas-renderer';
+import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
 
 @singleton({
-  token: LineRendererContribution,
+  token: CanvasRenderer.LineRendererContribution,
 })
-export class LineRenderer implements StyleRenderer {
+export class LineRenderer implements CanvasRenderer.StyleRenderer {
   hash: (parsedStyle: ParsedBaseStyleProps) => string;
 
   render(

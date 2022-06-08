@@ -1,7 +1,9 @@
-import { Algorithm } from '@antv/g6';
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer } from '@antv/g-webgpu';
-import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
+import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
+import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { Algorithm } from '@antv/g6';
+
+const { BufferUsage } = DeviceRenderer;
 
 /**
  * Pagerank with power method, ported from CUDA

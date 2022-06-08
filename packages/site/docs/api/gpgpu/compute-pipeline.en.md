@@ -9,8 +9,10 @@ order: 2
 
 ```js
 import { Canvas, CanvasEvent } from '@antv/g';
-import { Renderer } from '@antv/g-webgpu';
-import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
+import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { Plugin, Kernel } from '@antv/g-plugin-gpgpu';
+
+const { BufferUsage } = DeviceRenderer;
 
 const renderer = new Renderer();
 // 注册 GPGPU 插件

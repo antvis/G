@@ -27,7 +27,6 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.1.8-alpha.1",
     "@antv/g-shader-components": "^1.1.8-alpha.0",
     "tslib": "^2.3.1"
   },

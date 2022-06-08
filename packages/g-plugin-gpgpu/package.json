@@ -36,7 +36,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "@antv/g-plugin-device-renderer": "^1.0.1"
+    "@antv/g-webgpu": "^1.0.1"
   },
   "publishConfig": {
     "access": "public"

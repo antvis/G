@@ -3,7 +3,7 @@ export default {
     name: 'G.RoughSVGRenderer',
     globals: {
       '@antv/g': 'window.G',
-      '@antv/g-plugin-svg-renderer': 'window.G.SVGRenderer',
+      '@antv/g-svg': 'window.G.SVG',
     },
   },
 };
