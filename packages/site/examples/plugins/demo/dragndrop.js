@@ -1,5 +1,6 @@
 import { Canvas, CanvasEvent, Image, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin } from '@antv/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -11,13 +12,32 @@ import Stats from 'stats.js';
  * @see https://javascript.info/mouse-drag-and-drop
  */
 
+const plugin = new Plugin({
+  // we can drag the whole document from empty space now!
+  isDocumentDraggable: true,
+});
+
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-canvasRenderer.registerPlugin(new Plugin());
+canvasRenderer.registerPlugin(plugin);
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+canvaskitRenderer.registerPlugin(plugin);
 const webglRenderer = new WebGLRenderer();
-webglRenderer.registerPlugin(new Plugin());
+webglRenderer.registerPlugin(plugin);
 const svgRenderer = new SVGRenderer();
-svgRenderer.registerPlugin(new Plugin());
+svgRenderer.registerPlugin(plugin);
 
 // create a canvas
 const canvas = new Canvas({
@@ -116,6 +136,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     e.target.style.opacity = 1;
     gateText.style.text = 'gate drop';
   });
+
+  // move camera
+  const camera = canvas.getCamera();
+  canvas.addEventListener('drag', function (e) {
+    if (e.target === canvas.document) {
+      camera.pan(-e.movementX, -e.movementY);
+    }
+  });
 });
 
 // stats
@@ -140,9 +168,19 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();

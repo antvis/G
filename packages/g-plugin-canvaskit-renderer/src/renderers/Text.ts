@@ -1,12 +1,5 @@
-import {
-  ContextService,
-  CSSRGB,
-  DisplayObject,
-  inject,
-  ParsedPathStyleProps,
-  ParsedTextStyleProps,
-  singleton,
-} from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps, ParsedTextStyleProps } from '@antv/g';
+import { ContextService, CSSRGB, inject, singleton } from '@antv/g';
 import type { EmbindEnumEntity, Typeface } from 'canvaskit-wasm';
 import { FontLoader } from '../FontLoader';
 import type {

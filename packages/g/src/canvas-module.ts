@@ -1,6 +1,7 @@
 import { Contribution, Module } from 'mana-syringe';
 import RBush from 'rbush';
-import { RBushNodeAABB, RBushRoot } from './components';
+import type { RBushNodeAABB } from './components';
+import { RBushRoot } from './components';
 import { CullingPlugin, CullingStrategyContribution } from './plugins/CullingPlugin';
 import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { EventPlugin } from './plugins/EventPlugin';

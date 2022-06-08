@@ -10,4 +10,10 @@ export interface DragndropPluginOptions {
    * @see https://interactjs.io/docs/dropzone/#accept
    */
   overlap: 'pointer' | 'center';
+
+  /**
+   * Since Canvas & Document don't have `draggable` attribute,
+   * we need to add an extra option.
+   */
+  isDocumentDraggable: boolean;
 }

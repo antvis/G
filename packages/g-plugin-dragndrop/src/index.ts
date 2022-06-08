@@ -16,6 +16,7 @@ export class Plugin implements RendererPlugin {
     container.register(DragndropPluginOptions, {
       useValue: {
         overlap: 'pointer',
+        isDocumentDraggable: false,
         ...this.options,
       },
     });

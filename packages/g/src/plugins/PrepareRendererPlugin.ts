@@ -1,6 +1,7 @@
 import { inject, singleton } from 'mana-syringe';
 import RBush from 'rbush';
-import { RBushNodeAABB, RBushRoot } from '../components';
+import type { RBushNodeAABB } from '../components';
+import { RBushRoot } from '../components';
 import { StyleValueRegistry } from '../css';
 import type { DisplayObject } from '../display-objects';
 import type { Element, FederatedEvent } from '../dom';
@@ -36,7 +37,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
   apply(renderingService: RenderingService) {
     const handleAttributeChanged = (e: FederatedEvent) => {
-      // this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
       const object = e.target as DisplayObject;
       object.renderable.dirty = true;
       renderingService.dirtify();
@@ -118,7 +118,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       // some objects may be removed since last frame
       .filter((object) => object.isConnected)
       .forEach((node: DisplayObject) => {
-        // @ts-ignore
         const rBushNode = node.rBushNode;
 
         // clear dirty node

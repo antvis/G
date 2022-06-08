@@ -1,9 +1,8 @@
 import { vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
-import RBush from 'rbush';
 import { Camera, DefaultCamera } from '../camera/Camera';
-import { RBushNodeAABB, RBushRoot } from '../components';
 import type { DisplayObject } from '../display-objects/DisplayObject';
+import type { Element } from '../dom';
 import type { Plane } from '../shapes';
 import { AABB, Mask } from '../shapes';
 import { Shape } from '../types';
@@ -28,12 +27,6 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
   @inject(DefaultCamera)
   private camera: Camera;
 
-  /**
-   * RBush used in dirty rectangle rendering
-   */
-  @inject(RBushRoot)
-  private rBush: RBush<RBushNodeAABB>;
-
   isVisible(object: DisplayObject) {
     // return true;
 
@@ -42,31 +35,25 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
       return true;
     }
 
-    const rBushNode = object.rBushNode;
-    // console.log(object, rBushNode.aabb);
+    const renderBounds = object.getRenderBounds();
 
-    // const renderBounds = object.getRenderBounds();
+    if (AABB.isEmpty(renderBounds)) {
+      return false;
+    }
 
-    // if (AABB.isEmpty(renderBounds)) {
-    //   return false;
-    // }
+    // get VP matrix from camera
+    const frustum = this.camera.getFrustum();
 
-    // this.rBush()
+    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
+    cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
+      object,
+      renderBounds,
+      parentVisibilityPlaneMask || Mask.INDETERMINATE,
+      frustum.planes,
+    );
 
-    // // get VP matrix from camera
-    // const frustum = this.camera.getFrustum();
+    cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
 
-    // const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
-    // cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
-    //   object,
-    //   renderBounds,
-    //   parentVisibilityPlaneMask || Mask.INDETERMINATE,
-    //   frustum.planes,
-    // );
-
-    // cullable.visible = cullable.visibilityPlaneMask !== Mask.OUTSIDE;
-
-    cullable.visible = true;
     return cullable.visible;
   }
 

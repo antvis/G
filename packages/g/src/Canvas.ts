@@ -221,6 +221,7 @@ export class Canvas extends EventTarget implements ICanvas {
         root: this.document.documentElement,
         renderListLastFrame: [],
         renderListCurrentFrame: [],
+        unculledEntities: [],
 
         renderReasons: new Set(),
 

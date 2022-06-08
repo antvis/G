@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { isBoolean, isFunction, isObject } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
-import type { IElement, IEventTarget, INode } from './interfaces';
+import type { ICanvas, IDocument, IElement, IEventTarget, INode } from './interfaces';
 
 export const DELEGATION_SPLITTER = ':';
 
@@ -127,13 +127,21 @@ export class EventTarget implements IEventTarget {
       throw new Error('DisplayObject cannot propagate events outside of the Federated Events API');
     }
 
-    const document =
+    // should account for Element / Document / Canvas
+    let canvas: ICanvas;
+    // @ts-ignore
+    if (this.document) {
+      canvas = this as unknown as ICanvas;
       // @ts-ignore
-      (this as unknown as INode).ownerDocument || this.document;
+    } else if (this.defaultView) {
+      canvas = (this as unknown as IDocument).defaultView;
+    } else {
+      canvas = (this as unknown as INode).ownerDocument?.defaultView;
+    }
 
     // assign event manager
-    if (document) {
-      e.manager = document.defaultView?.getEventService() || null;
+    if (canvas) {
+      e.manager = canvas.getEventService() || null;
       e.defaultPrevented = false;
       e.path = [];
       e.target = this;

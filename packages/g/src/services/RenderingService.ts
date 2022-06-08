@@ -1,5 +1,5 @@
 import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
-// import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from 'tapable';
+import { Camera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { CustomEvent, ElementEvent } from '../dom';
@@ -49,6 +49,9 @@ export class RenderingService {
   @inject(StyleValueRegistry)
   private styleValueRegistry: StyleValueRegistry;
 
+  @inject(DefaultCamera)
+  private camera: Camera;
+
   private inited = false;
 
   private stats = {
@@ -76,7 +79,7 @@ export class RenderingService {
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    cull: new SyncWaterfallHook<[DisplayObject | null, Camera]>(['object', 'camera']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
@@ -171,7 +174,9 @@ export class RenderingService {
       ? this.hooks.dirtycheck.call(displayObject)
       : displayObject;
     if (objectChanged) {
-      const objectToRender = enableCulling ? this.hooks.cull.call(objectChanged) : objectChanged;
+      const objectToRender = enableCulling
+        ? this.hooks.cull.call(objectChanged, this.camera)
+        : objectChanged;
 
       if (objectToRender) {
         this.stats.rendered++;

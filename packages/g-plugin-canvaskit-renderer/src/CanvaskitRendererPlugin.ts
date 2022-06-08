@@ -1,3 +1,11 @@
+import type {
+  DisplayObject,
+  LinearGradient,
+  ParsedBaseStyleProps,
+  RadialGradient,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import {
   Camera,
   CanvasConfig,
@@ -5,20 +13,14 @@ import {
   CSSGradientValue,
   CSSRGB,
   DefaultCamera,
-  DisplayObject,
   getEuler,
   GradientPatternType,
   inject,
   isNil,
-  LinearGradient,
   parseColor,
-  ParsedBaseStyleProps,
   rad2deg,
-  RadialGradient,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
-  RenderingService,
   Shape,
   singleton,
 } from '@antv/g';

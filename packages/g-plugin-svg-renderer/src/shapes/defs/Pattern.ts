@@ -71,7 +71,7 @@ function createOrUpdatePattern(
   parsedColor: CSSGradientValue,
 ) {
   const patternId = generateCacheKey(parsedColor);
-  let $existed = $def.querySelector(`#${patternId}`);
+  const $existed = $def.querySelector(`#${patternId}`);
 
   if (!$existed) {
     const { src } = parsedColor.value as Pattern;

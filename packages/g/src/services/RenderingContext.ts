@@ -30,5 +30,7 @@ export interface RenderingContext {
   renderListLastFrame: DisplayObject[];
   renderListCurrentFrame: DisplayObject[];
 
+  unculledEntities: number[];
+
   dirty: boolean;
 }

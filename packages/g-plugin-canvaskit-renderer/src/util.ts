@@ -1,4 +1,5 @@
-import { CSSRGB, parseColor } from '@antv/g';
+import type { CSSRGB } from '@antv/g';
+import { parseColor } from '@antv/g';
 import type { CanvasKit } from 'canvaskit-wasm';
 
 export function color2CanvaskitColor(CanvasKit: CanvasKit, color: string) {

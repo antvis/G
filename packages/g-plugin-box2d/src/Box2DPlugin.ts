@@ -23,7 +23,7 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
-import 'box2d-wasm';
+import type Box2D from 'box2d-wasm';
 import { Box2DPluginOptions } from './tokens';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
 
@@ -52,7 +52,8 @@ export class Box2DPlugin implements RenderingPlugin {
   @inject(Box2DPluginOptions)
   private options: Box2DPluginOptions;
 
-  private Box2D: typeof Box2D & EmscriptenModule;
+  // private Box2D: typeof Box2D & EmscriptenModule;
+  private Box2D: any;
   private world: Box2D.b2World;
   private contactListener: Box2D.JSContactListener;
 
@@ -265,6 +266,7 @@ export class Box2DPlugin implements RenderingPlugin {
         [x1.value, y1.value],
         [x2.value, y2.value],
       ]);
+      // @ts-ignore
       shape.SetTwoSided(
         new b2Vec2(points[0][0] - defX, points[0][1] - defY),
         new b2Vec2(points[1][0] - defX, points[1][1] - defY),
@@ -289,6 +291,7 @@ export class Box2DPlugin implements RenderingPlugin {
       const { width, height } = parsedStyle as ParsedRectStyleProps;
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
+      // @ts-ignore
       shape.SetAsBox(
         width.value / 2,
         height.value / 2,
