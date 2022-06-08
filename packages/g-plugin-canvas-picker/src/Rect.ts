@@ -1,12 +1,5 @@
-import {
-  clamp,
-  CSSRGB,
-  DisplayObject,
-  ParsedRectStyleProps,
-  Point,
-  RectStyleProps,
-  UnitType,
-} from '@antv/g';
+import type { CSSRGB, DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
+import { clamp, UnitType } from '@antv/g';
 import { inArc, inBox, inLine, inRect } from './utils/math';
 
 export function isPointInPath(

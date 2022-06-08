@@ -1,4 +1,5 @@
-import { clamp, ParsedRectStyleProps } from '@antv/g';
+import type { ParsedRectStyleProps } from '@antv/g';
+import { clamp } from '@antv/g';
 
 export function updateRectElementAttribute($el: SVGElement, parsedStyle: ParsedRectStyleProps) {
   const { radius, width, height } = parsedStyle;

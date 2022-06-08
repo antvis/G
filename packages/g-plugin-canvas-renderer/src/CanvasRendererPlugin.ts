@@ -288,18 +288,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.save();
 
     // apply RTS transformation in world space
-    // this.applyTransform(context, object.getWorldTransform());
-
-    const [tx, ty] = object.getLocalPosition();
-    const [sx, sy] = object.getLocalScale();
-    const rotation = object.getLocalRotation();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [eux, euy, euz] = getEuler(this.tmpVec3, rotation);
-    // gimbal lock at 90 degrees
-    const cos = Math.cos(eux || euz);
-    const sin = Math.sin(eux || euz);
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    context.transform(sx * cos, sy * sin, -sx * sin, sy * cos, tx, ty);
+    this.applyTransform(context, object.getLocalTransform());
 
     // clip path
     const clipPathShape = object.style.clipPath;
