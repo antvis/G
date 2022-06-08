@@ -1,12 +1,14 @@
 import type { FederatedPointerEvent } from '@antv/g';
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
+import sinon from 'sinon';
+// @ts-ignore
 import sinonChai from 'sinon-chai';
-import { sleep } from './utils';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -34,6 +36,20 @@ describe('Canvas', () => {
     canvas.destroy();
   });
 
+  it('should not trigger CanvasEvent when switching renderer', async () => {
+    const readyCallback = sinon.spy();
+    const beforeDestroyCallback = sinon.spy();
+    canvas.addEventListener(CanvasEvent.READY, readyCallback);
+    canvas.addEventListener(CanvasEvent.BEFORE_DESTROY, beforeDestroyCallback);
+
+    await canvas.setRenderer(new SVGRenderer());
+
+    // @ts-ignore
+    expect(readyCallback).to.have.been.not.called;
+    // @ts-ignore
+    expect(beforeDestroyCallback).to.have.been.not.called;
+  });
+
   it('should generate correct composed path', async () => {
     let point = canvas.getClientByPoint(0, 0);
     expect(point.x).eqls(8);
@@ -51,9 +67,10 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
 
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     const handlePointerDown = (e) => {
       // target
@@ -103,9 +120,10 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
 
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     canvas.addEventListener(
       'pointerdown',
@@ -171,9 +189,10 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
 
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     canvas.addEventListener(
       'pointerdown',
@@ -234,9 +253,9 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.appendChild(circle);
-
-    await sleep(100);
+    canvas.addEventListener(CanvasEvent.READY, () => {
+      canvas.appendChild(circle);
+    });
 
     canvas.addEventListener(
       'pointerdown',

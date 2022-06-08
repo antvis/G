@@ -1,6 +1,5 @@
-import type { RendererPlugin } from '@antv/g';
-import { Module } from 'mana-syringe';
-import type { Syringe } from 'mana-syringe';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module } from '@antv/g';
 import {
   BlendFactor,
   BlendMode,
@@ -13,6 +12,7 @@ import {
   FogType,
   Format,
   FrontFaceMode,
+  GL,
   Light,
   Material,
   Mesh,
@@ -23,7 +23,6 @@ import {
   StencilOp,
   TextureDimension,
   TextureUsage,
-  GL,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
   VertexBufferFrequency,
@@ -31,8 +30,8 @@ import {
 } from '@antv/g-plugin-device-renderer';
 
 export * from './geometries';
-export * from './materials';
 export * from './lights';
+export * from './materials';
 export {
   BlendFactor,
   BlendMode,

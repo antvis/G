@@ -1,15 +1,35 @@
-import { Circle, Line, Text, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
+import Hammer from 'hammerjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import Hammer from 'hammerjs';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+
+// create a canvas
+const canvas = new Canvas({
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: webglRenderer,
+});
 
 // ported from G6 @see https://g6.antv.vision/zh/examples/performance/perf#eva
 
@@ -28,81 +48,78 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
   });
 };
 
-fetch('https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4afecd43e6.json')
-  .then((res) => res.json())
-  .then((data) => {
-    data.nodes.forEach((node) => {
-      node.label = node.olabel;
-      node.degree = 0;
-      data.edges.forEach((edge) => {
-        if (edge.source === node.id || edge.target === node.id) {
-          node.degree++;
-        }
-      });
-    });
-    mapNodeSize(data.nodes, 'degree', [1, 15]);
+(async () => {
+  const [_, data] = await Promise.all([
+    canvas.ready,
+    fetch(
+      'https://gw.alipayobjects.com/os/basement_prod/0b9730ff-0850-46ff-84d0-1d4afecd43e6.json',
+    ).then((res) => res.json()),
+  ]);
 
-    /**
-     * Draw edges
-     */
-    data.edges.forEach(({ startPoint, endPoint }) => {
-      const line = new Line({
-        style: {
-          x1: startPoint.x * 10,
-          y1: startPoint.y * 10,
-          x2: endPoint.x * 10,
-          y2: endPoint.y * 10,
-          stroke: '#1890FF',
-          lineWidth: 3,
-        },
-      });
-
-      canvas.appendChild(line);
-    });
-
-    /**
-     * Draw nodes
-     */
-    data.nodes.forEach(({ size, x, y, label }) => {
-      const circle = new Circle({
-        style: {
-          cx: x * 10,
-          cy: y * 10,
-          fill: '#C6E5FF',
-          stroke: '#5B8FF9',
-          r: size * 10,
-          lineWidth: 1,
-        },
-      });
-      canvas.appendChild(circle);
-
-      const text = new Text({
-        style: {
-          text: label,
-          fontSize: 12,
-          fontFamily: 'PingFang SC',
-          fill: '#1890FF',
-        },
-      });
-      circle.appendChild(text);
-
-      circle.addEventListener('mouseenter', (e) => {
-        circle.style.fill = '#2FC25B';
-      });
-
-      circle.addEventListener('mouseleave', (e) => {
-        circle.style.fill = '#C6E5FF';
-      });
+  data.nodes.forEach((node) => {
+    node.label = node.olabel;
+    node.degree = 0;
+    data.edges.forEach((edge) => {
+      if (edge.source === node.id || edge.target === node.id) {
+        node.degree++;
+      }
     });
   });
+  mapNodeSize(data.nodes, 'degree', [1, 15]);
 
-// create a canvas
-const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: webglRenderer,
-});
+  /**
+   * Draw edges
+   */
+  data.edges.forEach(({ startPoint, endPoint }) => {
+    const line = new Line({
+      style: {
+        x1: startPoint.x * 10,
+        y1: startPoint.y * 10,
+        x2: endPoint.x * 10,
+        y2: endPoint.y * 10,
+        stroke: '#1890FF',
+        lineWidth: 3,
+      },
+    });
+
+    canvas.appendChild(line);
+  });
+
+  /**
+   * Draw nodes
+   */
+  data.nodes.forEach(({ size, x, y, label }) => {
+    const circle = new Circle({
+      style: {
+        cx: x * 10,
+        cy: y * 10,
+        fill: '#C6E5FF',
+        stroke: '#5B8FF9',
+        r: size * 10,
+        lineWidth: 1,
+      },
+    });
+    canvas.appendChild(circle);
+
+    const text = new Text({
+      style: {
+        text: label,
+        fontSize: 12,
+        fontFamily: 'sans-serif',
+        fill: '#1890FF',
+      },
+    });
+    circle.appendChild(text);
+
+    circle.addEventListener('mouseenter', (e) => {
+      circle.style.fill = '#2FC25B';
+    });
+
+    circle.addEventListener('mouseleave', (e) => {
+      circle.style.fill = '#C6E5FF';
+    });
+  });
+})();
 
 // stats
 const stats = new Stats();
@@ -117,7 +134,7 @@ $wrapper.appendChild($stats);
 const camera = canvas.getCamera();
 camera.pan(1000, 800);
 camera.setZoom(0.05);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -170,10 +187,22 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'webgl',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-  bindWheelHandler();
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+    bindWheelHandler();
+  });
 rendererFolder.open();

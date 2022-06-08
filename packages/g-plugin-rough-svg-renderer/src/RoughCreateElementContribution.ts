@@ -8,22 +8,13 @@ import type {
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
 } from '@antv/g';
-import { CanvasConfig, ContextService, Shape } from '@antv/g';
-import {
-  CreateElementContribution,
-  createSVGElement,
-  G_SVG_PREFIX,
-  SHAPE2TAGS,
-  SHAPE_UPDATE_DEPS,
-  updateImageElementAttribute,
-  updateTextElementAttribute,
-} from '@antv/g-plugin-svg-renderer';
-import { inject, singleton } from 'mana-syringe';
+import { CanvasConfig, ContextService, inject, Shape, singleton } from '@antv/g';
+import { SVGRenderer } from '@antv/g-svg';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { formatPath, generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
-@singleton({ token: CreateElementContribution })
-export class RoughCreateElementContribution implements CreateElementContribution {
+@singleton({ token: SVGRenderer.CreateElementContribution })
+export class RoughCreateElementContribution implements SVGRenderer.CreateElementContribution {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -47,8 +38,8 @@ export class RoughCreateElementContribution implements CreateElementContribution
       case Shape.TEXT:
       case Shape.HTML:
         const { document: doc } = this.canvasConfig;
-        const type = SHAPE2TAGS[nodeName] || 'g';
-        return createSVGElement(type, doc || document);
+        const type = SVGRenderer.SHAPE2TAGS[nodeName] || 'g';
+        return SVGRenderer.createSVGElement(type, doc || document);
     }
     return null;
   }
@@ -61,8 +52,9 @@ export class RoughCreateElementContribution implements CreateElementContribution
   shouldUpdateElementAttribute(object: DisplayObject, attributeName: string) {
     const { nodeName } = object;
     return (
-      [...(SHAPE_UPDATE_DEPS[nodeName] || []), ...SUPPORTED_ROUGH_OPTIONS].indexOf(attributeName) >
-      -1
+      [...(SVGRenderer.SHAPE_UPDATE_DEPS[nodeName] || []), ...SUPPORTED_ROUGH_OPTIONS].indexOf(
+        attributeName,
+      ) > -1
     );
   }
 
@@ -87,11 +79,11 @@ export class RoughCreateElementContribution implements CreateElementContribution
         break;
       }
       case Shape.IMAGE: {
-        updateImageElementAttribute($el, parsedStyle);
+        SVGRenderer.updateImageElementAttribute($el, parsedStyle);
         break;
       }
       case Shape.TEXT: {
-        updateTextElementAttribute($el, parsedStyle);
+        SVGRenderer.updateTextElementAttribute($el, parsedStyle);
         break;
       }
     }
@@ -171,7 +163,9 @@ export class RoughCreateElementContribution implements CreateElementContribution
       for (let i = 0; i < $roughG.children.length; i++) {
         // <g> cannot be a target for hit testing
         // @see https://bugzilla.mozilla.org/show_bug.cgi?id=1428780
-        $roughG.children[i].id = `${G_SVG_PREFIX}_${object.nodeName}_rough${i}_${object.entity}`;
+        $roughG.children[
+          i
+        ].id = `${SVGRenderer.G_SVG_PREFIX}_${object.nodeName}_rough${i}_${object.entity}`;
       }
     }
 

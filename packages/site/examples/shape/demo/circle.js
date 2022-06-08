@@ -1,5 +1,6 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
@@ -11,6 +12,19 @@ const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
 const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({
@@ -35,8 +49,10 @@ const circle = new Circle({
   },
 });
 
-// add a circle to canvas
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // add a circle to canvas
+  canvas.appendChild(circle);
+});
 
 // use AntV G devtools
 window.__g_instances__ = [canvas];
@@ -50,7 +66,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -64,7 +80,7 @@ const rendererConfig = {
   renderer: 'canvas',
 };
 rendererFolder
-  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu'])
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
   .onChange((rendererName) => {
     let renderer;
     if (rendererName === 'canvas') {
@@ -75,6 +91,8 @@ rendererFolder
       renderer = webglRenderer;
     } else if (rendererName === 'webgpu') {
       renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
     }
     canvas.setRenderer(renderer);
   });

@@ -1,13 +1,13 @@
-import { injectable } from 'mana-syringe';
 import type { DisplayObject, Image as ImageShape } from '@antv/g';
-import { Format, VertexBufferFrequency } from '../platform';
-import vert from '../shader/image.vert';
-import frag from '../shader/image.frag';
+import { injectable } from '@antv/g';
 import {
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from '../meshes/Instanced';
+import { Format, VertexBufferFrequency } from '../platform';
+import frag from '../shader/image.frag';
+import vert from '../shader/image.vert';
 
 @injectable()
 export class ImageMesh extends Instanced {

@@ -57,7 +57,7 @@ export function mergeNumberLists(
   left: CSSUnitValue[],
   right: CSSUnitValue[],
 ): [number[], number[], (numberList: number[]) => number[]] | undefined {
-  if (left.length != right.length) {
+  if (left.length !== right.length) {
     return;
   }
   return [

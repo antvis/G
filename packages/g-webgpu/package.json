@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A renderer implemented by WebGPU",
   "keywords": [
     "antv",
@@ -16,6 +16,7 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "sideEffects": true,
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -27,10 +28,10 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.1.7",
-    "@antv/g-plugin-dom-interaction": "^1.1.7",
-    "@antv/g-plugin-html-renderer": "^1.1.7",
-    "@antv/g-plugin-webgpu-device": "^1.1.7"
+    "@antv/g-plugin-device-renderer": "^1.1.8",
+    "@antv/g-plugin-dom-interaction": "^1.1.8-alpha.1",
+    "@antv/g-plugin-html-renderer": "^1.1.8-alpha.1",
+    "@antv/g-plugin-webgpu-device": "^1.1.8-alpha.1"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
@@ -38,8 +39,7 @@
     "@types/offscreencanvas": "^2019.6.4"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

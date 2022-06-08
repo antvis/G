@@ -57,6 +57,7 @@ describe('Render <CustomElement> with g-svg', () => {
   });
 
   it('should render custom-element on server-side correctly.', async () => {
+    await canvas.ready;
     const lineArrow = new Arrow({
       id: 'lineArrow',
       style: {

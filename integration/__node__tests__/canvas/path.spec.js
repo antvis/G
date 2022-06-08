@@ -34,6 +34,7 @@ describe('Render <Path> with g-canvas', () => {
   });
 
   it('should render path on server-side correctly.', async () => {
+    await canvas.ready;
     const path = new Path({
       style: {
         path: 'M10,10 L30,30 L10, 30',

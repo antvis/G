@@ -1,4 +1,4 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import Stats from 'stats.js';
 
@@ -29,13 +29,16 @@ const circle = new Circle({
     lineWidth: 4,
   },
 });
-canvas.appendChild(circle);
-circle.on('mouseenter', () => {
-  circle.attr('fill', '#2FC25B');
-});
 
-circle.on('mouseleave', () => {
-  circle.attr('fill', '#1890FF');
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
+  circle.addEventListener('pointerenter', () => {
+    circle.attr('fill', '#2FC25B');
+  });
+
+  circle.addEventListener('pointerleave', () => {
+    circle.attr('fill', '#1890FF');
+  });
 });
 
 // stats
@@ -47,7 +50,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

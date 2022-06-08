@@ -1,7 +1,7 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -31,62 +31,66 @@ const circle = new Circle({
   },
 });
 
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
 
-circle.addEventListener('mouseenter', function (e) {
-  console.log(this, e.currentTarget);
-  circle.style.fill = '#2FC25B';
-});
+  circle.addEventListener('pointerenter', function (e) {
+    console.log(this, e.currentTarget);
+    circle.style.fill = '#2FC25B';
+  });
 
-circle.addEventListener('mouseleave', () => {
-  console.log(this);
-  circle.style.fill = '#1890FF';
-});
+  circle.addEventListener('pointerleave', () => {
+    console.log(this);
+    circle.style.fill = '#1890FF';
+  });
 
-// stats
-const stats = new Stats();
-stats.showPanel(0);
-const $stats = stats.dom;
-$stats.style.position = 'absolute';
-$stats.style.left = '0px';
-$stats.style.top = '0px';
-const $wrapper = document.getElementById('container');
-$wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
-  if (stats) {
-    stats.update();
-  }
-});
+  // stats
+  const stats = new Stats();
+  stats.showPanel(0);
+  const $stats = stats.dom;
+  $stats.style.position = 'absolute';
+  $stats.style.left = '0px';
+  $stats.style.top = '0px';
+  const $wrapper = document.getElementById('container');
+  $wrapper.appendChild($stats);
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    if (stats) {
+      stats.update();
+    }
+  });
 
-// GUI
-const gui = new lil.GUI({ autoPlace: false });
-$wrapper.appendChild(gui.domElement);
-const rendererFolder = gui.addFolder('renderer');
-const rendererConfig = {
-  renderer: 'canvas',
-};
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
-rendererFolder.open();
+  // GUI
+  const gui = new lil.GUI({ autoPlace: false });
+  $wrapper.appendChild(gui.domElement);
+  const rendererFolder = gui.addFolder('renderer');
+  const rendererConfig = {
+    renderer: 'canvas',
+  };
+  rendererFolder
+    .add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg'])
+    .onChange((renderer) => {
+      canvas.setRenderer(
+        renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
+      );
+    });
+  rendererFolder.open();
 
-const circleFolder = gui.addFolder('circle');
-const circleConfig = {
-  interactive: true,
-  visible: true,
-};
-circleFolder.add(circleConfig, 'visible').onChange((visible) => {
-  if (visible) {
-    circle.style.visibility = 'visible';
-    // circle.show();
-  } else {
-    circle.style.visibility = 'hidden';
-    // circle.hide();
-  }
+  const circleFolder = gui.addFolder('circle');
+  const circleConfig = {
+    interactive: true,
+    visible: true,
+  };
+  circleFolder.add(circleConfig, 'visible').onChange((visible) => {
+    if (visible) {
+      circle.style.visibility = 'visible';
+      // circle.show();
+    } else {
+      circle.style.visibility = 'hidden';
+      // circle.hide();
+    }
+  });
+  circleFolder.add(circleConfig, 'interactive').onChange((interactive) => {
+    circle.interactive = interactive;
+  });
+  circleFolder.open();
 });
-circleFolder.add(circleConfig, 'interactive').onChange((interactive) => {
-  circle.interactive = interactive;
-});
-circleFolder.open();

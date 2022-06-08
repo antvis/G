@@ -1,7 +1,7 @@
-import { Circle, Canvas, CanvasEvent } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -22,21 +22,23 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-let nodesNum = 2000;
-for (let i = 0; i < nodesNum; i++) {
-  canvas.appendChild(
-    new Circle({
-      attrs: {
-        fill: '#C6E5FF',
-        stroke: '#5B8FF9',
-        r: 2,
-        cx: Math.random() * 600,
-        cy: Math.random() * 500,
-        lineWidth: 0.3,
-      },
-    }),
-  );
-}
+canvas.addEventListener(CanvasEvent.READY, () => {
+  let nodesNum = 2000;
+  for (let i = 0; i < nodesNum; i++) {
+    canvas.appendChild(
+      new Circle({
+        attrs: {
+          fill: '#C6E5FF',
+          stroke: '#5B8FF9',
+          r: 2,
+          cx: Math.random() * 600,
+          cy: Math.random() * 500,
+          lineWidth: 0.3,
+        },
+      }),
+    );
+  }
+});
 
 const camera = canvas.getCamera();
 

@@ -5,9 +5,10 @@
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
-import type { Circle, Ellipse, Line, Path, Polyline, Polygon, Rect } from '../display-objects';
+import type { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from '../display-objects';
 import type { PathCommand } from '../types';
 import { Shape } from '../types';
+import { clamp } from './math';
 
 function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {
   const ax = a[0];
@@ -381,7 +382,13 @@ export function convertToPath(
         height.value,
         x.value,
         y.value,
-        hasRadius && (radius.map((r) => r.value) as [number, number, number, number]),
+        hasRadius &&
+          (radius.map((r) => clamp(r.value, 0, Math.min(width.value / 2, height.value / 2))) as [
+            number,
+            number,
+            number,
+            number,
+          ]),
       );
       break;
     case Shape.PATH:

@@ -1,12 +1,12 @@
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import * as lil from 'lil-gui';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import SplitPane from 'react-split-pane';
 import Stats from 'stats.js';
-import * as lil from 'lil-gui';
-import { Canvas, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
 
 // scene1 + scene2
 const TOTAL_WIDTH = 600;
@@ -48,36 +48,40 @@ const App = function MultiWorld() {
       renderer: canvasRenderer2,
     });
 
-    const circle1 = new Circle({
-      style: {
-        cx: 100,
-        cy: 100,
-        r: 100,
-        fill: 'blue',
-      },
-    });
-    canvas1.appendChild(circle1);
-    circle1.on('mouseenter', () => {
-      circle1.attr('fill', 'yellow');
-    });
-    circle1.on('mouseleave', () => {
-      circle1.attr('fill', 'blue');
+    canvas1.addEventListener(CanvasEvent.READY, () => {
+      const circle1 = new Circle({
+        style: {
+          cx: 100,
+          cy: 100,
+          r: 100,
+          fill: 'blue',
+        },
+      });
+      canvas1.appendChild(circle1);
+      circle1.on('mouseenter', () => {
+        circle1.attr('fill', 'yellow');
+      });
+      circle1.on('mouseleave', () => {
+        circle1.attr('fill', 'blue');
+      });
     });
 
-    const circle2 = new Circle({
-      style: {
-        cx: 100,
-        cy: 100,
-        r: 100,
-        fill: 'red',
-      },
-    });
-    canvas2.appendChild(circle2);
-    circle2.on('mouseenter', () => {
-      circle2.attr('fill', 'green');
-    });
-    circle2.on('mouseleave', () => {
-      circle2.attr('fill', 'red');
+    canvas2.addEventListener(CanvasEvent.READY, () => {
+      const circle2 = new Circle({
+        style: {
+          cx: 100,
+          cy: 100,
+          r: 100,
+          fill: 'red',
+        },
+      });
+      canvas2.appendChild(circle2);
+      circle2.on('mouseenter', () => {
+        circle2.attr('fill', 'green');
+      });
+      circle2.on('mouseleave', () => {
+        circle2.attr('fill', 'red');
+      });
     });
 
     // GUI

@@ -36,9 +36,8 @@ describe('CSSPropertyLengthOrPercentage', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(circle);
-
-    await sleep(100);
 
     // attribute
     expect(circle.getAttribute('cx')).to.be.eqls(10);
@@ -94,7 +93,7 @@ describe('CSSPropertyLengthOrPercentage', () => {
       { duration: 100, fill: 'both' },
     );
 
-    await sleep(500);
+    await sleep(1000);
     expect(circle.getAttribute('cx')).to.be.eqls('20px');
 
     // em

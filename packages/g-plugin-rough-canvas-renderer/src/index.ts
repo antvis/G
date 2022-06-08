@@ -1,15 +1,6 @@
-import type { RendererPlugin } from '@antv/g';
-import {
-  CircleRenderer,
-  EllipseRenderer,
-  LineRenderer,
-  PathRenderer,
-  PolygonRenderer,
-  PolylineRenderer,
-  RectRenderer,
-} from '@antv/g-plugin-canvas-renderer';
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module } from '@antv/g';
+import { CanvasRenderer } from '@antv/g-canvas';
 import {
   CircleRenderer as CircleRoughRenderer,
   EllipseRenderer as EllipseRoughRenderer,
@@ -20,6 +11,16 @@ import {
   RectRenderer as RectRoughRenderer,
 } from './renderers';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
+
+const {
+  CircleRenderer,
+  EllipseRenderer,
+  LineRenderer,
+  PathRenderer,
+  PolygonRenderer,
+  PolylineRenderer,
+  RectRenderer,
+} = CanvasRenderer;
 
 const containerModule = Module((register) => {
   register(RoughRendererPlugin);

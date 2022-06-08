@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-gpgpu",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A G plugin for GPGPU based on WebGPU",
   "keywords": [
     "webgpu",
@@ -36,8 +36,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "@antv/g-plugin-device-renderer": "^1.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g-webgpu": "^1.0.1"
   },
   "publishConfig": {
     "access": "public"

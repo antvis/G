@@ -27,6 +27,36 @@ new Plugin({
 });
 ```
 
+## isDocumentDraggable
+
+由于 [Document](/zh/docs/api/builtin-objects/document) 上并没有“样式”，因此当我们想在画布的空白区域进行拖拽时，并不能这么做：
+
+```js
+// wrong
+canvas.document.style.draggable = true;
+
+// correct
+const plugin = new Plugin({
+    // we can drag the whole document from empty space now!
+    isDocumentDraggable: true,
+});
+```
+
+在该[示例](/zh/examples/plugins#dragndrop)中，在空白区域进行拖拽可以通过 [camera.pan()](/zh/docs/api/camera#pan) 平移相机，以达到整个画布发生移动的视觉效果：
+
+```js
+const camera = canvas.getCamera();
+canvas.addEventListener('drag', function (e) {
+    if (e.target === canvas.document) {
+        camera.pan(-e.movementX, -e.movementY);
+    }
+});
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sF1WQr4zrsQAAAAAAAAAAAAAARQnAQ" width="300" alt="drag document">
+
+在上面的例子中我们有 `e.target === canvas.document` 这样的判断，是为了避免移动“足球”等非 [Document](/zh/docs/api/builtin-objects/document) 元素也造成相机移动。
+
 ## overlap
 
 用以判断拖拽中的图形是否进入 `dropzone`，支持以下两个取值：

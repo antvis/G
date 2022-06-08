@@ -1,7 +1,9 @@
-import { Polygon, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Polygon } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -9,6 +11,20 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -36,8 +52,10 @@ const polygon = new Polygon({
   },
 });
 
-// add a polygon to canvas
-canvas.appendChild(polygon);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  // add a polygon to canvas
+  canvas.appendChild(polygon);
+});
 
 // stats
 const stats = new Stats();
@@ -48,7 +66,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -61,11 +79,23 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();
 
 const polygonFolder = gui.addFolder('polygon');
@@ -81,6 +111,10 @@ const polygonConfig = {
   lineDashOffset: 0,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 polygonFolder.addColor(polygonConfig, 'fill').onChange((color) => {
   polygon.style.fill = color;
@@ -113,6 +147,18 @@ polygonFolder
   .onChange((cursor) => {
     polygon.style.cursor = cursor;
   });
+polygonFolder.addColor(polygonConfig, 'shadowColor').onChange((color) => {
+  polygon.attr('shadowColor', color);
+});
+polygonFolder.add(polygonConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  polygon.style.shadowBlur = shadowBlur;
+});
+polygonFolder.add(polygonConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  polygon.style.shadowOffsetX = shadowOffsetX;
+});
+polygonFolder.add(polygonConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  polygon.style.shadowOffsetY = shadowOffsetY;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

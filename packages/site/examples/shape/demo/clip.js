@@ -1,7 +1,7 @@
-import { Image, Circle, Rect, Path, Group, Text, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, Image, Path, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -98,13 +98,15 @@ group.appendChild(text1);
 group.appendChild(text2);
 group.appendChild(text3);
 
-canvas.appendChild(image);
-canvas.appendChild(image2);
-canvas.appendChild(group);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(image);
+  canvas.appendChild(image2);
+  canvas.appendChild(group);
 
-clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
-  duration: 1500,
-  iterations: Infinity,
+  clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
+    duration: 1500,
+    iterations: Infinity,
+  });
 });
 
 // stats
@@ -116,7 +118,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

@@ -1,9 +1,8 @@
-import type { ParsedBaseStyleProps, DisplayObject } from '@antv/g';
-import { Syringe } from 'mana-syringe';
+import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
+import { Syringe } from '@antv/g';
 
 export const StyleRendererFactory = Syringe.defineToken('StyleRendererFactory');
 export interface StyleRenderer {
-  hash: (parsedStyle: ParsedBaseStyleProps) => string;
   render: (
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedBaseStyleProps,

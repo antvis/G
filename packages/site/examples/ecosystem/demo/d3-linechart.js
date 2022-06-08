@@ -1,9 +1,11 @@
-import { Canvas } from '@antv/g';
+import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
-import * as lil from 'lil-gui';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as d3 from 'd3';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
@@ -16,8 +18,22 @@ import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({
@@ -123,7 +139,9 @@ const drawLineChart = async () => {
     .style('transform', `translateY(${dimensions.boundedHeight}px)`);
 };
 
-drawLineChart();
+canvas.addEventListener(CanvasEvent.READY, () => {
+  drawLineChart();
+});
 
 // stats
 const stats = new Stats();
@@ -134,7 +152,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -147,9 +165,21 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();

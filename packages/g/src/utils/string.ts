@@ -1,7 +1,11 @@
 import { isNil } from './assert';
 
+const cache = {};
 export function camelCase(str: string = '') {
-  return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+  if (!cache[str]) {
+    cache[str] = str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+  }
+  return cache[str];
 }
 
 export function isString(str: any): str is string {

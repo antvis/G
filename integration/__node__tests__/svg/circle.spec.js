@@ -51,6 +51,7 @@ describe('Render <Circle> with g-svg', () => {
   });
 
   it('should render circle on server-side correctly.', async () => {
+    await canvas.ready;
     const circle1 = new Circle({
       style: {
         cx: 10,

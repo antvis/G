@@ -1,12 +1,12 @@
-import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
-import { CullingStrategyContribution } from './CullingPlugin';
-import { AABB, Mask } from '../shapes';
-import type { Plane } from '../shapes';
-import { DefaultCamera, Camera } from '../camera/Camera';
+import { inject, singleton } from 'mana-syringe';
+import { Camera, DefaultCamera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
+import type { Plane } from '../shapes';
+import { AABB, Mask } from '../shapes';
 import { Shape } from '../types';
+import { CullingStrategyContribution } from './CullingPlugin';
 
 // group is not a 2d shape
 const shape2D = [

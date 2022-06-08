@@ -1,5 +1,4 @@
-import { GeometryAABBUpdater, Shape } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import { GeometryAABBUpdater, Shape, singleton } from '@antv/g';
 import type { ParsedMeshStyleProps } from './Mesh';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.MESH } })

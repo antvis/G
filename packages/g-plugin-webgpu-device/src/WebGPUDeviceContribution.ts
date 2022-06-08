@@ -1,8 +1,8 @@
+import { inject, singleton } from '@antv/g';
 import { DeviceContribution } from '@antv/g-plugin-device-renderer';
-import { inject, singleton } from 'mana-syringe';
+import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import { WebGPUDeviceOptions } from './interfaces';
 import { Device_WebGPU } from './platform/Device';
-import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 
 @singleton({
   token: DeviceContribution,

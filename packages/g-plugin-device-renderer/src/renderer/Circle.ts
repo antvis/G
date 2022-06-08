@@ -1,9 +1,8 @@
-import type { DisplayObject, ParsedCircleStyleProps, CSSRGB } from '@antv/g';
-import { Shape } from '@antv/g';
-import { injectable } from 'mana-syringe';
-import { Batch } from './Batch';
-import { ShapeRenderer } from '../tokens';
+import type { CSSRGB, DisplayObject, ParsedCircleStyleProps } from '@antv/g';
+import { injectable, Shape } from '@antv/g';
 import { LineMesh, SDFMesh } from '../meshes';
+import { ShapeRenderer } from '../tokens';
+import { Batch } from './Batch';
 
 /**
  * Use 2 meshes:

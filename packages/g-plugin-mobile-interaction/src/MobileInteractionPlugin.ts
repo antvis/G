@@ -1,6 +1,5 @@
 import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
-import { ContextService, RenderingPluginContribution } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { ContextService, inject, RenderingPluginContribution, singleton } from '@antv/g';
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */

@@ -1,7 +1,7 @@
-import { Circle, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -31,45 +31,49 @@ const canvas2 = new Canvas({
   renderer: canvasRenderer2,
 });
 
-// create a circle
-const circle1 = new Circle({
-  id: 'circle1',
-  style: {
-    cx: 300,
-    cy: 200,
-    r: 100,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-  },
-});
-canvas1.appendChild(circle1);
-circle1.on('mouseenter', () => {
-  circle1.attr('fill', '#2FC25B');
+canvas1.addEventListener(CanvasEvent.READY, () => {
+  // create a circle
+  const circle1 = new Circle({
+    id: 'circle1',
+    style: {
+      cx: 300,
+      cy: 200,
+      r: 100,
+      fill: '#1890FF',
+      stroke: '#F04864',
+      lineWidth: 4,
+    },
+  });
+  canvas1.appendChild(circle1);
+  circle1.addEventListener('mouseenter', () => {
+    circle1.attr('fill', '#2FC25B');
+  });
+
+  circle1.addEventListener('mouseleave', () => {
+    circle1.attr('fill', '#1890FF');
+  });
 });
 
-circle1.on('mouseleave', () => {
-  circle1.attr('fill', '#1890FF');
-});
+canvas2.addEventListener(CanvasEvent.READY, () => {
+  const circle2 = new Circle({
+    id: 'circle2',
+    style: {
+      cx: 300,
+      cy: 200,
+      r: 100,
+      fill: '#1890FF',
+      stroke: '#F04864',
+      lineWidth: 4,
+    },
+  });
+  canvas2.appendChild(circle2);
+  circle2.addEventListener('mouseenter', () => {
+    circle2.attr('fill', '#2FC25B');
+  });
 
-const circle2 = new Circle({
-  id: 'circle2',
-  style: {
-    cx: 300,
-    cy: 200,
-    r: 100,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-  },
-});
-canvas2.appendChild(circle2);
-circle2.on('mouseenter', () => {
-  circle2.attr('fill', '#2FC25B');
-});
-
-circle2.on('mouseleave', () => {
-  circle2.attr('fill', '#1890FF');
+  circle2.addEventListener('mouseleave', () => {
+    circle2.attr('fill', '#1890FF');
+  });
 });
 
 // stats
@@ -81,7 +85,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas1.on('afterrender', () => {
+canvas1.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

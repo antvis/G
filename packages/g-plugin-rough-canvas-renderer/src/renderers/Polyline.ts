@@ -1,13 +1,12 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedPolylineStyleProps } from '@antv/g';
-import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
-import { PolylineRendererContribution } from '@antv/g-plugin-canvas-renderer';
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
+import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
 
 @singleton({
-  token: PolylineRendererContribution,
+  token: CanvasRenderer.PolylineRendererContribution,
 })
-export class PolylineRenderer implements StyleRenderer {
+export class PolylineRenderer implements CanvasRenderer.StyleRenderer {
   hash: (parsedStyle: ParsedBaseStyleProps) => string;
 
   render(

@@ -13,11 +13,12 @@ import {
   ContextService,
   DefaultCamera,
   ElementEvent,
+  inject,
   parseColor,
   RenderingContext,
   RenderingPluginContribution,
+  singleton,
 } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
 import { DeviceContribution } from './interfaces';
 import { LightPool } from './LightPool';

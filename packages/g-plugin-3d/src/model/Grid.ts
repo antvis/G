@@ -1,5 +1,5 @@
 // import { DisplayObject, Renderable } from '@antv/g';
-// import { inject, singleton } from 'mana-syringe';
+// import { inject, singleton } from '@antv/g';
 // import { vec3 } from 'gl-matrix';
 // import {
 //   Batch,

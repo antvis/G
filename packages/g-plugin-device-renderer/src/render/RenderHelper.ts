@@ -1,4 +1,4 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
 import type { Device } from '../platform';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';

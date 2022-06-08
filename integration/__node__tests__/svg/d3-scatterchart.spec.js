@@ -59,6 +59,7 @@ describe('Render D3 scatterchart with g-svg', () => {
   });
 
   it('should render d3 scatterchart on server-side correctly.', async () => {
+    await canvas.ready;
     const drawScatter = () => {
       // 1. Access data
       const dataset = weatherDataset;

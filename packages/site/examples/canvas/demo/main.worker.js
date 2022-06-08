@@ -1,4 +1,4 @@
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { setupTransferableMethodsOnWorker } from '@naoak/workerize-transferable';
 
@@ -42,40 +42,42 @@ export function render(offscreenCanvas, devicePixelRatio) {
     },
   });
 
-  // add a circle to canvas
-  canvas.appendChild(circle);
+  canvas.addEventListener(CanvasEvent.READY, () => {
+    // add a circle to canvas
+    canvas.appendChild(circle);
 
-  circle.animate(
-    [
+    circle.animate(
+      [
+        {
+          transform: 'scale(1)',
+          fill: '#1890FF',
+          stroke: '#F04864',
+          opacity: 1,
+          shadowColor: 'black',
+          shadowBlur: 30,
+        },
+        {
+          transform: 'scale(2)',
+          fill: 'red',
+          stroke: '#1890FF',
+          opacity: 0.8,
+          shadowColor: 'red',
+          shadowBlur: 0,
+        },
+      ],
       {
-        transform: 'scale(1)',
-        fill: '#1890FF',
-        stroke: '#F04864',
-        opacity: 1,
-        shadowColor: 'black',
-        shadowBlur: 30,
+        duration: 1500,
+        iterations: Infinity,
+        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
       },
-      {
-        transform: 'scale(2)',
-        fill: 'red',
-        stroke: '#1890FF',
-        opacity: 0.8,
-        shadowColor: 'red',
-        shadowBlur: 0,
-      },
-    ],
-    {
-      duration: 1500,
-      iterations: Infinity,
-      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    },
-  );
+    );
 
-  circle.addEventListener('pointerenter', () => {
-    circle.style.lineWidth = 20;
-  });
-  circle.addEventListener('pointerleave', () => {
-    circle.style.lineWidth = 4;
+    circle.addEventListener('pointerenter', () => {
+      circle.style.lineWidth = 20;
+    });
+    circle.addEventListener('pointerleave', () => {
+      circle.style.lineWidth = 4;
+    });
   });
 }
 

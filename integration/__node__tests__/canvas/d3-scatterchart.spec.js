@@ -48,6 +48,7 @@ describe('Render d3 scatterplot with g-canvas', () => {
   });
 
   it('should render d3 scatterplot on server-side correctly.', async () => {
+    await canvas.ready;
     const drawScatter = () => {
       // 1. Access data
       const dataset = weatherDataset;

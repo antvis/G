@@ -1,20 +1,8 @@
+import { Canvas, Circle, Ellipse, EllipseStyleProps, Rect, RectStyleProps, Shape } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 import chaiAlmost from 'chai-almost';
-import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-
-import {
-  Circle,
-  Canvas,
-  Rect,
-  Shape,
-  Ellipse,
-  EllipseStyleProps,
-  RectStyleProps,
-  Image,
-  ImageStyleProps,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost());
@@ -43,7 +31,7 @@ describe('Document', () => {
     canvas.removeChildren();
   });
 
-  it('should createElement correctly', () => {
+  it('should createElement correctly', async () => {
     const circle = canvas.document.createElement(Shape.CIRCLE, {
       style: {
         fill: 'rgb(239, 244, 255)',
@@ -56,6 +44,8 @@ describe('Document', () => {
         cursor: 'pointer',
       },
     });
+
+    await canvas.ready;
     canvas.appendChild(circle);
     expect(circle.style.r).to.be.eql(50);
 

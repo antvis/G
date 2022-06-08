@@ -1,7 +1,7 @@
-import { Canvas, Group, Rect, Text, CustomEvent } from '@antv/g';
+import { Canvas, CanvasEvent, CustomEvent, Group, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -21,59 +21,61 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const ul = new Group({
-  id: 'ul',
-});
-const li1 = new Rect({
-  id: 'li1',
-  style: {
-    x: 200,
-    y: 100,
-    width: 300,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-const text = new Text({
-  style: {
-    x: 150,
-    y: 50,
-    text: 'Click me!',
-    fontSize: 22,
-    fill: '#000',
-    textAlign: 'center',
-    textBaseline: 'middle',
-  },
-});
-li1.appendChild(text);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const ul = new Group({
+    id: 'ul',
+  });
+  const li1 = new Rect({
+    id: 'li1',
+    style: {
+      x: 200,
+      y: 100,
+      width: 300,
+      height: 100,
+      fill: '#1890FF',
+    },
+  });
+  const text = new Text({
+    style: {
+      x: 150,
+      y: 50,
+      text: 'Click me!',
+      fontSize: 22,
+      fill: '#000',
+      textAlign: 'center',
+      textBaseline: 'middle',
+    },
+  });
+  li1.appendChild(text);
 
-const li2 = new Rect({
-  id: 'li2',
-  style: {
-    x: 200,
-    y: 300,
-    width: 300,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
+  const li2 = new Rect({
+    id: 'li2',
+    style: {
+      x: 200,
+      y: 300,
+      width: 300,
+      height: 100,
+      fill: '#1890FF',
+    },
+  });
 
-canvas.appendChild(ul);
-ul.appendChild(li1);
-ul.appendChild(li2);
+  canvas.appendChild(ul);
+  ul.appendChild(li1);
+  ul.appendChild(li2);
 
-li1.addEventListener('click', (e) => {
-  // dispatch my custom event!
-  li1.dispatchEvent(event);
+  li1.addEventListener('click', (e) => {
+    // dispatch my custom event!
+    li1.dispatchEvent(event);
 
-  // @deprecated
-  // li1.emit('build', { prop1: 'xx' });
-});
+    // @deprecated
+    // li1.emit('build', { prop1: 'xx' });
+  });
 
-// delegate to parent
-ul.addEventListener('build', (e) => {
-  console.log(e.target); // circle
-  console.log(e.detail); // { prop1: 'xx' }
+  // delegate to parent
+  ul.addEventListener('build', (e) => {
+    console.log(e.target); // circle
+    console.log(e.detail); // { prop1: 'xx' }
+  });
 });
 
 // stats
@@ -85,7 +87,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

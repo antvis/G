@@ -1,9 +1,11 @@
-import { Canvas } from '@antv/g';
+import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
-import * as lil from 'lil-gui';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as d3 from 'd3';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
@@ -16,8 +18,22 @@ import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({
@@ -29,23 +45,12 @@ const canvas = new Canvas({
 
 const data = [38024.7, 209484.6, 6201.2, 17741.9, 24377.7];
 const total = d3.sum(data);
-
-const width = 600;
-
-const wrapper = d3.select(
-  canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
-);
-
-const bounds = wrapper.append('g').style('transform', `translate(${width / 2}px, ${width / 2}px)`);
-const svg = bounds.append('g');
-
 const colors = 'blue red maroon gray orange'.split(' ');
-
+const width = 600;
 const sectorArc = d3
   .arc()
   .innerRadius(width / 8)
   .outerRadius(width / 5);
-
 const tweens = [
   function (sectorData) {
     const currentPath = this.getAttribute('d');
@@ -57,6 +62,7 @@ const tweens = [
     return (t) => sectorArc(interpolator(t));
   },
 ];
+let svg;
 
 function drawCharts(data) {
   const pieData = d3.pie().sort(null)(data);
@@ -72,7 +78,18 @@ function drawCharts(data) {
   sectors.transition().duration(1000).attrTween('d', tweens[1]);
 }
 
-drawCharts(data);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const wrapper = d3.select(
+    canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
+  );
+
+  const bounds = wrapper
+    .append('g')
+    .style('transform', `translate(${width / 2}px, ${width / 2}px)`);
+  svg = bounds.append('g');
+
+  drawCharts(data);
+});
 
 // stats
 const stats = new Stats();
@@ -96,11 +113,23 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();
 
 let isEven = false;

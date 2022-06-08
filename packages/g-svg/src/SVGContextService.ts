@@ -1,6 +1,5 @@
-import { CanvasConfig, ContextService, isString } from '@antv/g';
+import { CanvasConfig, ContextService, inject, isString, singleton } from '@antv/g';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
-import { inject, singleton } from 'mana-syringe';
 
 @singleton({ token: ContextService })
 export class SVGContextService implements ContextService<SVGElement> {
@@ -11,7 +10,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
+  async init() {
     const { container, document: doc } = this.canvasConfig;
 
     // create container

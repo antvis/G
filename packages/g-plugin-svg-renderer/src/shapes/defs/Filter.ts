@@ -31,6 +31,8 @@ export function createOrUpdateFilter(
   } else {
     const filterIds = filters.map(({ name, params }, i) => {
       const $filter = createSVGElement('filter', document) as SVGFilterElement;
+      // @see https://github.com/antvis/g/issues/1025
+      $filter.setAttribute('filterUnits', 'userSpaceOnUse');
       if (name === 'blur') {
         createBlur(document, $filter, params);
       } else if (name === 'brightness') {

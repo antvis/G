@@ -1,4 +1,4 @@
-import { Circle, Line, Text, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 // create a renderer
@@ -65,6 +65,8 @@ const edge = new Line({
   },
 });
 
-canvas.appendChild(edge);
-canvas.appendChild(node1);
-canvas.appendChild(node2);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(edge);
+  canvas.appendChild(node1);
+  canvas.appendChild(node2);
+});

@@ -12,17 +12,19 @@ import {
   Camera,
   CanvasConfig,
   ContextService,
+  CSSRGB,
   DefaultCamera,
   ElementEvent,
   fromRotationTranslationScale,
   getEuler,
+  inject,
   RenderingContext,
   RenderingPluginContribution,
   RenderReason,
   Shape,
+  singleton,
 } from '@antv/g';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
 import { ElementSVG } from './components/ElementSVG';
 import { createOrUpdateFilter } from './shapes/defs/Filter';
 import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
@@ -149,6 +151,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
    */
   private renderQueue: DisplayObject[] = [];
 
+  /**
+   * reorder after mounted
+   */
+  private pendingReorderQueue: Set<DisplayObject> = new Set();
+
   apply(renderingService: RenderingService) {
     const { document } = this.canvasConfig;
 
@@ -192,6 +199,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.updateAttribute(object, [attrName]);
     };
 
+    const handleGeometryBoundsChanged = (e: MutationEvent) => {
+      const { document: doc } = this.canvasConfig;
+      const object = e.target as DisplayObject;
+      // @ts-ignore
+      const $el = object.elementSVG?.$el;
+
+      const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
+
+      if (fill && !(fill instanceof CSSRGB)) {
+        createOrUpdateGradientAndPattern(doc || document, this.$def, object, $el, fill, 'fill');
+      }
+      if (stroke && !(stroke instanceof CSSRGB)) {
+        createOrUpdateGradientAndPattern(doc || document, this.$def, object, $el, stroke, 'stroke');
+      }
+    };
+
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
       const { background, document } = this.canvasConfig;
 
@@ -218,6 +241,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      this.renderingContext.root.addEventListener(
+        ElementEvent.GEOMETRY_BOUNDS_CHANGED,
+        handleGeometryBoundsChanged,
+      );
     });
 
     renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
@@ -227,12 +254,34 @@ export class SVGRendererPlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.GEOMETRY_BOUNDS_CHANGED,
+        handleGeometryBoundsChanged,
+      );
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
       // if (!object.isCulled()) {
       this.renderQueue.push(object);
       // }
+    });
+
+    renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
+      const { document: doc } = this.canvasConfig;
+
+      if (this.pendingReorderQueue.size) {
+        this.pendingReorderQueue.forEach((object) => {
+          const children = (object?.children || []).slice() as DisplayObject[];
+          const $parentGroupEl =
+            // @ts-ignore
+            object?.elementSVG?.$groupEl;
+
+          if ($parentGroupEl) {
+            this.reorderChildren(doc || document, $parentGroupEl, children || []);
+          }
+        });
+        this.pendingReorderQueue.clear();
+      }
     });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
@@ -352,20 +401,26 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       // <foreignObject>
       if (object.nodeName === Shape.HTML) {
-        if (name === 'fill') {
-          $el.style.background = usedValue.toString();
-        } else if (name === 'stroke') {
-          $el.style['border-color'] = usedValue.toString();
-          $el.style['border-style'] = 'solid';
-        } else if (name === 'lineWidth') {
+        if (name === 'lineWidth') {
           $el.style['border-width'] = `${usedValue.value || 0}px`;
         } else if (name === 'lineDash') {
           $el.style['border-style'] = 'dashed';
         }
       }
 
-      if (name === 'fill' || name === 'stroke') {
-        createOrUpdateGradientAndPattern(document, this.$def, object, $el!, usedValue, usedName);
+      if (name === 'fill') {
+        if (object.nodeName === Shape.HTML) {
+          $el.style.background = usedValue.toString();
+        } else {
+          createOrUpdateGradientAndPattern(document, this.$def, object, $el, usedValue, usedName);
+        }
+      } else if (name === 'stroke') {
+        if (object.nodeName === Shape.HTML) {
+          $el.style['border-color'] = usedValue.toString();
+          $el.style['border-style'] = 'solid';
+        } else {
+          createOrUpdateGradientAndPattern(document, this.$def, object, $el, usedValue, usedName);
+        }
       } else if (name === 'visibility' && computedValue.value !== 'unset') {
         // use computed value
         // update `visibility` on <group>
@@ -455,8 +510,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);
-        const children = (object.parentNode?.children || []).slice() as DisplayObject[];
-        this.reorderChildren(document, $parentGroupEl, children || []);
+
+        // need reorder children later
+        this.pendingReorderQueue.add(object.parentNode as DisplayObject);
       }
     }
   }

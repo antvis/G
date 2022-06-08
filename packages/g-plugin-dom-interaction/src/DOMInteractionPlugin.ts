@@ -1,6 +1,11 @@
 import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
-import { ContextService, RenderingContext, RenderingPluginContribution } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import {
+  ContextService,
+  inject,
+  RenderingContext,
+  RenderingPluginContribution,
+  singleton,
+} from '@antv/g';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 

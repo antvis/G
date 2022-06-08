@@ -34,9 +34,17 @@ const canvas = new Canvas({
 
 # 向画布中添加图形
 
-有了画布，我们可以把场景图中的两个节点和一条边加入画布：
+有了画布，我们可以把场景图中的两个节点和一条边加入画布，当然这一切要等待画布就绪之后。我们有两种方式获知画布何时就绪，一是监听 [就绪事件](/zh/docs/api/canvas#ready-事件)，二是[等待就绪的 Promise 返回](/zh/docs/api/canvas#ready)：
 
 ```javascript
+canvas.addEventListener(CanvasEvent.READY, () => {
+    canvas.appendChild(node1);
+    canvas.appendChild(node2);
+    canvas.appendChild(edge);
+});
+
+// 或者
+await canvas.ready;
 canvas.appendChild(node1);
 canvas.appendChild(node2);
 canvas.appendChild(edge);

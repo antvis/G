@@ -62,6 +62,8 @@ export enum ElementEvent {
    * trigger when z-index changed
    */
   RENDER_ORDER_CHANGED = 'render-order-changed',
+
+  CULLED = 'culled',
 }
 
 export interface IEventTarget {

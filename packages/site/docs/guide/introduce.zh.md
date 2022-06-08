@@ -2,21 +2,69 @@
 title: 介绍
 order: 0
 redirect_from:
-  - /zh
-  - /zh/docs
-  - /zh/docs/guide
+    - /zh
+    - /zh/docs
+    - /zh/docs/guide
 ---
 
-G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU）。
+![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
 
-特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
+![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+
+[![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
+
+G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU）。特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
+
+<p>
+  <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
+
+</p>
 
 ## 特性
 
-- 更易用的 API。其中图形、事件系统兼容 DOM API，动画兼容 Web Animation API，自定义图形 CustomElement API。
-- 适配 Web 端全部渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU。
-- 高性能的渲染与计算。为可并行算法提供 GPGPU 支持。
-- 可扩展插件机制。
+**易用的 API**。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+
+**适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换，并支持服务端渲染。
+
+**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
+
+可扩展的插件机制以及丰富的插件集：
+
+-   渲染相关
+    -   [g-plugin-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    -   [g-plugin-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+    -   [g-plugin-device-renderer](https://g-next.antv.vision/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
+    -   [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
+    -   [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
+    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvs2D 进行手绘风格渲染
+    -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
+    -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+-   拾取
+    -   [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
+    -   [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
+-   交互
+    -   [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+    -   [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
+    -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
+-   物理引擎
+    -   [g-plugin-box2d](https://g-next.antv.vision/zh/docs/plugins/box2d) 基于 Box2D
+    -   [g-plugin-matterjs](https://g-next.antv.vision/zh/docs/plugins/matterjs) 基于 matter.js
+    -   [g-plugin-physx](https://g-next.antv.vision/zh/docs/plugins/physx) 基于 PhysX
+-   布局引擎
+    -   [g-plugin-yoga](https://g-next.antv.vision/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+-   GPGPU
+    -   [g-plugin-gpgpu](https://g-next.antv.vision/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+-   CSS 选择器
+    -   [g-plugin-css-select](https://g-next.antv.vision/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
 完整 [API Spec](/api.html)。
 
@@ -31,13 +79,13 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 ```html
 <!-- G 核心 -->
 <script
-  src="https://unpkg.com/@antv/g/dist/index.umd.min.js"
-  type="application/javascript"
+    src="https://unpkg.com/@antv/g/dist/index.umd.min.js"
+    type="application/javascript"
 ></script>
 <!-- G 渲染器，支持 Canvas2D/SVG/WebGL -->
 <script
-  src="https://unpkg.com/@antv/g-canvas/dist/index.umd.min.js"
-  type="application/javascript"
+    src="https://unpkg.com/@antv/g-canvas/dist/index.umd.min.js"
+    type="application/javascript"
 ></script>
 <!-- <script src="https://unpkg.com/@antv/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
 <script src="https://unpkg.com/@antv/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
@@ -47,32 +95,35 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 ```js
 // 从核心包中引入画布、Circle 等对象
-const { Circle, Canvas } = window.G;
+const { Circle, Canvas, CanvasEvent } = window.G;
 
 // 创建一个渲染器，这里使用 Canvas2D
 const canvasRenderer = new window.G.Canvas2D.Renderer();
 
 // 创建画布
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: canvasRenderer,
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer: canvasRenderer,
 });
 
 // 创建一个 Circle
 const circle = new Circle({
-  style: {
-    r: 50,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-    cursor: 'pointer',
-  },
+    style: {
+        r: 50,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+        cursor: 'pointer',
+    },
 });
 
-// 向画布中加入 Circle
-canvas.appendChild(circle);
+// 等待画布初始化完成
+canvas.addEventListener(CanvasEvent.READY, () => {
+    // 向画布中加入 Circle
+    canvas.appendChild(circle);
+});
 ```
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/yi-umd-xing-shi-shi-yong-g-701x5?file=/index.js)
@@ -96,27 +147,29 @@ $ npm install @antv/g-webgl --save
 然后就可以在核心包中使用 [Canvas](/zh/docs/api/canvas)、[Circle](/zh/docs/api/basic/circle) 这样的核心基础对象以及 [Renderer](/zh/docs/api/renderer) 这样的渲染器：
 
 ```js
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer } from '@antv/g-canvas';
 
 const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: new Renderer(),
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer: new Renderer(),
 });
 
 const circle = new Circle({
-  style: {
-    r: 50,
-    fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 4,
-    cursor: 'pointer',
-  },
+    style: {
+        r: 50,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+        cursor: 'pointer',
+    },
 });
 
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+    canvas.appendChild(circle);
+});
 ```
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/yi-npm-module-xing-shi-shi-yong-g-wjfux?file=/index.js)

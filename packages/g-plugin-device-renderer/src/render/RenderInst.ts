@@ -1,14 +1,15 @@
+import { isNumber } from '@antv/g';
 import type {
-  RenderPipelineDescriptor,
-  BindingsDescriptor,
-  InputState,
-  Program,
-  MegaStateDescriptor,
-  InputLayout,
   BindingLayoutDescriptor,
-  SamplerBinding,
+  BindingsDescriptor,
   Device,
+  InputLayout,
+  InputState,
+  MegaStateDescriptor,
+  Program,
   RenderPass,
+  RenderPipelineDescriptor,
+  SamplerBinding,
 } from '../platform';
 import { PrimitiveTopology } from '../platform';
 import {
@@ -247,24 +248,28 @@ export class RenderInst {
     const uboBuffer = [];
     uniforms.forEach((uniform) => {
       const { value } = uniform;
-      const array = typeof value === 'number' ? [value] : value;
-      const formatByteSize = array.length > 4 ? 4 : array.length;
 
-      // std140 UBO layout
-      const emptySpace = 4 - (offset % 4);
-      if (emptySpace !== 4) {
-        if (emptySpace >= formatByteSize) {
-        } else {
-          offset += emptySpace;
-          for (let j = 0; j < emptySpace; j++) {
-            uboBuffer.push(0); // padding
+      // number | number[] | Float32Array
+      if (isNumber(value) || Array.isArray(value) || value instanceof Float32Array) {
+        const array = isNumber(value) ? [value] : value;
+        const formatByteSize = array.length > 4 ? 4 : array.length;
+
+        // std140 UBO layout
+        const emptySpace = 4 - (offset % 4);
+        if (emptySpace !== 4) {
+          if (emptySpace >= formatByteSize) {
+          } else {
+            offset += emptySpace;
+            for (let j = 0; j < emptySpace; j++) {
+              uboBuffer.push(0); // padding
+            }
           }
         }
+
+        offset += array.length;
+
+        uboBuffer.push(...array);
       }
-
-      offset += array.length;
-
-      uboBuffer.push(...array);
     });
 
     // padding

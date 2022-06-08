@@ -1,7 +1,7 @@
-import { Canvas, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -50,8 +50,10 @@ const circle2 = circle1.cloneNode();
 circle2.setPosition(400, 400);
 circle2.style.fill = 'green';
 
-canvas.appendChild(circle1);
-canvas.appendChild(circle2);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle1);
+  canvas.appendChild(circle2);
+});
 
 // stats
 const stats = new Stats();
@@ -62,7 +64,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

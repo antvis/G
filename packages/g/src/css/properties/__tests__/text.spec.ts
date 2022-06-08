@@ -1,7 +1,6 @@
-import chai, { expect } from 'chai';
-import { Text, Group, Canvas, CSSUnitValue } from '@antv/g';
+import { Canvas, CSSUnitValue, Group, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { sleep } from '../../../__tests__/utils';
+import { expect } from 'chai';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -34,9 +33,8 @@ describe('CSSPropertyText', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(text);
-
-    await sleep(100);
 
     // attribute
     expect(text.getAttribute('text')).to.be.eqls('');

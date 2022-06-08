@@ -1,10 +1,7 @@
-import type { Syringe } from 'mana-syringe';
-import type { RendererPlugin } from '@antv/g';
-import { BufferUsage } from '@antv/g-plugin-device-renderer';
+import type { RendererPlugin, Syringe } from '@antv/g';
 
 export * from './interface';
 export * from './Kernel';
-export { BufferUsage };
 export class Plugin implements RendererPlugin {
   name = 'gpgpu';
   init(container: Syringe.Container): void {}

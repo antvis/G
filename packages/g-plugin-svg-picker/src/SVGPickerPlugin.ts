@@ -1,7 +1,12 @@
 import type { DisplayObject, PickingResult, RenderingPlugin, RenderingService } from '@antv/g';
-import { CanvasConfig, DisplayObjectPool, RenderingPluginContribution } from '@antv/g';
+import {
+  CanvasConfig,
+  DisplayObjectPool,
+  inject,
+  RenderingPluginContribution,
+  singleton,
+} from '@antv/g';
 import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
-import { inject, singleton } from 'mana-syringe';
 
 /**
  * pick shape(s) with Mouse/Touch event

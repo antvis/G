@@ -1,13 +1,12 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
-import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
-import { EllipseRendererContribution } from '@antv/g-plugin-canvas-renderer';
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
+import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
 
 @singleton({
-  token: EllipseRendererContribution,
+  token: CanvasRenderer.EllipseRendererContribution,
 })
-export class EllipseRenderer implements StyleRenderer {
+export class EllipseRenderer implements CanvasRenderer.StyleRenderer {
   hash: (parsedStyle: ParsedBaseStyleProps) => string;
 
   render(

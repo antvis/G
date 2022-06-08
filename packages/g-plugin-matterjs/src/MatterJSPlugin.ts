@@ -1,30 +1,31 @@
-import { inject, singleton } from 'mana-syringe';
-import { vec2 } from 'gl-matrix';
+import type {
+  DisplayObject,
+  FederatedEvent,
+  MutationEvent,
+  ParsedBaseStyleProps,
+  ParsedCircleStyleProps,
+  ParsedLineStyleProps,
+  ParsedPolygonStyleProps,
+  ParsedRectStyleProps,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import {
+  AABB,
+  CanvasEvent,
+  deg2rad,
   DisplayObjectPool,
+  ElementEvent,
+  inject,
+  rad2deg,
+  RenderingContext,
   RenderingPluginContribution,
   SceneGraphService,
-  RenderingContext,
-  ElementEvent,
-  CanvasEvent,
   Shape,
-  rad2deg,
-  deg2rad,
-  AABB,
+  singleton,
 } from '@antv/g';
-import type {
-  FederatedEvent,
-  RenderingService,
-  RenderingPlugin,
-  MutationEvent,
-  DisplayObject,
-  ParsedLineStyleProps,
-  ParsedCircleStyleProps,
-  ParsedRectStyleProps,
-  ParsedPolygonStyleProps,
-  ParsedBaseStyleProps,
-} from '@antv/g';
-import { Engine, Render, Bodies, Body, Composite, World } from 'matter-js';
+import { vec2 } from 'gl-matrix';
+import { Bodies, Body, Composite, Engine, Render, World } from 'matter-js';
 import { MatterJSPluginOptions } from './tokens';
 import { sortPointsInCCW } from './utils';
 

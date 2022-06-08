@@ -1,8 +1,7 @@
-import { injectable } from 'mana-syringe';
-import { Batch } from './Batch';
-import { ShapeRenderer } from '../tokens';
+import { injectable, Shape } from '@antv/g';
 import { MeshMesh } from '../meshes';
-import { Shape } from '@antv/g';
+import { ShapeRenderer } from '../tokens';
+import { Batch } from './Batch';
 
 @injectable({
   token: [{ token: ShapeRenderer, named: Shape.MESH }],

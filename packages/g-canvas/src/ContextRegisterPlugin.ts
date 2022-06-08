@@ -1,6 +1,5 @@
-import { Module } from 'mana-syringe';
-import type { Syringe } from 'mana-syringe';
-import type { RendererPlugin } from '@antv/g';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module } from '@antv/g';
 import { Canvas2DContextService } from './Canvas2DContextService';
 
 const containerModule = Module((register) => {

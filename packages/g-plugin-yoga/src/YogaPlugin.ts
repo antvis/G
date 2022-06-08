@@ -1,46 +1,47 @@
-import { inject, singleton } from 'mana-syringe';
-import {
-  AABB,
-  RenderingPluginContribution,
-  SceneGraphService,
-  RenderingContext,
-  ElementEvent,
-  Shape,
-  UnitType,
-  CSSKeywordValue,
-} from '@antv/g';
 import type {
-  FederatedEvent,
-  RenderingService,
-  RenderingPlugin,
-  MutationEvent,
+  CSSUnitValue,
   DisplayObject,
+  FederatedEvent,
+  MutationEvent,
   ParsedBaseStyleProps,
   ParsedRectStyleProps,
   ParsedTextStyleProps,
-  CSSUnitValue,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
+import {
+  AABB,
+  CSSKeywordValue,
+  ElementEvent,
+  inject,
+  RenderingContext,
+  RenderingPluginContribution,
+  SceneGraphService,
+  Shape,
+  singleton,
+  UnitType,
 } from '@antv/g';
 import type {
-  YogaFlexDirection,
-  YogaNode,
-  YogaJustifyContent,
   YogaAlign,
-  YogaFlexWrap,
-  YogaPositionType,
   YogaDisplay,
   YogaEdge,
+  YogaFlexDirection,
+  YogaFlexWrap,
+  YogaJustifyContent,
+  YogaNode,
+  YogaPositionType,
 } from 'yoga-layout-prebuilt';
 import Yoga, {
-  FLEX_DIRECTION_ROW,
   ALIGN_FLEX_START,
-  EDGE_TOP,
-  EDGE_RIGHT,
   EDGE_BOTTOM,
   EDGE_LEFT,
+  EDGE_RIGHT,
+  EDGE_TOP,
+  FLEX_DIRECTION_ROW,
   POSITION_TYPE_RELATIVE,
 } from 'yoga-layout-prebuilt';
-import { YogaPluginOptions } from './tokens';
 import { YogaConstants } from './constants';
+import { YogaPluginOptions } from './tokens';
 
 import YogaEdges = YogaConstants.YogaEdges;
 // import ComputedLayout = YogaConstants.ComputedLayout;

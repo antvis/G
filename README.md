@@ -11,13 +11,16 @@ English | [简体中文](./README-zh_CN.md)
 A powerful rendering engine for AntV.
 
 <p>
-  <a href="https://g-next.antv.vision/en/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
+  <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
 <a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
 
 </p>
 
@@ -27,7 +30,7 @@ A powerful rendering engine for AntV.
     -   The graphics and event systems are compatible with the DOM [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) & [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) API, which means we can take over the default rendering process of [D3](https://github.com/d3/d3) or use gesture libs such as [Hammer.js](http://hammerjs.github.io/) easily.
     -   The animation system is compatible with [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API).
     -   The style system is compatible with [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) & [CSS Layout API](https://github.com/w3c/css-houdini-drafts/blob/main/css-layout-api/EXPLAINER.md).
--   Provides Canvas2D / SVG / WebGL / WebGPU renderers, you can choose one on demand or switch between them at runtime. We also support server-side rendering with [node-canvas](https://github.com/Automattic/node-canvas).
+-   Provides Canvas2D / SVG / WebGL / WebGPU / Skia renderers, you can choose one on demand or switch between them at runtime. We also support [server-side rendering](https://g-next.antv.vision/zh/docs/api/renderer/canvas#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93) with [node-canvas](https://github.com/Automattic/node-canvas) and [JSDOM](https://github.com/jsdom/jsdom).
 -   Besides the high-performance rendering, we also provide GPGPU capabilities based on [WebGPU](https://www.w3.org/TR/webgpu/).
     -   [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) A GPU accelerated graph analytics library.
 -   There're a lot of out-of-the-box plugins：
@@ -39,12 +42,14 @@ A powerful rendering engine for AntV.
         -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Expanded 3D rendering capabilities such as Geometry, Material, Mesh and Lights.
         -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/) and Canvas2D.
         -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Render sketchy styled shapes with [rough.js](https://roughjs.com/) and SVG.
+        -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Renders 2D graphics with [Skia](https://skia.org/docs/user/modules/quickstart).
     -   Picking
         -   [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Implements graphics picking with Canvas2D API.
         -   [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Implements graphics picking with SVG API.
     -   Interaction
         -   [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Register event listeners with DOM API.
         -   [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides controls such as orbit based on [Camera](https://g-next.antv.vision/en/docs/api/camera).
+        -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on Pointer Events.
     -   Physics engine
         -   [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
         -   [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
@@ -76,7 +81,7 @@ $ npm install @antv/g-webgl --save
 ```
 
 ```js
-import { Circle, Canvas } from '@antv/g';
+import { Circle, Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 // or
 // import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -102,12 +107,14 @@ const circle = new Circle({
     },
 });
 
-// append to canvas
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, function () {
+    // append to canvas
+    canvas.appendChild(circle);
 
-// add listener for `click` event
-circle.addEventListener('click', function () {
-    this.style.fill = 'green';
+    // add listener for `click` event
+    circle.addEventListener('click', function () {
+        this.style.fill = 'green';
+    });
 });
 ```
 

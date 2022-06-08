@@ -1,23 +1,39 @@
 import type { CanvasLike } from '@antv/g';
-import { CanvasConfig, ContextService, isBrowser, isString, setDOMSize } from '@antv/g';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  isBrowser,
+  isString,
+  setDOMSize,
+  singleton,
+  Syringe,
+} from '@antv/g';
+import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKit } from 'canvaskit-wasm';
-import { CanvasKitInit } from 'canvaskit-wasm';
-import { inject, singleton } from 'mana-syringe';
+import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
+
+export const ContextRegisterPluginOptions = Syringe.defineToken('ContextRegisterPluginOptions');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export interface ContextRegisterPluginOptions {
+  wasmDir: string;
+}
 
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
  */
 @singleton({ token: ContextService })
-export class CanvasKitContextService implements ContextService<CanvasRenderingContext2D> {
+export class CanvasKitContextService implements ContextService<CanvasKitContext> {
   private $container: HTMLElement | null;
   private $canvas: CanvasLike | null;
   private dpr: number;
-  private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
+  private context: CanvasKitContext;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  private canvaskit: CanvasKit;
+  @inject(ContextRegisterPluginOptions)
+  private contextRegisterPluginOptions: ContextRegisterPluginOptions;
 
   async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;
@@ -46,24 +62,23 @@ export class CanvasKitContextService implements ContextService<CanvasRenderingCo
       }
     }
 
-    const ckLoaded = CanvasKitInit({
-      locateFile: (file) => 'https://unpkg.com/canvaskit-wasm@0.19.0/bin/' + file,
-    });
-    const CanvasKit = await ckLoaded;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const surface = CanvasKit.MakeCanvasSurface(this.$canvas as HTMLCanvasElement);
-
-    this.context = this.$canvas.getContext('2d');
     // use user-defined dpr first
     let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
-
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
+
+    // making surface must after canvas init
+    const CanvasKit = await this.loadCanvaskit();
+    const surface = CanvasKit.MakeWebGLCanvasSurface(this.$canvas as HTMLCanvasElement);
+    this.context = {
+      surface,
+      CanvasKit,
+    };
   }
 
   getContext() {
-    return this.context as CanvasRenderingContext2D;
+    return this.context;
   }
 
   getDomElement() {
@@ -83,6 +98,9 @@ export class CanvasKitContextService implements ContextService<CanvasRenderingCo
   destroy() {
     // @ts-ignore
     if (this.$container && this.$canvas && this.$canvas.parentNode) {
+      if (this.context?.surface) {
+        this.context.surface.dispose();
+      }
       // destroy context
       // @ts-ignore
       this.$container.removeChild(this.$canvas);
@@ -97,11 +115,6 @@ export class CanvasKitContextService implements ContextService<CanvasRenderingCo
 
       // set CSS style width & height
       setDOMSize(this.$canvas, width, height);
-
-      const dpr = this.getDPR();
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      this.context.scale(dpr, dpr);
     }
   }
 
@@ -109,5 +122,11 @@ export class CanvasKitContextService implements ContextService<CanvasRenderingCo
     if (this.$container && this.$container.style) {
       this.$container.style.cursor = cursor;
     }
+  }
+
+  private loadCanvaskit(): Promise<CanvasKit> {
+    return CanvasKitInit({
+      locateFile: (file: string) => this.contextRegisterPluginOptions.wasmDir + file,
+    });
   }
 }

@@ -27,8 +27,8 @@
     <div id="container"></div>
     <script src="../packages/g/dist/index.umd.min.js" type="application/javascript"></script>
     <script src="../packages/g-canvas/dist/index.umd.min.js" type="application/javascript"></script>
-    <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
-    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script>
+    <!-- <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
     <script
       src="../packages/g-plugin-css-select/dist/index.umd.min.js"
       type="application/javascript"
@@ -36,12 +36,12 @@
     <script>
       const { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } =
         window.G;
-      const CanvasRenderer = window.G.Canvas2D.Renderer;
+      // const CanvasRenderer = window.G.Canvas2D.Renderer;
       // const SVGRenderer = window.G.SVG.Renderer;
       // const WebGLRenderer = window.G.WebGL.Renderer;
 
       // create a renderer
-      const canvasRenderer = new CanvasRenderer();
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
       canvasRenderer.registerPlugin(new window.G.CSSSelect.Plugin());
 
       // const svgRenderer = new SVGRenderer();

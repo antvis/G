@@ -41,14 +41,15 @@
       tokenElement1.httpEquiv = 'origin-trial';
       tokenElement1.content =
         // https://localhost:8000
-        'AkIL+/THBoi1QEsWbX5SOuMpL6+KGAXKrZE5Bz6yHTuijzvKz2MznuLqE+MH4YSqRi/v1fDK/6JyFzgibTTeNAsAAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjUyODMxOTk5fQ==';
+        'AskBFhwWdwJJX7fGMNV72Pzx17Ie+rnFLgcF3UiQpX+j+eb7P23/I84lXdRPBPE5KOkTnyil7Rstt1Ucd0EmhAgAAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjYzNzE4Mzk5fQ==';
       document.head.appendChild(tokenElement1);
     </script>
     <script>
       const { Canvas, Circle, Line } = window.G;
       const { Renderer: WebGLRenderer } = window.G.WebGL;
-      const { Renderer: WebGPURenderer } = window.G.WebGPU;
-      const { Plugin, Kernel, BufferUsage } = window.G.GPGPU;
+      const { Renderer: WebGPURenderer, DeviceRenderer } = window.G.WebGPU;
+      const { BufferUsage } = DeviceRenderer;
+      const { Plugin, Kernel } = window.G.GPGPU;
 
       /**
        * ported from https://nblintao.github.io/ParaGraphL/

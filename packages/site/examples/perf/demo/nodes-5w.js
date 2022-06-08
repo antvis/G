@@ -1,17 +1,25 @@
-import { Circle, Line, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import Hammer from 'hammerjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import Hammer from 'hammerjs';
+
+// ported from G6 @see https://g6.antv.vision/zh/examples/performance/perf#moreData
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
 
-// ported from G6 @see https://g6.antv.vision/zh/examples/performance/perf#moreData
+// create a canvas
+const canvas = new Canvas({
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: webglRenderer,
+});
 
 const mapNodeSize = (nodes, propertyName, visualRange) => {
   let minp = 9999999999;
@@ -28,60 +36,57 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
   });
 };
 
-fetch('https://gw.alipayobjects.com/os/bmw-prod/f1565312-d537-4231-adf5-81cb1cd3a0e8.json')
-  .then((res) => res.json())
-  .then((data) => {
-    data.nodes.forEach((node) => {
-      node.degree = 0;
-      data.edges.forEach((edge) => {
-        if (edge.source === node.id || edge.target === node.id) {
-          node.degree++;
-        }
-      });
-    });
-    mapNodeSize(data.nodes, 'degree', [1, 15]);
+(async () => {
+  const [_, data] = await Promise.all([
+    canvas.ready,
+    fetch(
+      'https://gw.alipayobjects.com/os/bmw-prod/f1565312-d537-4231-adf5-81cb1cd3a0e8.json',
+    ).then((res) => res.json()),
+  ]);
 
-    data.edges.forEach(({ source, target }) => {
-      const startPoint = data.nodes.find((node) => node.id === source);
-      const endPoint = data.nodes.find((node) => node.id === target);
-
-      if (startPoint && endPoint) {
-        const line = new Line({
-          style: {
-            x1: startPoint.x,
-            y1: startPoint.y,
-            x2: endPoint.x,
-            y2: endPoint.y,
-            stroke: '#1890FF',
-            lineWidth: 0.3,
-          },
-        });
-        canvas.appendChild(line);
+  data.nodes.forEach((node) => {
+    node.degree = 0;
+    data.edges.forEach((edge) => {
+      if (edge.source === node.id || edge.target === node.id) {
+        node.degree++;
       }
     });
+  });
+  mapNodeSize(data.nodes, 'degree', [1, 15]);
 
-    data.nodes.forEach(({ size, x, y }) => {
-      const circle = new Circle({
+  data.edges.forEach(({ source, target }) => {
+    const startPoint = data.nodes.find((node) => node.id === source);
+    const endPoint = data.nodes.find((node) => node.id === target);
+
+    if (startPoint && endPoint) {
+      const line = new Line({
         style: {
-          cx: x,
-          cy: y,
-          fill: '#C6E5FF',
-          stroke: '#5B8FF9',
-          r: size,
-          lineWidth: 1,
+          x1: startPoint.x,
+          y1: startPoint.y,
+          x2: endPoint.x,
+          y2: endPoint.y,
+          stroke: '#1890FF',
+          lineWidth: 0.3,
         },
       });
-      canvas.appendChild(circle);
-    });
+      canvas.appendChild(line);
+    }
   });
 
-// create a canvas
-const canvas = new Canvas({
-  container: 'container',
-  width: 600,
-  height: 500,
-  renderer: webglRenderer,
-});
+  data.nodes.forEach(({ size, x, y }) => {
+    const circle = new Circle({
+      style: {
+        cx: x,
+        cy: y,
+        fill: '#C6E5FF',
+        stroke: '#5B8FF9',
+        r: size,
+        lineWidth: 1,
+      },
+    });
+    canvas.appendChild(circle);
+  });
+})();
 
 // stats
 const stats = new Stats();
@@ -94,7 +99,7 @@ const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
 
 const camera = canvas.getCamera();
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

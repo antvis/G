@@ -10,7 +10,7 @@ import { CustomElement, DisplayObject } from './display-objects';
 import type { Element, FederatedEvent, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
-import type { ICanvas, INode } from './dom/interfaces';
+import type { ICanvas } from './dom/interfaces';
 import {
   ContextService,
   EventService,
@@ -196,7 +196,16 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);
-    this.initRenderer(renderer);
+
+    (async () => {
+      await this.initRenderer(renderer);
+
+      this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+
+      if (this.readyPromise) {
+        this.resolveReadyPromise();
+      }
+    })();
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
@@ -210,6 +219,9 @@ export class Canvas extends EventTarget implements ICanvas {
          * the root node in scene graph
          */
         root: this.document.documentElement,
+        renderListLastFrame: [],
+        renderListCurrentFrame: [],
+        unculledEntities: [],
 
         renderReasons: new Set(),
 
@@ -316,8 +328,10 @@ export class Canvas extends EventTarget implements ICanvas {
     return this.readyPromise;
   }
 
-  destroy(destroyScenegraph = true) {
-    this.emit(CanvasEvent.BEFORE_DESTROY, () => {});
+  destroy(destroyScenegraph = true, skipTriggerEvent = false) {
+    if (!skipTriggerEvent) {
+      this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
+    }
     if (this.frameId) {
       const cancelRAF = this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
       cancelRAF(this.frameId);
@@ -339,7 +353,9 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().destroy();
     this.getRenderingService().destroy();
 
-    this.emit(CanvasEvent.AFTER_DESTROY, {});
+    if (!skipTriggerEvent) {
+      this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
+    }
   }
 
   /**
@@ -376,7 +392,7 @@ export class Canvas extends EventTarget implements ICanvas {
       camera.setAspect(width / height);
     }
 
-    this.emit(CanvasEvent.RESIZE, { width, height });
+    this.dispatchEvent(new CustomEvent(CanvasEvent.RESIZE, { width, height }));
   }
 
   // proxy to document.documentElement
@@ -394,14 +410,14 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render() {
-    this.emit(CanvasEvent.BEFORE_RENDER, {});
+    this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_RENDER));
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
       renderingService.render(this.getConfig());
     }
 
-    this.emit(CanvasEvent.AFTER_RENDER, {});
+    this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_RENDER));
   }
 
   private run() {
@@ -424,26 +440,15 @@ export class Canvas extends EventTarget implements ICanvas {
     this.loadCommonContainerModule();
     this.loadRendererContainerModule(renderer);
 
-    // init context
+    // init services
     const contextService = this.container.get<ContextService<unknown>>(ContextService);
-
     this.renderingService = this.container.get<RenderingService>(RenderingService);
-    this.eventService = this.container.get<EventService>(EventService);
+    this.eventService = this.container.get<EventService>(EventService); // auto init post-contruct
 
-    contextService.init();
+    await contextService.init();
     await this.renderingService.init();
 
-    this.emit(CanvasEvent.READY, {});
-
-    if (this.readyPromise) {
-      this.resolveReadyPromise();
-    }
-
     this.inited = true;
-
-    if (renderer.getConfig().enableAutoRendering) {
-      this.run();
-    }
 
     this.getRoot().forEach((node) => {
       const renderable = (node as Element).renderable;
@@ -456,6 +461,10 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // keep current scenegraph unchanged, just trigger mounted event
     this.mountChildren(this.getRoot());
+
+    if (renderer.getConfig().enableAutoRendering) {
+      this.run();
+    }
   }
 
   private loadCommonContainerModule() {
@@ -471,7 +480,7 @@ export class Canvas extends EventTarget implements ICanvas {
     });
   }
 
-  setRenderer(renderer: IRenderer) {
+  async setRenderer(renderer: IRenderer) {
     // update canvas' config
     const canvasConfig = this.getConfig();
     if (canvasConfig.renderer === renderer) {
@@ -482,14 +491,14 @@ export class Canvas extends EventTarget implements ICanvas {
     canvasConfig.renderer = renderer;
 
     // keep all children undestroyed
-    this.destroy(false);
+    this.destroy(false, true);
 
     // destroy all plugins, reverse will mutate origin array
     [...oldRenderer?.getPlugins()].reverse().forEach((plugin) => {
       plugin.destroy(this.container);
     });
 
-    this.initRenderer(renderer);
+    await this.initRenderer(renderer);
   }
 
   setCursor(cursor: Cursor) {
@@ -497,47 +506,57 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private unmountChildren(parent: DisplayObject) {
-    const path = [];
-    parent.forEach((child) => {
-      if (child.isConnected) {
-        path.push(child);
-      }
-    });
-
-    // unmount from leaf to root
-    path.reverse().forEach((child: DisplayObject) => {
-      // trigger before unmounted
-      if (child instanceof CustomElement) {
-        if (child.disconnectedCallback) {
-          child.disconnectedCallback();
+    if (this.inited) {
+      const path = [];
+      parent.forEach((child) => {
+        if (child.isConnected) {
+          path.push(child);
         }
-      }
+      });
 
-      child.emit(ElementEvent.UNMOUNTED, {});
-
-      // skip document.documentElement
-      if (child !== this.document.documentElement) {
-        child.ownerDocument = null;
-      }
-      child.isConnected = false;
-    });
-  }
-
-  private mountChildren(parent: INode) {
-    parent.forEach((child) => {
-      if (!child.isConnected) {
-        child.ownerDocument = this.document;
-        child.isConnected = true;
-        child.dispatchEvent(new CustomEvent(ElementEvent.MOUNTED));
-
-        // trigger after mounted
+      // unmount from leaf to root
+      path.reverse().forEach((child: DisplayObject) => {
+        // trigger before unmounted
         if (child instanceof CustomElement) {
-          if (child.connectedCallback) {
-            child.connectedCallback();
+          if (child.disconnectedCallback) {
+            child.disconnectedCallback();
           }
         }
-      }
-    });
+
+        child.dispatchEvent(new CustomEvent(ElementEvent.UNMOUNTED));
+
+        // skip document.documentElement
+        if (child !== this.document.documentElement) {
+          child.ownerDocument = null;
+        }
+        child.isConnected = false;
+      });
+    }
+  }
+
+  private mountChildren(parent: DisplayObject) {
+    if (this.inited) {
+      parent.forEach((child) => {
+        if (!child.isConnected) {
+          child.ownerDocument = this.document;
+          child.isConnected = true;
+          child.dispatchEvent(new CustomEvent(ElementEvent.MOUNTED));
+
+          // trigger after mounted
+          if (child instanceof CustomElement) {
+            if (child.connectedCallback) {
+              child.connectedCallback();
+            }
+          }
+        }
+      });
+    } else {
+      console.error(
+        "[g]: You are trying to call `canvas.appendChild` before canvas' initialization finished. You can either await `canvas.ready` or listen to `CanvasEvent.READY` manually.",
+        'appended child: ',
+        parent,
+      );
+    }
   }
 
   client2Viewport(client: PointLike): PointLike {

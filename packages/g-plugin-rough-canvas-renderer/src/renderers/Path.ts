@@ -1,13 +1,12 @@
 import type { DisplayObject, ParsedBaseStyleProps, ParsedPathStyleProps } from '@antv/g';
-import type { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
-import { PathRendererContribution } from '@antv/g-plugin-canvas-renderer';
-import { singleton } from 'mana-syringe';
+import { singleton } from '@antv/g';
+import { CanvasRenderer } from '@antv/g-canvas';
 import { formatPath, generateRoughOptions } from '../util';
 
 @singleton({
-  token: PathRendererContribution,
+  token: CanvasRenderer.PathRendererContribution,
 })
-export class PathRenderer implements StyleRenderer {
+export class PathRenderer implements CanvasRenderer.StyleRenderer {
   hash: (parsedStyle: ParsedBaseStyleProps) => string;
 
   render(

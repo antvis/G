@@ -34,6 +34,7 @@ describe('Render <Line> with g-canvas', () => {
   });
 
   it('should render line on server-side correctly.', async () => {
+    await canvas.ready;
     const line = new Line({
       style: {
         x1: 10,

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-canvas-element",
-  "version": "0.0.3",
+  "version": "0.0.4-alpha.1",
   "description": "Create a CanvasLike element from existed context in mobile environment",
   "keywords": [
     "antv",
@@ -34,8 +34,7 @@
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

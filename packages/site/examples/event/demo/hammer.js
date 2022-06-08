@@ -1,4 +1,4 @@
-import { Canvas, Circle, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -54,16 +54,18 @@ const text = new Text({
   },
 });
 
-circle.appendChild(text);
-canvas.appendChild(circle);
-circle.setPosition(300, 200);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  circle.appendChild(text);
+  canvas.appendChild(circle);
+  circle.setPosition(300, 200);
 
-// use hammer.js
-const hammer = new Hammer(circle, {
-  inputClass: Hammer.PointerEventInput,
-});
-hammer.on('panleft panright tap press', (ev) => {
-  text.attr('text', `${ev.type} gesture detected.`);
+  // use hammer.js
+  const hammer = new Hammer(circle, {
+    inputClass: Hammer.PointerEventInput,
+  });
+  hammer.on('panleft panright tap press', (ev) => {
+    text.attr('text', `${ev.type} gesture detected.`);
+  });
 });
 
 // stats
@@ -75,7 +77,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

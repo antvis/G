@@ -34,6 +34,7 @@ describe('Render <Polygon> with g-canvas', () => {
   });
 
   it('should render polygon on server-side correctly.', async () => {
+    await canvas.ready;
     const polygon = new Polygon({
       style: {
         points: [

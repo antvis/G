@@ -3,7 +3,6 @@ export default {
     name: 'G.WebGL',
     globals: {
       '@antv/g': 'window.G',
-      'mana-syringe': 'window.G.ManaSyringe',
     },
   },
 };

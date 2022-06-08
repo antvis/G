@@ -1,6 +1,11 @@
 import type { RenderingPlugin, RenderingService } from '@antv/g';
-import { CanvasConfig, ContextService, RenderingPluginContribution } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  RenderingPluginContribution,
+  singleton,
+} from '@antv/g';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
 
@@ -27,5 +32,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       context.roughCanvas = rough.canvas(this.contextService.getDomElement() as HTMLCanvasElement);
     });
+
+    renderingService.hooks.destroy.tap(RoughRendererPlugin.tag, () => {});
   }
 }

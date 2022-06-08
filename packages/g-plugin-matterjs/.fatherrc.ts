@@ -3,7 +3,6 @@ export default {
     name: 'G.MatterJS',
     globals: {
       '@antv/g': 'window.G',
-      'mana-syringe': 'window.G.ManaSyringe',
     },
   },
 };

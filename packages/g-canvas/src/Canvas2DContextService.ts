@@ -1,6 +1,13 @@
 import type { CanvasLike } from '@antv/g';
-import { CanvasConfig, ContextService, isBrowser, isString, setDOMSize } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  isBrowser,
+  isString,
+  setDOMSize,
+  singleton,
+} from '@antv/g';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
@@ -12,7 +19,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
+  async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;
 
     if (canvas) {

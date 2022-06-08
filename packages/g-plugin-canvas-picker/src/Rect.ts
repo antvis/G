@@ -1,6 +1,6 @@
-import type { DisplayObject, RectStyleProps, Point, ParsedRectStyleProps, CSSRGB } from '@antv/g';
-import { UnitType } from '@antv/g';
-import { inLine, inArc, inBox, inRect } from './utils/math';
+import type { CSSRGB, DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
+import { clamp, UnitType } from '@antv/g';
+import { inArc, inBox, inLine, inRect } from './utils/math';
 
 export function isPointInPath(
   displayObject: DisplayObject<RectStyleProps>,
@@ -64,7 +64,12 @@ export function isPointInPath(
         0,
         width,
         height,
-        radius.map((r) => r.value) as [number, number, number, number],
+        radius.map((r) => clamp(r.value, 0, Math.min(width / 2, height / 2))) as [
+          number,
+          number,
+          number,
+          number,
+        ],
         lineWidthForHitTesting,
         position.x,
         position.y,

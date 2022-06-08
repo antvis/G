@@ -1,4 +1,4 @@
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from '@antv/g';
 import { BufferGeometry } from '../geometries';
 import type { InputLayout, InputState, Program } from '../platform';
 import { Format, VertexBufferFrequency } from '../platform';

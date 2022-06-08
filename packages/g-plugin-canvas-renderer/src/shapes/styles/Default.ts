@@ -1,18 +1,9 @@
 import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
-import { isNil } from '@antv/g';
-import { singleton } from 'mana-syringe';
+import { isNil, singleton } from '@antv/g';
 import type { StyleRenderer } from './interfaces';
 
 @singleton()
 export class DefaultRenderer implements StyleRenderer {
-  hash(parsedStyle: ParsedBaseStyleProps) {
-    // const { fill, opacity, fillOpacity, stroke, strokeOpacity, lineWidth, lineCap, lineJoin } =
-    //   parsedStyle;
-
-    // return fill + opacity + fillOpacity + stroke + strokeOpacity + lineWidth + lineCap + lineJoin;
-    return '';
-  }
-
   render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
     const {
       fill,

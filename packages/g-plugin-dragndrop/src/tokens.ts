@@ -1,4 +1,4 @@
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@antv/g';
 
 export const DragndropPluginOptions = Syringe.defineToken('DragndropPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -10,4 +10,10 @@ export interface DragndropPluginOptions {
    * @see https://interactjs.io/docs/dropzone/#accept
    */
   overlap: 'pointer' | 'center';
+
+  /**
+   * Since Canvas & Document don't have `draggable` attribute,
+   * we need to add an extra option.
+   */
+  isDocumentDraggable: boolean;
 }

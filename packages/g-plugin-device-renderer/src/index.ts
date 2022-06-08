@@ -1,51 +1,49 @@
+import type { RendererPlugin, Shape, Syringe } from '@antv/g';
+import { GlobalContainer, Module } from '@antv/g';
 import 'regenerator-runtime/runtime';
-import type { RendererPlugin, Shape } from '@antv/g';
-import type { Syringe } from 'mana-syringe';
-import { Module, GlobalContainer } from 'mana-syringe';
 import { Renderable3D } from './components/Renderable3D';
-import { PickingIdGenerator } from './PickingIdGenerator';
-import { PickingPlugin } from './PickingPlugin';
-import { RenderGraphPlugin } from './RenderGraphPlugin';
-import { RenderHelper } from './render/RenderHelper';
-import {
-  Batch,
-  CircleRenderer,
-  PathRenderer,
-  ImageRenderer,
-  MeshRenderer,
-  BatchManager,
-  LineRenderer,
-  TextRenderer,
-} from './renderer';
-import { TexturePool } from './TexturePool';
-import { GlyphManager } from './meshes/symbol/GlyphManager';
-import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
-import { Mesh } from './Mesh';
 import { LightPool } from './LightPool';
-import type { Texture, TextureDescriptor } from './platform';
+import { Mesh } from './Mesh';
 import {
   FillMesh,
   ImageMesh,
   InstancedLineMesh,
   LineMesh,
+  MeshMesh,
   SDFMesh,
   TextMesh,
-  MeshMesh,
 } from './meshes';
+import { GlyphManager } from './meshes/symbol/GlyphManager';
 import { MeshUpdater } from './MeshUpdater';
+import { PickingIdGenerator } from './PickingIdGenerator';
+import { PickingPlugin } from './PickingPlugin';
+import type { Texture, TextureDescriptor } from './platform';
+import { RenderHelper } from './render/RenderHelper';
+import {
+  Batch,
+  BatchManager,
+  CircleRenderer,
+  ImageRenderer,
+  LineRenderer,
+  MeshRenderer,
+  PathRenderer,
+  TextRenderer,
+} from './renderer';
+import { RenderGraphPlugin } from './RenderGraphPlugin';
+import { TexturePool } from './TexturePool';
+import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
 
-export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
-
-export * from './interfaces';
-export * from './platform';
-export * from './render';
 export * from './geometries';
+export * from './interfaces';
+export * from './lights';
 export * from './materials';
 export * from './meshes';
-export * from './lights';
 export * from './passes';
-export * from './utils';
+export * from './platform';
+export * from './render';
 export * from './shader/compiler';
+export * from './utils';
+export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 
 export const containerModule = Module((register) => {
   register(RenderHelper);

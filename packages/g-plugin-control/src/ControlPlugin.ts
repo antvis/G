@@ -1,12 +1,13 @@
 import type { RenderingPlugin, RenderingService } from '@antv/g';
 import {
-  RenderingContext,
-  RenderingPluginContribution,
   Camera,
   CanvasConfig,
   DefaultCamera,
+  inject,
+  RenderingContext,
+  RenderingPluginContribution,
+  singleton,
 } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
 import Hammer from 'hammerjs';
 
 const MOTION_FACTOR = 10;

@@ -1,9 +1,7 @@
-import type { RendererPlugin } from '@antv/g';
-import { CSS, PropertySyntax } from '@antv/g';
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
-import { YogaPlugin } from './YogaPlugin';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { CSS, Module, PropertySyntax } from '@antv/g';
 import { YogaPluginOptions } from './tokens';
+import { YogaPlugin } from './YogaPlugin';
 
 const containerModule = Module((register) => {
   register(YogaPlugin);

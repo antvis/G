@@ -1,7 +1,7 @@
-import { Circle, Text, Canvas, ElementEvent, MutationObserver } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, ElementEvent, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -18,21 +18,21 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-// canvas.addEventListener(ElementEvent.INSERTED, (e) => {
-//   console.log('inserted', e.target);
-// });
-// canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
-//   console.log('mounted', e.target);
-// });
-// canvas.addEventListener(ElementEvent.UNMOUNTED, (e) => {
-//   console.log('unmounted', e.target);
-// });
-// canvas.addEventListener(ElementEvent.REMOVED, (e) => {
-//   console.log('removed', e.target);
-// });
-// canvas.addEventListener(ElementEvent.DESTROY, (e) => {
-//   console.log('destroyed', e.target);
-// });
+canvas.addEventListener(ElementEvent.INSERTED, (e) => {
+  console.log('inserted', e.target);
+});
+canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
+  console.log('mounted', e.target);
+});
+canvas.addEventListener(ElementEvent.UNMOUNTED, (e) => {
+  console.log('unmounted', e.target);
+});
+canvas.addEventListener(ElementEvent.REMOVED, (e) => {
+  console.log('removed', e.target);
+});
+canvas.addEventListener(ElementEvent.DESTROY, (e) => {
+  console.log('destroyed', e.target);
+});
 
 // observe root node
 // const observer = new MutationObserver(() => {});
@@ -47,7 +47,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

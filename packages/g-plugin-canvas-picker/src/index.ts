@@ -1,15 +1,13 @@
-import type { RendererPlugin } from '@antv/g';
-import { Shape } from '@antv/g';
-import type { Syringe } from 'mana-syringe';
-import { Module } from 'mana-syringe';
+import type { RendererPlugin, Syringe } from '@antv/g';
+import { Module, Shape } from '@antv/g';
 import { CanvasPickerPlugin, PointInPathPickerFactory } from './CanvasPickerPlugin';
 import { isPointInPath as CirclePicker } from './Circle';
 import { isPointInPath as EllipsePicker } from './Ellipse';
 import { isPointInPath as LinePicker } from './Line';
-import { isPointInPath as PolylinePicker } from './Polyline';
 import { isPointInPath as PathPicker } from './Path';
-import { isPointInPath as RectPicker } from './Rect';
 import { isPointInPath as PolygonPicker } from './Polygon';
+import { isPointInPath as PolylinePicker } from './Polyline';
+import { isPointInPath as RectPicker } from './Rect';
 
 const containerModule = Module((register) => {
   register({

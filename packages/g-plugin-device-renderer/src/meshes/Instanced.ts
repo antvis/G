@@ -12,11 +12,12 @@ import {
   CSSRGB,
   DefaultCamera,
   GradientPatternType,
+  inject,
+  injectable,
   parseColor,
   Shape,
 } from '@antv/g';
 import { mat4 } from 'gl-matrix';
-import { inject, injectable } from 'mana-syringe';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import { LightPool } from '../LightPool';
 import type { Fog } from '../lights';

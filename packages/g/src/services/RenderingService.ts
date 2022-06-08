@@ -1,8 +1,8 @@
 import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
-// import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from 'tapable';
+import { Camera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
-import { ElementEvent } from '../dom';
+import { CustomEvent, ElementEvent } from '../dom';
 import type { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
 import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from '../utils';
 import { RenderingContext, RenderReason } from './RenderingContext';
@@ -49,6 +49,9 @@ export class RenderingService {
   @inject(StyleValueRegistry)
   private styleValueRegistry: StyleValueRegistry;
 
+  @inject(DefaultCamera)
+  private camera: Camera;
+
   private inited = false;
 
   private stats = {
@@ -60,10 +63,6 @@ export class RenderingService {
      * number of display objects need to render in current frame
      */
     rendered: 0,
-    /**
-     * number of display objects displayed on screen
-     */
-    renderedOnscreen: 0,
   };
 
   private zIndexCounter = 0;
@@ -80,7 +79,7 @@ export class RenderingService {
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    cull: new SyncWaterfallHook<[DisplayObject | null, Camera]>(['object', 'camera']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
@@ -140,18 +139,23 @@ export class RenderingService {
       this.renderDisplayObject(this.renderingContext.root, canvasConfig);
 
       if (
-        this.renderingContext.dirty ||
-        (canvasConfig.renderer.getConfig().enableDirtyRectangleRendering && this.stats.total === 1)
+        this.renderingContext.renderListCurrentFrame.length ||
+        this.renderingContext.renderListLastFrame.length !==
+          this.renderingContext.renderListCurrentFrame.length
       ) {
-        if (!this.renderingContext.dirty) {
-          this.hooks.beginFrame.call();
-        }
+        this.hooks.beginFrame.call();
 
-        this.stats.renderedOnscreen = this.stats.rendered;
+        this.renderingContext.renderListCurrentFrame.forEach((object) => {
+          this.hooks.beforeRender.call(object);
+          this.hooks.render.call(object);
+          this.hooks.afterRender.call(object);
+        });
+
         this.hooks.endFrame.call();
-        this.renderingContext.dirty = false;
       }
 
+      this.renderingContext.renderListLastFrame = [...this.renderingContext.renderListCurrentFrame];
+      this.renderingContext.renderListCurrentFrame = [];
       this.renderingContext.renderReasons.clear();
     }
 
@@ -170,22 +174,17 @@ export class RenderingService {
       ? this.hooks.dirtycheck.call(displayObject)
       : displayObject;
     if (objectChanged) {
-      const objectToRender = enableCulling ? this.hooks.cull.call(objectChanged) : objectChanged;
+      const objectToRender = enableCulling
+        ? this.hooks.cull.call(objectChanged, this.camera)
+        : objectChanged;
 
       if (objectToRender) {
         this.stats.rendered++;
-        if (!this.renderingContext.dirty) {
-          this.renderingContext.dirty = true;
-          this.hooks.beginFrame.call();
-        }
-
-        this.hooks.beforeRender.call(objectToRender);
-        this.hooks.render.call(objectToRender);
-        this.hooks.afterRender.call(objectToRender);
-        displayObject.renderable.dirty = false;
+        this.renderingContext.renderListCurrentFrame.push(objectToRender);
       }
     }
 
+    displayObject.renderable.dirty = false;
     displayObject.sortable.renderOrder = this.zIndexCounter++;
 
     this.stats.total++;
@@ -206,9 +205,11 @@ export class RenderingService {
 
     if (renderOrderChanged) {
       displayObject.forEach((child: DisplayObject) => {
-        child.emit(ElementEvent.RENDER_ORDER_CHANGED, {
-          renderOrder: child.sortable.renderOrder,
-        });
+        child.dispatchEvent(
+          new CustomEvent(ElementEvent.RENDER_ORDER_CHANGED, {
+            renderOrder: child.sortable.renderOrder,
+          }),
+        );
       });
     }
   }

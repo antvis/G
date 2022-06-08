@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-picker",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A G plugin for picking in canvas",
   "keywords": [
     "antv",
@@ -34,8 +34,7 @@
   },
   "peerDependencies": {
     "@antv/g": "^5.0.1",
-    "@antv/g-plugin-canvas-renderer": "^1.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g-plugin-canvas-path-generator": "^0.0.0"
   },
   "publishConfig": {
     "access": "public"

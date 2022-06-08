@@ -1,7 +1,9 @@
-import { Canvas, Circle, Line } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line } from '@antv/g';
+import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
-import { Plugin, Kernel, BufferUsage } from '@antv/g-plugin-gpgpu';
+import { DeviceRenderer, Renderer as WebGPURenderer } from '@antv/g-webgpu';
+
+const { BufferUsage } = DeviceRenderer;
 
 /**
  * ported from https://nblintao.github.io/ParaGraphL/
@@ -263,45 +265,47 @@ function renderCircles(edges, indices, positions) {
     renderer,
   });
 
-  // draw edges
-  for (let i = 0; i < indices.length - 1; i++) {
-    const x1 = positions[i * 2];
-    const y1 = positions[i * 2 + 1];
+  canvas.addEventListener(CanvasEvent.READY, () => {
+    // draw edges
+    for (let i = 0; i < indices.length - 1; i++) {
+      const x1 = positions[i * 2];
+      const y1 = positions[i * 2 + 1];
 
-    for (let j = indices[i]; j < indices[i + 1]; j++) {
-      const x2 = positions[edges[j] * 2];
-      const y2 = positions[edges[j] * 2 + 1];
+      for (let j = indices[i]; j < indices[i + 1]; j++) {
+        const x2 = positions[edges[j] * 2];
+        const y2 = positions[edges[j] * 2 + 1];
+        canvas.appendChild(
+          new Line({
+            style: {
+              x1,
+              y1,
+              x2,
+              y2,
+              stroke: '#1890FF',
+              lineWidth: 1,
+            },
+          }),
+        );
+      }
+    }
+
+    // draw nodes
+    for (let i = 0; i < positions.length; i += 2) {
+      const x = positions[i];
+      const y = positions[i + 1];
+
       canvas.appendChild(
-        new Line({
+        new Circle({
           style: {
-            x1,
-            y1,
-            x2,
-            y2,
-            stroke: '#1890FF',
-            lineWidth: 1,
+            cx: x,
+            cy: y,
+            r: 5,
+            fill: 'red',
+            stroke: 'blue',
+            lineWidth: 2,
           },
         }),
       );
     }
-  }
-
-  // draw nodes
-  for (let i = 0; i < positions.length; i += 2) {
-    const x = positions[i];
-    const y = positions[i + 1];
-
-    canvas.appendChild(
-      new Circle({
-        style: {
-          cx: x,
-          cy: y,
-          r: 5,
-          fill: 'red',
-          stroke: 'blue',
-          lineWidth: 2,
-        },
-      }),
-    );
-  }
+  });
 }

@@ -1,7 +1,6 @@
-import chai, { expect } from 'chai';
-import { Circle, Line, CSS, Canvas, CSSUnitValue } from '@antv/g';
+import { Canvas, Circle, CSS, CSSUnitValue, Line } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { sleep } from '../../../__tests__/utils';
+import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
 
 const $container = document.createElement('div');
@@ -46,9 +45,8 @@ describe('CSSPropertyOffsetDistance', () => {
       },
     });
 
+    await canvas.ready;
     canvas.appendChild(circle);
-
-    await sleep(100);
 
     // attribute
     expect(circle.getAttribute('offsetDistance')).to.be.eqls(0);

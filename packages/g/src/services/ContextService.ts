@@ -5,7 +5,7 @@ import type { CanvasLike } from '../types';
 export const ContextService = Syringe.defineToken('ContextService', { multiple: false });
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextService<Context> {
-  init: () => void;
+  init: () => Promise<void>;
   destroy: () => void;
   getContext: () => Context | null;
   getDomElement: () => CanvasLike | null;

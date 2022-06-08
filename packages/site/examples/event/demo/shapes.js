@@ -1,14 +1,42 @@
-import { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } from '@antv/g';
+import {
+  Canvas,
+  CanvasEvent,
+  Circle,
+  Ellipse,
+  Image,
+  Line,
+  Path,
+  Polygon,
+  Polyline,
+  Rect,
+  Text,
+} from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({
@@ -151,93 +179,95 @@ const clippedText = new Text({
   },
 });
 
-circle.setPosition(100, 100);
-canvas.appendChild(circle);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  circle.setPosition(100, 100);
+  canvas.appendChild(circle);
 
-ellipse.setPosition(220, 100);
-canvas.appendChild(ellipse);
+  ellipse.setPosition(220, 100);
+  canvas.appendChild(ellipse);
 
-rect.setPosition(300, 100);
-canvas.appendChild(rect);
+  rect.setPosition(300, 100);
+  canvas.appendChild(rect);
 
-image.setPosition(400, 100);
-canvas.appendChild(image);
+  image.setPosition(400, 100);
+  canvas.appendChild(image);
 
-line.setPosition(100, 200);
-canvas.appendChild(line);
+  line.setPosition(100, 200);
+  canvas.appendChild(line);
 
-polyline.setPosition(0, 200);
-polyline.rotate(20);
-canvas.appendChild(polyline);
+  polyline.setPosition(0, 200);
+  polyline.rotate(20);
+  canvas.appendChild(polyline);
 
-path.setPosition(160, 200);
-path.rotate(20);
-path.scale(0.5);
-canvas.appendChild(path);
+  path.setPosition(160, 200);
+  path.rotate(20);
+  path.scale(0.5);
+  canvas.appendChild(path);
 
-polygon.setPosition(340, 200);
-polygon.scale(0.3);
-canvas.appendChild(polygon);
+  polygon.setPosition(340, 200);
+  polygon.scale(0.3);
+  canvas.appendChild(polygon);
 
-text.setPosition(160, 450);
-canvas.appendChild(text);
+  text.setPosition(160, 450);
+  canvas.appendChild(text);
 
-clippedText.setPosition(160, 500);
-canvas.appendChild(clippedText);
+  clippedText.setPosition(160, 500);
+  canvas.appendChild(clippedText);
 
-circle.addEventListener('mouseenter', () => {
-  circle.style.fill = '#2FC25B';
-});
-circle.addEventListener('mouseleave', () => {
-  circle.style.fill = '#1890FF';
-});
-ellipse.addEventListener('mouseenter', () => {
-  ellipse.style.fill = '#2FC25B';
-});
-ellipse.addEventListener('mouseleave', () => {
-  ellipse.style.fill = '#1890FF';
-});
-rect.addEventListener('mouseenter', () => {
-  rect.style.fill = '#2FC25B';
-});
-rect.addEventListener('mouseleave', () => {
-  rect.style.fill = '#1890FF';
-});
-line.addEventListener('mouseenter', () => {
-  line.style.stroke = '#2FC25B';
-});
-line.addEventListener('mouseleave', () => {
-  line.style.stroke = '#1890FF';
-});
-polyline.addEventListener('mouseenter', () => {
-  polyline.style.stroke = '#2FC25B';
-});
-polyline.addEventListener('mouseleave', () => {
-  polyline.style.stroke = '#1890FF';
-});
-path.addEventListener('mouseenter', () => {
-  path.style.stroke = '#2FC25B';
-});
-path.addEventListener('mouseleave', () => {
-  path.style.stroke = '#1890FF';
-});
-polygon.addEventListener('mouseenter', () => {
-  polygon.style.stroke = '#2FC25B';
-});
-polygon.addEventListener('mouseleave', () => {
-  polygon.style.stroke = '#1890FF';
-});
-text.addEventListener('mouseenter', () => {
-  text.attr('stroke', '#2FC25B');
-});
-text.addEventListener('mouseleave', () => {
-  text.attr('stroke', '#F04864');
-});
-clippedText.addEventListener('mouseenter', () => {
-  clippedText.attr('stroke', '#2FC25B');
-});
-clippedText.addEventListener('mouseleave', () => {
-  clippedText.attr('stroke', '#F04864');
+  circle.addEventListener('mouseenter', () => {
+    circle.style.fill = '#2FC25B';
+  });
+  circle.addEventListener('mouseleave', () => {
+    circle.style.fill = '#1890FF';
+  });
+  ellipse.addEventListener('mouseenter', () => {
+    ellipse.style.fill = '#2FC25B';
+  });
+  ellipse.addEventListener('mouseleave', () => {
+    ellipse.style.fill = '#1890FF';
+  });
+  rect.addEventListener('mouseenter', () => {
+    rect.style.fill = '#2FC25B';
+  });
+  rect.addEventListener('mouseleave', () => {
+    rect.style.fill = '#1890FF';
+  });
+  line.addEventListener('mouseenter', () => {
+    line.style.stroke = '#2FC25B';
+  });
+  line.addEventListener('mouseleave', () => {
+    line.style.stroke = '#1890FF';
+  });
+  polyline.addEventListener('mouseenter', () => {
+    polyline.style.stroke = '#2FC25B';
+  });
+  polyline.addEventListener('mouseleave', () => {
+    polyline.style.stroke = '#1890FF';
+  });
+  path.addEventListener('mouseenter', () => {
+    path.style.stroke = '#2FC25B';
+  });
+  path.addEventListener('mouseleave', () => {
+    path.style.stroke = '#1890FF';
+  });
+  polygon.addEventListener('mouseenter', () => {
+    polygon.style.stroke = '#2FC25B';
+  });
+  polygon.addEventListener('mouseleave', () => {
+    polygon.style.stroke = '#1890FF';
+  });
+  text.addEventListener('mouseenter', () => {
+    text.attr('stroke', '#2FC25B');
+  });
+  text.addEventListener('mouseleave', () => {
+    text.attr('stroke', '#F04864');
+  });
+  clippedText.addEventListener('mouseenter', () => {
+    clippedText.attr('stroke', '#2FC25B');
+  });
+  clippedText.addEventListener('mouseleave', () => {
+    clippedText.attr('stroke', '#F04864');
+  });
 });
 
 // stats
@@ -262,9 +292,21 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();

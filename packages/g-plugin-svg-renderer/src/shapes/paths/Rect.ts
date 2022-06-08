@@ -1,4 +1,5 @@
 import type { ParsedRectStyleProps } from '@antv/g';
+import { clamp } from '@antv/g';
 
 export function updateRectElementAttribute($el: SVGElement, parsedStyle: ParsedRectStyleProps) {
   const { radius, width, height } = parsedStyle;
@@ -9,7 +10,9 @@ export function updateRectElementAttribute($el: SVGElement, parsedStyle: ParsedR
   if (!hasRadius) {
     d = `M 0,0 l ${width.value},0 l 0,${height.value} l${-width.value} 0 z`;
   } else {
-    const [tlr, trr, brr, blr] = radius.map((r) => r.value);
+    const [tlr, trr, brr, blr] = radius.map((r) =>
+      clamp(r.value, 0, Math.min(width.value / 2, height.value / 2)),
+    );
     d = [
       [`M ${tlr},0`],
       [`l ${width.value - tlr - trr},0`],

@@ -1,13 +1,10 @@
+import { Canvas, Circle } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
 import sinonChai from 'sinon-chai';
-
-import { Group, Circle, Canvas, Text, Rect, ElementEvent } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost());
@@ -50,6 +47,8 @@ describe('Animation Timeline', () => {
       },
     });
     circle.setPosition(300, 200);
+
+    await canvas.ready;
     canvas.appendChild(circle);
 
     const animation = circle.animate([], {

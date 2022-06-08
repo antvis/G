@@ -34,6 +34,7 @@ describe('Render <Ellipse> with g-canvas', () => {
   });
 
   it('should render ellipse on server-side correctly.', async () => {
+    await canvas.ready;
     const ellipse1 = new Ellipse({
       style: {
         cx: 20,

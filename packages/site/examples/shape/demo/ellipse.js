@@ -1,7 +1,9 @@
-import { Ellipse, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Ellipse } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -9,6 +11,20 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -31,7 +47,9 @@ const ellipse = new Ellipse({
   },
 });
 
-canvas.appendChild(ellipse);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(ellipse);
+});
 
 // stats
 const stats = new Stats();
@@ -42,7 +60,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -55,11 +73,23 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();
 
 const ellipseFolder = gui.addFolder('ellipse');
@@ -75,6 +105,10 @@ const ellipseConfig = {
   strokeOpacity: 1,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  shadowColor: '#fff',
+  shadowBlur: 0,
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
 };
 ellipseFolder.add(ellipseConfig, 'cx', 0, 600).onChange((cx) => {
   ellipse.style.cx = cx;
@@ -114,6 +148,18 @@ ellipseFolder
   .onChange((cursor) => {
     ellipse.style.cursor = cursor;
   });
+ellipseFolder.addColor(ellipseConfig, 'shadowColor').onChange((color) => {
+  ellipse.attr('shadowColor', color);
+});
+ellipseFolder.add(ellipseConfig, 'shadowBlur', 0, 100).onChange((shadowBlur) => {
+  ellipse.style.shadowBlur = shadowBlur;
+});
+ellipseFolder.add(ellipseConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) => {
+  ellipse.style.shadowOffsetX = shadowOffsetX;
+});
+ellipseFolder.add(ellipseConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
+  ellipse.style.shadowOffsetY = shadowOffsetY;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

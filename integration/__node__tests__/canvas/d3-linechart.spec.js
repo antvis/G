@@ -48,6 +48,8 @@ describe('Render d3 linechart with g-canvas', () => {
   });
 
   it('should render d3 linechart on server-side correctly.', async () => {
+    await canvas.ready;
+
     const drawLineChart = () => {
       // 1. Access data
       const data = weatherDataset;

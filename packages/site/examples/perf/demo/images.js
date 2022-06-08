@@ -1,7 +1,7 @@
-import { Image, Canvas } from '@antv/g';
+import { Canvas, CanvasEvent, Image } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -18,30 +18,32 @@ const canvas = new Canvas({
   renderer: webglRenderer,
 });
 
-for (let i = 0; i < 1000; i++) {
-  const image = new Image({
-    style: {
-      x: Math.random() * 600,
-      y: Math.random() * 500,
-      width: 100 + Math.random() * 100,
-      height: 100 + Math.random() * 100,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
-    },
-  });
-  canvas.appendChild(image);
-}
-for (let i = 0; i < 1000; i++) {
-  const image = new Image({
-    style: {
-      x: Math.random() * 600,
-      y: Math.random() * 500,
-      width: 100 + Math.random() * 100,
-      height: 100 + Math.random() * 100,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    },
-  });
-  canvas.appendChild(image);
-}
+canvas.addEventListener(CanvasEvent.READY, () => {
+  for (let i = 0; i < 1000; i++) {
+    const image = new Image({
+      style: {
+        x: Math.random() * 600,
+        y: Math.random() * 500,
+        width: 100 + Math.random() * 100,
+        height: 100 + Math.random() * 100,
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
+      },
+    });
+    canvas.appendChild(image);
+  }
+  for (let i = 0; i < 1000; i++) {
+    const image = new Image({
+      style: {
+        x: Math.random() * 600,
+        y: Math.random() * 500,
+        width: 100 + Math.random() * 100,
+        height: 100 + Math.random() * 100,
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      },
+    });
+    canvas.appendChild(image);
+  }
+});
 
 // stats
 const stats = new Stats();
@@ -54,7 +56,7 @@ const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
 
 const camera = canvas.getCamera();
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

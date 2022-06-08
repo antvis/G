@@ -1,5 +1,4 @@
-import { CanvasConfig, ContextService } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 import { isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })
@@ -11,7 +10,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  init() {
+  async init() {
     const { canvas, devicePixelRatio } = this.canvasConfig;
     this.$canvas = canvas as HTMLCanvasElement;
     // 实际获取到小程序环境的上下文

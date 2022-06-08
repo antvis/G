@@ -1,4 +1,4 @@
-import { Canvas, Group, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Plugin } from '@antv/g-plugin-css-select';
 import * as lil from 'lil-gui';
@@ -82,7 +82,9 @@ solarSystem.setPosition(300, 250);
 earthOrbit.translate(100, 0);
 moonOrbit.translate(100, 0);
 
-canvas.appendChild(solarSystem);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(solarSystem);
+});
 
 // stats
 const stats = new Stats();
@@ -93,7 +95,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

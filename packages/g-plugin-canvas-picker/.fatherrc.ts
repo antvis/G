@@ -3,8 +3,7 @@ export default {
     name: 'G.CanvasPicker',
     globals: {
       '@antv/g': 'window.G',
-      '@antv/g-plugin-canvas-renderer': 'window.G.CanvasRenderer',
-      'mana-syringe': 'window.G.ManaSyringe',
+      '@antv/g-plugin-canvas-path-generator': 'window.G.CanvasPathGenerator',
     },
   },
 };

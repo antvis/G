@@ -1,10 +1,12 @@
-import { Canvas } from '@antv/g';
+import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin as PluginCSSSelect } from '@antv/g-plugin-css-select';
-import * as lil from 'lil-gui';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as d3 from 'd3';
+import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
@@ -13,13 +15,29 @@ import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
 
 const cssSelectPlugin = new PluginCSSSelect();
 
 canvasRenderer.registerPlugin(cssSelectPlugin);
 webglRenderer.registerPlugin(cssSelectPlugin);
+webgpuRenderer.registerPlugin(cssSelectPlugin);
+canvaskitRenderer.registerPlugin(cssSelectPlugin);
 svgRenderer.registerPlugin(cssSelectPlugin);
 
 // create a canvas
@@ -512,18 +530,18 @@ const miserables = {
   ],
 };
 
-const chart = ForceGraph(miserables, {
-  nodeId: (d) => d.id,
-  nodeGroup: (d) => d.group,
-  nodeTitle: (d) => `${d.id}\n${d.group}`,
-  linkStroke: () => '#999',
-  linkStrokeWidth: (l) => Math.sqrt(l.value),
-  width: 600,
-  height: 600,
-  invalidation: null, // a promise to stop the simulation when the cell is re-run
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const chart = ForceGraph(miserables, {
+    nodeId: (d) => d.id,
+    nodeGroup: (d) => d.group,
+    nodeTitle: (d) => `${d.id}\n${d.group}`,
+    linkStroke: () => '#999',
+    linkStrokeWidth: (l) => Math.sqrt(l.value),
+    width: 600,
+    height: 600,
+    invalidation: null, // a promise to stop the simulation when the cell is re-run
+  });
 });
-
-console.log(chart);
 
 // stats
 const stats = new Stats();
@@ -534,7 +552,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
@@ -547,9 +565,21 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();

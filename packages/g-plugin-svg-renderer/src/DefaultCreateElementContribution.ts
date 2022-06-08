@@ -1,6 +1,5 @@
 import type { DisplayObject } from '@antv/g';
-import { CanvasConfig, Shape } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
+import { CanvasConfig, inject, Shape, singleton } from '@antv/g';
 import {
   updateImageElementAttribute,
   updateLineElementAttribute,

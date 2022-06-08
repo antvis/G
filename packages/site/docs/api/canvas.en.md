@@ -435,7 +435,7 @@ if (tooManyShapes) {
 
 ## ready
 
-初始化工作完成后，返回一个 Promise，等价于监听 `CanvasEvent.READY` 事件：
+初始化工作完成后，返回一个 Promise，等价于监听 [CanvasEvent.READY](/zh/docs/api/canvas#ready-事件) 事件：
 
 ```js
 await canvas.ready;
@@ -547,26 +547,57 @@ canvas.document.addEventListener('click', () => {});
 
 ## 画布特有事件
 
-目前可以监听以下画布相关事件：
+画布在初始化、渲染前后会触发对应事件，目前可以监听以下画布相关事件：
 
--   `ready` 画布相关服务准备就绪后触发
--   `beforerender` 在每一帧渲染前触发
--   `afterrender` 在每一帧渲染后触发
--   `beforedestroy` 在销毁前触发
--   `afterdestroy` 在销毁后触发
+```js
+export enum CanvasEvent {
+  READY = 'ready', // 画布相关服务准备就绪后触发
+  BEFORE_RENDER = 'beforerender', // 在每一帧渲染前触发
+  AFTER_RENDER = 'afterrender', // 在每一帧渲染后触发
+  BEFORE_DESTROY = 'beforedestroy', // 在销毁前触发
+  AFTER_DESTROY = 'afterdestroy', // 在销毁后触发
+  RESIZE = 'resize', // 在 resize 时触发
+}
+```
 
-例如我们在官网所有例子中展示实时帧率，该组件在每次渲染后更新：
+例如我们在官网所有例子中展示实时帧率，该组件在每次渲染后更新，我们就可以通过监听 `afterrender` 事件完成：
 
 ```js
 import { CanvasEvent } from '@antv/g';
 
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
     stats.update();
 });
 // 或者
-canvas.on(CanvasEvent.AFTER_RENDER, () => {
+canvas.addEventListener('afterrender', () => {
     stats.update();
 });
+```
+
+### ready 事件
+
+在浏览器中我们可以通过 `window.onload` 获知包含 HTML 解析、样式解析、资源加载等页面初始化工作是否完成：
+
+```js
+// @see https://javascript.info/onload-ondomcontentloaded
+window.onload = function () {
+    alert('Page loaded');
+};
+```
+
+同样在 G 中这些初始化工作也是异步的，我们也提供了类似的 `ready` 事件。在初始化完成后可以进行场景图创建等工作：
+
+```js
+canvas.addEventListener(CanvasEvent.READY, () => {
+    canvas.appendChild(circle);
+});
+```
+
+除了监听 `ready` 事件，还可以选择[等待 ready 这个 Promise](/zh/docs/api/canvas#ready)：
+
+```js
+await canvas.ready;
+canvas.appendChild(circle);
 ```
 
 # 使用 CustomElementRegistry

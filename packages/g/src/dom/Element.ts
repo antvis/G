@@ -1,5 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
-import { Cullable, Geometry, Renderable, Sortable, Transform } from '../components';
+import { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
 import { SceneGraphService } from '../services/SceneGraphService';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -38,6 +38,7 @@ export class Element<
   transformable = new Transform();
   sortable = new Sortable();
   geometry = new Geometry();
+  rBushNode = new RBushNode();
 
   /**
    * used with `getElementById()`
@@ -50,6 +51,7 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByClassName
    */
   get className() {
+    // @ts-ignore
     return this.getAttribute('class') || '';
   }
 
@@ -427,8 +429,11 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
   getAttribute(name: keyof StyleProps) {
-    const [attributeName] = formatAttribute(name.toString(), '');
-    const value = this.attributes[attributeName];
+    let value = this.attributes[name];
+    if (value === undefined) {
+      const [attributeName] = formatAttribute(name.toString(), '');
+      value = this.attributes[attributeName];
+    }
     // if the given attribute does not exist, the value returned will either be null or ""
     return isNil(value) ? null : value;
   }

@@ -59,6 +59,7 @@ describe('Render D3 barchart with g-svg', () => {
   });
 
   it('should render d3 barchart on server-side correctly.', async () => {
+    await canvas.ready;
     const drawBars = async () => {
       // 1. Access data
       const dataset = weatherDataset;

@@ -12,12 +12,13 @@ import {
   ContextService,
   DefaultCamera,
   ElementEvent,
+  inject,
   Rectangle,
   RenderingContext,
   RenderingPluginContribution,
   SceneGraphService,
+  singleton,
 } from '@antv/g';
-import { inject, singleton } from 'mana-syringe';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentBlack } from './platform';
 import {

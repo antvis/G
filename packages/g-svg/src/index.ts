@@ -1,11 +1,10 @@
 import type { RendererConfig } from '@antv/g';
 import { AbstractRenderer } from '@antv/g';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
-import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
 import * as SVGPicker from '@antv/g-plugin-svg-picker';
+import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
-
-export { DomInteraction, SVGRenderer, SVGPicker };
+export { DomInteraction, SVGPicker, SVGRenderer };
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<RendererConfig>) {
