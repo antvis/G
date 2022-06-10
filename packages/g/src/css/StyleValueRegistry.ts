@@ -22,29 +22,6 @@ export interface PropertyParseOptions {
   skipParse: boolean;
 }
 
-// export const PROPERTY_HANDLERS = {
-//   [PropertySyntax.COORDINATE]: CSSPropertyLocalPosition,
-//   [PropertySyntax.ANGLE]: CSSPropertyAngle,
-//   [PropertySyntax.COLOR]: CSSPropertyColor,
-//   [PropertySyntax.PAINT]: CSSPropertyColor,
-//   [PropertySyntax.OPACITY_VALUE]: CSSPropertyOpacity,
-//   [PropertySyntax.LENGTH_PERCENTAGE]: CSSPropertyLengthOrPercentage,
-//   [PropertySyntax.LENGTH_PERCENTAGE_12]: CSSPropertyLengthOrPercentage12,
-//   [PropertySyntax.LENGTH_PERCENTAGE_14]: CSSPropertyLengthOrPercentage14,
-//   [PropertySyntax.SHADOW_BLUR]: CSSPropertyShadowBlur,
-//   [PropertySyntax.LIST_OF_POINTS]: CSSPropertyPoints,
-//   [PropertySyntax.PATH]: CSSPropertyPath,
-//   [PropertySyntax.FILTER]: CSSPropertyFilter,
-//   [PropertySyntax.Z_INDEX]: CSSPropertyZIndex,
-//   [PropertySyntax.OFFSET_PATH]: CSSPropertyOffsetPath,
-//   [PropertySyntax.OFFSET_DISTANCE]: CSSPropertyOffsetDistance,
-//   [PropertySyntax.CLIP_PATH]: CSSPropertyClipPath,
-//   [PropertySyntax.TRANSFORM]: CSSPropertyTransform,
-//   [PropertySyntax.TRANSFORM_ORIGIN]: CSSPropertyTransformOrigin,
-//   [PropertySyntax.TEXT]: CSSPropertyText,
-//   [PropertySyntax.TEXT_TRANSFORM]: CSSPropertyTextTransform,
-// };
-
 /**
  * Blink used them in code generation(css_properties.json5)
  */

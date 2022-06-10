@@ -1,3 +1,4 @@
+import { Shape } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { AABB } from '../../shapes';
@@ -173,8 +174,8 @@ export function convertPercentUnit(
   if (valueWithUnit.unit === UnitType.kPixels) {
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
-    // use bounds
-    const bounds = target.getGeometryBounds();
+    const bounds =
+      target.nodeName === Shape.GROUP ? target.getLocalBounds() : target.getGeometryBounds();
     let size = 0;
     if (!AABB.isEmpty(bounds)) {
       size = bounds.halfExtents[vec3Index] * 2;
