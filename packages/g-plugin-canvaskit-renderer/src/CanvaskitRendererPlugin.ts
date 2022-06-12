@@ -9,6 +9,8 @@ import type {
 import {
   Camera,
   CanvasConfig,
+  computeLinearGradient,
+  computeRadialGradient,
   ContextService,
   CSSGradientValue,
   CSSRGB,
@@ -241,11 +243,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     if (stroke.type === GradientPatternType.LinearGradient) {
       // @see https://fiddle.skia.org/c/@GradientShader_MakeLinear
-      const { x0, y0, x1, y1, steps } = stroke.value as LinearGradient;
+      const { angle, steps } = stroke.value as LinearGradient;
       const pos: number[] = [];
       const colors: Float32Array[] = [];
       steps.forEach(([offset, color]) => {
-        pos.push(Number(offset));
+        pos.push(offset);
         const c = parseColor(color) as CSSRGB;
         colors.push(
           new Float32Array([
@@ -256,17 +258,18 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           ]),
         );
       });
+      const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
       const gradient = CanvasKit.Shader.MakeLinearGradient(
-        [x0 * width, y0 * height],
-        [x1 * width, y1 * height],
+        [x1, y1],
+        [x2, y2],
         colors,
         pos,
         CanvasKit.TileMode.Mirror,
       );
       paint.setShader(gradient);
     } else if (stroke.type === GradientPatternType.RadialGradient) {
-      const { x0, y0, r1, steps } = stroke.value as RadialGradient;
-      const r = Math.sqrt(width * width + height * height) / 2;
+      const { cx, cy, steps } = stroke.value as RadialGradient;
+      const { x, y, r } = computeRadialGradient(width, height, cx, cy);
       const pos: number[] = [];
       const colors: Float32Array[] = [];
       steps.forEach(([offset, color]) => {
@@ -283,8 +286,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       });
       // @see https://fiddle.skia.org/c/@radial_gradient_test
       const gradient = CanvasKit.Shader.MakeRadialGradient(
-        [x0 * width, y0 * height],
-        r1 * r,
+        [x, y],
+        r,
         colors,
         pos,
         CanvasKit.TileMode.Mirror,
@@ -343,8 +346,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
             Number(fill.alpha),
           ),
         );
-      } else if (fill instanceof CSSGradientValue) {
-        this.addGradient(object, fill, fillPaint, CanvasKit);
+      } else if (Array.isArray(fill)) {
+        fill.forEach((gradient) => {
+          this.addGradient(object, gradient, fillPaint, CanvasKit);
+        });
       }
       fillPaint.setAlphaf(fillOpacity.value * opacity.value);
     }
@@ -366,8 +371,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
               Number(stroke.alpha),
             ),
           );
-        } else if (stroke instanceof CSSGradientValue) {
-          this.addGradient(object, stroke, strokePaint, CanvasKit);
+        } else if (Array.isArray(stroke)) {
+          stroke.forEach((gradient) => {
+            this.addGradient(object, gradient, strokePaint, CanvasKit);
+          });
         }
 
         strokePaint.setAlphaf(strokeOpacity.value * opacity.value);

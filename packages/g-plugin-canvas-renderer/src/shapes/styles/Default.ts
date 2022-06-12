@@ -1,10 +1,35 @@
-import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
-import { isNil, singleton } from '@antv/g';
+import {
+  CSSGradientValue,
+  CSSRGB,
+  DisplayObject,
+  GradientPatternType,
+  inject,
+  isNil,
+  LinearGradient,
+  ParsedBaseStyleProps,
+  Pattern,
+  RadialGradient,
+  RenderingService,
+  singleton,
+} from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
+import { GradientPool } from '../GradientPool';
 import type { StyleRenderer } from './interfaces';
 
 @singleton()
 export class DefaultRenderer implements StyleRenderer {
-  render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+  @inject(ImagePool)
+  private imagePool: ImagePool;
+
+  @inject(GradientPool)
+  private gradientPool: GradientPool;
+
+  render(
+    context: CanvasRenderingContext2D,
+    parsedStyle: ParsedBaseStyleProps,
+    object: DisplayObject,
+    renderingService: RenderingService,
+  ) {
     const {
       fill,
       opacity,
@@ -25,10 +50,10 @@ export class DefaultRenderer implements StyleRenderer {
     if (hasFill) {
       if (!isNil(fillOpacity) && fillOpacity.value !== 1) {
         context.globalAlpha = fillOpacity.value;
-        context.fill();
+        this.fill(context, object, fill, renderingService);
         context.globalAlpha = opacity.value;
       } else {
-        context.fill();
+        this.fill(context, object, fill, renderingService);
       }
     }
 
@@ -96,5 +121,61 @@ export class DefaultRenderer implements StyleRenderer {
         }
       }
     }
+  }
+
+  private fill(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    fill: CSSRGB | CSSGradientValue[],
+    renderingService: RenderingService,
+  ) {
+    if (Array.isArray(fill)) {
+      fill.forEach((gradient) => {
+        context.fillStyle = this.getColor(gradient, object, context, renderingService);
+        context.fill();
+      });
+    } else {
+      context.fill();
+    }
+  }
+
+  private getColor(
+    parsedColor: CSSGradientValue,
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    renderingService: RenderingService,
+  ) {
+    let color: CanvasGradient | CanvasPattern | string;
+
+    if (
+      parsedColor.type === GradientPatternType.LinearGradient ||
+      parsedColor.type === GradientPatternType.RadialGradient
+    ) {
+      const bounds = object.getGeometryBounds();
+      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+      color = this.gradientPool.getOrCreateGradient(
+        {
+          type: parsedColor.type,
+          ...(parsedColor.value as LinearGradient | RadialGradient),
+          width,
+          height,
+        },
+        context,
+      );
+    } else if (parsedColor.type === GradientPatternType.Pattern) {
+      const pattern = this.imagePool.getPatternSync(parsedColor.value as Pattern);
+      if (pattern) {
+        color = pattern;
+      } else {
+        this.imagePool.createPattern(parsedColor.value as Pattern, context).then(() => {
+          // set dirty rectangle flag
+          object.renderable.dirty = true;
+          renderingService.dirtify();
+        });
+      }
+    }
+
+    return color;
   }
 }

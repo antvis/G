@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, RenderingService } from '@antv/g';
 import { Syringe } from '@antv/g';
 
 export const StyleRendererFactory = Syringe.defineToken('StyleRendererFactory');
@@ -7,6 +7,7 @@ export interface StyleRenderer {
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedBaseStyleProps,
     object: DisplayObject,
+    renderingService: RenderingService,
   ) => void;
 }
 

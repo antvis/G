@@ -2,22 +2,15 @@ import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
 import type { Nested, ParenLess } from './types';
 
 export interface LinearGradient {
-  x0: number;
-  y0: number;
-  x1: number;
-  y1: number;
-  steps: string[][];
+  angle: number;
+  steps: [number, string][];
   hash: string;
 }
 
 export interface RadialGradient {
-  x0: number;
-  y0: number;
-  r0: number;
-  x1: number;
-  y1: number;
-  r1: number;
-  steps: string[][];
+  cx: number;
+  cy: number;
+  steps: [number, string][];
   hash: string;
 }
 

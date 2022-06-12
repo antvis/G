@@ -2,10 +2,7 @@ import type {
   CSSRGB,
   DisplayObject,
   FederatedEvent,
-  LinearGradient,
   ParsedBaseStyleProps,
-  Pattern,
-  RadialGradient,
   RBushNodeAABB,
   RenderingPlugin,
   RenderingService,
@@ -15,13 +12,11 @@ import {
   Camera,
   CanvasConfig,
   ContextService,
-  CSSGradientValue,
   DefaultCamera,
   DisplayObjectPool,
   ElementEvent,
   fromRotationTranslationScale,
   getEuler,
-  GradientPatternType,
   inject,
   isNil,
   RBush,
@@ -34,9 +29,7 @@ import {
 } from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
-import { ImagePool } from '@antv/g-plugin-image-loader';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { GradientPool } from './shapes/GradientPool';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
 
@@ -67,12 +60,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
-
-  @inject(ImagePool)
-  private imagePool: ImagePool;
-
-  @inject(GradientPool)
-  private gradientPool: GradientPool;
 
   @inject(PathGeneratorFactory)
   private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
@@ -324,7 +311,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     context.save();
     // apply attributes to context
-    this.applyAttributesToContext(context, object, renderingService);
+    this.applyAttributesToContext(context, object);
 
     // apply anchor in local space
     this.useAnchor(context, object);
@@ -348,7 +335,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // fill & stroke
     if (styleRenderer) {
-      styleRenderer.render(context, object.parsedStyle, object);
+      styleRenderer.render(context, object.parsedStyle, object, renderingService);
     }
 
     // restore applied attributes, eg. shadowBlur shadowColor...
@@ -444,59 +431,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
   }
 
-  private getColor(
-    parsedColor: CSSRGB | CSSGradientValue,
-    name: string,
-    object: DisplayObject,
-    context: CanvasRenderingContext2D,
-    renderingService: RenderingService,
-  ) {
-    let color: CanvasGradient | CanvasPattern | string;
-
-    if (parsedColor instanceof CSSGradientValue) {
-      if (
-        parsedColor.type === GradientPatternType.LinearGradient ||
-        parsedColor.type === GradientPatternType.RadialGradient
-      ) {
-        const bounds = object.getGeometryBounds();
-        const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-        const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-        color = this.gradientPool.getOrCreateGradient(
-          {
-            type: parsedColor.type,
-            ...(parsedColor.value as LinearGradient | RadialGradient),
-            width,
-            height,
-          },
-          context,
-        );
-      } else if (parsedColor.type === GradientPatternType.Pattern) {
-        const pattern = this.imagePool.getPatternSync(parsedColor.value as Pattern);
-        if (pattern) {
-          color = pattern;
-        } else {
-          this.imagePool.createPattern(parsedColor.value as Pattern, context).then(() => {
-            // set dirty rectangle flag
-            object.renderable.dirty = true;
-            renderingService.dirtify();
-          });
-        }
-      }
-    } else {
-      // use instead of buildCSSText
-      // constant, eg. rgba(255,255,255,1)
-      // color = parsedColor.toString();
-      color = object.attributes[name];
-    }
-
-    return color;
-  }
-
-  private applyAttributesToContext(
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-    renderingService: RenderingService,
-  ) {
+  private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject) {
     const {
       stroke,
       fill,
@@ -523,12 +458,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.globalAlpha *= opacity.value;
     }
 
-    if (!isNil(stroke) && !(stroke as CSSRGB).isNone) {
-      context.strokeStyle = this.getColor(stroke, 'stroke', object, context, renderingService);
+    if (!isNil(stroke) && !Array.isArray(stroke) && !(stroke as CSSRGB).isNone) {
+      context.strokeStyle = object.attributes.stroke;
     }
 
-    if (!isNil(fill) && !(fill as CSSRGB).isNone) {
-      context.fillStyle = this.getColor(fill, 'fill', object, context, renderingService);
+    if (!isNil(fill) && !Array.isArray(fill) && !(fill as CSSRGB).isNone) {
+      context.fillStyle = object.attributes.fill;
     }
 
     if (!isNil(filter)) {

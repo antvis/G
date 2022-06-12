@@ -7,7 +7,7 @@ import Stats from 'stats.js';
 
 /**
  * <color>
- * eg. 'red' '#f00' 'rgb(255,0,0)' 'rgba(255,0,0,0.5)' 'transparent'
+ * e.g. 'red' '#f00' 'rgb(255,0,0)' 'rgba(255,0,0,0.5)' 'transparent'
  */
 
 // create a renderer

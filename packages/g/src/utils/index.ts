@@ -4,6 +4,7 @@ export * from './custom-easing';
 export * from './deferred';
 export * from './dom';
 export * from './event';
+export * from './gradient';
 export * from './interpolation';
 export * from './math';
 export * from './path';

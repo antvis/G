@@ -20,13 +20,15 @@ import { mergeColors, parseColor } from '../parser/color';
 })
 export class CSSPropertyColor
   implements
-    Partial<CSSProperty<CSSRGB | CSSGradientValue | CSSKeywordValue, CSSRGB | CSSGradientValue>>
+    Partial<
+      CSSProperty<CSSRGB | CSSGradientValue[] | CSSKeywordValue, CSSRGB | CSSGradientValue[]>
+    >
 {
   parser = parseColor;
   calculator(
     name: string,
-    oldParsed: CSSRGB | CSSGradientValue | CSSKeywordValue,
-    parsed: CSSRGB | CSSGradientValue | CSSKeywordValue,
+    oldParsed: CSSRGB | CSSGradientValue[] | CSSKeywordValue,
+    parsed: CSSRGB | CSSGradientValue[] | CSSKeywordValue,
     object: DisplayObject,
   ) {
     if (parsed instanceof CSSKeywordValue) {

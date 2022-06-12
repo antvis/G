@@ -9,7 +9,7 @@ import Stats from 'stats.js';
  * <length>
  *
  * support the following units:
- * eg. '100px' '20rem' '10em'
+ * e.g. '100px' '20rem' '10em'
  */
 
 // create a renderer

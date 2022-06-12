@@ -1,6 +1,8 @@
 import type { LinearGradient, RadialGradient } from '@antv/g';
 import {
   CanvasConfig,
+  computeLinearGradient,
+  computeRadialGradient,
   GradientPatternType,
   inject,
   isBrowser,
@@ -96,7 +98,8 @@ export class TexturePool {
 
   getOrCreateGradient(params: GradientParams) {
     const key = this.generateCacheKey(params);
-    const { type, x0, y0, x1, y1, steps, width, height } = params;
+    // @ts-ignore
+    const { type, steps, width, height, angle, cx, cy } = params;
 
     let gradient: CanvasGradient | null = this.gradientCache[key];
     const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
@@ -106,23 +109,17 @@ export class TexturePool {
       canvas.height = height; // needs only 1px height
 
       if (type === GradientPatternType.LinearGradient) {
+        const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
-        gradient = context.createLinearGradient(x0 * width, y0 * height, x1 * width, y1 * height);
+        gradient = context.createLinearGradient(x1, y1, x2, y2);
       } else if (type === GradientPatternType.RadialGradient) {
-        const r = Math.sqrt(width * width + height * height) / 2;
+        const { x, y, r } = computeRadialGradient(width, height, cx, cy);
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
-        gradient = context.createRadialGradient(
-          x0 * width,
-          y0 * height,
-          0,
-          x1 * width,
-          y1 * height,
-          (params as RadialGradient).r1 * r,
-        );
+        gradient = context.createRadialGradient(x, y, 0, x, y, r);
       }
 
       steps.forEach(([offset, color]) => {
-        gradient?.addColorStop(Number(offset), color);
+        gradient?.addColorStop(offset, color);
       });
 
       this.gradientCache[key] = gradient;
@@ -140,8 +137,8 @@ export class TexturePool {
 
   private generateCacheKey(params: GradientParams): string {
     // @ts-ignore
-    const { type, x0, y0, x1, y1, r1, steps, width, height } = params;
-    return `gradient-${type}-${x0}-${y0}-${x1}-${y1}-${r1 || 0}-${width}-${height}-${steps
+    const { type, width, height, steps, angle, cx, cy } = params;
+    return `gradient-${type}-${angle || 0}-${cx || 0}-${cy || 0}-${width}-${height}-${steps
       .map((step) => step.join(''))
       .join('-')}`;
   }

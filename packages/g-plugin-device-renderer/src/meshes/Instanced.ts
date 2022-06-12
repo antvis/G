@@ -1023,18 +1023,20 @@ export abstract class Instanced {
 
     const fill = (
       instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
-    ) as CSSRGB | CSSGradientValue;
+    ) as CSSRGB | CSSGradientValue[];
     // use pattern & gradient
-    if (fill && fill instanceof CSSGradientValue) {
+    if (fill && Array.isArray(fill)) {
+      const gradient = fill[0] as CSSGradientValue;
+
       let texImageSource: string | TexImageSource;
       if (
-        fill.type === GradientPatternType.LinearGradient ||
-        fill.type === GradientPatternType.RadialGradient
+        gradient.type === GradientPatternType.LinearGradient ||
+        gradient.type === GradientPatternType.RadialGradient
       ) {
         this.program.setDefineBool('USE_PATTERN', false);
         this.texturePool.getOrCreateGradient({
-          type: fill.type,
-          ...(fill.value as LinearGradient),
+          type: gradient.type,
+          ...(gradient.value as LinearGradient),
           width: 128,
           height: 128,
         });
@@ -1042,7 +1044,7 @@ export abstract class Instanced {
       } else {
         this.program.setDefineBool('USE_PATTERN', true);
         // FIXME: support repeat
-        texImageSource = (fill.value as Pattern).src;
+        texImageSource = (gradient.value as Pattern).src;
       }
 
       const fillMapping = new TextureMapping();

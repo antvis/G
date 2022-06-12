@@ -209,8 +209,8 @@ export interface ParsedBaseStyleProps
   opacity?: CSSUnitValue;
   fillOpacity?: CSSUnitValue;
   strokeOpacity?: CSSUnitValue;
-  fill?: CSSRGB | CSSGradientValue;
-  stroke?: CSSRGB | CSSGradientValue;
+  fill?: CSSRGB | CSSGradientValue[];
+  stroke?: CSSRGB | CSSGradientValue[];
   lineDash?: [CSSUnitValue, CSSUnitValue];
   lineCap?: CSSKeywordValue;
   lineJoin?: CSSKeywordValue;
