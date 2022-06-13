@@ -17,13 +17,13 @@ export interface RepeatingLinearGradientNode {
 
 export interface RadialGradientNode {
   type: 'radial-gradient';
-  orientation?: Array<ShapeNode | DefaultRadialNode | ExtentKeywordNode> | undefined;
+  orientation?: (ShapeNode | DefaultRadialNode | ExtentKeywordNode)[] | undefined;
   colorStops: ColorStop[];
 }
 
 export interface RepeatingRadialGradientNode {
   type: 'repeating-radial-gradient';
-  orientation?: Array<ShapeNode | DefaultRadialNode | ExtentKeywordNode> | undefined;
+  orientation?: (ShapeNode | DefaultRadialNode | ExtentKeywordNode)[] | undefined;
   colorStops: ColorStop[];
 }
 
@@ -210,7 +210,7 @@ export const parseGradient = (function () {
 
   function matchGradient(gradientType: string, pattern, orientationMatcher) {
     return matchCall(pattern, function (captures) {
-      var orientation = orientationMatcher();
+      const orientation = orientationMatcher();
       if (orientation) {
         if (!scan(tokens.comma)) {
           error('Missing comma before color stops');
@@ -226,14 +226,14 @@ export const parseGradient = (function () {
   }
 
   function matchCall(pattern, callback) {
-    var captures = scan(pattern);
+    const captures = scan(pattern);
 
     if (captures) {
       if (!scan(tokens.startCall)) {
         error('Missing (');
       }
 
-      var result = callback(captures);
+      const result = callback(captures);
 
       if (!scan(tokens.endCall)) {
         error('Missing )');
@@ -256,7 +256,7 @@ export const parseGradient = (function () {
   }
 
   function matchListRadialOrientations() {
-    var radialOrientations,
+    let radialOrientations,
       radialOrientation = matchRadialOrientation(),
       lookaheadCache;
 
@@ -285,16 +285,16 @@ export const parseGradient = (function () {
       // @ts-ignore
       radialType.at = matchAtPosition();
     } else {
-      var extent = matchExtentKeyword();
+      const extent = matchExtentKeyword();
       if (extent) {
         radialType = extent;
-        var positionAt = matchAtPosition();
+        const positionAt = matchAtPosition();
         if (positionAt) {
           // @ts-ignore
           radialType.at = positionAt;
         }
       } else {
-        var defaultPosition = matchPositioning();
+        const defaultPosition = matchPositioning();
         if (defaultPosition) {
           radialType = {
             type: 'default-radial',
@@ -336,7 +336,7 @@ export const parseGradient = (function () {
 
   function matchAtPosition() {
     if (match('position', /^at/, 0)) {
-      var positioning = matchPositioning();
+      const positioning = matchPositioning();
 
       if (!positioning) {
         error('Missing positioning value');
@@ -347,7 +347,7 @@ export const parseGradient = (function () {
   }
 
   function matchPositioning() {
-    var location = matchCoordinates();
+    const location = matchCoordinates();
 
     if (location.x || location.y) {
       return {
@@ -365,8 +365,8 @@ export const parseGradient = (function () {
   }
 
   function matchListing(matcher: Function) {
-    let captures = matcher(),
-      result = [];
+    let captures = matcher();
+    const result = [];
 
     if (captures) {
       result.push(captures);
@@ -451,14 +451,12 @@ export const parseGradient = (function () {
   }
 
   function scan(regexp) {
-    var captures, blankCaptures;
-
-    blankCaptures = /^[\n\r\t\s]+/.exec(input);
+    const blankCaptures = /^[\n\r\t\s]+/.exec(input);
     if (blankCaptures) {
       consume(blankCaptures[0].length);
     }
 
-    captures = regexp.exec(input);
+    const captures = regexp.exec(input);
     if (captures) {
       consume(captures[0].length);
     }

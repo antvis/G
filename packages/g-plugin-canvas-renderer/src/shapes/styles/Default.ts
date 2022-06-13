@@ -1,17 +1,14 @@
-import {
+import type {
   CSSGradientValue,
   CSSRGB,
   DisplayObject,
-  GradientPatternType,
-  inject,
-  isNil,
   LinearGradient,
   ParsedBaseStyleProps,
   Pattern,
   RadialGradient,
   RenderingService,
-  singleton,
 } from '@antv/g';
+import { GradientPatternType, inject, isNil, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { GradientPool } from '../GradientPool';
 import type { StyleRenderer } from './interfaces';

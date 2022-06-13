@@ -22,7 +22,7 @@ export function createOrUpdateGradientAndPattern(
 ) {
   // eg. clipPath don't have fill/stroke
   if (!parsedColor) {
-    return;
+    return '';
   }
 
   if (parsedColor instanceof CSSRGB) {
@@ -41,13 +41,18 @@ export function createOrUpdateGradientAndPattern(
       } else {
         const gradientId = createOrUpdateGradient(document, object, $def, $el, gradient);
         $el?.setAttribute(name, `url(#${gradientId})`);
+        return gradientId;
       }
     } else {
       // @see https://stackoverflow.com/questions/20671502/can-i-blend-gradients-in-svg
       const filterId = createOrUpdateMultiGradient(document, object, $def, $el, parsedColor);
-      $el?.setAttribute(name, `url(#${filterId})`);
+      $el?.setAttribute('filter', `url(#${filterId})`);
+      $el?.setAttribute('fill', 'black');
+      return filterId;
     }
   }
+
+  return '';
 }
 
 function generateCacheKey(params: CSSGradientValue | CSSRGB): string {
@@ -131,8 +136,6 @@ function createOrUpdateGradient(
   let $existed = $def.querySelector(`#${gradientId}`);
 
   if (!$existed) {
-    // TODO: need to clear existed but no-ref <gradient>
-
     // <linearGradient> <radialGradient>
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/linearGradient
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/radialGradient
@@ -164,6 +167,8 @@ function createOrUpdateGradient(
     $existed.setAttribute('y1', `${y1}`);
     $existed.setAttribute('x2', `${x2}`);
     $existed.setAttribute('y2', `${y2}`);
+
+    // $existed.setAttribute('gradientTransform', `rotate(${angle})`);
   } else {
     const { cx, cy } = parsedColor.value as RadialGradient;
     const { x, y, r } = computeRadialGradient(width, height, cx, cy);
@@ -186,23 +191,20 @@ function createOrUpdateMultiGradient(
   let $existed = $def.querySelector(`#${filterId}`);
   if (!$existed) {
     $existed = createSVGElement('filter', document) as SVGFilterElement;
+    $existed.setAttribute('filterUnits', 'userSpaceOnUse');
     // @see https://github.com/antvis/g/issues/1025
     $existed.setAttribute('x', '0%');
     $existed.setAttribute('y', '0%');
     $existed.setAttribute('width', '100%');
     $existed.setAttribute('height', '100%');
 
-    const $feComposite = createSVGElement('feComposite', document) as SVGFECompositeElement;
-    $feComposite.setAttribute('in', `${filterId}-${gradients.length}`);
-    $feComposite.setAttribute('in2', 'SourceGraphic');
-    $feComposite.setAttribute('operator', 'in');
-    $existed.appendChild($feComposite);
     $existed.id = filterId;
 
     $def.appendChild($existed);
   }
 
   /**
+   * <rect id="wave-rect" x="0" y="0" width="100%" height="100%" fill="url(#wave)"></rect>
    * <filter id="blend-it" x="0%" y="0%" width="100%" height="100%">
         <feImage xlink:href="#wave-rect" result="myWave" x="100" y="100"/>
         <feImage xlink:href="#ry-rect" result="myRY"  x="100" y="100"/>
@@ -213,11 +215,24 @@ function createOrUpdateMultiGradient(
 
   gradients.forEach((gradient, i) => {
     const gradientId = createOrUpdateGradient(document, object, $def, $el, gradient);
+
+    const rectId = gradientId + '_rect';
+    const $rect = createSVGElement('rect', document) as SVGRectElement;
+    $rect.setAttribute('x', '0');
+    $rect.setAttribute('y', '0');
+    $rect.setAttribute('width', '100%');
+    $rect.setAttribute('height', '100%');
+    $rect.setAttribute('fill', `url(#${gradientId})`);
+    $rect.id = rectId;
+    $def.appendChild($rect);
+
     const $feImage = createSVGElement('feImage', document) as SVGFEImageElement;
-    $feImage.setAttribute('xlink:href', `#${gradientId}`);
+    $feImage.setAttribute('xlink:href', `#${rectId}`);
     $feImage.setAttribute('result', `${filterId}-${i}`);
-    $feImage.setAttribute('x', '100');
-    $feImage.setAttribute('y', '100');
+    // $feImage.setAttribute('x', '0');
+    // $feImage.setAttribute('y', '0');
+    // $feImage.setAttribute('width', '200');
+    // $feImage.setAttribute('height', '100');
     $existed.appendChild($feImage);
 
     if (i > 0) {
@@ -229,6 +244,12 @@ function createOrUpdateMultiGradient(
       $existed.appendChild($feBlend);
     }
   });
+
+  const $feComposite = createSVGElement('feComposite', document) as SVGFECompositeElement;
+  $feComposite.setAttribute('in', `${filterId}-${gradients.length}`);
+  $feComposite.setAttribute('in2', 'SourceGraphic');
+  $feComposite.setAttribute('operator', 'in');
+  $existed.appendChild($feComposite);
 
   return filterId;
 }

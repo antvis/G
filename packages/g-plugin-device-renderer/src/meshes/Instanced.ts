@@ -1,4 +1,5 @@
 import type {
+  CSSGradientValue,
   DisplayObject,
   ParsedBaseStyleProps,
   Pattern,
@@ -7,7 +8,6 @@ import type {
 } from '@antv/g';
 import {
   Camera,
-  CSSGradientValue,
   CSSRGB,
   DefaultCamera,
   GradientPatternType,

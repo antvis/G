@@ -1,9 +1,8 @@
+import type { LinearGradient, RadialGradient } from '@antv/g';
 import {
   computeLinearGradient,
   computeRadialGradient,
   GradientPatternType,
-  LinearGradient,
-  RadialGradient,
   singleton,
 } from '@antv/g';
 

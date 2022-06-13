@@ -2,7 +2,8 @@ import * as d3 from 'd3-color';
 import memoize from 'lodash.memoize';
 import type { Tuple4Number } from '../../types';
 import { clamp, isNil } from '../../utils';
-import { CSSGradientValue, CSSRGB } from '../cssom';
+import type { CSSGradientValue } from '../cssom';
+import { CSSRGB } from '../cssom';
 import { parseGradient } from './gradient';
 
 /**

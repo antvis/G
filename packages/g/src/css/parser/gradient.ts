@@ -1,15 +1,8 @@
 import memoize from 'lodash.memoize';
-import {
-  AngularNode,
-  ColorStop,
-  colorStopToString,
-  DirectionalNode,
-  isNil,
-  isString,
-  parseGradient as parse,
-  PositionNode,
-} from '../../utils';
-import { CSSGradientValue, GradientPatternType, Pattern, RadialGradient } from '../cssom';
+import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
+import { colorStopToString, isNil, isString, parseGradient as parse } from '../../utils';
+import type { Pattern, RadialGradient } from '../cssom';
+import { CSSGradientValue, GradientPatternType } from '../cssom';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;

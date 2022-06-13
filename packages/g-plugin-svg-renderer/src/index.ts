@@ -2,6 +2,7 @@ import type { RendererPlugin, Syringe } from '@antv/g';
 import { Module } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
 import { DefaultCreateElementContribution } from './DefaultCreateElementContribution';
+import { DefElementManager } from './shapes/defs';
 import { SVGRendererPlugin } from './SVGRendererPlugin';
 
 export * from './DefaultCreateElementContribution';
@@ -12,6 +13,7 @@ export * from './utils/dom';
 export { ElementSVG };
 
 export const containerModule = Module((register) => {
+  register(DefElementManager);
   register(DefaultCreateElementContribution);
   register(SVGRendererPlugin);
 });

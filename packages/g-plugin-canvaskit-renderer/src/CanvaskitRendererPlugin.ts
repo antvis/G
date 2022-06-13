@@ -1,4 +1,5 @@
 import type {
+  CSSGradientValue,
   DisplayObject,
   LinearGradient,
   ParsedBaseStyleProps,
@@ -12,7 +13,6 @@ import {
   computeLinearGradient,
   computeRadialGradient,
   ContextService,
-  CSSGradientValue,
   CSSRGB,
   DefaultCamera,
   getEuler,
