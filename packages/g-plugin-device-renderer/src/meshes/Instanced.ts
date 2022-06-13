@@ -1,6 +1,5 @@
 import type {
   DisplayObject,
-  LinearGradient,
   ParsedBaseStyleProps,
   Pattern,
   RenderingService,
@@ -51,7 +50,7 @@ import { TexturePool } from '../TexturePool';
 import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 
 let counter = 1;
-const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
+export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
 
 /**
  * WebGPU has max vertex attribute num(8)
@@ -1024,27 +1023,25 @@ export abstract class Instanced {
     const fill = (
       instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
     ) as CSSRGB | CSSGradientValue[];
+
+    let texImageSource: string | TexImageSource;
+
     // use pattern & gradient
     if (fill && Array.isArray(fill)) {
-      const gradient = fill[0] as CSSGradientValue;
-
-      let texImageSource: string | TexImageSource;
-      if (
-        gradient.type === GradientPatternType.LinearGradient ||
-        gradient.type === GradientPatternType.RadialGradient
-      ) {
-        this.program.setDefineBool('USE_PATTERN', false);
-        this.texturePool.getOrCreateGradient({
-          type: gradient.type,
-          ...(gradient.value as LinearGradient),
-          width: 128,
-          height: 128,
-        });
-        texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
-      } else {
+      if (fill.length === 1 && fill[0].type === GradientPatternType.Pattern) {
+        const gradient = fill[0] as CSSGradientValue;
         this.program.setDefineBool('USE_PATTERN', true);
         // FIXME: support repeat
         texImageSource = (gradient.value as Pattern).src;
+      } else {
+        this.program.setDefineBool('USE_PATTERN', false);
+        this.texturePool.getOrCreateGradient({
+          gradients: fill,
+          width: 128,
+          height: 128,
+          instance,
+        });
+        texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
       }
 
       const fillMapping = new TextureMapping();

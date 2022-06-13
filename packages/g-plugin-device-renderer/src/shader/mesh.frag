@@ -1,5 +1,7 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/mesh.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
+#pragma glslify: import('@antv/g-shader-components/map.declaration.frag')
 
 out vec4 outputColor;
 
@@ -17,6 +19,11 @@ void main(){
     }
     outputColor = vec4(pickingColor, 1.0);
   } else {
+
+    vec4 u_Color = u_FillColor;
+
+    #pragma glslify: import('@antv/g-shader-components/map.frag')
+
     outputColor = u_Color;
     outputColor.a = outputColor.a * u_Opacity * u_FillOpacity;
   }

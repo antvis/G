@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, HTML, Rect } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -86,6 +86,51 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(rect2);
   canvas.appendChild(rect3);
   canvas.appendChild(rect4);
+
+  canvas.appendChild(
+    new HTML({
+      style: {
+        x: 100,
+        y: 20,
+        height: 30,
+        width: 200,
+        innerHTML: 'linear gradient',
+      },
+    }),
+  );
+  canvas.appendChild(
+    new HTML({
+      style: {
+        x: 60,
+        y: 220,
+        height: 30,
+        width: 200,
+        innerHTML: 'multiple linear gradients',
+      },
+    }),
+  );
+  canvas.appendChild(
+    new HTML({
+      style: {
+        x: 350,
+        y: 20,
+        height: 30,
+        width: 200,
+        innerHTML: 'radial gradient',
+      },
+    }),
+  );
+  canvas.appendChild(
+    new HTML({
+      style: {
+        x: 350,
+        y: 220,
+        height: 30,
+        width: 200,
+        innerHTML: 'hard color stop',
+      },
+    }),
+  );
 });
 
 // stats

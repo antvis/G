@@ -103,7 +103,7 @@ export class DefaultRenderer implements StyleRenderer {
 
         const drawStroke = hasFill && !isFillTransparent;
         if (drawStroke) {
-          context.stroke();
+          this.stroke(context, object, stroke, renderingService);
         }
 
         // restore shadow blur
@@ -117,7 +117,7 @@ export class DefaultRenderer implements StyleRenderer {
         }
 
         if (!drawStroke) {
-          context.stroke();
+          this.stroke(context, object, stroke, renderingService);
         }
       }
     }
@@ -139,6 +139,22 @@ export class DefaultRenderer implements StyleRenderer {
     }
   }
 
+  private stroke(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    stroke: CSSRGB | CSSGradientValue[],
+    renderingService: RenderingService,
+  ) {
+    if (Array.isArray(stroke)) {
+      stroke.forEach((gradient) => {
+        context.strokeStyle = this.getColor(gradient, object, context, renderingService);
+        context.stroke();
+      });
+    } else {
+      context.stroke();
+    }
+  }
+
   private getColor(
     parsedColor: CSSGradientValue,
     object: DisplayObject,
@@ -152,8 +168,8 @@ export class DefaultRenderer implements StyleRenderer {
       parsedColor.type === GradientPatternType.RadialGradient
     ) {
       const bounds = object.getGeometryBounds();
-      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+      const width = (bounds && bounds.halfExtents[0] * 2) || 1;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 1;
       color = this.gradientPool.getOrCreateGradient(
         {
           type: parsedColor.type,

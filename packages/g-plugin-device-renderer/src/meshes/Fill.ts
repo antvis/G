@@ -2,6 +2,7 @@ import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g'
 import { CSSRGB, injectable, Shape } from '@antv/g';
 import { mat4, vec3 } from 'gl-matrix';
 import {
+  FILL_TEXTURE_MAPPING,
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
@@ -31,11 +32,25 @@ export class FillMesh extends Instanced {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          byteStride: 4 * 2,
           location: VertexAttributeLocation.POSITION,
         },
       ],
       data: new Float32Array(pointsBuffer),
+    });
+    const { halfExtents } = instance.getGeometryBounds();
+    const uvsBuffer = pointsBuffer.map((x, i) => x / halfExtents[i % 2] / 2);
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.UV,
+      byteStride: 4 * 2,
+      frequency: VertexBufferFrequency.PerVertex,
+      attributes: [
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 0,
+          location: VertexAttributeLocation.UV,
+        },
+      ],
+      data: new Float32Array(uvsBuffer),
     });
     this.geometry.vertexCount = triangles.length;
     this.geometry.setIndexBuffer(new Uint32Array(triangles));
@@ -79,7 +94,7 @@ export class FillMesh extends Instanced {
 
     this.material.setUniforms({
       [Uniform.MODEL_MATRIX]: m,
-      [Uniform.COLOR]: fillColor,
+      [Uniform.FILL_COLOR]: fillColor,
       [Uniform.PICKING_COLOR]: encodedPickingColor,
       [Uniform.OPACITY]: opacity.value,
       [Uniform.FILL_OPACITY]: fillOpacity.value,
@@ -109,18 +124,24 @@ export class FillMesh extends Instanced {
         this.material.geometryDirty = true;
         this.material.programDirty = true;
       } else if (name === 'fill') {
-        let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (fill instanceof CSSRGB) {
-          fillColor = [
+          const fillColor = [
             Number(fill.r) / 255,
             Number(fill.g) / 255,
             Number(fill.b) / 255,
             Number(fill.alpha),
           ];
+          this.material.setUniforms({
+            [Uniform.FILL_COLOR]: fillColor,
+          });
+        } else {
+          const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
+          const fillTextureMapping = this.createFillGradientTextureMapping([this.instance]);
+          if (i >= 0) {
+            this.textureMappings.splice(i, 1, fillTextureMapping);
+          }
+          this.material.textureDirty = true;
         }
-        this.material.setUniforms({
-          [Uniform.COLOR]: fillColor,
-        });
       } else if (name === 'opacity') {
         this.material.setUniforms({
           [Uniform.OPACITY]: opacity.value,

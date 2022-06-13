@@ -19,8 +19,11 @@ export class PathRenderer extends Batch {
   meshes = [FillMesh, LineMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    const { fill, strokeOpacity, lineDash, lineWidth } = object.parsedStyle as ParsedBaseStyleProps;
+    const { fill, stroke, opacity, strokeOpacity, lineDash, lineWidth } =
+      object.parsedStyle as ParsedBaseStyleProps;
     const nodeName = object.nodeName;
+    const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
 
     // Polyline don't need fill
     if (index === 0 && (object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)) {
@@ -29,11 +32,10 @@ export class PathRenderer extends Batch {
 
     // stroke mesh
     if (index === 1) {
-      if (strokeOpacity.value === 0 || lineWidth.value === 0) {
+      if (strokeOpacity.value === 0 || opacity.value === 0 || lineWidth.value === 0 || !hasStroke) {
         return false;
       }
 
-      const hasDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
       if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
         // @see https://github.com/antvis/g/issues/824
         return hasDash;

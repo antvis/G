@@ -1,6 +1,6 @@
 layout(std140) uniform ub_ObjectParams {
   mat4 u_ModelMatrix;
-  vec4 u_Color;
+  vec4 u_FillColor;
   vec4 u_StrokeColor;
   float u_StrokeWidth;
   float u_Opacity;

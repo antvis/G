@@ -59,7 +59,7 @@ enum LineVertexAttributeLocation {
 
 export enum Uniform {
   MODEL_MATRIX = 'u_ModelMatrix',
-  COLOR = 'u_Color',
+  FILL_COLOR = 'u_FillColor',
   STROKE_COLOR = 'u_StrokeColor',
   STROKE_WIDTH = 'u_StrokeWidth',
   INCREASED_LINE_WIDTH_FOR_HIT_TESTING = 'u_IncreasedLineWidthForHitTesting',
@@ -263,7 +263,7 @@ export class LineMesh extends Instanced {
 
     this.material.setUniforms({
       [Uniform.MODEL_MATRIX]: m,
-      [Uniform.COLOR]: fillColor,
+      [Uniform.FILL_COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
       [Uniform.STROKE_WIDTH]: lineWidth.value,
       [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting.value,

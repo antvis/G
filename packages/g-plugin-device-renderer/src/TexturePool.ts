@@ -1,4 +1,4 @@
-import type { LinearGradient, RadialGradient } from '@antv/g';
+import type { CSSGradientValue, DisplayObject, LinearGradient, RadialGradient } from '@antv/g';
 import {
   CanvasConfig,
   computeLinearGradient,
@@ -13,11 +13,12 @@ import {
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureEvent, TextureUsage } from './platform';
 
-export type GradientParams = (LinearGradient | RadialGradient) & {
+export interface GradientParams {
   width: number;
   height: number;
-  type: GradientPatternType;
-};
+  gradients: CSSGradientValue[];
+  instance: DisplayObject;
+}
 
 @singleton()
 export class TexturePool {
@@ -97,50 +98,66 @@ export class TexturePool {
   }
 
   getOrCreateGradient(params: GradientParams) {
-    const key = this.generateCacheKey(params);
-    // @ts-ignore
-    const { type, steps, width, height, angle, cx, cy } = params;
+    const { instance, gradients } = params;
+    const { halfExtents } = instance.getGeometryBounds();
+    const width = halfExtents[0] * 2 || 1;
+    const height = halfExtents[1] * 2 || 1;
 
-    let gradient: CanvasGradient | null = this.gradientCache[key];
     const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
     const context = this.offscreenCanvas.getOrCreateContext(this.canvasConfig.offscreenCanvas);
-    if (!gradient) {
-      canvas.width = width;
-      canvas.height = height; // needs only 1px height
 
-      if (type === GradientPatternType.LinearGradient) {
-        const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
-        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
-        gradient = context.createLinearGradient(x1, y1, x2, y2);
-      } else if (type === GradientPatternType.RadialGradient) {
-        const { x, y, r } = computeRadialGradient(width, height, cx, cy);
-        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
-        gradient = context.createRadialGradient(x, y, 0, x, y, r);
+    canvas.width = width;
+    canvas.height = height;
+
+    gradients.forEach((g) => {
+      const key = this.generateCacheKey(g, width, height);
+      let gradient: CanvasGradient | null = this.gradientCache[key];
+
+      if (!gradient) {
+        const { type } = g;
+        const { steps } = g.value as LinearGradient | RadialGradient;
+
+        if (type === GradientPatternType.LinearGradient) {
+          const { angle } = g.value as LinearGradient;
+          const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
+          // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
+          gradient = context.createLinearGradient(x1, y1, x2, y2);
+        } else if (type === GradientPatternType.RadialGradient) {
+          const { cx, cy } = g.value as RadialGradient;
+          const { x, y, r } = computeRadialGradient(width, height, cx, cy);
+          // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
+          gradient = context.createRadialGradient(x, y, 0, x, y, r);
+        }
+
+        steps.forEach(([offset, color]) => {
+          gradient.addColorStop(offset, color);
+        });
+
+        this.gradientCache[key] = gradient;
       }
 
-      steps.forEach(([offset, color]) => {
-        gradient?.addColorStop(offset, color);
-      });
+      // used as canvas' ID
+      // @ts-ignore
+      canvas.src = key;
 
-      this.gradientCache[key] = gradient;
-    }
-
-    // used as canvas' ID
-    // @ts-ignore
-    canvas.src = key;
-
-    if (gradient) {
       context.fillStyle = gradient;
       context.fillRect(0, 0, width, height);
-    }
+    });
   }
 
-  private generateCacheKey(params: GradientParams): string {
-    // @ts-ignore
-    const { type, width, height, steps, angle, cx, cy } = params;
-    return `gradient-${type}-${angle || 0}-${cx || 0}-${cy || 0}-${width}-${height}-${steps
-      .map((step) => step.join(''))
-      .join('-')}`;
+  private generateCacheKey(params: CSSGradientValue, width: number, height: number): string {
+    if (params.type === GradientPatternType.LinearGradient) {
+      const { steps, angle } = params.value as LinearGradient;
+      return `gradient-${params.type}-${angle || 0}-${width}-${height}-${steps
+        .map((step) => step.join(''))
+        .join('-')}`;
+    } else if (params.type === GradientPatternType.RadialGradient) {
+      const { steps, cx, cy } = params.value as RadialGradient;
+      return `gradient-${params.type}-${cx || 0}-${cy || 0}-${width}-${height}-${steps
+        .map((step) => step.join(''))
+        .join('-')}`;
+    }
+    return '';
   }
 
   destroy() {
