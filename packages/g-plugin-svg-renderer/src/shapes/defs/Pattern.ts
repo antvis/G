@@ -267,6 +267,7 @@ function createOrUpdateMultiGradient(
     </filter>
    */
 
+  let blended = 0;
   gradients.forEach((gradient, i) => {
     const gradientId = createOrUpdateGradient(document, object, $def, $el, gradient);
 
@@ -281,26 +282,26 @@ function createOrUpdateMultiGradient(
     $def.appendChild($rect);
 
     const $feImage = createSVGElement('feImage', document) as SVGFEImageElement;
-    $feImage.setAttribute('xlink:href', `#${rectId}`);
+    $feImage.setAttribute('href', `#${rectId}`);
     $feImage.setAttribute('result', `${filterId}-${i}`);
-    // $feImage.setAttribute('x', '0');
-    // $feImage.setAttribute('y', '0');
-    // $feImage.setAttribute('width', '200');
-    // $feImage.setAttribute('height', '100');
     $existed.appendChild($feImage);
 
     if (i > 0) {
       const $feBlend = createSVGElement('feBlend', document) as SVGFEBlendElement;
-      $feBlend.setAttribute('in', `${filterId}-${i - 1}`);
+      $feBlend.setAttribute(
+        'in',
+        i === 1 ? `${filterId}-${i - 1}` : `${filterId}-blended-${blended - 1}`,
+      );
       $feBlend.setAttribute('in2', `${filterId}-${i}`);
-      $feBlend.setAttribute('result', `${filterId}-${i + 1}`);
+      $feBlend.setAttribute('result', `${filterId}-blended-${blended++}`);
+      // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/blend-mode
       $feBlend.setAttribute('mode', 'multiply');
       $existed.appendChild($feBlend);
     }
   });
 
   const $feComposite = createSVGElement('feComposite', document) as SVGFECompositeElement;
-  $feComposite.setAttribute('in', `${filterId}-${gradients.length}`);
+  $feComposite.setAttribute('in', `${filterId}-blended-${blended}`);
   $feComposite.setAttribute('in2', 'SourceGraphic');
   $feComposite.setAttribute('operator', 'in');
   $existed.appendChild($feComposite);
