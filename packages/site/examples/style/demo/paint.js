@@ -7,6 +7,7 @@ import Stats from 'stats.js';
 
 /**
  * <paint>
+ * include <color> <gradient> <pattern>
  */
 
 // create a renderer
@@ -73,9 +74,11 @@ const circleFolder = gui.addFolder('circle');
 const circleConfig = {
   fill: '#f00',
 };
-const linearGradient = 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
-const radialGradient = 'r(0.5, 0.5, 1) 0:#ffffff 1:#1890ff';
-const pattern = 'p(a) https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
+const linearGradient = 'linear-gradient(0deg, blue, green 40%, red)';
+const radialGradient = 'radial-gradient(circle at center, red, blue, green 100%)';
+const pattern = {
+  image: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jgjxQ57sACsAAAAAAAAAAAAAARQnAQ',
+};
 circleFolder
   .add(circleConfig, 'fill', [
     'none',
@@ -83,8 +86,8 @@ circleFolder
     'transparent',
     linearGradient,
     radialGradient,
-    pattern,
+    'pattern',
   ])
   .onChange((fill) => {
-    circle.style.fill = fill;
+    circle.style.fill = fill === 'pattern' ? pattern : fill;
   });
