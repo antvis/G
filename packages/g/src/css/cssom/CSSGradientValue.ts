@@ -30,17 +30,7 @@ export class CSSGradientValue extends CSSStyleValue {
   }
 
   buildCSSText(n: Nested, p: ParenLess, result: string): string {
-    let text = '';
-    if (this.type === GradientType.LinearGradient) {
-      text = `linear-gradient(${(this.value as LinearGradient).steps
-        .map((step) => step.join(','))
-        .join(',')})`;
-    } else if (this.type === GradientType.RadialGradient) {
-      text = `radial-gradient(${(this.value as RadialGradient).steps
-        .map((step) => step.join(','))
-        .join(',')})`;
-    }
-    return (result += text);
+    return result;
   }
 
   getType() {

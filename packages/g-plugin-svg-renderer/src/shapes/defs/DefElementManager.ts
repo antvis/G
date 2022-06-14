@@ -62,25 +62,27 @@ export class DefElementManager {
   ) {
     const { document: doc, createImage } = this.canvasConfig;
 
-    // `url(#${gradientId})`
-    const matches = $el.getAttribute(name)?.match(urlRegexp);
-    if (matches && matches.length > 1) {
-      this.clearUnusedDefElement(this.gradientCache, matches[1], object.entity);
-    }
+    if ($el) {
+      // `url(#${gradientId})`
+      const matches = $el.getAttribute(name)?.match(urlRegexp);
+      if (matches && matches.length > 1) {
+        this.clearUnusedDefElement(this.gradientCache, matches[1], object.entity);
+      }
 
-    const newDefElementId = createOrUpdateGradientAndPattern(
-      doc || document,
-      this.$def,
-      object,
-      $el,
-      parsedColor,
-      name,
-      createImage,
-    );
-    if (!this.gradientCache[newDefElementId]) {
-      this.gradientCache[newDefElementId] = new Set();
+      const newDefElementId = createOrUpdateGradientAndPattern(
+        doc || document,
+        this.$def,
+        object,
+        $el,
+        parsedColor,
+        name,
+        createImage,
+      );
+      if (!this.gradientCache[newDefElementId]) {
+        this.gradientCache[newDefElementId] = new Set();
+      }
+      this.gradientCache[newDefElementId].add(object.entity);
     }
-    this.gradientCache[newDefElementId].add(object.entity);
   }
 
   createOrUpdateShadow(object: DisplayObject, $el: SVGElement, name: string) {

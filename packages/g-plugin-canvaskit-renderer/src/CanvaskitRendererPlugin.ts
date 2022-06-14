@@ -403,6 +403,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       fillPaint = new CanvasKit.Paint();
       fillPaint.setAntiAlias(true);
       fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
+      // should not affect transparent
+      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
       if (fill instanceof CSSRGB && !fill.isNone) {
         fillPaint.setColor(
           CanvasKit.Color4f(
@@ -423,7 +425,6 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           shader.delete();
         }
       }
-      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
     }
 
     if (hasStroke) {
@@ -434,6 +435,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       if (!isNil(lineWidth) && lineWidth.value > 0) {
         strokePaint.setAntiAlias(true);
         strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
+        strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
         if (stroke instanceof CSSRGB && !stroke.isNone) {
           strokePaint.setColor(
             CanvasKit.Color4f(
@@ -454,8 +456,6 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
             shader.delete();
           }
         }
-
-        strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
 
         strokePaint.setStrokeWidth(lineWidth.value);
         const STROKE_CAP_MAP = {

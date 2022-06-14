@@ -71,8 +71,8 @@ export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[
 });
 
 export function mergeColors(
-  left: CSSRGB | CSSGradientValue[],
-  right: CSSRGB | CSSGradientValue[],
+  left: CSSRGB | CSSGradientValue[] | Pattern,
+  right: CSSRGB | CSSGradientValue[] | Pattern,
 ): [number[], number[], (color: number[]) => string] | undefined {
   // only support constant value, exclude gradient & pattern
   if (!(left instanceof CSSRGB) || !(right instanceof CSSRGB)) {

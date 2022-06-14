@@ -217,7 +217,10 @@ export class TextRenderer implements RendererContribution {
             // width?: FontWidth;
             // slant?: FontSlant;
           },
-          foregroundColor: color2CanvaskitColor(CanvasKit, foregroundColor || fill),
+          foregroundColor: color2CanvaskitColor(
+            CanvasKit,
+            foregroundColor || object.getAttribute('fill'),
+          ),
           heightMultiplier,
           halfLeading,
           letterSpacing,

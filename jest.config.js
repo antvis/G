@@ -20,7 +20,12 @@ const moduleNameMapper = {
 module.exports = {
   moduleNameMapper: moduleNameMapper,
   collectCoverageFrom: ['<rootDir>/packages/g/src/**/*.{ts,tsx}'],
-  coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/', '/__node__tests__/'],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/__tests__/',
+    '/__node__tests__/',
+    '<rootDir>/packages/g-gesture/',
+  ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'clover', 'lcov'],
   // coverageThreshold: {
