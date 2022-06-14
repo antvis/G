@@ -31,6 +31,7 @@
     "@antv/g-plugin-device-renderer": "^1.1.8",
     "@antv/g-plugin-dom-interaction": "^1.1.8-alpha.1",
     "@antv/g-plugin-html-renderer": "^1.1.8-alpha.1",
+    "@antv/g-plugin-image-loader": "^0.0.1-alpha.1",
     "@antv/g-plugin-webgl-device": "^1.1.8-alpha.1"
   },
   "devDependencies": {

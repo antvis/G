@@ -8,18 +8,14 @@ import type {
   RadialGradient,
   RenderingService,
 } from '@antv/g';
-import { GradientPatternType, inject, isNil, singleton } from '@antv/g';
+import { GradientType, inject, isNil, isPattern, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
-import { GradientPool } from '../GradientPool';
 import type { StyleRenderer } from './interfaces';
 
 @singleton()
 export class DefaultRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
-
-  @inject(GradientPool)
-  private gradientPool: GradientPool;
 
   render(
     context: CanvasRenderingContext2D,
@@ -123,15 +119,18 @@ export class DefaultRenderer implements StyleRenderer {
   private fill(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
-    fill: CSSRGB | CSSGradientValue[],
+    fill: CSSRGB | CSSGradientValue[] | Pattern,
     renderingService: RenderingService,
   ) {
     if (Array.isArray(fill)) {
       fill.forEach((gradient) => {
-        context.fillStyle = this.getColor(gradient, object, context, renderingService);
+        context.fillStyle = this.getColor(gradient, object, context);
         context.fill();
       });
     } else {
+      if (isPattern(fill)) {
+        context.fillStyle = this.getPattern(fill, object, context, renderingService);
+      }
       context.fill();
     }
   }
@@ -139,35 +138,52 @@ export class DefaultRenderer implements StyleRenderer {
   private stroke(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
-    stroke: CSSRGB | CSSGradientValue[],
+    stroke: CSSRGB | CSSGradientValue[] | Pattern,
     renderingService: RenderingService,
   ) {
     if (Array.isArray(stroke)) {
       stroke.forEach((gradient) => {
-        context.strokeStyle = this.getColor(gradient, object, context, renderingService);
+        context.strokeStyle = this.getColor(gradient, object, context);
         context.stroke();
       });
     } else {
+      if (isPattern(stroke)) {
+        context.strokeStyle = this.getPattern(stroke, object, context, renderingService);
+      }
       context.stroke();
     }
+  }
+
+  private getPattern(
+    pattern: Pattern,
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    renderingService: RenderingService,
+  ): CanvasPattern {
+    const canvasPattern = this.imagePool.getOrCreatePatternSync(pattern, context, () => {
+      // set dirty rectangle flag
+      object.renderable.dirty = true;
+      renderingService.dirtify();
+    });
+
+    return canvasPattern;
   }
 
   private getColor(
     parsedColor: CSSGradientValue,
     object: DisplayObject,
     context: CanvasRenderingContext2D,
-    renderingService: RenderingService,
   ) {
-    let color: CanvasGradient | CanvasPattern | string;
+    let color: CanvasGradient | string;
 
     if (
-      parsedColor.type === GradientPatternType.LinearGradient ||
-      parsedColor.type === GradientPatternType.RadialGradient
+      parsedColor.type === GradientType.LinearGradient ||
+      parsedColor.type === GradientType.RadialGradient
     ) {
       const bounds = object.getGeometryBounds();
       const width = (bounds && bounds.halfExtents[0] * 2) || 1;
       const height = (bounds && bounds.halfExtents[1] * 2) || 1;
-      color = this.gradientPool.getOrCreateGradient(
+      color = this.imagePool.getOrCreateGradient(
         {
           type: parsedColor.type,
           ...(parsedColor.value as LinearGradient | RadialGradient),
@@ -176,17 +192,6 @@ export class DefaultRenderer implements StyleRenderer {
         },
         context,
       );
-    } else if (parsedColor.type === GradientPatternType.Pattern) {
-      const pattern = this.imagePool.getPatternSync(parsedColor.value as Pattern);
-      if (pattern) {
-        color = pattern;
-      } else {
-        this.imagePool.createPattern(parsedColor.value as Pattern, context).then(() => {
-          // set dirty rectangle flag
-          object.renderable.dirty = true;
-          renderingService.dirtify();
-        });
-      }
     }
 
     return color;

@@ -1,4 +1,10 @@
-import type { CSSGradientValue, CSSRGB, DisplayObject, ParsedFilterStyleProperty } from '@antv/g';
+import type {
+  CSSGradientValue,
+  CSSRGB,
+  DisplayObject,
+  ParsedFilterStyleProperty,
+  Pattern,
+} from '@antv/g';
 import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 import { createOrUpdateFilter } from './Filter';
@@ -51,10 +57,10 @@ export class DefElementManager {
   createOrUpdateGradientAndPattern(
     object: DisplayObject,
     $el: SVGElement,
-    parsedColor: CSSGradientValue[] | CSSRGB,
+    parsedColor: CSSGradientValue[] | CSSRGB | Pattern,
     name: string,
   ) {
-    const { document: doc } = this.canvasConfig;
+    const { document: doc, createImage } = this.canvasConfig;
 
     // `url(#${gradientId})`
     const matches = $el.getAttribute(name)?.match(urlRegexp);
@@ -69,6 +75,7 @@ export class DefElementManager {
       $el,
       parsedColor,
       name,
+      createImage,
     );
     if (!this.gradientCache[newDefElementId]) {
       this.gradientCache[newDefElementId] = new Set();

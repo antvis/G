@@ -13,7 +13,7 @@ import {
   CSSGradientValue,
   CSSRGB,
   ElementEvent,
-  GradientPatternType,
+  GradientType,
   inject,
   isString,
   RenderingContext,
@@ -199,7 +199,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         if (fill instanceof CSSRGB) {
           color = fill.toString();
         } else if (fill instanceof CSSGradientValue) {
-          if (fill.type === GradientPatternType.LinearGradient) {
+          if (fill.type === GradientType.LinearGradient) {
             const steps = (fill.value as LinearGradient).steps
               .map((cur) => {
                 //  ['0', '#ffffff'],

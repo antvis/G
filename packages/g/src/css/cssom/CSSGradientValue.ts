@@ -14,24 +14,14 @@ export interface RadialGradient {
   hash: string;
 }
 
-export interface Pattern {
-  repetition: string;
-  src: string;
-  hash: string;
-}
-
-export enum GradientPatternType {
+export enum GradientType {
   Constant,
   LinearGradient,
   RadialGradient,
-  Pattern,
 }
 
 export class CSSGradientValue extends CSSStyleValue {
-  constructor(
-    public type: GradientPatternType,
-    public value: LinearGradient | RadialGradient | Pattern,
-  ) {
+  constructor(public type: GradientType, public value: LinearGradient | RadialGradient) {
     super();
   }
 
@@ -41,16 +31,14 @@ export class CSSGradientValue extends CSSStyleValue {
 
   buildCSSText(n: Nested, p: ParenLess, result: string): string {
     let text = '';
-    if (this.type === GradientPatternType.LinearGradient) {
+    if (this.type === GradientType.LinearGradient) {
       text = `linear-gradient(${(this.value as LinearGradient).steps
         .map((step) => step.join(','))
         .join(',')})`;
-    } else if (this.type === GradientPatternType.RadialGradient) {
+    } else if (this.type === GradientType.RadialGradient) {
       text = `radial-gradient(${(this.value as RadialGradient).steps
         .map((step) => step.join(','))
         .join(',')})`;
-    } else if (this.type === GradientPatternType.Pattern) {
-      text = `url(${(this.value as Pattern).src})`;
     }
     return (result += text);
   }

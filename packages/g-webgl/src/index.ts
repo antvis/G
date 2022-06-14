@@ -3,6 +3,7 @@ import { AbstractRenderer } from '@antv/g';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
+import * as ImageLoader from '@antv/g-plugin-image-loader';
 import * as WebGLDevice from '@antv/g-plugin-webgl-device';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
@@ -17,6 +18,7 @@ export class Renderer extends AbstractRenderer {
     super(config);
 
     this.registerPlugin(new ContextRegisterPlugin());
+    this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(
       new WebGLDevice.Plugin(
         config?.targets

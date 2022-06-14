@@ -1,8 +1,9 @@
 import memoize from 'lodash.memoize';
 import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
 import { colorStopToString, isNil, isString, parseGradient as parse } from '../../utils';
-import type { Pattern, RadialGradient } from '../cssom';
-import { CSSGradientValue, GradientPatternType } from '../cssom';
+import type { RadialGradient } from '../cssom';
+import { CSSGradientValue, GradientType } from '../cssom';
+import type { Pattern } from './color';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;
@@ -121,7 +122,7 @@ export const parseGradient = memoize((colorStr: string) => {
         return [Number(colorStop.length.value) / 100, colorStopToString(colorStop)];
       });
       if (type === 'linear-gradient') {
-        return new CSSGradientValue(GradientPatternType.LinearGradient, {
+        return new CSSGradientValue(GradientType.LinearGradient, {
           angle: orientation ? angleToDeg(orientation as DirectionalNode | AngularNode) : 0,
           steps,
           hash: colorStr,
@@ -137,7 +138,7 @@ export const parseGradient = memoize((colorStr: string) => {
         }
         if (orientation[0].type === 'shape' && orientation[0].value === 'circle') {
           const { cx, cy } = positonToPercentage(orientation[0].at);
-          return new CSSGradientValue(GradientPatternType.RadialGradient, {
+          return new CSSGradientValue(GradientType.RadialGradient, {
             cx,
             cy,
             steps,
@@ -158,7 +159,7 @@ export const parseGradient = memoize((colorStr: string) => {
       if (arr) {
         const steps = arr[2].match(regexColorStop)?.map((stop) => stop.split(':')) || [];
         return [
-          new CSSGradientValue(GradientPatternType.LinearGradient, {
+          new CSSGradientValue(GradientType.LinearGradient, {
             angle: parseFloat(arr[1]),
             steps: steps.map(([offset, color]) => [Number(offset), color]),
             hash: colorStr,
@@ -171,14 +172,11 @@ export const parseGradient = memoize((colorStr: string) => {
         if (isString(parsedRadialGradient)) {
           colorStr = parsedRadialGradient as string;
         } else {
-          return [new CSSGradientValue(GradientPatternType.RadialGradient, parsedRadialGradient)];
+          return [new CSSGradientValue(GradientType.RadialGradient, parsedRadialGradient)];
         }
       }
     } else if (type === 'p') {
-      const pattern = parsePattern(colorStr);
-      if (pattern) {
-        return [new CSSGradientValue(GradientPatternType.Pattern, pattern)];
-      }
+      return parsePattern(colorStr);
     }
   }
 });
@@ -219,9 +217,9 @@ function parsePattern(patternStr: string): Pattern | null {
         repetition = 'no-repeat';
     }
     return {
-      src,
+      image: src,
+      // @ts-ignore
       repetition,
-      hash: patternStr,
     };
   }
   return null;

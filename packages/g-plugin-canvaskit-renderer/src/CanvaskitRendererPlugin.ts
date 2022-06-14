@@ -3,6 +3,7 @@ import type {
   DisplayObject,
   LinearGradient,
   ParsedBaseStyleProps,
+  Pattern,
   RadialGradient,
   RenderingPlugin,
   RenderingService,
@@ -16,9 +17,11 @@ import {
   CSSRGB,
   DefaultCamera,
   getEuler,
-  GradientPatternType,
+  GradientType,
   inject,
   isNil,
+  isPattern,
+  isString,
   parseColor,
   rad2deg,
   RenderingContext,
@@ -26,13 +29,15 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import type {
   Canvas,
-  CanvasKit,
+  EmbindEnumEntity,
   InputRect,
   ManagedSkottieAnimation,
   Paint,
   Particles,
+  TextureSource,
 } from 'canvaskit-wasm';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { FontLoader } from './FontLoader';
@@ -64,8 +69,13 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   @inject(FontLoader)
   private fontLoader: FontLoader;
 
+  @inject(ImagePool)
+  private imagePool: ImagePool;
+
   @inject(CanvaskitRendererPluginOptions)
   private canvaskitRendererPluginOptions: CanvaskitRendererPluginOptions;
+
+  private renderingService: RenderingService;
 
   private destroyed = false;
 
@@ -111,6 +121,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   apply(renderingService: RenderingService) {
+    this.renderingService = renderingService;
     renderingService.hooks.init.tapPromise(CanvaskitRendererPlugin.tag, async () => {
       const canvasKitContext = this.contextService.getContext();
       const { surface, CanvasKit } = canvasKitContext;
@@ -153,7 +164,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
         this.drawAnimations(canvas, firstFrame);
         this.drawParticles(canvas);
-        this.drawWithSurface(canvas, CanvasKit);
+        this.drawWithSurface(canvas);
 
         canvas.restore();
 
@@ -225,23 +236,61 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private drawWithSurface(canvas: Canvas, CanvasKit: CanvasKit) {
+  private drawWithSurface(canvas: Canvas) {
     this.renderingContext.root.forEach((object: DisplayObject) => {
-      this.renderDisplayObject(object, canvas, CanvasKit);
+      this.renderDisplayObject(object, canvas);
     });
   }
 
-  private addGradient(
-    object: DisplayObject,
-    stroke: CSSGradientValue,
-    paint: Paint,
-    CanvasKit: CanvasKit,
-  ) {
+  private generatePattern(object: DisplayObject, pattern: Pattern) {
+    const { surface, CanvasKit } = this.contextService.getContext();
+    const { image, repetition } = pattern;
+
+    let src: TextureSource;
+    if (isString(image)) {
+      src = this.imagePool.getImageSync(image, () => {
+        // set dirty rectangle flag
+        object.renderable.dirty = true;
+        this.renderingService.dirtify();
+      });
+    } else {
+      // @ts-ignore
+      src = image;
+    }
+
+    if (src) {
+      // TODO: check image.complete
+      // WebGL: INVALID_VALUE: texImage2D: invalid image
+      const decoded = surface.makeImageFromTextureSource(src);
+      if (decoded) {
+        let tx: EmbindEnumEntity;
+        let ty: EmbindEnumEntity;
+        if (repetition === 'repeat') {
+          tx = CanvasKit.TileMode.Repeat;
+          ty = CanvasKit.TileMode.Repeat;
+        } else if (repetition === 'repeat-x') {
+          tx = CanvasKit.TileMode.Repeat;
+          ty = CanvasKit.TileMode.Decal;
+        } else if (repetition === 'repeat-y') {
+          tx = CanvasKit.TileMode.Decal;
+          ty = CanvasKit.TileMode.Repeat;
+        } else if (repetition === 'no-repeat') {
+          tx = CanvasKit.TileMode.Decal;
+          ty = CanvasKit.TileMode.Decal;
+        }
+        const pattern = decoded.makeShaderCubic(tx, ty, 1 / 3, 1 / 3);
+        return pattern;
+      }
+    }
+  }
+
+  private generateGradient(object: DisplayObject, stroke: CSSGradientValue) {
+    const { CanvasKit } = this.contextService.getContext();
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
 
-    if (stroke.type === GradientPatternType.LinearGradient) {
+    if (stroke.type === GradientType.LinearGradient) {
       // @see https://fiddle.skia.org/c/@GradientShader_MakeLinear
       const { angle, steps } = stroke.value as LinearGradient;
       const pos: number[] = [];
@@ -266,8 +315,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         pos,
         CanvasKit.TileMode.Mirror,
       );
-      paint.setShader(gradient);
-    } else if (stroke.type === GradientPatternType.RadialGradient) {
+      return gradient;
+    } else if (stroke.type === GradientType.RadialGradient) {
       const { cx, cy, steps } = stroke.value as RadialGradient;
       const { x, y, r } = computeRadialGradient(width, height, cx, cy);
       const pos: number[] = [];
@@ -292,11 +341,28 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         pos,
         CanvasKit.TileMode.Mirror,
       );
-      paint.setShader(gradient);
+      return gradient;
     }
   }
 
-  private renderDisplayObject(object: DisplayObject, canvas: Canvas, CanvasKit: CanvasKit) {
+  private generateGradientsShader(object: DisplayObject, fill: CSSGradientValue[]) {
+    const { CanvasKit } = this.contextService.getContext();
+    const gradientShaders = fill.map((gradient) => this.generateGradient(object, gradient));
+    let previousShader = gradientShaders[0];
+    for (let i = 1; i < gradientShaders.length; i++) {
+      previousShader = CanvasKit.Shader.MakeBlend(
+        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+        CanvasKit.BlendMode.SrcOver,
+        previousShader,
+        gradientShaders[i],
+      );
+    }
+    return previousShader;
+  }
+
+  private renderDisplayObject(object: DisplayObject, canvas: Canvas) {
+    const { CanvasKit } = this.contextService.getContext();
+
     if (
       !object.isVisible() ||
       object.isCulled() ||
@@ -347,9 +413,15 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           ),
         );
       } else if (Array.isArray(fill)) {
-        fill.forEach((gradient) => {
-          this.addGradient(object, gradient, fillPaint, CanvasKit);
-        });
+        const shader = this.generateGradientsShader(object, fill);
+        fillPaint.setShader(shader);
+        shader.delete();
+      } else if (isPattern(fill)) {
+        const shader = this.generatePattern(object, fill);
+        if (shader) {
+          fillPaint.setShader(shader);
+          shader.delete();
+        }
       }
       fillPaint.setAlphaf(fillOpacity.value * opacity.value);
     }
@@ -372,9 +444,15 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
             ),
           );
         } else if (Array.isArray(stroke)) {
-          stroke.forEach((gradient) => {
-            this.addGradient(object, gradient, strokePaint, CanvasKit);
-          });
+          const shader = this.generateGradientsShader(object, stroke);
+          strokePaint.setShader(shader);
+          shader.delete();
+        } else if (isPattern(stroke)) {
+          const shader = this.generatePattern(object, stroke);
+          if (shader) {
+            strokePaint.setShader(shader);
+            shader.delete();
+          }
         }
 
         strokePaint.setAlphaf(strokeOpacity.value * opacity.value);

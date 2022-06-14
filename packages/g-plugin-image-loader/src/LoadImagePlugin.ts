@@ -34,7 +34,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         const { img } = attributes;
 
         if (isString(img)) {
-          this.imagePool.getOrCreateImage(img).then(() => {
+          this.imagePool.getImageSync(img, () => {
             // set dirty rectangle flag
             object.renderable.dirty = true;
             renderingService.dirtify();

@@ -1,9 +1,9 @@
+import { CSSGradientValue, CSSStyleValueType, GradientType } from '@antv/g';
 import { expect } from 'chai';
-import { CSSGradientValue, GradientPatternType, CSSStyleValueType } from '@antv/g';
 
 describe('CSSGradientValueTest', () => {
   it('should create linear gradient correctly.', () => {
-    const value = new CSSGradientValue(GradientPatternType.LinearGradient, {
+    const value = new CSSGradientValue(GradientType.LinearGradient, {
       x0: 0,
       y0: 0,
       x1: 0,
@@ -19,7 +19,7 @@ describe('CSSGradientValueTest', () => {
   });
 
   it('should create radial gradient correctly.', () => {
-    const value = new CSSGradientValue(GradientPatternType.RadialGradient, {
+    const value = new CSSGradientValue(GradientType.RadialGradient, {
       x0: 0,
       y0: 0,
       x1: 0,
@@ -34,21 +34,8 @@ describe('CSSGradientValueTest', () => {
     expect(cloned.toString()).to.eqls('radial-gradient(0,1)');
   });
 
-  it('should create pattern correctly.', () => {
-    const value = new CSSGradientValue(GradientPatternType.Pattern, {
-      src: 'xxx',
-      hash: '',
-      repetition: '',
-    });
-    expect(value.toString()).to.eqls('url(xxx)');
-    expect(value.getType()).to.eqls(CSSStyleValueType.kColorType);
-
-    const cloned = value.clone();
-    expect(cloned.toString()).to.eqls('url(xxx)');
-  });
-
   it('should create constant correctly.', () => {
-    const value = new CSSGradientValue(GradientPatternType.Constant, {
+    const value = new CSSGradientValue(GradientType.Constant, {
       src: 'xxx',
       hash: '',
       repetition: '',

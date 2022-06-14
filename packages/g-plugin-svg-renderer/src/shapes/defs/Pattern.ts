@@ -4,11 +4,15 @@ import {
   computeRadialGradient,
   CSSGradientValue,
   CSSRGB,
-  GradientPatternType,
+  GradientType,
+  isBrowser,
+  isPattern,
+  isString,
 } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 import { FILTER_PREFIX } from './Filter';
 
+export const PATTERN_PREFIX = 'g-pattern-';
 const cacheKey2IDMap: Record<string, string> = {};
 let counter = 0;
 
@@ -17,8 +21,9 @@ export function createOrUpdateGradientAndPattern(
   $def: SVGDefsElement,
   object: DisplayObject,
   $el: SVGElement,
-  parsedColor: CSSGradientValue[] | CSSRGB,
+  parsedColor: CSSGradientValue[] | CSSRGB | Pattern,
   name: string,
+  createImage: (url: string) => HTMLImageElement,
 ) {
   // eg. clipPath don't have fill/stroke
   if (!parsedColor) {
@@ -33,16 +38,17 @@ export function createOrUpdateGradientAndPattern(
       // constant value, eg. '#fff'
       $el?.setAttribute(name, parsedColor.isNone ? 'none' : parsedColor.toString());
     }
+  } else if (isPattern(parsedColor)) {
+    const patternId = createOrUpdatePattern(document, $def, object, parsedColor, createImage);
+    // use style instead of attribute when applying <pattern>
+    // @see https://stackoverflow.com/a/7723115
+    $el.style[name] = `url(#${patternId})`;
+    return patternId;
   } else {
     if (parsedColor.length === 1) {
-      const gradient = parsedColor[0];
-      if (gradient.type === GradientPatternType.Pattern) {
-        createOrUpdatePattern(document, $def, $el, name, gradient);
-      } else {
-        const gradientId = createOrUpdateGradient(document, object, $def, $el, gradient);
-        $el?.setAttribute(name, `url(#${gradientId})`);
-        return gradientId;
-      }
+      const gradientId = createOrUpdateGradient(document, object, $def, $el, parsedColor[0]);
+      $el?.setAttribute(name, `url(#${gradientId})`);
+      return gradientId;
     } else {
       // @see https://stackoverflow.com/questions/20671502/can-i-blend-gradients-in-svg
       const filterId = createOrUpdateMultiGradient(document, object, $def, $el, parsedColor);
@@ -55,28 +61,28 @@ export function createOrUpdateGradientAndPattern(
   return '';
 }
 
-function generateCacheKey(params: CSSGradientValue | CSSRGB): string {
+function generateCacheKey(src: CSSGradientValue | CSSRGB | Pattern): string {
   let cacheKey = '';
-  if (params instanceof CSSGradientValue) {
-    const { type } = params;
-    if (type === GradientPatternType.Pattern) {
-      const { src } = params.value as Pattern;
-      cacheKey = src;
-    } else if (
-      type === GradientPatternType.LinearGradient ||
-      type === GradientPatternType.RadialGradient
-    ) {
+  if (src instanceof CSSGradientValue) {
+    const { type, value } = src;
+    if (type === GradientType.LinearGradient || type === GradientType.RadialGradient) {
       // @ts-ignore
-      const { type, width, height, steps, angle, cx, cy } = params.value;
+      const { type, width, height, steps, angle, cx, cy } = value;
       cacheKey = `${type}${width}${height}${angle || 0}${cx || 0}${cy || 0}${steps
-        .map((step: string[]) => step.join(''))
+        .map((step: [number, string]) => step.join(''))
         .join('')}`;
     }
+  } else if (isPattern(src)) {
+    if (isString(src.image)) {
+      cacheKey = `pattern-${src.image}-${src.repetition}`;
+    } else {
+      cacheKey = `pattern-${counter}`;
+    }
+  }
 
-    if (cacheKey) {
-      if (!cacheKey2IDMap[cacheKey]) {
-        cacheKey2IDMap[cacheKey] = `_pattern_${type}_${counter++}`;
-      }
+  if (cacheKey) {
+    if (!cacheKey2IDMap[cacheKey]) {
+      cacheKey2IDMap[cacheKey] = PATTERN_PREFIX + `${counter++}`;
     }
   }
 
@@ -86,43 +92,91 @@ function generateCacheKey(params: CSSGradientValue | CSSRGB): string {
 function createOrUpdatePattern(
   document: Document,
   $def: SVGDefsElement,
-  $el: SVGElement,
-  name: string,
-  parsedColor: CSSGradientValue,
+  object: DisplayObject,
+  pattern: Pattern,
+  createImage: (url: string) => HTMLImageElement,
 ) {
-  const patternId = generateCacheKey(parsedColor);
+  const patternId = generateCacheKey(pattern);
   const $existed = $def.querySelector(`#${patternId}`);
-
   if (!$existed) {
-    const { src } = parsedColor.value as Pattern;
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
-    const $pattern = createSVGElement('pattern', document) as SVGPatternElement;
-    $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-    const $image = createSVGElement('image', document);
-    $pattern.appendChild($image);
-    $pattern.id = patternId;
-    $def.appendChild($pattern);
-    $el?.setAttribute(name, `url(#${patternId})`);
+    const { image, repetition } = pattern;
 
-    $image.setAttribute('href', src);
-
-    const img = new window.Image();
-    if (!src.match(/^data:/i)) {
-      img.crossOrigin = 'Anonymous';
-    }
-    img.src = src;
-    const onload = function () {
-      $pattern.setAttribute('width', `${img.width}`);
-      $pattern.setAttribute('height', `${img.height}`);
-    };
-    if (img.complete) {
-      onload();
+    let imageURL = '';
+    if (isString(image)) {
+      imageURL = image;
     } else {
-      img.onload = onload;
-      // Fix onload() bug in IE9
-      img.src = img.src;
+      if (isBrowser) {
+        if (image instanceof HTMLImageElement) {
+          imageURL = image.src;
+        } else if (image instanceof HTMLCanvasElement) {
+          imageURL = image.toDataURL();
+        } else if (image instanceof HTMLVideoElement) {
+          // won't support
+        }
+      }
+    }
+
+    if (imageURL) {
+      // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
+      const $pattern = createSVGElement('pattern', document) as SVGPatternElement;
+      $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+
+      const $image = createSVGElement('image', document);
+
+      $pattern.appendChild($image);
+      $pattern.id = patternId;
+      $def.appendChild($pattern);
+      // use href instead of xlink:href
+      // @see https://stackoverflow.com/a/13379007
+      $image.setAttribute('href', imageURL);
+
+      let img: HTMLImageElement;
+      if (createImage) {
+        img = createImage(imageURL);
+      } else if (isBrowser) {
+        img = new window.Image();
+      }
+      if (!imageURL.match(/^data:/i)) {
+        img.crossOrigin = 'Anonymous';
+        $image.setAttribute('crossorigin', 'anonymous');
+      }
+      img.src = imageURL;
+      const onload = function () {
+        $pattern.setAttribute('x', '0');
+        $pattern.setAttribute('y', '0');
+
+        const { halfExtents } = object.getGeometryBounds();
+
+        // There is no equivalent to CSS no-repeat for SVG patterns
+        // @see https://stackoverflow.com/a/33481956
+        let patternWidth = img.width;
+        let patternHeight = img.height;
+        if (repetition === 'repeat-x') {
+          patternHeight = halfExtents[1] * 2;
+        } else if (repetition === 'repeat-y') {
+          patternWidth = halfExtents[0] * 2;
+        } else if (repetition === 'no-repeat') {
+          patternWidth = halfExtents[0] * 2;
+          patternHeight = halfExtents[1] * 2;
+        }
+        $pattern.setAttribute('width', `${patternWidth}`);
+        $pattern.setAttribute('height', `${patternHeight}`);
+
+        $image.setAttribute('x', '0');
+        $image.setAttribute('y', '0');
+        $image.setAttribute('width', `${img.width}`);
+        $image.setAttribute('height', `${img.height}`);
+      };
+      if (img.complete) {
+        onload();
+      } else {
+        img.onload = onload;
+        // Fix onload() bug in IE9
+        img.src = img.src;
+      }
     }
   }
+  return patternId;
 }
 
 function createOrUpdateGradient(
@@ -140,7 +194,7 @@ function createOrUpdateGradient(
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/linearGradient
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/radialGradient
     $existed = createSVGElement(
-      parsedColor.type === GradientPatternType.LinearGradient ? 'linearGradient' : 'radialGradient',
+      parsedColor.type === GradientType.LinearGradient ? 'linearGradient' : 'radialGradient',
       document,
     );
     // @see https://github.com/antvis/g/issues/1025
@@ -159,7 +213,7 @@ function createOrUpdateGradient(
   const width = (bounds && bounds.halfExtents[0] * 2) || 0;
   const height = (bounds && bounds.halfExtents[1] * 2) || 0;
 
-  if (parsedColor.type === GradientPatternType.LinearGradient) {
+  if (parsedColor.type === GradientType.LinearGradient) {
     const { angle } = parsedColor.value as LinearGradient;
     const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
 

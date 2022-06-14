@@ -1,19 +1,17 @@
+import {
+  Circle,
+  CSSGradientValue,
+  CSSRGB,
+  GradientType,
+  mergeColors,
+  parseColor,
+  Rect,
+} from '@antv/g';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
 import sinonChai from 'sinon-chai';
-import {
-  CSSGradientValue,
-  CSSRGB,
-  Rect,
-  Circle,
-  parseColor,
-  mergeColors,
-  GradientPatternType,
-} from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -92,7 +90,7 @@ describe('Property Color', () => {
   it('should not merge constant color with gradient', () => {
     const result = mergeColors(
       new CSSRGB(255, 0, 0, 1),
-      new CSSGradientValue(GradientPatternType.LinearGradient, {
+      new CSSGradientValue(GradientType.LinearGradient, {
         hash: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
         steps: [
           ['0', '#ffffff'],

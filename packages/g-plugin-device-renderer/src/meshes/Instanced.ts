@@ -10,9 +10,9 @@ import {
   Camera,
   CSSRGB,
   DefaultCamera,
-  GradientPatternType,
   inject,
   injectable,
+  isPattern,
   parseColor,
   Shape,
 } from '@antv/g';
@@ -1022,18 +1022,13 @@ export abstract class Instanced {
 
     const fill = (
       instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
-    ) as CSSRGB | CSSGradientValue[];
+    ) as CSSRGB | CSSGradientValue[] | Pattern;
 
     let texImageSource: string | TexImageSource;
 
     // use pattern & gradient
-    if (fill && Array.isArray(fill)) {
-      if (fill.length === 1 && fill[0].type === GradientPatternType.Pattern) {
-        const gradient = fill[0] as CSSGradientValue;
-        this.program.setDefineBool('USE_PATTERN', true);
-        // FIXME: support repeat
-        texImageSource = (gradient.value as Pattern).src;
-      } else {
+    if (fill && (isPattern(fill) || Array.isArray(fill))) {
+      if (Array.isArray(fill)) {
         this.program.setDefineBool('USE_PATTERN', false);
         this.texturePool.getOrCreateGradient({
           gradients: fill,
@@ -1041,34 +1036,48 @@ export abstract class Instanced {
           height: 128,
           instance,
         });
-        texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
+      } else if (isPattern(fill)) {
+        this.program.setDefineBool('USE_PATTERN', true);
+        this.texturePool.getOrCreatePattern(fill as Pattern, instance, () => {
+          // need re-render
+          objects.forEach((object) => {
+            object.renderable.dirty = true;
+          });
+          this.material.textureDirty = true;
+        });
       }
 
-      const fillMapping = new TextureMapping();
-      fillMapping.name = FILL_TEXTURE_MAPPING;
-      fillMapping.texture = this.texturePool.getOrCreateTexture(
+      texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
+      const texture = this.texturePool.getOrCreateTexture(
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
       );
-      fillMapping.texture.on('loaded', () => {
-        // need re-render
-        objects.forEach((object) => {
-          object.renderable.dirty = true;
-        });
-      });
-      this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
-      fillMapping.sampler = this.renderHelper.getCache().createSampler({
-        wrapS: WrapMode.Repeat,
-        wrapT: WrapMode.Repeat,
-        minFilter: TexFilterMode.Point,
-        magFilter: TexFilterMode.Bilinear,
-        mipFilter: MipFilterMode.Linear,
-        minLOD: 0,
-        maxLOD: 0,
-      });
 
-      return fillMapping;
+      if (texture) {
+        const fillMapping = new TextureMapping();
+        fillMapping.name = FILL_TEXTURE_MAPPING;
+        fillMapping.texture = texture;
+        fillMapping.texture.on('loaded', () => {
+          // need re-render
+          objects.forEach((object) => {
+            object.renderable.dirty = true;
+          });
+          this.material.textureDirty = true;
+        });
+        this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
+        fillMapping.sampler = this.renderHelper.getCache().createSampler({
+          wrapS: WrapMode.Repeat,
+          wrapT: WrapMode.Repeat,
+          minFilter: TexFilterMode.Point,
+          magFilter: TexFilterMode.Bilinear,
+          mipFilter: MipFilterMode.Linear,
+          minLOD: 0,
+          maxLOD: 0,
+        });
+
+        return fillMapping;
+      }
     }
 
     return null;

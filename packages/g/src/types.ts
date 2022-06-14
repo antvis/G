@@ -9,6 +9,7 @@ import type {
   CSSRGB,
   CSSUnitValue,
   ParsedTransform,
+  Pattern,
 } from './css';
 import type { DisplayObject } from './display-objects';
 
@@ -111,11 +112,11 @@ export interface BaseStyleProps {
   offsetPathTargets?: DisplayObject[];
   offsetDistance?: number;
 
-  stroke?: ColorType;
+  stroke?: ColorType | Pattern;
   /** 描边透明度 */
   strokeOpacity?: number;
   /** 填充颜色 */
-  fill?: ColorType;
+  fill?: ColorType | Pattern;
   /** 填充透明度 */
   fillOpacity?: number;
   /** 整体透明度 */
@@ -209,8 +210,8 @@ export interface ParsedBaseStyleProps
   opacity?: CSSUnitValue;
   fillOpacity?: CSSUnitValue;
   strokeOpacity?: CSSUnitValue;
-  fill?: CSSRGB | CSSGradientValue[];
-  stroke?: CSSRGB | CSSGradientValue[];
+  fill?: CSSRGB | CSSGradientValue[] | Pattern;
+  stroke?: CSSRGB | CSSGradientValue[] | Pattern;
   lineDash?: [CSSUnitValue, CSSUnitValue];
   lineCap?: CSSKeywordValue;
   lineJoin?: CSSKeywordValue;

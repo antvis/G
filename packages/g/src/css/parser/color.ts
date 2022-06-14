@@ -1,15 +1,34 @@
 import * as d3 from 'd3-color';
 import memoize from 'lodash.memoize';
 import type { Tuple4Number } from '../../types';
-import { clamp, isNil } from '../../utils';
+import { clamp, isNil, isObject } from '../../utils';
 import type { CSSGradientValue } from '../cssom';
 import { CSSRGB } from '../cssom';
 import { parseGradient } from './gradient';
 
 /**
+ * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createPattern
+ */
+export interface Pattern {
+  image: string | CanvasImageSource;
+  repetition: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
+}
+
+export function isPattern(object: any): object is Pattern {
+  return isObject(object) && !!(object as Pattern).image;
+}
+
+/**
  * @see https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/parser/CSSParser.cpp#L97
  */
-export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[] => {
+export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[] | Pattern => {
+  if (isPattern(colorStr)) {
+    return {
+      repetition: 'repeat',
+      ...(colorStr as Pattern),
+    };
+  }
+
   if (isNil(colorStr)) {
     colorStr = '';
   }
@@ -24,7 +43,7 @@ export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[
 
   // support CSS gradient syntax
   const g = parseGradient(colorStr);
-  if (g && g.length) {
+  if (g) {
     return g;
   }
 
