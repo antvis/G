@@ -9,6 +9,16 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+const webgpuRenderer = new WebGPURenderer();
 
 const plugin = new PluginYoga();
 

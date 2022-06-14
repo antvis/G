@@ -1,7 +1,9 @@
 import { Canvas, CanvasEvent, Circle, MutationObserver } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
@@ -9,6 +11,16 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
