@@ -38,18 +38,32 @@ const rect = new Rect({
   style: {
     x: 200,
     y: 100,
-    width: 300,
-    height: 200,
+    width: -100,
+    height: -100,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
-    radius: [0, 4, 8, 16],
+    radius: [8, 4, 8, 16],
     cursor: 'pointer',
   },
 });
+// const rect2 = new Rect({
+//   style: {
+//     x: 120,
+//     y: 120,
+//     width: -100,
+//     height: 100,
+//     fill: '#1890FF',
+//     stroke: '#F04864',
+//     lineWidth: 4,
+//     radius: [0, 4, 8, 16],
+//     cursor: 'pointer',
+//   },
+// });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(rect);
+  // canvas.appendChild(rect2);
 });
 
 // stats
@@ -123,10 +137,10 @@ rectFolder.add(rectConfig, 'x', 0, 400).onChange((x) => {
 rectFolder.add(rectConfig, 'y', 0, 400).onChange((y) => {
   rect.style.y = y;
 });
-rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
+rectFolder.add(rectConfig, 'width', -400, 400).onChange((width) => {
   rect.style.width = width;
 });
-rectFolder.add(rectConfig, 'height', 50, 400).onChange((height) => {
+rectFolder.add(rectConfig, 'height', -400, 400).onChange((height) => {
   rect.style.height = height;
 });
 rectFolder.addColor(rectConfig, 'fill').onChange((color) => {

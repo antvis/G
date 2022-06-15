@@ -869,8 +869,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         offsetZ = 0,
       } = geometryUpdater.update(parsedStyle, object);
 
+      // account for negative width / height of Rect
+      // @see https://github.com/antvis/g/issues/957
+      const flipY = width < 0;
+      const flipX = height < 0;
+
       // init with content box
-      const halfExtents = vec3.fromValues(width / 2, height / 2, depth / 2);
+      const halfExtents = vec3.fromValues(Math.abs(width) / 2, Math.abs(height) / 2, depth / 2);
       // anchor is center by default, don't account for lineWidth here
       const {
         lineWidth,
@@ -887,8 +892,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
 
       const center = vec3.fromValues(
-        (1 - ((anchor && anchor[0].value) || 0) * 2) * halfExtents[0] + offsetX,
-        (1 - ((anchor && anchor[1].value) || 0) * 2) * halfExtents[1] + offsetY,
+        ((1 - ((anchor && anchor[0].value) || 0) * 2) * width) / 2 + offsetX,
+        ((1 - ((anchor && anchor[1].value) || 0) * 2) * height) / 2 + offsetY,
         (1 - ((anchor && anchor[2]?.value) || 0) * 2) * halfExtents[2] + offsetZ,
       );
 
@@ -955,12 +960,20 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       anchor = parsedStyle.anchor;
 
       // set transform origin
-      let usedOriginXValue = convertPercentUnit(transformOrigin[0], 0, object);
-      let usedOriginYValue = convertPercentUnit(transformOrigin[1], 1, object);
-      usedOriginXValue -=
-        ((anchor && anchor[0].value) || 0) * geometry.contentBounds.halfExtents[0] * 2;
-      usedOriginYValue -=
-        ((anchor && anchor[1].value) || 0) * geometry.contentBounds.halfExtents[1] * 2;
+      let usedOriginXValue = (flipY ? -1 : 1) * convertPercentUnit(transformOrigin[0], 0, object);
+      let usedOriginYValue = (flipX ? -1 : 1) * convertPercentUnit(transformOrigin[1], 1, object);
+      usedOriginXValue =
+        usedOriginXValue -
+        (flipY ? -1 : 1) *
+          ((anchor && anchor[0].value) || 0) *
+          geometry.contentBounds.halfExtents[0] *
+          2;
+      usedOriginYValue =
+        usedOriginYValue -
+        (flipX ? -1 : 1) *
+          ((anchor && anchor[1].value) || 0) *
+          geometry.contentBounds.halfExtents[1] *
+          2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
       object.dispatchEvent(new CustomEvent(ElementEvent.GEOMETRY_BOUNDS_CHANGED));

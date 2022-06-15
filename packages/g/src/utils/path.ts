@@ -321,15 +321,20 @@ function rectToCommands(
   // @see https://gist.github.com/danielpquinn/dd966af424030d47e476
   if (radius) {
     const [tlr, trr, brr, blr] = radius;
+    const signX = width > 0 ? 1 : -1;
+    const signY = height > 0 ? 1 : -1;
+    // sweep-flag @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths#arcs
+    const sweepFlag = signX + signY !== 0 ? 1 : 0;
     return [
-      ['M', x, tlr + y],
-      tlr ? ['A', tlr, tlr, 0, 0, 1, tlr + x, y] : null,
-      ['L', width - trr + x, y],
-      trr ? ['A', trr, trr, 0, 0, 1, width + x, trr + y] : null,
-      ['L', width + x, height - brr + y],
-      brr ? ['A', brr, brr, 0, 0, 1, width - brr + x, height + y] : null,
-      ['L', blr + x, height + y],
-      blr ? ['A', blr, blr, 0, 0, 1, x, height - blr + y] : null,
+      ['M', signX * tlr + x, y],
+      ['L', width - signX * trr + x, y],
+      trr ? ['A', trr, trr, 0, 0, sweepFlag, width + x, signY * trr + y] : null,
+      ['L', width + x, height - signY * brr + y],
+      brr ? ['A', brr, brr, 0, 0, sweepFlag, width + x - signX * brr, height + y] : null,
+      ['L', x + signX * blr, height + y],
+      blr ? ['A', blr, blr, 0, 0, sweepFlag, x, height + y - signY * blr] : null,
+      ['L', x, signY * tlr + y],
+      tlr ? ['A', tlr, tlr, 0, 0, sweepFlag, signX * tlr + x, y] : null,
       ['Z'],
     ].filter((command) => command) as PathCommand[];
   }
@@ -383,12 +388,9 @@ export function convertToPath(
         x.value,
         y.value,
         hasRadius &&
-          (radius.map((r) => clamp(r.value, 0, Math.min(width.value / 2, height.value / 2))) as [
-            number,
-            number,
-            number,
-            number,
-          ]),
+          (radius.map((r) =>
+            clamp(r.value, 0, Math.min(Math.abs(width.value) / 2, Math.abs(height.value) / 2)),
+          ) as [number, number, number, number]),
       );
       break;
     case Shape.PATH:

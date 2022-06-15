@@ -625,7 +625,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
       if ($el) {
-        if (anchor[0].value !== 0 && anchor[1].value !== 0) {
+        if (anchor[0].value !== 0 || anchor[1].value !== 0) {
           // apply anchor to element's `transform` property
           $el.setAttribute(
             'transform',

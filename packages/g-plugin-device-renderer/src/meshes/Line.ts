@@ -473,6 +473,17 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       path = parsePath(convertToPath(object, false), object);
       defX = path.rect.x;
       defY = path.rect.y;
+
+      // support negative width/height of Rect
+      if (object.nodeName === Shape.RECT) {
+        const { width, height } = object.parsedStyle;
+        if (width.value < 0) {
+          defX += path.rect.width;
+        }
+        if (height.value < 0) {
+          defY += path.rect.height;
+        }
+      }
     } else {
       path = object.parsedStyle.path;
     }

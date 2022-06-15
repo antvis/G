@@ -64,12 +64,9 @@ export function isPointInPath(
         0,
         width,
         height,
-        radius.map((r) => clamp(r.value, 0, Math.min(width / 2, height / 2))) as [
-          number,
-          number,
-          number,
-          number,
-        ],
+        radius.map((r) =>
+          clamp(r.value, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2)),
+        ) as [number, number, number, number],
         lineWidthForHitTesting,
         position.x,
         position.y,

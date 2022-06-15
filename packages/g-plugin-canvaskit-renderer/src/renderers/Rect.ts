@@ -21,24 +21,39 @@ export class RectRenderer implements RendererContribution {
       object.parsedStyle as ParsedRectStyleProps;
 
     const [r1, r2, r3, r4] = radius.map((r) =>
-      clamp(r.value, 0, Math.min(width.value / 2, height.value / 2)),
+      clamp(r.value, 0, Math.min(Math.abs(width.value) / 2, Math.abs(height.value) / 2)),
     );
 
-    const rrect = [
-      0,
-      0,
-      width.value,
-      height.value,
-      r1[0],
-      r1[1],
-      r2[0],
-      r2[1],
-      r3[0],
-      r3[1],
-      r4[0],
-      r4[1],
-    ];
+    const flipY = width.value < 0;
+    const flipX = height.value < 0;
 
+    let tlr: number;
+    let trr: number;
+    let brr: number;
+    let blr: number;
+    if (!flipX && !flipY) {
+      tlr = r1;
+      trr = r2;
+      brr = r3;
+      blr = r4;
+    } else if (flipX && flipY) {
+      tlr = r3;
+      trr = r4;
+      brr = r1;
+      blr = r2;
+    } else if (flipX && !flipY) {
+      tlr = r4;
+      trr = r3;
+      brr = r2;
+      blr = r1;
+    } else if (!flipX && flipY) {
+      tlr = r2;
+      trr = r1;
+      brr = r4;
+      blr = r3;
+    }
+
+    const rrect = [0, 0, width.value, height.value, tlr, tlr, trr, trr, brr, brr, blr, blr];
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawRRect(
         [
@@ -46,14 +61,14 @@ export class RectRenderer implements RendererContribution {
           (shadowOffsetY?.value || 0) / 2,
           width.value + (shadowOffsetX?.value || 0) / 2,
           height.value + (shadowOffsetY?.value || 0) / 2,
-          r1[0],
-          r1[1],
-          r2[0],
-          r2[1],
-          r3[0],
-          r3[1],
-          r4[0],
-          r4[1],
+          tlr,
+          tlr,
+          trr,
+          trr,
+          brr,
+          brr,
+          blr,
+          blr,
         ],
         fillPaint ? shadowFillPaint : shadowStrokePaint,
       );
