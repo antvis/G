@@ -47,7 +47,7 @@ export function createOrUpdateShadow(
   }
 
   // only apply shadow when blur > 0
-  if (!isNil(object.parsedStyle.shadowColor)) {
+  if (!isNil(object.parsedStyle.shadowColor) && object.parsedStyle.shadowBlur?.value > 0) {
     // use filter <feDropShadow>
     // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
     $el?.setAttribute('filter', `url(#${shadowId})`);

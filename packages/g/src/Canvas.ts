@@ -551,7 +551,7 @@ export class Canvas extends EventTarget implements ICanvas {
         }
       });
     } else {
-      console.error(
+      console.warn(
         "[g]: You are trying to call `canvas.appendChild` before canvas' initialization finished. You can either await `canvas.ready` or listen to `CanvasEvent.READY` manually.",
         'appended child: ',
         parent,

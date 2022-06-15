@@ -393,6 +393,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
     const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
+    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
 
     let fillPaint: Paint = null;
     let strokePaint: Paint = null;
@@ -404,21 +405,20 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       fillPaint.setAntiAlias(true);
       fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
       // should not affect transparent
-      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
       if (fill instanceof CSSRGB && !fill.isNone) {
-        fillPaint.setColor(
-          CanvasKit.Color4f(
-            Number(fill.r) / 255,
-            Number(fill.g) / 255,
-            Number(fill.b) / 255,
-            Number(fill.alpha),
-          ),
+        fillPaint.setColorComponents(
+          Number(fill.r) / 255,
+          Number(fill.g) / 255,
+          Number(fill.b) / 255,
+          Number(fill.alpha) * fillOpacity.value * opacity.value,
         );
       } else if (Array.isArray(fill)) {
+        fillPaint.setAlphaf(fillOpacity.value * opacity.value);
         const shader = this.generateGradientsShader(object, fill);
         fillPaint.setShader(shader);
         shader.delete();
       } else if (isPattern(fill)) {
+        fillPaint.setAlphaf(fillOpacity.value * opacity.value);
         const shader = this.generatePattern(object, fill);
         if (shader) {
           fillPaint.setShader(shader);
@@ -435,21 +435,22 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       if (!isNil(lineWidth) && lineWidth.value > 0) {
         strokePaint.setAntiAlias(true);
         strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
-        strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
         if (stroke instanceof CSSRGB && !stroke.isNone) {
           strokePaint.setColor(
             CanvasKit.Color4f(
               Number(stroke.r) / 255,
               Number(stroke.g) / 255,
               Number(stroke.b) / 255,
-              Number(stroke.alpha),
+              Number(stroke.alpha) * strokeOpacity.value * opacity.value,
             ),
           );
         } else if (Array.isArray(stroke)) {
+          strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
           const shader = this.generateGradientsShader(object, stroke);
           strokePaint.setShader(shader);
           shader.delete();
         } else if (isPattern(stroke)) {
+          strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
           const shader = this.generatePattern(object, stroke);
           if (shader) {
             strokePaint.setShader(shader);
@@ -483,7 +484,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       }
     }
 
-    if (hasFill && !isNil(shadowColor)) {
+    if (hasFill && hasShadow) {
       shadowFillPaint = fillPaint.copy();
       shadowFillPaint.setAntiAlias(true);
       shadowFillPaint.setColor(
@@ -499,7 +500,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
     }
-    if (hasStroke && !isNil(shadowColor)) {
+    if (hasStroke && hasShadow) {
       shadowStrokePaint = strokePaint.copy();
       shadowStrokePaint.setAntiAlias(true);
       shadowStrokePaint.setColor(
