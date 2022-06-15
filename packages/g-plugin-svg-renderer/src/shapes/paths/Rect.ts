@@ -4,6 +4,11 @@ import { clamp } from '@antv/g';
 export function updateRectElementAttribute($el: SVGElement, parsedStyle: ParsedRectStyleProps) {
   const { radius, width, height } = parsedStyle;
 
+  // CSSKeyword: auto
+  if (!isFinite(width.value) || !isFinite(height.value)) {
+    return;
+  }
+
   const hasRadius = radius && radius.some((r) => r.value !== 0);
 
   let d = '';

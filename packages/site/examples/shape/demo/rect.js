@@ -36,34 +36,20 @@ const canvas = new Canvas({
 
 const rect = new Rect({
   style: {
-    x: 200,
+    x: 100,
     y: 100,
-    width: -100,
-    height: -100,
+    width: 300,
+    height: 200,
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
-    radius: [8, 4, 8, 16],
+    radius: [0, 4, 8, 16],
     cursor: 'pointer',
   },
 });
-// const rect2 = new Rect({
-//   style: {
-//     x: 120,
-//     y: 120,
-//     width: -100,
-//     height: 100,
-//     fill: '#1890FF',
-//     stroke: '#F04864',
-//     lineWidth: 4,
-//     radius: [0, 4, 8, 16],
-//     cursor: 'pointer',
-//   },
-// });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(rect);
-  // canvas.appendChild(rect2);
 });
 
 // stats
