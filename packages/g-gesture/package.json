@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-gesture",
-  "version": "0.1.0",
+  "version": "0.0.3",
   "description": "G Gesture",
   "keywords": [
     "antv",
@@ -36,5 +36,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "89a517f161e783e64278a4f0d800850db6b5b420"
 }
