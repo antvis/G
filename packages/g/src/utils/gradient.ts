@@ -152,6 +152,10 @@ export const parseGradient = (function () {
     repeatingLinearGradient: /^(repeating\-linear\-gradient)/i,
     radialGradient: /^(radial\-gradient)/i,
     repeatingRadialGradient: /^(repeating\-radial\-gradient)/i,
+    /**
+     * @see https://projects.verou.me/conic-gradient/
+     */
+    conicGradient: /^(conic\-gradient)/i,
     sideOrCorner:
       /^to (left (top|bottom)|right (top|bottom)|top (left|right)|bottom (left|right)|left|right|top|bottom)/i,
     extentKeywords:
@@ -204,11 +208,12 @@ export const parseGradient = (function () {
         'repeating-radial-gradient',
         tokens.repeatingRadialGradient,
         matchListRadialOrientations,
-      )
+      ) ||
+      matchGradient('conic-gradient', tokens.conicGradient, matchListRadialOrientations)
     );
   }
 
-  function matchGradient(gradientType: string, pattern, orientationMatcher) {
+  function matchGradient(gradientType: string, pattern: RegExp, orientationMatcher) {
     return matchCall(pattern, function (captures) {
       const orientation = orientationMatcher();
       if (orientation) {
