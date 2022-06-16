@@ -15,6 +15,9 @@ import Stats from 'stats.js';
 const plugin = new Plugin({
   // we can drag the whole document from empty space now!
   isDocumentDraggable: true,
+  isDocumentDroppable: true,
+  dragstartDistanceThreshold: 10,
+  dragstartTimeThreshold: 100,
 });
 
 // create a renderer
@@ -142,6 +145,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.addEventListener('drag', function (e) {
     if (e.target === canvas.document) {
       camera.pan(-e.movementX, -e.movementY);
+    }
+  });
+  canvas.addEventListener('drop', function (e) {
+    if (e.target === canvas.document) {
+      console.log('drop on document');
     }
   });
 });

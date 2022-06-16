@@ -51,11 +51,11 @@ describe('gesture', () => {
       circle.addEventListener('pointerup', pointerupCallback);
 
       // 考虑 WebGL / WebGPU 实现，拾取是异步的
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 60, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 60, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
 
       expect(pointerdownCallback.mock.calls.length).toBe(1);
       expect(pointermoveCallback.mock.calls.length).toBe(1);
@@ -77,11 +77,11 @@ describe('gesture', () => {
       gesture.on('pan', panCallback);
       gesture.on('panend', panendCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 62, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
       expect(panstartCallback.mock.calls.length).toBe(1);
       expect(panstartCallback.mock.calls[0][0].direction).toBe('down');
       expect(panstartCallback.mock.calls[0][0].deltaX).toBeCloseTo(2);
@@ -106,11 +106,11 @@ describe('gesture', () => {
       gesture.on('press', pressCallback);
       gesture.on('pressend', pressendCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 62, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
       expect(pressstartCallback.mock.calls.length).toBe(1);
       expect(pressstartCallback.mock.calls[0][0].direction).toBe('down');
       expect(pressstartCallback.mock.calls[0][0].deltaX).toBeCloseTo(2);
@@ -133,7 +133,7 @@ describe('gesture', () => {
       gesture.on('press', pressCallback);
       gesture.on('pressend', pressendCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       await delay(300);
       expect(pressstartCallback.mock.calls.length).toBe(1);
@@ -142,7 +142,7 @@ describe('gesture', () => {
 
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 62, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
       expect(pressCallback.mock.calls.length).toBe(2);
       expect(pressendCallback.mock.calls.length).toBe(1);
     });
@@ -167,11 +167,11 @@ describe('gesture', () => {
       gesture.on('press', pressCallback);
       gesture.on('pressend', pressendCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 62, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
 
       // 触发pan
       expect(panstartCallback.mock.calls.length).toBe(1);
@@ -187,7 +187,7 @@ describe('gesture', () => {
       await delay(500);
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 62, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
       // 不触发pan
       expect(panstartCallback.mock.calls.length).toBe(1);
       expect(panCallback.mock.calls.length).toBe(1);
@@ -211,11 +211,11 @@ describe('gesture', () => {
 
       gesture.on('swipe', swipeCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 80, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 80, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
       expect(swipeCallback.mock.calls.length).toBe(1);
       expect(swipeCallback.mock.calls[0][0].direction).toBe('right');
       expect(swipeCallback.mock.calls[0][0].velocity).toBeTruthy();
@@ -243,26 +243,26 @@ describe('gesture', () => {
       gesture.on('pan', panCallback);
       gesture.on('panend', panendCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchstart', { x: 80, y: 60, identifier: 1 });
 
       await delay(10);
       gestureSimulator(context.canvas, 'touchmove', { x: 50, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 90, y: 60, identifier: 1 });
-      await delay(100);
+      await delay(500);
 
       expect(pinchstartCallback.mock.calls.length).toBe(1);
       expect(pinchCallback.mock.calls.length).toBe(1);
       expect(pinchCallback.mock.calls[0][0].zoom > 1).toBe(true);
 
       gestureSimulator(context.canvas, 'touchend', { x: 90, y: 60, identifier: 1 });
-      await delay(100);
+      await delay(500);
       expect(pinchendCallback.mock.calls.length).toBe(1);
 
       // 另外一指继续滑动
       gestureSimulator(context.canvas, 'touchmove', { x: 52, y: 80, identifier: 0 });
-      await delay(100);
+      await delay(500);
 
       expect(panstartCallback.mock.calls.length).toBe(1);
       expect(panstartCallback.mock.calls[0][0].direction).toBe('down');
@@ -285,7 +285,7 @@ describe('gesture', () => {
       gesture.on('pan', panCallback);
       gesture.on('panend', panendCallback);
 
-      await delay(100);
+      await delay(500);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 61, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
@@ -296,7 +296,7 @@ describe('gesture', () => {
       gestureSimulator(context.canvas, 'touchmove', { x: 67, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchmove', { x: 68, y: 81, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 68, y: 81, identifier: 0 });
-      await delay(100);
+      await delay(500);
       expect(panstartCallback.mock.calls.length).toBe(1);
       expect(panCallback.mock.calls.length).toBe(1);
       expect(panCallback.mock.calls[0][0].x).toBe(68);

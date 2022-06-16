@@ -16,4 +16,20 @@ export interface DragndropPluginOptions {
    * we need to add an extra option.
    */
   isDocumentDraggable: boolean;
+
+  /**
+   * Since Canvas & Document don't have `droppable` attribute,
+   * we need to add an extra option.
+   */
+  isDocumentDroppable: boolean;
+
+  /**
+   * Threshold for triggering `dragstart` event in milliseconds.
+   */
+  dragstartTimeThreshold: number;
+
+  /**
+   * Threshold for triggering `dragstart` event in pixels.
+   */
+  dragstartDistanceThreshold: number;
 }
