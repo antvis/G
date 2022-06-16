@@ -18,6 +18,7 @@ export default {
     name: 'G.DeviceRenderer',
     globals: {
       '@antv/g': 'window.G',
+      '@antv/g-plugin-image-loader': 'window.G.ImageLoader',
     },
   },
 };
