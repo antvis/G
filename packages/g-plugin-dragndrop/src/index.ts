@@ -17,6 +17,9 @@ export class Plugin implements RendererPlugin {
       useValue: {
         overlap: 'pointer',
         isDocumentDraggable: false,
+        isDocumentDroppable: false,
+        dragstartDistanceThreshold: 0,
+        dragstartTimeThreshold: 0,
         ...this.options,
       },
     });

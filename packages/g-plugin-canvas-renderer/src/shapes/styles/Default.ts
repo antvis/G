@@ -1,10 +1,28 @@
-import type { CSSRGB, ParsedBaseStyleProps } from '@antv/g';
-import { isNil, singleton } from '@antv/g';
+import type {
+  CSSGradientValue,
+  CSSRGB,
+  DisplayObject,
+  LinearGradient,
+  ParsedBaseStyleProps,
+  Pattern,
+  RadialGradient,
+  RenderingService,
+} from '@antv/g';
+import { GradientType, inject, isNil, isPattern, singleton } from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import type { StyleRenderer } from './interfaces';
 
 @singleton()
 export class DefaultRenderer implements StyleRenderer {
-  render(context: CanvasRenderingContext2D, parsedStyle: ParsedBaseStyleProps) {
+  @inject(ImagePool)
+  private imagePool: ImagePool;
+
+  render(
+    context: CanvasRenderingContext2D,
+    parsedStyle: ParsedBaseStyleProps,
+    object: DisplayObject,
+    renderingService: RenderingService,
+  ) {
     const {
       fill,
       opacity,
@@ -25,10 +43,10 @@ export class DefaultRenderer implements StyleRenderer {
     if (hasFill) {
       if (!isNil(fillOpacity) && fillOpacity.value !== 1) {
         context.globalAlpha = fillOpacity.value;
-        context.fill();
+        this.fill(context, object, fill, renderingService);
         context.globalAlpha = opacity.value;
       } else {
-        context.fill();
+        this.fill(context, object, fill, renderingService);
       }
     }
 
@@ -78,7 +96,7 @@ export class DefaultRenderer implements StyleRenderer {
 
         const drawStroke = hasFill && !isFillTransparent;
         if (drawStroke) {
-          context.stroke();
+          this.stroke(context, object, stroke, renderingService);
         }
 
         // restore shadow blur
@@ -92,9 +110,90 @@ export class DefaultRenderer implements StyleRenderer {
         }
 
         if (!drawStroke) {
-          context.stroke();
+          this.stroke(context, object, stroke, renderingService);
         }
       }
     }
+  }
+
+  private fill(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    fill: CSSRGB | CSSGradientValue[] | Pattern,
+    renderingService: RenderingService,
+  ) {
+    if (Array.isArray(fill)) {
+      fill.forEach((gradient) => {
+        context.fillStyle = this.getColor(gradient, object, context);
+        context.fill();
+      });
+    } else {
+      if (isPattern(fill)) {
+        context.fillStyle = this.getPattern(fill, object, context, renderingService);
+      }
+      context.fill();
+    }
+  }
+
+  private stroke(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    stroke: CSSRGB | CSSGradientValue[] | Pattern,
+    renderingService: RenderingService,
+  ) {
+    if (Array.isArray(stroke)) {
+      stroke.forEach((gradient) => {
+        context.strokeStyle = this.getColor(gradient, object, context);
+        context.stroke();
+      });
+    } else {
+      if (isPattern(stroke)) {
+        context.strokeStyle = this.getPattern(stroke, object, context, renderingService);
+      }
+      context.stroke();
+    }
+  }
+
+  private getPattern(
+    pattern: Pattern,
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    renderingService: RenderingService,
+  ): CanvasPattern {
+    const canvasPattern = this.imagePool.getOrCreatePatternSync(pattern, context, () => {
+      // set dirty rectangle flag
+      object.renderable.dirty = true;
+      renderingService.dirtify();
+    });
+
+    return canvasPattern;
+  }
+
+  private getColor(
+    parsedColor: CSSGradientValue,
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+  ) {
+    let color: CanvasGradient | string;
+
+    if (
+      parsedColor.type === GradientType.LinearGradient ||
+      parsedColor.type === GradientType.RadialGradient
+    ) {
+      const bounds = object.getGeometryBounds();
+      const width = (bounds && bounds.halfExtents[0] * 2) || 1;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 1;
+      color = this.imagePool.getOrCreateGradient(
+        {
+          type: parsedColor.type,
+          ...(parsedColor.value as LinearGradient | RadialGradient),
+          width,
+          height,
+        },
+        context,
+      );
+    }
+
+    return color;
   }
 }

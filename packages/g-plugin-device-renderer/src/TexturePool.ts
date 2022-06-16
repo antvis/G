@@ -1,24 +1,35 @@
-import type { LinearGradient, RadialGradient } from '@antv/g';
+import type {
+  CSSGradientValue,
+  DisplayObject,
+  LinearGradient,
+  Pattern,
+  RadialGradient,
+} from '@antv/g';
 import {
   CanvasConfig,
-  GradientPatternType,
   inject,
   isBrowser,
+  isString,
   OffscreenCanvasCreator,
   RenderingService,
   singleton,
 } from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureEvent, TextureUsage } from './platform';
 
-export type GradientParams = (LinearGradient | RadialGradient) & {
+export interface GradientParams {
   width: number;
   height: number;
-  type: GradientPatternType;
-};
+  gradients: CSSGradientValue[];
+  instance: DisplayObject;
+}
 
 @singleton()
 export class TexturePool {
+  @inject(ImagePool)
+  private imagePool: ImagePool;
+
   @inject(OffscreenCanvasCreator)
   private offscreenCanvas: OffscreenCanvasCreator;
 
@@ -29,7 +40,6 @@ export class TexturePool {
   private canvasConfig: CanvasConfig;
 
   private textureCache: Record<string, Texture> = {};
-  private gradientCache: Record<string, CanvasGradient> = {};
 
   getOrCreateTexture(
     device: Device,
@@ -37,11 +47,13 @@ export class TexturePool {
     descriptor?: TextureDescriptor,
     successCallback?: (t: Texture) => void,
   ): Texture {
+    // use Image URL or src as cache key
     // @ts-ignore
     const id = typeof src === 'string' ? src : src.src || '';
+    let texture: Texture;
 
-    if (!this.textureCache[id]) {
-      this.textureCache[id] = device.createTexture({
+    if (!id || !this.textureCache[id]) {
+      texture = device.createTexture({
         pixelFormat: Format.U8_RGBA_NORM,
         width: 1,
         height: 1,
@@ -55,9 +67,14 @@ export class TexturePool {
         immutable: false,
         ...descriptor,
       });
-      if (typeof src !== 'string') {
-        this.textureCache[id].setImageData(src);
-        this.textureCache[id].emit(TextureEvent.LOADED);
+
+      if (id) {
+        this.textureCache[id] = texture;
+      }
+
+      if (!isString(src)) {
+        texture.setImageData(src);
+        texture.emit(TextureEvent.LOADED);
         this.renderingService.dirtify();
       } else {
         // @see https://github.com/antvis/g/issues/938
@@ -85,9 +102,10 @@ export class TexturePool {
         }
       }
     } else {
-      this.textureCache[id].emit(TextureEvent.LOADED);
+      texture = this.textureCache[id];
+      texture.emit(TextureEvent.LOADED);
     }
-    return this.textureCache[id];
+    return texture;
   }
 
   getOrCreateCanvas() {
@@ -95,55 +113,63 @@ export class TexturePool {
   }
 
   getOrCreateGradient(params: GradientParams) {
-    const key = this.generateCacheKey(params);
-    const { type, x0, y0, x1, y1, steps, width, height } = params;
+    const { instance, gradients } = params;
+    const { halfExtents } = instance.getGeometryBounds();
+    const width = halfExtents[0] * 2 || 1;
+    const height = halfExtents[1] * 2 || 1;
 
-    let gradient: CanvasGradient | null = this.gradientCache[key];
     const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
-    const context = this.offscreenCanvas.getOrCreateContext(this.canvasConfig.offscreenCanvas);
-    if (!gradient) {
-      canvas.width = width;
-      canvas.height = height; // needs only 1px height
+    const context = this.offscreenCanvas.getOrCreateContext(
+      this.canvasConfig.offscreenCanvas,
+    ) as CanvasRenderingContext2D;
 
-      if (type === GradientPatternType.LinearGradient) {
-        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
-        gradient = context.createLinearGradient(x0 * width, y0 * height, x1 * width, y1 * height);
-      } else if (type === GradientPatternType.RadialGradient) {
-        const r = Math.sqrt(width * width + height * height) / 2;
-        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
-        gradient = context.createRadialGradient(
-          x0 * width,
-          y0 * height,
-          0,
-          x1 * width,
-          y1 * height,
-          (params as RadialGradient).r1 * r,
-        );
-      }
+    canvas.width = width;
+    canvas.height = height;
 
-      steps.forEach(([offset, color]) => {
-        gradient?.addColorStop(Number(offset), color);
-      });
+    gradients.forEach((g) => {
+      const gradient = this.imagePool.getOrCreateGradient(
+        {
+          type: g.type,
+          ...(g.value as LinearGradient | RadialGradient),
+          width,
+          height,
+        },
+        context,
+      );
 
-      this.gradientCache[key] = gradient;
-    }
+      // used as canvas' ID
+      // @ts-ignore
+      // canvas.src = key;
 
-    // used as canvas' ID
-    // @ts-ignore
-    canvas.src = key;
-
-    if (gradient) {
       context.fillStyle = gradient;
       context.fillRect(0, 0, width, height);
-    }
+    });
   }
 
-  private generateCacheKey(params: GradientParams): string {
-    // @ts-ignore
-    const { type, x0, y0, x1, y1, r1, steps, width, height } = params;
-    return `gradient-${type}-${x0}-${y0}-${x1}-${y1}-${r1 || 0}-${width}-${height}-${steps
-      .map((step) => step.join(''))
-      .join('-')}`;
+  getOrCreatePattern(pattern: Pattern, instance: DisplayObject, callback: () => void) {
+    const { image, repetition } = pattern;
+    const { halfExtents } = instance.getGeometryBounds();
+    const width = halfExtents[0] * 2 || 1;
+    const height = halfExtents[1] * 2 || 1;
+
+    const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
+    const context = this.offscreenCanvas.getOrCreateContext(this.canvasConfig.offscreenCanvas);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    let src: CanvasImageSource;
+    // Image URL
+    if (isString(image)) {
+      src = this.imagePool.getImageSync(image, callback);
+    } else {
+      src = image as CanvasImageSource;
+    }
+
+    const canvasPattern = src && context.createPattern(src, repetition);
+
+    context.fillStyle = canvasPattern;
+    context.fillRect(0, 0, width, height);
   }
 
   destroy() {
@@ -151,6 +177,5 @@ export class TexturePool {
       this.textureCache[key].destroy();
     }
     this.textureCache = {};
-    this.gradientCache = {};
   }
 }

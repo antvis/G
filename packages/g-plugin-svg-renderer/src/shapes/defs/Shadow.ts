@@ -2,7 +2,7 @@ import type { CSSRGB, CSSUnitValue, DisplayObject } from '@antv/g';
 import { isNil } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 
-const FILTER_DROPSHADOW_PREFIX = 'filter-dropshadow-';
+const FILTER_DROPSHADOW_PREFIX = 'g-filter-dropshadow-';
 
 /**
  * use SVG filters
@@ -47,7 +47,7 @@ export function createOrUpdateShadow(
   }
 
   // only apply shadow when blur > 0
-  if (!isNil(object.parsedStyle.shadowColor)) {
+  if (!isNil(object.parsedStyle.shadowColor) && object.parsedStyle.shadowBlur?.value > 0) {
     // use filter <feDropShadow>
     // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
     $el?.setAttribute('filter', `url(#${shadowId})`);

@@ -2,7 +2,6 @@ import type {
   DisplayObject,
   FederatedEvent,
   HTML,
-  LinearGradient,
   MutationEvent,
   RenderingPlugin,
   RenderingService,
@@ -10,11 +9,10 @@ import type {
 import {
   CanvasConfig,
   ContextService,
-  CSSGradientValue,
   CSSRGB,
   ElementEvent,
-  GradientPatternType,
   inject,
+  isPattern,
   isString,
   RenderingContext,
   RenderingPluginContribution,
@@ -197,24 +195,34 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const { fill } = object.parsedStyle;
         let color = '';
         if (fill instanceof CSSRGB) {
-          color = fill.toString();
-        } else if (fill instanceof CSSGradientValue) {
-          if (fill.type === GradientPatternType.LinearGradient) {
-            const steps = (fill.value as LinearGradient).steps
-              .map((cur) => {
-                //  ['0', '#ffffff'],
-                return `${cur[1]} ${Number(cur[0]) * 100}%`;
-              })
-              .join(',');
-            // @see https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()
-            color = `linear-gradient(to right, ${steps});`;
+          if (fill.isNone) {
+            color = 'transparent';
+          } else {
+            color = object.getAttribute('fill') as string;
           }
+        } else if (Array.isArray(fill)) {
+          color = object.getAttribute('fill') as string;
+        } else if (isPattern(fill)) {
+          // TODO: pattern, use background?
         }
         $el.style.background = color;
         break;
       case 'stroke':
         const { stroke } = object.parsedStyle;
-        $el.style['border-color'] = stroke.toString();
+        let borderColor = '';
+        if (stroke instanceof CSSRGB) {
+          if (stroke.isNone) {
+            borderColor = 'transparent';
+          } else {
+            borderColor = object.getAttribute('stroke') as string;
+          }
+        } else if (Array.isArray(stroke)) {
+          borderColor = object.getAttribute('stroke') as string;
+        } else if (isPattern(stroke)) {
+          // TODO: pattern, use background?
+        }
+
+        $el.style['border-color'] = borderColor;
         $el.style['border-style'] = 'solid';
         break;
       case 'lineWidth':

@@ -4,6 +4,7 @@ import type { CSSGradientValue } from '../cssom';
 import { CSSKeywordValue, CSSRGB } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
+import type { Pattern } from '../parser/color';
 import { mergeColors, parseColor } from '../parser/color';
 
 @singleton({
@@ -20,13 +21,18 @@ import { mergeColors, parseColor } from '../parser/color';
 })
 export class CSSPropertyColor
   implements
-    Partial<CSSProperty<CSSRGB | CSSGradientValue | CSSKeywordValue, CSSRGB | CSSGradientValue>>
+    Partial<
+      CSSProperty<
+        CSSRGB | CSSGradientValue[] | Pattern | CSSKeywordValue,
+        CSSRGB | CSSGradientValue[] | Pattern
+      >
+    >
 {
   parser = parseColor;
   calculator(
     name: string,
-    oldParsed: CSSRGB | CSSGradientValue | CSSKeywordValue,
-    parsed: CSSRGB | CSSGradientValue | CSSKeywordValue,
+    oldParsed: CSSRGB | CSSGradientValue[] | CSSKeywordValue | Pattern,
+    parsed: CSSRGB | CSSGradientValue[] | CSSKeywordValue | Pattern,
     object: DisplayObject,
   ) {
     if (parsed instanceof CSSKeywordValue) {

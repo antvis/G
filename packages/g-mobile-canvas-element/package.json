@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-canvas-element",
-  "version": "0.0.4-alpha.1",
+  "version": "0.1.0",
   "description": "Create a CanvasLike element from existed context in mobile environment",
   "keywords": [
     "antv",
@@ -39,5 +39,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "8c7cefec629c4a036903a55e9b435ef4ddbcf9c3"
+  "gitHead": "89a517f161e783e64278a4f0d800850db6b5b420"
 }

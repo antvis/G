@@ -1,13 +1,13 @@
+import { Camera, Canvas } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
+import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
-import { vec3 } from 'gl-matrix';
-import { Camera, Canvas } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost(0.0001));
@@ -83,7 +83,7 @@ describe('Camera landmark', () => {
       onfinish: finishCallback,
     });
 
-    await sleep(500);
+    await sleep(1000);
     expect(finishCallback).to.have.been.called;
 
     expect(camera.getPosition()).to.be.eqls(vec3.fromValues(100, 100, 500));

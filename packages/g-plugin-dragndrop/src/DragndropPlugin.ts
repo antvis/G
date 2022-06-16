@@ -32,7 +32,13 @@ export class DragndropPlugin implements RenderingPlugin {
 
     // TODO: should we add an option like `draggable` to Canvas
     const canvas = document.defaultView;
-    const { overlap, isDocumentDraggable } = this.dragndropPluginOptions;
+    const {
+      overlap,
+      isDocumentDraggable,
+      isDocumentDroppable,
+      dragstartDistanceThreshold,
+      dragstartTimeThreshold,
+    } = this.dragndropPluginOptions;
 
     const handlePointerdown = (event: FederatedPointerEvent) => {
       const target = event.target as DisplayObject;
@@ -41,13 +47,34 @@ export class DragndropPlugin implements RenderingPlugin {
         (isDocument && isDocumentDraggable) ||
         (target.getAttribute && target.getAttribute('draggable'))
       ) {
-        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
-        event.type = 'dragstart';
-        target.dispatchEvent(event);
+        // delay triggering dragstart event
+        let dragstartTriggered = false;
+        const dragstartTimeStamp = event.timeStamp;
+        const dragstartCanvasCoordinates = [event.canvasX, event.canvasY];
 
         let currentDroppable = null;
         // @ts-ignore
         async function onMouseMove(event: FederatedPointerEvent) {
+          if (!dragstartTriggered) {
+            const timeElapsed = event.timeStamp - dragstartTimeStamp;
+            const distanceMoved = Math.sqrt(
+              Math.pow(event.canvasX - dragstartCanvasCoordinates[0], 2) +
+                Math.pow(event.canvasY - dragstartCanvasCoordinates[1], 2),
+            );
+            // check thresholds
+            if (
+              timeElapsed <= dragstartTimeThreshold ||
+              distanceMoved <= dragstartDistanceThreshold
+            ) {
+              return;
+            }
+
+            // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
+            event.type = 'dragstart';
+            target.dispatchEvent(event);
+            dragstartTriggered = true;
+          }
+
           // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
           event.type = 'drag';
 
@@ -63,7 +90,8 @@ export class DragndropPlugin implements RenderingPlugin {
             const elemBelow = await document.elementFromPoint(point[0], point[1]);
             target.style.pointerEvents = pointerEventsOldValue;
 
-            const droppableBelow = elemBelow?.closest('[droppable=true]') || null;
+            const droppableBelow =
+              elemBelow?.closest('[droppable=true]') || (isDocumentDroppable ? document : null);
             if (currentDroppable !== droppableBelow) {
               if (currentDroppable) {
                 // null when we were not over a droppable before this event
@@ -93,9 +121,9 @@ export class DragndropPlugin implements RenderingPlugin {
         }
 
         canvas.addEventListener('pointermove', onMouseMove);
-        target.addEventListener(
-          'pointerup',
-          function () {
+
+        const stopDragging = function () {
+          if (dragstartTriggered) {
             // drop should fire before dragend
             // @see https://javascript.tutorialink.com/is-there-a-defined-ordering-between-dragend-and-drop-events/
 
@@ -110,10 +138,14 @@ export class DragndropPlugin implements RenderingPlugin {
             event.type = 'dragend';
             target.dispatchEvent(event);
 
-            canvas.removeEventListener('pointermove', onMouseMove);
-          },
-          { once: true },
-        );
+            dragstartTriggered = false;
+          }
+
+          canvas.removeEventListener('pointermove', onMouseMove);
+        };
+
+        target.addEventListener('pointerup', stopDragging, { once: true });
+        target.addEventListener('pointerupoutside', stopDragging, { once: true });
       }
     };
 

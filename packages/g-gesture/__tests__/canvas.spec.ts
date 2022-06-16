@@ -184,7 +184,7 @@ describe('gesture', () => {
 
       await delay(300);
       gestureSimulator(context.canvas, 'touchstart', { x: 60, y: 60, identifier: 0 });
-      await delay(500);
+      await delay(100);
       gestureSimulator(context.canvas, 'touchmove', { x: 62, y: 80, identifier: 0 });
       gestureSimulator(context.canvas, 'touchend', { x: 62, y: 80, identifier: 0 });
       await delay(100);

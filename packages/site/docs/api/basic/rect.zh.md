@@ -58,7 +58,15 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
 ## width
 
-矩形宽度。
+矩形宽度。支持取**负数**，效果为沿 Y 轴反转，[示例](/zh/examples/shape#rect)：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_sVnRJmw7m8AAAAAAAAAAAAAARQnAQ" width="300" alt="negative width of rect">
+
+这与 Canvas2D API 保持一致，[详见](https://stackoverflow.com/a/15598760)。在 SVG 规范中指出 `<rect>` 宽高属性取负数时不予展示，例如在 Chrome 中这么做会报如下错误 `Error: <rect> attribute height: A negative value is not valid. ("-100")`：
+
+> The width and height properties define the overall width and height of the rectangle. A negative value for either property is illegal and must be ignored as a parsing error. A computed value of zero for either dimension disables rendering of the element.
+
+我们在 [g-svg](/zh/docs/api/renderer/svg) 中使用 `<path>` 代替 `<rect>` 绘制规避了这个问题。
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
@@ -68,7 +76,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 ## height
 
-矩形高度。
+矩形高度。支持取**负数**，效果为沿 X 轴反转，[示例](/zh/examples/shape#rect)：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gPkGR56c5QgAAAAAAAAAAAAAARQnAQ" width="300" alt="negative height of rect">
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
@@ -96,6 +106,14 @@ rect.style.radius = '0 4px 8px 16px';
     -   `[ 1, 2, 3 ]` 相当于 `[ 1, 2, 3, 2 ]`
     -   `[ 1, 2, 3, 4 ]`
 -   `string` 与 CSS [padding](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) 属性类似，使用空格分隔
+
+在实际绘制时，会限制圆角半径的最大值为矩形宽高最大值的一半：
+
+```js
+const [tlr, trr, brr, blr] = radius.map((r) =>
+    clamp(r.value, 0, Math.min(Math.abs(width.value) / 2, Math.abs(height.value) / 2)),
+);
+```
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |

@@ -1,10 +1,11 @@
 {
   "name": "@antv/g",
-  "version": "5.1.8",
-  "description": "A core module implements DOM API.",
+  "version": "5.2.0",
+  "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
-    "g"
+    "g",
+    "rendering engine"
   ],
   "homepage": "https://github.com/antvis/g#readme",
   "bugs": {
@@ -28,12 +29,13 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.1.8-alpha.0",
+    "@antv/g-math": "^1.2.0",
     "@antv/util": "^3.0.2",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
+    "lodash.memoize": "^4.1.2",
     "mana-syringe": "^0.3.0",
     "rbush": "^3.0.1",
     "reflect-metadata": "^0.1.13",
@@ -43,11 +45,12 @@
   "devDependencies": {
     "@types/d3-color": "^3.0.2",
     "@types/gl-matrix": "^2.4.5",
+    "@types/lodash.memoize": "^4.1.2",
     "@types/offscreencanvas": "^2019.6.1",
     "@types/rbush": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "8c7cefec629c4a036903a55e9b435ef4ddbcf9c3"
+  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
 }

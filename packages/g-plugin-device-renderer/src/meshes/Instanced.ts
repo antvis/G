@@ -1,6 +1,6 @@
 import type {
+  CSSGradientValue,
   DisplayObject,
-  LinearGradient,
   ParsedBaseStyleProps,
   Pattern,
   RenderingService,
@@ -8,12 +8,11 @@ import type {
 } from '@antv/g';
 import {
   Camera,
-  CSSGradientValue,
   CSSRGB,
   DefaultCamera,
-  GradientPatternType,
   inject,
   injectable,
+  isPattern,
   parseColor,
   Shape,
 } from '@antv/g';
@@ -51,7 +50,7 @@ import { TexturePool } from '../TexturePool';
 import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 
 let counter = 1;
-const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
+export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
 
 /**
  * WebGPU has max vertex attribute num(8)
@@ -1023,53 +1022,62 @@ export abstract class Instanced {
 
     const fill = (
       instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
-    ) as CSSRGB | CSSGradientValue;
+    ) as CSSRGB | CSSGradientValue[] | Pattern;
+
+    let texImageSource: string | TexImageSource;
+
     // use pattern & gradient
-    if (fill && fill instanceof CSSGradientValue) {
-      let texImageSource: string | TexImageSource;
-      if (
-        fill.type === GradientPatternType.LinearGradient ||
-        fill.type === GradientPatternType.RadialGradient
-      ) {
+    if (fill && (isPattern(fill) || Array.isArray(fill))) {
+      if (Array.isArray(fill)) {
         this.program.setDefineBool('USE_PATTERN', false);
         this.texturePool.getOrCreateGradient({
-          type: fill.type,
-          ...(fill.value as LinearGradient),
+          gradients: fill,
           width: 128,
           height: 128,
+          instance,
         });
-        texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
-      } else {
+      } else if (isPattern(fill)) {
         this.program.setDefineBool('USE_PATTERN', true);
-        // FIXME: support repeat
-        texImageSource = (fill.value as Pattern).src;
+        this.texturePool.getOrCreatePattern(fill as Pattern, instance, () => {
+          // need re-render
+          objects.forEach((object) => {
+            object.renderable.dirty = true;
+          });
+          this.material.textureDirty = true;
+        });
       }
 
-      const fillMapping = new TextureMapping();
-      fillMapping.name = FILL_TEXTURE_MAPPING;
-      fillMapping.texture = this.texturePool.getOrCreateTexture(
+      texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
+      const texture = this.texturePool.getOrCreateTexture(
         this.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
       );
-      fillMapping.texture.on('loaded', () => {
-        // need re-render
-        objects.forEach((object) => {
-          object.renderable.dirty = true;
-        });
-      });
-      this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
-      fillMapping.sampler = this.renderHelper.getCache().createSampler({
-        wrapS: WrapMode.Repeat,
-        wrapT: WrapMode.Repeat,
-        minFilter: TexFilterMode.Point,
-        magFilter: TexFilterMode.Bilinear,
-        mipFilter: MipFilterMode.Linear,
-        minLOD: 0,
-        maxLOD: 0,
-      });
 
-      return fillMapping;
+      if (texture) {
+        const fillMapping = new TextureMapping();
+        fillMapping.name = FILL_TEXTURE_MAPPING;
+        fillMapping.texture = texture;
+        fillMapping.texture.on('loaded', () => {
+          // need re-render
+          objects.forEach((object) => {
+            object.renderable.dirty = true;
+          });
+          this.material.textureDirty = true;
+        });
+        this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
+        fillMapping.sampler = this.renderHelper.getCache().createSampler({
+          wrapS: WrapMode.Repeat,
+          wrapT: WrapMode.Repeat,
+          minFilter: TexFilterMode.Point,
+          magFilter: TexFilterMode.Bilinear,
+          mipFilter: MipFilterMode.Linear,
+          minLOD: 0,
+          maxLOD: 0,
+        });
+
+        return fillMapping;
+      }
     }
 
     return null;

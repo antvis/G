@@ -59,7 +59,7 @@ enum LineVertexAttributeLocation {
 
 export enum Uniform {
   MODEL_MATRIX = 'u_ModelMatrix',
-  COLOR = 'u_Color',
+  FILL_COLOR = 'u_FillColor',
   STROKE_COLOR = 'u_StrokeColor',
   STROKE_WIDTH = 'u_StrokeWidth',
   INCREASED_LINE_WIDTH_FOR_HIT_TESTING = 'u_IncreasedLineWidthForHitTesting',
@@ -263,7 +263,7 @@ export class LineMesh extends Instanced {
 
     this.material.setUniforms({
       [Uniform.MODEL_MATRIX]: m,
-      [Uniform.COLOR]: fillColor,
+      [Uniform.FILL_COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
       [Uniform.STROKE_WIDTH]: lineWidth.value,
       [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting.value,
@@ -473,6 +473,17 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       path = parsePath(convertToPath(object, false), object);
       defX = path.rect.x;
       defY = path.rect.y;
+
+      // support negative width/height of Rect
+      if (object.nodeName === Shape.RECT) {
+        const { width, height } = object.parsedStyle;
+        if (width.value < 0) {
+          defX += path.rect.width;
+        }
+        if (height.value < 0) {
+          defY += path.rect.height;
+        }
+      }
     } else {
       path = object.parsedStyle.path;
     }

@@ -135,7 +135,7 @@ describe('CSSPropertyAngle', () => {
       { duration: 100, fill: 'both' },
     );
 
-    await sleep(500);
+    await sleep(1000);
 
     // after animation
     expect(circle.getAttribute('angle')).to.be.eqls('40deg');

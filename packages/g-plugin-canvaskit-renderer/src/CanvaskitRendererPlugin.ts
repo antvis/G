@@ -1,7 +1,9 @@
 import type {
+  CSSGradientValue,
   DisplayObject,
   LinearGradient,
   ParsedBaseStyleProps,
+  Pattern,
   RadialGradient,
   RenderingPlugin,
   RenderingService,
@@ -9,14 +11,17 @@ import type {
 import {
   Camera,
   CanvasConfig,
+  computeLinearGradient,
+  computeRadialGradient,
   ContextService,
-  CSSGradientValue,
   CSSRGB,
   DefaultCamera,
   getEuler,
-  GradientPatternType,
+  GradientType,
   inject,
   isNil,
+  isPattern,
+  isString,
   parseColor,
   rad2deg,
   RenderingContext,
@@ -24,13 +29,15 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import type {
   Canvas,
-  CanvasKit,
+  EmbindEnumEntity,
   InputRect,
   ManagedSkottieAnimation,
   Paint,
   Particles,
+  TextureSource,
 } from 'canvaskit-wasm';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { FontLoader } from './FontLoader';
@@ -62,8 +69,13 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   @inject(FontLoader)
   private fontLoader: FontLoader;
 
+  @inject(ImagePool)
+  private imagePool: ImagePool;
+
   @inject(CanvaskitRendererPluginOptions)
   private canvaskitRendererPluginOptions: CanvaskitRendererPluginOptions;
+
+  private renderingService: RenderingService;
 
   private destroyed = false;
 
@@ -109,6 +121,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   apply(renderingService: RenderingService) {
+    this.renderingService = renderingService;
     renderingService.hooks.init.tapPromise(CanvaskitRendererPlugin.tag, async () => {
       const canvasKitContext = this.contextService.getContext();
       const { surface, CanvasKit } = canvasKitContext;
@@ -151,7 +164,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
         this.drawAnimations(canvas, firstFrame);
         this.drawParticles(canvas);
-        this.drawWithSurface(canvas, CanvasKit);
+        this.drawWithSurface(canvas);
 
         canvas.restore();
 
@@ -223,29 +236,67 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private drawWithSurface(canvas: Canvas, CanvasKit: CanvasKit) {
+  private drawWithSurface(canvas: Canvas) {
     this.renderingContext.root.forEach((object: DisplayObject) => {
-      this.renderDisplayObject(object, canvas, CanvasKit);
+      this.renderDisplayObject(object, canvas);
     });
   }
 
-  private addGradient(
-    object: DisplayObject,
-    stroke: CSSGradientValue,
-    paint: Paint,
-    CanvasKit: CanvasKit,
-  ) {
+  private generatePattern(object: DisplayObject, pattern: Pattern) {
+    const { surface, CanvasKit } = this.contextService.getContext();
+    const { image, repetition } = pattern;
+
+    let src: TextureSource;
+    if (isString(image)) {
+      src = this.imagePool.getImageSync(image, () => {
+        // set dirty rectangle flag
+        object.renderable.dirty = true;
+        this.renderingService.dirtify();
+      });
+    } else {
+      // @ts-ignore
+      src = image;
+    }
+
+    if (src) {
+      // TODO: check image.complete
+      // WebGL: INVALID_VALUE: texImage2D: invalid image
+      const decoded = surface.makeImageFromTextureSource(src);
+      if (decoded) {
+        let tx: EmbindEnumEntity;
+        let ty: EmbindEnumEntity;
+        if (repetition === 'repeat') {
+          tx = CanvasKit.TileMode.Repeat;
+          ty = CanvasKit.TileMode.Repeat;
+        } else if (repetition === 'repeat-x') {
+          tx = CanvasKit.TileMode.Repeat;
+          ty = CanvasKit.TileMode.Decal;
+        } else if (repetition === 'repeat-y') {
+          tx = CanvasKit.TileMode.Decal;
+          ty = CanvasKit.TileMode.Repeat;
+        } else if (repetition === 'no-repeat') {
+          tx = CanvasKit.TileMode.Decal;
+          ty = CanvasKit.TileMode.Decal;
+        }
+        const pattern = decoded.makeShaderCubic(tx, ty, 1 / 3, 1 / 3);
+        return pattern;
+      }
+    }
+  }
+
+  private generateGradient(object: DisplayObject, stroke: CSSGradientValue) {
+    const { CanvasKit } = this.contextService.getContext();
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
 
-    if (stroke.type === GradientPatternType.LinearGradient) {
+    if (stroke.type === GradientType.LinearGradient) {
       // @see https://fiddle.skia.org/c/@GradientShader_MakeLinear
-      const { x0, y0, x1, y1, steps } = stroke.value as LinearGradient;
+      const { angle, steps } = stroke.value as LinearGradient;
       const pos: number[] = [];
       const colors: Float32Array[] = [];
       steps.forEach(([offset, color]) => {
-        pos.push(Number(offset));
+        pos.push(offset);
         const c = parseColor(color) as CSSRGB;
         colors.push(
           new Float32Array([
@@ -256,17 +307,18 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           ]),
         );
       });
+      const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
       const gradient = CanvasKit.Shader.MakeLinearGradient(
-        [x0 * width, y0 * height],
-        [x1 * width, y1 * height],
+        [x1, y1],
+        [x2, y2],
         colors,
         pos,
         CanvasKit.TileMode.Mirror,
       );
-      paint.setShader(gradient);
-    } else if (stroke.type === GradientPatternType.RadialGradient) {
-      const { x0, y0, r1, steps } = stroke.value as RadialGradient;
-      const r = Math.sqrt(width * width + height * height) / 2;
+      return gradient;
+    } else if (stroke.type === GradientType.RadialGradient) {
+      const { cx, cy, steps } = stroke.value as RadialGradient;
+      const { x, y, r } = computeRadialGradient(width, height, cx, cy);
       const pos: number[] = [];
       const colors: Float32Array[] = [];
       steps.forEach(([offset, color]) => {
@@ -283,17 +335,34 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       });
       // @see https://fiddle.skia.org/c/@radial_gradient_test
       const gradient = CanvasKit.Shader.MakeRadialGradient(
-        [x0 * width, y0 * height],
-        r1 * r,
+        [x, y],
+        r,
         colors,
         pos,
         CanvasKit.TileMode.Mirror,
       );
-      paint.setShader(gradient);
+      return gradient;
     }
   }
 
-  private renderDisplayObject(object: DisplayObject, canvas: Canvas, CanvasKit: CanvasKit) {
+  private generateGradientsShader(object: DisplayObject, fill: CSSGradientValue[]) {
+    const { CanvasKit } = this.contextService.getContext();
+    const gradientShaders = fill.map((gradient) => this.generateGradient(object, gradient));
+    let previousShader = gradientShaders[0];
+    for (let i = 1; i < gradientShaders.length; i++) {
+      previousShader = CanvasKit.Shader.MakeBlend(
+        // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+        CanvasKit.BlendMode.SrcOver,
+        previousShader,
+        gradientShaders[i],
+      );
+    }
+    return previousShader;
+  }
+
+  private renderDisplayObject(object: DisplayObject, canvas: Canvas) {
+    const { CanvasKit } = this.contextService.getContext();
+
     if (
       !object.isVisible() ||
       object.isCulled() ||
@@ -324,6 +393,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
     const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
+    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
 
     let fillPaint: Paint = null;
     let strokePaint: Paint = null;
@@ -334,19 +404,27 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       fillPaint = new CanvasKit.Paint();
       fillPaint.setAntiAlias(true);
       fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
+      // should not affect transparent
       if (fill instanceof CSSRGB && !fill.isNone) {
-        fillPaint.setColor(
-          CanvasKit.Color4f(
-            Number(fill.r) / 255,
-            Number(fill.g) / 255,
-            Number(fill.b) / 255,
-            Number(fill.alpha),
-          ),
+        fillPaint.setColorComponents(
+          Number(fill.r) / 255,
+          Number(fill.g) / 255,
+          Number(fill.b) / 255,
+          Number(fill.alpha) * fillOpacity.value * opacity.value,
         );
-      } else if (fill instanceof CSSGradientValue) {
-        this.addGradient(object, fill, fillPaint, CanvasKit);
+      } else if (Array.isArray(fill)) {
+        fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+        const shader = this.generateGradientsShader(object, fill);
+        fillPaint.setShader(shader);
+        shader.delete();
+      } else if (isPattern(fill)) {
+        fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+        const shader = this.generatePattern(object, fill);
+        if (shader) {
+          fillPaint.setShader(shader);
+          shader.delete();
+        }
       }
-      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
     }
 
     if (hasStroke) {
@@ -363,14 +441,22 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
               Number(stroke.r) / 255,
               Number(stroke.g) / 255,
               Number(stroke.b) / 255,
-              Number(stroke.alpha),
+              Number(stroke.alpha) * strokeOpacity.value * opacity.value,
             ),
           );
-        } else if (stroke instanceof CSSGradientValue) {
-          this.addGradient(object, stroke, strokePaint, CanvasKit);
+        } else if (Array.isArray(stroke)) {
+          strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
+          const shader = this.generateGradientsShader(object, stroke);
+          strokePaint.setShader(shader);
+          shader.delete();
+        } else if (isPattern(stroke)) {
+          strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
+          const shader = this.generatePattern(object, stroke);
+          if (shader) {
+            strokePaint.setShader(shader);
+            shader.delete();
+          }
         }
-
-        strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
 
         strokePaint.setStrokeWidth(lineWidth.value);
         const STROKE_CAP_MAP = {
@@ -398,7 +484,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       }
     }
 
-    if (hasFill && !isNil(shadowColor)) {
+    if (hasFill && hasShadow) {
       shadowFillPaint = fillPaint.copy();
       shadowFillPaint.setAntiAlias(true);
       shadowFillPaint.setColor(
@@ -414,7 +500,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
     }
-    if (hasStroke && !isNil(shadowColor)) {
+    if (hasStroke && hasShadow) {
       shadowStrokePaint = strokePaint.copy();
       shadowStrokePaint.setAntiAlias(true);
       shadowStrokePaint.setColor(

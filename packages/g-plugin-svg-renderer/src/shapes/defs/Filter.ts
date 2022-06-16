@@ -2,7 +2,7 @@ import type { CSSUnitValue, DisplayObject, ParsedFilterStyleProperty } from '@an
 import { UnitType } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 
-const FILTER_PREFIX = 'g-filter-';
+export const FILTER_PREFIX = 'g-filter-';
 
 /**
  * use SVG filters, eg. blur, brightness, contrast...

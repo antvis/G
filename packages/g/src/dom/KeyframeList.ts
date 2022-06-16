@@ -1,3 +1,4 @@
+import { isNil } from '../utils';
 import type { AnimationEffectTiming } from './AnimationEffectTiming';
 
 /**
@@ -126,7 +127,7 @@ export function normalizeKeyframes(
   let previousOffset = -Infinity;
   for (let i = 0; i < keyframes.length; i++) {
     const offset = keyframes[i].offset;
-    if (offset !== null && offset !== undefined) {
+    if (!isNil(offset)) {
       if (offset < previousOffset) {
         throw new TypeError('Keyframes are not loosely sorted by offset. Sort or specify offsets.');
       }
@@ -150,18 +151,13 @@ export function normalizeKeyframes(
     let previousIndex = 0;
     let previousOffset = Number(keyframes[0].computedOffset);
     for (let i = 1; i < length; i++) {
-      const offset = Number(keyframes[i].computedOffset);
-      if (
-        offset !== null &&
-        offset !== undefined &&
-        previousOffset !== null &&
-        previousOffset !== undefined
-      ) {
+      const offset = keyframes[i].computedOffset;
+      if (!isNil(offset) && !isNil(previousOffset)) {
         for (let j = 1; j < i - previousIndex; j++)
           keyframes[previousIndex + j].computedOffset =
-            previousOffset + ((offset - previousOffset) * j) / (i - previousIndex);
+            previousOffset + ((Number(offset) - previousOffset) * j) / (i - previousIndex);
         previousIndex = i;
-        previousOffset = offset;
+        previousOffset = Number(offset);
       }
     }
   }

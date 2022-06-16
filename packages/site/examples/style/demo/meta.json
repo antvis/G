@@ -19,6 +19,20 @@
       }
     },
     {
+      "filename": "gradient.js",
+      "title": {
+        "zh": "<gradient>",
+        "en": "<gradient>"
+      }
+    },
+    {
+      "filename": "pattern.js",
+      "title": {
+        "zh": "<pattern>",
+        "en": "<pattern>"
+      }
+    },
+    {
       "filename": "paint.js",
       "title": {
         "zh": "<paint>",

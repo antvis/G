@@ -1,18 +1,31 @@
 import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
  * <paint>
+ * include <color> <gradient> <pattern>
  */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'sans-serif',
+      url: '/NotoSansCJKsc-VF.ttf',
+    },
+  ],
+});
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -62,20 +75,34 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
 rendererFolder.open();
 
 const circleFolder = gui.addFolder('circle');
 const circleConfig = {
   fill: '#f00',
 };
-const linearGradient = 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
-const radialGradient = 'r(0.5, 0.5, 1) 0:#ffffff 1:#1890ff';
-const pattern = 'p(a) https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
+const linearGradient = 'linear-gradient(0deg, blue, green 40%, red)';
+const radialGradient = 'radial-gradient(circle at center, red, blue, green 100%)';
+const pattern = {
+  image: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jgjxQ57sACsAAAAAAAAAAAAAARQnAQ',
+};
 circleFolder
   .add(circleConfig, 'fill', [
     'none',
@@ -83,8 +110,8 @@ circleFolder
     'transparent',
     linearGradient,
     radialGradient,
-    pattern,
+    'pattern',
   ])
   .onChange((fill) => {
-    circle.style.fill = fill;
+    circle.style.fill = fill === 'pattern' ? pattern : fill;
   });

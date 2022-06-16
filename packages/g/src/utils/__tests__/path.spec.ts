@@ -1,23 +1,21 @@
+import {
+  Circle,
+  convertToPath,
+  Ellipse,
+  equalizeSegments,
+  getDrawDirection,
+  Line,
+  Path,
+  PathCommand,
+  Polygon,
+  Polyline,
+  Rect,
+} from '@antv/g';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
 import sinonChai from 'sinon-chai';
-import {
-  Rect,
-  Ellipse,
-  Circle,
-  Line,
-  Polyline,
-  Polygon,
-  Path,
-  convertToPath,
-  equalizeSegments,
-  getDrawDirection,
-  PathCommand,
-} from '@antv/g';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -57,27 +55,27 @@ describe('Path utils', () => {
 
     rect.style.radius = 10;
     expect(convertToPath(rect)).to.be.eqls(
-      'M0,10A10,10,0,0,1,10,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90Z',
+      'M10,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90L0,10A10,10,0,0,1,10,0Z',
     );
 
     rect.style.radius = '0 10 10 10';
     expect(convertToPath(rect)).to.be.eqls(
-      'M0,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90Z',
+      'M0,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90L0,0Z',
     );
 
     rect.style.radius = '10 0 10 10';
     expect(convertToPath(rect)).to.be.eqls(
-      'M0,10A10,10,0,0,1,10,0L100,0L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90Z',
+      'M10,0L100,0L100,90A10,10,0,0,1,90,100L10,100A10,10,0,0,1,0,90L0,10A10,10,0,0,1,10,0Z',
     );
 
     rect.style.radius = '10 10 0 10';
     expect(convertToPath(rect)).to.be.eqls(
-      'M0,10A10,10,0,0,1,10,0L90,0A10,10,0,0,1,100,10L100,100L10,100A10,10,0,0,1,0,90Z',
+      'M10,0L90,0A10,10,0,0,1,100,10L100,100L10,100A10,10,0,0,1,0,90L0,10A10,10,0,0,1,10,0Z',
     );
 
     rect.style.radius = '10 10 10 0';
     expect(convertToPath(rect)).to.be.eqls(
-      'M0,10A10,10,0,0,1,10,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L0,100Z',
+      'M10,0L90,0A10,10,0,0,1,100,10L100,90A10,10,0,0,1,90,100L0,100L0,10A10,10,0,0,1,10,0Z',
     );
   });
 

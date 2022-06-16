@@ -214,42 +214,65 @@ https://www.w3.org/TR/css-color-3/#currentcolor
 
 Canvas / WebGL 渲染环境中等同于 black，SVG 中为同名属性效果。
 
-## \<paint\>
+## \<gradient\>
 
-参考 SVG 中的 [\<paint\>](https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint)，它是以下类型的并集：
+在 CSS 中，渐变是通过函数创建的，例如线性渐变 [linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/linear-gradient)：
 
-```js
-<paint> = none | <color> | <gradient> | <pattern>
+```css
+background: linear-gradient(#e66465, #9198e5);
 ```
 
-[示例](/zh/examples/style#paint)。
-
-目前使用的属性有：
-
--   [fill]() 填充色
--   [stroke]() 描边色
-
-### none
-
-不使用任何颜色，并不等于 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 的 [transparent](/zh/docs/api/css/css-properties-values-api#transparent) 关键词。以 `fill` 属性为例，两者从视觉效果上看相同，但设置为 `'transparent'` 依然可以被拾取到，设置成 `'none'` 则不会。
-
-例如当图形在初始化未设置 `fill` 属性时，等同于创建后手动修改为 `none`：
+我们沿用了该语法，因此可以在支持渐变的属性中使用：
 
 ```js
-const circle = new Circle({
-    r: 150,
-});
-
-circle.style.fill = 'none';
+rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 ```
 
-### \<color\>
+在该[示例](/zh/examples/style#gradient)中我们展示了目前支持的渐变效果，包括线性和径向渐变、多个渐变叠加等：
 
-见 [\<color\>](/zh/docs/api/css/color)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sXoJTKPWg70AAAAAAAAAAAAAARQnAQ" width="400" alt="gradient">
 
-### \<gradient\>
+### linear-gradient
 
-#### 线性渐变
+线性渐变用于创建一个表示两种或多种颜色线性渐变的图片。[这个教程](https://observablehq.com/@danburzo/css-gradient-line)可以帮助你理解线性渐变方向的含义和计算逻辑。
+
+用法完全可以参考 CSS [linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/linear-gradient)，但有以下区别：
+
+-   渐变方向在 CSS 中默认为从下到上，而我们为了和 Canvas / SVG 保持一致，使用从左到右。
+
+因此一个从左到右方向，旋转角度为 0 的线性渐变如下，[示例](/zh/examples/style#gradient)：
+
+```js
+rect.style.fill = 'linear-gradient(0deg, blue, green 40%, red)';
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aU84RIJaH6AAAAAAAAAAAAAAARQnAQ" width="300" alt="linear gradient">
+
+最后和 CSS 一致，多组渐变可以叠加：
+
+```js
+rect.style.fill = `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
+            linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
+            linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`;
+```
+
+### radial-gradient
+
+径向渐变由从原点发出的两种或者多种颜色之间的逐步过渡组成。
+
+用法完全可以参考 CSS [radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient)，但有以下区别：
+
+-   形状仅支持 `circle` 不支持 `ellipse`
+
+因此一个渐变中心位于图形中心，从红过渡到蓝再到绿的径向渐变如下，[示例](/zh/examples/style#gradient)：
+
+```js
+rect.style.fill = 'radial-gradient(circle at center, red, blue, green 100%)';
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z4QLTr3lC80AAAAAAAAAAAAAARQnAQ" width="300" alt="radial gradient">
+
+### 历史用法
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5gpQL9ia9kAAAAAAAAAAABkARQnAQ)
 
@@ -261,8 +284,6 @@ circle.style.fill = 'none';
 stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 ```
 
-#### 放射状/环形渐变
-
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9sc1SY2d_0AAAAAAAAAAAABkARQnAQ)
 
 -   `r` 表示使用放射状渐变，绿色的字体为可变量，由用户自己填写，开始圆的 `x`、`y`、`r` 值均为相对值(0 至 1 范围)。
@@ -273,7 +294,71 @@ stroke: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
 fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 ```
 
-### \<pattern\>
+## \<pattern\>
+
+在该[示例](/zh/examples/style#pattern)中我们展示了目前支持的模版填充效果，来源可以包括图片 URL，`HTMLImageElement` `HTMLCanvasElement` `HTMLVideoElement` 等，同时还可以指定填充重复方向：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cRmFTItZOtYAAAAAAAAAAAAAARQnAQ" width="400" alt="pattern">
+
+使用一个对象描述，包含来源和填充模式：
+
+```js
+rect.style.fill = {
+    image: 'http://example.png',
+    repetition: 'repeat',
+};
+```
+
+### image
+
+支持以下来源：
+
+-   图片 URL，例如 `'http://example.png'`
+-   HTMLImageElement
+-   HTMLCanvasElement
+-   HTMLVideoElement
+
+在该[示例](/zh/examples/style#pattern)中，我们使用了 HTMLCanvasElement 先绘制了一个 20 \* 20 的模版，再使用它进行填充：
+
+```js
+// @see https://observablehq.com/@awoodruff/canvas-cartography-nacis-2019
+const patternCanvas = document.createElement('canvas');
+patternCanvas.width = 20;
+patternCanvas.height = 20;
+const ctx = patternCanvas.getContext('2d');
+ctx.strokeStyle = '#333';
+ctx.lineWidth = 1;
+ctx.beginPath();
+for (let i = 0.5; i < 20; i += 5) {
+    ctx.moveTo(0, i);
+    ctx.lineTo(20, i);
+}
+ctx.stroke();
+
+const rect3 = new Rect({
+    style: {
+        x: 50,
+        y: 200,
+        width: 200,
+        height: 100,
+        fill: {
+            image: patternCanvas,
+            repetition: 'repeat',
+        },
+    },
+});
+```
+
+### repetition
+
+支持以下模式，可以在该[示例](/zh/examples/style#pattern)中查看：
+
+-   repeat 默认值，沿水平和垂直方向平铺
+-   repeat-x 沿水平方向平铺
+-   repeat-y 沿垂直方向平铺
+-   no-repeat 不平铺
+
+### 历史用法
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
 
@@ -288,6 +373,35 @@ fill: 'r(0.5, 0.5, 0.1) 0:#ffffff 1:#1890ff';
 // example
 // 使用纹理填充，在水平和垂直方向重复图片
 fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
+```
+
+## \<paint\>
+
+参考 SVG 中的 [\<paint\>](https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint)，它是以下类型的并集：
+
+```js
+<paint> = none | <color> | <gradient> | <pattern>
+```
+
+[示例](/zh/examples/style#paint)。
+
+目前使用的属性有：
+
+-   [fill](/zh/docs/api/basic/display-object#fill) 填充色
+-   [stroke](/zh/docs/api/basic/display-object#stroke) 描边色
+
+### none
+
+不使用任何颜色，并不等于 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 的 [transparent](/zh/docs/api/css/css-properties-values-api#transparent) 关键词。以 `fill` 属性为例，两者从视觉效果上看相同，但设置为 `'transparent'` 依然可以被拾取到，设置成 `'none'` 则不会。
+
+例如当图形在初始化未设置 `fill` 属性时，等同于创建后手动修改为 `none`：
+
+```js
+const circle = new Circle({
+    r: 150,
+});
+
+circle.style.fill = 'none';
 ```
 
 # 属性元数据

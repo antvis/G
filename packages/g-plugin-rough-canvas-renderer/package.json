@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-rough-canvas-renderer",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "A G plugin of renderer implementation with rough.js",
   "keywords": [
     "antv",
@@ -40,5 +40,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "8c7cefec629c4a036903a55e9b435ef4ddbcf9c3"
+  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
 }

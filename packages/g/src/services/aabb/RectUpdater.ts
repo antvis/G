@@ -1,9 +1,9 @@
 import { singleton } from 'mana-syringe';
-import { GeometryAABBUpdater } from './interfaces';
-import type { Image, Rect, Group, ParsedImageStyleProps } from '../../display-objects';
-import { Shape } from '../../types';
 import { CSSUnitValue, UnitType } from '../../css';
+import type { Group, Image, ParsedImageStyleProps, Rect } from '../../display-objects';
+import { Shape } from '../../types';
 import { isString } from '../../utils';
+import { GeometryAABBUpdater } from './interfaces';
 
 @singleton({
   token: [

@@ -26,9 +26,7 @@ import {
 } from '@antv/g';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
-import { createOrUpdateFilter } from './shapes/defs/Filter';
-import { createOrUpdateGradientAndPattern } from './shapes/defs/Pattern';
-import { createOrUpdateShadow } from './shapes/defs/Shadow';
+import { DefElementManager } from './shapes/defs';
 import { CreateElementContribution } from './tokens';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
@@ -136,10 +134,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
   @inject(CreateElementContribution)
   private createElementContribution: CreateElementContribution;
 
-  /**
-   * container for <gradient> <clipPath>...
-   */
-  private $def: SVGDefsElement;
+  @inject(DefElementManager)
+  private defElementManager: DefElementManager;
 
   /**
    * <camera>
@@ -167,6 +163,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+      this.defElementManager.clear(object.entity);
       this.removeSVGDom(object);
     };
 
@@ -200,7 +197,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     };
 
     const handleGeometryBoundsChanged = (e: MutationEvent) => {
-      const { document: doc } = this.canvasConfig;
       const object = e.target as DisplayObject;
       // @ts-ignore
       const $el = object.elementSVG?.$el;
@@ -208,24 +204,23 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
 
       if (fill && !(fill instanceof CSSRGB)) {
-        createOrUpdateGradientAndPattern(doc || document, this.$def, object, $el, fill, 'fill');
+        this.defElementManager.createOrUpdateGradientAndPattern(object, $el, fill, 'fill');
       }
       if (stroke && !(stroke instanceof CSSRGB)) {
-        createOrUpdateGradientAndPattern(doc || document, this.$def, object, $el, stroke, 'stroke');
+        this.defElementManager.createOrUpdateGradientAndPattern(object, $el, stroke, 'stroke');
       }
     };
 
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
       const { background, document } = this.canvasConfig;
 
-      this.$def = createSVGElement('defs', document) as SVGDefsElement;
-      const $svg = this.contextService.getContext()!;
+      // <defs>
+      this.defElementManager.init();
 
+      const $svg = this.contextService.getContext()!;
       if (background) {
         $svg.style.background = background;
       }
-
-      $svg.appendChild(this.$def);
 
       // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters
       $svg.setAttribute('color-interpolation-filters', 'sRGB');
@@ -412,14 +407,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (object.nodeName === Shape.HTML) {
           $el.style.background = usedValue.toString();
         } else {
-          createOrUpdateGradientAndPattern(document, this.$def, object, $el, usedValue, usedName);
+          this.defElementManager.createOrUpdateGradientAndPattern(object, $el, usedValue, usedName);
         }
       } else if (name === 'stroke') {
         if (object.nodeName === Shape.HTML) {
           $el.style['border-color'] = usedValue.toString();
           $el.style['border-style'] = 'solid';
         } else {
-          createOrUpdateGradientAndPattern(document, this.$def, object, $el, usedValue, usedName);
+          this.defElementManager.createOrUpdateGradientAndPattern(object, $el, usedValue, usedName);
         }
       } else if (name === 'visibility' && computedValue.value !== 'unset') {
         // use computed value
@@ -433,9 +428,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         name === 'shadowOffsetX' ||
         name === 'shadowOffsetY'
       ) {
-        createOrUpdateShadow(document, this.$def, object, $el, name);
+        this.defElementManager.createOrUpdateShadow(object, $el, name);
       } else if (name === 'filter') {
-        createOrUpdateFilter(document, this.$def, object, $el, usedValue);
+        this.defElementManager.createOrUpdateFilter(object, $el, usedValue);
       } else if (name === 'innerHTML') {
         this.createOrUpdateInnerHTML(document, $el, usedValue);
       } else if (name === 'anchor') {
@@ -584,13 +579,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
   ) {
     if (clipPath) {
       const clipPathId = CLIP_PATH_PREFIX + clipPath.entity;
+      const $def = this.defElementManager.getDefElement();
 
-      const existed = this.$def.querySelector(`#${clipPathId}`);
+      const existed = $def.querySelector(`#${clipPathId}`);
       if (!existed) {
         // create <clipPath> dom node, append it to <defs>
         const $clipPath = createSVGElement('clipPath', document);
         $clipPath.id = clipPathId;
-        this.$def.appendChild($clipPath);
+        $def.appendChild($clipPath);
 
         // <clipPath><circle /></clipPath>
         this.createSVGDom(document, clipPath, $clipPath, true);
@@ -629,13 +625,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
       if ($el) {
-        // apply anchor to element's `transform` property
-        $el.setAttribute(
-          'transform',
-          // can't use percent unit like translate(-50%, -50%)
-          // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-          `translate(-${anchor[0].value * width},-${anchor[1].value * height})`,
-        );
+        if (anchor[0].value !== 0 || anchor[1].value !== 0) {
+          // apply anchor to element's `transform` property
+          $el.setAttribute(
+            'transform',
+            // can't use percent unit like translate(-50%, -50%)
+            // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
+            `translate(-${anchor[0].value * width},-${anchor[1].value * height})`,
+          );
+        }
 
         if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {
           $el.setAttribute('cx', `${width / 2}`);

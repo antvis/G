@@ -1,7 +1,6 @@
 import type { RendererPlugin, Syringe } from '@antv/g';
 import { Module, Shape } from '@antv/g';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
-import { GradientPool } from './shapes/GradientPool';
 import type { StyleRenderer } from './shapes/styles';
 import {
   CircleRenderer,
@@ -61,8 +60,6 @@ const containerModule = Module((register) => {
         return null;
       },
   });
-
-  register(GradientPool);
 
   register(CanvasRendererPlugin);
 });

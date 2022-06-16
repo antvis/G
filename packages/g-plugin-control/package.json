@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-control",
-  "version": "1.1.8-alpha.1",
+  "version": "1.2.0",
   "description": "A G plugin for orbit control",
   "keywords": [
     "antv",
@@ -40,5 +40,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "8c7cefec629c4a036903a55e9b435ef4ddbcf9c3"
+  "gitHead": "89a517f161e783e64278a4f0d800850db6b5b420"
 }

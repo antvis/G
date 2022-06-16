@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
@@ -27,7 +27,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-shader-components": "^1.1.8-alpha.0",
+    "@antv/g-shader-components": "^1.2.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "8c7cefec629c4a036903a55e9b435ef4ddbcf9c3",
+  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48",
   "glslify": {
     "transform": [
       "glslify-import"

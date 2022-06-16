@@ -36,7 +36,7 @@ const canvas = new Canvas({
 
 const rect = new Rect({
   style: {
-    x: 200,
+    x: 100,
     y: 100,
     width: 300,
     height: 200,
@@ -123,10 +123,10 @@ rectFolder.add(rectConfig, 'x', 0, 400).onChange((x) => {
 rectFolder.add(rectConfig, 'y', 0, 400).onChange((y) => {
   rect.style.y = y;
 });
-rectFolder.add(rectConfig, 'width', 50, 400).onChange((width) => {
+rectFolder.add(rectConfig, 'width', -400, 400).onChange((width) => {
   rect.style.width = width;
 });
-rectFolder.add(rectConfig, 'height', 50, 400).onChange((height) => {
+rectFolder.add(rectConfig, 'height', -400, 400).onChange((height) => {
   rect.style.height = height;
 });
 rectFolder.addColor(rectConfig, 'fill').onChange((color) => {

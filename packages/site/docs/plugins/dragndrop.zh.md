@@ -19,7 +19,7 @@ canvasRenderer.registerPlugin(new Plugin());
 
 # 插件配置项
 
-我们提供了以下配置项，可以在创建插件时传入：
+我们提供了以下配置项，可以在创建插件时传入，例如 [overlap](/zh/docs/plugins/dragndrop#overlap)：
 
 ```js
 new Plugin({
@@ -56,6 +56,56 @@ canvas.addEventListener('drag', function (e) {
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sF1WQr4zrsQAAAAAAAAAAAAAARQnAQ" width="300" alt="drag document">
 
 在上面的例子中我们有 `e.target === canvas.document` 这样的判断，是为了避免移动“足球”等非 [Document](/zh/docs/api/builtin-objects/document) 元素也造成相机移动。
+
+## isDocumentDroppable
+
+同样的，如果我们想让 [Document](/zh/docs/api/builtin-objects/document) 也成为“可放置区域”，可以使用该配置项：
+
+```js
+// wrong
+canvas.document.style.droppable = true;
+
+// correct
+const plugin = new Plugin(
+    isDocumentDroppable: true,
+});
+```
+
+在该[示例](/zh/examples/plugins#dragndrop)中，当我们拖动足球到空白区域时，控制台会打印如下信息：
+
+```js
+canvas.addEventListener('drop', function (e) {
+    if (e.target === canvas.document) {
+        console.log('drop on document');
+    }
+});
+```
+
+## dragstartDistanceThreshold
+
+对于满足何种条件判定“开始拖拽”，我们提供了以下配置项：分别基于拖拽距离和时间。只有这些判定条件全部满足，才会触发 `dragstart` 等一系列拖放事件。
+
+该配置项用于配置拖放距离的检测阈值，单位为像素，只有 **大于** 该值才会判定通过。默认值为 0。
+
+在该[示例](/zh/examples/plugins#dragndrop)中，我们配置了该选项为 10，即只有拖动超过 10 像素距离才会触发拖动事件：
+
+```js
+const plugin = new Plugin({
+    dragstartDistanceThreshold: 10,
+});
+```
+
+## dragstartTimeThreshold
+
+该配置项用于配置拖放时间的检测阈值，单位为毫秒，只有 **大于** 该值才会判定通过。默认值为 0。
+
+在该[示例](/zh/examples/plugins#dragndrop)中，我们配置了该选项为 100，即只有拖动超过 100 毫秒才会触发拖动事件：
+
+```js
+const plugin = new Plugin({
+    dragstartTimeThreshold: 100,
+});
+```
 
 ## overlap
 

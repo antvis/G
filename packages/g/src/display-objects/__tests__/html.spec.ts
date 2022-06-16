@@ -77,7 +77,7 @@ describe('HTML', () => {
     expect($el.style.fontSize).to.be.eqls('16px');
     expect($el.style.transform).to.be.eqls('matrix(1, 0, 0, 1, 100, 100)');
     expect($el.style.transformOrigin).to.be.eqls('0px 0px');
-    expect($el.style.background).to.be.eqls('rgba(0, 0, 0, 0)');
+    expect($el.style.background).to.be.eqls('transparent');
 
     html.translateLocal(100, 100);
     expect($el.style.transform).to.be.eqls('matrix(1, 0, 0, 1, 200, 200)');
@@ -86,11 +86,11 @@ describe('HTML', () => {
     expect($el.style.transform).to.be.eqls('matrix(0.5, 0, 0, 0.5, 200, 200)');
 
     html.style.fill = 'white';
-    expect($el.style.background).to.be.eqls('rgb(255, 255, 255)');
+    expect($el.style.background).to.be.eqls('white');
 
     html.style.stroke = 'red';
     html.style.lineWidth = 10;
-    expect($el.style.borderColor).to.be.eqls('rgb(255, 0, 0)');
+    expect($el.style.borderColor).to.be.eqls('red');
     expect($el.style.borderStyle).to.be.eqls('solid');
     expect($el.style.borderWidth).to.be.eqls('10px');
 
