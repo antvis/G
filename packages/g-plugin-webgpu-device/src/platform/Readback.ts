@@ -2,16 +2,16 @@ import type { Buffer, Readback, Texture } from '@antv/g-plugin-device-renderer';
 import {
   BufferFrequencyHint,
   BufferUsage,
-  ResourceType,
   Format,
   getFormatCompByteSize,
+  ResourceType,
 } from '@antv/g-plugin-device-renderer';
 import type { Buffer_WebGPU } from './Buffer';
+import { GPUMapMode } from './constants';
 import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
-import { GPUMapMode } from './constants';
-import { allocateAndCopyTypedBuffer, halfFloat2Number } from './utils';
 import type { Texture_WebGPU } from './Texture';
+import { allocateAndCopyTypedBuffer, halfFloat2Number } from './utils';
 
 export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
   type: ResourceType.Readback = ResourceType.Readback;
@@ -288,8 +288,8 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
         throw new Error('No fixed size for Depth24PlusStencil8 format!');
       case 'depth32float':
         return { width: 1, height: 1, length: 4 };
-      case 'depth24unorm-stencil8':
-        return { width: 1, height: 1, length: 4 };
+      // case 'depth24unorm-stencil8':
+      //   return { width: 1, height: 1, length: 4 };
       case 'depth32float-stencil8':
         return { width: 1, height: 1, length: 5 };
       // BC compressed formats usable if "texture-compression-bc" is both
