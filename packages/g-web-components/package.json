@@ -1,7 +1,7 @@
 {
   "name": "@antv/g-web-components",
-  "version": "1.2.0",
-  "description": "A renderer implemented by SVG",
+  "version": "1.2.1",
+  "description": "A declarative usage for G implemented with WebComponents",
   "keywords": [
     "antv",
     "g"

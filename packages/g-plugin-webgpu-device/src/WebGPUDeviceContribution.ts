@@ -25,7 +25,7 @@ export class WebGPUDeviceContribution implements DeviceContribution {
 
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-requiredfeatures
     const optionalFeatures: GPUFeatureName[] = [
-      'depth24unorm-stencil8',
+      // 'depth24unorm-stencil8',
       'depth32float-stencil8',
       'texture-compression-bc',
     ];

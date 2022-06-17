@@ -1,4 +1,4 @@
-import memoize from 'lodash.memoize';
+import { memoize } from 'lodash-es';
 import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
 import { colorStopToString, isNil, isString, parseGradient as parse } from '../../utils';
 import type { RadialGradient } from '../cssom';
