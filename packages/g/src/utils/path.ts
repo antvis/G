@@ -2,232 +2,133 @@
  * implements morph animation with cubic splitting
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
-import { Cubic as CubicUtil } from '@antv/g-math';
+import type { AbsoluteArray, CurveArray } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from '../display-objects';
-import type { PathCommand } from '../types';
 import { Shape } from '../types';
 import { clamp } from './math';
 
-function midPoint(a: [number, number], b: [number, number], t: number): [number, number] {
-  const ax = a[0];
-  const ay = a[1];
-  const bx = b[0];
-  const by = b[1];
-  return [ax + (bx - ax) * t, ay + (by - ay) * t];
+export function hasArcOrBezier(path: AbsoluteArray) {
+  let hasArc = false;
+  const count = path.length;
+  for (let i = 0; i < count; i++) {
+    const params = path[i];
+    const cmd = params[0];
+    if (cmd === 'C' || cmd === 'A' || cmd === 'Q') {
+      hasArc = true;
+      break;
+    }
+  }
+  return hasArc;
 }
 
-function splitCubic(
-  pts: [number, number, number, number, number, number, number, number],
-  t = 0.5,
-): [PathCommand, PathCommand] {
-  const p0 = pts.slice(0, 2) as [number, number];
-  const p1 = pts.slice(2, 4) as [number, number];
-  const p2 = pts.slice(4, 6) as [number, number];
-  const p3 = pts.slice(6, 8) as [number, number];
-  const p4 = midPoint(p0, p1, t);
-  const p5 = midPoint(p1, p2, t);
-  const p6 = midPoint(p2, p3, t);
-  const p7 = midPoint(p4, p5, t);
-  const p8 = midPoint(p5, p6, t);
-  const p9 = midPoint(p7, p8, t);
-
-  return [
-    // @ts-ignore
-    ['C'].concat(p4, p7, p9) as PathCommand,
-    // @ts-ignore
-    ['C'].concat(p8, p6, p3) as PathCommand,
-  ];
-}
-
-function getCurveArray(segments: PathCommand[]) {
-  return segments.map((segment, i, pathArray) => {
-    // @ts-ignore
-    const segmentData = i && pathArray[i - 1].slice(-2).concat(segment.slice(1));
-    // @ts-ignore
-    const curveLength = i ? CubicUtil.length(...segmentData) : 0;
-
-    let subsegs;
-    if (i) {
-      // must be [segment,segment]
-      subsegs = curveLength ? splitCubic(segmentData) : [segment, segment];
+export function extractPolygons(pathArray: AbsoluteArray) {
+  const polygons: [number, number][][] = [];
+  const polylines: [number, number][][] = [];
+  let points: [number, number][] = []; // 防止第一个命令不是 'M'
+  for (let i = 0; i < pathArray.length; i++) {
+    const params = pathArray[i];
+    const cmd = params[0];
+    if (cmd === 'M') {
+      // 遇到 'M' 判定是否是新数组，新数组中没有点
+      if (points.length) {
+        // 如果存在点，则说明没有遇到 'Z'，开始了一个新的多边形
+        polylines.push(points);
+        points = []; // 创建新的点
+      }
+      points.push([params[1] as number, params[2] as number]);
+    } else if (cmd === 'Z') {
+      if (points.length) {
+        // 存在点
+        polygons.push(points);
+        points = []; // 开始新的点集合
+      }
+      // 如果不存在点，同时 'Z'，则说明是错误，不处理
     } else {
-      subsegs = [segment];
+      points.push([params[1] as number, params[2] as number]);
     }
+  }
+  // 说明 points 未放入 polygons 或者 polyline
+  // 仅当只有一个 M，没有 Z 时会发生这种情况
+  if (points.length > 0) {
+    polylines.push(points);
+  }
+  return {
+    polygons,
+    polylines,
+  };
+}
 
-    return {
-      s: segment,
-      ss: subsegs,
-      l: curveLength,
+function isSamePoint(point1, point2) {
+  return point1[0] === point2[0] && point1[1] === point2[1];
+}
+
+export function path2Segments(path: CurveArray) {
+  const segments = [];
+  let currentPoint = null; // 当前图形
+  let nextParams = null; // 下一节点的 path 参数
+  let startMovePoint = null; // 开始 M 的点，可能会有多个
+  let lastStartMovePointIndex = 0; // 最近一个开始点 M 的索引
+  const count = path.length;
+  for (let i = 0; i < count; i++) {
+    const params = path[i];
+    nextParams = path[i + 1];
+    const command = params[0];
+    // 数学定义上的参数，便于后面的计算
+    const segment = {
+      command,
+      prePoint: currentPoint,
+      params,
+      startTangent: null,
+      endTangent: null,
     };
-  });
-}
-
-export function equalizeSegments(
-  path1: PathCommand[],
-  path2: PathCommand[],
-  TL?: number,
-): PathCommand[][] {
-  const c1 = getCurveArray(path1);
-  const c2 = getCurveArray(path2);
-  const L1 = c1.length;
-  const L2 = c2.length;
-  const l1 = c1.filter((x) => x.l).length;
-  const l2 = c2.filter((x) => x.l).length;
-  const m1 = c1.filter((x) => x.l).reduce((a, { l }) => a + l, 0) / l1 || 0;
-  const m2 = c2.filter((x) => x.l).reduce((a, { l }) => a + l, 0) / l2 || 0;
-  const tl = TL || Math.max(L1, L2);
-  const mm = [m1, m2];
-  const dif = [tl - L1, tl - L2];
-  let canSplit: number | boolean = 0;
-  const result = [c1, c2].map((x, i) =>
-    // @ts-ignore
-    x.l === tl
-      ? x.map((y) => y.s)
-      : x
-          .map((y, j) => {
-            canSplit = j && dif[i] && y.l >= mm[i];
-            dif[i] -= canSplit ? 1 : 0;
-            return canSplit ? y.ss : [y.s];
-          })
-          .flat(),
-  );
-
-  return result[0].length === result[1].length
-    ? result
-    : equalizeSegments(result[0], result[1], tl);
-}
-
-export function getDrawDirection(pathArray: PathCommand[]) {
-  return getPathArea(pathArray) >= 0;
-}
-
-function getCubicSegArea(
-  x0: number,
-  y0: number,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  x3: number,
-  y3: number,
-) {
-  // https://stackoverflow.com/a/15845996
-  return (
-    (3 *
-      ((y3 - y0) * (x1 + x2) -
-        (x3 - x0) * (y1 + y2) +
-        y1 * (x0 - x2) -
-        x1 * (y0 - y2) +
-        y3 * (x2 + x0 / 3) -
-        x3 * (y2 + y0 / 3))) /
-    20
-  );
-}
-
-export function getPathArea(pathArray: PathCommand[]) {
-  let x = 0;
-  let y = 0;
-  let mx = 0;
-  let my = 0;
-  let len = 0;
-  return pathArray
-    .map((seg) => {
-      switch (seg[0]) {
-        case 'M':
-        case 'Z':
-          mx = seg[0] === 'M' ? seg[1] : mx;
-          my = seg[0] === 'M' ? seg[2] : my;
-          x = mx;
-          y = my;
-          return 0;
-        default:
-          // @ts-ignore
-          len = getCubicSegArea.apply(0, [x, y].concat(seg.slice(1)));
-          [x, y] = seg.slice(-2) as [number, number];
-          return len;
-      }
-    })
-    .reduce((a, b) => a + b, 0);
-}
-
-// reverse CURVE based pathArray segments only
-export function reverseCurve(pathArray: PathCommand[]): PathCommand[] {
-  const rotatedCurve = pathArray
-    .slice(1)
-    .map((x, i, curveOnly) =>
-      // @ts-ignore
-      !i ? pathArray[0].slice(1).concat(x.slice(1)) : curveOnly[i - 1].slice(-2).concat(x.slice(1)),
-    )
-    // @ts-ignore
-    .map((x) => x.map((y, i) => x[x.length - i - 2 * (1 - (i % 2))]))
-    .reverse();
-
-  // @ts-ignore
-  return [['M'].concat(rotatedCurve[0].slice(0, 2))].concat(
-    rotatedCurve.map((x) => ['C'].concat(x.slice(2))),
-  );
-}
-
-export function clonePath(pathArray: PathCommand[]): PathCommand[] {
-  // @ts-ignore
-  return pathArray.map((x) => {
-    if (Array.isArray(x)) {
-      // @ts-ignore
-      return clonePath(x);
+    switch (command) {
+      case 'M':
+        startMovePoint = [params[1], params[2]];
+        lastStartMovePointIndex = i;
+        break;
+      default:
+        break;
     }
-    return !Number.isNaN(+x) ? +x : x;
-  });
-}
+    const len = params.length;
+    currentPoint = [params[len - 2], params[len - 1]];
+    segment['currentPoint'] = currentPoint;
+    // 如果当前点与最近一个 M 点相同，则最近一个 M 点的前一个点为当前点的前一个点
+    if (
+      segments[lastStartMovePointIndex] &&
+      isSamePoint(currentPoint, segments[lastStartMovePointIndex].currentPoint)
+    ) {
+      segments[lastStartMovePointIndex].prePoint = segment.prePoint;
+    }
+    const nextPoint = nextParams
+      ? [nextParams[nextParams.length - 2], nextParams[nextParams.length - 1]]
+      : null;
+    segment['nextPoint'] = nextPoint;
+    // Add startTangent and endTangent
+    const { prePoint } = segment;
+    if (command === 'C') {
+      // 三次贝塞尔曲线有两个控制点
+      const cp1 = [params[1], params[2]];
+      const cp2 = [params[3], params[4]];
+      segment.startTangent = [prePoint[0] - cp1[0], prePoint[1] - cp1[1]];
+      segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
 
-function getRotations(a: PathCommand[]) {
-  const segCount = a.length;
-  const pointCount = segCount - 1;
-
-  return a.map((f, idx) =>
-    a.map((p, i) => {
-      let oldSegIdx = idx + i;
-      let seg;
-
-      if (i === 0 || (a[oldSegIdx] && a[oldSegIdx][0] === 'M')) {
-        seg = a[oldSegIdx];
-        // @ts-ignore
-        return ['M'].concat(seg.slice(-2));
+      // horizontal line, eg. ['C', 100, 100, 100, 100, 200, 200]
+      if (segment.startTangent[0] === 0 && segment.startTangent[1] === 0) {
+        segment.startTangent = [cp1[0] - cp2[0], cp1[1] - cp2[1]];
       }
-      if (oldSegIdx >= segCount) oldSegIdx -= pointCount;
-      return a[oldSegIdx];
-    }),
-  );
-}
-
-function distanceSquareRoot(a: [number, number], b: [number, number]) {
-  return Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
-}
-
-export function getRotatedCurve(a: PathCommand[], b: PathCommand[]) {
-  const segCount = a.length - 1;
-  const lineLengths: number[] = [];
-  let computedIndex = 0;
-  let sumLensSqrd = 0;
-  const rotations = getRotations(a);
-
-  rotations.forEach((r, i) => {
-    a.slice(1).forEach((s, j) => {
-      // @ts-ignore
-      sumLensSqrd += distanceSquareRoot(a[(i + j) % segCount].slice(-2), b[j % segCount].slice(-2));
-    });
-    lineLengths[i] = sumLensSqrd;
-    sumLensSqrd = 0;
-  });
-
-  computedIndex = lineLengths.indexOf(Math.min.apply(null, lineLengths));
-
-  return rotations[computedIndex];
+      if (segment.endTangent[0] === 0 && segment.endTangent[1] === 0) {
+        segment.endTangent = [cp2[0] - cp1[0], cp2[1] - cp1[1]];
+      }
+    }
+    segments.push(segment);
+  }
+  return segments;
 }
 
 function commandsToPathString(
-  commands: PathCommand[],
+  commands: AbsoluteArray,
   object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
   applyLocalTransform = true,
 ) {
@@ -273,14 +174,14 @@ function commandsToPathString(
   }, '');
 }
 
-function lineToCommands(x1: number, y1: number, x2: number, y2: number): PathCommand[] {
+function lineToCommands(x1: number, y1: number, x2: number, y2: number): AbsoluteArray {
   return [
     ['M', x1, y1],
     ['L', x2, y2],
   ];
 }
 
-function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): PathCommand[] {
+function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): AbsoluteArray {
   const factor = ((-1 + Math.sqrt(2)) / 3) * 4;
   const dx = rx * factor;
   const dy = ry * factor;
@@ -299,7 +200,7 @@ function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): Path
   ];
 }
 
-function polygonToCommands(points: [number, number][], closed: boolean): PathCommand[] {
+function polygonToCommands(points: [number, number][], closed: boolean): AbsoluteArray {
   const result = points.map((point, i) => {
     return [i === 0 ? 'M' : 'L', point[0], point[1]];
   });
@@ -308,7 +209,7 @@ function polygonToCommands(points: [number, number][], closed: boolean): PathCom
     result.push(['Z']);
   }
 
-  return result as PathCommand[];
+  return result as AbsoluteArray;
 }
 
 function rectToCommands(
@@ -317,7 +218,7 @@ function rectToCommands(
   x: number,
   y: number,
   radius?: [number, number, number, number],
-): PathCommand[] {
+): AbsoluteArray {
   // @see https://gist.github.com/danielpquinn/dd966af424030d47e476
   if (radius) {
     const [tlr, trr, brr, blr] = radius;
@@ -336,7 +237,7 @@ function rectToCommands(
       ['L', x, signY * tlr + y],
       tlr ? ['A', tlr, tlr, 0, 0, sweepFlag, signX * tlr + x, y] : null,
       ['Z'],
-    ].filter((command) => command) as PathCommand[];
+    ].filter((command) => command) as AbsoluteArray;
   }
 
   return [
@@ -358,7 +259,7 @@ export function convertToPath(
   object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
   applyLocalTransform = true,
 ) {
-  let commands: PathCommand[] = [];
+  let commands: AbsoluteArray = [] as unknown as AbsoluteArray;
   switch (object.nodeName) {
     case Shape.LINE:
       const { x1, y1, x2, y2 } = (object as Line).parsedStyle;

@@ -14,15 +14,9 @@ export class LineRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedLineStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { x1, y1, x2, y2, defX = 0, defY = 0 } = parsedStyle as ParsedLineStyleProps;
+    const { x1, y1, x2, y2 } = parsedStyle as ParsedLineStyleProps;
     // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
     // @ts-ignore
-    context.roughCanvas.line(
-      x1.value - defX,
-      y1.value - defY,
-      x2.value - defX,
-      y2.value - defY,
-      generateRoughOptions(object),
-    );
+    context.roughCanvas.line(x1.value, y1.value, x2.value, y2.value, generateRoughOptions(object));
   }
 }

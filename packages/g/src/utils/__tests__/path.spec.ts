@@ -2,11 +2,10 @@ import {
   Circle,
   convertToPath,
   Ellipse,
-  equalizeSegments,
-  getDrawDirection,
+  // equalizeSegments,
+  // getDrawDirection,
   Line,
   Path,
-  PathCommand,
   Polygon,
   Polyline,
   Rect,
@@ -147,50 +146,5 @@ describe('Path utils', () => {
       },
     });
     expect(convertToPath(path2)).to.be.eqls('M0,0C0,0,0,100,0,100C0,100,100,100,100,100Z');
-  });
-
-  it('should calc draw direction correctly', () => {
-    expect(
-      getDrawDirection([
-        ['M', 0, 0],
-        ['L', 100, 100],
-      ]),
-    ).to.be.eqls(false);
-
-    expect(
-      getDrawDirection([
-        ['M', 0, 0],
-        ['L', -100, -100],
-      ]),
-    ).to.be.eqls(false);
-
-    expect(getDrawDirection([['M', 0, 0], ['L', 100, 100], ['L', 0, 100], ['Z']])).to.be.eqls(
-      false,
-    );
-
-    expect(getDrawDirection([['M', 0, 0], ['L', 0, 100], ['L', 100, 100], ['Z']])).to.be.eqls(
-      false,
-    );
-  });
-
-  it('should equalizeSegments correctly', () => {
-    const path1: PathCommand[] = [
-      ['M', 0, 0],
-      ['L', 100, 100],
-    ];
-    const path2: PathCommand[] = [
-      ['M', 0, 0],
-      ['L', -100, -100],
-    ];
-    expect(equalizeSegments(path1, path2)).to.be.eqls([
-      [
-        ['M', 0, 0],
-        ['L', 100, 100],
-      ],
-      [
-        ['M', 0, 0],
-        ['L', -100, -100],
-      ],
-    ]);
   });
 });

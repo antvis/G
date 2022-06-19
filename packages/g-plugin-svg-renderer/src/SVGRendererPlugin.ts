@@ -625,13 +625,28 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
       if ($el) {
-        if (anchor[0].value !== 0 || anchor[1].value !== 0) {
+        let defX = 0;
+        let defY = 0;
+        if (
+          object.nodeName === Shape.LINE ||
+          object.nodeName === Shape.POLYLINE ||
+          object.nodeName === Shape.POLYGON ||
+          object.nodeName === Shape.PATH
+        ) {
+          defX = object.parsedStyle.defX;
+          defY = object.parsedStyle.defY;
+        }
+
+        const tx = -(anchor[0].value * width + defX);
+        const ty = -(anchor[1].value * height + defY);
+
+        if (tx !== 0 || ty !== 0) {
           // apply anchor to element's `transform` property
           $el.setAttribute(
             'transform',
             // can't use percent unit like translate(-50%, -50%)
             // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-            `translate(-${anchor[0].value * width},-${anchor[1].value * height})`,
+            `translate(${tx},${ty})`,
           );
         }
 

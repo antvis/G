@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "@antv/g-math": "^1.2.1",
-    "@antv/util": "^3.0.2",
+    "@antv/util": "^3.1.0",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",

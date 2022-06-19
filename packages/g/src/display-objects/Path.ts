@@ -1,10 +1,10 @@
-import { Cubic as CubicUtil } from '@antv/g-math';
+import type { AbsoluteArray, CurveArray } from '@antv/util';
+import { getPointAtLength } from '@antv/util';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
 import type { BaseStyleProps, ParsedBaseStyleProps, PathCommand } from '../types';
 import { Shape } from '../types';
-import { isNil } from '../utils';
 import { DisplayObject } from './DisplayObject';
 
 export interface PathStyleProps extends BaseStyleProps {
@@ -22,14 +22,13 @@ export interface PathSegment {
 }
 export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   path: {
-    absolutePath: PathCommand[];
+    absolutePath: AbsoluteArray;
     hasArc: boolean;
     segments: PathSegment[];
     polygons: [number, number][][];
     polylines: [number, number][][];
-    curve: PathCommand[];
+    curve: CurveArray;
     totalLength: number;
-    curveSegments: number[][];
     zCommandIndexes: number[];
     rect: Rectangle;
   };
@@ -55,41 +54,8 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Get point according to ratio
    */
   getPoint(ratio: number): Point | null {
-    let subt = 0;
-    let index = 0;
-
-    const curve = this.parsedStyle.path.curve;
-    if (!this.parsedStyle.path.curveSegments.length) {
-      if (curve) {
-        return new Point(curve[0][1], curve[0][2]);
-      }
-      return null;
-    }
-    this.parsedStyle.path.curveSegments.forEach((v, i) => {
-      if (ratio >= v[0] && ratio <= v[1]) {
-        subt = (ratio - v[0]) / (v[1] - v[0]);
-        index = i;
-      }
-    });
-
-    const seg = curve[index];
-    if (isNil(seg) || isNil(index)) {
-      return null;
-    }
-    const l = seg.length;
-    const nextSeg = curve[index + 1];
-    const { x, y } = CubicUtil.pointAt(
-      // @ts-ignore
-      seg[l - 2],
-      seg[l - 1],
-      nextSeg[1],
-      nextSeg[2],
-      nextSeg[3],
-      nextSeg[4],
-      nextSeg[5],
-      nextSeg[6],
-      subt,
-    );
+    const { totalLength, absolutePath } = this.parsedStyle.path;
+    const { x, y } = getPointAtLength(absolutePath, ratio * totalLength);
     return new Point(x, y);
   }
 

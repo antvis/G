@@ -51,7 +51,7 @@ module.exports = {
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox|lodash-es)'],
 
   // // @see https://jestjs.io/docs/configuration#projects-arraystring--projectconfig
   // projects: [

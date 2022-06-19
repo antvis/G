@@ -529,17 +529,29 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     canvas.rotate(rot, 0, 0);
     canvas.scale(sx, sy);
 
-    const contentBounds = object.getGeometryBounds();
-    if (contentBounds) {
-      const { halfExtents } = contentBounds;
+    const bounds = object.getGeometryBounds();
+    const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+    const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+    const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
+    let defX = 0;
+    let defY = 0;
+    if (
+      object.nodeName === Shape.LINE ||
+      object.nodeName === Shape.POLYLINE ||
+      object.nodeName === Shape.POLYGON ||
+      object.nodeName === Shape.PATH
+    ) {
+      defX = object.parsedStyle.defX;
+      defY = object.parsedStyle.defY;
+    }
+
+    const translateX = -(((anchor && anchor[0].value) || 0) * width + defX);
+    const translateY = -(((anchor && anchor[1].value) || 0) * height + defY);
+    if (translateX !== 0 || translateY !== 0) {
       // apply anchor, use true size, not include stroke,
       // eg. bounds = true size + half lineWidth
-      const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-      canvas.translate(
-        -((anchor && anchor[0].value) || 0) * halfExtents[0] * 2,
-        -((anchor && anchor[1].value) || 0) * halfExtents[1] * 2,
-      );
+      canvas.translate(translateX, translateY);
     }
 
     const renderer = this.rendererContributionFactory(object.nodeName);
