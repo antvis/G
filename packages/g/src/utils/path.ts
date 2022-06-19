@@ -68,7 +68,7 @@ export function path2Segments(path: CurveArray) {
   const segments = [];
   let currentPoint = null; // 当前图形
   let nextParams = null; // 下一节点的 path 参数
-  let startMovePoint = null; // 开始 M 的点，可能会有多个
+  // let startMovePoint = null; // 开始 M 的点，可能会有多个
   let lastStartMovePointIndex = 0; // 最近一个开始点 M 的索引
   const count = path.length;
   for (let i = 0; i < count; i++) {
@@ -85,7 +85,7 @@ export function path2Segments(path: CurveArray) {
     };
     switch (command) {
       case 'M':
-        startMovePoint = [params[1], params[2]];
+        // startMovePoint = [params[1], params[2]];
         lastStartMovePointIndex = i;
         break;
       default:
@@ -93,7 +93,8 @@ export function path2Segments(path: CurveArray) {
     }
     const len = params.length;
     currentPoint = [params[len - 2], params[len - 1]];
-    segment['currentPoint'] = currentPoint;
+    // @ts-ignore
+    segment.currentPoint = currentPoint;
     // 如果当前点与最近一个 M 点相同，则最近一个 M 点的前一个点为当前点的前一个点
     if (
       segments[lastStartMovePointIndex] &&
@@ -104,7 +105,8 @@ export function path2Segments(path: CurveArray) {
     const nextPoint = nextParams
       ? [nextParams[nextParams.length - 2], nextParams[nextParams.length - 1]]
       : null;
-    segment['nextPoint'] = nextPoint;
+    // @ts-ignore
+    segment.nextPoint = nextPoint;
     // Add startTangent and endTangent
     const { prePoint } = segment;
     if (command === 'C') {

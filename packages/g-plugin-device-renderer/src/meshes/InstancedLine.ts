@@ -1,4 +1,5 @@
-import { DisplayObject, injectable, Line, ParsedLineStyleProps } from '@antv/g';
+import type { DisplayObject, Line, ParsedLineStyleProps } from '@antv/g';
+import { injectable } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';

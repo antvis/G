@@ -123,13 +123,13 @@ export class RoughCreateElementContribution implements SVGRenderer.CreateElement
         break;
       }
       case Shape.LINE: {
-        const { x1, y1, x2, y2 } = parsedStyle as ParsedLineStyleProps;
+        const { x1, y1, x2, y2, defX = 0, defY = 0 } = parsedStyle as ParsedLineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
         $roughG = roughSVG.line(
-          x1.value,
-          y1.value,
-          x2.value,
-          y2.value,
+          x1.value - defX,
+          y1.value - defY,
+          x2.value - defX,
+          y2.value - defY,
           generateRoughOptions(object),
         );
         break;
