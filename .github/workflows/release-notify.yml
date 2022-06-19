@@ -13,6 +13,6 @@ jobs:
         with:
           DING_TALK_TOKEN: ${{ secrets.DING_TALK_TOKEN}}
           notify_title: '🎉 G-next 发布 release {release_tag} 🎉'
-          notify_body: '## { title }<hr /> { body } <hr />'
+          notify_body: '## { title }<hr /> ![](https://gw.alipayobjects.com/zos/antfincdn/9Ivxcn0hFl/Gtoutu.png) <hr /> { body } <hr />'
           notify_footer: '前往 [**G Releases**]({ release_url }) 查看完整信息.'
           at_all: false
