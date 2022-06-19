@@ -26,7 +26,7 @@ const BASELINE_IMAGE_DIR = '/snapshots';
 describe('Render <Line> with g-canvas', () => {
   afterEach(() => {
     canvas.removeChildren();
-    // fs.rmSync(__dirname + RESULT_IMAGE);
+    fs.rmSync(__dirname + RESULT_IMAGE);
   });
 
   afterAll(() => {

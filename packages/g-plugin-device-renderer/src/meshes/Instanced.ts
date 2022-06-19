@@ -199,6 +199,30 @@ export abstract class Instanced {
     });
   }
 
+  private shouldMergeColor(o1: DisplayObject, o2: DisplayObject, name: string) {
+    // c1: CSSRGB | CSSGradientValue[] | Pattern, c2: CSSRGB | CSSGradientValue[] | Pattern
+    // can't be merged if gradients & pattern used
+    const source = o1.parsedStyle[name];
+    const target = o2.parsedStyle[name];
+
+    // constant color value
+    if (source instanceof CSSRGB && target instanceof CSSRGB) {
+      return true;
+    }
+
+    // pattern
+    if (isPattern(source) && isPattern(target) && source.image === target.image) {
+      return true;
+    }
+
+    // gradients
+    if (Array.isArray(source) && Array.isArray(target) && o1.style[name] === o2.style[name]) {
+      return true;
+    }
+
+    return false;
+  }
+
   /**
    * should be merged into current InstancedMesh
    */
@@ -213,6 +237,13 @@ export abstract class Instanced {
 
     // can't be merged when using clipPath
     if (object.parsedStyle.clipPath) {
+      return false;
+    }
+
+    if (
+      !this.shouldMergeColor(this.instance, object, 'fill') ||
+      !this.shouldMergeColor(this.instance, object, 'stroke')
+    ) {
       return false;
     }
 

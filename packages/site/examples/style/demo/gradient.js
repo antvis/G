@@ -91,9 +91,20 @@ const line1 = new Line({
     stroke: 'linear-gradient(0deg, blue, green 40%, red)',
   },
 });
+const line2 = new Line({
+  style: {
+    x1: 350,
+    y1: 180,
+    x2: 550,
+    y2: 180,
+    strokeWidth: 10,
+    stroke: 'radial-gradient(circle at center, red, blue, green 100%)',
+  },
+});
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(line1);
+  canvas.appendChild(line2);
 
   canvas.appendChild(rect1);
   canvas.appendChild(rect2);

@@ -628,7 +628,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         let defX = 0;
         let defY = 0;
         if (
-          object.nodeName === Shape.LINE ||
           object.nodeName === Shape.POLYLINE ||
           object.nodeName === Shape.POLYGON ||
           object.nodeName === Shape.PATH
