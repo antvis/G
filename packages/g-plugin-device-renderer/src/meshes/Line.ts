@@ -11,9 +11,9 @@ import type {
 } from '@antv/g';
 import { convertToPath, CSSRGB, injectable, parsePath, Shape } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
+import type { CurveArray } from '@antv/util';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
-import type { CurveArray } from '../../../../../../ant/util/lib';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/line.frag';

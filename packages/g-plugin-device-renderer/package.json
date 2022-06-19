@@ -32,6 +32,7 @@
   ],
   "dependencies": {
     "@antv/g-shader-components": "^1.2.1",
+    "@antv/util": "^3.1.0",
     "@mapbox/tiny-sdf": "^2.0.4",
     "@types/offscreencanvas": "^2019.6.4",
     "@webgpu/types": "^0.1.6",

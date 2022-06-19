@@ -1,77 +1,82 @@
-import { GPUTextureUsage } from './constants';
 import type {
-  SwapChain,
-  Device,
-  Sampler,
-  Buffer,
   BindingLayoutDescriptor,
-  TextureDescriptor,
-  SamplerDescriptor,
-  RenderTargetDescriptor,
-  RenderTarget,
-  ProgramDescriptorSimple,
-  Program,
-  BindingsDescriptor,
+  BindingLayoutSamplerDescriptor,
   Bindings,
-  InputLayoutDescriptor,
-  InputLayout,
-  VertexBufferDescriptor,
-  IndexBufferDescriptor,
-  InputState,
-  RenderPipelineDescriptor,
-  RenderPipeline,
-  Readback,
-  RenderPassDescriptor,
-  RenderPass,
-  DeviceLimits,
-  VendorInfo,
-  DebugGroup,
-  ComputePipelineDescriptor,
-  ComputePipeline,
+  BindingsDescriptor,
+  Buffer,
+  BufferDescriptor,
   ComputePass,
   ComputePassDescriptor,
-  BindingLayoutSamplerDescriptor,
+  ComputePipeline,
+  ComputePipelineDescriptor,
+  DebugGroup,
+  Device,
+  DeviceLimits,
+  IndexBufferDescriptor,
+  InputLayout,
+  InputLayoutDescriptor,
+  InputState,
+  Program,
+  ProgramDescriptor,
+  ProgramDescriptorSimple,
   QueryPool,
   QueryPoolType,
-  ProgramDescriptor,
-  BufferDescriptor,
+  Readback,
+  RenderPass,
+  RenderPassDescriptor,
+  RenderPipeline,
+  RenderPipelineDescriptor,
+  RenderTarget,
+  RenderTargetDescriptor,
   Resource,
+  Sampler,
+  SamplerDescriptor,
+  SwapChain,
   Texture,
+  TextureDescriptor,
+  VendorInfo,
+  VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
-import { defaultBindingLayoutSamplerDescriptor } from '@antv/g-plugin-device-renderer';
 import {
-  ResourceType,
-  ViewportOrigin,
-  ClipSpaceNearZ,
-  WrapMode,
-  TexFilterMode,
-  MipFilterMode,
-  TextureDimension,
-  TextureUsage,
-  SamplerFormatKind,
   assert,
   bindingLayoutDescriptorEqual,
-  HashMap,
-  nullHashFunc,
+  ClipSpaceNearZ,
+  defaultBindingLayoutSamplerDescriptor,
   Format,
+  HashMap,
+  MipFilterMode,
+  nullHashFunc,
+  ResourceType,
+  SamplerFormatKind,
+  TexFilterMode,
+  TextureDimension,
+  TextureUsage,
+  ViewportOrigin,
+  WrapMode,
 } from '@antv/g-plugin-device-renderer';
-import type {
-  BindGroupLayout,
-  Attachment_WebGPU,
-  TextureSharedDescriptor,
-  TextureShared_WebGPU,
-  IDevice_WebGPU,
-} from './interfaces';
+import type { glsl_compile as glsl_compile_ } from '../../../../rust/pkg/glsl_wgsl_compiler';
 import { Bindings_WebGPU } from './Bindings';
 import { Buffer_WebGPU } from './Buffer';
+import { ComputePass_WebGPU } from './ComputePass';
+import { ComputePipeline_WebGPU } from './ComputePipeline';
+import { GPUTextureUsage } from './constants';
 import { InputLayout_WebGPU } from './InputLayout';
+import { InputState_WebGPU } from './InputState';
+import type {
+  Attachment_WebGPU,
+  BindGroupLayout,
+  IDevice_WebGPU,
+  TextureSharedDescriptor,
+  TextureShared_WebGPU,
+} from './interfaces';
 import { Program_WebGPU } from './Program';
+// import { FullscreenAlphaClear } from './FullscreenAlphaClear';
+import { QueryPool_WebGPU } from './QueryPool';
+import { Readback_WebGPU } from './Readback';
 import { RenderPass_WebGPU } from './RenderPass';
+import { RenderPipeline_WebGPU } from './RenderPipeline';
 import { Sampler_WebGPU } from './Sampler';
 import { Texture_WebGPU } from './Texture';
-import { InputState_WebGPU } from './InputState';
-import { RenderPipeline_WebGPU } from './RenderPipeline';
-import { Readback_WebGPU } from './Readback';
 import {
   getFormatBlockSize,
   isFormatTextureCompressionBC,
@@ -83,11 +88,6 @@ import {
   translateTextureFormat,
   translateTextureUsage,
 } from './utils';
-import { ComputePass_WebGPU } from './ComputePass';
-import { ComputePipeline_WebGPU } from './ComputePipeline';
-import type { glsl_compile as glsl_compile_ } from '../../../../rust/pkg/glsl_wgsl_compiler';
-// import { FullscreenAlphaClear } from './FullscreenAlphaClear';
-import { QueryPool_WebGPU } from './QueryPool';
 
 export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private swapChainWidth = 0;
@@ -670,6 +670,14 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       if (width % bb !== 0 || height % bb !== 0) return false;
       return this.featureTextureCompressionBC;
     }
+
+    switch (format) {
+      case Format.U16_RGBA_NORM:
+        return false;
+      case Format.F32_RGBA:
+        return false; // unfilterable
+    }
+
     return true;
   }
 
