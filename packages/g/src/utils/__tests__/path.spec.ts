@@ -138,13 +138,13 @@ describe('Path utils', () => {
         path: 'M0,0L0,100L100,100',
       },
     });
-    expect(convertToPath(path)).to.be.eqls('M0,0C0,0,0,100,0,100C0,100,100,100,100,100');
+    expect(convertToPath(path)).to.be.eqls('M0,0C0,0,0,65.625,0,100C50,100,68.75,100,100,100');
 
     const path2 = new Path({
       style: {
         path: 'M0,0L0,100L100,100Z',
       },
     });
-    expect(convertToPath(path2)).to.be.eqls('M0,0C0,0,0,100,0,100C0,100,100,100,100,100Z');
+    expect(convertToPath(path2)).to.be.eqls('M0,0C0,0,0,65.625,0,100C50,100,68.75,100,100,100Z');
   });
 });

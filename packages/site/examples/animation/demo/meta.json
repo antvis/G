@@ -76,6 +76,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "ripple-effect.js",
+      "title": {
+        "zh": "涟漪效果",
+        "en": "Ripple Effect"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DuMkRr0AaecAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "convert-to-path.js",
       "title": {
         "zh": "转换基础图形到路径定义",

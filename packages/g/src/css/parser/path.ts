@@ -1,4 +1,4 @@
-import type { CurveArray } from '@antv/util';
+import type { AbsoluteArray, CurveArray } from '@antv/util';
 import {
   clonePath,
   equalizeSegments,
@@ -15,7 +15,14 @@ import { Rectangle } from '../../shapes';
 import { extractPolygons, hasArcOrBezier, path2Segments } from '../../utils';
 
 export function parsePath(path: string, object: DisplayObject): ParsedPathStyleProps['path'] {
-  const absolutePath = normalizePath(path);
+  let absolutePath: AbsoluteArray;
+  try {
+    absolutePath = normalizePath(path);
+  } catch (e) {
+    absolutePath = normalizePath('');
+    console.error(`[g]: Invalid SVG Path definition: ${path}`);
+  }
+
   const hasArc = hasArcOrBezier(absolutePath);
 
   const { polygons, polylines } = extractPolygons(absolutePath);

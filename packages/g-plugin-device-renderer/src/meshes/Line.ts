@@ -6,7 +6,6 @@ import type {
   ParsedBaseStyleProps,
   ParsedLineStyleProps,
   ParsedPathStyleProps,
-  PathCommand,
   Polyline,
   Tuple4Number,
 } from '@antv/g';
@@ -14,6 +13,7 @@ import { convertToPath, CSSRGB, injectable, parsePath, Shape } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
+import { CurveArray } from '../../../../../../ant/util/lib';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/line.frag';
@@ -491,7 +491,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
 
     const curve = [...path.curve].map((c, i) =>
       zCommandIndexes.includes(i) ? ['Z'] : c,
-    ) as PathCommand[];
+    ) as CurveArray;
 
     let startPointIndex = -1;
     curve.forEach(([command, ...params]) => {

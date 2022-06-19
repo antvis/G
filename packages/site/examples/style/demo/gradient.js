@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, HTML, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, HTML, Line, Rect } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -81,7 +81,20 @@ const rect4 = new Rect({
   },
 });
 
+const line1 = new Line({
+  style: {
+    x1: 50,
+    y1: 180,
+    x2: 250,
+    y2: 180,
+    strokeWidth: 10,
+    stroke: 'linear-gradient(0deg, blue, green 40%, red)',
+  },
+});
+
 canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(line1);
+
   canvas.appendChild(rect1);
   canvas.appendChild(rect2);
   canvas.appendChild(rect3);

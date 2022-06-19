@@ -1,24 +1,24 @@
-import type { AbsoluteArray, CurveArray } from '@antv/util';
+import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
 import { getPointAtLength } from '@antv/util';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
-import type { BaseStyleProps, ParsedBaseStyleProps, PathCommand } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface PathStyleProps extends BaseStyleProps {
-  path?: string | PathCommand[];
-  d?: string | PathCommand[];
+  path?: string | PathArray;
+  d?: string | PathArray;
 }
 export interface PathSegment {
-  command: PathCommand[0];
+  command: PathArray[0];
   currentPoint: [number, number];
   prePoint: [number, number] | null;
   nextPoint: [number, number] | null;
   startTangent: [number, number] | null;
   endTangent: [number, number] | null;
-  params: PathCommand;
+  params: PathArray[0];
 }
 export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   path: {

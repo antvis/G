@@ -26,7 +26,7 @@ const BASELINE_IMAGE_DIR = '/snapshots';
 describe('Render <Line> with g-canvas', () => {
   afterEach(() => {
     canvas.removeChildren();
-    fs.rmSync(__dirname + RESULT_IMAGE);
+    // fs.rmSync(__dirname + RESULT_IMAGE);
   });
 
   afterAll(() => {
@@ -73,6 +73,11 @@ describe('Render <Line> with g-canvas', () => {
     line6.style.stroke = 'r(0.5, 0.5, 1) 0:#ffffff 1:#1890ff';
     line6.setPosition(150, 0);
     canvas.appendChild(line6);
+
+    const line7 = line.cloneNode();
+    line7.style.stroke = 'linear-gradient(90deg, blue, green 40%, red)';
+    line7.setPosition(150, 0);
+    canvas.appendChild(line7);
 
     await sleep(300);
 
