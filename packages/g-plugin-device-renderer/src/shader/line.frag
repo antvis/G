@@ -57,9 +57,10 @@ void main(){
   }
 
   if (u_Dash + u_Gap > 1.0) {
-    float travel = mod(v_Travel + u_Gap * 0.5 + u_DashOffset, u_Dash + u_Gap) - (u_Gap * 0.5);
+    float scalingFactor = sqrt(u_ModelMatrix[0][0] * u_ModelMatrix[0][0] + u_ModelMatrix[0][1] * u_ModelMatrix[0][1] + u_ModelMatrix[0][2] * u_ModelMatrix[0][2]);
+    float travel = mod(v_Travel + u_Gap * scalingFactor * 0.5 + u_DashOffset, u_Dash * scalingFactor + u_Gap * scalingFactor) - (u_Gap * scalingFactor * 0.5);
     float left = max(travel - 0.5, -0.5);
-    float right = min(travel + 0.5, u_Gap + 0.5);
+    float right = min(travel + 0.5, u_Gap * scalingFactor + 0.5);
     alpha *= max(0.0, right - left);
   }
 
