@@ -39,6 +39,6 @@ module.exports = {
   transformIgnorePatterns: [
     // '<rootDir>/node_modules/(?!@mapbox)',
     // @see https://stackoverflow.com/a/69179139
-    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|lodash-es)',
   ],
 };

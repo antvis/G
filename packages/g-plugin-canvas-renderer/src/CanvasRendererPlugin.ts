@@ -482,20 +482,27 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private useAnchor(context: CanvasRenderingContext2D, object: DisplayObject): void {
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
-    if (!anchor || (anchor[0].value === 0 && anchor[1].value === 0)) {
-      return;
+    const bounds = object.getGeometryBounds();
+    const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+    const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+    let defX = 0;
+    let defY = 0;
+    if (
+      object.nodeName === Shape.POLYLINE ||
+      object.nodeName === Shape.POLYGON ||
+      object.nodeName === Shape.PATH
+    ) {
+      defX = object.parsedStyle.defX;
+      defY = object.parsedStyle.defY;
     }
 
-    const contentBounds = object.getGeometryBounds();
-    if (contentBounds) {
-      const { halfExtents } = contentBounds;
+    const tx = -(((anchor && anchor[0].value) || 0) * width + defX);
+    const ty = -(((anchor && anchor[1].value) || 0) * height + defY);
 
+    if (tx !== 0 || ty !== 0) {
       // apply anchor, use true size, not include stroke,
       // eg. bounds = true size + half lineWidth
-      context.translate(
-        -anchor[0].value * halfExtents[0] * 2,
-        -anchor[1].value * halfExtents[1] * 2,
-      );
+      context.translate(tx, ty);
     }
   }
 

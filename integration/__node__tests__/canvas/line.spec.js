@@ -74,6 +74,11 @@ describe('Render <Line> with g-canvas', () => {
     line6.setPosition(150, 0);
     canvas.appendChild(line6);
 
+    const line7 = line.cloneNode();
+    line7.style.stroke = 'linear-gradient(90deg, blue, green 40%, red)';
+    line7.setPosition(150, 0);
+    canvas.appendChild(line7);
+
     await sleep(300);
 
     await new Promise((resolve) => {

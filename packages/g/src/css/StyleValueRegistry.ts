@@ -879,6 +879,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // anchor is center by default, don't account for lineWidth here
       const {
         lineWidth,
+        // lineCap,
+        // lineJoin,
+        // miterLimit,
         increasedLineWidthForHitTesting,
         shadowColor,
         filter = [],
@@ -900,8 +903,23 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
 
+      // @see https://github.molgen.mpg.de/git-mirror/cairo/blob/master/src/cairo-stroke-style.c#L97..L128
+      const expansion =
+        object.nodeName === Shape.POLYLINE ||
+        object.nodeName === Shape.POLYGON ||
+        object.nodeName === Shape.PATH
+          ? Math.SQRT2
+          : 0.5;
+      // if (lineCap?.value === 'square') {
+      //   expansion = Math.SQRT1_2;
+      // }
+
+      // if (lineJoin?.value === 'miter' && expansion < Math.SQRT2 * miterLimit) {
+      //   expansion = Math.SQRT1_2 * miterLimit;
+      // }
+
       const halfLineWidth =
-        ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) / 2;
+        ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) * expansion;
       // append border
       vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
       geometry.renderBounds.update(center, halfExtents);

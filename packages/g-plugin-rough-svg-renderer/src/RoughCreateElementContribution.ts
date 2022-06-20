@@ -10,8 +10,9 @@ import type {
 } from '@antv/g';
 import { CanvasConfig, ContextService, inject, Shape, singleton } from '@antv/g';
 import { SVGRenderer } from '@antv/g-svg';
+import { path2String } from '@antv/util';
 import type { RoughSVG } from 'roughjs/bin/svg';
-import { formatPath, generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
+import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
 @singleton({ token: SVGRenderer.CreateElementContribution })
 export class RoughCreateElementContribution implements SVGRenderer.CreateElementContribution {
@@ -134,27 +135,26 @@ export class RoughCreateElementContribution implements SVGRenderer.CreateElement
         break;
       }
       case Shape.POLYLINE: {
-        const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolylineStyleProps;
+        const { points } = parsedStyle as ParsedPolylineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
         $roughG = roughSVG.linearPath(
-          points.points.map(([x, y]) => [x - defX, y - defY]),
+          points.points.map(([x, y]) => [x, y]),
           generateRoughOptions(object),
         );
         break;
       }
       case Shape.POLYGON: {
-        const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolygonStyleProps;
+        const { points } = parsedStyle as ParsedPolygonStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#polygon-vertices--options
         $roughG = roughSVG.polygon(
-          points.points.map(([x, y]) => [x - defX, y - defY]),
+          points.points.map(([x, y]) => [x, y]),
           generateRoughOptions(object),
         );
         break;
       }
       case Shape.PATH: {
-        const { path, defX = 0, defY = 0 } = parsedStyle as ParsedPathStyleProps;
-        const formatted = formatPath(path.absolutePath, defX, defY);
-        $roughG = roughSVG.path(formatted, generateRoughOptions(object));
+        const { path } = parsedStyle as ParsedPathStyleProps;
+        $roughG = roughSVG.path(path2String(path.absolutePath, 3), generateRoughOptions(object));
         break;
       }
     }

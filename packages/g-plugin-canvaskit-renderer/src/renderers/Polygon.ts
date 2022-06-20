@@ -21,12 +21,9 @@ export class PolygonRenderer implements RendererContribution {
     const { CanvasKit } = this.contextService.getContext();
     const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
 
-    const { shadowOffsetX, shadowOffsetY, defX, defY, points } =
-      object.parsedStyle as ParsedPolygonStyleProps;
+    const { shadowOffsetX, shadowOffsetY, points } = object.parsedStyle as ParsedPolygonStyleProps;
 
-    const formattedPoints = points.points
-      .map(([x, y]) => [x - defX, y - defY])
-      .reduce<number[]>((prev, cur) => prev.concat(cur), []);
+    const formattedPoints = points.points.reduce<number[]>((prev, cur) => prev.concat(cur), []);
 
     if (shadowFillPaint || shadowStrokePaint) {
       const path = new CanvasKit.Path();

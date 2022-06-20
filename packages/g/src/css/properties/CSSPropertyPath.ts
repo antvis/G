@@ -1,3 +1,4 @@
+import type { AbsoluteArray, CurveArray } from '@antv/util';
 import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import { Rectangle } from '../../shapes';
@@ -29,14 +30,13 @@ export class CSSPropertyPath
     // unset
     if (parsed instanceof CSSKeywordValue && parsed.value === 'unset') {
       return {
-        absolutePath: [],
+        absolutePath: [] as unknown as AbsoluteArray,
         hasArc: false,
         segments: [],
         polygons: [],
         polylines: [],
-        curve: [],
+        curve: [] as unknown as CurveArray,
         totalLength: 0,
-        curveSegments: [],
         zCommandIndexes: [],
         rect: new Rectangle(0, 0, 0, 0),
       };

@@ -1,11 +1,11 @@
-import { expect } from 'chai';
 import { Path } from '@antv/g';
+import type { PathArray } from '@antv/util';
+import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
-import type { PathCommand } from '@antv/g';
 
 describe('Path', () => {
   it('should calc global bounds correctly', () => {
-    const pathArray: PathCommand[] = [
+    const pathArray: PathArray = [
       ['M', 0, 0],
       ['L', 100, 0],
     ];
@@ -69,7 +69,7 @@ describe('Path', () => {
   });
 
   it('should handle invalid path correctly', () => {
-    const pathArray: PathCommand[] = [
+    const pathArray: PathArray = [
       // @ts-ignore
       ['XX', 0, 0],
     ];
@@ -89,7 +89,7 @@ describe('Path', () => {
   });
 
   it('should use `d` property in path correctly', () => {
-    const pathArray: PathCommand[] = [
+    const pathArray: PathArray = [
       ['M', 0, 0],
       ['L', 10, 0],
     ];
@@ -105,7 +105,7 @@ describe('Path', () => {
   });
 
   it('should getPoint at ratio correctly', () => {
-    const pathArray: PathCommand[] = [
+    const pathArray: PathArray = [
       ['M', 0, 0],
       ['L', 100, 0],
     ];
@@ -117,26 +117,26 @@ describe('Path', () => {
       },
     });
 
-    let point = path.getPoint(0)!;
+    let point = path.getPoint(0);
     expect(point.x).eqls(0);
     expect(point.y).eqls(0);
 
-    point = path.getPoint(0.5)!;
+    point = path.getPoint(0.5);
 
     expect(point.x).eqls(50);
     expect(point.y).eqls(0);
 
-    point = path.getPoint(1)!;
+    point = path.getPoint(1);
     expect(point.x).eqls(100);
     expect(point.y).eqls(0);
 
-    point = path.getPoint(10)!;
-    expect(point.x).eqls(0);
+    point = path.getPoint(10);
+    expect(point.x).eqls(100);
     expect(point.y).eqls(0);
   });
 
   it('should calc tangent correctly', () => {
-    const pathArray: PathCommand[] = [
+    const pathArray: PathArray = [
       ['M', 0, 0],
       ['L', 100, 0],
     ];
@@ -149,12 +149,12 @@ describe('Path', () => {
     });
 
     expect(path.getStartTangent()).eqls([
-      [100, 0],
+      [50, 0],
       [0, 0],
     ]);
 
     expect(path.getEndTangent()).eqls([
-      [0, 0],
+      [68.75, 0],
       [100, 0],
     ]);
   });

@@ -1,5 +1,5 @@
-import type { CSSGradientValue, CSSRGB, DisplayObject, Line, ParsedLineStyleProps } from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+import type { DisplayObject, Line, ParsedLineStyleProps } from '@antv/g';
+import { injectable } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';
@@ -37,18 +37,6 @@ export class InstancedLineMesh extends Instanced {
     const shouldMerge = super.shouldMerge(object, index);
     if (!shouldMerge) {
       return false;
-    }
-
-    // should split when using gradient & pattern
-    const instance = this.instance;
-    if (instance.nodeName === Shape.LINE) {
-      const source = instance.parsedStyle.stroke as CSSRGB | CSSGradientValue;
-      const target = object.parsedStyle.stroke as CSSRGB | CSSGradientValue;
-
-      // can't be merged if stroke's types are different
-      if (source.toString() !== target.toString()) {
-        return false;
-      }
     }
 
     return true;

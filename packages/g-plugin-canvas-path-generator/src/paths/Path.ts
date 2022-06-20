@@ -1,11 +1,10 @@
 import type { ParsedPathStyleProps } from '@antv/g';
 
 export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedPathStyleProps) {
-  const { defX: x = 0, defY: y = 0 } = parsedStyle;
-
   const { curve, zCommandIndexes } = parsedStyle.path;
   const path = [...curve];
   zCommandIndexes.forEach((zIndex, index) => {
+    // @ts-ignore
     path.splice(zIndex + index, 1, ['Z']);
   });
 
@@ -15,18 +14,12 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
     // V,H,S,T 都在前面被转换成标准形式
     switch (command) {
       case 'M':
-        context.moveTo(params[1]! - x, params[2]! - y);
+        context.moveTo(params[1], params[2]);
         break;
       case 'C':
-        context.bezierCurveTo(
-          params[1]! - x,
-          params[2]! - y,
-          params[3]! - x,
-          params[4]! - y,
-          params[5]! - x,
-          params[6]! - y,
-        );
+        context.bezierCurveTo(params[1], params[2], params[3], params[4], params[5], params[6]);
         break;
+      // @ts-ignore
       case 'Z':
         context.closePath();
         break;
