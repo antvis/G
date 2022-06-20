@@ -13,16 +13,6 @@ const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
-  fonts: [
-    {
-      name: 'Roboto',
-      url: '/Roboto-Regular.ttf',
-    },
-    {
-      name: 'sans-serif',
-      url: '/NotoSansCJKsc-VF.ttf',
-    },
-  ],
 });
 const webgpuRenderer = new WebGPURenderer();
 
@@ -89,10 +79,34 @@ const circlePath = new Path({
   },
 });
 
+const path4 = new Path({
+  style: {
+    transform: 'translate(300, 100) scale(0.4)',
+    lineWidth: 10,
+    lineJoin: 'round',
+    stroke: '#54BECC',
+    cursor: 'pointer',
+    path:
+      'M 100,300' +
+      'l 50,-25' +
+      'a25,25 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'a25,50 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'a25,75 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'a25,100 -30 0,1 50,-25' +
+      'l 50,-25' +
+      'l 0, 200,' +
+      'z',
+  },
+});
+
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(path1);
   canvas.appendChild(path2);
   canvas.appendChild(path3);
+  canvas.appendChild(path4);
   canvas.appendChild(circlePath);
   circlePath.setPosition(100, 300);
 });

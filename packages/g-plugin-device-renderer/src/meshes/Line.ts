@@ -438,10 +438,11 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
 
-  let points: number[] = [];
+  const points: number[][] = [];
   let triangles: number[] = [];
+
   if (object.nodeName === Shape.POLYLINE || object.nodeName === Shape.POLYGON) {
-    points = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
+    points[0] = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
       prev.push(cur[0] - defX, cur[1] - defY);
       return prev;
     }, [] as number[]);
@@ -450,16 +451,16 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     if (object.nodeName === Shape.POLYGON) {
       if (needEarcut) {
         // use earcut for triangulation
-        triangles = earcut(points, [], 2);
+        triangles = earcut(points[0], [], 2);
         return {
-          pointsBuffer: points,
+          pointsBuffer: points[0],
           travelBuffer: [],
           triangles,
-          instancedCount: Math.round(points.length / stridePoints),
+          instancedCount: Math.round(points[0].length / stridePoints),
         };
       } else {
-        points.push(points[0], points[1]);
-        points.push(...addTailSegment(points[0], points[1], points[2], points[3]));
+        points[0].push(points[0][0], points[0][1]);
+        points[0].push(...addTailSegment(points[0][0], points[0][1], points[0][2], points[0][3]));
       }
     }
   } else if (
@@ -494,10 +495,13 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     ) as CurveArray;
 
     let startPointIndex = -1;
+    let mCommandsNum = -1;
     curve.forEach(([command, ...params]) => {
       if (command === 'M') {
-        startPointIndex = points.length;
-        points.push(params[0] - defX, params[1] - defY);
+        mCommandsNum++;
+        points[mCommandsNum] = [];
+        startPointIndex = points[mCommandsNum].length;
+        points[mCommandsNum].push(params[0] - defX, params[1] - defY);
       } else if (command === 'C') {
         curveTo(
           params[0] - defX,
@@ -506,7 +510,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[3] - defY,
           params[4] - defX,
           params[5] - defY,
-          points,
+          points[mCommandsNum],
         );
       } else if (
         command === 'Z' &&
@@ -515,31 +519,44 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
         const epsilon = 0.0001;
         // skip if already closed
         if (
-          Math.abs(points[points.length - 2] - points[startPointIndex]) > epsilon ||
-          Math.abs(points[points.length - 1] - points[startPointIndex + 1]) > epsilon
+          Math.abs(
+            points[mCommandsNum][points[mCommandsNum].length - 2] -
+              points[mCommandsNum][startPointIndex],
+          ) > epsilon ||
+          Math.abs(
+            points[mCommandsNum][points[mCommandsNum].length - 1] -
+              points[mCommandsNum][startPointIndex + 1],
+          ) > epsilon
         ) {
-          points.push(points[startPointIndex], points[startPointIndex + 1]);
+          points[mCommandsNum].push(
+            points[mCommandsNum][startPointIndex],
+            points[mCommandsNum][startPointIndex + 1],
+          );
         }
 
-        points.push(
+        points[mCommandsNum].push(
           ...addTailSegment(
-            points[startPointIndex],
-            points[startPointIndex + 1],
-            points[startPointIndex + 2],
-            points[startPointIndex + 3],
+            points[mCommandsNum][startPointIndex],
+            points[mCommandsNum][startPointIndex + 1],
+            points[mCommandsNum][startPointIndex + 2],
+            points[mCommandsNum][startPointIndex + 3],
           ),
         );
       }
     });
 
     if (needEarcut) {
+      const pointsBuffer = points.reduce((prev, cur) => {
+        prev.push(...cur);
+        return prev;
+      }, []);
       // use earcut for triangulation
-      triangles = earcut(points, [], 2);
+      triangles = earcut(pointsBuffer, [], 2);
       return {
-        pointsBuffer: points,
+        pointsBuffer,
         travelBuffer: [],
         triangles,
-        instancedCount: Math.round(points.length / stridePoints),
+        instancedCount: Math.round(pointsBuffer.length / stridePoints),
       };
     }
   }
@@ -557,56 +574,73 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
   }
 
-  let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
+  return points
+    .map((points) => {
+      let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
 
-  // const needDash = !isNil(lineDash);
-  let dist = 0;
-  const pointsBuffer = [];
-  const travelBuffer = [];
-  for (let i = 0; i < points.length; i += stridePoints) {
-    // calc travel
-    // if (needDash) {
-    if (i > 1) {
-      dist += Math.sqrt(
-        Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
-      );
-    }
-    travelBuffer.push(dist);
-    // } else {
-    //   travelBuffer.push(0);
-    // }
+      // const needDash = !isNil(lineDash);
+      let dist = 0;
+      const pointsBuffer = [];
+      const travelBuffer = [];
+      for (let i = 0; i < points.length; i += stridePoints) {
+        // calc travel
+        // if (needDash) {
+        if (i > 1) {
+          dist += Math.sqrt(
+            Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+          );
+        }
+        travelBuffer.push(dist);
+        // } else {
+        //   travelBuffer.push(0);
+        // }
 
-    pointsBuffer[j++] = points[i];
-    pointsBuffer[j++] = points[i + 1];
-    pointsBuffer[j] = jointType;
-    if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
-      pointsBuffer[j] += capType;
-    }
-    if (i + stridePoints * 2 >= points.length) {
-      pointsBuffer[j] += endJoint - jointType;
-    } else if (i + stridePoints >= points.length) {
-      pointsBuffer[j] = 0;
-    }
-    j++;
-  }
-  pointsBuffer[j++] = points[points.length - 4];
-  pointsBuffer[j++] = points[points.length - 3];
-  pointsBuffer[j++] = 0;
-  pointsBuffer[0] = points[0];
-  pointsBuffer[1] = points[1];
-  pointsBuffer[2] = 0;
-  pointsBuffer[3] = points[2];
-  pointsBuffer[4] = points[3];
-  pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
+        pointsBuffer[j++] = points[i];
+        pointsBuffer[j++] = points[i + 1];
+        pointsBuffer[j] = jointType;
+        if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
+          pointsBuffer[j] += capType;
+        }
+        if (i + stridePoints * 2 >= points.length) {
+          pointsBuffer[j] += endJoint - jointType;
+        } else if (i + stridePoints >= points.length) {
+          pointsBuffer[j] = 0;
+        }
+        j++;
+      }
+      pointsBuffer[j++] = points[points.length - 4];
+      pointsBuffer[j++] = points[points.length - 3];
+      pointsBuffer[j++] = 0;
+      pointsBuffer[0] = points[0];
+      pointsBuffer[1] = points[1];
+      pointsBuffer[2] = 0;
+      pointsBuffer[3] = points[2];
+      pointsBuffer[4] = points[3];
+      pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
 
-  const instancedCount = Math.round(points.length / stridePoints);
+      const instancedCount = Math.round(points.length / stridePoints);
 
-  return {
-    pointsBuffer,
-    travelBuffer,
-    triangles,
-    instancedCount,
-  };
+      return {
+        pointsBuffer,
+        travelBuffer,
+        triangles,
+        instancedCount,
+      };
+    })
+    .reduce(
+      (prev, cur) => {
+        prev.pointsBuffer.push(...cur.pointsBuffer);
+        prev.travelBuffer.push(...cur.travelBuffer);
+        prev.instancedCount += cur.instancedCount;
+        return prev;
+      },
+      {
+        pointsBuffer: [],
+        travelBuffer: [],
+        triangles,
+        instancedCount: 0,
+      },
+    );
 }
 
 function getJointType(lineJoin: CanvasLineJoin) {
