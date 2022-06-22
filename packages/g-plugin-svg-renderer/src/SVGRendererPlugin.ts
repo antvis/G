@@ -625,19 +625,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
       if ($el) {
-        let defX = 0;
-        let defY = 0;
-        if (
-          object.nodeName === Shape.POLYLINE ||
-          object.nodeName === Shape.POLYGON ||
-          object.nodeName === Shape.PATH
-        ) {
-          defX = object.parsedStyle.defX;
-          defY = object.parsedStyle.defY;
-        }
-
-        const tx = -(anchor[0].value * width + defX);
-        const ty = -(anchor[1].value * height + defY);
+        const tx = -(anchor[0].value * width);
+        const ty = -(anchor[1].value * height);
 
         if (tx !== 0 || ty !== 0) {
           // apply anchor to element's `transform` property

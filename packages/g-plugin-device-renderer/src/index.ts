@@ -1,4 +1,4 @@
-import type { RendererPlugin, Shape, Syringe } from '@antv/g';
+import type { DataURLOptions, RendererPlugin, Shape, Syringe } from '@antv/g';
 import { GlobalContainer, Module } from '@antv/g';
 import 'regenerator-runtime/runtime';
 import { Renderable3D } from './components/Renderable3D';
@@ -129,5 +129,9 @@ export class Plugin implements RendererPlugin {
     successCallback?: (t: Texture) => void,
   ) {
     return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
+  }
+
+  toDataURL(options: Partial<DataURLOptions>) {
+    return this.container.get(RenderGraphPlugin).toDataURL(options);
   }
 }

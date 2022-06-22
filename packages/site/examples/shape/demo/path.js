@@ -23,6 +23,27 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
+const path = new Path({
+  style: {
+    path: [
+      ['M', 57.06339097770921, -18.541019662496844],
+      ['L', 13.225168176580645, -18.202882373436317],
+      ['L', 3.67394039744206e-15, -60],
+      ['L', -13.225168176580643, -18.202882373436317],
+      ['L', -57.06339097770921, -18.54101966249685],
+      ['L', -21.398771616640953, 6.952882373436324],
+      ['L', -35.267115137548394, 48.54101966249684],
+      ['L', -4.133182947122317e-15, 22.5],
+      ['L', 35.26711513754837, 48.54101966249685],
+      ['L', 21.398771616640953, 6.952882373436322],
+      ['Z'],
+    ],
+    stroke: '#1890FF',
+    lineWidth: 1,
+  },
+});
+path.translate(100, 250);
+
 const path1 = new Path({
   style: {
     path: [
@@ -103,6 +124,7 @@ const path4 = new Path({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(path);
   canvas.appendChild(path1);
   canvas.appendChild(path2);
   canvas.appendChild(path3);

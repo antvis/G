@@ -1,4 +1,4 @@
-import type { CanvasLike } from '@antv/g';
+import type { CanvasLike, DataURLOptions } from '@antv/g';
 import {
   CanvasConfig,
   ContextService,
@@ -102,5 +102,10 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
     if (this.$container && this.$container.style) {
       this.$container.style.cursor = cursor;
     }
+  }
+
+  async toDataURL(options: Partial<DataURLOptions> = {}) {
+    const { type, encoderOptions } = options;
+    return (this.context.canvas as HTMLCanvasElement).toDataURL(type, encoderOptions);
   }
 }

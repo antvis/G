@@ -30,7 +30,7 @@
             "path": "../g-plugin-device-renderer"
         },
         {
-            "path": "../g-plugin-webgl-device"
+            "path": "../g-plugin-webgpu-device"
         },
         {
             "path": "../g-plugin-dom-interaction"

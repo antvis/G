@@ -8,9 +8,15 @@ import type {
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
 } from '@antv/g';
-import { CanvasConfig, ContextService, inject, Shape, singleton } from '@antv/g';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  Shape,
+  singleton,
+  translatePathToString,
+} from '@antv/g';
 import { SVGRenderer } from '@antv/g-svg';
-import { path2String } from '@antv/util';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
@@ -135,26 +141,29 @@ export class RoughCreateElementContribution implements SVGRenderer.CreateElement
         break;
       }
       case Shape.POLYLINE: {
-        const { points } = parsedStyle as ParsedPolylineStyleProps;
+        const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolylineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
         $roughG = roughSVG.linearPath(
-          points.points.map(([x, y]) => [x, y]),
+          points.points.map(([x, y]) => [x - defX, y - defY]),
           generateRoughOptions(object),
         );
         break;
       }
       case Shape.POLYGON: {
-        const { points } = parsedStyle as ParsedPolygonStyleProps;
+        const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolygonStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#polygon-vertices--options
         $roughG = roughSVG.polygon(
-          points.points.map(([x, y]) => [x, y]),
+          points.points.map(([x, y]) => [x - defX, y - defY]),
           generateRoughOptions(object),
         );
         break;
       }
       case Shape.PATH: {
-        const { path } = parsedStyle as ParsedPathStyleProps;
-        $roughG = roughSVG.path(path2String(path.absolutePath, 3), generateRoughOptions(object));
+        const { path, defX = 0, defY = 0 } = parsedStyle as ParsedPathStyleProps;
+        $roughG = roughSVG.path(
+          translatePathToString(path.absolutePath, defX, defY),
+          generateRoughOptions(object),
+        );
         break;
       }
     }

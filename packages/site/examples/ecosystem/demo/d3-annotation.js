@@ -1,8 +1,10 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin as PluginCSSSelect } from '@antv/g-plugin-css-select';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as d3 from 'd3';
 import * as d3SvgAnnotation from 'd3-svg-annotation';
 import * as lil from 'lil-gui';
@@ -38,6 +40,8 @@ const cssSelectPlugin = new PluginCSSSelect();
 canvasRenderer.registerPlugin(cssSelectPlugin);
 webglRenderer.registerPlugin(cssSelectPlugin);
 svgRenderer.registerPlugin(cssSelectPlugin);
+webgpuRenderer.registerPlugin(cssSelectPlugin);
+canvaskitRenderer.registerPlugin(cssSelectPlugin);
 
 // create chart dimensions
 const margin = { top: 20, right: 20, bottom: 30, left: 50 },

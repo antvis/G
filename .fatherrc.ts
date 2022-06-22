@@ -47,5 +47,6 @@ export default {
     'g-components',
     'g-web-components',
     'react-g',
+    'g-image-exporter',
   ],
 };
