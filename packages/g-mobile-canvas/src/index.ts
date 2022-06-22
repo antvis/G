@@ -1,4 +1,5 @@
-import { AbstractRenderer, isNil, RendererConfig } from '@antv/g';
+import type { RendererConfig } from '@antv/g';
+import { AbstractRenderer, isNil } from '@antv/g';
 import * as CanvasPathGenerator from '@antv/g-plugin-canvas-path-generator';
 import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
 import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';

@@ -29,7 +29,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
   fonts: [
     {
       name: 'sans-serif',
-      url: '/NotoSansCJKsc-VF.ttf',
+      url: '/NotoSans-Regular.ttf',
     },
   ],
 });

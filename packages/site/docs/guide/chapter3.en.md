@@ -9,7 +9,7 @@ order: 3
 
 -   使用 [addEventListener](/zh/docs/api/event#addeventlistener) 为图形添加事件监听器：
 -   使用 [style](/zh/docs/api/basic/display-object#绘图属性) 修改图形样式属性
--   使用 [translateLocal]() 改变节点位置
+-   使用 [translateLocal](/zh/docs/api/basic/display-object#平移) 改变节点位置
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 

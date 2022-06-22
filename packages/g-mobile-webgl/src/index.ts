@@ -1,4 +1,5 @@
-import { AbstractRenderer, isNil, RendererConfig } from '@antv/g';
+import type { RendererConfig } from '@antv/g';
+import { AbstractRenderer, isNil } from '@antv/g';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
@@ -26,7 +27,9 @@ export class Renderer extends AbstractRenderer {
   constructor(config?: MobileWebglRenderConfig) {
     super(config);
 
-    this.registerPlugin(new ContextRegisterPlugin());
+    const deviceRendererPlugin = new DeviceRenderer.Plugin();
+
+    this.registerPlugin(new ContextRegisterPlugin(deviceRendererPlugin));
     this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(
       new WebGLDevice.Plugin(
@@ -39,7 +42,7 @@ export class Renderer extends AbstractRenderer {
             },
       ),
     );
-    this.registerPlugin(new DeviceRenderer.Plugin());
+    this.registerPlugin(deviceRendererPlugin);
     this.registerPlugin(new DomInteraction.Plugin());
     this.registerPlugin(new HTMLRenderer.Plugin());
     this.registerPlugin(

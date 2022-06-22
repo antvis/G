@@ -1,7 +1,7 @@
-import { Canvas, CanvasEvent } from '@antv/g';
+import { Canvas, CanvasEvent, Rectangle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { Exporter } from '@antv/g-image-exporter';
+import { ImageExporter } from '@antv/g-image-exporter';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
@@ -10,6 +10,8 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
+ * Export contents in canvas to image.
+ *
  * inspired by sprite.js
  * @see http://spritejs.com/#/en/guide/d3
  *
@@ -26,12 +28,8 @@ const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
   fonts: [
     {
-      name: 'Roboto',
-      url: '/Roboto-Regular.ttf',
-    },
-    {
       name: 'sans-serif',
-      url: '/NotoSansCJKsc-VF.ttf',
+      url: '/NotoSans-Regular.ttf',
     },
   ],
 });
@@ -44,7 +42,10 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const exporter = new Exporter({ canvas });
+const exporter = new ImageExporter({
+  canvas,
+  defaultFilename: 'test',
+});
 
 const drawBars = async () => {
   // 1. Access data
@@ -212,14 +213,120 @@ rendererFolder.open();
 
 const exporterFolder = gui.addFolder('exporter');
 const exporterConfig = {
+  clippingRegionX: 0,
+  clippingRegionY: 0,
+  clippingRegionWidth: 600,
+  clippingRegionHeight: 500,
+  enableBackgroundColor: false,
+  backgroundColor: 'none',
+  enableWatermark: false,
+  type: 'image/png',
+  encoderOptions: 1,
   toDataURL: async () => {
-    const dataURL = await exporter.toDataURL();
-    console.log(dataURL);
+    const {
+      clippingRegionX,
+      clippingRegionY,
+      clippingRegionWidth,
+      clippingRegionHeight,
+      enableBackgroundColor,
+      backgroundColor,
+      enableWatermark,
+      type,
+      encoderOptions,
+    } = exporterConfig;
+    const canvas = await exporter.toCanvas({
+      clippingRegion: new Rectangle(
+        clippingRegionX,
+        clippingRegionY,
+        clippingRegionWidth,
+        clippingRegionHeight,
+      ),
+      beforeDrawImage: (context) => {
+        if (enableBackgroundColor) {
+          context.fillStyle = backgroundColor;
+          context.fillRect(0, 0, clippingRegionWidth, clippingRegionHeight);
+        }
+      },
+      afterDrawImage: (context) => {
+        if (enableWatermark) {
+          context.font = '24px Times New Roman';
+          context.fillStyle = '#FFC82C';
+          context.fillText('AntV', 20, 20);
+        }
+      },
+    });
+    console.log(canvas.toDataURL(type, encoderOptions));
   },
-  downloadImage: () => {
-    exporter.downloadImage();
+  downloadImage: async () => {
+    const {
+      clippingRegionX,
+      clippingRegionY,
+      clippingRegionWidth,
+      clippingRegionHeight,
+      enableBackgroundColor,
+      backgroundColor,
+      enableWatermark,
+      type,
+      encoderOptions,
+    } = exporterConfig;
+    const canvas = await exporter.toCanvas({
+      clippingRegion: new Rectangle(
+        clippingRegionX,
+        clippingRegionY,
+        clippingRegionWidth,
+        clippingRegionHeight,
+      ),
+      beforeDrawImage: (context) => {
+        if (enableBackgroundColor) {
+          context.fillStyle = backgroundColor;
+          context.fillRect(0, 0, clippingRegionWidth, clippingRegionHeight);
+        }
+      },
+      afterDrawImage: (context) => {
+        if (enableWatermark) {
+          context.font = '24px Times New Roman';
+          context.fillStyle = '#FFC82C';
+          context.fillText('AntV', 20, 20);
+        }
+      },
+    });
+    const dataURL = canvas.toDataURL(type, encoderOptions);
+    exporter.downloadImage({
+      dataURL,
+      name: 'test',
+    });
+  },
+  toSVGDataURL: async () => {
+    const svgDataURL = await exporter.toSVGDataURL();
+    if (!svgDataURL) {
+      console.log("Current renderer doesn't support exporting SVG.");
+    } else {
+      console.log(svgDataURL);
+    }
+  },
+  downloadSVG: async () => {
+    const svgDataURL = await exporter.toSVGDataURL();
+    if (!svgDataURL) {
+      console.log("Current renderer doesn't support exporting SVG.");
+    } else {
+      exporter.downloadImage({
+        dataURL: svgDataURL,
+        name: 'test',
+      });
+    }
   },
 };
+exporterFolder.add(exporterConfig, 'clippingRegionX', 0, 600);
+exporterFolder.add(exporterConfig, 'clippingRegionY', 0, 500);
+exporterFolder.add(exporterConfig, 'clippingRegionWidth', 0, 600);
+exporterFolder.add(exporterConfig, 'clippingRegionHeight', 0, 500);
+exporterFolder.add(exporterConfig, 'enableBackgroundColor');
+exporterFolder.addColor(exporterConfig, 'backgroundColor');
+exporterFolder.add(exporterConfig, 'enableWatermark');
+exporterFolder.add(exporterConfig, 'type', ['image/png', 'image/jpeg', 'image/webp', 'image/bmp']);
+exporterFolder.add(exporterConfig, 'encoderOptions', 0, 1);
 exporterFolder.add(exporterConfig, 'toDataURL');
 exporterFolder.add(exporterConfig, 'downloadImage');
+exporterFolder.add(exporterConfig, 'toSVGDataURL');
+exporterFolder.add(exporterConfig, 'downloadSVG');
 exporterFolder.open();

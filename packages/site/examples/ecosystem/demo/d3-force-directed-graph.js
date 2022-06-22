@@ -27,7 +27,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
     },
     {
       name: 'sans-serif',
-      url: '/NotoSansCJKsc-VF.ttf',
+      url: '/NotoSans-Regular.ttf',
     },
   ],
 });

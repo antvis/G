@@ -1,4 +1,7 @@
-# g-plugin-image-exporter
+---
+title: 导出画布内容
+order: 6
+---
 
 一些图表库提供了保存内容到图片的功能，下图来自 [Highcharts](https://www.highcharts.com/)：
 
@@ -158,7 +161,7 @@ const imageData = canvas.getImageData(50, 50, 100, 100); // ImageData { width: 1
 
 HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) 的确是一个同步方法。
 
-但由于 WebGL 使用双缓冲机制，拥有绘制 Buffer 和展示 Buffer。好处是相比每一帧都拷贝绘制 Buffer 的内容到展示 Buffer，直接交换效率更高。因此在创建 WebGL 上下文时我们关闭了 [preserveDrawingBuffer](https://stackoverflow.com/questions/27746091/preservedrawingbuffer-false-is-it-worth-the-effort)，但需要确保调用 toDataURL 时渲染没有被清除（调用 `gl.clear()`），这会导致该行为变成异步，等待下一次渲染 tick 时才能获取内容。
+但由于 WebGL / Canvaskit 使用双缓冲机制，拥有绘制 Buffer 和展示 Buffer。好处是相比每一帧都拷贝绘制 Buffer 的内容到展示 Buffer，直接交换效率更高。因此在创建 WebGL 上下文时我们关闭了 [preserveDrawingBuffer](https://stackoverflow.com/questions/27746091/preservedrawingbuffer-false-is-it-worth-the-effort)，但需要确保调用 toDataURL 时渲染没有被清除（调用 `gl.clear()`），这会导致该行为变成异步，等待下一次渲染 tick 时才能获取内容。
 
 ## 如何导出画布视口之外的图形？
 

@@ -1,5 +1,5 @@
 ---
-title: 使用React定义图形
+title: 使用 React 定义图形
 order: 5
 ---
 
@@ -23,9 +23,9 @@ react-g 提供以下内置组件，可以直接引入使用，属性和原生的
 ### 基本用法
 
 ```tsx
-import React, { useState } from 'react';
-import { Canvas, Circle } from '@antv/react-g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Canvas, Circle } from '@antv/react-g';
+import { useState } from 'react';
 
 const renderer = new CanvasRenderer();
 
@@ -54,9 +54,9 @@ export default App;
 ### 使用 ref 可以获取 g 中的对象实例
 
 ```tsx
-import React, { useState, useRef } from 'react';
-import { Canvas, Circle } from '@antv/react-g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Canvas, Circle } from '@antv/react-g';
+import { useRef, useState } from 'react';
 
 const renderer = new CanvasRenderer();
 
@@ -90,10 +90,10 @@ export default App;
 -   意味着可以将 react-g 组件渲染到 g2,g6 等其他库中
 
 ```tsx
-import React, { useState } from 'react';
 import { Canvas as GCanvas } from '@antv/g';
-import { Circle, render } from '@antv/react-g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Circle, render } from '@antv/react-g';
+import { useState } from 'react';
 
 const renderer = new CanvasRenderer();
 

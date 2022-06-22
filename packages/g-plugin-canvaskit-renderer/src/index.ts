@@ -1,4 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
+import type { DataURLOptions, RendererPlugin, Syringe } from '@antv/g';
 import { Module, Shape } from '@antv/g';
 import type { Canvas, InputRect } from 'canvaskit-wasm';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
@@ -104,5 +104,9 @@ export class Plugin implements RendererPlugin {
 
   createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
     return this.container.get(CanvaskitRendererPlugin).createParticles(jsonStr, onFrame, assets);
+  }
+
+  toDataURL(options: Partial<DataURLOptions>) {
+    return this.container.get(CanvaskitRendererPlugin).toDataURL(options);
   }
 }

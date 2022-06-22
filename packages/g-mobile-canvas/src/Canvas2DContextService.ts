@@ -75,6 +75,7 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   async toDataURL(options: Partial<DataURLOptions>) {
-    return '';
+    const { type, encoderOptions } = options;
+    return (this.context.canvas as HTMLCanvasElement).toDataURL(type, encoderOptions);
   }
 }

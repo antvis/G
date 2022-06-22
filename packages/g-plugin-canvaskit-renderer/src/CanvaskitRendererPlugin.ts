@@ -1,5 +1,7 @@
 import type {
   CSSGradientValue,
+  DataURLOptions,
+  DataURLType,
   DisplayObject,
   LinearGradient,
   ParsedBaseStyleProps,
@@ -33,6 +35,7 @@ import { ImagePool } from '@antv/g-plugin-image-loader';
 import type {
   Canvas,
   EmbindEnumEntity,
+  EncodedImageFormat,
   InputRect,
   ManagedSkottieAnimation,
   Paint,
@@ -93,6 +96,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     particles: Particles;
     onFrame: (canvas: Canvas) => void;
   }[] = [];
+
+  private enableCapture: boolean;
+  private captureOptions: Partial<DataURLOptions>;
+  private capturePromise: Promise<any> | undefined;
+  private resolveCapturePromise: (dataURL: string) => void;
 
   playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
     const canvasKitContext = this.contextService.getContext();
@@ -167,6 +175,27 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         this.drawWithSurface(canvas);
 
         canvas.restore();
+
+        // capture here since we don't preserve drawing buffer
+        if (this.enableCapture && this.resolveCapturePromise) {
+          const { type = 'image/png', encoderOptions = 1 } = this.captureOptions;
+
+          const typeMap: Record<DataURLType, EncodedImageFormat> = {
+            'image/png': CanvasKit.ImageFormat.PNG,
+            'image/jpeg': CanvasKit.ImageFormat.JPEG,
+            'image/webp': CanvasKit.ImageFormat.WEBP,
+            'image/bmp': undefined,
+          };
+
+          // TODO: transparent image
+          const snapshot = surface.makeImageSnapshot();
+          const bytes = snapshot.encodeToBytes(typeMap[type], encoderOptions);
+          const blobObj = new Blob([bytes], { type });
+          this.resolveCapturePromise(window.URL.createObjectURL(blobObj));
+          this.enableCapture = false;
+          this.captureOptions = undefined;
+          this.resolveCapturePromise = undefined;
+        }
 
         surface.requestAnimationFrame(drawFrame);
       };
@@ -559,5 +588,17 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     shadowStrokePaint?.delete();
 
     canvas.restore();
+  }
+
+  async toDataURL(options: Partial<DataURLOptions>) {
+    // trigger re-render
+    this.enableCapture = true;
+    this.captureOptions = options;
+    this.capturePromise = new Promise((resolve) => {
+      this.resolveCapturePromise = (dataURL: string) => {
+        resolve(dataURL);
+      };
+    });
+    return this.capturePromise;
   }
 }

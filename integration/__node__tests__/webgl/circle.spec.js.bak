@@ -20,7 +20,7 @@
 //   height,
 //   getContext: () => {
 //     gl.canvas = mockCanvas;
-//     // 模拟 DOM API，返回小程序 context，它应当和 Canvas2DRenderingContext 一致
+//     // 模拟 DOM API，返回小程序 context，它应当和 CanvasRenderingContext2D 一致
 //     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/getContext
 //     return gl;
 //   },
