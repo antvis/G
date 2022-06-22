@@ -1,10 +1,11 @@
 {
-  "name": "@antv/g-plugin-rough-svg-renderer",
-  "version": "1.2.2",
-  "description": "A G plugin of renderer implementation with rough.js",
+  "name": "@antv/g-image-exporter",
+  "version": "0.0.1",
+  "description": "A image exporter for G using DOM API",
   "keywords": [
     "antv",
-    "g"
+    "g",
+    "image exporter"
   ],
   "homepage": "https://github.com/antvis/g#readme",
   "bugs": {
@@ -27,16 +28,13 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/util": "^3.1.2",
-    "roughjs": "^4.5.2",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "@antv/g-svg": "^1.0.1"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

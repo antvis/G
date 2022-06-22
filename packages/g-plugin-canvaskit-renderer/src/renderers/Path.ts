@@ -22,7 +22,8 @@ export class PathRenderer implements RendererContribution {
     const { CanvasKit } = this.contextService.getContext();
     const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
 
-    const { shadowOffsetX, shadowOffsetY, path } = object.parsedStyle as ParsedPathStyleProps;
+    const { shadowOffsetX, shadowOffsetY, defX, defY, path } =
+      object.parsedStyle as ParsedPathStyleProps;
 
     const skPath = new CanvasKit.Path();
 
@@ -39,10 +40,17 @@ export class PathRenderer implements RendererContribution {
       // V,H,S,T 都在前面被转换成标准形式
       switch (command) {
         case 'M':
-          skPath.moveTo(params[1], params[2]);
+          skPath.moveTo(params[1] - defX, params[2] - defY);
           break;
         case 'C':
-          skPath.cubicTo(params[1], params[2], params[3], params[4], params[5], params[6]);
+          skPath.cubicTo(
+            params[1] - defX,
+            params[2] - defY,
+            params[3] - defX,
+            params[4] - defY,
+            params[5] - defX,
+            params[6] - defY,
+          );
           break;
         // @ts-ignore
         case 'Z':

@@ -1,5 +1,6 @@
 import type {
   CSSRGB,
+  DataURLOptions,
   DisplayObject,
   FederatedEvent,
   MutationEvent,
@@ -109,6 +110,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
    * Render Graph builder at each frame
    */
   private builder: RGGraphBuilder;
+
+  private enableCapture: boolean;
+  private captureOptions: Partial<DataURLOptions>;
+  private capturePromise: Promise<any> | undefined;
+  private resolveCapturePromise: (dataURL: string) => void;
 
   getDevice(): Device {
     return this.device;
@@ -363,6 +369,19 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // output to screen
       this.swapChain.present();
+
+      // capture here since we don't preserve drawing buffer
+      if (this.enableCapture && this.resolveCapturePromise) {
+        const { type, encoderOptions } = this.captureOptions;
+        const dataURL = (this.contextService.getDomElement() as HTMLCanvasElement).toDataURL(
+          type,
+          encoderOptions,
+        );
+        this.resolveCapturePromise(dataURL);
+        this.enableCapture = false;
+        this.captureOptions = undefined;
+        this.resolveCapturePromise = undefined;
+      }
     });
   }
 
@@ -379,5 +398,17 @@ export class RenderGraphPlugin implements RenderingPlugin {
         successCallback(t);
       }
     });
+  }
+
+  async toDataURL(options: Partial<DataURLOptions>) {
+    // trigger re-render
+    this.enableCapture = true;
+    this.captureOptions = options;
+    this.capturePromise = new Promise((resolve) => {
+      this.resolveCapturePromise = (dataURL: string) => {
+        resolve(dataURL);
+      };
+    });
+    return this.capturePromise;
   }
 }

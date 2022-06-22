@@ -15,6 +15,7 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "lib": ["esnext", "dom"],
+        "types": ["jest"],
         "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
         "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
         "downlevelIteration": true
@@ -22,18 +23,12 @@
     "include": [
         "src/**/*"
     ],
+    "exclude": [
+        "src/**/*.spec.ts",
+    ],
     "references": [
         {
             "path": "../g"
         },
-        {
-            "path": "../g-plugin-device-renderer"
-        },
-        {
-            "path": "../g-plugin-webgpu-device"
-        },
-        {
-            "path": "../g-plugin-dom-interaction"
-        }
     ]
 }

@@ -534,19 +534,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
-    let defX = 0;
-    let defY = 0;
-    if (
-      object.nodeName === Shape.POLYLINE ||
-      object.nodeName === Shape.POLYGON ||
-      object.nodeName === Shape.PATH
-    ) {
-      defX = object.parsedStyle.defX;
-      defY = object.parsedStyle.defY;
-    }
-
-    const translateX = -(((anchor && anchor[0].value) || 0) * width + defX);
-    const translateY = -(((anchor && anchor[1].value) || 0) * height + defY);
+    const translateX = -(((anchor && anchor[0].value) || 0) * width);
+    const translateY = -(((anchor && anchor[1].value) || 0) * height);
     if (translateX !== 0 || translateY !== 0) {
       // apply anchor, use true size, not include stroke,
       // eg. bounds = true size + half lineWidth

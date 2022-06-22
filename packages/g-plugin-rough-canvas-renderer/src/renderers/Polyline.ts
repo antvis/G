@@ -14,9 +14,12 @@ export class PolylineRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedPolylineStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { points } = parsedStyle as ParsedPolylineStyleProps;
+    const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolylineStyleProps;
     // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
     // @ts-ignore
-    context.roughCanvas.linearPath(points.points, generateRoughOptions(object));
+    context.roughCanvas.linearPath(
+      points.points.map(([x, y]) => [x - defX, y - defY]),
+      generateRoughOptions(object),
+    );
   }
 }

@@ -485,19 +485,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-    let defX = 0;
-    let defY = 0;
-    if (
-      object.nodeName === Shape.POLYLINE ||
-      object.nodeName === Shape.POLYGON ||
-      object.nodeName === Shape.PATH
-    ) {
-      defX = object.parsedStyle.defX;
-      defY = object.parsedStyle.defY;
-    }
-
-    const tx = -(((anchor && anchor[0].value) || 0) * width + defX);
-    const ty = -(((anchor && anchor[1].value) || 0) * height + defY);
+    const tx = -(((anchor && anchor[0].value) || 0) * width);
+    const ty = -(((anchor && anchor[1].value) || 0) * height);
 
     if (tx !== 0 || ty !== 0) {
       // apply anchor, use true size, not include stroke,
