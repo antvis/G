@@ -286,7 +286,8 @@ class Gesture extends EE {
       return;
     }
 
-    const global = el.ownerDocument?.defaultView;
+    // @ts-ignore
+    const global = el.ownerDocument?.defaultView || el.document?.defaultView;
     this.throttleTimer = global.requestAnimationFrame(() => {
       for (let i = 0, len = emitThrottles.length; i < len; i++) {
         const { type, ev } = emitThrottles[i];
