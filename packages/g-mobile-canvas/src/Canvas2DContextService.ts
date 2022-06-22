@@ -1,3 +1,4 @@
+import type { DataURLOptions } from '@antv/g';
 import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 import { isCanvasElement } from './dom';
 
@@ -71,5 +72,9 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
 
   applyCursorStyle(cursor: string) {
     // 小程序环境无需设置鼠标样式
+  }
+
+  async toDataURL(options: Partial<DataURLOptions>) {
+    return '';
   }
 }

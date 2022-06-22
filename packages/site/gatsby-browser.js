@@ -37,6 +37,7 @@ window.gPluginDragndrop = require('@antv/g-plugin-dragndrop');
 // window.webgpuGraph = require('@antv/webgpu-graph');
 window.gComponents = require('@antv/g-components');
 window.gWebComponents = require('@antv/g-web-components');
+window.gImageExporter = require('@antv/g-image-exporter');
 
 window.reactG = require('@antv/react-g');
 window.mainWorker = require('./examples/canvas/demo/main.worker.js');

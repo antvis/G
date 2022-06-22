@@ -1,4 +1,4 @@
-import type { CanvasLike } from '@antv/g';
+import type { CanvasLike, DataURLOptions } from '@antv/g';
 import {
   CanvasConfig,
   ContextService,
@@ -8,16 +8,20 @@ import {
   setDOMSize,
   singleton,
 } from '@antv/g';
+import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
+import { DeviceRendererPlugin } from './tokens';
 
 @singleton({ token: ContextService })
-export class WebGLContextService implements ContextService<WebGLRenderingContext> {
+export class WebGPUContextService implements ContextService<GPUCanvasContext> {
   private $container: HTMLElement | null;
   private $canvas: CanvasLike | null;
   private dpr: number;
-  private context: WebGLRenderingContext | null;
 
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
+
+  @inject(DeviceRendererPlugin)
+  private deviceRendererPlugin: DeviceRenderer.Plugin;
 
   async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;
@@ -56,7 +60,8 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   getContext() {
-    return this.context;
+    // @ts-ignore
+    return this.deviceRendererPlugin.getDevice().canvasContext as GPUCanvasContext;
   }
 
   getBoundingClientRect() {
@@ -94,5 +99,9 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
     if (this.$container && this.$container.style) {
       this.$container.style.cursor = cursor;
     }
+  }
+
+  async toDataURL(options: Partial<DataURLOptions>) {
+    return '';
   }
 }

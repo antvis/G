@@ -1,4 +1,4 @@
-import type { CanvasLike } from '@antv/g';
+import type { CanvasLike, DataURLOptions } from '@antv/g';
 import {
   CanvasConfig,
   ContextService,
@@ -122,6 +122,10 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
     if (this.$container && this.$container.style) {
       this.$container.style.cursor = cursor;
     }
+  }
+
+  async toDataURL(options: Partial<DataURLOptions>) {
+    return '';
   }
 
   private loadCanvaskit(): Promise<CanvasKit> {

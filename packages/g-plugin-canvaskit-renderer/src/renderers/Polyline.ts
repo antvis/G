@@ -21,9 +21,12 @@ export class PolylineRenderer implements RendererContribution {
     const { CanvasKit } = this.contextService.getContext();
     const { canvas, strokePaint, shadowStrokePaint } = context;
 
-    const { shadowOffsetX, shadowOffsetY, points } = object.parsedStyle as ParsedPolylineStyleProps;
+    const { shadowOffsetX, shadowOffsetY, points, defX, defY } =
+      object.parsedStyle as ParsedPolylineStyleProps;
 
-    const formattedPoints = points.points.reduce<number[]>((prev, cur) => prev.concat(cur), []);
+    const formattedPoints = points.points
+      .map(([x, y]) => [x - defX, y - defY])
+      .reduce<number[]>((prev, cur) => prev.concat(cur), []);
 
     if (shadowStrokePaint) {
       const path = new CanvasKit.Path();

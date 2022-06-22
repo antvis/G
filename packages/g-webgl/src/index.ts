@@ -17,7 +17,9 @@ export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<WebGLRendererConfig>) {
     super(config);
 
-    this.registerPlugin(new ContextRegisterPlugin());
+    const deviceRendererPlugin = new DeviceRenderer.Plugin();
+
+    this.registerPlugin(new ContextRegisterPlugin(deviceRendererPlugin));
     this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(
       new WebGLDevice.Plugin(
@@ -30,7 +32,7 @@ export class Renderer extends AbstractRenderer {
             },
       ),
     );
-    this.registerPlugin(new DeviceRenderer.Plugin());
+    this.registerPlugin(deviceRendererPlugin);
     this.registerPlugin(new DomInteraction.Plugin());
     this.registerPlugin(new HTMLRenderer.Plugin());
   }

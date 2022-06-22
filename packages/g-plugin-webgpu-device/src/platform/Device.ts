@@ -126,7 +126,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private adapter: GPUAdapter;
   device: GPUDevice;
   private canvas: HTMLCanvasElement | OffscreenCanvas;
-  private canvasContext: GPUCanvasContext;
+  canvasContext: GPUCanvasContext;
   glsl_compile: typeof glsl_compile_;
 
   constructor(
