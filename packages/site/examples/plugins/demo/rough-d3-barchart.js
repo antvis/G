@@ -1,5 +1,6 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
 import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -20,6 +21,19 @@ canvasRenderer.registerPlugin(new PluginRoughCanvasRenderer());
 const svgRenderer = new SVGRenderer();
 svgRenderer.registerPlugin(new PluginRoughSVGRenderer());
 const webglRenderer = new WebGLRenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
+    {
+      name: 'sans-serif',
+      url: '/NotoSans-Regular.ttf',
+    },
+  ],
+});
 
 // create a canvas
 const canvas = new Canvas({

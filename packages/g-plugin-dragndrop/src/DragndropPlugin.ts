@@ -12,6 +12,7 @@ import {
   SceneGraphService,
   singleton,
 } from '@antv/g';
+import { distanceSquareRoot } from '@antv/util';
 import { DragndropPluginOptions } from './tokens';
 
 @singleton({ contrib: RenderingPluginContribution })
@@ -50,16 +51,17 @@ export class DragndropPlugin implements RenderingPlugin {
         // delay triggering dragstart event
         let dragstartTriggered = false;
         const dragstartTimeStamp = event.timeStamp;
-        const dragstartCanvasCoordinates = [event.canvasX, event.canvasY];
+        const dragstartClientCoordinates: [number, number] = [event.clientX, event.clientY];
 
         let currentDroppable = null;
+        let lastDragClientCoordinates = [event.clientX, event.clientY];
         // @ts-ignore
-        async function onMouseMove(event: FederatedPointerEvent) {
+        async function handlePointermove(event: FederatedPointerEvent) {
           if (!dragstartTriggered) {
             const timeElapsed = event.timeStamp - dragstartTimeStamp;
-            const distanceMoved = Math.sqrt(
-              Math.pow(event.canvasX - dragstartCanvasCoordinates[0], 2) +
-                Math.pow(event.canvasY - dragstartCanvasCoordinates[1], 2),
+            const distanceMoved = distanceSquareRoot(
+              [event.clientX, event.clientY],
+              dragstartClientCoordinates,
             );
             // check thresholds
             if (
@@ -77,8 +79,12 @@ export class DragndropPlugin implements RenderingPlugin {
 
           // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
           event.type = 'drag';
-
+          // @ts-ignore
+          event.dx = event.clientX - lastDragClientCoordinates[0];
+          // @ts-ignore
+          event.dy = event.clientY - lastDragClientCoordinates[1];
           target.dispatchEvent(event);
+          lastDragClientCoordinates = [event.clientX, event.clientY];
 
           if (!isDocument) {
             // prevent from picking the dragging element
@@ -120,7 +126,7 @@ export class DragndropPlugin implements RenderingPlugin {
           }
         }
 
-        canvas.addEventListener('pointermove', onMouseMove);
+        canvas.addEventListener('pointermove', handlePointermove);
 
         const stopDragging = function () {
           if (dragstartTriggered) {
@@ -141,7 +147,7 @@ export class DragndropPlugin implements RenderingPlugin {
             dragstartTriggered = false;
           }
 
-          canvas.removeEventListener('pointermove', onMouseMove);
+          canvas.removeEventListener('pointermove', handlePointermove);
         };
 
         target.addEventListener('pointerup', stopDragging, { once: true });

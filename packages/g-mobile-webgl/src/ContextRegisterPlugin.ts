@@ -1,6 +1,6 @@
 import type { RendererPlugin, Syringe } from '@antv/g';
 import { Module } from '@antv/g';
-import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
+import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { DeviceRendererPlugin } from './tokens';
 import { WebGLContextService } from './WebGLContextService';
 
