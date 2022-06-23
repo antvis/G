@@ -9,6 +9,7 @@ import {
   singleton,
   Syringe,
 } from '@antv/g';
+import type * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKit } from 'canvaskit-wasm';
 import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
@@ -17,6 +18,7 @@ export const ContextRegisterPluginOptions = Syringe.defineToken('ContextRegister
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextRegisterPluginOptions {
   wasmDir: string;
+  canvaskitRendererPlugin: CanvaskitRenderer.Plugin;
 }
 
 /**
@@ -125,7 +127,7 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
   }
 
   async toDataURL(options: Partial<DataURLOptions>) {
-    return '';
+    return this.contextRegisterPluginOptions.canvaskitRendererPlugin.toDataURL(options);
   }
 
   private loadCanvaskit(): Promise<CanvasKit> {

@@ -71,7 +71,21 @@ export class SVGContextService implements ContextService<SVGElement> {
     }
   }
 
-  async toDataURL(options: Partial<DataURLOptions>) {
-    return '';
+  async toDataURL(options: Partial<DataURLOptions> = {}) {
+    const cloneNode = this.$namespace.cloneNode(true);
+    const svgDocType = document.implementation.createDocumentType(
+      'svg',
+      '-//W3C//DTD SVG 1.1//EN',
+      'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd',
+    );
+    const svgDoc = document.implementation.createDocument(
+      'http://www.w3.org/2000/svg',
+      'svg',
+      svgDocType,
+    );
+    svgDoc.replaceChild(cloneNode, svgDoc.documentElement);
+    return `data:image/svg+xml;charset=utf8,${encodeURIComponent(
+      new XMLSerializer().serializeToString(svgDoc),
+    )}`;
   }
 }

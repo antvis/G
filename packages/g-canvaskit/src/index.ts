@@ -29,20 +29,21 @@ export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<CanvaskitRendererConfig>) {
     super(config);
 
+    const canvaskitRendererPlugin = new CanvaskitRenderer.Plugin({
+      fonts: config?.fonts || [],
+    });
+
     // register Canvas2DContext
     this.registerPlugin(
       new ContextRegisterPlugin({
         wasmDir: config?.wasmDir || 'https://unpkg.com/canvaskit-wasm@0.34.0/bin/',
+        canvaskitRendererPlugin,
       }),
     );
     this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(new CanvasPathGenerator.Plugin());
     // enable rendering with Canvas2D API
-    this.registerPlugin(
-      new CanvaskitRenderer.Plugin({
-        fonts: config?.fonts || [],
-      }),
-    );
+    this.registerPlugin(canvaskitRendererPlugin);
     this.registerPlugin(new DomInteraction.Plugin());
     // enable picking with Canvas2D API
     this.registerPlugin(new CanvasPicker.Plugin());

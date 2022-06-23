@@ -1,10 +1,12 @@
-import type { Canvas, DataURLOptions } from '@antv/g';
+import type { Rectangle } from '@antv/g';
 
-export interface ExporterOptions {
-  canvas: Canvas;
-  defaultFilename?: string;
+export interface DownloadImageOptions {
+  dataURL: string;
+  name?: string;
 }
 
-export interface DownloadImageOptions extends DataURLOptions {
-  name: string;
+export interface CanvasOptions {
+  clippingRegion: Rectangle;
+  beforeDrawImage: (context: CanvasRenderingContext2D) => void;
+  afterDrawImage: (context: CanvasRenderingContext2D) => void;
 }
