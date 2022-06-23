@@ -116,7 +116,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   });
   ball.addEventListener('drag', function (e) {
     moveAt(e.target, e.canvasX, e.canvasY);
-    ballText.style.text = `ball drag movement: ${e.movementX}, ${e.movementY}`;
+    ballText.style.text = `ball drag movement: ${e.dx}, ${e.dy}`;
   });
   ball.addEventListener('dragend', function (e) {
     e.target.style.opacity = 1;
@@ -144,7 +144,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const camera = canvas.getCamera();
   canvas.addEventListener('drag', function (e) {
     if (e.target === canvas.document) {
-      camera.pan(-e.movementX, -e.movementY);
+      camera.pan(-e.dx, -e.dy);
     }
   });
   canvas.addEventListener('drop', function (e) {
