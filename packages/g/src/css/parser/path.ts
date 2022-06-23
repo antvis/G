@@ -9,49 +9,52 @@ import {
   path2Curve,
   reverseCurve,
 } from '@antv/util';
+import { memoize } from 'lodash-es';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { Rectangle } from '../../shapes';
 import { extractPolygons, hasArcOrBezier, path2Segments } from '../../utils';
 
-export function parsePath(path: string, object: DisplayObject): ParsedPathStyleProps['path'] {
-  let absolutePath: AbsoluteArray;
-  try {
-    absolutePath = normalizePath(path);
-  } catch (e) {
-    absolutePath = normalizePath('');
-    console.error(`[g]: Invalid SVG Path definition: ${path}`);
-  }
+export const parsePath = memoize(
+  (path: string, object: DisplayObject): ParsedPathStyleProps['path'] => {
+    let absolutePath: AbsoluteArray;
+    try {
+      absolutePath = normalizePath(path);
+    } catch (e) {
+      absolutePath = normalizePath('');
+      console.error(`[g]: Invalid SVG Path definition: ${path}`);
+    }
 
-  const hasArc = hasArcOrBezier(absolutePath);
+    const hasArc = hasArcOrBezier(absolutePath);
 
-  const { polygons, polylines } = extractPolygons(absolutePath);
+    const { polygons, polylines } = extractPolygons(absolutePath);
 
-  // convert to curves to do morphing & picking later
-  // @see http://thednp.github.io/kute.js/svgCubicMorph.html
-  const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
+    // convert to curves to do morphing & picking later
+    // @see http://thednp.github.io/kute.js/svgCubicMorph.html
+    const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
 
-  // for later use
-  const segments = path2Segments(curve);
-  const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
+    // for later use
+    const segments = path2Segments(curve);
+    const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
 
-  if (object) {
-    object.parsedStyle.defX = x;
-    object.parsedStyle.defY = y;
-  }
+    if (object) {
+      object.parsedStyle.defX = x;
+      object.parsedStyle.defY = y;
+    }
 
-  return {
-    absolutePath,
-    hasArc,
-    segments,
-    polygons,
-    polylines,
-    curve,
-    totalLength: length,
-    zCommandIndexes,
-    rect: new Rectangle(x, y, width, height),
-  };
-}
+    return {
+      absolutePath,
+      hasArc,
+      segments,
+      polygons,
+      polylines,
+      curve,
+      totalLength: length,
+      zCommandIndexes,
+      rect: new Rectangle(x, y, width, height),
+    };
+  },
+);
 
 export function mergePaths(
   left: ParsedPathStyleProps['path'],
