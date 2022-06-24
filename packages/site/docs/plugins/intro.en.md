@@ -2,7 +2,7 @@
 title: 插件系统介绍
 order: -100
 redirect_from:
-    - /en/docs/plugins
+    - /zh/docs/plugins
 ---
 
 # 插件集
@@ -19,6 +19,8 @@ redirect_from:
 -   拾取
     -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于 Canvas2D
     -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 SVG
+-   无障碍
+    -   [g-plugin-a11y](/zh/docs/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
 -   交互
     -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
     -   [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 基于 PointerEvents 实现拖放功能
