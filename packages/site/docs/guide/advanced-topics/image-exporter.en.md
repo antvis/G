@@ -49,6 +49,7 @@ interface CanvasOptions {
 -   clippingRegion 画布裁剪区域，用矩形表示
 -   beforeDrawImage 在绘制画布内容前调用，适合绘制背景颜色
 -   afterDrawImage 在绘制画布内容后调用，适合绘制水印
+-   ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
 
 在该[示例](/zh/examples/plugins#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
 
@@ -56,6 +57,10 @@ interface CanvasOptions {
 import { Rectangle } from '@antv/g';
 
 const canvas = await exporter.toCanvas({
+    // 忽略 stats.js lil-gui 等在容器内添加的 DOM 元素
+    ignoreElements: (element) => {
+        return [gui.domElement, stats.dom].indexOf(element) > -1;
+    },
     // 指定导出画布区域
     clippingRegion: new Rectangle(
         clippingRegionX,
@@ -151,17 +156,22 @@ const imageData = canvas.getImageData(50, 50, 100, 100); // ImageData { width: 1
 
 导出图片的物理尺寸已经包含了 resolution，即对于指定了宽高 400 x 400 的画布，如果当前环境的 [devicePixelRatio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio) 为 2，将生成 800 x 800 的图片。
 
-## 暂不支持导出的图形
+## 可以导出 HTML 吗？
 
-如果画布中包含 [HTML](/zh/docs/api/basic/html)，暂不支持生成非 `image/svg+xml` 的 dataURL，此时可以选择导出 SVG，其中包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)。
+可以，如果画布中包含 [HTML](/zh/docs/api/basic/html)，目前不同的渲染器实现如下：
 
-未来可能会通过 https://html2canvas.hertzen.com/ 支持。
+-   导出 SVG，其中天然包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
+-   导出其他图片格式，内部使用 [html2canvas](https://html2canvas.hertzen.com/) 实现
+
+在该[示例](/zh/examples/ecosystem#image-exporter)中，左上角 Tooltip 就是一个 HTML。
 
 ## 为何 toCanvas 为异步方法？
 
 HTMLCanvasElement 的原生方法 [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) 的确是一个同步方法。
 
 但由于 WebGL / Canvaskit 使用双缓冲机制，拥有绘制 Buffer 和展示 Buffer。好处是相比每一帧都拷贝绘制 Buffer 的内容到展示 Buffer，直接交换效率更高。因此在创建 WebGL 上下文时我们关闭了 [preserveDrawingBuffer](https://stackoverflow.com/questions/27746091/preservedrawingbuffer-false-is-it-worth-the-effort)，但需要确保调用 toDataURL 时渲染没有被清除（调用 `gl.clear()`），这会导致该行为变成异步，等待下一次渲染 tick 时才能获取内容。
+
+另外在导出 [HTML](/zh/docs/api/basic/html) 内容时，使用 [html2canvas](https://html2canvas.hertzen.com/) 提供的导出方法同样也是一个异步操作。
 
 ## 如何导出画布视口之外的图形？
 

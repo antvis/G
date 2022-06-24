@@ -9,4 +9,5 @@ export interface CanvasOptions {
   clippingRegion: Rectangle;
   beforeDrawImage: (context: CanvasRenderingContext2D) => void;
   afterDrawImage: (context: CanvasRenderingContext2D) => void;
+  ignoreElements: (element: Element) => boolean;
 }

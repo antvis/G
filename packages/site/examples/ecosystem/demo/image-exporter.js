@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rectangle } from '@antv/g';
+import { Canvas, CanvasEvent, HTML, Rectangle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { ImageExporter } from '@antv/g-image-exporter';
@@ -168,6 +168,21 @@ const drawBars = async () => {
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   drawBars();
+
+  const tooltip = new HTML({
+    style: {
+      x: 100,
+      y: 100,
+      innerHTML: 'Tooltip',
+      fill: 'white',
+      stroke: 'black',
+      lineWidth: 6,
+      width: 100,
+      height: 30,
+      pointerEvents: 'none',
+    },
+  });
+  canvas.appendChild(tooltip);
 });
 
 // stats
@@ -235,6 +250,9 @@ const exporterConfig = {
       encoderOptions,
     } = exporterConfig;
     const canvas = await exporter.toCanvas({
+      ignoreElements: (element) => {
+        return [gui.domElement, stats.dom].indexOf(element) > -1;
+      },
       clippingRegion: new Rectangle(
         clippingRegionX,
         clippingRegionY,
@@ -270,6 +288,9 @@ const exporterConfig = {
       encoderOptions,
     } = exporterConfig;
     const canvas = await exporter.toCanvas({
+      ignoreElements: (element) => {
+        return [gui.domElement, stats.dom].indexOf(element) > -1;
+      },
       clippingRegion: new Rectangle(
         clippingRegionX,
         clippingRegionY,

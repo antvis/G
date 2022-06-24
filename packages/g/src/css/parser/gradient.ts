@@ -1,14 +1,5 @@
-import {
-  AngularNode,
-  ColorStop,
-  colorStopToString,
-  DirectionalNode,
-  isNil,
-  isString,
-  memoize,
-  parseGradient as parse,
-  PositionNode,
-} from '../../utils';
+import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
+import { colorStopToString, isNil, isString, memoize, parseGradient as parse } from '../../utils';
 import type { RadialGradient } from '../cssom';
 import { CSSGradientValue, GradientType } from '../cssom';
 import type { Pattern } from './color';
