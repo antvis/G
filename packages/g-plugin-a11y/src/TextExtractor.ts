@@ -1,4 +1,5 @@
-import { CanvasConfig, ContextService, inject, singleton, Text } from '@antv/g';
+import type { Text } from '@antv/g';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 
 const CLASSNAME_PREFIX = 'g-a11y-text-extractor';
 

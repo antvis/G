@@ -9,7 +9,6 @@ import {
   path2Curve,
   reverseCurve,
 } from '@antv/util';
-// import { memoize } from 'lodash-es';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { Rectangle } from '../../shapes';

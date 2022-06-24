@@ -1,6 +1,14 @@
-import { memoize } from 'lodash-es';
-import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
-import { colorStopToString, isNil, isString, parseGradient as parse } from '../../utils';
+import {
+  AngularNode,
+  ColorStop,
+  colorStopToString,
+  DirectionalNode,
+  isNil,
+  isString,
+  memoize,
+  parseGradient as parse,
+  PositionNode,
+} from '../../utils';
 import type { RadialGradient } from '../cssom';
 import { CSSGradientValue, GradientType } from '../cssom';
 import type { Pattern } from './color';

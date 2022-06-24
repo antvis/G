@@ -1,18 +1,20 @@
+import type {
+  DisplayObject,
+  FederatedEvent,
+  MutationEvent,
+  RenderingPlugin,
+  RenderingService,
+  Text,
+} from '@antv/g';
 import {
   ContextService,
-  DisplayObject,
   ElementEvent,
-  FederatedEvent,
   inject,
   isBrowser,
-  MutationEvent,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
-  RenderingService,
   Shape,
   singleton,
-  Text,
 } from '@antv/g';
 import { TextExtractor } from './TextExtractor';
 import { A11yPluginOptions } from './tokens';
