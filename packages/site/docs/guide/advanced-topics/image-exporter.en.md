@@ -51,7 +51,7 @@ interface CanvasOptions {
 -   afterDrawImage 在绘制画布内容后调用，适合绘制水印
 -   ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
 
-在该[示例](/zh/examples/plugins#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
+在该[示例](/zh/examples/ecosystem#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
 
 ```js
 import { Rectangle } from '@antv/g';
@@ -84,9 +84,19 @@ const canvas = await exporter.toCanvas({
 
 注意裁剪区域使用的是 `Rectangle` 而非 [Rect](/zh/docs/api/basic/rect) 图形。它的构造函数中包含 `x/y/width/height` 四个参数。它相对于[视口坐标系](/zh/docs/api/canvas#viewport)下，即对于一个 400 x 400 的画布，裁剪的最大宽高就是 400。
 
+在导出 [HTML](/zh/docs/api/basic/html) 时，默认会导出容器内的全部 HTMLElement，但有时有些元素并不是我们想导出的，此时可以使用 `ignoreElements: (element: Element): boolean;` 方法进行过滤。例如该[示例](/zh/examples/ecosystem#image-exporter)中容器内还有 stats.js 和 lil-gui 添加的 DOM 元素，我们并不希望导出，此时可以：
+
+```js
+ignoreElements: (element) => {
+    return [gui.domElement, stats.dom].indexOf(element) > -1;
+},
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D8jdTK6xoJgAAAAAAAAAAAAAARQnAQ" alt="export html" width="400">
+
 ## toSVGDataURL
 
-有时我们想导出矢量图。不同于 [toCanvas]() 对于所有渲染器都支持，只有 [g-svg](/zh/docs/api/renderer/svg) 渲染器支持生成 SVG 类型的 dataURL，如果选择了其他渲染器，将返回 `Promise<undefined>`。
+有时我们想导出矢量图。不同于 [toCanvas](/zh/docs/guide/advanced-topics/image-exporter#tocanvas) 对于所有渲染器都支持，只有 [g-svg](/zh/docs/api/renderer/svg) 渲染器支持生成 SVG 类型的 dataURL，如果选择了其他渲染器，将返回 `Promise<undefined>`。
 
 方法签名如下：
 
@@ -111,7 +121,7 @@ interface DownloadImageOptions {
 }
 ```
 
-在该[示例](/zh/examples/plugins#image-exporter)中，点击按钮立即开始下载图片，如果选择了 `image/png` 格式，最终保存成 `my-file.png` 文件：
+在该[示例](/zh/examples/ecosystem#image-exporter)中，点击按钮立即开始下载图片，如果选择了 `image/png` 格式，最终保存成 `my-file.png` 文件：
 
 ```js
 const canvas = await exporter.toCanvas();
