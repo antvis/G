@@ -142,6 +142,13 @@
         "zh": "使用 Yoga 排版引擎 - 对属性应用动画",
         "en": "Use Yoga layout engine - use animation"
       }
+    },
+    {
+      "filename": "a11y-text-extractor.js",
+      "title": {
+        "zh": "使用浏览器搜索（command + F）文本内容",
+        "en": "Search text content in browser"
+      }
     }
   ]
 }

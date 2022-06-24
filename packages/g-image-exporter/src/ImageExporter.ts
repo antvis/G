@@ -1,5 +1,6 @@
 import type { Canvas, DataURLOptions } from '@antv/g';
 import { isBrowser, Rectangle } from '@antv/g';
+import html2canvas from 'html2canvas';
 import type { CanvasOptions, DownloadImageOptions } from './types';
 
 export interface ImageExporterOptions {
@@ -25,6 +26,7 @@ export class ImageExporter {
       clippingRegion = new Rectangle(0, 0, width, height),
       beforeDrawImage,
       afterDrawImage,
+      ignoreElements,
       ...rest
     } = options;
     const dataURL = await this.toDataURL(rest);
@@ -57,6 +59,40 @@ export class ImageExporter {
       sHeight,
     );
 
+    if (!this.isSVG()) {
+      const $dom = this.options.canvas.getContextService().getDomElement() as HTMLCanvasElement;
+      if ($dom && $dom.parentElement) {
+        // screenshot HTML
+        // @see https://html2canvas.hertzen.com/configuration
+        const canvas = await html2canvas($dom.parentElement, {
+          backgroundColor: null,
+          width,
+          height,
+          x: 0,
+          y: 0,
+          ignoreElements: (element: Element) => {
+            if (element === $dom) {
+              return true;
+            }
+            return ignoreElements && ignoreElements(element);
+          },
+        });
+
+        const image = await this.getOrCreateImage(canvas.toDataURL());
+        context.drawImage(
+          image,
+          sx * sourceImageMultipiler,
+          sy * sourceImageMultipiler,
+          sWidth * sourceImageMultipiler,
+          sHeight * sourceImageMultipiler,
+          0,
+          0,
+          sWidth,
+          sHeight,
+        );
+      }
+    }
+
     if (afterDrawImage) {
       afterDrawImage(context);
     }
@@ -71,10 +107,14 @@ export class ImageExporter {
     return this.options.canvas.getContextService().toDataURL(options);
   }
 
+  private isSVG() {
+    return (
+      isBrowser && this.options.canvas.getContextService().getDomElement() instanceof SVGSVGElement
+    );
+  }
+
   async toSVGDataURL() {
-    const isSVG =
-      isBrowser && this.options.canvas.getContextService().getDomElement() instanceof SVGSVGElement;
-    if (isSVG) {
+    if (this.isSVG()) {
       return this.toDataURL();
     }
   }

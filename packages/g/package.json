@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.3.1",
+  "version": "5.4.0",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -29,13 +29,12 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.3.1",
+    "@antv/g-math": "^1.4.0",
     "@antv/util": "^3.1.2",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
-    "lodash-es": "^4.17.21",
     "mana-syringe": "^0.3.0",
     "rbush": "^3.0.1",
     "reflect-metadata": "^0.1.13",
@@ -45,7 +44,6 @@
   "devDependencies": {
     "@types/d3-color": "^3.0.2",
     "@types/gl-matrix": "^2.4.5",
-    "@types/lodash-es": "^4.17.6",
     "@types/offscreencanvas": "^2019.6.1",
     "@types/rbush": "^3.0.0"
   },

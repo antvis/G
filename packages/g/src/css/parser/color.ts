@@ -1,7 +1,6 @@
 import * as d3 from 'd3-color';
-import { memoize } from 'lodash-es';
 import type { Tuple4Number } from '../../types';
-import { clamp, isNil, isObject } from '../../utils';
+import { clamp, isNil, isObject, memoize } from '../../utils';
 import type { CSSGradientValue } from '../cssom';
 import { CSSRGB } from '../cssom';
 import { parseGradient } from './gradient';

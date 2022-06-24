@@ -1,11 +1,10 @@
 {
-  "name": "@antv/g-plugin-webgpu-device",
-  "version": "1.4.0",
-  "description": "A G plugin implements GPUDevice interface with WebGPU API",
+  "name": "@antv/g-plugin-a11y",
+  "version": "0.1.0",
+  "description": "A G plugin for accessibility",
   "keywords": [
     "antv",
-    "g",
-    "webgpu"
+    "g"
   ],
   "homepage": "https://github.com/antvis/g#readme",
   "bugs": {
@@ -28,15 +27,13 @@
     "README.md"
   ],
   "dependencies": {
-    "eventemitter3": "^4.0.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "@antv/g-plugin-device-renderer": "^1.0.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"
