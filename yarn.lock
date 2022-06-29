@@ -420,12 +420,13 @@
     csstype "^3.0.8"
     tslib "^2.0.3"
 
-"@antv/util@^3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.1.2.tgz#881709781e778b093b9d8adba43c6a3c9f0c6a5d"
-  integrity sha512-Zzoo0yoZaTVKB7sz1q1cntot+8vpAJVW1o8MmbKzQQZp3GM9gporQv2ICD03wuD0A9U49sO1XCGHlDelVLu4kQ==
+"@antv/util@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.2.0.tgz#bef311fd620ec709fc48e630f1660d70a1535c43"
+  integrity sha512-mmGu4F5gvgqZl3sahxLhL7zF/HPVkV56R5Bx0w0TmJcD6k4W1epZ+BXeHTgLd2kVd89iwHHNwBfk0q6diyHxSA==
   dependencies:
     fast-deep-equal "^3.1.3"
+    tslib "^2.3.1"
 
 "@antv/webgpu-graph@^1.0.0":
   version "1.0.0"
@@ -16999,6 +17000,11 @@ github-slugger@^1.0.0, github-slugger@^1.1.1, github-slugger@^1.2.1, github-slug
   resolved "https://registry.yarnpkg.com/github-slugger/-/github-slugger-1.4.0.tgz#206eb96cdb22ee56fdc53a28d5a302338463444e"
   integrity sha512-w0dzqw/nt51xMVmlaV1+JRzN+oCa1KfcgGEWhxUG16wbdA+Xnt/yoFO8Z8x/V82ZcZ0wy6ln9QDup5avbhiDhQ==
 
+gl-mat4@^1.0.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.2.0.tgz#49d8a7636b70aa00819216635f4a3fd3f4669b26"
+  integrity sha512-sT5C0pwB1/e9G9AvAoLsoaJtbMGjfd/jfxo8jMCKqYYEnjZuFvqV5rehqar0538EmssjdDeiEWnKyBSTw7quoA==
+
 gl-matrix@^3.0.0, gl-matrix@^3.1.0, gl-matrix@^3.3.0, gl-matrix@^3.4.3:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-3.4.3.tgz#fc1191e8320009fd4d20e9339595c6041ddc22c9"
@@ -17008,6 +17014,11 @@ gl-vec2@^1.0.0, gl-vec2@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/gl-vec2/-/gl-vec2-1.3.0.tgz#83d472ed46034de8e09cbc857123fb6c81c51199"
   integrity sha512-YiqaAuNsheWmUV0Sa8k94kBB0D6RWjwZztyO+trEYS8KzJ6OQB/4686gdrf59wld4hHFIvaxynO3nRxpk1Ij/A==
+
+gl-vec3@^1.0.2:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/gl-vec3/-/gl-vec3-1.1.3.tgz#a47c62f918774a06cbed1b65bcd0288ecbb03826"
+  integrity sha512-jduKUqT0SGH02l8Yl+mV1yVsDfYgQAJyXGxkJQGyxPLHRiW25DwVIRPt6uvhrEMHftJfqhqKthRcyZqNEl9Xdw==
 
 gl@^5.0.0:
   version "5.0.0"
@@ -22512,6 +22523,14 @@ marked@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/marked/-/marked-1.0.0.tgz#d35784245a04871e5988a491e28867362e941693"
   integrity sha512-Wo+L1pWTVibfrSr+TTtMuiMfNzmZWiOPeO7rZsQUY5bgsxpHesBEcIWJloWVTFnrMXnf/TL30eTFSGJddmQAng==
+
+mat4-decompose@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/mat4-decompose/-/mat4-decompose-1.0.4.tgz#65eb4fe39d70878f7a444eb4624d52f7e7eb2faf"
+  integrity sha512-M3x6GXrzRTt5Ok4/bcHFc869Pe8F3uWaSp3xkUpi+uaTRulPXIZ1GWD13Z3A8WK2bxTrcvX21mjp05gUy/Dwbw==
+  dependencies:
+    gl-mat4 "^1.0.1"
+    gl-vec3 "^1.0.2"
 
 match-sorter@^3.0.0:
   version "3.1.1"

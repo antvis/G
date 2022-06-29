@@ -552,9 +552,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const [tx, ty] = object.getPosition();
     const [sx, sy] = object.getScale();
     const rot = object.getEulerAngles();
+    const [ax, ay] = object.getLocalSkew();
 
     // @see https://fiddle.skia.org/c/68b54cb7d3435f46e532e6d565a59c49
     canvas.translate(tx, ty);
+    // FIXME
+    canvas.skew(ax, ay);
     canvas.rotate(rot, 0, 0);
     canvas.scale(sx, sy);
 

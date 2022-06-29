@@ -31,7 +31,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: canvaskitRenderer,
+  renderer: canvasRenderer,
 });
 
 const image = new Image({
@@ -139,6 +139,8 @@ const transformConfig = {
   localPositionY: 100,
   localScale: 1,
   localEulerAngles: 0,
+  skewX: 0,
+  skewY: 0,
   transformOrigin: 'left top',
   anchorX: 0,
   anchorY: 0,
@@ -167,6 +169,12 @@ transformFolder.add(transformConfig, 'localScale', 0.2, 5).onChange((localScale)
 });
 transformFolder.add(transformConfig, 'localEulerAngles', 0, 360).onChange((localEulerAngles) => {
   image.setLocalEulerAngles(localEulerAngles);
+});
+transformFolder.add(transformConfig, 'skewX', -180, 180).onChange((skewX) => {
+  image.setLocalSkew(skewX * (Math.PI / 180), transformConfig.skewY * (Math.PI / 180));
+});
+transformFolder.add(transformConfig, 'skewY', -180, 180).onChange((skewY) => {
+  image.setLocalSkew(transformConfig.skewX * (Math.PI / 180), skewY * (Math.PI / 180));
 });
 transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
   image.style.anchor = [anchorX, transformConfig.anchorY];

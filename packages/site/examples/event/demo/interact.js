@@ -1,8 +1,10 @@
 import { Canvas, CanvasEvent, Circle, Rect, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin } from '@antv/g-plugin-css-select';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import interact from 'interactjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';

@@ -15,8 +15,6 @@ import {
   CSSRGB,
   DefaultCamera,
   ElementEvent,
-  fromRotationTranslationScale,
-  getEuler,
   inject,
   RenderingContext,
   RenderingPluginContribution,
@@ -24,7 +22,7 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
-import { mat4, quat, vec3 } from 'gl-matrix';
+import type { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import { DefElementManager } from './shapes/defs';
 import { CreateElementContribution } from './tokens';
@@ -323,27 +321,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private applyTransform($el: SVGElement, transform: mat4) {
-    const translation = mat4.getTranslation(vec3.create(), transform);
-    const scaling = mat4.getScaling(vec3.create(), transform);
-    const rotation = mat4.getRotation(quat.create(), transform);
-
-    const [x, y] = translation;
-    const [scaleX, scaleY] = scaling;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), rotation);
-
-    // gimbal lock at 90 degrees
-    const rts = fromRotationTranslationScale(ex || ez, x, y, scaleX, scaleY);
-
+  private applyTransform($el: SVGElement, rts: mat4) {
     // use proper precision avoiding too long string in `transform`
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     $el.setAttribute(
       'transform',
       `matrix(${numberToLongString(rts[0])},${numberToLongString(rts[1])},${numberToLongString(
-        rts[3],
-      )},${numberToLongString(rts[4])},${numberToLongString(rts[6])},${numberToLongString(
-        rts[7],
+        rts[4],
+      )},${numberToLongString(rts[5])},${numberToLongString(rts[12])},${numberToLongString(
+        rts[13],
       )})`,
     );
   }

@@ -1,4 +1,4 @@
-import { mat4, quat, vec3 } from 'gl-matrix';
+import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 
 /**
  * do RTS transformation for 2D/3D
@@ -18,6 +18,11 @@ export class Transform {
   localRotation = quat.fromValues(0, 0, 0, 1);
   localScale = vec3.fromValues(1, 1, 1);
   localTransform = mat4.create();
+
+  /**
+   * @see https://www.w3.org/TR/css-transforms-1/#SkewDefined
+   */
+  localSkew = vec2.fromValues(0, 0);
 
   /**
    * world space RTS

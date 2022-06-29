@@ -1,6 +1,7 @@
 import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
+import { deg2rad } from '../../utils';
 import { Odeg, Opx } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
@@ -55,7 +56,8 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
       object.resetLocalTransform();
       object.setLocalPosition(defX, defY);
 
-      transform.forEach(({ t, d }) => {
+      transform.forEach((parsed) => {
+        const { t, d } = parsed;
         if (t === 'scale') {
           // scale(1) scale(1, 1)
           const newScale = d.map((s) => s.value) || [1, 1];
@@ -112,6 +114,15 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
           //   newAngles[1].value - oldAngles[1].value,
           //   newAngles[2].value - oldAngles[2].value,
           // );
+        } else if (t === 'skew') {
+          const newSkew = d.map((s) => s.value) || [0, 0];
+          object.setLocalSkew(deg2rad(newSkew[0]), deg2rad(newSkew[1]));
+        } else if (t === 'skewx') {
+          const newSkew = d.map((s) => s.value) || [0];
+          object.setLocalSkew(deg2rad(newSkew[0]), object.getLocalSkew()[1]);
+        } else if (t === 'skewy') {
+          const newSkew = d.map((s) => s.value) || [0];
+          object.setLocalSkew(object.getLocalSkew()[0], deg2rad(newSkew[0]));
         }
       });
     }

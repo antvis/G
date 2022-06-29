@@ -213,7 +213,7 @@ circle.style.anchor = '0.5 0.5';
 
 ### transform
 
-我们提供了在局部坐标系下进行变换的快捷方式，同时与 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
+我们提供了在局部坐标系下进行变换的快捷方式，同时与 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下[transform-function 变换函数](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function)：
 
 -   缩放，无单位
     -   scale(x, y)
@@ -227,8 +227,12 @@ circle.style.anchor = '0.5 0.5';
     -   translateY(0)
     -   translateZ(0)
     -   translate3d(0, 0, 0)
--   旋转，支持 deg rad turn 这些单位
+-   旋转，支持 deg rad turn 这些角度单位
     -   rotate(0.5turn) rotate(30deg) rotate(1rad)
+-   拉伸，支持 deg rad turn 这些角度单位
+    -   skew(ax, ay)
+    -   skewX(a)
+    -   skewY(a)
 -   none 清除变换
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |

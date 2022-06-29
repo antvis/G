@@ -243,3 +243,16 @@ export function formatAttribute(name: string, value: any): [string, any] {
   const attributeValue = map?.values?.[value] || value;
   return [attributeName, attributeValue];
 }
+
+// export const formatAttribute = memoize(
+//   (name: string, value: any): [string, any] => {
+//     let attributeName = camelCase(name);
+//     const map = FORMAT_ATTR_MAP[attributeName];
+//     attributeName = map?.alias || attributeName;
+//     const attributeValue = map?.values?.[value] || value;
+//     return [attributeName, attributeValue];
+//   },
+//   (name: string, value: any) => {
+//     return `${name}${value}`;
+//   },
+// );

@@ -271,8 +271,8 @@ export class DisplayObject<
     );
 
     // inform clip path targets
-    if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
-      this.attributes.clipPathTargets.forEach((target) => {
+    if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
+      this.parsedStyle.clipPathTargets.forEach((target) => {
         dirtifyToRoot(target);
         target.dispatchEvent(
           new MutationEvent(
@@ -499,12 +499,21 @@ export class DisplayObject<
     return this;
   }
 
+  setLocalSkew(skew: vec2 | number, y?: number) {
+    this.sceneGraphService.setLocalSkew(this, skew, y);
+    return this;
+  }
+
   getRotation(): quat {
     return this.sceneGraphService.getRotation(this);
   }
 
   getLocalRotation(): quat {
     return this.sceneGraphService.getLocalRotation(this);
+  }
+
+  getLocalSkew(): vec2 {
+    return this.sceneGraphService.getLocalSkew(this);
   }
 
   getLocalTransform(): mat4 {
@@ -544,8 +553,8 @@ export class DisplayObject<
     let timeline = this.ownerDocument?.timeline;
 
     // account for clip path, use target's timeline
-    if (this.attributes.clipPathTargets && this.attributes.clipPathTargets.length) {
-      const target = this.attributes.clipPathTargets[0];
+    if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
+      const target = this.parsedStyle.clipPathTargets[0];
       timeline = target.ownerDocument?.timeline;
     }
 

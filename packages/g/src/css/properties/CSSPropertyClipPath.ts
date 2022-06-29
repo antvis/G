@@ -41,16 +41,16 @@ export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, D
     }
 
     // clear ref to old clip path
-    if (oldClipPath && oldClipPath !== newClipPath && oldClipPath.style.clipPathTargets) {
-      const index = oldClipPath.style.clipPathTargets.indexOf(object);
-      oldClipPath.style.clipPathTargets.splice(index, 1);
+    if (oldClipPath && oldClipPath !== newClipPath && oldClipPath.parsedStyle.clipPathTargets) {
+      const index = oldClipPath.parsedStyle.clipPathTargets.indexOf(object);
+      oldClipPath.parsedStyle.clipPathTargets.splice(index, 1);
     }
 
     if (newClipPath) {
-      if (!newClipPath.style.clipPathTargets) {
-        newClipPath.style.clipPathTargets = [];
+      if (!newClipPath.parsedStyle.clipPathTargets) {
+        newClipPath.parsedStyle.clipPathTargets = [];
       }
-      newClipPath.style.clipPathTargets.push(object);
+      newClipPath.parsedStyle.clipPathTargets.push(object);
     }
 
     dirtifyToRoot(object);

@@ -1,4 +1,4 @@
-import type { AbsoluteArray, CurveArray } from '@antv/util';
+import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
 import {
   clonePath,
   equalizeSegments,
@@ -7,50 +7,65 @@ import {
   getRotatedCurve,
   normalizePath,
   path2Curve,
+  path2String,
   reverseCurve,
 } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { Rectangle } from '../../shapes';
-import { extractPolygons, hasArcOrBezier, path2Segments } from '../../utils';
+import { extractPolygons, hasArcOrBezier, isString, memoize, path2Segments } from '../../utils';
 
-export function parsePath(path: string, object: DisplayObject): ParsedPathStyleProps['path'] {
-  let absolutePath: AbsoluteArray;
-  try {
-    absolutePath = normalizePath(path);
-  } catch (e) {
-    absolutePath = normalizePath('');
-    console.error(`[g]: Invalid SVG Path definition: ${path}`);
-  }
+const memoizedParsePath = memoize(
+  (path: string | PathArray) => {
+    let absolutePath: AbsoluteArray;
+    try {
+      absolutePath = normalizePath(path);
+    } catch (e) {
+      absolutePath = normalizePath('');
+      console.error(`[g]: Invalid SVG Path definition: ${path}`);
+    }
 
-  const hasArc = hasArcOrBezier(absolutePath);
+    const hasArc = hasArcOrBezier(absolutePath);
 
-  const { polygons, polylines } = extractPolygons(absolutePath);
+    const { polygons, polylines } = extractPolygons(absolutePath);
 
-  // convert to curves to do morphing & picking later
-  // @see http://thednp.github.io/kute.js/svgCubicMorph.html
-  const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
+    // convert to curves to do morphing & picking later
+    // @see http://thednp.github.io/kute.js/svgCubicMorph.html
+    const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
 
-  // for later use
-  const segments = path2Segments(curve);
-  const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
+    // for later use
+    const segments = path2Segments(curve);
+    const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
+
+    return {
+      absolutePath,
+      hasArc,
+      segments,
+      polygons,
+      polylines,
+      curve,
+      totalLength: length,
+      zCommandIndexes,
+      rect: new Rectangle(x, y, width, height),
+    };
+  },
+  (path: string | PathArray) => {
+    return isString(path) ? path : path2String(path);
+  },
+);
+
+export function parsePath(
+  path: string | PathArray,
+  object: DisplayObject,
+): ParsedPathStyleProps['path'] {
+  const result = memoizedParsePath(path) as ParsedPathStyleProps['path'];
 
   if (object) {
-    object.parsedStyle.defX = x;
-    object.parsedStyle.defY = y;
+    object.parsedStyle.defX = result.rect.x;
+    object.parsedStyle.defY = result.rect.y;
   }
 
-  return {
-    absolutePath,
-    hasArc,
-    segments,
-    polygons,
-    polylines,
-    curve,
-    totalLength: length,
-    zCommandIndexes,
-    rect: new Rectangle(x, y, width, height),
-  };
+  return result;
 }
 
 export function mergePaths(
