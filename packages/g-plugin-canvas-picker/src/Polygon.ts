@@ -1,9 +1,9 @@
 import type {
-  DisplayObject,
-  PolylineStyleProps,
-  Point,
-  ParsedPolygonStyleProps,
   CSSRGB,
+  DisplayObject,
+  ParsedPolygonStyleProps,
+  Point,
+  PolylineStyleProps,
 } from '@antv/g';
 import { inPolygon, inPolyline } from './utils/math';
 
@@ -29,7 +29,7 @@ export function isPointInPath(
   if (hasStroke || isClipPath) {
     isHit = inPolyline(
       points.points,
-      lineWidth.value + increasedLineWidthForHitTesting.value,
+      (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
       position.x + x,
       position.y + y,
       true,

@@ -104,28 +104,37 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         // find group with max z-index
         hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
 
+        // test with clip path & origin shape
+        // @see https://github.com/antvis/g/issues/1064
         const pickedDisplayObjects: DisplayObject[] = [];
         for (const displayObject of hitTestList) {
-          // test with clip path
-          const clipPath = displayObject.parsedStyle.clipPath;
-          const objectToTest = clipPath || displayObject;
           let worldTransform = displayObject.getWorldTransform();
+          const isHitOriginShape = this.isHit(displayObject, position, worldTransform);
+          if (isHitOriginShape) {
+            const clipPath = displayObject.parsedStyle.clipPath;
+            if (clipPath) {
+              worldTransform = mat4.multiply(
+                mat4.create(),
+                worldTransform,
+                clipPath.getLocalTransform(),
+              );
 
-          // clipped's world matrix * clipPath's local matrix
-          if (clipPath) {
-            worldTransform = mat4.multiply(
-              mat4.create(),
-              worldTransform,
-              clipPath.getLocalTransform(),
-            );
-          }
-
-          if (this.isHit(objectToTest, position, worldTransform)) {
-            if (topmost) {
-              result.picked = [displayObject];
-              return result;
+              const isHitClipPath = this.isHit(clipPath, position, worldTransform);
+              if (isHitClipPath) {
+                if (topmost) {
+                  result.picked = [displayObject];
+                  return result;
+                } else {
+                  pickedDisplayObjects.push(displayObject);
+                }
+              }
             } else {
-              pickedDisplayObjects.push(displayObject);
+              if (topmost) {
+                result.picked = [displayObject];
+                return result;
+              } else {
+                pickedDisplayObjects.push(displayObject);
+              }
             }
           }
         }

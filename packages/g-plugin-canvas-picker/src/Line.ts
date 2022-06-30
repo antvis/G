@@ -24,7 +24,7 @@ export function isPointInPath(
     y1.value,
     x2.value,
     y2.value,
-    lineWidth.value + increasedLineWidthForHitTesting.value,
+    (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
     position.x + x,
     position.y + y,
   );

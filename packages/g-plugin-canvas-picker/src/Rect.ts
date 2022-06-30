@@ -33,7 +33,8 @@ export function isPointInPath(
     height = heightValue;
   }
 
-  const lineWidthForHitTesting = lineWidth.value + increasedLineWidthForHitTesting.value;
+  const lineWidthForHitTesting =
+    (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0);
 
   // 无圆角时的策略
   if (!hasRadius) {

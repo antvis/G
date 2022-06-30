@@ -25,7 +25,8 @@ export function isPointInPath(
   const rx = rxInPixels.value;
   const ry = ryInPixels.value;
 
-  const halfLineWith = ((lineWidth?.value || 0) + increasedLineWidthForHitTesting.value) / 2;
+  const halfLineWith =
+    ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) / 2;
   const squareX = (x - rx) * (x - rx);
   const squareY = (y - ry) * (y - ry);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
