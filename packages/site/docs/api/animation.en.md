@@ -446,13 +446,16 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
     -   translate3d(0, 0, 0)
 -   旋转，支持 deg rad turn 这些单位
     -   rotate(0.5turn) rotate(30deg) rotate(1rad)
+-   拉伸，支持 deg rad turn 这些角度单位
+    -   skew(ax, ay)
+    -   skewX(a)
+    -   skewY(a)
 -   无变换 none
 
 ⚠️ 暂不支持以下取值：
 
 -   `calc()`。例如 `translate(calc(100% + 10px))`
 -   `matrix/matrix3d()`
--   `skew/skewX/skewY`
 -   `perspective`
 
 ## offset

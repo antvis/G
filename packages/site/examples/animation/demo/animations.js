@@ -221,6 +221,24 @@ const effects = [
     ],
     animationOptions: { duration: 1000, fill: 'both' },
   }),
+  () => ({
+    name: 'flipX',
+    keyframes: [
+      { transform: 'scaleX(1)', transformOrigin },
+      { transform: 'scaleX(-1)', transformOrigin },
+      { transform: 'scaleX(1)', transformOrigin },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
+  () => ({
+    name: 'flipY',
+    keyframes: [
+      { transform: 'scaleY(1)', transformOrigin: 'center' },
+      { transform: 'scaleY(-1)', transformOrigin: 'center' },
+      { transform: 'scaleY(1)', transformOrigin: 'center' },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
 ];
 
 canvas.addEventListener(CanvasEvent.READY, () => {
