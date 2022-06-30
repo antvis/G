@@ -1,5 +1,4 @@
-import type { vec2 } from 'gl-matrix';
-import { mat4, quat, vec3 } from 'gl-matrix';
+import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { inject, singleton, Syringe } from 'mana-syringe';
 import type { Transform } from '../components';
 import type { Element } from '../dom';
@@ -61,10 +60,12 @@ export interface SceneGraphService {
   setLocalScale: (element: INode, scaling: vec3 | vec2) => void;
   getLocalScale: (element: INode) => vec3;
   getScale: (element: INode) => vec3;
+  getLocalSkew: (element: INode) => vec2;
   translate: (element: INode, translation: vec3 | number, y?: number, z?: number) => void;
   translateLocal: (element: INode, translation: vec3 | number, y?: number, z?: number) => void;
   getPosition: (element: INode) => vec3;
   getLocalPosition: (element: INode) => vec3;
+  setLocalSkew: (element: INode, skew: vec2 | number, y?: number) => void;
   setEulerAngles: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
   setLocalEulerAngles: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
   rotateLocal: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
@@ -457,6 +458,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.dirtifyLocal(element, transform);
   }
 
+  setLocalSkew(element: INode, skew: vec2 | number, y?: number) {
+    if (typeof skew === 'number') {
+      skew = vec2.fromValues(skew, y);
+    }
+    const transform = (element as Element).transformable;
+    vec2.copy(transform.localSkew, skew);
+    this.dirtifyLocal(element, transform);
+  }
+
   dirtifyLocal(element: INode, transform: Transform) {
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
@@ -516,16 +526,50 @@ export class DefaultSceneGraphService implements SceneGraphService {
     return (element as Element).transformable.localScale;
   }
 
+  getLocalSkew(element: INode) {
+    return (element as Element).transformable.localSkew;
+  }
+
+  private calcLocalTransform(transform: Transform) {
+    // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
+    // mat4.fromRotationTranslationScaleOrigin(
+    //   transform.localTransform,
+    //   transform.localRotation,
+    //   transform.localPosition,
+    //   transform.localScale,
+    //   transform.origin,
+    // );
+
+    mat4.fromRotationTranslationScaleOrigin(
+      transform.localTransform,
+      transform.localRotation,
+      transform.localPosition,
+      vec3.fromValues(1, 1, 1),
+      transform.origin,
+    );
+
+    // apply skew2D
+    if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
+      const tmpMat4 = mat4.identity(mat4.create());
+      tmpMat4[4] = Math.tan(transform.localSkew[0]);
+      tmpMat4[1] = Math.tan(transform.localSkew[1]);
+      mat4.multiply(transform.localTransform, transform.localTransform, tmpMat4);
+    }
+
+    const scaling = mat4.fromRotationTranslationScaleOrigin(
+      mat4.create(),
+      quat.fromValues(0, 0, 0, 1),
+      vec3.create(),
+      transform.localScale,
+      transform.origin,
+    );
+    mat4.multiply(transform.localTransform, transform.localTransform, scaling);
+  }
+
   getLocalTransform(element: INode) {
     const transform = (element as Element).transformable;
     if (transform.localDirtyFlag) {
-      mat4.fromRotationTranslationScaleOrigin(
-        transform.localTransform,
-        transform.localRotation,
-        transform.localPosition,
-        transform.localScale,
-        transform.origin,
-      );
+      this.calcLocalTransform(transform);
       transform.localDirtyFlag = false;
     }
     return transform.localTransform;
@@ -544,6 +588,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.setLocalScale(element, [1, 1, 1]);
     this.setLocalPosition(element, [0, 0, 0]);
     this.setLocalEulerAngles(element, [0, 0, 0]);
+    this.setLocalSkew(element, [0, 0]);
   }
 
   private getTransformedGeometryBounds(element: INode, render = false): AABB | null {
@@ -563,7 +608,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
   getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
     const bounds = render ? geometry.renderBounds : geometry.contentBounds || null;
-    return (bounds && new AABB(bounds.center, bounds.halfExtents)) || new AABB();
+    // return (bounds && new AABB(bounds.center, bounds.halfExtents)) || new AABB();
+    return bounds || new AABB();
   }
 
   /**
@@ -736,13 +782,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   private sync(element: INode, transform: Transform) {
     if (transform.localDirtyFlag) {
-      mat4.fromRotationTranslationScaleOrigin(
-        transform.localTransform,
-        transform.localRotation,
-        transform.localPosition,
-        transform.localScale,
-        transform.origin,
-      );
+      this.calcLocalTransform(transform);
       transform.localDirtyFlag = false;
     }
 

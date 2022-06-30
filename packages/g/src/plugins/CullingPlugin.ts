@@ -27,29 +27,29 @@ export class CullingPlugin implements RenderingPlugin {
   private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    // const strategies = this.strategyProvider.getContributions();
+    const strategies = this.strategyProvider.getContributions();
 
     renderingService.hooks.cull.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const { cullable } = object;
-        cullable.visible = true;
-        // // const renderBounds = object.getRenderBounds();
-        // // if (AABB.isEmpty(renderBounds)) {
-        // //   cullable.visible = false;
-        // // } else {
-        // //   const isShape2D = shape2D.indexOf(object.nodeName as Shape) > -1;
-        // //   const [p0, p1, p2, p3] = camera.getFrustum().planes;
-        // //   tmpAABB.setMinMax([-p1.distance, -p3.distance, 0], [p0.distance, p2.distance, 0]);
-
-        // //   cullable.visible = isShape2D ? renderBounds.intersects(tmpAABB) : true;
-        // // }
-
-        // if (strategies.length === 0) {
-        //   cullable.visible = this.renderingContext.unculledEntities.indexOf(object.entity) > -1;
+        // cullable.visible = true;
+        // const renderBounds = object.getRenderBounds();
+        // if (AABB.isEmpty(renderBounds)) {
+        //   cullable.visible = false;
         // } else {
-        //   // eg. implemented by g-webgl(frustum culling)
-        //   cullable.visible = strategies.every((strategy) => strategy.isVisible(object));
+        //   const isShape2D = shape2D.indexOf(object.nodeName as Shape) > -1;
+        //   const [p0, p1, p2, p3] = camera.getFrustum().planes;
+        //   tmpAABB.setMinMax([-p1.distance, -p3.distance, 0], [p0.distance, p2.distance, 0]);
+
+        //   cullable.visible = isShape2D ? renderBounds.intersects(tmpAABB) : true;
         // }
+
+        if (strategies.length === 0) {
+          cullable.visible = this.renderingContext.unculledEntities.indexOf(object.entity) > -1;
+        } else {
+          // eg. implemented by g-webgl(frustum culling)
+          cullable.visible = strategies.every((strategy) => strategy.isVisible(object));
+        }
 
         if (!cullable.isCulled() && object.isVisible()) {
           return object;

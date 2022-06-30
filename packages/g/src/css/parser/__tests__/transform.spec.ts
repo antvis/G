@@ -1,5 +1,5 @@
-import chai, { expect } from 'chai';
-import { CSSUnitValue, parseTransform, mergeTransforms } from '@antv/g';
+import { CSS, CSSUnitValue, mergeTransforms, parseTransform } from '@antv/g';
+import { expect } from 'chai';
 
 describe('Property Transform', () => {
   it('parse none transform', () => {
@@ -113,6 +113,96 @@ describe('Property Transform', () => {
     expect(result[2].d[1].toString()).to.be.eqls('-100px');
   });
 
+  it('should parse matrix correctly.', () => {
+    let result = parseTransform('matrix(1, 2, -1, 1, 80, 80)');
+    expect(result).to.be.eqls([
+      {
+        d: [
+          new CSSUnitValue(1),
+          new CSSUnitValue(2),
+          new CSSUnitValue(-1),
+          new CSSUnitValue(1),
+          new CSSUnitValue(80),
+          new CSSUnitValue(80),
+        ],
+        t: 'matrix',
+      },
+    ]);
+
+    result = parseTransform('matrix3d(1, 2, -1, 1, 80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)');
+    expect(result).to.be.eqls([
+      {
+        d: [
+          new CSSUnitValue(1),
+          new CSSUnitValue(2),
+          new CSSUnitValue(-1),
+          new CSSUnitValue(1),
+          new CSSUnitValue(80),
+          new CSSUnitValue(80),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+          CSS.number(0),
+        ],
+        t: 'matrix3d',
+      },
+    ]);
+
+    result = parseTransform('skew(15deg, 15deg)');
+    expect(result).to.be.eqls([
+      {
+        d: [CSS.deg(15), CSS.deg(15)],
+        t: 'skew',
+      },
+    ]);
+
+    result = parseTransform('skew(0)');
+    expect(result).to.be.eqls([
+      {
+        d: [CSS.deg(0), CSS.deg(0)],
+        t: 'skew',
+      },
+    ]);
+
+    result = parseTransform('skew(-0.06turn, 18deg)');
+    expect(result).to.be.eqls([
+      {
+        d: [CSS.turn(-0.06), CSS.deg(18)],
+        t: 'skew',
+      },
+    ]);
+
+    result = parseTransform('skew(.312rad)');
+    expect(result).to.be.eqls([
+      {
+        d: [CSS.rad(0.312), CSS.deg(0)],
+        t: 'skew',
+      },
+    ]);
+
+    result = parseTransform('skewX(.312rad)');
+    expect(result).to.be.eqls([
+      {
+        d: [CSS.rad(0.312)],
+        t: 'skewx',
+      },
+    ]);
+
+    result = parseTransform('skewY(.312rad)');
+    expect(result).to.be.eqls([
+      {
+        d: [CSS.rad(0.312)],
+        t: 'skewy',
+      },
+    ]);
+  });
+
   it('should merge transforms(scale) correctly', () => {
     const [left, right, format] = mergeTransforms(
       [{ t: 'scale', d: [new CSSUnitValue(-2), new CSSUnitValue(-2)] }],
@@ -222,4 +312,125 @@ describe('Property Transform', () => {
       ]),
     ).to.be.eqls('translate(10px,20px) scale(10,20)');
   });
+
+  it('should merge transforms(skew) correctly', () => {
+    let [left, right, format] = mergeTransforms(
+      [
+        {
+          d: [CSS.deg(15), CSS.deg(15)],
+          t: 'skew',
+        },
+      ],
+      [
+        {
+          d: [CSS.deg(30), CSS.deg(30)],
+          t: 'skew',
+        },
+      ],
+      null,
+    );
+    expect(left).to.be.eqls([[15, 15]]);
+    expect(right).to.be.eqls([[30, 30]]);
+    expect(format([[20, 20]])).to.be.eqls('skew(20deg,20deg)');
+
+    [left, right, format] = mergeTransforms(
+      [
+        {
+          d: [CSS.deg(15)],
+          t: 'skewx',
+        },
+      ],
+      [
+        {
+          d: [CSS.deg(30)],
+          t: 'skewx',
+        },
+      ],
+      null,
+    );
+    expect(left).to.be.eqls([[15]]);
+    expect(right).to.be.eqls([[30]]);
+    expect(format([[20]])).to.be.eqls('skewx(20deg)');
+
+    [left, right, format] = mergeTransforms(
+      [
+        {
+          d: [CSS.deg(15)],
+          t: 'skewy',
+        },
+      ],
+      [
+        {
+          d: [CSS.deg(30)],
+          t: 'skewy',
+        },
+      ],
+      null,
+    );
+    expect(left).to.be.eqls([[15]]);
+    expect(right).to.be.eqls([[30]]);
+    expect(format([[20]])).to.be.eqls('skewy(20deg)');
+
+    [left, right, format] = mergeTransforms(
+      [
+        {
+          d: [CSS.deg(15), CSS.deg(15)],
+          t: 'skew',
+        },
+      ],
+      [
+        {
+          d: [CSS.deg(30)],
+          t: 'skewy',
+        },
+      ],
+      null,
+    );
+    expect(left).to.be.eqls([[15, 15]]);
+    expect(right).to.be.eqls([[0, 30]]);
+    expect(format([[20, 10]])).to.be.eqls('skew(20deg,10deg)');
+
+    [left, right, format] = mergeTransforms(
+      [
+        {
+          d: [CSS.deg(15), CSS.deg(15)],
+          t: 'skew',
+        },
+      ],
+      [
+        {
+          d: [CSS.deg(30)],
+          t: 'skewx',
+        },
+      ],
+      null,
+    );
+    expect(left).to.be.eqls([[15, 15]]);
+    expect(right).to.be.eqls([[30, 0]]);
+    expect(format([[20, 10]])).to.be.eqls('skew(20deg,10deg)');
+  });
+
+  // it.only('should merge matrix correctly', () => {
+  //   const [left, right, format] = mergeTransforms(
+  //     [
+  //       {
+  //         t: 'translatey',
+  //         d: [new CSSUnitValue(0, 'px')],
+  //       },
+  //       { t: 'scale', d: [new CSSUnitValue(0.7), new CSSUnitValue(0.7)] },
+  //     ],
+  //     [
+  //       {
+  //         t: 'translatey',
+  //         d: [new CSSUnitValue(0, 'px')],
+  //       },
+  //     ],
+  //     null,
+  //   );
+
+  //   console.log(left, right);
+
+  //   expect(format([left])).to.be.eqls(0);
+  //   // expect(format(right)).to.be.eqls(0);
+  // });
 });

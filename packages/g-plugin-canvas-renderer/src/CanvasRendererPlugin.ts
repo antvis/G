@@ -15,8 +15,6 @@ import {
   DefaultCamera,
   DisplayObjectPool,
   ElementEvent,
-  fromRotationTranslationScale,
-  getEuler,
   inject,
   isNil,
   RBush,
@@ -29,7 +27,7 @@ import {
 } from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
-import { mat4, quat, vec3 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
 
@@ -419,16 +417,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private applyTransform(context: CanvasRenderingContext2D, transform: mat4) {
-    const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
-    const [sx, sy] = mat4.getScaling(vec3.create(), transform);
-    const rotation = mat4.getRotation(quat.create(), transform);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [eux, euy, euz] = getEuler(vec3.create(), rotation);
-    // gimbal lock at 90 degrees
-    const rts = fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
-
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    context.transform(rts[0], rts[1], rts[3], rts[4], rts[6], rts[7]);
+    context.transform(
+      transform[0],
+      transform[1],
+      transform[4],
+      transform[5],
+      transform[12],
+      transform[13],
+    );
   }
 
   private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject) {
@@ -471,7 +468,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.filter = object.style.filter;
     }
 
-    if (!isNil(shadowColor)) {
+    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
+    if (hasShadow) {
       context.shadowColor = shadowColor.toString();
       context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
       context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;

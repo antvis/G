@@ -7,7 +7,7 @@ react-g may get confused with ordering. Just define correct order of elements in
 `;
 
 const isEvent = (key: string) => key.slice(0, 2) === 'on';
-const getEventName = (key: string) => key.substr(2).toLowerCase();
+const getEventName = (key: string) => key.substring(2).toLowerCase();
 
 export const bindShapeEvent = (newProps: Props, instance: Instance) => {
   Object.keys(newProps).forEach((propKey) => {

@@ -1,14 +1,13 @@
 import { vec3 } from 'gl-matrix';
 import { GlobalContainer, inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
-import { CustomEvent, ElementEvent } from '../dom';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
 import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { dirtifyToRoot } from '../services/SceneGraphService';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { formatAttribute, isNil } from '../utils';
+import { formatAttribute, isFunction, isNil } from '../utils';
 import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
 import type { PropertyMetadata } from './interfaces';
@@ -247,14 +246,24 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'transformOrigin',
     parsePriority: 100,
     // interpolable: true,
-    defaultValue: 'left top',
+    defaultValue: (nodeName: string) => {
+      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
+        return 'center';
+      }
+      return 'left top';
+    },
     layoutDependent: true,
     syntax: PropertySyntax.TRANSFORM_ORIGIN,
   },
   {
     name: 'anchor',
     parsePriority: 99,
-    defaultValue: '0 0',
+    defaultValue: (nodeName: string) => {
+      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
+        return '0.5 0.5';
+      }
+      return '0 0';
+    },
     layoutDependent: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },
@@ -727,7 +736,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         if (value === 'initial') {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/initial
           if (!isNil(defaultValue)) {
-            computed = this.parseProperty(name, defaultValue, object);
+            computed = this.parseProperty(
+              name,
+              isFunction(defaultValue) ? defaultValue(object.nodeName) : defaultValue,
+              object,
+            );
           }
         } else if (value === 'inherit') {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/inherit
@@ -994,7 +1007,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
-      object.dispatchEvent(new CustomEvent(ElementEvent.GEOMETRY_BOUNDS_CHANGED));
+      // object.dispatchEvent(new CustomEvent(ElementEvent.GEOMETRY_BOUNDS_CHANGED));
 
       dirtifyToRoot(object);
     }

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A renderer implemented by SVG",
   "keywords": [
     "antv",
@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "sideEffects": true,
+  "sideEffects": false,
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -28,9 +28,9 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-dom-interaction": "^1.4.0",
-    "@antv/g-plugin-svg-picker": "^1.4.0",
-    "@antv/g-plugin-svg-renderer": "^1.4.0",
+    "@antv/g-plugin-dom-interaction": "^1.5.0",
+    "@antv/g-plugin-svg-picker": "^1.5.0",
+    "@antv/g-plugin-svg-renderer": "^1.5.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

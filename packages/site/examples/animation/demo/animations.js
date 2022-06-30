@@ -201,6 +201,44 @@ const effects = [
     ],
     animationOptions: { duration: 1000, fill: 'both' },
   }),
+  () => ({
+    name: 'skewX',
+    keyframes: [
+      { transform: 'skewX(0deg)', transformOrigin, offset: 0 },
+      { transform: 'skewX(30deg)', transformOrigin, offset: 0.25 },
+      { transform: 'skewX(-30deg)', transformOrigin, offset: 0.75 },
+      { transform: 'skewX(0deg)', transformOrigin, offset: 1 },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
+  () => ({
+    name: 'skewY',
+    keyframes: [
+      { transform: 'skewY(0deg)', transformOrigin, offset: 0 },
+      { transform: 'skewY(30deg)', transformOrigin, offset: 0.25 },
+      { transform: 'skewY(-30deg)', transformOrigin, offset: 0.75 },
+      { transform: 'skewY(0deg)', transformOrigin, offset: 1 },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
+  () => ({
+    name: 'flipX',
+    keyframes: [
+      { transform: 'scaleX(1)', transformOrigin },
+      { transform: 'scaleX(-1)', transformOrigin },
+      { transform: 'scaleX(1)', transformOrigin },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
+  () => ({
+    name: 'flipY',
+    keyframes: [
+      { transform: 'scaleY(1)', transformOrigin: 'center' },
+      { transform: 'scaleY(-1)', transformOrigin: 'center' },
+      { transform: 'scaleY(1)', transformOrigin: 'center' },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
 ];
 
 canvas.addEventListener(CanvasEvent.READY, () => {
@@ -229,7 +267,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     group.appendChild(circle);
     canvas.appendChild(group);
 
-    group.setPosition(50 + 150 * (i % 4), 50 + 150 * row);
+    group.setPosition(50 + 150 * (i % 4), 50 + 120 * row);
 
     circle.animate(keyframes, {
       ...animationOptions,

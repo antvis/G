@@ -218,7 +218,7 @@ describe('Document', () => {
     expect(targets).to.be.eqls([circle2, circle1, canvas.document.documentElement]);
 
     // make it non-interactive
-    circle2.interactive = false;
+    circle2.style.pointerEvents = 'none';
 
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);

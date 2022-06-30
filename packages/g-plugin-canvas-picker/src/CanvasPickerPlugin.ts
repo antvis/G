@@ -179,7 +179,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     }
     const generatePath = this.pathGeneratorFactoryCache[displayObject.nodeName];
     if (generatePath) {
+      context.beginPath();
       generatePath(context, displayObject.parsedStyle);
+      context.closePath();
     }
 
     return context.isPointInPath(position.x, position.y);

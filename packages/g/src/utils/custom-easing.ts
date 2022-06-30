@@ -8,7 +8,7 @@ export const convertToDash = (str: string) => {
   str = str.replace(/([A-Z])/g, (letter) => `-${letter.toLowerCase()}`);
 
   // Remove first dash
-  return str.charAt(0) === '-' ? str.substr(1) : str;
+  return str.charAt(0) === '-' ? str.substring(1) : str;
 };
 
 /**
