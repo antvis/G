@@ -9,8 +9,13 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
-const canvasRenderer = new CanvasRenderer();
-const svgRenderer = new SVGRenderer();
+// enable culling for canvas & svg renderer
+const canvasRenderer = new CanvasRenderer({
+  enableCulling: true,
+});
+const svgRenderer = new SVGRenderer({
+  enableCulling: true,
+});
 const webglRenderer = new WebGLRenderer();
 const webgpuRenderer = new WebGPURenderer();
 const canvaskitRenderer = new CanvaskitRenderer({

@@ -235,7 +235,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         handleAttributeChanged,
       );
       this.renderingContext.root.addEventListener(
-        ElementEvent.GEOMETRY_BOUNDS_CHANGED,
+        ElementEvent.BOUNDS_CHANGED,
         handleGeometryBoundsChanged,
       );
     });
@@ -248,7 +248,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         handleAttributeChanged,
       );
       this.renderingContext.root.removeEventListener(
-        ElementEvent.GEOMETRY_BOUNDS_CHANGED,
+        ElementEvent.BOUNDS_CHANGED,
         handleGeometryBoundsChanged,
       );
     });

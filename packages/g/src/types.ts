@@ -65,12 +65,6 @@ export interface BaseStyleProps {
   visibility?: 'visible' | 'hidden' | CSSGlobalKeywords;
 
   /**
-   * use `pointerEvents` instead
-   * @deprecated
-   */
-  interactive?: boolean;
-
-  /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events
    */
   pointerEvents?:

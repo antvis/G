@@ -95,7 +95,7 @@ export interface PropertyMetadata {
    * - for keyword fields, this is the initial keyword
    * - for other fields, this is a string containg the C++ expression that is used to initialise the field.
    */
-  defaultValue?: string;
+  defaultValue?: string | ((nodeName: string) => string);
 
   /**
    * The resolved value used for getComputedStyle() depends on layout for this

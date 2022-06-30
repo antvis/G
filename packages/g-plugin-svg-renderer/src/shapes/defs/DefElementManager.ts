@@ -46,7 +46,7 @@ export class DefElementManager {
   }
 
   private clearUnusedDefElement(cache: Record<string, Set<number>>, id: string, entity: number) {
-    if (cache[id].size === 1 && cache[id].has(entity)) {
+    if (cache[id] && cache[id].size === 1 && cache[id].has(entity)) {
       const targetElement = this.$def.querySelector(`#${id}`);
       if (targetElement) {
         this.$def.removeChild(targetElement);

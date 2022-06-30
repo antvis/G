@@ -64,7 +64,7 @@ describe('StyleValueRegistry initialization', () => {
     expect(documentElement.style.visibility).to.equal('visible');
     expect(documentElement.style.pointerEvents).to.equal('auto');
     expect(documentElement.style.width).to.equal('');
-    expect(documentElement.style.zIndex).to.equal(0);
+    expect(documentElement.style.zIndex).to.equal('');
 
     // hide all children
     documentElement.style.visibility = 'hidden';
@@ -145,9 +145,9 @@ describe('StyleValueRegistry initialization', () => {
     expect(circle.getAttribute('visibility')).to.be.eqls('');
     expect(circle.getAttribute('lineJoin')).to.be.eqls('');
     expect(circle.getAttribute('lineCap')).to.be.eqls('');
-    // expect(circle.getAttribute('transform')).to.be.eqls('');
-    expect(circle.getAttribute('transformOrigin')).to.be.eqls('center');
-    expect(circle.getAttribute('anchor')).to.be.eqls('0.5 0.5');
+    expect(circle.getAttribute('transform')).to.be.eqls('');
+    expect(circle.getAttribute('transformOrigin')).to.be.eqls('');
+    expect(circle.getAttribute('anchor')).to.be.eqls('');
 
     /**
      * computed values
@@ -188,14 +188,12 @@ describe('StyleValueRegistry initialization', () => {
     const lineCap = styleMap.get('lineCap') as CSSKeywordValue;
     expect(lineCap instanceof CSSKeywordValue).to.be.true;
     expect(lineCap.value).to.be.eqls('unset');
-    const transformOrigin = styleMap.get('transformOrigin') as [CSSUnitValue, CSSUnitValue];
-    expect(transformOrigin.length).to.be.eqls(2);
-    expect(transformOrigin[0].equals(CSS.percent(50))).to.be.true;
-    expect(transformOrigin[1].equals(CSS.percent(50))).to.be.true;
-    const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
-    expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.px(0.5))).to.be.true;
-    expect(anchor[1].equals(CSS.px(0.5))).to.be.true;
+    const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
+    expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
+    expect(transformOrigin.value).to.be.eqls('unset');
+    const anchor = styleMap.get('anchor') as CSSKeywordValue;
+    expect(anchor instanceof CSSKeywordValue).to.be.true;
+    expect(anchor.value).to.be.eqls('unset');
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**
@@ -321,14 +319,12 @@ describe('StyleValueRegistry initialization', () => {
     const visibility = styleMap.get('visibility') as CSSKeywordValue;
     expect(visibility instanceof CSSKeywordValue).to.be.true;
     expect(visibility.value).to.be.eqls('unset');
-    const transformOrigin = styleMap.get('transformOrigin') as [CSSUnitValue, CSSUnitValue];
-    expect(transformOrigin.length).to.be.eqls(2);
-    expect(transformOrigin[0].equals(CSS.percent(50))).to.be.true;
-    expect(transformOrigin[1].equals(CSS.percent(50))).to.be.true;
-    const anchor = styleMap.get('anchor') as [CSSUnitValue, CSSUnitValue];
-    expect(anchor.length).to.be.eqls(2);
-    expect(anchor[0].equals(CSS.px(0.5))).to.be.true;
-    expect(anchor[1].equals(CSS.px(0.5))).to.be.true;
+    const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
+    expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
+    expect(transformOrigin.value).to.be.eqls('unset');
+    const anchor = styleMap.get('anchor') as CSSKeywordValue;
+    expect(anchor instanceof CSSKeywordValue).to.be.true;
+    expect(anchor.value).to.be.eqls('unset');
     expect(styleMap.get('xxxx')).to.be.undefined;
 
     /**

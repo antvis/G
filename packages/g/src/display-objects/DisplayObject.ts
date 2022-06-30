@@ -54,6 +54,7 @@ const DEFAULT_STYLE_PROPS: {
   textAlign: string;
   textBaseline: string;
   textTransform: string;
+  zIndex: string | number;
 } = {
   anchor: '',
   opacity: '',
@@ -77,6 +78,7 @@ const DEFAULT_STYLE_PROPS: {
   textAlign: '',
   textBaseline: '',
   textTransform: '',
+  zIndex: '',
 };
 
 /**
@@ -135,8 +137,6 @@ export class DisplayObject<
     // compatible with G 3.0
     this.config.style = {
       ...DEFAULT_STYLE_PROPS,
-      zIndex: this.config.zIndex ?? 0,
-      interactive: this.config.interactive ?? true,
       ...this.config.style,
       ...this.config.attrs,
     };

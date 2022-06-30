@@ -53,7 +53,7 @@ const webglRenderer = new WebGLRenderer({
 
 ## enableCulling
 
-是否开启视锥剔除，默认开启。开启后只有视口范围内的图形才会被绘制。
+是否开启视锥剔除，默认关闭。开启后只有视口范围内的图形才会被绘制。
 
 # 修改配置
 

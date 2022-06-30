@@ -6,7 +6,8 @@ import type { AnimationEffectTiming } from '../dom';
 import type { IElement } from '../dom/interfaces';
 import { parseEasingFunction } from './animation';
 import type { TypeEasingFunction } from './custom-easing';
-import { camelCase } from './string';
+import { memoize } from './memoize';
+import { camelCase, isString } from './string';
 
 export function convertEffectInput(
   keyframes: ComputedKeyframe[],
@@ -236,11 +237,16 @@ const FORMAT_ATTR_MAP = {
   },
 };
 
-export function formatAttribute(name: string, value: any): [string, any] {
+const formatAttributeName = memoize((name: string) => {
   let attributeName = camelCase(name);
   const map = FORMAT_ATTR_MAP[attributeName];
   attributeName = map?.alias || attributeName;
-  const attributeValue = map?.values?.[value] || value;
+  return [attributeName, map];
+});
+
+export function formatAttribute(name: string, value: any): [string, any] {
+  const [attributeName, map] = formatAttributeName(name);
+  const attributeValue = (isString(value) && map?.values?.[value]) || value;
   return [attributeName, attributeValue];
 }
 

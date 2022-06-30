@@ -8,7 +8,7 @@ describe('Abstract renderer', () => {
     expect(renderer.getConfig()).to.be.eqls({
       enableAutoRendering: true,
       enableDirtyCheck: true,
-      enableCulling: true,
+      enableCulling: false,
       enableDirtyRectangleRendering: true,
       // enableDirtyRectangleRenderingDebug: false,
     });
@@ -17,7 +17,7 @@ describe('Abstract renderer', () => {
     expect(renderer.getConfig()).to.be.eqls({
       enableAutoRendering: false,
       enableDirtyCheck: true,
-      enableCulling: true,
+      enableCulling: false,
       enableDirtyRectangleRendering: true,
       // enableDirtyRectangleRenderingDebug: false,
     });
