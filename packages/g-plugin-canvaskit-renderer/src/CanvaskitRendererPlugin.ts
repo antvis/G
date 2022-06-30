@@ -323,24 +323,22 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       // @see https://fiddle.skia.org/c/@GradientShader_MakeLinear
       const { angle, steps } = stroke.value as LinearGradient;
       const pos: number[] = [];
-      const colors: Float32Array[] = [];
+      const colors: number[] = [];
       steps.forEach(([offset, color]) => {
         pos.push(offset);
         const c = parseColor(color) as CSSRGB;
         colors.push(
-          new Float32Array([
-            Number(c.r) / 255,
-            Number(c.g) / 255,
-            Number(c.b) / 255,
-            Number(c.alpha),
-          ]),
+          Number(c.alpha) === 0 ? 1 : Number(c.r) / 255,
+          Number(c.alpha) === 0 ? 1 : Number(c.g) / 255,
+          Number(c.alpha) === 0 ? 1 : Number(c.b) / 255,
+          Number(c.alpha),
         );
       });
       const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
       const gradient = CanvasKit.Shader.MakeLinearGradient(
         [x1, y1],
         [x2, y2],
-        colors,
+        new Float32Array(colors),
         pos,
         CanvasKit.TileMode.Mirror,
       );
@@ -355,9 +353,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         const c = parseColor(color) as CSSRGB;
         colors.push(
           new Float32Array([
-            Number(c.r) / 255,
-            Number(c.g) / 255,
-            Number(c.b) / 255,
+            Number(c.alpha) === 0 ? 1 : Number(c.r) / 255,
+            Number(c.alpha) === 0 ? 1 : Number(c.g) / 255,
+            Number(c.alpha) === 0 ? 1 : Number(c.b) / 255,
             Number(c.alpha),
           ]),
         );

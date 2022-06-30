@@ -1,68 +1,76 @@
-// const { Circle, Canvas, Rectangle } = require('@antv/g');
-// const { Renderer } = require('@antv/g-webgl');
-// const { createPNGFromRawdata, sleep } = require('../../util');
+const { Circle, Canvas, Rectangle } = require('@antv/g');
+const { Renderer } = require('@antv/g-webgl');
+const { ImageExporter } = require('@antv/g-image-exporter');
+const { createPNGFromRawdata, sleep } = require('../../util');
 
-// // create a renderer, unregister plugin relative to DOM
-// const renderer = new Renderer();
-// const domInteractionPlugin = renderer.getPlugin('dom-interaction');
-// renderer.unregisterPlugin(domInteractionPlugin);
+// create a renderer, unregister plugin relative to DOM
+const renderer = new Renderer();
+const domInteractionPlugin = renderer.getPlugin('dom-interaction');
+renderer.unregisterPlugin(domInteractionPlugin);
 
-// const width = 200;
-// const height = 200;
-// const gl = require('gl')(width, height, {
-//   debug: true,
-//   antialias: false,
-//   preserveDrawingBuffer: false,
-//   stencil: true,
-// });
-// const mockCanvas = {
-//   width,
-//   height,
-//   getContext: () => {
-//     gl.canvas = mockCanvas;
-//     // 模拟 DOM API，返回小程序 context，它应当和 CanvasRenderingContext2D 一致
-//     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/getContext
-//     return gl;
-//   },
-//   getBoundingClientRect: () => {
-//     // 模拟 DOM API，返回小程序 context 相对于视口的位置
-//     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
-//     return new Rectangle(0, 0, width, height);
-//   },
-// };
+const width = 200;
+const height = 200;
+const gl = require('gl')(width, height, {
+  debug: true,
+  antialias: false,
+  preserveDrawingBuffer: false,
+  stencil: true,
+});
+const mockCanvas = {
+  width,
+  height,
+  getContext: () => {
+    gl.canvas = mockCanvas;
+    // 模拟 DOM API，返回小程序 context，它应当和 CanvasRenderingContext2D 一致
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/getContext
+    return gl;
+  },
+  getBoundingClientRect: () => {
+    // 模拟 DOM API，返回小程序 context 相对于视口的位置
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
+    return new Rectangle(0, 0, width, height);
+  },
+};
 
-// const canvas = new Canvas({
-//   width,
-//   height,
-//   canvas: mockCanvas, // use headless-gl
-//   renderer,
-//   background: 'red',
-// });
+const canvas = new Canvas({
+  width,
+  height,
+  canvas: mockCanvas, // use headless-gl
+  renderer,
+  background: 'red',
+});
 
-// describe('Render <Circle> with g-canvas', () => {
-//   beforeEach(() => {
-//     gl.clearColor(1, 0, 0, 1);
-//     gl.clear(gl.COLOR_BUFFER_BIT);
-//   });
+const exporter = new ImageExporter({
+  canvas,
+});
 
-//   it('should render circle on server-side correctly.', async () => {
-//     const circle1 = new Circle({
-//       style: {
-//         cx: 100,
-//         cy: 100,
-//         r: 100,
-//         fill: 'green',
-//       },
-//     });
-//     canvas.appendChild(circle1);
+describe('Render <Circle> with g-webgl', () => {
+  beforeEach(() => {
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  });
 
-//     await sleep(300);
+  it('should render circle on server-side correctly.', async () => {
+    const circle1 = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        fill: 'green',
+      },
+    });
+    await canvas.ready;
 
-//     const pixels = new Uint8Array(width * height * 4);
-//     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    canvas.appendChild(circle1);
 
-//     await createPNGFromRawdata(__dirname + '/test.png', width, height, pixels);
+    const exportedCanvas = await exporter.toCanvas();
+    const pixels = exportedCanvas.getContext('2d').getImageData().data;
 
-//     expect(pixels[0]).toBe(0);
-//   });
-// });
+    // const pixels = new Uint8Array(width * height * 4);
+    // gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+    await createPNGFromRawdata(__dirname + '/test.png', width, height, pixels);
+
+    expect(pixels[0]).toBe(0);
+  });
+});
