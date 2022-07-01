@@ -47,6 +47,8 @@ export class A11yPlugin implements RenderingPlugin {
         Object.keys(object.attributes).forEach((name) => {
           this.textExtractor.updateAttribute(name, object as Text);
         });
+
+        this.textExtractor.updateAttribute('modelMatrix', object as Text);
       }
     };
 
@@ -56,6 +58,13 @@ export class A11yPlugin implements RenderingPlugin {
 
       if (object.nodeName === Shape.TEXT) {
         this.textExtractor.updateAttribute(attrName, object as Text);
+      }
+    };
+
+    const handleBoundsChanged = (e: MutationEvent) => {
+      const object = e.target as DisplayObject;
+      if (object.nodeName === Shape.TEXT) {
+        this.textExtractor.updateAttribute('modelMatrix', object as Text);
       }
     };
 
@@ -77,6 +86,10 @@ export class A11yPlugin implements RenderingPlugin {
           ElementEvent.ATTR_MODIFIED,
           handleAttributeChanged,
         );
+        this.renderingContext.root.addEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
       }
 
       globalThis.addEventListener('keydown', this.onKeyDown, false);
@@ -91,6 +104,10 @@ export class A11yPlugin implements RenderingPlugin {
         this.renderingContext.root.removeEventListener(
           ElementEvent.ATTR_MODIFIED,
           handleAttributeChanged,
+        );
+        this.renderingContext.root.removeEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
         );
       }
 

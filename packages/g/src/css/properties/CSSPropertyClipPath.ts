@@ -1,6 +1,6 @@
-import { singleton } from 'mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
-import { dirtifyToRoot } from '../../services';
+import { SceneGraphService } from '../../services';
 import { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
@@ -29,6 +29,9 @@ import { PropertySyntax } from '../interfaces';
   },
 })
 export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
+  @inject(SceneGraphService)
+  private sceneGraphService: SceneGraphService;
+
   calculator(
     name: string,
     oldClipPath: DisplayObject,
@@ -52,8 +55,7 @@ export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, D
       }
       newClipPath.parsedStyle.clipPathTargets.push(object);
     }
-
-    dirtifyToRoot(object);
+    this.sceneGraphService.dirtifyToRoot(object);
 
     return newClipPath;
   }

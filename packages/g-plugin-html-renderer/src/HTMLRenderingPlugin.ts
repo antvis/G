@@ -38,6 +38,18 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   private $camera: HTMLDivElement;
 
   apply(renderingService: RenderingService) {
+    const setTransform = (object: DisplayObject, $el: HTMLElement) => {
+      const worldTransform = object.getWorldTransform();
+      $el.style.transform = `matrix(${[
+        worldTransform[0],
+        worldTransform[1],
+        worldTransform[4],
+        worldTransform[5],
+        worldTransform[12],
+        worldTransform[13],
+      ].join(',')})`;
+    };
+
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
@@ -51,6 +63,8 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         Object.keys(object.attributes).forEach((name) => {
           this.updateAttribute(name, object as HTML);
         });
+
+        setTransform(object, $el);
       }
     };
 
@@ -77,6 +91,14 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
+    const handleBoundsChanged = (e: MutationEvent) => {
+      const object = e.target as HTML;
+      if (object.nodeName === Shape.HTML) {
+        const $el = this.getOrCreateEl(object);
+        setTransform(object, $el);
+      }
+    };
+
     renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
       this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -84,6 +106,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
@@ -92,6 +115,10 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
+      );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
       );
     });
   }
@@ -153,19 +180,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $el.appendChild(innerHTML);
         }
         break;
-      case 'modelMatrix':
       case 'transformOrigin':
         const { transformOrigin } = object.parsedStyle;
         $el.style['transform-origin'] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
-        const worldTransform = object.getWorldTransform();
-        $el.style.transform = `matrix(${[
-          worldTransform[0],
-          worldTransform[1],
-          worldTransform[4],
-          worldTransform[5],
-          worldTransform[12],
-          worldTransform[13],
-        ].join(',')})`;
         break;
       case 'width':
         const width = object.computedStyleMap().get('width');

@@ -1,4 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
+import { vec3 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
@@ -46,9 +47,17 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
   getPoint(ratio: number): Point {
     // TODO: account for z1/z2 in 3D line
-    const { x1, y1, x2, y2 } = this.parsedStyle;
-    const point = LineUtil.pointAt(x1.value, y1.value, x2.value, y2.value, ratio);
-    return new Point(point.x, point.y);
+    const { x1, y1, x2, y2, defX, defY } = this.parsedStyle;
+    const { x, y } = LineUtil.pointAt(x1.value, y1.value, x2.value, y2.value, ratio);
+
+    const transformed = vec3.transformMat4(
+      vec3.create(),
+      vec3.fromValues(x - defX, y - defY, 0),
+      this.getLocalTransform(),
+    );
+
+    // apply local transformation
+    return new Point(transformed[0], transformed[1]);
   }
 
   getTotalLength() {

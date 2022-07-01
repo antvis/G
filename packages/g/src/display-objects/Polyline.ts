@@ -1,4 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
+import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -33,7 +34,11 @@ export class Polyline extends DisplayObject<PolylineStyleProps, ParsedPolylineSt
   }
 
   getPoint(ratio: number): Point {
-    const { points, segments } = this.parsedStyle.points;
+    const {
+      defX,
+      defY,
+      points: { points, segments },
+    } = this.parsedStyle;
 
     let subt = 0;
     let index = 0;
@@ -51,7 +56,15 @@ export class Polyline extends DisplayObject<PolylineStyleProps, ParsedPolylineSt
       points[index + 1][1],
       subt,
     );
-    return new Point(x, y);
+
+    const transformed = vec3.transformMat4(
+      vec3.create(),
+      vec3.fromValues(x - defX, y - defY, 0),
+      this.getLocalTransform(),
+    );
+
+    // apply local transformation
+    return new Point(transformed[0], transformed[1]);
   }
 
   getStartTangent(): number[][] {

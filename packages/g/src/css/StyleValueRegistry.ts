@@ -1,9 +1,9 @@
 import { vec3 } from 'gl-matrix';
 import { GlobalContainer, inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
+import { SceneGraphService } from '../services';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
 import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
-import { dirtifyToRoot } from '../services/SceneGraphService';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -525,6 +525,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   @inject(CSSPropertySyntaxFactory)
   private propertySyntaxFactory: CSSPropertySyntaxFactory;
 
+  @inject(SceneGraphService)
+  private sceneGraphService: SceneGraphService;
+
   /**
    * eg.
    *
@@ -1007,9 +1010,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
-      // object.dispatchEvent(new CustomEvent(ElementEvent.GEOMETRY_BOUNDS_CHANGED));
-
-      dirtifyToRoot(object);
+      this.sceneGraphService.dirtifyToRoot(object);
     }
   }
 

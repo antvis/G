@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { Polyline } from '@antv/g';
+import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
 
 describe('Polyline', () => {
@@ -93,6 +93,10 @@ describe('Polyline', () => {
 
     let point = polyline.getPoint(0);
     expect(point.x).eqls(50);
+    expect(point.y).eqls(50);
+
+    point = polyline.getPoint(0.5);
+    expect(point.x).eqls(100);
     expect(point.y).eqls(50);
 
     point = polyline.getPoint(1);

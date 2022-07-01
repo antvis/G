@@ -3,7 +3,8 @@ import { Camera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { CustomEvent, ElementEvent } from '../dom';
-import type { CanvasConfig, EventPosition, InteractivePointerEvent } from '../types';
+import type { EventPosition, InteractivePointerEvent } from '../types';
+import { CanvasConfig } from '../types';
 import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from '../utils';
 import { RenderingContext, RenderReason } from './RenderingContext';
 import { SceneGraphService, sortByZIndex } from './SceneGraphService';
@@ -39,6 +40,9 @@ export interface PickingResult {
 export class RenderingService {
   @contrib(RenderingPluginContribution)
   private renderingPluginProvider: Contribution.Provider<RenderingPlugin>;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
@@ -128,12 +132,30 @@ export class RenderingService {
     return this.stats;
   }
 
+  /**
+   * Meet the following conditions:
+   * * disable DirtyRectangleRendering
+   * * camera changed
+   * * some heuristic conditions such as 80% object changed
+   */
+  needDirtyRectangleRendering() {
+    const { renderer } = this.canvasConfig;
+    const { enableDirtyRectangleRendering } = renderer.getConfig();
+    const { total, rendered } = this.getStats();
+    return (
+      !enableDirtyRectangleRendering ||
+      this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED) ||
+      (enableDirtyRectangleRendering && rendered / total > 0.8)
+    );
+  }
+
   render(canvasConfig: Partial<CanvasConfig>) {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
 
     this.sceneGraphService.syncHierarchy(this.renderingContext.root);
+    this.sceneGraphService.triggerPendingEvents();
 
     if (this.renderingContext.renderReasons.size && this.inited) {
       this.renderDisplayObject(this.renderingContext.root, canvasConfig);

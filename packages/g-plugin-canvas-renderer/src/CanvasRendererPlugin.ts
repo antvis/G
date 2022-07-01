@@ -21,13 +21,13 @@ import {
   RBushRoot,
   RenderingContext,
   RenderingPluginContribution,
-  RenderReason,
   Shape,
   singleton,
 } from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
-import { mat4, vec3 } from 'gl-matrix';
+import type { mat4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
 
@@ -84,9 +84,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private clearFullScreen = false;
 
-  private tmpVec3 = vec3.create();
-  private tmpMat4 = mat4.create();
-
   apply(renderingService: RenderingService) {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -131,10 +128,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const context = this.contextService.getContext();
       const { width, height } = this.canvasConfig;
 
-      // clear fullscreen when:
-      // 1. dirty rectangle rendering disabled
-      // 2. camera changed
-      this.clearFullScreen = this.shouldClearFullScreen();
+      this.clearFullScreen = renderingService.needDirtyRectangleRendering();
 
       if (context) {
         context.save();
@@ -151,8 +145,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
-      if (this.clearFullScreen) {
-      } else {
+      if (!this.clearFullScreen) {
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(
@@ -280,10 +273,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     if (clipPathShape) {
       context.save();
 
-      // const parentTransform =
-      //   (object.parentElement as DisplayObject)?.getWorldTransform() || mat4.identity(this.tmpMat4);
-      // mat4.multiply(this.tmpMat4, parentTransform, clipPathShape.getLocalTransform());
-
       // apply clip shape's RTS
       this.applyTransform(context, clipPathShape.getLocalTransform());
 
@@ -343,15 +332,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     object.renderable.dirty = false;
 
     this.restoreStack.push(object);
-  }
-
-  private shouldClearFullScreen() {
-    const { renderer } = this.canvasConfig;
-    const { enableDirtyRectangleRendering } = renderer.getConfig();
-    return (
-      !enableDirtyRectangleRendering ||
-      this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
-    );
   }
 
   private convertAABB2Rect(aabb: AABB): Rect {

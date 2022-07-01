@@ -2,7 +2,7 @@ import { Shape } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { AABB } from '../../shapes';
-import { isNil, isString, rad2deg, turn2deg } from '../../utils';
+import { isNil, isNumber, isString, rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
 import { CSSUnitValue, UnitType } from '../cssom';
 
@@ -69,6 +69,9 @@ export function parserPercentage(css: string) {
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
 export function parseLengthOrPercentage(css: string): CSSUnitValue {
+  if (isNumber(css)) {
+    return new CSSUnitValue(css, 'px');
+  }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
 }
 

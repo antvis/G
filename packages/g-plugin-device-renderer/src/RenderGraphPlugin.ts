@@ -179,6 +179,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.batchManager.updateAttribute(object, attrName, newValue);
     };
 
+    const handleBoundsChanged = (e: MutationEvent) => {
+      const object = e.target as DisplayObject;
+      this.batchManager.updateAttribute(object, 'modelMatrix', null);
+    };
+
     const handleRenderOrderChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { renderOrder } = e.detail;
@@ -192,6 +197,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
       this.renderingContext.root.addEventListener(
         ElementEvent.RENDER_ORDER_CHANGED,
         handleRenderOrderChanged,
@@ -228,6 +234,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
+      );
+      this.renderingContext.root.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
       );
       this.renderingContext.root.removeEventListener(
         ElementEvent.RENDER_ORDER_CHANGED,

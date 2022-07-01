@@ -1,5 +1,6 @@
 import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
 import { getPointAtLength } from '@antv/util';
+import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
@@ -53,10 +54,22 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   /**
    * Get point according to ratio
    */
-  getPoint(ratio: number): Point | null {
-    const { totalLength, absolutePath } = this.parsedStyle.path;
+  getPoint(ratio: number): Point {
+    const {
+      defX,
+      defY,
+      path: { totalLength, absolutePath },
+    } = this.parsedStyle;
     const { x, y } = getPointAtLength(absolutePath, ratio * totalLength);
-    return new Point(x, y);
+
+    const transformed = vec3.transformMat4(
+      vec3.create(),
+      vec3.fromValues(x - defX, y - defY, 0),
+      this.getLocalTransform(),
+    );
+
+    // apply local transformation
+    return new Point(transformed[0], transformed[1]);
   }
 
   /**
