@@ -34,6 +34,7 @@ import {
   CSSPropertyLengthOrPercentage12,
   CSSPropertyLengthOrPercentage14,
   CSSPropertyLocalPosition,
+  CSSPropertyNumber,
   CSSPropertyOffsetDistance,
   CSSPropertyOffsetPath,
   CSSPropertyOpacity,
@@ -112,6 +113,7 @@ export const containerModule = Module((register) => {
   });
 
   // bind CSS property handlers
+  register(CSSPropertyNumber);
   register(CSSPropertyAngle);
   register(CSSPropertyClipPath);
   register(CSSPropertyColor);

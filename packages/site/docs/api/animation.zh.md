@@ -430,6 +430,8 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 | lineDashOffset | `number` | 例如 `-20` `0` `20` | 设置虚线的偏移量，在[蚂蚁线效果](/zh/docs/api/animation#蚂蚁线)中使用 |
 | path | `string` | 例如 `M 100,100 L 200,200` | Path 的定义，在[形变动画](/zh/docs/api/animation#形变动画)中使用 |
 
+对于自定义属性，可以[在样式系统中注册](/zh/docs/api/css/css-properties-values-api#自定义属性)。在该[示例](/zh/examples/style#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
+
 其中 transform 和 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下属性值：
 
 -   缩放，无单位

@@ -117,7 +117,7 @@ path.getTotalLength(); // 0
 
 ## getPoint(ratio: number): Point
 
-根据长度比例（取值范围 `[0-1]`）获取点，其中 `Point` 的格式为:
+根据长度比例（取值范围 `[0-1]`）获取局部坐标系下点的坐标，其中 `Point` 的格式为:
 
 ```ts
 export type Point = {
@@ -141,6 +141,12 @@ const path = new Path({
 
 path.getPoint(0.5); // Point {x: 100, y: 150}
 ```
+
+值得注意的是，如果超出取值范围 `[0-1]`，会返回路径头尾的点坐标。对于非法路径，该方法会返回 `Point {x: NaN, y: NaN}`
+
+另外在原路径上应用的，在局部坐标系下的变换也会应用到返回的点上。例如在该[示例](/zh/examples/shape#path)中，路径本身经过了平移和缩放：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
 ## getStartTangent(): number[][]
 

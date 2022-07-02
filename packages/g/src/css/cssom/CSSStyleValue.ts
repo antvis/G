@@ -1,7 +1,7 @@
 // import type { CSSValue } from '../CSSValue';
 // import { CSSPropertyID, cssPropertyID } from '../properties/CSSPropertyNames';
 // import { fromString } from '../parser/StyleValueFactory';
-import { Nested, ParenLess, UnitType, UnitCategory } from './types';
+import { Nested, ParenLess, UnitCategory, UnitType } from './types';
 
 // This file specifies the unit strings used in CSSPrimitiveValues.
 const data = [
@@ -460,7 +460,8 @@ export abstract class CSSStyleValue {
       case UnitCategory.kULength:
         return UnitType.kPixels;
       case UnitCategory.kUPercent:
-        return UnitType.kUnknown; // Cannot convert between numbers and percent.
+        return UnitType.kPercentage;
+      // return UnitType.kUnknown; // Cannot convert between numbers and percent.
       case UnitCategory.kUTime:
         return UnitType.kSeconds;
       case UnitCategory.kUAngle:

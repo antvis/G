@@ -500,6 +500,8 @@ CSS.registerProperty({
 
 随后就可以在 CSS 中使用这个属性。其中比较关键的是 `syntax`，局限性是只能使用浏览器内置的实现，无法做到真正意义上的自定义解析。
 
+在该[示例](/zh/examples/style#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
+
 ## name
 
 字符串形式的属性名。
