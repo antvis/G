@@ -181,7 +181,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     const handleBoundsChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
+      // const { affectChildren } = e.detail;
+      // if (affectChildren) {
+      //   object.forEach(() => {
+      //     this.batchManager.updateAttribute(object, 'modelMatrix', null);
+      //   });
+      // } else {
       this.batchManager.updateAttribute(object, 'modelMatrix', null);
+      // }
     };
 
     const handleRenderOrderChanged = (e: FederatedEvent) => {

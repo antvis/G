@@ -476,11 +476,22 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   triggerPendingEvents() {
     const set = new Set<number>();
-    this.pendingEvents.forEach(([element, detail]) => {
+
+    const trigger = (element, detail) => {
       if (!set.has(element.entity)) {
         this.boundsChangedEvent.detail = detail;
         element.dispatchEvent(this.boundsChangedEvent);
         set.add(element.entity);
+      }
+    };
+
+    this.pendingEvents.forEach(([element, detail]) => {
+      if (detail.affectChildren) {
+        element.forEach((e) => {
+          trigger(e, detail);
+        });
+      } else {
+        trigger(element, detail);
       }
     });
     this.pendingEvents = [];
@@ -661,7 +672,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     });
 
     // account for clip path
-    const clipPath = (element as IElement).style.clipPath;
+    const clipPath = (element as IElement).parsedStyle.clipPath;
     if (clipPath) {
       const clipPathBounds = this.getTransformedGeometryBounds(clipPath, true);
       let transformParentBounds: AABB;

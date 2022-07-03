@@ -69,6 +69,13 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "dragndrop-perf.js",
+      "title": {
+        "zh": "拖放性能测试",
+        "en": "Drag'n'Drop Perf"
+      }
+    },
+    {
       "filename": "css-select.js",
       "title": {
         "zh": "CSS 选择器插件",

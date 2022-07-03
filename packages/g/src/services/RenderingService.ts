@@ -136,16 +136,13 @@ export class RenderingService {
    * Meet the following conditions:
    * * disable DirtyRectangleRendering
    * * camera changed
-   * * some heuristic conditions such as 80% object changed
    */
-  needDirtyRectangleRendering() {
+  disableDirtyRectangleRendering() {
     const { renderer } = this.canvasConfig;
     const { enableDirtyRectangleRendering } = renderer.getConfig();
-    const { total, rendered } = this.getStats();
     return (
       !enableDirtyRectangleRendering ||
-      this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED) ||
-      (enableDirtyRectangleRendering && rendered / total > 0.8)
+      this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
     );
   }
 

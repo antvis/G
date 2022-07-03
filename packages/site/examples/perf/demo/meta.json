@@ -40,6 +40,13 @@
       }
     },
     {
+      "filename": "group-move.js",
+      "title": {
+        "zh": "频繁移动 Group",
+        "en": "Move groups"
+      }
+    },
+    {
       "filename": "nodes-8k.js",
       "title": {
         "zh": "8k 节点",

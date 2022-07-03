@@ -94,23 +94,26 @@ export function mergeDimensions(
   nonNegative?: boolean,
   index = 0,
 ): [number, number, (value: number) => string] {
-  // let unit = '';
-  // let leftValue = left.value || 0;
-  // let rightValue = right.value || 0;
+  let unit = '';
+  let leftValue = left.value || 0;
+  let rightValue = right.value || 0;
 
   const canonicalUnit = CSSUnitValue.toCanonicalUnit(left.unit);
-
   const leftCanonicalUnitValue = left.convertTo(canonicalUnit);
   const rightCanonicalUnitValue = right.convertTo(canonicalUnit);
 
-  const unit = CSSUnitValue.unitTypeToString(left.unit);
-
-  // // format '%' to 'px'
-  // if (CSSUnitValue.isLength(left.unit) || CSSUnitValue.isLength(right.unit)) {
-  //   leftValue = convertPercentUnit(left, index, target as DisplayObject);
-  //   rightValue = convertPercentUnit(right, index, target as DisplayObject);
-  //   unit = 'px';
-  // }
+  if (leftCanonicalUnitValue && rightCanonicalUnitValue) {
+    leftValue = leftCanonicalUnitValue.value;
+    rightValue = rightCanonicalUnitValue.value;
+    unit = CSSUnitValue.unitTypeToString(left.unit);
+  } else {
+    // format '%' to 'px'
+    if (CSSUnitValue.isLength(left.unit) || CSSUnitValue.isLength(right.unit)) {
+      leftValue = convertPercentUnit(left, index, target as DisplayObject);
+      rightValue = convertPercentUnit(right, index, target as DisplayObject);
+      unit = 'px';
+    }
+  }
   // // format 'rad' 'turn' to 'deg'
   // if (CSSUnitValue.isAngle(left.unit) || CSSUnitValue.isAngle(right.unit)) {
   //   leftValue = convertAngleUnit(left);
@@ -119,16 +122,8 @@ export function mergeDimensions(
   // }
 
   return [
-    // leftValue,
-    // rightValue,
-    // (value: number) => {
-    //   if (nonNegative) {
-    //     value = Math.max(value, 0);
-    //   }
-    //   return value + unit;
-    // },
-    leftCanonicalUnitValue.value,
-    rightCanonicalUnitValue.value,
+    leftValue,
+    rightValue,
     (value: number) => {
       if (nonNegative) {
         value = Math.max(value, 0);

@@ -14,7 +14,7 @@ export class DirtyCheckPlugin implements RenderingPlugin {
     renderingService.hooks.dirtycheck.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const renderable = object.renderable;
-        const isDirty = renderable.dirty || renderingService.needDirtyRectangleRendering();
+        const isDirty = renderable.dirty || renderingService.disableDirtyRectangleRendering();
 
         if (isDirty) {
           return object;
