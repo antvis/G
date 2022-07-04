@@ -462,7 +462,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.filter = object.style.filter;
     }
 
-    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
     if (hasShadow) {
       context.shadowColor = shadowColor.toString();
       context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;

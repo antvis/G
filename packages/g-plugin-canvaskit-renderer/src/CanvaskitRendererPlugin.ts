@@ -420,7 +420,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
     const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
-    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
 
     let fillPaint: Paint = null;
     let strokePaint: Paint = null;
@@ -522,7 +522,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      const blurSigma = ((shadowBlur && shadowBlur.value) || 0) / 2;
+      const blurSigma = ((shadowBlur && shadowBlur?.value) || 0) / 2;
       shadowFillPaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
@@ -538,7 +538,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      const blurSigma = ((shadowBlur && shadowBlur.value) || 0) / 2;
+      const blurSigma = ((shadowBlur && shadowBlur?.value) || 0) / 2;
       shadowStrokePaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
