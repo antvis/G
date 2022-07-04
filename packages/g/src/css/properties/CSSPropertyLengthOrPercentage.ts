@@ -18,10 +18,16 @@ function getFontSize(object: DisplayObject): CSSUnitValue {
  * <length> & <percentage>
  */
 @singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.LENGTH_PERCENTAGE,
-  },
+  token: [
+    {
+      token: CSSProperty,
+      named: PropertySyntax.LENGTH_PERCENTAGE,
+    },
+    {
+      token: CSSProperty,
+      named: PropertySyntax.LENGTH,
+    },
+  ],
 })
 export class CSSPropertyLengthOrPercentage
   implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
@@ -44,23 +50,6 @@ export class CSSPropertyLengthOrPercentage
   ): CSSUnitValue {
     if (CSSUnitValue.isRelativeUnit(computed.unit)) {
       if (computed.unit === UnitType.kPercentage) {
-        // try to resolve according to parent's geometry bounds
-        // if (object.parentElement) {
-        //   // registry.registerParentGeometryBoundsChangedHandler(object, name);
-        //   return this.calculateUsedValueWithParentBounds(object, name);
-        // } else {
-
-        //   registry.addUnresolveProperty(object, name);
-
-        //   // defer calculation after mounted
-        //   // object.addEventListener(
-        //   //   ElementEvent.MOUNTED,
-        //   //   () => {
-        //   //     registry.registerParentGeometryBoundsChangedHandler(object, name);
-        //   //   },
-        //   //   { once: true },
-        //   // );
-        // }
         return new CSSUnitValue(0, 'px');
       } else if (computed.unit === UnitType.kEms) {
         if (object.parentNode) {
@@ -85,23 +74,4 @@ export class CSSPropertyLengthOrPercentage
       return computed.clone();
     }
   }
-
-  // private nameToBoundsIndex(name: string): number {
-  //   if (name === 'x' || name === 'cx' || name === 'width') {
-  //     return 0;
-  //   } else if (name === 'y' || name === 'cy' || name === 'height') {
-  //     return 1;
-  //   }
-
-  //   return 2;
-  // }
-
-  // private calculateUsedValueWithParentBounds(object: DisplayObject, name: string) {
-  //   const bounds = (object.parentElement as DisplayObject).getGeometryBounds();
-  //   const computedValue = object.computedStyle[name].value;
-  //   return new CSSUnitValue(
-  //     (bounds.halfExtents[this.nameToBoundsIndex(name)] * 2 * computedValue) / 100,
-  //     'px',
-  //   );
-  // }
 }

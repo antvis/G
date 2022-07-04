@@ -901,6 +901,12 @@ circle.scaleLocal(2, 2); // number, number
 circle.scaleLocal(2); // number
 ```
 
+如果想实现沿 X / Y 轴翻转，可以传入负值，例如沿 Y 轴翻转：
+
+```js
+circle.setLocalScale(-1, 1);
+```
+
 ## 旋转
 
 在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数。
@@ -917,6 +923,15 @@ circle.scaleLocal(2); // number
 | getLocalEulerAngles | 无 | `number` | 获取 **局部坐标系** 下的欧拉角 |
 | getLocalRotation | 无 | `quat` | 获取 **局部坐标系** 下的四元数 |
 | getRotation | 无 | `quat` | 获取 **世界坐标系** 下的四元数 |
+
+## 拉伸
+
+在 2D 场景中，可以进行拉伸，在一定方向上以一定角度扭曲元素上的每个点。可参考 [CSS 同名变换函数](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function#skew)。
+
+| 名称         | 参数   | 返回值 | 备注                                                            |
+| ------------ | ------ | ------ | --------------------------------------------------------------- |
+| setLocalSkew | `vec2` | 无     | 在 **局部坐标系** 下，沿着横/纵坐标扭曲元素的角度，单位为 `rad` |
+| getLocalSkew | 无     | `vec2` | 获取 **局部坐标系** 下的扭曲角度，单位为 `rad`                  |
 
 ## 设置缩放和旋转中心
 

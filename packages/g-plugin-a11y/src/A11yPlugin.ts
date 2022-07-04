@@ -16,10 +16,9 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
+import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
 import { A11yPluginOptions } from './tokens';
-
-const KEY_CODE_TAB = 9;
 
 @singleton({ contrib: RenderingPluginContribution })
 export class A11yPlugin implements RenderingPlugin {
@@ -37,6 +36,9 @@ export class A11yPlugin implements RenderingPlugin {
   @inject(TextExtractor)
   private textExtractor: TextExtractor;
 
+  @inject(AriaManager)
+  private ariaManager: AriaManager;
+
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -47,6 +49,8 @@ export class A11yPlugin implements RenderingPlugin {
         Object.keys(object.attributes).forEach((name) => {
           this.textExtractor.updateAttribute(name, object as Text);
         });
+
+        this.textExtractor.updateAttribute('modelMatrix', object as Text);
       }
     };
 
@@ -56,6 +60,13 @@ export class A11yPlugin implements RenderingPlugin {
 
       if (object.nodeName === Shape.TEXT) {
         this.textExtractor.updateAttribute(attrName, object as Text);
+      }
+    };
+
+    const handleBoundsChanged = (e: MutationEvent) => {
+      const object = e.target as DisplayObject;
+      if (object.nodeName === Shape.TEXT) {
+        this.textExtractor.updateAttribute('modelMatrix', object as Text);
       }
     };
 
@@ -77,9 +88,13 @@ export class A11yPlugin implements RenderingPlugin {
           ElementEvent.ATTR_MODIFIED,
           handleAttributeChanged,
         );
+        this.renderingContext.root.addEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
       }
 
-      globalThis.addEventListener('keydown', this.onKeyDown, false);
+      this.ariaManager.activate();
     });
 
     renderingService.hooks.destroy.tap(A11yPlugin.tag, () => {
@@ -92,21 +107,15 @@ export class A11yPlugin implements RenderingPlugin {
           ElementEvent.ATTR_MODIFIED,
           handleAttributeChanged,
         );
+        this.renderingContext.root.removeEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
       }
 
-      globalThis.removeEventListener('keydown', this.onKeyDown, false);
+      this.ariaManager.deactivate();
     });
   }
-
-  private onKeyDown = (e: KeyboardEvent) => {
-    if (e.keyCode !== KEY_CODE_TAB) {
-      return;
-    }
-
-    this.activate();
-  };
-
-  private activate() {}
 
   private isSVG() {
     return isBrowser && this.contextService.getDomElement() instanceof SVGSVGElement;

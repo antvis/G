@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Group, Path } from '@antv/g';
+import { Canvas, CanvasEvent, Group, Image, Path, Rect } from '@antv/g';
 import { Renderer } from '@antv/g-canvas';
 
 const canvas = new Canvas({
@@ -8,6 +8,10 @@ const canvas = new Canvas({
   renderer: new Renderer(),
   background: 'rgb(16, 22, 29)',
 });
+
+// const camera = canvas.getCamera();
+// camera.setZoom(0.5);
+// camera.pan(100, 100);
 
 const gradient =
   'linear-gradient(-90deg, rgba(178, 230, 181, 0), rgba(178, 230, 181, 0.6) 14%, rgba(166, 221, 179, 0.82) 23%, rgba(101, 171, 170, 0.9) 67%, rgb(23, 80, 157))';
@@ -66,24 +70,53 @@ const rippleData = [
 ];
 
 const group = new Group();
-const mountain = new Path({
+const mountain1 = new Path({
+  // @see https://g-next.antv.vision/zh/docs/api/basic/display-object#classname
+  className: 'mountain',
   style: {
-    d: 'M33.6,51S44.36,31.65,48.15,18,64.38,7.42,66.62,18s10.6,33.6,13.15,33.1',
+    d: 'M33.6,51S44.36,31.65,48.15,18,64.38,7.42,66.62,18s10.6,33.6,13.15,33.1Z',
     fill: gradient,
     stroke: '#efcb84',
     strokeWidth: 0.5,
     miterLimit: 10,
     shadowColor: 'rgba(124,94,44,0.5)',
     shadowBlur: 50,
+    // @see https://g-next.antv.vision/zh/docs/api/basic/display-object#%E8%A3%81%E5%89%AA
+    clipPath: new Rect({
+      style: {
+        y: -10,
+        x: -10,
+        width: 60,
+        height: 51,
+      },
+    }),
   },
 });
 
-group.appendChild(mountain);
+const mountain2 = mountain1.cloneNode();
+mountain2.translateLocal(20, 10);
+mountain2.scale(0.8);
+
+group.appendChild(mountain2);
+group.appendChild(mountain1);
+
+// @see https://g-next.antv.vision/zh/docs/api/basic/display-object#%E9%AB%98%E7%BA%A7%E6%9F%A5%E8%AF%A2
+const mountains = group.querySelectorAll('.mountain');
+mountains.forEach((mountain) => {
+  mountain.addEventListener('click', () => {
+    mountains.forEach((m) => {
+      m.style.strokeWidth = 0.5;
+    });
+    mountain.style.strokeWidth = 2;
+  });
+});
 
 const rippleGroups = rippleData.map(({ top, bottom, stroke, strokeOpacity }) => {
   const rippleGroup = new Group({
     style: {
       strokeOpacity,
+      // @see https://g-next.antv.vision/zh/docs/api/basic/display-object#pointerevents
+      pointerEvents: 'none',
     },
   });
   const topRipple = new Path({
@@ -109,8 +142,19 @@ const rippleGroups = rippleData.map(({ top, bottom, stroke, strokeOpacity }) => 
   return rippleGroup;
 });
 
+const boat = new Image({
+  style: {
+    width: 100,
+    height: 100,
+    opacity: 0,
+    anchor: '0.5 0.5',
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qdRtSanFh_4AAAAAAAAAAAAAARQnAQ',
+  },
+});
+
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(group);
+  canvas.appendChild(boat);
 
   rippleGroups.forEach((rippleGroup, i) => {
     const { center } = rippleGroup.getBounds();
@@ -136,3 +180,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
   group.scale(4);
 });
+
+// canvas.addEventListener("click", function (e) {
+//   // @see https://g-next.antv.vision/zh/docs/api/event#canvasxy
+//   boat.style.x = e.canvasX;
+//   boat.style.y = e.canvasY;
+//   boat.animate([{ opacity: 0 }, { opacity: 1 }], {
+//     duration: 500,
+//     // @see https://g-next.antv.vision/zh/docs/api/animation#fill
+//     fill: "both"
+//   });
+// });

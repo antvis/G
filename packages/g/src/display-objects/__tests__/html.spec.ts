@@ -6,6 +6,7 @@ import chaiAlmost from 'chai-almost';
 import { GlobalContainer } from 'mana-syringe';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
+import { sleep } from '../../__tests__/utils';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -80,9 +81,13 @@ describe('HTML', () => {
     expect($el.style.background).to.be.eqls('transparent');
 
     html.translateLocal(100, 100);
+
+    await sleep(500);
     expect($el.style.transform).to.be.eqls('matrix(1, 0, 0, 1, 200, 200)');
 
     html.scaleLocal(0.5);
+
+    await sleep(500);
     expect($el.style.transform).to.be.eqls('matrix(0.5, 0, 0, 0.5, 200, 200)');
 
     html.style.fill = 'white';

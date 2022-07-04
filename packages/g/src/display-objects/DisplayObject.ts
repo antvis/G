@@ -12,7 +12,6 @@ import type {
   IElement,
 } from '../dom';
 import { Element, ElementEvent, KeyframeEffect, MutationEvent } from '../dom';
-import { dirtifyToRoot } from '../services';
 import { Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -117,6 +116,17 @@ export class DisplayObject<
    */
   private activeAnimations: Animation[] = [];
 
+  private mutationEvent = new MutationEvent(
+    ElementEvent.ATTR_MODIFIED,
+    this as IElement,
+    null,
+    null,
+    null,
+    MutationEvent.MODIFICATION,
+    null,
+    null,
+  );
+
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
     // assign name, id to config
@@ -168,7 +178,7 @@ export class DisplayObject<
         },
       },
       {
-        get: (target, name) => {
+        get: (target, name: string) => {
           if (target[name] !== undefined) {
             // if (name in target) {
             return target[name];
@@ -273,7 +283,8 @@ export class DisplayObject<
     // inform clip path targets
     if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
       this.parsedStyle.clipPathTargets.forEach((target) => {
-        dirtifyToRoot(target);
+        this.sceneGraphService.dirtifyToRoot(target);
+
         target.dispatchEvent(
           new MutationEvent(
             ElementEvent.ATTR_MODIFIED,
@@ -298,18 +309,15 @@ export class DisplayObject<
     // redraw at next frame
     renderable.dirty = true;
 
-    this.dispatchEvent(
-      new MutationEvent(
-        ElementEvent.ATTR_MODIFIED,
-        this as IElement,
-        oldValue,
-        value,
-        name as string,
-        MutationEvent.MODIFICATION,
-        oldParsedValue,
-        this.parsedStyle[name as string],
-      ),
-    );
+    // trigger later
+    // this.sceneGraphService.pendingEvents.push([ElementEvent.ATTR_MODIFIED, { affectChildren }]);
+
+    this.mutationEvent.prevValue = oldValue;
+    this.mutationEvent.newValue = value;
+    this.mutationEvent.attrName = name as string;
+    this.mutationEvent.prevParsedValue = oldParsedValue;
+    this.mutationEvent.newParsedValue = this.parsedStyle[name as string];
+    this.dispatchEvent(this.mutationEvent);
 
     if (this.isCustomElement && this.isConnected) {
       if ((this as unknown as CustomElement<any>).attributeChangedCallback) {

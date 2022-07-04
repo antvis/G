@@ -2,7 +2,7 @@ import { Shape } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { AABB } from '../../shapes';
-import { isNil, isString, rad2deg, turn2deg } from '../../utils';
+import { isNil, isNumber, isString, rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
 import { CSSUnitValue, UnitType } from '../cssom';
 
@@ -69,6 +69,9 @@ export function parserPercentage(css: string) {
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
 export function parseLengthOrPercentage(css: string): CSSUnitValue {
+  if (isNumber(css)) {
+    return new CSSUnitValue(css, 'px');
+  }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
 }
 
@@ -82,6 +85,7 @@ export function parseAngle(css: string): CSSUnitValue {
  * @example
  * 10px + 20px = 30px
  * 10deg + 10rad
+ * 10% + 20% = 30%
  */
 export function mergeDimensions(
   left: CSSUnitValue,
@@ -94,23 +98,28 @@ export function mergeDimensions(
   let leftValue = left.value || 0;
   let rightValue = right.value || 0;
 
-  // const canonicalUnit = CSSUnitValue.toCanonicalUnit(left.unit);
+  const canonicalUnit = CSSUnitValue.toCanonicalUnit(left.unit);
+  const leftCanonicalUnitValue = left.convertTo(canonicalUnit);
+  const rightCanonicalUnitValue = right.convertTo(canonicalUnit);
 
-  // const leftCanonicalUnitValue = left.convertTo(canonicalUnit);
-  // const rightCanonicalUnitValue = right.convertTo(canonicalUnit);
-
-  // format '%' to 'px'
-  if (CSSUnitValue.isLength(left.unit) || CSSUnitValue.isLength(right.unit)) {
-    leftValue = convertPercentUnit(left, index, target as DisplayObject);
-    rightValue = convertPercentUnit(right, index, target as DisplayObject);
-    unit = 'px';
+  if (leftCanonicalUnitValue && rightCanonicalUnitValue) {
+    leftValue = leftCanonicalUnitValue.value;
+    rightValue = rightCanonicalUnitValue.value;
+    unit = CSSUnitValue.unitTypeToString(left.unit);
+  } else {
+    // format '%' to 'px'
+    if (CSSUnitValue.isLength(left.unit) || CSSUnitValue.isLength(right.unit)) {
+      leftValue = convertPercentUnit(left, index, target as DisplayObject);
+      rightValue = convertPercentUnit(right, index, target as DisplayObject);
+      unit = 'px';
+    }
   }
-  // format 'rad' 'turn' to 'deg'
-  if (CSSUnitValue.isAngle(left.unit) || CSSUnitValue.isAngle(right.unit)) {
-    leftValue = convertAngleUnit(left);
-    rightValue = convertAngleUnit(right);
-    unit = 'deg';
-  }
+  // // format 'rad' 'turn' to 'deg'
+  // if (CSSUnitValue.isAngle(left.unit) || CSSUnitValue.isAngle(right.unit)) {
+  //   leftValue = convertAngleUnit(left);
+  //   rightValue = convertAngleUnit(right);
+  //   unit = 'deg';
+  // }
 
   return [
     leftValue,

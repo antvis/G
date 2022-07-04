@@ -121,7 +121,7 @@ export function isPointInPath(
   if (hasStroke || isClipPath) {
     isHit = isPointInStroke(
       segments,
-      lineWidth.value + increasedLineWidthForHitTesting.value,
+      (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
       position.x + x,
       position.y + y,
       totalLength,

@@ -1,9 +1,9 @@
 import type {
-  DisplayObject,
-  PolylineStyleProps,
-  Point,
-  ParsedPolylineStyleProps,
   CSSRGB,
+  DisplayObject,
+  ParsedPolylineStyleProps,
+  Point,
+  PolylineStyleProps,
 } from '@antv/g';
 import { inPolyline } from './utils/math';
 
@@ -29,7 +29,7 @@ export function isPointInPath(
 
   return inPolyline(
     points.points,
-    lineWidth.value + increasedLineWidthForHitTesting.value,
+    (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
     position.x + x,
     position.y + y,
     false,

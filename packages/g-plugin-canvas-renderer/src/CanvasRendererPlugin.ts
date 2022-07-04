@@ -21,7 +21,6 @@ import {
   RBushRoot,
   RenderingContext,
   RenderingPluginContribution,
-  RenderReason,
   Shape,
   singleton,
 } from '@antv/g';
@@ -84,8 +83,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private clearFullScreen = false;
 
-  private tmpVec3 = vec3.create();
+  /**
+   * view projection matrix
+   */
+  private vpMatrix = mat4.create();
+  private dprMatrix = mat4.create();
   private tmpMat4 = mat4.create();
+  private tmpVec3 = vec3.create();
 
   apply(renderingService: RenderingService) {
     const handleUnmounted = (e: FederatedEvent) => {
@@ -117,9 +121,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.renderingContext.root.addEventListener(ElementEvent.CULLED, handleCulled);
 
       // clear fullscreen
+      const dpr = this.contextService.getDPR();
       const { width, height } = this.canvasConfig;
       const context = this.contextService.getContext();
-      this.clearRect(context, 0, 0, width, height);
+      this.clearRect(context, 0, 0, width * dpr, height * dpr);
+
+      mat4.fromScaling(this.dprMatrix, vec3.fromValues(dpr, dpr, 1));
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
@@ -129,37 +136,40 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
+      const dpr = this.contextService.getDPR();
       const { width, height } = this.canvasConfig;
 
-      // clear fullscreen when:
-      // 1. dirty rectangle rendering disabled
-      // 2. camera changed
-      this.clearFullScreen = this.shouldClearFullScreen();
+      // some heuristic conditions such as 80% object changed
+      const { total, rendered } = renderingService.getStats();
+      const ratio = rendered / total;
+
+      this.clearFullScreen =
+        renderingService.disableDirtyRectangleRendering() || (rendered > 100 && ratio > 0.8);
 
       if (context) {
-        context.save();
-
         if (this.clearFullScreen) {
-          this.clearRect(context, 0, 0, width, height);
+          context.resetTransform();
+          this.clearRect(context, 0, 0, width * dpr, height * dpr);
         }
-
-        // account for camera's world matrix
-        this.applyTransform(context, this.camera.getOrthoMatrix());
       }
     });
 
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
+      // clear & clip dirty rectangle
+      mat4.multiply(this.vpMatrix, this.dprMatrix, this.camera.getOrthoMatrix());
+
       if (this.clearFullScreen) {
+        this.renderingContext.root.forEach((object: DisplayObject) => {
+          if (object.isVisible() && !object.isCulled()) {
+            this.renderDisplayObject(object, renderingService);
+          }
+        });
       } else {
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
-          this.mergeDirtyAABBs(
-            // should not ignore group since clipPath may affect its children
-            // this.renderQueue.filter((o) => o.nodeName !== Shape.GROUP)),
-            this.renderQueue,
-          ),
+          this.mergeDirtyAABBs(this.renderQueue),
           ...this.removedRBushNodeAABBs.map(({ minX, minY, maxX, maxY }) => {
             const aabb = new AABB();
             aabb.setMinMax(vec3.fromValues(minX, minY, 0), vec3.fromValues(maxX, maxY, 0));
@@ -173,8 +183,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           return;
         }
 
-        // clear & clip dirty rectangle
         const { x, y, width, height } = this.convertAABB2Rect(dirtyRenderBounds);
+
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+        context.setTransform(
+          this.vpMatrix[0],
+          this.vpMatrix[1],
+          this.vpMatrix[4],
+          this.vpMatrix[5],
+          this.vpMatrix[12],
+          this.vpMatrix[13],
+        );
+
+        context.save();
         this.clearRect(context, x, y, width, height);
         context.beginPath();
         context.rect(x, y, width, height);
@@ -203,6 +224,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
             }
           });
 
+        context.restore();
+
         // save dirty AABBs in last frame
         this.renderQueue.forEach((object) => {
           this.saveDirtyAABB(object);
@@ -213,23 +236,22 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
 
       // pop restore stack, eg. root -> parent -> child
-      this.restoreStack.forEach((s) => {
+      this.restoreStack.forEach(() => {
         context.restore();
       });
       // clear restore stack
       this.restoreStack = [];
       this.clearFullScreen = false;
-
-      context.restore();
     });
 
     renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
-      if (this.clearFullScreen) {
-        if (object.isVisible() && !object.isCulled()) {
-          // render immediately
-          this.renderDisplayObject(object, renderingService);
-        }
-      } else {
+      if (
+        !this.clearFullScreen &&
+        // basic shapes
+        ((object.nodeName !== Shape.GROUP && !object.isCustomElement) ||
+          // should not ignore group since clipPath may affect its children
+          object.parsedStyle.clipPath)
+      ) {
         // render at the end of frame
         this.renderQueue.push(object);
       }
@@ -252,7 +274,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
-    const context = this.contextService.getContext()!;
+    const context = this.contextService.getContext();
 
     // restore to its parent
     let parent = this.restoreStack[this.restoreStack.length - 1];
@@ -268,24 +290,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.styleRendererFactoryCache[nodeName] = this.styleRendererFactory(nodeName);
     }
     const styleRenderer = this.styleRendererFactoryCache[nodeName];
-
-    // reset transformation
-    context.save();
-
-    // apply RTS transformation in world space
-    this.applyTransform(context, object.getLocalTransform());
+    if (this.pathGeneratorFactoryCache[nodeName] === undefined) {
+      this.pathGeneratorFactoryCache[nodeName] = this.pathGeneratorFactory(nodeName);
+    }
+    const generatePath = this.pathGeneratorFactoryCache[nodeName];
 
     // clip path
-    const clipPathShape = object.style.clipPath;
+    const clipPathShape = object.parsedStyle.clipPath;
     if (clipPathShape) {
-      context.save();
-
-      // const parentTransform =
-      //   (object.parentElement as DisplayObject)?.getWorldTransform() || mat4.identity(this.tmpMat4);
-      // mat4.multiply(this.tmpMat4, parentTransform, clipPathShape.getLocalTransform());
-
-      // apply clip shape's RTS
-      this.applyTransform(context, clipPathShape.getLocalTransform());
+      this.applyWorldTransform(context, clipPathShape, object.getWorldTransform());
 
       // generate path in local space
       if (this.pathGeneratorFactoryCache[clipPathShape.nodeName] === undefined) {
@@ -295,30 +308,31 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
       const generatePath = this.pathGeneratorFactoryCache[clipPathShape.nodeName];
       if (generatePath) {
-        this.useAnchor(context, clipPathShape);
+        context.save();
+
+        // save clip
+        // if (object.nodeName === Shape.GROUP || object.isCustomElement) {
+        this.restoreStack.push(object);
+        // }
+
         context.beginPath();
         generatePath(context, clipPathShape.parsedStyle);
         context.closePath();
+        context.clip();
       }
-
-      context.restore();
-      context.clip();
     }
 
     // fill & stroke
 
-    context.save();
-    // apply attributes to context
-    this.applyAttributesToContext(context, object);
+    if (styleRenderer) {
+      this.applyWorldTransform(context, object);
 
-    // apply anchor in local space
-    this.useAnchor(context, object);
-    // generate path in local space
+      context.save();
 
-    if (this.pathGeneratorFactoryCache[object.nodeName] === undefined) {
-      this.pathGeneratorFactoryCache[object.nodeName] = this.pathGeneratorFactory(object.nodeName);
+      // apply attributes to context
+      this.applyAttributesToContext(context, object);
     }
-    const generatePath = this.pathGeneratorFactoryCache[object.nodeName];
+
     if (generatePath) {
       context.beginPath();
       generatePath(context, object.parsedStyle);
@@ -334,24 +348,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     // fill & stroke
     if (styleRenderer) {
       styleRenderer.render(context, object.parsedStyle, object, renderingService);
-    }
 
-    // restore applied attributes, eg. shadowBlur shadowColor...
-    context.restore();
+      // restore applied attributes, eg. shadowBlur shadowColor...
+      context.restore();
+    }
 
     // finish rendering, clear dirty flag
     object.renderable.dirty = false;
-
-    this.restoreStack.push(object);
-  }
-
-  private shouldClearFullScreen() {
-    const { renderer } = this.canvasConfig;
-    const { enableDirtyRectangleRendering } = renderer.getConfig();
-    return (
-      !enableDirtyRectangleRendering ||
-      this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
-    );
   }
 
   private convertAABB2Rect(aabb: AABB): Rect {
@@ -416,18 +419,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private applyTransform(context: CanvasRenderingContext2D, transform: mat4) {
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    context.transform(
-      transform[0],
-      transform[1],
-      transform[4],
-      transform[5],
-      transform[12],
-      transform[13],
-    );
-  }
-
+  /**
+   * TODO: batch the same global attributes
+   */
   private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject) {
     const {
       stroke,
@@ -477,20 +471,52 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private useAnchor(context: CanvasRenderingContext2D, object: DisplayObject): void {
+  private applyWorldTransform(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    matrix?: mat4,
+  ) {
+    let tx = 0;
+    let ty = 0;
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-
-    const bounds = object.getGeometryBounds();
-    const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-    const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-    const tx = -(((anchor && anchor[0].value) || 0) * width);
-    const ty = -(((anchor && anchor[1].value) || 0) * height);
-
-    if (tx !== 0 || ty !== 0) {
-      // apply anchor, use true size, not include stroke,
-      // eg. bounds = true size + half lineWidth
-      context.translate(tx, ty);
+    const anchorX = (anchor && anchor[0].value) || 0;
+    const anchorY = (anchor && anchor[1].value) || 0;
+    if (anchorX !== 0 || anchorY !== 0) {
+      const bounds = object.getGeometryBounds();
+      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+      tx = -(anchorX * width);
+      ty = -(anchorY * height);
     }
+
+    // apply clip shape's RTS
+    if (matrix) {
+      mat4.copy(this.tmpMat4, object.getLocalTransform());
+      this.tmpVec3[0] = tx;
+      this.tmpVec3[1] = ty;
+      this.tmpVec3[2] = 0;
+      mat4.translate(this.tmpMat4, this.tmpMat4, this.tmpVec3);
+      mat4.multiply(this.tmpMat4, matrix, this.tmpMat4);
+      mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
+    } else {
+      // apply RTS transformation in world space
+      mat4.copy(this.tmpMat4, object.getWorldTransform());
+      this.tmpVec3[0] = tx;
+      this.tmpVec3[1] = ty;
+      this.tmpVec3[2] = 0;
+      mat4.translate(this.tmpMat4, this.tmpMat4, this.tmpVec3);
+      mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
+    }
+
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+    context.setTransform(
+      this.tmpMat4[0],
+      this.tmpMat4[1],
+      this.tmpMat4[4],
+      this.tmpMat4[5],
+      this.tmpMat4[12],
+      this.tmpMat4[13],
+    );
   }
 
   private safeMergeAABB(...aabbs: AABB[]): AABB {

@@ -84,8 +84,8 @@ describe('Path', () => {
     expect(path.getTotalLength()).eqls(0);
 
     const point = path.getPoint(0)!;
-    expect(point.x).eqls(0);
-    expect(point.y).eqls(0);
+    expect(point.x).eqls(NaN);
+    expect(point.y).eqls(NaN);
   });
 
   it('should use `d` property in path correctly', () => {

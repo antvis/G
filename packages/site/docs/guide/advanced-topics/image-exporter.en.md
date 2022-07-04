@@ -153,7 +153,7 @@ HTMLCanvasElement 同样提供了 [getImageData](https://developer.mozilla.org/z
 
 ```js
 const canvas = await exporter.toCanvas();
-const imageData = canvas.getImageData(50, 50, 100, 100); // ImageData { width: 100, height: 100, data: Uint8ClampedArray[40000] }
+const imageData = canvas.getContext('2d').getImageData(50, 50, 100, 100); // ImageData { width: 100, height: 100, data: Uint8ClampedArray[40000] }
 ```
 
 # 导出 PDF

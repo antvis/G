@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Group, Path } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -43,6 +43,12 @@ const path = new Path({
   },
 });
 path.translate(100, 250);
+const pointInPath = new Circle({
+  style: {
+    r: 10,
+    fill: 'red',
+  },
+});
 
 const path1 = new Path({
   style: {
@@ -76,6 +82,12 @@ const path3 = new Path({
     lineWidth: 1,
     stroke: '#54BECC',
     path: 'M 0,40 C 5.5555555555555545,40,22.222222222222218,44.44444444444445,33.33333333333333,40 C 44.444444444444436,35.55555555555556,55.55555555555554,14.66666666666667,66.66666666666666,13.333333333333336 C 77.77777777777777,12.000000000000002,88.88888888888887,32,100,32 C 111.11111111111113,32,122.22222222222221,14.66666666666667,133.33333333333331,13.333333333333336 C 144.44444444444443,12.000000000000002,155.55555555555557,24,166.66666666666669,24 C 177.7777777777778,24,188.8888888888889,11.111111111111114,200,13.333333333333336 C 211.1111111111111,15.555555555555557,222.22222222222226,35.111111111111114,233.33333333333334,37.333333333333336 C 244.44444444444443,39.55555555555555,255.55555555555551,31.22222222222223,266.66666666666663,26.66666666666667 C 277.77777777777777,22.111111111111114,294.4444444444444,12.777777777777779,300,10',
+  },
+});
+const pointInPath3 = new Circle({
+  style: {
+    r: 10,
+    fill: 'red',
   },
 });
 
@@ -122,6 +134,27 @@ const path4 = new Path({
       'z',
   },
 });
+const pointInPath4 = new Circle({
+  style: {
+    r: 10,
+    fill: 'red',
+  },
+});
+
+const path5 = new Path({
+  style: {
+    transform: 'translate(300, 160) scale(4)',
+    lineWidth: 2,
+    stroke: '#54BECC',
+    path: 'M 134 -126 C 152 -126 152 -151 170 -151z',
+  },
+});
+const pointInPath5 = new Circle({
+  style: {
+    r: 10,
+    fill: 'red',
+  },
+});
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(path);
@@ -129,8 +162,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(path2);
   canvas.appendChild(path3);
   canvas.appendChild(path4);
+  canvas.appendChild(path5);
   canvas.appendChild(circlePath);
   circlePath.setPosition(100, 300);
+
+  canvas.appendChild(pointInPath);
+  canvas.appendChild(pointInPath3);
+  canvas.appendChild(pointInPath4);
+  canvas.appendChild(pointInPath5);
 });
 
 const g = new Group({
@@ -281,3 +320,29 @@ pathFolder
   .onChange((cursor) => {
     path2.style.cursor = cursor;
   });
+
+const getPointFolder = gui.addFolder('getPoint');
+const getPointConfig = {
+  ratio: 0,
+};
+getPointFolder.add(getPointConfig, 'ratio', 0, 1).onChange((ratio) => {
+  let point = path3.getPoint(ratio);
+  if (point) {
+    pointInPath3.setLocalPosition(point.x, point.y);
+  }
+
+  point = path4.getPoint(ratio);
+  if (point) {
+    pointInPath4.setLocalPosition(point.x, point.y);
+  }
+
+  point = path5.getPoint(ratio);
+  if (point) {
+    pointInPath5.setLocalPosition(point.x, point.y);
+  }
+
+  point = path.getPoint(ratio);
+  if (point) {
+    pointInPath.setLocalPosition(point.x, point.y);
+  }
+});

@@ -1,30 +1,40 @@
 import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
+import { Plugin } from '@antv/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
- * compared with G 4.0 ～20FPS
- * @see https://codesandbox.io/s/g-canvas-particles-2w-jyiie?file=/src/index.tsx
+ * Drag and Drop Stress Test with 10,000 Shapes
+ * @see https://konvajs.org/docs/sandbox/Drag_and_Drop_Stress_Test.html
  */
 
+const plugin = new Plugin();
+
+// create a renderer
 const canvasRenderer = new CanvasRenderer();
-const webglRenderer = new WebGLRenderer();
-const svgRenderer = new SVGRenderer();
+canvasRenderer.registerPlugin(plugin);
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
   fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
     {
       name: 'sans-serif',
       url: '/NotoSans-Regular.ttf',
     },
   ],
 });
-const webgpuRenderer = new WebGPURenderer();
+canvaskitRenderer.registerPlugin(plugin);
+const webglRenderer = new WebGLRenderer();
+webglRenderer.registerPlugin(plugin);
+const svgRenderer = new SVGRenderer();
+svgRenderer.registerPlugin(plugin);
 
 // create a canvas
 const canvas = new Canvas({
@@ -35,24 +45,37 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  let nodesNum = 5000;
-  for (let i = 0; i < nodesNum; i++) {
-    canvas.appendChild(
-      new Circle({
-        attrs: {
-          fill: '#C6E5FF',
-          stroke: '#5B8FF9',
-          r: 2,
-          cx: Math.random() * 600,
-          cy: Math.random() * 500,
-          lineWidth: 0.3,
-        },
-      }),
-    );
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'cyan', 'purple'];
+  for (let i = 0; i < 10000; i++) {
+    const circle = new Circle({
+      style: {
+        cx: Math.random() * 600,
+        cy: Math.random() * 500,
+        r: 6,
+        fill: colors[i % colors.length],
+        draggable: true,
+      },
+    });
+    canvas.appendChild(circle);
   }
 });
 
-const camera = canvas.getCamera();
+let shiftX = 0;
+let shiftY = 0;
+function moveAt(target, canvasX, canvasY) {
+  target.setPosition(canvasX - shiftX, canvasY - shiftY);
+}
+
+canvas.addEventListener('dragstart', function (e) {
+  const [x, y] = e.target.getPosition();
+  shiftX = e.canvasX - x;
+  shiftY = e.canvasY - y;
+
+  moveAt(e.target, e.canvasX, e.canvasY);
+});
+canvas.addEventListener('drag', function (e) {
+  moveAt(e.target, e.canvasX, e.canvasY);
+});
 
 // stats
 const stats = new Stats();
@@ -63,12 +86,10 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on(CanvasEvent.AFTER_RENDER, () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
-
-  camera.rotate(0, 0, 1);
 });
 
 // GUI
@@ -88,8 +109,6 @@ rendererFolder
       renderer = svgRenderer;
     } else if (rendererName === 'webgl') {
       renderer = webglRenderer;
-    } else if (rendererName === 'webgpu') {
-      renderer = webgpuRenderer;
     } else if (rendererName === 'canvaskit') {
       renderer = canvaskitRenderer;
     }

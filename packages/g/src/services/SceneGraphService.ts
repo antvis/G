@@ -5,7 +5,6 @@ import type { Element } from '../dom';
 import { CustomEvent } from '../dom';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
-import { MutationEvent } from '../dom/MutationEvent';
 import { AABB, Rectangle } from '../shapes';
 import { isNil } from '../utils';
 import type { SceneGraphSelector } from './SceneGraphSelector';
@@ -25,24 +24,11 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   return zIndex1 - zIndex2;
 }
 
-export function dirtifyToRoot(element: INode, affectChildren = false) {
-  let p = element;
-  while (p) {
-    const renderable = (p as Element).renderable;
-    if (renderable) {
-      renderable.renderBoundsDirty = true;
-      renderable.boundsDirty = true;
-      renderable.dirty = true;
-    }
-    p = p.parentNode;
-  }
-
-  element.dispatchEvent(new CustomEvent(ElementEvent.BOUNDS_CHANGED, { affectChildren }));
-}
-
 export const SceneGraphService = Syringe.defineToken('SceneGraphService');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphService {
+  triggerPendingEvents: () => void;
+  dirtifyToRoot: (element: INode, affectChildren?: boolean) => void;
   matches: <T extends IElement>(query: string, root: T) => boolean;
   querySelector: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
   querySelectorAll: <R extends IElement, T extends IElement>(query: string, root: R) => T[];
@@ -108,6 +94,9 @@ export interface SceneGraphService {
 export class DefaultSceneGraphService implements SceneGraphService {
   @inject(SceneGraphSelectorFactory)
   private sceneGraphSelectorFactory: () => SceneGraphSelector;
+
+  private pendingEvents = [];
+  private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
 
   matches<T extends IElement>(query: string, root: T) {
     return this.sceneGraphSelectorFactory().is(query, root);
@@ -482,7 +471,46 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     this.dirtifyWorldInternal(element, transform);
-    dirtifyToRoot(element, true);
+    this.dirtifyToRoot(element, true);
+  }
+
+  triggerPendingEvents() {
+    const set = new Set<number>();
+
+    const trigger = (element, detail) => {
+      if (!set.has(element.entity)) {
+        this.boundsChangedEvent.detail = detail;
+        element.dispatchEvent(this.boundsChangedEvent);
+        set.add(element.entity);
+      }
+    };
+
+    this.pendingEvents.forEach(([element, detail]) => {
+      if (detail.affectChildren) {
+        element.forEach((e) => {
+          trigger(e, detail);
+        });
+      } else {
+        trigger(element, detail);
+      }
+    });
+    this.pendingEvents = [];
+  }
+
+  dirtifyToRoot(element: INode, affectChildren = false) {
+    let p = element;
+    while (p) {
+      const renderable = (p as Element).renderable;
+      if (renderable) {
+        renderable.renderBoundsDirty = true;
+        renderable.boundsDirty = true;
+        renderable.dirty = true;
+      }
+      p = p.parentNode;
+    }
+
+    // reuse the same custom event
+    this.pendingEvents.push([element, { affectChildren }]);
   }
 
   getPosition(element: INode) {
@@ -644,7 +672,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     });
 
     // account for clip path
-    const clipPath = (element as IElement).style.clipPath;
+    const clipPath = (element as IElement).parsedStyle.clipPath;
     if (clipPath) {
       const clipPathBounds = this.getTransformedGeometryBounds(clipPath, true);
       let transformParentBounds: AABB;
@@ -747,19 +775,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
         renderable.boundsDirty = true;
         renderable.dirty = true;
       }
-
-      element.dispatchEvent(
-        new MutationEvent(
-          ElementEvent.ATTR_MODIFIED,
-          element as IElement,
-          null,
-          null,
-          'modelMatrix',
-          MutationEvent.MODIFICATION,
-          null,
-          null,
-        ),
-      );
     }
   }
 

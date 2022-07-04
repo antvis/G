@@ -7,7 +7,7 @@ import type { DisplayObject } from '../display-objects';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingPlugin, RenderingService } from '../services';
-import { dirtifyToRoot, RenderingContext, RenderingPluginContribution } from '../services';
+import { RenderingContext, RenderingPluginContribution, SceneGraphService } from '../services';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
@@ -18,6 +18,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
   @inject(StyleValueRegistry)
   private styleValueRegistry: StyleValueRegistry;
+
+  @inject(SceneGraphService)
+  private sceneGraphService: SceneGraphService;
 
   /**
    * RBush used in dirty rectangle rendering
@@ -65,7 +68,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       // recalc style values
       this.styleValueRegistry.recalc(object);
 
-      dirtifyToRoot(object);
+      this.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
     };
 
@@ -78,7 +81,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         this.toSync.delete(object);
       }
 
-      dirtifyToRoot(e.target as Element);
+      this.sceneGraphService.dirtifyToRoot(e.target as Element);
       renderingService.dirtify();
     };
 

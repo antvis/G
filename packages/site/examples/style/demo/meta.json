@@ -45,6 +45,13 @@
         "zh": "<length>",
         "en": "<length>"
       }
+    },
+    {
+      "filename": "custom-property.js",
+      "title": {
+        "zh": "自定义属性",
+        "en": "Use custom property"
+      }
     }
   ]
 }
