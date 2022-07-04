@@ -1,9 +1,9 @@
-import type { ParsedBaseStyleProps } from '../../types';
-import type { LayoutFragment } from './LayoutFragment';
-import { PropertyName } from './types';
-import type { MeasureFn, IntrinsicSizes } from './types';
-import type { CSSStyleValue } from '../cssom';
 import { layoutEngine } from '../..';
+import type { ParsedBaseStyleProps } from '../../types';
+import type { CSSStyleValue } from '../cssom';
+import type { LayoutFragment } from './LayoutFragment';
+import type { IntrinsicSizes, MeasureFn } from './types';
+import { PropertyName } from './types';
 
 interface LayoutObjectIntrinsicSizes {
   minContentInlineSize: number;
@@ -80,7 +80,7 @@ export class LayoutObject {
   }
 
   setStyle(property: keyof ParsedBaseStyleProps, value: CSSStyleValue) {
-    this.style.set(property, value);
+    this.style.set(property as string, value);
   }
 
   // setStyles(styles: Record<StyleProperty, StyleInputValue>) {

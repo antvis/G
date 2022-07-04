@@ -35,7 +35,7 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  let nodesNum = 2000;
+  let nodesNum = 5000;
   for (let i = 0; i < nodesNum; i++) {
     canvas.appendChild(
       new Circle({

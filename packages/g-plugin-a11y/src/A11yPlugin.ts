@@ -16,10 +16,9 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
+import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
 import { A11yPluginOptions } from './tokens';
-
-const KEY_CODE_TAB = 9;
 
 @singleton({ contrib: RenderingPluginContribution })
 export class A11yPlugin implements RenderingPlugin {
@@ -36,6 +35,9 @@ export class A11yPlugin implements RenderingPlugin {
 
   @inject(TextExtractor)
   private textExtractor: TextExtractor;
+
+  @inject(AriaManager)
+  private ariaManager: AriaManager;
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {
@@ -92,7 +94,7 @@ export class A11yPlugin implements RenderingPlugin {
         );
       }
 
-      globalThis.addEventListener('keydown', this.onKeyDown, false);
+      this.ariaManager.activate();
     });
 
     renderingService.hooks.destroy.tap(A11yPlugin.tag, () => {
@@ -111,19 +113,9 @@ export class A11yPlugin implements RenderingPlugin {
         );
       }
 
-      globalThis.removeEventListener('keydown', this.onKeyDown, false);
+      this.ariaManager.deactivate();
     });
   }
-
-  private onKeyDown = (e: KeyboardEvent) => {
-    if (e.keyCode !== KEY_CODE_TAB) {
-      return;
-    }
-
-    this.activate();
-  };
-
-  private activate() {}
 
   private isSVG() {
     return isBrowser && this.contextService.getDomElement() instanceof SVGSVGElement;

@@ -72,14 +72,15 @@ const loop = () => {
     stats.update();
   }
 
-  groups.forEach((group) =>
-    // ~30FPS
-    // group.attr({
-    //   x: Math.random() * 600,
-    //   y: Math.random() * 500,
-    // }),
+  groups.forEach(
+    (group) =>
+      // ~30FPS
+      group.attr({
+        x: Math.random() * 600,
+        y: Math.random() * 500,
+      }),
     // ~60FPS
-    group.setLocalPosition(Math.random() * 600, Math.random() * 500),
+    // group.setLocalPosition(Math.random() * 600, Math.random() * 500),
   );
   setTimeout(loop);
 };

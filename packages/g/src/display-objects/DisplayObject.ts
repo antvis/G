@@ -178,7 +178,7 @@ export class DisplayObject<
         },
       },
       {
-        get: (target, name) => {
+        get: (target, name: string) => {
           if (target[name] !== undefined) {
             // if (name in target) {
             return target[name];

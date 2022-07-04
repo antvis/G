@@ -502,9 +502,34 @@ CSS.registerProperty({
 
 在该[示例](/zh/examples/style#custom-property)中，我们注册了多种不同类型的自定义属性，让它们支持插值。
 
+```js
+import { CSS, PropertySyntax } from '@antv/g';
+
+// 注册自定义属性
+CSS.registerProperty({
+    name: 'myNumber',
+    syntax: PropertySyntax.NUMBER, // 使用内置的 “数字” 解析器
+    initialValue: '0',
+    interpolable: true, // 支持动画过程中的插值
+});
+
+// 对自定义属性应用动画
+const animation = myCustomElement.animate(
+    [
+        {
+            myNumber: 0,
+        },
+        {
+            myNumber: 1,
+        },
+    ],
+    { duration: 2000, fill: 'both' },
+);
+```
+
 ## name
 
-字符串形式的属性名。
+字符串形式的属性名。需要保证全局唯一，不能与内置属性冲突，可加上命名空间前缀。
 
 ## inherits
 
