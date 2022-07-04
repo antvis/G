@@ -28,7 +28,7 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
     if (query.startsWith('.')) {
       return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
-        return node.className === this.getIdOrClassname(query);
+        return (node?.classList || []).indexOf(this.getIdOrClassname(query)) > -1;
       });
     } else if (query.startsWith('#')) {
       // getElementById('id')
@@ -61,7 +61,8 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
       // should not include itself
       return root.findAll(
         (node) =>
-          (root as unknown as T) !== node && node.className === this.getIdOrClassname(query),
+          (root as unknown as T) !== node &&
+          (node?.classList || []).indexOf(this.getIdOrClassname(query)) > -1,
       );
     } else if (query.startsWith('#')) {
       return root.findAll(

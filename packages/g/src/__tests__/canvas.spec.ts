@@ -1,5 +1,5 @@
 import type { FederatedPointerEvent } from '@antv/g';
-import { Canvas, CanvasEvent, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import chai, { expect } from 'chai';
@@ -294,6 +294,19 @@ describe('Canvas', () => {
         screenY: 200,
       }),
     );
+  });
+
+  it('should query child with multiple classnames correctly', () => {
+    const group3 = new Group({
+      id: 'id3',
+      name: 'group3',
+      className: 'c1 c2 c3',
+    });
+    canvas.appendChild(group3);
+
+    expect(canvas.document.getElementsByClassName('c1').length).to.eqls(1);
+    expect(canvas.document.getElementsByClassName('c2').length).to.eqls(1);
+    expect(canvas.document.getElementsByClassName('c3').length).to.eqls(1);
   });
 
   // it("should acount for camera's zoom when converting", async () => {
