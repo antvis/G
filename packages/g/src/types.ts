@@ -164,8 +164,6 @@ export interface BaseStyleProps {
   miterLimit?: number;
 
   display?: string;
-
-  [key: string]: any;
 }
 
 export interface ParsedBaseStyleProps
@@ -237,8 +235,6 @@ export interface ParsedBaseStyleProps
   shadowOffsetX?: CSSUnitValue;
   shadowOffsetY?: CSSUnitValue;
   textTransform?: CSSKeywordValue;
-
-  [key: string]: any;
 }
 
 // Cursor style

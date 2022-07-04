@@ -342,6 +342,7 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
    * Returns the value of element's class content attribute. Can be set to change it.
    */
   className: string;
+  classList: string[];
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes
