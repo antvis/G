@@ -34,6 +34,7 @@ window.gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-rendere
 window.gPluginRoughSvgRenderer = require('@antv/g-plugin-rough-svg-renderer');
 window.gPluginDragndrop = require('@antv/g-plugin-dragndrop');
 window.gPluginA11y = require('@antv/g-plugin-a11y');
+window.gPluginAnnotation = require('@antv/g-plugin-annotation');
 // compiler for GPGPU
 // window.webgpuGraph = require('@antv/webgpu-graph');
 window.gComponents = require('@antv/g-components');

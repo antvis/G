@@ -1,0 +1,107 @@
+import { Canvas, CanvasEvent, Circle, Image } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
+import { Plugin } from '@antv/g-plugin-annotation';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
+import * as lil from 'lil-gui';
+import Stats from 'stats.js';
+
+// create a renderer
+const canvasRenderer = new CanvasRenderer();
+const svgRenderer = new SVGRenderer();
+const webglRenderer = new WebGLRenderer();
+const webgpuRenderer = new WebGPURenderer();
+const canvaskitRenderer = new CanvaskitRenderer({
+  wasmDir: '/',
+  fonts: [
+    {
+      name: 'sans-serif',
+      url: '/NotoSans-Regular.ttf',
+    },
+  ],
+});
+
+const plugin = new Plugin();
+canvasRenderer.registerPlugin(plugin);
+svgRenderer.registerPlugin(plugin);
+webglRenderer.registerPlugin(plugin);
+webgpuRenderer.registerPlugin(plugin);
+canvaskitRenderer.registerPlugin(plugin);
+
+// create a canvas
+const canvas = new Canvas({
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: canvasRenderer,
+});
+
+const circle = new Circle({
+  style: {
+    cx: 200,
+    cy: 200,
+    r: 100,
+    stroke: '#F04864',
+    lineWidth: 10,
+    selectable: true,
+  },
+});
+
+const image = new Image({
+  style: {
+    x: 300,
+    y: 280,
+    width: 200,
+    height: 200,
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    selectable: true,
+  },
+});
+
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(circle);
+  canvas.appendChild(image);
+});
+
+// stats
+const stats = new Stats();
+stats.showPanel(0);
+const $stats = stats.dom;
+$stats.style.position = 'absolute';
+$stats.style.left = '0px';
+$stats.style.top = '0px';
+const $wrapper = document.getElementById('container');
+$wrapper.appendChild($stats);
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+  if (stats) {
+    stats.update();
+  }
+});
+
+// GUI
+const gui = new lil.GUI({ autoPlace: false });
+$wrapper.appendChild(gui.domElement);
+const rendererFolder = gui.addFolder('renderer');
+const rendererConfig = {
+  renderer: 'canvas',
+};
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'canvas') {
+      renderer = canvasRenderer;
+    } else if (rendererName === 'svg') {
+      renderer = svgRenderer;
+    } else if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    } else if (rendererName === 'canvaskit') {
+      renderer = canvaskitRenderer;
+    }
+    canvas.setRenderer(renderer);
+  });
+rendererFolder.open();
