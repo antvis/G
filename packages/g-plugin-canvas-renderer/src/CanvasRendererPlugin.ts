@@ -245,13 +245,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
-      if (
-        !this.clearFullScreen &&
-        // basic shapes
-        ((object.nodeName !== Shape.GROUP && !object.isCustomElement) ||
-          // should not ignore group since clipPath may affect its children
-          object.parsedStyle.clipPath)
-      ) {
+      if (!this.clearFullScreen) {
         // render at the end of frame
         this.renderQueue.push(object);
       }
