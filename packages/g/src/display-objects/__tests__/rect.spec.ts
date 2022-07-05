@@ -43,6 +43,7 @@ describe('Rect', () => {
       'textBaseline',
       'textTransform',
       'zIndex',
+      'filter',
       'x',
       'y',
       'width',

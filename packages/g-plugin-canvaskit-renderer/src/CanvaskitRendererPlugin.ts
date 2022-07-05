@@ -172,7 +172,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
         this.drawAnimations(canvas, firstFrame);
         this.drawParticles(canvas);
-        this.drawWithSurface(canvas);
+        this.drawWithSurface(canvas, this.renderingContext.root);
 
         canvas.restore();
 
@@ -265,10 +265,15 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private drawWithSurface(canvas: Canvas) {
-    this.renderingContext.root.forEach((object: DisplayObject) => {
-      this.renderDisplayObject(object, canvas);
-    });
+  private drawWithSurface(canvas: Canvas, object: DisplayObject) {
+    this.renderDisplayObject(object, canvas);
+
+    // should account for z-index
+    if (object.sortable.sorted && object.sortable.sorted.length) {
+      object.sortable.sorted.forEach((child: DisplayObject) => {
+        this.drawWithSurface(canvas, child);
+      });
+    }
   }
 
   private generatePattern(object: DisplayObject, pattern: Pattern) {
@@ -420,7 +425,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
     const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
-    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
 
     let fillPaint: Paint = null;
     let strokePaint: Paint = null;
@@ -522,7 +527,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      const blurSigma = ((shadowBlur && shadowBlur.value) || 0) / 2;
+      const blurSigma = ((shadowBlur && shadowBlur?.value) || 0) / 2;
       shadowFillPaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
@@ -538,7 +543,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      const blurSigma = ((shadowBlur && shadowBlur.value) || 0) / 2;
+      const blurSigma = ((shadowBlur && shadowBlur?.value) || 0) / 2;
       shadowStrokePaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );

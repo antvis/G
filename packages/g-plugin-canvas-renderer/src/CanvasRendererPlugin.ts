@@ -245,13 +245,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
-      if (
-        !this.clearFullScreen &&
-        // basic shapes
-        ((object.nodeName !== Shape.GROUP && !object.isCustomElement) ||
-          // should not ignore group since clipPath may affect its children
-          object.parsedStyle.clipPath)
-      ) {
+      if (!this.clearFullScreen) {
         // render at the end of frame
         this.renderQueue.push(object);
       }
@@ -311,9 +305,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.save();
 
         // save clip
-        // if (object.nodeName === Shape.GROUP || object.isCustomElement) {
         this.restoreStack.push(object);
-        // }
 
         context.beginPath();
         generatePath(context, clipPathShape.parsedStyle);
@@ -462,7 +454,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.filter = object.style.filter;
     }
 
-    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
     if (hasShadow) {
       context.shadowColor = shadowColor.toString();
       context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;

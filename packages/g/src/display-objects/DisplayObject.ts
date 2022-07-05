@@ -54,6 +54,7 @@ const DEFAULT_STYLE_PROPS: {
   textBaseline: string;
   textTransform: string;
   zIndex: string | number;
+  filter: string;
 } = {
   anchor: '',
   opacity: '',
@@ -78,6 +79,7 @@ const DEFAULT_STYLE_PROPS: {
   textBaseline: '',
   textTransform: '',
   zIndex: '',
+  filter: '',
 };
 
 /**

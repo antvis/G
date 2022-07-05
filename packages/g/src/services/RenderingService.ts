@@ -71,6 +71,11 @@ export class RenderingService {
 
   private zIndexCounter = 0;
 
+  /**
+   * avoid re-creating too many custom events
+   */
+  private renderOrderChangedEvent = new CustomEvent(ElementEvent.RENDER_ORDER_CHANGED);
+
   hooks = {
     /**
      * called before any frame rendered
@@ -224,11 +229,10 @@ export class RenderingService {
 
     if (renderOrderChanged) {
       displayObject.forEach((child: DisplayObject) => {
-        child.dispatchEvent(
-          new CustomEvent(ElementEvent.RENDER_ORDER_CHANGED, {
-            renderOrder: child.sortable.renderOrder,
-          }),
-        );
+        this.renderOrderChangedEvent.detail = {
+          renderOrder: child.sortable.renderOrder,
+        };
+        child.dispatchEvent(this.renderOrderChangedEvent);
       });
     }
   }

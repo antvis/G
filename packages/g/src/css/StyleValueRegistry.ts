@@ -98,18 +98,21 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'shadowOffsetX',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'shadowOffsetY',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'shadowBlur',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '0',
     syntax: PropertySyntax.SHADOW_BLUR,
   },
   {
@@ -228,6 +231,8 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'filter',
     independent: true,
     layoutDependent: true,
+    keywords: ['none'],
+    defaultValue: 'none',
     syntax: PropertySyntax.FILTER,
   },
   {
