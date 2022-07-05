@@ -305,9 +305,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.save();
 
         // save clip
-        // if (object.nodeName === Shape.GROUP || object.isCustomElement) {
         this.restoreStack.push(object);
-        // }
 
         context.beginPath();
         generatePath(context, clipPathShape.parsedStyle);
