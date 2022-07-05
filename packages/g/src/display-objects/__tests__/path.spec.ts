@@ -1,9 +1,32 @@
-import { Path } from '@antv/g';
+import { AABB, Path } from '@antv/g';
 import type { PathArray } from '@antv/util';
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
 
 describe('Path', () => {
+  it('should support empty path definition', () => {
+    // use empty string
+    const path = new Path({
+      style: {
+        path: '',
+        lineWidth: 10,
+      },
+    });
+
+    let bounds = path.getBounds();
+    expect(AABB.isEmpty(bounds)).to.be.true;
+    expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(bounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
+
+    // use empty path array
+    // @ts-ignore
+    path.style.path = [];
+    bounds = path.getBounds();
+    expect(AABB.isEmpty(bounds)).to.be.true;
+    expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
+    expect(bounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
+  });
+
   it('should calc global bounds correctly', () => {
     const pathArray: PathArray = [
       ['M', 0, 0],
