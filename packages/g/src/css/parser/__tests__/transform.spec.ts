@@ -410,27 +410,47 @@ describe('Property Transform', () => {
     expect(format([[20, 10]])).to.be.eqls('skew(20deg,10deg)');
   });
 
-  // it.only('should merge matrix correctly', () => {
-  //   const [left, right, format] = mergeTransforms(
-  //     [
-  //       {
-  //         t: 'translatey',
-  //         d: [new CSSUnitValue(0, 'px')],
-  //       },
-  //       { t: 'scale', d: [new CSSUnitValue(0.7), new CSSUnitValue(0.7)] },
-  //     ],
-  //     [
-  //       {
-  //         t: 'translatey',
-  //         d: [new CSSUnitValue(0, 'px')],
-  //       },
-  //     ],
-  //     null,
-  //   );
+  it('should merge matrix correctly', () => {
+    const [left, right, format] = mergeTransforms(
+      [
+        {
+          t: 'translatey',
+          d: [new CSSUnitValue(0, 'px')],
+        },
+        { t: 'scale', d: [new CSSUnitValue(0.7), new CSSUnitValue(0.7)] },
+      ],
+      [
+        {
+          t: 'translatey',
+          d: [new CSSUnitValue(0, 'px')],
+        },
+      ],
+      null,
+    );
 
-  //   console.log(left, right);
+    expect(format(left)).to.be.eqls('matrix(0.700000,0,0,0.700000,0,0)');
+    expect(format(right)).to.be.eqls('matrix(1,0,0,1,0,0)');
+  });
 
-  //   expect(format([left])).to.be.eqls(0);
-  //   // expect(format(right)).to.be.eqls(0);
-  // });
+  it('should merge matrix3d correctly', () => {
+    const [left, right, format] = mergeTransforms(
+      [
+        {
+          t: 'translate3d',
+          d: [new CSSUnitValue(0, 'px'), new CSSUnitValue(0, 'px'), new CSSUnitValue(10, 'px')],
+        },
+        { t: 'scale3d', d: [new CSSUnitValue(0.7), new CSSUnitValue(0.7), new CSSUnitValue(2)] },
+      ],
+      [
+        {
+          t: 'translatey',
+          d: [new CSSUnitValue(0, 'px')],
+        },
+      ],
+      null,
+    );
+
+    expect(format(left)).to.be.eqls('matrix3d(0.700000,0,0,0,0,0.700000,0,0,0,0,2,0,0,0,10,1)');
+    expect(format(right)).to.be.eqls('matrix(1,0,0,1,0,0)');
+  });
 });
