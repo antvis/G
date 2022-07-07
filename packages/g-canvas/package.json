@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "1.5.3",
+  "version": "1.6.0-alpha.0",
   "description": "A renderer implemented by Canvas 2D API",
   "keywords": [
     "antv",
@@ -30,12 +30,12 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-canvas-path-generator": "^0.4.3",
-    "@antv/g-plugin-canvas-picker": "^1.5.3",
-    "@antv/g-plugin-canvas-renderer": "^1.5.3",
-    "@antv/g-plugin-dom-interaction": "^1.5.3",
-    "@antv/g-plugin-html-renderer": "^1.5.3",
-    "@antv/g-plugin-image-loader": "^0.4.3",
+    "@antv/g-plugin-canvas-path-generator": "^0.5.0-alpha.0",
+    "@antv/g-plugin-canvas-picker": "^1.6.0-alpha.0",
+    "@antv/g-plugin-canvas-renderer": "^1.6.0-alpha.0",
+    "@antv/g-plugin-dom-interaction": "^1.6.0-alpha.0",
+    "@antv/g-plugin-html-renderer": "^1.6.0-alpha.0",
+    "@antv/g-plugin-image-loader": "^0.5.0-alpha.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
