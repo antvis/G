@@ -376,17 +376,6 @@
     dagre-compound "^0.0.11"
     ml-matrix "^6.5.0"
 
-"@antv/layout@latest":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@antv/layout/-/layout-0.2.5.tgz#bdb02d2eebd2f11dccdf0af5aca74e2fd32d62d0"
-  integrity sha512-YezISSc5wp88QLvytS2mm/3sFvJYTafIWEvjvp4DIIfIkt8fzZZSJHXJVky3VIqGwbkmD278lMWQQmQ8W1EWEA==
-  dependencies:
-    "@antv/g-webgpu" "0.5.5"
-    "@antv/graphlib" "^1.0.0"
-    d3-force "^2.0.1"
-    dagre-compound "^0.0.11"
-    ml-matrix "^6.5.0"
-
 "@antv/matrix-util@^3.0.4":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@antv/matrix-util/-/matrix-util-3.0.4.tgz#ea13f158aa2fb4ba2fb8d6b6b561ec467ea3ac20"

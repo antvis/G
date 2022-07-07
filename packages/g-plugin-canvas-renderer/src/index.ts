@@ -23,6 +23,7 @@ import {
 } from './shapes/styles';
 import { ImageRenderer } from './shapes/styles/Image';
 import { TextRenderer } from './shapes/styles/Text';
+import { CanvasRendererPluginOptions } from './tokens';
 
 export * from './shapes/styles';
 
@@ -66,10 +67,21 @@ const containerModule = Module((register) => {
 
 export class Plugin implements RendererPlugin {
   name = 'canvas-renderer';
+
+  constructor(private options: Partial<CanvasRendererPluginOptions> = {}) {}
+
   init(container: Syringe.Container): void {
+    container.register(CanvasRendererPluginOptions, {
+      useValue: {
+        dirtyObjectNumThreshold: 500,
+        dirtyObjectRatioThreshold: 0.8,
+        ...this.options,
+      },
+    });
     container.load(containerModule, true);
   }
   destroy(container: Syringe.Container): void {
     container.unload(containerModule);
+    container.remove(CanvasRendererPluginOptions);
   }
 }

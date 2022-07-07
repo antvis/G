@@ -31,6 +31,7 @@ import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
+import { CanvasRendererPluginOptions } from './tokens';
 
 interface Rect {
   x: number;
@@ -70,6 +71,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
+
+  @inject(CanvasRendererPluginOptions)
+  private canvasRendererPluginOptions: CanvasRendererPluginOptions;
 
   /**
    * RBush used in dirty rectangle rendering
@@ -142,13 +146,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const context = this.contextService.getContext();
       const dpr = this.contextService.getDPR();
       const { width, height } = this.canvasConfig;
+      const { dirtyObjectNumThreshold, dirtyObjectRatioThreshold } =
+        this.canvasRendererPluginOptions;
 
       // some heuristic conditions such as 80% object changed
       const { total, rendered } = renderingService.getStats();
       const ratio = rendered / total;
 
       this.clearFullScreen =
-        renderingService.disableDirtyRectangleRendering() || (rendered > 100 && ratio > 0.8);
+        renderingService.disableDirtyRectangleRendering() ||
+        (rendered > dirtyObjectNumThreshold && ratio > dirtyObjectRatioThreshold);
 
       if (context) {
         if (this.clearFullScreen) {
