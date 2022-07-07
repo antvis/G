@@ -50,7 +50,7 @@ export class AbstractRenderer implements IRenderer {
        * enable dirty rectangle rendering by default
        */
       enableDirtyRectangleRendering: true,
-      // enableDirtyRectangleRenderingDebug: false,
+      enableDirtyRectangleRenderingDebug: false,
       ...config,
     };
   }

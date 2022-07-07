@@ -30,6 +30,7 @@ export enum CanvasEvent {
   BEFORE_DESTROY = 'beforedestroy',
   AFTER_DESTROY = 'afterdestroy',
   RESIZE = 'resize',
+  DIRTY_RECTANGLE = 'dirtyrectangle',
 }
 
 /**

@@ -2,11 +2,10 @@ import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
 // @ts-ignore
-import sinonChai from 'sinon-chai';
-import { Rect, Circle, Group } from '@antv/g';
+import { Circle, Group, Rect } from '@antv/g';
 import { vec3 } from 'gl-matrix';
+import sinonChai from 'sinon-chai';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -18,6 +17,7 @@ describe('DisplayObject Bounds API', () => {
         cx: 100,
         cy: 100,
         r: 100,
+        stroke: 'red',
       },
     });
     let bounds = circle.getBounds();

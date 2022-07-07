@@ -2,6 +2,7 @@ import { Canvas, CanvasEvent, Circle, CustomElement, Image, Line, Path, Polyline
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Arrow } from '@antv/g-components';
+import { Plugin } from '@antv/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
@@ -16,6 +17,8 @@ const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
 });
 const webgpuRenderer = new WebGPURenderer();
+
+canvasRenderer.registerPlugin(new Plugin());
 
 // create a canvas
 const canvas = new Canvas({
@@ -45,6 +48,21 @@ const lineArrow = new Arrow({
   },
 });
 lineArrow.translate(200, 100);
+
+const handle1 = new Circle({
+  id: 'handle1',
+  style: {
+    cx: 400,
+    cy: 200,
+    r: 10,
+    fill: 'red',
+    draggable: true,
+  },
+});
+const handle2 = handle1.cloneNode();
+handle2.id = 'handle2';
+handle2.style.cx = 200;
+handle2.style.cy = 100;
 
 const polylineArrow = new Arrow({
   id: 'polylineArrow',
@@ -89,6 +107,36 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(lineArrow);
   canvas.appendChild(polylineArrow);
   canvas.appendChild(pathArrow);
+
+  canvas.appendChild(handle1);
+  canvas.appendChild(handle2);
+});
+
+let shiftX = 0;
+let shiftY = 0;
+function moveAt(target, canvasX, canvasY) {
+  target.setPosition(canvasX - shiftX, canvasY - shiftY);
+
+  if (target.id === 'handle1') {
+    const lineBody = lineArrow.getBody();
+    lineBody.style.x1 = canvasX - shiftX - 200;
+    lineBody.style.y1 = canvasY - shiftY - 100;
+  } else if (target.id === 'handle2') {
+    const lineBody = lineArrow.getBody();
+    lineBody.style.x2 = canvasX - shiftX - 200;
+    lineBody.style.y2 = canvasY - shiftY - 100;
+  }
+}
+
+canvas.addEventListener('dragstart', function (e) {
+  const [x, y] = e.target.getPosition();
+  shiftX = e.canvasX - x;
+  shiftY = e.canvasY - y;
+
+  moveAt(e.target, e.canvasX, e.canvasY);
+});
+canvas.addEventListener('drag', function (e) {
+  moveAt(e.target, e.canvasX, e.canvasY);
 });
 
 lineArrow.addEventListener('mouseenter', () => {

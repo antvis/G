@@ -8,6 +8,7 @@ import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { formatAttribute, isFunction, isNil } from '../utils';
+import type { CSSRGB } from './cssom';
 import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
 import type { PropertyMetadata } from './interfaces';
@@ -899,6 +900,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const halfExtents = vec3.fromValues(Math.abs(width) / 2, Math.abs(height) / 2, depth / 2);
       // anchor is center by default, don't account for lineWidth here
       const {
+        stroke,
         lineWidth,
         // lineCap,
         // lineJoin,
@@ -939,10 +941,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       //   expansion = Math.SQRT1_2 * miterLimit;
       // }
 
-      const halfLineWidth =
-        ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) * expansion;
-      // append border
-      vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
+      // append border only if stroke existed
+      const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+      if (hasStroke) {
+        const halfLineWidth =
+          ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) * expansion;
+        vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
+      }
       geometry.renderBounds.update(center, halfExtents);
 
       // account for shadow, only support constant value now

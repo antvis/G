@@ -11,7 +11,9 @@ import {
   AABB,
   Camera,
   CanvasConfig,
+  CanvasEvent,
   ContextService,
+  CustomEvent,
   DefaultCamera,
   DisplayObjectPool,
   ElementEvent,
@@ -92,6 +94,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private tmpVec3 = vec3.create();
 
   apply(renderingService: RenderingService) {
+    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
@@ -164,6 +168,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.renderingContext.root.forEach((object: DisplayObject) => {
           if (object.isVisible() && !object.isCulled()) {
             this.renderDisplayObject(object, renderingService);
+            // if we did a full screen rendering last frame
+            this.saveDirtyAABB(object);
           }
         });
       } else {
@@ -183,7 +189,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           return;
         }
 
-        const { x, y, width, height } = this.convertAABB2Rect(dirtyRenderBounds);
+        const dirtyRect = this.convertAABB2Rect(dirtyRenderBounds);
+        const { x, y, width, height } = dirtyRect;
 
         // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
         context.setTransform(
@@ -202,13 +209,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.clip();
 
         // draw dirty rectangle
-        // if (enableDirtyRectangleRenderingDebug) {
-        //   context.lineWidth = 4;
-        //   context.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
-        //     Math.random() * 255
-        //   }, 1)`;
-        //   context.strokeRect(x, y, width, height);
-        // }
+        const { enableDirtyRectangleRenderingDebug } = this.canvasConfig.renderer.getConfig();
+        if (enableDirtyRectangleRenderingDebug) {
+          canvas.dispatchEvent(
+            new CustomEvent(CanvasEvent.DIRTY_RECTANGLE, {
+              dirtyRect,
+            }),
+          );
+        }
 
         // search objects intersect with dirty rectangle
         const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
@@ -241,7 +249,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       });
       // clear restore stack
       this.restoreStack = [];
-      this.clearFullScreen = false;
     });
 
     renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
@@ -371,6 +378,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
+    // TODO: skip descendant if ancestor is caculated
     const aabb = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();

@@ -1,5 +1,12 @@
-import type { DisplayObject, Line, Polyline, BaseStyleProps, DisplayObjectConfig } from '@antv/g';
-import { CustomElement, Path, Shape, isNil } from '@antv/g';
+import type {
+  BaseStyleProps,
+  DisplayObject,
+  DisplayObjectConfig,
+  Line,
+  MutationEvent,
+  Polyline,
+} from '@antv/g';
+import { CustomElement, ElementEvent, isNil, Path, Shape } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 
 type ArrowHead = boolean | DisplayObject;
@@ -60,6 +67,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     // append arrow body
     this.body = body;
     this.appendChild(this.body);
+    this.handleBodyAttributeChanged(this.body);
 
     if (startHead) {
       this.appendArrowHead(this.getArrowHeadType(startHead), true);
@@ -69,6 +77,25 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     }
 
     this.applyArrowStyle(rest, [this.body, this.startHead, this.endHead]);
+  }
+
+  private handleBodyAttributeChanged(body: ArrowBody) {
+    body.addEventListener(ElementEvent.ATTR_MODIFIED, (e: MutationEvent) => {
+      const { attrName } = e;
+      if (attrName === 'x1' || attrName === 'y1') {
+        if (this.startHead) {
+          this.transformArrowHead(this.startHead, true);
+        }
+      } else if (attrName === 'x2' || attrName === 'y2') {
+        if (this.endHead) {
+          this.transformArrowHead(this.endHead, false);
+        }
+      }
+      // const { nodeName } = body;
+      // if (nodeName === Shape.LINE) {
+      //   body
+      // }
+    });
   }
 
   getBody() {
@@ -226,6 +253,19 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
           ),
         ),
       );
+    }
+
+    // cut body
+    if (this.body) {
+      // const bodyType = this.body && this.body.nodeName;
+      // if (bodyType === Shape.LINE) {
+      //   const {  } = this.body.style;
+      //   const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).attributes;
+      //   x1 = isStart ? _x2 : _x1;
+      //   x2 = isStart ? _x1 : _x2;
+      //   y1 = isStart ? _y2 : _y1;
+      //   y2 = isStart ? _y1 : _y2;
+      // }
     }
   }
 
