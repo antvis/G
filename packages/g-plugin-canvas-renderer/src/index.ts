@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module, Shape } from '@antv/g';
+import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import type { StyleRenderer } from './shapes/styles';
 import {
@@ -65,23 +64,25 @@ const containerModule = Module((register) => {
   register(CanvasRendererPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-renderer';
 
-  constructor(private options: Partial<CanvasRendererPluginOptions> = {}) {}
+  constructor(private options: Partial<CanvasRendererPluginOptions> = {}) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(CanvasRendererPluginOptions, {
+  init(): void {
+    this.container.register(CanvasRendererPluginOptions, {
       useValue: {
         dirtyObjectNumThreshold: 500,
         dirtyObjectRatioThreshold: 0.8,
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
-    container.remove(CanvasRendererPluginOptions);
+  destroy(): void {
+    this.container.unload(containerModule);
+    this.container.remove(CanvasRendererPluginOptions);
   }
 }

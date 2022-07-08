@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { CSS, Module, PropertySyntax } from '@antv/g';
+import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
 import { YogaPluginOptions } from './tokens';
 import { YogaPlugin } from './YogaPlugin';
 
@@ -7,18 +6,20 @@ const containerModule = Module((register) => {
   register(YogaPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'yoga';
 
-  constructor(private options: Partial<YogaPluginOptions>) {}
+  constructor(private options: Partial<YogaPluginOptions>) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(YogaPluginOptions, {
+  init(): void {
+    this.container.register(YogaPluginOptions, {
       useValue: {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
 
     [
       'top',
@@ -69,9 +70,9 @@ export class Plugin implements RendererPlugin {
       });
     });
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(YogaPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(YogaPluginOptions);
+    this.container.unload(containerModule);
 
     // TODO: unregister CSS properties
   }

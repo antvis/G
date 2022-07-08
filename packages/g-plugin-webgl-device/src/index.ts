@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { WebGLRendererPluginOptions } from './interfaces';
 import { WebGLDeviceContribution } from './WebGLDeviceContribution';
 
@@ -7,20 +6,22 @@ const containerModule = Module((register) => {
   register(WebGLDeviceContribution);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'webgl-device';
-  constructor(private options: Partial<WebGLRendererPluginOptions>) {}
+  constructor(private options: Partial<WebGLRendererPluginOptions>) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(WebGLRendererPluginOptions, {
+  init(): void {
+    this.container.register(WebGLRendererPluginOptions, {
       useValue: {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(WebGLRendererPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(WebGLRendererPluginOptions);
+    this.container.unload(containerModule);
   }
 }

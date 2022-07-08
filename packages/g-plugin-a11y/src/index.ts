@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { A11yPlugin } from './A11yPlugin';
 import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
@@ -11,22 +10,24 @@ const containerModule = Module((register) => {
   register(A11yPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'a11y';
 
-  constructor(private options: Partial<A11yPluginOptions> = {}) {}
+  constructor(private options: Partial<A11yPluginOptions> = {}) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(A11yPluginOptions, {
+  init(): void {
+    this.container.register(A11yPluginOptions, {
       useValue: {
         enableExtractingText: false,
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(A11yPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(A11yPluginOptions);
+    this.container.unload(containerModule);
   }
 }

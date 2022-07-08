@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { WebGPUDeviceOptions } from './interfaces';
 import { WebGPUDeviceContribution } from './WebGPUDeviceContribution';
 
@@ -7,20 +6,22 @@ const containerModule = Module((register) => {
   register(WebGPUDeviceContribution);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'webgpu-device';
-  constructor(private options: Partial<WebGPUDeviceOptions> = {}) {}
+  constructor(private options: Partial<WebGPUDeviceOptions> = {}) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(WebGPUDeviceOptions, {
+  init(): void {
+    this.container.register(WebGPUDeviceOptions, {
       useValue: {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(WebGPUDeviceOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(WebGPUDeviceOptions);
+    this.container.unload(containerModule);
   }
 }

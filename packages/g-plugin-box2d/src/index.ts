@@ -1,5 +1,5 @@
-import type { DisplayObject, RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { Box2DPlugin } from './Box2DPlugin';
 import { Box2DPluginOptions } from './tokens';
 
@@ -7,15 +7,15 @@ const containerModule = Module((register) => {
   register(Box2DPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'box2d';
-  private container: Syringe.Container;
 
-  constructor(private options: Partial<Box2DPluginOptions>) {}
+  constructor(private options: Partial<Box2DPluginOptions>) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    this.container = container;
-    container.register(Box2DPluginOptions, {
+  init(): void {
+    this.container.register(Box2DPluginOptions, {
       useValue: {
         gravity: [0, 100],
         timeStep: 1 / 60,
@@ -24,11 +24,11 @@ export class Plugin implements RendererPlugin {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(Box2DPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(Box2DPluginOptions);
+    this.container.unload(containerModule);
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {

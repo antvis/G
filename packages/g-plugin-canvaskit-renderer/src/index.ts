@@ -1,5 +1,5 @@
-import type { DataURLOptions, RendererPlugin, Syringe } from '@antv/g';
-import { Module, Shape } from '@antv/g';
+import type { DataURLOptions } from '@antv/g';
+import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
 import type { Canvas, InputRect } from 'canvaskit-wasm';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
 import { FontLoader } from './FontLoader';
@@ -75,27 +75,26 @@ const containerModule = Module((register) => {
   register(CanvaskitRendererPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'canvaskit-renderer';
 
-  private container: Syringe.Container;
+  constructor(private options: Partial<CanvaskitRendererPluginOptions> = {}) {
+    super();
+  }
 
-  constructor(private options: Partial<CanvaskitRendererPluginOptions> = {}) {}
-
-  init(container: Syringe.Container): void {
-    this.container = container;
-    container.register(CanvaskitRendererPluginOptions, {
+  init(): void {
+    this.container.register(CanvaskitRendererPluginOptions, {
       useValue: {
         fonts: [],
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
 
-  destroy(container: Syringe.Container): void {
-    container.remove(CanvaskitRendererPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(CanvaskitRendererPluginOptions);
+    this.container.unload(containerModule);
   }
 
   playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {

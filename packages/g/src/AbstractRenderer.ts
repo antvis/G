@@ -3,8 +3,16 @@ import type { RendererConfig } from './types';
 
 export interface RendererPlugin {
   name: string;
-  init: (container: Syringe.Container) => void;
-  destroy: (container: Syringe.Container) => void;
+  container: Syringe.Container;
+  init: () => void;
+  destroy: () => void;
+}
+
+export abstract class AbstractRendererPlugin implements RendererPlugin {
+  container: Syringe.Container;
+  abstract name: string;
+  abstract init(): void;
+  abstract destroy(): void;
 }
 
 export interface IRenderer {

@@ -1,5 +1,5 @@
-import type { DataURLOptions, RendererPlugin, Shape, Syringe } from '@antv/g';
-import { GlobalContainer, Module } from '@antv/g';
+import type { DataURLOptions, Shape } from '@antv/g';
+import { AbstractRendererPlugin, GlobalContainer, Module } from '@antv/g';
 import 'regenerator-runtime/runtime';
 import { Renderable3D } from './components/Renderable3D';
 import { LightPool } from './LightPool';
@@ -101,22 +101,20 @@ export const containerModule = Module((register) => {
   });
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'device-renderer';
-  private container: Syringe.Container;
 
-  init(container: Syringe.Container): void {
+  init(): void {
     if (!GlobalContainer.isBound(MeshUpdater)) {
       GlobalContainer.register(MeshUpdater);
     }
-    this.container = container;
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
+  destroy(): void {
     if (GlobalContainer.isBound(MeshUpdater)) {
       GlobalContainer.remove(MeshUpdater);
     }
-    container.unload(containerModule);
+    this.container.unload(containerModule);
   }
 
   getDevice() {

@@ -1,5 +1,5 @@
-import type { DisplayObject, RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { MatterJSPlugin } from './MatterJSPlugin';
 import { MatterJSPluginOptions } from './tokens';
 
@@ -7,15 +7,15 @@ const containerModule = Module((register) => {
   register(MatterJSPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'matterjs';
-  private container: Syringe.Container;
 
-  constructor(private options: Partial<MatterJSPluginOptions>) {}
+  constructor(private options: Partial<MatterJSPluginOptions>) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    this.container = container;
-    container.register(MatterJSPluginOptions, {
+  init(): void {
+    this.container.register(MatterJSPluginOptions, {
       useValue: {
         gravity: [0, 1],
         gravityScale: 0.001,
@@ -25,11 +25,11 @@ export class Plugin implements RendererPlugin {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(MatterJSPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(MatterJSPluginOptions);
+    this.container.unload(containerModule);
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {

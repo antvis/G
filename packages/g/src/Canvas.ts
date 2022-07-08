@@ -477,7 +477,8 @@ export class Canvas extends EventTarget implements ICanvas {
     // load other container modules provided by g-canvas/g-svg/g-webgl
     const plugins = renderer.getPlugins();
     plugins.forEach((plugin) => {
-      plugin.init(this.container);
+      plugin.container = this.container;
+      plugin.init();
     });
   }
 
@@ -496,7 +497,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // destroy all plugins, reverse will mutate origin array
     [...oldRenderer?.getPlugins()].reverse().forEach((plugin) => {
-      plugin.destroy(this.container);
+      plugin.destroy();
     });
 
     await this.initRenderer(renderer);
