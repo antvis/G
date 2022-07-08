@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { DragndropPlugin } from './DragndropPlugin';
 import { DragndropPluginOptions } from './tokens';
 
@@ -7,13 +6,15 @@ const containerModule = Module((register) => {
   register(DragndropPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'dragndrop';
 
-  constructor(private options: Partial<DragndropPluginOptions> = {}) {}
+  constructor(private options: Partial<DragndropPluginOptions> = {}) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(DragndropPluginOptions, {
+  init(): void {
+    this.container.register(DragndropPluginOptions, {
       useValue: {
         overlap: 'pointer',
         isDocumentDraggable: false,
@@ -23,10 +24,10 @@ export class Plugin implements RendererPlugin {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(DragndropPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(DragndropPluginOptions);
+    this.container.unload(containerModule);
   }
 }

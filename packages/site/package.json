@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-site",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "private": true,
   "description": "G sites deployed on gh-pages",
   "keywords": [

@@ -9,10 +9,6 @@ const canvas = new Canvas({
   background: 'rgb(16, 22, 29)',
 });
 
-// const camera = canvas.getCamera();
-// camera.setZoom(0.5);
-// camera.pan(100, 100);
-
 const gradient =
   'linear-gradient(-90deg, rgba(178, 230, 181, 0), rgba(178, 230, 181, 0.6) 14%, rgba(166, 221, 179, 0.82) 23%, rgba(101, 171, 170, 0.9) 67%, rgb(23, 80, 157))';
 // 'l(270) 0:rgba(178, 230, 181, 0) 0.14:rgba(178, 230, 181, 0.6) 0.23:rgba(166, 221, 179, 0.82) 0.67:rgba(101, 171, 170, 0.9) 1:rgb(23, 80, 157)';

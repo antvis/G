@@ -383,15 +383,15 @@ function convertToMatrix(transformList: ParsedTransform[]) {
 
 function makeMatrixDecomposition(transformList: ParsedTransform[]) {
   const translate = [0, 0, 0];
-  const scale = [0, 0, 0];
+  const scale = [1, 1, 1];
   const skew = [0, 0, 0];
   const perspective = [0, 0, 0, 1];
   const quaternion = [0, 0, 0, 1];
   decomposeMatrix(convertToMatrix(transformList), translate, scale, skew, perspective, quaternion);
-  return [translate, scale, skew, quaternion, perspective];
+  return [[translate, scale, skew, quaternion, perspective]];
 }
 
-const composeMatrix = (function () {
+export const composeMatrix = (function () {
   function multiply(a, b) {
     const result = [
       [0, 0, 0, 0],
@@ -517,12 +517,14 @@ function mergeMatrices(
   if (left.decompositionPair !== right) {
     // @ts-ignore
     left.decompositionPair = right;
+    // @ts-ignore
     leftArgs = makeMatrixDecomposition(left);
   }
   // @ts-ignore
   if (right.decompositionPair !== left) {
     // @ts-ignore
     right.decompositionPair = left;
+    // @ts-ignore
     rightArgs = makeMatrixDecomposition(right);
   }
   if (leftArgs[0] === null || rightArgs[0] === null)
@@ -725,8 +727,12 @@ export function mergeTransforms(
               return types[i][1][j](arg);
             })
             .join(',');
-          if (types[i][0] === 'matrix' && stringifiedArgs.split(',').length === 16)
+          if (types[i][0] === 'matrix' && stringifiedArgs.split(',').length === 16) {
             types[i][0] = 'matrix3d';
+          }
+          if (types[i][0] === 'matrix3d' && stringifiedArgs.split(',').length === 6) {
+            types[i][0] = 'matrix';
+          }
           return types[i][0] + '(' + stringifiedArgs + ')';
         })
         .join(' ');

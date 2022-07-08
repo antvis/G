@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { PhysXPlugin } from './PhysXPlugin';
 
 const containerModule = Module((register) => {
@@ -9,14 +8,16 @@ const containerModule = Module((register) => {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PhysXPluginOptions {}
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'physx';
-  constructor(private options: Partial<PhysXPluginOptions>) {}
-
-  init(container: Syringe.Container): void {
-    container.load(containerModule, true);
+  constructor(private options: Partial<PhysXPluginOptions>) {
+    super();
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
+
+  init(): void {
+    this.container.load(containerModule, true);
+  }
+  destroy(): void {
+    this.container.unload(containerModule);
   }
 }

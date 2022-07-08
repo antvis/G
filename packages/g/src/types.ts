@@ -293,7 +293,10 @@ export interface RendererConfig {
    */
   enableDirtyRectangleRendering: boolean;
 
-  // enableDirtyRectangleRenderingDebug: boolean;
+  /**
+   * enable debugging dirty rectangle, Canvas will trigger CanvasEvent.DIRTY_RECTANGLE
+   */
+  enableDirtyRectangleRenderingDebug: boolean;
 
   /**
    * enable auto rendering

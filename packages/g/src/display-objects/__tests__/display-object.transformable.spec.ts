@@ -2,11 +2,10 @@ import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
 // @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Circle, deg2rad, DisplayObject, Group } from '@antv/g';
 import { mat3, mat4, vec2, vec3 } from 'gl-matrix';
-import { DisplayObject, Group, Circle, deg2rad } from '@antv/g';
+import sinonChai from 'sinon-chai';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
@@ -219,5 +218,31 @@ describe('Mixin Transformable', () => {
     });
 
     expect(circle.getLocalPosition()).to.eqls(vec3.fromValues(200, 200, 0));
+  });
+
+  it('should apply transform(matrix) attribute correctly', () => {
+    const circle = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        transform: 'matrix(1, 0, 0, 1, 100, 0)',
+      },
+    });
+
+    expect(circle.getLocalPosition()).to.eqls(vec3.fromValues(200, 100, 0));
+  });
+
+  it('should apply transform(matrix3d) attribute correctly', () => {
+    const circle = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 0, 0, 1)',
+      },
+    });
+
+    expect(circle.getLocalPosition()).to.eqls(vec3.fromValues(200, 100, 0));
   });
 });

@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
 import {
   CircleRenderer as CircleRoughRenderer,
@@ -35,29 +34,29 @@ const containerModule = Module((register) => {
   register(PathRoughRenderer);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'rough-canvas-renderer';
-  init(container: Syringe.Container): void {
+  init(): void {
     // unregister default renderer in `g-plugin-canvas-renderer`
-    container.remove(CircleRenderer);
-    container.remove(EllipseRenderer);
-    container.remove(RectRenderer);
-    container.remove(LineRenderer);
-    container.remove(PolylineRenderer);
-    container.remove(PolygonRenderer);
-    container.remove(PathRenderer);
+    this.container.remove(CircleRenderer);
+    this.container.remove(EllipseRenderer);
+    this.container.remove(RectRenderer);
+    this.container.remove(LineRenderer);
+    this.container.remove(PolylineRenderer);
+    this.container.remove(PolygonRenderer);
+    this.container.remove(PathRenderer);
 
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.unload(containerModule);
 
-    container.register(CircleRenderer);
-    container.register(EllipseRenderer);
-    container.register(RectRenderer);
-    container.register(LineRenderer);
-    container.register(PolylineRenderer);
-    container.register(PolygonRenderer);
-    container.register(PathRenderer);
+    this.container.register(CircleRenderer);
+    this.container.register(EllipseRenderer);
+    this.container.register(RectRenderer);
+    this.container.register(LineRenderer);
+    this.container.register(PolylineRenderer);
+    this.container.register(PolygonRenderer);
+    this.container.register(PathRenderer);
   }
 }

@@ -452,12 +452,14 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
     -   skew(ax, ay)
     -   skewX(a)
     -   skewY(a)
+-   变换矩阵
+    -   matrix(a,b,c,d,tx,ty) 可参考 [CSS matrix 定义](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix)
+    -   matrix3d() 包含 16 个元素的完整矩阵定义
 -   无变换 none
 
 ⚠️ 暂不支持以下取值：
 
 -   `calc()`。例如 `translate(calc(100% + 10px))`
--   `matrix/matrix3d()`
 -   `perspective`
 
 ## offset

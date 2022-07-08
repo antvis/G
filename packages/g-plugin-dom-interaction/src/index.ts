@@ -1,17 +1,16 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { DOMInteractionPlugin } from './DOMInteractionPlugin';
 
 const containerModule = Module((register) => {
   register(DOMInteractionPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'dom-interaction';
-  init(container: Syringe.Container): void {
-    container.load(containerModule, true);
+  init(): void {
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.unload(containerModule);
   }
 }
