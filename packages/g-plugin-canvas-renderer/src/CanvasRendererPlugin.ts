@@ -1,28 +1,26 @@
-import type {
-  CSSRGB,
-  DisplayObject,
-  FederatedEvent,
-  ParsedBaseStyleProps,
-  RBushNodeAABB,
-  RenderingPlugin,
-  RenderingService,
-} from '@antv/g';
 import {
   AABB,
   Camera,
   CanvasConfig,
   CanvasEvent,
   ContextService,
+  CSSRGB,
   CustomEvent,
   DefaultCamera,
+  DisplayObject,
   DisplayObjectPool,
   ElementEvent,
+  FederatedEvent,
   inject,
   isNil,
+  ParsedBaseStyleProps,
   RBush,
+  RBushNodeAABB,
   RBushRoot,
   RenderingContext,
+  RenderingPlugin,
   RenderingPluginContribution,
+  RenderingService,
   Shape,
   singleton,
 } from '@antv/g';
@@ -158,8 +156,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         (rendered > dirtyObjectNumThreshold && ratio > dirtyObjectRatioThreshold);
 
       if (context) {
+        context.resetTransform();
         if (this.clearFullScreen) {
-          context.resetTransform();
           this.clearRect(context, 0, 0, width * dpr, height * dpr);
         }
       }
@@ -199,6 +197,24 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         const dirtyRect = this.convertAABB2Rect(dirtyRenderBounds);
         const { x, y, width, height } = dirtyRect;
 
+        const tl = vec3.transformMat4(this.tmpVec3, vec3.fromValues(x, y, 0), this.vpMatrix);
+        const br = vec3.transformMat4(
+          vec3.create(),
+          vec3.fromValues(x + width, y + height, 0),
+          this.vpMatrix,
+        );
+
+        const ix = Math.floor(tl[0]);
+        const iy = Math.floor(tl[1]);
+        const iwidth = Math.ceil(br[0] - tl[0]);
+        const iheight = Math.ceil(br[1] - tl[1]);
+
+        context.save();
+        this.clearRect(context, ix, iy, iwidth, iheight);
+        context.beginPath();
+        context.rect(ix, iy, iwidth, iheight);
+        context.clip();
+
         // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
         context.setTransform(
           this.vpMatrix[0],
@@ -208,12 +224,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.vpMatrix[12],
           this.vpMatrix[13],
         );
-
-        context.save();
-        this.clearRect(context, x, y, width, height);
-        context.beginPath();
-        context.rect(x, y, width, height);
-        context.clip();
 
         // draw dirty rectangle
         const { enableDirtyRectangleRenderingDebug } = this.canvasConfig.renderer.getConfig();
@@ -273,6 +283,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     width: number,
     height: number,
   ) {
+    // clearRect is faster than fillRect @see https://stackoverflow.com/a/30830253
     context.clearRect(x, y, width, height);
     const { background } = this.canvasConfig;
     if (background) {
@@ -385,7 +396,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
-    // TODO: skip descendant if ancestor is caculated
+    // TODO: skip descendant if ancestor is caculated, but compareNodePosition is really slow
     const aabb = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();
