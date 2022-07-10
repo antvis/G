@@ -1,24 +1,18 @@
 import type * as G from '@antv/g';
-import type { DisplayObject } from '@antv/g';
+import type { DisplayObject, PathStyleProps } from '@antv/g';
 import { isBoolean } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 import React, { Component } from 'react';
 import { Group, Path } from '../host-elements';
 
 type ArrowHead = boolean | React.ReactNode;
-
-export interface ArrowStyleProps extends React.ReactElement {
+export interface ArrowStyleProps extends PathStyleProps {
   path: string;
   startHead?: ArrowHead;
   endHead?: ArrowHead;
-  stroke?: string;
-  lineWidth?: number;
-  opacity?: number;
-  strokeOpacity?: number;
 }
 
 const DEFAULT_ARROW_SIZE = 16;
-
 export class Arrow extends Component<ArrowStyleProps, {}> {
   startRef: React.MutableRefObject<DisplayObject | null>;
   endRef: React.MutableRefObject<DisplayObject | null>;
@@ -74,23 +68,15 @@ export class Arrow extends Component<ArrowStyleProps, {}> {
 
   // transform arrow head to match line tangent
   private transformArrowHead(head: DisplayObject, isStart: boolean) {
-    let rad = 0;
-    let x1 = 0;
-    let x2 = 0;
-    let y1 = 0;
-    let y2 = 0;
-
     const [p1, p2] = this.getTangent(this.bodyRef.current as G.Path, isStart);
-    x1 = p1[0];
-    y1 = p1[1];
-    x2 = p2[0];
-    y2 = p2[1];
+    const [x1, y1] = p1;
+    const [x2, y2] = p2;
 
     const x = x1 - x2;
     const y = y1 - y2;
-    rad = Math.atan2(y, x);
-
+    const rad = Math.atan2(y, x) + Math.PI;
     const position = vec3.fromValues(x2, y2, 0);
+
     head.setLocalPosition(position);
     head.setLocalEulerAngles((rad * 180) / Math.PI);
   }
@@ -108,7 +94,7 @@ export class Arrow extends Component<ArrowStyleProps, {}> {
         {...others}
         lineDash={undefined}
         fill={this.props.stroke}
-        path={`M${DEFAULT_ARROW_SIZE * cos(PI / 6)},${DEFAULT_ARROW_SIZE * sin(PI / 6)} L0,0 L${
+        path={`M-${DEFAULT_ARROW_SIZE * cos(PI / 6)},${DEFAULT_ARROW_SIZE * sin(PI / 6)} L0,0 L-${
           DEFAULT_ARROW_SIZE * cos(PI / 6)
         },-${DEFAULT_ARROW_SIZE * sin(PI / 6)} Z`}
       />
