@@ -14,6 +14,8 @@ Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lot
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_q9uQLTx6ssAAAAAAAAAAAAAARQnAQ" width="160" alt="text emoji">
 
+[Codesandbox 例子](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
+
 # 使用方式
 
 和 `@antv/g` 一样，也有以下两种使用方式。

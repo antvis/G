@@ -503,7 +503,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           miter: CanvasKit.StrokeJoin.Miter,
         };
         strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin.value]);
-        strokePaint.setStrokeMiter(miterLimit);
+        if (!isNil(miterLimit)) {
+          strokePaint.setStrokeMiter(miterLimit.value);
+        }
 
         if (lineDash) {
           strokePaint.setPathEffect(

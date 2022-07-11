@@ -55,6 +55,7 @@ const DEFAULT_STYLE_PROPS: {
   textTransform: string;
   zIndex: string | number;
   filter: string;
+  shadowType: string;
 } = {
   anchor: '',
   opacity: '',
@@ -80,6 +81,7 @@ const DEFAULT_STYLE_PROPS: {
   textTransform: '',
   zIndex: '',
   filter: '',
+  shadowType: '',
 };
 
 /**

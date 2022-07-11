@@ -28,15 +28,15 @@
   ],
   "dependencies": {
     "@antv/g-math": "^1.6.0-alpha.0",
+    "@antv/g-plugin-canvas-path-generator": "^1.0.0",
+    "@antv/g-plugin-image-loader": "^1.0.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "@antv/g-plugin-canvas-path-generator": "^0.0.0",
-    "@antv/g-plugin-image-loader": "^0.0.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

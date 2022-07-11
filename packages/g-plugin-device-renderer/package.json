@@ -31,6 +31,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@antv/g-plugin-image-loader": "^1.0.0",
     "@antv/g-shader-components": "^1.6.0-alpha.0",
     "@antv/util": "^3.2.0",
     "@mapbox/tiny-sdf": "^2.0.4",
@@ -49,8 +50,7 @@
     "rollup-plugin-glslify": "^1.2.1"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "@antv/g-plugin-image-loader": "^0.0.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

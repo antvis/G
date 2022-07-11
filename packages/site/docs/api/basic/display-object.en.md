@@ -425,7 +425,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJo
 
 ### miterLimit
 
-斜接面限制比例。SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。
+斜接面限制比例。SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。我们给 [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline) [Polygon](/zh/docs/api/basic/polygon) 这三种图形设置为 4，其余图形设置为 10。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit
 

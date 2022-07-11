@@ -1,4 +1,4 @@
-import type { CSSRGB, CSSUnitValue, DisplayObject } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
 import { isNil } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 
@@ -15,39 +15,121 @@ export function createOrUpdateShadow(
   $el: SVGElement,
   name: string,
 ) {
+  const { shadowType, shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY } =
+    object.parsedStyle as ParsedBaseStyleProps;
+
+  // <Group> also has shadowType as its default value
+  const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+  if (!hasShadow) {
+    return;
+  }
+
   const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;
   let $existedFilter = $def.querySelector(`#${shadowId}`);
+  if ($existedFilter && name === 'shadowType') {
+    const existedShadowType = $existedFilter.getAttribute('data-type');
+    if (existedShadowType !== shadowType.value) {
+      // remove existed shadow
+      $existedFilter.remove();
+      $existedFilter = null;
+    }
+  }
+
   if (!$existedFilter) {
     $existedFilter = createSVGElement('filter', document) as SVGFilterElement;
-    const $feDropShadow = createSVGElement('feDropShadow', document);
-    $feDropShadow.setAttribute('dx', '0');
-    $feDropShadow.setAttribute('dy', '0');
-    $existedFilter.appendChild($feDropShadow);
+    $existedFilter.setAttribute('data-type', shadowType.value);
+
+    if (shadowType.value === 'outer') {
+      const $feDropShadow = createSVGElement('feDropShadow', document);
+      $feDropShadow.setAttribute('dx', `${(shadowOffsetX?.value || 0) / 2}`);
+      $feDropShadow.setAttribute('dy', `${(shadowOffsetY?.value || 0) / 2}`);
+      $feDropShadow.setAttribute('stdDeviation', `${(shadowBlur?.value || 0) / 4}`);
+      $feDropShadow.setAttribute('flood-color', shadowColor.toString());
+      $existedFilter.appendChild($feDropShadow);
+    } else if (shadowType.value === 'inner') {
+      const $feComponentTransfer = createSVGElement('feComponentTransfer', document);
+      $feComponentTransfer.setAttribute('in', 'SourceAlpha');
+      const $feFuncA = createSVGElement('feFuncA', document);
+      $feFuncA.setAttribute('type', 'table');
+      $feFuncA.setAttribute('tableValues', '1 0');
+      $feComponentTransfer.appendChild($feFuncA);
+      $existedFilter.appendChild($feComponentTransfer);
+
+      const $feGaussianBlur = createSVGElement('feGaussianBlur', document);
+      $feGaussianBlur.setAttribute('stdDeviation', `${(shadowBlur?.value || 0) / 4}`);
+      $existedFilter.appendChild($feGaussianBlur);
+
+      const $feOffset = createSVGElement('feOffset', document);
+      $feOffset.setAttribute('dx', `${(shadowOffsetX?.value || 0) / 2}`);
+      $feOffset.setAttribute('dy', `${(shadowOffsetY?.value || 0) / 2}`);
+      $feOffset.setAttribute('result', 'offsetblur');
+      $existedFilter.appendChild($feOffset);
+
+      const $feFlood = createSVGElement('feFlood', document);
+      $feFlood.setAttribute('flood-color', shadowColor.toString());
+      $feFlood.setAttribute('result', 'color');
+      $existedFilter.appendChild($feFlood);
+
+      const $feComposite = createSVGElement('feComposite', document);
+      $feComposite.setAttribute('in2', 'offsetblur');
+      $feComposite.setAttribute('operator', 'in');
+      $existedFilter.appendChild($feComposite);
+
+      const $feComposite2 = createSVGElement('feComposite', document);
+      $feComposite2.setAttribute('in2', 'SourceAlpha');
+      $feComposite2.setAttribute('operator', 'in');
+      $existedFilter.appendChild($feComposite2);
+
+      const $feMerge = createSVGElement('feMerge', document);
+      $existedFilter.appendChild($feMerge);
+      const $feMergeNode = createSVGElement('feMergeNode', document);
+      $feMergeNode.setAttribute('in', 'SourceGraphic');
+      const $feMergeNode2 = createSVGElement('feMergeNode', document);
+      $feMerge.appendChild($feMergeNode);
+      $feMerge.appendChild($feMergeNode2);
+    }
+
     $existedFilter.id = shadowId;
     // @see https://github.com/antvis/g/issues/1025
     $existedFilter.setAttribute('filterUnits', 'userSpaceOnUse');
     $def.appendChild($existedFilter);
+    return;
   }
-  const $feDropShadow = $existedFilter.children[0] as SVGPatternElement;
-  if (name === 'shadowColor') {
-    const parsedColor = object.parsedStyle[name] as CSSRGB;
-    $feDropShadow.setAttribute('flood-color', parsedColor.toString());
-  } else if (name === 'shadowBlur') {
-    const shadowBlur = object.parsedStyle[name] as CSSUnitValue;
-    // half the blur radius
-    // @see https://drafts.csswg.org/css-backgrounds/#shadow-blur
-    // @see https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/
-    $feDropShadow.setAttribute('stdDeviation', `${(shadowBlur?.value || 0) / 4}`);
-  } else if (name === 'shadowOffsetX') {
-    const shadowOffsetX = object.parsedStyle[name] as CSSUnitValue;
-    $feDropShadow.setAttribute('dx', `${(shadowOffsetX?.value || 0) / 2}`);
-  } else if (name === 'shadowOffsetY') {
-    const shadowOffsetY = object.parsedStyle[name] as CSSUnitValue;
-    $feDropShadow.setAttribute('dy', `${(shadowOffsetY?.value || 0) / 2}`);
+
+  if (shadowType.value === 'inner') {
+    const $feGaussianBlur = $existedFilter.children[1] as SVGFEGaussianBlurElement;
+    const $feOffset = $existedFilter.children[2] as SVGFEOffsetElement;
+    const $feFlood = $existedFilter.children[3] as SVGFEFloodElement;
+    if (name === 'shadowColor') {
+      $feFlood.setAttribute('flood-color', shadowColor.toString());
+    } else if (name === 'shadowBlur') {
+      // half the blur radius
+      // @see https://drafts.csswg.org/css-backgrounds/#shadow-blur
+      // @see https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/
+      $feGaussianBlur.setAttribute('stdDeviation', `${(shadowBlur?.value || 0) / 4}`);
+    } else if (name === 'shadowOffsetX') {
+      $feOffset.setAttribute('dx', `${(shadowOffsetX?.value || 0) / 2}`);
+    } else if (name === 'shadowOffsetY') {
+      $feOffset.setAttribute('dy', `${(shadowOffsetY?.value || 0) / 2}`);
+    }
+  } else if (shadowType.value === 'outer') {
+    const $feDropShadow = $existedFilter.children[0] as SVGPatternElement;
+    if (name === 'shadowColor') {
+      $feDropShadow.setAttribute('flood-color', shadowColor.toString());
+    } else if (name === 'shadowBlur') {
+      // half the blur radius
+      // @see https://drafts.csswg.org/css-backgrounds/#shadow-blur
+      // @see https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/
+      $feDropShadow.setAttribute('stdDeviation', `${(shadowBlur?.value || 0) / 4}`);
+    } else if (name === 'shadowOffsetX') {
+      $feDropShadow.setAttribute('dx', `${(shadowOffsetX?.value || 0) / 2}`);
+    } else if (name === 'shadowOffsetY') {
+      $feDropShadow.setAttribute('dy', `${(shadowOffsetY?.value || 0) / 2}`);
+    }
   }
 
   // only apply shadow when blur > 0
-  if (!isNil(object.parsedStyle.shadowColor) && object.parsedStyle.shadowBlur?.value > 0) {
+  if (hasShadow) {
     // use filter <feDropShadow>
     // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
     $el?.setAttribute('filter', `url(#${shadowId})`);

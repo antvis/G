@@ -13,9 +13,9 @@ order: 3
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 选中高亮
+# 激活高亮
 
-我们想让节点 1 响应选中事件：当鼠标移入时将节点变成红色，同时改变鼠标样式，移出后恢复。
+我们想让节点 1 响应激活事件：当鼠标移入时将节点变成红色，同时改变鼠标样式，移出后恢复。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Xw7JTZTFqMgAAAAAAAAAAAAAARQnAQ)
 

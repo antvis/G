@@ -1,4 +1,3 @@
-// import * as ManaSyringe from 'mana-syringe';
 import { GlobalContainer } from 'mana-syringe';
 import RBush from 'rbush';
 import 'reflect-metadata';
@@ -18,7 +17,6 @@ export * from './services';
 export * from './shapes';
 export * from './types';
 export * from './utils';
-// export { ManaSyringe, RBush };
 export { RBush, layoutEngine };
 
 GlobalContainer.load(globalModule);

@@ -65,7 +65,7 @@ export class TextMesh extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing = 0 } = object.parsedStyle;
+    const { textBaseline, fontSize, letterSpacing } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize.value;
@@ -111,7 +111,7 @@ export class TextMesh extends Instanced {
           lineHeight: fontScale * lineHeight,
           offsetX: fontScale * offsetX,
           offsetY: fontScale * (linePositionY + offsetY),
-          letterSpacing: fontScale * letterSpacing,
+          letterSpacing: fontScale * letterSpacing.value,
           glyphAtlas,
           indicesOffset: indicesOff,
         });

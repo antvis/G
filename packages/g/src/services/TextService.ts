@@ -163,11 +163,11 @@ export class TextService {
     const {
       fontSize,
       wordWrap,
-      lineHeight: strokeHeight = 0,
+      lineHeight: strokeHeight,
       lineWidth,
       textBaseline,
       textAlign,
-      letterSpacing = 0,
+      letterSpacing,
       // dropShadow = 0,
       // dropShadowDistance = 0,
       leading = 0,
@@ -190,7 +190,8 @@ export class TextService {
     const lineWidths = new Array<number>(lines.length);
     let maxLineWidth = 0;
     for (let i = 0; i < lines.length; i++) {
-      const lineWidth = context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
+      const lineWidth =
+        context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing.value;
       lineWidths[i] = lineWidth;
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
@@ -198,7 +199,7 @@ export class TextService {
     // if (dropShadow) {
     //   width += dropShadowDistance;
     // }
-    let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth.value;
+    let lineHeight = strokeHeight.value || fontProperties.fontSize + lineWidth.value;
     const height =
       Math.max(lineHeight, fontProperties.fontSize + lineWidth.value) +
       (lines.length - 1) * (lineHeight + leading);
@@ -251,11 +252,11 @@ export class TextService {
 
   private wordWrap(
     text: string,
-    { wordWrapWidth = 0, letterSpacing = 0 }: ParsedTextStyleProps,
+    { wordWrapWidth = 0, letterSpacing }: ParsedTextStyleProps,
     offscreenCanvas: CanvasLike,
   ): string {
     const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
-    const maxWidth = wordWrapWidth + letterSpacing;
+    const maxWidth = wordWrapWidth + letterSpacing.value;
 
     let lines: string[] = [];
     let currentIndex = 0;
@@ -263,7 +264,12 @@ export class TextService {
 
     const cache: { [key in string]: number } = {};
     const calcWidth = (char: string): number => {
-      return this.getFromCache(char, letterSpacing, cache, context as CanvasRenderingContext2D);
+      return this.getFromCache(
+        char,
+        letterSpacing.value,
+        cache,
+        context as CanvasRenderingContext2D,
+      );
     };
 
     Array.from(text).forEach((char: string, i: number) => {
