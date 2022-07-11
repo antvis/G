@@ -1,102 +1,99 @@
 ---
-title: 第三节：增加交互
+title: Section III - Adding some interaction
 order: 3
 ---
 
-在该系列教程中，我们将逐步实现一个简单的可视化场景，展示节点和边，并让它们具备拖拽、拾取等基本交互能力。
+In this tutorial series, we will step-by-step implement a simple visualization scene that shows nodes and edges and gives them basic interaction capabilities such as dragging and picking.
 
-在本节中，我们将学习如何让图形响应事件 [本节示例](/zh/examples/guide#chapter2)。其中会涉及以下 API：
+In this section, we will learn how to make graphics respond to events, [example of this section](/en/examples/guide#chapter2). The following APIs will be involved：
 
--   使用 [addEventListener](/zh/docs/api/event#addeventlistener) 为图形添加事件监听器：
--   使用 [style](/zh/docs/api/basic/display-object#绘图属性) 修改图形样式属性
--   使用 [translateLocal](/zh/docs/api/basic/display-object#平移) 改变节点位置
+-   Using [addEventListener](/en/docs/api/event#addeventlistener)
+-   Using [style](/en/docs/api/basic/display-object#绘图属性)
+-   Using [translateLocal](/en/docs/api/basic/display-object#平移)
 
-[完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
+[DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 激活高亮
+# Activate highlighting
 
-我们想让节点 1 响应激活事件：当鼠标移入时将节点变成红色，同时改变鼠标样式，移出后恢复。
+We want node 1 to respond to an activation event: turn the node red when the mouse is moved in, change the mouse style, and restore it when it is moved out.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Xw7JTZTFqMgAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Xw7JTZTFqMgAAAAAAAAAAAAAARQnAQ" width="200" alt="interaction">
 
-和 DOM API 一样，我们通过 [addEventListener](/zh/docs/api/event#addeventlistener) 给图形增加事件监听器，监听 mouseenter 和 mouseleave 事件：
+As with the DOM API, we add event listeners to the graphics via [addEventListener](/en/docs/api/event#addeventlistener) to listen for mouseenter and mouseleave events.
 
 ```js
 node1.addEventListener('mouseenter', () => {
-    // 修改图形样式属性
     node1.style.fill = 'red';
 });
 node1.addEventListener('mouseleave', () => {
-    // 修改图形样式属性
     node1.style.fill = '#1890FF';
 });
 ```
 
-然后我们可以给节点添加 `cursor` 属性来设置[鼠标悬停样式](/zh/docs/api/basic/display-object#鼠标样式)，这里使用“手指”形状 `pointer`：
+Then we can add the `cursor` property to the node to set the [mouse hover style](/en/docs/api/basic/display-object#mouse style), here we use the "finger" shape `pointer`.
 
 ```js
 const node1 = new Circle({
     style: {
-        //... 省略其他属性
+        //...
         cursor: 'pointer',
     },
 });
 ```
 
-我们的[事件系统](/zh/docs/api/event)完全兼容 DOM Event API，这意味着可以使用前端熟悉的 API 实现事件监听器的绑定/解绑、触发自定义事件、事件委托等等功能。除了这些方法名更好记外，在下一节中我们还将看到它的另一大优势。
+Our [event system](/en/docs/api/event) is fully compatible with the DOM Event API, which means that it is possible to bind/unbind event listeners, trigger custom events, delegate events, and more using the familiar API on the front-end. Besides the fact that these method names are better remembered, we will see another big advantage of it in the next section.
 
-# 拖拽
+# Dragging
 
-拖拽是一个常见的交互动作，我们想实现对于节点 1 的拖拽功能，同时改变边的端点位置：
+Dragging is a common interaction and we want to implement dragging for node 1 while changing the endpoint position of the edge.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ" width="400" alt="dragging">
 
-## 使用 interact.js 实现拖拽
+## Drag and Drop with interact.js
 
-我们当然可以通过组合对基础事件（pointerup、pointermove、pointerdown）的监听来实现拖拽。但这里我们用一种更简单的方法，由于我们的[事件系统](/zh/docs/api/event)完全兼容 DOM Event API，因此可以直接使用 Web 端现成的拖拽库，例如 [interact.js](https://interactjs.io/) 来完成绝大部分“脏活累活”。而我们只需要做两件事：
+We can certainly drag and drop by combining listening to the base events (pointerup, pointermove, pointerdown). But here we go with a simpler approach. Since our [event system](/en/docs/api/event) is fully compatible with the DOM Event API, we can directly use a web-side off-the-shelf drag-and-drop library such as [interact.js](https://interactjs.io/) to do most of the of the "dirty work". Instead, we only need to do two things:
 
-1. 传给 interact.js 一个假的上下文 `canvas.document` 和节点 1，让它以为操作的是真实的 DOM
-2. 在 interact.js 的 `onmove` 回调函数中改变节点和边端点的位置
+1. Pass interact.js a fake context `canvas.document` and node 1 to make it think it's operating on the real DOM
+2. Changing the position of nodes and edge endpoints in the `onmove` callback function of interact.js
 
 ```js
 import interact from 'interactjs';
 
-// 使用 interact.js 实现拖拽
+// Use interact.js
 interact(node1, {
-    // 直接传入节点1
-    context: canvas.document, // 传入上下文
+    context: canvas.document, // Pass our fake DOM-like context
 }).draggable({
     onmove: function (event) {
-        // interact.js 告诉我们的偏移量
+        // Get the offset from interact.js
         const { dx, dy } = event;
-        // 改变节点1位置
+        // Change the position of node 1
         node1.translateLocal(dx, dy);
-        // 获取节点1位置
+        // Get the position of node 1
         const [nx, ny] = node1.getLocalPosition();
-        // 改变边的端点位置
+        // Changing the endpoint position of an edge
         edge.style.x1 = nx;
         edge.style.y1 = ny;
     },
 });
 ```
 
-你可能注意到了，在拖拽时鼠标样式自动变成了 `move` 的形状，这完全是 interact.js 的功劳。之所以能这么做，是因为 [interact.js](https://interactjs.io/) 并不假设自身一定运行在真实的 DOM 环境。换言之，我们可以将 G 的图形伪装成 DOM 来“欺骗”它们。同样的道理，我们也可以直接使用 [hammer.js](/zh/docs/api/event#直接使用-hammerjs) 这样的手势库。
+You may have noticed that the mouse style automatically changes to a `move` shape when dragging and dropping, thanks to interact.js. This is possible because [interact.js](https://interactjs.io/) does not assume that it is necessarily running in the real DOM environment. In other words, we can "trick" G's graphics by disguising them as the DOM. By the same token, we can also use gesture libraries like [hammer.js](/en/docs/api/event#directly-hammerjs).
 
-## 改变节点位置
+## Change node position
 
-回到 `onmove` 回调函数中，我们需要改变节点的位置，而偏移量 interact.js 已经告诉我们了：
+Back in the `onmove` callback function, we need to change the position of the node, and the offset interact.js already tells us.
 
 ```js
 node1.translateLocal(dx, dy);
 ```
 
-类似 `translateLocal` 这样的[变换操作](/zh/docs/api/basic/display-object#变换操作)还有很多，除了平移，还可以进行旋转和缩放。
+There are many other [transform operations](/en/docs/api/basic/display-object#transform operations) like `translateLocal`, besides translation, you can also rotate and scale.
 
-改变边的端点也很简单，通过修改它的样式属性 `x1/y1` 就可以完成，可以查看 [Line](/zh/docs/api/basic/line) 进一步了解：
+Changing the endpoint of an edge is also simple, and can be done by modifying its style attribute `x1/y1`, see [Line](/en/docs/api/basic/line) for further information.
 
 ```js
 edge.style.x1 = nx;
 edge.style.y1 = ny;
 ```
 
-至此这个简单的场景就完成了，跟随我们的后续教程继续了解场景图、相机吧。
+So this simple scene is complete, follow our subsequent tutorials to continue to understand the scene graph and camera.

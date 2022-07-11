@@ -1,198 +1,193 @@
 ---
-title: 画布
+title: Canvas
 order: -100
 redirect_from:
     - /en/docs/api
 ---
 
-我们在 G 核心包 `@antv/g` 中提供了 Canvas 画布这一核心对象，从渲染的角度上看，它是一个在浏览器中实现的“小浏览器”，承载着以下三类对象：
+We provide the Canvas as a core object in the `@antv/g`, which is a "mini-browser" from a rendering perspective implemented in the browser and hosts three types of objects:
 
--   [场景图](/zh/docs/guide/diving-deeper/scenegraph)。我们通过它描述场景中的各个图形及其层次关系。
--   [相机](/zh/docs/api/camera)。我们通过它定义观察整个场景的角度。我们为每一个画布内置了一个默认使用正交投影的相机，后续可随时修改。
--   [渲染器](/zh/docs/api/renderer)。我们通过它指定画布使用何种底层技术来渲染场景。不同的渲染器有着不同的渲染能力，例如只有 `g-webgl` 才能渲染 3D 图形。在 2D 场景下我们会尽力实现不同渲染器下一致的渲染效果。
+-   [Scene Graph](/en/docs/guide/diving-deeper/scenegraph). We use it to describe the individual shapes in the scene and their hierarchical relationships.
+-   [Camera](/en/docs/api/camera). We use it to define the angle at which the whole scene is viewed. We have a built-in camera for each canvas that uses orthogonal projection by default, which can be modified at any time subsequently.
+-   [Renderer](/en/docs/api/renderer). We use it to specify which underlying technology the canvas uses to render the scene. Different renderers have different rendering capabilities, for example only `g-webgl` can render 3D graphics. In 2D scenes we try to achieve consistent rendering with different renderers.
 
-在设计画布 API 时，我们参考了 DOM API，因此它们有着很多相似之处：
+When designing the canvas API, we referenced the DOM API, so they share many similarities:
 
--   画布可以类比成浏览器环境中的 [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) 对象。和 window 一样，在内部实现中我们也让画布继承了 [EventTarget](/zh/docs/api/builtin-objects/event-target)。与 window 不同的是，在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。
--   在 DOM 树中页面的入口为 [window.document](https://developer.mozilla.org/en-US/docs/Web/API/Document)，在画布中为 `canvas.document`。
--   在 DOM 树中根节点为 [document.documentElement](https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement)，也就是 `<html>`。在画布中同样可以通过 `canvas.document.documentElement` 访问。
+-   The canvas can be analogous to the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object in the browser environment. Like window, the canvas inherits from [EventTarget](/en/docs/api/builtin-objects/event-target) in the internal implementation. Unlike window, multiple canvases can coexist in the same page, i.e. multiple "parallel worlds" can exist at the same time.
+-   The entry point of the page in the DOM tree is [window.document](https://developer.mozilla.org/en-US/docs/Web/API/Document) and in the canvas is `canvas.document`.
+-   The root node in the DOM tree is [document.documentElement](https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement), which is `<html>`. It can also be accessed in the canvas via `canvas.document.documentElement`.
 
-我们选择尽可能兼容 DOM API，一方面降低了前端使用者的记忆学习成本，另一方面可以充分利用现有的 Web 生态，例如可以无缝接入[现有的手势和拖拽库](/zh/docs/api/event#手势和拖拽)。
+We chose to be as DOM API compatible as possible to reduce the memory learning cost for front-end users on the one hand, and to leverage the existing Web ecosystem on the other hand, e.g. to seamlessly access [existing gesture and drag libraries](/en/docs/api/event#gestureanddrag).
 
-对于非常规浏览器环境，我们也提供了例如 [WebWorker 中使用 OffscreenCanvas](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)、[服务端渲染](/zh/docs/api/canvas#服务端渲染)等方案。
+For unconventional browser environments, we also provide options such as [OffscreenCanvas in WebWorker](/en/docs/api/canvas#use-offscreencanvas-in-webworker-), [server-side rendering](/en/docs/api/canvas# server-side rendering) and other options.
 
-# 继承自
+# Inherited from
 
-[EventTarget](/zh/docs/api/builtin-objects/event-target)
+[EventTarget](/en/docs/api/builtin-objects/event-target)
 
-# 初始化
+# Initialization
 
-在创建一个画布时，我们可以传入以下初始化参数，这也是最简单的初始化方式：
+When creating a canvas, we can pass in the following initialization parameters, which is the simplest way to initialize it.
 
--   container 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
--   width / height 画布宽度和高度
--   renderer 渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`
+-   container The id or DOM element of the canvas container, and the subsequent `<canvas>/<svg>` is automatically created within that DOM element.
+-   width / height
+-   renderer
 
 ```js
 import { Canvas } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 
-// 创建渲染器
 const webglRenderer = new WebGLRenderer();
 
-// 创建画布
 const canvas = new Canvas({
-    container: 'container', // 画布 DOM 容器 id
-    width: 600, // 画布宽度
-    height: 500, // 画布高度
-    renderer: webglRenderer, // 指定渲染器
+    container: 'container',
+    width: 600,
+    height: 500,
+    renderer: webglRenderer,
 });
 ```
 
-以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
+The above initialization approach only requires providing a container `container` that carries `<canvas>/<svg>`, but sometimes we have custom requirements as follows:
 
--   自行创建 `<canvas>`，[详见](/zh/docs/api/canvas#使用创建好的-canvas-元素)
--   在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
--   在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/docs/api/canvas#服务端渲染)
+-   [Using existed `<canvas>`](/en/docs/api/canvas#使用创建好的-canvas-元素)
+-   [Using OffscreenCanvas in WebWorker](/en/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+-   [Server-side rendering in Node.js](/en/docs/api/canvas#服务端渲染)
 
-此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
+In this case you can use `canvas` instead of `container`, and more initialization parameters are as follows.
 
 ## container
 
-可选，`string | HTMLElement`，画布容器的 id 或 DOM 元素。后续当渲染器初始化时，会在该容器 DOM 元素内自动创建 `<canvas>/<svg>`。
+Optional, `string | HTMLElement`. The id or DOM element of the canvas container. Later, when the renderer is initialized, `<canvas>/<svg>` is automatically created inside that container's DOM element.
 
 ## canvas
 
-可选，`HTMLCanvasElement | OffscreenCanvas | NodeCanvas`，已创建好的 `<canvas>` 元素或者 OffscreenCanvas。
+Optional, `HTMLCanvasElement | OffscreenCanvas | NodeCanvas`. Using existed `<canvas>` or OffscreenCanvas.
 
-当传入此参数时，[container](/zh/docs/api/canvas#container) 参数将被忽略，我们假定 `<canvas>` 已经创建完毕并且加入到文档中，例如：
+When this parameter is passed, the [container](/en/docs/api/canvas#container) argument is ignored and we assume that `<canvas>` has been created and added to the document, e.g.
 
 ```js
-// 用户自行创建 <canvas>
+// create a <canvas>
 const $canvas = document.createElement('canvas');
-// 设置画布大小
 const dpr = window.devicePixelRatio;
 $canvas.height = dpr * 600;
 $canvas.width = dpr * 500;
 $canvas.style.height = '600px';
 $canvas.style.width = '500px';
-// 用户自行将 <canvas> 加入文档
 document.getElementById('container').appendChild($canvas);
 
-// 使用创建好的 <canvas> 创建画布
+// using existed <canvas>
 const canvas = new Canvas({
     canvas: $canvas,
     renderer: canvasRenderer,
 });
 ```
 
-除了浏览器环境下的 `HTMLCanvasElement`，还可以使用：
+In addition to the `HTMLCanvasElement` in the browser environment, you can also use:
 
--   `OffscreenCanvas` 在 WebWorker 中运行，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
--   `NodeCanvas` 在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/docs/api/canvas#服务端渲染)
+-   [`OffscreenCanvas` in WebWorker](/en/docs/api/canvas#在-webworker-中使用-offscreencanvas)
+-   [`NodeCanvas` in server-side rendering](/en/docs/api/canvas#服务端渲染)
 
-需要注意的是，一旦使用了该参数，就不再支持运行时切换渲染器了。
+Note that once this parameter is used, runtime switching of the renderer is no longer supported.
 
 ## width / height
 
-画布宽高。
+Set the width and height of canvas.
 
--   如果设置了 [container](/zh/docs/api/canvas#container)，必填。渲染器创建 `<canvas>` 时将使用传入的宽高设置。
--   如果设置了 [canvas](/zh/docs/api/canvas#canvas)，选填。如果不填写，将使用 `canvas.width/height` 与 `devicePixelRatio` 计算。
+-   Required if [container](/en/docs/api/canvas#container) passed in. The renderer will create `<canvas>` with these values.
+-   Optional if [canvas](/en/docs/api/canvas#canvas) passed in. If not provided, we will calculate with `canvas.width/height` and `devicePixelRatio`.
 
 ## renderer
 
-必填，目前支持以下渲染器:
+Required. The following renderers are currently supported:
 
--   基于 Canvas2D 的 [g-canvas](/zh/docs/api/renderer/canvas)
--   基于 SVG 的 [g-svg](/zh/docs/api/renderer/svg)
--   基于 WebGL 2/1 的 [g-webgl](/zh/docs/api/renderer/webgl)
--   基于 WebGPU 的 [g-webgpu](/zh/docs/api/renderer/webgpu)
+-   [g-canvas](/en/docs/api/renderer/canvas)
+-   [g-svg](/en/docs/api/renderer/svg)
+-   [g-webgl](/en/docs/api/renderer/webgl)
+-   [g-webgpu](/en/docs/api/renderer/webgpu)
+-   [g-canvaskit](/en/docs/api/renderer/canvaskit)
 
-后续可以在运行时通过 [setRenderer()](/zh/docs/api/canvas#setrendererrenderer-renderer) 切换。
+It can be switched at runtime with [setRenderer()](/en/docs/api/canvas#setrendererrenderer-renderer) after initialized.
 
 ## background
 
-选填，画布初始化时用于清除的颜色。类似 WebGL 中的 [clearColor](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/clearColor)。
+Optional. The color used to clear the canvas when it is initialized, similar to WebGL's [clearColor](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/clearColor).
 
-支持 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 取值，默认值为 `'transparent'`。
+Using [\<color\>](/en/docs/api/css/css-properties-values-api#color), defaults to `'transparent'`.
 
-在该[示例](/zh/examples/canvas#background)中，我们为 Canvas 设置了一个半透明的红色，而最底层的 `<div>` 通过 CSS 设置了背景灰色：
+In [this example](/en/examples/canvas#background), we have set a translucent red color for the Canvas, and the bottom `<div>` has a background gray color set by CSS: `<div>`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 
-# 特殊运行平台适配
+# Special platform adaptations
 
-在一些特殊的运行平台（例如小程序）上，无法正常使用类似 [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) 这样的全局变量，而在内部我们又需要依靠它创建图片（`new globalThis.Image()`）、判断是否支持 TouchEvent（`'ontouchstart' in globalThis`）等。因此需要这些特殊平台的使用者手动传入特有的创建以及判断方式。
+On some special runtime platforms (e.g. applets), it is not possible to use global variables like [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ globalThis), and internally we need to rely on it to create images (`new globalThis.Image()`), determine if a TouchEvent is supported (`'ontouchstart' in globalThis`), and so on. Therefore, users of these particular platforms need to manually pass in the specific creation and determination methods.
 
 ## document
 
-可选。默认将使用 `window.document`。在[基于 g-svg 的服务端渲染方案](/zh/docs/api/renderer/svg#服务端渲染)中，需要将 `window.document` 替换成 [JSDOM](https://github.com/jsdom/jsdom) 提供的对应元素，以便创建对应 SVG 元素。
+Optional. Default will use `window.document`. In [g-svg based server-side rendering scheme](/en/docs/api/renderer/svg#server-side rendering), you need to replace `window.document` with the corresponding element provided by [JSDOM](https://github.com/jsdom/jsdom) in order to create the corresponding SVG element.
 
 ## devicePixelRatio
 
-可选。默认将使用 `window.devicePixelRatio`，如果运行环境中无 `window` 对象，例如 WebWorker 中，可以手动传入，如果仍未传入则使用 1。
+Optional. By default `window.devicePixelRatio` will be used, if there is no `window` object in the runtime environment, such as in WebWorker, you can pass it in manually, or use 1 if it is still not passed in.
 
 ## requestAnimationFrame
 
-可选。默认将使用 `window.requestAnimationFrame`，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
+Optional. By default `window.requestAnimationFrame` will be used, if there is no `window` object in the runtime environment, such as an applet environment, you can pass it in manually.
 
 ## cancelAnimationFrame
 
-可选。默认将使用 `window.cancelAnimationFrame`，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
+Optional. By default `window.cancelAnimationFrame` will be used, if there is no `window` object in the runtime environment, such as an applet environment, you can pass it in manually.
 
 ## createImage
 
-可选。返回一个 `HTMLImageElement` 或类似对象，默认将使用 `() => new window.Image()` 创建，如果运行环境中无 `window` 对象，例如小程序环境，可以手动传入。
+Optional. Returns an `HTMLImageElement` or similar object, which by default will be created using `() => new window.Image()`. If there is no `window` object in the runtime environment, such as an applet environment, you can pass it in manually.
 
-例如支付宝小程序中使用 [createImage](https://opendocs.alipay.com/mini/api/createimage)：
+For example, in the Alipay applet use [createImage](https://opendocs.alipay.com/mini/api/createimage).
 
 ```js
 const canvas = new Canvas({
-    // 省略其他参数
     createImage: () => canvas.createImage(),
 });
 ```
 
 ## supportsPointerEvents
 
-可选。是否支持 PointerEvent，默认将使用 `!!globalThis.PointerEvent` 判断。如果传入 `false`，事件监听插件将不会监听例如 `pointerdown` 等 PointerEvent。
+Optional. Whether PointerEvent is supported or not, the default will use `! !globalThis.PointerEvent`. If `false` is passed, the event listener plugin will not listen for PointerEvent such as `pointerdown`.
 
 ## supportsTouchEvents
 
-可选。是否支持 TouchEvent。如果传入 `false`，事件监听插件将不会监听例如 `touchstart` 等 TouchEvent。
+Optional. If `false` is passed, the event listener plugin will not listen to TouchEvent such as `touchstart`.
 
 ## isTouchEvent
 
-可选。判断一个原生事件是否是 TouchEvent，接受原生事件作为参数，返回判定结果。
+Optional. Determines if a native event is a TouchEvent, accepts the native event as parameter, and returns the result.
 
 ## isMouseEvent
 
-可选。判断一个原生事件是否是 MouseEvent，接受原生事件作为参数，返回判定结果。
+Optional. Determines if a native event is a MouseEvent, accepts the native event as parameter, and returns the result.
 
 ## offscreenCanvas
 
-可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：
+Optional. Returns an `HTMLCanvasElement | OffscreenCanvas` or similar object. Used to generate an offscreen Canvas2D context, it is currently used in the following scenarios.
 
--   g 绘制并调用 `ctx.measureText` 度量文本
--   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 会在上下文中绘制一遍路径，再调用 `ctx.isPointInPath` Canvas2D API
--   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 会在上下文中调用 `ctx.createLinearGradient` 绘制渐变，再生成纹理
+-   The core service calls `ctx.measureText` to measure the text.
+-   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) will draw the path in context and call `ctx.isPointInPath` Canvas2D API.
+-   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) will call `ctx.createLinearGradient` in the context to draw the gradient and then generate the texture.
 
-默认不传入时会尝试创建 `OffscreenCanvas`，失败后再使用 DOM API 创建一个 `HTMLCanvasElement`。但在小程序这样非 DOM 环境中，需要手动传入：
+When not passed in by default, it will try to create an `OffscreenCanvas` and then use the DOM API to create an `HTMLCanvasElement` when it fails. However, in non-dom environments like applets, you need to manually pass in.
 
 ```js
 const canvas = new Canvas({
-    // 省略其他参数
+    //...
     offscreenCanvas: {
-        // 小程序中创建上下文方法
         getContext: () => Canvas.createContext(),
     },
 });
 ```
 
-# 坐标系
+# Coordinate system
 
-当我们说起“位置”，一定是相对于某个坐标系下而言，在 G 中我们会使用到 Client、Screen、Page、Canvas 以及 Viewport 坐标系，例如在[事件系统](/zh/docs/api/event)中可以从事件对象上获取不同坐标系下的坐标：
+When we talk about "location", it must be relative to some coordinate system, in G we use Client, Screen, Page, Canvas and Viewport coordinate systems, for example, in [event system](/en/docs/api/event) you can get the coordinates from the event object in different coordinate systems.
 
 ```js
 canvas.addEventListener('click', (e) => {
@@ -204,54 +199,60 @@ canvas.addEventListener('click', (e) => {
 });
 ```
 
-在这些坐标系中，Client、Screen、Page 都是浏览器原生支持的坐标系，因此我们不会对事件对象上的这些坐标值做任何修改。而 Canvas 画布类似在浏览器中实现的一个“小浏览器”，因此它的视口坐标系即 Viewport 就可以类比成浏览器的 Client 坐标系。而当相机发生移动时，我们的可视范围随之改变，类似页面发生滚动，但图形在世界中的位置并没有改变，因此 Canvas 坐标系就可以类比成浏览器的 Page 坐标系。
+Of these coordinate systems, Client, Screen, and Page are all natively supported by the browser, so we don't make any changes to these coordinate values on the event object. The Canvas canvas is like a "mini-browser" implemented in the browser, so its viewport coordinate system is analogous to the browser's Client coordinate system. When the camera moves, our viewing area changes, similar to a page scrolling, but the position of the graphics in the world does not change, so the Canvas coordinate system is analogous to the browser's Page coordinate system.
 
-这些坐标系都以左上角为原点： ![](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png)
+These coordinate systems all have the upper left corner as the origin:
 
-⚠️ 如果使用了 [g-plugin-3d](/zh/docs/plugins/3d) 插件，Z 轴正向指向屏幕外。
+<img src="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes/canvas_default_grid.png" width="300" alt="canvas coordinates">
 
-我们提供了它们之间的转换方法，在这个[示例](/zh/examples/event#coordinates)中，移动鼠标可以看到鼠标所在位置在各个坐标系下的值：
+⚠️ If [g-plugin-3d](/en/docs/plugins/3d) plugin is used, the Z-axis is pointing off-screen.
+
+We provide methods to convert between them, and in this [example](/en/examples/event#coordinates), move the mouse to see the value of the mouse location in each coordinate system:
 
 -   Client <-> Viewport
 -   Canvas <-> Viewport
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ" width="300" alt="coordinates conversion">
 
 ## Client
 
-前端开发者最熟悉的应该是 Client 浏览器坐标系，它以浏览器左上角为原点，G 不会修改原生事件对象的这个坐标值，[示例](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX)。
+Front-end developers should be most familiar with the Client browser coordinate system, which takes the upper-left corner of the browser as the origin, and G does not modify this coordinate value for native event objects, [example](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX).
 
 https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX
 
-如果文档没有滚动，等同于 Page 坐标，下图展示了与 Screen 的差别：
+If the document is not scrolled, which is equivalent to the Page coordinate, the following figure shows the difference with Screen:
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TYQJR40KMm0AAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TYQJR40KMm0AAAAAAAAAAAAAARQnAQ" width="300" alt="page coordinates">
 
 ## Screen
 
-屏幕坐标系也是浏览器常用的坐标系，以屏幕左上角为原点，会受页面滚动影响。G 不会修改原生事件对象的这个坐标值。 https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX
+The screen coordinate system is also the common browser coordinate system, with the top left corner of the screen as the origin, and is affected by page scrolling. we won't modify this coordinate value of the native event object.
 
-值得一提的是，在双屏下可能会出现负数，例如在左侧屏幕中，[示例](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX)：
+https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*SlEMSJq20R4AAAAAAAAAAAAAARQnAQ)
+It is worth mentioning that negative numbers may appear in dual screens, for example in the left screen, [example](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX).
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*SlEMSJq20R4AAAAAAAAAAAAAARQnAQ" width="300" alt="page coordinates">
 
 ## Page
 
-以文档左上角为原点，考虑文档滚动，G 不会修改原生事件对象的这个坐标值。 https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/pageX
+With the top left corner of the document as the origin and considering the document scrolling, G does not modify this coordinate value of the native event object.
+
+https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/pageX
 
 ## Canvas
 
-可以类比浏览器的 Client 坐标系，也称作世界坐标系，我们在创建图形时指定的位置均相对于该坐标系。它以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。也称作“世界坐标系”，涉及到旋转时，我们设定沿坐标轴正向顺时针为旋转方向。
+An analogy can be drawn to the browser's Client coordinate system, also known as the world coordinate system, to which the positions we specify when creating a drawing are relative. It takes the top left corner of the DOM element of the canvas as the origin, with the X-axis pointing forward to the right side of the screen and the Y-axis pointing forward to the bottom of the screen. Also known as the "world coordinate system", when it comes to rotation, we set the direction of rotation to be clockwise along the axes.
 
 ## Viewport
 
-在浏览器的 Page 坐标系中，不管页面如何滚动，元素在文档中的坐标都不会改变，改变的是我们的可视区域。
+In the browser's Page coordinate system, the coordinates of the element in the document do not change regardless of page scrolling; what changes is our viewing area.
 
-同样的，[相机](/zh/docs/api/camera)决定了我们观察世界的角度，如果相机没有发生移动，Viewport 视口坐标系和 Canvas 坐标系将完全重合，因此在我们的可见范围内，视口左上角坐标与 Canvas 坐标系原点一样，都是 `[0, 0]`。但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。
+Similarly, [camera](/en/docs/api/camera) determines the angle from which we view the world. If the camera does not move, the Viewport coordinate system and the Canvas coordinate system will coincide exactly, so the coordinates of the upper-left corner of the Viewport are the same as the origin of the Canvas coordinate system, `[0, 0]`, in our visible range. However, if the camera is panned, rotated, or scaled, the viewport will also change accordingly, and the position of `[0, 0]` in the upper-left corner of the viewport will no longer be `[0, 0]` in the Canvas coordinate system.
 
-## 转换方法
+## Conversion method
 
-我们提供以下转换方法需要使用到 Point，它的结构如下，可以从 G 核心包中引入，[示例](/zh/examples/event#coordinates)：
+We provide the following transformation methods needed to use Point, which has the following structure and can be introduced from the G core package, [example](/en/examples/event#coordinates):
 
 ```js
 interface Point {
@@ -264,12 +265,12 @@ import type { Point } from '@antv/g';
 
 ### Client <-> Viewport
 
-我们提供了从浏览器的 Client 坐标系到画布 Viewport 视口坐标系的转换方法，[示例](/zh/examples/event#coordinates)：
+We provide a method for converting from the browser's Client coordinate system to the canvas Viewport coordinate system, [example](/en/examples/event#coordinates):
 
 -   client2Viewport(client: Point): Point
 -   viewport2Client(canvas: Point): Point
 
-在内部实现中，我们使用了以下计算逻辑，例如从 Client 到 Viewport，首先获取画布 DOM 元素在 Client 坐标系下的包围盒，使用到了 [getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect)，然后用 clientX/Y 减去包围盒左上角坐标，就得到了相对画布 DOM 元素左上角的坐标，即 Viewport 坐标：
+In the internal implementation, we use the following calculation logic, for example, from Client to Viewport, we first get the bounding box of the canvas DOM element under the Client coordinate system, using [getBoundingClientRect](https://developer.mozilla.org/en-US/ docs/Web/API/Element/getBoundingClientRect), and then subtract the coordinates of the upper-left corner of the bounding box from clientX/Y to get the coordinates of the upper-left corner of the DOM element relative to the canvas, i.e., the Viewport coordinates:
 
 ```js
 // 获取画布 DOM 元素在 Client 坐标系下的包围盒
@@ -280,85 +281,85 @@ viewportX = clientX - bbox.left;
 viewportY = clientY - bbox.top;
 ```
 
-例如 DOM 树中的 `<canvas>` 元素通过绝对定位，处于距浏览器左上角 `[100, 100]` 的位置，当鼠标移动到 `<canvas>` 左上角 `[0, 0]` 位置时，可以得到 Client 坐标为 `[100, 100]`：
+For example, the `<canvas>` element in the DOM tree is absolutely positioned at `[100, 100]` from the top left corner of the browser, and when the mouse moves to the `[0, 0]` position in the top left corner of `<canvas>`, the Client coordinates are `[100, 100]`.
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
 canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 ```
 
-为了兼容旧版 G API，我们也提供了：
+For compatibility with older versions of the G API, we also provide:
 
 -   getPointByClient(clientX: number, clientY: number): Point
 -   getClientByPoint(viewportX: number, viewportY: number): Point
 
 ### Canvas <-> Viewport
 
-[相机](/zh/docs/api/camera)决定了我们观察世界的角度，如果相机没有发生移动，Viewport 视口坐标系和 Canvas 坐标系将完全重合，因此在我们的可见范围内，视口左上角坐标与 Canvas 坐标系原点一样，都是 `[0, 0]`。但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。
+The [camera](/en/docs/api/camera) determines the angle from which we view the world. If the camera does not move, the Viewport coordinate system and the Canvas coordinate system will coincide exactly, so within our visible range, the coordinates of the upper-left corner of the viewport are the same as the Canvas coordinate system origin, both are `[0, 0]`. However, if the camera is panned, rotated, or scaled, the viewport will change accordingly, and the `[0, 0]` position in the upper-left corner of the viewport will no longer be `[0, 0]` in the Canvas coordinate system.
 
-在[示例](/zh/examples/event#coordinates)中，我们将相机向上移动了一段距离（整个世界在观察者眼中向下移动），可以发现圆心在 Canvas 坐标系下位置不变，仍然为 `[300, 200]`，但在 Viewport 坐标系下发生了偏移：
+In [example](/en/examples/event#coordinates), we moved the camera up a distance (the whole world moves down in the viewer's eyes) and found that the center of the circle remains the same in the Canvas coordinate system, `[300, 200]`, but is shifted in the Viewport coordinate system as follows.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qe5tR4G5AD4AAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qe5tR4G5AD4AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas to viewport">
 
-我们提供了以下转换方法：
+We offer the following conversion methods:
 
 -   viewport2Canvas(viewport: Point): Point
 -   canvas2Viewport(canvas: Point): Point
 
-在内部实现中，我们使用了以下计算逻辑，例如从 Canvas 到 Viewport，经历从世界坐标系到裁剪坐标系，再到 NDC，最后到视口坐标系的变换：
+In the internal implementation, we use the following computational logic to transform, for example, from Canvas to Viewport, from the world coordinate system to the crop coordinate system, to NDC, and finally to the viewport coordinate system:
 
 ```js
-// 计算相机 VP 矩阵
+// Camera VP Matrix
 const camera = canvas.getCamera();
 const projectionMatrix = camera.getPerspective();
 const viewMatrix = camera.getViewTransform();
 const vpMatrix = mat4.multiply(mat4.create(), projectionMatrix, viewMatrix);
 
-// 世界坐标系（Canvas） -> 裁剪坐标系（Clip）
+// Canvas -> Clip
 const clip = vec3.fromValues(canvasX, canvasY, 0);
 vec3.transformMat4(clip, clip, vpMatrix);
 
-// Clip -> NDC -> Viewport 同时翻转 Y 轴
+// Clip -> NDC -> Viewport and FlipY
 const { width, height } = this.canvasConfig; // 画布宽高
 viewportX = ((clip[0] + 1) / 2) * width;
 viewportY = (1 - (clip[1] + 1) / 2) * height;
 ```
 
-# 入口与根节点
+# The root node
 
-我们都知道浏览器中的 `window` 对象，DOM 树的入口为 `window.document`，而入口中通常会包含一个根节点 `<html>` 元素，它可以通过 `window.document.documentElement` 获得。我们向这个根节点下添加各种 DOM 元素，例如 `<head>` `<body>` 等。
+We all know the `window` object in the browser, the entry point of the DOM tree is `window.document`, and the entry point usually contains a root node `<html>` element, which can be obtained from `window.document.documentElement`. We add various DOM elements to this root node, such as `<head>`, `<body>`, etc.
 
-Canvas 画布可以类比到 `window` 对象。与之类似，每一个画布在创建时都内置了一个入口 [Document](/zh/docs/api/builtin-objects/document)，可以通过 `canvas.document` 获取。这个入口包含了[场景图](/zh/docs/guide/diving-deeper/scenegraph)的根节点，这个根节点可以通过 `canvas.document.documentElement` 获取，随后可以通过 `appendChild` 向这个根节点中添加图形完成渲染。
+Canvas canvases can be analogous to `window` objects. Similarly, each canvas is created with a built-in entry [Document](/en/docs/api/builtin-objects/document), which can be obtained via `canvas.document`. This entry contains the root node of [Scene Graph](/en/docs/guide/diving-deeper/scenegraph), which can be obtained via `canvas.document.documentElement`, and then you can add graphics to this root node via `appendChild` to complete the rendering. and then you can add graphics to this root node with `appendChild` to complete the rendering.
 
 ## document
 
-返回一个内置的 [Document](/zh/docs/api/builtin-objects/document) 对象，它拥有场景图的根节点。通过 `document.documentElement` 获取到这个根节点后，可以使用场景图能力添加子节点：
+Returns a built-in [Document](/en/docs/api/builtin-objects/document) object that holds the root node of the scene graph. After getting this root node via `document.documentElement`, you can add child nodes using the scene graph capability:
 
 ```js
-// 向画布中添加一个 Circle
+// append a Circle to canvas
 canvas.document.documentElement.appendChild(circle);
 canvas.document.documentElement.children; // [circle]
 ```
 
-除了添加/删除节点能力，其他场景图能力、事件能力也都可以在根节点上使用：
+In addition to the add/remove node capability, other scene graph and event capabilities are also available on the root node:
 
 ```js
-canvas.document.documentElement.getBounds(); // 获取当前场景包围盒大小
-canvas.document.addEventListener('click', () => {}); // 绑定事件
+canvas.document.documentElement.getBounds();
+canvas.document.addEventListener('click', () => {});
 ```
 
 ## getRoot(): Group
 
-`canvas.document.documentElement` 的别名，因此以下两种写法等价：
+Alias of `canvas.document.documentElement`, so the following two ways of writing it are equivalent:
 
 ```js
 const root = canvas.getRoot();
 const root = canvas.document.documentElement;
 ```
 
-# 添加/删除场景图节点
+# Add/remove scene graph nodes
 
-由于画布并没有继承 [Node](/zh/docs/api/builtin-objects/node)，因此它本身并不具备节点操作能力。但我们增加了一些快捷方式，以下节点操作本质上都是在根节点上完成的，例如以下两种写法等价：
+Since canvas does not inherit from [Node](/en/docs/api/builtin-objects/node), it does not have node manipulation capability by itself. However, we have added some shortcuts and the following node operations are essentially done on the root node, e.g. the following two writes are equivalent:
 
 ```js
 canvas.appendChild(circle);
@@ -367,7 +368,7 @@ canvas.document.documentElement.appendChild(circle);
 
 ## appendChild(object: DisplayObject)
 
-向画布中添加待渲染对象。如果该对象有子节点也会一并加入。
+Adds the object to be rendered to the canvas. If the object has children, they are also added together.
 
 ```js
 const circle = new Circle({ style: { r: 10 } });
@@ -378,7 +379,7 @@ canvas.appendChild(circle);
 
 ## removeChild(object: DisplayObject)
 
-从画布中移除对象。如果该对象有子节点也会一并移除。
+Removes the object from the canvas. If the object has children, they are removed as well.
 
 ```js
 canvas.removeChild(circle);
@@ -387,20 +388,20 @@ canvas.removeChild(circle);
 
 ## removeChildren()
 
-移除并销毁画布中所有对象。
+Removes and destroys all objects in the canvas.
 
 ```js
 canvas.removeChildren();
 // or canvas.document.documentElement.removeChildren();
 ```
 
-# 修改初始化配置
+# Modify the initialization configuration
 
-在初始化画布时我们传入了画布尺寸、渲染器等配置，后续可能对它们进行修改，因此我们提供了以下 API。
+When initializing the canvas we pass in the canvas size, renderer and other configurations, which may be modified subsequently, so we provide the following API.
 
 ## resize(width: number, height: number)
 
-有时我们需要在初始化之后调整画布尺寸，例如使用 [ResizeObserver](https://developer.mozilla.org/zh-CN/docs/Web/API/ResizeObserver) 监听容器尺寸变化：
+Sometimes we need to resize the canvas after initialization, for example by using [ResizeObserver](https://developer.mozilla.org/zh-CN/docs/Web/API/ResizeObserver) to listen for container size changes.
 
 ```js
 const resizeObserver = new ResizeObserver((entries) => {
@@ -418,10 +419,10 @@ resizeObserver.observe($container);
 
 ## setRenderer(renderer: Renderer)
 
-在绝大部分场景下我们都应该在画布初始化时指定一个渲染器，后续再也不会更改。但也有小部分场景需要在运行时[切换渲染器](/zh/docs/guide/diving-deeper/switch-renderer#运行时切换)，例如 G 官网中几乎所有的示例都是这样做的：
+In most scenarios we should specify a renderer at canvas initialization and never change it again. However, there are a few scenarios where we need to [switch renderers at runtime](/en/docs/guide/diving-deeper/switch-renderer#runtime), for example, almost all of the examples on our website do this.
 
 ```js
-// 当图元数目很多时切换到 WebGL 渲染器
+// switch to WebGL renderer if possible
 if (tooManyShapes) {
     canvas.setRenderer(webglRenderer);
 } else {
@@ -429,28 +430,27 @@ if (tooManyShapes) {
 }
 ```
 
-# 生命周期
+# Lifecycle
 
-在实例化时会进行初始化逻辑，随后可调用以下生命周期方法。
+The initialization logic is performed upon instantiation, and the following lifecycle methods can be called afterwards.
 
 ## ready
 
-初始化工作完成后，返回一个 Promise，等价于监听 [CanvasEvent.READY](/zh/docs/api/canvas#ready-事件) 事件：
+When initialization is complete, a Promise is returned that is equivalent to listening for the [CanvasEvent.READY](/en/docs/api/canvas#ready-event) event.
 
 ```js
 await canvas.ready;
 
-// 等价于
+// or
 import { CanvasEvent } from '@antv/g';
 canvas.addEventListener(CanvasEvent.READY, () => {});
 ```
 
 ## render()
 
-渲染画布，由于渲染器默认开启了自动渲染，大多数情况下不需要手动调用。但有些场景需要手动控制渲染时机，此时可以进行[按需渲染](/zh/docs/guide/diving-deeper/rendering-on-demand) [示例](/zh/examples/canvas#rendering-on-demand)：
+Rendering the canvas, since the renderer has auto-rendering enabled by default, there is no need to call it manually in most cases. However, some scenes require manual control of rendering timing, in which case [rendering-on-demand](/en/docs/guide/diving-deeper/rendering-on-demand) [example](/en/examples/canvas#rendering-on-demand).
 
 ```js
-// 关闭自动渲染
 const webglRenderer = new WebGLRenderer({
     enableAutoRendering: false,
 });
@@ -460,27 +460,27 @@ canvas.render();
 
 ## destroy(destroyScenegraph = true)
 
-销毁画布，依次执行以下销毁逻辑：
+Destroy the canvas, executing the following destruction logic in turn.
 
--   如果开启了自动渲染，停止主渲染循环
--   将整个场景图从画布中移除，如果设置了 `destroyScenegraph` 还会销毁整个场景图
--   销毁渲染上下文
+-   If auto-rendering is enabled, stop the main rendering loop.
+-   Remove the entire scene graph from the canvas, and destroy it if `destroyScenegraph` is set.
+-   Destroying the rendering context.
 
 ```js
-// 仅销毁画布，保留场景图
+// Destroy the canvas only, keep the scene graph
 canvas.destroy();
 
-// 一并销毁画布中的场景图
+// Destroy the scene graph in the canvas together
 canvas.destroy(true);
 ```
 
-# 获取内置对象
+# Get built-in objects
 
-通过以下方法可以快速获取画布中的一些内置对象。
+You can quickly get some built-in objects in the canvas by using the following methods.
 
 ## getConfig(): CanvasConfig
 
-获取初始传入画布的配置。
+Get the configuration of the initial incoming canvas.
 
 ```js
 const canvas = new Canvas({
@@ -494,32 +494,32 @@ canvas.getConfig(); // { container: 'container', width: 600, ... }
 
 ## getContextService(): ContextService
 
-获取[渲染上下文](/zh/docs/api/renderer#渲染环境上下文)，由渲染器（`g-canvas/svg/webgl`）实现。该渲染上下文上有很多常用的方法，例如：
+Get [rendering context](/en/docs/api/renderer#rendering environment context), which is implemented by the renderer (`g-canvas/svg/webgl`). There are many common methods on this rendering context, such as:
 
--   getDomElement() 返回上下文所处的 DOM 元素，例如 `g-canvas/webgl` 会返回 `<canvas>`，而 `g-svg` 会返回 `<svg>`
--   getDPR() 返回上下文的 devicePixelRatio
+-   `getDomElement()` Get the DOM element of current renderer, for example `g-canvas/webgl` will return a `<canvas>` element while `g-svg` will return a `<svg>` element.
+-   `getDPR()` Get devicePixelRatio of current rendering context.
 
 ## getCamera(): Camera
 
-获取[相机](/zh/docs/api/camera)，后续可对该相机进行操作，例如切换投影模式、完成相机动作和动画等。
+Get [camera](/en/docs/api/camera) and subsequently perform operations on that camera, such as switching projection mode, completing camera actions and animations, etc.
 
 ```js
 const camera = canvas.getCamera();
 
-// 相机动作
+// camera actions
 camera.pan();
 camera.rotate();
 
-// 切换透视投影模式
+// switch to perspective projection
 camera
     .setPosition(300, 100, 500)
     .setFocalPoint(300, 250, 0)
     .setPerspective(0.1, 1000, 75, 600 / 500);
 ```
 
-# 事件
+# Event
 
-在[事件系统](/zh/docs/api/event)中，大部分事件都会冒泡直至画布。例如我们在如下简单场景下点击 Circle，可以查看事件的传播路径依次为：
+In the [event system](/en/docs/api/event), most events bubble up to the canvas. For example, if we click Circle in the following simple scenario, we can see the propagation path of the events in order.
 
 ```
 Circle -> Group(canvas.document.documentElement) -> Document(canvas.document) -> Canvas：
@@ -531,36 +531,35 @@ canvas.addEventListener('click', (e) => {
 });
 ```
 
-## 绑定/解绑
+## Add/removeEventListener
 
-在 Canvas 画布和画布根节点上都可以绑定事件：
+Events can be bound on both the Canvas and the root node of the canvas.
 
 ```js
-// 在画布上绑定
 canvas.addEventListener('click', () => {});
 
-// 在画布根节点上绑定
+// or
 canvas.document.addEventListener('click', () => {});
 ```
 
-更多事件相关操作详见[事件系统](/zh/docs/api/event)
+More event-related operations are described in [event system](/en/docs/api/event).
 
-## 画布特有事件
+## Canvas-specific events
 
-画布在初始化、渲染前后会触发对应事件，目前可以监听以下画布相关事件：
+The canvas will trigger corresponding events before and after initialization, rendering, and currently the following canvas-related events can be listened to.
 
 ```js
 export enum CanvasEvent {
-  READY = 'ready', // 画布相关服务准备就绪后触发
-  BEFORE_RENDER = 'beforerender', // 在每一帧渲染前触发
-  AFTER_RENDER = 'afterrender', // 在每一帧渲染后触发
-  BEFORE_DESTROY = 'beforedestroy', // 在销毁前触发
-  AFTER_DESTROY = 'afterdestroy', // 在销毁后触发
-  RESIZE = 'resize', // 在 resize 时触发
+  READY = 'ready',
+  BEFORE_RENDER = 'beforerender',
+  AFTER_RENDER = 'afterrender',
+  BEFORE_DESTROY = 'beforedestroy',
+  AFTER_DESTROY = 'afterdestroy',
+  RESIZE = 'resize',
 }
 ```
 
-例如我们在官网所有例子中展示实时帧率，该组件在每次渲染后更新，我们就可以通过监听 `afterrender` 事件完成：
+For example, if we show the live frame rate in all the examples on the website, which is updated after each render, we can do it by listening to the `afterrender` event.
 
 ```js
 import { CanvasEvent } from '@antv/g';
@@ -568,15 +567,15 @@ import { CanvasEvent } from '@antv/g';
 canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
     stats.update();
 });
-// 或者
+// or
 canvas.addEventListener('afterrender', () => {
     stats.update();
 });
 ```
 
-### ready 事件
+### ready event
 
-在浏览器中我们可以通过 `window.onload` 获知包含 HTML 解析、样式解析、资源加载等页面初始化工作是否完成：
+In the browser, we can use `window.onload` to find out if the initialization of the page, including HTML parsing, style parsing, resource loading, etc., is complete.
 
 ```js
 // @see https://javascript.info/onload-ondomcontentloaded
@@ -585,7 +584,7 @@ window.onload = function () {
 };
 ```
 
-同样在 G 中这些初始化工作也是异步的，我们也提供了类似的 `ready` 事件。在初始化完成后可以进行场景图创建等工作：
+Also in G these initializations are asynchronous, and we provide a similar `ready` event. After the initialization is done you can do things like scene graph creation.
 
 ```js
 canvas.addEventListener(CanvasEvent.READY, () => {
@@ -593,37 +592,37 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 });
 ```
 
-除了监听 `ready` 事件，还可以选择[等待 ready 这个 Promise](/zh/docs/api/canvas#ready)：
+In addition to listening to the `ready` event, you can also choose to [wait for this Promise](/en/docs/api/canvas#ready).
 
 ```js
 await canvas.ready;
 canvas.appendChild(circle);
 ```
 
-# 使用 CustomElementRegistry
+# Using CustomElementRegistry
 
-通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/docs/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
+Usually we recommend using `new Circle()` to create built-in or custom graphics, but we also provide something like the DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/ CustomElementRegistry) API to create a completed registered graph using [document.createElement](/en/docs/api/builtin-objects/document#createelement), so the following writeup is equivalent.
 
 ```js
 import { Shape, Circle } from '@antv/g';
 
 const circle = canvas.document.createElement(Shape.CIRCLE, { style: { r: 100 } });
 
-// 或者
+// or
 const circle = new Circle({ style: { r: 100 } });
 ```
 
-`canvas.customElements` 提供了以下方法。
+`canvas.customElements` provides the following methods.
 
 ## define
 
-完整方法签名为：
+The full method signature is:
 
 ```js
 define(name: string, new (...any[]) => DisplayObject): void;
 ```
 
-所有 G 的内置图形在画布初始化时都完成了注册，对于自定义图形，如果也想通过 createElement 的方法创建，也可以按如下方式完成注册：
+All of G's built-in graphics are registered during canvas initialization, and for custom graphics, if you also want to create them with the `createElement` method, registration can be done as follows.
 
 ```js
 import { MyCustomShape } from 'my-custom-shape';
@@ -634,13 +633,13 @@ const myCustomShape = canvas.document.createElement(MyCustomShape.tag, {});
 
 ## get
 
-完整方法签名为：
+The full method signature is:
 
 ```js
 get(name: string): new (...any[]) => DisplayObject
 ```
 
-根据图形注册时提供的字符串，返回构造函数：
+Returns the constructor based on the string provided at the time of graphic registration.
 
 ```js
 import { Shape } from '@antv/g';
@@ -648,15 +647,15 @@ import { Shape } from '@antv/g';
 canvas.customElements.get(Shape.CIRCLE); // Circle constructor
 ```
 
-# 注意事项
+# Cautions
 
-## 多个画布共存
+## Multiple Canvas Coexistence
 
-在同一个页面中，多个画布可以共存，即可以同时存在多个“平行世界”。但受限于底层渲染 API，例如 WebGL 只允许至多 8 个上下文。[示例](/zh/examples/canvas#multi-canvas)
+Multiple canvases can coexist on the same page, i.e., multiple "parallel worlds" can exist at the same time. However, this is limited by the underlying rendering API, e.g. WebGL only allows up to 8 contexts. [example](/en/examples/canvas#multi-canvas)
 
-## 使用创建好的 canvas 元素
+## Using the created canvas element
 
-在该 [示例](/zh/examples/canvas#user-defined-canvas) 中，我们自行创建 `<canvas>` 元素，用它来创建画布：
+In this [example](/en/examples/canvas#user-defined-canvas), we create our own `<canvas>` element, which we use to create the canvas.
 
 ```js
 const $canvas = document.createElement('canvas');
@@ -670,22 +669,22 @@ const canvas = new Canvas({
 });
 ```
 
-## 在 WebWorker 中使用 OffscreenCanvas
+## Using OffscreenCanvas in WebWorker
 
-你可能看到过一些渲染引擎的应用：
+You may have seen some applications of the rendering engine:
 
 -   Babylon.js https://doc.babylonjs.com/divingDeeper/scene/offscreenCanvas
 -   Three.js https://r105.threejsfundamentals.org/threejs/lessons/threejs-offscreencanvas.html
 
-我们在以下两个场景会使用到 OffscreenCanvas，主要利用 Worker 解放主线程压力：
+We will use OffscreenCanvas in the following two scenarios, mainly using the Worker to relieve the main thread:
 
 1. GPGPU 配合 g-webgl 和 g-plugin-gpgpu 使用，例如上层的图分析算法库
 2. g-webgl 在 Worker 中渲染，同步结果到主线程
 
-在该 [示例](/zh/examples/canvas#offscreen-canvas) 中我们演示了第二种用法，在主线程创建 `<canvas>`，通过 `transferControlToOffscreen()` 将控制权转移给 WebWorker，后续在 WebWorker 中完成渲染，将结果同步给主线程：
+In this [example](/en/examples/canvas#offscreen-canvas) we demonstrate the second use, creating `<canvas>` in the main thread, transferring control to the WebWorker via `transferControlToOffscreen()`, and subsequently completing the rendering in the WebWorker and synchronizing the results to the main thread.
 
 ```js
-// 主线程
+// main thread
 const $canvas = document.createElement('canvas') as HTMLCanvasElement;
 const dpr = window.devicePixelRatio;
 $canvas.height = dpr * 600;
@@ -705,11 +704,11 @@ const canvas = new Canvas({
 });
 ```
 
-值得注意的是事件交互。OffscreenCanvas 并不具备事件监听能力，我们的交互都发生在主线程的 `<canvas>` 元素上，当鼠标点击事件被监听时，我们如何得知 OffscreenCanvas 中哪个图形命中了呢？
+It's worth noting that OffscreenCanvas doesn't have event listening capabilities, our interactions happen on the `<canvas>` element in the main thread, so when the mouse click event is listened to, how do we know which shape in OffscreenCanvas hit?
 
-我们可以这样实现：
+We can achieve this by:
 
-1. 监听 `<canvas>` 上的交互事件，触发后将事件通过 `postMessage` 传递给 Worker。注意这里并不能直接传递类似 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 这样的原生事件对象，在序列化时会报如下错误。正确的做法是提取原生事件对象上的关键属性（例如 `clientX/Y`）进行传递：
+1.  Listen for interaction events on `<canvas>` and pass them to the worker via `postMessage` when triggered. Note that you can't pass a native event object like [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/ PointerEvent), it will report the following error when serializing. The correct approach is to extract the key properties of the native event object (e.g. `clientX/Y`) and pass them.
 
 ```
 Uncaught (in promise) DOMException: Failed to execute 'postMessage' on 'Worker': PointerEvent object could not be cloned.
@@ -727,7 +726,7 @@ $canvas.addEventListener(
 );
 ```
 
-2. 在 Worker 中触发 G 渲染服务提供的交互事件 hook，例如接收到主线程传来的 `pointerdown` 信号时调用 `pointerDown` hook：
+2. Trigger the interaction event hook provided by the G rendering service in the worker, e.g. call the `pointerDown` hook when receiving the `pointerdown` signal from the main thread.
 
 ```js
 export function triggerEvent(event, ev) {
@@ -737,14 +736,14 @@ export function triggerEvent(event, ev) {
 }
 ```
 
-3. [cursor](/zh/docs/api/basic/display-object#鼠标样式) 鼠标样式显然无法在 Worker 中应用。我们可以在拾取到图形时在 Worker 中通过 `postMessage` 告知主线程修改 `<canvas>` 上的鼠标样式。
+3. [cursor](/en/docs/api/basic/display-object#鼠标样式) The mouse style obviously cannot be applied in the worker. We can tell the main thread to change the mouse style on `<canvas>` via `postMessage` in the Worker when we pick up the image.
 
-## 服务端渲染
+## Server-side rendering
 
-依据不同的渲染器，我们提供了以下服务端渲染方案：
+Depending on the renderer, we offer the following server-side rendering options:
 
--   [g-canvas + node-canvas](/zh/docs/api/renderer/canvas#服务端渲染)
--   [g-svg + JSDOM](/zh/docs/api/renderer/svg#服务端渲染)
+-   [g-canvas + node-canvas](/en/docs/api/renderer/canvas#服务端渲染)
+-   [g-svg + JSDOM](/en/docs/api/renderer/svg#服务端渲染)
 -   [g-webgl + headless-gl]()
 
-目前我们在[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/)中使用它们。
+We currently use them in [integration tests](https://github.com/antvis/g/tree/next/integration/__node__tests__/).
