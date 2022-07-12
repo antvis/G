@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import { AnnotationPluginOptions } from './tokens';
 
@@ -7,21 +6,23 @@ const containerModule = Module((register) => {
   register(AnnotationPlugin);
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'annotation';
 
-  constructor(private options: Partial<AnnotationPluginOptions> = {}) {}
+  constructor(private options: Partial<AnnotationPluginOptions> = {}) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(AnnotationPluginOptions, {
+  init(): void {
+    this.container.register(AnnotationPluginOptions, {
       useValue: {
         ...this.options,
       },
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.remove(AnnotationPluginOptions);
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.remove(AnnotationPluginOptions);
+    this.container.unload(containerModule);
   }
 }
