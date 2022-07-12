@@ -256,6 +256,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
+      // if (this.renderingContext.renderListCurrentFrame.length === 0) {
+      //   return;
+      // }
+
       const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
@@ -316,6 +320,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
+      // if (this.renderingContext.renderListCurrentFrame.length === 0) {
+      //   return;
+      // }
+
       const renderInstManager = this.renderHelper.renderInstManager;
 
       // TODO: time for GPU Animation
