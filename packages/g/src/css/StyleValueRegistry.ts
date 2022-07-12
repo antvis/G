@@ -8,6 +8,7 @@ import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { formatAttribute, isFunction, isNil } from '../utils';
+import type { CSSRGB } from './cssom';
 import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
 import type { PropertyMetadata } from './interfaces';
@@ -90,6 +91,12 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     syntax: PropertySyntax.PAINT,
   },
   {
+    name: 'shadowType',
+    keywords: ['inner', 'outer', 'both'],
+    defaultValue: 'outer',
+    layoutDependent: true,
+  },
+  {
     name: 'shadowColor',
     interpolable: true,
     syntax: PropertySyntax.COLOR,
@@ -98,18 +105,21 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'shadowOffsetX',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'shadowOffsetY',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'shadowBlur',
     interpolable: true,
     layoutDependent: true,
+    defaultValue: '0',
     syntax: PropertySyntax.SHADOW_BLUR,
   },
   {
@@ -228,6 +238,8 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'filter',
     independent: true,
     layoutDependent: true,
+    keywords: ['none'],
+    defaultValue: 'none',
     syntax: PropertySyntax.FILTER,
   },
   {
@@ -249,6 +261,9 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: (nodeName: string) => {
       if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
         return 'center';
+      }
+      if (nodeName === Shape.TEXT) {
+        return 'text-anchor';
       }
       return 'left top';
     },
@@ -466,16 +481,27 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'lineHeight',
     layoutDependent: true,
-    // interpolable: true,
-    // inherited: true,
-    // defaultValue: '-100%'
+    syntax: PropertySyntax.LENGTH,
+    interpolable: true,
+    defaultValue: '0',
   },
   {
     name: 'letterSpacing',
     layoutDependent: true,
-    // interpolable: true,
-    // inherited: true,
-    // defaultValue: '0',
+    syntax: PropertySyntax.LENGTH,
+    interpolable: true,
+    defaultValue: '0',
+  },
+  {
+    name: 'miterLimit',
+    layoutDependent: true,
+    syntax: PropertySyntax.NUMBER,
+    defaultValue: (nodeName: string) => {
+      if (nodeName === Shape.PATH || nodeName === Shape.POLYGON || nodeName === Shape.POLYLINE) {
+        return '4';
+      }
+      return '10';
+    },
   },
   {
     name: 'wordWrap',
@@ -894,11 +920,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const halfExtents = vec3.fromValues(Math.abs(width) / 2, Math.abs(height) / 2, depth / 2);
       // anchor is center by default, don't account for lineWidth here
       const {
+        stroke,
         lineWidth,
         // lineCap,
         // lineJoin,
         // miterLimit,
         increasedLineWidthForHitTesting,
+        shadowType,
         shadowColor,
         filter = [],
         transformOrigin,
@@ -934,14 +962,17 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       //   expansion = Math.SQRT1_2 * miterLimit;
       // }
 
-      const halfLineWidth =
-        ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) * expansion;
-      // append border
-      vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
+      // append border only if stroke existed
+      const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+      if (hasStroke) {
+        const halfLineWidth =
+          ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) * expansion;
+        vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
+      }
       geometry.renderBounds.update(center, halfExtents);
 
       // account for shadow, only support constant value now
-      if (shadowColor) {
+      if (shadowColor && shadowType?.value !== 'inner') {
         const { min, max } = geometry.renderBounds;
 
         const { shadowBlur, shadowOffsetX, shadowOffsetY } = parsedStyle as ParsedBaseStyleProps;

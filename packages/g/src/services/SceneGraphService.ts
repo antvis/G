@@ -499,12 +499,17 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   dirtifyToRoot(element: INode, affectChildren = false) {
     let p = element;
+
+    // only need to re-render itself
+    if ((p as Element).renderable) {
+      (p as Element).renderable.dirty = true;
+    }
+
     while (p) {
       const renderable = (p as Element).renderable;
       if (renderable) {
         renderable.renderBoundsDirty = true;
         renderable.boundsDirty = true;
-        renderable.dirty = true;
       }
       p = p.parentNode;
     }

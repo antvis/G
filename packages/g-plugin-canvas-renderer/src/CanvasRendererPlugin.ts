@@ -11,7 +11,9 @@ import {
   AABB,
   Camera,
   CanvasConfig,
+  CanvasEvent,
   ContextService,
+  CustomEvent,
   DefaultCamera,
   DisplayObjectPool,
   ElementEvent,
@@ -29,6 +31,7 @@ import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
+import { CanvasRendererPluginOptions } from './tokens';
 
 interface Rect {
   x: number;
@@ -69,6 +72,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   @inject(DisplayObjectPool)
   private displayObjectPool: DisplayObjectPool;
 
+  @inject(CanvasRendererPluginOptions)
+  private canvasRendererPluginOptions: CanvasRendererPluginOptions;
+
   /**
    * RBush used in dirty rectangle rendering
    */
@@ -92,6 +98,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private tmpVec3 = vec3.create();
 
   apply(renderingService: RenderingService) {
+    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
@@ -138,17 +146,20 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const context = this.contextService.getContext();
       const dpr = this.contextService.getDPR();
       const { width, height } = this.canvasConfig;
+      const { dirtyObjectNumThreshold, dirtyObjectRatioThreshold } =
+        this.canvasRendererPluginOptions;
 
       // some heuristic conditions such as 80% object changed
       const { total, rendered } = renderingService.getStats();
       const ratio = rendered / total;
 
       this.clearFullScreen =
-        renderingService.disableDirtyRectangleRendering() || (rendered > 100 && ratio > 0.8);
+        renderingService.disableDirtyRectangleRendering() ||
+        (rendered > dirtyObjectNumThreshold && ratio > dirtyObjectRatioThreshold);
 
       if (context) {
+        context.resetTransform();
         if (this.clearFullScreen) {
-          context.resetTransform();
           this.clearRect(context, 0, 0, width * dpr, height * dpr);
         }
       }
@@ -164,6 +175,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.renderingContext.root.forEach((object: DisplayObject) => {
           if (object.isVisible() && !object.isCulled()) {
             this.renderDisplayObject(object, renderingService);
+            // if we did a full screen rendering last frame
+            this.saveDirtyAABB(object);
           }
         });
       } else {
@@ -183,7 +196,26 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           return;
         }
 
-        const { x, y, width, height } = this.convertAABB2Rect(dirtyRenderBounds);
+        const dirtyRect = this.convertAABB2Rect(dirtyRenderBounds);
+        const { x, y, width, height } = dirtyRect;
+
+        const tl = vec3.transformMat4(this.tmpVec3, vec3.fromValues(x, y, 0), this.vpMatrix);
+        const br = vec3.transformMat4(
+          vec3.create(),
+          vec3.fromValues(x + width, y + height, 0),
+          this.vpMatrix,
+        );
+
+        const ix = Math.floor(tl[0]);
+        const iy = Math.floor(tl[1]);
+        const iwidth = Math.ceil(br[0] - tl[0]);
+        const iheight = Math.ceil(br[1] - tl[1]);
+
+        context.save();
+        this.clearRect(context, ix, iy, iwidth, iheight);
+        context.beginPath();
+        context.rect(ix, iy, iwidth, iheight);
+        context.clip();
 
         // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
         context.setTransform(
@@ -195,20 +227,15 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.vpMatrix[13],
         );
 
-        context.save();
-        this.clearRect(context, x, y, width, height);
-        context.beginPath();
-        context.rect(x, y, width, height);
-        context.clip();
-
         // draw dirty rectangle
-        // if (enableDirtyRectangleRenderingDebug) {
-        //   context.lineWidth = 4;
-        //   context.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
-        //     Math.random() * 255
-        //   }, 1)`;
-        //   context.strokeRect(x, y, width, height);
-        // }
+        const { enableDirtyRectangleRenderingDebug } = this.canvasConfig.renderer.getConfig();
+        if (enableDirtyRectangleRenderingDebug) {
+          canvas.dispatchEvent(
+            new CustomEvent(CanvasEvent.DIRTY_RECTANGLE, {
+              dirtyRect,
+            }),
+          );
+        }
 
         // search objects intersect with dirty rectangle
         const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
@@ -241,17 +268,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       });
       // clear restore stack
       this.restoreStack = [];
-      this.clearFullScreen = false;
     });
 
     renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (object: DisplayObject) => {
-      if (
-        !this.clearFullScreen &&
-        // basic shapes
-        ((object.nodeName !== Shape.GROUP && !object.isCustomElement) ||
-          // should not ignore group since clipPath may affect its children
-          object.parsedStyle.clipPath)
-      ) {
+      if (!this.clearFullScreen) {
         // render at the end of frame
         this.renderQueue.push(object);
       }
@@ -265,6 +285,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     width: number,
     height: number,
   ) {
+    // clearRect is faster than fillRect @see https://stackoverflow.com/a/30830253
     context.clearRect(x, y, width, height);
     const { background } = this.canvasConfig;
     if (background) {
@@ -311,9 +332,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.save();
 
         // save clip
-        // if (object.nodeName === Shape.GROUP || object.isCustomElement) {
         this.restoreStack.push(object);
-        // }
 
         context.beginPath();
         generatePath(context, clipPathShape.parsedStyle);
@@ -379,6 +398,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private mergeDirtyAABBs(dirtyObjects: DisplayObject[]): AABB {
     // merge into a big AABB
+    // TODO: skip descendant if ancestor is caculated, but compareNodePosition is really slow
     const aabb = new AABB();
     dirtyObjects.forEach((object) => {
       const renderBounds = object.getRenderBounds();
@@ -423,18 +443,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    * TODO: batch the same global attributes
    */
   private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject) {
-    const {
-      stroke,
-      fill,
-      opacity,
-      lineDash,
-      lineDashOffset,
-      filter,
-      shadowColor,
-      shadowBlur,
-      shadowOffsetX,
-      shadowOffsetY,
-    } = object.parsedStyle as ParsedBaseStyleProps;
+    const { stroke, fill, opacity, lineDash, lineDashOffset } =
+      object.parsedStyle as ParsedBaseStyleProps;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
     if (lineDash && Array.isArray(lineDash)) {
       context.setLineDash(lineDash.map((segment) => segment.value));
@@ -455,19 +465,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     if (!isNil(fill) && !Array.isArray(fill) && !(fill as CSSRGB).isNone) {
       context.fillStyle = object.attributes.fill;
-    }
-
-    if (!isNil(filter)) {
-      // use raw filter string
-      context.filter = object.style.filter;
-    }
-
-    const hasShadow = !isNil(shadowColor) && shadowBlur.value > 0;
-    if (hasShadow) {
-      context.shadowColor = shadowColor.toString();
-      context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
-      context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
-      context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
     }
   }
 

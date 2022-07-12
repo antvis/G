@@ -1,17 +1,18 @@
 ---
-title: 第二节：使用渲染器
+title: Section II - Using the renderer
 order: 2
 ---
 
-在该系列教程中，我们将逐步实现一个简单的可视化场景，展示节点和边，并让它们具备拖拽、拾取等基本交互能力。
+In this tutorial series, we will step-by-step implement a simple visualization scene that shows nodes and edges and gives them basic interaction capabilities such as dragging and picking.
 
-在上一节我们定义了一个简单的场景，在本节中，我们将学习如何使用[渲染器](/zh/docs/guide/diving-deeper/switch-renderer)完成渲染。[本节示例](/zh/examples/guide#chapter2)
+In the previous section we defined a simple scene, in this section we will learn how to use [renderer](/en/docs/api/renderer/renderer) to complete the rendering.
 
-[完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
+-   [Example of this section](/en/examples/guide#chapter2)
+-   [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 选择渲染器
+# Choosing a renderer
 
-首先我们需要引入一个或多个渲染器，如果引入了多个，还可以在[运行时切换](/zh/docs/guide/diving-deeper/switch-renderer#运行时切换)。本例中我们只选择了一个 Canvas2D 渲染器：
+First we need to introduce one or more renderers, and if we introduce more than one, we can also switch them [at runtime](/en/docs/guide/diving-deeper/switch-renderer#runtime). In this example we have selected only one Canvas2D renderer:
 
 ```javascript
 import { Renderer } from '@antv/g-canvas';
@@ -19,22 +20,22 @@ import { Renderer } from '@antv/g-canvas';
 const renderer = new Renderer();
 ```
 
-# 创建画布
+# Creating a canvas
 
-然后我们需要创建画布，使用上面引入的渲染器：
+Then we need to create the canvas, using the renderer introduced above:.
 
 ```javascript
 const canvas = new Canvas({
-    container: 'container', // DOM 节点id
-    width: 600, // 画布宽度
-    height: 500, // 画布高度
+    container: 'container', // id of the DOM container
+    width: 600,
+    height: 500,
     renderer,
 });
 ```
 
-# 向画布中添加图形
+# Adding graphics to the canvas
 
-有了画布，我们可以把场景图中的两个节点和一条边加入画布，当然这一切要等待画布就绪之后。我们有两种方式获知画布何时就绪，一是监听 [就绪事件](/zh/docs/api/canvas#ready-事件)，二是[等待就绪的 Promise 返回](/zh/docs/api/canvas#ready)：
+With the canvas, we can add two nodes and an edge from the scene graph to the canvas, but of course we have to wait until the canvas is ready. We have two ways to know when the canvas is ready, either by listening to the [ready event](/en/docs/api/canvas#ready-event) or [waiting for the ready Promise to return](/en/docs/api/canvas#ready).
 
 ```javascript
 canvas.addEventListener(CanvasEvent.READY, () => {
@@ -43,20 +44,20 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     canvas.appendChild(edge);
 });
 
-// 或者
+// or
 await canvas.ready;
 canvas.appendChild(node1);
 canvas.appendChild(node2);
 canvas.appendChild(edge);
 ```
 
-此时就能看到渲染效果了，不过有些奇怪，边出现在了节点之上，甚至挡住了文本：
+At this point you can see the rendering effect, but there is something strange, the edge appears on top of the node, even blocking the text:
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*HQoYSocN12MAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*HQoYSocN12MAAAAAAAAAAAAAARQnAQ" width="400" alt="abnormal effect">
 
-这个问题是由我们加入画布的各个图形顺序导致，我们最后才将“边”加入画布，根据画家算法，它是最后绘制的，因此出现在了最顶层。
+This problem is caused by the order in which we added the shapes to the canvas. We added the "edge" to the canvas last, and according to the painter's algorithm, it was drawn last, so it appears at the top.
 
-最简单的解决办法就是修改顺序，先绘制边，再绘制节点：
+The simplest solution is to modify the order, drawing the edges first and then the nodes.
 
 ```javascript
 canvas.appendChild(edge);
@@ -64,17 +65,19 @@ canvas.appendChild(node1);
 canvas.appendChild(node2);
 ```
 
-此时效果就正常了： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*te-lR4m9mRIAAAAAAAAAAAAAARQnAQ)
+At this point the effect is normal.
 
-或者，我们也可以通过 `zIndex` 手动调整。
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*te-lR4m9mRIAAAAAAAAAAAAAARQnAQ" width="400" alt="normal effect">
 
-# 设置展示次序
+Alternatively, we can manually adjust the `zIndex`.
 
-类似 CSS 中的 `zIndex`，我们可以手动设置两个节点的绘制顺序，让它们比边高（默认为 0）即可：
+# Setting the display order
+
+Similar to `zIndex` in CSS, we can manually set the drawing order of the two nodes so that they are higher than the edge (default is 0)：
 
 ```javascript
 node1.style.zIndex = 1;
 node2.style.zIndex = 1;
 ```
 
-基础图形已经绘制出来了，下面让我们增加一些交互吧。
+The basic graphics are drawn, so let's add some interaction.

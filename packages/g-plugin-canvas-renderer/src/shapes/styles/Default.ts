@@ -8,7 +8,7 @@ import type {
   RadialGradient,
   RenderingService,
 } from '@antv/g';
-import { GradientType, inject, isNil, isPattern, singleton } from '@antv/g';
+import { GradientType, inject, isNil, isPattern, Shape, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import type { StyleRenderer } from './interfaces';
 
@@ -32,87 +32,115 @@ export class DefaultRenderer implements StyleRenderer {
       lineWidth,
       lineCap,
       lineJoin,
+      shadowType,
       shadowColor,
+      shadowBlur,
       filter,
       miterLimit,
     } = parsedStyle;
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
-    const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
+    const hasStroke =
+      !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth && lineWidth.value > 0;
     const isFillTransparent = (fill as CSSRGB).alpha === 0;
+    const hasFilter = !isNil(filter);
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+    const nodeName = object.nodeName;
+    const isInnerShadow = shadowType?.value === 'inner';
+    const shouldDrawShadowWithStroke =
+      hasStroke &&
+      hasShadow &&
+      (nodeName === Shape.PATH ||
+        nodeName === Shape.LINE ||
+        nodeName === Shape.POLYLINE ||
+        isFillTransparent ||
+        isInnerShadow);
 
     if (hasFill) {
-      if (!isNil(fillOpacity) && fillOpacity.value !== 1) {
-        context.globalAlpha = fillOpacity.value;
-        this.fill(context, object, fill, renderingService);
-        context.globalAlpha = opacity.value;
-      } else {
-        this.fill(context, object, fill, renderingService);
+      context.globalAlpha = opacity.value * fillOpacity.value;
+
+      if (!shouldDrawShadowWithStroke) {
+        this.setShadowAndFilter(object, context, hasShadow);
+      }
+
+      this.fill(context, object, fill, renderingService);
+
+      if (!shouldDrawShadowWithStroke) {
+        this.clearShadowAndFilter(context, hasFilter, hasShadow);
       }
     }
 
     if (hasStroke) {
-      if (lineWidth && lineWidth.value > 0) {
-        const applyOpacity = !isNil(strokeOpacity) && strokeOpacity.value !== 1;
-        if (applyOpacity) {
-          context.globalAlpha = strokeOpacity.value;
-        }
-        context.lineWidth = lineWidth.value;
-        if (!isNil(miterLimit)) {
-          context.miterLimit = miterLimit;
-        }
+      context.globalAlpha = opacity.value * strokeOpacity.value;
+      context.lineWidth = lineWidth.value;
+      if (!isNil(miterLimit)) {
+        context.miterLimit = miterLimit.value;
+      }
 
-        if (!isNil(lineCap)) {
-          context.lineCap = lineCap.value as CanvasLineCap;
+      if (!isNil(lineCap)) {
+        context.lineCap = lineCap.value as CanvasLineCap;
+      }
+
+      if (!isNil(lineJoin)) {
+        context.lineJoin = lineJoin.value as CanvasLineJoin;
+      }
+
+      if (shouldDrawShadowWithStroke) {
+        if (isInnerShadow) {
+          context.globalCompositeOperation = 'source-atop';
         }
+        this.setShadowAndFilter(object, context, true);
 
-        if (!isNil(lineJoin)) {
-          context.lineJoin = lineJoin.value as CanvasLineJoin;
-        }
-
-        let oldShadowBlur: number;
-        let oldShadowColor: string;
-        let oldFilter: string;
-        const hasShadowColor = !isNil(shadowColor);
-        const hasFilter = !isNil(filter);
-
-        if (hasShadowColor) {
-          // prevent inner shadow when drawing stroke, toggle shadowBlur & filter(drop-shadow)
-          // save shadow blur
-          oldShadowBlur = context.shadowBlur;
-          oldShadowColor = context.shadowColor;
-          if (!isNil(oldShadowBlur)) {
-            context.shadowColor = 'transparent';
-            context.shadowBlur = 0;
-          }
-        }
-
-        if (hasFilter) {
-          // save drop-shadow filter
-          oldFilter = context.filter;
-          if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
-            context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
-          }
-        }
-
-        const drawStroke = hasFill && !isFillTransparent;
-        if (drawStroke) {
+        if (isInnerShadow) {
           this.stroke(context, object, stroke, renderingService);
-        }
-
-        // restore shadow blur
-        if (hasShadowColor) {
-          context.shadowColor = oldShadowColor;
-          context.shadowBlur = oldShadowBlur;
-        }
-        // restore filters
-        if (hasFilter) {
-          context.filter = oldFilter;
-        }
-
-        if (!drawStroke) {
-          this.stroke(context, object, stroke, renderingService);
+          context.globalCompositeOperation = 'source-over';
+          this.clearShadowAndFilter(context, hasFilter, true);
         }
       }
+
+      this.stroke(context, object, stroke, renderingService);
+    }
+  }
+
+  private clearShadowAndFilter(
+    context: CanvasRenderingContext2D,
+    hasFilter: boolean,
+    hasShadow: boolean,
+  ) {
+    if (hasShadow) {
+      context.shadowColor = 'transparent';
+      context.shadowBlur = 0;
+    }
+
+    if (hasFilter) {
+      // save drop-shadow filter
+      const oldFilter = context.filter;
+      if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
+        context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
+      }
+    }
+  }
+
+  /**
+   * apply before fill and stroke but only once
+   */
+  private setShadowAndFilter(
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    hasShadow: boolean,
+  ) {
+    const { filter, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
+      object.parsedStyle as ParsedBaseStyleProps;
+
+    if (!isNil(filter)) {
+      // use raw filter string
+      context.filter = object.style.filter;
+    }
+
+    if (hasShadow) {
+      context.shadowColor = shadowColor.toString();
+      context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
+      context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
+      context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
     }
   }
 

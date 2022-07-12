@@ -40,7 +40,7 @@ const effects = [
     keyframes: [
       { transform: 'translateY(-1200px) scale(0.7)', opacity: 0.7, offset: 0 },
       { transform: 'translateY(0px) scale(0.7)', opacity: 0.7, offset: 0.8 },
-      { transform: 'translateY(0px) scale(1)', opacity: 1, offset: 1 },
+      { transform: 'translateY(0px)', opacity: 1, offset: 1 },
     ],
     animationOptions: { duration: 1000, fill: 'both' },
   }),
@@ -163,12 +163,12 @@ const effects = [
   () => ({
     name: 'headShake',
     keyframes: [
-      { transform: 'translateX(0) rotateY(0)', offset: 0 },
+      { transform: 'translateX(0)', offset: 0 },
       { transform: 'translateX(-6px) rotateY(-9deg)', offset: 0.065 },
       { transform: 'translateX(5px) rotateY(7deg)', offset: 0.185 },
       { transform: 'translateX(-3px) rotateY(-5deg)', offset: 0.315 },
       { transform: 'translateX(2px) rotateY(3deg)', offset: 0.435 },
-      { transform: 'translateX(0) rotateY(0)', offset: 0.5 },
+      { transform: 'translateX(0)', offset: 0.5 },
       { transform: 'none', offset: 1 },
     ],
     animationOptions: { duration: 1000, fill: 'both', easing: 'ease-in-out' },
@@ -236,6 +236,14 @@ const effects = [
       { transform: 'scaleY(1)', transformOrigin: 'center' },
       { transform: 'scaleY(-1)', transformOrigin: 'center' },
       { transform: 'scaleY(1)', transformOrigin: 'center' },
+    ],
+    animationOptions: { duration: 1000, fill: 'both' },
+  }),
+  () => ({
+    name: 'matrix interpolation',
+    keyframes: [
+      { transform: 'skewY(30deg)', transformOrigin: 'center' },
+      { transform: 'matrix(0.2,0,0,0.2,-50,0)', transformOrigin: 'center' },
     ],
     animationOptions: { duration: 1000, fill: 'both' },
   }),

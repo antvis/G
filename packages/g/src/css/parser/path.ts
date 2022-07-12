@@ -19,6 +19,10 @@ const memoizedParsePath = memoize(
   (path: string | PathArray) => {
     let absolutePath: AbsoluteArray;
     try {
+      if (Array.isArray(path) && path.length === 0) {
+        throw new Error();
+      }
+
       absolutePath = normalizePath(path);
     } catch (e) {
       absolutePath = normalizePath('');
@@ -46,7 +50,12 @@ const memoizedParsePath = memoize(
       curve,
       totalLength: length,
       zCommandIndexes,
-      rect: new Rectangle(x, y, width, height),
+      rect: new Rectangle(
+        Number.isFinite(x) ? x : 0,
+        Number.isFinite(y) ? y : 0,
+        Number.isFinite(width) ? width : 0,
+        Number.isFinite(height) ? height : 0,
+      ),
     };
   },
   (path: string | PathArray) => {

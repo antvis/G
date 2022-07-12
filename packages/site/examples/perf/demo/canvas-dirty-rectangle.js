@@ -8,7 +8,9 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
-const canvasRenderer = new CanvasRenderer();
+const canvasRenderer = new CanvasRenderer({
+  enableDirtyRectangleRenderingDebug: true,
+});
 const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -92,6 +94,28 @@ const dirtyRectangleConfig = {
 folder0.add(dirtyRectangleConfig, 'enable').onChange((enable) => {
   currentRenderer.setConfig({
     enableDirtyRectangleRendering: enable,
+    enableDirtyRectangleRenderingDebug: enable,
   });
 });
 folder0.open();
+
+// display dirty rectangle
+const $dirtyRectangle = document.createElement('div');
+$dirtyRectangle.style.cssText = `
+position: absolute;
+pointer-events: none;
+background: rgba(255, 0, 0, 0.5);
+`;
+$wrapper.appendChild($dirtyRectangle);
+canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
+  const { dirtyRect } = e.detail;
+  const { x, y, width, height } = dirtyRect;
+
+  const tl = canvas.canvas2Viewport({ x, y });
+  const br = canvas.canvas2Viewport({ x: x + width, y: y + height });
+
+  $dirtyRectangle.style.left = `${tl.x}px`;
+  $dirtyRectangle.style.top = `${tl.y}px`;
+  $dirtyRectangle.style.width = `${br.x - tl.x}px`;
+  $dirtyRectangle.style.height = `${br.y - tl.y}px`;
+});

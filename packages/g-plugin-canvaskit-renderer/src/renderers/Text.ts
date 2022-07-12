@@ -51,7 +51,7 @@ export class TextRenderer implements RendererContribution {
       textBaseline,
       // lineJoin,
       // miterLimit = 0,
-      letterSpacing = 0,
+      letterSpacing,
       // stroke,
       fill,
       // fillOpacity,
@@ -218,7 +218,7 @@ export class TextRenderer implements RendererContribution {
           ),
           heightMultiplier,
           halfLeading,
-          letterSpacing,
+          letterSpacing: letterSpacing.value,
           // locale?: string;
           shadows: (shadows || []).map(({ color, offset, blurRadius }) => {
             return {

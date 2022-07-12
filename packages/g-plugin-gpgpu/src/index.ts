@@ -1,9 +1,9 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
+import { AbstractRendererPlugin } from '@antv/g';
 
 export * from './interface';
 export * from './Kernel';
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'gpgpu';
-  init(container: Syringe.Container): void {}
-  destroy(container: Syringe.Container): void {}
+  init(): void {}
+  destroy(): void {}
 }

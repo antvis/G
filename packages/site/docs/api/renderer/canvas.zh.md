@@ -73,6 +73,41 @@ const renderer = new Renderer({
 
 但在可视化这类相对静态的场景下就显得有意义了，例如在触发拾取后只更新图表的局部，其余部分保持不变。
 
+## enableDirtyRectangleRenderingDebug
+
+用于 debug，默认关闭，开启后画布会触发 `CanvasEvent.DIRTY_RECTANGLE` 事件并携带脏矩形信息，可用于后续可视化。
+
+在该[示例](/zh/examples/perf#canvas-dirty-rectangle)中，当鼠标划过各个圆时，能展示出当前需要被清除的脏矩形，当前帧仅会重绘该区域：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*iIJcRpUFEBUAAAAAAAAAAAAAARQnAQ" alt="dirty rectangle rendering" width="300">
+
+需要注意的是，脏矩形的坐标在 [Canvas 坐标系下](/zh/docs/api/canvas#canvas-1)，如果想使用 HTML 绘制浮层，需要使用[坐标系转换方法](/zh/docs/api/canvas#canvas---viewport)：
+
+```js
+// display dirty rectangle
+const $dirtyRectangle = document.createElement('div');
+$dirtyRectangle.style.cssText = `
+position: absolute;
+pointer-events: none;
+background: rgba(255, 0, 0, 0.5);
+`;
+$wrapper.appendChild($dirtyRectangle);
+
+canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
+    const { dirtyRect } = e.detail;
+    const { x, y, width, height } = dirtyRect;
+
+    // convert from canvas coords to viewport
+    const tl = canvas.canvas2Viewport({ x, y });
+    const br = canvas.canvas2Viewport({ x: x + width, y: y + height });
+
+    $dirtyRectangle.style.left = `${tl.x}px`;
+    $dirtyRectangle.style.top = `${tl.y}px`;
+    $dirtyRectangle.style.width = `${br.x - tl.x}px`;
+    $dirtyRectangle.style.height = `${br.y - tl.y}px`;
+});
+```
+
 # 内置插件
 
 该渲染器内置了以下插件：

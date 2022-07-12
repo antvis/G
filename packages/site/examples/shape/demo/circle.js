@@ -110,6 +110,7 @@ const circleConfig = {
   lineDashOffset: 0,
   fillOpacity: 1,
   strokeOpacity: 1,
+  shadowType: 'outer',
   shadowColor: '#000',
   shadowBlur: 20,
   shadowOffsetX: 0,
@@ -131,6 +132,9 @@ circleFolder.addColor(circleConfig, 'fill').onChange((color) => {
 });
 circleFolder.addColor(circleConfig, 'stroke').onChange((color) => {
   circle.attr('stroke', color);
+});
+circleFolder.add(circleConfig, 'shadowType', ['inner', 'outer']).onChange((shadowType) => {
+  circle.attr('shadowType', shadowType);
 });
 circleFolder.addColor(circleConfig, 'shadowColor').onChange((color) => {
   circle.attr('shadowColor', color);

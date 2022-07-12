@@ -11,7 +11,7 @@ function getFontSize(object: DisplayObject): CSSUnitValue {
   if (fontSize && !CSSUnitValue.isRelativeUnit(fontSize.unit)) {
     return fontSize.clone();
   }
-  return new CSSUnitValue(0, 'px');
+  return null;
 }
 
 /**
@@ -54,15 +54,25 @@ export class CSSPropertyLengthOrPercentage
       } else if (computed.unit === UnitType.kEms) {
         if (object.parentNode) {
           const fontSize = getFontSize(object.parentNode as DisplayObject);
-          fontSize.value *= computed.value;
-          return fontSize;
+
+          if (fontSize) {
+            fontSize.value *= computed.value;
+            return fontSize;
+          } else {
+            registry.addUnresolveProperty(object, name);
+          }
         }
         return new CSSUnitValue(0, 'px');
       } else if (computed.unit === UnitType.kRems) {
         if (object?.ownerDocument?.documentElement) {
           const fontSize = getFontSize(object.ownerDocument.documentElement as DisplayObject);
-          fontSize.value *= computed.value;
-          return fontSize;
+
+          if (fontSize) {
+            fontSize.value *= computed.value;
+            return fontSize;
+          } else {
+            registry.addUnresolveProperty(object, name);
+          }
         }
         return new CSSUnitValue(0, 'px');
       }

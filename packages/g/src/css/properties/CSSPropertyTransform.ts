@@ -1,3 +1,4 @@
+import { mat4 } from 'gl-matrix';
 import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
@@ -60,19 +61,19 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
         const { t, d } = parsed;
         if (t === 'scale') {
           // scale(1) scale(1, 1)
-          const newScale = d.map((s) => s.value) || [1, 1];
+          const newScale = d?.map((s) => s.value) || [1, 1];
           object.scaleLocal(newScale[0], newScale[1], 1);
         } else if (t === 'scalex') {
-          const newScale = d.map((s) => s.value) || [1];
+          const newScale = d?.map((s) => s.value) || [1];
           object.scaleLocal(newScale[0], 1, 1);
         } else if (t === 'scaley') {
-          const newScale = d.map((s) => s.value) || [1];
+          const newScale = d?.map((s) => s.value) || [1];
           object.scaleLocal(1, newScale[0], 1);
         } else if (t === 'scalez') {
-          const newScale = d.map((s) => s.value) || [1];
+          const newScale = d?.map((s) => s.value) || [1];
           object.scaleLocal(1, 1, newScale[0]);
         } else if (t === 'scale3d') {
-          const newScale = d.map((s) => s.value) || [1, 1, 1];
+          const newScale = d?.map((s) => s.value) || [1, 1, 1];
           object.scaleLocal(newScale[0], newScale[1], newScale[2]);
         } else if (t === 'translate') {
           const newTranslation = d || [Opx, Opx];
@@ -115,14 +116,25 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
           //   newAngles[2].value - oldAngles[2].value,
           // );
         } else if (t === 'skew') {
-          const newSkew = d.map((s) => s.value) || [0, 0];
+          const newSkew = d?.map((s) => s.value) || [0, 0];
           object.setLocalSkew(deg2rad(newSkew[0]), deg2rad(newSkew[1]));
         } else if (t === 'skewx') {
-          const newSkew = d.map((s) => s.value) || [0];
+          const newSkew = d?.map((s) => s.value) || [0];
           object.setLocalSkew(deg2rad(newSkew[0]), object.getLocalSkew()[1]);
         } else if (t === 'skewy') {
-          const newSkew = d.map((s) => s.value) || [0];
+          const newSkew = d?.map((s) => s.value) || [0];
           object.setLocalSkew(object.getLocalSkew()[0], deg2rad(newSkew[0]));
+        } else if (t === 'matrix') {
+          const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
+          object.setLocalTransform(
+            mat4.fromValues(a, b, 0, 0, c, dd, 0, 0, 0, 0, 1, 0, tx + defX, ty + defY, 0, 1),
+          );
+        } else if (t === 'matrix3d') {
+          // @ts-ignore
+          const mat = mat4.fromValues(...d.map((s) => s.value));
+          mat[12] += defX;
+          mat[13] += defY;
+          object.setLocalTransform(mat);
         }
       });
     }

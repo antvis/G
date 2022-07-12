@@ -52,6 +52,13 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gW6rQpXFK30AAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "change-z-index.js",
+      "title": {
+        "zh": "修改 Group 上的 zIndex",
+        "en": "Change zIndex on Group"
+      }
+    },
+    {
       "filename": "clone.js",
       "title": {
         "zh": "克隆节点",

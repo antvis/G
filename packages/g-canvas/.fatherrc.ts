@@ -1,6 +1,6 @@
 export default {
   umd: {
-    name: 'G.ImageExporter',
+    name: 'G.Canvas2D',
     globals: {
       '@antv/g': 'window.G',
     },

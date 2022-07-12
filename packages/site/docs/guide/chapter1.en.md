@@ -1,76 +1,75 @@
 ---
-title: 第一节：定义场景
+title: Section I - Defining the Scenario
 order: 1
 ---
 
-在该系列教程中，我们将逐步实现一个简单的可视化场景，展示节点和边，并让它们具备拖拽、拾取等基本交互能力。
+In this tutorial series, we will step-by-step implement a simple visualization scene that shows nodes and edges and gives them basic interaction capabilities such as dragging and picking.
 
-在本节中，我们将学习如何使用[场景图](/zh/docs/guide/diving-deeper/scenegraph)描述场景。
+In this section, we will learn how to describe a scene using a [scene graph](/en/docs/guide/diving-deeper/scenegraph).
 
-我们的场景十分简单，包含两个节点，用 [Circle](/zh/docs/api/circle) 实现，连接它们的一条边用 [Line](/zh/docs/api/line) 实现，其中每个节点上的文本使用 [Text](/zh/docs/api/text) 实现。
+Our scene is very simple, it contains two nodes implemented with [Circle](/en/docs/api/circle), an edge connecting them implemented with [Line](/en/docs/api/line), where the text on each node is implemented with [Text](/en/docs/api/text).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ" width="200" alt="2 nodes">
 
-[完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
+[DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 创建节点
+# Create Node
 
-首先我们从 `@antv/g` 中引入基础图形 [Circle](/zh/docs/api/circle)，我们的节点用它来实现：
+First we import the base graph [Circle](/en/docs/api/circle) from `@antv/g`, which our node uses to implement:
 
 ```javascript
 import { Circle } from '@antv/g';
 ```
 
-然后我们需要定义该图形的一系列属性：
+Then we need to define a set of properties for the graph：
 
 ```javascript
-// 节点1
 const node1 = new Circle({
     style: {
-        r: 100, // 半径
-        fill: '#1890FF', // 填充色
-        stroke: '#F04864', // 描边颜色
-        lineWidth: 4, // 描边宽度
+        r: 100,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
     },
 });
 ```
 
-同样我们可以创建第二个节点。
+We can create a second node in the same way.
 
-# 给节点添加文本
+# Adding text to a node
 
-我们想在节点上展示描述性文本，同样我们从 `@antv/g` 中引入基础图形 [Text](/zh/docs/api/text)：
+We want to display descriptive text on the node, again we bring in the base graph [Text](/en/docs/api/text) from `@antv/g`:
 
 ```javascript
 import { Text } from '@antv/g';
 
 const text1 = new Text({
     style: {
-        text: 'Node1', // 文本内容
-        fontFamily: 'Avenir', // 字体
-        fontSize: 22, // 字号
-        fill: '#fff', // 文本颜色
-        textAlign: 'center', // 水平居中
-        textBaseline: 'middle', // 垂直居中
+        text: 'Node1',
+        fontFamily: 'Avenir',
+        fontSize: 22,
+        fill: '#fff',
+        textAlign: 'center',
+        textBaseline: 'middle',
     },
 });
 ```
 
-文本应该是节点的子节点，在场景图中，这种父子关系通过 `appendChild` 构建：
+The text should be a child of the node, and in the scene graph, this parent-child relationship is constructed via `appendChild`：
 
 ```javascript
 node1.appendChild(text1);
 ```
 
-我们只需要设置节点的位置，它的所有子节点（文本）也会跟着移动：
+We only need to set the position of the node, and all its children (text) will follow:
 
 ```javascript
 node1.setPosition(200, 200);
 ```
 
-# 创建边
+# Create edge
 
-我们从 `@antv/g` 中引入基础图形 [Line](/zh/docs/api/line)，将两个端点连接起来：
+We can import [Line](/en/docs/api/line) from `@antv/g` to connect the two endpoints:
 
 ```javascript
 import { Line } from '@antv/g';
@@ -87,4 +86,4 @@ const edge = new Line({
 });
 ```
 
-至此我们的场景就定义完毕了，在下一节中我们将使用渲染器将场景渲染出来。
+At this point our scene is defined and in the next section we will render the scene using the renderer.

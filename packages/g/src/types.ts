@@ -135,6 +135,7 @@ export interface BaseStyleProps {
   lineDash?: string | (string | number)[];
   lineDashOffset?: number;
 
+  shadowType?: 'inner' | 'outer' | 'both';
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowBlur
    */
@@ -161,7 +162,7 @@ export interface BaseStyleProps {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit
    */
-  miterLimit?: number;
+  miterLimit?: number | string;
 
   display?: string;
 }
@@ -186,6 +187,7 @@ export interface ParsedBaseStyleProps
     | 'lineDashOffset'
     | 'path'
     | 'points'
+    | 'shadowType'
     | 'shadowColor'
     | 'shadowBlur'
     | 'shadowOffsetX'
@@ -197,6 +199,7 @@ export interface ParsedBaseStyleProps
     | 'transformOrigin'
     | 'textTransform'
     | 'offsetDistance'
+    | 'miterLimit'
   > {
   zIndex?: CSSUnitValue;
   visibility?: CSSKeywordValue;
@@ -230,11 +233,13 @@ export interface ParsedBaseStyleProps
    */
   offsetX?: number;
   offsetY?: number;
+  shadowType?: CSSKeywordValue;
   shadowColor?: CSSRGB;
   shadowBlur?: CSSUnitValue;
   shadowOffsetX?: CSSUnitValue;
   shadowOffsetY?: CSSUnitValue;
   textTransform?: CSSKeywordValue;
+  miterLimit?: CSSUnitValue;
 }
 
 // Cursor style
@@ -293,7 +298,10 @@ export interface RendererConfig {
    */
   enableDirtyRectangleRendering: boolean;
 
-  // enableDirtyRectangleRenderingDebug: boolean;
+  /**
+   * enable debugging dirty rectangle, Canvas will trigger CanvasEvent.DIRTY_RECTANGLE
+   */
+  enableDirtyRectangleRenderingDebug: boolean;
 
   /**
    * enable auto rendering

@@ -5,7 +5,7 @@ order: 2
 
 在该系列教程中，我们将逐步实现一个简单的可视化场景，展示节点和边，并让它们具备拖拽、拾取等基本交互能力。
 
-在上一节我们定义了一个简单的场景，在本节中，我们将学习如何使用[渲染器](/zh/docs/guide/diving-deeper/switch-renderer)完成渲染。[本节示例](/zh/examples/guide#chapter2)
+在上一节我们定义了一个简单的场景，在本节中，我们将学习如何使用[渲染器](/zh/docs/api/renderer/renderer)完成渲染。[本节示例](/zh/examples/guide#chapter2)
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 

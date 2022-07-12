@@ -1,28 +1,30 @@
 ---
-title: 相机
+title: Camera
 order: -98
 ---
 
-相机（Camera）描述了我们观察世界的角度。视点、相机位置都会影响最终的成像。在创建 [Canvas](/zh/docs/api/canvas) 画布时，已经内置了一个默认使用正交投影的相机。因此我们不需要手动创建它，可以通过如下方式获取：
+The camera describes the angle from which we view the world. The viewpoint and camera position all affect the final image. When creating the [Canvas](/en/docs/api/canvas) canvas, there is already a built-in camera that uses orthogonal projection by default. So we don't need to create it manually, we can get it as follows.
 
 ```js
 const camera = canvas.getCamera();
 ```
 
-通过操作相机我们可以很方便地实现很多效果，例如对整个画布进行平移和缩放。这在渲染性能上会有很大提升。
+By manipulating the camera we can easily achieve many effects, such as panning and zooming the entire canvas. This will be a big improvement in rendering performance.
 
-目前相机支持以下特性：
+The camera currently supports the following features.
 
--   两种投影模式：正交投影 [Orthographic](/zh/docs/api/camera#投影模式) 和透视投影 [Perspective](/zh/docs/api/camera#投影模式)，默认使用前者。
--   三种相机类型：[Exploring](/zh/docs/api/camera#exploring)、[Orbiting](/zh/docs/api/camera#orbiting) 和 [Tracking](/zh/docs/api/camera#tracking)，默认使用 Exploring。
--   相机动作。例如 [pan](/zh/docs/api/camera#pan)、[dolly](/zh/docs/api/camera#dolly)、[rotate](/zh/docs/api/camera#rotate)
--   自定义[相机动画](/zh/docs/api/camera#相机动画)，创建/保存当前相机状态作为一个 Landmark，可在多个 Landmark 间平滑切换。
+-   Two projection modes: Orthographic [Orthogonal](/en/docs/api/camera#projection mode) and Perspective [Perspective](/en/docs/api/camera#projection mode), the former is used by default.
+-   Three camera types: [Exploring](/en/docs/api/camera#exploring), [Orbiting](/en/docs/api/camera#orbiting) and [Tracking](/en/docs/api/camera#tracking), Exploring is used by default.
+-   Camera action. For example [pan](/en/docs/api/camera#pan), [dolly](/en/docs/api/camera#dolly), [rotate](/en/docs/api/camera#rotate)
+-   Customize [camera animation](/en/docs/api/camera#camera animation) to create/save the current camera state as a Landmark and smoothly switch between multiple Landmarks.
 
-## 投影模式
+## Projection Mode
 
-正交投影（左图）常用于 CAD 软件和策略类游戏（模拟人生）中。而透视投影（右图）遵循我们认知中的“近大远小”。 ![](https://www.scratchapixel.com/images/upload/perspective-matrix/projectionsexample.png)
+The orthogonal projection (left) is commonly used in CAD software and strategy games (Sims). The perspective projection (right) follows our perception of "large near and small far".
 
-我们提供了以上两种投影模式：
+<img src="https://www.scratchapixel.com/images/upload/perspective-matrix/projectionsexample.png" width="400" alt="projection mode">
+
+We offer the above two projection modes.
 
 ```js
 enum CameraProjectionMode {
@@ -33,19 +35,19 @@ enum CameraProjectionMode {
 
 ### getProjectionMode()
 
-G 默认使用 `CameraProjectionMode.ORTHOGRAPHIC`：
+We use `CameraProjectionMode.ORTHOGRAPHIC` by default.
 
 ```js
 canvas.getCamera().getProjectionMode(); // CameraProjectionMode.ORTHOGRAPHIC
 ```
 
-在 2D 场景中使用的都是正交投影，因此这也是 G 默认的投影模式。而在 3D 场景中，有时我们需要切换到透视投影，因此我们提供以下两个 API 来设置投影模式。
+In 2D scenes the orthogonal projection is used, so this is the default projection mode of G. In 3D scenes, sometimes we need to switch to perspective projection, so we provide the following two APIs to set the projection mode.
 
 ### setOrthographic()
 
-设置相机投影模式为正交投影 `CameraProjectionMode.ORTHOGRAPHIC`
+Set the camera projection mode to orthogonal projection `CameraProjectionMode.ORTHOGRAPHIC`
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setOrthographic(left: number, right: number,
@@ -53,16 +55,16 @@ setOrthographic(left: number, right: number,
                 near: number, far: number)
 ```
 
-参数列表如下：
+The list of parameters is as follows.
 
--   `left` x 轴负向最大距离
--   `right` x 轴正向最大距离
--   `top` y 轴正向最大距离
--   `bottom` y 轴负向最大距离
--   `near` 近平面
--   `far` 远平面
+-   `left` Maximum distance in the negative direction of x-axis
+-   `right` Maximum distance in the forward direction of x-axis
+-   `top` Maximum distance in the forward direction of y-axis
+-   `bottom` Maximum distance in the negative direction of y-axis
+-   `near` Near plane
+-   `far` Far plane
 
-G 的默认相机设置如下，其中 `width/height` 为 [Canvas](/zh/docs/api/canvas) 的尺寸，[使用示例](/zh/examples/camera#ortho)：
+The default camera settings for G are as follows, where `width/height` is the size of [Canvas](/en/docs/api/canvas) and [usage example](/en/examples/camera#ortho).
 
 ```js
 const camera = new Camera()
@@ -73,22 +75,22 @@ const camera = new Camera()
 
 ### setPerspective()
 
-设置相机投影模式为透视投影 `CameraProjectionMode.PERSPECTIVE`
+Set the camera projection mode to Perspective Projection `CameraProjectionMode.PERSPECTIVE`
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setPerspective(near: number, far: number, fov: number, aspect: number)
 ```
 
-参数：
+Parameters:
 
--   `near` 近平面
--   `far` 远平面
--   `fov` 可视角度，越大意味着能容纳场景中的更多对象
--   `aspect` 宽高比
+-   `near` Near plane
+-   `far` Far plane
+-   `fov` Viewing angle, larger means more objects in the scene can be accommodated
+-   `aspect` Width-to-Height Ratio
 
-[使用示例](/zh/examples/camera#perspective)：
+[Example](/en/examples/camera#perspective)：
 
 ```js
 camera
@@ -97,17 +99,17 @@ camera
     .setPerspective(0.1, 1000, 75, 600 / 500);
 ```
 
-## 相机参数
+## Camera Parameters
 
-我们提供了以下方法获取或者修改相机位置、视点等常用的相机参数。
+We provide the following methods to obtain or modify the camera position, viewpoint and other common camera parameters.
 
-下图来自：http://voxelent.com/tutorial-camera-landmarks/ 展示了相机位置 `position` 和视点 `focalPoint`：
+The picture below shows the camera `position` and the `focalPoint`:
 
 <img src="http://voxelent.com/wp-content/uploads/2014/03/camera_position_focalpoint.png" alt="position and focal position" width="300">
 
 ### getPosition()
 
-获取相机在世界坐标系下的位置，类型为 `[number, number, number]`。
+Get the position of the camera in the world coordinate system which has the following type `[number, number, number]`.
 
 ```js
 camera.getPosition(); // [300, 200, 500]
@@ -115,26 +117,26 @@ camera.getPosition(); // [300, 200, 500]
 
 ### setPosition()
 
-设置相机在世界坐标系下的位置。
+Sets the camera's position in the world coordinate system.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setPosition(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2, 500]`，其中 `width/height` 为 [Canvas](/zh/docs/api/canvas) 的尺寸。因此如果我们想重新设置相机的 `x/y` 坐标，同时保持 `z` 坐标不变，可以这么做：
+In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 500]`, where `width/height` is the size of the [Canvas](/en/docs/api/canvas). So if we want to reset the `x/y` coordinates of the camera, while keeping the `z` coordinates the same, we can do this.
 
 ```js
-// 保持 Z 坐标不变
+// Keep the Z-coordinate constant.
 camera.setPosition(300, 250);
 camera.setPosition([300, 250]);
-// 或者设置 Z 坐标为默认值 500
+// Or set the Z-coordinate to the default value of 500.
 camera.setPosition(300, 250, 500);
 camera.setPosition([300, 250, 500]);
 ```
 
-需要注意的是，在 2D 场景中当我们设置相机位置时，通常也需要一并设置视点位置，否则使用 `g-webgl` 渲染时会出现非预期的效果：
+Note that in 2D scenes when we set the camera position, we usually need to set the viewpoint position as well, otherwise we will have an unintended effect.
 
 ```js
 camera.setPosition(100, 100, 500);
@@ -143,7 +145,7 @@ camera.setFocalPoint(100, 100, 0);
 
 ### getFocalPoint()
 
-获取视点在世界坐标系下的位置，类型为 `[number, number, number]`。
+Get the position of the viewpoint in the world coordinate system, type `[number, number, number]`.
 
 ```js
 camera.getFocalPoint(); // [300, 200, 0]
@@ -151,31 +153,31 @@ camera.getFocalPoint(); // [300, 200, 0]
 
 ### setFocalPoint()
 
-设置视点在世界坐标系下的位置。
+Set the position of the viewpoint in the world coordinate system.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setFocalPoint(x: number | vec2 | vec3, y?: number, z?: number)
 ```
 
-在 G 内置的正交投影相机中，默认设置为 `[width / 2, height / 2, 0]`，其中 `width/height` 为 [Canvas](/zh/docs/api/canvas) 的尺寸。因此如果我们想重新设置相机视点的 `x/y` 坐标，同时保持 `z` 坐标不变，可以这么做：
+In G's built-in orthogonal projection camera, the default setting is `[width / 2, height / 2, 0]`, where `width/height` is the size of the [Canvas](/en/docs/api/canvas). So if we want to reset the `x/y` coordinates of the camera viewpoint while keeping the `z` coordinates the same, we can do this.
 
 ```js
-// 保持 Z 坐标不变
+// Keep the Z-coordinate constant.
 camera.setFocalPoint(300, 250);
 camera.setFocalPoint([300, 250]);
-// 或者设置 Z 坐标为默认值 0
+// Or set the Z-coordinate to the default value of 0.
 camera.setFocalPoint(300, 250, 0);
-// 或者设置 Z 坐标为默认值 0
+// Or set the Z-coordinate to the default value of 0.
 camera.setFocalPoint([300, 250, 0]);
 ```
 
 ### getDistance()
 
-获取相机位置到视点的距离。
+Get the distance from the camera position to the viewpoint.
 
-例如默认相机中：
+For example, in the default camera.
 
 ```js
 camera.getDistance(); // 500
@@ -183,9 +185,9 @@ camera.getDistance(); // 500
 
 ### setDistance()
 
-固定视点，沿 `forward` 方向移动相机位置。
+Fix the viewpoint and move the camera position along the `forward` direction.
 
-例如移动默认相机，固定视点位置，将视距从 `500` 改成 `400`：
+For example, move the default camera, fix the viewpoint position, and change the view distance from `500` to `400`.
 
 ```js
 camera.setDistance(400);
@@ -193,9 +195,9 @@ camera.setDistance(400);
 
 ### getNear()
 
-获取近平面。近平面内的图形将被剔除。
+Get the near-plane. Graphics in the near-plane will be rejected.
 
-G 的默认相机设置为 `0.1`：
+The default camera setting for G is `0.1`.
 
 ```js
 camera.getNear(); // 0.1
@@ -203,9 +205,9 @@ camera.getNear(); // 0.1
 
 ### setNear()
 
-设置近平面。
+Set up near plane.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setNear(near: number)
@@ -213,9 +215,9 @@ setNear(near: number)
 
 ### getFar()
 
-获取远平面。远平面外的图形将被剔除。
+Get the far plane. Graphics outside the far plane will be excluded.
 
-G 的默认相机设置为 `1000`：
+The default camera setting for G is `1000`.
 
 ```js
 camera.getFar(); // 1000
@@ -223,9 +225,9 @@ camera.getFar(); // 1000
 
 ### setFar()
 
-设置远平面。
+Set the far plane.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setFar(far: number)
@@ -233,9 +235,9 @@ setFar(far: number)
 
 ### getZoom()
 
-获取缩放比例。虽然从视觉效果上看，增大相机的缩放比例与调用根节点的 [setScale]() 相同，但显然前者并不会对场景中的图形造成任何改变。
+Gets the scaling. Although visually increasing the camera's scale is the same as calling [setScale]() on the root node, it is clear that the former does not cause any change to the graphics in the scene.
 
-默认缩放比例为 `1`：
+The default scaling is `1`.
 
 ```js
 camera.getZoom(); // 1
@@ -243,9 +245,9 @@ camera.getZoom(); // 1
 
 ### setZoom()
 
-`zoom` 大于 1 代表放大，反之代表缩小，[示例](/zh/examples/camera#ortho)。
+`zoom` greater than 1 means zoom in, and vice versa means zoom out, [example](/en/examples/camera#ortho).
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setZoom(zoom: number)
@@ -253,9 +255,9 @@ setZoom(zoom: number)
 
 ### setFov()
 
-仅透视投影下生效，视角越大容纳的对象越多。[示例](/zh/examples/camera#perspective)
+Only works in perspective projection, the larger the perspective is the more objects it can hold. [example](/en/examples/camera#perspective)
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setFov(fov: number)
@@ -263,9 +265,9 @@ setFov(fov: number)
 
 ### setAspect()
 
-仅透视投影下生效。大部分情况下不需要手动设置，当画布尺寸发生改变时可以通过调用 `canvas.resize()` 自动更新。
+Only works under perspective projection. Most of the time there is no need to set it manually, it can be updated automatically when the canvas size changes by calling `canvas.resize()`.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 setAspect(aspect: number)
@@ -273,21 +275,21 @@ setAspect(aspect: number)
 
 ### setMinDistance()
 
-设置最小视距。在进行 [dolly](/zh/docs/api/camera#dolly) 操作时不会小于该距离。
+Set the minimum view distance. It will not be smaller than this distance when [dolly](/en/docs/api/camera#dolly) operation is performed.
 
-默认值为 `-Infinity`。
+The default value is `-Infinity`.
 
 ### setMaxDistance()
 
-设置最大视距。在进行 [dolly](/zh/docs/api/camera#dolly) 操作时不会大于该距离。
+Set the maximum view distance. It will not be greater than this distance when [dolly](/en/docs/api/camera#dolly) operation is performed.
 
-默认值为 `Infinity`。
+The default value is `Infinity`.
 
 ### setViewOffset()
 
-设置视口的偏移量，立刻重新计算投影矩阵。
+Set the offset of the viewport and immediately recalculate the projection matrix.
 
-方法签名为：
+The method signature is as follows.
 
 ```
 setViewOffset(
@@ -300,37 +302,37 @@ setViewOffset(
 )
 ```
 
-其中 `fullWidth/fullHeight` 为原始视口大小，`x/y` 为视口偏移坐标，`width/height` 为偏移后视口大小。
+where `fullWidth/fullHeight` is the original viewport size, `x/y` is the viewport offset coordinate, and `width/height` is the offset viewport size.
 
-在该[示例](/zh/examples/camera#view-offset)中，[Cube](/zh/docs/api/3d/geometry#cubegeometry) 原本位于视口正中央，通过设置 `x/y` 偏移量到视口中心。
+In this [example](/en/examples/camera#view-offset), [Cube](/en/docs/api/3d/geometry#cubegeometry) is originally in the center of the viewport, by setting the `x/y` offset to the center of the viewport.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*U6ELSY2EVNIAAAAAAAAAAAAAARQnAQ" alt="setViewOffset" width="300">
 
-在 [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 中拾取时，我们使用该方法设置偏移量（将相机对准拾取区域），仅渲染拾取区域而非整个屏幕以提高性能。
+When picking up in [g-plugin-device-renderer](/en/docs/plugins/device-renderer), we use this method to set the offset (aligning the camera to the pickup area) and render only the pickup area instead of the whole screen to improve performance.
 
 ### clearViewOffset()
 
-清除之前设置的视口偏移量，立刻重新计算投影矩阵。
+Clear the previously set viewport offset and immediately recalculate the projection matrix.
 
-在该[示例](/zh/examples/camera#view-offset)中，点击按钮可以随时移除已设置的偏移量。
+In this [example](/en/examples/camera#view-offset), the set offset can be removed at any time by clicking the button.
 
-### 设置方位角
+### Set azimuth
 
-在描述旋转时，有时欧拉角理解起来要更直观，因为它更加贴近我们在日常生活中的描述，比如摄像机运动、水平坐标系（也称作地心坐标系）中的经纬度等等。在一些 GIS 类可视化项目（例如 Mapbox）中，经常使用 pitch/yaw/roll 来描述自身的旋转情况。例如下图中的一架飞机。
+When describing rotation, sometimes Euler angles are more intuitive to understand because they are more closely related to what we describe in everyday life, such as camera motion, latitude and longitude in a horizontal coordinate system (also known as a geocentric coordinate system), and so on. In some GIS-like visualization projects (e.g. Mapbox), pitch/yaw/roll is often used to describe the rotation of itself. An example is an airplane in the picture below.
 
-设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置。
+To set the camera azimuth, you need to recalculate the camera position or viewpoint position in different camera modes.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tLc3R7rerqsAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tLc3R7rerqsAAAAAAAAAAAAAARQnAQ" alt="" width="400">
 
 #### setRoll()
 
-设置绕 `forward` 轴旋转的角度，单位为 `deg`，方法签名如下：
+Sets the angle of rotation around the `forward` axis in `deg`, with the following method signature.
 
 ```
 setRoll(roll: number)
 ```
 
-注意不同的[相机类型](/zh/docs/api/camera#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
+Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/en/docs/api/camera#camera type).
 
 ```js
 camera.setRoll(30);
@@ -338,13 +340,13 @@ camera.setRoll(30);
 
 #### setElevation()
 
-设置 `elevation` 角度，单位为 `deg`，方法签名如下：
+Sets the `elevation` angle in `deg`, with the following method signature.
 
 ```
 setElevation(angle: number)
 ```
 
-注意不同的[相机类型](/zh/docs/api/camera#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
+Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/en/docs/api/camera#camera type).
 
 ```js
 camera.setElevation(30);
@@ -352,25 +354,27 @@ camera.setElevation(30);
 
 #### setAzimuth()
 
-设置绕 `azimuth` 角度，单位为 `deg`，方法签名如下：
+Set the angle around `azimuth` in `deg`, with the following method signature.
 
 ```
 setAzimuth(angle: number)
 ```
 
-注意不同的[相机类型](/zh/docs/api/camera#相机类型)下，固定相机位置和固定视点位置旋转的效果不同：
+Note the different effects of fixed camera position and fixed viewpoint position rotation under different [camera types](/en/docs/api/camera#camera type).
 
 ```js
 camera.setAzimuth(30);
 ```
 
-## 相机类型
+## Camera Types
 
-在 2D 场景中，如果我们想在场景中移动，通常会使用到平移和缩放。而在 3D 场景下不同的相机类型会带来不同的视觉效果。
+In 2D scenes, if we want to move around the scene, we usually use panning and zooming. In 3D scenes different camera types will bring different visual effects.
 
-左图是固定视点，移动相机位置来观测场景，多见于模型观察。而右图固定相机位置，调整视点观察场景中的所有物体。 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*vNDVQ5tE4G0AAAAAAAAAAAAAARQnAQ)
+The image on the left is a fixed point of view, moving the camera position to observe the scene, mostly seen in model observation. On the right, the camera position is fixed and the viewpoint is adjusted to observe all objects in the scene.
 
-我们提供了三种类型：
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*vNDVQ5tE4G0AAAAAAAAAAAAAARQnAQ" width="600" alt="camera types">
+
+We offer three types.
 
 ```js
 export enum CameraType {
@@ -381,152 +385,152 @@ export enum CameraType {
 
 ```
 
-配合 [g-plugin-control](/zh/docs/plugins/control) 可以使用鼠标平移、缩放进行交互，[示例](/zh/examples/camera#landmark)。
+With [g-plugin-control](/en/docs/plugins/control) you can interact with mouse panning and zooming, [example](/en/examples/camera#landmark).
 
 ### Orbiting
 
-固定视点 `focalPoint`，改变相机位置 `position`。常用于 CAD 观察模型这样的场景，但不能跨越南北极。
+Fixes the viewpoint `focalPoint` and changes the camera position `position`. Commonly used in scenarios like CAD viewing models, but not across the north and south poles.
 
-在 Three.js 中称作 [OrbitControls](https://threejs.org/docs/#examples/zh/controls/OrbitControls)
+Called [OrbitControls](https://threejs.org/docs/#examples/en/controls/OrbitControls) in Three.js.
 
-在该[示例](/zh/examples/camera#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/zh/docs/api/camera#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
+In this [example](/en/examples/camera#landmark), we control the camera by mouse panning to complete the [pan](/en/docs/api/camera#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
 ### Exploring
 
-类似 `Orbiting` 模式，同样固定视点 `focalPoint`，但可以跨越南北极。
+Similar to `Orbiting` mode, also fixed viewpoint `focalPoint`, but can span North and South poles.
 
-G 的**默认相机**选择了该模式。
+G's **Default Camera** has this mode selected.
 
-在 Three.js 中称作 [TrackballControls](https://threejs.org/docs/#examples/en/controls/TrackballControls)
+Called [TrackballControls](https://threejs.org/docs/#examples/en/controls/TrackballControls) in Three.js.
 
-在该[示例](/zh/examples/camera#landmark)中，我们通过鼠标的平移控制相机完成 [pan]() 动作，让相机绕固定视点“旋转”。
+In this [example](/en/examples/camera#landmark), we control the camera via mouse panning to complete the [pan]() action, allowing the camera to "rotate" around a fixed point of view.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dGgTTKjUrKoAAAAAAAAAAAAAARQnAQ">
 
 ### Tracking
 
-固定相机位置 `position` 绕其旋转，因此视点 `focalPoint` 位置会发生改变。
+The fixed camera position `position` rotates around it, so the viewpoint `focalPoint` position will change.
 
-在 Three.js 中称作 [FirstPersonControls](https://threejs.org/docs/#examples/en/controls/FirstPersonControls)
+Called [FirstPersonControls](https://threejs.org/docs/#examples/en/controls/FirstPersonControls) in Three.js.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3OPVQajsb3YAAAAAAAAAAAAAARQnAQ">
 
 ### setType()
 
-随时可以在以上三种模式间切换：
+At any time, you can switch between these three modes.
 
 ```js
 camera.setType(CameraType.Tracking);
 ```
 
-## 相机动作
+## Camera action
 
-在相机坐标系中相机的三轴为 `uvn`
+The three axes of the camera in the camera coordinate system are `uvn`.
 
 <img src="https://i.stack.imgur.com/ooEFp.png" width="200">
 
-后面我们介绍的相机动作实际就是沿这三轴进行移动和旋转。
+The camera movements we describe later are actually movement and rotation along these three axes.
 
-下图来自 Television Production Handbook p.97。早年的电视台使用的摄像机通过轨道完成移动：
+The following picture is from Television Production Handbook p.97. The cameras used in the early years of television were moved by tracks.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_4be1e1/afts/img/A*Dm7cQZ6locEAAAAAAAAAAAAAARQnAQ" width="400">
 
-我们不考虑依靠摇臂完成的 crane 和 tongue 动作，沿 uvn 三轴的平移和旋转可总结出以下动作：
+Disregarding the crane and tongue movements, which rely on the rocker, the translations and rotations along the three uvn axes can be summarized as follows.
 
-| 动作名   | 相机位置 | 视点     | u    | v    | n    |
-| -------- | -------- | -------- | ---- | ---- | ---- |
-| dolly    |          |          |      |      | 平移 |
-| pedestal |          |          |      | 平移 |      |
-| truck    |          |          | 平移 |      |      |
-| cant     | 旋转中心 |          |      |      | 旋转 |
-| pan      | 旋转中心 |          |      | 旋转 |      |
-| tilt     | 旋转中心 |          | 旋转 |      |      |
-| arc      |          | 旋转中心 |      | 旋转 |      |
+| Action   | Camera Position    | FocalPoint         | u      | v      | n      |
+| -------- | ------------------ | ------------------ | ------ | ------ | ------ |
+| dolly    |                    |                    |        |        | pan    |
+| pedestal |                    |                    |        | pan    |        |
+| truck    |                    |                    | pan    |        |        |
+| cant     | Center of Rotation |                    |        |        | rotate |
+| pan      | Center of Rotation |                    |        | rotate |        |
+| tilt     | Center of Rotation |                    | rotate |        |        |
+| arc      |                    | Center of Rotation |        | rotate |        |
 
-很自然的，根据相机类型的不同，同一个摄像机动作对应的实现也不同。 我们以 [dolly]() 动作为例，同样都是一个向前向后移动摄像机位置的动作，对于 [Orbiting](/zh/docs/api/camera#orbiting) / [Exploring](/zh/docs/api/camera#exploring) 模式视点不变，而在 [Tracking](/zh/docs/api/camera#tracking) 模式下视点是需要调整的。
+Naturally, depending on the camera type, the same camera action is implemented differently. Let's take [dolly]() action as an example, it's also an action to move the camera position forward and backward, for [Orbiting](/en/docs/api/camera#orbiting) / [Exploring](/en/docs/api/camera#exploring) mode the point of view remains the same. In [Tracking](/en/docs/api/camera#tracking) mode, the point of view is adjusted.
 
 ### pan()
 
-沿 u / v 轴，即水平和垂直方向平移相机。
+Pans the camera along the u / v axis, i.e., horizontally and vertically.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 pan(tx: number, ty: number)
 ```
 
-参数：
+Parameters:
 
--   `tx` 沿 u 轴正向平移
--   `ty` 沿 v 轴正向平移
+-   `tx` Positive translation along u-axis
+-   `ty` Positive translation along v-axis
 
-在该[示例](/zh/examples/camera#action) 中，下面的操作将导致原本处于视点处的物体展示在左上角：
+In this [example](/en/examples/camera#action), the following action will cause the object originally at the point of view to be displayed in the upper left corner.
 
 ```ts
 camera.pan(200, 200);
 ```
 
-在 [g-plugin-control](/zh/docs/plugins/control) 中我们响应鼠标平移事件，调用该方法：
+In [g-plugin-control](/en/docs/plugins/control) we respond to the mouse panning event by calling this method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
 ### dolly()
 
-沿 n 轴移动相机。固定视点，改变相机位置从而改变视距。会保持视距在 [minDistance](/zh/docs/api/camera#setmindistance) 和 [maxDistance](/zh/docs/api/camera#setmaxdistance) 之间。
+Move the camera along the n-axis. Fix the viewpoint and change the camera position to change the view distance. It will keep the view distance between [minDistance](/en/docs/api/camera#setmindistance) and [maxDistance](/en/docs/api/camera#setmaxdistance).
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 dolly(value: number)
 ```
 
-参数：
+Parameters:
 
 -   `value` 以 `dollyingStep` 为单位，正向远离视点，负向靠近
 
-使用示例：
+Example:
 
 ```ts
-camera.dolly(10); // 远离视点
-camera.dolly(-10); // 靠近视点
+camera.dolly(10); // Away from the point of view
+camera.dolly(-10); // Close to the point of view
 ```
 
-在透视投影中效果如下，在 [g-plugin-control](/zh/docs/plugins/control) 中我们响应鼠标滚轮事件，调用该方法：
+The effect in the pivot projection is as follows. In [g-plugin-control](/en/docs/plugins/control) we respond to the mouse wheel event by calling this method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Q-OJQ5cCbowAAAAAAAAAAAAAARQnAQ">
 
 ### rotate()
 
-按相机方位角旋转，逆时针方向为正。
+Rotate by camera azimuth, counterclockwise is positive.
 
-方法签名如下：
+The method signature is as follows.
 
 ```
 rotate(azimuth: number, elevation: number, roll: number)
 ```
 
-2D 场景只需要指定 roll，例如让相机“歪下头”：
+2D scenes only need to specify rolls, e.g. for the camera to "tilt its head".
 
 ```js
 camera.rotate(0, 0, 30);
 ```
 
-## 相机动画
+## Camera animation
 
-我们可以把相机当前的位置、视点记录下来，保存成一个"地标" Landmark。随后当相机参数发生改变时，可以随时切换到之前保存的任意一个 Landmark，同时带有平滑的切换动画，类似真实片场中的摄像机摇臂，在一些应用中也称作 `flyTo`（例如 [Mapbox 中的应用](https://docs.mapbox.com/mapbox-gl-js/example/flyto/)），[示例](/zh/examples/camera#landmark)。
+We can record the current position and viewpoint of the camera and save it as a Landmark, and then when the camera parameters change, you can switch to any of the previously saved Landmark at any time, with a smooth switching animation, similar to the camera pan arm on a real set, also called `flyTo` in some applications (e.g. [Mapbox in application](https://docs.mapbox.com/mapbox-gl-js/example/flyto/)), [example](/en/examples/camera#landmark).
 
 ### createLandmark()
 
-创建一个 Landmark，参数包括：
+Create a Landmark with the following parameters.
 
--   markName 名称
--   options 相机参数，包括：
-    -   position 世界坐标系下的相机位置，取值类型参考 [setPosition](/zh/docs/api/camera#setposition)
-    -   focalPoint 世界坐标系下的视点，取值类型参考 [setFocalPoint](/zh/docs/api/camera#setfocalpoint)
-    -   roll 旋转角度，取值类型参考 [setRoll](/zh/docs/api/camera#setroll)
-    -   zoom 缩放比例，取值类型参考 [setZoom](/zh/docs/api/camera#setzoom)
+-   markName
+-   options Camera parameters, including.
+    -   `position` The position of the camera in the world coordinate system, taking the type reference [setPosition](/en/docs/api/camera#setposition)
+    -   `focalPoint` Viewpoint in the world coordinate system, reference to the value type [setFocalPoint](/en/docs/api/camera#setfocalpoint)
+    -   `roll` Rotation angle, take the value type reference [setRoll](/en/docs/api/camera#setroll)
+    -   `zoom` Zoom scaling, take the value type reference [setZoom](/en/docs/api/camera#setzoom)
 
 ```js
 camera.createLandmark('mark1', {
@@ -546,7 +550,7 @@ camera.createLandmark('mark3', {
 
 ### gotoLandmark()
 
-切换到之前保存的 Landmark，在 2D 和 3D 场景下都适用，[示例](/zh/examples/camera#landmark2)：
+Switching to a previously saved Landmark works in both 2D and 3D scenes, [example](/en/examples/camera#landmark2).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EL2XSL5qSQ8AAAAAAAAAAAAAARQnAQ" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*o4eKT4ZQfJcAAAAAAAAAAAAAARQnAQ" width="300">
@@ -557,20 +561,20 @@ camera.gotoLandmark('mark1', { duration: 300, easing: 'ease-in' });
 camera.gotoLandmark(landmark, { duration: 300, easing: 'ease-in' });
 ```
 
-参数列表如下：
+The list of parameters is as follows.
 
--   markName 名称或者已创建的 Landmark
--   options 动画参数，包括：
-    -   duration 动画持续时间，单位为 `ms`，默认值为 `100`
-    -   easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation#easing-1)
-    -   easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/docs/api/animation#easingfunction)
-    -   onfinish 动画结束后的回调函数
+-   markName
+-   options Camera parameters, including.
+    -   `duration` Duration of the animation in `ms`, default value is `100`.
+    -   `easing` Easing function, default value is `linear`. Consistent with the animation system [built-in effects](/en/docs/api/animation#easing-1)
+    -   `easingFunction` Custom easing function, when the built-in easing function can not meet the requirements, you can [custom](/en/docs/api/animation#easingfunction)
+    -   `onfinish` Callback function at the end of the animation
 
-和动画系统中的 [options](/zh/docs/api/animation#options) 参数一样，传入 `number` 时等同于设置 `duration`：
+As with the [options](/en/docs/api/animation#options) parameter in the animation system, passing `number` is equivalent to setting `duration`.
 
 ```js
 camera.gotoLandmark('mark1', { duration: 300 });
 camera.gotoLandmark('mark1', 300);
 ```
 
-值得注意的是，如果在一个相机动画结束前调用另一个，进行中的动画将会立刻取消。
+It is important to note that if another camera animation is called before the end of one, the animation in progress will be cancelled immediately.

@@ -20,7 +20,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
       type: Shape.POLYGON,
       style: {
         points: '',
-        miterLimit: 4,
+        miterLimit: '',
         ...style,
       },
       ...rest,

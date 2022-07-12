@@ -10,7 +10,7 @@ describe('Abstract renderer', () => {
       enableDirtyCheck: true,
       enableCulling: false,
       enableDirtyRectangleRendering: true,
-      // enableDirtyRectangleRenderingDebug: false,
+      enableDirtyRectangleRenderingDebug: false,
     });
 
     renderer.setConfig({ enableAutoRendering: false });
@@ -19,7 +19,7 @@ describe('Abstract renderer', () => {
       enableDirtyCheck: true,
       enableCulling: false,
       enableDirtyRectangleRendering: true,
-      // enableDirtyRectangleRenderingDebug: false,
+      enableDirtyRectangleRenderingDebug: false,
     });
 
     expect(renderer.getPlugins().length).to.be.eqls(0);

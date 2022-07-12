@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module, Shape } from '@antv/g';
+import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
 import { PathGenerator, PathGeneratorFactory } from './interfaces';
 import {
   CirclePath,
@@ -57,13 +56,13 @@ const containerModule = Module((register) => {
   });
 });
 
-export class Plugin implements RendererPlugin {
+export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-path-generator';
-  init(container: Syringe.Container): void {
-    container.load(containerModule, true);
+  init(): void {
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.unload(containerModule);
   }
 }
 

@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { DeviceRendererPlugin } from './tokens';
 import { WebGPUContextService } from './WebGPUContextService';
@@ -11,18 +10,20 @@ const containerModule = Module((register) => {
   register(WebGPUContextService);
 });
 
-export class ContextRegisterPlugin implements RendererPlugin {
+export class ContextRegisterPlugin extends AbstractRendererPlugin {
   name = 'webgpu-context-register';
-  constructor(private rendererPlugin: DeviceRenderer.Plugin) {}
+  constructor(private rendererPlugin: DeviceRenderer.Plugin) {
+    super();
+  }
 
-  init(container: Syringe.Container): void {
-    container.register(DeviceRendererPlugin, {
+  init(): void {
+    this.container.register(DeviceRendererPlugin, {
       useValue: this.rendererPlugin,
     });
-    container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
-    container.remove(DeviceRendererPlugin);
+  destroy(): void {
+    this.container.unload(containerModule);
+    this.container.remove(DeviceRendererPlugin);
   }
 }

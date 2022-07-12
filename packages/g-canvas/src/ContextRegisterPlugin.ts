@@ -1,5 +1,4 @@
-import type { RendererPlugin, Syringe } from '@antv/g';
-import { Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { Canvas2DContextService } from './Canvas2DContextService';
 
 const containerModule = Module((register) => {
@@ -9,12 +8,12 @@ const containerModule = Module((register) => {
   register(Canvas2DContextService);
 });
 
-export class ContextRegisterPlugin implements RendererPlugin {
+export class ContextRegisterPlugin extends AbstractRendererPlugin {
   name = 'canvas-context-register';
-  init(container: Syringe.Container): void {
-    container.load(containerModule, true);
+  init(): void {
+    this.container.load(containerModule, true);
   }
-  destroy(container: Syringe.Container): void {
-    container.unload(containerModule);
+  destroy(): void {
+    this.container.unload(containerModule);
   }
 }

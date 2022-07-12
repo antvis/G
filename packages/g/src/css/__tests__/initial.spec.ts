@@ -555,8 +555,8 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.x.equals(CSS.px(0))).to.be.true;
     expect(parsedStyle.y.equals(CSS.px(0))).to.be.true;
     // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.width.equals(CSS.px(200))).to.be.true;
-    expect(parsedStyle.height.equals(CSS.px(100))).to.be.true;
+    expect(parsedStyle.width!.equals(CSS.px(200))).to.be.true;
+    expect(parsedStyle.height!.equals(CSS.px(100))).to.be.true;
     expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
     expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);
     expect((parsedStyle.fill as CSSRGB).g).to.be.eqls(0);
@@ -567,16 +567,16 @@ describe('StyleValueRegistry initialization', () => {
     expect((parsedStyle.stroke as CSSRGB).g).to.be.eqls(0);
     expect((parsedStyle.stroke as CSSRGB).b).to.be.eqls(0);
     expect((parsedStyle.stroke as CSSRGB).alpha).to.be.eqls(0);
-    expect(parsedStyle.opacity.equals(CSS.number(1))).to.be.true;
+    expect(parsedStyle.opacity!.equals(CSS.number(1))).to.be.true;
     expect(parsedStyle.visibility instanceof CSSKeywordValue).to.be.true;
-    expect(parsedStyle.visibility.value).to.be.eqls('visible');
-    expect(parsedStyle.transformOrigin.length).to.be.eqls(2);
-    expect(parsedStyle.transformOrigin[0].equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.transformOrigin[1].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.visibility!.value).to.be.eqls('visible');
+    expect(parsedStyle.transformOrigin!.length).to.be.eqls(2);
+    expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).to.be.true;
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor.length).to.be.eqls(2);
-    expect(parsedStyle.anchor[0].equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.anchor[1].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.anchor!.length).to.be.eqls(2);
+    expect(parsedStyle.anchor![0].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.anchor![1].equals(CSS.px(0))).to.be.true;
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.fillOpacity).to.be.undefined;
     expect(parsedStyle.strokeOpacity).to.be.undefined;
@@ -604,10 +604,10 @@ describe('StyleValueRegistry initialization', () => {
     expect(text.getAttribute('textBaseline')).to.be.eqls('');
     expect(text.getAttribute('fill')).to.be.eqls('black');
     expect(text.getAttribute('stroke')).to.be.eqls('');
-    expect(text.getAttribute('letterSpacing')).to.be.eqls(0);
-    expect(text.getAttribute('lineHeight')).to.be.eqls(0);
+    expect(text.getAttribute('letterSpacing')).to.be.eqls('');
+    expect(text.getAttribute('lineHeight')).to.be.eqls('');
     expect(text.getAttribute('lineWidth')).to.be.eqls('');
-    expect(text.getAttribute('miterLimit')).to.be.eqls(10);
+    expect(text.getAttribute('miterLimit')).to.be.eqls('');
     expect(text.getAttribute('whiteSpace')).to.be.eqls('pre');
     expect(text.getAttribute('wordWrap')).to.be.eqls(false);
     expect(text.getAttribute('leading')).to.be.eqls(0);

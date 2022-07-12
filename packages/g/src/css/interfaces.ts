@@ -133,4 +133,5 @@ export interface StyleValueRegistry {
   unregisterMetadata: (name: string) => void;
   getMetadata: (name: string) => PropertyMetadata;
   getPropertySyntax: (syntax: string) => CSSProperty<any, any>;
+  addUnresolveProperty: (object: DisplayObject, name: string) => void;
 }
