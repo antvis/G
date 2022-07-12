@@ -102,8 +102,6 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       lineXOffset += dx.value;
     }
     if (dy) {
-      console.log(dy.toString(), object);
-
       lineYOffset += dy.value;
     }
 
