@@ -17,8 +17,8 @@ export class TextRenderer implements StyleRenderer {
       textAlign,
       textBaseline,
       lineJoin,
-      miterLimit = 0,
-      letterSpacing = 0,
+      miterLimit,
+      letterSpacing,
       stroke,
       fill,
       fillOpacity,
@@ -36,7 +36,9 @@ export class TextRenderer implements StyleRenderer {
     context.textAlign = textAlign.value as CanvasTextAlign;
     context.textBaseline = textBaseline.value as CanvasTextBaseline;
     context.lineJoin = lineJoin.value as CanvasLineJoin;
-    context.miterLimit = miterLimit;
+    if (!isNil(miterLimit)) {
+      context.miterLimit = miterLimit.value;
+    }
 
     let linePositionY = 0;
     // handle vertical text baseline
@@ -76,7 +78,7 @@ export class TextRenderer implements StyleRenderer {
           textAlign.value as CanvasTextAlign,
           linePositionX,
           linePositionY,
-          letterSpacing,
+          letterSpacing.value,
           fillOpacity.value,
           strokeOpacity.value,
           opacity.value,
@@ -91,7 +93,7 @@ export class TextRenderer implements StyleRenderer {
           textAlign.value as CanvasTextAlign,
           linePositionX,
           linePositionY,
-          letterSpacing,
+          letterSpacing.value,
           fillOpacity.value,
           strokeOpacity.value,
           opacity.value,

@@ -31,9 +31,8 @@ export interface TextStyleProps extends BaseStyleProps {
   /** 字体变体 */
   fontVariant?: CSSGlobalKeywords | 'normal' | 'small-caps' | string;
   /** 文本行高 */
-  lineHeight?: number;
-  letterSpacing?: number;
-  miterLimit?: number;
+  lineHeight?: number | string;
+  letterSpacing?: number | string;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -62,9 +61,8 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   /** 字体变体 */
   fontVariant?: CSSKeywordValue;
   /** 文本行高 */
-  lineHeight?: number;
-  letterSpacing?: number;
-  miterLimit?: number;
+  lineHeight?: CSSUnitValue;
+  letterSpacing?: CSSUnitValue;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -83,9 +81,9 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement#constants
    */
-  LENGTHADJUST_SPACING: number = 1;
-  LENGTHADJUST_SPACINGANDGLYPHS: number = 2;
-  LENGTHADJUST_UNKNOWN: number = 0;
+  // LENGTHADJUST_SPACING: number = 1;
+  // LENGTHADJUST_SPACINGANDGLYPHS: number = 2;
+  // LENGTHADJUST_UNKNOWN: number = 0;
 
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
     super({
@@ -102,17 +100,10 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         textAlign: '',
         textBaseline: '',
         textTransform: '',
-        // dropShadow: false,
-        // dropShadowAlpha: 1,
-        // dropShadowAngle: Math.PI / 6,
-        // dropShadowBlur: 0,
-        // dropShadowColor: '#000',
-        // dropShadowDistance: 5,
         fill: 'black',
-        // stroke: 'black',
-        letterSpacing: 0,
-        lineHeight: 0,
-        miterLimit: 10,
+        letterSpacing: '',
+        lineHeight: '',
+        miterLimit: '',
         whiteSpace: 'pre',
         wordWrap: false,
         wordWrapWidth: 0,
@@ -125,11 +116,11 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
     });
   }
 
-  lengthAdjust: SVGAnimatedEnumeration;
-  textLength: SVGAnimatedLength;
-  getCharNumAtPosition(point?: DOMPointInit): number {
-    throw new Error('Method not implemented.');
-  }
+  // lengthAdjust: SVGAnimatedEnumeration;
+  // textLength: SVGAnimatedLength;
+  // getCharNumAtPosition(point?: DOMPointInit): number {
+  //   throw new Error('Method not implemented.');
+  // }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement
@@ -138,29 +129,29 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
     return this.parsedStyle.metrics?.maxLineWidth || 0;
   }
 
-  getEndPositionOfChar(charnum: number): DOMPoint {
-    throw new Error('Method not implemented.');
-  }
-  getExtentOfChar(charnum: number): DOMRect {
-    throw new Error('Method not implemented.');
-  }
-  getNumberOfChars(): number {
-    throw new Error('Method not implemented.');
-  }
-  getRotationOfChar(charnum: number): number {
-    throw new Error('Method not implemented.');
-  }
-  getStartPositionOfChar(charnum: number): DOMPoint {
-    throw new Error('Method not implemented.');
-  }
+  // getEndPositionOfChar(charnum: number): DOMPoint {
+  //   throw new Error('Method not implemented.');
+  // }
+  // getExtentOfChar(charnum: number): DOMRect {
+  //   throw new Error('Method not implemented.');
+  // }
+  // getNumberOfChars(): number {
+  //   throw new Error('Method not implemented.');
+  // }
+  // getRotationOfChar(charnum: number): number {
+  //   throw new Error('Method not implemented.');
+  // }
+  // getStartPositionOfChar(charnum: number): DOMPoint {
+  //   throw new Error('Method not implemented.');
+  // }
 
-  getSubStringLength(charnum: number, nchars: number): number {
-    throw new Error('Method not implemented.');
-  }
+  // getSubStringLength(charnum: number, nchars: number): number {
+  //   throw new Error('Method not implemented.');
+  // }
 
-  selectSubString(charnum: number, nchars: number): void {
-    throw new Error('Method not implemented.');
-  }
+  // selectSubString(charnum: number, nchars: number): void {
+  //   throw new Error('Method not implemented.');
+  // }
 
   getLineBoundingRects() {
     return this.parsedStyle.metrics?.lineMetrics || [];

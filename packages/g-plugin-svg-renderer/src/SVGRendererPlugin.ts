@@ -409,6 +409,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       } else if (name === 'clipPath') {
         this.createOrUpdateClipPath(document, usedValue, $groupEl);
       } else if (
+        name === 'shadowType' ||
         name === 'shadowColor' ||
         name === 'shadowBlur' ||
         name === 'shadowOffsetX' ||

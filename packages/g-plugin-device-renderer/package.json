@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-device-renderer",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A G plugin of renderer implementation with GPUDevice",
   "keywords": [
     "antv",
@@ -31,7 +31,8 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-shader-components": "^1.6.0-alpha.0",
+    "@antv/g-plugin-image-loader": "^1.0.1",
+    "@antv/g-shader-components": "^1.6.0",
     "@antv/util": "^3.2.0",
     "@mapbox/tiny-sdf": "^2.0.4",
     "@types/offscreencanvas": "^2019.6.4",
@@ -49,8 +50,7 @@
     "rollup-plugin-glslify": "^1.2.1"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "@antv/g-plugin-image-loader": "^0.0.0"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

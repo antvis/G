@@ -22,7 +22,7 @@ export class Polyline extends DisplayObject<PolylineStyleProps, ParsedPolylineSt
       type: Shape.POLYLINE,
       style: {
         points: '',
-        miterLimit: 4,
+        miterLimit: '',
         ...style,
       },
       ...rest,

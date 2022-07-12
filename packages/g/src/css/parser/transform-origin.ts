@@ -8,6 +8,10 @@ import { parseLengthOrPercentage } from './dimension';
  */
 export function parseTransformOrigin(value: string | number[]): [CSSUnitValue, CSSUnitValue] {
   if (isString(value)) {
+    if (value === 'text-anchor') {
+      return [new CSSUnitValue(0, 'px'), new CSSUnitValue(0, 'px')];
+    }
+
     const values = value.split(' ');
     if (values.length === 1) {
       if (values[0] === 'top' || values[0] === 'bottom') {

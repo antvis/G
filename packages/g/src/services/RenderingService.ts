@@ -162,23 +162,15 @@ export class RenderingService {
     if (this.renderingContext.renderReasons.size && this.inited) {
       this.renderDisplayObject(this.renderingContext.root, canvasConfig);
 
-      if (
-        this.renderingContext.renderListCurrentFrame.length ||
-        this.renderingContext.renderListLastFrame.length !==
-          this.renderingContext.renderListCurrentFrame.length
-      ) {
-        this.hooks.beginFrame.call();
+      this.hooks.beginFrame.call();
 
-        this.renderingContext.renderListCurrentFrame.forEach((object) => {
-          this.hooks.beforeRender.call(object);
-          this.hooks.render.call(object);
-          this.hooks.afterRender.call(object);
-        });
+      this.renderingContext.renderListCurrentFrame.forEach((object) => {
+        this.hooks.beforeRender.call(object);
+        this.hooks.render.call(object);
+        this.hooks.afterRender.call(object);
+      });
 
-        this.hooks.endFrame.call();
-      }
-
-      this.renderingContext.renderListLastFrame = [...this.renderingContext.renderListCurrentFrame];
+      this.hooks.endFrame.call();
       this.renderingContext.renderListCurrentFrame = [];
       this.renderingContext.renderReasons.clear();
     }

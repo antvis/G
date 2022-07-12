@@ -220,7 +220,6 @@ export class Canvas extends EventTarget implements ICanvas {
          * the root node in scene graph
          */
         root: this.document.documentElement,
-        renderListLastFrame: [],
         renderListCurrentFrame: [],
         unculledEntities: [],
 

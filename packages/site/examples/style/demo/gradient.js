@@ -109,6 +109,9 @@ const path = new Path({
     lineWidth: 1,
     stroke: '#54BECC',
     fill: 'linear-gradient(-90deg, rgba(178, 230, 181, 0), rgba(178, 230, 181, 0.6) 14%, rgba(166, 221, 179, 0.82) 23%, rgba(101, 171, 170, 0.9) 67%, rgb(23, 80, 157))',
+    shadowType: 'inner',
+    shadowColor: 'red',
+    shadowBlur: 10,
   },
 });
 

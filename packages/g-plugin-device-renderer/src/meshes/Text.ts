@@ -47,15 +47,23 @@ export class TextMesh extends Instanced {
     }
 
     const instance = this.instance;
-    const instancedAttributes = ['fontFamily', 'fontWeight', 'textBaseline', 'letterSpacing'];
+    const instancedAttributes = [
+      'fontSize',
+      'fontFamily',
+      'fontWeight',
+      'textBaseline',
+      'letterSpacing',
+    ];
 
     // fontStack & fontSize should be same
-    if (instance.parsedStyle.fontSize.value !== object.parsedStyle.fontSize.value) {
-      return false;
-    }
+    // if (instance.parsedStyle.fontSize.value !== object.parsedStyle.fontSize.value) {
+    //   return false;
+    // }
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
-      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
+      instancedAttributes.some(
+        (name) => instance.parsedStyle[name].value !== object.parsedStyle[name].value,
+      )
     ) {
       return false;
     }
@@ -65,7 +73,7 @@ export class TextMesh extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing = 0 } = object.parsedStyle;
+    const { textBaseline, fontSize, letterSpacing } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize.value;
@@ -111,7 +119,7 @@ export class TextMesh extends Instanced {
           lineHeight: fontScale * lineHeight,
           offsetX: fontScale * offsetX,
           offsetY: fontScale * (linePositionY + offsetY),
-          letterSpacing: fontScale * letterSpacing,
+          letterSpacing: fontScale * letterSpacing.value,
           glyphAtlas,
           indicesOffset: indicesOff,
         });

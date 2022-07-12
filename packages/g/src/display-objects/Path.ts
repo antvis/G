@@ -40,7 +40,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       type: Shape.PATH,
       style: {
         path: '',
-        miterLimit: 4,
+        miterLimit: '',
         ...style,
       },
       ...rest,

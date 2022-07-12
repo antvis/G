@@ -96,7 +96,9 @@ export class Document extends Node implements IDocument {
       clazz = tagName === 'tspan' ? Text : Group;
     }
 
-    return new clazz(options) as unknown as T;
+    const shape = new clazz(options) as unknown as T;
+    shape.ownerDocument = this;
+    return shape;
   }
 
   createElementNS<T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(

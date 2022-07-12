@@ -443,18 +443,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    * TODO: batch the same global attributes
    */
   private applyAttributesToContext(context: CanvasRenderingContext2D, object: DisplayObject) {
-    const {
-      stroke,
-      fill,
-      opacity,
-      lineDash,
-      lineDashOffset,
-      filter,
-      shadowColor,
-      shadowBlur,
-      shadowOffsetX,
-      shadowOffsetY,
-    } = object.parsedStyle as ParsedBaseStyleProps;
+    const { stroke, fill, opacity, lineDash, lineDashOffset } =
+      object.parsedStyle as ParsedBaseStyleProps;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
     if (lineDash && Array.isArray(lineDash)) {
       context.setLineDash(lineDash.map((segment) => segment.value));
@@ -475,19 +465,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     if (!isNil(fill) && !Array.isArray(fill) && !(fill as CSSRGB).isNone) {
       context.fillStyle = object.attributes.fill;
-    }
-
-    if (!isNil(filter)) {
-      // use raw filter string
-      context.filter = object.style.filter;
-    }
-
-    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
-    if (hasShadow) {
-      context.shadowColor = shadowColor.toString();
-      context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
-      context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
-      context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
     }
   }
 

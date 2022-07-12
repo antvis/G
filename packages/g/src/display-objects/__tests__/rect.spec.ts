@@ -44,6 +44,7 @@ describe('Rect', () => {
       'textTransform',
       'zIndex',
       'filter',
+      'shadowType',
       'x',
       'y',
       'width',

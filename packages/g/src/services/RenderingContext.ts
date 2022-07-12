@@ -27,7 +27,6 @@ export interface RenderingContext {
    */
   renderReasons: Set<RenderReason>;
 
-  renderListLastFrame: DisplayObject[];
   renderListCurrentFrame: DisplayObject[];
 
   unculledEntities: number[];

@@ -10,7 +10,7 @@ module.exports = {
   ],
   siteMetadata: {
     title: 'G',
-    description: 'A powerful rendering engine for AntV providing canvas and svg draw',
+    description: 'A powerful rendering engine for AntV.',
     siteUrl: 'https://g.antv.vision',
     githubUrl: 'https://github.com/antvis/g',
     navs: [
@@ -217,6 +217,7 @@ module.exports = {
       },
     ],
     docsearchOptions: {
+      versionV3: false,
       apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
       indexName: 'antv_g',
     },

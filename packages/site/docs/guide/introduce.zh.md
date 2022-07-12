@@ -13,7 +13,7 @@ redirect_from:
 
 [![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
 
-G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU）。特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
+G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU / CanvasKit）。特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
 
 <p>
   <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
@@ -33,7 +33,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 **易用的 API**。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
 
-**适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换，并支持服务端渲染。
+**适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU / CanvasKit 以及运行时切换，并支持服务端渲染。
 
 **高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
 

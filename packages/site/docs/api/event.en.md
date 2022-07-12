@@ -819,6 +819,8 @@ renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
 
 ## A11y 无障碍插件
 
+在 [g-plugin-a11y](/zh/docs/plugins/a11y) 中，我们监听了键盘事件用于导航。
+
 # 注意事项
 
 ## 事件监听器内 this 指向问题
