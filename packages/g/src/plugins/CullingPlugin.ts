@@ -1,5 +1,6 @@
 import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
+import { CustomEvent, ElementEvent } from '../dom';
 import { RenderingContext } from '../services';
 import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
@@ -54,7 +55,7 @@ export class CullingPlugin implements RenderingPlugin {
           return object;
         } else {
           // if (this.renderingContext.renderListLastFrame.indexOf(object) > -1) {
-          // object.dispatchEvent(new CustomEvent(ElementEvent.CULLED));
+          object.dispatchEvent(new CustomEvent(ElementEvent.CULLED));
           // }
         }
         return null;
