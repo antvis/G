@@ -469,6 +469,8 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 当然外阴影会使 [Render Bounds](/zh/docs/api/basic/concept#包围盒) 增大，内阴影则不会。
 
+最后，阴影会对渲染性能造成非常大影响。
+
 ### shadowType
 
 目前我们支持两种阴影：

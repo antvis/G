@@ -8,7 +8,7 @@ import type {
   RadialGradient,
   RenderingService,
 } from '@antv/g';
-import { GradientType, inject, isNil, isPattern, singleton } from '@antv/g';
+import { GradientType, inject, isNil, isPattern, Shape, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import type { StyleRenderer } from './interfaces';
 
@@ -42,30 +42,30 @@ export class DefaultRenderer implements StyleRenderer {
     const hasStroke =
       !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth && lineWidth.value > 0;
     const isFillTransparent = (fill as CSSRGB).alpha === 0;
-    let hasShadowApplied = false;
     const hasFilter = !isNil(filter);
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+    const nodeName = object.nodeName;
+    const isInnerShadow = shadowType?.value === 'inner';
+    const shouldDrawShadowWithStroke =
+      hasStroke &&
+      hasShadow &&
+      (nodeName === Shape.PATH ||
+        nodeName === Shape.LINE ||
+        nodeName === Shape.POLYLINE ||
+        isFillTransparent ||
+        isInnerShadow);
 
     if (hasFill) {
       context.globalAlpha = opacity.value * fillOpacity.value;
 
-      if (!hasStroke || shadowType?.value === 'outer') {
-        hasShadowApplied = true;
-        this.setShadowAndFilter(object, context);
+      if (!shouldDrawShadowWithStroke) {
+        this.setShadowAndFilter(object, context, hasShadow);
       }
 
       this.fill(context, object, fill, renderingService);
 
-      if (hasShadowApplied) {
-        context.shadowColor = 'transparent';
-        context.shadowBlur = 0;
-
-        if (hasFilter) {
-          // save drop-shadow filter
-          const oldFilter = context.filter;
-          if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
-            context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
-          }
-        }
+      if (!shouldDrawShadowWithStroke) {
+        this.clearShadowAndFilter(context, hasFilter, hasShadow);
       }
     }
 
@@ -84,15 +84,38 @@ export class DefaultRenderer implements StyleRenderer {
         context.lineJoin = lineJoin.value as CanvasLineJoin;
       }
 
-      if (!hasShadowApplied) {
-        context.globalCompositeOperation = 'source-atop';
-        this.setShadowAndFilter(object, context);
+      if (shouldDrawShadowWithStroke) {
+        if (isInnerShadow) {
+          context.globalCompositeOperation = 'source-atop';
+        }
+        this.setShadowAndFilter(object, context, true);
+
+        if (isInnerShadow) {
+          this.stroke(context, object, stroke, renderingService);
+          context.globalCompositeOperation = 'source-over';
+          this.clearShadowAndFilter(context, hasFilter, true);
+        }
       }
 
       this.stroke(context, object, stroke, renderingService);
+    }
+  }
 
-      if (!hasShadowApplied) {
-        context.globalCompositeOperation = 'source-over';
+  private clearShadowAndFilter(
+    context: CanvasRenderingContext2D,
+    hasFilter: boolean,
+    hasShadow: boolean,
+  ) {
+    if (hasShadow) {
+      context.shadowColor = 'transparent';
+      context.shadowBlur = 0;
+    }
+
+    if (hasFilter) {
+      // save drop-shadow filter
+      const oldFilter = context.filter;
+      if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
+        context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
       }
     }
   }
@@ -100,7 +123,11 @@ export class DefaultRenderer implements StyleRenderer {
   /**
    * apply before fill and stroke but only once
    */
-  private setShadowAndFilter(object: DisplayObject, context: CanvasRenderingContext2D) {
+  private setShadowAndFilter(
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    hasShadow: boolean,
+  ) {
     const { filter, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
       object.parsedStyle as ParsedBaseStyleProps;
 
@@ -109,7 +136,6 @@ export class DefaultRenderer implements StyleRenderer {
       context.filter = object.style.filter;
     }
 
-    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
     if (hasShadow) {
       context.shadowColor = shadowColor.toString();
       context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;

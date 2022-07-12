@@ -457,7 +457,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterL
 
 在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
 
-阴影不会影响图形的包围盒，例如下图中给一个半径为 100 的圆添加阴影后，包围盒尺寸不变：
+阴影不会影响图形的 [Geometry Bounds](/zh/docs/api/basic/concept#包围盒)，例如下图中给一个半径为 100 的圆添加阴影后，几何包围盒尺寸不变：
 
 ```js
 circle.getBounds(); // { halfExtents: [100, 100] }
@@ -465,9 +465,20 @@ circle.style.shadowBlur = 20;
 circle.getBounds(); // { halfExtents: [100, 100] }
 ```
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="200" alt="outer shadow">
 
-⚠️ 暂不支持内阴影。
+当然外阴影会使 [Render Bounds](/zh/docs/api/basic/concept#包围盒) 增大，内阴影则不会。
+
+最后，阴影会对渲染性能造成非常大影响。
+
+### shadowType
+
+目前我们支持两种阴影：
+
+-   `'outer'` 外阴影，也是该属性的默认值。阴影出现在图形填充或者描边的外侧。
+-   `'inner'` 内阴影。顾名思义阴影在图形内部，如下图所示。
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0uHfQa00ZeYAAAAAAAAAAAAAARQnAQ" width="200" alt="inner shadow">
 
 ### shadowColor
 

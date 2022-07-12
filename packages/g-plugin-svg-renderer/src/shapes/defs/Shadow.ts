@@ -18,21 +18,27 @@ export function createOrUpdateShadow(
   const { shadowType, shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY } =
     object.parsedStyle as ParsedBaseStyleProps;
 
-  // <Group> also has shadowType as its default value
   const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
-  if (!hasShadow) {
-    return;
-  }
-
   const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;
   let $existedFilter = $def.querySelector(`#${shadowId}`);
-  if ($existedFilter && name === 'shadowType') {
+  if ($existedFilter) {
     const existedShadowType = $existedFilter.getAttribute('data-type');
-    if (existedShadowType !== shadowType.value) {
+    if (existedShadowType !== shadowType.value || !hasShadow) {
       // remove existed shadow
       $existedFilter.remove();
       $existedFilter = null;
     }
+  }
+
+  // <Group> also has shadowType as its default value
+  // only apply shadow when blur > 0
+  if (hasShadow) {
+    // use filter <feDropShadow>
+    // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
+    $el?.setAttribute('filter', `url(#${shadowId})`);
+  } else {
+    $el?.removeAttribute('filter');
+    return;
   }
 
   if (!$existedFilter) {
@@ -126,14 +132,5 @@ export function createOrUpdateShadow(
     } else if (name === 'shadowOffsetY') {
       $feDropShadow.setAttribute('dy', `${(shadowOffsetY?.value || 0) / 2}`);
     }
-  }
-
-  // only apply shadow when blur > 0
-  if (hasShadow) {
-    // use filter <feDropShadow>
-    // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow
-    $el?.setAttribute('filter', `url(#${shadowId})`);
-  } else {
-    $el?.removeAttribute('filter');
   }
 }
