@@ -269,8 +269,6 @@ circle.emit('build', { prop1: 'xx' });
 
 我们会尽量将原生事件规范化到 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 事件对象后统一处理，可以在 [nativeEvent](/zh/docs/api/event#nativeevent) 上访问原生事件。
 
-对于特殊的 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)，由于多个触控点的存在，一些重要的属性例如 [target]() [canvasX/Y]() 都存储在 [Touch]() 对象上，可以通过 [changedTouches](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/changedTouches)，[touches](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/touches) 访问触点列表。
-
 ## 通用属性
 
 事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等，其中位置和[坐标系](/zh/docs/api/canvas#坐标系)相关。
