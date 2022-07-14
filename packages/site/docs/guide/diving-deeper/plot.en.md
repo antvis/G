@@ -1,5 +1,5 @@
 ---
-title: Take over Observable Plot rendering
+title: Takeover Observable Plot's rendering
 order: 15
 ---
 
