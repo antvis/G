@@ -65,7 +65,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     const addTouchEventListener = ($el: HTMLElement) => {
       $el.addEventListener('touchstart', onPointerDown, true);
       $el.addEventListener('touchend', onPointerUp, true);
-      globalThis.document.addEventListener('touchmove', onPointerMove, true);
+      $el.addEventListener('touchmove', onPointerMove, true);
       $el.addEventListener('touchcancel', onPointerCancel, true);
     };
 
@@ -88,8 +88,8 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     const removeTouchEventListener = ($el: HTMLElement) => {
       $el.removeEventListener('touchstart', onPointerDown, true);
       $el.removeEventListener('touchend', onPointerUp, true);
+      $el.removeEventListener('touchmove', onPointerMove, true);
       $el.removeEventListener('touchcancel', onPointerCancel, true);
-      globalThis.document.removeEventListener('touchmove', onPointerMove, true);
     };
 
     const removeMouseEventListener = ($el: HTMLElement) => {
