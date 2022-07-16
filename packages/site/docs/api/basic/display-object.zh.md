@@ -13,6 +13,7 @@ DisplayObject 是所有图形的基类，例如 [Group](/zh/docs/api/basic/group
 -   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
 -   使用 Interact.js [实现 Drag&Drop，Resize](/zh/docs/api/event#直接使用-interactjs)
 -   保留 D3 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/d3)
+-   保留 Observable Plot 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/plot)
 
 # 继承自
 
@@ -233,6 +234,9 @@ circle.style.anchor = '0.5 0.5';
     -   skew(ax, ay)
     -   skewX(a)
     -   skewY(a)
+-   矩阵
+    -   matrix()
+    -   matrix3d()
 -   none 清除变换
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |

@@ -140,8 +140,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       case node1:
       case node2:
         target.style.opacity = 1;
+        console.log(e.target);
     }
-    // console.log(e.target);
   });
 
   canvas.addEventListener('dragenter', function (e) {
