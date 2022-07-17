@@ -31,14 +31,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const kernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<i32>;
+  data: array<i32>,
 };
 struct AtomicBuffer {
-  data: array<atomic<i32>>;
+  data: array<atomic<i32>>,
 };
 struct Params {
-  k: i32;
-  center: vec2<i32>;
+  k: i32,
+  center: vec2<i32>,
 };
 
 @binding(0) @group(0) var<storage, read_write> input : Buffer;

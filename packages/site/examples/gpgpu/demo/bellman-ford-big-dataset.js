@@ -103,10 +103,10 @@ const calculateInGPU = async (V, E, I, W) => {
   const relaxKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<i32>;
+  data: array<i32>,
 };
 struct AtomicBuffer {
-  data: array<atomic<i32>>;
+  data: array<atomic<i32>>,
 };
 
 @group(0) @binding(0) var<storage, read> d_in_E : Buffer;
@@ -141,7 +141,7 @@ fn main(
   const updateDistanceKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<i32>;
+  data: array<i32>,
 };
 
 @group(0) @binding(0) var<storage, read_write> d_out_D : Buffer;
@@ -165,10 +165,10 @@ fn main(
   const updatePredKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<i32>;
+  data: array<i32>,
 };
 struct AtomicBuffer {
-  data: array<atomic<i32>>;
+  data: array<atomic<i32>>,
 };
 
 @group(0) @binding(0) var<storage, read> d_in_V : Buffer;
