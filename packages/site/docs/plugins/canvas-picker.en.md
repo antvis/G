@@ -3,24 +3,24 @@ title: g-plugin-canvas-picker
 order: 4
 ---
 
-提供基于 Canvas2D 的拾取能力。
+Provides Canvas2D-based pickup capabilities.
 
-# 安装方式
+# Usage
 
-`g-canvas` 渲染器默认内置，因此无需手动引入。
+The [g-canvas](/en/docs/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-// 创建 Canvas 渲染器，其中内置了该插件
+// Create a renderer with the plugin built in
 const canvasRenderer = new CanvasRenderer();
 ```
 
-# 实现原理
+# Principle of implementation
 
-基于 Canvas2D API 实现的拾取：
+Pickups based on the Canvas2D API implementation.
 
-1. 使用 R-Tree 空间索引查找拾取点命中的一系列图形包围盒
-2. 在这些图形中找到最顶层的一个图形，依据 `z-index`
-3. 使用数学计算精确判定是否命中该图形，例如 Circle 测算到圆心距离是否小于半径
+1. Use the R-Tree spatial index to find a series of graph bounding boxes hit by a pickup point
+2. Find the topmost graph among these graphs, based on the `z-index`
+3. Use mathematical calculations to determine precisely whether the figure is hit or miss, e.g. Circle measures whether the distance to the center of the circle is less than the radius
 
-该方案基于 CPU，因此优化点在于包围盒相交运算是否足够快。
+The solution is CPU-based, so the optimization point is whether the enclosing box intersection operation is fast enough.

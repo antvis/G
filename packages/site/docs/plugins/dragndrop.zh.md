@@ -66,7 +66,7 @@ canvas.addEventListener('drag', function (e) {
 canvas.document.style.droppable = true;
 
 // correct
-const plugin = new Plugin(
+const plugin = new Plugin({
     isDocumentDroppable: true,
 });
 ```

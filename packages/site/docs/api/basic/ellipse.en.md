@@ -1,11 +1,11 @@
 ---
-title: Ellipse 椭圆
+title: Ellipse
 order: 3
 ---
 
-可以参考 SVG 的 [\<ellipse\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/ellipse) 元素。
+You can refer to the [\<ellipse\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/ellipse) element of SVG.
 
-如下 [示例](/zh/examples/shape#ellipse) 绘制了一个圆心在 `[100, 100]`，半径为 `100` 的椭圆：
+The following [example](/en/examples/shape#ellipse) draws an ellipse with a center of `[100, 100]` and a radius of `100`.
 
 ```js
 const ellipse = new Ellipse({
@@ -18,56 +18,56 @@ const ellipse = new Ellipse({
 });
 ```
 
-# 继承自
+# Inherited from
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
 ## anchor
 
-默认值为 `[0.5, 0.5]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+The default value is `[0.5, 0.5]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
 ## transformOrigin
 
-默认值为 `center`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+The default value is `center`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-# 额外属性
+# Additional Properties
 
 ## cx
 
-圆心在局部坐标系下的 x 轴坐标。
+The x-axis coordinates of the center of the circle in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## cy
 
-圆心在局部坐标系下的 y 轴坐标。
+The y-axis coordinates of the center of the circle in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## rx
 
-椭圆的水平半径
+Horizontal radius of the ellipse
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rx
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## ry
 
-椭圆的垂直半径
+The vertical radius of the ellipse
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ry
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |

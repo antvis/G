@@ -1,11 +1,11 @@
 ---
-title: Line 直线
+title: Line
 order: 6
 ---
 
-可以参考 SVG 的 [\<line\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/line) 元素。
+You can refer to the [\<line\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/line) element of SVG.
 
-如下 [示例](/zh/examples/shape#line) 定义了一条直线，两个端点分别为 `[200, 100]` 和 `[400, 100]`，线宽为 2，而且是一条虚线：
+The following [example](/en/examples/shape#line) defines a line with two endpoints `[200, 100]` and `[400, 100]`, a line width of 2, and a dashed line.
 
 ```javascript
 const line1 = new Line({
@@ -21,17 +21,17 @@ const line1 = new Line({
 });
 ```
 
-对于直线，默认锚点定义的位置为包围盒左上角顶点，其中两个端点坐标 `[x1, y1]` `[x2, y2]` 定义在局部坐标系下，因此如果此时获取该直线在局部坐标系的坐标，会得到 `[x1, y1]` 的坐标，即 `[200, 100]`：
+For a straight line, the default anchor point is defined at the top left vertex of the enclosing box, where the two endpoint coordinates `[x1, y1]` `[x2, y2]` are defined under the local coordinate system, so if you get the coordinates of the line in the local coordinate system at this point, you will get the coordinates of `[x1, y1]`, i.e. `[200, 100]`.
 
 ```js
 line1.getLocalPosition(); // [200, 100]
 ```
 
-对于上面的直线为 `(200, 100)`。当我们想沿 X 轴向右移动该直线 100 距离时，可以有以下三种做法：
+For the above line as `(200, 100)`. When we want to move this line 100 distance to the right along the X-axis, we can do three things:
 
--   使用 translate 在世界坐标系下平移一段相对距离
--   使用 setPosition 设置世界坐标系下的绝对坐标
--   直接修改直线定义中的 x1/x2 属性
+-   Use [translate]() to translate a relative distance in the world coordinate system
+-   Use [setPosition]() to set the absolute coordinates in the world coordinate system
+-   Directly modify the x1/x2 property in the line definition
 
 ```javascript
 // 平移相对距离，此时 x1/x2 不变
@@ -43,96 +43,96 @@ line1.style.x1 = 200 + 100;
 line1.style.x2 = 400 + 100;
 ```
 
-如果想更改默认的锚点位置，可以通过 `anchor` 属性修改，例如把直线的中点作为锚点，此时直线局部坐标系下的坐标不变，但会把锚点移动到 `[200, 100]`，因此展示效果会发生改变：
+If you want to change the default anchor position, you can do so by using the `anchor` property, for example, by using the midpoint of the line as the anchor point, where the coordinates in the line's local coordinate system remain the same, but the anchor point is moved to `[200, 100]`, so the display will change.
 
 ```js
 line.style.anchor = [0.5, 0.5];
 line.getLocalPosition(); // [200, 100]
 ```
 
-# 继承自
+# Inherited from
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
 ## anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
 ## transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
 ## lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
-# 额外属性
+# Additional Properties
 
 ## x1
 
-局部坐标系下，第一个端点的 x 轴坐标。
+The x-axis coordinate of the first endpoint in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## y1
 
-局部坐标系下，第一个端点的 y 轴坐标。
+The y-axis coordinate of the first endpoint in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## z1
 
-局部坐标系下，第一个端点的 z 轴坐标。
+The z-axis coordinate of the first endpoint in the local coordinate system.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## x2
 
-局部坐标系下，第二个端点的 x 轴坐标。
+The x-axis coordinate of the second endpoint in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## y2
 
-局部坐标系下，第二个端点的 y 轴坐标。
+The y-axis coordinate of the second endpoint in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## z2
 
-局部坐标系下，第二个端点的 z 轴坐标。
+The z-axis coordinate of the second endpoint in the local coordinate system.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## isBillboard
 
-3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。默认值为 `false`。[示例](/zh/examples/3d#force-3d)
+Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/en/examples/3d#force-3d)
 
-# 方法
+# Methods
 
 ## getTotalLength(): number
 
-获取直线长度。
+Get the length of the line.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
@@ -142,7 +142,7 @@ line.getTotalLength(); // 200
 
 ## getPoint(ratio: number): Point
 
-根据长度比例（取值范围 `[0-1]`）获取直线上局部坐标系下的点坐标，其中 `Point` 的格式为:
+Obtain the coordinates of a point in the local coordinate system on a line according to the length scale (in the range `[0-1]`), where `Point` is of the form :
 
 ```ts
 export type Point = {
@@ -151,17 +151,17 @@ export type Point = {
 };
 ```
 
-例如获取上面定义直线的中点：
+For example, to obtain the midpoint of the line defined above.
 
 ```js
 line.getPoint(0.5); // Point {x: 300, y: 100}
 ```
 
-# 3D 场景中的线
+# Lines in 3D scenes
 
-需要配合 `g-webgl` 渲染器与 `g-plugin-3d` 插件使用。
+Requires use with [g-webgl](/en/docs/api/renderer/webgl) renderer and [g-plugin-3d](/en/docs/plugins/3d) plug-in.
 
-将端点坐标拓展到三维：
+Extending endpoint coordinates to 3D.
 
 ```js
 new Line({
@@ -176,4 +176,4 @@ new Line({
 });
 ```
 
-2D 的线在正交投影下可以保证一致的宽度，但是在透视投影下就无法保证了。在某些需要时刻保持线宽一致的 3D 场景下，可以开启 [isBillboard](/zh/docs/api/basic/line#isbillboard)，[示例](/zh/examples/3d#force-3d)
+2D lines are guaranteed to have a consistent width under orthogonal projection, but not under perspective projection. In some 3D scenes where the line width needs to be consistent at all times, you can turn on [isBillboard](/en/docs/api/basic/line#isbillboard), [example](/en/examples/3d#force-3d)

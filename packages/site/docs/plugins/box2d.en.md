@@ -3,51 +3,51 @@ title: g-plugin-box2d
 order: -1
 ---
 
-支持 [Box2D](https://box2d.org/documentation/) 物理引擎（仅支持刚体）。2D 图形初始化后开始仿真，除了受重力和表面摩擦力，在任意时刻也可以施加外力改变图形的位置和旋转角度。
+Supports [Box2D](https://box2d.org/documentation/) physics engine (rigid bodies only). 2D graphics are initialized to start the simulation, and in addition to gravity and surface friction, external forces can be applied at any time to change the position and rotation angle of the graphics.
 
-运行时加载 WASM 方式使用，entry 使用 UMD：
+The WASM method is loaded at runtime and the UMD is used for entry.
 
--   2.4 版本 https://github.com/Birch-san/box2d-wasm
--   2.3 & 2.2 版本 https://github.com/kripken/box2d.js
+-   version 2.4 https://github.com/Birch-san/box2d-wasm
+-   version 2.3 & 2.2 https://github.com/kripken/box2d.js
 
-目前使用 Box2D 最新版 2.4，参考文档：https://box2d.org/documentation/。
+Currently using Box2D latest version 2.4, refer to the documentation: https://box2d.org/documentation/。
 
-支持以下 2D 图形：[Circle](/zh/docs/api/basic/circle)、[Rect](/zh/docs/api/basic/rect)、[Line](/zh/docs/api/basic/line)、[Image](/zh/docs/api/basic/image)、[Polygon](/zh/docs/api/basic/polygon)
+The following 2D graphics are supported: [Circle](/en/docs/api/basic/circle), [Rect](/en/docs/api/basic/rect), [Line](/en/docs/api/basic/line), [Image](/en/docs/api/basic/image) and [Polygon](/en/docs/api/basic/polygon).
 
-在该[示例](/zh/examples/plugins#box2d)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
+In this [example](/en/examples/plugins#box2d), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 安装方式
+# Usage
 
-创建插件并在渲染器中注册：
+Create plug-ins and register them in the renderer.
 
 ```js
 import { Plugin as PluginBox2D } from '@antv/g-plugin-box2d';
 renderer.registerPlugin(new PluginBox2D());
 ```
 
-在 2D 图形中使用相关物理属性：
+Use the relevant physical properties in 2D graphics.
 
 ```js
 new Circle({
     style: {
-        rigid: 'dynamic', // 动态物体，参与受力计算
-        density: 10, // 密度：10 千克/平方米
-        r: 10, // 半径：对应物理世界中 10 米
+        rigid: 'dynamic', // Dynamic objects, involved in force calculations
+        density: 10, // Density: 10 kg/m2
+        r: 10, // Radius: corresponds to 10 meters in the physical world
     },
 });
 ```
 
-# 全局配置
+# Global Configuration
 
-全局物理世界配置。
+Global physical world configuration.
 
 ## gravity
 
-重力方向向量，默认值为 `[0, 100]`。
+The gravity direction vector, the default value is `[0, 100]`.
 
-例如设置成 `[100, 100]`，物体会自然向右下角运动：
+For example, if it is set to `[100, 100]`, the object will naturally move to the lower right corner: `[100, 100]`.
 
 ```js
 new PluginBox2D({
@@ -57,39 +57,39 @@ new PluginBox2D({
 
 ## timeStep
 
-仿真时间间隔，默认值为 `1/60`
+Simulation time interval, default value is `1/60`
 
 ## velocityIterations
 
-计算加速度迭代次数，默认值为 `8`，越高计算开销越大
+Calculate the number of acceleration iterations, the default value is `8`, the higher the calculation overhead
 
 ## positionIterations
 
-计算位置迭代次数，默认值为 `3`，越高计算开销越大
+Calculate the number of position iterations, the default value is `3`, the higher the computation overhead
 
 ## onContact
 
-可以监听两个物体表面接触：
+It is possible to listen to the surface contact of two objects.
 
 ```js
 new PluginBox2D({
   onContact: (objectA, objectB) => {
-    // 两个物体表面发生了接触
+    // The surfaces of two objects come into contact
   }
 }),
 ```
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md105
 
-# 图形物理属性
+# Graphical Physical Properties
 
-Box2D 使用如下物理单位：米、千克和秒。
+Box2D uses the following physical units: meters, kilograms, and seconds.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_loose_ends.html#autotoc_md124
 
 > Box2D uses MKS (meters, kilograms, and seconds) units and radians for angles.
 
-以下属性大部分都支持运行时修改，例如修改密度：
+Most of the following properties are supported for runtime modification, such as modifying the density.
 
 ```js
 circle.style.density = 100;
@@ -97,56 +97,66 @@ circle.style.density = 100;
 
 ## rigid
 
-刚体类型：
+Rigid body type.
 
--   static 静态物体，例如地面
--   dynamic 动态物体，计算受力
+-   `'static'` Static objects, such as the ground
+-   `'dynamic'` Dynamic objects, calculation of forces
 
 <!-- - kinematic -->
 
 ## density
 
-密度，千克/平方米。静态物体为 0。
+Density, kg/m2. Static objects are 0.
 
 ## linearVelocity
 
-线速度，默认值为 `[0, 0]`。
+Line speed, the default value is `[0, 0]`.
 
 ## angularVelocity
 
-角速度，默认值为 `0`。
+Angular velocity, the default value is `0`.
 
 ## gravityScale
 
-重力因子，默认值为 `1`。 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md60
+Gravity factor, the default value is `1`.
+
+https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md60
 
 ## linearDamping
 
-阻尼，默认值为 `0`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
+Damping, the default value is `0`.
+
+https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
 
 ## angularDamping
 
-角阻尼，默认值为 `0`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
+AngularDamping, the default value is `0`.
+
+https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
 
 ## fixedRotation
 
-固定旋转角度，默认值为 `false`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md62
+Fixed rotation angle, the default value is `false`.
+
+https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md62
 
 ## bullet
 
-默认值为 `false`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md63
+The default value is `false`。
+
+https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md63
 
 ## friction
 
-摩擦力，取值范围为 `[0 - 1]`
+Friction, The default value is `[0 - 1]`.
 
 ## restitution
 
-恢复力，取值范围为 `[0 - 1]`。例如一个球落向地面，恢复力为 0 时则不会弹起。
+The recovery force, in the range `[0 - 1]`. For example, if a ball falls to the ground, it will not bounce if the restoring force is 0.
 
-# [WIP] 对物体施加外力
+# [WIP] Applying an external force to an object
 
-除了通过初始化参数进行仿真，在任意时刻都可以通过施加外力，改变物体的位置和旋转角度。
+In addition to the simulation by initializing parameters, the position and rotation angle of the object can be changed at any moment by applying external forces.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md71
 
@@ -172,10 +182,10 @@ plugin.applyForce(circle, [0, 0], [0, 0]);
 
 # [WIP] Joint
 
-物理间的连接会导致作用力的发生。Box2D 提供了一系列连接的描述。
+Box2D provides a series of descriptions of the connections between the physics that cause the forces to occur.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md82
 
-# [WIP] 流体
+# [WIP] Fluids
 
-使用 liquidfun：https://github.com/Birch-san/box2d-wasm/blob/c04514c040/README.md#alternative-distributions
+Using liquidfun: https://github.com/Birch-san/box2d-wasm/blob/c04514c040/README.md#alternative-distributions

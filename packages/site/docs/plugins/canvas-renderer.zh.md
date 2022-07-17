@@ -7,7 +7,7 @@ order: 3
 
 # 安装方式
 
-`g-canvas` 渲染器默认内置，因此无需手动引入。
+[g-canvas](/zh/docs/api/renderer/canvas) 渲染器默认内置，因此无需手动引入。
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';

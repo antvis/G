@@ -3,11 +3,11 @@ title: g-plugin-control
 order: 10
 ---
 
-为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/zh/docs/api/camera#相机类型)，提供不同的交互效果。
+Provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/en/docs/api/camera#camera#camera type), different interactions are provided.
 
-# 安装方式
+# Usage
 
-创建 `g-webgl` 渲染器，注册该插件：
+Create the `g-webgl` renderer and register the plugin.
 
 ```js
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -18,8 +18,6 @@ const webglRenderer = new WebGLRenderer();
 webglRenderer.registerPlugin(new Plugin());
 ```
 
-# 效果
-
-[完整示例](/zh/examples/plugins#orbit-control)：
+[Example](/en/examples/plugins#orbit-control)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1u8eRKMbVX8AAAAAAAAAAAAAARQnAQ)
