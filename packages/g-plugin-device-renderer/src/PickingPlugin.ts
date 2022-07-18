@@ -126,7 +126,7 @@ export class PickingPlugin implements RenderingPlugin {
         topmost ? 1 : MAX_PICKING_DEPTH,
       );
 
-      console.log(pickedDisplayObjects);
+      // console.log(pickedDisplayObjects);
 
       result.picked = pickedDisplayObjects;
       return result;
