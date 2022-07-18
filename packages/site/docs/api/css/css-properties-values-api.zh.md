@@ -89,9 +89,9 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/unset
 
 目前使用该类型的属性值包括：
 
--   [opacity]()
--   [fillOpacity]()
--   [strokeOpacity]()
+-   [opacity](/zh/docs/api/basic/display-object#opacity)
+-   [fillOpacity](/zh/docs/api/basic/display-object#fillopacity)
+-   [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity)
 
 ```js
 circle.style.opacity = '0.5';
@@ -119,9 +119,13 @@ const styleMap = circle.computedStyleMap();
 styleMap.get('r'); // CSSUnitValue { unit: 'px', value: 10 }
 ```
 
-### [WIP] rem
+### rem
 
-### [WIP] em
+这个单位代表根元素的 font-size 大小。当用在根元素的 font-size 上面时，它代表了它的初始值。
+
+### em
+
+相对长度单位，这个单位表示元素的 font-size 的计算值。如果用在 font-size 属性本身，它则表示元素继承的 font-size 值。
 
 ## \<percentage\>
 
@@ -133,11 +137,19 @@ https://drafts.csswg.org/css-values-4/#angle-value
 
 ### deg
 
+度。一个完整的圆是 360deg。例：0deg，90deg，14.23deg。
+
 ### grad
+
+百分度。一个完整的圆是 400grad。例：0grad，100grad，38.8grad。
 
 ### rad
 
+弧度。一个完整的圆是 2π 弧度，约等于 6.2832rad。1rad 是 180/π 度。例：0rad，1.0708rad，6.2832rad。
+
 ### turn
+
+圈数。一个完整的圆是 1turn。例：0turn，0.25turn，1.2turn。
 
 ## \<color\>
 

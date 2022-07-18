@@ -903,6 +903,28 @@ canvas
 
 其他绝大部分原生事件，尤其是需要绑定在 window/document 上的键盘、剪切板事件用法在 G 中并没有特殊之处，可以直接参考相关事件文档。
 
+### 禁用右键菜单
+
+有时我们想禁用掉浏览器默认的右键菜单，此时可以在 [contextmenu](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/contextmenu_event) 事件处理函数中通过 `preventDefault()` 方法禁用默认行为。如何获取画布的 DOM 节点可以使用 [getDomElement](/zh/docs/api/renderer#getdomelement)：
+
+```js
+canvas
+    .getContextService()
+    .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+    .addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+```
+
+需要注意的是，由于 rightup / down 事件的默认行为并不是弹出系统菜单，因此以下写法无效：
+
+```js
+// wrong
+canvas.addEventListener('rightup', (e) => {
+    e.preventDefault();
+});
+```
+
 ### 键盘事件
 
 可以直接使用 [KeyboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent)：

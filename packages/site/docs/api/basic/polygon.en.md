@@ -1,11 +1,11 @@
 ---
-title: Polygon 多边形
+title: Polygon
 order: 7
 ---
 
-可以参考 SVG 的 [\<polygon\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polygon) 元素。
+You can refer to the [\<polygon\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polygon) element of SVG.
 
-如下 [示例](/zh/examples/shape#polygon) 定义了一个多边形：
+The following [example](/en/examples/shape#polygon) defines a polygon.
 
 ```javascript
 const polygon = new Polygon({
@@ -22,36 +22,36 @@ const polygon = new Polygon({
 });
 ```
 
-# 继承自
+# Inherited from
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
 ## anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
 ## transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
 ## lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
 ## miterLimit
 
-默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
+Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
 
-# 额外属性
+# Additional Properties
 
 ## points
 
-支持以下两种写法：
+The following two writing methods are supported.
 
--   `[number, number][]` 点数组
--   `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
+-   `[number, number][]` an array of points
+-   `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
 
-因此以下两种写法等价：
+Thus the following two ways of writing are equivalent.
 
 ```js
 polygon.style.points = '100,10 250,150 200,110';

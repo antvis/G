@@ -46,8 +46,14 @@ export class CSSPropertyLocalPosition
         x = minX;
         y = minY;
         z = 0;
+        object.parsedStyle.defX = x || 0;
+        object.parsedStyle.defY = y || 0;
         break;
-      default:
+      case Shape.RECT:
+      case Shape.IMAGE:
+      case Shape.GROUP:
+      case Shape.HTML:
+      case Shape.TEXT:
         if (!isNil((object as Rect).parsedStyle.x)) {
           x = (object as Rect).parsedStyle.x.value;
         }
@@ -55,12 +61,14 @@ export class CSSPropertyLocalPosition
           y = (object as Rect).parsedStyle.y.value;
         }
         break;
+      default:
+        break;
     }
 
-    object.parsedStyle.defX = x || 0;
-    object.parsedStyle.defY = y || 0;
-
-    const [ox, oy, oz] = object.getLocalPosition();
-    object.setLocalPosition(isNil(x) ? ox : x, isNil(y) ? oy : y, isNil(z) ? oz : z);
+    const needResetLocalPosition = !isNil(x) || !isNil(y) || !isNil(z);
+    if (needResetLocalPosition) {
+      const [ox, oy, oz] = object.getLocalPosition();
+      object.setLocalPosition(isNil(x) ? ox : x, isNil(y) ? oy : y, isNil(z) ? oz : z);
+    }
   }
 }

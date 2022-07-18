@@ -1,11 +1,11 @@
 ---
-title: Path 路径
+title: Path
 order: 8
 ---
 
-使用 Path 可以定义直线、折线、圆弧、贝塞尔曲线等。路径中包含一组命令与参数，这些命令有不同的语义，具体用法可以参考：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+Use Path to define lines, dashes, arcs, Bezier curves, etc. The path contains a set of commands and arguments with different semantics, which can be found at: https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
 
-如下 [示例](/zh/examples/shape#path) 定义了一条直线，在局部坐标系下从 `[100, 100]` 到 `[200, 200]`：
+The following [example](/en/examples/shape#path) defines a line from `[100, 100]` to `[200, 200]` in the local coordinate system.
 
 ```javascript
 const line = new Path({
@@ -19,17 +19,17 @@ const line = new Path({
 });
 ```
 
-# 继承自
+# Inherited from
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/docs/api/display-object#anchor) 改变。
+The default anchor definition is the top-left corner of the enclosing box, which can be changed by [anchor](/en/docs/api/display-object#anchor).
 
-关于这一点我们参考了 SVG 的实际表现，以下图为例我们以 `[100, 100]` 为起点定义了一段圆弧，显然它的包围盒左上角顶点并不是 `[0, 0]` 或者 `[100, 100]`，而是需要根据 path 的真实形状计算得出，我们将把这个计算结果作为默认锚点位置，也是局部坐标系下的坐标：
+On this point we refer to the actual performance of SVG, the following figure as an example we defined a segment of arc with `[100, 100]` as the starting point, obviously its top left corner of the enclosing box vertex is not `[0, 0]` or `[100, 100]`, but needs to be calculated according to the real shape of the path, we will use this calculation as the default anchor position, but also the coordinates of the local coordinate system: `[0, 0]`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nLVmQ4nZc1oAAAAAAAAAAAAAARQnAQ" width="600px">
 
-再比如这条直线路径 `[ ['M', 100, 100], ['L', 200, 200] ]` 在局部坐标系下的 “位置” 为 `[100, 100]`：
+And let's say this linear path `[['M', 100, 100], ['L', 200, 200]]` has a "location" of `[100, 100]` in the local coordinate system.
 
 ```js
 const line = new Path({
@@ -49,44 +49,42 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 ## anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
 ## transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
 ## lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
 ## miterLimit
 
-默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
+Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
 
-# 额外属性
+# Additional Properties
 
 ## path
 
-路径，支持 `字符串`和 `数组` 两种形式，可参考 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)：
+Paths, both `string` and `Array` forms are supported, see [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths).
 
--   字符串形式: `M 100,100 L 200,200`
--   数组形式: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ] ]`
+-   String form: `M 100,100 L 200,200`
+-   Array form: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ]]`
 
 https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
 ## d
 
-[path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
+Alias for the [path](/en/docs/api/basic/path#path) attribute, consistent with the `<path>` naming in SVG.
 
-# 方法
+# Methods
 
 ## getTotalLength(): number
 
-获取路径长度。
-
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
-例如获取如下直线的长度：
+For example, get the length of the following line.
 
 ```js
 const path = new Path({
@@ -102,7 +100,7 @@ const path = new Path({
 path.getTotalLength(); // 100
 ```
 
-如果是一个不合法的路径，返回 0：
+If it is an illegal path, return 0.
 
 ```js
 const path = new Path({
@@ -117,7 +115,7 @@ path.getTotalLength(); // 0
 
 ## getPoint(ratio: number): Point
 
-根据长度比例（取值范围 `[0-1]`）获取局部坐标系下点的坐标，其中 `Point` 的格式为:
+Get the coordinates of a point in the local coordinate system according to the length scale (in the range `[0-1]`), where `Point` has the format :
 
 ```ts
 export type Point = {
@@ -126,7 +124,7 @@ export type Point = {
 };
 ```
 
-例如获取如下直线的中点坐标：
+For example, get the coordinates of the midpoint of the following line.
 
 ```js
 const path = new Path({
@@ -142,16 +140,16 @@ const path = new Path({
 path.getPoint(0.5); // Point {x: 100, y: 150}
 ```
 
-值得注意的是，如果超出取值范围 `[0-1]`，会返回路径头尾的点坐标。对于非法路径，该方法会返回 `Point {x: NaN, y: NaN}`
+It is worth noting that if the value range `[0-1]` is exceeded, the coordinates of the point at the beginning and end of the path will be returned. For illegal paths, the method returns `Point {x: NaN, y: NaN}`.
 
-另外在原路径上应用的，在局部坐标系下的变换也会应用到返回的点上。例如在该[示例](/zh/examples/shape#path)中，路径本身经过了平移和缩放：
+Also the transformations applied on the original path, in the local coordinate system, will be applied to the returned points. For example, in this [example](/en/examples/shape#path), the path itself is translated and scaled by.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
 ## getStartTangent(): number[][]
 
-获取起点的切向量，形如: `[[10, 10], [20, 20]]`
+Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 
 ## getEndTangent(): number[][]
 
-获取终点的切向量，形如: `[[10, 10], [20, 20]]`
+Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`

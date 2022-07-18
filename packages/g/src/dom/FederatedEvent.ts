@@ -1,5 +1,5 @@
-import { Point } from '../shapes/Point';
 import type { EventService } from '../services';
+import { Point } from '../shapes/Point';
 import type { IEventTarget } from './interfaces';
 
 /**

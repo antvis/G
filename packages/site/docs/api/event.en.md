@@ -902,6 +902,28 @@ canvas
 
 Most of the other native events, especially keyboard and clipboard events that need to be bound to window/document, have no special usage in G. You can directly refer to the related events documentation.
 
+### Disable right-click menu
+
+Sometimes we want to disable the browser's default right-click menu, so we can disable the default behavior in the [contextmenu](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/contextmenu_event) event handler with the `preventDefault()` method to disable the default behavior. To get the DOM node of the canvas you can use [getDomElement](/en/docs/api/renderer#getdomelement).
+
+```js
+canvas
+    .getContextService()
+    .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+    .addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+```
+
+Note that since the default behavior of the rightup / down events is not to pop up the system menu, the following writeup is not valid.
+
+```js
+// wrong
+canvas.addEventListener('rightup', (e) => {
+    e.preventDefault();
+});
+```
+
 ### KeyboardEvent
 
 Use [KeyboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent) directly.
