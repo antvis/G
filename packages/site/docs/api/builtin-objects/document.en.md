@@ -3,42 +3,42 @@ title: Document
 order: 4
 ---
 
-在 G 中有以下继承关系：
+The following inheritance relationships exist in G.
 
-- Document -> Node -> EventTarget
+-   Document -> Node -> EventTarget
 
-我们可以把 `Document` 类比成浏览器环境中的 `window.document`，例如在浏览器中：
+We can analogize `Document` to `window.document` in the browser environment, e.g. in a browser.
 
-- 它有指向 `window` 的引用 [defaultView](/zh/docs/api/builtin-objects/document#defaultview)
-- 通过 [documentElement](/zh/docs/api/builtin-objects/document#documentelement) 访问 `<html>` 元素
-- 可以通过一系列方法查询节点，例如 [getElementById](/zh/docs/api/builtin-objects/document#getelementbyid)
-- 通过 [createElement](/zh/docs/api/builtin-objects/document#createelement) 创建元素
+-   It has a reference to `window` [defaultView](/en/docs/api/builtin-objects/document#defaultview)
+-   Access `<html>` elements via [documentElement](/en/docs/api/builtin-objects/document#documentelement)
+-   Nodes can be queried by a series of methods, such as [getElementById](/en/docs/api/builtin-objects/document#getelementbyid)
+-   Create an element by [createElement](/en/docs/api/builtin-objects/document#createelement)
 
-我们尽可能实现了以上浏览器提供的 API。
+We have implemented the above browser-provided API as much as possible.
 
-# 继承自
+# Inherited from
 
-[Node](/zh/docs/api/builtin-objects/node)
+[Node](/en/docs/api/builtin-objects/node)
 
-# 属性
+# Properties
 
 ## nodeName
 
-实现了 [Node.nodeName](/zh/docs/api/builtin-objects/node#nodename)，返回 `'document'`，在事件处理器中可用来快速判断 target，例如点击了画布的空白区域时：
+implements [Node.nodeName](/en/docs/api/builtin-objects/node#nodename), which returns `'document'` and can be used in event handlers to quickly determine the target, e.g. when clicking on a blank area of the canvas.
 
 ```js
 canvas.addEventListener('click', (e) => {
-  e.target; // Document
+    e.target; // Document
 
-  if (e.target.nodeName === 'document') {
-    //...
-  }
+    if (e.target.nodeName === 'document') {
+        //...
+    }
 });
 ```
 
 ## defaultView
 
-指向画布，例如：
+Point to the [canvas](/en/docs/api/canvas), e.g.
 
 ```js
 canvas.document.defaultView; // canvas
@@ -48,46 +48,46 @@ https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
 
 ## documentElement
 
-返回场景图中的根节点，在创建画布时会默认使用 [Group](/zh/docs/api/basic/group) 创建一个：
+Returns the root node in the scene graph. When creating a canvas, [Group](/en/docs/api/basic/group) is used by default to create a.
 
 ```js
 canvas.document.documentElement; // Group
-canvas.document.documentElement.getBounds(); // 获取整个场景的包围盒
+canvas.document.documentElement.getBounds(); // Get the whole scene bounding box
 ```
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
 
 ## timeline
 
-默认时间轴，在动画系统中使用。
+The default timeline, used in the animation system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/timeline
 
 ## ownerDocument
 
-返回 null
+Return null.
 
-# 方法
+# Methods
 
-由于继承自 [Node](/zh/docs/api/builtin-objects/node)，因此显然拥有了事件绑定能力：
+Since it inherits from [Node](/en/docs/api/builtin-objects/node), it obviously has event binding capabilities.
 
 ```js
 canvas.document.addEventListener('click', () => {});
 ```
 
-但在一些方法特别是节点操作上和 Node 有差异。
+However, some of the methods, especially the node operations, differ from Node.
 
-## 节点操作
+## Node Operations
 
-虽然继承了 [Node](/zh/docs/api/builtin-objects/node)，但在 Document 上无法调用一些节点操作方法，正如在浏览器中调用 `document.appendChild` 会返回如下错误一样：
+Although it inherits from [Node](/en/docs/api/builtin-objects/node), some node manipulation methods cannot be called on the Document, just as calling `document.appendChild` in the browser returns the following error.
 
 ```
 Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.
 ```
 
-## 节点查询
+## Node Query
 
-以下节点查询方法等同于在 document.documentElement 上执行。
+The following node query methods are equivalent to executing on [document.documentElement](/en/docs/api/builtin-objects/document#documentelement).
 
 ### getElementById
 
@@ -115,14 +115,14 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll
 
 ## createElement
 
-通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/docs/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
+Usually we recommend using `new Circle()` to create built-in or custom graphics, but we also provide something like the DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/ CustomElementRegistry) API to create a completed registered graph using [document.createElement](/en/docs/api/builtin-objects/document#createelement), so the following writeup is equivalent.
 
 ```js
 import { Shape, Circle } from '@antv/g';
 
 const circle = canvas.document.createElement(Shape.CIRCLE, { style: { r: 100 } });
 
-// 或者
+// or
 const circle = new Circle({ style: { r: 100 } });
 ```
 
@@ -130,15 +130,15 @@ https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
 
 ## createElementNS
 
-目前实现同 createElement。
+The current implementation is the same as [createElement](/en/docs/api/builtin-objects/document#createelement).
 
 ## elementFromPoint
 
-当我们想知道画布中某个点上堆叠了多少个图形，除了通过交互事件，还可以通过 API 方式完成拾取。
+When we want to know how many shapes are stacked on a certain point in the canvas, we can do the pickup by API way, besides the interactive events.
 
-该方法接受一组 `x, y` 坐标（在 [Canvas 坐标系](/zh/docs/api/canvas#canvas-1)下，如果想使用其他坐标系下的坐标，请使用[转换方法](/zh/docs/api/canvas#转换方法)）为参数，返回拾取结果。
+This method accepts a set of `x, y` coordinates (under [Canvas coordinate system](/en/docs/api/canvas#canvas-1), if you want to use coordinates under other coordinate system, please use [conversion method](/en/docs/api/canvas#conversion method)) as parameters and returns the pickup result.
 
-在下面的[例子](/zh/examples/canvas#element-from-point)中，我们在 [Canvas 坐标系](/zh/docs/api/canvas#canvas-1)下 `[100, 100]` 放置了一个半径为 `100` 的 [Circle](/zh/docs/api/basic/circle)，在红点处拾取时会返回它：
+In the following [example](/en/examples/canvas#element-from-point), we place a [Circle](/en/docs/api/canvas#canvas-1) with radius `100, 100` under [Canvas coordinate system](/en/docs/api/canvas#canvas-1). en/docs/api/basic/circle), which will be returned when picked up at the red dot.
 
 ```js
 const topMostElement = await canvas.document.elementFromPoint(20, 100); // circle1
@@ -148,26 +148,26 @@ await canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XAYjSJnlCIYAAAAAAAAAAAAAARQnAQ" width="400px">
 
-有三点需要注意：
+There are three points to note.
 
-1. 有别于浏览器提供的同步 API，由于部分渲染器的实现（例如 `g-webgl`）需要通过 GPU 方式完成拾取，因此该方法为**异步**
-2. 当只需要获取该点命中的最顶层的图形时，应该使用 `elementFromPoint` 而非 `elementsFromPoint`，前者在绝大部分场景下都比后者快
-3. 拾取判定遵循以下规则：
+1. Unlike the synchronous API provided by the browser, this method is **asynchronous** because some renderer implementations (e.g. `g-webgl`) need to be picked up via the GPU.
+2. when only the topmost graph of the point hit is needed, `elementFromPoint` should be used instead of `elementsFromPoint`, as the former is faster than the latter in most scenarios
+3. The pickup decision follows the following rules.
 
-   1. 超出画布视口范围（考虑到相机，并不一定等于画布范围）返回 null。
-   2. 图形的 [interactive](/zh/docs/api/basic/display-object#interactive) 属性**会影响**拾取。不可交互图形无法拾取。
-   3. 图形的 [visibility](/zh/docs/api/basic/display-object#visibility) 属性**会影响**拾取。不可见图形无法拾取。
-   4. 图形的 [opacity](/zh/docs/api/basic/display-object#opacity) 属性**不会影响**拾取。即使图形完全透明，依然也会被拾取到。
+    1. Out of canvas viewport range (considering camera, not necessarily equal to canvas range) returns null.
+    2. The [interactive](/en/docs/api/basic/display-object#interactive) attribute** of the graph affects **pickup. Non-interactive graphics cannot be picked up. 3.
+    3. The [visibility](/en/docs/api/basic/display-object#visibility) attribute** of a drawing affects **pickup. Invisible shapes cannot be picked up. 4.
+    4. The [opacity](/en/docs/api/basic/display-object#opacity) attribute** of a drawing does not affect **pickup. Even if the graphic is completely transparent, it will still be picked up.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
 
 ## elementsFromPoint
 
-当目标点上有多个图形堆叠时，该方法会按照 [z-index](/zh/docs/api/basic/display-object#zindex) 排序后返回它们，返回结果中的第一个元素为最顶层的图形。
+When there are multiple graphs stacked on the target point, this method returns them sorted by [z-index](/en/docs/api/basic/display-object#zindex), with the first element of the result being the topmost graph.
 
-该方法同样接受一组 `x, y` 坐标作为参数。
+This method also accepts a set of `x, y` coordinates as arguments.
 
-在下面的[例子](/zh/examples/canvas#element-from-point)中，circle2 在 circle1 之上，因此在重叠区域进行拾取两者都会出现在结果数组中，并且 circle2 在前：
+In the following [example](/en/examples/canvas#element-from-point), circle2 is on top of circle1, so picking both in the overlapping region appears in the result array, and circle2 comes first.
 
 ```js
 const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2, circle1, document.documentElement]
@@ -175,9 +175,9 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LqlZSYwRBPoAAAAAAAAAAAAAARQnAQ" width="500px">
 
-注意事项：
+Caveats.
 
-1. 该返回结果和事件对象上的 [composedPath()](/zh/docs/api/event#composedpath) 的差别是，后者会在返回数组中追加 [Document](/zh/docs/api/builtin-objects/document) 和 [Canvas](/zh/docs/api/canvas) 对象，而前者只到 [画布根节点](/zh/docs/api/canvas#getroot-group) 为止。
-2. 超出画布视口范围返回空数组。
+1. The difference between this return result and [composedPath()](/en/docs/api/event#composedpath) on the event object is that the latter appends [Document](/en/docs/api/builtin-objects/document) and [ Canvas](/en/docs/api/canvas) objects, while the former only goes to [Canvas root](/en/docs/api/canvas#getroot-group). 2.
+2. Return an empty array beyond the canvas viewport range.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint

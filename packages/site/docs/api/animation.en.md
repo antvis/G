@@ -917,7 +917,7 @@ starPath.scale(0.2); // do scaling first
 const pathString = convertToPath(starPath); // then do conversion
 ```
 
-## Cautions
+## Caveats
 
 We do not support more than two sets of keyframes for the time being in the shape change animation, e.g.
 

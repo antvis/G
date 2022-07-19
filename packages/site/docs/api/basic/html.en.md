@@ -144,13 +144,11 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
 ## innerHTML
 
-**类型**： `string | HTMLElement`
+HTML content, either as a string or as an HTMLElement.
 
-**默认值**：无
-
-**是否必须**：`true`
-
-**说明**：HTML 内容，可以为字符串或者 HTMLElement
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- | --- |
+| - | - | no | no | `string | HTMLElement` |
 
 ```js
 const html = new HTML({
@@ -194,7 +192,7 @@ const $div = html.getDomElement(); // HTMLDivElement
 const $foreignObject = html.getDomElement(); // <foreignObject>
 ```
 
-# Cautions
+# Caveats
 
 ## Scenegraph capability
 

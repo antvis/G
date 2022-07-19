@@ -748,7 +748,7 @@ image.style.clipPath = null;
 image.setClip(null);
 ```
 
-### Cautions
+### Caveats
 
 The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/docs/api/animation) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
 
@@ -1225,7 +1225,7 @@ clonedCircle.style.r; // 20
 clonedCircle.getPosition(); // [10, 20]
 ```
 
-Cautions:
+Caveats:
 
 -   Deep copy support, i.e. itself and the whole subtree
 -   The cloned node does not retain the parent-child relationship of the original node and needs to be added to the canvas using `appendChild` before it will be rendered

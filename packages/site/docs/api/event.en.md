@@ -818,7 +818,7 @@ Different rendering environments use different pickup plugins for determining th
 
 In [g-plugin-a11y](/en/docs/plugins/a11y), we listen to keyboard events for navigation.
 
-# Cautions
+# Caveats
 
 ## The problem of 'this' within the event listener
 
