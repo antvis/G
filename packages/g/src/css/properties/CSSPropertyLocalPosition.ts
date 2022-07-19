@@ -46,8 +46,6 @@ export class CSSPropertyLocalPosition
         x = minX;
         y = minY;
         z = 0;
-        object.parsedStyle.defX = x || 0;
-        object.parsedStyle.defY = y || 0;
         break;
       case Shape.RECT:
       case Shape.IMAGE:
@@ -63,6 +61,15 @@ export class CSSPropertyLocalPosition
         break;
       default:
         break;
+    }
+
+    if (
+      object.nodeName !== Shape.PATH &&
+      object.nodeName !== Shape.POLYLINE &&
+      object.nodeName !== Shape.POLYGON
+    ) {
+      object.parsedStyle.defX = x || 0;
+      object.parsedStyle.defY = y || 0;
     }
 
     const needResetLocalPosition = !isNil(x) || !isNil(y) || !isNil(z);
