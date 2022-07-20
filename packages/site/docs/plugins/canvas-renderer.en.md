@@ -3,14 +3,14 @@ title: g-plugin-canvas-renderer
 order: 3
 ---
 
-提供基于 Canvas2D 的渲染能力。
+Provides Canvas2D-based rendering capabilities.
 
-# 安装方式
+# Usage
 
-`g-canvas` 渲染器默认内置，因此无需手动引入。
+The [g-canvas](/en/docs/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-// 创建 Canvas 渲染器，其中内置了该插件
+// Create a renderer with the plugin built in
 const canvasRenderer = new CanvasRenderer();
 ```

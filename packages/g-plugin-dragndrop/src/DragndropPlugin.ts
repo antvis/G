@@ -142,6 +142,11 @@ export class DragndropPlugin implements RenderingPlugin {
 
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
             event.type = 'dragend';
+            // prevent click event being triggerd
+            // @see https://github.com/antvis/G/issues/1091
+            event.detail = {
+              preventClick: true,
+            };
             target.dispatchEvent(event);
 
             dragstartTriggered = false;

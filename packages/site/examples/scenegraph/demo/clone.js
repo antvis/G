@@ -84,6 +84,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     shiftY = e.canvasY - y;
 
     moveAt(circle, e.canvasX, e.canvasY);
+
+    console.log('dragstart...');
   });
   circle.addEventListener('drag', function (e) {
     moveAt(circle, e.canvasX, e.canvasY);
@@ -92,6 +94,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   circle.addEventListener('dragend', function (e) {
     circle.style.opacity = 1;
     text.style.text = 'Drag me';
+
+    console.log('dragend...');
+  });
+  circle.addEventListener('click', function (e) {
+    console.log('click...');
   });
 
   // stats

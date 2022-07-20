@@ -48,7 +48,25 @@ new CSSUnitValue(5, 'px');
 
 ## em()
 
+创建一个 [CSSUnitValue](/zh/docs/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kEms`，以下两种写法一致：
+
+```js
+import { CSS, CSSUnitValue } from '@antv/g';
+
+CSS.em(5);
+new CSSUnitValue(5, 'em');
+```
+
 ## rem()
+
+创建一个 [CSSUnitValue](/zh/docs/api/css/css-typed-om#cssunitvalue)，单位为 `UnitType.kRems`，以下两种写法一致：
+
+```js
+import { CSS, CSSUnitValue } from '@antv/g';
+
+CSS.rem(5);
+new CSSUnitValue(5, 'rem');
+```
 
 # CSSStyleValue
 
@@ -83,27 +101,27 @@ https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/type
 // <number>
 const number = new CSSUnitValue(10);
 expect(number.type()).to.eqls({
-  length: 0,
-  angle: 0,
-  time: 0,
-  frequency: 0,
-  resolution: 0,
-  flex: 0,
-  percent: 0,
-  percentHint: 'length',
+    length: 0,
+    angle: 0,
+    time: 0,
+    frequency: 0,
+    resolution: 0,
+    flex: 0,
+    percent: 0,
+    percentHint: 'length',
 });
 
 // <length>
 const length = new CSSUnitValue(10, 'px');
 expect(length.type()).to.eqls({
-  length: 1,
-  angle: 0,
-  time: 0,
-  frequency: 0,
-  resolution: 0,
-  flex: 0,
-  percent: 0,
-  percentHint: 'length',
+    length: 1,
+    angle: 0,
+    time: 0,
+    frequency: 0,
+    resolution: 0,
+    flex: 0,
+    percent: 0,
+    percentHint: 'length',
 });
 ```
 

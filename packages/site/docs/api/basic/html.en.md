@@ -1,16 +1,16 @@
 ---
-title: HTML 内容
+title: HTML
 order: 9
 ---
 
-有时我们需要在画布上增加一些 HUD（Head-Up Display），例如 Tooltip。此时用 HTML + CSS 展现相比使用基础图形绘制有以下优势：
+Sometimes we need to add some HUDs to the canvas, e.g. Tooltip. In this case, the HTML + CSS presentation has the following advantages over using basic graphics.
 
--   很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
--   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape#html)：
+-   Many native HTML components are difficult to draw, such as some input components: `<input>`, `<select>` etc.
+-   Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape#html).
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
-HTML 内容以及宽高为必填项，其中 HTML 内容可以为字符串或者 HTMLElement：
+HTML content and width are required, where HTML content can be a string or HTMLElement.
 
 ```js
 const html = new HTML({
@@ -25,14 +25,14 @@ const html = new HTML({
 canvas.appendChild(html);
 ```
 
-之所以一定要指定宽高（至少是初始宽高），是由于 SVG 的 [\<foreignObject\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 元素必须指定否则无法显示。
+The reason why you must specify the width and height (or at least the initial width and height) is that the [\<foreignObject\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) element of the SVG must be specified or it will not be displayed. .
 
-# DOM 结构
+# DOM structure
 
-在实现中 g-canvas/webgl 会将 HTML 内容包裹在 `<div>` 中，以 `<canvas>` 的兄弟节点放在容器内。而在 g-svg 中使用 `<foreignObject>` 包裹内容：
+In the implementation `g-canvas/webgl` wraps the HTML content in `<div>`, placing it inside the container as a sibling node of `<canvas>`. And in `g-svg` the content is wrapped using `<foreignObject>`.
 
 ```html
-// g-canvas/webgl 的 DOM 结构
+// the DOM in g-canvas/webgl
 <div id="container">
     <canvas></canvas>
     <div name="容器元素">
@@ -40,7 +40,7 @@ canvas.appendChild(html);
     </div>
 </div>
 
-// g-svg 的 DOM 结构
+// the DOM in g-svg
 <div id="container">
     <svg>
         <foreignObject name="容器元素">
@@ -50,48 +50,48 @@ canvas.appendChild(html);
 </div>
 ```
 
-# 继承自
+# Inherited from
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/en/docs/api/basic/display-object)
 
-其中的 [id](/zh/docs/api/basic/display-object#id)，[name](/zh/docs/api/basic/display-object#name)，[className](/zh/docs/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
+Where [id](/en/docs/api/basic/display-object#id), [name](/en/docs/api/basic/display-object#name), [className](/en/docs/api/basic/ display-object#classname) are applied to the container element if passed in, so there are two ways to get to the container element.
 
--   通过类似 `getElementById` 这样的 DOM API 获取
--   使用 [getDomElement()](/zh/docs/api/basic/html#getdomelement)
+-   Get it through a DOM API like `getElementById`
+-   using [getDomElement()](/en/docs/api/basic/html#getdomelement)
 
-其他样式属性通过 CSS 应用。
+Other style attributes are applied via CSS.
 
 ## fill
 
-对应 CSS [background](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 属性。
+Corresponds to the CSS [background](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) property.
 
 ## stroke
 
-对应 CSS [border-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-color) 属性。
+Corresponds to the CSS [border-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-color) property.
 
 ## lineWidth
 
-对应 CSS [border-width](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-width) 属性。
+Corresponds to the CSS [border-width](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-width) property.
 
 ## lineDash
 
-对应 CSS [border-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style) 属性。
+Corresponds to the CSS [border-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style) property.
 
-使用 `dashed` 值，但无法精确控制 `dash` 和 `gap` 的长度。
+Use the `dashed` value, but there is no precise control over the length of `dash` and `gap`.
 
 ## opacity
 
-对应 CSS [opacity](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity) 属性。
+Corresponds to the CSS [opacity](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity) property.
 
 ## visibility
 
-对应 CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web/CSS/visibility) 属性。
+Corresponds to the CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web/CSS/visibility) property.
 
 ## pointerEvents
 
-对应 CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) 属性。
+Corresponds to the CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) property.
 
-当我们在实现类似 tooltip 这样的需求时，可以让鼠标事件穿透它，[示例](/zh/examples/shape#html)：
+When we implement a requirement like tooltip, we can have mouse events penetrate it, [example](/en/examples/shape#html).
 
 ```js
 const tooltip = new HTML({
@@ -104,7 +104,7 @@ const tooltip = new HTML({
         lineWidth: 6,
         width: 100,
         height: 30,
-        pointerEvents: 'none', // 让事件穿透它
+        pointerEvents: 'none', // Let the event penetrate it
         visibility: 'hidden',
     },
 });
@@ -112,45 +112,43 @@ const tooltip = new HTML({
 
 ## transform
 
-对应 CSS [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 属性。
+Corresponds to the [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) property.
 
-使用生成全局坐标系下的 matrix 字符串形式。
+Use to generate the matrix string form in the global coordinate system.
 
 ## transformOrigin
 
-对应 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 属性。
+Corresponds to the [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) property.
 
-# 额外属性
+# Additional Properties
 
 ## x
 
-局部坐标系下，容器左上角顶点的 x 轴坐标。
+The x-axis coordinate of the top-left vertex of the container in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## y
 
-局部坐标系下，容器左上角顶点的 y 轴坐标。
+The y-axis coordinate of the top-left vertex of the container in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## innerHTML
 
-**类型**： `string | HTMLElement`
+HTML content, either as a string or as an HTMLElement.
 
-**默认值**：无
-
-**是否必须**：`true`
-
-**说明**：HTML 内容，可以为字符串或者 HTMLElement
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- | --- |
+| - | - | no | no | `string | HTMLElement` |
 
 ```js
 const html = new HTML({
@@ -168,29 +166,23 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 ## width
 
-容器宽度，默认值为 `'auto'`。
-
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| 'auto' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## height
 
-容器宽度，默认值为 `'auto'`。
-
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
-
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| 'auto' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# 额外方法
+# Methods
 
 ## getDomElement()
 
-获取容器元素，例如在 g-canvas/webgl 中会得到 `<div>`，而在 g-svg 中会得到 `<foreignObject>`：
+Gets the container element, e.g. `<div>` in `g-canvas/webgl`, and `<foreignObject>` in `g-svg`.
 
 ```js
 // g-canvas/webgl
@@ -200,13 +192,13 @@ const $div = html.getDomElement(); // HTMLDivElement
 const $foreignObject = html.getDomElement(); // <foreignObject>
 ```
 
-# 注意事项
+# Caveats
 
-## 场景图能力
+## Scenegraph capability
 
-### 变换
+### Transformation
 
-绝大部分场景图能力都可以在 HTML 上使用，例如[变换操作](/zh/docs/api/basic/display-object#变换操作)：
+Most of the scenegraph capabilities are available on HTML, such as [transform operations](/en/docs/api/basic/display-object#transformation-operations).
 
 ```js
 html.translate(100, 0); // 平移
@@ -214,11 +206,11 @@ html.scale(2); // 缩放
 html.rotate(30); // 旋转
 ```
 
-在获取包围盒时，我们会使用原生 DOM API [getBoundingClientRect](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect)，因此在首次渲染完成之前调用会得到不正确的结果。
+When getting the enclosing box, we will use the native DOM API [getBoundingClientRect](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect), so calling it before the first call before the rendering is done will give incorrect results.
 
-### 节点操作
+### Node Operations
 
-对于 HTML 元素，添加其他基础图形作为它的子元素意义不大。此时可以使用 [getDomElement](/zh/docs/api/basic/html#getdomelement) 获取容器元素后再进行后续的 DOM 操作，例如添加子节点：
+For HTML elements, it does not make much sense to add other base graphics as its child elements. In this case, you can use [getDomElement](/en/docs/api/basic/html#getdomelement) to get the container element and then perform subsequent DOM operations, such as adding child nodes.
 
 ```js
 const $div = document.createElement('div');
@@ -230,9 +222,9 @@ html.appendChild($div);
 html.getDomElement().appendChild($div);
 ```
 
-### 可见性与渲染次序
+### Visibility and rendering order
 
-隐藏展示都可以正常使用：
+The hidden displays all work properly.
 
 ```js
 html.show();
@@ -242,7 +234,7 @@ html.hide();
 html.style.visibility = 'hidden';
 ```
 
-但是在通过 [z-index](/zh/docs/api/basic/display-object#zindex) 指定渲染顺序时，受限于具体实现，仅在各个 HTML 内容间生效。在下面的例子中，html1 无法在 circle1 和 circle2 之间展示：
+However, when specifying the rendering order by [z-index](/en/docs/api/basic/display-object#zindex), it is limited by the specific implementation and only works between individual HTML contents. In the following example, html1 cannot be displayed between circle1 and circle2.
 
 ```js
 // 在 <canvas> 中渲染的两个 circle
@@ -253,15 +245,15 @@ html1.style.zIndex = 2;
 html2.style.zIndex = 100;
 ```
 
-## 指定宽高
+## Specify width and height
 
-由于 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 需要指定宽高才能渲染，在创建时指定后也可以进行修改：
+Since [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) requires a specified width and height to be rendered, it can also be modified after being specified at creation time.
 
 ```js
 html.style.width = 100;
 html.style.height = 100;
 ```
 
-## 动画
+## Animation
 
-目前其他基础图形动画都是通过 Keyframe 插值后重绘完成。对于 HTML 图形，理想状况显然是直接使用 CSS Animation。
+Currently, all other basic graphics animations are redrawn after interpolation by Keyframe. For HTML graphics, the ideal situation is obviously to use CSS Animation directly.

@@ -158,6 +158,37 @@ describe('Path', () => {
     expect(point.y).eqls(0);
   });
 
+  it('should getPoint on a quad bezier correctly', () => {
+    const pathArray: PathArray = [
+      ['M', 968, 400],
+      ['Q', 913, 400, 858, 400],
+    ];
+
+    const path = new Path({
+      style: {
+        path: pathArray,
+        lineWidth: 10,
+      },
+    });
+    path.translate(-800, -150);
+
+    let point = path.getPoint(0);
+    expect(point.x).eqls(168);
+    expect(point.y).eqls(250);
+
+    point = path.getPoint(0.5);
+    expect(point.x).eqls(113);
+    expect(point.y).eqls(250);
+
+    point = path.getPoint(1);
+    expect(point.x).eqls(58);
+    expect(point.y).eqls(250);
+
+    // point = path.getPoint(10);
+    // expect(point.x).eqls(100);
+    // expect(point.y).eqls(0);
+  });
+
   it('should calc tangent correctly', () => {
     const pathArray: PathArray = [
       ['M', 0, 0],

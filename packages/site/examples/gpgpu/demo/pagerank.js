@@ -51,7 +51,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const storeKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<f32>;
+  data: array<f32>,
 };
 
 @group(0) @binding(0) var<storage, read> r : Buffer;
@@ -71,7 +71,7 @@ fn main(
   const matmulKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<f32>;
+  data: array<f32>,
 };
 
 @group(0) @binding(0) var<storage, read> graph : Buffer;
@@ -97,7 +97,7 @@ fn main(
   const rankDiffKernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<f32>;
+  data: array<f32>,
 };
 
 @group(0) @binding(0) var<storage, read> r : Buffer;

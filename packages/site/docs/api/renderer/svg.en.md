@@ -1,19 +1,19 @@
 ---
-title: SVG 渲染器
+title: SVG Renderer
 order: 1
 ---
 
-使用 [SVG](https://developer.mozilla.org/zh-CN/docs/Web/SVG) 绘制 2D 图形。会在容器中创建一个 `<svg>` 元素。
+Use [SVG](https://developer.mozilla.org/zh-CN/docs/Web/SVG) to draw 2D graphics. A `<svg>` element is created in the container.
 
-SVG 在文本渲染上直接依赖浏览器的能力，因而有独特的优势。另外通过 `<foreignObject>` 也可以嵌入 HTML 片段。
+SVG has the unique advantage of relying directly on the browser's ability to render text. It is also possible to embed HTML fragments via `<foreignObject>`.
 
-# 使用方式
+# Usage
 
-和 `@antv/g` 一样，也有以下两种使用方式。
+As with `@antv/g`, there are two ways to use it.
 
 ## NPM Module
 
-安装 `@antv/g-svg` 后可以从中获取渲染器：
+After installing `@antv/g-svg` you can get the renderer from.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -29,7 +29,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN 方式
+## CDN
 
 ```html
 <script
@@ -37,45 +37,45 @@ const canvas = new Canvas({
   type="application/javascript">
 ```
 
-从 `G.SVG` 命名空间下可以获取渲染器：
+The renderer is available from the `G.SVG` namespace under.
 
 ```js
 const svgRenderer = new window.G.SVG.Renderer();
 ```
 
-# 插件列表
+# Built-in plug-ins
 
-该渲染器内置了以下插件：
+The renderer has the following plug-ins built in.
 
 -   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
 -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API 拾取图形
 -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
 
-# 可选插件
+# Optional plug-ins
 
-除了内置插件，还有以下可选插件。
+In addition to the built-in plug-ins, the following optional plug-ins are available.
 
-## 手绘风格渲染
+## Hand-drawn style rendering
 
-使用 [rough.js](https://roughjs.com/) 的 SVG 版本进行手绘风格的渲染。
+Use the SVG version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
-我们提供了 [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) 插件，注册后会替换掉 [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 对于部分 2D 图形的渲染能力。
+We provide [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) plugin, which will replace [g-plugin-svg-renderer](/zh/docs/plugins/svg- renderer) for some 2D graphics.
 
-[示例](/zh/examples/plugins#rough)效果如下：
+The effect of [example](/zh/examples/plugins#rough) is as follows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
-# 服务端渲染
+# Server-side rendering
 
-该渲染器依赖 SVG DOM API 的渲染能力，并不局限在浏览器端，因此也可以使用 [JSDOM](https://github.com/jsdom/node-jsdom) 进行服务端渲染。
+The renderer relies on the rendering capabilities of the SVG DOM API and is not limited to the browser side, so server-side rendering is also possible using [JSDOM](https://github.com/jsdom/node-jsdom).
 
-在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg)中，会在 Node 端配合 [JSDOM](https://github.com/jsdom/node-jsdom) 与 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
+In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg), we will work with [JSDOM](https://github.com/jsdom/node-) on the Node side jsdom) with [node-canvas](https://github.com/Automattic/node-canvas) to render the result image and compare it with the benchmark image. Other server-side rendering scenes can also follow the following steps.
 
-1. 使用 [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) 卸载掉 [g-svg](/zh/docs/api/renderer/svg) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)
-2. 使用 JSDOM 创建一个画布容器
-3. 使用上一步的容器创建画布，同时传入 JSDOM 创建的 `document`，代替浏览器环境中的 `window.document`，`raf` 同理。
-4. 正常使用 [g-svg](/zh/docs/api/renderer/svg) 渲染器，通过 G 的 API 创建场景
-5. 使用 [xmlserializer](https://www.npmjs.com/package/xmlserializer) 将 JSDOM 序列化成字符串，保存成 SVG 图片
+1. Use [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/zh/docs/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction).
+2. Create a canvas container using JSDOM.
+3. Use the container from the previous step to create the canvas, and pass in the `document` created by JSDOM instead of `window.document` in the browser environment, and the same for `raf`.
+4. Normal use of [g-svg](/zh/docs/api/renderer/svg) renderer to create scenes via G's API.
+5. Use [xmlserializer](https://www.npmjs.com/package/xmlserializer) to serialize JSDOM to a string and save it as an SVG image.
 
 https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js
 

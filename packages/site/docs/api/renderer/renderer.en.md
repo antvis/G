@@ -1,21 +1,21 @@
 ---
-title: 简介
+title: Introduction
 order: -99
 redirect_from:
     - /en/docs/api/renderer
 ---
 
-渲染器使用底层渲染 API 绘制各类图形，目前我们提供了以下渲染器，分别是：
+Renderers use the underlying rendering API to draw various types of graphics. We currently provide the following renderers, which are:
 
--   基于 Canvas2D 的 [g-canvas](/zh/docs/api/renderer/canvas)
--   基于 Canvaskit / Skia 的 [g-canvaskit](/zh/docs/api/renderer/canvaskit)
--   基于 SVG 的 [g-svg](/zh/docs/api/renderer/svg)
--   基于 WebGL 2/1 的 [g-webgl](/zh/docs/api/renderer/webgl)
--   基于 WebGPU 的 [g-webgpu](/zh/docs/api/renderer/webgpu)
+-   [g-canvas](/en/docs/api/renderer/canvas) based on Canvas2D API
+-   [g-canvaskit](/en/docs/api/renderer/canvaskit) based on Canvaskit / Skia
+-   [g-svg](/en/docs/api/renderer/svg) based on SVG
+-   [g-webgl](/en/docs/api/renderer/webgl) based on WebGL 2/1
+-   [g-webgpu](/en/docs/api/renderer/webgpu) based on WebGPU
 
-渲染器由一个渲染上下文和一组[插件](/zh/docs/plugins/intro)组成，通过插件可以在运行时动态扩展渲染器的能力。
+The renderer consists of a rendering context and a set of [plugins](/en/docs/plugins/intro) that allow the capabilities of the renderer to be dynamically extended at runtime.
 
-以 `g-canvas` 渲染器为例，基础使用方式如下：
+Using the `g-canvas` renderer as an example, the basic usage is as follows.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -30,56 +30,55 @@ const canvas = new Canvas({
 });
 ```
 
-# 初始化配置
+# Initial Configuration
 
-在创建渲染器时，可以传入一系列初始化配置影响实际渲染行为。
+When creating a renderer, a series of initialization configurations can be passed in to affect the actual rendering behavior.
 
 ## enableAutoRendering
 
-是否开启自动渲染，默认开启。所谓“自动渲染”是指无需手动调用画布的渲染方法，只需将图形添加到画布中，这也和浏览器行为一致。
+Whether to enable auto-rendering or not, the default is on. "Auto-rendering" means that you do not need to manually invoke the rendering method of the canvas, but simply add the graphics to the canvas, which is also consistent with the browser behavior.
 
-有些场景需要手动控制渲染时机时可关闭：
+It can be turned off for some scenes where the rendering timing needs to be controlled manually.
 
 ```js
 const webglRenderer = new WebGLRenderer({
-    // 关闭自动渲染
     enableAutoRendering: false,
 });
 ```
 
 ## enableDirtyCheck
 
-是否开启脏检查，默认开启。开启后只有图形发生变化才会触发画布重绘。
+Whether to turn on dirty check, default is on. When enabled, only changes in the graphics will trigger canvas redraw.
 
 ## enableCulling
 
-是否开启视锥剔除，默认关闭。开启后只有视口范围内的图形才会被绘制。
+Whether to turn on view cone culling, off by default. When on, only drawings within the viewport range will be drawn.
 
-# 修改配置
+# Modify configuration
 
-通过 `setConfig` 可以修改初始化配置，例如再次开启自动渲染：
+The `setConfig` allows you to modify the initial configuration, for example to enable automatic rendering again.
 
 ```js
 renderer.setConfig({ enableAutoRendering: true });
 ```
 
-# 插件相关
+# Plug-in related
 
-我们提供了一系列操作插件的方法。
+We provide a number of ways to operate the plug-in.
 
 ## registerPlugin()
 
-渲染器可以在运行时动态添加插件，扩展自身能力，例如 `g-webgl` 可以通过 [g-pluin-3d](/zh/docs/plugins/3d) 进行 3D 场景的渲染：
+Renders can dynamically add plugins at runtime to extend their capabilities, e.g. `g-webgl` can render 3D scenes via [g-pluin-3d](/en/docs/plugins/3d).
 
 ```js
 import { Plugin } from '@antv/g-plugin-3d';
-// 注册 3D 插件
+
 webglRenderer.registerPlugin(new Plugin());
 ```
 
 ## unregisterPlugin()
 
-移除插件：
+Removal of plug-ins.
 
 ```js
 renderer.unregisterPlugin(plugin);
@@ -87,7 +86,7 @@ renderer.unregisterPlugin(plugin);
 
 ## getPlugin()
 
-根据名称获取插件。每个插件都有自己的名称，我们约定 `g-plugin-name` 的名称为 `name`：
+Get plugins by name. Each plugin has its own name, and we agree that the name of `g-plugin-name` is `name`.
 
 ```js
 import { Plugin } from '@antv/g-plugin-testonly';
@@ -96,7 +95,7 @@ const plugin = new Plugin();
 plugin.name; // 'testonly'
 ```
 
-因此在渲染器中可以通过插件名获取：
+So in the renderer it is possible to obtain by plugin name.
 
 ```js
 renderer.register(plugin);
@@ -106,7 +105,7 @@ renderer.getPlugin('testonly'); // plugin
 
 ## getPlugins()
 
-返回当前渲染器的插件列表：
+Returns the list of plug-ins for the current renderer.
 
 ```js
 renderer.getPlugins(); // [Plugin1, Plugin2]

@@ -1,29 +1,29 @@
-import type { Key, ReactElement, ReactNode, Ref } from 'react';
-import { Shape } from '@antv/g';
 import type {
   BaseStyleProps,
-  CircleStyleProps,
-  EllipseStyleProps,
-  HTMLStyleProps,
-  ImageStyleProps,
-  LineStyleProps,
-  PathStyleProps,
-  PolygonStyleProps,
-  PolylineStyleProps,
-  RectStyleProps,
-  TextStyleProps,
   Circle as GCircle,
-  Group as GGroup,
+  CircleStyleProps,
   Ellipse as GEllipse,
+  EllipseStyleProps,
+  Group as GGroup,
   HTML as GHTML,
+  HTMLStyleProps,
   Image as GImage,
+  ImageStyleProps,
   Line as GLine,
+  LineStyleProps,
   Path as GPath,
+  PathStyleProps,
   Polygon as GPolygon,
+  PolygonStyleProps,
   Polyline as GPolyline,
+  PolylineStyleProps,
   Rect as GRect,
+  RectStyleProps,
   Text as GText,
+  TextStyleProps,
 } from '@antv/g';
+import { Shape } from '@antv/g';
+import type { Key, ReactElement, ReactNode, Ref } from 'react';
 import type { GEvents } from './types';
 
 type BaseProps<Element, Prop> = {
@@ -50,3 +50,4 @@ export const Polygon = ElementOf<GPolygon, PolygonStyleProps, Shape.POLYGON>(Sha
 export const Polyline = ElementOf<GPolyline, PolylineStyleProps, Shape.POLYLINE>(Shape.POLYLINE);
 export const Rect = ElementOf<GRect, RectStyleProps, Shape.RECT>(Shape.RECT);
 export const Text = ElementOf<GText, TextStyleProps, Shape.TEXT>(Shape.TEXT);
+export * from './components';

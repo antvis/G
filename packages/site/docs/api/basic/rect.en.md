@@ -1,11 +1,11 @@
 ---
-title: Rect 矩形
+title: Rect
 order: 4
 ---
 
-可以参考 SVG 的 [\<rect\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/rect) 元素。
+You can refer to the [\<rect\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/rect) element of SVG.
 
-如下 [示例](/zh/examples/shape#rect) 定义了一个圆角矩形，左上角顶点位置为 `(200, 100)`：
+The following [example](/en/examples/shape#rect) defines a rounded rectangle with the top left vertex at `(200, 100)`.
 
 ```javascript
 const rect = new Rect({
@@ -22,73 +22,73 @@ const rect = new Rect({
 });
 ```
 
-# 继承自
+# Inherited from
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
 ## anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
 ## transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-# 额外属性
+# Additional Properties
 
 ## x
 
-局部坐标系下，矩形左上角顶点的 x 轴坐标。
+The x-axis coordinate of the top-left vertex of the rectangle in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## y
 
-局部坐标系下，矩形左上角顶点的 y 轴坐标。
+The y-axis coordinate of the top-left vertex of the rectangle in the local coordinate system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## width
 
-矩形宽度。支持取**负数**，效果为沿 Y 轴反转，[示例](/zh/examples/shape#rect)：
+The width of the rectangle. Supports taking **negative numbers** with the effect of reversing along the Y-axis, [example](/en/examples/shape#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_sVnRJmw7m8AAAAAAAAAAAAAARQnAQ" width="300" alt="negative width of rect">
 
-这与 Canvas2D API 保持一致，[详见](https://stackoverflow.com/a/15598760)。在 SVG 规范中指出 `<rect>` 宽高属性取负数时不予展示，例如在 Chrome 中这么做会报如下错误 `Error: <rect> attribute height: A negative value is not valid. ("-100")`：
+This is consistent with the Canvas2D API, [see](https://stackoverflow.com/a/15598760). In the SVG spec, it is noted that the `<rect>` width and height attribute is not displayed when it is negative, for example, in Chrome this results in the following error: `Error: <rect> attribute height: A negative value is not valid. ("-100")`：
 
 > The width and height properties define the overall width and height of the rectangle. A negative value for either property is illegal and must be ignored as a parsing error. A computed value of zero for either dimension disables rendering of the element.
 
-我们在 [g-svg](/zh/docs/api/renderer/svg) 中使用 `<path>` 代替 `<rect>` 绘制规避了这个问题。
+We circumvent this problem by using `<path>` instead of `<rect>` for drawing in [g-svg](/en/docs/api/renderer/svg).
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## height
 
-矩形高度。支持取**负数**，效果为沿 X 轴反转，[示例](/zh/examples/shape#rect)：
+The height of the rectangle. Supports taking **negative numbers** with the effect of reversing along the X-axis, [example](/en/examples/shape#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gPkGR56c5QgAAAAAAAAAAAAAARQnAQ" width="300" alt="negative height of rect">
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ## radius
 
-圆角半径，不同于 SVG `<rect>` 仅支持 `cx/cy` 统一设置，这里可以分别指定四个角的圆角半径，[示例](/zh/examples/shape#rect)：
+Corner radius, unlike SVG `<rect>` which only supports `cx/cy` uniform settings, here you can specify the radius of each of the four corners, [example](/en/examples/shape#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_pegTqJKe54AAAAAAAAAAAAAARQnAQ" alt="rounded rect">
 
@@ -97,17 +97,17 @@ rect.style.radius = [0, 4, 8, 16];
 rect.style.radius = '0 4px 8px 16px';
 ```
 
-支持以下取值，设置顺序依次为 左上，右上，右下，左下：
+The following values are supported, set in the order of top left, top right, bottom right, bottom left.
 
--   `number` 统一设置四个圆角半径
--   `number[]` 分别设置四个圆角半径，会补足缺省的分量：
-    -   `[ 1 ]` 相当于 `[ 1, 1, 1, 1 ]`
-    -   `[ 1, 2 ]` 相当于 `[ 1, 2, 1, 2 ]`
-    -   `[ 1, 2, 3 ]` 相当于 `[ 1, 2, 3, 2 ]`
+-   `number` Uniform setting of four rounded corner radii
+-   `number[]` Setting the four corner radii separately will make up the default fraction of.
+    -   `[ 1 ]` equals `[ 1, 1, 1, 1 ]`
+    -   `[ 1, 2 ]` equals `[ 1, 2, 1, 2 ]`
+    -   `[ 1, 2, 3 ]` equals `[ 1, 2, 3, 2 ]`
     -   `[ 1, 2, 3, 4 ]`
--   `string` 与 CSS [padding](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) 属性类似，使用空格分隔
+-   `string` Similar to the CSS [padding](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding) property, using spaces to separate
 
-在实际绘制时，会限制圆角半径的最大值为矩形宽高最大值的一半：
+When actually drawn, the maximum value of the radius of the rounded corners is limited to half the maximum value of the width and height of the rectangle.
 
 ```js
 const [tlr, trr, brr, blr] = radius.map((r) =>
@@ -115,6 +115,6 @@ const [tlr, trr, brr, blr] = radius.map((r) =>
 );
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | - | 否 | 是 | ([\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length)) {1, 4} |
+| '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |

@@ -31,7 +31,7 @@ export class ComputePipeline_WebGPU extends ResourceBase_WebGPU implements Compu
       compute: {
         ...computeStage,
       },
-      layout: undefined,
+      layout: 'auto',
     };
 
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createrenderpipeline

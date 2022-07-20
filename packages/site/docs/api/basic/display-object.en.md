@@ -5,24 +5,25 @@ redirect_from:
     - /en/docs/api/basic
 ---
 
-DisplayObject 是所有图形的基类，例如 [Group](/zh/docs/api/basic/group) [Circle](/zh/docs/api/basic/circle) [Text](/zh/docs/api/basic/text) 等都会继承它。
+DisplayObject is the base class of all graph like [Group](/en/docs/api/basic/group), [Circle](/en/docs/api/basic/circle), [Text](/en/docs/api/basic/text) etc.
 
-我们尝试让它尽可能兼容 [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)，除了能降低学习成本，还能将自身伪装成 DOM Element 来充分利用已有的 Web 生态，例如：
+We tried to make it as compatible as possible with [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element), which in addition to reducing learning costs, allows us to take advantage of the existing Web ecosystem by disguising ourselves as a DOM Element, e.g.
 
--   使用 CSS 选择器进行[高级查询](/zh/docs/plugins/css-select)
--   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
--   使用 Interact.js [实现 Drag&Drop，Resize](/zh/docs/api/event#直接使用-interactjs)
--   保留 D3 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/d3)
+-   Using CSS selectors for [advanced queries](/en/docs/plugins/css-select).
+-   Using Hammer.js for [gesture](/en/docs/api/event#直接使用-hammerjs)
+-   Using Interact.js for [Drag'n'Drop and Resize](/en/docs/api/event#直接使用-interactjs)
+-   [Taking over D3's rendering implementation](/en/docs/guide/diving-deeper/d3)
+-   [Taking over Observable Plot's rendering implementation](/en/docs/guide/diving-deeper/plot)
 
-# 继承自
+# Inherited from
 
-[Element](/zh/docs/api/builtin-objects/element)
+[Element](/en/docs/api/builtin-objects/element)
 
 # id
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/id
 
-全局唯一的标识，可通过 [getElementById](/zh/docs/api/display-object#高级查询) 查询。
+Globally unique identifier, can be queried by [getElementById](/en/docs/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
@@ -39,7 +40,7 @@ canvas.getElementById('my-circle-id'); // circle
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
 
-图形名称，不要求全局唯一，可通过 [getElementsByName](/zh/docs/api/display-object#高级查询) 查询。
+Graph name, not required to be globally unique, can be queried by [getElementsByName](/en/docs/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
@@ -56,7 +57,7 @@ canvas.getElementsByName('my-circle-name'); // [circle]
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
-图形拥有的类名，可通过它获取/设置图形的类名。后续可以使用 [getElementsByClassName](/zh/docs/api/display-object#高级查询) 查询。
+The class name owned by the graphic, which can be used to get/set the class name of the graphic. It can be queried later using [getElementsByClassName](/en/docs/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
@@ -69,21 +70,21 @@ circle.className; // 'my-circle-classname'
 canvas.getElementsByClassName('my-circle-classname'); // [circle]
 ```
 
-可以使用空格隔开多个类名，随后使用 [classList](/zh/docs/api/builtin-objects/element#classlist) 只读属性获取类名列表：
+You can use spaces to separate multiple class names, and then use [classList](/en/docs/api/builtin-objects/element#classlist) read-only attribute to get a list of class names.
 
 ```js
 circle.className = 'c1 c2';
 circle.classList; // ['c1', 'c2']
 ```
 
-未指定类名将返回空字符串：
+Not specifying a class name will return the empty string.
 
 ```js
 const group = new Group();
 group.className; // ''
 ```
 
-最后在设置时还可以使用 `class` 作为别名：
+Finally, you can also use `class` as an alias when setting.
 
 ```js
 const group = new Group({
@@ -93,18 +94,17 @@ const group = new Group({
 
 group.setAttribute('class', 'my-classname');
 
-// 但不可以使用 class 属性，为保留字
+// wrong, class is the kept keywords
 group.class;
 ```
 
 # interactive
 
-是否支持响应[事件](/zh/docs/api/event)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
+Whether to support responding to [events](/en/docs/api/event), default is `true`. Can be turned off on some graphics that do not need to support interaction.
 
-例如我们不想让下面这个圆响应鼠标 `mouseenter/leave` 事件，[示例](/zh/examples/event#circle)
+For example, we don't want the following circle to respond to the mouse `mouseenter/leave` event, [example](/en/examples/event#circle)
 
 ```js
-// 初始化时禁止交互
 const circle = new Circle({
     interactive: false,
     style: {
@@ -112,24 +112,24 @@ const circle = new Circle({
     },
 });
 
-// 或者后续禁止
+// or
 circle.interactive = false;
 ```
 
-推荐使用 [pointerEvents](/zh/docs/api/basic/display-object#pointerevents) 属性，因此上面禁止交互的操作等同于：
+It is recommended to use the [pointerEvents](/en/docs/api/basic/display-object#pointerevents) attribute, so the above prohibited interactions are equivalent to
 
 ```js
 circle.style.pointerEvents = 'none';
 ```
 
-# 绘图属性
+# Drawing Properties
 
-绘图属性通过 `style` 设置，通常包含了填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的左上角顶点位置`(x, y)`、尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
+The drawing properties are set by `style` and usually contain **generic properties** such as fill color, transparency, etc. Different types of shapes also have their own **additional properties**, for example, in the following rounded rectangle, the fill color `fill` and stroke color `stroke` are generic properties, while the top-left vertex position `(x, y)`, the size `width/height` and the radius `radius` of the rectangle are additional properties.
 
 ```javascript
 const rect = new Rect({
     style: {
-        // 或者使用 attrs
+        // or using attrs
         x: 200,
         y: 100,
         fill: '#1890FF',
@@ -142,7 +142,7 @@ const rect = new Rect({
 });
 ```
 
-属性名也可以使用连字符形式，因此以下写法完全等同，完整用法详见[获取/设置属性值](/zh/docs/api/basic/display-object#获取设置属性值)：
+Property names can also be hyphenated, so the following writeups are fully equivalent, see [get/set property values](/en/docs/api/basic/display-object#获取设置属性值) for full usage.
 
 ```js
 const rect = new Rect({
@@ -156,20 +156,20 @@ rect.style.setProperty('lineWidth', 4);
 rect.style.setProperty('line-width', 4);
 ```
 
-## 位置
+## Position
 
-图形在局部坐标系下的初始位置，根据图形种类使用不同属性描述，后续也可以通过 [setLocalPosition](/zh/docs/api/display-object#平移) 重新设置。
+The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/docs/api/display-object#panning).
 
-对于不同的图形，“位置”的几何意义也不同，例如：
+The geometric meaning of "position" is also different for different shapes, e.g.
 
--   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置，使用 [cx/cy](/zh/docs/api/basic/circle#cx)
--   [Group](/zh/docs/api/group) [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image) 为左上角顶点位置，使用 [x/y](/zh/docs/api/basic/rect#x)
--   [Text](/zh/docs/api/text) 为文本锚点位置
--   [Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置
+-   Using [cx/cy](/en/docs/api/basic/circle#cx) for [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse).
+-   [Group](/en/docs/api/group) [Rect](/en/docs/api/rect)，[Image](/en/docs/api/image) 为左上角顶点位置，使用 [x/y](/en/docs/api/basic/rect#x)
+-   [Text](/en/docs/api/text) 为文本锚点位置
+-   [Line](/en/docs/api/line)，[Polyline](/en/docs/api/polyline)，[Polygon](/en/docs/api/polygon)，[Path](/en/docs/api/path) 为包围盒左上角顶点位置
 
-有时我们需要更改这个 “位置” 的几何意义，例如将 Rect 的中心而非左上角设置成 “锚点”，此时我们可以使用 [anchor](/zh/docs/api/display-object#anchor)，将它设置成 `[0.5, 0.5]`。需要注意的是，修改前后图形在局部坐标系下的坐标并不会改变。
+Sometimes we need to change the geometric meaning of this `position`, for example to set the center of Rect instead of the top left corner as the `anchor`, we can use [anchor](/en/docs/api/display-object#anchor) to set it to `[0.5, 0.5]`. Note that the coordinates of the graph in the local coordinate system do not change before and after the modification.
 
-举例来说，我们定义了一个半径为 100 的圆，由于 anchor 默认值为 `[0.5, 0.5]`，此时获取这个圆在局部坐标系的坐标为 `[100, 100]`，即圆心所在的位置：
+For example, we define a circle with a radius of 100, and since the anchor defaults to `[0.5, 0.5]`, we get the coordinates of the circle in the local coordinate system as `[100, 100]`, i.e., the location of the center of the circle.
 
 ```js
 const circle = new Cirle({
@@ -182,7 +182,7 @@ const circle = new Cirle({
 circle.getLocalPosition(); // [100, 100]，此时为圆心所在位置
 ```
 
-如果我们此时修改锚点为 `[0, 0]`，这个圆局部坐标系下位置依然不变，还是 `[100, 100]`，只是此时这个坐标不再是圆心，而是圆的包围盒左上角，因此从视觉上看，这个圆向右下方平移了 `[100, 100]` 的距离：
+If we change the anchor point to `[0, 0]`, the position of the circle in the local coordinate system remains the same, `[100, 100]`, except that this coordinate is no longer the center of the circle, but the upper left corner of the enclosing box of the circle, so that visually the circle is shifted down to the right by a distance of `[100, 100]`.
 
 ```js
 circle.style.anchor = [0, 0];
@@ -191,58 +191,61 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 ### anchor
 
-图形的原点（锚点）位置，基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。
+The position of the origin (anchor) of the graph, based on [Geometry Bounds](/en/docs/api/basic/display-object#enclosing-box), is defined in the range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper-left corner of Geometry Bounds and `[1, 1]` represents the lower right corner.
 
-不同图形的默认锚点如下，[示例](/zh/examples/shape#rect)：
+The default anchor points for different shapes are as follows, [example](/en/examples/shape#rect).
 
--   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为圆心位置 `[0.5, 0.5]`
--   [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `[0, 0]`
--   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
--   [Group](/zh/docs/api/text) 无几何定义，因此设置此属性无效
+-   The center of [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse) is `[0.5, 0.5]`
+-   The top left corner of [Rect](/en/docs/api/rect), [Image](/en/docs/api/image), [Line](/en/docs/api/line), [Polyline](/en/docs/api/polyline), [Polygon](/en/docs/api/polygon) and [Path](/en/docs/api/path) is `[0, 0]`.
+-   We should always use [textBaseline](/en/docs/api/basic/text#textbaseline) and [textAlign](/en/docs/api/basic/text#textalign) to set the anchor of [Text](/en/docs/api/text).
+-   Since [Group](/en/docs/api/text) has no geometry bounds, so its anchor is `[0, 0]`.
 
-除了使用数组，还可以使用空格分隔的数组字符串，因此以下两种写法等价：
+In addition to using arrays, you can also use space-separated array strings, so the following two ways of writing them are equivalent.
 
 ```js
 circle.style.anchor = [0.5, 0.5];
 circle.style.anchor = '0.5 0.5';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| `'0 0'` | 所有 | 否 | 否 | `<array>` |
+| `'0 0'` | all | no | no | `<array>` |
 
 ### transform
 
-我们提供了在局部坐标系下进行变换的快捷方式，同时与 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下[transform-function 变换函数](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function)：
+We provide shortcuts for transformations in local coordinate systems, while keeping in line with [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform), supporting the following [transform-function transformations function](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function).
 
--   缩放，无单位
+-   Scaling
     -   scale(x, y)
     -   scaleX(x)
     -   scaleY(x)
     -   scaleZ(z)
     -   scale3d(x, y, z)
--   平移，0 可以不加单位，无单位当作 px 处理，百分比相对于当前图形包围盒
+-   Translation, 0 can be used without units, unitless is treated as px, the percentage is relative to the current graph bounding box
     -   translate(0, 0) translate(0, 30px) translate(100%, 100%)
     -   translateX(0)
     -   translateY(0)
     -   translateZ(0)
     -   translate3d(0, 0, 0)
--   旋转，支持 deg rad turn 这些角度单位
+-   Rotation, support for deg rad turn, these angular units
     -   rotate(0.5turn) rotate(30deg) rotate(1rad)
--   拉伸，支持 deg rad turn 这些角度单位
+-   Stretch, support deg rad turn these angular units
     -   skew(ax, ay)
     -   skewX(a)
     -   skewY(a)
--   none 清除变换
+-   Matrix
+    -   matrix()
+    -   matrix3d()
+-   none
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| `'none'` | 所有 | 否 | 是 | `<transform>` |
+| `'none'` | all | no | yes | `<transform>` |
 
-由于是在局部坐标系下进行变换，因此以下写法在视觉效果上一致：
+Since the transformation is performed in a local coordinate system, the following write-ups are visually consistent.
 
 ```js
-// 使用 transform 属性
+// Using transform
 const circle = new Circle({
     style: {
         transform: 'translate(100px, 100px)',
@@ -250,7 +253,7 @@ const circle = new Circle({
     },
 });
 
-// 直接设置 cx/cy
+// or set cx/cy directly
 const circle = new Circle({
     style: {
         cx: 100,
@@ -259,7 +262,7 @@ const circle = new Circle({
     },
 });
 
-// 使用变换方法
+// or using transform functions
 const circle = new Circle({
     style: {
         r: 100,
@@ -270,128 +273,128 @@ circle.translateLocal(100, 100);
 
 ### transformOrigin
 
-旋转与缩放中心，也称作变换中心，相对于 Bounds 定义。
+Rotation and scaling centers, also called transform origin, are defined relative to Bounds.
 
-和 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 类似，支持以下字符串写法，其中用空格分隔：
+Similar to CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin), the following string writing is supported, separated by spaces.
 
--   一个值
-    -   单位为 px 的长度，例如 10px
-    -   单位为 % 的长度，例如 50%
-    -   关键词 left, center, right, top, bottom，等于用百分比表示，例如 left 等于 0%，center 等于 50%
--   两个值
-    -   第一个是单位为 px 或 % 的长度，或 left, center, right 关键字中的一个
-    -   第二个是单位为 px 或 % 的长度，或 top, center, bottom 关键字中的一个
+-   One value
+    -   Length in px, e.g. 10px
+    -   Length in %, e.g. 50%
+    -   The keywords left, center, right, top, bottom are expressed as percentages, e.g. left equals 0%, center equals 50%.
+-   Two values
+    -   The first is the length in px or %, or one of the left, center, or right keywords
+    -   The second is the length in px or %, or one of the top, center, or bottom keywords
 
-因此以下写法等价：
+Therefore the following write-ups are equivalent.
 
 ```js
 // r = 100
 circle.style.transformOrigin = 'left';
-circle.style.transformOrigin = 'left center'; // 包围盒水平方向左侧边缘，垂直方向中点
-circle.style.transformOrigin = '0 50%'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 50% 高度
-circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘距离为 0，垂直方向距离顶部 100px
+circle.style.transformOrigin = 'left center'; // AABB horizontal left edge, vertical midpoint
+circle.style.transformOrigin = '0 50%'; // The distance to the left edge of the AABB is 0 horizontally and 50% height from the top vertically
+circle.style.transformOrigin = '0 100px'; // The distance to the left edge of the AABB is 0 horizontally and 100px vertically from the top
 ```
 
-⚠️ 暂不支持三个值的写法。
+⚠️ Writing with three values is not supported at the moment.
 
-和 [anchor](/zh/docs/api/basic/display-object#anchor) 一样，不同图形的默认值也不同：
+As with [anchor](/en/docs/api/basic/display-object#anchor), the default value varies from graph to graph.
 
--   [Circle](/zh/docs/api/circle)，[Ellipse](/zh/docs/api/ellipse) 为 `'center'`
--   [Group](/zh/docs/api/text) [Rect](/zh/docs/api/rect)，[Image](/zh/docs/api/image)，[Line](/zh/docs/api/line)，[Polyline](/zh/docs/api/polyline)，[Polygon](/zh/docs/api/polygon)，[Path](/zh/docs/api/path) 为包围盒左上角顶点位置 `'left top'`
--   [Text](/zh/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/docs/api/basic/text#textbaseline) 与 [textAlign](/zh/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   `'center'` in [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse).
+-   `'left top'` in [Group](/en/docs/api/text), [Rect](/en/docs/api/rect)，[Image](/en/docs/api/image), [Line](/en/docs/api/line), [Polyline](/en/docs/api/polyline), [Polygon](/en/docs/api/polygon) and [Path](/en/docs/api/path).
+-   [Text](/en/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/en/docs/api/basic/text#textbaseline) 与 [textAlign](/en/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 不同图形各异 | 所有 | 否 | 否 | `<transform-origin>` |
+| - | all | no | no | `<transform-origin>` |
 
-## 填充
+## Fill
 
 ### opacity
 
-图形整体透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
+The overall transparency of the graph, with values in the range `[0, 1]`, supports both `number` and `string` types, so the following two ways of writing it are equivalent.
 
 ```js
 circle.style.opacity = 0.5;
 circle.style.opacity = '0.5';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| '1' | all | no | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
 ### fillOpacity
 
-填充色透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
+The fill color transparency, in the range `[0, 1]`, supports both `number` and `string` types, so the following two ways of writing are equivalent.
 
 ```js
 circle.style.fillOpacity = 0.5;
 circle.style.fillOpacity = '0.5';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 是 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| '1' | all | yes | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
 ### fill
 
-填充色，支持 `string` 类型，详见 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint)：
+Fill color, supports `string` type, see [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)：
 
 ```js
 circle.style.fill = 'red';
 circle.style.fill = 'rgb(255, 0, 0)';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
+| 'none' | all | no | yes | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint) |
 
-## 描边
+## Stroke
 
 ### strokeOpacity
 
-描边透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
+Stroke transparency, which takes values in the range `[0, 1]`, supports both `number` and `string` types, so the following two ways of writing it are equivalent.
 
 ```js
 circle.style.strokeOpacity = 0.5;
 circle.style.strokeOpacity = '0.5';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 是 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| '1' | all | yes | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
 ### stroke
 
-描边色，支持 `string` 类型，详见 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint)：
+Stroke color, supports `string` type, see [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)：
 
 ```js
 circle.style.stroke = 'red';
 circle.style.stroke = 'rgb(255, 0, 0)';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
+| 'none' | all | no | yes | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint) |
 
 ### strokeWidth
 
-[lineWidth](/zh/docs/api/basic/display-object#linewidth) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width)保持一致。
+Alias of [lineWidth](/en/docs/api/basic/display-object#linewidth), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-width).
 
 ### strokeDasharray
 
-[lineDash](/zh/docs/api/basic/display-object#linedash) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-dasharray)保持一致。
+Alias of [lineDash](/en/docs/api/basic/display-object#linedash), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-dasharray) to be consistent.
 
 ### strokeDashoffset
 
-[lineDashOffset](/zh/docs/api/basic/display-object#linedash) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-dashoffset)保持一致。
+Alias of [lineDashOffset](/en/docs/api/basic/display-object#linedash), and [SVG Attribute Name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/ Attribute/stroke-dashoffset) to be consistent.
 
 ### lineWidth
 
-描边宽度。与我们熟悉的 [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing) 不同，边框的一半宽度在图形内，一半在图形外。例如下面这个圆的包围盒宽度为：`r + lineWidth / 2 = 110`
+The width of the stroke. Unlike the familiar [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing), half of the width of the border is inside the graphic and half is outside the graphic. For example, the width of the enclosing box for the circle below is: `r + lineWidth / 2 = 110`
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*f0-CTpClWkMAAAAAAAAAAAAAARQnAQ" width="300">
 
-支持 `number` 和 `string` 类型，前者默认为以 `px` 为单位的长度值，以下写法等价：
+supports `number` and `string` types, the former defaulting to length values in `px`, with the following writing equivalents.
 
 ```js
 circle.style.lineWidth = 1;
@@ -399,65 +402,65 @@ circle.style.lineWidth = '1';
 circle.style.lineWidth = '1px';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '1' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '1' | all | yes | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ### lineCap
 
-端点样式，支持以下取值：
+Endpoint style, supporting the following values.
 
--   'butt' 默认值。线段末端以方形结束。
--   'round' 线段末端以圆形结束。
--   'square' 线段末端以方形结束，但是增加了一个宽度和线段相同，高度是线段厚度一半的矩形区域。
+-   'butt' Default value. The end of the line segment ends in a square.
+-   'round' The line segment ends in a circle.
+-   'square' The line segment ends in a square, but adds a rectangular area with the same width as the line segment and half the height of the line segment's thickness.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap
 
 ### lineJoin
 
-连接处样式，支持以下取值：
+Supporting the following values.
 
--   'miter' 默认值。通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。这个设置可以通过 [miterLimit](/zh/docs/api/basic/display-object#miterlimit) 属性看到效果。
--   'round' 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。 圆角的半径是线段的宽度。
--   'bevel' 在相连部分的末端填充一个额外的以三角形为底的区域， 每个部分都有各自独立的矩形拐角。
+-   'miter' Default. An additional diamond-shaped area is formed by extending the outer edges of the connected sections so that they intersect at a point. The effect of this setting can be seen with the [miterLimit](/en/docs/api/basic/display-object#miterlimit) property.
+-   'round' Draws the shape of the corner by filling an additional, circular sector with the center of the circle at the end of the connected section. The radius of the rounded corner is the width of the line segment.
+-   'bevel' An additional triangular-base area is filled in at the end of the connected sections, each with its own separate rectangular corner.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin
 
 ### miterLimit
 
-斜接面限制比例。SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。我们给 [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline) [Polygon](/zh/docs/api/basic/polygon) 这三种图形设置为 4，其余图形设置为 10。
+The default value for SVG and Canvas2D is different, the former is 4 and the latter is 10. We set [Path](/en/docs/api/basic/path) [Polyline](/en/docs/api/basic/polyline) [Polygon](/en/docs/api/basic/polygon) to 4 and the rest to 10. api/basic/polygon) These three graphs are set to 4, and the rest are set to 10.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit
 
 ### lineDash
 
-使用 `number[]` 描述交替绘制的线段和间距。可参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
+Use `number[]` to describe the alternate line segments and spacing. Reference can be made to: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
 
-目前仅支持形如：`[dash, gap]` 的形式，如果数组中仅有一个元素，即 `[dash]` 等价于 `[dash, dash]`。
+Currently only the form `[dash, gap]` is supported, if there is only one element in the array, i.e. `[dash]` is equivalent to `[dash, dash]`.
 
-对它应用动画可以实现[笔迹动画效果](/zh/docs/api/animation#笔迹动画)。
+Applying animation to it can achieve [handwriting animation effect](/en/docs/api/animation#stroke-animation).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400" alt="stroke animation">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 是 | 是 |  |
+| - | all | yes | yes |  |
 
 ### lineDashOffset
 
-虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation#蚂蚁线)
+Dashed line offset, type `number`, transform it to achieve [marching ants animation](/en/docs/api/animation#marching-ant-animation)
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400" alt="marching ants animation">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | all | yes | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## 阴影
+## Shadow
 
-在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
+Add shadow effect at the bottom of the shape, support configuring shadow color, blur radius and horizontal/vertical offset distance. [example](/en/examples/shape#circle).
 
-阴影不会影响图形的 [Geometry Bounds](/zh/docs/api/basic/concept#包围盒)，例如下图中给一个半径为 100 的圆添加阴影后，几何包围盒尺寸不变：
+Shadows do not affect the graph's [Geometry Bounds](/en/docs/api/basic/concept#bounding-box), e.g. in the following figure, after adding a shadow to a circle with a radius of 100, the geometry wrapping box size remains the same.
 
 ```js
 circle.getBounds(); // { halfExtents: [100, 100] }
@@ -467,215 +470,213 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="200" alt="outer shadow">
 
-当然外阴影会使 [Render Bounds](/zh/docs/api/basic/concept#包围盒) 增大，内阴影则不会。
+Of course outer shadows increase the [Render Bounds](/en/docs/api/basic/concept#bounding-box), inner shadows do not.
 
-最后，阴影会对渲染性能造成非常大影响。
+Finally, shadows can have a very big impact on rendering performance.
 
 ### shadowType
 
-目前我们支持两种阴影：
+We currently support two kinds of shadow.
 
--   `'outer'` 外阴影，也是该属性的默认值。阴影出现在图形填充或者描边的外侧。
--   `'inner'` 内阴影。顾名思义阴影在图形内部，如下图所示。
+-   `'outer'` Outer Shading, which is also the default value for this property. The shadow appears on the outside of the drawing fill or stroke.
+-   `'inner'` Internal shading. As the name implies the shadows are inside the graph, as shown in the figure below.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0uHfQa00ZeYAAAAAAAAAAAAAARQnAQ" width="200" alt="inner shadow">
 
 ### shadowColor
 
-阴影色，支持 `string` 类型，例如 `'#1890FF'`。不支持渐变或者纹理写法。
+Shade color, supports `string` type, for example `'#1890FF'`. Gradient or pattern writing is not supported.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<color\>](/zh/docs/api/css/css-properties-values-api#color) |
+| - | all | no | yes | [\<color\>](/en/docs/api/css/css-properties-values-api#color) |
 
 ### shadowBlur
 
-阴影效果模糊程度，`number` 类型，不允许为负数。越大代表越模糊，为 0 时无模糊效果。
+The blurring degree of the shading effect, `number` type, negative numbers are not allowed. Larger means more blurred, 0 means no blurring effect.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| - | all | no | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
 ### shadowOffsetX
 
-水平方向偏移量，支持 `number` 或 `string` 类型，例如负数让阴影往左移，正数向右
+Horizontal offset, supports `number` or `string` types, e.g. negative numbers move shadows to the left, positive numbers to the right.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| - | all | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 ### shadowOffsetY
 
-垂直方向偏移量，例如负数让阴影往上移，正数向下
+Vertical offset, e.g. a negative number moves the shadow up, a positive number down.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| - | all | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## 滤镜
+## Filter
 
-滤镜（Filter）可以对已生成的图像进行一些处理，例如模糊、高亮、提升对比度等。在 Web 端有以下实现：
+Filters can perform some processing on the generated image, such as blurring, highlighting, boosting contrast, etc. The following implementations are available on the web side.
 
--   CSS Filter：https://developer.mozilla.org/en-US/docs/Web/CSS/filter
--   Canvas Filter：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
--   SVG Filter：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
--   WebGL 中一般称作后处理
+-   CSS Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+-   Canvas Filter: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
+-   SVG Filter: https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
+-   Post Processing in WebGL.
 
-参考 CSS Filter 语法，我们支持对图形应用一个或多个滤镜效果，[示例](/zh/examples/shape#filter)：
+Referring to the CSS Filter syntax, we support applying one or more filter effects to a shape, [example](/en/examples/shape#filter).
 
 ```js
 circle.style.filter = 'blur(5px)';
-circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
+circle.style.filter = 'blur(5px) brightness(0.4)'; // Stackable
 ```
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3MxRTpAT77gAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3MxRTpAT77gAAAAAAAAAAAAAARQnAQ" alt="filters" width="300">
 
-目前可以在 g-canvas/svg/webgl 渲染器中使用滤镜，有以下注意事项：
+Filters can currently be used in the g-canvas/svg/webgl renderer with the following caveats.
 
--   由于 Canvas Filter 支持度不佳，主要是 [Safari 不支持](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter)，因此使用 g-canvas 无法在 Safari 中正常展示滤镜
--   g-canvas 和 g-svg 在部分 filter 效果上略有差异
--   可以施加在所有基础图形以及 Group 上
--   该属性暂不支持动画
+-   Due to poor Canvas Filter support, mainly [Safari does not support](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter), filters are not displayed properly in Safari using g-canvas
+-   g-canvas and g-svg differ slightly in some filter effects
+-   Can be applied to all base graphs and Groups
+-   This property does not support animation at this time
 
 ### blur
 
-将高斯模糊应用于输入图像。其中 radius 定义了高斯函数的标准偏差值，或者屏幕上有多少像素相互融合，因此较大的值将产生更多的模糊，默认值为 0。该参数可以指定为 CSS 长度，但不接受百分比值。
+Applies a Gaussian blur to the input image. where radius defines the standard deviation value of the Gaussian function, or how many pixels on the screen blend into each other so that larger values will produce more blur, with a default value of 0. This parameter can be specified as a CSS length, but does not accept percentage values.
 
-和阴影一样，模糊同样不会影响图形的包围盒尺寸。
+As with shadows, blurring also does not affect the size of the geometry bounds for graphics.
 
 ```js
 circle.style.filter = 'blur(5px)';
 ```
 
-下图依次展示了 2px 4px 和 10px 的模糊效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the blurring effect of 2px 4px and 10px in order, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ" width="300" alt="blur filter">
 
 ### brightness
 
-将线性乘法器应用于输入图像，让它变亮或变暗，默认值为 1。值为 0％ 将创建全黑图像。值为 100％ 会使输入保持不变。其他值是效果的线性乘数。如果值大于 100% 提供更明亮的结果。
+Applies a linear multiplier to the input image to make it lighter or darker, with a default value of 1. A value of 0% will create an all-black image. A value of 100% will leave the input unchanged. Other values are linear multipliers of the effect. Values greater than 100% provide brighter results.
 
 ```js
 circle.style.filter = 'brightness(2)';
 circle.style.filter = 'brightness(200%)';
 ```
 
-下图依次展示了 0 100% 和 200% 的明亮效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the bright effects of 0 100% and 200% in order, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ" width="300" alt="brightness filter">
 
 ### drop-shadow
 
-在图像下展示阴影，可以设置阴影颜色、偏移量与模糊效果，依次传入以下参数：
+To display the shadows under the image, you can set the shadow color, offset and blur effect by passing in the following parameters in order.
 
--   offset-x 描述阴影的水平偏移距离，单位 px
--   offset-y 描述阴影的垂直偏移距离，单位 px
--   blur-radius 数值越大越模糊，单位 px，不允许为负数
--   color 阴影颜色
+-   offset-x Describes the horizontal offset distance of the shadow in px
+-   offset-y Describes the vertical offset distance of the shadow in px
+-   blur-radius The larger the value, the more ambiguous it is, in px, no negative numbers allowed
+-   color
 
-阴影不会影响图形的包围盒尺寸。
+The shading does not affect the size of the geometry bounding box of the graph.
 
 ```js
 circle.style.filter = 'drop-shadow(16px 16px 10px black)';
 ```
 
-下图依次展示了上面配置的效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the effect of the above configuration in turn, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="300" alt="drop-shadow filter">
 
 ### contrast
 
-调节图像的对比度。当数值为 0% 时，图像会完全变黑。当数值为 100% 时，图像没有任何变化。
+Adjusts the contrast of the image. When the value is 0%, the image becomes completely black. When the value is 100%, the image does not change at all.
 
 ```js
 circle.style.filter = 'contrast(2)';
 circle.style.filter = 'contrast(200%)';
 ```
 
-下图依次展示了 0 1 和 10 的对比度效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the contrast effect of 0, 1 and 10 in order，[example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ" width="300" alt="contrast filter">
 
 ### grayscale
 
-将图像转换成灰色的图片。当值为 100% 时，图像会完全变成灰色。 当值为 0% 时，图像没有任何变化。
+Converts the image to a gray picture. When the value is 100%, the image turns completely gray. When the value is 0%, the image does not change at all.
 
 ```js
 circle.style.filter = 'grayscale(1)';
 circle.style.filter = 'grayscale(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的灰度效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the grayscale effect of 0 50% and 100% in order, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ" alt="grayscale filter" width="300">
 
 ### saturate
 
-对图像进行饱和度的处理。当值为 0% 时，图像完全不饱和。当值为 100% 时，图像没有任何变化。
+Saturation is applied to the image. When the value is 0%, the image is not saturated at all. When the value is 100%, there is no change in the image.
 
 ```js
 circle.style.filter = 'saturate(1)';
 circle.style.filter = 'saturate(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的饱和度效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the saturation effect at 0 50% and 100% in order, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
 ### sepia
 
-对图像进行深褐色处理（怀旧风格）。当值为 100% 时，图像完全变成深褐色。当值为 0% 时，图像没有任何变化。
+Applies sepia processing to the image (nostalgic style). When the value is 100%, the image becomes completely sepia. When the value is 0%, the image does not change at all.
 
 ```js
 circle.style.filter = 'sepia(1)';
 circle.style.filter = 'sepia(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的处理效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the results of 0 50% and 100% processing in order, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
 ### hue-rotate
 
-在输入图像上应用色相旋转，可设定图像会被调整的色环角度值。值为 0deg 时图像无变化。
+Applying hue rotation to the input image sets the value of the color ring angle at which the image will be adjusted. The image does not change when the value is 0deg.
 
 ```js
 circle.style.filter = 'hue-rotate(30deg)';
 circle.style.filter = 'hue-rotate(180deg)';
 ```
 
-下图依次展示了 0 90deg 和 180deg 的处理效果，[示例](/zh/examples/shape#filter)：
+The following figure shows the effect of 0, 90deg and 180deg processing in turn, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
 ### invert
 
-反转输入图像的颜色。amount 的值定义转换的比例，100% 代表完全反转，0% 则图像无变化。
+Inverts the color of the input image. amount defines the percentage of conversion, 100% means complete inversion, 0% means no change in the image.
 
 ```js
 circle.style.filter = 'invert(1)';
 circle.style.filter = 'invert(100%)';
 ```
 
-下图依次展示了 0 50% 和 100% 的反转效果，[示例](/zh/examples/shape#filter)：
+The following figure shows in turn the effect of 0, 50% and 100% inversions, [example](/en/examples/shape#filter).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
-## 渲染次序
+## zIndex
 
-### zIndex
+Similar to CSS's `z-index` property, used to control the rendering order, it needs to be noted that
 
-类似 CSS 的 `zIndex` 属性，用于控制渲染次序，需要注意：
+1. Only affects the rendering order, and does not change the node structure in the scene graph.
+2. Effective only in the current context.
+3. The default display order is the order in which the scenes are added, with those added later on top of the previously added elements.
 
-1. 只会影响渲染顺序，并不会改变场景图中的节点结构
-2. 只在当前上下文内生效
-3. 默认展示次序为场景图添加顺序，后添加的在之前添加的元素之上
-
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 否 | 否 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| '0' | all | no | no | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-例如下面的场景图中，由于 li2 在 li1 之后加入画布，因此 li2 默认会展示在 li1 之上。如果希望改变这种展示次序，可以修改 li1 的 zIndex：
+For example, in the scene below, li2 is displayed on top of li1 by default because li2 was added to the canvas after li1. If you want to change this display order, you can modify the zIndex of li1:
 
 ```js
 // ul1 -> li1
@@ -685,17 +686,15 @@ circle.style.filter = 'invert(100%)';
 li1.style.zIndex = 1; // li1 在 li2 之上
 ```
 
-再比如尽管 li2 的 zIndex 比 ul2 大很多，但由于 ul1 比 ul2 小，它也只能处于 ul2 之下，[示例](/zh/examples/scenegraph#z-index)
+For example, even though li2 has a much larger zIndex than ul2, it can only be under ul2 because ul1 is smaller than ul2, [example](/en/examples/scenegraph#z-index)
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ" alt="z-index" width="500">
 
-## 裁剪
+## clipPath
 
-### clipPath
+Use clipping to create a displayable region of an element, with the parts inside the region shown and the parts outside the region hidden. See CSS's [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path). The value of this property can be any shape, such as Circle, Rect, etc. The same clipping region can be shared by multiple shapes. Finally, the crop region also affects the pickup area of the shapes, [example](/en/examples/event#shapes).
 
-使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/zh/examples/event#shapes)。
-
-例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 \* 200），此时我们可以设置裁剪区域圆形的局部坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
+For example, if we want to create a picture that is cropped into a circle, so that the cropping area is just in the center of the picture (size 200 \* 200), we can set the local coordinates of the circle in the cropping area to `[100, 100]`. [example](/en/examples/shape#clip).
 
 ```js
 const image = new Image({
@@ -704,7 +703,7 @@ const image = new Image({
         height: 200,
         clipPath: new Circle({
             style: {
-                cx: 100, // 处于被裁剪图形局部坐标系下
+                cx: 100, // In the local coordinate system of the cropped figure
                 cy: 100,
                 r: 50,
             },
@@ -713,27 +712,27 @@ const image = new Image({
 });
 ```
 
-也可以在创建图形之后设置裁剪区域，因此以上写法等价于：
+It is also possible to set the cropping area after creating the drawing, so the above writeup is equivalent to:
 
 ```js
 const image = new Image({
     style: {
-        //... 省略其他属性
+        //...
     },
 });
 
 image.style.clipPath = new Circle({
     style: {
-        cx: 100, // 处于被裁剪图形局部坐标系下
+        cx: 100,
         cy: 100,
         r: 50,
     },
 });
-// 或者兼容旧版写法
+// or
 image.setClip(
     new Circle({
         style: {
-            cx: 100, // 处于被裁剪图形局部坐标系下
+            cx: 100,
             cy: 100,
             r: 50,
         },
@@ -741,41 +740,40 @@ image.setClip(
 );
 ```
 
-当我们想清除裁剪区域时，可以设置为 `null`：
+When we want to clear the cropping area, we can set it to `null`.
 
 ```js
 image.style.clipPath = null;
-// 或者
+// or
 image.setClip(null);
 ```
 
-### 注意事项
+### Caveats
 
-裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。例如，配合[动画系统](/zh/docs/api/animation)我们可以对裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
+The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/docs/api/animation) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 
 ```js
-// 对裁剪区域应用动画
+// Apply animation to clipped areas
 clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
     duration: 1500,
     iterations: Infinity,
 });
 ```
 
-我们暂不支持复合的裁剪区域，例如自定义图形以及 Group.
+We do not yet support composite clipped areas, such as custom graphics and Group.
 
-## 运动轨迹
+## Offset Path
 
-在[路径动画](/zh/docs/api/animation#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation#路径动画)对 `offsetDistance` 属性应用变换：
+In [path-animation](/en/docs/api/animation#path-animation), we can use `offsetPath` to specify the trajectory of a drawing, applying a transformation to the `offsetDistance` property.
 
 ```js
 const circle = new Circle({
     style: {
         offsetPath: new Line({
-            // 创建运动轨迹
             style: {
-                // 不需要设置其他与轨迹无关的绘图属性
+                // There is no need to set other drawing properties that are not related to trajectories
                 x1: 100,
                 y1: 100,
                 x2: 300,
@@ -786,106 +784,102 @@ const circle = new Circle({
     },
 });
 
-const animation = circle.animate(
-    [
-        { offsetDistance: 0 }, // 变换
-        { offsetDistance: 1 },
-    ],
-    {
-        duration: 3000,
-        easing: 'ease-in-out',
-        iterations: Infinity,
-    },
-);
+const animation = circle.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+    duration: 3000,
+    easing: 'ease-in-out',
+    iterations: Infinity,
+});
 ```
 
 ### offsetPath
 
-指定路径轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline) 这三种图形。
+Specify path trajectory, currently support [Line](/en/docs/api/basic/line) [Path](/en/docs/api/basic/path) and [Polyline](/en/docs/api/basic/polyline) these three graphics.
 
 ### offsetDistance
 
-从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
+The distance to travel from the start of the path, in the range of `[0-1]`, where 0 is the start of the path and 1 is the end.
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| '0' | all | no | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-## 鼠标样式
+## Cursor style
 
-当鼠标悬停在图形上时，我们可以改变它的样式，通过修改容器的 CSS 样式实现。
+We can change the style of a graphic when the mouse hovers over it, by modifying the CSS style of the container.
 
-`cursor` 属性支持的值可以参考：https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor
+The values supported by the `cursor` property can be found at https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor
 
 ```js
 const circle = new Circle({
     style: {
-        //... 省略其他属性
+        //...
         cursor: 'pointer',
     },
 });
 ```
 
-## 响应交互事件
+## Responding to interaction events
 
-我们可以设置图形如何响应交互事件，例如命中拾取时展示鼠标样式，或者增大拾取区域。
+We can set how the graph responds to interaction events, such as displaying the mouse style when hitting a pickup, or increasing the pickup area.
 
 ### pointerEvents
 
-设置图形如何响应交互事件。目前支持以下关键词：
+Sets how the graph responds to interaction events. The following keywords are currently supported.
 
--   auto 响应事件
--   none 不响应事件
+-   `'auto'` Responding to events
+-   `'none'` Non-responsive events
 
-后续会增加 `fill` `stroke` 等更多关键词。
+More keywords such as `fill` and `stroke` will be added later.
 
-在该 [示例](/zh/examples/style#inheritance) 中，基于继承机制我们能很方便的控制可交互性：
+In this [example](/en/examples/style#inheritance), we can easily control the interactivity based on the inheritance mechanism.
 
 ```js
-// 整个画布不响应交互事件
+// The entire canvas does not respond to interaction events
 canvas.document.documentElement.style.pointerEvents = 'none';
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'auto' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
+| 'auto' | all | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#关键词) |
 
 ### increasedLineWidthForHitTesting
 
-当 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 较小时，可交互区域也随之变小，有时我们想增大这个区域，让“细线”更容易被拾取到。注意该属性并不会影响渲染效果。
+When [lineWidth](/en/docs/api/basic/display-object#linewidth) is small, the interactable area becomes smaller, sometimes we want to increase this area to make the "thin line" easier to be picked up. Note that this property does not affect the rendering effect.
 
-在下面的 [示例](/zh/examples/shape#polyline) 中，我们设置该属性为 `50`，在进行拾取时线宽相当于 `50 + 原始线宽`，这样靠近时就更容易拾取到了： <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
+In the [example](/en/examples/shape#polyline) below, we set this property to `50`, so that the line width is equal to `50 + the original line width` when picking up, making it easier to pick up when close:
+
+ <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0ISzTIiefZ0AAAAAAAAAAAAAARQnAQ">
 
 ```js
 line.style.increasedLineWidthForHitTesting = 50;
 ```
 
-另外和 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 一样，该属性同样会向两侧延展，下图中无填充的 [Path](/zh/docs/api/basic/path) 内部拾取区域也变大了：
+Also like [lineWidth](/en/docs/api/basic/display-object#linewidth), this property also extends to the sides, and in the image below the unfilled [Path](/en/docs/api/basic/path) internal pickup area has been enlarged.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ude1Qo6PVNYAAAAAAAAAAAAAARQnAQ">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '0' | 所有 | 否 | 否 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| '0' | all | no | no | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# 变换操作
+# Transformation operations
 
-我们提供了一系列变换方法。
+We offer a range of transformation methods.
 
-## 平移
+## Translation
 
-对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
+For translation operations, we provide APIs for moving absolute/relative distances in local/world coordinate systems.
 
-| 名称 | 参数 | 返回值 | 备注 |
+| method name | parameters | return value | remarks |
 | --- | --- | --- | --- |
-| translate | `[number, number]`<br />`number, number`<br />`number` | 无 | 在 **世界坐标系** 下，相对当前位置移动 |
-| translateLocal | `[number, number]`<br />`number, number`<br />`number` | 无 | 在 **局部坐标系** 下，相对当前位置移动 |
-| setPosition | `[number, number]`<br />`number, number`<br />`number` | 无 | 设置 **世界坐标系** 下的位置 |
-| setLocalPosition | `[number, number]`<br />`number, number`<br />`number` | 无 | 设置 **局部坐标系** 下的位置 |
-| getPosition | 无 | `[number, number]` | 获取 **世界坐标系** 下的位置 |
-| getLocalPosition | 无 | `[number, number]` | 获取 **局部坐标系** 下的位置 |
+| translate | `[number, number]` or `number, number` or `number` | - | Move relative to current position in **world coordinate system** |
+| translateLocal | `[number, number]` or `number, number` or `number` | - | Move relative to current position in **local coordinate system** |
+| setPosition | `[number, number]` or `number, number` or `number` | - | Sets the position in the **world coordinate system**. |
+| setLocalPosition | `[number, number]` or `number, number`or `number` | - | Set the position under the **local coordinate system** |
+| getPosition | - | `[number, number]` | Get the position in the **world coordinate system** |
+| getLocalPosition | - | `[number, number]` | Get the position in the **local coordinate system** |
 
-其中 translate/translateLocal/setPosition/setLocalPosition 支持以下入参形式，其中如果只想修改 X 轴方向，可以只传一个数字：
+`translate/translateLocal/setPosition/setLocalPosition` supports the following input forms, where if you want to modify only the X-axis direction, you can pass only one number.
 
 ```js
 circle.translate([100, 0]); // [number, number]
@@ -893,18 +887,18 @@ circle.translate(100, 0); // number, number
 circle.translate(100); // number
 ```
 
-## 缩放
+## Scaling
 
-和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
+Unlike panning, we can't provide a method like `setScale` to set scaling in the world coordinate system, so scaling in the global coordinate system is read-only, which in Unity is called [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
-| 名称 | 参数 | 返回值 | 备注 |
+| method name | parameters | return value | remarks |
 | --- | --- | --- | --- |
-| scaleLocal | `[number, number]`<br />`number, number`<br />`number` | 无 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
-| setLocalScale | `[number, number]`<br />`number, number`<br />`number` | 无 | 设置 **局部坐标系** 下的缩放比例 |
-| getScale | 无 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
-| getLocalScale | 无 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
+| scaleLocal | `[number, number]` or `number, number` or`number` | - | Continued scaling with respect to the current scale in **local coordinate system** |
+| setLocalScale | `[number, number]` or `number, number` or `number` | - | Set the scaling in **local coordinate system** |
+| getScale | - | `[number, number]` | Get the scaling in **world coordinate system** |
+| getLocalScale | - | `[number, number]` | Get the scaling in **local coordinate system** |
 
-其中 scaleLocal/setLocalScale 支持以下入参形式，其中如果水平/垂直方向缩放比例相等时，可以只传一个数字：
+`scaleLocal/setLocalScale` supports the following input forms, where only one number can be passed if the horizontal/vertical scaling is equal.
 
 ```js
 circle.scaleLocal([2, 2]); // [number, number]
@@ -912,52 +906,52 @@ circle.scaleLocal(2, 2); // number, number
 circle.scaleLocal(2); // number
 ```
 
-如果想实现沿 X / Y 轴翻转，可以传入负值，例如沿 Y 轴翻转：
+If you want to flip along the X / Y axis, you can pass in a negative value, e.g. flip along the Y axis.
 
 ```js
 circle.setLocalScale(-1, 1);
 ```
 
-## 旋转
+## Rotation
 
-在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数。
+In 3D scenes, rotations can be represented by matrices, axis angles, Euler angles and quaternions, which are interconvertible with each other. Although, considering future scalability, we use quaternions in the G internal implementation.
 
-| 名称 | 参数 | 返回值 | 备注 |
+| method name | parameters | return value | remarks |
 | --- | --- | --- | --- |
-| rotateLocal | `number` | 无 | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
-| rotate | `number` | 无 | 在 **世界坐标系** 下，旋转一定的欧拉角 |
-| setEulerAngles | `number` | 无 | 设置 **世界坐标系** 下的欧拉角 |
-| setLocalEulerAngles | `number` | 无 | 设置 **局部坐标系** 下的欧拉角 |
-| setLocalRotation | `quat` | 无 | 设置 **局部坐标系** 下的四元数 |
-| setRotation | `quat` | 无 | 设置 **世界坐标系** 下的四元数 |
-| getEulerAngles | 无 | `number` | 获取 **世界坐标系** 下的欧拉角 |
-| getLocalEulerAngles | 无 | `number` | 获取 **局部坐标系** 下的欧拉角 |
-| getLocalRotation | 无 | `quat` | 获取 **局部坐标系** 下的四元数 |
-| getRotation | 无 | `quat` | 获取 **世界坐标系** 下的四元数 |
+| rotateLocal | `number` | - | In the **local coordinate system**, rotate by a certain Eulerian angle, clockwise positive, in `degree` |
+| rotate | `number` | - | In **world coordinate system**, rotate by a certain Eulerian angle |
+| setEulerAngles | `number` | - | In **world coordinate system**, rotate by a certain Eulerian angle |
+| setLocalEulerAngles | `number` | - | Set the Euler angles in the **local coordinate system**. |
+| setLocalRotation | `quat` | - | Sets the number of quaternions in the **local coordinate system**. |
+| setRotation | `quat` | - | Sets the number of quaternions in the **world coordinate system**. |
+| getEulerAngles | - | `number` | Get the Euler angles in **world coordinate system** |
+| getLocalEulerAngles | - | `number` | Get the Euler angles in **local coordinate system** |
+| getLocalRotation | - | `quat` | Get the quaternion in **local coordinate system** |
+| getRotation | - | `quat` | Get the quaternion in **world coordinate system** |
 
-## 拉伸
+## Skew
 
-在 2D 场景中，可以进行拉伸，在一定方向上以一定角度扭曲元素上的每个点。可参考 [CSS 同名变换函数](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function#skew)。
+In 2D scenes, stretching can be performed to distort each point on an element in a certain direction at a certain angle. See [CSS eponymous transform function](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function#skew).
 
-| 名称         | 参数   | 返回值 | 备注                                                            |
-| ------------ | ------ | ------ | --------------------------------------------------------------- |
-| setLocalSkew | `vec2` | 无     | 在 **局部坐标系** 下，沿着横/纵坐标扭曲元素的角度，单位为 `rad` |
-| getLocalSkew | 无     | `vec2` | 获取 **局部坐标系** 下的扭曲角度，单位为 `rad`                  |
-
-## 设置缩放和旋转中心
-
-除了使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 属性，还可以手动计算相对于 [anchor](/zh/docs/api/basic/display-object#anchor) 位置的偏移量，再通过 `setOrigin` 重新设置变换中心。
-
-| 名称 | 参数 | 返回值 | 备注 |
+| method name | parameters | return values | remarks |
 | --- | --- | --- | --- |
-| setOrigin | `[number, number]` 或 `[number, number, number]` 或 `number, number` 或 `number, number, number` | 无 | 设置局部坐标系下的缩放和旋转中心 |
-| getOrigin | `[number, number, number]` | 无 | 获取局部坐标系下的缩放和旋转中心 |
+| setLocalSkew | `vec2` | - | The angle in `rad` that distorts the element along the horizontal/vertical coordinates in the **local coordinate system**. |
+| getLocalSkew | - | `vec2` | Gets the distortion angle in `rad` under the **local coordinate system**. |
 
-设置局部坐标系下的缩放和旋转中心，[示例](/zh/examples/scenegraph#origin)
+## Set the scaling and rotation center
 
-数值为相对于[锚点](/zh/docs/api/basic/display-object#anchor)的偏移量，默认值为 `[0, 0]`，因此就是锚点位置。
+Besides using the [transformOrigin](/en/docs/api/basic/display-object#transformorigin) property, you can also manually calculate the offset relative to the [anchor](/en/docs/api/basic/display-object#anchor) position and then reset the transform center by `setOrigin`.
 
-在下面的例子中，我们在 `[100, 100]` 处放置了一个半径为 100 的圆：
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- |
+| setOrigin | `[number, number]` or `[number, number, number]` or `number, number` or `number, number, number` | - | Set the scaling and rotation center in the local coordinate system. |
+| getOrigin | `[number, number, number]` | - | Get the scaling and rotation center in the local coordinate system. |
+
+Set the center of scaling and rotation in the local coordinate system, [example](/en/examples/scenegraph#origin).
+
+The value is the offset relative to [anchor](/en/docs/api/basic/display-object#anchor), the default value is `[0, 0]`, so that is the anchor position.
+
+In the following example, we have placed a circle with a radius of 100 at `[100, 100]`.
 
 ```js
 const circle = new Circle({
@@ -969,7 +963,7 @@ const circle = new Circle({
 });
 ```
 
-如果我们想让圆以圆心作为变换中心进行缩放，由于此时锚点就是圆心，因此缩放前后锚点在世界坐标系下位置不变，发生变化的是包围盒：
+If we want the circle to be scaled with the center of the circle as the center of transformation, since the anchor point is the center of the circle at this point, the position of the anchor point in the world coordinate system remains the same before and after scaling, and it is the enclosing box that changes.
 
 ```js
 circle.setOrigin(0, 0);
@@ -978,7 +972,7 @@ circle.getPosition(); // [100, 100]
 circle.getBounds(); // { center: [100, 100], halfExtents: [50, 50] }
 ```
 
-但假如我们想让这个圆以自身包围盒左上角进行缩放，即相对于当前锚点（圆心）偏移 `[-100, -100]`。缩放之后锚点也会发生偏移，圆在世界坐标系下的位置自然也来到了 `[50, 50]`。同理，包围盒的中心点发生了移动：
+But if we want the circle to be scaled by its own upper left corner of the bounding box, i.e. shifted by `[-100, -100]` with respect to the current anchor point (the center of the circle). After scaling, the anchor point is also shifted, and the circle's position in the world coordinate system comes to `[50, 50]`. Similarly, the center point of the enclosing box is shifted by.
 
 ```js
 circle.setOrigin(-100, -100);
@@ -987,7 +981,7 @@ circle.getPosition(); // [50, 50]
 circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
 ```
 
-在下面的[示例](/zh/examples/scenegraph#origin)中，我们创建了一个矩形，它的默认锚点为局部坐标系下包围盒的左上角。如果我们想让它以包围盒中心进行旋转，就需要设置变换中心相对于锚点偏移长宽各一半，即 `[150, 100]`：
+In the following [example](/en/examples/scenegraph#origin), we have created a rectangle whose default anchor point is the upper left corner of the enclosing box in the local coordinate system. If we want it to rotate at the center of the enclosing box, we need to set the transformation center to be offset by half the length and width relative to the anchor point, i.e., `[150, 100]`.
 
 ```js
 const rect = new Rect({
@@ -997,10 +991,10 @@ const rect = new Rect({
         height: 200,
     },
 });
-rect.setOrigin(150, 100); // 设置旋转与缩放中心为自身包围盒中心点
+rect.setOrigin(150, 100); // Set the rotation and scaling center to the center point of its own bounding box
 ```
 
-例如我们想修改一个圆的变换中心到左上角而非圆心，可以这样做：
+For example, if we want to modify the transformation center of a circle to the upper left corner instead of the center of the circle, we can do so.
 
 ```js
 const circle = new Circle({
@@ -1011,39 +1005,39 @@ const circle = new Circle({
     },
 });
 
-circle.setOrigin(-100, -100); // 相对于锚点（圆心）偏移 [-100, -100]
-// 或者
-circle.style.transformOrigin = 'left top'; // 包围盒左上角
-// 或者
+circle.setOrigin(-100, -100); // Offset relative to anchor point (center of circle) [-100, -100]
+// or
+circle.style.transformOrigin = 'left top';
+// or
 circle.style.transformOrigin = '0px 0px';
-// 或者
+// or
 circle.style.transformOrigin = '0% 0%';
 ```
 
-两者的区别在于 origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
+The difference between the two is that origin is defined relative to the anchor point, while transformOrigin is defined relative to the bounding box.
 
-# 获取包围盒
+# Get Bounding box
 
-基于不同的[包围盒定义](/zh/docs/api/basic/display-object#包围盒)，我们提供了以下获取方法。
+Based on different [bounding box definitions](/en/docs/api/basic/display-object#bounding-box), we provide the following methods to obtain them.
 
 ## getGeometryBounds(): AABB | null
 
-获取基础图形的几何包围盒，除了定义所需的样式属性（例如 Circle 的 r，Rect 的 width/height），它不受其他绘图属性（例如 lineWidth，fitler，shadowBlur 等）影响：
+Gets the geometric bouding box of the base drawing, which is independent of other drawing properties (e.g. [lineWidth](/en/docs/api/basic/display-object#linewidth), [filter](/en/docs/api/basic/display-object#filter), [shadowBlur](/en/docs/api/basic/display-object#shadowblur), etc.), except for defining the required style properties (e.g. r for Circle, width/height for Rect).
 
 ```js
 const circle = new Circle({
     style: {
-        cx: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
-        cy: 100, // 局部坐标系下的坐标不会影响 Geometry Bounds
+        cx: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
+        cy: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
         r: 100,
-        lineWidth: 20, // 样式属性不会影响 Geometry Bounds
-        shadowBlur: 10, // 样式属性不会影响 Geometry Bounds
+        lineWidth: 20, // Style properties do not affect Geometry Bounds
+        shadowBlur: 10, // Style properties do not affect Geometry Bounds
     },
 });
 circle.getGeometryBounds(); // { center: [0, 0], halfExtents: [100, 100] }
 ```
 
-Group 由于没有几何定义，因此会返回 null：
+Group returns null because there is no geometry definition.
 
 ```js
 const group = new Group();
@@ -1052,12 +1046,12 @@ group.getGeometryBounds(); // null
 
 ## getBounds(): AABB | null
 
-合并自身以及子节点在世界坐标系下的 Geometry Bounds。这应当是最常用的计算方式：
+This should be the most common way of calculating the Geometry Bounds of itself and its children in the world coordinate system.
 
 ```js
 const circle = new Circle({
     style: {
-        cx: 100, // 应用世界坐标系下的变换
+        cx: 100, // Applying transformations in the world coordinate system
         cy: 100,
         r: 100,
     },
@@ -1067,15 +1061,15 @@ circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 
 ## getRenderBounds(): AABB | null
 
-合并自身以及子节点在世界坐标系下的 Render Bounds，在 Geometry Bounds 基础上，受以下样式属性影响： lineWidth，shadowBlur，filter：
+Merge the Render Bounds of itself and its children in the world coordinate system, based on the Geometry Bounds, affected by the following style properties: [lineWidth](/en/docs/api/basic/display-object#linewidth), [filter](/en/docs/api/basic/display-object#filter), [shadowBlur](/en/docs/api/basic/display-object#shadowblur), etc.
 
 ```js
 const circle = new Circle({
     style: {
-        cx: 100, // 应用世界坐标系下的变换
+        cx: 100, // Applying transformations in the world coordinate system
         cy: 100,
         r: 100,
-        lineWidth: 20, // 考虑样式属性
+        lineWidth: 20,
     },
 });
 // r + lineWidth / 2
@@ -1084,11 +1078,11 @@ circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
 
 ## getLocalBounds(): AABB | null
 
-getBounds 的唯一区别是在父节点的局部坐标系下计算。
+The only difference in getBounds is that it is calculated under the local coordinate system of the parent node.
 
 ## getBBox(): Rect
 
-兼容 [SVG 同名方法](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox)，计算方式等同于 getBounds，区别仅在于返回值类型不同，后者返回的是 AABB，而该方法返回一个 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect)：
+Compatible with [SVG method of the same name](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox), the calculation is equivalent to getBounds, except that the return value type is different, the latter returns AABB. This method returns a [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect).
 
 ```js
 interface DOMRect {
@@ -1103,45 +1097,45 @@ interface DOMRect {
 
 ## getBoundingClientRect(): DOMRect
 
-获取浏览器坐标系下的 Geometry Bounds，应用世界坐标系下的变换后，再加上画布相对于浏览器的偏移量。
+Get the Geometry Bounds in the browser coordinate system, apply the transformation in the world coordinate system, and then add the offset of the canvas relative to the browser.
 
-# 节点操作
+# Node Operations
 
-在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。基于继承关系，每个 DisplayObject 都拥有 [Node](/zh/docs/api/builtin-objects/node) 和 [Element](/zh/docs/api/builtin-objects/element) 能力。
+In the scene graph, we need to construct parent-child relationships, get parent-child nodes quickly, and sometimes query the list of nodes of a certain type in the subtree. Based on the inheritance relationship, each DisplayObject has [Node](/en/docs/api/builtin-objects/node) and [Element](/en/docs/api/builtin-objects/element) capabilities.
 
-## 简单节点查询
+## Simple Node Query
 
-| 名称            | 属性/方法 | 返回值            | 备注                           |
-| --------------- | --------- | ----------------- | ------------------------------ | ------------------------------------ |
-| parentNode      | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
-| parentElement   | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
-| childNodes      | 属性      | `DisplayObject[]` | 子节点列表                     |
-| children        | 属性      | `DisplayObject[]` | 子节点列表                     |
-| firstChild      | 属性      | `DisplayObject    | null`                          | 返回子节点列表中第一个节点（如有）   |
-| lastChild       | 属性      | `DisplayObject    | null`                          | 返回子节点列表中最后一个节点（如有） |
-| nextSibling     | 属性      | `DisplayObject    | null`                          | 返回后一个兄弟节点（如有）           |
-| previousSibling | 属性      | `DisplayObject    | null`                          | 返回前一个兄弟节点（如有）           |
-| contains        | 方法      | `boolean`         | 子树中是否包含某个节点（入参） |
-| getRootNode     | 方法      | `Node`            | 返回当前节点的根节点           |
-| ownerDocument   | 属性      | `Document`        | 返回画布入口 Document          |
-| isConnected     | 属性      | `boolean`         | 节点是否被添加到画布中         |
-
-## 高级查询
-
-参考 CSS 选择器，我们提供了以下查询方法，查询范围是当前节点的**整棵子树**，并不仅仅是直接的子节点列表，而是所有子孙节点。
-
-| 名称 | 参数 | 返回值 | 备注 |
+| method/property name | method/property | return value | remarks |
 | --- | --- | --- | --- | --- |
-| getElementById | `(id: string)` | `DisplayObject | null` | 通过 `id` 查询子节点 |
-| getElementsByName | `(name: string)` | `DisplayObject[]` | 通过 `name` 查询子节点列表 |
-| getElementsByClassName | `(className: string)` | `DisplayObject[]` | 通过 `className` 查询子节点列表 |
-| getElementsByTagName | `(tagName: string)` | `DisplayObject[]` | 通过 `tagName` 查询子节点列表 |
-| querySelector | `(selector: string)` | `DisplayObject ｜ null` | 查询满足条件的第一个子节点 |
-| querySelectorAll | `(selector: string)` | `DisplayObject[]` | 查询满足条件的所有子节点列表 |
-| find | `(filter: Function)` | `DisplayObject ｜ null` | 查询满足条件的第一个子节点 |
-| findAll | `(filter: Function)` | `DisplayObject[]` | 查询满足条件的所有子节点列表 |
+| parentNode | property | `DisplayObject | null` | Parent node (if any) |
+| parentElement | property | `DisplayObject | null` | Parent node (if any) |
+| childNodes | property | `DisplayObject[]` | Child Node List |
+| children | property | `DisplayObject[]` | Child Node List |
+| firstChild | property | `DisplayObject | null` | Returns the first node in the list of child nodes (if any) |
+| lastChild | property | `DisplayObject | null` | Returns the last node in the list of child nodes (if any) |
+| nextSibling | property | `DisplayObject | null` | Return the next sibling node (if any) |
+| previousSibling | property | `DisplayObject | null` | Return the previous sibling node (if any) |
+| contains | method | `boolean` | Whether the subtree contains a node (entry) |
+| getRootNode | method | `Node` | Returns the root node of the current node |
+| ownerDocument | property | `Document` | Back to the canvas entrance Document |
+| isConnected | property | `boolean` | Whether the node is added to the canvas |
 
-下面我们以上面太阳系的例子，演示如何使用这些查询方法。
+## Advanced Search
+
+Referring to the CSS selector, we provide the following query that looks at the **entire subtree** of the current node, and not just the direct list of children, but all descendant nodes.
+
+| method name | parameters | return value | remarks |
+| --- | --- | --- | --- | --- |
+| getElementById | `(id: string)` | `DisplayObject | null` | Query child nodes by `id` |
+| getElementsByName | `(name: string)` | `DisplayObject[]` | Query the list of child nodes by `name` |
+| getElementsByClassName | `(className: string)` | `DisplayObject[]` | Query the list of child nodes by `className` |
+| getElementsByTagName | `(tagName: string)` | `DisplayObject[]` | Query the list of child nodes by `tagName` |
+| querySelector | `(selector: string)` | `DisplayObject ｜ null` | Query the first child node that satisfies the condition |
+| querySelectorAll | `(selector: string)` | `DisplayObject[]` | Query the list of all child nodes that satisfy the condition |
+| find | `(filter: Function)` | `DisplayObject ｜ null` | Query the first child node that satisfies the condition |
+| findAll | `(filter: Function)` | `DisplayObject[]` | Query the list of all child nodes that satisfy the condition |
+
+We demonstrate how to use these query methods using the above example of the solar system.
 
 ```javascript
 solarSystem.getElementsByName('sun');
@@ -1158,7 +1152,7 @@ solarSystem.querySelectorAll('[r=25]');
 // [moon]
 ```
 
-有时查询条件不好用 CSS 选择器描述，此时可以使用自定义查询方法：find/findAll。它们可以类比成 querySelector/querySelectorAll。不同之处在于前者需要传入一个 filter，例如以下写法等价：
+Sometimes the query criteria are not well described by CSS selectors, so you can use custom query methods: find/findAll. they can be compared to querySelector/querySelectorAll. the difference is that the former requires passing in a filter, for example the following is equivalent.
 
 ```js
 solarSystem.querySelector('[name=sun]');
@@ -1168,58 +1162,58 @@ solarSystem.querySelectorAll('[r=25]');
 solarSystem.findAll((element) => element.style.r === 25);
 ```
 
-## 添加/删除节点
+## Add/Remove Nodes
 
-以下添加/删除节点能力来自继承的 [Element](/zh/docs/api/builtin-objects/element) 基类。
+The following add/remove node capabilities come from the inherited [Element](/en/docs/api/builtin-objects/element) base class.
 
-| 名称 | 参数 | 返回值 | 备注 |
+| method name | parameters | return value | remarks |
 | --- | --- | --- | --- |
-| appendChild | `child: DisplayObject` | `DisplayObject` | 添加子节点，返回添加的节点 |
-| insertBefore | `child: DisplayObject`<br/>`reference?: DisplayObject` | `DisplayObject` | 添加子节点，在某个子节点之前（如有），返回添加的节点 |
-| append | `...nodes: DisplayObject[]` |  | 在当前节点的子节点列表末尾批量添加一组节点 |
-| prepend | `...nodes: DisplayObject[]` |  | 在当前节点的子节点列表头部批量添加一组节点 |
-| after | `...nodes: DisplayObject[]` |  | 在当前节点之后批量添加一些兄弟节点 |
-| before | `...nodes: DisplayObject[]` |  | 在当前节点之前批量添加一些兄弟节点 |
-| removeChild | `child: DisplayObject`<br/>`destroy = true` | `DisplayObject` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
-| removeChildren | `destroy = true` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
-| remove | `destroy = true` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
-| replaceChild | `child: DisplayObject` | `DisplayObject` | 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点 |
-| replaceWith | `...nodes: DisplayObject[]` |  | 在父节点的子节点列表中，用传入的节点列表替换该节点 |
-| replaceChildren | `...nodes: DisplayObject[]` |  | 替换该节点的所有子节点。不传参数时则会清空该节点的所有子节点 |
+| appendChild | `child: DisplayObject` | `DisplayObject` | Adds a child node and returns the added node |
+| insertBefore | `child: DisplayObject` or `reference?: DisplayObject` | `DisplayObject` | Add a child node, before some child node (if any), and return the added node |
+| append | `...nodes: DisplayObject[]` |  | Add a group of nodes in bulk at the end of the child node list of the current node |
+| prepend | `...nodes: DisplayObject[]` |  | Add a group of nodes in bulk to the head of the current node's child node list |
+| after | `...nodes: DisplayObject[]` |  | Add some sibling nodes in bulk after the current node |
+| before | `...nodes: DisplayObject[]` |  | Add some sibling nodes in bulk before the current node |
+| removeChild | `child: DisplayObject` or `destroy = true` | `DisplayObject` | Delete the child node and return the node that was deleted. `destroy` indicates whether to destroy |
+| removeChildren | `destroy = true` |  | Delete all child nodes. `destroy` indicates whether to destroy |
+| remove | `destroy = true` | `DisplayObject` | Remove itself from the parent node (if any), `destroy` indicates whether to destroy |
+| replaceChild | `child: DisplayObject` | `DisplayObject` | Replace a child node of the current node with the specified node, and return the replaced node |
+| replaceWith | `...nodes: DisplayObject[]` |  | In the list of children of the parent node, replace the node with the list of nodes passed in |
+| replaceChildren | `...nodes: DisplayObject[]` |  | Replace all children of the node. If no parameters are passed, all children of the node will be cleared |
 
-从父节点中删除子节点并销毁有以下两种方式：
+There are two ways to remove a child node from a parent node and destroy it.
 
 ```js
 // parent -> child
 parent.removeChild(child);
 
-// 等价于
+// or
 child.remove();
 ```
 
-删除所有子节点有以下三种方式：
+There are three ways to delete all child nodes.
 
 ```js
 parent.removeChildren();
 
-// 等价于
+// or
 [...parent.children].forEach((child) => parent.removeChild(child));
 [...parent.children].forEach((child) => child.remove());
 
-// 等价于
+// or
 parent.replaceChildren();
 ```
 
-在添加/删除节点时有以下注意点：
+The following points are noted when adding/removing nodes.
 
-1. 添加节点时会依次触发 ChildInserted 和 Inserted 事件
-2. 删除节点时会依次触发 Removed 和 ChildRemoved 事件，默认会调用 [destroy](/zh/docs/api/basic/display-object#销毁) 销毁自身。如果只是暂时从场景图中移除，后续还可能继续添加回来，可以使用 `remove(false)`
+1. The ChildInserted and Inserted events are triggered sequentially when a node is added.
+2. Removed and ChildRemoved events will be triggered sequentially, and [destroy](/en/docs/api/basic/display-object#destroy) will be called by default to destroy itself. If the node is only temporarily removed from the scene graph and may be added back later, you can use `remove(false)`.
 
-## 克隆节点
+## Clone node
 
-方法签名为 `cloneNode(deep?: boolean): this`，可选参数为是否需要深拷贝，返回克隆得到的新节点。
+The method signature is `cloneNode(deep?: boolean): this`, with optional arguments for whether a deep copy is needed, and returns the new node obtained by cloning.
 
-在下面的例子中，我们创建了一个圆，设置了它的半径与位置。拷贝得到的新节点拥有同样的样式属性与位置：
+In the following example, we create a circle, set its radius and position. The new node is copied with the same style properties and position.
 
 ```js
 circle.style.r = 20;
@@ -1231,110 +1225,95 @@ clonedCircle.style.r; // 20
 clonedCircle.getPosition(); // [10, 20]
 ```
 
-注意事项：
+Caveats:
 
--   支持深拷贝，即自身以及整棵子树
--   克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
--   与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+-   Deep copy support, i.e. itself and the whole subtree
+-   The cloned node does not retain the parent-child relationship of the original node and needs to be added to the canvas using `appendChild` before it will be rendered
+-   Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original drawing are not copied
 
-在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
+In this [example](/en/examples/scenegraph#clone), we demonstrate the above features.
 
--   可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
--   但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
--   非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+-   The style properties of the original node can be changed at any time, and the copy obtained will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
+-   However, since no event listeners will be copied, only the original node can be dragged
+-   In non-deep copy mode, Text (Drag me Text) is not copied as a child of Circle
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
-## 获取/设置属性值
+## Get/Set attribute values
 
-| 名称         | 参数                         | 返回值 | 备注       |
-| ------------ | ---------------------------- | ------ | ---------- | -------------------- |
-| getAttribute | `(name: string)`             | `null  | any`       | 根据属性名获取属性值 |
-| setAttribute | `(name: string, value: any)` | 无     | 设置属性值 |
+| method name  | parameters                   | return values | remarks             |
+| ------------ | ---------------------------- | ------------- | ------------------- | ------------------------------------------- |
+| getAttribute | `(name: string)`             | `null         | any`                | Get attribute value based on attribute name |
+| setAttribute | `(name: string, value: any)` | -             | Set attribute value |
 
-⚠️ 兼容旧版 `attr(name: string, value?: any)`，获取以及设置属性值。
+⚠️ Compatible with the old `attr(name: string, value?: any)`, get and set attribute values.
 
-⚠️ 兼容 [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)，因此可以使用以下方法：
+⚠️ Compatible with [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style):
 
 -   style.[getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue)
 -   style.[setProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty)
 -   style.[removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
 
-以下用法等价：
+The following usage equivalents.
 
 ```js
 const circle = new Circle({
     style: {
-        // 或者使用 attrs
+        // or using attrs
         r: 10,
         fill: 'red',
     },
 });
 
-// 获取属性值
+// get attribute value
 circle.getAttribute('fill'); // red
 circle.attr('fill'); // red
 circle.style.fill; // red
 circle.style.getPropertyValue('fill');
 
-// 设置属性值
+// set attribute value
 circle.setAttribute('r', 20);
 circle.attr('r', 20);
 circle.style.r = 20;
 circle.style.setProperty('r', 20);
 ```
 
-## 获取解析后的属性值
+## Get the parsed attribute value
 
-部分属性例如 [Rect](/zh/docs/api/basic/rect) 的 width / height 是支持单位的，如果想获取计算后的值，可以使用 `parsedStyle`：
+Some properties such as [Rect](/en/docs/api/basic/rect) support units for width / height, if you want to get the [calculated value](/en/docs/api/css/css-typed-om#cssunitvalue), you can use `parsedStyle`.
 
 ```js
 rect.style.width = '100px';
-rect.parsedStyle.width; // { unit: 'px', value: 100 }
+rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
-返回的 `ParsedElement` 格式如下：
-
-```js
-// 长度单位
-export type LengthUnit = 'px' | '%' | 'em';
-// 角度单位
-export type AngleUnit = 'deg' | 'rad' | 'turn';
-export type Unit = LengthUnit | AngleUnit | '';
-
-export interface ParsedElement {
-    unit: Unit;
-    value: number;
-}
-```
-
-需要注意的是，目前在使用[动画](/zh/docs/api/animation)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/zh/examples/animation#onframe)：
+Note that currently, when using [animation](/en/docs/api/animation), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation#onframe).
 
 ```js
 animation.onframe = () => {
     rect.style.width; // '100px'
-    rect.parsedStyle.width; // { unit: 'px', value: 100 }
+    rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 };
 ```
 
-## 销毁
+## Destroy
 
-调用 `destroy()` 将销毁节点。被销毁的节点将无法被再次加入画布渲染。通过 [destroyed](/zh/docs/api/basic/display-object#destroyed) 属性可以判断一个节点是否已经被销毁。
+Calling `destroy()` will destroy the node. Destroyed nodes will not be added to the canvas rendering again. The [destroyed](/en/docs/api/basic/display-object#destroyed) attribute allows you to determine if a node has been destroyed.
 
 ```js
 circle.destroy();
 ```
 
-在调用用该方法时，会依次执行以下操作：
+When this method is invoked, the following actions are performed in sequence.
 
-1. 触发 Destroy 事件
-2. 调用 `remove()` 将自身从场景图中移除，因此会触发 Removed 和 ChildRemoved 事件
-3. 移除该节点上的所有事件监听器
-4. 将 [destroyed](/zh/docs/api/basic/display-object#destroyed) 标志置为 true
+1. Trigger Destroy event
+2. Call `remove()` to remove itself from the scene graph, so it will trigger the Removed and ChildRemoved events
+3. Remove all event listeners and animations on this node
+4. Set the [destroyed](/en/docs/api/basic/display-object#destroyed) flag to true
 
-## 状态
+## Status
 
-通过以下属性可以判断图形当前的状态，例如是否被加入到画布中，是否已经被销毁等。
+The following properties allow you to determine the current state of the drawing, such as whether it has been added to the canvas, whether it has been destroyed, etc.
 
 ### isConnected
 
@@ -1350,7 +1329,7 @@ circle.isConnected; // true
 
 ### ownerDocument
 
-指向画布的入口 Document。如果还未加入到画布中，返回 null。
+Used to determine if a drawing has been added to the canvas.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
 
@@ -1362,9 +1341,9 @@ circle.ownerDocument; // canvas.document
 
 ### destroyed
 
-用于判断一个图形是否已经被销毁。
+Used to determine if a graph has been destroyed.
 
-通过调用 `destroy()` 主动销毁自身，或者父节点通过 `removeChildren()` 主动移除并销毁所有子节点等：
+By calling `destroy()` to actively destroy itself, or the parent node by `removeChildren()` to actively remove and destroy all children, etc.
 
 ```js
 circle.destroyed; // false
@@ -1372,16 +1351,16 @@ circle.destroy();
 circle.destroyed; // true
 ```
 
-## 生命周期事件监听
+## Lifecycle Event Listening
 
-在[事件系统](/zh/docs/api/event)中，我们可以使用类似 DOM Event API 的方式给添加到画布中的节点增加事件监听器。
+In the [event system](/en/docs/api/event), we can add event listeners to nodes added to the canvas using a DOM Event API-like approach.
 
-除了例如 click、mouseenter 这样的交互事件，我们还提供了一系列内置的节点生命周期事件，例如可以监听节点的添加和删除事件，这些事件同样有完整的传播路径（冒泡、捕获），[示例](/zh/examples/event#builtin)：
+In addition to interactive events such as click and mouseenter, we also provide a series of built-in node lifecycle events, such as listening for node additions and deletions, which also have full propagation paths (bubbling, capturing), [example](/en/examples/event#builtin).
 
 ```js
 import { ElementEvent, MutationEvent } from '@antv/g';
 
-// 监听子节点添加事件
+// Listening for child node add events
 parent.on(ElementEvent.CHILD_INSERTED, (e) => {
     e.target; // parent
     e.detail.child; // child
@@ -1400,35 +1379,35 @@ child.on(ElementEvent.REMOVED, (e) => {
 });
 child.on(ElementEvent.ATTR_MODIFIED, (e) => {
     e.target; // child
-    e.attrName; // 属性名
-    e.prevValue; // 旧值
-    e.newValue; // 新值
+    e.attrName;
+    e.prevValue;
+    e.newValue;
 });
 
 parent.appendChild(child);
 ```
 
-目前我们支持如下场景图相关事件：
+We currently support the following scenario map related events.
 
--   CHILD_INSERTED 作为父节点有子节点添加时触发
--   INSERTED 作为子节点被添加时触发
--   CHILD_REMOVED 作为父节点有子节点移除时触发
--   REMOVED 作为子节点被移除时触发
--   MOUNTED 首次进入画布时触发
--   UNMOUNTED 从画布中移除时触发
--   ATTR_MODIFIED 修改属性时触发
--   DESTROY 销毁时触发
+-   `CHILD_INSERTED` Triggered when a child node is added as a parent
+-   `INSERTED` Triggered when added as a child node
+-   `CHILD_REMOVED` Triggered when a parent node is removed as a child node
+-   `REMOVED` Triggered when removed as a child node
+-   `MOUNTED` Triggered when first entering the canvas
+-   `UNMOUNTED` Triggered when removed from the canvas
+-   `ATTR_MODIFIED` Triggered when modifying properties
+-   `DESTROY` Triggered on destruction
 
-# 可见性与渲染次序
+# Visibility and rendering order
 
-## 隐藏/显示
+## Hide/Show
 
-| 名称 | 参数 | 返回值 | 备注     |
-| ---- | ---- | ------ | -------- |
-| hide | 无   | 无     | 隐藏节点 |
-| show | 无   | 无     | 展示节点 |
+| method name | parameters | return value | remarks    |
+| ----------- | ---------- | ------------ | ---------- |
+| hide        | -          | -            | Hide Nodes |
+| show        | -          | -            | Show Nodes |
 
-另外我们也可以通过 `visibility` 属性控制：
+Alternatively, we can control this with the `visibility` property.
 
 ```javascript
 const group = new Group();
@@ -1440,24 +1419,24 @@ group.show();
 // or group.setAttribute('visibility', 'visible');
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'visible' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
+| 'visible' | all | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-关于可见性有两点需要注意：
+There are two points to note about visibility.
 
-1. 当图形隐藏时不会被拾取
-2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移出元素，应该使用 [removeChild](/zh/docs/api/basic/display-object#添加删除节点)
+1. Not picked up when graphics are hidden
+2. Hidden elements still need to participate in enclosing box operations, i.e. they still occupy space. If you want to remove the element completely, you should use [removeChild](/en/docs/api/basic/display-object#addremove-nodes)
 
-## 渲染次序
+## Rendering Order
 
-类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：
+Similar to CSS, we can control the rendering order through the [zIndex](/zh/docs/api/basic/display-object#zindex) property.
 
-| 名称      | 参数     | 返回值 | 备注          |
-| --------- | -------- | ------ | ------------- |
-| setZIndex | `number` | 无     | 设置 `zIndex` |
-| toFront   | 无       | 无     | 置顶          |
-| toBack    | 无       | 无     | 置底          |
+| method name | parameters | return value | remarks      |
+| ----------- | ---------- | ------------ | ------------ |
+| setZIndex   | `number`   | -            | set `zIndex` |
+| toFront     | -          | -            |              |
+| toBack      | -          | -            |              |
 
 ```javascript
 const group = new Group();
@@ -1467,9 +1446,9 @@ group.setZIndex(100);
 // or group.style.zIndex = 100;
 ```
 
-# 动画
+# Animation
 
-参考 Web Animation API，可以使用 animate 完成 keyframe 动画，下面是一个 ScaleIn 动画效果：
+Referring to the Web Animation API, you can use animate to complete the keyframe animation, the following is a ScaleIn animation effect.
 
 ```js
 circle.animate(
@@ -1489,4 +1468,4 @@ circle.animate(
 );
 ```
 
-更多用法详见[动画系统](/zh/docs/api/animation)
+See [animation system](/en/docs/api/animation) for more details on usage.

@@ -27,7 +27,7 @@ import { isUndefined } from '@antv/g';
 
 ## isFunction
 
-判断是否为 `number`
+判断是否为 `Function`
 
 ## isBoolean
 

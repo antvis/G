@@ -165,6 +165,21 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     });
 
+    const renderByZIndex = (object: DisplayObject) => {
+      if (object.isVisible() && !object.isCulled()) {
+        this.renderDisplayObject(object, renderingService);
+        // if we did a full screen rendering last frame
+        this.saveDirtyAABB(object);
+      }
+
+      // should account for z-index
+      if (object.sortable.sorted && object.sortable.sorted.length) {
+        object.sortable.sorted.forEach((child: DisplayObject) => {
+          renderByZIndex(child);
+        });
+      }
+    };
+
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
@@ -172,13 +187,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.multiply(this.vpMatrix, this.dprMatrix, this.camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
-        this.renderingContext.root.forEach((object: DisplayObject) => {
-          if (object.isVisible() && !object.isCulled()) {
-            this.renderDisplayObject(object, renderingService);
-            // if we did a full screen rendering last frame
-            this.saveDirtyAABB(object);
-          }
-        });
+        renderByZIndex(this.renderingContext.root);
       } else {
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(

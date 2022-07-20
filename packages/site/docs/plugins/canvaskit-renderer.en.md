@@ -3,20 +3,20 @@ title: g-plugin-canvaskit-renderer
 order: 3
 ---
 
-使用 [Skia](https://skia.org/docs/user/api/) 绘制 2D 图形。在运行时异步加载 WASM 格式的 [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit)，将 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 封装成 `SkSurface` ，进而通过页面上的 `<canvas>` 元素进行绘制。
+Use [Skia](https://skia.org/docs/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](https://developer .mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
 
-Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lottie 动画](https://skia.org/docs/user/modules/skottie/)等。除了 Chrome 和 Android，一些跨平台的方案例如 [Flutter](https://docs.flutter.dev/resources/architectural-overview)、[Weex](https://github.com/alibaba/weex) 中也使用了它作为底层渲染引擎。
+Skia offers more features than the Canvas2D API, such as text paragraph layout, [Lottie animation](https://skia.org/docs/user/modules/skottie/), and more. In addition to Chrome and Android, some cross-platform solutions such as [Flutter](https://docs.flutter.dev/resources/architectural-overview), [Weex](https://github.com/alibaba/) weex) also use it as the underlying rendering engine.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-# 安装方式
+# Usage
 
-`g-canvaskit` 渲染器默认内置，因此无需手动引入。
+The [g-canvaskit](/en/docs/api/renderer/canvaskit) renderer is built-in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-// 创建 CanvasKit 渲染器，其中内置了该插件
+// Create the CanvasKit renderer, which has the plugin built in
 const canvaskitRenderer = new CanvaskitRenderer();
 ```
 
@@ -24,35 +24,33 @@ const canvaskitRenderer = new CanvaskitRenderer();
 
 ## playAnimation
 
-[Lottie](https://airbnb.design/introducing-lottie/) 动画通过 After Effects 的 [Bodymovin](https://github.com/bodymovin/bodymovin) 插件创建，导出成 JSON 格式。
+The [Lottie](https://airbnb.design/introducing-lottie/) animation was created with the [Bodymovin](https://github.com/bodymovin/bodymovin) plugin for After Effects and exported to JSON format.
 
-完整方法签名如下，其中包含以下参数：
+The full method signature is as follows, which contains the following parameters.
 
--   name 动画名称，必填
--   jsonStr JSON 格式的 Lottie 描述文件，必填
--   bounds 展示区域，接受的数据格式为 `[left, top, width, height]`，可选。不填写会尝试使用描述文件中定义的大小，即 `[0, 0, width, height]`
--   assets 额外的资源文件，可选。
+-   name Animation name, required
+-   jsonStr Lottie description file in JSON format, required
+-   bounds The display area, which accepts data in the format `[left, top, width, height]`, is optional. Not filled will try to use the size defined in the description file, i.e. `[0, 0, width, height]`
+-   assets Additional resource files, optional
 
-返回一个 `ManagedSkottieAnimation` 对象
+Returns a `ManagedSkottieAnimation` object
 
 ```js
 playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any): ManagedSkottieAnimation;
 ```
 
-首先创建渲染器并通过 [getPlugin](/zh/docs/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer]() 插件：
+First create the renderer and get the g-plugin-canvaskit-renderer via [getPlugin](/en/docs/api/renderer/renderer#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
 
-// 创建渲染器
 const canvaskitRenderer = new Renderer({
     wasmDir: '/',
 });
-// 获取渲染插件
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-然后等待画布初始化完成，并加载 Lottie 动画描述文件：
+Then wait for the canvas initialization to complete and load the Lottie animation description file.
 
 ```js
 (async () => {
@@ -67,7 +65,7 @@ const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 })();
 ```
 
-如果想移除动画，可以在返回的动画对象上调用 `delete()` 方法：
+If you want to remove the animation, you can call the `delete()` method on the returned animation object.
 
 ```js
 animation.delete();
@@ -75,28 +73,26 @@ animation.delete();
 
 ## createParticles
 
-例如烟火、火焰等粒子特效需要生成大量“粒子”并应用动画，通常在 GPU 中通过 Shader 编程实现，例如用以改变每个粒子位置的插值计算，应当放在 GPU 而非在 CPU 中完成。
+For example, particle effects such as fireworks, flames, etc. require generating and animating a large number of "particles", which are usually programmed in the GPU through the shader, e.g. interpolation calculations to change the position of each particle should be done in the GPU instead of the CPU.
 
-CanvasKit 提供了基于 Skia 的编程语言 [SkSL(Skia’s shading language)](https://skia.org/docs/user/sksl/) 实现，语法上十分接近 GLSL，在 Shader 中用以控制粒子的生成以及动画，对于没接触过 Shader 编程的开发者存在一定门槛。
+CanvasKit provides a Skia-based programming language [SkSL(Skia's shading language)](https://skia.org/docs/user/sksl/) implementation, which is syntactically very close to GLSL and is used in the shader to control particle generation and animation. and animation in the shader, which is a certain threshold for developers who have not been exposed to shader programming.
 
-在该[示例](/zh/examples/plugins#canvaskit-particles)中，我们实现了一些粒子特效：
+In this [example](/en/examples/plugins#canvaskit-particles), we have implemented some particle effects.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-首先创建渲染器并通过 [getPlugin](/zh/docs/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 插件：
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/docs/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/docs/plugins/canvaskit-renderer).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
 
-// 创建渲染器
 const canvaskitRenderer = new Renderer({
     wasmDir: '/',
 });
-// 获取渲染插件
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-然后调用插件的 [createParticles](/zh/docs/plugins/canvaskit-renderer#createparticles) 创建粒子效果，在每一帧的回调函数中对画布进行变换以调整粒子的位置，最后通过 [start]() 开始生成粒子：
+Then call the plugin's [createParticles](/en/docs/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {
@@ -105,11 +101,11 @@ const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {
 textParticles.start(Date.now() / 1000.0, true);
 ```
 
-最后我们来看关键的粒子效果定义：
+Finally, let's look at the key particle effect definitions.
 
--   MaxCount 粒子数目
--   Drawable 粒子的类型，通常使用 `'SkCircleDrawable'` 即可，可以修改大小
--   Code SkSL 代码，用以控制粒子的生命周期，例如每一帧中位置和颜色应该如何改变
+-   MaxCount
+-   Drawable The type of particle, usually `'SkCircleDrawable'`, can be modified in size
+-   Code SkSL code to control the life cycle of the particles, such as how the position and color should change in each frame
 -   Bindings
 
 ```js
@@ -151,7 +147,7 @@ const text = {
 };
 ```
 
-如果想移除粒子效果，可以在返回的对象上调用 `delete()` 方法：
+If you want to remove the particle effect, you can call the `delete()` method on the returned object.
 
 ```js
 particles.delete();

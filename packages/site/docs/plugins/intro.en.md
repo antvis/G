@@ -1,132 +1,122 @@
 ---
-title: 插件系统介绍
+title: Introduction to the plug-in system
 order: -100
 redirect_from:
-    - /zh/docs/plugins
+    - /en/docs/plugins
 ---
 
-# 插件集
+# Set of plug-ins
 
--   渲染相关
-    -   [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-    -   [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 基于 CanvasKit / Skia 渲染 2D 图形
-    -   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
-    -   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 WebGPU / WebGL 渲染 2D 图形
-    -   [g-plugin-html-renderer](/zh/docs/plugins/html-renderer) 渲染 DOM 元素
-    -   [g-plugin-3d](/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
-    -   [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 基于 rough.js 和 Canvas2D 渲染手绘风格图形
-    -   [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) 基于 rough.js 和 SVG 渲染手绘风格图形
--   拾取
-    -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于 Canvas2D
-    -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 SVG
--   无障碍
-    -   [g-plugin-a11y](/zh/docs/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
--   交互
-    -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
-    -   [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 基于 PointerEvents 实现拖放功能
-    -   [g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互
--   物理引擎
-    -   [g-plugin-box2d](/zh/docs/plugins/box2d) 基于 Box2D
-    -   [g-plugin-matterjs](/zh/docs/plugins/matterjs) 基于 matter.js
-    -   [g-plugin-physx](/zh/docs/plugins/physx) 基于 PhysX
--   布局引擎
-    -   [g-plugin-yoga](/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+Extensible plug-in mechanism and rich set of plug-ins：
+
+-   Rendering Related
+    -   [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+    -   [g-plugin-svg-renderer](/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+    -   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
+    -   [g-plugin-html-renderer](/en/docs/plugins/html-renderer) Rendering DOM with HTML.
+    -   [g-plugin-3d](/en/docs/plugins/3d) Extended 3D capabilities.
+    -   [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
+    -   [g-plugin-rough-svg-renderer](/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
+    -   [g-plugin-canvaskit-renderer](/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+-   Picking
+    -   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+    -   [g-plugin-svg-picker](/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
+-   Interaction
+    -   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
+    -   [g-plugin-control](/en/docs/plugins/control) Provides camera interaction for 3D scenes.
+    -   [g-plugin-dragndrop](/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+-   Physics Engine
+    -   [g-plugin-box2d](/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
+    -   [g-plugin-matterjs](/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+    -   [g-plugin-physx](/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+-   Layout Engine
+    -   [g-plugin-yoga](/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
 -   GPGPU
-    -   [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
--   CSS 选择器
-    -   [g-plugin-css-select](/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+    -   [g-plugin-gpgpu](/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+-   CSS Selector
+    -   [g-plugin-css-select](/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
+-   A11y
+    -   [g-plugin-a11y](/en/docs/plugins/a11y) Provides accessibility features.
 
-# 与渲染器的关系
+# Relationship with Renderer
 
-`g-canvas/svg/webgl` 这些渲染器本质上是由一组插件组成，通过插件也可以扩展它们的能力：
+These [renderers](/en/docs/api/renderer/renderer) essentially consist of a set of plug-ins through which their capabilities can also be extended.
 
 ```js
-// 渲染器注册插件
 renderer.registerPlugin(new Plugin());
 ```
 
-在命名方式上，所有的插件名都以 `g-plugin-` 开头。下面我们通过对于 `g-plugin-canvas-renderer` 这个使用 Canvas2D 渲染的插件分析，深入了解一下插件的结构，它也是 `g-canvas` 的核心插件之一。
+In terms of naming convention, all plugin names start with `g-plugin-`. Let's take a deeper look into the structure of the plugin by analyzing `g-plugin-canvas-renderer`, which uses Canvas2D rendering and is one of the core plugins of `g-canvas`.
 
-# 基本结构
+# Basic Structure
+
+https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
 
 ## package.json
 
-从 `package.json` 的 `peerDependencies` 可以看出，一个插件的最核心依赖有两个：
-
--   `@antv/g` G 的核心层，包含了画布、基础图形、事件等核心对象
--   `mana-syringe` 一个依赖注入库，我们用它定义模块，完成核心依赖的注入
+As you can see from the `peerDependencies` of `package.json`, the most core dependency of a plugin is `@antv/g`, the core layer of G, which contains core objects such as dependency injection, canvas, base graphics, events, etc.
 
 ```json
 "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g": "^5.0.1"
 },
 ```
 
 ## index.js
 
-打开插件的入口文件，我们可以发现一个实现了 `RendererPlugin` 接口的插件只需要实现两个方法：
+Opening the plugin's entry file, we can find that a plugin that inherits from `AbstractRendererPlugin` needs to implement two methods.
 
--   `init` 在容器中加载模块
--   `destroy` 在容器中卸载模块
+-   `init` Loading modules in containers
+-   `destroy` Unloading modules in containers
 
 ```js
-import { RendererPlugin } from '@antv/g';
-import { Syringe, Module } from 'mana-syringe';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { DOMInteractionPlugin } from './DOMInteractionPlugin';
 
-// 定义该插件的模块
+// Define the module for this plugin
 const containerModule = Module((register) => {
     register(ImagePool);
-    // ...省略注册其他依赖
+    // ...Omit registration of other dependencies
     register(CanvasRendererPlugin);
     register(LoadImagePlugin);
 });
 
-export class Plugin implements RendererPlugin {
-    init(container: Syringe.Container): void {
-        // 加载模块
-        container.load(containerModule, true);
+export class Plugin extends AbstractRendererPlugin {
+    name = 'canvas-renderer';
+    init(): void {
+        this.container.load(containerModule, true);
     }
-    destroy(container: Syringe.Container): void {
-        // 卸载模块
-        // 注：mana-syringe 实现 unload 之后就不需要手动一个个移除依赖了
-        container.remove(ImagePool);
-        container.remove(RBushRoot);
-        container.remove(DefaultRenderer);
+    destroy(): void {
+        this.container.unload(containerModule);
     }
 }
 ```
 
-在模块中我们可以通过 `register` 向当前容器（每个画布拥有一个）或者全局容器（所有画布共享）中注册依赖。也可以向核心层定义的扩展点（马上就会看到）上挂载。
+In the module we can register dependencies with the current container (one per canvas) or the global container (shared by all canvases) via `register`. It is also possible to mount it to an extension point defined in the core layer (which you will see shortly).
 
-这里我们注册了一个 `CanvasRendererPlugin`，让我们继续深入看看。
+Here we have registered a `CanvasRendererPlugin`, let's go ahead and take a deeper look.
 
 ## CanvasRendererPlugin
 
-通过 `mana-syringe` 提供的 `inject` 可以获取我们关心的对象，例如创建画布时的原始配置、默认相机、上下文等服务，注入依赖由容器完成。
+The `inject` provided by `mana-syringe` allows us to get objects we care about, such as the original configuration when creating the canvas, the default camera, the context, and other services, with the injection of dependencies done by the container.
 
-同时我们也在 `RenderingPluginContribution` 这个 G 核心层提供的扩展点上注册了自己，这样在核心层渲染服务运行时就会调用包含它在内的一组渲染服务插件。
+We also register ourselves with `RenderingPluginContribution`, an extension point provided by the G core layer, so that a set of rendering service plugins containing it are called when the core layer rendering service runs.
 
 ```js
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from '@antv/g';
 
-// 实现扩展点
+// Realization of extension points
 @singleton({ contrib: RenderingPluginContribution })
 export class CanvasRendererPlugin implements RenderingPlugin {
-    // 画布配置
     @inject(CanvasConfig)
     private canvasConfig: CanvasConfig;
 
-    // 默认相机
     @inject(DefaultCamera)
     private camera: Camera;
 
-    // 上下文服务
     @inject(ContextService)
     private contextService: ContextService<CanvasRenderingContext2D>;
 
-    // 场景图服务
     @inject(SceneGraphService)
     private sceneGraphService: SceneGraphService;
 
@@ -136,21 +126,20 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 }
 ```
 
-接下来就可以通过渲染服务提供的一系列 `hooks` 选择适当的执行时机，例如在渲染服务初始化时处理下 DPR：
+The next step is to select the appropriate execution timing through a series of `hooks` provided by the rendering service, e.g. to process the next DPR when the rendering service is initialized.
 
 ```js
-//
 apply(renderingService: RenderingService) {
-    // 当渲染服务初始化时...
+    // When the rendering service is initialized...
     renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
-        // 使用容器注入的上下文服务
+        // Contextual services using container injection
         const context = this.contextService.getContext();
         const dpr = this.contextService.getDPR();
         // scale all drawing operations by the dpr
         // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
         context && context.scale(dpr, dpr);
 
-        // 使用容器注入的渲染上下文服务
+        // Rendering Context Service with Container Injection
         this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
         this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
         this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
@@ -158,8 +147,8 @@ apply(renderingService: RenderingService) {
 }
 ```
 
-所有插件都遵循以上的结构实现。
+All plugins follow the above structure implementation.
 
-# 插件之间的关系
+# Relationship between plug-ins
 
-插件之间也会存在依赖关系，例如 `g-plugin-gpgpu` 就依赖 `g-plugin-device-renderer`。在独立构建 UMD 时需要排除掉依赖，详见[构建说明]()。
+There are also dependencies between plugins, for example [g-plugin-gpgpu](/en/docs/plugins/gpgpu) depends on [g-plugin-device-renderer](/en/docs/plugins/device-renderer). You need to exclude dependencies when building UMD independently, see [build instructions]() for details.

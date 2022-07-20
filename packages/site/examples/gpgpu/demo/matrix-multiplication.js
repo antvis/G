@@ -34,8 +34,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const kernel = new Kernel(device, {
     computeShader: `
   struct Matrix {
-    size : vec2<f32>;
-    numbers: array<f32>;
+    size : vec2<f32>,
+    numbers: array<f32>,
   };
   
   @group(0) @binding(0) var<storage, read> firstMatrix : Matrix;
