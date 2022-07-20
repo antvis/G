@@ -1,6 +1,7 @@
 import type { FederatedEvent } from '@antv/g';
 import type { DrawerTool } from '../constants/enum';
 import type { AnnotationType, Point } from './annotation';
+import EventEmitter from 'eventemitter3';
 
 export interface DrawerState {
   type: AnnotationType;
@@ -9,36 +10,31 @@ export interface DrawerState {
   id: string;
 }
 
-export interface DrawerOption {
-  onStart?: Function;
-  onChange?: Function;
-  onComplete?: Function;
-  onCancel?: Function;
-}
+export interface DrawerOption {}
 
-export abstract class BaseDrawer {
+export abstract class BaseDrawer extends EventEmitter {
+  /** 当前标注的id */
   id: string | undefined;
+  /** 标注类型 */
   abstract type: DrawerTool;
-  isDrawing: boolean = false;
-  isActive: boolean = false;
-  path: Point[] = [];
+  /** 构造参数 */
   drawerOptions: DrawerOption;
-  onStart: Function = () => {};
-  onChange: Function = () => {};
-  onComplete: Function = () => {};
-  onCancel: Function = () => {};
+  /** 是否正在绘制 */
+  isDrawing: boolean = false;
+  /** 绘制激活 */
+  isActive: boolean = true;
+  /** 绘制路径 */
+  path: Point[] = [];
+  /** 标签 */
+  tag: string;
 
   constructor(drawerOptions: DrawerOption) {
+    super();
     this.drawerOptions = drawerOptions;
-    this.assignEvents();
   }
 
-  private assignEvents() {
-    Object.entries(this.drawerOptions).forEach(([key, fn]) => {
-      if (typeof fn === 'function') {
-        this[key] = fn;
-      }
-    });
+  public addEventListener(eventName: string, fn: (...args: any[]) => void) {
+    return this.on(eventName, fn);
   }
 
   abstract onMouseDown(e: FederatedEvent): void;
@@ -51,5 +47,9 @@ export abstract class BaseDrawer {
     this.id = undefined;
     this.isDrawing = false;
     this.path = [];
+  }
+
+  dispose() {
+    this.reset();
   }
 }

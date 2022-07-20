@@ -27,6 +27,7 @@ import { PolylineDrawer } from './drawers/polyline';
 import { CircleDrawer } from './drawers/circle';
 import { RectDrawer } from './drawers/rect';
 import type { BaseDrawer } from './interface/drawer';
+import { EventEmitter } from 'eventemitter3';
 
 /**
  * make shape selectable:
@@ -57,8 +58,9 @@ export class AnnotationPlugin implements RenderingPlugin {
   private undoStack: Annotation[] = [];
   private redoStack: Annotation[] = [];
   private hotkeyActive: boolean = false;
-  private drawer: BaseDrawer;
-  private canvas: Canvas;
+  public drawer: BaseDrawer;
+  public emmiter = new EventEmitter();
+  public canvas: Canvas;
 
   /**
    *
@@ -70,36 +72,11 @@ export class AnnotationPlugin implements RenderingPlugin {
   }
 
   /**
-   * 绘制标注
-   * @param anno
-   */
-  private renderAnnotation(anno: Annotation) {
-    console.log(anno);
-    this.cancelAnnotation(anno.id);
-
-    if (anno.type === 'circle') {
-      renderCircle(this, anno);
-    }
-    if (anno.type === 'rect') {
-      renderRect(this, anno);
-    }
-
-    if (anno.type === 'polygon') {
-      renderPolygon(this, anno);
-    }
-
-    if (anno.type === 'polyline') {
-      renderPolyline(this, anno);
-    }
-  }
-
-  /**
    * 取消标注（仅从画布移除）
    * @param id
    */
   private cancelAnnotation(id: string) {
     const annos = this.getAnnotationObjects(id);
-    console.log({ annos });
     annos.forEach((anno) => anno.remove());
   }
 
@@ -124,6 +101,75 @@ export class AnnotationPlugin implements RenderingPlugin {
   }
 
   /**
+   * 绘制标注
+   * @param anno
+   */
+  public renderAnnotation(anno: Annotation) {
+    this.cancelAnnotation(anno.id);
+    if (anno.type === 'circle') {
+      renderCircle(this, anno);
+    }
+    if (anno.type === 'rect') {
+      renderRect(this, anno);
+    }
+
+    if (anno.type === 'polygon') {
+      renderPolygon(this, anno);
+    }
+
+    if (anno.type === 'polyline') {
+      renderPolyline(this, anno);
+    }
+    console.log('all', this.canvas.document.childNodes);
+  }
+
+  /**
+   * 获取激活的标注
+   * @returns active anno
+   */
+  getActiveAnnotation = () => {
+    return this.annotations.find((anno) => anno.isActive);
+  };
+
+  /**
+   * 激活标注
+   * @param id
+   */
+  setActiveAnnotation = (id: string) => {
+    console.log('setActiveAnnotation', this.annotations, id);
+    this.annotations.forEach((anno, index) => {
+      if (anno.isActive) {
+        anno.isActive = false;
+        this.renderAnnotation(anno);
+        this.emmiter.emit('annotation:deactive', anno);
+      }
+      if (anno.id === id) {
+        this.annotations[index].isActive = true;
+        this.renderAnnotation(this.annotations[index]);
+        this.emmiter.emit('annotation:active', anno);
+      }
+    });
+  };
+
+  hoverAnnotation = (id: string) => {
+    this.annotations.forEach((anno, index) => {
+      if (anno.id === id) {
+        this.annotations[index].isHover = true;
+        this.renderAnnotation(this.annotations[index]);
+      }
+    });
+  };
+
+  unHoverAnnotation = (id: string) => {
+    this.annotations.forEach((anno, index) => {
+      if (anno.id === id) {
+        this.annotations[index].isHover = false;
+        this.renderAnnotation(this.annotations[index]);
+      }
+    });
+  };
+
+  /**
    * 新增标注
    * @param annotation
    */
@@ -132,6 +178,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.undoStack.push(annotation);
     this.annotations.push(annotation);
     this.annotationPluginOptions.onAdd?.(annotation);
+    this.emmiter.emit('annotation:create', annotation);
   }
 
   /**
@@ -143,6 +190,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.annotations = this.annotations.filter((anno) => anno.id !== id);
     this.annotationPluginOptions.onDelete?.(id);
     this.cancelAnnotation(id);
+    this.emmiter.emit('annotation:delete', id);
   }
 
   /**
@@ -184,51 +232,70 @@ export class AnnotationPlugin implements RenderingPlugin {
    * @returns
    */
   setDrawer(tool: DrawerTool, options) {
-    let activeTool;
-    const drawerOptons = {
-      onStart: (toolstate: any) => {
-        this.renderAnnotation(toolstate);
-      },
-      onChange: (toolstate: any) => {
-        this.renderAnnotation(toolstate);
-      },
-      onComplete: (toolstate: any) => {
-        this.createAnnotation(toolstate);
-      },
-      onCancel: (toolstate: any) => {
-        this.cancelAnnotation(toolstate.id);
-      },
-    };
+    let activeDrawer;
     switch (tool) {
       case DrawerTool.Circle:
-        activeTool = new CircleDrawer({
-          ...drawerOptons,
-          ...options,
-        });
+        activeDrawer = new CircleDrawer(options);
         break;
       case DrawerTool.Rect:
-        activeTool = new RectDrawer({
-          ...drawerOptons,
-          ...options,
-        });
+        activeDrawer = new RectDrawer(options);
         break;
       case DrawerTool.Polygon:
-        activeTool = new PolygonDrawer({
-          ...drawerOptons,
-          ...options,
-        });
+        activeDrawer = new PolygonDrawer(options);
         break;
       case DrawerTool.Polyline:
-        activeTool = new PolylineDrawer({
-          ...drawerOptons,
-          ...options,
-        });
+        activeDrawer = new PolylineDrawer(options);
         break;
       default:
         break;
     }
-    this.drawer = activeTool;
-    return activeTool;
+
+    const onStart = (toolstate: any) => {
+      this.renderAnnotation(toolstate);
+    };
+    const onModify = (toolstate: any) => {
+      this.renderAnnotation(toolstate);
+    };
+    const onComplete = (toolstate: any) => {
+      this.createAnnotation(toolstate);
+    };
+    const onCancel = (toolstate: any) => {
+      this.cancelAnnotation(toolstate.id);
+    };
+
+    /** 监听绘制事件 */
+    activeDrawer.addEventListener('draw:start', onStart);
+    activeDrawer.addEventListener('draw:modify', onModify);
+    activeDrawer.addEventListener('draw:complete', onComplete);
+    activeDrawer.addEventListener('draw:cancel', onCancel);
+
+    if (this.drawer) this.drawer.dispose();
+
+    /**  */
+    this.drawer = activeDrawer;
+    this.emmiter.emit('drawer:enable', activeDrawer);
+    // todo
+    this.canvas.setCursor('crosshair');
+    return activeDrawer;
+  }
+
+  /**
+   * 冻结绘制工具
+   */
+  freezeDrawer() {
+    this.drawer.isActive = false;
+  }
+
+  unfreezeDrawer() {
+    this.drawer.isActive = true;
+  }
+
+  /**
+   * 清除绘制工具
+   */
+  clearDrawer() {
+    this.drawer = undefined;
+    this.canvas.setCursor('grab');
   }
 
   apply(renderingService: RenderingService) {
@@ -237,6 +304,10 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.canvas = canvas;
 
     const handleMouseDown = (e: FederatedEvent) => {
+      if (this.getActiveAnnotation()) {
+        this.setActiveAnnotation('');
+        return;
+      }
       this.drawer?.onMouseDown(e);
     };
 
@@ -274,7 +345,6 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const handleKeyDown = (e) => {
-      console.log(this.hotkeyActive);
       if (!this.hotkeyActive) return;
       if (this.drawer?.isDrawing) {
         handleDrawerKeyDown(e);
@@ -289,6 +359,25 @@ export class AnnotationPlugin implements RenderingPlugin {
       if (e.code === 'KeyZ' && e.ctrlKey && e.altKey) {
         this.redo();
       }
+
+      const active = this.getActiveAnnotation();
+      if (!active) return;
+      if (e.code === 'Delete') {
+        this.deleteAnnotation(active.id);
+      }
+      if (e.key === 'ArrowLeft') {
+        active.path = active.path.map((point) => ({ x: point.x - 1, y: point.y }));
+      }
+      if (e.key === 'ArrowUp') {
+        active.path = active.path.map((point) => ({ x: point.x, y: point.y - 1 }));
+      }
+      if (e.key === 'ArrowRight') {
+        active.path = active.path.map((point) => ({ x: point.x + 1, y: point.y }));
+      }
+      if (e.key === 'ArrowDown') {
+        active.path = active.path.map((point) => ({ x: point.x, y: point.y + 1 }));
+      }
+      this.renderAnnotation(active);
     };
 
     const handleCanvasEnter = () => {

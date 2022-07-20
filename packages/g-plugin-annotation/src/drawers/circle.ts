@@ -8,8 +8,9 @@ export class CircleDrawer extends BaseDrawer {
   get state() {
     return {
       type: this.type,
-      path: this.path[0],
+      path: this.path,
       id: this.id,
+      tag: this.tag,
     };
   }
   onMouseDown(e) {
@@ -21,10 +22,9 @@ export class CircleDrawer extends BaseDrawer {
 
   onMouseUp(e) {
     // exclude drag event
-    if (!this.isActive) {
-      this.onComplete(this.state);
+    if (this.isActive) {
+      this.emit('draw:complete', this.state);
     }
-    this.isActive = false;
   }
   onMouseDbClick(): void {}
   onKeyDown() {}
