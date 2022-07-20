@@ -13,6 +13,7 @@ DisplayObject 是所有图形的基类，例如 [Group](/zh/docs/api/basic/group
 -   使用 Hammer.js [扩展手势](/zh/docs/api/event#直接使用-hammerjs)
 -   使用 Interact.js [实现 Drag&Drop，Resize](/zh/docs/api/event#直接使用-interactjs)
 -   保留 D3 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/d3)
+-   保留 Observable Plot 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/plot)
 
 # 继承自
 
@@ -233,6 +234,9 @@ circle.style.anchor = '0.5 0.5';
     -   skew(ax, ay)
     -   skewX(a)
     -   skewY(a)
+-   矩阵
+    -   matrix()
+    -   matrix3d()
 -   none 清除变换
 
 | [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
@@ -1286,26 +1290,11 @@ circle.style.setProperty('r', 20);
 
 ## 获取解析后的属性值
 
-部分属性例如 [Rect](/zh/docs/api/basic/rect) 的 width / height 是支持单位的，如果想获取计算后的值，可以使用 `parsedStyle`：
+部分属性例如 [Rect](/zh/docs/api/basic/rect) 的 width / height 是支持单位的，如果想获取[计算后的值](/zh/docs/api/css/css-typed-om#cssunitvalue)，可以使用 `parsedStyle`：
 
 ```js
 rect.style.width = '100px';
-rect.parsedStyle.width; // { unit: 'px', value: 100 }
-```
-
-返回的 `ParsedElement` 格式如下：
-
-```js
-// 长度单位
-export type LengthUnit = 'px' | '%' | 'em';
-// 角度单位
-export type AngleUnit = 'deg' | 'rad' | 'turn';
-export type Unit = LengthUnit | AngleUnit | '';
-
-export interface ParsedElement {
-    unit: Unit;
-    value: number;
-}
+rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
 需要注意的是，目前在使用[动画](/zh/docs/api/animation)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/zh/examples/animation#onframe)：
@@ -1313,7 +1302,7 @@ export interface ParsedElement {
 ```js
 animation.onframe = () => {
     rect.style.width; // '100px'
-    rect.parsedStyle.width; // { unit: 'px', value: 100 }
+    rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 };
 ```
 
@@ -1329,7 +1318,7 @@ circle.destroy();
 
 1. 触发 Destroy 事件
 2. 调用 `remove()` 将自身从场景图中移除，因此会触发 Removed 和 ChildRemoved 事件
-3. 移除该节点上的所有事件监听器
+3. 移除该节点上的所有事件监听器和动画对象
 4. 将 [destroyed](/zh/docs/api/basic/display-object#destroyed) 标志置为 true
 
 ## 状态
@@ -1451,7 +1440,7 @@ group.show();
 
 ## 渲染次序
 
-类似 CSS，我们可以通过 `zIndex` 属性控制渲染次序，有两点需要注意：
+类似 CSS，我们可以通过 [zIndex](/zh/docs/api/basic/display-object#zindex) 属性控制渲染次序。
 
 | 名称      | 参数     | 返回值 | 备注          |
 | --------- | -------- | ------ | ------------- |

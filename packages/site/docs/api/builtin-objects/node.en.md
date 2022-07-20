@@ -3,22 +3,22 @@ title: Node
 order: 2
 ---
 
-和 DOM API 中的 [Node](https://developer.mozilla.org/en-US/docs/Web/API/Node) 类似，该对象提供了一部分场景图能力，例如节点添加、删除等。
+Similar to [Node](https://developer.mozilla.org/en-US/docs/Web/API/Node) in the DOM API, this object provides part of the scene graph capabilities, such as node addition, deletion, etc.
 
-在 G 中有以下继承关系：
+The following inheritance relationships exist in G.
 
-- Document -> Node -> EventTarget
-- DisplayObject -> Element -> Node -> EventTarget
+-   Document -> Node -> EventTarget
+-   DisplayObject -> Element -> Node -> EventTarget
 
-# 继承自
+# Inherited from
 
-[EventTarget](/zh/docs/api/builtin-objects/event-target)
+[EventTarget](/en/docs/api/builtin-objects/event-target)
 
-# 属性
+# Properties
 
 ## nodeName
 
-只读，返回节点名称，例如：
+Read-only, returns the node name, e.g.
 
 ```js
 circle.nodeName; // 'circle'
@@ -27,7 +27,7 @@ rect.nodeName; // 'rect'
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
 
-G 内置图形名称如下：
+G The built-in graphic names are as follows.
 
 ```js
 export enum Shape {
@@ -48,7 +48,7 @@ export enum Shape {
 
 ## nodeValue
 
-只读，返回节点字符串，默认为 null。[Text](/zh/docs/api/basic/text) 会返回文本字符串。
+Read-only, return node string, default is null.[Text](/en/docs/api/basic/text) will return text string.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
 
@@ -62,7 +62,7 @@ text.nodeValue; // 'test'
 
 ## isConnected
 
-只读，是否被加入到画布中，例如：
+Read-only, whether it is added to the canvas, e.g.
 
 ```js
 circle.isConnected; // false
@@ -74,7 +74,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
 
 ## ownerDocument
 
-只读，指向画布的入口 [Document](/zh/docs/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
+Read-only, pointing to the entry [Document](/en/docs/api/builtin-objects/document) of the canvas. Returns null if not yet added to the canvas, e.g.
 
 ```js
 circle.ownerDocument; // null
@@ -86,51 +86,51 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument
 
 ## parentNode
 
-只读，返回当前节点的父节点。
+Read-only, returns the parent node of the current node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode
 
 ## parentElement
 
-只读，在目前的实现中同 parentNode。
+Read-only, same as parentNode in the current implementation.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement
 
 ## childNodes
 
-只读，返回当前节点的子节点列表。
+Read-only, returns the list of child nodes of the current node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes
 
 ## firstChild
 
-只读，返回当前节点的第一个子节点，如果无子节点，则返回 null。
+Read-only, returns the first child of the current node, or null if there are no children.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild
 
 ## lastChild
 
-只读，返回当前节点的最后一个子节点，如果无子节点，则返回 null。
+Read-only, returns the last child of the current node, or null if there are no children.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild
 
 ## nextSibling
 
-只读，返回当前节点的后一个兄弟节点，没有则返回 null。
+Read-only, returns the next sibling of the current node, or null if none.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling
 
 ## previousSibling
 
-只读，返回当前节点的前一个兄弟节点，没有则返回 null。
+Read-only, returns the previous sibling of the current node, or null if there is none.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
 
 ## textContent
 
-读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/zh/docs/api/basic/text) 会返回文本字符串。
+Read/write property to get or set the text content of the node. The default returns the empty string, [Text](/en/docs/api/basic/text) will return the text string.
 
-在读取时，该方法会递归计算子节点，将最终拼接而成的字符串返回：
+When reading, this method recursively computes the sub-nodes and returns the final stitched string as.
 
 ```js
 const group = new Group();
@@ -143,7 +143,7 @@ text.textContent; // 'test'
 group.textContent; // 'test'
 ```
 
-在设置时，会首先移除该节点的所有子节点，如果该节点是 [Text](/zh/docs/api/basic/text)，直接修改文本内容；如果该节点不是 [Text](/zh/docs/api/basic/text)，会创建一个 [Text](/zh/docs/api/basic/text) 作为子节点并设置文本内容。
+When setting, all children of this node will be removed first, if the node is [Text](/en/docs/api/basic/text), the text content will be modified directly; if the node is not [Text](/en/docs/api/basic/text), a [Text](/en/docs/api/basic/text) will be created as a child node and the text content will be set.
 
 ```js
 const text = new Text({ style: { text: 'test' } });
@@ -154,19 +154,19 @@ group.textContent = 'changed';
 group.childNodes; // [Text]
 ```
 
-# 方法
+# Methods
 
 ## appendChild
 
-将一个节点添加到指定父节点的子节点列表末尾处。如果该节点已经在场景图中，会先从原位置处移除，再添加到新的位置。
+Adds a node to the end of the child node list of the specified parent node. If the node is already in the scene graph, it will be removed from its original position and then added to the new position.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild
 
 ## cloneNode
 
-方法签名为 `cloneNode(deep?: boolean): this`，可选参数为是否需要深拷贝，返回克隆得到的新节点。
+The method signature is `cloneNode(deep?: boolean): this`, with optional arguments for whether a deep copy is needed, and returns the new node obtained by cloning.
 
-在下面的例子中，我们创建了一个圆，设置了它的半径与位置。拷贝得到的新节点拥有同样的样式属性与位置：
+In the following example, we create a circle, set its radius and position. The new node is copied with the same style properties and position.
 
 ```js
 circle.style.r = 20;
@@ -178,29 +178,29 @@ clonedCircle.style.r; // 20
 clonedCircle.getPosition(); // [10, 20]
 ```
 
-注意事项：
+Caveats.
 
-- 支持深拷贝，即自身以及整棵子树
-- 克隆的新节点不会保留原始节点的父子关系，需要使用 `appendChild` 将其加入画布才会被渲染
-- 与 [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes) 保持一致，不会拷贝原图形上的事件监听器
+-   Deep copy support, i.e. itself and the whole subtree
+-   Cloned new nodes do not retain the parent-child relationship of the original node, and need to be added to the canvas using `appendChild` before they will be rendered
+-   Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original graph are not copied
 
-在这个[示例](/zh/examples/scenegraph#clone)中，我们展示了以上特性：
+In this [example](/en/examples/scenegraph#clone), we demonstrate the above features.
 
-- 可以随时更改原始节点的样式属性，得到的拷贝都会是最新的，新节点同样需要被加入到场景图中才会被渲染
-- 但由于不会拷贝事件监听器，因此只有原始节点可以进行拖拽
-- 非深拷贝模式下，Text（Drag me 文本） 作为 Circle 的子节点不会被拷贝
+-   The style properties of the original node can be changed at any time, the copy will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
+-   However, since no event listeners are copied, only the original node can be dragged and dropped
+-   In non-deep copy mode, Text (Drag me Text) is not copied as a child of Circle.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
 ## contains
 
-判断传入的节点是否为该节点的后代节点。
+Determine if the incoming node is a descendant of this node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains
 
 ## getRootNode
 
-返回当前节点的根节点。如果已经被添加到画布中，会返回 canvas.document 例如：
+Returns the root node of the current node. If it has already been added to the canvas, it returns canvas.document For example
 
 ```js
 circle.getRootNode(); // circle
@@ -212,13 +212,13 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
 
 ## getAncestor
 
-返回指定层次的祖先节点，例如：
+Returns the ancestor node at the specified level, e.g.
 
 ```js
 circle.getAncestor(2); // circle.parentNode.parentNode
 ```
 
-如果向上查找超出了根节点，则返回 null：
+If the lookup goes beyond the root node, null is returned.
 
 ```js
 circle.getAncestor(100); // null
@@ -226,84 +226,84 @@ circle.getAncestor(100); // null
 
 ## hasChildNodes
 
-是否有子节点。
+If or not there are child nodes.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes
 
 ## insertBefore
 
-完整方法签名为：
+The full method signature is:
 
 ```
 insertBefore(child: Node, reference?: Node): Node
 ```
 
-在参考节点之前插入一个拥有指定父节点的子节点。如果给定的子节点是对文档中现有节点的引用，insertBefore() 会将其从当前位置移动到新位置（在将节点附加到其他节点之前，不需要从其父节点删除该节点）。
+Inserts a child node with the specified parent node before the reference node. If the given child node is a reference to an existing node in the document, insertBefore() will move it from its current position to the new position (it is not necessary to remove the node from its parent before attaching it to another node).
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore
 
 ## removeChild
 
-完整方法签名为：
+The full method signature is:
 
 ```
 removeChild(child: Node, destroy?: boolean): Node
 ```
 
-删除一个子节点，同时可以选择是否要销毁这个子节点，最后返回被删除的子节点。
+Deletes a child node, while you can choose whether to destroy this child node or not, and finally returns the deleted child node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild
 
 ## replaceChild
 
-用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点。
+Replaces a child node of the current node with the specified node, and returns the replaced node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
 
 ## isEqualNode
 
-判断两个节点是否相等。
+Determines if two nodes are equal.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
 
 ## compareDocumentPosition
 
-比较两个节点在场景图中的位置。
+Compare the positions of the two nodes in the scene graph.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
 
-例如自己和自己比较返回 0：
+For example, comparing itself will return 0.
 
 ```js
 const group1 = new Element();
 expect(group1.compareDocumentPosition(group1)).to.eqls(0);
 ```
 
-和另一个无共同祖先的节点比较：
+Comparison with another node with no common ancestor.
 
 ```js
 const group1 = new Element();
 const group2 = new Element();
 expect(group1.compareDocumentPosition(group2)).to.eqls(
-  Node.DOCUMENT_POSITION_DISCONNECTED |
-    Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
-    Node.DOCUMENT_POSITION_PRECEDING,
+    Node.DOCUMENT_POSITION_DISCONNECTED |
+        Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+        Node.DOCUMENT_POSITION_PRECEDING,
 );
 ```
 
-父子节点：
+Parent-child nodes.
 
 ```js
 group1.appendChild(group2);
 expect(group1.compareDocumentPosition(group2)).to.eqls(
-  Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING,
+    Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING,
 );
 expect(group2.compareDocumentPosition(group1)).to.eqls(
-  Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING,
+    Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING,
 );
 ```
 
-兄弟节点：
+Sibling Nodes.
 
 ```js
 // 1 -> 2
@@ -314,7 +314,7 @@ expect(group2.compareDocumentPosition(group4)).to.eqls(Node.DOCUMENT_POSITION_PR
 expect(group4.compareDocumentPosition(group2)).to.eqls(Node.DOCUMENT_POSITION_FOLLOWING);
 ```
 
-枚举值如下：
+The enumeration values are as follows.
 
 ```js
 static DOCUMENT_POSITION_DISCONNECTED = 1;

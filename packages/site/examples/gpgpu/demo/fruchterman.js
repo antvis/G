@@ -65,23 +65,23 @@ const canvas = new Canvas({
   const kernel = new Kernel(device, {
     computeShader: `
 struct Buffer {
-  data: array<i32>;
+  data: array<i32>,
 };
 struct PositionBuffer {
-  data: array<vec2<f32>>;
+  data: array<vec2<f32>>,
 };
 @group(0) @binding(0) var<storage, read> edges : Buffer;
 @group(0) @binding(1) var<storage, read> indices : Buffer;
 @group(0) @binding(2) var<storage, read_write> positions : PositionBuffer;
 
 struct Params {
-  vertexNum: f32;
-  k: f32;
-  k2: f32;
-  gravity: f32;
-  speed: f32;
-  maxDisplace: f32;
-  center: vec2<f32>;
+  vertexNum: f32,
+  k: f32,
+  k2: f32,
+  gravity: f32,
+  speed: f32,
+  maxDisplace: f32,
+  center: vec2<f32>,
 };
 @group(0) @binding(3) var<uniform> params : Params;
 

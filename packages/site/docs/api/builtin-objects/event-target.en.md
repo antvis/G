@@ -3,17 +3,17 @@ title: EventTarget
 order: 1
 ---
 
-和 DOM API 中的 [EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget) 类似，该对象提供了事件绑定/解绑的能力。
+Similar to [EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget) in the DOM API, this object provides the ability to bind/unbind events.
 
-在 G 中有以下继承关系，因此 [Canvas](/zh/docs/api/canvas)，[Document]()，[DisplayObject](/zh/docs/api/basic/display-object) 这些高级对象都拥有事件管理能力：
+The following inheritance relationships exist in G, so the high-level objects [Canvas](/en/docs/api/canvas), [Document](/en/docs/api/builtin-objects/document), [DisplayObject](/en/docs/api/basic/display-object) all have event management capabilities.
 
 -   Canvas -> EventTarget
 -   Document -> Node -> EventTarget
 -   DisplayObject -> Element -> Node -> EventTarget
 
-具体 API 可以参考[事件系统](/zh/docs/api/event)：
+Specific API can be found in [event system](/en/docs/api/event).
 
--   绑定事件：[addEventListener](/zh/docs/api/event#addeventlistener)
--   解绑事件：[removeEventListener](/zh/docs/api/event#removeeventlistener)
--   触发自定义事件：[dispatchEvent](/zh/docs/api/event#dispatchevent)
--   移除所有事件监听器 [removeAllEventListeners](/zh/docs/api/event#removealleventlisteners)
+-   Bind event: [addEventListener](/en/docs/api/event#addeventlistener)
+-   Unbind event: [removeEventListener](/en/docs/api/event#removeeventlistener)
+-   Trigger custom events: [dispatchEvent](/en/docs/api/event#dispatchevent)
+-   Remove all event listeners [removeAllEventListeners](/en/docs/api/event#removealleventlisteners)

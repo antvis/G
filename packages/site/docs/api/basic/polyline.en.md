@@ -1,11 +1,11 @@
 ---
-title: Polyline 折线
+title: Polyline
 order: 7
 ---
 
-可以参考 SVG 的 [\<polyline\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polyline) 元素。
+You can refer to the [\<polyline\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polyline) element of SVG.
 
-如下 [示例](/zh/examples/shape#polyline) 定义了一条折线，各个端点依次为：
+The following [example](/en/examples/shape#polyline) defines a polyline with the following endpoints in order
 
 ```javascript
 const polyline = new Polyline({
@@ -34,42 +34,42 @@ const polyline = new Polyline({
 });
 ```
 
-对于折线，默认锚点定义的位置为包围盒左上角顶点，其中各个端点坐标均定义在局部坐标系下。因此如果此时获取上面折线在局部坐标系的坐标，会得到包围盒左上角的坐标，也恰巧是第一个顶点的坐标，即 `[50, 50]`：
+For the line, the default anchor point is defined at the top left vertex of the enclosing box, where the coordinates of each endpoint are defined in the local coordinate system. So if we get the coordinates of the above line in the local coordinate system, we will get the coordinates of the upper left corner of the enclosing box, which also happens to be the coordinates of the first vertex, i.e. `[50, 50]`.
 
 ```js
 polyline.getLocalPosition(); // [50, 50]
 ```
 
-# 继承自
+# Inherited from
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
 ## anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
 ## transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
 ## lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
 ## miterLimit
 
-默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
+Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
 
-# 额外属性
+# Additional Properties
 
 ## points
 
-支持以下两种写法：
+The following two writing methods are supported.
 
--   `[number, number][]` 点数组
--   `string` 点之间使用空格分隔，形如：`'100,10 250,150 200,110'`
+-   `[number, number][]` an array of points
+-   `string` points are separated by spaces, e.g., `'100,10 250,150 200,110'`
 
-因此以下两种写法等价：
+Thus the following two ways of writing are equivalent.
 
 ```js
 polyline.style.points = '100,10 250,150 200,110';
@@ -82,17 +82,17 @@ polyline.style.points = [
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
 
-# 方法
+# Methods
 
 ## getTotalLength(): number
 
-获取折线长度。
+Get the length of the polyline.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
 ## getPoint(ratio: number): Point
 
-根据长度比例（取值范围 `[0-1]`）获取点，其中 `Point` 的格式为:
+Obtain the coordinates of a point in the local coordinate system on a line according to the length scale (in the range `[0-1]`), where `Point` is of the form :
 
 ```ts
 export type Point = {
@@ -103,8 +103,8 @@ export type Point = {
 
 ## getStartTangent(): number[][]
 
-获取起点的切向量，形如: `[[10, 10], [20, 20]]`
+Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 
 ## getEndTangent(): number[][]
 
-获取终点的切向量，形如: `[[10, 10], [20, 20]]`
+Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`

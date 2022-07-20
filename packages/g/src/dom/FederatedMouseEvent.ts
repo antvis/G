@@ -1,6 +1,6 @@
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { FederatedEvent } from './FederatedEvent';
 import { Point } from '../shapes/Point';
+import { FederatedEvent } from './FederatedEvent';
 
 export class FederatedMouseEvent
   extends FederatedEvent<MouseEvent | PointerEvent | TouchEvent>
@@ -36,6 +36,12 @@ export class FederatedMouseEvent
   }
   get clientY(): number {
     return this.client.y;
+  }
+  get x(): number {
+    return this.clientX;
+  }
+  get y(): number {
+    return this.clientY;
   }
 
   /**

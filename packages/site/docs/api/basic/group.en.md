@@ -1,11 +1,12 @@
 ---
-title: Group 图形分组
+title: Group
 order: 1
 ---
 
-虽然我们支持在所有基础图形上添加子节点表达层次关系，但有时还是需要一种类似“容器”的概念，它本身并无实体，只容纳其他子元素。例如典型的太阳系例子中，太阳轨道、地球轨道就使用了 Group 来创建。
+While we support adding child nodes to all base graphs to express hierarchical relationships, sometimes there is a need for a "container" like concept that has no entity of its own and only holds other child elements. For example, in the typical solar system example, the solar orbit and the Earth's orbit are created using a Group.
 
-虽然 Group 没有绘图属性，但 [DisplayObject](/zh/docs/api/basic/display-object) 的通用能力它都具有。例如查询子节点、变换、获取包围盒等。
+Although Group does not have drawing properties, it has all the general capabilities of [DisplayObject](/en/docs/api/basic/display-object). For example, querying child nodes, transformations, getting bounding boxes, etc.
+
 ```js
 group.appendChild(circle);
 group.getBounds(); // circle's bounds
@@ -17,6 +18,6 @@ group.translate(100, 0);
 group.getElementsByTagName('circle'); // [circle]
 ```
 
-# 继承自
+# Inherited from
 
-- [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/en/docs/api/basic/display-object)

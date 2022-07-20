@@ -647,7 +647,7 @@ import { Shape } from '@antv/g';
 canvas.customElements.get(Shape.CIRCLE); // Circle constructor
 ```
 
-# Cautions
+# Caveats
 
 ## Multiple Canvas Coexistence
 

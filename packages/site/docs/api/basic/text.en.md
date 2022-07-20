@@ -1,282 +1,278 @@
 ---
-title: Text 文本
+title: Text
 order: 1
 ---
 
-提供简单的单行/多行文本排版能力，单行支持水平对齐、字符间距；多行支持显式换行符以及自动换行，垂直对齐。
+Provides simple single/multi-line text layout capabilities, with single-line support for horizontal alignment and character spacing; multi-line support for explicit line breaks as well as automatic line breaks and vertical alignment.
 
-可以在该 [示例](/zh/examples/shape#text) 中调整以下属性。
+The following properties can be adjusted in this [example](/en/examples/shape#text).
 
-# 继承自
+# Inherited from
 
-- [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/en/docs/api/basic/display-object)
 
-文本/文本块的位置通过文本锚点描述，围绕该锚点通过 `textBaseline`（单行/多行）、`textAlign`（多行）等属性调整自身位置。
+The position of a text/text block is described by a text anchor point around which it adjusts itself through properties such as `textBaseline` (single/multi-line), `textAlign` (multi-line), etc.
 
-# 额外属性
+# Additional Properties
 
 ## text
 
-**类型**： `string`
+**type**: `string`
 
-**默认值**：无
+**default value**: -
 
-**是否必须**：`true`
+**required**: `true`
 
-**说明**：文本内容，可以包含换行符，例如 `"测试文本\n另起一行"`
+**remarks**: Text content, which can contain line breaks, e.g. `"test text \n another line"`
 
 ## textTransform
 
-**类型**： `string`
+**type**: `string`
 
-**默认值**：`'none'`
+**default value**: `'none'`
 
-**是否必须**：`false`
+**required**: `false`
 
-**说明**：与 [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform) 一致，对文本内容进行转换，支持以下枚举值：
+**remarks**: Consistent with [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform), the following enumeration values are supported for text content transformation.
 
-- 'capitalize' 首字母大写
-- 'uppercase' 全大写
-- 'lowercase' 全小写
-- 'none' 不做转换
+-   `'capitalize'`
+-   `'uppercase'`
+-   `'lowercase'`
+-   `'none'`
 
 ## dx / dy
 
-**类型**： `number` | `string`
+**type**: `number` | `string`
 
-**默认值**：`0`
+**default value**: `0`
 
-**是否必须**：`false`
+**required**: `false`
 
-**说明**：与 [SVG dx / dy 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/dx)对应，在水平和垂直方向增加偏移量
+**remarks**: Corresponds to the [SVG dx / dy attribute](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/dx) to add offsets in the horizontal and vertical directions.
 
-支持 `px` 和 `em` 两种单位，使用 `number` 类型时默认 `px` 单位：
+Both `px` and `em` units are supported, and the default `px` unit when using the `number` type.
 
 ```js
 {
-  dx: 10;
-  dx: '10px';
-  dx: '0.5em';
+    dx: 10;
+    dx: '10px';
+    dx: '0.5em';
 }
 ```
 
-## 字体相关
+## Font Related
 
 ### fontFamily
 
-**类型**： `string`
+**type**: `string`
 
-**默认值**：无
+**default value**: -
 
-**是否必须**：`true`
+**required**: `true`
 
-**说明**：字体类型，例如 `'PingFang SC'` `'Microsoft Yahei'`
+**remarks**: Font type, e.g. `'PingFang SC'` `'Microsoft Yahei'`
 
 ### fontSize
 
-**类型**： `number`
+**type**: `number`
 
-**默认值**：无
+**default value**: -
 
-**是否必须**：`true`
-
-**说明**：字体大小
+**required**: `true`
 
 ### fontWeight
 
-**类型**： `string` | `number`
+**type**: `string` | `number`
 
-**默认值**：`normal`
+**default value**: `normal`
 
-**是否必须**：`false`
-
-**说明**：字体粗细
+**required**: `false`
 
 ### fontStyle
 
-**类型**： `string`
+**type**: `string`
 
-**默认值**：`normal`
+**default value**: `normal`
 
-**是否必须**：`false`
+**required**: `false`
 
-**说明**：字体样式，例如下图为倾斜 `italic` 效果
+**remarks**: Font style, for example, the image below shows the tilted `italic` effect.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ)
 
 ### fontVariant
 
-**类型**： `string`
+**type**: `string`
 
-**默认值**：`normal`
+**default value**: `normal`
 
-**是否必须**：`false`
+**required**: `false`
 
-**说明**：字体样式，例如下图为 `small-cap` 效果
+**remarks**: Font style, for example, the following image is the `small-cap` effect.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ)
 
-## 单行布局
+## Single row layout
 
 ### textBaseline
 
-类型： String
+**type**: `string`
 
-默认值：alphabetic
+**default value**: `alphabetic`
 
-是否必须：false
+**required**: `false`
 
-说明：在垂直方向的对齐通过 `textBaseline` 实现，下图展示了不同取值下的对齐效果： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g1SQZlEBCAAAAAAAAAAAAAAARQnAQ)
+**remarks**: Alignment in the vertical direction is achieved by `textBaseline`, and the following figure shows the effect of alignment with different values.
 
-以文本当前位置为锚点，下图依次展示了 `top` `middle` 和 `bottom` 的效果。除了单行也适用于多行文本块：
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g1SQZlEBCAAAAAAAAAAAAAAARQnAQ)
+
+Using the current position of the text as the anchor point, the following figure shows the effect of `top`, `middle` and `bottom` in turn. In addition to single line also applies to multi-line text blocks.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZJzIQKBhAnUAAAAAAAAAAAAAARQnAQ)
 
 ### letterSpacing
 
-类型： number
+**type**: `number`
 
-默认值：0
+**default value**: `0`
 
-是否必须：false
+**required**: `false`
 
-说明：字符间距
+**remarks**: Character Spacing
 
-## 多行布局
+## Multi-row layout
 
-在以下两种情况下会出现换行：
+Line feeds occur in the following two cases:
 
-1. 文本中的换行符
-2. 开启 `wordWrap` 后，超出 `wordWrapWidth` 的部分自动换行，类似 CSS 中的 `word-break`
+1. Line breaks in text
+2. When `wordWrap` is turned on, the part beyond `wordWrapWidth` will be automatically line wrapped, similar to `word-break` in CSS.
 
-因此在解析原始文本时，需要考虑这两种情况。但在处理 CJK(Chinese/Japanese/Korean) 字符时，需要考虑它们的特殊语言规范。事实上 CSS 的 `word-break` 也提供了考虑 CJK 情况的值。
+Therefore, both cases need to be considered when parsing raw text. However, when dealing with CJK (Chinese/Japanese/Korean) characters, their special language specification needs to be taken into account. In fact, the CSS `word-break` also provides a value that takes into account the CJK case.
 
 ### textAlign
 
-类型： String
+**type**: `string`
 
-默认值：left
+**default value**: `left`
 
-是否必须：false
+**required**: `false`
 
-说明：在多行文本中，每一行可以在水平方向以锚点（anchor）对齐
+**remarks**: In multi-line text, each line can be horizontally aligned with an anchor
 
-下图依次展示了 `left` `center` 和 `right` 的效果：
+The following figure shows the effect of `left`, `center` and `right` in that order:
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tyAzR7Y11oIAAAAAAAAAAAAAARQnAQ)
 
 ### wordWrap
 
-类型： boolean
+**type**: `boolean`
 
-默认值：false
+**default value**: `false`
 
-是否必须：false
+**required**: `false`
 
-说明：是否开启自动折行
+**remarks**: Whether to turn on automatic line feed
 
 ### wordWrapWidth
 
-类型： number
+**type**: `number`
 
-默认值：无
+**default value**: -
 
-是否必须：false
+**required**: `false`
 
-说明：开启自动折行后，超出该宽度则换行
+**remarks**: When auto-folding is turned on, the line will be changed beyond that width
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FdtgQLndl8IAAAAAAAAAAAAAARQnAQ)
 
 ### lineHeight
 
-类型： number
+**type**: `number`
 
-默认值：无
+**default value**: -
 
-是否必须：false
-
-说明：行高
+**required**: `false`
 
 ### leading
 
-类型： number
+**type**: `number`
 
-默认值：无
+**default value**: -
 
-是否必须：false
+**required**: `false`
 
-说明：行间距
-
-## [WIP] 阴影
-
-# 方法
+# Methods
 
 ## getLineBoundingRects(): Rectangle[]
 
-获取每一行文本的包围盒，例如：
+Get the bounding box for each line of text, e.g.:
 
 ```js
 text.getLineBoundingRects(); // Rectangle[]
 ```
 
-其中包围盒结构如下，其中 x/y 相对于文本的局部坐标系：
+where the enclosing box structure is as follows, where x/y is relative to the local coordinate system of the text:
 
 ```js
 interface Rectangle {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 }
 ```
 
-在[示例](/zh/examples/shape#text)中，我们绘制出了多行文本中每一行的包围盒，可以根据包围盒信息实现例如下划线、删除线等高级文本特性：
+In [example](/en/examples/shape#text), we draw the bounding box for each line of the multi-line text, and we can implement advanced text features such as underline and strikethrough based on the bounding box information:
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
 
 ```js
 text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
-  const block = new Rect({
-    style: {
-      x,
-      y,
-      width,
-      height,
-      stroke: 'black',
-      lineWidth: 2,
-    },
-  });
-  text.appendChild(block);
+    const block = new Rect({
+        style: {
+            x,
+            y,
+            width,
+            height,
+            stroke: 'black',
+            lineWidth: 2,
+        },
+    });
+    text.appendChild(block);
 });
 ```
 
-# 加载字体
+# Loading Fonts
 
-除了系统默认字体，有时我们希望加载第三方字体。
+In addition to the system default fonts, sometimes we want to load third-party fonts.
 
-此时可以使用 [Web Font Loader](https://github.com/typekit/webfontloader)，在加载成功的 `active` 回调函数中创建，[示例](/zh/examples/shape#text)：
+In this case, you can use [Web Font Loader](https://github.com/typekit/webfontloader), which is created in the `active` callback function when it is loaded successfully, [example](/en/examples/shape#text):
 
 ```js
 import WebFont from 'webfontloader';
 
 WebFont.load({
-  google: {
-    families: ['Gaegu'],
-  },
-  active: () => {
-    const text = new Text({
-      style: {
-        x: 100,
-        y: 100,
-        fontFamily: 'Gaegu',
-        text: 'Almost before we knew it, we had left the ground.',
-        fontSize: 30,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 5,
-      },
-    });
-    canvas.appendChild(text);
-  },
+    google: {
+        families: ['Gaegu'],
+    },
+    active: () => {
+        const text = new Text({
+            style: {
+                x: 100,
+                y: 100,
+                fontFamily: 'Gaegu',
+                text: 'Almost before we knew it, we had left the ground.',
+                fontSize: 30,
+                fill: '#1890FF',
+                stroke: '#F04864',
+                lineWidth: 5,
+            },
+        });
+        canvas.appendChild(text);
+    },
 });
 ```
+
+# More CanvasKit-based configuration items
+
+CanvasKit provides [enhanced paragraph drawing capabilities](/en/docs/api/renderer/canvaskit#text-paragraphs). We've integrated them into our [g-canvaskit](/en/docs/api/renderer/canvaskit) renderer.

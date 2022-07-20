@@ -1,6 +1,6 @@
 import { clamp } from '@antv/g';
-import { GL, ResourceType, getFormatByteSize } from '@antv/g-plugin-device-renderer';
 import type { Buffer, Readback, Texture } from '@antv/g-plugin-device-renderer';
+import { GL, ResourceType } from '@antv/g-plugin-device-renderer';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import type { Texture_GL } from './Texture';
@@ -77,56 +77,56 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     const gl = this.device.gl;
 
     const texture = t as Texture_GL;
-    const gl_format = this.device.translateTextureFormat(texture.pixelFormat);
+    // const gl_format = this.device.translateTextureFormat(texture.pixelFormat);
     const gl_type = this.device.translateTextureType(texture.pixelFormat);
-    const formatByteSize = getFormatByteSize(texture.pixelFormat);
+    // const formatByteSize = getFormatByteSize(texture.pixelFormat);
 
-    if (isWebGL2(gl)) {
-      this.gl_pbo = this.device.ensureResourceExists(gl.createBuffer());
-      // PIXEL_PACK_BUFFER: Buffer used for pixel transfer operations
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindBuffer
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, this.gl_pbo);
-      // STREAM_READ: The contents are intended to be specified once by reading data from WebGL, and queried at most a few times by the application
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData
-      gl.bufferData(gl.PIXEL_PACK_BUFFER, length, gl.STREAM_READ);
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    // if (isWebGL2(gl)) {
+    //   this.gl_pbo = this.device.ensureResourceExists(gl.createBuffer());
+    //   // PIXEL_PACK_BUFFER: Buffer used for pixel transfer operations
+    //   // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindBuffer
+    //   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, this.gl_pbo);
+    //   // STREAM_READ: The contents are intended to be specified once by reading data from WebGL, and queried at most a few times by the application
+    //   // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData
+    //   gl.bufferData(gl.PIXEL_PACK_BUFFER, length, gl.STREAM_READ);
+    //   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 
-      gl.bindFramebuffer(GL.READ_FRAMEBUFFER, this.device.readbackFramebuffer);
-      gl.framebufferTexture2D(
-        GL.READ_FRAMEBUFFER,
-        GL.COLOR_ATTACHMENT0,
-        GL.TEXTURE_2D,
-        texture.gl_texture,
-        0,
-      );
+    //   gl.bindFramebuffer(GL.READ_FRAMEBUFFER, this.device.readbackFramebuffer);
+    //   gl.framebufferTexture2D(
+    //     GL.READ_FRAMEBUFFER,
+    //     GL.COLOR_ATTACHMENT0,
+    //     GL.TEXTURE_2D,
+    //     texture.gl_texture,
+    //     0,
+    //   );
 
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, this.gl_pbo);
-      gl.readPixels(x, y, width, height, gl_format, gl_type, dstOffset * formatByteSize);
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    //   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, this.gl_pbo);
+    //   gl.readPixels(x, y, width, height, gl_format, gl_type, dstOffset * formatByteSize);
+    //   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 
-      return this.getBufferSubDataAsync(
-        gl.PIXEL_PACK_BUFFER,
-        this.gl_pbo,
-        0,
-        dstBuffer,
-        dstOffset,
-        length,
-      );
-    } else {
-      gl.bindFramebuffer(GL.FRAMEBUFFER, this.device.readbackFramebuffer);
-      gl.framebufferTexture2D(
-        GL.FRAMEBUFFER,
-        GL.COLOR_ATTACHMENT0,
-        GL.TEXTURE_2D,
-        texture.gl_texture,
-        0,
-      );
-      // slow requires roundtrip to GPU
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei
-      gl.pixelStorei(gl.PACK_ALIGNMENT, 4);
-      gl.readPixels(x, y, width, height, gl.RGBA, gl_type, dstBuffer);
-      return Promise.resolve(dstBuffer);
-    }
+    //   return this.getBufferSubDataAsync(
+    //     gl.PIXEL_PACK_BUFFER,
+    //     this.gl_pbo,
+    //     0,
+    //     dstBuffer,
+    //     dstOffset,
+    //     length,
+    //   );
+    // } else {
+    gl.bindFramebuffer(GL.FRAMEBUFFER, this.device.readbackFramebuffer);
+    gl.framebufferTexture2D(
+      GL.FRAMEBUFFER,
+      GL.COLOR_ATTACHMENT0,
+      GL.TEXTURE_2D,
+      texture.gl_texture,
+      0,
+    );
+    // slow requires roundtrip to GPU
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei
+    gl.pixelStorei(gl.PACK_ALIGNMENT, 4);
+    gl.readPixels(x, y, width, height, gl.RGBA, gl_type, dstBuffer);
+    return Promise.resolve(dstBuffer);
+    // }
   }
 
   async readBuffer(

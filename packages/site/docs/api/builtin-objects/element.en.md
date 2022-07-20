@@ -3,24 +3,24 @@ title: Element
 order: 3
 ---
 
-在 G 中有以下继承关系：
+The following inheritance relationships exist in G.
 
-- DisplayObject -> Element -> Node -> EventTarget
+-   DisplayObject -> Element -> Node -> EventTarget
 
-# 继承自
+# Inherited from
 
-[Node](/zh/docs/api/builtin-objects/node)
+[Node](/en/docs/api/builtin-objects/node)
 
-# 属性
+# Properties
 
 ## id
 
-场景图中唯一，后续可以通过 getElementById 查询：
+Unique in the scenario map, which can be subsequently queried by `getElementById`.
 
 ```js
 const circle = new Circle({
-  id: 'my-id',
-  style: { r: 10 },
+    id: 'my-id',
+    style: { r: 10 },
 });
 
 circle.id; // 'my-id';
@@ -38,7 +38,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
 
 ## classList
 
-只读属性，返回类名列表。
+Read-only property that returns a list of class names.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/classList
 
@@ -49,7 +49,7 @@ circle.classList; // ['c1', 'c2']
 
 ## attributes
 
-只读，返回样式属性，例如：
+Read-only, returns style attributes, e.g.
 
 ```js
 const circle = new Circle({ style: { r: 10 } });
@@ -61,35 +61,35 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/attributes
 
 ## children
 
-返回子元素列表，和 Node.childNodes 等价。
+Returns a list of child elements, equivalent to Node.childNodes.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/children
 
 ## childElementCount
 
-返回子元素列表长度。
+Return the length of the list of child elements.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/childElementCount
 
 ## firstElementChild
 
-和 [Node.firstChild](/zh/docs/api/builtin-objects/node#firstchild) 等价。
+Equals [Node.firstChild](/en/docs/api/builtin-objects/node#firstchild).
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild
 
 ## lastElementChild
 
-和 [Node.lastChild](/zh/docs/api/builtin-objects/node#lastchild) 等价。
+Equals [Node.lastChild](/en/docs/api/builtin-objects/node#lastchild).
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild
 
 ## clientTop / clientLeft
 
-由于暂不支持 border，始终返回 0。
+Since border is not supported at the moment, it always returns 0.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop
 
-# 方法
+# Methods
 
 ## getAttributeNames
 
@@ -113,7 +113,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
 
 ## getBoundingClientRect
 
-返回浏览器坐标系下的包围盒，不考虑子元素。
+Returns the enclosing box in the browser coordinate system, regardless of child elements.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
 
@@ -123,7 +123,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
 
 ## computedStyleMap
 
-获取[样式系统](/zh/docs/api/css/intro)解析后的样式 Map，例如：
+Get the parsed style Map of [style system](/en/docs/api/css/intro), e.g.
 
 ```js
 const circle = new Circle({
@@ -155,13 +155,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
 
 ## destroy
 
-销毁自身，会移除一切事件监听器，停止正在进行的动画。
+Destroying itself will remove all event listeners and stop the ongoing animation.
 
-## 节点查询
+## Node Query
 
 ### matches
 
-是否匹配选择器字符串
+Whether or not to match the selector string
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
 
@@ -181,13 +181,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
 
 ### findAll
 
-## 节点操作
+## Node Operations
 
-基于 Node 已有的节点操作能力，提供一些更便捷的操作，例如批量添加兄弟节点、替换所有子节点等。
+Based on Node's existing node manipulation capabilities, it provides some more convenient operations, such as bulk adding sibling nodes, replacing all child nodes, etc.
 
 ### append(...nodes: this[])
 
-在当前节点的子节点列表末尾批量添加一组节点。
+Add a group of nodes in bulk at the end of the child node list of the current node.
 
 ```js
 parent.appendChild(child1);
@@ -199,7 +199,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
 
 ### prepend(...nodes: this[])
 
-在当前节点的子节点列表头部批量添加一组节点。
+Add a group of nodes in bulk to the head of the current node's child node list.
 
 ```js
 parent.appendChild(child1);
@@ -211,7 +211,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
 
 ### after(...nodes: Element[])
 
-在当前节点之后批量添加一些兄弟节点，例如一次性添加一批：
+Add some sibling nodes in bulk after the current node, e.g. add a batch at once.
 
 ```js
 circle.after(sibling1, sibling2); // [circle, sibling1, sibling2]
@@ -221,7 +221,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
 
 ### before(...nodes: Element[])
 
-在当前节点之前批量添加一些兄弟节点，例如一次性添加一批：
+Add some sibling nodes in bulk before the current node, e.g. add a batch at once.
 
 ```js
 circle.before(sibling1, sibling2); // [sibling1, sibling2, circle]
@@ -231,7 +231,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
 
 ### remove(destroy = true)
 
-将自身从场景图中移除，可以选择是否同时销毁，默认会销毁。
+Remove itself from the scene graph, you can choose whether to destroy it at the same time, the default will be destroyed.
 
 ```js
 circle.remove();
@@ -241,7 +241,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
 
 ### removeChildren(destroy = true)
 
-将所有子节点从场景图中移除，可以选择是否同时销毁，默认会销毁。
+Remove all child nodes from the scene graph, you can choose whether to destroy them at the same time, the default will be destroyed.
 
 ```js
 parent.removeChildren();
@@ -249,7 +249,7 @@ parent.removeChildren();
 
 ### replaceWith(...nodes: Element[])
 
-在父节点的子节点列表中，用传入的节点列表替换该节点：
+In the list of children of the parent node, replace the node with the list of nodes passed in.
 
 ```js
 parent.appendChild(child1);
@@ -261,7 +261,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
 
 ### replaceChildren(...nodes: Element[])
 
-替换该节点的所有子节点。不传参数时则会清空并销毁该节点的所有子节点：
+Replace all children of the node. If no parameters are passed, all children of the node are cleared and destroyed.
 
 ```js
 parent.replaceChildren(child1, child2);
@@ -270,16 +270,16 @@ parent.replaceChildren(); // 清空
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
 
-## 动画
+## Animation
 
 ### getAnimations
 
-返回应用在当前元素上的动画对象列表，详见[动画系统](/zh/docs/api/animation)
+Returns a list of animation objects applied to the current element, see [animation system](/en/docs/api/animation)
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
 
 ### animate
 
-应用 Keyframe 动画，详见[动画系统](/zh/docs/api/animation)
+Apply Keyframe animation, see [animation system](/en/docs/api/animation)
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate
