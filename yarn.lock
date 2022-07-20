@@ -420,10 +420,10 @@
     csstype "^3.0.8"
     tslib "^2.0.3"
 
-"@antv/util@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.2.1.tgz#2b2302587bbf8a83d27b7296b26eeff119215281"
-  integrity sha512-FnuQdL7Zbys64R3aweZ4y9gfSglZ2u5DwkqB//THH3v5A7e2ovDJtoPCpes3Zes7hZNk2HFXrpZXNovDWpMpIw==
+"@antv/util@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.2.2.tgz#71bc669feb846504c83fbb69c1b8d2710d87ad5e"
+  integrity sha512-lsP9d6+z3BkZS+whozAlbcalRTWGnapEDiDc4Gt9njFgzfrCaRy2CSqn6U5oJktuX8Jc6T1z0sujmeT7lEJ7wg==
   dependencies:
     fast-deep-equal "^3.1.3"
     tslib "^2.3.1"
