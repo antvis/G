@@ -133,6 +133,7 @@ export class Canvas extends EventTarget implements ICanvas {
       devicePixelRatio,
       renderer,
       background,
+      cursor,
       document,
       requestAnimationFrame,
       cancelAnimationFrame,
@@ -190,7 +191,7 @@ export class Canvas extends EventTarget implements ICanvas {
       renderer,
       offscreenCanvas,
       devicePixelRatio: dpr,
-      cursor: 'default' as Cursor,
+      cursor: cursor || ('default' as Cursor),
       background,
       createImage,
       document,
@@ -503,6 +504,8 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   setCursor(cursor: Cursor) {
+    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    canvasConfig.cursor = cursor;
     this.getContextService().applyCursorStyle(cursor);
   }
 

@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, Text } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin } from '@antv/g-plugin-dragndrop';
@@ -51,9 +51,13 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  const node1 = new Circle({
+  const g1 = new Group({
     style: {
       draggable: true,
+    },
+  });
+  const node1 = new Circle({
+    style: {
       r: 50,
       cx: -50,
       cy: -50,
@@ -70,9 +74,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       pointerEvents: 'none',
     },
   });
+  g1.appendChild(node1);
   node1.appendChild(text1);
 
-  const node2 = node1.cloneNode(true);
+  const g2 = g1.cloneNode(true);
+  const node2 = g2.childNodes[0];
   node2.style.cx = 50;
   node2.style.cy = 50;
   node2.children[0].style.text = 'node2';
@@ -91,8 +97,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   group2.style.cx = 400;
   group2.style.zIndex = -1;
 
-  group1.appendChild(node1);
-  group1.appendChild(node2);
+  group1.appendChild(g1);
+  group1.appendChild(g2);
 
   canvas.appendChild(group1);
   canvas.appendChild(group2);
@@ -108,9 +114,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.addEventListener('dragstart', function (e) {
     const { target, canvasX, canvasY } = e;
 
+    console.log(target);
+
     switch (target) {
-      case node1:
-      case node2:
+      case g1:
+      case g2:
         const [x, y] = target.getPosition();
         shiftX = canvasX - x;
         shiftY = canvasY - y;
@@ -126,8 +134,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       case canvas.document:
         camera.pan(-dx, -dy);
         break;
-      case node1:
-      case node2:
+      case g1:
+      case g2:
         moveAt(target, canvasX, canvasY);
         target.style.opacity = 0.5;
         break;
@@ -137,8 +145,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const { target } = e;
 
     switch (target) {
-      case node1:
-      case node2:
+      case g1:
+      case g2:
         target.style.opacity = 1;
         console.log(e.target);
     }
