@@ -42,7 +42,7 @@ export class EventPlugin implements RenderingPlugin {
   @inject(EventService)
   private eventService: EventService;
 
-  private autoPreventDefault = true;
+  private autoPreventDefault = false;
   private rootPointerEvent = new FederatedPointerEvent(null);
   private rootWheelEvent = new FederatedWheelEvent(null);
 

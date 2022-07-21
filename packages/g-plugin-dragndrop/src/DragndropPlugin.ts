@@ -59,11 +59,12 @@ export class DragndropPlugin implements RenderingPlugin {
       const target = event.target as DisplayObject;
       const isDocument = (target as unknown as IDocument) === document;
 
-      const draggableEventTarget = this.findClosestDraggable(event);
+      const draggableEventTarget =
+        isDocument && isDocumentDraggable ? document : this.findClosestDraggable(event);
 
       // `draggable` may be set on ancestor nodes:
       // @see https://github.com/antvis/G/issues/1088
-      if ((isDocument && isDocumentDraggable) || !!draggableEventTarget) {
+      if (!!draggableEventTarget) {
         // delay triggering dragstart event
         let dragstartTriggered = false;
         const dragstartTimeStamp = event.timeStamp;
