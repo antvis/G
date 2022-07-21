@@ -6,6 +6,7 @@ import type {
   RenderingService,
 } from '@antv/g';
 import {
+  Element,
   inject,
   RenderingContext,
   RenderingPluginContribution,
@@ -28,6 +29,19 @@ export class DragndropPlugin implements RenderingPlugin {
   @inject(DragndropPluginOptions)
   private dragndropPluginOptions: DragndropPluginOptions;
 
+  private findClosestDraggable(event: FederatedPointerEvent) {
+    const composedPath = event.composedPath();
+
+    for (let i = 0; i < composedPath.length; i++) {
+      const target = composedPath[i] as Element;
+      if (Element.isElement(target) && target.getAttribute('draggable')) {
+        return target;
+      }
+    }
+
+    return null;
+  }
+
   apply(renderingService: RenderingService) {
     const document = this.renderingContext.root.ownerDocument;
 
@@ -44,10 +58,12 @@ export class DragndropPlugin implements RenderingPlugin {
     const handlePointerdown = (event: FederatedPointerEvent) => {
       const target = event.target as DisplayObject;
       const isDocument = (target as unknown as IDocument) === document;
-      if (
-        (isDocument && isDocumentDraggable) ||
-        (target.getAttribute && target.getAttribute('draggable'))
-      ) {
+
+      const draggableEventTarget = this.findClosestDraggable(event);
+
+      // `draggable` may be set on ancestor nodes:
+      // @see https://github.com/antvis/G/issues/1088
+      if ((isDocument && isDocumentDraggable) || !!draggableEventTarget) {
         // delay triggering dragstart event
         let dragstartTriggered = false;
         const dragstartTimeStamp = event.timeStamp;
@@ -73,7 +89,8 @@ export class DragndropPlugin implements RenderingPlugin {
 
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
             event.type = 'dragstart';
-            target.dispatchEvent(event);
+
+            draggableEventTarget.dispatchEvent(event);
             dragstartTriggered = true;
           }
 
@@ -83,7 +100,7 @@ export class DragndropPlugin implements RenderingPlugin {
           event.dx = event.clientX - lastDragClientCoordinates[0];
           // @ts-ignore
           event.dy = event.clientY - lastDragClientCoordinates[1];
-          target.dispatchEvent(event);
+          draggableEventTarget.dispatchEvent(event);
           lastDragClientCoordinates = [event.clientX, event.clientY];
 
           if (!isDocument) {
@@ -147,7 +164,7 @@ export class DragndropPlugin implements RenderingPlugin {
             event.detail = {
               preventClick: true,
             };
-            target.dispatchEvent(event);
+            draggableEventTarget.dispatchEvent(event);
 
             dragstartTriggered = false;
           }

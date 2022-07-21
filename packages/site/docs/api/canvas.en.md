@@ -118,6 +118,39 @@ In [this example](/en/examples/canvas#background), we have set a translucent red
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 
+## cursor
+
+Check to set the canvas default [mouse style](https://g-next.antv.vision/zh/docs/api/basic/display-object#cursor). If this property is also configured on top of a drawing picked up by an interaction event, it will override the mouse style configured on the canvas, but when the mouse is moved to a blank area, the mouse style configured on the canvas will take effect. The following figure demonstrates this.
+
+```js
+const canvas = new Canvas({
+    //...
+    cursor: 'crosshair',
+});
+
+const circle = new Circle({
+    style: {
+        //...
+        cursor: 'pointer',
+    },
+});
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*YlqRRI5vjFgAAAAAAAAAAAAAARQnAQ" alt="cursor" width="150">
+
+In addition to being set at canvas initialization, it can be subsequently modified by `setCursor()`.
+
+```js
+// Set at canvas initialization
+canvas = new Canvas({
+    //...
+    cursor: 'crosshair',
+});
+
+// Or reset later
+canvas.setCursor('crosshair');
+```
+
 # Special platform adaptations
 
 On some special runtime platforms (e.g. applets), it is not possible to use global variables like [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ globalThis), and internally we need to rely on it to create images (`new globalThis.Image()`), determine if a TouchEvent is supported (`'ontouchstart' in globalThis`), and so on. Therefore, users of these particular platforms need to manually pass in the specific creation and determination methods.
