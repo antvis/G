@@ -133,6 +133,17 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement() as unknown as HTMLElement;
+
+      // @ts-ignore
+      if (globalThis.navigator.msPointerEnabled) {
+        // @ts-ignore
+        $el.style.msContentZooming = '';
+        // @ts-ignore
+        $el.style.msTouchAction = '';
+      } else if (canvas.supportsPointerEvents) {
+        $el.style.touchAction = '';
+      }
+
       if (canvas.supportsPointerEvents) {
         removePointerEventListener($el);
       } else {
