@@ -121,6 +121,39 @@ const canvas = new Canvas({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 
+## cursor
+
+选填，设置画布默认的[鼠标样式](https://g-next.antv.vision/zh/docs/api/basic/display-object#%E9%BC%A0%E6%A0%87%E6%A0%B7%E5%BC%8F)。如果通过交互事件拾取到的图形之上也配置了该属性，会覆盖掉画布上配置的鼠标样式，但当鼠标移动到空白区域时，画布上配置的鼠标样式就会生效了。下图展示了这一点：
+
+```js
+const canvas = new Canvas({
+    //...
+    cursor: 'crosshair',
+});
+
+const circle = new Circle({
+    style: {
+        //...
+        cursor: 'pointer',
+    },
+});
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*YlqRRI5vjFgAAAAAAAAAAAAAARQnAQ" alt="cursor" width="150">
+
+除了在画布初始化时设置，后续还可以通过 `setCursor()` 修改：
+
+```js
+// 画布初始化时设置
+canvas = new Canvas({
+    //...
+    cursor: 'crosshair',
+});
+
+// 或者后续修改
+canvas.setCursor('crosshair');
+```
+
 # 特殊运行平台适配
 
 在一些特殊的运行平台（例如小程序）上，无法正常使用类似 [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) 这样的全局变量，而在内部我们又需要依靠它创建图片（`new globalThis.Image()`）、判断是否支持 TouchEvent（`'ontouchstart' in globalThis`）等。因此需要这些特殊平台的使用者手动传入特有的创建以及判断方式。
