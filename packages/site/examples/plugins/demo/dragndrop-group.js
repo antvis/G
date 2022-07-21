@@ -51,7 +51,7 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  const g1 = new Group({
+  const draggableGroup1 = new Group({
     style: {
       draggable: true,
     },
@@ -74,18 +74,22 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       pointerEvents: 'none',
     },
   });
-  g1.appendChild(node1);
+  draggableGroup1.appendChild(node1);
   node1.appendChild(text1);
 
-  const g2 = g1.cloneNode(true);
-  const node2 = g2.childNodes[0];
+  const draggableGroup2 = draggableGroup1.cloneNode(true);
+  const node2 = draggableGroup2.childNodes[0];
   node2.style.cx = 50;
   node2.style.cy = 50;
   node2.children[0].style.text = 'node2';
 
-  const group1 = new Circle({
+  const droppableGroup1 = new Group({
     style: {
       droppable: true,
+    },
+  });
+  const group1 = new Circle({
+    style: {
       r: 120,
       cx: 150,
       cy: 200,
@@ -93,15 +97,16 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       stroke: 'black',
     },
   });
-  const group2 = group1.cloneNode();
-  group2.style.cx = 400;
-  group2.style.zIndex = -1;
+  droppableGroup1.appendChild(group1);
+  const droppableGroup2 = droppableGroup1.cloneNode(true);
+  droppableGroup2.childNodes[0].style.cx = 400;
+  droppableGroup2.style.zIndex = -1;
 
-  group1.appendChild(g1);
-  group1.appendChild(g2);
+  group1.appendChild(draggableGroup1);
+  group1.appendChild(draggableGroup2);
 
-  canvas.appendChild(group1);
-  canvas.appendChild(group2);
+  canvas.appendChild(droppableGroup1);
+  canvas.appendChild(droppableGroup2);
 
   // move camera
   const camera = canvas.getCamera();
@@ -117,14 +122,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     console.log(target);
 
     switch (target) {
-      case g1:
-      case g2:
+      case draggableGroup1:
+      case draggableGroup2:
         const [x, y] = target.getPosition();
         shiftX = canvasX - x;
         shiftY = canvasY - y;
 
         moveAt(target, canvasX, canvasY);
-        target.style.opacity = 0.5;
+        target.childNodes[0].style.opacity = 0.5;
     }
   });
   canvas.addEventListener('drag', function (e) {
@@ -134,10 +139,10 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       case canvas.document:
         camera.pan(-dx, -dy);
         break;
-      case g1:
-      case g2:
+      case draggableGroup1:
+      case draggableGroup2:
         moveAt(target, canvasX, canvasY);
-        target.style.opacity = 0.5;
+        target.childNodes[0].style.opacity = 0.5;
         break;
     }
   });
@@ -145,9 +150,9 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const { target } = e;
 
     switch (target) {
-      case g1:
-      case g2:
-        target.style.opacity = 1;
+      case draggableGroup1:
+      case draggableGroup2:
+        target.childNodes[0].style.opacity = 1;
         console.log(e.target);
     }
   });
@@ -156,18 +161,18 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const { target } = e;
 
     switch (target) {
-      case group1:
-      case group2:
-        target.style.fill = 'rgba(0,0,0,0.5)';
+      case droppableGroup1:
+      case droppableGroup2:
+        target.childNodes[0].style.fill = 'rgba(0,0,0,0.5)';
     }
   });
   canvas.addEventListener('dragleave', function (e) {
     const { target } = e;
 
     switch (target) {
-      case group1:
-      case group2:
-        target.style.fill = 'white';
+      case droppableGroup1:
+      case droppableGroup2:
+        target.childNodes[0].style.fill = 'white';
     }
   });
   // canvas.addEventListener('dragover', function (e) {
@@ -181,9 +186,9 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       case canvas.document:
         console.log('drop on document');
         break;
-      case group1:
-      case group2:
-        target.style.fill = 'white';
+      case droppableGroup1:
+      case droppableGroup2:
+        target.childNodes[0].style.fill = 'white';
         break;
     }
   });
