@@ -33,6 +33,7 @@ window.gPluginMatterjs = require('@antv/g-plugin-matterjs');
 window.gPluginYoga = require('@antv/g-plugin-yoga');
 window.gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-renderer');
 window.gPluginRoughSvgRenderer = require('@antv/g-plugin-rough-svg-renderer');
+window.gPluginSvgRenderer = require('@antv/g-plugin-svg-renderer');
 window.gPluginDragndrop = require('@antv/g-plugin-dragndrop');
 window.gPluginA11y = require('@antv/g-plugin-a11y');
 // compiler for GPGPU
