@@ -214,7 +214,21 @@ export class DisplayObject<
     });
   }
 
-  cloneNode(deep?: boolean): this {
+  cloneNode(deep?: boolean, customCloneFunc?: (name: string, attribute: any) => any): this {
+    const clonedStyle = { ...this.attributes };
+    for (const attributeName in clonedStyle) {
+      const attribute = clonedStyle[attributeName];
+
+      // @see https://github.com/antvis/G/issues/1095
+      if (attribute instanceof DisplayObject) {
+        clonedStyle[attributeName] = attribute.cloneNode(deep);
+      }
+      // TODO: clone other type
+      if (customCloneFunc) {
+        clonedStyle[attributeName] = customCloneFunc(attributeName, attribute);
+      }
+    }
+
     const cloned = new (this.constructor as ConstructorTypeOf<DisplayObject>)({
       // copy id & name
       // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes
@@ -222,7 +236,7 @@ export class DisplayObject<
       name: this.name,
       className: this.name,
       interactive: this.interactive,
-      style: { ...this.attributes },
+      style: clonedStyle,
     });
 
     // apply transform

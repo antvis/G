@@ -37,6 +37,14 @@ interface BProps extends BaseCustomElementStyleProps {
 }
 
 describe('CustomElement', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+  });
+
+  afterAll(() => {
+    canvas.destroy();
+  });
+
   it('should create custom element correctly.', async () => {
     const connectedCallback = sinon.spy();
     const disconnectedCallback = sinon.spy();
