@@ -111,8 +111,8 @@ checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
 
 [[package]]
 name = "naga"
-version = "0.8.0"
-source = "git+https://github.com/gfx-rs/naga#81dc67402a743b4dc6b2d24c0d306cd18799238b"
+version = "0.9.0"
+source = "git+https://github.com/gfx-rs/naga#cc985396dadc95039a0f3d5cfc818a6b4d5eba6b"
 dependencies = [
  "bit-set",
  "bitflags",
@@ -121,6 +121,7 @@ dependencies = [
  "num-traits",
  "pp-rs",
  "rustc-hash",
+ "termcolor",
  "thiserror",
 ]
 
@@ -175,6 +176,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
+]
+
+[[package]]
+name = "termcolor"
+version = "1.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
+dependencies = [
+ "winapi-util",
 ]
 
 [[package]]
@@ -294,6 +304,15 @@ name = "winapi-i686-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
+
+[[package]]
+name = "winapi-util"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "70ec6ce85bb158151cae5e5c87f95a8e97d2c0c4b001223f33a334e3ce5de178"
+dependencies = [
+ "winapi",
+]
 
 [[package]]
 name = "winapi-x86_64-pc-windows-gnu"
