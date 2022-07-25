@@ -119,8 +119,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.addEventListener('dragstart', function (e) {
     const { target, canvasX, canvasY } = e;
 
-    console.log(target);
-
     switch (target) {
       case draggableGroup1:
       case draggableGroup2:
@@ -153,7 +151,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       case draggableGroup1:
       case draggableGroup2:
         target.childNodes[0].style.opacity = 1;
-        console.log(e.target);
     }
   });
 
@@ -184,7 +181,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
     switch (target) {
       case canvas.document:
-        console.log('drop on document');
         break;
       case droppableGroup1:
       case droppableGroup2:

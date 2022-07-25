@@ -37,12 +37,6 @@ export class FederatedMouseEvent
   get clientY(): number {
     return this.client.y;
   }
-  get x(): number {
-    return this.clientX;
-  }
-  get y(): number {
-    return this.clientY;
-  }
 
   /**
    * The movement in this pointer relative to the last `mousemove` event.

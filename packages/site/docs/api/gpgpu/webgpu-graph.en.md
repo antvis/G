@@ -3,27 +3,27 @@ title: webgpu-graph
 order: 6
 ---
 
-我们参考 [cuGraph](https://github.com/rapidsai/cugraph) 以及其他 CUDA 实现，基于 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 背后的 WebGPU 能力实现常见的图分析算法，达到大规模节点边数据量下并行加速的目的。
+We refer to [cuGraph](https://github.com/rapidsai/cugraph) and other CUDA implementations to implement common graph analysis algorithms based on the WebGPU capabilities behind [g-plugin-gpgpu](/en/docs/plugins/gpgpu) to achieve large-scale node edge data volume.
 
-对比 G6 目前提供的 [CPU 串行版本](https://github.com/antvis/algorithm)有很大提升。
+This is a significant improvement over the [CPU serial version](https://github.com/antvis/algorithm) currently offered by G6.
 
-| 算法名   | 节点 / 边       | CPU 耗时    | GPU 耗时  | Speed up |
-| -------- | --------------- | ----------- | --------- | -------- |
-| SSSP     | 1k 节点 5k 边   | 27687.10 ms | 261.60 ms | ~100x    |
-| PageRank | 1k 节点 500k 边 | 13641.50 ms | 130.20 ms | ~100x    |
+| Algorithm name | Node / Edge           | CPU time consumption | GPU time consumption | Speed up |
+| -------------- | --------------------- | -------------------- | -------------------- | -------- |
+| SSSP           | 1k Nodes & 5k Edges   | 27687.10 ms          | 261.60 ms            | ~100x    |
+| PageRank       | 1k Nodes & 500k Edges | 13641.50 ms          | 130.20 ms            | ~100x    |
 
-# 前置条件
+# Pre-requisites
 
-在使用前需要确认运行环境与数据这两项前置条件。
+Before using it, you need to confirm the operating environment and data as two preconditions.
 
-## WebGPU 运行环境
+## WebGPU Operating Environment
 
-目前（2022-3-21）在 Chrome 94 正式版本以上即支持 WebGPU，但由于我们使用最新的 WGSL 语法，推荐更新浏览器到最新版。
+WebGPU is currently (2022-3-21) supported in Chrome 94 official version and above, but since we are using the latest WGSL syntax, it is recommended to update your browser to the latest version.
 
-目前在生产环境使用，需要启用 Origin Trial 以支持 WebGPU 特性（Chrome 100 以上将不再需要）：
+For production use at this time, Origin Trial will need to be enabled to support WebGPU features (no longer required for Chrome 100+).
 
--   [获取 Token](https://developer.chrome.com/origintrials/#/view_trial/118219490218475521)
--   在页面中添加 `<meta>` 标签，附上上一步获取的 Token，例如通过 DOM API：
+-   [Get Token](https://developer.chrome.com/origintrials/#/view_trial/118219490218475521)
+-   Add the `<meta>` tag to the page with the Token obtained in the previous step, e.g. via the DOM API.
 
 ```js
 const tokenElement = document.createElement('meta');
@@ -32,9 +32,9 @@ tokenElement.content = 'AkIL...5fQ==';
 document.head.appendChild(tokenElement);
 ```
 
-## 图数据格式
+## Graph data format
 
-我们使用 G6 的[图数据格式](https://g6.antv.vision/zh/docs/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)，它也是以下所有算法的第一个固定参数：
+We use G6's [graph data format](https://g6.antv.vision/en/docs/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87), which is also the first fixed of all the following algorithms parameters.
 
 ```js
 const data = {
@@ -61,37 +61,36 @@ const data = {
 };
 ```
 
-如果数据格式不满足以上要求，算法将无法正常执行。
+If the data format does not meet the above requirements, the algorithm will not execute properly.
 
-# 使用方式
+# Usage
 
-我们提供以下两种方式使用：
+We offer the following two ways to use it.
 
--   没有 G 的 [Canvas 画布](/zh/docs/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
--   已有 G 的 [Canvas 画布](/zh/docs/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
+-   [Canvas](/en/docs/api/canvas) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
+-   There is already a [Canvas](/en/docs/api/canvas) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
 
-## 方法一
+## Method 1
 
-创建一个 WebGPUGraph，内部会完成画布创建、插件注册等一系列初始化工作。完成后直接调用算法：
+A WebGPUGraph is created and a series of initialization work such as canvas creation and plugin registration is done internally. Once completed, the algorithm is called directly.
 
 ```js
 import { WebGPUGraph } from '@antv/webgpu-graph';
 const graph = new WebGPUGraph();
 
 (async () => {
-    // 调用算法
     const result = await graph.pageRank(data);
 })();
 ```
 
-## 方法二
+## Method 2
 
-如果已经在使用 G 的 Canvas 画布进行渲染，可以复用它，并执行以下操作：
+If you are already using G's Canvas for rendering, you can reuse it and do the following.
 
--   注册 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 插件
--   等待画布初始化
--   获取 GPU [Device](/zh/docs/plugins/device-renderer#device)
--   调用算法，此时算法的第一个参数为上一步获取到的 Device
+-   Register [g-plugin-gpgpu](/en/docs/plugins/gpgpu)
+-   Waiting for the canvas to initialize
+-   Get GPU [Device](/en/docs/plugins/device-renderer#device)
+-   The algorithm is called, and the first parameter of the algorithm is the Device obtained in the previous step
 
 ```js
 import { Canvas } from '@antv/g';
@@ -110,69 +109,69 @@ const canvas = new Canvas({
 });
 
 (async () => {
-    // 等待画布初始化完成
+    // Wait for the canvas initialization to complete
     await canvas.ready;
 
-    // 通过渲染器获取 Device
+    // Get Device by Renderer
     const plugin = renderer.getPlugin('device-renderer');
     const device = plugin.getDevice();
 
-    // 调用算法，传入 device 和图数据
+    // Call the algorithm, pass in Device and graph data
     const result = await pageRank(device, data);
 })();
 ```
 
-以下所有算法均为异步调用。
+All the following algorithms are called asynchronously.
 
 # Link Analysis
 
 ## PageRank
 
-参数列表如下：
+The list of parameters is as follows.
 
-| 名称 | 类型 | 是否必选 | 描述 |
+| name | type | isRequired | description |
 | --- | --- | --- | --- |
-| graphData | GraphData | true | 图数据 |
-| epsilon | number | false | 判断 PageRank 得分是否稳定的精度值，默认值为 `1e-05` |
-| alpha | number | false | 阻尼系数（dumping factor），指任意时刻，用户访问到某节点后继续访问该节点指向的节点的概率，默认值为 `0.85`。 |
-| maxIteration | number | false | 迭代次数，默认值为 `1000` |
+| graphData | GraphData | true |  |
+| epsilon | number | false | The precision value to determine if the PageRank score is stable, default value is `1e-05`. |
+| alpha | number | false | The dumping factor is the probability that a user will continue to access the node pointed to by a node at any given moment, with a default value of `0.85`. |
+| maxIteration | number | false | Number of iterations, default value is `1000` |
 
-返回值为一个结果数组，包含 `id` 和 `score` 属性，形如 `[{ id: 'A', score: 0.38 }, { id: 'B', score: 0.32 }...]`。
+The return value is an array of results containing the `id` and `score` attributes, in the form `[{ id: 'A', score: 0.38 }, { id: 'B', score: 0.32 }...] `.
 
-其中数组元素已经按照 `score` 进行了从高到低的排序，因此第一个元素代表重要性最高的节点。
+The array elements have been sorted by `score` from highest to lowest, so the first element represents the node with the highest importance.
 
-参考以下 CUDA 版本实现：
+Refer to the following CUDA version implementation.
 
 -   https://github.com/princeofpython/PageRank-with-CUDA/blob/main/parallel.cu
 -   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.dask.link_analysis.pagerank.pagerank.html
 
-使用方式如下，[示例](/zh/examples/gpgpu#webgpu-graph-pagerank)：
+It is used in the following way, [example](/en/examples/gpgpu#webgpu-graph-pagerank)：
 
 ```js
 const result = await graph.pageRank(data);
 // [{id: 'B', score: 0.3902697265148163}, {}...]
 ```
 
-在较大规模的点边场景下有非常明显的提升：
+There is a very significant improvement in larger point-side scenarios.
 
-| 算法名   | 节点 / 边       | CPU 耗时    | GPU 耗时  | Speed up |
-| -------- | --------------- | ----------- | --------- | -------- |
-| PageRank | 1k 节点 500k 边 | 13641.50 ms | 130.20 ms | ~100x    |
+| Algorithm name | Node / Edge           | CPU time consumption | GPU time consumption | Speed up |
+| -------------- | --------------------- | -------------------- | -------------------- | -------- |
+| PageRank       | 1k Nodes & 500k Edges | 13641.50 ms          | 130.20 ms            | ~100x    |
 
 # Traversal
 
 ## SSSP
 
-单源最短路径，即从一个节点出发，到其他所有节点的最短路径。
+Single source shortest path, i.e., the shortest path from one node to all other nodes.
 
-参数列表如下：
+The list of parameters is as follows.
 
-| 名称      | 类型      | 是否必选 | 描述                                                 |
-| --------- | --------- | -------- | ---------------------------------------------------- |
-| graphData | GraphData | true     | 图数据                                               |
-| source    | number    | false    | 判断 PageRank 得分是否稳定的精度值，默认值为 `1e-05` |
+| name      | type      | isRequired | description                                          |
+| --------- | --------- | ---------- | ---------------------------------------------------- |
+| graphData | GraphData | true       | 图数据                                               |
+| source    | number    | false      | 判断 PageRank 得分是否稳定的精度值，默认值为 `1e-05` |
 
-参考以下 CUDA 版本实现：
+Refer to the following CUDA version implementations.
 
 -   https://www.lewuathe.com/illustration-of-distributed-bellman-ford-algorithm.html
 -   https://github.com/sengorajkumar/gpu_graph_algorithms
@@ -183,6 +182,14 @@ const result = await graph.pageRank(data);
 [Accelerating large graph algorithms on the GPU using CUDA](https://link.zhihu.com/?target=http%3A//citeseerx.ist.psu.edu/viewdoc/download%3Fdoi%3D10.1.1.102.4206%26rep%3Drep1%26type%3Dpdf)
 
 ## BFS
+
+-   [Scalable GPU Graph Traversal](https://research.nvidia.com/publication/scalable-gpu-graph-traversal)
+-   https://github.com/rafalk342/bfs-cuda
+-   https://github.com/kaletap/bfs-cuda-gpu
+
+## DFS
+
+https://github.com/divyanshu-talwar/Parallel-DFS
 
 # Nodes clustering
 
@@ -195,7 +202,9 @@ const result = await graph.pageRank(data);
 
 ## Louvain
 
-[Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
+-   [Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
+-   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.louvain.html
+-   https://github.com/rapidsai/cugraph/tree/branch-22.08/cpp/src/community
 
 ## K-Core
 

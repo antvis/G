@@ -9,7 +9,7 @@ order: 1
 
 在 CUDA 中 Kernel（核函数）在 GPU 侧（Device）并行，CPU 侧（Host）负责写入、读取数据，指定线程组大小，调用 Kernel 等串行任务：
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZWCaRLLs1ekAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZWCaRLLs1ekAAAAAAAAAAAAAARQnAQ" alt="host & device" width="60%">
 
 两者是需要配合执行的，例如在 Host 中分配内存，再拷贝到 Device 中：
 
@@ -50,13 +50,13 @@ int main()
 
 “single source” 无疑是 CUDA 的一大亮点，即 Host、Device 代码都用 C++ 编写，对于使用者无疑大大减少了学习成本。而使用渲染 API 的 Compute Shader 肯定无法做到这一点，Device 代码必须使用 Shader 语言写，类似 RPC 调用使得同步变得困难，同时 Shader 语言限制颇多（无递归、参数类型受限）。
 
-下图来自 [PPT](https://docs.google.com/presentation/d/1dVSXORW6JurLUcx5UhE1_7EZHuXv8APjx2y_Bbs_1Vg/edit#slide=id.gd6c3b45912_0_10)，对比了 CUDA 和 Compute Shader 的差异：
+下图来自该 [PPT](https://docs.google.com/presentation/d/1dVSXORW6JurLUcx5UhE1_7EZHuXv8APjx2y_Bbs_1Vg/edit#slide=id.gd6c3b45912_0_10)，对比了 CUDA 和 Compute Shader 的差异：
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4tl8Q6vZ16MAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4tl8Q6vZ16MAAAAAAAAAAAAAARQnAQ" alt="CUDA vs compute shaders" width="80%">
 
 CUDA C++ 让开发者可以用 C++ 编写核函数，使用 nvcc 编译成 GPU 可执行的代码。如果我们想在 Web 端做同样的事情，JS 语言并不好扩展，换言之 Device 和 Host 代码很难写在一起。
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zCZDRY8o2ncAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zCZDRY8o2ncAAAAAAAAAAAAAARQnAQ" alt="CUDA vs compute shaders" width="80%">
 
 一个简单的做法是将 Device 代码写在字符串中，利用 WebGPU API 提供的计算管线。下一个问题是字符串中的 Device 代码应该使用哪种语言呢？
 
@@ -73,13 +73,13 @@ GPU 线程和通常意义上我们理解的线程还不太一样，这些线程�
 
 下图来自 [http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf](http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf)，仅展示网格与线程组的层次关系，并不局限于 DirectCompute。
 
+<img src="https://user-images.githubusercontent.com/3608471/83828560-87a24f80-a713-11ea-8558-2813989db14a.png" alt="GPU Programming Model" width="60%">
+
 -   通过 `dispatch(x, y, z)` 分配一个 3 维的线程网格（Grid）
 -   网格中包含了许多线程组（Work Group、Thread Group、Thread Block、本地工作组不同叫法），每一个线程组中又包含了许多线程，线程组也是 3 维的，一般在 Shader 中通过 `numthreads(x, y, z)` 指定
 -   我们的 Shader 程序最终会运行在每一个线程上。对于每一个线程，可以获取自己在线程组中的 3 维坐标，也可以获取线程组在整个线程网格中的 3 维坐标，以此映射到不同的数据上
 
-![image](https://user-images.githubusercontent.com/3608471/83828560-87a24f80-a713-11ea-8558-2813989db14a.png)
-
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rNh0SKfOOQAAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rNh0SKfOOQAAAAAAAAAAAAAAARQnAQ" alt="Grid, Block and Thread" width="40%">
 
 在 CUDA 中使用如下方式分配 Blocks 数量和每个 Block 中的线程数量：
 
@@ -89,25 +89,29 @@ dim3 numBlocks(N / threadsPerBlock.x, N / threadsPerBlock.y);
 MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C); // 调用 Kernel 函数
 ```
 
-而在 Compute Shader 中使用如下语法： https://www.w3.org/TR/WGSL/#compute-shader-workgroups
+而在 Compute Shader 中使用如下语法： https://www.w3.org/TR/WGSL/#entry-point-attributes
 
 ```
-[[stage(compute), workgroup_size(16, 16)]]
+@compute @workgroup_size(8,4,1)
 ```
 
 ## 硬件视图
 
 网格、线程组与线程的对应关系也体现在 GPU 的硬件实现上。
 
-GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多核心，下图为 CUDA 实现的对应关系： ![image](https://user-images.githubusercontent.com/3608471/83829499-968a0180-a715-11ea-801e-ce68b2681cdf.png)
+GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多核心，下图为 CUDA 实现的对应关系：
 
-下图来自：http://www.adms-conf.org/2019-presentations/ADMS19_nvidia_keynote.pdf ![image](https://user-images.githubusercontent.com/3608471/83829297-1ebbd700-a715-11ea-9083-ced1728ee10d.png)
+<img src="https://user-images.githubusercontent.com/3608471/83829499-968a0180-a715-11ea-801e-ce68b2681cdf.png" alt="software & hardware" width="60%">
+
+下图来自：http://www.adms-conf.org/2019-presentations/ADMS19_nvidia_keynote.pdf
+
+<img src="https://user-images.githubusercontent.com/3608471/83829297-1ebbd700-a715-11ea-9083-ced1728ee10d.png" alt="GPU execution model" width="60%">
 
 ## 线程变量
 
 现在我们了解了网格、线程组和线程的层次关系，在每一个线程执行 Shader 程序时，需要了解自己在所在线程组中的坐标、线程组在整个线程网格中的坐标。下图来自 [https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN](https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN)，展示了这些坐标的计算逻辑：
 
-![image](https://user-images.githubusercontent.com/3608471/83828472-53c72a00-a713-11ea-80e7-5ec22a688da8.png)
+<img src="https://user-images.githubusercontent.com/3608471/83828472-53c72a00-a713-11ea-80e7-5ec22a688da8.png" alt="attributes numthreads" width="80%">
 
 | 变量名 | 类型 | 说明 |
 | --- | --- | --- |
@@ -122,7 +126,7 @@ GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多�
 
 在某些计算任务中，每个线程不仅需要处理自己负责的那一部分数据，可能还需要读取、修改其他线程处理过的数据，此时就需要共享内存与同步了。
 
-![image](https://user-images.githubusercontent.com/3608471/83833646-018c0600-a71f-11ea-92d9-f354bfa19345.png)
+<img src="https://user-images.githubusercontent.com/3608471/83833646-018c0600-a71f-11ea-92d9-f354bfa19345.png" alt="shared memory" width="60%">
 
 来自：https://zhuanlan.zhihu.com/p/128996252
 

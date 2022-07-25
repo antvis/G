@@ -115,8 +115,18 @@ export interface BaseStyleProps {
   fillOpacity?: number;
   /** 整体透明度 */
   opacity?: number;
-  /** 线宽 */
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width
+   */
+  strokeWidth?: string | number;
+
+  /**
+   * alias if strokeWidth
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineWidth
+   */
   lineWidth?: string | number;
+
   /**
    * increased line width when hitting test
    */
@@ -125,14 +135,49 @@ export interface BaseStyleProps {
    * 交互区域
    */
   hitArea?: DisplayObject | null;
-  /** 指定如何绘制每一条线段末端 */
-  lineCap?: CanvasLineCap;
-  /** 用来设置2个长度不为0的相连部分（线段，圆弧，曲线）如何连接在一起的属性（长度为0的变形部分，其指定的末端和控制点在同一位置，会被忽略） */
-  lineJoin?: CanvasLineJoin;
+
   /**
-   * 设置线的虚线样式，可以指定一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。 如果数组元素的数量是奇数， 数组的元素会被复制并重复。例如， [5, 15, 25] 会变成 [5, 15, 25, 5, 15, 25]。这个属性取决于浏览器是否支持 setLineDash() 函数。
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap
+   */
+  strokeLinecap?: CanvasLineCap;
+
+  /**
+   * alias of strokeLinecap
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
+   */
+  lineCap?: CanvasLineCap;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin
+   */
+  strokeLinejoin?: CanvasLineJoin;
+
+  /**
+   * alias of strokeLinejoin
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+   */
+  lineJoin?: CanvasLineJoin;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
+   */
+  strokeDasharray?: string | (string | number)[];
+
+  /**
+   * alias of strokeDasharray
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getLineDash
    */
   lineDash?: string | (string | number)[];
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset
+   */
+  strokeDashoffset?: number;
+
+  /**
+   * alias of strokeDashoffset
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+   */
   lineDashOffset?: number;
 
   shadowType?: 'inner' | 'outer' | 'both';
@@ -144,9 +189,15 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowColor
    */
   shadowColor?: ColorType;
-  /** 阴影 x 方向偏移量 */
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowOffsetX
+   */
   shadowOffsetX?: number;
-  /** 阴影 y 方向偏移量 */
+
+  /**
+   * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowOffsetY
+   */
   shadowOffsetY?: number;
 
   /**
@@ -165,15 +216,22 @@ export interface BaseStyleProps {
   miterLimit?: number | string;
 
   display?: string;
+
+  /**
+   * @see https://g-next.antv.vision/zh/docs/plugins/dragndrop#drag
+   */
+  draggable?: boolean;
+
+  /**
+   * @see https://g-next.antv.vision/zh/docs/plugins/dragndrop#drop
+   */
+  droppable?: boolean;
 }
 
 export interface ParsedBaseStyleProps
   extends Omit<
     BaseStyleProps,
     | 'anchor'
-    | 'x'
-    | 'y'
-    | 'z'
     | 'opacity'
     | 'strokeOpacity'
     | 'fillOpacity'

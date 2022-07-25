@@ -41,31 +41,31 @@ order: 0
 import { Group, Circle } from '@antv/g';
 
 const solarSystem = new Group({
-  name: 'solarSystem',
+    name: 'solarSystem',
 });
 const earthOrbit = new Group({
-  name: 'earthOrbit',
+    name: 'earthOrbit',
 });
 const moonOrbit = new Group({
-  name: 'moonOrbit',
+    name: 'moonOrbit',
 });
 const sun = new Circle({
-  name: 'sun',
-  style: {
-    r: 100,
-  },
+    name: 'sun',
+    style: {
+        r: 100,
+    },
 });
 const earth = new Circle({
-  name: 'earth',
-  style: {
-    r: 50,
-  },
+    name: 'earth',
+    style: {
+        r: 50,
+    },
 });
 const moon = new Circle({
-  name: 'moon',
-  style: {
-    r: 25,
-  },
+    name: 'moon',
+    style: {
+        r: 25,
+    },
 });
 
 solarSystem.appendChild(sun);
@@ -85,7 +85,7 @@ moonOrbit.appendChild(moon);
 
 ## 变换
 
-我们提供了平移、缩放和旋转这三种变换。其中每一种的值又可以分成相对和绝对两种，例如对于平移这种变换，平移到某一个点和基于当前点平移多少距离显然是不同的。和变换的量一样，**坐标系**同样具有相对和绝对的概念，这在之前版本的 G 中并没有解释的很清楚，缺少配套的 API，在使用时有诸多不变。
+我们提供了平移、缩放和旋转这三种变换。其中每一种的值又可以分成相对和绝对两种，例如对于平移这种变换，平移到某一个点和基于当前点平移多少距离显然是不同的。和变换的量一样，**坐标系**同样具有相对和绝对的概念，这在之前版本的 G 中并没有解释的很清楚，缺少配套的 API，在使用时有诸多不便。
 
 ### 局部 VS 世界坐标系
 
@@ -298,43 +298,43 @@ group.setZIndex(100);
 
 ### 定义组件
 
-- 使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
-- 如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
-- 提供例如 `useFrame` 这样的 hook，完成动画
+-   使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
+-   如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
+-   提供例如 `useFrame` 这样的 hook，完成动画
 
 ```jsx
 import React, { useRef, useState } from 'react';
 import { Group, Circle, useFrame } from '@antv/react-g-fiber';
 
 const SolarSystem = () => {
-  // 创建对于 Group 的引用
-  const solarSystem = useRef();
-  const earthOrbit = useRef();
+    // 创建对于 Group 的引用
+    const solarSystem = useRef();
+    const earthOrbit = useRef();
 
-  // 每一帧调用
-  useFrame(() => {
-    solarSystem.rotateLocal(1);
-    earthOrbit.rotateLocal(1);
-  });
+    // 每一帧调用
+    useFrame(() => {
+        solarSystem.rotateLocal(1);
+        earthOrbit.rotateLocal(1);
+    });
 
-  const [hovered, setHover] = useState(false);
+    const [hovered, setHover] = useState(false);
 
-  return;
-  <Group name="solarSystem" ref={solarSystem} position={[300, 250]}>
-    <Circle name="sun" r={100} />
-    <Group name="earthOrbit" ref={earthOrbit} localPosition={[100, 0]}>
-      <Circle name="earth" r={50} />
-      <Group name="moonOrbit" localPosition={[100, 0]}>
-        <Circle
-          name="moon"
-          r={25}
-          fill={hovered ? 'yellow' : 'red'}
-          onPointerOver={(event) => setHover(true)}
-          onPointerOut={(event) => setHover(false)}
-        />
-      </Group>
-    </Group>
-  </Group>;
+    return;
+    <Group name="solarSystem" ref={solarSystem} position={[300, 250]}>
+        <Circle name="sun" r={100} />
+        <Group name="earthOrbit" ref={earthOrbit} localPosition={[100, 0]}>
+            <Circle name="earth" r={50} />
+            <Group name="moonOrbit" localPosition={[100, 0]}>
+                <Circle
+                    name="moon"
+                    r={25}
+                    fill={hovered ? 'yellow' : 'red'}
+                    onPointerOver={(event) => setHover(true)}
+                    onPointerOut={(event) => setHover(false)}
+                />
+            </Group>
+        </Group>
+    </Group>;
 };
 ```
 
@@ -348,10 +348,10 @@ import { Canvas } from '@antv/react-g-fiber';
 import { SolarSystem } from './SolarSystem';
 
 ReactDOM.render(
-  <Canvas width={600} height={500} renderer="webgl">
-    <SolarSystem />
-  </Canvas>,
-  document.getElementById('root'),
+    <Canvas width={600} height={500} renderer="webgl">
+        <SolarSystem />
+    </Canvas>,
+    document.getElementById('root'),
 );
 ```
 
@@ -359,8 +359,8 @@ ReactDOM.render(
 
 在实际使用中，如何将场景图中的节点与 HTML 结合是一个问题，尤其当 HTML 变得复杂时，就不仅仅是一个 HUD 问题了：
 
-- Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
-- SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
+-   Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
+-   SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
 
 因此我们应该让渲染引擎做它们擅长的事情：让 Canvas/WebGL 高效地绘制基础图形，让 HTML 来渲染复杂组件。两者之间的**联动**才是我们该关心的问题。
 
@@ -370,20 +370,20 @@ ReactDOM.render(
 import { Group, Circle, Html } from '@antv/react-g-fiber';
 
 const SolarSystem = () => (
-  <Group>
-    <Circle r={100} />
-    <Html prepend>
-      <h1>hello</h1>
-      <p>world</p>
-    </Html>
-  </Group>
+    <Group>
+        <Circle r={100} />
+        <Html prepend>
+            <h1>hello</h1>
+            <p>world</p>
+        </Html>
+    </Group>
 );
 ```
 
 该容器中的内容会添加在 `<canvas>` 之后。但毕竟是特殊节点，一些会功能受限，例如：
 
-- 无法通过 `z-index` 让它夹在两个 `Circle` 之间
-- 无法在内部嵌套其他基础图形节点
+-   无法通过 `z-index` 让它夹在两个 `Circle` 之间
+-   无法在内部嵌套其他基础图形节点
 
 ## WIP 结合 D3 生态
 
@@ -402,9 +402,9 @@ SpriteJS 就是这么做的，节点描述、处理逻辑仍由 D3 完成，渲�
 ```javascript
 import { transform } from '@antv/matrix-util';
 transform(m, [
-  ['t', x, y], // translate with vector (x, y)
-  ['r', Math.PI], // rotate
-  ['s', 2, 2], // scale at x-axis and y-axis
+    ['t', x, y], // translate with vector (x, y)
+    ['r', Math.PI], // rotate
+    ['s', 2, 2], // scale at x-axis and y-axis
 ]);
 ```
 
@@ -412,9 +412,9 @@ transform(m, [
 
 ```javascript
 group
-  .translate(x, y)
-  .rotateLocal(180) // rotate in degrees
-  .scaleLocal(2, 2);
+    .translate(x, y)
+    .rotateLocal(180) // rotate in degrees
+    .scaleLocal(2, 2);
 ```
 
 ### 节点定义
@@ -460,6 +460,6 @@ group.queryAllSelector('.link-point-left');
 
 ## 参考资料
 
-- [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
-- [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
-- [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)
+-   [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
+-   [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
+-   [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)
