@@ -23,20 +23,27 @@ export class Plugin extends AbstractRendererPlugin {
     this.container.load(containerModule, true);
   }
 
-  setDrawer(tool: DrawerTool) {
-    return this.container.get(AnnotationPlugin).setDrawer(tool, {});
+  addEventListener(eventName: string, fn: (...args: any[]) => void) {
+    this.container.get(AnnotationPlugin).emmiter.on(eventName, (e) => {
+      fn(e);
+      console.log('on', eventName, e);
+    });
+  }
+
+  setDrawer(tool: DrawerTool, options) {
+    this.container.get(AnnotationPlugin).setDrawer(tool, options);
   }
 
   redo() {
-    return this.container.get(AnnotationPlugin).redo();
+    this.container.get(AnnotationPlugin).redo();
   }
 
   undo() {
-    return this.container.get(AnnotationPlugin).undo();
+    this.container.get(AnnotationPlugin).undo();
   }
 
   deleteAll() {
-    return this.container.get(AnnotationPlugin).deleteAll();
+    this.container.get(AnnotationPlugin).deleteAll();
   }
 
   destroy(): void {

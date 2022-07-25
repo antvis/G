@@ -4,7 +4,9 @@ export interface Annotation {
   id: string;
   path: AnnotationPath;
   isActive: boolean;
+  isHover: boolean;
   isDrawing: boolean;
+  tag?: string;
 }
 
 export interface Point {
