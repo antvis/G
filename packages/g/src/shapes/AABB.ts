@@ -14,9 +14,9 @@ export class AABB {
     );
   }
 
-  center: vec3;
+  center: vec3 = vec3.create();
 
-  halfExtents: vec3;
+  halfExtents: vec3 = vec3.create();
 
   min: vec3 = vec3.create();
   max: vec3 = vec3.create();
@@ -26,8 +26,14 @@ export class AABB {
   }
 
   update(center?: vec3, halfExtents?: vec3) {
-    this.center = vec3.copy(vec3.create(), center || vec3.create());
-    this.halfExtents = vec3.copy(vec3.create(), halfExtents || vec3.fromValues(0, 0, 0));
+    if (center) {
+      vec3.copy(this.center, center);
+    }
+
+    if (halfExtents) {
+      vec3.copy(this.halfExtents, halfExtents || vec3.fromValues(0, 0, 0));
+    }
+
     this.min = vec3.sub(this.min, this.center, this.halfExtents);
     this.max = vec3.add(this.max, this.center, this.halfExtents);
   }

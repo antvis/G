@@ -1,25 +1,25 @@
 ---
-title: 场景图
+title: Scene Graph
 order: 0
 ---
 
-[场景图](https://zh.wikipedia.org/zh-cn/%E5%9C%BA%E6%99%AF%E5%9B%BE)（SceneGraph）是组织和管理二维/三维虚拟场景的一种数据结构，是一个有向无环图。场景图提供了两大能力：
+The [SceneGraph](https://zh.wikipedia.org/zh-cn/%E5%9C%BA%E6%99%AF%E5%9B%BE) is a data structure for organizing and managing 2D/3D virtual scenes as a directed acyclic graph. SceneGraphs provide two major capabilities.
 
-1. 描述父子关系
-2. 自动完成基于父子关系的某些复杂级联计算
+1. describe parent-child relationships
+2. automate some complex cascade calculations based on parent-child relationships
 
-在旧版 G 中我们在 `Group/Shape` 上提供了部分相关操作，但存在很多问题，导致上层在使用时存在很多 hack 手段。在新版中，我们参考了 DOM API 和 CSS 选择器，给场景图中的每个节点补全了以下能力，大幅降低学习成本：
+In the old version of G, we provided some related operations on `Group/Shape`, but there were a lot of problems, which led to a lot of hacking at the upper level when using it. In the new version, we refer to the DOM API and CSS selector, and give each node in the scene graph the following capabilities to significantly reduce the learning cost.
 
-1. 与 DOM API 风格一致的添加/删除节点/属性方法
-2. 与 CSS 选择器类似的节点查询语法
-3. 通过 `z-index` 控制展示次序
-4. 通过 `visibility` 控制可见性
+1. add/remove node/property methods in the same style as the DOM API
+2. node query syntax similar to CSS selector
+3. `z-index` to control the display order
+4. visibility control via `visibility
 
-另外我们参考了 `react-three-fiber`，使用声明式语法定义场景图，便于组件复用。
+In addition, we refer to `react-three-fiber` to define the scene graph using declarative syntax for easy component reuse.
 
-## 太阳系的例子
+## Examples of solar systems
 
-试想我们需要构建一个简单的太阳系场景，具有以下层次关系：
+Imagine we need to construct a simple solar system scenario with the following hierarchical relationships.
 
 ```
 太阳系 solarSystem
@@ -35,37 +35,37 @@ order: 0
      月球 moon
 ```
 
-在 G 中使用 `Group` 和 `Circle` 可以很容易构建出它们的层次关系：
+Their hierarchy can be easily constructed in G using `Group` and `Circle`.
 
 ```javascript
 import { Group, Circle } from '@antv/g';
 
 const solarSystem = new Group({
-  name: 'solarSystem',
+    name: 'solarSystem',
 });
 const earthOrbit = new Group({
-  name: 'earthOrbit',
+    name: 'earthOrbit',
 });
 const moonOrbit = new Group({
-  name: 'moonOrbit',
+    name: 'moonOrbit',
 });
 const sun = new Circle({
-  name: 'sun',
-  style: {
-    r: 100,
-  },
+    name: 'sun',
+    style: {
+        r: 100,
+    },
 });
 const earth = new Circle({
-  name: 'earth',
-  style: {
-    r: 50,
-  },
+    name: 'earth',
+    style: {
+        r: 50,
+    },
 });
 const moon = new Circle({
-  name: 'moon',
-  style: {
-    r: 25,
-  },
+    name: 'moon',
+    style: {
+        r: 25,
+    },
 });
 
 solarSystem.appendChild(sun);
@@ -75,89 +75,95 @@ earthOrbit.appendChild(moonOrbit);
 moonOrbit.appendChild(moon);
 ```
 
-⚠️ 此时我们并不需要使用到 `Canvas`，场景图是一种抽象的数据结构，只有在渲染时才需要与 `Canvas` 交互。
+⚠️ We don't need to use `Canvas` at this point, the scene graph is an abstract data structure that only needs to interact with `Canvas` when rendering.
 
-描述完层次关系，我们通常需要进一步定义场景图中对象的行为。在之前简单的太阳系模型中，我们希望让地球绕着太阳旋转，月亮绕着地球旋转，实时更新它们的位置属性，[DEMO](/en/examples/scenegraph#hierarchy)。但月球的轨迹（下图中红色虚线）计算似乎很复杂。
+After describing the hierarchical relationships, we usually need to further define the behavior of the objects in the scene graph. In the previous simple solar system model, we wanted to have the Earth rotate around the Sun and the Moon rotate around the Earth, updating their position properties in real time, [DEMO](/en/examples/scenegraph#hierarchy). However, the calculation of the moon's trajectory (red dashed line in the figure below) seems to be complicated.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VDIfSJrf6xEAAAAAAAAAAAAAARQnAQ)
 
-因此我们需要让月球只需要专心做“绕地球转”这件事，背后涉及父子关系的矩阵计算交给场景图完成。
+Therefore, we need to let the moon just concentrate on the "orbiting the Earth", and leave the matrix calculation behind the parent-child relationship to the scene map.
 
-## 变换
+## Transformation
 
-我们提供了平移、缩放和旋转这三种变换。其中每一种的值又可以分成相对和绝对两种，例如对于平移这种变换，平移到某一个点和基于当前点平移多少距离显然是不同的。和变换的量一样，**坐标系**同样具有相对和绝对的概念，这在之前版本的 G 中并没有解释的很清楚，缺少配套的 API，在使用时有诸多不变。
+We provide three types of transformations: translation, scaling and rotation. The values of each of these can be divided into relative and absolute. For example, for the translation transformation, there is obviously a difference between translating to a certain point and translating a distance based on the current point. Like the amount of transformation, the **coordinate system** also has the concept of relative and absolute, which was not clearly explained in the previous version of G. The lack of a supporting API makes it inconvenient to use.
 
-### 局部 VS 世界坐标系
+### Local & World Coordinate systems
 
-坐标系可以用来描述场景中物体的位置、旋转和缩放情况，最著名的坐标系是欧式坐标系。在图形学中我们还会使用到重心坐标系。欧式空间可以包含 N 维，在可视化场景中我们只使用二维和三维。
+Coordinate systems can be used to describe the position, rotation, and scaling of objects in a scene; the most famous coordinate system is the Euclidean coordinate system. In graphics we also use the center of gravity coordinate system. Euclidean space can contain N dimensions, in visualization scenes we use only 2D and 3D.
 
-当我们在说“月亮绕着地球转”的时候，实际上已经忽略了地球以外的对象。在月亮的**“局部坐标系”**中，它只是单纯地绕着一个点旋转而已，尽管在整个太阳系这个**“世界坐标系”**下，地球还在绕着太阳旋转，月球最终沿着上面那个复杂轨迹运动。
+When we say that "the moon revolves around the earth", we have actually ignored the objects outside the earth. In the **"local coordinate system "** of the Moon, it simply rotates around a point, although in the **"world coordinate system "** of the entire solar system, the Earth still rotates around the Sun, and the Moon eventually follows the complex trajectory above. motion.
 
-在二维和三维世界中，都可以使用局部坐标系和世界坐标系的概念，下图来自 [playcanvas](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)，左侧为世界坐标系，右侧为局部坐标系： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kgaHRIYex8MAAAAAAAAAAAAAARQnAQ)
+The concepts of local and world coordinate systems can be used in both two and three dimensional worlds.
 
-世界坐标系被整个场景图内的所有节点共享，因此它有一个固定的原点`(0, 0)`，XYZ 三轴（二维场景中为 XY 轴）的朝向也都是固定的，即使场景中的这个盒子自身发生了旋转，世界坐标系对它来说也不会变化。但对于自身的局部坐标系而言，它的原点首先就不再是 `(0, 0)` 而是物体自身的位置，坐标轴自然也发生了变化，顾名思义它和物体本身相关联。
+The following image is from [playcanvas](https://developer.playcanvas.com/en/tutorials/manipulating-entities/), with the world coordinate system on the left and the local coordinate system on the right.
 
-试想此时我们让这个盒子“沿 X 轴（红色）平移 10 个单位”，在不同坐标系下含义完全不同。因此当我们想对一个物体进行变换时，首先要指明所处的坐标系。
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kgaHRIYex8MAAAAAAAAAAAAAARQnAQ)
 
-另外，局部坐标系也被称作**模型坐标系**，在描述模型自身的变换时更方便。在[下图](https://bladecast.pro/blog/local-vs-world-space-why-two)中放置了两个士兵模型，如果我们想让每一个士兵转一下头，显然在局部坐标系做比较简单，因为“转动”这个变换就是相对于每个模型的头部而言的。 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9B4FRo4UbNsAAAAAAAAAAAAAARQnAQ)
+The world coordinate system is shared by all the nodes in the whole scene graph, so it has a fixed origin `(0, 0)` and the orientation of the XYZ axes (XY axes in 2D scene) is also fixed, even if the box in the scene rotates itself, the world coordinate system will not change for it. But for its own local coordinate system, its origin is no longer `(0, 0)` but the object's own position, and the axes naturally change, as the name implies, and are associated with the object itself.
 
-### 平移
+Imagine at this point that we ask the box to "translate 10 units along the X-axis (red)", which has a completely different meaning in different coordinate systems. So when we want to transform an object, we first need to specify the coordinate system we are in.
 
-对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
+In addition, the local coordinate system is also called **model coordinate system**, which is more convenient when describing the transformation of the model itself. In [the figure below](https://bladecast.pro/blog/local-vs-world-space-why-two) two soldier models are placed, and if we want to make each soldier turn his head a little, it is obviously simpler to do it in the local coordinate system, because the "turn " this transformation is relative to the head of each model.
 
-| 名称 | 参数 | 返回值 | 备注 |
+![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9B4FRo4UbNsAAAAAAAAAAAAAARQnAQ)
+
+### Translation
+
+For translation operations, we provide APIs for moving absolute/relative distances in local/world coordinate systems.
+
+| name | params | return value | remarks |
 | --- | --- | --- | --- |
-| translate | `[number, number]` | 无 | 在 **世界坐标系** 下，相对当前位置移动 |
-| translateLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前位置移动 |
-| setPosition | `[number, number]` | 无 | 设置 **世界坐标系** 下的位置 |
-| setLocalPosition | `[number, number]` | 无 | 设置 **局部坐标系** 下的位置 |
-| getPosition | 无 | `[number, number]` | 获取 **世界坐标系** 下的位置 |
-| getLocalPosition | 无 | `[number, number]` | 获取 **局部坐标系** 下的位置 |
+| translate | `[number, number]` | - | Move relative to current position in **world coordinate system** |
+| translateLocal | `[number, number]` | - | Move relative to current position in **local coordinate system** |
+| setPosition | `[number, number]` | - | Sets the position in the **world coordinate system**. |
+| setLocalPosition | `[number, number]` | - | Sets the position in the **local coordinate system**. |
+| getPosition | - | `[number, number]` | Get the position in the **world coordinate system** |
+| getLocalPosition | - | `[number, number]` | Get the position in the **local coordinate system** |
 
-### 缩放
+### Scaling
 
-和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
+Unlike panning, we can't provide a method like `setScale` to set the scaling in the world coordinate system, so scaling in the global coordinate system is read-only, which is called [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/) in Unity.
 
-| 名称 | 参数 | 返回值 | 备注 |
+| name | params | return value | remarks |
 | --- | --- | --- | --- |
-| scaleLocal | `[number, number]` | 无 | 在 **局部坐标系** 下，相对当前缩放比例继续缩放 |
-| setLocalScale | `[number, number]` | 无 | 设置 **局部坐标系** 下的缩放比例 |
-| getScale | 无 | `[number, number]` | 获取 **世界坐标系** 下的缩放比例 |
-| getLocalScale | 无 | `[number, number]` | 获取 **局部坐标系** 下的缩放比例 |
+| scaleLocal | `[number, number]` | - | Continued scaling with respect to the current scale in **local coordinate system** |
+| setLocalScale | `[number, number]` | - | Set the scaling in **local coordinate system** |
+| getScale | - | `[number, number]` | Get the scaling in **world coordinate system** |
+| getLocalScale | - | `[number, number]` | Get the scaling in **local coordinate system** |
 
-### 旋转
+### Rotation
 
-在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数。
+In 3D scenes, rotations can be represented as matrices, axis angles, Euler angles and quaternions, which are interconvertible with each other. Although, considering future scalability, we use quaternions in the G internal implementation.
 
-| 名称 | 参数 | 返回值 | 备注 |
+| name | params | return value | remarks |
 | --- | --- | --- | --- |
-| rotateLocal | `number` | 无 | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
-| rotate | `number` | 无 | 在 **世界坐标系** 下，旋转一定的欧拉角 |
-| setEulerAngles | `number` | 无 | 设置 **世界坐标系** 下的欧拉角 |
-| setLocalEulerAngles | `number` | 无 | 设置 **局部坐标系** 下的欧拉角 |
-| setLocalRotation | `quat` | 无 | 设置 **局部坐标系** 下的四元数 |
-| setRotation | `quat` | 无 | 设置 **世界坐标系** 下的四元数 |
-| getEulerAngles | 无 | `number` | 获取 **世界坐标系** 下的欧拉角 |
-| getLocalEulerAngles | 无 | `number` | 获取 **局部坐标系** 下的欧拉角 |
-| getLocalRotation | 无 | `quat` | 获取 **局部坐标系** 下的四元数 |
-| getRotation | 无 | `quat` | 获取 **世界坐标系** 下的四元数 |
+| rotateLocal | `number` | - | 在 **局部坐标系** 下，旋转一定的欧拉角，顺时针方向为正，单位为 `degree` |
+| rotate | `number` | - | 在 **世界坐标系** 下，旋转一定的欧拉角 |
+| setEulerAngles | `number` | - | 设置 **世界坐标系** 下的欧拉角 |
+| setLocalEulerAngles | `number` | - | 设置 **局部坐标系** 下的欧拉角 |
+| setLocalRotation | `quat` | - | 设置 **局部坐标系** 下的四元数 |
+| setRotation | `quat` | - | 设置 **世界坐标系** 下的四元数 |
+| getEulerAngles | - | `number` | 获取 **世界坐标系** 下的欧拉角 |
+| getLocalEulerAngles | - | `number` | 获取 **局部坐标系** 下的欧拉角 |
+| getLocalRotation | - | `quat` | 获取 **局部坐标系** 下的四元数 |
+| getRotation | - | `quat` | 获取 **世界坐标系** 下的四元数 |
 
-上面的旋转方法都以自身位置为旋转中心，如果我们想让节点绕任意一个点旋转，可以给它创建一个父节点，将父节点移动到某个点后再旋转：
+If we want to rotate a node around any point, we can create a parent node for it, move the parent node to a point and then rotate it.
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VE3bSZ7RFlQAAAAAAAAAAAAAARQnAQ)
 
-下面我们会完成上述太阳系的例子，让地球绕着太阳旋转，让月亮绕着地球旋转。
+Below we will complete the above solar system example by having the Earth rotate around the Sun and having the Moon rotate around the Earth.
 
-### 完成太阳系的例子
+### Example of a completed solar system
 
-首先设置太阳系在世界坐标系下的位置，基于场景图内的父子关系，太阳、地球轨道、地球、月球轨道和月球都被移动到了 `(300, 250)`，如下图（左）所示：
+First set the position of the solar system under the world coordinate system. Based on the parent-child relationship within the scene graph, the Sun, Earth's orbit, Earth, Moon's orbit and Moon are moved to `(300, 250)` as shown in the following figure (left).
 
 ```javascript
 // 设置太阳系的位置
 solarSystem.setPosition(300, 250);
 ```
 
-保持太阳位置不变，我们沿 X 轴移动地球轨道 100，同样地球、月球轨道和月球也都被移动到了世界坐标系下`(400, 250)`，如下图（中）所示：
+Keeping the position of the Sun constant, we move the Earth's orbit by 100 along the X-axis, and similarly the Earth, the Moon's orbit and the Moon are all moved to `(400, 250)` under the world coordinate system, as shown in the following figure (center).
 
 ```javascript
 earthOrbit.translate(100, 0);
@@ -165,7 +171,7 @@ earthOrbit.translate(100, 0);
 // earthOrbit.getPosition() --> (400, 250)
 ```
 
-然后我们移动月球轨道，如下图（右）所示：
+Then we move the lunar orbit, as shown in the following figure (right).
 
 ```javascript
 moonOrbit.translate(100, 0);
@@ -173,7 +179,7 @@ moonOrbit.translate(100, 0);
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XcUqQJowVKMAAAAAAAAAAAAAARQnAQ)
 
-最后在每一帧中，我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
+Finally, in each frame, we rotate the solar system and the Earth's orbit by 1 degree along the Z-axis in the local coordinate system (you can also make the Earth's orbit go faster).
 
 ```javascript
 solarSystem.rotateLocal(1);
@@ -182,7 +188,7 @@ earthOrbit.rotateLocal(1);
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZcrHSoLxRS8AAAAAAAAAAAAAARQnAQ)
 
-对于每个节点来说，只需要使用上述变换方法，就像月球只需要绕着地球转，场景图在背后会依据父子关系计算出世界坐标系下它的位置。因此我们不建议使用类似 `get/setMatrix()` 这样手动设置矩阵的方法。
+For each node, it is only necessary to use the above transformation method, just like the moon only needs to orbit the earth, and the scene graph will calculate its position in the world coordinate system behind the scenes based on the parent-child relationship. Therefore we do not recommend to use methods like `get/setMatrix()` to set the matrix manually.
 
 ## 节点操作
 
@@ -298,43 +304,43 @@ group.setZIndex(100);
 
 ### 定义组件
 
-- 使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
-- 如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
-- 提供例如 `useFrame` 这样的 hook，完成动画
+-   使用声明式语法定义场景图结构，省略了大量对于 `appendChild` 的手动调用
+-   如果需要调用 `Group` 上的方法，可以使用 `useRef` 获取引用
+-   提供例如 `useFrame` 这样的 hook，完成动画
 
 ```jsx
 import React, { useRef, useState } from 'react';
 import { Group, Circle, useFrame } from '@antv/react-g-fiber';
 
 const SolarSystem = () => {
-  // 创建对于 Group 的引用
-  const solarSystem = useRef();
-  const earthOrbit = useRef();
+    // 创建对于 Group 的引用
+    const solarSystem = useRef();
+    const earthOrbit = useRef();
 
-  // 每一帧调用
-  useFrame(() => {
-    solarSystem.rotateLocal(1);
-    earthOrbit.rotateLocal(1);
-  });
+    // 每一帧调用
+    useFrame(() => {
+        solarSystem.rotateLocal(1);
+        earthOrbit.rotateLocal(1);
+    });
 
-  const [hovered, setHover] = useState(false);
+    const [hovered, setHover] = useState(false);
 
-  return;
-  <Group name="solarSystem" ref={solarSystem} position={[300, 250]}>
-    <Circle name="sun" r={100} />
-    <Group name="earthOrbit" ref={earthOrbit} localPosition={[100, 0]}>
-      <Circle name="earth" r={50} />
-      <Group name="moonOrbit" localPosition={[100, 0]}>
-        <Circle
-          name="moon"
-          r={25}
-          fill={hovered ? 'yellow' : 'red'}
-          onPointerOver={(event) => setHover(true)}
-          onPointerOut={(event) => setHover(false)}
-        />
-      </Group>
-    </Group>
-  </Group>;
+    return;
+    <Group name="solarSystem" ref={solarSystem} position={[300, 250]}>
+        <Circle name="sun" r={100} />
+        <Group name="earthOrbit" ref={earthOrbit} localPosition={[100, 0]}>
+            <Circle name="earth" r={50} />
+            <Group name="moonOrbit" localPosition={[100, 0]}>
+                <Circle
+                    name="moon"
+                    r={25}
+                    fill={hovered ? 'yellow' : 'red'}
+                    onPointerOver={(event) => setHover(true)}
+                    onPointerOut={(event) => setHover(false)}
+                />
+            </Group>
+        </Group>
+    </Group>;
 };
 ```
 
@@ -348,10 +354,10 @@ import { Canvas } from '@antv/react-g-fiber';
 import { SolarSystem } from './SolarSystem';
 
 ReactDOM.render(
-  <Canvas width={600} height={500} renderer="webgl">
-    <SolarSystem />
-  </Canvas>,
-  document.getElementById('root'),
+    <Canvas width={600} height={500} renderer="webgl">
+        <SolarSystem />
+    </Canvas>,
+    document.getElementById('root'),
 );
 ```
 
@@ -359,8 +365,8 @@ ReactDOM.render(
 
 在实际使用中，如何将场景图中的节点与 HTML 结合是一个问题，尤其当 HTML 变得复杂时，就不仅仅是一个 HUD 问题了：
 
-- Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
-- SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
+-   Canvas/WebGL 可以渲染类似按钮这样的简单组件，但类似输入框、表单这样的复杂组件成本太高
+-   SVG 虽然可以使用 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，兼顾基础图形和 HTML 的渲染，但存在性能问题
 
 因此我们应该让渲染引擎做它们擅长的事情：让 Canvas/WebGL 高效地绘制基础图形，让 HTML 来渲染复杂组件。两者之间的**联动**才是我们该关心的问题。
 
@@ -370,20 +376,20 @@ ReactDOM.render(
 import { Group, Circle, Html } from '@antv/react-g-fiber';
 
 const SolarSystem = () => (
-  <Group>
-    <Circle r={100} />
-    <Html prepend>
-      <h1>hello</h1>
-      <p>world</p>
-    </Html>
-  </Group>
+    <Group>
+        <Circle r={100} />
+        <Html prepend>
+            <h1>hello</h1>
+            <p>world</p>
+        </Html>
+    </Group>
 );
 ```
 
 该容器中的内容会添加在 `<canvas>` 之后。但毕竟是特殊节点，一些会功能受限，例如：
 
-- 无法通过 `z-index` 让它夹在两个 `Circle` 之间
-- 无法在内部嵌套其他基础图形节点
+-   无法通过 `z-index` 让它夹在两个 `Circle` 之间
+-   无法在内部嵌套其他基础图形节点
 
 ## WIP 结合 D3 生态
 
@@ -402,9 +408,9 @@ SpriteJS 就是这么做的，节点描述、处理逻辑仍由 D3 完成，渲�
 ```javascript
 import { transform } from '@antv/matrix-util';
 transform(m, [
-  ['t', x, y], // translate with vector (x, y)
-  ['r', Math.PI], // rotate
-  ['s', 2, 2], // scale at x-axis and y-axis
+    ['t', x, y], // translate with vector (x, y)
+    ['r', Math.PI], // rotate
+    ['s', 2, 2], // scale at x-axis and y-axis
 ]);
 ```
 
@@ -412,9 +418,9 @@ transform(m, [
 
 ```javascript
 group
-  .translate(x, y)
-  .rotateLocal(180) // rotate in degrees
-  .scaleLocal(2, 2);
+    .translate(x, y)
+    .rotateLocal(180) // rotate in degrees
+    .scaleLocal(2, 2);
 ```
 
 ### 节点定义
@@ -460,6 +466,6 @@ group.queryAllSelector('.link-point-left');
 
 ## 参考资料
 
-- [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
-- [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
-- [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)
+-   [World vs Local Space. Why do we need them both?](https://bladecast.pro/blog/local-vs-world-space-why-two)
+-   [PlayCanvas Docs - Manipulating Entities](https://developer.playcanvas.com/en/tutorials/manipulating-entities/)
+-   [What dose 'lossyScale' actually means?](https://answers.unity.com/questions/456669/what-dose-lossyscale-actually-means.html)
