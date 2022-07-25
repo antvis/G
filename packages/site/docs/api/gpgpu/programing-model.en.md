@@ -1,17 +1,19 @@
 ---
-title: 编程模型
+title: Programming Model
 order: 1
 ---
 
-参考 CUDA 的编程模型，了解它有助于我们写出高性能的并行代码： https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#programming-model
+Referring to the CUDA programming model, understanding it helps us to write high-performance parallel code.
+
+https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#programming-model
 
 # Host & Device
 
-在 CUDA 中 Kernel（核函数）在 GPU 侧（Device）并行，CPU 侧（Host）负责写入、读取数据，指定线程组大小，调用 Kernel 等串行任务：
+In CUDA the Kernel is parallelized on the GPU side (Device), while the CPU side (Host) is responsible for serial tasks such as writing and reading data, specifying the size of the thread group, and calling the Kernel.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZWCaRLLs1ekAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZWCaRLLs1ekAAAAAAAAAAAAAARQnAQ" alt="host & device" width="60%">
 
-两者是需要配合执行的，例如在 Host 中分配内存，再拷贝到 Device 中：
+The two need to be executed in conjunction, for example, by allocating memory in the Host and copying it to the Device.
 
 ```c
 //allocate memory
@@ -21,120 +23,124 @@ cudaMalloc((void**) &d_in_V, V.size() *sizeof(int));
 cudaMemcpy(d_in_V, V.data(), V.size() *sizeof(int), cudaMemcpyHostToDevice);
 ```
 
-以下面的 CUDA 程序（矩阵加法）为例，核函数在 GPU 每一个线程间并行，每个线程根据自己的编号领取部分数据进行运算，将结果写回全局数组中。在加法中每一个线程负责两个矩阵间同位置元素的计算：
+In the following CUDA program (matrix addition), for example, the kernel function is parallelized between each thread of the GPU, and each thread receives part of the data according to its number to perform the operation and writes the result back to the global array. Each thread in the addition is responsible for the computation of elements in the same position between two matrices.
 
 ```c
-// Kernel 定义
+// Kernel
 __global__ void MatAdd(
-  float A[N][N], // 输入数组1
-  float B[N][N], // 输入数组2
-  float C[N][N]) // 结果数组
+  float A[N][N], // Input array 1
+  float B[N][N], // Input array 2
+  float C[N][N]) // Result array
 {
-    int i = blockIdx.x * blockDim.x + threadIdx.x; // 这些都是线程组相关的内置变量，仅 Kernel 函数中可使用
+    int i = blockIdx.x * blockDim.x + threadIdx.x; // These are built-in variables related to thread groups and are only available in Kernel functions
     int j = blockIdx.y * blockDim.y + threadIdx.y;
     if (i < N && j < N)
-        C[i][j] = A[i][j] + B[i][j]; // 执行加法并写回
+        C[i][j] = A[i][j] + B[i][j]; // Perform addition and write back
 }
 
 int main()
 {
-    // ... 省略创建 buffer 过程
+    // ... Omit the buffer creation process
     // Kernel invocation
-    dim3 threadsPerBlock(16, 16); // 指定线程组大小
+    dim3 threadsPerBlock(16, 16); // Specify the thread group size
     dim3 numBlocks(N / threadsPerBlock.x, N / threadsPerBlock.y);
-    MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C); // 调用 Kernel 函数
+    MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C); // Calling Kernel Functions
 }
 ```
 
 # CUDA vs Compute Shader
 
-“single source” 无疑是 CUDA 的一大亮点，即 Host、Device 代码都用 C++ 编写，对于使用者无疑大大减少了学习成本。而使用渲染 API 的 Compute Shader 肯定无法做到这一点，Device 代码必须使用 Shader 语言写，类似 RPC 调用使得同步变得困难，同时 Shader 语言限制颇多（无递归、参数类型受限）。
+"single source" is undoubtedly one of the highlights of CUDA, i.e. Host and Device code are written in C++, which definitely reduces the learning cost for users. This is definitely not possible with Compute Shader, which uses the rendering API. Device code must be written in the Shader language, which makes synchronization difficult due to RPC-like calls, and the Shader language has a lot of limitations (no recursion, restricted parameter types).
 
-下图来自 [PPT](https://docs.google.com/presentation/d/1dVSXORW6JurLUcx5UhE1_7EZHuXv8APjx2y_Bbs_1Vg/edit#slide=id.gd6c3b45912_0_10)，对比了 CUDA 和 Compute Shader 的差异：
+The following figure from this [PPT](https://docs.google.com/presentation/d/1dVSXORW6JurLUcx5UhE1_7EZHuXv8APjx2y_Bbs_1Vg/edit#slide=id.gd6c3b45912_0_10) compares differences between CUDA and Compute Shader.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4tl8Q6vZ16MAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4tl8Q6vZ16MAAAAAAAAAAAAAARQnAQ" alt="CUDA vs compute shaders" width="80%">
 
-CUDA C++ 让开发者可以用 C++ 编写核函数，使用 nvcc 编译成 GPU 可执行的代码。如果我们想在 Web 端做同样的事情，JS 语言并不好扩展，换言之 Device 和 Host 代码很难写在一起。
+CUDA C++ allows developers to write kernel functions in C++ and compile them into GPU-executable code using nvcc. If we want to do the same thing on the web side, the JS language doesn't scale well, in other words Device and Host code are hard to write together.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zCZDRY8o2ncAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zCZDRY8o2ncAAAAAAAAAAAAAARQnAQ" alt="CUDA vs compute shaders" width="80%">
 
-一个简单的做法是将 Device 代码写在字符串中，利用 WebGPU API 提供的计算管线。下一个问题是字符串中的 Device 代码应该使用哪种语言呢？
+A simple approach is to write the Device code in a string, taking advantage of the computational pipeline provided by the WebGPU API. The next question is which language should the Device code in the string be in?
 
--   WGSL。使用 WebGPU 的 Shader 语言最直接，但对于前端开发者有一定学习成本（但其实还好，只需要学 Compute Shader），另外在字符串里写代码会丧失语法高亮。
--   TS。让前端开发者写 TS 代码，通过编译器生成 WGSL。之前 GWebGPU 这个项目就是这种思路，配合编辑器插件能提供语法高亮。
+-   WGSL. Using WebGPU's Shader language is the most straightforward, but there are some learning costs for front-end developers (but it's actually fine, you only need to learn Compute Shader), plus you lose syntax highlighting when writing code in strings.
+-   TS. This is the idea behind the GWebGPU project, which provides syntax highlighting with the editor plugin.
 
-尽管 CUDA 和 Compute Shader 用法差异大，但对于同一个算法来说，将 CUDA 实现移植到 Compute Shader 中并不难，只要 Compute Shader 的特性足够丰富。
+Although the usage of CUDA and Compute Shader is quite different, it is not difficult to port a CUDA implementation to Compute Shader for the same algorithm, as long as Compute Shader is feature-rich enough.
 
-# 线程 & 组 & 网格
+# Thread, Block and Grid
 
-GPU 线程和通常意义上我们理解的线程还不太一样，这些线程执行同样的指令，只是使用不同的数据（SIMD）。在核函数中每个线程通过 ID 找到自己负责的数据。
+GPU threads are not quite the same as what we normally understand as threads, these threads execute the same instructions, but just use different data (SIMD). In the kernel function each thread finds the data it is responsible for by its ID.
 
-## 逻辑视图
+## Logic View
 
-下图来自 [http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf](http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf)，仅展示网格与线程组的层次关系，并不局限于 DirectCompute。
+The image below is from: [http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf](http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf). It only shows the hierarchical relationship between grids and thread groups, and is not limited to DirectCompute.
 
--   通过 `dispatch(x, y, z)` 分配一个 3 维的线程网格（Grid）
--   网格中包含了许多线程组（Work Group、Thread Group、Thread Block、本地工作组不同叫法），每一个线程组中又包含了许多线程，线程组也是 3 维的，一般在 Shader 中通过 `numthreads(x, y, z)` 指定
--   我们的 Shader 程序最终会运行在每一个线程上。对于每一个线程，可以获取自己在线程组中的 3 维坐标，也可以获取线程组在整个线程网格中的 3 维坐标，以此映射到不同的数据上
+<img src="https://user-images.githubusercontent.com/3608471/83828560-87a24f80-a713-11ea-8558-2813989db14a.png" alt="GPU Programming Model" width="60%">
 
-![image](https://user-images.githubusercontent.com/3608471/83828560-87a24f80-a713-11ea-8558-2813989db14a.png)
+-   Assign a 3-dimensional thread grid via `dispatch(x, y, z)`
+-   The grid contains many thread groups (Work Groups, Thread Groups, Thread Blocks, local workgroups are called differently), each of which contains many threads, and the thread groups are also 3-dimensional, generally specified in the Shader by `numthreads(x, y, z)`
+-   Our Shader program will eventually run on each thread. For each thread, you can get the 3-dimensional coordinates of your own thread group, or you can get the 3-dimensional coordinates of the thread group in the whole thread grid, and map it to different data
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rNh0SKfOOQAAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rNh0SKfOOQAAAAAAAAAAAAAAARQnAQ" alt="Grid, Block and Thread" width="40%">
 
-在 CUDA 中使用如下方式分配 Blocks 数量和每个 Block 中的线程数量：
+The number of Blocks and the number of threads in each Block are allocated in CUDA in the following way.
 
 ```
-dim3 threadsPerBlock(16, 16); // 指定线程组大小
+dim3 threadsPerBlock(16, 16); // Specify the thread group size
 dim3 numBlocks(N / threadsPerBlock.x, N / threadsPerBlock.y);
-MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C); // 调用 Kernel 函数
+MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C); // Calling Kernel Functions
 ```
 
-而在 Compute Shader 中使用如下语法： https://www.w3.org/TR/WGSL/#compute-shader-workgroups
+Instead, the following syntax is used in the Compute Shader. https://www.w3.org/TR/WGSL/#entry-point-attributes
 
 ```
-[[stage(compute), workgroup_size(16, 16)]]
+@compute @workgroup_size(8,4,1)
 ```
 
-## 硬件视图
+## Hardware View
 
-网格、线程组与线程的对应关系也体现在 GPU 的硬件实现上。
+The correspondence between grids, thread groups and threads is also reflected in the hardware implementation of the GPU.
 
-GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多核心，下图为 CUDA 实现的对应关系： ![image](https://user-images.githubusercontent.com/3608471/83829499-968a0180-a715-11ea-801e-ce68b2681cdf.png)
+There are many SMs (Streaming Multiprocessor) on the GPU and each SM contains many cores, the following diagram shows the correspondence of CUDA implementations.
 
-下图来自：http://www.adms-conf.org/2019-presentations/ADMS19_nvidia_keynote.pdf ![image](https://user-images.githubusercontent.com/3608471/83829297-1ebbd700-a715-11ea-9083-ced1728ee10d.png)
+<img src="https://user-images.githubusercontent.com/3608471/83829499-968a0180-a715-11ea-801e-ce68b2681cdf.png" alt="software & hardware" width="60%">
 
-## 线程变量
+The image below is from: http://www.adms-conf.org/2019-presentations/ADMS19_nvidia_keynote.pdf
 
-现在我们了解了网格、线程组和线程的层次关系，在每一个线程执行 Shader 程序时，需要了解自己在所在线程组中的坐标、线程组在整个线程网格中的坐标。下图来自 [https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN](https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN)，展示了这些坐标的计算逻辑：
+<img src="https://user-images.githubusercontent.com/3608471/83829297-1ebbd700-a715-11ea-9083-ced1728ee10d.png" alt="GPU execution model" width="60%">
 
-![image](https://user-images.githubusercontent.com/3608471/83828472-53c72a00-a713-11ea-80e7-5ec22a688da8.png)
+## Thread Variables
 
-| 变量名 | 类型 | 说明 |
+Now that we understand the hierarchy of grids, thread groups and threads, each thread needs to know its own coordinates in the thread group it is in, and the coordinates of the thread group in the entire thread grid when it executes the Shader program. The following figure is from [https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN](https://docs. microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN), shows the logic for calculating these coordinates.
+
+<img src="https://user-images.githubusercontent.com/3608471/83828472-53c72a00-a713-11ea-80e7-5ec22a688da8.png" alt="attributes numthreads" width="80%">
+
+| parameter | data type | remarks |
 | --- | --- | --- |
-| numWorkGroups | ivec3 | dispatch 的线程工作组数目 |
-| workGroupSize | ivec3 | Shader 内通过 `numthreads` 声明的每一个线程工作组包含的线程数 |
-| workGroupID | ivec3 | 当前线程工作组的索引。取值范围为 `(0, 0, 0)` 到 `(numWorkGroups.x - 1, numWorkGroups.y - 1, numWorkGroups.z - 1)` 之间 |
-| localInvocationID | ivec3 | 当前线程在自己线程组中的索引。取值范围为 `(0, 0, 0) 到 (workGroupSize.x - 1, * workGroupSize.y - 1, workGroupSize.z - 1)` 之间 |
-| globalInvocationID | ivec3 | 当前线程在全局线程组中的索引。计算方法为 `workGroupID * workGroupSize + localInvocationID` |
-| localInvocationIndex | int | 当前线程在自己线程组中的一维索引，计算方法为 `localInvocationID.z * workGroupSize.x * workGroupSize.y + localInvocationID.y * workGroupSize.x + localInvocationID.x` |
+| numWorkGroups | ivec3 | Number of threaded workgroups for dispatch |
+| workGroupSize | ivec3 | The number of threads per thread group declared by `numthreads` within the Shader |
+| workGroupID | ivec3 | The index of the current thread workgroup. The range of values is from `(0, 0, 0)` to `(numWorkGroups.x - 1, numWorkGroups.y - 1, numWorkGroups.z - 1)` |
+| localInvocationID | ivec3 | The index of the current thread in its own thread group. The range of values is from `(0, 0, 0)` to `(workGroupSize.x - 1, * workGroupSize.y - 1, workGroupSize.z - 1)` |
+| globalInvocationID | ivec3 | The index of the current thread in the global thread group. It is calculated as `workGroupID * workGroupSize + localInvocationID` |
+| localInvocationIndex | int | The one-dimensional index of the current thread in its own thread group, calculated as `localInvocationID.z * workGroupSize.x * workGroupSize.y + localInvocationID.y * workGroupSize.x + localInvocationID.x` |
 
-## 共享内存与同步
+## Shared memory and Synchronization
 
-在某些计算任务中，每个线程不仅需要处理自己负责的那一部分数据，可能还需要读取、修改其他线程处理过的数据，此时就需要共享内存与同步了。
+In some computing tasks, each thread not only needs to process the part of data it is responsible for, but may also need to read and modify the data processed by other threads, which requires shared memory and synchronization.
 
-![image](https://user-images.githubusercontent.com/3608471/83833646-018c0600-a71f-11ea-92d9-f354bfa19345.png)
+<img src="https://user-images.githubusercontent.com/3608471/83833646-018c0600-a71f-11ea-92d9-f354bfa19345.png" alt="shared memory" width="60%">
 
-来自：https://zhuanlan.zhihu.com/p/128996252
+https://zhuanlan.zhihu.com/p/128996252
 
-> 一个变量被声明为 shared，那么它将被保存到特定的位置，从而对同一个本地工作组内所有计算着色器可见。如果某个计算着色器请求对共享变量进行写入，那么这个数据的修改信息将最终通知给同一个本地工作组的所有着色器。通常访问共享 shared 变量的性能会远好于访问图像或者着色器存储缓存（如主内存）的性能。因为着色器会将共享内存作为局部量处理，并且可以在设备中进行拷贝，所以访问共享变量可能比使用缓冲区的方法更迅速。因此，如果着色器需要对同一处内存进行大量的访问，优先考虑将内存拷贝到共享变量中，然后操作。
+> When a variable is declared as shared, it will be saved to a specific location and thus visible to all compute shaders in the same local workgroup. If a compute shader requests a write to a shared variable, then information about the changes to this data will eventually be notified to all shaders in the same local workgroup. Access to shared variables is usually much better than access to image or shader storage caches (e.g. main memory). Because shaders treat shared memory as a local quantity and can make copies in the device, accessing shared variables may be faster than using the buffer approach. Therefore, if a shader needs to make a large number of accesses to the same memory, give preference to copying the memory to a shared variable and then manipulating it.
 
-既然涉及到共享内存，肯定就需要设置同步点：
+Since shared memory is involved, it is definitely necessary to set up synchronization points.
 
-> 运行屏障（execution barrier），可以通过 barrier() 函数触发。如果计算着色器的一个请求遇到 barrier，那么它会停止运行，等待同一个本地工作组的所有请求也到达 barrier，然后才会执行后面的代码。
+> The execution barrier, which can be triggered by the barrier() function. If a request from a compute shader encounters the barrier, it stops running and waits for all requests from the same local workgroup to also reach the barrier before executing the code that follows.
 
-例如在我们实现的 Reduce 求和的[例子](/zh/examples/gpgpu#reduce)中，使用了：
+For example, in our implementation of Reduce summation [example](/en/examples/gpgpu#reduce), the following is used.
 
--   [线程间共享内存](https://www.w3.org/TR/WGSL/#address-spaces-workgroup)
+-   [shared memory](https://www.w3.org/TR/WGSL/#address-spaces-workgroup)
 -   [workgroupBarrier](https://www.w3.org/TR/WGSL/#sync-builtin-functions)
 
 ```wgsl

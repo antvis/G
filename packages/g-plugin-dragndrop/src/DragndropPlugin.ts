@@ -6,7 +6,6 @@ import type {
   RenderingService,
 } from '@antv/g';
 import {
-  Element,
   inject,
   RenderingContext,
   RenderingPluginContribution,
@@ -29,19 +28,6 @@ export class DragndropPlugin implements RenderingPlugin {
   @inject(DragndropPluginOptions)
   private dragndropPluginOptions: DragndropPluginOptions;
 
-  private findClosestDraggable(event: FederatedPointerEvent) {
-    const composedPath = event.composedPath();
-
-    for (let i = 0; i < composedPath.length; i++) {
-      const target = composedPath[i] as Element;
-      if (Element.isElement(target) && target.getAttribute('draggable')) {
-        return target;
-      }
-    }
-
-    return null;
-  }
-
   apply(renderingService: RenderingService) {
     const document = this.renderingContext.root.ownerDocument;
 
@@ -60,7 +46,7 @@ export class DragndropPlugin implements RenderingPlugin {
       const isDocument = (target as unknown as IDocument) === document;
 
       const draggableEventTarget =
-        isDocument && isDocumentDraggable ? document : this.findClosestDraggable(event);
+        isDocument && isDocumentDraggable ? document : target?.closest('[draggable=true]');
 
       // `draggable` may be set on ancestor nodes:
       // @see https://github.com/antvis/G/issues/1088
@@ -105,17 +91,15 @@ export class DragndropPlugin implements RenderingPlugin {
           lastDragClientCoordinates = [event.clientX, event.clientY];
 
           if (!isDocument) {
-            // prevent from picking the dragging element
-            const pointerEventsOldValue = target.style.pointerEvents;
-            target.style.pointerEvents = 'none';
-
             const point =
               overlap === 'pointer' ? [event.canvasX, event.canvasY] : target.getBounds().center;
-            const elemBelow = await document.elementFromPoint(point[0], point[1]);
-            target.style.pointerEvents = pointerEventsOldValue;
+            const elementsBelow = await document.elementsFromPoint(point[0], point[1]);
+
+            // prevent from picking the dragging element
+            const elementBelow = elementsBelow[elementsBelow.indexOf(target) + 1];
 
             const droppableBelow =
-              elemBelow?.closest('[droppable=true]') || (isDocumentDroppable ? document : null);
+              elementBelow?.closest('[droppable=true]') || (isDocumentDroppable ? document : null);
             if (currentDroppable !== droppableBelow) {
               if (currentDroppable) {
                 // null when we were not over a droppable before this event

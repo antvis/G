@@ -210,6 +210,8 @@ describe('Canvas', () => {
         expect(e.viewportY).to.almost.eqls(100 - top);
         expect(e.canvasX).to.almost.eqls(100 - left);
         expect(e.canvasY).to.almost.eqls(100 - top);
+        expect(e.x).to.almost.eqls(100 - left);
+        expect(e.y).to.almost.eqls(100 - top);
 
         const viewport = canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY });
 
