@@ -46,7 +46,9 @@ export class DragndropPlugin implements RenderingPlugin {
       const isDocument = (target as unknown as IDocument) === document;
 
       const draggableEventTarget =
-        isDocument && isDocumentDraggable ? document : target?.closest('[draggable=true]');
+        isDocument && isDocumentDraggable
+          ? document
+          : target.closest && target.closest('[draggable=true]');
 
       // `draggable` may be set on ancestor nodes:
       // @see https://github.com/antvis/G/issues/1088

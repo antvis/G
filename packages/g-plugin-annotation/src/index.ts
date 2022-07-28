@@ -1,6 +1,7 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
+import type { SelectableStyle } from './tokens';
 import { AnnotationPluginOptions } from './tokens';
 
 const containerModule = Module((register) => {
@@ -17,10 +18,91 @@ export class Plugin extends AbstractRendererPlugin {
   init(): void {
     this.container.register(AnnotationPluginOptions, {
       useValue: {
+        selectableStyle: {},
         ...this.options,
       },
     });
     this.container.load(containerModule, true);
+
+    // register custom properties
+    CSS.registerProperty({
+      name: 'selectionFill',
+      inherits: false,
+      initialValue: 'black',
+      interpolable: true,
+      syntax: PropertySyntax.COLOR,
+    });
+    CSS.registerProperty({
+      name: 'selectionStroke',
+      inherits: false,
+      initialValue: 'black',
+      interpolable: true,
+      syntax: PropertySyntax.COLOR,
+    });
+    CSS.registerProperty({
+      name: 'selectionFillOpacity',
+      inherits: false,
+      initialValue: '1',
+      interpolable: true,
+      syntax: PropertySyntax.OPACITY_VALUE,
+    });
+    CSS.registerProperty({
+      name: 'selectionStrokeOpacity',
+      inherits: false,
+      initialValue: '1',
+      interpolable: true,
+      syntax: PropertySyntax.OPACITY_VALUE,
+    });
+    CSS.registerProperty({
+      name: 'selectionStrokeWidth',
+      inherits: false,
+      initialValue: '1',
+      interpolable: true,
+      syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    });
+    CSS.registerProperty({
+      name: 'anchorStroke',
+      inherits: false,
+      initialValue: 'black',
+      interpolable: true,
+      syntax: PropertySyntax.COLOR,
+    });
+    CSS.registerProperty({
+      name: 'anchorFill',
+      inherits: false,
+      initialValue: 'black',
+      interpolable: true,
+      syntax: PropertySyntax.COLOR,
+    });
+    CSS.registerProperty({
+      name: 'anchorStrokeOpacity',
+      inherits: false,
+      initialValue: '1',
+      interpolable: true,
+      syntax: PropertySyntax.OPACITY_VALUE,
+    });
+    CSS.registerProperty({
+      name: 'anchorFillOpacity',
+      inherits: false,
+      initialValue: '1',
+      interpolable: true,
+      syntax: PropertySyntax.OPACITY_VALUE,
+    });
+    CSS.registerProperty({
+      name: 'anchorSize',
+      inherits: false,
+      initialValue: '6',
+      interpolable: true,
+      syntax: PropertySyntax.LENGTH_PERCENTAGE,
+    });
+  }
+
+  updateSelectableStyle(style: Partial<SelectableStyle>) {
+    const { selectableStyle } =
+      this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
+    Object.assign(selectableStyle, style);
+
+    this.container.get(AnnotationPlugin).updateSelectableStyle();
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {

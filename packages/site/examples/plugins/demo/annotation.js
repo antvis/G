@@ -1,7 +1,8 @@
-import { Canvas, CanvasEvent, Circle, Image } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Ellipse, Image, Line, Polyline, Rect } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { Plugin } from '@antv/g-plugin-annotation';
+import { Plugin as AnnotationPlugin } from '@antv/g-plugin-annotation';
+import { Plugin as DragndropPlugin } from '@antv/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
@@ -23,12 +24,30 @@ const canvaskitRenderer = new CanvaskitRenderer({
   ],
 });
 
-const plugin = new Plugin();
-canvasRenderer.registerPlugin(plugin);
-svgRenderer.registerPlugin(plugin);
-webglRenderer.registerPlugin(plugin);
-webgpuRenderer.registerPlugin(plugin);
-canvaskitRenderer.registerPlugin(plugin);
+const annotationPlugin = new AnnotationPlugin({
+  selectableStyle: {
+    selectionFill: 'rgba(24,144,255,0.15)',
+    selectionStroke: '#1890FF',
+    selectionStrokeWidth: 2.5,
+    anchorFill: '#1890FF',
+    anchorStroke: '#1890FF',
+  },
+});
+canvasRenderer.registerPlugin(annotationPlugin);
+svgRenderer.registerPlugin(annotationPlugin);
+webglRenderer.registerPlugin(annotationPlugin);
+webgpuRenderer.registerPlugin(annotationPlugin);
+canvaskitRenderer.registerPlugin(annotationPlugin);
+
+const dragndropPlugin = new DragndropPlugin({
+  dragstartDistanceThreshold: 10,
+  dragstartTimeThreshold: 100,
+});
+canvasRenderer.registerPlugin(dragndropPlugin);
+svgRenderer.registerPlugin(dragndropPlugin);
+webglRenderer.registerPlugin(dragndropPlugin);
+webgpuRenderer.registerPlugin(dragndropPlugin);
+canvaskitRenderer.registerPlugin(dragndropPlugin);
 
 // create a canvas
 const canvas = new Canvas({
@@ -49,6 +68,18 @@ const circle = new Circle({
   },
 });
 
+const ellipse = new Ellipse({
+  style: {
+    cx: 440,
+    cy: 200,
+    rx: 100,
+    ry: 50,
+    stroke: '#F04864',
+    lineWidth: 10,
+    selectable: true,
+  },
+});
+
 const image = new Image({
   style: {
     x: 300,
@@ -56,13 +87,56 @@ const image = new Image({
     width: 200,
     height: 200,
     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    transform: 'scale(0.5) rotate(30deg)',
+    selectable: true,
+  },
+});
+
+const rect = new Rect({
+  style: {
+    x: 100,
+    y: 280,
+    width: 100,
+    height: 200,
+    fill: 'blue',
+    stroke: 'red',
+    selectable: true,
+  },
+});
+
+const line = new Line({
+  style: {
+    x1: 100,
+    y1: 100,
+    x2: 100,
+    y2: 300,
+    lineWidth: 10,
+    stroke: 'red',
+    selectable: true,
+  },
+});
+
+const polyline = new Polyline({
+  style: {
+    points: [
+      [200, 100],
+      [300, 100],
+      [300, 200],
+      [300, 300],
+    ],
+    lineWidth: 10,
+    stroke: 'red',
     selectable: true,
   },
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(circle);
+  canvas.appendChild(ellipse);
   canvas.appendChild(image);
+  canvas.appendChild(rect);
+  canvas.appendChild(line);
+  canvas.appendChild(polyline);
 });
 
 // stats
@@ -105,3 +179,76 @@ rendererFolder
     canvas.setRenderer(renderer);
   });
 rendererFolder.open();
+
+const selectableFolder = gui.addFolder('selectable');
+const selectableConfig = {
+  selectionFill: 'rgba(24,144,255,0.15)',
+  selectionFillOpacity: 1,
+  selectionStroke: '#1890FF',
+  selectionStrokeOpacity: 1,
+  selectionStrokeWidth: 2.5,
+  anchorFill: '#1890FF',
+  anchorFillOpacity: 1,
+  anchorStroke: '#1890FF',
+  anchorStrokeOpacity: 1,
+  anchorSize: 6,
+};
+selectableFolder.addColor(selectableConfig, 'selectionFill').onChange((selectionFill) => {
+  annotationPlugin.updateSelectableStyle({
+    selectionFill,
+  });
+});
+selectableFolder
+  .add(selectableConfig, 'selectionFillOpacity', 0, 1)
+  .onChange((selectionFillOpacity) => {
+    annotationPlugin.updateSelectableStyle({
+      selectionFillOpacity,
+    });
+  });
+selectableFolder.addColor(selectableConfig, 'selectionStroke').onChange((selectionStroke) => {
+  annotationPlugin.updateSelectableStyle({
+    selectionStroke,
+  });
+});
+selectableFolder
+  .add(selectableConfig, 'selectionStrokeOpacity', 0, 1)
+  .onChange((selectionStrokeOpacity) => {
+    annotationPlugin.updateSelectableStyle({
+      selectionStrokeOpacity,
+    });
+  });
+selectableFolder
+  .add(selectableConfig, 'selectionStrokeWidth', 1, 20)
+  .onChange((selectionStrokeWidth) => {
+    annotationPlugin.updateSelectableStyle({
+      selectionStrokeWidth,
+    });
+  });
+selectableFolder.addColor(selectableConfig, 'anchorFill').onChange((anchorFill) => {
+  annotationPlugin.updateSelectableStyle({
+    anchorFill,
+  });
+});
+selectableFolder.addColor(selectableConfig, 'anchorStroke').onChange((anchorStroke) => {
+  annotationPlugin.updateSelectableStyle({
+    anchorStroke,
+  });
+});
+selectableFolder.add(selectableConfig, 'anchorSize', 5, 20).onChange((anchorSize) => {
+  annotationPlugin.updateSelectableStyle({
+    anchorSize,
+  });
+});
+selectableFolder.add(selectableConfig, 'anchorFillOpacity', 0, 1).onChange((anchorFillOpacity) => {
+  annotationPlugin.updateSelectableStyle({
+    anchorFillOpacity,
+  });
+});
+selectableFolder
+  .add(selectableConfig, 'anchorStrokeOpacity', 0, 1)
+  .onChange((anchorStrokeOpacity) => {
+    annotationPlugin.updateSelectableStyle({
+      anchorStrokeOpacity,
+    });
+  });
+selectableFolder.open();

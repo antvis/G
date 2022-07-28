@@ -6,7 +6,7 @@ import type {
   RenderingService,
 } from '@antv/g';
 import {
-  ContextService,
+  ElementEvent,
   Group,
   inject,
   RenderingContext,
@@ -14,20 +14,21 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
-import { SelectableRect } from './SelectableRect';
+import { EventEmitter } from 'eventemitter3';
+import { DrawerTool } from './constants/enum';
+import { CircleDrawer } from './drawers/circle';
+import { PolygonDrawer } from './drawers/polygon';
+import { PolylineDrawer } from './drawers/polyline';
+import { RectDrawer } from './drawers/rect';
 import type { Annotation } from './interface/annotation';
+import type { BaseDrawer } from './interface/drawer';
 import { renderCircle } from './rendering/circle-render';
 import { renderPolygon } from './rendering/polygon-render';
 import { renderPolyline } from './rendering/polyline-render';
-import { AnnotationPluginOptions } from './tokens';
 import { renderRect } from './rendering/rect-render';
-import { DrawerTool } from './constants/enum';
-import { PolygonDrawer } from './drawers/polygon';
-import { PolylineDrawer } from './drawers/polyline';
-import { CircleDrawer } from './drawers/circle';
-import { RectDrawer } from './drawers/rect';
-import type { BaseDrawer } from './interface/drawer';
-import { EventEmitter } from 'eventemitter3';
+import { SelectablePolyline } from './selectable/SelectablePolyline';
+import { SelectableRect } from './selectable/SelectableRect';
+import { AnnotationPluginOptions } from './tokens';
 
 /**
  * make shape selectable:
@@ -41,18 +42,28 @@ export class AnnotationPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  @inject(ContextService)
-  private contextService: ContextService<unknown>;
-
   @inject(AnnotationPluginOptions)
   private annotationPluginOptions: AnnotationPluginOptions;
 
+  /**
+   * the topmost operation layer
+   */
   private activeSelectableLayer = new Group({
     className: 'g-annotation-active-layer',
     style: {
       zIndex: 999,
     },
   });
+
+  /**
+   * selected objects on current canvas
+   */
+  private selected: DisplayObject[] = [];
+
+  /**
+   * each selectable has an operation UI
+   */
+  private selectableMap: Record<number, DisplayObject> = {};
 
   private annotations: Annotation[] = [];
   private undoStack: Annotation[] = [];
@@ -80,24 +91,58 @@ export class AnnotationPlugin implements RenderingPlugin {
     annos.forEach((anno) => anno.remove());
   }
 
+  /**
+   * Update all existed selectable UIs.
+   * @example
+   *
+   * plugin.updateSelectableStyle({
+   *   selectionStroke: 'red',
+   * });
+   */
+  updateSelectableStyle() {
+    const { selectableStyle } = this.annotationPluginOptions;
+
+    for (const entity in this.selectableMap) {
+      this.selectableMap[entity].attr(selectableStyle);
+    }
+  }
+
   private getOrCreateSelectableUI(object: DisplayObject): DisplayObject {
-    if (!object.style.selectableUI) {
+    if (!this.selectableMap[object.entity]) {
       let created: DisplayObject;
-      if (object.nodeName === Shape.IMAGE) {
+      if (
+        object.nodeName === Shape.IMAGE ||
+        object.nodeName === Shape.RECT ||
+        object.nodeName === Shape.CIRCLE ||
+        object.nodeName === Shape.ELLIPSE
+      ) {
         created = new SelectableRect({
           style: {
             target: object,
+            ...this.annotationPluginOptions.selectableStyle,
+            // TODO: use object's selectable style to override
+          },
+        });
+      } else if (object.nodeName === Shape.LINE || object.nodeName === Shape.POLYLINE) {
+        created = new SelectablePolyline({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
           },
         });
       }
 
       if (created) {
-        object.style.selectableUI = created;
+        this.selectableMap[object.entity] = created;
         this.activeSelectableLayer.appendChild(created);
+
+        object.addEventListener(ElementEvent.UNMOUNTED, () => {
+          this.activeSelectableLayer.removeChild(created);
+        });
       }
     }
 
-    return object.style.selectableUI;
+    return this.selectableMap[object.entity];
   }
 
   /**
@@ -327,16 +372,26 @@ export class AnnotationPlugin implements RenderingPlugin {
       if (e.detail === 2) handleMouseDbClick(e);
       const object = e.target as DisplayObject;
 
-      if (object.style?.selectable) {
-        const selectable = this.getOrCreateSelectableUI(object);
-
-        if (selectable) {
-          selectable.style.visibility = 'visible';
-        }
-      } else {
+      // @ts-ignore
+      if (object === document) {
         this.activeSelectableLayer.children.forEach((selectable) => {
           selectable.style.visibility = 'hidden';
         });
+
+        this.selected = [];
+      } else if (object.style?.selectable) {
+        // Whether to cancel the selected object?
+        // TODO: multi-select
+        this.selected.forEach((o) => {
+          const selectable = this.getOrCreateSelectableUI(o);
+          selectable.style.visibility = 'hidden';
+        });
+
+        const selectable = this.getOrCreateSelectableUI(object);
+        if (selectable) {
+          selectable.style.visibility = 'visible';
+          this.selected.push(object);
+        }
       }
     };
 
@@ -390,12 +445,12 @@ export class AnnotationPlugin implements RenderingPlugin {
 
     renderingService.hooks.init.tapPromise(AnnotationPlugin.tag, async () => {
       canvas.addEventListener('click', handleClick);
-      canvas.addEventListener('mousedown', handleMouseDown);
-      canvas.addEventListener('mousemove', handleMouseMove);
-      canvas.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('pointerdown', handleMouseDown);
+      canvas.addEventListener('pointermove', handleMouseMove);
+      canvas.addEventListener('pointerup', handleMouseUp);
 
-      canvas.document.addEventListener('mouseenter', handleCanvasEnter);
-      canvas.document.addEventListener('mouseleave', handleCanvasLeave);
+      canvas.document.addEventListener('pointerenter', handleCanvasEnter);
+      canvas.document.addEventListener('pointerleave', handleCanvasLeave);
       window.addEventListener('keydown', handleKeyDown);
       canvas.appendChild(this.activeSelectableLayer);
     });
