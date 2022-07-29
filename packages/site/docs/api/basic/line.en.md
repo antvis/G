@@ -128,6 +128,113 @@ The z-axis coordinate of the second endpoint in the local coordinate system.
 
 Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/en/examples/3d#force-3d)
 
+## markerStart
+
+You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start) of SVG.
+
+Add a marker graphic to the "start point" of the line, where the "start point" is the endpoint defined by [x1/y1](/en/docs/api/basic/line#x1).
+
+In the following [example](/en/examples/shape#line), we first created an arrow using [Path](/en/docs/api/basic/path) and then added it to the start of the line with this property.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Ft0URoJ4joYAAAAAAAAAAAAAARQnAQ" width="200" alt="arrowhead">
+
+```js
+// Create a marker graphic
+const arrowMarker = new Path({
+    style: {
+        path: 'M 10,10 L -10,0 L 10,-10 Z',
+        stroke: '#1890FF',
+        anchor: '0.5 0.5',
+        transformOrigin: 'center',
+    },
+});
+
+const arrowLine = new Line({
+    style: {
+        x1: 200,
+        y1: 250,
+        x2: 400,
+        y2: 250,
+        stroke: '#1890FF',
+        lineWidth: 2,
+        markerStart: arrowMarker, // Placement on the "start point" of the line
+    },
+});
+```
+
+The marker graphic can be any graphic, and we will place it in the right place and adjust the orientation. When the definition of a line is changed, it will be adjusted automatically as well.
+
+Of course you can also manually adjust its [anchor](/en/docs/api/basic/display-object#anchor), [transformOrigin](/en/docs/api/basic/display-object#transformorigin) and [transform](/en/docs/api/basic/display-object#transform), for example in this [example](/en/examples/shape#line) we rotate [Image](/en/docs/api/basic/image) as a marker graphic, manually rotated by 90 degrees.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fWUrQKbwGngAAAAAAAAAAAAAARQnAQ" width="200" alt="image arrowhead">
+
+```js
+const imageMarker = new Image({
+    style: {
+        width: 50,
+        height: 50,
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        anchor: [0.5, 0.5],
+        transformOrigin: 'center',
+        transform: 'rotate(90deg)',
+    },
+});
+```
+
+If you want to unset the marker graphic, you can set it to null or the empty string.
+
+```js
+line.style.markerStart = null;
+```
+
+The relationship between the line and the marker graph in the implementation is parent-child.
+
+```
+Line
+  -> Path(#markerStart)
+  -> Path(#markerEnd)
+```
+
+This can also be found using [childNodes](/en/docs/api/builtin-objects/node#childnodes).
+
+```js
+line.style.markerStart = arrowHead;
+line.childNodes; // [Path]
+```
+
+The "start point" and "end point" can be set to the same marker graph, and internally it will first use [cloneNode](/en/docs/api/builtin-objects/node# clonenode) to generate a new graph. So once we specify a marker graph, subsequent attempts to modify its properties cannot operate on the original graph, but need to be obtained by [childNodes](/en/docs/api/builtin-objects/node#childnodes).
+
+```js
+line.style.markerStart = arrowhead;
+line.style.markerEnd = arrowhead;
+
+// wrong
+arrowhead.style.stroke = 'red';
+
+// correct!
+line.childNodes[0].style.stroke = 'red';
+```
+
+## markerEnd
+
+Add a marker graphic to the "endpoint" of the line, where "endpoint" is the endpoint defined by [x2/y2](/en/docs/api/basic/line#x2).
+
+You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end) of SVG.
+
+## markerStartOffset
+
+Sometimes we want to adjust the position of the marker shape, so we provide the option to increase the offset along the line by a certain amount, positive offset inward and negative offset outward.
+
+In [example](/en/examples/shape#line), we manipulate this property to give the line a "stretch effect".
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Uc-wSYP9sYUAAAAAAAAAAAAAARQnAQ">
+
+It is worth noting that while the offset will make the line change visually, it does not affect the [x1/y1/x2/y2](/en/docs/api/basic/line#x1) values of these attributes.
+
+## markerEndOffset
+
+Adjusts the position of the marker graphic at the "end point".
+
 # Methods
 
 ## getTotalLength(): number

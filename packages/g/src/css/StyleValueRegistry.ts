@@ -535,6 +535,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'whiteSpace',
     layoutDependent: true,
   },
+  {
+    name: 'markerStart',
+    syntax: PropertySyntax.MARKER,
+  },
+  {
+    name: 'markerEnd',
+    syntax: PropertySyntax.MARKER,
+  },
 ];
 
 @singleton({

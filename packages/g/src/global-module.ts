@@ -34,6 +34,7 @@ import {
   CSSPropertyLengthOrPercentage12,
   CSSPropertyLengthOrPercentage14,
   CSSPropertyLocalPosition,
+  CSSPropertyMarker,
   CSSPropertyNumber,
   CSSPropertyOffsetDistance,
   CSSPropertyOffsetPath,
@@ -133,6 +134,7 @@ export const containerModule = Module((register) => {
   register(CSSPropertyTransform);
   register(CSSPropertyTransformOrigin);
   register(CSSPropertyZIndex);
+  register(CSSPropertyMarker);
   register({
     token: CSSPropertySyntaxFactory,
     useFactory: (context) => {

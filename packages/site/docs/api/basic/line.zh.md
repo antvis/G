@@ -128,6 +128,113 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
 
 3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。默认值为 `false`。[示例](/zh/examples/3d#force-3d)
 
+## markerStart
+
+可以参考 SVG 的 [同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)。
+
+在直线的 “起始点” 处添加一个标记图形，其中 “起始点” 为 [x1/y1](/zh/docs/api/basic/line#x1) 定义的端点。
+
+在下面的 [示例](/zh/examples/shape#line) 中，我们首先使用 [Path](/zh/docs/api/basic/path) 创建了一个箭头，然后通过该属性把它添加到了直线的起点上：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Ft0URoJ4joYAAAAAAAAAAAAAARQnAQ" width="200" alt="arrowhead">
+
+```js
+// 创建一个标记图形
+const arrowMarker = new Path({
+    style: {
+        path: 'M 10,10 L -10,0 L 10,-10 Z',
+        stroke: '#1890FF',
+        anchor: '0.5 0.5',
+        transformOrigin: 'center',
+    },
+});
+
+const arrowLine = new Line({
+    style: {
+        x1: 200,
+        y1: 250,
+        x2: 400,
+        y2: 250,
+        stroke: '#1890FF',
+        lineWidth: 2,
+        markerStart: arrowMarker, // 放置在直线的 “起始点” 上
+    },
+});
+```
+
+标记图形可以是任意图形，我们会将它放置在合适的位置并调整好朝向。当直线的定义改变时，也会随之自动调整。
+
+当然你也可以手动调整它的 [anchor](/zh/docs/api/basic/display-object#anchor), [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 和 [transform](/zh/docs/api/basic/display-object#transform)，例如在该 [示例](/zh/examples/shape#line) 中，我们将 [Image](/zh/docs/api/basic/image) 作为标记图形，手动旋转了 90 度：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fWUrQKbwGngAAAAAAAAAAAAAARQnAQ" width="200" alt="image arrowhead">
+
+```js
+const imageMarker = new Image({
+    style: {
+        width: 50,
+        height: 50,
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        anchor: [0.5, 0.5],
+        transformOrigin: 'center',
+        transform: 'rotate(90deg)',
+    },
+});
+```
+
+如果想取消设置标记图形，可以设置为 null 或者空字符串：
+
+```js
+line.style.markerStart = null;
+```
+
+在实现中直线和标记图形的关系为父子关系：
+
+```
+Line
+  -> Path(#markerStart)
+  -> Path(#markerEnd)
+```
+
+使用 [childNodes](/zh/docs/api/builtin-objects/node#childnodes) 也能发现这一点：
+
+```js
+line.style.markerStart = arrowHead;
+line.childNodes; // [Path]
+```
+
+“起始点” 和 “终止点” 可以设置为同一个标记图形，内部首先会使用 [cloneNode](/zh/docs/api/builtin-objects/node#clonenode) 生成新的图形。因此一旦我们指定了标记图形，后续想修改它的属性就不能在原始图形上操作，需要通过 [childNodes](/zh/docs/api/builtin-objects/node#childnodes) 获取：
+
+```js
+line.style.markerStart = arrowhead;
+line.style.markerEnd = arrowhead;
+
+// wrong
+arrowhead.style.stroke = 'red';
+
+// correct!
+line.childNodes[0].style.stroke = 'red';
+```
+
+## markerEnd
+
+可以参考 SVG 的 [同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)。
+
+在直线的 “终止点” 处添加一个标记图形，其中 “终止点” 为 [x2/y2](/zh/docs/api/basic/line#x2) 定义的端点。
+
+## markerStartOffset
+
+有时我们想调整标记图形的位置，为此我们提供了该选项沿直线方向增加一定偏移量，正偏移量向内，负偏移量向外。
+
+在 [示例](/zh/examples/shape#line) 中，我们通过操作该属性让直线实现“伸缩效果”：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Uc-wSYP9sYUAAAAAAAAAAAAAARQnAQ">
+
+值得注意的是，虽然偏移量会让直线在视觉效果上发生变化，但并不会影响 [x1/y1/x2/y2](/zh/docs/api/basic/line#x1) 这些属性值。
+
+## markerEndOffset
+
+调整 “终止点” 处标记图形的位置。
+
 # 方法
 
 ## getTotalLength(): number
