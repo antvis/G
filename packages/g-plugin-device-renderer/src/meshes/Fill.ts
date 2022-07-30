@@ -112,6 +112,10 @@ export class FillMesh extends Instanced {
       if (
         name === 'lineJoin' ||
         name === 'lineCap' ||
+        name === 'markerStart' ||
+        name === 'markerEnd' ||
+        name === 'markerStartOffset' ||
+        name === 'markerEndOffset' ||
         (object.nodeName === Shape.RECT &&
           (name === 'width' || name === 'height' || name === 'radius')) ||
         (object.nodeName === Shape.LINE &&
