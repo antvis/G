@@ -1,8 +1,8 @@
 import { Polyline } from '@antv/g';
 import { DRAW_LINE_STYLE } from '../constants/style';
-import type { Annotation } from '../interface/annotation';
+import type { DrawerState } from '../interface/drawer';
 
-export const renderDrawLine = (context, anno: Annotation) => {
+export const renderDrawLine = (context, anno: DrawerState) => {
   const drawPoints = anno.path.slice(0, anno.path.length - 1);
   const polyline = new Polyline({
     style: {

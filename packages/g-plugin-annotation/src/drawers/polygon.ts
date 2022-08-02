@@ -10,9 +10,7 @@ export class PolygonDrawer extends BaseDrawer {
     return {
       type: this.type,
       path: this.path,
-      isDrawing: this.isDrawing,
       id: this.id,
-      tag: this.tag,
     };
   }
 

@@ -1,5 +1,5 @@
 import uuidv4 from '../utils/uuidv4';
-import type { Point } from '../interface/annotation';
+import type { Point } from '../interface/drawer';
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
 import { isNearPoint } from '../utils/drawer';
@@ -22,7 +22,6 @@ export class RectDrawer extends BaseDrawer {
       width: this.end.x - this.start.x,
       height: this.end.y - this.start.y,
       id: this.id,
-      tag: this.tag,
       isDrawing: this.isDrawing,
     };
   }

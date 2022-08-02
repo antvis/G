@@ -2,6 +2,7 @@ import type {
   Canvas,
   DisplayObject,
   FederatedEvent,
+  Rect,
   RenderingPlugin,
   RenderingService,
 } from '@antv/g';
@@ -15,7 +16,6 @@ import {
   singleton,
 } from '@antv/g';
 import { SelectableRect } from './SelectableRect';
-import type { Annotation } from './interface/annotation';
 import { renderCircle } from './rendering/circle-render';
 import { renderPolygon } from './rendering/polygon-render';
 import { renderPolyline } from './rendering/polyline-render';
@@ -28,6 +28,7 @@ import { CircleDrawer } from './drawers/circle';
 import { RectDrawer } from './drawers/rect';
 import type { BaseDrawer } from './interface/drawer';
 import { EventEmitter } from 'eventemitter3';
+import type { DrawerState } from './interface/drawer';
 
 /**
  * make shape selectable:
@@ -54,31 +55,10 @@ export class AnnotationPlugin implements RenderingPlugin {
     },
   });
 
-  private annotations: Annotation[] = [];
-  private undoStack: Annotation[] = [];
-  private redoStack: Annotation[] = [];
   private hotkeyActive: boolean = false;
   public drawer: BaseDrawer;
   public emmiter = new EventEmitter();
   public canvas: Canvas;
-
-  /**
-   *
-   * @param id
-   * @returns
-   */
-  private getAnnotationObjects(id: string) {
-    return this.canvas.document.getElementsByClassName(id);
-  }
-
-  /**
-   * 取消标注（仅从画布移除）
-   * @param id
-   */
-  private cancelAnnotation(id: string) {
-    const annos = this.getAnnotationObjects(id);
-    annos.forEach((anno) => anno.remove());
-  }
 
   private getOrCreateSelectableUI(object: DisplayObject): DisplayObject {
     if (!object.style.selectableUI) {
@@ -99,13 +79,29 @@ export class AnnotationPlugin implements RenderingPlugin {
 
     return object.style.selectableUI;
   }
+  /**
+   *
+   * @param id
+   * @returns
+   */
+  private getAnnotationObjects(id: string) {
+    return this.canvas.document.getElementsByClassName(id);
+  }
+  /**
+   * 取消标注（仅从画布移除）
+   * @param id
+   */
+  private cancelDrawer(id: string) {
+    const annos = this.getAnnotationObjects(id);
+    annos.forEach((anno) => anno.remove());
+  }
 
   /**
    * 绘制标注
    * @param anno
    */
-  public renderAnnotation(anno: Annotation) {
-    this.cancelAnnotation(anno.id);
+  public renderDrawer(anno: DrawerState) {
+    this.cancelDrawer(anno.id);
     if (anno.type === 'circle') {
       renderCircle(this, anno);
     }
@@ -120,109 +116,14 @@ export class AnnotationPlugin implements RenderingPlugin {
     if (anno.type === 'polyline') {
       renderPolyline(this, anno);
     }
-    console.log('all', this.canvas.document.childNodes);
   }
-
-  /**
-   * 获取激活的标注
-   * @returns active anno
-   */
-  getActiveAnnotation = () => {
-    return this.annotations.find((anno) => anno.isActive);
-  };
 
   /**
    * 激活标注
    * @param id
    */
   setActiveAnnotation = (id: string) => {
-    console.log('setActiveAnnotation', this.annotations, id);
-    this.annotations.forEach((anno, index) => {
-      if (anno.isActive) {
-        anno.isActive = false;
-        this.renderAnnotation(anno);
-        this.emmiter.emit('annotation:deactive', anno);
-      }
-      if (anno.id === id) {
-        this.annotations[index].isActive = true;
-        this.renderAnnotation(this.annotations[index]);
-        this.emmiter.emit('annotation:active', anno);
-      }
-    });
-  };
-
-  hoverAnnotation = (id: string) => {
-    this.annotations.forEach((anno, index) => {
-      if (anno.id === id) {
-        this.annotations[index].isHover = true;
-        this.renderAnnotation(this.annotations[index]);
-      }
-    });
-  };
-
-  unHoverAnnotation = (id: string) => {
-    this.annotations.forEach((anno, index) => {
-      if (anno.id === id) {
-        this.annotations[index].isHover = false;
-        this.renderAnnotation(this.annotations[index]);
-      }
-    });
-  };
-
-  /**
-   * 新增标注
-   * @param annotation
-   */
-  createAnnotation(annotation: Annotation) {
-    this.renderAnnotation(annotation);
-    this.undoStack.push(annotation);
-    this.annotations.push(annotation);
-    this.annotationPluginOptions.onAdd?.(annotation);
-    this.emmiter.emit('annotation:create', annotation);
-  }
-
-  /**
-   * 删除标注
-   * @param id
-   */
-  deleteAnnotation(id: string) {
-    this.undoStack = this.undoStack.filter((anno) => anno.id !== id);
-    this.annotations = this.annotations.filter((anno) => anno.id !== id);
-    this.annotationPluginOptions.onDelete?.(id);
-    this.cancelAnnotation(id);
-    this.emmiter.emit('annotation:delete', id);
-  }
-
-  /**
-   * 清除画布
-   */
-  deleteAll() {
-    this.annotations.forEach((anno) => {
-      this.deleteAnnotation(anno.id);
-    });
-  }
-
-  /**
-   * 撤销
-   */
-  undo = () => {
-    if (this.undoStack.length > 0) {
-      const anno = this.undoStack.pop();
-      if (anno) {
-        this.deleteAnnotation(anno.id);
-        this.redoStack.push(anno);
-      }
-    }
-  };
-
-  /**
-   * 重做
-   */
-  redo = () => {
-    if (this.redoStack.length > 0) {
-      const anno = this.redoStack.pop();
-      this.createAnnotation(anno!);
-    }
+    // TODO
   };
 
   /**
@@ -251,23 +152,32 @@ export class AnnotationPlugin implements RenderingPlugin {
     }
 
     const onStart = (toolstate: any) => {
-      this.renderAnnotation(toolstate);
+      this.emmiter.emit('draw:start', toolstate);
+      this.renderDrawer(toolstate);
     };
+
     const onModify = (toolstate: any) => {
-      this.renderAnnotation(toolstate);
+      this.emmiter.emit('draw:modify', toolstate);
+      this.renderDrawer(toolstate);
     };
+
     const onComplete = (toolstate: any) => {
-      this.createAnnotation(toolstate);
+      if (this.annotationPluginOptions.destroyAfterComplete !== false) {
+        this.cancelDrawer(toolstate.id);
+      }
+      this.emmiter.emit('draw:complete', toolstate);
     };
+
     const onCancel = (toolstate: any) => {
-      this.cancelAnnotation(toolstate.id);
+      this.cancelDrawer(toolstate.id);
+      this.emmiter.emit('draw:cancel', toolstate);
     };
 
     /** 监听绘制事件 */
-    activeDrawer.addEventListener('draw:start', onStart);
-    activeDrawer.addEventListener('draw:modify', onModify);
-    activeDrawer.addEventListener('draw:complete', onComplete);
-    activeDrawer.addEventListener('draw:cancel', onCancel);
+    activeDrawer.on('draw:start', onStart);
+    activeDrawer.on('draw:modify', onModify);
+    activeDrawer.on('draw:complete', onComplete);
+    activeDrawer.on('draw:cancel', onCancel);
 
     if (this.drawer) this.drawer.dispose();
 
@@ -304,10 +214,6 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.canvas = canvas;
 
     const handleMouseDown = (e: FederatedEvent) => {
-      if (this.getActiveAnnotation()) {
-        this.setActiveAnnotation('');
-        return;
-      }
       this.drawer?.onMouseDown(e);
     };
 
@@ -350,21 +256,7 @@ export class AnnotationPlugin implements RenderingPlugin {
         handleDrawerKeyDown(e);
       }
 
-      // 撤销
-      if (e.code === 'KeyZ' && e.ctrlKey && !e.altKey) {
-        this.undo();
-      }
-
-      // 重做
-      if (e.code === 'KeyZ' && e.ctrlKey && e.altKey) {
-        this.redo();
-      }
-
-      const active = this.getActiveAnnotation();
-      if (!active) return;
-      if (e.code === 'Delete') {
-        this.deleteAnnotation(active.id);
-      }
+      const active = this.drawer;
       if (e.key === 'ArrowLeft') {
         active.path = active.path.map((point) => ({ x: point.x - 1, y: point.y }));
       }
@@ -377,7 +269,7 @@ export class AnnotationPlugin implements RenderingPlugin {
       if (e.key === 'ArrowDown') {
         active.path = active.path.map((point) => ({ x: point.x, y: point.y + 1 }));
       }
-      this.renderAnnotation(active);
+      // this.renderDrawer(active);
     };
 
     const handleCanvasEnter = () => {

@@ -4,9 +4,9 @@ import {
   NORMAL_DRAWPOINT_STYLE,
   HOVER_DRAWPOINT_STYLE,
 } from '../constants/style';
-import type { Annotation } from '../interface/annotation';
+import type { DrawerState } from '../interface/drawer';
 
-export const renderDrawPoints = (context, anno: Annotation) => {
+export const renderDrawPoints = (context, anno: DrawerState) => {
   const points = anno.path.slice(0, anno.path.length - 1);
   const length = points.length;
   points.forEach((point, index) => {

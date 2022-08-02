@@ -1,6 +1,7 @@
 import { AbstractRendererPlugin, Module } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
+import type { DrawerOption } from './interface/drawer';
 import { AnnotationPluginOptions } from './tokens';
 
 const containerModule = Module((register) => {
@@ -24,26 +25,21 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
+    console.log('on', eventName);
     this.container.get(AnnotationPlugin).emmiter.on(eventName, (e) => {
+      fn(e);
+    });
+  }
+
+  removeEventListener(eventName: string, fn: (...args: any[]) => void) {
+    this.container.get(AnnotationPlugin).emmiter.off(eventName, (e) => {
       fn(e);
       console.log('on', eventName, e);
     });
   }
 
-  setDrawer(tool: DrawerTool, options) {
+  setDrawer(tool: DrawerTool, options?: DrawerOption) {
     this.container.get(AnnotationPlugin).setDrawer(tool, options);
-  }
-
-  redo() {
-    this.container.get(AnnotationPlugin).redo();
-  }
-
-  undo() {
-    this.container.get(AnnotationPlugin).undo();
-  }
-
-  deleteAll() {
-    this.container.get(AnnotationPlugin).deleteAll();
   }
 
   destroy(): void {

@@ -1,10 +1,21 @@
 import type { FederatedEvent } from '@antv/g';
 import type { DrawerTool } from '../constants/enum';
-import type { AnnotationType, Point } from './annotation';
 import EventEmitter from 'eventemitter3';
 
+export type DrawerType = 'circle' | 'rect' | 'polyline' | 'polygon';
 export interface DrawerState {
-  type: AnnotationType;
+  type: DrawerType;
+  id: string;
+  path: DrawerPath;
+}
+
+export interface Point {
+  x: number;
+  y: number;
+}
+export type DrawerPath = Point[];
+export interface DrawerState {
+  type: DrawerType;
   isDrawing: boolean;
   path: Point[];
   id: string;
@@ -25,16 +36,10 @@ export abstract class BaseDrawer extends EventEmitter {
   isActive: boolean = true;
   /** 绘制路径 */
   path: Point[] = [];
-  /** 标签 */
-  tag: string;
 
   constructor(drawerOptions: DrawerOption) {
     super();
     this.drawerOptions = drawerOptions;
-  }
-
-  public addEventListener(eventName: string, fn: (...args: any[]) => void) {
-    return this.on(eventName, fn);
   }
 
   abstract onMouseDown(e: FederatedEvent): void;
