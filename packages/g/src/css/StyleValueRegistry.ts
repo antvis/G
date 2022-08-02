@@ -412,12 +412,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     defaultValue: '',
     alias: ['d'],
     syntax: PropertySyntax.PATH,
+    parsePriority: 50,
   },
   // Polyline & Polygon
   {
     name: 'points',
     layoutDependent: true,
     syntax: PropertySyntax.LIST_OF_POINTS,
+    parsePriority: 50,
   },
   // Text
   {
@@ -532,6 +534,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     name: 'whiteSpace',
     layoutDependent: true,
+  },
+  {
+    name: 'markerStart',
+    syntax: PropertySyntax.MARKER,
+  },
+  {
+    name: 'markerEnd',
+    syntax: PropertySyntax.MARKER,
   },
 ];
 

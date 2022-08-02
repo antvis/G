@@ -1,15 +1,19 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import type {
+import {
+  convertToPath,
+  CSSRGB,
   DisplayObject,
+  injectable,
   ParsedBaseStyleProps,
   ParsedLineStyleProps,
   ParsedPathStyleProps,
+  parsePath,
   Polyline,
+  Shape,
   Tuple4Number,
 } from '@antv/g';
-import { convertToPath, CSSRGB, injectable, parsePath, Shape } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { CurveArray } from '@antv/util';
 import earcut from 'earcut';
@@ -103,6 +107,10 @@ export class LineMesh extends Instanced {
       if (
         name === 'lineJoin' ||
         name === 'lineCap' ||
+        name === 'markerStart' ||
+        name === 'markerEnd' ||
+        name === 'markerStartOffset' ||
+        name === 'markerEndOffset' ||
         (object.nodeName === Shape.CIRCLE && name === 'r') ||
         (object.nodeName === Shape.ELLIPSE && (name === 'rx' || name === 'ry')) ||
         (object.nodeName === Shape.RECT &&
@@ -436,14 +444,52 @@ function segmentsCount(length: number, defaultSegments = 20) {
 
 export function updateBuffer(object: DisplayObject, needEarcut = false) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
-  let { defX, defY } = object.parsedStyle;
+  let { defX, defY, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+    object.parsedStyle;
 
   const points: number[][] = [];
   let triangles: number[] = [];
 
   if (object.nodeName === Shape.POLYLINE || object.nodeName === Shape.POLYGON) {
-    points[0] = (object as Polyline).parsedStyle.points.points.reduce((prev, cur) => {
-      prev.push(cur[0] - defX, cur[1] - defY);
+    const polylinePoints = (object as Polyline).parsedStyle.points.points;
+    const length = polylinePoints.length;
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+    let endOffsetX = 0;
+    let endOffsetY = 0;
+
+    let rad = 0;
+    let x: number;
+    let y: number;
+
+    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+      x = polylinePoints[1][0] - polylinePoints[0][0];
+      y = polylinePoints[1][1] - polylinePoints[0][1];
+      rad = Math.atan2(y, x);
+      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
+    }
+
+    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+      x = polylinePoints[length - 2][0] - polylinePoints[length - 1][0];
+      y = polylinePoints[length - 2][1] - polylinePoints[length - 1][1];
+      rad = Math.atan2(y, x);
+      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
+    }
+
+    points[0] = polylinePoints.reduce((prev, cur, i) => {
+      let offsetX = 0;
+      let offsetY = 0;
+      if (i === 0) {
+        offsetX = startOffsetX;
+        offsetY = startOffsetY;
+      } else if (i === length - 1) {
+        offsetX = endOffsetX;
+        offsetY = endOffsetY;
+      }
+
+      prev.push(cur[0] - defX + offsetX, cur[1] - defY + offsetY);
       return prev;
     }, [] as number[]);
 

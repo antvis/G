@@ -259,10 +259,13 @@ export class EventService extends EventEmitter {
 
       clickEvent.detail = clickHistory.clickCount;
 
-      if (clickEvent.pointerType === 'mouse' || clickEvent.pointerType === 'touch') {
-        this.dispatchEvent(clickEvent, 'click');
-      } else {
-        this.dispatchEvent(clickEvent, 'pointertap');
+      // @see https://github.com/antvis/G/issues/1091
+      if (!e.detail?.preventClick) {
+        if (clickEvent.pointerType === 'mouse' || clickEvent.pointerType === 'touch') {
+          this.dispatchEvent(clickEvent, 'click');
+        } else {
+          this.dispatchEvent(clickEvent, 'pointertap');
+        }
       }
 
       this.freeEvent(clickEvent);

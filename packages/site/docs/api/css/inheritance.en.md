@@ -1,13 +1,13 @@
 ---
-title: 继承机制
+title: Inheritance
 order: 1
 ---
 
-在 CSS 中，当没有为属性设置值时，可继承属性将从父元素上获取计算值。
+In CSS, when no value is set for an attribute, the inheritable attribute will take the calculated value from the parent element.
 
 https://developer.mozilla.org/zh-CN/docs/Web/CSS/inheritance
 
-例如 CSS 的 `color` 属性是可继承的，因此对于未设置该属性的 `<em>` 元素，它将使用父元素的值 `green`：
+For example, the `color` property of CSS is inheritable, so for an `<em>` element that does not have this property set, it will use the value of the parent element, `green`.
 
 ```css
 p { color: green; }
@@ -15,31 +15,31 @@ p { color: green; }
 <p>This paragraph has <em>emphasized text</em> in it.</p>
 ```
 
-我们在 G 中实现了一套样式系统，同样支持继承。例如我们创建一个 [Text](/zh/docs/api/basic/text)，并未指定 `fontSize` 或者 `fontFamily` 这些属性，但它依然可以被渲染出来，因为它加入画布后继承了根节点上的默认样式：`fontSize: '16px'; fontFamily: 'sans-serif'`：
+We have implemented a style system in G that also supports inheritance. For example, we create a [Text](/en/docs/api/basic/text) without specifying `fontSize` or `fontFamily` properties, but it can still be rendered because it inherits the default style from the root node when added to the canvas: `fontSize: '16px'; fontFamily: 'sans-serif'`.
 
 ```js
 const text = new Text({
-  style: {
-    x: 100,
-    y: 100,
-    text: 'hello',
-  },
+    style: {
+        x: 100,
+        y: 100,
+        text: 'hello',
+    },
 });
 
 canvas.appendChild(text);
 ```
 
-在该[示例](/zh/examples/style#inheritance)中，修改根节点的字号同样会影响到子元素，配合 `rem` 这样的单位我们可以轻松实现“弹性布局”：
+In this [example](/en/examples/style#inheritance), modifying the font size of the root node also affects the child elements, and with units like `rem` we can easily achieve an "elastic layout:"
 
 ```js
 canvas.document.documentElement.style.fontSize = `32px`;
 ```
 
-# 根节点默认样式
+# The default style of root node
 
-和浏览器一样，默认值（[initial value](https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value)）会在根节点上应用可继承属性。
+As with browsers, the default value ([initial value](https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value)) applies inheritable attributes at the root node.
 
-例如浏览器默认的 `fontSize` 是 `16px`。我们在 G 中给[根节点]()设置了如下样式：
+For example, the browser default `fontSize` is `16px`. We have styled [root node](/en/docs/api/builtin-objects/document#documentelement) in G as follows.
 
 ```js
 expect(documentElement.style.fill).to.equal('');
@@ -70,25 +70,25 @@ expect(documentElement.style.z).to.equal(0);
 expect(documentElement.style.zIndex).to.equal(0);
 ```
 
-# 支持继承的属性
+# Inherited properties supported
 
-目前我们支持的可继承属性如下：
+We currently support the following inheritable properties.
 
-| 属性名         | 初始值       | 适用元素 | 是否可继承 | 是否支持动画 | computed value          |
-| -------------- | ------------ | -------- | ---------- | ------------ | ----------------------- |
-| fillOpacity    | '1'          | 所有     | 是         | 是           | `<number>`              |
-| strokeOpacity  | '1'          | 所有     | 是         | 是           | `<number>`              |
-| lineWidth      | '1'          | 所有     | 是         | 是           | `<length> <percentage>` |
-| lineJoin       | 'miter'      | 所有     | 是         | 否           | `<keywords>`            |
-| lineCap        | 'butt'       | 所有     | 是         | 否           | `<keywords>`            |
-| lineDash       | 无           | 所有     | 是         | 是           | `<array>`               |
-| lineDashOffset | '0'          | 所有     | 是         | 是           | `<length> <percentage>` |
-| visibility     | 'visible'    | 所有     | 是         | 否           | `<keywords>`            |
-| pointerEvents  | 'auto'       | 所有     | 是         | 否           | `<keywords>`            |
-| fontSize       | '16px'       | 所有     | 是         | 是           | `<length> <percentage>` |
-| fontFamily     | 'sans-serif' | 所有     | 是         | 否           | `<keywords>`            |
-| fontStyle      | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
-| fontWeight     | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
-| fontVariant    | 'normal'     | 所有     | 是         | 否           | `<keywords>`            |
-| textBaseline   | 'alphabetic' | 所有     | 是         | 否           | `<keywords>`            |
-| textAlign      | 'start'      | 所有     | 是         | 否           | `<keywords>`            |
+| method name    | initial value | element | inheritable | animatable | computed value          |
+| -------------- | ------------- | ------- | ----------- | ---------- | ----------------------- |
+| fillOpacity    | '1'           | all     | yes         | yes        | `<number>`              |
+| strokeOpacity  | '1'           | all     | yes         | yes        | `<number>`              |
+| lineWidth      | '1'           | all     | yes         | yes        | `<length> <percentage>` |
+| lineJoin       | 'miter'       | all     | yes         | no         | `<keywords>`            |
+| lineCap        | 'butt'        | all     | yes         | no         | `<keywords>`            |
+| lineDash       | 无            | all     | yes         | yes        | `<array>`               |
+| lineDashOffset | '0'           | all     | yes         | yes        | `<length> <percentage>` |
+| visibility     | 'visible'     | all     | yes         | no         | `<keywords>`            |
+| pointerEvents  | 'auto'        | all     | yes         | no         | `<keywords>`            |
+| fontSize       | '16px'        | all     | yes         | yes        | `<length> <percentage>` |
+| fontFamily     | 'sans-serif'  | all     | yes         | no         | `<keywords>`            |
+| fontStyle      | 'normal'      | all     | yes         | no         | `<keywords>`            |
+| fontWeight     | 'normal'      | all     | yes         | no         | `<keywords>`            |
+| fontVariant    | 'normal'      | all     | yes         | no         | `<keywords>`            |
+| textBaseline   | 'alphabetic'  | all     | yes         | no         | `<keywords>`            |
+| textAlign      | 'start'       | all     | yes         | no         | `<keywords>`            |

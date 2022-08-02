@@ -1,17 +1,17 @@
 ---
-title: WebGL 渲染器
+title: WebGL Renderer
 order: 2
 ---
 
-使用 [WebGLRenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext) 或者 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 渲染。相比 [Canvas 渲染器](/zh/docs/api/renderer/canvas)和 [SVG 渲染器](/zh/docs/api/renderer/svg) 拥有更强大的渲染能力，在大规模数量图形以及 3D 场景下有明显的优势。
+Use [WebGLRenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext) or [WebGL2RenderingContext](https: //developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) for rendering. Compared with [Canvas renderer](/en/docs/api/renderer/canvas) and [SVG renderer](/en/docs/api/renderer/svg), it has more powerful rendering capabilities and has obvious advantages in large volume graphics and 3D scenes.
 
-# 使用方式
+# Usage
 
-和 `@antv/g` 一样，也有以下两种使用方式。
+As with `@antv/g`, there are two ways to use it.
 
 ## NPM Module
 
-安装 `@antv/g-webgl` 后可以从中获取渲染器：
+After installing `@antv/g-webgl` you can get the renderer from.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -27,7 +27,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN 方式
+## CDN
 
 ```html
 <script
@@ -35,19 +35,19 @@ const canvas = new Canvas({
   type="application/javascript">
 ```
 
-从 `G.WebGL` 命名空间下可以获取渲染器：
+The renderer is available from the `G.WebGL` namespace under.
 
 ```js
 const webglRenderer = new window.G.WebGL.Renderer();
 ```
 
-# 初始化配置
+# Initial Configuration
 
 ## targets
 
-选择渲染环境。默认值为 `['webgl2', 'webgl1']` 并自动按该优先级自动降级。
+Selects the rendering environment. The default value is `['webgl2', 'webgl1']` and is automatically downgraded automatically by that priority.
 
-例如在某些特殊环境下，仅选择在 WebGL1 环境下运行：
+For example, in some special environments, only the WebGL1 environment is selected to run in.
 
 ```js
 const webglRenderer = new WebGLRenderer({
@@ -55,22 +55,22 @@ const webglRenderer = new WebGLRenderer({
 });
 ```
 
-# 内置插件
+# Built-in plug-ins
 
-该渲染器内置了以下插件：
+The renderer has the following plug-ins built in.
 
--   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
--   [g-plugin-webgl-device](/zh/docs/plugins/webgl-device) 基于 [WebGLRenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext) 和 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 实现 GPUDevice 能力
--   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+-   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) GPUDevice based rendering capabilities
+-   [g-plugin-webgl-device](/en/docs/plugins/webgl-device) Implementing GPUDevice Capabilities based on [WebGLRenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext) and [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext)
+-   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
 
-# 可选插件
+# Optional plug-ins
 
-除了内置插件，还可以选择以下插件。
+In addition to the built-in plug-ins, the following plug-ins are also available.
 
-## 3D 渲染能力
+## 3D rendering capabilities
 
-[g-plugin-3d](/zh/docs/plugins/3d) 提供 3D 渲染能力，包括 [Mesh]() [Material]() [Geometry]() 等常见对象。
+[g-plugin-3d](/en/docs/plugins/3d) Provides 3D rendering capabilities, including common objects such as [Mesh](/en/docs/api/3d/mesh) [Material](/en/docs/api/3d/material) [Geometry](/en/docs/api/3d/geometry).
 
-## 相机交互
+## Camera Interaction
 
-[g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/zh/docs/api/camera#%E7%9B%B8%E6%9C%BA%E7%B1%BB%E5%9E%8B)，提供不同的交互效果。
+[g-plugin-control](/en/docs/plugins/control) provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/en/docs/api/camera#camera-types), different interaction effects are provided.

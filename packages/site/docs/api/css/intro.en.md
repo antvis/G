@@ -1,57 +1,57 @@
 ---
-title: 简介
+title: Introduction
 order: 0
 redirect_from:
-  - /en/docs/api/css
+    - /en/docs/api/css
 ---
 
-我们在 CSS 中会使用到大量的样式属性（`style`），有些会影响元素的外观，有些会影响元素的布局：
+We use a large number of style attributes in CSS, some of which affect the appearance of an element, and some of which affect the layout of an element.
 
 ```css
 div {
-  display: 'flex'; // 使用 Flex 布局
-  color: 'red'; // 字体颜色
-  opacity: 0.5;
+    display: 'flex'; // 使用 Flex 布局
+    color: 'red'; // 字体颜色
+    opacity: 0.5;
 }
 ```
 
-在 SVG 中同样存在类似的属性（`attribute`），例如绘制一个半径为 5 的红色半透明圆形：
+A similar `attribute` exists in SVG, for example, to draw a red translucent circle with a radius of 5.
 
 ```html
-<circle r="5" fill="red" opacity="0.5" />
+<circle r="5" fill="red" opacity="0.5"></circle>
 ```
 
-两者在部分属性上存在重合，我们将其结合，因此在 G 中实现上述效果可以这么做：
+The two overlap in some of their properties and we combine them so that the above effect can be achieved in G as follows:
 
 ```js
 const circle = new Circle({
-  // 从 CSS 中而来
-  style: {
-    r: 5, // 从 SVG 属性中来
-    fill: 'red', // 从 SVG 属性中来
-    opacity: 0.5, // 两者的重合属性
-  },
+    // come from CSS
+    style: {
+        r: 5, // come from SVG
+        fill: 'red', // come from SVG
+        opacity: 0.5, // both from SVG & CSS
+    },
 });
 ```
 
-在现代浏览器中，[CSS](https://developer.mozilla.org/en-US/docs/Web/API/CSS) 提供了一系列 API 帮助前端开发者更好地与样式系统这个“黑盒”交互：
+In modern browsers, [CSS](https://developer.mozilla.org/en-US/docs/Web/API/CSS) provides a number of APIs to help front-end developers better interact with the "black box" that is the style system.
 
-- [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_typed_om) 将用户传入的字符串转换成 JS 表示，并提供数学运算等工具方法
-- [CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) 支持自定义样式属性
-- [CSS Layout API](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api) 支持自定义布局，实现浏览器中还不支持的布局算法。
+-   [CSS Typed OM](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_typed_om) converts user-input strings into JS representations and provides tools such as math operations
+-   CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) supports custom style properties
+-   The [CSS Layout API](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api) supports custom layouts and implements layout algorithms that are not yet supported in browsers.
 
-我们参考了 Blink（目前 Webkit 还不支持 CSS Typed OM 等）的实现，设计了一套简易的样式系统（暂不支持样式规则），实现了以上 CSS API。初始化时通过 CSS Properties & Values API 注册了一系列内置属性，在自定义图形中也可以用该方式注册自定义属性。在解析属性时使用 CSS Typed OM 完成，例如 `r: 5` 会被解析成 `CSS.px(5)`。如果用户设置了布局属性 `display`，我们会在布局阶段使用 CSS Layout API 完成布局计算。
+We have designed a simple style system (no support for style rules yet) by referring to the implementation of Blink (currently Webkit does not support CSS Typed OM, etc.) to implement the above CSS API. The CSS Properties & Values API registers a set of built-in properties during initialization, which can also be used in custom graphics to register Custom properties. Parsing of properties is done using CSS Typed OM, for example `r: 5` will be parsed as `CSS.px(5)`. If the user sets the layout property `display`, we will use the CSS Layout API to do the layout calculations during the layout phase.
 
-我们希望通过这一套样式系统，让布局变得更简单，用户完全可以避免复杂的手动计算、使用 `setPosition()` 设置元素位置，通过布局属性轻松完成任务。想象一下在浏览器支持 `display: flex` 之前，那些让元素居中的奇技淫巧：
+With this style system, we hope to make layout simpler, so that users can avoid complicated manual calculations, use `setPosition()` to set the element position, and do the task easily with the layout property. Imagine all the fancy ways of centering elements before browsers supported `display: flex`.
 
 ```js
 container.appendChild(child1);
 container.appendChild(child2);
 
-// 设置容器使用 Flex 布局，直接完成子元素的定位
+// Set the container to use the Flex layout to directly position the child elements
 container.style.display = 'flex';
 
-// or 手动进行一系列复杂的布局计算
+// or Manually perform a series of complex layout calculations
 const [x1, y1, x2, y2] = heavyLifting(container, child1, child2);
 child1.setPosition(x1, y1);
 child2.setPosition(x2, y2);
@@ -59,21 +59,21 @@ child2.setPosition(x2, y2);
 
 # CSS Typed OM
 
-在浏览器中，过去很长一段时间 CSS 的解析对于前端开发者都是一个黑盒。
+In the browser, CSS parsing used to be a black box for front-end developers for a long time.
 
-我们只能通过 `el.style.width = '50%'` 这样非结构化的字符串与样式系统交互。
+We could only interact with the style system through unstructured strings like `el.style.width = '50%'`.
 
-不同的样式属性支持不同的类型，例如圆的半径 `r` 支持长度 `<length>` 和百分比 `<percentage>`，我们可以使用字符串表示：
+Different style properties support different types, for example the radius of a circle `r` supports length `<length>` and percentage `<percentage>`, which we can represent as strings.
 
 ```js
 circle.style.r = '5px';
 circle.style.r = '50%';
 ```
 
-我们会将这样的字符串解析成 [CSSStyleValue](/zh/docs/api/css/css-typed-om#cssstylevalue)，例如 `CSS.px(5)` 和 `CSS.percent(50)`，更多信息详见 [CSS Typed OM](/zh/docs/api/css/css-typed-om)。
+We will parse such strings as [CSSStyleValue](/en/docs/api/css/css-typed-om#cssstylevalue), for example `CSS.px(5)` and `CSS.percent(50)`, for more information see [CSS Typed OM](/en/ docs/api/css/css-typed-om).
 
 # CSS Properties & Values API
 
-显然，一个属性的元数据（是否可以继承、是否支持动画、默认值等）会影响到我们对于属性值的解析。
+Obviously, the metadata of an attribute (whether it can be inherited, whether it supports animations, default values, etc.) affects how we parse the value of the attribute.
 
 # CSS Layout API

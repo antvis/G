@@ -3,11 +3,11 @@ title: g-plugin-dragndrop
 order: 7
 ---
 
-基于 [PointerEvents](/zh/docs/api/event#交互事件) 实现拖放功能。在该[示例](/zh/examples/plugins#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
+Drag and drop based on [PointerEvents](/en/docs/api/event#interaction events). In this [example](/en/examples/plugins#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
-# 安装方式
+# Usage
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
@@ -17,9 +17,9 @@ const canvasRenderer = new CanvasRenderer();
 canvasRenderer.registerPlugin(new Plugin());
 ```
 
-# 插件配置项
+# Plugin configuration items
 
-我们提供了以下配置项，可以在创建插件时传入，例如 [overlap](/zh/docs/plugins/dragndrop#overlap)：
+We provide the following configuration items that can be passed in when creating plugins, for example [overlap](/en/docs/plugins/dragndrop#overlap).
 
 ```js
 new Plugin({
@@ -29,7 +29,7 @@ new Plugin({
 
 ## isDocumentDraggable
 
-由于 [Document](/zh/docs/api/builtin-objects/document) 上并没有“样式”，因此当我们想在画布的空白区域进行拖拽时，并不能这么做：
+Since there is no "style" on [Document](/en/docs/api/builtin-objects/document), when we want to drag and drop on a blank area of the canvas, we cannot do so.
 
 ```js
 // wrong
@@ -42,7 +42,7 @@ const plugin = new Plugin({
 });
 ```
 
-在该[示例](/zh/examples/plugins#dragndrop)中，在空白区域进行拖拽可以通过 [camera.pan()](/zh/docs/api/camera#pan) 平移相机，以达到整个画布发生移动的视觉效果：
+In this [example](/en/examples/plugins#dragndrop), dragging in a blank area pans the camera with [camera.pan()](/en/docs/api/camera#pan) to achieve the visual effect of the entire canvas moving.
 
 ```js
 const camera = canvas.getCamera();
@@ -55,23 +55,23 @@ canvas.addEventListener('drag', function (e) {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sF1WQr4zrsQAAAAAAAAAAAAAARQnAQ" width="300" alt="drag document">
 
-在上面的例子中我们有 `e.target === canvas.document` 这样的判断，是为了避免移动“足球”等非 [Document](/zh/docs/api/builtin-objects/document) 元素也造成相机移动。
+In the above example we have `e.target === canvas.document` to avoid moving non-[Document](/en/docs/api/builtin-objects/document) elements like "soccer". element also causes the camera to move.
 
 ## isDocumentDroppable
 
-同样的，如果我们想让 [Document](/zh/docs/api/builtin-objects/document) 也成为“可放置区域”，可以使用该配置项：
+Similarly, if we want to make [Document](/en/docs/api/builtin-objects/document) a "placeable area", we can use this configuration item.
 
 ```js
 // wrong
 canvas.document.style.droppable = true;
 
 // correct
-const plugin = new Plugin(
+const plugin = new Plugin({
     isDocumentDroppable: true,
 });
 ```
 
-在该[示例](/zh/examples/plugins#dragndrop)中，当我们拖动足球到空白区域时，控制台会打印如下信息：
+In this [example](/en/examples/plugins#dragndrop), when we drag the soccer to a blank area, the console prints the following message.
 
 ```js
 canvas.addEventListener('drop', function (e) {
@@ -83,11 +83,11 @@ canvas.addEventListener('drop', function (e) {
 
 ## dragstartDistanceThreshold
 
-对于满足何种条件判定“开始拖拽”，我们提供了以下配置项：分别基于拖拽距离和时间。只有这些判定条件全部满足，才会触发 `dragstart` 等一系列拖放事件。
+We provide the following configurations for what conditions are met to determine `dragstart`: based on drag distance and time, respectively. Only if all these conditions are met, a series of drag events such as `dragstart` will be triggered.
 
-该配置项用于配置拖放距离的检测阈值，单位为像素，只有 **大于** 该值才会判定通过。默认值为 0。
+This configuration item is used to configure the detection threshold of the drag distance in pixels, and only ** greater than ** this value will be passed. The default value is 0.
 
-在该[示例](/zh/examples/plugins#dragndrop)中，我们配置了该选项为 10，即只有拖动超过 10 像素距离才会触发拖动事件：
+In this [example](/en/examples/plugins#dragndrop), we have configured this option to 10, i.e. only dragging more than 10 pixels will trigger a drag event.
 
 ```js
 const plugin = new Plugin({
@@ -97,9 +97,9 @@ const plugin = new Plugin({
 
 ## dragstartTimeThreshold
 
-该配置项用于配置拖放时间的检测阈值，单位为毫秒，只有 **大于** 该值才会判定通过。默认值为 0。
+This configuration item is used to configure the detection threshold of drag and drop time in milliseconds, and only ** greater than ** this value will be passed. The default value is 0.
 
-在该[示例](/zh/examples/plugins#dragndrop)中，我们配置了该选项为 100，即只有拖动超过 100 毫秒才会触发拖动事件：
+In this [example](/en/examples/plugins#dragndrop), we have configured this option to 100, i.e. the drag event will only be triggered if the drag exceeds 100 milliseconds.
 
 ```js
 const plugin = new Plugin({
@@ -109,18 +109,18 @@ const plugin = new Plugin({
 
 ## overlap
 
-用以判断拖拽中的图形是否进入 `dropzone`，支持以下两个取值：
+Used to determine if the graph in the drag is in the `dropzone`, supports the following two values.
 
--   `'pointer'` 默认值。鼠标位置进入 `dropzone` 区域则通过判定
--   `'center'` 拖拽中图形包围盒中心进入 `dropzone` 区域则通过判定
+-   `'pointer'` Default value. The mouse position enters the `dropzone` area by determining
+-   `'center'` The center of the dropzone is determined if the center of the dropzone is in the dropzone.
 
-# 使用方式
+# Usage
 
-通过配置图形支持 Drag（拖拽）、Drop（放置），我们可以监听相关的事件。Drag 和 Drop 相关的事件都是可冒泡的。
+Drag and Drop related events are both bubbly.
 
 ## Drag
 
-注册插件完毕之后，为了让图形支持拖拽，需要设置 `draggable` 属性为 `true`。例如上面的足球：
+After registering the plugin, you need to set the `draggable` property to `true` in order to make the graphics support drag and drop. For example, for the soccer ball above.
 
 ```js
 const ball = new Image({
@@ -136,15 +136,15 @@ const ball = new Image({
 });
 ```
 
-此时就可以监听该图形的 drag 相关事件，包括以下三类事件，事件对象的 [target](/zh/docs/api/event#target) 都是被拖拽的图形：
+At this point, you can listen to drag-related events for the graph, including the following three types of events, the [target](/en/docs/api/event#target) of the event object are the graph being dragged.
 
--   dragstart 在开始拖拽时触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
--   drag 在拖拽中频繁触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
--   dragend 在拖拽结束后触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
+-   dragstart triggered at the start of dragging https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
+-   drag Triggered frequently during dragging https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
+-   dragend Triggered at the end of the drag https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
 
-drag 相关事件都是 [PointerEvents](/zh/docs/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。
+drag The related events are all [PointerEvents](/en/docs/api/event#interaction events), so you can access the properties on the event object in the event listener.
 
-例如开始拖拽时，我们记录下鼠标位置到被拖拽元素位置的偏移量 `shiftX/Y`，两者都在[Canvas/世界坐标系](/zh/docs/api/canvas#canvas-1)下。在 `drag` 事件中我们调用 [setPosition](/zh/docs/api/basic/display-object#平移) 完成被拖拽图形的平移。
+For example, when we start dragging, we record the offset from mouse position to the position of the dragged element `shiftX/Y`, both under [Canvas/world coordinate system](/en/docs/api/canvas#canvas-1). In the `drag` event we call [setPosition](/en/docs/api/basic/display-object#panning) to finish the panning of the dragged drawing.
 
 https://javascript.info/mouse-drag-and-drop#correct-positioning
 
@@ -179,12 +179,12 @@ ball.addEventListener('dragend', function (e) {
 
 ## Drop
 
-同样，我们可以为支持放置的图形开启 `droppable`：
+Similarly, we can enable `droppable` for graphics that support placement.
 
 ```js
 const gate = new Image({
     style: {
-        droppable: true, // 表示该图形支持放置
+        droppable: true, // Indicates that the graph supports the placement of
         x: 50,
         y: 100,
         width: 200,
@@ -194,14 +194,14 @@ const gate = new Image({
 });
 ```
 
-此时就可以监听放置区域的 drag/drop 相关事件，包括以下三类事件，事件对象的 [target](/zh/docs/api/event#target) 都是放置区域的图形：
+At this point you can listen to drag/drop related events in the placement area, including the following three types of events, the [target](/en/docs/api/event#target) of the event object are the graphics of the placement area.
 
--   dragenter 有图形被拖入该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event
--   dragleave 有图形被拖离该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event
--   dragover 有图形正在划过该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event
--   drop 有图形放置在该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event
+-   dragenter has the graphic being dragged into the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event
+-   dragleave has graphics being dragged out of the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event
+-   dragover has the graphic being drawn over the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event
+-   drop has the graphic placed in the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event
 
-例如我们让球门监听相关事件：
+For example, let's have the goal listen for events related to.
 
 ```js
 gate.addEventListener('dragenter', function (e) {

@@ -42,7 +42,7 @@ export class EventPlugin implements RenderingPlugin {
   @inject(EventService)
   private eventService: EventService;
 
-  private autoPreventDefault = true;
+  private autoPreventDefault = false;
   private rootPointerEvent = new FederatedPointerEvent(null);
   private rootWheelEvent = new FederatedWheelEvent(null);
 
@@ -145,13 +145,10 @@ export class EventPlugin implements RenderingPlugin {
   };
 
   private bootstrapEvent(
-    e: FederatedPointerEvent,
+    event: FederatedPointerEvent,
     nativeEvent: PointerEvent,
     view: ICanvas,
   ): FederatedPointerEvent {
-    e.pointerType = nativeEvent.pointerType;
-
-    const event = e as FederatedPointerEvent;
     event.view = view;
     event.originalEvent = null;
     event.nativeEvent = nativeEvent;
@@ -160,6 +157,7 @@ export class EventPlugin implements RenderingPlugin {
     event.width = nativeEvent.width;
     event.height = nativeEvent.height;
     event.isPrimary = nativeEvent.isPrimary;
+    event.pointerType = nativeEvent.pointerType;
     event.pressure = nativeEvent.pressure;
     event.tangentialPressure = nativeEvent.tangentialPressure;
     event.tiltX = nativeEvent.tiltX;
@@ -223,6 +221,7 @@ export class EventPlugin implements RenderingPlugin {
    */
   private transferMouseData(event: FederatedMouseEvent, nativeEvent: MouseEvent): void {
     event.isTrusted = nativeEvent.isTrusted;
+    event.srcElement = nativeEvent.srcElement;
     event.timeStamp = performance.now();
     event.type = nativeEvent.type;
 
@@ -255,8 +254,8 @@ export class EventPlugin implements RenderingPlugin {
 
         // use changedTouches instead of touches since touchend has no touches
         // @see https://stackoverflow.com/a/10079076
-        if (isUndefined(touch.button)) touch.button = event.touches.length ? 1 : 0;
-        if (isUndefined(touch.buttons)) touch.buttons = event.touches.length ? 1 : 0;
+        if (isUndefined(touch.button)) touch.button = 0;
+        if (isUndefined(touch.buttons)) touch.buttons = 1;
         if (isUndefined(touch.isPrimary)) {
           touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
         }

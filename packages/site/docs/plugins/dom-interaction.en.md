@@ -3,14 +3,13 @@ title: g-plugin-dom-interaction
 order: 7
 ---
 
-基于 DOM API 绑定事件。
+Bind events based on the DOM API.
 
-# 安装方式
+# Usage
 
-`g-webgl/canvas/svg` 渲染器默认内置，因此无需手动引入。
+Every renderer is built-in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as SvgRenderer } from '@antv/g-svg';
-// 创建 SVG 渲染器，其中内置了该插件
 const svgRenderer = new SvgRenderer();
 ```

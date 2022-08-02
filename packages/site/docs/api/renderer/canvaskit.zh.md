@@ -394,7 +394,7 @@ const text = new Text({
 
 ### 文本方向
 
-使用 `direction` 可以指定文本方向从左向右或者从右向左，支持 `'ltr'` 和 `'rtl'`，默认为 `'ltr'`。下图为 `'rtl' 的效果：
+使用 `direction` 可以指定文本方向从左向右或者从右向左，支持 `'ltr'` 和 `'rtl'`，默认为 `'ltr'`。下图为 `'rtl'` 的效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8oWlSpL5hGAAAAAAAAAAAAAAARQnAQ" width="160" alt="text direction">
 

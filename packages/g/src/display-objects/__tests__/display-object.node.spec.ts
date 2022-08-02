@@ -1,4 +1,6 @@
-import { DisplayObject, Group, Shape } from '@antv/g';
+import type { BaseCustomElementStyleProps, DisplayObjectConfig } from '@antv/g';
+import { Canvas, Circle, CustomElement, DisplayObject, Group, Shape } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -9,7 +11,28 @@ import sinonChai from 'sinon-chai';
 chai.use(chaiAlmost());
 chai.use(sinonChai);
 
+const $container = document.createElement('div');
+$container.id = 'container';
+document.body.prepend($container);
+
+const renderer = new CanvasRenderer();
+// create a canvas
+const canvas = new Canvas({
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer,
+});
+
 describe('DisplayObject Node API', () => {
+  afterEach(() => {
+    canvas.removeChildren();
+  });
+
+  afterAll(() => {
+    canvas.destroy();
+  });
+
   it('should update transform with its parent group', () => {
     const group1 = new DisplayObject({});
     const group2 = new DisplayObject({});
@@ -324,5 +347,66 @@ describe('DisplayObject Node API', () => {
     expect(cloned.children[0].getPosition()).to.be.eqls(group2.getPosition());
     expect(cloned.children[0].style.fontSize).to.be.eqls(group2.style.fontSize);
     expect(cloned.children[0].style.transform).to.be.eqls(group2.style.transform);
+  });
+
+  it('should (deep) cloneNode for custom elements correctly', async () => {
+    interface AProps extends BaseCustomElementStyleProps {
+      size: number;
+      circle: Circle;
+    }
+    class ElementA extends CustomElement<AProps> {
+      constructor(options: DisplayObjectConfig<AProps>) {
+        super(options);
+      }
+      connectedCallback() {
+        const { circle } = this.style;
+        this.appendChild(circle);
+      }
+      disconnectedCallback() {}
+      attributeChangedCallback<Key extends never>(
+        name: Key,
+        oldValue: {}[Key],
+        newValue: {}[Key],
+      ) {}
+    }
+
+    await canvas.ready;
+
+    const circle = new Circle({
+      name: 'testname',
+      id: 'testid',
+      className: 'testclassname',
+      style: {
+        fill: 'red',
+        r: 10,
+      },
+    });
+    const a = new ElementA({
+      style: {
+        size: 10,
+        circle,
+      },
+    });
+
+    // before appending to canvas
+    let cloned = a.cloneNode(true);
+    expect(cloned.style.size).to.be.eqls(10);
+    expect(cloned.style.circle).to.be.not.eql(circle);
+    expect(cloned.style.circle.entity).to.be.not.eql(circle.entity);
+    expect(cloned.childNodes.length).to.be.eqls(0);
+
+    // after appending to canvas
+    canvas.appendChild(a);
+    cloned = a.cloneNode(true);
+
+    expect(cloned.style.size).to.be.eqls(10);
+    expect(cloned.style.circle).to.be.not.eql(circle);
+    expect(cloned.style.circle.entity).to.be.not.eql(circle.entity);
+    expect(cloned.childNodes.length).to.be.eqls(1);
+    expect((cloned.childNodes[0] as Circle).name).to.be.eqls('testname');
+    expect((cloned.childNodes[0] as Circle).id).to.be.eqls('testid');
+    expect((cloned.childNodes[0] as Circle).className).to.be.eqls('testclassname');
+    expect((cloned.childNodes[0] as Circle).style.fill).to.be.eqls('red');
+    expect((cloned.childNodes[0] as Circle).style.r).to.be.eqls(10);
   });
 });

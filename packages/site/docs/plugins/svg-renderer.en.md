@@ -3,14 +3,14 @@ title: g-plugin-svg-renderer
 order: 5
 ---
 
-提供基于 SVG 的渲染能力。
+Provides SVG-based rendering capabilities.
 
-# 安装方式
+# Usage
 
-`g-svg` 渲染器默认内置，因此无需手动引入。
+The [g-svg](/en/docs/api/renderer/svg) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as SvgRenderer } from '@antv/g-svg';
-// 创建 SVG 渲染器，其中内置了该插件
+// Create a renderer with the plugin built in
 const svgRenderer = new SvgRenderer();
 ```

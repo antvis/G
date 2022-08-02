@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-renderer",
-  "version": "1.6.1",
+  "version": "1.6.4",
   "description": "A G plugin of renderer implementation with SVG",
   "keywords": [
     "antv",
@@ -27,7 +27,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/util": "^3.2.0",
+    "@antv/util": "^3.2.2",
     "detect-browser": "^5.0.0",
     "tslib": "^2.3.1"
   },

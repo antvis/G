@@ -19,6 +19,20 @@
       }
     },
     {
+      "filename": "bfs.js",
+      "title": {
+        "zh": "Breadth First Search",
+        "en": "Breadth First Search"
+      }
+    },
+    {
+      "filename": "louvain.js",
+      "title": {
+        "zh": "Louvain Clustering Algorithm",
+        "en": "Louvain Clustering Algorithm"
+      }
+    },
+    {
       "filename": "bellman-ford.js",
       "title": {
         "zh": "Bellman-Ford 最短路径算法",

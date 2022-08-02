@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.6.1",
+  "version": "5.6.4",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -29,8 +29,8 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.6.0",
-    "@antv/util": "^3.2.0",
+    "@antv/g-math": "^1.6.3",
+    "@antv/util": "^3.2.2",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",

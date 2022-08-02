@@ -257,7 +257,9 @@ https://github.com/divyanshu-talwar/Parallel-DFS
 
 ## Louvain
 
-[Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
+-   [Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
+-   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.louvain.html
+-   https://github.com/rapidsai/cugraph/tree/branch-22.08/cpp/src/community
 
 ## K-Core
 

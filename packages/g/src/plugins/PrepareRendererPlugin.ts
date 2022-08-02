@@ -150,6 +150,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     // @see https://github.com/mourner/rbush#bulk-inserting-data
     this.rBush.load(bulk);
 
+    bulk.length = 0;
     this.toSync.clear();
   }
 }

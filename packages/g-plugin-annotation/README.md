@@ -17,3 +17,18 @@ canvasRenderer.registerPlugin(plugin);
 ```
 
 # Features
+
+## Customization
+
+Refer to: http://fabricjs.com/fabric-intro-part-4#customization
+
+```js
+new Circle({
+    style: {
+        hasBorders: false,
+        borderColor: 'red',
+        cornerColor: 'green',
+        cornerSize: 6,
+    },
+});
+```

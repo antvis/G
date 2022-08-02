@@ -49,30 +49,27 @@ renderer.registerPlugin(new Plugin());
 
 # 基本结构
 
+https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
+
 ## package.json
 
-从 `package.json` 的 `peerDependencies` 可以看出，一个插件的最核心依赖有两个：
-
--   `@antv/g` G 的核心层，包含了画布、基础图形、事件等核心对象
--   `mana-syringe` 一个依赖注入库，我们用它定义模块，完成核心依赖的注入
+从 `package.json` 的 `peerDependencies` 可以看出，一个插件的最核心依赖就是 `@antv/g`，即 G 的核心层，包含了依赖注入、画布、基础图形、事件等核心对象。
 
 ```json
 "peerDependencies": {
-    "@antv/g": "^5.0.1",
-    "mana-syringe": "^0.3.0"
+    "@antv/g": "^5.0.1"
 },
 ```
 
 ## index.js
 
-打开插件的入口文件，我们可以发现一个实现了 `RendererPlugin` 接口的插件只需要实现两个方法：
+打开插件的入口文件，我们可以发现一个继承了 `AbstractRendererPlugin` 的插件需要实现两个方法：
 
 -   `init` 在容器中加载模块
 -   `destroy` 在容器中卸载模块
 
 ```js
-import { RendererPlugin } from '@antv/g';
-import { Syringe, Module } from 'mana-syringe';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { DOMInteractionPlugin } from './DOMInteractionPlugin';
 
 // 定义该插件的模块
@@ -83,17 +80,15 @@ const containerModule = Module((register) => {
     register(LoadImagePlugin);
 });
 
-export class Plugin implements RendererPlugin {
-    init(container: Syringe.Container): void {
+export class Plugin extends AbstractRendererPlugin {
+    name = 'canvas-renderer';
+    init(): void {
         // 加载模块
-        container.load(containerModule, true);
+        this.container.load(containerModule, true);
     }
-    destroy(container: Syringe.Container): void {
+    destroy(): void {
         // 卸载模块
-        // 注：mana-syringe 实现 unload 之后就不需要手动一个个移除依赖了
-        container.remove(ImagePool);
-        container.remove(RBushRoot);
-        container.remove(DefaultRenderer);
+        this.container.unload(containerModule);
     }
 }
 ```
@@ -109,7 +104,7 @@ export class Plugin implements RendererPlugin {
 同时我们也在 `RenderingPluginContribution` 这个 G 核心层提供的扩展点上注册了自己，这样在核心层渲染服务运行时就会调用包含它在内的一组渲染服务插件。
 
 ```js
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from '@antv/g';
 
 // 实现扩展点
 @singleton({ contrib: RenderingPluginContribution })

@@ -27,8 +27,9 @@
     "README.md"
   ],
   "dependencies": {
-    "tslib": "^2.3.1", 
-    "eventemitter3": "^4.0.0"
+    "eventemitter3": "^4.0.0",
+    "gl-matrix": "^3.1.0",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^25.0.0"

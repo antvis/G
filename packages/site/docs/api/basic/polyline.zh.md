@@ -80,7 +80,75 @@ polyline.style.points = [
 ];
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
+可以参考 SVG 的[同名属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points)。
+
+## markerStart
+
+可以参考 [Line](/zh/docs/api/basic/line) 的 [markerStart](/zh/docs/api/basic/line#markerstart) 属性。
+
+“起始点” 由 [points](/zh/docs/api/basic/polyline#points) 中的第一个点决定。
+
+在该[示例](/zh/examples/shape#polyline)中，我们在折线的起始点上放置了一个箭头：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jPJnTJ9VANYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
+
+```js
+const arrowMarker = new Path({
+    style: {
+        path: 'M 10,10 L -10,0 L 10,-10 Z',
+        stroke: '#1890FF',
+        anchor: '0.5 0.5',
+        transformOrigin: 'center',
+    },
+});
+
+polyline.style.markerStart = arrowMarker;
+```
+
+## markerEnd
+
+可以参考 [Line](/zh/docs/api/basic/line) 的 [markerEnd](/zh/docs/api/basic/line#markerend) 属性。
+
+“终止点” 由 [points](/zh/docs/api/basic/polyline#points) 中的最后一个点决定。
+
+在该[示例](/zh/examples/shape#polyline)中，我们在折线的终止点上放置了一个图片：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aXEMQIPzPVYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
+
+```js
+const imageMarker = new Image({
+    style: {
+        width: 50,
+        height: 50,
+        anchor: [0.5, 0.5],
+        transformOrigin: 'center',
+        transform: 'rotate(90deg)',
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
+});
+
+polyline.style.markerEnd = imageMarker;
+```
+
+## markerMid
+
+可以参考 SVG 的[同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)。
+
+在折线除了 “起始点” 和 “终止点” 之外的每一个顶点上放置标记图形。
+
+## markerStartOffset
+
+可以参考 [Line](/zh/docs/api/basic/line) 的 [markerStartOffset](/zh/docs/api/basic/line#markerstartoffset) 属性。
+
+沿折线的第一个线段方向移动标记图形。
+
+## markerEndOffset
+
+可以参考 [Line](/zh/docs/api/basic/line) 的 [markerEndOffset](/zh/docs/api/basic/line#markerendoffset) 属性。
+
+沿折线的最后一个线段方向移动标记图形。在该[示例](/zh/examples/shape#polyline)中，我们使用该属性移动标记图形：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
 
 # 方法
 

@@ -69,7 +69,7 @@ const webglRenderer = new WebGLRenderer({
 
 ## 3D 渲染能力
 
-[g-plugin-3d](/zh/docs/plugins/3d) 提供 3D 渲染能力，包括 [Mesh]() [Material]() [Geometry]() 等常见对象。
+[g-plugin-3d](/zh/docs/plugins/3d) 提供 3D 渲染能力，包括 [Mesh](/zh/docs/api/3d/mesh) [Material](/zh/docs/api/3d/material) [Geometry](/zh/docs/api/3d/geometry) 等常见对象。
 
 ## 相机交互
 

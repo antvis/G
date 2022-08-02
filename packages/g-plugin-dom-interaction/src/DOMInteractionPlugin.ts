@@ -65,7 +65,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     const addTouchEventListener = ($el: HTMLElement) => {
       $el.addEventListener('touchstart', onPointerDown, true);
       $el.addEventListener('touchend', onPointerUp, true);
-      globalThis.document.addEventListener('touchmove', onPointerMove, true);
+      $el.addEventListener('touchmove', onPointerMove, true);
       $el.addEventListener('touchcancel', onPointerCancel, true);
     };
 
@@ -88,8 +88,8 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     const removeTouchEventListener = ($el: HTMLElement) => {
       $el.removeEventListener('touchstart', onPointerDown, true);
       $el.removeEventListener('touchend', onPointerUp, true);
+      $el.removeEventListener('touchmove', onPointerMove, true);
       $el.removeEventListener('touchcancel', onPointerCancel, true);
-      globalThis.document.removeEventListener('touchmove', onPointerMove, true);
     };
 
     const removeMouseEventListener = ($el: HTMLElement) => {
@@ -133,6 +133,17 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el = this.contextService.getDomElement() as unknown as HTMLElement;
+
+      // @ts-ignore
+      if (globalThis.navigator.msPointerEnabled) {
+        // @ts-ignore
+        $el.style.msContentZooming = '';
+        // @ts-ignore
+        $el.style.msTouchAction = '';
+      } else if (canvas.supportsPointerEvents) {
+        $el.style.touchAction = '';
+      }
+
       if (canvas.supportsPointerEvents) {
         removePointerEventListener($el);
       } else {

@@ -44,10 +44,15 @@ export class DragndropPlugin implements RenderingPlugin {
     const handlePointerdown = (event: FederatedPointerEvent) => {
       const target = event.target as DisplayObject;
       const isDocument = (target as unknown as IDocument) === document;
-      if (
-        (isDocument && isDocumentDraggable) ||
-        (target.getAttribute && target.getAttribute('draggable'))
-      ) {
+
+      const draggableEventTarget =
+        isDocument && isDocumentDraggable
+          ? document
+          : target.closest && target.closest('[draggable=true]');
+
+      // `draggable` may be set on ancestor nodes:
+      // @see https://github.com/antvis/G/issues/1088
+      if (!!draggableEventTarget) {
         // delay triggering dragstart event
         let dragstartTriggered = false;
         const dragstartTimeStamp = event.timeStamp;
@@ -73,7 +78,8 @@ export class DragndropPlugin implements RenderingPlugin {
 
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
             event.type = 'dragstart';
-            target.dispatchEvent(event);
+
+            draggableEventTarget.dispatchEvent(event);
             dragstartTriggered = true;
           }
 
@@ -83,21 +89,19 @@ export class DragndropPlugin implements RenderingPlugin {
           event.dx = event.clientX - lastDragClientCoordinates[0];
           // @ts-ignore
           event.dy = event.clientY - lastDragClientCoordinates[1];
-          target.dispatchEvent(event);
+          draggableEventTarget.dispatchEvent(event);
           lastDragClientCoordinates = [event.clientX, event.clientY];
 
           if (!isDocument) {
-            // prevent from picking the dragging element
-            const pointerEventsOldValue = target.style.pointerEvents;
-            target.style.pointerEvents = 'none';
-
             const point =
               overlap === 'pointer' ? [event.canvasX, event.canvasY] : target.getBounds().center;
-            const elemBelow = await document.elementFromPoint(point[0], point[1]);
-            target.style.pointerEvents = pointerEventsOldValue;
+            const elementsBelow = await document.elementsFromPoint(point[0], point[1]);
+
+            // prevent from picking the dragging element
+            const elementBelow = elementsBelow[elementsBelow.indexOf(target) + 1];
 
             const droppableBelow =
-              elemBelow?.closest('[droppable=true]') || (isDocumentDroppable ? document : null);
+              elementBelow?.closest('[droppable=true]') || (isDocumentDroppable ? document : null);
             if (currentDroppable !== droppableBelow) {
               if (currentDroppable) {
                 // null when we were not over a droppable before this event
@@ -142,7 +146,12 @@ export class DragndropPlugin implements RenderingPlugin {
 
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
             event.type = 'dragend';
-            target.dispatchEvent(event);
+            // prevent click event being triggerd
+            // @see https://github.com/antvis/G/issues/1091
+            event.detail = {
+              preventClick: true,
+            };
+            draggableEventTarget.dispatchEvent(event);
 
             dragstartTriggered = false;
           }

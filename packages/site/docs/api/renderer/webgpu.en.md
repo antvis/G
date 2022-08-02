@@ -1,19 +1,19 @@
 ---
-title: WebGPU 渲染器
+title: WebGPU Renderer
 order: 3
 ---
 
-基于 [WebGPU](https://www.w3.org/TR/webgpu/) 提供渲染和计算能力。
+Based on [WebGPU](https://www.w3.org/TR/webgpu/) to provide rendering and computation capabilities.
 
-特别是利用 GPU 进行并行计算的能力，是 WebGL 所不具备的，我们提供了 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 帮助简化这一过程。
+In particular, the ability to use the GPU for parallel computation is not available with WebGL, and we provide [g-plugin-gpgpu](/en/docs/plugins/gpgpu) to help simplify this process.
 
-# 前置条件
+# Pre-requisites
 
-以下前置条件需要满足。
+The following pre-requisites need to be met.
 
-## 特性检测
+## Feature Detection
 
-在使用时需要判断当前环境是否支持 WebGPU，下面特性检测代码来自：https://web.dev/gpu/#feature-detection：
+When using it, you need to determine whether the current environment supports WebGPU, the following feature detection code from https://web.dev/gpu/#feature-detection.
 
 ```js
 if ('gpu' in navigator) {
@@ -21,19 +21,19 @@ if ('gpu' in navigator) {
 }
 ```
 
-目前在 Chrome 最新版本（101）中可以通过 Open Trial 开启。
+This is currently available in the latest version of Chrome (101) via Open Trial.
 
-## WASM 支持
+## WASM Support
 
-在运行时我们使用 [wgpu naga](https://github.com/gfx-rs/naga) 进行 Shader 转译（GLSL 300 -> WGSL），因此需要运行环境支持 WASM。
+At runtime we use [wgpu naga](https://github.com/gfx-rs/naga) for shader translation (GLSL 300 -> WGSL), so the runtime environment needs to support WASM.
 
-# 使用方式
+# Usage
 
-和 `@antv/g` 一样，也有以下两种使用方式。
+As with `@antv/g`, there are two ways to use it.
 
 ## NPM Module
 
-安装 `@antv/g-webgl` 后可以从中获取渲染器：
+After installing `@antv/g-webgl` you can get the renderer from.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -49,7 +49,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN 方式
+## CDN
 
 ```html
 <script
@@ -57,32 +57,32 @@ const canvas = new Canvas({
   type="application/javascript">
 ```
 
-从 `G.WebGPU` 命名空间下可以获取渲染器：
+The renderer is available from the `G.WebGPU` namespace under.
 
 ```js
 const webgpuRenderer = new window.G.WebGPU.Renderer();
 ```
 
-# 内置插件
+# Built-in plug-ins
 
-该渲染器内置了以下插件：
+The renderer has the following plug-ins built in.
 
--   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 GPUDevice 提供渲染能力
--   [g-plugin-webgpu-device](/zh/docs/plugins/webgpu-device) 基于 WebGPU 实现 GPUDevice 能力
--   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+-   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) GPUDevice based rendering capabilities
+-   [g-plugin-webgpu-device](/en/docs/plugins/webgl-device) Implementing GPUDevice Capabilities based on WebGPU
+-   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
 
-# 可选插件
+# Optional plug-ins
 
-除了内置插件，还可以选择以下插件。
+In addition to the built-in plug-ins, the following plug-ins are also available
 
 ## GPGPU
 
-[g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 提供 GPGPU 能力。得益于 WebGPU 对于 Compute Shader 的支持度，我们可以实现很多可并行算法。
+[g-plugin-gpgpu](/en/docs/plugins/gpgpu) provides GPGPU capabilities. Thanks to the WebGPU's support for Compute Shader, we can implement many parallelizable algorithms.
 
-## 3D 渲染能力
+## 3D rendering capabilities
 
-[g-plugin-3d](/zh/docs/plugins/3d) 提供 3D 渲染能力，包括 [Mesh]() [Material]() [Geometry]() 等常见对象。
+[g-plugin-3d](/en/docs/plugins/3d) Provides 3D rendering capabilities, including common objects such as [Mesh](/en/docs/api/3d/mesh) [Material](/en/docs/api/3d/material) [Geometry](/en/docs/api/3d/geometry).
 
-## 相机交互
+## Camera Interaction
 
-[g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/zh/docs/api/camera#%E7%9B%B8%E6%9C%BA%E7%B1%BB%E5%9E%8B)，提供不同的交互效果。
+[g-plugin-control](/en/docs/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/en/docs/api/camera#%E7%9B%B8%E6%9C%BA%E7%B1%BB%E5%9E%8B)，提供不同的交互效果。

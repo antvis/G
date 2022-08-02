@@ -202,7 +202,7 @@ export class PickingPlugin implements RenderingPlugin {
     const currentView = { ...this.camera.getView() };
 
     return new Promise((resolve) => {
-      // prevent unsed RTs like main color being destroyed
+      // prevent unused RTs like main color being destroyed
       this.renderHelper.renderGraph.renderTargetDeadPool.forEach((rt) => {
         rt.age = -1;
       });

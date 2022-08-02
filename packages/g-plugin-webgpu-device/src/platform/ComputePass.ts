@@ -18,7 +18,7 @@ export class ComputePass_WebGPU implements ComputePass {
    * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatch
    */
   dispatch(x: number, y?: number, z?: number): void {
-    this.gpuComputePassEncoder.dispatch(x, y, z);
+    this.gpuComputePassEncoder.dispatchWorkgroups(x, y, z);
     // TODO: dispatchIndirect read from GPUBuffer
   }
 

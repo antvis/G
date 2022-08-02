@@ -1,6 +1,6 @@
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { FederatedEvent } from './FederatedEvent';
 import { Point } from '../shapes/Point';
+import { FederatedEvent } from './FederatedEvent';
 
 export class FederatedMouseEvent
   extends FederatedEvent<MouseEvent | PointerEvent | TouchEvent>

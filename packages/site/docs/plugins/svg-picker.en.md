@@ -3,19 +3,18 @@ title: g-plugin-svg-picker
 order: 6
 ---
 
-提供基于 SVG 的拾取能力。
+Provides SVG-based pickup capability.
 
-# 安装方式
+# Usage
 
-`g-svg` 渲染器默认内置，因此无需手动引入。
+The [g-svg](/en/docs/api/renderer/svg) renderer is built in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as SvgRenderer } from '@antv/g-svg';
-// 创建 SVG 渲染器，其中内置了该插件
+// Create a renderer with the plugin built in
 const svgRenderer = new SvgRenderer();
 ```
 
-# 实现原理
+# Principle of implementation
 
-直接使用 [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) 获取 `SVGElement`。
-找到后通过 `id` 查询 `DisplayObject` 返回。
+Get `SVGElement` directly using [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint). Find it and query `DisplayObject` by `id` to return it.

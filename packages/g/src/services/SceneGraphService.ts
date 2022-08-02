@@ -320,24 +320,28 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   setPosition = (() => {
     const parentInvertMatrix = mat4.create();
+    const tmpPosition = vec3.create();
 
     return (element: INode, position: vec3 | vec2) => {
       const transform = (element as Element).transformable;
-      position = vec3.fromValues(position[0], position[1], position[2] || 0);
 
-      if (vec3.equals(this.getPosition(element), position)) {
+      tmpPosition[0] = position[0];
+      tmpPosition[1] = position[1];
+      tmpPosition[2] = position[2] || 0;
+
+      if (vec3.equals(this.getPosition(element), tmpPosition)) {
         return;
       }
 
-      transform.position = position;
+      vec3.copy(transform.position, tmpPosition);
 
       if (element.parentNode === null || !(element.parentNode as Element).transformable) {
-        vec3.copy(transform.localPosition, position);
+        vec3.copy(transform.localPosition, tmpPosition);
       } else {
         const parentTransform = (element.parentNode as Element).transformable;
         mat4.copy(parentInvertMatrix, parentTransform.worldTransform);
         mat4.invert(parentInvertMatrix, parentInvertMatrix);
-        vec3.transformMat4(transform.localPosition, position, parentInvertMatrix);
+        vec3.transformMat4(transform.localPosition, tmpPosition, parentInvertMatrix);
       }
 
       this.dirtifyLocal(element, transform);
@@ -347,15 +351,24 @@ export class DefaultSceneGraphService implements SceneGraphService {
   /**
    * move to position in local space
    */
-  setLocalPosition(element: INode, position: vec3 | vec2) {
-    const transform = (element as Element).transformable;
-    position = vec3.fromValues(position[0], position[1], position[2] || 0);
-    if (vec3.equals(transform.localPosition, position)) {
-      return;
-    }
-    vec3.copy(transform.localPosition, position);
-    this.dirtifyLocal(element, transform);
-  }
+  setLocalPosition = (() => {
+    const tmpPosition = vec3.create();
+
+    return (element: INode, position: vec3 | vec2) => {
+      const transform = (element as Element).transformable;
+
+      tmpPosition[0] = position[0];
+      tmpPosition[1] = position[1];
+      tmpPosition[2] = position[2] || 0;
+
+      if (vec3.equals(transform.localPosition, tmpPosition)) {
+        return;
+      }
+
+      vec3.copy(transform.localPosition, tmpPosition);
+      this.dirtifyLocal(element, transform);
+    };
+  })();
 
   /**
    * scale in local space

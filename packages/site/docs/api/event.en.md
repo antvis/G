@@ -1,26 +1,26 @@
 ---
-title: 事件
+title: Event
 order: -3
 ---
 
-事件系统能提供丰富的交互，在设计时我们遵循两个原则：
+The event system can provide rich interactions and we follow two principles in its design.
 
--   尽可能和 DOM API 保持一致，除了能降低学习成本，最重要的是能接入已有生态（例如手势库）。
--   仅提供标准事件。拖拽、手势等高级事件通过扩展方式定义。
+-   Keeping it as consistent as possible with the DOM API, besides reducing learning costs, is most important to be able to access existing ecologies (e.g. gesture libraries).
+-   Only standard events are provided. Advanced events such as drag and drop, gestures, etc. are defined by extension.
 
-熟悉 [DOM 事件流](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) 的开发者对以下概念肯定不陌生：
+Developers familiar with [DOM Event Stream](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) will be familiar with the following concepts.
 
--   事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 [EventTarget](/zh/docs/api/builtin-objects/event-target)
--   事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们
--   可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发
+-   Event objects have a reference to the EventTarget, which is naturally a DOM element in the DOM and [EventTarget](/en/docs/api/builtin-objects/event-target) in G.
+-   The event stream contains capture and bubble phases, and you can intervene in them through certain methods on the event object.
+-   One or more listeners can be added to an event, and they are triggered sequentially in the order in which they are registered.
 
-下图展示了事件传播的三个阶段，在捕获阶段自顶向下依次触发监听器，到达目标节点后向上冒泡。在监听器中可以通过 [eventPhase](/zh/docs/api/event#eventphase) 获取当前所处的阶段。下图来自 https://javascript.info/bubbling-and-capturing#capturing
+The following diagram shows the three phases of event propagation, the listener is triggered from top to bottom in the capture phase, and bubbles up after reaching the target node. In the listener, you can get the current phase by [eventPhase](/en/docs/api/event#eventphase). The following image is from https://javascript.info/bubbling-and-capturing#capturing
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zJBbSL2D5mkAAAAAAAAAAAAAARQnAQ" width="500" alt="event capture">
 
-目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
+We currently support the following [base events](/en/docs/api/event#type), which are compatible with DOM event streams as much as possible, so we have included reference links to the corresponding DOM Event APIs in many of the API introductions below.
 
-例如我们想给这个圆形增加简单的鼠标移入/移出的交互效果，[示例](/zh/examples/event#shapes)
+For example, we want to add a simple mouse-in/out interaction to this circle, [example](/en/examples/event#shapes).
 
 ```js
 circle.addEventListener('mouseenter', () => {
@@ -33,76 +33,78 @@ circle.addEventListener('mouseleave', () => {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D7xLQp4L4VoAAAAAAAAAAAAAARQnAQ" width="300" alt="interactive event">
 
-# 可监听事件
+# Listenable events
 
-目前我们支持对于以下两类事件的监听：交互事件和场景图事件。前者和 DOM Event API 中提供的大部分鼠标、触屏事件相同，后者则是基于场景图在节点添加、删除、属性变换时触发。
+We currently support listening to two types of events: interaction events and scene graph events. The former is the same as most of the mouse and touch screen events provided in the DOM Event API, while the latter is based on the scene graph triggered when nodes are added, deleted, or property transformed.
 
-## 交互事件
+## Interaction events
 
-浏览器对于交互事件的支持历经了以下阶段，详见：https://javascript.info/pointer-events#the-brief-history
+Browser support for interaction events has gone through the following stages, as detailed in.
 
--   最早支持的是 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
--   随着移动设备普及，[TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent) 出现，同时也触发 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
--   再后来新的设备又出现了，比如 pen，这样一来各种事件结构各异，使用起来非常痛苦（例如 hammer.js 为了[兼容性的处理](https://github.com/hammerjs/hammer.js/tree/master/src/input)）
--   新的标准被提出，[PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 希望涵盖以上所有输入设备
+https://javascript.info/pointer-events#the-brief-history
 
-下图来自：https://w3c.github.io/pointerevents/
+-   The earliest supported is [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent).
+-   With the popularity of mobile devices, [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent) appeared and also triggered [MouseEvent](https://developer.mozilla. org/zh-cn/docs/Web/API/MouseEvent)
+-   Then later new devices appeared, such as the pen, so that the various event structures were different and painful to use (e.g. hammer.js for [compatibility of processing](https://github.com/hammerjs/hammer.js/tree/master/src/input))
+-   A new standard has been proposed, [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) that wants to cover all the above input devices
+
+The image below is from https://w3c.github.io/pointerevents/
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FtyaTL5gzv4AAAAAAAAAAAAAARQnAQ" width="200" alt="pointer event">
 
-于是如今 Level 2 的 PointerEvent 已经被所有主流浏览器支持：https://www.w3.org/TR/pointerevents2/
+So now the Level 2 PointerEvent is supported by all major browsers: https://www.w3.org/TR/pointerevents2/
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Doz_TbygcIIAAAAAAAAAAAAAARQnAQ" width="100%" alt="can i use pointer event">
 
-新的运行环境也都使用 PointerEvent 这样的统一定义，不再有 Touch / Mouse / PenEvent，例如：
+The new runtime environments also all use a uniform definition like PointerEvent and no longer have Touch / Mouse / PenEvent, e.g.
 
 -   Flutter：https://api.flutter.dev/flutter/gestures/PointerEvent-class.html
 -   Kraken：https://zhuanlan.zhihu.com/p/371640453
 
-因此我们推荐直接使用 PointerEvent。多指触控的手势也完全可以实现，例如：
+We therefore recommend using PointerEvent directly. multi-finger touch gestures are also fully implementable, e.g.
 
--   Pinch 的实现：https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
+-   Pinch: https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
 
-目前支持监听如下交互事件：
+The following interaction events are currently supported for listening.
 
-Pointer 系列：
+PointerEvents:
 
--   pointerdown
--   pointerup
--   pointerupoutside
--   pointertap
--   pointerover
--   pointerenter
--   pointerleave
--   pointerout
+-   `pointerdown`
+-   `pointerup`
+-   `pointerupoutside`
+-   `pointertap`
+-   `pointerover`
+-   `pointerenter`
+-   `pointerleave`
+-   `pointerout`
 
-Mouse 系列：
+MouseEvents:
 
--   mousedown 鼠标左键按下
--   rightdown 鼠标右键按下
--   mouseup 鼠标左键抬起
--   rightup 鼠标右键抬起
--   mouseupoutside 鼠标左键抬起时与按下时图形不同
--   rightupoutside 鼠标右键抬起与按下时图形不同
--   click 单击 & 双击 [如何区分?](/zh/docs/api/event#鼠标双击事件)
--   mousemove 鼠标持续在该图形上移动
--   mouseover 鼠标从该图形上移入，会冒泡
--   mouseout 鼠标从该图形上移出，会冒泡
--   mouseenter 鼠标从该图形上移入，不会冒泡
--   mouseleave 鼠标从该图形上移出，不会冒泡
--   wheel 滚轮
+-   `mousedown` Left mouse button pressed
+-   `rightdown` Right mouse button pressed
+-   `mouseup` Left mouse button lift
+-   `rightup` Right mouse button lift
+-   `mouseupoutside` Different graphics when the left mouse button is lifted and when it is pressed
+-   `rightupoutside` Different graphics when the right mouse button is raised and pressed
+-   `click` Click & double click [how to distinguish?](/en/docs/api/event#doubleclick)
+-   `mousemove` The mouse continuously moves over the graph
+-   `mouseover` Mouse over the graph will bubble
+-   `mouseout` The mouse is removed from the graph and will bubble up
+-   `mouseenter` The mouse is moved in from the graph and will not bubble
+-   `mouseleave` The mouse is removed from this graphic without bubbling
+-   `wheel`
 
-Touch 系列：
+TouchEvents:
 
--   touchstart
--   touchend
--   touchendoutside
--   touchmove
--   touchcancel
+-   `touchstart`
+-   `touchend`
+-   `touchendoutside`
+-   `touchmove`
+-   `touchcancel`
 
-## 场景图事件
+## SceneGraph Events
 
-除了交互事件，我们还可以监听一些场景图相关的事件，例如在画布上监听每一个节点的首次加载（g-svg 会在此时创建当前图形相关的 DOM），[示例](/zh/examples/event#builtin)
+In addition to interaction events, we can also listen for some scene graph-related events, such as listening for the first load of each node on the canvas (`g-svg` will create the DOM associated with the current graph at this point), [example](/en/examples/event#builtin)
 
 ```js
 import { ElementEvent } from '@antv/g';
@@ -112,53 +114,53 @@ canvas.addEventListener(ElementEvent.MOUNTED, (e) => {
 });
 ```
 
-目前我们支持如下场景图相关事件：
+We currently support the following scenegraph related events.
 
--   CHILD_INSERTED 作为父节点有子节点添加时触发
--   INSERTED 作为子节点被添加时触发
--   CHILD_REMOVED 作为父节点有子节点移除时触发
--   REMOVED 作为子节点被移除时触发
--   MOUNTED 首次进入画布时触发
--   UNMOUNTED 从画布中移除时触发
--   ATTR_MODIFIED 修改属性时触发
--   DESTROY 销毁时触发
+-   `CHILD_INSERTED` Triggered when a child node is added as a parent.
+-   `INSERTED` Triggered when added as a child node.
+-   `CHILD_REMOVED` Triggered when a parent node is removed as a child node.
+-   `REMOVED` Triggered when removed as a child node.
+-   `MOUNTED` Triggered when first entering the canvas.
+-   `UNMOUNTED` Triggered when removed from the canvas.
+-   `ATTR_MODIFIED` Triggered when modifying properties.
+-   `DESTROY` Triggered on destruction.
 
-在下面的例子中，画布监听 INSERTED REMOVED MOUNTED 和 UNMOUNTED 事件。在加入、移除场景图时，以下事件会依次触发：
+In the following example, the canvas listens for INSERTED REMOVED MOUNTED and UNMOUNTED events. The following events are triggered sequentially when the scene graph is added and removed.
 
 ```js
 canvas.addEventListener(ElementEvent.INSERTED, (e) => {
     console.log(ElementEvent.INSERTED, e.target);
 });
-// 省略其他事件监听器
+// Omitting other event listeners
 
-parent.appendChild(child); // 构建父子关系
-canvas.appendChild(parent); // 加入场景图
-canvas.removeChild(parent, false); // 从场景图中移除，但不销毁
+parent.appendChild(child); // Building father-son relationships
+canvas.appendChild(parent); // Add to the scenegraph
+canvas.removeChild(parent, false); // Remove from the scene graph, but do not destroy
 
-// MOUNTED parent 父节点载入
-// MOUNTED child 子节点载入
-// INSERTED parent 父节点加入场景图
-// REMOVED parent 父节点被移除场景图
-// UNMOUNTED child 子节点卸载
-// UNMOUNTED parent 父节点卸载
+// MOUNTED parent
+// MOUNTED child
+// INSERTED parent
+// REMOVED parent
+// UNMOUNTED child
+// UNMOUNTED parent
 ```
 
-# 事件监听
+# Event Listeners
 
 ## addEventListener
 
-为图形添加事件监听器，可以完全参考 DOM Event API：https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
+Adding event listeners to graphics is fully referenced in the DOM Event API: https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
 
-方法签名：
+Method signature.
 
 ```js
 target.addEventListener(type, listener, options);
 target.addEventListener(type, listener, useCapture);
 ```
 
-其中参数为：
+Parameters:
 
--   type 事件名称，[内置标准事件](/zh/docs/api/event#type) 或[自定义事件名]()
+-   type 事件名称，[内置标准事件](/en/docs/api/event#type) 或[自定义事件名](/en/docs/api/event#custom-events)
 -   listener 事件监听器，支持以下两种写法：
     -   处理函数 `Function`
     -   [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
@@ -168,44 +170,43 @@ target.addEventListener(type, listener, useCapture);
 -   useCapture `可选` `boolean` 默认为 `false`。如果是 `true`，向上冒泡的事件不会触发 listener。
 
 ```js
-// 二者等价
 button.addEventListener('click', () => {});
 button.addEventListener('click', {
   handleEvent(e): {}
 });
 ```
 
-注册仅在捕获阶段执行的监听器：
+Register listeners that are executed only during the capture phase.
 
 ```js
 circle.addEventListener('click', () => {}, { capture: true });
 circle.addEventListener('click', () => {}, true);
 ```
 
-注册仅执行一次的监听器：
+Register listeners that are executed only once.
 
 ```js
 circle.addEventListener('click', () => {}, { once: true });
 ```
 
-为了兼容旧版 G API，也支持使用 `on`，因此以下写法等价：
+For compatibility with the old G API, the use of `on` is also supported, so the following writeup is equivalent.
 
 ```js
 circle.addEventListener('mouseenter', () => {});
 circle.on('mouseenter', () => {});
 ```
 
-关于监听器内 this 的指向问题可以参考[该小节](/zh/docs/api/event#事件监听器内-this-指向问题)。
+You can refer to [this section](/en/docs/api/event#the-problem-of-this-within-the-event-listener) for more information about the pointing of this in the listener.
 
 ## removeEventListener
 
-移除事件监听器
+Removing the event listener.
 
 ```js
 circle.removeEventListener('click', handler);
 ```
 
-为了兼容旧版 G API，也支持使用 `off`，因此以下写法等价：
+The use of `off` is also supported for compatibility with older versions of the G API, so the following writeup is equivalent.
 
 ```js
 circle.removeEventListener('mouseenter', () => {});
@@ -214,9 +215,9 @@ circle.off('mouseenter', () => {});
 
 ## removeAllEventListeners
 
-移除所有事件监听器。
+Removes all event listeners.
 
-为了兼容旧版 G API，也支持使用 `off`，因此以下写法等价：
+The use of `off` is also supported for compatibility with older versions of the G API, so the following writeup is equivalent.
 
 ```js
 circle.removeAllEventListeners();
@@ -225,15 +226,15 @@ circle.off();
 
 ## dispatchEvent
 
-手动触发事件，和交互触发的事件一样会经历完整的事件传播流程。
+Manually triggered events, like interactively triggered events, go through the full event propagation process.
 
 https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
 
-⚠️ 在一个图形上手动触发事件前，必须保证该元素已经添加到画布上
+⚠️ Before manually firing an event on a drawing, you must ensure that the element has been added to the canvas.
 
-### 自定义事件
+### Custom Events
 
-除了内置标准事件，有时我们也需要触发一些自定义事件，参考 [Web CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)，我们也支持如下写法，[示例](/zh/examples/event#custom)：
+In addition to the built-in standard events, sometimes we also need to trigger some custom events, refer to [Web CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), we also support the following writeup, [examples](/en/examples/event#custom).
 
 ```js
 import { CustomEvent } from '@antv/g';
@@ -247,13 +248,13 @@ circle.addEventListener('build', (e) => {
 circle.dispatchEvent(event);
 ```
 
-其中 CustomEvent 构造函数参数如下：
+The parameters of the CustomEvent constructor are as follows.
 
--   eventName 事件名 `string` `必填`
--   eventObject 事件对象 `选填` 包含以下属性：
-    -   detail 自定义数据 `any`
+-   `eventName` required, type is `string`
+-   `eventObject` optional, contains the following attributes.
+    -   `detail` contains custom data which type is `any`
 
-为了兼容旧版 G API，也支持使用 `emit`：
+For compatibility with older G APIs, the use of `emit` is also supported.
 
 ```js
 circle.on('build', (e) => {
@@ -263,21 +264,19 @@ circle.on('build', (e) => {
 circle.emit('build', { prop1: 'xx' });
 ```
 
-# 事件对象
+# Event Object
 
-在事件监听器的回调函数中，我们可以取得事件对象并访问其上的属性和方法。这些属性和方法和 DOM Event API 保持一致，因此可以直接参考它们的文档。
+In the event listener's callback function, we can get the event object and access the properties and methods on it. These properties and methods are consistent with the DOM Event API, so you can directly refer to their documentation.
 
-我们会尽量将原生事件规范化到 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) 事件对象后统一处理，可以在 [nativeEvent](/zh/docs/api/event#nativeevent) 上访问原生事件。
+We will try to normalize the native events to [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) event object and then handle them uniformly, which can be accessed on [nativeEvent](/en/docs/api/event#nativeevent) to access native events.
 
-对于特殊的 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)，由于多个触控点的存在，一些重要的属性例如 [target]() [canvasX/Y]() 都存储在 [Touch]() 对象上，可以通过 [changedTouches](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/changedTouches)，[touches](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent/touches) 访问触点列表。
+## General Properties
 
-## 通用属性
-
-事件对象上常用的属性包括事件类型、当前触发事件的图形、位置等，其中位置和[坐标系](/zh/docs/api/canvas#坐标系)相关。
+Common properties on the event object include event type, graphics of the current triggered event, location, etc., where location is related to [coordinate system](/en/docs/api/canvas#coordinate system).
 
 ### type
 
-事件类型：
+Event type：
 
 -   pointerup
 -   pointerdown
@@ -289,47 +288,47 @@ https://developer.mozilla.org/en-US/docs/Web/API/Event/type
 
 ### nativeEvent
 
-原生事件对象。当我们调用 [preventDefault](/zh/docs/api/event#preventdefault) 方法时，会调用原生事件对象上的同名方法。
+Native event object. When we call [preventDefault](/en/docs/api/event#preventdefault) method, it will call the method of the same name on the native event object.
 
 ### view
 
-指向 [Canvas](/zh/docs/api/canvas)。
+Point to [Canvas](/en/docs/api/canvas).
 
 https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
 
 ### altKey
 
-事件触发时是否伴随 `alt` 的按下。
+If or not the event is triggered with an `alt` press.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey
 
 ### metaKey
 
-事件触发时是否伴随 `meta` 的按下。
+If or not the event is triggered with a `meta` press.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey
 
 ### ctrlKey
 
-事件触发时是否伴随 `ctrl` 的按下。
+If or not the event is triggered with a `ctrl` press.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey
 
 ### shiftKey
 
-事件触发时是否伴随 `shift` 的按下。
+If or not the event is triggered with a `shift` press.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
 
 ### timeStamp
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+Timestamp when the event was created.
 
-事件创建时的时间戳
+https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
 
 ### eventPhase
 
-当前所处的事件阶段。有以下三个枚举值：
+The current event phase. There are three enumeration values as follows.
 
 ```
 CAPTURING_PHASE = 1;
@@ -337,7 +336,7 @@ AT_TARGET = 2;
 BUBBLING_PHASE = 3;
 ```
 
-例如配合 `capture` 配置项，仅在捕获阶段处理事件：
+For example, with the `capture` configuration item, events are processed only during the capture phase.
 
 ```js
 circle.addEventListener(
@@ -351,7 +350,7 @@ circle.addEventListener(
 
 ### detail
 
-事件对象携带的数据对象。例如在触发 click 时，会带上点击次数。
+The data object carried by the event object. For example, when a click is triggered, the number of clicks is carried.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
 
@@ -359,9 +358,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
 
-当前触发事件的 [EventTarget](/zh/docs/api/builtin-objects/event-target)。
+The [EventTarget](/en/docs/api/builtin-objects/event-target) of the current triggering event.
 
-在实现事件委托时很有用，例如有这样一个场景，类似 DOM 中的 `ul/li`：
+Useful when implementing event delegation, for example in a scenario like this, similar to `ul/li` in the DOM.
 
 ```
 Group(ul)
@@ -369,7 +368,7 @@ Group(ul)
     - Rect(li)
 ```
 
-我们可以在 `ul` 上监听事件，当点击每一个 `li` 时都会触发：
+We can listen for events on `ul` that will trigger when each `li` is clicked on.
 
 ```js
 const ul = new Group();
@@ -388,13 +387,13 @@ ul.addEventListener(
 );
 ```
 
-[示例](/zh/examples/event#delegate)
+[Example](/en/examples/event#delegate)
 
 ### currentTarget
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
 
-总是指向事件绑定的元素。
+Always points to the event-bound element.
 
 ```js
 ul.addEventListener(
@@ -408,14 +407,14 @@ ul.addEventListener(
 
 ### canvasX/Y
 
-在 [Canvas 坐标系/世界坐标系](/zh/docs/api/canvas#canvas)下，以画布 DOM 元素的左上角为原点，X 轴正向指向屏幕右侧，Y 轴正向指向屏幕下方。可以与 [viewportX/Y](/zh/docs/api/event#viewportxy) 互相转换，[详见](/zh/docs/api/canvas#canvas---viewport)：
+Under [Canvas coordinate system/world coordinate system](/en/docs/api/canvas#canvas), the upper left corner of the canvas DOM element is the origin, the X-axis is pointing to the right side of the screen and the Y-axis is pointing to the bottom of the screen. Can be interconverted with [viewportX/Y](/en/docs/api/event#viewportxy), [see](/en/docs/api/canvas#canvas--viewport).
 
 ```js
 canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
 canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
 ```
 
-别名为 x/y，因此以下写法等价：
+The alias is x/y, so the following writing is equivalent.
 
 ```js
 e.canvasX;
@@ -427,16 +426,16 @@ e.y;
 
 ### viewportX/Y
 
-在 [Viewport 坐标系](/zh/docs/api/canvas#viewport)下，考虑相机变换。
+Under [Viewport coordinate system](/en/docs/api/canvas#viewport), consider the camera transformation.
 
-可以与 [canvasX/Y](/zh/docs/api/event#canvasxy) 互相转换，[详见](/zh/docs/api/canvas#canvas---viewport)：
+Can be interconverted with [canvasX/Y](/en/docs/api/event#canvasxy), [see](/en/docs/api/canvas#canvas--viewport).
 
 ```js
 canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
 canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
 ```
 
-可以与 [clientX/Y](/zh/docs/api/event#clientxy) 互相转换，[详见](/zh/docs/api/canvas#client---viewport)：
+Can be interconverted with [clientX/Y](/en/docs/api/event#clientxy), [see](/en/docs/api/canvas#client--viewport).
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
@@ -447,14 +446,14 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
 
-在[浏览器坐标系](/zh/docs/api/canvas#client)下，左上角为 `(0, 0)`。G 不会修改原生事件上的该属性，因此两者完全相同：
+Under [browser coordinate system](/en/docs/api/canvas#client), the upper left corner is `(0, 0)`. G does not modify this property on the native event, so they are identical.
 
 ```js
 e.clientX;
 e.nativeEvent.clientX;
 ```
 
-可以与 [viewportX/Y](/zh/docs/api/event#viewportxy) 互相转换，[详见](/zh/docs/api/canvas#client---viewport)：
+Can be interconverted with [viewportX/Y](/en/docs/api/event#viewportxy), [see](/en/docs/api/canvas#client--viewport).
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
@@ -465,7 +464,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
 
-在[屏幕坐标系](/zh/docs/api/canvas#screen)下，不考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
+Under [screen coordinate system](/en/docs/api/canvas#screen), page scrolling is not considered. g does not modify this property on native events, so they are identical.
 
 ```js
 e.screenX;
@@ -476,7 +475,7 @@ e.nativeEvent.screenX;
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
 
-在[文档坐标系](/zh/docs/api/canvas#page)下，考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
+Under [page coordinate system](/en/docs/api/canvas#page), consider page scrolling. g does not modify this property on native events, so they are identical.
 
 ```js
 e.pageX;
@@ -487,35 +486,35 @@ e.nativeEvent.pageX;
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
 
-当前事件和上一个 `mousemove` 事件之间鼠标在水平方向上的移动值。换句话说，这个值是这样计算的: `currentEvent.movementX = currentEvent.screenX - previousEvent.screenX`
+The value of the mouse movement in the horizontal direction between the current event and the previous `mousemove` event. In other words, this value is calculated like this: `currentEvent.movementX = currentEvent.screenX - previousEvent.screenX`
 
-## PointerEvent 属性
+## PointerEvent
 
 ### pointerType
 
-返回事件的设备类型，返回值如下：
+Returns the device type of the event with the following return value.
 
--   pointer 代表 [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
--   mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
--   touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
+-   `'pointer'` [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent)
+-   `'mouse'` [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
+-   `'touch'` [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
 
 ### pointerId
 
-返回一个可以唯一地识别和触摸平面接触的点的值。这个值在这根手指（或触摸笔等）所引发的所有事件中保持一致，直到它离开触摸平面。
+Returns a value that uniquely identifies the point in contact with the touch plane. This value remains consistent across all events raised by this finger (or stylus, etc.) until it leaves the touch plane.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId
 
 ### isPrimary
 
-是否是 primary pointer。在多指触控场景下，代表当前事件由主触点产生。
+If or not it is primary pointer, it means the current event is generated by the primary pointer in multi-touch scenario.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary
 
 ### button
 
-标识鼠标事件哪个按键被点击。0 为左键，1 为右键。
+Identifies which button was clicked for the mouse event. 0 is the left button, 1 is the right button.
 
 https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
 
@@ -525,31 +524,31 @@ https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
 
 ### width
 
-接触面积宽度。如果原生事件为 MouseEvent，返回 1。
+The width of the contact area. Returns `1` if the native event is MouseEvent.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width
 
 ### height
 
-接触面积高度。如果原生事件为 MouseEvent，返回 1。
+The height of the contact area. Returns `1` if the native event is MouseEvent.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height
 
 ### tiltX
 
-触点与屏幕在 Y-Z 平面上的角度。如果原生事件为 MouseEvent 返回固定值 `0`。
+The angle of the contact with the screen in the Y-Z plane. Returns a fixed value of `0` if the native event is MouseEvent.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX
 
 ### tiltY
 
-触点与屏幕在 X-Z 平面上的角度。如果原生事件为 MouseEvent 返回固定值 `0`。
+The angle of the contact with the screen in the X-Z plane. Returns a fixed value of `0` if the native event is MouseEvent.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY
 
 ### pressure
 
-返回对应的手指挤压触摸平面的压力大小，从 `0.0` (没有压力)到 `1.0` (最大压力)的浮点数。如果原生事件为 MouseEvent 返回固定值 `0.5`。
+Returns the amount of pressure corresponding to the finger squeezing the touch plane, from `0.0` (no pressure) to `1.0` (maximum pressure) as a floating point number. Returns a fixed value of `0.5` if the native event is MouseEvent.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure
 
@@ -559,13 +558,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure
 
 ### twist
 
-顺时针旋转角度。如果原生事件为 MouseEvent 返回固定值 `0`。
+The clockwise rotation angle. Returns a fixed value of `0` if the native event is MouseEvent.
 
 https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist
 
-## WheelEvent 属性
+## WheelEvent
 
-在鼠标滚轮事件中，可以获取滚动量。
+In the mouse wheel event, you can get the scroll amount.
 
 ### deltaX/Y/Z
 
@@ -573,19 +572,19 @@ https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent
 
-滚轮的横向/纵向/Z 轴的滚动量。
+The amount of lateral/longitudinal/Z-axis roll of the roller.
 
-## 方法
+## Methods
 
-事件对象上的某些方法可以控制事件传播时的行为，例如阻止冒泡等。
+Certain methods on the event object can control the behavior of the event as it propagates, such as preventing bubbling, etc.
 
 ### stopImmediatePropagation
 
-阻止监听同一事件的其他事件监听器被调用，同时阻止冒泡。
+Prevents other event listeners listening to the same event from being called, and prevents bubbling.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation
 
-例如在图形上绑定了多个 click 监听器：
+For example, if multiple click listeners are bound to the graph.
 
 ```js
 // group -> circle
@@ -593,7 +592,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation
 circle.on(
     'click',
     () => {
-        // 正常执行
+        // Normal execution
     },
     false,
 );
@@ -601,7 +600,7 @@ circle.on(
 circle.on(
     'click',
     (e) => {
-        // 正常执行
+        // Normal execution
         e.stopImmediatePropagation();
     },
     false,
@@ -610,7 +609,7 @@ circle.on(
 circle.on(
     'click',
     () => {
-        // 之后注册的监听器，不会执行
+        // Listeners registered afterwards will not be executed
     },
     false,
 );
@@ -618,7 +617,7 @@ circle.on(
 group.on(
     'click',
     () => {
-        // 由于阻止了向上冒泡，同样不会执行
+        // Since upward bubbling is prevented, the same will not be executed
     },
     false,
 );
@@ -626,27 +625,27 @@ group.on(
 
 ### stopPropagation
 
-阻止捕获和冒泡阶段中当前事件的进一步传播。
+Stops further propagation of the current event in the capture and bubble phases.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation
 
-与 `stopImmediatePropagation` 的区别是并不会阻止监听同一事件的其他事件监听器被调用。
+The difference with `stopImmediatePropagation` is that it does not prevent other event listeners listening to the same event from being called.
 
 ### preventDefault
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
 
-阻止浏览器默认行为。对于 Passive 事件调用该方法无效，并且会抛出警告。
+Block the default browser behavior. Calling this method for Passive events is not valid and will throw a warning.
 
-关于 wheel 事件的解决方案可以参考：[在 Chrome 中禁止页面默认滚动行为](/zh/docs/api/event#在-chrome-中禁止页面默认滚动行为)。
+A solution for wheel events can be found at [Disable default page scrolling behavior in Chrome](/en/docs/api/event#en/docs/api/event#disable-default-page-scrolling-behavior-in-chrome).
 
 ### composedPath
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
 
-返回事件路径，是包含 [EventTarget](/zh/docs/api/builtin-objects/event-target) 的数组，类似旧版 G 中的 `propagationPath`。在这个数组中，`event.target` 为数组的第一个元素，[场景图根节点](/zh/docs/api/canvas#入口与根节点)、[Document](/zh/docs/api/canvas#入口与根节点) 和 [Canvas](/zh/docs/api/canvas) 为数组末尾的三个元素。
+Returns the event path, which is an array containing [EventTarget](/en/docs/api/builtin-objects/event-target), similar to `propagationPath` in the old G version. In this array, `event.target` is the first element of the array, [scene graph root](/en/docs/api/canvas#the-root-node), [Document](/en/docs/api/builtin-objects/document) and [Canvas](/en/docs/api/canvas) are the three elements at the end of the array.
 
-仍然以类似 DOM `ul/li` 场景为例：
+Still using a DOM-like `ul/li` scenario as an example.
 
 ```
 Group(ul)
@@ -654,7 +653,7 @@ Group(ul)
     - Rect(li)
 ```
 
-在 `ul` 上监听事件，当点击每一个 `li` 时都会触发，事件传播路径为 `[li1, ul, Group, Document, Canvas]`：
+Listen for events on `ul` that are triggered when each `li` is clicked, with the event propagation path being `[li1, ul, Group, Document, Canvas]`.
 
 ```js
 const ul = new Group();
@@ -672,21 +671,21 @@ ul.addEventListener(
 );
 ```
 
-[示例](/zh/examples/event#delegate)
+[Example](/en/examples/event#delegate)
 
-# 手势和拖拽
+# Gesture & Drag'n'Drop
 
-当我们想实现除基础事件之外的某些“高级事件”时，例如常见的手势和拖拽，可以通过组合这些基础事件实现。得益于场景图对于 DOM API 的兼容，我们也可以直接使用已有生态，让这些库以为仍然在操作 DOM。
+When we want to implement certain "advanced events" in addition to the base events, such as common gestures and drag and drop, we can do so by combining these base events. Thanks to the scene graph's compatibility with the DOM API, we can also use the existing ecosystem directly and let these libraries think they are still manipulating the DOM.
 
-## 直接使用 Hammer.js
+## Use Hammer.js
 
-以 [Hammer.js](https://github.com/hammerjs/hammer.js) 这样的手势库为例，由于完全兼容 DOM API，我们可以直接把 `DisplayObject` 传入。另外需要通过 [inputClass](https://hammerjs.github.io/jsdoc/Hammer.defaults.html#.inputClass) 告知 Hammer.js 我们的输入事件为 PointerEvent，无需考虑例如 TouchEvent 等交互事件，[示例](/zh/examples/event#hammer)：
+Taking a gesture library like [Hammer.js](https://github.com/hammerjs/hammer.js) as an example, we can pass `DisplayObject` in directly since it is fully DOM API compatible. In addition, we need to tell Hammer.js that our input event is a PointerEvent via [inputClass](https://hammerjs.github.io/jsdoc/Hammer.defaults.html#.inputClass), so we don't need to take into account interaction events such as TouchEvent and other interactive events, [example](/en/examples/event#hammer).
 
 ```js
 import Hammer from 'hammerjs';
 
 const hammer = new Hammer(circle, {
-    inputClass: Hammer.PointerEventInput, // 告知 Hammer.js 我们的输入事件为 PointerEvent
+    inputClass: Hammer.PointerEventInput, // use PointerEvent
 });
 hammer.on('press', (e) => {
     console.log("You're pressing me!");
@@ -696,53 +695,53 @@ hammer.on('press', (e) => {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i7SaRaYw0YcAAAAAAAAAAAAAARQnAQ" width="400">
 
-## 使用 PointerEvents 实现 Pinch 手势
+## Implementing Pinch Gestures with PointerEvents
 
-在该[示例](/zh/examples/event#pinch-with-pointer)中实现了 Pinch 手势，参考 https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_zoom_gestures
+The Pinch gesture is implemented in this [example](/en/examples/event#pinch-with-pointer), see https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events/Pinch_ zoom_gestures
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
 
-核心思路是无需关心 Mouse/TouchEvent，通过监听 PointerEvents 根据事件对象上的 [pointerId](/zh/docs/api/event#pointerid) 跟踪管理屏幕上的触控点。
+The core idea is to manage the touch points on the screen by listening to PointerEvents based on the [pointerId](/en/docs/api/event#pointerid) on the event object without caring about Mouse/TouchEvent.
 
-## 直接使用 Interact.js
+## Direct use of Interact.js
 
-[Interact.js](https://interactjs.io/) 是一个包含了 Drag&Drop，Resize，手势等功能的交互库。
+[Interact.js](https://interactjs.io/) is an interaction library that includes Drag&Drop, Resize, gestures, and more.
 
-以拖拽为例：
+As an example of drag and drop.
 
 ```js
 import interact from 'interactjs';
 
 interact(
-    circle, // 待拖拽对象
+    circle, //draggable object
     {
-        context: canvas.document, // 将画布 document 传入
+        context: canvas.document, // Pass the canvas document in
     },
 ).draggable({
-    startAxis: 'xy', // 允许水平垂直两个方向的拖拽
-    lockAxis: 'start', // 锁定拖拽方向为初始设定
+    startAxis: 'xy', // Allows dragging in both horizontal and vertical directions
+    lockAxis: 'start', // Lock the dragging direction to the initial setting
     onmove: function (event) {
-        const { dx, dy } = event; // interact.js 将 dx/dy 挂载在事件对象上
-        circle.translateLocal(dx, dy); // 移动该对象
+        const { dx, dy } = event; // interact.js mounts dx/dy on the event object
+        circle.translateLocal(dx, dy); // Move the object
     },
 });
 ```
 
-[示例](/zh/examples/event#interact)
+[Example](/en/examples/event#interact)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ" width="400">
 
-## 使用 g-plugin-dragndrop
+## Using g-plugin-dragndrop
 
-如果觉得 interact.js 太重，可以选择使用我们提供的简单拖放插件：[g-plugin-dragndrop](/zh/docs/plugins/dragndrop)。
+If you find interact.js too heavy, you can choose to use the simple drag-and-drop plugin we provide: [g-plugin-dragndrop](/en/docs/plugins/dragndrop).
 
-该插件完全基于 [PointerEvents](/zh/docs/api/event#交互事件) 实现拖放功能。在该[示例](/zh/examples/plugins#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
+This plugin is completely based on [PointerEvents](/en/docs/api/event#interaction events) to implement drag and drop functionality. In this [example](/en/examples/plugins#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
-## 实现简单的拖拽
+## Implementing simple drag'n'drop
 
-除了使用以上现成的库，我们还可以通过组合监听 PointerEvents 实现简单的拖拽效果，[g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 内部就是这么实现的，参考了 [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop)：
+In addition to using the above off-the-shelf libraries, we can also implement simple drag-and-drop effects by combining PointerEvents listeners, which is what [g-plugin-dragndrop](/en/docs/plugins/dragndrop) does internally, as referenced in [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop).
 
 ```js
 ball.addEventListener('pointerdown', function (event) {
@@ -772,15 +771,15 @@ ball.addEventListener('pointerdown', function (event) {
 });
 ```
 
-[示例](/zh/examples/event#drag)
+[Example](/en/examples/event#drag)
 
-# 与其他插件的交互
+# Interaction with other plugins
 
-## 事件绑定/解绑插件
+## Event Binding/Unbinding Plugin
 
-前面提到过，事件绑定不在核心事件系统中完成，应当交给对应渲染环境插件。例如使用 DOM API 绑定/解绑的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)，其他环境例如小程序应当自行编写插件。
+As mentioned before, event binding is not done in the core event system, it should be left to the corresponding rendering environment plugins. For example, [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) which uses DOM API to bind/unbind, other environments such as applets should write their own plugins.
 
-在这一类插件中，我们需要在 `init` 中完成绑定，在 `destroy` 中完成解绑。在实现绑定时，需要将该渲染环境下的多个（如有）原生事件映射到 G 的标准事件处理器上。
+In this class of plugins, we need to complete the binding in `init` and the unbinding in `destroy`. When implementing the binding, multiple (if any) native events in that rendering environment need to be mapped to G's standard event handlers.
 
 ```js
 // g-plugin-dom-interaction
@@ -790,44 +789,42 @@ const onPointerDown = (ev: InteractivePointerEvent) => {
 };
 
 renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
-    // 事件绑定，使用 DOM API
+    // using native DOM API
     $el.addEventListener(
-        'pointerdown', // 原生事件
-        onPointerDown, // G 标准事件处理器
+        'pointerdown', // native event
+        onPointerDown,
         true,
     );
 
-    // 如果需要支持移动端
+    // If mobile support is required
     if (supportsTouchEvents) {
         $el.addEventListener('touchstart', onPointerDown, true);
     }
-    // 省略其他
+    // ...
 });
 
-renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-    // 事件解绑
-});
+renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {});
 ```
 
-## 拾取插件
+## Picking Plugin
 
-不同渲染环境使用不同的拾取插件，用于判定原生事件的 EventTarget：
+Different rendering environments use different pickup plugins for determining the EventTarget of native events.
 
--   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 主要使用数学运算
--   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 使用现成 SVG API
--   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 使用 GPU 颜色编码
+-   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Use mainly mathematical operations.
+-   [g-plugin-svg-picker](/en/docs/plugins/svg-picker) Use SVG API.
+-   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) Use GPU-based methods.
 
-## A11y 无障碍插件
+## A11y Plugin
 
-在 [g-plugin-a11y](/zh/docs/plugins/a11y) 中，我们监听了键盘事件用于导航。
+In [g-plugin-a11y](/en/docs/plugins/a11y), we listen to keyboard events for navigation.
 
-# 注意事项
+# Caveats
 
-## 事件监听器内 this 指向问题
+## The problem of 'this' within the event listener
 
-参考 https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler
+Refer to https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler
 
-在事件监听器内部 `this` 指向应该与 `e.currentTarget` 相同。但如果使用了箭头函数，将丢失上下文：
+Inside the event listener `this` should point to the same as `e.currentTarget`. However, if the arrow function is used, the context will be lost:
 
 ```js
 circle.addEventListener('mouseenter', function (e) {
@@ -840,33 +837,33 @@ circle.addEventListener('mouseleave', () => {
 });
 ```
 
-## mouseenter/leave 冒泡问题
+## mouseenter/leave won't bubble up
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mouseenter_event
 
-mouseenter 不会冒泡，而 mouseover 会。同理 mouseleave 不会冒泡，而 mouseout 会。
+mouseenter does not bubble, while mouseover does. Similarly mouseleave does not bubble, while mouseout does.
 
-## 拾取判定
+## Hit testing
 
-事件系统只会响应 Canvas 画布范围之内的事件，例如监听了 mousemove 时，在画布之外的其他页面区域移动并不会触发该事件处理器。当拾取到画布空白区域（未命中任何可见图形）时，事件对象的 [target](/zh/docs/api/event#target) 属性会返回 [Document](/zh/docs/api/builtin-objects/document)：
+The event system only responds to events within the Canvas canvas. For example, when mousemove is listened to, moving outside of the canvas to other areas of the page does not trigger the event handler. The [target](/en/docs/api/event#target) property of the event object returns [Document](/en/docs/api/builtin-objects/document) when picking up a blank area of the canvas (without hitting any visible graphics).
 
 ```js
 canvas.addEventListener('mousemove', (e) => {
     if (e.target.nodeName === 'document') {
-        // 在空白区域移动
+        // move on empty area
     }
 });
 ```
 
-## 事件触发顺序
+## Event Trigger Sequence
 
-一些内置事件有触发顺序，例如 click 事件会在 pointerdown 和 pointerup 触发之后。在这个过程中，有可能出现 pointerdown 和 pointerup 事件 target 不一致的情况。例如在一个图形上按下鼠标，移动到另一个图形上再抬起鼠标，此时我们会在这两个 target 共同的祖先节点上（例如场景图的根节点 [document.documentElement](/zh/docs/api/canvas#入口与根节点)）触发 click 事件。
+Some built-in events have an order of firing, for example, the click event will be fired after the pointerdown and pointerup events. In this process, it is possible that the target of the pointerdown and pointerup events may not match. For example, if you press the mouse on one graph, move to another graph and then lift the mouse, we will trigger the click event on an ancestor node that is common to both targets (e.g. the root of the scene graph [document.documentElement](/en/docs/api/canvas#document-1)).
 
-可以在[这个例子](/zh/examples/event#delegate)中尝试。
+This can be tried in [this example](/en/examples/event#delegate).
 
-## 在 Chrome 中禁止页面默认滚动行为
+## Disable default page scrolling behavior in Chrome
 
-有时我们需要禁止掉页面默认的滚动行为，例如实现缩放类的需求时。禁用默认行为可以使用 [preventDefault](/zh/docs/api/event#preventdefault)，但以下代码在 Chrome 中执行并不会生效，页面依然可以滚动：
+Sometimes we need to disable the default scrolling behavior of a page, for example when implementing a zoom class. Disabling the default behavior can be done with [preventDefault](/en/docs/api/event#preventdefault), but the following code will not work in Chrome and the page will still scroll.
 
 ```
 canvas.addEventListener('wheel', (e) => {
@@ -874,19 +871,19 @@ canvas.addEventListener('wheel', (e) => {
 });
 ```
 
-造成这个问题的原因是 G 在监听画布事件的 wheel 事件时，添加了 `passive: true` 这个配置项：
+The reason for this problem is that G added the `passive: true` configuration item when listening to the wheel event of the canvas event.
 
 ```js
-// $el 为画布的 DOM 元素，g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+// $el is the DOM element, <canvas> in g-canvas/webgl while <svg> in g-svg
 $el.addEventListener('wheel', onPointerWheel, {
     passive: true,
     capture: true,
 });
 ```
 
-关于 Passive 事件处理器，可以参考知乎的这篇文章：https://zhuanlan.zhihu.com/p/24555031 。简而言之是通过这个选项可以提升浏览器的滚动流畅度，相当于提前告知浏览器“我不会阻止你的默认滚动行为”。
+For more information about Passive event handlers, please refer to this article from https://zhuanlan.zhihu.com/p/24555031. The short answer is that this option improves the browser's scrolling smoothness by telling the browser in advance that "I won't block your default scrolling behavior".
 
-现在回到我们的问题，如果用户确实需要禁止默认滚动行为，可以在画布的 DOM 节点上手动添加一个非 Passive 的事件处理器，[g-plugin-control](http://g-next.antv.vision/zh/docs/plugins/control) 插件就是这么做的。如何获取画布的 DOM 节点可以使用 [getDomElement](/zh/docs/api/renderer#getdomelement)：
+Now back to our question, if the user does need to disable the default scrolling behavior, a non-Passive event handler can be manually added to the DOM node of the canvas, [g-plugin-control](http://g-next.antv.vision/en/docs/plugins/control) plugin does this. How to get the DOM node of the canvas can be done using [getDomElement](/en/docs/api/renderer#getdomelement).
 
 ```js
 canvas
@@ -901,58 +898,80 @@ canvas
     );
 ```
 
-## 其他事件
+## Other Events
 
-其他绝大部分原生事件，尤其是需要绑定在 window/document 上的键盘、剪切板事件用法在 G 中并没有特殊之处，可以直接参考相关事件文档。
+Most of the other native events, especially keyboard and clipboard events that need to be bound to window/document, have no special usage in G. You can directly refer to the related events documentation.
 
-### 键盘事件
+### Disable right-click menu
 
-可以直接使用 [KeyboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent)：
+Sometimes we want to disable the browser's default right-click menu, so we can disable the default behavior in the [contextmenu](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/contextmenu_event) event handler with the `preventDefault()` method to disable the default behavior. To get the DOM node of the canvas you can use [getDomElement](/en/docs/api/renderer#getdomelement).
+
+```js
+canvas
+    .getContextService()
+    .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+    .addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+```
+
+Note that since the default behavior of the rightup / down events is not to pop up the system menu, the following writeup is not valid.
+
+```js
+// wrong
+canvas.addEventListener('rightup', (e) => {
+    e.preventDefault();
+});
+```
+
+### KeyboardEvent
+
+Use [KeyboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent) directly.
 
 ```js
 window.addEventListener('keydown', () => {}, false);
 ```
 
-但目前我们还没有实现 A11y 相关的功能，例如使用 tab 在画布内图形间切换选中。
+However, we have not yet implemented A11y-related features, such as using tabs to toggle selection between shapes within the canvas.
 
-### 剪切板事件
+### ClipboardEvent
 
-可以直接使用 [ClipboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/ClipboardEvent)
+Use [ClipboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/ClipboardEvent) directly.
 
-### 焦点相关事件
+### FocusEvent
 
-我们并没有内置 focus/blur 这样的[焦点事件](https://developer.mozilla.org/zh-CN/docs/Web/API/FocusEvent)，因此以下代码无效：
+We don't have a built-in [focus event](https://developer.mozilla.org/zh-CN/docs/Web/API/FocusEvent) like focus/blur, so the following code is not valid.
 
 ```js
 circle.addEventListener('focus', () => {});
 circle.addEventListener('blur', () => {});
 ```
 
-可以通过 click/mouseenter/mouseleave 等事件实现焦点相关功能。[示例](/zh/examples/event#circle)
+Focus-related functions can be implemented through events such as click/mouseenter/mouseleave. [example](/en/examples/event#circle)
 
-### 鼠标双击事件
+### Doubleclick
 
-由于需要尽可能兼容 PC 和移动端事件，我们并没有监听原生的 [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) 事件，而是通过监听 pointerdown 与 pointerup，将一定时间间隔（200ms）内的点击次数记录在 [detail](/zh/docs/api/event#detail) 属性中，这样就可以区分单击与双击：
+Due to the need to be as compatible as possible with PC and mobile events, we do not listen to the native [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) event, but to the [pointerdown](/en/docs/api/event#detail) property by listening to pointerdown and pointerup, the number of clicks within a certain time interval (200ms) is recorded in the [detail](/en/docs/api/event#detail) attribute, so that it is possible to distinguish between a click and a double click.
 
 ```js
 canvas.addEventListener('click', (e) => {
     if (e.detail === 2) {
-        // 双击
+        // dbclick
     } else if (e.detail === 1) {
-        // 单击
+        // click
     }
 });
 ```
 
-## 旧版兼容
+## Compatible API
 
-在旧版中支持以下在事件名中表示委托的写法，格式为 `[被委托图形 name]:[事件名]`，[示例](/zh/examples/event#deprecated-delegate)：
+The following way of writing delegates in event names is supported in older versions, in the format `[delegated-graphic name]:[event-name]`, [example](/en/examples/event#deprecated-delegate).
 
 ```js
-// 监听所有 name 为 node 的图形上冒泡上来的 click 事件
+// Listen for click events bubbling up on all graphs with the name node
 graph.on('node:click', () => {});
 
-// 等价于
+// or
 graph.addEventListener('click', (e) => {
     if (e.target.name === 'node') {
     }

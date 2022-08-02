@@ -69,6 +69,13 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "dragndrop-group.js",
+      "title": {
+        "zh": "在 Group 上使用拖放",
+        "en": "Use Drag'n'Drop on Group"
+      }
+    },
+    {
       "filename": "dragndrop-perf.js",
       "title": {
         "zh": "拖放性能测试",

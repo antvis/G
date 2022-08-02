@@ -3,23 +3,23 @@ title: g-plugin-yoga
 order: -1
 ---
 
-[Yoga](https://yogalayout.com/) 是 Facebook 提供的跨平台布局引擎，基于 Flex，属性和 CSS Flex 完全一致，因此也可以阅读 [MDN flex 布局的基本概念](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) 获取更多概念知识。
+[Yoga](https://yogalayout.com/) is a cross-platform layout engine provided by Facebook, based on Flex, with exactly the same properties as CSS Flex, so you can also read [MDN Basic Concepts of flex layout](https://developer.mozilla.org/zh- CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox) for more conceptual knowledge.
 
-示例：
+Examples:
 
--   [容器相关配置](/zh/examples/plugins#yoga-container)
--   [子元素相关配置](/zh/examples/plugins#yoga-child)
--   [自适应布局](/zh/examples/plugins#yoga-available-space)
--   [文本换行](/zh/examples/plugins#yoga-text)
--   [对相关属性应用动画](/zh/examples/plugins#yoga-animation)
+-   [Container-related configuration](/en/examples/plugins#yoga-container)
+-   [Sub-element related configuration](/en/examples/plugins#yoga-child)
+-   [Adaptive layout](/en/examples/plugins#yoga-available-space)
+-   [Text Line Feed](/en/examples/plugins#yoga-text)
+-   [Apply animations to relevant properties](/en/examples/plugins#yoga-animation)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
-该插件使用 [yoga-layout-prebuilt](https://www.npmjs.com/package/yoga-layout-prebuilt)，包体积较大，后续我们会使用自己开发的轻量版布局引擎。
+The plugin uses [yoga-layout-prebuilt](https://www.npmjs.com/package/yoga-layout-prebuilt), the package size is large, and we will subsequently use a lightweight version of our own developed layout engine.
 
-# 安装方式
+# Usage
 
-首先注册插件：
+Create plug-ins and register them in the renderer.
 
 ```js
 import { Renderer } from '@antv/g-canvas';
@@ -29,17 +29,17 @@ const renderer = new Renderer();
 renderer.registerPlugin(new Plugin());
 ```
 
-通过 `display: 'flex'` 可以声明一个图形使用 Flex 布局。目前我们仅支持 [Rect](/zh/docs/api/basic/rect) 和 [Group](/zh/docs/api/basic/group) 两类图形作为 Flex 容器：
+With `display: 'flex'` you can declare a graph to use Flex layout. Currently we only support [Rect](/en/docs/api/basic/rect) and [Group](/en/docs/api/basic/group) as Flex containers.
 
 ```js
-// 声明一个容器
+// Declare a container
 const container = new Rect({
     style: {
-        width: 500, // 尺寸
+        width: 500, // Size
         height: 300,
-        display: 'flex', // 声明使用 flex 布局
-        justifyContent: 'center', // 居中
-        alignItems: 'center', // 居中
+        display: 'flex', // Declaring the use of flex layouts
+        justifyContent: 'center',
+        alignItems: 'center',
         x: 0,
         y: 0,
         fill: '#C6E5FF',
@@ -47,7 +47,7 @@ const container = new Rect({
 });
 canvas.appendChild(container);
 
-// 声明子元素，不需要手动设置位置，由布局引擎计算
+// Declare child elements, no need to set the position manually, calculated by the layout engine
 const node1 = new Rect({
     style: {
         fill: 'white',
@@ -66,49 +66,49 @@ container.appendChild(node1);
 container.appendChild(node2);
 ```
 
-# 支持属性
+# Support Properties
 
-不同的属性支持的单位也不同，例如 `number` 类型的绝对像素值、`'100%'` 字符串类型的百分比以及特殊含义的 `'auto'`。
+Different properties support different units, such as absolute pixel values of type `number`, percentages of type `'100%'` string, and the special meaning of `'auto'`.
 
-## 声明 Flex 容器
+## Declare Flex containers
 
-使用 `display: 'flex'` 可以声明一个 Flex 容器，容器内所有直系子元素按照布局引擎计算结果进行布局，暂时仅支持 [Rect](/zh/docs/api/basic/rect) 和 [Group](/zh/docs/api/basic/group) 作为容器：
+Use `display: 'flex'` to declare a Flex container, all the immediate children inside the container will be laid out according to the layout engine calculation, only [Rect](/en/docs/api/basic/rect) and [Group](/en/docs/api/basic/group) are supported as containers for now.
 
 ```js
-// 或者使用 Group
+// or using Group
 // const container = new Group({
 const container = new Rect({
     style: {
-        width: 500, // 尺寸
+        width: 500,
         height: 300,
-        display: 'flex', // 声明使用 flex 布局
-        justifyContent: 'center', // 居中
-        alignItems: 'center', // 居中
-        x: 0, // 容器局部坐标系下位置
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        x: 0,
         y: 0,
-        fill: '#C6E5FF', // 其他样式属性
+        fill: '#C6E5FF',
     },
 });
 ```
 
-容器内子元素无类型限制，例如下图中可以看到 [Image](/zh/docs/api/basic/image) 也可以按照计算结果正常布局。
+There is no type restriction for child elements inside the container, for example, you can see in the following figure that [Image](/en/docs/api/basic/image) can also be laid out normally according to the calculation result.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
-另外容器支持嵌套，例如上图中 Node1 自身也是一个 Flex 容器，因此其中的文本可以水平垂直居中。
+In addition, the container supports nesting, for example, Node1 in the above image is also a Flex container itself, so the text in it can be centered horizontally and vertically.
 
 ## Layout
 
-Layout 属性用于设置自身在容器中的布局效果，例如相对于已有结果进行调整。
+The Layout property is used to set the effect of its own layout in the container, for example by adjusting it relative to existing results.
 
 ### position
 
-支持以下取值，可以配合 top / right / botton / left 使用，和 CSS 完全一致：
+The following values are supported and can be used with top / right / botton / left, exactly as in CSS.
 
--   `relative` 默认值，相对于正常布局位置
--   `absolute` 相对于父容器进行绝对定位
+-   `relative` Default value, relative to the normal layout position
+-   `absolute` Absolute positioning relative to the parent container
 
-下左图中 Node1 使用 `relative`，下右图使用 `absolute` 进行绝对定位：
+Node1 uses `relative` in the image below left and `absolute` in the image below right for absolute positioning.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -116,56 +116,56 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ### top / right / botton / left
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-支持绝对值与百分比，例如 `{ top: 10 }`、`{ top: '50%' }`。当传入百分比字符串时，相对于父元素的尺寸。
+Supports absolute values with percentages, e.g. `{ top: 10 }`, `{ top: '50%' }`. Size relative to the parent element when a percentage string is passed in.
 
-例如下图中 Node1 使用 `absolute` 进行绝对定位，`top` 和 `left` 设置为 10：
+For example, in the figure below, Node1 uses `absolute` for absolute positioning, with `top` and `left` set to 10.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2zZaS6PlrOcAAAAAAAAAAAAAARQnAQ" width="300px">
 
-下图中 Node1 使用 `absolute` 进行绝对定位，`top` 取 `'50%'`，即父元素高度的一半：
+In the following figure, Node1 is positioned absolutely using `absolute`, and `top` takes `'50%'`, which is half the height of the parent element.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zSqHQJWIH1UAAAAAAAAAAAAAARQnAQ" width="300px">
 
-下图中 Node1 使用 `absolute` 进行绝对定位，`top` 取 `-50`：
+In the following figure, Node1 uses `absolute` for absolute positioning and `top` takes `-50`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xj7YT4DOTOEAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### width / height
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-设置自身宽高尺寸。默认值为 `'auto'`。
+Set its own width and height size. The default value is `'auto'`.
 
-支持百分比和绝对值，取百分比时相对于父元素尺寸。
+Supports both percentage and absolute values, taking the percentage relative to the parent element size.
 
-例如下图中 Node1 设置了一个稍大一些的长宽：
+For example, in the following figure Node1 sets a slightly larger aspect.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*GzGKRarp_EEAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### minWidth / minHeight / maxWidth / maxHeight
 
-最大最小约束，优先级高于其他属性。可以配合 [flexGrow](/zh/docs/plugins/yoga#flexgrow) 使用。
+Max-min constraint, priority over other attributes. Can be used with [flexGrow](/en/docs/plugins/yoga#flexgrow).
 
-默认值为 NaN，即无约束。支持百分比和绝对值，取百分比时相对于父元素尺寸，例如 `{ minWidth: 50% }`。
+Default value is NaN, i.e. no constraint. Support percentage and absolute values, take percentage relative to parent element size, e.g. `{ minWidth: 50% }`.
 
-例如下图 Node1 设置了 `{ flexGrow: 1, maxWidth: 50% }`，因此它最多只能占据父元素宽度的一半：
+For example, the following Node1 is set to `{ flexGrow: 1, maxWidth: 50% }`, so it can only occupy up to half the width of its parent element.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cUDJSI8WKNIAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### padding
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-数据类型为 `[number | string, number | string, number | string, number | string]`，一次性设置上右下左的 padding。
+The data type is `[number | string, number | string, number | string, number | string]`, which sets the top-right and bottom-left padding at once.
 
-支持以下取值，可参考 [CSS padding 属性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding)：
+The following values are supported and can be found in [CSS padding properties](https://developer.mozilla.org/zh-CN/docs/Web/CSS/padding).
 
--   绝对像素值，不支持负值，例如 `10`
--   百分比字符串，不支持负值，例如 `'50%'`，取百分比时相对于**自身的宽度**
+-   Absolute pixel value, negative values are not supported, e.g. `10`
+-   Percentage strings, negative values are not supported, e.g. `'50%'`, take the percentage relative to the width of **itself**
 
-例如以下两种写法等价：
+For example, the following two ways of writing are equivalent.
 
 ```js
 {
@@ -181,78 +181,78 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 ### paddingAll
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-数据类型为 `number | string`，统一设置上右下左的 padding。
+The data type is `number | string`, and the padding is set uniformly from top right to bottom left.
 
 ### paddingTop / paddingRight / paddingBottom / paddingLeft
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-单独设置上右下左的 padding。
+Set the top-right-bottom-left padding separately.
 
 ### margin
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
 ```ts
 type PixelsOrPercentage = number | string;
 type YogaSize = PixelsOrPercentage | 'auto';
 ```
 
-数据类型为 `[YogaSize, YogaSize, YogaSize, YogaSize]`，一次性设置上右下左的 margin。
+The data type is `[YogaSize, YogaSize, YogaSize, YogaSize]`, which sets the top-right-bottom-left margin at once.
 
-支持以下取值，可参考 [CSS margin 属性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin)：
+The following values are supported and can be found in [CSS margin properties](https://developer.mozilla.org/zh-CN/docs/Web/CSS/margin).
 
--   绝对像素值，支持负值，例如 `10` `-50`
--   百分比字符串，支持负值，例如 `'50%'` `'-20%'`，取百分比时相对于**父元素的宽度**
--   `'auto'`，让布局引擎选择合适的外边距，可实现元素居中
+-   absolute pixel values, negative values are supported, e.g. `10` `-50`
+-   Percentage strings, negative values are supported, e.g. `'50%'` `'-20%'`, relative to the width of the **parent element** when taking the percentage
+-   `'auto'`, let the layout engine choose the right margin, can achieve the centering of the element
 
-例如下图中 Node1 分别设置了 `marginRight: 10` 和 `marginLeft: -50`：
+For example, in the following figure, Node1 has set `marginRight: 10` and `marginLeft: -50` respectively.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6qPTRKwDtqsAAAAAAAAAAAAAARQnAQ" width="300px">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qrzWT6TchH0AAAAAAAAAAAAAARQnAQ" width="300px">
 
-下图展示了 `marginTop: '50%'` 的效果，以父元素宽度（500）为基准：
+The following figure shows the effect of `marginTop: '50%'`, with the parent element width (500) as the base.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Kh90SJPkqr4AAAAAAAAAAAAAARQnAQ" width="200px">
 
-下图展示了 `margin: [0, 'auto', 0, 'auto']` 的效果，让元素水平居中：
+The following image shows the effect of `margin: [0, 'auto', 0, 'auto']` to center the element horizontally.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*GCpwRa6aFsIAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### marginAll
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-数据类型为 `YogaSize`，统一设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
+See [margin](/en/docs/plugins/yoga#margin) for details.
 
 ### marginTop / marginRight / marginBottom / marginLeft
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-单独设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
+See [margin](/en/docs/plugins/yoga#margin) for details.
 
 ### border
 
-暂不支持。
+Not supported at this time.
 
 ## Flex
 
 ### flexDirection
 
-来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flexbox_%E7%9A%84%E4%B8%A4%E6%A0%B9%E8%BD%B4%E7%BA%BF)
+From [MDN's description](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flexbox_%E7%9A%84%E4%B8%A4%E6%A0%B9%E8%BD%B4%E7%BA%BF)
 
-> 使用 flex 布局时，首先想到的是两根轴线：主轴和交叉轴。主轴由 `flexDirection` 定义，另一根轴垂直于它。
+> When using the flex layout, the first two axes that come to mind are the main axis and the cross axis. The main axis is defined by `flexDirection`, and the other axis is perpendicular to it.
 
-支持以下取值：
+The following values are supported.
 
--   row 默认值
--   row-reverse
--   column
--   column-reverse
+-   `'row'` default value
+-   `'row-reverse'`
+-   `'column'`
+-   `'column-reverse'`
 
-下左图为默认效果，下右图为 `column`：
+The left image below shows the default effect, and the right image below shows the `'column''.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*wHajQJ_BzhAAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -260,17 +260,17 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 ### flexWrap
 
-来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#%E7%94%A8flex-wrap%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%8Cflex%E5%AE%B9%E5%99%A8)：
+From [MDN's description](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#%E7%94%A8flex-wrap%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%8Cflex%E5%AE%B9%E5%99%A8)：
 
-> 虽然 flexbox 是一维模型，但可以使我们的 flex 项目应用到多行中。 在这样做的时候，您应该把每一行看作一个新的 flex 容器。 任何空间分布都将在该行上发生，而不影响该空间分布的其他行。
+> Although flexbox is a one-dimensional model, it is possible to make our flex items apply to multiple rows. When doing so, you should treat each row as a new flex container. Any spatial distribution will occur on that row, without affecting the other rows of that spatial distribution.
 
-支持以下取值：
+The following values are supported.
 
--   wrap
--   no-wrap 默认值
--   wrap-reverse
+-   `'wrap'`
+-   `'no-wrap'` default value
+-   `'wrap-reverse'`
 
-在该[示例](/zh/examples/plugins#yoga-container)中，可以点击 `appendChild` 按钮向容器中添加子元素。下左图展示了容器默认 `no-wrap` 的效果（注意由于不允许换行，子元素在宽度上被压缩了），下右图设置为 `wrap` 自动换行：
+In this [example](/en/examples/plugins#yoga-container), you can add child elements to the container by clicking the `appendChild` button. The image on the left below shows the effect of the container's default `no-wrap` (note that the child element is compressed in width because line breaks are not allowed), and the image on the right below is set to `wrap` with automatic line breaks.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*BUfETp4tDZAAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -278,74 +278,74 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 ### flexGrow
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-该属性是处理子元素在主轴上增加空间的问题。当 Flex 容器首次分配完子元素空间之后，如果还有剩余空间，它会按照这些子元素的 flexGrow 属性进行二次分配。
+This property deals with child elements adding space to the main axis. After the Flex container has allocated space for the child elements for the first time, if there is any space left, it will allocate it a second time according to the flexGrow property of those child elements.
 
-默认值为 0，支持大于等于 0 的取值，作为分配剩余空间的权重。
+The default value is 0, and values greater than or equal to 0 are supported as weights for allocating the remaining space.
 
-例如下图中，Node1 和 Node2 都设置了初始大小 `{ width: 100, height: 100 }`，但 Node1 额外设置了 `{ flexGrow: 1 }`，因此它将占据容器主轴上的全部剩余空间（总宽度 500 - Node2 宽度 100 = 400），效果上看就被“拉长”了：
+For example, in the figure below, Node1 and Node2 are both set to the initial size `{ width: 100, height: 100 }`, but Node1 is additionally set to `{ flexGrow: 1 }`, so it will take up all the remaining space on the main axis of the container (total width 500 - Node2 width 100 = 400), which has the effect of being "stretched" by.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*YCtYQL8IPwcAAAAAAAAAAAAAARQnAQ" width="300px">
 
-如果想让 Node1 和 Node2 平分空间，可以在 Node2 上也设置 `{ flexGrow: 1 }`。
+If you want Node1 and Node2 to split the space equally, you can set `{ flexGrow: 1 }` on Node2 as well.
 
-可以在该[示例](/zh/examples/plugins#yoga-available-space)中调整以观察效果。特别适合实现“自适应”布局，当容器宽度发生修改时，剩余空间也跟着改变。
+You can adjust this [example](/en/examples/plugins#yoga-available-space) to see the effect. This is particularly suitable for implementing "adaptive" layouts, where when the container width is modified, the remaining space changes as well.
 
-另外，剩余空间的分配也会考虑到子元素上 [min/maxWidth/Height](/zh/docs/plugins/yoga#minwidth--minheight--maxwidth--maxheight) 这样的约束条件，在该[示例](/zh/examples/plugins#yoga-available-space)中，Node1 同时设置了 `{ maxWidth: 200 }`，因此即使容器还有更多剩余空间，也不会分配给它（注意下图右侧容器的空白部分）：
+Also, the allocation of the remaining space takes into account constraints like [min/maxWidth/Height](/en/docs/plugins/yoga#minwidth--minheight--maxwidth--maxheight) on the child elements, and in this [example](/en/ examples/plugins#yoga examples/plugins#yoga-available-space), Node1 also has `{ maxWidth: 200 }` set, so even if there is more space left in the container, it will not be allocated to it (note the blank part of the container on the right side of the image below).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fbvlTpdHR0IAAAAAAAAAAAAAARQnAQ" width="500px">
 
-同样，当剩余空间不足时，`minWidth` 也能做为一个下限，例如下图中 Node1 最小宽度设置为 50，因此即使容器宽度仅有 100，也将保证它的展示宽度：
+Likewise, `minWidth` can be used as a lower limit when there is not enough space left, for example, the minimum width of Node1 in the following figure is set to 50, so even if the container is only 100 wide, it will be guaranteed to be displayed at the following width.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VpsQR72y3dsAAAAAAAAAAAAAARQnAQ" width="400px">
 
 ### flexShrink
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-该属性是处理子元素收缩的问题。如果容器中没有足够排列元素的空间，那么可以把子元素的 flexShrink 属性设置为正整数来缩小它所占空间到 flexBasis 以下。与 flexGrow 属性一样，可以赋予不同的值来控制子元素收缩的程度，即给 flexShrink 属性赋予更大的数值可以比赋予小数值的同级元素收缩程度更大。
+This property handles the shrinking of child elements. If there is not enough space in the container to align the elements, then the flexShrink property of a child element can be set to a positive integer to shrink the space it occupies below flexBasis. As with the flexGrow attribute, different values can be assigned to control how much the child element shrinks, i.e. giving a larger value to the flexShrink attribute can shrink it more than a smaller value given to a sibling.
 
-默认值为 1，支持大于等于 0 的取值。
+The default value is 1, and values greater than or equal to 0 are supported.
 
-例如下图当容器宽度不足以容纳 Node1 和 Node2 设置的初始宽度时，会按照 flexShrink 进行缩放，两个字节点都设置为 1 因此缩放程度一致：
+For example, in the following figure, when the container is not wide enough to accommodate the initial width set by Node1 and Node2, it will be scaled according to flexShrink, which is set to 1 for both word nodes and therefore scaled to the same extent.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kf8jQKLjAA4AAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### flexBasis
 
-<tag color="green" text="可应用动画">可应用动画</tag>
+<tag color="green" text="Animatable">Animatable</tag>
 
-来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flex_%E5%85%83%E7%B4%A0%E4%B8%8A%E7%9A%84%E5%B1%9E%E6%80%A7)
+From [MDN's description](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flex_%E5%85%83%E7%B4%A0%E4%B8%8A%E7%9A%84%E5%B1%9E%E6%80%A7)
 
-> 在考虑这几个属性的作用之前，需要先了解一下 可用空间 available space 这个概念。
+> Before considering the role of these properties, it is important to understand the concept of available space.
 
-[Yoga 示例](https://yogalayout.com/docs/flex/)
+[Yoga Example](https://yogalayout.com/docs/flex/)
 
-定义了该元素在主轴上的默认空间大小。
+Defines the default space size for this element on the main axis.
 
-默认值为 NaN。
+The default value is NaN.
 
 ## Alignment
 
-来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#%E5%85%83%E7%B4%A0%E9%97%B4%E7%9A%84%E5%AF%B9%E9%BD%90%E5%92%8C%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D)
+From [MDN's description](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#%E5%85%83%E7%B4%A0%E9%97%B4%E7%9A%84%E5%AF%B9%E9%BD%90%E5%92%8C%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D)
 
-> flexbox 的一个关键特性是能够设置 flex 元素沿主轴方向和交叉轴方向的对齐方式，以及它们之间的空间分配。
+> A key feature of flexbox is the ability to set the alignment of flex elements along the major and cross-axis directions, as well as the space allocation between them.
 
 ### justifyContent
 
-该属性用来使元素在主轴方向上对齐。
+This property is used to align elements in the major axis direction.
 
-支持以下枚举值：
+The following enumeration values are supported.
 
--   flex-start 默认值
--   flex-end
--   center
--   space-between
--   space-around
--   space-evenly
+-   `'flex-start'` the default value
+-   `'flex-end'`
+-   `'center'`
+-   `'space-between'`
+-   `'space-around'`
+-   `'space-evenly'`
 
-在该[示例](/zh/examples/plugins#yoga-container)中，展示了 `center` / `space-between` / `space-around` 的效果：
+In this [example](/en/examples/plugins#yoga-container), the effect of `center` / `space-between` / `space-around` is shown.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3KUrRZ8gjg0AAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -355,45 +355,45 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 ### alignItems
 
-该属性可以使元素在交叉轴方向对齐。
+This property allows elements to be aligned in the cross-axis direction.
 
-支持以下枚举值：
+The following enumeration values are supported.
 
--   stretch 默认值
--   auto
--   baseline
--   center
--   flex-start
--   flex-end
--   space-between
--   space-around
+-   `'stretch'` the default value
+-   `'auto'`
+-   `'baseline'`
+-   `'center'`
+-   `'flex-start'`
+-   `'flex-end'`
+-   `'space-between'`
+-   `'space-around'`
 
-下图为 `center` 效果：
+The following figure shows the `center` effect.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*es0mTatBlHEAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### alignSelf
 
-用于子元素覆盖容器中已有的 [alignItems](/zh/docs/plugins/yoga#alignitems) 的值：
+For child elements to override the existing [alignItems](/en/docs/plugins/yoga#alignitems) value in the container.
 
-在下图中，容器设置的 `alignItems` 为默认值 `stretch`，但 Node1 可以通过 `alignSelf: center` 让自身脱离原本 Node2 和 Node3 的布局效果：
+In the following figure, the container sets `alignItems` to the default value of `stretch`, but Node1 can set itself out of the original Node2 and Node3 layout effect by using `alignSelf: center`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*G5HKSpnYVkAAAAAAAAAAAAAAARQnAQ" width="300px">
 
 ### alignContent
 
-容器如何分配子元素周围空间，只有当 [flexWrap](/zh/docs/plugins/yoga#flexwrap) 取值为 `wrap` 时生效：
+How the container allocates space around child elements only takes effect if [flexWrap](/en/docs/plugins/yoga#flexwrap) takes the value `wrap`.
 
-支持以下枚举值：
+The following enumeration values are supported.
 
--   stretch
--   center
--   flex-start 默认值
--   flex-end
--   space-between
--   space-around
+-   `'stretch'`
+-   `'center'`
+-   `'flex-start'` the default value
+-   `'flex-end'`
+-   `'space-between'`
+-   `'space-around'`
 
-在该[示例](/zh/examples/plugins#yoga-container)中，依次展示了 `center` / `space-between` / `space-around` 效果：
+In this [example](/en/examples/plugins#yoga-container), the `center` / `space-between` / `space-around` effects are shown in order.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*P8hPS6i7iPcAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -401,25 +401,25 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VI4HRaZlQe4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 其他常见问题
+# Other Frequently Asked Questions
 
-## Flex 容器是否支持嵌套？
+## Does the Flex container support nesting?
 
-支持，每个容器内单独计算布局并影响内部的子元素。
+Yes, the layout is calculated separately within each container and affects the inner child elements.
 
-## 支持非 Rect / Group 图形作为 Flex 容器吗？
+## Do you support non-Rect / Group graphics as Flex containers?
 
-暂不支持。如果容器本身不需要被渲染，应该使用 Group。以上例子为了更好地展示容器尺寸，我们选择了 Rect。
+Not supported at the moment. If the container itself does not need to be rendered, you should use Group. above example we chose Rect to better show the container size.
 
-## Flex 容器内子元素还支持使用 `setPosition/setLocalPosition()` 调整位置吗？
+## Does the Flex container also support repositioning of child elements using `setPosition/setLocalPosition()`?
 
-一旦容器使用了 Flex，它内部的子元素都应该使用 Flex 相关属性进行定位。虽然不禁止使用 `setPosition`，但它显然会和布局引擎的计算结果冲突。
+Once a container uses Flex, all child elements inside it should be positioned using Flex-related properties. While the use of `setPosition` is not prohibited, it will obviously conflict with the layout engine's calculations.
 
-## 支持除绝对值之外的百分比吗？
+## Do you support percentages other than absolute values?
 
-支持。但不同属性使用百分比的参考值并不相同。
+Yes. However, the reference values for using percentages are not the same for different attributes.
 
-例如 [width/height](/zh/docs/plugins/yoga#width--height) 相对于父元素的宽高：
+For example [width/height](/en/docs/plugins/yoga#width--height) relative to the width and height of the parent element.
 
 ```js
 {
@@ -428,11 +428,11 @@ type YogaSize = PixelsOrPercentage | 'auto';
 }
 ```
 
-## 是否支持文本自动换行？
+## Does it support automatic text line feeds?
 
-目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行，但需要用户手动设置 `wordWrapWidth`，超出后换行。
+Currently [Text](/en/docs/api/basic/text) already supports multi-line text with automatic line break, but requires user to set `wordWrapWidth` manually to break the line when it is exceeded.
 
-在 Flex 布局中，当文本作为子元素时，无需用户手动设置文本行宽，只需要开启 `wordWrap`，配合 `width` 即可：
+In Flex layout, when text is a child element, there is no need for user to set text line width manually, just turn on `wordWrap` with `width` and you can.
 
 ```js
 const text = new Text({
@@ -441,21 +441,21 @@ const text = new Text({
         fontSize: 32,
         fill: '#1890FF',
         text: '这是测试文字，这是测试文字，这是测试文字，这是测试文字',
-        wordWrap: true, // 开启自动换行
-        width: '100%', // 行宽
+        wordWrap: true, // Turn on automatic line feeds
+        width: '100%',
     },
 });
 ```
 
-在该[示例](/zh/examples/plugins#yoga-text)中，可以随时改变需要换行文本的行宽，下图为 `width: '100%'` 的效果：
+In this [example](/en/examples/plugins#yoga-text), you can always change the line width of the text that needs a line break, as shown below for `width: '100%'`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 
-## 新增的属性是否支持动画？
+## Does the added property support animation?
 
-Flex 布局新增了很多新属性，例如 [padding](/zh/docs/plugins/yoga#padding) [margin](/zh/docs/plugins/yoga#margin) 等，在 CSS 中是可以对这些属性进行动画的。
+Flex layout adds many new properties, such as [padding](/en/docs/plugins/yoga#padding) [margin](/en/docs/plugins/yoga#margin), etc. It is possible to animate these properties in CSS.
 
-目前支持了部分属性，在该[示例](/zh/examples/plugins#yoga-animation)中可以查看：
+Some of these properties are currently supported and can be viewed in this [example](/en/examples/plugins#yoga-animation).
 
 ```js
 node1.animate(
@@ -473,8 +473,8 @@ node1.animate(
 );
 ```
 
-## 3D 图形是否可以使用布局？
+## Is it possible to use layouts for 3D graphics?
 
-需要指定一个平面，然后才能应用 Yoga 这样的 2D 布局引擎。
+You need to specify a plane before you can apply a 2D layout engine like Yoga.
 
-例如 [react-three-flex](https://github.com/pmndrs/react-three-flex) 中使用 `xy` `yz` `xz`。
+For example, [react-three-flex](https://github.com/pmndrs/react-three-flex) uses `xy` `yz` `xz`.

@@ -4,7 +4,7 @@ import type { AnnotationPlugin } from '../AnnotationPlugin';
 import type { DrawerState } from '../interface/drawer';
 
 export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
-  const { path, id } = anno;
+  const { path } = anno;
   const left = path[0].x;
   const top = path[0].y;
   const height = path[2].y - path[0].y;
