@@ -14,21 +14,20 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
+import { EventEmitter } from 'eventemitter3';
+import { DrawerTool } from './constants/enum';
+import { CircleDrawer } from './drawers/circle';
+import { PolygonDrawer } from './drawers/polygon';
+import { PolylineDrawer } from './drawers/polyline';
+import { RectDrawer } from './drawers/rect';
+import type { BaseDrawer, DrawerState } from './interface/drawer';
 import { renderCircle } from './rendering/circle-render';
 import { renderPolygon } from './rendering/polygon-render';
 import { renderPolyline } from './rendering/polyline-render';
 import { renderRect } from './rendering/rect-render';
-import { DrawerTool } from './constants/enum';
-import { PolygonDrawer } from './drawers/polygon';
-import { PolylineDrawer } from './drawers/polyline';
-import { CircleDrawer } from './drawers/circle';
-import { RectDrawer } from './drawers/rect';
-import type { BaseDrawer } from './interface/drawer';
-import { EventEmitter } from 'eventemitter3';
-import type { DrawerState } from './interface/drawer';
-import { AnnotationPluginOptions } from './tokens';
 import { SelectablePolyline } from './selectable/SelectablePolyline';
 import { SelectableRect } from './selectable/SelectableRect';
+import { AnnotationPluginOptions } from './tokens';
 
 /**
  * make shape selectable:
@@ -107,6 +106,23 @@ export class AnnotationPlugin implements RenderingPlugin {
 
     return this.selectableMap[object.entity];
   }
+
+  /**
+   * Update all existed selectable UIs.
+   * @example
+   *
+   * plugin.updateSelectableStyle({
+   *   selectionStroke: 'red',
+   * });
+   */
+  updateSelectableStyle() {
+    const { selectableStyle } = this.annotationPluginOptions;
+
+    for (const entity in this.selectableMap) {
+      this.selectableMap[entity].attr(selectableStyle);
+    }
+  }
+
   /**
    *
    * @param id
