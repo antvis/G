@@ -312,26 +312,42 @@ export function convertToPath(
   }
 }
 
-export function translatePathToString(pathArray: AbsoluteArray, x: number, y: number) {
+export function translatePathToString(
+  pathArray: AbsoluteArray,
+  x: number,
+  y: number,
+  startOffsetX = 0,
+  startOffsetY = 0,
+  endOffsetX = 0,
+  endOffsetY = 0,
+) {
+  // @ts-ignore
+  const isClosed = pathArray[pathArray.length - 1][0] === 'Z';
+
   const newValue = pathArray
-    .map((params) => {
+    .map((params, i) => {
       const command = params[0];
+
+      const offsetX = i === pathArray.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
+      const offsetY = i === pathArray.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
 
       switch (command) {
         case 'M':
-          return `M ${params[1]! - x},${params[2]! - y}`;
+          return `M ${params[1]! - x + startOffsetX},${params[2]! - y + startOffsetY}`;
         case 'L':
-          return `L ${params[1]! - x},${params[2]! - y}`;
+          return `L ${params[1]! - x + offsetX},${params[2]! - y + offsetY}`;
         case 'Q':
-          return `Q ${params[1]! - x} ${params[2]! - y},${params[3]! - x} ${params[4]! - y}`;
+          return `Q ${params[1]! - x} ${params[2]! - y},${params[3]! - x + offsetX} ${
+            params[4]! - y + offsetY
+          }`;
         case 'C':
           return `C ${params[1]! - x} ${params[2]! - y},${params[3]! - x} ${params[4]! - y},${
-            params[5]! - x
-          } ${params[6]! - y}`;
+            params[5]! - x + offsetX
+          } ${params[6]! - y + offsetY}`;
         case 'A':
           return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${
-            params[6]! - x
-          } ${params[7]! - y}`;
+            params[6]! - x + offsetX
+          } ${params[7]! - y + offsetY}`;
         case 'Z':
           return 'Z';
         default:

@@ -8,7 +8,7 @@ import {
   updateRectElementAttribute,
   updateTextElementAttribute,
 } from './shapes/paths';
-import { CreateElementContribution } from './tokens';
+import { ElementLifeCycleContribution } from './tokens';
 import { createSVGElement } from './utils/dom';
 
 export const SHAPE2TAGS: Record<Shape | string, string> = {
@@ -86,24 +86,26 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
   ],
 };
 
-@singleton({ token: CreateElementContribution })
-export class DefaultCreateElementContribution implements CreateElementContribution {
+@singleton({ token: ElementLifeCycleContribution })
+export class DefaultElementLifeCycleContribution implements ElementLifeCycleContribution {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  createElement(object: DisplayObject<any, any>): SVGElement {
+  createElement(object: DisplayObject): SVGElement {
     const { document: doc } = this.canvasConfig;
 
     const type = SHAPE2TAGS[object.nodeName] || 'g';
     return createSVGElement(type, doc || document);
   }
 
-  shouldUpdateElementAttribute(object: DisplayObject<any, any>, attributeName: string) {
+  destroyElement(object: DisplayObject, $el: SVGElement) {}
+
+  shouldUpdateElementAttribute(object: DisplayObject, attributeName: string) {
     const { nodeName } = object;
     return (SHAPE_UPDATE_DEPS[nodeName] || []).indexOf(attributeName) > -1;
   }
 
-  updateElementAttribute(object: DisplayObject<any, any>) {
+  updateElementAttribute(object: DisplayObject) {
     // @ts-ignore
     const { $el } = object.elementSVG as ElementSVG;
     const { nodeName, parsedStyle } = object;

@@ -20,8 +20,8 @@ import { SVGRenderer } from '@antv/g-svg';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
-@singleton({ token: SVGRenderer.CreateElementContribution })
-export class RoughCreateElementContribution implements SVGRenderer.CreateElementContribution {
+@singleton({ token: SVGRenderer.ElementLifeCycleContribution })
+export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLifeCycleContribution {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
@@ -50,6 +50,8 @@ export class RoughCreateElementContribution implements SVGRenderer.CreateElement
     }
     return null;
   }
+
+  destroyElement(object: DisplayObject, $el: SVGElement) {}
 
   private wrapGroup($el: SVGElement): SVGElement {
     $el.setAttribute('data-wrapgroup', '1');

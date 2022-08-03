@@ -543,6 +543,24 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'markerEnd',
     syntax: PropertySyntax.MARKER,
   },
+  {
+    name: 'markerMid',
+    syntax: PropertySyntax.MARKER,
+  },
+  {
+    name: 'markerStartOffset',
+    syntax: PropertySyntax.LENGTH,
+    layoutDependent: true,
+    interpolable: true,
+    defaultValue: '0',
+  },
+  {
+    name: 'markerEndOffset',
+    syntax: PropertySyntax.LENGTH,
+    layoutDependent: true,
+    interpolable: true,
+    defaultValue: '0',
+  },
 ];
 
 @singleton({

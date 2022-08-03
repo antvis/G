@@ -1,4 +1,5 @@
-import { DisplayObject, ParsedLineStyleProps, singleton } from '@antv/g';
+import type { ParsedLineStyleProps } from '@antv/g';
+import { DisplayObject, singleton } from '@antv/g';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
 import { LineRendererContribution } from '../interfaces';
 
@@ -39,16 +40,16 @@ export class LineRenderer implements RendererContribution {
       x = x2.value - x1.value;
       y = y2.value - y1.value;
       rad = Math.atan2(y, x);
-      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
-      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
+      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
       x = x1.value - x2.value;
       y = y1.value - y2.value;
       rad = Math.atan2(y, x);
-      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
-      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
+      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
     }
 
     if (shadowStrokePaint) {

@@ -82,6 +82,99 @@ polyline.style.points = [
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
 
+## markerStart
+
+See the [markerStart](/en/docs/api/basic/line) property of [Line](/en/docs/api/basic/line#markerstart).
+
+The "start point" is determined by the first point in [points](/en/docs/api/basic/polyline#points).
+
+In this [example](/en/examples/shape#polyline), we have placed an arrow at the start of the line.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jPJnTJ9VANYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
+
+```js
+const arrowMarker = new Path({
+    style: {
+        path: 'M 10,10 L -10,0 L 10,-10 Z',
+        stroke: '#1890FF',
+        anchor: '0.5 0.5',
+        transformOrigin: 'center',
+    },
+});
+
+polyline.style.markerStart = arrowMarker;
+```
+
+## markerEnd
+
+See the [markerEnd](/en/docs/api/basic/line) attribute of [Line](/en/docs/api/basic/line#markerend).
+
+The "end point" is determined by the last point in [points](/en/docs/api/basic/polyline#points).
+
+In this [example](/en/examples/shape#polyline), we have placed an image at the termination point of the line.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aXEMQIPzPVYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
+
+```js
+const imageMarker = new Image({
+    style: {
+        width: 50,
+        height: 50,
+        anchor: [0.5, 0.5],
+        transformOrigin: 'center',
+        transform: 'rotate(90deg)',
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
+});
+
+polyline.style.markerEnd = imageMarker;
+```
+
+## markerMid
+
+You can refer to the SVG's [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid).
+
+Place markers on each vertex of the line except for the "start" and "end" points.
+
+For example, in the following figure, a [Circle] (/en/docs/api/basic/circle) is placed on each vertex of the line except for the beginning and end.
+
+```js
+const circleMarker = new Circle({
+    style: {
+        r: 10,
+        stroke: '#1890FF',
+    },
+});
+
+polyline.style.markerMid = circleMarker;
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Rsd9R7U4zdcAAAAAAAAAAAAAARQnAQ" alt="marker mid" width="200">
+
+## markerStartOffset
+
+You can refer to the [markerStartOffset](/en/docs/api/basic/line#markerstartoffset) property of [Line](/en/docs/api/basic/line).
+
+Moves the marker graphic in the direction of the first line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*M8ibT6pBNjYAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
+
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+
+## markerEndOffset
+
+You can refer to the [markerEndOffset](/en/docs/api/basic/line#markerendoffset) property of [Line](/en/docs/api/basic/line).
+
+Moves the marker graphic in the direction of the last line segment of the fold. Note that if the offset distance exceeds the length of the original line segment, it will extend in the opposite direction. In this [example](/en/examples/shape#polyline), we use this property to move the marker graphic.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
+
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+
 # Methods
 
 ## getTotalLength(): number

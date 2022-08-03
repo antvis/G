@@ -1,7 +1,8 @@
 import { Line as LineUtil } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
-import { DisplayObjectConfig, ElementEvent, MutationEvent } from '../dom';
+import type { DisplayObjectConfig, MutationEvent } from '../dom';
+import { ElementEvent } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -47,8 +48,8 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   isBillboard?: boolean;
   markerStart?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: number;
-  markerEndOffset?: number;
+  markerStartOffset?: CSSUnitValue;
+  markerEndOffset?: CSSUnitValue;
 }
 
 /**
@@ -164,14 +165,14 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
       oy = y1.value - defY;
       x = x2.value - x1.value;
       y = y2.value - y1.value;
-      offset = markerStartOffset || 0;
+      offset = markerStartOffset?.value || 0;
       originalAngle = this.markerStartAngle;
     } else {
       ox = x2.value - defX;
       oy = y2.value - defY;
       x = x1.value - x2.value;
       y = y1.value - y2.value;
-      offset = markerEndOffset || 0;
+      offset = markerEndOffset?.value || 0;
       originalAngle = this.markerEndAngle;
     }
     rad = Math.atan2(y, x);

@@ -231,9 +231,21 @@ line.childNodes[0].style.stroke = 'red';
 
 值得注意的是，虽然偏移量会让直线在视觉效果上发生变化，但并不会影响 [x1/y1/x2/y2](/zh/docs/api/basic/line#x1) 这些属性值。
 
+在 [示例](/zh/examples/shape#marker) 中，直线端点与两端的圆心重合，但为了避免箭头与两端的节点重合，需要向内缩进一定距离：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
 ## markerEndOffset
 
-调整 “终止点” 处标记图形的位置。
+调整 “终止点” 处标记图形的位置，正偏移量向内，负偏移量向外。
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 # 方法
 

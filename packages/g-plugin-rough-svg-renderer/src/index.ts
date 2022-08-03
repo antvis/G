@@ -1,9 +1,9 @@
 import { AbstractRendererPlugin, Module } from '@antv/g';
-import { RoughCreateElementContribution } from './RoughCreateElementContribution';
+import { RoughElementLifeCycleContribution } from './RoughElementLifeCycleContribution';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
 
 const containerModule = Module((register) => {
-  register(RoughCreateElementContribution);
+  register(RoughElementLifeCycleContribution);
   register(RoughRendererPlugin);
 });
 

@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedPathStyleProps } from '@antv/g';
-import { ContextService, inject, singleton } from '@antv/g';
+import type { ParsedPathStyleProps, Path } from '@antv/g';
+import { ContextService, DisplayObject, inject, singleton } from '@antv/g';
 import { mat3 } from 'gl-matrix';
 import type {
   CanvasKitContext,
@@ -22,8 +22,45 @@ export class PathRenderer implements RendererContribution {
     const { CanvasKit } = this.contextService.getContext();
     const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
 
-    const { shadowOffsetX, shadowOffsetY, defX, defY, path } =
-      object.parsedStyle as ParsedPathStyleProps;
+    const {
+      shadowOffsetX,
+      shadowOffsetY,
+      defX,
+      defY,
+      path,
+      markerStart,
+      markerEnd,
+      markerStartOffset,
+      markerEndOffset,
+    } = object.parsedStyle as ParsedPathStyleProps;
+
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+    let endOffsetX = 0;
+    let endOffsetY = 0;
+
+    let rad = 0;
+    let x: number;
+    let y: number;
+
+    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+      const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
+      x = p1[0] - p2[0];
+      y = p1[1] - p2[1];
+
+      rad = Math.atan2(y, x);
+      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+    }
+
+    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+      const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
+      x = p1[0] - p2[0];
+      y = p1[1] - p2[1];
+      rad = Math.atan2(y, x);
+      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+    }
 
     const skPath = new CanvasKit.Path();
 
@@ -34,22 +71,29 @@ export class PathRenderer implements RendererContribution {
       pathCommand.splice(zIndex + index, 1, ['Z']);
     });
 
+    // @ts-ignore
+    const isClosed = pathCommand[pathCommand.length - 1][0] === 'Z';
+
     for (let i = 0; i < pathCommand.length; i++) {
       const params = pathCommand[i]; // eg. M 100 200
       const command = params[0];
       // V,H,S,T 都在前面被转换成标准形式
       switch (command) {
         case 'M':
-          skPath.moveTo(params[1] - defX, params[2] - defY);
+          skPath.moveTo(params[1] - defX + startOffsetX, params[2] - defY + startOffsetY);
           break;
         case 'C':
+          // the last C command
+          const offsetX = i === pathCommand.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
+          const offsetY = i === pathCommand.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
+
           skPath.cubicTo(
             params[1] - defX,
             params[2] - defY,
             params[3] - defX,
             params[4] - defY,
-            params[5] - defX,
-            params[6] - defY,
+            params[5] - defX + offsetX,
+            params[6] - defY + offsetY,
           );
           break;
         // @ts-ignore

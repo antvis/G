@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps, ParsedPathStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps } from '@antv/g';
 import { singleton, translatePathToString } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
@@ -7,8 +7,6 @@ import { generateRoughOptions } from '../util';
   token: CanvasRenderer.PathRendererContribution,
 })
 export class PathRenderer implements CanvasRenderer.StyleRenderer {
-  hash: (parsedStyle: ParsedBaseStyleProps) => string;
-
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedPathStyleProps,

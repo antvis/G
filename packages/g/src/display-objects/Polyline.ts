@@ -1,10 +1,11 @@
 import { Line as LineUtil } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
-import { DisplayObjectConfig } from '../dom';
+import type { CSSUnitValue } from '../css';
+import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { DisplayObject } from './DisplayObject';
+import type { DisplayObject } from './DisplayObject';
 import { Polygon } from './Polygon';
 
 export interface PolylineStyleProps extends BaseStyleProps {
@@ -40,10 +41,16 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   markerStart?: DisplayObject;
   markerMid?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: number;
-  markerEndOffset?: number;
+  markerStartOffset?: CSSUnitValue;
+  markerEndOffset?: CSSUnitValue;
 }
+
+/**
+ * Polyline inherits the marker-related capabilities of Polygon.
+ */
 export class Polyline extends Polygon {
+  protected isClosed = false;
+
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
       type: Shape.POLYLINE,

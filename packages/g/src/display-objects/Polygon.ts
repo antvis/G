@@ -1,4 +1,6 @@
-import { DisplayObjectConfig, ElementEvent, MutationEvent } from '../dom';
+import type { CSSUnitValue } from '../css';
+import type { DisplayObjectConfig, MutationEvent } from '../dom';
+import { ElementEvent } from '../dom';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -36,11 +38,13 @@ export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   markerStart?: DisplayObject;
   markerMid?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: number;
-  markerEndOffset?: number;
+  markerStartOffset?: CSSUnitValue;
+  markerEndOffset?: CSSUnitValue;
 }
 
 export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyleProps> {
+  protected isClosed = true;
+
   private markerStartAngle = 0;
   private markerEndAngle = 0;
 
@@ -143,20 +147,26 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     let offset: number;
     let originalAngle: number;
 
+    ox = points[0][0] - defX;
+    oy = points[0][1] - defY;
+
     if (isStart) {
-      ox = points[0][0] - defX;
-      oy = points[0][1] - defY;
       x = points[1][0] - points[0][0];
       y = points[1][1] - points[0][1];
-      offset = markerStartOffset || 0;
+      offset = markerStartOffset?.value || 0;
       originalAngle = this.markerStartAngle;
     } else {
       const { length } = points;
-      ox = points[length - 1][0] - defX;
-      oy = points[length - 1][1] - defY;
-      x = points[length - 2][0] - points[length - 1][0];
-      y = points[length - 2][1] - points[length - 1][1];
-      offset = markerEndOffset || 0;
+      if (!this.isClosed) {
+        ox = points[length - 1][0] - defX;
+        oy = points[length - 1][1] - defY;
+        x = points[length - 2][0] - points[length - 1][0];
+        y = points[length - 2][1] - points[length - 1][1];
+      } else {
+        x = points[length - 1][0] - points[0][0];
+        y = points[length - 1][1] - points[0][1];
+      }
+      offset = markerEndOffset?.value || 0;
       originalAngle = this.markerEndAngle;
     }
     rad = Math.atan2(y, x);
@@ -179,7 +189,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     });
 
     if (marker && marker instanceof DisplayObject) {
-      for (let i = 1; i < points.length - 1; i++) {
+      for (let i = 1; i < (this.isClosed ? points.length : points.length - 1); i++) {
         const ox = points[i][0] - defX;
         const oy = points[i][1] - defY;
 

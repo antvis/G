@@ -1,21 +1,23 @@
+import type {
+  DisplayObject,
+  FederatedEvent,
+  LinearGradient,
+  MutationEvent,
+  ParsedBaseStyleProps,
+  RadialGradient,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import {
   Camera,
   CanvasConfig,
   ContextService,
   CSSRGB,
   DefaultCamera,
-  DisplayObject,
   ElementEvent,
-  FederatedEvent,
   inject,
-  LinearGradient,
-  MutationEvent,
-  ParsedBaseStyleProps,
-  RadialGradient,
   RenderingContext,
-  RenderingPlugin,
   RenderingPluginContribution,
-  RenderingService,
   RenderReason,
   Shape,
   singleton,
@@ -24,7 +26,7 @@ import {
 import type { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import { DefElementManager } from './shapes/defs';
-import { CreateElementContribution } from './tokens';
+import { ElementLifeCycleContribution } from './tokens';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
 
@@ -131,8 +133,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
   @inject(StyleValueRegistry)
   private styleValueRegistry: StyleValueRegistry;
 
-  @inject(CreateElementContribution)
-  private createElementContribution: CreateElementContribution;
+  @inject(ElementLifeCycleContribution)
+  private createElementContribution: ElementLifeCycleContribution;
 
   @inject(DefElementManager)
   private defElementManager: DefElementManager;
@@ -512,6 +514,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     if ($groupEl && $groupEl.parentNode) {
       $groupEl.parentNode.removeChild($groupEl);
 
+      this.createElementContribution.destroyElement(object, $groupEl);
       // object.entity.removeComponent(ElementSVG, true);
     }
   }

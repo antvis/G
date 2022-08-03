@@ -231,9 +231,21 @@ In [example](/en/examples/shape#line), we manipulate this property to give the l
 
 It is worth noting that while the offset will make the line change visually, it does not affect the [x1/y1/x2/y2](/en/docs/api/basic/line#x1) values of these attributes.
 
+In [example](/en/examples/shape#marker), the endpoints of the line coincide with the center of the circle at both ends, but to avoid the arrows coinciding with the nodes at both ends, they need to be indented a certain distance inward.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
+
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+
 ## markerEndOffset
 
 Adjusts the position of the marker graphic at the "end point".
+
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
 # Methods
 

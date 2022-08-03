@@ -22,6 +22,12 @@ export class CSSPropertyMarker implements Partial<CSSProperty<DisplayObject, Dis
       newMarker = null;
     }
 
-    return newMarker?.cloneNode(true);
+    const cloned = newMarker?.cloneNode(true);
+    if (cloned) {
+      // FIXME: SVG should not inherit parent's style, add a flag here
+      cloned.style.isMarker = true;
+    }
+
+    return cloned;
   }
 }

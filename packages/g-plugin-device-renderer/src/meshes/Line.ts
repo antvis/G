@@ -1,19 +1,15 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import {
-  convertToPath,
-  CSSRGB,
-  DisplayObject,
-  injectable,
+import type {
   ParsedBaseStyleProps,
   ParsedLineStyleProps,
   ParsedPathStyleProps,
-  parsePath,
+  Path,
   Polyline,
-  Shape,
   Tuple4Number,
 } from '@antv/g';
+import { convertToPath, CSSRGB, DisplayObject, injectable, parsePath, Shape } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { CurveArray } from '@antv/util';
 import earcut from 'earcut';
@@ -444,8 +440,9 @@ function segmentsCount(length: number, defaultSegments = 20) {
 
 export function updateBuffer(object: DisplayObject, needEarcut = false) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
-  let { defX, defY, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    object.parsedStyle;
+  let { defX, defY } = object.parsedStyle;
+  const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+    object.parsedStyle as ParsedLineStyleProps;
 
   const points: number[][] = [];
   let triangles: number[] = [];
@@ -466,16 +463,16 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       x = polylinePoints[1][0] - polylinePoints[0][0];
       y = polylinePoints[1][1] - polylinePoints[0][1];
       rad = Math.atan2(y, x);
-      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
-      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
+      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
       x = polylinePoints[length - 2][0] - polylinePoints[length - 1][0];
       y = polylinePoints[length - 2][1] - polylinePoints[length - 1][1];
       rad = Math.atan2(y, x);
-      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
-      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
+      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
     }
 
     points[0] = polylinePoints.reduce((prev, cur, i) => {
@@ -540,22 +537,57 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       zCommandIndexes.includes(i) ? ['Z'] : c,
     ) as CurveArray;
 
+    // @ts-ignore
+    const isClosed = curve[curve.length - 1][0] === 'Z';
+
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+    let endOffsetX = 0;
+    let endOffsetY = 0;
+
+    let rad = 0;
+    let x: number;
+    let y: number;
+
+    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+      const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
+      x = p1[0] - p2[0];
+      y = p1[1] - p2[1];
+
+      rad = Math.atan2(y, x);
+      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+    }
+
+    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+      const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
+      x = p1[0] - p2[0];
+      y = p1[1] - p2[1];
+      rad = Math.atan2(y, x);
+      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+    }
+
     let startPointIndex = -1;
     let mCommandsNum = -1;
-    curve.forEach(([command, ...params]) => {
+    curve.forEach(([command, ...params], i) => {
       if (command === 'M') {
         mCommandsNum++;
         points[mCommandsNum] = [];
         startPointIndex = points[mCommandsNum].length;
-        points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+        points[mCommandsNum].push(params[0] - defX + startOffsetX, params[1] - defY + startOffsetY);
       } else if (command === 'C') {
+        // the last C command
+        const offsetX = i === curve.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
+        const offsetY = i === curve.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
+
         curveTo(
           params[0] - defX,
           params[1] - defY,
           params[2] - defX,
           params[3] - defY,
-          params[4] - defX,
-          params[5] - defY,
+          params[4] - defX + offsetX,
+          params[5] - defY + offsetY,
           points[mCommandsNum],
         );
       } else if (

@@ -136,19 +136,44 @@ polyline.style.markerEnd = imageMarker;
 
 在折线除了 “起始点” 和 “终止点” 之外的每一个顶点上放置标记图形。
 
+例如下图中在折线上除首尾的每个顶点上都放置了一个 [Circle](/zh/docs/api/basic/circle)：
+
+```js
+const circleMarker = new Circle({
+    style: {
+        r: 10,
+        stroke: '#1890FF',
+    },
+});
+
+polyline.style.markerMid = circleMarker;
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Rsd9R7U4zdcAAAAAAAAAAAAAARQnAQ" alt="marker mid" width="200">
+
 ## markerStartOffset
 
 可以参考 [Line](/zh/docs/api/basic/line) 的 [markerStartOffset](/zh/docs/api/basic/line#markerstartoffset) 属性。
 
-沿折线的第一个线段方向移动标记图形。
+沿折线的第一个线段方向移动标记图形。需要注意的是，如果偏移距离超过了原始线段的长度，会向反方向延伸：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*M8ibT6pBNjYAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 ## markerEndOffset
 
 可以参考 [Line](/zh/docs/api/basic/line) 的 [markerEndOffset](/zh/docs/api/basic/line#markerendoffset) 属性。
 
-沿折线的最后一个线段方向移动标记图形。在该[示例](/zh/examples/shape#polyline)中，我们使用该属性移动标记图形：
+沿折线的最后一个线段方向移动标记图形。需要注意的是，如果偏移距离超过了原始线段的长度，会向反方向延伸。在该[示例](/zh/examples/shape#polyline)中，我们使用该属性移动标记图形：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*lUB7SYL6zK0AAAAAAAAAAAAAARQnAQ" alt="use offset on marker">
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
 # 方法
 
