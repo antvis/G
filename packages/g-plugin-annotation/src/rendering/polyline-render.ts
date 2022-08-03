@@ -1,10 +1,10 @@
 import { Polyline } from '@antv/g';
 import { DASH_LINE_STYLE, DEFAULT_LINE_HOVER_STYLE, DEFAULT_LINE_STYLE } from '../constants/style';
-import type { Annotation } from '../interface/annotation';
+import type { DrawerState } from '../interface/drawer';
 import { renderDrawLine } from './drawline-render';
 import { renderDrawPoints } from './drawPoint-render';
 
-const renderDrawingLine = (context, anno: Annotation) => {
+const renderDrawingLine = (context, anno: DrawerState) => {
   const total = anno.path.length;
   const drawingPoints = [anno.path[total - 2], anno.path[total - 1]];
   const polyline = new Polyline({
@@ -17,7 +17,7 @@ const renderDrawingLine = (context, anno: Annotation) => {
   });
   context.canvas?.appendChild(polyline);
 };
-export const renderPolyline = (context, anno: Annotation) => {
+export const renderPolyline = (context, anno: DrawerState) => {
   if (anno.isDrawing) {
     renderDrawPoints(context, anno);
     renderDrawLine(context, anno);

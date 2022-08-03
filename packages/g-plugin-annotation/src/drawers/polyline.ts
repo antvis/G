@@ -12,7 +12,6 @@ export class PolylineDrawer extends BaseDrawer {
       path: this.path,
       isDrawing: this.isDrawing,
       id: this.id,
-      tag: this.tag,
     };
   }
 
