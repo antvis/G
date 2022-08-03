@@ -49,14 +49,13 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
  * Polyline inherits the marker-related capabilities of Polygon.
  */
 export class Polyline extends Polygon {
-  protected isClosed = false;
-
   constructor({ style, ...rest }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
       type: Shape.POLYLINE,
       style: {
         points: '',
         miterLimit: '',
+        isClosed: false,
         ...style,
       },
       ...rest,

@@ -244,8 +244,11 @@ export class DisplayObject<
 
     if (deep) {
       this.children.forEach((child) => {
-        const clonedChild = child.cloneNode(deep);
-        cloned.appendChild(clonedChild);
+        // skip marker
+        if (!child.style.isMarker) {
+          const clonedChild = child.cloneNode(deep);
+          cloned.appendChild(clonedChild);
+        }
       });
     }
 

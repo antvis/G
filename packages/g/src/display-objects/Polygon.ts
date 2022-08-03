@@ -28,6 +28,7 @@ export interface PolygonStyleProps extends BaseStyleProps {
    * offset relative to original position
    */
   markerEndOffset?: number;
+  isClosed?: boolean;
 }
 export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   points: {
@@ -40,11 +41,10 @@ export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   markerEnd?: DisplayObject;
   markerStartOffset?: CSSUnitValue;
   markerEndOffset?: CSSUnitValue;
+  isClosed?: boolean;
 }
 
 export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyleProps> {
-  protected isClosed = true;
-
   private markerStartAngle = 0;
   private markerEndAngle = 0;
 
@@ -59,6 +59,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
       style: {
         points: '',
         miterLimit: '',
+        isClosed: true,
         ...style,
       },
       ...rest,
@@ -157,7 +158,8 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
       originalAngle = this.markerStartAngle;
     } else {
       const { length } = points;
-      if (!this.isClosed) {
+
+      if (!this.style.isClosed) {
         ox = points[length - 1][0] - defX;
         oy = points[length - 1][1] - defY;
         x = points[length - 2][0] - points[length - 1][0];
@@ -189,7 +191,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     });
 
     if (marker && marker instanceof DisplayObject) {
-      for (let i = 1; i < (this.isClosed ? points.length : points.length - 1); i++) {
+      for (let i = 1; i < (this.style.isClosed ? points.length : points.length - 1); i++) {
         const ox = points[i][0] - defX;
         const oy = points[i][1] - defY;
 
