@@ -227,8 +227,6 @@ function createOrUpdateGradient(
     const { cx, cy } = parsedColor.value as RadialGradient;
     const { x, y, r } = computeRadialGradient(width, height, cx, cy);
 
-    console.log(cx, cy, x, y, r);
-
     $existed.setAttribute('cx', `${x}`);
     $existed.setAttribute('cy', `${y}`);
     $existed.setAttribute('r', `${r}`);
