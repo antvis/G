@@ -1,8 +1,7 @@
 import { Line as LineUtil } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
-import type { DisplayObjectConfig, MutationEvent } from '../dom';
-import { ElementEvent } from '../dom';
+import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -92,45 +91,49 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
     this.transformMarker(true);
     this.transformMarker(false);
+  }
 
-    this.addEventListener(ElementEvent.ATTR_MODIFIED, (e: MutationEvent) => {
-      const { attrName, prevParsedValue, newParsedValue } = e;
-
-      if (
-        attrName === 'x1' ||
-        attrName === 'y1' ||
-        attrName === 'x2' ||
-        attrName === 'y2' ||
-        attrName === 'markerStartOffset' ||
-        attrName === 'markerEndOffset'
-      ) {
-        this.transformMarker(true);
-        this.transformMarker(false);
-      } else if (attrName === 'markerStart') {
-        if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
-          this.markerStartAngle = 0;
-          (prevParsedValue as DisplayObject).remove();
-        }
-
-        // CSSKeyword 'unset'
-        if (newParsedValue && newParsedValue instanceof DisplayObject) {
-          this.markerStartAngle = newParsedValue.getLocalEulerAngles();
-          this.appendChild(newParsedValue);
-          this.transformMarker(true);
-        }
-      } else if (attrName === 'markerEnd') {
-        if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
-          this.markerEndAngle = 0;
-          (prevParsedValue as DisplayObject).remove();
-        }
-
-        if (newParsedValue && newParsedValue instanceof DisplayObject) {
-          this.markerEndAngle = newParsedValue.getLocalEulerAngles();
-          this.appendChild(newParsedValue);
-          this.transformMarker(false);
-        }
+  attributeChangedCallback<Key extends keyof LineStyleProps>(
+    attrName: Key,
+    oldValue: LineStyleProps[Key],
+    newValue: LineStyleProps[Key],
+    prevParsedValue: ParsedLineStyleProps[Key],
+    newParsedValue: ParsedLineStyleProps[Key],
+  ) {
+    if (
+      attrName === 'x1' ||
+      attrName === 'y1' ||
+      attrName === 'x2' ||
+      attrName === 'y2' ||
+      attrName === 'markerStartOffset' ||
+      attrName === 'markerEndOffset'
+    ) {
+      this.transformMarker(true);
+      this.transformMarker(false);
+    } else if (attrName === 'markerStart') {
+      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+        this.markerStartAngle = 0;
+        (prevParsedValue as DisplayObject).remove();
       }
-    });
+
+      // CSSKeyword 'unset'
+      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+        this.markerStartAngle = newParsedValue.getLocalEulerAngles();
+        this.appendChild(newParsedValue);
+        this.transformMarker(true);
+      }
+    } else if (attrName === 'markerEnd') {
+      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+        this.markerEndAngle = 0;
+        (prevParsedValue as DisplayObject).remove();
+      }
+
+      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+        this.markerEndAngle = newParsedValue.getLocalEulerAngles();
+        this.appendChild(newParsedValue);
+        this.transformMarker(false);
+      }
+    }
   }
 
   private transformMarker(isStart: boolean) {

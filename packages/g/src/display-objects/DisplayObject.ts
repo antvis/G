@@ -333,21 +333,24 @@ export class DisplayObject<
     // trigger later
     // this.sceneGraphService.pendingEvents.push([ElementEvent.ATTR_MODIFIED, { affectChildren }]);
 
-    this.mutationEvent.prevValue = oldValue;
-    this.mutationEvent.newValue = value;
-    this.mutationEvent.attrName = name as string;
-    this.mutationEvent.prevParsedValue = oldParsedValue;
-    this.mutationEvent.newParsedValue = this.parsedStyle[name as string];
-    this.dispatchEvent(this.mutationEvent);
+    const newParsedValue = this.parsedStyle[name as string];
+    if (this.isConnected) {
+      this.mutationEvent.prevValue = oldValue;
+      this.mutationEvent.newValue = value;
+      this.mutationEvent.attrName = name as string;
+      this.mutationEvent.prevParsedValue = oldParsedValue;
+      this.mutationEvent.newParsedValue = newParsedValue;
+      this.dispatchEvent(this.mutationEvent);
+    }
 
-    if (this.isCustomElement && this.isConnected) {
-      if ((this as unknown as CustomElement<any>).attributeChangedCallback) {
-        (this as unknown as CustomElement<any>).attributeChangedCallback(
-          name as Key,
-          oldValue,
-          value,
-        );
-      }
+    if ((this as unknown as CustomElement<any>).attributeChangedCallback) {
+      (this as unknown as CustomElement<any>).attributeChangedCallback(
+        name as Key,
+        oldValue,
+        value,
+        oldParsedValue,
+        newParsedValue,
+      );
     }
   }
 

@@ -2,8 +2,7 @@ import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
 import { getPointAtLength } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
-import type { DisplayObjectConfig, MutationEvent } from '../dom';
-import { ElementEvent } from '../dom';
+import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -46,6 +45,17 @@ export interface PathSegment {
 }
 export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   path: {
+    absolutePath: AbsoluteArray;
+    hasArc: boolean;
+    segments: PathSegment[];
+    polygons: [number, number][][];
+    polylines: [number, number][][];
+    curve: CurveArray;
+    totalLength: number;
+    zCommandIndexes: number[];
+    rect: Rectangle;
+  };
+  d?: {
     absolutePath: AbsoluteArray;
     hasArc: boolean;
     segments: PathSegment[];
@@ -100,45 +110,49 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
 
     this.transformMarker(true);
     this.transformMarker(false);
+  }
 
-    this.addEventListener(ElementEvent.ATTR_MODIFIED, (e: MutationEvent) => {
-      const { attrName, prevParsedValue, newParsedValue } = e;
-
-      if (attrName === 'path') {
-        // recalc markers
-        this.transformMarker(true);
-        this.transformMarker(false);
-        this.placeMarkerMid(this.parsedStyle.markerMid);
-      } else if (attrName === 'markerStartOffset' || attrName === 'markerEndOffset') {
-        this.transformMarker(true);
-        this.transformMarker(false);
-      } else if (attrName === 'markerStart') {
-        if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
-          this.markerStartAngle = 0;
-          (prevParsedValue as DisplayObject).remove();
-        }
-
-        // CSSKeyword 'unset'
-        if (newParsedValue && newParsedValue instanceof DisplayObject) {
-          this.markerStartAngle = newParsedValue.getLocalEulerAngles();
-          this.appendChild(newParsedValue);
-          this.transformMarker(true);
-        }
-      } else if (attrName === 'markerEnd') {
-        if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
-          this.markerEndAngle = 0;
-          (prevParsedValue as DisplayObject).remove();
-        }
-
-        if (newParsedValue && newParsedValue instanceof DisplayObject) {
-          this.markerEndAngle = newParsedValue.getLocalEulerAngles();
-          this.appendChild(newParsedValue);
-          this.transformMarker(false);
-        }
-      } else if (attrName === 'markerMid') {
-        this.placeMarkerMid(newParsedValue);
+  attributeChangedCallback<Key extends keyof PathStyleProps>(
+    attrName: Key,
+    oldValue: PathStyleProps[Key],
+    newValue: PathStyleProps[Key],
+    prevParsedValue: ParsedPathStyleProps[Key],
+    newParsedValue: ParsedPathStyleProps[Key],
+  ) {
+    if (attrName === 'path') {
+      // recalc markers
+      this.transformMarker(true);
+      this.transformMarker(false);
+      this.placeMarkerMid(this.parsedStyle.markerMid);
+    } else if (attrName === 'markerStartOffset' || attrName === 'markerEndOffset') {
+      this.transformMarker(true);
+      this.transformMarker(false);
+    } else if (attrName === 'markerStart') {
+      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+        this.markerStartAngle = 0;
+        (prevParsedValue as DisplayObject).remove();
       }
-    });
+
+      // CSSKeyword 'unset'
+      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+        this.markerStartAngle = newParsedValue.getLocalEulerAngles();
+        this.appendChild(newParsedValue);
+        this.transformMarker(true);
+      }
+    } else if (attrName === 'markerEnd') {
+      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+        this.markerEndAngle = 0;
+        (prevParsedValue as DisplayObject).remove();
+      }
+
+      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+        this.markerEndAngle = newParsedValue.getLocalEulerAngles();
+        this.appendChild(newParsedValue);
+        this.transformMarker(false);
+      }
+    } else if (attrName === 'markerMid') {
+      this.placeMarkerMid(newParsedValue as DisplayObject);
+    }
   }
 
   private transformMarker(isStart: boolean) {

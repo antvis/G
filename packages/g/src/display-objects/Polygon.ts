@@ -1,6 +1,5 @@
 import type { CSSUnitValue } from '../css';
-import type { DisplayObjectConfig, MutationEvent } from '../dom';
-import { ElementEvent } from '../dom';
+import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -83,45 +82,49 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
 
     this.transformMarker(true);
     this.transformMarker(false);
+  }
 
-    this.addEventListener(ElementEvent.ATTR_MODIFIED, (e: MutationEvent) => {
-      const { attrName, prevParsedValue, newParsedValue } = e;
-
-      if (attrName === 'points') {
-        // recalc markers
-        this.transformMarker(true);
-        this.transformMarker(false);
-        this.placeMarkerMid(this.parsedStyle.markerMid);
-      } else if (attrName === 'markerStartOffset' || attrName === 'markerEndOffset') {
-        this.transformMarker(true);
-        this.transformMarker(false);
-      } else if (attrName === 'markerStart') {
-        if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
-          this.markerStartAngle = 0;
-          (prevParsedValue as DisplayObject).remove();
-        }
-
-        // CSSKeyword 'unset'
-        if (newParsedValue && newParsedValue instanceof DisplayObject) {
-          this.markerStartAngle = newParsedValue.getLocalEulerAngles();
-          this.appendChild(newParsedValue);
-          this.transformMarker(true);
-        }
-      } else if (attrName === 'markerEnd') {
-        if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
-          this.markerEndAngle = 0;
-          (prevParsedValue as DisplayObject).remove();
-        }
-
-        if (newParsedValue && newParsedValue instanceof DisplayObject) {
-          this.markerEndAngle = newParsedValue.getLocalEulerAngles();
-          this.appendChild(newParsedValue);
-          this.transformMarker(false);
-        }
-      } else if (attrName === 'markerMid') {
-        this.placeMarkerMid(newParsedValue);
+  attributeChangedCallback<Key extends keyof PolygonStyleProps>(
+    attrName: Key,
+    oldValue: PolygonStyleProps[Key],
+    newValue: PolygonStyleProps[Key],
+    prevParsedValue: ParsedPolygonStyleProps[Key],
+    newParsedValue: ParsedPolygonStyleProps[Key],
+  ) {
+    if (attrName === 'points') {
+      // recalc markers
+      this.transformMarker(true);
+      this.transformMarker(false);
+      this.placeMarkerMid(this.parsedStyle.markerMid);
+    } else if (attrName === 'markerStartOffset' || attrName === 'markerEndOffset') {
+      this.transformMarker(true);
+      this.transformMarker(false);
+    } else if (attrName === 'markerStart') {
+      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+        this.markerStartAngle = 0;
+        (prevParsedValue as DisplayObject).remove();
       }
-    });
+
+      // CSSKeyword 'unset'
+      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+        this.markerStartAngle = newParsedValue.getLocalEulerAngles();
+        this.appendChild(newParsedValue);
+        this.transformMarker(true);
+      }
+    } else if (attrName === 'markerEnd') {
+      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+        this.markerEndAngle = 0;
+        (prevParsedValue as DisplayObject).remove();
+      }
+
+      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+        this.markerEndAngle = newParsedValue.getLocalEulerAngles();
+        this.appendChild(newParsedValue);
+        this.transformMarker(false);
+      }
+    } else if (attrName === 'markerMid') {
+      this.placeMarkerMid(newParsedValue as DisplayObject);
+    }
   }
 
   private transformMarker(isStart: boolean) {

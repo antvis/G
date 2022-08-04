@@ -1,32 +1,49 @@
-const { createCanvas, loadImage } = require('canvas');
-const fs = require('fs');
-const { Circle, Canvas, Line, Polyline, Polygon, Path } = require('@antv/g');
-const { Renderer } = require('@antv/g-canvas');
-const { sleep, diff } = require('../../util');
+const util = require('util');
+// ref: https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
+// ref: https://github.com/jsdom/jsdom/issues/2524
+Object.defineProperty(window, 'TextEncoder', {
+  writable: true,
+  value: util.TextEncoder,
+});
+Object.defineProperty(window, 'TextDecoder', {
+  writable: true,
+  value: util.TextDecoder,
+});
 
-// create a node-canvas
-const nodeCanvas = createCanvas(200, 200);
+const fs = require('fs');
+const { JSDOM } = require('jsdom');
+const xmlserializer = require('xmlserializer');
+const { Circle, Canvas, Line, Polyline, Polygon, Path } = require('@antv/g');
+const { Renderer } = require('@antv/g-svg');
+const { sleep } = require('../../util');
 
 // create a renderer, unregister plugin relative to DOM
 const renderer = new Renderer();
 const domInteractionPlugin = renderer.getPlugin('dom-interaction');
 renderer.unregisterPlugin(domInteractionPlugin);
 
+const dom = new JSDOM(`
+<div id="container">
+</div>
+`);
+
 const SIZE = 200;
 const canvas = new Canvas({
+  container: 'container',
   width: SIZE,
   height: SIZE,
-  canvas: nodeCanvas, // use node-canvas
   renderer,
+  document: dom.window.document,
+  requestAnimationFrame: dom.window.requestAnimationFrame,
+  cancelAnimationFrame: dom.window.cancelAnimationFrame,
 });
 
-const RESULT_IMAGE = '/marker.png';
+const RESULT_IMAGE = '/marker.svg';
 const BASELINE_IMAGE_DIR = '/snapshots';
 
-describe('Render marker with g-canvas', () => {
+describe('Render marker with g-svg', () => {
   afterEach(() => {
     canvas.removeChildren();
-    fs.rmSync(__dirname + RESULT_IMAGE);
   });
 
   afterAll(() => {
@@ -133,15 +150,18 @@ describe('Render marker with g-canvas', () => {
 
     await sleep(200);
 
-    await new Promise((resolve) => {
-      const out = fs.createWriteStream(__dirname + RESULT_IMAGE);
-      const stream = nodeCanvas.createPNGStream();
-      stream.pipe(out);
-      out.on('finish', () => {
-        resolve(undefined);
-      });
+    // fs.writeFileSync(
+    //   __dirname + RESULT_IMAGE,
+    //   xmlserializer.serializeToString(dom.window.document.getElementById('container').children[0]),
+    // );
+
+    const snapshot = fs.readFileSync(__dirname + BASELINE_IMAGE_DIR + RESULT_IMAGE, {
+      encoding: 'utf8',
+      flag: 'r',
     });
 
-    expect(diff(__dirname + RESULT_IMAGE, __dirname + BASELINE_IMAGE_DIR + RESULT_IMAGE)).toBe(0);
+    expect(
+      xmlserializer.serializeToString(dom.window.document.getElementById('container').children[0]),
+    ).toBe(snapshot);
   });
 });
