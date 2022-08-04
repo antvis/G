@@ -1,4 +1,5 @@
-import { Circle, FederatedEvent } from '@antv/g';
+import type { FederatedEvent } from '@antv/g';
+import { Circle } from '@antv/g';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { EDIT_POINT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';

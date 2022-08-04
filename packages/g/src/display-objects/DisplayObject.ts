@@ -343,7 +343,10 @@ export class DisplayObject<
       this.dispatchEvent(this.mutationEvent);
     }
 
-    if ((this as unknown as CustomElement<any>).attributeChangedCallback) {
+    if (
+      ((this.isCustomElement && this.isConnected) || !this.isCustomElement) &&
+      (this as unknown as CustomElement<any>).attributeChangedCallback
+    ) {
       (this as unknown as CustomElement<any>).attributeChangedCallback(
         name as Key,
         oldValue,

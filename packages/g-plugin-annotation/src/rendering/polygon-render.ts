@@ -1,9 +1,8 @@
-import { Polygon, Polyline } from '@antv/g';
-import { DEFAULT_STYLE } from '../constants/style';
-import type { DrawerState } from '../interface/drawer';
+import { Polyline } from '@antv/g';
 import { DASH_LINE_STYLE } from '../constants/style';
-import { renderDrawPoints } from './drawPoint-render';
+import type { DrawerState } from '../interface/drawer';
 import { renderDrawLine } from './drawline-render';
+import { renderDrawPoints } from './drawPoint-render';
 
 const renderDrawingLine = (context, anno: DrawerState) => {
   const total = anno.path.length;
