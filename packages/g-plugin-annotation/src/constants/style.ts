@@ -114,7 +114,7 @@ export const EDIT_POINT_STYLE: CircleStyleProps = {
 };
 
 export const getDrawPointStyle = (type: 'normal' | 'hover' | 'active') => {
-  let style;
+  let style: BaseStyleProps;
   switch (type) {
     case 'normal':
       style = NORMAL_DRAWPOINT_STYLE;

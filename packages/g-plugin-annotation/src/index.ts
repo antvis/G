@@ -2,11 +2,13 @@ import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
 import type { DrawerOption } from './interface/drawer';
+import { SelectablePlugin } from './SelectablePlugin';
 import type { SelectableStyle } from './tokens';
 import { AnnotationPluginOptions } from './tokens';
 
 const containerModule = Module((register) => {
   register(AnnotationPlugin);
+  register(SelectablePlugin);
 });
 
 export class Plugin extends AbstractRendererPlugin {
@@ -103,7 +105,7 @@ export class Plugin extends AbstractRendererPlugin {
       this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
     Object.assign(selectableStyle, style);
 
-    this.container.get(AnnotationPlugin).updateSelectableStyle();
+    this.container.get(SelectablePlugin).updateSelectableStyle();
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {

@@ -4,7 +4,7 @@ export const AnnotationPluginOptions = Syringe.defineToken('AnnotationPluginOpti
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface AnnotationPluginOptions {
   selectableStyle?: Partial<SelectableStyle>;
-  destroyAfterComplete: boolean;
+  destroyAfterComplete?: boolean;
 }
 
 // @see http://fabricjs.com/fabric-intro-part-4#customization

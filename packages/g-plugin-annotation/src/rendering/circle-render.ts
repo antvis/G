@@ -1,7 +1,7 @@
-import { Circle } from '@antv/g';
-import type { DrawerState } from '../interface/drawer';
-import { EDIT_POINT_STYLE } from '../constants/style';
+import { Circle, FederatedEvent } from '@antv/g';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
+import { EDIT_POINT_STYLE } from '../constants/style';
+import type { DrawerState } from '../interface/drawer';
 
 export const renderCircle = (context: AnnotationPlugin, anno: DrawerState) => {
   const circle = new Circle({
@@ -16,13 +16,13 @@ export const renderCircle = (context: AnnotationPlugin, anno: DrawerState) => {
 
   context.canvas.appendChild(circle);
 
-  circle.addEventListener('mousedown', (e) => {
+  circle.addEventListener('mousedown', (e: FederatedEvent) => {
     context.freezeDrawer();
     context.setActiveAnnotation(anno.id);
     e.stopPropagation();
   });
 
-  circle.addEventListener('mouseup', (e) => {
+  circle.addEventListener('mouseup', (e: FederatedEvent) => {
     context.unfreezeDrawer();
     e.stopPropagation();
   });

@@ -1,3 +1,4 @@
+import { FederatedEvent } from '@antv/g';
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
 import uuidv4 from '../utils/uuidv4';
@@ -10,10 +11,9 @@ export class CircleDrawer extends BaseDrawer {
       type: this.type,
       path: this.path,
       id: this.id,
-      tag: this.tag,
     };
   }
-  onMouseDown(e) {
+  onMouseDown(e: FederatedEvent) {
     this.path = [{ x: e.canvas.x, y: e.canvas.y }];
     this.id = uuidv4();
   }

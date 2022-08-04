@@ -1,19 +1,5 @@
-import type {
-  Canvas,
-  DisplayObject,
-  FederatedEvent,
-  RenderingPlugin,
-  RenderingService,
-} from '@antv/g';
-import {
-  ElementEvent,
-  Group,
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  singleton,
-} from '@antv/g';
+import type { Canvas, FederatedEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';
@@ -25,14 +11,11 @@ import { renderCircle } from './rendering/circle-render';
 import { renderPolygon } from './rendering/polygon-render';
 import { renderPolyline } from './rendering/polyline-render';
 import { renderRect } from './rendering/rect-render';
-import { SelectablePolyline } from './selectable/SelectablePolyline';
-import { SelectableRect } from './selectable/SelectableRect';
 import { AnnotationPluginOptions } from './tokens';
 
 /**
- * make shape selectable:
- * @example
- * circle.style.selectable = true;
+ * Provides drawing capability like free drawing mode in fabric.js.
+ * @see http://fabricjs.com/freedrawing
  */
 @singleton({ contrib: RenderingPluginContribution })
 export class AnnotationPlugin implements RenderingPlugin {
@@ -44,84 +27,10 @@ export class AnnotationPlugin implements RenderingPlugin {
   @inject(AnnotationPluginOptions)
   private annotationPluginOptions: AnnotationPluginOptions;
 
-  /**
-   * the topmost operation layer
-   */
-  private activeSelectableLayer = new Group({
-    className: 'g-annotation-active-layer',
-    style: {
-      zIndex: 999,
-    },
-  });
-
-  /**
-   * selected objects on current canvas
-   */
-  private selected: DisplayObject[] = [];
-
-  /**
-   * each selectable has an operation UI
-   */
-  private selectableMap: Record<number, DisplayObject> = {};
-
   private hotkeyActive: boolean = false;
   public drawer: BaseDrawer;
   public emmiter = new EventEmitter();
   public canvas: Canvas;
-
-  private getOrCreateSelectableUI(object: DisplayObject): DisplayObject {
-    if (!this.selectableMap[object.entity]) {
-      let created: DisplayObject;
-      if (
-        object.nodeName === Shape.IMAGE ||
-        object.nodeName === Shape.RECT ||
-        object.nodeName === Shape.CIRCLE ||
-        object.nodeName === Shape.ELLIPSE
-      ) {
-        created = new SelectableRect({
-          style: {
-            target: object,
-            ...this.annotationPluginOptions.selectableStyle,
-            // TODO: use object's selectable style to override
-          },
-        });
-      } else if (object.nodeName === Shape.LINE || object.nodeName === Shape.POLYLINE) {
-        created = new SelectablePolyline({
-          style: {
-            target: object,
-            ...this.annotationPluginOptions.selectableStyle,
-          },
-        });
-      }
-
-      if (created) {
-        this.selectableMap[object.entity] = created;
-        this.activeSelectableLayer.appendChild(created);
-
-        object.addEventListener(ElementEvent.UNMOUNTED, () => {
-          this.activeSelectableLayer.removeChild(created);
-        });
-      }
-    }
-
-    return this.selectableMap[object.entity];
-  }
-
-  /**
-   * Update all existed selectable UIs.
-   * @example
-   *
-   * plugin.updateSelectableStyle({
-   *   selectionStroke: 'red',
-   * });
-   */
-  updateSelectableStyle() {
-    const { selectableStyle } = this.annotationPluginOptions;
-
-    for (const entity in this.selectableMap) {
-      this.selectableMap[entity].attr(selectableStyle);
-    }
-  }
 
   /**
    *
@@ -275,29 +184,6 @@ export class AnnotationPlugin implements RenderingPlugin {
 
     const handleClick = (e: FederatedEvent) => {
       if (e.detail === 2) handleMouseDbClick(e);
-      const object = e.target as DisplayObject;
-
-      // @ts-ignore
-      if (object === document) {
-        this.activeSelectableLayer.children.forEach((selectable) => {
-          selectable.style.visibility = 'hidden';
-        });
-
-        this.selected = [];
-      } else if (object.style?.selectable) {
-        // Whether to cancel the selected object?
-        // TODO: multi-select
-        this.selected.forEach((o) => {
-          const selectable = this.getOrCreateSelectableUI(o);
-          selectable.style.visibility = 'hidden';
-        });
-
-        const selectable = this.getOrCreateSelectableUI(object);
-        if (selectable) {
-          selectable.style.visibility = 'visible';
-          this.selected.push(object);
-        }
-      }
     };
 
     const handleDrawerKeyDown = (e) => {
@@ -343,13 +229,17 @@ export class AnnotationPlugin implements RenderingPlugin {
       canvas.document.addEventListener('pointerenter', handleCanvasEnter);
       canvas.document.addEventListener('pointerleave', handleCanvasLeave);
       window.addEventListener('keydown', handleKeyDown);
-      canvas.appendChild(this.activeSelectableLayer);
     });
 
     renderingService.hooks.destroy.tap(AnnotationPlugin.tag, () => {
       canvas.removeEventListener('click', handleClick);
-      canvas.removeChild(this.activeSelectableLayer);
+      canvas.removeEventListener('pointerdown', handleMouseDown);
+      canvas.removeEventListener('pointermove', handleMouseMove);
+      canvas.removeEventListener('pointerup', handleMouseUp);
+
+      canvas.document.removeEventListener('pointerenter', handleCanvasEnter);
+      canvas.document.removeEventListener('pointerleave', handleCanvasLeave);
+      window.removeEventListener('keydown', handleKeyDown);
     });
-    return this;
   }
 }
