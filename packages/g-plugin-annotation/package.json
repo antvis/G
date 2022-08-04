@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-annotation",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A G plugin for annotation",
   "keywords": [
     "antv",
