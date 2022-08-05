@@ -85,6 +85,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private renderQueue: DisplayObject[] = [];
 
+  /**
+   * This stack is only used by clipPath for now.
+   */
   private restoreStack: DisplayObject[] = [];
 
   private clearFullScreen = false;
@@ -306,15 +309,21 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
     const context = this.contextService.getContext();
 
-    // restore to its parent
+    const nodeName = object.nodeName;
+
+    // restore to its ancestor
+
     let parent = this.restoreStack[this.restoreStack.length - 1];
-    while (parent && object.parentNode !== parent) {
+    if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
       context.restore();
       this.restoreStack.pop();
-      parent = this.restoreStack[this.restoreStack.length - 1];
     }
 
-    const nodeName = object.nodeName;
+    // while (parent && object.parentNode !== parent) {
+    //   context.restore();
+    //   this.restoreStack.pop();
+    //   parent = this.restoreStack[this.restoreStack.length - 1];
+    // }
 
     if (this.styleRendererFactoryCache[nodeName] === undefined) {
       this.styleRendererFactoryCache[nodeName] = this.styleRendererFactory(nodeName);
