@@ -109,17 +109,11 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
-    console.log('on', eventName);
-    this.container.get(AnnotationPlugin).emmiter.on(eventName, (e) => {
-      fn(e);
-    });
+    this.container.get(AnnotationPlugin).emmiter.on(eventName, fn);
   }
 
   removeEventListener(eventName: string, fn: (...args: any[]) => void) {
-    this.container.get(AnnotationPlugin).emmiter.off(eventName, (e) => {
-      fn(e);
-      console.log('on', eventName, e);
-    });
+    this.container.get(AnnotationPlugin).emmiter.off(eventName, fn);
   }
 
   setDrawer(tool: DrawerTool, options?: DrawerOption) {
