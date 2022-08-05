@@ -111,11 +111,13 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           let worldTransform = displayObject.getWorldTransform();
           const isHitOriginShape = this.isHit(displayObject, position, worldTransform);
           if (isHitOriginShape) {
-            const clipPath = displayObject.parsedStyle.clipPath;
-            if (clipPath) {
+            // should look up in the ancestor node
+            const clipped = this.findClosestClipPath(displayObject);
+            if (clipped) {
+              const clipPath = clipped.style.clipPath;
               worldTransform = mat4.multiply(
                 mat4.create(),
-                worldTransform,
+                clipped === displayObject ? worldTransform : clipped.getWorldTransform(),
                 clipPath.getLocalTransform(),
               );
 
@@ -143,6 +145,16 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         return result;
       },
     );
+  }
+
+  private findClosestClipPath(object: DisplayObject): DisplayObject {
+    let el = object;
+    do {
+      const clipPath = el.style?.clipPath;
+      if (clipPath) return el;
+      el = el.parentElement as DisplayObject;
+    } while (el !== null);
+    return null;
   }
 
   private isHit = (displayObject: DisplayObject, position: vec3, worldTransform: mat4) => {

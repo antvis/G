@@ -313,7 +313,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // restore to its ancestor
 
-    let parent = this.restoreStack[this.restoreStack.length - 1];
+    const parent = this.restoreStack[this.restoreStack.length - 1];
     if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
       context.restore();
       this.restoreStack.pop();
