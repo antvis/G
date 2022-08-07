@@ -59,6 +59,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "d3-geo.js",
+      "title": {
+        "zh": "D3 Geo",
+        "en": "D3 Geo"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cG62RqGKMXsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "d3-annotation.js",
       "title": {
         "zh": "D3 标注",

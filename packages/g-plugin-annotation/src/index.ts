@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
+import { AbstractRendererPlugin, CSS, DisplayObject, Module, PropertySyntax } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
 import type { DrawerOption } from './interface/drawer';
@@ -106,6 +106,17 @@ export class Plugin extends AbstractRendererPlugin {
     Object.assign(selectableStyle, style);
 
     this.container.get(SelectablePlugin).updateSelectableStyle();
+  }
+
+  /**
+   * @see http://fabricjs.com/docs/fabric.Canvas.html#setActiveObject
+   */
+  selectDisplayObject(displayObject: DisplayObject) {}
+
+  unselectDisplayObject(displayObject: DisplayObject) {}
+
+  getSelectedDisplayObjects() {
+    this.container.get(SelectablePlugin).getSelectedDisplayObjects();
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {

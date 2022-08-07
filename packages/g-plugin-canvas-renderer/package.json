@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-renderer",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "A G plugin of renderer implementation with Canvas2D API",
   "keywords": [
     "antv",
@@ -29,7 +29,7 @@
   "dependencies": {
     "@antv/g-math": "^1.7.0",
     "@antv/g-plugin-canvas-path-generator": "^1.1.0",
-    "@antv/g-plugin-image-loader": "^1.1.0",
+    "@antv/g-plugin-image-loader": "^1.1.1",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

@@ -32,6 +32,10 @@ export class ImagePool {
           callback();
         }
       });
+    } else {
+      if (callback) {
+        callback();
+      }
     }
 
     return this.imageCache[src];

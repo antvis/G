@@ -94,6 +94,13 @@ describe('Render <Text> with g-canvas', () => {
     text8.setPosition(10, 120);
     canvas.appendChild(text8);
 
+    // dx/dy use relative units
+    const text9 = text1.cloneNode();
+    text9.style.dx = '1rem';
+    text9.style.dy = '1em';
+    text9.setPosition(10, 140);
+    canvas.appendChild(text9);
+
     await sleep(300);
 
     await new Promise((resolve) => {
