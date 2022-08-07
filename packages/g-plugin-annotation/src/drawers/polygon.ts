@@ -35,7 +35,7 @@ export class PolygonDrawer extends BaseDrawer {
   onMouseMove(e) {
     if (!this.isDrawing) return;
     this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
-    this.emit('draw:modify', this.state);
+    this.emit('draw:move', this.state);
   }
 
   onMouseUp() {}
