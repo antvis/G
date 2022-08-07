@@ -58,8 +58,10 @@
     "react-split-pane": "^0.1.92",
     "simplex-noise": "^3.0.0",
     "stats.js": "^0.17.0",
+    "topojson": "^3.0.2",
     "typedoc": "^0.17.6",
     "typedoc-plugin-markdown": "^2.2.11",
+    "versor": "^0.2.0",
     "webfontloader": "1.6.28"
   }
 }

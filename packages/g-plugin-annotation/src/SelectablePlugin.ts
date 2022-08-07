@@ -55,6 +55,10 @@ export class SelectablePlugin implements RenderingPlugin {
   @inject(AnnotationPluginOptions)
   private annotationPluginOptions: AnnotationPluginOptions;
 
+  getSelectedDisplayObjects() {
+    return this.selected;
+  }
+
   private getOrCreateSelectableUI(object: DisplayObject): DisplayObject {
     if (!this.selectableMap[object.entity]) {
       let created: DisplayObject;
