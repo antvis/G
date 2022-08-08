@@ -1,4 +1,5 @@
-import { AbstractRendererPlugin, CSS, DisplayObject, Module, PropertySyntax } from '@antv/g';
+import type { DisplayObject } from '@antv/g';
+import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
 import type { DrawerOption } from './interface/drawer';

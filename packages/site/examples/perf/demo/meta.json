@@ -12,6 +12,13 @@
       }
     },
     {
+      "filename": "webgl-circle-path.js",
+      "title": {
+        "zh": "g-webgl 渲染 Circle 和 Path",
+        "en": "Render Circle & Path with g-webgl"
+      }
+    },
+    {
       "filename": "vs-g4.0.js",
       "title": {
         "zh": "与 G 4.0 对比",
