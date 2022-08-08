@@ -1,6 +1,6 @@
-import type { ParsedImageStyleProps } from '@antv/g';
-import { inject, isString, singleton } from '@antv/g';
+import { DisplayObject, inject, isNil, isString, ParsedImageStyleProps, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
+import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
 import { ImageRendererContribution } from './interfaces';
 
@@ -11,8 +11,12 @@ export class ImageRenderer implements StyleRenderer {
   @inject(ImagePool)
   private imagePool: ImagePool;
 
-  render(context: CanvasRenderingContext2D, parsedStyle: ParsedImageStyleProps) {
-    const { width, height, img } = parsedStyle;
+  render(
+    context: CanvasRenderingContext2D,
+    parsedStyle: ParsedImageStyleProps,
+    object: DisplayObject,
+  ) {
+    const { width, height, img, shadowColor, shadowBlur } = parsedStyle;
 
     let image: HTMLImageElement;
     let iw = width.value;
@@ -28,6 +32,9 @@ export class ImageRenderer implements StyleRenderer {
     }
 
     if (image) {
+      const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+      setShadowAndFilter(object, context, hasShadow);
+
       // node-canvas will throw the following err:
       // Error: Image given has not completed loading
       try {

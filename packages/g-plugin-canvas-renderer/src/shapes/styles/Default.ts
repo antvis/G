@@ -59,7 +59,7 @@ export class DefaultRenderer implements StyleRenderer {
       context.globalAlpha = opacity.value * fillOpacity.value;
 
       if (!shouldDrawShadowWithStroke) {
-        this.setShadowAndFilter(object, context, hasShadow);
+        setShadowAndFilter(object, context, hasShadow);
       }
 
       this.fill(context, object, fill, renderingService);
@@ -88,7 +88,7 @@ export class DefaultRenderer implements StyleRenderer {
         if (isInnerShadow) {
           context.globalCompositeOperation = 'source-atop';
         }
-        this.setShadowAndFilter(object, context, true);
+        setShadowAndFilter(object, context, true);
 
         if (isInnerShadow) {
           this.stroke(context, object, stroke, renderingService);
@@ -117,30 +117,6 @@ export class DefaultRenderer implements StyleRenderer {
       if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
         context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
       }
-    }
-  }
-
-  /**
-   * apply before fill and stroke but only once
-   */
-  private setShadowAndFilter(
-    object: DisplayObject,
-    context: CanvasRenderingContext2D,
-    hasShadow: boolean,
-  ) {
-    const { filter, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
-      object.parsedStyle as ParsedBaseStyleProps;
-
-    if (!isNil(filter)) {
-      // use raw filter string
-      context.filter = object.style.filter;
-    }
-
-    if (hasShadow) {
-      context.shadowColor = shadowColor.toString();
-      context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
-      context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
-      context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
     }
   }
 
@@ -223,5 +199,29 @@ export class DefaultRenderer implements StyleRenderer {
     }
 
     return color;
+  }
+}
+
+/**
+ * apply before fill and stroke but only once
+ */
+export function setShadowAndFilter(
+  object: DisplayObject,
+  context: CanvasRenderingContext2D,
+  hasShadow: boolean,
+) {
+  const { filter, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
+    object.parsedStyle as ParsedBaseStyleProps;
+
+  if (!isNil(filter)) {
+    // use raw filter string
+    context.filter = object.style.filter;
+  }
+
+  if (hasShadow) {
+    context.shadowColor = shadowColor.toString();
+    context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
+    context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
+    context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
   }
 }
