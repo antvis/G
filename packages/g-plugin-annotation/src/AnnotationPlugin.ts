@@ -1,4 +1,4 @@
-import type { Canvas, FederatedEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import type { Canvas, FederatedPointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
 import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerTool } from './constants/enum';
@@ -172,23 +172,31 @@ export class AnnotationPlugin implements RenderingPlugin {
     const canvas = document.defaultView as Canvas;
     this.canvas = canvas;
 
-    const handleMouseDown = (e: FederatedEvent) => {
-      this.drawer?.onMouseDown(e);
+    const handleMouseDown = (e: FederatedPointerEvent) => {
+      if (e.button === 0) {
+        this.drawer?.onMouseDown(e);
+      }
     };
 
-    const handleMouseMove = (e: FederatedEvent) => {
-      this.drawer?.onMouseMove(e);
+    const handleMouseMove = (e: FederatedPointerEvent) => {
+      if (e.button === 0) {
+        this.drawer?.onMouseMove(e);
+      }
     };
 
-    const handleMouseUp = (e: FederatedEvent) => {
-      this.drawer?.onMouseUp(e);
+    const handleMouseUp = (e: FederatedPointerEvent) => {
+      if (e.button === 0) {
+        this.drawer?.onMouseUp(e);
+      }
     };
 
-    const handleMouseDbClick = (e) => {
-      this.drawer?.onMouseDbClick(e);
+    const handleMouseDbClick = (e: FederatedPointerEvent) => {
+      if (e.button === 0) {
+        this.drawer?.onMouseDbClick(e);
+      }
     };
 
-    const handleClick = (e: FederatedEvent) => {
+    const handleClick = (e: FederatedPointerEvent) => {
       if (e.detail === 2) handleMouseDbClick(e);
     };
 

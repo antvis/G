@@ -1,6 +1,6 @@
 import type { FederatedEvent } from '@antv/g';
-import type { DrawerTool } from '../constants/enum';
 import EventEmitter from 'eventemitter3';
+import type { DrawerTool } from '../constants/enum';
 
 export type DrawerType = 'circle' | 'rect' | 'polyline' | 'polygon';
 export interface DrawerState {
