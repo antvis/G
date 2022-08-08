@@ -1,7 +1,7 @@
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
-import uuidv4 from '../utils/uuidv4';
 import { isNearPoint } from '../utils/drawer';
+import uuidv4 from '../utils/uuidv4';
 
 export class PolylineDrawer extends BaseDrawer {
   type = DrawerTool.Polyline;
@@ -67,7 +67,7 @@ export class PolylineDrawer extends BaseDrawer {
         this.reset();
       } else {
         this.path.pop();
-        this.emit('draw:modify', this.state);
+        this.emit('draw:move', this.state);
       }
       e.stopPropagation();
     }

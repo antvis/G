@@ -132,6 +132,10 @@ export class Plugin extends AbstractRendererPlugin {
     this.container.get(AnnotationPlugin).setDrawer(tool, options);
   }
 
+  clearDrawer() {
+    this.container.get(AnnotationPlugin).clearDrawer();
+  }
+
   destroy(): void {
     this.container.remove(AnnotationPluginOptions);
     this.container.unload(containerModule);

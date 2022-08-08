@@ -109,6 +109,11 @@ export class AnnotationPlugin implements RenderingPlugin {
       this.renderDrawer(toolstate);
     };
 
+    const onMove = (toolstate: any) => {
+      this.emmiter.emit('draw:move', toolstate);
+      this.renderDrawer(toolstate);
+    };
+
     const onModify = (toolstate: any) => {
       this.emmiter.emit('draw:modify', toolstate);
       this.renderDrawer(toolstate);
@@ -129,6 +134,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     /** 监听绘制事件 */
     activeDrawer.on('draw:start', onStart);
     activeDrawer.on('draw:modify', onModify);
+    activeDrawer.on('draw:move', onMove);
     activeDrawer.on('draw:complete', onComplete);
     activeDrawer.on('draw:cancel', onCancel);
 
