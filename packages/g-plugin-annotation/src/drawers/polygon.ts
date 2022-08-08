@@ -15,7 +15,7 @@ export class PolygonDrawer extends BaseDrawer {
   }
 
   onMouseDown(e) {
-    const point = { x: e.canvas.x, y: e.canvas.y };
+    const point = { x: e.x, y: e.y };
     if (!this.isDrawing) {
       this.isDrawing = true;
       this.id = uuidv4();
@@ -34,7 +34,7 @@ export class PolygonDrawer extends BaseDrawer {
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
+    this.path[this.path.length - 1] = { x: e.x, y: e.y };
     this.emit('draw:move', this.state);
   }
 

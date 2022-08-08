@@ -174,25 +174,23 @@ export class AnnotationPlugin implements RenderingPlugin {
 
     const handleMouseDown = (e: FederatedPointerEvent) => {
       if (e.button === 0) {
-        this.drawer?.onMouseDown(e);
+        this.drawer?.onMouseDown(this.canvas.viewport2Canvas(e.viewport));
       }
     };
 
     const handleMouseMove = (e: FederatedPointerEvent) => {
-      if (e.button === 0) {
-        this.drawer?.onMouseMove(e);
-      }
+      this.drawer?.onMouseMove(this.canvas.viewport2Canvas(e.viewport));
     };
 
     const handleMouseUp = (e: FederatedPointerEvent) => {
       if (e.button === 0) {
-        this.drawer?.onMouseUp(e);
+        this.drawer?.onMouseUp(this.canvas.viewport2Canvas(e.viewport));
       }
     };
 
     const handleMouseDbClick = (e: FederatedPointerEvent) => {
       if (e.button === 0) {
-        this.drawer?.onMouseDbClick(e);
+        this.drawer?.onMouseDbClick(this.canvas.viewport2Canvas(e.viewport));
       }
     };
 

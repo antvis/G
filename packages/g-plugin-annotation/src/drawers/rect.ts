@@ -1,8 +1,8 @@
-import uuidv4 from '../utils/uuidv4';
-import type { Point } from '../interface/drawer';
 import { DrawerTool } from '../constants/enum';
+import type { Point } from '../interface/drawer';
 import { BaseDrawer } from '../interface/drawer';
 import { isNearPoint } from '../utils/drawer';
+import uuidv4 from '../utils/uuidv4';
 
 export class RectDrawer extends BaseDrawer {
   private start: Point | undefined;
@@ -31,15 +31,15 @@ export class RectDrawer extends BaseDrawer {
       this.reset();
     }
     this.isDrawing = true;
-    this.start = { x: e.canvas.x, y: e.canvas.y };
-    this.end = { x: e.canvas.x, y: e.canvas.y };
+    this.start = { x: e.x, y: e.y };
+    this.end = { x: e.x, y: e.y };
     this.id = uuidv4();
     this.emit('draw:start', this.state);
   }
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.end = { x: e.canvas.x, y: e.y };
+    this.end = { x: e.x, y: e.y };
     this.emit('draw:modify', this.state);
   }
 
