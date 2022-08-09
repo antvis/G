@@ -97,14 +97,13 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
     const { dirtyRect } = e.detail;
     const { x, y, width, height } = dirtyRect;
 
-    // convert from canvas coords to viewport
-    const tl = canvas.canvas2Viewport({ x, y });
-    const br = canvas.canvas2Viewport({ x: x + width, y: y + height });
+    const dpr = window.devicePixelRatio;
 
-    $dirtyRectangle.style.left = `${tl.x}px`;
-    $dirtyRectangle.style.top = `${tl.y}px`;
-    $dirtyRectangle.style.width = `${br.x - tl.x}px`;
-    $dirtyRectangle.style.height = `${br.y - tl.y}px`;
+    // convert from canvas coords to viewport
+    $dirtyRectangle.style.left = `${x / dpr}px`;
+    $dirtyRectangle.style.top = `${y / dpr}px`;
+    $dirtyRectangle.style.width = `${width / dpr}px`;
+    $dirtyRectangle.style.height = `${height / dpr}px`;
 });
 ```
 
