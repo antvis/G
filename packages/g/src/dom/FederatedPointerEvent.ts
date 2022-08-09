@@ -91,4 +91,19 @@ export class FederatedPointerEvent extends FederatedMouseEvent implements Pointe
   getPredictedEvents(): PointerEvent[] {
     throw new Error('getPredictedEvents is not supported!');
   }
+
+  /**
+   * @see https://github.com/antvis/G/issues/1115
+   * We currently reuses event objects in the event system,
+   * avoiding the creation of a large number of event objects.
+   * Reused objects are only used to carry different data,
+   * such as coordinate information, native event objects,
+   * and therefore the lifecycle is limited to the event handler,
+   * which can lead to unintended consequences if an attempt is made to cache the entire event object.
+   *
+   * Therefore, while keeping the above performance considerations in mind, it is possible to provide a clone method that creates a new object when the user really wants to cache it, e.g.
+   */
+  clone() {
+    return this.manager.clonePointerEvent(this);
+  }
 }

@@ -725,7 +725,24 @@ export class EventService extends EventEmitter {
     return this.mappingState.trackingData[id];
   }
 
-  private clonePointerEvent(from: FederatedPointerEvent, type?: string): FederatedPointerEvent {
+  cloneWheelEvent(from: FederatedWheelEvent) {
+    const event = this.allocateEvent(FederatedWheelEvent);
+
+    event.nativeEvent = from.nativeEvent;
+    event.originalEvent = from.originalEvent;
+
+    this.copyWheelData(from, event);
+    this.copyMouseData(from, event);
+    this.copyData(from, event);
+
+    event.target = from.target;
+    event.path = from.composedPath().slice();
+    event.type = event.type;
+
+    return event;
+  }
+
+  clonePointerEvent(from: FederatedPointerEvent, type?: string): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     event.nativeEvent = from.nativeEvent;

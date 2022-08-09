@@ -672,6 +672,22 @@ ul.addEventListener(
 
 [示例](/zh/examples/event#delegate)
 
+### clone
+
+目前在事件系统中会重复使用事件对象，避免大量事件对象的创建。被重复使用的对象仅用于携带不同的数据，例如坐标信息、原生事件对象等，因此生命周期限定在事件处理器内，一旦试图缓存整个事件对象并在事件处理器之外使用，就会导致意料之外的结果。因此推荐缓存事件对象上携带的数据而非对象本身。
+
+在保留上述性能考虑的基础上，我们也提供了一个 clone 方法，当用户真的想缓存时会创建新的事件对象，例如：
+
+```js
+circle.addEventListener('click', (e) => {
+    const newEvent = e.clone();
+});
+```
+
+克隆后的事件对象将保留原事件对象上的一切属性。
+
+目前我们暂时只支持交互事件，即 [PointerEvent](/zh/docs/api/event#pointerevent-属性) 和 [WheelEvent](/zh/docs/api/event#wheelevent-属性)。其他事件例如 AnimationEvent 和 CustomEvent 暂不支持。
+
 # 手势和拖拽
 
 当我们想实现除基础事件之外的某些“高级事件”时，例如常见的手势和拖拽，可以通过组合这些基础事件实现。得益于场景图对于 DOM API 的兼容，我们也可以直接使用已有生态，让这些库以为仍然在操作 DOM。

@@ -8,6 +8,7 @@ import type {
   CSSKeywordValue,
   CSSRGB,
   CSSUnitValue,
+  ParsedFilterStyleProperty,
   ParsedTransform,
   Pattern,
 } from './css';
@@ -258,6 +259,7 @@ export interface ParsedBaseStyleProps
     | 'textTransform'
     | 'offsetDistance'
     | 'miterLimit'
+    | 'filter'
   > {
   zIndex?: CSSUnitValue;
   visibility?: CSSKeywordValue;
@@ -298,6 +300,7 @@ export interface ParsedBaseStyleProps
   shadowOffsetY?: CSSUnitValue;
   textTransform?: CSSKeywordValue;
   miterLimit?: CSSUnitValue;
+  filter?: ParsedFilterStyleProperty[];
 }
 
 // Cursor style
