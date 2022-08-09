@@ -24,4 +24,8 @@ export class FederatedWheelEvent extends FederatedMouseEvent implements WheelEve
 
   /** Units specified in pixels. */
   DOM_DELTA_PIXEL = 2;
+
+  clone() {
+    return this.manager.cloneWheelEvent(this);
+  }
 }

@@ -1,6 +1,6 @@
-import { FederatedEvent } from './FederatedEvent';
 import type { EventService } from '../services';
 import type { Animation } from './Animation';
+import { FederatedEvent } from './FederatedEvent';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AnimationPlaybackEvent

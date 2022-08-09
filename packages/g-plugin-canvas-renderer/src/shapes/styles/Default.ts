@@ -42,7 +42,7 @@ export class DefaultRenderer implements StyleRenderer {
     const hasStroke =
       !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth && lineWidth.value > 0;
     const isFillTransparent = (fill as CSSRGB).alpha === 0;
-    const hasFilter = !isNil(filter);
+    const hasFilter = !!(filter && filter.length);
     const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
     const nodeName = object.nodeName;
     const isInnerShadow = shadowType?.value === 'inner';
@@ -213,7 +213,7 @@ export function setShadowAndFilter(
   const { filter, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
     object.parsedStyle as ParsedBaseStyleProps;
 
-  if (!isNil(filter)) {
+  if (filter && filter.length) {
     // use raw filter string
     context.filter = object.style.filter;
   }

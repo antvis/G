@@ -1,4 +1,5 @@
-import { DisplayObject, inject, isNil, isString, ParsedImageStyleProps, singleton } from '@antv/g';
+import type { DisplayObject, ParsedImageStyleProps } from '@antv/g';
+import { inject, isNil, isString, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
