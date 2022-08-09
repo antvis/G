@@ -1,26 +1,35 @@
 import { DrawerTool } from '../constants/enum';
 import type { Point } from '../interface/drawer';
 import { BaseDrawer } from '../interface/drawer';
-import { isNearPoint } from '../utils/drawer';
+import { isInvalidRect } from '../utils/drawer';
 import uuidv4 from '../utils/uuidv4';
 
+const sortBboxPoint = (points: Point[]) => {
+  const [tl, tr, bl, br] = points.concat().sort((a, b) => b.y - a.y);
+  const t = [bl, br].sort((a, b) => a.x - b.x);
+  const b = [tl, tr].sort((a, b) => b.x - a.x);
+  return t.concat(b);
+};
 export class RectDrawer extends BaseDrawer {
-  private start: Point | undefined;
-  private end: Point | undefined;
+  private start: { canvas: Point; viewport: Point } | undefined;
+  private end: { canvas: Point; viewport: Point } | undefined;
   type = DrawerTool.Rect;
 
   get state() {
     if (!this.start || !this.end) return null;
+
+    const tr = {
+      canvas: this.canvas.viewport2Canvas({ x: this.end.viewport.x, y: this.start.viewport.y }),
+      viewport: { x: this.end.viewport.x, y: this.start.viewport.y },
+    };
+    const bl = {
+      canvas: this.canvas.viewport2Canvas({ x: this.start.viewport.x, y: this.end.viewport.y }),
+      viewport: { x: this.start.viewport.x, y: this.end.viewport.y },
+    };
+
     return {
       type: this.type,
-      path: [
-        this.start,
-        { x: this.end.x, y: this.start.y },
-        this.end,
-        { x: this.start.x, y: this.end.y },
-      ],
-      width: this.end.x - this.start.x,
-      height: this.end.y - this.start.y,
+      path: sortBboxPoint([this.start.canvas, tr.canvas, this.end.canvas, bl.canvas]),
       id: this.id,
       isDrawing: this.isDrawing,
     };
@@ -28,24 +37,25 @@ export class RectDrawer extends BaseDrawer {
 
   onMouseDown(e) {
     if (this.start) {
-      this.reset();
+      this.onMouseUp(e);
+      return;
     }
     this.isDrawing = true;
-    this.start = { x: e.x, y: e.y };
-    this.end = { x: e.x, y: e.y };
+    this.start = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
+    this.end = { canvas: e.canvas, viewport: e.viewport };
     this.id = uuidv4();
     this.emit('draw:start', this.state);
   }
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.end = { x: e.x, y: e.y };
+    this.end = { canvas: e.canvas, viewport: e.viewport };
     this.emit('draw:modify', this.state);
   }
 
   onMouseUp(e) {
     if (!this.isDrawing) return;
-    if (isNearPoint(this.start, this.end, 2)) {
+    if (isInvalidRect(this.start.viewport, this.end.viewport, 2)) {
       this.emit('draw:cancel', this.state);
       this.reset();
       return;

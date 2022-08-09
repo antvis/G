@@ -1,15 +1,37 @@
+import type { PointLike } from '@antv/g';
 import { Rect } from '@antv/g';
-import { DEFAULT_STYLE, DASH_LINE_STYLE } from '../constants/style';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
+import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
+
+function getWidthFromBbox(path: PointLike[]) {
+  const [tl, tr, br, bl] = path;
+  const dy = tr.y - tl.y;
+  const dx = tr.x - tl.x;
+  return Math.sqrt(dy * dy + dx * dx);
+}
+
+function getHeightFromBbox(path: PointLike[]) {
+  const [tl, tr, br, bl] = path;
+  const dy = br.y - tr.y;
+  const dx = br.x - tr.x;
+  return Math.sqrt(dy * dy + dx * dx);
+}
+function getRotationFromBbox(path: PointLike[]) {
+  const [tl, tr, br, bl] = path;
+  const dy = tr.y - tl.y;
+  const dx = tr.x - tl.x;
+  return (Math.atan(dy / dx) * 180) / Math.PI;
+}
 
 export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   const { path } = anno;
   const left = path[0].x;
   const top = path[0].y;
-  const height = path[2].y - path[0].y;
-  const width = path[2].x - path[0].x;
   const style = anno.isDrawing ? DASH_LINE_STYLE : DEFAULT_STYLE;
+  const width = getWidthFromBbox(path);
+  const height = getHeightFromBbox(path);
+
   const rect = new Rect({
     style: {
       x: left,
@@ -21,13 +43,15 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     className: anno.id,
     id: anno.id,
   });
+  const rotation = getRotationFromBbox(path);
+  rect.rotate(rotation);
 
-  rect.addEventListener('mousedown', (e) => {
+  rect.addEventListener('mousedown', () => {
     context.freezeDrawer();
     context.setActiveAnnotation(anno.id);
   });
 
-  rect.addEventListener('mouseup', (e) => {
+  rect.addEventListener('mouseup', () => {
     context.unfreezeDrawer();
   });
 

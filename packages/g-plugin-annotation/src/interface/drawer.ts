@@ -1,3 +1,4 @@
+import type { Canvas } from '@antv/g';
 import EventEmitter from 'eventemitter3';
 import type { DrawerTool } from '../constants/enum';
 
@@ -35,6 +36,8 @@ export abstract class BaseDrawer extends EventEmitter {
   isActive: boolean = true;
   /** 绘制路径 */
   path: Point[] = [];
+  /** 画布 */
+  canvas: Canvas;
 
   constructor(drawerOptions: DrawerOption) {
     super();
@@ -46,6 +49,10 @@ export abstract class BaseDrawer extends EventEmitter {
   abstract onMouseUp(e): void;
   abstract onMouseDbClick(e): void;
   abstract onKeyDown(e: KeyboardEvent): void;
+
+  setCanvas(canvas: Canvas) {
+    this.canvas = canvas;
+  }
 
   reset() {
     this.id = undefined;

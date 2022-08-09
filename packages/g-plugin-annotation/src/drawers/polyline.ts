@@ -1,6 +1,6 @@
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
-import { isNearPoint } from '../utils/drawer';
+import { isInvalidRect } from '../utils/drawer';
 import uuidv4 from '../utils/uuidv4';
 
 export class PolylineDrawer extends BaseDrawer {
@@ -16,7 +16,7 @@ export class PolylineDrawer extends BaseDrawer {
   }
 
   onMouseDown(e) {
-    const currentPoint = { x: e.x, y: e.y };
+    const currentPoint = { x: e.canvas.x, y: e.canvas.y };
     if (!this.isDrawing) {
       this.isDrawing = true;
       this.id = uuidv4();
@@ -25,7 +25,7 @@ export class PolylineDrawer extends BaseDrawer {
     } else {
       const lastPoint = this.path[this.path.length - 2];
 
-      if (isNearPoint(lastPoint, currentPoint, 10)) {
+      if (isInvalidRect(lastPoint, currentPoint, 10)) {
         this.closePath();
         return;
       }
@@ -37,7 +37,7 @@ export class PolylineDrawer extends BaseDrawer {
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.path[this.path.length - 1] = { x: e.x, y: e.y };
+    this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
     this.emit('draw:modify', this.state);
   }
 
