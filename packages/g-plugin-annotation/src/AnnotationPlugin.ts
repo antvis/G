@@ -103,7 +103,7 @@ export class AnnotationPlugin implements RenderingPlugin {
       default:
         break;
     }
-
+    activeDrawer?.setCanvas(this.canvas);
     const onStart = (toolstate: any) => {
       this.emmiter.emit('draw:start', toolstate);
       this.renderDrawer(toolstate);
@@ -174,23 +174,23 @@ export class AnnotationPlugin implements RenderingPlugin {
 
     const handleMouseDown = (e: FederatedPointerEvent) => {
       if (e.button === 0) {
-        this.drawer?.onMouseDown(this.canvas.viewport2Canvas(e.viewport));
+        this.drawer?.onMouseDown(e);
       }
     };
 
     const handleMouseMove = (e: FederatedPointerEvent) => {
-      this.drawer?.onMouseMove(this.canvas.viewport2Canvas(e.viewport));
+      this.drawer?.onMouseMove(e);
     };
 
     const handleMouseUp = (e: FederatedPointerEvent) => {
       if (e.button === 0) {
-        this.drawer?.onMouseUp(this.canvas.viewport2Canvas(e.viewport));
+        this.drawer?.onMouseUp(e);
       }
     };
 
     const handleMouseDbClick = (e: FederatedPointerEvent) => {
       if (e.button === 0) {
-        this.drawer?.onMouseDbClick(this.canvas.viewport2Canvas(e.viewport));
+        this.drawer?.onMouseDbClick(e);
       }
     };
 

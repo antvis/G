@@ -1,6 +1,6 @@
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
-import { isNearPoint } from '../utils/drawer';
+import { isInvalidRect } from '../utils/drawer';
 import uuidv4 from '../utils/uuidv4';
 
 export class PolygonDrawer extends BaseDrawer {
@@ -15,7 +15,7 @@ export class PolygonDrawer extends BaseDrawer {
   }
 
   onMouseDown(e) {
-    const point = { x: e.x, y: e.y };
+    const point = { x: e.canvas.x, y: e.canvas.y };
     if (!this.isDrawing) {
       this.isDrawing = true;
       this.id = uuidv4();
@@ -23,7 +23,7 @@ export class PolygonDrawer extends BaseDrawer {
       this.emit('draw:start', this.state);
     } else {
       const startPoint = this.path[0];
-      if (isNearPoint(point, startPoint, 10)) {
+      if (isInvalidRect(point, startPoint, 10)) {
         this.closePath();
       } else {
         this.path.push(point);
@@ -34,7 +34,7 @@ export class PolygonDrawer extends BaseDrawer {
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.path[this.path.length - 1] = { x: e.x, y: e.y };
+    this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
     this.emit('draw:move', this.state);
   }
 

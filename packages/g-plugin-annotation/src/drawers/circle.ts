@@ -14,7 +14,7 @@ export class CircleDrawer extends BaseDrawer {
     };
   }
   onMouseDown(e: FederatedEvent) {
-    this.path = [{ x: e.x, y: e.y }];
+    this.path = [{ x: e.canvas.x, y: e.canvas.y }];
     this.id = uuidv4();
   }
 
