@@ -16,7 +16,7 @@ export class PolylineDrawer extends BaseDrawer {
   }
 
   onMouseDown(e) {
-    const currentPoint = { x: e.canvas.x, y: e.canvas.y };
+    const currentPoint = { x: e.x, y: e.y };
     if (!this.isDrawing) {
       this.isDrawing = true;
       this.id = uuidv4();
@@ -37,7 +37,7 @@ export class PolylineDrawer extends BaseDrawer {
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
+    this.path[this.path.length - 1] = { x: e.x, y: e.y };
     this.emit('draw:modify', this.state);
   }
 

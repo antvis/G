@@ -1,6 +1,5 @@
-import type { FederatedEvent } from '@antv/g';
-import type { DrawerTool } from '../constants/enum';
 import EventEmitter from 'eventemitter3';
+import type { DrawerTool } from '../constants/enum';
 
 export type DrawerType = 'circle' | 'rect' | 'polyline' | 'polygon';
 export interface DrawerState {
@@ -42,10 +41,10 @@ export abstract class BaseDrawer extends EventEmitter {
     this.drawerOptions = drawerOptions;
   }
 
-  abstract onMouseDown(e: FederatedEvent): void;
-  abstract onMouseMove(e: FederatedEvent): void;
-  abstract onMouseUp(e: FederatedEvent): void;
-  abstract onMouseDbClick(e: FederatedEvent): void;
+  abstract onMouseDown(e): void;
+  abstract onMouseMove(e): void;
+  abstract onMouseUp(e): void;
+  abstract onMouseDbClick(e): void;
   abstract onKeyDown(e: KeyboardEvent): void;
 
   reset() {
