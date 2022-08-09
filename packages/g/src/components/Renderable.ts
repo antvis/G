@@ -28,4 +28,9 @@ export class Renderable {
    * dirty rectangle flag
    */
   dirty = false;
+
+  /**
+   * Rendering with other renderers, eg. simple Path/Polyline should be treated as instanced Line.
+   */
+  proxyNodeName: string;
 }

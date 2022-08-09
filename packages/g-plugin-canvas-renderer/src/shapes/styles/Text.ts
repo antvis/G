@@ -1,5 +1,6 @@
 import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
 import { isNil, singleton, UnitType } from '@antv/g';
+import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
 import { TextRendererContribution } from './interfaces';
 
@@ -27,6 +28,8 @@ export class TextRenderer implements StyleRenderer {
       metrics,
       dx,
       dy,
+      shadowColor,
+      shadowBlur,
     } = parsedStyle as ParsedTextStyleProps;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
@@ -62,6 +65,9 @@ export class TextRenderer implements StyleRenderer {
     if (dy && dy.unit === UnitType.kPixels) {
       linePositionY += dy.value;
     }
+
+    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+    setShadowAndFilter(object, context, hasShadow);
 
     // draw lines line by line
     for (let i = 0; i < lines.length; i++) {

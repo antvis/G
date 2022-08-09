@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Line, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Path, Text } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import Stats from 'stats.js';
 
@@ -25,17 +25,25 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const x = Math.random() * 600;
     const y = Math.random() * 500;
     canvas.appendChild(
-      new Line({
+      new Path({
         attrs: {
-          x1: x,
-          y1: y,
-          x2: x + Math.random() * 100,
-          y2: y + Math.random() * 50,
+          d: `M ${x} ${y} L ${x + Math.random() * 100} ${y + Math.random() * 50}`,
           lineWidth: 1,
           stroke: '#000',
           lineWidth: 0.3,
         },
       }),
+      // new Line({
+      //   attrs: {
+      //     x1: x,
+      //     y1: y,
+      //     x2: x + Math.random() * 100,
+      //     y2: y + Math.random() * 50,
+      //     lineWidth: 1,
+      //     stroke: '#000',
+      //     lineWidth: 0.3,
+      //   },
+      // }),
     );
   }
   let nodesNum = 1589;
