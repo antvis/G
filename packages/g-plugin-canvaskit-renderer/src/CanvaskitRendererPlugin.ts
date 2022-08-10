@@ -267,13 +267,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
   private drawWithSurface(canvas: Canvas, object: DisplayObject) {
     this.renderDisplayObject(object, canvas);
+    const sorted = object.sortable.sorted || object.childNodes;
 
     // should account for z-index
-    if (object.sortable.sorted && object.sortable.sorted.length) {
-      object.sortable.sorted.forEach((child: DisplayObject) => {
-        this.drawWithSurface(canvas, child);
-      });
-    }
+    sorted.forEach((child: DisplayObject) => {
+      this.drawWithSurface(canvas, child);
+    });
   }
 
   private generatePattern(object: DisplayObject, pattern: Pattern) {

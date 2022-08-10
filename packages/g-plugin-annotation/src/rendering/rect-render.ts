@@ -5,6 +5,7 @@ import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
 
 function getWidthFromBbox(path: PointLike[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tl, tr, br, bl] = path;
   const dy = tr.y - tl.y;
   const dx = tr.x - tl.x;
@@ -12,12 +13,14 @@ function getWidthFromBbox(path: PointLike[]) {
 }
 
 function getHeightFromBbox(path: PointLike[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tl, tr, br, bl] = path;
   const dy = br.y - tr.y;
   const dx = br.x - tr.x;
   return Math.sqrt(dy * dy + dx * dx);
 }
 function getRotationFromBbox(path: PointLike[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tl, tr, br, bl] = path;
   const dy = tr.y - tl.y;
   const dx = tr.x - tl.x;

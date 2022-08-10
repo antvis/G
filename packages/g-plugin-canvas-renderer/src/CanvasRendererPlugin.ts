@@ -175,15 +175,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       if (object.isVisible() && !object.isCulled()) {
         this.renderDisplayObject(object, renderingService);
         // if we did a full screen rendering last frame
+        // setTimeout(() => {
         this.saveDirtyAABB(object);
+        // });
       }
 
+      const sorted = object.sortable.sorted || object.childNodes;
+
       // should account for z-index
-      if (object.sortable.sorted && object.sortable.sorted.length) {
-        object.sortable.sorted.forEach((child: DisplayObject) => {
-          renderByZIndex(child);
-        });
-      }
+      sorted.forEach((child: DisplayObject) => {
+        renderByZIndex(child);
+      });
     };
 
     // render at the end of frame

@@ -250,7 +250,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style['border-style'] = 'dashed';
         break;
       case 'filter':
-        const { filter } = object.parsedStyle;
+        const { filter } = object.style;
         $el.style.filter = filter;
         break;
     }
