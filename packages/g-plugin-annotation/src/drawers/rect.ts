@@ -42,14 +42,14 @@ export class RectDrawer extends BaseDrawer {
     }
     this.isDrawing = true;
     this.start = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
-    this.end = { canvas: e.canvas, viewport: e.viewport };
+    this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
     this.id = uuidv4();
     this.emit('draw:start', this.state);
   }
 
   onMouseMove(e) {
     if (!this.isDrawing) return;
-    this.end = { canvas: e.canvas, viewport: e.viewport };
+    this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
     this.emit('draw:modify', this.state);
   }
 
