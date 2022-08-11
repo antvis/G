@@ -1,11 +1,12 @@
 import type {
   Canvas,
   DisplayObject,
-  FederatedEvent,
+  FederatedPointerEvent,
   RenderingPlugin,
   RenderingService,
 } from '@antv/g';
 import {
+  CustomEvent,
   ElementEvent,
   Group,
   inject,
@@ -14,8 +15,8 @@ import {
   Shape,
   singleton,
 } from '@antv/g';
-import { SelectablePolyline } from './selectable/SelectablePolyline';
-import { SelectableRect } from './selectable/SelectableRect';
+import { SelectableEvent } from './constants/enum';
+import { SelectablePolyline, SelectableRect } from './selectable';
 import { AnnotationPluginOptions } from './tokens';
 
 /**
@@ -57,6 +58,25 @@ export class SelectablePlugin implements RenderingPlugin {
 
   getSelectedDisplayObjects() {
     return this.selected;
+  }
+
+  selectDisplayObject(displayObject: DisplayObject) {
+    const selectable = this.getOrCreateSelectableUI(displayObject);
+    if (selectable && this.selected.indexOf(displayObject) === -1) {
+      selectable.style.visibility = 'visible';
+      this.selected.push(displayObject);
+      displayObject.dispatchEvent(new CustomEvent(SelectableEvent.SELECTED));
+    }
+  }
+
+  deselectDisplayObject(displayObject: DisplayObject) {
+    const selectable = this.getOrCreateSelectableUI(displayObject);
+    const index = this.selected.indexOf(displayObject);
+    if (selectable && index > -1) {
+      selectable.style.visibility = 'hidden';
+      this.selected.splice(index, 1);
+      displayObject.dispatchEvent(new CustomEvent(SelectableEvent.DESELECTED));
+    }
   }
 
   private getOrCreateSelectableUI(object: DisplayObject): DisplayObject {
@@ -117,40 +137,59 @@ export class SelectablePlugin implements RenderingPlugin {
     const document = this.renderingContext.root.ownerDocument;
     const canvas = document.defaultView as Canvas;
 
-    const handleClick = (e: FederatedEvent) => {
+    const handleClick = (e: FederatedPointerEvent) => {
       const object = e.target as DisplayObject;
 
       // @ts-ignore
       if (object === document) {
-        this.activeSelectableLayer.children.forEach((selectable) => {
-          selectable.style.visibility = 'hidden';
+        this.selected.forEach((target) => {
+          this.deselectDisplayObject(target);
         });
-
         this.selected = [];
       } else if (object.style?.selectable) {
-        // Whether to cancel the selected object?
-        // TODO: multi-select
-        this.selected.forEach((o) => {
-          const selectable = this.getOrCreateSelectableUI(o);
-          selectable.style.visibility = 'hidden';
-        });
-
-        const selectable = this.getOrCreateSelectableUI(object);
-        if (selectable) {
-          selectable.style.visibility = 'visible';
-          this.selected.push(object);
+        if (!e.shiftKey) {
+          // multi-select
+          this.selected.forEach((o) => {
+            this.deselectDisplayObject(o);
+          });
         }
+
+        this.selectDisplayObject(object);
       }
+    };
+
+    const handleMovingTarget = (e: CustomEvent) => {
+      const movingTarget = e.target as DisplayObject;
+      const { movingX: canvasX, movingY: canvasY } = e.detail;
+
+      const [ox, oy] = movingTarget.getPosition();
+      const dx = canvasX - ox;
+      const dy = canvasY - oy;
+
+      // account for multi-select
+      this.selected.forEach((target) => {
+        // move selectableUI at the same time
+        const selectable = this.getOrCreateSelectableUI(target);
+        if (selectable) {
+          selectable.translate(dx, dy);
+        }
+
+        target.translate(dx, dy);
+      });
     };
 
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
       canvas.addEventListener('click', handleClick);
       canvas.appendChild(this.activeSelectableLayer);
+
+      canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
       canvas.removeEventListener('click', handleClick);
       canvas.removeChild(this.activeSelectableLayer);
+
+      canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
     });
   }
 }

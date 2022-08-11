@@ -175,9 +175,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       if (object.isVisible() && !object.isCulled()) {
         this.renderDisplayObject(object, renderingService);
         // if we did a full screen rendering last frame
-        // setTimeout(() => {
         this.saveDirtyAABB(object);
-        // });
       }
 
       const sorted = object.sortable.sorted || object.childNodes;

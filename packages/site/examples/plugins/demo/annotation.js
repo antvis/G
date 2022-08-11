@@ -87,9 +87,15 @@ const image = new Image({
     width: 200,
     height: 200,
     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    transform: 'scale(0.5) rotate(30deg)',
+    // transform: 'scale(0.5) rotate(30deg)',
     selectable: true,
   },
+});
+image.addEventListener('selected', () => {
+  console.log('image selected');
+});
+image.addEventListener('deselected', () => {
+  console.log('image deselected');
 });
 
 const rect = new Rect({
@@ -252,3 +258,70 @@ selectableFolder
     });
   });
 selectableFolder.open();
+
+const apiFolder = gui.addFolder('API');
+const apiConfig = {
+  selectDisplayObject: 'none',
+  deselectDisplayObject: 'none',
+  getSelectedDisplayObjects: () => {
+    console.log(annotationPlugin.getSelectedDisplayObjects());
+  },
+};
+apiFolder
+  .add(apiConfig, 'selectDisplayObject', [
+    'rect',
+    'image',
+    'circle',
+    'ellipse',
+    'line',
+    'polyline',
+    'none',
+  ])
+  .onChange((shape) => {
+    let target;
+    if (shape === 'rect') {
+      target = rect;
+    } else if (shape === 'image') {
+      target = image;
+    } else if (shape === 'circle') {
+      target = circle;
+    } else if (shape === 'ellipse') {
+      target = ellipse;
+    } else if (shape === 'line') {
+      target = line;
+    } else if (shape === 'polyline') {
+      target = polyline;
+    }
+    annotationPlugin.selectDisplayObject(target);
+  });
+
+apiFolder
+  .add(apiConfig, 'deselectDisplayObject', [
+    'rect',
+    'image',
+    'circle',
+    'ellipse',
+    'line',
+    'polyline',
+    'none',
+  ])
+  .onChange((shape) => {
+    let target;
+    if (shape === 'rect') {
+      target = rect;
+    } else if (shape === 'image') {
+      target = image;
+    } else if (shape === 'circle') {
+      target = circle;
+    } else if (shape === 'ellipse') {
+      target = ellipse;
+    } else if (shape === 'line') {
+      target = line;
+    } else if (shape === 'polyline') {
+      target = polyline;
+    }
+    annotationPlugin.deselectDisplayObject(target);
+  });
+
+apiFolder.add(apiConfig, 'getSelectedDisplayObjects');
+apiFolder.open();

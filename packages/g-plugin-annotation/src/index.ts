@@ -110,14 +110,22 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   /**
+   * show selectable UI of target displayobject
    * @see http://fabricjs.com/docs/fabric.Canvas.html#setActiveObject
    */
-  selectDisplayObject(displayObject: DisplayObject) {}
+  selectDisplayObject(displayObject: DisplayObject) {
+    this.container.get(SelectablePlugin).selectDisplayObject(displayObject);
+  }
 
-  unselectDisplayObject(displayObject: DisplayObject) {}
+  /**
+   * hide selectable UI of target displayobject
+   */
+  deselectDisplayObject(displayObject: DisplayObject) {
+    this.container.get(SelectablePlugin).deselectDisplayObject(displayObject);
+  }
 
   getSelectedDisplayObjects() {
-    this.container.get(SelectablePlugin).getSelectedDisplayObjects();
+    return this.container.get(SelectablePlugin).getSelectedDisplayObjects();
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {

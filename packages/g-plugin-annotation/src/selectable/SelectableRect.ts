@@ -1,12 +1,17 @@
-import type {
+import {
   BaseCustomElementStyleProps,
+  Circle,
   Cursor,
+  CustomElement,
+  CustomEvent,
   DisplayObject,
   DisplayObjectConfig,
   FederatedEvent,
   ParsedBaseStyleProps,
+  rad2deg,
+  Rect,
 } from '@antv/g';
-import { Circle, CustomElement, rad2deg, Rect } from '@antv/g';
+import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 
 interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
@@ -206,7 +211,13 @@ export class SelectableRect extends CustomElement<Props> {
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
       this.setPosition(canvasX - shiftX, canvasY - shiftY);
-      targetObject.setPosition(canvasX - shiftX, canvasY - shiftY);
+
+      targetObject.dispatchEvent(
+        new CustomEvent(SelectableEvent.MOVING, {
+          movingX: canvasX - shiftX,
+          movingY: canvasY - shiftY,
+        }),
+      );
     };
 
     this.addEventListener('dragstart', (e: FederatedEvent) => {
@@ -292,6 +303,11 @@ export class SelectableRect extends CustomElement<Props> {
       if (target === this.mask) {
         this.status = 'active';
       }
+
+      // targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED, {
+      //   movingX: canvasX - shiftX,
+      //   movingY: canvasY - shiftY,
+      // }));
     });
   }
 

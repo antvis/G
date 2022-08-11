@@ -125,7 +125,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     // parent needs re-sort
     const sortable = (parent as unknown as Element).sortable;
-    if (sortable?.sorted?.length && (child as unknown as Element).style?.zIndex) {
+    if (sortable?.sorted?.length || (child as unknown as Element).style?.zIndex) {
       // if (sortable) {
       // only child has z-Index
       sortable.dirty = true;
@@ -157,7 +157,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       // parent needs re-sort
       const sortable = (child.parentNode as Element).sortable;
       // if (sortable) {
-      if (sortable?.sorted?.length && (child as unknown as Element).style?.zIndex) {
+      if (sortable?.sorted?.length || (child as unknown as Element).style?.zIndex) {
         sortable.dirty = true;
       }
 
