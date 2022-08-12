@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Group, Path } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, Image, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -153,6 +153,31 @@ const pointInPath5 = new Circle({
   style: {
     r: 10,
     fill: 'red',
+  },
+});
+
+const arrowMarker = new Path({
+  style: {
+    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    stroke: '#1890FF',
+    anchor: '0.5 0.5',
+    transformOrigin: 'center',
+  },
+});
+const circleMarker = new Circle({
+  style: {
+    r: 10,
+    stroke: '#1890FF',
+  },
+});
+const imageMarker = new Image({
+  style: {
+    width: 50,
+    height: 50,
+    anchor: [0.5, 0.5],
+    transformOrigin: 'center',
+    transform: 'rotate(90deg)',
+    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   },
 });
 
@@ -346,3 +371,67 @@ getPointFolder.add(getPointConfig, 'ratio', 0, 1).onChange((ratio) => {
     pointInPath.setLocalPosition(point.x, point.y);
   }
 });
+
+const markerFolder = gui.addFolder('marker');
+const markerConfig = {
+  markerStart: 'null',
+  markerEnd: 'null',
+  markerMid: 'null',
+  markerStartOffset: 0,
+  markerEndOffset: 0,
+};
+markerFolder
+  .add(markerConfig, 'markerStart', ['path', 'circle', 'image', 'null'])
+  .onChange((markerStartStr) => {
+    let markerStart;
+    if (markerStartStr === 'path') {
+      markerStart = arrowMarker.cloneNode();
+    } else if (markerStartStr === 'circle') {
+      markerStart = circleMarker.cloneNode();
+    } else if (markerStartStr === 'image') {
+      markerStart = imageMarker.cloneNode();
+    } else {
+      markerStart = null;
+    }
+
+    path3.style.markerStart = markerStart;
+  });
+markerFolder
+  .add(markerConfig, 'markerMid', ['path', 'circle', 'image', 'null'])
+  .onChange((markerMidStr) => {
+    let markerMid;
+    if (markerMidStr === 'path') {
+      markerMid = arrowMarker.cloneNode();
+    } else if (markerMidStr === 'circle') {
+      markerMid = circleMarker.cloneNode();
+    } else if (markerMidStr === 'image') {
+      markerMid = imageMarker.cloneNode();
+    } else {
+      markerMid = null;
+    }
+
+    path3.style.markerMid = markerMid;
+  });
+markerFolder
+  .add(markerConfig, 'markerEnd', ['path', 'circle', 'image', 'null'])
+  .onChange((markerEndStr) => {
+    let markerEnd;
+    if (markerEndStr === 'path') {
+      markerEnd = arrowMarker.cloneNode();
+    } else if (markerEndStr === 'circle') {
+      markerEnd = circleMarker.cloneNode();
+    } else if (markerEndStr === 'image') {
+      markerEnd = imageMarker.cloneNode();
+    } else {
+      markerEnd = null;
+    }
+
+    path3.style.markerEnd = markerEnd;
+  });
+markerFolder.add(markerConfig, 'markerStartOffset', -20, 20).onChange((markerStartOffset) => {
+  path3.style.markerStartOffset = markerStartOffset;
+});
+markerFolder.add(markerConfig, 'markerEndOffset', -20, 20).onChange((markerEndOffset) => {
+  path3.style.markerEndOffset = markerEndOffset;
+});
+markerFolder.open();

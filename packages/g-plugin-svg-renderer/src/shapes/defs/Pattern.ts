@@ -61,13 +61,13 @@ export function createOrUpdateGradientAndPattern(
   return '';
 }
 
-function generateCacheKey(src: CSSGradientValue | CSSRGB | Pattern): string {
+function generateCacheKey(src: CSSGradientValue | CSSRGB | Pattern, options: any = {}): string {
   let cacheKey = '';
   if (src instanceof CSSGradientValue) {
     const { type, value } = src;
     if (type === GradientType.LinearGradient || type === GradientType.RadialGradient) {
       // @ts-ignore
-      const { type, width, height, steps, angle, cx, cy } = value;
+      const { type, width, height, steps, angle, cx, cy } = { ...value, ...options };
       cacheKey = `${type}${width}${height}${angle || 0}${cx || 0}${cy || 0}${steps
         .map((step: [number, string]) => step.join(''))
         .join('')}`;
@@ -186,7 +186,11 @@ function createOrUpdateGradient(
   $el: SVGElement,
   parsedColor: CSSGradientValue,
 ) {
-  const gradientId = generateCacheKey(parsedColor);
+  const bounds = object.getGeometryBounds();
+  const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+  const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+
+  const gradientId = generateCacheKey(parsedColor, { width, height });
   let $existed = $def.querySelector(`#${gradientId}`);
 
   if (!$existed) {
@@ -209,10 +213,6 @@ function createOrUpdateGradient(
     $def.appendChild($existed);
   }
 
-  const bounds = object.getGeometryBounds();
-  const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-  const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-
   if (parsedColor.type === GradientType.LinearGradient) {
     const { angle } = parsedColor.value as LinearGradient;
     const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
@@ -226,6 +226,7 @@ function createOrUpdateGradient(
   } else {
     const { cx, cy } = parsedColor.value as RadialGradient;
     const { x, y, r } = computeRadialGradient(width, height, cx, cy);
+
     $existed.setAttribute('cx', `${x}`);
     $existed.setAttribute('cy', `${y}`);
     $existed.setAttribute('r', `${r}`);

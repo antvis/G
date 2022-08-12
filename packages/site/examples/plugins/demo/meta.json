@@ -163,6 +163,13 @@
         "zh": "使用浏览器搜索（command + F）文本内容",
         "en": "Search text content in browser"
       }
+    },
+    {
+      "filename": "annotation.js",
+      "title": {
+        "zh": "使用标注",
+        "en": "Use annotation"
+      }
     }
   ]
 }

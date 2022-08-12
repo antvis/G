@@ -78,6 +78,105 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
 [path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
 
+## markerStart
+
+由于 Path 可通过 `Z` 命令闭合，因此对于 “起始点” 的定义在两种情况下有差别：
+
+-   如果未闭合，可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStart](/zh/docs/api/basic/polyline#markerstart) 属性。
+-   如果已闭合，可以参考 [Polygon](/zh/docs/api/basic/polygon) 的 [markerStart](/zh/docs/api/basic/polygon#markerstart) 属性。
+
+例如下图中，同样指定了 markerStart 和 markerEnd 为“箭头”，左侧展示了一个未闭合路径的效果，右侧展示了闭合路径的效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2Pi6SpcqPwAAAAAAAAAAAAAAARQnAQ" alt="unclosed path marker" width="200"><img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*HEpoQbRiRowAAAAAAAAAAAAAARQnAQ" alt="closed path marker" width="200">
+
+在该[示例](/zh/examples/shape#path)中，我们在 Path 的起始点上放置了一个箭头：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*-ooIS5IePf4AAAAAAAAAAAAAARQnAQ" alt="path start marker" width="400">
+
+```js
+const arrowMarker = new Path({
+    style: {
+        path: 'M 10,10 L -10,0 L 10,-10 Z',
+        stroke: '#1890FF',
+        anchor: '0.5 0.5',
+        transformOrigin: 'center',
+    },
+});
+
+path.style.markerStart = arrowMarker;
+```
+
+## markerEnd
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEnd](/zh/docs/api/basic/polyline#markerend) 属性。
+
+由于 Path 可通过 `Z` 命令闭合，因此对于 “终止点” 的定义在两种情况下有差别：
+
+-   如果未闭合，可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEnd](/zh/docs/api/basic/polyline#markerend) 属性。
+-   如果已闭合，可以参考 [Polygon](/zh/docs/api/basic/polygon) 的 [markerEnd](/zh/docs/api/basic/polygon#markerend) 属性。
+
+在该[示例](/zh/examples/shape#path)中，我们在多边形的终止点上放置了一个图片：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bYtTKQxOrQAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
+
+```js
+const imageMarker = new Image({
+    style: {
+        width: 50,
+        height: 50,
+        anchor: [0.5, 0.5],
+        transformOrigin: 'center',
+        transform: 'rotate(90deg)',
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
+});
+
+path.style.markerEnd = imageMarker;
+```
+
+## markerMid
+
+可以参考 SVG 的[同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)。
+
+在路径除了 “起始点” 和 “终止点” 之外的每一个顶点上放置标记图形。在内部实现中，由于我们会把路径中部分命令转换成 C 命令，因此这些顶点实际是三阶贝塞尔曲线的控制点。
+
+例如下图中在路径上除首尾的每个顶点上都放置了一个 [Circle](/en/docs/api/basic/circle)：
+
+```js
+const circleMarker = new Circle({
+    style: {
+        r: 10,
+        stroke: '#1890FF',
+    },
+});
+
+path.style.markerMid = circleMarker;
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Vg1OQ5mGaG4AAAAAAAAAAAAAARQnAQ" alt="marker mid" width="400">
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2Pi6SpcqPwAAAAAAAAAAAAAAARQnAQ" alt="unclosed path marker" width="200">
+
+## markerStartOffset
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStartOffset](/zh/docs/api/basic/polyline#markerstartoffset) 属性。marker 会沿路径中第一段的切线方向移动，同时主体路径也会进行相应延长或缩短。需要注意的是主体路径的伸缩距离也是有限的，当超过了第一段的长度，会产生“拐弯”的效果，如下图所示：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2DI5TpGasHcAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
+
+因此该属性适合“微调”，而非大幅改变路径定义。
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
+## markerEndOffset
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEndOffset](/zh/docs/api/basic/polyline#markerendoffset) 属性。marker 会沿路径中最后一段的切线方向移动，同时主体路径也会进行相应延长或缩短。
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
 # 方法
 
 ## getTotalLength(): number

@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps, ParsedLineStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedLineStyleProps } from '@antv/g';
 import { singleton } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
@@ -7,8 +7,6 @@ import { generateRoughOptions } from '../util';
   token: CanvasRenderer.LineRendererContribution,
 })
 export class LineRenderer implements CanvasRenderer.StyleRenderer {
-  hash: (parsedStyle: ParsedBaseStyleProps) => string;
-
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedLineStyleProps,

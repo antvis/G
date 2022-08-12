@@ -85,6 +85,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private renderQueue: DisplayObject[] = [];
 
+  /**
+   * This stack is only used by clipPath for now.
+   */
   private restoreStack: DisplayObject[] = [];
 
   private clearFullScreen = false;
@@ -95,7 +98,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private vpMatrix = mat4.create();
   private dprMatrix = mat4.create();
   private tmpMat4 = mat4.create();
-  private tmpVec3 = vec3.create();
+  private vec3a = vec3.create();
+  private vec3b = vec3.create();
+  private vec3c = vec3.create();
+  private vec3d = vec3.create();
 
   apply(renderingService: RenderingService) {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;
@@ -172,12 +178,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.saveDirtyAABB(object);
       }
 
+      const sorted = object.sortable.sorted || object.childNodes;
+
       // should account for z-index
-      if (object.sortable.sorted && object.sortable.sorted.length) {
-        object.sortable.sorted.forEach((child: DisplayObject) => {
-          renderByZIndex(child);
-        });
-      }
+      sorted.forEach((child: DisplayObject) => {
+        renderByZIndex(child);
+      });
     };
 
     // render at the end of frame
@@ -208,17 +214,24 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         const dirtyRect = this.convertAABB2Rect(dirtyRenderBounds);
         const { x, y, width, height } = dirtyRect;
 
-        const tl = vec3.transformMat4(this.tmpVec3, vec3.fromValues(x, y, 0), this.vpMatrix);
+        const tl = vec3.transformMat4(this.vec3a, vec3.fromValues(x, y, 0), this.vpMatrix);
+        const tr = vec3.transformMat4(this.vec3b, vec3.fromValues(x + width, y, 0), this.vpMatrix);
+        const bl = vec3.transformMat4(this.vec3c, vec3.fromValues(x, y + height, 0), this.vpMatrix);
         const br = vec3.transformMat4(
-          vec3.create(),
+          this.vec3d,
           vec3.fromValues(x + width, y + height, 0),
           this.vpMatrix,
         );
 
-        const ix = Math.floor(tl[0]);
-        const iy = Math.floor(tl[1]);
-        const iwidth = Math.ceil(br[0] - tl[0]);
-        const iheight = Math.ceil(br[1] - tl[1]);
+        const minx = Math.min(tl[0], tr[0], br[0], bl[0]);
+        const miny = Math.min(tl[1], tr[1], br[1], bl[1]);
+        const maxx = Math.max(tl[0], tr[0], br[0], bl[0]);
+        const maxy = Math.max(tl[1], tr[1], br[1], bl[1]);
+
+        const ix = Math.floor(minx);
+        const iy = Math.floor(miny);
+        const iwidth = Math.ceil(maxx - minx);
+        const iheight = Math.ceil(maxy - miny);
 
         context.save();
         this.clearRect(context, ix, iy, iwidth, iheight);
@@ -241,7 +254,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         if (enableDirtyRectangleRenderingDebug) {
           canvas.dispatchEvent(
             new CustomEvent(CanvasEvent.DIRTY_RECTANGLE, {
-              dirtyRect,
+              dirtyRect: {
+                x: ix,
+                y: iy,
+                width: iwidth,
+                height: iheight,
+              },
             }),
           );
         }
@@ -306,15 +324,21 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
     const context = this.contextService.getContext();
 
-    // restore to its parent
-    let parent = this.restoreStack[this.restoreStack.length - 1];
-    while (parent && object.parentNode !== parent) {
+    const nodeName = object.nodeName;
+
+    // restore to its ancestor
+
+    const parent = this.restoreStack[this.restoreStack.length - 1];
+    if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
       context.restore();
       this.restoreStack.pop();
-      parent = this.restoreStack[this.restoreStack.length - 1];
     }
 
-    const nodeName = object.nodeName;
+    // while (parent && object.parentNode !== parent) {
+    //   context.restore();
+    //   this.restoreStack.pop();
+    //   parent = this.restoreStack[this.restoreStack.length - 1];
+    // }
 
     if (this.styleRendererFactoryCache[nodeName] === undefined) {
       this.styleRendererFactoryCache[nodeName] = this.styleRendererFactory(nodeName);
@@ -498,19 +522,19 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     // apply clip shape's RTS
     if (matrix) {
       mat4.copy(this.tmpMat4, object.getLocalTransform());
-      this.tmpVec3[0] = tx;
-      this.tmpVec3[1] = ty;
-      this.tmpVec3[2] = 0;
-      mat4.translate(this.tmpMat4, this.tmpMat4, this.tmpVec3);
+      this.vec3a[0] = tx;
+      this.vec3a[1] = ty;
+      this.vec3a[2] = 0;
+      mat4.translate(this.tmpMat4, this.tmpMat4, this.vec3a);
       mat4.multiply(this.tmpMat4, matrix, this.tmpMat4);
       mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
     } else {
       // apply RTS transformation in world space
       mat4.copy(this.tmpMat4, object.getWorldTransform());
-      this.tmpVec3[0] = tx;
-      this.tmpVec3[1] = ty;
-      this.tmpVec3[2] = 0;
-      mat4.translate(this.tmpMat4, this.tmpMat4, this.tmpVec3);
+      this.vec3a[0] = tx;
+      this.vec3a[1] = ty;
+      this.vec3a[2] = 0;
+      mat4.translate(this.tmpMat4, this.tmpMat4, this.vec3a);
       mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
     }
 

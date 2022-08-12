@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-yoga",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "description": "A G plugin for Yoga layout engine",
   "keywords": [
     "antv",

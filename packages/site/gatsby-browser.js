@@ -11,6 +11,8 @@ window.hammerjs = require('hammerjs');
 window.hammerTouchemulator = require('hammer-touchemulator');
 window.interactjs = require('interactjs');
 window.simplexNoise = require('simplex-noise');
+window.topojson = require('topojson');
+window.versor = require('versor');
 window.d3 = require('d3');
 window.d3Force3d = require('d3-force-3d');
 window.d3SvgAnnotation = require('d3-svg-annotation');
@@ -36,6 +38,7 @@ window.gPluginRoughSvgRenderer = require('@antv/g-plugin-rough-svg-renderer');
 window.gPluginSvgRenderer = require('@antv/g-plugin-svg-renderer');
 window.gPluginDragndrop = require('@antv/g-plugin-dragndrop');
 window.gPluginA11y = require('@antv/g-plugin-a11y');
+window.gPluginAnnotation = require('@antv/g-plugin-annotation');
 // compiler for GPGPU
 // window.webgpuGraph = require('@antv/webgpu-graph');
 window.gComponents = require('@antv/g-components');

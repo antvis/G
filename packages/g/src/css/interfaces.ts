@@ -63,6 +63,7 @@ export enum PropertySyntax {
   OFFSET_PATH = '<offset-path>',
   OFFSET_DISTANCE = '<offset-distance>',
   CLIP_PATH = '<clip-path>',
+  MARKER = '<marker>',
   TRANSFORM = '<transform>',
   TRANSFORM_ORIGIN = '<transform-origin>',
   TEXT = '<text>',

@@ -231,7 +231,13 @@ export abstract class Instanced {
       return true;
     }
 
-    if (this.instance.nodeName !== object.nodeName) {
+    // Path / Polyline could be rendered as Line
+    if (
+      this.instance.nodeName !== object.nodeName &&
+      this.instance.nodeName !== object.renderable.proxyNodeName &&
+      this.instance.renderable.proxyNodeName !== object.nodeName &&
+      this.instance.renderable.proxyNodeName !== object.renderable.proxyNodeName
+    ) {
       return false;
     }
 

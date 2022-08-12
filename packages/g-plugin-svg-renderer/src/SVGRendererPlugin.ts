@@ -21,11 +21,12 @@ import {
   RenderReason,
   Shape,
   singleton,
+  StyleValueRegistry,
 } from '@antv/g';
 import type { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import { DefElementManager } from './shapes/defs';
-import { CreateElementContribution } from './tokens';
+import { ElementLifeCycleContribution } from './tokens';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
 
@@ -129,8 +130,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
 
-  @inject(CreateElementContribution)
-  private createElementContribution: CreateElementContribution;
+  @inject(StyleValueRegistry)
+  private styleValueRegistry: StyleValueRegistry;
+
+  @inject(ElementLifeCycleContribution)
+  private createElementContribution: ElementLifeCycleContribution;
 
   @inject(DefElementManager)
   private defElementManager: DefElementManager;
@@ -378,7 +382,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
       const computedValue = computedStyle[name];
+      const computedValueStr = computedValue && computedValue.toString();
+      const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
+      const inherited = !!this.styleValueRegistry.getMetadata(name)?.inherited;
 
       // <foreignObject>
       if (object.nodeName === Shape.HTML) {
@@ -402,10 +409,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
         } else {
           this.defElementManager.createOrUpdateGradientAndPattern(object, $el, usedValue, usedName);
         }
-      } else if (name === 'visibility' && computedValue.value !== 'unset') {
+      } else if (
+        inherited &&
+        usedName &&
+        computedValueStr !== 'unset' &&
+        computedValueStr !== DEFAULT_VALUE_MAP[name]
+      ) {
         // use computed value
         // update `visibility` on <group>
-        $groupEl?.setAttribute(usedName, `${computedValue.value}`);
+        $groupEl?.setAttribute(usedName, formattedValueStr);
       } else if (name === 'clipPath') {
         this.createOrUpdateClipPath(document, usedValue, $groupEl);
       } else if (
@@ -428,13 +440,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       } else {
         if (computedValue) {
           // use computed value so that we can use cascaded effect in SVG
-          const valueStr = computedValue.toString();
-
           // ignore 'unset' and default value
           [$el, $hitTestingEl].forEach(($el: SVGElement) => {
             if ($el && usedName) {
-              if (valueStr !== 'unset' && valueStr !== DEFAULT_VALUE_MAP[name]) {
-                const formattedValueStr = FORMAT_VALUE_MAP[name]?.[valueStr] || valueStr;
+              if (computedValueStr !== 'unset' && computedValueStr !== DEFAULT_VALUE_MAP[name]) {
                 $el.setAttribute(usedName, formattedValueStr);
               } else {
                 $el.removeAttribute(usedName);
@@ -505,6 +514,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     if ($groupEl && $groupEl.parentNode) {
       $groupEl.parentNode.removeChild($groupEl);
 
+      this.createElementContribution.destroyElement(object, $groupEl);
       // object.entity.removeComponent(ElementSVG, true);
     }
   }

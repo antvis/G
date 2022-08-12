@@ -45,6 +45,7 @@ export default {
     'g-plugin-rough-canvas-renderer',
     'g-plugin-rough-svg-renderer',
     'g-plugin-a11y',
+    'g-plugin-annotation',
     'g-components',
     'g-web-components',
     'react-g',

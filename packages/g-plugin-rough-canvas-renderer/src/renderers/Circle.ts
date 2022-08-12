@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps, ParsedCircleStyleProps } from '@antv/g';
+import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
 import { singleton } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
 import { generateRoughOptions } from '../util';
@@ -7,8 +7,6 @@ import { generateRoughOptions } from '../util';
   token: CanvasRenderer.CircleRendererContribution,
 })
 export class CircleRenderer implements CanvasRenderer.StyleRenderer {
-  hash: (parsedStyle: ParsedBaseStyleProps) => string;
-
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedCircleStyleProps,

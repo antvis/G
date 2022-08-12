@@ -61,6 +61,8 @@ export class CSSPropertyLengthOrPercentage
           } else {
             registry.addUnresolveProperty(object, name);
           }
+        } else {
+          registry.addUnresolveProperty(object, name);
         }
         return new CSSUnitValue(0, 'px');
       } else if (computed.unit === UnitType.kRems) {
@@ -73,6 +75,8 @@ export class CSSPropertyLengthOrPercentage
           } else {
             registry.addUnresolveProperty(object, name);
           }
+        } else {
+          registry.addUnresolveProperty(object, name);
         }
         return new CSSUnitValue(0, 'px');
       }

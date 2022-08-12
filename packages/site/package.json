@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-site",
-  "version": "1.6.4",
+  "version": "1.7.1",
   "private": true,
   "description": "G sites deployed on gh-pages",
   "keywords": [
@@ -35,7 +35,7 @@
   "dependencies": {
     "@antv/g6": "^4.5.2",
     "@antv/gatsby-theme-antv": "^1.1.15",
-    "@antv/util": "^3.2.2",
+    "@antv/util": "^3.2.3",
     "@antv/webgpu-graph": "^1.0.0",
     "@naoak/workerize-transferable": "^0.1.0",
     "@types/gl-matrix": "^2.4.5",
@@ -58,8 +58,10 @@
     "react-split-pane": "^0.1.92",
     "simplex-noise": "^3.0.0",
     "stats.js": "^0.17.0",
+    "topojson": "^3.0.2",
     "typedoc": "^0.17.6",
     "typedoc-plugin-markdown": "^2.2.11",
+    "versor": "^0.2.0",
     "webfontloader": "1.6.28"
   }
 }

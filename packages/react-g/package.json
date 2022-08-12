@@ -1,6 +1,6 @@
 {
   "name": "@antv/react-g",
-  "version": "1.6.4",
+  "version": "1.7.3",
   "description": "react render for @antv/g",
   "keywords": [
     "react",
@@ -28,7 +28,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g": "^5.6.4",
+    "@antv/g": "^5.7.3",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",
     "tslib": "^2.3.1"

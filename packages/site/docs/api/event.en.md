@@ -673,6 +673,22 @@ ul.addEventListener(
 
 [Example](/en/examples/event#delegate)
 
+### clone
+
+Currently event objects are reused in the event system to avoid the creation of a large number of event objects. Reused objects are only used to carry different data, such as coordinate information, native event objects, etc., so the life cycle is limited to the event handler, which can lead to unintended consequences once an attempt is made to cache the entire event object and use it outside the event handler. It is therefore recommended to cache the data carried on the event object rather than the object itself.
+
+While keeping the above performance considerations in mind, we also provide a clone method that creates a new event object when the user really wants to cache it, e.g.
+
+```js
+circle.addEventListener('click', (e) => {
+    const newEvent = e.clone();
+});
+```
+
+The cloned event object will retain all the properties on the original event object.
+
+Currently, we only support interactive events, namely [PointerEvent](/en/docs/api/event#pointerevent) and [WheelEvent](/en/docs/api/event#wheelevent). Other events such as AnimationEvent and CustomEvent are not supported at the moment.
+
 # Gesture & Drag'n'Drop
 
 When we want to implement certain "advanced events" in addition to the base events, such as common gestures and drag and drop, we can do so by combining these base events. Thanks to the scene graph's compatibility with the DOM API, we can also use the existing ecosystem directly and let these libraries think they are still manipulating the DOM.

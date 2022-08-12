@@ -1,10 +1,10 @@
 import { AbstractRendererPlugin, Module } from '@antv/g';
 import { ElementSVG } from './components/ElementSVG';
-import { DefaultCreateElementContribution } from './DefaultCreateElementContribution';
+import { DefaultElementLifeCycleContribution } from './DefaultElementLifeCycleContribution';
 import { DefElementManager } from './shapes/defs';
 import { SVGRendererPlugin } from './SVGRendererPlugin';
 
-export * from './DefaultCreateElementContribution';
+export * from './DefaultElementLifeCycleContribution';
 export * from './shapes/paths';
 export * from './SVGRendererPlugin';
 export * from './tokens';
@@ -13,7 +13,7 @@ export { ElementSVG };
 
 export const containerModule = Module((register) => {
   register(DefElementManager);
-  register(DefaultCreateElementContribution);
+  register(DefaultElementLifeCycleContribution);
   register(SVGRendererPlugin);
 });
 

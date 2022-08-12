@@ -60,7 +60,10 @@ export function createOrUpdateFilter(
       return $filter.id;
     });
 
-    $el?.setAttribute('filter', filterIds.map((filterId) => `url(#${filterId})`).join(' '));
+    // @see https://github.com/antvis/G/issues/1114
+    setTimeout(() => {
+      $el?.setAttribute('filter', filterIds.map((filterId) => `url(#${filterId})`).join(' '));
+    });
   }
 }
 

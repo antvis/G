@@ -207,6 +207,10 @@ export class FederatedEvent<N extends Event = Event, T = any> {
   readonly composed = false;
   isTrusted: boolean;
 
+  clone() {
+    throw new Error('Method not implemented.');
+  }
+
   NONE = 0;
   CAPTURING_PHASE = 1;
   AT_TARGET = 2;

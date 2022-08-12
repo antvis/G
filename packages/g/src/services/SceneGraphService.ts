@@ -125,7 +125,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     // parent needs re-sort
     const sortable = (parent as unknown as Element).sortable;
-    if (sortable) {
+    if (sortable?.sorted?.length || (child as unknown as Element).style?.zIndex) {
+      // if (sortable) {
+      // only child has z-Index
       sortable.dirty = true;
     }
 
@@ -154,7 +156,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       // parent needs re-sort
       const sortable = (child.parentNode as Element).sortable;
-      if (sortable) {
+      // if (sortable) {
+      if (sortable?.sorted?.length || (child as unknown as Element).style?.zIndex) {
         sortable.dirty = true;
       }
 
@@ -576,41 +579,47 @@ export class DefaultSceneGraphService implements SceneGraphService {
     return (element as Element).transformable.localSkew;
   }
 
-  private calcLocalTransform(transform: Transform) {
-    // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
-    // mat4.fromRotationTranslationScaleOrigin(
-    //   transform.localTransform,
-    //   transform.localRotation,
-    //   transform.localPosition,
-    //   transform.localScale,
-    //   transform.origin,
-    // );
+  private calcLocalTransform = (() => {
+    const tmpMat = mat4.create();
+    const tmpPosition = vec3.create();
+    const tmpQuat = quat.fromValues(0, 0, 0, 1);
 
-    mat4.fromRotationTranslationScaleOrigin(
-      transform.localTransform,
-      transform.localRotation,
-      transform.localPosition,
-      vec3.fromValues(1, 1, 1),
-      transform.origin,
-    );
+    return (transform: Transform) => {
+      // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
+      // mat4.fromRotationTranslationScaleOrigin(
+      //   transform.localTransform,
+      //   transform.localRotation,
+      //   transform.localPosition,
+      //   transform.localScale,
+      //   transform.origin,
+      // );
 
-    // apply skew2D
-    if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
-      const tmpMat4 = mat4.identity(mat4.create());
-      tmpMat4[4] = Math.tan(transform.localSkew[0]);
-      tmpMat4[1] = Math.tan(transform.localSkew[1]);
-      mat4.multiply(transform.localTransform, transform.localTransform, tmpMat4);
-    }
+      mat4.fromRotationTranslationScaleOrigin(
+        transform.localTransform,
+        transform.localRotation,
+        transform.localPosition,
+        vec3.fromValues(1, 1, 1),
+        transform.origin,
+      );
 
-    const scaling = mat4.fromRotationTranslationScaleOrigin(
-      mat4.create(),
-      quat.fromValues(0, 0, 0, 1),
-      vec3.create(),
-      transform.localScale,
-      transform.origin,
-    );
-    mat4.multiply(transform.localTransform, transform.localTransform, scaling);
-  }
+      // apply skew2D
+      if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
+        const tmpMat4 = mat4.identity(tmpMat);
+        tmpMat4[4] = Math.tan(transform.localSkew[0]);
+        tmpMat4[1] = Math.tan(transform.localSkew[1]);
+        mat4.multiply(transform.localTransform, transform.localTransform, tmpMat4);
+      }
+
+      const scaling = mat4.fromRotationTranslationScaleOrigin(
+        tmpMat,
+        tmpQuat,
+        tmpPosition,
+        transform.localScale,
+        transform.origin,
+      );
+      mat4.multiply(transform.localTransform, transform.localTransform, scaling);
+    };
+  })();
 
   getLocalTransform(element: INode) {
     const transform = (element as Element).transformable;
@@ -637,10 +646,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.setLocalSkew(element, [0, 0]);
   }
 
-  private getTransformedGeometryBounds(element: INode, render = false): AABB | null {
+  private getTransformedGeometryBounds(
+    element: INode,
+    render = false,
+    existedAABB?: AABB,
+  ): AABB | null {
     const bounds = this.getGeometryBounds(element, render);
     if (!AABB.isEmpty(bounds)) {
-      const aabb = new AABB();
+      const aabb = existedAABB || new AABB();
       aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
       return aabb;
     } else {
@@ -672,8 +685,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
       return renderable.renderBounds;
     }
 
+    // reuse existed if possible
+    const existedAABB = render ? renderable.renderBounds : renderable.bounds;
+
     // reset with geometry's aabb
-    let aabb: AABB = this.getTransformedGeometryBounds(element, render);
+    let aabb: AABB = this.getTransformedGeometryBounds(element, render, existedAABB);
 
     // merge children's aabbs
     const children = element.childNodes as IElement[];
@@ -681,7 +697,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       const childBounds = this.getBounds(child, render);
       if (childBounds) {
         if (!aabb) {
-          aabb = new AABB();
+          aabb = existedAABB || new AABB();
           aabb.update(childBounds.center, childBounds.halfExtents);
         } else {
           aabb.add(childBounds);

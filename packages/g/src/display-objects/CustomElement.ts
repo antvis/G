@@ -47,6 +47,8 @@ export abstract class CustomElement<
     name: Key,
     oldValue: CustomElementStyleProps[Key],
     newValue: CustomElementStyleProps[Key],
+    oldParsedValue?: any,
+    newParsedValue?: any,
   ): void;
 
   // private handleMounted = (e: FederatedEvent) => {

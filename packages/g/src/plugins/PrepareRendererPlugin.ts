@@ -38,6 +38,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     });
   }
 
+  // private isFirstTimeRendering = true;
+
   apply(renderingService: RenderingService) {
     const handleAttributeChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -109,6 +111,14 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
+      // if (this.isFirstTimeRendering) {
+      //   // @see https://github.com/antvis/G/issues/1117
+      //   setTimeout(() => this.syncRTree());
+      //   this.isFirstTimeRendering = false;
+      // } else {
+      //   this.syncRTree();
+      // }
+
       this.syncRTree();
     });
   }

@@ -1,5 +1,5 @@
-import type { DisplayObject, Line, ParsedLineStyleProps } from '@antv/g';
-import { injectable } from '@antv/g';
+import type { Line, ParsedLineStyleProps, Path, Polyline } from '@antv/g';
+import { DisplayObject, injectable, Shape } from '@antv/g';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';
@@ -61,12 +61,88 @@ export class InstancedLineMesh extends Instanced {
     const indices: number[] = [];
     let offset = 0;
     objects.forEach((object) => {
-      const line = object as Line;
-      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } =
-        line.parsedStyle as ParsedLineStyleProps;
+      let parsedLineStyleProps: Partial<ParsedLineStyleProps>;
+      let totalLength: number;
+      if (object.nodeName === Shape.LINE) {
+        parsedLineStyleProps = (object as Line).parsedStyle;
+        totalLength = (object as Line).getTotalLength();
+      } else if (object.nodeName === Shape.POLYLINE) {
+        const {
+          points: { points },
+          defX,
+          defY,
+          lineCap,
+          markerStart,
+          markerEnd,
+          markerStartOffset,
+          markerEndOffset,
+        } = (object as Polyline).parsedStyle;
+        parsedLineStyleProps = {
+          // @ts-ignore
+          x1: { value: points[0][0] },
+          // @ts-ignore
+          y1: { value: points[0][1] },
+          // @ts-ignore
+          x2: { value: points[points.length - 1][0] },
+          // @ts-ignore
+          y2: { value: points[points.length - 1][1] },
+          // @ts-ignore
+          z1: { value: 0 },
+          // @ts-ignore
+          z2: { value: 0 },
+          defX,
+          defY,
+          lineCap,
+          isBillboard: true,
+          markerStart,
+          markerEnd,
+          markerStartOffset,
+          markerEndOffset,
+        };
+        totalLength = (object as Polyline).getTotalLength();
+      } else if (object.nodeName === Shape.PATH) {
+        const {
+          path: { curve },
+          defX,
+          defY,
+          lineCap,
+          markerStart,
+          markerEnd,
+          markerStartOffset,
+          markerEndOffset,
+        } = (object as Path).parsedStyle;
+        parsedLineStyleProps = {
+          // @ts-ignore
+          x1: { value: curve[0][1] },
+          // @ts-ignore
+          y1: { value: curve[0][2] },
+          // @ts-ignore
+          x2: { value: curve[1][5] },
+          // @ts-ignore
+          y2: { value: curve[1][6] },
+          // @ts-ignore
+          z1: { value: 0 },
+          // @ts-ignore
+          z2: { value: 0 },
+          defX,
+          defY,
+          lineCap,
+          isBillboard: true,
+          markerStart,
+          markerEnd,
+          markerStartOffset,
+          markerEndOffset,
+        };
+        totalLength = (object as Path).getTotalLength();
+      }
 
+      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } = parsedLineStyleProps;
+
+      const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
+        this.calcOffset(parsedLineStyleProps);
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
-        object as Line,
+        parsedLineStyleProps,
+        totalLength,
       );
 
       packedCap.push(
@@ -82,11 +158,11 @@ export class InstancedLineMesh extends Instanced {
       );
 
       interleaved.push(
-        x1.value - defX,
-        y1.value - defY,
+        x1.value - defX + startOffsetX,
+        y1.value - defY + startOffsetY,
         z1.value,
-        x2.value - defX,
-        y2.value - defY,
+        x2.value - defX + endOffsetX,
+        y2.value - defY + endOffsetY,
         z2.value,
       );
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
@@ -177,17 +253,102 @@ export class InstancedLineMesh extends Instanced {
       name === 'x2' ||
       name === 'y2' ||
       name === 'z1' ||
-      name === 'z2'
+      name === 'z2' ||
+      name === 'markerStartOffset' ||
+      name === 'markerEndOffset' ||
+      name === 'markerStart' ||
+      name === 'markerEnd' ||
+      name === 'points' ||
+      name === 'path'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { x1, y1, x2, y2, z1, z2, defX, defY } = object.parsedStyle as ParsedLineStyleProps;
+        let parsedLineStyleProps: Partial<ParsedLineStyleProps>;
+        if (object.nodeName === Shape.LINE) {
+          parsedLineStyleProps = (object as Line).parsedStyle;
+        } else if (
+          object.nodeName === Shape.POLYLINE &&
+          object.renderable.proxyNodeName === Shape.LINE
+        ) {
+          const {
+            points: { points },
+            defX,
+            defY,
+            lineCap,
+            markerStart,
+            markerEnd,
+            markerStartOffset,
+            markerEndOffset,
+          } = (object as Polyline).parsedStyle;
+          parsedLineStyleProps = {
+            // @ts-ignore
+            x1: { value: points[0][0] },
+            // @ts-ignore
+            y1: { value: points[0][1] },
+            // @ts-ignore
+            x2: { value: points[points.length - 1][0] },
+            // @ts-ignore
+            y2: { value: points[points.length - 1][1] },
+            // @ts-ignore
+            z1: { value: 0 },
+            // @ts-ignore
+            z2: { value: 0 },
+            defX,
+            defY,
+            lineCap,
+            isBillboard: true,
+            markerStart,
+            markerEnd,
+            markerStartOffset,
+            markerEndOffset,
+          };
+        } else if (
+          object.nodeName === Shape.PATH &&
+          object.renderable.proxyNodeName === Shape.LINE
+        ) {
+          const {
+            path: { curve },
+            defX,
+            defY,
+            lineCap,
+            markerStart,
+            markerEnd,
+            markerStartOffset,
+            markerEndOffset,
+          } = (object as Path).parsedStyle;
+          parsedLineStyleProps = {
+            // @ts-ignore
+            x1: { value: curve[0][1] },
+            // @ts-ignore
+            y1: { value: curve[0][2] },
+            // @ts-ignore
+            x2: { value: curve[1][5] },
+            // @ts-ignore
+            y2: { value: curve[1][6] },
+            // @ts-ignore
+            z1: { value: 0 },
+            // @ts-ignore
+            z2: { value: 0 },
+            defX,
+            defY,
+            lineCap,
+            isBillboard: true,
+            markerStart,
+            markerEnd,
+            markerStartOffset,
+            markerEndOffset,
+          };
+        }
+
+        const { x1, y1, x2, y2, z1, z2, defX, defY } = parsedLineStyleProps;
+        const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
+          this.calcOffset(parsedLineStyleProps);
         packed.push(
-          x1.value - defX,
-          y1.value - defY,
+          x1.value - defX + startOffsetX,
+          y1.value - defY + startOffsetY,
           z1.value,
-          x2.value - defX,
-          y2.value - defY,
+          x2.value - defX + endOffsetX,
+          y2.value - defY + endOffsetY,
           z2.value,
         );
       });
@@ -201,8 +362,11 @@ export class InstancedLineMesh extends Instanced {
     } else if (name === 'lineDashOffset' || name === 'lineDash') {
       const packed: number[] = [];
       objects.forEach((object) => {
+        const totalLength = (object as Line).getTotalLength();
+
         const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
-          object as Line,
+          object.parsedStyle,
+          totalLength,
         );
         packed.push(
           dashOffset,
@@ -233,9 +397,45 @@ export class InstancedLineMesh extends Instanced {
     }
   }
 
-  private calcDash(line: Line) {
-    const { lineDash, lineDashOffset } = line.parsedStyle as ParsedLineStyleProps;
-    const totalLength = line.getTotalLength();
+  private calcOffset(parsedStyle: Partial<ParsedLineStyleProps>) {
+    const { x1, y1, x2, y2, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+      parsedStyle;
+
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+    let endOffsetX = 0;
+    let endOffsetY = 0;
+
+    let rad = 0;
+    let x: number;
+    let y: number;
+
+    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+      x = x2.value - x1.value;
+      y = y2.value - y1.value;
+      rad = Math.atan2(y, x);
+      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+    }
+
+    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+      x = x1.value - x2.value;
+      y = y1.value - y2.value;
+      rad = Math.atan2(y, x);
+      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+    }
+
+    return {
+      startOffsetX,
+      startOffsetY,
+      endOffsetX,
+      endOffsetY,
+    };
+  }
+
+  private calcDash(parsedLineStyle: Partial<ParsedLineStyleProps>, totalLength: number) {
+    const { lineDash, lineDashOffset } = parsedLineStyle;
     let dashOffset = 0;
     let dashSegmentPercent = 1;
     let dashRatioInEachSegment = 0;

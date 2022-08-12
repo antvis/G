@@ -63,3 +63,94 @@ polygon.style.points = [
 ```
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
+
+## markerStart
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStart](/zh/docs/api/basic/polyline#markerstart) 属性。
+
+但和 Polyline 不同的是，由于多边形是**闭合**的，因此 “起始点” 和 “终止点” 的位置是完全重合的，由 [points](/zh/docs/api/basic/polygon#points) 中的第一个点决定。这也与 SVG 原生实现保持一致，下图展示了同时定义 markerStart 和 markerEnd 后的重合效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*mXYATLithEUAAAAAAAAAAAAAARQnAQ" alt="polygon end/start overlap" width="400">
+
+在该[示例](/zh/examples/shape#polygon)中，我们在多边形的“起始点”上放置了一个箭头：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RRPTRIpZoUIAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
+
+```js
+const arrowMarker = new Path({
+    style: {
+        path: 'M 10,10 L -10,0 L 10,-10 Z',
+        stroke: '#1890FF',
+        anchor: '0.5 0.5',
+        transformOrigin: 'center',
+    },
+});
+
+polygon.style.markerStart = arrowMarker;
+```
+
+## markerEnd
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEnd](/zh/docs/api/basic/polyline#markerend) 属性。
+
+但和 Polyline 不同的是，由于多边形是**闭合**的，因此 “起始点” 和 “终止点” 的位置是完全重合的。“终止点” 由 [points](/zh/docs/api/basic/polygon#points) 中的第一个点决定。
+
+在该[示例](/zh/examples/shape#polygon)中，我们在多边形的终止点上放置了一个图片：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*eZHETJ0B3lkAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
+
+```js
+const imageMarker = new Image({
+    style: {
+        width: 50,
+        height: 50,
+        anchor: [0.5, 0.5],
+        transformOrigin: 'center',
+        transform: 'rotate(90deg)',
+        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
+});
+
+polygon.style.markerEnd = imageMarker;
+```
+
+## markerMid
+
+可以参考 SVG 的[同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)。
+
+在多边形除了 “起始点” / “终止点” 之外的每一个顶点上放置标记图形。
+
+例如下图中在多边形上除首尾的每个顶点上都放置了一个 [Circle](/zh/docs/api/basic/circle)：
+
+```js
+const circleMarker = new Circle({
+    style: {
+        r: 10,
+        stroke: '#1890FF',
+    },
+});
+
+polygon.style.markerMid = circleMarker;
+```
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jaFPRbpzpJwAAAAAAAAAAAAAARQnAQ" alt="marker mid" width="200">
+
+## markerStartOffset
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStartOffset](/zh/docs/api/basic/polyline#markerstartoffset) 属性。
+
+沿多边形的第一个线段方向移动标记图形，同时会改变原始多边形的形状。
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4l7xQoYcXngAAAAAAAAAAAAAARQnAQ" alt="marker start offset">
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+
+## markerEndOffset
+
+可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEndOffset](/zh/docs/api/basic/polyline#markerendoffset) 属性。
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
