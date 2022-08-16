@@ -81,7 +81,7 @@ describe('CSSPropertyLengthOrPercentage', () => {
     expect(circle.getAttribute('cx')).to.be.null;
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     expect(computed.toString()).to.be.eqls('unset');
-    expect(circle.parsedStyle.cx.equals(CSS.px(0))).to.be.true;
+    expect(circle.parsedStyle.cx).to.be.eqls(0);
 
     circle.animate(
       [
@@ -101,13 +101,13 @@ describe('CSSPropertyLengthOrPercentage', () => {
     expect(circle.getAttribute('cx')).to.be.eqls('1em');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     expect(computed.equals(CSS.em(1))).to.be.true;
-    expect(circle.parsedStyle.cx.equals(CSS.px(16))).to.be.true;
+    expect(circle.parsedStyle.cx).to.be.eqls(16);
 
     // rem
     circle.style.cx = '2rem';
     expect(circle.getAttribute('cx')).to.be.eqls('2rem');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     expect(computed.equals(CSS.rem(2))).to.be.true;
-    expect(circle.parsedStyle.cx.equals(CSS.px(32))).to.be.true;
+    expect(circle.parsedStyle.cx).to.be.eqls(32);
   });
 });

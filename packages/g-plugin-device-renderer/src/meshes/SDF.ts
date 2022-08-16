@@ -171,10 +171,10 @@ export class SDFMesh extends Instanced {
     let size: [number, number] = [0, 0];
     if (tagName === Shape.CIRCLE) {
       const { r } = parsed as ParsedCircleStyleProps;
-      size = [r.value, r.value];
+      size = [r, r];
     } else if (tagName === Shape.ELLIPSE) {
       const { rx, ry } = parsed as ParsedEllipseStyleProps;
-      size = [rx.value, ry.value];
+      size = [rx, ry];
     }
 
     return size;
@@ -183,16 +183,16 @@ export class SDFMesh extends Instanced {
   private shouldOmitStroke(parsedStyle: ParsedBaseStyleProps) {
     const { lineDash, stroke, strokeOpacity } = parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
-    const hasStrokeOpacity = strokeOpacity.value < 1;
+    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+    const hasStrokeOpacity = strokeOpacity < 1;
     return !hasStroke || (hasStroke && (hasLineDash || hasStrokeOpacity));
   }
 
   private needDrawStrokeSeparately(parsedStyle: ParsedBaseStyleProps) {
     const { stroke, lineDash, lineWidth, strokeOpacity } = parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
-    const hasStrokeOpacity = strokeOpacity.value < 1;
-    return hasStroke && lineWidth.value > 0 && (hasLineDash || hasStrokeOpacity);
+    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+    const hasStrokeOpacity = strokeOpacity < 1;
+    return hasStroke && lineWidth > 0 && (hasLineDash || hasStrokeOpacity);
   }
 }

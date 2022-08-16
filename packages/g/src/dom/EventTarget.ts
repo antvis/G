@@ -142,6 +142,10 @@ export class EventTarget implements IEventTarget {
     // assign event manager
     if (canvas) {
       e.manager = canvas.getEventService() || null;
+      if (!e.manager) {
+        return false;
+      }
+
       e.defaultPrevented = false;
       e.path = [];
       e.target = this;

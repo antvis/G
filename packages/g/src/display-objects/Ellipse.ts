@@ -1,4 +1,3 @@
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -11,10 +10,10 @@ export interface EllipseStyleProps extends BaseStyleProps {
   ry: number | string;
 }
 export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
-  cx: CSSUnitValue;
-  cy: CSSUnitValue;
-  rx: CSSUnitValue;
-  ry: CSSUnitValue;
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
 }
 export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps> = {}) {

@@ -1,10 +1,9 @@
+import { Group, Text } from '@antv/g';
 import chai, { expect } from 'chai';
-import { Text, Group, CSS } from '@antv/g';
 import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 
@@ -33,7 +32,7 @@ describe('Text', () => {
 
     // parse font size with unit
     text.style.fontSize = '40px';
-    expect(text.parsedStyle.fontSize.equals(CSS.px(40))).to.be.true;
+    expect(text.parsedStyle.fontSize).eqls(40);
 
     expect(text.nodeValue).eqls('这是测试文本This is text');
     expect(text.textContent).eqls('这是测试文本This is text');

@@ -424,7 +424,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
     const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
-    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
 
     let fillPaint: Paint = null;
     let strokePaint: Paint = null;
@@ -441,15 +441,15 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(fill.r) / 255,
           Number(fill.g) / 255,
           Number(fill.b) / 255,
-          Number(fill.alpha) * fillOpacity.value * opacity.value,
+          Number(fill.alpha) * fillOpacity * opacity,
         );
       } else if (Array.isArray(fill)) {
-        fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+        fillPaint.setAlphaf(fillOpacity * opacity);
         const shader = this.generateGradientsShader(object, fill);
         fillPaint.setShader(shader);
         shader.delete();
       } else if (isPattern(fill)) {
-        fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+        fillPaint.setAlphaf(fillOpacity * opacity);
         const shader = this.generatePattern(object, fill);
         if (shader) {
           fillPaint.setShader(shader);
@@ -463,7 +463,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       /**
        * stroke
        */
-      if (!isNil(lineWidth) && lineWidth.value > 0) {
+      if (lineWidth > 0) {
         strokePaint.setAntiAlias(true);
         strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
         if (stroke instanceof CSSRGB && !stroke.isNone) {
@@ -472,16 +472,16 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
               Number(stroke.r) / 255,
               Number(stroke.g) / 255,
               Number(stroke.b) / 255,
-              Number(stroke.alpha) * strokeOpacity.value * opacity.value,
+              Number(stroke.alpha) * strokeOpacity * opacity,
             ),
           );
         } else if (Array.isArray(stroke)) {
-          strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
+          strokePaint.setAlphaf(strokeOpacity * opacity);
           const shader = this.generateGradientsShader(object, stroke);
           strokePaint.setShader(shader);
           shader.delete();
         } else if (isPattern(stroke)) {
-          strokePaint.setAlphaf(strokeOpacity.value * opacity.value);
+          strokePaint.setAlphaf(strokeOpacity * opacity);
           const shader = this.generatePattern(object, stroke);
           if (shader) {
             strokePaint.setShader(shader);
@@ -489,30 +489,25 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           }
         }
 
-        strokePaint.setStrokeWidth(lineWidth.value);
+        strokePaint.setStrokeWidth(lineWidth);
         const STROKE_CAP_MAP = {
           butt: CanvasKit.StrokeCap.Butt,
           round: CanvasKit.StrokeCap.Round,
           square: CanvasKit.StrokeCap.Square,
         };
-        strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap.value]);
+        strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap]);
         const STROKE_JOIN_MAP = {
           bevel: CanvasKit.StrokeJoin.Bevel,
           round: CanvasKit.StrokeJoin.Round,
           miter: CanvasKit.StrokeJoin.Miter,
         };
-        strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin.value]);
+        strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin]);
         if (!isNil(miterLimit)) {
-          strokePaint.setStrokeMiter(miterLimit.value);
+          strokePaint.setStrokeMiter(miterLimit);
         }
 
         if (lineDash) {
-          strokePaint.setPathEffect(
-            CanvasKit.PathEffect.MakeDash(
-              lineDash.map((d) => d.value),
-              lineDashOffset?.value || 0,
-            ),
-          );
+          strokePaint.setPathEffect(CanvasKit.PathEffect.MakeDash(lineDash, lineDashOffset || 0));
         }
       }
     }
@@ -528,7 +523,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      const blurSigma = ((shadowBlur && shadowBlur?.value) || 0) / 2;
+      const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
       shadowFillPaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
@@ -544,7 +539,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(shadowColor.alpha),
         ),
       );
-      const blurSigma = ((shadowBlur && shadowBlur?.value) || 0) / 2;
+      const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
       shadowStrokePaint.setMaskFilter(
         CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
       );
@@ -570,8 +565,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
-    const translateX = -(((anchor && anchor[0].value) || 0) * width);
-    const translateY = -(((anchor && anchor[1].value) || 0) * height);
+    const translateX = -(((anchor && anchor[0]) || 0) * width);
+    const translateY = -(((anchor && anchor[1]) || 0) * height);
     if (translateX !== 0 || translateY !== 0) {
       // apply anchor, use true size, not include stroke,
       // eg. bounds = true size + half lineWidth

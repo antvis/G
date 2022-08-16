@@ -1,3 +1,4 @@
+import { memoize } from '@antv/util';
 import { clamp, isString } from '../../utils';
 import { CSSUnitValue } from '../cssom';
 
@@ -14,7 +15,7 @@ export function numberToString(x: number) {
  * * 0 -> CSSUnitValue(0)
  * * '2' -> CSSUnitValue(2)
  */
-export function parseNumber(string: string | number): CSSUnitValue {
+export const parseNumber = memoize((string: string | number): CSSUnitValue => {
   if (typeof string === 'number') {
     return new CSSUnitValue(string);
   }
@@ -23,46 +24,43 @@ export function parseNumber(string: string | number): CSSUnitValue {
   } else {
     return new CSSUnitValue(0);
   }
-}
+});
 
 /**
  * separate string to array
  * eg.
  * * [0.5, 0.5] -> [CSSUnitValue, CSSUnitValue]
  */
-export function parseNumberList(string: string | number[]): CSSUnitValue[] {
+export const parseNumberList = memoize((string: string | number[]): CSSUnitValue[] => {
   if (isString(string)) {
     return string.split(' ').map(parseNumber);
   } else {
     return string.map(parseNumber);
   }
-}
+});
 
-export function mergeNumbers(
-  left: CSSUnitValue,
-  right: CSSUnitValue,
-): [number, number, (n: number) => string] {
-  return [left.value, right.value, numberToString];
+export function mergeNumbers(left: number, right: number): [number, number, (n: number) => string] {
+  return [left, right, numberToString];
 }
 
 export function clampedMergeNumbers(min: number, max: number) {
-  return (left: CSSUnitValue, right: CSSUnitValue): [number, number, (i: number) => string] => [
-    left.value,
-    right.value,
+  return (left: number, right: number): [number, number, (i: number) => string] => [
+    left,
+    right,
     (x: number) => numberToString(clamp(x, min, max)),
   ];
 }
 
 export function mergeNumberLists(
-  left: CSSUnitValue[],
-  right: CSSUnitValue[],
+  left: number[],
+  right: number[],
 ): [number[], number[], (numberList: number[]) => number[]] | undefined {
   if (left.length !== right.length) {
     return;
   }
   return [
-    left.map((l) => l.value),
-    right.map((l) => l.value),
+    left,
+    right,
     (numberList: number[]) => {
       return numberList;
     },

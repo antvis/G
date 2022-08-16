@@ -21,11 +21,11 @@ export class RectRenderer implements RendererContribution {
       object.parsedStyle as ParsedRectStyleProps;
 
     const [r1, r2, r3, r4] = radius.map((r) =>
-      clamp(r.value, 0, Math.min(Math.abs(width.value) / 2, Math.abs(height.value) / 2)),
+      clamp(r, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2)),
     );
 
-    const flipY = width.value < 0;
-    const flipX = height.value < 0;
+    const flipY = width < 0;
+    const flipX = height < 0;
 
     let tlr: number;
     let trr: number;
@@ -53,14 +53,14 @@ export class RectRenderer implements RendererContribution {
       blr = r3;
     }
 
-    const rrect = [0, 0, width.value, height.value, tlr, tlr, trr, trr, brr, brr, blr, blr];
+    const rrect = [0, 0, width, height, tlr, tlr, trr, trr, brr, brr, blr, blr];
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawRRect(
         [
-          (shadowOffsetX?.value || 0) / 2,
-          (shadowOffsetY?.value || 0) / 2,
-          width.value + (shadowOffsetX?.value || 0) / 2,
-          height.value + (shadowOffsetY?.value || 0) / 2,
+          (shadowOffsetX || 0) / 2,
+          (shadowOffsetY || 0) / 2,
+          width + (shadowOffsetX || 0) / 2,
+          height + (shadowOffsetY || 0) / 2,
           tlr,
           tlr,
           trr,

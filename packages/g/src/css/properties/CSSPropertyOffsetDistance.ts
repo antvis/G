@@ -12,8 +12,12 @@ import { clampedMergeNumbers, parseNumber } from '../parser/numeric';
     named: PropertySyntax.OFFSET_DISTANCE,
   },
 })
-export class CSSPropertyOffsetDistance implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+export class CSSPropertyOffsetDistance implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseNumber;
+
+  calculator(name: string, oldParsed: CSSUnitValue, computed: CSSUnitValue): number {
+    return computed.value;
+  }
 
   mixer = clampedMergeNumbers(0, 1);
 
@@ -28,7 +32,7 @@ export class CSSPropertyOffsetDistance implements Partial<CSSProperty<CSSUnitVal
       offsetPathNodeName === Shape.PATH ||
       offsetPathNodeName === Shape.POLYLINE
     ) {
-      const point = object.attributes.offsetPath.getPoint(object.parsedStyle.offsetDistance.value);
+      const point = object.attributes.offsetPath.getPoint(object.parsedStyle.offsetDistance);
       if (point) {
         object.setLocalPosition(point.x, point.y);
       }

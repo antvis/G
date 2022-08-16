@@ -15,6 +15,7 @@ import {
   CSSRGB,
   DefaultCamera,
   ElementEvent,
+  getMetadata,
   inject,
   RenderingContext,
   RenderingPluginContribution,
@@ -61,7 +62,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   endArrow: 'marker-end',
   class: 'class',
   id: 'id',
-  style: 'style',
+  // style: 'style',
   preserveAspectRatio: 'preserveAspectRatio',
   visibility: 'visibility',
   anchor: 'anchor',
@@ -385,12 +386,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!this.styleValueRegistry.getMetadata(name)?.inherited;
+      const inherited = !!getMetadata(name)?.inherited;
+
+      if (!usedName) {
+        return;
+      }
 
       // <foreignObject>
       if (object.nodeName === Shape.HTML) {
         if (name === 'lineWidth') {
-          $el.style['border-width'] = `${usedValue.value || 0}px`;
+          $el.style['border-width'] = `${usedValue || 0}px`;
         } else if (name === 'lineDash') {
           $el.style['border-style'] = 'dashed';
         }
@@ -409,15 +414,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
         } else {
           this.defElementManager.createOrUpdateGradientAndPattern(object, $el, usedValue, usedName);
         }
-      } else if (
-        inherited &&
-        usedName &&
-        computedValueStr !== 'unset' &&
-        computedValueStr !== DEFAULT_VALUE_MAP[name]
-      ) {
+      } else if (inherited && usedName) {
         // use computed value
         // update `visibility` on <group>
-        $groupEl?.setAttribute(usedName, formattedValueStr);
+        if (computedValueStr !== 'unset' && computedValueStr !== DEFAULT_VALUE_MAP[name]) {
+          $groupEl?.setAttribute(usedName, formattedValueStr);
+        } else {
+          $groupEl?.removeAttribute(usedName);
+        }
       } else if (name === 'clipPath') {
         this.createOrUpdateClipPath(document, usedValue, $groupEl);
       } else if (
@@ -523,8 +527,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     const svgElement = object.elementSVG as ElementSVG;
     let $hitTestingEl = svgElement.$hitTestingEl;
-    const increasedLineWidthForHitTesting =
-      object.parsedStyle.increasedLineWidthForHitTesting?.value;
+    const increasedLineWidthForHitTesting = object.parsedStyle.increasedLineWidthForHitTesting;
 
     // account for hitArea
     if (increasedLineWidthForHitTesting) {
@@ -548,7 +551,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // increase interactive line width
       $hitTestingEl.setAttribute(
         'stroke-width',
-        `${increasedLineWidthForHitTesting + object.parsedStyle.lineWidth?.value}`,
+        `${increasedLineWidthForHitTesting + object.parsedStyle.lineWidth}`,
       );
     } else {
       if ($hitTestingEl) {
@@ -622,8 +625,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
       if ($el) {
-        const tx = -(anchor[0].value * width);
-        const ty = -(anchor[1].value * height);
+        const tx = -(anchor[0] * width);
+        const ty = -(anchor[1] * height);
 
         if (tx !== 0 || ty !== 0) {
           // apply anchor to element's `transform` property

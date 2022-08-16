@@ -1,18 +1,17 @@
 import { inject, singleton, Syringe } from 'mana-syringe';
-import type { LayoutWorkTask } from './LayoutWorkTask';
-import type { LayoutTaskType } from './types';
-import type { ContextId } from './types';
 import type { FragmentResultFactory } from './FragmentResult';
 import type { LayoutChildrenFactory } from './LayoutChildren';
 import type { LayoutFragmentFactory } from './LayoutFragment';
+import type { LayoutWorkTask } from './LayoutWorkTask';
+import type { ContextId, LayoutTaskType } from './types';
 
-export const LayoutContextFactory = Syringe.defineToken('LayoutContextFactory');
+export const LayoutContextFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutContextFactory {
   (options: { mode: LayoutTaskType }): LayoutContext;
 }
 
-export const LayoutContextOptions = Syringe.defineToken('LayoutContextOptions');
+export const LayoutContextOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutContextOptions {
   mode: LayoutTaskType;

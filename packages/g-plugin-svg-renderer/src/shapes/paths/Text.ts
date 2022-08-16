@@ -29,13 +29,10 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
   const browser = detect();
   if (browser && browser.name === 'firefox') {
     // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
-    $el.setAttribute(
-      'dominant-baseline',
-      BASELINE_MAP_FOR_FIREFOX[textBaseline.value] || 'alphabetic',
-    );
+    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline] || 'alphabetic');
   } else {
-    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline.value]);
-    $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline.value]);
+    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline]);
+    $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline]);
   }
 
   $el.setAttribute('paint-order', 'stroke');
@@ -43,26 +40,26 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
 
   const lineNum = lines.length;
 
-  $el.setAttribute('style', `transform:translate(${dx.toString()}, ${dy.toString()});`);
+  $el.setAttribute('style', `transform:translate(${dx}px, ${dy}px);`);
 
   if (lineNum === 1) {
     $el.innerHTML = convertHTML(lines[0]);
-    $el.setAttribute('dx', `${lineWidth.value / 2}`);
+    $el.setAttribute('dx', `${lineWidth / 2}`);
   } else {
     $el.innerHTML = lines
       .map((line: string, i: number) => {
-        const dx = lineWidth.value / 2;
+        const dx = lineWidth / 2;
         let dy = 0;
         if (i === 0) {
           // TODO: handle other textBaseline values
-          if (textBaseline.value === 'middle') {
+          if (textBaseline === 'middle') {
             dy = lineHeight / 2 - height / 2;
-          } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+          } else if (textBaseline === 'top' || textBaseline === 'hanging') {
             dy = 0;
           } else if (
-            textBaseline.value === 'bottom' ||
-            textBaseline.value === 'alphabetic' ||
-            textBaseline.value === 'ideographic'
+            textBaseline === 'bottom' ||
+            textBaseline === 'alphabetic' ||
+            textBaseline === 'ideographic'
           ) {
             dy = -lineHeight * (lineNum - 1);
           }

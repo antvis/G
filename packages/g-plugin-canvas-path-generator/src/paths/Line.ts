@@ -25,21 +25,21 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
   let y: number;
 
   if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
-    x = x2.value - x1.value;
-    y = y2.value - y1.value;
+    x = x2 - x1;
+    y = y2 - y1;
     rad = Math.atan2(y, x);
-    startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-    startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+    startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+    startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
   if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
-    x = x1.value - x2.value;
-    y = y1.value - y2.value;
+    x = x1 - x2;
+    y = y1 - y2;
     rad = Math.atan2(y, x);
-    endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-    endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+    endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+    endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
-  context.moveTo(x1.value - defX + startOffsetX, y1.value - defY + startOffsetY);
-  context.lineTo(x2.value - defX + endOffsetX, y2.value - defY + endOffsetY);
+  context.moveTo(x1 - defX + startOffsetX, y1 - defY + startOffsetY);
+  context.lineTo(x2 - defX + endOffsetX, y2 - defY + endOffsetY);
 }

@@ -178,8 +178,8 @@ export class TextService {
     // fallback in case UA disallow canvas data extraction
     // (toDataURI, getImageData functions)
     if (fontProperties.fontSize === 0) {
-      fontProperties.fontSize = fontSize.value as number;
-      fontProperties.ascent = fontSize.value as number;
+      fontProperties.fontSize = fontSize;
+      fontProperties.ascent = fontSize;
     }
 
     const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
@@ -190,18 +190,18 @@ export class TextService {
     const lineWidths = new Array<number>(lines.length);
     let maxLineWidth = 0;
     for (let i = 0; i < lines.length; i++) {
-      const lineWidth =
-        context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing.value;
+      const lineWidth = context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
       lineWidths[i] = lineWidth;
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
-    const width = maxLineWidth + lineWidth.value;
+    const width = maxLineWidth + lineWidth;
+
     // if (dropShadow) {
     //   width += dropShadowDistance;
     // }
-    let lineHeight = strokeHeight.value || fontProperties.fontSize + lineWidth.value;
+    let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth;
     const height =
-      Math.max(lineHeight, fontProperties.fontSize + lineWidth.value) +
+      Math.max(lineHeight, fontProperties.fontSize + lineWidth) +
       (lines.length - 1) * (lineHeight + leading);
     // if (dropShadow) {
     //   height += dropShadowDistance;
@@ -210,15 +210,15 @@ export class TextService {
 
     // handle vertical text baseline
     let offsetY = 0;
-    if (textBaseline.value === 'middle') {
+    if (textBaseline === 'middle') {
       offsetY = -height / 2;
     } else if (
-      textBaseline.value === 'bottom' ||
-      textBaseline.value === 'alphabetic' ||
-      textBaseline.value === 'ideographic'
+      textBaseline === 'bottom' ||
+      textBaseline === 'alphabetic' ||
+      textBaseline === 'ideographic'
     ) {
       offsetY = -height;
-    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       offsetY = 0;
     }
 
@@ -234,16 +234,16 @@ export class TextService {
       lineMetrics: lineWidths.map((width, i) => {
         let offsetX = 0;
         // handle horizontal text align
-        if (textAlign.value === 'center') {
+        if (textAlign === 'center') {
           offsetX -= width / 2;
-        } else if (textAlign.value === 'right' || textAlign.value === 'end') {
+        } else if (textAlign === 'right' || textAlign === 'end') {
           offsetX -= width;
         }
 
         return new Rectangle(
-          offsetX - lineWidth.value / 2,
+          offsetX - lineWidth / 2,
           offsetY + i * lineHeight,
-          width + lineWidth.value,
+          width + lineWidth,
           lineHeight,
         );
       }),
@@ -256,7 +256,7 @@ export class TextService {
     offscreenCanvas: CanvasLike,
   ): string {
     const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
-    const maxWidth = wordWrapWidth + letterSpacing.value;
+    const maxWidth = wordWrapWidth + letterSpacing;
 
     let lines: string[] = [];
     let currentIndex = 0;
@@ -264,12 +264,7 @@ export class TextService {
 
     const cache: { [key in string]: number } = {};
     const calcWidth = (char: string): number => {
-      return this.getFromCache(
-        char,
-        letterSpacing.value,
-        cache,
-        context as CanvasRenderingContext2D,
-      );
+      return this.getFromCache(char, letterSpacing, cache, context as CanvasRenderingContext2D);
     };
 
     Array.from(text).forEach((char: string, i: number) => {

@@ -263,8 +263,8 @@ export class Box2DPlugin implements RenderingPlugin {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md39
       shape = new b2EdgeShape();
       const points = sortPointsInCCW([
-        [x1.value, y1.value],
-        [x2.value, y2.value],
+        [x1, y1],
+        [x2, y2],
       ]);
       // @ts-ignore
       shape.SetTwoSided(
@@ -292,17 +292,12 @@ export class Box2DPlugin implements RenderingPlugin {
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
       // @ts-ignore
-      shape.SetAsBox(
-        width.value / 2,
-        height.value / 2,
-        new b2Vec2(width.value / 2, height.value / 2),
-        0,
-      );
+      shape.SetAsBox(width / 2, height / 2, new b2Vec2(width / 2, height / 2), 0);
     } else if (nodeName === Shape.CIRCLE) {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md37
       const { r } = parsedStyle as ParsedCircleStyleProps;
       shape = new b2CircleShape();
-      shape.set_m_radius(r.value);
+      shape.set_m_radius(r);
     } else if (nodeName === Shape.ELLIPSE) {
       // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
     } else if (nodeName === Shape.POLYGON) {

@@ -45,8 +45,8 @@ export class CircleRenderer extends Batch {
 
     const hasFill = fill && !(fill as CSSRGB).isNone;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
+    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
 
-    return !hasFill || (hasStroke && lineWidth.value > 0 && (strokeOpacity.value < 1 || hasDash));
+    return !hasFill || (hasStroke && lineWidth > 0 && (strokeOpacity < 1 || hasDash));
   }
 }

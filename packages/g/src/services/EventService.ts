@@ -1,8 +1,8 @@
 import { EventEmitter } from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
 import { inject, postConstruct, singleton } from 'mana-syringe';
+import { displayObjectPool } from '..';
 import type { HTML } from '../display-objects';
-import { DisplayObjectPool } from '../DisplayObjectPool';
 import { Element } from '../dom/Element';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
@@ -48,9 +48,6 @@ export class EventService extends EventEmitter {
   @inject(CanvasConfig)
   private canvasConfig: CanvasConfig;
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
-
   private rootTarget: IEventTarget;
 
   cursor: Cursor | null = 'default';
@@ -68,6 +65,9 @@ export class EventService extends EventEmitter {
   private eventPool: Map<typeof FederatedEvent, FederatedEvent[]> = new Map();
 
   private pickHandler: Picker;
+
+  private tmpMatrix = mat4.create();
+  private tmpVec3 = vec3.create();
 
   @postConstruct()
   init() {
@@ -100,9 +100,9 @@ export class EventService extends EventEmitter {
 
     const projectionMatrixInverse = camera.getPerspectiveInverse();
     const worldMatrix = camera.getWorldTransform();
-    const vpMatrix = mat4.multiply(mat4.create(), worldMatrix, projectionMatrixInverse);
+    const vpMatrix = mat4.multiply(this.tmpMatrix, worldMatrix, projectionMatrixInverse);
 
-    const viewport = vec3.fromValues((x / width) * 2 - 1, (1 - y / height) * 2 - 1, 0);
+    const viewport = vec3.set(this.tmpVec3, (x / width) * 2 - 1, (1 - y / height) * 2 - 1, 0);
 
     vec3.transformMat4(viewport, viewport, vpMatrix);
 
@@ -116,9 +116,10 @@ export class EventService extends EventEmitter {
     // World -> Clip
     const projectionMatrix = camera.getPerspective();
     const viewMatrix = camera.getViewTransform();
-    const vpMatrix = mat4.multiply(mat4.create(), projectionMatrix, viewMatrix);
-    const clip = vec3.fromValues(canvasP.x, canvasP.y, 0);
-    vec3.transformMat4(clip, clip, vpMatrix);
+    const vpMatrix = mat4.multiply(this.tmpMatrix, projectionMatrix, viewMatrix);
+
+    const clip = vec3.set(this.tmpVec3, canvasP.x, canvasP.y, 0);
+    vec3.transformMat4(this.tmpVec3, this.tmpVec3, vpMatrix);
 
     // Clip -> NDC -> Viewport, flip Y
     const { width, height } = this.canvasConfig;
@@ -650,7 +651,7 @@ export class EventService extends EventEmitter {
 
   private getExistedHTML(event: FederatedEvent): HTML {
     if (event.nativeEvent.composedPath) {
-      const htmls = this.displayObjectPool.getHTMLs();
+      const htmls = displayObjectPool.getHTMLs();
       for (const html of htmls) {
         if (event.nativeEvent.composedPath().indexOf(html) > -1) {
           return html;

@@ -1,16 +1,12 @@
-import {
+import type {
   BaseCustomElementStyleProps,
-  Circle,
   Cursor,
-  CustomElement,
-  CustomEvent,
   DisplayObject,
   DisplayObjectConfig,
   FederatedEvent,
   ParsedBaseStyleProps,
-  rad2deg,
-  Rect,
 } from '@antv/g';
+import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 
@@ -137,7 +133,7 @@ export class SelectableRect extends CustomElement<Props> {
 
     // account for origin object's anchor such as Circle and Ellipse
     const { anchor } = target.parsedStyle as ParsedBaseStyleProps;
-    this.mask.translateLocal(-anchor[0].value * width, -anchor[1].value * height);
+    this.mask.translateLocal(-anchor[0] * width, -anchor[1] * height);
 
     // resize according to target
     this.mask.style.width = width;
@@ -292,9 +288,14 @@ export class SelectableRect extends CustomElement<Props> {
         this.blAnchor.setLocalPosition(0, maskHeight);
         this.brAnchor.setLocalPosition(maskWidth, maskHeight);
 
-        // re-position target
-        targetObject.setPosition(maskX, maskY);
-        targetObject.scale(maskWidth / originMaskWidth, maskHeight / originMaskHeight);
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MODIFIED, {
+            positionX: maskX,
+            positionY: maskY,
+            scaleX: maskWidth / originMaskWidth,
+            scaleY: maskHeight / originMaskHeight,
+          }),
+        );
       }
     });
     this.addEventListener('dragend', (e: FederatedEvent) => {
@@ -304,10 +305,7 @@ export class SelectableRect extends CustomElement<Props> {
         this.status = 'active';
       }
 
-      // targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED, {
-      //   movingX: canvasX - shiftX,
-      //   movingY: canvasY - shiftY,
-      // }));
+      targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
     });
   }
 

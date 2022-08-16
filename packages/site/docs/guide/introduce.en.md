@@ -45,7 +45,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
     -   [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
     -   [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
     -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
-    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
+    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvas2D.
     -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
     -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
 -   Picking

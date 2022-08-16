@@ -39,13 +39,12 @@ export class DefaultRenderer implements StyleRenderer {
       miterLimit,
     } = parsedStyle;
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
-    const hasStroke =
-      !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth && lineWidth.value > 0;
+    const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth > 0;
     const isFillTransparent = (fill as CSSRGB).alpha === 0;
     const hasFilter = !!(filter && filter.length);
-    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
     const nodeName = object.nodeName;
-    const isInnerShadow = shadowType?.value === 'inner';
+    const isInnerShadow = shadowType === 'inner';
     const shouldDrawShadowWithStroke =
       hasStroke &&
       hasShadow &&
@@ -56,7 +55,7 @@ export class DefaultRenderer implements StyleRenderer {
         isInnerShadow);
 
     if (hasFill) {
-      context.globalAlpha = opacity.value * fillOpacity.value;
+      context.globalAlpha = opacity * fillOpacity;
 
       if (!shouldDrawShadowWithStroke) {
         setShadowAndFilter(object, context, hasShadow);
@@ -70,18 +69,18 @@ export class DefaultRenderer implements StyleRenderer {
     }
 
     if (hasStroke) {
-      context.globalAlpha = opacity.value * strokeOpacity.value;
-      context.lineWidth = lineWidth.value;
+      context.globalAlpha = opacity * strokeOpacity;
+      context.lineWidth = lineWidth;
       if (!isNil(miterLimit)) {
-        context.miterLimit = miterLimit.value;
+        context.miterLimit = miterLimit;
       }
 
       if (!isNil(lineCap)) {
-        context.lineCap = lineCap.value as CanvasLineCap;
+        context.lineCap = lineCap;
       }
 
       if (!isNil(lineJoin)) {
-        context.lineJoin = lineJoin.value as CanvasLineJoin;
+        context.lineJoin = lineJoin;
       }
 
       if (shouldDrawShadowWithStroke) {
@@ -220,8 +219,8 @@ export function setShadowAndFilter(
 
   if (hasShadow) {
     context.shadowColor = shadowColor.toString();
-    context.shadowBlur = (shadowBlur && shadowBlur.value) || 0;
-    context.shadowOffsetX = (shadowOffsetX && shadowOffsetX.value) || 0;
-    context.shadowOffsetY = (shadowOffsetY && shadowOffsetY.value) || 0;
+    context.shadowBlur = shadowBlur || 0;
+    context.shadowOffsetX = shadowOffsetX || 0;
+    context.shadowOffsetY = shadowOffsetY || 0;
   }
 }

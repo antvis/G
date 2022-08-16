@@ -1,3 +1,4 @@
+import { memoize } from '@antv/util';
 import { isString } from '../../utils';
 import { CSSUnitValue } from '../cssom';
 import { parseLengthOrPercentage } from './dimension';
@@ -6,37 +7,39 @@ import { parseLengthOrPercentage } from './dimension';
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin
  * eg. 'center' 'top left' '50px 50px'
  */
-export function parseTransformOrigin(value: string | number[]): [CSSUnitValue, CSSUnitValue] {
-  if (isString(value)) {
-    if (value === 'text-anchor') {
-      return [new CSSUnitValue(0, 'px'), new CSSUnitValue(0, 'px')];
-    }
-
-    const values = value.split(' ');
-    if (values.length === 1) {
-      if (values[0] === 'top' || values[0] === 'bottom') {
-        // 'top' -> 'center top'
-        values[1] = values[0];
-        values[0] = 'center';
-      } else {
-        // '50px' -> '50px center'
-        values[1] = 'center';
+export const parseTransformOrigin = memoize(
+  (value: string | number[]): [CSSUnitValue, CSSUnitValue] => {
+    if (isString(value)) {
+      if (value === 'text-anchor') {
+        return [new CSSUnitValue(0, 'px'), new CSSUnitValue(0, 'px')];
       }
-    }
 
-    if (values.length !== 2) {
-      return null;
-    }
+      const values = value.split(' ');
+      if (values.length === 1) {
+        if (values[0] === 'top' || values[0] === 'bottom') {
+          // 'top' -> 'center top'
+          values[1] = values[0];
+          values[0] = 'center';
+        } else {
+          // '50px' -> '50px center'
+          values[1] = 'center';
+        }
+      }
 
-    // eg. center bottom
-    return [
-      parseLengthOrPercentage(convertKeyword2Percent(values[0])),
-      parseLengthOrPercentage(convertKeyword2Percent(values[1])),
-    ];
-  } else {
-    return [new CSSUnitValue(value[0] || 0, 'px'), new CSSUnitValue(value[1] || 0, 'px')];
-  }
-}
+      if (values.length !== 2) {
+        return null;
+      }
+
+      // eg. center bottom
+      return [
+        parseLengthOrPercentage(convertKeyword2Percent(values[0])),
+        parseLengthOrPercentage(convertKeyword2Percent(values[1])),
+      ];
+    } else {
+      return [new CSSUnitValue(value[0] || 0, 'px'), new CSSUnitValue(value[1] || 0, 'px')];
+    }
+  },
+);
 
 function convertKeyword2Percent(keyword: string) {
   if (keyword === 'center') {

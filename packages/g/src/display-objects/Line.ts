@@ -1,6 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -36,19 +35,19 @@ export interface LineStyleProps extends BaseStyleProps {
   markerEndOffset?: number;
 }
 export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
-  x1: CSSUnitValue;
-  y1: CSSUnitValue;
-  x2: CSSUnitValue;
-  y2: CSSUnitValue;
-  z1?: CSSUnitValue;
-  z2?: CSSUnitValue;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  z1?: number;
+  z2?: number;
   defX: number;
   defY: number;
   isBillboard?: boolean;
   markerStart?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: CSSUnitValue;
-  markerEndOffset?: CSSUnitValue;
+  markerStartOffset?: number;
+  markerEndOffset?: number;
 }
 
 /**
@@ -164,18 +163,18 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
     let originalAngle: number;
 
     if (isStart) {
-      ox = x1.value - defX;
-      oy = y1.value - defY;
-      x = x2.value - x1.value;
-      y = y2.value - y1.value;
-      offset = markerStartOffset?.value || 0;
+      ox = x1 - defX;
+      oy = y1 - defY;
+      x = x2 - x1;
+      y = y2 - y1;
+      offset = markerStartOffset || 0;
       originalAngle = this.markerStartAngle;
     } else {
-      ox = x2.value - defX;
-      oy = y2.value - defY;
-      x = x1.value - x2.value;
-      y = y1.value - y2.value;
-      offset = markerEndOffset?.value || 0;
+      ox = x2 - defX;
+      oy = y2 - defY;
+      x = x1 - x2;
+      y = y1 - y2;
+      offset = markerEndOffset || 0;
       originalAngle = this.markerEndAngle;
     }
     rad = Math.atan2(y, x);
@@ -188,7 +187,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   getPoint(ratio: number): Point {
     // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2, defX, defY } = this.parsedStyle;
-    const { x, y } = LineUtil.pointAt(x1.value, y1.value, x2.value, y2.value, ratio);
+    const { x, y } = LineUtil.pointAt(x1, y1, x2, y2, ratio);
 
     const transformed = vec3.transformMat4(
       vec3.create(),
@@ -203,6 +202,6 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   getTotalLength() {
     // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2 } = this.parsedStyle;
-    return LineUtil.length(x1.value, y1.value, x2.value, y2.value);
+    return LineUtil.length(x1, y1, x2, y2);
   }
 }

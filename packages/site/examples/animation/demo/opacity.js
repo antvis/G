@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -30,54 +30,90 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const rect = new Rect({
+const path = new Path({
   style: {
-    x: 100,
-    y: 200,
-    width: 50,
-    height: 100,
-    fill: '#1890FF',
+    fill: '#5B8FF9',
+    // fillOpacity: 0,
+    stroke: '#5B8FF9',
+    // strokeOpacity: 0,
+    // opacity: 0,
+    path: 'M11.078431372405001,86.78571428571429L110.78431372534617,86.78571428571429L110.78431372534617,405L11.078431372405001,405Z',
   },
 });
-const rect2 = new Rect({
-  style: {
-    x: 200,
-    y: 200,
-    width: 50,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-const rect3 = new Rect({
-  style: {
-    x: 300,
-    y: 200,
-    width: 50,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
+
+// const path2 = new Path({
+//   style: {
+//     fill: '#5B8FF9',
+//     stroke: '#5B8FF9',
+//     path: 'M232.64705882332998,266.14285714285717L332.3529411762712,266.14285714285717L332.3529411762712,405L232.64705882332998,405Z',
+//   },
+// });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(rect);
-  canvas.appendChild(rect2);
-  canvas.appendChild(rect3);
+  canvas.appendChild(path);
+  // canvas.appendChild(path2);
 
-  rect.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
-    duration: 1000,
-    //   delay: 0,
-    fill: 'both',
-  });
-  rect2.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scaleY(1)' }], {
-    duration: 1000,
-    delay: 1000,
-    fill: 'both',
-  });
-  rect3.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
-    duration: 1000,
-    delay: 2000,
-    fill: 'both',
-  });
+  const transformOrigin = [0, 318.21429443359375];
+  path.setOrigin(transformOrigin);
+  const animation = path.animate(
+    [
+      {
+        // transform: 'scale(1, 0.0001)',
+        fillOpacity: 0,
+        strokeOpacity: 0,
+        opacity: 0,
+      },
+      {
+        // transform: 'scale(1, 0.0001)',
+        fillOpacity: '',
+        strokeOpacity: '',
+        opacity: '',
+        // offset: 0.01,
+      },
+      // {
+      //   transform: 'scale(1, 1)',
+      // },
+    ],
+    {
+      duration: 1200,
+      fill: 'both',
+      delay: 0,
+      iterations: Infinity,
+    },
+  );
+
+  animation.finished.then(() => path.setOrigin(0, 0));
+
+  animation.onframe = () => {
+    // @ts-ignore
+    console.log('frame...', path.style.opacity);
+  };
+
+  // path2.animate(
+  //   [
+  //     {
+  //       transform: 'scale(1, 0.0001)',
+  //       fillOpacity: 0,
+  //       strokeOpacity: 0,
+  //       opacity: 0,
+  //     },
+  //     {
+  //       transform: 'scale(1, 0.0001)',
+  //       fillOpacity: 1,
+  //       strokeOpacity: 1,
+  //       opacity: 1,
+  //       offset: 0.01,
+  //     },
+  //     {
+  //       transform: 'scale(1, 1)',
+  //     },
+  //   ],
+  //   {
+  //     duration: 1200,
+  //     fill: 'both',
+  //     delay: 0,
+  //   },
+  // );
 });
 
 // stats

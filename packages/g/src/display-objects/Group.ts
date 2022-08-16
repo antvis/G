@@ -1,8 +1,8 @@
-import { Shape } from '../types';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { DisplayObject } from './DisplayObject';
-import type { DisplayObjectConfig } from '../dom';
 import type { CSSUnitValue } from '../css';
+import type { DisplayObjectConfig } from '../dom';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { Shape } from '../types';
+import { DisplayObject } from './DisplayObject';
 
 export interface GroupStyleProps extends BaseStyleProps {
   x?: number | string;
@@ -37,6 +37,14 @@ export class Group extends DisplayObject {
         y: '',
         width: '',
         height: '',
+        // fontSize: '',
+        // fontFamily: '',
+        // fontStyle: '',
+        // fontWeight: '',
+        // fontVariant: '',
+        // textAlign: '',
+        // textBaseline: '',
+        // textTransform: '',
         ...style,
       },
       ...rest,

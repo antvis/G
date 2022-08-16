@@ -17,7 +17,7 @@ export class TextRenderer extends Batch {
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
     const { stroke, lineWidth } = object.parsedStyle as ParsedTextStyleProps;
-    const hasStroke = !!(stroke && lineWidth && lineWidth.value);
+    const hasStroke = !!(stroke && lineWidth);
 
     if (!hasStroke && index === 0) {
       // skip rendering stroke

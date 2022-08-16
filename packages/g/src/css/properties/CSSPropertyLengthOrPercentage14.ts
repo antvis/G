@@ -3,7 +3,8 @@ import { isNumber } from '../../utils';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
-import { mergeDimensionList, parseDimensionArray } from '../parser/dimension';
+import { mergeNumberLists } from '../parser';
+import { parseDimensionArray } from '../parser/dimension';
 
 /**
  * used in rounded rect
@@ -24,7 +25,7 @@ export class CSSPropertyLengthOrPercentage14
     Partial<
       CSSProperty<
         [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue],
-        [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue]
+        [number, number, number, number]
       >
     >
 {
@@ -46,5 +47,13 @@ export class CSSPropertyLengthOrPercentage14
     return formatted;
   }
 
-  mixer = mergeDimensionList;
+  calculator(
+    name: string,
+    oldParsed: [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue],
+    computed: [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue],
+  ): [number, number, number, number] {
+    return computed.map((c) => c.value) as [number, number, number, number];
+  }
+
+  mixer = mergeNumberLists;
 }

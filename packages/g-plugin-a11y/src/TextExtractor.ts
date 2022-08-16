@@ -1,4 +1,4 @@
-import type { Text } from '@antv/g';
+import type { ParsedTextStyleProps, Text } from '@antv/g';
 import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 
 const CLASSNAME_PREFIX = 'g-a11y-text-extractor';
@@ -66,7 +66,7 @@ color: transparent !important;
         break;
       case 'visibility':
         const { visibility } = text.parsedStyle;
-        if (visibility.value === 'visible') {
+        if (visibility === 'visible') {
           this.getOrCreateEl(text);
         } else {
           this.removeEl(text);
@@ -78,35 +78,34 @@ color: transparent !important;
       case 'textBaseline':
       case 'dx':
       case 'dy':
-        const { transformOrigin, textAlign, textBaseline, dx, dy } = text.parsedStyle;
+        const { transformOrigin, textAlign, textBaseline, dx, dy } =
+          text.parsedStyle as ParsedTextStyleProps;
         $el.style['transform-origin'] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
         const worldTransform = text.getWorldTransform();
 
         let offsetX = '0';
         // handle horizontal text align
-        if (textAlign.value === 'center') {
+        if (textAlign === 'center') {
           offsetX = '-50%';
-        } else if (textAlign.value === 'right' || textAlign.value === 'end') {
+        } else if (textAlign === 'right' || textAlign === 'end') {
           offsetX = '-100%';
         }
         let offsetY = '0';
-        if (textBaseline.value === 'middle') {
+        if (textBaseline === 'middle') {
           offsetY = '-50%';
         } else if (
-          textBaseline.value === 'bottom' ||
-          textBaseline.value === 'alphabetic' ||
-          textBaseline.value === 'ideographic'
+          textBaseline === 'bottom' ||
+          textBaseline === 'alphabetic' ||
+          textBaseline === 'ideographic'
         ) {
           offsetY = '-100%';
         }
 
-        $el.style.transform = `translate(${dx},${dy}) translate(${offsetX},${offsetY}) matrix3d(${worldTransform.join(
-          ',',
-        )})`;
+        $el.style.transform = `translate(${dx}px,${dy}px) translate(${offsetX},${offsetY}) matrix3d(${worldTransform.toString()})`;
         break;
       case 'fontSize':
-        const { fontSize } = text.parsedStyle;
-        $el.style.fontSize = fontSize.toString();
+        const { fontSize = 0 } = text.parsedStyle;
+        $el.style.fontSize = `${fontSize}px`;
         break;
       case 'fontFamily':
         const { fontFamily } = text.parsedStyle;

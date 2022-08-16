@@ -1,4 +1,4 @@
-import type { CSSGlobalKeywords, CSSKeywordValue, CSSUnitValue } from '../css';
+import type { CSSGlobalKeywords } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import type { TextMetrics } from '../services';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -43,26 +43,25 @@ export interface TextStyleProps extends BaseStyleProps {
   dy?: number | string;
 }
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
+  x: number;
+  y: number;
   text: string;
-  /** 设置文本内容的当前对齐方式 */
-  textAlign?: CSSKeywordValue;
+  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
   /** 设置在绘制文本时使用的当前文本基线 */
-  textBaseline?: CSSKeywordValue;
+  textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
   /** 字体样式 */
-  fontStyle?: CSSKeywordValue;
+  fontStyle?: 'normal' | 'italic' | 'oblique';
   /** 文本字体大小 */
-  fontSize?: CSSUnitValue;
+  fontSize?: number;
   /** 文本字体 */
   fontFamily?: string;
   /** 文本粗细 */
-  fontWeight?: CSSKeywordValue;
+  fontWeight?: 'normal' | 'bold' | 'bolder' | 'lighter' | number;
   /** 字体变体 */
-  fontVariant?: CSSKeywordValue;
+  fontVariant?: 'normal' | 'small-caps' | string;
   /** 文本行高 */
-  lineHeight?: CSSUnitValue;
-  letterSpacing?: CSSUnitValue;
+  lineHeight?: number;
+  letterSpacing?: number;
   whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
@@ -70,8 +69,8 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   // dropShadow?: boolean;
   // dropShadowDistance?: number;
   metrics?: TextMetrics;
-  dx?: CSSUnitValue;
-  dy?: CSSUnitValue;
+  dx?: number;
+  dy?: number;
 }
 
 /**

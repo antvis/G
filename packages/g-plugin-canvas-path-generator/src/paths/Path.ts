@@ -18,7 +18,7 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
   });
 
   // @ts-ignore
-  const isClosed = path[path.length - 1][0] === 'Z';
+  const isClosed = path.length && path[path.length - 1][0] === 'Z';
 
   let startOffsetX = 0;
   let startOffsetY = 0;
@@ -35,8 +35,8 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
     y = p1[1] - p2[1];
 
     rad = Math.atan2(y, x);
-    startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-    startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+    startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+    startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
   if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
@@ -44,8 +44,8 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];
     rad = Math.atan2(y, x);
-    endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-    endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+    endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+    endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
   for (let i = 0; i < path.length; i++) {

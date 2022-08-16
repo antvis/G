@@ -5,33 +5,33 @@ export function updateRectElementAttribute($el: SVGElement, parsedStyle: ParsedR
   const { radius, width, height } = parsedStyle;
 
   // CSSKeyword: auto
-  if (!isFinite(width.value) || !isFinite(height.value)) {
+  if (!isFinite(width) || !isFinite(height)) {
     return;
   }
 
-  const hasRadius = radius && radius.some((r) => r.value !== 0);
+  const hasRadius = radius && radius.some((r) => r !== 0);
 
   let d = '';
   if (!hasRadius) {
-    d = `M 0,0 l ${width.value},0 l 0,${height.value} l${-width.value} 0 z`;
+    d = `M 0,0 l ${width},0 l 0,${height} l${-width} 0 z`;
   } else {
     const [tlr, trr, brr, blr] = radius.map((r) =>
-      clamp(r.value, 0, Math.min(Math.abs(width.value) / 2, Math.abs(height.value) / 2)),
+      clamp(r, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2)),
     );
 
-    const signX = width.value > 0 ? 1 : -1;
-    const signY = height.value > 0 ? 1 : -1;
+    const signX = width > 0 ? 1 : -1;
+    const signY = height > 0 ? 1 : -1;
     // sweep-flag @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths#arcs
     const sweepFlag = signX + signY !== 0 ? 1 : 0;
     d = [
       [`M ${signX * tlr},0`],
-      [`l ${width.value - signX * (tlr + trr)},0`],
+      [`l ${width - signX * (tlr + trr)},0`],
       [`a ${trr},${trr},0,0,${sweepFlag},${signX * trr},${signY * trr}`],
-      [`l 0,${height.value - signY * (trr + brr)}`],
+      [`l 0,${height - signY * (trr + brr)}`],
       [`a ${brr},${brr},0,0,${sweepFlag},${-signX * brr},${signY * brr}`],
-      [`l ${signX * (brr + blr) - width.value},0`],
+      [`l ${signX * (brr + blr) - width},0`],
       [`a ${blr},${blr},0,0,${sweepFlag},${-signX * blr},${-signY * blr}`],
-      [`l 0,${signY * (blr + tlr) - height.value}`],
+      [`l 0,${signY * (blr + tlr) - height}`],
       [`a ${tlr},${tlr},0,0,${sweepFlag},${signX * tlr},${-signY * tlr}`],
       ['z'],
     ].join(' ');

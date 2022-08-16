@@ -9,7 +9,7 @@ export enum RenderReason {
   DISPLAY_OBJECT_CHANGED,
   NONE,
 }
-export const RenderingContext = Syringe.defineToken('RenderingContext');
+export const RenderingContext = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface RenderingContext {
   /**

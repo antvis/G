@@ -5,69 +5,89 @@ import {
   getDrawDirection,
   getPathBBoxTotalLength,
   getRotatedCurve,
+  memoize,
   normalizePath,
   path2Curve,
-  path2String,
   reverseCurve,
 } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
-import { Rectangle } from '../../shapes';
-import { extractPolygons, hasArcOrBezier, isString, memoize, path2Segments } from '../../utils';
+import { extractPolygons, hasArcOrBezier, isString, path2Segments } from '../../utils';
 
-const memoizedParsePath = memoize(
-  (path: string | PathArray) => {
-    let absolutePath: AbsoluteArray;
-    try {
-      if (Array.isArray(path) && path.length === 0) {
-        throw new Error();
-      }
-
-      absolutePath = normalizePath(path);
-    } catch (e) {
-      absolutePath = normalizePath('');
-      console.error(`[g]: Invalid SVG Path definition: ${path}`);
-    }
-
-    const hasArc = hasArcOrBezier(absolutePath);
-
-    const { polygons, polylines } = extractPolygons(absolutePath);
-
-    // convert to curves to do morphing & picking later
-    // @see http://thednp.github.io/kute.js/svgCubicMorph.html
-    const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
-
-    // for later use
-    const segments = path2Segments(curve);
-    const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
-
+const internalParsePath = (path: string | PathArray) => {
+  // empty path
+  if (path === '' || (Array.isArray(path) && path.length === 0)) {
     return {
-      absolutePath,
-      hasArc,
-      segments,
-      polygons,
-      polylines,
-      curve,
-      totalLength: length,
-      zCommandIndexes,
-      rect: new Rectangle(
-        Number.isFinite(x) ? x : 0,
-        Number.isFinite(y) ? y : 0,
-        Number.isFinite(width) ? width : 0,
-        Number.isFinite(height) ? height : 0,
-      ),
+      absolutePath: [],
+      hasArc: false,
+      segments: [],
+      polygons: [],
+      polylines: [],
+      curve: [],
+      totalLength: 0,
+      zCommandIndexes: [],
+      rect: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      },
     };
-  },
-  (path: string | PathArray) => {
-    return isString(path) ? path : path2String(path);
-  },
-);
+  }
+
+  let absolutePath: AbsoluteArray;
+  try {
+    absolutePath = normalizePath(path);
+  } catch (e) {
+    absolutePath = normalizePath('');
+    console.error(`[g]: Invalid SVG Path definition: ${path}`);
+  }
+
+  const hasArc = hasArcOrBezier(absolutePath);
+
+  const { polygons, polylines } = extractPolygons(absolutePath);
+
+  // convert to curves to do morphing & picking later
+  // @see http://thednp.github.io/kute.js/svgCubicMorph.html
+  const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
+
+  // for later use
+  const segments = path2Segments(curve);
+  const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
+
+  return {
+    absolutePath,
+    hasArc,
+    segments,
+    polygons,
+    polylines,
+    curve,
+    totalLength: length,
+    zCommandIndexes,
+    // rect: new Rectangle(
+    //   Number.isFinite(x) ? x : 0,
+    //   Number.isFinite(y) ? y : 0,
+    //   Number.isFinite(width) ? width : 0,
+    //   Number.isFinite(height) ? height : 0,
+    // ),
+    rect: {
+      x: Number.isFinite(x) ? x : 0,
+      y: Number.isFinite(y) ? y : 0,
+      width: Number.isFinite(width) ? width : 0,
+      height: Number.isFinite(height) ? height : 0,
+    },
+  };
+};
+
+const memoizedParsePath = memoize(internalParsePath);
 
 export function parsePath(
   path: string | PathArray,
   object: DisplayObject,
 ): ParsedPathStyleProps['path'] {
-  const result = memoizedParsePath(path) as ParsedPathStyleProps['path'];
+  const result = (
+    isString(path) ? memoizedParsePath(path) : internalParsePath(path)
+  ) as ParsedPathStyleProps['path'];
 
   if (object) {
     object.parsedStyle.defX = result.rect.x;

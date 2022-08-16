@@ -2,7 +2,7 @@ import decomposeMatrix from 'mat4-decompose';
 import type { DisplayObject } from '../../display-objects';
 import { clamp, deg2rad } from '../../utils';
 import { CSS } from '../CSS';
-import { CSSUnitValue, Odeg, Opx, UnitType } from '../cssom';
+import { CSSUnitValue, Odeg, Opx } from '../cssom';
 import {
   convertAngleUnit,
   convertPercentUnit,
@@ -11,7 +11,7 @@ import {
   parseLength,
   parseLengthOrPercentage,
 } from './dimension';
-import { mergeNumbers, parseNumber } from './numeric';
+import { parseNumber } from './numeric';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -697,9 +697,8 @@ export function mergeTransforms(
       const rightArgsCopy = [];
       const stringConversions = [];
       for (let j = 0; j < leftArgs.length; j++) {
-        const merge = leftArgs[j].unit === UnitType.kNumber ? mergeNumbers : mergeDimensions;
-        // @ts-ignore
-        const merged = merge(leftArgs[j], rightArgs[j], target, false, j);
+        // const merge = leftArgs[j].unit === UnitType.kNumber ? mergeDimensions : mergeDimensions;
+        const merged = mergeDimensions(leftArgs[j], rightArgs[j], target, false, j);
         leftArgsCopy[j] = merged[0];
         rightArgsCopy[j] = merged[1];
         stringConversions.push(merged[2]);

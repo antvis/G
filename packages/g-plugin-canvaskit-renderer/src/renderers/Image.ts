@@ -31,8 +31,8 @@ export class ImageRenderer implements RendererContribution {
       object.parsedStyle as ParsedImageStyleProps;
 
     let image: HTMLImageElement;
-    let iw = width.value;
-    let ih = height.value;
+    let iw = width;
+    let ih = height;
 
     if (isString(img)) {
       // image has been loaded in `mounted` hook
@@ -61,7 +61,7 @@ export class ImageRenderer implements RendererContribution {
       const fillPaint = new CanvasKit.Paint();
       fillPaint.setAntiAlias(true);
       fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
-      fillPaint.setAlphaf(fillOpacity.value * opacity.value);
+      fillPaint.setAlphaf(fillOpacity * opacity);
 
       // @see https://github.com/google/skia/blob/4ff73144c35b993907a6e3738a7be81c0681e504/modules/canvaskit/tests/core.spec.js#L864
       canvas.drawImageRectOptions(

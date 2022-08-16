@@ -18,7 +18,7 @@ import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 })
 export class CSSPropertyLocalPosition
   extends CSSPropertyLengthOrPercentage
-  implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
+  implements Partial<CSSProperty<CSSUnitValue, number>>
 {
   /**
    * update local position
@@ -33,16 +33,16 @@ export class CSSPropertyLocalPosition
       case Shape.ELLIPSE:
         const { cx, cy } = (object as Circle).parsedStyle;
         if (!isNil(cx)) {
-          x = cx.value;
+          x = cx;
         }
         if (!isNil(cy)) {
-          y = cy.value;
+          y = cy;
         }
         break;
       case Shape.LINE:
         const { x1, x2, y1, y2 } = (object as Line).parsedStyle;
-        const minX = Math.min(x1.value, x2.value);
-        const minY = Math.min(y1.value, y2.value);
+        const minX = Math.min(x1, x2);
+        const minY = Math.min(y1, y2);
         x = minX;
         y = minY;
         z = 0;
@@ -52,11 +52,12 @@ export class CSSPropertyLocalPosition
       case Shape.GROUP:
       case Shape.HTML:
       case Shape.TEXT:
+      case Shape.MESH:
         if (!isNil((object as Rect).parsedStyle.x)) {
-          x = (object as Rect).parsedStyle.x.value;
+          x = (object as Rect).parsedStyle.x;
         }
         if (!isNil((object as Rect).parsedStyle.y)) {
-          y = (object as Rect).parsedStyle.y.value;
+          y = (object as Rect).parsedStyle.y;
         }
         break;
       default:

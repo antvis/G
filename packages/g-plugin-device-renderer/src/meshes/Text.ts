@@ -1,5 +1,5 @@
 import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
-import { CSSRGB, inject, injectable, UnitType } from '@antv/g';
+import { CSSRGB, inject, injectable } from '@antv/g';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -56,7 +56,7 @@ export class TextMesh extends Instanced {
     ];
 
     // fontStack & fontSize should be same
-    // if (instance.parsedStyle.fontSize.value !== object.parsedStyle.fontSize.value) {
+    // if (instance.parsedStyle.fontSize !== object.parsedStyle.fontSize) {
     //   return false;
     // }
     if (
@@ -76,7 +76,7 @@ export class TextMesh extends Instanced {
     const { textBaseline, fontSize, letterSpacing } = object.parsedStyle;
 
     // scale current font size to base(24)
-    const fontScale = BASE_FONT_WIDTH / fontSize.value;
+    const fontScale = BASE_FONT_WIDTH / fontSize;
 
     const indices = [];
     const uvOffsets = [];
@@ -87,26 +87,20 @@ export class TextMesh extends Instanced {
       const { font, lines, height, lineHeight } = metrics;
 
       // account for dx & dy
-      let offsetX = 0;
-      let offsetY = 0;
-      if (dx && dx.unit === UnitType.kPixels) {
-        offsetX += dx.value;
-      }
-      if (dy && dy.unit === UnitType.kPixels) {
-        offsetY += dy.value;
-      }
+      const offsetX = dx || 0;
+      const offsetY = dy || 0;
 
       let linePositionY = 0;
       // handle vertical text baseline
-      if (textBaseline.value === 'middle') {
+      if (textBaseline === 'middle') {
         linePositionY = -height / 2;
-      } else if (textBaseline.value === 'bottom') {
+      } else if (textBaseline === 'bottom') {
         linePositionY = -height;
-      } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+      } else if (textBaseline === 'top' || textBaseline === 'hanging') {
         linePositionY = 0;
-      } else if (textBaseline.value === 'alphabetic') {
+      } else if (textBaseline === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
-      } else if (textBaseline.value === 'ideographic') {
+      } else if (textBaseline === 'ideographic') {
         linePositionY = -height;
       }
 
@@ -119,7 +113,7 @@ export class TextMesh extends Instanced {
           lineHeight: fontScale * lineHeight,
           offsetX: fontScale * offsetX,
           offsetY: fontScale * (linePositionY + offsetY),
-          letterSpacing: fontScale * letterSpacing.value,
+          letterSpacing: fontScale * letterSpacing,
           glyphAtlas,
           indicesOffset: indicesOff,
         });
@@ -235,7 +229,13 @@ export class TextMesh extends Instanced {
     };
 
     const object = this.instance as TextShape;
-    const { fontSize, fontFamily = '', fontWeight, fontStyle, metrics } = object.parsedStyle;
+    const {
+      fontSize,
+      fontFamily = '',
+      fontWeight = '',
+      fontStyle,
+      metrics,
+    } = object.parsedStyle as ParsedTextStyleProps;
     const { font } = metrics;
     const allText = objects.map((object) => object.parsedStyle.text).join('');
 
@@ -243,7 +243,7 @@ export class TextMesh extends Instanced {
       font,
       fontFamily,
       fontWeight.toString(),
-      fontStyle.toString(),
+      fontStyle,
       allText,
       this.device,
     );
@@ -257,7 +257,7 @@ export class TextMesh extends Instanced {
     this.material.setUniforms({
       [TextUniform.SDF_MAP]: glyphAtlasTexture,
       [TextUniform.SDF_MAP_SIZE]: [atlasWidth, atlasHeight],
-      [TextUniform.FONT_SIZE]: fontSize.value,
+      [TextUniform.FONT_SIZE]: fontSize,
       [TextUniform.GAMMA_SCALE]: 1,
       [TextUniform.STROKE_BLUR]: 0.2,
       [TextUniform.HAS_STROKE]: this.index,
@@ -366,7 +366,7 @@ export class TextMesh extends Instanced {
       lines,
       fontStack,
       lineHeight,
-      textAlign.value as CanvasTextAlign,
+      textAlign,
       letterSpacing,
       offsetX,
       offsetY,
@@ -383,11 +383,11 @@ export class TextMesh extends Instanced {
         ...temp,
         ...fillColor,
         ...strokeColor,
-        opacity.value,
-        fillOpacity.value,
-        strokeOpacity.value,
-        lineWidth.value,
-        visibility.value === 'visible' ? 1 : 0,
+        opacity,
+        fillOpacity,
+        strokeOpacity,
+        lineWidth,
+        visibility === 'visible' ? 1 : 0,
         0,
         0,
         0,

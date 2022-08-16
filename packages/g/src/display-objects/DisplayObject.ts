@@ -1,9 +1,7 @@
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { GlobalContainer } from 'mana-syringe';
+import { displayObjectPool, sceneGraphService, styleValueRegistry } from '..';
 import type { PropertyParseOptions } from '../css';
-import { StyleValueRegistry } from '../css';
-import { DisplayObjectPool } from '../DisplayObjectPool';
 import type {
   Animation,
   DisplayObjectConfig,
@@ -84,6 +82,8 @@ const DEFAULT_STYLE_PROPS: {
   shadowType: '',
 };
 
+let mutationEvent: MutationEvent;
+
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
  *
@@ -111,8 +111,6 @@ export class DisplayObject<
    */
   config: DisplayObjectConfig<StyleProps>;
 
-  styleValueRegistry = GlobalContainer.get(StyleValueRegistry);
-
   isCustomElement = false;
 
   /**
@@ -120,19 +118,9 @@ export class DisplayObject<
    */
   private activeAnimations: Animation[] = [];
 
-  private mutationEvent = new MutationEvent(
-    ElementEvent.ATTR_MODIFIED,
-    this as IElement,
-    null,
-    null,
-    null,
-    MutationEvent.MODIFICATION,
-    null,
-    null,
-  );
-
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
+
     // assign name, id to config
     // eg. group.get('name')
     this.config = config;
@@ -199,14 +187,14 @@ export class DisplayObject<
     this.initAttributes(this.config.style);
 
     // insert this group into pool
-    GlobalContainer.get(DisplayObjectPool).add(this.entity, this);
+    displayObjectPool.add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    GlobalContainer.get(DisplayObjectPool).remove(this.entity);
+    displayObjectPool.remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -258,7 +246,7 @@ export class DisplayObject<
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
     const renderable = this.renderable;
 
-    this.styleValueRegistry.processProperties(this, attributes);
+    styleValueRegistry.processProperties(this, attributes);
 
     // redraw at next frame
     renderable.dirty = true;
@@ -293,7 +281,7 @@ export class DisplayObject<
     const oldValue = this.attributes[name];
     const oldParsedValue = this.parsedStyle[name as string];
 
-    this.styleValueRegistry.processProperties(
+    styleValueRegistry.processProperties(
       this,
       {
         [name]: value,
@@ -304,7 +292,7 @@ export class DisplayObject<
     // inform clip path targets
     if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
       this.parsedStyle.clipPathTargets.forEach((target) => {
-        this.sceneGraphService.dirtifyToRoot(target);
+        sceneGraphService.dirtifyToRoot(target);
 
         target.dispatchEvent(
           new MutationEvent(
@@ -331,16 +319,30 @@ export class DisplayObject<
     renderable.dirty = true;
 
     // trigger later
-    // this.sceneGraphService.pendingEvents.push([ElementEvent.ATTR_MODIFIED, { affectChildren }]);
+    // sceneGraphService.pendingEvents.push([ElementEvent.ATTR_MODIFIED, { affectChildren }]);
 
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {
-      this.mutationEvent.prevValue = oldValue;
-      this.mutationEvent.newValue = value;
-      this.mutationEvent.attrName = name as string;
-      this.mutationEvent.prevParsedValue = oldParsedValue;
-      this.mutationEvent.newParsedValue = newParsedValue;
-      this.dispatchEvent(this.mutationEvent);
+      if (!mutationEvent) {
+        mutationEvent = new MutationEvent(
+          ElementEvent.ATTR_MODIFIED,
+          null,
+          null,
+          null,
+          null,
+          MutationEvent.MODIFICATION,
+          null,
+          null,
+        );
+      }
+
+      mutationEvent.relatedNode = this as IElement;
+      mutationEvent.prevValue = oldValue;
+      mutationEvent.newValue = value;
+      mutationEvent.attrName = name as string;
+      mutationEvent.prevParsedValue = oldParsedValue;
+      mutationEvent.newParsedValue = newParsedValue;
+      this.dispatchEvent(mutationEvent);
     }
 
     if (
@@ -373,19 +375,19 @@ export class DisplayObject<
   }
 
   setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    sceneGraphService.setOrigin(this, createVec3(position, y, z));
     return this;
   }
 
   getOrigin(): vec3 {
-    return this.sceneGraphService.getOrigin(this);
+    return sceneGraphService.getOrigin(this);
   }
 
   /**
    * set position in world space
    */
   setPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    sceneGraphService.setPosition(this, createVec3(position, y, z));
     return this;
   }
 
@@ -393,7 +395,7 @@ export class DisplayObject<
    * set position in local space
    */
   setLocalPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
+    sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
     return this;
   }
 
@@ -401,7 +403,7 @@ export class DisplayObject<
    * translate in world space
    */
   translate(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.translate(this, createVec3(position, y, z));
+    sceneGraphService.translate(this, createVec3(position, y, z));
     return this;
   }
 
@@ -409,16 +411,16 @@ export class DisplayObject<
    * translate in local space
    */
   translateLocal(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    sceneGraphService.translateLocal(this, createVec3(position, y, z));
     return this;
   }
 
   getPosition(): vec3 {
-    return this.sceneGraphService.getPosition(this);
+    return sceneGraphService.getPosition(this);
   }
 
   getLocalPosition(): vec3 {
-    return this.sceneGraphService.getLocalPosition(this);
+    return sceneGraphService.getLocalPosition(this);
   }
 
   /**
@@ -438,7 +440,7 @@ export class DisplayObject<
       z = z || scaling;
       scaling = createVec3(scaling, y, z);
     }
-    this.sceneGraphService.scaleLocal(this, scaling);
+    sceneGraphService.scaleLocal(this, scaling);
     return this;
   }
 
@@ -452,7 +454,7 @@ export class DisplayObject<
       scaling = createVec3(scaling, y, z);
     }
 
-    this.sceneGraphService.setLocalScale(this, scaling);
+    sceneGraphService.setLocalScale(this, scaling);
     return this;
   }
 
@@ -460,14 +462,14 @@ export class DisplayObject<
    * get scaling in local space
    */
   getLocalScale(): vec3 {
-    return this.sceneGraphService.getLocalScale(this);
+    return sceneGraphService.getLocalScale(this);
   }
 
   /**
    * get scaling in world space
    */
   getScale(): vec3 {
-    return this.sceneGraphService.getScale(this);
+    return sceneGraphService.getScale(this);
   }
 
   /**
@@ -475,7 +477,7 @@ export class DisplayObject<
    */
   getEulerAngles() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getWorldTransform(this));
+    const [ex, ey, ez] = getEuler(vec3.create(), sceneGraphService.getWorldTransform(this));
     return rad2deg(ez);
   }
 
@@ -484,7 +486,7 @@ export class DisplayObject<
    */
   getLocalEulerAngles() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getLocalRotation(this));
+    const [ex, ey, ez] = getEuler(vec3.create(), sceneGraphService.getLocalRotation(this));
     return rad2deg(ez);
   }
 
@@ -492,7 +494,7 @@ export class DisplayObject<
    * set euler angles(degrees) in world space
    */
   setEulerAngles(z: number) {
-    this.sceneGraphService.setEulerAngles(this, 0, 0, z);
+    sceneGraphService.setEulerAngles(this, 0, 0, z);
     return this;
   }
 
@@ -500,15 +502,15 @@ export class DisplayObject<
    * set euler angles(degrees) in local space
    */
   setLocalEulerAngles(z: number) {
-    this.sceneGraphService.setLocalEulerAngles(this, 0, 0, z);
+    sceneGraphService.setLocalEulerAngles(this, 0, 0, z);
     return this;
   }
 
   rotateLocal(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      this.sceneGraphService.rotateLocal(this, 0, 0, x);
+      sceneGraphService.rotateLocal(this, 0, 0, x);
     } else {
-      this.sceneGraphService.rotateLocal(this, x, y, z);
+      sceneGraphService.rotateLocal(this, x, y, z);
     }
 
     return this;
@@ -516,56 +518,56 @@ export class DisplayObject<
 
   rotate(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      this.sceneGraphService.rotate(this, 0, 0, x);
+      sceneGraphService.rotate(this, 0, 0, x);
     } else {
-      this.sceneGraphService.rotate(this, x, y, z);
+      sceneGraphService.rotate(this, x, y, z);
     }
 
     return this;
   }
 
   setRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
-    this.sceneGraphService.setRotation(this, rotation, y, z, w);
+    sceneGraphService.setRotation(this, rotation, y, z, w);
     return this;
   }
 
   setLocalRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
-    this.sceneGraphService.setLocalRotation(this, rotation, y, z, w);
+    sceneGraphService.setLocalRotation(this, rotation, y, z, w);
     return this;
   }
 
   setLocalSkew(skew: vec2 | number, y?: number) {
-    this.sceneGraphService.setLocalSkew(this, skew, y);
+    sceneGraphService.setLocalSkew(this, skew, y);
     return this;
   }
 
   getRotation(): quat {
-    return this.sceneGraphService.getRotation(this);
+    return sceneGraphService.getRotation(this);
   }
 
   getLocalRotation(): quat {
-    return this.sceneGraphService.getLocalRotation(this);
+    return sceneGraphService.getLocalRotation(this);
   }
 
   getLocalSkew(): vec2 {
-    return this.sceneGraphService.getLocalSkew(this);
+    return sceneGraphService.getLocalSkew(this);
   }
 
   getLocalTransform(): mat4 {
-    return this.sceneGraphService.getLocalTransform(this);
+    return sceneGraphService.getLocalTransform(this);
   }
 
   getWorldTransform(): mat4 {
-    return this.sceneGraphService.getWorldTransform(this);
+    return sceneGraphService.getWorldTransform(this);
   }
 
   setLocalTransform(transform: mat4) {
-    this.sceneGraphService.setLocalTransform(this, transform);
+    sceneGraphService.setLocalTransform(this, transform);
     return this;
   }
 
   resetLocalTransform(): void {
-    this.sceneGraphService.resetLocalTransform(this);
+    sceneGraphService.resetLocalTransform(this);
   }
   // #endregion transformable
 
@@ -626,7 +628,7 @@ export class DisplayObject<
    * shortcut for Used value of `visibility`
    */
   isVisible() {
-    return this.parsedStyle?.visibility?.value === 'visible';
+    return this.parsedStyle?.visibility === 'visible';
   }
 
   get interactive() {
@@ -637,7 +639,7 @@ export class DisplayObject<
   }
 
   isInteractive() {
-    return this.parsedStyle?.pointerEvents?.value !== 'none';
+    return this.parsedStyle?.pointerEvents !== 'none';
   }
 
   isCulled() {

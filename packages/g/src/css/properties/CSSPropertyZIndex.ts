@@ -11,8 +11,17 @@ import { parseNumber } from '../parser/numeric';
     named: PropertySyntax.Z_INDEX,
   },
 })
-export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseNumber;
+
+  calculator(
+    name: string,
+    oldParsed: CSSUnitValue,
+    computed: CSSUnitValue,
+    object: DisplayObject,
+  ): number {
+    return computed.value;
+  }
 
   postProcessor(object: DisplayObject) {
     if (object.parentNode) {

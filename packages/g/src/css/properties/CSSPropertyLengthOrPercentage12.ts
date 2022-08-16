@@ -3,7 +3,8 @@ import { isNumber } from '../../utils';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
-import { mergeDimensionList, parseDimensionArray } from '../parser/dimension';
+import { mergeNumberLists } from '../parser';
+import { parseDimensionArray } from '../parser/dimension';
 
 /**
  * format to Tuple2<CSSUnitValue>
@@ -20,7 +21,7 @@ import { mergeDimensionList, parseDimensionArray } from '../parser/dimension';
   },
 })
 export class CSSPropertyLengthOrPercentage12
-  implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>>
+  implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [number, number]>>
 {
   parser(radius: string | number | number[]) {
     const parsed = parseDimensionArray(isNumber(radius) ? [radius] : radius);
@@ -35,5 +36,13 @@ export class CSSPropertyLengthOrPercentage12
     return formatted;
   }
 
-  mixer = mergeDimensionList;
+  calculator(
+    name: string,
+    oldParsed: [CSSUnitValue, CSSUnitValue],
+    computed: [CSSUnitValue, CSSUnitValue],
+  ): [number, number] {
+    return computed.map((c) => c.value) as [number, number];
+  }
+
+  mixer = mergeNumberLists;
 }

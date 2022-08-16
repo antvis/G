@@ -1,7 +1,6 @@
 import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
 import { getPointAtLength } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
@@ -69,8 +68,8 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   markerStart?: DisplayObject;
   markerMid?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: CSSUnitValue;
-  markerEndOffset?: CSSUnitValue;
+  markerStartOffset?: number;
+  markerEndOffset?: number;
 }
 export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   private markerStartAngle = 0;
@@ -178,7 +177,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       oy = p2[1] - defY;
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
-      offset = markerStartOffset?.value || 0;
+      offset = markerStartOffset || 0;
       originalAngle = this.markerStartAngle;
     } else {
       const [p1, p2] = this.getEndTangent();
@@ -186,7 +185,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       oy = p2[1] - defY;
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
-      offset = markerEndOffset?.value || 0;
+      offset = markerEndOffset || 0;
       originalAngle = this.markerEndAngle;
     }
     rad = Math.atan2(y, x);

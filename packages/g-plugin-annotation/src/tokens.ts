@@ -1,6 +1,6 @@
 import { Syringe } from '@antv/g';
 
-export const AnnotationPluginOptions = Syringe.defineToken('AnnotationPluginOptions');
+export const AnnotationPluginOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface AnnotationPluginOptions {
   selectableStyle?: Partial<SelectableStyle>;

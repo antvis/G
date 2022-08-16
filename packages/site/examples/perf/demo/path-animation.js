@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -7,8 +7,8 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 /**
- * G4.0 @see https://codesandbox.io/s/g-4-0-perf-k2tm35?file=/src/index.tsx
- * G5.0 @see https://codesandbox.io/s/g-5-0-perf-forked-jvcidq?file=/index.js
+ * G4.0 @see https://tnwwc1.csb.app/
+ * @see https://codesandbox.io/s/g-canvas-4-0-animation2-tnwwc1?file=/src/index.tsx
  */
 
 // create a renderer
@@ -29,20 +29,25 @@ const canvas = new Canvas({
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   for (let i = 0; i < 5000; i++) {
-    const circle = new Circle({
-      style: {
-        cx: Math.random() * 600,
-        cy: Math.random() * 500,
-        r: 10 + Math.random() * 5,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-      },
-    });
+    const x = Math.random() * 600;
+    const y = Math.random() * 500;
+    const path = canvas.appendChild(
+      new Path({
+        attrs: {
+          fill: '#C6E5FF',
+          stroke: '#5B8FF9',
+          path: `M${54.4462133232839 + x},${-6.41757177038063 + y} L${61.3765714868427 + x},${
+            6.41757177038063 + y
+          } M${61.3765714868427 + x},${6.41757177038063 + y} L${61.54285370420826 + x},${
+            0.5852759906612777 + y
+          }M${61.3765714868427 + x},${6.41757177038063 + y}L${56.4087962879037 + x},${
+            3.3574192560847824 + y
+          }`,
+        },
+      }),
+    );
 
-    canvas.appendChild(circle);
-
-    circle.animate([{ opacity: 1 }, { opacity: 0 }], {
+    path.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: 1000,
       delay: 1000,
       fill: 'both',
@@ -67,7 +72,6 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 });
 
 // GUI
-let currentRenderer = canvasRenderer;
 const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');

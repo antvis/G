@@ -5,7 +5,6 @@ import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
   CSSGradientValue,
-  CSSKeywordValue,
   CSSRGB,
   CSSUnitValue,
   ParsedFilterStyleProperty,
@@ -233,56 +232,29 @@ export interface ParsedBaseStyleProps
   extends Omit<
     BaseStyleProps,
     | 'anchor'
-    | 'opacity'
-    | 'strokeOpacity'
-    | 'fillOpacity'
     | 'fill'
     | 'stroke'
     | 'lineWidth'
     | 'increasedLineWidthForHitTesting'
-    | 'lineJoin'
-    | 'lineCap'
     | 'lineDash'
-    | 'lineDashOffset'
     | 'path'
     | 'points'
-    | 'shadowType'
     | 'shadowColor'
-    | 'shadowBlur'
-    | 'shadowOffsetX'
-    | 'shadowOffsetY'
-    | 'visibility'
-    | 'pointerEvents'
-    | 'zIndex'
     | 'transform'
     | 'transformOrigin'
-    | 'textTransform'
-    | 'offsetDistance'
     | 'miterLimit'
     | 'filter'
   > {
-  zIndex?: CSSUnitValue;
-  visibility?: CSSKeywordValue;
-  pointerEvents?: CSSKeywordValue;
-  opacity?: CSSUnitValue;
-  fillOpacity?: CSSUnitValue;
-  strokeOpacity?: CSSUnitValue;
   fill?: CSSRGB | CSSGradientValue[] | Pattern;
   stroke?: CSSRGB | CSSGradientValue[] | Pattern;
-  lineDash?: [CSSUnitValue, CSSUnitValue];
-  lineCap?: CSSKeywordValue;
-  lineJoin?: CSSKeywordValue;
-  lineDashOffset?: CSSUnitValue;
-  offsetDistance?: CSSUnitValue;
+  lineDash?: [number, number];
 
-  anchor?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
+  anchor?: [number, number, number];
   transform: ParsedTransform[];
   transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
 
-  width?: CSSUnitValue;
-  height?: CSSUnitValue;
-  lineWidth?: CSSUnitValue;
-  increasedLineWidthForHitTesting?: CSSUnitValue;
+  lineWidth?: number;
+  increasedLineWidthForHitTesting?: number;
   /**
    * x according to definition, eg. Line's x1/x2, Polyline's points
    */
@@ -293,13 +265,8 @@ export interface ParsedBaseStyleProps
    */
   offsetX?: number;
   offsetY?: number;
-  shadowType?: CSSKeywordValue;
   shadowColor?: CSSRGB;
-  shadowBlur?: CSSUnitValue;
-  shadowOffsetX?: CSSUnitValue;
-  shadowOffsetY?: CSSUnitValue;
-  textTransform?: CSSKeywordValue;
-  miterLimit?: CSSUnitValue;
+  miterLimit?: number;
   filter?: ParsedFilterStyleProperty[];
 }
 
@@ -414,7 +381,7 @@ export interface CanvasLike extends IEventTarget {
     ) => void);
 }
 
-export const CanvasConfig = Syringe.defineToken('CanvasConfig');
+export const CanvasConfig = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**

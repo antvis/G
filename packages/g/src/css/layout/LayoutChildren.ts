@@ -1,18 +1,18 @@
 import { inject, injectable, Syringe } from 'mana-syringe';
-import type { LayoutObject } from './LayoutObject';
 import { Deferred } from '../../utils';
 import { LayoutContext } from './LayoutContext';
 import type { LayoutFragment } from './LayoutFragment';
+import type { LayoutObject } from './LayoutObject';
 import type { IntrinsicSizes, LayoutConstraints } from './types';
 import { LayoutTaskType } from './types';
 
-export const LayoutChildrenFactory = Syringe.defineToken('LayoutChildrenFactory');
+export const LayoutChildrenFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutChildrenFactory {
   (options: LayoutChildrenOptions): LayoutChildren;
 }
 
-export const LayoutChildrenOptions = Syringe.defineToken('LayoutChildrenOptions');
+export const LayoutChildrenOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutChildrenOptions {
   node: LayoutObject;

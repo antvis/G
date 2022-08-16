@@ -14,12 +14,6 @@ export class EllipseRenderer implements CanvasRenderer.StyleRenderer {
   ) {
     const { rx, ry } = parsedStyle as ParsedEllipseStyleProps;
     // @ts-ignore
-    context.roughCanvas.ellipse(
-      rx.value,
-      ry.value,
-      rx.value * 2,
-      ry.value * 2,
-      generateRoughOptions(object),
-    );
+    context.roughCanvas.ellipse(rx, ry, rx * 2, ry * 2, generateRoughOptions(object));
   }
 }

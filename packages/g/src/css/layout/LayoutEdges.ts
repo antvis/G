@@ -2,13 +2,13 @@ import { inject, injectable, Syringe } from 'mana-syringe';
 import type { LayoutObject } from './LayoutObject';
 import { PropertyName } from './types';
 
-export const LayoutEdgesFactory = Syringe.defineToken('LayoutEdgesFactory');
+export const LayoutEdgesFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutEdgesFactory {
   (options: LayoutEdgesOptions): LayoutEdges;
 }
 
-export const LayoutEdgesOptions = Syringe.defineToken('LayoutEdgesOptions');
+export const LayoutEdgesOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutEdgesOptions {
   node: LayoutObject;

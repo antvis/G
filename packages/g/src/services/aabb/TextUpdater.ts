@@ -1,6 +1,4 @@
-import { vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
-import { CSSUnitValue } from '../../css';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { Shape } from '../../types';
 import { TextService } from '../TextService';
@@ -72,45 +70,41 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     const { width, height, lineHeight, fontProperties } = metrics;
 
     // anchor is left-top by default
-    const halfExtents = vec3.fromValues(width / 2, height / 2, 0);
+    const halfExtents = [width / 2, height / 2, 0];
 
     // default 'left'
     let anchor: [number, number] = [0, 1];
     let lineXOffset = 0;
-    if (textAlign.value === 'center') {
-      lineXOffset = lineWidth.value / 2;
+    if (textAlign === 'center') {
+      lineXOffset = lineWidth / 2;
       anchor = [0.5, 1];
-    } else if (textAlign.value === 'right' || textAlign.value === 'end') {
-      lineXOffset = lineWidth.value;
+    } else if (textAlign === 'right' || textAlign === 'end') {
+      lineXOffset = lineWidth;
       anchor = [1, 1];
     }
 
     let lineYOffset = 0;
-    if (textBaseline.value === 'middle') {
+    if (textBaseline === 'middle') {
       // eslint-disable-next-line prefer-destructuring
       lineYOffset = halfExtents[1];
-    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       lineYOffset = halfExtents[1] * 2;
-    } else if (textBaseline.value === 'alphabetic') {
+    } else if (textBaseline === 'alphabetic') {
       lineYOffset = lineHeight - fontProperties.ascent;
-    } else if (textBaseline.value === 'bottom' || textBaseline.value === 'ideographic') {
+    } else if (textBaseline === 'bottom' || textBaseline === 'ideographic') {
       lineYOffset = 0;
     }
     // TODO: ideographic & bottom
 
     if (dx) {
-      lineXOffset += dx.value;
+      lineXOffset += dx;
     }
     if (dy) {
-      lineYOffset += dy.value;
+      lineYOffset += dy;
     }
 
     // update anchor
-    parsedStyle.anchor = [
-      new CSSUnitValue(anchor[0]),
-      new CSSUnitValue(anchor[1]),
-      new CSSUnitValue(0),
-    ];
+    parsedStyle.anchor = [anchor[0], anchor[1], 0];
     // console.log(parsedStyle.anchor);
 
     // if (!parsedStyle.transformOrigin) {

@@ -1,3 +1,4 @@
+import { memoize } from '@antv/util';
 import { Shape } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
@@ -50,17 +51,17 @@ export function parseDimension(unitRegExp: RegExp, string: string): CSSStyleValu
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length
  * length with only absolute unit, eg. 1px
  */
-export function parseLength(css: string) {
+export const parseLength = memoize((css: string) => {
   return parseDimension(new RegExp('px', 'g'), css);
-}
+});
 
 /**
  * <percentage>
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/percentage
  */
-export function parserPercentage(css: string) {
+export const parserPercentage = memoize((css: string) => {
   return parseDimension(new RegExp('%', 'g'), css);
-}
+});
 
 /**
  * length with absolute or relative unit,
@@ -68,16 +69,16 @@ export function parserPercentage(css: string) {
  *
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
-export function parseLengthOrPercentage(css: string): CSSUnitValue {
-  if (isNumber(css)) {
-    return new CSSUnitValue(css, 'px');
+export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
+  if (isNumber(css) || isFinite(Number(css))) {
+    return new CSSUnitValue(Number(css), 'px');
   }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
-}
+});
 
-export function parseAngle(css: string): CSSUnitValue {
+export const parseAngle = memoize((css: string): CSSUnitValue => {
   return parseDimension(new RegExp('deg|rad|grad|turn', 'g'), css) as CSSUnitValue;
-}
+});
 
 /**
  * merge CSSUnitValue
@@ -155,25 +156,25 @@ export function parseDimensionArray(string: string | (string | number)[]): CSSUn
   }
 }
 
-export function mergeDimensionList(
-  left: CSSUnitValue[],
-  right: CSSUnitValue[],
-  target: IElement | null,
-): [number[], number[], (list: number[]) => string] | undefined {
-  if (left.length !== right.length) {
-    return;
-  }
+// export function mergeDimensionList(
+//   left: CSSUnitValue[],
+//   right: CSSUnitValue[],
+//   target: IElement | null,
+// ): [number[], number[], (list: number[]) => string] | undefined {
+//   if (left.length !== right.length) {
+//     return;
+//   }
 
-  const unit = left[0].unit;
+//   const unit = left[0].unit;
 
-  return [
-    left.map((l) => l.value),
-    right.map((l) => l.value),
-    (values: number[]) => {
-      return values.map((n) => new CSSUnitValue(n, unit)).join(' ');
-    },
-  ];
-}
+//   return [
+//     left.map((l) => l.value),
+//     right.map((l) => l.value),
+//     (values: number[]) => {
+//       return values.map((n) => new CSSUnitValue(n, unit)).join(' ');
+//     },
+//   ];
+// }
 
 export function convertPercentUnit(
   valueWithUnit: CSSUnitValue,

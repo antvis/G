@@ -1,5 +1,5 @@
 import type { CSSRGB, DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
-import { clamp, UnitType } from '@antv/g';
+import { clamp } from '@antv/g';
 import { inArc, inBox, inLine, inRect } from './utils/math';
 
 export function isPointInPath(
@@ -13,28 +13,16 @@ export function isPointInPath(
     stroke,
     lineWidth,
     increasedLineWidthForHitTesting,
-    width: parsedWidth,
-    height: parsedHeight,
+    width,
+    height,
     clipPathTargets,
   } = displayObject.parsedStyle as ParsedRectStyleProps;
   const isClipPath = !!clipPathTargets?.length;
   const hasFill = fill && !(fill as CSSRGB).isNone;
   const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-  const hasRadius = radius && radius.some((r) => r.value !== 0);
+  const hasRadius = radius && radius.some((r) => r !== 0);
 
-  const { unit: widthUnit, value: widthValue } = parsedWidth;
-  const { unit: heightUnit, value: heightValue } = parsedHeight;
-  let width = 0;
-  let height = 0;
-  if (widthUnit === UnitType.kNumber || widthUnit === UnitType.kPixels) {
-    width = widthValue;
-  }
-  if (heightUnit === UnitType.kNumber || heightUnit === UnitType.kPixels) {
-    height = heightValue;
-  }
-
-  const lineWidthForHitTesting =
-    (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0);
+  const lineWidthForHitTesting = (lineWidth || 0) + (increasedLineWidthForHitTesting || 0);
 
   // 无圆角时的策略
   if (!hasRadius) {
@@ -65,9 +53,12 @@ export function isPointInPath(
         0,
         width,
         height,
-        radius.map((r) =>
-          clamp(r.value, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2)),
-        ) as [number, number, number, number],
+        radius.map((r) => clamp(r, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2))) as [
+          number,
+          number,
+          number,
+          number,
+        ],
         lineWidthForHitTesting,
         position.x,
         position.y,

@@ -4,8 +4,6 @@ import type {
   FederatedEvent,
   MutationEvent,
   ParsedBaseStyleProps,
-  ParsedRectStyleProps,
-  ParsedTextStyleProps,
   RenderingPlugin,
   RenderingService,
 } from '@antv/g';
@@ -228,7 +226,7 @@ export class YogaPlugin implements RenderingPlugin {
         object.nodeName === Shape.RECT ||
         object.nodeName === Shape.IMAGE
       ) {
-        const { width, height } = object.computedStyle as ParsedRectStyleProps;
+        const { width, height } = object.computedStyle;
         this.setWidth(node, width);
         this.setHeight(node, height);
       } else {
@@ -246,7 +244,7 @@ export class YogaPlugin implements RenderingPlugin {
         }
 
         if (object.nodeName === Shape.TEXT) {
-          const { wordWrap, width } = object.computedStyle as ParsedTextStyleProps;
+          const { wordWrap, width } = object.computedStyle;
 
           if (wordWrap) {
             this.setWidth(node, width);
@@ -542,8 +540,8 @@ export class YogaPlugin implements RenderingPlugin {
       const { anchor } = object.parsedStyle as ParsedBaseStyleProps;
       if (anchor) {
         // calculate local position instead of modify origin directly
-        left += anchor[0].value * width;
-        top += anchor[1].value * height;
+        left += anchor[0] * width;
+        top += anchor[1] * height;
       }
 
       if (object.nodeName === Shape.TEXT) {

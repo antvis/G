@@ -1,8 +1,8 @@
 import type { ParsedBaseStyleProps } from '@antv/g';
 import { Syringe } from '@antv/g';
 
-export const PathGeneratorFactory = Syringe.defineToken('PathGeneratorFactory');
-export const PathGenerator = Syringe.defineToken('PathGenerator');
+export const PathGeneratorFactory = Syringe.defineToken('');
+export const PathGenerator = Syringe.defineToken('');
 
 /**
  * generate path in local space

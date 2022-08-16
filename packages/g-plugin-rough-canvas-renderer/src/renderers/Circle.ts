@@ -16,6 +16,6 @@ export class CircleRenderer implements CanvasRenderer.StyleRenderer {
     // rough.js use diameter instead of radius
     // @see https://github.com/rough-stuff/rough/wiki#circle-x-y-diameter--options
     // @ts-ignore
-    context.roughCanvas.circle(r.value, r.value, r.value * 2, generateRoughOptions(object));
+    context.roughCanvas.circle(r, r, r * 2, generateRoughOptions(object));
   }
 }

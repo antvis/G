@@ -479,17 +479,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const { stroke, fill, opacity, lineDash, lineDashOffset } =
       object.parsedStyle as ParsedBaseStyleProps;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
-    if (lineDash && Array.isArray(lineDash)) {
-      context.setLineDash(lineDash.map((segment) => segment.value));
+    if (lineDash) {
+      context.setLineDash(lineDash);
     }
 
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
     if (!isNil(lineDashOffset)) {
-      context.lineDashOffset = lineDashOffset.value;
+      context.lineDashOffset = lineDashOffset;
     }
 
     if (!isNil(opacity)) {
-      context.globalAlpha *= opacity.value;
+      context.globalAlpha *= opacity;
     }
 
     if (!isNil(stroke) && !Array.isArray(stroke) && !(stroke as CSSRGB).isNone) {
@@ -509,8 +509,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     let tx = 0;
     let ty = 0;
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-    const anchorX = (anchor && anchor[0].value) || 0;
-    const anchorY = (anchor && anchor[1].value) || 0;
+    const anchorX = (anchor && anchor[0]) || 0;
+    const anchorY = (anchor && anchor[1]) || 0;
     if (anchorX !== 0 || anchorY !== 0) {
       const bounds = object.getGeometryBounds();
       const width = (bounds && bounds.halfExtents[0] * 2) || 0;

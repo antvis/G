@@ -18,7 +18,7 @@ export interface DataURLOptions {
 }
 
 // 1 of 1 in each Canvas
-export const ContextService = Syringe.defineToken('ContextService', { multiple: false });
+export const ContextService = Syringe.defineToken('', { multiple: false });
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextService<Context> {
   init: () => Promise<void>;

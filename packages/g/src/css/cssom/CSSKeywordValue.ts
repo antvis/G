@@ -1,5 +1,5 @@
-import type { Nested, ParenLess } from './types';
 import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
+import type { Nested, ParenLess } from './types';
 
 /**
  * CSSKeywordValue represents CSS Values that are specified as keywords

@@ -194,19 +194,19 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         break;
       case 'zIndex':
         const { zIndex } = object.parsedStyle;
-        $el.style['z-index'] = `${zIndex.value}`;
+        $el.style['z-index'] = `${zIndex}`;
         break;
       case 'visibility':
         const { visibility } = object.parsedStyle;
-        $el.style.visibility = visibility.value;
+        $el.style.visibility = visibility;
         break;
       case 'pointerEvents':
         const { pointerEvents } = object.parsedStyle;
-        $el.style.pointerEvents = pointerEvents.value;
+        $el.style.pointerEvents = pointerEvents;
         break;
       case 'opacity':
         const { opacity } = object.parsedStyle;
-        $el.style.opacity = `${opacity.value}`;
+        $el.style.opacity = `${opacity}`;
         break;
       case 'fill':
         const { fill } = object.parsedStyle;
@@ -244,7 +244,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         break;
       case 'lineWidth':
         const { lineWidth } = object.parsedStyle;
-        $el.style['border-width'] = `${lineWidth.value || 0}px`;
+        $el.style['border-width'] = `${lineWidth || 0}px`;
         break;
       case 'lineDash':
         $el.style['border-style'] = 'dashed';

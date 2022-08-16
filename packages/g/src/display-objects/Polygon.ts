@@ -1,4 +1,3 @@
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -38,8 +37,8 @@ export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   markerStart?: DisplayObject;
   markerMid?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: CSSUnitValue;
-  markerEndOffset?: CSSUnitValue;
+  markerStartOffset?: number;
+  markerEndOffset?: number;
   isClosed?: boolean;
 }
 
@@ -157,7 +156,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     if (isStart) {
       x = points[1][0] - points[0][0];
       y = points[1][1] - points[0][1];
-      offset = markerStartOffset?.value || 0;
+      offset = markerStartOffset || 0;
       originalAngle = this.markerStartAngle;
     } else {
       const { length } = points;
@@ -171,7 +170,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
         x = points[length - 1][0] - points[0][0];
         y = points[length - 1][1] - points[0][1];
       }
-      offset = markerEndOffset?.value || 0;
+      offset = markerEndOffset || 0;
       originalAngle = this.markerEndAngle;
     }
     rad = Math.atan2(y, x);

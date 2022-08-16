@@ -20,11 +20,11 @@ export function isPointInPath(
   } = displayObject.parsedStyle as ParsedLineStyleProps;
 
   return inLine(
-    x1.value,
-    y1.value,
-    x2.value,
-    y2.value,
-    (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
+    x1,
+    y1,
+    x2,
+    y2,
+    (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
     position.x + x,
     position.y + y,
   );

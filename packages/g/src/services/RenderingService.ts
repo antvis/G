@@ -13,7 +13,7 @@ export interface RenderingPlugin {
   apply: (renderer: RenderingService) => void;
 }
 
-export const RenderingPluginContribution = Syringe.defineToken('RenderingPluginContribution');
+export const RenderingPluginContribution = Syringe.defineToken('');
 
 export interface PickingResult {
   /**
