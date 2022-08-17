@@ -66,9 +66,11 @@ export class SelectableRect extends CustomElement<Props> {
         selectionStroke: 'black',
         selectionStrokeOpacity: 1,
         selectionStrokeWidth: 1,
+        selectionLineDash: 0,
         anchorFill: 'black',
         anchorStroke: 'black',
         anchorStrokeOpacity: 1,
+        anchorStrokeWidth: 1,
         anchorFillOpacity: 1,
         anchorSize: 6,
         ...style,
@@ -118,11 +120,13 @@ export class SelectableRect extends CustomElement<Props> {
       anchorFillOpacity,
       anchorStrokeOpacity,
       anchorSize,
+      anchorStrokeWidth,
       selectionFill,
       selectionFillOpacity,
       selectionStroke,
       selectionStrokeOpacity,
       selectionStrokeWidth,
+      selectionLineDash,
       target,
     } = this.style;
 
@@ -143,6 +147,7 @@ export class SelectableRect extends CustomElement<Props> {
     this.mask.style.fillOpacity = selectionFillOpacity;
     this.mask.style.strokeOpacity = selectionStrokeOpacity;
     this.mask.style.lineWidth = selectionStrokeWidth;
+    this.mask.style.lineDash = selectionLineDash;
 
     // position anchors
     this.trAnchor.setLocalPosition(width, 0);
@@ -155,6 +160,7 @@ export class SelectableRect extends CustomElement<Props> {
       anchor.style.fill = anchorFill;
       anchor.style.fillOpacity = anchorFillOpacity;
       anchor.style.strokeOpacity = anchorStrokeOpacity;
+      anchor.style.strokeWidth = anchorStrokeWidth;
       anchor.style.r = anchorSize;
       anchor.style.cursor = this.scaleCursorStyleHandler(controls[i], target) as Cursor;
     });

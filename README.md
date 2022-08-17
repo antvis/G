@@ -26,7 +26,7 @@ As the underlying rendering engine of AntV, G is dedicated to provide consistent
 
 ## ✨ Features
 
-**Easy-to-use API**。The graphics and event system is compatible with DOM Element & Event API, and the animation system is compatible with Web Animation API, which can be adapted to the existing ecology of Web side such as D3, Hammer.js gesture library, etc. at a very low cost.
+**Easy-to-use API**。The graphics and event system is compatible with DOM Element & Event API, and the animation system is compatible with Web Animation API, which can be adapted to the existing ecosystem of Web side such as D3, Hammer.js gesture library, etc. at a very low cost.
 
 **Support multiple rendering environments**。Support Canvas2D / SVG / WebGL / WebGPU / CanvasKit and runtime switching, and also server-side rendering.
 

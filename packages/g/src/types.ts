@@ -167,7 +167,7 @@ export interface BaseStyleProps {
    * alias of strokeDasharray
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getLineDash
    */
-  lineDash?: string | (string | number)[];
+  lineDash?: number | string | (string | number)[];
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset

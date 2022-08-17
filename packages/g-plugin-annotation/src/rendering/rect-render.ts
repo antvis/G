@@ -19,13 +19,13 @@ function getHeightFromBbox(path: PointLike[]) {
   const dx = br.x - tr.x;
   return Math.sqrt(dy * dy + dx * dx);
 }
-function getRotationFromBbox(path: PointLike[]) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tl, tr, br, bl] = path;
-  const dy = tr.y - tl.y;
-  const dx = tr.x - tl.x;
-  return (Math.atan(dy / dx) * 180) / Math.PI;
-}
+// function getRotationFromBbox(path: PointLike[]) {
+//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//   const [tl, tr, br, bl] = path;
+//   const dy = tr.y - tl.y;
+//   const dx = tr.x - tl.x;
+//   return (Math.atan(dy / dx) * 180) / Math.PI;
+// }
 
 export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   const { path } = anno;
@@ -35,28 +35,37 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   const width = getWidthFromBbox(path);
   const height = getHeightFromBbox(path);
 
-  const rect = new Rect({
-    style: {
-      x: left,
-      y: top,
-      height,
-      width,
-      ...style,
-    },
-    className: anno.id,
-    id: anno.id,
-  });
-  const rotation = getRotationFromBbox(path);
-  rect.rotate(rotation);
+  if (!context.brushRect) {
+    context.brushRect = new Rect({
+      id: anno.id,
+      className: anno.id,
+      style: {
+        width: 0,
+        height: 0,
+      },
+    });
 
-  rect.addEventListener('mousedown', () => {
-    context.freezeDrawer();
-    context.setActiveAnnotation(anno.id);
+    // context.brushRect.addEventListener('pointerdown', () => {
+    //   context.freezeDrawer();
+    //   context.setActiveAnnotation(anno.id);
+    // });
+
+    // context.brushRect.addEventListener('pointerup', () => {
+    //   context.unfreezeDrawer();
+    // });
+
+    context.canvas?.appendChild(context.brushRect);
+  }
+
+  context.brushRect.attr({
+    x: left,
+    y: top,
+    height,
+    width,
+    visibility: 'visible',
+    ...style,
   });
 
-  rect.addEventListener('mouseup', () => {
-    context.unfreezeDrawer();
-  });
-
-  context.canvas?.appendChild(rect);
+  // const rotation = getRotationFromBbox(path);
+  // context.brushRect.rotate(rotation);
 };

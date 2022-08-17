@@ -11,6 +11,10 @@ export class DisplayObjectPool {
     return pool[entity];
   }
 
+  getAll() {
+    return Object.keys(pool).map((entity) => pool[entity]);
+  }
+
   add(entity: number, groupOrShape: DisplayObject) {
     pool[entity] = groupOrShape;
 

@@ -188,7 +188,7 @@ export class SelectablePlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
-      canvas.addEventListener('click', handleClick);
+      canvas.addEventListener('pointerdown', handleClick);
       canvas.appendChild(this.activeSelectableLayer);
 
       canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
@@ -196,7 +196,7 @@ export class SelectablePlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
-      canvas.removeEventListener('click', handleClick);
+      canvas.removeEventListener('pointerdown', handleClick);
       canvas.removeChild(this.activeSelectableLayer);
 
       canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);

@@ -8,8 +8,8 @@ import type { SelectableStyle } from './tokens';
 import { AnnotationPluginOptions } from './tokens';
 
 const containerModule = Module((register) => {
-  register(AnnotationPlugin);
   register(SelectablePlugin);
+  register(AnnotationPlugin);
 });
 
 export class Plugin extends AbstractRendererPlugin {
@@ -23,6 +23,7 @@ export class Plugin extends AbstractRendererPlugin {
     this.container.register(AnnotationPluginOptions, {
       useValue: {
         selectableStyle: {},
+        isDrawingMode: true,
         ...this.options,
       },
     });
@@ -142,6 +143,14 @@ export class Plugin extends AbstractRendererPlugin {
 
   clearDrawer() {
     this.container.get(AnnotationPlugin).clearDrawer();
+  }
+
+  /**
+   * @see http://fabricjs.com/fabric-intro-part-4#free_drawing
+   */
+  setDrawingMode(enabled: boolean) {
+    const options = this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
+    options.isDrawingMode = enabled;
   }
 
   destroy(): void {

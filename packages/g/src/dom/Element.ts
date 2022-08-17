@@ -1,4 +1,4 @@
-import { sceneGraphService } from '..';
+import { displayObjectPool, sceneGraphService } from '..';
 import { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -191,6 +191,7 @@ export class Element<
 
     // emit destroy event
     if (destroy) {
+      // child.destroy();
       child.dispatchEvent(destroyEvent);
       (child as unknown as Element).destroyed = true;
     }
@@ -213,6 +214,7 @@ export class Element<
       // remove event listeners
       // @ts-ignore
       child.emitter.removeAllListeners();
+      displayObjectPool.remove((child as unknown as Element).entity);
     }
     return child;
   }
