@@ -25,11 +25,13 @@ export class DisplayObjectPool {
 
   remove(entity: number) {
     const existed = pool[entity];
-    delete pool[entity];
 
-    if (existed.nodeName === Shape.HTML) {
-      const index = htmlPool.indexOf(existed as HTML);
-      htmlPool.splice(index, 1);
+    if (existed) {
+      delete pool[entity];
+      if (existed.nodeName === Shape.HTML) {
+        const index = htmlPool.indexOf(existed as HTML);
+        htmlPool.splice(index, 1);
+      }
     }
   }
 
