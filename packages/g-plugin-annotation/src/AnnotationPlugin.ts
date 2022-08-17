@@ -1,4 +1,10 @@
-import type { Canvas, FederatedPointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import type {
+  Canvas,
+  FederatedPointerEvent,
+  Rect,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g';
 import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerTool } from './constants/enum';
@@ -33,20 +39,12 @@ export class AnnotationPlugin implements RenderingPlugin {
   public canvas: Canvas;
 
   /**
-   *
-   * @param id
-   * @returns
+   * draw a dashed rect when brushing
    */
-  private getAnnotationObjects(id: string) {
-    return this.canvas.document.getElementsByClassName(id);
-  }
-  /**
-   * 取消标注（仅从画布移除）
-   * @param id
-   */
-  private cancelDrawer(id: string) {
-    const annos = this.getAnnotationObjects(id);
-    annos.forEach((anno) => anno.remove());
+  brushRect: Rect;
+
+  private hideDrawer() {
+    this.brushRect.style.visibility = 'hidden';
   }
 
   /**
@@ -54,7 +52,6 @@ export class AnnotationPlugin implements RenderingPlugin {
    * @param anno
    */
   public renderDrawer(anno: DrawerState) {
-    this.cancelDrawer(anno.id);
     if (anno.type === 'circle') {
       renderCircle(this, anno);
     }
@@ -120,14 +117,14 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const onComplete = (toolstate: any) => {
-      if (this.annotationPluginOptions.destroyAfterComplete !== false) {
-        this.cancelDrawer(toolstate.id);
-      }
+      // if (this.annotationPluginOptions.destroyAfterComplete !== false) {
+      this.hideDrawer();
+      // }
       this.emmiter.emit('draw:complete', toolstate);
     };
 
     const onCancel = (toolstate: any) => {
-      this.cancelDrawer(toolstate.id);
+      this.hideDrawer();
       this.emmiter.emit('draw:cancel', toolstate);
     };
 
@@ -173,36 +170,64 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.canvas = canvas;
 
     const handleMouseDown = (e: FederatedPointerEvent) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       if (e.button === 0) {
         this.drawer?.onMouseDown(e);
       }
     };
 
     const handleMouseMove = (e: FederatedPointerEvent) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       this.drawer?.onMouseMove(e);
     };
 
     const handleMouseUp = (e: FederatedPointerEvent) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       if (e.button === 0) {
         this.drawer?.onMouseUp(e);
       }
     };
 
     const handleMouseDbClick = (e: FederatedPointerEvent) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       if (e.button === 0) {
         this.drawer?.onMouseDbClick(e);
       }
     };
 
     const handleClick = (e: FederatedPointerEvent) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       if (e.detail === 2) handleMouseDbClick(e);
     };
 
     const handleDrawerKeyDown = (e) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       this.drawer?.onKeyDown?.(e);
     };
 
     const handleKeyDown = (e) => {
+      if (!this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
       if (!this.hotkeyActive) return;
       if (this.drawer?.isDrawing) {
         handleDrawerKeyDown(e);

@@ -1,7 +1,7 @@
 import type { DisplayObject, ParsedBaseStyleProps, RenderingService } from '@antv/g';
 import { Syringe } from '@antv/g';
 
-export const StyleRendererFactory = Syringe.defineToken('StyleRendererFactory');
+export const StyleRendererFactory = Syringe.defineToken('');
 export interface StyleRenderer {
   render: (
     context: CanvasRenderingContext2D,
@@ -11,20 +11,20 @@ export interface StyleRenderer {
   ) => void;
 }
 
-export const CircleRendererContribution = Syringe.defineToken('CircleRenderer', {
+export const CircleRendererContribution = Syringe.defineToken('', {
   multiple: false,
 });
-export const EllipseRendererContribution = Syringe.defineToken('EllipseRenderer', {
+export const EllipseRendererContribution = Syringe.defineToken('', {
   multiple: false,
 });
-export const RectRendererContribution = Syringe.defineToken('RectRenderer', { multiple: false });
-export const LineRendererContribution = Syringe.defineToken('LineRenderer', { multiple: false });
-export const PolylineRendererContribution = Syringe.defineToken('PolylineRenderer', {
+export const RectRendererContribution = Syringe.defineToken('', { multiple: false });
+export const LineRendererContribution = Syringe.defineToken('', { multiple: false });
+export const PolylineRendererContribution = Syringe.defineToken('', {
   multiple: false,
 });
-export const PolygonRendererContribution = Syringe.defineToken('PolygonRenderer', {
+export const PolygonRendererContribution = Syringe.defineToken('', {
   multiple: false,
 });
-export const PathRendererContribution = Syringe.defineToken('PathRenderer', { multiple: false });
-export const TextRendererContribution = Syringe.defineToken('TextRenderer', { multiple: false });
-export const ImageRendererContribution = Syringe.defineToken('ImageRenderer', { multiple: false });
+export const PathRendererContribution = Syringe.defineToken('', { multiple: false });
+export const TextRendererContribution = Syringe.defineToken('', { multiple: false });
+export const ImageRendererContribution = Syringe.defineToken('', { multiple: false });

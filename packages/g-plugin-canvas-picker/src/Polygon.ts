@@ -29,7 +29,7 @@ export function isPointInPath(
   if (hasStroke || isClipPath) {
     isHit = inPolyline(
       points.points,
-      (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
+      (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
       position.x + x,
       position.y + y,
       true,

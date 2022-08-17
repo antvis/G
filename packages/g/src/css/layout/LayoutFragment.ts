@@ -1,13 +1,13 @@
 import { inject, injectable, Syringe } from 'mana-syringe';
 import { LayoutContext } from './LayoutContext';
 
-export const LayoutFragmentFactory = Syringe.defineToken('LayoutFragmentFactory');
+export const LayoutFragmentFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutFragmentFactory<T = void> {
   (options: LayoutFragmentOptions<T>): LayoutFragment<T>;
 }
 
-export const LayoutFragmentOptions = Syringe.defineToken('LayoutFragmentOptions');
+export const LayoutFragmentOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutFragmentOptions<T = void> {
   inlineSize: number;

@@ -1,7 +1,7 @@
 import { GlobalContainer } from 'mana-syringe';
+import { styleValueRegistry } from '..';
 import { CSSUnitValue } from './cssom';
 import type { PropertySyntax } from './interfaces';
-import { StyleValueRegistry } from './interfaces';
 import type { LayoutDefinitionCtor } from './layout';
 import { LayoutRegistry } from './layout';
 
@@ -117,8 +117,7 @@ export const CSS = {
   registerProperty: (definition: PropertyDefinition) => {
     const { name, inherits, interpolable, initialValue, syntax } = definition;
 
-    const registry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
-    registry.registerMetadata({
+    styleValueRegistry.registerMetadata({
       name,
       inherited: inherits,
       interpolable,

@@ -1,9 +1,10 @@
 import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
-import { CSSUnitValue } from '../cssom';
+import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
-import { convertAngleUnit, mergeDimensions, parseAngle } from '../parser/dimension';
+import { mergeNumbers } from '../parser';
+import { convertAngleUnit, parseAngle } from '../parser/dimension';
 
 @singleton({
   token: {
@@ -11,10 +12,12 @@ import { convertAngleUnit, mergeDimensions, parseAngle } from '../parser/dimensi
     named: PropertySyntax.ANGLE,
   },
 })
-export class CSSPropertyAngle implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+export class CSSPropertyAngle implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseAngle;
-  mixer = mergeDimensions;
+
+  mixer = mergeNumbers;
+
   calculator(name: string, oldParsed: CSSUnitValue, parsed: CSSUnitValue, object: DisplayObject) {
-    return new CSSUnitValue(convertAngleUnit(parsed), 'deg');
+    return convertAngleUnit(parsed);
   }
 }

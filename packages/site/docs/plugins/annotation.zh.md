@@ -246,3 +246,47 @@ image.addEventListener('deselected', () => {});
 // or
 image.addEventListener(SelectableEvent.DESELECTED, () => {});
 ```
+
+## 移动中事件
+
+拖拽蒙层时目标图形会跟着移动，此过程会持续触发移动中事件，类似 [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 中的 `dragging`：
+
+```js
+import { SelectableEvent } from '@antv/g-plugin-annotation';
+
+image.addEventListener('moving', () => {});
+// or
+image.addEventListener(SelectableEvent.MOVING, () => {});
+```
+
+该事件对象上携带以下信息：
+
+```js
+image.addEventListener('moving', (e) => {
+    const { movingX, movingY } = e.detail;
+});
+```
+
+## 移动完毕事件
+
+当拖拽结束后，会触发该事件，类似 [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 中的 `dragend`：
+
+```js
+import { SelectableEvent } from '@antv/g-plugin-annotation';
+
+image.addEventListener('moved', () => {});
+// or
+image.addEventListener(SelectableEvent.MOVED, () => {});
+```
+
+## 修改事件
+
+在锚点上拖拽可以对图形进行缩放，此过程也会持续触发修改事件：
+
+```js
+import { SelectableEvent } from '@antv/g-plugin-annotation';
+
+image.addEventListener('modified', () => {});
+// or
+image.addEventListener(SelectableEvent.MODIFED, () => {});
+```

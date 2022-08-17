@@ -19,20 +19,20 @@ export class EllipseRenderer implements RendererContribution {
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawOval(
         [
-          shadowOffsetX?.value || 0,
-          shadowOffsetY?.value || 0,
-          rx.value * 2 + (shadowOffsetX?.value || 0) / 2,
-          ry.value * 2 + (shadowOffsetY?.value || 0) / 2,
+          shadowOffsetX || 0,
+          shadowOffsetY || 0,
+          rx * 2 + (shadowOffsetX || 0) / 2,
+          ry * 2 + (shadowOffsetY || 0) / 2,
         ],
         shadowFillPaint || shadowStrokePaint,
       );
     }
 
     if (fillPaint) {
-      canvas.drawOval([0, 0, rx.value * 2, ry.value * 2], fillPaint);
+      canvas.drawOval([0, 0, rx * 2, ry * 2], fillPaint);
     }
     if (strokePaint) {
-      canvas.drawOval([0, 0, rx.value * 2, ry.value * 2], strokePaint);
+      canvas.drawOval([0, 0, rx * 2, ry * 2], strokePaint);
     }
   }
 }

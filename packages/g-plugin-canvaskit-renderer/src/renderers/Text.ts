@@ -43,7 +43,7 @@ export class TextRenderer implements RendererContribution {
     const {
       text,
       fontSize,
-      fontFamily: fontFamilies,
+      fontFamily: fontFamilies = '',
       fontWeight,
       // fontStyle,
       // lineWidth,
@@ -167,7 +167,7 @@ export class TextRenderer implements RendererContribution {
           ),
         );
       }
-      const skFont = new CanvasKit.Font(loadedTypefaces[0], fontSize.value);
+      const skFont = new CanvasKit.Font(loadedTypefaces[0], fontSize);
       const textblob = CanvasKit.TextBlob.MakeOnPath(text, skPath, skFont);
       canvas.drawTextBlob(textblob, 0, 0, textPaint);
     } else {
@@ -204,10 +204,10 @@ export class TextRenderer implements RendererContribution {
           decorationStyle: DECORATION_STYLE_MAP[decorationStyle || 'solid'],
           fontFamilies: loadedFontFamilies,
           fontFeatures,
-          fontSize: fontSize.value,
+          fontSize: fontSize,
           fontStyle: {
             weight: {
-              value: Number(fontWeight.value),
+              value: Number(fontWeight),
             },
             // width?: FontWidth;
             // slant?: FontSlant;
@@ -218,7 +218,7 @@ export class TextRenderer implements RendererContribution {
           ),
           heightMultiplier,
           halfLeading,
-          letterSpacing: letterSpacing.value,
+          letterSpacing: letterSpacing,
           // locale?: string;
           shadows: (shadows || []).map(({ color, offset, blurRadius }) => {
             return {
@@ -227,10 +227,10 @@ export class TextRenderer implements RendererContribution {
               blurRadius,
             };
           }),
-          textBaseline: TEXT_BASELINE_MAP[textBaseline.value],
+          textBaseline: TEXT_BASELINE_MAP[textBaseline],
           wordSpacing,
         },
-        textAlign: TEXT_ALIGN_MAP[textAlign.value],
+        textAlign: TEXT_ALIGN_MAP[textAlign],
         disableHinting,
         ellipsis,
         // heightMultiplier,
@@ -251,7 +251,7 @@ export class TextRenderer implements RendererContribution {
         // width in pixels to use when wrapping text
         paragraph.layout(wordWrapWidth);
       } else {
-        paragraph.layout(text.length * fontSize.value);
+        paragraph.layout(text.length * fontSize);
       }
 
       // account for textBaseline
@@ -259,26 +259,26 @@ export class TextRenderer implements RendererContribution {
       const paragraphMaxWidth = paragraph.getMaxWidth();
       let offsetX = 0;
       // handle horizontal text align
-      if (textAlign.value === 'center') {
+      if (textAlign === 'center') {
         offsetX -= paragraphMaxWidth / 2;
-      } else if (textAlign.value === 'right' || textAlign.value === 'end') {
+      } else if (textAlign === 'right' || textAlign === 'end') {
         offsetX -= paragraphMaxWidth;
       }
       let linePositionY = 0;
       // handle vertical text baseline
-      if (textBaseline.value === 'middle') {
+      if (textBaseline === 'middle') {
         linePositionY = -paragraphHeight / 2;
       } else if (
-        textBaseline.value === 'bottom' ||
-        textBaseline.value === 'alphabetic' ||
-        textBaseline.value === 'ideographic'
+        textBaseline === 'bottom' ||
+        textBaseline === 'alphabetic' ||
+        textBaseline === 'ideographic'
       ) {
         linePositionY = -paragraphHeight;
-      } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+      } else if (textBaseline === 'top' || textBaseline === 'hanging') {
         linePositionY = 0;
       }
 
-      canvas.drawParagraph(paragraph, offsetX + dx.value, linePositionY + dy.value);
+      canvas.drawParagraph(paragraph, offsetX + dx, linePositionY + dy);
 
       paragraph.delete();
       builder.delete();

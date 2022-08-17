@@ -1,12 +1,11 @@
-import { GlobalContainer } from 'mana-syringe';
+import { memoize } from '@antv/util';
+import { styleValueRegistry } from '..';
 import type { Interpolatable } from '../css';
-import { StyleValueRegistry } from '../css/interfaces';
+import { getMetadata } from '../css';
 import type { DisplayObject } from '../display-objects';
-import type { AnimationEffectTiming } from '../dom';
-import type { IElement } from '../dom/interfaces';
+import type { AnimationEffectTiming, IElement } from '../dom';
 import { parseEasingFunction } from './animation';
 import type { TypeEasingFunction } from './custom-easing';
-import { memoize } from './memoize';
 import { camelCase, isString } from './string';
 
 export function convertEffectInput(
@@ -150,27 +149,65 @@ function propertyInterpolation(
   right: string | number,
   target: IElement | null,
 ) {
-  let parsedLeft = left;
-  let parsedRight = right;
-
-  const registry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
-  const metadata = registry.getMetadata(property);
+  const metadata = getMetadata(property);
 
   if (metadata && metadata.syntax && metadata.interpolable) {
-    const propertyHandler = registry.getPropertySyntax(metadata.syntax);
+    const propertyHandler = styleValueRegistry.getPropertySyntax(metadata.syntax);
 
     if (propertyHandler) {
-      if (propertyHandler.parser) {
-        parsedLeft = propertyHandler.parser(left, target as DisplayObject);
-        parsedRight = propertyHandler.parser(right, target as DisplayObject);
-      }
+      const computedLeft = styleValueRegistry.parseProperty(
+        property,
+        left,
+        target as DisplayObject,
+      );
+      const computedRight = styleValueRegistry.parseProperty(
+        property,
+        right,
+        target as DisplayObject,
+      );
+
+      const usedLeft = styleValueRegistry.computeProperty(
+        property,
+        computedLeft,
+        target as DisplayObject,
+      );
+      const usedRight = styleValueRegistry.computeProperty(
+        property,
+        computedRight,
+        target as DisplayObject,
+      );
+
+      // use defaultValue
+      // const parsedDefaultLeft = parseDefaultValue(metadata, target, property, left);
+      // const parsedDefaultRight = parseDefaultValue(metadata, target, property, right);
+
+      // if (!isNil(parsedDefaultLeft)) {
+      //   // @ts-ignore
+      //   parsedLeft = parsedDefaultLeft;
+      // } else if (propertyHandler.parser) {
+      //   parsedLeft = propertyHandler.parser(left, target as DisplayObject);
+      // }
+      // if (!isNil(parsedDefaultRight)) {
+      //   // @ts-ignore
+      //   parsedRight = parsedDefaultRight;
+      // } else if (propertyHandler.parser) {
+      //   parsedRight = propertyHandler.parser(right, target as DisplayObject);
+      // }
+
+      // if (propertyHandler.parser) {
+      //   parsedLeft = propertyHandler.parser(left, target as DisplayObject);
+      //   parsedRight = propertyHandler.parser(right, target as DisplayObject);
+      // }
+
+      // // no need to calculate
       // if (propertyHandler.calculator) {
       //   parsedLeft = propertyHandler.calculator(parsedLeft);
+      //   parsedRight = propertyHandler.calculator(parsedRight);
       //   // parsedLeft = handler.calculator
       // }
 
       // merger [left, right, n2string()]
-      const interpolationArgs = propertyHandler.mixer(parsedLeft, parsedRight, target);
+      const interpolationArgs = propertyHandler.mixer(usedLeft, usedRight, target);
       if (interpolationArgs) {
         // @ts-ignore
         const interp = InterpolationFactory(...interpolationArgs);

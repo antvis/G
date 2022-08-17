@@ -1,5 +1,4 @@
 import { singleton } from 'mana-syringe';
-import { CSSUnitValue, UnitType } from '../../css';
 import type { Group, Image, ParsedImageStyleProps, Rect } from '../../display-objects';
 import { Shape } from '../../types';
 import { isString } from '../../utils';
@@ -14,36 +13,21 @@ import { GeometryAABBUpdater } from './interfaces';
 })
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
-    const { img, width, height } = parsedStyle;
+    const { img, width = 0, height = 0 } = parsedStyle;
 
-    let contentWidth = 0;
-    let contentHeight = 0;
-    if (width instanceof CSSUnitValue) {
-      if (width.unit === UnitType.kPixels) {
-        contentWidth = width.value;
-      }
-    }
-    if (height instanceof CSSUnitValue) {
-      if (height.unit === UnitType.kPixels) {
-        contentHeight = height.value;
-      }
-    }
+    let contentWidth = width;
+    let contentHeight = height;
 
     // resize with HTMLImageElement's size
     if (img && !isString(img)) {
       if (!contentWidth) {
         contentWidth = img.width;
+        parsedStyle.width = contentWidth;
       }
       if (!contentHeight) {
         contentHeight = img.height;
+        parsedStyle.height = contentHeight;
       }
-    }
-
-    if (width instanceof CSSUnitValue) {
-      width.value = contentWidth;
-    }
-    if (height instanceof CSSUnitValue) {
-      height.value = contentHeight;
     }
 
     return {

@@ -24,7 +24,7 @@ const canvas = new Canvas({
 });
 
 interface AProps extends BaseCustomElementStyleProps {
-  angle: string | number;
+  angle?: string | number | null;
   test: number;
 }
 
@@ -80,7 +80,7 @@ describe('CSSPropertyAngle', () => {
     expect(computed.equals(CSS.deg(30))).to.be.true;
     expect(circle.computedStyleMap().get('test')).to.be.eqls(50);
     // used value
-    expect(circle.parsedStyle.angle).to.be.eqls(CSS.deg(30));
+    expect(circle.parsedStyle.angle).to.be.eqls(30);
     expect(circle.parsedStyle.test).to.be.eqls(50);
 
     // 90deg
@@ -88,14 +88,14 @@ describe('CSSPropertyAngle', () => {
     expect(circle.getAttribute('angle')).to.be.eqls(90);
     computed = circle.computedStyleMap().get('angle') as CSSUnitValue;
     expect(computed.equals(CSS.deg(90))).to.be.true;
-    expect(circle.parsedStyle.angle).to.be.eqls(CSS.deg(90));
+    expect(circle.parsedStyle.angle).to.be.eqls(90);
 
     // 60deg
     circle.style.angle = '60deg';
     expect(circle.getAttribute('angle')).to.be.eqls('60deg');
     computed = circle.computedStyleMap().get('angle') as CSSUnitValue;
     expect(computed.equals(CSS.deg(60))).to.be.true;
-    expect(circle.parsedStyle.angle).to.be.eqls(CSS.deg(60));
+    expect(circle.parsedStyle.angle).to.be.eqls(60);
 
     // 2rad
     circle.style.angle = '2rad';
@@ -109,20 +109,20 @@ describe('CSSPropertyAngle', () => {
     expect(circle.getAttribute('angle')).to.be.eqls('1turn');
     computed = circle.computedStyleMap().get('angle') as CSSUnitValue;
     expect(computed.equals(CSS.turn(1))).to.be.true;
-    expect(circle.parsedStyle.angle).to.be.eqls(CSS.deg(360));
+    expect(circle.parsedStyle.angle).to.be.eqls(360);
 
     // should remain the same
     circle.style.angle = undefined;
     computed = circle.computedStyleMap().get('angle') as CSSUnitValue;
     expect(computed.equals(CSS.turn(1))).to.be.true;
-    expect(circle.parsedStyle.angle).to.be.eqls(CSS.deg(360));
+    expect(circle.parsedStyle.angle).to.be.eqls(360);
 
     // unset
     circle.style.angle = null;
     expect(circle.getAttribute('angle')).to.be.null;
     computed = circle.computedStyleMap().get('angle') as CSSUnitValue;
     expect(computed.toString()).to.be.eqls('unset');
-    expect(circle.parsedStyle.angle.equals(CSS.deg(0))).to.be.true;
+    expect(circle.parsedStyle.angle).to.be.eqls(0);
 
     // start animation
     circle.animate(
@@ -141,6 +141,6 @@ describe('CSSPropertyAngle', () => {
     expect(circle.getAttribute('angle')).to.be.eqls('40deg');
     computed = circle.computedStyleMap().get('angle') as CSSUnitValue;
     expect(computed.equals(CSS.deg(40))).to.be.true;
-    expect(circle.parsedStyle.angle).to.be.eqls(CSS.deg(40));
+    expect(circle.parsedStyle.angle).to.be.eqls(40);
   });
 });

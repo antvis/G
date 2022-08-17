@@ -1,4 +1,3 @@
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -13,12 +12,12 @@ export interface ImageStyleProps extends BaseStyleProps {
   height?: number | string;
 }
 export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
+  x: number;
+  y: number;
   img?: string | HTMLImageElement;
   src?: string | HTMLImageElement;
-  width?: CSSUnitValue;
-  height?: CSSUnitValue;
+  width?: number;
+  height?: number;
 }
 export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps> = {}) {

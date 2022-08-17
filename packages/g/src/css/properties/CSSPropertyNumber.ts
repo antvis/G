@@ -10,7 +10,10 @@ import { mergeNumbers, parseNumber } from '../parser/numeric';
     named: PropertySyntax.NUMBER,
   },
 })
-export class CSSPropertyNumber implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>> {
+export class CSSPropertyNumber implements Partial<CSSProperty<CSSUnitValue, number>> {
   mixer = mergeNumbers;
   parser = parseNumber;
+  calculator(name: string, oldParsed: CSSUnitValue, computed: CSSUnitValue): number {
+    return computed.value;
+  }
 }

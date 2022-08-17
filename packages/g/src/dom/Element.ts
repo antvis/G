@@ -1,6 +1,5 @@
-import { GlobalContainer } from 'mana-syringe';
+import { displayObjectPool, sceneGraphService } from '..';
 import { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
-import { SceneGraphService } from '../services/SceneGraphService';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { formatAttribute, isNil } from '../utils';
@@ -11,6 +10,16 @@ import { MutationEvent } from './MutationEvent';
 import { Node } from './Node';
 
 let entityCounter = 0;
+// let sceneGraphService: SceneGraphService;
+const childInsertedEvent = new CustomEvent(ElementEvent.CHILD_INSERTED, {
+  child: null,
+});
+const insertedEvent = new MutationEvent(ElementEvent.INSERTED, null, '', '', '', 0, '', '');
+const removedEvent = new MutationEvent(ElementEvent.REMOVED, null, '', '', '', 0, '', '');
+const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
+const childRemovedEvent = new CustomEvent(ElementEvent.CHILD_REMOVED, {
+  child: null,
+});
 
 /**
  * Has following capabilities:
@@ -28,8 +37,6 @@ export class Element<
   static isElement(target: IEventTarget | INode | IElement): target is IElement {
     return !!(target as IElement).getAttribute;
   }
-
-  sceneGraphService = GlobalContainer.get<SceneGraphService>(SceneGraphService);
 
   entity = entityCounter++;
 
@@ -133,20 +140,25 @@ export class Element<
   }
 
   appendChild<T extends INode>(child: T, index?: number): T {
-    this.sceneGraphService.attach(child, this, index);
+    sceneGraphService.attach(child, this, index);
 
-    this.dispatchEvent(
-      new CustomEvent(ElementEvent.CHILD_INSERTED, {
-        child,
-      }),
-    );
+    // this.dispatchEvent(
+    //   new CustomEvent(ElementEvent.CHILD_INSERTED, {
+    //     child,
+    //   }),
+    // );
+    childInsertedEvent.detail.child = child;
+    // @ts-ignore
+    // this.ownerDocument?.defaultView?.mountChildren(child);
+
+    this.dispatchEvent(childInsertedEvent);
+
     // child.emit(ElementEvent.INSERTED, {
     //   parent: this,
     //   index,
     // });
-    child.dispatchEvent(
-      new MutationEvent(ElementEvent.INSERTED, this as IElement, '', '', '', 0, '', ''),
-    );
+    insertedEvent.relatedNode = this as IElement;
+    child.dispatchEvent(insertedEvent);
 
     return child;
   }
@@ -174,25 +186,27 @@ export class Element<
     //   parent: this,
     // });
 
-    child.dispatchEvent(
-      new MutationEvent(ElementEvent.REMOVED, this as IElement, '', '', '', 0, '', ''),
-    );
+    removedEvent.relatedNode = this as IElement;
+    child.dispatchEvent(removedEvent);
 
     // emit destroy event
     if (destroy) {
-      child.dispatchEvent(new CustomEvent(ElementEvent.DESTROY));
+      // child.destroy();
+      child.dispatchEvent(destroyEvent);
       (child as unknown as Element).destroyed = true;
     }
 
     // emit on parent
-    this.dispatchEvent(
-      new CustomEvent(ElementEvent.CHILD_REMOVED, {
-        child,
-      }),
-    );
+    childRemovedEvent.detail.child = child;
+    this.dispatchEvent(childRemovedEvent);
+    // this.dispatchEvent(
+    //   new CustomEvent(ElementEvent.CHILD_REMOVED, {
+    //     child,
+    //   }),
+    // );
 
     // remove from scene graph
-    this.sceneGraphService.detach(child);
+    sceneGraphService.detach(child);
 
     // cannot emit Destroy event now
     if (destroy) {
@@ -200,6 +214,7 @@ export class Element<
       // remove event listeners
       // @ts-ignore
       child.emitter.removeAllListeners();
+      displayObjectPool.remove((child as unknown as Element).entity);
     }
     return child;
   }
@@ -214,28 +229,25 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
    */
   matches(selector: string): boolean {
-    return this.sceneGraphService.matches(selector, this as IElement);
+    return sceneGraphService.matches(selector, this as IElement);
   }
   getElementById<E extends IElement = IElement>(id: string): E | null {
-    return this.sceneGraphService.querySelector<IElement, E>(`#${id}`, this as IElement);
+    return sceneGraphService.querySelector<IElement, E>(`#${id}`, this as IElement);
   }
   getElementsByName<E extends IElement = IElement>(name: string): E[] {
-    return this.sceneGraphService.querySelectorAll<IElement, E>(
-      `[name="${name}"]`,
-      this as IElement,
-    );
+    return sceneGraphService.querySelectorAll<IElement, E>(`[name="${name}"]`, this as IElement);
   }
   getElementsByClassName<E extends IElement = IElement>(className: string): E[] {
-    return this.sceneGraphService.querySelectorAll<IElement, E>(`.${className}`, this as IElement);
+    return sceneGraphService.querySelectorAll<IElement, E>(`.${className}`, this as IElement);
   }
   getElementsByTagName<E extends IElement = IElement>(tagName: string): E[] {
-    return this.sceneGraphService.querySelectorAll<IElement, E>(tagName, this as IElement);
+    return sceneGraphService.querySelectorAll<IElement, E>(tagName, this as IElement);
   }
   querySelector<E extends IElement = IElement>(selectors: string): E | null {
-    return this.sceneGraphService.querySelector<IElement, E>(selectors, this as IElement);
+    return sceneGraphService.querySelector<IElement, E>(selectors, this as IElement);
   }
   querySelectorAll<E extends IElement = IElement>(selectors: string): E[] {
-    return this.sceneGraphService.querySelectorAll<IElement, E>(selectors, this as IElement);
+    return sceneGraphService.querySelectorAll<IElement, E>(selectors, this as IElement);
   }
 
   /**
@@ -247,7 +259,7 @@ export class Element<
   closest<E extends IElement = IElement>(selectors: string): E | null {
     let el = this as unknown as E;
     do {
-      if (this.sceneGraphService.matches(selectors, el)) return el;
+      if (sceneGraphService.matches(selectors, el)) return el;
       el = el.parentElement as E;
     } while (el !== null);
     return null;
@@ -347,7 +359,7 @@ export class Element<
   destroyed = false;
   destroy() {
     // destroy itself before remove
-    this.dispatchEvent(new CustomEvent(ElementEvent.DESTROY));
+    this.dispatchEvent(destroyEvent);
 
     // remove from scenegraph first
     this.remove(false);
@@ -359,25 +371,25 @@ export class Element<
   }
 
   getGeometryBounds(): AABB {
-    return this.sceneGraphService.getGeometryBounds(this);
+    return sceneGraphService.getGeometryBounds(this);
   }
 
   getRenderBounds(): AABB {
-    return this.sceneGraphService.getBounds(this, true);
+    return sceneGraphService.getBounds(this, true);
   }
 
   /**
    * get bounds in world space, account for children
    */
   getBounds(): AABB {
-    return this.sceneGraphService.getBounds(this);
+    return sceneGraphService.getBounds(this);
   }
 
   /**
    * get bounds in local space, account for children
    */
   getLocalBounds(): AABB {
-    return this.sceneGraphService.getLocalBounds(this);
+    return sceneGraphService.getLocalBounds(this);
   }
 
   /**
@@ -386,7 +398,7 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
    */
   getBoundingClientRect(): Rectangle {
-    return this.sceneGraphService.getBoundingClientRect(this);
+    return sceneGraphService.getBoundingClientRect(this);
   }
 
   /**

@@ -19,4 +19,16 @@ export class CSSPropertyTransformOrigin
   implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>>
 {
   parser = parseTransformOrigin;
+
+  // calculator(
+  //   name: string,
+  //   oldParsed: [CSSUnitValue, CSSUnitValue],
+  //   parsed: [CSSUnitValue, CSSUnitValue],
+  //   object: DisplayObject,
+  // ): [number, number] {
+  //   console.log(object, parsed);
+
+  //   return [parsed[0].value, parsed[1].value];
+  //   // return [convertPercentUnit(parsed[0], 0, object), convertPercentUnit(parsed[1], 1, object)];
+  // }
 }

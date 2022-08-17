@@ -13,4 +13,4 @@ export class RBushNode {
   aabb: RBushNodeAABB;
 }
 
-export const RBushRoot = Syringe.defineToken('RBushRoot');
+export const RBushRoot = Syringe.defineToken('');

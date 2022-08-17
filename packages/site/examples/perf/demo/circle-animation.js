@@ -1,11 +1,15 @@
-import { Canvas, CanvasEvent, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
+
+/**
+ * G4.0 @see https://rurm4c.csb.app/
+ * @see https://codesandbox.io/s/g-canvas-4-0-animation-rurm4c?file=/src/index.tsx
+ */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -13,14 +17,7 @@ const webglRenderer = new WebGLRenderer();
 const svgRenderer = new SVGRenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
-  fonts: [
-    {
-      name: 'sans-serif',
-      url: '/NotoSans-Regular.ttf',
-    },
-  ],
 });
-const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -30,54 +27,28 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const rect = new Rect({
-  style: {
-    x: 100,
-    y: 200,
-    width: 50,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-const rect2 = new Rect({
-  style: {
-    x: 200,
-    y: 200,
-    width: 50,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-const rect3 = new Rect({
-  style: {
-    x: 300,
-    y: 200,
-    width: 50,
-    height: 100,
-    fill: '#1890FF',
-  },
-});
-
 canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(rect);
-  canvas.appendChild(rect2);
-  canvas.appendChild(rect3);
+  for (let i = 0; i < 5000; i++) {
+    const circle = new Circle({
+      style: {
+        cx: Math.random() * 600,
+        cy: Math.random() * 500,
+        r: 10 + Math.random() * 5,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+      },
+    });
 
-  rect.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
-    duration: 1000,
-    //   delay: 0,
-    fill: 'both',
-  });
-  rect2.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scaleY(1)' }], {
-    duration: 1000,
-    delay: 1000,
-    fill: 'both',
-  });
-  rect3.animate([{ transform: 'scale(0.0001, 1)' }, { transform: 'scale(1, 1)' }], {
-    duration: 1000,
-    delay: 2000,
-    fill: 'both',
-  });
+    canvas.appendChild(circle);
+
+    circle.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 1000,
+      delay: 1000,
+      fill: 'both',
+      iterations: Infinity,
+    });
+  }
 });
 
 // stats
@@ -96,12 +67,14 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 });
 
 // GUI
+let currentRenderer = canvasRenderer;
 const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'canvas',
 };
+
 rendererFolder
   .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
   .onChange((rendererName) => {
@@ -112,8 +85,6 @@ rendererFolder
       renderer = svgRenderer;
     } else if (rendererName === 'webgl') {
       renderer = webglRenderer;
-    } else if (rendererName === 'webgpu') {
-      renderer = webgpuRenderer;
     } else if (rendererName === 'canvaskit') {
       renderer = canvaskitRenderer;
     }

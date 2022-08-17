@@ -1,3 +1,3 @@
 import { Syringe } from '@antv/g';
 
-export const DeviceRendererPlugin = Syringe.defineToken('DeviceRendererPlugin');
+export const DeviceRendererPlugin = Syringe.defineToken('');

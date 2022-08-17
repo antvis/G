@@ -1,5 +1,7 @@
 import { Syringe } from 'mana-syringe';
+import type { BaseStyleProps } from '..';
 import type { DisplayObject } from '../display-objects';
+import type { CSSStyleValue } from './cssom';
 import type { CSSProperty } from './CSSProperty';
 
 /**
@@ -126,13 +128,27 @@ export interface PropertyMetadata {
   syntax?: string;
 }
 
-export const StyleValueRegistry = Syringe.defineToken('StyleValueRegistry');
+export interface PropertyParseOptions {
+  skipUpdateAttribute: boolean;
+  skipParse: boolean;
+}
+
+export const StyleValueRegistry = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface StyleValueRegistry {
   recalc: (displayObject: DisplayObject) => void;
   registerMetadata: (metadata: PropertyMetadata) => void;
   unregisterMetadata: (name: string) => void;
-  getMetadata: (name: string) => PropertyMetadata;
+  // getMetadata: (name: string) => PropertyMetadata;
   getPropertySyntax: (syntax: string) => CSSProperty<any, any>;
   addUnresolveProperty: (object: DisplayObject, name: string) => void;
+
+  processProperties: (
+    object: DisplayObject,
+    attributes: BaseStyleProps,
+    options?: Partial<PropertyParseOptions>,
+  ) => void;
+
+  parseProperty: (name: string, value: any, object: DisplayObject) => CSSStyleValue;
+  computeProperty: (name: string, computed: CSSStyleValue, object: DisplayObject) => any;
 }

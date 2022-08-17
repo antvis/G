@@ -1,5 +1,5 @@
 import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
-import { isNil, singleton, UnitType } from '@antv/g';
+import { isNil, singleton } from '@antv/g';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
 import { TextRendererContribution } from './interfaces';
@@ -35,59 +35,54 @@ export class TextRenderer implements StyleRenderer {
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 
     context.font = font;
-    context.lineWidth = lineWidth.value;
-    context.textAlign = textAlign.value as CanvasTextAlign;
-    context.textBaseline = textBaseline.value as CanvasTextBaseline;
-    context.lineJoin = lineJoin.value as CanvasLineJoin;
+    context.lineWidth = lineWidth;
+    context.textAlign = textAlign;
+    context.textBaseline = textBaseline;
+    context.lineJoin = lineJoin;
     if (!isNil(miterLimit)) {
-      context.miterLimit = miterLimit.value;
+      context.miterLimit = miterLimit;
     }
 
     let linePositionY = 0;
     // handle vertical text baseline
-    if (textBaseline.value === 'middle') {
+    if (textBaseline === 'middle') {
       linePositionY = -height / 2 - lineHeight / 2;
     } else if (
-      textBaseline.value === 'bottom' ||
-      textBaseline.value === 'alphabetic' ||
-      textBaseline.value === 'ideographic'
+      textBaseline === 'bottom' ||
+      textBaseline === 'alphabetic' ||
+      textBaseline === 'ideographic'
     ) {
       linePositionY = -height;
-    } else if (textBaseline.value === 'top' || textBaseline.value === 'hanging') {
+    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       linePositionY = -lineHeight;
     }
 
     // account for dx & dy
-    let offsetX = 0;
-    if (dx && dx.unit === UnitType.kPixels) {
-      offsetX += dx.value;
-    }
-    if (dy && dy.unit === UnitType.kPixels) {
-      linePositionY += dy.value;
-    }
+    const offsetX = dx || 0;
+    linePositionY += dy || 0;
 
-    const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+    const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
     setShadowAndFilter(object, context, hasShadow);
 
     // draw lines line by line
     for (let i = 0; i < lines.length; i++) {
-      const linePositionX = lineWidth.value / 2 + offsetX;
+      const linePositionX = lineWidth / 2 + offsetX;
       linePositionY += lineHeight;
 
       // no need to re-position X, cause we already set text align
       // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign
-      if (!isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth && lineWidth.value) {
+      if (!isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth) {
         this.drawLetterSpacing(
           context,
           lines[i],
           lineMetrics[i],
-          textAlign.value as CanvasTextAlign,
+          textAlign,
           linePositionX,
           linePositionY,
-          letterSpacing.value,
-          fillOpacity.value,
-          strokeOpacity.value,
-          opacity.value,
+          letterSpacing,
+          fillOpacity,
+          strokeOpacity,
+          opacity,
           true,
         );
       }
@@ -96,13 +91,13 @@ export class TextRenderer implements StyleRenderer {
           context,
           lines[i],
           lineMetrics[i],
-          textAlign.value as CanvasTextAlign,
+          textAlign,
           linePositionX,
           linePositionY,
-          letterSpacing.value,
-          fillOpacity.value,
-          strokeOpacity.value,
-          opacity.value,
+          letterSpacing,
+          fillOpacity,
+          strokeOpacity,
+          opacity,
         );
       }
     }

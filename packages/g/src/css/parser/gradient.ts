@@ -1,5 +1,6 @@
+import { memoize } from '@antv/util';
 import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
-import { colorStopToString, isNil, isString, memoize, parseGradient as parse } from '../../utils';
+import { colorStopToString, isNil, isString, parseGradient as parse } from '../../utils';
 import type { RadialGradient } from '../cssom';
 import { CSSGradientValue, GradientType } from '../cssom';
 import type { Pattern } from './color';

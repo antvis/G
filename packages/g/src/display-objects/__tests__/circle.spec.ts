@@ -1,4 +1,4 @@
-import { Circle, CSS, CSSKeywordValue, CSSRGB } from '@antv/g';
+import { Circle, CSS, CSSRGB } from '@antv/g';
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
 
@@ -185,9 +185,9 @@ describe('Circle', () => {
     ]);
 
     expect(circle.getAttribute('anchor')).to.be.eqls('');
-    expect(circle.parsedStyle.anchor).to.be.eqls([CSS.px(0.5), CSS.px(0.5)]);
+    expect(circle.parsedStyle.anchor).to.be.eqls([0.5, 0.5]);
     expect(circle.getAttribute('opacity')).to.be.eqls('');
-    expect(circle.parsedStyle.opacity).to.be.eqls(CSS.number(1));
+    expect(circle.parsedStyle.opacity).to.be.undefined;
     expect(circle.getAttribute('fillOpacity')).to.be.eqls('');
     expect(circle.parsedStyle.fillOpacity).to.be.undefined;
     expect(circle.getAttribute('strokeOpacity')).to.be.eqls('');
@@ -197,7 +197,7 @@ describe('Circle', () => {
     expect(circle.getAttribute('stroke')).to.be.eqls('');
     expect(circle.parsedStyle.stroke).to.be.eqls(new CSSRGB(0, 0, 0, 0, true)); // transparent
     expect(circle.getAttribute('transform')).to.be.eqls('');
-    expect(circle.parsedStyle.transform).to.be.eqls(new CSSKeywordValue('none'));
+    expect(circle.parsedStyle.transform).to.be.eqls([]);
     expect(circle.getAttribute('transformOrigin')).to.be.eqls('');
     expect(circle.parsedStyle.transformOrigin).to.be.eqls([CSS.percent(50), CSS.percent(50)]);
     expect(circle.getAttribute('visibility')).to.be.eqls('');
@@ -215,18 +215,18 @@ describe('Circle', () => {
     expect(circle.getAttribute('fontSize')).to.be.eqls('');
     expect(circle.parsedStyle.fontSize).to.be.undefined;
     expect(circle.getAttribute('zIndex')).to.be.eqls('');
-    expect(circle.parsedStyle.zIndex).to.be.eqls(CSS.number(0));
+    expect(circle.parsedStyle.zIndex).to.be.eqls(0);
     expect(circle.getAttribute('cx')).to.be.eqls(100);
-    expect(circle.parsedStyle.cx).to.be.eqls(CSS.px(100));
+    expect(circle.parsedStyle.cx).to.be.eqls(100);
     expect(circle.getAttribute('cy')).to.be.eqls(100);
-    expect(circle.parsedStyle.cy).to.be.eqls(CSS.px(100));
+    expect(circle.parsedStyle.cy).to.be.eqls(100);
     expect(circle.getAttribute('r')).to.be.eqls(100);
-    expect(circle.parsedStyle.r).to.be.eqls(CSS.px(100));
+    expect(circle.parsedStyle.r).to.be.eqls(100);
 
     // update anchor
     circle.style.anchor = '0 0';
     expect(circle.getAttribute('anchor')).to.be.eqls('0 0');
-    expect(circle.parsedStyle.anchor).to.be.eqls([CSS.px(0), CSS.px(0)]);
+    expect(circle.parsedStyle.anchor).to.be.eqls([0, 0]);
     // update fill
     circle.style.fill = 'red';
     expect(circle.getAttribute('fill')).to.be.eqls('red');
@@ -244,9 +244,9 @@ describe('Circle', () => {
     });
 
     expect(circle.getAttribute('anchor')).to.be.eqls('');
-    expect(circle.parsedStyle.anchor).to.be.eqls([CSS.px(0.5), CSS.px(0.5)]);
+    expect(circle.parsedStyle.anchor).to.be.eqls([0.5, 0.5]);
     expect(circle.getAttribute('opacity')).to.be.eqls('');
-    expect(circle.parsedStyle.opacity).to.be.eqls(CSS.number(1));
+    expect(circle.parsedStyle.opacity).to.be.undefined;
     expect(circle.getAttribute('fillOpacity')).to.be.eqls('');
     expect(circle.parsedStyle.fillOpacity).to.be.undefined;
     expect(circle.getAttribute('strokeOpacity')).to.be.eqls('');
@@ -256,7 +256,7 @@ describe('Circle', () => {
     expect(circle.getAttribute('stroke')).to.be.eqls('');
     expect(circle.parsedStyle.stroke).to.be.eqls(new CSSRGB(0, 0, 0, 0, true)); // transparent
     expect(circle.getAttribute('transform')).to.be.eqls('');
-    expect(circle.parsedStyle.transform).to.be.eqls(new CSSKeywordValue('none'));
+    expect(circle.parsedStyle.transform).to.be.eqls([]);
     expect(circle.getAttribute('transformOrigin')).to.be.eqls('');
     expect(circle.parsedStyle.transformOrigin).to.be.eqls([CSS.percent(50), CSS.percent(50)]);
     expect(circle.getAttribute('visibility')).to.be.eqls('');
@@ -270,12 +270,12 @@ describe('Circle', () => {
     expect(circle.getAttribute('lineCap')).to.be.eqls('');
     expect(circle.parsedStyle.lineCap).to.be.undefined;
     expect(circle.getAttribute('zIndex')).to.be.eqls('');
-    expect(circle.parsedStyle.zIndex).to.be.eqls(CSS.number(0));
+    expect(circle.parsedStyle.zIndex).to.be.eqls(0);
     expect(circle.getAttribute('cx')).to.be.eqls('');
-    expect(circle.parsedStyle.cx).to.be.eqls(CSS.px(0));
+    expect(circle.parsedStyle.cx).to.be.eqls(0);
     expect(circle.getAttribute('cy')).to.be.eqls('');
-    expect(circle.parsedStyle.cy).to.be.eqls(CSS.px(0));
+    expect(circle.parsedStyle.cy).to.be.eqls(0);
     expect(circle.getAttribute('r')).to.be.eqls('');
-    expect(circle.parsedStyle.r).to.be.eqls(CSS.px(0));
+    expect(circle.parsedStyle.r).to.be.eqls(0);
   });
 });

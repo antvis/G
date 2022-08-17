@@ -1,4 +1,3 @@
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -16,11 +15,11 @@ export interface RectStyleProps extends BaseStyleProps {
 }
 
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
-  width: CSSUnitValue;
-  height: CSSUnitValue;
-  radius?: [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  radius?: [number, number, number, number];
 }
 
 export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {

@@ -135,23 +135,23 @@ export class LineMesh extends Instanced {
         });
       } else if (name === 'opacity') {
         this.material.setUniforms({
-          [Uniform.OPACITY]: opacity.value,
+          [Uniform.OPACITY]: opacity,
         });
       } else if (name === 'fillOpacity') {
         this.material.setUniforms({
-          [Uniform.FILL_OPACITY]: fillOpacity.value,
+          [Uniform.FILL_OPACITY]: fillOpacity,
         });
       } else if (name === 'strokeOpacity') {
         this.material.setUniforms({
-          [Uniform.STROKE_OPACITY]: strokeOpacity.value,
+          [Uniform.STROKE_OPACITY]: strokeOpacity,
         });
       } else if (name === 'lineWidth') {
         this.material.setUniforms({
-          [Uniform.STROKE_WIDTH]: lineWidth.value,
+          [Uniform.STROKE_WIDTH]: lineWidth,
         });
       } else if (name === 'increasedLineWidthForHitTesting') {
         this.material.setUniforms({
-          [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting.value,
+          [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting || 0,
         });
       } else if (name === 'anchor' || name === 'modelMatrix') {
         let translateX = 0;
@@ -159,8 +159,8 @@ export class LineMesh extends Instanced {
         const contentBounds = object.getGeometryBounds();
         if (contentBounds) {
           const { halfExtents } = contentBounds;
-          translateX = -halfExtents[0] * anchor[0].value * 2;
-          translateY = -halfExtents[1] * anchor[1].value * 2;
+          translateX = -halfExtents[0] * anchor[0] * 2;
+          translateY = -halfExtents[1] * anchor[1] * 2;
         }
         const m = mat4.create();
         mat4.mul(
@@ -173,16 +173,16 @@ export class LineMesh extends Instanced {
         });
       } else if (name === 'visibility') {
         this.material.setUniforms({
-          [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
+          [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
         });
       } else if (name === 'lineDash') {
         this.material.setUniforms({
-          [Uniform.DASH]: lineDash[0].value || 0,
-          [Uniform.GAP]: lineDash[1].value || 0,
+          [Uniform.DASH]: lineDash[0] || 0,
+          [Uniform.GAP]: lineDash[1] || 0,
         });
       } else if (name === 'lineDashOffset') {
         this.material.setUniforms({
-          [Uniform.DASH_OFFSET]: (lineDashOffset && lineDashOffset.value) || 0,
+          [Uniform.DASH_OFFSET]: lineDashOffset || 0,
         });
       } else if (name === 'pointerEvents') {
         const encodedPickingColor = (value &&
@@ -254,8 +254,8 @@ export class LineMesh extends Instanced {
     const contentBounds = instance.getGeometryBounds();
     if (contentBounds) {
       const { halfExtents } = contentBounds;
-      translateX = -halfExtents[0] * anchor[0].value * 2;
-      translateY = -halfExtents[1] * anchor[1].value * 2;
+      translateX = -halfExtents[0] * anchor[0] * 2;
+      translateY = -halfExtents[1] * anchor[1] * 2;
     }
 
     const m = mat4.create();
@@ -269,20 +269,20 @@ export class LineMesh extends Instanced {
       [Uniform.MODEL_MATRIX]: m,
       [Uniform.FILL_COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
-      [Uniform.STROKE_WIDTH]: lineWidth.value,
-      [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting.value,
-      [Uniform.OPACITY]: opacity.value,
-      [Uniform.FILL_OPACITY]: fillOpacity.value,
-      [Uniform.STROKE_OPACITY]: strokeOpacity.value,
+      [Uniform.STROKE_WIDTH]: lineWidth,
+      [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting || 0,
+      [Uniform.OPACITY]: opacity,
+      [Uniform.FILL_OPACITY]: fillOpacity,
+      [Uniform.STROKE_OPACITY]: strokeOpacity,
       [Uniform.EXPAND]: 1,
       [Uniform.MITER_LIMIT]: 5,
       [Uniform.SCALE_MODE]: 1,
       [Uniform.ALIGNMENT]: 0.5,
       [Uniform.PICKING_COLOR]: encodedPickingColor,
-      [Uniform.DASH]: (lineDash && lineDash[0]?.value) || 0,
-      [Uniform.GAP]: (lineDash && lineDash[1]?.value) || 0,
-      [Uniform.DASH_OFFSET]: (lineDashOffset && lineDashOffset.value) || 0,
-      [Uniform.VISIBLE]: visibility.value === 'visible' ? 1 : 0,
+      [Uniform.DASH]: (lineDash && lineDash[0]) || 0,
+      [Uniform.GAP]: (lineDash && lineDash[1]) || 0,
+      [Uniform.DASH_OFFSET]: lineDashOffset || 0,
+      [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
       [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
     this.material.cullMode = CullMode.None;
@@ -463,16 +463,16 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       x = polylinePoints[1][0] - polylinePoints[0][0];
       y = polylinePoints[1][1] - polylinePoints[0][1];
       rad = Math.atan2(y, x);
-      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
       x = polylinePoints[length - 2][0] - polylinePoints[length - 1][0];
       y = polylinePoints[length - 2][1] - polylinePoints[length - 1][1];
       rad = Math.atan2(y, x);
-      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
     }
 
     points[0] = polylinePoints.reduce((prev, cur, i) => {
@@ -521,10 +521,10 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       // support negative width/height of Rect
       if (object.nodeName === Shape.RECT) {
         const { width, height } = object.parsedStyle;
-        if (width.value < 0) {
+        if (width < 0) {
           defX += path.rect.width;
         }
-        if (height.value < 0) {
+        if (height < 0) {
           defY += path.rect.height;
         }
       }
@@ -538,7 +538,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     ) as CurveArray;
 
     // @ts-ignore
-    const isClosed = curve[curve.length - 1][0] === 'Z';
+    const isClosed = curve.length && curve[curve.length - 1][0] === 'Z';
 
     let startOffsetX = 0;
     let startOffsetY = 0;
@@ -555,8 +555,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       y = p1[1] - p2[1];
 
       rad = Math.atan2(y, x);
-      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
@@ -564,8 +564,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
       rad = Math.atan2(y, x);
-      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
     }
 
     let startPointIndex = -1;
@@ -639,8 +639,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     }
   }
 
-  const jointType = getJointType(lineJoin.value as CanvasLineJoin);
-  const capType = getCapType(lineCap.value as CanvasLineCap);
+  const jointType = getJointType(lineJoin);
+  const capType = getCapType(lineCap);
   let endJoint = capType;
   if (capType === JOINT_TYPE.CAP_ROUND) {
     endJoint = JOINT_TYPE.JOINT_CAP_ROUND;

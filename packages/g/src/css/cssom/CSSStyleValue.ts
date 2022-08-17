@@ -297,13 +297,13 @@ export abstract class CSSStyleValue {
       case UnitType.kPercentage:
         return UnitCategory.kUPercent;
       case UnitType.kPixels:
-      case UnitType.kCentimeters:
-      case UnitType.kMillimeters:
-      case UnitType.kQuarterMillimeters:
-      case UnitType.kInches:
-      case UnitType.kPoints:
-      case UnitType.kPicas:
-      case UnitType.kUserUnits:
+        // case UnitType.kCentimeters:
+        // case UnitType.kMillimeters:
+        // case UnitType.kQuarterMillimeters:
+        // case UnitType.kInches:
+        // case UnitType.kPoints:
+        // case UnitType.kPicas:
+        // case UnitType.kUserUnits:
         return UnitCategory.kULength;
       case UnitType.kMilliseconds:
       case UnitType.kSeconds:
@@ -313,13 +313,13 @@ export abstract class CSSStyleValue {
       case UnitType.kGradians:
       case UnitType.kTurns:
         return UnitCategory.kUAngle;
-      case UnitType.kHertz:
-      case UnitType.kKilohertz:
-        return UnitCategory.kUFrequency;
-      case UnitType.kDotsPerPixel:
-      case UnitType.kDotsPerInch:
-      case UnitType.kDotsPerCentimeter:
-        return UnitCategory.kUResolution;
+      // case UnitType.kHertz:
+      // case UnitType.kKilohertz:
+      //   return UnitCategory.kUFrequency;
+      // case UnitType.kDotsPerPixel:
+      // case UnitType.kDotsPerInch:
+      // case UnitType.kDotsPerCentimeter:
+      //   return UnitCategory.kUResolution;
       default:
         return UnitCategory.kUOther;
     }
@@ -329,12 +329,12 @@ export abstract class CSSStyleValue {
     switch (type) {
       case UnitType.kNumber:
       case UnitType.kInteger:
-      case UnitType.kUserUnits:
+        // case UnitType.kUserUnits:
         return '';
       case UnitType.kPercentage:
         return '%';
       case UnitType.kEms:
-      case UnitType.kQuirkyEms:
+        // case UnitType.kQuirkyEms:
         return 'em';
       // case UnitType.kExs:
       //   return 'ex';
@@ -466,10 +466,10 @@ export abstract class CSSStyleValue {
         return UnitType.kSeconds;
       case UnitCategory.kUAngle:
         return UnitType.kDegrees;
-      case UnitCategory.kUFrequency:
-        return UnitType.kHertz;
-      case UnitCategory.kUResolution:
-        return UnitType.kDotsPerPixel;
+      // case UnitCategory.kUFrequency:
+      //   return UnitType.kHertz;
+      // case UnitCategory.kUResolution:
+      //   return UnitType.kDotsPerPixel;
       default:
         return UnitType.kUnknown;
     }
@@ -484,38 +484,38 @@ export abstract class CSSStyleValue {
     switch (unit_type) {
       // These are "canonical" units in their respective categories.
       case UnitType.kPixels:
-      case UnitType.kUserUnits:
+      // case UnitType.kUserUnits:
       case UnitType.kDegrees:
       case UnitType.kSeconds:
-      case UnitType.kHertz:
+        // case UnitType.kHertz:
         break;
       case UnitType.kMilliseconds:
         factor = 0.001;
         break;
-      case UnitType.kCentimeters:
-        // factor = kCssPixelsPerCentimeter;
-        break;
-      case UnitType.kDotsPerCentimeter:
-        // factor = 1 / kCssPixelsPerCentimeter;
-        break;
-      case UnitType.kMillimeters:
-        // factor = kCssPixelsPerMillimeter;
-        break;
-      case UnitType.kQuarterMillimeters:
-        // factor = kCssPixelsPerQuarterMillimeter;
-        break;
-      case UnitType.kInches:
-        // factor = kCssPixelsPerInch;
-        break;
-      case UnitType.kDotsPerInch:
-        // factor = 1 / kCssPixelsPerInch;
-        break;
-      case UnitType.kPoints:
-        // factor = kCssPixelsPerPoint;
-        break;
-      case UnitType.kPicas:
-        // factor = kCssPixelsPerPica;
-        break;
+      // case UnitType.kCentimeters:
+      //   // factor = kCssPixelsPerCentimeter;
+      //   break;
+      // case UnitType.kDotsPerCentimeter:
+      //   // factor = 1 / kCssPixelsPerCentimeter;
+      //   break;
+      // case UnitType.kMillimeters:
+      //   // factor = kCssPixelsPerMillimeter;
+      //   break;
+      // case UnitType.kQuarterMillimeters:
+      //   // factor = kCssPixelsPerQuarterMillimeter;
+      //   break;
+      // case UnitType.kInches:
+      //   // factor = kCssPixelsPerInch;
+      //   break;
+      // case UnitType.kDotsPerInch:
+      //   // factor = 1 / kCssPixelsPerInch;
+      //   break;
+      // case UnitType.kPoints:
+      //   // factor = kCssPixelsPerPoint;
+      //   break;
+      // case UnitType.kPicas:
+      //   // factor = kCssPixelsPerPica;
+      //   break;
       case UnitType.kRadians:
         factor = 180 / Math.PI;
         break;
@@ -525,9 +525,9 @@ export abstract class CSSStyleValue {
       case UnitType.kTurns:
         factor = 360;
         break;
-      case UnitType.kKilohertz:
-        factor = 1000;
-        break;
+      // case UnitType.kKilohertz:
+      //   factor = 1000;
+      //   break;
       default:
         break;
     }
@@ -543,27 +543,28 @@ export abstract class CSSStyleValue {
     );
   }
 
-  static isViewportPercentageLength(type: UnitType) {
-    return type >= UnitType.kViewportWidth && type <= UnitType.kDynamicViewportMax;
-  }
+  // static isViewportPercentageLength(type: UnitType) {
+  //   return type >= UnitType.kViewportWidth && type <= UnitType.kDynamicViewportMax;
+  // }
 
-  static isContainerPercentageLength(type: UnitType) {
-    return type >= UnitType.kContainerWidth && type <= UnitType.kContainerMax;
-  }
+  // static isContainerPercentageLength(type: UnitType) {
+  //   return type >= UnitType.kContainerWidth && type <= UnitType.kContainerMax;
+  // }
 
   static isLength(type: UnitType) {
-    return (type >= UnitType.kEms && type <= UnitType.kUserUnits) || type == UnitType.kQuirkyEms;
+    // return (type >= UnitType.kEms && type <= UnitType.kUserUnits) || type == UnitType.kQuirkyEms;
+    return type >= UnitType.kEms && type < UnitType.kDegrees;
   }
 
   static isRelativeUnit(type: UnitType) {
     return (
       type === UnitType.kPercentage ||
       type === UnitType.kEms ||
-      type === UnitType.kExs ||
-      type === UnitType.kRems ||
-      type === UnitType.kChs ||
-      this.isViewportPercentageLength(type) ||
-      this.isContainerPercentageLength(type)
+      // type === UnitType.kExs ||
+      type === UnitType.kRems
+      // type === UnitType.kChs ||
+      // this.isViewportPercentageLength(type) ||
+      // this.isContainerPercentageLength(type)
     );
   }
 
@@ -571,17 +572,17 @@ export abstract class CSSStyleValue {
     return unit === UnitType.kSeconds || unit === UnitType.kMilliseconds;
   }
 
-  static isFrequency(unit: UnitType) {
-    return unit == UnitType.kHertz || unit == UnitType.kKilohertz;
-  }
+  // static isFrequency(unit: UnitType) {
+  //   return unit == UnitType.kHertz || unit == UnitType.kKilohertz;
+  // }
 
-  static isResolution(type: UnitType) {
-    return type >= UnitType.kDotsPerPixel && type <= UnitType.kDotsPerCentimeter;
-  }
+  // static isResolution(type: UnitType) {
+  //   return type >= UnitType.kDotsPerPixel && type <= UnitType.kDotsPerCentimeter;
+  // }
 
-  static isFlex(unit: UnitType) {
-    return unit === UnitType.kFraction;
-  }
+  // static isFlex(unit: UnitType) {
+  //   return unit === UnitType.kFraction;
+  // }
 
   protected abstract getType(): CSSStyleValueType;
 

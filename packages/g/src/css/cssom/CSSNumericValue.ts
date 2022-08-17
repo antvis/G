@@ -43,47 +43,47 @@ export function unitTypeToBaseType(unit: UnitType) {
   DCHECK_NE(unit, UnitType.kNumber);
   switch (unit) {
     case UnitType.kEms:
-    case UnitType.kExs:
+    // case UnitType.kExs:
     case UnitType.kPixels:
-    case UnitType.kCentimeters:
-    case UnitType.kMillimeters:
-    case UnitType.kQuarterMillimeters:
-    case UnitType.kInches:
-    case UnitType.kPoints:
-    case UnitType.kPicas:
-    case UnitType.kUserUnits:
-    case UnitType.kViewportWidth:
-    case UnitType.kViewportHeight:
-    case UnitType.kViewportInlineSize:
-    case UnitType.kViewportBlockSize:
-    case UnitType.kViewportMin:
-    case UnitType.kViewportMax:
-    case UnitType.kSmallViewportWidth:
-    case UnitType.kSmallViewportHeight:
-    case UnitType.kSmallViewportInlineSize:
-    case UnitType.kSmallViewportBlockSize:
-    case UnitType.kSmallViewportMin:
-    case UnitType.kSmallViewportMax:
-    case UnitType.kLargeViewportWidth:
-    case UnitType.kLargeViewportHeight:
-    case UnitType.kLargeViewportInlineSize:
-    case UnitType.kLargeViewportBlockSize:
-    case UnitType.kLargeViewportMin:
-    case UnitType.kLargeViewportMax:
-    case UnitType.kDynamicViewportWidth:
-    case UnitType.kDynamicViewportHeight:
-    case UnitType.kDynamicViewportInlineSize:
-    case UnitType.kDynamicViewportBlockSize:
-    case UnitType.kDynamicViewportMin:
-    case UnitType.kDynamicViewportMax:
-    case UnitType.kContainerWidth:
-    case UnitType.kContainerHeight:
-    case UnitType.kContainerInlineSize:
-    case UnitType.kContainerBlockSize:
-    case UnitType.kContainerMin:
-    case UnitType.kContainerMax:
+    // case UnitType.kCentimeters:
+    // case UnitType.kMillimeters:
+    // case UnitType.kQuarterMillimeters:
+    // case UnitType.kInches:
+    // case UnitType.kPoints:
+    // case UnitType.kPicas:
+    // case UnitType.kUserUnits:
+    // case UnitType.kViewportWidth:
+    // case UnitType.kViewportHeight:
+    // case UnitType.kViewportInlineSize:
+    // case UnitType.kViewportBlockSize:
+    // case UnitType.kViewportMin:
+    // case UnitType.kViewportMax:
+    // case UnitType.kSmallViewportWidth:
+    // case UnitType.kSmallViewportHeight:
+    // case UnitType.kSmallViewportInlineSize:
+    // case UnitType.kSmallViewportBlockSize:
+    // case UnitType.kSmallViewportMin:
+    // case UnitType.kSmallViewportMax:
+    // case UnitType.kLargeViewportWidth:
+    // case UnitType.kLargeViewportHeight:
+    // case UnitType.kLargeViewportInlineSize:
+    // case UnitType.kLargeViewportBlockSize:
+    // case UnitType.kLargeViewportMin:
+    // case UnitType.kLargeViewportMax:
+    // case UnitType.kDynamicViewportWidth:
+    // case UnitType.kDynamicViewportHeight:
+    // case UnitType.kDynamicViewportInlineSize:
+    // case UnitType.kDynamicViewportBlockSize:
+    // case UnitType.kDynamicViewportMin:
+    // case UnitType.kDynamicViewportMax:
+    // case UnitType.kContainerWidth:
+    // case UnitType.kContainerHeight:
+    // case UnitType.kContainerInlineSize:
+    // case UnitType.kContainerBlockSize:
+    // case UnitType.kContainerMin:
+    // case UnitType.kContainerMax:
     case UnitType.kRems:
-    case UnitType.kChs:
+      // case UnitType.kChs:
       return BaseType.kLength;
     case UnitType.kMilliseconds:
     case UnitType.kSeconds:
@@ -93,15 +93,15 @@ export function unitTypeToBaseType(unit: UnitType) {
     case UnitType.kGradians:
     case UnitType.kTurns:
       return BaseType.kAngle;
-    case UnitType.kHertz:
-    case UnitType.kKilohertz:
-      return BaseType.kFrequency;
-    case UnitType.kDotsPerPixel:
-    case UnitType.kDotsPerInch:
-    case UnitType.kDotsPerCentimeter:
-      return BaseType.kResolution;
-    case UnitType.kFraction:
-      return BaseType.kFlex;
+    // case UnitType.kHertz:
+    // case UnitType.kKilohertz:
+    //   return BaseType.kFrequency;
+    // case UnitType.kDotsPerPixel:
+    // case UnitType.kDotsPerInch:
+    // case UnitType.kDotsPerCentimeter:
+    //   return BaseType.kResolution;
+    // case UnitType.kFraction:
+    //   return BaseType.kFlex;
     case UnitType.kPercentage:
       return BaseType.kPercent;
     default:
@@ -517,16 +517,16 @@ export abstract class CSSNumericValue extends CSSStyleValue {
   }
 
   static isValidUnit(unit: UnitType) {
-    if (unit === UnitType.kUserUnits) return false;
+    // if (unit === UnitType.kUserUnits) return false;
     if (
       unit === UnitType.kNumber ||
       unit == UnitType.kPercentage ||
       this.isLength(unit) ||
       this.isAngle(unit) ||
-      this.isTime(unit) ||
-      this.isFrequency(unit) ||
-      this.isResolution(unit) ||
-      this.isFlex(unit)
+      this.isTime(unit)
+      // this.isFrequency(unit) ||
+      // this.isResolution(unit) ||
+      // this.isFlex(unit)
     )
       return true;
     return false;
@@ -662,6 +662,8 @@ export class CSSUnitValue extends CSSNumericValue {
   value: number;
 
   constructor(value: number, unitOrName: UnitType | string = UnitType.kNumber) {
+    // console.log('unit value...');
+
     let unit: UnitType;
     if (typeof unitOrName === 'string') {
       unit = CSSUnitValue.unitFromName(unitOrName);
@@ -760,60 +762,59 @@ export class CSSUnitValue extends CSSNumericValue {
       case UnitType.kNumber:
       case UnitType.kPercentage:
       case UnitType.kEms:
-      case UnitType.kQuirkyEms:
-      case UnitType.kExs:
+      // case UnitType.kQuirkyEms:
+      // case UnitType.kExs:
       case UnitType.kRems:
-      case UnitType.kChs:
+      // case UnitType.kChs:
       case UnitType.kPixels:
-      case UnitType.kCentimeters:
-      case UnitType.kDotsPerPixel:
-      case UnitType.kDotsPerInch:
-      case UnitType.kDotsPerCentimeter:
-      case UnitType.kMillimeters:
-      case UnitType.kQuarterMillimeters:
-      case UnitType.kInches:
-      case UnitType.kPoints:
-      case UnitType.kPicas:
-      case UnitType.kUserUnits:
+      // case UnitType.kCentimeters:
+      // case UnitType.kDotsPerPixel:
+      // case UnitType.kDotsPerInch:
+      // case UnitType.kDotsPerCentimeter:
+      // case UnitType.kMillimeters:
+      // case UnitType.kQuarterMillimeters:
+      // case UnitType.kInches:
+      // case UnitType.kPoints:
+      // case UnitType.kPicas:
+      // case UnitType.kUserUnits:
       case UnitType.kDegrees:
       case UnitType.kRadians:
       case UnitType.kGradians:
       case UnitType.kMilliseconds:
       case UnitType.kSeconds:
-      case UnitType.kHertz:
-      case UnitType.kKilohertz:
-      case UnitType.kTurns:
-      case UnitType.kFraction:
-      case UnitType.kViewportWidth:
-      case UnitType.kViewportHeight:
-      case UnitType.kViewportInlineSize:
-      case UnitType.kViewportBlockSize:
-      case UnitType.kViewportMin:
-      case UnitType.kViewportMax:
-      case UnitType.kSmallViewportWidth:
-      case UnitType.kSmallViewportHeight:
-      case UnitType.kSmallViewportInlineSize:
-      case UnitType.kSmallViewportBlockSize:
-      case UnitType.kSmallViewportMin:
-      case UnitType.kSmallViewportMax:
-      case UnitType.kLargeViewportWidth:
-      case UnitType.kLargeViewportHeight:
-      case UnitType.kLargeViewportInlineSize:
-      case UnitType.kLargeViewportBlockSize:
-      case UnitType.kLargeViewportMin:
-      case UnitType.kLargeViewportMax:
-      case UnitType.kDynamicViewportWidth:
-      case UnitType.kDynamicViewportHeight:
-      case UnitType.kDynamicViewportInlineSize:
-      case UnitType.kDynamicViewportBlockSize:
-      case UnitType.kDynamicViewportMin:
-      case UnitType.kDynamicViewportMax:
-      case UnitType.kContainerWidth:
-      case UnitType.kContainerHeight:
-      case UnitType.kContainerInlineSize:
-      case UnitType.kContainerBlockSize:
-      case UnitType.kContainerMin:
-      case UnitType.kContainerMax: {
+      // case UnitType.kHertz:
+      // case UnitType.kKilohertz:
+      case UnitType.kTurns: // case UnitType.kViewportWidth: // case UnitType.kFraction:
+      // case UnitType.kViewportHeight:
+      // case UnitType.kViewportInlineSize:
+      // case UnitType.kViewportBlockSize:
+      // case UnitType.kViewportMin:
+      // case UnitType.kViewportMax:
+      // case UnitType.kSmallViewportWidth:
+      // case UnitType.kSmallViewportHeight:
+      // case UnitType.kSmallViewportInlineSize:
+      // case UnitType.kSmallViewportBlockSize:
+      // case UnitType.kSmallViewportMin:
+      // case UnitType.kSmallViewportMax:
+      // case UnitType.kLargeViewportWidth:
+      // case UnitType.kLargeViewportHeight:
+      // case UnitType.kLargeViewportInlineSize:
+      // case UnitType.kLargeViewportBlockSize:
+      // case UnitType.kLargeViewportMin:
+      // case UnitType.kLargeViewportMax:
+      // case UnitType.kDynamicViewportWidth:
+      // case UnitType.kDynamicViewportHeight:
+      // case UnitType.kDynamicViewportInlineSize:
+      // case UnitType.kDynamicViewportBlockSize:
+      // case UnitType.kDynamicViewportMin:
+      // case UnitType.kDynamicViewportMax:
+      // case UnitType.kContainerWidth:
+      // case UnitType.kContainerHeight:
+      // case UnitType.kContainerInlineSize:
+      // case UnitType.kContainerBlockSize:
+      // case UnitType.kContainerMin:
+      // case UnitType.kContainerMax: {
+      {
         const kMinInteger = -999999;
         const kMaxInteger = 999999;
 

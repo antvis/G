@@ -58,6 +58,7 @@ export const DEFAULT_STYLE: BaseStyleProps = {
   strokeOpacity: 1,
   fill: null,
   cursor: 'pointer',
+  pointerEvents: 'auto',
 };
 
 // rect/polygon

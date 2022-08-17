@@ -33,7 +33,7 @@ export class PathRenderer extends Batch {
       object.parsedStyle as ParsedBaseStyleProps;
     const nodeName = object.nodeName;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item.value !== 0);
+    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
     const isLine = this.isLine(object);
 
     object.renderable.proxyNodeName = isLine ? Shape.LINE : null;
@@ -45,13 +45,7 @@ export class PathRenderer extends Batch {
 
     // stroke mesh
     if (index === 1) {
-      if (
-        isLine ||
-        strokeOpacity.value === 0 ||
-        opacity.value === 0 ||
-        lineWidth.value === 0 ||
-        !hasStroke
-      ) {
+      if (isLine || strokeOpacity === 0 || opacity === 0 || lineWidth === 0 || !hasStroke) {
         return false;
       }
 

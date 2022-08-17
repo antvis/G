@@ -3,9 +3,10 @@ import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
 import { deg2rad } from '../../utils';
-import { Odeg, Opx } from '../cssom';
+import { CSSKeywordValue, Odeg, Opx } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
+import type { ParsedTransform } from '../parser/transform';
 import { mergeTransforms, parseTransform } from '../parser/transform';
 
 /**
@@ -44,8 +45,25 @@ import { mergeTransforms, parseTransform } from '../parser/transform';
     named: PropertySyntax.TRANSFORM,
   },
 })
-export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> {
+export class CSSPropertyTransform
+  implements Partial<CSSProperty<CSSKeywordValue | ParsedTransform[], ParsedTransform[]>>
+{
+  private tmpMat4 = mat4.create();
+
   parser = parseTransform;
+
+  calculator(
+    name: string,
+    oldParsed: CSSKeywordValue | ParsedTransform[],
+    parsed: CSSKeywordValue | ParsedTransform[],
+    object: DisplayObject,
+  ): ParsedTransform[] {
+    // 'none'
+    if (parsed instanceof CSSKeywordValue) {
+      return [];
+    }
+    return parsed;
+  }
 
   mixer = mergeTransforms;
 
@@ -127,14 +145,15 @@ export class CSSPropertyTransform implements Partial<CSSProperty<any[], any[]>> 
         } else if (t === 'matrix') {
           const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
           object.setLocalTransform(
-            mat4.fromValues(a, b, 0, 0, c, dd, 0, 0, 0, 0, 1, 0, tx + defX, ty + defY, 0, 1),
+            mat4.set(this.tmpMat4, a, b, 0, 0, c, dd, 0, 0, 0, 0, 1, 0, tx + defX, ty + defY, 0, 1),
           );
         } else if (t === 'matrix3d') {
           // @ts-ignore
-          const mat = mat4.fromValues(...d.map((s) => s.value));
-          mat[12] += defX;
-          mat[13] += defY;
-          object.setLocalTransform(mat);
+          mat4.set(this.tmpMat4, ...d.map((s) => s.value));
+
+          this.tmpMat4[12] += defX;
+          this.tmpMat4[13] += defY;
+          object.setLocalTransform(this.tmpMat4);
         }
       });
     }

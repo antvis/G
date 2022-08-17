@@ -1,45 +1,35 @@
-import chai, { expect } from 'chai';
-import { toFontString, CSS, CSSKeywordValue } from '@antv/g';
+import { toFontString } from '@antv/g';
+import { expect } from 'chai';
 
 describe('Text utils', () => {
   it('should convert font string correctly', () => {
     expect(
       toFontString({
-        fontSize: CSS.px(12),
+        fontSize: 12,
         fontFamily: 'sans-serif',
-        fontStyle: new CSSKeywordValue('normal'),
-        fontWeight: new CSSKeywordValue('normal'),
-        fontVariant: new CSSKeywordValue('normal'),
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontVariant: 'normal',
       }),
     ).eqls('normal normal normal 12px sans-serif');
 
     expect(
       toFontString({
-        fontSize: CSS.px(12),
-        fontFamily: 'sans-serif',
-        fontStyle: new CSSKeywordValue('normal'),
-        fontWeight: new CSSKeywordValue('normal'),
-        fontVariant: new CSSKeywordValue('normal'),
-      }),
-    ).eqls('normal normal normal 12px sans-serif');
-
-    expect(
-      toFontString({
-        fontSize: CSS.px(12),
+        fontSize: 12,
         fontFamily: 'sans-serif,Yahei',
-        fontStyle: new CSSKeywordValue('normal'),
-        fontWeight: new CSSKeywordValue('normal'),
-        fontVariant: new CSSKeywordValue('normal'),
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontVariant: 'normal',
       }),
     ).eqls('normal normal normal 12px sans-serif,"Yahei"');
 
     expect(
       toFontString({
-        fontSize: CSS.px(12),
+        fontSize: 12,
         fontFamily: 'sans-serif,"Yahei"',
-        fontStyle: new CSSKeywordValue('normal'),
-        fontWeight: new CSSKeywordValue('normal'),
-        fontVariant: new CSSKeywordValue('normal'),
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontVariant: 'normal',
       }),
     ).eqls('normal normal normal 12px sans-serif,"Yahei"');
   });

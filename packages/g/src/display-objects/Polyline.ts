@@ -1,6 +1,5 @@
 import { Line as LineUtil } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -41,8 +40,8 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   markerStart?: DisplayObject;
   markerMid?: DisplayObject;
   markerEnd?: DisplayObject;
-  markerStartOffset?: CSSUnitValue;
-  markerEndOffset?: CSSUnitValue;
+  markerStartOffset?: number;
+  markerEndOffset?: number;
 }
 
 /**

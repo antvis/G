@@ -25,7 +25,7 @@ import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 
-export const PointInPathPickerFactory = Syringe.defineToken('PointInPathPicker');
+export const PointInPathPickerFactory = Syringe.defineToken('');
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,
@@ -61,6 +61,10 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   @inject(PointInPathPickerFactory)
   private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
 
+  private tmpVec3a = vec3.create();
+  private tmpVec3b = vec3.create();
+  private tmpVec3c = vec3.create();
+
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tapPromise(
       CanvasPickerPlugin.tag,
@@ -71,7 +75,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         } = result;
 
         // position in world space
-        const position = vec3.fromValues(x, y, 0);
+        const position = vec3.set(this.tmpVec3a, x, y, 0);
 
         // query by AABB first with spatial index(r-tree)
         const rBushNodes = this.rBush.search({
@@ -166,16 +170,16 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
       // transform client position to local space, do picking in local space
       const localPosition = vec3.transformMat4(
-        vec3.create(),
-        vec3.fromValues(position[0], position[1], 0),
+        this.tmpVec3b,
+        vec3.set(this.tmpVec3c, position[0], position[1], 0),
         invertWorldMat,
       );
 
       // account for anchor
       const { halfExtents } = displayObject.getGeometryBounds();
       const { anchor } = displayObject.parsedStyle as ParsedBaseStyleProps;
-      localPosition[0] += ((anchor && anchor[0].value) || 0) * halfExtents[0] * 2;
-      localPosition[1] += ((anchor && anchor[1].value) || 0) * halfExtents[1] * 2;
+      localPosition[0] += ((anchor && anchor[0]) || 0) * halfExtents[0] * 2;
+      localPosition[1] += ((anchor && anchor[1]) || 0) * halfExtents[1] * 2;
       if (pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)) {
         return true;
       }

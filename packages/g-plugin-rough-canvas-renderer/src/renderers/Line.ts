@@ -16,10 +16,10 @@ export class LineRenderer implements CanvasRenderer.StyleRenderer {
     // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
     // @ts-ignore
     context.roughCanvas.line(
-      x1.value - defX,
-      y1.value - defY,
-      x2.value - defX,
-      y2.value - defY,
+      x1 - defX,
+      y1 - defY,
+      x2 - defX,
+      y2 - defY,
       generateRoughOptions(object),
     );
   }

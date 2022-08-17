@@ -13,19 +13,19 @@ export class CircleRenderer implements RendererContribution {
 
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawCircle(
-        r.value + (shadowOffsetX?.value || 0) / 2,
-        r.value + (shadowOffsetY?.value || 0) / 2,
-        r.value,
+        r + (shadowOffsetX || 0) / 2,
+        r + (shadowOffsetY || 0) / 2,
+        r,
         shadowFillPaint || shadowStrokePaint,
       );
     }
 
     if (fillPaint) {
-      canvas.drawCircle(r.value, r.value, r.value, fillPaint);
+      canvas.drawCircle(r, r, r, fillPaint);
     }
 
     if (strokePaint) {
-      canvas.drawCircle(r.value, r.value, r.value, strokePaint);
+      canvas.drawCircle(r, r, r, strokePaint);
     }
   }
 }

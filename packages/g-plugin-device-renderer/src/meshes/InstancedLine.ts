@@ -78,18 +78,12 @@ export class InstancedLineMesh extends Instanced {
           markerEndOffset,
         } = (object as Polyline).parsedStyle;
         parsedLineStyleProps = {
-          // @ts-ignore
-          x1: { value: points[0][0] },
-          // @ts-ignore
-          y1: { value: points[0][1] },
-          // @ts-ignore
-          x2: { value: points[points.length - 1][0] },
-          // @ts-ignore
-          y2: { value: points[points.length - 1][1] },
-          // @ts-ignore
-          z1: { value: 0 },
-          // @ts-ignore
-          z2: { value: 0 },
+          x1: points[0][0],
+          y1: points[0][1],
+          x2: points[points.length - 1][0],
+          y2: points[points.length - 1][1],
+          z1: 0,
+          z2: 0,
           defX,
           defY,
           lineCap,
@@ -112,18 +106,12 @@ export class InstancedLineMesh extends Instanced {
           markerEndOffset,
         } = (object as Path).parsedStyle;
         parsedLineStyleProps = {
-          // @ts-ignore
-          x1: { value: curve[0][1] },
-          // @ts-ignore
-          y1: { value: curve[0][2] },
-          // @ts-ignore
-          x2: { value: curve[1][5] },
-          // @ts-ignore
-          y2: { value: curve[1][6] },
-          // @ts-ignore
-          z1: { value: 0 },
-          // @ts-ignore
-          z2: { value: 0 },
+          x1: curve[0][1],
+          y1: curve[0][2],
+          x2: curve[1][5],
+          y2: curve[1][6],
+          z1: 0,
+          z2: 0,
           defX,
           defY,
           lineCap,
@@ -147,7 +135,7 @@ export class InstancedLineMesh extends Instanced {
 
       packedCap.push(
         // caps
-        LineCap_MAP[lineCap.value],
+        LineCap_MAP[lineCap],
       );
       packedDash.push(
         dashOffset,
@@ -158,12 +146,12 @@ export class InstancedLineMesh extends Instanced {
       );
 
       interleaved.push(
-        x1.value - defX + startOffsetX,
-        y1.value - defY + startOffsetY,
-        z1.value,
-        x2.value - defX + endOffsetX,
-        y2.value - defY + endOffsetY,
-        z2.value,
+        x1 - defX + startOffsetX,
+        y1 - defY + startOffsetY,
+        z1,
+        x2 - defX + endOffsetX,
+        y2 - defY + endOffsetY,
+        z2,
       );
       indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
       offset += 4;
@@ -281,18 +269,12 @@ export class InstancedLineMesh extends Instanced {
             markerEndOffset,
           } = (object as Polyline).parsedStyle;
           parsedLineStyleProps = {
-            // @ts-ignore
-            x1: { value: points[0][0] },
-            // @ts-ignore
-            y1: { value: points[0][1] },
-            // @ts-ignore
-            x2: { value: points[points.length - 1][0] },
-            // @ts-ignore
-            y2: { value: points[points.length - 1][1] },
-            // @ts-ignore
-            z1: { value: 0 },
-            // @ts-ignore
-            z2: { value: 0 },
+            x1: points[0][0],
+            y1: points[0][1],
+            x2: points[points.length - 1][0],
+            y2: points[points.length - 1][1],
+            z1: 0,
+            z2: 0,
             defX,
             defY,
             lineCap,
@@ -317,18 +299,12 @@ export class InstancedLineMesh extends Instanced {
             markerEndOffset,
           } = (object as Path).parsedStyle;
           parsedLineStyleProps = {
-            // @ts-ignore
-            x1: { value: curve[0][1] },
-            // @ts-ignore
-            y1: { value: curve[0][2] },
-            // @ts-ignore
-            x2: { value: curve[1][5] },
-            // @ts-ignore
-            y2: { value: curve[1][6] },
-            // @ts-ignore
-            z1: { value: 0 },
-            // @ts-ignore
-            z2: { value: 0 },
+            x1: curve[0][1],
+            y1: curve[0][2],
+            x2: curve[1][5],
+            y2: curve[1][6],
+            z1: 0,
+            z2: 0,
             defX,
             defY,
             lineCap,
@@ -344,12 +320,12 @@ export class InstancedLineMesh extends Instanced {
         const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
           this.calcOffset(parsedLineStyleProps);
         packed.push(
-          x1.value - defX + startOffsetX,
-          y1.value - defY + startOffsetY,
-          z1.value,
-          x2.value - defX + endOffsetX,
-          y2.value - defY + endOffsetY,
-          z2.value,
+          x1 - defX + startOffsetX,
+          y1 - defY + startOffsetY,
+          z1,
+          x2 - defX + endOffsetX,
+          y2 - defY + endOffsetY,
+          z2,
         );
       });
 
@@ -411,19 +387,19 @@ export class InstancedLineMesh extends Instanced {
     let y: number;
 
     if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
-      x = x2.value - x1.value;
-      y = y2.value - y1.value;
+      x = x2 - x1;
+      y = y2 - y1;
       rad = Math.atan2(y, x);
-      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
-      x = x1.value - x2.value;
-      y = y1.value - y2.value;
+      x = x1 - x2;
+      y = y1 - y2;
       rad = Math.atan2(y, x);
-      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
     }
 
     return {
@@ -440,15 +416,15 @@ export class InstancedLineMesh extends Instanced {
     let dashSegmentPercent = 1;
     let dashRatioInEachSegment = 0;
     if (lineDash && lineDash.length) {
-      dashOffset = ((lineDashOffset && lineDashOffset.value) || 0) / totalLength;
-      const segmentsLength = lineDash.reduce((cur, prev) => cur + prev.value, 0);
+      dashOffset = (lineDashOffset || 0) / totalLength;
+      const segmentsLength = lineDash.reduce((cur, prev) => cur + prev, 0);
 
       if (segmentsLength === 0) {
         dashSegmentPercent = 1;
         dashRatioInEachSegment = 0;
       } else {
         dashSegmentPercent = segmentsLength / totalLength;
-        dashRatioInEachSegment = lineDash[1].value / segmentsLength;
+        dashRatioInEachSegment = lineDash[1] / segmentsLength;
       }
     }
     return {

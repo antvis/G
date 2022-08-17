@@ -4,19 +4,19 @@ import { clamp } from '@antv/g';
 export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedRectStyleProps) {
   const { radius, width, height } = parsedStyle;
 
-  const w = width.value;
-  const h = height.value;
-  const hasRadius = radius && radius.some((r) => r.value !== 0);
+  const w = width;
+  const h = height;
+  const hasRadius = radius && radius.some((r) => r !== 0);
 
   if (!hasRadius) {
     // Canvas support negative width/height of rect
     context.rect(0, 0, w, h);
   } else {
-    const signX = width.value > 0 ? 1 : -1;
-    const signY = height.value > 0 ? 1 : -1;
+    const signX = width > 0 ? 1 : -1;
+    const signY = height > 0 ? 1 : -1;
     const sweepFlag = signX + signY === 0;
     const [tlr, trr, brr, blr] = radius.map((r) =>
-      clamp(r.value, 0, Math.min(Math.abs(w) / 2, Math.abs(h) / 2)),
+      clamp(r, 0, Math.min(Math.abs(w) / 2, Math.abs(h) / 2)),
     );
 
     context.moveTo(signX * tlr, 0);

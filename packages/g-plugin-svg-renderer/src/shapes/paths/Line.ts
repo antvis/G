@@ -25,24 +25,24 @@ export function updateLineElementAttribute($el: SVGElement, parsedStyle: ParsedL
   let y: number;
 
   if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
-    x = x2.value - x1.value;
-    y = y2.value - y1.value;
+    x = x2 - x1;
+    y = y2 - y1;
     rad = Math.atan2(y, x);
-    startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-    startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+    startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+    startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
   if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
-    x = x1.value - x2.value;
-    y = y1.value - y2.value;
+    x = x1 - x2;
+    y = y1 - y2;
     rad = Math.atan2(y, x);
-    endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-    endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+    endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+    endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
   // @see https://github.com/antvis/g/issues/1038
-  $el.setAttribute('x1', `${x1.value - defX + startOffsetX}`);
-  $el.setAttribute('y1', `${y1.value - defY + startOffsetY}`);
-  $el.setAttribute('x2', `${x2.value - defX + endOffsetX}`);
-  $el.setAttribute('y2', `${y2.value - defY + endOffsetY}`);
+  $el.setAttribute('x1', `${x1 - defX + startOffsetX}`);
+  $el.setAttribute('y1', `${y1 - defY + startOffsetY}`);
+  $el.setAttribute('x2', `${x2 - defX + endOffsetX}`);
+  $el.setAttribute('y2', `${y2 - defY + endOffsetY}`);
 }

@@ -315,14 +315,14 @@ export abstract class Instanced {
       packedModelMatrix.push(...modelMatrix);
       packedFillStroke.push(...fillColor, ...strokeColor);
       packedStyle.push(
-        opacity.value,
-        fillOpacity.value,
-        strokeOpacity.value,
-        lineWidth.value,
-        visibility.value === 'visible' ? 1 : 0,
-        anchor[0].value,
-        anchor[1].value,
-        increasedLineWidthForHitTesting?.value || 0,
+        opacity,
+        fillOpacity,
+        strokeOpacity,
+        lineWidth,
+        visibility === 'visible' ? 1 : 0,
+        anchor[0],
+        anchor[1],
+        increasedLineWidthForHitTesting || 0,
       );
       packedPicking.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
 
@@ -729,14 +729,14 @@ export abstract class Instanced {
           increasedLineWidthForHitTesting,
         } = object.parsedStyle as ParsedBaseStyleProps;
         packed.push(
-          opacity.value,
-          fillOpacity.value,
-          strokeOpacity.value,
-          lineWidth.value,
-          visibility.value === 'visible' ? 1 : 0,
-          anchor[0].value,
-          anchor[1].value,
-          increasedLineWidthForHitTesting?.value || 0,
+          opacity,
+          fillOpacity,
+          strokeOpacity,
+          lineWidth,
+          visibility === 'visible' ? 1 : 0,
+          anchor[0],
+          anchor[1],
+          increasedLineWidthForHitTesting || 0,
         );
       });
 

@@ -1,16 +1,12 @@
-import {
+import type {
   BaseCustomElementStyleProps,
-  Circle,
   Cursor,
-  CustomElement,
-  CustomEvent,
   DisplayObject,
   DisplayObjectConfig,
   FederatedEvent,
   ParsedBaseStyleProps,
-  rad2deg,
-  Rect,
 } from '@antv/g';
+import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 
@@ -70,9 +66,11 @@ export class SelectableRect extends CustomElement<Props> {
         selectionStroke: 'black',
         selectionStrokeOpacity: 1,
         selectionStrokeWidth: 1,
+        selectionLineDash: 0,
         anchorFill: 'black',
         anchorStroke: 'black',
         anchorStrokeOpacity: 1,
+        anchorStrokeWidth: 1,
         anchorFillOpacity: 1,
         anchorSize: 6,
         ...style,
@@ -122,11 +120,13 @@ export class SelectableRect extends CustomElement<Props> {
       anchorFillOpacity,
       anchorStrokeOpacity,
       anchorSize,
+      anchorStrokeWidth,
       selectionFill,
       selectionFillOpacity,
       selectionStroke,
       selectionStrokeOpacity,
       selectionStrokeWidth,
+      selectionLineDash,
       target,
     } = this.style;
 
@@ -137,7 +137,7 @@ export class SelectableRect extends CustomElement<Props> {
 
     // account for origin object's anchor such as Circle and Ellipse
     const { anchor } = target.parsedStyle as ParsedBaseStyleProps;
-    this.mask.translateLocal(-anchor[0].value * width, -anchor[1].value * height);
+    this.mask.translateLocal(-anchor[0] * width, -anchor[1] * height);
 
     // resize according to target
     this.mask.style.width = width;
@@ -147,6 +147,7 @@ export class SelectableRect extends CustomElement<Props> {
     this.mask.style.fillOpacity = selectionFillOpacity;
     this.mask.style.strokeOpacity = selectionStrokeOpacity;
     this.mask.style.lineWidth = selectionStrokeWidth;
+    this.mask.style.lineDash = selectionLineDash;
 
     // position anchors
     this.trAnchor.setLocalPosition(width, 0);
@@ -159,6 +160,7 @@ export class SelectableRect extends CustomElement<Props> {
       anchor.style.fill = anchorFill;
       anchor.style.fillOpacity = anchorFillOpacity;
       anchor.style.strokeOpacity = anchorStrokeOpacity;
+      anchor.style.strokeWidth = anchorStrokeWidth;
       anchor.style.r = anchorSize;
       anchor.style.cursor = this.scaleCursorStyleHandler(controls[i], target) as Cursor;
     });
@@ -292,9 +294,14 @@ export class SelectableRect extends CustomElement<Props> {
         this.blAnchor.setLocalPosition(0, maskHeight);
         this.brAnchor.setLocalPosition(maskWidth, maskHeight);
 
-        // re-position target
-        targetObject.setPosition(maskX, maskY);
-        targetObject.scale(maskWidth / originMaskWidth, maskHeight / originMaskHeight);
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MODIFIED, {
+            positionX: maskX,
+            positionY: maskY,
+            scaleX: maskWidth / originMaskWidth,
+            scaleY: maskHeight / originMaskHeight,
+          }),
+        );
       }
     });
     this.addEventListener('dragend', (e: FederatedEvent) => {
@@ -304,10 +311,7 @@ export class SelectableRect extends CustomElement<Props> {
         this.status = 'active';
       }
 
-      // targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED, {
-      //   movingX: canvasX - shiftX,
-      //   movingY: canvasY - shiftY,
-      // }));
+      targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
     });
   }
 

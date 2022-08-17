@@ -5,5 +5,5 @@ export function generatePath(
   parsedStyle: ParsedCircleStyleProps,
 ) {
   const { r } = parsedStyle;
-  context.arc(r.value, r.value, r.value, 0, Math.PI * 2, false);
+  context.arc(r, r, r, 0, Math.PI * 2, false);
 }

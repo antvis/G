@@ -178,18 +178,29 @@ export class SelectablePlugin implements RenderingPlugin {
       });
     };
 
+    const handleModifyingTarget = (e: CustomEvent) => {
+      const target = e.target as DisplayObject;
+      const { positionX, positionY, scaleX, scaleY } = e.detail;
+
+      // re-position target
+      target.setPosition(positionX, positionY);
+      target.scale(scaleX, scaleY);
+    };
+
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
-      canvas.addEventListener('click', handleClick);
+      canvas.addEventListener('pointerdown', handleClick);
       canvas.appendChild(this.activeSelectableLayer);
 
       canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
+      canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
-      canvas.removeEventListener('click', handleClick);
+      canvas.removeEventListener('pointerdown', handleClick);
       canvas.removeChild(this.activeSelectableLayer);
 
       canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
+      canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
   }
 }

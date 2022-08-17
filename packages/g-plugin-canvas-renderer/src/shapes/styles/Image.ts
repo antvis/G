@@ -20,8 +20,8 @@ export class ImageRenderer implements StyleRenderer {
     const { width, height, img, shadowColor, shadowBlur } = parsedStyle;
 
     let image: HTMLImageElement;
-    let iw = width.value;
-    let ih = height.value;
+    let iw = width;
+    let ih = height;
 
     if (isString(img)) {
       // image has been loaded in `mounted` hook
@@ -33,7 +33,7 @@ export class ImageRenderer implements StyleRenderer {
     }
 
     if (image) {
-      const hasShadow = !isNil(shadowColor) && shadowBlur?.value > 0;
+      const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
       setShadowAndFilter(object, context, hasShadow);
 
       // node-canvas will throw the following err:

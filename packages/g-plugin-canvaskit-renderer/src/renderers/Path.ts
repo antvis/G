@@ -49,8 +49,8 @@ export class PathRenderer implements RendererContribution {
       y = p1[1] - p2[1];
 
       rad = Math.atan2(y, x);
-      startOffsetX = Math.cos(rad) * (markerStartOffset?.value || 0);
-      startOffsetY = Math.sin(rad) * (markerStartOffset?.value || 0);
+      startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
+      startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
@@ -58,8 +58,8 @@ export class PathRenderer implements RendererContribution {
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
       rad = Math.atan2(y, x);
-      endOffsetX = Math.cos(rad) * (markerEndOffset?.value || 0);
-      endOffsetY = Math.sin(rad) * (markerEndOffset?.value || 0);
+      endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
+      endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
     }
 
     const skPath = new CanvasKit.Path();
@@ -72,7 +72,7 @@ export class PathRenderer implements RendererContribution {
     });
 
     // @ts-ignore
-    const isClosed = pathCommand[pathCommand.length - 1][0] === 'Z';
+    const isClosed = pathCommand.length && pathCommand[pathCommand.length - 1][0] === 'Z';
 
     for (let i = 0; i < pathCommand.length; i++) {
       const params = pathCommand[i]; // eg. M 100 200
@@ -108,10 +108,7 @@ export class PathRenderer implements RendererContribution {
     if (shadowFillPaint || shadowStrokePaint) {
       const shadowPath = skPath.copy();
       shadowPath.transform(
-        mat3.fromTranslation(mat3.create(), [
-          (shadowOffsetX?.value || 0) / 2,
-          (shadowOffsetY?.value || 0) / 2,
-        ]),
+        mat3.fromTranslation(mat3.create(), [(shadowOffsetX || 0) / 2, (shadowOffsetY || 0) / 2]),
       );
       canvas.drawPath(shadowPath, fillPaint ? shadowFillPaint : shadowStrokePaint);
     }

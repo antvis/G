@@ -134,7 +134,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         const rBushNode = node.rBushNode;
 
         // clear dirty node
-        if (rBushNode) {
+        if (rBushNode && rBushNode.aabb) {
           this.rBush.remove(rBushNode.aabb);
         }
 

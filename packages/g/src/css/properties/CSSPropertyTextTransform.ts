@@ -1,4 +1,5 @@
 import { singleton } from 'mana-syringe';
+import type { TextTransform } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
@@ -15,7 +16,7 @@ import { PropertySyntax } from '../interfaces';
   },
 })
 export class CSSPropertyTextTransform
-  implements Partial<CSSProperty<CSSKeywordValue, CSSKeywordValue>>
+  implements Partial<CSSProperty<CSSKeywordValue, TextTransform>>
 {
   calculator(
     name: string,
@@ -37,6 +38,6 @@ export class CSSPropertyTextTransform
       object.parsedStyle.text = transformedText;
     }
 
-    return parsed;
+    return parsed.value as TextTransform;
   }
 }

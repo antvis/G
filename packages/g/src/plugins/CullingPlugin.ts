@@ -5,7 +5,7 @@ import { RenderingContext } from '../services';
 import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
 
-export const CullingStrategyContribution = Syringe.defineToken('CullingStrategyContribution');
+export const CullingStrategyContribution = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CullingStrategyContribution {
   isVisible: (object: DisplayObject) => boolean;

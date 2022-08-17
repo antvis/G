@@ -1,26 +1,23 @@
+import { memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import { GlobalContainer, inject, postConstruct, singleton } from 'mana-syringe';
+import { inject, postConstruct, singleton } from 'mana-syringe';
+import { sceneGraphService } from '..';
 import type { DisplayObject } from '../display-objects';
-import { SceneGraphService } from '../services';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
 import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { formatAttribute, isFunction, isNil } from '../utils';
-import type { CSSRGB } from './cssom';
-import { CSSKeywordValue, CSSStyleValue, CSSUnitValue } from './cssom';
+import type { CSSRGB, CSSStyleValue } from './cssom';
+import { CSSKeywordValue } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
-import type { PropertyMetadata } from './interfaces';
+import type { PropertyMetadata, PropertyParseOptions } from './interfaces';
 import { PropertySyntax, StyleValueRegistry } from './interfaces';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
-export interface PropertyParseOptions {
-  skipUpdateAttribute: boolean;
-  skipParse: boolean;
-}
 
 /**
  * Blink used them in code generation(css_properties.json5)
@@ -41,6 +38,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      */
     name: 'opacity',
     interpolable: true,
+    inherited: true,
     defaultValue: '1',
     syntax: PropertySyntax.OPACITY_VALUE,
   },
@@ -306,14 +304,14 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     name: 'rx',
     interpolable: true,
     layoutDependent: true,
-    defaultValue: 'auto',
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     name: 'ry',
     interpolable: true,
     layoutDependent: true,
-    defaultValue: 'auto',
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   // Rect Image Group
@@ -346,7 +344,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/width
      */
     keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: 'auto',
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
@@ -357,7 +355,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/height
      */
     keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: 'auto',
+    defaultValue: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
@@ -563,6 +561,29 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
+const cache: Record<string, PropertyMetadata> = {};
+const unresolvedProperties: Record<number, string[]> = {};
+const priorityMap: Record<string, number> = {};
+const sortAttributeNames = memoize((attributeNames: string[]) => {
+  return attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
+});
+export const getMetadata = (name: string) => {
+  return cache[name];
+};
+
+const tmpVec3a = vec3.create();
+const tmpVec3b = vec3.create();
+const tmpVec3c = vec3.create();
+
+const keywordCache: Record<string, CSSKeywordValue> = {};
+const getOrCreateKeyword = (name: string) => {
+  if (!keywordCache[name]) {
+    keywordCache[name] = new CSSKeywordValue(name);
+  }
+
+  return keywordCache[name];
+};
+
 @singleton({
   token: StyleValueRegistry,
 })
@@ -570,51 +591,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * need recalc later
    */
-  dirty = false;
-
-  private cache: Record<string, PropertyMetadata> = {};
-
-  private unresolvedProperties: Record<number, string[]> = {};
+  // dirty = false;
 
   @inject(CSSPropertySyntaxFactory)
   private propertySyntaxFactory: CSSPropertySyntaxFactory;
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
-
-  /**
-   * eg.
-   *
-   * document: {
-   *   fontSize: [
-   *
-   *   ]
-   * }
-   */
-  private cascadeProperties: Record<
-    number,
-    {
-      property: string;
-      listeners: number[];
-    }
-  > = {};
-
-  // private boundsChangeListeners: Record<
-  //   /**
-  //    * parent's entity
-  //    */
-  //   number,
-  //   Record<
-  //     /**
-  //      * child's entity
-  //      */
-  //     number,
-  //     /**
-  //      * child properties
-  //      */
-  //     string[]
-  //   >
-  // > = {};
+  @inject(GeometryUpdaterFactory)
+  private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>;
 
   @postConstruct()
   init() {
@@ -625,16 +608,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
   registerMetadata(metadata: PropertyMetadata) {
     [metadata.name, ...(metadata.alias || [])].forEach((name) => {
-      this.cache[name] = metadata;
+      cache[name] = metadata;
+      priorityMap[name] = metadata.parsePriority || 0;
     });
   }
 
   unregisterMetadata(name: string) {
-    delete this.cache[name];
-  }
-
-  getMetadata(name: string) {
-    return this.cache[name];
+    delete cache[name];
   }
 
   getPropertySyntax(syntax: string) {
@@ -661,25 +641,24 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const { skipUpdateAttribute, skipParse } = options;
 
     let needUpdateGeometry = false;
-    Object.keys(attributes).forEach((attributeName) => {
+    let attributeNames = Object.keys(attributes);
+    attributeNames.forEach((attributeName) => {
       const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
 
       if (!skipUpdateAttribute) {
         object.attributes[name] = value;
       }
-      if (!needUpdateGeometry && this.getMetadata(name as string)?.layoutDependent) {
+      if (!needUpdateGeometry && getMetadata(name as string)?.layoutDependent) {
         needUpdateGeometry = true;
       }
     });
 
     // parse according to priority
-    const sortedNames = Object.keys(attributes).sort(
-      (a, b) =>
-        (this.getMetadata(a)?.parsePriority || 0) - (this.getMetadata(b)?.parsePriority || 0),
-    );
+    attributeNames = sortAttributeNames(attributeNames);
+    // attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
 
     if (!skipParse) {
-      sortedNames.forEach((name) => {
+      attributeNames.forEach((name) => {
         object.computedStyle[name] = this.parseProperty(
           name as string,
           object.attributes[name],
@@ -688,11 +667,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       });
     }
 
-    let hasUnresolvedProperties = false;
-    sortedNames.forEach((name) => {
+    // let hasUnresolvedProperties = false;
+    attributeNames.forEach((name) => {
       // some style props maybe deleted after parsing such as `anchor` in Text
       if (name in object.computedStyle) {
-        hasUnresolvedProperties = this.computeProperty(
+        object.parsedStyle[name] = this.computeProperty(
           name as string,
           object.computedStyle[name],
           object,
@@ -700,40 +679,42 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     });
 
-    if (hasUnresolvedProperties) {
-      this.dirty = true;
-      return;
-    }
+    // if (hasUnresolvedProperties) {
+    //   this.dirty = true;
+    //   return;
+    // }
 
     // update geometry
     if (needUpdateGeometry) {
       this.updateGeometry(object);
     }
 
-    sortedNames.forEach((name) => {
+    attributeNames.forEach((name) => {
       if (name in object.parsedStyle) {
         this.postProcessProperty(name as string, object);
       }
     });
 
-    sortedNames.forEach((name) => {
-      if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
-        // update children's inheritable
-        object.children.forEach((child: DisplayObject) => {
-          child.internalSetAttribute(name, null, {
-            skipUpdateAttribute: true,
-            skipParse: true,
+    if (object.children.length) {
+      attributeNames.forEach((name) => {
+        if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
+          // update children's inheritable
+          object.children.forEach((child: DisplayObject) => {
+            child.internalSetAttribute(name, null, {
+              skipUpdateAttribute: true,
+              skipParse: true,
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   /**
    * string -> parsed value
    */
   parseProperty(name: string, value: any, object: DisplayObject): CSSStyleValue {
-    const metadata = this.getMetadata(name);
+    const metadata = getMetadata(name);
 
     let computed: CSSStyleValue = value;
     if (value === '' || isNil(value)) {
@@ -741,7 +722,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
 
     if (value === 'unset' || value === 'initial' || value === 'inherit') {
-      computed = new CSSKeywordValue(value);
+      // computed = new CSSKeywordValue(value);
+      computed = getOrCreateKeyword(value);
     } else {
       if (metadata) {
         const { keywords, syntax } = metadata;
@@ -749,15 +731,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
         // use keywords
         if (keywords && keywords.indexOf(value) > -1) {
-          computed = new CSSKeywordValue(value);
-        } else if (handler) {
-          // try to parse value with handler
-          const propertyHandler = handler;
-
-          if (propertyHandler && propertyHandler.parser) {
-            // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
-            computed = propertyHandler.parser(value, object);
-          }
+          // computed = new CSSKeywordValue(value);
+          computed = getOrCreateKeyword(value);
+        } else if (handler && handler.parser) {
+          // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
+          computed = handler.parser(value, object);
         }
       }
     }
@@ -769,16 +747,17 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * computed value -> used value
    */
   computeProperty(name: string, computed: CSSStyleValue, object: DisplayObject) {
-    const metadata = this.getMetadata(name);
+    const metadata = getMetadata(name);
     const isDocumentElement = object.id === 'g-root';
 
-    let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
+    // let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
+    let used: any = computed;
 
     if (metadata) {
       const { syntax, inherited, defaultValue } = metadata;
-
       if (computed instanceof CSSKeywordValue) {
         let value = computed.value;
+
         /**
          * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/unset
          */
@@ -804,35 +783,35 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           // behave like `inherit`
           const resolved = this.tryToResolveProperty(object, name, { inherited: true });
           if (resolved) {
-            object.parsedStyle[name] = resolved;
-            return false;
+            // object.parsedStyle[name] = resolved;
+            // return false;
+            return resolved;
           } else {
             this.addUnresolveProperty(object, name);
-            return true;
+            return;
           }
         }
       }
 
       const handler = syntax && this.getPropertySyntax(syntax);
-      if (handler) {
+      if (handler && handler.calculator) {
         // convert computed value to used value
-        if (handler.calculator) {
-          const oldParsedValue = object.parsedStyle[name];
-          used = handler.calculator(name, oldParsedValue, computed, object, this);
-        } else {
-          used = computed;
-        }
+        const oldParsedValue = object.parsedStyle[name];
+        used = handler.calculator(name, oldParsedValue, computed, object, this);
+      } else if (computed instanceof CSSKeywordValue) {
+        used = computed.value;
       } else {
         used = computed;
       }
     }
 
-    object.parsedStyle[name] = used;
-    return false;
+    // object.parsedStyle[name] = used;
+    // return false;
+    return used;
   }
 
   postProcessProperty(name: string, object: DisplayObject) {
-    const metadata = this.getMetadata(name);
+    const metadata = getMetadata(name);
 
     if (metadata && metadata.syntax) {
       const handler = metadata.syntax && this.getPropertySyntax(metadata.syntax);
@@ -845,26 +824,23 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   isPropertyResolved(object: DisplayObject, name: string) {
-    if (
-      !this.unresolvedProperties[object.entity] ||
-      this.unresolvedProperties[object.entity].length === 0
-    ) {
+    if (!unresolvedProperties[object.entity] || unresolvedProperties[object.entity].length === 0) {
       return true;
     }
 
-    return this.unresolvedProperties[object.entity].includes(name);
+    return unresolvedProperties[object.entity].includes(name);
   }
 
   /**
    * resolve later
    */
   addUnresolveProperty(object: DisplayObject, name: string) {
-    if (!this.unresolvedProperties[object.entity]) {
-      this.unresolvedProperties[object.entity] = [];
+    if (!unresolvedProperties[object.entity]) {
+      unresolvedProperties[object.entity] = [];
     }
 
-    if (this.unresolvedProperties[object.entity].indexOf(name) === -1) {
-      this.unresolvedProperties[object.entity].push(name);
+    if (unresolvedProperties[object.entity].indexOf(name) === -1) {
+      unresolvedProperties[object.entity].push(name);
     }
   }
 
@@ -876,20 +852,23 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         object.parentElement &&
         this.isPropertyResolved(object.parentElement as DisplayObject, name)
       ) {
+        // const computedValue = object.parentElement.computedStyle[name];
         const usedValue = object.parentElement.parsedStyle[name];
         if (
-          usedValue instanceof CSSKeywordValue &&
-          (usedValue.value === 'unset' ||
-            usedValue.value === 'initial' ||
-            usedValue.value === 'inherit')
-        ) {
-          return false;
-        } else if (
-          usedValue instanceof CSSUnitValue &&
-          CSSUnitValue.isRelativeUnit(usedValue.unit)
+          // usedValue instanceof CSSKeywordValue &&
+          usedValue === 'unset' ||
+          usedValue === 'initial' ||
+          usedValue === 'inherit'
         ) {
           return false;
         }
+
+        // else if (
+        //   usedValue instanceof CSSUnitValue &&
+        //   CSSUnitValue.isRelativeUnit(usedValue.unit)
+        // ) {
+        //   return false;
+        // }
 
         return usedValue;
       }
@@ -899,7 +878,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   recalc(object: DisplayObject) {
-    const properties = this.unresolvedProperties[object.entity];
+    const properties = unresolvedProperties[object.entity];
     if (properties && properties.length) {
       const attributes = {};
       properties.forEach((property) => {
@@ -907,7 +886,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       });
 
       this.processProperties(object, attributes);
-      delete this.unresolvedProperties[object.entity];
+      delete unresolvedProperties[object.entity];
     }
   }
 
@@ -916,9 +895,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * eg. r of Circle, width/height of Rect
    */
   updateGeometry(object: DisplayObject) {
-    const geometryUpdaterFactory =
-      GlobalContainer.get<(tagName: string) => GeometryAABBUpdater<any>>(GeometryUpdaterFactory);
-    const geometryUpdater = geometryUpdaterFactory(object.nodeName);
+    const geometryUpdater = this.geometryUpdaterFactory(object.nodeName);
     if (geometryUpdater) {
       const geometry = object.geometry;
       if (!geometry.contentBounds) {
@@ -945,7 +922,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const flipX = height < 0;
 
       // init with content box
-      const halfExtents = vec3.fromValues(Math.abs(width) / 2, Math.abs(height) / 2, depth / 2);
+      const halfExtents = vec3.set(tmpVec3a, Math.abs(width) / 2, Math.abs(height) / 2, depth / 2);
+
       // anchor is center by default, don't account for lineWidth here
       const {
         stroke,
@@ -966,10 +944,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         delete parsedStyle.anchor;
       }
 
-      const center = vec3.fromValues(
-        ((1 - ((anchor && anchor[0].value) || 0) * 2) * width) / 2 + offsetX,
-        ((1 - ((anchor && anchor[1].value) || 0) * 2) * height) / 2 + offsetY,
-        (1 - ((anchor && anchor[2]?.value) || 0) * 2) * halfExtents[2] + offsetZ,
+      const center = vec3.set(
+        tmpVec3b,
+        ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
+        ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
+        (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
       );
 
       // update geometry's AABB
@@ -994,19 +973,22 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const hasStroke = stroke && !(stroke as CSSRGB).isNone;
       if (hasStroke) {
         const halfLineWidth =
-          ((lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0)) * expansion;
-        vec3.add(halfExtents, halfExtents, vec3.fromValues(halfLineWidth, halfLineWidth, 0));
+          ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) * expansion;
+        // halfExtents[0] += halfLineWidth[0];
+        // halfExtents[1] += halfLineWidth[1];
+
+        vec3.add(halfExtents, halfExtents, vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0));
       }
       geometry.renderBounds.update(center, halfExtents);
 
       // account for shadow, only support constant value now
-      if (shadowColor && shadowType?.value !== 'inner') {
+      if (shadowColor && shadowType && shadowType !== 'inner') {
         const { min, max } = geometry.renderBounds;
 
         const { shadowBlur, shadowOffsetX, shadowOffsetY } = parsedStyle as ParsedBaseStyleProps;
-        const shadowBlurInPixels = (shadowBlur && shadowBlur.value) || 0;
-        const shadowOffsetXInPixels = (shadowOffsetX && shadowOffsetX.value) || 0;
-        const shadowOffsetYInPixels = (shadowOffsetY && shadowOffsetY.value) || 0;
+        const shadowBlurInPixels = shadowBlur || 0;
+        const shadowOffsetXInPixels = shadowOffsetX || 0;
+        const shadowOffsetYInPixels = shadowOffsetY || 0;
         const shadowLeft = min[0] - shadowBlurInPixels + shadowOffsetXInPixels;
         const shadowRight = max[0] + shadowBlurInPixels + shadowOffsetXInPixels;
         const shadowTop = min[1] - shadowBlurInPixels + shadowOffsetYInPixels;
@@ -1057,24 +1039,18 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       let usedOriginYValue = (flipX ? -1 : 1) * convertPercentUnit(transformOrigin[1], 1, object);
       usedOriginXValue =
         usedOriginXValue -
-        (flipY ? -1 : 1) *
-          ((anchor && anchor[0].value) || 0) *
-          geometry.contentBounds.halfExtents[0] *
-          2;
+        (flipY ? -1 : 1) * ((anchor && anchor[0]) || 0) * geometry.contentBounds.halfExtents[0] * 2;
       usedOriginYValue =
         usedOriginYValue -
-        (flipX ? -1 : 1) *
-          ((anchor && anchor[1].value) || 0) *
-          geometry.contentBounds.halfExtents[1] *
-          2;
+        (flipX ? -1 : 1) * ((anchor && anchor[1]) || 0) * geometry.contentBounds.halfExtents[1] * 2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
-      this.sceneGraphService.dirtifyToRoot(object);
+      sceneGraphService.dirtifyToRoot(object);
     }
   }
 
   private isPropertyInheritable(name: string) {
-    const metadata = this.getMetadata(name);
+    const metadata = getMetadata(name);
     if (!metadata) {
       return false;
     }

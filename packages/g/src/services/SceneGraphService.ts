@@ -24,7 +24,7 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   return zIndex1 - zIndex2;
 }
 
-export const SceneGraphService = Syringe.defineToken('SceneGraphService');
+export const SceneGraphService = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphService {
   triggerPendingEvents: () => void;
@@ -415,13 +415,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * @see https://github.com/antvis/g/blob/master/packages/g-base/src/abstract/element.ts#L665-L676
    */
   translate = (() => {
+    const zeroVec3 = vec3.create();
+    const tmpVec3 = vec3.create();
     const tr = vec3.create();
 
     return (element: INode, translation: vec3 | number, y: number = 0, z: number = 0) => {
       if (typeof translation === 'number') {
-        translation = vec3.fromValues(translation, y, z);
+        translation = vec3.set(tmpVec3, translation, y, z);
       }
-      if (vec3.equals(translation, vec3.create())) {
+      if (vec3.equals(translation, zeroVec3)) {
         return;
       }
 

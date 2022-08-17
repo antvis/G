@@ -14,7 +14,7 @@ import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKit } from 'canvaskit-wasm';
 import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
 
-export const ContextRegisterPluginOptions = Syringe.defineToken('ContextRegisterPluginOptions');
+export const ContextRegisterPluginOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextRegisterPluginOptions {
   wasmDir: string;

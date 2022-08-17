@@ -7,7 +7,6 @@ export * from './event';
 export * from './gradient';
 export * from './interpolation';
 export * from './math';
-export * from './memoize';
 export * from './path';
 export * from './string';
 export * from './tapable';

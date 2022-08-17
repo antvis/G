@@ -114,6 +114,14 @@ export class Canvas extends EventTarget implements ICanvas {
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
 
+  /**
+   * reuse custom event preventing from re-create them in every frame
+   */
+  private mountEvent = new CustomEvent(ElementEvent.MOUNTED);
+  private unmountEvent = new CustomEvent(ElementEvent.UNMOUNTED);
+  private beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
+  private afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
+
   constructor(config: CanvasConfig) {
     super();
 
@@ -411,14 +419,14 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render() {
-    this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_RENDER));
+    this.dispatchEvent(this.beforeRenderEvent);
 
     if (this.container.isBound(RenderingService)) {
       const renderingService = this.container.get<RenderingService>(RenderingService);
       renderingService.render(this.getConfig());
     }
 
-    this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_RENDER));
+    this.dispatchEvent(this.afterRenderEvent);
   }
 
   private run() {
@@ -527,7 +535,7 @@ export class Canvas extends EventTarget implements ICanvas {
           }
         }
 
-        child.dispatchEvent(new CustomEvent(ElementEvent.UNMOUNTED));
+        child.dispatchEvent(this.unmountEvent);
 
         // skip document.documentElement
         if (child !== this.document.documentElement) {
@@ -544,7 +552,7 @@ export class Canvas extends EventTarget implements ICanvas {
         if (!child.isConnected) {
           child.ownerDocument = this.document;
           child.isConnected = true;
-          child.dispatchEvent(new CustomEvent(ElementEvent.MOUNTED));
+          child.dispatchEvent(this.mountEvent);
 
           // trigger after mounted
           if (child instanceof CustomElement) {

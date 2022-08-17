@@ -1,17 +1,16 @@
 import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
+import { isNil } from '../../utils';
 import { CSSUnitValue, UnitType } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import type { StyleValueRegistry } from '../interfaces';
 import { PropertySyntax } from '../interfaces';
-import { mergeDimensions, parseLengthOrPercentage } from '../parser/dimension';
+import { mergeNumbers } from '../parser';
+import { parseLengthOrPercentage } from '../parser/dimension';
 
-function getFontSize(object: DisplayObject): CSSUnitValue {
+function getFontSize(object: DisplayObject): number {
   const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
-  if (fontSize && !CSSUnitValue.isRelativeUnit(fontSize.unit)) {
-    return fontSize.clone();
-  }
-  return null;
+  return isNil(fontSize) ? null : fontSize;
 }
 
 /**
@@ -29,11 +28,10 @@ function getFontSize(object: DisplayObject): CSSUnitValue {
     },
   ],
 })
-export class CSSPropertyLengthOrPercentage
-  implements Partial<CSSProperty<CSSUnitValue, CSSUnitValue>>
-{
+export class CSSPropertyLengthOrPercentage implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseLengthOrPercentage;
-  mixer = mergeDimensions;
+
+  mixer = mergeNumbers;
 
   /**
    * according to parent's bounds
@@ -47,16 +45,16 @@ export class CSSPropertyLengthOrPercentage
     computed: CSSUnitValue,
     object: DisplayObject,
     registry: StyleValueRegistry,
-  ): CSSUnitValue {
+  ): number {
     if (CSSUnitValue.isRelativeUnit(computed.unit)) {
       if (computed.unit === UnitType.kPercentage) {
-        return new CSSUnitValue(0, 'px');
+        // TODO: merge dimensions
+        return 0;
       } else if (computed.unit === UnitType.kEms) {
         if (object.parentNode) {
-          const fontSize = getFontSize(object.parentNode as DisplayObject);
-
+          let fontSize = getFontSize(object.parentNode as DisplayObject);
           if (fontSize) {
-            fontSize.value *= computed.value;
+            fontSize *= computed.value;
             return fontSize;
           } else {
             registry.addUnresolveProperty(object, name);
@@ -64,13 +62,13 @@ export class CSSPropertyLengthOrPercentage
         } else {
           registry.addUnresolveProperty(object, name);
         }
-        return new CSSUnitValue(0, 'px');
+        return 0;
       } else if (computed.unit === UnitType.kRems) {
         if (object?.ownerDocument?.documentElement) {
-          const fontSize = getFontSize(object.ownerDocument.documentElement as DisplayObject);
+          let fontSize = getFontSize(object.ownerDocument.documentElement as DisplayObject);
 
           if (fontSize) {
-            fontSize.value *= computed.value;
+            fontSize *= computed.value;
             return fontSize;
           } else {
             registry.addUnresolveProperty(object, name);
@@ -78,14 +76,14 @@ export class CSSPropertyLengthOrPercentage
         } else {
           registry.addUnresolveProperty(object, name);
         }
-        return new CSSUnitValue(0, 'px');
+        return 0;
       }
     } else {
       // remove listener if exists
       // registry.unregisterParentGeometryBoundsChangedHandler(object, name);
 
       // return absolute value
-      return computed.clone();
+      return computed.value;
     }
   }
 }

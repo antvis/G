@@ -265,16 +265,16 @@ export function convertToPath(
   switch (object.nodeName) {
     case Shape.LINE:
       const { x1, y1, x2, y2 } = (object as Line).parsedStyle;
-      commands = lineToCommands(x1.value, y1.value, x2.value, y2.value);
+      commands = lineToCommands(x1, y1, x2, y2);
       break;
     case Shape.CIRCLE: {
       const { r, cx, cy } = (object as Circle).parsedStyle;
-      commands = ellipseToCommands(r.value, r.value, cx.value, cy.value);
+      commands = ellipseToCommands(r, r, cx, cy);
       break;
     }
     case Shape.ELLIPSE: {
       const { rx, ry, cx, cy } = (object as Ellipse).parsedStyle;
-      commands = ellipseToCommands(rx.value, ry.value, cx.value, cy.value);
+      commands = ellipseToCommands(rx, ry, cx, cy);
       break;
     }
     case Shape.POLYLINE:
@@ -284,16 +284,20 @@ export function convertToPath(
       break;
     case Shape.RECT:
       const { width, height, x, y, radius } = (object as Rect).parsedStyle;
-      const hasRadius = radius && radius.some((r) => r.value !== 0);
+
+      const hasRadius = radius && radius.some((r) => r !== 0);
       commands = rectToCommands(
-        width.value,
-        height.value,
-        x.value,
-        y.value,
+        width,
+        height,
+        x,
+        y,
         hasRadius &&
-          (radius.map((r) =>
-            clamp(r.value, 0, Math.min(Math.abs(width.value) / 2, Math.abs(height.value) / 2)),
-          ) as [number, number, number, number]),
+          (radius.map((r) => clamp(r, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2))) as [
+            number,
+            number,
+            number,
+            number,
+          ]),
       );
       break;
     case Shape.PATH:

@@ -48,8 +48,8 @@ export class SelectablePolyline extends CustomElement<Props> {
     let points = [];
     if (this.style.target.nodeName === Shape.LINE) {
       const { x1, y1, x2, y2, defX, defY } = this.style.target.parsedStyle;
-      points.push([x1.value - defX, y1.value - defY]);
-      points.push([x2.value - defX, y2.value - defY]);
+      points.push([x1 - defX, y1 - defY]);
+      points.push([x2 - defX, y2 - defY]);
     } else if (this.style.target.nodeName === Shape.POLYLINE) {
       const {
         points: parsedPoints,

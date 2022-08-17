@@ -5,8 +5,8 @@ export function generatePath(
   parsedStyle: ParsedEllipseStyleProps,
 ) {
   const { rx: rxInPixels, ry: ryInPixels } = parsedStyle;
-  const rx = rxInPixels.value;
-  const ry = ryInPixels.value;
+  const rx = rxInPixels;
+  const ry = ryInPixels;
 
   // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse
   if (context.ellipse) {
