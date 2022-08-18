@@ -245,15 +245,17 @@ export class SelectableRect extends CustomElement<Props> {
     this.addEventListener('drag', (e: FederatedEvent) => {
       const zoom = camera.getZoom();
       const target = e.target as DisplayObject;
-      // @ts-ignore
-      let { dx, dy, canvasX, canvasY } = e;
+
+      const { canvasX, canvasY } = e;
       const originMaskWidth = Number(this.mask.style.width);
       const originMaskHeight = Number(this.mask.style.height);
 
       const [ox, oy] = this.getPosition();
 
-      dx /= zoom;
-      dy /= zoom;
+      // @ts-ignore
+      const dx = e.dx / zoom;
+      // @ts-ignore
+      const dy = e.dy / zoom;
 
       if (target === this.mask) {
         this.status = 'moving';
