@@ -1,6 +1,7 @@
 import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { Shape } from '../../types';
+import { isNil } from '../../utils';
 import { TextService } from '../TextService';
 import { GeometryAABBUpdater } from './interfaces';
 
@@ -29,7 +30,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       fontVariant &&
       textAlign &&
       textBaseline &&
-      lineWidth
+      !isNil(lineWidth)
     );
   }
 
