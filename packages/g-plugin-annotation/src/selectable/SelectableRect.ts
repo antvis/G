@@ -182,9 +182,15 @@ export class SelectableRect extends CustomElement<Props> {
       this.mask.style.strokeOpacity = newValue;
     } else if (name === 'selectionStrokeWidth') {
       this.mask.style.lineWidth = newValue;
+    } else if (name === 'selectionLineDash') {
+      this.mask.style.lineDash = newValue;
     } else if (name === 'anchorFill') {
       this.anchors.forEach((anchor) => {
         anchor.style.fill = newValue;
+      });
+    } else if (name === 'anchorStrokeWidth') {
+      this.anchors.forEach((anchor) => {
+        anchor.style.strokeWidth = newValue;
       });
     } else if (name === 'anchorStroke') {
       this.anchors.forEach((anchor) => {
@@ -207,6 +213,7 @@ export class SelectableRect extends CustomElement<Props> {
 
   private bindEventListeners() {
     const { target: targetObject } = this.style;
+    const camera = this.ownerDocument.defaultView.getCamera();
 
     // listen to drag'n'drop events
     let shiftX = 0;
@@ -236,13 +243,17 @@ export class SelectableRect extends CustomElement<Props> {
       }
     });
     this.addEventListener('drag', (e: FederatedEvent) => {
+      const zoom = camera.getZoom();
       const target = e.target as DisplayObject;
       // @ts-ignore
-      const { dx, dy, canvasX, canvasY } = e;
+      let { dx, dy, canvasX, canvasY } = e;
       const originMaskWidth = Number(this.mask.style.width);
       const originMaskHeight = Number(this.mask.style.height);
 
       const [ox, oy] = this.getPosition();
+
+      dx /= zoom;
+      dy /= zoom;
 
       if (target === this.mask) {
         this.status = 'moving';

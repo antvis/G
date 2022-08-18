@@ -193,10 +193,12 @@ const selectableConfig = {
   selectionStroke: '#1890FF',
   selectionStrokeOpacity: 1,
   selectionStrokeWidth: 2.5,
+  selectionLineDash: 0,
   anchorFill: '#1890FF',
   anchorFillOpacity: 1,
   anchorStroke: '#1890FF',
   anchorStrokeOpacity: 1,
+  anchorStrokeWidth: 1,
   anchorSize: 6,
 };
 selectableFolder.addColor(selectableConfig, 'selectionFill').onChange((selectionFill) => {
@@ -230,6 +232,11 @@ selectableFolder
       selectionStrokeWidth,
     });
   });
+selectableFolder.add(selectableConfig, 'selectionLineDash', 0, 20).onChange((selectionLineDash) => {
+  annotationPlugin.updateSelectableStyle({
+    selectionLineDash,
+  });
+});
 selectableFolder.addColor(selectableConfig, 'anchorFill').onChange((anchorFill) => {
   annotationPlugin.updateSelectableStyle({
     anchorFill,
@@ -243,6 +250,11 @@ selectableFolder.addColor(selectableConfig, 'anchorStroke').onChange((anchorStro
 selectableFolder.add(selectableConfig, 'anchorSize', 5, 20).onChange((anchorSize) => {
   annotationPlugin.updateSelectableStyle({
     anchorSize,
+  });
+});
+selectableFolder.add(selectableConfig, 'anchorStrokeWidth', 1, 20).onChange((anchorStrokeWidth) => {
+  annotationPlugin.updateSelectableStyle({
+    anchorStrokeWidth,
   });
 });
 selectableFolder.add(selectableConfig, 'anchorFillOpacity', 0, 1).onChange((anchorFillOpacity) => {
@@ -325,3 +337,16 @@ apiFolder
 
 apiFolder.add(apiConfig, 'getSelectedDisplayObjects');
 apiFolder.open();
+
+const camera = canvas.getCamera();
+const cameraFolder = gui.addFolder('camera actions');
+const cameraConfig = {
+  panX: 0,
+  panY: 0,
+  zoom: 1,
+  roll: 0,
+};
+cameraFolder.add(cameraConfig, 'zoom', 0.1, 10).onChange((zoom) => {
+  camera.setZoom(zoom);
+});
+cameraFolder.open();
