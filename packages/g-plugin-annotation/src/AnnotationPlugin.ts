@@ -1,6 +1,8 @@
 import type {
   Canvas,
+  Circle,
   FederatedPointerEvent,
+  Polyline,
   Rect,
   RenderingPlugin,
   RenderingService,
@@ -43,8 +45,31 @@ export class AnnotationPlugin implements RenderingPlugin {
    */
   brushRect: Rect;
 
-  private hideDrawer() {
-    this.brushRect.style.visibility = 'hidden';
+  /**
+   * control points on polyline
+   */
+  polylineControlPoints: Circle[] = [];
+
+  /**
+   * the whole polyline except for last segment
+   */
+  savedPolyline: Polyline;
+
+  /**
+   * the last segment of polyline
+   */
+  polylineLastSegment: Polyline;
+
+  private hideDrawer(anno: DrawerState) {
+    if (anno.type === 'rect') {
+      this.brushRect.style.visibility = 'hidden';
+    } else if (anno.type === 'polyline' || anno.type === 'polygon') {
+      this.polylineControlPoints.forEach((point) => {
+        point.style.visibility = 'hidden';
+      });
+      this.savedPolyline.style.visibility = 'hidden';
+      this.polylineLastSegment.style.visibility = 'hidden';
+    }
   }
 
   /**
@@ -83,7 +108,7 @@ export class AnnotationPlugin implements RenderingPlugin {
    * @returns
    */
   setDrawer(tool: DrawerTool, options) {
-    let activeDrawer;
+    let activeDrawer: BaseDrawer;
     switch (tool) {
       case DrawerTool.Circle:
         activeDrawer = new CircleDrawer(options);
@@ -117,14 +142,12 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const onComplete = (toolstate: any) => {
-      // if (this.annotationPluginOptions.destroyAfterComplete !== false) {
-      this.hideDrawer();
-      // }
+      this.hideDrawer(toolstate);
       this.emmiter.emit('draw:complete', toolstate);
     };
 
     const onCancel = (toolstate: any) => {
-      this.hideDrawer();
+      this.hideDrawer(toolstate);
       this.emmiter.emit('draw:cancel', toolstate);
     };
 

@@ -448,8 +448,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   let triangles: number[] = [];
 
   if (object.nodeName === Shape.POLYLINE || object.nodeName === Shape.POLYGON) {
-    const polylinePoints = (object as Polyline).parsedStyle.points.points;
-    const length = polylinePoints.length;
+    const polylineControlPoints = (object as Polyline).parsedStyle.points.points;
+    const length = polylineControlPoints.length;
     let startOffsetX = 0;
     let startOffsetY = 0;
     let endOffsetX = 0;
@@ -460,22 +460,22 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     let y: number;
 
     if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
-      x = polylinePoints[1][0] - polylinePoints[0][0];
-      y = polylinePoints[1][1] - polylinePoints[0][1];
+      x = polylineControlPoints[1][0] - polylineControlPoints[0][0];
+      y = polylineControlPoints[1][1] - polylineControlPoints[0][1];
       rad = Math.atan2(y, x);
       startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
     if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
-      x = polylinePoints[length - 2][0] - polylinePoints[length - 1][0];
-      y = polylinePoints[length - 2][1] - polylinePoints[length - 1][1];
+      x = polylineControlPoints[length - 2][0] - polylineControlPoints[length - 1][0];
+      y = polylineControlPoints[length - 2][1] - polylineControlPoints[length - 1][1];
       rad = Math.atan2(y, x);
       endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
       endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
     }
 
-    points[0] = polylinePoints.reduce((prev, cur, i) => {
+    points[0] = polylineControlPoints.reduce((prev, cur, i) => {
       let offsetX = 0;
       let offsetY = 0;
       if (i === 0) {

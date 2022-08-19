@@ -180,15 +180,29 @@ export class SelectablePlugin implements RenderingPlugin {
 
     const handleModifyingTarget = (e: CustomEvent) => {
       const target = e.target as DisplayObject;
-      const { positionX, positionY, scaleX, scaleY } = e.detail;
+      const { positionX, positionY, scaleX, scaleY, maskWidth, maskHeight } = e.detail;
 
       // re-position target
       target.setPosition(positionX, positionY);
-      target.scale(scaleX, scaleY);
+
+      if (target.nodeName === Shape.RECT) {
+        target.attr({
+          width: maskWidth,
+          height: maskHeight,
+        });
+      } else {
+        target.scale(scaleX, scaleY);
+      }
+    };
+
+    // TODO: deselected when removed
+    const handleUnmounted = (e: CustomEvent) => {
+      // this.deselectDisplayObject(e.target as DisplayObject);
     };
 
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
       canvas.addEventListener('pointerdown', handleClick);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.appendChild(this.activeSelectableLayer);
 
       canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
@@ -197,6 +211,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
       canvas.removeEventListener('pointerdown', handleClick);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.removeChild(this.activeSelectableLayer);
 
       canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);

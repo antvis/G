@@ -311,6 +311,8 @@ export class SelectableRect extends CustomElement<Props> {
           new CustomEvent(SelectableEvent.MODIFIED, {
             positionX: maskX,
             positionY: maskY,
+            maskWidth,
+            maskHeight,
             scaleX: maskWidth / originMaskWidth,
             scaleY: maskHeight / originMaskHeight,
           }),

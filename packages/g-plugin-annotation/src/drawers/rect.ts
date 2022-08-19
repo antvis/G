@@ -1,3 +1,4 @@
+import type { FederatedEvent } from '@antv/g';
 import { DrawerTool } from '../constants/enum';
 import type { Point } from '../interface/drawer';
 import { BaseDrawer } from '../interface/drawer';
@@ -35,7 +36,7 @@ export class RectDrawer extends BaseDrawer {
     };
   }
 
-  onMouseDown(e) {
+  onMouseDown(e: FederatedEvent) {
     if (this.start) {
       this.onMouseUp(e);
       return;
@@ -47,13 +48,13 @@ export class RectDrawer extends BaseDrawer {
     this.emit('draw:start', this.state);
   }
 
-  onMouseMove(e) {
+  onMouseMove(e: FederatedEvent) {
     if (!this.isDrawing) return;
     this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
     this.emit('draw:modify', this.state);
   }
 
-  onMouseUp(e) {
+  onMouseUp(e: FederatedEvent) {
     if (!this.isDrawing) return;
     if (isInvalidRect(this.start.viewport, this.end.viewport, 2)) {
       this.emit('draw:cancel', this.state);
