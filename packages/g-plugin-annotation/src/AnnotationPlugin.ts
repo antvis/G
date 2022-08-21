@@ -65,8 +65,9 @@ export class AnnotationPlugin implements RenderingPlugin {
       this.brushRect.style.visibility = 'hidden';
     } else if (anno.type === 'polyline' || anno.type === 'polygon') {
       this.polylineControlPoints.forEach((point) => {
-        point.style.visibility = 'hidden';
+        point.remove();
       });
+      this.polylineControlPoints = [];
       this.savedPolyline.style.visibility = 'hidden';
       this.polylineLastSegment.style.visibility = 'hidden';
     }

@@ -17,6 +17,7 @@ import {
 } from '@antv/g';
 import { SelectableEvent } from './constants/enum';
 import { SelectablePolyline, SelectableRect } from './selectable';
+import { SelectablePolygon } from './selectable/SelectablePolygon';
 import { AnnotationPluginOptions } from './tokens';
 
 /**
@@ -102,6 +103,13 @@ export class SelectablePlugin implements RenderingPlugin {
             ...this.annotationPluginOptions.selectableStyle,
           },
         });
+      } else if (object.nodeName === Shape.POLYGON) {
+        created = new SelectablePolygon({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
+          },
+        });
       }
 
       if (created) {
@@ -139,7 +147,6 @@ export class SelectablePlugin implements RenderingPlugin {
 
     const handleClick = (e: FederatedPointerEvent) => {
       const object = e.target as DisplayObject;
-
       // @ts-ignore
       if (object === document) {
         this.selected.forEach((target) => {
