@@ -665,9 +665,7 @@ circle.style.filter = 'invert(100%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ)
 
-## 渲染次序
-
-### zIndex
+## zIndex
 
 类似 CSS 的 `zIndex` 属性，用于控制渲染次序，需要注意：
 
@@ -691,7 +689,57 @@ li1.style.zIndex = 1; // li1 在 li2 之上
 
 再比如尽管 li2 的 zIndex 比 ul2 大很多，但由于 ul1 比 ul2 小，它也只能处于 ul2 之下，[示例](/zh/examples/scenegraph#z-index)
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ" alt="">
+
+为了兼容旧版本，我们也提供了额外的、在上下文中设置的方法：
+
+| 名称      | 参数     | 返回值 | 备注          |
+| --------- | -------- | ------ | ------------- |
+| setZIndex | `number` | 无     | 设置 `zIndex` |
+| toFront   | 无       | 无     | 置顶          |
+| toBack    | 无       | 无     | 置底          |
+
+```javascript
+const group = new Group();
+
+group.setZIndex(100);
+// or group.setAttribute('zIndex', 100);
+// or group.style.zIndex = 100;
+```
+
+## visibility
+
+控制图形的可见性，可参考：https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
+
+为了兼容旧版本，我们也提供了以下方法：
+
+| 名称 | 参数 | 返回值 | 备注     |
+| ---- | ---- | ------ | -------- |
+| hide | 无   | 无     | 隐藏节点 |
+| show | 无   | 无     | 展示节点 |
+
+因此以下写法等价：
+
+```javascript
+const group = new Group();
+
+group.style.visibility = 'hidden';
+// or group.setAttribute('visibility', 'hidden');
+// or group.hide();
+
+group.style.visibility = 'visible';
+// or group.setAttribute('visibility', 'visible');
+// or group.show();
+```
+
+| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'visible' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
+
+关于可见性有两点需要注意：
+
+1. 隐藏的图形仍然可以被拾取，此时需要配合 [pointerEvents](/zh/docs/api/basic/display-object#pointerevents) 使用
+2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移除元素，应该使用 [removeChild](/zh/docs/api/basic/display-object#添加删除节点)
 
 ## 裁剪
 
@@ -836,12 +884,35 @@ const circle = new Circle({
 
 ### pointerEvents
 
-设置图形如何响应交互事件。目前支持以下关键词：
+设置图形如何响应交互事件，可参考：https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
 
--   auto 响应事件
--   none 不响应事件
+简而言之，[fill](/zh/docs/api/basic/display-object#fill) [stroke](/zh/docs/api/basic/display-object#stroke) 和 [visibility](/zh/docs/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
 
-后续会增加 `fill` `stroke` 等更多关键词。
+-   `'auto'` 默认值，等同于 `'visiblepainted'`。
+-   `'none'` 永远不会成为响应事件的目标。
+-   `'visiblepainted'` 满足以下条件才会响应事件：
+    -   [visibility](/zh/docs/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+    -   在图形填充区域触发同时 [fill](/zh/docs/api/basic/display-object#fill) 取非 `'none'` 的值。或者在图形描边区域触发同时 [stroke](/zh/docs/api/basic/display-object#stroke) 取非 `'none'` 的值。
+-   `'visiblefill'` 满足以下条件才会响应事件：
+    -   [visibility](/zh/docs/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+    -   在图形填充区域触发，不受 [fill](/zh/docs/api/basic/display-object#fill) 取值的影响。
+-   `'visiblestroke'` 满足以下条件才会响应事件：
+    -   [visibility](/zh/docs/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+    -   在图形描边区域触发，不受 [stroke](/zh/docs/api/basic/display-object#stroke) 取值的影响。
+-   `'visible'` 满足以下条件才会响应事件：
+    -   [visibility](/zh/docs/api/basic/display-object#visibility) 设置为 `'visible'`，即图形为可见的。
+    -   在图形填充或者描边区域触发，不受 [fill](/zh/docs/api/basic/display-object#fill) 和 [stroke](/zh/docs/api/basic/display-object#stroke) 取值的影响。
+-   `'painted'` 满足以下条件才会响应事件：
+    -   在图形填充区域触发同时 [fill](/zh/docs/api/basic/display-object#fill) 取非 `'none'` 的值。或者在图形描边区域触发同时 [stroke](/zh/docs/api/basic/display-object#stroke) 取非 `'none'` 的值。不受 [visibility](/zh/docs/api/basic/display-object#visibility) 取值的影响。
+-   `'fill'` 满足以下条件才会响应事件：
+    -   在图形填充区域触发，不受 [fill](/zh/docs/api/basic/display-object#fill) 取值的影响。不受 [visibility](/zh/docs/api/basic/display-object#visibility) 取值的影响。
+-   `'stroke'` 满足以下条件才会响应事件：
+    -   在图形描边区域触发，不受 [stroke](/zh/docs/api/basic/display-object#stroke) 取值的影响。不受 [visibility](/zh/docs/api/basic/display-object#visibility) 取值的影响。
+-   `'all'` 只要进入图形的填充和描边区域就会响应事件。因此不会受 [fill](/zh/docs/api/basic/display-object#fill) [stroke](/zh/docs/api/basic/display-object#stroke) [visibility](/zh/docs/api/basic/display-object#visibility) 的取值影响。
+
+在该 [示例](/zh/examples/shape#circle) 中，我们将该属性设置为 `stroke`，因此填充区域不会响应事件：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2a6jSpYP0LoAAAAAAAAAAAAAARQnAQ" alt="pointer-events stroke">
 
 在该 [示例](/zh/examples/style#inheritance) 中，基于继承机制我们能很方便的控制可交互性：
 
@@ -1407,54 +1478,6 @@ parent.appendChild(child);
 -   UNMOUNTED 从画布中移除时触发
 -   ATTR_MODIFIED 修改属性时触发
 -   DESTROY 销毁时触发
-
-# 可见性与渲染次序
-
-## 隐藏/显示
-
-| 名称 | 参数 | 返回值 | 备注     |
-| ---- | ---- | ------ | -------- |
-| hide | 无   | 无     | 隐藏节点 |
-| show | 无   | 无     | 展示节点 |
-
-另外我们也可以通过 `visibility` 属性控制：
-
-```javascript
-const group = new Group();
-
-group.hide();
-// or group.setAttribute('visibility', 'hidden');
-
-group.show();
-// or group.setAttribute('visibility', 'visible');
-```
-
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| --- | --- | --- | --- | --- |
-| 'visible' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
-
-关于可见性有两点需要注意：
-
-1. 当图形隐藏时不会被拾取
-2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移出元素，应该使用 [removeChild](/zh/docs/api/basic/display-object#添加删除节点)
-
-## 渲染次序
-
-类似 CSS，我们可以通过 [zIndex](/zh/docs/api/basic/display-object#zindex) 属性控制渲染次序。
-
-| 名称      | 参数     | 返回值 | 备注          |
-| --------- | -------- | ------ | ------------- |
-| setZIndex | `number` | 无     | 设置 `zIndex` |
-| toFront   | 无       | 无     | 置顶          |
-| toBack    | 无       | 无     | 置底          |
-
-```javascript
-const group = new Group();
-
-group.setZIndex(100);
-// or group.setAttribute('zIndex', 100);
-// or group.style.zIndex = 100;
-```
 
 # 动画
 

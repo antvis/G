@@ -690,6 +690,56 @@ For example, even though li2 has a much larger zIndex than ul2, it can only be u
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfZhRYJ_rogAAAAAAAAAAAAAARQnAQ" alt="z-index" width="500">
 
+For compatibility with older versions, we also provide the following methods:
+
+| name      | parameters | return value | remarks |
+| --------- | ---------- | ------------ | ------- |
+| setZIndex | `number`   | -            | -       |
+| toFront   | -          | -            | -       |
+| toBack    | -          | -            | -       |
+
+```javascript
+const group = new Group();
+
+group.setZIndex(100);
+// or group.setAttribute('zIndex', 100);
+// or group.style.zIndex = 100;
+```
+
+## visibility
+
+To control the visibility of the graph, see. https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
+
+For compatibility with older versions, the following methods are also provided.
+
+| name | parameters | return value | remarks |
+| ---- | ---------- | ------------ | ------- |
+| hide | -          | -            | -       |
+| show | -          | -            | -       |
+
+Therefore the following write-ups are equivalent.
+
+```javascript
+const group = new Group();
+
+group.style.visibility = 'hidden';
+// or group.setAttribute('visibility', 'hidden');
+// or group.hide();
+
+group.style.visibility = 'visible';
+// or group.setAttribute('visibility', 'visible');
+// or group.show();
+```
+
+| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| 'visible' | all | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
+
+There are two points to note about visibility.
+
+1. Hidden graphics can still be picked up, so use [pointerEvents](/en/docs/api/basic/display-object#pointerevents)
+2. Hidden elements still need to participate in enclosing box operations, i.e. they still occupy space. If you want to remove the element completely, you should use [removeChild](/en/docs/api/basic/display-object#addremove-nodese)
+
 ## clipPath
 
 Use clipping to create a displayable region of an element, with the parts inside the region shown and the parts outside the region hidden. See CSS's [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path). The value of this property can be any shape, such as Circle, Rect, etc. The same clipping region can be shared by multiple shapes. Finally, the crop region also affects the pickup area of the shapes, [example](/en/examples/event#shapes).
@@ -824,12 +874,33 @@ We can set how the graph responds to interaction events, such as displaying the 
 
 ### pointerEvents
 
-Sets how the graph responds to interaction events. The following keywords are currently supported.
+To set how the graph responds to interaction events, see. https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
 
--   `'auto'` Responding to events
--   `'none'` Non-responsive events
+简而言之，[fill](/en/docs/api/basic/display-object#fill) [stroke](/en/docs/api/basic/display-object#stroke) 和 [visibility](/en/docs/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
 
-More keywords such as `fill` and `stroke` will be added later.
+-   `'auto'` Default value, equivalent to `'visiblepainted'`.
+-   `'none'` Will never be the target of a response event.
+-   `'visiblepainted'` The following conditions are met before the event is responded to.
+    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible.
+    -   Trigger while [fill](/en/docs/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/docs/api/basic/display-object#stroke) takes a value other than `'none'` when triggered in the drawing stroke area.
+-   `'visiblefill'` The following conditions are met before the event is responded to.
+    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [fill](/en/docs/api/basic/display-object#fill).
+-   `'visiblestroke'` The following conditions are met before the event is responded to.
+    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [stroke](/en/docs/api/basic/display-object#stroke).
+-   `'visible'` The following conditions are met before the event is responded to.
+    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'`.
+    -   Triggered in drawing fill or stroke area, not affected by [fill](/en/docs/api/basic/display-object#fill) and [stroke](/en/docs/api/basic/display-object#stroke) values.
+-   `'painted'` The following conditions are met before the event is responded to.
+    -   Trigger while [fill](/en/docs/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/docs/api/basic/display-object#stroke) takes a value other than `'none'` when the drawing stroke area is triggered. Not affected by the value of [visibility](/en/docs/api/basic/display-object#visibility).
+-   `'fill'` The following conditions are met before the event is responded to.
+    -   Triggered in graphics fill area, not affected by [fill](/en/docs/api/basic/display-object#fill) and [visibility](/en/docs/api/basic/display-object#visibility) values.
+-   `'stroke'` The following conditions are met before the event is responded to.
+    -   Triggered in graphics fill area, not affected by [stroke](/en/docs/api/basic/display-object#stroke) and [visibility](/en/docs/api/basic/display-object#visibility) values.
+-   `'all'` The events are responded to whenever the fill and stroke areas of the drawing are entered. So it will not be affected by [fill](/en/docs/api/basic/display-object#fill) [stroke](/en/docs/api/basic/display-object#stroke) [visibility](/en/docs/api/ basic/display-object#visibility) is affected by the value of
+
+In this [example](/en/examples/shape#circle), we set the property to `stroke`, so the filled area will not respond to events.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2a6jSpYP0LoAAAAAAAAAAAAAARQnAQ" alt="pointer-events stroke">
 
 In this [example](/en/examples/style#inheritance), we can easily control the interactivity based on the inheritance mechanism.
 
@@ -1397,54 +1468,6 @@ We currently support the following scenario map related events.
 -   `UNMOUNTED` Triggered when removed from the canvas
 -   `ATTR_MODIFIED` Triggered when modifying properties
 -   `DESTROY` Triggered on destruction
-
-# Visibility and rendering order
-
-## Hide/Show
-
-| method name | parameters | return value | remarks    |
-| ----------- | ---------- | ------------ | ---------- |
-| hide        | -          | -            | Hide Nodes |
-| show        | -          | -            | Show Nodes |
-
-Alternatively, we can control this with the `visibility` property.
-
-```javascript
-const group = new Group();
-
-group.hide();
-// or group.setAttribute('visibility', 'hidden');
-
-group.show();
-// or group.setAttribute('visibility', 'visible');
-```
-
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| --- | --- | --- | --- | --- |
-| 'visible' | all | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
-
-There are two points to note about visibility.
-
-1. Not picked up when graphics are hidden
-2. Hidden elements still need to participate in enclosing box operations, i.e. they still occupy space. If you want to remove the element completely, you should use [removeChild](/en/docs/api/basic/display-object#addremove-nodes)
-
-## Rendering Order
-
-Similar to CSS, we can control the rendering order through the [zIndex](/zh/docs/api/basic/display-object#zindex) property.
-
-| method name | parameters | return value | remarks      |
-| ----------- | ---------- | ------------ | ------------ |
-| setZIndex   | `number`   | -            | set `zIndex` |
-| toFront     | -          | -            |              |
-| toBack      | -          | -            |              |
-
-```javascript
-const group = new Group();
-
-group.setZIndex(100);
-// or group.setAttribute('zIndex', 100);
-// or group.style.zIndex = 100;
-```
 
 # Animation
 
