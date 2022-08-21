@@ -213,7 +213,7 @@ export class SelectablePlugin implements RenderingPlugin {
       canvas.appendChild(this.activeSelectableLayer);
 
       canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
-      canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
+      // canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
@@ -222,7 +222,7 @@ export class SelectablePlugin implements RenderingPlugin {
       canvas.removeChild(this.activeSelectableLayer);
 
       canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
-      canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
+      // canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
   }
 }

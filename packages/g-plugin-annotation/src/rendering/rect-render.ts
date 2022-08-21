@@ -69,6 +69,7 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     ...style,
   });
 
+  // todo: 相机旋转后绘制也需要旋转
   // const rotation = getRotationFromBbox(path);
   // brushRect.rotate(rotation);
 };

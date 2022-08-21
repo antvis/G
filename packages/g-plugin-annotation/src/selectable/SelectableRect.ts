@@ -242,6 +242,12 @@ export class SelectableRect extends CustomElement<Props> {
         moveAt(e.canvasX, e.canvasY);
       }
     });
+
+    let maskX: number;
+    let maskY: number;
+    let maskWidth: number;
+    let maskHeight: number;
+
     this.addEventListener('drag', (e: FederatedEvent) => {
       const zoom = camera.getZoom();
       const target = e.target as DisplayObject;
@@ -268,11 +274,6 @@ export class SelectableRect extends CustomElement<Props> {
         target === this.brAnchor
       ) {
         // this.scaleObject();
-
-        let maskX: number;
-        let maskY: number;
-        let maskWidth: number;
-        let maskHeight: number;
 
         if (target === this.tlAnchor) {
           maskWidth = originMaskWidth - dx;
@@ -306,27 +307,28 @@ export class SelectableRect extends CustomElement<Props> {
         this.trAnchor.setLocalPosition(maskWidth, 0);
         this.blAnchor.setLocalPosition(0, maskHeight);
         this.brAnchor.setLocalPosition(maskWidth, maskHeight);
-
-        targetObject.dispatchEvent(
-          new CustomEvent(SelectableEvent.MODIFIED, {
-            positionX: maskX,
-            positionY: maskY,
-            maskWidth,
-            maskHeight,
-            scaleX: maskWidth / originMaskWidth,
-            scaleY: maskHeight / originMaskHeight,
-          }),
-        );
       }
     });
+
     this.addEventListener('dragend', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-
       if (target === this.mask) {
         this.status = 'active';
-      }
 
-      targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
+        this.style.target.attr({
+          x: Number(this.mask.style.x) + this.mask.getPosition()[0],
+          y: Number(this.mask.style.y) + this.mask.getPosition()[1],
+        });
+        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
+      } else if (
+        target === this.tlAnchor ||
+        target === this.trAnchor ||
+        target === this.blAnchor ||
+        target === this.brAnchor
+      ) {
+        this.style.target.attr({ x: maskX, y: maskY, width: maskWidth, height: maskHeight });
+        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
+      }
     });
   }
 
