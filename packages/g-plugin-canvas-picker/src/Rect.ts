@@ -1,5 +1,5 @@
-import type { CSSRGB, DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
-import { clamp } from '@antv/g';
+import type { DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
+import { clamp, isFillOrStrokeAffected } from '@antv/g';
 import { inArc, inBox, inLine, inRect } from './utils/math';
 
 export function isPointInPath(
@@ -16,10 +16,12 @@ export function isPointInPath(
     width,
     height,
     clipPathTargets,
+    pointerEvents,
   } = displayObject.parsedStyle as ParsedRectStyleProps;
   const isClipPath = !!clipPathTargets?.length;
-  const hasFill = fill && !(fill as CSSRGB).isNone;
-  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+
   const hasRadius = radius && radius.some((r) => r !== 0);
 
   const lineWidthForHitTesting = (lineWidth || 0) + (increasedLineWidthForHitTesting || 0);

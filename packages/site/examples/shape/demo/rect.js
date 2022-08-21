@@ -116,6 +116,8 @@ const rectConfig = {
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 rectFolder.add(rectConfig, 'x', 0, 400).onChange((x) => {
   rect.style.x = x;
@@ -183,6 +185,25 @@ rectFolder.add(rectConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) =>
 });
 rectFolder.add(rectConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
   rect.style.shadowOffsetY = shadowOffsetY;
+});
+rectFolder
+  .add(rectConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    rect.style.pointerEvents = pointerEvents;
+  });
+rectFolder.add(rectConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  rect.style.visibility = visibility;
 });
 rectFolder.open();
 

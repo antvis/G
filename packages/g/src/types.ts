@@ -77,7 +77,7 @@ export interface BaseStyleProps {
     | 'visiblestroke'
     | 'visiblefill'
     | 'visiblepainted'
-    | 'bounding-box'
+    // | 'bounding-box'
     | 'all'
     | CSSGlobalKeywords;
 

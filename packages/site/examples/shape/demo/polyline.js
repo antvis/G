@@ -143,13 +143,14 @@ const lineConfig = {
   strokeOpacity: 1,
   firstPointX: 50,
   firstPointY: 50,
-  visible: true,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
   shadowColor: '#fff',
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 lineFolder.add(lineConfig, 'firstPointX', 0, 200).onChange((firstPointX) => {
   const newPoints = [...points];
@@ -182,15 +183,6 @@ lineFolder.add(lineConfig, 'lineDashOffset', 0, 100).onChange((lineDashOffset) =
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   polyline.attr('strokeOpacity', opacity);
 });
-lineFolder.add(lineConfig, 'visible').onChange((visible) => {
-  if (visible) {
-    polyline.style.visibility = 'visible';
-    // polyline.show();
-  } else {
-    polyline.style.visibility = 'hidden';
-    // polyline.hide();
-  }
-});
 lineFolder
   .add(lineConfig, 'increasedLineWidthForHitTesting', 0, 50)
   .onChange((increasedLineWidthForHitTesting) => {
@@ -212,6 +204,25 @@ lineFolder.add(lineConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) =>
 });
 lineFolder.add(lineConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
   polyline.style.shadowOffsetY = shadowOffsetY;
+});
+lineFolder
+  .add(lineConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    polyline.style.pointerEvents = pointerEvents;
+  });
+lineFolder.add(lineConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  polyline.style.visibility = visibility;
 });
 
 const transformFolder = gui.addFolder('transform');

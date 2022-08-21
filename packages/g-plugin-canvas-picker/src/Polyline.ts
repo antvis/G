@@ -1,10 +1,5 @@
-import type {
-  CSSRGB,
-  DisplayObject,
-  ParsedPolylineStyleProps,
-  Point,
-  PolylineStyleProps,
-} from '@antv/g';
+import type { DisplayObject, ParsedPolylineStyleProps, Point, PolylineStyleProps } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { inPolyline } from './utils/math';
 
 export function isPointInPath(
@@ -12,16 +7,20 @@ export function isPointInPath(
   position: Point,
 ): boolean {
   const {
-    stroke,
     lineWidth,
     increasedLineWidthForHitTesting,
     points,
     defX: x = 0,
     defY: y = 0,
     clipPathTargets,
+    pointerEvents,
+    fill,
+    stroke,
   } = displayObject.parsedStyle as ParsedPolylineStyleProps;
   const isClipPath = !!clipPathTargets?.length;
-  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   if ((!hasStroke && !isClipPath) || !lineWidth) {
     return false;

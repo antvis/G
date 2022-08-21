@@ -227,7 +227,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
       'visiblestroke',
       'visiblefill',
       'visiblepainted',
-      'bounding-box',
+      // 'bounding-box',
       'all',
     ],
     defaultValue: 'auto',

@@ -117,6 +117,8 @@ const circleConfig = {
   shadowOffsetY: 0,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 circleFolder.add(circleConfig, 'cx', 0, 600).onChange((cx) => {
   circle.style.cx = cx;
@@ -173,6 +175,25 @@ circleFolder
   .onChange((cursor) => {
     circle.style.cursor = cursor;
   });
+circleFolder
+  .add(circleConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    circle.style.pointerEvents = pointerEvents;
+  });
+circleFolder.add(circleConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  circle.style.visibility = visibility;
+});
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

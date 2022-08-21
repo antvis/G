@@ -89,8 +89,20 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         const hitTestList: DisplayObject[] = [];
         rBushNodes.forEach(({ id }) => {
           const displayObject = this.displayObjectPool.getByEntity(id);
+          const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
+
+          // account for `visibility`
+          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
+          const isVisibilityAffected = [
+            'auto',
+            'visiblepainted',
+            'visiblefill',
+            'visiblestroke',
+            'visible',
+          ].includes(pointerEvents);
+
           if (
-            displayObject.isVisible() &&
+            (!isVisibilityAffected || (isVisibilityAffected && displayObject.isVisible())) &&
             !displayObject.isCulled() &&
             displayObject.isInteractive()
           ) {

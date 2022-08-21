@@ -73,6 +73,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   filter: 'filter',
   innerHTML: 'innerHTML',
   textAlign: 'text-anchor',
+  pointerEvents: 'pointer-events',
 };
 
 const FORMAT_VALUE_MAP = {
@@ -103,6 +104,7 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   letterSpacing: '0',
   fontSize: 'inherit',
   fontFamily: 'inherit',
+  pointerEvents: 'auto',
 };
 
 export type GradientParams = LinearGradient | RadialGradient;

@@ -109,6 +109,7 @@ const circlePath = new Path({
     path: getCirclePath(0, 0, 100, 100),
     lineWidth: 1,
     stroke: '#54BECC',
+    cursor: 'pointer',
   },
 });
 
@@ -296,6 +297,8 @@ const circleConfig = {
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
   circlePath.style.path = getCirclePath(0, 0, r, r);
@@ -327,6 +330,25 @@ circleFolder.add(circleConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX
 });
 circleFolder.add(circleConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
   circlePath.style.shadowOffsetY = shadowOffsetY;
+});
+circleFolder
+  .add(circleConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    circlePath.style.pointerEvents = pointerEvents;
+  });
+circleFolder.add(circleConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  circlePath.style.visibility = visibility;
 });
 circleFolder.open();
 

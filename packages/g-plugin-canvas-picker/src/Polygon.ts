@@ -1,10 +1,5 @@
-import type {
-  CSSRGB,
-  DisplayObject,
-  ParsedPolygonStyleProps,
-  Point,
-  PolylineStyleProps,
-} from '@antv/g';
+import type { DisplayObject, ParsedPolygonStyleProps, Point, PolylineStyleProps } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { inPolygon, inPolyline } from './utils/math';
 
 export function isPointInPath(
@@ -20,10 +15,11 @@ export function isPointInPath(
     defX: x = 0,
     defY: y = 0,
     clipPathTargets,
+    pointerEvents,
   } = displayObject.parsedStyle as ParsedPolygonStyleProps;
   const isClipPath = !!clipPathTargets?.length;
-  const hasFill = fill && !(fill as CSSRGB).isNone;
-  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   let isHit = false;
   if (hasStroke || isClipPath) {

@@ -41,6 +41,7 @@ const image = new Image({
     width: 200,
     height: 200,
     img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    cursor: 'pointer',
   },
 });
 
@@ -97,7 +98,8 @@ const config = {
   height: 200,
   opacity: 1,
   src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-  visible: true,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 imageFolder.add(config, 'x', 0, 400).onChange((x) => {
   image.style.x = x;
@@ -122,14 +124,24 @@ imageFolder
   .onChange((src) => {
     image.style.img = src;
   });
-imageFolder.add(config, 'visible').onChange((visible) => {
-  if (visible) {
-    image.style.visibility = 'visible';
-    // image.show();
-  } else {
-    image.style.visibility = 'hidden';
-    // image.hide();
-  }
+imageFolder
+  .add(config, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    image.style.pointerEvents = pointerEvents;
+  });
+imageFolder.add(config, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  image.style.visibility = visibility;
 });
 imageFolder.open();
 
