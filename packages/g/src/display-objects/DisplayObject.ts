@@ -1,7 +1,8 @@
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { displayObjectPool, sceneGraphService, styleValueRegistry } from '..';
-import { noneColor, PropertyParseOptions } from '../css';
+import type { PropertyParseOptions } from '../css';
+import { noneColor } from '../css';
 import type {
   Animation,
   DisplayObjectConfig,

@@ -185,22 +185,22 @@ export class SelectablePlugin implements RenderingPlugin {
       });
     };
 
-    const handleModifyingTarget = (e: CustomEvent) => {
-      const target = e.target as DisplayObject;
-      const { positionX, positionY, scaleX, scaleY, maskWidth, maskHeight } = e.detail;
+    // const handleModifyingTarget = (e: CustomEvent) => {
+    //   const target = e.target as DisplayObject;
+    //   const { positionX, positionY, scaleX, scaleY, maskWidth, maskHeight } = e.detail;
 
-      // re-position target
-      target.setPosition(positionX, positionY);
+    //   // re-position target
+    //   target.setPosition(positionX, positionY);
 
-      if (target.nodeName === Shape.RECT) {
-        target.attr({
-          width: maskWidth,
-          height: maskHeight,
-        });
-      } else {
-        target.scale(scaleX, scaleY);
-      }
-    };
+    //   if (target.nodeName === Shape.RECT) {
+    //     target.attr({
+    //       width: maskWidth,
+    //       height: maskHeight,
+    //     });
+    //   } else {
+    //     target.scale(scaleX, scaleY);
+    //   }
+    // };
 
     // TODO: deselected when removed
     const handleUnmounted = (e: CustomEvent) => {
