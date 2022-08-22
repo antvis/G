@@ -115,7 +115,7 @@ export class InstancedLineMesh extends Instanced {
           defX,
           defY,
           lineCap,
-          isBillboard: true,
+          isBillboard: false,
           markerStart,
           markerEnd,
           markerStartOffset,
