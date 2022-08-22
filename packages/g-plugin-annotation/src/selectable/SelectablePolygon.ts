@@ -3,24 +3,23 @@ import type {
   DisplayObject,
   DisplayObjectConfig,
   FederatedEvent,
-  ParsedPolylineStyleProps,
+  ParsedPolygonStyleProps,
 } from '@antv/g';
-import { Circle, CustomElement, CustomEvent, Polyline, Shape } from '@antv/g';
+import { Circle, CustomElement, CustomEvent, Polygon, Shape } from '@antv/g';
 import { mat4, vec3 } from 'gl-matrix';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
-
 interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
   target: DisplayObject;
 }
 
 type SelectableStatus = 'active' | 'deactive' | 'moving' | 'resizing';
 
-export class SelectablePolyline extends CustomElement<Props> {
+export class SelectablePolygon extends CustomElement<Props> {
   /**
    * transparent mask
    */
-  private mask: Polyline;
+  private mask: Polygon;
 
   // private rotateAnchor: Circle;
 
@@ -46,21 +45,14 @@ export class SelectablePolyline extends CustomElement<Props> {
       ...rest,
     });
 
-    let points = [];
-    if (this.style.target.nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2, defX, defY } = this.style.target.parsedStyle;
-      points.push([x1 - defX, y1 - defY]);
-      points.push([x2 - defX, y2 - defY]);
-    } else if (this.style.target.nodeName === Shape.POLYLINE) {
-      const {
-        points: parsedPoints,
-        defX,
-        defY,
-      } = this.style.target.parsedStyle as ParsedPolylineStyleProps;
-      points = parsedPoints.points.map(([x, y]) => [x - defX, y - defY]);
-    }
+    const {
+      points: parsedPoints,
+      defX,
+      defY,
+    } = this.style.target.parsedStyle as ParsedPolygonStyleProps;
+    const points = parsedPoints.points.map(([x, y]) => [x - defX, y - defY] as [number, number]);
 
-    this.mask = new Polyline({
+    this.mask = new Polygon({
       style: {
         points,
         draggable: true,
@@ -213,41 +205,28 @@ export class SelectablePolyline extends CustomElement<Props> {
         // change polyline definition
         originPoints[anchorIndex] = [inverted[0], inverted[1]];
         this.mask.style.points = originPoints;
+
         // change anchors' position
         this.repositionAnchors();
 
         // reposition target
-        if (targetObject.nodeName === Shape.LINE) {
-          // if (anchorIndex === 0) {
-          //   (targetObject as Line).attr({
-          //     x1: inverted[0],
-          //     y1: inverted[1],
-          //   });
-          // } else if (anchorIndex === 1) {
-          //   (targetObject as Line).attr({
-          //     x2: inverted[0],
-          //     y2: inverted[1],
-          //   });
-          // }
-        } else if (targetObject.nodeName === Shape.POLYLINE) {
-        }
+        // (this.style.target as Polygon).style.points = originPoints;
       }
     });
     this.addEventListener('dragend', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-      const { defX, defY } = this.mask.parsedStyle;
+
       const dx = this.mask.getPosition()[0];
       const dy = this.mask.getPosition()[1];
+      const { defX, defY } = this.mask.parsedStyle;
       if (target === this.mask) {
         this.status = 'active';
         targetObject.attr({
           points: this.mask.style.points.map(([x, y]) => [x + dx + defX, y + dy + defY]),
         });
         targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
-      } else if (targetObject.nodeName === Shape.POLYLINE) {
-        targetObject.attr({
-          points: this.mask.style.points.map(([x, y]) => [x + dx, y + dy]),
-        });
+      } else if (targetObject.nodeName === Shape.POLYGON) {
+        targetObject.attr({ points: this.mask.style.points.map(([x, y]) => [x + dx, y + dy]) });
         targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
       }
     });

@@ -1,7 +1,7 @@
 import type { FederatedEvent } from '@antv/g';
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
-import { isInvalidRect } from '../utils/drawer';
+import { isNearPoint } from '../utils/drawer';
 import uuidv4 from '../utils/uuidv4';
 
 export class PolygonDrawer extends BaseDrawer {
@@ -24,7 +24,7 @@ export class PolygonDrawer extends BaseDrawer {
       this.emit('draw:start', this.state);
     } else {
       const startPoint = this.path[0];
-      if (isInvalidRect(point, startPoint, 10)) {
+      if (isNearPoint(point, startPoint, 8)) {
         this.closePath();
       } else {
         this.path.push(point);
