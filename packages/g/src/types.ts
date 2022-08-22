@@ -108,13 +108,13 @@ export interface BaseStyleProps {
 
   stroke?: ColorType | Pattern;
   /** 描边透明度 */
-  strokeOpacity?: number;
+  strokeOpacity?: number | string;
   /** 填充颜色 */
   fill?: ColorType | Pattern;
   /** 填充透明度 */
-  fillOpacity?: number;
+  fillOpacity?: number | string;
   /** 整体透明度 */
-  opacity?: number;
+  opacity?: number | string;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width
@@ -244,7 +244,14 @@ export interface ParsedBaseStyleProps
     | 'transformOrigin'
     | 'miterLimit'
     | 'filter'
+    | 'opacity'
+    | 'fillOpacity'
+    | 'strokeOpacity'
   > {
+  opacity?: number;
+  fillOpacity?: number;
+  strokeOpacity?: number;
+
   fill?: CSSRGB | CSSGradientValue[] | Pattern;
   stroke?: CSSRGB | CSSGradientValue[] | Pattern;
   lineDash?: [number, number];

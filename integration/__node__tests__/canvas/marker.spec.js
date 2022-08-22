@@ -75,6 +75,8 @@ describe('Render marker with g-canvas', () => {
       [100, 90],
     ];
     polyline2.style.markerStartOffset = 20;
+    // FIXME: should be removed
+    polyline2.style.markerMid = circle;
 
     const polygon = new Polygon({
       style: {

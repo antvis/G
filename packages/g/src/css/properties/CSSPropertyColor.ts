@@ -1,11 +1,12 @@
 import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
-import type { CSSGradientValue } from '../cssom';
-import { CSSKeywordValue, CSSRGB } from '../cssom';
+import type { CSSGradientValue, CSSRGB } from '../cssom';
+import { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';
 import type { Pattern } from '../parser/color';
 import { mergeColors, parseColor } from '../parser/color';
+import { noneColor, transparentColor } from '../StyleValueRegistry';
 
 @singleton({
   token: [
@@ -37,7 +38,7 @@ export class CSSPropertyColor
   ) {
     if (parsed instanceof CSSKeywordValue) {
       // 'unset' 'none'
-      return new CSSRGB(0, 0, 0, 0, parsed.value === 'none');
+      return parsed.value === 'none' ? noneColor : transparentColor;
     }
     return parsed;
   }

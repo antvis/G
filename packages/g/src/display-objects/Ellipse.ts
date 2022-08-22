@@ -26,6 +26,9 @@ export class Ellipse extends DisplayObject<EllipseStyleProps, ParsedEllipseStyle
         ry: '',
         ...style,
       },
+      initialParsedStyle: {
+        anchor: [0.5, 0.5],
+      },
       ...rest,
     });
   }

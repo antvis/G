@@ -9,13 +9,13 @@ import type {
   RenderingService,
 } from '@antv/g';
 import {
+  cache,
   Camera,
   CanvasConfig,
   ContextService,
   CSSRGB,
   DefaultCamera,
   ElementEvent,
-  getMetadata,
   inject,
   RenderingContext,
   RenderingPluginContribution,
@@ -388,7 +388,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!getMetadata(name)?.inherited;
+      const inherited = !!cache[name]?.inherited;
 
       if (!usedName) {
         return;

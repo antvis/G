@@ -291,6 +291,7 @@ export interface DisplayObjectConfig<StyleProps> {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
    */
   style?: StyleProps;
+  initialParsedStyle?: any;
   /**
    * compatible with G 3.0
    * @alias style

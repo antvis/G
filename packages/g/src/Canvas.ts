@@ -200,7 +200,7 @@ export class Canvas extends EventTarget implements ICanvas {
       offscreenCanvas,
       devicePixelRatio: dpr,
       cursor: cursor || ('default' as Cursor),
-      background,
+      background: background || 'transparent',
       createImage,
       document,
     });

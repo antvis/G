@@ -131,6 +131,8 @@ export interface PropertyMetadata {
 export interface PropertyParseOptions {
   skipUpdateAttribute: boolean;
   skipParse: boolean;
+  forceUpdateGeometry: boolean;
+  usedAttributes: string[];
 }
 
 export const StyleValueRegistry = Syringe.defineToken('');
@@ -139,7 +141,6 @@ export interface StyleValueRegistry {
   recalc: (displayObject: DisplayObject) => void;
   registerMetadata: (metadata: PropertyMetadata) => void;
   unregisterMetadata: (name: string) => void;
-  // getMetadata: (name: string) => PropertyMetadata;
   getPropertySyntax: (syntax: string) => CSSProperty<any, any>;
   addUnresolveProperty: (object: DisplayObject, name: string) => void;
 
