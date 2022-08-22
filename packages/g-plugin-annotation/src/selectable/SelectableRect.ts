@@ -213,7 +213,6 @@ export class SelectableRect extends CustomElement<Props> {
 
   private bindEventListeners() {
     const { target: targetObject } = this.style;
-    const camera = this.ownerDocument.defaultView.getCamera();
 
     // listen to drag'n'drop events
     let shiftX = 0;
@@ -249,19 +248,15 @@ export class SelectableRect extends CustomElement<Props> {
     let maskHeight: number;
 
     this.addEventListener('drag', (e: FederatedEvent) => {
-      const zoom = camera.getZoom();
       const target = e.target as DisplayObject;
 
+      // event in canvas coordinates
       const { canvasX, canvasY } = e;
       const originMaskWidth = Number(this.mask.style.width);
       const originMaskHeight = Number(this.mask.style.height);
 
+      // position in canvas coordinates
       const [ox, oy] = this.getPosition();
-
-      // @ts-ignore
-      const dx = e.dx / zoom;
-      // @ts-ignore
-      const dy = e.dy / zoom;
 
       if (target === this.mask) {
         this.status = 'moving';
@@ -273,26 +268,24 @@ export class SelectableRect extends CustomElement<Props> {
         target === this.blAnchor ||
         target === this.brAnchor
       ) {
-        // this.scaleObject();
-
         if (target === this.tlAnchor) {
-          maskWidth = originMaskWidth - dx;
-          maskHeight = originMaskHeight - dy;
+          maskWidth = originMaskWidth - (canvasX - ox);
+          maskHeight = originMaskHeight - (canvasY - oy);
           maskX = canvasX;
           maskY = canvasY;
         } else if (target === this.trAnchor) {
-          maskWidth = originMaskWidth + dx;
-          maskHeight = originMaskHeight - dy;
+          maskWidth = canvasX - ox;
+          maskHeight = originMaskHeight - (canvasY - oy);
           maskX = ox;
-          maskY = oy + dy;
+          maskY = canvasY;
         } else if (target === this.blAnchor) {
-          maskWidth = originMaskWidth - dx;
-          maskHeight = originMaskHeight + dy;
-          maskX = ox + dx;
+          maskWidth = originMaskWidth - (canvasX - ox);
+          maskHeight = canvasY - oy;
+          maskX = canvasX;
           maskY = oy;
         } else if (target === this.brAnchor) {
-          maskWidth = originMaskWidth + dx;
-          maskHeight = originMaskHeight + dy;
+          maskWidth = canvasX - ox;
+          maskHeight = canvasY - oy;
           maskX = ox;
           maskY = oy;
         }

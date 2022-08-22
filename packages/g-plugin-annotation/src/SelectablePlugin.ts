@@ -115,10 +115,6 @@ export class SelectablePlugin implements RenderingPlugin {
       if (created) {
         this.selectableMap[object.entity] = created;
         this.activeSelectableLayer.appendChild(created);
-
-        object.addEventListener(ElementEvent.UNMOUNTED, () => {
-          this.activeSelectableLayer.removeChild(created);
-        });
       }
     }
 
@@ -204,7 +200,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
     // TODO: deselected when removed
     const handleUnmounted = (e: CustomEvent) => {
-      // this.deselectDisplayObject(e.target as DisplayObject);
+      this.deselectDisplayObject(e.target as DisplayObject);
     };
 
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {

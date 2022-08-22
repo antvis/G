@@ -278,6 +278,9 @@ const apiConfig = {
   getSelectedDisplayObjects: () => {
     console.log(annotationPlugin.getSelectedDisplayObjects());
   },
+  removeImage: () => {
+    image.remove();
+  },
 };
 apiFolder
   .add(apiConfig, 'selectDisplayObject', [
@@ -336,6 +339,7 @@ apiFolder
   });
 
 apiFolder.add(apiConfig, 'getSelectedDisplayObjects');
+apiFolder.add(apiConfig, 'removeImage');
 apiFolder.open();
 
 const camera = canvas.getCamera();
@@ -348,5 +352,8 @@ const cameraConfig = {
 };
 cameraFolder.add(cameraConfig, 'zoom', 0.1, 10).onChange((zoom) => {
   camera.setZoom(zoom);
+});
+cameraFolder.add(cameraConfig, 'roll', -90, 90).onChange((roll) => {
+  camera.rotate(0, 0, roll);
 });
 cameraFolder.open();

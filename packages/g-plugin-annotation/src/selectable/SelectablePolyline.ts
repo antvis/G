@@ -172,7 +172,13 @@ export class SelectablePolyline extends CustomElement<Props> {
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
       this.setPosition(canvasX - shiftX, canvasY - shiftY);
-      targetObject.setPosition(canvasX - shiftX, canvasY - shiftY);
+
+      targetObject.dispatchEvent(
+        new CustomEvent(SelectableEvent.MOVING, {
+          movingX: canvasX - shiftX,
+          movingY: canvasY - shiftY,
+        }),
+      );
     };
 
     this.addEventListener('dragstart', (e: FederatedEvent) => {
