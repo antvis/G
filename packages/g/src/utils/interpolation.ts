@@ -1,7 +1,7 @@
 import { memoize } from '@antv/util';
 import { styleValueRegistry } from '..';
 import type { Interpolatable } from '../css';
-import { getMetadata } from '../css';
+import { cache } from '../css';
 import type { DisplayObject } from '../display-objects';
 import type { AnimationEffectTiming, IElement } from '../dom';
 import { parseEasingFunction } from './animation';
@@ -149,7 +149,7 @@ function propertyInterpolation(
   right: string | number,
   target: IElement | null,
 ) {
-  const metadata = getMetadata(property);
+  const metadata = cache[property];
 
   if (metadata && metadata.syntax && metadata.interpolable) {
     const propertyHandler = styleValueRegistry.getPropertySyntax(metadata.syntax);

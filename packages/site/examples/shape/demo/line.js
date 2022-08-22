@@ -187,13 +187,14 @@ const lineConfig = {
   y2: 100,
   lineDash: 0,
   lineDashOffset: 0,
-  visible: true,
   increasedLineWidthForHitTesting: 0,
   cursor: 'pointer',
   shadowColor: '#fff',
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 lineFolder.add(lineConfig, 'lineJoin', ['miter', 'round', 'bevel']).onChange((lineJoin) => {
   line1.style.lineJoin = lineJoin;
@@ -228,15 +229,6 @@ lineFolder.add(lineConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   line1.style.strokeOpacity = opacity;
 });
-lineFolder.add(lineConfig, 'visible').onChange((visible) => {
-  if (visible) {
-    line1.style.visibility = 'visible';
-    // line1.show();
-  } else {
-    line1.style.visibility = 'hidden';
-    // line1.hide();
-  }
-});
 lineFolder
   .add(lineConfig, 'increasedLineWidthForHitTesting', 0, 200)
   .onChange((increasedLineWidthForHitTesting) => {
@@ -258,6 +250,25 @@ lineFolder.add(lineConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffsetX) =>
 });
 lineFolder.add(lineConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
   line1.style.shadowOffsetY = shadowOffsetY;
+});
+lineFolder
+  .add(lineConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    line1.style.pointerEvents = pointerEvents;
+  });
+lineFolder.add(lineConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  line1.style.visibility = visibility;
 });
 
 const transformFolder = gui.addFolder('transform');

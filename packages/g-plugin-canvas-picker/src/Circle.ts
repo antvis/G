@@ -1,26 +1,26 @@
-import type {
-  CircleStyleProps,
-  CSSRGB,
-  DisplayObject,
-  ParsedCircleStyleProps,
-  Point,
-} from '@antv/g';
+import type { CircleStyleProps, DisplayObject, ParsedCircleStyleProps, Point } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { distance } from './utils/math';
 
 export function isPointInPath(
   displayObject: DisplayObject<CircleStyleProps>,
   position: Point,
 ): boolean {
-  const { r, fill, stroke, lineWidth, increasedLineWidthForHitTesting, clipPathTargets } =
-    displayObject.parsedStyle as ParsedCircleStyleProps;
+  const {
+    r,
+    fill,
+    stroke,
+    lineWidth,
+    increasedLineWidthForHitTesting,
+    clipPathTargets,
+    pointerEvents,
+  } = displayObject.parsedStyle as ParsedCircleStyleProps;
   const halfLineWidth = ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
   const absDistance = distance(r, r, position.x, position.y);
   const isClipPath = !!clipPathTargets?.length;
 
-  const hasFill = fill && !(fill as CSSRGB).isNone;
-  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
-  // 直接用距离，如果同时存在边和填充时，可以减少两次计算
   if ((hasFill && hasStroke) || isClipPath) {
     return absDistance <= r + halfLineWidth;
   }

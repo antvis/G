@@ -109,6 +109,8 @@ const ellipseConfig = {
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 ellipseFolder.add(ellipseConfig, 'cx', 0, 600).onChange((cx) => {
   ellipse.style.cx = cx;
@@ -159,6 +161,25 @@ ellipseFolder.add(ellipseConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffse
 });
 ellipseFolder.add(ellipseConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
   ellipse.style.shadowOffsetY = shadowOffsetY;
+});
+ellipseFolder
+  .add(ellipseConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    ellipse.style.pointerEvents = pointerEvents;
+  });
+ellipseFolder.add(ellipseConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  ellipse.style.visibility = visibility;
 });
 
 const transformFolder = gui.addFolder('transform');

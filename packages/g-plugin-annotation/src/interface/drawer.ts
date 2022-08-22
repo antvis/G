@@ -1,4 +1,4 @@
-import type { Canvas } from '@antv/g';
+import type { Canvas, FederatedEvent } from '@antv/g';
 import EventEmitter from 'eventemitter3';
 import type { DrawerTool } from '../constants/enum';
 
@@ -44,10 +44,10 @@ export abstract class BaseDrawer extends EventEmitter {
     this.drawerOptions = drawerOptions;
   }
 
-  abstract onMouseDown(e): void;
-  abstract onMouseMove(e): void;
-  abstract onMouseUp(e): void;
-  abstract onMouseDbClick(e): void;
+  abstract onMouseDown(e: FederatedEvent): void;
+  abstract onMouseMove(e: FederatedEvent): void;
+  abstract onMouseUp(e: FederatedEvent): void;
+  abstract onMouseDbClick(e: FederatedEvent): void;
   abstract onKeyDown(e: KeyboardEvent): void;
 
   setCanvas(canvas: Canvas) {

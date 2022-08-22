@@ -1,7 +1,7 @@
-import type { KeyframeEffect } from './KeyframeEffect';
-import type { AnimationTimeline } from './AnimationTimeline';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { AnimationEvent } from './AnimationEvent';
+import type { AnimationTimeline } from './AnimationTimeline';
+import type { KeyframeEffect } from './KeyframeEffect';
 
 let sequenceNumber = 0;
 
@@ -226,13 +226,14 @@ export class Animation {
   get _isFinished() {
     return (
       !this._idle &&
-      ((this._playbackRate > 0 && Number(this._currentTime) >= this.totalDuration) ||
+      ((this._playbackRate > 0 && Number(this._currentTime) >= this._totalDuration) ||
         (this._playbackRate < 0 && Number(this._currentTime) <= 0))
     );
   }
 
+  _totalDuration: number;
   get totalDuration() {
-    return Number(this.effect?.getComputedTiming().endTime);
+    return this._totalDuration;
   }
 
   _inEffect: boolean;
@@ -248,6 +249,7 @@ export class Animation {
     this.id = `${sequenceNumber++}`;
 
     this._inEffect = !!this.effect.update(0);
+    this._totalDuration = Number(this.effect?.getComputedTiming().endTime);
     this._holdTime = 0;
     this._paused = false;
     this.oldPlayState = 'idle';
@@ -325,8 +327,8 @@ export class Animation {
   finish() {
     this.updatePromises();
     if (this._idle) return;
-    this.currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
-    this._startTime = this.totalDuration - this.currentTime;
+    this.currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
+    this._startTime = this._totalDuration - this.currentTime;
     this.currentTimePending = false;
     this.timeline.applyDirtiedAnimation(this);
 
@@ -408,8 +410,8 @@ export class Animation {
   private rewind() {
     if (this.playbackRate >= 0) {
       this.currentTime = 0;
-    } else if (this.totalDuration < Infinity) {
-      this.currentTime = this.totalDuration;
+    } else if (this._totalDuration < Infinity) {
+      this.currentTime = this._totalDuration;
     } else {
       throw new Error('Unable to rewind negative playback rate animation with infinite duration');
     }
@@ -476,7 +478,7 @@ export class Animation {
     if (newTime !== this._currentTime) {
       this._currentTime = newTime;
       if (this._isFinished && !ignoreLimit) {
-        this._currentTime = this._playbackRate > 0 ? this.totalDuration : 0;
+        this._currentTime = this._playbackRate > 0 ? this._totalDuration : 0;
       }
       this.ensureAlive();
     }

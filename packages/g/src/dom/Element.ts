@@ -1,5 +1,6 @@
 import { displayObjectPool, sceneGraphService } from '..';
 import { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
+import { unsetKeywordValue } from '../css';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { formatAttribute, isNil } from '../utils';
@@ -414,8 +415,57 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
-  computedStyle: any = {};
-  parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
+  computedStyle: any = {
+    anchor: unsetKeywordValue,
+    opacity: unsetKeywordValue,
+    fillOpacity: unsetKeywordValue,
+    strokeOpacity: unsetKeywordValue,
+    fill: unsetKeywordValue,
+    stroke: unsetKeywordValue,
+    transform: unsetKeywordValue,
+    transformOrigin: unsetKeywordValue,
+    visibility: unsetKeywordValue,
+    pointerEvents: unsetKeywordValue,
+    lineWidth: unsetKeywordValue,
+    lineCap: unsetKeywordValue,
+    lineJoin: unsetKeywordValue,
+    increasedLineWidthForHitTesting: unsetKeywordValue,
+    fontSize: unsetKeywordValue,
+    fontFamily: unsetKeywordValue,
+    fontStyle: unsetKeywordValue,
+    fontWeight: unsetKeywordValue,
+    fontVariant: unsetKeywordValue,
+    textAlign: unsetKeywordValue,
+    textBaseline: unsetKeywordValue,
+    textTransform: unsetKeywordValue,
+    zIndex: unsetKeywordValue,
+    filter: unsetKeywordValue,
+    shadowType: unsetKeywordValue,
+  };
+
+  /**
+   * Renderers will use these used values.
+   */
+  parsedStyle: ParsedStyleProps = {
+    // opacity: '',
+    // fillOpacity: '',
+    // strokeOpacity: '',
+    // transformOrigin: '',
+    // visibility: '',
+    // pointerEvents: '',
+    // lineWidth: '',
+    // lineCap: '',
+    // lineJoin: '',
+    // increasedLineWidthForHitTesting: '',
+    // fontSize: '',
+    // fontFamily: '',
+    // fontStyle: '',
+    // fontWeight: '',
+    // fontVariant: '',
+    // textAlign: '',
+    // textBaseline: '',
+    // textTransform: '',
+  } as ParsedStyleProps;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap

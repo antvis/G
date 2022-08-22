@@ -4,6 +4,7 @@ import type { Tuple4Number } from '../../types';
 import { clamp, isNil, isObject } from '../../utils';
 import type { CSSGradientValue } from '../cssom';
 import { CSSRGB } from '../cssom';
+import { getOrCreateRGBA, transparentColor } from '../StyleValueRegistry';
 import { parseGradient } from './gradient';
 
 /**
@@ -35,7 +36,7 @@ export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[
 
   if (colorStr === 'transparent') {
     // transparent black
-    return new CSSRGB(0, 0, 0, 0);
+    return transparentColor;
   } else if (colorStr === 'currentColor') {
     // @see https://github.com/adobe-webplatform/Snap.svg/issues/526
     colorStr = 'black';
@@ -57,17 +58,8 @@ export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[
     rgba[3] = color.opacity;
   }
 
-  return new CSSRGB(...rgba);
-
-  // return {
-  //   type: PARSED_COLOR_TYPE.Constant,
-  //   value: rgba,
-  //   formatted:
-  //     // rgba(255,255,255,0) -> [NaN, NaN, NaN, 0]
-  //     // @see https://github.com/d3/d3-color/issues/52
-  //     (color && `rgba(${color.r || 0},${color.g || 0},${color.b || 0},${color.opacity})`) ||
-  //     'rgba(0,0,0,0)',
-  // };
+  // return new CSSRGB(...rgba);
+  return getOrCreateRGBA(...rgba);
 });
 
 export function mergeColors(

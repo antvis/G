@@ -23,6 +23,9 @@ export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStylePro
         r: '',
         ...style,
       },
+      initialParsedStyle: {
+        anchor: [0.5, 0.5],
+      },
       ...rest,
     });
   }

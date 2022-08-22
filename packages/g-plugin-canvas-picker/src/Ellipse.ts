@@ -1,4 +1,5 @@
-import type { CSSRGB, DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
+import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
   return squareX / (rx * rx) + squareY / (ry * ry);
@@ -8,12 +9,19 @@ export function isPointInPath(
   displayObject: DisplayObject<EllipseStyleProps>,
   { x, y }: { x: number; y: number },
 ): boolean {
-  const { rx, ry, fill, stroke, lineWidth, increasedLineWidthForHitTesting, clipPathTargets } =
-    displayObject.parsedStyle as ParsedEllipseStyleProps;
+  const {
+    rx,
+    ry,
+    fill,
+    stroke,
+    lineWidth,
+    increasedLineWidthForHitTesting,
+    clipPathTargets,
+    pointerEvents,
+  } = displayObject.parsedStyle as ParsedEllipseStyleProps;
   const isClipPath = !!clipPathTargets?.length;
 
-  const hasFill = fill && !(fill as CSSRGB).isNone;
-  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   const halfLineWith = ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
   const squareX = (x - rx) * (x - rx);

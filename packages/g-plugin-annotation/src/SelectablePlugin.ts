@@ -17,6 +17,7 @@ import {
 } from '@antv/g';
 import { SelectableEvent } from './constants/enum';
 import { SelectablePolyline, SelectableRect } from './selectable';
+import { SelectablePolygon } from './selectable/SelectablePolygon';
 import { AnnotationPluginOptions } from './tokens';
 
 /**
@@ -102,6 +103,13 @@ export class SelectablePlugin implements RenderingPlugin {
             ...this.annotationPluginOptions.selectableStyle,
           },
         });
+      } else if (object.nodeName === Shape.POLYGON) {
+        created = new SelectablePolygon({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
+          },
+        });
       }
 
       if (created) {
@@ -139,7 +147,6 @@ export class SelectablePlugin implements RenderingPlugin {
 
     const handleClick = (e: FederatedPointerEvent) => {
       const object = e.target as DisplayObject;
-
       // @ts-ignore
       if (object === document) {
         this.selected.forEach((target) => {
@@ -178,29 +185,44 @@ export class SelectablePlugin implements RenderingPlugin {
       });
     };
 
-    const handleModifyingTarget = (e: CustomEvent) => {
-      const target = e.target as DisplayObject;
-      const { positionX, positionY, scaleX, scaleY } = e.detail;
+    // const handleModifyingTarget = (e: CustomEvent) => {
+    //   const target = e.target as DisplayObject;
+    //   const { positionX, positionY, scaleX, scaleY, maskWidth, maskHeight } = e.detail;
 
-      // re-position target
-      target.setPosition(positionX, positionY);
-      target.scale(scaleX, scaleY);
+    //   // re-position target
+    //   target.setPosition(positionX, positionY);
+
+    //   if (target.nodeName === Shape.RECT) {
+    //     target.attr({
+    //       width: maskWidth,
+    //       height: maskHeight,
+    //     });
+    //   } else {
+    //     target.scale(scaleX, scaleY);
+    //   }
+    // };
+
+    // TODO: deselected when removed
+    const handleUnmounted = (e: CustomEvent) => {
+      // this.deselectDisplayObject(e.target as DisplayObject);
     };
 
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
       canvas.addEventListener('pointerdown', handleClick);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.appendChild(this.activeSelectableLayer);
 
       canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
-      canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
+      // canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
       canvas.removeEventListener('pointerdown', handleClick);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.removeChild(this.activeSelectableLayer);
 
       canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
-      canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
+      // canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
   }
 }

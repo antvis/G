@@ -9,8 +9,8 @@ import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { formatAttribute, isFunction, isNil } from '../utils';
-import type { CSSRGB, CSSStyleValue } from './cssom';
-import { CSSKeywordValue } from './cssom';
+import type { CSSStyleValue } from './cssom';
+import { CSSKeywordValue, CSSRGB } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
 import type { PropertyMetadata, PropertyParseOptions } from './interfaces';
 import { PropertySyntax, StyleValueRegistry } from './interfaces';
@@ -227,7 +227,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
       'visiblestroke',
       'visiblefill',
       'visiblepainted',
-      'bounding-box',
+      // 'bounding-box',
       'all',
     ],
     defaultValue: 'auto',
@@ -561,22 +561,38 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
-const cache: Record<string, PropertyMetadata> = {};
+export const cache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: Record<number, string[]> = {};
 const priorityMap: Record<string, number> = {};
 const sortAttributeNames = memoize((attributeNames: string[]) => {
   return attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
 });
-export const getMetadata = (name: string) => {
-  return cache[name];
-};
 
 const tmpVec3a = vec3.create();
 const tmpVec3b = vec3.create();
 const tmpVec3c = vec3.create();
 
-const keywordCache: Record<string, CSSKeywordValue> = {};
-const getOrCreateKeyword = (name: string) => {
+export const unsetKeywordValue = new CSSKeywordValue('unset');
+export const initialKeywordValue = new CSSKeywordValue('initial');
+export const inheritKeywordValue = new CSSKeywordValue('inherit');
+export const noneColor = new CSSRGB(0, 0, 0, 0, true);
+export const transparentColor = new CSSRGB(0, 0, 0, 0);
+export const getOrCreateRGBA = memoize(
+  (r: number, g: number, b: number, a: number) => {
+    return new CSSRGB(r, g, b, a);
+  },
+  (r: number, g: number, b: number, a: number) => {
+    return `rgba(${r},${g},${b},${a})`;
+  },
+);
+
+const keywordCache: Record<string, CSSKeywordValue> = {
+  '': unsetKeywordValue,
+  unset: unsetKeywordValue,
+  initial: initialKeywordValue,
+  inherit: inheritKeywordValue,
+};
+export const getOrCreateKeyword = (name: string) => {
   if (!keywordCache[name]) {
     keywordCache[name] = new CSSKeywordValue(name);
   }
@@ -636,26 +652,26 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     options: Partial<PropertyParseOptions> = {
       skipUpdateAttribute: false,
       skipParse: false,
+      forceUpdateGeometry: false,
+      usedAttributes: [],
     },
   ) {
-    const { skipUpdateAttribute, skipParse } = options;
+    const { skipUpdateAttribute, skipParse, forceUpdateGeometry, usedAttributes } = options;
 
-    let needUpdateGeometry = false;
+    let needUpdateGeometry = forceUpdateGeometry;
     let attributeNames = Object.keys(attributes);
+
     attributeNames.forEach((attributeName) => {
       const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
 
       if (!skipUpdateAttribute) {
         object.attributes[name] = value;
       }
-      if (!needUpdateGeometry && getMetadata(name as string)?.layoutDependent) {
+
+      if (!needUpdateGeometry && cache[name as string]?.layoutDependent) {
         needUpdateGeometry = true;
       }
     });
-
-    // parse according to priority
-    attributeNames = sortAttributeNames(attributeNames);
-    // attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
 
     if (!skipParse) {
       attributeNames.forEach((name) => {
@@ -668,6 +684,15 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
 
     // let hasUnresolvedProperties = false;
+
+    // parse according to priority
+    attributeNames = sortAttributeNames(
+      usedAttributes?.length
+        ? Array.from(new Set(attributeNames.concat(usedAttributes)))
+        : attributeNames,
+    );
+    // attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
+
     attributeNames.forEach((name) => {
       // some style props maybe deleted after parsing such as `anchor` in Text
       if (name in object.computedStyle) {
@@ -714,7 +739,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * string -> parsed value
    */
   parseProperty(name: string, value: any, object: DisplayObject): CSSStyleValue {
-    const metadata = getMetadata(name);
+    const metadata = cache[name];
 
     let computed: CSSStyleValue = value;
     if (value === '' || isNil(value)) {
@@ -747,7 +772,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * computed value -> used value
    */
   computeProperty(name: string, computed: CSSStyleValue, object: DisplayObject) {
-    const metadata = getMetadata(name);
+    const metadata = cache[name];
     const isDocumentElement = object.id === 'g-root';
 
     // let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
@@ -811,7 +836,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   postProcessProperty(name: string, object: DisplayObject) {
-    const metadata = getMetadata(name);
+    const metadata = cache[name];
 
     if (metadata && metadata.syntax) {
       const handler = metadata.syntax && this.getPropertySyntax(metadata.syntax);
@@ -1050,7 +1075,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   private isPropertyInheritable(name: string) {
-    const metadata = getMetadata(name);
+    const metadata = cache[name];
     if (!metadata) {
       return false;
     }

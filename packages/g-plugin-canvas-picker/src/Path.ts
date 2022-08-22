@@ -1,4 +1,5 @@
-import type { CSSRGB, DisplayObject, ParsedPathStyleProps, PathStyleProps, Point } from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps, PathStyleProps, Point } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { inLine, inPolygons } from './utils/math';
 
@@ -68,9 +69,11 @@ export function isPointInPath(
     defY: y = 0,
     clipPathTargets,
     path,
+    pointerEvents,
   } = displayObject.parsedStyle as ParsedPathStyleProps;
-  const hasFill = fill && !(fill as CSSRGB).isNone;
-  const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+
   const { segments, hasArc, polylines, polygons, totalLength } = path;
 
   const isClipPath = !!clipPathTargets?.length;

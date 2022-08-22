@@ -1,6 +1,7 @@
+import type { FederatedEvent } from '@antv/g';
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
-import { isInvalidRect } from '../utils/drawer';
+import { isNearPoint } from '../utils/drawer';
 import uuidv4 from '../utils/uuidv4';
 
 export class PolylineDrawer extends BaseDrawer {
@@ -15,7 +16,7 @@ export class PolylineDrawer extends BaseDrawer {
     };
   }
 
-  onMouseDown(e) {
+  onMouseDown(e: FederatedEvent) {
     const currentPoint = { x: e.canvas.x, y: e.canvas.y };
     if (!this.isDrawing) {
       this.isDrawing = true;
@@ -23,19 +24,17 @@ export class PolylineDrawer extends BaseDrawer {
       this.path = [currentPoint, currentPoint];
       this.emit('draw:start', this.state);
     } else {
-      const lastPoint = this.path[this.path.length - 2];
-
-      if (isInvalidRect(lastPoint, currentPoint, 10)) {
+      this.path.push(currentPoint);
+      const lastPoint = this.path[this.path.length - 3];
+      if (isNearPoint(lastPoint, currentPoint, 8)) {
         this.closePath();
         return;
       }
-
-      this.path.push(currentPoint);
       this.emit('draw:modify', this.state);
     }
   }
 
-  onMouseMove(e) {
+  onMouseMove(e: FederatedEvent) {
     if (!this.isDrawing) return;
     this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
     this.emit('draw:modify', this.state);
@@ -43,7 +42,7 @@ export class PolylineDrawer extends BaseDrawer {
 
   onMouseUp() {}
 
-  onMouseDbClick(e) {
+  onMouseDbClick(e: FederatedEvent) {
     this.onMouseDown(e);
     this.closePath();
   }
@@ -55,7 +54,7 @@ export class PolylineDrawer extends BaseDrawer {
    * @param e
    */
 
-  onKeyDown(e) {
+  onKeyDown(e: KeyboardEvent) {
     if (e.code === 'Escape') {
       this.emit('draw:cancel', this.state);
       this.reset();
@@ -78,6 +77,7 @@ export class PolylineDrawer extends BaseDrawer {
   }
 
   closePath() {
+    this.path.pop();
     this.isDrawing = false;
     this.emit('draw:complete', this.state);
     this.reset();

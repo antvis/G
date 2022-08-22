@@ -47,11 +47,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       }),
     );
 
-    path.animate([{ opacity: 1 }, { opacity: 0 }], {
+    path.animate([{ opacity: 0 }, { opacity: 1 }], {
       duration: 1000,
       delay: 1000,
       fill: 'both',
-      iterations: Infinity,
+      iterations: 5,
     });
   }
 });

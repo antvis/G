@@ -191,6 +191,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     this.markerMidList.forEach((marker) => {
       marker.remove();
     });
+    this.markerMidList = [];
 
     if (marker && marker instanceof DisplayObject) {
       for (let i = 1; i < (this.style.isClosed ? points.length : points.length - 1); i++) {

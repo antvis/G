@@ -19,6 +19,7 @@ function getHeightFromBbox(path: PointLike[]) {
   const dx = br.x - tr.x;
   return Math.sqrt(dy * dy + dx * dx);
 }
+
 // function getRotationFromBbox(path: PointLike[]) {
 //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 //   const [tl, tr, br, bl] = path;
@@ -35,8 +36,9 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   const width = getWidthFromBbox(path);
   const height = getHeightFromBbox(path);
 
-  if (!context.brushRect) {
-    context.brushRect = new Rect({
+  let brushRect = context.brushRect;
+  if (!brushRect) {
+    brushRect = new Rect({
       id: anno.id,
       className: anno.id,
       style: {
@@ -54,10 +56,11 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     //   context.unfreezeDrawer();
     // });
 
-    context.canvas?.appendChild(context.brushRect);
+    context.canvas?.appendChild(brushRect);
+    context.brushRect = brushRect;
   }
 
-  context.brushRect.attr({
+  brushRect.attr({
     x: left,
     y: top,
     height,
@@ -66,6 +69,7 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     ...style,
   });
 
+  // todo: 相机旋转后绘制也需要旋转
   // const rotation = getRotationFromBbox(path);
-  // context.brushRect.rotate(rotation);
+  // brushRect.rotate(rotation);
 };

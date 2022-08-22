@@ -9,13 +9,13 @@ import type {
   RenderingService,
 } from '@antv/g';
 import {
+  cache,
   Camera,
   CanvasConfig,
   ContextService,
   CSSRGB,
   DefaultCamera,
   ElementEvent,
-  getMetadata,
   inject,
   RenderingContext,
   RenderingPluginContribution,
@@ -73,6 +73,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   filter: 'filter',
   innerHTML: 'innerHTML',
   textAlign: 'text-anchor',
+  pointerEvents: 'pointer-events',
 };
 
 const FORMAT_VALUE_MAP = {
@@ -103,6 +104,7 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   letterSpacing: '0',
   fontSize: 'inherit',
   fontFamily: 'inherit',
+  pointerEvents: 'auto',
 };
 
 export type GradientParams = LinearGradient | RadialGradient;
@@ -386,7 +388,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!getMetadata(name)?.inherited;
+      const inherited = !!cache[name]?.inherited;
 
       if (!usedName) {
         return;

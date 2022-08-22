@@ -2,6 +2,7 @@ import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { displayObjectPool, sceneGraphService, styleValueRegistry } from '..';
 import type { PropertyParseOptions } from '../css';
+import { noneColor } from '../css';
 import type {
   Animation,
   DisplayObjectConfig,
@@ -27,60 +28,6 @@ import {
 import type { CustomElement } from './CustomElement';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
-
-const DEFAULT_STYLE_PROPS: {
-  anchor: string;
-  transformOrigin: string;
-  transform: string;
-  visibility: string;
-  pointerEvents: string;
-  opacity: string;
-  fillOpacity: string;
-  strokeOpacity: string;
-  fill: string;
-  stroke: string;
-  lineWidth: string | number;
-  lineCap: CanvasLineCap | '';
-  lineJoin: CanvasLineJoin | '';
-  increasedLineWidthForHitTesting: string | number;
-  fontSize: string | number;
-  fontFamily: string;
-  fontStyle: string;
-  fontWeight: string;
-  fontVariant: string;
-  textAlign: string;
-  textBaseline: string;
-  textTransform: string;
-  zIndex: string | number;
-  filter: string;
-  shadowType: string;
-} = {
-  anchor: '',
-  opacity: '',
-  fillOpacity: '',
-  strokeOpacity: '',
-  fill: '',
-  stroke: '',
-  transform: '',
-  transformOrigin: '',
-  visibility: '',
-  pointerEvents: '',
-  lineWidth: '',
-  lineCap: '',
-  lineJoin: '',
-  increasedLineWidthForHitTesting: '',
-  fontSize: '',
-  fontFamily: '',
-  fontStyle: '',
-  fontWeight: '',
-  fontVariant: '',
-  textAlign: '',
-  textBaseline: '',
-  textTransform: '',
-  zIndex: '',
-  filter: '',
-  shadowType: '',
-};
 
 let mutationEvent: MutationEvent;
 
@@ -138,7 +85,7 @@ export class DisplayObject<
 
     // compatible with G 3.0
     this.config.style = {
-      ...DEFAULT_STYLE_PROPS,
+      // ...DEFAULT_STYLE_PROPS,
       ...this.config.style,
       ...this.config.attrs,
     };
@@ -149,9 +96,56 @@ export class DisplayObject<
       this.config.style.pointerEvents = this.config.interactive === false ? 'none' : 'auto';
     }
 
-    this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
+    // merge parsed value
+    Object.assign(
+      this.parsedStyle,
       {
-        ...this.attributes,
+        anchor: [0, 0],
+        fill: noneColor,
+        stroke: noneColor,
+        transform: [],
+        zIndex: 0,
+        filter: [],
+        shadowType: 'outer',
+      },
+      this.config.initialParsedStyle,
+    );
+
+    Object.assign(this.attributes, {
+      anchor: '',
+      opacity: '',
+      fillOpacity: '',
+      strokeOpacity: '',
+      fill: '',
+      stroke: '',
+      transform: '',
+      transformOrigin: '',
+      visibility: '',
+      pointerEvents: '',
+      lineWidth: '',
+      lineCap: '',
+      lineJoin: '',
+      increasedLineWidthForHitTesting: '',
+      fontSize: '',
+      fontFamily: '',
+      fontStyle: '',
+      fontWeight: '',
+      fontVariant: '',
+      textAlign: '',
+      textBaseline: '',
+      textTransform: '',
+      zIndex: '',
+      filter: '',
+      shadowType: '',
+    });
+
+    // start to process attributes
+    this.initAttributes(this.config.style);
+
+    this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
+      // @ts-ignore
+      {
+        // ...this.attributes,
         setProperty: <Key extends keyof StyleProps>(
           propertyName: Key,
           value: StyleProps[Key],
@@ -183,8 +177,6 @@ export class DisplayObject<
         },
       },
     );
-
-    this.initAttributes(this.config.style);
 
     // insert this group into pool
     displayObjectPool.add(this.entity, this);
@@ -246,7 +238,37 @@ export class DisplayObject<
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
     const renderable = this.renderable;
 
-    styleValueRegistry.processProperties(this, attributes);
+    // account for FCP, process properties as less as possible
+    styleValueRegistry.processProperties(this, attributes, {
+      forceUpdateGeometry: true,
+      usedAttributes: [
+        // 'anchor',
+        // 'transform',
+        // 'zIndex',
+        // 'filter',
+        // 'shadowType',
+        // 'fill',
+        // 'stroke',
+        'opacity',
+        'fillOpacity',
+        'strokeOpacity',
+        'transformOrigin',
+        'visibility',
+        'pointerEvents',
+        'lineWidth',
+        'lineCap',
+        'lineJoin',
+        'increasedLineWidthForHitTesting',
+        'fontSize',
+        'fontFamily',
+        'fontStyle',
+        'fontWeight',
+        'fontVariant',
+        'textAlign',
+        'textBaseline',
+        'textTransform',
+      ],
+    });
 
     // redraw at next frame
     renderable.dirty = true;

@@ -140,6 +140,8 @@ const polygonConfig = {
   shadowBlur: 0,
   shadowOffsetX: 0,
   shadowOffsetY: 0,
+  pointerEvents: 'auto',
+  visibility: 'visible',
 };
 polygonFolder.addColor(polygonConfig, 'fill').onChange((color) => {
   polygon.style.fill = color;
@@ -183,6 +185,25 @@ polygonFolder.add(polygonConfig, 'shadowOffsetX', -50, 50).onChange((shadowOffse
 });
 polygonFolder.add(polygonConfig, 'shadowOffsetY', -50, 50).onChange((shadowOffsetY) => {
   polygon.style.shadowOffsetY = shadowOffsetY;
+});
+polygonFolder
+  .add(polygonConfig, 'pointerEvents', [
+    'none',
+    'auto',
+    'stroke',
+    'fill',
+    'painted',
+    'visible',
+    'visiblestroke',
+    'visiblefill',
+    'visiblepainted',
+    'all',
+  ])
+  .onChange((pointerEvents) => {
+    polygon.style.pointerEvents = pointerEvents;
+  });
+polygonFolder.add(polygonConfig, 'visibility', ['visible', 'hidden']).onChange((visibility) => {
+  polygon.style.visibility = visibility;
 });
 
 const transformFolder = gui.addFolder('transform');
