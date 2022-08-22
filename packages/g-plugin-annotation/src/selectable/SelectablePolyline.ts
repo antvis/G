@@ -213,7 +213,6 @@ export class SelectablePolyline extends CustomElement<Props> {
         // change polyline definition
         originPoints[anchorIndex] = [inverted[0], inverted[1]];
         this.mask.style.points = originPoints;
-
         // change anchors' position
         this.repositionAnchors();
 
@@ -236,18 +235,19 @@ export class SelectablePolyline extends CustomElement<Props> {
     });
     this.addEventListener('dragend', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-
+      const { defX, defY } = this.mask.parsedStyle;
+      const dx = this.mask.getPosition()[0];
+      const dy = this.mask.getPosition()[1];
       if (target === this.mask) {
         this.status = 'active';
-
-        const dx = this.mask.getPosition()[0];
-        const dy = this.mask.getPosition()[1];
-        originPoints = this.mask.style.points.map(([x, y]) => [x + dx, y + dy]);
-        (this.style.target as Polyline).attr({ points: originPoints });
+        targetObject.attr({
+          points: this.mask.style.points.map(([x, y]) => [x + dx + defX, y + dy + defY]),
+        });
         targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
-      }
-      if (targetObject.nodeName === Shape.POLYLINE) {
-        (this.style.target as Polyline).attr({ points: originPoints });
+      } else if (targetObject.nodeName === Shape.POLYLINE) {
+        targetObject.attr({
+          points: this.mask.style.points.map(([x, y]) => [x + dx, y + dy]),
+        });
         targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
       }
     });
