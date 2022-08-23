@@ -728,6 +728,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
       }
     }
 
+    if (!aabb) {
+      aabb = new AABB();
+    }
+
     if (aabb) {
       if (render) {
         renderable.renderBounds = aabb;
@@ -742,7 +746,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       renderable.boundsDirty = false;
     }
 
-    return aabb || new AABB();
+    return aabb;
   }
 
   /**

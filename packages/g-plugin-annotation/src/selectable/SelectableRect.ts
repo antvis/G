@@ -1,12 +1,16 @@
-import type {
+import {
   BaseCustomElementStyleProps,
+  Circle,
   Cursor,
+  CustomElement,
+  CustomEvent,
   DisplayObject,
   DisplayObjectConfig,
   FederatedEvent,
   ParsedBaseStyleProps,
+  rad2deg,
+  Rect,
 } from '@antv/g';
-import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 
@@ -213,6 +217,7 @@ export class SelectableRect extends CustomElement<Props> {
 
   private bindEventListeners() {
     const { target: targetObject } = this.style;
+    const canvas = this.ownerDocument.defaultView;
 
     // listen to drag'n'drop events
     let shiftX = 0;
@@ -257,6 +262,7 @@ export class SelectableRect extends CustomElement<Props> {
 
       // position in canvas coordinates
       const [ox, oy] = this.getPosition();
+      const angles = this.getEulerAngles();
 
       if (target === this.mask) {
         this.status = 'moving';
@@ -284,6 +290,33 @@ export class SelectableRect extends CustomElement<Props> {
           maskX = canvasX;
           maskY = oy;
         } else if (target === this.brAnchor) {
+          // calculate width/height in viewport coordinates
+          // const tl = canvas.canvas2Viewport({ x: ox, y: oy });
+          // const tr = canvas.viewport2Canvas({
+          //   x: viewportX,
+          //   y: tl.y,
+          // });
+
+          // const width = Math.hypot(tr.x - ox, tr.y - oy);
+          // const height = Math.hypot(tr.x - canvasX, tr.y - canvasY);
+
+          // rotate around tl corner
+          // const rotationMatrix = mat4.fromRotationTranslationScaleOrigin(
+          //   mat4.create(),
+          //   quat.fromEuler(quat.create(), 0, 0, -angles),
+          //   vec3.create(),
+          //   vec3.fromValues(1, 1, 1),
+          //   vec3.fromValues(ox, oy, 0),
+          // );
+
+          // const br = vec3.transformMat4(
+          //   vec3.create(),
+          //   vec3.fromValues(canvasX, canvasY, 0),
+          //   rotationMatrix,
+          // );
+
+          // maskWidth = br[0] - ox;
+          // maskHeight = br[1] - oy;
           maskWidth = canvasX - ox;
           maskHeight = canvasY - oy;
           maskX = ox;
