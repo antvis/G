@@ -71,10 +71,12 @@ export class SelectablePlugin implements RenderingPlugin {
   }
 
   deselectDisplayObject(displayObject: DisplayObject) {
-    const selectable = this.getOrCreateSelectableUI(displayObject);
     const index = this.selected.indexOf(displayObject);
-    if (selectable && index > -1) {
-      selectable.style.visibility = 'hidden';
+    if (index > -1) {
+      const selectable = this.getOrCreateSelectableUI(displayObject);
+      if (selectable) {
+        selectable.style.visibility = 'hidden';
+      }
       this.selected.splice(index, 1);
       displayObject.dispatchEvent(new CustomEvent(SelectableEvent.DESELECTED));
     }
