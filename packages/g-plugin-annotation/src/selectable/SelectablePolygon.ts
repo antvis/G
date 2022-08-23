@@ -6,7 +6,6 @@ import type {
   ParsedPolygonStyleProps,
 } from '@antv/g';
 import { Circle, CustomElement, CustomEvent, Polygon, Shape } from '@antv/g';
-import { mat4, vec3 } from 'gl-matrix';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
@@ -45,12 +44,8 @@ export class SelectablePolygon extends CustomElement<Props> {
       ...rest,
     });
 
-    const {
-      points: parsedPoints,
-      defX,
-      defY,
-    } = this.style.target.parsedStyle as ParsedPolygonStyleProps;
-    const points = parsedPoints.points.map(([x, y]) => [x - defX, y - defY] as [number, number]);
+    const { points: parsedPoints } = this.style.target.parsedStyle as ParsedPolygonStyleProps;
+    const points = parsedPoints.points;
 
     this.mask = new Polygon({
       style: {
@@ -65,8 +60,8 @@ export class SelectablePolygon extends CustomElement<Props> {
     points.forEach((point) => {
       const anchor = new Circle({
         style: {
-          cx: point[0],
-          cy: point[1],
+          cx: 0,
+          cy: 0,
           r: 10,
           cursor: 'move',
           draggable: true,
@@ -74,6 +69,9 @@ export class SelectablePolygon extends CustomElement<Props> {
       });
       this.anchors.push(anchor);
       this.mask.appendChild(anchor);
+
+      // set anchor in canvas coordinates
+      anchor.setPosition(point);
     });
   }
   connectedCallback() {
@@ -88,10 +86,7 @@ export class SelectablePolygon extends CustomElement<Props> {
       selectionStroke,
       selectionStrokeOpacity,
       selectionStrokeWidth,
-      target,
     } = this.style;
-
-    const transform = target.getWorldTransform();
 
     // resize according to target
     this.mask.style.fill = selectionFill;
@@ -109,7 +104,6 @@ export class SelectablePolygon extends CustomElement<Props> {
       anchor.style.r = anchorSize;
     });
 
-    this.setLocalTransform(transform);
     this.bindEventListeners();
   }
   disconnectedCallback() {}
@@ -148,22 +142,29 @@ export class SelectablePolygon extends CustomElement<Props> {
   }
 
   private repositionAnchors() {
-    const { points, defX, defY } = this.mask.parsedStyle;
+    const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
       const anchor = this.anchors[i];
-      anchor.style.cx = point[0] - defX;
-      anchor.style.cy = point[1] - defY;
+      anchor.setPosition(point);
     });
   }
 
   private bindEventListeners() {
     const { target: targetObject } = this.style;
-    let originPoints = [];
     // listen to drag'n'drop events
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      this.setPosition(canvasX - shiftX, canvasY - shiftY);
+      const { defX, defY } = this.mask.parsedStyle;
+
+      // change definition of polyline
+      this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
+        x + canvasX - shiftX - defX,
+        y + canvasY - shiftY - defY,
+      ]);
+
+      // re-position anchors in canvas coordinates
+      this.repositionAnchors();
 
       targetObject.dispatchEvent(
         new CustomEvent(SelectableEvent.MOVING, {
@@ -179,9 +180,9 @@ export class SelectablePolygon extends CustomElement<Props> {
       if (target === this.mask) {
         this.status = 'moving';
 
-        const [x, y] = this.getPosition();
-        shiftX = e.canvasX - x;
-        shiftY = e.canvasY - y;
+        const { defX, defY } = this.mask.parsedStyle;
+        shiftX = e.canvasX - defX;
+        shiftY = e.canvasY - defY;
 
         moveAt(e.canvasX, e.canvasY);
       }
@@ -198,25 +199,13 @@ export class SelectablePolygon extends CustomElement<Props> {
         moveAt(canvasX, canvasY);
       } else if (anchorIndex > -1) {
         const { points } = this.mask.parsedStyle;
-        originPoints = [...points.points];
-
-        const transform = targetObject.getWorldTransform();
-        const invert = mat4.invert(mat4.create(), transform);
-        const inverted = vec3.transformMat4(
-          vec3.create(),
-          vec3.fromValues(canvasX, canvasY, 0),
-          invert,
-        );
+        const originPoints = [...points.points];
 
         // change polyline definition
-        originPoints[anchorIndex] = [inverted[0], inverted[1]];
+        originPoints[anchorIndex] = [canvasX, canvasY];
         this.mask.style.points = originPoints;
-
         // change anchors' position
         this.repositionAnchors();
-
-        // reposition target
-        // (this.style.target as Polygon).style.points = originPoints;
       }
     });
     this.addEventListener('dragend', (e: FederatedEvent) => {
@@ -228,11 +217,13 @@ export class SelectablePolygon extends CustomElement<Props> {
       if (target === this.mask) {
         this.status = 'active';
         targetObject.attr({
-          points: this.mask.style.points.map(([x, y]) => [x + dx + defX, y + dy + defY]),
+          points: this.mask.style.points,
         });
         targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
       } else if (targetObject.nodeName === Shape.POLYGON) {
-        targetObject.attr({ points: this.mask.style.points.map(([x, y]) => [x + dx, y + dy]) });
+        targetObject.attr({
+          points: this.mask.style.points,
+        });
         targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
       }
     });

@@ -79,9 +79,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       const rBushNode = object.rBushNode;
       if (rBushNode.aabb) {
         this.rBush.remove(rBushNode.aabb);
-
-        this.toSync.delete(object);
       }
+
+      this.toSync.delete(object);
 
       this.sceneGraphService.dirtifyToRoot(e.target as Element);
       renderingService.dirtify();
@@ -142,17 +142,28 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         if (renderBounds) {
           const [minX, minY] = renderBounds.getMin();
           const [maxX, maxY] = renderBounds.getMax();
-          rBushNode.aabb = {
-            id: node.entity,
-            minX,
-            minY,
-            maxX,
-            maxY,
-          };
+
+          if (!rBushNode.aabb) {
+            // @ts-ignore
+            rBushNode.aabb = {};
+          }
+          rBushNode.aabb.id = node.entity;
+          rBushNode.aabb.minX = minX;
+          rBushNode.aabb.minY = minY;
+          rBushNode.aabb.maxX = maxX;
+          rBushNode.aabb.maxY = maxY;
         }
 
         if (rBushNode.aabb) {
-          bulk.push(rBushNode.aabb);
+          // TODO: NaN occurs when width/height of Rect is 0
+          if (
+            !isNaN(rBushNode.aabb.maxX) &&
+            !isNaN(rBushNode.aabb.maxX) &&
+            !isNaN(rBushNode.aabb.minX) &&
+            !isNaN(rBushNode.aabb.minY)
+          ) {
+            bulk.push(rBushNode.aabb);
+          }
         }
       });
 

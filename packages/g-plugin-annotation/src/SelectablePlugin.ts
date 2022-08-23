@@ -163,25 +163,25 @@ export class SelectablePlugin implements RenderingPlugin {
       }
     };
 
-    const handleMovingTarget = (e: CustomEvent) => {
-      const movingTarget = e.target as DisplayObject;
-      const { movingX: canvasX, movingY: canvasY } = e.detail;
+    // const handleMovingTarget = (e: CustomEvent) => {
+    //   const movingTarget = e.target as DisplayObject;
+    //   const { movingX: canvasX, movingY: canvasY } = e.detail;
 
-      const [ox, oy] = movingTarget.getPosition();
-      const dx = canvasX - ox;
-      const dy = canvasY - oy;
+    //   const [ox, oy] = movingTarget.getPosition();
+    //   const dx = canvasX - ox;
+    //   const dy = canvasY - oy;
 
-      // account for multi-select
-      this.selected.forEach((target) => {
-        // move selectableUI at the same time
-        const selectable = this.getOrCreateSelectableUI(target);
-        if (selectable) {
-          selectable.translate(dx, dy);
-        }
+    //   // account for multi-select
+    //   this.selected.forEach((target) => {
+    //     // move selectableUI at the same time
+    //     const selectable = this.getOrCreateSelectableUI(target);
+    //     if (selectable) {
+    //       selectable.translate(dx, dy);
+    //     }
 
-        target.translate(dx, dy);
-      });
-    };
+    //     target.translate(dx, dy);
+    //   });
+    // };
 
     // const handleModifyingTarget = (e: CustomEvent) => {
     //   const target = e.target as DisplayObject;
@@ -210,7 +210,7 @@ export class SelectablePlugin implements RenderingPlugin {
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.appendChild(this.activeSelectableLayer);
 
-      canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
+      // canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
       // canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
 
@@ -219,7 +219,7 @@ export class SelectablePlugin implements RenderingPlugin {
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.removeChild(this.activeSelectableLayer);
 
-      canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
+      // canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
       // canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
   }

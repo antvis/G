@@ -662,8 +662,6 @@ export class CSSUnitValue extends CSSNumericValue {
   value: number;
 
   constructor(value: number, unitOrName: UnitType | string = UnitType.kNumber) {
-    // console.log('unit value...');
-
     let unit: UnitType;
     if (typeof unitOrName === 'string') {
       unit = CSSUnitValue.unitFromName(unitOrName);
@@ -784,9 +782,7 @@ export class CSSUnitValue extends CSSNumericValue {
       case UnitType.kSeconds:
       // case UnitType.kHertz:
       // case UnitType.kKilohertz:
-      case UnitType.kTurns: // case UnitType.kViewportWidth: // case UnitType.kFraction:
-      // case UnitType.kViewportHeight:
-      // case UnitType.kViewportInlineSize:
+      case UnitType.kTurns: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
       // case UnitType.kViewportBlockSize:
       // case UnitType.kViewportMin:
       // case UnitType.kViewportMax:
