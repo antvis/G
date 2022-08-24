@@ -6,11 +6,14 @@ import type { DrawerState } from '../interface/drawer';
 export const renderDrawLine = (context: AnnotationPlugin, anno: DrawerState) => {
   const drawPoints = anno.path.slice(0, anno.path.length - 1);
 
+  let polyline = context.savedPolyline;
   if (drawPoints.length < 2) {
+    if (polyline) {
+      polyline.style.visibility = 'hidden';
+    }
     return;
   }
 
-  let polyline = context.savedPolyline;
   if (!polyline) {
     polyline = new Polyline({
       style: {

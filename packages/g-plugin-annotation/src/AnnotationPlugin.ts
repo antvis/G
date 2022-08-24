@@ -62,14 +62,21 @@ export class AnnotationPlugin implements RenderingPlugin {
 
   private hideDrawer(anno: DrawerState) {
     if (anno.type === 'rect') {
-      this.brushRect.style.visibility = 'hidden';
+      if (this.brushRect) {
+        this.brushRect.style.visibility = 'hidden';
+      }
     } else if (anno.type === 'polyline' || anno.type === 'polygon') {
       this.polylineControlPoints.forEach((point) => {
         point.remove();
       });
       this.polylineControlPoints = [];
-      this.savedPolyline.style.visibility = 'hidden';
-      this.polylineLastSegment.style.visibility = 'hidden';
+
+      if (this.savedPolyline) {
+        this.savedPolyline.style.visibility = 'hidden';
+      }
+      if (this.polylineLastSegment) {
+        this.polylineLastSegment.style.visibility = 'hidden';
+      }
     }
   }
 
