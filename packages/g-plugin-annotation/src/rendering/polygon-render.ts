@@ -6,9 +6,19 @@ import { renderDrawPoints } from './drawPoint-render';
 
 const renderDrawingLine = (context, anno: DrawerState) => {
   const total = anno.path.length;
-  const drawingPoints = [anno.path[total - 2], anno.path[total - 1], anno.path[0]];
+  const drawingPoints = [
+    ...[anno.path[total - 2], anno.path[total - 1]].filter((point) => !!point),
+    anno.path[0],
+  ];
 
   let polyline = context.polylineLastSegment;
+  if (drawingPoints.length < 2) {
+    if (polyline) {
+      polyline.style.visibility = 'hidden';
+    }
+    return;
+  }
+
   if (!polyline) {
     polyline = new Polyline({
       style: {

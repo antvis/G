@@ -7,13 +7,16 @@ import { renderDrawPoints } from './drawPoint-render';
 
 const renderDrawingLine = (context: AnnotationPlugin, anno: DrawerState) => {
   const total = anno.path.length;
-  const drawingPoints = [anno.path[total - 2], anno.path[total - 1]];
+  const drawingPoints = [anno.path[total - 2], anno.path[total - 1]].filter((point) => !!point);
 
+  let polyline = context.polylineLastSegment;
   if (drawingPoints.length < 2) {
+    if (polyline) {
+      polyline.style.visibility = 'hidden';
+    }
     return;
   }
 
-  let polyline = context.polylineLastSegment;
   if (!polyline) {
     polyline = new Polyline({
       style: {

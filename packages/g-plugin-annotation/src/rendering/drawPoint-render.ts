@@ -1,15 +1,17 @@
 import { Circle } from '@antv/g';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
-import {
-  ACTIVE_DRAWPOINT_STYLE,
-  HOVER_DRAWPOINT_STYLE,
-  NORMAL_DRAWPOINT_STYLE,
-} from '../constants/style';
+import { ACTIVE_DRAWPOINT_STYLE, NORMAL_DRAWPOINT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
 
 export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) => {
   const points = anno.path.slice(0, anno.path.length - 1);
   const length = points.length;
+
+  // hide all control points first
+  for (let i = 0; i < context.polylineControlPoints.length; i++) {
+    context.polylineControlPoints[i].style.visibility = 'hidden';
+  }
+
   points.forEach((point, index) => {
     const styles = index === length - 1 ? ACTIVE_DRAWPOINT_STYLE : NORMAL_DRAWPOINT_STYLE;
 
@@ -29,6 +31,15 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
       context.canvas?.appendChild(circle);
 
       context.polylineControlPoints[index] = circle;
+
+      // todo:  修改不生效
+      // circle.addEventListener('mouseover', () => {
+      //   circle.attr({ ...circle.style, ...HOVER_DRAWPOINT_STYLE, r: 10 });
+      // });
+
+      // circle.addEventListener('mouseout', () => {
+      //   circle.style = { ...circle.style, ...HOVER_DRAWPOINT_STYLE };
+      // });
     }
 
     circle.attr({
@@ -36,15 +47,6 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
       cy: point.y,
       visibility: 'visible',
       ...styles,
-    });
-
-    // todo:  修改不生效
-    circle.addEventListener('mouseover', () => {
-      circle.attr({ ...circle.style, ...HOVER_DRAWPOINT_STYLE, r: 10 });
-    });
-
-    circle.addEventListener('mouseout', () => {
-      circle.style = { ...circle.style, ...HOVER_DRAWPOINT_STYLE };
     });
   });
 };

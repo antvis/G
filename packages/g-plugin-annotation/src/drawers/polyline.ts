@@ -27,6 +27,8 @@ export class PolylineDrawer extends BaseDrawer {
       this.path.push(currentPoint);
       const lastPoint = this.path[this.path.length - 3];
       if (isNearPoint(lastPoint, currentPoint, 8)) {
+        // remove last moving point
+        this.path.pop();
         this.closePath();
         return;
       }
