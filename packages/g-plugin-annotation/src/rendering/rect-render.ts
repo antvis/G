@@ -1,4 +1,5 @@
-import { PointLike, Rect } from '@antv/g';
+import type { PointLike } from '@antv/g';
+import { Rect } from '@antv/g';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';

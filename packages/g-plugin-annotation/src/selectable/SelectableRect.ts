@@ -1,16 +1,12 @@
-import {
+import type {
   BaseCustomElementStyleProps,
-  Circle,
   Cursor,
-  CustomElement,
-  CustomEvent,
   DisplayObject,
   DisplayObjectConfig,
   FederatedEvent,
   ParsedBaseStyleProps,
-  rad2deg,
-  Rect,
 } from '@antv/g';
+import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 
@@ -217,7 +213,6 @@ export class SelectableRect extends CustomElement<Props> {
 
   private bindEventListeners() {
     const { target: targetObject } = this.style;
-    const canvas = this.ownerDocument.defaultView;
 
     // listen to drag'n'drop events
     let shiftX = 0;
@@ -262,7 +257,7 @@ export class SelectableRect extends CustomElement<Props> {
 
       // position in canvas coordinates
       const [ox, oy] = this.getPosition();
-      const angles = this.getEulerAngles();
+      // const angles = this.getEulerAngles();
 
       if (target === this.mask) {
         this.status = 'moving';
