@@ -807,7 +807,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/inherit
           // behave like `inherit`
           const resolved = this.tryToResolveProperty(object, name, { inherited: true });
-          if (resolved) {
+          if (!isNil(resolved)) {
             // object.parsedStyle[name] = resolved;
             // return false;
             return resolved;
@@ -885,7 +885,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           usedValue === 'initial' ||
           usedValue === 'inherit'
         ) {
-          return false;
+          return;
         }
 
         // else if (
@@ -899,7 +899,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     }
 
-    return false;
+    return;
   }
 
   recalc(object: DisplayObject) {
