@@ -1,16 +1,13 @@
-import {
+import type {
   Canvas,
   Circle,
   FederatedPointerEvent,
-  inject,
   Polyline,
   Rect,
-  RenderingContext,
   RenderingPlugin,
-  RenderingPluginContribution,
   RenderingService,
-  singleton,
 } from '@antv/g';
+import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';

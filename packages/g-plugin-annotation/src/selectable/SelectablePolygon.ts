@@ -211,9 +211,6 @@ export class SelectablePolygon extends CustomElement<Props> {
     this.addEventListener('dragend', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
 
-      const dx = this.mask.getPosition()[0];
-      const dy = this.mask.getPosition()[1];
-      const { defX, defY } = this.mask.parsedStyle;
       if (target === this.mask) {
         this.status = 'active';
         targetObject.attr({
