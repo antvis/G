@@ -17,6 +17,7 @@ import {
 } from '@antv/g';
 import { SelectableEvent } from './constants/enum';
 import { SelectablePolyline, SelectableRect } from './selectable';
+import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
 import { AnnotationPluginOptions } from './tokens';
 
@@ -49,7 +50,7 @@ export class SelectablePlugin implements RenderingPlugin {
   /**
    * each selectable has an operation UI
    */
-  private selectableMap: Record<number, DisplayObject> = {};
+  private selectableMap: Record<number, Selectable> = {};
 
   @inject(RenderingContext)
   private renderingContext: RenderingContext;
@@ -82,9 +83,9 @@ export class SelectablePlugin implements RenderingPlugin {
     }
   }
 
-  private getOrCreateSelectableUI(object: DisplayObject): DisplayObject {
+  private getOrCreateSelectableUI(object: DisplayObject): Selectable {
     if (!this.selectableMap[object.entity]) {
-      let created: DisplayObject;
+      let created: Selectable;
       if (
         object.nodeName === Shape.IMAGE ||
         object.nodeName === Shape.RECT ||
@@ -183,44 +184,158 @@ export class SelectablePlugin implements RenderingPlugin {
     //   });
     // };
 
-    // const handleModifyingTarget = (e: CustomEvent) => {
-    //   const target = e.target as DisplayObject;
-    //   const { positionX, positionY, scaleX, scaleY, maskWidth, maskHeight } = e.detail;
+    const handleModifiedTarget = (e: CustomEvent) => {
+      const target = e.target as DisplayObject;
+      const { rect, polyline, polygon } = e.detail;
 
-    //   // re-position target
-    //   target.setPosition(positionX, positionY);
+      if (target.nodeName === Shape.RECT) {
+        const { x, y, width, height } = rect;
+        target.attr({
+          x,
+          y,
+          width,
+          height,
+        });
+      } else if (target.nodeName === Shape.POLYLINE) {
+        target.attr({
+          points: polyline.points,
+        });
+      } else if (target.nodeName === Shape.POLYGON) {
+        target.attr({
+          points: polygon.points,
+        });
+      }
 
-    //   if (target.nodeName === Shape.RECT) {
-    //     target.attr({
-    //       width: maskWidth,
-    //       height: maskHeight,
-    //     });
-    //   } else {
-    //     target.scale(scaleX, scaleY);
-    //   }
-    // };
+      // re-position target
+      // target.setPosition(positionX, positionY);
 
-    // TODO: deselected when removed
+      // if (target.nodeName === Shape.RECT) {
+      //   target.attr({
+      //     width: maskWidth,
+      //     height: maskHeight,
+      //   });
+      // } else {
+      //   target.scale(scaleX, scaleY);
+      // }
+    };
+
+    const handleMovedTarget = (e: CustomEvent) => {
+      const target = e.target as DisplayObject;
+      const { rect, polyline, polygon } = e.detail;
+
+      if (target.nodeName === Shape.RECT) {
+        target.attr({
+          x: rect.x,
+          y: rect.y,
+        });
+      } else if (target.nodeName === Shape.POLYLINE) {
+        target.attr({
+          points: polyline.points,
+        });
+      } else if (target.nodeName === Shape.POLYGON) {
+        target.attr({
+          points: polygon.points,
+        });
+      }
+    };
+
+    // deselected when removed
     const handleUnmounted = (e: CustomEvent) => {
       this.deselectDisplayObject(e.target as DisplayObject);
+    };
+
+    // Use arrow key to move selectable UI.
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (this.annotationPluginOptions.isDrawingMode) {
+        return;
+      }
+
+      if (
+        e.key === 'ArrowLeft' ||
+        e.key === 'ArrowUp' ||
+        e.key === 'ArrowRight' ||
+        e.key === 'ArrowDown'
+      ) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        let dx = 0;
+        let dy = 0;
+        const { arrowKeyStepLength } = this.annotationPluginOptions;
+        if (e.key === 'ArrowLeft') {
+          dx -= arrowKeyStepLength;
+        }
+        if (e.key === 'ArrowUp') {
+          dy -= arrowKeyStepLength;
+        }
+        if (e.key === 'ArrowRight') {
+          dx += arrowKeyStepLength;
+        }
+        if (e.key === 'ArrowDown') {
+          dy += arrowKeyStepLength;
+        }
+
+        this.selected.forEach((selected) => {
+          const selectable = this.getOrCreateSelectableUI(selected);
+          if (selectable) {
+            let x = 0;
+            let y = 0;
+
+            // move mask first
+            selectable.moveMask(dx, dy);
+
+            if (selected.nodeName === Shape.RECT) {
+              [x, y] = selectable.getPosition();
+              selected.dispatchEvent(
+                new CustomEvent(SelectableEvent.MOVED, {
+                  rect: {
+                    x,
+                    y,
+                  },
+                }),
+              );
+            } else if (selected.nodeName === Shape.POLYLINE) {
+              selected.dispatchEvent(
+                new CustomEvent(SelectableEvent.MOVED, {
+                  polyline: {
+                    points: (selectable as SelectablePolyline).mask.style.points,
+                  },
+                }),
+              );
+            } else if (selected.nodeName === Shape.POLYGON) {
+              selected.dispatchEvent(
+                new CustomEvent(SelectableEvent.MOVED, {
+                  polygon: {
+                    points: (selectable as SelectablePolygon).mask.style.points,
+                  },
+                }),
+              );
+            }
+          }
+        });
+      }
     };
 
     renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
       canvas.addEventListener('pointerdown', handleClick);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      window.addEventListener('keydown', handleKeyDown);
       canvas.appendChild(this.activeSelectableLayer);
 
+      canvas.addEventListener(SelectableEvent.MOVED, handleMovedTarget);
+      canvas.addEventListener(SelectableEvent.MODIFIED, handleModifiedTarget);
       // canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
-      // canvas.addEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
       canvas.removeEventListener('pointerdown', handleClick);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      window.removeEventListener('keydown', handleKeyDown);
       canvas.removeChild(this.activeSelectableLayer);
 
+      canvas.removeEventListener(SelectableEvent.MOVED, handleMovedTarget);
+      canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifiedTarget);
       // canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
-      // canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifyingTarget);
     });
   }
 }

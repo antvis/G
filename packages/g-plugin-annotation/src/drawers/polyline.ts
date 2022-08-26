@@ -60,6 +60,7 @@ export class PolylineDrawer extends BaseDrawer {
     if (e.code === 'Escape') {
       this.emit('draw:cancel', this.state);
       this.reset();
+      e.stopPropagation();
     }
 
     if (e.code === 'KeyZ' && e.ctrlKey) {
@@ -75,6 +76,7 @@ export class PolylineDrawer extends BaseDrawer {
 
     if (e.code === 'Space') {
       this.closePath();
+      e.stopPropagation();
     }
   }
 

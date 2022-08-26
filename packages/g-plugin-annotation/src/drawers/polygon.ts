@@ -52,6 +52,7 @@ export class PolygonDrawer extends BaseDrawer {
     if (e.code === 'Escape') {
       this.emit('draw:cancel', this.state);
       this.reset();
+      e.stopPropagation();
     }
 
     if (e.code === 'KeyZ' && e.ctrlKey) {
@@ -68,6 +69,7 @@ export class PolygonDrawer extends BaseDrawer {
     if (e.code === 'Space') {
       if (this.path.length > 3) {
         this.closePath();
+        e.stopPropagation();
       }
     }
   }

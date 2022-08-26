@@ -8,17 +8,18 @@ import type {
 import { Circle, CustomElement, CustomEvent, Polygon, Shape } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
+import type { Selectable } from './interface';
 interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
   target: DisplayObject;
 }
 
 type SelectableStatus = 'active' | 'deactive' | 'moving' | 'resizing';
 
-export class SelectablePolygon extends CustomElement<Props> {
+export class SelectablePolygon extends CustomElement<Props> implements Selectable {
   /**
    * transparent mask
    */
-  private mask: Polygon;
+  mask: Polygon;
 
   // private rotateAnchor: Circle;
 
@@ -141,6 +142,14 @@ export class SelectablePolygon extends CustomElement<Props> {
     }
   }
 
+  moveMask(dx: number, dy: number) {
+    // change definition of polyline
+    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [x + dx, y + dy]);
+
+    // re-position anchors in canvas coordinates
+    this.repositionAnchors();
+  }
+
   private repositionAnchors() {
     const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
@@ -157,15 +166,9 @@ export class SelectablePolygon extends CustomElement<Props> {
     const moveAt = (canvasX: number, canvasY: number) => {
       const { defX, defY } = this.mask.parsedStyle;
 
-      // change definition of polyline
-      this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
-        x + canvasX - shiftX - defX,
-        y + canvasY - shiftY - defY,
-      ]);
+      this.moveMask(canvasX - shiftX - defX, canvasY - shiftY - defY);
 
-      // re-position anchors in canvas coordinates
-      this.repositionAnchors();
-
+      // TODO: mask moving
       targetObject.dispatchEvent(
         new CustomEvent(SelectableEvent.MOVING, {
           movingX: canvasX - shiftX,
@@ -213,15 +216,21 @@ export class SelectablePolygon extends CustomElement<Props> {
 
       if (target === this.mask) {
         this.status = 'active';
-        targetObject.attr({
-          points: this.mask.style.points,
-        });
-        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MOVED, {
+            polygon: {
+              points: this.mask.style.points,
+            },
+          }),
+        );
       } else if (targetObject.nodeName === Shape.POLYGON) {
-        targetObject.attr({
-          points: this.mask.style.points,
-        });
-        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MODIFIED, {
+            polygon: {
+              points: this.mask.style.points,
+            },
+          }),
+        );
       }
     });
   }

@@ -9,6 +9,7 @@ import type {
 import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
+import type { Selectable } from './interface';
 
 interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
   target: DisplayObject;
@@ -42,7 +43,7 @@ const controls: Control[] = [
   },
 ];
 
-export class SelectableRect extends CustomElement<Props> {
+export class SelectableRect extends CustomElement<Props> implements Selectable {
   /**
    * transparent mask
    */
@@ -170,7 +171,9 @@ export class SelectableRect extends CustomElement<Props> {
 
     this.bindEventListeners();
   }
-  disconnectedCallback() {}
+  disconnectedCallback() {
+    // TODO: unbind event listeners
+  }
   attributeChangedCallback<Key extends never>(name: Key, oldValue: {}[Key], newValue: {}[Key]) {
     if (name === 'selectionStroke') {
       this.mask.style.stroke = newValue;
@@ -211,6 +214,15 @@ export class SelectableRect extends CustomElement<Props> {
     }
   }
 
+  moveMask(dx: number, dy: number) {
+    this.translate(dx, dy);
+  }
+
+  /**
+   * Support 2 kinds of interactions:
+   * * Drag with pointer device.
+   * * ArrowKey with keyboard.
+   */
   private bindEventListeners() {
     const { target: targetObject } = this.style;
 
@@ -218,7 +230,8 @@ export class SelectableRect extends CustomElement<Props> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      this.setPosition(canvasX - shiftX, canvasY - shiftY);
+      const [ox, oy] = this.getPosition();
+      this.moveMask(canvasX - shiftX - ox, canvasY - shiftY - oy);
 
       targetObject.dispatchEvent(
         new CustomEvent(SelectableEvent.MOVING, {
@@ -285,33 +298,16 @@ export class SelectableRect extends CustomElement<Props> {
           maskX = canvasX;
           maskY = oy;
         } else if (target === this.brAnchor) {
-          // calculate width/height in viewport coordinates
-          // const tl = canvas.canvas2Viewport({ x: ox, y: oy });
-          // const tr = canvas.viewport2Canvas({
-          //   x: viewportX,
-          //   y: tl.y,
+          // const height = distanceFromPointToLine({ x: ox, y: oy }, deg2rad(angles), {
+          //   x: canvasX,
+          //   y: canvasY,
           // });
-
-          // const width = Math.hypot(tr.x - ox, tr.y - oy);
-          // const height = Math.hypot(tr.x - canvasX, tr.y - canvasY);
-
-          // rotate around tl corner
-          // const rotationMatrix = mat4.fromRotationTranslationScaleOrigin(
-          //   mat4.create(),
-          //   quat.fromEuler(quat.create(), 0, 0, -angles),
-          //   vec3.create(),
-          //   vec3.fromValues(1, 1, 1),
-          //   vec3.fromValues(ox, oy, 0),
-          // );
-
-          // const br = vec3.transformMat4(
-          //   vec3.create(),
-          //   vec3.fromValues(canvasX, canvasY, 0),
-          //   rotationMatrix,
-          // );
-
-          // maskWidth = br[0] - ox;
-          // maskHeight = br[1] - oy;
+          // const width = distanceFromPointToLine({ x: ox, y: oy }, deg2rad(90 - angles), {
+          //   x: canvasX,
+          //   y: canvasY,
+          // });
+          // maskWidth = width;
+          // maskHeight = -height;
           maskWidth = canvasX - ox;
           maskHeight = canvasY - oy;
           maskX = ox;
@@ -336,19 +332,30 @@ export class SelectableRect extends CustomElement<Props> {
       if (target === this.mask) {
         this.status = 'active';
 
-        this.style.target.attr({
-          x: Number(this.mask.style.x) + this.mask.getPosition()[0],
-          y: Number(this.mask.style.y) + this.mask.getPosition()[1],
-        });
-        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MOVED, {
+            rect: {
+              x: Number(this.mask.style.x) + this.mask.getPosition()[0],
+              y: Number(this.mask.style.y) + this.mask.getPosition()[1],
+            },
+          }),
+        );
       } else if (
         target === this.tlAnchor ||
         target === this.trAnchor ||
         target === this.blAnchor ||
         target === this.brAnchor
       ) {
-        this.style.target.attr({ x: maskX, y: maskY, width: maskWidth, height: maskHeight });
-        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MODIFIED, {
+            rect: {
+              x: maskX,
+              y: maskY,
+              width: maskWidth,
+              height: maskHeight,
+            },
+          }),
+        );
       }
     });
   }
