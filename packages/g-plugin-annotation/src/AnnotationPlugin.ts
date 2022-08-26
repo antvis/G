@@ -254,7 +254,7 @@ export class AnnotationPlugin implements RenderingPlugin {
       this.drawer?.onKeyDown?.(e);
     };
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (!this.annotationPluginOptions.isDrawingMode) {
         return;
       }
@@ -263,21 +263,6 @@ export class AnnotationPlugin implements RenderingPlugin {
       if (this.drawer?.isDrawing) {
         handleDrawerKeyDown(e);
       }
-
-      const active = this.drawer;
-      if (e.key === 'ArrowLeft') {
-        active.path = active.path.map((point) => ({ x: point.x - 1, y: point.y }));
-      }
-      if (e.key === 'ArrowUp') {
-        active.path = active.path.map((point) => ({ x: point.x, y: point.y - 1 }));
-      }
-      if (e.key === 'ArrowRight') {
-        active.path = active.path.map((point) => ({ x: point.x + 1, y: point.y }));
-      }
-      if (e.key === 'ArrowDown') {
-        active.path = active.path.map((point) => ({ x: point.x, y: point.y + 1 }));
-      }
-      // this.renderDrawer(active);
     };
 
     const handleCanvasEnter = () => {

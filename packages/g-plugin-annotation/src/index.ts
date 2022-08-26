@@ -24,6 +24,7 @@ export class Plugin extends AbstractRendererPlugin {
       useValue: {
         selectableStyle: {},
         isDrawingMode: true,
+        arrowKeyStepLength: 4,
         ...this.options,
       },
     });

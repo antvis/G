@@ -3,9 +3,18 @@ import { Syringe } from '@antv/g';
 export const AnnotationPluginOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface AnnotationPluginOptions {
+  /**
+   * Style for selectable UI.
+   */
   selectableStyle?: Partial<SelectableStyle>;
+  /**
+   * Switch between drawing mode & select mode.
+   */
   isDrawingMode?: boolean;
-  destroyAfterComplete?: boolean;
+  /**
+   * The length target should move after arrwo key pressed in canvas coordinates.
+   */
+  arrowKeyStepLength: number;
 }
 
 // @see http://fabricjs.com/fabric-intro-part-4#customization

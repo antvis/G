@@ -8,6 +8,7 @@ import type {
 import { Circle, CustomElement, CustomEvent, Polyline, Shape } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
+import type { Selectable } from './interface';
 
 interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
   target: DisplayObject;
@@ -15,11 +16,11 @@ interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
 
 type SelectableStatus = 'active' | 'deactive' | 'moving' | 'resizing';
 
-export class SelectablePolyline extends CustomElement<Props> {
+export class SelectablePolyline extends CustomElement<Props> implements Selectable {
   /**
    * transparent mask
    */
-  private mask: Polyline;
+  mask: Polyline;
 
   // private rotateAnchor: Circle;
 
@@ -149,6 +150,14 @@ export class SelectablePolyline extends CustomElement<Props> {
     }
   }
 
+  moveMask(dx: number, dy: number) {
+    // change definition of polyline
+    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [x + dx, y + dy]);
+
+    // re-position anchors in canvas coordinates
+    this.repositionAnchors();
+  }
+
   private repositionAnchors() {
     const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
@@ -164,15 +173,7 @@ export class SelectablePolyline extends CustomElement<Props> {
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
       const { defX, defY } = this.mask.parsedStyle;
-
-      // change definition of polyline
-      this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
-        x + canvasX - shiftX - defX,
-        y + canvasY - shiftY - defY,
-      ]);
-
-      // re-position anchors in canvas coordinates
-      this.repositionAnchors();
+      this.moveMask(canvasX - shiftX - defX, canvasY - shiftY - defY);
 
       targetObject.dispatchEvent(
         new CustomEvent(SelectableEvent.MOVING, {
@@ -220,15 +221,21 @@ export class SelectablePolyline extends CustomElement<Props> {
       const target = e.target as DisplayObject;
       if (target === this.mask) {
         this.status = 'active';
-        targetObject.attr({
-          points: this.mask.style.points,
-        });
-        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MOVED));
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MOVED, {
+            polyline: {
+              points: this.mask.style.points,
+            },
+          }),
+        );
       } else if (targetObject.nodeName === Shape.POLYLINE) {
-        targetObject.attr({
-          points: this.mask.style.points,
-        });
-        targetObject.dispatchEvent(new CustomEvent(SelectableEvent.MODIFIED));
+        targetObject.dispatchEvent(
+          new CustomEvent(SelectableEvent.MODIFIED, {
+            polyline: {
+              points: this.mask.style.points,
+            },
+          }),
+        );
       }
     });
   }
