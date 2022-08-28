@@ -32,6 +32,11 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
   isPointInPath?: (displayObject: DisplayObject<T>, point: Point) => boolean,
 ) => boolean;
 
+const tmpVec3a = vec3.create();
+const tmpVec3b = vec3.create();
+const tmpVec3c = vec3.create();
+const tmpMat4 = mat4.create();
+
 /**
  * pick shape(s) with Mouse/Touch event
  *
@@ -61,10 +66,6 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   @inject(PointInPathPickerFactory)
   private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
 
-  private tmpVec3a = vec3.create();
-  private tmpVec3b = vec3.create();
-  private tmpVec3c = vec3.create();
-
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tapPromise(
       CanvasPickerPlugin.tag,
@@ -75,7 +76,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         } = result;
 
         // position in world space
-        const position = vec3.set(this.tmpVec3a, x, y, 0);
+        const position = vec3.set(tmpVec3a, x, y, 0);
 
         // query by AABB first with spatial index(r-tree)
         const rBushNodes = this.rBush.search({
@@ -132,7 +133,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
             if (clipped) {
               const clipPath = clipped.style.clipPath;
               worldTransform = mat4.multiply(
-                mat4.create(),
+                tmpMat4,
                 clipped === displayObject ? worldTransform : clipped.getWorldTransform(),
                 clipPath.getLocalTransform(),
               );
@@ -178,12 +179,12 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     const pick = this.pointInPathPickerFactory(displayObject.nodeName);
     if (pick) {
       // invert with world matrix
-      const invertWorldMat = mat4.invert(mat4.create(), worldTransform);
+      const invertWorldMat = mat4.invert(tmpMat4, worldTransform);
 
       // transform client position to local space, do picking in local space
       const localPosition = vec3.transformMat4(
-        this.tmpVec3b,
-        vec3.set(this.tmpVec3c, position[0], position[1], 0),
+        tmpVec3b,
+        vec3.set(tmpVec3c, position[0], position[1], 0),
         invertWorldMat,
       );
 

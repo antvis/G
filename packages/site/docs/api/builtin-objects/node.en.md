@@ -250,7 +250,7 @@ The full method signature is:
 removeChild(child: Node, destroy?: boolean): Node
 ```
 
-Deletes a child node, while you can choose whether to destroy this child node or not, and finally returns the deleted child node.
+Deletes a child node, finally returns the deleted child node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild
 

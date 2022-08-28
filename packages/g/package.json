@@ -29,24 +29,12 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.7.9",
-    "@antv/util": "^3.2.3",
-    "@types/offscreencanvas": "^2019.6.4",
-    "d3-color": "^1.4.0",
-    "eventemitter3": "^4.0.0",
-    "gl-matrix": "^3.1.0",
-    "mana-syringe": "^0.3.0",
-    "mat4-decompose": "^1.0.4",
-    "rbush": "^3.0.1",
-    "reflect-metadata": "^0.1.13",
-    "request-animation-frame-polyfill": "^1.1.2",
-    "tslib": "^2.3.1"
-  },
-  "devDependencies": {
-    "@types/d3-color": "^3.0.2",
-    "@types/gl-matrix": "^2.4.5",
-    "@types/offscreencanvas": "^2019.6.1",
-    "@types/rbush": "^3.0.0"
+    "@antv/g-compat": "^0.0.1",
+    "@antv/g-css-layout-api": "^0.0.1",
+    "@antv/g-css-typed-om-api": "^0.0.1",
+    "@antv/g-dom-mutation-observer-api": "^0.0.1",
+    "@antv/g-lite": "^0.0.1",
+    "@antv/g-web-animations-api": "^0.0.1"
   },
   "publishConfig": {
     "access": "public"

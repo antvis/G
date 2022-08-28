@@ -18,6 +18,7 @@ window.d3Force3d = require('d3-force-3d');
 window.d3SvgAnnotation = require('d3-svg-annotation');
 // core
 window.g = require('@antv/g');
+window.gLite = require('@antv/g-lite');
 // renderers
 window.gCanvas = require('@antv/g-canvas');
 window.gWebgl = require('@antv/g-webgl');

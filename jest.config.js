@@ -19,7 +19,7 @@ const moduleNameMapper = {
 
 module.exports = {
   moduleNameMapper: moduleNameMapper,
-  collectCoverageFrom: ['<rootDir>/packages/g/src/**/*.{ts,tsx}'],
+  collectCoverageFrom: ['<rootDir>/packages/g-lite/src/**/*.{ts,tsx}'],
   coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/', '/__node__tests__/'],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'clover', 'lcov'],
@@ -34,7 +34,7 @@ module.exports = {
 
   runner: 'jest-electron/runner',
   testEnvironment: 'jest-electron/environment',
-  testMatch: ['<rootDir>/packages/**/*/__tests__/*.spec.+(ts|tsx|js)'],
+  testMatch: ['<rootDir>/packages/**/*/__tests__/**/*/*.spec.+(ts|tsx|js)'],
   testPathIgnorePatterns: ['<rootDir>/packages/g-gesture'],
   preset: 'ts-jest',
   globals: {

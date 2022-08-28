@@ -239,9 +239,9 @@ circle.remove();
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
 
-### removeChildren(destroy = true)
+### removeChildren()
 
-Remove all child nodes from the scene graph, you can choose whether to destroy them at the same time, the default will be destroyed.
+Remove and destroy all child nodes from the scene graph.
 
 ```js
 parent.removeChildren();

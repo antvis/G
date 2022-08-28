@@ -134,6 +134,24 @@
     gl-matrix "^3.0.0"
     tslib "^2.0.3"
 
+"@antv/g-lite@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@antv/g-lite/-/g-lite-0.0.1.tgz#6f3f71ec6c34ed7a7f4eb2f7a3f7297e286f1fc5"
+  integrity sha512-Evy5zLOQbd8syR1iN8w5891L8CjOY8SdiNhtGEU4OELWgaMTeXfanIfGutSKniqXUDz4NR7oVPuLauB20RLSnQ==
+  dependencies:
+    "@antv/g-math" "^1.7.3"
+    "@antv/util" "^3.2.3"
+    "@types/offscreencanvas" "^2019.6.4"
+    d3-color "^1.4.0"
+    eventemitter3 "^4.0.0"
+    gl-matrix "^3.1.0"
+    mana-syringe "^0.3.0"
+    mat4-decompose "^1.0.4"
+    rbush "^3.0.1"
+    reflect-metadata "^0.1.13"
+    request-animation-frame-polyfill "^1.1.2"
+    tslib "^2.3.1"
+
 "@antv/g-math@^0.1.1", "@antv/g-math@^0.1.6":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@antv/g-math/-/g-math-0.1.7.tgz#6ec2769269f7ccb67e58140d5739df74046cc04e"

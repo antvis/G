@@ -1255,8 +1255,8 @@ solarSystem.findAll((element) => element.style.r === 25);
 | prepend | `...nodes: DisplayObject[]` |  | 在当前节点的子节点列表头部批量添加一组节点 |
 | after | `...nodes: DisplayObject[]` |  | 在当前节点之后批量添加一些兄弟节点 |
 | before | `...nodes: DisplayObject[]` |  | 在当前节点之前批量添加一些兄弟节点 |
-| removeChild | `child: DisplayObject`<br/>`destroy = true` | `DisplayObject` | 删除子节点，返回被删除的节点。`destroy` 表示是否要销毁 |
-| removeChildren | `destroy = true` |  | 删除全部子节点。`destroy` 表示是否要销毁 |
+| removeChild | `child: DisplayObject` | `DisplayObject` | 删除子节点，返回被删除的节点。 |
+| removeChildren |  |  | 删除并销毁全部子节点。 |
 | remove | `destroy = true` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 | replaceChild | `child: DisplayObject` | `DisplayObject` | 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点 |
 | replaceWith | `...nodes: DisplayObject[]` |  | 在父节点的子节点列表中，用传入的节点列表替换该节点 |
