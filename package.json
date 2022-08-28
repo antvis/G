@@ -94,6 +94,11 @@
   },
   "limit-size": [
     {
+      "path": "packages/g-lite/dist/index.umd.min.js",
+      "limit": "150 Kb",
+      "gzip": true
+    },
+    {
       "path": "packages/g/dist/index.umd.min.js",
       "limit": "150 Kb",
       "gzip": true
