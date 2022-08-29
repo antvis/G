@@ -5,6 +5,7 @@ import {
   getDrawDirection,
   getPathBBoxTotalLength,
   getRotatedCurve,
+  isString,
   memoize,
   normalizePath,
   path2Curve,
@@ -12,7 +13,7 @@ import {
 } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
-import { extractPolygons, hasArcOrBezier, isString, path2Segments } from '../../utils';
+import { extractPolygons, hasArcOrBezier, path2Segments } from '../../utils';
 
 const internalParsePath = (path: string | PathArray) => {
   // empty path

@@ -1,3 +1,4 @@
+import { isUndefined } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import type { FederatedMouseEvent, ICanvas } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
@@ -13,7 +14,6 @@ import {
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { isUndefined } from '../utils';
 import type { FormattedPointerEvent, FormattedTouch } from '../utils/event';
 import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
 

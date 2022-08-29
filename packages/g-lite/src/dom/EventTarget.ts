@@ -1,5 +1,5 @@
+import { isBoolean, isFunction, isObject } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
-import { isBoolean, isFunction, isObject } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
 import type { ICanvas, IDocument, IElement, IEventTarget, INode } from './interfaces';

@@ -18,7 +18,6 @@ import {
   DisplayObjectPool,
   ElementEvent,
   inject,
-  isNil,
   RBush,
   RBushRoot,
   RenderingContext,
@@ -28,6 +27,7 @@ import {
 } from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
+import { isNil } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';

@@ -1,6 +1,6 @@
+import { isNil } from '@antv/util';
 import { singleton, Syringe } from 'mana-syringe';
 import type { IElement } from '../dom/interfaces';
-import { isNil } from '../utils';
 
 export const SceneGraphSelectorFactory = Syringe.defineToken('');
 export const SceneGraphSelector = Syringe.defineToken('', { multiple: false });

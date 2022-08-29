@@ -8,12 +8,12 @@ import type {
 import {
   ElementEvent,
   inject,
-  isString,
   RenderingContext,
   RenderingPluginContribution,
   Shape,
   singleton,
 } from '@antv/g';
+import { isString } from '@antv/util';
 import { ImagePool } from './ImagePool';
 
 @singleton({ contrib: RenderingPluginContribution })

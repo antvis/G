@@ -8,7 +8,6 @@ import type {
 import {
   Camera,
   CanvasConfig,
-  clamp,
   ContextService,
   DefaultCamera,
   ElementEvent,
@@ -19,6 +18,7 @@ import {
   SceneGraphService,
   singleton,
 } from '@antv/g';
+import { clamp } from '@antv/util';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentBlack } from './platform';
 import {

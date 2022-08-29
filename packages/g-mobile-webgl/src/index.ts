@@ -1,11 +1,12 @@
 import type { RendererConfig } from '@antv/g';
-import { AbstractRenderer, isNil } from '@antv/g';
+import { AbstractRenderer } from '@antv/g';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
 import * as DomInteraction from '@antv/g-plugin-mobile-interaction';
 import * as WebGLDevice from '@antv/g-plugin-webgl-device';
+import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, DeviceRenderer, WebGLDevice, HTMLRenderer };

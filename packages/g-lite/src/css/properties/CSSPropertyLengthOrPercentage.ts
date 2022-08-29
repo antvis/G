@@ -1,6 +1,6 @@
+import { isNil } from '@antv/util';
 import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
-import { isNil } from '../../utils';
 import { CSSUnitValue, UnitType } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import type { StyleValueRegistry } from '../interfaces';

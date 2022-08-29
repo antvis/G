@@ -10,7 +10,7 @@
 export * from './CSSColorValue';
 export * from './CSSGradientValue';
 export * from './CSSKeywordValue';
-export * from './CSSMathOperator';
+// export * from './CSSMathOperator';
 export * from './CSSNumericSumValue';
 export * from './CSSNumericValue';
 export * from './CSSRGB';

@@ -1,4 +1,5 @@
 // import { this.sceneGraphService } from '..';
+import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { GlobalContainer } from 'mana-syringe';
 import type { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
@@ -7,7 +8,7 @@ import { unsetKeywordValue } from '../css';
 import { SceneGraphService } from '../services/interfaces';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, formatAttribute, isNil } from '../utils';
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, formatAttribute } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import type { IChildNode, ICSSStyleDeclaration, IElement, IEventTarget, INode } from './interfaces';
 import { ElementEvent } from './interfaces';

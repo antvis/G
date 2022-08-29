@@ -1,4 +1,4 @@
-import { isNil } from '@antv/g-lite';
+import { isNil } from '@antv/util';
 import type { AnimationEffectTiming } from './AnimationEffectTiming';
 
 /**

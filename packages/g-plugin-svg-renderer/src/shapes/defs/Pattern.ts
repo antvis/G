@@ -7,8 +7,8 @@ import {
   GradientType,
   isBrowser,
   isPattern,
-  isString,
 } from '@antv/g';
+import { isString } from '@antv/util';
 import { createSVGElement } from '../../utils/dom';
 import { FILTER_PREFIX } from './Filter';
 

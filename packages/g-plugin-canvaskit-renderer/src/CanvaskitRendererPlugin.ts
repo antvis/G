@@ -21,9 +21,7 @@ import {
   getEuler,
   GradientType,
   inject,
-  isNil,
   isPattern,
-  isString,
   parseColor,
   rad2deg,
   RenderingContext,
@@ -32,6 +30,7 @@ import {
   singleton,
 } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
+import { isNil, isString } from '@antv/util';
 import type {
   Canvas,
   EmbindEnumEntity,

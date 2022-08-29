@@ -8,8 +8,9 @@ import type {
   RadialGradient,
   RenderingService,
 } from '@antv/g';
-import { GradientType, inject, isNil, isPattern, Shape, singleton } from '@antv/g';
+import { GradientType, inject, isPattern, Shape, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
+import { isNil } from '@antv/util';
 import type { StyleRenderer } from './interfaces';
 
 @singleton()

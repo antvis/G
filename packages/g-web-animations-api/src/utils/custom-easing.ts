@@ -2,7 +2,7 @@
  * ported from https://github.com/okikio/native/blob/master/packages/animate/src/custom-easing.ts
  */
 import type { TypeEasingFunction } from '@antv/g-lite';
-import { clamp } from '@antv/g-lite';
+import { clamp } from '@antv/util';
 import { bezier } from './bezier-easing';
 
 export const convertToDash = (str: string) => {

@@ -3,11 +3,11 @@
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
 import type { AbsoluteArray, CurveArray } from '@antv/util';
+import { clamp } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from '../display-objects';
 import { Shape } from '../types';
-import { clamp } from './math';
 
 export function hasArcOrBezier(path: AbsoluteArray) {
   let hasArc = false;

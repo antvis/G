@@ -1,6 +1,7 @@
 import type { DataURLOptions } from '@antv/g';
-import { CanvasConfig, ContextService, inject, isString, singleton } from '@antv/g';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
+import { isString } from '@antv/util';
 
 @singleton({ token: ContextService })
 export class SVGContextService implements ContextService<SVGElement> {

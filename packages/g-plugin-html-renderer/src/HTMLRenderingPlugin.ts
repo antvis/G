@@ -13,12 +13,12 @@ import {
   ElementEvent,
   inject,
   isPattern,
-  isString,
   RenderingContext,
   RenderingPluginContribution,
   Shape,
   singleton,
 } from '@antv/g';
+import { isString } from '@antv/util';
 
 const HTML_PREFIX = 'g-html-';
 

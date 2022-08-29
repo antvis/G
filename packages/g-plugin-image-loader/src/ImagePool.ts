@@ -6,9 +6,9 @@ import {
   GradientType,
   inject,
   isBrowser,
-  isString,
   singleton,
 } from '@antv/g';
+import { isString } from '@antv/util';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;

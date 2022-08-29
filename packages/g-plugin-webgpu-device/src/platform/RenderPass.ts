@@ -1,4 +1,3 @@
-import { isNil } from '@antv/g';
 import type {
   Bindings,
   InputState,
@@ -7,6 +6,7 @@ import type {
   RenderPipeline,
 } from '@antv/g-plugin-device-renderer';
 import { assert, assertExists } from '@antv/g-plugin-device-renderer';
+import { isNil } from '@antv/util';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
 import type { InputLayout_WebGPU } from './InputLayout';

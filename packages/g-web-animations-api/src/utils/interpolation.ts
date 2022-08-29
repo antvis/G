@@ -150,7 +150,7 @@ function propertyInterpolation(
 ) {
   const metadata = cache[property];
 
-  if (metadata && metadata.syntax && metadata.interpolable) {
+  if (metadata && metadata.syntax && metadata.int) {
     const propertyHandler = styleValueRegistry.getPropertySyntax(metadata.syntax);
 
     if (propertyHandler) {

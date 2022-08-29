@@ -1,14 +1,11 @@
+import { isFunction } from '@antv/util';
 import { GlobalContainer } from 'mana-syringe';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { BaseStyleProps } from '../types';
 import { AnimationTimelineToken, Shape } from '../types';
-import {
-  ERROR_MSG_METHOD_NOT_IMPLEMENTED,
-  ERROR_MSG_USE_DOCUMENT_ELEMENT,
-  isFunction,
-} from '../utils';
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, ERROR_MSG_USE_DOCUMENT_ELEMENT } from '../utils';
 import type {
   DisplayObjectConfig,
   IAnimationTimeline,
@@ -43,9 +40,9 @@ export class Document extends Node implements IDocument {
      * @see https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
      */
     const initialStyle = {};
-    BUILT_IN_PROPERTIES.forEach(({ name, inherited, defaultValue }) => {
-      if (inherited && defaultValue) {
-        initialStyle[name] = isFunction(defaultValue) ? defaultValue(Shape.GROUP) : defaultValue;
+    BUILT_IN_PROPERTIES.forEach(({ n, inh, d }) => {
+      if (inh && d) {
+        initialStyle[n] = isFunction(d) ? d(Shape.GROUP) : d;
       }
     });
 

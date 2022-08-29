@@ -1,6 +1,6 @@
 import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
+import { isString } from '@antv/util';
 import type { DisplayObject } from '../..';
-import { isString } from '../../utils';
 
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points

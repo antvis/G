@@ -1,13 +1,6 @@
 import type { CanvasLike, DataURLOptions } from '@antv/g';
-import {
-  CanvasConfig,
-  ContextService,
-  inject,
-  isBrowser,
-  isString,
-  setDOMSize,
-  singleton,
-} from '@antv/g';
+import { CanvasConfig, ContextService, inject, isBrowser, setDOMSize, singleton } from '@antv/g';
+import { isString } from '@antv/util';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {

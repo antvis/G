@@ -1,7 +1,7 @@
+import { isNil } from '@antv/util';
 import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { Shape } from '../../types';
-import { isNil } from '../../utils';
 import { TextService } from '../TextService';
 import { GeometryAABBUpdater } from './interfaces';
 

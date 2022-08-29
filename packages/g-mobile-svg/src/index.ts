@@ -1,9 +1,10 @@
 import type { RendererConfig } from '@antv/g';
-import { AbstractRenderer, isNil } from '@antv/g';
+import { AbstractRenderer } from '@antv/g';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
 import * as SVGPicker from '@antv/g-plugin-svg-picker';
 import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
+import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { MobileInteraction, SVGRenderer, SVGPicker };

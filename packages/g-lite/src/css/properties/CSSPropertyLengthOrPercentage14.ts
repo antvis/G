@@ -1,5 +1,5 @@
+import { isNumber } from '@antv/util';
 import { singleton } from 'mana-syringe';
-import { isNumber } from '../../utils';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';

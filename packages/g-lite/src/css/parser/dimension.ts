@@ -1,11 +1,11 @@
-import { memoize } from '@antv/util';
+import { isNil, isNumber, isString, memoize } from '@antv/util';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { AABB } from '../../shapes';
 import { Shape } from '../../types';
-import { isNil, isNumber, isString, rad2deg, turn2deg } from '../../utils';
+import { rad2deg, turn2deg } from '../../utils';
 import type { CSSStyleValue } from '../cssom';
-import { CSSUnitValue, UnitType } from '../cssom';
+import { CSSUnitValue, toCanonicalUnit, UnitType, unitTypeToString } from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 
 type LengthUnit = 'px' | '%' | 'em' | 'rem';
@@ -99,14 +99,14 @@ export function mergeDimensions(
   let leftValue = left.value || 0;
   let rightValue = right.value || 0;
 
-  const canonicalUnit = CSSUnitValue.toCanonicalUnit(left.unit);
+  const canonicalUnit = toCanonicalUnit(left.unit);
   const leftCanonicalUnitValue = left.convertTo(canonicalUnit);
   const rightCanonicalUnitValue = right.convertTo(canonicalUnit);
 
   if (leftCanonicalUnitValue && rightCanonicalUnitValue) {
     leftValue = leftCanonicalUnitValue.value;
     rightValue = rightCanonicalUnitValue.value;
-    unit = CSSUnitValue.unitTypeToString(left.unit);
+    unit = unitTypeToString(left.unit);
   } else {
     // format '%' to 'px'
     if (CSSUnitValue.isLength(left.unit) || CSSUnitValue.isLength(right.unit)) {

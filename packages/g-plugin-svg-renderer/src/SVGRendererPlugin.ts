@@ -388,7 +388,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!cache[name]?.inherited;
+      const inherited = !!cache[name]?.inh;
 
       if (!usedName) {
         return;

@@ -1,7 +1,15 @@
 import { DCHECK, DCHECK_EQ, DCHECK_NE } from '../../utils/assert';
 import { CSSMathOperator } from './CSSMathOperator';
 import type { CSSNumericSumValue, Term, UnitMap } from './CSSNumericSumValue';
-import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
+import {
+  canonicalUnitTypeForCategory,
+  conversionToCanonicalUnitsScaleFactor,
+  CSSStyleValue,
+  CSSStyleValueType,
+  unitFromName,
+  unitTypeToString,
+  unitTypeToUnitCategory,
+} from './CSSStyleValue';
 import { Nested, ParenLess, UnitType } from './types';
 
 export type CSSNumberish = number | CSSNumericValue;
@@ -253,6 +261,13 @@ export class CSSNumericValueType {
   }
 }
 
+const fromNumberish = (value: CSSNumberish): CSSNumericValue => {
+  if (typeof value === 'number') {
+    return new CSSUnitValue(value, UnitType.kNumber);
+  }
+
+  return value;
+};
 /**
  * CSSNumericValue is the base class for numeric and length typed CSS Values.
  * @see https://drafts.css-houdini.org/css-typed-om/#numeric-objects
@@ -263,21 +278,14 @@ export abstract class CSSNumericValue extends CSSStyleValue {
   /**
    * @see https://chromium.googlesource.com/chromium/src/+/refs/heads/main/third_party/blink/renderer/core/css/cssom/css_numeric_value.cc#296
    */
-  static fromNumberish(value: CSSNumberish): CSSNumericValue {
-    if (typeof value === 'number') {
-      return new CSSUnitValue(value, UnitType.kNumber);
-    }
 
-    return value;
-  }
+  // static fromPercentish(value: CSSNumberish): CSSNumericValue {
+  //   if (typeof value === 'number') {
+  //     return new CSSUnitValue(value * 100, UnitType.kPercentage);
+  //   }
 
-  static fromPercentish(value: CSSNumberish): CSSNumericValue {
-    if (typeof value === 'number') {
-      return new CSSUnitValue(value * 100, UnitType.kPercentage);
-    }
-
-    return value;
-  }
+  //   return value;
+  // }
 
   constructor(public type_: CSSNumericValueType) {
     super();
@@ -397,7 +405,7 @@ export abstract class CSSNumericValue extends CSSStyleValue {
 
     let unit: UnitType;
     if (typeof unitOrName === 'string') {
-      unit = CSSUnitValue.unitFromName(unitOrName);
+      unit = unitFromName(unitOrName);
     } else {
       unit = unitOrName;
     }
@@ -410,7 +418,7 @@ export abstract class CSSNumericValue extends CSSStyleValue {
    */
   toSum(...unit_strings: string[]): CSSMathSum {
     for (const unit_string of unit_strings) {
-      if (!CSSNumericValue.isValidUnit(CSSNumericValue.unitFromName(unit_string))) {
+      if (!CSSNumericValue.isValidUnit(unitFromName(unit_string))) {
         return null;
       }
     }
@@ -440,7 +448,7 @@ export abstract class CSSNumericValue extends CSSStyleValue {
 
     const result: CSSNumericValue[] = [];
     for (const unit_string of unit_strings) {
-      const target_unit = CSSNumericValue.unitFromName(unit_string);
+      const target_unit = unitFromName(unit_string);
       DCHECK(CSSNumericValue.isValidUnit(target_unit));
 
       // Collect all the terms that are compatible with this unit.
@@ -546,7 +554,7 @@ export abstract class CSSNumericValue extends CSSStyleValue {
 }
 
 function cssNumberishesToNumericValues(values: CSSNumberish[]): CSSNumericValue[] {
-  return values.map(CSSNumericValue.fromNumberish);
+  return values.map(fromNumberish);
 }
 
 function prependValueForArithmetic(
@@ -617,6 +625,28 @@ function maybeMultiplyAsUnitValue(values: CSSNumericValue[]) {
   return new CSSUnitValue(final_value, unit_other_than_number);
 }
 
+export const toCanonicalUnit = (unit: UnitType) => {
+  return canonicalUnitTypeForCategory(unitTypeToUnitCategory(unit));
+};
+
+const formatInfinityOrNaN = (number: number, suffix: string = '') => {
+  let result = '';
+  if (!Number.isFinite(number)) {
+    if (number > 0) result = 'infinity';
+    else result = '-infinity';
+  } else {
+    DCHECK(Number.isNaN(number));
+    result = 'NaN';
+  }
+  return (result += suffix);
+};
+
+const toCanonicalUnitIfPossible = (unit: UnitType) => {
+  const canonical_unit = toCanonicalUnit(unit);
+  if (canonical_unit === UnitType.kUnknown) return unit;
+  return canonical_unit;
+};
+
 /**
  * Represents numeric values that can be expressed as a single number plus a
  * unit (or a naked number or percentage).
@@ -632,44 +662,18 @@ export class CSSUnitValue extends CSSNumericValue {
   //   return new CSSUnitValue(value.getDoubleValue(), unit);
   // }
 
-  static toCanonicalUnit(unit: UnitType) {
-    return this.canonicalUnitTypeForCategory(this.unitTypeToUnitCategory(unit));
-  }
-
-  static toCanonicalUnitIfPossible(unit: UnitType) {
-    const canonical_unit = this.toCanonicalUnit(unit);
-    if (canonical_unit === UnitType.kUnknown) return unit;
-    return canonical_unit;
-  }
-
-  static formatInfinityOrNaN(number: number, suffix: string = '') {
-    let result = '';
-    if (!Number.isFinite(number)) {
-      if (number > 0) result = 'infinity';
-      else result = '-infinity';
-    } else {
-      DCHECK(Number.isNaN(number));
-      result = 'NaN';
-    }
-    return (result += suffix);
-  }
-
-  static formatNumber(number: number, suffix: string = '') {
-    return number + suffix;
-  }
-
   unit: UnitType;
   value: number;
 
   constructor(value: number, unitOrName: UnitType | string = UnitType.kNumber) {
     let unit: UnitType;
     if (typeof unitOrName === 'string') {
-      unit = CSSUnitValue.unitFromName(unitOrName);
+      unit = unitFromName(unitOrName);
     } else {
       unit = unitOrName;
     }
 
-    DCHECK(CSSUnitValue.isValidUnit(unit));
+    // DCHECK(CSSUnitValue.isValidUnit(unit));
 
     super(new CSSNumericValueType(unit));
     this.unit = unit;
@@ -688,17 +692,14 @@ export class CSSUnitValue extends CSSNumericValue {
     // Instead of defining the scale factors for every unit to every other unit,
     // we simply convert to the canonical unit and back since we already have
     // the scale factors for canonical units.
-    const canonical_unit = CSSUnitValue.toCanonicalUnit(this.unit);
-    if (
-      canonical_unit !== CSSUnitValue.toCanonicalUnit(target_unit) ||
-      canonical_unit === UnitType.kUnknown
-    ) {
+    const canonical_unit = toCanonicalUnit(this.unit);
+    if (canonical_unit !== toCanonicalUnit(target_unit) || canonical_unit === UnitType.kUnknown) {
       return null;
     }
 
     const scale_factor =
-      CSSStyleValue.conversionToCanonicalUnitsScaleFactor(this.unit) /
-      CSSStyleValue.conversionToCanonicalUnitsScaleFactor(target_unit);
+      conversionToCanonicalUnitsScaleFactor(this.unit) /
+      conversionToCanonicalUnitsScaleFactor(target_unit);
 
     return new CSSUnitValue(this.value * scale_factor, target_unit);
   }
@@ -726,11 +727,11 @@ export class CSSUnitValue extends CSSNumericValue {
     const sum: CSSNumericSumValue = [];
     const unit_map = {} as Record<UnitType, number>;
     if (this.unit !== UnitType.kNumber) {
-      unit_map[CSSUnitValue.toCanonicalUnitIfPossible(this.unit)] = 1;
+      unit_map[toCanonicalUnitIfPossible(this.unit)] = 1;
     }
 
     sum.push({
-      value: this.value * CSSStyleValue.conversionToCanonicalUnitsScaleFactor(this.unit),
+      value: this.value * conversionToCanonicalUnitsScaleFactor(this.unit),
       units: unit_map,
     });
     return sum;
@@ -782,23 +783,7 @@ export class CSSUnitValue extends CSSNumericValue {
       case UnitType.kSeconds:
       // case UnitType.kHertz:
       // case UnitType.kKilohertz:
-      case UnitType.kTurns: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
-      // case UnitType.kViewportMin:
-      // case UnitType.kViewportMax:
-      // case UnitType.kSmallViewportWidth:
-      // case UnitType.kSmallViewportHeight:
-      // case UnitType.kSmallViewportInlineSize:
-      // case UnitType.kSmallViewportBlockSize:
-      // case UnitType.kSmallViewportMin:
-      // case UnitType.kSmallViewportMax:
-      // case UnitType.kLargeViewportWidth:
-      // case UnitType.kLargeViewportHeight:
-      // case UnitType.kLargeViewportInlineSize:
-      // case UnitType.kLargeViewportBlockSize:
-      // case UnitType.kLargeViewportMin:
-      // case UnitType.kLargeViewportMax:
-      // case UnitType.kDynamicViewportWidth:
-      // case UnitType.kDynamicViewportHeight:
+      case UnitType.kTurns: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
       // case UnitType.kDynamicViewportInlineSize:
       // case UnitType.kDynamicViewportBlockSize:
       // case UnitType.kDynamicViewportMin:
@@ -814,13 +799,13 @@ export class CSSUnitValue extends CSSNumericValue {
         const kMaxInteger = 999999;
 
         const value = this.value;
-        const unit = CSSUnitValue.unitTypeToString(this.unit);
+        const unit = unitTypeToString(this.unit);
         if (value < kMinInteger || value > kMaxInteger) {
-          const unit = CSSUnitValue.unitTypeToString(this.unit);
+          const unit = unitTypeToString(this.unit);
           if (!Number.isFinite(value) || Number.isNaN(value)) {
-            text = CSSUnitValue.formatInfinityOrNaN(value, unit);
+            text = formatInfinityOrNaN(value, unit);
           } else {
-            text = CSSUnitValue.formatNumber(value, unit);
+            text = value + (unit || '');
           }
         } else {
           text = `${value}${unit}`;

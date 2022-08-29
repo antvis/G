@@ -1,14 +1,7 @@
 import type { CanvasLike, DataURLOptions } from '@antv/g';
-import {
-  CanvasConfig,
-  ContextService,
-  inject,
-  isBrowser,
-  isString,
-  setDOMSize,
-  singleton,
-} from '@antv/g';
+import { CanvasConfig, ContextService, inject, isBrowser, setDOMSize, singleton } from '@antv/g';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
+import { isString } from '@antv/util';
 import { DeviceRendererPlugin } from './tokens';
 
 @singleton({ token: ContextService })

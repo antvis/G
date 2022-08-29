@@ -9,12 +9,12 @@ import {
   CanvasConfig,
   inject,
   isBrowser,
-  isString,
   OffscreenCanvasCreator,
   RenderingService,
   singleton,
 } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
+import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureEvent, TextureUsage } from './platform';
 

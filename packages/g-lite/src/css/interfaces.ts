@@ -73,54 +73,54 @@ export enum PropertySyntax {
 }
 
 export interface PropertyMetadata {
-  name: string;
+  n: string;
 
   /**
    * The interpolable flag indicates whether a property can be animated smoothly.
    * Default to `false`.
    */
-  interpolable?: boolean;
+  int?: boolean;
 
   /**
    * The property will inherit by default if no value is specified.
    * Default to `false`.
    */
-  inherited?: boolean;
+  inh?: boolean;
 
   /**
    * This property affects only one field on ComputedStyle, and can be set
    * directly during inheritance instead of forcing a recalc.
    */
-  independent?: boolean;
+  ind?: boolean;
 
   /**
    * This specifies the default value for this field.
    * - for keyword fields, this is the initial keyword
    * - for other fields, this is a string containg the C++ expression that is used to initialise the field.
    */
-  defaultValue?: string | ((nodeName: string) => string);
+  d?: string | ((nodeName: string) => string);
 
   /**
    * The resolved value used for getComputedStyle() depends on layout for this
    * property, which means we may need to update layout to return the correct
    * value from getComputedStyle().
    */
-  layoutDependent?: boolean;
+  l?: boolean;
 
   /**
    * This specifies all valid keyword values for the property.
    */
-  keywords?: string[];
+  k?: string[];
 
   /**
    * eg. strokeWidth is an alias of lineWidth
    */
-  alias?: string[];
+  a?: string[];
 
   /**
    * sort before init attributes according to this priority
    */
-  parsePriority?: number;
+  p?: number;
 
   /**
    * eg. <color> <paint> <number>

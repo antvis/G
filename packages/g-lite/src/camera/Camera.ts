@@ -1,3 +1,4 @@
+import { isNumber, isString } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
@@ -6,7 +7,6 @@ import type { Canvas } from '../Canvas';
 import { Frustum } from '../shapes';
 import type { TypeEasingFunction } from '../types';
 import { ParseEasingFunction } from '../types';
-import { isNumber, isString } from '../utils';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
 import type { Landmark } from './Landmark';
 // import { DisplayObject } from '../display-objects';

@@ -1,5 +1,4 @@
-import { memoize } from '@antv/util';
-import { isString } from '../../utils';
+import { isString, memoize } from '@antv/util';
 import type { CSSUnitValue } from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 import { parseLengthOrPercentage } from './dimension';

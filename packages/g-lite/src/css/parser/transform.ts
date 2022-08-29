@@ -1,6 +1,7 @@
+import { clamp } from '@antv/util';
 import decomposeMatrix from 'mat4-decompose';
 import type { DisplayObject } from '../../display-objects';
-import { clamp, deg2rad } from '../../utils';
+import { deg2rad } from '../../utils';
 import { CSS } from '../CSS';
 import type { CSSUnitValue } from '../cssom';
 import { Odeg, Opx } from '../cssom';

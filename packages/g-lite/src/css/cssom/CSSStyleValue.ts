@@ -1,6 +1,3 @@
-// import type { CSSValue } from '../CSSValue';
-// import { CSSPropertyID, cssPropertyID } from '../properties/CSSPropertyNames';
-// import { fromString } from '../parser/StyleValueFactory';
 import { Nested, ParenLess, UnitCategory, UnitType } from './types';
 
 // This file specifies the unit strings used in CSSPrimitiveValues.
@@ -260,6 +257,264 @@ export enum CSSStyleValueType {
 //   return [];
 // }
 
+const stringToUnitType = (name: string): UnitType => {
+  return data.find((item) => item.name === name).unit_type;
+};
+
+export const unitFromName = (name: string) => {
+  if (!name) {
+    return UnitType.kUnknown;
+  }
+  if (name === 'number') {
+    return UnitType.kNumber;
+  }
+  if (name === 'percent' || name === '%') {
+    return UnitType.kPercentage;
+  }
+  return stringToUnitType(name);
+};
+
+export const unitTypeToUnitCategory = (type: UnitType) => {
+  switch (type) {
+    case UnitType.kNumber:
+    case UnitType.kInteger:
+      return UnitCategory.kUNumber;
+    case UnitType.kPercentage:
+      return UnitCategory.kUPercent;
+    case UnitType.kPixels:
+      // case UnitType.kCentimeters:
+      // case UnitType.kMillimeters:
+      // case UnitType.kQuarterMillimeters:
+      // case UnitType.kInches:
+      // case UnitType.kPoints:
+      // case UnitType.kPicas:
+      // case UnitType.kUserUnits:
+      return UnitCategory.kULength;
+    case UnitType.kMilliseconds:
+    case UnitType.kSeconds:
+      return UnitCategory.kUTime;
+    case UnitType.kDegrees:
+    case UnitType.kRadians:
+    case UnitType.kGradians:
+    case UnitType.kTurns:
+      return UnitCategory.kUAngle;
+    // case UnitType.kHertz:
+    // case UnitType.kKilohertz:
+    //   return UnitCategory.kUFrequency;
+    // case UnitType.kDotsPerPixel:
+    // case UnitType.kDotsPerInch:
+    // case UnitType.kDotsPerCentimeter:
+    //   return UnitCategory.kUResolution;
+    default:
+      return UnitCategory.kUOther;
+  }
+};
+
+export const canonicalUnitTypeForCategory = (category: UnitCategory) => {
+  // The canonical unit type is chosen according to the way
+  // CSSPropertyParser.ValidUnit() chooses the default unit in each category
+  // (based on unitflags).
+  switch (category) {
+    case UnitCategory.kUNumber:
+      return UnitType.kNumber;
+    case UnitCategory.kULength:
+      return UnitType.kPixels;
+    case UnitCategory.kUPercent:
+      return UnitType.kPercentage;
+    // return UnitType.kUnknown; // Cannot convert between numbers and percent.
+    case UnitCategory.kUTime:
+      return UnitType.kSeconds;
+    case UnitCategory.kUAngle:
+      return UnitType.kDegrees;
+    // case UnitCategory.kUFrequency:
+    //   return UnitType.kHertz;
+    // case UnitCategory.kUResolution:
+    //   return UnitType.kDotsPerPixel;
+    default:
+      return UnitType.kUnknown;
+  }
+};
+
+/**
+ * @see https://chromium.googlesource.com/chromium/src/+/refs/heads/main/third_party/blink/renderer/core/css/css_primitive_value.cc#353
+ */
+export const conversionToCanonicalUnitsScaleFactor = (unit_type: UnitType) => {
+  let factor = 1.0;
+  // FIXME: the switch can be replaced by an array of scale factors.
+  switch (unit_type) {
+    // These are "canonical" units in their respective categories.
+    case UnitType.kPixels:
+    // case UnitType.kUserUnits:
+    case UnitType.kDegrees:
+    case UnitType.kSeconds:
+      // case UnitType.kHertz:
+      break;
+    case UnitType.kMilliseconds:
+      factor = 0.001;
+      break;
+    // case UnitType.kCentimeters:
+    //   // factor = kCssPixelsPerCentimeter;
+    //   break;
+    // case UnitType.kDotsPerCentimeter:
+    //   // factor = 1 / kCssPixelsPerCentimeter;
+    //   break;
+    // case UnitType.kMillimeters:
+    //   // factor = kCssPixelsPerMillimeter;
+    //   break;
+    // case UnitType.kQuarterMillimeters:
+    //   // factor = kCssPixelsPerQuarterMillimeter;
+    //   break;
+    // case UnitType.kInches:
+    //   // factor = kCssPixelsPerInch;
+    //   break;
+    // case UnitType.kDotsPerInch:
+    //   // factor = 1 / kCssPixelsPerInch;
+    //   break;
+    // case UnitType.kPoints:
+    //   // factor = kCssPixelsPerPoint;
+    //   break;
+    // case UnitType.kPicas:
+    //   // factor = kCssPixelsPerPica;
+    //   break;
+    case UnitType.kRadians:
+      factor = 180 / Math.PI;
+      break;
+    case UnitType.kGradians:
+      factor = 0.9;
+      break;
+    case UnitType.kTurns:
+      factor = 360;
+      break;
+    // case UnitType.kKilohertz:
+    //   factor = 1000;
+    //   break;
+    default:
+      break;
+  }
+  return factor;
+};
+
+export const unitTypeToString = (type: UnitType) => {
+  switch (type) {
+    case UnitType.kNumber:
+    case UnitType.kInteger:
+      // case UnitType.kUserUnits:
+      return '';
+    case UnitType.kPercentage:
+      return '%';
+    case UnitType.kEms:
+      // case UnitType.kQuirkyEms:
+      return 'em';
+    // case UnitType.kExs:
+    //   return 'ex';
+    case UnitType.kRems:
+      return 'rem';
+    // case UnitType.kChs:
+    //   return 'ch';
+    case UnitType.kPixels:
+      return 'px';
+    // case UnitType.kCentimeters:
+    //   return 'cm';
+    // case UnitType.kDotsPerPixel:
+    //   return 'dppx';
+    // case UnitType.kDotsPerInch:
+    //   return 'dpi';
+    // case UnitType.kDotsPerCentimeter:
+    //   return 'dpcm';
+    // case UnitType.kMillimeters:
+    //   return 'mm';
+    // case UnitType.kQuarterMillimeters:
+    //   return 'q';
+    // case UnitType.kInches:
+    //   return 'in';
+    // case UnitType.kPoints:
+    //   return 'pt';
+    // case UnitType.kPicas:
+    //   return 'pc';
+    case UnitType.kDegrees:
+      return 'deg';
+    case UnitType.kRadians:
+      return 'rad';
+    case UnitType.kGradians:
+      return 'grad';
+    case UnitType.kMilliseconds:
+      return 'ms';
+    case UnitType.kSeconds:
+      return 's';
+    // case UnitType.kHertz:
+    //   return 'hz';
+    // case UnitType.kKilohertz:
+    //   return 'khz';
+    case UnitType.kTurns:
+      return 'turn';
+    // case UnitType.kFraction:
+    //   return 'fr';
+    // case UnitType.kViewportWidth:
+    //   return 'vw';
+    // case UnitType.kViewportHeight:
+    //   return 'vh';
+    // case UnitType.kViewportInlineSize:
+    //   return 'vi';
+    // case UnitType.kViewportBlockSize:
+    //   return 'vb';
+    // case UnitType.kViewportMin:
+    //   return 'vmin';
+    // case UnitType.kViewportMax:
+    //   return 'vmax';
+    // case UnitType.kSmallViewportWidth:
+    //   return 'svw';
+    // case UnitType.kSmallViewportHeight:
+    //   return 'svh';
+    // case UnitType.kSmallViewportInlineSize:
+    //   return 'svi';
+    // case UnitType.kSmallViewportBlockSize:
+    //   return 'svb';
+    // case UnitType.kSmallViewportMin:
+    //   return 'svmin';
+    // case UnitType.kSmallViewportMax:
+    //   return 'svmax';
+    // case UnitType.kLargeViewportWidth:
+    //   return 'lvw';
+    // case UnitType.kLargeViewportHeight:
+    //   return 'lvh';
+    // case UnitType.kLargeViewportInlineSize:
+    //   return 'lvi';
+    // case UnitType.kLargeViewportBlockSize:
+    //   return 'lvb';
+    // case UnitType.kLargeViewportMin:
+    //   return 'lvmin';
+    // case UnitType.kLargeViewportMax:
+    //   return 'lvmax';
+    // case UnitType.kDynamicViewportWidth:
+    //   return 'dvw';
+    // case UnitType.kDynamicViewportHeight:
+    //   return 'dvh';
+    // case UnitType.kDynamicViewportInlineSize:
+    //   return 'dvi';
+    // case UnitType.kDynamicViewportBlockSize:
+    //   return 'dvb';
+    // case UnitType.kDynamicViewportMin:
+    //   return 'dvmin';
+    // case UnitType.kDynamicViewportMax:
+    //   return 'dvmax';
+    // case UnitType.kContainerWidth:
+    //   return 'cqw';
+    // case UnitType.kContainerHeight:
+    //   return 'cqh';
+    // case UnitType.kContainerInlineSize:
+    //   return 'cqi';
+    // case UnitType.kContainerBlockSize:
+    //   return 'cqb';
+    // case UnitType.kContainerMin:
+    //   return 'cqmin';
+    // case UnitType.kContainerMax:
+    //   return 'cqmax';
+    default:
+      break;
+  }
+  return '';
+};
+
 /**
  * CSSStyleValue is the base class for all CSS values accessible from Typed OM.
  * Values that are not yet supported as specific types are also returned as base CSSStyleValues.
@@ -275,264 +530,6 @@ export abstract class CSSStyleValue {
   // static parseAll(propertyName: string, value: string): CSSStyleValue[] {
   //   return parseCSSStyleValue(propertyName, value);
   // }
-
-  static unitFromName(name: string) {
-    if (!name) {
-      return UnitType.kUnknown;
-    }
-    if (name === 'number') {
-      return UnitType.kNumber;
-    }
-    if (name === 'percent' || name === '%') {
-      return UnitType.kPercentage;
-    }
-    return this.stringToUnitType(name);
-  }
-
-  static unitTypeToUnitCategory(type: UnitType) {
-    switch (type) {
-      case UnitType.kNumber:
-      case UnitType.kInteger:
-        return UnitCategory.kUNumber;
-      case UnitType.kPercentage:
-        return UnitCategory.kUPercent;
-      case UnitType.kPixels:
-        // case UnitType.kCentimeters:
-        // case UnitType.kMillimeters:
-        // case UnitType.kQuarterMillimeters:
-        // case UnitType.kInches:
-        // case UnitType.kPoints:
-        // case UnitType.kPicas:
-        // case UnitType.kUserUnits:
-        return UnitCategory.kULength;
-      case UnitType.kMilliseconds:
-      case UnitType.kSeconds:
-        return UnitCategory.kUTime;
-      case UnitType.kDegrees:
-      case UnitType.kRadians:
-      case UnitType.kGradians:
-      case UnitType.kTurns:
-        return UnitCategory.kUAngle;
-      // case UnitType.kHertz:
-      // case UnitType.kKilohertz:
-      //   return UnitCategory.kUFrequency;
-      // case UnitType.kDotsPerPixel:
-      // case UnitType.kDotsPerInch:
-      // case UnitType.kDotsPerCentimeter:
-      //   return UnitCategory.kUResolution;
-      default:
-        return UnitCategory.kUOther;
-    }
-  }
-
-  static unitTypeToString(type: UnitType) {
-    switch (type) {
-      case UnitType.kNumber:
-      case UnitType.kInteger:
-        // case UnitType.kUserUnits:
-        return '';
-      case UnitType.kPercentage:
-        return '%';
-      case UnitType.kEms:
-        // case UnitType.kQuirkyEms:
-        return 'em';
-      // case UnitType.kExs:
-      //   return 'ex';
-      case UnitType.kRems:
-        return 'rem';
-      // case UnitType.kChs:
-      //   return 'ch';
-      case UnitType.kPixels:
-        return 'px';
-      // case UnitType.kCentimeters:
-      //   return 'cm';
-      // case UnitType.kDotsPerPixel:
-      //   return 'dppx';
-      // case UnitType.kDotsPerInch:
-      //   return 'dpi';
-      // case UnitType.kDotsPerCentimeter:
-      //   return 'dpcm';
-      // case UnitType.kMillimeters:
-      //   return 'mm';
-      // case UnitType.kQuarterMillimeters:
-      //   return 'q';
-      // case UnitType.kInches:
-      //   return 'in';
-      // case UnitType.kPoints:
-      //   return 'pt';
-      // case UnitType.kPicas:
-      //   return 'pc';
-      case UnitType.kDegrees:
-        return 'deg';
-      case UnitType.kRadians:
-        return 'rad';
-      case UnitType.kGradians:
-        return 'grad';
-      case UnitType.kMilliseconds:
-        return 'ms';
-      case UnitType.kSeconds:
-        return 's';
-      // case UnitType.kHertz:
-      //   return 'hz';
-      // case UnitType.kKilohertz:
-      //   return 'khz';
-      case UnitType.kTurns:
-        return 'turn';
-      // case UnitType.kFraction:
-      //   return 'fr';
-      // case UnitType.kViewportWidth:
-      //   return 'vw';
-      // case UnitType.kViewportHeight:
-      //   return 'vh';
-      // case UnitType.kViewportInlineSize:
-      //   return 'vi';
-      // case UnitType.kViewportBlockSize:
-      //   return 'vb';
-      // case UnitType.kViewportMin:
-      //   return 'vmin';
-      // case UnitType.kViewportMax:
-      //   return 'vmax';
-      // case UnitType.kSmallViewportWidth:
-      //   return 'svw';
-      // case UnitType.kSmallViewportHeight:
-      //   return 'svh';
-      // case UnitType.kSmallViewportInlineSize:
-      //   return 'svi';
-      // case UnitType.kSmallViewportBlockSize:
-      //   return 'svb';
-      // case UnitType.kSmallViewportMin:
-      //   return 'svmin';
-      // case UnitType.kSmallViewportMax:
-      //   return 'svmax';
-      // case UnitType.kLargeViewportWidth:
-      //   return 'lvw';
-      // case UnitType.kLargeViewportHeight:
-      //   return 'lvh';
-      // case UnitType.kLargeViewportInlineSize:
-      //   return 'lvi';
-      // case UnitType.kLargeViewportBlockSize:
-      //   return 'lvb';
-      // case UnitType.kLargeViewportMin:
-      //   return 'lvmin';
-      // case UnitType.kLargeViewportMax:
-      //   return 'lvmax';
-      // case UnitType.kDynamicViewportWidth:
-      //   return 'dvw';
-      // case UnitType.kDynamicViewportHeight:
-      //   return 'dvh';
-      // case UnitType.kDynamicViewportInlineSize:
-      //   return 'dvi';
-      // case UnitType.kDynamicViewportBlockSize:
-      //   return 'dvb';
-      // case UnitType.kDynamicViewportMin:
-      //   return 'dvmin';
-      // case UnitType.kDynamicViewportMax:
-      //   return 'dvmax';
-      // case UnitType.kContainerWidth:
-      //   return 'cqw';
-      // case UnitType.kContainerHeight:
-      //   return 'cqh';
-      // case UnitType.kContainerInlineSize:
-      //   return 'cqi';
-      // case UnitType.kContainerBlockSize:
-      //   return 'cqb';
-      // case UnitType.kContainerMin:
-      //   return 'cqmin';
-      // case UnitType.kContainerMax:
-      //   return 'cqmax';
-      default:
-        break;
-    }
-    return '';
-  }
-
-  static stringToUnitType(name: string): UnitType {
-    return data.find((item) => item.name === name).unit_type;
-  }
-
-  static canonicalUnitTypeForCategory(category: UnitCategory) {
-    // The canonical unit type is chosen according to the way
-    // CSSPropertyParser.ValidUnit() chooses the default unit in each category
-    // (based on unitflags).
-    switch (category) {
-      case UnitCategory.kUNumber:
-        return UnitType.kNumber;
-      case UnitCategory.kULength:
-        return UnitType.kPixels;
-      case UnitCategory.kUPercent:
-        return UnitType.kPercentage;
-      // return UnitType.kUnknown; // Cannot convert between numbers and percent.
-      case UnitCategory.kUTime:
-        return UnitType.kSeconds;
-      case UnitCategory.kUAngle:
-        return UnitType.kDegrees;
-      // case UnitCategory.kUFrequency:
-      //   return UnitType.kHertz;
-      // case UnitCategory.kUResolution:
-      //   return UnitType.kDotsPerPixel;
-      default:
-        return UnitType.kUnknown;
-    }
-  }
-
-  /**
-   * @see https://chromium.googlesource.com/chromium/src/+/refs/heads/main/third_party/blink/renderer/core/css/css_primitive_value.cc#353
-   */
-  static conversionToCanonicalUnitsScaleFactor(unit_type: UnitType) {
-    let factor = 1.0;
-    // FIXME: the switch can be replaced by an array of scale factors.
-    switch (unit_type) {
-      // These are "canonical" units in their respective categories.
-      case UnitType.kPixels:
-      // case UnitType.kUserUnits:
-      case UnitType.kDegrees:
-      case UnitType.kSeconds:
-        // case UnitType.kHertz:
-        break;
-      case UnitType.kMilliseconds:
-        factor = 0.001;
-        break;
-      // case UnitType.kCentimeters:
-      //   // factor = kCssPixelsPerCentimeter;
-      //   break;
-      // case UnitType.kDotsPerCentimeter:
-      //   // factor = 1 / kCssPixelsPerCentimeter;
-      //   break;
-      // case UnitType.kMillimeters:
-      //   // factor = kCssPixelsPerMillimeter;
-      //   break;
-      // case UnitType.kQuarterMillimeters:
-      //   // factor = kCssPixelsPerQuarterMillimeter;
-      //   break;
-      // case UnitType.kInches:
-      //   // factor = kCssPixelsPerInch;
-      //   break;
-      // case UnitType.kDotsPerInch:
-      //   // factor = 1 / kCssPixelsPerInch;
-      //   break;
-      // case UnitType.kPoints:
-      //   // factor = kCssPixelsPerPoint;
-      //   break;
-      // case UnitType.kPicas:
-      //   // factor = kCssPixelsPerPica;
-      //   break;
-      case UnitType.kRadians:
-        factor = 180 / Math.PI;
-        break;
-      case UnitType.kGradians:
-        factor = 0.9;
-        break;
-      case UnitType.kTurns:
-        factor = 360;
-        break;
-      // case UnitType.kKilohertz:
-      //   factor = 1000;
-      //   break;
-      default:
-        break;
-    }
-    return factor;
-  }
 
   static isAngle(unit: UnitType) {
     return (

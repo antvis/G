@@ -1,6 +1,5 @@
+import { isNumber, isString } from '@antv/util';
 import type { ParsedTextStyleProps } from '../display-objects/Text';
-import { isNumber } from './assert';
-import { isString } from './string';
 
 const genericFontFamilies = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 

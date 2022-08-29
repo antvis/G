@@ -4,13 +4,13 @@ import {
   ContextService,
   inject,
   isBrowser,
-  isString,
   setDOMSize,
   singleton,
   Syringe,
 } from '@antv/g';
 import type * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
+import { isString } from '@antv/util';
 import type { CanvasKit } from 'canvaskit-wasm';
 import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
 

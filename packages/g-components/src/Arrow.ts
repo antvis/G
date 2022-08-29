@@ -6,7 +6,8 @@ import type {
   MutationEvent,
   Polyline,
 } from '@antv/g';
-import { CustomElement, ElementEvent, isNil, Path, Shape } from '@antv/g';
+import { CustomElement, ElementEvent, Path, Shape } from '@antv/g';
+import { isNil } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 
 type ArrowHead = boolean | DisplayObject;

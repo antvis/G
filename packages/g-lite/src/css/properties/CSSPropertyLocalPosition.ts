@@ -1,7 +1,7 @@
+import { isNil } from '@antv/util';
 import { singleton } from 'mana-syringe';
 import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
 import { Shape } from '../../types';
-import { isNil } from '../../utils';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { PropertySyntax } from '../interfaces';

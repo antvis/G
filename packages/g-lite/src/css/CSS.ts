@@ -119,10 +119,10 @@ export const CSS = {
 
     const styleValueRegistry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
     styleValueRegistry.registerMetadata({
-      name,
-      inherited: inherits,
-      interpolable,
-      defaultValue: initialValue,
+      n: name,
+      inh: inherits,
+      int: interpolable,
+      d: initialValue,
       syntax,
     });
   },

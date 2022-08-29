@@ -1,7 +1,7 @@
+import { isString } from '@antv/util';
 import { singleton } from 'mana-syringe';
 import type { Group, Image, ParsedImageStyleProps, Rect } from '../../display-objects';
 import { Shape } from '../../types';
-import { isString } from '../../utils';
 import { GeometryAABBUpdater } from './interfaces';
 
 @singleton({

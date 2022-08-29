@@ -1,4 +1,4 @@
-import { memoize } from '@antv/util';
+import { isFunction, isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import { inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
@@ -8,8 +8,8 @@ import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { formatAttribute, isFunction, isNil } from '../utils';
-import type { CSSRGB, CSSStyleValue, UnitType } from './cssom';
+import { formatAttribute } from '../utils';
+import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
@@ -29,18 +29,18 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * used in CSS Layout API
      * eg. `display: 'flex'`
      */
-    name: 'display',
-    keywords: ['none'],
+    n: 'display',
+    k: ['none'],
   },
   {
     /**
      * range [0.0, 1.0]
      * @see https://developer.mozilla.org/en-US/docs/Web/CSS/opacity
      */
-    name: 'opacity',
-    interpolable: true,
-    inherited: true,
-    defaultValue: '1',
+    n: 'opacity',
+    int: true,
+    inh: true,
+    d: '1',
     syntax: PropertySyntax.OPACITY_VALUE,
   },
   {
@@ -49,10 +49,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity
      * @see https://svgwg.org/svg2-draft/painting.html#FillOpacity
      */
-    name: 'fillOpacity',
-    interpolable: true,
-    inherited: true,
-    defaultValue: '1',
+    n: 'fillOpacity',
+    int: true,
+    inh: true,
+    d: '1',
     syntax: PropertySyntax.OPACITY_VALUE,
   },
   {
@@ -61,10 +61,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-opacity
      * @see https://svgwg.org/svg2-draft/painting.html#StrokeOpacity
      */
-    name: 'strokeOpacity',
-    interpolable: true,
-    inherited: true,
-    defaultValue: '1',
+    n: 'strokeOpacity',
+    int: true,
+    inh: true,
+    d: '1',
     syntax: PropertySyntax.OPACITY_VALUE,
   },
   {
@@ -72,10 +72,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
      * background-color is not inheritable
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Fills_and_Strokes
      */
-    name: 'fill',
-    interpolable: true,
-    keywords: ['none'],
-    defaultValue: 'none',
+    n: 'fill',
+    int: true,
+    k: ['none'],
+    d: 'none',
     syntax: PropertySyntax.PAINT,
   },
   /**
@@ -83,142 +83,142 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke#usage_notes
    */
   {
-    name: 'stroke',
-    interpolable: true,
-    keywords: ['none'],
-    defaultValue: 'none',
+    n: 'stroke',
+    int: true,
+    k: ['none'],
+    d: 'none',
     syntax: PropertySyntax.PAINT,
   },
   {
-    name: 'shadowType',
-    keywords: ['inner', 'outer', 'both'],
-    defaultValue: 'outer',
-    layoutDependent: true,
+    n: 'shadowType',
+    k: ['inner', 'outer', 'both'],
+    d: 'outer',
+    l: true,
   },
   {
-    name: 'shadowColor',
-    interpolable: true,
+    n: 'shadowColor',
+    int: true,
     syntax: PropertySyntax.COLOR,
   },
   {
-    name: 'shadowOffsetX',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'shadowOffsetX',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'shadowOffsetY',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'shadowOffsetY',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'shadowBlur',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'shadowBlur',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.SHADOW_BLUR,
   },
   {
     /**
      * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width
      */
-    name: 'lineWidth',
-    interpolable: true,
-    inherited: true,
-    defaultValue: '1',
-    layoutDependent: true,
-    alias: ['strokeWidth'],
+    n: 'lineWidth',
+    int: true,
+    inh: true,
+    d: '1',
+    l: true,
+    a: ['strokeWidth'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'increasedLineWidthForHitTesting',
-    inherited: true,
-    defaultValue: '0',
-    layoutDependent: true,
+    n: 'increasedLineWidthForHitTesting',
+    inh: true,
+    d: '0',
+    l: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'lineJoin',
-    inherited: true,
-    layoutDependent: true,
-    alias: ['strokeLinejoin'],
-    keywords: ['miter', 'bevel', 'round'],
-    defaultValue: 'miter',
+    n: 'lineJoin',
+    inh: true,
+    l: true,
+    a: ['strokeLinejoin'],
+    k: ['miter', 'bevel', 'round'],
+    d: 'miter',
   },
   {
-    name: 'lineCap',
-    inherited: true,
-    layoutDependent: true,
-    alias: ['strokeLinecap'],
-    keywords: ['butt', 'round', 'square'],
-    defaultValue: 'butt',
+    n: 'lineCap',
+    inh: true,
+    l: true,
+    a: ['strokeLinecap'],
+    k: ['butt', 'round', 'square'],
+    d: 'butt',
   },
   {
-    name: 'lineDash',
-    interpolable: true,
-    inherited: true,
-    keywords: ['none'],
-    alias: ['strokeDasharray'],
+    n: 'lineDash',
+    int: true,
+    inh: true,
+    k: ['none'],
+    a: ['strokeDasharray'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },
   {
-    name: 'lineDashOffset',
-    interpolable: true,
-    inherited: true,
-    defaultValue: '0',
-    alias: ['strokeDashoffset'],
+    n: 'lineDashOffset',
+    int: true,
+    inh: true,
+    d: '0',
+    a: ['strokeDashoffset'],
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'offsetPath',
+    n: 'offsetPath',
     syntax: PropertySyntax.OFFSET_PATH,
   },
   {
-    name: 'offsetDistance',
-    interpolable: true,
+    n: 'offsetDistance',
+    int: true,
     syntax: PropertySyntax.OFFSET_DISTANCE,
   },
   {
-    name: 'dx',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'dx',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'dy',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'dy',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'zIndex',
-    independent: true,
-    interpolable: true,
-    defaultValue: '0',
-    keywords: ['auto'],
+    n: 'zIndex',
+    ind: true,
+    int: true,
+    d: '0',
+    k: ['auto'],
     syntax: PropertySyntax.Z_INDEX,
   },
   {
-    name: 'visibility',
-    keywords: ['visible', 'hidden'],
-    independent: true,
-    inherited: true,
+    n: 'visibility',
+    k: ['visible', 'hidden'],
+    ind: true,
+    inh: true,
     /**
      * TODO: support interpolation
      * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility#interpolation
      */
-    // interpolable: true,
-    defaultValue: 'visible',
+    // int: true,
+    d: 'visible',
   },
   {
-    name: 'pointerEvents',
-    inherited: true,
-    keywords: [
+    n: 'pointerEvents',
+    inh: true,
+    k: [
       'none',
       'auto',
       'stroke',
@@ -231,33 +231,33 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
       // 'bounding-box',
       'all',
     ],
-    defaultValue: 'auto',
+    d: 'auto',
   },
   {
-    name: 'filter',
-    independent: true,
-    layoutDependent: true,
-    keywords: ['none'],
-    defaultValue: 'none',
+    n: 'filter',
+    ind: true,
+    l: true,
+    k: ['none'],
+    d: 'none',
     syntax: PropertySyntax.FILTER,
   },
   {
-    name: 'clipPath',
+    n: 'clipPath',
     syntax: PropertySyntax.CLIP_PATH,
   },
   {
-    name: 'transform',
-    parsePriority: 100,
-    interpolable: true,
-    keywords: ['none'],
-    defaultValue: 'none',
+    n: 'transform',
+    p: 100,
+    int: true,
+    k: ['none'],
+    d: 'none',
     syntax: PropertySyntax.TRANSFORM,
   },
   {
-    name: 'transformOrigin',
-    parsePriority: 100,
-    // interpolable: true,
-    defaultValue: (nodeName: string) => {
+    n: 'transformOrigin',
+    p: 100,
+    // int: true,
+    d: (nodeName: string) => {
       if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
         return 'center';
       }
@@ -266,238 +266,238 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
       }
       return 'left top';
     },
-    layoutDependent: true,
+    l: true,
     syntax: PropertySyntax.TRANSFORM_ORIGIN,
   },
   {
-    name: 'anchor',
-    parsePriority: 99,
-    defaultValue: (nodeName: string) => {
+    n: 'anchor',
+    p: 99,
+    d: (nodeName: string) => {
       if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
         return '0.5 0.5';
       }
       return '0 0';
     },
-    layoutDependent: true,
+    l: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
   },
   // <circle> & <ellipse>
   {
-    name: 'cx',
-    interpolable: true,
-    defaultValue: '0',
+    n: 'cx',
+    int: true,
+    d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'cy',
-    interpolable: true,
-    defaultValue: '0',
+    n: 'cy',
+    int: true,
+    d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'r',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'r',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'rx',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'rx',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'ry',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'ry',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   // Rect Image Group
   {
     // x in local space
-    name: 'x',
-    interpolable: true,
-    defaultValue: '0',
+    n: 'x',
+    int: true,
+    d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
     // y in local space
-    name: 'y',
-    interpolable: true,
-    defaultValue: '0',
+    n: 'y',
+    int: true,
+    d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
     // z in local space
-    name: 'z',
-    interpolable: true,
-    defaultValue: '0',
+    n: 'z',
+    int: true,
+    d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'width',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'width',
+    int: true,
+    l: true,
     /**
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/width
      */
-    keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: '0',
+    k: ['auto', 'fit-content', 'min-content', 'max-content'],
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'height',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'height',
+    int: true,
+    l: true,
     /**
      * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/height
      */
-    keywords: ['auto', 'fit-content', 'min-content', 'max-content'],
-    defaultValue: '0',
+    k: ['auto', 'fit-content', 'min-content', 'max-content'],
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'radius',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '0',
+    n: 'radius',
+    int: true,
+    l: true,
+    d: '0',
     syntax: PropertySyntax.LENGTH_PERCENTAGE_14,
   },
   // Line
   {
-    name: 'x1',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'x1',
+    int: true,
+    l: true,
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'y1',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'y1',
+    int: true,
+    l: true,
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'z1',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'z1',
+    int: true,
+    l: true,
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'x2',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'x2',
+    int: true,
+    l: true,
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'y2',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'y2',
+    int: true,
+    l: true,
     syntax: PropertySyntax.COORDINATE,
   },
   {
-    name: 'z2',
-    interpolable: true,
-    layoutDependent: true,
+    n: 'z2',
+    int: true,
+    l: true,
     syntax: PropertySyntax.COORDINATE,
   },
   // Path
   {
-    name: 'path',
-    interpolable: true,
-    layoutDependent: true,
-    defaultValue: '',
-    alias: ['d'],
+    n: 'path',
+    int: true,
+    l: true,
+    d: '',
+    a: ['d'],
     syntax: PropertySyntax.PATH,
-    parsePriority: 50,
+    p: 50,
   },
   // Polyline & Polygon
   {
-    name: 'points',
-    layoutDependent: true,
+    n: 'points',
+    l: true,
     syntax: PropertySyntax.LIST_OF_POINTS,
-    parsePriority: 50,
+    p: 50,
   },
   // Text
   {
-    name: 'text',
-    layoutDependent: true,
-    defaultValue: '',
+    n: 'text',
+    l: true,
+    d: '',
     syntax: PropertySyntax.TEXT,
-    parsePriority: 50,
+    p: 50,
   },
   {
-    name: 'textTransform',
-    layoutDependent: true,
-    inherited: true,
-    keywords: ['capitalize', 'uppercase', 'lowercase', 'none'],
-    defaultValue: 'none',
+    n: 'textTransform',
+    l: true,
+    inh: true,
+    k: ['capitalize', 'uppercase', 'lowercase', 'none'],
+    d: 'none',
     syntax: PropertySyntax.TEXT_TRANSFORM,
-    parsePriority: 51, // it must get parsed after text
+    p: 51, // it must get parsed after text
   },
   {
-    name: 'font',
-    layoutDependent: true,
+    n: 'font',
+    l: true,
   },
   {
-    name: 'fontSize',
-    interpolable: true,
-    inherited: true,
+    n: 'fontSize',
+    int: true,
+    inh: true,
     /**
      * @see https://www.w3schools.com/css/css_font_size.asp
      */
-    defaultValue: '16px',
-    layoutDependent: true,
+    d: '16px',
+    l: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'fontFamily',
-    layoutDependent: true,
-    inherited: true,
-    defaultValue: 'sans-serif',
+    n: 'fontFamily',
+    l: true,
+    inh: true,
+    d: 'sans-serif',
   },
   {
-    name: 'fontStyle',
-    layoutDependent: true,
-    inherited: true,
-    keywords: ['normal', 'italic', 'oblique'],
-    defaultValue: 'normal',
+    n: 'fontStyle',
+    l: true,
+    inh: true,
+    k: ['normal', 'italic', 'oblique'],
+    d: 'normal',
   },
   {
-    name: 'fontWeight',
-    layoutDependent: true,
-    inherited: true,
-    keywords: ['normal', 'bold', 'bolder', 'lighter'],
-    defaultValue: 'normal',
+    n: 'fontWeight',
+    l: true,
+    inh: true,
+    k: ['normal', 'bold', 'bolder', 'lighter'],
+    d: 'normal',
   },
   {
-    name: 'fontVariant',
-    layoutDependent: true,
-    inherited: true,
-    keywords: ['normal', 'small-caps'],
-    defaultValue: 'normal',
+    n: 'fontVariant',
+    l: true,
+    inh: true,
+    k: ['normal', 'small-caps'],
+    d: 'normal',
   },
   {
-    name: 'lineHeight',
-    layoutDependent: true,
+    n: 'lineHeight',
+    l: true,
     syntax: PropertySyntax.LENGTH,
-    interpolable: true,
-    defaultValue: '0',
+    int: true,
+    d: '0',
   },
   {
-    name: 'letterSpacing',
-    layoutDependent: true,
+    n: 'letterSpacing',
+    l: true,
     syntax: PropertySyntax.LENGTH,
-    interpolable: true,
-    defaultValue: '0',
+    int: true,
+    d: '0',
   },
   {
-    name: 'miterLimit',
-    layoutDependent: true,
+    n: 'miterLimit',
+    l: true,
     syntax: PropertySyntax.NUMBER,
-    defaultValue: (nodeName: string) => {
+    d: (nodeName: string) => {
       if (nodeName === Shape.PATH || nodeName === Shape.POLYGON || nodeName === Shape.POLYLINE) {
         return '4';
       }
@@ -505,60 +505,60 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     },
   },
   {
-    name: 'wordWrap',
-    layoutDependent: true,
+    n: 'wordWrap',
+    l: true,
   },
   {
-    name: 'wordWrapWidth',
-    layoutDependent: true,
+    n: 'wordWrapWidth',
+    l: true,
   },
   {
-    name: 'leading',
-    layoutDependent: true,
+    n: 'leading',
+    l: true,
   },
   {
-    name: 'textBaseline',
-    layoutDependent: true,
-    inherited: true,
-    keywords: ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'],
-    defaultValue: 'alphabetic',
+    n: 'textBaseline',
+    l: true,
+    inh: true,
+    k: ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'],
+    d: 'alphabetic',
   },
   {
-    name: 'textAlign',
-    layoutDependent: true,
-    inherited: true,
-    keywords: ['start', 'center', 'end', 'left', 'right'],
-    defaultValue: 'start',
+    n: 'textAlign',
+    l: true,
+    inh: true,
+    k: ['start', 'center', 'end', 'left', 'right'],
+    d: 'start',
   },
   {
-    name: 'whiteSpace',
-    layoutDependent: true,
+    n: 'whiteSpace',
+    l: true,
   },
   {
-    name: 'markerStart',
+    n: 'markerStart',
     syntax: PropertySyntax.MARKER,
   },
   {
-    name: 'markerEnd',
+    n: 'markerEnd',
     syntax: PropertySyntax.MARKER,
   },
   {
-    name: 'markerMid',
+    n: 'markerMid',
     syntax: PropertySyntax.MARKER,
   },
   {
-    name: 'markerStartOffset',
+    n: 'markerStartOffset',
     syntax: PropertySyntax.LENGTH,
-    layoutDependent: true,
-    interpolable: true,
-    defaultValue: '0',
+    l: true,
+    int: true,
+    d: '0',
   },
   {
-    name: 'markerEndOffset',
+    n: 'markerEndOffset',
     syntax: PropertySyntax.LENGTH,
-    layoutDependent: true,
-    interpolable: true,
-    defaultValue: '0',
+    l: true,
+    int: true,
+    d: '0',
   },
 ];
 
@@ -573,7 +573,13 @@ const tmpVec3a = vec3.create();
 const tmpVec3b = vec3.create();
 const tmpVec3c = vec3.create();
 
-export const getOrCreateUnit = (value: number, unitOrName?: string | UnitType) => {};
+const isPropertyResolved = (object: DisplayObject, name: string) => {
+  if (!unresolvedProperties[object.entity] || unresolvedProperties[object.entity].length === 0) {
+    return true;
+  }
+
+  return unresolvedProperties[object.entity].includes(name);
+};
 
 @singleton({
   token: StyleValueRegistry,
@@ -601,9 +607,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   registerMetadata(metadata: PropertyMetadata) {
-    [metadata.name, ...(metadata.alias || [])].forEach((name) => {
+    [metadata.n, ...(metadata.a || [])].forEach((name) => {
       cache[name] = metadata;
-      priorityMap[name] = metadata.parsePriority || 0;
+      priorityMap[name] = metadata.p || 0;
     });
   }
 
@@ -646,7 +652,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         object.attributes[name] = value;
       }
 
-      if (!needUpdateGeometry && cache[name as string]?.layoutDependent) {
+      if (!needUpdateGeometry && cache[name as string]?.l) {
         needUpdateGeometry = true;
       }
     });
@@ -729,7 +735,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       computed = getOrCreateKeyword(value);
     } else {
       if (metadata) {
-        const { keywords, syntax } = metadata;
+        const { k: keywords, syntax } = metadata;
         const handler = syntax && this.getPropertySyntax(syntax);
 
         // use keywords
@@ -757,7 +763,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     let used: any = computed;
 
     if (metadata) {
-      const { syntax, inherited, defaultValue } = metadata;
+      const { syntax, inh: inherited, d: defaultValue } = metadata;
       if (computed instanceof CSSKeywordValue) {
         let value = computed.value;
 
@@ -826,14 +832,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
   }
 
-  isPropertyResolved(object: DisplayObject, name: string) {
-    if (!unresolvedProperties[object.entity] || unresolvedProperties[object.entity].length === 0) {
-      return true;
-    }
-
-    return unresolvedProperties[object.entity].includes(name);
-  }
-
   /**
    * resolve later
    */
@@ -851,10 +849,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const { inherited } = options;
 
     if (inherited) {
-      if (
-        object.parentElement &&
-        this.isPropertyResolved(object.parentElement as DisplayObject, name)
-      ) {
+      if (object.parentElement && isPropertyResolved(object.parentElement as DisplayObject, name)) {
         // const computedValue = object.parentElement.computedStyle[name];
         const usedValue = object.parentElement.parsedStyle[name];
         if (
@@ -1058,6 +1053,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       return false;
     }
 
-    return metadata.inherited;
+    return metadata.inh;
   }
 }

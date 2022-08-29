@@ -1,13 +1,13 @@
-import { isNil } from '@antv/g';
+import type { Program, ProgramDescriptorSimple } from '@antv/g-plugin-device-renderer';
 import {
-  ResourceType,
+  assert,
   getAttributeLocations,
   getDefines,
-  assert,
   getUniformSetter,
   parseUniformName,
+  ResourceType,
 } from '@antv/g-plugin-device-renderer';
-import type { Program, ProgramDescriptorSimple } from '@antv/g-plugin-device-renderer';
+import { isNil } from '@antv/util';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { Texture_GL } from './Texture';

@@ -1,3 +1,4 @@
+import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { inject, singleton } from 'mana-syringe';
 import type { Transform } from '../components';
@@ -6,7 +7,6 @@ import { CustomEvent } from '../dom';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
 import { AABB, Rectangle } from '../shapes';
-import { isNil } from '../utils';
 import { SceneGraphService } from './interfaces';
 import type { SceneGraphSelector } from './SceneGraphSelector';
 import { SceneGraphSelectorFactory } from './SceneGraphSelector';
