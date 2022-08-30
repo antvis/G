@@ -1,5 +1,5 @@
-import { Contribution, Module } from 'mana-syringe';
 import RBush from 'rbush';
+import { DependencyContainer } from 'tsyringe';
 import type { RBushNodeAABB } from './components';
 import { RBushRoot } from './components';
 import { CullingPlugin, CullingStrategyContribution } from './plugins/CullingPlugin';
@@ -9,19 +9,20 @@ import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { EventService, RenderingPluginContribution, RenderingService } from './services';
 
-export const containerModule = Module((register) => {
-  Contribution.register(register, RenderingPluginContribution, { cache: false });
+export const loadCanvasContainerModule = (container: DependencyContainer) => {
+  // Contribution.register(register, RenderingPluginContribution, { cache: false });
   // culling plugin
-  Contribution.register(register, CullingStrategyContribution, { cache: false });
+  // Contribution.register(register, CullingStrategyContribution, { cache: false });
 
-  register({ token: RBushRoot, useValue: new RBush<RBushNodeAABB>() });
+  container.register(RBushRoot, { useValue: new RBush<RBushNodeAABB>() });
 
   // register built-in rendering plugins
-  register(RenderingService);
-  register(EventService);
-  register(EventPlugin);
-  register(PrepareRendererPlugin);
-  register(DirtyCheckPlugin);
-  register(CullingPlugin);
-  register(FrustumCullingStrategy);
-});
+  container.registerSingleton(RenderingService);
+  container.registerSingleton(EventService);
+
+  container.registerSingleton(RenderingPluginContribution, EventPlugin);
+  container.registerSingleton(RenderingPluginContribution, PrepareRendererPlugin);
+  container.registerSingleton(RenderingPluginContribution, DirtyCheckPlugin);
+  container.registerSingleton(RenderingPluginContribution, CullingPlugin);
+  container.registerSingleton(CullingStrategyContribution, FrustumCullingStrategy);
+};

@@ -1,6 +1,4 @@
-import { Syringe } from '@antv/g';
-
-export const AnnotationPluginOptions = Syringe.defineToken('');
+export const AnnotationPluginOptions = Symbol('AnnotationPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface AnnotationPluginOptions {
   /**

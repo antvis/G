@@ -1,21 +1,20 @@
-import type { ParsedPolylineStyleProps } from '@antv/g';
-import { ContextService, DisplayObject, inject, singleton } from '@antv/g';
+import type { ParsedPolylineStyleProps } from '@antv/g-lite';
+import { ContextService, DisplayObject, inject, singleton } from '@antv/g-lite';
 import type {
   CanvasKitContext,
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
-import { PolylineRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Path_addPoly
  */
-@singleton({
-  token: PolylineRendererContribution,
-})
+@singleton()
 export class PolylineRenderer implements RendererContribution {
-  @inject(ContextService)
-  private contextService: ContextService<CanvasKitContext>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<CanvasKitContext>,
+  ) {}
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = this.contextService.getContext();

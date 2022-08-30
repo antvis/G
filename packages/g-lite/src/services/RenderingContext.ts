@@ -1,4 +1,3 @@
-import { Syringe } from 'mana-syringe';
 import type { DisplayObject, Group } from '../display-objects';
 
 /**
@@ -9,7 +8,7 @@ export enum RenderReason {
   DISPLAY_OBJECT_CHANGED,
   NONE,
 }
-export const RenderingContext = Syringe.defineToken('');
+export const RenderingContext = 'RenderingContext';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface RenderingContext {
   /**

@@ -1,13 +1,9 @@
-import { Module, ParseEasingFunction } from '@antv/g-lite';
+import { AnimationTimelineToken, container, ParseEasingFunction } from '@antv/g-lite';
 import { AnimationTimeline } from './dom/AnimationTimeline';
 import { parseEasingFunction } from './utils';
 
-export const containerModule = Module((register) => {
-  // bind layout engine
-  register({
-    token: ParseEasingFunction,
-    useValue: parseEasingFunction,
-  });
-
-  register(AnimationTimeline);
+container.register(ParseEasingFunction, {
+  useValue: parseEasingFunction,
 });
+
+container.registerSingleton(AnimationTimelineToken, AnimationTimeline);

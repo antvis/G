@@ -1,7 +1,8 @@
-import type { DisplayObject, ParsedBaseStyleProps, RenderingService } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, RenderingService } from '@antv/g-lite';
 
-export const StyleRendererFactory = Syringe.defineToken('');
+export const StyleRendererFactory = Symbol('StyleRendererFactory');
+export type StyleRendererFactory = (tagName: string) => StyleRenderer;
+
 export interface StyleRenderer {
   render: (
     context: CanvasRenderingContext2D,
@@ -11,20 +12,12 @@ export interface StyleRenderer {
   ) => void;
 }
 
-export const CircleRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const EllipseRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const RectRendererContribution = Syringe.defineToken('', { multiple: false });
-export const LineRendererContribution = Syringe.defineToken('', { multiple: false });
-export const PolylineRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const PolygonRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const PathRendererContribution = Syringe.defineToken('', { multiple: false });
-export const TextRendererContribution = Syringe.defineToken('', { multiple: false });
-export const ImageRendererContribution = Syringe.defineToken('', { multiple: false });
+export const CircleRendererContribution = Symbol('CircleRendererContribution');
+export const EllipseRendererContribution = Symbol('EllipseRendererContribution');
+export const RectRendererContribution = Symbol('RectRendererContribution');
+export const LineRendererContribution = Symbol('LineRendererContribution');
+export const PolylineRendererContribution = Symbol('PolylineRendererContribution');
+export const PolygonRendererContribution = Symbol('PolygonRendererContribution');
+export const PathRendererContribution = Symbol('PathRendererContribution');
+export const TextRendererContribution = Symbol('TextRendererContribution');
+export const ImageRendererContribution = Symbol('ImageRendererContribution');

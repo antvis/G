@@ -1,4 +1,4 @@
-import { injectable } from '@antv/g';
+import { injectable } from '@antv/g-lite';
 import TinySDF from '@mapbox/tiny-sdf';
 import type { Device, Texture } from '../../platform';
 import { Format, makeTextureDescriptor2D } from '../../platform';

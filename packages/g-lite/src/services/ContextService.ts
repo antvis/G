@@ -1,4 +1,3 @@
-import { Syringe } from 'mana-syringe';
 import type { CanvasLike } from '../types';
 
 export type DataURLType = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/bmp';
@@ -18,7 +17,7 @@ export interface DataURLOptions {
 }
 
 // 1 of 1 in each Canvas
-export const ContextService = Syringe.defineToken('', { multiple: false });
+export const ContextService = 'ContextService';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextService<Context> {
   init: () => Promise<void>;

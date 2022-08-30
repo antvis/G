@@ -1,8 +1,5 @@
-import { singleton } from '@antv/g';
+import { singleton } from '@antv/g-lite';
 import { DefaultRenderer } from './Default';
-import { EllipseRendererContribution } from './interfaces';
 
-@singleton({
-  token: EllipseRendererContribution,
-})
+@singleton()
 export class EllipseRenderer extends DefaultRenderer {}

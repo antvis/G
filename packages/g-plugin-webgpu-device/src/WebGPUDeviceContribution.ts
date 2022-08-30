@@ -1,15 +1,15 @@
-import { inject, singleton } from '@antv/g';
+import { inject, singleton } from '@antv/g-lite';
 import { DeviceContribution } from '@antv/g-plugin-device-renderer';
 import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import { WebGPUDeviceOptions } from './interfaces';
 import { Device_WebGPU } from './platform/Device';
 
-@singleton({
-  token: DeviceContribution,
-})
+@singleton()
 export class WebGPUDeviceContribution implements DeviceContribution {
-  @inject(WebGPUDeviceOptions)
-  private pluginOptions: WebGPUDeviceOptions;
+  constructor(
+    @inject(WebGPUDeviceOptions)
+    private pluginOptions: WebGPUDeviceOptions,
+  ) {}
 
   async createSwapChain($canvas: HTMLCanvasElement) {
     if (navigator.gpu === undefined) return null;

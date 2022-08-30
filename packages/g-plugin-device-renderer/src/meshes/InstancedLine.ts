@@ -1,5 +1,5 @@
-import type { Line, ParsedLineStyleProps, Path, Polyline } from '@antv/g';
-import { DisplayObject, injectable, Shape } from '@antv/g';
+import type { Line, ParsedLineStyleProps, Path, Polyline } from '@antv/g-lite';
+import { DisplayObject, injectable, Shape } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';

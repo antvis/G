@@ -1,8 +1,7 @@
-import type { DisplayObject, ParsedRectStyleProps } from '@antv/g';
-import { singleton } from '@antv/g';
+import type { DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
 import { clamp } from '@antv/util';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
-import { RectRendererContribution } from '../interfaces';
 
 /**
  * should account for round rect(RRect)
@@ -12,9 +11,7 @@ import { RectRendererContribution } from '../interfaces';
  * correspond to left, top, right, bottom and then in pairs, the radiusX, radiusY for upper-left,
  * upper-right, lower-right, lower-left. See RRect.h for more.
  */
-@singleton({
-  token: RectRendererContribution,
-})
+@singleton()
 export class RectRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
     const { canvas, strokePaint, fillPaint, shadowFillPaint, shadowStrokePaint } = context;

@@ -1,4 +1,4 @@
-import type { ParsedTextStyleProps } from '@antv/g';
+import type { ParsedTextStyleProps } from '@antv/g-lite';
 import { detect } from 'detect-browser';
 import { convertHTML } from '../../utils/format';
 

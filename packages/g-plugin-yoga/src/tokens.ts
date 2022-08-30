@@ -1,5 +1,3 @@
-import { Syringe } from '@antv/g';
-
-export const YogaPluginOptions = Syringe.defineToken('');
+export const YogaPluginOptions = Symbol('YogaPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface YogaPluginOptions {}

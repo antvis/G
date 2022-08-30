@@ -1,16 +1,12 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, RenderingPluginContribution } from '@antv/g-lite';
 import { DOMInteractionPlugin } from './DOMInteractionPlugin';
-
-const containerModule = Module((register) => {
-  register(DOMInteractionPlugin);
-});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'dom-interaction';
   init(): void {
-    this.container.load(containerModule, true);
+    this.container.registerSingleton(RenderingPluginContribution, DOMInteractionPlugin);
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    // this.container.unload(containerModule);
   }
 }

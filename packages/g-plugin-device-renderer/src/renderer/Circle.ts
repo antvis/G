@@ -1,7 +1,6 @@
-import type { CSSRGB, DisplayObject, ParsedCircleStyleProps } from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+import type { CSSRGB, DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
+import { injectable } from '@antv/g-lite';
 import { LineMesh, SDFMesh } from '../meshes';
-import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';
 
 /**
@@ -9,12 +8,7 @@ import { Batch } from './Batch';
  * * SDF to draw fill
  * * InstancedLine
  */
-@injectable({
-  token: [
-    { token: ShapeRenderer, named: Shape.CIRCLE },
-    { token: ShapeRenderer, named: Shape.ELLIPSE },
-  ],
-})
+@injectable()
 export class CircleRenderer extends Batch {
   meshes = [SDFMesh, LineMesh];
 

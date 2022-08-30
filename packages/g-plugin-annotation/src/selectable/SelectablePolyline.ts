@@ -4,8 +4,8 @@ import type {
   DisplayObjectConfig,
   FederatedEvent,
   ParsedPolylineStyleProps,
-} from '@antv/g';
-import { Circle, CustomElement, CustomEvent, Polyline, Shape } from '@antv/g';
+} from '@antv/g-lite';
+import { Circle, CustomElement, CustomEvent, Polyline, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 import type { Selectable } from './interface';

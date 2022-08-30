@@ -1,14 +1,8 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import type { ParsedPolylineStyleProps } from '../../display-objects';
-import { Shape } from '../../types';
 import { GeometryAABBUpdater } from './interfaces';
 
-@singleton({
-  token: [
-    { token: GeometryAABBUpdater, named: Shape.POLYLINE },
-    { token: GeometryAABBUpdater, named: Shape.POLYGON },
-  ],
-})
+@singleton()
 export class PolylineUpdater implements GeometryAABBUpdater<ParsedPolylineStyleProps> {
   update(parsedStyle: ParsedPolylineStyleProps) {
     const { points } = parsedStyle.points;

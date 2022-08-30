@@ -1,6 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { injectable, Shape } from '@antv/g';
-import { ShapeRenderer } from '../tokens';
+import type { DisplayObject } from '@antv/g-lite';
+import { injectable } from '@antv/g-lite';
 import { Batch } from './Batch';
 // import { BatchMesh } from '../meshes/Instanced';
 
@@ -14,9 +13,7 @@ import { Batch } from './Batch';
 //   protected updateMeshAttribute(object: DisplayObject, index: number, name: string, value: any) {}
 // }
 
-@injectable({
-  token: [{ token: ShapeRenderer, named: Shape.GROUP }],
-})
+@injectable()
 export class GroupRenderer extends Batch {
   meshes = [];
 

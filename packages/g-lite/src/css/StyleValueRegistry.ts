@@ -1,9 +1,8 @@
 import { isFunction, isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import { inject, postConstruct, singleton } from 'mana-syringe';
+import { inject, singleton } from 'tsyringe';
 import type { DisplayObject } from '../display-objects';
 import { SceneGraphService } from '../services';
-import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
 import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -581,26 +580,19 @@ const isPropertyResolved = (object: DisplayObject, name: string) => {
   return unresolvedProperties[object.entity].includes(name);
 };
 
-@singleton({
-  token: StyleValueRegistry,
-})
+@singleton()
 export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * need recalc later
    */
   // dirty = false;
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
-
-  @inject(CSSPropertySyntaxFactory)
-  private propertySyntaxFactory: CSSPropertySyntaxFactory;
-
-  @inject(GeometryUpdaterFactory)
-  private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>;
-
-  @postConstruct()
-  init() {
+  constructor(
+    @inject(SceneGraphService) private sceneGraphService: SceneGraphService,
+    @inject(CSSPropertySyntaxFactory) private propertySyntaxFactory: CSSPropertySyntaxFactory,
+    @inject(GeometryUpdaterFactory)
+    private geometryUpdaterFactory: GeometryUpdaterFactory,
+  ) {
     BUILT_IN_PROPERTIES.forEach((property) => {
       this.registerMetadata(property);
     });

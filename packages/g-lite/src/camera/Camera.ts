@@ -2,7 +2,7 @@ import { isNumber, isString } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
-import { GlobalContainer, Syringe } from 'mana-syringe';
+import { container as GlobalContainer } from 'tsyringe';
 import type { Canvas } from '../Canvas';
 import { Frustum } from '../shapes';
 import type { TypeEasingFunction } from '../types';
@@ -11,7 +11,7 @@ import { createVec3, getAngle, makePerspective } from '../utils/math';
 import type { Landmark } from './Landmark';
 // import { DisplayObject } from '../display-objects';
 
-export const DefaultCamera = Syringe.defineToken('');
+export const DefaultCamera = 'DefaultCamera';
 
 export enum CameraType {
   /**
@@ -890,7 +890,8 @@ export class Camera extends EventEmitter {
       const destZoom = landmark.zoom;
       const destRoll = landmark.roll;
 
-      const easingFunc = easingFunction || GlobalContainer.get(ParseEasingFunction)(easing);
+      const easingFunc =
+        easingFunction || GlobalContainer.resolve<any>(ParseEasingFunction)(easing);
 
       let timeStart: number | undefined;
       const endAnimation = () => {

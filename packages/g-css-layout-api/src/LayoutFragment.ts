@@ -1,13 +1,13 @@
-import { inject, injectable, Syringe } from '@antv/g-lite';
+import { inject, injectable } from '@antv/g-lite';
 import { LayoutContext } from './LayoutContext';
 
-export const LayoutFragmentFactory = Syringe.defineToken('');
+export const LayoutFragmentFactory = 'LayoutFragmentFactory';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutFragmentFactory<T = void> {
   (options: LayoutFragmentOptions<T>): LayoutFragment<T>;
 }
 
-export const LayoutFragmentOptions = Syringe.defineToken('');
+export const LayoutFragmentOptions = 'LayoutFragmentOptions';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutFragmentOptions<T = void> {
   inlineSize: number;

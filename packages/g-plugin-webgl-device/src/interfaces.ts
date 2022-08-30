@@ -1,6 +1,4 @@
-import { Syringe } from '@antv/g';
-
-export const WebGLRendererPluginOptions = Syringe.defineToken('');
+export const WebGLRendererPluginOptions = Symbol('WebGLRendererPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface WebGLRendererPluginOptions {
   targets: ('webgl1' | 'webgl2')[];

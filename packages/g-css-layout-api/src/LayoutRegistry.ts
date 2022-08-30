@@ -7,9 +7,7 @@ import type { LayoutDefinitionCtor } from './LayoutDefinition';
 //   registerLayout: (layoutRegistry: LayoutRegistry) => void;
 // }
 
-@singleton({
-  token: LayoutRegistry,
-})
+@singleton()
 export class DefaultLayoutRegistry implements LayoutRegistry {
   // 系统保留的布局名称，外部用户不能使用
   // private static reservedLayout = ['relative', 'absolute', 'fixed', 'flex', 'dagre', 'autolayout'];

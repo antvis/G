@@ -1,5 +1,4 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import { Syringe } from 'mana-syringe';
 import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';
 import type {
@@ -388,7 +387,7 @@ export interface CanvasLike extends IEventTarget {
     ) => void);
 }
 
-export const CanvasConfig = Syringe.defineToken('');
+export const CanvasConfig = 'CanvasConfig';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvasConfig {
   /**
@@ -466,8 +465,8 @@ export interface CanvasConfig {
 /**
  * Web Animations API
  */
-export const AnimationTimelineToken = Syringe.defineToken('');
-export const ParseEasingFunction = Syringe.defineToken('');
+export const AnimationTimelineToken = 'AnimationTimelineToken';
+export const ParseEasingFunction = 'ParseEasingFunction';
 
 /**
  * The format to use when defining custom easing functions

@@ -1,6 +1,4 @@
-import { Syringe } from '@antv/g';
-
-export const DragndropPluginOptions = Syringe.defineToken('');
+export const DragndropPluginOptions = Symbol('DragndropPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface DragndropPluginOptions {
   /**

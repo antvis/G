@@ -1,15 +1,9 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import type { DisplayObject } from '../../display-objects';
 import { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
 
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.TEXT,
-  },
-})
+@singleton()
 export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | string, string>> {
   calculator(
     name: string,

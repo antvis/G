@@ -1,16 +1,10 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
 import type { ParsedFilterStyleProperty } from '../parser';
 import { parseFilter } from '../parser/filter';
 
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.FILTER,
-  },
-})
+@singleton()
 export class CSSPropertyFilter
   implements Partial<CSSProperty<ParsedFilterStyleProperty[], ParsedFilterStyleProperty[]>>
 {

@@ -1,7 +1,7 @@
-import { GeometryAABBUpdater, Shape, singleton } from '@antv/g';
+import { GeometryAABBUpdater, singleton } from '@antv/g-lite';
 import type { ParsedMeshStyleProps } from './Mesh';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: Shape.MESH } })
+@singleton()
 export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
   update(parsedStyle: ParsedMeshStyleProps) {
     const { geometry } = parsedStyle;

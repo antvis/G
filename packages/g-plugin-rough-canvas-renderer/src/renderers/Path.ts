@@ -1,11 +1,9 @@
-import type { DisplayObject, ParsedPathStyleProps } from '@antv/g';
-import { singleton, translatePathToString } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
+import type { DisplayObject, ParsedPathStyleProps } from '@antv/g-lite';
+import { singleton, translatePathToString } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
-@singleton({
-  token: CanvasRenderer.PathRendererContribution,
-})
+@singleton()
 export class PathRenderer implements CanvasRenderer.StyleRenderer {
   render(
     context: CanvasRenderingContext2D,

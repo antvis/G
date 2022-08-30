@@ -1,9 +1,9 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, RenderingPluginContribution } from '@antv/g-lite';
 import { PhysXPlugin } from './PhysXPlugin';
 
-const containerModule = Module((register) => {
-  register(PhysXPlugin);
-});
+// const containerModule = Module((register) => {
+//   register(PhysXPlugin);
+// });
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PhysXPluginOptions {}
@@ -15,9 +15,10 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.load(containerModule, true);
+    this.container.registerSingleton(RenderingPluginContribution, PhysXPlugin);
+    // this.container.load(containerModule, true);
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    // this.container.unload(containerModule);
   }
 }

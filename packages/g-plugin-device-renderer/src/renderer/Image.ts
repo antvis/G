@@ -1,12 +1,9 @@
-import type { DisplayObject } from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { injectable } from '@antv/g-lite';
 import { ImageMesh } from '../meshes';
-import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';
 
-@injectable({
-  token: [{ token: ShapeRenderer, named: Shape.IMAGE }],
-})
+@injectable()
 export class ImageRenderer extends Batch {
   meshes = [ImageMesh];
 

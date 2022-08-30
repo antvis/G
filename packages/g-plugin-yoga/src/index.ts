@@ -1,10 +1,15 @@
-import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
+import {
+  AbstractRendererPlugin,
+  CSS,
+  PropertySyntax,
+  RenderingPluginContribution,
+} from '@antv/g-lite';
 import { YogaPluginOptions } from './tokens';
 import { YogaPlugin } from './YogaPlugin';
 
-const containerModule = Module((register) => {
-  register(YogaPlugin);
-});
+// const containerModule = Module((register) => {
+//   register(YogaPlugin);
+// });
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'yoga';
@@ -19,7 +24,9 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-    this.container.load(containerModule, true);
+    // this.container.load(containerModule, true);
+
+    this.container.registerSingleton(RenderingPluginContribution, YogaPlugin);
 
     [
       'top',
@@ -71,9 +78,8 @@ export class Plugin extends AbstractRendererPlugin {
     });
   }
   destroy(): void {
-    this.container.remove(YogaPluginOptions);
-    this.container.unload(containerModule);
-
+    // this.container.remove(YogaPluginOptions);
+    // this.container.unload(containerModule);
     // TODO: unregister CSS properties
   }
 }

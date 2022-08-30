@@ -1,8 +1,7 @@
 import { isNumber } from '@antv/util';
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
 import { mergeNumberLists } from '../parser';
 import { parseDimensionArray } from '../parser/dimension';
 
@@ -14,12 +13,7 @@ import { parseDimensionArray } from '../parser/dimension';
  * rect.style.lineDash = [10, 10];
  * rect.style.lineDash = '10 10';
  */
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.LENGTH_PERCENTAGE_12,
-  },
-})
+@singleton()
 export class CSSPropertyLengthOrPercentage12
   implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [number, number]>>
 {

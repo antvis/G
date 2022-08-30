@@ -1,9 +1,8 @@
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from 'tsyringe';
 import type { DisplayObject } from '../../display-objects';
 import { SceneGraphService } from '../../services';
 import { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
 
 /**
  * @see /zh/docs/api/basic/display-object#clippath
@@ -22,15 +21,12 @@ import { PropertySyntax } from '../interfaces';
     }
   });
  */
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.CLIP_PATH,
-  },
-})
+@singleton()
 export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+  constructor(
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
+  ) {}
 
   calculator(
     name: string,

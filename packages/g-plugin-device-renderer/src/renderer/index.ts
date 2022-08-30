@@ -1,9 +1,9 @@
 export * from './Batch';
+export * from './BatchManager';
 export * from './Circle';
-export * from './Path';
-export * from './Group';
+// export * from './Group';
 export * from './Image';
-export * from './Text';
 export * from './Line';
 export * from './Mesh';
-export * from './BatchManager';
+export * from './Path';
+export * from './Text';

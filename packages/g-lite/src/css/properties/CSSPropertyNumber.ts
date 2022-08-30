@@ -1,15 +1,9 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
 import { mergeNumbers, parseNumber } from '../parser/numeric';
 
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.NUMBER,
-  },
-})
+@singleton()
 export class CSSPropertyNumber implements Partial<CSSProperty<CSSUnitValue, number>> {
   mixer = mergeNumbers;
   parser = parseNumber;

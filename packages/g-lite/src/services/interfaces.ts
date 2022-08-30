@@ -1,10 +1,9 @@
 import type { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { Syringe } from 'mana-syringe';
 import type { Transform } from '../components';
 import type { IElement, INode, IParentNode } from '../dom';
 import type { AABB, Rectangle } from '../shapes';
 
-export const SceneGraphService = Syringe.defineToken('');
+export const SceneGraphService = 'SceneGraphService';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphService {
   triggerPendingEvents: () => void;

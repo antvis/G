@@ -1,5 +1,5 @@
 import type { Document, IAnimationTimeline, IElement } from '@antv/g-lite';
-import { AnimationTimelineToken, singleton } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
 import { Animation } from './Animation';
 import { KeyframeEffect } from './KeyframeEffect';
 
@@ -10,9 +10,7 @@ export function compareAnimations(leftAnimation: Animation, rightAnimation: Anim
 /**
  * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/web-animations-js/index.d.ts
  */
-@singleton({
-  token: AnimationTimelineToken,
-})
+@singleton()
 export class AnimationTimeline implements IAnimationTimeline {
   /**
    * all active animations

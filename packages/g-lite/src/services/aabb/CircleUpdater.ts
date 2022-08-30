@@ -1,9 +1,8 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import type { Circle, ParsedCircleStyleProps } from '../../display-objects/Circle';
-import { Shape } from '../../types';
 import { GeometryAABBUpdater } from './interfaces';
 
-@singleton({ token: { token: GeometryAABBUpdater, named: Shape.CIRCLE } })
+@singleton()
 export class CircleUpdater implements GeometryAABBUpdater<ParsedCircleStyleProps> {
   update(parsedStyle: ParsedCircleStyleProps, object: Circle) {
     const { r } = parsedStyle;

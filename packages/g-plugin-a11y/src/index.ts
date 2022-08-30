@@ -1,14 +1,14 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, RenderingPluginContribution } from '@antv/g-lite';
 import { A11yPlugin } from './A11yPlugin';
 import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
 import { A11yPluginOptions } from './tokens';
 
-const containerModule = Module((register) => {
-  register(TextExtractor);
-  register(AriaManager);
-  register(A11yPlugin);
-});
+// const containerModule = Module((register) => {
+//   register(TextExtractor);
+//   register(AriaManager);
+//   register(A11yPlugin);
+// });
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'a11y';
@@ -24,10 +24,14 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-    this.container.load(containerModule, true);
+
+    this.container.registerSingleton(TextExtractor);
+    this.container.registerSingleton(AriaManager);
+    this.container.registerSingleton(RenderingPluginContribution, A11yPlugin);
+    // this.container.load(containerModule, true);
   }
   destroy(): void {
-    this.container.remove(A11yPluginOptions);
-    this.container.unload(containerModule);
+    // this.container.remove(A11yPluginOptions);
+    // this.container.unload(containerModule);
   }
 }

@@ -1,7 +1,7 @@
 import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { GlobalContainer } from 'mana-syringe';
+import { container } from 'tsyringe';
 // import { displayObjectPool, this.sceneGraphService, styleValueRegistry } from '..';
 import type { PropertyParseOptions } from '../css';
 import { noneColor, StyleValueRegistry } from '../css';
@@ -59,9 +59,9 @@ export class DisplayObject<
    */
   private activeAnimations: IAnimation[] = [];
 
-  private displayObjectPool = GlobalContainer.get(DisplayObjectPool);
+  private displayObjectPool = container.resolve<DisplayObjectPool>(DisplayObjectPool);
 
-  private styleValueRegistry = GlobalContainer.get(StyleValueRegistry);
+  private styleValueRegistry = container.resolve<StyleValueRegistry>(StyleValueRegistry);
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();

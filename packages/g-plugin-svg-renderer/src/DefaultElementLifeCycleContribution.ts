@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { CanvasConfig, inject, Shape, singleton } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { CanvasConfig, inject, Shape, singleton } from '@antv/g-lite';
 import {
   updateImageElementAttribute,
   updateLineElementAttribute,
@@ -86,10 +86,12 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
   ],
 };
 
-@singleton({ token: ElementLifeCycleContribution })
+@singleton()
 export class DefaultElementLifeCycleContribution implements ElementLifeCycleContribution {
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   createElement(object: DisplayObject): SVGElement {
     const { document: doc } = this.canvasConfig;

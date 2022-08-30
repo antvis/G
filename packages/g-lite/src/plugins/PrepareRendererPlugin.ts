@@ -1,5 +1,5 @@
-import { inject, singleton } from 'mana-syringe';
 import RBush from 'rbush';
+import { inject, singleton } from 'tsyringe';
 import type { RBushNodeAABB } from '../components';
 import { RBushRoot } from '../components';
 import { StyleValueRegistry } from '../css';
@@ -7,26 +7,28 @@ import type { DisplayObject } from '../display-objects';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingPlugin, RenderingService } from '../services';
-import { RenderingContext, RenderingPluginContribution, SceneGraphService } from '../services';
+import { RenderingContext, SceneGraphService } from '../services';
 
-@singleton({ contrib: RenderingPluginContribution })
+@singleton()
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+  constructor(
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(StyleValueRegistry)
-  private styleValueRegistry: StyleValueRegistry;
+    @inject(StyleValueRegistry)
+    private styleValueRegistry: StyleValueRegistry,
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
 
-  /**
-   * RBush used in dirty rectangle rendering
-   */
-  @inject(RBushRoot)
-  private rBush: RBush<RBushNodeAABB>;
+    /**
+     * RBush used in dirty rectangle rendering
+     */
+    @inject(RBushRoot)
+    private rBush: RBush<RBushNodeAABB>,
+  ) {}
 
   /**
    * sync to RBush later

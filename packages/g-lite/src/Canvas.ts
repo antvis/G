@@ -1,11 +1,11 @@
-import { GlobalContainer } from 'mana-syringe';
 import {
   cancelAnimationFrame as cancelRAF,
   requestAnimationFrame as rAF,
 } from 'request-animation-frame-polyfill';
+import { container as GlobalContainer } from 'tsyringe';
 import type { IRenderer } from './AbstractRenderer';
 import { Camera, CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
-import { containerModule as commonContainerModule } from './canvas-module';
+import { loadCanvasContainerModule } from './canvas-module';
 import { CustomElement, DisplayObject } from './display-objects';
 import type { Element, FederatedEvent, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
@@ -45,7 +45,7 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * child container of current canvas, use hierarchy container
    */
-  container = GlobalContainer.createChild();
+  container = GlobalContainer.createChildContainer();
 
   /**
    * window.document
@@ -219,11 +219,10 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
-    this.container.register({ token: CanvasConfig, useValue: mergedConfig });
+    this.container.register(CanvasConfig, { useValue: mergedConfig });
 
     // bind rendering context, shared by all renderers
-    this.container.register({
-      token: RenderingContext,
+    this.container.register(RenderingContext, {
       useValue: {
         /**
          * the root node in scene graph
@@ -265,16 +264,16 @@ export class Canvas extends EventTarget implements ICanvas {
     camera.canvas = this;
 
     // redraw when camera changed
-    const context = this.container.get<RenderingContext>(RenderingContext);
+    const context = this.container.resolve<RenderingContext>(RenderingContext);
     camera.on(CameraEvent.UPDATED, () => {
       context.renderReasons.add(RenderReason.CAMERA_CHANGED);
     });
     // bind camera
-    this.container.register({ token: DefaultCamera, useValue: camera });
+    this.container.register(DefaultCamera, { useValue: camera });
   }
 
   getConfig() {
-    return this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    return this.container.resolve<Partial<CanvasConfig>>(CanvasConfig);
   }
 
   getContainer() {
@@ -293,11 +292,11 @@ export class Canvas extends EventTarget implements ICanvas {
    * get the camera of canvas
    */
   getCamera() {
-    return this.container.get<Camera>(DefaultCamera);
+    return this.container.resolve<Camera>(DefaultCamera);
   }
 
   getContextService() {
-    return this.container.get<ContextService<unknown>>(ContextService);
+    return this.container.resolve<ContextService<unknown>>(ContextService);
   }
 
   getEventService() {
@@ -309,7 +308,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   getRenderingContext() {
-    return this.container.get<RenderingContext>(RenderingContext);
+    return this.container.resolve<RenderingContext>(RenderingContext);
   }
 
   getStats() {
@@ -377,7 +376,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
   resize(width: number, height: number) {
     // update canvas' config
-    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    const canvasConfig = this.container.resolve<Partial<CanvasConfig>>(CanvasConfig);
     canvasConfig.width = width;
     canvasConfig.height = height;
 
@@ -385,7 +384,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().resize(width, height);
 
     // resize camera
-    const camera = this.container.get<Camera>(DefaultCamera);
+    const camera = this.container.resolve<Camera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
     camera.setPosition(width / 2, height / 2, 500).setFocalPoint(width / 2, height / 2, 0);
     if (projectionMode === CameraProjectionMode.ORTHOGRAPHIC) {
@@ -421,10 +420,10 @@ export class Canvas extends EventTarget implements ICanvas {
   render() {
     this.dispatchEvent(this.beforeRenderEvent);
 
-    if (this.container.isBound(RenderingService)) {
-      const renderingService = this.container.get<RenderingService>(RenderingService);
-      renderingService.render(this.getConfig());
-    }
+    // if (this.container.isBound(RenderingService)) {
+    const renderingService = this.container.resolve<RenderingService>(RenderingService);
+    renderingService.render(this.getConfig());
+    // }
 
     this.dispatchEvent(this.afterRenderEvent);
   }
@@ -450,9 +449,9 @@ export class Canvas extends EventTarget implements ICanvas {
     this.loadRendererContainerModule(renderer);
 
     // init services
-    const contextService = this.container.get<ContextService<unknown>>(ContextService);
-    this.renderingService = this.container.get<RenderingService>(RenderingService);
-    this.eventService = this.container.get<EventService>(EventService); // auto init post-contruct
+    const contextService = this.container.resolve<ContextService<unknown>>(ContextService);
+    this.renderingService = this.container.resolve<RenderingService>(RenderingService);
+    this.eventService = this.container.resolve<EventService>(EventService); // auto init post-contruct
 
     await contextService.init();
     await this.renderingService.init();
@@ -477,8 +476,8 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private loadCommonContainerModule() {
-    this.container.unload(commonContainerModule);
-    this.container.load(commonContainerModule, true);
+    // this.container.clearInstances();
+    loadCanvasContainerModule(this.container);
   }
 
   private loadRendererContainerModule(renderer: IRenderer) {
@@ -512,7 +511,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   setCursor(cursor: Cursor) {
-    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    const canvasConfig = this.container.resolve<Partial<CanvasConfig>>(CanvasConfig);
     canvasConfig.cursor = cursor;
     this.getContextService().applyCursorStyle(cursor);
   }

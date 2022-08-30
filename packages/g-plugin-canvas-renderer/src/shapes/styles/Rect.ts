@@ -1,8 +1,5 @@
-import { singleton } from '@antv/g';
+import { singleton } from '@antv/g-lite';
 import { DefaultRenderer } from './Default';
-import { RectRendererContribution } from './interfaces';
 
-@singleton({
-  token: RectRendererContribution,
-})
+@singleton()
 export class RectRenderer extends DefaultRenderer {}

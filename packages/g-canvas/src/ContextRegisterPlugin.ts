@@ -1,19 +1,21 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, ContextService } from '@antv/g-lite';
 import { Canvas2DContextService } from './Canvas2DContextService';
 
-const containerModule = Module((register) => {
-  /**
-   * implements ContextService
-   */
-  register(Canvas2DContextService);
-});
+// const containerModule = Module((register) => {
+//   /**
+//    * implements ContextService
+//    */
+//   register(Canvas2DContextService);
+// });
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
   name = 'canvas-context-register';
   init(): void {
-    this.container.load(containerModule, true);
+    // this.container.load(containerModule, true);
+
+    this.container.registerSingleton(ContextService, Canvas2DContextService);
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    // this.container.unload(containerModule);
   }
 }

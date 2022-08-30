@@ -1,5 +1,4 @@
-import type { DisplayObject } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
 import type { Canvas, CanvasKit, Paint, Surface } from 'canvaskit-wasm';
 
 export interface CanvasKitContext {
@@ -7,35 +6,17 @@ export interface CanvasKitContext {
   surface: Surface;
 }
 
-export const CircleRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const EllipseRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const RectRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const ImageRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const LineRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const PolylineRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const PolygonRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const PathRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
-export const TextRendererContribution = Syringe.defineToken('', {
-  multiple: false,
-});
+export const CircleRendererContribution = Symbol('CircleRendererContribution');
+export const EllipseRendererContribution = Symbol('EllipseRendererContribution');
+export const RectRendererContribution = Symbol('RectRendererContribution');
+export const ImageRendererContribution = Symbol('ImageRendererContribution');
+export const LineRendererContribution = Symbol('LineRendererContribution');
+export const PolylineRendererContribution = Symbol('PolylineRendererContribution');
+export const PolygonRendererContribution = Symbol('PolygonRendererContribution');
+export const PathRendererContribution = Symbol('PathRendererContribution');
+export const TextRendererContribution = Symbol('TextRendererContribution');
 
-export const RendererContributionFactory = Syringe.defineToken('');
+export const RendererContributionFactory = Symbol('');
 export interface RendererContributionContext {
   canvas: Canvas;
   fillPaint: Paint;
@@ -47,7 +28,7 @@ export interface RendererContribution {
   render: (displayObject: DisplayObject, context: RendererContributionContext) => void;
 }
 
-export const CanvaskitRendererPluginOptions = Syringe.defineToken('');
+export const CanvaskitRendererPluginOptions = Symbol('CanvaskitRendererPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CanvaskitRendererPluginOptions {
   fonts: {

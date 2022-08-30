@@ -1,6 +1,4 @@
-import { Syringe } from '@antv/g';
-
-export const MatterJSPluginOptions = Syringe.defineToken('');
+export const MatterJSPluginOptions = Symbol('MatterJSPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface MatterJSPluginOptions {
   debug: boolean;

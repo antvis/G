@@ -1,5 +1,5 @@
 import { isFunction } from '@antv/util';
-import { GlobalContainer } from 'mana-syringe';
+import { container as GlobalContainer } from 'tsyringe';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
@@ -30,7 +30,7 @@ export class Document extends Node implements IDocument {
     // create timeline
     // this.timeline = new AnimationTimeline(this);
     try {
-      this.timeline = GlobalContainer.get(AnimationTimelineToken);
+      this.timeline = GlobalContainer.resolve(AnimationTimelineToken);
       this.timeline.attach(this);
     } catch (e) {}
 

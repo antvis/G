@@ -1,4 +1,4 @@
-import { singleton } from '@antv/g';
+import { singleton } from '@antv/g-lite';
 import type { Fog, Light } from './lights';
 
 @singleton()

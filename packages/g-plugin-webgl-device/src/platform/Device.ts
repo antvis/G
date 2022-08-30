@@ -1,4 +1,4 @@
-import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '@antv/g';
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '@antv/g-lite';
 import type {
   AttachmentState,
   BindingLayoutDescriptor,

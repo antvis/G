@@ -13,7 +13,7 @@ export default {
   umd: {
     name: 'G.3D',
     globals: {
-      '@antv/g': 'window.G',
+      '@antv/g-lite': 'window.G',
       '@antv/g-plugin-device-renderer': 'window.G.WebGL.DeviceRenderer',
     },
   },

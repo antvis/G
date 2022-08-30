@@ -1,12 +1,11 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { ParsedBaseStyleProps } from '@antv/g-lite';
 
-export const PathGeneratorFactory = Syringe.defineToken('');
-export const PathGenerator = Syringe.defineToken('');
+export const PathGeneratorFactory = 'PathGeneratorFactory';
 
 /**
  * generate path in local space
  */
+export const PathGenerator = 'PathGenerator';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export type PathGenerator<T extends ParsedBaseStyleProps> = (
   context: CanvasRenderingContext2D,

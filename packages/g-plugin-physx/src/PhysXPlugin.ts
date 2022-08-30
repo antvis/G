@@ -1,4 +1,9 @@
-import type { DisplayObject, FederatedEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import type {
+  DisplayObject,
+  FederatedEvent,
+  RenderingPlugin,
+  RenderingService,
+} from '@antv/g-lite';
 import {
   AABB,
   CanvasEvent,
@@ -6,10 +11,9 @@ import {
   ElementEvent,
   inject,
   RenderingContext,
-  RenderingPluginContribution,
   SceneGraphService,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 
 /**
  * PhysX runtime mode.
@@ -23,18 +27,20 @@ export enum PhysXRuntimeMode {
   JavaScript,
 }
 
-@singleton({ contrib: RenderingPluginContribution })
+@singleton()
 export class PhysXPlugin implements RenderingPlugin {
   static tag = 'PhysX';
 
-  @inject(SceneGraphService)
-  protected sceneGraphService: SceneGraphService;
+  constructor(
+    @inject(SceneGraphService)
+    protected sceneGraphService: SceneGraphService,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
+    @inject(DisplayObjectPool)
+    private displayObjectPool: DisplayObjectPool,
+  ) {}
 
   private PhysX: any;
   private physics: any;

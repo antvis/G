@@ -1,7 +1,6 @@
-import type { DisplayObject } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
 
-export const Box2DPluginOptions = Syringe.defineToken('');
+export const Box2DPluginOptions = Symbol('Box2DPluginOptions');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface Box2DPluginOptions {
   wasmUrl: string;

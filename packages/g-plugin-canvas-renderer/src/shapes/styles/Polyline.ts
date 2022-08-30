@@ -1,8 +1,5 @@
-import { singleton } from '@antv/g';
+import { singleton } from '@antv/g-lite';
 import { DefaultRenderer } from './Default';
-import { PolylineRendererContribution } from './interfaces';
 
-@singleton({
-  token: PolylineRendererContribution,
-})
+@singleton()
 export class PolylineRenderer extends DefaultRenderer {}

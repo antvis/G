@@ -1,9 +1,8 @@
-import { Syringe } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import type { IElement } from '../dom';
 import type { StyleValueRegistry } from './interfaces';
 
-export const CSSPropertySyntaxFactory = Syringe.defineToken('');
+export const CSSPropertySyntaxFactory = 'CSSPropertySyntaxFactory';
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export type CSSPropertySyntaxFactory = <P, U>(syntax: string) => CSSProperty<P, U>;
 
@@ -24,7 +23,7 @@ type CSSPropertyCalculator<Parsed, Used> = (
   registry: StyleValueRegistry,
 ) => Used;
 
-export const CSSProperty = Syringe.defineToken('');
+export const CSSProperty = 'CSSProperty';
 /**
  * 1. parser: raw CSS string -> Computed Value
  * 2. calculator: Computed Value -> Used Value

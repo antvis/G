@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { injectable, Shape } from '@antv/g-lite';
 import type { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
 

@@ -1,11 +1,9 @@
-import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g';
-import { singleton } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
+import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
-@singleton({
-  token: CanvasRenderer.EllipseRendererContribution,
-})
+@singleton()
 export class EllipseRenderer implements CanvasRenderer.StyleRenderer {
   render(
     context: CanvasRenderingContext2D,

@@ -1,4 +1,4 @@
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from 'tsyringe';
 import type { CanvasLike } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';
@@ -78,8 +78,7 @@ const regexCannotEnd = new RegExp(
 export class TextService {
   private cache: Record<string, IFontMetrics> = {};
 
-  @inject(OffscreenCanvasCreator)
-  private offscreenCanvas: OffscreenCanvasCreator;
+  constructor(@inject(OffscreenCanvasCreator) private offscreenCanvas: OffscreenCanvasCreator) {}
 
   measureFont(font: string, offscreenCanvas: CanvasLike): IFontMetrics {
     // as this method is used for preparing assets, don't recalculate things if we don't need to

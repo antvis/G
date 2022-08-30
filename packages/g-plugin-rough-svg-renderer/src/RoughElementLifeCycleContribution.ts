@@ -7,7 +7,7 @@ import type {
   ParsedPolygonStyleProps,
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   CanvasConfig,
   ContextService,
@@ -15,18 +15,20 @@ import {
   Shape,
   singleton,
   translatePathToString,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { SVGRenderer } from '@antv/g-svg';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
-@singleton({ token: SVGRenderer.ElementLifeCycleContribution })
+@singleton()
 export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLifeCycleContribution {
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(ContextService)
-  private contextService: ContextService<SVGSVGElement>;
+    @inject(ContextService)
+    private contextService: ContextService<SVGSVGElement>,
+  ) {}
 
   createElement(object: DisplayObject<any, any>): SVGElement {
     const { nodeName } = object;

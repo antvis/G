@@ -1,4 +1,4 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from 'tsyringe';
 import type { CanvasLike } from '..';
 
 /**

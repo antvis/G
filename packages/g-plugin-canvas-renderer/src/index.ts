@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
+import { AbstractRendererPlugin, RenderingPluginContribution, Shape } from '@antv/g-lite';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import type { StyleRenderer } from './shapes/styles';
 import {
@@ -26,44 +26,6 @@ import { CanvasRendererPluginOptions } from './tokens';
 
 export * from './shapes/styles';
 
-const containerModule = Module((register) => {
-  register(CircleRenderer);
-  register(EllipseRenderer);
-  register(RectRenderer);
-  register(ImageRenderer);
-  register(TextRenderer);
-  register(LineRenderer);
-  register(PolylineRenderer);
-  register(PolygonRenderer);
-  register(PathRenderer);
-
-  const shape2Token = {
-    [Shape.CIRCLE]: CircleRendererContribution,
-    [Shape.ELLIPSE]: EllipseRendererContribution,
-    [Shape.RECT]: RectRendererContribution,
-    [Shape.IMAGE]: ImageRendererContribution,
-    [Shape.TEXT]: TextRendererContribution,
-    [Shape.LINE]: LineRendererContribution,
-    [Shape.POLYLINE]: PolylineRendererContribution,
-    [Shape.POLYGON]: PolygonRendererContribution,
-    [Shape.PATH]: PathRendererContribution,
-  };
-  register({
-    token: StyleRendererFactory,
-    useFactory:
-      (ctx) =>
-      (tagName: Shape): StyleRenderer => {
-        const token = shape2Token[tagName];
-        if (token && ctx.container.isBound(token)) {
-          return ctx.container.get<StyleRenderer>(token);
-        }
-        return null;
-      },
-  });
-
-  register(CanvasRendererPlugin);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-renderer';
 
@@ -72,6 +34,34 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
+    this.container.registerSingleton(CircleRendererContribution, CircleRenderer);
+    this.container.registerSingleton(EllipseRendererContribution, EllipseRenderer);
+    this.container.registerSingleton(RectRendererContribution, RectRenderer);
+    this.container.registerSingleton(ImageRendererContribution, ImageRenderer);
+    this.container.registerSingleton(TextRendererContribution, TextRenderer);
+    this.container.registerSingleton(LineRendererContribution, LineRenderer);
+    this.container.registerSingleton(PolylineRendererContribution, PolylineRenderer);
+    this.container.registerSingleton(PolygonRendererContribution, PolygonRenderer);
+    this.container.registerSingleton(PathRendererContribution, PathRenderer);
+
+    const shape2Token = {
+      [Shape.CIRCLE]: CircleRendererContribution,
+      [Shape.ELLIPSE]: EllipseRendererContribution,
+      [Shape.RECT]: RectRendererContribution,
+      [Shape.IMAGE]: ImageRendererContribution,
+      [Shape.TEXT]: TextRendererContribution,
+      [Shape.LINE]: LineRendererContribution,
+      [Shape.POLYLINE]: PolylineRendererContribution,
+      [Shape.POLYGON]: PolygonRendererContribution,
+      [Shape.PATH]: PathRendererContribution,
+    };
+
+    this.container.register(StyleRendererFactory, {
+      useValue: (nodeName: string): StyleRenderer => {
+        return this.container.resolve(shape2Token[nodeName]);
+      },
+    });
+
     this.container.register(CanvasRendererPluginOptions, {
       useValue: {
         dirtyObjectNumThreshold: 500,
@@ -79,10 +69,12 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-    this.container.load(containerModule, true);
+
+    this.container.registerSingleton(RenderingPluginContribution, CanvasRendererPlugin);
+    // this.container.load(containerModule, true);
   }
   destroy(): void {
-    this.container.unload(containerModule);
-    this.container.remove(CanvasRendererPluginOptions);
+    // this.container.unload(containerModule);
+    // this.container.remove(CanvasRendererPluginOptions);
   }
 }
