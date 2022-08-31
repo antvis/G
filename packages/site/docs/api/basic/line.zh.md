@@ -259,6 +259,16 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLeng
 line.getTotalLength(); // 200
 ```
 
+## getPointAtLength(distance: number): Point
+
+沿路径返回给定距离的点。
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+```js
+line.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
 ## getPoint(ratio: number): Point
 
 根据长度比例（取值范围 `[0-1]`）获取直线上局部坐标系下的点坐标，其中 `Point` 的格式为:

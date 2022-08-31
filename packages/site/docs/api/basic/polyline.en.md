@@ -194,6 +194,16 @@ export type Point = {
 };
 ```
 
+## getPointAtLength(distance: number): Point
+
+Returns the point at a given distance along the path.
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+```js
+polyline.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
 ## getStartTangent(): number[][]
 
 Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`

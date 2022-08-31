@@ -194,6 +194,16 @@ export type Point = {
 };
 ```
 
+## getPointAtLength(distance: number): Point
+
+沿路径返回给定距离的点。
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+```js
+polyline.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
 ## getStartTangent(): number[][]
 
 获取起点的切向量，形如: `[[10, 10], [20, 20]]`

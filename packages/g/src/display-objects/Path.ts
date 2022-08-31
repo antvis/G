@@ -6,6 +6,7 @@ import { Point } from '../shapes';
 import type { Rectangle } from '../shapes/Rectangle';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
+import { getOrCalculatePathTotalLength } from '../utils';
 import { DisplayObject } from './DisplayObject';
 
 export interface PathStyleProps extends BaseStyleProps {
@@ -218,20 +219,25 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
     }
   }
 
+  /**
+   * Returns the total length of the path.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getTotalLength
+   */
   getTotalLength() {
-    return this.parsedStyle.path.totalLength;
+    return getOrCalculatePathTotalLength(this);
   }
 
   /**
-   * Get point according to ratio
+   * Returns the point at a given distance along the path.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
    */
-  getPoint(ratio: number): Point {
+  getPointAtLength(distance: number): Point {
     const {
       defX,
       defY,
-      path: { totalLength, absolutePath },
+      path: { absolutePath },
     } = this.parsedStyle;
-    const { x, y } = getPointAtLength(absolutePath, ratio * totalLength);
+    const { x, y } = getPointAtLength(absolutePath, distance);
 
     const transformed = vec3.transformMat4(
       vec3.create(),
@@ -241,6 +247,13 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
 
     // apply local transformation
     return new Point(transformed[0], transformed[1]);
+  }
+
+  /**
+   * Returns the point at a given ratio of the total length in path.
+   */
+  getPoint(ratio: number): Point {
+    return this.getPointAtLength(ratio * getOrCalculatePathTotalLength(this));
   }
 
   /**
