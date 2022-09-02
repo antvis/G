@@ -1,6 +1,7 @@
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { inject, singleton, Syringe } from 'mana-syringe';
 import type { Transform } from '../components';
+import type { DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
 import { CustomEvent } from '../dom';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
@@ -22,6 +23,16 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
     }
   }
   return zIndex1 - zIndex2;
+}
+
+export function findClosestClipPathTarget(object: DisplayObject): DisplayObject {
+  let el = object;
+  do {
+    const clipPath = el.style?.clipPath;
+    if (clipPath) return el;
+    el = el.parentElement as DisplayObject;
+  } while (el !== null);
+  return null;
 }
 
 export const SceneGraphService = Syringe.defineToken('');
@@ -708,9 +719,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     });
 
     // account for clip path
-    const clipPath = (element as IElement).parsedStyle.clipPath;
-    if (clipPath) {
-      const clipPathBounds = this.getTransformedGeometryBounds(clipPath, true);
+    const clipped = findClosestClipPathTarget(element as DisplayObject);
+    if (clipped) {
+      const clipPathBounds = this.getTransformedGeometryBounds(clipped.style.clipPath, true);
       let transformParentBounds: AABB;
 
       if (clipPathBounds) {
@@ -718,7 +729,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         // intersect with original geometry
         transformParentBounds.setFromTransformedAABB(
           clipPathBounds,
-          this.getWorldTransform(element),
+          this.getWorldTransform(clipped),
         );
       }
       if (!aabb) {
