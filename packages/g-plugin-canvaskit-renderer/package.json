@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvaskit-renderer",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "A G plugin of renderer implementation with CanvasKit",
   "keywords": [
     "antv",
@@ -27,8 +27,8 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-math": "^1.7.10",
-    "@antv/g-plugin-image-loader": "^1.1.11",
+    "@antv/g-math": "^1.7.11",
+    "@antv/g-plugin-image-loader": "^1.1.12",
     "canvaskit-wasm": "^0.34.0",
     "tslib": "^2.3.1"
   },
