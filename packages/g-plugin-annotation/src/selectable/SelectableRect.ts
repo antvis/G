@@ -1,26 +1,12 @@
-import type {
-  BaseCustomElementStyleProps,
-  Cursor,
-  DisplayObject,
-  DisplayObjectConfig,
-  FederatedEvent,
-  ParsedBaseStyleProps,
-} from '@antv/g';
-import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
+import type { Cursor, DisplayObject, FederatedEvent, ParsedBaseStyleProps } from '@antv/g';
+import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g';
 import { SelectableEvent } from '../constants/enum';
-import type { SelectableStyle } from '../tokens';
-import type { Selectable } from './interface';
-
-interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
-  target: DisplayObject;
-}
+import { AbstractSelectable } from './AbstractSelectable';
 
 interface Control {
   x: number;
   y: number;
 }
-
-type SelectableStatus = 'active' | 'deactive' | 'moving' | 'resizing';
 
 const scaleMap = ['e', 'se', 's', 'sw', 'w', 'nw', 'n', 'ne', 'e'];
 // const skewMap = ['ns', 'nesw', 'ew', 'nwse'];
@@ -43,42 +29,15 @@ const controls: Control[] = [
   },
 ];
 
-export class SelectableRect extends CustomElement<Props> implements Selectable {
-  /**
-   * transparent mask
-   */
-  private mask: Rect;
-
+export class SelectableRect extends AbstractSelectable<Rect> {
   // private rotateAnchor: Circle;
 
   private tlAnchor: Circle;
   private trAnchor: Circle;
   private blAnchor: Circle;
   private brAnchor: Circle;
-  private anchors: Circle[] = [];
 
-  status: SelectableStatus;
-
-  constructor({ style, ...rest }: Partial<DisplayObjectConfig<Props>>) {
-    super({
-      style: {
-        selectionFill: 'transparent',
-        selectionFillOpacity: 1,
-        selectionStroke: 'black',
-        selectionStrokeOpacity: 1,
-        selectionStrokeWidth: 1,
-        selectionLineDash: 0,
-        anchorFill: 'black',
-        anchorStroke: 'black',
-        anchorStrokeOpacity: 1,
-        anchorStrokeWidth: 1,
-        anchorFillOpacity: 1,
-        anchorSize: 6,
-        ...style,
-      },
-      ...rest,
-    });
-
+  init() {
     this.mask = new Rect({
       style: {
         width: 0,
@@ -87,6 +46,7 @@ export class SelectableRect extends CustomElement<Props> implements Selectable {
         cursor: 'move',
       },
     });
+
     this.appendChild(this.mask);
 
     this.tlAnchor = new Circle({
@@ -113,8 +73,7 @@ export class SelectableRect extends CustomElement<Props> implements Selectable {
     this.mask.appendChild(this.trAnchor);
     this.mask.appendChild(this.brAnchor);
     this.mask.appendChild(this.blAnchor);
-  }
-  connectedCallback() {
+
     const {
       anchorFill,
       anchorStroke,
@@ -171,51 +130,35 @@ export class SelectableRect extends CustomElement<Props> implements Selectable {
 
     this.bindEventListeners();
   }
-  disconnectedCallback() {
-    // TODO: unbind event listeners
-  }
-  attributeChangedCallback<Key extends never>(name: Key, oldValue: {}[Key], newValue: {}[Key]) {
-    if (name === 'selectionStroke') {
-      this.mask.style.stroke = newValue;
-    } else if (name === 'selectionFill') {
-      this.mask.style.fill = newValue;
-    } else if (name === 'selectionFillOpacity') {
-      this.mask.style.fillOpacity = newValue;
-    } else if (name === 'selectionStrokeOpacity') {
-      this.mask.style.strokeOpacity = newValue;
-    } else if (name === 'selectionStrokeWidth') {
-      this.mask.style.lineWidth = newValue;
-    } else if (name === 'selectionLineDash') {
-      this.mask.style.lineDash = newValue;
-    } else if (name === 'anchorFill') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.fill = newValue;
-      });
-    } else if (name === 'anchorStrokeWidth') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.strokeWidth = newValue;
-      });
-    } else if (name === 'anchorStroke') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.stroke = newValue;
-      });
-    } else if (name === 'anchorSize') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.r = newValue;
-      });
-    } else if (name === 'anchorStrokeOpacity') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.strokeOpacity = newValue;
-      });
-    } else if (name === 'anchorFillOpacity') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.fillOpacity = newValue;
-      });
-    }
-  }
+
+  destroy(): void {}
 
   moveMask(dx: number, dy: number) {
     this.translate(dx, dy);
+  }
+
+  triggerMovingEvent(dx: number, dy: number) {
+    const [ox, oy] = this.getPosition();
+    this.style.target.dispatchEvent(
+      new CustomEvent(SelectableEvent.MOVING, {
+        movingX: ox + dx,
+        movingY: oy + dy,
+        dx,
+        dy,
+      }),
+    );
+  }
+
+  triggerMovedEvent() {
+    const [x, y] = this.getPosition();
+    this.style.target.dispatchEvent(
+      new CustomEvent(SelectableEvent.MOVED, {
+        rect: {
+          x,
+          y,
+        },
+      }),
+    );
   }
 
   /**
@@ -231,22 +174,20 @@ export class SelectableRect extends CustomElement<Props> implements Selectable {
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
       const [ox, oy] = this.getPosition();
-      this.moveMask(canvasX - shiftX - ox, canvasY - shiftY - oy);
+      const dx = canvasX - shiftX - ox;
+      const dy = canvasY - shiftY - oy;
 
-      targetObject.dispatchEvent(
-        new CustomEvent(SelectableEvent.MOVING, {
-          movingX: canvasX - shiftX,
-          movingY: canvasY - shiftY,
-        }),
-      );
+      // account for multi-selection
+      this.plugin.selected.forEach((selected) => {
+        const selectable = this.plugin.getOrCreateSelectableUI(selected);
+        selectable.triggerMovingEvent(dx, dy);
+      });
     };
 
     this.addEventListener('dragstart', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        this.status = 'moving';
-
         const [x, y] = this.getPosition();
         shiftX = e.canvasX - x;
         shiftY = e.canvasY - y;
@@ -273,8 +214,6 @@ export class SelectableRect extends CustomElement<Props> implements Selectable {
       // const angles = this.getEulerAngles();
 
       if (target === this.mask) {
-        this.status = 'moving';
-
         moveAt(canvasX, canvasY);
       } else if (
         target === this.tlAnchor ||
@@ -330,16 +269,11 @@ export class SelectableRect extends CustomElement<Props> implements Selectable {
     this.addEventListener('dragend', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
       if (target === this.mask) {
-        this.status = 'active';
-
-        targetObject.dispatchEvent(
-          new CustomEvent(SelectableEvent.MOVED, {
-            rect: {
-              x: Number(this.mask.style.x) + this.mask.getPosition()[0],
-              y: Number(this.mask.style.y) + this.mask.getPosition()[1],
-            },
-          }),
-        );
+        // account for multi-selection
+        this.plugin.selected.forEach((selected) => {
+          const selectable = this.plugin.getOrCreateSelectableUI(selected);
+          selectable.triggerMovedEvent();
+        });
       } else if (
         target === this.tlAnchor ||
         target === this.trAnchor ||
