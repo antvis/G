@@ -247,6 +247,16 @@ path.getPoint(0.5); // Point {x: 100, y: 150}
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
+## getPointAtLength(distance: number): Point
+
+沿路径返回给定距离的点。
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+```js
+path.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
 ## getStartTangent(): number[][]
 
 获取起点的切向量，形如: `[[10, 10], [20, 20]]`

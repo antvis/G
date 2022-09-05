@@ -107,6 +107,14 @@ describe('Polyline', () => {
     point = polyline.getPoint(10);
     expect(point.x).eqls(50);
     expect(point.y).eqls(50);
+
+    point = polyline.getPointAtLength(0);
+    expect(point.x).eqls(50);
+    expect(point.y).eqls(50);
+
+    point = polyline.getPointAtLength(50);
+    expect(point.x).eqls(100);
+    expect(point.y).eqls(50);
   });
 
   it('should calc tangent correctly', () => {

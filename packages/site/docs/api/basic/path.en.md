@@ -247,6 +247,16 @@ Also the transformations applied on the original path, in the local coordinate s
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
+## getPointAtLength(distance: number): Point
+
+Returns the point at a given distance along the path.
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+```js
+path.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
 ## getStartTangent(): number[][]
 
 Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`

@@ -199,6 +199,10 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
     return new Point(transformed[0], transformed[1]);
   }
 
+  getPointAtLength(distance: number): Point {
+    return this.getPoint(distance / this.getTotalLength());
+  }
+
   getTotalLength() {
     // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2 } = this.parsedStyle;

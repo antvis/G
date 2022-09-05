@@ -3,7 +3,7 @@ title: Line
 order: 6
 ---
 
-You can refer to the [\<line\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/line) element of SVG.
+You can refer to the [\<line\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line) element of SVG.
 
 The following [example](/en/examples/shape#line) defines a line with two endpoints `[200, 100]` and `[400, 100]`, a line width of 2, and a dashed line.
 
@@ -72,7 +72,7 @@ Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/displ
 
 The x-axis coordinate of the first endpoint in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1
+https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -82,7 +82,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1
 
 The y-axis coordinate of the first endpoint in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1
+https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -100,7 +100,7 @@ The z-axis coordinate of the first endpoint in the local coordinate system.
 
 The x-axis coordinate of the second endpoint in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2
+https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -110,7 +110,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2
 
 The y-axis coordinate of the second endpoint in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
+https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
@@ -253,10 +253,20 @@ Adjusts the position of the marker graphic at the "end point".
 
 Get the length of the line.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getTotalLength
 
 ```js
 line.getTotalLength(); // 200
+```
+
+## getPointAtLength(distance: number): Point
+
+Returns the point at a given distance along the path.
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+```js
+line.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
 ## getPoint(ratio: number): Point

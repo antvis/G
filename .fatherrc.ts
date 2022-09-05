@@ -8,7 +8,6 @@ export default {
   // yarn build order
   pkgs: [
     'g-math',
-    'g-lite',
     'g',
     'g-layout-blocklike',
     'g-plugin-image-loader',

@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedPathStyleProps, PathStyleProps, Point } from '@antv/g';
-import { isFillOrStrokeAffected } from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps, Path, PathStyleProps, Point } from '@antv/g';
+import { getOrCalculatePathTotalLength, isFillOrStrokeAffected } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { inLine, inPolygons } from './utils/math';
 
@@ -74,7 +74,9 @@ export function isPointInPath(
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
-  const { segments, hasArc, polylines, polygons, totalLength } = path;
+  const { segments, hasArc, polylines, polygons } = path;
+
+  const totalLength = getOrCalculatePathTotalLength(displayObject as Path);
 
   const isClipPath = !!clipPathTargets?.length;
 

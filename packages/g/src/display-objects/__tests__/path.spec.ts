@@ -156,6 +156,14 @@ describe('Path', () => {
     point = path.getPoint(10);
     expect(point.x).eqls(100);
     expect(point.y).eqls(0);
+
+    point = path.getPointAtLength(0);
+    expect(point.x).eqls(0);
+    expect(point.y).eqls(0);
+
+    point = path.getPointAtLength(50);
+    expect(point.x).eqls(50);
+    expect(point.y).eqls(0);
   });
 
   it('should getPoint on a quad bezier correctly', () => {
