@@ -46,6 +46,11 @@ export class AnnotationPlugin implements RenderingPlugin {
   brushRect: Rect;
 
   /**
+   * draw a static point
+   */
+  pointCircle: Circle;
+
+  /**
    * control points on polyline
    */
   polylineControlPoints: Circle[] = [];
@@ -64,6 +69,10 @@ export class AnnotationPlugin implements RenderingPlugin {
     if (anno.type === 'rect') {
       if (this.brushRect) {
         this.brushRect.style.visibility = 'hidden';
+      }
+    } else if (anno.type === 'circle') {
+      if (this.pointCircle) {
+        this.pointCircle.style.visibility = 'hidden';
       }
     } else if (anno.type === 'polyline' || anno.type === 'polygon') {
       this.polylineControlPoints.forEach((point) => {
@@ -174,17 +183,6 @@ export class AnnotationPlugin implements RenderingPlugin {
     // todo
     this.canvas.setCursor('crosshair');
     return activeDrawer;
-  }
-
-  /**
-   * 冻结绘制工具
-   */
-  freezeDrawer() {
-    this.drawer.isActive = false;
-  }
-
-  unfreezeDrawer() {
-    this.drawer.isActive = true;
   }
 
   /**

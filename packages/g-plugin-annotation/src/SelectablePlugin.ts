@@ -16,7 +16,7 @@ import {
   singleton,
 } from '@antv/g';
 import { SelectableEvent } from './constants/enum';
-import { SelectablePolyline, SelectableRect } from './selectable';
+import { SelectableCircle, SelectablePolyline, SelectableRect } from './selectable';
 import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
 import { AnnotationPluginOptions } from './tokens';
@@ -95,7 +95,6 @@ export class SelectablePlugin implements RenderingPlugin {
       if (
         object.nodeName === Shape.IMAGE ||
         object.nodeName === Shape.RECT ||
-        object.nodeName === Shape.CIRCLE ||
         object.nodeName === Shape.ELLIPSE
       ) {
         created = new SelectableRect({
@@ -103,6 +102,13 @@ export class SelectablePlugin implements RenderingPlugin {
             target: object,
             ...this.annotationPluginOptions.selectableStyle,
             // TODO: use object's selectable style to override
+          },
+        });
+      } else if (object.nodeName === Shape.CIRCLE) {
+        created = new SelectableCircle({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
           },
         });
       } else if (object.nodeName === Shape.LINE || object.nodeName === Shape.POLYLINE) {
@@ -178,7 +184,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
     const handleModifiedTarget = (e: CustomEvent) => {
       const target = e.target as DisplayObject;
-      const { rect, polyline, polygon } = e.detail;
+      const { circle, rect, polyline, polygon } = e.detail;
 
       if (target.nodeName === Shape.RECT) {
         const { x, y, width, height } = rect;
@@ -195,6 +201,13 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (target.nodeName === Shape.POLYGON) {
         target.attr({
           points: polygon.points,
+        });
+      } else if (target.nodeName === Shape.CIRCLE) {
+        const { cx, cy, r } = circle;
+        target.attr({
+          cx,
+          cy,
+          r,
         });
       }
 
@@ -213,7 +226,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
     const handleMovedTarget = (e: CustomEvent) => {
       const target = e.target as DisplayObject;
-      const { rect, polyline, polygon } = e.detail;
+      const { circle, rect, polyline, polygon } = e.detail;
 
       if (target.nodeName === Shape.RECT) {
         target.attr({
@@ -227,6 +240,11 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (target.nodeName === Shape.POLYGON) {
         target.attr({
           points: polygon.points,
+        });
+      } else if (target.nodeName === Shape.CIRCLE) {
+        target.attr({
+          cx: circle.cx,
+          cy: circle.cy,
         });
       }
     };
