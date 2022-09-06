@@ -38,7 +38,7 @@ export type EmitterListeners = Record<
 const PROPAGATION_LIMIT = 2048;
 
 @singleton()
-export class EventService extends EventEmitter {
+export class EventService {
   constructor(
     @inject(RenderingContext)
     private renderingContext: RenderingContext,
@@ -51,11 +51,11 @@ export class EventService extends EventEmitter {
 
     @inject(DisplayObjectPool)
     private displayObjectPool: DisplayObjectPool,
-  ) {
-    super();
-  }
+  ) {}
 
   private rootTarget: IEventTarget;
+
+  private emitter = new EventEmitter();
 
   cursor: Cursor | null = 'default';
 
@@ -543,7 +543,7 @@ export class EventService extends EventEmitter {
     e.propagationImmediatelyStopped = false;
 
     this.propagate(e, type);
-    this.emit(type || e.type, e);
+    this.emitter.emit(type || e.type, e);
   }
 
   propagate(e: FederatedEvent, type?: string) {

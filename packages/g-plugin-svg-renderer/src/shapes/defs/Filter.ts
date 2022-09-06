@@ -1,4 +1,4 @@
-import type { CSSUnitValue, DisplayObject, ParsedFilterStyleProperty } from '@antv/g-lite';
+import type { CSSUnitValue, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import { UnitType } from '@antv/g-lite';
 import { createSVGElement } from '../../utils/dom';
 
@@ -13,7 +13,7 @@ export function createOrUpdateFilter(
   $def: SVGDefsElement,
   object: DisplayObject,
   $el: SVGElement,
-  filters: ParsedFilterStyleProperty[],
+  filters: ParsedBaseStyleProps['filter'],
 ) {
   // eg. filter="url(#f1) url(#f2)"
   const filterName = FILTER_PREFIX + object.entity;

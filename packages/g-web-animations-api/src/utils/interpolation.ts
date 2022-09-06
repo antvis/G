@@ -5,7 +5,7 @@ import type {
   Interpolatable,
   TypeEasingFunction,
 } from '@antv/g-lite';
-import { cache, styleValueRegistry } from '@antv/g-lite';
+import { propertyMetadataCache, styleValueRegistry } from '@antv/g-lite';
 import { parseEasingFunction } from './animation';
 
 export function convertEffectInput(
@@ -148,7 +148,7 @@ function propertyInterpolation(
   right: string | number,
   target: IElement | null,
 ) {
-  const metadata = cache[property];
+  const metadata = propertyMetadataCache[property];
 
   if (metadata && metadata.syntax && metadata.int) {
     const propertyHandler = styleValueRegistry.getPropertySyntax(metadata.syntax);
@@ -251,16 +251,3 @@ function interpolate(from: Interpolatable, to: Interpolatable, f: number): Inter
   }
   throw new Error('Mismatched interpolation arguments ' + from + ':' + to);
 }
-
-// export const formatAttribute = memoize(
-//   (name: string, value: any): [string, any] => {
-//     let attributeName = camelCase(name);
-//     const map = FORMAT_ATTR_MAP[attributeName];
-//     attributeName = map?.alias || attributeName;
-//     const attributeValue = map?.values?.[value] || value;
-//     return [attributeName, attributeValue];
-//   },
-//   (name: string, value: any) => {
-//     return `${name}${value}`;
-//   },
-// );

@@ -1,5 +1,5 @@
-import { CSS } from '@antv/g';
 import { expect } from 'chai';
+import { CSS } from '../../';
 
 describe('CSSMathInvert', () => {
   it('should invert numeric correctly.', () => {

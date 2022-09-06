@@ -1,5 +1,5 @@
-import { toFontString } from '@antv/g';
 import { expect } from 'chai';
+import { toFontString } from '..';
 
 describe('Text utils', () => {
   it('should convert font string correctly', () => {

@@ -5,10 +5,15 @@ import type { DisplayObject } from '../display-objects';
 import { CustomEvent, ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from '../utils';
+import {
+  AsyncParallelHook,
+  AsyncSeriesWaterfallHook,
+  sortByZIndex,
+  SyncHook,
+  SyncWaterfallHook,
+} from '../utils';
 import { SceneGraphService } from './interfaces';
 import { RenderingContext, RenderReason } from './RenderingContext';
-import { sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
   apply: (renderer: RenderingService) => void;

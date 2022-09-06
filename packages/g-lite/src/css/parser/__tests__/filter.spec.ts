@@ -1,5 +1,5 @@
-import { parseFilter } from '@antv/g';
 import { expect } from 'chai';
+import { parseFilter } from '..';
 
 describe('Property Filter', () => {
   it('should parse single filter like blur(5px)', () => {

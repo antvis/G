@@ -4,7 +4,7 @@ import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
 import { Strategy } from '../components';
-import { unsetKeywordValue } from '../css';
+import { unsetKeywordValue } from '../css/CSSStyleValuePool';
 import { SceneGraphService } from '../services/interfaces';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';

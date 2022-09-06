@@ -8,58 +8,17 @@ import { Frustum } from '../shapes';
 import type { TypeEasingFunction } from '../types';
 import { ParseEasingFunction } from '../types';
 import { createVec3, getAngle, makePerspective } from '../utils/math';
+import {
+  CameraEvent,
+  CameraProjectionMode,
+  CameraTrackingMode,
+  CameraType,
+  ICamera,
+} from './interfaces';
 import type { Landmark } from './Landmark';
 // import { DisplayObject } from '../display-objects';
 
 export const DefaultCamera = Syringe.defineToken('');
-
-export enum CameraType {
-  /**
-   * Performs all the rotational operations with the focal point instead of the camera position.
-   * This type of camera is useful in applications(like CAD) where 3D objects are being designed or explored.
-   * Camera cannot orbits over the north & south poles.
-   * @see http://voxelent.com/tutorial-cameras/
-   *
-   * In Three.js it's used in OrbitControls.
-   * @see https://threejs.org/docs/#examples/zh/controls/OrbitControls
-   */
-  ORBITING,
-  /**
-   * It's similar to the ORBITING camera, but it allows the camera to orbit over the north or south poles.
-   *
-   * In Three.js it's used in OrbitControls.
-   * @see https://threejs.org/docs/#examples/en/controls/TrackballControls
-   */
-  EXPLORING,
-  /**
-   * Performs all the rotational operations with the camera position.
-   * It's useful in first person shooting games.
-   * Camera cannot orbits over the north & south poles.
-   *
-   * In Three.js it's used in FirstPersonControls.
-   * @see https://threejs.org/docs/#examples/en/controls/FirstPersonControls
-   */
-  TRACKING,
-}
-
-/**
- * CameraType must be TRACKING
- */
-export enum CameraTrackingMode {
-  DEFAULT,
-  ROTATIONAL,
-  TRANSLATIONAL,
-  CINEMATIC,
-}
-
-export enum CameraProjectionMode {
-  ORTHOGRAPHIC,
-  PERSPECTIVE,
-}
-
-export const CameraEvent = {
-  UPDATED: 'updated',
-};
 
 const DEG_2_RAD = Math.PI / 180;
 const RAD_2_DEG = 180 / Math.PI;
@@ -76,13 +35,13 @@ const MIN_DISTANCE = 0.0002;
  * 4. 移动到 Landmark，具有平滑的动画效果，其间禁止其他用户交互
  */
 
-export class Camera extends EventEmitter {
+export class Camera extends EventEmitter implements ICamera {
   canvas: Canvas;
 
   /**
    * 相机矩阵
    */
-  matrix = mat4.create();
+  private matrix = mat4.create();
 
   /**
    * u 轴

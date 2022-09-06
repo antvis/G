@@ -2,7 +2,7 @@ import type {
   CSSGradientValue,
   CSSRGB,
   DisplayObject,
-  ParsedFilterStyleProperty,
+  ParsedBaseStyleProps,
   Pattern,
 } from '@antv/g-lite';
 import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
@@ -95,7 +95,7 @@ export class DefElementManager {
   createOrUpdateFilter(
     object: DisplayObject,
     $el: SVGElement,
-    filters: ParsedFilterStyleProperty[],
+    filters: ParsedBaseStyleProps['filter'],
   ) {
     const { document: doc } = this.canvasConfig;
     createOrUpdateFilter(doc || document, this.$def, object, $el, filters);

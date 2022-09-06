@@ -1,6 +1,6 @@
-import { Plane } from '@antv/g';
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
+import { Plane } from '..';
 
 describe('Plane', () => {
   test('should generate correct p-vertex & n-vertex flag.', () => {

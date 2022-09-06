@@ -10,6 +10,7 @@ export default {
     'g-math',
     'g-lite',
     'g-compat',
+    'g-camera-api',
     'g-css-typed-om-api',
     'g-css-layout-api',
     'g-web-animations-api',

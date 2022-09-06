@@ -1,9 +1,8 @@
-import { Canvas, DisplayObjectPool, HTML } from '@antv/g';
+import { Canvas, DisplayObjectPool, GlobalContainer, HTML } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
-import { GlobalContainer } from 'mana-syringe';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 import { sleep } from '../utils';

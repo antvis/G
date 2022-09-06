@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g",
-  "version": "5.8.6",
-  "description": "A core module for rendering engine implements DOM API.",
+  "name": "@antv/g-camera-api",
+  "version": "0.0.1",
+  "description": "A simple implementation of Camera API.",
   "keywords": [
     "antv",
     "g",
@@ -28,14 +28,8 @@
     "LICENSE",
     "README.md"
   ],
-  "dependencies": {
-    "@antv/g-camera-api": "^0.0.1",
-    "@antv/g-compat": "^0.0.1",
-    "@antv/g-css-layout-api": "^0.0.1",
-    "@antv/g-css-typed-om-api": "^0.0.1",
-    "@antv/g-dom-mutation-observer-api": "^0.0.1",
-    "@antv/g-lite": "^0.0.1",
-    "@antv/g-web-animations-api": "^0.0.1"
+  "peerDependencies": {
+    "@antv/g-lite": "^0.0.1"
   },
   "publishConfig": {
     "access": "public"

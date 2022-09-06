@@ -1,16 +1,5 @@
-import {
-  Circle,
-  convertToPath,
-  Ellipse,
-  // equalizeSegments,
-  // getDrawDirection,
-  Line,
-  Path,
-  Polygon,
-  Polyline,
-  Rect,
-} from '@antv/g';
 import chai, { expect } from 'chai';
+import { convertToPath, Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from '@antv/g-lite';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore

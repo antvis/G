@@ -1,6 +1,6 @@
-import { AABB, Plane } from '@antv/g';
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
+import { AABB, Plane } from '..';
 
 describe('AABB', () => {
   test('should construct correctly.', () => {

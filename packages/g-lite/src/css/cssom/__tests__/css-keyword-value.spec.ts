@@ -1,5 +1,5 @@
-import { CSSKeywordValue, CSSStyleValueType } from '@antv/g';
 import { expect } from 'chai';
+import { CSSKeywordValue, CSSStyleValueType } from '../';
 
 describe('CSSKeywordValueTest', () => {
   it('should create with keyword.', () => {

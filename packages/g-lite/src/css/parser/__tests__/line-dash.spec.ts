@@ -1,5 +1,5 @@
-import { parseDimensionArray } from '@antv/g';
 import { expect } from 'chai';
+import { parseDimensionArray } from '..';
 
 describe('Property LineDash', () => {
   it('parse lineDash with unit', () => {

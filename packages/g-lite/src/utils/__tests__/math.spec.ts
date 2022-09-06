@@ -1,5 +1,7 @@
 import chai, { expect } from 'chai';
-// @ts-ignore
+import chaiAlmost from 'chai-almost';
+import { mat3, vec2, vec3 } from 'gl-matrix';
+import sinonChai from 'sinon-chai';
 import {
   createVec3,
   decompose,
@@ -9,10 +11,7 @@ import {
   grad2deg,
   rad2deg,
   turn2deg,
-} from '@antv/g';
-import chaiAlmost from 'chai-almost';
-import { mat3, vec2, vec3 } from 'gl-matrix';
-import sinonChai from 'sinon-chai';
+} from '../';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);

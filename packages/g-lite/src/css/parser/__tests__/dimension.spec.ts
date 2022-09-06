@@ -1,13 +1,5 @@
-import { Circle, parseLength } from '@antv/g';
 import { expect } from 'chai';
-
-const circle = new Circle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 100,
-  },
-});
+import { parseLength } from '..';
 
 describe('Property Dimension', () => {
   it('parse length with unit', () => {

@@ -1,5 +1,5 @@
-import { parseGradient } from '@antv/g';
 import chai, { expect } from 'chai';
+import { parseGradient } from '../';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore

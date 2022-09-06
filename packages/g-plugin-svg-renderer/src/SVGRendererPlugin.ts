@@ -9,7 +9,6 @@ import type {
   RenderingService,
 } from '@antv/g-lite';
 import {
-  cache,
   Camera,
   CanvasConfig,
   ContextService,
@@ -17,6 +16,7 @@ import {
   DefaultCamera,
   ElementEvent,
   inject,
+  propertyMetadataCache,
   RenderingContext,
   RenderingPluginContribution,
   RenderReason,
@@ -390,7 +390,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!cache[name]?.inh;
+      const inherited = !!propertyMetadataCache[name]?.inh;
 
       if (!usedName) {
         return;

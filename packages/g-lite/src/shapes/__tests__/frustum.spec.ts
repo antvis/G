@@ -1,6 +1,6 @@
-import { Frustum } from '@antv/g';
 import { expect } from 'chai';
 import { mat4, vec3 } from 'gl-matrix';
+import { Frustum } from '..';
 
 describe('Frustum', () => {
   test('should extract 6 planes from VP matrix.', () => {

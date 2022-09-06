@@ -11,20 +11,6 @@ import { SceneGraphService } from './interfaces';
 import type { SceneGraphSelector } from './SceneGraphSelector';
 import { SceneGraphSelectorFactory } from './SceneGraphSelector';
 
-export function sortByZIndex(o1: IElement, o2: IElement) {
-  const zIndex1 = Number(o1.style.zIndex);
-  const zIndex2 = Number(o2.style.zIndex);
-  if (zIndex1 === zIndex2) {
-    // return o1.entity.getComponent(Sortable).lastSortedIndex - o2.entity.getComponent(Sortable).lastSortedIndex;
-    const parent = o1.parentNode;
-    if (parent) {
-      const children = parent.childNodes || [];
-      return children.indexOf(o1) - children.indexOf(o2);
-    }
-  }
-  return zIndex1 - zIndex2;
-}
-
 /**
  * update transform in scene graph
  *
