@@ -2,7 +2,7 @@ export default {
   umd: {
     name: 'G.SVGRenderer',
     globals: {
-      '@antv/g': 'window.G',
+      '@antv/g-lite': 'window.G',
     },
   },
 };

@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedPathStyleProps, ParsedTextStyleProps } from '@antv/g';
-import { ContextService, CSSRGB, inject, singleton } from '@antv/g';
+import type { DisplayObject, ParsedPathStyleProps, ParsedTextStyleProps } from '@antv/g-lite';
+import { ContextService, CSSRGB, inject, singleton } from '@antv/g-lite';
 import type { EmbindEnumEntity, Typeface } from 'canvaskit-wasm';
 import { FontLoader } from '../FontLoader';
 import type {
@@ -31,11 +31,13 @@ import { color2CanvaskitColor } from '../util';
   token: TextRendererContribution,
 })
 export class TextRenderer implements RendererContribution {
-  @inject(ContextService)
-  private contextService: ContextService<CanvasKitContext>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<CanvasKitContext>,
 
-  @inject(FontLoader)
-  private fontLoader: FontLoader;
+    @inject(FontLoader)
+    private fontLoader: FontLoader,
+  ) {}
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = this.contextService.getContext();

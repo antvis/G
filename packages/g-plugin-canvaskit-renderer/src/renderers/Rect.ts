@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedRectStyleProps } from '@antv/g';
-import { singleton } from '@antv/g';
+import type { DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
 import { clamp } from '@antv/util';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
 import { RectRendererContribution } from '../interfaces';

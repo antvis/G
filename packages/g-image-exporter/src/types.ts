@@ -1,4 +1,4 @@
-import type { Rectangle } from '@antv/g';
+import type { Rectangle } from '@antv/g-lite';
 
 export interface DownloadImageOptions {
   dataURL: string;

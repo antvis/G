@@ -1,5 +1,5 @@
+import { inject, singleton } from '@alipay/mana-syringe';
 import { isNil } from '@antv/util';
-import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { Shape } from '../../types';
 import { TextService } from '../TextService';
@@ -7,8 +7,10 @@ import { GeometryAABBUpdater } from './interfaces';
 
 @singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
-  @inject(TextService)
-  private textService: TextService;
+  constructor(
+    @inject(TextService)
+    private textService: TextService,
+  ) {}
 
   private isReadyToMeasure(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
     const {

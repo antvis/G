@@ -1,5 +1,5 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
-import { ContextService, inject, RenderingPluginContribution, singleton } from '@antv/g';
+import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g-lite';
+import { ContextService, inject, RenderingPluginContribution, singleton } from '@antv/g-lite';
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */
@@ -7,8 +7,10 @@ import { ContextService, inject, RenderingPluginContribution, singleton } from '
 export class MobileInteractionPlugin implements RenderingPlugin {
   static tag = 'MobileInteraction';
 
-  @inject(ContextService)
-  private contextService: ContextService<CanvasRenderingContext2D>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<CanvasRenderingContext2D>,
+  ) {}
 
   apply(renderingService: RenderingService) {
     // 获取小程序上下文

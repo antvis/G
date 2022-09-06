@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { WebGPUDeviceOptions } from './interfaces';
 import { WebGPUDeviceContribution } from './WebGPUDeviceContribution';
 

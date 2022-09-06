@@ -1,7 +1,7 @@
 // import { this.sceneGraphService } from '..';
+import { GlobalContainer } from '@alipay/mana-syringe';
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { GlobalContainer } from 'mana-syringe';
 import type { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
 import { Strategy } from '../components';
 import { unsetKeywordValue } from '../css';

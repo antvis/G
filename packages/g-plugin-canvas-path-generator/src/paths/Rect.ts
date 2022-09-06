@@ -1,4 +1,4 @@
-import type { ParsedRectStyleProps } from '@antv/g';
+import type { ParsedRectStyleProps } from '@antv/g-lite';
 import { clamp } from '@antv/util';
 
 export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedRectStyleProps) {

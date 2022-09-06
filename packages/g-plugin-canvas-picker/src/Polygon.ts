@@ -1,5 +1,10 @@
-import type { DisplayObject, ParsedPolygonStyleProps, Point, PolylineStyleProps } from '@antv/g';
-import { isFillOrStrokeAffected } from '@antv/g';
+import type {
+  DisplayObject,
+  ParsedPolygonStyleProps,
+  Point,
+  PolylineStyleProps,
+} from '@antv/g-lite';
+import { isFillOrStrokeAffected } from '@antv/g-lite';
 import { inPolygon, inPolyline } from './utils/math';
 
 export function isPointInPath(

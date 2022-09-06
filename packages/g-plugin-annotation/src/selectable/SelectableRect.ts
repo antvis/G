@@ -5,8 +5,8 @@ import type {
   DisplayObjectConfig,
   FederatedEvent,
   ParsedBaseStyleProps,
-} from '@antv/g';
-import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g';
+} from '@antv/g-lite';
+import { Circle, CustomElement, CustomEvent, rad2deg, Rect } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import type { SelectableStyle } from '../tokens';
 import type { Selectable } from './interface';

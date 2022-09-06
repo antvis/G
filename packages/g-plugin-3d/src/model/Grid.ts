@@ -1,5 +1,5 @@
-// import { DisplayObject, Renderable } from '@antv/g';
-// import { inject, singleton } from '@antv/g';
+// import { DisplayObject, Renderable } from '@antv/g-lite';
+// import { inject, singleton } from '@antv/g-lite';
 // import { vec3 } from 'gl-matrix';
 // import {
 //   Batch,

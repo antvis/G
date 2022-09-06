@@ -1,4 +1,4 @@
-import { Polyline } from '@antv/g';
+import { Polyline } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DASH_LINE_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';

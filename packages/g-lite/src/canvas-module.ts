@@ -1,4 +1,4 @@
-import { Contribution, Module } from 'mana-syringe';
+import { Contribution, Module } from '@alipay/mana-syringe';
 import RBush from 'rbush';
 import type { RBushNodeAABB } from './components';
 import { RBushRoot } from './components';

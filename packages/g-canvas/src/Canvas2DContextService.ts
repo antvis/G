@@ -1,5 +1,12 @@
-import type { CanvasLike, DataURLOptions } from '@antv/g';
-import { CanvasConfig, ContextService, inject, isBrowser, setDOMSize, singleton } from '@antv/g';
+import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  isBrowser,
+  setDOMSize,
+  singleton,
+} from '@antv/g-lite';
 import { isString } from '@antv/util';
 
 @singleton({ token: ContextService })
@@ -9,8 +16,10 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   private dpr: number;
   private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;

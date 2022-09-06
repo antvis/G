@@ -1,6 +1,6 @@
+import { inject, singleton } from '@alipay/mana-syringe';
 import { isFunction, isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import { inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import { SceneGraphService } from '../services';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
@@ -590,17 +590,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    */
   // dirty = false;
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+  constructor(
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
 
-  @inject(CSSPropertySyntaxFactory)
-  private propertySyntaxFactory: CSSPropertySyntaxFactory;
+    @inject(CSSPropertySyntaxFactory)
+    private propertySyntaxFactory: CSSPropertySyntaxFactory,
 
-  @inject(GeometryUpdaterFactory)
-  private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>;
-
-  @postConstruct()
-  init() {
+    @inject(GeometryUpdaterFactory)
+    private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>,
+  ) {
     BUILT_IN_PROPERTIES.forEach((property) => {
       this.registerMetadata(property);
     });

@@ -1,4 +1,4 @@
-import { singleton } from '@antv/g';
+import { singleton } from '@antv/g-lite';
 import type { Device } from '../platform';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';

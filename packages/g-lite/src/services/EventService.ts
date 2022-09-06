@@ -1,6 +1,6 @@
+import { inject, singleton } from '@alipay/mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
-import { inject, postConstruct, singleton } from 'mana-syringe';
 import type { HTML } from '../display-objects';
 import { DisplayObjectPool } from '../display-objects';
 import { Element } from '../dom/Element';
@@ -39,17 +39,21 @@ const PROPAGATION_LIMIT = 2048;
 
 @singleton()
 export class EventService extends EventEmitter {
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+  constructor(
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(ContextService)
-  private contextService: ContextService<any>;
+    @inject(ContextService)
+    private contextService: ContextService<any>,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
+    @inject(DisplayObjectPool)
+    private displayObjectPool: DisplayObjectPool,
+  ) {
+    super();
+  }
 
   private rootTarget: IEventTarget;
 
@@ -72,7 +76,6 @@ export class EventService extends EventEmitter {
   private tmpMatrix = mat4.create();
   private tmpVec3 = vec3.create();
 
-  @postConstruct()
   init() {
     this.rootTarget = this.renderingContext.root.parentNode; // document
     this.addEventMapping('pointerdown', this.onPointerDown);

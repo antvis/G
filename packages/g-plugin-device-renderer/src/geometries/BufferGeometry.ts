@@ -1,4 +1,4 @@
-import { AABB } from '@antv/g';
+import { AABB } from '@antv/g-lite';
 import { EventEmitter } from 'eventemitter3';
 import type { Mesh } from '../Mesh';
 import type { Buffer, Device, InputLayoutDescriptor, VertexBufferFrequency } from '../platform';

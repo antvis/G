@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedBaseStyleProps, RenderingService } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, RenderingService } from '@antv/g-lite';
+import { Syringe } from '@antv/g-lite';
 
 export const StyleRendererFactory = Syringe.defineToken('');
 export interface StyleRenderer {

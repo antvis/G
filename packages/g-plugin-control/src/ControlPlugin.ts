@@ -1,4 +1,4 @@
-import type { RenderingPlugin, RenderingService } from '@antv/g';
+import type { RenderingPlugin, RenderingService } from '@antv/g-lite';
 import {
   Camera,
   CanvasConfig,
@@ -7,7 +7,7 @@ import {
   RenderingContext,
   RenderingPluginContribution,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import Hammer from 'hammerjs';
 
 const MOTION_FACTOR = 10;
@@ -18,14 +18,16 @@ const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 export class ControlPlugin implements RenderingPlugin {
   static tag = 'Control';
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+  constructor(
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: Camera,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   private hammertime: HammerManager;
 

@@ -1,4 +1,4 @@
-import type { DisplayObject } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
 
 export interface Selectable extends DisplayObject {
   /**

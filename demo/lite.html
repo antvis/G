@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <title>Show 2D shapes with Canvas2D/SVG/WebGL</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script src="../packages/g-lite/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-canvas/dist/index.umd.min.js" type="application/javascript"></script>
+    <!-- <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
+    <script
+      src="../packages/g-plugin-css-select/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Circle, Rect, Ellipse, Image, Line, Polyline, Path, Polygon, Text, Canvas } =
+        window.G;
+      // const CanvasRenderer = window.G.Canvas2D.Renderer;
+      // const SVGRenderer = window.G.SVG.Renderer;
+      // const WebGLRenderer = window.G.WebGL.Renderer;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+      canvasRenderer.registerPlugin(new window.G.CSSSelect.Plugin());
+
+      // const svgRenderer = new SVGRenderer();
+      // const webglRenderer = new WebGLRenderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+        // renderer: svgRenderer,
+        // renderer: webglRenderer,
+      });
+
+      const circle = new Circle({
+        style: {
+          r: 50,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 4,
+          cursor: 'pointer',
+        },
+      });
+      const ellipse = new Ellipse({
+        style: {
+          rx: 60,
+          ry: 80,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 4,
+          cursor: 'pointer',
+        },
+      });
+      const rect = new Rect({
+        style: {
+          width: 80,
+          height: 60,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 4,
+          radius: 8,
+          cursor: 'pointer',
+        },
+      });
+      const image = new Image({
+        style: {
+          width: 100,
+          height: 100,
+          img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+          cursor: 'pointer',
+        },
+      });
+      const line = new Line({
+        style: {
+          x1: 0,
+          y1: 0,
+          x2: 200,
+          y2: 0,
+          stroke: '#1890FF',
+          lineWidth: 10,
+          cursor: 'pointer',
+        },
+      });
+      const polyline = new Polyline({
+        style: {
+          points: [
+            [50, 50],
+            [100, 50],
+            [100, 100],
+            [150, 100],
+            [150, 150],
+            [200, 150],
+            [200, 200],
+            [250, 200],
+          ],
+          stroke: '#1890FF',
+          lineWidth: 10,
+          cursor: 'pointer',
+        },
+      });
+      const path = new Path({
+        style: {
+          path:
+            'M 100,300' +
+            'l 50,-25' +
+            'a25,25 -30 0,1 50,-25' +
+            'l 50,-25' +
+            'a25,50 -30 0,1 50,-25' +
+            'l 50,-25' +
+            'a25,75 -30 0,1 50,-25' +
+            'l 50,-25' +
+            'a25,100 -30 0,1 50,-25' +
+            'l 50,-25' +
+            'l 0, 200,' +
+            'z',
+          lineWidth: 10,
+          lineJoin: 'round',
+          stroke: '#1890FF',
+          cursor: 'pointer',
+        },
+      });
+      const polygon = new Polygon({
+        style: {
+          points: [
+            [200, 100],
+            [400, 100],
+            [400 + 200 * Math.sin(Math.PI / 6), 100 + 200 * Math.cos(Math.PI / 6)],
+            [400, 100 + 200 * Math.cos(Math.PI / 6) * 2],
+            [200, 100 + 200 * Math.cos(Math.PI / 6) * 2],
+            [200 - 200 * Math.sin(Math.PI / 6), 100 + 200 * Math.cos(Math.PI / 6)],
+          ],
+          stroke: '#1890FF',
+          fill: '#1890FF',
+          lineWidth: 10,
+          cursor: 'pointer',
+        },
+      });
+      const text = new Text({
+        style: {
+          fontFamily: 'PingFang SC',
+          text: '这是测试文本',
+          fontSize: 40,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 5,
+          cursor: 'pointer',
+        },
+      });
+      const clippedText = new Text({
+        style: {
+          fontFamily: 'PingFang SC',
+          text: '这是测试文本',
+          fontSize: 40,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 5,
+          clipPath: new Circle({
+            style: {
+              cx: 20,
+              cy: -10,
+              r: 20,
+            },
+          }),
+          cursor: 'pointer',
+        },
+      });
+
+      circle.setPosition(100, 100);
+      canvas.appendChild(circle);
+
+      ellipse.setPosition(220, 100);
+      canvas.appendChild(ellipse);
+
+      rect.setPosition(300, 100);
+      canvas.appendChild(rect);
+
+      image.setPosition(400, 100);
+      canvas.appendChild(image);
+
+      line.setPosition(100, 200);
+      canvas.appendChild(line);
+
+      polyline.setPosition(0, 200);
+      polyline.rotate(20);
+      canvas.appendChild(polyline);
+
+      path.setPosition(160, 200);
+      path.rotate(20);
+      path.scale(0.5);
+      canvas.appendChild(path);
+
+      polygon.setPosition(340, 200);
+      polygon.scale(0.3);
+      canvas.appendChild(polygon);
+
+      text.setPosition(160, 450);
+      canvas.appendChild(text);
+
+      clippedText.setPosition(160, 500);
+      canvas.appendChild(clippedText);
+
+      circle.addEventListener('mouseenter', () => {
+        circle.style.fill = '#2FC25B';
+      });
+      circle.addEventListener('mouseleave', () => {
+        circle.style.fill = '#1890FF';
+      });
+      ellipse.addEventListener('mouseenter', () => {
+        ellipse.style.fill = '#2FC25B';
+      });
+      ellipse.addEventListener('mouseleave', () => {
+        ellipse.style.fill = '#1890FF';
+      });
+      rect.addEventListener('mouseenter', () => {
+        rect.style.fill = '#2FC25B';
+      });
+      rect.addEventListener('mouseleave', () => {
+        rect.style.fill = '#1890FF';
+      });
+      line.addEventListener('mouseenter', () => {
+        line.style.stroke = '#2FC25B';
+      });
+      line.addEventListener('mouseleave', () => {
+        line.style.stroke = '#1890FF';
+      });
+      polyline.addEventListener('mouseenter', () => {
+        polyline.style.stroke = '#2FC25B';
+      });
+      polyline.addEventListener('mouseleave', () => {
+        polyline.style.stroke = '#1890FF';
+      });
+      path.addEventListener('mouseenter', () => {
+        path.style.stroke = '#2FC25B';
+      });
+      path.addEventListener('mouseleave', () => {
+        path.style.stroke = '#1890FF';
+      });
+      polygon.addEventListener('mouseenter', () => {
+        polygon.style.stroke = '#2FC25B';
+      });
+      polygon.addEventListener('mouseleave', () => {
+        polygon.style.stroke = '#1890FF';
+      });
+      text.addEventListener('mouseenter', () => {
+        text.attr('stroke', '#2FC25B');
+      });
+      text.addEventListener('mouseleave', () => {
+        text.attr('stroke', '#F04864');
+      });
+      clippedText.addEventListener('mouseenter', () => {
+        clippedText.attr('stroke', '#2FC25B');
+      });
+      clippedText.addEventListener('mouseleave', () => {
+        clippedText.attr('stroke', '#F04864');
+      });
+    </script>
+  </body>
+</html>

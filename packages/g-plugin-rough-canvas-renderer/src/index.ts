@@ -1,5 +1,5 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import {
   CircleRenderer as CircleRoughRenderer,
   EllipseRenderer as EllipseRoughRenderer,

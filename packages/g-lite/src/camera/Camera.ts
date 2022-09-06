@@ -1,8 +1,8 @@
+import { GlobalContainer, Syringe } from '@alipay/mana-syringe';
 import { isNumber, isString } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
-import { GlobalContainer, Syringe } from 'mana-syringe';
 import type { Canvas } from '../Canvas';
 import { Frustum } from '../shapes';
 import type { TypeEasingFunction } from '../types';

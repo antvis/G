@@ -1,10 +1,10 @@
-import { AABB } from '@antv/g';
+import { AABB } from '@antv/g-lite';
 import {
-  Format,
   BufferGeometry,
+  Format,
   VertexAttributeBufferIndex,
-  VertexBufferFrequency,
   VertexAttributeLocation,
+  VertexBufferFrequency,
 } from '@antv/g-plugin-device-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 

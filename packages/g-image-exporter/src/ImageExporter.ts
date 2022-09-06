@@ -1,5 +1,5 @@
-import type { Canvas, DataURLOptions } from '@antv/g';
-import { isBrowser, Rectangle } from '@antv/g';
+import type { Canvas, DataURLOptions } from '@antv/g-lite';
+import { isBrowser, Rectangle } from '@antv/g-lite';
 import html2canvas from 'html2canvas';
 import type { CanvasOptions, DownloadImageOptions } from './types';
 

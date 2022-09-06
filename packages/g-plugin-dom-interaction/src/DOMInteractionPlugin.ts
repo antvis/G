@@ -1,11 +1,11 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g-lite';
 import {
   ContextService,
   inject,
   RenderingContext,
   RenderingPluginContribution,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
@@ -16,11 +16,13 @@ import {
 export class DOMInteractionPlugin implements RenderingPlugin {
   static tag = 'DOMInteraction';
 
-  @inject(ContextService)
-  private contextService: ContextService<unknown>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<unknown>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
+  ) {}
 
   apply(renderingService: RenderingService) {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;

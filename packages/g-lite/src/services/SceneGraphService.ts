@@ -1,6 +1,6 @@
+import { inject, singleton } from '@alipay/mana-syringe';
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'mana-syringe';
 import type { Transform } from '../components';
 import type { Element } from '../dom';
 import { CustomEvent } from '../dom';
@@ -34,8 +34,10 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   token: SceneGraphService,
 })
 export class DefaultSceneGraphService implements SceneGraphService {
-  @inject(SceneGraphSelectorFactory)
-  private sceneGraphSelectorFactory: () => SceneGraphSelector;
+  constructor(
+    @inject(SceneGraphSelectorFactory)
+    private sceneGraphSelectorFactory: () => SceneGraphSelector,
+  ) {}
 
   private pendingEvents = [];
   private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);

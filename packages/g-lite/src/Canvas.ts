@@ -1,4 +1,4 @@
-import { GlobalContainer } from 'mana-syringe';
+import { GlobalContainer } from '@alipay/mana-syringe';
 import {
   cancelAnimationFrame as cancelRAF,
   requestAnimationFrame as rAF,
@@ -454,6 +454,8 @@ export class Canvas extends EventTarget implements ICanvas {
     this.renderingService = this.container.get<RenderingService>(RenderingService);
     this.eventService = this.container.get<EventService>(EventService); // auto init post-contruct
 
+    // use init instead of postConstruct
+    this.eventService.init();
     await contextService.init();
     await this.renderingService.init();
 

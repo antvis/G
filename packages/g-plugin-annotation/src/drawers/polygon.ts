@@ -1,4 +1,4 @@
-import type { FederatedEvent } from '@antv/g';
+import type { FederatedEvent } from '@antv/g-lite';
 import { DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
 import { isNearPoint } from '../utils/drawer';

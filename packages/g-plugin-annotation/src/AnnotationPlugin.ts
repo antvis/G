@@ -6,8 +6,8 @@ import type {
   Rect,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
-import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g';
+} from '@antv/g-lite';
+import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g-lite';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';
@@ -29,11 +29,13 @@ import { AnnotationPluginOptions } from './tokens';
 export class AnnotationPlugin implements RenderingPlugin {
   static tag = 'Annotation';
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+  constructor(
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(AnnotationPluginOptions)
-  private annotationPluginOptions: AnnotationPluginOptions;
+    @inject(AnnotationPluginOptions)
+    private annotationPluginOptions: AnnotationPluginOptions,
+  ) {}
 
   private hotkeyActive: boolean = false;
   public drawer: BaseDrawer;

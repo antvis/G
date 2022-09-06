@@ -1,4 +1,4 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from '@alipay/mana-syringe';
 import { Shape } from '../types';
 import type { DisplayObject, HTML } from './';
 

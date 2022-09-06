@@ -1,5 +1,5 @@
-import type { TextStyleProps } from '@antv/g';
-import { Text } from '@antv/g';
+import type { TextStyleProps } from '@antv/g-lite';
+import { Text } from '@antv/g-lite';
 import { BaseShape } from './BaseShape';
 
 export class TextShape extends BaseShape {

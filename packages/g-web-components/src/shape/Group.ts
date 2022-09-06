@@ -1,5 +1,5 @@
-import type { GroupStyleProps } from '@antv/g';
-import { Group } from '@antv/g';
+import type { GroupStyleProps } from '@antv/g-lite';
+import { Group } from '@antv/g-lite';
 import { BaseShape } from './BaseShape';
 
 export class GroupShape extends BaseShape {

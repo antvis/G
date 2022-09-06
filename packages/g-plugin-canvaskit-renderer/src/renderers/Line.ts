@@ -1,5 +1,5 @@
-import type { ParsedLineStyleProps } from '@antv/g';
-import { DisplayObject, singleton } from '@antv/g';
+import type { ParsedLineStyleProps } from '@antv/g-lite';
+import { DisplayObject, singleton } from '@antv/g-lite';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
 import { LineRendererContribution } from '../interfaces';
 

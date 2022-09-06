@@ -1,5 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
-import { decorate, injectable, Module } from 'mana-syringe';
+import { Module } from '@alipay/mana-syringe';
 import { CSSProperty, CSSPropertySyntaxFactory, DefaultStyleValueRegistry } from './css';
 import {
   CSSPropertyAngle,
@@ -45,8 +44,6 @@ import {
 import type { Shape } from './types';
 
 export const containerModule = Module((register) => {
-  decorate(injectable(), EventEmitter);
-
   // bind DisplayObject pool
   register(DisplayObjectPool);
 

@@ -1,5 +1,5 @@
-import type { PathStyleProps } from '@antv/g';
-import { Path } from '@antv/g';
+import type { PathStyleProps } from '@antv/g-lite';
+import { Path } from '@antv/g-lite';
 import { BaseShape } from './BaseShape';
 
 export class PathShape extends BaseShape {

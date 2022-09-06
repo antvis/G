@@ -1,4 +1,4 @@
-import type { Syringe } from 'mana-syringe';
+import type { Syringe } from '@alipay/mana-syringe';
 import type { RendererConfig } from './types';
 
 export interface RendererPlugin {

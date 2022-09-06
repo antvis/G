@@ -1,4 +1,4 @@
-import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
+import { contrib, Contribution, inject, singleton, Syringe } from '@alipay/mana-syringe';
 import { Camera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
@@ -39,23 +39,25 @@ export interface PickingResult {
  */
 @singleton()
 export class RenderingService {
-  @contrib(RenderingPluginContribution)
-  private renderingPluginProvider: Contribution.Provider<RenderingPlugin>;
+  constructor(
+    @contrib(RenderingPluginContribution)
+    private renderingPluginProvider: Contribution.Provider<RenderingPlugin>,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
 
-  @inject(StyleValueRegistry)
-  private styleValueRegistry: StyleValueRegistry;
+    @inject(StyleValueRegistry)
+    private styleValueRegistry: StyleValueRegistry,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: Camera,
+  ) {}
 
   private inited = false;
 

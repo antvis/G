@@ -1,4 +1,4 @@
-import { injectable, Shape } from '@antv/g';
+import { injectable, Shape } from '@antv/g-lite';
 import { MeshMesh } from '../meshes';
 import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';

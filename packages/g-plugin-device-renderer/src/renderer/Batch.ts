@@ -1,5 +1,5 @@
-import type { DisplayObject, RenderingService } from '@antv/g';
-import { Camera, DefaultCamera, inject, injectable } from '@antv/g';
+import type { DisplayObject, RenderingService } from '@antv/g-lite';
+import { Camera, DefaultCamera, inject, injectable } from '@antv/g-lite';
 import { LightPool } from '../LightPool';
 import type { Instanced } from '../meshes/Instanced';
 import type { Device } from '../platform';

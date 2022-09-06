@@ -1,4 +1,4 @@
-import { inject, singleton } from '@antv/g';
+import { inject, singleton } from '@antv/g-lite';
 import { BufferGeometry } from '../geometries';
 import type { InputLayout, InputState, Program } from '../platform';
 import { Format, VertexBufferFrequency } from '../platform';
@@ -11,8 +11,10 @@ import type { RenderInput } from '../render/RenderGraphHelpers';
 
 @singleton()
 export class PostProcessing {
-  @inject(RenderHelper)
-  private renderHelper: RenderHelper;
+  constructor(
+    @inject(RenderHelper)
+    private renderHelper: RenderHelper,
+  ) {}
 
   protected deviceProgram: DeviceProgram;
   protected debugName: string;

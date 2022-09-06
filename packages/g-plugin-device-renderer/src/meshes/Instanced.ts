@@ -5,7 +5,7 @@ import type {
   Pattern,
   RenderingService,
   Tuple4Number,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   Camera,
   CSSRGB,
@@ -15,7 +15,7 @@ import {
   isPattern,
   parseColor,
   Shape,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import { LightPool } from '../LightPool';

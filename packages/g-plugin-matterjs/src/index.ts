@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { MatterJSPlugin } from './MatterJSPlugin';
 import { MatterJSPluginOptions } from './tokens';
 

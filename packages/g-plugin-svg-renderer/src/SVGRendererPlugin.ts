@@ -7,7 +7,7 @@ import type {
   RadialGradient,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   cache,
   Camera,
@@ -23,7 +23,7 @@ import {
   Shape,
   singleton,
   StyleValueRegistry,
-} from '@antv/g';
+} from '@antv/g-lite';
 import type { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import { DefElementManager } from './shapes/defs';
@@ -121,26 +121,28 @@ const CLIP_PATH_PREFIX = 'clip-path-';
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRenderer';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: Camera,
 
-  @inject(ContextService)
-  private contextService: ContextService<SVGElement>;
+    @inject(ContextService)
+    private contextService: ContextService<SVGElement>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(StyleValueRegistry)
-  private styleValueRegistry: StyleValueRegistry;
+    @inject(StyleValueRegistry)
+    private styleValueRegistry: StyleValueRegistry,
 
-  @inject(ElementLifeCycleContribution)
-  private createElementContribution: ElementLifeCycleContribution;
+    @inject(ElementLifeCycleContribution)
+    private createElementContribution: ElementLifeCycleContribution,
 
-  @inject(DefElementManager)
-  private defElementManager: DefElementManager;
+    @inject(DefElementManager)
+    private defElementManager: DefElementManager,
+  ) {}
 
   /**
    * <camera>

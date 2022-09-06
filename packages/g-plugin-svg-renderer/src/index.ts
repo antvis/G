@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { ElementSVG } from './components/ElementSVG';
 import { DefaultElementLifeCycleContribution } from './DefaultElementLifeCycleContribution';
 import { DefElementManager } from './shapes/defs';
