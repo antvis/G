@@ -1,4 +1,4 @@
-import { Syringe } from '@alipay/mana-syringe';
+import { Syringe } from 'mana-syringe';
 import type { vec2, vec3 } from 'gl-matrix';
 import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';

@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import type { CanvasLike } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';

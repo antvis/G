@@ -1,4 +1,4 @@
-import { Syringe } from '@alipay/mana-syringe';
+import { Syringe } from 'mana-syringe';
 
 export interface RBushNodeAABB {
   id: number;

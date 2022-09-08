@@ -1,4 +1,4 @@
-import { GlobalContainer } from '@alipay/mana-syringe';
+import { GlobalContainer } from 'mana-syringe';
 import { CSSUnitValue } from './cssom';
 import type { PropertySyntax } from './interfaces';
 import { StyleValueRegistry } from './interfaces';

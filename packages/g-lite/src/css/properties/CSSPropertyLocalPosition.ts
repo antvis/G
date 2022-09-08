@@ -1,4 +1,4 @@
-import { singleton } from '@alipay/mana-syringe';
+import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
 import { Shape } from '../../types';

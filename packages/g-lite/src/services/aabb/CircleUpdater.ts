@@ -1,4 +1,4 @@
-import { singleton } from '@alipay/mana-syringe';
+import { singleton } from 'mana-syringe';
 import type { Circle, ParsedCircleStyleProps } from '../../display-objects/Circle';
 import { Shape } from '../../types';
 import { GeometryAABBUpdater } from './interfaces';

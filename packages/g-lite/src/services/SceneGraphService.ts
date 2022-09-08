@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';

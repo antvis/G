@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import { isFunction, isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';

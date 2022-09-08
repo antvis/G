@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
 import type { HTML } from '../display-objects';

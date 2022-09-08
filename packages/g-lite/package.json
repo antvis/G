@@ -29,13 +29,13 @@
     "README.md"
   ],
   "dependencies": {
-    "@alipay/mana-syringe": "^0.8.0-alpha.0",
     "@antv/g-math": "^1.7.9",
     "@antv/util": "^3.2.3",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
+    "mana-syringe": "^0.3.1",
     "rbush": "^3.0.1",
     "request-animation-frame-polyfill": "^1.1.2",
     "tslib": "^2.3.1"

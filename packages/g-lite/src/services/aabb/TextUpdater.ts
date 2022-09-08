@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { Shape } from '../../types';

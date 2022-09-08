@@ -1,5 +1,5 @@
-import type { Contribution } from '@alipay/mana-syringe';
-import { contrib, inject, singleton, Syringe } from '@alipay/mana-syringe';
+import type { Contribution } from 'mana-syringe';
+import { contrib, inject, singleton, Syringe } from 'mana-syringe';
 import type { ICamera } from '../camera';
 import { DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';

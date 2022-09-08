@@ -1,4 +1,4 @@
-import { Syringe } from '@alipay/mana-syringe';
+import { Syringe } from 'mana-syringe';
 import type { CanvasLike } from '../types';
 
 export type DataURLType = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/bmp';

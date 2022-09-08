@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import type RBush from 'rbush';
 import type { RBushNodeAABB } from '../components';
 import { RBushRoot } from '../components';

@@ -1,4 +1,4 @@
-import { GlobalContainer } from '@alipay/mana-syringe';
+import { GlobalContainer } from 'mana-syringe';
 import { isFunction } from '@antv/util';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text } from '../display-objects';

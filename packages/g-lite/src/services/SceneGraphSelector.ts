@@ -1,4 +1,4 @@
-import { singleton, Syringe } from '@alipay/mana-syringe';
+import { singleton, Syringe } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import type { IElement } from '../dom/interfaces';
 

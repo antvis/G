@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@alipay/mana-syringe@^0.8.0-alpha.0":
-  version "0.8.0-alpha.0"
-  resolved "https://registry.npm.alibaba-inc.com/@alipay/mana-syringe/download/@alipay/mana-syringe-0.8.0-alpha.0.tgz#9fdca7c0db6181384f23b6344de21d2a38c14569"
-  integrity sha512-rdJNIEtm5flhBg/f3fNKm8CVIy3v41OiBXHvn7UuKjmP7/iG1nco3M7Il0dTfvItfNJnwFWtN6psVT8mABKFXQ==
-
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -444,7 +439,7 @@
     csstype "^3.0.8"
     tslib "^2.0.3"
 
-"@antv/util@^3.2.3":
+"@antv/util@^3.2.3", "@antv/util@^3.2.4":
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.2.5.tgz#c482c3f9f67276d072cebc52f6b6ca88b0007439"
   integrity sha512-5qFvH+NPzB79pxEdjVdBPChe2Bbxmh2Z72iGAnPSibNhtLpn+d03laqXTeNJ4+1BhBG8Y+KKZoRpE6GR4d2zUQ==
@@ -22526,7 +22521,7 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-mana-syringe@^0.3.0:
+mana-syringe@^0.3.0, mana-syringe@^0.3.1:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/mana-syringe/-/mana-syringe-0.3.2.tgz#9c82eccf451111a4d99ed2d855757b39b33e367e"
   integrity sha512-2DZZj2dplm667q2gl+G2u3L0UleE2vK02PIFRgF7P0Uz7Aiq7KqXQRjx2af2SgRJ6JZ9B/LCVaBHBdvWZXGrbw==

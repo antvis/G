@@ -1,16 +1,9 @@
-import { GlobalContainer } from '@alipay/mana-syringe';
+import { GlobalContainer } from 'mana-syringe';
 import RBush from 'rbush';
 import { StyleValueRegistry } from './css';
 import { containerModule as globalModule } from './global-module';
 
-export {
-  GlobalContainer,
-  inject,
-  injectable,
-  Module,
-  singleton,
-  Syringe,
-} from '@alipay/mana-syringe';
+export { GlobalContainer, inject, injectable, Module, singleton, Syringe } from 'mana-syringe';
 export * from './AbstractRenderer';
 export * from './camera';
 export * from './Canvas';

@@ -1,4 +1,4 @@
-import { Syringe } from '@alipay/mana-syringe';
+import { Syringe } from 'mana-syringe';
 import type EventEmitter from 'eventemitter3';
 import type { mat4, vec2, vec3 } from 'gl-matrix';
 import type { TypeEasingFunction } from '..';

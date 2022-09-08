@@ -1,4 +1,4 @@
-import { singleton } from '@alipay/mana-syringe';
+import { singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import type { Group, Image, ParsedImageStyleProps, Rect } from '../../display-objects';
 import { Shape } from '../../types';

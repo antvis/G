@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import type { ICamera } from '../camera';
 import { DefaultCamera } from '../camera';

@@ -1,4 +1,4 @@
-import { Syringe } from '@alipay/mana-syringe';
+import { Syringe } from 'mana-syringe';
 import type { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
 import type { IElement, INode, IParentNode } from '../dom';

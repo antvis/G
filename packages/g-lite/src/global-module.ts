@@ -1,4 +1,4 @@
-import { Module } from '@alipay/mana-syringe';
+import { Module } from 'mana-syringe';
 import { Camera } from './camera';
 import { CSSProperty, CSSPropertySyntaxFactory, DefaultStyleValueRegistry } from './css';
 import {

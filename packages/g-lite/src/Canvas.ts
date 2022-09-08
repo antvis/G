@@ -1,4 +1,4 @@
-import { GlobalContainer } from '@alipay/mana-syringe';
+import { GlobalContainer } from 'mana-syringe';
 import {
   cancelAnimationFrame as cancelRAF,
   requestAnimationFrame as rAF,

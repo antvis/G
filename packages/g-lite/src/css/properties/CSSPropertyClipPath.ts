@@ -1,4 +1,4 @@
-import { inject, singleton } from '@alipay/mana-syringe';
+import { inject, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import { SceneGraphService } from '../../services';
 import { CSSKeywordValue } from '../cssom';

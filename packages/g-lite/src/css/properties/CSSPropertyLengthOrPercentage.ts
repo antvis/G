@@ -1,4 +1,4 @@
-import { singleton } from '@alipay/mana-syringe';
+import { singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { CSSUnitValue, UnitType } from '../cssom';

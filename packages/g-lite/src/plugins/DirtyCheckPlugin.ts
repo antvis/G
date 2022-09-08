@@ -1,4 +1,4 @@
-import { singleton } from '@alipay/mana-syringe';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
 import { RenderingPluginContribution } from '../services/RenderingService';
