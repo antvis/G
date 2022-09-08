@@ -1,11 +1,12 @@
-import { singleton } from 'tsyringe';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
+import { RenderingPluginContribution } from '../services/RenderingService';
 
 /**
  * Filter dirty renderables and calculate the "dirty rectangle" which will be clear when frame began
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class DirtyCheckPlugin implements RenderingPlugin {
   static tag = 'DirtyCheck';
 

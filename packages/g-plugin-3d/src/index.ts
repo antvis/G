@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin } from '@antv/g-lite';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import {
   BlendFactor,
   BlendMode,
@@ -60,15 +60,15 @@ export {
   WrapMode,
 };
 
-// export const containerModule = Module((register) => {});
+export const containerModule = Module((register) => {});
 
 export class Plugin extends AbstractRendererPlugin {
   name = '3d';
 
   init(): void {
-    // this.container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
   destroy(): void {
-    // this.container.unload(containerModule);
+    this.container.unload(containerModule);
   }
 }

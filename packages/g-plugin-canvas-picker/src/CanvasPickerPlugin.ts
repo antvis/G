@@ -8,7 +8,7 @@ import type {
   RenderingPlugin,
   RenderingService,
   Shape,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   CanvasConfig,
   DisplayObjectPool,
@@ -17,13 +17,15 @@ import {
   Point,
   RBush,
   RBushRoot,
+  RenderingPluginContribution,
   singleton,
-} from '@antv/g-lite';
+  Syringe,
+} from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 
-export const PointInPathPickerFactory = 'PointInPathPickerFactory';
+export const PointInPathPickerFactory = Syringe.defineToken('');
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,
@@ -41,31 +43,28 @@ const tmpMat4 = mat4.create();
  * 1. find AABB with r-tree
  * 2. do math calculation with geometry in an accurate way
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPicker';
 
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
+
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
+
+  @inject(OffscreenCanvasCreator)
+  private offscreenCanvas: OffscreenCanvasCreator;
+
+  @inject(RBushRoot)
+  private rBush: RBush<RBushNodeAABB>;
+
+  @inject(PathGeneratorFactory)
+  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
   private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
 
-  constructor(
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(OffscreenCanvasCreator)
-    private offscreenCanvas: OffscreenCanvasCreator,
-
-    @inject(RBushRoot)
-    private rBush: RBush<RBushNodeAABB>,
-
-    @inject(PathGeneratorFactory)
-    private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>,
-
-    @inject(PointInPathPickerFactory)
-    private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>,
-  ) {}
+  @inject(PointInPathPickerFactory)
+  private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tapPromise(

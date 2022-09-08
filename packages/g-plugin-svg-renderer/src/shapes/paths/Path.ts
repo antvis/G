@@ -1,5 +1,5 @@
-import type { ParsedPathStyleProps, Path } from '@antv/g-lite';
-import { DisplayObject, translatePathToString } from '@antv/g-lite';
+import type { ParsedPathStyleProps, Path } from '@antv/g';
+import { DisplayObject, translatePathToString } from '@antv/g';
 
 export function updatePathElementAttribute($el: SVGElement, parsedStyle: ParsedPathStyleProps) {
   const {

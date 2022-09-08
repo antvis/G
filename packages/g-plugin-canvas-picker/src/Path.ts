@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedPathStyleProps, PathStyleProps, Point } from '@antv/g-lite';
-import { isFillOrStrokeAffected } from '@antv/g-lite';
+import type { DisplayObject, ParsedPathStyleProps, PathStyleProps, Point } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import { inLine, inPolygons } from './utils/math';
 

@@ -6,7 +6,7 @@ import type {
   RBushNodeAABB,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   AABB,
   Camera,
@@ -21,9 +21,10 @@ import {
   RBush,
   RBushRoot,
   RenderingContext,
+  RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g-lite';
+} from '@antv/g';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { isNil } from '@antv/util';
@@ -44,45 +45,41 @@ interface Rect {
  * * immediate
  * * delayed: render at the end of frame with dirty-rectangle
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class CanvasRendererPlugin implements RenderingPlugin {
   static tag = 'CanvasRenderer';
 
-  private styleRendererFactoryCache: Record<Shape | string, StyleRenderer> = {};
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
+  @inject(DefaultCamera)
+  private camera: Camera;
+
+  @inject(ContextService)
+  private contextService: ContextService<CanvasRenderingContext2D>;
+
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
+  @inject(PathGeneratorFactory)
+  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
   private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @inject(StyleRendererFactory)
+  private styleRendererFactory: (tagName: Shape | string) => StyleRenderer;
+  private styleRendererFactoryCache: Record<Shape | string, StyleRenderer> = {};
 
-    @inject(DefaultCamera)
-    private camera: Camera,
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
 
-    @inject(ContextService)
-    private contextService: ContextService<CanvasRenderingContext2D>,
+  @inject(CanvasRendererPluginOptions)
+  private canvasRendererPluginOptions: CanvasRendererPluginOptions;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(PathGeneratorFactory)
-    private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>,
-
-    @inject(StyleRendererFactory)
-    private styleRendererFactory: (tagName: Shape | string) => StyleRenderer,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-
-    @inject(CanvasRendererPluginOptions)
-    private canvasRendererPluginOptions: CanvasRendererPluginOptions,
-
-    /**
-     * RBush used in dirty rectangle rendering
-     */
-    @inject(RBushRoot)
-    private rBush: RBush<RBushNodeAABB>,
-  ) {}
+  /**
+   * RBush used in dirty rectangle rendering
+   */
+  @inject(RBushRoot)
+  private rBush: RBush<RBushNodeAABB>;
 
   private removedRBushNodeAABBs: RBushNodeAABB[] = [];
 

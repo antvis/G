@@ -1,10 +1,11 @@
-import { inject, injectAll, singleton } from 'tsyringe';
+import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { CustomEvent, ElementEvent } from '../dom';
 import { RenderingContext } from '../services';
 import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
+import { RenderingPluginContribution } from '../services/RenderingService';
 
-export const CullingStrategyContribution = 'CullingStrategyContribution';
+export const CullingStrategyContribution = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CullingStrategyContribution {
   isVisible: (object: DisplayObject) => boolean;
@@ -15,20 +16,18 @@ export interface CullingStrategyContribution {
  * 1. `visibility` in scenegraph node
  * 2. other custom culling strategies, eg. frustum culling
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class CullingPlugin implements RenderingPlugin {
   static tag = 'Culling';
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @contrib(CullingStrategyContribution)
+  private strategyProvider: Contribution.Provider<CullingStrategyContribution>;
 
-    @injectAll(CullingStrategyContribution)
-    private strategies: CullingStrategyContribution[],
-  ) {}
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
-    const strategies = this.strategies;
+    const strategies = this.strategyProvider.getContributions();
 
     renderingService.hooks.cull.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {

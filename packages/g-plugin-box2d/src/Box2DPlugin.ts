@@ -9,7 +9,7 @@ import type {
   ParsedRectStyleProps,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   CanvasEvent,
   deg2rad,
@@ -18,10 +18,11 @@ import {
   inject,
   rad2deg,
   RenderingContext,
+  RenderingPluginContribution,
   SceneGraphService,
   Shape,
   singleton,
-} from '@antv/g-lite';
+} from '@antv/g';
 import type Box2D from 'box2d-wasm';
 import { Box2DPluginOptions } from './tokens';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
@@ -35,23 +36,21 @@ const BOX2D_UMD_DIR = 'https://unpkg.com/box2d-wasm@7.0.0/dist/umd/';
 //   WASM = 'http://kripken.github.io/box2d.js/demo/webgl/Box2D_v2.2.1_min.wasm.js',
 // }
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class Box2DPlugin implements RenderingPlugin {
   static tag = 'Box2D';
 
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
+  @inject(SceneGraphService)
+  protected sceneGraphService: SceneGraphService;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
 
-    @inject(Box2DPluginOptions)
-    private options: Box2DPluginOptions,
-  ) {}
+  @inject(Box2DPluginOptions)
+  private options: Box2DPluginOptions;
 
   // private Box2D: typeof Box2D & EmscriptenModule;
   private Box2D: any;

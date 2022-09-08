@@ -1,10 +1,11 @@
-import { AbstractRendererPlugin, DisplayObject, RenderingPluginContribution } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { Box2DPlugin } from './Box2DPlugin';
 import { Box2DPluginOptions } from './tokens';
 
-// const containerModule = Module((register) => {
-//   register(Box2DPlugin);
-// });
+const containerModule = Module((register) => {
+  register(Box2DPlugin);
+});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'box2d';
@@ -23,16 +24,14 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-
-    this.container.registerSingleton(RenderingPluginContribution, Box2DPlugin);
-    // this.container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
   destroy(): void {
-    // this.container.remove(Box2DPluginOptions);
-    // this.container.unload(containerModule);
+    this.container.remove(Box2DPluginOptions);
+    this.container.unload(containerModule);
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
-    this.container.resolve(Box2DPlugin).applyForce(object, force, point);
+    this.container.get(Box2DPlugin).applyForce(object, force, point);
   }
 }

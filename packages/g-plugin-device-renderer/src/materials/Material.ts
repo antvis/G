@@ -1,4 +1,4 @@
-import type { Tuple4Number } from '@antv/g-lite';
+import type { Tuple4Number } from '@antv/g';
 import { isNil } from '@antv/util';
 import { EventEmitter } from 'eventemitter3';
 import type { Mesh } from '../Mesh';

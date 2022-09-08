@@ -5,7 +5,7 @@ import type {
   MutationEvent,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   CanvasConfig,
   ContextService,
@@ -14,27 +14,26 @@ import {
   inject,
   isPattern,
   RenderingContext,
+  RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g-lite';
+} from '@antv/g';
 import { isString } from '@antv/util';
 
 const HTML_PREFIX = 'g-html-';
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class HTMLRenderingPlugin implements RenderingPlugin {
   static tag = 'HTMLRendering';
 
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasRenderingContext2D>,
+  @inject(ContextService)
+  private contextService: ContextService<CanvasRenderingContext2D>;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
   private $camera: HTMLDivElement;
 

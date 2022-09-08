@@ -1,4 +1,4 @@
-import { Polyline } from '@antv/g-lite';
+import { Polyline } from '@antv/g';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DRAW_LINE_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';

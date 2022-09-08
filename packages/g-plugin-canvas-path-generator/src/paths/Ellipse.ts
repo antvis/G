@@ -1,4 +1,4 @@
-import type { ParsedEllipseStyleProps } from '@antv/g-lite';
+import type { ParsedEllipseStyleProps } from '@antv/g';
 
 export function generatePath(
   context: CanvasRenderingContext2D,

@@ -1,10 +1,10 @@
-import { AbstractRendererPlugin, RenderingPluginContribution } from '@antv/g-lite';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { DragndropPlugin } from './DragndropPlugin';
 import { DragndropPluginOptions } from './tokens';
 
-// const containerModule = Module((register) => {
-//   register(DragndropPlugin);
-// });
+const containerModule = Module((register) => {
+  register(DragndropPlugin);
+});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'dragndrop';
@@ -24,13 +24,10 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-
-    this.container.registerSingleton(RenderingPluginContribution, DragndropPlugin);
-
-    // this.container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
   destroy(): void {
-    // this.container.remove(DragndropPluginOptions);
-    // this.container.unload(containerModule);
+    this.container.remove(DragndropPluginOptions);
+    this.container.unload(containerModule);
   }
 }

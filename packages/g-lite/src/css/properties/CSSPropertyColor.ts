@@ -1,13 +1,25 @@
-import { singleton } from 'tsyringe';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSGradientValue, CSSRGB } from '../cssom';
 import { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import { noneColor, transparentColor } from '../CSSStyleValuePool';
+import { PropertySyntax } from '../interfaces';
 import type { Pattern } from '../parser/color';
 import { mergeColors, parseColor } from '../parser/color';
 
-@singleton()
+@singleton({
+  token: [
+    {
+      token: CSSProperty,
+      named: PropertySyntax.PAINT,
+    },
+    {
+      token: CSSProperty,
+      named: PropertySyntax.COLOR,
+    },
+  ],
+})
 export class CSSPropertyColor
   implements
     Partial<

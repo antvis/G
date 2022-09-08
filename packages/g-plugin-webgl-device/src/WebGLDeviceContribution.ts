@@ -1,14 +1,14 @@
-import { inject, singleton } from '@antv/g-lite';
+import { inject, singleton } from '@antv/g';
 import { DeviceContribution } from '@antv/g-plugin-device-renderer';
 import { WebGLRendererPluginOptions } from './interfaces';
 import { Device_GL } from './platform/Device';
 
-@singleton()
+@singleton({
+  token: DeviceContribution,
+})
 export class WebGLDeviceContribution implements DeviceContribution {
-  constructor(
-    @inject(WebGLRendererPluginOptions)
-    private pluginOptions: WebGLRendererPluginOptions,
-  ) {}
+  @inject(WebGLRendererPluginOptions)
+  private pluginOptions: WebGLRendererPluginOptions;
 
   async createSwapChain($canvas: HTMLCanvasElement) {
     const options: WebGLContextAttributes = {

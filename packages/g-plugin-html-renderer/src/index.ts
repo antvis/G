@@ -1,16 +1,16 @@
-import { AbstractRendererPlugin, RenderingPluginContribution } from '@antv/g-lite';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { HTMLRenderingPlugin } from './HTMLRenderingPlugin';
 
-// const containerModule = Module((register) => {
-//   register(HTMLRenderingPlugin);
-// });
+const containerModule = Module((register) => {
+  register(HTMLRenderingPlugin);
+});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'html-renderer';
   init(): void {
-    this.container.registerSingleton(RenderingPluginContribution, HTMLRenderingPlugin);
+    this.container.load(containerModule, true);
   }
   destroy(): void {
-    // this.container.unload(containerModule);
+    this.container.unload(containerModule);
   }
 }

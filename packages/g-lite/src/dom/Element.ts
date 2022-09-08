@@ -1,7 +1,7 @@
 // import { this.sceneGraphService } from '..';
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { container as GlobalContainer } from 'tsyringe';
+import { GlobalContainer } from 'mana-syringe';
 import type { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
 import { Strategy } from '../components';
 import { unsetKeywordValue } from '../css';
@@ -44,7 +44,7 @@ export class Element<
     return !!(target as IElement).getAttribute;
   }
 
-  protected sceneGraphService = GlobalContainer.resolve<SceneGraphService>(SceneGraphService);
+  protected sceneGraphService = GlobalContainer.get<SceneGraphService>(SceneGraphService);
 
   /**
    * Unique id.

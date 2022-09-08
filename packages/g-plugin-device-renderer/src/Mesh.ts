@@ -3,8 +3,8 @@ import type {
   CSSUnitValue,
   DisplayObjectConfig,
   ParsedBaseStyleProps,
-} from '@antv/g-lite';
-import { DisplayObject, Shape } from '@antv/g-lite';
+} from '@antv/g';
+import { DisplayObject, Shape } from '@antv/g';
 import type { BufferGeometry } from './geometries';
 import type { Material } from './materials';
 

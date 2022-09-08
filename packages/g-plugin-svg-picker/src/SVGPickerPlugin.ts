@@ -1,5 +1,11 @@
-import type { DisplayObject, PickingResult, RenderingPlugin, RenderingService } from '@antv/g-lite';
-import { CanvasConfig, DisplayObjectPool, inject, singleton } from '@antv/g-lite';
+import type { DisplayObject, PickingResult, RenderingPlugin, RenderingService } from '@antv/g';
+import {
+  CanvasConfig,
+  DisplayObjectPool,
+  inject,
+  RenderingPluginContribution,
+  singleton,
+} from '@antv/g';
 import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
 
 /**
@@ -8,17 +14,15 @@ import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
  * 1. find AABB with r-tree
  * 2. use elementFromPoint
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class SVGPickerPlugin implements RenderingPlugin {
   static tag = 'SVGPicker';
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-  ) {}
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
 
   apply(renderingService: RenderingService) {
     const { document: doc } = this.canvasConfig;

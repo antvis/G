@@ -1,5 +1,5 @@
-import type { DisplayObject, Image as ImageShape } from '@antv/g-lite';
-import { injectable } from '@antv/g-lite';
+import type { DisplayObject, Image as ImageShape } from '@antv/g';
+import { injectable } from '@antv/g';
 import {
   Instanced,
   VertexAttributeBufferIndex,

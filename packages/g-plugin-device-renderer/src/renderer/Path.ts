@@ -7,16 +7,24 @@ import type {
   ParsedBaseStyleProps,
   ParsedPathStyleProps,
   ParsedPolylineStyleProps,
-} from '@antv/g-lite';
-import { injectable, Shape } from '@antv/g-lite';
+} from '@antv/g';
+import { injectable, Shape } from '@antv/g';
 import { FillMesh, InstancedLineMesh, LineMesh } from '../meshes';
+import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';
 
 /**
  * Try downgrading the "simple" Path / Polyline to InstancedLine.
  * @see https://github.com/antvis/G/issues/1113
  */
-@injectable()
+@injectable({
+  token: [
+    { token: ShapeRenderer, named: Shape.POLYLINE },
+    { token: ShapeRenderer, named: Shape.PATH },
+    { token: ShapeRenderer, named: Shape.POLYGON },
+    { token: ShapeRenderer, named: Shape.RECT },
+  ],
+})
 export class PathRenderer extends Batch {
   meshes = [FillMesh, LineMesh, InstancedLineMesh];
 

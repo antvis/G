@@ -1,4 +1,4 @@
-import type { DisplayObject, FederatedPointerEvent, PointLike as Point } from '@antv/g-lite';
+import type { DisplayObject, FederatedPointerEvent, PointLike as Point } from '@antv/g';
 import EE from 'eventemitter3';
 
 const clock = typeof performance === 'object' && performance.now ? performance : Date;

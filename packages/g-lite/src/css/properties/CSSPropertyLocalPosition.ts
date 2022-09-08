@@ -1,15 +1,21 @@
 import { isNil } from '@antv/util';
-import { singleton } from 'tsyringe';
+import { singleton } from 'mana-syringe';
 import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
 import { Shape } from '../../types';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
 /**
  * local position
  */
-@singleton()
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.COORDINATE,
+  },
+})
 export class CSSPropertyLocalPosition
   extends CSSPropertyLengthOrPercentage
   implements Partial<CSSProperty<CSSUnitValue, number>>

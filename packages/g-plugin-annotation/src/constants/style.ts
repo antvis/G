@@ -1,4 +1,4 @@
-import type { BaseStyleProps, CircleStyleProps, Cursor } from '@antv/g-lite';
+import type { BaseStyleProps, CircleStyleProps, Cursor } from '@antv/g';
 
 export const DRAW_LINE_STYLE: BaseStyleProps = {
   lineWidth: 2,

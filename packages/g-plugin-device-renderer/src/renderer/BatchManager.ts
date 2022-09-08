@@ -1,5 +1,5 @@
-import type { DisplayObject, RenderingService } from '@antv/g-lite';
-import { inject, singleton } from '@antv/g-lite';
+import type { DisplayObject, RenderingService } from '@antv/g';
+import { inject, singleton } from '@antv/g';
 import type { Renderable3D } from '../components/Renderable3D';
 import type { Instanced } from '../meshes/Instanced';
 import type { Device } from '../platform';
@@ -12,16 +12,14 @@ let stencilRefCounter = 1;
 
 @singleton()
 export class BatchManager {
-  constructor(
-    @inject(RenderHelper)
-    protected renderHelper: RenderHelper,
+  @inject(RenderHelper)
+  protected renderHelper: RenderHelper;
 
-    @inject(RendererFactory)
-    private rendererFactory: (shape: string) => Batch,
+  @inject(RendererFactory)
+  private rendererFactory: (shape: string) => Batch;
 
-    @inject(MeshFactory)
-    protected meshFactory: (shape: any) => Instanced,
-  ) {}
+  @inject(MeshFactory)
+  protected meshFactory: (shape: typeof Instanced) => Instanced;
 
   /**
    * attached when Device created

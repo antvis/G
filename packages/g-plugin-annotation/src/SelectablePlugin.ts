@@ -4,16 +4,17 @@ import type {
   FederatedPointerEvent,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   CustomEvent,
   ElementEvent,
   Group,
   inject,
   RenderingContext,
+  RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g-lite';
+} from '@antv/g';
 import { SelectableEvent } from './constants/enum';
 import { SelectablePolyline, SelectableRect } from './selectable';
 import type { Selectable } from './selectable/interface';
@@ -27,17 +28,9 @@ import { AnnotationPluginOptions } from './tokens';
  * @example
  * circle.style.selectable = true;
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class SelectablePlugin implements RenderingPlugin {
   static tag = 'Selectable';
-
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(AnnotationPluginOptions)
-    private annotationPluginOptions: AnnotationPluginOptions,
-  ) {}
 
   /**
    * the topmost operation layer, which will be appended to documentElement directly
@@ -58,6 +51,12 @@ export class SelectablePlugin implements RenderingPlugin {
    * each selectable has an operation UI
    */
   private selectableMap: Record<number, Selectable> = {};
+
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
+  @inject(AnnotationPluginOptions)
+  private annotationPluginOptions: AnnotationPluginOptions;
 
   getSelectedDisplayObjects() {
     return this.selected;

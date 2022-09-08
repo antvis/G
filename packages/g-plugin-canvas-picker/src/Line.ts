@@ -1,5 +1,5 @@
-import type { DisplayObject, LineStyleProps, ParsedLineStyleProps } from '@antv/g-lite';
-import { isFillOrStrokeAffected } from '@antv/g-lite';
+import type { DisplayObject, LineStyleProps, ParsedLineStyleProps } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { inLine } from './utils/math';
 
 export function isPointInPath(

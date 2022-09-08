@@ -1,16 +1,17 @@
-import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
-import { inject, singleton } from '@antv/g-lite';
+import type { DisplayObject, ParsedImageStyleProps } from '@antv/g';
+import { inject, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil, isString } from '@antv/util';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
+import { ImageRendererContribution } from './interfaces';
 
-@singleton()
+@singleton({
+  token: ImageRendererContribution,
+})
 export class ImageRenderer implements StyleRenderer {
-  constructor(
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-  ) {}
+  @inject(ImagePool)
+  private imagePool: ImagePool;
 
   render(
     context: CanvasRenderingContext2D,

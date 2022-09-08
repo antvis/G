@@ -1,19 +1,23 @@
-import type { RenderingPlugin, RenderingService } from '@antv/g-lite';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
+import type { RenderingPlugin, RenderingService } from '@antv/g';
+import {
+  CanvasConfig,
+  ContextService,
+  inject,
+  RenderingPluginContribution,
+  singleton,
+} from '@antv/g';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class RoughRendererPlugin implements RenderingPlugin {
   static tag = 'RoughCanvasRenderer';
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
-    @inject(ContextService)
-    private contextService: ContextService<CanvasRenderingContext2D>,
-  ) {}
+  @inject(ContextService)
+  private contextService: ContextService<CanvasRenderingContext2D>;
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {

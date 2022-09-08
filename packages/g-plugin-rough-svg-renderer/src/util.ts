@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
 import type { Options } from 'roughjs/bin/core';
 
 export const SUPPORTED_ROUGH_OPTIONS = [

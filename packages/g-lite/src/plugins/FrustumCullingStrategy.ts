@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix';
-import { inject, singleton } from 'tsyringe';
+import { inject, singleton } from 'mana-syringe';
 import { Camera, DefaultCamera } from '../camera/Camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
@@ -22,12 +22,10 @@ const shape2D = [
   Shape.HTML,
 ];
 
-@singleton()
+@singleton({ contrib: CullingStrategyContribution })
 export class FrustumCullingStrategy implements CullingStrategyContribution {
-  constructor(
-    @inject(DefaultCamera)
-    private camera: Camera,
-  ) {}
+  @inject(DefaultCamera)
+  private camera: Camera;
 
   isVisible(object: DisplayObject) {
     // return true;

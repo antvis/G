@@ -1,17 +1,17 @@
-import { inject, singleton } from '@antv/g-lite';
+import { inject, singleton, Syringe } from '@antv/g-lite';
 import type { FragmentResultFactory } from './FragmentResult';
 import type { LayoutChildrenFactory } from './LayoutChildren';
 import type { LayoutFragmentFactory } from './LayoutFragment';
 import type { LayoutWorkTask } from './LayoutWorkTask';
 import type { ContextId, LayoutTaskType } from './types';
 
-export const LayoutContextFactory = 'LayoutContextFactory';
+export const LayoutContextFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutContextFactory {
   (options: { mode: LayoutTaskType }): LayoutContext;
 }
 
-export const LayoutContextOptions = 'LayoutContextOptions';
+export const LayoutContextOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutContextOptions {
   mode: LayoutTaskType;

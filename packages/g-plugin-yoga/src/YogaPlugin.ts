@@ -6,18 +6,19 @@ import type {
   ParsedBaseStyleProps,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   AABB,
   CSSKeywordValue,
   ElementEvent,
   inject,
   RenderingContext,
+  RenderingPluginContribution,
   SceneGraphService,
   Shape,
   singleton,
   UnitType,
-} from '@antv/g-lite';
+} from '@antv/g';
 import type {
   YogaAlign,
   YogaDisplay,
@@ -52,20 +53,18 @@ import PositionType = YogaConstants.PositionType;
 export type PixelsOrPercentage = number | string;
 export type YogaSize = PixelsOrPercentage | 'auto';
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class YogaPlugin implements RenderingPlugin {
   static tag = 'Yoga';
 
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
+  @inject(SceneGraphService)
+  protected sceneGraphService: SceneGraphService;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(YogaPluginOptions)
-    private options: YogaPluginOptions,
-  ) {}
+  @inject(YogaPluginOptions)
+  private options: YogaPluginOptions;
 
   // displayObject.entity -> YogaNode
   private nodes: Record<number, YogaNode> = {};

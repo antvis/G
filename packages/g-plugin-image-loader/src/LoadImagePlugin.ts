@@ -4,22 +4,27 @@ import type {
   MutationEvent,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
-import { ElementEvent, inject, RenderingContext, Shape, singleton } from '@antv/g-lite';
+} from '@antv/g';
+import {
+  ElementEvent,
+  inject,
+  RenderingContext,
+  RenderingPluginContribution,
+  Shape,
+  singleton,
+} from '@antv/g';
 import { isString } from '@antv/util';
 import { ImagePool } from './ImagePool';
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {
   static tag = 'LoadImage';
 
-  constructor(
-    @inject(ImagePool)
-    private imagePool: ImagePool,
+  @inject(ImagePool)
+  private imagePool: ImagePool;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-  ) {}
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {

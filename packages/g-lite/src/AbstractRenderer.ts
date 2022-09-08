@@ -1,15 +1,15 @@
-import type { DependencyContainer } from 'tsyringe';
+import type { Syringe } from 'mana-syringe';
 import type { RendererConfig } from './types';
 
 export interface RendererPlugin {
   name: string;
-  container: DependencyContainer;
+  container: Syringe.Container;
   init: () => void;
   destroy: () => void;
 }
 
 export abstract class AbstractRendererPlugin implements RendererPlugin {
-  container: DependencyContainer;
+  container: Syringe.Container;
   abstract name: string;
   abstract init(): void;
   abstract destroy(): void;

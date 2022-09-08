@@ -1,4 +1,4 @@
-import { inject, injectAll, singleton } from 'tsyringe';
+import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
 import { Camera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
@@ -14,7 +14,7 @@ export interface RenderingPlugin {
   apply: (renderer: RenderingService) => void;
 }
 
-export const RenderingPluginContribution = 'RenderingPluginContribution';
+export const RenderingPluginContribution = Syringe.defineToken('');
 
 export interface PickingResult {
   /**
@@ -39,25 +39,23 @@ export interface PickingResult {
  */
 @singleton()
 export class RenderingService {
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @contrib(RenderingPluginContribution)
+  private renderingPluginProvider: Contribution.Provider<RenderingPlugin>;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
-    @inject(SceneGraphService)
-    private sceneGraphService: SceneGraphService,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(StyleValueRegistry)
-    private styleValueRegistry: StyleValueRegistry,
+  @inject(SceneGraphService)
+  private sceneGraphService: SceneGraphService;
 
-    @inject(DefaultCamera)
-    private camera: Camera,
+  @inject(StyleValueRegistry)
+  private styleValueRegistry: StyleValueRegistry;
 
-    @injectAll(RenderingPluginContribution)
-    private renderingPlugins: RenderingPlugin[],
-  ) {}
+  @inject(DefaultCamera)
+  private camera: Camera;
 
   private inited = false;
 
@@ -128,7 +126,7 @@ export class RenderingService {
 
   async init() {
     // register rendering plugins
-    this.renderingPlugins.forEach((plugin) => {
+    this.renderingPluginProvider.getContributions({ cache: false }).forEach((plugin) => {
       plugin.apply(this);
     });
     // await this.hooks.init.callPromise();

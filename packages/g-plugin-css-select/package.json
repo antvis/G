@@ -34,7 +34,7 @@
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g-lite": "^0.0.1"
+    "@antv/g": "^5.0.1"
   },
   "publishConfig": {
     "access": "public"

@@ -1,9 +1,9 @@
 import { isNil } from '@antv/util';
-import { singleton } from 'tsyringe';
+import { singleton, Syringe } from 'mana-syringe';
 import type { IElement } from '../dom/interfaces';
 
-export const SceneGraphSelectorFactory = 'SceneGraphSelectorFactory';
-export const SceneGraphSelector = 'SceneGraphSelector';
+export const SceneGraphSelectorFactory = Syringe.defineToken('');
+export const SceneGraphSelector = Syringe.defineToken('', { multiple: false });
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphSelector {
   selectOne: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
@@ -22,7 +22,7 @@ const ATTRIBUTE_REGEXP = /\[\s*(.*)=(.*)\s*\]/;
  * * querySelector
  * * querySelectorAll
  */
-@singleton()
+@singleton({ token: SceneGraphSelector })
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
   selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
     if (query.startsWith('.')) {

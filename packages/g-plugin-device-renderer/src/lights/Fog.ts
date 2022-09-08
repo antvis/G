@@ -1,5 +1,5 @@
-import type { BaseStyleProps, DisplayObjectConfig } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import type { BaseStyleProps, DisplayObjectConfig } from '@antv/g';
+import { DisplayObject } from '@antv/g';
 
 export enum FogType {
   NONE = 0,

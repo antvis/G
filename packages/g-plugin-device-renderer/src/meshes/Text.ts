@@ -1,10 +1,5 @@
-import type {
-  DisplayObject,
-  ParsedTextStyleProps,
-  Text as TextShape,
-  Tuple4Number,
-} from '@antv/g-lite';
-import { CSSRGB, inject, injectable } from '@antv/g-lite';
+import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
+import { CSSRGB, inject, injectable } from '@antv/g';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -37,12 +32,8 @@ export enum TextUniform {
 
 @injectable()
 export class TextMesh extends Instanced {
-  constructor(
-    @inject(GlyphManager)
-    private glyphManager: GlyphManager,
-  ) {
-    super();
-  }
+  @inject(GlyphManager)
+  private glyphManager: GlyphManager;
 
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);

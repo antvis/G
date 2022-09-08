@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'tsyringe';
+import { inject, postConstruct, singleton } from 'mana-syringe';
 import type { HTML } from '../display-objects';
 import { DisplayObjectPool } from '../display-objects';
 import { Element } from '../dom/Element';
@@ -39,31 +39,17 @@ const PROPAGATION_LIMIT = 2048;
 
 @singleton()
 export class EventService extends EventEmitter {
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(ContextService)
-    private contextService: ContextService<any>,
+  @inject(ContextService)
+  private contextService: ContextService<any>;
 
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-  ) {
-    super();
-
-    this.rootTarget = this.renderingContext.root.parentNode; // document
-    this.addEventMapping('pointerdown', this.onPointerDown);
-    this.addEventMapping('pointerup', this.onPointerUp);
-    this.addEventMapping('pointermove', this.onPointerMove);
-    this.addEventMapping('pointerout', this.onPointerOut);
-    this.addEventMapping('pointerleave', this.onPointerOut);
-    this.addEventMapping('pointerover', this.onPointerOver);
-    this.addEventMapping('pointerupoutside', this.onPointerUpOutside);
-    this.addEventMapping('wheel', this.onWheel);
-  }
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
 
   private rootTarget: IEventTarget;
 
@@ -85,6 +71,19 @@ export class EventService extends EventEmitter {
 
   private tmpMatrix = mat4.create();
   private tmpVec3 = vec3.create();
+
+  @postConstruct()
+  init() {
+    this.rootTarget = this.renderingContext.root.parentNode; // document
+    this.addEventMapping('pointerdown', this.onPointerDown);
+    this.addEventMapping('pointerup', this.onPointerUp);
+    this.addEventMapping('pointermove', this.onPointerMove);
+    this.addEventMapping('pointerout', this.onPointerOut);
+    this.addEventMapping('pointerleave', this.onPointerOut);
+    this.addEventMapping('pointerover', this.onPointerOver);
+    this.addEventMapping('pointerupoutside', this.onPointerUpOutside);
+    this.addEventMapping('wheel', this.onWheel);
+  }
 
   client2Viewport(client: PointLike): PointLike {
     const bbox = this.contextService.getBoundingClientRect();

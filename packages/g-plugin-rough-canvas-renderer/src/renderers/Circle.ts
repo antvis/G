@@ -1,9 +1,11 @@
+import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
+import { singleton } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
-import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
-@singleton()
+@singleton({
+  token: CanvasRenderer.CircleRendererContribution,
+})
 export class CircleRenderer implements CanvasRenderer.StyleRenderer {
   render(
     context: CanvasRenderingContext2D,

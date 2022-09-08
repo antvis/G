@@ -1,5 +1,5 @@
-import type { CSSUnitValue, DisplayObject, ParsedFilterStyleProperty } from '@antv/g-lite';
-import { UnitType } from '@antv/g-lite';
+import type { CSSUnitValue, DisplayObject, ParsedFilterStyleProperty } from '@antv/g';
+import { UnitType } from '@antv/g';
 import { createSVGElement } from '../../utils/dom';
 
 export const FILTER_PREFIX = 'g-filter-';

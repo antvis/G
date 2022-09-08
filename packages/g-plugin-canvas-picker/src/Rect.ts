@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g-lite';
-import { isFillOrStrokeAffected } from '@antv/g-lite';
+import type { DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { clamp } from '@antv/util';
 import { inArc, inBox, inLine, inRect } from './utils/math';
 

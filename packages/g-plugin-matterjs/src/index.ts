@@ -1,10 +1,11 @@
-import { AbstractRendererPlugin, DisplayObject, RenderingPluginContribution } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g';
 import { MatterJSPlugin } from './MatterJSPlugin';
 import { MatterJSPluginOptions } from './tokens';
 
-// const containerModule = Module((register) => {
-//   register(MatterJSPlugin);
-// });
+const containerModule = Module((register) => {
+  register(MatterJSPlugin);
+});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'matterjs';
@@ -24,16 +25,14 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-
-    this.container.registerSingleton(RenderingPluginContribution, MatterJSPlugin);
-    // this.container.load(containerModule, true);
+    this.container.load(containerModule, true);
   }
   destroy(): void {
-    // this.container.remove(MatterJSPluginOptions);
-    // this.container.unload(containerModule);
+    this.container.remove(MatterJSPluginOptions);
+    this.container.unload(containerModule);
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
-    this.container.resolve(MatterJSPlugin).applyForce(object, force, point);
+    this.container.get(MatterJSPlugin).applyForce(object, force, point);
   }
 }

@@ -1,10 +1,13 @@
-import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
+import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
+import { singleton } from '@antv/g';
 import { isNil } from '@antv/util';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
+import { TextRendererContribution } from './interfaces';
 
-@singleton()
+@singleton({
+  token: TextRendererContribution,
+})
 export class TextRenderer implements StyleRenderer {
   render(
     context: CanvasRenderingContext2D,

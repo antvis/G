@@ -1,3 +1,4 @@
+import { Syringe } from 'mana-syringe';
 import type { BaseStyleProps } from '..';
 import type { DisplayObject } from '../display-objects';
 import type { CSSStyleValue } from './cssom';
@@ -134,7 +135,7 @@ export interface PropertyParseOptions {
   usedAttributes: string[];
 }
 
-export const StyleValueRegistry = 'StyleValueRegistry';
+export const StyleValueRegistry = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface StyleValueRegistry {
   recalc: (displayObject: DisplayObject) => void;
@@ -153,10 +154,9 @@ export interface StyleValueRegistry {
   computeProperty: (name: string, computed: CSSStyleValue, object: DisplayObject) => any;
 }
 
-export const LayoutRegistry = 'LayoutRegistry';
+export const LayoutRegistry = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutRegistry {
   hasLayout: (name: string) => boolean;
   getLayout: (name: string) => any;
-  registerLayout: (name: string, clazz: any) => void;
 }

@@ -1,6 +1,6 @@
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import { inject, singleton } from 'tsyringe';
+import { inject, singleton } from 'mana-syringe';
 import type { Transform } from '../components';
 import type { Element } from '../dom';
 import { CustomEvent } from '../dom';
@@ -30,11 +30,12 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
-@singleton()
+@singleton({
+  token: SceneGraphService,
+})
 export class DefaultSceneGraphService implements SceneGraphService {
-  constructor(
-    @inject(SceneGraphSelectorFactory) private sceneGraphSelectorFactory: () => SceneGraphSelector,
-  ) {}
+  @inject(SceneGraphSelectorFactory)
+  private sceneGraphSelectorFactory: () => SceneGraphSelector;
 
   private pendingEvents = [];
   private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);

@@ -1,10 +1,5 @@
-import {
-  AbstractRendererPlugin,
-  CSS,
-  DisplayObject,
-  PropertySyntax,
-  RenderingPluginContribution,
-} from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g';
+import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
 import type { DrawerOption } from './interface/drawer';
@@ -12,10 +7,10 @@ import { SelectablePlugin } from './SelectablePlugin';
 import type { SelectableStyle } from './tokens';
 import { AnnotationPluginOptions } from './tokens';
 
-// const containerModule = Module((register) => {
-//   register(SelectablePlugin);
-//   register(AnnotationPlugin);
-// });
+const containerModule = Module((register) => {
+  register(SelectablePlugin);
+  register(AnnotationPlugin);
+});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'annotation';
@@ -33,10 +28,7 @@ export class Plugin extends AbstractRendererPlugin {
         ...this.options,
       },
     });
-
-    this.container.registerSingleton(RenderingPluginContribution, SelectablePlugin);
-    this.container.registerSingleton(RenderingPluginContribution, AnnotationPlugin);
-    // this.container.load(containerModule, true);
+    this.container.load(containerModule, true);
 
     // register custom properties
     CSS.registerProperty({
@@ -113,10 +105,10 @@ export class Plugin extends AbstractRendererPlugin {
 
   updateSelectableStyle(style: Partial<SelectableStyle>) {
     const { selectableStyle } =
-      this.container.resolve<AnnotationPluginOptions>(AnnotationPluginOptions);
+      this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
     Object.assign(selectableStyle, style);
 
-    this.container.resolve(SelectablePlugin).updateSelectableStyle();
+    this.container.get(SelectablePlugin).updateSelectableStyle();
   }
 
   /**
@@ -124,47 +116,47 @@ export class Plugin extends AbstractRendererPlugin {
    * @see http://fabricjs.com/docs/fabric.Canvas.html#setActiveObject
    */
   selectDisplayObject(displayObject: DisplayObject) {
-    this.container.resolve(SelectablePlugin).selectDisplayObject(displayObject);
+    this.container.get(SelectablePlugin).selectDisplayObject(displayObject);
   }
 
   /**
    * hide selectable UI of target displayobject
    */
   deselectDisplayObject(displayObject: DisplayObject) {
-    this.container.resolve(SelectablePlugin).deselectDisplayObject(displayObject);
+    this.container.get(SelectablePlugin).deselectDisplayObject(displayObject);
   }
 
   getSelectedDisplayObjects() {
-    return this.container.resolve(SelectablePlugin).getSelectedDisplayObjects();
+    return this.container.get(SelectablePlugin).getSelectedDisplayObjects();
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
-    this.container.resolve(AnnotationPlugin).emmiter.on(eventName, fn);
+    this.container.get(AnnotationPlugin).emmiter.on(eventName, fn);
   }
 
   removeEventListener(eventName: string, fn: (...args: any[]) => void) {
-    this.container.resolve(AnnotationPlugin).emmiter.off(eventName, fn);
+    this.container.get(AnnotationPlugin).emmiter.off(eventName, fn);
   }
 
   setDrawer(tool: DrawerTool, options?: DrawerOption) {
-    this.container.resolve(AnnotationPlugin).setDrawer(tool, options);
+    this.container.get(AnnotationPlugin).setDrawer(tool, options);
   }
 
   clearDrawer() {
-    this.container.resolve(AnnotationPlugin).clearDrawer();
+    this.container.get(AnnotationPlugin).clearDrawer();
   }
 
   /**
    * @see http://fabricjs.com/fabric-intro-part-4#free_drawing
    */
   setDrawingMode(enabled: boolean) {
-    const options = this.container.resolve<AnnotationPluginOptions>(AnnotationPluginOptions);
+    const options = this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
     options.isDrawingMode = enabled;
   }
 
   destroy(): void {
-    // this.container.remove(AnnotationPluginOptions);
-    // this.container.unload(containerModule);
+    this.container.remove(AnnotationPluginOptions);
+    this.container.unload(containerModule);
   }
 }
 export * from './constants/enum';

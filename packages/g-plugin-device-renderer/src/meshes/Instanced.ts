@@ -5,7 +5,7 @@ import type {
   Pattern,
   RenderingService,
   Tuple4Number,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   Camera,
   CSSRGB,
@@ -15,7 +15,7 @@ import {
   isPattern,
   parseColor,
   Shape,
-} from '@antv/g-lite';
+} from '@antv/g';
 import { mat4 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import { LightPool } from '../LightPool';
@@ -92,7 +92,6 @@ export enum VertexAttributeLocation {
 /**
  * Instanced mesh
  */
-// @ts-ignore
 @injectable()
 export abstract class Instanced {
   /**
@@ -106,19 +105,17 @@ export abstract class Instanced {
    */
   index = -1;
 
-  constructor(
-    @inject(RenderHelper)
-    protected renderHelper?: RenderHelper,
+  @inject(RenderHelper)
+  protected renderHelper: RenderHelper;
 
-    @inject(TexturePool)
-    protected texturePool?: TexturePool,
+  @inject(TexturePool)
+  protected texturePool: TexturePool;
 
-    @inject(DefaultCamera)
-    protected camera?: Camera,
+  @inject(DefaultCamera)
+  protected camera: Camera;
 
-    @inject(LightPool)
-    protected lightPool?: LightPool,
-  ) {}
+  @inject(LightPool)
+  protected lightPool: LightPool;
 
   device: Device;
 

@@ -1,5 +1,7 @@
-export const RendererFactory = Symbol('RendererFactory');
-export const ShapeRenderer = Symbol('ShapeRenderer');
+import { Syringe } from '@antv/g';
 
-export const MeshFactory = Symbol('MeshFactory');
+export const RendererFactory = Syringe.defineToken('');
+export const ShapeRenderer = Syringe.defineToken('');
+
+export const MeshFactory = Syringe.defineToken('');
 // export const ShapeMesh = Syringe.defineToken('');

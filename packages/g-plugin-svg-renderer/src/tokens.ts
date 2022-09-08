@@ -1,6 +1,9 @@
-import type { DisplayObject } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g';
+import { Syringe } from '@antv/g';
 
-export const ElementLifeCycleContribution = Symbol('ElementLifeCycleContribution');
+export const ElementLifeCycleContribution = Syringe.defineToken('', {
+  multiple: false,
+});
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ElementLifeCycleContribution {
   createElement: (object: DisplayObject) => SVGElement;

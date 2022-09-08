@@ -1,5 +1,5 @@
-import type { DisplayObjectConfig } from '@antv/g-lite';
-import { CSSRGB } from '@antv/g-lite';
+import type { DisplayObjectConfig } from '@antv/g';
+import { CSSRGB } from '@antv/g';
 import type { LightProps, RenderInstUniform } from '@antv/g-plugin-device-renderer';
 import { Light } from '@antv/g-plugin-device-renderer';
 import { vec3 } from 'gl-matrix';

@@ -1,8 +1,11 @@
-import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
+import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g';
+import { singleton } from '@antv/g';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { CircleRendererContribution } from '../interfaces';
 
-@singleton()
+@singleton({
+  token: CircleRendererContribution,
+})
 export class CircleRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
     const { canvas, strokePaint, fillPaint, shadowFillPaint, shadowStrokePaint } = context;

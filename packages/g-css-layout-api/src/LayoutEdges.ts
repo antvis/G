@@ -1,14 +1,14 @@
-import { inject, injectable } from '@antv/g-lite';
+import { inject, injectable, Syringe } from '@antv/g-lite';
 import type { LayoutObject } from './LayoutObject';
 import { PropertyName } from './types';
 
-export const LayoutEdgesFactory = 'LayoutEdgesFactory';
+export const LayoutEdgesFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutEdgesFactory {
   (options: LayoutEdgesOptions): LayoutEdges;
 }
 
-export const LayoutEdgesOptions = 'LayoutEdgesOptions';
+export const LayoutEdgesOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutEdgesOptions {
   node: LayoutObject;

@@ -1,10 +1,16 @@
-import { singleton } from 'tsyringe';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSUnitValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
 import { parseNumber } from '../parser/numeric';
 
-@singleton()
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.Z_INDEX,
+  },
+})
 export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseNumber;
 

@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
-import { ContextService, inject, singleton } from '@antv/g-lite';
+import type { DisplayObject, ParsedImageStyleProps } from '@antv/g';
+import { ContextService, inject, singleton } from '@antv/g';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type {
@@ -7,6 +7,7 @@ import type {
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
+import { ImageRendererContribution } from '../interfaces';
 
 /**
  * @see https://docs.flutter.dev/development/platform-integration/web-images#flutter-renderers-on-the-web
@@ -14,15 +15,15 @@ import type {
  * @see https://fiddle.skia.org/c/@Canvas_drawImage
  * @see https://github.com/google/skia/blob/4ff73144c35b993907a6e3738a7be81c0681e504/modules/canvaskit/tests/bazel/core_test.js#L104
  */
-@singleton()
+@singleton({
+  token: ImageRendererContribution,
+})
 export class ImageRenderer implements RendererContribution {
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasKitContext>,
+  @inject(ContextService)
+  private contextService: ContextService<CanvasKitContext>;
 
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-  ) {}
+  @inject(ImagePool)
+  private imagePool: ImagePool;
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { surface, CanvasKit } = this.contextService.getContext();

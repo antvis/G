@@ -1,5 +1,5 @@
-import type { BaseStyleProps, DisplayObjectConfig } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import type { DisplayObjectConfig, BaseStyleProps } from '@antv/g';
+import { DisplayObject } from '@antv/g';
 import type { RenderInstUniform } from '../render';
 
 export interface LightProps extends BaseStyleProps {

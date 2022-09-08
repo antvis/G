@@ -1,4 +1,4 @@
-import { inject, injectable } from '@antv/g-lite';
+import { inject, injectable, Syringe } from '@antv/g-lite';
 import { LayoutContext } from './LayoutContext';
 import type { LayoutFragment } from './LayoutFragment';
 import type { LayoutObject } from './LayoutObject';
@@ -6,13 +6,13 @@ import type { IntrinsicSizes, LayoutConstraints } from './types';
 import { LayoutTaskType } from './types';
 import { Deferred } from './utils';
 
-export const LayoutChildrenFactory = 'LayoutChildrenFactory';
+export const LayoutChildrenFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutChildrenFactory {
   (options: LayoutChildrenOptions): LayoutChildren;
 }
 
-export const LayoutChildrenOptions = 'LayoutChildrenOptions';
+export const LayoutChildrenOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutChildrenOptions {
   node: LayoutObject;

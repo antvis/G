@@ -1,11 +1,14 @@
-import type { ParsedLineStyleProps } from '@antv/g-lite';
-import { DisplayObject, singleton } from '@antv/g-lite';
+import type { ParsedLineStyleProps } from '@antv/g';
+import { DisplayObject, singleton } from '@antv/g';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { LineRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawLine
  */
-@singleton()
+@singleton({
+  token: LineRendererContribution,
+})
 export class LineRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
     const { canvas, strokePaint, shadowStrokePaint } = context;

@@ -1,22 +1,26 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g-lite';
-import { ContextService, inject, RenderingContext, singleton } from '@antv/g-lite';
+import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g';
+import {
+  ContextService,
+  inject,
+  RenderingContext,
+  RenderingPluginContribution,
+  singleton,
+} from '@antv/g';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class DOMInteractionPlugin implements RenderingPlugin {
   static tag = 'DOMInteraction';
 
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
+  @inject(ContextService)
+  private contextService: ContextService<unknown>;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-  ) {}
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
   apply(renderingService: RenderingService) {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;

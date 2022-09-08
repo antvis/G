@@ -9,7 +9,7 @@ import type {
   ParsedRectStyleProps,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   AABB,
   CanvasEvent,
@@ -19,32 +19,31 @@ import {
   inject,
   rad2deg,
   RenderingContext,
+  RenderingPluginContribution,
   SceneGraphService,
   Shape,
   singleton,
-} from '@antv/g-lite';
+} from '@antv/g';
 import { vec2 } from 'gl-matrix';
 import { Bodies, Body, Composite, Engine, Render, World } from 'matter-js';
 import { MatterJSPluginOptions } from './tokens';
 import { sortPointsInCCW } from './utils';
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class MatterJSPlugin implements RenderingPlugin {
   static tag = 'MatterJS';
 
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
+  @inject(SceneGraphService)
+  protected sceneGraphService: SceneGraphService;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
+  @inject(DisplayObjectPool)
+  private displayObjectPool: DisplayObjectPool;
 
-    @inject(MatterJSPluginOptions)
-    private options: MatterJSPluginOptions,
-  ) {}
+  @inject(MatterJSPluginOptions)
+  private options: MatterJSPluginOptions;
 
   private engine: Engine;
 

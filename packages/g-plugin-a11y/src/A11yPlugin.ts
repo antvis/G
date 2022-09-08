@@ -5,40 +5,39 @@ import type {
   RenderingPlugin,
   RenderingService,
   Text,
-} from '@antv/g-lite';
+} from '@antv/g';
 import {
   ContextService,
   ElementEvent,
   inject,
   isBrowser,
   RenderingContext,
+  RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g-lite';
+} from '@antv/g';
 import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
 import { A11yPluginOptions } from './tokens';
 
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class A11yPlugin implements RenderingPlugin {
   static tag = 'A11y';
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
+  @inject(ContextService)
+  private contextService: ContextService<unknown>;
 
-    @inject(A11yPluginOptions)
-    private a11yPluginOptions: A11yPluginOptions,
+  @inject(A11yPluginOptions)
+  private a11yPluginOptions: A11yPluginOptions;
 
-    @inject(TextExtractor)
-    private textExtractor: TextExtractor,
+  @inject(TextExtractor)
+  private textExtractor: TextExtractor;
 
-    @inject(AriaManager)
-    private ariaManager: AriaManager,
-  ) {}
+  @inject(AriaManager)
+  private ariaManager: AriaManager;
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {

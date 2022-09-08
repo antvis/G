@@ -1,4 +1,4 @@
-import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
+import type { CanvasLike, DataURLOptions } from '@antv/g';
 import {
   CanvasConfig,
   ContextService,
@@ -6,14 +6,15 @@ import {
   isBrowser,
   setDOMSize,
   singleton,
-} from '@antv/g-lite';
+  Syringe,
+} from '@antv/g';
 import type * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import { isString } from '@antv/util';
 import type { CanvasKit } from 'canvaskit-wasm';
 import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit.js';
 
-export const ContextRegisterPluginOptions = Symbol('ContextRegisterPluginOptions');
+export const ContextRegisterPluginOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface ContextRegisterPluginOptions {
   wasmDir: string;
@@ -23,20 +24,18 @@ export interface ContextRegisterPluginOptions {
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
  */
-@singleton()
+@singleton({ token: ContextService })
 export class CanvasKitContextService implements ContextService<CanvasKitContext> {
   private $container: HTMLElement | null;
   private $canvas: CanvasLike | null;
   private dpr: number;
   private context: CanvasKitContext;
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
-    @inject(ContextRegisterPluginOptions)
-    private contextRegisterPluginOptions: ContextRegisterPluginOptions,
-  ) {}
+  @inject(ContextRegisterPluginOptions)
+  private contextRegisterPluginOptions: ContextRegisterPluginOptions;
 
   async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;

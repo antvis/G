@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g';
 import { isNil } from '@antv/util';
 import { createSVGElement } from '../../utils/dom';
 

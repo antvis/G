@@ -1,4 +1,4 @@
-import { container } from 'tsyringe';
+import { GlobalContainer } from 'mana-syringe';
 import { CSSUnitValue } from './cssom';
 import type { PropertySyntax } from './interfaces';
 import { StyleValueRegistry } from './interfaces';
@@ -117,7 +117,7 @@ export const CSS = {
   registerProperty: (definition: PropertyDefinition) => {
     const { name, inherits, interpolable, initialValue, syntax } = definition;
 
-    const styleValueRegistry = container.resolve<StyleValueRegistry>(StyleValueRegistry);
+    const styleValueRegistry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
     styleValueRegistry.registerMetadata({
       n: name,
       inh: inherits,
@@ -136,7 +136,7 @@ export const CSS = {
    */
   registerLayout: (name: string, clazz: any) => {
     // registerLayout: (name: string, clazz: LayoutDefinitionCtor) => {
-    const layoutRegistry = container.resolve<LayoutRegistry>(LayoutRegistry);
+    const layoutRegistry = GlobalContainer.get(LayoutRegistry);
     layoutRegistry.registerLayout(name, clazz);
   },
 };

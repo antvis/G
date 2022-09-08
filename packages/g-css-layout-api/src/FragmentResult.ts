@@ -1,9 +1,9 @@
-import { inject, injectable } from '@antv/g-lite';
+import { inject, injectable, Syringe } from '@antv/g-lite';
 import { LayoutContext } from './LayoutContext';
 import type { LayoutFragment } from './LayoutFragment';
 import { LayoutObject } from './LayoutObject';
 
-export const FragmentResultFactory = 'FragmentResultFactory';
+export const FragmentResultFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface FragmentResultFactory {
   (options: FragmentResultOptions): FragmentResult;
@@ -12,7 +12,7 @@ export interface FragmentResultFactory {
 /**
  * The web developer defined layout method can return either a FragmentResultOptions or a FragmentResult.
  */
-export const FragmentResultOptions = 'FragmentResultOptions';
+export const FragmentResultOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface FragmentResultOptions<T = void> {
   inlineSize: number;
@@ -22,7 +22,7 @@ export interface FragmentResultOptions<T = void> {
   data: T;
 }
 
-export const ContextNode = 'ContextNode';
+export const ContextNode = Syringe.defineToken('');
 
 @injectable()
 export class FragmentResult<T = void> {

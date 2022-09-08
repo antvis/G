@@ -1,3 +1,5 @@
+import { Syringe } from 'mana-syringe';
+
 export interface RBushNodeAABB {
   id: number;
   minX: number;
@@ -9,4 +11,4 @@ export interface RBushNode {
   aabb?: RBushNodeAABB;
 }
 
-export const RBushRoot = 'RBushRoot';
+export const RBushRoot = Syringe.defineToken('');

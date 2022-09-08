@@ -1,5 +1,5 @@
-import type { DisplayObject, RenderingService } from '@antv/g-lite';
-import { Camera, DefaultCamera, inject, injectable } from '@antv/g-lite';
+import type { DisplayObject, RenderingService } from '@antv/g';
+import { Camera, DefaultCamera, inject, injectable } from '@antv/g';
 import { LightPool } from '../LightPool';
 import type { Instanced } from '../meshes/Instanced';
 import type { Device } from '../platform';
@@ -20,25 +20,22 @@ let counter = 1;
  * A container for multiple display objects with the same `style`,
  * eg. 1000 Circles with the same stroke color, but their position, radius can be different
  */
-// @ts-ignore
 @injectable()
 export abstract class Batch {
-  constructor(
-    @inject(RenderHelper)
-    protected renderHelper: RenderHelper,
+  @inject(RenderHelper)
+  protected renderHelper: RenderHelper;
 
-    @inject(TexturePool)
-    protected texturePool: TexturePool,
+  @inject(TexturePool)
+  protected texturePool: TexturePool;
 
-    @inject(DefaultCamera)
-    protected camera: Camera,
+  @inject(DefaultCamera)
+  protected camera: Camera;
 
-    @inject(LightPool)
-    protected lightPool: LightPool,
+  @inject(LightPool)
+  protected lightPool: LightPool;
 
-    @inject(BatchManager)
-    protected batchManager: BatchManager,
-  ) {}
+  @inject(BatchManager)
+  protected batchManager: BatchManager;
 
   // @inject(MeshFactory)
   // protected meshFactory: (shape: string) => Instanced;
@@ -53,7 +50,7 @@ export abstract class Batch {
    * describe render insts used in this draw call
    * eg. a Polygon with stroke will use 2 renderInsts
    */
-  meshes: any[] = [];
+  meshes: typeof Instanced[] = [];
   private clipPathMeshCreated = false;
 
   shouldSubmitRenderInst(object: DisplayObject, index: number): boolean {

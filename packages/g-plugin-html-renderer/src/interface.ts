@@ -1,1 +1,1 @@
-export const HTMLRendererPluginConfig = Symbol('HTMLRendererPluginConfig');
+export const HTMLRendererPluginConfig = 'HTMLRendererPluginConfig';

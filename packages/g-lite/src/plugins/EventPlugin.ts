@@ -1,10 +1,16 @@
 import { isUndefined } from '@antv/util';
-import { inject, singleton } from 'tsyringe';
+import { inject, singleton } from 'mana-syringe';
 import type { FederatedMouseEvent, ICanvas } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import type { RenderingPlugin } from '../services';
-import { ContextService, EventService, RenderingContext, RenderingService } from '../services';
+import {
+  ContextService,
+  EventService,
+  RenderingContext,
+  RenderingPluginContribution,
+  RenderingService,
+} from '../services';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
@@ -17,23 +23,24 @@ import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
  *
  * also provide some extra events such as `drag`
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class EventPlugin implements RenderingPlugin {
   static tag = 'Event';
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
+  @inject(CanvasConfig)
+  private canvasConfig: CanvasConfig;
 
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
+  @inject(ContextService)
+  private contextService: ContextService<unknown>;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingService)
+  private renderingService: RenderingService;
 
-    @inject(EventService)
-    private eventService: EventService,
-  ) {}
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
+
+  @inject(EventService)
+  private eventService: EventService;
 
   private autoPreventDefault = false;
   private rootPointerEvent = new FederatedPointerEvent(null);
@@ -43,7 +50,7 @@ export class EventPlugin implements RenderingPlugin {
     const canvas = this.renderingContext.root.ownerDocument.defaultView;
 
     this.eventService.setPickHandler(async (position: EventPosition) => {
-      const { picked } = await renderingService.hooks.pick.promise({
+      const { picked } = await this.renderingService.hooks.pick.promise({
         position,
         picked: [],
         topmost: true, // we only concern the topmost element

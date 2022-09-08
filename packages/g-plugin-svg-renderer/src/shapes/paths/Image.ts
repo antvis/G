@@ -1,4 +1,4 @@
-import type { ParsedImageStyleProps } from '@antv/g-lite';
+import type { ParsedImageStyleProps } from '@antv/g';
 import { isString } from '@antv/util';
 
 export function updateImageElementAttribute($el: SVGElement, parsedStyle: ParsedImageStyleProps) {

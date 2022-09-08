@@ -1,5 +1,5 @@
-import type { ParsedLineStyleProps } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import type { ParsedLineStyleProps } from '@antv/g';
+import { DisplayObject } from '@antv/g';
 
 export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedLineStyleProps) {
   const {

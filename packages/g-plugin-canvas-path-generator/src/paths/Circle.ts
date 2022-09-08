@@ -1,4 +1,4 @@
-import type { ParsedCircleStyleProps } from '@antv/g-lite';
+import type { ParsedCircleStyleProps } from '@antv/g';
 
 export function generatePath(
   context: CanvasRenderingContext2D,

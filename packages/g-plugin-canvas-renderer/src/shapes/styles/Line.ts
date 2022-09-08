@@ -1,5 +1,8 @@
-import { singleton } from '@antv/g-lite';
+import { singleton } from '@antv/g';
 import { DefaultRenderer } from './Default';
+import { LineRendererContribution } from './interfaces';
 
-@singleton()
+@singleton({
+  token: LineRendererContribution,
+})
 export class LineRenderer extends DefaultRenderer {}

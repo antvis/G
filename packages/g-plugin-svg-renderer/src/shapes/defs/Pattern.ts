@@ -1,4 +1,4 @@
-import type { DisplayObject, LinearGradient, Pattern, RadialGradient } from '@antv/g-lite';
+import type { DisplayObject, LinearGradient, Pattern, RadialGradient } from '@antv/g';
 import {
   computeLinearGradient,
   computeRadialGradient,
@@ -7,7 +7,7 @@ import {
   GradientType,
   isBrowser,
   isPattern,
-} from '@antv/g-lite';
+} from '@antv/g';
 import { isString } from '@antv/util';
 import { createSVGElement } from '../../utils/dom';
 import { FILTER_PREFIX } from './Filter';

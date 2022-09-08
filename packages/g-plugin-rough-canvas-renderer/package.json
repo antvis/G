@@ -35,8 +35,8 @@
     "@types/jest": "^25.0.0"
   },
   "peerDependencies": {
-    "@antv/g-canvas": "^1.0.1",
-    "@antv/g-lite": "^0.0.1"
+    "@antv/g": "^5.0.1",
+    "@antv/g-canvas": "^1.0.1"
   },
   "publishConfig": {
     "access": "public"

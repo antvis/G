@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g';
+import { singleton } from '@antv/g';
 
 @singleton()
 export class PickingIdGenerator {

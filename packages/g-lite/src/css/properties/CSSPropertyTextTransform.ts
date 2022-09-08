@@ -1,14 +1,20 @@
-import { singleton } from 'tsyringe';
+import { singleton } from 'mana-syringe';
 import type { TextTransform } from '../..';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSKeywordValue } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
+import { PropertySyntax } from '../interfaces';
 
 /**
  * it must transform after text get parsed
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform
  */
-@singleton()
+@singleton({
+  token: {
+    token: CSSProperty,
+    named: PropertySyntax.TEXT_TRANSFORM,
+  },
+})
 export class CSSPropertyTextTransform
   implements Partial<CSSProperty<CSSKeywordValue, TextTransform>>
 {

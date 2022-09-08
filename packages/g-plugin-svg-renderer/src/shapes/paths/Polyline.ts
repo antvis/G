@@ -1,5 +1,5 @@
-import type { ParsedPolylineStyleProps } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import type { ParsedPolylineStyleProps } from '@antv/g';
+import { DisplayObject } from '@antv/g';
 
 export function updatePolylineElementAttribute(
   $el: SVGElement,

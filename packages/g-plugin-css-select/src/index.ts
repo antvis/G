@@ -1,23 +1,21 @@
-import { AbstractRendererPlugin, container, SceneGraphSelector } from '@antv/g-lite';
+import { AbstractRendererPlugin, DefaultSceneGraphSelector, GlobalContainer } from '@antv/g';
 import { CSSSceneGraphSelector } from './CSSSceneGraphSelector';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'css-select';
   init(): void {
-    container.registerSingleton(SceneGraphSelector, CSSSceneGraphSelector);
-    container.registerSingleton(SceneGraphAdapter);
-    // if (GlobalContainer.isBound(DefaultSceneGraphSelector)) {
-    //   GlobalContainer.remove(DefaultSceneGraphSelector);
-    // }
-    // GlobalContainer.register(SceneGraphAdapter);
-    // GlobalContainer.register(CSSSceneGraphSelector);
+    if (GlobalContainer.isBound(DefaultSceneGraphSelector)) {
+      GlobalContainer.remove(DefaultSceneGraphSelector);
+    }
+    GlobalContainer.register(SceneGraphAdapter);
+    GlobalContainer.register(CSSSceneGraphSelector);
   }
   destroy(): void {
-    // GlobalContainer.remove(CSSSceneGraphSelector);
-    // GlobalContainer.remove(SceneGraphAdapter);
-    // if (!GlobalContainer.isBound(DefaultSceneGraphSelector)) {
-    //   GlobalContainer.register(DefaultSceneGraphSelector);
-    // }
+    GlobalContainer.remove(CSSSceneGraphSelector);
+    GlobalContainer.remove(SceneGraphAdapter);
+    if (!GlobalContainer.isBound(DefaultSceneGraphSelector)) {
+      GlobalContainer.register(DefaultSceneGraphSelector);
+    }
   }
 }

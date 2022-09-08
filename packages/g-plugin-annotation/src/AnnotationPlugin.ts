@@ -6,8 +6,8 @@ import type {
   Rect,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g-lite';
-import { inject, RenderingContext, singleton } from '@antv/g-lite';
+} from '@antv/g';
+import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';
@@ -25,17 +25,15 @@ import { AnnotationPluginOptions } from './tokens';
  * Provides drawing capability like free drawing mode in fabric.js.
  * @see http://fabricjs.com/freedrawing
  */
-@singleton()
+@singleton({ contrib: RenderingPluginContribution })
 export class AnnotationPlugin implements RenderingPlugin {
   static tag = 'Annotation';
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  @inject(RenderingContext)
+  private renderingContext: RenderingContext;
 
-    @inject(AnnotationPluginOptions)
-    private annotationPluginOptions: AnnotationPluginOptions,
-  ) {}
+  @inject(AnnotationPluginOptions)
+  private annotationPluginOptions: AnnotationPluginOptions;
 
   private hotkeyActive: boolean = false;
   public drawer: BaseDrawer;

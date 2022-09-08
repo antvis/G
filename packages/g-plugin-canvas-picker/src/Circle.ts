@@ -1,5 +1,5 @@
-import type { CircleStyleProps, DisplayObject, ParsedCircleStyleProps, Point } from '@antv/g-lite';
-import { isFillOrStrokeAffected } from '@antv/g-lite';
+import type { CircleStyleProps, DisplayObject, ParsedCircleStyleProps, Point } from '@antv/g';
+import { isFillOrStrokeAffected } from '@antv/g';
 import { distance } from './utils/math';
 
 export function isPointInPath(

@@ -1,9 +1,10 @@
 import { isNil } from '@antv/util';
-import { singleton } from 'tsyringe';
+import { singleton } from 'mana-syringe';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
 import { CSSUnitValue, UnitType } from '../cssom';
 import { CSSProperty } from '../CSSProperty';
 import type { StyleValueRegistry } from '../interfaces';
+import { PropertySyntax } from '../interfaces';
 import { mergeNumbers } from '../parser';
 import { parseLengthOrPercentage } from '../parser/dimension';
 
@@ -15,7 +16,18 @@ function getFontSize(object: DisplayObject): number {
 /**
  * <length> & <percentage>
  */
-@singleton()
+@singleton({
+  token: [
+    {
+      token: CSSProperty,
+      named: PropertySyntax.LENGTH_PERCENTAGE,
+    },
+    {
+      token: CSSProperty,
+      named: PropertySyntax.LENGTH,
+    },
+  ],
+})
 export class CSSPropertyLengthOrPercentage implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseLengthOrPercentage;
 

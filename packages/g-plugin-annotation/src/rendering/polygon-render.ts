@@ -1,4 +1,4 @@
-import { Polyline } from '@antv/g-lite';
+import { Polyline } from '@antv/g';
 import { DASH_LINE_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
 import { renderDrawLine } from './drawline-render';

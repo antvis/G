@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedPathStyleProps, ParsedTextStyleProps } from '@antv/g-lite';
-import { ContextService, CSSRGB, inject, singleton } from '@antv/g-lite';
+import type { DisplayObject, ParsedPathStyleProps, ParsedTextStyleProps } from '@antv/g';
+import { ContextService, CSSRGB, inject, singleton } from '@antv/g';
 import type { EmbindEnumEntity, Typeface } from 'canvaskit-wasm';
 import { FontLoader } from '../FontLoader';
 import type {
@@ -7,6 +7,7 @@ import type {
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
+import { TextRendererContribution } from '../interfaces';
 import { color2CanvaskitColor } from '../util';
 
 /**
@@ -26,15 +27,15 @@ import { color2CanvaskitColor } from '../util';
  * Emoji:
  * @see https://github.com/flutter/flutter/issues/76248
  */
-@singleton()
+@singleton({
+  token: TextRendererContribution,
+})
 export class TextRenderer implements RendererContribution {
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasKitContext>,
+  @inject(ContextService)
+  private contextService: ContextService<CanvasKitContext>;
 
-    @inject(FontLoader)
-    private fontLoader: FontLoader,
-  ) {}
+  @inject(FontLoader)
+  private fontLoader: FontLoader;
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = this.contextService.getContext();

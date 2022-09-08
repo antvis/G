@@ -1,4 +1,6 @@
-export const WebGPUDeviceOptions = Symbol('WebGPUDeviceOptions');
+import { Syringe } from '@antv/g';
+
+export const WebGPUDeviceOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface WebGPUDeviceOptions {
   onContextCreationError: (e: Event) => void;
