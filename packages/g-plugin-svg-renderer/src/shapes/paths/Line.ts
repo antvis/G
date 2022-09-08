@@ -1,5 +1,5 @@
-import type { ParsedLineStyleProps } from '@antv/g';
-import { DisplayObject } from '@antv/g';
+import type { ParsedLineStyleProps } from '@antv/g-lite';
+import { DisplayObject } from '@antv/g-lite';
 
 export function updateLineElementAttribute($el: SVGElement, parsedStyle: ParsedLineStyleProps) {
   const {

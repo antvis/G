@@ -1,5 +1,5 @@
-import type { RendererConfig } from '@antv/g';
-import { AbstractRenderer } from '@antv/g';
+import type { RendererConfig } from '@antv/g-lite';
+import { AbstractRenderer } from '@antv/g-lite';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';

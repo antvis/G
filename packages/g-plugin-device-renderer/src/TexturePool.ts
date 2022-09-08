@@ -4,7 +4,7 @@ import type {
   LinearGradient,
   Pattern,
   RadialGradient,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   CanvasConfig,
   inject,
@@ -12,7 +12,7 @@ import {
   OffscreenCanvasCreator,
   RenderingService,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from './platform';
@@ -27,17 +27,19 @@ export interface GradientParams {
 
 @singleton()
 export class TexturePool {
-  @inject(ImagePool)
-  private imagePool: ImagePool;
+  constructor(
+    @inject(ImagePool)
+    private imagePool: ImagePool,
 
-  @inject(OffscreenCanvasCreator)
-  private offscreenCanvas: OffscreenCanvasCreator;
+    @inject(OffscreenCanvasCreator)
+    private offscreenCanvas: OffscreenCanvasCreator,
 
-  @inject(RenderingService)
-  private renderingService: RenderingService;
+    @inject(RenderingService)
+    private renderingService: RenderingService,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   private textureCache: Record<string, Texture> = {};
 

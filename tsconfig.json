@@ -18,11 +18,10 @@
       "dom"
     ],
     "types": [
-      "jest",
-      "reflect-metadata"
+      "jest"
     ],
     "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
-    "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
+    // "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
     /* Advanced Options */
     "skipLibCheck": true, /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */

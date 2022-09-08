@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { DragndropPlugin } from './DragndropPlugin';
 import { DragndropPluginOptions } from './tokens';
 

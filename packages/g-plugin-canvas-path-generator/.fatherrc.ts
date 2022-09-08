@@ -2,7 +2,7 @@ export default {
   umd: {
     name: 'G.CanvasPathGenerator',
     globals: {
-      '@antv/g': 'window.G',
+      '@antv/g-lite': 'window.G',
     },
   },
 };

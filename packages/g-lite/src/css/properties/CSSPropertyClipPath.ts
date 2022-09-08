@@ -1,4 +1,4 @@
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from '@alipay/mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import { SceneGraphService } from '../../services';
 import { CSSKeywordValue } from '../cssom';
@@ -29,8 +29,10 @@ import { PropertySyntax } from '../interfaces';
   },
 })
 export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+  constructor(
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
+  ) {}
 
   calculator(
     name: string,

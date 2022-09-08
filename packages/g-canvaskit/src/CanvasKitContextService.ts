@@ -1,4 +1,4 @@
-import type { CanvasLike, DataURLOptions } from '@antv/g';
+import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
 import {
   CanvasConfig,
   ContextService,
@@ -7,7 +7,7 @@ import {
   setDOMSize,
   singleton,
   Syringe,
-} from '@antv/g';
+} from '@antv/g-lite';
 import type * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import { isString } from '@antv/util';
@@ -31,11 +31,13 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
   private dpr: number;
   private context: CanvasKitContext;
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(ContextRegisterPluginOptions)
-  private contextRegisterPluginOptions: ContextRegisterPluginOptions;
+    @inject(ContextRegisterPluginOptions)
+    private contextRegisterPluginOptions: ContextRegisterPluginOptions,
+  ) {}
 
   async init() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;

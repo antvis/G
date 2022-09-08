@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin } from '@antv/g';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 
 export * from './interface';
 export * from './Kernel';

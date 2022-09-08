@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g';
-import { CSSRGB, injectable, Shape } from '@antv/g';
+import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g-lite';
+import { CSSRGB, injectable, Shape } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import {
   FILL_TEXTURE_MAPPING,

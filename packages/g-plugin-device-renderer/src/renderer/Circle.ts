@@ -1,5 +1,5 @@
-import type { CSSRGB, DisplayObject, ParsedCircleStyleProps } from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+import type { CSSRGB, DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
+import { injectable, Shape } from '@antv/g-lite';
 import { LineMesh, SDFMesh } from '../meshes';
 import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';

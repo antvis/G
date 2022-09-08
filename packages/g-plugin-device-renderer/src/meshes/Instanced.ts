@@ -1,13 +1,13 @@
 import type {
+  ICamera,
   CSSGradientValue,
   DisplayObject,
   ParsedBaseStyleProps,
   Pattern,
   RenderingService,
   Tuple4Number,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
-  Camera,
   CSSRGB,
   DefaultCamera,
   inject,
@@ -15,7 +15,7 @@ import {
   isPattern,
   parseColor,
   Shape,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import { LightPool } from '../LightPool';
@@ -112,7 +112,7 @@ export abstract class Instanced {
   protected texturePool: TexturePool;
 
   @inject(DefaultCamera)
-  protected camera: Camera;
+  protected camera: ICamera;
 
   @inject(LightPool)
   protected lightPool: LightPool;

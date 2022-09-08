@@ -1,4 +1,4 @@
-import type { Element } from '@antv/g';
+import type { Element } from '@antv/g-lite';
 
 export default class GElement extends HTMLElement {
   isGElement = true;

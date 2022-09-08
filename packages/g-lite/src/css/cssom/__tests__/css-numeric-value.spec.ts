@@ -1,5 +1,5 @@
-import { BaseType, CSSNumericValueType, CSSUnitValue, UnitType } from '@antv/g';
 import { expect } from 'chai';
+import { BaseType, CSSNumericValueType, CSSUnitValue, UnitType } from '../';
 
 describe('CSSNumericValueType', () => {
   it('should return correct type', () => {

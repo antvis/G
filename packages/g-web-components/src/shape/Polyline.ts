@@ -1,5 +1,5 @@
-import type { PolylineStyleProps } from '@antv/g';
-import { Polyline } from '@antv/g';
+import type { PolylineStyleProps } from '@antv/g-lite';
+import { Polyline } from '@antv/g-lite';
 import { BaseShape } from './BaseShape';
 
 export class PolylineShape extends BaseShape {

@@ -5,8 +5,8 @@ import type {
   Line,
   MutationEvent,
   Polyline,
-} from '@antv/g';
-import { CustomElement, ElementEvent, Path, Shape } from '@antv/g';
+} from '@antv/g-lite';
+import { CustomElement, ElementEvent, Path, Shape } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 

@@ -1,5 +1,5 @@
-import type { ParsedPolygonStyleProps } from '@antv/g';
-import { DisplayObject } from '@antv/g';
+import type { ParsedPolygonStyleProps } from '@antv/g-lite';
+import { DisplayObject } from '@antv/g-lite';
 
 export function generatePath(
   context: CanvasRenderingContext2D,

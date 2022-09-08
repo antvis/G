@@ -1,4 +1,4 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from '@alipay/mana-syringe';
 import type { CanvasLike } from '..';
 
 /**

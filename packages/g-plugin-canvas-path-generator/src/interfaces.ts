@@ -1,5 +1,5 @@
-import type { ParsedBaseStyleProps } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { ParsedBaseStyleProps } from '@antv/g-lite';
+import { Syringe } from '@antv/g-lite';
 
 export const PathGeneratorFactory = Syringe.defineToken('');
 export const PathGenerator = Syringe.defineToken('');

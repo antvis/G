@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { ImagePool } from './ImagePool';
 import { LoadImagePlugin } from './LoadImagePlugin';
 

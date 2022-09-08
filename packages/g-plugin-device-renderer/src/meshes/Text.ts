@@ -1,5 +1,10 @@
-import type { DisplayObject, ParsedTextStyleProps, Text as TextShape, Tuple4Number } from '@antv/g';
-import { CSSRGB, inject, injectable } from '@antv/g';
+import type {
+  DisplayObject,
+  ParsedTextStyleProps,
+  Text as TextShape,
+  Tuple4Number,
+} from '@antv/g-lite';
+import { CSSRGB, inject, injectable } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';

@@ -1,4 +1,4 @@
-import { inject, singleton } from 'mana-syringe';
+import { inject, singleton } from '@alipay/mana-syringe';
 import RBush from 'rbush';
 import type { RBushNodeAABB } from '../components';
 import { RBushRoot } from '../components';
@@ -13,20 +13,22 @@ import { RenderingContext, RenderingPluginContribution, SceneGraphService } from
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+  constructor(
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(StyleValueRegistry)
-  private styleValueRegistry: StyleValueRegistry;
+    @inject(StyleValueRegistry)
+    private styleValueRegistry: StyleValueRegistry,
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
 
-  /**
-   * RBush used in dirty rectangle rendering
-   */
-  @inject(RBushRoot)
-  private rBush: RBush<RBushNodeAABB>;
+    /**
+     * RBush used in dirty rectangle rendering
+     */
+    @inject(RBushRoot)
+    private rBush: RBush<RBushNodeAABB>,
+  ) {}
 
   /**
    * sync to RBush later

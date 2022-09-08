@@ -4,7 +4,7 @@ import type {
   MutationEvent,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   ElementEvent,
   inject,
@@ -12,7 +12,7 @@ import {
   RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { isString } from '@antv/util';
 import { ImagePool } from './ImagePool';
 
@@ -20,11 +20,13 @@ import { ImagePool } from './ImagePool';
 export class LoadImagePlugin implements RenderingPlugin {
   static tag = 'LoadImage';
 
-  @inject(ImagePool)
-  private imagePool: ImagePool;
+  constructor(
+    @inject(ImagePool)
+    private imagePool: ImagePool,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
+  ) {}
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {

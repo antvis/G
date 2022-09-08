@@ -4,7 +4,7 @@ import { CustomEvent } from './CustomEvent';
 import { FederatedEvent } from './FederatedEvent';
 import type { ICanvas, IDocument, IElement, IEventTarget, INode } from './interfaces';
 
-export const DELEGATION_SPLITTER = ':';
+const DELEGATION_SPLITTER = ':';
 
 /**
  * Objects that can receive events and may have listeners for them.

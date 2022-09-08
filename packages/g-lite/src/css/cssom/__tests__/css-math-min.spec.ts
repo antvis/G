@@ -1,5 +1,5 @@
-import { CSS, CSSMathMin, CSSStyleValueType } from '@antv/g';
 import { expect } from 'chai';
+import { CSS, CSSMathMin, CSSStyleValueType } from '../../';
 
 describe('CSSMathMin', () => {
   it('should get min numeric correctly.', () => {

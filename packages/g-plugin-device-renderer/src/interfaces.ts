@@ -1,4 +1,4 @@
-import { Syringe } from '@antv/g';
+import { Syringe } from '@antv/g-lite';
 import type { SwapChain } from './platform';
 
 export const DeviceContribution = Syringe.defineToken('');

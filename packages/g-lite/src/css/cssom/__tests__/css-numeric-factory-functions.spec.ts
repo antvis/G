@@ -1,5 +1,5 @@
-import { CSS } from '@antv/g';
 import { expect } from 'chai';
+import { CSS } from '../../';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/factory_functions

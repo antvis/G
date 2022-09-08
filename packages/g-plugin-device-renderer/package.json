@@ -50,7 +50,7 @@
     "rollup-plugin-glslify": "^1.2.1"
   },
   "peerDependencies": {
-    "@antv/g": "^5.0.1"
+    "@antv/g-lite": "^0.0.1"
   },
   "publishConfig": {
     "access": "public"

@@ -1,7 +1,6 @@
 import { clamp } from '@antv/util';
-import decomposeMatrix from 'mat4-decompose';
 import type { DisplayObject } from '../../display-objects';
-import { deg2rad } from '../../utils';
+import { decomposeMat4, deg2rad } from '../../utils';
 import { CSS } from '../CSS';
 import type { CSSUnitValue } from '../cssom';
 import { Odeg, Opx } from '../cssom';
@@ -390,7 +389,8 @@ function makeMatrixDecomposition(transformList: ParsedTransform[]) {
   const skew = [0, 0, 0];
   const perspective = [0, 0, 0, 1];
   const quaternion = [0, 0, 0, 1];
-  decomposeMatrix(convertToMatrix(transformList), translate, scale, skew, perspective, quaternion);
+  // @ts-ignore
+  decomposeMat4(convertToMatrix(transformList), translate, scale, skew, perspective, quaternion);
   return [[translate, scale, skew, quaternion, perspective]];
 }
 

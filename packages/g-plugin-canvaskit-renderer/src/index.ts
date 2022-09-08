@@ -1,5 +1,5 @@
-import type { DataURLOptions } from '@antv/g';
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
+import type { DataURLOptions } from '@antv/g-lite';
+import { AbstractRendererPlugin, Module, Shape } from '@antv/g-lite';
 import type { Canvas, InputRect } from 'canvaskit-wasm';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
 import { FontLoader } from './FontLoader';

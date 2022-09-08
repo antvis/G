@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { Syringe } from '@antv/g-lite';
 import type { Canvas, CanvasKit, Paint, Surface } from 'canvaskit-wasm';
 
 export interface CanvasKitContext {

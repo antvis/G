@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { A11yPlugin } from './A11yPlugin';
 import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';

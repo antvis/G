@@ -1,5 +1,5 @@
+import { singleton } from '@alipay/mana-syringe';
 import { isNil } from '@antv/util';
-import { singleton } from 'mana-syringe';
 import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
 import { Shape } from '../../types';
 import type { CSSUnitValue } from '../cssom';

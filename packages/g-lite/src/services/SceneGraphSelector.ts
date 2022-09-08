@@ -1,5 +1,5 @@
+import { singleton, Syringe } from '@alipay/mana-syringe';
 import { isNil } from '@antv/util';
-import { singleton, Syringe } from 'mana-syringe';
 import type { IElement } from '../dom/interfaces';
 
 export const SceneGraphSelectorFactory = Syringe.defineToken('');

@@ -2,10 +2,10 @@ import type {
   CSSGradientValue,
   CSSRGB,
   DisplayObject,
-  ParsedFilterStyleProperty,
+  ParsedBaseStyleProps,
   Pattern,
-} from '@antv/g';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
+} from '@antv/g-lite';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 import { createSVGElement } from '../../utils/dom';
 import { createOrUpdateFilter } from './Filter';
 import { createOrUpdateGradientAndPattern } from './Pattern';
@@ -15,11 +15,13 @@ const urlRegexp = /url\(#(.*)\)/;
 
 @singleton()
 export class DefElementManager {
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(ContextService)
-  private contextService: ContextService<SVGElement>;
+    @inject(ContextService)
+    private contextService: ContextService<SVGElement>,
+  ) {}
 
   /**
    * container for <gradient> <clipPath>...
@@ -93,7 +95,7 @@ export class DefElementManager {
   createOrUpdateFilter(
     object: DisplayObject,
     $el: SVGElement,
-    filters: ParsedFilterStyleProperty[],
+    filters: ParsedBaseStyleProps['filter'],
   ) {
     const { document: doc } = this.canvasConfig;
     createOrUpdateFilter(doc || document, this.$def, object, $el, filters);

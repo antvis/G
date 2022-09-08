@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   DisplayObject,
   FederatedEvent,
   LinearGradient,
@@ -7,23 +8,22 @@ import type {
   RadialGradient,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
-  cache,
-  Camera,
   CanvasConfig,
   ContextService,
   CSSRGB,
   DefaultCamera,
   ElementEvent,
   inject,
+  propertyMetadataCache,
   RenderingContext,
   RenderingPluginContribution,
   RenderReason,
   Shape,
   singleton,
   StyleValueRegistry,
-} from '@antv/g';
+} from '@antv/g-lite';
 import type { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import { DefElementManager } from './shapes/defs';
@@ -121,26 +121,28 @@ const CLIP_PATH_PREFIX = 'clip-path-';
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRenderer';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: ICamera,
 
-  @inject(ContextService)
-  private contextService: ContextService<SVGElement>;
+    @inject(ContextService)
+    private contextService: ContextService<SVGElement>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(StyleValueRegistry)
-  private styleValueRegistry: StyleValueRegistry;
+    @inject(StyleValueRegistry)
+    private styleValueRegistry: StyleValueRegistry,
 
-  @inject(ElementLifeCycleContribution)
-  private createElementContribution: ElementLifeCycleContribution;
+    @inject(ElementLifeCycleContribution)
+    private createElementContribution: ElementLifeCycleContribution,
 
-  @inject(DefElementManager)
-  private defElementManager: DefElementManager;
+    @inject(DefElementManager)
+    private defElementManager: DefElementManager,
+  ) {}
 
   /**
    * <camera>
@@ -388,7 +390,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!cache[name]?.inh;
+      const inherited = !!propertyMetadataCache[name]?.inh;
 
       if (!usedName) {
         return;

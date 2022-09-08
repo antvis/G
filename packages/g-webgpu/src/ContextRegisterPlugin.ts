@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { DeviceRendererPlugin } from './tokens';
 import { WebGPUContextService } from './WebGPUContextService';

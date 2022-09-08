@@ -1,14 +1,19 @@
-import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
-import { Camera, DefaultCamera } from '../camera';
+import { contrib, Contribution, inject, singleton, Syringe } from '@alipay/mana-syringe';
+import { ICamera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { CustomEvent, ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
 import { CanvasConfig } from '../types';
-import { AsyncParallelHook, AsyncSeriesWaterfallHook, SyncHook, SyncWaterfallHook } from '../utils';
+import {
+  AsyncParallelHook,
+  AsyncSeriesWaterfallHook,
+  sortByZIndex,
+  SyncHook,
+  SyncWaterfallHook,
+} from '../utils';
 import { SceneGraphService } from './interfaces';
 import { RenderingContext, RenderReason } from './RenderingContext';
-import { sortByZIndex } from './SceneGraphService';
 
 export interface RenderingPlugin {
   apply: (renderer: RenderingService) => void;
@@ -39,23 +44,25 @@ export interface PickingResult {
  */
 @singleton()
 export class RenderingService {
-  @contrib(RenderingPluginContribution)
-  private renderingPluginProvider: Contribution.Provider<RenderingPlugin>;
+  constructor(
+    @contrib(RenderingPluginContribution)
+    private renderingPluginProvider: Contribution.Provider<RenderingPlugin>,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
 
-  @inject(StyleValueRegistry)
-  private styleValueRegistry: StyleValueRegistry;
+    @inject(StyleValueRegistry)
+    private styleValueRegistry: StyleValueRegistry,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: ICamera,
+  ) {}
 
   private inited = false;
 
@@ -89,7 +96,7 @@ export class RenderingService {
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null, Camera]>(['object', 'camera']),
+    cull: new SyncWaterfallHook<[DisplayObject | null, ICamera]>(['object', 'camera']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */

@@ -6,13 +6,5 @@ export default {
   umd: {
     name: 'G',
   },
-  extraRollupPlugins: [
-    ...(isBundleVis
-      ? [
-          visualizer({
-            gzipSize: true,
-          }),
-        ]
-      : []),
-  ],
+  extraRollupPlugins: [...(isBundleVis ? [visualizer()] : [])],
 };

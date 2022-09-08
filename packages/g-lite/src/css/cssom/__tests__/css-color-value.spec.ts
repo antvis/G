@@ -1,5 +1,5 @@
-import { CSSRGB, CSSStyleValueType } from '@antv/g';
 import { expect } from 'chai';
+import { CSSRGB, CSSStyleValueType } from '../';
 
 describe('CSSColorValueTest', () => {
   it('should create with rgb.', () => {

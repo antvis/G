@@ -1,5 +1,20 @@
+import { IElement } from '../dom';
 import type { CanvasLike } from '../types';
 import { isBrowser } from './canvas';
+
+export function sortByZIndex(o1: IElement, o2: IElement) {
+  const zIndex1 = Number(o1.style.zIndex);
+  const zIndex2 = Number(o2.style.zIndex);
+  if (zIndex1 === zIndex2) {
+    // return o1.entity.getComponent(Sortable).lastSortedIndex - o2.entity.getComponent(Sortable).lastSortedIndex;
+    const parent = o1.parentNode;
+    if (parent) {
+      const children = parent.childNodes || [];
+      return children.indexOf(o1) - children.indexOf(o2);
+    }
+  }
+  return zIndex1 - zIndex2;
+}
 
 const PX_SUFFIX = 'px';
 export function setDOMSize($el: CanvasLike, width: number, height: number) {

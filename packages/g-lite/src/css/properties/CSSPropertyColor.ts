@@ -1,4 +1,4 @@
-import { singleton } from 'mana-syringe';
+import { singleton } from '@alipay/mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSGradientValue, CSSRGB } from '../cssom';
 import { CSSKeywordValue } from '../cssom';

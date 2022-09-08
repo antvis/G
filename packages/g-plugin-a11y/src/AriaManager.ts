@@ -1,4 +1,4 @@
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 import { isMobile } from './util';
 
 const CLASSNAME_PREFIX = 'g-a11y-screen-reader';
@@ -16,11 +16,13 @@ const DIV_HOOK_ZINDEX = 2;
 
 @singleton()
 export class AriaManager {
-  @inject(ContextService)
-  private contextService: ContextService<unknown>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<unknown>,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   private $container: HTMLDivElement;
 

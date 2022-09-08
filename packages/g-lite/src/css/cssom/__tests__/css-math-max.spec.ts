@@ -1,5 +1,5 @@
-import { CSS, CSSMathMax, CSSStyleValueType } from '@antv/g';
 import { expect } from 'chai';
+import { CSS, CSSMathMax, CSSStyleValueType } from '../../';
 
 describe('CSSMathMax', () => {
   it('should get max numeric correctly.', () => {

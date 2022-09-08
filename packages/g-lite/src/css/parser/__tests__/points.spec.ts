@@ -1,9 +1,9 @@
-import { parsePoints } from '@antv/g';
 import { expect } from 'chai';
+import { parsePoints } from '..';
 
 describe('Property Points', () => {
   it('should parse points correctly', () => {
-    let result = parsePoints('10,10 10,20 10,30');
+    let result = parsePoints('10,10 10,20 10,30', null);
     expect(result.points).to.be.eqls([
       [10, 10],
       [10, 20],
@@ -15,11 +15,14 @@ describe('Property Points', () => {
       [0.5, 1],
     ]);
 
-    result = parsePoints([
-      [10, 10],
-      [10, 20],
-      [10, 30],
-    ]);
+    result = parsePoints(
+      [
+        [10, 10],
+        [10, 20],
+        [10, 30],
+      ],
+      null,
+    );
     expect(result.points).to.be.eqls([
       [10, 10],
       [10, 20],

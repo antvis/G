@@ -1,15 +1,17 @@
-import type { ParsedTextStyleProps, Text } from '@antv/g';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
+import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 
 const CLASSNAME_PREFIX = 'g-a11y-text-extractor';
 
 @singleton()
 export class TextExtractor {
-  @inject(ContextService)
-  private contextService: ContextService<unknown>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<unknown>,
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   private $container: HTMLDivElement;
 

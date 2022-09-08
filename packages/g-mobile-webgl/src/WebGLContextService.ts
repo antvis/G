@@ -1,5 +1,5 @@
-import type { CanvasLike, DataURLOptions } from '@antv/g';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
+import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { isCanvasElement } from './dom';
 import { DeviceRendererPlugin } from './tokens';
@@ -10,11 +10,13 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   private dpr: number;
   private context: WebGLRenderingContext | null;
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(DeviceRendererPlugin)
-  private deviceRendererPlugin: DeviceRenderer.Plugin;
+    @inject(DeviceRendererPlugin)
+    private deviceRendererPlugin: DeviceRenderer.Plugin,
+  ) {}
 
   async init() {
     const { canvas, devicePixelRatio } = this.canvasConfig;

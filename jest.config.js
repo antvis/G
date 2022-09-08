@@ -34,7 +34,7 @@ module.exports = {
 
   runner: 'jest-electron/runner',
   testEnvironment: 'jest-electron/environment',
-  testMatch: ['<rootDir>/packages/**/*/__tests__/**/*/*.spec.+(ts|tsx|js)'],
+  testMatch: ['<rootDir>/packages/**/*/*.spec.+(ts|tsx|js)'],
   testPathIgnorePatterns: ['<rootDir>/packages/g-gesture'],
   preset: 'ts-jest',
   globals: {

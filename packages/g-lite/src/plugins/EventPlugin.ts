@@ -1,5 +1,5 @@
+import { inject, singleton } from '@alipay/mana-syringe';
 import { isUndefined } from '@antv/util';
-import { inject, singleton } from 'mana-syringe';
 import type { FederatedMouseEvent, ICanvas } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
@@ -27,20 +27,22 @@ import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
 export class EventPlugin implements RenderingPlugin {
   static tag = 'Event';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(ContextService)
-  private contextService: ContextService<unknown>;
+    @inject(ContextService)
+    private contextService: ContextService<unknown>,
 
-  @inject(RenderingService)
-  private renderingService: RenderingService;
+    @inject(RenderingService)
+    private renderingService: RenderingService,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(EventService)
-  private eventService: EventService;
+    @inject(EventService)
+    private eventService: EventService,
+  ) {}
 
   private autoPreventDefault = false;
   private rootPointerEvent = new FederatedPointerEvent(null);

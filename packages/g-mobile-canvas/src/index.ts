@@ -1,5 +1,5 @@
-import type { RendererConfig } from '@antv/g';
-import { AbstractRenderer } from '@antv/g';
+import type { RendererConfig } from '@antv/g-lite';
+import { AbstractRenderer } from '@antv/g-lite';
 import * as CanvasPathGenerator from '@antv/g-plugin-canvas-path-generator';
 import * as CanvasPicker from '@antv/g-plugin-canvas-picker';
 import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';

@@ -1,5 +1,5 @@
-import type { DisplayObject, RenderingService } from '@antv/g';
-import { Camera, DefaultCamera, inject, injectable } from '@antv/g';
+import type { DisplayObject, RenderingService, ICamera } from '@antv/g-lite';
+import { DefaultCamera, inject, injectable } from '@antv/g-lite';
 import { LightPool } from '../LightPool';
 import type { Instanced } from '../meshes/Instanced';
 import type { Device } from '../platform';
@@ -29,7 +29,7 @@ export abstract class Batch {
   protected texturePool: TexturePool;
 
   @inject(DefaultCamera)
-  protected camera: Camera;
+  protected camera: ICamera;
 
   @inject(LightPool)
   protected lightPool: LightPool;

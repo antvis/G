@@ -29,6 +29,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@antv/g-camera-api": "^0.0.1",
     "@antv/g-compat": "^0.0.1",
     "@antv/g-css-layout-api": "^0.0.1",
     "@antv/g-css-typed-om-api": "^0.0.1",

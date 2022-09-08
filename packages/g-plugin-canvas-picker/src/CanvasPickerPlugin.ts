@@ -8,7 +8,7 @@ import type {
   RenderingPlugin,
   RenderingService,
   Shape,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   CanvasConfig,
   DisplayObjectPool,
@@ -20,7 +20,7 @@ import {
   RenderingPluginContribution,
   singleton,
   Syringe,
-} from '@antv/g';
+} from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
@@ -47,24 +47,27 @@ const tmpMat4 = mat4.create();
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPicker';
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
-
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
-
-  @inject(OffscreenCanvasCreator)
-  private offscreenCanvas: OffscreenCanvasCreator;
-
-  @inject(RBushRoot)
-  private rBush: RBush<RBushNodeAABB>;
-
-  @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
   private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
 
-  @inject(PointInPathPickerFactory)
-  private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>;
+  constructor(
+    @inject(DisplayObjectPool)
+    private displayObjectPool: DisplayObjectPool,
+
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+
+    @inject(OffscreenCanvasCreator)
+    private offscreenCanvas: OffscreenCanvasCreator,
+
+    @inject(RBushRoot)
+    private rBush: RBush<RBushNodeAABB>,
+
+    @inject(PathGeneratorFactory)
+    private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>,
+
+    @inject(PointInPathPickerFactory)
+    private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>,
+  ) {}
 
   apply(renderingService: RenderingService) {
     renderingService.hooks.pick.tapPromise(

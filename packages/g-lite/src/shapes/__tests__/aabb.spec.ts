@@ -1,6 +1,6 @@
-import { AABB, Plane, Ray } from '@antv/g';
 import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
+import { AABB, Plane } from '..';
 
 describe('AABB', () => {
   test('should construct correctly.', () => {
@@ -44,22 +44,22 @@ describe('AABB', () => {
     expect(aabb1.containsPoint(vec3.fromValues(0.6, 0.1, 0.1))).to.false;
   });
 
-  test('should intersects with Ray.', () => {
-    const aabb1 = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
+  // test('should intersects with Ray.', () => {
+  //   const aabb1 = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));
 
-    const ray1 = new Ray(vec3.fromValues(0, 10, 0), vec3.fromValues(0, -1, 0));
-    const ray2 = new Ray(vec3.fromValues(0, 10, 0), vec3.fromValues(0, 1, 0));
+  //   const ray1 = new Ray(vec3.fromValues(0, 10, 0), vec3.fromValues(0, -1, 0));
+  //   const ray2 = new Ray(vec3.fromValues(0, 10, 0), vec3.fromValues(0, 1, 0));
 
-    let intersection = vec3.create();
-    let intersects = ray1.intersectsAABB(aabb1, intersection);
-    expect(intersects).to.true;
-    expect(intersection).to.eqls(vec3.fromValues(0, 0.5, 0));
+  //   let intersection = vec3.create();
+  //   let intersects = ray1.intersectsAABB(aabb1, intersection);
+  //   expect(intersects).to.true;
+  //   expect(intersection).to.eqls(vec3.fromValues(0, 0.5, 0));
 
-    intersection = vec3.create();
-    intersects = ray2.intersectsAABB(aabb1, intersection);
-    expect(intersects).to.false;
-    expect(intersection).to.eqls(vec3.create());
-  });
+  //   intersection = vec3.create();
+  //   intersects = ray2.intersectsAABB(aabb1, intersection);
+  //   expect(intersects).to.false;
+  //   expect(intersection).to.eqls(vec3.create());
+  // });
 
   test('should get p-vertex & n-vertex based on each plane of culling volume.', () => {
     const aabb = new AABB(vec3.fromValues(0, 0, 0), vec3.fromValues(0.5, 0.5, 0.5));

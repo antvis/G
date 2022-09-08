@@ -1,16 +1,9 @@
+import { Syringe } from '@alipay/mana-syringe';
 import type { vec2, vec3 } from 'gl-matrix';
-import { Syringe } from 'mana-syringe';
 import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';
-import type {
-  CSSGlobalKeywords,
-  CSSGradientValue,
-  CSSRGB,
-  CSSUnitValue,
-  ParsedFilterStyleProperty,
-  ParsedTransform,
-  Pattern,
-} from './css';
+import type { CSSGlobalKeywords, CSSGradientValue, CSSRGB, CSSUnitValue } from './css';
+import type { ParsedFilterStyleProperty, ParsedTransform, Pattern } from './css/parser';
 import type { DisplayObject } from './display-objects';
 
 export enum Shape {

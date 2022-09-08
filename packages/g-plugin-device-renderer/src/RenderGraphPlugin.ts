@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSRGB,
   DataURLOptions,
   DisplayObject,
@@ -6,9 +7,8 @@ import type {
   MutationEvent,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   CanvasEvent,
   ContextService,
@@ -19,7 +19,7 @@ import {
   RenderingContext,
   RenderingPluginContribution,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { Renderable3D } from './components/Renderable3D';
 import { DeviceContribution } from './interfaces';
 import { LightPool } from './LightPool';
@@ -64,32 +64,34 @@ export enum SceneUniform {
 export class RenderGraphPlugin implements RenderingPlugin {
   static tag = 'RenderGraph';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(ContextService)
-  private contextService: ContextService<WebGLRenderingContext>;
+    @inject(ContextService)
+    private contextService: ContextService<WebGLRenderingContext>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: ICamera,
 
-  @inject(RenderHelper)
-  private renderHelper: RenderHelper;
+    @inject(RenderHelper)
+    private renderHelper: RenderHelper,
 
-  @inject(LightPool)
-  private lightPool: LightPool;
+    @inject(LightPool)
+    private lightPool: LightPool,
 
-  @inject(TexturePool)
-  private texturePool: TexturePool;
+    @inject(TexturePool)
+    private texturePool: TexturePool,
 
-  @inject(BatchManager)
-  private batchManager: BatchManager;
+    @inject(BatchManager)
+    private batchManager: BatchManager,
 
-  @inject(DeviceContribution)
-  private deviceContribution: DeviceContribution;
+    @inject(DeviceContribution)
+    private deviceContribution: DeviceContribution,
+  ) {}
 
   private device: Device;
 

@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { Syringe } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { Syringe } from '@antv/g-lite';
 
 export const ElementLifeCycleContribution = Syringe.defineToken('', {
   multiple: false,

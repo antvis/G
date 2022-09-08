@@ -1,5 +1,6 @@
 const { vec3 } = require('gl-matrix');
-const { CustomElement, Path, Shape, isNil } = require('@antv/g');
+const { isNil } = require('@antv/util');
+const { CustomElement, Path, Shape } = require('@antv/g');
 
 class Arrow extends CustomElement {
   static tag = 'arrow';

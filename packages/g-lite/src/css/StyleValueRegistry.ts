@@ -1,6 +1,6 @@
+import { inject, singleton } from '@alipay/mana-syringe';
 import { isFunction, isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import { inject, postConstruct, singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import { SceneGraphService } from '../services';
 import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
@@ -562,7 +562,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
-export const cache: Record<string, PropertyMetadata> = {};
+export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: Record<number, string[]> = {};
 const priorityMap: Record<string, number> = {};
 const sortAttributeNames = memoize((attributeNames: string[]) => {
@@ -590,17 +590,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    */
   // dirty = false;
 
-  @inject(SceneGraphService)
-  private sceneGraphService: SceneGraphService;
+  constructor(
+    @inject(SceneGraphService)
+    private sceneGraphService: SceneGraphService,
 
-  @inject(CSSPropertySyntaxFactory)
-  private propertySyntaxFactory: CSSPropertySyntaxFactory;
+    @inject(CSSPropertySyntaxFactory)
+    private propertySyntaxFactory: CSSPropertySyntaxFactory,
 
-  @inject(GeometryUpdaterFactory)
-  private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>;
-
-  @postConstruct()
-  init() {
+    @inject(GeometryUpdaterFactory)
+    private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>,
+  ) {
     BUILT_IN_PROPERTIES.forEach((property) => {
       this.registerMetadata(property);
     });
@@ -608,13 +607,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
   registerMetadata(metadata: PropertyMetadata) {
     [metadata.n, ...(metadata.a || [])].forEach((name) => {
-      cache[name] = metadata;
+      propertyMetadataCache[name] = metadata;
       priorityMap[name] = metadata.p || 0;
     });
   }
 
   unregisterMetadata(name: string) {
-    delete cache[name];
+    delete propertyMetadataCache[name];
   }
 
   getPropertySyntax(syntax: string) {
@@ -652,7 +651,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         object.attributes[name] = value;
       }
 
-      if (!needUpdateGeometry && cache[name as string]?.l) {
+      if (!needUpdateGeometry && propertyMetadataCache[name as string]?.l) {
         needUpdateGeometry = true;
       }
     });
@@ -723,7 +722,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * string -> parsed value
    */
   parseProperty(name: string, value: any, object: DisplayObject): CSSStyleValue {
-    const metadata = cache[name];
+    const metadata = propertyMetadataCache[name];
 
     let computed: CSSStyleValue = value;
     if (value === '' || isNil(value)) {
@@ -756,7 +755,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * computed value -> used value
    */
   computeProperty(name: string, computed: CSSStyleValue, object: DisplayObject) {
-    const metadata = cache[name];
+    const metadata = propertyMetadataCache[name];
     const isDocumentElement = object.id === 'g-root';
 
     // let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
@@ -820,7 +819,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   postProcessProperty(name: string, object: DisplayObject) {
-    const metadata = cache[name];
+    const metadata = propertyMetadataCache[name];
 
     if (metadata && metadata.syntax) {
       const handler = metadata.syntax && this.getPropertySyntax(metadata.syntax);
@@ -1048,7 +1047,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   private isPropertyInheritable(name: string) {
-    const metadata = cache[name];
+    const metadata = propertyMetadataCache[name];
     if (!metadata) {
       return false;
     }

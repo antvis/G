@@ -1,13 +1,6 @@
-import {
-  Circle,
-  CSSGradientValue,
-  CSSRGB,
-  GradientType,
-  mergeColors,
-  parseColor,
-  Rect,
-} from '@antv/g';
 import chai, { expect } from 'chai';
+import { CSSGradientValue, CSSRGB, GradientType, mergeColors, parseColor } from '../../';
+
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
@@ -15,23 +8,6 @@ import sinonChai from 'sinon-chai';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
-
-const rect = new Rect({
-  style: {
-    x: 100,
-    y: 100,
-    width: 200,
-    height: 200,
-  },
-});
-
-const circle = new Circle({
-  style: {
-    cx: 100,
-    cy: 100,
-    r: 100,
-  },
-});
 
 describe('Property Color', () => {
   it('should parse constant color correctly', () => {

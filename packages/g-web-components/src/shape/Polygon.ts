@@ -1,5 +1,5 @@
-import type { PolygonStyleProps } from '@antv/g';
-import { Polygon } from '@antv/g';
+import type { PolygonStyleProps } from '@antv/g-lite';
+import { Polygon } from '@antv/g-lite';
 import { BaseShape } from './BaseShape';
 
 export class PoligonShape extends BaseShape {

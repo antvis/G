@@ -1,4 +1,4 @@
-import { contrib, Contribution, inject, singleton, Syringe } from 'mana-syringe';
+import { contrib, Contribution, inject, singleton, Syringe } from '@alipay/mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { CustomEvent, ElementEvent } from '../dom';
 import { RenderingContext } from '../services';
@@ -20,11 +20,13 @@ export interface CullingStrategyContribution {
 export class CullingPlugin implements RenderingPlugin {
   static tag = 'Culling';
 
-  @contrib(CullingStrategyContribution)
-  private strategyProvider: Contribution.Provider<CullingStrategyContribution>;
+  constructor(
+    @contrib(CullingStrategyContribution)
+    private strategyProvider: Contribution.Provider<CullingStrategyContribution>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
+  ) {}
 
   apply(renderingService: RenderingService) {
     const strategies = this.strategyProvider.getContributions();

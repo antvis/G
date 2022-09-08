@@ -1,4 +1,4 @@
-import type { DisplayObject } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
 import { styleAttributeNames } from '../enum';
 import GElement from '../GElement';
 

@@ -1,5 +1,5 @@
-import { CSS, CSSUnitValue, mergeTransforms, parseTransform } from '@antv/g';
 import { expect } from 'chai';
+import { CSS, CSSUnitValue, mergeTransforms, parseTransform } from '../../';
 
 describe('Property Transform', () => {
   it('parse none transform', () => {

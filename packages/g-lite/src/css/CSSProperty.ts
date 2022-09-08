@@ -1,4 +1,4 @@
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@alipay/mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import type { IElement } from '../dom';
 import type { StyleValueRegistry } from './interfaces';

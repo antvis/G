@@ -1,4 +1,4 @@
-import { Camera, Canvas } from '@antv/g';
+import { AdvancedCamera, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
@@ -37,7 +37,7 @@ describe('Camera landmark', () => {
   });
 
   it('should save default camera state in landmark', () => {
-    const camera = new Camera();
+    const camera = new AdvancedCamera();
     const landmark = camera.createLandmark('test');
     expect(landmark.name).eqls('test');
     expect(landmark.right).eqls(vec3.fromValues(1, 0, 0));

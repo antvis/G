@@ -1,5 +1,5 @@
-import type { DataURLOptions } from '@antv/g';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g';
+import type { DataURLOptions } from '@antv/g-lite';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 import { isCanvasElement } from './dom';
 
 @singleton({ token: ContextService })
@@ -8,8 +8,10 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   private dpr: number;
   private context: CanvasRenderingContext2D;
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   async init() {
     const { canvas, devicePixelRatio } = this.canvasConfig;

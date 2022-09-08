@@ -1,4 +1,4 @@
-import { Syringe } from 'mana-syringe';
+import { Syringe } from '@alipay/mana-syringe';
 import type { BaseStyleProps } from '..';
 import type { DisplayObject } from '../display-objects';
 import type { CSSStyleValue } from './cssom';
