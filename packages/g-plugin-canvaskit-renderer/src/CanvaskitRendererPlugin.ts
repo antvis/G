@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSGradientValue,
   DataURLOptions,
   DataURLType,
@@ -11,7 +12,6 @@ import type {
   RenderingService,
 } from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   computeLinearGradient,
   computeRadialGradient,
@@ -64,7 +64,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     private renderingContext: RenderingContext,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
 
     @inject(RendererContributionFactory)
     private rendererContributionFactory: (tagName: Shape | string) => RendererContribution,

@@ -1,4 +1,5 @@
 import { Module } from '@alipay/mana-syringe';
+import { Camera } from './camera';
 import { CSSProperty, CSSPropertySyntaxFactory, DefaultStyleValueRegistry } from './css';
 import {
   CSSPropertyAngle,
@@ -46,6 +47,8 @@ import type { Shape } from './types';
 export const containerModule = Module((register) => {
   // bind DisplayObject pool
   register(DisplayObjectPool);
+
+  register(Camera);
 
   // bind Selector
   register(DefaultSceneGraphSelector);

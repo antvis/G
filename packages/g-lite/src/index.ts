@@ -59,6 +59,8 @@ export {
   setDOMSize,
   translatePathToString,
   turn2deg,
+  getAngle,
+  createVec3,
 } from './utils';
 export { RBush };
 

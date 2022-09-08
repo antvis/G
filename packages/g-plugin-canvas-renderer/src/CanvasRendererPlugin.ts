@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSRGB,
   DisplayObject,
   FederatedEvent,
@@ -9,7 +10,6 @@ import type {
 } from '@antv/g-lite';
 import {
   AABB,
-  Camera,
   CanvasConfig,
   CanvasEvent,
   ContextService,
@@ -57,7 +57,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     private canvasConfig: CanvasConfig,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
 
     @inject(ContextService)
     private contextService: ContextService<CanvasRenderingContext2D>,

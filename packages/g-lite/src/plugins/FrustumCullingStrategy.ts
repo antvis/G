@@ -1,6 +1,6 @@
 import { inject, singleton } from '@alipay/mana-syringe';
 import { vec3 } from 'gl-matrix';
-import { Camera, DefaultCamera } from '../camera/Camera';
+import { ICamera, DefaultCamera } from '../camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
 import type { Plane } from '../shapes';
@@ -26,7 +26,7 @@ const shape2D = [
 export class FrustumCullingStrategy implements CullingStrategyContribution {
   constructor(
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
   ) {}
 
   isVisible(object: DisplayObject) {

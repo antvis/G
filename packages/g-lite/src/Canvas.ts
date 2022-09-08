@@ -4,6 +4,7 @@ import {
   requestAnimationFrame as rAF,
 } from 'request-animation-frame-polyfill';
 import type { IRenderer } from './AbstractRenderer';
+import { CameraContribution, CameraTrackingMode, CameraType, ICamera } from './camera';
 import { Camera, CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { CustomElement, DisplayObject } from './display-objects';
@@ -32,6 +33,10 @@ export enum CanvasEvent {
   RESIZE = 'resize',
   DIRTY_RECTANGLE = 'dirtyrectangle',
 }
+
+const DEFAULT_CAMERA_Z = 500;
+const DEFAULT_CAMERA_NEAR = 0.1;
+const DEFAULT_CAMERA_FAR = 1000;
 
 /**
  * can be treated like Window in DOM
@@ -256,17 +261,27 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private initDefaultCamera(width: number, height: number) {
     // set a default ortho camera
-    const camera = new Camera()
-      .setPosition(width / 2, height / 2, 500)
+    const camera = GlobalContainer.get<ICamera>(CameraContribution);
+
+    camera
+      .setType(CameraType.EXPLORING, CameraTrackingMode.DEFAULT)
+      .setPosition(width / 2, height / 2, DEFAULT_CAMERA_Z)
       .setFocalPoint(width / 2, height / 2, 0)
-      .setOrthographic(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
+      .setOrthographic(
+        width / -2,
+        width / 2,
+        height / 2,
+        height / -2,
+        DEFAULT_CAMERA_NEAR,
+        DEFAULT_CAMERA_FAR,
+      );
 
     // keep ref since it will use raf in camera animation
     camera.canvas = this;
 
     // redraw when camera changed
     const context = this.container.get<RenderingContext>(RenderingContext);
-    camera.on(CameraEvent.UPDATED, () => {
+    camera.eventEmitter.on(CameraEvent.UPDATED, () => {
       context.renderReasons.add(RenderReason.CAMERA_CHANGED);
     });
     // bind camera
@@ -293,7 +308,7 @@ export class Canvas extends EventTarget implements ICanvas {
    * get the camera of canvas
    */
   getCamera() {
-    return this.container.get<Camera>(DefaultCamera);
+    return this.container.get<ICamera>(DefaultCamera);
   }
 
   getContextService() {
@@ -385,9 +400,11 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().resize(width, height);
 
     // resize camera
-    const camera = this.container.get<Camera>(DefaultCamera);
+    const camera = this.container.get<ICamera>(DefaultCamera);
     const projectionMode = camera.getProjectionMode();
-    camera.setPosition(width / 2, height / 2, 500).setFocalPoint(width / 2, height / 2, 0);
+    camera
+      .setPosition(width / 2, height / 2, DEFAULT_CAMERA_Z)
+      .setFocalPoint(width / 2, height / 2, 0);
     if (projectionMode === CameraProjectionMode.ORTHOGRAPHIC) {
       camera.setOrthographic(
         width / -2,

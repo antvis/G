@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSGradientValue,
   DisplayObject,
   ParsedBaseStyleProps,
@@ -7,7 +8,6 @@ import type {
   Tuple4Number,
 } from '@antv/g-lite';
 import {
-  Camera,
   CSSRGB,
   DefaultCamera,
   inject,
@@ -112,7 +112,7 @@ export abstract class Instanced {
   protected texturePool: TexturePool;
 
   @inject(DefaultCamera)
-  protected camera: Camera;
+  protected camera: ICamera;
 
   @inject(LightPool)
   protected lightPool: LightPool;

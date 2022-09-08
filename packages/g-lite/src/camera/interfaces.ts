@@ -1,9 +1,21 @@
+import { Syringe } from '@alipay/mana-syringe';
 import EventEmitter from 'eventemitter3';
 import type { mat4, vec2, vec3 } from 'gl-matrix';
 import { TypeEasingFunction } from '..';
 import { ICanvas } from '../dom';
 import { Frustum } from '../shapes';
 import { Landmark } from './Landmark';
+
+/**
+ * 1 of 1 in each Canvas.
+ */
+export const DefaultCamera = Syringe.defineToken('');
+
+/**
+ * Different type of cameras, eg. simple camera used in 2D scene or
+ * advanced camera which can do actions & switch between landmarks.
+ */
+export const CameraContribution = Syringe.defineToken('', { multiple: false });
 
 export enum CameraType {
   /**
@@ -53,8 +65,9 @@ export const CameraEvent = {
   UPDATED: 'updated',
 };
 
-export interface ICamera extends EventEmitter {
+export interface ICamera {
   canvas: ICanvas;
+  eventEmitter: EventEmitter;
   isOrtho(): boolean;
   getProjectionMode(): CameraProjectionMode;
   getPerspective(): mat4;
@@ -143,6 +156,7 @@ export interface ICamera extends EventEmitter {
    */
   setFocalPoint(x: number | vec2 | vec3, y?: number, z?: number): this;
   getDistance(): number;
+  getDistanceVector(): vec3;
   /**
    * Moves the camera towards/from the focal point.
    */

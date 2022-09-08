@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSRGB,
   DataURLOptions,
   DisplayObject,
@@ -8,7 +9,6 @@ import type {
   RenderingService,
 } from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   CanvasEvent,
   ContextService,
@@ -75,7 +75,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     private renderingContext: RenderingContext,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
 
     @inject(RenderHelper)
     private renderHelper: RenderHelper,

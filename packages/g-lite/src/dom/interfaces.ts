@@ -1,4 +1,4 @@
-import type { Camera } from '../camera';
+import type { ICamera } from '../camera';
 import type { DisplayObject } from '../display-objects';
 import type { ContextService, EventService, RenderingService } from '../services';
 import type { PointLike } from '../shapes';
@@ -520,7 +520,7 @@ export interface ICanvas extends IEventTarget {
   resize: (width: number, height: number) => void;
 
   getConfig: () => Partial<CanvasConfig>;
-  getCamera: () => Camera;
+  getCamera: () => ICamera;
   getContextService: () => ContextService<unknown>;
   getRenderingService: () => RenderingService;
   getEventService: () => EventService;

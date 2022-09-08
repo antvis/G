@@ -1,6 +1,5 @@
-import type { RenderingPlugin, RenderingService } from '@antv/g-lite';
+import type { ICamera, RenderingPlugin, RenderingService } from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   DefaultCamera,
   inject,
@@ -23,7 +22,7 @@ export class ControlPlugin implements RenderingPlugin {
     private renderingContext: RenderingContext,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
 
     @inject(CanvasConfig)
     private canvasConfig: CanvasConfig,

@@ -1,5 +1,5 @@
 import { contrib, Contribution, inject, singleton, Syringe } from '@alipay/mana-syringe';
-import { Camera, DefaultCamera } from '../camera';
+import { ICamera, DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { CustomEvent, ElementEvent } from '../dom';
@@ -61,7 +61,7 @@ export class RenderingService {
     private styleValueRegistry: StyleValueRegistry,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
   ) {}
 
   private inited = false;
@@ -96,7 +96,7 @@ export class RenderingService {
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null, Camera]>(['object', 'camera']),
+    cull: new SyncWaterfallHook<[DisplayObject | null, ICamera]>(['object', 'camera']),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */

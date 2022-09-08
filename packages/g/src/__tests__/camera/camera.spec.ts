@@ -1,8 +1,7 @@
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import { Camera, CameraProjectionMode, Canvas } from '@antv/g';
+import { AdvancedCamera, CameraProjectionMode, Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { mat4, vec3 } from 'gl-matrix';
 import sinonChai from 'sinon-chai';
@@ -30,7 +29,7 @@ describe('Camera', () => {
   it('should create an ortho camera correctly', () => {
     const width = 600;
     const height = 500;
-    const camera = new Camera()
+    const camera = new AdvancedCamera()
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
       .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
@@ -122,7 +121,7 @@ describe('Camera', () => {
   it('should setDistance correctly.', () => {
     const width = 600;
     const height = 500;
-    const camera = new Camera()
+    const camera = new AdvancedCamera()
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
       .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
@@ -149,7 +148,7 @@ describe('Camera', () => {
   it('should setViewOffset correctly.', () => {
     const width = 600;
     const height = 500;
-    const camera = new Camera()
+    const camera = new AdvancedCamera()
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
       .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);
@@ -233,7 +232,7 @@ describe('Camera', () => {
   it('should jitter camera correctly.', () => {
     const width = 600;
     const height = 500;
-    const camera = new Camera()
+    const camera = new AdvancedCamera()
       .setPosition(width / 2, height / 2, 500)
       .setFocalPoint(width / 2, height / 2, 0)
       .setOrthographic(width / -2, width / 2, height / -2, height / 2, 0.1, 1000);

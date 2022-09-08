@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   DisplayObject,
   FederatedEvent,
   LinearGradient,
@@ -9,7 +10,6 @@ import type {
   RenderingService,
 } from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   ContextService,
   CSSRGB,
@@ -126,7 +126,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     private canvasConfig: CanvasConfig,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
 
     @inject(ContextService)
     private contextService: ContextService<SVGElement>,

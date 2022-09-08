@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   DisplayObject,
   FederatedEvent,
   PickingResult,
@@ -6,7 +7,6 @@ import type {
   RenderingService,
 } from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   ContextService,
   DefaultCamera,
@@ -67,7 +67,7 @@ export class PickingPlugin implements RenderingPlugin {
     private pickingIdGenerator: PickingIdGenerator,
 
     @inject(DefaultCamera)
-    private camera: Camera,
+    private camera: ICamera,
 
     @inject(BatchManager)
     private batchManager: BatchManager,
