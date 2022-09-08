@@ -12,7 +12,7 @@ import {
 import { isString, isNumber } from '@antv/util';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { vec2 } from 'gl-matrix';
-import type { TypeEasingFunction, Landmark, ICamera } from '@antv/g-lite';
+import type { TypeEasingFunction, Landmark } from '@antv/g-lite';
 
 /**
  * Provides camera action & animation.

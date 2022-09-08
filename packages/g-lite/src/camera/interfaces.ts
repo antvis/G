@@ -1,10 +1,10 @@
 import { Syringe } from '@alipay/mana-syringe';
-import EventEmitter from 'eventemitter3';
+import type EventEmitter from 'eventemitter3';
 import type { mat4, vec2, vec3 } from 'gl-matrix';
-import { TypeEasingFunction } from '..';
-import { ICanvas } from '../dom';
-import { Frustum } from '../shapes';
-import { Landmark } from './Landmark';
+import type { TypeEasingFunction } from '..';
+import type { ICanvas } from '../dom';
+import type { Frustum } from '../shapes';
+import type { Landmark } from './Landmark';
 
 /**
  * 1 of 1 in each Canvas.
@@ -68,19 +68,19 @@ export const CameraEvent = {
 export interface ICamera {
   canvas: ICanvas;
   eventEmitter: EventEmitter;
-  isOrtho(): boolean;
-  getProjectionMode(): CameraProjectionMode;
-  getPerspective(): mat4;
-  getPerspectiveInverse(): mat4;
-  getFrustum(): Frustum;
-  getPosition(): vec3;
-  getFocalPoint(): vec3;
-  getDollyingStep(): number;
-  getNear(): number;
-  getFar(): number;
-  getZoom(): number;
-  getOrthoMatrix(): mat4;
-  getView(): {
+  isOrtho: () => boolean;
+  getProjectionMode: () => CameraProjectionMode;
+  getPerspective: () => mat4;
+  getPerspectiveInverse: () => mat4;
+  getFrustum: () => Frustum;
+  getPosition: () => vec3;
+  getFocalPoint: () => vec3;
+  getDollyingStep: () => number;
+  getNear: () => number;
+  getFar: () => number;
+  getZoom: () => number;
+  getOrthoMatrix: () => mat4;
+  getView: () => {
     enabled: boolean;
     fullWidth: number;
     fullHeight: number;
@@ -89,10 +89,10 @@ export interface ICamera {
     width: number;
     height: number;
   };
-  setEnableUpdate(enabled: boolean): void;
-  setType(type: CameraType, trackingMode?: CameraTrackingMode): this;
-  setProjectionMode(projectionMode: CameraProjectionMode): this;
-  setTrackingMode(trackingMode: CameraTrackingMode): this;
+  setEnableUpdate: (enabled: boolean) => void;
+  setType: (type: CameraType, trackingMode?: CameraTrackingMode) => this;
+  setProjectionMode: (projectionMode: CameraProjectionMode) => this;
+  setTrackingMode: (trackingMode: CameraTrackingMode) => this;
   /**
    * If flag is true, it reverses the azimuth and elevation angles.
    * Subsequent calls to rotate, setAzimuth, setElevation,
@@ -105,37 +105,37 @@ export interface ICamera {
    * By default the camera angles are not reversed.
    * @param {Boolean} flag the boolean flag to reverse the angles.
    */
-  setWorldRotation(flag: boolean): this;
+  setWorldRotation: (flag: boolean) => this;
   /**
    * 计算 MV 矩阵，为相机矩阵的逆矩阵
    */
-  getViewTransform(): mat4;
-  getWorldTransform(): mat4;
-  jitterProjectionMatrix(x: number, y: number): void;
-  clearJitterProjectionMatrix(): void;
+  getViewTransform: () => mat4;
+  getWorldTransform: () => mat4;
+  jitterProjectionMatrix: (x: number, y: number) => void;
+  clearJitterProjectionMatrix: () => void;
   /**
    * 设置相机矩阵
    */
-  setMatrix(matrix: mat4): this;
-  setFov(fov: number): this;
-  setAspect(aspect: number): this;
-  setNear(near: number): this;
-  setFar(far: number): this;
+  setMatrix: (matrix: mat4) => this;
+  setFov: (fov: number) => this;
+  setAspect: (aspect: number) => this;
+  setNear: (near: number) => this;
+  setFar: (far: number) => this;
   /**
    * Sets an offset in a larger frustum, used in PixelPicking
    */
-  setViewOffset(
+  setViewOffset: (
     fullWidth: number,
     fullHeight: number,
     x: number,
     y: number,
     width: number,
     height: number,
-  ): this;
-  clearViewOffset(): this;
-  setZoom(zoom: number): this;
-  setPerspective(near: number, far: number, fov: number, aspect: number): this;
-  setOrthographic(l: number, r: number, t: number, b: number, near: number, far: number): this;
+  ) => this;
+  clearViewOffset: () => this;
+  setZoom: (zoom: number) => this;
+  setPerspective: (near: number, far: number, fov: number, aspect: number) => this;
+  setOrthographic: (l: number, r: number, t: number, b: number, near: number, far: number) => this;
   /**
    * Move the camera in world coordinates.
    * It will keep looking at the current focal point.
@@ -145,7 +145,7 @@ export interface ICamera {
    * setPosition(1, 2, 3);
    * setPosition([1, 2, 3]);
    */
-  setPosition(x: number | vec2 | vec3, y?: number, z?: number): this;
+  setPosition: (x: number | vec2 | vec3, y?: number, z?: number) => this;
   /**
    * Sets the focal point of this camera in world coordinates.
    *
@@ -154,47 +154,47 @@ export interface ICamera {
    * setFocalPoint(1, 2, 3);
    * setFocalPoint([1, 2, 3]);
    */
-  setFocalPoint(x: number | vec2 | vec3, y?: number, z?: number): this;
-  getDistance(): number;
-  getDistanceVector(): vec3;
+  setFocalPoint: (x: number | vec2 | vec3, y?: number, z?: number) => this;
+  getDistance: () => number;
+  getDistanceVector: () => vec3;
   /**
    * Moves the camera towards/from the focal point.
    */
-  setDistance(d: number): this;
-  setMaxDistance(d: number): this;
-  setMinDistance(d: number): this;
+  setDistance: (d: number) => this;
+  setMaxDistance: (d: number) => this;
+  setMinDistance: (d: number) => this;
   /**
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
    * the azimuth in degrees
    */
-  setAzimuth(az: number): this;
-  getAzimuth(): number;
+  setAzimuth: (az: number) => this;
+  getAzimuth: () => number;
   /**
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
    */
-  setElevation(el: number): this;
-  getElevation(): number;
+  setElevation: (el: number) => this;
+  getElevation: () => number;
   /**
    * 设置相机方位角，不同相机模式下需要重新计算相机位置或者是视点位置
    */
-  setRoll(angle: number): this;
-  getRoll(): number;
+  setRoll: (angle: number) => this;
+  getRoll: () => number;
   /**
    * Changes the azimuth and elevation with respect to the current camera axes
    * @param {Number} azimuth the relative azimuth
    * @param {Number} elevation the relative elevation
    * @param {Number} roll the relative roll
    */
-  rotate(azimuth: number, elevation: number, roll: number): this;
+  rotate: (azimuth: number, elevation: number, roll: number) => this;
   /**
    * 沿水平(right) & 垂直(up)平移相机
    */
-  pan(tx: number, ty: number): this;
+  pan: (tx: number, ty: number) => this;
   /**
    * 沿 n 轴移动，当距离视点远时移动速度较快，离视点越近速度越慢
    */
-  dolly(value: number): this;
-  createLandmark(
+  dolly: (value: number) => this;
+  createLandmark: (
     name: string,
     params?: Partial<{
       position: vec3 | vec2;
@@ -202,8 +202,8 @@ export interface ICamera {
       zoom: number;
       roll: number;
     }>,
-  ): Landmark;
-  gotoLandmark(
+  ) => Landmark;
+  gotoLandmark: (
     name: string | Landmark,
     options?:
       | number
@@ -213,5 +213,5 @@ export interface ICamera {
           duration: number;
           onfinish: () => void;
         }>,
-  ): void;
+  ) => void;
 }

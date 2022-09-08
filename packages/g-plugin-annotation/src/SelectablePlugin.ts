@@ -16,7 +16,7 @@ import {
   singleton,
 } from '@antv/g-lite';
 import { SelectableEvent } from './constants/enum';
-import { SelectablePolyline, SelectableRect } from './selectable';
+import { SelectableCircle, SelectablePolyline, SelectableRect } from './selectable';
 import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
 import { AnnotationPluginOptions } from './tokens';
@@ -53,7 +53,7 @@ export class SelectablePlugin implements RenderingPlugin {
   /**
    * selected objects on current canvas
    */
-  private selected: DisplayObject[] = [];
+  selected: DisplayObject[] = [];
 
   /**
    * each selectable has an operation UI
@@ -85,13 +85,18 @@ export class SelectablePlugin implements RenderingPlugin {
     }
   }
 
-  private getOrCreateSelectableUI(object: DisplayObject): Selectable {
+  private deselectAllDisplayObjects() {
+    [...this.selected].forEach((target) => {
+      this.deselectDisplayObject(target);
+    });
+  }
+
+  getOrCreateSelectableUI(object: DisplayObject): Selectable {
     if (!this.selectableMap[object.entity]) {
       let created: Selectable;
       if (
         object.nodeName === Shape.IMAGE ||
         object.nodeName === Shape.RECT ||
-        object.nodeName === Shape.CIRCLE ||
         object.nodeName === Shape.ELLIPSE
       ) {
         created = new SelectableRect({
@@ -99,6 +104,13 @@ export class SelectablePlugin implements RenderingPlugin {
             target: object,
             ...this.annotationPluginOptions.selectableStyle,
             // TODO: use object's selectable style to override
+          },
+        });
+      } else if (object.nodeName === Shape.CIRCLE) {
+        created = new SelectableCircle({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
           },
         });
       } else if (object.nodeName === Shape.LINE || object.nodeName === Shape.POLYLINE) {
@@ -118,6 +130,7 @@ export class SelectablePlugin implements RenderingPlugin {
       }
 
       if (created) {
+        created.plugin = this;
         this.selectableMap[object.entity] = created;
         this.activeSelectableLayer.appendChild(created);
       }
@@ -150,45 +163,30 @@ export class SelectablePlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       // @ts-ignore
       if (object === document) {
-        this.selected.forEach((target) => {
-          this.deselectDisplayObject(target);
-        });
+        this.deselectAllDisplayObjects();
         this.selected = [];
       } else if (object.style?.selectable) {
         if (!e.shiftKey) {
           // multi-select
-          this.selected.forEach((o) => {
-            this.deselectDisplayObject(o);
-          });
+          this.deselectAllDisplayObjects();
         }
 
         this.selectDisplayObject(object);
       }
     };
 
-    // const handleMovingTarget = (e: CustomEvent) => {
-    //   const movingTarget = e.target as DisplayObject;
-    //   const { movingX: canvasX, movingY: canvasY } = e.detail;
-
-    //   const [ox, oy] = movingTarget.getPosition();
-    //   const dx = canvasX - ox;
-    //   const dy = canvasY - oy;
-
-    //   // account for multi-select
-    //   this.selected.forEach((target) => {
-    //     // move selectableUI at the same time
-    //     const selectable = this.getOrCreateSelectableUI(target);
-    //     if (selectable) {
-    //       selectable.translate(dx, dy);
-    //     }
-
-    //     target.translate(dx, dy);
-    //   });
-    // };
+    const handleMovingTarget = (e: CustomEvent) => {
+      const { dx, dy } = e.detail;
+      // move selectableUI at the same time
+      const selectable = this.getOrCreateSelectableUI(e.target as DisplayObject);
+      if (selectable) {
+        selectable.moveMask(dx, dy);
+      }
+    };
 
     const handleModifiedTarget = (e: CustomEvent) => {
       const target = e.target as DisplayObject;
-      const { rect, polyline, polygon } = e.detail;
+      const { circle, rect, polyline, polygon } = e.detail;
 
       if (target.nodeName === Shape.RECT) {
         const { x, y, width, height } = rect;
@@ -205,6 +203,13 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (target.nodeName === Shape.POLYGON) {
         target.attr({
           points: polygon.points,
+        });
+      } else if (target.nodeName === Shape.CIRCLE) {
+        const { cx, cy, r } = circle;
+        target.attr({
+          cx,
+          cy,
+          r,
         });
       }
 
@@ -223,7 +228,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
     const handleMovedTarget = (e: CustomEvent) => {
       const target = e.target as DisplayObject;
-      const { rect, polyline, polygon } = e.detail;
+      const { circle, rect, polyline, polygon } = e.detail;
 
       if (target.nodeName === Shape.RECT) {
         target.attr({
@@ -237,6 +242,11 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (target.nodeName === Shape.POLYGON) {
         target.attr({
           points: polygon.points,
+        });
+      } else if (target.nodeName === Shape.CIRCLE) {
+        target.attr({
+          cx: circle.cx,
+          cy: circle.cy,
         });
       }
     };
@@ -277,42 +287,12 @@ export class SelectablePlugin implements RenderingPlugin {
           dy += arrowKeyStepLength;
         }
 
+        // account for multi-selection
         this.selected.forEach((selected) => {
           const selectable = this.getOrCreateSelectableUI(selected);
           if (selectable) {
-            let x = 0;
-            let y = 0;
-
-            // move mask first
-            selectable.moveMask(dx, dy);
-
-            if (selected.nodeName === Shape.RECT) {
-              [x, y] = selectable.getPosition();
-              selected.dispatchEvent(
-                new CustomEvent(SelectableEvent.MOVED, {
-                  rect: {
-                    x,
-                    y,
-                  },
-                }),
-              );
-            } else if (selected.nodeName === Shape.POLYLINE) {
-              selected.dispatchEvent(
-                new CustomEvent(SelectableEvent.MOVED, {
-                  polyline: {
-                    points: (selectable as SelectablePolyline).mask.style.points,
-                  },
-                }),
-              );
-            } else if (selected.nodeName === Shape.POLYGON) {
-              selected.dispatchEvent(
-                new CustomEvent(SelectableEvent.MOVED, {
-                  polygon: {
-                    points: (selectable as SelectablePolygon).mask.style.points,
-                  },
-                }),
-              );
-            }
+            selectable.triggerMovingEvent(dx, dy);
+            selectable.triggerMovedEvent();
           }
         });
       }
@@ -326,7 +306,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
       canvas.addEventListener(SelectableEvent.MOVED, handleMovedTarget);
       canvas.addEventListener(SelectableEvent.MODIFIED, handleModifiedTarget);
-      // canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
+      canvas.addEventListener(SelectableEvent.MOVING, handleMovingTarget);
     });
 
     renderingService.hooks.destroy.tap(SelectablePlugin.tag, () => {
@@ -337,7 +317,7 @@ export class SelectablePlugin implements RenderingPlugin {
 
       canvas.removeEventListener(SelectableEvent.MOVED, handleMovedTarget);
       canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifiedTarget);
-      // canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
+      canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
     });
   }
 }

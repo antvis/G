@@ -16,15 +16,17 @@ export class CircleDrawer extends BaseDrawer {
   onMouseDown(e: FederatedEvent) {
     this.path = [{ x: e.canvas.x, y: e.canvas.y }];
     this.id = uuidv4();
+    this.emit('draw:start', this.state);
+    this.emit('draw:complete', this.state);
   }
 
   onMouseMove() {}
 
   onMouseUp(e) {
     // exclude drag event
-    if (this.isActive) {
-      this.emit('draw:complete', this.state);
-    }
+    // if (this.isActive) {
+    //   this.emit('draw:complete', this.state);
+    // }
   }
   onMouseDbClick(): void {}
   onKeyDown() {}

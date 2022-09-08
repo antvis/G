@@ -7,7 +7,7 @@ import {
   setDOMSize,
   singleton,
 } from '@antv/g-lite';
-import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
+import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { isString } from '@antv/util';
 import { DeviceRendererPlugin } from './tokens';
 

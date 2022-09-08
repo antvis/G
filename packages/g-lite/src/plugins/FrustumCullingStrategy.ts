@@ -1,6 +1,7 @@
 import { inject, singleton } from '@alipay/mana-syringe';
 import { vec3 } from 'gl-matrix';
-import { ICamera, DefaultCamera } from '../camera';
+import type { ICamera } from '../camera';
+import { DefaultCamera } from '../camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
 import type { Plane } from '../shapes';

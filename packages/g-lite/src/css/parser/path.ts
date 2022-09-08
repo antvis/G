@@ -3,7 +3,8 @@ import {
   clonePath,
   equalizeSegments,
   getDrawDirection,
-  getPathBBoxTotalLength,
+  getPathBBox,
+  // getPathBBoxTotalLength,
   getRotatedCurve,
   isString,
   memoize,
@@ -54,7 +55,10 @@ const internalParsePath = (path: string | PathArray) => {
 
   // for later use
   const segments = path2Segments(curve);
-  const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
+
+  // Only calculate bbox here since we don't need length now.
+  const { x, y, width, height } = getPathBBox(absolutePath);
+  // const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
 
   return {
     absolutePath,
@@ -63,7 +67,9 @@ const internalParsePath = (path: string | PathArray) => {
     polygons,
     polylines,
     curve,
-    totalLength: length,
+    // Delay the calculation of length.
+    // totalLength: length,
+    totalLength: 0,
     zCommandIndexes,
     // rect: new Rectangle(
     //   Number.isFinite(x) ? x : 0,

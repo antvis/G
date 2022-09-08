@@ -1,7 +1,7 @@
 import { inject, injectable, Syringe } from '@antv/g-lite';
 import { LayoutContext } from './LayoutContext';
 import type { LayoutFragment } from './LayoutFragment';
-import { LayoutObject } from './LayoutObject';
+import type { LayoutObject } from './LayoutObject';
 
 export const FragmentResultFactory = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare

@@ -1,5 +1,7 @@
-import { contrib, Contribution, inject, singleton, Syringe } from '@alipay/mana-syringe';
-import { ICamera, DefaultCamera } from '../camera';
+import type { Contribution } from '@alipay/mana-syringe';
+import { contrib, inject, singleton, Syringe } from '@alipay/mana-syringe';
+import type { ICamera } from '../camera';
+import { DefaultCamera } from '../camera';
 import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
 import { CustomEvent, ElementEvent } from '../dom';

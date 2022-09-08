@@ -1,6 +1,6 @@
 import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
 import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
-import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
+import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { isCanvasElement } from './dom';
 import { DeviceRendererPlugin } from './tokens';
 

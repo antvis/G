@@ -1,5 +1,5 @@
 import { inject, singleton } from '@alipay/mana-syringe';
-import RBush from 'rbush';
+import type RBush from 'rbush';
 import type { RBushNodeAABB } from '../components';
 import { RBushRoot } from '../components';
 import { StyleValueRegistry } from '../css';

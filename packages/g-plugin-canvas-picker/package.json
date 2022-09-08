@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-picker",
-  "version": "1.8.6",
+  "version": "1.8.8",
   "description": "A G plugin for picking in canvas",
   "keywords": [
     "antv",
@@ -27,7 +27,8 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-canvas-path-generator": "^1.1.9",
+    "@antv/g-plugin-canvas-path-generator": "^1.1.11",
+    "@antv/util": "^3.2.4",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

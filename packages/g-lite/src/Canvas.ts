@@ -4,8 +4,9 @@ import {
   requestAnimationFrame as rAF,
 } from 'request-animation-frame-polyfill';
 import type { IRenderer } from './AbstractRenderer';
-import { CameraContribution, CameraTrackingMode, CameraType, ICamera } from './camera';
-import { Camera, CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
+import type { ICamera } from './camera';
+import { CameraContribution, CameraTrackingMode, CameraType } from './camera';
+import { CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
 import { CustomElement, DisplayObject } from './display-objects';
 import type { Element, FederatedEvent, IChildNode } from './dom';

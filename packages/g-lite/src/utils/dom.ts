@@ -1,4 +1,5 @@
-import { IElement } from '../dom';
+import type { IElement } from '../dom';
+import type { DisplayObject } from '../display-objects';
 import type { CanvasLike } from '../types';
 import { isBrowser } from './canvas';
 
@@ -14,6 +15,16 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
     }
   }
   return zIndex1 - zIndex2;
+}
+
+export function findClosestClipPathTarget(object: DisplayObject): DisplayObject {
+  let el = object;
+  do {
+    const clipPath = el.style?.clipPath;
+    if (clipPath) return el;
+    el = el.parentElement as DisplayObject;
+  } while (el !== null);
+  return null;
 }
 
 const PX_SUFFIX = 'px';

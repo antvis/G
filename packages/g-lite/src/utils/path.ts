@@ -3,11 +3,18 @@
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
 import type { AbsoluteArray, CurveArray } from '@antv/util';
-import { clamp } from '@antv/util';
+import { getTotalLength, clamp } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from '../display-objects';
 import { Shape } from '../types';
+
+export function getOrCalculatePathTotalLength(path: Path) {
+  if (path.parsedStyle.path.totalLength === 0) {
+    path.parsedStyle.path.totalLength = getTotalLength(path.parsedStyle.path.absolutePath);
+  }
+  return path.parsedStyle.path.totalLength;
+}
 
 export function hasArcOrBezier(path: AbsoluteArray) {
   let hasArc = false;

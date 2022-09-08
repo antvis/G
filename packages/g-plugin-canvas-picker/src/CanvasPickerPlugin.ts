@@ -8,14 +8,15 @@ import type {
   RenderingPlugin,
   RenderingService,
   Shape,
+  RBush,
 } from '@antv/g-lite';
 import {
   CanvasConfig,
   DisplayObjectPool,
+  findClosestClipPathTarget,
   inject,
   OffscreenCanvasCreator,
   Point,
-  RBush,
   RBushRoot,
   RenderingPluginContribution,
   singleton,
@@ -132,7 +133,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           const isHitOriginShape = this.isHit(displayObject, position, worldTransform);
           if (isHitOriginShape) {
             // should look up in the ancestor node
-            const clipped = this.findClosestClipPath(displayObject);
+            const clipped = findClosestClipPathTarget(displayObject);
             if (clipped) {
               const clipPath = clipped.style.clipPath;
               worldTransform = mat4.multiply(

@@ -1,5 +1,5 @@
 ---
-title: use react-g
+title: Using react-g
 order: 5
 ---
 

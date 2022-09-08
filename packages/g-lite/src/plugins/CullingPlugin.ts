@@ -1,4 +1,5 @@
-import { contrib, Contribution, inject, singleton, Syringe } from '@alipay/mana-syringe';
+import type { Contribution } from '@alipay/mana-syringe';
+import { contrib, inject, singleton, Syringe } from '@alipay/mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { CustomEvent, ElementEvent } from '../dom';
 import { RenderingContext } from '../services';

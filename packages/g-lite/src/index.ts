@@ -61,6 +61,8 @@ export {
   turn2deg,
   getAngle,
   createVec3,
+  findClosestClipPathTarget,
+  getOrCalculatePathTotalLength,
 } from './utils';
 export { RBush };
 

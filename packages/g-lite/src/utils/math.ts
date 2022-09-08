@@ -236,11 +236,11 @@ export function decompose(mat: mat3) {
   return [mat[6], mat[7], scalingX, scalingY, angle];
 }
 
-let tmp = mat4.create();
-var perspectiveMatrix = mat4.create();
-var tmpVec4 = vec4.create();
-var row = [vec3.create(), vec3.create(), vec3.create()];
-var pdum3 = vec3.create();
+const tmp = mat4.create();
+const perspectiveMatrix = mat4.create();
+const tmpVec4 = vec4.create();
+const row = [vec3.create(), vec3.create(), vec3.create()];
+const pdum3 = vec3.create();
 
 /*
 Input:  matrix      ; a 4x4 matrix
@@ -281,7 +281,7 @@ export function decomposeMat4(
   // decompose, so we'll bail early. Constant taken from SkMatrix44::invert.
   if (Math.abs(mat4.determinant(perspectiveMatrix)) < 1e-8) return false;
 
-  var a03 = tmp[3],
+  const a03 = tmp[3],
     a13 = tmp[7],
     a23 = tmp[11],
     a30 = tmp[12],
@@ -299,7 +299,7 @@ export function decomposeMat4(
     // Solve the equation by inverting perspectiveMatrix and multiplying
     // rightHandSide by the inverse.
     // resuing the perspectiveMatrix here since it's no longer needed
-    var ret = mat4.invert(perspectiveMatrix, perspectiveMatrix);
+    const ret = mat4.invert(perspectiveMatrix, perspectiveMatrix);
     if (!ret) return false;
     mat4.transpose(perspectiveMatrix, perspectiveMatrix);
 
@@ -349,7 +349,7 @@ export function decomposeMat4(
   // is -1, then negate the matrix and the scaling factors.
   vec3.cross(pdum3, row[1], row[2]);
   if (vec3.dot(row[0], pdum3) < 0) {
-    for (var i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
       scale[i] *= -1;
       row[i][0] *= -1;
       row[i][1] *= -1;
@@ -370,11 +370,11 @@ export function decomposeMat4(
 }
 
 function normalize(out: mat4, mat: mat4) {
-  var m44 = mat[15];
+  const m44 = mat[15];
   // Cannot normalize.
   if (m44 === 0) return false;
-  var scale = 1 / m44;
-  for (var i = 0; i < 16; i++) out[i] = mat[i] * scale;
+  const scale = 1 / m44;
+  for (let i = 0; i < 16; i++) out[i] = mat[i] * scale;
   return true;
 }
 

@@ -1,50 +1,10 @@
-import type {
-  BaseCustomElementStyleProps,
-  DisplayObject,
-  DisplayObjectConfig,
-  FederatedEvent,
-  ParsedPolygonStyleProps,
-} from '@antv/g-lite';
-import { Circle, CustomElement, CustomEvent, Polygon, Shape } from '@antv/g-lite';
+import type { DisplayObject, FederatedEvent, ParsedPolygonStyleProps } from '@antv/g-lite';
+import { Circle, CustomEvent, Polygon, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
-import type { SelectableStyle } from '../tokens';
-import type { Selectable } from './interface';
-interface Props extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
-  target: DisplayObject;
-}
+import { AbstractSelectable } from './AbstractSelectable';
 
-type SelectableStatus = 'active' | 'deactive' | 'moving' | 'resizing';
-
-export class SelectablePolygon extends CustomElement<Props> implements Selectable {
-  /**
-   * transparent mask
-   */
-  mask: Polygon;
-
-  // private rotateAnchor: Circle;
-
-  private anchors: Circle[] = [];
-
-  status: SelectableStatus;
-
-  constructor({ style, ...rest }: Partial<DisplayObjectConfig<Props>>) {
-    super({
-      style: {
-        selectionFill: 'transparent',
-        selectionFillOpacity: 1,
-        selectionStroke: 'black',
-        selectionStrokeOpacity: 1,
-        selectionStrokeWidth: 1,
-        anchorFill: 'black',
-        anchorStroke: 'black',
-        anchorStrokeOpacity: 1,
-        anchorFillOpacity: 1,
-        anchorSize: 6,
-        ...style,
-      },
-      ...rest,
-    });
-
+export class SelectablePolygon extends AbstractSelectable<Polygon> {
+  init() {
     const { points: parsedPoints } = this.style.target.parsedStyle as ParsedPolygonStyleProps;
     const points = parsedPoints.points;
 
@@ -74,8 +34,7 @@ export class SelectablePolygon extends CustomElement<Props> implements Selectabl
       // set anchor in canvas coordinates
       anchor.setPosition(point);
     });
-  }
-  connectedCallback() {
+
     const {
       anchorFill,
       anchorStroke,
@@ -107,40 +66,8 @@ export class SelectablePolygon extends CustomElement<Props> implements Selectabl
 
     this.bindEventListeners();
   }
-  disconnectedCallback() {}
-  attributeChangedCallback<Key extends never>(name: Key, oldValue: {}[Key], newValue: {}[Key]) {
-    if (name === 'selectionStroke') {
-      this.mask.style.stroke = newValue;
-    } else if (name === 'selectionFill') {
-      this.mask.style.fill = newValue;
-    } else if (name === 'selectionFillOpacity') {
-      this.mask.style.fillOpacity = newValue;
-    } else if (name === 'selectionStrokeOpacity') {
-      this.mask.style.strokeOpacity = newValue;
-    } else if (name === 'selectionStrokeWidth') {
-      this.mask.style.lineWidth = newValue;
-    } else if (name === 'anchorFill') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.fill = newValue;
-      });
-    } else if (name === 'anchorStroke') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.stroke = newValue;
-      });
-    } else if (name === 'anchorSize') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.r = newValue;
-      });
-    } else if (name === 'anchorStrokeOpacity') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.strokeOpacity = newValue;
-      });
-    } else if (name === 'anchorFillOpacity') {
-      this.anchors.forEach((anchor) => {
-        anchor.style.fillOpacity = newValue;
-      });
-    }
-  }
+
+  destroy(): void {}
 
   moveMask(dx: number, dy: number) {
     // change definition of polyline
@@ -148,6 +75,28 @@ export class SelectablePolygon extends CustomElement<Props> implements Selectabl
 
     // re-position anchors in canvas coordinates
     this.repositionAnchors();
+  }
+
+  triggerMovingEvent(dx: number, dy: number) {
+    const { defX, defY } = this.mask.parsedStyle;
+    this.style.target.dispatchEvent(
+      new CustomEvent(SelectableEvent.MOVING, {
+        movingX: dx + defX,
+        movingY: dy + defY,
+        dx,
+        dy,
+      }),
+    );
+  }
+
+  triggerMovedEvent() {
+    this.style.target.dispatchEvent(
+      new CustomEvent(SelectableEvent.MOVED, {
+        polygon: {
+          points: this.mask.style.points,
+        },
+      }),
+    );
   }
 
   private repositionAnchors() {
@@ -166,23 +115,17 @@ export class SelectablePolygon extends CustomElement<Props> implements Selectabl
     const moveAt = (canvasX: number, canvasY: number) => {
       const { defX, defY } = this.mask.parsedStyle;
 
-      this.moveMask(canvasX - shiftX - defX, canvasY - shiftY - defY);
-
-      // TODO: mask moving
-      targetObject.dispatchEvent(
-        new CustomEvent(SelectableEvent.MOVING, {
-          movingX: canvasX - shiftX,
-          movingY: canvasY - shiftY,
-        }),
-      );
+      // account for multi-selection
+      this.plugin.selected.forEach((selected) => {
+        const selectable = this.plugin.getOrCreateSelectableUI(selected);
+        selectable.triggerMovingEvent(canvasX - shiftX - defX, canvasY - shiftY - defY);
+      });
     };
 
     this.addEventListener('dragstart', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        this.status = 'moving';
-
         const { defX, defY } = this.mask.parsedStyle;
         shiftX = e.canvasX - defX;
         shiftY = e.canvasY - defY;
@@ -197,8 +140,6 @@ export class SelectablePolygon extends CustomElement<Props> implements Selectabl
       const anchorIndex = this.anchors.indexOf(target);
 
       if (target === this.mask) {
-        this.status = 'moving';
-
         moveAt(canvasX, canvasY);
       } else if (anchorIndex > -1) {
         const { points } = this.mask.parsedStyle;
@@ -215,14 +156,11 @@ export class SelectablePolygon extends CustomElement<Props> implements Selectabl
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        this.status = 'active';
-        targetObject.dispatchEvent(
-          new CustomEvent(SelectableEvent.MOVED, {
-            polygon: {
-              points: this.mask.style.points,
-            },
-          }),
-        );
+        // account for multi-selection
+        this.plugin.selected.forEach((selected) => {
+          const selectable = this.plugin.getOrCreateSelectableUI(selected);
+          selectable.triggerMovedEvent();
+        });
       } else if (targetObject.nodeName === Shape.POLYGON) {
         targetObject.dispatchEvent(
           new CustomEvent(SelectableEvent.MODIFIED, {

@@ -126,5 +126,13 @@ describe('Line', () => {
     point = line.getPoint(1);
     expect(point.x).eqls(400);
     expect(point.y).eqls(100);
+
+    point = line.getPointAtLength(0);
+    expect(point.x).eqls(200);
+    expect(point.y).eqls(100);
+
+    point = line.getPointAtLength(200);
+    expect(point.x).eqls(400);
+    expect(point.y).eqls(100);
   });
 });

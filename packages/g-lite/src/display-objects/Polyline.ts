@@ -65,6 +65,10 @@ export class Polyline extends Polygon {
     return this.parsedStyle.points.totalLength;
   }
 
+  getPointAtLength(distance: number): Point {
+    return this.getPoint(distance / this.getTotalLength());
+  }
+
   getPoint(ratio: number): Point {
     const {
       defX,

@@ -7,6 +7,7 @@ import type {
   RBushNodeAABB,
   RenderingPlugin,
   RenderingService,
+  RBush,
 } from '@antv/g-lite';
 import {
   AABB,
@@ -18,7 +19,6 @@ import {
   DisplayObjectPool,
   ElementEvent,
   inject,
-  RBush,
   RBushRoot,
   RenderingContext,
   RenderingPluginContribution,

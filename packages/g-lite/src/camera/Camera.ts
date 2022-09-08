@@ -4,7 +4,7 @@ import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import type { Canvas } from '../Canvas';
 import { Frustum } from '../shapes';
-import { TypeEasingFunction } from '../types';
+import type { TypeEasingFunction } from '../types';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   createVec3,
@@ -13,13 +13,13 @@ import {
   makePerspective,
   rad2deg,
 } from '../utils';
+import type { ICamera } from './interfaces';
 import {
   CameraContribution,
   CameraEvent,
   CameraProjectionMode,
   CameraTrackingMode,
   CameraType,
-  ICamera,
 } from './interfaces';
 import type { Landmark } from './Landmark';
 
