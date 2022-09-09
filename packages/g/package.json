@@ -29,13 +29,13 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-camera-api": "^0.0.1",
-    "@antv/g-compat": "^0.0.1",
-    "@antv/g-css-layout-api": "^0.0.1",
-    "@antv/g-css-typed-om-api": "^0.0.1",
-    "@antv/g-dom-mutation-observer-api": "^0.0.1",
-    "@antv/g-lite": "^0.0.1",
-    "@antv/g-web-animations-api": "^0.0.1"
+    "@antv/g-camera-api": "^1.0.0",
+    "@antv/g-compat": "^1.0.0",
+    "@antv/g-css-layout-api": "^1.0.0",
+    "@antv/g-css-typed-om-api": "^1.0.0",
+    "@antv/g-dom-mutation-observer-api": "^1.0.0",
+    "@antv/g-lite": "^1.0.0",
+    "@antv/g-web-animations-api": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

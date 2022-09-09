@@ -58,7 +58,7 @@ As you can see from the `peerDependencies` of `package.json`, the most core depe
 
 ```json
 "peerDependencies": {
-    "@antv/g-lite": "^0.0.1"
+    "@antv/g-lite": "^1.0.0"
 },
 ```
 

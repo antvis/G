@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "@antv/g-canvas": "^1.1.4",
-    "@antv/g-lite": "^0.0.1",
+    "@antv/g-lite": "^1.0.0",
     "@antv/g-webgl": "^1.1.4"
   },
   "publishConfig": {

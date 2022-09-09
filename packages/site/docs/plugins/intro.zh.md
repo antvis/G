@@ -57,7 +57,7 @@ https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
 
 ```json
 "peerDependencies": {
-    "@antv/g-lite": "^0.0.1"
+    "@antv/g-lite": "^1.0.0"
 },
 ```
 

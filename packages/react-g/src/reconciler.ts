@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Canvas, Element } from '@antv/g';
 import React from 'react';
 import type { OpaqueHandle } from 'react-reconciler';
