@@ -1,5 +1,6 @@
-import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g';
-import { isNil, singleton } from '@antv/g';
+import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
+import { isNil } from '@antv/util';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
 import { TextRendererContribution } from './interfaces';

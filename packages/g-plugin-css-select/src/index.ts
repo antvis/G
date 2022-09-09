@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, DefaultSceneGraphSelector, GlobalContainer } from '@antv/g';
+import { AbstractRendererPlugin, DefaultSceneGraphSelector, GlobalContainer } from '@antv/g-lite';
 import { CSSSceneGraphSelector } from './CSSSceneGraphSelector';
 import { SceneGraphAdapter } from './SceneGraphAdapter';
 

@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g';
+import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g-lite';
 import { YogaPluginOptions } from './tokens';
 import { YogaPlugin } from './YogaPlugin';
 

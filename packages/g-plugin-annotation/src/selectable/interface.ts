@@ -1,4 +1,4 @@
-import type { BaseCustomElementStyleProps, DisplayObject } from '@antv/g';
+import type { BaseCustomElementStyleProps, DisplayObject } from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { SelectableStyle } from '../tokens';
 

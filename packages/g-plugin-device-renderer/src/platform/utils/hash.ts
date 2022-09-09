@@ -1,21 +1,21 @@
-import { isNil } from '@antv/g';
+import { isNil } from '@antv/util';
 import type { Format } from '../format';
 import type {
-  BufferBinding,
-  SamplerBinding,
-  BindingLayoutDescriptor,
-  BindingsDescriptor,
-  ChannelBlendState,
   AttachmentState,
+  BindingLayoutDescriptor,
+  BindingLayoutSamplerDescriptor,
+  BindingsDescriptor,
+  BufferBinding,
+  ChannelBlendState,
+  InputLayoutBufferDescriptor,
+  InputLayoutDescriptor,
   MegaStateDescriptor,
   Program,
   RenderPipelineDescriptor,
-  VertexAttributeDescriptor,
-  InputLayoutBufferDescriptor,
-  InputLayoutDescriptor,
+  SamplerBinding,
   SamplerDescriptor,
+  VertexAttributeDescriptor,
 } from '../interfaces';
-import type { BindingLayoutSamplerDescriptor } from '../interfaces';
 import { colorEqual } from './color';
 import { copyMegaState } from './states';
 

@@ -1,6 +1,6 @@
-import { clamp } from '@antv/g';
 import type { Buffer, Readback, Texture } from '@antv/g-plugin-device-renderer';
 import { GL, ResourceType } from '@antv/g-plugin-device-renderer';
+import { clamp } from '@antv/util';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import type { Texture_GL } from './Texture';

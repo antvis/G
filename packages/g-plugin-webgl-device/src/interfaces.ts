@@ -1,4 +1,4 @@
-import { Syringe } from '@antv/g';
+import { Syringe } from '@antv/g-lite';
 
 export const WebGLRendererPluginOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare

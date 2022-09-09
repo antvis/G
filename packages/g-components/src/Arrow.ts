@@ -5,8 +5,9 @@ import type {
   Line,
   MutationEvent,
   Polyline,
-} from '@antv/g';
-import { CustomElement, ElementEvent, isNil, Path, Shape } from '@antv/g';
+} from '@antv/g-lite';
+import { CustomElement, ElementEvent, Path, Shape } from '@antv/g-lite';
+import { isNil } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 
 type ArrowHead = boolean | DisplayObject;
@@ -140,7 +141,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     } else if (name === 'body') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
-      this.removeChild(this.body, true);
+      this.body.destroy();
       // @ts-ignore
       this.body = newValue;
       this.appendChild(this.body);
@@ -271,13 +272,11 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
   private destroyArrowHead(isStart: boolean) {
     if (isStart && this.startHead) {
-      // @ts-ignore
-      this.removeChild(this.startHead, true);
+      this.startHead.destroy();
       this.startHead = undefined;
     }
     if (!isStart && this.endHead) {
-      // @ts-ignore
-      this.removeChild(this.endHead, true);
+      this.endHead.destroy();
       this.endHead = undefined;
     }
   }

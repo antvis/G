@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSGradientValue,
   DataURLOptions,
   DataURLType,
@@ -9,9 +10,8 @@ import type {
   RadialGradient,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
   computeLinearGradient,
   computeRadialGradient,
@@ -21,17 +21,16 @@ import {
   getEuler,
   GradientType,
   inject,
-  isNil,
   isPattern,
-  isString,
   parseColor,
   rad2deg,
   RenderingContext,
   RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { ImagePool } from '@antv/g-plugin-image-loader';
+import { isNil, isString } from '@antv/util';
 import type {
   Canvas,
   EmbindEnumEntity,
@@ -54,29 +53,31 @@ import { CanvaskitRendererPluginOptions, RendererContributionFactory } from './i
 export class CanvaskitRendererPlugin implements RenderingPlugin {
   static tag = 'CanvaskitRenderer';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(ContextService)
-  private contextService: ContextService<CanvasKitContext>;
+    @inject(ContextService)
+    private contextService: ContextService<CanvasKitContext>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: ICamera,
 
-  @inject(RendererContributionFactory)
-  private rendererContributionFactory: (tagName: Shape | string) => RendererContribution;
+    @inject(RendererContributionFactory)
+    private rendererContributionFactory: (tagName: Shape | string) => RendererContribution,
 
-  @inject(FontLoader)
-  private fontLoader: FontLoader;
+    @inject(FontLoader)
+    private fontLoader: FontLoader,
 
-  @inject(ImagePool)
-  private imagePool: ImagePool;
+    @inject(ImagePool)
+    private imagePool: ImagePool,
 
-  @inject(CanvaskitRendererPluginOptions)
-  private canvaskitRendererPluginOptions: CanvaskitRendererPluginOptions;
+    @inject(CanvaskitRendererPluginOptions)
+    private canvaskitRendererPluginOptions: CanvaskitRendererPluginOptions,
+  ) {}
 
   private renderingService: RenderingService;
 

@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { Canvas2DContextService } from './Canvas2DContextService';
 
 const containerModule = Module((register) => {

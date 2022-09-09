@@ -5,8 +5,8 @@ import type {
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
-} from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+} from '@antv/g-lite';
+import { injectable, Shape } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';

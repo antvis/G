@@ -86,6 +86,13 @@
         "zh": "导出画布内容成图片",
         "en": "Export canvas' contents to image"
       }
+    },
+    {
+      "filename": "lite.js",
+      "title": {
+        "zh": "使用轻量版",
+        "en": "Use lightweight version of G"
+      }
     }
   ]
 }

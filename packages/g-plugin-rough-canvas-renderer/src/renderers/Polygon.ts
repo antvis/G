@@ -1,6 +1,6 @@
-import type { DisplayObject, ParsedPolygonStyleProps } from '@antv/g';
-import { singleton } from '@antv/g';
 import { CanvasRenderer } from '@antv/g-canvas';
+import type { DisplayObject, ParsedPolygonStyleProps } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
 @singleton({

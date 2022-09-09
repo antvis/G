@@ -1,5 +1,5 @@
-import type { Cursor, DisplayObject, FederatedEvent, ParsedBaseStyleProps } from '@antv/g';
-import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g';
+import type { Cursor, DisplayObject, FederatedEvent, ParsedBaseStyleProps } from '@antv/g-lite';
+import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 

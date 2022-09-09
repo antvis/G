@@ -1,6 +1,6 @@
-import { isNumber } from '@antv/g';
 import type { Buffer, BufferDescriptor, BufferFrequencyHint } from '@antv/g-plugin-device-renderer';
-import { BufferUsage, ResourceType, assert } from '@antv/g-plugin-device-renderer';
+import { assert, BufferUsage, ResourceType } from '@antv/g-plugin-device-renderer';
+import { isNumber } from '@antv/util';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import {

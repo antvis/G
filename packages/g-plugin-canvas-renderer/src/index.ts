@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
+import { AbstractRendererPlugin, Module, Shape } from '@antv/g-lite';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import type { StyleRenderer } from './shapes/styles';
 import {

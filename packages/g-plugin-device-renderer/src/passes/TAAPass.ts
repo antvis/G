@@ -1,5 +1,5 @@
 // import { inject, injectable } from 'inversify';
-// import { Camera, DefaultCamera, DisplayObject } from '@antv/g';
+// import { Camera, DefaultCamera, DisplayObject } from '@antv/g-lite';
 // // @ts-ignore
 // import blendFS from '../services/shader-module/shaders/webgl.blend.frag.glsl';
 // // @ts-ignore

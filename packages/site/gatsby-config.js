@@ -29,7 +29,7 @@ module.exports = {
         },
       },
       {
-        slug: 'examples',
+        slug: 'examples/shape#circle',
         title: {
           zh: '示例',
           en: 'Examples',

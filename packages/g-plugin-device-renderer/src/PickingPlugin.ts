@@ -1,14 +1,13 @@
 import type {
+  ICamera,
   DisplayObject,
   FederatedEvent,
   PickingResult,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
-  Camera,
   CanvasConfig,
-  clamp,
   ContextService,
   DefaultCamera,
   ElementEvent,
@@ -18,7 +17,8 @@ import {
   RenderingPluginContribution,
   SceneGraphService,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
+import { clamp } from '@antv/util';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentBlack } from './platform';
 import {
@@ -44,32 +44,34 @@ const MAX_PICKING_DEPTH = 100;
 export class PickingPlugin implements RenderingPlugin {
   static tag = 'WebGLPicker';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(SceneGraphService)
-  protected sceneGraphService: SceneGraphService;
+    @inject(SceneGraphService)
+    protected sceneGraphService: SceneGraphService,
 
-  @inject(ContextService)
-  private contextService: ContextService<WebGLRenderingContext>;
+    @inject(ContextService)
+    private contextService: ContextService<WebGLRenderingContext>,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(RenderHelper)
-  private renderHelper: RenderHelper;
+    @inject(RenderHelper)
+    private renderHelper: RenderHelper,
 
-  @inject(RenderGraphPlugin)
-  private renderGraphPlugin: RenderGraphPlugin;
+    @inject(RenderGraphPlugin)
+    private renderGraphPlugin: RenderGraphPlugin,
 
-  @inject(PickingIdGenerator)
-  private pickingIdGenerator: PickingIdGenerator;
+    @inject(PickingIdGenerator)
+    private pickingIdGenerator: PickingIdGenerator,
 
-  @inject(DefaultCamera)
-  private camera: Camera;
+    @inject(DefaultCamera)
+    private camera: ICamera,
 
-  @inject(BatchManager)
-  private batchManager: BatchManager;
+    @inject(BatchManager)
+    private batchManager: BatchManager,
+  ) {}
 
   apply(renderingService: RenderingService) {
     const handleMounted = (e: FederatedEvent) => {

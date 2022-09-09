@@ -1,6 +1,6 @@
 import type * as G from '@antv/g';
 import type { DisplayObject, PathStyleProps } from '@antv/g';
-import { isBoolean } from '@antv/g';
+import { isBoolean } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import React, { Component } from 'react';
 import { Group, Path } from '../host-elements';

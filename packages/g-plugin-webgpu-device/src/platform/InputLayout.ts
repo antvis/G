@@ -1,12 +1,12 @@
-import { isNil } from '@antv/g';
 import type { InputLayout, InputLayoutDescriptor } from '@antv/g-plugin-device-renderer';
-import { ResourceType, assertExists } from '@antv/g-plugin-device-renderer';
+import { assertExists, ResourceType } from '@antv/g-plugin-device-renderer';
+import { isNil } from '@antv/util';
 import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import {
+  translateIndexFormat,
   translateVertexBufferFrequency,
   translateVertexFormat,
-  translateIndexFormat,
 } from './utils';
 
 export class InputLayout_WebGPU extends ResourceBase_WebGPU implements InputLayout {

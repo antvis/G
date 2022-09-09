@@ -8,8 +8,8 @@ import type {
   Path,
   Polyline,
   Tuple4Number,
-} from '@antv/g';
-import { convertToPath, CSSRGB, DisplayObject, injectable, parsePath, Shape } from '@antv/g';
+} from '@antv/g-lite';
+import { convertToPath, CSSRGB, DisplayObject, injectable, parsePath, Shape } from '@antv/g-lite';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { CurveArray } from '@antv/util';
 import earcut from 'earcut';

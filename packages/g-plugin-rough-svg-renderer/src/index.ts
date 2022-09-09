@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { RoughElementLifeCycleContribution } from './RoughElementLifeCycleContribution';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
 

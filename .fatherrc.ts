@@ -8,6 +8,13 @@ export default {
   // yarn build order
   pkgs: [
     'g-math',
+    'g-lite',
+    'g-compat',
+    'g-camera-api',
+    'g-css-typed-om-api',
+    'g-css-layout-api',
+    'g-web-animations-api',
+    'g-dom-mutation-observer-api',
     'g',
     'g-layout-blocklike',
     'g-plugin-image-loader',

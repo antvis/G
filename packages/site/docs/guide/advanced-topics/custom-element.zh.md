@@ -349,11 +349,11 @@ attributeChangedCallback<Key extends keyof ArrowStyleProps>(
 ```js
 private destroyArrowHead(isStart: boolean) {
   if (isStart && this.startHead) {
-    this.removeChild(this.startHead, true);
+    this.removeChild(this.startHead);
     this.startHead = undefined;
   }
   if (!isStart && this.endHead) {
-    this.removeChild(this.endHead, true);
+    this.removeChild(this.endHead);
     this.endHead = undefined;
   }
 }

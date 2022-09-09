@@ -1,4 +1,4 @@
-import type { CanvasLike } from '@antv/g';
+import type { CanvasLike } from '@antv/g-lite';
 import { EventEmitter } from 'eventemitter3';
 
 class CanvasElement implements CanvasLike {

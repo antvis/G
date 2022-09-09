@@ -1,5 +1,5 @@
-import type { DisplayObject, FederatedEvent, ParsedPolylineStyleProps } from '@antv/g';
-import { Circle, CustomEvent, Polyline, Shape } from '@antv/g';
+import type { DisplayObject, FederatedEvent, ParsedPolylineStyleProps } from '@antv/g-lite';
+import { Circle, CustomEvent, Polyline, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 

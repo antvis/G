@@ -1,6 +1,6 @@
-import type { IRenderer } from '@antv/g';
-import { Canvas } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import type { IRenderer } from '@antv/g-lite';
+import { Canvas } from '@antv/g-lite';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import GElement from './GElement';
 

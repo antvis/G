@@ -1,8 +1,10 @@
-import { inject, singleton } from '@antv/g';
+import { inject, singleton } from '@antv/g-lite';
 import { RenderHelper } from './RenderHelper';
 
 @singleton()
 export class PostProcessingManager {
-  @inject(RenderHelper)
-  private renderHelper: RenderHelper;
+  constructor(
+    @inject(RenderHelper)
+    private renderHelper: RenderHelper,
+  ) {}
 }

@@ -1,6 +1,7 @@
-import type { DisplayObject, ParsedImageStyleProps } from '@antv/g';
-import { ContextService, inject, isString, singleton } from '@antv/g';
+import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
+import { ContextService, inject, singleton } from '@antv/g-lite';
 import { ImagePool } from '@antv/g-plugin-image-loader';
+import { isString } from '@antv/util';
 import type {
   CanvasKitContext,
   RendererContribution,
@@ -18,11 +19,13 @@ import { ImageRendererContribution } from '../interfaces';
   token: ImageRendererContribution,
 })
 export class ImageRenderer implements RendererContribution {
-  @inject(ContextService)
-  private contextService: ContextService<CanvasKitContext>;
+  constructor(
+    @inject(ContextService)
+    private contextService: ContextService<CanvasKitContext>,
 
-  @inject(ImagePool)
-  private imagePool: ImagePool;
+    @inject(ImagePool)
+    private imagePool: ImagePool,
+  ) {}
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { surface, CanvasKit } = this.contextService.getContext();

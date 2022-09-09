@@ -1,11 +1,11 @@
 import type {
-  LayoutChildren,
-  LayoutEdges,
-  LayoutConstraints,
   FragmentResult,
   FragmentResultOptions,
-} from '@antv/g';
-import { AbstractLayoutDefinition } from '@antv/g';
+  LayoutChildren,
+  LayoutConstraints,
+  LayoutEdges,
+} from '@antv/g-css-layout-api';
+import { AbstractLayoutDefinition } from '@antv/g-css-layout-api';
 
 /**
  * @see https://github.com/GoogleChromeLabs/houdini-samples/blob/master/layout-worklet/blocklike/index.html

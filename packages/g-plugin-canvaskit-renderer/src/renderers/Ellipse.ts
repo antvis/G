@@ -1,5 +1,5 @@
-import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g';
-import { singleton } from '@antv/g';
+import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g-lite';
+import { singleton } from '@antv/g-lite';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
 import { EllipseRendererContribution } from '../interfaces';
 

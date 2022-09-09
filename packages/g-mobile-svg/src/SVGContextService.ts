@@ -1,6 +1,7 @@
-import type { DataURLOptions } from '@antv/g';
-import { CanvasConfig, ContextService, inject, isString, singleton } from '@antv/g';
+import type { DataURLOptions } from '@antv/g-lite';
+import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
+import { isString } from '@antv/util';
 
 @singleton({ token: ContextService })
 export class SVGContextService implements ContextService<SVGElement> {
@@ -8,8 +9,10 @@ export class SVGContextService implements ContextService<SVGElement> {
   private $namespace: SVGElement | null;
   private dpr: number;
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   async init() {
     const { container, document: doc } = this.canvasConfig;

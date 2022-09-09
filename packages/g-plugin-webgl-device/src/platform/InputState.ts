@@ -1,17 +1,17 @@
-import { isNil } from '@antv/g';
-import {
-  BufferUsage,
-  ResourceType,
-  VertexBufferFrequency,
-  getFormatCompByteSize,
-  assert,
-  assertExists,
-} from '@antv/g-plugin-device-renderer';
 import type {
   IndexBufferDescriptor,
   InputState,
   VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
+import {
+  assert,
+  assertExists,
+  BufferUsage,
+  getFormatCompByteSize,
+  ResourceType,
+  VertexBufferFrequency,
+} from '@antv/g-plugin-device-renderer';
+import { isNil } from '@antv/util';
 import type { Buffer_GL } from './Buffer';
 import type { Device_GL } from './Device';
 import type { InputLayout_GL } from './InputLayout';

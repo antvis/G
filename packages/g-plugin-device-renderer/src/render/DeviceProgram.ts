@@ -1,4 +1,4 @@
-import { isNil } from '@antv/g';
+import { isNil } from '@antv/util';
 import type { VendorInfo } from '../platform';
 import { assert, nullify } from '../platform/utils';
 import type { ShaderFeatureMap } from '../shader/compiler';

@@ -1,5 +1,5 @@
-import type { DisplayObject, FederatedEvent } from '@antv/g';
-import { Circle, CustomEvent, Shape } from '@antv/g';
+import type { DisplayObject, FederatedEvent } from '@antv/g-lite';
+import { Circle, CustomEvent, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 

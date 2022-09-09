@@ -1,3 +1,4 @@
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '@antv/g-lite';
 import type {
   AttachmentState,
   BindingLayoutDescriptor,
@@ -758,11 +759,11 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createComputePass(computePassDescriptor: ComputePassDescriptor): ComputePass {
-    throw new Error('Method not implemented.');
+    throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
 
   createComputePipeline(descriptor: ComputePipelineDescriptor): ComputePipeline {
-    throw new Error('Method not implemented.');
+    throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
 
   // createReadback(byteCount: number): Readback {

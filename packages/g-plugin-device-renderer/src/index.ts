@@ -1,5 +1,5 @@
-import type { DataURLOptions, Shape } from '@antv/g';
-import { AbstractRendererPlugin, GlobalContainer, Module } from '@antv/g';
+import type { DataURLOptions, Shape } from '@antv/g-lite';
+import { AbstractRendererPlugin, GlobalContainer, Module } from '@antv/g-lite';
 import 'regenerator-runtime/runtime';
 import { Renderable3D } from './components/Renderable3D';
 import { LightPool } from './LightPool';

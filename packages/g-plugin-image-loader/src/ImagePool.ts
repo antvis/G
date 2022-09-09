@@ -1,4 +1,4 @@
-import type { LinearGradient, Pattern, RadialGradient } from '@antv/g';
+import type { LinearGradient, Pattern, RadialGradient } from '@antv/g-lite';
 import {
   CanvasConfig,
   computeLinearGradient,
@@ -6,9 +6,9 @@ import {
   GradientType,
   inject,
   isBrowser,
-  isString,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
+import { isString } from '@antv/util';
 
 export type GradientParams = (LinearGradient | RadialGradient) & {
   width: number;
@@ -22,8 +22,10 @@ export class ImagePool {
   private gradientCache: Record<string, CanvasGradient> = {};
   private patternCache: Record<string, CanvasPattern> = {};
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
+  ) {}
 
   getImageSync(src: string, callback?: () => void) {
     if (!this.imageCache[src]) {

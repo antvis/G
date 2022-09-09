@@ -1,5 +1,5 @@
-import type { Circle, DisplayObject, DisplayObjectConfig } from '@antv/g';
-import { CustomElement } from '@antv/g';
+import type { Circle, DisplayObject, DisplayObjectConfig } from '@antv/g-lite';
+import { CustomElement } from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { Selectable, SelectableProps } from './interface';
 

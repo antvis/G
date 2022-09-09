@@ -1,4 +1,5 @@
 import type {
+  ICamera,
   CSSRGB,
   DisplayObject,
   FederatedEvent,
@@ -6,10 +7,10 @@ import type {
   RBushNodeAABB,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+  RBush,
+} from '@antv/g-lite';
 import {
   AABB,
-  Camera,
   CanvasConfig,
   CanvasEvent,
   ContextService,
@@ -18,16 +19,15 @@ import {
   DisplayObjectPool,
   ElementEvent,
   inject,
-  isNil,
-  RBush,
   RBushRoot,
   RenderingContext,
   RenderingPluginContribution,
   Shape,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
+import { isNil } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
 import type { StyleRenderer } from './shapes/styles';
 import { StyleRendererFactory } from './shapes/styles';
@@ -49,37 +49,40 @@ interface Rect {
 export class CanvasRendererPlugin implements RenderingPlugin {
   static tag = 'CanvasRenderer';
 
-  @inject(CanvasConfig)
-  private canvasConfig: CanvasConfig;
-
-  @inject(DefaultCamera)
-  private camera: Camera;
-
-  @inject(ContextService)
-  private contextService: ContextService<CanvasRenderingContext2D>;
-
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
-
-  @inject(PathGeneratorFactory)
-  private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
   private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
-
-  @inject(StyleRendererFactory)
-  private styleRendererFactory: (tagName: Shape | string) => StyleRenderer;
   private styleRendererFactoryCache: Record<Shape | string, StyleRenderer> = {};
 
-  @inject(DisplayObjectPool)
-  private displayObjectPool: DisplayObjectPool;
+  constructor(
+    @inject(CanvasConfig)
+    private canvasConfig: CanvasConfig,
 
-  @inject(CanvasRendererPluginOptions)
-  private canvasRendererPluginOptions: CanvasRendererPluginOptions;
+    @inject(DefaultCamera)
+    private camera: ICamera,
 
-  /**
-   * RBush used in dirty rectangle rendering
-   */
-  @inject(RBushRoot)
-  private rBush: RBush<RBushNodeAABB>;
+    @inject(ContextService)
+    private contextService: ContextService<CanvasRenderingContext2D>,
+
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
+
+    @inject(PathGeneratorFactory)
+    private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>,
+
+    @inject(StyleRendererFactory)
+    private styleRendererFactory: (tagName: Shape | string) => StyleRenderer,
+
+    @inject(DisplayObjectPool)
+    private displayObjectPool: DisplayObjectPool,
+
+    @inject(CanvasRendererPluginOptions)
+    private canvasRendererPluginOptions: CanvasRendererPluginOptions,
+
+    /**
+     * RBush used in dirty rectangle rendering
+     */
+    @inject(RBushRoot)
+    private rBush: RBush<RBushNodeAABB>,
+  ) {}
 
   private removedRBushNodeAABBs: RBushNodeAABB[] = [];
 

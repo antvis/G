@@ -5,7 +5,7 @@ order: 3
 
 在 G 中有以下继承关系：
 
-- DisplayObject -> Element -> Node -> EventTarget
+-   DisplayObject -> Element -> Node -> EventTarget
 
 # 继承自
 
@@ -19,8 +19,8 @@ order: 3
 
 ```js
 const circle = new Circle({
-  id: 'my-id',
-  style: { r: 10 },
+    id: 'my-id',
+    style: { r: 10 },
 });
 
 circle.id; // 'my-id';
@@ -239,9 +239,9 @@ circle.remove();
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
 
-### removeChildren(destroy = true)
+### removeChildren()
 
-将所有子节点从场景图中移除，可以选择是否同时销毁，默认会销毁。
+将所有子节点从场景图中移除并销毁。
 
 ```js
 parent.removeChildren();

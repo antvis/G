@@ -1,10 +1,10 @@
-import type { CSSRGB } from '@antv/g';
-import { parseColor } from '@antv/g';
+import type { CSSRGB } from '@antv/g-lite';
+import { parseColor } from '@antv/g-lite';
 import type { Device, Texture } from '@antv/g-plugin-device-renderer';
+import frag from '../shaders/material.phong.frag';
+import vert from '../shaders/material.phong.vert';
 import type { IMeshBasicMaterial } from './MeshBasicMaterial';
 import { MeshBasicMaterial } from './MeshBasicMaterial';
-import vert from '../shaders/material.phong.vert';
-import frag from '../shaders/material.phong.frag';
 
 export interface IMeshPhongMaterial extends IMeshBasicMaterial {
   emissive: string;

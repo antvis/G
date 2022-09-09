@@ -1,4 +1,4 @@
-import { Circle } from '@antv/g';
+import { Circle } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { EDIT_POINT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';

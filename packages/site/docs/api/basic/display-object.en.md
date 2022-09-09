@@ -1245,8 +1245,8 @@ The following add/remove node capabilities come from the inherited [Element](/en
 | prepend | `...nodes: DisplayObject[]` |  | Add a group of nodes in bulk to the head of the current node's child node list |
 | after | `...nodes: DisplayObject[]` |  | Add some sibling nodes in bulk after the current node |
 | before | `...nodes: DisplayObject[]` |  | Add some sibling nodes in bulk before the current node |
-| removeChild | `child: DisplayObject` or `destroy = true` | `DisplayObject` | Delete the child node and return the node that was deleted. `destroy` indicates whether to destroy |
-| removeChildren | `destroy = true` |  | Delete all child nodes. `destroy` indicates whether to destroy |
+| removeChild | `child: DisplayObject` | `DisplayObject` | Delete the child node and return the node that was deleted. |
+| removeChildren |  |  | Delete and destroy all child nodes. |
 | remove | `destroy = true` | `DisplayObject` | Remove itself from the parent node (if any), `destroy` indicates whether to destroy |
 | replaceChild | `child: DisplayObject` | `DisplayObject` | Replace a child node of the current node with the specified node, and return the replaced node |
 | replaceWith | `...nodes: DisplayObject[]` |  | In the list of children of the parent node, replace the node with the list of nodes passed in |

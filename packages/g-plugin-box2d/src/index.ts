@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g';
-import { AbstractRendererPlugin, Module } from '@antv/g';
+import type { DisplayObject } from '@antv/g-lite';
+import { AbstractRendererPlugin, Module } from '@antv/g-lite';
 import { Box2DPlugin } from './Box2DPlugin';
 import { Box2DPluginOptions } from './tokens';
 

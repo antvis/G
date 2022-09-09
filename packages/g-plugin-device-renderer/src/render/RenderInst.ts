@@ -1,4 +1,4 @@
-import { isNumber } from '@antv/g';
+import { isNumber } from '@antv/util';
 import type {
   BindingLayoutDescriptor,
   BindingsDescriptor,

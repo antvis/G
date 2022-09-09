@@ -1,4 +1,4 @@
-import type { Canvas, FederatedEvent } from '@antv/g';
+import type { Canvas, FederatedEvent } from '@antv/g-lite';
 import EventEmitter from 'eventemitter3';
 import type { DrawerTool } from '../constants/enum';
 

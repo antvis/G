@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g';
+import { AbstractRendererPlugin, Module, Shape } from '@antv/g-lite';
 import { CanvasPickerPlugin, PointInPathPickerFactory } from './CanvasPickerPlugin';
 import { isPointInPath as CirclePicker } from './Circle';
 import { isPointInPath as EllipsePicker } from './Ellipse';

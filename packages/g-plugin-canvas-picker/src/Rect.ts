@@ -1,5 +1,6 @@
-import type { DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g';
-import { clamp, isFillOrStrokeAffected } from '@antv/g';
+import type { DisplayObject, ParsedRectStyleProps, Point, RectStyleProps } from '@antv/g-lite';
+import { isFillOrStrokeAffected } from '@antv/g-lite';
+import { clamp } from '@antv/util';
 import { inArc, inBox, inLine, inRect } from './utils/math';
 
 export function isPointInPath(

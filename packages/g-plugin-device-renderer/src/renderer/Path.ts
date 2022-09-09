@@ -7,8 +7,8 @@ import type {
   ParsedBaseStyleProps,
   ParsedPathStyleProps,
   ParsedPolylineStyleProps,
-} from '@antv/g';
-import { injectable, Shape } from '@antv/g';
+} from '@antv/g-lite';
+import { injectable, Shape } from '@antv/g-lite';
 import { FillMesh, InstancedLineMesh, LineMesh } from '../meshes';
 import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';

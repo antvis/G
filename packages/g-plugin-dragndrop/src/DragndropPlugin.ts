@@ -4,14 +4,14 @@ import type {
   IDocument,
   RenderingPlugin,
   RenderingService,
-} from '@antv/g';
+} from '@antv/g-lite';
 import {
   inject,
   RenderingContext,
   RenderingPluginContribution,
   SceneGraphService,
   singleton,
-} from '@antv/g';
+} from '@antv/g-lite';
 import { distanceSquareRoot } from '@antv/util';
 import { DragndropPluginOptions } from './tokens';
 
@@ -19,14 +19,16 @@ import { DragndropPluginOptions } from './tokens';
 export class DragndropPlugin implements RenderingPlugin {
   static tag = 'Dragndrop';
 
-  @inject(SceneGraphService)
-  protected sceneGraphService: SceneGraphService;
+  constructor(
+    @inject(SceneGraphService)
+    protected sceneGraphService: SceneGraphService,
 
-  @inject(RenderingContext)
-  private renderingContext: RenderingContext;
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
 
-  @inject(DragndropPluginOptions)
-  private dragndropPluginOptions: DragndropPluginOptions;
+    @inject(DragndropPluginOptions)
+    private dragndropPluginOptions: DragndropPluginOptions,
+  ) {}
 
   apply(renderingService: RenderingService) {
     const document = this.renderingContext.root.ownerDocument;
