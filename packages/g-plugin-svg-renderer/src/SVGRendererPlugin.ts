@@ -27,7 +27,7 @@ import {
 import type { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import { DefElementManager } from './shapes/defs';
-import { ElementLifeCycleContribution } from './tokens';
+import { ElementLifeCycleContribution, SVGRendererPluginOptions } from './tokens';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
 
@@ -142,6 +142,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     @inject(DefElementManager)
     private defElementManager: DefElementManager,
+
+    @inject(SVGRendererPluginOptions)
+    private pluginOptions: SVGRendererPluginOptions,
   ) {}
 
   /**
@@ -485,7 +488,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         object.parsedStyle.$el = $el;
       }
 
-      $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
+      if (this.pluginOptions.outputSVGElementId) {
+        $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
+      }
 
       if (($el.hasAttribute('data-wrapgroup') || $el.nodeName !== 'g') && !noWrapWithGroup) {
         $groupEl = createSVGElement('g', document);
@@ -538,8 +543,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       if (!$hitTestingEl) {
         $hitTestingEl = $el.cloneNode() as SVGElement;
 
-        // use the entity suffix, so that `g-plugin-svg-picker` can extract
-        $hitTestingEl.id = `${G_SVG_PREFIX}_${object.nodeName}_hittesting_${object.entity}`;
+        if (this.pluginOptions.outputSVGElementId) {
+          // use the entity suffix, so that `g-plugin-svg-picker` can extract
+          $hitTestingEl.id = `${G_SVG_PREFIX}_${object.nodeName}_hittesting_${object.entity}`;
+        }
         // clear attributes like `filter` `font-size`
         ['filter'].forEach((attribute) => {
           $hitTestingEl.removeAttribute(attribute);

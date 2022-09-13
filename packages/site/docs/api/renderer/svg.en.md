@@ -43,13 +43,36 @@ The renderer is available from the `G.SVG` namespace under.
 const svgRenderer = new window.G.SVG.Renderer();
 ```
 
+# Initial Configuration
+
+When creating a renderer, you can pass in some initialization configuration items, such as.
+
+```js
+import { Renderer } from '@antv/g-svg';
+const renderer = new Renderer({
+    outputSVGElementId: false,
+});
+```
+
+## outputSVGElementId
+
+The renderer adds the `id` attribute when generating the SVGElement, which is used to pick up the decision to counter-check the element when interacting. However, in scenarios like server-side rendering, where there is no interaction and no need for generation, this can be turned off with this configuration item.
+
+```html
+<!-- Enable by default -->
+<g id="g_svg_g_450" fill="none"></g>
+
+<!-- Disable -->
+<g fill="none"></g>
+```
+
 # Built-in plug-ins
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 使用 SVG 元素绘制图形，例如 `<circle>` `<rect>` 等
--   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API 拾取图形
--   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+-   [g-plugin-svg-renderer](/en/docs/plugins/svg-renderer) Draw shapes using SVG elements, such as `<circle>`, `<rect>`, etc.
+-   [g-plugin-svg-picker](/en/docs/plugins/svg-picker) Pick up graphics based on [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API
+-   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
 
 # Optional plug-ins
 
@@ -59,9 +82,9 @@ In addition to the built-in plug-ins, the following optional plug-ins are availa
 
 Use the SVG version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
-We provide [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) plugin, which will replace [g-plugin-svg-renderer](/zh/docs/plugins/svg- renderer) for some 2D graphics.
+We provide [g-plugin-rough-svg-renderer](/en/docs/plugins/rough-svg-renderer) plugin, which will replace [g-plugin-svg-renderer](/en/docs/plugins/svg- renderer) for some 2D graphics.
 
-The effect of [example](/zh/examples/plugins#rough) is as follows.
+The effect of [example](/en/examples/plugins#rough) is as follows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
@@ -71,10 +94,10 @@ The renderer relies on the rendering capabilities of the SVG DOM API and is not 
 
 In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/svg), we will work with [JSDOM](https://github.com/jsdom/node-) on the Node side jsdom) with [node-canvas](https://github.com/Automattic/node-canvas) to render the result image and compare it with the benchmark image. Other server-side rendering scenes can also follow the following steps.
 
-1. Use [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/zh/docs/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction).
+1. Use [unregisterPlugin](/en/docs/api/renderer/renderer#unregisterplugin) to unregister the DOM API-related plugins built into [g-svg](/en/docs/api/renderer/svg), such as the event binding [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction).
 2. Create a canvas container using JSDOM.
 3. Use the container from the previous step to create the canvas, and pass in the `document` created by JSDOM instead of `window.document` in the browser environment, and the same for `raf`.
-4. Normal use of [g-svg](/zh/docs/api/renderer/svg) renderer to create scenes via G's API.
+4. Normal use of [g-svg](/en/docs/api/renderer/svg) renderer to create scenes via G's API.
 5. Use [xmlserializer](https://www.npmjs.com/package/xmlserializer) to serialize JSDOM to a string and save it as an SVG image.
 
 https://github.com/antvis/g/blob/next/integration/__node__tests__/svg/circle.spec.js

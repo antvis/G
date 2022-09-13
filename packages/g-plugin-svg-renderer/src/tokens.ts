@@ -11,3 +11,9 @@ export interface ElementLifeCycleContribution {
   updateElementAttribute: (object: DisplayObject, $el: SVGElement) => void;
   destroyElement: (object: DisplayObject, $el: SVGElement) => void;
 }
+
+export const SVGRendererPluginOptions = Syringe.defineToken('');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export interface SVGRendererPluginOptions {
+  outputSVGElementId: boolean;
+}

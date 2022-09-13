@@ -43,6 +43,29 @@ const canvas = new Canvas({
 const svgRenderer = new window.G.SVG.Renderer();
 ```
 
+# 初始化配置
+
+在创建渲染器时，可以传入一些初始化配置项，例如：
+
+```js
+import { Renderer } from '@antv/g-svg';
+const renderer = new Renderer({
+    outputSVGElementId: false,
+});
+```
+
+## outputSVGElementId
+
+该渲染器在生成 SVGElement 时会添加 `id` 属性，用于交互时拾取判定反查元素。但在服务端渲染这样的场景下，不存在交互也就无需生成，此时可通过该配置项关闭。
+
+```html
+<!-- 默认开启 -->
+<g id="g_svg_g_450" fill="none"></g>
+
+<!--关闭后 -->
+<g fill="none"></g>
+```
+
 # 插件列表
 
 该渲染器内置了以下插件：
