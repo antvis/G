@@ -9,7 +9,7 @@ import type {
 } from '@antv/g-lite';
 import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g-lite';
 import { EventEmitter } from 'eventemitter3';
-import { DrawerTool } from './constants/enum';
+import { DrawerEvent, DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';
 import { PolygonDrawer } from './drawers/polygon';
 import { PolylineDrawer } from './drawers/polyline';
@@ -146,36 +146,36 @@ export class AnnotationPlugin implements RenderingPlugin {
     }
     activeDrawer?.setCanvas(this.canvas);
     const onStart = (toolstate: any) => {
-      this.emmiter.emit('draw:start', toolstate);
+      this.emmiter.emit(DrawerEvent.START, toolstate);
       this.renderDrawer(toolstate);
     };
 
     const onMove = (toolstate: any) => {
-      this.emmiter.emit('draw:move', toolstate);
+      this.emmiter.emit(DrawerEvent.MOVE, toolstate);
       this.renderDrawer(toolstate);
     };
 
     const onModify = (toolstate: any) => {
-      this.emmiter.emit('draw:modify', toolstate);
+      this.emmiter.emit(DrawerEvent.MODIFIED, toolstate);
       this.renderDrawer(toolstate);
     };
 
     const onComplete = (toolstate: any) => {
       this.hideDrawer(toolstate);
-      this.emmiter.emit('draw:complete', toolstate);
+      this.emmiter.emit(DrawerEvent.COMPLETE, toolstate);
     };
 
     const onCancel = (toolstate: any) => {
       this.hideDrawer(toolstate);
-      this.emmiter.emit('draw:cancel', toolstate);
+      this.emmiter.emit(DrawerEvent.CANCEL, toolstate);
     };
 
     /** 监听绘制事件 */
-    activeDrawer.on('draw:start', onStart);
-    activeDrawer.on('draw:modify', onModify);
-    activeDrawer.on('draw:move', onMove);
-    activeDrawer.on('draw:complete', onComplete);
-    activeDrawer.on('draw:cancel', onCancel);
+    activeDrawer.on(DrawerEvent.START, onStart);
+    activeDrawer.on(DrawerEvent.MODIFIED, onModify);
+    activeDrawer.on(DrawerEvent.MOVE, onMove);
+    activeDrawer.on(DrawerEvent.COMPLETE, onComplete);
+    activeDrawer.on(DrawerEvent.CANCEL, onCancel);
 
     if (this.drawer) this.drawer.dispose();
 
@@ -201,7 +201,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.canvas = canvas;
 
     const handleMouseDown = (e: FederatedPointerEvent) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 
@@ -211,7 +211,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const handleMouseMove = (e: FederatedPointerEvent) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 
@@ -219,7 +219,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const handleMouseUp = (e: FederatedPointerEvent) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 
@@ -229,7 +229,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const handleMouseDbClick = (e: FederatedPointerEvent) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 
@@ -239,15 +239,15 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const handleClick = (e: FederatedPointerEvent) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 
       if (e.detail === 2) handleMouseDbClick(e);
     };
 
-    const handleDrawerKeyDown = (e) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+    const handleDrawerKeyDown = (e: KeyboardEvent) => {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 
@@ -255,7 +255,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!this.annotationPluginOptions.isDrawingMode) {
+      if (!this.annotationPluginOptions.isDrawingMode || e.shiftKey) {
         return;
       }
 

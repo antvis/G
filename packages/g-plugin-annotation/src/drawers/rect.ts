@@ -1,5 +1,5 @@
 import type { FederatedEvent } from '@antv/g-lite';
-import { DrawerTool } from '../constants/enum';
+import { DrawerEvent, DrawerTool } from '../constants/enum';
 import type { Point } from '../interface/drawer';
 import { BaseDrawer } from '../interface/drawer';
 import { isInvalidRect } from '../utils/drawer';
@@ -45,30 +45,36 @@ export class RectDrawer extends BaseDrawer {
     this.start = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
     this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
     this.id = uuidv4();
-    this.emit('draw:start', this.state);
+    this.emit(DrawerEvent.START, this.state);
   }
 
   onMouseMove(e: FederatedEvent) {
     if (!this.isDrawing) return;
     this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
-    this.emit('draw:modify', this.state);
+    this.emit(DrawerEvent.MODIFIED, this.state);
   }
 
   onMouseUp(e: FederatedEvent) {
     if (!this.isDrawing) return;
     if (isInvalidRect(this.start.viewport, this.end.viewport, 2)) {
-      this.emit('draw:cancel', this.state);
+      this.emit(DrawerEvent.CANCEL, this.state);
       this.reset();
       return;
     }
     this.isDrawing = false;
-    this.emit('draw:complete', this.state);
+    this.emit(DrawerEvent.COMPLETE, this.state);
     this.reset();
   }
 
   onMouseDbClick() {}
 
-  onKeyDown() {}
+  onKeyDown(e: KeyboardEvent) {
+    if (e.code === 'Escape') {
+      this.emit(DrawerEvent.CANCEL, this.state);
+      this.reset();
+      e.stopPropagation();
+    }
+  }
 
   reset() {
     super.reset();

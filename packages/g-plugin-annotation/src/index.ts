@@ -25,6 +25,8 @@ export class Plugin extends AbstractRendererPlugin {
         selectableStyle: {},
         isDrawingMode: true,
         arrowKeyStepLength: 4,
+        enableAutoSwitchDrawingMode: false,
+        enableDeleteTargetWithShortcuts: false,
         ...this.options,
       },
     });

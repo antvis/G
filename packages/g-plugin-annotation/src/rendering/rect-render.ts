@@ -61,5 +61,7 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     visibility: 'visible',
     ...style,
   });
-  brushRect.setLocalEulerAngles(rotation);
+  if (!isNaN(rotation)) {
+    brushRect.setLocalEulerAngles(rotation);
+  }
 };

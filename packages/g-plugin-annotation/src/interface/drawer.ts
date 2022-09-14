@@ -3,6 +3,12 @@ import EventEmitter from 'eventemitter3';
 import type { DrawerTool } from '../constants/enum';
 
 export type DrawerType = 'circle' | 'rect' | 'polyline' | 'polygon';
+
+/**
+ * TODO: make drawer style configurable
+ */
+export interface DrawerStyle {}
+
 export interface DrawerState {
   type: DrawerType;
   id: string;

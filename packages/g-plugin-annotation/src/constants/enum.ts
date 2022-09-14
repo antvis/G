@@ -5,6 +5,14 @@ export enum DrawerTool {
   Polyline = 'polyline',
 }
 
+export enum DrawerEvent {
+  START = 'draw:start',
+  MOVE = 'draw:move',
+  MODIFIED = 'draw:modify',
+  COMPLETE = 'draw:complete',
+  CANCEL = 'draw:cancel',
+}
+
 /**
  * fire custom event on target
  * @see http://fabricjs.com/docs/fabric.Object.html

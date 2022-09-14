@@ -7,9 +7,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
   init() {
     let points = [];
     if (this.style.target.nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2, defX, defY } = this.style.target.parsedStyle;
-      points.push([x1 - defX, y1 - defY]);
-      points.push([x2 - defX, y2 - defY]);
+      const { x1, y1, x2, y2 } = this.style.target.parsedStyle;
+      points.push([x1, y1]);
+      points.push([x2, y2]);
     } else if (this.style.target.nodeName === Shape.POLYLINE) {
       const { points: parsedPoints } = this.style.target.parsedStyle as ParsedPolylineStyleProps;
       points = parsedPoints.points;
@@ -167,7 +167,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
           const selectable = this.plugin.getOrCreateSelectableUI(selected);
           selectable.triggerMovedEvent();
         });
-      } else if (targetObject.nodeName === Shape.POLYLINE) {
+      } else if (targetObject.nodeName === Shape.POLYLINE || targetObject.nodeName === Shape.LINE) {
         targetObject.dispatchEvent(
           new CustomEvent(SelectableEvent.MODIFIED, {
             polyline: {

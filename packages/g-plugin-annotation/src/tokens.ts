@@ -6,15 +6,27 @@ export interface AnnotationPluginOptions {
   /**
    * Style for selectable UI.
    */
-  selectableStyle?: Partial<SelectableStyle>;
+  selectableStyle: Partial<SelectableStyle>;
+
   /**
    * Switch between drawing mode & select mode.
    */
-  isDrawingMode?: boolean;
+  isDrawingMode: boolean;
+
   /**
-   * The length target should move after arrwo key pressed in canvas coordinates.
+   * The length target should move after arrow key pressed in canvas coordinates.
    */
   arrowKeyStepLength: number;
+
+  /**
+   * Switch between drawing mode & select mode.
+   */
+  enableAutoSwitchDrawingMode: boolean;
+
+  /**
+   * Delete target with shortcuts, e.g. Delete, Esc
+   */
+  enableDeleteTargetWithShortcuts: boolean;
 }
 
 // @see http://fabricjs.com/fabric-intro-part-4#customization

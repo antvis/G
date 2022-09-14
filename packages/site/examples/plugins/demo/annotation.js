@@ -1,4 +1,14 @@
-import { Canvas, CanvasEvent, Circle, Ellipse, Image, Line, Polyline, Rect } from '@antv/g';
+import {
+  Canvas,
+  CanvasEvent,
+  Circle,
+  Ellipse,
+  Image,
+  Line,
+  Polyline,
+  Polygon,
+  Rect,
+} from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Plugin as AnnotationPlugin } from '@antv/g-plugin-annotation';
@@ -25,6 +35,8 @@ const canvaskitRenderer = new CanvaskitRenderer({
 });
 
 const annotationPlugin = new AnnotationPlugin({
+  enableDeleteTargetWithShortcuts: true,
+  enableAutoSwitchDrawingMode: true,
   selectableStyle: {
     selectionFill: 'rgba(24,144,255,0.15)',
     selectionStroke: '#1890FF',
@@ -143,6 +155,59 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(rect);
   canvas.appendChild(line);
   canvas.appendChild(polyline);
+
+  annotationPlugin.setDrawingMode(true);
+  annotationPlugin.setDrawer('rect');
+
+  annotationPlugin.addEventListener('drawer:enable', (setDrawer) => {
+    console.log('drawer:enable', setDrawer);
+  });
+
+  annotationPlugin.addEventListener('draw:start', (toolstate) => {
+    console.log('draw:start', toolstate);
+  });
+
+  annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
+    // use any brush you preferred
+    const brush = {
+      stroke: 'black',
+      strokeWidth: 10,
+      selectable: true,
+    };
+
+    if (type === 'polyline') {
+      const polyline = new Polyline({
+        style: {
+          ...brush,
+          points: path.map(({ x, y }) => [x, y]),
+        },
+      });
+      canvas.appendChild(polyline);
+    } else if (type === 'polygon') {
+      const polygon = new Polygon({
+        style: {
+          ...brush,
+          points: path.map(({ x, y }) => [x, y]),
+        },
+      });
+      canvas.appendChild(polygon);
+    } else if (type === 'rect') {
+      const rect = new Rect({
+        style: {
+          ...brush,
+          x: path[0].x,
+          y: path[0].y,
+          width: path[2].x - path[0].x,
+          height: path[2].y - path[0].y,
+        },
+      });
+      canvas.appendChild(rect);
+    }
+  });
+
+  annotationPlugin.addEventListener('draw:cancel', (toolstate) => {
+    console.log('draw:cancel', toolstate);
+  });
 });
 
 // stats
@@ -273,6 +338,8 @@ selectableFolder.open();
 
 const apiFolder = gui.addFolder('API');
 const apiConfig = {
+  setDrawingMode: true,
+  setDrawer: 'rect',
   selectDisplayObject: 'none',
   deselectDisplayObject: 'none',
   getSelectedDisplayObjects: () => {
@@ -282,6 +349,12 @@ const apiConfig = {
     image.remove();
   },
 };
+apiFolder.add(apiConfig, 'setDrawingMode').onChange((enable) => {
+  annotationPlugin.setDrawingMode(enable);
+});
+apiFolder.add(apiConfig, 'setDrawer', ['rect', 'polyline', 'polygon']).onChange((drawer) => {
+  annotationPlugin.setDrawer(drawer);
+});
 apiFolder
   .add(apiConfig, 'selectDisplayObject', [
     'rect',
