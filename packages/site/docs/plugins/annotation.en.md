@@ -3,15 +3,15 @@ title: g-plugin-annotation
 order: -1
 ---
 
-除了把图形渲染出来，有时我们还希望以交互形式对图形进行缩放等变换，例如 [Fabric.js](http://fabricjs.com/) 和 [Konva.js](https://konvajs.org/) 就提供了这样的能力。以下图为例，鼠标选中图形后，会出现辅助操作的控件，可以通过拖拽蒙层移动目标图形，也可以通过拖拽锚点对图形进行缩放：
+In addition to rendering the drawing out, sometimes we want to perform transformations such as scaling on the drawing in an interactive form, for example [Fabric.js](http://fabricjs.com/) and [Konva.js](https://konvajs.org/) provide the ability to do so. As an example, in the following figure, after selecting the graph with the mouse, controls for auxiliary operations appear, allowing the target graph to be moved by dragging and dropping the mask, and the graph to be scaled by dragging and dropping the anchor point.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zXxcR4O7aHQAAAAAAAAAAAAAARQnAQ" alt="selectable UI" width="200">
 
-[示例](/en/examples/plugins#annotation)
+[Example](/en/examples/plugins#annotation)
 
-# 安装方式
+# Installation
 
-该插件依赖 [g-plugin-dragndrop](/en/docs/plugins/dragndrop) 提供的拖拽能力，因此在使用时需要同时注册：
+This plugin relies on [g-plugin-dragndrop](/en/docs/plugins/dragndrop) for drag-and-drop capabilities, so it needs to be used with the following registration.
 
 ```js
 import { Plugin as PluginDragndrop } from '@antv/g-plugin-dragndrop';
@@ -21,59 +21,162 @@ renderer.registerPlugin(new PluginDragndrop());
 renderer.registerPlugin(new PluginAnnotation());
 ```
 
-# 使用方式
+# Usage
 
-通过开启 `selectable` 可以让基础图形具备交互功能：
+The plugin provides two modes which can be switched via [setDrawingMode](/en/docs/plugins/annotation#setdrawingmode).
+
+-   Drawing mode. This mode allows drawing graphics in preset steps.
+-   Edit mode. In this mode, select `selectable` graphics and the corresponding editing component will appear, so you can finish editing operations such as panning and resizing the graphics through component interaction.
+
+## Drawing mode
+
+After entering drawing mode, use [setDrawer](/en/docs/plugins/annotation#setdrawer) to set the drawing tool for the corresponding graph and start drawing. For example, we want to draw a line.
+
+```js
+plugin.setDrawingMode(true);
+plugin.setDrawer(DrawerTool.Polyline);
+// or
+plugin.setDrawer('polyline');
+```
+
+We currently offer the following drawing tools.
+
+```js
+export enum DrawerTool {
+  Circle = 'circle',
+  Rect = 'rect',
+  Polygon = 'polygon',
+  Polyline = 'polyline',
+}
+```
+
+A series of events will be triggered during the drawing process. In Fabric.js, you need to set the brush before you can draw. When using this plugin, you need to listen to the Draw Finished event and use the draw point data carried in the event object to create the base drawing and add it to the canvas.
+
+```js
+annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
+    // use any brush you preferred
+    const brush = {
+        stroke: 'black',
+        strokeWidth: 10,
+        selectable: true,
+    };
+});
+```
+
+### Drawing keypoint
+
+Press the mouse to determine the position of the point, which can then be used to draw any figure such as [Circle](/en/docs/api/basic/circle).
+
+### Drawing rectangles
+
+Press the mouse, drag and drop and then lift to finish drawing.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*AdchSpfkON0AAAAAAAAAAAAAARQnAQ" alt="draw a rect" width="400" />
+
+The following keyboard shortcuts are supported.
+
+-   `esc` to cancel drawing
+
+### Drawing polyline
+
+Press the mouse in sequence to determine the vertices, double-click the mouse or successive vertices close to each other is considered to be the end of the drawing, the line between the vertices form the final fold line.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*cWBbT54Ym9cAAAAAAAAAAAAAARQnAQ" alt="draw a polyline" width="400" />
+
+The following keyboard shortcuts are supported.
+
+-   `esc` to cancel drawing
+-   `shift` + `Z` to undo the latest line segment
+-   `space` to finish drawing
+
+### Drawing polygon
+
+Press the mouse in sequence to determine the vertices and close them to form a polygon.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*XO54RqJPp7AAAAAAAAAAAAAAARQnAQ" alt="draw a polygon" width="400" />
+
+The following keyboard shortcuts are supported.
+
+-   `esc` to cancel drawing
+-   `shift` + `Z` to undo the latest line segment
+-   `space` to finish drawing
+
+## Edit mode
+
+The base graph can be made interactive by turning on `selectable`.
 
 ```js
 circle.style.selectable = true;
 ```
 
-目前我们支持以下**基础图形**：[Circle](/en/docs/api/basic/circle)、[Ellipse](/en/docs/api/basic/ellipse)、[Rect](/en/docs/api/basic/rect)、[Image](/en/docs/api/basic/image)、[Line](/en/docs/api/basic/line)、[Polyline](/en/docs/api/basic/polyline)
+We currently support the following **basic graphics**: [Circle](/en/docs/api/basic/circle)、[Ellipse](/en/docs/api/basic/ellipse)、[Rect](/en/docs/api/basic/rect)、[Image](/en/docs/api/basic/image)、[Line](/en/docs/api/basic/line)、[Polyline](/en/docs/api/basic/polyline)
 
-## 选中图形
+### Select graphics
 
-选中一个可交互图形有以下两种方式：
+We support selecting single or multiple graphics either interactively or via API.
 
--   点击图形。这也是最常见的方式。
--   通过 API 方式选中图形，调用 [selectDisplayObject](/en/docs/plugins/annotation#selectdisplayobject) 方法。
+To select a graphic via API, you can call the [selectDisplayObject](/en/docs/plugins/annotation#selectdisplayobject) method. When the graphic is selected, a mask will appear on top of it, which contains several anchor points.
 
-图形被选中后会在上面出现一个蒙层，蒙层中包含若干锚点。
+Clicking on the graphic will complete a single selection, which is the most common way. We support the following two ways to complete multiple selections.
 
-另外我们支持按住 `shift` 配合点击实现多选。
+-   Hold down `shift` and click to add a selection while keeping the selected shape
+-   Hold down `shift` and drag a rectangle to complete a region swipe
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*i4jHQ6a8ZzMAAAAAAAAAAAAAARQnAQ" alt="multi-select" width="200">
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*kf-wR5_SY4YAAAAAAAAAAAAAARQnAQ" alt="multi-select" width="300">
 
-## 取消选中图形
+### Deselect graphics
 
-和选中图形相对，取消选中也有两种方式：
+As opposed to selecting a graphic, there are two ways to unselect it.
 
--   点击画布空白区域或者另一个图形。
--   通过 API 方式取消选中图形，调用 [deselectDisplayObject](/en/docs/plugins/annotation#deselectdisplayobject) 方法。
+-   Click on a blank area of the canvas or another graphic.
+-   To unselect a graphic via API, call [deselectDisplayObject](/en/docs/plugins/annotation#deselectdisplayobject) method.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
-## 移动图形
+### Move graphics
 
-选中图形后，在蒙层上拖拽即可实现图形移动：
+After selecting the shape, drag and drop it on the mask to move it.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rC-ERaSSrmcAAAAAAAAAAAAAARQnAQ" alt="move target">
 
-在移动过程中以及移动完毕后会触发相应 [事件]()。
+The corresponding [event]() will be triggered during and after the movement.
 
-## 改变图形大小
+You can also use the keyboard up/down/left/right arrow keys to move the drawing after it is selected, and the step length can be configured by [arrowKeyStepLength](/en/docs/plugins/annotation#arrowkeysteplength).
 
-拖拽锚点可以改变图形的大小。以下图为例，拖拽右下角的锚点时，实际上是先固定了左上角，再修改图片的宽高。
+### Resize graphics
+
+Dragging the anchor point can change the size of the graphic. Take the following figure as an example, when dragging the anchor point in the bottom right corner, it actually fixes the top left corner first, and then modifies the width and height of the image.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gmraRLDxW_kAAAAAAAAAAAAAARQnAQ" alt="resize target">
 
-# 插件初始化配置
+# Plugin initialization configuration
 
-在创建插件时，可以传入一些初始化配置。
+When creating a plugin, you can pass in some initialization configuration.
 
-## 辅助操作组件样式
+## isDrawingMode
 
-辅助操作组件的部分样式支持自定义，因此可以在初始化时传入样式配置，例如将蒙层的填充色变成黑色：
+If or not draw mode, the default value is `true`.
+
+## enableAutoSwitchDrawingMode
+
+Automatically switch in some scenes, the default value is `false`.
+
+-   Clicking on an interactive drawing in drawing mode will automatically switch to editing mode.
+-   Clicking on a blank area in edit mode will automatically switch to draw mode.
+
+## enableDeleteTargetWithShortcuts
+
+The default value is `false` to delete the selected interactive graphics using keyboard shortcuts.
+
+When enabled, you can use the `Delete` / `Esc` / `Backspace` keys to delete the selected interactive graphics.
+
+## arrowKeyStepLength
+
+In edit mode, use the keyboard up, down, left and right arrow keys to move the graph in steps, the default value is `4`.
+
+## selectableStyle
+
+Some of the styles of the auxiliary actions component support customization, so you can pass in style configurations during initialization, for example to make the fill color of the mask black.
 
 ```js
 const plugin = new PluginAnnotation({
@@ -83,12 +186,12 @@ const plugin = new PluginAnnotation({
 });
 ```
 
-目前我们支持的样式配置如下：
+We currently support the following style configurations.
 
 ```js
 export interface SelectableStyle {
     /**
-     * 蒙层
+     * Mask
      */
     selectionFill: string;
     selectionFillOpacity: number;
@@ -96,7 +199,7 @@ export interface SelectableStyle {
     selectionStrokeOpacity: number;
     selectionStrokeWidth: number;
     /**
-     * 锚点
+     * Anchors
      */
     anchorFill: string;
     anchorStroke: string;
@@ -106,11 +209,11 @@ export interface SelectableStyle {
 }
 ```
 
-除了在初始化插件时指定，后续也可以随时使用 [updateSelectableStyle](/en/docs/plugins/annotation#updateselectablestyle) 方法修改。
+In addition to specifying it when initializing the plugin, it can be modified at any time later using the [updateSelectableStyle](/en/docs/plugins/annotation#updateselectablestyle) method.
 
 ### selectionFill
 
-蒙层填充色，可以参考 [fill](/en/docs/api/basic/display-object#fill) 的取值，例如：
+For the mask fill color, you can refer to [fill](/en/docs/api/basic/display-object#fill) for the value, e.g.
 
 ```js
 const plugin = new PluginAnnotation({
@@ -122,11 +225,11 @@ const plugin = new PluginAnnotation({
 
 ### selectionFillOpacity
 
-蒙层填充色透明度，可以参考 [fillOpacity](/en/docs/api/basic/display-object#fillopacity) 的取值。
+For the opacity of the mask fill color, you can refer to [fillOpacity](/en/docs/api/basic/display-object#fillopacity) for the value.
 
 ### selectionStroke
 
-蒙层描边颜色。可以参考 [stroke](/en/docs/api/basic/display-object#stroke) 的取值。
+Stroke color of the mask. You can refer to [stroke](/en/docs/api/basic/display-object#stroke) for the value.
 
 ```js
 const plugin = new PluginAnnotation({
@@ -138,35 +241,149 @@ const plugin = new PluginAnnotation({
 
 ### selectionStrokeOpacity
 
-蒙层描边透明度，可以参考 [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity) 的取值。
+Mask stroke opacity, you can refer to [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity) for the value.
 
 ### selectionStrokeWidth
 
-蒙层描边线宽。可以参考 [strokeWidth](/en/docs/api/basic/display-object#strokewidth) 的取值。
+Stroke width of the mask. You can refer to [strokeWidth](/en/docs/api/basic/display-object#strokewidth) for the value.
+
+### selectionLineDash
+
+The mask stroke dashed line. You can refer to [lineDash](/en/docs/api/basic/display-object#linedash) for the value.
 
 ### anchorFill
 
-锚点填充色。
+The anchor fill color.
 
 ### anchorFillOpacity
 
-锚点填充色透明度。
+The opacity of the anchor fill color.
 
 ### anchorStroke
 
-锚点描边色。
+The anchor stroke color.
 
 ### anchorStrokeOpacity
 
-锚点描边色透明度。
+The opacity of the anchor stroke color.
+
+### anchorStrokeWidth
+
+The width of the anchor stroke line.
 
 ### anchorSize
 
-锚点尺寸。暂时我们仅支持圆形锚点，因此该属性等同于圆的半径。
+The size of the anchor point. For now we only support circular anchors, so this property is equivalent to the radius of a circle.
+
+## drawerStyle
+
+Auxiliary drawing style for the component. The initial value is specified by the constructor `drawStyle` parameter and can be updated by [updateDrawerStyle](/en/docs/plugins/annotation#updatedrawerstyle).
+
+For example, if we want to specify the stroke color of a rectangular drawing component.
+
+```js
+const annotationPlugin = new AnnotationPlugin({
+    drawerStyle: {
+        rectStroke: 'red',
+    },
+});
+```
+
+### rectFill
+
+See [fill](/en/docs/api/basic/display-object#fill), the default value is `'none'`.
+
+### rectFillOpacity
+
+See [fillOpacity](/en/docs/api/basic/display-object#fillopacity), the default value is `1`.
+
+### rectStroke
+
+See [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+
+### rectStrokeOpacity
+
+See [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity), the default value is `1`.
+
+### rectStrokeWidth
+
+See [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2.5`.
+
+### rectLineDash
+
+You can refer to [lineDash](/en/docs/api/basic/display-object#linedash), the default value is `6`.
+
+### polylineVertexSize
+
+The size of the drawn vertex of the folded line. For now, we only support circular vertices, so this property is equivalent to the radius of a circle, and the default value is `6`.
+
+In the following figure, the hollow circle is the drawn vertex and the solid line is the drawn line segment; the solid circle is the vertex being drawn and the dashed line is the line segment being drawn.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*RDKsRIgEAqIAAAAAAAAAAAAAARQnAQ" alt="draw polyline" width="300">
+
+### polylineVertexFill
+
+See [fill](/en/docs/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
+
+### polylineVertexFillOpacity
+
+See [fillOpacity](/en/docs/api/basic/display-object#fillopacity), the default value is `1`.
+
+### polylineVertexStroke
+
+See [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+
+### polylineVertexStrokeOpacity
+
+See [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity), the default value is `1`.
+
+### polylineVertexStrokeWidth
+
+See [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2`.
+
+### polylineSegmentStroke
+
+The color of the drawn line segment of the fold line, see [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+
+### polylineSegmentStrokeWidth
+
+The line width of the drawn line segment of the folded line, refer to [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2`.
+
+### polylineActiveVertexSize
+
+The size of the vertex being drawn by the fold. For now we only support circular vertices, so this property is equivalent to the radius of a circle, and the default value is `6`.
+
+### polylineActiveVertexFill
+
+See [fill](/en/docs/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
+
+### polylineActiveVertexFillOpacity
+
+See [fillOpacity](/en/docs/api/basic/display-object#fillopacity), the default value is `1`.
+
+### polylineActiveVertexStroke
+
+See [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+
+### polylineActiveVertexStrokeOpacity
+
+See [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity), the default value is `0.2`.
+
+### polylineActiveVertexStrokeWidth
+
+See [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2`.
+
+### polylineActiveSegmentStroke
+
+The fold line is drawing line color, see [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
+
+### polylineActiveSegmentStrokeWidth
+
+The line width of the line segment being drawn, refer to [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2.5`.
 
 # API
 
-以下 API 可以通过插件实例调用，例如：
+The following APIs can be called through plugin instances, e.g.
 
 ```js
 const plugin = new PluginAnnotation();
@@ -175,9 +392,37 @@ circle.style.selectable = true;
 plugin.selectDisplayObject(circle);
 ```
 
+## setDrawingMode
+
+Sets whether draw mode is enabled.
+
+```js
+// 进入绘制模式
+plugin.setDrawingMode(true);
+
+// 进入编辑模式
+plugin.setDrawingMode(false);
+```
+
+## setDrawer
+
+In drawing mode, we provide the ability to draw the following graphics.
+
+-   `circle`
+-   `rect`
+-   `polyline`
+-   `polygon`
+
+For example, to draw a rectangle.
+
+```js
+plugin.setDrawingMode(true);
+plugin.setDrawer('rect');
+```
+
 ## selectDisplayObject
 
-选中一个图形。并不会对其他已选择的图形应用取消操作。
+Selects a graphic. Does not apply the cancel operation to other selected graphs.
 
 ```js
 plugin.selectedDisplayObject(circle);
@@ -185,7 +430,7 @@ plugin.selectedDisplayObject(circle);
 
 ## deselectDisplayObject
 
-取消选中一个图形。
+Deselects a graphic.
 
 ```js
 plugin.deselectedDisplayObject(circle);
@@ -193,7 +438,7 @@ plugin.deselectedDisplayObject(circle);
 
 ## getSelectedDisplayObjects
 
-获取当前选中的图形列表。
+Get the list of currently selected graphs.
 
 ```js
 plugin.getSelectedDisplayObjects(); // [circle, path]
@@ -201,7 +446,7 @@ plugin.getSelectedDisplayObjects(); // [circle, path]
 
 ## updateSelectableStyle
 
-实时更新交互组件的[样式](/en/docs/plugins/annotation#辅助操作组件样式)，例如在 [示例](/en/examples/plugins#annotation) 中修改蒙层填充色：
+Update the [style](/en/docs/plugins/annotation#assist manipulation component style) of the interactive component in real time, e.g. modify the mask fill color in [example](/en/examples/plugins#annotation).
 
 ```js
 plugin.updateSelectableStyle({
@@ -209,9 +454,79 @@ plugin.updateSelectableStyle({
 });
 ```
 
-# 事件
+## updateDrawerStyle
 
-当图形被选中、取消选中、移动、改变尺寸时，会触发对应事件。
+Update the style of the auxiliary drawing component, e.g.
+
+```js
+plugin.updateDrawerStyle({
+    rectStroke: 'red',
+});
+```
+
+# Events
+
+Different events will be triggered in different modes, for example, drawing mode will trigger on plug-ins, while editing mode will trigger on graphics.
+
+## Drawing mode
+
+Unlike the "free drawing" mode of Fabric.js, the plugin listens for events triggered at different drawing stages, gets the geometry information contained in the event object, creates the corresponding shapes and applies custom styles to complete the drawing.
+
+The following events are supported.
+
+```js
+export enum DrawerEvent {
+  START = 'draw:start',
+  MOVE = 'draw:move',
+  MODIFIED = 'draw:modify',
+  COMPLETE = 'draw:complete',
+  CANCEL = 'draw:cancel',
+}
+```
+
+The event object contains the following data, where the key properties are
+
+-   `type` The type of graph to draw. Currently supports `rect` `polyline` `polygon`
+-   `path` draws a list of graph vertices, like: `[{ x: 0, y: 0 }, { x: 100, y: 100 }...] `
+
+```js
+plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {});
+```
+
+### Start drawing
+
+### Drawing
+
+### Cancel drawing
+
+### Complete drawing
+
+At the end of the drawing, the auxiliary drawing UI is automatically hidden and we can use the vertex data to draw the final shape.
+
+```js
+plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {
+    // use any brush you preferred
+    const brush = {
+        stroke: 'black',
+        strokeWidth: 10,
+        selectable: true,
+    };
+
+    if (type === 'polyline') {
+        const polyline = new Polyline({
+            style: {
+                ...brush,
+                points: path.map(({ x, y }) => [x, y]),
+            },
+        });
+        canvas.appendChild(polyline);
+    }
+});
+```
+
+## Edit mode
+
+When a drawing is selected, unselected, moved, or changed in size, the corresponding event is triggered.
 
 ```js
 export enum SelectableEvent {
@@ -223,9 +538,9 @@ export enum SelectableEvent {
 }
 ```
 
-## 选中事件
+### Selected Event
 
-当目标图形被选中时触发。在 [示例](/en/examples/plugins#annotation) 中，我们监听了图片的选中事件：
+Triggered when the target graphic is selected. In [example](/en/examples/plugins#annotation), we listen to the selected event of the image.
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -235,9 +550,9 @@ image.addEventListener('selected', () => {});
 image.addEventListener(SelectableEvent.SELECTED, () => {});
 ```
 
-## 取消选中事件
+### Deselected Event
 
-当目标图形被取消选中时触发。在 [示例](/en/examples/plugins#annotation) 中，我们监听了图片的取消选中事件：
+Triggered when the target graphic is deselected. In [example](/en/examples/plugins#annotation), we listen to the deselected event of the image.
 
 ```js
 import { SelectableEvent } from '@antv/g-plugin-annotation';
@@ -245,4 +560,48 @@ import { SelectableEvent } from '@antv/g-plugin-annotation';
 image.addEventListener('deselected', () => {});
 // or
 image.addEventListener(SelectableEvent.DESELECTED, () => {});
+```
+
+### Moving Event
+
+When dragging a mask, the target graphic will move with it, and this process will continue to trigger in-motion events, similar to `dragging` in [g-plugin-dragndrop](/en/docs/plugins/dragndrop).
+
+```js
+import { SelectableEvent } from '@antv/g-plugin-annotation';
+
+image.addEventListener('moving', () => {});
+// or
+image.addEventListener(SelectableEvent.MOVING, () => {});
+```
+
+The following information is carried on this event object.
+
+```js
+image.addEventListener('moving', (e) => {
+    const { movingX, movingY, dx, dy } = e.detail;
+});
+```
+
+### Moved Event
+
+This event is triggered when the dragging is finished, similar to `dragend` in [g-plugin-dragndrop](/en/docs/plugins/dragndrop).
+
+```js
+import { SelectableEvent } from '@antv/g-plugin-annotation';
+
+image.addEventListener('moved', () => {});
+// or
+image.addEventListener(SelectableEvent.MOVED, () => {});
+```
+
+### Modified Event
+
+Dragging and dropping on the anchor point scales the drawing, and this process also continuously triggers modification events.
+
+```js
+import { SelectableEvent } from '@antv/g-plugin-annotation';
+
+image.addEventListener('modified', () => {});
+// or
+image.addEventListener(SelectableEvent.MODIFED, () => {});
 ```

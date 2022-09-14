@@ -34,7 +34,7 @@ export class AnnotationPlugin implements RenderingPlugin {
     private renderingContext: RenderingContext,
 
     @inject(AnnotationPluginOptions)
-    private annotationPluginOptions: AnnotationPluginOptions,
+    public annotationPluginOptions: AnnotationPluginOptions,
   ) {}
 
   private hotkeyActive: boolean = false;

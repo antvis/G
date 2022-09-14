@@ -1,4 +1,4 @@
-import { Circle } from '@antv/g-lite';
+import { Circle, definedProps } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { ACTIVE_DRAWPOINT_STYLE, NORMAL_DRAWPOINT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
@@ -7,6 +7,21 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
   const points = anno.path.slice(0, anno.path.length - 1);
   const length = points.length;
 
+  const {
+    polylineVertexFill,
+    polylineVertexFillOpacity,
+    polylineVertexSize,
+    polylineVertexStroke,
+    polylineVertexStrokeOpacity,
+    polylineVertexStrokeWidth,
+    polylineActiveVertexFill,
+    polylineActiveVertexFillOpacity,
+    polylineActiveVertexSize,
+    polylineActiveVertexStroke,
+    polylineActiveVertexStrokeOpacity,
+    polylineActiveVertexStrokeWidth,
+  } = context.annotationPluginOptions.drawerStyle;
+
   // hide all control points first
   for (let i = 0; i < context.polylineControlPoints.length; i++) {
     context.polylineControlPoints[i].style.visibility = 'hidden';
@@ -14,6 +29,24 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
 
   points.forEach((point, index) => {
     const styles = index === length - 1 ? ACTIVE_DRAWPOINT_STYLE : NORMAL_DRAWPOINT_STYLE;
+    const overrideStyles =
+      index === length - 1
+        ? {
+            fill: polylineActiveVertexFill,
+            fillOpacity: polylineActiveVertexFillOpacity,
+            r: polylineActiveVertexSize,
+            stroke: polylineActiveVertexStroke,
+            strokeOpacity: polylineActiveVertexStrokeOpacity,
+            strokeWidth: polylineActiveVertexStrokeWidth,
+          }
+        : {
+            fill: polylineVertexFill,
+            fillOpacity: polylineVertexFillOpacity,
+            r: polylineVertexSize,
+            stroke: polylineVertexStroke,
+            strokeOpacity: polylineVertexStrokeOpacity,
+            strokeWidth: polylineVertexStrokeWidth,
+          };
 
     let circle = context.polylineControlPoints[index];
     if (!circle) {
@@ -47,6 +80,7 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
       cy: point.y,
       visibility: 'visible',
       ...styles,
+      ...definedProps(overrideStyles),
     });
   });
 };

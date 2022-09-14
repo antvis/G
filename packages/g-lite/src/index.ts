@@ -56,6 +56,7 @@ export {
   createVec3,
   findClosestClipPathTarget,
   getOrCalculatePathTotalLength,
+  definedProps,
 } from './utils';
 export { RBush };
 

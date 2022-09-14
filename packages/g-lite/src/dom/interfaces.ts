@@ -1,4 +1,6 @@
+import type RBush from 'rbush';
 import type { ICamera } from '../camera';
+import type { RBushNodeAABB } from '../components';
 import type { DisplayObject } from '../display-objects';
 import type { ContextService, EventService, RenderingService } from '../services';
 import type { PointLike } from '../shapes';
@@ -486,6 +488,7 @@ export interface IDocument extends INode, IParentNode {
 
   elementFromPoint: (x: number, y: number) => Promise<DisplayObject>;
   elementsFromPoint: (x: number, y: number) => Promise<DisplayObject[]>;
+  elementsFromBBox: (minX: number, minY: number, maxX: number, maxY: number) => DisplayObject[];
 }
 
 /**
@@ -524,6 +527,7 @@ export interface ICanvas extends IEventTarget {
   getContextService: () => ContextService<unknown>;
   getRenderingService: () => RenderingService;
   getEventService: () => EventService;
+  getRBushRoot: () => RBush<RBushNodeAABB>;
 
   client2Viewport: (client: PointLike) => PointLike;
   viewport2Client: (viewport: PointLike) => PointLike;

@@ -57,7 +57,13 @@ export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, D
       }
       newClipPath.parsedStyle.clipPathTargets.push(object);
     }
-    this.sceneGraphService.dirtifyToRoot(object);
+
+    // should affect children
+    object.forEach((leaf) => {
+      if (leaf.childNodes.length === 0) {
+        this.sceneGraphService.dirtifyToRoot(leaf);
+      }
+    });
 
     return newClipPath;
   }

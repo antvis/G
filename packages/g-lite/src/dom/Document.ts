@@ -1,9 +1,9 @@
 import { GlobalContainer } from 'mana-syringe';
 import { isFunction } from '@antv/util';
 import { BUILT_IN_PROPERTIES } from '../css';
-import { Group, Text } from '../display-objects';
+import { DisplayObjectPool, Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import type { BaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { AnimationTimelineToken, Shape } from '../types';
 import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, ERROR_MSG_USE_DOCUMENT_ELEMENT } from '../utils';
 import type {
@@ -130,6 +130,43 @@ export class Document extends Node implements IDocument {
       this.documentElement.destroy();
       this.timeline.destroy();
     } catch (e) {}
+  }
+
+  /**
+   * Picking 2D graphics with RBush based on BBox, fast but inaccurate.
+   */
+  elementsFromBBox(minX: number, minY: number, maxX: number, maxY: number): DisplayObject[] {
+    const rBush = this.defaultView.getRBushRoot();
+    const rBushNodes = rBush.search({ minX, minY, maxX, maxY });
+    const displayObjectPool = GlobalContainer.get(DisplayObjectPool);
+
+    const hitTestList: DisplayObject[] = [];
+    rBushNodes.forEach(({ id }) => {
+      const displayObject = displayObjectPool.getByEntity(id);
+      const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
+
+      // account for `visibility`
+      // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
+      const isVisibilityAffected = [
+        'auto',
+        'visiblepainted',
+        'visiblefill',
+        'visiblestroke',
+        'visible',
+      ].includes(pointerEvents);
+
+      if (
+        (!isVisibilityAffected || (isVisibilityAffected && displayObject.isVisible())) &&
+        !displayObject.isCulled() &&
+        displayObject.isInteractive()
+      ) {
+        hitTestList.push(displayObject);
+      }
+    });
+    // find group with max z-index
+    hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
+
+    return hitTestList;
   }
 
   /**

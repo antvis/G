@@ -225,4 +225,31 @@ describe('Document', () => {
     expect(target).to.be.eqls(circle1);
     expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
   });
+
+  it('should execute region query with elementsFromBBox', async () => {
+    let targets = canvas.document.elementsFromBBox(0, 0, 1, 1);
+    expect(targets).to.be.eqls([canvas.document.documentElement]);
+
+    // outside Canvas' viewport
+    targets = canvas.document.elementsFromBBox(-100, -100, -50, -50);
+    expect(targets).to.be.eqls([]);
+
+    const circle = new Circle({
+      style: {
+        r: 100,
+        cx: 100,
+        cy: 100,
+        fill: 'red',
+      },
+    });
+    canvas.appendChild(circle);
+
+    await sleep(100);
+
+    targets = canvas.document.elementsFromBBox(100, 100, 150, 150);
+    expect(targets).to.be.eqls([circle, canvas.document.documentElement]);
+
+    targets = canvas.document.elementsFromBBox(-100, -100, -50, -50);
+    expect(targets).to.be.eqls([]);
+  });
 });

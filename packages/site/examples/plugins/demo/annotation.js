@@ -202,6 +202,16 @@ canvas.addEventListener(CanvasEvent.READY, () => {
         },
       });
       canvas.appendChild(rect);
+    } else if (type === 'circle') {
+      const circle = new Circle({
+        style: {
+          ...brush,
+          cx: path[0].x,
+          cy: path[0].y,
+          r: 20,
+        },
+      });
+      canvas.appendChild(circle);
     }
   });
 
@@ -336,6 +346,102 @@ selectableFolder
   });
 selectableFolder.open();
 
+const drawerFolder = gui.addFolder('drawer');
+const drawerConfig = {
+  rectStroke: '#FAAD14',
+  rectStrokeWidth: 2.5,
+  rectLineDash: 6,
+  polylineVertexFill: '#FFFFFF',
+  polylineVertexSize: 6,
+  polylineVertexStroke: '#FAAD14',
+  polylineVertexStrokeWidth: 2,
+  polylineActiveVertexFill: '#FAAD14',
+  polylineActiveVertexSize: 6,
+  polylineActiveVertexStroke: '#FAAD14',
+  polylineActiveVertexStrokeWidth: 4,
+  polylineSegmentStroke: '#FAAD14',
+  polylineActiveSegmentStroke: '#FAAD14',
+};
+drawerFolder.addColor(drawerConfig, 'rectStroke').onChange((rectStroke) => {
+  annotationPlugin.updateDrawerStyle({
+    rectStroke,
+  });
+});
+drawerFolder.add(drawerConfig, 'rectStrokeWidth', 0, 10).onChange((rectStrokeWidth) => {
+  annotationPlugin.updateDrawerStyle({
+    rectStrokeWidth,
+  });
+});
+drawerFolder.add(drawerConfig, 'rectLineDash', 0, 10).onChange((rectLineDash) => {
+  annotationPlugin.updateDrawerStyle({
+    rectLineDash,
+  });
+});
+drawerFolder.addColor(drawerConfig, 'polylineVertexFill').onChange((polylineVertexFill) => {
+  annotationPlugin.updateDrawerStyle({
+    polylineVertexFill,
+  });
+});
+drawerFolder.addColor(drawerConfig, 'polylineVertexStroke').onChange((polylineVertexStroke) => {
+  annotationPlugin.updateDrawerStyle({
+    polylineVertexStroke,
+  });
+});
+drawerFolder.add(drawerConfig, 'polylineVertexSize', 0, 10).onChange((polylineVertexSize) => {
+  annotationPlugin.updateDrawerStyle({
+    polylineVertexSize,
+  });
+});
+drawerFolder
+  .add(drawerConfig, 'polylineVertexStrokeWidth', 0, 10)
+  .onChange((polylineVertexStrokeWidth) => {
+    annotationPlugin.updateDrawerStyle({
+      polylineVertexStrokeWidth,
+    });
+  });
+drawerFolder.addColor(drawerConfig, 'polylineSegmentStroke').onChange((polylineSegmentStroke) => {
+  annotationPlugin.updateDrawerStyle({
+    polylineSegmentStroke,
+  });
+});
+
+drawerFolder
+  .addColor(drawerConfig, 'polylineActiveVertexFill')
+  .onChange((polylineActiveVertexFill) => {
+    annotationPlugin.updateDrawerStyle({
+      polylineActiveVertexFill,
+    });
+  });
+drawerFolder
+  .addColor(drawerConfig, 'polylineActiveVertexStroke')
+  .onChange((polylineActiveVertexStroke) => {
+    annotationPlugin.updateDrawerStyle({
+      polylineActiveVertexStroke,
+    });
+  });
+drawerFolder
+  .add(drawerConfig, 'polylineActiveVertexSize', 0, 10)
+  .onChange((polylineActiveVertexSize) => {
+    annotationPlugin.updateDrawerStyle({
+      polylineActiveVertexSize,
+    });
+  });
+drawerFolder
+  .add(drawerConfig, 'polylineActiveVertexStrokeWidth', 0, 10)
+  .onChange((polylineActiveVertexStrokeWidth) => {
+    annotationPlugin.updateDrawerStyle({
+      polylineActiveVertexStrokeWidth,
+    });
+  });
+drawerFolder
+  .addColor(drawerConfig, 'polylineActiveSegmentStroke')
+  .onChange((polylineActiveSegmentStroke) => {
+    annotationPlugin.updateDrawerStyle({
+      polylineActiveSegmentStroke,
+    });
+  });
+drawerFolder.close();
+
 const apiFolder = gui.addFolder('API');
 const apiConfig = {
   setDrawingMode: true,
@@ -352,9 +458,11 @@ const apiConfig = {
 apiFolder.add(apiConfig, 'setDrawingMode').onChange((enable) => {
   annotationPlugin.setDrawingMode(enable);
 });
-apiFolder.add(apiConfig, 'setDrawer', ['rect', 'polyline', 'polygon']).onChange((drawer) => {
-  annotationPlugin.setDrawer(drawer);
-});
+apiFolder
+  .add(apiConfig, 'setDrawer', ['rect', 'polyline', 'polygon', 'circle'])
+  .onChange((drawer) => {
+    annotationPlugin.setDrawer(drawer);
+  });
 apiFolder
   .add(apiConfig, 'selectDisplayObject', [
     'rect',

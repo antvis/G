@@ -1,5 +1,5 @@
 import type { PointLike } from '@antv/g-lite';
-import { Rect } from '@antv/g-lite';
+import { Rect, definedProps } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
@@ -31,6 +31,14 @@ function getRotationFromBbox(path: PointLike[]) {
 export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   const { path } = anno;
   const style = anno.isDrawing ? DASH_LINE_STYLE : DEFAULT_STYLE;
+  const {
+    rectFill,
+    rectFillOpacity,
+    rectStroke,
+    rectStrokeOpacity,
+    rectStrokeWidth,
+    rectLineDash,
+  } = context.annotationPluginOptions.drawerStyle;
 
   const [tl] = path;
   const { x, y } = tl;
@@ -60,6 +68,14 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     width,
     visibility: 'visible',
     ...style,
+    ...definedProps({
+      fill: rectFill,
+      fillOpacity: rectFillOpacity,
+      stroke: rectStroke,
+      strokeOpacity: rectStrokeOpacity,
+      strokeWidth: rectStrokeWidth,
+      lineDash: rectLineDash,
+    }),
   });
   if (!isNaN(rotation)) {
     brushRect.setLocalEulerAngles(rotation);

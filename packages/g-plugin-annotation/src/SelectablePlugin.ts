@@ -18,8 +18,8 @@ import {
 } from '@antv/g-lite';
 import { DrawerEvent, SelectableEvent } from './constants/enum';
 import { RectDrawer } from './drawers/rect';
-import { DrawerState } from './interface/drawer';
-import { renderRect } from './rendering/rect-render';
+import type { DrawerState } from './interface/drawer';
+import { getHeightFromBbox, getWidthFromBbox, renderRect } from './rendering/rect-render';
 import { SelectableCircle, SelectablePolyline, SelectableRect } from './selectable';
 import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
@@ -122,7 +122,6 @@ export class SelectablePlugin implements RenderingPlugin {
 
   getOrCreateSelectableUI(object: DisplayObject): Selectable {
     if (!this.selectableMap[object.entity]) {
-      let created: Selectable;
       let constructor: any;
       if (
         object.nodeName === Shape.IMAGE ||
@@ -138,7 +137,7 @@ export class SelectablePlugin implements RenderingPlugin {
         constructor = SelectablePolygon;
       }
 
-      created = new constructor({
+      const created: Selectable = new constructor({
         style: {
           target: object,
           ...this.annotationPluginOptions.selectableStyle,
@@ -193,7 +192,18 @@ export class SelectablePlugin implements RenderingPlugin {
     const onComplete = (toolstate: any) => {
       this.hideDrawer(toolstate);
 
-      // TODO: pick elements with rect
+      const { path } = toolstate;
+      const [tl] = path;
+      const { x, y } = tl;
+      const width = getWidthFromBbox(path);
+      const height = getHeightFromBbox(path);
+
+      document
+        .elementsFromBBox(x, y, x + width, y + height)
+        .filter((intersection) => intersection.style.selectable)
+        .forEach((selected) => {
+          this.selectDisplayObject(selected);
+        });
     };
 
     const onCancel = (toolstate: any) => {
@@ -394,7 +404,7 @@ export class SelectablePlugin implements RenderingPlugin {
     };
 
     const handleMouseDown = (e: FederatedPointerEvent) => {
-      if (this.annotationPluginOptions.isDrawingMode && !e.shiftKey) {
+      if (!e.shiftKey) {
         return;
       }
 
@@ -404,7 +414,7 @@ export class SelectablePlugin implements RenderingPlugin {
     };
 
     const handleMouseMove = (e: FederatedPointerEvent) => {
-      if (this.annotationPluginOptions.isDrawingMode && !e.shiftKey) {
+      if (!e.shiftKey) {
         return;
       }
 
@@ -412,7 +422,7 @@ export class SelectablePlugin implements RenderingPlugin {
     };
 
     const handleMouseUp = (e: FederatedPointerEvent) => {
-      if (this.annotationPluginOptions.isDrawingMode && !e.shiftKey) {
+      if (!e.shiftKey) {
         return;
       }
 

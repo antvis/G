@@ -1,4 +1,5 @@
 import { GlobalContainer } from 'mana-syringe';
+import type RBush from 'rbush';
 import {
   cancelAnimationFrame as cancelRAF,
   requestAnimationFrame as rAF,
@@ -8,6 +9,8 @@ import type { ICamera } from './camera';
 import { CameraContribution, CameraTrackingMode, CameraType } from './camera';
 import { CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
 import { containerModule as commonContainerModule } from './canvas-module';
+import type { RBushNodeAABB } from './components';
+import { RBushRoot } from './components';
 import { CustomElement, DisplayObject } from './display-objects';
 import type { Element, FederatedEvent, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
@@ -326,6 +329,10 @@ export class Canvas extends EventTarget implements ICanvas {
 
   getRenderingContext() {
     return this.container.get<RenderingContext>(RenderingContext);
+  }
+
+  getRBushRoot() {
+    return this.container.get<RBush<RBushNodeAABB>>(RBushRoot);
   }
 
   getStats() {
