@@ -6,69 +6,43 @@ order: 6
 We provide a range of tool methods for use with the core as well as plug-ins, such as:
 
 ```js
-import { isUndefined } from '@antv/g';
+import { convertToPath } from '@antv/g';
 ```
 
-# Type judgment
+# Math
 
-Most of the following methods are from: https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore Type determination of incoming parameters.
+It mainly involves the conversion between different angle units.
 
-## isUndefined
+## deg2rad
 
-Determine if the parameter is `undefined`.
-
-## isNil
-
-Determine if the parameter is `undefined` or `null`.
-
-## isNumber
-
-Determine if the parameter is `number`.
-
-## isFunction
-
-Determine if the parameter is `Function`.
-
-## isBoolean
-
-Determine if the parameter is `boolean`.
-
-## isObject
-
-Determines if it is an `object`. This is a simple determination, not as complicated as in lodash:
+Angle conversion to radians.
 
 ```js
-function isObject(value: any): value is object {
-  return Object.prototype.toString.call(value) === '[object Object]';
-}
+deg2rad(deg: number): number;
 ```
 
-# Assertion
+## rad2deg
 
-Throws an error if the assertion condition is not met, and aborts the program execution early.
-
-## DCHECK
-
-Abort when `false`.
+Radians conversion to angle.
 
 ```js
-DCHECK(true);
+rad2deg(rad: number): number;
 ```
 
-## DCHECK_EQ
+## deg2turn
 
-Abort when the two are not equal.
+Angle conversion to turn.
 
 ```js
-DCHECK_EQ(1, 1);
+deg2turn(deg: number): number;
 ```
 
-## DCHECK_NE
+## turn2deg
 
-Abort when the two are equal.
+Turn conversion to angle.
 
 ```js
-DCHECK_NE(1, 2);
+turn2deg(turn: number): number;
 ```
 
 # Matrix
@@ -94,6 +68,14 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 ```
 
 来自：https://github.com/toji/gl-matrix/issues/329
+
+## createVec3
+
+Create `vec3` that accepts multiple types of arguments. The method signature is as follows.
+
+```js
+createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
+```
 
 # Path
 

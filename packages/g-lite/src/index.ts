@@ -47,6 +47,7 @@ export {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   getEuler,
   grad2deg,
+  decompose,
   isBrowser,
   isFillOrStrokeAffected,
   rad2deg,

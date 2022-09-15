@@ -6,69 +6,43 @@ order: 6
 我们提供了一系列工具方法，供核心以及插件使用，例如：
 
 ```js
-import { isUndefined } from '@antv/g';
+import { convertToPath } from '@antv/g';
 ```
 
-# 类型判断
+# 数学计算
 
-以下方法大部分来自：https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore 对入参进行类型判断。
+主要涉及不同角度单位之间的换算。
 
-## isUndefined
+## deg2rad
 
-判断是否为 `undefined`
-
-## isNil
-
-判断是否为 `undefined` 或者 `null`
-
-## isNumber
-
-判断是否为 `number`
-
-## isFunction
-
-判断是否为 `Function`
-
-## isBoolean
-
-判断是否为 `boolean`
-
-## isObject
-
-判断是否为 `object`。仅作简单判断，并没有 lodash 中那么复杂：
+角度转换到弧度。
 
 ```js
-function isObject(value: any): value is object {
-  return Object.prototype.toString.call(value) === '[object Object]';
-}
+deg2rad(deg: number): number;
 ```
 
-# 断言
+## rad2deg
 
-不满足断言条件时抛出错误，提前中止程序执行。
-
-## DCHECK
-
-`false` 时中止。
+弧度转换到角度。
 
 ```js
-DCHECK(true);
+rad2deg(rad: number): number;
 ```
 
-## DCHECK_EQ
+## deg2turn
 
-两者不等时中止。
+角度转换到圈数。
 
 ```js
-DCHECK_EQ(1, 1);
+deg2turn(deg: number): number;
 ```
 
-## DCHECK_NE
+## turn2deg
 
-两者相等时中止。
+圈数转换到角度。
 
 ```js
-DCHECK_NE(1, 2);
+turn2deg(turn: number): number;
 ```
 
 # 矩阵计算
@@ -94,6 +68,14 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 ```
 
 来自：https://github.com/toji/gl-matrix/issues/329
+
+## createVec3
+
+创建 `vec3`，接受多种类型参数。方法签名如下：
+
+```js
+createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
+```
 
 # Path 计算
 
