@@ -519,39 +519,43 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const tmpQuat = quat.fromValues(0, 0, 0, 1);
 
     return (transform: Transform) => {
-      // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
-      // mat4.fromRotationTranslationScaleOrigin(
-      //   transform.localTransform,
-      //   transform.localRotation,
-      //   transform.localPosition,
-      //   transform.localScale,
-      //   transform.origin,
-      // );
+      const hasSkew = transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0;
 
-      mat4.fromRotationTranslationScaleOrigin(
-        transform.localTransform,
-        transform.localRotation,
-        transform.localPosition,
-        vec3.fromValues(1, 1, 1),
-        transform.origin,
-      );
+      if (hasSkew) {
+        mat4.fromRotationTranslationScaleOrigin(
+          transform.localTransform,
+          transform.localRotation,
+          transform.localPosition,
+          vec3.fromValues(1, 1, 1),
+          transform.origin,
+        );
 
-      // apply skew2D
-      if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
-        const tmpMat4 = mat4.identity(tmpMat);
-        tmpMat4[4] = Math.tan(transform.localSkew[0]);
-        tmpMat4[1] = Math.tan(transform.localSkew[1]);
-        mat4.multiply(transform.localTransform, transform.localTransform, tmpMat4);
+        // apply skew2D
+        if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
+          const tmpMat4 = mat4.identity(tmpMat);
+          tmpMat4[4] = Math.tan(transform.localSkew[0]);
+          tmpMat4[1] = Math.tan(transform.localSkew[1]);
+          mat4.multiply(transform.localTransform, transform.localTransform, tmpMat4);
+        }
+
+        const scaling = mat4.fromRotationTranslationScaleOrigin(
+          tmpMat,
+          tmpQuat,
+          tmpPosition,
+          transform.localScale,
+          transform.origin,
+        );
+        mat4.multiply(transform.localTransform, transform.localTransform, scaling);
+      } else {
+        // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
+        mat4.fromRotationTranslationScaleOrigin(
+          transform.localTransform,
+          transform.localRotation,
+          transform.localPosition,
+          transform.localScale,
+          transform.origin,
+        );
       }
-
-      const scaling = mat4.fromRotationTranslationScaleOrigin(
-        tmpMat,
-        tmpQuat,
-        tmpPosition,
-        transform.localScale,
-        transform.origin,
-      );
-      mat4.multiply(transform.localTransform, transform.localTransform, scaling);
     };
   })();
 

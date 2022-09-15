@@ -1,5 +1,5 @@
 import type { FederatedEvent } from '@antv/g-lite';
-import { DrawerTool } from '../constants/enum';
+import { DrawerEvent, DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
 import uuidv4 from '../utils/uuidv4';
 
@@ -16,8 +16,8 @@ export class CircleDrawer extends BaseDrawer {
   onMouseDown(e: FederatedEvent) {
     this.path = [{ x: e.canvas.x, y: e.canvas.y }];
     this.id = uuidv4();
-    this.emit('draw:start', this.state);
-    this.emit('draw:complete', this.state);
+    this.emit(DrawerEvent.START, this.state);
+    this.emit(DrawerEvent.COMPLETE, this.state);
   }
 
   onMouseMove() {}
@@ -25,7 +25,7 @@ export class CircleDrawer extends BaseDrawer {
   onMouseUp(e) {
     // exclude drag event
     // if (this.isActive) {
-    //   this.emit('draw:complete', this.state);
+    //   this.emit(DrawerEvent.COMPLETE, this.state);
     // }
   }
   onMouseDbClick(): void {}

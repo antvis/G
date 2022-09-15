@@ -1,4 +1,4 @@
-import { Polyline } from '@antv/g-lite';
+import { definedProps, Polyline } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DRAW_LINE_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
@@ -14,11 +14,19 @@ export const renderDrawLine = (context: AnnotationPlugin, anno: DrawerState) => 
     return;
   }
 
+  const { polylineSegmentStroke, polylineSegmentStrokeWidth, polylineSegmentLineDash } =
+    context.annotationPluginOptions.drawerStyle;
+
   if (!polyline) {
     polyline = new Polyline({
       style: {
         points: [],
         ...DRAW_LINE_STYLE,
+        ...definedProps({
+          stroke: polylineSegmentStroke,
+          strokeWidth: polylineSegmentStrokeWidth,
+          lineDash: polylineSegmentLineDash,
+        }),
       },
       className: anno.id,
       id: `${anno.id}-line`,

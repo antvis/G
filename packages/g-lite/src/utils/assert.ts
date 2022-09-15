@@ -19,6 +19,9 @@ export function DCHECK_NE(a: any, b: any) {
   }
 }
 
+export const definedProps = (obj: object) =>
+  Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+
 const FORMAT_ATTR_MAP = {
   d: {
     alias: 'path',

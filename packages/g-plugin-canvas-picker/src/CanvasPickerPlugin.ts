@@ -1,7 +1,6 @@
 import type {
   BaseStyleProps,
   DisplayObject,
-  Element,
   ParsedBaseStyleProps,
   PickingResult,
   RBushNodeAABB,
@@ -10,6 +9,7 @@ import type {
   Shape,
   RBush,
 } from '@antv/g-lite';
+import { RenderingContext } from '@antv/g-lite';
 import {
   CanvasConfig,
   DisplayObjectPool,
@@ -54,6 +54,9 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     @inject(DisplayObjectPool)
     private displayObjectPool: DisplayObjectPool,
 
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
+
     @inject(CanvasConfig)
     private canvasConfig: CanvasConfig,
 
@@ -71,6 +74,8 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   ) {}
 
   apply(renderingService: RenderingService) {
+    const document = this.renderingContext.root?.ownerDocument;
+
     renderingService.hooks.pick.tapPromise(
       CanvasPickerPlugin.tag,
       async (result: PickingResult) => {
@@ -83,47 +88,54 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         const position = vec3.set(tmpVec3a, x, y, 0);
 
         // query by AABB first with spatial index(r-tree)
-        const rBushNodes = this.rBush.search({
-          minX: position[0],
-          minY: position[1],
-          maxX: position[0],
-          maxY: position[1],
-        });
+        const hitTestList = document.elementsFromBBox(
+          position[0],
+          position[1],
+          position[0],
+          position[1],
+        );
 
-        const queriedIds = rBushNodes.map((node) => node.id);
-        const hitTestList: DisplayObject[] = [];
-        rBushNodes.forEach(({ id }) => {
-          const displayObject = this.displayObjectPool.getByEntity(id);
-          const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
+        // const rBushNodes = this.rBush.search({
+        //   minX: position[0],
+        //   minY: position[1],
+        //   maxX: position[0],
+        //   maxY: position[1],
+        // });
 
-          // account for `visibility`
-          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
-          const isVisibilityAffected = [
-            'auto',
-            'visiblepainted',
-            'visiblefill',
-            'visiblestroke',
-            'visible',
-          ].includes(pointerEvents);
+        // const queriedIds = rBushNodes.map((node) => node.id);
+        // const hitTestList: DisplayObject[] = [];
+        // rBushNodes.forEach(({ id }) => {
+        //   const displayObject = this.displayObjectPool.getByEntity(id);
+        //   const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
 
-          if (
-            (!isVisibilityAffected || (isVisibilityAffected && displayObject.isVisible())) &&
-            !displayObject.isCulled() &&
-            displayObject.isInteractive()
-          ) {
-            // parent is not included, eg. parent is clipped
-            if (
-              displayObject.parentNode &&
-              queriedIds.indexOf((displayObject.parentNode as Element).entity) === -1
-            ) {
-              return;
-            }
+        //   // account for `visibility`
+        //   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
+        //   const isVisibilityAffected = [
+        //     'auto',
+        //     'visiblepainted',
+        //     'visiblefill',
+        //     'visiblestroke',
+        //     'visible',
+        //   ].includes(pointerEvents);
 
-            hitTestList.push(displayObject);
-          }
-        });
-        // find group with max z-index
-        hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
+        //   if (
+        //     (!isVisibilityAffected || (isVisibilityAffected && displayObject.isVisible())) &&
+        //     !displayObject.isCulled() &&
+        //     displayObject.isInteractive()
+        //   ) {
+        //     // parent is not included, eg. parent is clipped
+        //     if (
+        //       displayObject.parentNode &&
+        //       queriedIds.indexOf((displayObject.parentNode as Element).entity) === -1
+        //     ) {
+        //       return;
+        //     }
+
+        //     hitTestList.push(displayObject);
+        //   }
+        // });
+        // // find group with max z-index
+        // hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
 
         // test with clip path & origin shape
         // @see https://github.com/antvis/g/issues/1064

@@ -1,8 +1,39 @@
-import type { Canvas, FederatedEvent } from '@antv/g-lite';
+import type { BaseStyleProps, Canvas, CircleStyleProps, FederatedEvent } from '@antv/g-lite';
 import EventEmitter from 'eventemitter3';
 import type { DrawerTool } from '../constants/enum';
 
 export type DrawerType = 'circle' | 'rect' | 'polyline' | 'polygon';
+
+/**
+ * TODO: make drawer style configurable
+ */
+export interface DrawerStyle {
+  rectFill: BaseStyleProps['fill'];
+  rectFillOpacity: BaseStyleProps['fillOpacity'];
+  rectStroke: BaseStyleProps['stroke'];
+  rectStrokeOpacity: BaseStyleProps['strokeOpacity'];
+  rectStrokeWidth: BaseStyleProps['strokeWidth'];
+  rectLineDash: BaseStyleProps['lineDash'];
+  polylineVertexSize: CircleStyleProps['r'];
+  polylineVertexFill: BaseStyleProps['fill'];
+  polylineVertexFillOpacity: BaseStyleProps['fillOpacity'];
+  polylineVertexStroke: BaseStyleProps['stroke'];
+  polylineVertexStrokeOpacity: BaseStyleProps['strokeOpacity'];
+  polylineVertexStrokeWidth: BaseStyleProps['strokeWidth'];
+  polylineSegmentStroke: BaseStyleProps['stroke'];
+  polylineSegmentStrokeWidth: BaseStyleProps['strokeWidth'];
+  polylineSegmentLineDash: BaseStyleProps['lineDash'];
+  polylineActiveVertexSize: CircleStyleProps['r'];
+  polylineActiveVertexFill: BaseStyleProps['fill'];
+  polylineActiveVertexFillOpacity: BaseStyleProps['fillOpacity'];
+  polylineActiveVertexStroke: BaseStyleProps['stroke'];
+  polylineActiveVertexStrokeOpacity: BaseStyleProps['strokeOpacity'];
+  polylineActiveVertexStrokeWidth: BaseStyleProps['strokeWidth'];
+  polylineActiveSegmentStroke: BaseStyleProps['stroke'];
+  polylineActiveSegmentStrokeWidth: BaseStyleProps['strokeWidth'];
+  polylineActiveSegmentLineDash: BaseStyleProps['lineDash'];
+}
+
 export interface DrawerState {
   type: DrawerType;
   id: string;

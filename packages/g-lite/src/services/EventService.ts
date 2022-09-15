@@ -270,9 +270,8 @@ export class EventService {
       if (!e.detail?.preventClick) {
         if (clickEvent.pointerType === 'mouse' || clickEvent.pointerType === 'touch') {
           this.dispatchEvent(clickEvent, 'click');
-        } else {
-          this.dispatchEvent(clickEvent, 'pointertap');
         }
+        this.dispatchEvent(clickEvent, 'pointertap');
       }
 
       this.freeEvent(clickEvent);

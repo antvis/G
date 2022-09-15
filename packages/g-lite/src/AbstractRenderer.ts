@@ -64,7 +64,10 @@ export class AbstractRenderer implements IRenderer {
   }
 
   registerPlugin(plugin: RendererPlugin) {
-    this.plugins.push(plugin);
+    const index = this.plugins.findIndex((p) => p === plugin);
+    if (index === -1) {
+      this.plugins.push(plugin);
+    }
   }
 
   unregisterPlugin(plugin: RendererPlugin) {

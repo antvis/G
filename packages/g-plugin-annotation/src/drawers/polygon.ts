@@ -1,5 +1,5 @@
 import type { FederatedEvent } from '@antv/g-lite';
-import { DrawerTool } from '../constants/enum';
+import { DrawerEvent, DrawerTool } from '../constants/enum';
 import { BaseDrawer } from '../interface/drawer';
 import { isNearPoint } from '../utils/drawer';
 import uuidv4 from '../utils/uuidv4';
@@ -21,14 +21,14 @@ export class PolygonDrawer extends BaseDrawer {
       this.isDrawing = true;
       this.id = uuidv4();
       this.path = [point, point];
-      this.emit('draw:start', this.state);
+      this.emit(DrawerEvent.START, this.state);
     } else {
       const startPoint = this.path[0];
       if (isNearPoint(point, startPoint, 8)) {
         this.closePath();
       } else {
         this.path.push(point);
-        this.emit('draw:modify', this.state);
+        this.emit(DrawerEvent.MODIFIED, this.state);
       }
     }
   }
@@ -36,7 +36,7 @@ export class PolygonDrawer extends BaseDrawer {
   onMouseMove(e: FederatedEvent) {
     if (!this.isDrawing) return;
     this.path[this.path.length - 1] = { x: e.canvas.x, y: e.canvas.y };
-    this.emit('draw:move', this.state);
+    this.emit(DrawerEvent.MOVE, this.state);
   }
 
   onMouseUp() {}
@@ -50,18 +50,18 @@ export class PolygonDrawer extends BaseDrawer {
 
   onKeyDown(e: KeyboardEvent) {
     if (e.code === 'Escape') {
-      this.emit('draw:cancel', this.state);
+      this.emit(DrawerEvent.CANCEL, this.state);
       this.reset();
       e.stopPropagation();
     }
 
     if (e.code === 'KeyZ' && e.ctrlKey) {
       if (this.path.length === 1) {
-        this.emit('draw:cancel', this.state);
+        this.emit(DrawerEvent.CANCEL, this.state);
         this.reset();
       } else {
         this.path.pop();
-        this.emit('draw:modify', this.state);
+        this.emit(DrawerEvent.MODIFIED, this.state);
       }
       e.stopPropagation();
     }
@@ -79,7 +79,7 @@ export class PolygonDrawer extends BaseDrawer {
   closePath() {
     this.path.pop();
     this.isDrawing = false;
-    this.emit('draw:complete', this.state);
+    this.emit(DrawerEvent.COMPLETE, this.state);
     this.reset();
   }
 

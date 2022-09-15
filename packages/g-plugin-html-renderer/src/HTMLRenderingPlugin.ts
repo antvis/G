@@ -132,7 +132,8 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   private getOrCreateEl(object: DisplayObject) {
     const { document: doc } = this.canvasConfig;
     const existedId = this.getId(object);
-    const $container = (this.contextService.getDomElement() as unknown as HTMLElement).parentNode;
+    const $canvas = this.contextService.getDomElement() as unknown as HTMLElement;
+    const $container = $canvas.parentNode;
     if ($container) {
       let $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
       if (!$existedElement) {
@@ -150,8 +151,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
         // use absolute position
         $existedElement.style.position = 'absolute';
-        $existedElement.style.left = '0';
-        $existedElement.style.top = '0';
+        // @see https://github.com/antvis/G/issues/1150
+        $existedElement.style.left = `${$canvas.offsetLeft || 0}px`;
+        $existedElement.style.top = `${$canvas.offsetTop || 0}px`;
         $existedElement.style['will-change'] = 'transform';
         const worldTransform = object.getWorldTransform();
         $existedElement.style.transform = `matrix(${[

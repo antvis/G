@@ -2,7 +2,7 @@ import type { DisplayObject } from '@antv/g-lite';
 import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g-lite';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
-import type { DrawerOption } from './interface/drawer';
+import type { DrawerOption, DrawerStyle } from './interface/drawer';
 import { SelectablePlugin } from './SelectablePlugin';
 import type { SelectableStyle } from './tokens';
 import { AnnotationPluginOptions } from './tokens';
@@ -23,8 +23,11 @@ export class Plugin extends AbstractRendererPlugin {
     this.container.register(AnnotationPluginOptions, {
       useValue: {
         selectableStyle: {},
+        drawerStyle: {},
         isDrawingMode: true,
         arrowKeyStepLength: 4,
+        enableAutoSwitchDrawingMode: false,
+        enableDeleteTargetWithShortcuts: false,
         ...this.options,
       },
     });
@@ -101,6 +104,11 @@ export class Plugin extends AbstractRendererPlugin {
       interpolable: true,
       syntax: PropertySyntax.LENGTH_PERCENTAGE,
     });
+  }
+
+  updateDrawerStyle(style: Partial<DrawerStyle>) {
+    const { drawerStyle } = this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
+    Object.assign(drawerStyle, style);
   }
 
   updateSelectableStyle(style: Partial<SelectableStyle>) {

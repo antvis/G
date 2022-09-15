@@ -5,14 +5,14 @@ order: 4
 
 在 G 中有以下继承关系：
 
-- Document -> Node -> EventTarget
+-   Document -> Node -> EventTarget
 
 我们可以把 `Document` 类比成浏览器环境中的 `window.document`，例如在浏览器中：
 
-- 它有指向 `window` 的引用 [defaultView](/zh/docs/api/builtin-objects/document#defaultview)
-- 通过 [documentElement](/zh/docs/api/builtin-objects/document#documentelement) 访问 `<html>` 元素
-- 可以通过一系列方法查询节点，例如 [getElementById](/zh/docs/api/builtin-objects/document#getelementbyid)
-- 通过 [createElement](/zh/docs/api/builtin-objects/document#createelement) 创建元素
+-   它有指向 `window` 的引用 [defaultView](/zh/docs/api/builtin-objects/document#defaultview)
+-   通过 [documentElement](/zh/docs/api/builtin-objects/document#documentelement) 访问 `<html>` 元素
+-   可以通过一系列方法查询节点，例如 [getElementById](/zh/docs/api/builtin-objects/document#getelementbyid)
+-   通过 [createElement](/zh/docs/api/builtin-objects/document#createelement) 创建元素
 
 我们尽可能实现了以上浏览器提供的 API。
 
@@ -28,11 +28,11 @@ order: 4
 
 ```js
 canvas.addEventListener('click', (e) => {
-  e.target; // Document
+    e.target; // Document
 
-  if (e.target.nodeName === 'document') {
-    //...
-  }
+    if (e.target.nodeName === 'document') {
+        //...
+    }
 });
 ```
 
@@ -154,10 +154,10 @@ await canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
 2. 当只需要获取该点命中的最顶层的图形时，应该使用 `elementFromPoint` 而非 `elementsFromPoint`，前者在绝大部分场景下都比后者快
 3. 拾取判定遵循以下规则：
 
-   1. 超出画布视口范围（考虑到相机，并不一定等于画布范围）返回 null。
-   2. 图形的 [interactive](/zh/docs/api/basic/display-object#interactive) 属性**会影响**拾取。不可交互图形无法拾取。
-   3. 图形的 [visibility](/zh/docs/api/basic/display-object#visibility) 属性**会影响**拾取。不可见图形无法拾取。
-   4. 图形的 [opacity](/zh/docs/api/basic/display-object#opacity) 属性**不会影响**拾取。即使图形完全透明，依然也会被拾取到。
+    1. 超出画布视口范围（考虑到相机，并不一定等于画布范围）返回 null。
+    2. 图形的 [interactive](/zh/docs/api/basic/display-object#interactive) 属性**会影响**拾取。不可交互图形无法拾取。
+    3. 图形的 [visibility](/zh/docs/api/basic/display-object#visibility) 属性**会影响**拾取。不可见图形无法拾取。
+    4. 图形的 [opacity](/zh/docs/api/basic/display-object#opacity) 属性**不会影响**拾取。即使图形完全透明，依然也会被拾取到。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
 
@@ -181,3 +181,24 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 2. 超出画布视口范围返回空数组。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint
+
+## elementsFromBBox
+
+区域查询特别是基于包围盒的检测在以下场景中特别适用：
+
+-   脏矩形渲染中用于确定受影响区域
+-   矩形刷选批量选中图形
+
+此类基于包围盒的检测不需要太精确，配合内部 RBush 这样的空间索引，因此速度很快。
+
+该方法为同步方法，接受包围盒描述 `minX, minY, maxX, maxY` 坐标（在 [Canvas 坐标系](/zh/docs/api/canvas#canvas-1)下）：
+
+```js
+const elements = document.elementsFromBBox(minX, minY, maxX, maxY);
+```
+
+注意事项：
+
+1. 会考虑 [visibility](/zh/docs/api/basic/display-object#visibility) 和 [pointer-events](/zh/docs/api/basic/display-object#pointerevents) 属性
+2. 无需考虑 WebGL / WebGPU 这样基于 GPU 的拾取实现，为同步方法
+3. 返回的元素数组按实际渲染次序排序
