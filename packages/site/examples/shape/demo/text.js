@@ -245,7 +245,6 @@ const multilineConfig = {
   lineHeight: 0,
   leading: 0,
   textAlign: 'start',
-  whiteSpace: 'pre',
 };
 multilineFolder.add(multilineConfig, 'breakWords').onChange((breakWords) => {
   text.attr('breakWords', breakWords);
@@ -285,11 +284,11 @@ multilineFolder
   .onChange((textAlign) => {
     text.attr('textAlign', textAlign);
   });
-multilineFolder
-  .add(multilineConfig, 'whiteSpace', ['pre', 'normal', 'pre-line'])
-  .onChange((whiteSpace) => {
-    text.attr('whiteSpace', whiteSpace);
-  });
+// multilineFolder
+//   .add(multilineConfig, 'whiteSpace', ['pre', 'normal', 'pre-line'])
+//   .onChange((whiteSpace) => {
+//     text.attr('whiteSpace', whiteSpace);
+//   });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {

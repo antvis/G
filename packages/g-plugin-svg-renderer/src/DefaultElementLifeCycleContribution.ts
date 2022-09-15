@@ -80,7 +80,7 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
     'textBaseline',
     'textAlign',
     'textTransform',
-    'whiteSpace',
+    // 'whiteSpace',
     'dx',
     'dy',
   ],

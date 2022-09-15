@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { GlobalContainer } from 'mana-syringe';
 import RBush from 'rbush';
 import { StyleValueRegistry } from './css';

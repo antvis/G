@@ -9,9 +9,17 @@ export interface TextStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
   text: string;
-  /** 设置文本内容的当前对齐方式 */
+
+  /**
+   * The text-align property sets the horizontal alignment of the inline-level content.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-align
+   */
   textAlign?: CSSGlobalKeywords | 'start' | 'center' | 'end' | 'left' | 'right';
-  /** 设置在绘制文本时使用的当前文本基线 */
+
+  /**
+   * It specifies the current text baseline used when drawing text.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textBaseline
+   */
   textBaseline?:
     | CSSGlobalKeywords
     | 'top'
@@ -20,26 +28,95 @@ export interface TextStyleProps extends BaseStyleProps {
     | 'alphabetic'
     | 'ideographic'
     | 'bottom';
-  /** 字体样式 */
+
+  /**
+   * The text-overflow property sets how hidden overflow content is signaled to users.
+   * It can be clipped, display an ellipsis ('…'), or display a custom string.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
+   */
+  textOverflow?: 'clip' | 'ellipsis' | '';
+
+  /**
+   * The font-style property sets whether a font should be styled with a normal, italic, or oblique face from its font-family.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-style
+   */
   fontStyle?: CSSGlobalKeywords | 'normal' | 'italic' | 'oblique';
-  /** 文本字体大小 */
+
+  /**
+   * The font-size property sets the size of the font.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
+   */
   fontSize?: number | string;
-  /** 文本字体 */
+
+  /**
+   * The font-family property specifies a prioritized list of one or more font family names and/or generic family names for the selected element.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-family
+   */
   fontFamily?: string;
-  /** 文本粗细 */
+
+  /**
+   * The font-weight property sets the weight (or boldness) of the font. The weights available depend on the font-family that is currently set.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
+   */
   fontWeight?: CSSGlobalKeywords | 'normal' | 'bold' | 'bolder' | 'lighter' | number;
-  /** 字体变体 */
+
+  /**
+   * The font-variant shorthand property allows you to set all the font variants for a font.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant
+   */
   fontVariant?: CSSGlobalKeywords | 'normal' | 'small-caps' | string;
-  /** 文本行高 */
+
+  /**
+   * The line-height property sets the height of a line box.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/line-height
+   */
   lineHeight?: number | string;
+
+  /**
+   * It specifies the spacing between letters when drawing text.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/letterSpacing
+   */
   letterSpacing?: number | string;
-  whiteSpace?: 'pre';
+
+  /**
+   * The white-space property sets how white space inside an element is handled.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/white-space
+   */
+  // whiteSpace?: 'pre';
+
+  /**
+   * There is no "CSS leading" property
+   * @see https://css-tricks.com/how-to-tame-line-height-in-css/
+   */
   leading?: number;
+
+  /**
+   * The overflow-wrap CSS property applies to inline elements,
+   * setting whether the browser should insert line breaks within an otherwise unbreakable string to prevent text from overflowing its line box.
+   *
+   * The overflow-wrap property acts in the same way as the non-standard property word-wrap.
+   * The word-wrap property is now treated by browsers as an alias of the standard property.
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-wrap
+   */
   wordWrap?: boolean;
+
+  /**
+   * Max width of overflowing box.
+   */
   wordWrapWidth?: number;
   // dropShadow?: boolean;
   // dropShadowDistance?: number;
+
+  /**
+   * The dx attribute indicates a shift along the x-axis on the position of an element or its content.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dx
+   */
   dx?: number | string;
+
+  /**
+   * The dy attribute indicates a shift along the y-axis on the position of an element or its content.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dy
+   */
   dy?: number | string;
 }
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
@@ -47,22 +124,15 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   y: number;
   text: string;
   textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
-  /** 设置在绘制文本时使用的当前文本基线 */
   textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
-  /** 字体样式 */
   fontStyle?: 'normal' | 'italic' | 'oblique';
-  /** 文本字体大小 */
   fontSize?: number;
-  /** 文本字体 */
   fontFamily?: string;
-  /** 文本粗细 */
   fontWeight?: 'normal' | 'bold' | 'bolder' | 'lighter' | number;
-  /** 字体变体 */
   fontVariant?: 'normal' | 'small-caps' | string;
-  /** 文本行高 */
   lineHeight?: number;
   letterSpacing?: number;
-  whiteSpace?: 'pre';
+  // whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
   wordWrapWidth?: number;
@@ -103,7 +173,7 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
         letterSpacing: '',
         lineHeight: '',
         miterLimit: '',
-        whiteSpace: 'pre',
+        // whiteSpace: 'pre',
         wordWrap: false,
         wordWrapWidth: 0,
         leading: 0,

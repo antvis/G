@@ -160,7 +160,6 @@ addPropertiesHandler<number, number>(
         'leading',
         'textBaseline',
         'textAlign',
-        'whiteSpace',
     ],
     undefined,
     undefined,
