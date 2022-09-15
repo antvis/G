@@ -1,4 +1,4 @@
-import type { BaseCustomElementStyleProps, DisplayObjectConfig } from '@antv/g';
+import type { DisplayObjectConfig } from '@antv/g';
 import { Canvas, Circle, CustomElement } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
@@ -27,11 +27,11 @@ const canvas = new Canvas({
   renderer,
 });
 
-interface AProps extends BaseCustomElementStyleProps {
+interface AProps {
   size: number;
 }
 
-interface BProps extends BaseCustomElementStyleProps {
+interface BProps {
   size: number;
   path: string;
 }

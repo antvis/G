@@ -63,16 +63,6 @@ DisplayObject.prototype.get = function <StyleProps extends BaseStyleProps>(
 };
 
 // @ts-ignore
-DisplayObject.prototype.show = function () {
-  this.style.visibility = 'visible';
-};
-
-// @ts-ignore
-DisplayObject.prototype.hide = function () {
-  this.style.visibility = 'hidden';
-};
-
-// @ts-ignore
 DisplayObject.prototype.moveTo = function (
   position: vec3 | vec2 | number,
   y: number = 0,

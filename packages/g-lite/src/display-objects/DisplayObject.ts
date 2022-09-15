@@ -752,5 +752,21 @@ export class DisplayObject<
     this.setLocalEulerAngles(angle).setLocalPosition(tx, ty).setLocalScale(scalingX, scalingY);
   }
 
+  /**
+   * Use `visibility: visible` instead.
+   * @deprecated
+   */
+  show() {
+    this.style.visibility = 'visible';
+  }
+
+  /**
+   * Use `visibility: hidden` instead.
+   * @deprecated
+   */
+  hide() {
+    this.style.visibility = 'hidden';
+  }
+
   // #endregion deprecated
 }

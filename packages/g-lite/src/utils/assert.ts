@@ -19,6 +19,10 @@ export function DCHECK_NE(a: any, b: any) {
   }
 }
 
+export function isFunction(func: any): func is Function {
+  return typeof func === 'function';
+}
+
 export const definedProps = (obj: object) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 

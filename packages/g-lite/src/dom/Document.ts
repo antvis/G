@@ -1,11 +1,14 @@
 import { GlobalContainer } from 'mana-syringe';
-import { isFunction } from '@antv/util';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { DisplayObjectPool, Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { AnimationTimelineToken, Shape } from '../types';
-import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, ERROR_MSG_USE_DOCUMENT_ELEMENT } from '../utils';
+import {
+  ERROR_MSG_METHOD_NOT_IMPLEMENTED,
+  ERROR_MSG_USE_DOCUMENT_ELEMENT,
+  isFunction,
+} from '../utils';
 import type {
   DisplayObjectConfig,
   IAnimationTimeline,

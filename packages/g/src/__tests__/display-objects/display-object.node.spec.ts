@@ -1,4 +1,4 @@
-import type { BaseCustomElementStyleProps, DisplayObjectConfig } from '@antv/g';
+import type { DisplayObjectConfig } from '@antv/g';
 import { Canvas, Circle, CustomElement, DisplayObject, Group, Shape } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
@@ -350,7 +350,7 @@ describe('DisplayObject Node API', () => {
   });
 
   it('should (deep) cloneNode for custom elements correctly', async () => {
-    interface AProps extends BaseCustomElementStyleProps {
+    interface AProps {
       size: number;
       circle: Circle;
     }

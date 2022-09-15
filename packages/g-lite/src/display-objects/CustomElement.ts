@@ -1,7 +1,6 @@
 import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-
 export interface BaseCustomElementStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
@@ -11,9 +10,9 @@ export interface BaseCustomElementStyleProps extends BaseStyleProps {
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
  */
-export abstract class CustomElement<
-  CustomElementStyleProps extends BaseCustomElementStyleProps,
-> extends DisplayObject<CustomElementStyleProps> {
+export abstract class CustomElement<CustomElementStyleProps> extends DisplayObject<
+  CustomElementStyleProps & BaseCustomElementStyleProps
+> {
   // static get observedAttributes(): string[] {
   //   return [];
   // }
