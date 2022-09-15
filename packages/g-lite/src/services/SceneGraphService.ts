@@ -643,24 +643,26 @@ export class DefaultSceneGraphService implements SceneGraphService {
       }
     });
 
-    // account for clip path
-    const clipped = findClosestClipPathTarget(element as DisplayObject);
-    if (clipped) {
-      const clipPathBounds = this.getTransformedGeometryBounds(clipped.style.clipPath, true);
-      let transformParentBounds: AABB;
+    if (render) {
+      // account for clip path
+      const clipped = findClosestClipPathTarget(element as DisplayObject);
+      if (clipped) {
+        const clipPathBounds = this.getTransformedGeometryBounds(clipped.style.clipPath, true);
+        let transformParentBounds: AABB;
 
-      if (clipPathBounds) {
-        transformParentBounds = new AABB();
-        // intersect with original geometry
-        transformParentBounds.setFromTransformedAABB(
-          clipPathBounds,
-          this.getWorldTransform(clipped),
-        );
-      }
-      if (!aabb) {
-        aabb = transformParentBounds;
-      } else if (transformParentBounds) {
-        aabb = transformParentBounds.intersection(aabb);
+        if (clipPathBounds) {
+          transformParentBounds = new AABB();
+          // intersect with original geometry
+          transformParentBounds.setFromTransformedAABB(
+            clipPathBounds,
+            this.getWorldTransform(clipped),
+          );
+        }
+        if (!aabb) {
+          aabb = transformParentBounds;
+        } else if (transformParentBounds) {
+          aabb = transformParentBounds.intersection(aabb);
+        }
       }
     }
 

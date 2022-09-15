@@ -418,6 +418,8 @@ canvas.removeChild(circle);
 // or canvas.document.documentElement.removeChild(circle);
 ```
 
+为了和 DOM API 保持一致，仅移除对象并不会销毁。如果要销毁需要调用 `destroy()`。
+
 ## removeChildren()
 
 移除并销毁画布中所有对象。

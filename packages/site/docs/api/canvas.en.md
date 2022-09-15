@@ -419,6 +419,8 @@ canvas.removeChild(circle);
 // or canvas.document.documentElement.removeChild(circle);
 ```
 
+To be consistent with the DOM API, just removing the object does not destroy it. If you want to destroy it, you need to call `destroy()`.
+
 ## removeChildren()
 
 Removes and destroys all objects in the canvas.
