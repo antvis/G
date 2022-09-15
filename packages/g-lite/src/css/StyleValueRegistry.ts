@@ -530,10 +530,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     k: ['start', 'center', 'end', 'left', 'right'],
     d: 'start',
   },
-  {
-    n: 'whiteSpace',
-    l: true,
-  },
+  // {
+  //   n: 'whiteSpace',
+  //   l: true,
+  // },
   {
     n: 'markerStart',
     syntax: PropertySyntax.MARKER,
