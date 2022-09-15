@@ -1,8 +1,8 @@
-import type { BaseCustomElementStyleProps, DisplayObject } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { SelectableStyle } from '../tokens';
 
-export interface SelectableProps extends BaseCustomElementStyleProps, Partial<SelectableStyle> {
+export interface SelectableProps extends Partial<SelectableStyle> {
   target: DisplayObject;
 }
 

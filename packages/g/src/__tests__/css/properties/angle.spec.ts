@@ -1,5 +1,4 @@
 import {
-  BaseCustomElementStyleProps,
   Canvas,
   CSS,
   CSSUnitValue,
@@ -23,7 +22,7 @@ const canvas = new Canvas({
   renderer,
 });
 
-interface AProps extends BaseCustomElementStyleProps {
+interface AProps {
   angle?: string | number | null;
   test: number;
 }

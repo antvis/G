@@ -1,5 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
-import { isFunction, isNil, memoize } from '@antv/util';
+import { isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { SceneGraphService } from '../services';
@@ -8,7 +8,7 @@ import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { formatAttribute } from '../utils';
+import { formatAttribute, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { CSSPropertySyntaxFactory } from './CSSProperty';
