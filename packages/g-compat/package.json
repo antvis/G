@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-compat",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The migration build which provides some compatible API for G 4.0.",
   "keywords": [
     "antv",

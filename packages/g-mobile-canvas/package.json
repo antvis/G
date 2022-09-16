@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-canvas",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "description": "A renderer implemented with Canvas2D API in mobile environment",
   "keywords": [
     "antv",
@@ -27,11 +27,11 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-canvas-path-generator": "^1.1.14",
-    "@antv/g-plugin-canvas-picker": "^1.8.11",
-    "@antv/g-plugin-canvas-renderer": "^1.7.17",
-    "@antv/g-plugin-image-loader": "^1.1.15",
-    "@antv/g-plugin-mobile-interaction": "^0.7.14",
+    "@antv/g-plugin-canvas-path-generator": "^1.1.15",
+    "@antv/g-plugin-canvas-picker": "^1.8.12",
+    "@antv/g-plugin-canvas-renderer": "^1.7.18",
+    "@antv/g-plugin-image-loader": "^1.1.16",
+    "@antv/g-plugin-mobile-interaction": "^0.7.15",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
