@@ -287,6 +287,16 @@ describe('DisplayObject Bounds API', () => {
     bounds = rect.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getLocalBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getRenderBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(20, 20, 0));
     }
 
@@ -295,12 +305,32 @@ describe('DisplayObject Bounds API', () => {
     bounds = rect.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getLocalBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getRenderBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(40, 40, 0));
     }
 
     // clear clip path
     rect.style.clipPath = null;
     bounds = rect.getBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getLocalBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getRenderBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
       expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
@@ -362,8 +392,8 @@ describe('DisplayObject Bounds API', () => {
     group.style.clipPath = new Rect({ style: { width: 100, height: 100 } });
     bounds = group.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 200, 0));
     }
     geometryBounds = group.getGeometryBounds();
     expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
@@ -377,8 +407,13 @@ describe('DisplayObject Bounds API', () => {
     // child should be clipped also
     bounds = circle.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 200, 0));
+    }
+    bounds = circle.getLocalBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 200, 0));
     }
     geometryBounds = circle.getGeometryBounds();
     expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
