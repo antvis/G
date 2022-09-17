@@ -513,6 +513,15 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     l: true,
   },
   {
+    n: 'maxLines',
+    l: true,
+  },
+  {
+    n: 'textOverflow',
+    l: true,
+    d: 'clip',
+  },
+  {
     n: 'leading',
     l: true,
   },

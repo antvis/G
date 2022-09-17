@@ -101,6 +101,16 @@ describe('Render <Text> with g-canvas', () => {
     text9.setPosition(10, 140);
     canvas.appendChild(text9);
 
+    // text overflow
+    const text10 = text1.cloneNode();
+    text10.style.text = 'aaaaaaaaaaaaaaaaaaaaa';
+    text10.style.wordWrap = true;
+    text10.style.wordWrapWidth = 80;
+    text10.style.maxLines = 1;
+    text10.style.textOverflow = 'ellipsis';
+    text10.setPosition(100, 140);
+    canvas.appendChild(text10);
+
     await sleep(300);
 
     await new Promise((resolve) => {

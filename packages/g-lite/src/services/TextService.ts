@@ -186,6 +186,9 @@ export class TextService {
 
     const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     context.font = font;
+
+    // no overflowing by default
+    parsedStyle.isOverflowing = false;
     const outputText = wordWrap ? this.wordWrap(text, parsedStyle, offscreenCanvas) : text;
 
     const lines = outputText.split(/(?:\r\n|\r|\n)/);
@@ -254,11 +257,18 @@ export class TextService {
 
   private wordWrap(
     text: string,
-    { wordWrapWidth = 0, letterSpacing }: ParsedTextStyleProps,
+    parsedStyle: ParsedTextStyleProps,
     offscreenCanvas: CanvasLike,
   ): string {
+    const { wordWrapWidth = 0, letterSpacing, maxLines = Infinity, textOverflow } = parsedStyle;
     const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
+    let ellipsis = '';
+    if (textOverflow === 'ellipsis') {
+      ellipsis = '...';
+    } else if (textOverflow && textOverflow !== 'clip') {
+      ellipsis = textOverflow;
+    }
 
     let lines: string[] = [];
     let currentIndex = 0;
@@ -268,8 +278,14 @@ export class TextService {
     const calcWidth = (char: string): number => {
       return this.getFromCache(char, letterSpacing, cache, context as CanvasRenderingContext2D);
     };
+    const ellipsisWidth = Array.from(ellipsis).reduce((prev, cur) => {
+      return prev + calcWidth(cur);
+    }, 0);
 
-    Array.from(text).forEach((char: string, i: number) => {
+    const chars = Array.from(text);
+    for (let i = 0; i < chars.length; i++) {
+      const char = chars[i];
+
       const prevChar = text[i - 1];
       const nextChar = text[i + 1];
       const width = calcWidth(char);
@@ -278,16 +294,41 @@ export class TextService {
         currentIndex++;
         currentWidth = 0;
         lines[currentIndex] = '';
-        return;
+        continue;
       }
 
       if (currentWidth > 0 && currentWidth + width > maxWidth) {
+        if (currentIndex + 1 >= maxLines) {
+          parsedStyle.isOverflowing = true;
+
+          // If there is not enough space to display the string itself, it is clipped.
+          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
+          if (ellipsisWidth > 0 && ellipsisWidth <= maxWidth) {
+            // Backspace from line's end.
+            let lastLineWidth = 0;
+            let lastLineIndex = 0;
+            for (let i = 0; i < lines[currentIndex].length; i++) {
+              const width = calcWidth(lines[currentIndex][i]);
+              if (lastLineWidth + width + ellipsisWidth > maxWidth) {
+                lastLineIndex = i;
+                break;
+              }
+
+              lastLineWidth += width;
+            }
+
+            lines[currentIndex] = (lines[currentIndex] || '').slice(0, lastLineIndex) + ellipsis;
+          }
+
+          break;
+        }
+
         currentIndex++;
         currentWidth = 0;
         lines[currentIndex] = '';
 
         if (this.isBreakingSpace(char)) {
-          return;
+          continue;
         }
 
         if (!this.canBreakInLastChar(char)) {
@@ -303,7 +344,7 @@ export class TextService {
 
       currentWidth += width;
       lines[currentIndex] = (lines[currentIndex] || '') + char;
-    });
+    }
     return lines.join('\n');
   }
 

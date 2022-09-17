@@ -78,6 +78,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
           y: 100,
           fontFamily: 'Gaegu',
           text: 'Almost before we knew it, we had left the ground.',
+          textOverflow: 'ellipsis',
           fontSize: 30,
           fill: '#1890FF',
           stroke: '#F04864',
@@ -239,16 +240,14 @@ layoutFolder
 
 const multilineFolder = gui.addFolder('multiline');
 const multilineConfig = {
-  breakWords: false,
   wordWrap: false,
   wordWrapWidth: 100,
+  maxLines: Infinity,
+  textOverflow: '...',
   lineHeight: 0,
   leading: 0,
   textAlign: 'start',
 };
-multilineFolder.add(multilineConfig, 'breakWords').onChange((breakWords) => {
-  text.attr('breakWords', breakWords);
-});
 multilineFolder.add(multilineConfig, 'wordWrap').onChange((wordWrap) => {
   text.attr('wordWrap', wordWrap);
 });
@@ -272,6 +271,12 @@ multilineFolder.add(multilineConfig, 'wordWrapWidth', 0, 500).onChange((wordWrap
     lineBlocks.push(block);
     text.appendChild(block);
   });
+});
+multilineFolder.add(multilineConfig, 'maxLines', 1, 10, 1).onChange((maxLines) => {
+  text.attr('maxLines', maxLines);
+});
+multilineFolder.add(multilineConfig, 'textOverflow').onChange((textOverflow) => {
+  text.attr('textOverflow', textOverflow);
 });
 multilineFolder.add(multilineConfig, 'lineHeight', 0, 100).onChange((lineHeight) => {
   text.attr('lineHeight', lineHeight);
