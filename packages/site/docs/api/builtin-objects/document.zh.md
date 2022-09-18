@@ -202,3 +202,19 @@ const elements = document.elementsFromBBox(minX, minY, maxX, maxY);
 1. 会考虑 [visibility](/zh/docs/api/basic/display-object#visibility) 和 [pointer-events](/zh/docs/api/basic/display-object#pointerevents) 属性
 2. 无需考虑 WebGL / WebGPU 这样基于 GPU 的拾取实现，为同步方法
 3. 返回的元素数组按实际渲染次序排序
+
+## elementFromPointSync
+
+[elementFromPoint](/zh/docs/api/builtin-objects/document#elementfrompoint) 的同步版本，值得注意的是，并不是所有[渲染器](/zh/docs/api/renderer/renderer)都会实现该方法，目前仅有 [g-canvas](/zh/docs/api/renderer/canvas)，[g-svg](/zh/docs/api/renderer/svg) 和 [g-canvaskit](/zh/docs/api/renderer/canvaskit) 提供了对应实现：
+
+```js
+const element = canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
+```
+
+## elementsFromPointSync
+
+[elementsFromPoint](/zh/docs/api/builtin-objects/document#elementsfrompoint) 的同步版本，值得注意的是，并不是所有[渲染器](/zh/docs/api/renderer/renderer)都会实现该方法，目前仅有 [g-canvas](/zh/docs/api/renderer/canvas)，[g-svg](/zh/docs/api/renderer/svg) 和 [g-canvaskit](/zh/docs/api/renderer/canvaskit) 提供了对应实现：
+
+```js
+const elements = canvas.document.elementsFromPoint(150, 150); // [circle2, circle1, document.documentElement]
+```

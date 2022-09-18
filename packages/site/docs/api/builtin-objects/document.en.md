@@ -202,3 +202,19 @@ Caveats.
 1. will consider [visibility](/en/docs/api/basic/display-object#visibility) and [pointer-events](/en/docs/api/basic/display-object#pointerevents) attributes
 2. no need to consider GPU-based picking implementations like WebGL / WebGPU, synchronous methods
 3. the returned array of elements is sorted by the actual rendering order
+
+## elementFromPointSync
+
+The synchronized version of [elementFromPoint](/en/docs/api/builtin-objects/document#elementfrompoint), it is worth noting that not all [renderers](/en/docs/api/renderer/renderer) will implement this method, currently only [g-canvas](/en/docs/api/renderer/canvas), [g-svg](/en/docs/api/renderer/svg) and [g-canvaskit](/en/docs/api/renderer/ canvaskit) provide the corresponding implementations.
+
+```js
+const element = canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
+```
+
+## elementsFromPointSync
+
+The synchronized version of [elementsFromPoint](/en/docs/api/builtin-objects/document#elementsfrompoint), it is worth noting that not all [renderers](/en/docs/api/renderer/renderer) will implement this method, currently only [g-canvas](/en/docs/api/renderer/canvas), [g-svg](/en/docs/api/renderer/svg) and [g-canvaskit](/en/docs/api/renderer/ canvaskit) provide the corresponding implementations.
+
+```js
+const elements = canvas.document.elementsFromPoint(150, 150); // [circle2, circle1, document.documentElement]
+```

@@ -172,6 +172,34 @@ export class Document extends Node implements IDocument {
     return hitTestList;
   }
 
+  elementFromPointSync(x: number, y: number): DisplayObject {
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { width, height } = this.defaultView.getConfig();
+    // outside canvas' viewport
+    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+      return null;
+    }
+
+    const { x: clientX, y: clientY } = this.defaultView.viewport2Client({
+      x: viewportX,
+      y: viewportY,
+    });
+
+    const { picked } = this.defaultView.getRenderingService().hooks.pickSync.call({
+      topmost: true,
+      position: {
+        x,
+        y,
+        viewportX,
+        viewportY,
+        clientX,
+        clientY,
+      },
+      picked: [],
+    });
+    return (picked && picked[0]) || this.documentElement;
+  }
+
   /**
    * Do picking with API instead of triggering interactive events.
    *
@@ -203,6 +231,38 @@ export class Document extends Node implements IDocument {
       picked: [],
     });
     return (picked && picked[0]) || this.documentElement;
+  }
+
+  elementsFromPointSync(x: number, y: number): DisplayObject[] {
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { width, height } = this.defaultView.getConfig();
+    // outside canvas' viewport
+    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+      return [];
+    }
+
+    const { x: clientX, y: clientY } = this.defaultView.viewport2Client({
+      x: viewportX,
+      y: viewportY,
+    });
+
+    const { picked } = this.defaultView.getRenderingService().hooks.pickSync.call({
+      topmost: false,
+      position: {
+        x,
+        y,
+        viewportX,
+        viewportY,
+        clientX,
+        clientY,
+      },
+      picked: [],
+    });
+
+    if (picked[picked.length - 1] !== this.documentElement) {
+      picked.push(this.documentElement);
+    }
+    return picked;
   }
 
   /**

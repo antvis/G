@@ -137,14 +137,26 @@ describe('Document', () => {
     let targets = await canvas.document.elementsFromPoint(0, 0);
     expect(target).to.be.eqls(canvas.document.documentElement);
     expect(targets).to.be.eqls([canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(0, 0);
+    targets = canvas.document.elementsFromPointSync(0, 0);
+    expect(target).to.be.eqls(canvas.document.documentElement);
+    expect(targets).to.be.eqls([canvas.document.documentElement]);
 
     // outside Canvas' viewport
     target = await canvas.document.elementFromPoint(-100, -100);
     targets = await canvas.document.elementsFromPoint(-100, -100);
     expect(target).to.be.null;
     expect(targets).to.be.eqls([]);
+    target = canvas.document.elementFromPointSync(-100, -100);
+    targets = canvas.document.elementsFromPointSync(-100, -100);
+    expect(target).to.be.null;
+    expect(targets).to.be.eqls([]);
     target = await canvas.document.elementFromPoint(1000, 1000);
     targets = await canvas.document.elementsFromPoint(1000, 1000);
+    expect(target).to.be.null;
+    expect(targets).to.be.eqls([]);
+    target = canvas.document.elementFromPointSync(1000, 1000);
+    targets = canvas.document.elementsFromPointSync(1000, 1000);
     expect(target).to.be.null;
     expect(targets).to.be.eqls([]);
 
@@ -165,8 +177,16 @@ describe('Document', () => {
     targets = await canvas.document.elementsFromPoint(100, 100);
     expect(target).to.be.eqls(circle);
     expect(targets).to.be.eqls([circle, canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(100, 100);
+    targets = canvas.document.elementsFromPointSync(100, 100);
+    expect(target).to.be.eqls(circle);
+    expect(targets).to.be.eqls([circle, canvas.document.documentElement]);
     target = await canvas.document.elementFromPoint(0, 0);
     targets = await canvas.document.elementsFromPoint(0, 0);
+    expect(target).to.be.eqls(canvas.document.documentElement);
+    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(0, 0);
+    targets = canvas.document.elementsFromPointSync(0, 0);
     expect(target).to.be.eqls(canvas.document.documentElement);
     expect(targets).to.be.eqls([canvas.document.documentElement]);
   });
@@ -198,8 +218,16 @@ describe('Document', () => {
     let targets = await canvas.document.elementsFromPoint(100, 100);
     expect(target).to.be.eqls(circle2);
     expect(targets).to.be.eqls([circle2, circle1, canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(100, 100);
+    targets = canvas.document.elementsFromPointSync(100, 100);
+    expect(target).to.be.eqls(circle2);
+    expect(targets).to.be.eqls([circle2, circle1, canvas.document.documentElement]);
     target = await canvas.document.elementFromPoint(0, 0);
     targets = await canvas.document.elementsFromPoint(0, 0);
+    expect(target).to.be.eqls(canvas.document.documentElement);
+    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(0, 0);
+    targets = canvas.document.elementsFromPointSync(0, 0);
     expect(target).to.be.eqls(canvas.document.documentElement);
     expect(targets).to.be.eqls([canvas.document.documentElement]);
 
@@ -209,11 +237,19 @@ describe('Document', () => {
     targets = await canvas.document.elementsFromPoint(100, 100);
     expect(target).to.be.eqls(circle1);
     expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(100, 100);
+    targets = canvas.document.elementsFromPointSync(100, 100);
+    expect(target).to.be.eqls(circle1);
+    expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
 
     // change circle2's fill to 'transparent'
     circle2.style.fill = 'transparent';
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
+    expect(target).to.be.eqls(circle2);
+    expect(targets).to.be.eqls([circle2, circle1, canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(100, 100);
+    targets = canvas.document.elementsFromPointSync(100, 100);
     expect(target).to.be.eqls(circle2);
     expect(targets).to.be.eqls([circle2, circle1, canvas.document.documentElement]);
 
@@ -222,6 +258,10 @@ describe('Document', () => {
 
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
+    expect(target).to.be.eqls(circle1);
+    expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
+    target = canvas.document.elementFromPointSync(100, 100);
+    targets = canvas.document.elementsFromPointSync(100, 100);
     expect(target).to.be.eqls(circle1);
     expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
   });

@@ -21,7 +21,7 @@ Text content, which can contain line breaks, e.g. `"test text \n another line"`
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '' | - | no | no | [\<string\>](/zh/docs/api/css/css-properties-values-api#string) |
+| '' | - | no | no | [\<string\>](/en/docs/api/css/css-properties-values-api#string) |
 
 ## textTransform
 
@@ -34,7 +34,7 @@ Consistent with [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/We
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'none' | - | no | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'none' | - | no | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ## dx / dy
 
@@ -64,7 +64,7 @@ Corresponds to the [CSS font-family](https://developer.mozilla.org/en-US/docs/We
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| '' | - | yes | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| '' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ### fontSize
 
@@ -86,7 +86,7 @@ Corresponds to the [CSS font-weight](https://developer.mozilla.org/en-US/docs/We
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'normal' | - | yes | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'normal' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ### fontStyle
 
@@ -98,7 +98,7 @@ Font style, for example, the image below shows the tilted `italic` effect.
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'normal' | - | yes | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'normal' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ### fontVariant
 
@@ -110,7 +110,7 @@ Font style, for example, the following image is the `small-cap` effect.
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'normal' | - | yes | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'normal' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ## Single row layout
 
@@ -128,7 +128,7 @@ Using the current position of the text as the anchor point, the following figure
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'alphabetic' | - | yes | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'alphabetic' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ### letterSpacing
 
@@ -165,7 +165,7 @@ The following figure shows the effect of `left`, `center` and `right` in that or
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'left' | - | yes | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'left' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ### wordWrap
 
@@ -183,7 +183,7 @@ When `wordWrap` is turned on, the line will break beyond that width.
 
 ### textOverflow
 
-Used to determine how to prompt the user for the presence of hidden text overflow content, such as direct cropping, appending an ellipsis or a custom string. Need to be used with [wordWrap](/zh/docs/api/basic/text#wordwrap), [wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth) and [maxLines](/zh/docs/api/ basic/text#maxlines) are used together.
+Used to determine how to prompt the user for the presence of hidden text overflow content, such as direct cropping, appending an ellipsis or a custom string. Need to be used with [wordWrap](/en/docs/api/basic/text#wordwrap), [wordWrapWidth](/en/docs/api/basic/text#wordwrapwidth) and [maxLines](/en/docs/api/ basic/text#maxlines) are used together.
 
 Corresponds to the [CSS text-overflow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-overflow).
 
@@ -196,16 +196,16 @@ The following values are supported.
 Caution.
 
 -   `'clip'` and `'ellipsis'` are reserved words, so custom strings cannot use them.
--   If the length of custom text exceeds [wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth), it will be truncated directly, and the effect is the same as `'clip'`.
--   The truncation only affects the visual effect, the original text content [text](/zh/docs/api/basic/text#text) is not affected
+-   If the length of custom text exceeds [wordWrapWidth](/en/docs/api/basic/text#wordwrapwidth), it will be truncated directly, and the effect is the same as `'clip'`.
+-   The truncation only affects the visual effect, the original text content [text](/en/docs/api/basic/text#text) is not affected
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'clip' | - | no | no | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| 'clip' | - | no | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
 ### maxLines
 
-Max lines, text overflow will be truncated, need to use with [wordWrap](/zh/docs/api/basic/text#wordwrap), [wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth) and [ textOverflow](/zh/docs/api/basic/text#textoverflow) are used together.
+Max lines, text overflow will be truncated, need to use with [wordWrap](/en/docs/api/basic/text#wordwrap), [wordWrapWidth](/en/docs/api/basic/text#wordwrapwidth) and [ textOverflow](/en/docs/api/basic/text#textoverflow) are used together.
 
 The following figure shows limiting text to be displayed on one line and truncated with an ellipsis after it is exceeded.
 
@@ -213,7 +213,7 @@ The following figure shows limiting text to be displayed on one line and truncat
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
-| 'Infinity' | - | no | no | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
+| 'Infinity' | - | no | no | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
 ### lineHeight
 
@@ -282,7 +282,7 @@ Note that the presence of a line break does not necessarily mean that there is o
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ" alt="no onverflowing" width="200">
 
-And only if the content does overflow, i.e. the [textOverflow](/zh/docs/api/basic/text#textoverflow) attribute does take effect (whatever its value is), will it return `true`.
+And only if the content does overflow, i.e. the [textOverflow](/en/docs/api/basic/text#textoverflow) attribute does take effect (whatever its value is), will it return `true`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*vGk_TL5e2gEAAAAAAAAAAAAAARQnAQ" alt="text overflow" width="400">
 
