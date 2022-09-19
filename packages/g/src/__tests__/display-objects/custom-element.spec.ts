@@ -54,7 +54,10 @@ describe('CustomElement', () => {
       constructor(options: DisplayObjectConfig<AProps>) {
         super(options);
         // this.addEventListener('onclick', () => {});
-        const circle = new Circle({ style: { r: options.style?.size || 0, fill: 'red' } });
+        const circle = new Circle({
+          id: 'circle',
+          style: { r: options.style?.size || 0, fill: 'red' },
+        });
         this.appendChild(circle);
       }
       connectedCallback() {
@@ -91,6 +94,9 @@ describe('CustomElement', () => {
     canvas.appendChild(a);
     // @ts-ignore
     expect(connectedCallback).to.have.been.called;
+
+    // do query
+    expect(a.querySelector('#circle')).eqls(a.childNodes[0]);
 
     a.style.size = 100;
     // @ts-ignore
