@@ -45,6 +45,7 @@ window.gPluginAnnotation = require('@antv/g-plugin-annotation');
 window.gComponents = require('@antv/g-components');
 window.gWebComponents = require('@antv/g-web-components');
 window.gImageExporter = require('@antv/g-image-exporter');
+window.gLottiePlayer = require('@antv/g-lottie-player');
 
 window.reactG = require('@antv/react-g');
 window.mainWorker = require('./examples/canvas/demo/main.worker.js');

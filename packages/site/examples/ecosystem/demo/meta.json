@@ -88,6 +88,13 @@
       }
     },
     {
+      "filename": "lottie-player.js",
+      "title": {
+        "zh": "Lottie 播放器",
+        "en": "Lottie Player"
+      }
+    },
+    {
       "filename": "lite.js",
       "title": {
         "zh": "使用轻量版",

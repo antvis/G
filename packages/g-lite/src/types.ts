@@ -33,6 +33,7 @@ export interface EventPosition {
 }
 
 export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
+export type TextOverflow = 'clip' | 'ellipsis' | string;
 
 export interface BaseStyleProps {
   class?: string;

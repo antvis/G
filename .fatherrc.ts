@@ -57,5 +57,6 @@ export default {
     'g-web-components',
     'react-g',
     'g-image-exporter',
+    'g-lottie-player',
   ],
 };

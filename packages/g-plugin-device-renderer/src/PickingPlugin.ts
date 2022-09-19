@@ -94,6 +94,11 @@ export class PickingPlugin implements RenderingPlugin {
       this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
+    /**
+     * Sync version is not implemented.
+     */
+    renderingService.hooks.pickSync.tap(PickingPlugin.tag, (result: PickingResult) => result);
+
     renderingService.hooks.pick.tapPromise(PickingPlugin.tag, async (result: PickingResult) => {
       const { topmost, position } = result;
 

@@ -150,4 +150,24 @@ describe('DOM Element API', () => {
     group1.replaceChildren();
     expect(group1.childNodes.length).to.eqls(0);
   });
+
+  it('should querySelector correctly', () => {
+    const group1 = new Element();
+    const group2 = new Element();
+    group2.id = 'group2';
+    group2.className = 'group2-classname1 group2-classname2';
+    expect(group2.classList).eqls(['group2-classname1', 'group2-classname2']);
+
+    const group3 = new Element();
+    group3.id = 'group3';
+
+    group1.append(group2, group3);
+
+    // query by id
+    expect(group1.querySelector('#group2')).eqls(group2);
+    expect(group1.querySelector('#group3')).eqls(group3);
+
+    expect(group1.querySelector('.group2-classname1')).eqls(group2);
+    expect(group1.querySelector('.group2-classname2')).eqls(group2);
+  });
 });

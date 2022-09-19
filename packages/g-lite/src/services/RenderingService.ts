@@ -121,6 +121,11 @@ export class RenderingService {
      * use async but faster method such as GPU-based picking in `g-plugin-device-renderer`
      */
     pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
+
+    /**
+     * Unsafe but sync version of pick.
+     */
+    pickSync: new SyncWaterfallHook<[PickingResult], PickingResult>(['result']),
     /**
      * used in event system
      */

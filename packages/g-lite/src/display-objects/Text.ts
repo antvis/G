@@ -1,7 +1,7 @@
 import type { CSSGlobalKeywords } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import type { TextMetrics } from '../services';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps, TextOverflow } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
@@ -34,7 +34,12 @@ export interface TextStyleProps extends BaseStyleProps {
    * It can be clipped, display an ellipsis ('…'), or display a custom string.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
    */
-  textOverflow?: 'clip' | 'ellipsis' | '';
+  textOverflow?: TextOverflow | string;
+
+  /**
+   * Borrow from CanvasKit ParagraphStyle.
+   */
+  maxLines?: number;
 
   /**
    * The font-style property sets whether a font should be styled with a normal, italic, or oblique face from its font-family.
@@ -136,6 +141,9 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   leading?: number;
   wordWrap?: boolean;
   wordWrapWidth?: number;
+  maxLines?: number;
+  textOverflow?: TextOverflow | string;
+  isOverflowing?: boolean;
   // dropShadow?: boolean;
   // dropShadowDistance?: number;
   metrics?: TextMetrics;
@@ -224,5 +232,9 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
 
   getLineBoundingRects() {
     return this.parsedStyle.metrics?.lineMetrics || [];
+  }
+
+  isOverflowing() {
+    return !!this.parsedStyle.isOverflowing;
   }
 }

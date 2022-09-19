@@ -114,6 +114,16 @@ describe('Render <Text> with g-svg', () => {
     text8.setPosition(10, 120);
     canvas.appendChild(text8);
 
+    // text overflow
+    const text10 = text1.cloneNode();
+    text10.style.text = 'aaaaaaaaaaaaaaaaaaaaa';
+    text10.style.wordWrap = true;
+    text10.style.wordWrapWidth = 80;
+    text10.style.maxLines = 1;
+    text10.style.textOverflow = 'ellipsis';
+    text10.setPosition(100, 140);
+    canvas.appendChild(text10);
+
     await sleep(120);
 
     // fs.writeFileSync(
