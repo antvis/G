@@ -1,5 +1,5 @@
 import type { Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
-import { definedProps, Ellipse, Group, Shape } from '@antv/g-lite';
+import { definedProps, Ellipse, Group, Rect, Shape } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import type { CustomElementOption, KeyframeAnimation } from './parser';
 
@@ -52,6 +52,14 @@ export class LottieAnimation {
       });
     } else if (type === Shape.PATH) {
     } else if (type === Shape.RECT) {
+      displayObject = new Rect({
+        style: {
+          x: shape.x,
+          y: shape.y,
+          width: shape.width,
+          height: shape.height,
+        },
+      });
     }
 
     if (name) {

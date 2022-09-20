@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.7.16",
+  "version": "1.7.17",
   "description": "Components for g",
   "keywords": [
     "antv",
@@ -27,6 +27,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@antv/util": "^3.2.4",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

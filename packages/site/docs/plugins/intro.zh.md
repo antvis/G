@@ -25,6 +25,7 @@ redirect_from:
     -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
     -   [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 基于 PointerEvents 实现拖放功能
     -   [g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互
+    -   [g-plugin-annotation](/zh/docs/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 [Fabric.js](http://fabricjs.com/) 和 [Konva.js](https://konvajs.org/)
 -   物理引擎
     -   [g-plugin-box2d](/zh/docs/plugins/box2d) 基于 Box2D
     -   [g-plugin-matterjs](/zh/docs/plugins/matterjs) 基于 matter.js
@@ -35,6 +36,41 @@ redirect_from:
     -   [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
 -   CSS 选择器
     -   [g-plugin-css-select](/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+
+# 使用方式
+
+## CDN
+
+首先[引入核心和渲染器](/zh/docs/guide/introduce#cdn-方式)，然后在 HTML 中引入插件的 UMD：
+
+```html
+<!-- 插件 -->
+<script src="https://unpkg.com/@antv/g-plugin-rough-canvas-renderer@1.7.16/dist/index.umd.min.js"></script>
+```
+
+然后在 `window.G` 的命名空间下使用插件，以 [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 为例：
+
+```js
+const plugin = new window.G.RoughCanvasRenderer.Plugin();
+```
+
+[Codesandbox 例子](https://codesandbox.io/s/yi-umd-xing-shi-shi-yong-g-yi-ji-cha-jian-zsoln8?file=/index.js)
+
+## NPM Module
+
+首先[安装核心包和渲染器](/zh/docs/guide/introduce#npm-module)，然后安装插件，以 [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 为例：
+
+```bash
+$ npm install @antv/g-plugin-rough-canvas-renderer --save
+```
+
+然后可以使用 [registerPlugin](/zh/docs/api/renderer/renderer#registerplugin) 在渲染器上注册插件：
+
+```js
+import { Plugin } from '@antv/g-plugin-rough-canvas-renderer';
+
+renderer.registerPlugin(new Plugin());
+```
 
 # 与渲染器的关系
 

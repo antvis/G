@@ -421,7 +421,7 @@
     csstype "^3.0.8"
     tslib "^2.0.3"
 
-"@antv/util@^3.2.3", "@antv/util@^3.2.4":
+"@antv/util@^3.2.4":
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.2.5.tgz#c482c3f9f67276d072cebc52f6b6ca88b0007439"
   integrity sha512-5qFvH+NPzB79pxEdjVdBPChe2Bbxmh2Z72iGAnPSibNhtLpn+d03laqXTeNJ4+1BhBG8Y+KKZoRpE6GR4d2zUQ==
