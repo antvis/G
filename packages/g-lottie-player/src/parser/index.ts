@@ -478,6 +478,10 @@ function parseStroke(
 function isBezier(k: any): k is Lottie.Bezier {
   return k && k.i && k.o && k.v;
 }
+
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/shapes/#path
+ */
 function parseShapePaths(
   shape: Pick<Lottie.PathShape, 'ks'>,
   animations: KeyframeAnimation[],
@@ -519,6 +523,9 @@ function parseShapePaths(
   return attrs;
 }
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/shapes/#rectangle
+ */
 function parseShapeRect(
   shape: Lottie.RectShape,
   animations: KeyframeAnimation[],
@@ -541,6 +548,9 @@ function parseShapeRect(
   return attrs;
 }
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/shapes/#ellipse
+ */
 function parseShapeEllipse(
   shape: Lottie.EllipseShape,
   animations: KeyframeAnimation[],
@@ -572,8 +582,11 @@ function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
       case Lottie.ShapeType.Ellipse:
         ecEl = parseShapeEllipse(shape as Lottie.EllipseShape, keyframeAnimations, context);
         break;
-      case Lottie.ShapeType.Rect:
+      case Lottie.ShapeType.Rectangle:
         ecEl = parseShapeRect(shape as Lottie.RectShape, keyframeAnimations, context);
+        break;
+      case Lottie.ShapeType.PolyStar:
+        // TODO: parseShapePolyStar
         break;
     }
     return ecEl;
@@ -592,7 +605,7 @@ function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
       }
       // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
       switch (shape.ty) {
-        case Lottie.ShapeType.Repeat:
+        case Lottie.ShapeType.Repeater:
           parseValue(
             (shape as Lottie.RepeatShape).c,
             modifiers.attrs,

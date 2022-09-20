@@ -32,7 +32,8 @@
     "@antv/g-plugin-dom-interaction": "^1.7.16",
     "@antv/g-plugin-html-renderer": "^1.7.16",
     "@antv/g-plugin-image-loader": "^1.1.17",
-    "@antv/g-plugin-webgpu-device": "^1.7.16"
+    "@antv/g-plugin-webgpu-device": "^1.7.16",
+    "@antv/util": "^3.2.4"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",

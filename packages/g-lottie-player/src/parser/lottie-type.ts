@@ -1,3 +1,7 @@
+/**
+ * https://lottiefiles.github.io/lottie-docs/constants/
+ */
+
 export enum BlendMode {
   Normal,
   Multiply,
@@ -15,8 +19,13 @@ export enum BlendMode {
   Saturation,
   Color,
   Luminosity,
+  Add,
+  HardMix,
 }
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/constants/#mattemode
+ */
 export enum MatteMode {
   Normal,
   Alpha,
@@ -484,18 +493,29 @@ export type Context = {
   fill: number[];
 };
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/shapes/#shape-types
+ */
 export enum ShapeType {
-  Group = 'gr',
-  Rect = 'rc',
+  Rectangle = 'rc',
   Ellipse = 'el',
+  PolyStar = 'sr',
+  Path = 'sh',
   Fill = 'fl',
+  Stroke = 'st',
   GradientFill = 'gf',
   GradientStroke = 'gs',
-  Stroke = 'st',
+  NoStyle = 'no',
+  Group = 'gr',
   Transform = 'tr',
-  Path = 'sh',
-  Repeat = 'rp',
+  Repeater = 'rp',
   Trim = 'tm',
+  RoundedCorners = 'rd',
+  PuckerOrBloat = 'pb',
+  Merge = 'mm',
+  Twist = 'tw',
+  OffsetPath = 'op',
+  ZigZag = 'zz',
 }
 
 export type ShapeElement = {
@@ -678,16 +698,26 @@ export type ColorValue = {
   a?: number;
 };
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/constants/#fillrule
+ */
 export enum FillRule {
   NonZero = 1,
   EvenOdd,
 }
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/constants/#linejoin
+ */
 export enum LineJoin {
   Miter = 1,
   Round = 2,
   Bevel = 3,
 }
+
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/constants/#linecap
+ */
 export enum LineCap {
   Butt = 1,
   Round = 2,
@@ -703,6 +733,9 @@ export type FillShape = ShapeElement & {
   r: FillRule;
 };
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/constants/#gradienttype
+ */
 export enum GradientType {
   Linear = 1,
   Radial = 2,

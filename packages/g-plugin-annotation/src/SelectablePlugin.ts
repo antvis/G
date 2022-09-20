@@ -227,10 +227,6 @@ export class SelectablePlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       // @ts-ignore
       if (object === document) {
-        if (this.annotationPluginOptions.enableAutoSwitchDrawingMode) {
-          this.annotationPluginOptions.isDrawingMode = true;
-        }
-
         this.deselectAllDisplayObjects();
         this.selected = [];
       } else if (object.style?.selectable) {

@@ -28,6 +28,9 @@
     "LICENSE",
     "README.md"
   ],
+  "dependencies": {
+    "@antv/util": "^3.2.4"
+  },
   "peerDependencies": {
     "@antv/g-lite": "^1.0.0"
   },

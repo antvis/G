@@ -29,6 +29,7 @@
   ],
   "dependencies": {
     "@antv/g": "^5.9.0",
+    "@antv/util": "^3.2.4",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",
     "tslib": "^2.3.1"

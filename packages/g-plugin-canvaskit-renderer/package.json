@@ -29,6 +29,7 @@
   "dependencies": {
     "@antv/g-math": "^1.7.16",
     "@antv/g-plugin-image-loader": "^1.1.17",
+    "@antv/util": "^3.2.4",
     "canvaskit-wasm": "^0.34.0",
     "tslib": "^2.3.1"
   },
