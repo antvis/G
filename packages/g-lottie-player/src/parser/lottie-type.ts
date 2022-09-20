@@ -111,6 +111,9 @@ export type Mask = {
   x: Value;
 };
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/layers/
+ */
 export type Layer = {
   /** 3d layer flag */
   ddd?: Layer3DMode;
@@ -180,6 +183,9 @@ export type Position = {
   y: Value;
 };
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/concepts/#transform
+ */
 export type Transform = {
   /** Transform Anchor Point. */
   a: MultiDimensional;

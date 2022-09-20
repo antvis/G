@@ -25,6 +25,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
     -   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
     -   [g-plugin-control](/en/docs/plugins/control) Provides camera interaction for 3D scenes.
     -   [g-plugin-dragndrop](/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+    -   [g-plugin-annotation](/en/docs/plugins/annotation) Perform transformations on graphics in an interactive form like [Fabric.js](http://fabricjs.com/) and [Konva.js](https://konvajs.org/).
 -   Physics Engine
     -   [g-plugin-box2d](/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
     -   [g-plugin-matterjs](/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
@@ -37,6 +38,38 @@ Extensible plug-in mechanism and rich set of plug-ins：
     -   [g-plugin-css-select](/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
 -   A11y
     -   [g-plugin-a11y](/en/docs/plugins/a11y) Provides accessibility features.
+
+## CDN
+
+[Import the core and renderer code](/en/docs/guide/introduce#cdn) in UMD format first, then import plugin code in the same way.
+
+```html
+<script src="https://unpkg.com/@antv/g-plugin-rough-canvas-renderer@1.7.16/dist/index.umd.min.js"></script>
+```
+
+Then we can use plugin under the namespace `window.G`, take [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-renderer) as an example:
+
+```js
+const plugin = new window.G.RoughCanvasRenderer.Plugin();
+```
+
+[Codesandbox Example](https://codesandbox.io/s/yi-umd-xing-shi-shi-yong-g-yi-ji-cha-jian-zsoln8?file=/index.js)
+
+## NPM Module
+
+[Install core and renderer from NPM](/en/docs/guide/introduce#npm-module) first, then we can install plugins in the same way. Take [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-renderer) as an example:
+
+```bash
+$ npm install @antv/g-plugin-rough-canvas-renderer --save
+```
+
+Then we can [registerPlugin](/en/docs/api/renderer/renderer#registerplugin) on renderer:
+
+```js
+import { Plugin } from '@antv/g-plugin-rough-canvas-renderer';
+
+renderer.registerPlugin(new Plugin());
+```
 
 # Relationship with Renderer
 
