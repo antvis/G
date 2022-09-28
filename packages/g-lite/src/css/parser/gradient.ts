@@ -1,10 +1,11 @@
 import { isNil, isString, memoize } from '@antv/util';
 import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
 import { colorStopToString, parseGradient as parse } from '../../utils';
-import { CSSKeywordValue, CSSUnitValue, LinearColorStop, Odeg, RadialGradient } from '../cssom';
+import type { CSSKeywordValue, CSSUnitValue, LinearColorStop, RadialGradient } from '../cssom';
+import { Odeg } from '../cssom';
 import { CSSGradientValue, GradientType } from '../cssom';
 import { getOrCreateKeyword, getOrCreateUnitValue } from '../CSSStyleValuePool';
-import { Pattern } from './color';
+import type { Pattern } from './color';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
 const regexRG = /^r\s*\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*(.*)/i;

@@ -1,4 +1,4 @@
-import { CSSKeywordValue } from './CSSKeywordValue';
+import type { CSSKeywordValue } from './CSSKeywordValue';
 import type { CSSUnitValue } from './CSSNumericValue';
 import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
 import type { Nested, ParenLess } from './types';

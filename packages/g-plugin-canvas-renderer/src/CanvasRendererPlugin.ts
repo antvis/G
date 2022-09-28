@@ -142,8 +142,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const { width, height } = this.canvasConfig;
       const context = this.contextService.getContext();
       this.clearRect(context, 0, 0, width * dpr, height * dpr);
-
-      mat4.fromScaling(this.dprMatrix, vec3.fromValues(dpr, dpr, 1));
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
@@ -193,6 +191,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       const context = this.contextService.getContext();
       // clear & clip dirty rectangle
+      const dpr = this.contextService.getDPR();
+      mat4.fromScaling(this.dprMatrix, vec3.fromValues(dpr, dpr, 1));
       mat4.multiply(this.vpMatrix, this.dprMatrix, this.camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {

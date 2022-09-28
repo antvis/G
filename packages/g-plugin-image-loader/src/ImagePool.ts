@@ -1,4 +1,5 @@
-import { LinearGradient, Pattern, RadialGradient, UnitType } from '@antv/g-lite';
+import type { LinearGradient, Pattern, RadialGradient } from '@antv/g-lite';
+import { UnitType } from '@antv/g-lite';
 import {
   CanvasConfig,
   computeLinearGradient,

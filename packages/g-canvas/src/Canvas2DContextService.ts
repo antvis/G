@@ -1,4 +1,5 @@
 import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
+import { RenderingContext, RenderReason } from '@antv/g-lite';
 import {
   CanvasConfig,
   ContextService,
@@ -19,10 +20,13 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   constructor(
     @inject(CanvasConfig)
     private canvasConfig: CanvasConfig,
+
+    @inject(RenderingContext)
+    private renderingContext: RenderingContext,
   ) {}
 
   async init() {
-    const { container, canvas, devicePixelRatio } = this.canvasConfig;
+    const { container, canvas } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
@@ -49,11 +53,6 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
     }
 
     this.context = this.$canvas.getContext('2d');
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-    this.dpr = dpr;
-
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
   }
 
@@ -85,6 +84,13 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
   }
 
   resize(width: number, height: number) {
+    const { devicePixelRatio } = this.canvasConfig;
+
+    // use user-defined dpr first
+    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+    this.dpr = dpr;
+
     if (this.$canvas) {
       // set canvas width & height
       this.$canvas.width = this.dpr * width;
@@ -98,6 +104,8 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
       // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
       // this.context.scale(dpr, dpr);
     }
+
+    this.renderingContext.renderReasons.add(RenderReason.CAMERA_CHANGED);
   }
 
   applyCursorStyle(cursor: string) {

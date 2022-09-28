@@ -1,7 +1,6 @@
 import type { BaseStyleProps, Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
-import { mat4, quat, vec3 } from 'gl-matrix';
 import type {
   CustomElementOption,
   KeyframeAnimation,
@@ -219,6 +218,7 @@ export class LottieAnimation {
                 );
 
                 if (existedKeyframe) {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { offset, easing: e = 'linear', ...rest } = currentKeyframe;
 
                   // merge interpolated properties
@@ -236,7 +236,8 @@ export class LottieAnimation {
 
           // console.log(mergedKeyframesOptions);
 
-          const animations = mergedKeyframesOptions.map(([formattedKeyframes, options]) => {
+          // TODO: return animations
+          mergedKeyframesOptions.map(([formattedKeyframes, options]) => {
             // format interpolated properties, e.g. scaleX -> transform
             this.formatKeyframes(formattedKeyframes, child);
             return child.animate(formattedKeyframes, options);

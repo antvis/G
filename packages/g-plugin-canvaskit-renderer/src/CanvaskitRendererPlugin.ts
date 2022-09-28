@@ -1,4 +1,4 @@
-import {
+import type {
   ICamera,
   CSSGradientValue,
   DataURLOptions,
@@ -10,8 +10,8 @@ import {
   RadialGradient,
   RenderingPlugin,
   RenderingService,
-  UnitType,
 } from '@antv/g-lite';
+import { UnitType } from '@antv/g-lite';
 import {
   CanvasConfig,
   computeLinearGradient,
