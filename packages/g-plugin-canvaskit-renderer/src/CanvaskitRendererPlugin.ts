@@ -1,4 +1,4 @@
-import type {
+import {
   ICamera,
   CSSGradientValue,
   DataURLOptions,
@@ -10,6 +10,7 @@ import type {
   RadialGradient,
   RenderingPlugin,
   RenderingService,
+  UnitType,
 } from '@antv/g-lite';
 import {
   CanvasConfig,
@@ -329,8 +330,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       const { angle, steps } = stroke.value as LinearGradient;
       const pos: number[] = [];
       const colors: number[] = [];
-      steps.forEach(([offset, color]) => {
-        pos.push(offset);
+      steps.forEach(({ offset, color }) => {
+        if (offset.unit === UnitType.kPercentage) {
+          pos.push(offset.value / 100);
+        }
         const c = parseColor(color) as CSSRGB;
         colors.push(
           Number(c.alpha) === 0 ? 1 : Number(c.r) / 255,
@@ -349,12 +352,14 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       );
       return gradient;
     } else if (stroke.type === GradientType.RadialGradient) {
-      const { cx, cy, steps } = stroke.value as RadialGradient;
-      const { x, y, r } = computeRadialGradient(width, height, cx, cy);
+      const { cx, cy, steps, size } = stroke.value as RadialGradient;
+      const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
       const pos: number[] = [];
       const colors: Float32Array[] = [];
-      steps.forEach(([offset, color]) => {
-        pos.push(Number(offset));
+      steps.forEach(({ offset, color }) => {
+        if (offset.unit === UnitType.kPercentage) {
+          pos.push(offset.value / 100);
+        }
         const c = parseColor(color) as CSSRGB;
         colors.push(
           new Float32Array([
@@ -371,7 +376,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         r,
         colors,
         pos,
-        CanvasKit.TileMode.Mirror,
+        CanvasKit.TileMode.Clamp, // mirror for repetition
       );
       return gradient;
     }

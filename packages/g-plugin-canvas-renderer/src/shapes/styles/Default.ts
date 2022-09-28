@@ -192,7 +192,7 @@ export class DefaultRenderer implements StyleRenderer {
       color = this.imagePool.getOrCreateGradient(
         {
           type: parsedColor.type,
-          ...(parsedColor.value as LinearGradient | RadialGradient),
+          ...(parsedColor.value as LinearGradient & RadialGradient),
           width,
           height,
         },

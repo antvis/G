@@ -1,17 +1,23 @@
+import { CSSKeywordValue } from './CSSKeywordValue';
+import type { CSSUnitValue } from './CSSNumericValue';
 import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
 import type { Nested, ParenLess } from './types';
 
+export interface LinearColorStop {
+  offset: CSSUnitValue;
+  color: string; // use user-defined value instead of parsed CSSRGB
+}
+
 export interface LinearGradient {
-  angle: number;
-  steps: [number, string][];
-  hash: string;
+  angle: CSSUnitValue;
+  steps: LinearColorStop[];
 }
 
 export interface RadialGradient {
-  cx: number;
-  cy: number;
-  steps: [number, string][];
-  hash: string;
+  cx: CSSUnitValue;
+  cy: CSSUnitValue;
+  size?: CSSUnitValue | CSSKeywordValue;
+  steps: LinearColorStop[];
 }
 
 export enum GradientType {

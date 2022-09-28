@@ -132,7 +132,7 @@ export class TexturePool {
       const gradient = this.imagePool.getOrCreateGradient(
         {
           type: g.type,
-          ...(g.value as LinearGradient | RadialGradient),
+          ...(g.value as LinearGradient & RadialGradient),
           width,
           height,
         },

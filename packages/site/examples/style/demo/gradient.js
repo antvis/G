@@ -256,6 +256,7 @@ linearGradientFolder.add(linearGradientConfig, 'height', 50, 400).onChange((heig
 const radialGradientFolder = gui.addFolder('radial gradient');
 const radialGradientConfig = {
   position: 'center',
+  size: 'farthest-corner',
   'green color stop(%)': 100,
 };
 radialGradientFolder
@@ -272,12 +273,24 @@ radialGradientFolder
     'bottom right',
     '25% 25%',
     '50% 50%',
+    '50px 50px',
   ])
   .onChange((position) => {
-    rect3.style.fill = `radial-gradient(circle at ${position}, red, blue, green 100%)`;
+    rect3.style.fill = `radial-gradient(circle ${radialGradientConfig.size} at ${position}, red, blue, green ${radialGradientConfig['green color stop(%)']}%)`;
+  });
+radialGradientFolder
+  .add(radialGradientConfig, 'size', [
+    'closest-side',
+    'closest-corner',
+    'farthest-side',
+    'farthest-corner',
+    '100px',
+  ])
+  .onChange((size) => {
+    rect3.style.fill = `radial-gradient(circle ${size} at ${radialGradientConfig.position}, red, blue, green ${radialGradientConfig['green color stop(%)']}%)`;
   });
 radialGradientFolder
   .add(radialGradientConfig, 'green color stop(%)', 0, 100)
   .onChange((percentage) => {
-    rect3.style.fill = `radial-gradient(circle at center, red, blue, green ${percentage}%)`;
+    rect3.style.fill = `radial-gradient(circle ${radialGradientConfig.size} at ${radialGradientConfig.position}, red, blue, green ${percentage}%)`;
   });
