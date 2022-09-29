@@ -157,6 +157,7 @@ export class Canvas extends EventTarget implements ICanvas {
       createImage,
       supportsPointerEvents,
       supportsTouchEvents,
+      supportsCSSTransform,
       isTouchEvent,
       isMouseEvent,
     } = config;
@@ -212,6 +213,7 @@ export class Canvas extends EventTarget implements ICanvas {
       background: background || 'transparent',
       createImage,
       document,
+      supportsCSSTransform,
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);

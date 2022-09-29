@@ -240,6 +240,8 @@ background: linear-gradient(#e66465, #9198e5);
 rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 ```
 
+其中渐变色列表 `<color-stop-list>` 形如：`radial-gradient(cyan 0%, transparent 20%, salmon 40%)`，使用 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 和 [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) 的组合。
+
 在该[示例](/zh/examples/style#gradient)中我们展示了目前支持的渐变效果，包括线性和径向渐变、多个渐变叠加等：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sXoJTKPWg70AAAAAAAAAAAAAARQnAQ" width="400" alt="gradient">
@@ -272,9 +274,7 @@ rect.style.fill = `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.
 
 径向渐变由从原点发出的两种或者多种颜色之间的逐步过渡组成。
 
-用法完全可以参考 CSS [radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient)，但有以下区别：
-
--   形状仅支持 `circle` 不支持 `ellipse`
+用法完全可以参考 CSS [radial-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/radial-gradient)。
 
 因此一个渐变中心位于图形中心，从红过渡到蓝再到绿的径向渐变如下，[示例](/zh/examples/style#gradient)：
 
@@ -283,6 +283,45 @@ rect.style.fill = 'radial-gradient(circle at center, red, blue, green 100%)';
 ```
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z4QLTr3lC80AAAAAAAAAAAAAARQnAQ" width="300" alt="radial gradient">
+
+注意事项：
+
+-   形状仅支持 `circle` 不支持 `ellipse`
+-   支持指定 `circle` 半径：
+
+    -   `'closest-side'` 圆心到包围盒最近边的距离
+    -   `'farthest-corner'` **默认值**。圆心到包围盒最远角的距离
+    -   `'closest-corner'` 圆心到包围盒最近角的距离
+    -   `'farthest-side'` 圆心到包围盒最远边的距离
+    -   `<length>` 指定长度，例如 `'radial-gradient(circle 80px at center, red 100%, blue 100%)'`
+
+下图分别展示了 `'closest-side'` `'farthest-side'` 和 `80px` 的效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*eXrBQYlLENwAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-closest-side" width="200">
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*C__VRJ24rVcAAAAAAAAAAAAAARQnAQ" 
+alt="radial-gradient-farthest-side" width="200">
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*3U91RYB3DukAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-size-80" width="200">
+
+-   支持指定圆心位置，相对包围盒左上角定位，例如 `radial-gradient(circle at 50px 50px, red, blue, green 100%)`：
+    -   `'top'` 上方边缘中点
+    -   `'left'` 左侧边缘中点
+    -   `'bottom'` 下方边缘中点
+    -   `'right'` 右侧边缘中点
+    -   `'center'` 水平垂直居中
+    -   `'top left'` 左上角
+    -   `'left top'` 同 `'top left'`
+    -   `'top right'` 右上角
+    -   `'bottom left'` 左下角
+    -   `'bottom right'` 右下角
+    -   `<length> <length>` 指定长度，例如 `'25% 25%'` 或者 `'50px 50px'`
+
+下图分别展示了 `'50px 50px'`，`'top right'` 和 `'left'` 的效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*UrmySIhRKdgAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-50-50" width="200">
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*ekj4TZv0Yf4AAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-top-right" width="200">
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*bXIjTaTpC2QAAAAAAAAAAAAAARQnAQ" alt="radial-gradient-center-left" width="200">
+
+-   和线性渐变一样，也支持多组叠加
 
 ### 历史用法
 

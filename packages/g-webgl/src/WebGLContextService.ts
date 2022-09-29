@@ -26,7 +26,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   ) {}
 
   async init() {
-    const { container, canvas, devicePixelRatio } = this.canvasConfig;
+    const { container, canvas } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
@@ -51,10 +51,7 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
       }
     }
 
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
-    this.dpr = dpr;
+    this.resize(this.canvasConfig.width, this.canvasConfig.height);
   }
 
   getDomElement() {
@@ -83,6 +80,12 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
   }
 
   resize(width: number, height: number) {
+    // use user-defined dpr first
+    const { devicePixelRatio } = this.canvasConfig;
+    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+    this.dpr = dpr;
+
     if (this.$canvas) {
       const dpr = this.getDPR();
 

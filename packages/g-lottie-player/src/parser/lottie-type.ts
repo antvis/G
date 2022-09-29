@@ -161,7 +161,7 @@ export type Layer = {
 export enum LayerType {
   precomp,
   solid,
-  still,
+  image,
   null,
   shape,
   text,
@@ -174,6 +174,7 @@ export enum LayerType {
   adjustment,
   camera,
   light,
+  data,
 }
 
 export type Position = {
@@ -253,7 +254,7 @@ export type SolidColorLayer = Layer & {
 };
 
 export type ImageLayer = Layer & {
-  ty: LayerType.still;
+  ty: LayerType.image;
   /** id pointing to the source image defined on 'assets' object. */
   refId: string;
 };

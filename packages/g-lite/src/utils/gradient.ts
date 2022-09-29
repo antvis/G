@@ -3,6 +3,10 @@
  * @see https://github.com/rafaelcaricio/gradient-parser
  */
 
+import { distanceSquareRoot } from '@antv/util';
+import { CSSKeywordValue, CSSUnitValue, UnitType } from '../css';
+import { deg2rad } from './math';
+
 export interface LinearGradientNode {
   type: 'linear-gradient';
   orientation?: DirectionalNode | AngularNode | undefined;
@@ -479,8 +483,8 @@ export const parseGradient = (function () {
   };
 })();
 
-export function computeLinearGradient(width: number, height: number, angle: number) {
-  const rad = (angle * Math.PI) / 180;
+export function computeLinearGradient(width: number, height: number, angle: CSSUnitValue) {
+  const rad = deg2rad(angle.value);
   const rx = 0;
   const ry = 0;
   const rcx = rx + width / 2;
@@ -496,8 +500,53 @@ export function computeLinearGradient(width: number, height: number, angle: numb
   return { x1, y1, x2, y2 };
 }
 
-export function computeRadialGradient(width: number, height: number, cx: number, cy: number) {
-  const r = Math.sqrt(width * width + height * height) / 2;
+export function computeRadialGradient(
+  width: number,
+  height: number,
+  cx: CSSUnitValue,
+  cy: CSSUnitValue,
+  size?: CSSUnitValue | CSSKeywordValue,
+) {
+  // 'px'
+  let x = cx.value;
+  let y = cy.value;
 
-  return { x: cx * width, y: cy * height, r };
+  // TODO: 'em'
+
+  // '%'
+  if (cx.unit === UnitType.kPercentage) {
+    x = (cx.value / 100) * width;
+  }
+  if (cy.unit === UnitType.kPercentage) {
+    y = (cy.value / 100) * height;
+  }
+
+  // default to farthest-side
+  let r = Math.max(
+    distanceSquareRoot([0, 0], [x, y]),
+    distanceSquareRoot([0, height], [x, y]),
+    distanceSquareRoot([width, height], [x, y]),
+    distanceSquareRoot([width, 0], [x, y]),
+  );
+  if (size) {
+    if (size instanceof CSSUnitValue) {
+      r = size.value;
+    } else if (size instanceof CSSKeywordValue) {
+      // @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Images/Using_CSS_gradients#example_closest-side_for_circles
+      if (size.value === 'closest-side') {
+        r = Math.min(x, width - x, y, height - y);
+      } else if (size.value === 'farthest-side') {
+        r = Math.max(x, width - x, y, height - y);
+      } else if (size.value === 'closest-corner') {
+        r = Math.min(
+          distanceSquareRoot([0, 0], [x, y]),
+          distanceSquareRoot([0, height], [x, y]),
+          distanceSquareRoot([width, height], [x, y]),
+          distanceSquareRoot([width, 0], [x, y]),
+        );
+      }
+    }
+  }
+
+  return { x, y, r };
 }

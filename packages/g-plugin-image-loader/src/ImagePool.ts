@@ -1,4 +1,5 @@
 import type { LinearGradient, Pattern, RadialGradient } from '@antv/g-lite';
+import { UnitType } from '@antv/g-lite';
 import {
   CanvasConfig,
   computeLinearGradient,
@@ -10,7 +11,7 @@ import {
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
-export type GradientParams = (LinearGradient | RadialGradient) & {
+export type GradientParams = (LinearGradient & RadialGradient) & {
   width: number;
   height: number;
   type: GradientType;
@@ -104,8 +105,7 @@ export class ImagePool {
 
   getOrCreateGradient(params: GradientParams, context: CanvasRenderingContext2D) {
     const key = this.generateGradientKey(params);
-    // @ts-ignore
-    const { type, steps, width, height, angle, cx, cy } = params;
+    const { type, steps, width, height, angle, cx, cy, size } = params;
 
     if (this.gradientCache[key]) {
       return this.gradientCache[key];
@@ -117,14 +117,16 @@ export class ImagePool {
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
       gradient = context.createLinearGradient(x1, y1, x2, y2);
     } else if (type === GradientType.RadialGradient) {
-      const { x, y, r } = computeRadialGradient(width, height, cx, cy);
+      const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
       gradient = context.createRadialGradient(x, y, 0, x, y, r);
     }
 
     if (gradient) {
-      steps.forEach(([offset, color]) => {
-        gradient?.addColorStop(offset, color);
+      steps.forEach(({ offset, color }) => {
+        if (offset.unit === UnitType.kPercentage) {
+          gradient?.addColorStop(offset.value / 100, color.toString());
+        }
       });
 
       this.gradientCache[key] = gradient;
@@ -134,10 +136,11 @@ export class ImagePool {
   }
 
   private generateGradientKey(params: GradientParams): string {
-    // @ts-ignore
-    const { type, width, height, steps, angle, cx, cy } = params;
-    return `gradient-${type}-${angle || 0}-${cx || 0}-${cy || 0}-${width}-${height}-${steps
-      .map((step) => step.join(''))
+    const { type, width, height, steps, angle, cx, cy, size } = params;
+    return `gradient-${type}-${angle?.toString() || 0}-${cx?.toString() || 0}-${
+      cy?.toString() || 0
+    }-${size?.toString() || 0}-${width}-${height}-${steps
+      .map(({ offset, color }) => `${offset}${color}`)
       .join('-')}`;
   }
 

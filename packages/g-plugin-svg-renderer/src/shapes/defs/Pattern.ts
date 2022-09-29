@@ -67,10 +67,12 @@ function generateCacheKey(src: CSSGradientValue | CSSRGB | Pattern, options: any
     const { type, value } = src;
     if (type === GradientType.LinearGradient || type === GradientType.RadialGradient) {
       // @ts-ignore
-      const { type, width, height, steps, angle, cx, cy } = { ...value, ...options };
-      cacheKey = `${type}${width}${height}${angle || 0}${cx || 0}${cy || 0}${steps
-        .map((step: [number, string]) => step.join(''))
-        .join('')}`;
+      const { type, width, height, steps, angle, cx, cy, size } = { ...value, ...options };
+      cacheKey = `gradient-${type}-${angle?.toString() || 0}-${cx?.toString() || 0}-${
+        cy?.toString() || 0
+      }-${size?.toString() || 0}-${width}-${height}-${steps
+        .map(({ offset, color }) => `${offset}${color}`)
+        .join('-')}`;
     }
   } else if (isPattern(src)) {
     if (isString(src.image)) {
@@ -205,8 +207,9 @@ function createOrUpdateGradient(
     $existed.setAttribute('gradientUnits', 'userSpaceOnUse');
     // add stops
     let innerHTML = '';
-    (parsedColor.value as LinearGradient).steps.forEach(([offset, color]) => {
-      innerHTML += `<stop offset="${offset}" stop-color="${color}"></stop>`;
+    (parsedColor.value as LinearGradient).steps.forEach(({ offset, color }) => {
+      // TODO: support absolute unit like `px`
+      innerHTML += `<stop offset="${offset.value / 100}" stop-color="${color}"></stop>`;
     });
     $existed.innerHTML = innerHTML;
     $existed.id = gradientId;
@@ -224,8 +227,8 @@ function createOrUpdateGradient(
 
     // $existed.setAttribute('gradientTransform', `rotate(${angle})`);
   } else {
-    const { cx, cy } = parsedColor.value as RadialGradient;
-    const { x, y, r } = computeRadialGradient(width, height, cx, cy);
+    const { cx, cy, size } = parsedColor.value as RadialGradient;
+    const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
 
     $existed.setAttribute('cx', `${x}`);
     $existed.setAttribute('cy', `${y}`);

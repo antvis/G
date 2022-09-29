@@ -2,6 +2,7 @@ import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import * as lil from 'lil-gui';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
@@ -32,6 +33,12 @@ const App = function MultiWorld() {
     const svgRenderer2 = new SVGRenderer();
     const webglRenderer1 = new WebGLRenderer();
     const webglRenderer2 = new WebGLRenderer();
+    const canvaskitRenderer1 = new CanvaskitRenderer({
+      wasmDir: '/',
+    });
+    const canvaskitRenderer2 = new CanvaskitRenderer({
+      wasmDir: '/',
+    });
 
     // create a canvas
     canvas1 = new Canvas({
@@ -91,25 +98,33 @@ const App = function MultiWorld() {
     const rendererFolder = gui.addFolder('renderer');
     const rendererConfig = {
       renderer: 'canvas',
+      devicePixelRatio: window.devicePixelRatio,
     };
     rendererFolder
-      .add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg'])
+      .add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg', 'canvaskit'])
       .onChange((renderer) => {
         canvas1.setRenderer(
           renderer === 'canvas'
             ? canvasRenderer1
             : renderer === 'webgl'
             ? webglRenderer1
-            : svgRenderer1,
+            : renderer === 'svg'
+            ? svgRenderer1
+            : canvaskitRenderer1,
         );
         canvas2.setRenderer(
           renderer === 'canvas'
             ? canvasRenderer2
             : renderer === 'webgl'
             ? webglRenderer2
-            : svgRenderer2,
+            : renderer === 'svg'
+            ? svgRenderer2
+            : canvaskitRenderer2,
         );
       });
+    rendererFolder.add(rendererConfig, 'devicePixelRatio', 0.5, 5).onChange((dpr) => {
+      canvas1.getConfig().devicePixelRatio = dpr;
+    });
     rendererFolder.open();
   });
 

@@ -16,6 +16,10 @@ import { MutationEvent } from './MutationEvent';
 import { Node } from './Node';
 
 let entityCounter = 0;
+export function resetEntityCounter() {
+  entityCounter = 0;
+}
+
 // let this.sceneGraphService: SceneGraphService;
 const childInsertedEvent = new CustomEvent(ElementEvent.CHILD_INSERTED, {
   child: null,

@@ -1,8 +1,10 @@
 import { isNil, isString, memoize } from '@antv/util';
 import type { AngularNode, ColorStop, DirectionalNode, PositionNode } from '../../utils';
 import { colorStopToString, parseGradient as parse } from '../../utils';
-import type { RadialGradient } from '../cssom';
+import type { CSSKeywordValue, CSSUnitValue, LinearColorStop, RadialGradient } from '../cssom';
+import { Odeg } from '../cssom';
 import { CSSGradientValue, GradientType } from '../cssom';
+import { getOrCreateKeyword, getOrCreateUnitValue } from '../CSSStyleValuePool';
 import type { Pattern } from './color';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;
@@ -26,6 +28,7 @@ function spaceColorStops(colorStops: ColorStop[]) {
   let previousIndex = 0;
   let previousOffset = Number(colorStops[0].length.value);
   for (let i = 1; i < length; i++) {
+    // support '%' & 'px'
     const offset = colorStops[i].length?.value;
     if (!isNil(offset) && !isNil(previousOffset)) {
       for (let j = 1; j < i - previousIndex; j++)
@@ -58,74 +61,83 @@ const SideOrCornerToDegMap: Record<DirectionalNode['value'], number> = {
   'bottom right': 135 - 90,
 };
 
-const angleToDeg = memoize((orientation: DirectionalNode | AngularNode) => {
-  let angle: number;
-  if (orientation.type === 'angular') {
-    angle = Number(orientation.value);
-  } else {
-    angle = SideOrCornerToDegMap[orientation.value] || 0;
-  }
-  return angle;
-});
+const angleToDeg: (orientation: DirectionalNode | AngularNode) => CSSUnitValue = memoize(
+  (orientation: DirectionalNode | AngularNode) => {
+    let angle: number;
+    if (orientation.type === 'angular') {
+      angle = Number(orientation.value);
+    } else {
+      angle = SideOrCornerToDegMap[orientation.value] || 0;
+    }
+    return getOrCreateUnitValue(angle, 'deg');
+  },
+);
 
-const positonToPercentage = memoize((position: PositionNode) => {
-  let cx = 0.5;
-  let cy = 0.5;
-  if (position?.type === 'position') {
-    const { x, y } = position.value;
-    if (x?.type === 'position-keyword') {
-      if (x.value === 'left') {
-        cx = 0;
-      } else if (x.value === 'center') {
-        cx = 0.5;
-      } else if (x.value === 'right') {
-        cx = 1;
-      } else if (x.value === 'top') {
-        cy = 0;
-      } else if (x.value === 'bottom') {
-        cy = 1;
+const positonToCSSUnitValue: (position: PositionNode) => { cx: CSSUnitValue; cy: CSSUnitValue } =
+  memoize((position: PositionNode) => {
+    let cx = 50;
+    let cy = 50;
+    let unitX = '%';
+    let unitY = '%';
+    if (position?.type === 'position') {
+      const { x, y } = position.value;
+      if (x?.type === 'position-keyword') {
+        if (x.value === 'left') {
+          cx = 0;
+        } else if (x.value === 'center') {
+          cx = 50;
+        } else if (x.value === 'right') {
+          cx = 100;
+        } else if (x.value === 'top') {
+          cy = 0;
+        } else if (x.value === 'bottom') {
+          cy = 100;
+        }
+      }
+
+      if (y?.type === 'position-keyword') {
+        if (y.value === 'left') {
+          cx = 0;
+        } else if (y.value === 'center') {
+          cy = 50;
+        } else if (y.value === 'right') {
+          cx = 100;
+        } else if (y.value === 'top') {
+          cy = 0;
+        } else if (y.value === 'bottom') {
+          cy = 100;
+        }
+      }
+
+      if (x?.type === 'px' || x?.type === '%' || x?.type === 'em') {
+        unitX = x?.type;
+        cx = Number(x.value);
+      }
+      if (y?.type === 'px' || y?.type === '%' || y?.type === 'em') {
+        unitY = y?.type;
+        cy = Number(y.value);
       }
     }
 
-    if (y?.type === 'position-keyword') {
-      if (y.value === 'left') {
-        cx = 0;
-      } else if (y.value === 'center') {
-        cy = 0.5;
-      } else if (y.value === 'right') {
-        cx = 1;
-      } else if (y.value === 'top') {
-        cy = 0;
-      } else if (y.value === 'bottom') {
-        cy = 1;
-      }
-    }
-
-    if (x?.type === '%') {
-      cx = Number(x.value) / 100;
-    }
-    if (y?.type === '%') {
-      cy = Number(x.value) / 100;
-    }
-  }
-
-  return { cx, cy };
-});
+    return { cx: getOrCreateUnitValue(cx, unitX), cy: getOrCreateUnitValue(cy, unitY) };
+  });
 
 export const parseGradient = memoize((colorStr: string) => {
   if (colorStr.indexOf('linear') > -1 || colorStr.indexOf('radial') > -1) {
     const ast = parse(colorStr);
     return ast.map(({ type, orientation, colorStops }) => {
       spaceColorStops(colorStops);
-      const steps = colorStops.map<[number, string]>((colorStop) => {
+      const steps = colorStops.map<LinearColorStop>((colorStop) => {
         // TODO: only support % for now, should calc percentage of axis length when using px/em
-        return [Number(colorStop.length.value) / 100, colorStopToString(colorStop)];
+        return {
+          offset: getOrCreateUnitValue(colorStop.length.value, '%'),
+          color: colorStopToString(colorStop),
+        };
       });
       if (type === 'linear-gradient') {
         return new CSSGradientValue(GradientType.LinearGradient, {
-          angle: orientation ? angleToDeg(orientation as DirectionalNode | AngularNode) : 0,
+          angle: orientation ? angleToDeg(orientation as DirectionalNode | AngularNode) : Odeg,
           steps,
-          hash: colorStr,
         });
       } else if (type === 'radial-gradient') {
         if (!orientation) {
@@ -137,14 +149,26 @@ export const parseGradient = memoize((colorStr: string) => {
           ];
         }
         if (orientation[0].type === 'shape' && orientation[0].value === 'circle') {
-          const { cx, cy } = positonToPercentage(orientation[0].at);
+          const { cx, cy } = positonToCSSUnitValue(orientation[0].at);
+          let size: CSSUnitValue | CSSKeywordValue;
+          if (orientation[0].style) {
+            const { type, value } = orientation[0].style;
+
+            if (type === 'extent-keyword') {
+              size = getOrCreateKeyword(value);
+            } else {
+              size = getOrCreateUnitValue(value, type);
+            }
+          }
           return new CSSGradientValue(GradientType.RadialGradient, {
             cx,
             cy,
+            size,
             steps,
-            hash: colorStr,
           });
         }
+        // TODO: support ellipse shape
+        // TODO: repeating-linear-gradient & repeating-radial-gradient
         // } else if (type === 'repeating-linear-gradient') {
         // } else if (type === 'repeating-radial-gradient') {
       }
@@ -160,9 +184,11 @@ export const parseGradient = memoize((colorStr: string) => {
         const steps = arr[2].match(regexColorStop)?.map((stop) => stop.split(':')) || [];
         return [
           new CSSGradientValue(GradientType.LinearGradient, {
-            angle: parseFloat(arr[1]),
-            steps: steps.map(([offset, color]) => [Number(offset), color]),
-            hash: colorStr,
+            angle: getOrCreateUnitValue(parseFloat(arr[1]), 'deg'),
+            steps: steps.map(([offset, color]) => ({
+              offset: getOrCreateUnitValue(Number(offset) * 100, '%'),
+              color,
+            })),
           }),
         ];
       }
@@ -186,10 +212,12 @@ function parseRadialGradient(gradientStr: string): RadialGradient | string | nul
   if (arr) {
     const steps = arr[4].match(regexColorStop)?.map((stop) => stop.split(':')) || [];
     return {
-      cx: 0.5,
-      cy: 0.5,
-      steps: steps.map(([offset, color]) => [Number(offset), color]),
-      hash: gradientStr,
+      cx: getOrCreateUnitValue(50, '%'),
+      cy: getOrCreateUnitValue(50, '%'),
+      steps: steps.map(([offset, color]) => ({
+        offset: getOrCreateUnitValue(Number(offset) * 100, '%'),
+        color,
+      })),
     };
   }
   return null;

@@ -1,9 +1,9 @@
-import { definedProps, Shape } from '@antv/g-lite';
+import { definedProps, rad2deg, Shape } from '@antv/g-lite';
 import { distanceSquareRoot, isNil } from '@antv/util';
 import { completeData } from './complete-data';
 import * as Lottie from './lottie-type';
 
-interface KeyframeAnimationKeyframe {
+export interface KeyframeAnimationKeyframe {
   easing?: string;
   offset: number;
   [key: string]: any;
@@ -12,7 +12,7 @@ interface KeyframeAnimationKeyframe {
 export interface KeyframeAnimation {
   duration?: number;
   delay?: number;
-  easing?: number;
+  easing?: string;
   loop?: boolean;
   keyframes: Record<string, any>[];
 }
@@ -38,10 +38,12 @@ export interface CustomElementOption {
   y?: number;
 }
 
-class ParseContext {
+export class ParseContext {
+  fps: number;
   frameTime = 1000 / 30;
   startFrame = 0;
   endFrame: number;
+  version: string;
 
   assetsMap: Map<string, Lottie.Asset> = new Map();
 
@@ -88,6 +90,9 @@ function getMultiDimensionValue(val: number | number[], dimIndex?: number) {
   return val != null ? (typeof val === 'number' ? val : val[dimIndex || 0]) : NaN;
 }
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/concepts/#easing-handles
+ */
 function getMultiDimensionEasingBezierString(
   kf: Pick<Lottie.OffsetKeyframe, 'o' | 'i'>,
   nextKf: Pick<Lottie.OffsetKeyframe, 'o' | 'i'>,
@@ -95,18 +100,37 @@ function getMultiDimensionEasingBezierString(
 ) {
   const bezierEasing: number[] = [];
   bezierEasing.push(
-    kf.o?.x ? getMultiDimensionValue(kf.o.x, dimIndex) : 0,
-    kf.o?.y ? getMultiDimensionValue(kf.o.y, dimIndex) : 0,
-    nextKf?.o?.x ? getMultiDimensionValue(nextKf.o.x, dimIndex) : 1,
-    nextKf?.o?.y ? getMultiDimensionValue(nextKf.o.y, dimIndex) : 1,
+    (kf.o?.x && (getMultiDimensionValue(kf.o.x, dimIndex) || getMultiDimensionValue(kf.o.x, 0))) ||
+      0,
+    (kf.o?.y && (getMultiDimensionValue(kf.o.y, dimIndex) || getMultiDimensionValue(kf.o.y, 0))) ||
+      0,
+    (kf.i?.x && (getMultiDimensionValue(kf.i.x, dimIndex) || getMultiDimensionValue(kf.i.x, 0))) ||
+      1,
+    (kf.i?.y && (getMultiDimensionValue(kf.i.y, dimIndex) || getMultiDimensionValue(kf.i.y, 0))) ||
+      1,
+    // nextKf?.o?.x ? getMultiDimensionValue(nextKf.o.x, dimIndex) : 1,
+    // nextKf?.o?.y ? getMultiDimensionValue(nextKf.o.y, dimIndex) : 1,
   );
 
-  if (bezierEasing[0] && bezierEasing[1] && bezierEasing[2] !== 1 && bezierEasing[3] !== 1) {
+  // linear by default
+  if (
+    !(
+      bezierEasing[0] === 0 &&
+      bezierEasing[1] === 0 &&
+      bezierEasing[2] === 1 &&
+      bezierEasing[3] === 1
+    )
+  ) {
+    console.log(`cubic-bezier(${bezierEasing.join(',')})`);
+
     return `cubic-bezier(${bezierEasing.join(',')})`;
   }
   return;
 }
 
+/**
+ * @see https://lottiefiles.github.io/lottie-docs/concepts/#keyframe
+ */
 function parseKeyframe(
   kfs: Lottie.OffsetKeyframe[],
   bezierEasingDimIndex: number,
@@ -126,6 +150,9 @@ function parseKeyframe(
   for (let i = 0; i < kfsLen; i++) {
     const kf = kfs[i];
     const nextKf = kfs[i + 1];
+
+    // If h is present and it's 1, you don't need i and o,
+    // as the property will keep the same value until the next keyframe.
     const isDiscrete = kf.h === 1;
     const offset = (kf.t + context.layerOffsetTime - context.startFrame) / duration;
 
@@ -260,6 +287,8 @@ function parseTransforms(
     scaleY: 'scaleY',
     anchorX: 'anchorX',
     anchorY: 'anchorY',
+    skew: 'skew',
+    skewAxis: 'skewAxis',
   },
 ) {
   // @see https://lottiefiles.github.io/lottie-docs/concepts/#split-vector
@@ -299,16 +328,7 @@ function parseTransforms(
     context,
     (val) => val / 100,
   );
-  parseValue(
-    ks.r,
-    attrs,
-    targetProp,
-    [transformProps.rotation],
-    animations,
-    context,
-    // Rotation in degrees, clockwise
-    (val) => val,
-  );
+  parseValue(ks.r, attrs, targetProp, [transformProps.rotation], animations, context);
 
   parseValue(
     ks.a,
@@ -319,8 +339,9 @@ function parseTransforms(
     context,
   );
 
-  // TODO sk: skew, sa: skew axis
-  // TODO px, py
+  parseValue(ks.sk, attrs, targetProp, [transformProps.skew], animations, context);
+
+  parseValue(ks.sa, attrs, targetProp, [transformProps.skewAxis], animations, context);
 }
 
 function isGradientFillOrStroke(
@@ -344,30 +365,42 @@ function convertColorStops(arr: number[], count: number) {
   return colorStops;
 }
 
+function joinColorStops(colorStops: any[]) {
+  return `${colorStops.map(({ offset, color }) => `${color} ${offset * 100}%`).join(', ')}`;
+}
+
+/**
+ * TODO:
+ * * Transition
+ * * Highlight length & angle in Radial Gradient
+ *
+ * @see https://lottiefiles.github.io/lottie-docs/concepts/#gradients
+ * @see https://lottiefiles.github.io/lottie-docs/shapes/#gradients
+ */
 function parseGradient(shape: Lottie.GradientFillShape | Lottie.GradientStrokeShape) {
-  // TODO animation
   const colorArr = shape.g.k.k as number[];
   const colorStops = convertColorStops(colorArr, shape.g.p);
+  // @see https://lottiefiles.github.io/lottie-docs/constants/#gradienttype
   if (shape.t === Lottie.GradientType.Linear) {
-    return {
-      type: 'linear' as const,
-      colorStops,
-      x: shape.s.k[0] as number,
-      y: shape.s.k[1] as number,
-      x2: shape.e.k[0] as number,
-      y2: shape.e.k[1] as number,
-      global: true,
-    };
+    const angle = rad2deg(
+      Math.atan2(
+        (shape.e.k[1] as number) - (shape.s.k[1] as number),
+        (shape.e.k[0] as number) - (shape.s.k[0] as number),
+      ),
+    );
+
+    // @see https://g-next.antv.vision/zh/docs/api/css/css-properties-values-api#linear-gradient
+    return `linear-gradient(${angle}deg, ${joinColorStops(colorStops)})`;
   } else if (shape.t === Lottie.GradientType.Radial) {
-    return {
-      type: 'radial' as const,
-      colorStops,
-      x: shape.s.k[0] as number,
-      y: shape.s.k[1] as number,
-      // r: vector.dist(shape.e.k as number[], shape.s.k as number[]),
-      r: distanceSquareRoot(shape.e.k as [number, number], shape.s.k as [number, number]),
-      global: true,
-    };
+    // TODO: highlight length & angle (h & a)
+    // Highlight Length, as a percentage between s and e
+    // Highlight Angle, relative to the direction from s to e
+    const size = distanceSquareRoot(shape.e.k as [number, number], shape.s.k as [number, number]);
+
+    // @see https://g-next.antv.vision/zh/docs/api/css/css-properties-values-api#radial-gradient
+    return `radial-gradient(circle ${size}px at ${shape.s.k[0] as number}px ${
+      shape.s.k[1] as number
+    }px, ${joinColorStops(colorStops)})`;
   } else {
     // Invalid gradient
     return '#000';
@@ -401,6 +434,8 @@ function parseFill(
     context,
     (opacity) => opacity / 100,
   );
+
+  // TODO: FillRule @see https://lottiefiles.github.io/lottie-docs/constants/#fillrule
 }
 
 function parseStroke(
@@ -495,6 +530,7 @@ function parseShapePaths(
       stroke: 'none',
     },
   };
+  // @see https://lottiefiles.github.io/lottie-docs/concepts/#bezier
   if (isBezier(shape.ks.k)) {
     attrs.shape = {
       in: shape.ks.k.i,
@@ -628,6 +664,8 @@ function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
               scaleY: 'repeatScaleY',
               anchorX: 'repeatAnchorX',
               anchorY: 'repeatAnchorY',
+              skew: 'repeatSkew',
+              skewAxis: 'repeatSkewAxis',
             },
           );
           break;
@@ -818,24 +856,30 @@ function parseLayers(
     // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
     switch (layer.ty) {
       case Lottie.LayerType.shape:
+        // @see https://lottiefiles.github.io/lottie-docs/layers/#shape-layer
         layerGroup = parseShapeLayer(layer as Lottie.ShapeLayer, context);
         break;
       case Lottie.LayerType.null:
+        // @see https://lottiefiles.github.io/lottie-docs/layers/#null-layer
         layerGroup = {
           type: Shape.GROUP,
           children: [],
         };
         break;
       case Lottie.LayerType.solid:
+        // @see https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer
         layerGroup = {
           type: Shape.GROUP,
           children: [],
         };
+        // Anything you can do with solid layers, you can do better with a shape layer and a rectangle shape
+        // since none of this layer's own properties can be animated.
         if ((layer as Lottie.SolidColorLayer).sc) {
-          layerGroup.children!.push(parseSolidShape(layer as Lottie.SolidColorLayer));
+          layerGroup.children.push(parseSolidShape(layer as Lottie.SolidColorLayer));
         }
         break;
       case Lottie.LayerType.precomp:
+        // @see https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer
         layerGroup = {
           type: Shape.GROUP,
           children: parseLayers(
@@ -847,6 +891,12 @@ function parseLayers(
             },
           ),
         };
+        break;
+      case Lottie.LayerType.text:
+        // TODO: https://lottiefiles.github.io/lottie-docs/layers/#text-layer
+        break;
+      case Lottie.LayerType.image:
+        // TODO: https://lottiefiles.github.io/lottie-docs/layers/#image-layer
         break;
     }
 
@@ -954,9 +1004,11 @@ export function parse(
   const context = new ParseContext();
   opts = opts || {};
 
-  context.frameTime = 1000 / (data.fr || 30);
+  context.fps = data.fr || 30;
+  context.frameTime = 1000 / context.fps;
   context.startFrame = data.ip;
   context.endFrame = data.op;
+  context.version = data.v;
 
   data.assets?.forEach((asset) => {
     context.assetsMap.set(asset.id, asset);
@@ -989,6 +1041,7 @@ export function parse(
     width: data.w,
     height: data.h,
     elements,
+    context,
 
     each: (cb: (el: CustomElementOption) => void) => {
       eachElement(elements, cb);

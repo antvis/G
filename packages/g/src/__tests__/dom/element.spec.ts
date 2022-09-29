@@ -1,4 +1,4 @@
-import { Element, Node } from '@antv/g';
+import { Element, Node, resetEntityCounter } from '@antv/g';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -9,6 +9,20 @@ chai.use(chaiAlmost());
 chai.use(sinonChai);
 
 describe('DOM Element API', () => {
+  it('should reset EntityCounter', () => {
+    resetEntityCounter();
+    let group1 = new Element();
+    let group2 = new Element();
+    expect(group1.entity).to.eqls(0);
+    expect(group2.entity).to.eqls(1);
+
+    resetEntityCounter();
+    group1 = new Element();
+    group2 = new Element();
+    expect(group1.entity).to.eqls(0);
+    expect(group2.entity).to.eqls(1);
+  });
+
   it('should appendChild with before & after correctly', () => {
     const group1 = new Element();
     const group2 = new Element();

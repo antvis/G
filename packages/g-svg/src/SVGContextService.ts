@@ -1,4 +1,5 @@
 import type { DataURLOptions } from '@antv/g-lite';
+import { isBrowser } from '@antv/g-lite';
 import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 import { isString } from '@antv/util';
@@ -15,7 +16,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   ) {}
 
   async init() {
-    const { container, document: doc } = this.canvasConfig;
+    const { container, document: doc, devicePixelRatio } = this.canvasConfig;
 
     // create container
     this.$container = isString(container) ? (doc || document).getElementById(container) : container;
@@ -32,7 +33,8 @@ export class SVGContextService implements ContextService<SVGElement> {
       this.$namespace = $namespace;
     }
 
-    let dpr = window.devicePixelRatio || 1;
+    // use user-defined dpr first
+    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
     dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
   }
@@ -62,6 +64,7 @@ export class SVGContextService implements ContextService<SVGElement> {
   }
 
   resize(width: number, height: number) {
+    // SVG should ignore DPR
     if (this.$namespace) {
       this.$namespace.setAttribute('width', `${width}`);
       this.$namespace.setAttribute('height', `${height}`);
