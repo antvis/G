@@ -239,15 +239,20 @@ describe('Property Color', () => {
     expect((result[1].value as RadialGradient).steps[2].offset.toString()).to.be.eqls('100%');
 
     // TODO: multiple gradients, use 0 as 0%
-    result = parseColor(`radial-gradient(circle at 50% 0%,
-      rgba(255,0,0,.5),
-      rgba(255,0,0,0) 70.71%),
-    radial-gradient(circle at 6.7% 75%,
-      rgba(0,0,255,.5),
-      rgba(0,0,255,0) 70.71%),
-    radial-gradient(circle at 93.3% 75%,
-      rgba(0,255,0,.5),
-      rgba(0,255,0,0) 70.71%)`) as CSSGradientValue[];
+    // result = parseColor(`radial-gradient(circle at 50% 0%,
+    //   rgba(255,0,0,.5),
+    //   rgba(255,0,0,0) 70.71%),
+    // radial-gradient(circle at 6.7% 75%,
+    //   rgba(0,0,255,.5),
+    //   rgba(0,0,255,0) 70.71%),
+    // radial-gradient(circle at 93.3% 75%,
+    //   rgba(0,255,0,.5),
+    //   rgba(0,255,0,0) 70.71%)`) as CSSGradientValue[];
+
+    // result = parseColor(
+    //   `radial-gradient(circle 480px at 256px 496px, rgb(196, 217, 245) 0%, rgb(50, 80, 176) 50%, rgb(41, 47, 117) 100%)`,
+    // );
+    // console.log(result);
   });
 
   it('should parse legacy linear gradient color correctly', () => {

@@ -1,5 +1,5 @@
 import { inject, singleton } from 'mana-syringe';
-import { isUndefined } from '@antv/util';
+import { isNil, isUndefined } from '@antv/util';
 import type { FederatedMouseEvent, ICanvas } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
@@ -146,6 +146,26 @@ export class EventPlugin implements RenderingPlugin {
     this.setCursor(this.eventService.cursor);
   };
 
+  private getViewportXY(nativeEvent: PointerEvent | WheelEvent) {
+    let x: number;
+    let y: number;
+    /**
+     * Should account for CSS Transform applied on container.
+     * @see https://github.com/antvis/G/issues/1161
+     * @see https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/offsetX
+     */
+    const { offsetX, offsetY, clientX, clientY } = nativeEvent;
+    if (this.canvasConfig.supportsCSSTransform && !isNil(offsetX) && !isNil(offsetY)) {
+      x = offsetX;
+      y = offsetY;
+    } else {
+      const point = this.eventService.client2Viewport(new Point(clientX, clientY));
+      x = point.x;
+      y = point.y;
+    }
+    return { x, y };
+  }
+
   private bootstrapEvent(
     event: FederatedPointerEvent,
     nativeEvent: PointerEvent,
@@ -167,9 +187,7 @@ export class EventPlugin implements RenderingPlugin {
     event.twist = nativeEvent.twist;
     this.transferMouseData(event, nativeEvent);
 
-    const { x, y } = this.eventService.client2Viewport(
-      new Point(nativeEvent.clientX, nativeEvent.clientY),
-    );
+    const { x, y } = this.getViewportXY(nativeEvent);
     event.viewport.x = x;
     event.viewport.y = y;
     const { x: canvasX, y: canvasY } = this.eventService.viewport2Canvas(event.viewport);
@@ -201,9 +219,7 @@ export class EventPlugin implements RenderingPlugin {
     event.deltaY = nativeEvent.deltaY;
     event.deltaZ = nativeEvent.deltaZ;
 
-    const { x, y } = this.eventService.client2Viewport(
-      new Point(nativeEvent.clientX, nativeEvent.clientY),
-    );
+    const { x, y } = this.getViewportXY(nativeEvent);
     event.viewport.x = x;
     event.viewport.y = y;
     const { x: canvasX, y: canvasY } = this.eventService.viewport2Canvas(event.viewport);

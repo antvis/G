@@ -63,6 +63,13 @@
         "zh": "通过 API 方式完成拾取",
         "en": "Use picking API"
       }
+    },
+    {
+      "filename": "supports-css-transform.js",
+      "title": {
+        "zh": "支持在容器上应用 CSS Transform",
+        "en": "Support applying CSS Transform on container"
+      }
     }
   ]
 }

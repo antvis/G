@@ -436,6 +436,11 @@ export interface CanvasConfig {
   isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
 
   /**
+   * Should we account for CSS Transform applied on container?
+   */
+  supportsCSSTransform?: boolean;
+
+  /**
    * 画布宽度
    */
   width?: number;
