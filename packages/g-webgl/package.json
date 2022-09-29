@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "1.7.20",
+  "version": "1.7.21",
   "description": "A renderer implemented by WebGL1/2",
   "keywords": [
     "antv",
@@ -27,11 +27,11 @@
     "README.md"
   ],
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.7.20",
-    "@antv/g-plugin-dom-interaction": "^1.7.17",
-    "@antv/g-plugin-html-renderer": "^1.7.17",
-    "@antv/g-plugin-image-loader": "^1.1.18",
-    "@antv/g-plugin-webgl-device": "^1.7.17",
+    "@antv/g-plugin-device-renderer": "^1.7.21",
+    "@antv/g-plugin-dom-interaction": "^1.7.18",
+    "@antv/g-plugin-html-renderer": "^1.7.18",
+    "@antv/g-plugin-image-loader": "^1.1.19",
+    "@antv/g-plugin-webgl-device": "^1.7.18",
     "@antv/util": "^3.2.4"
   },
   "devDependencies": {
