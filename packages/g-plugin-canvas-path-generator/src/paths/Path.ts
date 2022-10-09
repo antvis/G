@@ -14,7 +14,7 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
   const path = [...curve];
   zCommandIndexes.forEach((zIndex, index) => {
     // @ts-ignore
-    path.splice(zIndex + index, 1, ['Z']);
+    path.splice(zIndex + index + 1, 0, ['Z']);
   });
 
   // @ts-ignore

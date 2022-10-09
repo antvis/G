@@ -312,7 +312,7 @@ export function convertToPath(
 
       commands = [...curve];
       zCommandIndexes.forEach((zIndex, index) => {
-        commands.splice(zIndex + index, 1, ['Z']);
+        commands.splice(zIndex + index + 1, 0, ['Z']);
       });
 
       break;

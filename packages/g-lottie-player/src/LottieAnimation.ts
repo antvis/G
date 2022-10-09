@@ -1,11 +1,4 @@
-import {
-  BaseStyleProps,
-  Canvas,
-  DisplayObject,
-  ElementEvent,
-  PointLike,
-  Rectangle,
-} from '@antv/g-lite';
+import type { BaseStyleProps, Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
 import type {
@@ -132,8 +125,8 @@ export class LottieAnimation {
 
       displayObject = new Rect({
         style: {
-          // x: cx,
-          // y: cy,
+          x: cx,
+          y: cy,
           width,
           height,
           anchor: [0.5, 0.5], // position means the center of the rectangle
@@ -344,6 +337,7 @@ export class LottieAnimation {
 
     // ignore empty interpolable attributes
     keyframes = keyframes.filter((keyframe) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { ignore, easing, offset, ...rest } = keyframe;
       return Object.keys(rest).length > 0;
     });

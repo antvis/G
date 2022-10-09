@@ -70,7 +70,7 @@ export class PathRenderer implements RendererContribution {
     const pathCommand = [...curve];
     zCommandIndexes.forEach((zIndex, index) => {
       // @ts-ignore
-      pathCommand.splice(zIndex + index, 1, ['Z']);
+      pathCommand.splice(zIndex + index + 1, 0, ['Z']);
     });
 
     // @ts-ignore
