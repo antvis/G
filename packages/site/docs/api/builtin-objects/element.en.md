@@ -274,12 +274,12 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
 
 ### getAnimations
 
-Returns a list of animation objects applied to the current element, see [animation system](/en/docs/api/animation)
+Returns a list of animation objects applied to the current element, see [animation system](/en/docs/api/animation/waapi)
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
 
 ### animate
 
-Apply Keyframe animation, see [animation system](/en/docs/api/animation)
+Apply Keyframe animation, see [animation system](/en/docs/api/animation/waapi)
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate

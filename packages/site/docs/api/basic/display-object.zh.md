@@ -439,7 +439,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterL
 
 目前仅支持形如：`[dash, gap]` 的形式，如果数组中仅有一个元素，即 `[dash]` 等价于 `[dash, dash]`。
 
-对它应用动画可以实现[笔迹动画效果](/zh/docs/api/animation#笔迹动画)。
+对它应用动画可以实现[笔迹动画效果](/zh/docs/api/animation/waapi#笔迹动画)。
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
 
@@ -449,7 +449,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterL
 
 ### lineDashOffset
 
-虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation#蚂蚁线)
+虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation/waapi#蚂蚁线)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
 
@@ -803,7 +803,7 @@ image.setClip(null);
 
 ### 注意事项
 
-裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。例如，配合[动画系统](/zh/docs/api/animation)我们可以对裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
+裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。例如，配合[动画系统](/zh/docs/api/animation/waapi)我们可以对裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 
@@ -819,7 +819,7 @@ clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
 
 ## 运动轨迹
 
-在[路径动画](/zh/docs/api/animation#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation#路径动画)对 `offsetDistance` 属性应用变换：
+在[路径动画](/zh/docs/api/animation/waapi#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation/waapi#路径动画)对 `offsetDistance` 属性应用变换：
 
 ```js
 const circle = new Circle({
@@ -1368,7 +1368,7 @@ rect.style.width = '100px';
 rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
-需要注意的是，目前在使用[动画](/zh/docs/api/animation)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/zh/examples/animation#onframe)：
+需要注意的是，目前在使用[动画](/zh/docs/api/animation/waapi)时，我们也会将待插值的属性值进行转换，因此如果想获取以 px 为单位的绝对值，需要使用 `parsedStyle` [示例](/zh/examples/animation#onframe)：
 
 ```js
 animation.onframe = () => {
@@ -1501,4 +1501,4 @@ circle.animate(
 );
 ```
 
-更多用法详见[动画系统](/zh/docs/api/animation)
+更多用法详见[动画系统](/zh/docs/api/animation/waapi)

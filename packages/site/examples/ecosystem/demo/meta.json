@@ -95,10 +95,24 @@
       }
     },
     {
-      "filename": "lottie-player.js",
+      "filename": "lottie-player-basic-shapes.js",
       "title": {
-        "zh": "Lottie 播放器",
-        "en": "Lottie Player"
+        "zh": "Lottie 播放器 - 基础图形",
+        "en": "Lottie Player - Basic shapes"
+      }
+    },
+    {
+      "filename": "lottie-player-transform.js",
+      "title": {
+        "zh": "Lottie 播放器 - 变换",
+        "en": "Lottie Player - Transform"
+      }
+    },
+    {
+      "filename": "lottie-player-assets.js",
+      "title": {
+        "zh": "Lottie 播放器 - 图片资产",
+        "en": "Lottie Player - Displaying assets"
       }
     },
     {

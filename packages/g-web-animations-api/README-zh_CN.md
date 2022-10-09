@@ -6,7 +6,7 @@
 
 ### 使用方式
 
-详见[使用文档](https://g-next.antv.vision/zh/docs/api/animation)。
+详见[使用文档](https://g-next.antv.vision/zh/docs/api/animation/waapi)。
 
 ```js
 const scaleInCenter = circle.animate(

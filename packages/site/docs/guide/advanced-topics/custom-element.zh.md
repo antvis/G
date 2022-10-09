@@ -23,7 +23,7 @@ order: 3
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9Xs4SKUOAxwAAAAAAAAAAAAAARQnAQ)
 
-过程中会涉及[场景图](/zh/docs/guide/diving-deeper/scenegraph)、[动画系统](/zh/docs/api/animation)、[事件系统](/zh/docs/api/event)等。在开始前我们推荐先阅读以上各个系统的文档。
+过程中会涉及[场景图](/zh/docs/guide/diving-deeper/scenegraph)、[动画系统](/zh/docs/api/animation/waapi)、[事件系统](/zh/docs/api/event)等。在开始前我们推荐先阅读以上各个系统的文档。
 
 -   [完整 DEMO](/zh/examples/shape#arrow)
 -   [源码](https://github.com/antvis/g/blob/next/packages/g-components/src/Arrow.ts)
@@ -247,7 +247,7 @@ canvas.document.getElementById('lineArrow'); // Arrow lineArrow
 
 ## 应用动画
 
-同样也可以对它[应用动画](/zh/docs/api/animation)，例如对 transform stroke 和 opacity 这三个属性：
+同样也可以对它[应用动画](/zh/docs/api/animation/waapi)，例如对 transform stroke 和 opacity 这三个属性：
 
 ```js
 lineArrow.animate(

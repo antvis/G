@@ -479,7 +479,7 @@
     const myCustomShape = canvas.document.createElement(MyCustomShape.tag, {});
     ```
 
--   补全 [ComputedEffectTiming](http://g-next.antv.vision/zh/docs/api/animation#computedeffecttiming)
+-   补全 [ComputedEffectTiming](http://g-next.antv.vision/zh/docs/api/animation/waapi#computedeffecttiming)
     -   endTime
     -   activeDuration
     -   localTime

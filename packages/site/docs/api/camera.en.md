@@ -566,11 +566,11 @@ The list of parameters is as follows.
 -   markName
 -   options Camera parameters, including.
     -   `duration` Duration of the animation in `ms`, default value is `100`.
-    -   `easing` Easing function, default value is `linear`. Consistent with the animation system [built-in effects](/en/docs/api/animation#easing-1)
-    -   `easingFunction` Custom easing function, when the built-in easing function can not meet the requirements, you can [custom](/en/docs/api/animation#easingfunction)
+    -   `easing` Easing function, default value is `linear`. Consistent with the animation system [built-in effects](/en/docs/api/animation/waapi#easing-1)
+    -   `easingFunction` Custom easing function, when the built-in easing function can not meet the requirements, you can [custom](/en/docs/api/animation/waapi#easingfunction)
     -   `onfinish` Callback function at the end of the animation
 
-As with the [options](/en/docs/api/animation#options) parameter in the animation system, passing `number` is equivalent to setting `duration`.
+As with the [options](/en/docs/api/animation/waapi#options) parameter in the animation system, passing `number` is equivalent to setting `duration`.
 
 ```js
 camera.gotoLandmark('mark1', { duration: 300 });

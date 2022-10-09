@@ -1,5 +1,12 @@
-import type { BaseStyleProps, Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
-import { definedProps, Ellipse, Group, Rect, Path, Shape } from '@antv/g-lite';
+import {
+  BaseStyleProps,
+  Canvas,
+  DisplayObject,
+  ElementEvent,
+  PointLike,
+  Rectangle,
+} from '@antv/g-lite';
+import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
 import type {
   CustomElementOption,
@@ -8,6 +15,17 @@ import type {
   ParseContext,
 } from './parser';
 
+const eps = 0.0001;
+
+/**
+ * Provides some control methods like:
+ * - play
+ * - pause
+ * - stop
+ * - goToAndStop
+ * - goToAndPlay
+ * @see https://github.com/airbnb/lottie-web/blob/master/player/js/animation/AnimationItem.js
+ */
 export class LottieAnimation {
   constructor(
     private width: number,
@@ -17,14 +35,15 @@ export class LottieAnimation {
   ) {
     this.displayObjects = elements.map((element) => this.buildHierachy(element));
 
-    // console.log(elements, this.displayObjects);
+    // TODO: preload images
+    // TODO: preload fonts
   }
 
   private displayObjects: DisplayObject[];
   private keyframeAnimationMap = new WeakMap<DisplayObject, KeyframeAnimation[]>();
+  private displayObjectElementMap = new WeakMap<DisplayObject, CustomElementOption>();
 
   private buildHierachy(element: CustomElementOption) {
-    // @ts-ignore
     const {
       type,
       name,
@@ -45,15 +64,22 @@ export class LottieAnimation {
 
     let displayObject: DisplayObject;
 
+    let transformStr = '';
+    if (x - anchorX !== 0 || y - anchorY !== 0) {
+      transformStr += `translate(${x - anchorX}px, ${y - anchorY}px)`;
+    }
+    if (scaleX !== 1 || scaleY !== 1) {
+      transformStr += ` scale(${scaleX === 0 ? eps : scaleX}, ${scaleY === 0 ? eps : scaleY})`;
+    }
+    if (rotation !== 0) {
+      transformStr += ` rotate(${rotation}deg)`;
+    }
+
     // @see https://lottiefiles.github.io/lottie-docs/concepts/#transform
     const transformStyle: Pick<BaseStyleProps, 'transform' | 'transformOrigin'> = {
       transformOrigin: `${anchorX}px ${anchorY}px`,
-      transform: `translate(${x - anchorX}px, ${
-        y - anchorY
-      }px) scale(${scaleX}, ${scaleY}) rotate(${rotation}deg)`,
+      transform: transformStr,
     };
-
-    console.log(transformStyle);
 
     // TODO: repeater @see https://lottiefiles.github.io/lottie-docs/shapes/#repeater
 
@@ -66,12 +92,14 @@ export class LottieAnimation {
         },
       });
     } else if (type === Shape.ELLIPSE) {
+      const { cx, cy, rx, ry } = shape;
+
       displayObject = new Ellipse({
         style: {
-          cx: shape.cx,
-          cy: shape.cy,
-          rx: shape.rx,
-          ry: shape.ry,
+          cx,
+          cy,
+          rx,
+          ry,
           ...transformStyle,
         },
       });
@@ -100,15 +128,29 @@ export class LottieAnimation {
       });
     } else if (type === Shape.RECT) {
       // @see https://lottiefiles.github.io/lottie-docs/shapes/#rectangle
-      const { x, y, width, height, r } = shape;
+      const { x: cx, y: cy, width, height, r } = shape;
+
       displayObject = new Rect({
         style: {
-          x,
-          y,
+          // x: cx,
+          // y: cy,
           width,
           height,
+          anchor: [0.5, 0.5], // position means the center of the rectangle
           radius: r,
-          anchor: [0.5, 0.5],
+          ...transformStyle,
+        },
+      });
+    } else if (type === Shape.IMAGE) {
+      const { width, height, src } = shape;
+
+      displayObject = new Image({
+        style: {
+          x: 0,
+          y: 0,
+          width,
+          height,
+          src,
           ...transformStyle,
         },
       });
@@ -117,6 +159,8 @@ export class LottieAnimation {
     if (name) {
       displayObject.name = name;
     }
+
+    // TODO: match name `mn`, used in expressions
 
     if (style) {
       // { fill, fillOpacity, opacity, lineDash, lineDashOffset }
@@ -131,6 +175,8 @@ export class LottieAnimation {
       const childNodes = children.map((child) => this.buildHierachy(child));
       displayObject.append(...childNodes);
     }
+
+    this.displayObjectElementMap.set(displayObject, element);
 
     return displayObject;
   }
@@ -169,13 +215,11 @@ export class LottieAnimation {
 
   /**
    * Draws current animation frame. Must call seek or seekFrame first.
-   * @param canvas
-   * @param dstRect
    */
-  render(canvas: Canvas, dstRect?: Rectangle) {
-    this.displayObjects.forEach((object) => {
-      canvas.appendChild(object);
-    });
+  render(canvas: Canvas) {
+    const wrapper = new Group();
+    wrapper.append(...this.displayObjects);
+    canvas.appendChild(wrapper);
 
     this.displayObjects.forEach((parent) => {
       parent.forEach((child: DisplayObject) => {
@@ -234,27 +278,43 @@ export class LottieAnimation {
             }
           }
 
-          // console.log(mergedKeyframesOptions);
-
           // TODO: return animations
-          mergedKeyframesOptions.map(([formattedKeyframes, options]) => {
+          mergedKeyframesOptions.map(([merged, options]) => {
             // format interpolated properties, e.g. scaleX -> transform
-            this.formatKeyframes(formattedKeyframes, child);
-            return child.animate(formattedKeyframes, options);
+            const formatted = this.formatKeyframes(merged, child);
+
+            if (formatted.length) {
+              console.log(formatted);
+
+              return child.animate(formatted, options);
+            }
           });
         }
       });
     });
+
+    return wrapper;
   }
 
   private formatKeyframes(keyframes: Record<string, any>[], object: DisplayObject) {
     keyframes.forEach((keyframe) => {
+      if ('x' in keyframe) {
+        keyframe.transform = (keyframe.transform || '') + ` translateX(${keyframe.x})`;
+        delete keyframe.x;
+      }
+      if ('y' in keyframe) {
+        keyframe.transform = (keyframe.transform || '') + ` translateY(${keyframe.y})`;
+        delete keyframe.y;
+      }
+
       if ('scaleX' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` scaleX(${keyframe.scaleX})`;
+        keyframe.transform =
+          (keyframe.transform || '') + ` scaleX(${keyframe.scaleX === 0 ? eps : keyframe.scaleX})`;
         delete keyframe.scaleX;
       }
       if ('scaleY' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` scaleY(${keyframe.scaleY})`;
+        keyframe.transform =
+          (keyframe.transform || '') + ` scaleY(${keyframe.scaleY === 0 ? eps : keyframe.scaleY})`;
         delete keyframe.scaleY;
       }
 
@@ -264,25 +324,50 @@ export class LottieAnimation {
         delete keyframe.rotation;
       }
 
-      if ('x' in keyframe && object.nodeName === Shape.ELLIPSE) {
-        keyframe.cx = keyframe.x;
-        delete keyframe.x;
-      }
-      if ('y' in keyframe && object.nodeName === Shape.ELLIPSE) {
-        keyframe.cy = keyframe.y;
-        delete keyframe.y;
+      // manipulate cx/cy instead of x/y on ellipse
+      // if ('x' in keyframe && object.nodeName === Shape.ELLIPSE) {
+      //   keyframe.cx = keyframe.x;
+      //   delete keyframe.x;
+      // }
+      // if ('y' in keyframe && object.nodeName === Shape.ELLIPSE) {
+      //   keyframe.cy = keyframe.y;
+      //   delete keyframe.y;
+      // }
+      // { style: { opacity: 1 } }
+      if ('style' in keyframe) {
+        Object.keys(keyframe.style).forEach((name) => {
+          keyframe[name] = keyframe.style[name];
+        });
+        delete keyframe.style;
       }
     });
 
-    // padding offset = 1
-    if (keyframes[keyframes.length - 1].offset !== 1) {
-      keyframes.push({
-        ...keyframes[keyframes.length - 1],
-        offset: 1,
-      });
+    // ignore empty interpolable attributes
+    keyframes = keyframes.filter((keyframe) => {
+      const { ignore, easing, offset, ...rest } = keyframe;
+      return Object.keys(rest).length > 0;
+    });
+
+    if (keyframes.length) {
+      // padding offset = 1
+      if (keyframes[keyframes.length - 1].offset !== 1) {
+        keyframes.push({
+          ...keyframes[keyframes.length - 1],
+          offset: 1,
+        });
+      }
     }
 
     return keyframes;
+  }
+
+  /**
+   * Destroy all internal displayobjects.
+   */
+  destroy() {
+    this.displayObjects.forEach((object) => {
+      object.destroy();
+    });
   }
 
   /**
@@ -308,7 +393,7 @@ export class LottieAnimation {
   }
 
   /**
-   * Bodymoving version
+   * Bodymovin version
    */
   version() {
     return this.context.version;

@@ -28,9 +28,9 @@ https://g-next.antv.vision/zh/docs/api/event
 
 ### 动画系统
 
-https://g-next.antv.vision/zh/docs/api/animation
+https://g-next.antv.vision/zh/docs/api/animation/waapi
 
 ## 参考资料
 
 -   [Sprite.js](https://github.com/spritejs/spritejs)
--   [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions)
+-   [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions) ns)

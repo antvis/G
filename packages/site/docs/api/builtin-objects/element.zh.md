@@ -274,12 +274,12 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
 
 ### getAnimations
 
-返回应用在当前元素上的动画对象列表，详见[动画系统](/zh/docs/api/animation)
+返回应用在当前元素上的动画对象列表，详见[动画系统](/zh/docs/api/animation/waapi)
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
 
 ### animate
 
-应用 Keyframe 动画，详见[动画系统](/zh/docs/api/animation)
+应用 Keyframe 动画，详见[动画系统](/zh/docs/api/animation/waapi)
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate
+https://developer.mozilla.org/zh-CN/docs/Web/API/Element/animate imate

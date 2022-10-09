@@ -28,9 +28,9 @@ https://g-next.antv.vision/en/docs/api/event
 
 ### Animation
 
-https://g-next.antv.vision/en/docs/api/animation
+https://g-next.antv.vision/en/docs/api/animation/waapi
 
 ## Inspired by
 
 -   [Sprite.js](https://github.com/spritejs/spritejs)
--   [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions)
+-   [Theia 中的服务和扩展点](https://theia-ide.org/docs/services_and_contributions) ns)

@@ -592,7 +592,7 @@ const animation = myCustomElement.animate(
 
 ## interpolate
 
-是否支持插值。只有支持才能应用[动画](/zh/docs/api/animation)。
+是否支持插值。只有支持才能应用[动画](/zh/docs/api/animation/waapi)。
 
 例如在下面的自定义元素中，我们定义了自定义属性 `angle`，它使用 `<angle>` 解析器并支持插值：
 

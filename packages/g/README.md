@@ -28,7 +28,7 @@ https://g-next.antv.vision/en/docs/api/event
 
 ### Animation
 
-https://g-next.antv.vision/en/docs/api/animation
+https://g-next.antv.vision/en/docs/api/animation/waapi
 
 ## Inspired by
 

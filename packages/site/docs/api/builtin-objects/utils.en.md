@@ -83,7 +83,7 @@ Most calculations involving paths rely on `@antv/util`.
 
 ## convertToPath
 
-[Morph animation](/en/docs/api/animation#morping) is implemented by interpolating the [path/d](/en/docs/api/basic/path#d) property of [Path](/en/docs/api/basic/path).
+[Morph animation](/en/docs/api/animation/waapi#morping) is implemented by interpolating the [path/d](/en/docs/api/basic/path#d) property of [Path](/en/docs/api/basic/path).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ">
 

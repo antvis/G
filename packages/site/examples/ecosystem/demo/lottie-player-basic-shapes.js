@@ -1,7 +1,7 @@
 import { Canvas, CanvasEvent, HTML, Rectangle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { createAnimation } from '@antv/g-lottie-player';
+import { loadAnimation } from '@antv/g-lottie-player';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
@@ -83,10 +83,12 @@ const bouncy_ball = {
               ty: 'el',
               nm: 'Ellipse',
               p: {
+                // position
                 a: 0,
                 k: [204, 169],
               },
               s: {
+                // size
                 a: 0,
                 k: [153, 153],
               },
@@ -107,6 +109,7 @@ const bouncy_ball = {
             {
               ty: 'tr',
               a: {
+                // anchor
                 a: 0,
                 k: [204, 169],
               },
@@ -181,10 +184,12 @@ const bouncy_ball = {
                 ],
               },
               r: {
+                // rotation
                 a: 0,
                 k: 0,
               },
               o: {
+                // opacity
                 a: 0,
                 k: 100,
               },
@@ -612,10 +617,10 @@ const gradient = {
   },
 };
 
-const gradientAnimation = createAnimation(gradient);
-const rectAnimation = createAnimation(rect);
-const pathAnimation = createAnimation(path);
-const ballAnimation = createAnimation(bouncy_ball, { loop: true });
+const gradientAnimation = loadAnimation(gradient);
+const rectAnimation = loadAnimation(rect);
+const pathAnimation = loadAnimation(path);
+const ballAnimation = loadAnimation(bouncy_ball, { loop: true });
 canvas.addEventListener(CanvasEvent.READY, () => {
   gradientAnimation.render(canvas);
   rectAnimation.render(canvas);

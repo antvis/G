@@ -547,7 +547,7 @@ Default value.
 
 ## interpolate
 
-If or not interpolation is supported. Only supported to apply [animation](/en/docs/api/animation).
+If or not interpolation is supported. Only supported to apply [animation](/en/docs/api/animation/waapi).
 
 For example, in the following custom element, we define the custom attribute `angle`, which uses the `<angle>` parser and supports interpolation.
 
@@ -631,4 +631,10 @@ export enum PropertySyntax {
   TEXT = '<text>',
   TEXT_TRANSFORM = '<text-transform>',
 }
+```
+
+filter>', Z_INDEX = '<z-index>', OFFSET_PATH = '<offset-path>', OFFSET_DISTANCE = '<offset-distance>', CLIP_PATH = '<clip-path>', TRANSFORM = '<transform>', TRANSFORM_ORIGIN = '<transform-origin>', TEXT = '<text>', TEXT_TRANSFORM = '<text-transform>', }
+
+```
+
 ```
