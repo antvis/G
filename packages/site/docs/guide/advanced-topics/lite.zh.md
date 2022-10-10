@@ -91,7 +91,7 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 ## g-web-animations-api
 
-为基础图形提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的[动画能力](/zh/docs/api/animation)。缺少该功能仍可以调用 `object.animate()` 方法，但无任何效果。
+为基础图形提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的[动画能力](/zh/docs/api/animation/waapi)。缺少该功能仍可以调用 `object.animate()` 方法，但无任何效果。
 
 ## g-css-typed-om-api
 

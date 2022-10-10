@@ -83,7 +83,7 @@ createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
 
 ## convertToPath
 
-[Morph 形变动画](/zh/docs/api/animation#形变动画)是通过对 [Path](/zh/docs/api/basic/path) 的 [path/d](/zh/docs/api/basic/path#d) 属性进行插值实现的。
+[Morph 形变动画](/zh/docs/api/animation/waapi#形变动画)是通过对 [Path](/zh/docs/api/basic/path) 的 [path/d](/zh/docs/api/basic/path#d) 属性进行插值实现的。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ">
 

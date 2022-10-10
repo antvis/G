@@ -207,10 +207,13 @@ function createOrUpdateGradient(
     $existed.setAttribute('gradientUnits', 'userSpaceOnUse');
     // add stops
     let innerHTML = '';
-    (parsedColor.value as LinearGradient).steps.forEach(({ offset, color }) => {
-      // TODO: support absolute unit like `px`
-      innerHTML += `<stop offset="${offset.value / 100}" stop-color="${color}"></stop>`;
-    });
+    (parsedColor.value as LinearGradient).steps
+      // sort by offset @see https://github.com/antvis/G/issues/1171
+      .sort((a, b) => a.offset.value - b.offset.value)
+      .forEach(({ offset, color }) => {
+        // TODO: support absolute unit like `px`
+        innerHTML += `<stop offset="${offset.value / 100}" stop-color="${color}"></stop>`;
+      });
     $existed.innerHTML = innerHTML;
     $existed.id = gradientId;
     $def.appendChild($existed);

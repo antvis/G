@@ -562,11 +562,11 @@ camera.gotoLandmark(landmark, { duration: 300, easing: 'ease-in' });
 -   markName 名称或者已创建的 Landmark
 -   options 动画参数，包括：
     -   duration 动画持续时间，单位为 `ms`，默认值为 `100`
-    -   easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation#easing-1)
-    -   easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/docs/api/animation#easingfunction)
+    -   easing 缓动函数，默认值为 `linear`。和动画系统一致的[内置效果](/zh/docs/api/animation/waapi#easing-1)
+    -   easingFunction 自定义缓动函数，当内置的缓动函数无法满足要求时，可以[自定义](/zh/docs/api/animation/waapi#easingfunction)
     -   onfinish 动画结束后的回调函数
 
-和动画系统中的 [options](/zh/docs/api/animation#options) 参数一样，传入 `number` 时等同于设置 `duration`：
+和动画系统中的 [options](/zh/docs/api/animation/waapi#options) 参数一样，传入 `number` 时等同于设置 `duration`：
 
 ```js
 camera.gotoLandmark('mark1', { duration: 300 });

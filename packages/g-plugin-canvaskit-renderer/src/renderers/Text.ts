@@ -133,7 +133,7 @@ export class TextRenderer implements RendererContribution {
       const pathCommand = [...curve];
       zCommandIndexes.forEach((zIndex, index) => {
         // @ts-ignore
-        pathCommand.splice(zIndex + index, 1, ['Z']);
+        pathCommand.splice(zIndex + index + 1, 0, ['Z']);
       });
 
       for (let i = 0; i < pathCommand.length; i++) {

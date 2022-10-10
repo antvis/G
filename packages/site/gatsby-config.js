@@ -69,14 +69,6 @@ module.exports = {
       },
       // API
       {
-        slug: 'api/general',
-        title: {
-          zh: '通用',
-          en: 'General',
-        },
-        order: 0,
-      },
-      {
         slug: 'api/canvas',
         title: {
           zh: '画布',
@@ -90,7 +82,15 @@ module.exports = {
           zh: '渲染器',
           en: 'Renderer',
         },
-        order: 0,
+        order: 1,
+      },
+      {
+        slug: 'api/animation',
+        title: {
+          zh: '动画',
+          en: 'Animation',
+        },
+        order: 1,
       },
       {
         slug: 'api/basic',

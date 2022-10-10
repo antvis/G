@@ -89,7 +89,7 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 ## g-web-animations-api
 
-Provides [animation capabilities](/en/docs/api/animation) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
+Provides [animation capabilities](/en/docs/api/animation/waapi) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
 
 ## g-css-typed-om-api
 

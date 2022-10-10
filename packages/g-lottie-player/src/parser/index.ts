@@ -121,8 +121,6 @@ function getMultiDimensionEasingBezierString(
       bezierEasing[3] === 1
     )
   ) {
-    console.log(`cubic-bezier(${bezierEasing.join(',')})`);
-
     return `cubic-bezier(${bezierEasing.join(',')})`;
   }
   return;
@@ -585,6 +583,31 @@ function parseShapeRect(
 }
 
 /**
+ * @see https://lottiefiles.github.io/lottie-docs/layers/#image-layer
+ */
+function parseImageLayer(layer: Lottie.ImageLayer, context: ParseContext) {
+  const attrs = {
+    type: Shape.IMAGE,
+    style: {},
+    shape: {
+      width: 0,
+      height: 0,
+      src: '',
+    },
+  };
+
+  const asset = context.assetsMap.get(layer.refId) as Lottie.ImageAsset;
+  if (asset) {
+    attrs.shape.width = asset.w;
+    attrs.shape.height = asset.h;
+    // TODO: url to fetch
+    attrs.shape.src = asset.p;
+  }
+
+  return attrs;
+}
+
+/**
  * @see https://lottiefiles.github.io/lottie-docs/shapes/#ellipse
  */
 function parseShapeEllipse(
@@ -897,6 +920,10 @@ function parseLayers(
         break;
       case Lottie.LayerType.image:
         // TODO: https://lottiefiles.github.io/lottie-docs/layers/#image-layer
+        layerGroup = layerGroup = {
+          type: Shape.GROUP,
+          children: [parseImageLayer(layer as Lottie.ImageLayer, context)],
+        };
         break;
     }
 
@@ -1010,6 +1037,7 @@ export function parse(
   context.endFrame = data.op;
   context.version = data.v;
 
+  // @see https://lottiefiles.github.io/lottie-docs/assets/
   data.assets?.forEach((asset) => {
     context.assetsMap.set(asset.id, asset);
   });

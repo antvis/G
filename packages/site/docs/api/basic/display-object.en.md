@@ -438,7 +438,7 @@ Use `number[]` to describe the alternate line segments and spacing. Reference ca
 
 Currently only the form `[dash, gap]` is supported, if there is only one element in the array, i.e. `[dash]` is equivalent to `[dash, dash]`.
 
-Applying animation to it can achieve [handwriting animation effect](/en/docs/api/animation#stroke-animation).
+Applying animation to it can achieve [handwriting animation effect](/en/docs/api/animation/waapi#stroke-animation).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400" alt="stroke animation">
 
@@ -448,7 +448,7 @@ Applying animation to it can achieve [handwriting animation effect](/en/docs/api
 
 ### lineDashOffset
 
-Dashed line offset, type `number`, transform it to achieve [marching ants animation](/en/docs/api/animation#marching-ant-animation)
+Dashed line offset, type `number`, transform it to achieve [marching ants animation](/en/docs/api/animation/waapi#marching-ant-animation)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400" alt="marching ants animation">
 
@@ -800,7 +800,7 @@ image.setClip(null);
 
 ### Caveats
 
-The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/docs/api/animation) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
+The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/docs/api/animation/waapi) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 
@@ -816,7 +816,7 @@ We do not yet support composite clipped areas, such as custom graphics and Group
 
 ## Offset Path
 
-In [path-animation](/en/docs/api/animation#path-animation), we can use `offsetPath` to specify the trajectory of a drawing, applying a transformation to the `offsetDistance` property.
+In [path-animation](/en/docs/api/animation/waapi#path-animation), we can use `offsetPath` to specify the trajectory of a drawing, applying a transformation to the `offsetDistance` property.
 
 ```js
 const circle = new Circle({
@@ -1358,7 +1358,7 @@ rect.style.width = '100px';
 rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
-Note that currently, when using [animation](/en/docs/api/animation), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation#onframe).
+Note that currently, when using [animation](/en/docs/api/animation/waapi), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation#onframe).
 
 ```js
 animation.onframe = () => {
@@ -1491,4 +1491,4 @@ circle.animate(
 );
 ```
 
-See [animation system](/en/docs/api/animation) for more details on usage.
+See [animation system](/en/docs/api/animation/waapi) for more details on usage.

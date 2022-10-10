@@ -158,6 +158,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private renderQueue: DisplayObject[] = [];
 
   /**
+   * dirty attributes at the end of frame
+   */
+  private dirtyAttributes: WeakMap<DisplayObject, string[]> = new WeakMap();
+
+  /**
    * reorder after mounted
    */
   private pendingReorderQueue: Set<DisplayObject> = new Set();
@@ -188,22 +193,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       const { attrName } = e;
 
-      if (attrName === 'zIndex') {
-        const parent = object.parentNode;
-        // @ts-ignore
-        const $groupEl = object.parentNode?.elementSVG?.$groupEl;
-        const children = (parent?.children || []).slice();
-
-        if ($groupEl) {
-          this.reorderChildren(document, $groupEl, children as DisplayObject[]);
-        }
-      } else if (attrName === 'increasedLineWidthForHitTesting') {
-        // @ts-ignore
-        const svgElement = object.elementSVG as ElementSVG;
-        this.createOrUpdateHitArea(object, svgElement.$el, svgElement.$groupEl);
+      let attribtues = this.dirtyAttributes.get(object);
+      if (!attribtues) {
+        this.dirtyAttributes.set(object, []);
+        attribtues = this.dirtyAttributes.get(object);
       }
 
-      this.updateAttribute(object, [attrName]);
+      attribtues.push(attrName);
     };
 
     const handleGeometryBoundsChanged = (e: MutationEvent) => {
@@ -306,6 +302,29 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.applyTransform($groupEl, object.getLocalTransform());
           // finish rendering, clear dirty flag
           object.renderable.dirty = false;
+        }
+
+        // update dirty attributes
+        const attributes = this.dirtyAttributes.get(object);
+        if (attributes) {
+          attributes.forEach((attrName) => {
+            if (attrName === 'zIndex') {
+              const parent = object.parentNode;
+              // @ts-ignore
+              const $groupEl = object.parentNode?.elementSVG?.$groupEl;
+              const children = (parent?.children || []).slice();
+
+              if ($groupEl) {
+                this.reorderChildren(document, $groupEl, children as DisplayObject[]);
+              }
+            } else if (attrName === 'increasedLineWidthForHitTesting') {
+              this.createOrUpdateHitArea(object, $el, $groupEl);
+            }
+
+            this.updateAttribute(object, [attrName]);
+          });
+
+          this.dirtyAttributes.delete(object);
         }
       });
       this.renderQueue = [];
