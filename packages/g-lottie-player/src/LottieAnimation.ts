@@ -1,4 +1,4 @@
-import type { BaseStyleProps, Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
+import type { Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
 import type {

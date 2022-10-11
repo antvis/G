@@ -1,5 +1,6 @@
 import { definedProps, rad2deg, Shape } from '@antv/g-lite';
-import { distanceSquareRoot, isNil, PathArray } from '@antv/util';
+import type { PathArray } from '@antv/util';
+import { distanceSquareRoot, isNil } from '@antv/util';
 import { completeData } from './complete-data';
 import * as Lottie from './lottie-type';
 
