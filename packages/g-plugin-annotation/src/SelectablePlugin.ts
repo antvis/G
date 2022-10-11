@@ -388,7 +388,10 @@ export class SelectablePlugin implements RenderingPlugin {
             selectable.triggerMovedEvent();
           }
         });
-      } else if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
+      } else if (
+        this.annotationPluginOptions.enableDeleteTargetWithShortcuts &&
+        (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete')
+      ) {
         /** 退出/删除/回退键 删除 */
 
         [...this.selected].forEach((target) => {
