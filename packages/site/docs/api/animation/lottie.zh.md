@@ -223,6 +223,10 @@ https://lottiefiles.github.io/lottie-docs/layers/#image-layer https://lottiefile
 
 https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles.github.io/lottie-docs/text/
 
+### Precomposition
+
+https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer https://lottiefiles.github.io/lottie-docs/assets/#precomposition
+
 ## Expressions
 
 暂不支持。

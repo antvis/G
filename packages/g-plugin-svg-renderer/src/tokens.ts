@@ -16,4 +16,5 @@ export const SVGRendererPluginOptions = Syringe.defineToken('');
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SVGRendererPluginOptions {
   outputSVGElementId: boolean;
+  outputSVGElementName: boolean;
 }

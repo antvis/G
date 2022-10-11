@@ -194,7 +194,7 @@ const rendererConfig = {
 };
 rendererFolder
   .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
-  .onChange((rendererName) => {
+  .onChange(async (rendererName) => {
     let renderer;
     if (rendererName === 'canvas') {
       renderer = canvasRenderer;
@@ -207,7 +207,7 @@ rendererFolder
     } else if (rendererName === 'canvaskit') {
       renderer = canvaskitRenderer;
     }
-    canvas.setRenderer(renderer);
+    await canvas.setRenderer(renderer);
     bindWheelHandler();
   });
 rendererFolder.open();

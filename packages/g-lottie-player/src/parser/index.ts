@@ -1,4 +1,5 @@
 import { definedProps, rad2deg, Shape } from '@antv/g-lite';
+import type { PathArray } from '@antv/util';
 import { distanceSquareRoot, isNil } from '@antv/util';
 import { completeData } from './complete-data';
 import * as Lottie from './lottie-type';
@@ -216,6 +217,24 @@ function parseOffsetKeyframe(
       }
       (targetPropName ? (outKeyframe[targetPropName] = {} as any) : outKeyframe)[propName] = val;
     });
+
+    const offsetPath: PathArray = [] as unknown as PathArray;
+    kfs.forEach((kf, i) => {
+      // convert to & ti(Tangent for values (eg: moving position around a curved path)) to offsetPath & offsetDistance
+      if (kf.ti && kf.to) {
+        if (i === 0) {
+          offsetPath.push(['M', kf.s[0], kf.s[1]]);
+        }
+        offsetPath.push(['C', kf.to[0], kf.to[1], kf.ti[0], kf.ti[1], kf.e[0], kf.e[1]]);
+
+        keyframeAnim.keyframes[i].offsetPath = offsetPath;
+        keyframeAnim.keyframes[i].offsetDistance = keyframeAnim.keyframes[i].offset;
+      } else if (offsetPath.length) {
+        keyframeAnim.keyframes[i].offsetPath = offsetPath;
+        keyframeAnim.keyframes[i].offsetDistance = 1;
+      }
+    });
+
     if (keyframeAnim.keyframes.length) {
       keyframeAnimations.push(keyframeAnim);
     }

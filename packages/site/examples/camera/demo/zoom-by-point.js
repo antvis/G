@@ -1,32 +1,31 @@
-import { Canvas, CanvasEvent, HTML, Rectangle } from '@antv/g';
+import { Canvas, CanvasEvent, Ellipse } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { loadAnimation } from '@antv/g-lottie-player';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
+import Hammer from 'hammerjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import * as d3 from 'd3';
-
-/**
- * @see https://lottiefiles.github.io/lottie-docs/breakdown/bouncy_ball/
- */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
-const webgpuRenderer = new WebGPURenderer();
+const svgRenderer = new SVGRenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
   fonts: [
+    {
+      name: 'Roboto',
+      url: '/Roboto-Regular.ttf',
+    },
     {
       name: 'sans-serif',
       url: '/NotoSans-Regular.ttf',
     },
   ],
 });
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -36,12 +35,64 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-canvas.addEventListener(CanvasEvent.READY, async () => {
-  // const data = await d3.json('../examples/data/lottie.json');
-  const data = await d3.json('../examples/data/lottie/flower.json');
-  const animation = loadAnimation(data, { loop: true });
-  const wrapper = animation.render(canvas);
+const camera = canvas.getCamera();
+
+const ellipse = new Ellipse({
+  style: {
+    cx: 250,
+    cy: 250,
+    rx: 100,
+    ry: 150,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    cursor: 'pointer',
+  },
 });
+
+canvas.addEventListener(CanvasEvent.READY, () => {
+  canvas.appendChild(ellipse);
+});
+
+// handle mouse wheel event
+const bindWheelHandler = () => {
+  // update Camera's zoom
+  // @see https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/OrbitControls.js
+  const minZoom = 0;
+  const maxZoom = Infinity;
+  canvas
+    .getContextService()
+    .getDomElement() // g-canvas/webgl 为 <canvas>，g-svg 为 <svg>
+    .addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+
+        const { x, y } = canvas.client2Viewport({ x: e.clientX, y: e.clientY });
+
+        let zoom;
+        if (e.deltaY < 0) {
+          zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() / 0.95));
+        } else {
+          zoom = Math.max(minZoom, Math.min(maxZoom, camera.getZoom() * 0.95));
+        }
+
+        camera.setZoomByViewportPoint(zoom, [x, y]);
+      },
+      { passive: false },
+    );
+};
+
+// use hammer.js
+const hammer = new Hammer(canvas);
+hammer.on('pan', (ev) => {
+  camera.pan(
+    (-ev.deltaX / Math.pow(2, camera.getZoom())) * 0.5,
+    (-ev.deltaY / Math.pow(2, camera.getZoom())) * 0.5,
+  );
+});
+
+bindWheelHandler();
 
 // stats
 const stats = new Stats();
@@ -67,7 +118,7 @@ const rendererConfig = {
 };
 rendererFolder
   .add(rendererConfig, 'renderer', ['canvas', 'svg', 'webgl', 'webgpu', 'canvaskit'])
-  .onChange((rendererName) => {
+  .onChange(async (rendererName) => {
     let renderer;
     if (rendererName === 'canvas') {
       renderer = canvasRenderer;
@@ -80,6 +131,7 @@ rendererFolder
     } else if (rendererName === 'canvaskit') {
       renderer = canvaskitRenderer;
     }
-    canvas.setRenderer(renderer);
+    await canvas.setRenderer(renderer);
+    bindWheelHandler();
   });
 rendererFolder.open();

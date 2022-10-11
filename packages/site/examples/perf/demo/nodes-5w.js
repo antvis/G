@@ -163,10 +163,12 @@ const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
   renderer: 'webgl',
 };
-rendererFolder.add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg']).onChange((renderer) => {
-  canvas.setRenderer(
-    renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
-  );
-  bindWheelHandler();
-});
+rendererFolder
+  .add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg'])
+  .onChange(async (renderer) => {
+    await canvas.setRenderer(
+      renderer === 'canvas' ? canvasRenderer : renderer === 'webgl' ? webglRenderer : svgRenderer,
+    );
+    bindWheelHandler();
+  });
 rendererFolder.open();

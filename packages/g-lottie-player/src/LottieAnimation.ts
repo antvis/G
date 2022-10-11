@@ -1,4 +1,4 @@
-import type { BaseStyleProps, Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
+import type { Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
 import type {
@@ -36,6 +36,20 @@ export class LottieAnimation {
   private keyframeAnimationMap = new WeakMap<DisplayObject, KeyframeAnimation[]>();
   private displayObjectElementMap = new WeakMap<DisplayObject, CustomElementOption>();
 
+  private generateTransform(tx: number, ty: number, scaleX: number, scaleY: number, rotation) {
+    let transformStr = '';
+    if (tx !== 0 || ty !== 0) {
+      transformStr += `translate(${tx}, ${ty})`;
+    }
+    if (scaleX !== 1 || scaleY !== 1) {
+      transformStr += ` scale(${scaleX === 0 ? eps : scaleX}, ${scaleY === 0 ? eps : scaleY})`;
+    }
+    if (rotation !== 0) {
+      transformStr += ` rotate(${rotation}deg)`;
+    }
+    return transformStr;
+  }
+
   private buildHierachy(element: CustomElementOption) {
     const {
       type,
@@ -56,23 +70,7 @@ export class LottieAnimation {
     } = element;
 
     let displayObject: DisplayObject;
-
-    let transformStr = '';
-    if (x - anchorX !== 0 || y - anchorY !== 0) {
-      transformStr += `translate(${x - anchorX}px, ${y - anchorY}px)`;
-    }
-    if (scaleX !== 1 || scaleY !== 1) {
-      transformStr += ` scale(${scaleX === 0 ? eps : scaleX}, ${scaleY === 0 ? eps : scaleY})`;
-    }
-    if (rotation !== 0) {
-      transformStr += ` rotate(${rotation}deg)`;
-    }
-
-    // @see https://lottiefiles.github.io/lottie-docs/concepts/#transform
-    const transformStyle: Pick<BaseStyleProps, 'transform' | 'transformOrigin'> = {
-      transformOrigin: `${anchorX}px ${anchorY}px`,
-      transform: transformStr,
-    };
+    const transform = this.generateTransform(x - anchorX, y - anchorY, scaleX, scaleY, rotation);
 
     // TODO: repeater @see https://lottiefiles.github.io/lottie-docs/shapes/#repeater
 
@@ -81,19 +79,21 @@ export class LottieAnimation {
     if (type === Shape.GROUP) {
       displayObject = new Group({
         style: {
-          ...transformStyle,
+          transformOrigin: `${anchorX}px ${anchorY}px`,
+          transform,
         },
       });
     } else if (type === Shape.ELLIPSE) {
       const { cx, cy, rx, ry } = shape;
-
       displayObject = new Ellipse({
         style: {
           cx,
           cy,
           rx,
           ry,
-          ...transformStyle,
+          // reset transform-origin based on anchor & center
+          transformOrigin: `${anchorX - cx + rx}px ${anchorY - cy + ry}px`,
+          transform,
         },
       });
     } else if (type === Shape.PATH) {
@@ -111,12 +111,22 @@ export class LottieAnimation {
       }
 
       if (close) {
+        d.push([
+          'C',
+          out[v.length - 1][0],
+          out[v.length - 1][1],
+          i[0][0],
+          i[0][1],
+          v[0][0],
+          v[0][1],
+        ]);
         d.push(['Z']);
       }
       displayObject = new Path({
         style: {
           d, // use Path Array which can be skipped when parsing
-          ...transformStyle,
+          transformOrigin: `${anchorX}px ${anchorY}px`,
+          transform,
         },
       });
     } else if (type === Shape.RECT) {
@@ -131,7 +141,8 @@ export class LottieAnimation {
           height,
           anchor: [0.5, 0.5], // position means the center of the rectangle
           radius: r,
-          ...transformStyle,
+          transformOrigin: `${anchorX - cx + width / 2}px ${anchorY - cy + height / 2}px`,
+          transform,
         },
       });
     } else if (type === Shape.IMAGE) {
@@ -144,7 +155,8 @@ export class LottieAnimation {
           width,
           height,
           src,
-          ...transformStyle,
+          transformOrigin: `${anchorX}px ${anchorY}px`,
+          transform,
         },
       });
     }
@@ -277,7 +289,7 @@ export class LottieAnimation {
             const formatted = this.formatKeyframes(merged, child);
 
             if (formatted.length) {
-              console.log(formatted);
+              console.log(child, formatted);
 
               return child.animate(formatted, options);
             }
@@ -291,12 +303,18 @@ export class LottieAnimation {
 
   private formatKeyframes(keyframes: Record<string, any>[], object: DisplayObject) {
     keyframes.forEach((keyframe) => {
-      if ('x' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` translateX(${keyframe.x})`;
+      if ('offsetPath' in keyframe) {
+        if (!object.style.offsetPath) {
+          object.style.offsetPath = new Path({
+            style: {
+              d: keyframe.offsetPath,
+              // d: 'M200 200 L 400 200',
+            },
+          });
+        }
+        delete keyframe.offsetPath;
+        // offsetPath should override x/y
         delete keyframe.x;
-      }
-      if ('y' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` translateY(${keyframe.y})`;
         delete keyframe.y;
       }
 
@@ -318,14 +336,14 @@ export class LottieAnimation {
       }
 
       // manipulate cx/cy instead of x/y on ellipse
-      // if ('x' in keyframe && object.nodeName === Shape.ELLIPSE) {
-      //   keyframe.cx = keyframe.x;
-      //   delete keyframe.x;
-      // }
-      // if ('y' in keyframe && object.nodeName === Shape.ELLIPSE) {
-      //   keyframe.cy = keyframe.y;
-      //   delete keyframe.y;
-      // }
+      if ('x' in keyframe && object.nodeName === Shape.ELLIPSE) {
+        keyframe.cx = keyframe.x;
+        delete keyframe.x;
+      }
+      if ('y' in keyframe && object.nodeName === Shape.ELLIPSE) {
+        keyframe.cy = keyframe.y;
+        delete keyframe.y;
+      }
       // { style: { opacity: 1 } }
       if ('style' in keyframe) {
         Object.keys(keyframe.style).forEach((name) => {
