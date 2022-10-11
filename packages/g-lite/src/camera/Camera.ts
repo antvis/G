@@ -396,6 +396,29 @@ export class Camera implements ICamera {
     return this;
   }
 
+  /**
+   * Zoom by specified point in viewport coordinates.
+   */
+  setZoomByViewportPoint(zoom: number, viewportPoint: vec2) {
+    const { x: ox, y: oy } = this.canvas.viewport2Canvas({
+      x: viewportPoint[0],
+      y: viewportPoint[1],
+    });
+
+    this.setPosition(ox, oy);
+    this.setFocalPoint(ox, oy);
+    this.setZoom(zoom);
+
+    const { x: cx, y: cy } = this.canvas.viewport2Canvas({
+      x: viewportPoint[0],
+      y: viewportPoint[1],
+    });
+
+    this.pan(ox - cx, oy - cy);
+
+    return this;
+  }
+
   setPerspective(near: number, far: number, fov: number, aspect: number) {
     this.projectionMode = CameraProjectionMode.PERSPECTIVE;
     this.fov = fov;

@@ -251,6 +251,29 @@ camera.getZoom(); // 1
 setZoom(zoom: number)
 ```
 
+### setZoomByViewportPoint()
+
+[setZoom](/zh/docs/api/camera#setzoom) 会以相机在世界坐标系下的位置为中心进行缩放。但有时我们希望固定视点，即以[视口坐标系](/zh/docs/api/canvas#viewport)下的点为中心进行缩放。
+
+在下面的[示例](/zh/examples/camera#zoom-by-point)中，我们监听了 `wheel` 事件，以事件对象在 client 坐标系下的位置为中心进行缩放：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*cIK-RL1MHtYAAAAAAAAAAAAAARQnAQ" alt="zoom by viewport point" width="200">
+
+```js
+// 将 wheel 事件的 clientX/Y 转换到视口坐标系
+const { x, y } = canvas.client2Viewport({ x: e.clientX, y: e.clientY });
+camera.setZoomByViewportPoint(zoom, [x, y]);
+```
+
+方法签名如下：
+
+-   `zoom` 大于 1 代表放大，反之代表缩小。
+-   `viewportPoint` 为[视口坐标系](/zh/docs/api/canvas#viewport)下的点坐标。
+
+```
+setZoomByViewportPoint(zoom: number, viewportPoint: vec2)
+```
+
 ### setFov()
 
 仅透视投影下生效，视角越大容纳的对象越多。[示例](/zh/examples/camera#perspective)

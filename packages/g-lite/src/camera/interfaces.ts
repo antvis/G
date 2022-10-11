@@ -134,6 +134,7 @@ export interface ICamera {
   ) => this;
   clearViewOffset: () => this;
   setZoom: (zoom: number) => this;
+  setZoomByViewportPoint: (zoom: number, viewportPoint: vec2) => this;
   setPerspective: (near: number, far: number, fov: number, aspect: number) => this;
   setOrthographic: (l: number, r: number, t: number, b: number, near: number, far: number) => this;
   /**

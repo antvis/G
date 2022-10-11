@@ -510,6 +510,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
       if (this.pluginOptions.outputSVGElementId) {
         $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
       }
+      if (this.pluginOptions.outputSVGElementName && object.name) {
+        $el.setAttribute('name', object.name);
+      }
 
       if (($el.hasAttribute('data-wrapgroup') || $el.nodeName !== 'g') && !noWrapWithGroup) {
         $groupEl = createSVGElement('g', document);

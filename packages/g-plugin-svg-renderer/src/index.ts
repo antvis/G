@@ -27,11 +27,12 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    const { outputSVGElementId } = this.options;
+    const { outputSVGElementId, outputSVGElementName } = this.options;
 
     this.container.register(SVGRendererPluginOptions, {
       useValue: {
         outputSVGElementId: !isNil(outputSVGElementId) ? !!outputSVGElementId : true,
+        outputSVGElementName: !isNil(outputSVGElementName) ? !!outputSVGElementName : true,
       },
     });
 

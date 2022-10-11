@@ -9,6 +9,7 @@ import chaiAlmost from 'chai-almost';
 import sinon from 'sinon';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
+import { sleep } from './utils';
 
 chai.use(chaiAlmost(0.0001));
 chai.use(sinonChai);
@@ -50,7 +51,7 @@ describe('Canvas', () => {
     expect(beforeDestroyCallback).to.have.been.not.called;
   });
 
-  it('should generate correct composed path', async () => {
+  it('should generate correct composed path', async (done) => {
     let point = canvas.getClientByPoint(0, 0);
     expect(point.x).eqls(8);
     expect(point.y).eqls(8);
@@ -68,9 +69,8 @@ describe('Canvas', () => {
       },
     });
 
-    canvas.addEventListener(CanvasEvent.READY, () => {
-      canvas.appendChild(circle);
-    });
+    await canvas.ready;
+    canvas.appendChild(circle);
 
     const handlePointerDown = (e) => {
       // target
@@ -94,9 +94,13 @@ describe('Canvas', () => {
       expect(e.clientY).to.be.eqls(100);
       expect(e.screenX).to.be.eqls(200);
       expect(e.screenY).to.be.eqls(200);
+
+      done();
     };
 
     canvas.addEventListener('pointerdown', handlePointerDown, { once: true });
+
+    await sleep(100);
 
     const $canvas = canvas.getContextService().getDomElement();
 
@@ -111,7 +115,7 @@ describe('Canvas', () => {
     );
   });
 
-  it('should return Document & Canvas when hit nothing', async () => {
+  it('should return Document & Canvas when hit nothing', async (done) => {
     const circle = new Circle({
       style: {
         cx: 100,
@@ -121,9 +125,8 @@ describe('Canvas', () => {
       },
     });
 
-    canvas.addEventListener(CanvasEvent.READY, () => {
-      canvas.appendChild(circle);
-    });
+    await canvas.ready;
+    canvas.appendChild(circle);
 
     canvas.addEventListener(
       'pointerdown',
@@ -139,9 +142,13 @@ describe('Canvas', () => {
         expect(path.length).to.be.eqls(2);
         expect(path[0]).to.be.eqls(canvas.document);
         expect(path[1]).to.be.eqls(canvas);
+
+        done();
       },
       { once: true },
     );
+
+    await sleep(100);
 
     const $canvas = canvas.getContextService().getDomElement();
     $canvas.dispatchEvent(
@@ -178,9 +185,11 @@ describe('Canvas', () => {
         screenY: 2500,
       }),
     );
+
+    await sleep(300);
   });
 
-  it('should convert client & viewport coordinates correctly', async () => {
+  it('should convert client & viewport coordinates correctly', async (done) => {
     const circle = new Circle({
       style: {
         cx: 100,
@@ -190,9 +199,8 @@ describe('Canvas', () => {
       },
     });
 
-    canvas.addEventListener(CanvasEvent.READY, () => {
-      canvas.appendChild(circle);
-    });
+    await canvas.ready;
+    canvas.appendChild(circle);
 
     canvas.addEventListener(
       'pointerdown',
@@ -224,12 +232,16 @@ describe('Canvas', () => {
         });
         expect(canvasX).to.almost.eqls(100 - left);
         expect(canvasY).to.almost.eqls(100 - top);
+
+        done();
       },
       { once: true },
     );
 
     const $canvas = canvas.getContextService().getDomElement();
     const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
+
+    await sleep(100);
 
     $canvas.dispatchEvent(
       new PointerEvent('pointerdown', {
@@ -240,9 +252,11 @@ describe('Canvas', () => {
         screenY: 200,
       }),
     );
+
+    await sleep(300);
   });
 
-  it("should acount for camera's position when converting", async () => {
+  it("should acount for camera's position when converting", async (done) => {
     const camera = canvas.getCamera();
     const $canvas = canvas.getContextService().getDomElement();
     const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
@@ -255,9 +269,9 @@ describe('Canvas', () => {
         fill: 'red',
       },
     });
-    canvas.addEventListener(CanvasEvent.READY, () => {
-      canvas.appendChild(circle);
-    });
+
+    await canvas.ready;
+    canvas.appendChild(circle);
 
     canvas.addEventListener(
       'pointerdown',
@@ -280,12 +294,16 @@ describe('Canvas', () => {
         const { x: clientX, y: clientY } = canvas.getClientByPoint(viewportX, viewportY);
         expect(clientX).to.almost.eqls(100);
         expect(clientY).to.almost.eqls(100);
+
+        done();
       },
       { once: true },
     );
 
     // move camera
     camera.pan(100, 0);
+
+    await sleep(100);
 
     $canvas.dispatchEvent(
       new PointerEvent('pointerdown', {
@@ -296,81 +314,24 @@ describe('Canvas', () => {
         screenY: 200,
       }),
     );
+
+    await sleep(300);
   });
 
-  it('should query child with multiple classnames correctly', () => {
+  it('should query child with multiple classnames correctly', async () => {
     const group3 = new Group({
       id: 'id3',
       name: 'group3',
       className: 'c1 c2 c3',
     });
+
+    await canvas.ready;
     canvas.appendChild(group3);
 
+    expect(canvas.document.getElementById('id3')).to.eqls(group3);
+    expect(canvas.document.getElementsByName('group3').length).to.eqls(1);
     expect(canvas.document.getElementsByClassName('c1').length).to.eqls(1);
     expect(canvas.document.getElementsByClassName('c2').length).to.eqls(1);
     expect(canvas.document.getElementsByClassName('c3').length).to.eqls(1);
   });
-
-  // it("should acount for camera's zoom when converting", async () => {
-  //   const camera = canvas.getCamera();
-  //   const $canvas = canvas.getContextService().getDomElement();
-  //   const { top, left } = ($canvas as HTMLCanvasElement).getBoundingClientRect();
-
-  //   const circle = new Circle({
-  //     style: {
-  //       cx: 100,
-  //       cy: 100,
-  //       r: 100,
-  //       fill: 'red',
-  //     },
-  //   });
-  //   canvas.appendChild(circle);
-
-  //   await sleep(100);
-
-  //   canvas.addEventListener(
-  //     'pointerdown',
-  //     // @ts-ignore
-  //     (e: FederatedPointerEvent) => {
-  //       // currentTarget
-  //       expect(e.currentTarget).to.be.eqls(canvas);
-
-  //       // coordinates
-  //       expect(e.clientX).to.be.eqls(100);
-  //       expect(e.clientY).to.be.eqls(100);
-  //       expect(e.screenX).to.be.eqls(200);
-  //       expect(e.screenY).to.be.eqls(200);
-  //       expect(e.viewportX).to.almost.eqls(100 - left);
-  //       expect(e.viewportY).to.almost.eqls(100 - top);
-  //       expect(e.canvasX).to.almost.eqls(100 - left);
-  //       expect(e.canvasY).to.almost.eqls(100 - top);
-
-  //       const viewport = canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY });
-
-  //       expect(viewport.x).to.almost.eqls(100 - left);
-  //       expect(viewport.y).to.almost.eqls(100 - top);
-
-  //       const { x: canvasX, y: canvasY } = canvas.viewport2Canvas({
-  //         x: e.viewportX,
-  //         y: e.viewportY,
-  //       });
-  //       expect(canvasX).to.almost.eqls(100 - left);
-  //       expect(canvasY).to.almost.eqls(100 - top);
-  //     },
-  //     { once: true },
-  //   );
-
-  //   // move camera
-  //   camera.setZoom(2);
-
-  //   $canvas.dispatchEvent(
-  //     new PointerEvent('pointerdown', {
-  //       pointerType: 'mouse',
-  //       clientX: 100,
-  //       clientY: 100,
-  //       screenX: 200,
-  //       screenY: 200,
-  //     }),
-  //   );
-  // });
 });

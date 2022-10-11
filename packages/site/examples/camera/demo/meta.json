@@ -50,6 +50,13 @@
         "zh": "View Offset",
         "en": "View Offset"
       }
+    },
+    {
+      "filename": "zoom-by-point.js",
+      "title": {
+        "zh": "以指定视点缩放",
+        "en": "Zoom by specified viewport point"
+      }
     }
   ]
 }

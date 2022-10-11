@@ -253,6 +253,29 @@ The method signature is as follows.
 setZoom(zoom: number)
 ```
 
+### setZoomByViewportPoint()
+
+[setZoom](/en/docs/api/camera#setzoom) will scale at the center of the camera's position under the world coordinate system. However, sometimes we want to fix the viewpoint, i.e. to scale at the point under [viewport coordinate system](/en/docs/api/canvas#viewport).
+
+In the following [example](/en/examples/camera#zoom-by-point), we listen to the `wheel` event to scale at the position of the event object under the client coordinate system.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*cIK-RL1MHtYAAAAAAAAAAAAAARQnAQ" alt="zoom by viewport point" width="200">
+
+```js
+// Convert the clientX/Y of the wheel event to the viewport coordinate system
+const { x, y } = canvas.client2Viewport({ x: e.clientX, y: e.clientY });
+camera.setZoomByViewportPoint(zoom, [x, y]);
+```
+
+The method signature is as follows.
+
+-   `zoom` greater than 1 means zoom in, vice versa means zoom out.
+-   `viewportPoint` is the point coordinate under [viewport coordinate system](/en/docs/api/canvas#viewport).
+
+```
+setZoomByViewportPoint(zoom: number, viewportPoint: vec2)
+```
+
 ### setFov()
 
 Only works in perspective projection, the larger the perspective is the more objects it can hold. [example](/en/examples/camera#perspective)
