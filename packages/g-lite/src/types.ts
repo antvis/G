@@ -34,6 +34,8 @@ export interface EventPosition {
 
 export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
 export type TextOverflow = 'clip' | 'ellipsis' | string;
+export type TextDecorationLine = string | 'none';
+export type TextDecorationStyle = 'solid' | 'double' | 'dotted' | 'dashed' | 'wavy';
 
 export interface BaseStyleProps {
   class?: string;

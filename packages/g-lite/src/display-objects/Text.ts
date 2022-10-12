@@ -1,9 +1,16 @@
-import type { CSSGlobalKeywords } from '../css';
+import type { CSSGlobalKeywords, CSSRGB } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import type { TextMetrics } from '../services';
-import type { BaseStyleProps, ParsedBaseStyleProps, TextOverflow } from '../types';
+import type {
+  BaseStyleProps,
+  ParsedBaseStyleProps,
+  TextDecorationStyle,
+  TextOverflow,
+  TextDecorationLine,
+} from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
+import type { Path } from './Path';
 
 export interface TextStyleProps extends BaseStyleProps {
   x?: number | string;
@@ -40,6 +47,38 @@ export interface TextStyleProps extends BaseStyleProps {
    * Borrow from CanvasKit ParagraphStyle.
    */
   maxLines?: number;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath
+   */
+  textPath?: Path;
+
+  /**
+   * The side attribute determines the side of a path the text is placed on (relative to the path direction).
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/side
+   */
+  textPathSide?: 'left' | 'right';
+
+  /**
+   * The startOffset attribute defines an offset from the start of the path for the initial current text position along the path after converting the path to the \<textPath\> element's coordinate system.
+   * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/startOffset
+   */
+  textPathStartOffset?: number | string;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-line
+   */
+  textDecorationLine?: TextDecorationLine;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-color
+   */
+  textDecorationColor?: string;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-style
+   */
+  textDecorationStyle?: TextDecorationStyle;
 
   /**
    * The font-style property sets whether a font should be styled with a normal, italic, or oblique face from its font-family.
@@ -144,6 +183,12 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   maxLines?: number;
   textOverflow?: TextOverflow | string;
   isOverflowing?: boolean;
+  textPath?: Path;
+  textDecorationLine?: TextDecorationLine;
+  textDecorationColor?: CSSRGB;
+  textDecorationStyle?: TextDecorationStyle | string;
+  textPathSide?: 'left' | 'right';
+  textPathStartOffset?: number;
   // dropShadow?: boolean;
   // dropShadowDistance?: number;
   metrics?: TextMetrics;

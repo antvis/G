@@ -246,6 +246,21 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     syntax: PropertySyntax.CLIP_PATH,
   },
   {
+    n: 'textPath',
+    syntax: PropertySyntax.TEXT_PATH,
+  },
+  {
+    n: 'textPathSide',
+    k: ['left', 'right'],
+    d: 'left',
+  },
+  {
+    n: 'textPathStartOffset',
+    l: true,
+    d: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
+  },
+  {
     n: 'transform',
     p: 100,
     int: true,

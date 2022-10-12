@@ -40,6 +40,7 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   strokeOpacity: 'stroke-opacity',
   stroke: 'stroke',
   clipPath: 'clip-path',
+  textPath: 'text-path',
   r: 'r',
   rx: 'rx',
   ry: 'ry',
@@ -115,7 +116,8 @@ export type GradientParams = LinearGradient | RadialGradient;
  * eg. g_svg_circle_345
  */
 export const G_SVG_PREFIX = 'g_svg';
-const CLIP_PATH_PREFIX = 'clip-path-';
+export const CLIP_PATH_PREFIX = 'clip-path-';
+export const TEXT_PATH_PREFIX = 'text-path-';
 
 @singleton({ contrib: RenderingPluginContribution })
 export class SVGRendererPlugin implements RenderingPlugin {
@@ -449,7 +451,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
           $groupEl?.removeAttribute(usedName);
         }
       } else if (name === 'clipPath') {
-        this.createOrUpdateClipPath(document, usedValue, $groupEl);
+        this.createOrUpdateClipOrTextPath(document, usedValue, $groupEl);
+      } else if (name === 'textPath') {
+        this.createOrUpdateClipOrTextPath(document, usedValue, $groupEl, true);
       } else if (
         name === 'shadowType' ||
         name === 'shadowColor' ||
@@ -605,27 +609,41 @@ export class SVGRendererPlugin implements RenderingPlugin {
     $el.appendChild($div);
   }
 
-  private createOrUpdateClipPath(
+  private createOrUpdateClipOrTextPath(
     document: Document,
     clipPath: DisplayObject,
     $groupEl: SVGElement,
+    isTextPath = false,
   ) {
+    const PREFIX = isTextPath ? TEXT_PATH_PREFIX : CLIP_PATH_PREFIX;
+    const attributeNameCamel = isTextPath ? 'g' : 'clipPath';
+    const attributeNameHyphen = isTextPath ? 'text-path' : 'clip-path';
+
     if (clipPath) {
-      const clipPathId = CLIP_PATH_PREFIX + clipPath.entity;
+      const clipPathId = PREFIX + clipPath.entity;
       const $def = this.defElementManager.getDefElement();
 
       const existed = $def.querySelector(`#${clipPathId}`);
       if (!existed) {
-        // create <clipPath> dom node, append it to <defs>
-        const $clipPath = createSVGElement('clipPath', document);
+        let $clipPath: SVGElement;
+        if (isTextPath) {
+          // use <path> directly instead of wrapping with <g>
+          this.createSVGDom(document, clipPath, null, true);
+          // @ts-ignore
+          $clipPath = clipPath.elementSVG.$el;
+        } else {
+          // create <clipPath> dom node
+          $clipPath = createSVGElement(attributeNameCamel, document);
+
+          // <clipPath><circle /></clipPath>
+          this.createSVGDom(document, clipPath, $clipPath, true);
+          // @ts-ignore
+          clipPath.elementSVG.$groupEl = $clipPath;
+        }
+
         $clipPath.id = clipPathId;
+        // append it to <defs>
         $def.appendChild($clipPath);
-
-        // <clipPath><circle /></clipPath>
-        this.createSVGDom(document, clipPath, $clipPath, true);
-
-        // @ts-ignore
-        clipPath.elementSVG.$groupEl = $clipPath;
       }
 
       // @ts-ignore
@@ -637,12 +655,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // apply attributes
       this.applyAttributes(clipPath);
 
-      // apply clipPath to $group
-      // @see https://github.com/antvis/g/issues/961
-      $groupEl.setAttribute('clip-path', `url(#${clipPathId})`);
+      if (!isTextPath) {
+        // apply clipPath to $group
+        // @see https://github.com/antvis/g/issues/961
+        $groupEl.setAttribute(attributeNameHyphen, `url(#${clipPathId})`);
+      }
     } else {
-      // remove clip path
-      $groupEl.removeAttribute('clip-path');
+      if (!isTextPath) {
+        // remove clip path
+        $groupEl.removeAttribute(attributeNameHyphen);
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Rect, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Rect, Text, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -186,6 +186,9 @@ const fillStrokeConfig = {
   lineWidth: 5,
   lineJoin: 'miter',
   visible: true,
+  textDecorationLine: 'none',
+  textDecorationColor: 'none',
+  textDecorationStyle: 'solid',
 };
 fillStrokeFolder.addColor(fillStrokeConfig, 'fill').onChange((color) => {
   text.attr('fill', color);
@@ -216,11 +219,33 @@ fillStrokeFolder.add(fillStrokeConfig, 'visible').onChange((visible) => {
     // text.hide();
   }
 });
+fillStrokeFolder
+  .add(fillStrokeConfig, 'textDecorationLine', [
+    'none',
+    'underline',
+    'overline',
+    'line-through',
+    'underline overline',
+  ])
+  .onChange((textDecorationLine) => {
+    text.attr('textDecorationLine', textDecorationLine);
+  });
+fillStrokeFolder
+  .add(fillStrokeConfig, 'textDecorationStyle', ['solid', 'double', 'dotted', 'dashed', 'wavy'])
+  .onChange((textDecorationStyle) => {
+    text.attr('textDecorationStyle', textDecorationStyle);
+  });
+fillStrokeFolder.addColor(fillStrokeConfig, 'textDecorationColor').onChange((color) => {
+  text.attr('textDecorationColor', color);
+});
 
 const layoutFolder = gui.addFolder('layout');
 const layoutConfig = {
   letterSpacing: 0,
   textBaseline: 'alphabetic',
+  textPath: 'null',
+  textPathSide: 'left',
+  textPathStartOffset: 0,
 };
 layoutFolder.add(layoutConfig, 'letterSpacing', 0, 10).onChange((letterSpacing) => {
   text.attr('letterSpacing', letterSpacing);
@@ -237,6 +262,24 @@ layoutFolder
   .onChange((textBaseline) => {
     text.attr('textBaseline', textBaseline);
   });
+layoutFolder.add(layoutConfig, 'textPath', ['null', 'path']).onChange((textPath) => {
+  if (textPath === 'null') {
+    text.attr('textPath', null);
+  } else if (textPath === 'path') {
+    const path = new Path({
+      style: {
+        d: 'M10,90 Q90,90 90,45 Q90,10 50,10 Q10,10 10,40 Q10,70 45,70 Q70,70 75,50',
+      },
+    });
+    text.attr('textPath', path);
+  }
+});
+layoutFolder.add(layoutConfig, 'textPathSide', ['left', 'right']).onChange((textPathSide) => {
+  text.attr('textPathSide', textPathSide);
+});
+layoutFolder.add(layoutConfig, 'textPathStartOffset', 0, 100).onChange((textPathStartOffset) => {
+  text.attr('textPathStartOffset', textPathStartOffset);
+});
 
 const multilineFolder = gui.addFolder('multiline');
 const multilineConfig = {

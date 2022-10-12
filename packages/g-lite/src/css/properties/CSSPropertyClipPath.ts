@@ -23,10 +23,16 @@ import { PropertySyntax } from '../interfaces';
   });
  */
 @singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.CLIP_PATH,
-  },
+  token: [
+    {
+      token: CSSProperty,
+      named: PropertySyntax.CLIP_PATH,
+    },
+    {
+      token: CSSProperty,
+      named: PropertySyntax.TEXT_PATH,
+    },
+  ],
 })
 export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
   constructor(
@@ -45,17 +51,19 @@ export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, D
       newClipPath = null;
     }
 
+    const pathTargetsName = name === 'clipPath' ? 'clipPathTargets' : 'textPathTargets';
+
     // clear ref to old clip path
-    if (oldClipPath && oldClipPath !== newClipPath && oldClipPath.parsedStyle.clipPathTargets) {
-      const index = oldClipPath.parsedStyle.clipPathTargets.indexOf(object);
-      oldClipPath.parsedStyle.clipPathTargets.splice(index, 1);
+    if (oldClipPath && oldClipPath !== newClipPath && oldClipPath.parsedStyle[pathTargetsName]) {
+      const index = oldClipPath.parsedStyle[pathTargetsName].indexOf(object);
+      oldClipPath.parsedStyle[pathTargetsName].splice(index, 1);
     }
 
     if (newClipPath) {
-      if (!newClipPath.parsedStyle.clipPathTargets) {
-        newClipPath.parsedStyle.clipPathTargets = [];
+      if (!newClipPath.parsedStyle[pathTargetsName]) {
+        newClipPath.parsedStyle[pathTargetsName] = [];
       }
-      newClipPath.parsedStyle.clipPathTargets.push(object);
+      newClipPath.parsedStyle[pathTargetsName].push(object);
     }
 
     // should affect children
