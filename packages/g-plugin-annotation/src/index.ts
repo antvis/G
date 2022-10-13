@@ -138,6 +138,10 @@ export class Plugin extends AbstractRendererPlugin {
     return this.container.get(SelectablePlugin).getSelectedDisplayObjects();
   }
 
+  markSelectableUIAsDirty(object: DisplayObject) {
+    return this.container.get(SelectablePlugin).markSelectableUIAsDirty(object);
+  }
+
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
     this.container.get(AnnotationPlugin).emmiter.on(eventName, fn);
   }

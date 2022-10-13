@@ -310,30 +310,33 @@ export class DisplayObject<
     );
 
     // inform clip path targets
-    if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
-      this.parsedStyle.clipPathTargets.forEach((target) => {
-        this.sceneGraphService.dirtifyToRoot(target);
+    ['clipPathTargets', 'textPathTargets'].forEach((pathTargetsName, i) => {
+      if (this.parsedStyle[pathTargetsName] && this.parsedStyle[pathTargetsName].length) {
+        const modifiedName = i === 0 ? 'clipPath' : 'textPath';
+        this.parsedStyle[pathTargetsName].forEach((target: DisplayObject) => {
+          this.sceneGraphService.dirtifyToRoot(target);
 
-        target.dispatchEvent(
-          new MutationEvent(
-            ElementEvent.ATTR_MODIFIED,
-            target as IElement,
-            this,
-            this,
-            'clipPath',
-            MutationEvent.MODIFICATION,
-            this,
-            this,
-          ),
-        );
+          target.dispatchEvent(
+            new MutationEvent(
+              ElementEvent.ATTR_MODIFIED,
+              target as IElement,
+              this,
+              this,
+              modifiedName,
+              MutationEvent.MODIFICATION,
+              this,
+              this,
+            ),
+          );
 
-        if (target.isCustomElement && target.isConnected) {
-          if ((target as CustomElement<any>).attributeChangedCallback) {
-            (target as CustomElement<any>).attributeChangedCallback('clipPath', this, this);
+          if (target.isCustomElement && target.isConnected) {
+            if ((target as CustomElement<any>).attributeChangedCallback) {
+              (target as CustomElement<any>).attributeChangedCallback(modifiedName, this, this);
+            }
           }
-        }
-      });
-    }
+        });
+      }
+    });
 
     // redraw at next frame
     renderable.dirty = true;

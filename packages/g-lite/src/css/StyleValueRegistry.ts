@@ -78,6 +78,11 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     d: 'none',
     syntax: PropertySyntax.PAINT,
   },
+  {
+    n: 'fillRule',
+    k: ['nonzero', 'evenodd'],
+    d: 'nonzero',
+  },
   /**
    * default to none
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke#usage_notes
@@ -244,6 +249,21 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     n: 'clipPath',
     syntax: PropertySyntax.CLIP_PATH,
+  },
+  {
+    n: 'textPath',
+    syntax: PropertySyntax.TEXT_PATH,
+  },
+  {
+    n: 'textPathSide',
+    k: ['left', 'right'],
+    d: 'left',
+  },
+  {
+    n: 'textPathStartOffset',
+    l: true,
+    d: '0',
+    syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
     n: 'transform',

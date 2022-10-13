@@ -1,5 +1,7 @@
 import type { ParsedTextStyleProps } from '@antv/g-lite';
 import { detect } from 'detect-browser';
+import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
+import { createSVGElement } from '../../utils/dom';
 import { convertHTML } from '../../utils/format';
 
 // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
@@ -24,7 +26,19 @@ const BASELINE_MAP_FOR_FIREFOX: Record<string, string> = {
 };
 
 export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
-  const { textBaseline, lineWidth, metrics, dx, dy } = parsedStyle;
+  const {
+    textBaseline,
+    lineWidth,
+    metrics,
+    dx,
+    dy,
+    textPath,
+    textPathSide = 'left',
+    textPathStartOffset = 0,
+    textDecorationLine = '',
+    textDecorationColor = '',
+    textDecorationStyle = '',
+  } = parsedStyle;
 
   const browser = detect();
   if (browser && browser.name === 'firefox') {
@@ -40,11 +54,42 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
 
   const lineNum = lines.length;
 
-  $el.setAttribute('style', `transform:translate(${dx}px, ${dy}px);`);
+  let styleCSSText = '';
+  if (dx !== 0 || dy !== 0) {
+    styleCSSText += `transform:translate(${dx}px, ${dy}px);`;
+  }
+  if (textDecorationLine && textDecorationLine !== 'none') {
+    // use CSS text-decoration since the implementation in SVG is not good enough
+    styleCSSText += `text-decoration:${textDecorationLine} ${textDecorationStyle} ${textDecorationColor};`;
+  }
+  if (styleCSSText) {
+    $el.setAttribute('style', styleCSSText);
+  }
 
   if (lineNum === 1) {
-    $el.innerHTML = convertHTML(lines[0]);
+    const textContent = convertHTML(lines[0]);
     $el.setAttribute('dx', `${lineWidth / 2}`);
+
+    // <textPath> only support one line
+    // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath
+    if (textPath) {
+      // clear existed text content first
+      $el.innerHTML = '';
+
+      // append <textPath href="#MyPath">text</textPath>
+      const $textPath = createSVGElement('textPath', $el.ownerDocument);
+      $textPath.setAttribute('href', `#${TEXT_PATH_PREFIX + textPath.entity}`);
+      if (textPathSide !== 'left') {
+        $textPath.setAttribute('side', textPathSide);
+      }
+      if (textPathStartOffset !== 0) {
+        $textPath.setAttribute('startOffset', `${textPathStartOffset}`);
+      }
+      $textPath.innerHTML = textContent;
+      $el.appendChild($textPath);
+    } else {
+      $el.innerHTML = textContent;
+    }
   } else {
     $el.innerHTML = lines
       .map((line: string, i: number) => {

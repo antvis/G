@@ -28,6 +28,7 @@ export class DefaultRenderer implements StyleRenderer {
   ) {
     const {
       fill,
+      fillRule,
       opacity,
       fillOpacity,
       stroke,
@@ -64,7 +65,7 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, hasShadow);
       }
 
-      this.fill(context, object, fill, renderingService);
+      this.fill(context, object, fill, fillRule, renderingService);
 
       if (!shouldDrawShadowWithStroke) {
         this.clearShadowAndFilter(context, hasFilter, hasShadow);
@@ -126,18 +127,19 @@ export class DefaultRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     object: DisplayObject,
     fill: CSSRGB | CSSGradientValue[] | Pattern,
+    fillRule: 'nonzero' | 'evenodd',
     renderingService: RenderingService,
   ) {
     if (Array.isArray(fill)) {
       fill.forEach((gradient) => {
         context.fillStyle = this.getColor(gradient, object, context);
-        context.fill();
+        context.fill(fillRule);
       });
     } else {
       if (isPattern(fill)) {
         context.fillStyle = this.getPattern(fill, object, context, renderingService);
       }
-      context.fill();
+      context.fill(fillRule);
     }
   }
 

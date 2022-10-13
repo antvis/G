@@ -74,19 +74,28 @@ const regexCannotEnd = new RegExp(
   `${regexCannotEndZhCn.source}|${regexCannotEndZhTw.source}|${regexCannotEndJaJp.source}|${regexCannotEndKoKr.source}`,
 );
 
+/**
+ * Borrow from pixi/packages/text/src/TextMetrics.ts
+ */
 @singleton()
 export class TextService {
-  private cache: Record<string, IFontMetrics> = {};
+  /**
+   * font metrics cache
+   */
+  private fontMetricsCache: Record<string, IFontMetrics> = {};
 
   constructor(
     @inject(OffscreenCanvasCreator)
     private offscreenCanvas: OffscreenCanvasCreator,
   ) {}
 
+  /**
+   * Calculates the ascent, descent and fontSize of a given font-style.
+   */
   measureFont(font: string, offscreenCanvas: CanvasLike): IFontMetrics {
     // as this method is used for preparing assets, don't recalculate things if we don't need to
-    if (this.cache[font]) {
-      return this.cache[font];
+    if (this.fontMetricsCache[font]) {
+      return this.fontMetricsCache[font];
     }
     const properties: IFontMetrics = {
       ascent: 0,
@@ -153,7 +162,7 @@ export class TextService {
     properties.descent = i - baseline;
     properties.fontSize = properties.ascent + properties.descent;
 
-    this.cache[font] = properties;
+    this.fontMetricsCache[font] = properties;
     return properties;
   }
 
@@ -170,6 +179,9 @@ export class TextService {
       textBaseline,
       textAlign,
       letterSpacing,
+      textPath,
+      textPathSide,
+      textPathStartOffset,
       // dropShadow = 0,
       // dropShadowDistance = 0,
       leading = 0,
@@ -194,66 +206,122 @@ export class TextService {
     const lines = outputText.split(/(?:\r\n|\r|\n)/);
     const lineWidths = new Array<number>(lines.length);
     let maxLineWidth = 0;
-    for (let i = 0; i < lines.length; i++) {
-      const lineWidth = context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
-      lineWidths[i] = lineWidth;
-      maxLineWidth = Math.max(maxLineWidth, lineWidth);
-    }
-    const width = maxLineWidth + lineWidth;
 
-    // if (dropShadow) {
-    //   width += dropShadowDistance;
-    // }
-    let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth;
-    const height =
-      Math.max(lineHeight, fontProperties.fontSize + lineWidth) +
-      (lines.length - 1) * (lineHeight + leading);
-    // if (dropShadow) {
-    //   height += dropShadowDistance;
-    // }
-    lineHeight += leading;
+    // account for textPath
+    if (textPath) {
+      const totalPathLength = textPath.getTotalLength();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const startingPoint = textPath.getPoint(0);
 
-    // handle vertical text baseline
-    let offsetY = 0;
-    if (textBaseline === 'middle') {
-      offsetY = -height / 2;
-    } else if (
-      textBaseline === 'bottom' ||
-      textBaseline === 'alphabetic' ||
-      textBaseline === 'ideographic'
-    ) {
-      offsetY = -height;
-    } else if (textBaseline === 'top' || textBaseline === 'hanging') {
-      offsetY = 0;
-    }
+      for (let i = 0; i < lines.length; i++) {
+        let positionInPath: number;
+        const width = context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
+        const reverse = textPathSide === 'right';
 
-    return {
-      font,
-      width,
-      height,
-      lines,
-      lineWidths,
-      lineHeight,
-      maxLineWidth,
-      fontProperties,
-      lineMetrics: lineWidths.map((width, i) => {
-        let offsetX = 0;
-        // handle horizontal text align
-        if (textAlign === 'center') {
-          offsetX -= width / 2;
-        } else if (textAlign === 'right' || textAlign === 'end') {
-          offsetX -= width;
+        // TODO: should we support textPathStartOffsetY?
+        switch (textAlign) {
+          case 'left':
+          case 'start':
+            positionInPath = reverse ? totalPathLength - width : 0;
+            break;
+          case 'center':
+            positionInPath = (totalPathLength - width) / 2;
+            break;
+          case 'right':
+          case 'end':
+            positionInPath = reverse ? 0 : totalPathLength - width;
+            break;
         }
 
-        return new Rectangle(
-          offsetX - lineWidth / 2,
-          offsetY + i * lineHeight,
-          width + lineWidth,
-          lineHeight,
-        );
-      }),
-    };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        positionInPath += textPathStartOffset * (reverse ? -1 : 1);
+        // for (
+        //   let i = reverse ? lines[0].length - 1 : 0;
+        //   reverse ? i >= 0 : i < lines[0].length;
+        //   reverse ? i-- : i++
+        // ) {
+        //   graphemeInfo = lineBounds[i];
+        //   if (positionInPath > totalPathLength) {
+        //     positionInPath %= totalPathLength;
+        //   } else if (positionInPath < 0) {
+        //     positionInPath += totalPathLength;
+        //   }
+        //   // it would probably much faster to send all the grapheme position for a line
+        //   // and calculate path position/angle at once.
+        //   this.setGraphemeOnPath(
+        //     positionInPath,
+        //     graphemeInfo,
+        //     startingPoint
+        //   );
+        //   positionInPath += graphemeInfo.kernedWidth;
+        // }
+      }
+    } else {
+      for (let i = 0; i < lines.length; i++) {
+        // char width + letterSpacing
+        const lineWidth =
+          context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
+        lineWidths[i] = lineWidth;
+        maxLineWidth = Math.max(maxLineWidth, lineWidth);
+      }
+      const width = maxLineWidth + lineWidth;
+
+      // if (dropShadow) {
+      //   width += dropShadowDistance;
+      // }
+      let lineHeight = strokeHeight || fontProperties.fontSize + lineWidth;
+      const height =
+        Math.max(lineHeight, fontProperties.fontSize + lineWidth) +
+        (lines.length - 1) * (lineHeight + leading);
+      // if (dropShadow) {
+      //   height += dropShadowDistance;
+      // }
+      lineHeight += leading;
+
+      // handle vertical text baseline
+      let offsetY = 0;
+      if (textBaseline === 'middle') {
+        offsetY = -height / 2;
+      } else if (
+        textBaseline === 'bottom' ||
+        textBaseline === 'alphabetic' ||
+        textBaseline === 'ideographic'
+      ) {
+        offsetY = -height;
+      } else if (textBaseline === 'top' || textBaseline === 'hanging') {
+        offsetY = 0;
+      }
+
+      return {
+        font,
+        width,
+        height,
+        lines,
+        lineWidths,
+        lineHeight,
+        maxLineWidth,
+        fontProperties,
+        lineMetrics: lineWidths.map((width, i) => {
+          let offsetX = 0;
+          // handle horizontal text align
+          if (textAlign === 'center') {
+            offsetX -= width / 2;
+          } else if (textAlign === 'right' || textAlign === 'end') {
+            offsetX -= width;
+          }
+
+          return new Rectangle(
+            offsetX - lineWidth / 2,
+            offsetY + i * lineHeight,
+            width + lineWidth,
+            lineHeight,
+          );
+        }),
+      };
+    }
   }
+
+  private setGraphemeOnPath() {}
 
   private wordWrap(
     text: string,

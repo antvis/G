@@ -348,6 +348,17 @@ circle.style.fill = 'rgb(255, 0, 0)';
 | --- | --- | --- | --- | --- |
 | 'none' | all | no | yes | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint) |
 
+### fillRule
+
+This attribute is a presentation attribute defining the algorithm to use to determine the inside part of a shape.
+
+-   `'nonzero'` Default https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#nonzero
+-   `'evenodd'` https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#evenodd
+
+This [example](/en/examples/shape#polygon) shows the fill effects of `'nonzero'` and `'evenodd'` in order.
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*LgwCQ7mL4GoAAAAAAAAAAAAAARQnAQ" alt="fill rule" width="200">
+
 ## Stroke
 
 ### strokeOpacity
