@@ -210,6 +210,7 @@ export class TextService {
     // account for textPath
     if (textPath) {
       const totalPathLength = textPath.getTotalLength();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const startingPoint = textPath.getPoint(0);
 
       for (let i = 0; i < lines.length; i++) {
@@ -232,6 +233,7 @@ export class TextService {
             break;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         positionInPath += textPathStartOffset * (reverse ? -1 : 1);
         // for (
         //   let i = reverse ? lines[0].length - 1 : 0;

@@ -349,6 +349,17 @@ circle.style.fill = 'rgb(255, 0, 0)';
 | --- | --- | --- | --- | --- |
 | 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
 
+### fillRule
+
+该属性定义了用来确定一个多边形内部区域的算法，支持以下取值：
+
+-   `'nonzero'` 默认值 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill-rule#nonzero
+-   `'evenodd'` https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill-rule#evenodd
+
+该 [示例](/zh/examples/shape#polygon) 依次展示了 `'nonzero'` 和 `'evenodd'` 的填充效果：
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*LgwCQ7mL4GoAAAAAAAAAAAAAARQnAQ" alt="fill rule" width="200">
+
 ## 描边
 
 ### strokeOpacity

@@ -52,9 +52,32 @@ const polygon = new Polygon({
   },
 });
 
+const star = new Polygon({
+  style: {
+    points: '50,0 21,90 98,35 2,35 79,90',
+    fill: '#C6E5FF',
+    stroke: '#1890FF',
+    lineWidth: 2,
+    transform: 'translate(120px, 0)',
+  },
+});
+const star2 = new Polygon({
+  style: {
+    points: '50,0 21,90 98,35 2,35 79,90',
+    fill: '#C6E5FF',
+    fillRule: 'evenodd',
+    stroke: '#1890FF',
+    lineWidth: 2,
+    transform: 'translate(220px, 0)',
+  },
+});
+
 canvas.addEventListener(CanvasEvent.READY, () => {
   // add a polygon to canvas
   canvas.appendChild(polygon);
+
+  canvas.appendChild(star);
+  canvas.appendChild(star2);
 });
 
 const arrowMarker = new Path({

@@ -109,6 +109,13 @@ export interface BaseStyleProps {
   fill?: ColorType | Pattern;
   /** 填充透明度 */
   fillOpacity?: number | string;
+
+  /**
+   * The fill-rule attribute is a presentation attribute defining the algorithm to use to determine the inside part of a shape.
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill-rule
+   */
+  fillRule?: 'nonzero' | 'evenodd';
+
   /** 整体透明度 */
   opacity?: number | string;
 

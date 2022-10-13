@@ -78,6 +78,11 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     d: 'none',
     syntax: PropertySyntax.PAINT,
   },
+  {
+    n: 'fillRule',
+    k: ['nonzero', 'evenodd'],
+    d: 'nonzero',
+  },
   /**
    * default to none
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke#usage_notes
