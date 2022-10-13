@@ -464,6 +464,17 @@ plugin.updateDrawerStyle({
 });
 ```
 
+## markSelectableUIAsDirty
+
+有时目标图形的定义发生了修改，需要让辅助操作组件感知并重新生成，此时可以手动调用该方法：
+
+```js
+circle.style.cx = 100;
+circle.style.cy = 100;
+
+plugin.markSelectableUIAsDirty(circle);
+```
+
 # 事件
 
 在不同模式下会触发不同事件，例如绘制模式下会在插件上触发，而编辑模式下会在图形上触发。
