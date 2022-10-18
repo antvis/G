@@ -574,13 +574,13 @@ export class DisplayObject<
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
     options?: number | KeyframeAnimationOptions | undefined,
   ): IAnimation | null {
-    let timeline = this.ownerDocument?.timeline;
+    const timeline = this.ownerDocument?.timeline;
 
     // account for clip path, use target's timeline
-    if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
-      const target = this.parsedStyle.clipPathTargets[0];
-      timeline = target.ownerDocument?.timeline;
-    }
+    // if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
+    //   const target = this.parsedStyle.clipPathTargets[0];
+    //   timeline = target.ownerDocument?.timeline;
+    // }
 
     if (timeline) {
       return timeline.play(this as IElement, keyframes, options);

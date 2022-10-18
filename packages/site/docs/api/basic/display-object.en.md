@@ -755,16 +755,18 @@ There are two points to note about visibility.
 
 Use clipping to create a displayable region of an element, with the parts inside the region shown and the parts outside the region hidden. See CSS's [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path). The value of this property can be any shape, such as Circle, Rect, etc. The same clipping region can be shared by multiple shapes. Finally, the crop region also affects the pickup area of the shapes, [example](/en/examples/event#shapes).
 
-For example, if we want to create a picture that is cropped into a circle, so that the cropping area is just in the center of the picture (size 200 \* 200), we can set the local coordinates of the circle in the cropping area to `[100, 100]`. [example](/en/examples/shape#clip).
+For example, if we want to create a picture that is cropped into a circle, so that the cropping area is just in the center of the picture (size 200 \* 200), we can set the world coordinates of the circle in the cropping area to `[100, 100]`. [example](/en/examples/shape#clip).
 
 ```js
 const image = new Image({
     style: {
+        x: 0,
+        y: 0,
         width: 200,
         height: 200,
         clipPath: new Circle({
             style: {
-                cx: 100, // In the local coordinate system of the cropped figure
+                cx: 100,
                 cy: 100,
                 r: 50,
             },

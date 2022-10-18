@@ -136,6 +136,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
    */
   private pendingReorderQueue: Set<DisplayObject> = new Set();
 
+  /**
+   * <use> elements in <clipPath>, which should be sync with clipPath
+   *
+   * @example
+   * <clipPath transform="matrix(1,0,0,1,-100,-155)" id="clip-path-0-2">
+   *  <use href="#g_svg_circle_0" transform="matrix(1.477115,0,0,1.477115,150,150)">
+   *  </use>
+   * </clipPath>
+   */
+  private clipPathUseMap: WeakMap<DisplayObject, SVGUseElement[]> = new WeakMap();
+
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     this.context = context;
@@ -151,6 +162,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       this.defElementManager.clear(object.entity);
+      this.clipPathUseMap.delete(object);
       this.removeSVGDom(object);
     };
 
@@ -265,7 +277,18 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if ($el && $groupEl) {
           // apply local RTS transformation to <group> wrapper
           // account for anchor
-          this.applyTransform($groupEl, object.getLocalTransform());
+          const localTransform = object.getLocalTransform();
+          this.applyTransform($groupEl, localTransform);
+
+          // clipped shapes should also be informed
+
+          const $useRefs = this.clipPathUseMap.get(object);
+          if ($useRefs && $useRefs.length) {
+            $useRefs.forEach(($use) => {
+              this.applyTransform($use, localTransform);
+            });
+          }
+
           // finish rendering, clear dirty flag
           object.renderable.dirty = false;
         }
@@ -295,6 +318,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       });
       this.renderQueue = [];
     });
+  }
+
+  private getId(object: DisplayObject) {
+    return `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
   }
 
   private reorderChildren(doc: Document, $groupEl: SVGElement, children: DisplayObject[]) {
@@ -479,7 +506,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       if (this.pluginOptions.outputSVGElementId) {
-        $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
+        $el.id = this.getId(object);
       }
       if (this.pluginOptions.outputSVGElementName && object.name) {
         $el.setAttribute('name', object.name);
@@ -602,18 +629,28 @@ export class SVGRendererPlugin implements RenderingPlugin {
           // @ts-ignore
           $clipPath = clipPath.elementSVG.$el;
         } else {
-          // @ts-ignore
-          if (!clipPath.elementSVG?.$el?.id) {
-            // <defs><circle /></defs>
-            this.createSVGDom(document, clipPath, $def, true);
+          // the clipPath is allowed to be detached from canvas
+          if (!clipPath.isConnected) {
+            const $existedClipPath = $def.querySelector(`#${this.getId(clipPath)}`);
+            if (!$existedClipPath) {
+              this.createSVGDom(document, clipPath, $def, true);
+            }
           }
 
           // create <clipPath> dom node
           $clipPath = createSVGElement(attributeNameCamel, document);
-          const $use = createSVGElement('use', document);
+          const $use = createSVGElement('use', document) as SVGUseElement;
           // @ts-ignore
           $use.setAttribute('href', `#${clipPath.elementSVG.$el.id}`);
           $clipPath.appendChild($use);
+
+          let $useRefs = this.clipPathUseMap.get(clipPath);
+          if (!$useRefs) {
+            this.clipPathUseMap.set(clipPath, []);
+            $useRefs = this.clipPathUseMap.get(clipPath);
+          }
+          $useRefs.push($use);
+
           // <clipPath transform="matrix()"><circle /></clipPath>
           this.applyTransform($use, clipPath.getWorldTransform());
           const parentInvert = mat4.invert(
@@ -621,8 +658,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
             (object as DisplayObject).getWorldTransform(),
           );
           this.applyTransform($clipPath, parentInvert);
-          // @ts-ignore
-          clipPath.elementSVG.$groupEl = $clipPath;
         }
 
         $clipPath.id = clipPathId;

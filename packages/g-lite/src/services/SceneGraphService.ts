@@ -1,8 +1,9 @@
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
-import type { DisplayObject } from '../display-objects';
+import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
+import { MutationEvent } from '../dom';
 import { CustomEvent } from '../dom';
 import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
@@ -500,24 +501,24 @@ export class DefaultSceneGraphService implements SceneGraphService {
         dependencyMap[name].forEach((target) => {
           this.dirtifyToRoot(target);
 
-          // target.dispatchEvent(
-          //   new MutationEvent(
-          //     ElementEvent.ATTR_MODIFIED,
-          //     target as IElement,
-          //     this,
-          //     this,
-          //     name,
-          //     MutationEvent.MODIFICATION,
-          //     this,
-          //     this,
-          //   ),
-          // );
+          target.dispatchEvent(
+            new MutationEvent(
+              ElementEvent.ATTR_MODIFIED,
+              target as IElement,
+              this,
+              this,
+              name,
+              MutationEvent.MODIFICATION,
+              this,
+              this,
+            ),
+          );
 
-          // if (target.isCustomElement && target.isConnected) {
-          //   if ((target as CustomElement<any>).attributeChangedCallback) {
-          //     (target as CustomElement<any>).attributeChangedCallback(name, this, this);
-          //   }
-          // }
+          if (target.isCustomElement && target.isConnected) {
+            if ((target as CustomElement<any>).attributeChangedCallback) {
+              (target as CustomElement<any>).attributeChangedCallback(name, this, this);
+            }
+          }
         });
       });
     }
