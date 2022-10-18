@@ -8,17 +8,13 @@ import type {
   RadialGradient,
   RenderingService,
 } from '@antv/g-lite';
-import { GradientType, inject, isPattern, Shape, singleton } from '@antv/g-lite';
-import { ImagePool } from '@antv/g-plugin-image-loader';
+import { GradientType, isPattern, Shape } from '@antv/g-lite';
+import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import type { StyleRenderer } from './interfaces';
 
-@singleton()
 export class DefaultRenderer implements StyleRenderer {
-  constructor(
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-  ) {}
+  constructor(private imagePool: ImagePool) {}
 
   render(
     context: CanvasRenderingContext2D,

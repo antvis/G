@@ -1,7 +1,5 @@
 import type { DisplayObject } from '@antv/g-lite';
-import { injectable, Shape } from '@antv/g-lite';
 import { InstancedLineMesh } from '../meshes';
-import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';
 
 /**
@@ -11,9 +9,6 @@ import { Batch } from './Batch';
  * support dash array
  * TODO: joint & cap
  */
-@injectable({
-  token: { token: ShapeRenderer, named: Shape.LINE },
-})
 export class LineRenderer extends Batch {
   meshes = [InstancedLineMesh];
 

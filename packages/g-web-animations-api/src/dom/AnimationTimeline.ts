@@ -1,18 +1,14 @@
-import type { Document, IAnimationTimeline, IElement } from '@antv/g-lite';
-import { AnimationTimelineToken, singleton } from '@antv/g-lite';
+import type { IDocument, IAnimationTimeline, IElement, IAnimation } from '@antv/g-lite';
 import { Animation } from './Animation';
 import { KeyframeEffect } from './KeyframeEffect';
 
-export function compareAnimations(leftAnimation: Animation, rightAnimation: Animation) {
+export function compareAnimations(leftAnimation: IAnimation, rightAnimation: IAnimation) {
   return Number(leftAnimation.id) - Number(rightAnimation.id);
 }
 
 /**
  * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/web-animations-js/index.d.ts
  */
-@singleton({
-  token: AnimationTimelineToken,
-})
 export class AnimationTimeline implements IAnimationTimeline {
   /**
    * all active animations
@@ -38,11 +34,7 @@ export class AnimationTimeline implements IAnimationTimeline {
 
   private frameId: number;
 
-  private document: Document;
-
-  attach(document: Document) {
-    this.document = document;
-  }
+  constructor(private document: IDocument) {}
 
   getAnimations() {
     this.discardAnimations();
@@ -78,7 +70,7 @@ export class AnimationTimeline implements IAnimationTimeline {
     }
     // update active animations in displayobject
     animation.markTarget();
-    const animations = animation.targetAnimations() as Animation[];
+    const animations = animation.targetAnimations();
     animations.sort(compareAnimations);
 
     // clear inactive animations
@@ -171,7 +163,7 @@ export class AnimationTimeline implements IAnimationTimeline {
     });
   }
 
-  tick(t: number, isAnimationFrame: boolean, updatingAnimations: Animation[]) {
+  tick(t: number, isAnimationFrame: boolean, updatingAnimations: IAnimation[]) {
     this.inTick = true;
     this.hasRestartedThisFrame = false;
 
@@ -183,7 +175,7 @@ export class AnimationTimeline implements IAnimationTimeline {
     const activeAnimations: Animation[] = [];
     const inactiveAnimations: Animation[] = [];
 
-    updatingAnimations.forEach((animation) => {
+    (updatingAnimations as unknown as Animation[]).forEach((animation) => {
       animation.tick(t, isAnimationFrame);
 
       if (!animation._inEffect) {

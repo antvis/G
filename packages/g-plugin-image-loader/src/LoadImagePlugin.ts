@@ -3,32 +3,17 @@ import type {
   FederatedEvent,
   MutationEvent,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  ElementEvent,
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  singleton,
-} from '@antv/g-lite';
+import { ElementEvent, Shape } from '@antv/g-lite';
 import { isString } from '@antv/util';
-import { ImagePool } from './ImagePool';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class LoadImagePlugin implements RenderingPlugin {
   static tag = 'LoadImage';
 
-  constructor(
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-  ) {}
-
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    // @ts-ignore
+    const { renderingService, renderingContext, imagePool } = context;
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { nodeName, attributes } = object;
@@ -36,7 +21,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         const { img } = attributes;
 
         if (isString(img)) {
-          this.imagePool.getImageSync(img, () => {
+          imagePool.getImageSync(img, () => {
             // set dirty rectangle flag
             object.renderable.dirty = true;
             renderingService.dirtify();
@@ -52,7 +37,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       if (object.nodeName === Shape.IMAGE) {
         if (attrName === 'img') {
           if (isString(newValue)) {
-            this.imagePool.getOrCreateImage(newValue).then(() => {
+            imagePool.getOrCreateImage(newValue).then(() => {
               // set dirty rectangle flag
               object.renderable.dirty = true;
               renderingService.dirtify();
@@ -63,19 +48,13 @@ export class LoadImagePlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(LoadImagePlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
 
     renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
   }
 }

@@ -1,7 +1,4 @@
 import type { DisplayObject } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
-
-@singleton()
 export class PickingIdGenerator {
   private counter = 0;
 

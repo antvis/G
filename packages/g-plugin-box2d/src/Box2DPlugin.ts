@@ -8,23 +8,11 @@ import type {
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  CanvasEvent,
-  deg2rad,
-  DisplayObjectPool,
-  ElementEvent,
-  inject,
-  rad2deg,
-  RenderingContext,
-  RenderingPluginContribution,
-  SceneGraphService,
-  Shape,
-  singleton,
-} from '@antv/g-lite';
+import { CanvasEvent, deg2rad, runtime, ElementEvent, rad2deg, Shape } from '@antv/g-lite';
 import type Box2D from 'box2d-wasm';
-import { Box2DPluginOptions } from './tokens';
+import type { Box2DPluginOptions } from './interfaces';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
 
 // v2.4
@@ -36,23 +24,10 @@ const BOX2D_UMD_DIR = 'https://unpkg.com/box2d-wasm@7.0.0/dist/umd/';
 //   WASM = 'http://kripken.github.io/box2d.js/demo/webgl/Box2D_v2.2.1_min.wasm.js',
 // }
 
-@singleton({ contrib: RenderingPluginContribution })
 export class Box2DPlugin implements RenderingPlugin {
   static tag = 'Box2D';
 
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-
-    @inject(Box2DPluginOptions)
-    private options: Box2DPluginOptions,
-  ) {}
+  constructor(private options: Partial<Box2DPluginOptions>) {}
 
   // private Box2D: typeof Box2D & EmscriptenModule;
   private Box2D: any;
@@ -69,14 +44,15 @@ export class Box2DPlugin implements RenderingPlugin {
   private fixtures: Record<number, Box2D.b2Fixture> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
     const simulate = () => {
       if (this.world) {
         const { timeStep, velocityIterations, positionIterations } = this.options;
         // @see https://box2d.org/documentation/classb2_world.html#a82c081319af9a47e282dde807e4cd7b8
         this.world.Step(timeStep, velocityIterations, positionIterations);
         Object.keys(this.bodies).forEach((entity) => {
-          const displayObject = this.displayObjectPool.getByEntity(Number(entity));
+          const displayObject = runtime.displayObjectPool.getByEntity(Number(entity));
           const body = this.bodies[entity] as Box2D.b2Body;
           const bpos = body.GetPosition();
           const x = bpos.get_x();
@@ -166,12 +142,9 @@ export class Box2DPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
 
       this.Box2D = await this.loadBox2D();
 
@@ -181,19 +154,16 @@ export class Box2DPlugin implements RenderingPlugin {
       this.handlePendingDisplayObjects();
 
       // do simulation each frame
-      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
+      renderingContext.root.ownerDocument.defaultView.addEventListener(
         CanvasEvent.BEFORE_RENDER,
         simulate,
       );
     });
 
     renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
 
       if (this.world) {
         // memory leak
@@ -240,8 +210,8 @@ export class Box2DPlugin implements RenderingPlugin {
         );
 
         if (entityA && entityB) {
-          const displayObjectA = this.displayObjectPool.getByEntity(Number(entityA));
-          const displayObjectB = this.displayObjectPool.getByEntity(Number(entityB));
+          const displayObjectA = runtime.displayObjectPool.getByEntity(Number(entityA));
+          const displayObjectB = runtime.displayObjectPool.getByEntity(Number(entityB));
           onContact(displayObjectA, displayObjectB);
         }
       };

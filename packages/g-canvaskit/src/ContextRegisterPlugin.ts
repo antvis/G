@@ -1,12 +1,6 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
-import { CanvasKitContextService, ContextRegisterPluginOptions } from './CanvasKitContextService';
-
-const containerModule = Module((register) => {
-  /**
-   * implements ContextService
-   */
-  register(CanvasKitContextService);
-});
+import { AbstractRendererPlugin } from '@antv/g-lite';
+import type { ContextRegisterPluginOptions } from './CanvasKitContextService';
+import { CanvasKitContextService } from './CanvasKitContextService';
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
   name = 'canvaskit-context-register';
@@ -16,15 +10,14 @@ export class ContextRegisterPlugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(ContextRegisterPluginOptions, {
-      useValue: {
-        ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+    const contextRegisterPluginOptions = {
+      ...this.options,
+    };
+    // @ts-ignore
+    this.context.contextRegisterPluginOptions = contextRegisterPluginOptions;
+    this.context.ContextService = CanvasKitContextService;
   }
   destroy(): void {
-    this.container.remove(ContextRegisterPluginOptions);
-    this.container.unload(containerModule);
+    delete this.context.ContextService;
   }
 }

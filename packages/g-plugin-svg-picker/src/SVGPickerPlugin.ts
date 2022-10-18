@@ -1,11 +1,10 @@
-import type { DisplayObject, PickingResult, RenderingPlugin, RenderingService } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  DisplayObjectPool,
-  inject,
-  RenderingPluginContribution,
-  singleton,
+import type {
+  DisplayObject,
+  PickingResult,
+  RenderingPlugin,
+  RenderingPluginContext,
 } from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
 
 /**
@@ -14,20 +13,14 @@ import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
  * 1. find AABB with r-tree
  * 2. use elementFromPoint
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class SVGPickerPlugin implements RenderingPlugin {
   static tag = 'SVGPicker';
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-  ) {}
-
-  apply(renderingService: RenderingService) {
-    const { document: doc } = this.canvasConfig;
+  apply(context: RenderingPluginContext) {
+    const {
+      config: { document: doc },
+      renderingService,
+    } = context;
 
     renderingService.hooks.pick.tapPromise(SVGPickerPlugin.tag, async (result: PickingResult) => {
       return this.pick(doc, result);
@@ -52,7 +45,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
         const id = element && element.getAttribute('id');
         if (id && id.startsWith(G_SVG_PREFIX)) {
           const index = id.lastIndexOf('_');
-          const target = this.displayObjectPool.getByEntity(Number(id.substring(index + 1)));
+          const target = runtime.displayObjectPool.getByEntity(Number(id.substring(index + 1)));
 
           // don't need to account for `visibility` since DOM API already does
           if (target && target.isInteractive()) {

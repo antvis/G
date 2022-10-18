@@ -1,22 +1,10 @@
 import type { DataURLOptions } from '@antv/g-lite';
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g-lite';
+import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
 import type { Canvas, InputRect } from 'canvaskit-wasm';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
 import { FontLoader } from './FontLoader';
 import type { RendererContribution } from './interfaces';
-import {
-  CanvaskitRendererPluginOptions,
-  CircleRendererContribution,
-  EllipseRendererContribution,
-  ImageRendererContribution,
-  LineRendererContribution,
-  PathRendererContribution,
-  PolygonRendererContribution,
-  PolylineRendererContribution,
-  RectRendererContribution,
-  RendererContributionFactory,
-  TextRendererContribution,
-} from './interfaces';
+import type { CanvaskitRendererPluginOptions } from './interfaces';
 import {
   CircleRenderer,
   EllipseRenderer,
@@ -31,50 +19,6 @@ import {
 
 export * from './interfaces';
 
-const containerModule = Module((register) => {
-  register(FontLoader);
-
-  register(CircleRenderer);
-  register(EllipseRenderer);
-  register(RectRenderer);
-  register(LineRenderer);
-  register(ImageRenderer);
-  register(PolylineRenderer);
-  register(PolygonRenderer);
-  register(PathRenderer);
-  register(TextRenderer);
-
-  const shape2Token = {
-    [Shape.CIRCLE]: CircleRendererContribution,
-    [Shape.ELLIPSE]: EllipseRendererContribution,
-    [Shape.RECT]: RectRendererContribution,
-    [Shape.IMAGE]: ImageRendererContribution,
-    [Shape.TEXT]: TextRendererContribution,
-    [Shape.LINE]: LineRendererContribution,
-    [Shape.POLYLINE]: PolylineRendererContribution,
-    [Shape.POLYGON]: PolygonRendererContribution,
-    [Shape.PATH]: PathRendererContribution,
-  };
-  register({
-    token: RendererContributionFactory,
-    useFactory: (ctx) => {
-      const cache = {};
-      return (tagName: Shape): RendererContribution => {
-        const token = shape2Token[tagName];
-        if (token && !cache[tagName]) {
-          if (ctx.container.isBound(token)) {
-            cache[tagName] = ctx.container.get<RendererContribution>(token);
-          }
-        }
-
-        return cache[tagName];
-      };
-    },
-  });
-
-  register(CanvaskitRendererPlugin);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvaskit-renderer';
 
@@ -83,29 +27,50 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(CanvaskitRendererPluginOptions, {
-      useValue: {
-        fonts: [],
-        ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+    const canvaskitRendererPluginOptions = {
+      fonts: [],
+      ...this.options,
+    };
+
+    const fontLoader = new FontLoader();
+
+    const rendererContributionFactory: Record<Shape, RendererContribution> = {
+      [Shape.CIRCLE]: new CircleRenderer(),
+      [Shape.ELLIPSE]: new EllipseRenderer(),
+      [Shape.RECT]: new RectRenderer(),
+      [Shape.IMAGE]: new ImageRenderer(this.context),
+      [Shape.TEXT]: new TextRenderer(this.context, fontLoader),
+      [Shape.LINE]: new LineRenderer(),
+      [Shape.POLYLINE]: new PolylineRenderer(this.context),
+      [Shape.POLYGON]: new PolygonRenderer(this.context),
+      [Shape.PATH]: new PathRenderer(this.context),
+      [Shape.GROUP]: undefined,
+      [Shape.HTML]: undefined,
+      [Shape.MESH]: undefined,
+    };
+
+    this.addRenderingPlugin(
+      new CanvaskitRendererPlugin(
+        canvaskitRendererPluginOptions,
+        rendererContributionFactory,
+        fontLoader,
+      ),
+    );
   }
 
   destroy(): void {
-    this.container.remove(CanvaskitRendererPluginOptions);
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 
   playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
-    return this.container.get(CanvaskitRendererPlugin).playAnimation(name, jsonStr, bounds, assets);
+    return this.plugins[0].playAnimation(name, jsonStr, bounds, assets);
   }
 
   createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
-    return this.container.get(CanvaskitRendererPlugin).createParticles(jsonStr, onFrame, assets);
+    return this.plugins[0].createParticles(jsonStr, onFrame, assets);
   }
 
   toDataURL(options: Partial<DataURLOptions>) {
-    return this.container.get(CanvaskitRendererPlugin).toDataURL(options);
+    return this.plugins[0].toDataURL(options);
   }
 }

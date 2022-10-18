@@ -1,15 +1,5 @@
-import { LayoutRegistry, singleton } from '@antv/g-lite';
+import type { LayoutRegistry } from '@antv/g-lite';
 import type { LayoutDefinitionCtor } from './LayoutDefinition';
-
-// export const LayoutContribution = Syringe.defineToken('LayoutContribution');
-// // eslint-disable-next-line @typescript-eslint/no-redeclare
-// export interface LayoutContribution {
-//   registerLayout: (layoutRegistry: LayoutRegistry) => void;
-// }
-
-@singleton({
-  token: LayoutRegistry,
-})
 export class DefaultLayoutRegistry implements LayoutRegistry {
   // 系统保留的布局名称，外部用户不能使用
   // private static reservedLayout = ['relative', 'absolute', 'fixed', 'flex', 'dagre', 'autolayout'];

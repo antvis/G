@@ -1,28 +1,18 @@
 import type {
-  ICamera,
   CSSGradientValue,
   DisplayObject,
   ParsedBaseStyleProps,
   Pattern,
-  RenderingService,
   Tuple4Number,
 } from '@antv/g-lite';
-import {
-  CSSRGB,
-  DefaultCamera,
-  inject,
-  injectable,
-  isPattern,
-  parseColor,
-  Shape,
-} from '@antv/g-lite';
+import { CSSRGB, isPattern, parseColor, Shape } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
-import { LightPool } from '../LightPool';
+import type { LightPool } from '../LightPool';
 import type { Fog } from '../lights';
 import type { Material } from '../materials';
 import { MaterialEvent, ShaderMaterial } from '../materials';
-import type { BindingLayoutSamplerDescriptor, Device, InputState } from '../platform';
+import type { BindingLayoutSamplerDescriptor, InputState } from '../platform';
 import {
   ChannelWriteMask,
   CompareMode,
@@ -34,19 +24,14 @@ import {
   VertexBufferFrequency,
   WrapMode,
 } from '../platform';
-import type { RenderInst, RenderInstUniform } from '../render';
-import {
-  DeviceProgram,
-  makeSortKeyOpaque,
-  RendererLayer,
-  RenderHelper,
-  TextureMapping,
-} from '../render';
+import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
+import { DeviceProgram, makeSortKeyOpaque, RendererLayer, TextureMapping } from '../render';
+import type { BatchContext } from '../renderer';
 import type { Batch } from '../renderer/Batch';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
 import { preprocessProgramObj_GLSL } from '../shader/compiler';
-import { TexturePool } from '../TexturePool';
+import type { TexturePool } from '../TexturePool';
 import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 
 let counter = 1;
@@ -92,7 +77,6 @@ export enum VertexAttributeLocation {
 /**
  * Instanced mesh
  */
-@injectable()
 export abstract class Instanced {
   /**
    * unique ID
@@ -105,21 +89,13 @@ export abstract class Instanced {
    */
   index = -1;
 
-  @inject(RenderHelper)
-  protected renderHelper: RenderHelper;
+  constructor(
+    protected renderHelper: RenderHelper,
+    protected texturePool: TexturePool,
+    protected lightPool: LightPool,
+  ) {}
 
-  @inject(TexturePool)
-  protected texturePool: TexturePool;
-
-  @inject(DefaultCamera)
-  protected camera: ICamera;
-
-  @inject(LightPool)
-  protected lightPool: LightPool;
-
-  device: Device;
-
-  renderingService: RenderingService;
+  context: BatchContext;
 
   /**
    * instances
@@ -155,20 +131,19 @@ export abstract class Instanced {
   }
 
   inited = false;
-  init(device: Device, renderingService: RenderingService) {
+  init(context: BatchContext) {
     if (this.inited) {
       return;
     }
 
     this.renderer.beforeInitMesh(this);
-    this.device = device;
-    this.renderingService = renderingService;
-    this.material = new ShaderMaterial(this.device);
+    this.context = context;
+    this.material = new ShaderMaterial(this.context.device);
     this.material.defines = {
       ...enumToObject(VertexAttributeLocation),
       ...this.material.defines,
     };
-    this.geometry = new BufferGeometry(this.device);
+    this.geometry = new BufferGeometry(this.context.device);
 
     // make refs so that we can trigger MutationEvent on every object
     this.geometry.meshes = this.objects;
@@ -186,7 +161,7 @@ export abstract class Instanced {
       this.geometry.meshes.forEach((mesh) => {
         mesh.renderable.dirty = true;
       });
-      this.renderingService.dirtify();
+      this.context.renderingService.dirtify();
     });
   }
 
@@ -195,7 +170,7 @@ export abstract class Instanced {
       this.material.meshes.forEach((mesh) => {
         mesh.renderable.dirty = true;
       });
-      this.renderingService.dirtify();
+      this.context.renderingService.dirtify();
     });
   }
 
@@ -306,7 +281,7 @@ export abstract class Instanced {
       } else {
         mat4.copy(modelMatrix, object.getWorldTransform());
       }
-      mat4.mul(modelViewMatrix, this.camera.getViewTransform(), modelMatrix);
+      mat4.mul(modelViewMatrix, this.context.camera.getViewTransform(), modelMatrix);
 
       const encodedPickingColor = (object.isInteractive() &&
         // @ts-ignore
@@ -518,7 +493,7 @@ export abstract class Instanced {
           const mapping = new TextureMapping();
           mapping.name = key;
           mapping.texture = this.material.textures[key];
-          this.device.setResourceName(mapping.texture, 'Material Texture ' + key);
+          this.context.device.setResourceName(mapping.texture, 'Material Texture ' + key);
           mapping.sampler = this.renderHelper.getCache().createSampler({
             wrapS: WrapMode.Clamp,
             wrapT: WrapMode.Clamp,
@@ -566,7 +541,10 @@ export abstract class Instanced {
       this.program.vert = this.material.vertexShader;
       this.program.frag = this.material.fragmentShader;
       // use cached program
-      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(this.device, this.program);
+      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(
+        this.context.device,
+        this.program,
+      );
       this.material.programDirty = false;
       this.materialDirty = false;
     }
@@ -612,7 +590,7 @@ export abstract class Instanced {
       if (this.inputState) {
         this.inputState.destroy();
       }
-      this.inputState = this.device.createInputState(
+      this.inputState = this.context.device.createInputState(
         inputLayout,
         this.geometry.vertexBuffers.map((buffer) => ({
           buffer,
@@ -1086,7 +1064,7 @@ export abstract class Instanced {
 
       texImageSource = this.texturePool.getOrCreateCanvas() as TexImageSource;
       const texture = this.texturePool.getOrCreateTexture(
-        this.device,
+        this.context.device,
         texImageSource,
         makeTextureDescriptor2D(Format.U8_RGBA_NORM, 1, 1, 1),
       );
@@ -1102,7 +1080,7 @@ export abstract class Instanced {
           });
           this.material.textureDirty = true;
         });
-        this.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
+        this.context.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
           wrapS: WrapMode.Repeat,
           wrapT: WrapMode.Repeat,

@@ -1,20 +1,17 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { ImagePool } from './ImagePool';
 import { LoadImagePlugin } from './LoadImagePlugin';
 
 export { ImagePool };
 
-const containerModule = Module((register) => {
-  register(ImagePool);
-  register(LoadImagePlugin);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'image-loader';
   init(): void {
-    this.container.load(containerModule, true);
+    // @ts-ignore
+    this.context.imagePool = new ImagePool(this.context.config);
+    this.addRenderingPlugin(new LoadImagePlugin());
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }

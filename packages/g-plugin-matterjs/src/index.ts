@@ -1,11 +1,7 @@
 import type { DisplayObject } from '@antv/g-lite';
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { MatterJSPlugin } from './MatterJSPlugin';
-import { MatterJSPluginOptions } from './tokens';
-
-const containerModule = Module((register) => {
-  register(MatterJSPlugin);
-});
+import type { MatterJSPluginOptions } from './interfaces';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'matterjs';
@@ -15,24 +11,22 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(MatterJSPluginOptions, {
-      useValue: {
+    this.addRenderingPlugin(
+      new MatterJSPlugin({
         gravity: [0, 1],
         gravityScale: 0.001,
         timeStep: 1 / 60,
         velocityIterations: 4,
         positionIterations: 6,
         ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+      } as MatterJSPluginOptions),
+    );
   }
   destroy(): void {
-    this.container.remove(MatterJSPluginOptions);
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 
   applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
-    this.container.get(MatterJSPlugin).applyForce(object, force, point);
+    this.plugins[0].applyForce(object, force, point);
   }
 }

@@ -1,13 +1,6 @@
-import type { DisplayObject, RenderingService, ICamera } from '@antv/g-lite';
-import { DefaultCamera, inject, injectable } from '@antv/g-lite';
-import { LightPool } from '../LightPool';
+import type { DisplayObject } from '@antv/g-lite';
 import type { Instanced } from '../meshes/Instanced';
-import type { Device } from '../platform';
-import { RenderHelper } from '../render/RenderHelper';
 import type { RenderInst } from '../render/RenderInst';
-import { TexturePool } from '../TexturePool';
-// import { MeshFactory } from '../tokens';
-import { BatchManager } from './BatchManager';
 
 /**
  * render order start from 0, our default camera's Z is 500
@@ -20,29 +13,28 @@ let counter = 1;
  * A container for multiple display objects with the same `style`,
  * eg. 1000 Circles with the same stroke color, but their position, radius can be different
  */
-@injectable()
 export abstract class Batch {
-  @inject(RenderHelper)
-  protected renderHelper: RenderHelper;
+  // @inject(RenderHelper)
+  // protected renderHelper: RenderHelper;
 
-  @inject(TexturePool)
-  protected texturePool: TexturePool;
+  // @inject(TexturePool)
+  // protected texturePool: TexturePool;
 
-  @inject(DefaultCamera)
-  protected camera: ICamera;
+  // @inject(DefaultCamera)
+  // protected camera: ICamera;
 
-  @inject(LightPool)
-  protected lightPool: LightPool;
+  // @inject(LightPool)
+  // protected lightPool: LightPool;
 
-  @inject(BatchManager)
-  protected batchManager: BatchManager;
+  // @inject(BatchManager)
+  // protected batchManager: BatchManager;
 
   // @inject(MeshFactory)
   // protected meshFactory: (shape: string) => Instanced;
 
-  device: Device;
+  // device: Device;
 
-  renderingService: RenderingService;
+  // renderingService: RenderingService;
 
   id = counter++;
 

@@ -1,8 +1,6 @@
-import { inject, singleton } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
 import type { HTML } from '../display-objects';
-import { DisplayObjectPool } from '../display-objects';
 import { Element } from '../dom/Element';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
@@ -13,9 +11,7 @@ import { Node } from '../dom/Node';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
-import { CanvasConfig } from '../types';
-import { ContextService } from './ContextService';
-import { RenderingContext } from './RenderingContext';
+import type { CanvasContext, GlobalRuntime } from '..';
 
 type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
@@ -37,21 +33,8 @@ export type EmitterListeners = Record<
 >;
 const PROPAGATION_LIMIT = 2048;
 
-@singleton()
 export class EventService {
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(ContextService)
-    private contextService: ContextService<any>,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-  ) {}
+  constructor(private globalRuntime: GlobalRuntime, private context: CanvasContext) {}
 
   private rootTarget: IEventTarget;
 
@@ -77,7 +60,7 @@ export class EventService {
   private tmpVec3 = vec3.create();
 
   init() {
-    this.rootTarget = this.renderingContext.root.parentNode; // document
+    this.rootTarget = this.context.renderingContext.root.parentNode; // document
     this.addEventMapping('pointerdown', this.onPointerDown);
     this.addEventMapping('pointerup', this.onPointerUp);
     this.addEventMapping('pointermove', this.onPointerMove);
@@ -89,12 +72,12 @@ export class EventService {
   }
 
   client2Viewport(client: PointLike): PointLike {
-    const bbox = this.contextService.getBoundingClientRect();
+    const bbox = this.context.contextService.getBoundingClientRect();
     return new Point(client.x - (bbox?.left || 0), client.y - (bbox?.top || 0));
   }
 
   viewport2Client(canvas: PointLike): PointLike {
-    const bbox = this.contextService.getBoundingClientRect();
+    const bbox = this.context.contextService.getBoundingClientRect();
     return new Point(canvas.x + (bbox?.left || 0), canvas.y + (bbox?.top || 0));
   }
 
@@ -102,7 +85,7 @@ export class EventService {
     const canvas = (this.rootTarget as IDocument).defaultView;
     const camera = canvas.getCamera();
 
-    const { width, height } = this.canvasConfig;
+    const { width, height } = this.context.config;
 
     const projectionMatrixInverse = camera.getPerspectiveInverse();
     const worldMatrix = camera.getWorldTransform();
@@ -128,7 +111,7 @@ export class EventService {
     vec3.transformMat4(this.tmpVec3, this.tmpVec3, vpMatrix);
 
     // Clip -> NDC -> Viewport, flip Y
-    const { width, height } = this.canvasConfig;
+    const { width, height } = this.context.config;
     return new Point(((clip[0] + 1) / 2) * width, (1 - (clip[1] + 1) / 2) * height);
   }
 
@@ -612,7 +595,7 @@ export class EventService {
 
   async hitTest(position: EventPosition): Promise<IEventTarget | null> {
     const { viewportX, viewportY } = position;
-    const { width, height } = this.canvasConfig;
+    const { width, height } = this.context.config;
     // outside canvas
     if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
       return null;
@@ -630,7 +613,7 @@ export class EventService {
    * should account for HTML shape
    */
   private isNativeEventFromCanvas(event: FederatedEvent) {
-    const $el = this.contextService.getDomElement();
+    const $el = this.context.contextService.getDomElement();
 
     const target = event.nativeEvent?.target;
 
@@ -656,7 +639,7 @@ export class EventService {
 
   private getExistedHTML(event: FederatedEvent): HTML {
     if (event.nativeEvent.composedPath) {
-      const htmls = this.displayObjectPool.getHTMLs();
+      const htmls = this.globalRuntime.displayObjectPool.getHTMLs();
       for (const html of htmls) {
         if (event.nativeEvent.composedPath().indexOf(html) > -1) {
           return html;

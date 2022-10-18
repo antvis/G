@@ -1,15 +1,32 @@
-import type { Syringe } from 'mana-syringe';
+import type { CanvasContext } from './dom';
+import type { RenderingPlugin } from './services';
 import type { RendererConfig } from './types';
 
 export interface RendererPlugin {
   name: string;
-  container: Syringe.Container;
+  context: CanvasContext;
   init: () => void;
   destroy: () => void;
 }
 
 export abstract class AbstractRendererPlugin implements RendererPlugin {
-  container: Syringe.Container;
+  context: CanvasContext;
+  protected plugins = [];
+
+  protected addRenderingPlugin(plugin: RenderingPlugin) {
+    this.plugins.push(plugin);
+    this.context.renderingPlugins.push(plugin);
+  }
+
+  protected removeAllRenderingPlugins() {
+    this.plugins.forEach((plugin) => {
+      const index = this.context.renderingPlugins.indexOf(plugin);
+      if (index >= 0) {
+        this.context.renderingPlugins.splice(index, 1);
+      }
+    });
+  }
+
   abstract name: string;
   abstract init(): void;
   abstract destroy(): void;

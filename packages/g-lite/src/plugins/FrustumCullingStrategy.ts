@@ -1,13 +1,11 @@
-import { inject, singleton } from 'mana-syringe';
 import { vec3 } from 'gl-matrix';
 import type { ICamera } from '../camera';
-import { DefaultCamera } from '../camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import type { Element } from '../dom';
 import type { Plane } from '../shapes';
 import { AABB, Mask } from '../shapes';
 import { Shape } from '../types';
-import { CullingStrategyContribution } from './CullingPlugin';
+import type { CullingStrategyContribution } from './CullingPlugin';
 
 // group is not a 2d shape
 const shape2D = [
@@ -23,14 +21,8 @@ const shape2D = [
   Shape.HTML,
 ];
 
-@singleton({ contrib: CullingStrategyContribution })
 export class FrustumCullingStrategy implements CullingStrategyContribution {
-  constructor(
-    @inject(DefaultCamera)
-    private camera: ICamera,
-  ) {}
-
-  isVisible(object: DisplayObject) {
+  isVisible(camera: ICamera, object: DisplayObject) {
     // return true;
 
     const cullable = object.cullable;
@@ -45,7 +37,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     }
 
     // get VP matrix from camera
-    const frustum = this.camera.getFrustum();
+    const frustum = camera.getFrustum();
 
     const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(

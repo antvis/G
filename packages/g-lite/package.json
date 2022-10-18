@@ -35,9 +35,7 @@
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
-    "mana-syringe": "^0.3.1",
     "rbush": "^3.0.1",
-    "reflect-metadata": "^0.1.13",
     "request-animation-frame-polyfill": "^1.1.2",
     "tslib": "^2.3.1"
   },

@@ -1,11 +1,7 @@
-import { CanvasRenderer } from '@antv/g-canvas';
+import type { CanvasRenderer } from '@antv/g-canvas';
 import type { DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
-@singleton({
-  token: CanvasRenderer.RectRendererContribution,
-})
 export class RectRenderer implements CanvasRenderer.StyleRenderer {
   render(
     context: CanvasRenderingContext2D,

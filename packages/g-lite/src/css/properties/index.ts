@@ -9,7 +9,6 @@ export * from './CSSPropertyLocalPosition';
 export * from './CSSPropertyMarker';
 export * from './CSSPropertyNumber';
 export * from './CSSPropertyOffsetDistance';
-export * from './CSSPropertyOffsetPath';
 export * from './CSSPropertyOpacity';
 export * from './CSSPropertyPath';
 export * from './CSSPropertyPoints';

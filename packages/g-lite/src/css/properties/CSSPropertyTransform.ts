@@ -1,11 +1,9 @@
-import { singleton } from 'mana-syringe';
 import { mat4 } from 'gl-matrix';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
 import { deg2rad } from '../../utils';
 import { CSSKeywordValue, Odeg, Opx } from '../cssom';
-import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
+import type { CSSProperty } from '../CSSProperty';
 import type { ParsedTransform } from '../parser/transform';
 import { mergeTransforms, parseTransform } from '../parser/transform';
 
@@ -39,12 +37,6 @@ import { mergeTransforms, parseTransform } from '../parser/transform';
  * * skew/skewX/skewY
  * * perspective
  */
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.TRANSFORM,
-  },
-})
 export class CSSPropertyTransform
   implements Partial<CSSProperty<CSSKeywordValue | ParsedTransform[], ParsedTransform[]>>
 {

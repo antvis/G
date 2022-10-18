@@ -1,10 +1,7 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g-lite';
-import {
-  ContextService,
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  singleton,
+import type {
+  InteractivePointerEvent,
+  RenderingPlugin,
+  RenderingPluginContext,
 } from '@antv/g-lite';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
@@ -12,20 +9,16 @@ import {
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class DOMInteractionPlugin implements RenderingPlugin {
   static tag = 'DOMInteraction';
 
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
+  private context: RenderingPluginContext;
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-  ) {}
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
+    this.context = context;
 
-  apply(renderingService: RenderingService) {
-    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
     // const SUPPORT_ONLY_TOUCH = canvas.supportsTouchEvents && MOBILE_REGEX.test(navigator.userAgent);
 
     const onPointerMove = (ev: InteractivePointerEvent) => {
@@ -103,7 +96,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(DOMInteractionPlugin.tag, async () => {
-      const $el = this.contextService.getDomElement() as unknown as HTMLElement;
+      const $el = this.context.contextService.getDomElement() as unknown as HTMLElement;
 
       // @ts-ignore
       if (globalThis.navigator.msPointerEnabled) {
@@ -134,7 +127,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.contextService.getDomElement() as unknown as HTMLElement;
+      const $el = this.context.contextService.getDomElement() as unknown as HTMLElement;
 
       // @ts-ignore
       if (globalThis.navigator.msPointerEnabled) {

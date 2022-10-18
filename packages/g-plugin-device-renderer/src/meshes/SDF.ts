@@ -6,7 +6,7 @@ import type {
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
 } from '@antv/g-lite';
-import { injectable, Shape } from '@antv/g-lite';
+import { Shape } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';
@@ -28,7 +28,6 @@ const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE];
  * Use SDF to render 2D shapes, eg. circle, ellipse.
  * Use less triangles(2) and vertices compared with normal triangulation.
  */
-@injectable()
 export class SDFMesh extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);

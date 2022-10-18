@@ -1,16 +1,11 @@
 import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
 import type { RendererContribution, RendererContributionContext } from '../interfaces';
-import { EllipseRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawOval
  * @example
  * SkRect bounds = SkRect::MakeWH(80, 70);
  */
-@singleton({
-  token: EllipseRendererContribution,
-})
 export class EllipseRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
     const { canvas, strokePaint, fillPaint, shadowFillPaint, shadowStrokePaint } = context;

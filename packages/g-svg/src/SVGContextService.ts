@@ -1,19 +1,19 @@
-import type { DataURLOptions } from '@antv/g-lite';
+import type { CanvasContext, DataURLOptions, GlobalRuntime } from '@antv/g-lite';
 import { isBrowser } from '@antv/g-lite';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
+import type { CanvasConfig, ContextService } from '@antv/g-lite';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 import { isString } from '@antv/util';
 
-@singleton({ token: ContextService })
 export class SVGContextService implements ContextService<SVGElement> {
   private $container: HTMLElement | null;
   private $namespace: SVGElement | null;
   private dpr: number;
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  private canvasConfig: Partial<CanvasConfig>;
+
+  constructor(context: GlobalRuntime & CanvasContext) {
+    this.canvasConfig = context.config;
+  }
 
   async init() {
     const { container, document: doc, devicePixelRatio } = this.canvasConfig;

@@ -1,27 +1,22 @@
-import type { ParsedPathStyleProps, Path } from '@antv/g-lite';
-import { ContextService, DisplayObject, inject, singleton } from '@antv/g-lite';
+import type { CanvasContext, ParsedPathStyleProps, Path, ContextService } from '@antv/g-lite';
+import { DisplayObject } from '@antv/g-lite';
 import { mat3 } from 'gl-matrix';
 import type {
   CanvasKitContext,
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
-import { PathRendererContribution } from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawPath
  */
-@singleton({
-  token: PathRendererContribution,
-})
 export class PathRenderer implements RendererContribution {
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasKitContext>,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   render(object: DisplayObject, context: RendererContributionContext) {
-    const { CanvasKit } = this.contextService.getContext();
+    const { CanvasKit } = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
 
     const {

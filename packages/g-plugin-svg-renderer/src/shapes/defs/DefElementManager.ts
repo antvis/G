@@ -1,11 +1,12 @@
 import type {
+  CanvasContext,
   CSSGradientValue,
   CSSRGB,
   DisplayObject,
   ParsedBaseStyleProps,
   Pattern,
 } from '@antv/g-lite';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
+import type { ContextService } from '@antv/g-lite';
 import { createSVGElement } from '../../utils/dom';
 import { createOrUpdateFilter } from './Filter';
 import { createOrUpdateGradientAndPattern } from './Pattern';
@@ -13,15 +14,8 @@ import { createOrUpdateShadow } from './Shadow';
 
 const urlRegexp = /url\(#(.*)\)/;
 
-@singleton()
 export class DefElementManager {
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(ContextService)
-    private contextService: ContextService<SVGElement>,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   /**
    * container for <gradient> <clipPath>...
@@ -35,8 +29,8 @@ export class DefElementManager {
   }
 
   init() {
-    const { document } = this.canvasConfig;
-    const $svg = this.contextService.getContext();
+    const { document } = this.context.config;
+    const $svg = (this.context.contextService as ContextService<SVGElement>).getContext();
     this.$def = createSVGElement('defs', document) as SVGDefsElement;
     $svg.appendChild(this.$def);
   }
@@ -62,7 +56,7 @@ export class DefElementManager {
     parsedColor: CSSGradientValue[] | CSSRGB | Pattern,
     name: string,
   ) {
-    const { document: doc, createImage } = this.canvasConfig;
+    const { document: doc, createImage } = this.context.config;
 
     if ($el) {
       // `url(#${gradientId})`
@@ -88,7 +82,7 @@ export class DefElementManager {
   }
 
   createOrUpdateShadow(object: DisplayObject, $el: SVGElement, name: string) {
-    const { document: doc } = this.canvasConfig;
+    const { document: doc } = this.context.config;
     createOrUpdateShadow(doc || document, this.$def, object, $el, name);
   }
 
@@ -97,7 +91,7 @@ export class DefElementManager {
     $el: SVGElement,
     filters: ParsedBaseStyleProps['filter'],
   ) {
-    const { document: doc } = this.canvasConfig;
+    const { document: doc } = this.context.config;
     createOrUpdateFilter(doc || document, this.$def, object, $el, filters);
   }
 }

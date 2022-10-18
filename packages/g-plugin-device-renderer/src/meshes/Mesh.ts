@@ -1,9 +1,7 @@
 import type { DisplayObject } from '@antv/g-lite';
-import { injectable, Shape } from '@antv/g-lite';
+import { Shape } from '@antv/g-lite';
 import type { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
-
-@injectable()
 export class MeshMesh extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);

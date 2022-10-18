@@ -1,9 +1,7 @@
-import { singleton } from '@antv/g-lite';
 import type { CanvasKit, FontMgr, Typeface, TypefaceFontProvider } from 'canvaskit-wasm';
 
 // const cdn = 'https://storage.googleapis.com/skia-cdn/misc/';
 
-@singleton()
 export class FontLoader {
   private cache: Record<
     string,

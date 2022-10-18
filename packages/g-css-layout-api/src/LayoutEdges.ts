@@ -1,15 +1,8 @@
-import { inject, injectable, Syringe } from '@antv/g-lite';
 import type { LayoutObject } from './LayoutObject';
 import { PropertyName } from './types';
-
-export const LayoutEdgesFactory = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutEdgesFactory {
   (options: LayoutEdgesOptions): LayoutEdges;
 }
-
-export const LayoutEdgesOptions = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutEdgesOptions {
   node: LayoutObject;
 }
@@ -20,7 +13,6 @@ const SCROLLBAR_SIZES = [0, 0, 0, 0];
  * https://drafts.css-houdini.org/css-layout-api/#layoutedges
  * the size of border, scrollbar, padding
  */
-@injectable()
 export class LayoutEdges {
   readonly inlineStart: number;
   readonly inlineEnd: number;
@@ -32,7 +24,7 @@ export class LayoutEdges {
   readonly inline: number;
   readonly block: number;
 
-  constructor(@inject(LayoutEdgesOptions) protected readonly options: LayoutEdgesOptions) {
+  constructor(protected readonly options: LayoutEdgesOptions) {
     const { node } = options;
     const styleMap = node.getAllStyle();
 

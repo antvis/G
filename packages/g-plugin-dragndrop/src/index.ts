@@ -1,10 +1,6 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { DragndropPlugin } from './DragndropPlugin';
-import { DragndropPluginOptions } from './tokens';
-
-const containerModule = Module((register) => {
-  register(DragndropPlugin);
-});
+import type { DragndropPluginOptions } from './interfaces';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'dragndrop';
@@ -14,20 +10,18 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(DragndropPluginOptions, {
-      useValue: {
+    this.addRenderingPlugin(
+      new DragndropPlugin({
         overlap: 'pointer',
         isDocumentDraggable: false,
         isDocumentDroppable: false,
         dragstartDistanceThreshold: 0,
         dragstartTimeThreshold: 0,
         ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+      }),
+    );
   }
   destroy(): void {
-    this.container.remove(DragndropPluginOptions);
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }

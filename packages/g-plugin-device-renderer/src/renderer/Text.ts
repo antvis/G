@@ -1,14 +1,9 @@
 import type { DisplayObject, ParsedTextStyleProps } from '@antv/g-lite';
-import { injectable, Shape } from '@antv/g-lite';
 import type { Instanced } from '../meshes';
 import { TextMesh, TextUniform } from '../meshes';
 import type { RenderInst } from '../render/RenderInst';
-import { ShapeRenderer } from '../tokens';
 import { Batch } from './Batch';
 
-@injectable({
-  token: [{ token: ShapeRenderer, named: Shape.TEXT }],
-})
 export class TextRenderer extends Batch {
   /**
    * one for fill, one for stroke

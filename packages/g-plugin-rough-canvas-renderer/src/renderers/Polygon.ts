@@ -1,11 +1,7 @@
-import { CanvasRenderer } from '@antv/g-canvas';
+import type { CanvasRenderer } from '@antv/g-canvas';
 import type { DisplayObject, ParsedPolygonStyleProps } from '@antv/g-lite';
-import { singleton } from '@antv/g-lite';
 import { generateRoughOptions } from '../util';
 
-@singleton({
-  token: CanvasRenderer.PolygonRendererContribution,
-})
 export class PolygonRenderer implements CanvasRenderer.StyleRenderer {
   render(
     context: CanvasRenderingContext2D,

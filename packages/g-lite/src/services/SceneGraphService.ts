@@ -1,4 +1,3 @@
-import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
@@ -9,37 +8,30 @@ import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces
 import { ElementEvent } from '../dom/interfaces';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
-import { SceneGraphService } from './interfaces';
-import type { SceneGraphSelector } from './SceneGraphSelector';
-import { SceneGraphSelectorFactory } from './SceneGraphSelector';
+import type { SceneGraphService } from './interfaces';
+import type { GlobalRuntime } from '../global-runtime';
 
 /**
  * update transform in scene graph
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
-@singleton({
-  token: SceneGraphService,
-})
 export class DefaultSceneGraphService implements SceneGraphService {
-  constructor(
-    @inject(SceneGraphSelectorFactory)
-    private sceneGraphSelectorFactory: () => SceneGraphSelector,
-  ) {}
-
   private pendingEvents = [];
   private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
 
+  constructor(private runtime: GlobalRuntime) {}
+
   matches<T extends IElement>(query: string, root: T) {
-    return this.sceneGraphSelectorFactory().is(query, root);
+    return this.runtime.sceneGraphSelector.is(query, root);
   }
 
   querySelector<R extends IElement, T extends IElement>(query: string, root: R): T | null {
-    return this.sceneGraphSelectorFactory().selectOne<R, T>(query, root);
+    return this.runtime.sceneGraphSelector.selectOne<R, T>(query, root);
   }
 
   querySelectorAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
-    return this.sceneGraphSelectorFactory().selectAll<R, T>(query, root);
+    return this.runtime.sceneGraphSelector.selectAll<R, T>(query, root);
     // .filter((node) => !node.shadow);
   }
 
@@ -464,8 +456,71 @@ export class DefaultSceneGraphService implements SceneGraphService {
       p = p.parentNode;
     }
 
+    // inform dependencies
+    this.informDependentDisplayObjects(element as DisplayObject);
+
     // reuse the same custom event
     this.pendingEvents.push([element, { affectChildren }]);
+  }
+
+  private displayObjectDependencyMap: WeakMap<DisplayObject, Record<string, DisplayObject[]>> =
+    new WeakMap();
+  updateDisplayObjectDependency(
+    name: string,
+    oldPath: DisplayObject,
+    newPath: DisplayObject,
+    object: DisplayObject,
+  ) {
+    // clear ref to old clip path
+    if (oldPath && oldPath !== newPath) {
+      const oldDependencyMap = this.displayObjectDependencyMap.get(oldPath);
+      if (oldDependencyMap && oldDependencyMap[name]) {
+        const index = oldDependencyMap[name].indexOf(object);
+        oldDependencyMap[name].splice(index, 1);
+      }
+    }
+
+    if (newPath) {
+      let newDependencyMap = this.displayObjectDependencyMap.get(newPath);
+      if (!newDependencyMap) {
+        this.displayObjectDependencyMap.set(newPath, {});
+        newDependencyMap = this.displayObjectDependencyMap.get(newPath);
+      }
+      if (!newDependencyMap[name]) {
+        newDependencyMap[name] = [];
+      }
+      newDependencyMap[name].push(object);
+    }
+  }
+
+  informDependentDisplayObjects(object: DisplayObject) {
+    const dependencyMap = this.displayObjectDependencyMap.get(object);
+    if (dependencyMap) {
+      Object.keys(dependencyMap).forEach((name) => {
+        dependencyMap[name].forEach((target) => {
+          this.dirtifyToRoot(target);
+
+          // target.dispatchEvent(
+          //   new MutationEvent(
+          //     ElementEvent.ATTR_MODIFIED,
+          //     target as IElement,
+          //     this,
+          //     this,
+          //     name,
+          //     MutationEvent.MODIFICATION,
+          //     this,
+          //     this,
+          //   ),
+          // );
+
+          // if (target.isCustomElement && target.isConnected) {
+          //   if ((target as CustomElement<any>).attributeChangedCallback) {
+          //     (target as CustomElement<any>).attributeChangedCallback(name, this, this);
+          //   }
+          // }
+        });
+      });
+    }
   }
 
   getPosition(element: INode) {
@@ -644,24 +699,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
     });
 
     if (render) {
-      // account for clip path
+      // FIXME: account for clip path
       const clipped = findClosestClipPathTarget(element as DisplayObject);
       if (clipped) {
-        const clipPathBounds = this.getTransformedGeometryBounds(clipped.style.clipPath, true);
-        let transformParentBounds: AABB;
-
-        if (clipPathBounds) {
-          transformParentBounds = new AABB();
-          // intersect with original geometry
-          transformParentBounds.setFromTransformedAABB(
-            clipPathBounds,
-            this.getWorldTransform(clipped),
-          );
-        }
+        // use bounds under world space
+        const clipPathBounds = clipped.style.clipPath.getBounds(render);
         if (!aabb) {
-          aabb = transformParentBounds;
-        } else if (transformParentBounds) {
-          aabb = transformParentBounds.intersection(aabb);
+          aabb = clipPathBounds;
+        } else if (clipPathBounds) {
+          aabb = clipPathBounds.intersection(aabb);
         }
       }
     }

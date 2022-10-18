@@ -1,9 +1,7 @@
-import { inject, singleton } from 'mana-syringe';
-import type { CanvasLike } from '..';
+import type { CanvasLike, GlobalRuntime } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';
 import { toFontString } from '../utils';
-import { OffscreenCanvasCreator } from './OffscreenCanvasCreator';
 
 export interface TextMetrics {
   font: string;
@@ -77,17 +75,13 @@ const regexCannotEnd = new RegExp(
 /**
  * Borrow from pixi/packages/text/src/TextMetrics.ts
  */
-@singleton()
 export class TextService {
+  constructor(private runtime: GlobalRuntime) {}
+
   /**
    * font metrics cache
    */
   private fontMetricsCache: Record<string, IFontMetrics> = {};
-
-  constructor(
-    @inject(OffscreenCanvasCreator)
-    private offscreenCanvas: OffscreenCanvasCreator,
-  ) {}
 
   /**
    * Calculates the ascent, descent and fontSize of a given font-style.
@@ -103,8 +97,8 @@ export class TextService {
       fontSize: 0,
     };
 
-    const canvas = this.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const canvas = this.runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
+    const context = this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
 
     context.font = font;
     const metricsString = TEXT_METRICS.MetricsString + TEXT_METRICS.BaselineSymbol;
@@ -196,7 +190,7 @@ export class TextService {
       fontProperties.ascent = fontSize;
     }
 
-    const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const context = this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     context.font = font;
 
     // no overflowing by default
@@ -329,7 +323,7 @@ export class TextService {
     offscreenCanvas: CanvasLike,
   ): string {
     const { wordWrapWidth = 0, letterSpacing, maxLines = Infinity, textOverflow } = parsedStyle;
-    const context = this.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const context = this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
     let ellipsis = '';
     if (textOverflow === 'ellipsis') {

@@ -1,20 +1,18 @@
-import type { InteractivePointerEvent, RenderingPlugin, RenderingService } from '@antv/g-lite';
-import { ContextService, inject, RenderingPluginContribution, singleton } from '@antv/g-lite';
+import type {
+  InteractivePointerEvent,
+  RenderingPlugin,
+  RenderingPluginContext,
+} from '@antv/g-lite';
 /**
  * listen to mouse/touch/pointer events on DOM wrapper, trigger pointer events
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class MobileInteractionPlugin implements RenderingPlugin {
   static tag = 'MobileInteraction';
 
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasRenderingContext2D>,
-  ) {}
-
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingService, contextService } = context;
     // 获取小程序上下文
-    const canvasEl = this.contextService.getDomElement();
+    const canvasEl = contextService.getDomElement();
 
     const onPointerDown = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerDown.call(ev);

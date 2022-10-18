@@ -1,16 +1,6 @@
-import { singleton } from 'mana-syringe';
 import { isString } from '@antv/util';
 import type { Group, Image, ParsedImageStyleProps, Rect } from '../../display-objects';
-import { Shape } from '../../types';
-import { GeometryAABBUpdater } from './interfaces';
-
-@singleton({
-  token: [
-    { token: GeometryAABBUpdater, named: Shape.RECT },
-    { token: GeometryAABBUpdater, named: Shape.IMAGE },
-    { token: GeometryAABBUpdater, named: Shape.GROUP },
-  ],
-})
+import type { GeometryAABBUpdater } from './interfaces';
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
     const { img, width = 0, height = 0 } = parsedStyle;

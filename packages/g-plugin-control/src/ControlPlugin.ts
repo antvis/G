@@ -1,32 +1,16 @@
-import type { ICamera, RenderingPlugin, RenderingService } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  DefaultCamera,
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  singleton,
-} from '@antv/g-lite';
+import type { RenderingPluginContext, RenderingPlugin, ICamera } from '@antv/g-lite';
+import type { CanvasConfig } from '@antv/g-lite';
 import Hammer from 'hammerjs';
 
 const MOTION_FACTOR = 10;
 // https://gist.github.com/handleman/3c99e754065f647b082f
 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
-@singleton({ contrib: RenderingPluginContribution })
 export class ControlPlugin implements RenderingPlugin {
   static tag = 'Control';
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  private camera: ICamera;
+  private canvasConfig: Partial<CanvasConfig>;
 
   private hammertime: HammerManager;
 
@@ -37,9 +21,13 @@ export class ControlPlugin implements RenderingPlugin {
   private shiftKey: boolean;
   private altKey: boolean;
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { config, camera, renderingService, renderingContext } = context;
+    this.canvasConfig = config;
+    this.camera = camera;
+
     renderingService.hooks.init.tapPromise(ControlPlugin.tag, async () => {
-      const root = this.renderingContext.root.ownerDocument.defaultView;
+      const root = renderingContext.root.ownerDocument.defaultView;
       // @ts-ignore
       this.hammertime = new Hammer(root);
 
@@ -59,7 +47,7 @@ export class ControlPlugin implements RenderingPlugin {
       this.hammertime.off('panend', this.onPanend);
       this.hammertime.off('pinch', this.onPinch);
 
-      const root = this.renderingContext.root;
+      const root = renderingContext.root;
       root.removeEventListener('wheel', this.onMousewheel);
     });
   }

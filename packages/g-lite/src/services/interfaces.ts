@@ -1,13 +1,18 @@
-import { Syringe } from 'mana-syringe';
 import type { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
 import type { IElement, INode, IParentNode } from '../dom';
 import type { AABB, Rectangle } from '../shapes';
+import type { DisplayObject } from '../display-objects';
 
-export const SceneGraphService = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface SceneGraphService {
   triggerPendingEvents: () => void;
+  updateDisplayObjectDependency: (
+    name: string,
+    oldPath: DisplayObject,
+    newPath: DisplayObject,
+    object: DisplayObject,
+  ) => void;
+  informDependentDisplayObjects: (object: DisplayObject) => void;
   dirtifyToRoot: (element: INode, affectChildren?: boolean) => void;
   matches: <T extends IElement>(query: string, root: T) => boolean;
   querySelector: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;

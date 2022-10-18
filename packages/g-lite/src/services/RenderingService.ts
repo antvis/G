@@ -1,12 +1,10 @@
-import type { Contribution } from 'mana-syringe';
-import { contrib, inject, singleton, Syringe } from 'mana-syringe';
+import type { GlobalRuntime } from '../global-runtime';
 import type { ICamera } from '../camera';
-import { DefaultCamera } from '../camera';
-import { StyleValueRegistry } from '../css/interfaces';
 import type { DisplayObject } from '../display-objects';
+import type { CanvasContext } from '../dom';
 import { CustomEvent, ElementEvent } from '../dom';
 import type { EventPosition, InteractivePointerEvent } from '../types';
-import { CanvasConfig } from '../types';
+import type { CanvasConfig } from '../types';
 import {
   AsyncParallelHook,
   AsyncSeriesWaterfallHook,
@@ -14,14 +12,14 @@ import {
   SyncHook,
   SyncWaterfallHook,
 } from '../utils';
-import { SceneGraphService } from './interfaces';
-import { RenderingContext, RenderReason } from './RenderingContext';
+import type { RenderingContext } from './RenderingContext';
+import { RenderReason } from './RenderingContext';
+
+export type RenderingPluginContext = CanvasContext & GlobalRuntime;
 
 export interface RenderingPlugin {
-  apply: (renderer: RenderingService) => void;
+  apply: (context: RenderingPluginContext) => void;
 }
-
-export const RenderingPluginContribution = Syringe.defineToken('');
 
 export interface PickingResult {
   /**
@@ -44,27 +42,8 @@ export interface PickingResult {
  * * culling with strategies registered in `g-canvas/webgl`
  * * end frame
  */
-@singleton()
 export class RenderingService {
-  constructor(
-    @contrib(RenderingPluginContribution)
-    private renderingPluginProvider: Contribution.Provider<RenderingPlugin>,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(SceneGraphService)
-    private sceneGraphService: SceneGraphService,
-
-    @inject(StyleValueRegistry)
-    private styleValueRegistry: StyleValueRegistry,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-  ) {}
+  constructor(private globalRuntime: GlobalRuntime, private context: CanvasContext) {}
 
   private inited = false;
 
@@ -139,9 +118,11 @@ export class RenderingService {
   };
 
   async init() {
+    const context = { ...this.globalRuntime, ...this.context };
+
     // register rendering plugins
-    this.renderingPluginProvider.getContributions({ cache: false }).forEach((plugin) => {
-      plugin.apply(this);
+    this.context.renderingPlugins.forEach((plugin) => {
+      plugin.apply(context);
     });
     // await this.hooks.init.callPromise();
     await this.hooks.init.promise();
@@ -158,11 +139,11 @@ export class RenderingService {
    * * camera changed
    */
   disableDirtyRectangleRendering() {
-    const { renderer } = this.canvasConfig;
+    const { renderer } = this.context.config;
     const { enableDirtyRectangleRendering } = renderer.getConfig();
     return (
       !enableDirtyRectangleRendering ||
-      this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
+      this.context.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
     );
   }
 
@@ -171,32 +152,38 @@ export class RenderingService {
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
 
-    this.sceneGraphService.syncHierarchy(this.renderingContext.root);
-    this.sceneGraphService.triggerPendingEvents();
+    const { renderingContext } = this.context;
 
-    if (this.renderingContext.renderReasons.size && this.inited) {
-      this.renderDisplayObject(this.renderingContext.root, canvasConfig);
+    this.globalRuntime.sceneGraphService.syncHierarchy(renderingContext.root);
+    this.globalRuntime.sceneGraphService.triggerPendingEvents();
+
+    if (renderingContext.renderReasons.size && this.inited) {
+      this.renderDisplayObject(renderingContext.root, canvasConfig, renderingContext);
 
       this.hooks.beginFrame.call();
 
-      this.renderingContext.renderListCurrentFrame.forEach((object) => {
+      renderingContext.renderListCurrentFrame.forEach((object) => {
         this.hooks.beforeRender.call(object);
         this.hooks.render.call(object);
         this.hooks.afterRender.call(object);
       });
 
       this.hooks.endFrame.call();
-      this.renderingContext.renderListCurrentFrame = [];
-      this.renderingContext.renderReasons.clear();
+      renderingContext.renderListCurrentFrame = [];
+      renderingContext.renderReasons.clear();
     }
 
     // console.log('stats', this.stats);
   }
 
-  private renderDisplayObject(displayObject: DisplayObject, canvasConfig: Partial<CanvasConfig>) {
+  private renderDisplayObject(
+    displayObject: DisplayObject,
+    canvasConfig: Partial<CanvasConfig>,
+    renderingContext: RenderingContext,
+  ) {
     const { enableDirtyCheck, enableCulling } = canvasConfig.renderer.getConfig();
     // recalc style values
-    this.styleValueRegistry.recalc(displayObject);
+    this.globalRuntime.styleValueRegistry.recalc(displayObject);
 
     // TODO: relayout
 
@@ -206,12 +193,12 @@ export class RenderingService {
       : displayObject;
     if (objectChanged) {
       const objectToRender = enableCulling
-        ? this.hooks.cull.call(objectChanged, this.camera)
+        ? this.hooks.cull.call(objectChanged, this.context.camera)
         : objectChanged;
 
       if (objectToRender) {
         this.stats.rendered++;
-        this.renderingContext.renderListCurrentFrame.push(objectToRender);
+        renderingContext.renderListCurrentFrame.push(objectToRender);
       }
     }
 
@@ -231,7 +218,7 @@ export class RenderingService {
 
     // recursive rendering its children
     (sortable.sorted || displayObject.childNodes).forEach((child: DisplayObject) => {
-      this.renderDisplayObject(child, canvasConfig);
+      this.renderDisplayObject(child, canvasConfig, renderingContext);
     });
 
     if (renderOrderChanged) {
@@ -251,6 +238,6 @@ export class RenderingService {
 
   dirtify() {
     // need re-render
-    this.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
+    this.context.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
   }
 }

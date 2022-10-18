@@ -1,16 +1,12 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { MobileInteractionPlugin } from './MobileInteractionPlugin';
-
-const containerModule = Module((register) => {
-  register(MobileInteractionPlugin);
-});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'mobile-interaction';
   init(): void {
-    this.container.load(containerModule, true);
+    this.addRenderingPlugin(new MobileInteractionPlugin());
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }

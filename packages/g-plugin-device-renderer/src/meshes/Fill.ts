@@ -1,5 +1,5 @@
 import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g-lite';
-import { CSSRGB, injectable, Shape } from '@antv/g-lite';
+import { CSSRGB, Shape } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import {
   FILL_TEXTURE_MAPPING,
@@ -13,7 +13,6 @@ import meshFrag from '../shader/mesh.frag';
 import meshVert from '../shader/mesh.vert';
 import { Uniform, updateBuffer } from './Line';
 
-@injectable()
 export class FillMesh extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     return false;

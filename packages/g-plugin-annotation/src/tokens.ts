@@ -1,8 +1,5 @@
-import { Syringe } from '@antv/g-lite';
 import type { DrawerStyle } from './interface/drawer';
 
-export const AnnotationPluginOptions = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface AnnotationPluginOptions {
   /**
    * Style for selectable UI.

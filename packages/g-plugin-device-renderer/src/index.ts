@@ -1,19 +1,10 @@
-import type { DataURLOptions, Shape } from '@antv/g-lite';
-import { AbstractRendererPlugin, GlobalContainer, Module } from '@antv/g-lite';
+import type { DataURLOptions } from '@antv/g-lite';
+import { runtime, Shape } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import 'regenerator-runtime/runtime';
 import { Renderable3D } from './components/Renderable3D';
 import { LightPool } from './LightPool';
 import { Mesh } from './Mesh';
-import {
-  FillMesh,
-  ImageMesh,
-  InstancedLineMesh,
-  LineMesh,
-  MeshMesh,
-  SDFMesh,
-  TextMesh,
-} from './meshes';
-import { GlyphManager } from './meshes/symbol/GlyphManager';
 import { MeshUpdater } from './MeshUpdater';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
@@ -31,7 +22,6 @@ import {
 } from './renderer';
 import { RenderGraphPlugin } from './RenderGraphPlugin';
 import { TexturePool } from './TexturePool';
-import { MeshFactory, RendererFactory, ShapeRenderer } from './tokens';
 
 export * from './geometries';
 export * from './interfaces';
@@ -45,80 +35,57 @@ export * from './shader/compiler';
 export * from './utils';
 export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 
-export const containerModule = Module((register) => {
-  register(RenderHelper);
-  register(TexturePool);
-  register(LightPool);
-  register(GlyphManager);
-  register(PickingIdGenerator);
-  register(BatchManager);
-
-  register(RenderGraphPlugin);
-  register(PickingPlugin);
-
-  register(SDFMesh);
-  register(InstancedLineMesh);
-  register(LineMesh);
-  register(FillMesh);
-  register(ImageMesh);
-  register(TextMesh);
-  register(MeshMesh);
-  register({
-    token: MeshFactory,
-    useFactory: (context) => {
-      return (tagName: Shape) => {
-        if (context.container.isBound(tagName)) {
-          return context.container.get(tagName) || null;
-        }
-        return null;
-      };
-    },
-  });
-
-  /**
-   * bind model builder for each kind of Shape
-   */
-  register(CircleRenderer);
-  register(PathRenderer);
-  register(ImageRenderer);
-  register(LineRenderer);
-  register(TextRenderer);
-  register(MeshRenderer);
-  // register(GroupRenderer);
-  register({
-    token: RendererFactory,
-    useFactory: (context) => {
-      const cache = {};
-      return (tagName: Shape) => {
-        if (!cache[tagName]) {
-          if (context.container.isBoundNamed(ShapeRenderer, tagName)) {
-            cache[tagName] = context.container.getNamed(ShapeRenderer, tagName);
-          }
-        }
-        return cache[tagName] || null;
-      };
-    },
-  });
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'device-renderer';
 
   init(): void {
-    if (!GlobalContainer.isBound(MeshUpdater)) {
-      GlobalContainer.register(MeshUpdater);
-    }
-    this.container.load(containerModule, true);
+    runtime.geometryUpdaterFactory[Shape.MESH] = new MeshUpdater();
+
+    const renderHelper = new RenderHelper();
+    const lightPool = new LightPool();
+    const texturePool = new TexturePool(this.context);
+    const pickingIdGenerator = new PickingIdGenerator();
+
+    const circleRenderer = new CircleRenderer();
+    const pathRenderer = new PathRenderer();
+    const rendererFactory: Record<Shape, Batch> = {
+      [Shape.CIRCLE]: circleRenderer,
+      [Shape.ELLIPSE]: circleRenderer,
+      [Shape.POLYLINE]: pathRenderer,
+      [Shape.PATH]: pathRenderer,
+      [Shape.POLYGON]: pathRenderer,
+      [Shape.RECT]: pathRenderer,
+      [Shape.IMAGE]: new ImageRenderer(),
+      [Shape.LINE]: new LineRenderer(),
+      [Shape.TEXT]: new TextRenderer(),
+      [Shape.MESH]: new MeshRenderer(),
+      [Shape.GROUP]: undefined,
+      [Shape.HTML]: undefined,
+    };
+
+    const batchManager = new BatchManager(renderHelper, rendererFactory, texturePool, lightPool);
+
+    const renderGraphPlugin = new RenderGraphPlugin(
+      renderHelper,
+      lightPool,
+      texturePool,
+      batchManager,
+    );
+    this.addRenderingPlugin(renderGraphPlugin);
+    this.addRenderingPlugin(
+      new PickingPlugin(renderHelper, renderGraphPlugin, pickingIdGenerator, batchManager),
+    );
   }
   destroy(): void {
-    if (GlobalContainer.isBound(MeshUpdater)) {
-      GlobalContainer.remove(MeshUpdater);
-    }
-    this.container.unload(containerModule);
+    delete runtime.geometryUpdaterFactory[Shape.MESH];
+  }
+
+  private getRenderGraphPlugin() {
+    return this.plugins[0];
   }
 
   getDevice() {
-    return this.container.get(RenderGraphPlugin).getDevice();
+    return this.getRenderGraphPlugin().getDevice();
   }
 
   loadTexture(
@@ -126,10 +93,10 @@ export class Plugin extends AbstractRendererPlugin {
     descriptor?: TextureDescriptor,
     successCallback?: (t: Texture) => void,
   ) {
-    return this.container.get(RenderGraphPlugin).loadTexture(src, descriptor, successCallback);
+    return this.getRenderGraphPlugin().loadTexture(src, descriptor, successCallback);
   }
 
   toDataURL(options: Partial<DataURLOptions>) {
-    return this.container.get(RenderGraphPlugin).toDataURL(options);
+    return this.getRenderGraphPlugin().toDataURL(options);
   }
 }

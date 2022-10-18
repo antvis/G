@@ -2,19 +2,9 @@ import type {
   DisplayObject,
   FederatedEvent,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  AABB,
-  CanvasEvent,
-  DisplayObjectPool,
-  ElementEvent,
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  SceneGraphService,
-  singleton,
-} from '@antv/g-lite';
+import { AABB, CanvasEvent, runtime, ElementEvent } from '@antv/g-lite';
 
 /**
  * PhysX runtime mode.
@@ -28,20 +18,8 @@ export enum PhysXRuntimeMode {
   JavaScript,
 }
 
-@singleton({ contrib: RenderingPluginContribution })
 export class PhysXPlugin implements RenderingPlugin {
   static tag = 'PhysX';
-
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-  ) {}
 
   private PhysX: any;
   private physics: any;
@@ -49,7 +27,8 @@ export class PhysXPlugin implements RenderingPlugin {
   private bodies: Record<number, any> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
     const handleMounted = (e: FederatedEvent) => {
       const PhysX = this.PhysX;
       const target = e.target as DisplayObject;
@@ -62,14 +41,14 @@ export class PhysXPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(PhysXPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
 
       this.PhysX = (await this.initPhysX()) as any;
       this.createScene();
       this.handlePendingDisplayObjects();
 
       // do simulation each frame
-      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
+      renderingContext.root.ownerDocument.defaultView.addEventListener(
         CanvasEvent.BEFORE_RENDER,
         () => {
           if (this.scene) {
@@ -78,7 +57,7 @@ export class PhysXPlugin implements RenderingPlugin {
 
             Object.keys(this.bodies).forEach((entity) => {
               const body = this.bodies[entity];
-              const displayObject = this.displayObjectPool.getByEntity(Number(entity));
+              const displayObject = runtime.displayObjectPool.getByEntity(Number(entity));
               const transform = body.getGlobalPose();
               const { translation, rotation } = transform;
               displayObject.setPosition(translation.x, translation.y, translation.z);
@@ -90,7 +69,7 @@ export class PhysXPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
   }
 

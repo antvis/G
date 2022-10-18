@@ -9,7 +9,7 @@ import type {
   Polyline,
   Tuple4Number,
 } from '@antv/g-lite';
-import { convertToPath, CSSRGB, DisplayObject, injectable, parsePath, Shape } from '@antv/g-lite';
+import { convertToPath, CSSRGB, DisplayObject, parsePath, Shape } from '@antv/g-lite';
 import { Cubic as CubicUtil } from '@antv/g-math';
 import type { CurveArray } from '@antv/util';
 import earcut from 'earcut';
@@ -78,7 +78,6 @@ export enum Uniform {
   Z_INDEX = 'u_ZIndex',
 }
 
-@injectable()
 export class LineMesh extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     return false;

@@ -1,28 +1,15 @@
 import type {
-  ICamera,
   CSSRGB,
   DataURLOptions,
   DisplayObject,
   FederatedEvent,
   MutationEvent,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  CanvasEvent,
-  ContextService,
-  DefaultCamera,
-  ElementEvent,
-  inject,
-  parseColor,
-  RenderingContext,
-  RenderingPluginContribution,
-  singleton,
-} from '@antv/g-lite';
+import { CanvasEvent, ElementEvent, parseColor } from '@antv/g-lite';
 import { Renderable3D } from './components/Renderable3D';
-import { DeviceContribution } from './interfaces';
-import { LightPool } from './LightPool';
+import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
 // import { pushFXAAPass } from './passes/FXAA';
 import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
@@ -33,18 +20,17 @@ import {
   setAttachmentStateSimple,
   TransparentBlack,
 } from './platform';
-import type { RGGraphBuilder } from './render';
+import type { RGGraphBuilder, RenderHelper } from './render';
 import {
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
-  RenderHelper,
   RenderInstList,
   RGAttachmentSlot,
 } from './render';
-import { BatchManager } from './renderer';
-import { TexturePool } from './TexturePool';
+import type { BatchManager } from './renderer';
+import type { TexturePool } from './TexturePool';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -60,37 +46,16 @@ export enum SceneUniform {
   IS_PICKING = 'u_IsPicking',
 }
 
-@singleton({ contrib: RenderingPluginContribution })
 export class RenderGraphPlugin implements RenderingPlugin {
   static tag = 'RenderGraph';
 
+  private context: RenderingPluginContext;
+
   constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(ContextService)
-    private contextService: ContextService<WebGLRenderingContext>,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-
-    @inject(RenderHelper)
     private renderHelper: RenderHelper,
-
-    @inject(LightPool)
     private lightPool: LightPool,
-
-    @inject(TexturePool)
     private texturePool: TexturePool,
-
-    @inject(BatchManager)
     private batchManager: BatchManager,
-
-    @inject(DeviceContribution)
-    private deviceContribution: DeviceContribution,
   ) {}
 
   private device: Device;
@@ -130,7 +95,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
     return this.renderLists;
   }
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    this.context = context;
+    const { renderingService, renderingContext } = context;
+
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
@@ -200,55 +168,47 @@ export class RenderGraphPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      this.renderingContext.root.addEventListener(
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      renderingContext.root.addEventListener(
         ElementEvent.RENDER_ORDER_CHANGED,
         handleRenderOrderChanged,
       );
-      this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
+      this.context.config.renderer.getConfig().enableDirtyRectangleRendering = false;
 
-      const $canvas = this.contextService.getDomElement() as HTMLCanvasElement;
+      const $canvas = this.context.contextService.getDomElement() as HTMLCanvasElement;
 
-      const { width, height } = this.canvasConfig;
-      this.contextService.resize(width, height);
+      const { width, height } = this.context.config;
+      this.context.contextService.resize(width, height);
 
       // create swap chain and get device
-      this.swapChain = await this.deviceContribution.createSwapChain($canvas);
+      // @ts-ignore
+      this.swapChain = await this.context.deviceContribution.createSwapChain($canvas);
       this.device = this.swapChain.getDevice();
       this.renderHelper.setDevice(this.device);
       this.renderHelper.renderInstManager.disableSimpleMode();
       this.swapChain.configureSwapChain($canvas.width, $canvas.height);
 
-      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
-        CanvasEvent.RESIZE,
-        () => {
-          this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-        },
-      );
+      renderingContext.root.ownerDocument.defaultView.addEventListener(CanvasEvent.RESIZE, () => {
+        this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+      });
 
-      this.batchManager.attach(this.device, renderingService);
+      this.batchManager.attach({
+        device: this.device,
+        ...context,
+      });
     });
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
 
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.BOUNDS_CHANGED,
-        handleBoundsChanged,
-      );
-      this.renderingContext.root.removeEventListener(
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      renderingContext.root.removeEventListener(
         ElementEvent.RENDER_ORDER_CHANGED,
         handleRenderOrderChanged,
       );
@@ -258,7 +218,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      // if (this.renderingContext.renderListCurrentFrame.length === 0) {
+      // if (renderingContext.renderListCurrentFrame.length === 0) {
       //   return;
       // }
 
@@ -267,8 +227,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
       // use canvas.background
-      const backgroundColor = parseColor(this.canvasConfig.background) as CSSRGB;
-      const clearColor = this.canvasConfig.background
+      const backgroundColor = parseColor(this.context.config.background) as CSSRGB;
+      const clearColor = this.context.config.background
         ? // use premultipliedAlpha
           // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
           colorNewFromRGBA(
@@ -322,7 +282,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
-      // if (this.renderingContext.renderListCurrentFrame.length === 0) {
+      // if (renderingContext.renderListCurrentFrame.length === 0) {
       //   return;
       // }
 
@@ -353,23 +313,24 @@ export class RenderGraphPlugin implements RenderingPlugin {
       );
 
       // Update Scene Params
-      const { width, height } = this.canvasConfig;
+      const { width, height } = this.context.config;
+      const camera = this.context.camera;
       template.setUniforms(SceneUniformBufferIndex, [
         {
           name: SceneUniform.PROJECTION_MATRIX,
-          value: this.camera.getPerspective(),
+          value: camera.getPerspective(),
         },
         {
           name: SceneUniform.VIEW_MATRIX,
-          value: this.camera.getViewTransform(),
+          value: camera.getViewTransform(),
         },
         {
           name: SceneUniform.CAMERA_POSITION,
-          value: this.camera.getPosition(),
+          value: camera.getPosition(),
         },
         {
           name: SceneUniform.DEVICE_PIXEL_RATIO,
-          value: this.contextService.getDPR(),
+          value: this.context.contextService.getDPR(),
         },
         {
           name: SceneUniform.VIEWPORT,
@@ -377,7 +338,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         },
         {
           name: SceneUniform.IS_ORTHO,
-          value: this.camera.isOrtho() ? 1 : 0,
+          value: camera.isOrtho() ? 1 : 0,
         },
         {
           name: SceneUniform.IS_PICKING,
@@ -400,10 +361,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // capture here since we don't preserve drawing buffer
       if (this.enableCapture && this.resolveCapturePromise) {
         const { type, encoderOptions } = this.captureOptions;
-        const dataURL = (this.contextService.getDomElement() as HTMLCanvasElement).toDataURL(
-          type,
-          encoderOptions,
-        );
+        const dataURL = (
+          this.context.contextService.getDomElement() as HTMLCanvasElement
+        ).toDataURL(type, encoderOptions);
         this.resolveCapturePromise(dataURL);
         this.enableCapture = false;
         this.captureOptions = undefined;

@@ -1,4 +1,3 @@
-import { injectable } from '@antv/g-lite';
 import TinySDF from '@mapbox/tiny-sdf';
 import type { Device, Texture } from '../../platform';
 import { Format, makeTextureDescriptor2D } from '../../platform';
@@ -37,7 +36,6 @@ export function getDefaultCharacterSet(): string[] {
 /**
  * TODO: use one atlas for all fontstacks, each fontstack has one texture now
  */
-@injectable()
 export class GlyphManager {
   private sdfGeneratorCache: Record<string, TinySDF> = {};
 

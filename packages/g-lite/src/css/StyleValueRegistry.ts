@@ -1,22 +1,18 @@
-import { inject, singleton } from 'mana-syringe';
 import { isNil, memoize } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
-import { SceneGraphService } from '../services';
-import type { GeometryAABBUpdater } from '../services/aabb/interfaces';
-import { GeometryUpdaterFactory } from '../services/aabb/interfaces';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { formatAttribute, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
-import { CSSPropertySyntaxFactory } from './CSSProperty';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
-import type { PropertyMetadata, PropertyParseOptions } from './interfaces';
-import { PropertySyntax, StyleValueRegistry } from './interfaces';
+import type { PropertyMetadata, PropertyParseOptions, StyleValueRegistry } from './interfaces';
+import { PropertySyntax } from './interfaces';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser/dimension';
+import { runtime } from '../global-runtime';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 
@@ -179,7 +175,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     n: 'offsetPath',
-    syntax: PropertySyntax.OFFSET_PATH,
+    syntax: PropertySyntax.DEFINED_PATH,
   },
   {
     n: 'offsetDistance',
@@ -248,11 +244,11 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     n: 'clipPath',
-    syntax: PropertySyntax.CLIP_PATH,
+    syntax: PropertySyntax.DEFINED_PATH,
   },
   {
     n: 'textPath',
-    syntax: PropertySyntax.TEXT_PATH,
+    syntax: PropertySyntax.DEFINED_PATH,
   },
   {
     n: 'textPathSide',
@@ -610,25 +606,13 @@ const isPropertyResolved = (object: DisplayObject, name: string) => {
   return unresolvedProperties[object.entity].includes(name);
 };
 
-@singleton({
-  token: StyleValueRegistry,
-})
 export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * need recalc later
    */
   // dirty = false;
 
-  constructor(
-    @inject(SceneGraphService)
-    private sceneGraphService: SceneGraphService,
-
-    @inject(CSSPropertySyntaxFactory)
-    private propertySyntaxFactory: CSSPropertySyntaxFactory,
-
-    @inject(GeometryUpdaterFactory)
-    private geometryUpdaterFactory: (tagName: string) => GeometryAABBUpdater<any>,
-  ) {
+  constructor() {
     BUILT_IN_PROPERTIES.forEach((property) => {
       this.registerMetadata(property);
     });
@@ -646,7 +630,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   getPropertySyntax(syntax: string) {
-    return this.propertySyntaxFactory<any, any>(syntax);
+    return runtime.CSSPropertySyntaxFactory[syntax];
   }
 
   /**
@@ -921,7 +905,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * eg. r of Circle, width/height of Rect
    */
   updateGeometry(object: DisplayObject) {
-    const geometryUpdater = this.geometryUpdaterFactory(object.nodeName);
+    const geometryUpdater = runtime.geometryUpdaterFactory[object.nodeName];
     if (geometryUpdater) {
       const geometry = object.geometry;
       if (!geometry.contentBounds) {
@@ -1071,7 +1055,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         (flipX ? -1 : 1) * ((anchor && anchor[1]) || 0) * geometry.contentBounds.halfExtents[1] * 2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
-      this.sceneGraphService.dirtifyToRoot(object);
+      runtime.sceneGraphService.dirtifyToRoot(object);
     }
   }
 

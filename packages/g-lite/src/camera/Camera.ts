@@ -1,4 +1,3 @@
-import { injectable } from 'mana-syringe';
 import { EventEmitter } from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
@@ -14,13 +13,7 @@ import {
   rad2deg,
 } from '../utils';
 import type { ICamera } from './interfaces';
-import {
-  CameraContribution,
-  CameraEvent,
-  CameraProjectionMode,
-  CameraTrackingMode,
-  CameraType,
-} from './interfaces';
+import { CameraEvent, CameraProjectionMode, CameraTrackingMode, CameraType } from './interfaces';
 import type { Landmark } from './Landmark';
 
 const MIN_DISTANCE = 0.0002;
@@ -36,9 +29,6 @@ const MIN_DISTANCE = 0.0002;
  * 4. 移动到 Landmark，具有平滑的动画效果，其间禁止其他用户交互
  */
 
-@injectable({
-  token: CameraContribution,
-})
 export class Camera implements ICamera {
   canvas: Canvas;
 

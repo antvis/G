@@ -1,14 +1,4 @@
-import {
-  Camera,
-  CameraContribution,
-  CameraType,
-  ParseEasingFunction,
-  GlobalContainer,
-  getAngle,
-  createVec3,
-  deg2rad,
-  injectable,
-} from '@antv/g-lite';
+import { Camera, CameraType, getAngle, createVec3, deg2rad, runtime } from '@antv/g-lite';
 import { isString, isNumber } from '@antv/util';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { vec2 } from 'gl-matrix';
@@ -17,9 +7,6 @@ import type { TypeEasingFunction, Landmark } from '@antv/g-lite';
 /**
  * Provides camera action & animation.
  */
-@injectable({
-  token: CameraContribution,
-})
 export class AdvancedCamera extends Camera {
   /**
    * switch between multiple landmarks
@@ -134,7 +121,7 @@ export class AdvancedCamera extends Camera {
   ): Landmark {
     const { position = this.position, focalPoint = this.focalPoint, roll, zoom } = params;
 
-    const camera = GlobalContainer.get(CameraContribution);
+    const camera = new runtime.CameraContribution() as AdvancedCamera;
     camera.setType(this.type, undefined);
     camera.setPosition(
       position[0],
@@ -212,7 +199,7 @@ export class AdvancedCamera extends Camera {
       const destZoom = landmark.zoom;
       const destRoll = landmark.roll;
 
-      const easingFunc = easingFunction || GlobalContainer.get(ParseEasingFunction)(easing);
+      const easingFunc = easingFunction || runtime.EasingFunction(easing);
 
       let timeStart: number | undefined;
       const endAnimation = () => {

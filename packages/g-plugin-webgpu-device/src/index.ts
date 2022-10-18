@@ -1,11 +1,6 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
-import { WebGPUDeviceOptions } from './interfaces';
+import { AbstractRendererPlugin } from '@antv/g-lite';
+import type { WebGPUDeviceOptions } from './interfaces';
 import { WebGPUDeviceContribution } from './WebGPUDeviceContribution';
-
-const containerModule = Module((register) => {
-  register(WebGPUDeviceContribution);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'webgpu-device';
   constructor(private options: Partial<WebGPUDeviceOptions> = {}) {
@@ -13,15 +8,13 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(WebGPUDeviceOptions, {
-      useValue: {
-        ...this.options,
-      },
+    // @ts-ignore
+    this.context.deviceContribution = new WebGPUDeviceContribution({
+      ...this.options,
     });
-    this.container.load(containerModule, true);
   }
   destroy(): void {
-    this.container.remove(WebGPUDeviceOptions);
-    this.container.unload(containerModule);
+    // @ts-ignore
+    delete this.context.deviceContribution;
   }
 }

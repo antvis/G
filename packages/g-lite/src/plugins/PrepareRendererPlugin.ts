@@ -1,34 +1,14 @@
-import { inject, singleton } from 'mana-syringe';
 import type RBush from 'rbush';
+import { runtime } from '../global-runtime';
 import type { RBushNodeAABB } from '../components';
-import { RBushRoot } from '../components';
-import { StyleValueRegistry } from '../css';
 import type { DisplayObject } from '../display-objects';
 import type { Element, FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
-import type { RenderingPlugin, RenderingService } from '../services';
-import { RenderingContext, RenderingPluginContribution, SceneGraphService } from '../services';
+import type { RenderingPlugin, RenderingPluginContext } from '../services';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
-
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(StyleValueRegistry)
-    private styleValueRegistry: StyleValueRegistry,
-
-    @inject(SceneGraphService)
-    private sceneGraphService: SceneGraphService,
-
-    /**
-     * RBush used in dirty rectangle rendering
-     */
-    @inject(RBushRoot)
-    private rBush: RBush<RBushNodeAABB>,
-  ) {}
+  private rBush: RBush<RBushNodeAABB>;
 
   /**
    * sync to RBush later
@@ -42,7 +22,10 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
   // private isFirstTimeRendering = true;
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext, rBushRoot } = context;
+    this.rBush = rBushRoot;
+
     const handleAttributeChanged = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       object.renderable.dirty = true;
@@ -70,9 +53,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
 
       // recalc style values
-      this.styleValueRegistry.recalc(object);
+      runtime.styleValueRegistry.recalc(object);
 
-      this.sceneGraphService.dirtifyToRoot(object);
+      runtime.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
     };
 
@@ -85,31 +68,22 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
       this.toSync.delete(object);
 
-      this.sceneGraphService.dirtifyToRoot(e.target as Element);
+      runtime.sceneGraphService.dirtifyToRoot(e.target as Element);
       renderingService.dirtify();
     };
 
     renderingService.hooks.init.tapPromise(PrepareRendererPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.BOUNDS_CHANGED,
-        handleBoundsChanged,
-      );
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {

@@ -3,45 +3,28 @@ import type {
   FederatedEvent,
   MutationEvent,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
   Text,
 } from '@antv/g-lite';
-import {
-  ContextService,
-  ElementEvent,
-  inject,
-  isBrowser,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  singleton,
-} from '@antv/g-lite';
-import { AriaManager } from './AriaManager';
-import { TextExtractor } from './TextExtractor';
-import { A11yPluginOptions } from './tokens';
+import { ElementEvent, isBrowser, Shape } from '@antv/g-lite';
+import type { AriaManager } from './AriaManager';
+import type { TextExtractor } from './TextExtractor';
+import type { A11yPluginOptions } from './tokens';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class A11yPlugin implements RenderingPlugin {
   static tag = 'A11y';
 
+  private context: RenderingPluginContext;
+
   constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
-
-    @inject(A11yPluginOptions)
     private a11yPluginOptions: A11yPluginOptions,
-
-    @inject(TextExtractor)
     private textExtractor: TextExtractor,
-
-    @inject(AriaManager)
     private ariaManager: AriaManager,
   ) {}
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    this.context = context;
+    const { renderingService, renderingContext } = context;
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
@@ -84,16 +67,10 @@ export class A11yPlugin implements RenderingPlugin {
       const { enableExtractingText } = this.a11yPluginOptions;
       if (enableExtractingText && !this.isSVG()) {
         this.textExtractor.activate();
-        this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-        this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-        this.renderingContext.root.addEventListener(
-          ElementEvent.ATTR_MODIFIED,
-          handleAttributeChanged,
-        );
-        this.renderingContext.root.addEventListener(
-          ElementEvent.BOUNDS_CHANGED,
-          handleBoundsChanged,
-        );
+        renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+        renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+        renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
       }
 
       this.ariaManager.activate();
@@ -103,16 +80,13 @@ export class A11yPlugin implements RenderingPlugin {
       const { enableExtractingText } = this.a11yPluginOptions;
       if (enableExtractingText && !this.isSVG()) {
         this.textExtractor.deactivate();
-        this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-        this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-        this.renderingContext.root.removeEventListener(
+        renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+        renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        renderingContext.root.removeEventListener(
           ElementEvent.ATTR_MODIFIED,
           handleAttributeChanged,
         );
-        this.renderingContext.root.removeEventListener(
-          ElementEvent.BOUNDS_CHANGED,
-          handleBoundsChanged,
-        );
+        renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
       }
 
       this.ariaManager.deactivate();
@@ -120,6 +94,6 @@ export class A11yPlugin implements RenderingPlugin {
   }
 
   private isSVG() {
-    return isBrowser && this.contextService.getDomElement() instanceof SVGSVGElement;
+    return isBrowser && this.context.contextService.getDomElement() instanceof SVGSVGElement;
   }
 }
