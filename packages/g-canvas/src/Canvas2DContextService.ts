@@ -1,29 +1,28 @@
-import type { CanvasLike, DataURLOptions } from '@antv/g-lite';
-import { RenderingContext, RenderReason } from '@antv/g-lite';
-import {
+import type {
+  RenderingContext,
+  CanvasContext,
+  CanvasLike,
+  DataURLOptions,
+  GlobalRuntime,
   CanvasConfig,
   ContextService,
-  inject,
-  isBrowser,
-  setDOMSize,
-  singleton,
 } from '@antv/g-lite';
+import { RenderReason } from '@antv/g-lite';
+import { isBrowser, setDOMSize } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
-@singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
   private $container: HTMLElement | null;
   private $canvas: CanvasLike | null;
   private dpr: number;
   private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
+  private canvasConfig: Partial<CanvasConfig>;
+  private renderingContext: RenderingContext;
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-  ) {}
+  constructor(context: GlobalRuntime & CanvasContext) {
+    this.renderingContext = context.renderingContext;
+    this.canvasConfig = context.config;
+  }
 
   async init() {
     const { container, canvas } = this.canvasConfig;

@@ -1,4 +1,4 @@
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
+import type { CanvasContext } from '@antv/g-lite';
 import { isMobile } from './util';
 
 const CLASSNAME_PREFIX = 'g-a11y-screen-reader';
@@ -14,15 +14,8 @@ const DIV_HOOK_POS_X = -1000;
 const DIV_HOOK_POS_Y = -1000;
 const DIV_HOOK_ZINDEX = 2;
 
-@singleton()
 export class AriaManager {
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   private $container: HTMLDivElement;
 
@@ -52,8 +45,8 @@ export class AriaManager {
   };
 
   private createOverlay() {
-    const { document: doc } = this.canvasConfig;
-    const $domElement = this.contextService.getDomElement() as HTMLCanvasElement;
+    const { document: doc } = this.context.config;
+    const $domElement = this.context.contextService.getDomElement() as HTMLCanvasElement;
     const $parentElement = $domElement.parentNode;
 
     if ($parentElement) {

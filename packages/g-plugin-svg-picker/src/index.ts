@@ -1,16 +1,12 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { SVGPickerPlugin } from './SVGPickerPlugin';
-
-const containerModule = Module((register) => {
-  register(SVGPickerPlugin);
-});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'svg-picker';
   init(): void {
-    this.container.load(containerModule, true);
+    this.addRenderingPlugin(new SVGPickerPlugin());
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }

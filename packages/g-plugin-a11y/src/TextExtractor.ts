@@ -1,23 +1,15 @@
-import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
+import type { CanvasContext, ParsedTextStyleProps, Text } from '@antv/g-lite';
 
 const CLASSNAME_PREFIX = 'g-a11y-text-extractor';
 
-@singleton()
 export class TextExtractor {
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   private $container: HTMLDivElement;
 
   activate() {
-    const { document: doc } = this.canvasConfig;
-    const $domElement = this.contextService.getDomElement() as HTMLCanvasElement;
+    const { document: doc } = this.context.config;
+    const $domElement = this.context.contextService.getDomElement() as HTMLCanvasElement;
     const $parentElement = $domElement.parentNode;
 
     if ($parentElement) {
@@ -39,7 +31,7 @@ overflow: hidden;
   }
 
   getOrCreateEl(text: Text) {
-    const { document: doc } = this.canvasConfig;
+    const { document: doc } = this.context.config;
     const id = `${CLASSNAME_PREFIX}-text-${text.entity}`;
 
     let $existed = this.$container.querySelector<HTMLDivElement>(`#${id}`);

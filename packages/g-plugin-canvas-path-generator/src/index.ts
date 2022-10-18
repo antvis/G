@@ -1,5 +1,5 @@
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g-lite';
-import { PathGenerator, PathGeneratorFactory } from './interfaces';
+import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
+import type { PathGenerator } from './interfaces';
 import {
   CirclePath,
   EllipsePath,
@@ -10,59 +10,30 @@ import {
   RectPath,
 } from './paths';
 
-const containerModule = Module((register) => {
-  /**
-   * register shape renderers
-   */
-  register({
-    token: { token: PathGenerator, named: Shape.CIRCLE },
-    useValue: CirclePath,
-  });
-  register({
-    token: { token: PathGenerator, named: Shape.ELLIPSE },
-    useValue: EllipsePath,
-  });
-  register({
-    token: { token: PathGenerator, named: Shape.RECT },
-    useValue: RectPath,
-  });
-  register({
-    token: { token: PathGenerator, named: Shape.LINE },
-    useValue: LinePath,
-  });
-  register({
-    token: { token: PathGenerator, named: Shape.POLYLINE },
-    useValue: PolylinePath,
-  });
-  register({
-    token: { token: PathGenerator, named: Shape.POLYGON },
-    useValue: PolygonPath,
-  });
-  register({
-    token: { token: PathGenerator, named: Shape.PATH },
-    useValue: PathPath,
-  });
-
-  register({
-    token: PathGeneratorFactory,
-    useFactory: (ctx) => {
-      return (tagName: Shape) => {
-        if (ctx.container.isBoundNamed(PathGenerator, tagName)) {
-          return ctx.container.getNamed(PathGenerator, tagName);
-        }
-        return null;
-      };
-    },
-  });
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-path-generator';
   init(): void {
-    this.container.load(containerModule, true);
+    const pathGeneratorFactory: Record<Shape, PathGenerator<any>> = {
+      [Shape.CIRCLE]: CirclePath,
+      [Shape.ELLIPSE]: EllipsePath,
+      [Shape.RECT]: RectPath,
+      [Shape.LINE]: LinePath,
+      [Shape.POLYLINE]: PolylinePath,
+      [Shape.POLYGON]: PolygonPath,
+      [Shape.PATH]: PathPath,
+      [Shape.TEXT]: undefined,
+      [Shape.GROUP]: undefined,
+      [Shape.IMAGE]: undefined,
+      [Shape.HTML]: undefined,
+      [Shape.MESH]: undefined,
+    };
+
+    // @ts-ignore
+    this.context.pathGeneratorFactory = pathGeneratorFactory;
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    // @ts-ignore
+    delete this.context.pathGeneratorFactory;
   }
 }
 

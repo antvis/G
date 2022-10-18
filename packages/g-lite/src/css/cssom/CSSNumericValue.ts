@@ -783,9 +783,7 @@ export class CSSUnitValue extends CSSNumericValue {
       case UnitType.kSeconds:
       // case UnitType.kHertz:
       // case UnitType.kKilohertz:
-      case UnitType.kTurns: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
-      // case UnitType.kDynamicViewportInlineSize:
-      // case UnitType.kDynamicViewportBlockSize:
+      case UnitType.kTurns: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
       // case UnitType.kDynamicViewportMin:
       // case UnitType.kDynamicViewportMax:
       // case UnitType.kContainerWidth:
@@ -1392,4 +1390,5 @@ export class CSSMathProduct extends CSSMathVariadic {
 }
 
 export const Opx: CSSUnitValue = new CSSUnitValue(0, 'px');
+export const Lpx: CSSUnitValue = new CSSUnitValue(1, 'px');
 export const Odeg: CSSUnitValue = new CSSUnitValue(0, 'deg');

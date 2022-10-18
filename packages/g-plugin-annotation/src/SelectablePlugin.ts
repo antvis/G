@@ -4,18 +4,9 @@ import type {
   FederatedPointerEvent,
   Rect,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  CustomEvent,
-  ElementEvent,
-  Group,
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  singleton,
-} from '@antv/g-lite';
+import { CustomEvent, ElementEvent, Group, Shape } from '@antv/g-lite';
 import { DrawerEvent, SelectableEvent } from './constants/enum';
 import { RectDrawer } from './drawers/rect';
 import type { DrawerState } from './interface/drawer';
@@ -23,7 +14,7 @@ import { getHeightFromBbox, getWidthFromBbox, renderRect } from './rendering/rec
 import { SelectableCircle, SelectablePolyline, SelectableRect } from './selectable';
 import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
-import { AnnotationPluginOptions } from './tokens';
+import type { AnnotationPluginOptions } from './tokens';
 
 /**
  * Make shape selectable and interactive.
@@ -38,17 +29,10 @@ import { AnnotationPluginOptions } from './tokens';
  * * Press `shift` key to multi-select graphics.
  * * Use brush selection.
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class SelectablePlugin implements RenderingPlugin {
   static tag = 'Selectable';
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(AnnotationPluginOptions)
-    private annotationPluginOptions: AnnotationPluginOptions,
-  ) {}
+  constructor(private annotationPluginOptions: AnnotationPluginOptions) {}
 
   /**
    * the topmost operation layer, which will be appended to documentElement directly
@@ -177,8 +161,9 @@ export class SelectablePlugin implements RenderingPlugin {
     }
   }
 
-  apply(renderingService: RenderingService) {
-    const document = this.renderingContext.root.ownerDocument;
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
+    const document = renderingContext.root.ownerDocument;
     const canvas = document.defaultView as Canvas;
     this.canvas = canvas;
 

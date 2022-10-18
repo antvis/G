@@ -1,14 +1,8 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { A11yPlugin } from './A11yPlugin';
 import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
-import { A11yPluginOptions } from './tokens';
-
-const containerModule = Module((register) => {
-  register(TextExtractor);
-  register(AriaManager);
-  register(A11yPlugin);
-});
+import type { A11yPluginOptions } from './tokens';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'a11y';
@@ -18,16 +12,17 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(A11yPluginOptions, {
-      useValue: {
-        enableExtractingText: false,
-        ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+    const textExtractor = new TextExtractor(this.context);
+    const ariaManager = new AriaManager(this.context);
+
+    const a11yPluginOptions = {
+      enableExtractingText: false,
+      ...this.options,
+    };
+
+    this.addRenderingPlugin(new A11yPlugin(a11yPluginOptions, textExtractor, ariaManager));
   }
   destroy(): void {
-    this.container.remove(A11yPluginOptions);
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }

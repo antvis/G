@@ -1,31 +1,27 @@
-import { GlobalContainer } from 'mana-syringe';
-import type RBush from 'rbush';
+import RBush from 'rbush';
 import {
   cancelAnimationFrame as cancelRAF,
   requestAnimationFrame as rAF,
 } from 'request-animation-frame-polyfill';
+import { runtime } from './global-runtime';
 import type { IRenderer } from './AbstractRenderer';
-import type { ICamera } from './camera';
-import { CameraContribution, CameraTrackingMode, CameraType } from './camera';
-import { CameraEvent, CameraProjectionMode, DefaultCamera } from './camera';
-import { containerModule as commonContainerModule } from './canvas-module';
+import { CameraTrackingMode, CameraType } from './camera';
+import { CameraEvent, CameraProjectionMode } from './camera';
 import type { RBushNodeAABB } from './components';
-import { RBushRoot } from './components';
 import { CustomElement, DisplayObject } from './display-objects';
-import type { Element, FederatedEvent, IChildNode } from './dom';
+import type { CanvasContext, Element, FederatedEvent, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import type { ICanvas } from './dom/interfaces';
-import {
-  ContextService,
-  EventService,
-  RenderingContext,
-  RenderingService,
-  RenderReason,
-} from './services';
+import { CullingPlugin } from './plugins/CullingPlugin';
+import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
+import { EventPlugin } from './plugins/EventPlugin';
+import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
+import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
+import { EventService, RenderingService, RenderReason } from './services';
 import type { PointLike } from './shapes';
 import type { Cursor, InteractivePointerEvent } from './types';
-import { CanvasConfig } from './types';
+import type { CanvasConfig } from './types';
 import { cleanExistedCanvas, getHeight, getWidth, isBrowser } from './utils';
 
 export enum CanvasEvent {
@@ -51,11 +47,6 @@ const DEFAULT_CAMERA_FAR = 1000;
  * prototype chains: Canvas(Window) -> EventTarget
  */
 export class Canvas extends EventTarget implements ICanvas {
-  /**
-   * child container of current canvas, use hierarchy container
-   */
-  container = GlobalContainer.createChild();
-
   /**
    * window.document
    */
@@ -113,12 +104,6 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   private frameId?: number;
 
-  /**
-   * cache here since inversify's resolving is very slow
-   */
-  private eventService: EventService;
-  private renderingService: RenderingService;
-
   private inited = false;
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
@@ -130,6 +115,8 @@ export class Canvas extends EventTarget implements ICanvas {
   private unmountEvent = new CustomEvent(ElementEvent.UNMOUNTED);
   private beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
   private afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
+
+  context = {} as CanvasContext;
 
   constructor(config: CanvasConfig) {
     super();
@@ -230,25 +217,22 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
-    this.container.register({ token: CanvasConfig, useValue: mergedConfig });
+    this.context.config = mergedConfig;
 
     // bind rendering context, shared by all renderers
-    this.container.register({
-      token: RenderingContext,
-      useValue: {
-        /**
-         * the root node in scene graph
-         */
-        root: this.document.documentElement,
-        renderListCurrentFrame: [],
-        unculledEntities: [],
+    this.context.renderingContext = {
+      /**
+       * the root node in scene graph
+       */
+      root: this.document.documentElement,
+      renderListCurrentFrame: [],
+      unculledEntities: [],
 
-        renderReasons: new Set(),
+      renderReasons: new Set(),
 
-        force: false,
-        dirty: false,
-      },
-    });
+      force: false,
+      dirty: false,
+    };
 
     this.document.documentElement.addEventListener(
       ElementEvent.CHILD_INSERTED,
@@ -267,7 +251,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private initDefaultCamera(width: number, height: number) {
     // set a default ortho camera
-    const camera = GlobalContainer.get<ICamera>(CameraContribution);
+    const camera = new runtime.CameraContribution();
 
     camera
       .setType(CameraType.EXPLORING, CameraTrackingMode.DEFAULT)
@@ -286,20 +270,16 @@ export class Canvas extends EventTarget implements ICanvas {
     camera.canvas = this;
 
     // redraw when camera changed
-    const context = this.container.get<RenderingContext>(RenderingContext);
     camera.eventEmitter.on(CameraEvent.UPDATED, () => {
-      context.renderReasons.add(RenderReason.CAMERA_CHANGED);
+      this.context.renderingContext.renderReasons.add(RenderReason.CAMERA_CHANGED);
     });
+
     // bind camera
-    this.container.register({ token: DefaultCamera, useValue: camera });
+    this.context.camera = camera;
   }
 
   getConfig() {
-    return this.container.get<Partial<CanvasConfig>>(CanvasConfig);
-  }
-
-  getContainer() {
-    return this.container;
+    return this.context.config;
   }
 
   /**
@@ -314,27 +294,23 @@ export class Canvas extends EventTarget implements ICanvas {
    * get the camera of canvas
    */
   getCamera() {
-    return this.container.get<ICamera>(DefaultCamera);
+    return this.context.camera;
   }
 
   getContextService() {
-    return this.container.get<ContextService<unknown>>(ContextService);
+    return this.context.contextService;
   }
 
   getEventService() {
-    return this.eventService;
+    return this.context.eventService;
   }
 
   getRenderingService() {
-    return this.renderingService;
+    return this.context.renderingService;
   }
 
   getRenderingContext() {
-    return this.container.get<RenderingContext>(RenderingContext);
-  }
-
-  getRBushRoot() {
-    return this.container.get<RBush<RBushNodeAABB>>(RBushRoot);
+    return this.context.renderingContext;
   }
 
   getStats() {
@@ -402,7 +378,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
   resize(width: number, height: number) {
     // update canvas' config
-    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    const canvasConfig = this.context.config;
     canvasConfig.width = width;
     canvasConfig.height = height;
 
@@ -410,7 +386,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().resize(width, height);
 
     // resize camera
-    const camera = this.container.get<ICamera>(DefaultCamera);
+    const camera = this.context.camera;
     const projectionMode = camera.getProjectionMode();
     camera
       .setPosition(width / 2, height / 2, DEFAULT_CAMERA_Z)
@@ -448,10 +424,8 @@ export class Canvas extends EventTarget implements ICanvas {
   render() {
     this.dispatchEvent(this.beforeRenderEvent);
 
-    if (this.container.isBound(RenderingService)) {
-      const renderingService = this.container.get<RenderingService>(RenderingService);
-      renderingService.render(this.getConfig());
-    }
+    const renderingService = this.getRenderingService();
+    renderingService.render(this.getConfig());
 
     this.dispatchEvent(this.afterRenderEvent);
   }
@@ -473,18 +447,35 @@ export class Canvas extends EventTarget implements ICanvas {
     this.inited = false;
     this.readyPromise = undefined;
 
-    this.loadCommonContainerModule();
+    // FIXME: should re-create here?
+    this.context.rBushRoot = new RBush<RBushNodeAABB>();
+
+    // reset rendering plugins
+    this.context.renderingPlugins = [];
+    this.context.renderingPlugins.push(
+      new EventPlugin(),
+      new PrepareRendererPlugin(),
+      new DirtyCheckPlugin(),
+      new CullingPlugin([new FrustumCullingStrategy()]),
+    );
+
+    //
     this.loadRendererContainerModule(renderer);
 
-    // init services
-    const contextService = this.container.get<ContextService<unknown>>(ContextService);
-    this.renderingService = this.container.get<RenderingService>(RenderingService);
-    this.eventService = this.container.get<EventService>(EventService); // auto init post-contruct
+    // init context service
+    this.context.contextService = new this.context.ContextService({
+      ...runtime,
+      ...this.context,
+    });
 
-    // use init instead of postConstruct
-    this.eventService.init();
-    await contextService.init();
-    await this.renderingService.init();
+    // init rendering service
+    this.context.renderingService = new RenderingService(runtime, this.context);
+
+    // init event service
+    this.context.eventService = new EventService(runtime, this.context);
+    this.context.eventService.init();
+    await this.context.contextService.init();
+    await this.context.renderingService.init();
 
     this.inited = true;
 
@@ -505,16 +496,11 @@ export class Canvas extends EventTarget implements ICanvas {
     }
   }
 
-  private loadCommonContainerModule() {
-    this.container.unload(commonContainerModule);
-    this.container.load(commonContainerModule, true);
-  }
-
   private loadRendererContainerModule(renderer: IRenderer) {
     // load other container modules provided by g-canvas/g-svg/g-webgl
     const plugins = renderer.getPlugins();
     plugins.forEach((plugin) => {
-      plugin.container = this.container;
+      plugin.context = this.context;
       plugin.init();
     });
   }
@@ -541,7 +527,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   setCursor(cursor: Cursor) {
-    const canvasConfig = this.container.get<Partial<CanvasConfig>>(CanvasConfig);
+    const canvasConfig = this.getConfig();
     canvasConfig.cursor = cursor;
     this.getContextService().applyCursorStyle(cursor);
   }

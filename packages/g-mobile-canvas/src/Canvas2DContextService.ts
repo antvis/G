@@ -1,17 +1,17 @@
-import type { DataURLOptions } from '@antv/g-lite';
-import { CanvasConfig, ContextService, inject, singleton } from '@antv/g-lite';
+import type { CanvasContext, DataURLOptions, GlobalRuntime } from '@antv/g-lite';
+import type { CanvasConfig, ContextService } from '@antv/g-lite';
 import { isCanvasElement } from './dom';
 
-@singleton({ token: ContextService })
 export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
   private $canvas: HTMLCanvasElement;
   private dpr: number;
   private context: CanvasRenderingContext2D;
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  private canvasConfig: Partial<CanvasConfig>;
+
+  constructor(context: GlobalRuntime & CanvasContext) {
+    this.canvasConfig = context.config;
+  }
 
   async init() {
     const { canvas, devicePixelRatio } = this.canvasConfig;

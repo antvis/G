@@ -5,9 +5,8 @@ import type {
   Polyline,
   Rect,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import { inject, RenderingContext, RenderingPluginContribution, singleton } from '@antv/g-lite';
 import { EventEmitter } from 'eventemitter3';
 import { DrawerEvent, DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';
@@ -19,23 +18,16 @@ import { renderCircle } from './rendering/circle-render';
 import { renderPolygon } from './rendering/polygon-render';
 import { renderPolyline } from './rendering/polyline-render';
 import { renderRect } from './rendering/rect-render';
-import { AnnotationPluginOptions } from './tokens';
+import type { AnnotationPluginOptions } from './tokens';
 
 /**
  * Provides drawing capability like free drawing mode in fabric.js.
  * @see http://fabricjs.com/freedrawing
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class AnnotationPlugin implements RenderingPlugin {
   static tag = 'Annotation';
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(AnnotationPluginOptions)
-    public annotationPluginOptions: AnnotationPluginOptions,
-  ) {}
+  constructor(public annotationPluginOptions: AnnotationPluginOptions) {}
 
   private hotkeyActive: boolean = false;
   public drawer: BaseDrawer;
@@ -195,8 +187,10 @@ export class AnnotationPlugin implements RenderingPlugin {
     this.canvas.setCursor('grab');
   }
 
-  apply(renderingService: RenderingService) {
-    const document = this.renderingContext.root.ownerDocument;
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
+
+    const document = renderingContext.root.ownerDocument;
     const canvas = document.defaultView as Canvas;
     this.canvas = canvas;
 

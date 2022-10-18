@@ -1,15 +1,10 @@
-import type { Contribution } from 'mana-syringe';
-import { contrib, inject, singleton, Syringe } from 'mana-syringe';
+import type { ICamera } from '../camera';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { CustomEvent, ElementEvent } from '../dom';
-import { RenderingContext } from '../services';
-import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
-import { RenderingPluginContribution } from '../services/RenderingService';
+import type { RenderingPlugin, RenderingPluginContext } from '../services/RenderingService';
 
-export const CullingStrategyContribution = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CullingStrategyContribution {
-  isVisible: (object: DisplayObject) => boolean;
+  isVisible: (camera: ICamera, object: DisplayObject) => boolean;
 }
 
 /**
@@ -17,20 +12,14 @@ export interface CullingStrategyContribution {
  * 1. `visibility` in scenegraph node
  * 2. other custom culling strategies, eg. frustum culling
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class CullingPlugin implements RenderingPlugin {
   static tag = 'Culling';
 
-  constructor(
-    @contrib(CullingStrategyContribution)
-    private strategyProvider: Contribution.Provider<CullingStrategyContribution>,
+  constructor(private strategies: CullingStrategyContribution[]) {}
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-  ) {}
-
-  apply(renderingService: RenderingService) {
-    const strategies = this.strategyProvider.getContributions();
+  apply(context: RenderingPluginContext) {
+    const { camera, renderingService, renderingContext } = context;
+    const strategies = this.strategies;
 
     renderingService.hooks.cull.tap(CullingPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
@@ -48,10 +37,10 @@ export class CullingPlugin implements RenderingPlugin {
         // }
 
         if (strategies.length === 0) {
-          cullable.visible = this.renderingContext.unculledEntities.indexOf(object.entity) > -1;
+          cullable.visible = renderingContext.unculledEntities.indexOf(object.entity) > -1;
         } else {
           // eg. implemented by g-webgl(frustum culling)
-          cullable.visible = strategies.every((strategy) => strategy.isVisible(object));
+          cullable.visible = strategies.every((strategy) => strategy.isVisible(camera, object));
         }
 
         if (!object.isCulled() && object.isVisible()) {

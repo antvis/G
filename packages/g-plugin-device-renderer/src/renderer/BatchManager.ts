@@ -1,33 +1,29 @@
-import type { DisplayObject, RenderingService } from '@antv/g-lite';
-import { inject, singleton } from '@antv/g-lite';
+import type { DisplayObject, RenderingPluginContext, Shape } from '@antv/g-lite';
 import type { Renderable3D } from '../components/Renderable3D';
+import type { LightPool } from '../LightPool';
 import type { Instanced } from '../meshes/Instanced';
 import type { Device } from '../platform';
 import type { RenderInstList } from '../render';
-import { RenderHelper } from '../render';
-import { MeshFactory, RendererFactory } from '../tokens';
+import type { RenderHelper } from '../render';
+import type { TexturePool } from '../TexturePool';
 import type { Batch } from './Batch';
 
 let stencilRefCounter = 1;
 
-@singleton()
+export type BatchContext = { device: Device } & RenderingPluginContext;
+
 export class BatchManager {
   constructor(
-    @inject(RenderHelper)
     protected renderHelper: RenderHelper,
-
-    @inject(RendererFactory)
-    private rendererFactory: (shape: string) => Batch,
-
-    @inject(MeshFactory)
-    protected meshFactory: (shape: typeof Instanced) => Instanced,
+    private rendererFactory: Record<Shape, Batch>,
+    protected texturePool: TexturePool,
+    protected lightPool: LightPool,
   ) {}
 
   /**
    * attached when Device created
    */
-  private device: Device;
-  private renderingService: RenderingService;
+  private context: BatchContext;
 
   /**
    * draw calls
@@ -56,7 +52,7 @@ export class BatchManager {
 
     this.meshes.forEach((mesh) => {
       // init rendering service, create geometry & material
-      mesh.init(this.device, this.renderingService);
+      mesh.init(this.context);
 
       let objects = mesh.objects;
       if (mesh.clipPathTarget) {
@@ -84,16 +80,15 @@ export class BatchManager {
   /**
    * get called in RenderGraphPlugin
    */
-  attach(device: Device, renderingService: RenderingService) {
-    this.device = device;
-    this.renderingService = renderingService;
+  attach(context: BatchContext) {
+    this.context = context;
   }
 
   add(object: DisplayObject) {
     // @ts-ignore
     const renderable3D = object.renderable3D as Renderable3D;
     if (renderable3D && !renderable3D.meshes.length) {
-      const renderer = this.rendererFactory(object.nodeName);
+      const renderer = this.rendererFactory[object.nodeName];
       if (renderer) {
         renderer.meshes.forEach((meshTag, i) => {
           renderable3D.meshes[i] = undefined;
@@ -104,7 +99,7 @@ export class BatchManager {
                 meshTag === mesh.constructor && mesh.index === i && mesh.shouldMerge(object, i),
             );
             if (!existedMesh) {
-              existedMesh = this.meshFactory(meshTag);
+              existedMesh = new meshTag(this.renderHelper, this.texturePool, this.lightPool);
               existedMesh.renderer = renderer;
               existedMesh.index = i;
               this.meshes.push(existedMesh);
@@ -151,7 +146,7 @@ export class BatchManager {
   ) {
     // @ts-ignore
     const renderable3D = object.renderable3D as Renderable3D;
-    const renderer = this.rendererFactory(object.nodeName);
+    const renderer = this.rendererFactory[object.nodeName];
     if (renderer) {
       renderer.meshes.forEach((meshCtor, i) => {
         const shouldSubmit = renderer.shouldSubmitRenderInst(object, i);
@@ -179,10 +174,10 @@ export class BatchManager {
             );
 
             if (!existedMesh) {
-              existedMesh = this.meshFactory(meshCtor);
+              existedMesh = new meshCtor(this.renderHelper, this.texturePool, this.lightPool);
               existedMesh.renderer = renderer;
               existedMesh.index = i;
-              existedMesh.init(this.device, this.renderingService);
+              existedMesh.init(this.context);
               this.meshes.push(existedMesh);
             }
 

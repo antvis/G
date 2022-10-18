@@ -1,5 +1,5 @@
-import type { DisplayObject } from '@antv/g-lite';
-import { CanvasConfig, inject, Shape, singleton } from '@antv/g-lite';
+import type { CanvasContext, DisplayObject } from '@antv/g-lite';
+import { Shape } from '@antv/g-lite';
 import {
   updateImageElementAttribute,
   updateLineElementAttribute,
@@ -8,7 +8,7 @@ import {
   updateRectElementAttribute,
   updateTextElementAttribute,
 } from './shapes/paths';
-import { ElementLifeCycleContribution } from './tokens';
+import type { ElementLifeCycleContribution } from './interfaces';
 import { createSVGElement } from './utils/dom';
 
 export const SHAPE2TAGS: Record<Shape | string, string> = {
@@ -94,15 +94,11 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
   ],
 };
 
-@singleton({ token: ElementLifeCycleContribution })
 export class DefaultElementLifeCycleContribution implements ElementLifeCycleContribution {
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   createElement(object: DisplayObject): SVGElement {
-    const { document: doc } = this.canvasConfig;
+    const { document: doc } = this.context.config;
 
     const type = SHAPE2TAGS[object.nodeName] || 'g';
     return createSVGElement(type, doc || document);

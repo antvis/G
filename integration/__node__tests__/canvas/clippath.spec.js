@@ -58,6 +58,8 @@ describe('Render ClipPath with g-canvas', () => {
         clipPath: new Rect({
           // basic graphic as clippath
           style: {
+            x: 100,
+            y: 0,
             width: 50,
             height: 50,
           },
@@ -69,7 +71,7 @@ describe('Render ClipPath with g-canvas', () => {
         cx: 50,
         cy: 50,
         r: 50,
-        fill: 'red',
+        fill: 'blue',
       },
     });
     group.appendChild(circle2);
@@ -82,6 +84,8 @@ describe('Render ClipPath with g-canvas', () => {
         clipPath: new Rect({
           // basic graphic as clippath
           style: {
+            x: 50,
+            y: 100,
             width: 50,
             height: 50,
           },
@@ -94,16 +98,38 @@ describe('Render ClipPath with g-canvas', () => {
         cx: 50,
         cy: 50,
         r: 50,
-        fill: 'red',
+        fill: 'green',
       },
     });
     group2.appendChild(group3);
     group3.appendChild(circle3);
 
+    // clip with connected shape
+    const clipPathCircle = new Circle({
+      style: {
+        cx: 150,
+        cy: 150,
+        r: 50,
+        fill: 'yellow',
+      },
+    });
+    const rect = new Rect({
+      style: {
+        x: 150,
+        y: 100,
+        width: 50,
+        height: 50,
+        fill: 'cyan',
+      },
+    });
+    rect.style.clipPath = clipPathCircle;
+
     await canvas.ready;
     canvas.appendChild(circle);
     canvas.appendChild(group);
     canvas.appendChild(group2);
+    canvas.appendChild(clipPathCircle);
+    canvas.appendChild(rect);
 
     await sleep(200);
 

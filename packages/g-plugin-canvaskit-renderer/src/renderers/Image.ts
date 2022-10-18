@@ -1,13 +1,12 @@
-import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
-import { ContextService, inject, singleton } from '@antv/g-lite';
-import { ImagePool } from '@antv/g-plugin-image-loader';
+import type { CanvasContext, DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
+import type { ContextService } from '@antv/g-lite';
+import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type {
   CanvasKitContext,
   RendererContribution,
   RendererContributionContext,
 } from '../interfaces';
-import { ImageRendererContribution } from '../interfaces';
 
 /**
  * @see https://docs.flutter.dev/development/platform-integration/web-images#flutter-renderers-on-the-web
@@ -15,20 +14,13 @@ import { ImageRendererContribution } from '../interfaces';
  * @see https://fiddle.skia.org/c/@Canvas_drawImage
  * @see https://github.com/google/skia/blob/4ff73144c35b993907a6e3738a7be81c0681e504/modules/canvaskit/tests/bazel/core_test.js#L104
  */
-@singleton({
-  token: ImageRendererContribution,
-})
 export class ImageRenderer implements RendererContribution {
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasKitContext>,
-
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   render(object: DisplayObject, context: RendererContributionContext) {
-    const { surface, CanvasKit } = this.contextService.getContext();
+    const { surface, CanvasKit } = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const { canvas } = context;
     const { width, height, img, fillOpacity, opacity } =
       object.parsedStyle as ParsedImageStyleProps;
@@ -39,7 +31,8 @@ export class ImageRenderer implements RendererContribution {
 
     if (isString(img)) {
       // image has been loaded in `mounted` hook
-      image = this.imagePool.getImageSync(img);
+      // @ts-ignore
+      image = (this.context.imagePool as ImagePool).getImageSync(img);
     } else {
       iw ||= img.width;
       ih ||= img.height;

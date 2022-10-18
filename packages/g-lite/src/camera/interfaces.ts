@@ -1,4 +1,3 @@
-import { Syringe } from 'mana-syringe';
 import type EventEmitter from 'eventemitter3';
 import type { mat4, vec2, vec3 } from 'gl-matrix';
 import type { TypeEasingFunction } from '..';
@@ -7,15 +6,9 @@ import type { Frustum } from '../shapes';
 import type { Landmark } from './Landmark';
 
 /**
- * 1 of 1 in each Canvas.
- */
-export const DefaultCamera = Syringe.defineToken('');
-
-/**
  * Different type of cameras, eg. simple camera used in 2D scene or
  * advanced camera which can do actions & switch between landmarks.
  */
-export const CameraContribution = Syringe.defineToken('', { multiple: false });
 
 export enum CameraType {
   /**

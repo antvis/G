@@ -1,14 +1,7 @@
-import { inject, injectable, Syringe } from '@antv/g-lite';
-import { LayoutContext } from './LayoutContext';
-
-export const LayoutFragmentFactory = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+import type { LayoutContext } from './LayoutContext';
 export interface LayoutFragmentFactory<T = void> {
   (options: LayoutFragmentOptions<T>): LayoutFragment<T>;
 }
-
-export const LayoutFragmentOptions = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface LayoutFragmentOptions<T = void> {
   inlineSize: number;
   blockSize: number;
@@ -18,7 +11,6 @@ export interface LayoutFragmentOptions<T = void> {
 /**
  * 布局的结果
  */
-@injectable()
 export class LayoutFragment<T = void> {
   layoutContext: LayoutContext;
   readonly inlineSize: number;
@@ -28,8 +20,8 @@ export class LayoutFragment<T = void> {
   data: T;
 
   constructor(
-    @inject(LayoutContext) protected readonly _layoutContext: LayoutContext,
-    @inject(LayoutFragmentOptions) protected readonly options: LayoutFragmentOptions<T>,
+    protected readonly _layoutContext: LayoutContext,
+    protected readonly options: LayoutFragmentOptions<T>,
   ) {
     this.layoutContext = _layoutContext;
     this.inlineSize = options.inlineSize;

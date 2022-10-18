@@ -1,9 +1,9 @@
-import { GlobalContainer } from 'mana-syringe';
+import { runtime } from '../global-runtime';
 import { BUILT_IN_PROPERTIES } from '../css';
-import { DisplayObjectPool, Group, Text } from '../display-objects';
-import type { DisplayObject } from '../display-objects/DisplayObject';
+import { Group, Text } from '../display-objects';
+import type { DisplayObject } from '../display-objects';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { AnimationTimelineToken, Shape } from '../types';
+import { Shape } from '../types';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   ERROR_MSG_USE_DOCUMENT_ELEMENT,
@@ -31,10 +31,8 @@ export class Document extends Node implements IDocument {
     this.nodeName = 'document';
 
     // create timeline
-    // this.timeline = new AnimationTimeline(this);
     try {
-      this.timeline = GlobalContainer.get(AnimationTimelineToken);
-      this.timeline.attach(this);
+      this.timeline = new runtime.AnimationTimeline(this);
     } catch (e) {}
 
     /**
@@ -139,13 +137,12 @@ export class Document extends Node implements IDocument {
    * Picking 2D graphics with RBush based on BBox, fast but inaccurate.
    */
   elementsFromBBox(minX: number, minY: number, maxX: number, maxY: number): DisplayObject[] {
-    const rBush = this.defaultView.getRBushRoot();
+    const rBush = this.defaultView.context.rBushRoot;
     const rBushNodes = rBush.search({ minX, minY, maxX, maxY });
-    const displayObjectPool = GlobalContainer.get(DisplayObjectPool);
 
     const hitTestList: DisplayObject[] = [];
     rBushNodes.forEach(({ id }) => {
-      const displayObject = displayObjectPool.getByEntity(id);
+      const displayObject = runtime.displayObjectPool.getByEntity(id);
       const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
 
       // account for `visibility`

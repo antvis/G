@@ -1,14 +1,6 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
-import { DeviceRendererPlugin } from './tokens';
 import { WebGPUContextService } from './WebGPUContextService';
-
-const containerModule = Module((register) => {
-  /**
-   * implements ContextService
-   */
-  register(WebGPUContextService);
-});
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
   name = 'webgpu-context-register';
@@ -17,13 +9,11 @@ export class ContextRegisterPlugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(DeviceRendererPlugin, {
-      useValue: this.rendererPlugin,
-    });
-    this.container.load(containerModule, true);
+    this.context.ContextService = WebGPUContextService;
+    // @ts-ignore
+    this.context.deviceRendererPlugin = this.rendererPlugin;
   }
   destroy(): void {
-    this.container.unload(containerModule);
-    this.container.remove(DeviceRendererPlugin);
+    delete this.context.ContextService;
   }
 }

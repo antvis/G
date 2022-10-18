@@ -1,10 +1,7 @@
-import { Syringe } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects';
 import type { IElement } from '../dom';
 import type { StyleValueRegistry } from './interfaces';
 
-export const CSSPropertySyntaxFactory = Syringe.defineToken('');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type CSSPropertySyntaxFactory = <P, U>(syntax: string) => CSSProperty<P, U>;
 
 export type Interpolatable = number | boolean | number[] | boolean[];
@@ -24,14 +21,12 @@ type CSSPropertyCalculator<Parsed, Used> = (
   registry: StyleValueRegistry,
 ) => Used;
 
-export const CSSProperty = Syringe.defineToken('');
 /**
  * 1. parser: raw CSS string -> Computed Value
  * 2. calculator: Computed Value -> Used Value
  * 3. mixer(in animation system): Used Value -> new Used Value
  * 4. post processor
  */
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface CSSProperty<Parsed, Used> {
   /**
    * parse CSS string to CSSStyleValue

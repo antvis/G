@@ -36,7 +36,7 @@ const cubicBezierRe = new RegExp(
 const step1Re = /steps\(\s*(\d+)\s*\)/;
 const step2Re = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
 
-export function parseEasingFunction(normalizedEasing: string) {
+export function parseEasingFunction(normalizedEasing: string): (t: number) => number {
   const cubicData = cubicBezierRe.exec(normalizedEasing);
   if (cubicData) {
     // @ts-ignore

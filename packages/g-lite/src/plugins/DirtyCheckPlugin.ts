@@ -1,16 +1,15 @@
-import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import type { RenderingPlugin, RenderingService } from '../services/RenderingService';
-import { RenderingPluginContribution } from '../services/RenderingService';
+import type { RenderingPlugin, RenderingPluginContext } from '../services/RenderingService';
 
 /**
  * Filter dirty renderables and calculate the "dirty rectangle" which will be clear when frame began
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class DirtyCheckPlugin implements RenderingPlugin {
   static tag = 'DirtyCheck';
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingService } = context;
+
     renderingService.hooks.dirtycheck.tap(DirtyCheckPlugin.tag, (object: DisplayObject | null) => {
       if (object) {
         const renderable = object.renderable;

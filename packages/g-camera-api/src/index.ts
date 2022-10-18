@@ -1,9 +1,6 @@
-import { GlobalContainer } from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import { AdvancedCamera } from './AdvancedCamera';
 
 export { AdvancedCamera };
 
-/**
- * Override CameraContribution
- */
-GlobalContainer.register(AdvancedCamera);
+runtime.CameraContribution = AdvancedCamera;

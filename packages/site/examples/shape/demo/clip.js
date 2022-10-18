@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Group, Image, Path, Rect, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, Path, Rect } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -22,18 +22,43 @@ const canvaskitRenderer = new CanvaskitRenderer({
 });
 const webgpuRenderer = new WebGPURenderer();
 
-// clip path shape
+// in user space
 const clipPathCircle = new Circle({
   style: {
-    cx: 100,
-    cy: 100,
-    r: 50,
+    cx: 150,
+    cy: 150,
+    r: 35,
+    fill: 'blue',
   },
 });
+
+const rect1 = new Rect({
+  style: {
+    x: 0,
+    y: 0,
+    width: 45,
+    height: 45,
+    stroke: 'white',
+    strokeWidth: 2,
+    fill: 'red',
+    clipPath: clipPathCircle,
+    cursor: 'pointer',
+    // transform: 'translate(200px, 200px)',
+  },
+});
+const rect2 = rect1.cloneNode();
+rect2.style.y = 55;
+const rect3 = rect1.cloneNode();
+rect3.style.x = 55;
+rect3.style.y = 55;
+const rect4 = rect1.cloneNode();
+rect4.style.x = 55;
+rect4.style.y = 0;
+
 const clipPathRect = new Rect({
   style: {
-    x: 100,
-    y: 100,
+    x: 125,
+    y: 125,
     width: 50,
     height: 50,
   },
@@ -47,8 +72,6 @@ const clipPath = new Path({
   },
 });
 
-clipPath.setLocalPosition(100, 100);
-
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
@@ -57,65 +80,20 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const image = new Image({
-  style: {
-    x: 200,
-    y: 100,
-    width: 200,
-    height: 200,
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8TlCRIsKeUkAAAAAAAAAAAAAARQnAQ',
-    clipPath: clipPathCircle,
-  },
-});
-
-const image2 = new Image({
-  style: {
-    x: 200,
-    y: 200,
-    width: 200,
-    height: 200,
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    clipPath: clipPathCircle,
-  },
-});
-
-const group = new Group({
-  style: {
-    x: 200,
-    y: 300,
-    clipPath: clipPathCircle,
-    cursor: 'pointer',
-  },
-});
-const textStyle = {
-  fontFamily: 'PingFang SC',
-  text: '这是测试文本',
-  fontSize: 40,
-  fill: '#1890FF',
-  stroke: '#F04864',
-  lineWidth: 5,
-};
-const text1 = new Text({
-  style: textStyle,
-});
-const text2 = new Text({
-  style: textStyle,
-});
-const text3 = new Text({
-  style: textStyle,
-});
-text2.translateLocal(0, 50);
-text3.translateLocal(0, 100);
-group.appendChild(text1);
-group.appendChild(text2);
-group.appendChild(text3);
-
 canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(image);
-  canvas.appendChild(image2);
+  const group = new Group({
+    style: {
+      x: 100,
+      y: 100,
+    },
+  });
+  canvas.appendChild(clipPathCircle);
+  group.appendChild(rect1);
+  group.appendChild(rect2);
+  group.appendChild(rect3);
+  group.appendChild(rect4);
   canvas.appendChild(group);
-
-  clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }], {
+  clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(2)' }], {
     duration: 1500,
     iterations: Infinity,
   });
@@ -162,71 +140,41 @@ rendererFolder
   });
 rendererFolder.open();
 
-const clipFolder = gui.addFolder('clipPath');
-const clipConfig = {
-  clipPath: 'circle',
+const circleClipFolder = gui.addFolder('Circle as clipPath');
+const circleClipConfig = {
   r: 50,
 };
-
-clipFolder.add(clipConfig, 'clipPath', ['circle', 'rect', 'path', 'null']).onChange((type) => {
-  switch (type) {
-    case 'circle':
-      image.style.clipPath = clipPathCircle;
-      break;
-    case 'rect':
-      image.style.clipPath = clipPathRect;
-      break;
-    case 'path':
-      image.style.clipPath = clipPath;
-      break;
-    case 'null': // clear clip path
-      image.style.clipPath = null;
-      // image.setClip(null);
-      break;
-  }
-});
-clipFolder.add(clipConfig, 'r', 0, 100).onChange((r) => {
+circleClipFolder.add(circleClipConfig, 'r', 0, 100).onChange((r) => {
   clipPathCircle.style.r = r;
 });
-clipFolder.open();
+circleClipFolder.open();
 
-const imageFolder = gui.addFolder('image');
-const config = {
-  x: 200,
-  y: 100,
-  width: 200,
-  height: 200,
-  opacity: 1,
-  anchorX: 0,
-  anchorY: 0,
-  src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+const clippedShapesFolder = gui.addFolder('Clipped shapes');
+const clippedShapesConfig = {
+  rect1: 'circle',
+  rect2: 'circle',
+  rect3: 'circle',
+  rect4: 'circle',
 };
-imageFolder.add(config, 'x', 0, 400).onChange((x) => {
-  image.style.x = x;
+[rect1, rect2, rect3, rect4].forEach((rect, index) => {
+  clippedShapesFolder
+    .add(clippedShapesConfig, `rect${index + 1}`, ['circle', 'rect', 'path', 'null'])
+    .onChange((type) => {
+      switch (type) {
+        case 'circle':
+          rect.style.clipPath = clipPathCircle;
+          break;
+        case 'rect':
+          rect.style.clipPath = clipPathRect;
+          break;
+        case 'path':
+          rect.style.clipPath = clipPath;
+          break;
+        case 'null': // clear clip path
+          rect.style.clipPath = null;
+          // rect.setClip(null);
+          break;
+      }
+    });
 });
-imageFolder.add(config, 'y', 0, 400).onChange((y) => {
-  image.style.y = y;
-});
-imageFolder.add(config, 'width', 0, 400).onChange((width) => {
-  image.style.width = width;
-});
-imageFolder.add(config, 'height', 0, 400).onChange((height) => {
-  image.style.height = height;
-});
-imageFolder.add(config, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  image.style.anchor = [anchorX, config.anchorY];
-});
-imageFolder.add(config, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  image.style.anchor = [config.anchorX, anchorY];
-});
-imageFolder.add(config, 'opacity', 0, 1, 0.1).onChange((opacity) => {
-  image.style.opacity = opacity;
-});
-imageFolder
-  .add(config, 'src', [
-    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
-  ])
-  .onChange((src) => {
-    image.style.img = src;
-  });
+clippedShapesFolder.open();

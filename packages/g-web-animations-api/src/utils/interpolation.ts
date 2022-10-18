@@ -5,7 +5,7 @@ import type {
   Interpolatable,
   TypeEasingFunction,
 } from '@antv/g-lite';
-import { propertyMetadataCache, styleValueRegistry } from '@antv/g-lite';
+import { propertyMetadataCache, runtime } from '@antv/g-lite';
 import { parseEasingFunction } from './animation';
 
 export function convertEffectInput(
@@ -151,26 +151,26 @@ function propertyInterpolation(
   const metadata = propertyMetadataCache[property];
 
   if (metadata && metadata.syntax && metadata.int) {
-    const propertyHandler = styleValueRegistry.getPropertySyntax(metadata.syntax);
+    const propertyHandler = runtime.styleValueRegistry.getPropertySyntax(metadata.syntax);
 
     if (propertyHandler) {
-      const computedLeft = styleValueRegistry.parseProperty(
+      const computedLeft = runtime.styleValueRegistry.parseProperty(
         property,
         left,
         target as DisplayObject,
       );
-      const computedRight = styleValueRegistry.parseProperty(
+      const computedRight = runtime.styleValueRegistry.parseProperty(
         property,
         right,
         target as DisplayObject,
       );
 
-      const usedLeft = styleValueRegistry.computeProperty(
+      const usedLeft = runtime.styleValueRegistry.computeProperty(
         property,
         computedLeft,
         target as DisplayObject,
       );
-      const usedRight = styleValueRegistry.computeProperty(
+      const usedRight = runtime.styleValueRegistry.computeProperty(
         property,
         computedRight,
         target as DisplayObject,

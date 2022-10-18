@@ -1,8 +1,8 @@
-import { inject, LayoutRegistry, singleton } from '@antv/g-lite';
+import type { LayoutRegistry } from '@antv/g-lite';
 import { FragmentResult } from './FragmentResult';
 import type { LayoutChildren } from './LayoutChildren';
-import { LayoutContextFactory } from './LayoutContext';
-import { LayoutEdgesFactory } from './LayoutEdges';
+import type { LayoutContextFactory } from './LayoutContext';
+import type { LayoutEdgesFactory } from './LayoutEdges';
 import type { LayoutFragmentOptions } from './LayoutFragment';
 import type { LayoutObject } from './LayoutObject';
 import type { LayoutWorkTask } from './LayoutWorkTask';
@@ -18,20 +18,14 @@ const delay = (minisecond = 0) => {
   });
 };
 
-@singleton()
 export class LayoutEngine {
   protected layoutRegistry: LayoutRegistry;
   protected layoutContextFactory: LayoutContextFactory;
   protected layoutEdgesFactory: LayoutEdgesFactory;
 
   constructor(
-    @inject(LayoutRegistry)
     protected readonly _layoutRegistry: LayoutRegistry,
-
-    @inject(LayoutContextFactory)
     protected readonly _layoutContextFactory: LayoutContextFactory,
-
-    @inject(LayoutEdgesFactory)
     protected readonly _layoutEdgesFactory: LayoutEdgesFactory, // @contrib(LayoutContribution) // protected readonly layoutContributions: Contribution.Provider<LayoutContribution>,
   ) {
     this.layoutRegistry = _layoutRegistry;

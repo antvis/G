@@ -9,28 +9,22 @@ import type {
   Pattern,
   RadialGradient,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
+  ContextService,
 } from '@antv/g-lite';
 import { UnitType } from '@antv/g-lite';
 import {
-  CanvasConfig,
   computeLinearGradient,
   computeRadialGradient,
-  ContextService,
   CSSRGB,
-  DefaultCamera,
   getEuler,
   GradientType,
-  inject,
   isPattern,
   parseColor,
   rad2deg,
-  RenderingContext,
-  RenderingPluginContribution,
   Shape,
-  singleton,
 } from '@antv/g-lite';
-import { ImagePool } from '@antv/g-plugin-image-loader';
+import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil, isString } from '@antv/util';
 import type {
   Canvas,
@@ -43,44 +37,23 @@ import type {
   TextureSource,
 } from 'canvaskit-wasm';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { FontLoader } from './FontLoader';
+import type { FontLoader } from './FontLoader';
 import type { CanvasKitContext, RendererContribution } from './interfaces';
-import { CanvaskitRendererPluginOptions, RendererContributionFactory } from './interfaces';
+import type { CanvaskitRendererPluginOptions } from './interfaces';
 
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class CanvaskitRendererPlugin implements RenderingPlugin {
   static tag = 'CanvaskitRenderer';
 
   constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(ContextService)
-    private contextService: ContextService<CanvasKitContext>,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-
-    @inject(RendererContributionFactory)
-    private rendererContributionFactory: (tagName: Shape | string) => RendererContribution,
-
-    @inject(FontLoader)
-    private fontLoader: FontLoader,
-
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-
-    @inject(CanvaskitRendererPluginOptions)
     private canvaskitRendererPluginOptions: CanvaskitRendererPluginOptions,
+    private rendererContributionFactory: Record<Shape, RendererContribution>,
+    private fontLoader: FontLoader,
   ) {}
 
-  private renderingService: RenderingService;
+  private context: RenderingPluginContext;
 
   private destroyed = false;
 
@@ -105,7 +78,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   private resolveCapturePromise: (dataURL: string) => void;
 
   playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
-    const canvasKitContext = this.contextService.getContext();
+    const canvasKitContext = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const { CanvasKit } = canvasKitContext;
     const animation = CanvasKit.MakeManagedAnimation(jsonStr, assets);
     const duration = animation.duration() * 1000;
@@ -123,17 +98,23 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
-    const canvasKitContext = this.contextService.getContext();
+    const canvasKitContext = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const { CanvasKit } = canvasKitContext;
     const particles = CanvasKit.MakeParticles(jsonStr, assets);
     this.particlesList.push({ particles, onFrame });
     return particles;
   }
 
-  apply(renderingService: RenderingService) {
-    this.renderingService = renderingService;
+  apply(context: RenderingPluginContext) {
+    this.context = context;
+    const { renderingService, renderingContext } = context;
+
     renderingService.hooks.init.tapPromise(CanvaskitRendererPlugin.tag, async () => {
-      const canvasKitContext = this.contextService.getContext();
+      const canvasKitContext = (
+        this.context.contextService as ContextService<CanvasKitContext>
+      ).getContext();
       const { surface, CanvasKit } = canvasKitContext;
       const { fonts } = this.canvaskitRendererPluginOptions;
 
@@ -142,12 +123,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         fonts.map(({ name, url }) => this.fontLoader.loadFont(CanvasKit, name, url)),
       );
 
-      const { background } = this.canvasConfig;
+      const { background } = this.context.config;
       const clearColor = parseColor(background) as CSSRGB;
 
       // scale all drawing operations by the dpr
       // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      const dpr = this.contextService.getDPR();
+      const dpr = this.context.contextService.getDPR();
       surface.getCanvas().scale(dpr, dpr);
 
       const firstFrame = Date.now();
@@ -161,7 +142,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
         canvas.save();
 
-        this.applyCamera(canvas, tmpVec3, tmpQuat);
+        this.applyCamera(canvas, this.context.camera, tmpVec3, tmpQuat);
 
         canvas.clear(
           CanvasKit.Color4f(
@@ -174,7 +155,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
         this.drawAnimations(canvas, firstFrame);
         this.drawParticles(canvas);
-        this.drawWithSurface(canvas, this.renderingContext.root);
+        this.drawWithSurface(canvas, renderingContext.root);
 
         canvas.restore();
 
@@ -218,13 +199,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private applyCamera(canvas: Canvas, tmpVec3: vec3, tmpQuat: quat) {
-    const transform = this.camera.getOrthoMatrix();
+  private applyCamera(canvas: Canvas, camera: ICamera, tmpVec3: vec3, tmpQuat: quat) {
+    const transform = camera.getOrthoMatrix();
     const [tx, ty] = mat4.getTranslation(tmpVec3, transform);
     const [sx, sy] = mat4.getScaling(tmpVec3, transform);
     const rotation = mat4.getRotation(tmpQuat, transform);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [eux, euy, euz] = getEuler(tmpVec3, rotation);
+    const [, , euz] = getEuler(tmpVec3, rotation);
     const rot = rad2deg(euz);
 
     canvas.translate(tx, ty);
@@ -278,15 +258,18 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   private generatePattern(object: DisplayObject, pattern: Pattern) {
-    const { surface, CanvasKit } = this.contextService.getContext();
+    const { surface, CanvasKit } = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const { image, repetition } = pattern;
 
     let src: TextureSource;
     if (isString(image)) {
-      src = this.imagePool.getImageSync(image, () => {
+      // @ts-ignore
+      src = (this.context.imagePool as ImagePool).getImageSync(image, () => {
         // set dirty rectangle flag
         object.renderable.dirty = true;
-        this.renderingService.dirtify();
+        this.context.renderingService.dirtify();
       });
     } else {
       // @ts-ignore
@@ -320,7 +303,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   private generateGradient(object: DisplayObject, stroke: CSSGradientValue) {
-    const { CanvasKit } = this.contextService.getContext();
+    const { CanvasKit } = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
@@ -383,7 +368,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   private generateGradientsShader(object: DisplayObject, fill: CSSGradientValue[]) {
-    const { CanvasKit } = this.contextService.getContext();
+    const { CanvasKit } = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
     const gradientShaders = fill.map((gradient) => this.generateGradient(object, gradient));
     let previousShader = gradientShaders[0];
     for (let i = 1; i < gradientShaders.length; i++) {
@@ -398,7 +385,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   private renderDisplayObject(object: DisplayObject, canvas: Canvas) {
-    const { CanvasKit } = this.contextService.getContext();
+    const { CanvasKit } = (
+      this.context.contextService as ContextService<CanvasKitContext>
+    ).getContext();
 
     if (
       !object.isVisible() ||
@@ -579,7 +568,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       canvas.translate(translateX, translateY);
     }
 
-    const renderer = this.rendererContributionFactory(object.nodeName);
+    const renderer = this.rendererContributionFactory[object.nodeName];
     if (renderer) {
       renderer.render(object, {
         fillPaint,

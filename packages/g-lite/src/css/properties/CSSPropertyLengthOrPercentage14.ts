@@ -1,8 +1,6 @@
-import { singleton } from 'mana-syringe';
 import { isNumber } from '@antv/util';
 import type { CSSUnitValue } from '../cssom';
-import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
+import type { CSSProperty } from '../CSSProperty';
 import { mergeNumberLists } from '../parser';
 import { parseDimensionArray } from '../parser/dimension';
 
@@ -14,12 +12,6 @@ import { parseDimensionArray } from '../parser/dimension';
  * rect.style.radius = '10 10';
  * rect.style.radius = '10 10 10 10';
  */
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.LENGTH_PERCENTAGE_14,
-  },
-})
 export class CSSPropertyLengthOrPercentage14
   implements
     Partial<

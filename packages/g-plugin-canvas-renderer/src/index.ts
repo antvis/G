@@ -1,68 +1,12 @@
-import { AbstractRendererPlugin, Module, Shape } from '@antv/g-lite';
+import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
 import type { StyleRenderer } from './shapes/styles';
-import {
-  CircleRenderer,
-  CircleRendererContribution,
-  EllipseRenderer,
-  EllipseRendererContribution,
-  ImageRendererContribution,
-  LineRenderer,
-  LineRendererContribution,
-  PathRenderer,
-  PathRendererContribution,
-  PolygonRenderer,
-  PolygonRendererContribution,
-  PolylineRenderer,
-  PolylineRendererContribution,
-  RectRenderer,
-  RectRendererContribution,
-  StyleRendererFactory,
-  TextRendererContribution,
-} from './shapes/styles';
+import { DefaultRenderer } from './shapes/styles/Default';
 import { ImageRenderer } from './shapes/styles/Image';
 import { TextRenderer } from './shapes/styles/Text';
-import { CanvasRendererPluginOptions } from './tokens';
+import type { CanvasRendererPluginOptions } from './interfaces';
 
 export * from './shapes/styles';
-
-const containerModule = Module((register) => {
-  register(CircleRenderer);
-  register(EllipseRenderer);
-  register(RectRenderer);
-  register(ImageRenderer);
-  register(TextRenderer);
-  register(LineRenderer);
-  register(PolylineRenderer);
-  register(PolygonRenderer);
-  register(PathRenderer);
-
-  const shape2Token = {
-    [Shape.CIRCLE]: CircleRendererContribution,
-    [Shape.ELLIPSE]: EllipseRendererContribution,
-    [Shape.RECT]: RectRendererContribution,
-    [Shape.IMAGE]: ImageRendererContribution,
-    [Shape.TEXT]: TextRendererContribution,
-    [Shape.LINE]: LineRendererContribution,
-    [Shape.POLYLINE]: PolylineRendererContribution,
-    [Shape.POLYGON]: PolygonRendererContribution,
-    [Shape.PATH]: PathRendererContribution,
-  };
-  register({
-    token: StyleRendererFactory,
-    useFactory:
-      (ctx) =>
-      (tagName: Shape): StyleRenderer => {
-        const token = shape2Token[tagName];
-        if (token && ctx.container.isBound(token)) {
-          return ctx.container.get<StyleRenderer>(token);
-        }
-        return null;
-      },
-  });
-
-  register(CanvasRendererPlugin);
-});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-renderer';
@@ -72,17 +16,45 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(CanvasRendererPluginOptions, {
-      useValue: {
-        dirtyObjectNumThreshold: 500,
-        dirtyObjectRatioThreshold: 0.8,
-        ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+    const canvasRendererPluginOptions: CanvasRendererPluginOptions = {
+      dirtyObjectNumThreshold: 500,
+      dirtyObjectRatioThreshold: 0.8,
+      ...this.options,
+    };
+
+    // @ts-ignore
+    const imagePool = this.context.imagePool;
+
+    const defaultRenderer = new DefaultRenderer(imagePool);
+
+    const defaultStyleRendererFactory: Record<Shape, StyleRenderer> = {
+      [Shape.CIRCLE]: defaultRenderer,
+      [Shape.ELLIPSE]: defaultRenderer,
+      [Shape.RECT]: defaultRenderer,
+      [Shape.IMAGE]: new ImageRenderer(imagePool),
+      [Shape.TEXT]: new TextRenderer(),
+      [Shape.LINE]: defaultRenderer,
+      [Shape.POLYLINE]: defaultRenderer,
+      [Shape.POLYGON]: defaultRenderer,
+      [Shape.PATH]: defaultRenderer,
+      [Shape.GROUP]: undefined,
+      [Shape.HTML]: undefined,
+      [Shape.MESH]: undefined,
+    };
+
+    // @ts-ignore
+    this.context.defaultStyleRendererFactory = defaultStyleRendererFactory;
+    // @ts-ignore
+    this.context.styleRendererFactory = defaultStyleRendererFactory;
+
+    this.addRenderingPlugin(new CanvasRendererPlugin(canvasRendererPluginOptions));
   }
   destroy(): void {
-    this.container.unload(containerModule);
-    this.container.remove(CanvasRendererPluginOptions);
+    this.removeAllRenderingPlugins();
+
+    // @ts-ignore
+    delete this.context.defaultStyleRendererFactory;
+    // @ts-ignore
+    delete this.context.styleRendererFactory;
   }
 }

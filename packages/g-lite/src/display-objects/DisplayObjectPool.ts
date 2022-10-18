@@ -1,11 +1,8 @@
-import { singleton } from 'mana-syringe';
 import { Shape } from '../types';
 import type { DisplayObject, HTML } from './';
 
 const pool: Record<number, DisplayObject> = {};
 const htmlPool: HTML[] = [];
-
-@singleton()
 export class DisplayObjectPool {
   getByEntity(entity: number): DisplayObject {
     return pool[entity];

@@ -1,8 +1,15 @@
 import type RBush from 'rbush';
+import type { GlobalRuntime } from '..';
 import type { ICamera } from '../camera';
 import type { RBushNodeAABB } from '../components';
 import type { DisplayObject } from '../display-objects';
-import type { ContextService, EventService, RenderingService } from '../services';
+import type {
+  ContextService,
+  EventService,
+  RenderingContext,
+  RenderingPlugin,
+  RenderingService,
+} from '../services';
 import type { PointLike } from '../shapes';
 import type {
   BaseStyleProps,
@@ -398,7 +405,6 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
 
 export interface IAnimationTimeline {
   currentTime: number | null;
-  attach: (document: IDocument) => void;
   destroy: () => void;
   play: (
     target: IElement,
@@ -417,9 +423,9 @@ export interface IAnimation {
   playState: AnimationPlayState;
   ready: Promise<this>;
   finished: Promise<this>;
-  onfinish: ((this: IAnimation, ev: AnimationPlaybackEvent) => any) | null;
-  oncancel: ((this: IAnimation, ev: AnimationPlaybackEvent) => any) | null;
-  onframe: ((this: IAnimation, ev: AnimationPlaybackEvent) => any) | null;
+  onfinish: ((this: this, ev: AnimationPlaybackEvent) => any) | null;
+  oncancel: ((this: this, ev: AnimationPlaybackEvent) => any) | null;
+  onframe: ((this: this, ev: AnimationPlaybackEvent) => any) | null;
   currentTime: number;
   startTime: number;
   playbackRate: number;
@@ -505,6 +511,23 @@ export interface ICSSStyleDeclaration<StyleProps> {
   item: (index: number) => string;
 }
 
+export interface CanvasContext {
+  config: Partial<CanvasConfig>;
+  camera: ICamera;
+
+  /**
+   * ContextServiceContribution
+   */
+  ContextService: new (context: GlobalRuntime & CanvasContext) => ContextService<unknown>;
+
+  contextService: ContextService<unknown>;
+  renderingService: RenderingService;
+  eventService: EventService;
+  rBushRoot: RBush<RBushNodeAABB>;
+  renderingContext: RenderingContext;
+  renderingPlugins: RenderingPlugin[];
+}
+
 export interface ICanvas extends IEventTarget {
   document: IDocument;
   customElements: CustomElementRegistry;
@@ -522,12 +545,13 @@ export interface ICanvas extends IEventTarget {
   destroy: (destroyScenegraph?: boolean) => void;
   resize: (width: number, height: number) => void;
 
+  context: CanvasContext;
+
   getConfig: () => Partial<CanvasConfig>;
   getCamera: () => ICamera;
   getContextService: () => ContextService<unknown>;
   getRenderingService: () => RenderingService;
   getEventService: () => EventService;
-  getRBushRoot: () => RBush<RBushNodeAABB>;
 
   client2Viewport: (client: PointLike) => PointLike;
   viewport2Client: (viewport: PointLike) => PointLike;

@@ -1,5 +1,4 @@
 import type {
-  ICamera,
   DisplayObject,
   FederatedEvent,
   LinearGradient,
@@ -7,27 +6,14 @@ import type {
   ParsedBaseStyleProps,
   RadialGradient,
   RenderingPlugin,
-  RenderingService,
-} from '@antv/g-lite';
-import {
-  CanvasConfig,
+  RenderingPluginContext,
   ContextService,
-  CSSRGB,
-  DefaultCamera,
-  ElementEvent,
-  inject,
-  propertyMetadataCache,
-  RenderingContext,
-  RenderingPluginContribution,
-  RenderReason,
-  Shape,
-  singleton,
-  StyleValueRegistry,
 } from '@antv/g-lite';
-import type { mat4 } from 'gl-matrix';
+import { CSSRGB, ElementEvent, propertyMetadataCache, RenderReason, Shape } from '@antv/g-lite';
+import { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
-import { DefElementManager } from './shapes/defs';
-import { ElementLifeCycleContribution, SVGRendererPluginOptions } from './tokens';
+import type { DefElementManager } from './shapes/defs';
+import type { SVGRendererPluginOptions } from './interfaces';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
 
@@ -121,34 +107,13 @@ export const G_SVG_PREFIX = 'g_svg';
 export const CLIP_PATH_PREFIX = 'clip-path-';
 export const TEXT_PATH_PREFIX = 'text-path-';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class SVGRendererPlugin implements RenderingPlugin {
   static tag = 'SVGRenderer';
 
   constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-
-    @inject(ContextService)
-    private contextService: ContextService<SVGElement>,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(StyleValueRegistry)
-    private styleValueRegistry: StyleValueRegistry,
-
-    @inject(ElementLifeCycleContribution)
-    private createElementContribution: ElementLifeCycleContribution,
-
-    @inject(DefElementManager)
-    private defElementManager: DefElementManager,
-
-    @inject(SVGRendererPluginOptions)
     private pluginOptions: SVGRendererPluginOptions,
+    private defElementManager: DefElementManager,
+    private context: RenderingPluginContext,
   ) {}
 
   /**
@@ -171,8 +136,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
    */
   private pendingReorderQueue: Set<DisplayObject> = new Set();
 
-  apply(renderingService: RenderingService) {
-    const { document } = this.canvasConfig;
+  /**
+   * <use> elements in <clipPath>, which should be sync with clipPath
+   *
+   * @example
+   * <clipPath transform="matrix(1,0,0,1,-100,-155)" id="clip-path-0-2">
+   *  <use href="#g_svg_circle_0" transform="matrix(1.477115,0,0,1.477115,150,150)">
+   *  </use>
+   * </clipPath>
+   */
+  private clipPathUseMap: WeakMap<DisplayObject, SVGUseElement[]> = new WeakMap();
+
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
+    this.context = context;
+
+    const { document } = this.context.config;
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -183,6 +162,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       this.defElementManager.clear(object.entity);
+      this.clipPathUseMap.delete(object);
       this.removeSVGDom(object);
     };
 
@@ -222,12 +202,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
-      const { background, document } = this.canvasConfig;
+      const { background, document } = this.context.config;
 
       // <defs>
       this.defElementManager.init();
 
-      const $svg = this.contextService.getContext()!;
+      const $svg = (this.context.contextService as ContextService<SVGElement>).getContext()!;
       if (background) {
         $svg.style.background = background;
       }
@@ -237,29 +217,23 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       this.$camera = createSVGElement('g', document);
       this.$camera.id = `${G_SVG_PREFIX}_camera`;
-      this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
+      this.applyTransform(this.$camera, this.context.camera.getOrthoMatrix());
       $svg.appendChild(this.$camera);
 
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.addEventListener(
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.addEventListener(
         ElementEvent.BOUNDS_CHANGED,
         handleGeometryBoundsChanged,
       );
     });
 
     renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.removeEventListener(
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.removeEventListener(
         ElementEvent.BOUNDS_CHANGED,
         handleGeometryBoundsChanged,
       );
@@ -272,7 +246,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
-      const { document: doc } = this.canvasConfig;
+      const { document: doc } = this.context.config;
 
       if (this.pendingReorderQueue.size) {
         this.pendingReorderQueue.forEach((object) => {
@@ -290,8 +264,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
-      if (this.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
-        this.applyTransform(this.$camera, this.camera.getOrthoMatrix());
+      if (renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
+        this.applyTransform(this.$camera, this.context.camera.getOrthoMatrix());
       }
 
       this.renderQueue.forEach((object) => {
@@ -303,7 +277,18 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if ($el && $groupEl) {
           // apply local RTS transformation to <group> wrapper
           // account for anchor
-          this.applyTransform($groupEl, object.getLocalTransform());
+          const localTransform = object.getLocalTransform();
+          this.applyTransform($groupEl, localTransform);
+
+          // clipped shapes should also be informed
+
+          const $useRefs = this.clipPathUseMap.get(object);
+          if ($useRefs && $useRefs.length) {
+            $useRefs.forEach(($use) => {
+              this.applyTransform($use, localTransform);
+            });
+          }
+
           // finish rendering, clear dirty flag
           object.renderable.dirty = false;
         }
@@ -333,6 +318,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       });
       this.renderQueue = [];
     });
+  }
+
+  private getId(object: DisplayObject) {
+    return `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
   }
 
   private reorderChildren(doc: Document, $groupEl: SVGElement, children: DisplayObject[]) {
@@ -388,20 +377,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private updateAttribute(object: DisplayObject, attributes: string[]) {
-    const { document } = this.canvasConfig;
+    const { document } = this.context.config;
 
     // @ts-ignore
     const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
     const { parsedStyle, computedStyle } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
-      this.createElementContribution.shouldUpdateElementAttribute(object, name),
+      // @ts-ignore
+      this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(object, name),
     );
 
     // need re-generate path
     if (shouldUpdateElementAttribute && $el) {
       [$el, $hitTestingEl].forEach(($el) => {
         if ($el) {
-          this.createElementContribution.updateElementAttribute(object, $el);
+          // @ts-ignore
+          this.context.SVGElementLifeCycleContribution.updateElementAttribute(object, $el);
           if (object.nodeName !== Shape.TEXT) {
             this.updateAnchorWithTransform(object);
           }
@@ -453,9 +444,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
           $groupEl?.removeAttribute(usedName);
         }
       } else if (name === 'clipPath') {
-        this.createOrUpdateClipOrTextPath(document, usedValue, $groupEl);
+        this.createOrUpdateClipOrTextPath(document, usedValue, object);
       } else if (name === 'textPath') {
-        this.createOrUpdateClipOrTextPath(document, usedValue, $groupEl, true);
+        this.createOrUpdateClipOrTextPath(document, usedValue, object, true);
       } else if (
         name === 'shadowType' ||
         name === 'shadowColor' ||
@@ -504,7 +495,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
-    const $el = this.createElementContribution.createElement(object);
+    // @ts-ignore
+    const $el = this.context.SVGElementLifeCycleContribution.createElement(object);
     if ($el) {
       let $groupEl: SVGElement;
 
@@ -514,7 +506,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       if (this.pluginOptions.outputSVGElementId) {
-        $el.id = `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
+        $el.id = this.getId(object);
       }
       if (this.pluginOptions.outputSVGElementName && object.name) {
         $el.setAttribute('name', object.name);
@@ -555,7 +547,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     if ($groupEl && $groupEl.parentNode) {
       $groupEl.parentNode.removeChild($groupEl);
 
-      this.createElementContribution.destroyElement(object, $groupEl);
+      // @ts-ignore
+      this.context.SVGElementLifeCycleContribution.destroyElement(object, $groupEl);
       // object.entity.removeComponent(ElementSVG, true);
     }
   }
@@ -614,15 +607,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private createOrUpdateClipOrTextPath(
     document: Document,
     clipPath: DisplayObject,
-    $groupEl: SVGElement,
+    object: DisplayObject,
     isTextPath = false,
   ) {
+    // @ts-ignore
+    const { $groupEl } = object.elementSVG;
     const PREFIX = isTextPath ? TEXT_PATH_PREFIX : CLIP_PATH_PREFIX;
     const attributeNameCamel = isTextPath ? 'g' : 'clipPath';
     const attributeNameHyphen = isTextPath ? 'text-path' : 'clip-path';
 
     if (clipPath) {
-      const clipPathId = PREFIX + clipPath.entity;
+      const clipPathId = PREFIX + clipPath.entity + '-' + object.entity;
       const $def = this.defElementManager.getDefElement();
 
       const existed = $def.querySelector(`#${clipPathId}`);
@@ -634,13 +629,35 @@ export class SVGRendererPlugin implements RenderingPlugin {
           // @ts-ignore
           $clipPath = clipPath.elementSVG.$el;
         } else {
+          // the clipPath is allowed to be detached from canvas
+          if (!clipPath.isConnected) {
+            const $existedClipPath = $def.querySelector(`#${this.getId(clipPath)}`);
+            if (!$existedClipPath) {
+              this.createSVGDom(document, clipPath, $def, true);
+            }
+          }
+
           // create <clipPath> dom node
           $clipPath = createSVGElement(attributeNameCamel, document);
-
-          // <clipPath><circle /></clipPath>
-          this.createSVGDom(document, clipPath, $clipPath, true);
+          const $use = createSVGElement('use', document) as SVGUseElement;
           // @ts-ignore
-          clipPath.elementSVG.$groupEl = $clipPath;
+          $use.setAttribute('href', `#${clipPath.elementSVG.$el.id}`);
+          $clipPath.appendChild($use);
+
+          let $useRefs = this.clipPathUseMap.get(clipPath);
+          if (!$useRefs) {
+            this.clipPathUseMap.set(clipPath, []);
+            $useRefs = this.clipPathUseMap.get(clipPath);
+          }
+          $useRefs.push($use);
+
+          // <clipPath transform="matrix()"><circle /></clipPath>
+          this.applyTransform($use, clipPath.getWorldTransform());
+          const parentInvert = mat4.invert(
+            mat4.create(),
+            (object as DisplayObject).getWorldTransform(),
+          );
+          this.applyTransform($clipPath, parentInvert);
         }
 
         $clipPath.id = clipPathId;
@@ -648,12 +665,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $def.appendChild($clipPath);
       }
 
-      // @ts-ignore
-      const $clipPathGroupEl = clipPath.elementSVG?.$groupEl;
-      if ($clipPathGroupEl) {
-        // apply local RTS transformation to <group> wrapper
-        this.applyTransform($clipPathGroupEl, clipPath.getLocalTransform());
-      }
       // apply attributes
       this.applyAttributes(clipPath);
 

@@ -3,35 +3,19 @@ import type {
   FederatedPointerEvent,
   IDocument,
   RenderingPlugin,
-  RenderingService,
-} from '@antv/g-lite';
-import {
-  inject,
-  RenderingContext,
-  RenderingPluginContribution,
-  SceneGraphService,
-  singleton,
+  RenderingPluginContext,
 } from '@antv/g-lite';
 import { distanceSquareRoot } from '@antv/util';
-import { DragndropPluginOptions } from './tokens';
+import type { DragndropPluginOptions } from './interfaces';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class DragndropPlugin implements RenderingPlugin {
   static tag = 'Dragndrop';
 
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
+  constructor(private dragndropPluginOptions: DragndropPluginOptions) {}
 
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DragndropPluginOptions)
-    private dragndropPluginOptions: DragndropPluginOptions,
-  ) {}
-
-  apply(renderingService: RenderingService) {
-    const document = this.renderingContext.root.ownerDocument;
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
+    const document = renderingContext.root.ownerDocument;
 
     // TODO: should we add an option like `draggable` to Canvas
     const canvas = document.defaultView;

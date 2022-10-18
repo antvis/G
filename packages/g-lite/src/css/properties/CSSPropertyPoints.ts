@@ -1,17 +1,9 @@
-import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
 import { Shape } from '../../types';
-import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
+import type { CSSProperty } from '../CSSProperty';
 import { parsePoints } from '../parser/points';
 
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.LIST_OF_POINTS,
-  },
-})
 export class CSSPropertyPoints
   implements
     Partial<

@@ -4,7 +4,7 @@ import type {
   Text as TextShape,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB, inject, injectable } from '@antv/g-lite';
+import { CSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -35,10 +35,8 @@ export enum TextUniform {
   HAS_STROKE = 'u_HasStroke',
 }
 
-@injectable()
 export class TextMesh extends Instanced {
-  @inject(GlyphManager)
-  private glyphManager: GlyphManager;
+  private glyphManager = new GlyphManager();
 
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
@@ -250,12 +248,12 @@ export class TextMesh extends Instanced {
       fontWeight.toString(),
       fontStyle,
       allText,
-      this.device,
+      this.context.device,
     );
     const glyphAtlasTexture = this.glyphManager.getAtlasTexture();
     const glyphAtlas = this.glyphManager.getAtlas();
 
-    this.device.setResourceName(glyphAtlasTexture, 'TextSDF Texture');
+    this.context.device.setResourceName(glyphAtlasTexture, 'TextSDF Texture');
 
     const { width: atlasWidth, height: atlasHeight } = glyphAtlas.image;
 

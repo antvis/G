@@ -1,10 +1,6 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
-import { WebGLRendererPluginOptions } from './interfaces';
+import { AbstractRendererPlugin } from '@antv/g-lite';
+import type { WebGLRendererPluginOptions } from './interfaces';
 import { WebGLDeviceContribution } from './WebGLDeviceContribution';
-
-const containerModule = Module((register) => {
-  register(WebGLDeviceContribution);
-});
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'webgl-device';
@@ -13,15 +9,13 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(WebGLRendererPluginOptions, {
-      useValue: {
-        ...this.options,
-      },
+    // @ts-ignore
+    this.context.deviceContribution = new WebGLDeviceContribution({
+      ...this.options,
     });
-    this.container.load(containerModule, true);
   }
   destroy(): void {
-    this.container.remove(WebGLRendererPluginOptions);
-    this.container.unload(containerModule);
+    // @ts-ignore
+    delete this.context.deviceContribution;
   }
 }

@@ -1,4 +1,3 @@
-import { singleton } from '@antv/g-lite';
 import type { Device } from '../platform';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
@@ -6,7 +5,6 @@ import { RenderGraph } from './RenderGraph';
 import type { RenderInst } from './RenderInst';
 import { RenderInstManager } from './RenderInstManager';
 
-@singleton()
 export class RenderHelper {
   renderCache: RenderCache;
   renderGraph: RenderGraph;

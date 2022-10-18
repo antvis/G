@@ -1,16 +1,11 @@
 import type { DisplayObject } from '@antv/g-lite';
-import { AbstractRendererPlugin, CSS, Module, PropertySyntax } from '@antv/g-lite';
+import { AbstractRendererPlugin, CSS, PropertySyntax } from '@antv/g-lite';
 import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
 import type { DrawerOption, DrawerStyle } from './interface/drawer';
 import { SelectablePlugin } from './SelectablePlugin';
 import type { SelectableStyle } from './tokens';
-import { AnnotationPluginOptions } from './tokens';
-
-const containerModule = Module((register) => {
-  register(SelectablePlugin);
-  register(AnnotationPlugin);
-});
+import type { AnnotationPluginOptions } from './tokens';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'annotation';
@@ -20,18 +15,18 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    this.container.register(AnnotationPluginOptions, {
-      useValue: {
-        selectableStyle: {},
-        drawerStyle: {},
-        isDrawingMode: true,
-        arrowKeyStepLength: 4,
-        enableAutoSwitchDrawingMode: false,
-        enableDeleteTargetWithShortcuts: false,
-        ...this.options,
-      },
-    });
-    this.container.load(containerModule, true);
+    const annotationPluginOptions = {
+      selectableStyle: {},
+      drawerStyle: {},
+      isDrawingMode: true,
+      arrowKeyStepLength: 4,
+      enableAutoSwitchDrawingMode: false,
+      enableDeleteTargetWithShortcuts: false,
+      ...this.options,
+    };
+
+    this.addRenderingPlugin(new SelectablePlugin(annotationPluginOptions));
+    this.addRenderingPlugin(new AnnotationPlugin(annotationPluginOptions));
 
     // register custom properties
     CSS.registerProperty({
@@ -106,17 +101,28 @@ export class Plugin extends AbstractRendererPlugin {
     });
   }
 
+  private getSelectablePlugin() {
+    return this.plugins[0] as SelectablePlugin;
+  }
+
+  private getAnnotationPlugin() {
+    return this.plugins[1] as AnnotationPlugin;
+  }
+
+  private getAnnotationPluginOptions() {
+    return this.getAnnotationPlugin().annotationPluginOptions;
+  }
+
   updateDrawerStyle(style: Partial<DrawerStyle>) {
-    const { drawerStyle } = this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
+    const { drawerStyle } = this.getAnnotationPluginOptions();
     Object.assign(drawerStyle, style);
   }
 
   updateSelectableStyle(style: Partial<SelectableStyle>) {
-    const { selectableStyle } =
-      this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
+    const { selectableStyle } = this.getAnnotationPluginOptions();
     Object.assign(selectableStyle, style);
 
-    this.container.get(SelectablePlugin).updateSelectableStyle();
+    this.getSelectablePlugin().updateSelectableStyle();
   }
 
   /**
@@ -124,51 +130,50 @@ export class Plugin extends AbstractRendererPlugin {
    * @see http://fabricjs.com/docs/fabric.Canvas.html#setActiveObject
    */
   selectDisplayObject(displayObject: DisplayObject) {
-    this.container.get(SelectablePlugin).selectDisplayObject(displayObject);
+    this.getSelectablePlugin().selectDisplayObject(displayObject);
   }
 
   /**
    * hide selectable UI of target displayobject
    */
   deselectDisplayObject(displayObject: DisplayObject) {
-    this.container.get(SelectablePlugin).deselectDisplayObject(displayObject);
+    this.getSelectablePlugin().deselectDisplayObject(displayObject);
   }
 
   getSelectedDisplayObjects() {
-    return this.container.get(SelectablePlugin).getSelectedDisplayObjects();
+    return this.getSelectablePlugin().getSelectedDisplayObjects();
   }
 
   markSelectableUIAsDirty(object: DisplayObject) {
-    return this.container.get(SelectablePlugin).markSelectableUIAsDirty(object);
+    return this.getSelectablePlugin().markSelectableUIAsDirty(object);
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
-    this.container.get(AnnotationPlugin).emmiter.on(eventName, fn);
+    this.getAnnotationPlugin().emmiter.on(eventName, fn);
   }
 
   removeEventListener(eventName: string, fn: (...args: any[]) => void) {
-    this.container.get(AnnotationPlugin).emmiter.off(eventName, fn);
+    this.getAnnotationPlugin().emmiter.off(eventName, fn);
   }
 
   setDrawer(tool: DrawerTool, options?: DrawerOption) {
-    this.container.get(AnnotationPlugin).setDrawer(tool, options);
+    this.getAnnotationPlugin().setDrawer(tool, options);
   }
 
   clearDrawer() {
-    this.container.get(AnnotationPlugin).clearDrawer();
+    this.getAnnotationPlugin().clearDrawer();
   }
 
   /**
    * @see http://fabricjs.com/fabric-intro-part-4#free_drawing
    */
   setDrawingMode(enabled: boolean) {
-    const options = this.container.get<AnnotationPluginOptions>(AnnotationPluginOptions);
+    const options = this.getAnnotationPluginOptions();
     options.isDrawingMode = enabled;
   }
 
   destroy(): void {
-    this.container.remove(AnnotationPluginOptions);
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }
 export * from './constants/enum';

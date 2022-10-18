@@ -1,19 +1,11 @@
-import { singleton } from 'mana-syringe';
 import type { AbsoluteArray, CurveArray } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import { Rectangle } from '../../shapes';
 import { Shape } from '../../types';
 import { CSSKeywordValue } from '../cssom';
-import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
+import type { CSSProperty } from '../CSSProperty';
 import { mergePaths, parsePath } from '../parser/path';
 
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.PATH,
-  },
-})
 export class CSSPropertyPath
   implements Partial<CSSProperty<ParsedPathStyleProps['path'], ParsedPathStyleProps['path']>>
 {

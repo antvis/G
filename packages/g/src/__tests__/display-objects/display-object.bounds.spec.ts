@@ -279,6 +279,8 @@ describe('DisplayObject Bounds API', () => {
     // use clipPath
     const clipPath = new Circle({
       style: {
+        cx: 100,
+        cy: 100,
         r: 20,
       },
     });
@@ -302,6 +304,42 @@ describe('DisplayObject Bounds API', () => {
 
     // change clip path
     clipPath.style.r = 40;
+    bounds = rect.getBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getLocalBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getRenderBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(40, 40, 0));
+    }
+
+    // transform clip path
+    clipPath.style.transform = 'scale(0.5)';
+    bounds = rect.getBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getLocalBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+    }
+    bounds = rect.getRenderBounds();
+    if (bounds) {
+      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.halfExtents).eqls(vec3.fromValues(20, 20, 0));
+    }
+
+    // use transform API
+    clipPath.scale(2);
     bounds = rect.getBounds();
     if (bounds) {
       expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));

@@ -1,18 +1,20 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { RoughElementLifeCycleContribution } from './RoughElementLifeCycleContribution';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
-
-const containerModule = Module((register) => {
-  register(RoughElementLifeCycleContribution);
-  register(RoughRendererPlugin);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'rough-svg-renderer';
   init(): void {
-    this.container.load(containerModule, true);
+    const roughElementLifeCycleContribution = new RoughElementLifeCycleContribution(this.context);
+
+    // @ts-ignore
+    this.context.SVGElementLifeCycleContribution = roughElementLifeCycleContribution;
+
+    this.addRenderingPlugin(new RoughRendererPlugin());
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
+
+    // @ts-ignore
+    this.context.SVGElementLifeCycleContribution = this.context.defaultElementLifeCycleContribution;
   }
 }

@@ -4,26 +4,15 @@ import type {
   ParsedBaseStyleProps,
   PickingResult,
   RenderingPlugin,
-  RenderingService,
   Shape,
   IDocument,
-} from '@antv/g-lite';
-import { RenderingContext } from '@antv/g-lite';
-import {
+  RenderingPluginContext,
   CanvasConfig,
-  findClosestClipPathTarget,
-  inject,
-  OffscreenCanvasCreator,
-  Point,
-  RenderingPluginContribution,
-  singleton,
-  Syringe,
 } from '@antv/g-lite';
+import { findClosestClipPathTarget, runtime, Point } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
-import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 
-export const PointInPathPickerFactory = Syringe.defineToken('');
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,
@@ -41,31 +30,28 @@ const tmpMat4 = mat4.create();
  * 1. find AABB with r-tree
  * 2. do math calculation with geometry in an accurate way
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class CanvasPickerPlugin implements RenderingPlugin {
   static tag = 'CanvasPicker';
 
-  private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
+  private canvasConfig: Partial<CanvasConfig>;
+  private pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
+  private pointInPathPickerFactory: Record<Shape, PointInPathPicker<any>>;
 
-  constructor(
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
+  apply(context: RenderingPluginContext) {
+    const {
+      config,
+      renderingService,
+      renderingContext,
+      // @ts-ignore
+      pathGeneratorFactory,
+      // @ts-ignore
+      pointInPathPickerFactory,
+    } = context;
+    this.canvasConfig = config;
+    this.pathGeneratorFactory = pathGeneratorFactory;
+    this.pointInPathPickerFactory = pointInPathPickerFactory;
 
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(OffscreenCanvasCreator)
-    private offscreenCanvas: OffscreenCanvasCreator,
-
-    @inject(PathGeneratorFactory)
-    private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>,
-
-    @inject(PointInPathPickerFactory)
-    private pointInPathPickerFactory: (tagName: Shape | string) => PointInPathPicker<any>,
-  ) {}
-
-  apply(renderingService: RenderingService) {
-    const document = this.renderingContext.root?.ownerDocument;
+    const document = renderingContext.root?.ownerDocument;
 
     renderingService.hooks.pick.tapPromise(
       CanvasPickerPlugin.tag,
@@ -96,66 +82,18 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       position[1],
     );
 
-    // const rBushNodes = this.rBush.search({
-    //   minX: position[0],
-    //   minY: position[1],
-    //   maxX: position[0],
-    //   maxY: position[1],
-    // });
-
-    // const queriedIds = rBushNodes.map((node) => node.id);
-    // const hitTestList: DisplayObject[] = [];
-    // rBushNodes.forEach(({ id }) => {
-    //   const displayObject = this.displayObjectPool.getByEntity(id);
-    //   const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
-
-    //   // account for `visibility`
-    //   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
-    //   const isVisibilityAffected = [
-    //     'auto',
-    //     'visiblepainted',
-    //     'visiblefill',
-    //     'visiblestroke',
-    //     'visible',
-    //   ].includes(pointerEvents);
-
-    //   if (
-    //     (!isVisibilityAffected || (isVisibilityAffected && displayObject.isVisible())) &&
-    //     !displayObject.isCulled() &&
-    //     displayObject.isInteractive()
-    //   ) {
-    //     // parent is not included, eg. parent is clipped
-    //     if (
-    //       displayObject.parentNode &&
-    //       queriedIds.indexOf((displayObject.parentNode as Element).entity) === -1
-    //     ) {
-    //       return;
-    //     }
-
-    //     hitTestList.push(displayObject);
-    //   }
-    // });
-    // // find group with max z-index
-    // hitTestList.sort((a, b) => b.sortable.renderOrder - a.sortable.renderOrder);
-
     // test with clip path & origin shape
     // @see https://github.com/antvis/g/issues/1064
     const pickedDisplayObjects: DisplayObject[] = [];
     for (const displayObject of hitTestList) {
-      let worldTransform = displayObject.getWorldTransform();
+      const worldTransform = displayObject.getWorldTransform();
       const isHitOriginShape = this.isHit(displayObject, position, worldTransform);
       if (isHitOriginShape) {
         // should look up in the ancestor node
         const clipped = findClosestClipPathTarget(displayObject);
         if (clipped) {
-          const clipPath = clipped.style.clipPath;
-          worldTransform = mat4.multiply(
-            tmpMat4,
-            clipped === displayObject ? worldTransform : clipped.getWorldTransform(),
-            clipPath.getLocalTransform(),
-          );
-
-          const isHitClipPath = this.isHit(clipPath, position, worldTransform);
+          const { clipPath } = clipped.parsedStyle as ParsedBaseStyleProps;
+          const isHitClipPath = this.isHit(clipPath, position, clipPath.getWorldTransform());
           if (isHitClipPath) {
             if (topmost) {
               result.picked = [displayObject];
@@ -181,7 +119,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
 
   private isHit = (displayObject: DisplayObject, position: vec3, worldTransform: mat4) => {
     // use picker for current shape's type
-    const pick = this.pointInPathPickerFactory(displayObject.nodeName);
+    const pick = this.pointInPathPickerFactory[displayObject.nodeName];
     if (pick) {
       // invert with world matrix
       const invertWorldMat = mat4.invert(tmpMat4, worldTransform);
@@ -211,16 +149,11 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
   private isPointInPath = (displayObject: DisplayObject, position: Point) => {
-    const context = this.offscreenCanvas.getOrCreateContext(
+    const context = runtime.offscreenCanvas.getOrCreateContext(
       this.canvasConfig.offscreenCanvas,
     ) as CanvasRenderingContext2D;
 
-    if (this.pathGeneratorFactoryCache[displayObject.nodeName] === undefined) {
-      this.pathGeneratorFactoryCache[displayObject.nodeName] = this.pathGeneratorFactory(
-        displayObject.nodeName,
-      );
-    }
-    const generatePath = this.pathGeneratorFactoryCache[displayObject.nodeName];
+    const generatePath = this.pathGeneratorFactory[displayObject.nodeName];
     if (generatePath) {
       context.beginPath();
       generatePath(context, displayObject.parsedStyle);

@@ -1,27 +1,12 @@
-import type { RenderingPlugin, RenderingService } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  ContextService,
-  inject,
-  RenderingPluginContribution,
-  singleton,
-} from '@antv/g-lite';
+import type { RenderingPlugin, RenderingPluginContext } from '@antv/g-lite';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class RoughRendererPlugin implements RenderingPlugin {
   static tag = 'RoughSVGRenderer';
 
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(ContextService)
-    private contextService: ContextService<SVGSVGElement>,
-  ) {}
-
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { contextService, renderingService } = context;
     renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
@@ -31,7 +16,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
 
       // @see https://github.com/rough-stuff/rough/wiki#roughsvg-svgroot--config
 
-      const $svg = this.contextService.getContext();
+      const $svg = contextService.getContext();
 
       // @ts-ignore
       $svg.roughSVG = rough.svg($svg);

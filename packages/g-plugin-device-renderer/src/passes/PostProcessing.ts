@@ -1,20 +1,15 @@
-import { inject, singleton } from '@antv/g-lite';
 import { BufferGeometry } from '../geometries';
 import type { InputLayout, InputState, Program } from '../platform';
 import { Format, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState } from '../platform/utils';
-import type { DeviceProgram, TextureMapping } from '../render';
-import { fillVec4, RenderHelper } from '../render';
+import type { DeviceProgram, TextureMapping, RenderHelper } from '../render';
+import { fillVec4 } from '../render';
 import type { RGGraphBuilder } from '../render/interfaces';
 import { RGAttachmentSlot } from '../render/interfaces';
 import type { RenderInput } from '../render/RenderGraphHelpers';
 
-@singleton()
 export class PostProcessing {
-  constructor(
-    @inject(RenderHelper)
-    private renderHelper: RenderHelper,
-  ) {}
+  constructor(private renderHelper: RenderHelper) {}
 
   protected deviceProgram: DeviceProgram;
   protected debugName: string;

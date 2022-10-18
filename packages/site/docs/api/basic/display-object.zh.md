@@ -758,16 +758,18 @@ group.style.visibility = 'visible';
 
 使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/zh/examples/event#shapes)。
 
-例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 \* 200），此时我们可以设置裁剪区域圆形的局部坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
+例如我们想创建一个裁剪成圆形的图片，让裁剪区域刚好处于图片中心（尺寸为 200 \* 200），此时我们可以设置裁剪区域圆形的世界坐标为 `[100, 100]`。[示例](/zh/examples/shape#clip)：
 
 ```js
 const image = new Image({
     style: {
+        x: 0,
+        y: 0,
         width: 200,
         height: 200,
         clipPath: new Circle({
             style: {
-                cx: 100, // 处于被裁剪图形局部坐标系下
+                cx: 100,
                 cy: 100,
                 r: 50,
             },
@@ -787,7 +789,7 @@ const image = new Image({
 
 image.style.clipPath = new Circle({
     style: {
-        cx: 100, // 处于被裁剪图形局部坐标系下
+        cx: 100,
         cy: 100,
         r: 50,
     },
@@ -796,7 +798,7 @@ image.style.clipPath = new Circle({
 image.setClip(
     new Circle({
         style: {
-            cx: 100, // 处于被裁剪图形局部坐标系下
+            cx: 100,
             cy: 100,
             r: 50,
         },
@@ -814,7 +816,9 @@ image.setClip(null);
 
 ### 注意事项
 
-裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。例如，配合[动画系统](/zh/docs/api/animation/waapi)我们可以对裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
+裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。
+
+配合[动画系统](/zh/docs/api/animation/waapi)我们可以对已经添加到画布中的裁剪区域图形进行变换，实现以下效果，[示例](/zh/examples/shape#clip)：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 

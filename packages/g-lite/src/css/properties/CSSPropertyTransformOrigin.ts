@@ -1,7 +1,5 @@
-import { singleton } from 'mana-syringe';
 import type { CSSUnitValue } from '../cssom';
-import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
+import type { CSSProperty } from '../CSSProperty';
 import { parseTransformOrigin } from '../parser/transform-origin';
 
 /**
@@ -9,12 +7,6 @@ import { parseTransformOrigin } from '../parser/transform-origin';
  * @example
  * [10px, 10px] [10%, 10%]
  */
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.TRANSFORM_ORIGIN,
-  },
-})
 export class CSSPropertyTransformOrigin
   implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>>
 {

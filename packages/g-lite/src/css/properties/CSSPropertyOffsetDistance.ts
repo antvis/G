@@ -1,17 +1,8 @@
-import { singleton } from 'mana-syringe';
 import type { DisplayObject } from '../../display-objects';
 import { Shape } from '../../types';
 import type { CSSUnitValue } from '../cssom';
-import { CSSProperty } from '../CSSProperty';
-import { PropertySyntax } from '../interfaces';
+import type { CSSProperty } from '../CSSProperty';
 import { clampedMergeNumbers, parseNumber } from '../parser/numeric';
-
-@singleton({
-  token: {
-    token: CSSProperty,
-    named: PropertySyntax.OFFSET_DISTANCE,
-  },
-})
 export class CSSPropertyOffsetDistance implements Partial<CSSProperty<CSSUnitValue, number>> {
   parser = parseNumber;
 

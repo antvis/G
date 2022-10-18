@@ -1,5 +1,4 @@
 import type { DisplayObject, Image as ImageShape } from '@antv/g-lite';
-import { injectable } from '@antv/g-lite';
 import {
   Instanced,
   VertexAttributeBufferIndex,
@@ -9,7 +8,6 @@ import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/image.frag';
 import vert from '../shader/image.vert';
 
-@injectable()
 export class ImageMesh extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
@@ -36,7 +34,7 @@ export class ImageMesh extends Instanced {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
 
-    const map = this.texturePool.getOrCreateTexture(this.device, img);
+    const map = this.texturePool.getOrCreateTexture(this.context.device, img);
     this.material.setUniforms({
       u_Map: map,
     });
@@ -108,7 +106,7 @@ export class ImageMesh extends Instanced {
         new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'img') {
-      const map = this.texturePool.getOrCreateTexture(this.device, value);
+      const map = this.texturePool.getOrCreateTexture(this.context.device, value);
       this.material.setUniforms({
         u_Map: map,
       });

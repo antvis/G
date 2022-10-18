@@ -1,10 +1,8 @@
-import { GlobalContainer } from 'mana-syringe';
 import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
-// import { displayObjectPool, this.sceneGraphService, styleValueRegistry } from '..';
 import type { PropertyParseOptions } from '../css';
-import { noneColor, StyleValueRegistry } from '../css';
+import { noneColor } from '../css';
 import type { DisplayObjectConfig, IAnimation, ICSSStyleDeclaration, IElement } from '../dom';
 import { Element, ElementEvent, MutationEvent } from '../dom';
 import { Rectangle } from '../shapes';
@@ -19,11 +17,58 @@ import {
   rad2deg,
 } from '../utils';
 import type { CustomElement } from './CustomElement';
-import { DisplayObjectPool } from './DisplayObjectPool';
+import { runtime } from '../global-runtime';
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
-let mutationEvent: MutationEvent;
+const mutationEvent: MutationEvent = new MutationEvent(
+  ElementEvent.ATTR_MODIFIED,
+  null,
+  null,
+  null,
+  null,
+  MutationEvent.MODIFICATION,
+  null,
+  null,
+);
+
+const DEFAULT_STYLE_PROPS = {
+  anchor: '',
+  opacity: '',
+  fillOpacity: '',
+  strokeOpacity: '',
+  fill: '',
+  stroke: '',
+  transform: '',
+  transformOrigin: '',
+  visibility: '',
+  pointerEvents: '',
+  lineWidth: '',
+  lineCap: '',
+  lineJoin: '',
+  increasedLineWidthForHitTesting: '',
+  fontSize: '',
+  fontFamily: '',
+  fontStyle: '',
+  fontWeight: '',
+  fontVariant: '',
+  textAlign: '',
+  textBaseline: '',
+  textTransform: '',
+  zIndex: '',
+  filter: '',
+  shadowType: '',
+};
+
+const DEFAULT_PARSED_STYLE_PROPS = {
+  anchor: [0, 0],
+  fill: noneColor,
+  stroke: noneColor,
+  transform: [],
+  zIndex: 0,
+  filter: [],
+  shadowType: 'outer',
+};
 
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
@@ -59,10 +104,6 @@ export class DisplayObject<
    */
   private activeAnimations: IAnimation[] = [];
 
-  private displayObjectPool = GlobalContainer.get(DisplayObjectPool);
-
-  private styleValueRegistry = GlobalContainer.get(StyleValueRegistry);
-
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
 
@@ -95,47 +136,9 @@ export class DisplayObject<
     }
 
     // merge parsed value
-    Object.assign(
-      this.parsedStyle,
-      {
-        anchor: [0, 0],
-        fill: noneColor,
-        stroke: noneColor,
-        transform: [],
-        zIndex: 0,
-        filter: [],
-        shadowType: 'outer',
-      },
-      this.config.initialParsedStyle,
-    );
+    Object.assign(this.parsedStyle, DEFAULT_PARSED_STYLE_PROPS, this.config.initialParsedStyle);
 
-    Object.assign(this.attributes, {
-      anchor: '',
-      opacity: '',
-      fillOpacity: '',
-      strokeOpacity: '',
-      fill: '',
-      stroke: '',
-      transform: '',
-      transformOrigin: '',
-      visibility: '',
-      pointerEvents: '',
-      lineWidth: '',
-      lineCap: '',
-      lineJoin: '',
-      increasedLineWidthForHitTesting: '',
-      fontSize: '',
-      fontFamily: '',
-      fontStyle: '',
-      fontWeight: '',
-      fontVariant: '',
-      textAlign: '',
-      textBaseline: '',
-      textTransform: '',
-      zIndex: '',
-      filter: '',
-      shadowType: '',
-    });
+    Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
 
     // start to process attributes
     this.initAttributes(this.config.style);
@@ -177,14 +180,14 @@ export class DisplayObject<
     );
 
     // insert this group into pool
-    this.displayObjectPool.add(this.entity, this);
+    runtime.displayObjectPool.add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
 
     // remove from into pool
-    this.displayObjectPool.remove(this.entity);
+    runtime.displayObjectPool.remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -198,7 +201,13 @@ export class DisplayObject<
       const attribute = clonedStyle[attributeName];
 
       // @see https://github.com/antvis/G/issues/1095
-      if (attribute instanceof DisplayObject) {
+      if (
+        attribute instanceof DisplayObject &&
+        // share the same clipPath if possible
+        attributeName !== 'clipPath' &&
+        attributeName !== 'offsetPath' &&
+        attributeName !== 'textPath'
+      ) {
         clonedStyle[attributeName] = attribute.cloneNode(deep);
       }
       // TODO: clone other type
@@ -237,7 +246,7 @@ export class DisplayObject<
     const renderable = this.renderable;
 
     // account for FCP, process properties as less as possible
-    this.styleValueRegistry.processProperties(this, attributes, {
+    runtime.styleValueRegistry.processProperties(this, attributes, {
       forceUpdateGeometry: true,
       usedAttributes: [
         // 'anchor',
@@ -301,7 +310,7 @@ export class DisplayObject<
     const oldValue = this.attributes[name];
     const oldParsedValue = this.parsedStyle[name as string];
 
-    this.styleValueRegistry.processProperties(
+    runtime.styleValueRegistry.processProperties(
       this,
       {
         [name]: value,
@@ -309,56 +318,11 @@ export class DisplayObject<
       parseOptions,
     );
 
-    // inform clip path targets
-    ['clipPathTargets', 'textPathTargets'].forEach((pathTargetsName, i) => {
-      if (this.parsedStyle[pathTargetsName] && this.parsedStyle[pathTargetsName].length) {
-        const modifiedName = i === 0 ? 'clipPath' : 'textPath';
-        this.parsedStyle[pathTargetsName].forEach((target: DisplayObject) => {
-          this.sceneGraphService.dirtifyToRoot(target);
-
-          target.dispatchEvent(
-            new MutationEvent(
-              ElementEvent.ATTR_MODIFIED,
-              target as IElement,
-              this,
-              this,
-              modifiedName,
-              MutationEvent.MODIFICATION,
-              this,
-              this,
-            ),
-          );
-
-          if (target.isCustomElement && target.isConnected) {
-            if ((target as CustomElement<any>).attributeChangedCallback) {
-              (target as CustomElement<any>).attributeChangedCallback(modifiedName, this, this);
-            }
-          }
-        });
-      }
-    });
-
     // redraw at next frame
     renderable.dirty = true;
 
-    // trigger later
-    // this.sceneGraphService.pendingEvents.push([ElementEvent.ATTR_MODIFIED, { affectChildren }]);
-
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {
-      if (!mutationEvent) {
-        mutationEvent = new MutationEvent(
-          ElementEvent.ATTR_MODIFIED,
-          null,
-          null,
-          null,
-          null,
-          MutationEvent.MODIFICATION,
-          null,
-          null,
-        );
-      }
-
       mutationEvent.relatedNode = this as IElement;
       mutationEvent.prevValue = oldValue;
       mutationEvent.newValue = value;
@@ -398,19 +362,19 @@ export class DisplayObject<
   }
 
   setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setOrigin(this, createVec3(position, y, z));
     return this;
   }
 
   getOrigin(): vec3 {
-    return this.sceneGraphService.getOrigin(this);
+    return runtime.sceneGraphService.getOrigin(this);
   }
 
   /**
    * set position in world space
    */
   setPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setPosition(this, createVec3(position, y, z));
     return this;
   }
 
@@ -418,7 +382,7 @@ export class DisplayObject<
    * set position in local space
    */
   setLocalPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
     return this;
   }
 
@@ -426,7 +390,7 @@ export class DisplayObject<
    * translate in world space
    */
   translate(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.translate(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translate(this, createVec3(position, y, z));
     return this;
   }
 
@@ -434,16 +398,16 @@ export class DisplayObject<
    * translate in local space
    */
   translateLocal(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    this.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translateLocal(this, createVec3(position, y, z));
     return this;
   }
 
   getPosition(): vec3 {
-    return this.sceneGraphService.getPosition(this);
+    return runtime.sceneGraphService.getPosition(this);
   }
 
   getLocalPosition(): vec3 {
-    return this.sceneGraphService.getLocalPosition(this);
+    return runtime.sceneGraphService.getLocalPosition(this);
   }
 
   /**
@@ -463,7 +427,7 @@ export class DisplayObject<
       z = z || scaling;
       scaling = createVec3(scaling, y, z);
     }
-    this.sceneGraphService.scaleLocal(this, scaling);
+    runtime.sceneGraphService.scaleLocal(this, scaling);
     return this;
   }
 
@@ -477,7 +441,7 @@ export class DisplayObject<
       scaling = createVec3(scaling, y, z);
     }
 
-    this.sceneGraphService.setLocalScale(this, scaling);
+    runtime.sceneGraphService.setLocalScale(this, scaling);
     return this;
   }
 
@@ -485,14 +449,14 @@ export class DisplayObject<
    * get scaling in local space
    */
   getLocalScale(): vec3 {
-    return this.sceneGraphService.getLocalScale(this);
+    return runtime.sceneGraphService.getLocalScale(this);
   }
 
   /**
    * get scaling in world space
    */
   getScale(): vec3 {
-    return this.sceneGraphService.getScale(this);
+    return runtime.sceneGraphService.getScale(this);
   }
 
   /**
@@ -500,7 +464,7 @@ export class DisplayObject<
    */
   getEulerAngles() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getWorldTransform(this));
+    const [ex, ey, ez] = getEuler(vec3.create(), runtime.sceneGraphService.getWorldTransform(this));
     return rad2deg(ez);
   }
 
@@ -509,7 +473,7 @@ export class DisplayObject<
    */
   getLocalEulerAngles() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), this.sceneGraphService.getLocalRotation(this));
+    const [ex, ey, ez] = getEuler(vec3.create(), runtime.sceneGraphService.getLocalRotation(this));
     return rad2deg(ez);
   }
 
@@ -517,7 +481,7 @@ export class DisplayObject<
    * set euler angles(degrees) in world space
    */
   setEulerAngles(z: number) {
-    this.sceneGraphService.setEulerAngles(this, 0, 0, z);
+    runtime.sceneGraphService.setEulerAngles(this, 0, 0, z);
     return this;
   }
 
@@ -525,15 +489,15 @@ export class DisplayObject<
    * set euler angles(degrees) in local space
    */
   setLocalEulerAngles(z: number) {
-    this.sceneGraphService.setLocalEulerAngles(this, 0, 0, z);
+    runtime.sceneGraphService.setLocalEulerAngles(this, 0, 0, z);
     return this;
   }
 
   rotateLocal(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      this.sceneGraphService.rotateLocal(this, 0, 0, x);
+      runtime.sceneGraphService.rotateLocal(this, 0, 0, x);
     } else {
-      this.sceneGraphService.rotateLocal(this, x, y, z);
+      runtime.sceneGraphService.rotateLocal(this, x, y, z);
     }
 
     return this;
@@ -541,56 +505,56 @@ export class DisplayObject<
 
   rotate(x: number, y?: number, z?: number) {
     if (isNil(y) && isNil(z)) {
-      this.sceneGraphService.rotate(this, 0, 0, x);
+      runtime.sceneGraphService.rotate(this, 0, 0, x);
     } else {
-      this.sceneGraphService.rotate(this, x, y, z);
+      runtime.sceneGraphService.rotate(this, x, y, z);
     }
 
     return this;
   }
 
   setRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
-    this.sceneGraphService.setRotation(this, rotation, y, z, w);
+    runtime.sceneGraphService.setRotation(this, rotation, y, z, w);
     return this;
   }
 
   setLocalRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
-    this.sceneGraphService.setLocalRotation(this, rotation, y, z, w);
+    runtime.sceneGraphService.setLocalRotation(this, rotation, y, z, w);
     return this;
   }
 
   setLocalSkew(skew: vec2 | number, y?: number) {
-    this.sceneGraphService.setLocalSkew(this, skew, y);
+    runtime.sceneGraphService.setLocalSkew(this, skew, y);
     return this;
   }
 
   getRotation(): quat {
-    return this.sceneGraphService.getRotation(this);
+    return runtime.sceneGraphService.getRotation(this);
   }
 
   getLocalRotation(): quat {
-    return this.sceneGraphService.getLocalRotation(this);
+    return runtime.sceneGraphService.getLocalRotation(this);
   }
 
   getLocalSkew(): vec2 {
-    return this.sceneGraphService.getLocalSkew(this);
+    return runtime.sceneGraphService.getLocalSkew(this);
   }
 
   getLocalTransform(): mat4 {
-    return this.sceneGraphService.getLocalTransform(this);
+    return runtime.sceneGraphService.getLocalTransform(this);
   }
 
   getWorldTransform(): mat4 {
-    return this.sceneGraphService.getWorldTransform(this);
+    return runtime.sceneGraphService.getWorldTransform(this);
   }
 
   setLocalTransform(transform: mat4) {
-    this.sceneGraphService.setLocalTransform(this, transform);
+    runtime.sceneGraphService.setLocalTransform(this, transform);
     return this;
   }
 
   resetLocalTransform(): void {
-    this.sceneGraphService.resetLocalTransform(this);
+    runtime.sceneGraphService.resetLocalTransform(this);
   }
   // #endregion transformable
 
@@ -610,13 +574,13 @@ export class DisplayObject<
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
     options?: number | KeyframeAnimationOptions | undefined,
   ): IAnimation | null {
-    let timeline = this.ownerDocument?.timeline;
+    const timeline = this.ownerDocument?.timeline;
 
     // account for clip path, use target's timeline
-    if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
-      const target = this.parsedStyle.clipPathTargets[0];
-      timeline = target.ownerDocument?.timeline;
-    }
+    // if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
+    //   const target = this.parsedStyle.clipPathTargets[0];
+    //   timeline = target.ownerDocument?.timeline;
+    // }
 
     if (timeline) {
       return timeline.play(this as IElement, keyframes, options);

@@ -1,5 +1,4 @@
 import type {
-  ICamera,
   CSSRGB,
   DisplayObject,
   FederatedEvent,
@@ -8,30 +7,14 @@ import type {
   RenderingPlugin,
   RenderingService,
   RBush,
-} from '@antv/g-lite';
-import {
-  AABB,
-  CanvasConfig,
-  CanvasEvent,
+  RenderingPluginContext,
   ContextService,
-  CustomEvent,
-  DefaultCamera,
-  DisplayObjectPool,
-  ElementEvent,
-  inject,
-  RBushRoot,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  singleton,
 } from '@antv/g-lite';
+import { AABB, CanvasEvent, CustomEvent, runtime, ElementEvent, Shape } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
-import { PathGeneratorFactory } from '@antv/g-plugin-canvas-path-generator';
 import { isNil } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
-import type { StyleRenderer } from './shapes/styles';
-import { StyleRendererFactory } from './shapes/styles';
-import { CanvasRendererPluginOptions } from './tokens';
+import type { CanvasRendererPluginOptions } from './interfaces';
 
 interface Rect {
   x: number;
@@ -45,43 +28,20 @@ interface Rect {
  * * immediate
  * * delayed: render at the end of frame with dirty-rectangle
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class CanvasRendererPlugin implements RenderingPlugin {
   static tag = 'CanvasRenderer';
 
-  private pathGeneratorFactoryCache: Record<Shape | string, PathGenerator<any>> = {};
-  private styleRendererFactoryCache: Record<Shape | string, StyleRenderer> = {};
+  private context: RenderingPluginContext;
+
+  private pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
+
+  /**
+   * RBush used in dirty rectangle rendering
+   */
+  private rBush: RBush<RBushNodeAABB>;
 
   constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-
-    @inject(ContextService)
-    private contextService: ContextService<CanvasRenderingContext2D>,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(PathGeneratorFactory)
-    private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>,
-
-    @inject(StyleRendererFactory)
-    private styleRendererFactory: (tagName: Shape | string) => StyleRenderer,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-
-    @inject(CanvasRendererPluginOptions)
-    private canvasRendererPluginOptions: CanvasRendererPluginOptions,
-
-    /**
-     * RBush used in dirty rectangle rendering
-     */
-    @inject(RBushRoot)
-    private rBush: RBush<RBushNodeAABB>,
+    private canvasRendererPluginOptions: CanvasRendererPluginOptions, // private styleRendererFactory: Record<Shape, StyleRenderer>,
   ) {}
 
   private removedRBushNodeAABBs: RBushNodeAABB[] = [];
@@ -106,8 +66,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private vec3c = vec3.create();
   private vec3d = vec3.create();
 
-  apply(renderingService: RenderingService) {
-    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+  apply(context: RenderingPluginContext) {
+    this.context = context;
+
+    // @ts-ignore
+    const { config, camera, renderingService, renderingContext, rBushRoot, pathGeneratorFactory } =
+      context;
+    this.rBush = rBushRoot;
+    this.pathGeneratorFactory = pathGeneratorFactory;
+    const contextService = context.contextService as ContextService<CanvasRenderingContext2D>;
+
+    const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -134,25 +103,25 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(CanvasRendererPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(ElementEvent.CULLED, handleCulled);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.CULLED, handleCulled);
 
       // clear fullscreen
-      const dpr = this.contextService.getDPR();
-      const { width, height } = this.canvasConfig;
-      const context = this.contextService.getContext();
-      this.clearRect(context, 0, 0, width * dpr, height * dpr);
+      const dpr = contextService.getDPR();
+      const { width, height } = config;
+      const context = contextService.getContext();
+      this.clearRect(context, 0, 0, width * dpr, height * dpr, config.background);
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.CULLED, handleCulled);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.CULLED, handleCulled);
     });
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
-      const context = this.contextService.getContext();
-      const dpr = this.contextService.getDPR();
-      const { width, height } = this.canvasConfig;
+      const context = contextService.getContext();
+      const dpr = contextService.getDPR();
+      const { width, height } = config;
       const { dirtyObjectNumThreshold, dirtyObjectRatioThreshold } =
         this.canvasRendererPluginOptions;
 
@@ -167,14 +136,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       if (context) {
         context.resetTransform();
         if (this.clearFullScreen) {
-          this.clearRect(context, 0, 0, width * dpr, height * dpr);
+          this.clearRect(context, 0, 0, width * dpr, height * dpr, config.background);
         }
       }
     });
 
     const renderByZIndex = (object: DisplayObject) => {
       if (object.isVisible() && !object.isCulled()) {
-        this.renderDisplayObject(object, renderingService);
+        this.renderDisplayObject(object, contextService, renderingService);
         // if we did a full screen rendering last frame
         this.saveDirtyAABB(object);
       }
@@ -189,14 +158,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
-      const context = this.contextService.getContext();
+      const context = contextService.getContext();
       // clear & clip dirty rectangle
-      const dpr = this.contextService.getDPR();
+      const dpr = contextService.getDPR();
       mat4.fromScaling(this.dprMatrix, vec3.fromValues(dpr, dpr, 1));
-      mat4.multiply(this.vpMatrix, this.dprMatrix, this.camera.getOrthoMatrix());
+      mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
-        renderByZIndex(this.renderingContext.root);
+        renderByZIndex(renderingContext.root);
       } else {
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
@@ -237,7 +206,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         const iheight = Math.ceil(maxy - miny);
 
         context.save();
-        this.clearRect(context, ix, iy, iwidth, iheight);
+        this.clearRect(context, ix, iy, iwidth, iheight, config.background);
         context.beginPath();
         context.rect(ix, iy, iwidth, iheight);
         context.clip();
@@ -253,7 +222,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         );
 
         // draw dirty rectangle
-        const { enableDirtyRectangleRenderingDebug } = this.canvasConfig.renderer.getConfig();
+        const { enableDirtyRectangleRenderingDebug } = config.renderer.getConfig();
         if (enableDirtyRectangleRenderingDebug) {
           canvas.dispatchEvent(
             new CustomEvent(CanvasEvent.DIRTY_RECTANGLE, {
@@ -277,7 +246,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           .forEach((object) => {
             // culled object should not be rendered
             if (object && object.isVisible() && !object.isCulled()) {
-              this.renderDisplayObject(object, renderingService);
+              this.renderDisplayObject(object, contextService, renderingService);
             }
           });
 
@@ -314,18 +283,22 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     y: number,
     width: number,
     height: number,
+    background: string,
   ) {
     // clearRect is faster than fillRect @see https://stackoverflow.com/a/30830253
     context.clearRect(x, y, width, height);
-    const { background } = this.canvasConfig;
     if (background) {
       context.fillStyle = background;
       context.fillRect(x, y, width, height);
     }
   }
 
-  private renderDisplayObject(object: DisplayObject, renderingService: RenderingService) {
-    const context = this.contextService.getContext();
+  private renderDisplayObject(
+    object: DisplayObject,
+    contextService: ContextService<CanvasRenderingContext2D>,
+    renderingService: RenderingService,
+  ) {
+    const context = contextService.getContext();
 
     const nodeName = object.nodeName;
 
@@ -337,33 +310,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.restoreStack.pop();
     }
 
-    // while (parent && object.parentNode !== parent) {
-    //   context.restore();
-    //   this.restoreStack.pop();
-    //   parent = this.restoreStack[this.restoreStack.length - 1];
-    // }
-
-    if (this.styleRendererFactoryCache[nodeName] === undefined) {
-      this.styleRendererFactoryCache[nodeName] = this.styleRendererFactory(nodeName);
-    }
-    const styleRenderer = this.styleRendererFactoryCache[nodeName];
-    if (this.pathGeneratorFactoryCache[nodeName] === undefined) {
-      this.pathGeneratorFactoryCache[nodeName] = this.pathGeneratorFactory(nodeName);
-    }
-    const generatePath = this.pathGeneratorFactoryCache[nodeName];
+    // @ts-ignore
+    const styleRenderer = this.context.styleRendererFactory[nodeName];
+    const generatePath = this.pathGeneratorFactory[nodeName];
 
     // clip path
-    const clipPathShape = object.parsedStyle.clipPath;
-    if (clipPathShape) {
-      this.applyWorldTransform(context, clipPathShape, object.getWorldTransform());
+    const { clipPath } = object.parsedStyle as ParsedBaseStyleProps;
+    if (clipPath) {
+      this.applyWorldTransform(context, clipPath);
 
       // generate path in local space
-      if (this.pathGeneratorFactoryCache[clipPathShape.nodeName] === undefined) {
-        this.pathGeneratorFactoryCache[clipPathShape.nodeName] = this.pathGeneratorFactory(
-          clipPathShape.nodeName,
-        );
-      }
-      const generatePath = this.pathGeneratorFactoryCache[clipPathShape.nodeName];
+      const generatePath = this.pathGeneratorFactory[clipPath.nodeName];
       if (generatePath) {
         context.save();
 
@@ -371,7 +328,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.restoreStack.push(object);
 
         context.beginPath();
-        generatePath(context, clipPathShape.parsedStyle);
+        generatePath(context, clipPath.parsedStyle);
         context.closePath();
         context.clip();
       }
@@ -460,7 +417,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       maxY,
     });
 
-    return rBushNodes.map(({ id }) => this.displayObjectPool.getByEntity(id));
+    return rBushNodes.map(({ id }) => runtime.displayObjectPool.getByEntity(id));
   }
 
   private saveDirtyAABB(object: DisplayObject) {

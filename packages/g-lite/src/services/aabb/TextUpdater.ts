@@ -1,16 +1,9 @@
-import { inject, singleton } from 'mana-syringe';
 import { isNil } from '@antv/util';
 import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
-import { Shape } from '../../types';
-import { TextService } from '../TextService';
-import { GeometryAABBUpdater } from './interfaces';
-
-@singleton({ token: { token: GeometryAABBUpdater, named: Shape.TEXT } })
+import type { GeometryAABBUpdater } from './interfaces';
+import type { GlobalRuntime } from '../../global-runtime';
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
-  constructor(
-    @inject(TextService)
-    private textService: TextService,
-  ) {}
+  constructor(private globalRuntime: GlobalRuntime) {}
 
   private isReadyToMeasure(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
     const {
@@ -66,7 +59,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       };
     }
 
-    const metrics = this.textService.measureText(text, parsedStyle, offscreenCanvas);
+    const metrics = this.globalRuntime.textService.measureText(text, parsedStyle, offscreenCanvas);
     parsedStyle.metrics = metrics;
 
     const { width, height, lineHeight, fontProperties } = metrics;

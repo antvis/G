@@ -1,4 +1,5 @@
 import type {
+  CanvasContext,
   DisplayObject,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
@@ -8,27 +9,13 @@ import type {
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
 } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  ContextService,
-  inject,
-  Shape,
-  singleton,
-  translatePathToString,
-} from '@antv/g-lite';
+import { Shape, translatePathToString } from '@antv/g-lite';
 import { SVGRenderer } from '@antv/g-svg';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
-@singleton({ token: SVGRenderer.ElementLifeCycleContribution })
 export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLifeCycleContribution {
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(ContextService)
-    private contextService: ContextService<SVGSVGElement>,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   createElement(object: DisplayObject<any, any>): SVGElement {
     const { nodeName } = object;
@@ -46,7 +33,7 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
       case Shape.IMAGE:
       case Shape.TEXT:
       case Shape.HTML:
-        const { document: doc } = this.canvasConfig;
+        const { document: doc } = this.context.config;
         const type = SVGRenderer.SHAPE2TAGS[nodeName] || 'g';
         return SVGRenderer.createSVGElement(type, doc || document);
     }
@@ -103,7 +90,7 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
   private generateSVGElement(object: DisplayObject<any, any>) {
     const { nodeName, parsedStyle } = object;
     // @ts-ignore
-    const roughSVG = this.contextService.getContext().roughSVG as unknown as RoughSVG;
+    const roughSVG = this.context.contextService.getContext().roughSVG as unknown as RoughSVG;
 
     let $roughG: SVGGElement = null;
 

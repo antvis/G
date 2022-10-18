@@ -1,9 +1,6 @@
-import { GlobalContainer } from 'mana-syringe';
+import { runtime } from '../global-runtime';
 import { CSSUnitValue } from './cssom';
 import type { PropertySyntax } from './interfaces';
-import { StyleValueRegistry } from './interfaces';
-// import type { LayoutDefinitionCtor } from './layout';
-import { LayoutRegistry } from './interfaces';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty#parameters
@@ -116,9 +113,7 @@ export const CSS = {
    */
   registerProperty: (definition: PropertyDefinition) => {
     const { name, inherits, interpolable, initialValue, syntax } = definition;
-
-    const styleValueRegistry = GlobalContainer.get<StyleValueRegistry>(StyleValueRegistry);
-    styleValueRegistry.registerMetadata({
+    runtime.styleValueRegistry.registerMetadata({
       n: name,
       inh: inherits,
       int: interpolable,
@@ -135,8 +130,6 @@ export const CSS = {
    * @see https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini#css_layout_api
    */
   registerLayout: (name: string, clazz: any) => {
-    // registerLayout: (name: string, clazz: LayoutDefinitionCtor) => {
-    const layoutRegistry = GlobalContainer.get(LayoutRegistry);
-    layoutRegistry.registerLayout(name, clazz);
+    runtime.layoutRegistry.registerLayout(name, clazz);
   },
 };

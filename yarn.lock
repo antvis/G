@@ -22493,13 +22493,6 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-mana-syringe@^0.3.1:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/mana-syringe/-/mana-syringe-0.3.2.tgz#9c82eccf451111a4d99ed2d855757b39b33e367e"
-  integrity sha512-2DZZj2dplm667q2gl+G2u3L0UleE2vK02PIFRgF7P0Uz7Aiq7KqXQRjx2af2SgRJ6JZ9B/LCVaBHBdvWZXGrbw==
-  dependencies:
-    inversify "^5.0.1"
-
 map-age-cleaner@^0.1.1, map-age-cleaner@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/map-age-cleaner/-/map-age-cleaner-0.1.3.tgz#7d583a7306434c055fe474b0f45078e6e1b4b92a"

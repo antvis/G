@@ -1,16 +1,11 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { ControlPlugin } from './ControlPlugin';
-
-export const containerModule = Module((register) => {
-  register(ControlPlugin);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'control';
   init(): void {
-    this.container.load(containerModule, true);
+    this.addRenderingPlugin(new ControlPlugin());
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    this.removeAllRenderingPlugins();
   }
 }

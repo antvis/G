@@ -1,19 +1,13 @@
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin } from '@antv/g-lite';
 import { SVGContextService } from './SVGContextService';
-
-const containerModule = Module((register) => {
-  /**
-   * implements ContextService
-   */
-  register(SVGContextService);
-});
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
   name = 'mobile-svg-context-register';
   init(): void {
-    this.container.load(containerModule, true);
+    // @ts-ignore
+    this.context.ContextService = SVGContextService;
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    delete this.context.ContextService;
   }
 }

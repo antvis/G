@@ -4,42 +4,23 @@ import type {
   HTML,
   MutationEvent,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  ContextService,
-  CSSRGB,
-  ElementEvent,
-  inject,
-  isPattern,
-  RenderingContext,
-  RenderingPluginContribution,
-  Shape,
-  singleton,
-} from '@antv/g-lite';
+import { CSSRGB, ElementEvent, isPattern, Shape } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
 const HTML_PREFIX = 'g-html-';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class HTMLRenderingPlugin implements RenderingPlugin {
   static tag = 'HTMLRendering';
 
-  constructor(
-    @inject(ContextService)
-    private contextService: ContextService<CanvasRenderingContext2D>,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  private context: RenderingPluginContext;
 
   private $camera: HTMLDivElement;
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingContext, renderingService } = context;
+    this.context = context;
     const setTransform = (object: DisplayObject, $el: HTMLElement) => {
       const worldTransform = object.getWorldTransform();
       $el.style.transform = `matrix(${[
@@ -74,7 +55,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
         const existedId = this.getId(object);
-        const $container = (this.contextService.getDomElement() as unknown as HTMLElement)
+        const $container = (this.context.contextService.getDomElement() as unknown as HTMLElement)
           .parentNode;
         if ($container) {
           const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
@@ -102,26 +83,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.BOUNDS_CHANGED,
-        handleBoundsChanged,
-      );
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
   }
 
@@ -130,9 +102,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   }
 
   private getOrCreateEl(object: DisplayObject) {
-    const { document: doc } = this.canvasConfig;
+    const { document: doc } = this.context.config;
     const existedId = this.getId(object);
-    const $canvas = this.contextService.getDomElement() as unknown as HTMLElement;
+    const $canvas = this.context.contextService.getDomElement() as unknown as HTMLElement;
     const $container = $canvas.parentNode;
     if ($container) {
       let $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);

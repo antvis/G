@@ -1,19 +1,13 @@
 import type {
+  CanvasContext,
   CSSGradientValue,
   DisplayObject,
   LinearGradient,
   Pattern,
   RadialGradient,
 } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  inject,
-  isBrowser,
-  OffscreenCanvasCreator,
-  RenderingService,
-  singleton,
-} from '@antv/g-lite';
-import { ImagePool } from '@antv/g-plugin-image-loader';
+import { isBrowser, runtime } from '@antv/g-lite';
+import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from './platform';
 import { Format, TextureDimension, TextureEvent, TextureUsage } from './platform';
@@ -25,21 +19,8 @@ export interface GradientParams {
   instance: DisplayObject;
 }
 
-@singleton()
 export class TexturePool {
-  constructor(
-    @inject(ImagePool)
-    private imagePool: ImagePool,
-
-    @inject(OffscreenCanvasCreator)
-    private offscreenCanvas: OffscreenCanvasCreator,
-
-    @inject(RenderingService)
-    private renderingService: RenderingService,
-
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-  ) {}
+  constructor(private context: CanvasContext) {}
 
   private textureCache: Record<string, Texture> = {};
 
@@ -77,10 +58,10 @@ export class TexturePool {
       if (!isString(src)) {
         texture.setImageData(src);
         texture.emit(TextureEvent.LOADED);
-        this.renderingService.dirtify();
+        this.context.renderingService.dirtify();
       } else {
         // @see https://github.com/antvis/g/issues/938
-        const { createImage } = this.canvasConfig;
+        const { createImage } = this.context.config;
 
         let image: HTMLImageElement;
         if (createImage) {
@@ -93,7 +74,7 @@ export class TexturePool {
           image.onload = () => {
             this.textureCache[id].setImageData(image);
             this.textureCache[id].emit(TextureEvent.LOADED);
-            this.renderingService.dirtify();
+            this.context.renderingService.dirtify();
             if (successCallback) {
               successCallback(this.textureCache[id]);
             }
@@ -111,7 +92,7 @@ export class TexturePool {
   }
 
   getOrCreateCanvas() {
-    return this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
+    return runtime.offscreenCanvas.getOrCreateCanvas(this.context.config.offscreenCanvas);
   }
 
   getOrCreateGradient(params: GradientParams) {
@@ -120,16 +101,20 @@ export class TexturePool {
     const width = halfExtents[0] * 2 || 1;
     const height = halfExtents[1] * 2 || 1;
 
-    const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
-    const context = this.offscreenCanvas.getOrCreateContext(
-      this.canvasConfig.offscreenCanvas,
+    const { offscreenCanvas } = this.context.config;
+    const canvas = runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
+    const context = runtime.offscreenCanvas.getOrCreateContext(
+      offscreenCanvas,
     ) as CanvasRenderingContext2D;
 
     canvas.width = width;
     canvas.height = height;
 
+    // @ts-ignore
+    const imagePool = this.context.imagePool as ImagePool;
+
     gradients.forEach((g) => {
-      const gradient = this.imagePool.getOrCreateGradient(
+      const gradient = imagePool.getOrCreateGradient(
         {
           type: g.type,
           ...(g.value as LinearGradient & RadialGradient),
@@ -153,9 +138,10 @@ export class TexturePool {
     const { halfExtents } = instance.getGeometryBounds();
     const width = halfExtents[0] * 2 || 1;
     const height = halfExtents[1] * 2 || 1;
+    const { offscreenCanvas } = this.context.config;
 
-    const canvas = this.offscreenCanvas.getOrCreateCanvas(this.canvasConfig.offscreenCanvas);
-    const context = this.offscreenCanvas.getOrCreateContext(this.canvasConfig.offscreenCanvas);
+    const canvas = runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
+    const context = runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
 
     canvas.width = width;
     canvas.height = height;
@@ -163,7 +149,8 @@ export class TexturePool {
     let src: CanvasImageSource;
     // Image URL
     if (isString(image)) {
-      src = this.imagePool.getImageSync(image, callback);
+      // @ts-ignore
+      src = this.context.imagePool.getImageSync(image, callback);
     } else {
       src = image as CanvasImageSource;
     }

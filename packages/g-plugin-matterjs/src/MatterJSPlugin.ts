@@ -8,51 +8,26 @@ import type {
   ParsedPolygonStyleProps,
   ParsedRectStyleProps,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  AABB,
-  CanvasEvent,
-  deg2rad,
-  DisplayObjectPool,
-  ElementEvent,
-  inject,
-  rad2deg,
-  RenderingContext,
-  RenderingPluginContribution,
-  SceneGraphService,
-  Shape,
-  singleton,
-} from '@antv/g-lite';
+import { AABB, CanvasEvent, deg2rad, runtime, ElementEvent, rad2deg, Shape } from '@antv/g-lite';
 import { vec2 } from 'gl-matrix';
 import { Bodies, Body, Composite, Engine, Render, World } from 'matter-js';
-import { MatterJSPluginOptions } from './tokens';
+import type { MatterJSPluginOptions } from './interfaces';
 import { sortPointsInCCW } from './utils';
 
-@singleton({ contrib: RenderingPluginContribution })
 export class MatterJSPlugin implements RenderingPlugin {
   static tag = 'MatterJS';
 
-  constructor(
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(DisplayObjectPool)
-    private displayObjectPool: DisplayObjectPool,
-
-    @inject(MatterJSPluginOptions)
-    private options: MatterJSPluginOptions,
-  ) {}
+  constructor(private options: MatterJSPluginOptions) {}
 
   private engine: Engine;
 
   private bodies: Record<number, Body> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    const { renderingService, renderingContext } = context;
     const simulate = () => {
       if (this.engine) {
         const { timeStep } = this.options;
@@ -62,7 +37,7 @@ export class MatterJSPlugin implements RenderingPlugin {
         }
 
         Object.keys(this.bodies).forEach((entity) => {
-          const displayObject = this.displayObjectPool.getByEntity(Number(entity));
+          const displayObject = runtime.displayObjectPool.getByEntity(Number(entity));
           const bounds = displayObject.getBounds();
 
           if (!AABB.isEmpty(bounds)) {
@@ -133,30 +108,24 @@ export class MatterJSPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(MatterJSPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
 
       this.createScene();
       this.handlePendingDisplayObjects();
 
       // do simulation each frame
-      this.renderingContext.root.ownerDocument.defaultView.addEventListener(
+      renderingContext.root.ownerDocument.defaultView.addEventListener(
         CanvasEvent.BEFORE_RENDER,
         simulate,
       );
     });
 
     renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      this.renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      this.renderingContext.root.removeEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
   }
 

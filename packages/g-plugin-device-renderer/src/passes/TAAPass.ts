@@ -1,5 +1,5 @@
 // import { inject, injectable } from 'inversify';
-// import { Camera, DefaultCamera, DisplayObject } from '@antv/g-lite';
+// import { Camera, DisplayObject } from '@antv/g-lite';
 // // @ts-ignore
 // import blendFS from '../services/shader-module/shaders/webgl.blend.frag.glsl';
 // // @ts-ignore
@@ -71,9 +71,6 @@
 
 //   @inject(View)
 //   private view: View;
-
-//   @inject(DefaultCamera)
-//   private camera: Camera;
 
 //   /**
 //    * 低差异序列

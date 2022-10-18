@@ -7,8 +7,8 @@ export class ElementSVG {
   $el: SVGElement | null;
 
   /**
-   * group wrapper for basic element, eg. <group><circle /></group>.
-   * if current element is <group>, same as `$el`
+   * group wrapper for basic element, eg. <g><circle /></g>.
+   * if current element is <g>, same as `$el`
    */
   $groupEl: SVGElement | null;
 

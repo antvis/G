@@ -1,5 +1,4 @@
-import { CanvasRenderer } from '@antv/g-canvas';
-import { AbstractRendererPlugin, Module } from '@antv/g-lite';
+import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
 import {
   CircleRenderer as CircleRoughRenderer,
   EllipseRenderer as EllipseRoughRenderer,
@@ -11,52 +10,34 @@ import {
 } from './renderers';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
 
-const {
-  CircleRenderer,
-  EllipseRenderer,
-  LineRenderer,
-  PathRenderer,
-  PolygonRenderer,
-  PolylineRenderer,
-  RectRenderer,
-} = CanvasRenderer;
-
-const containerModule = Module((register) => {
-  register(RoughRendererPlugin);
-
-  // replace them with our 'rough' styled renderer
-  register(CircleRoughRenderer);
-  register(EllipseRoughRenderer);
-  register(RectRoughRenderer);
-  register(LineRoughRenderer);
-  register(PolylineRoughRenderer);
-  register(PolygonRoughRenderer);
-  register(PathRoughRenderer);
-});
-
 export class Plugin extends AbstractRendererPlugin {
   name = 'rough-canvas-renderer';
   init(): void {
-    // unregister default renderer in `g-plugin-canvas-renderer`
-    this.container.remove(CircleRenderer);
-    this.container.remove(EllipseRenderer);
-    this.container.remove(RectRenderer);
-    this.container.remove(LineRenderer);
-    this.container.remove(PolylineRenderer);
-    this.container.remove(PolygonRenderer);
-    this.container.remove(PathRenderer);
+    // @ts-ignore
+    const defaultStyleRendererFactory = this.context.defaultStyleRendererFactory;
 
-    this.container.load(containerModule, true);
+    // @ts-ignore
+    this.context.styleRendererFactory = {
+      [Shape.CIRCLE]: new CircleRoughRenderer(),
+      [Shape.ELLIPSE]: new EllipseRoughRenderer(),
+      [Shape.RECT]: new RectRoughRenderer(),
+      [Shape.IMAGE]: defaultStyleRendererFactory[Shape.IMAGE],
+      [Shape.TEXT]: defaultStyleRendererFactory[Shape.TEXT],
+      [Shape.LINE]: new LineRoughRenderer(),
+      [Shape.POLYLINE]: new PolylineRoughRenderer(),
+      [Shape.POLYGON]: new PolygonRoughRenderer(),
+      [Shape.PATH]: new PathRoughRenderer(),
+      [Shape.GROUP]: undefined,
+      [Shape.HTML]: undefined,
+      [Shape.MESH]: undefined,
+    };
+
+    this.addRenderingPlugin(new RoughRendererPlugin());
   }
   destroy(): void {
-    this.container.unload(containerModule);
+    // @ts-ignore
+    this.context.styleRendererFactory = this.context.defaultStyleRendererFactory;
 
-    this.container.register(CircleRenderer);
-    this.container.register(EllipseRenderer);
-    this.container.register(RectRenderer);
-    this.container.register(LineRenderer);
-    this.container.register(PolylineRenderer);
-    this.container.register(PolygonRenderer);
-    this.container.register(PathRenderer);
+    this.removeAllRenderingPlugins();
   }
 }

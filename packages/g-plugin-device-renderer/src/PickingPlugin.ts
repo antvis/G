@@ -1,36 +1,25 @@
 import type {
-  ICamera,
   DisplayObject,
   FederatedEvent,
   PickingResult,
   RenderingPlugin,
-  RenderingService,
+  RenderingPluginContext,
 } from '@antv/g-lite';
-import {
-  CanvasConfig,
-  ContextService,
-  DefaultCamera,
-  ElementEvent,
-  inject,
-  Rectangle,
-  RenderingContext,
-  RenderingPluginContribution,
-  SceneGraphService,
-  singleton,
-} from '@antv/g-lite';
+import { ElementEvent, Rectangle } from '@antv/g-lite';
 import { clamp } from '@antv/util';
-import { PickingIdGenerator } from './PickingIdGenerator';
+import type { PickingIdGenerator } from './PickingIdGenerator';
 import { BlendFactor, BlendMode, setAttachmentStateSimple, TransparentBlack } from './platform';
+import type { RenderHelper } from './render';
 import {
   AntialiasingMode,
   makeAttachmentClearDescriptor,
   makeBackbufferDescSimple,
   opaqueWhiteFullClearRenderPassDescriptor,
-  RenderHelper,
   RGAttachmentSlot,
 } from './render';
-import { BatchManager } from './renderer';
-import { RenderGraphPlugin, SceneUniform, SceneUniformBufferIndex } from './RenderGraphPlugin';
+import type { BatchManager } from './renderer';
+import type { RenderGraphPlugin } from './RenderGraphPlugin';
+import { SceneUniform, SceneUniformBufferIndex } from './RenderGraphPlugin';
 
 /**
  * max depth when doing multi-layer picking
@@ -40,40 +29,22 @@ const MAX_PICKING_DEPTH = 100;
 /**
  * Use color-based picking in GPU
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class PickingPlugin implements RenderingPlugin {
   static tag = 'WebGLPicker';
 
+  private context: RenderingPluginContext;
+
   constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(SceneGraphService)
-    protected sceneGraphService: SceneGraphService,
-
-    @inject(ContextService)
-    private contextService: ContextService<WebGLRenderingContext>,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(RenderHelper)
     private renderHelper: RenderHelper,
-
-    @inject(RenderGraphPlugin)
     private renderGraphPlugin: RenderGraphPlugin,
-
-    @inject(PickingIdGenerator)
     private pickingIdGenerator: PickingIdGenerator,
-
-    @inject(DefaultCamera)
-    private camera: ICamera,
-
-    @inject(BatchManager)
     private batchManager: BatchManager,
   ) {}
 
-  apply(renderingService: RenderingService) {
+  apply(context: RenderingPluginContext) {
+    this.context = context;
+    const { renderingService, renderingContext } = context;
+
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       // @ts-ignore
@@ -87,11 +58,11 @@ export class PickingPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(PickingPlugin.tag, async () => {
-      this.renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
     renderingService.hooks.destroy.tap(PickingPlugin.tag, () => {
-      this.renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
     /**
@@ -104,9 +75,9 @@ export class PickingPlugin implements RenderingPlugin {
 
       // use viewportX/Y
       const { viewportX: x, viewportY: y } = position;
-      const dpr = this.contextService.getDPR();
-      const width = this.canvasConfig.width * dpr;
-      const height = this.canvasConfig.height * dpr;
+      const dpr = this.context.contextService.getDPR();
+      const width = this.context.config.width * dpr;
+      const height = this.context.config.height * dpr;
 
       const xInDevicePixel = x * dpr;
       const yInDevicePixel = y * dpr;
@@ -181,6 +152,7 @@ export class PickingPlugin implements RenderingPlugin {
     const renderInstManager = this.renderHelper.renderInstManager;
     const builder = this.renderHelper.renderGraph.newGraphBuilder();
     const clearColor = TransparentBlack;
+    const camera = this.context.camera;
 
     // retrieve at each frame since canvas may resize
     const { x, y, width, height } = rect;
@@ -206,7 +178,7 @@ export class PickingPlugin implements RenderingPlugin {
     const mainDepthTargetID = builder.createRenderTargetID(mainDepthDesc, 'Picking Depth');
 
     // account for current view offset
-    const currentView = { ...this.camera.getView() };
+    const currentView = { ...camera.getView() };
 
     return new Promise((resolve) => {
       // prevent unused RTs like main color being destroyed
@@ -229,7 +201,7 @@ export class PickingPlugin implements RenderingPlugin {
 
           // restore previous view
           if (currentView && currentView.enabled) {
-            this.camera.setViewOffset(
+            camera.setViewOffset(
               currentView.fullWidth,
               currentView.fullHeight,
               currentView.offsetX,
@@ -238,10 +210,10 @@ export class PickingPlugin implements RenderingPlugin {
               currentView.height,
             );
           } else {
-            this.camera.clearViewOffset();
+            camera.clearViewOffset();
           }
 
-          this.camera.setEnableUpdate(true);
+          camera.setEnableUpdate(true);
 
           readback
             .readTexture(texture, 0, 0, width, height, new Uint8Array(width * height * 4))
@@ -295,28 +267,28 @@ export class PickingPlugin implements RenderingPlugin {
       );
 
       // Update Scene Params
-      const { width: canvasWidth, height: canvasHeight } = this.canvasConfig;
-      const dpr = this.contextService.getDPR();
+      const { width: canvasWidth, height: canvasHeight } = this.context.config;
+      const dpr = this.context.contextService.getDPR();
 
-      this.camera.setEnableUpdate(false);
-      this.camera.setViewOffset(canvasWidth * dpr, canvasHeight * dpr, x, y, width, height);
+      camera.setEnableUpdate(false);
+      camera.setViewOffset(canvasWidth * dpr, canvasHeight * dpr, x, y, width, height);
 
       template.setUniforms(SceneUniformBufferIndex, [
         {
           name: SceneUniform.PROJECTION_MATRIX,
-          value: this.camera.getPerspective(),
+          value: camera.getPerspective(),
         },
         {
           name: SceneUniform.VIEW_MATRIX,
-          value: this.camera.getViewTransform(),
+          value: camera.getViewTransform(),
         },
         {
           name: SceneUniform.CAMERA_POSITION,
-          value: this.camera.getPosition(),
+          value: camera.getPosition(),
         },
         {
           name: SceneUniform.DEVICE_PIXEL_RATIO,
-          value: this.contextService.getDPR(),
+          value: this.context.contextService.getDPR(),
         },
         {
           name: SceneUniform.VIEWPORT,
@@ -324,7 +296,7 @@ export class PickingPlugin implements RenderingPlugin {
         },
         {
           name: SceneUniform.IS_ORTHO,
-          value: this.camera.isOrtho() ? 1 : 0,
+          value: camera.isOrtho() ? 1 : 0,
         },
         {
           name: SceneUniform.IS_PICKING,

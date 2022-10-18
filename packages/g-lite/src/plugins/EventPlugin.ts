@@ -1,19 +1,10 @@
-import { inject, singleton } from 'mana-syringe';
 import { isNil, isUndefined } from '@antv/util';
 import type { FederatedMouseEvent, ICanvas } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import type { RenderingPlugin } from '../services';
-import {
-  ContextService,
-  EventService,
-  RenderingContext,
-  RenderingPluginContribution,
-  RenderingService,
-} from '../services';
+import type { RenderingPlugin, RenderingPluginContext } from '../services';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
-import { CanvasConfig } from '../types';
 import type { FormattedPointerEvent, FormattedTouch } from '../utils/event';
 import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
 
@@ -23,36 +14,23 @@ import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
  *
  * also provide some extra events such as `drag`
  */
-@singleton({ contrib: RenderingPluginContribution })
 export class EventPlugin implements RenderingPlugin {
   static tag = 'Event';
-
-  constructor(
-    @inject(CanvasConfig)
-    private canvasConfig: CanvasConfig,
-
-    @inject(ContextService)
-    private contextService: ContextService<unknown>,
-
-    @inject(RenderingService)
-    private renderingService: RenderingService,
-
-    @inject(RenderingContext)
-    private renderingContext: RenderingContext,
-
-    @inject(EventService)
-    private eventService: EventService,
-  ) {}
 
   private autoPreventDefault = false;
   private rootPointerEvent = new FederatedPointerEvent(null);
   private rootWheelEvent = new FederatedWheelEvent(null);
 
-  apply(renderingService: RenderingService) {
-    const canvas = this.renderingContext.root.ownerDocument.defaultView;
+  private context: RenderingPluginContext;
 
-    this.eventService.setPickHandler(async (position: EventPosition) => {
-      const { picked } = await this.renderingService.hooks.pick.promise({
+  apply(context: RenderingPluginContext) {
+    this.context = context;
+    const { renderingService } = context;
+
+    const canvas = this.context.renderingContext.root.ownerDocument.defaultView;
+
+    this.context.eventService.setPickHandler(async (position: EventPosition) => {
+      const { picked } = await this.context.renderingService.hooks.pick.promise({
         position,
         picked: [],
         topmost: true, // we only concern the topmost element
@@ -65,7 +43,7 @@ export class EventPlugin implements RenderingPlugin {
       (nativeEvent: InteractivePointerEvent) => {
         const wheelEvent = this.normalizeWheelEvent(nativeEvent as WheelEvent);
 
-        this.eventService.mapEvent(wheelEvent);
+        this.context.eventService.mapEvent(wheelEvent);
       },
     );
 
@@ -87,10 +65,10 @@ export class EventPlugin implements RenderingPlugin {
 
         for (const event of events) {
           const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, event, canvas);
-          this.eventService.mapEvent(federatedEvent);
+          this.context.eventService.mapEvent(federatedEvent);
         }
 
-        this.setCursor(this.eventService.cursor);
+        this.setCursor(this.context.eventService.cursor);
       },
     );
 
@@ -101,7 +79,7 @@ export class EventPlugin implements RenderingPlugin {
           return;
 
         // account for element in SVG
-        const $element = this.contextService.getDomElement();
+        const $element = this.context.contextService.getDomElement();
         const outside =
           $element &&
           nativeEvent.target &&
@@ -117,10 +95,10 @@ export class EventPlugin implements RenderingPlugin {
         for (const normalizedEvent of normalizedEvents) {
           const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
           event.type += outside;
-          this.eventService.mapEvent(event);
+          this.context.eventService.mapEvent(event);
         }
 
-        this.setCursor(this.eventService.cursor);
+        this.setCursor(this.context.eventService.cursor);
       },
     );
 
@@ -132,7 +110,7 @@ export class EventPlugin implements RenderingPlugin {
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
-    const canvas = this.renderingContext.root?.ownerDocument?.defaultView;
+    const canvas = this.context.renderingContext.root?.ownerDocument?.defaultView;
     if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
 
     const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
@@ -140,10 +118,10 @@ export class EventPlugin implements RenderingPlugin {
     for (const normalizedEvent of normalizedEvents) {
       const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
 
-      this.eventService.mapEvent(event);
+      this.context.eventService.mapEvent(event);
     }
 
-    this.setCursor(this.eventService.cursor);
+    this.setCursor(this.context.eventService.cursor);
   };
 
   private getViewportXY(nativeEvent: PointerEvent | WheelEvent) {
@@ -155,11 +133,11 @@ export class EventPlugin implements RenderingPlugin {
      * @see https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/offsetX
      */
     const { offsetX, offsetY, clientX, clientY } = nativeEvent;
-    if (this.canvasConfig.supportsCSSTransform && !isNil(offsetX) && !isNil(offsetY)) {
+    if (this.context.config.supportsCSSTransform && !isNil(offsetX) && !isNil(offsetY)) {
       x = offsetX;
       y = offsetY;
     } else {
-      const point = this.eventService.client2Viewport(new Point(clientX, clientY));
+      const point = this.context.eventService.client2Viewport(new Point(clientX, clientY));
       x = point.x;
       y = point.y;
     }
@@ -190,7 +168,7 @@ export class EventPlugin implements RenderingPlugin {
     const { x, y } = this.getViewportXY(nativeEvent);
     event.viewport.x = x;
     event.viewport.y = y;
-    const { x: canvasX, y: canvasY } = this.eventService.viewport2Canvas(event.viewport);
+    const { x: canvasX, y: canvasY } = this.context.eventService.viewport2Canvas(event.viewport);
     event.canvas.x = canvasX;
     event.canvas.y = canvasY;
     event.global.copyFrom(event.canvas);
@@ -222,7 +200,7 @@ export class EventPlugin implements RenderingPlugin {
     const { x, y } = this.getViewportXY(nativeEvent);
     event.viewport.x = x;
     event.viewport.y = y;
-    const { x: canvasX, y: canvasY } = this.eventService.viewport2Canvas(event.viewport);
+    const { x: canvasX, y: canvasY } = this.context.eventService.viewport2Canvas(event.viewport);
     event.canvas.x = canvasX;
     event.canvas.y = canvasY;
     event.global.copyFrom(event.canvas);
@@ -261,7 +239,7 @@ export class EventPlugin implements RenderingPlugin {
   }
 
   private setCursor(cursor: Cursor | null) {
-    this.contextService.applyCursorStyle(cursor || this.canvasConfig.cursor || 'default');
+    this.context.contextService.applyCursorStyle(cursor || this.context.config.cursor || 'default');
   }
 
   private normalizeToPointerEvent(event: InteractivePointerEvent, canvas: ICanvas): PointerEvent[] {

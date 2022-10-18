@@ -1,4 +1,4 @@
-import { Canvas, DisplayObjectPool, GlobalContainer, HTML } from '@antv/g';
+import { Canvas, DisplayObjectPool, runtime, HTML } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
@@ -34,7 +34,7 @@ describe('HTML', () => {
   });
 
   it('should create HTML correctly.', async () => {
-    const pool = GlobalContainer.get<DisplayObjectPool>(DisplayObjectPool);
+    const pool = runtime.displayObjectPool;
     expect(pool.getHTMLs().length).to.be.eqls(0);
 
     const html = new HTML({

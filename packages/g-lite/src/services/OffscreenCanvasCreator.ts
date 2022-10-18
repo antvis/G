@@ -1,4 +1,3 @@
-import { singleton } from 'mana-syringe';
 import type { CanvasLike } from '..';
 
 /**
@@ -7,7 +6,6 @@ import type { CanvasLike } from '..';
  * - g-plugin-canvas-picker `ctx.isPointInPath`
  * - g-plugin-device-renderer `ctx.createLinearGradient` and generate texture
  */
-@singleton()
 export class OffscreenCanvasCreator {
   private canvas: CanvasLike;
   private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;

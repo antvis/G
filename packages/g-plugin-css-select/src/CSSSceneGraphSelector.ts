@@ -1,14 +1,10 @@
 import type { IElement } from '@antv/g-lite';
-import { inject, SceneGraphSelector, singleton } from '@antv/g-lite';
+import type { SceneGraphSelector } from '@antv/g-lite';
 import { is, selectAll, selectOne } from 'css-select';
-import { SceneGraphAdapter } from './SceneGraphAdapter';
+import type { SceneGraphAdapter } from './SceneGraphAdapter';
 
-@singleton({ token: SceneGraphSelector })
 export class CSSSceneGraphSelector implements SceneGraphSelector {
-  constructor(
-    @inject(SceneGraphAdapter)
-    private sceneGraphAdapter: SceneGraphAdapter,
-  ) {}
+  constructor(private sceneGraphAdapter: SceneGraphAdapter) {}
 
   is<T extends IElement>(query: string, element: T) {
     return is(element, query, { adapter: this.sceneGraphAdapter });
