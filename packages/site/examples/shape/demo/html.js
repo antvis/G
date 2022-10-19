@@ -241,3 +241,29 @@ lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
   line.attr('anchor', [lineConfig.anchorX, anchorY]);
 });
 lineFolder.open();
+
+const cameraFolder = gui.addFolder('camera actions');
+const cameraConfig = {
+  panX: 0,
+  panY: 0,
+  zoom: 1,
+  roll: 0,
+};
+
+const camera = canvas.getCamera();
+const origin = camera.getPosition();
+cameraFolder.add(cameraConfig, 'panX', -300, 300).onChange((panX) => {
+  const current = camera.getPosition();
+  camera.pan(origin[0] + panX - current[0], 0);
+});
+cameraFolder.add(cameraConfig, 'panY', -300, 300).onChange((panY) => {
+  const current = camera.getPosition();
+  camera.pan(0, origin[1] + panY - current[1]);
+});
+cameraFolder.add(cameraConfig, 'roll', -90, 90).onChange((roll) => {
+  camera.rotate(0, 0, roll);
+});
+cameraFolder.add(cameraConfig, 'zoom', 0, 10).onChange((zoom) => {
+  camera.setZoom(zoom);
+});
+cameraFolder.open();
