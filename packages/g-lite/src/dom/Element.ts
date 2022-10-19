@@ -195,21 +195,9 @@ export class Element<
   appendChild<T extends INode>(child: T, index?: number): T {
     runtime.sceneGraphService.attach(child, this, index);
 
-    // this.dispatchEvent(
-    //   new CustomEvent(ElementEvent.CHILD_INSERTED, {
-    //     child,
-    //   }),
-    // );
     childInsertedEvent.detail.child = child;
-    // @ts-ignore
-    // this.ownerDocument?.defaultView?.mountChildren(child);
-
     this.dispatchEvent(childInsertedEvent);
 
-    // child.emit(ElementEvent.INSERTED, {
-    //   parent: this,
-    //   index,
-    // });
     insertedEvent.relatedNode = this as IElement;
     child.dispatchEvent(insertedEvent);
 
@@ -235,40 +223,15 @@ export class Element<
 
   removeChild<T extends INode>(child: T): T {
     // should emit on itself before detach
-    // child.emit(ElementEvent.REMOVED, {
-    //   parent: this,
-    // });
-
     removedEvent.relatedNode = this as IElement;
     child.dispatchEvent(removedEvent);
-
-    // emit destroy event
-    // if (destroy) {
-    //   // child.destroy();
-    //   child.dispatchEvent(destroyEvent);
-    //   (child as unknown as Element).destroyed = true;
-    // }
 
     // emit on parent
     childRemovedEvent.detail.child = child;
     this.dispatchEvent(childRemovedEvent);
-    // this.dispatchEvent(
-    //   new CustomEvent(ElementEvent.CHILD_REMOVED, {
-    //     child,
-    //   }),
-    // );
 
     // remove from scene graph
     runtime.sceneGraphService.detach(child);
-
-    // cannot emit Destroy event now
-    // if (destroy) {
-    //   // this.removeChildren();
-    //   // remove event listeners
-    //   // @ts-ignore
-    //   child.emitter.removeAllListeners();
-    //   displayObjectPool.remove((child as unknown as Element).entity);
-    // }
     return child;
   }
 

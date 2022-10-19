@@ -35,6 +35,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     const { camera, renderingContext, renderingService } = context;
     this.context = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const setTransform = (object: DisplayObject, $el: HTMLElement) => {
       $el.style.transform = this.joinTransformMatrix(object.getWorldTransform());
@@ -64,11 +65,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML && this.$camera) {
-        const existedId = this.getId(object);
-        const $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
-        if ($existedElement) {
-          this.$camera.removeChild($existedElement);
+        const $el = this.getOrCreateEl(object);
+        if ($el) {
+          $el.remove();
         }
+
+        // const existedId = this.getId(object);
+        // const $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
+        // if ($existedElement) {
+        //   this.$camera.removeChild($existedElement);
+        // }
       }
     };
 
@@ -88,17 +94,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
+    const handleCanvasResize = () => {
+      const { width, height } = this.context.config;
+      this.$camera.style.width = `${width || 0}px`;
+      this.$camera.style.height = `${height || 0}px`;
+    };
+
     renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
       // append camera
       this.$camera = this.createCamera(camera);
 
-      const canvas = renderingContext.root.ownerDocument.defaultView;
-      canvas.addEventListener(CanvasEvent.RESIZE, () => {
-        const { width, height } = this.context.config;
-        this.$camera.style.width = `${width || 0}px`;
-        this.$camera.style.height = `${height || 0}px`;
-      });
-
+      canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
@@ -117,6 +123,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         this.$camera.remove();
       }
 
+      canvas.removeEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
@@ -144,6 +151,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         // account for DOM element's offset @see https://github.com/antvis/G/issues/1150
         $camera.style.left = `${$canvas.offsetLeft || 0}px`;
         $camera.style.top = `${$canvas.offsetTop || 0}px`;
+        $camera.style.transformOrigin = 'left top';
         $camera.style.transform = this.joinTransformMatrix(camera.getOrthoMatrix());
         // HTML elements should not overflow with canvas @see https://github.com/antvis/G/issues/1163
         $camera.style.overflow = 'hidden';
@@ -168,6 +176,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       $existedElement = (doc || document).createElement('div');
       object.parsedStyle.$el = $existedElement;
       $existedElement.id = existedId;
+
       if (object.name) {
         $existedElement.setAttribute('name', object.name);
       }

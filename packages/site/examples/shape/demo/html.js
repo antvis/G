@@ -29,8 +29,8 @@ const webgpuRenderer = new WebGPURenderer();
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
-  width: 300,
-  height: 300,
+  width: 600,
+  height: 500,
   renderer: canvasRenderer,
 });
 
@@ -129,7 +129,12 @@ rect.addEventListener('mouseleave', (e) => {
 });
 
 class Custom extends CustomElement {
-  connectedCallback() {
+  constructor(config) {
+    super({
+      ...config,
+      type: 'custom',
+    });
+
     const tooltip = new HTML({
       style: {
         x: 0,
@@ -145,6 +150,8 @@ class Custom extends CustomElement {
     this.appendChild(tooltip);
     this.appendChild(new Rect({ style: { width: 100, height: 100, x: 0, y: 40, fill: 'red' } }));
   }
+
+  connectedCallback() {}
 }
 const customEl = new Custom({
   style: {
