@@ -28,6 +28,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "peerDependencies": {
     "@antv/g-lite": "^1.0.0"
   },

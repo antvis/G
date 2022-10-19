@@ -27,6 +27,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0"

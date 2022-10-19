@@ -28,6 +28,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "@antv/g-camera-api": "^1.0.11",
     "@antv/g-compat": "^1.0.11",

@@ -26,6 +26,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "@antv/g-plugin-device-renderer": "^1.7.25",
     "@antv/g-plugin-dom-interaction": "^1.7.22",

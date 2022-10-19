@@ -30,6 +30,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "@antv/g-plugin-image-loader": "^1.1.23",
     "@antv/g-shader-components": "^1.7.22",

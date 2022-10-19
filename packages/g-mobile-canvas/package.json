@@ -26,6 +26,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "@antv/g-plugin-canvas-path-generator": "^1.1.22",
     "@antv/g-plugin-canvas-picker": "^1.8.19",

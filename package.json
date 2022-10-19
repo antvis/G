@@ -26,6 +26,7 @@
     "publish": "lerna publish",
     "publish:next": "lerna publish prerelease --dist-tag next",
     "start": "cd ./packages/site && npm run start",
+    "sync": "lerna run sync --parallel",
     "test": "npm run test:browser & npm run test:serverside",
     "test-watch": "DEBUG_MODE=1 jest --watch",
     "test:browser": "jest --config jest.config.js",
