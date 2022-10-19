@@ -7,6 +7,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
+import { CanvasEvent } from '@antv/g-lite';
 import { RenderReason } from '@antv/g-lite';
 import { CSSRGB, ElementEvent, isPattern, Shape } from '@antv/g-lite';
 import { isString } from '@antv/util';
@@ -91,6 +92,13 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       // append camera
       this.$camera = this.createCamera(camera);
 
+      const canvas = renderingContext.root.ownerDocument.defaultView;
+      canvas.addEventListener(CanvasEvent.RESIZE, () => {
+        const { width, height } = this.context.config;
+        this.$camera.style.width = `${width || 0}px`;
+        this.$camera.style.height = `${height || 0}px`;
+      });
+
       renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
@@ -121,7 +129,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   }
 
   private createCamera(camera: ICamera) {
-    const { document: doc } = this.context.config;
+    const { document: doc, width, height } = this.context.config;
     const $canvas = this.context.contextService.getDomElement() as unknown as HTMLElement;
     const $container = $canvas.parentNode;
     if ($container) {
@@ -133,10 +141,15 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $camera.id = cameraId;
         // use absolute position
         $camera.style.position = 'absolute';
-        // @see https://github.com/antvis/G/issues/1150
+        // account for DOM element's offset @see https://github.com/antvis/G/issues/1150
         $camera.style.left = `${$canvas.offsetLeft || 0}px`;
         $camera.style.top = `${$canvas.offsetTop || 0}px`;
         $camera.style.transform = this.joinTransformMatrix(camera.getOrthoMatrix());
+        // HTML elements should not overflow with canvas @see https://github.com/antvis/G/issues/1163
+        $camera.style.overflow = 'hidden';
+        $camera.style.pointerEvents = 'none';
+        $camera.style.width = `${width || 0}px`;
+        $camera.style.height = `${height || 0}px`;
 
         $container.appendChild($camera);
       }

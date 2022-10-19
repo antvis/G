@@ -29,8 +29,8 @@ const webgpuRenderer = new WebGPURenderer();
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
-  width: 600,
-  height: 500,
+  width: 300,
+  height: 300,
   renderer: canvasRenderer,
 });
 
