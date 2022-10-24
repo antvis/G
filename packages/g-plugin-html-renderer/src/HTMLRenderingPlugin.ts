@@ -14,7 +14,7 @@ import { isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
 const HTML_PREFIX = 'g-html-';
-const CANVAS_CAMERA_ID = 'g_canvas_camera';
+const CANVAS_CAMERA_ID = 'g-canvas-camera';
 
 export class HTMLRenderingPlugin implements RenderingPlugin {
   static tag = 'HTMLRendering';
