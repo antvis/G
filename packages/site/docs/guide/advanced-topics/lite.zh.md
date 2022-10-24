@@ -17,7 +17,6 @@ order: 6
 -   `@antv/g-css-typed-om-api` 提供 [CSS Typed OM API]()
 -   `@antv/g-css-layout-api` 提供 [CSS Layout API]()
 -   `@antv/g-dom-mutation-observer-api` 提供 DOM Mutation Observer API
--   `@antv/g-compat` 包含兼容旧版本的 API
 
 # 使用方式
 
@@ -67,15 +66,6 @@ const canvas = new Canvas({
 const circle = new Circle({
     style: { r: 100 },
 });
-```
-
-只是在部分兼容旧版本的功能上有影响，例如基础图形上不存在以下方法，需要引入 `@antv/g-compat` 方可正常使用：
-
-```js
-circle.getCount(); // 新版使用 childElementCount
-circle.getParent(); // = parentElement
-circle.getChildren(); // = children
-circle.getFirst(); // = firstElementChild
 ```
 
 ## g-camera-api

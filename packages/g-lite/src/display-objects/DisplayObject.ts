@@ -3,7 +3,13 @@ import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { PropertyParseOptions } from '../css';
 import { noneColor } from '../css';
-import type { DisplayObjectConfig, IAnimation, ICSSStyleDeclaration, IElement } from '../dom';
+import type {
+  DisplayObjectConfig,
+  IAnimation,
+  IChildNode,
+  ICSSStyleDeclaration,
+  IElement,
+} from '../dom';
 import { Element, ElementEvent, MutationEvent } from '../dom';
 import { Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -730,6 +736,123 @@ export class DisplayObject<
    */
   hide() {
     this.style.visibility = 'hidden';
+  }
+
+  /**
+   * Use `childElementCount` instead.
+   * @deprecated
+   */
+  getCount() {
+    return this.childElementCount;
+  }
+
+  /**
+   * Use `parentElement` instead.
+   * @deprecated
+   */
+  getParent(): DisplayObject | null {
+    return this.parentElement as DisplayObject;
+  }
+
+  /**
+   * Use `children` instead.
+   * @deprecated
+   */
+  getChildren(): DisplayObject[] {
+    return this.children as DisplayObject[];
+  }
+
+  /**
+   * Use `firstElementChild` instead.
+   * @deprecated
+   */
+  getFirst(): DisplayObject | null {
+    return this.firstElementChild as DisplayObject;
+  }
+
+  /**
+   * Use `lastElementChild` instead.
+   * @deprecated
+   */
+  getLast(): DisplayObject | null {
+    return this.lastElementChild as DisplayObject;
+  }
+
+  /**
+   * Use `this.children[index]` instead.
+   * @deprecated
+   */
+  getChildByIndex(index: number): DisplayObject | null {
+    return (this.children[index] as DisplayObject) || null;
+  }
+
+  /**
+   * Use `appendChild` instead.
+   * @deprecated
+   */
+  add<T extends IChildNode>(child: T, index?: number): T {
+    return this.appendChild(child, index);
+  }
+
+  /**
+   * Use `this.style.clipPath` instead.
+   * @deprecated
+   */
+  setClip(clipPath: DisplayObject | null) {
+    this.style.clipPath = clipPath;
+  }
+
+  /**
+   * Use `this.style.clipPath` instead.
+   * @deprecated
+   */
+  getClip = function () {
+    return this.style.clipPath || null;
+  };
+
+  /**
+   * @deprecated
+   */
+  set<StyleProps extends BaseStyleProps, Key extends keyof DisplayObjectConfig<StyleProps>>(
+    name: Key,
+    value: DisplayObjectConfig<StyleProps>[Key],
+  ) {
+    // @ts-ignore
+    this.config[name] = value;
+  }
+
+  /**
+   * @deprecated
+   */
+  get<StyleProps extends BaseStyleProps>(name: keyof DisplayObjectConfig<StyleProps>) {
+    return this.config[name];
+  }
+
+  /**
+   * Use `setPosition` instead.
+   * @deprecated
+   */
+  moveTo(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    (this as unknown as DisplayObject).setPosition(position, y, z);
+    return this;
+  }
+
+  /**
+   * Use `setPosition` instead.
+   * @deprecated
+   */
+  move(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+    (this as unknown as DisplayObject).setPosition(position, y, z);
+    return this;
+  }
+
+  /**
+   * Use `this.style.zIndex` instead.
+   * @deprecated
+   */
+  setZIndex(zIndex: number) {
+    this.style.zIndex = zIndex;
+    return this;
   }
 
   // #endregion deprecated

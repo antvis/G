@@ -9,7 +9,6 @@ export default {
   pkgs: [
     'g-math',
     'g-lite',
-    'g-compat',
     'g-camera-api',
     'g-css-typed-om-api',
     'g-css-layout-api',
