@@ -395,16 +395,25 @@ export class Camera implements ICamera {
       y: viewportPoint[1],
     });
 
+    const roll = this.roll;
+
+    this.rotate(0, 0, -roll);
     this.setPosition(ox, oy);
     this.setFocalPoint(ox, oy);
     this.setZoom(zoom);
+    this.rotate(0, 0, roll);
 
     const { x: cx, y: cy } = this.canvas.viewport2Canvas({
       x: viewportPoint[0],
       y: viewportPoint[1],
     });
 
-    this.pan(ox - cx, oy - cy);
+    // project to rotated axis
+    const dvec = vec3.fromValues(cx - ox, cy - oy, 0);
+    const dx = vec3.dot(dvec, this.right) / vec3.length(this.right);
+    const dy = vec3.dot(dvec, this.up) / vec3.length(this.up);
+
+    this.pan(-dx, -dy);
 
     return this;
   }
@@ -873,29 +882,4 @@ export class Camera implements ICamera {
   ): void {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
-
-  /**
-   * Sets the camera to a distance such that the area covered by the bounding box is viewed.
-   */
-  // shot(displayObject: DisplayObject) {
-  //   const aabb = displayObject.getBounds();
-
-  //   if (!AABB.isEmpty(aabb)) {
-  //     this.setElevation(0);
-  //     this.setAzimuth(0);
-  //     this.setRoll(0);
-
-  //     const { halfExtents, center } = aabb;
-  //     const maxDim = Math.max(halfExtents[0] * 2, halfExtents[1] * 2);
-
-  //     const cc = center.map((c: number) => Math.round(c * 1000) / 1000) as [number, number, number];
-
-  //     if (maxDim !== 0) {
-  //       const d = (1.5 * maxDim) / Math.tan(this.fov * DEG_2_RAD);
-  //       this.setPosition([cc[0], cc[1], cc[2] + d]);
-  //     }
-
-  //     this.setFocalPoint(cc);
-  //   }
-  // }
 }

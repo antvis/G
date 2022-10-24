@@ -1,6 +1,6 @@
 English | [简体中文](./README-zh_CN.md)
 
-The graphics and event system is compatible with the DOM Element & Event API, and the animation system is compatible with the Web Animation API, so it can be adapted to existing Web-side ecologies such as D3, Hammer.js gesture library, etc. at a very low cost.
+The graphics and event system is compatible with the DOM Element & Event API, and the animation system is compatible with the Web Animations API, so it can be adapted to existing Web-side ecologies such as D3, Hammer.js gesture library, etc. at a very low cost.
 
 The usage is as follows, providing the following core objects and APIs.
 

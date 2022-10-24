@@ -26,7 +26,7 @@
 
 ## ✨ 特性
 
--   更易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+-   更易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animations API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
 -   适配 Web 端多种渲染环境。支持 Canvas2D / SVG / WebGL / WebGPU 以及运行时切换，并支持服务端渲染。
 -   高性能的渲染与计算。为可并行算法提供基于 WebGPU 的 GPGPU 支持。
     -   [webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库

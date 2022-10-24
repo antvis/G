@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-control",
-  "version": "1.7.22",
+  "version": "1.7.23",
   "description": "A G plugin for orbit control",
   "keywords": [
     "antv",
@@ -26,6 +26,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "hammerjs": "^2.0.8",
     "tslib": "^2.3.1"

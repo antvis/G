@@ -43,20 +43,10 @@ export enum ElementEvent {
   INSERTED = 'DOMNodeInserted',
 
   /**
-   * it has had a child inserted
-   */
-  CHILD_INSERTED = 'child-inserted',
-
-  /**
    * it is being removed
    * @see https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMNodeRemoved
    */
   REMOVED = 'removed',
-
-  /**
-   * it has had a child removed
-   */
-  CHILD_REMOVED = 'child-removed',
 
   /**
    * @see https://www.w3.org/TR/DOM-Level-3-Events/#domnodeinsertedintodocument
@@ -546,6 +536,9 @@ export interface ICanvas extends IEventTarget {
   resize: (width: number, height: number) => void;
 
   context: CanvasContext;
+
+  mountChildren: (parent: INode) => void;
+  unmountChildren: (parent: INode) => void;
 
   getConfig: () => Partial<CanvasConfig>;
   getCamera: () => ICamera;

@@ -44,8 +44,8 @@ export class SVGPickerPlugin implements RenderingPlugin {
         // eg. g_svg_circle_345
         const id = element && element.getAttribute('id');
         if (id && id.startsWith(G_SVG_PREFIX)) {
-          const index = id.lastIndexOf('_');
-          const target = runtime.displayObjectPool.getByEntity(Number(id.substring(index + 1)));
+          const index = id.lastIndexOf('-');
+          const target = runtime.displayObjectPool.getByEntity(id.substring(index + 1));
 
           // don't need to account for `visibility` since DOM API already does
           if (target && target.isInteractive()) {

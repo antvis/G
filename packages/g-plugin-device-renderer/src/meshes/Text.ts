@@ -64,9 +64,7 @@ export class TextMesh extends Instanced {
     // }
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
-      instancedAttributes.some(
-        (name) => instance.parsedStyle[name].value !== object.parsedStyle[name].value,
-      )
+      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
     ) {
       return false;
     }

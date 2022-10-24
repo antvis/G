@@ -18,16 +18,9 @@ export function resetEntityCounter() {
   entityCounter = 0;
 }
 
-// let this.sceneGraphService: SceneGraphService;
-const childInsertedEvent = new CustomEvent(ElementEvent.CHILD_INSERTED, {
-  child: null,
-});
 const insertedEvent = new MutationEvent(ElementEvent.INSERTED, null, '', '', '', 0, '', '');
 const removedEvent = new MutationEvent(ElementEvent.REMOVED, null, '', '', '', 0, '', '');
 const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
-const childRemovedEvent = new CustomEvent(ElementEvent.CHILD_REMOVED, {
-  child: null,
-});
 
 /**
  * Has following capabilities:
@@ -195,21 +188,10 @@ export class Element<
   appendChild<T extends INode>(child: T, index?: number): T {
     runtime.sceneGraphService.attach(child, this, index);
 
-    // this.dispatchEvent(
-    //   new CustomEvent(ElementEvent.CHILD_INSERTED, {
-    //     child,
-    //   }),
-    // );
-    childInsertedEvent.detail.child = child;
-    // @ts-ignore
-    // this.ownerDocument?.defaultView?.mountChildren(child);
+    if (this.ownerDocument?.defaultView) {
+      this.ownerDocument.defaultView.mountChildren(child);
+    }
 
-    this.dispatchEvent(childInsertedEvent);
-
-    // child.emit(ElementEvent.INSERTED, {
-    //   parent: this,
-    //   index,
-    // });
     insertedEvent.relatedNode = this as IElement;
     child.dispatchEvent(insertedEvent);
 
@@ -235,40 +217,15 @@ export class Element<
 
   removeChild<T extends INode>(child: T): T {
     // should emit on itself before detach
-    // child.emit(ElementEvent.REMOVED, {
-    //   parent: this,
-    // });
-
     removedEvent.relatedNode = this as IElement;
     child.dispatchEvent(removedEvent);
 
-    // emit destroy event
-    // if (destroy) {
-    //   // child.destroy();
-    //   child.dispatchEvent(destroyEvent);
-    //   (child as unknown as Element).destroyed = true;
-    // }
-
-    // emit on parent
-    childRemovedEvent.detail.child = child;
-    this.dispatchEvent(childRemovedEvent);
-    // this.dispatchEvent(
-    //   new CustomEvent(ElementEvent.CHILD_REMOVED, {
-    //     child,
-    //   }),
-    // );
+    if (child.ownerDocument?.defaultView) {
+      child.ownerDocument.defaultView.unmountChildren(child);
+    }
 
     // remove from scene graph
     runtime.sceneGraphService.detach(child);
-
-    // cannot emit Destroy event now
-    // if (destroy) {
-    //   // this.removeChildren();
-    //   // remove event listeners
-    //   // @ts-ignore
-    //   child.emitter.removeAllListeners();
-    //   displayObjectPool.remove((child as unknown as Element).entity);
-    // }
     return child;
   }
 
@@ -555,11 +512,14 @@ export class Element<
   getAttribute(name: keyof StyleProps) {
     let value = this.attributes[name];
     if (value === undefined) {
-      const [attributeName] = formatAttribute(name.toString(), '');
+      const [attributeName] = formatAttribute(name as string, '');
       value = this.attributes[attributeName];
+
+      // if the given attribute does not exist, the value returned will either be null or ""
+      return isNil(value) ? null : value;
+    } else {
+      return value;
     }
-    // if the given attribute does not exist, the value returned will either be null or ""
-    return isNil(value) ? null : value;
   }
 
   /**

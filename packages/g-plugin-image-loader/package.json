@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-image-loader",
-  "version": "1.1.23",
+  "version": "1.1.24",
   "description": "A G plugin for loading image",
   "keywords": [
     "antv",
@@ -26,6 +26,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "@antv/util": "^3.2.4",
     "tslib": "^2.3.1"

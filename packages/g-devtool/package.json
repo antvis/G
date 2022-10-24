@@ -1,12 +1,13 @@
 {
   "name": "@antv/g-devtool",
+  "version": "0.10.23",
   "private": true,
-  "version": "0.10.22",
   "description": "devtool for g in browser",
-  "main": "index.js",
   "license": "MIT",
+  "main": "index.js",
   "scripts": {
-    "start": "webpack -w"
+    "start": "webpack -w",
+    "sync": "tnpm sync"
   },
   "dependencies": {
     "antd": "^4.18.3",

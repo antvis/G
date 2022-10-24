@@ -7,7 +7,7 @@ order: 3
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XPzwTIUwizkAAAAAAAAAAAAAARQnAQ)
 
-其中会涉及以下 API，如果你熟悉 CSS Animation 或者 [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，使用时会相当轻松：
+其中会涉及以下 API，如果你熟悉 CSS Animation 或者 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，使用时会相当轻松：
 
 -   使用 [animate](/zh/docs/api/animation/waapi#创建) 创建一个 Animation 对象
 -   使用 [onfinish](/zh/docs/api/animation/waapi#onfinish) 监听动画结束事件
@@ -40,7 +40,7 @@ order: 3
 }
 ```
 
-如果理解了上述 CSS Animation 写法，那么就很容易将它转换成符合 Web Animation API 的代码：
+如果理解了上述 CSS Animation 写法，那么就很容易将它转换成符合 Web Animations API 的代码：
 
 -   `circle.animate()` 将创建一个 [Animation](/zh/docs/api/animation/waapi#animation) 对象，上面有很多有用的属性和控制方法，我们很快就将看到
 -   该方法拥有两个参数，第一个对应 keyframes，第二个则是动画控制参数

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-device-renderer",
-  "version": "1.7.25",
+  "version": "1.7.26",
   "description": "A G plugin of renderer implementation with GPUDevice",
   "keywords": [
     "antv",
@@ -30,9 +30,12 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
-    "@antv/g-plugin-image-loader": "^1.1.23",
-    "@antv/g-shader-components": "^1.7.22",
+    "@antv/g-plugin-image-loader": "^1.1.24",
+    "@antv/g-shader-components": "^1.7.23",
     "@antv/util": "^3.2.4",
     "@mapbox/tiny-sdf": "^2.0.4",
     "@types/offscreencanvas": "^2019.6.4",

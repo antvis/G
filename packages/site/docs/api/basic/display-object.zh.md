@@ -1456,18 +1456,9 @@ circle.destroyed; // true
 ```js
 import { ElementEvent, MutationEvent } from '@antv/g';
 
-// 监听子节点添加事件
-parent.on(ElementEvent.CHILD_INSERTED, (e) => {
-    e.target; // parent
-    e.detail.child; // child
-});
 child.on(ElementEvent.INSERTED, (e: MutationEvent) => {
     e.target; // child
     e.relatedNode; // parent
-});
-parent.on(ElementEvent.CHILD_REMOVED, (e) => {
-    e.target; // parent
-    e.detail.child; // child
 });
 child.on(ElementEvent.REMOVED, (e) => {
     e.target; // child
@@ -1485,9 +1476,7 @@ parent.appendChild(child);
 
 目前我们支持如下场景图相关事件：
 
--   CHILD_INSERTED 作为父节点有子节点添加时触发
 -   INSERTED 作为子节点被添加时触发
--   CHILD_REMOVED 作为父节点有子节点移除时触发
 -   REMOVED 作为子节点被移除时触发
 -   MOUNTED 首次进入画布时触发
 -   UNMOUNTED 从画布中移除时触发
@@ -1496,7 +1485,7 @@ parent.appendChild(child);
 
 # 动画
 
-参考 Web Animation API，可以使用 animate 完成 keyframe 动画，下面是一个 ScaleIn 动画效果：
+参考 Web Animations API，可以使用 animate 完成 keyframe 动画，下面是一个 ScaleIn 动画效果：
 
 ```js
 circle.animate(

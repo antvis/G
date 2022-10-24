@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-a11y",
-  "version": "0.4.22",
+  "version": "0.4.23",
   "description": "A G plugin for accessibility",
   "keywords": [
     "antv",
@@ -26,6 +26,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "ismobilejs": "^1.1.0",
     "tslib": "^2.3.1"

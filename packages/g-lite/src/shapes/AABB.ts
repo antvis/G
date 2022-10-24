@@ -21,21 +21,15 @@ export class AABB {
   min: vec3 = vec3.create();
   max: vec3 = vec3.create();
 
-  constructor(center?: vec3, halfExtents?: vec3) {
+  constructor(center: vec3 = [0, 0, 0], halfExtents: vec3 = [0, 0, 0]) {
     this.update(center, halfExtents);
   }
 
-  update(center?: vec3, halfExtents?: vec3) {
-    if (center) {
-      vec3.copy(this.center, center);
-    }
-
-    if (halfExtents) {
-      vec3.copy(this.halfExtents, halfExtents || vec3.fromValues(0, 0, 0));
-    }
-
-    this.min = vec3.sub(this.min, this.center, this.halfExtents);
-    this.max = vec3.add(this.max, this.center, this.halfExtents);
+  update(center: vec3, halfExtents: vec3) {
+    vec3.copy(this.center, center);
+    vec3.copy(this.halfExtents, halfExtents);
+    vec3.sub(this.min, this.center, this.halfExtents);
+    vec3.add(this.max, this.center, this.halfExtents);
   }
 
   setMinMax(min: vec3, max: vec3) {

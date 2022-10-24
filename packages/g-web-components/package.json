@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-web-components",
-  "version": "1.7.22",
+  "version": "1.7.23",
   "description": "A declarative usage for G implemented with WebComponents",
   "keywords": [
     "antv",
@@ -27,6 +27,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0"

@@ -4,7 +4,7 @@ import type { DisplayObject, HTML } from './';
 const pool: Record<number, DisplayObject> = {};
 const htmlPool: HTML[] = [];
 export class DisplayObjectPool {
-  getByEntity(entity: number): DisplayObject {
+  getByEntity(entity: string | number): DisplayObject {
     return pool[entity];
   }
 
@@ -12,7 +12,7 @@ export class DisplayObjectPool {
     return Object.keys(pool).map((entity) => pool[entity]);
   }
 
-  add(entity: number, groupOrShape: DisplayObject) {
+  add(entity: string | number, groupOrShape: DisplayObject) {
     pool[entity] = groupOrShape;
 
     if (groupOrShape.nodeName === Shape.HTML) {

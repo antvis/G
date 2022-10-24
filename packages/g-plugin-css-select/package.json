@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-css-select",
-  "version": "1.7.22",
+  "version": "1.7.23",
   "description": "A G plugin for using CSS select syntax in query selector",
   "keywords": [
     "antv",
@@ -26,6 +26,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "css-select": "^3.1.2",
     "tslib": "^2.3.1"

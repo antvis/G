@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-web-animations-api",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A simple implementation of Web Animations API.",
   "keywords": [
     "antv",
@@ -28,6 +28,9 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "sync": "tnpm sync"
+  },
   "dependencies": {
     "@antv/util": "^3.2.4"
   },

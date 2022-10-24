@@ -270,7 +270,7 @@ describe('DisplayObject Node API', () => {
     group2.appendChild(group3);
     group1.appendChild(group4);
     // remove
-    group4.remove(false);
+    group4.remove();
     expect(group1.children.length).to.be.eqls(1);
 
     // re-append
@@ -344,7 +344,7 @@ describe('DisplayObject Node API', () => {
     expect(cloned.children[0].id).to.be.eqls(group2.id);
     expect(cloned.children[0].name).to.be.eqls(group2.name);
     expect(cloned.children[0].className).to.be.eqls(group2.className);
-    expect(cloned.children[0].getPosition()).to.be.eqls(group2.getPosition());
+    expect((cloned.children[0] as DisplayObject).getPosition()).to.be.eqls(group2.getPosition());
     expect(cloned.children[0].style.fontSize).to.be.eqls(group2.style.fontSize);
     expect(cloned.children[0].style.transform).to.be.eqls(group2.style.transform);
   });

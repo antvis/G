@@ -2,41 +2,52 @@ import type {
   DisplayObject,
   FederatedEvent,
   HTML,
+  ICamera,
   MutationEvent,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
+import { CanvasEvent } from '@antv/g-lite';
+import { RenderReason } from '@antv/g-lite';
 import { CSSRGB, ElementEvent, isPattern, Shape } from '@antv/g-lite';
 import { isString } from '@antv/util';
+import type { mat4 } from 'gl-matrix';
 
 const HTML_PREFIX = 'g-html-';
+const CANVAS_CAMERA_ID = 'g-canvas-camera';
 
 export class HTMLRenderingPlugin implements RenderingPlugin {
   static tag = 'HTMLRendering';
 
   private context: RenderingPluginContext;
 
+  /**
+   * wrapper for camera
+   */
   private $camera: HTMLDivElement;
 
+  private joinTransformMatrix(matrix: mat4) {
+    return `matrix(${[matrix[0], matrix[1], matrix[4], matrix[5], matrix[12], matrix[13]].join(
+      ',',
+    )})`;
+  }
+
   apply(context: RenderingPluginContext) {
-    const { renderingContext, renderingService } = context;
+    const { camera, renderingContext, renderingService } = context;
     this.context = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
+
     const setTransform = (object: DisplayObject, $el: HTMLElement) => {
-      const worldTransform = object.getWorldTransform();
-      $el.style.transform = `matrix(${[
-        worldTransform[0],
-        worldTransform[1],
-        worldTransform[4],
-        worldTransform[5],
-        worldTransform[12],
-        worldTransform[13],
-      ].join(',')})`;
+      $el.style.transform = this.joinTransformMatrix(object.getWorldTransform());
     };
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
+        // create DOM element
         const $el = this.getOrCreateEl(object);
+        this.$camera.appendChild($el);
+
         // apply documentElement's style
         const { attributes } = object.ownerDocument.documentElement;
         Object.keys(attributes).forEach((name) => {
@@ -53,16 +64,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      if (object.nodeName === Shape.HTML) {
-        const existedId = this.getId(object);
-        const $container = (this.context.contextService.getDomElement() as unknown as HTMLElement)
-          .parentNode;
-        if ($container) {
-          const $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-          if ($existedElement) {
-            $container.removeChild($existedElement);
-          }
+      if (object.nodeName === Shape.HTML && this.$camera) {
+        const $el = this.getOrCreateEl(object);
+        if ($el) {
+          $el.remove();
         }
+
+        // const existedId = this.getId(object);
+        // const $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
+        // if ($existedElement) {
+        //   this.$camera.removeChild($existedElement);
+        // }
       }
     };
 
@@ -82,14 +94,36 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
+    const handleCanvasResize = () => {
+      const { width, height } = this.context.config;
+      this.$camera.style.width = `${width || 0}px`;
+      this.$camera.style.height = `${height || 0}px`;
+    };
+
     renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
+      // append camera
+      this.$camera = this.createCamera(camera);
+
+      canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
       renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
       renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
+    renderingService.hooks.endFrame.tap(HTMLRenderingPlugin.tag, () => {
+      if (this.$camera && renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
+        this.$camera.style.transform = this.joinTransformMatrix(camera.getOrthoMatrix());
+      }
+    });
+
     renderingService.hooks.destroy.tap(HTMLRenderingPlugin.tag, () => {
+      // remove camera
+      if (this.$camera) {
+        this.$camera.remove();
+      }
+
+      canvas.removeEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
@@ -101,47 +135,65 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     return object.id || HTML_PREFIX + object.entity;
   }
 
-  private getOrCreateEl(object: DisplayObject) {
-    const { document: doc } = this.context.config;
-    const existedId = this.getId(object);
+  private createCamera(camera: ICamera) {
+    const { document: doc, width, height } = this.context.config;
     const $canvas = this.context.contextService.getDomElement() as unknown as HTMLElement;
     const $container = $canvas.parentNode;
     if ($container) {
-      let $existedElement: HTMLElement | null = $container.querySelector('#' + existedId);
-      if (!$existedElement) {
-        $existedElement = (doc || document).createElement('div');
-        object.parsedStyle.$el = $existedElement;
-        $existedElement.id = existedId;
-        if (object.name) {
-          $existedElement.setAttribute('name', object.name);
-        }
-        if (object.className) {
-          $existedElement.className = object.className;
-        }
-
-        $container.appendChild($existedElement);
-
+      const cameraId = CANVAS_CAMERA_ID;
+      let $existedCamera = $container.querySelector<HTMLDivElement>('#' + cameraId);
+      if (!$existedCamera) {
+        const $camera = (doc || document).createElement('div');
+        $existedCamera = $camera;
+        $camera.id = cameraId;
         // use absolute position
-        $existedElement.style.position = 'absolute';
-        // @see https://github.com/antvis/G/issues/1150
-        $existedElement.style.left = `${$canvas.offsetLeft || 0}px`;
-        $existedElement.style.top = `${$canvas.offsetTop || 0}px`;
-        $existedElement.style['will-change'] = 'transform';
-        const worldTransform = object.getWorldTransform();
-        $existedElement.style.transform = `matrix(${[
-          worldTransform[0],
-          worldTransform[1],
-          worldTransform[4],
-          worldTransform[5],
-          worldTransform[12],
-          worldTransform[13],
-        ].join(',')})`;
+        $camera.style.position = 'absolute';
+        // account for DOM element's offset @see https://github.com/antvis/G/issues/1150
+        $camera.style.left = `${$canvas.offsetLeft || 0}px`;
+        $camera.style.top = `${$canvas.offsetTop || 0}px`;
+        $camera.style.transformOrigin = 'left top';
+        $camera.style.transform = this.joinTransformMatrix(camera.getOrthoMatrix());
+        // HTML elements should not overflow with canvas @see https://github.com/antvis/G/issues/1163
+        $camera.style.overflow = 'hidden';
+        $camera.style.pointerEvents = 'none';
+        $camera.style.width = `${width || 0}px`;
+        $camera.style.height = `${height || 0}px`;
+
+        $container.appendChild($camera);
       }
 
-      return $existedElement;
+      return $existedCamera;
+    }
+    return null;
+  }
+
+  private getOrCreateEl(object: DisplayObject) {
+    const { document: doc } = this.context.config;
+    const existedId = this.getId(object);
+
+    let $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
+    if (!$existedElement) {
+      $existedElement = (doc || document).createElement('div');
+      object.parsedStyle.$el = $existedElement;
+      $existedElement.id = existedId;
+
+      if (object.name) {
+        $existedElement.setAttribute('name', object.name);
+      }
+      if (object.className) {
+        $existedElement.className = object.className;
+      }
+
+      // use absolute position
+      $existedElement.style.position = 'absolute';
+      // @see https://github.com/antvis/G/issues/1150
+      $existedElement.style.left = `0px`;
+      $existedElement.style.top = `0px`;
+      $existedElement.style['will-change'] = 'transform';
+      $existedElement.style.transform = this.joinTransformMatrix(object.getWorldTransform());
     }
 
-    return null;
+    return $existedElement;
   }
 
   private updateAttribute(name: string, object: HTML) {

@@ -1444,18 +1444,9 @@ In addition to interactive events such as click and mouseenter, we also provide 
 ```js
 import { ElementEvent, MutationEvent } from '@antv/g';
 
-// Listening for child node add events
-parent.on(ElementEvent.CHILD_INSERTED, (e) => {
-    e.target; // parent
-    e.detail.child; // child
-});
 child.on(ElementEvent.INSERTED, (e: MutationEvent) => {
     e.target; // child
     e.relatedNode; // parent
-});
-parent.on(ElementEvent.CHILD_REMOVED, (e) => {
-    e.target; // parent
-    e.detail.child; // child
 });
 child.on(ElementEvent.REMOVED, (e) => {
     e.target; // child
@@ -1473,9 +1464,7 @@ parent.appendChild(child);
 
 We currently support the following scenario map related events.
 
--   `CHILD_INSERTED` Triggered when a child node is added as a parent
 -   `INSERTED` Triggered when added as a child node
--   `CHILD_REMOVED` Triggered when a parent node is removed as a child node
 -   `REMOVED` Triggered when removed as a child node
 -   `MOUNTED` Triggered when first entering the canvas
 -   `UNMOUNTED` Triggered when removed from the canvas
@@ -1484,7 +1473,7 @@ We currently support the following scenario map related events.
 
 # Animation
 
-Referring to the Web Animation API, you can use animate to complete the keyframe animation, the following is a ScaleIn animation effect.
+Referring to the Web Animations API, you can use animate to complete the keyframe animation, the following is a ScaleIn animation effect.
 
 ```js
 circle.animate(

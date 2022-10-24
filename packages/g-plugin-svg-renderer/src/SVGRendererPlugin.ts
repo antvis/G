@@ -103,7 +103,7 @@ export type GradientParams = LinearGradient | RadialGradient;
  *
  * eg. g_svg_circle_345
  */
-export const G_SVG_PREFIX = 'g_svg';
+export const G_SVG_PREFIX = 'g-svg';
 export const CLIP_PATH_PREFIX = 'clip-path-';
 export const TEXT_PATH_PREFIX = 'text-path-';
 
@@ -216,7 +216,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       $svg.setAttribute('color-interpolation-filters', 'sRGB');
 
       this.$camera = createSVGElement('g', document);
-      this.$camera.id = `${G_SVG_PREFIX}_camera`;
+      this.$camera.id = `${G_SVG_PREFIX}-camera`;
       this.applyTransform(this.$camera, this.context.camera.getOrthoMatrix());
       $svg.appendChild(this.$camera);
 
@@ -321,7 +321,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private getId(object: DisplayObject) {
-    return `${G_SVG_PREFIX}_${object.nodeName}_${object.entity}`;
+    return `${G_SVG_PREFIX}-${object.nodeName}-${object.entity}`;
   }
 
   private reorderChildren(doc: Document, $groupEl: SVGElement, children: DisplayObject[]) {
@@ -566,7 +566,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
         if (this.pluginOptions.outputSVGElementId) {
           // use the entity suffix, so that `g-plugin-svg-picker` can extract
-          $hitTestingEl.id = `${G_SVG_PREFIX}_${object.nodeName}_hittesting_${object.entity}`;
+          $hitTestingEl.id = `${G_SVG_PREFIX}-${object.nodeName}-hittesting-${object.entity}`;
         }
         // clear attributes like `filter` `font-size`
         ['filter'].forEach((attribute) => {

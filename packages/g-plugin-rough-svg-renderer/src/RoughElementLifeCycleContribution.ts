@@ -159,7 +159,7 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
         // @see https://bugzilla.mozilla.org/show_bug.cgi?id=1428780
         $roughG.children[
           i
-        ].id = `${SVGRenderer.G_SVG_PREFIX}_${object.nodeName}_rough${i}_${object.entity}`;
+        ].id = `${SVGRenderer.G_SVG_PREFIX}-${object.nodeName}-rough${i}-${object.entity}`;
       }
     }
 

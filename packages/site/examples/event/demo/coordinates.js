@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Text } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Text, Line } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -88,6 +88,23 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   pageText.setPosition(100, 50);
   canvas.appendChild(pageText);
 
+  const vLine = new Line({
+    style: {
+      stroke: 'black',
+      strokeWidth: 2,
+      pointerEvents: 'none',
+    },
+  });
+  const hLine = new Line({
+    style: {
+      stroke: 'black',
+      strokeWidth: 2,
+      pointerEvents: 'none',
+    },
+  });
+  canvas.appendChild(vLine);
+  canvas.appendChild(hLine);
+
   canvas.addEventListener('mousemove', (e) => {
     const screenX = e.screenX;
     const screenY = e.screenY;
@@ -108,6 +125,21 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const viewportX = e.viewportX;
     const viewportY = e.viewportY;
     viewportText.style.text = `Viewport: ${viewportX}, ${viewportY}`;
+
+    // AuxiliaryLine
+    const hStart = { x: 0, y: e.viewportY };
+    const hEnd = { x: canvas.getConfig().width, y: e.viewportY };
+    hLine.style.x1 = canvas.viewport2Canvas(hStart).x;
+    hLine.style.y1 = canvas.viewport2Canvas(hStart).y;
+    hLine.style.x2 = canvas.viewport2Canvas(hEnd).x;
+    hLine.style.y2 = canvas.viewport2Canvas(hEnd).y;
+
+    const vStart = { x: e.viewportX, y: 0 };
+    const vEnd = { x: e.viewportX, y: canvas.getConfig().height };
+    vLine.style.x1 = canvas.viewport2Canvas(vStart).x;
+    vLine.style.y1 = canvas.viewport2Canvas(vStart).y;
+    vLine.style.x2 = canvas.viewport2Canvas(vEnd).x;
+    vLine.style.y2 = canvas.viewport2Canvas(vEnd).y;
   });
 
   // stats

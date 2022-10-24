@@ -17,7 +17,6 @@ The full version `@antv/g` consists of the following parts.
 -   `@antv/g-css-typed-om-api` Provides CSS Typed OM API
 -   `@antv/g-css-layout-api` Provides CSS Layout API]
 -   `@antv/g-dom-mutation-observer-api` Provides DOM Mutation Observer API
--   `@antv/g-compat` Includes APIs compatible with older versions
 
 # Usage
 
@@ -67,15 +66,6 @@ const canvas = new Canvas({
 const circle = new Circle({
     style: { r: 100 },
 });
-```
-
-There is only an impact on some of the features that are compatible with older versions, for example, the following methods do not exist on the base graphics and need to be introduced to `@antv/g-compat` to work properly.
-
-```js
-circle.getCount(); // = childElementCount
-circle.getParent(); // = parentElement
-circle.getChildren(); // = children
-circle.getFirst(); // = firstElementChild
 ```
 
 ## g-camera-api
