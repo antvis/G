@@ -463,8 +463,7 @@ export class DisplayObject<
    * only return degrees of Z axis in world space
    */
   getEulerAngles() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), runtime.sceneGraphService.getWorldTransform(this));
+    const [, , ez] = getEuler(vec3.create(), runtime.sceneGraphService.getWorldTransform(this));
     return rad2deg(ez);
   }
 
@@ -472,8 +471,7 @@ export class DisplayObject<
    * only return degrees of Z axis in local space
    */
   getLocalEulerAngles() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ex, ey, ez] = getEuler(vec3.create(), runtime.sceneGraphService.getLocalRotation(this));
+    const [, , ez] = getEuler(vec3.create(), runtime.sceneGraphService.getLocalRotation(this));
     return rad2deg(ez);
   }
 
@@ -687,8 +685,7 @@ export class DisplayObject<
     const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
     const [sx, sy] = mat4.getScaling(vec3.create(), transform);
     const rotation = mat4.getRotation(quat.create(), transform);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [eux, euy, euz] = getEuler(vec3.create(), rotation);
+    const [eux, , euz] = getEuler(vec3.create(), rotation);
     // gimbal lock at 90 degrees
     return fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
   }

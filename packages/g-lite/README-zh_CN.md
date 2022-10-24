@@ -1,6 +1,6 @@
 [English](./README.md) | 简体中文
 
-提供易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。因此可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+提供易用的 API。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animations API。因此可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
 
 使用方式如下，提供以下核心对象和 API：
 

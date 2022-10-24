@@ -66,8 +66,8 @@ describe('Event API', () => {
       expect(e.target).eqls(childGroup);
       expect(e.relatedNode).eqls(group);
     };
-    group.addEventListener(ElementEvent.CHILD_INSERTED, childInsertedCallback);
-    group.on(ElementEvent.CHILD_INSERTED, childInsertedCallback);
+    // group.addEventListener(ElementEvent.CHILD_INSERTED, childInsertedCallback);
+    // group.on(ElementEvent.CHILD_INSERTED, childInsertedCallback);
     group.addEventListener(ElementEvent.INSERTED, insertedCallback);
 
     canvas.addEventListener(ElementEvent.INSERTED, insertedCallback);
@@ -101,7 +101,7 @@ describe('Event API', () => {
     // group.addEventListener(ElementEvent.REMOVED, removedCallback);
     // group.addEventListener(ElementEvent.DESTROY, destroyCallback);
 
-    group.addEventListener(ElementEvent.CHILD_REMOVED, childRemovedCallbackSpy);
+    // group.addEventListener(ElementEvent.CHILD_REMOVED, childRemovedCallbackSpy);
     group.addEventListener(ElementEvent.REMOVED, removedCallbackSpy);
     group.addEventListener(ElementEvent.DESTROY, destroyCallbackSpy);
 
@@ -110,7 +110,7 @@ describe('Event API', () => {
     group.removeChild(childGroup);
 
     // @ts-ignore
-    expect(childRemovedCallbackSpy).to.have.been.called;
+    // expect(childRemovedCallbackSpy).to.have.been.called;
     // @ts-ignore
     expect(removedCallbackSpy).to.have.been.called;
     // @ts-ignore

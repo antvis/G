@@ -31,7 +31,7 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 ## 特性
 
-**易用的 API**。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animation API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
+**易用的 API**。其中图形、事件系统兼容 DOM Element & Event API，动画系统兼容 Web Animations API。可以以极低的成本适配 Web 端已有的生态例如 D3、Hammer.js 手势库等。
 
 **适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU / CanvasKit 以及运行时切换，并支持服务端渲染。
 

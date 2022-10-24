@@ -18,16 +18,9 @@ export function resetEntityCounter() {
   entityCounter = 0;
 }
 
-// let this.sceneGraphService: SceneGraphService;
-const childInsertedEvent = new CustomEvent(ElementEvent.CHILD_INSERTED, {
-  child: null,
-});
 const insertedEvent = new MutationEvent(ElementEvent.INSERTED, null, '', '', '', 0, '', '');
 const removedEvent = new MutationEvent(ElementEvent.REMOVED, null, '', '', '', 0, '', '');
 const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
-const childRemovedEvent = new CustomEvent(ElementEvent.CHILD_REMOVED, {
-  child: null,
-});
 
 /**
  * Has following capabilities:
@@ -195,8 +188,9 @@ export class Element<
   appendChild<T extends INode>(child: T, index?: number): T {
     runtime.sceneGraphService.attach(child, this, index);
 
-    childInsertedEvent.detail.child = child;
-    this.dispatchEvent(childInsertedEvent);
+    if (this.ownerDocument?.defaultView) {
+      this.ownerDocument.defaultView.mountChildren(child);
+    }
 
     insertedEvent.relatedNode = this as IElement;
     child.dispatchEvent(insertedEvent);
@@ -226,9 +220,9 @@ export class Element<
     removedEvent.relatedNode = this as IElement;
     child.dispatchEvent(removedEvent);
 
-    // emit on parent
-    childRemovedEvent.detail.child = child;
-    this.dispatchEvent(childRemovedEvent);
+    if (child.ownerDocument?.defaultView) {
+      child.ownerDocument.defaultView.unmountChildren(child);
+    }
 
     // remove from scene graph
     runtime.sceneGraphService.detach(child);
@@ -518,11 +512,14 @@ export class Element<
   getAttribute(name: keyof StyleProps) {
     let value = this.attributes[name];
     if (value === undefined) {
-      const [attributeName] = formatAttribute(name.toString(), '');
+      const [attributeName] = formatAttribute(name as string, '');
       value = this.attributes[attributeName];
+
+      // if the given attribute does not exist, the value returned will either be null or ""
+      return isNil(value) ? null : value;
+    } else {
+      return value;
     }
-    // if the given attribute does not exist, the value returned will either be null or ""
-    return isNil(value) ? null : value;
   }
 
   /**

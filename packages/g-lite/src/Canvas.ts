@@ -9,7 +9,7 @@ import { CameraTrackingMode, CameraType } from './camera';
 import { CameraEvent, CameraProjectionMode } from './camera';
 import type { RBushNodeAABB } from './components';
 import { CustomElement, DisplayObject } from './display-objects';
-import type { CanvasContext, Element, FederatedEvent, IChildNode } from './dom';
+import type { CanvasContext, Element, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import type { ICanvas } from './dom/interfaces';
@@ -37,6 +37,14 @@ export enum CanvasEvent {
 const DEFAULT_CAMERA_Z = 500;
 const DEFAULT_CAMERA_NEAR = 0.1;
 const DEFAULT_CAMERA_FAR = 1000;
+
+/**
+ * reuse custom event preventing from re-create them in every frame
+ */
+const mountEvent = new CustomEvent(ElementEvent.MOUNTED);
+const unmountEvent = new CustomEvent(ElementEvent.UNMOUNTED);
+const beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
+const afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
 
 /**
  * can be treated like Window in DOM
@@ -107,14 +115,6 @@ export class Canvas extends EventTarget implements ICanvas {
   private inited = false;
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
-
-  /**
-   * reuse custom event preventing from re-create them in every frame
-   */
-  private mountEvent = new CustomEvent(ElementEvent.MOUNTED);
-  private unmountEvent = new CustomEvent(ElementEvent.UNMOUNTED);
-  private beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
-  private afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
 
   context = {} as CanvasContext;
 
@@ -233,20 +233,6 @@ export class Canvas extends EventTarget implements ICanvas {
       force: false,
       dirty: false,
     };
-
-    this.document.documentElement.addEventListener(
-      ElementEvent.CHILD_INSERTED,
-      (e: FederatedEvent<Event, { child: DisplayObject }>) => {
-        this.mountChildren(e.detail.child);
-      },
-    );
-
-    this.document.documentElement.addEventListener(
-      ElementEvent.CHILD_REMOVED,
-      (e: FederatedEvent<Event, { child: DisplayObject }>) => {
-        this.unmountChildren(e.detail.child);
-      },
-    );
   }
 
   private initDefaultCamera(width: number, height: number) {
@@ -422,12 +408,12 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render() {
-    this.dispatchEvent(this.beforeRenderEvent);
+    this.dispatchEvent(beforeRenderEvent);
 
     const renderingService = this.getRenderingService();
     renderingService.render(this.getConfig());
 
-    this.dispatchEvent(this.afterRenderEvent);
+    this.dispatchEvent(afterRenderEvent);
   }
 
   private run() {
@@ -532,7 +518,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().applyCursorStyle(cursor);
   }
 
-  private unmountChildren(parent: DisplayObject) {
+  unmountChildren(parent: DisplayObject) {
     if (this.inited) {
       const path = [];
       parent.forEach((child) => {
@@ -550,7 +536,7 @@ export class Canvas extends EventTarget implements ICanvas {
           }
         }
 
-        child.dispatchEvent(this.unmountEvent);
+        child.dispatchEvent(unmountEvent);
 
         // skip document.documentElement
         if (child !== this.document.documentElement) {
@@ -561,13 +547,13 @@ export class Canvas extends EventTarget implements ICanvas {
     }
   }
 
-  private mountChildren(parent: DisplayObject) {
+  mountChildren(parent: DisplayObject) {
     if (this.inited) {
       parent.forEach((child) => {
         if (!child.isConnected) {
           child.ownerDocument = this.document;
           child.isConnected = true;
-          child.dispatchEvent(this.mountEvent);
+          child.dispatchEvent(mountEvent);
 
           // trigger after mounted
           if (child instanceof CustomElement) {

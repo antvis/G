@@ -5,7 +5,7 @@ redirect_from:
     - /en/docs/api/animation
 ---
 
-Referring to the [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API), we add animation capabilities to each DisplayObject.
+Referring to the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API), we add animation capabilities to each DisplayObject.
 
 Currently we support Keyframe based animations, where the user needs to define a series of keyframes, each of which can contain parameters such as transformation attributes, frame offsets, easing functions, etc. G internally interpolates the values of each attribute at the current time and applies them to the target graphics (as shown below). In addition, the transformation of some special attributes will bring special animation effects, for example:
 

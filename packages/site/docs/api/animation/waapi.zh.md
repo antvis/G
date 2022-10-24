@@ -5,7 +5,7 @@ redirect_from:
     - /zh/docs/api/animation
 ---
 
-参考 [Web Animation API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，我们为每一个 DisplayObject 添加了动画能力。
+参考 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API)，我们为每一个 DisplayObject 添加了动画能力。
 
 目前我们支持基于 Keyframe 的动画，用户需要定义一系列关键帧，其中每一帧都可以包含变换属性、帧偏移量、缓动函数等参数，G 内部通过插值得到各个属性值在当前时间下的值并应用到目标图形上（如下图）。另外，对一些特殊属性变换会带来特别的动画效果，例如：
 

@@ -588,7 +588,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
 ];
 
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
-const unresolvedProperties: Record<number, string[]> = {};
+const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
 const priorityMap: Record<string, number> = {};
 const sortAttributeNames = memoize((attributeNames: string[]) => {
   return attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
@@ -599,11 +599,12 @@ const tmpVec3b = vec3.create();
 const tmpVec3c = vec3.create();
 
 const isPropertyResolved = (object: DisplayObject, name: string) => {
-  if (!unresolvedProperties[object.entity] || unresolvedProperties[object.entity].length === 0) {
+  const properties = unresolvedProperties.get(object);
+  if (!properties || properties.length === 0) {
     return true;
   }
 
-  return unresolvedProperties[object.entity].includes(name);
+  return properties.includes(name);
 };
 
 export class DefaultStyleValueRegistry implements StyleValueRegistry {
@@ -848,12 +849,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * resolve later
    */
   addUnresolveProperty(object: DisplayObject, name: string) {
-    if (!unresolvedProperties[object.entity]) {
-      unresolvedProperties[object.entity] = [];
+    let properties = unresolvedProperties.get(object);
+    if (!properties) {
+      unresolvedProperties.set(object, []);
+      properties = unresolvedProperties.get(object);
     }
 
-    if (unresolvedProperties[object.entity].indexOf(name) === -1) {
-      unresolvedProperties[object.entity].push(name);
+    if (properties.indexOf(name) === -1) {
+      properties.push(name);
     }
   }
 
@@ -888,7 +891,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   recalc(object: DisplayObject) {
-    const properties = unresolvedProperties[object.entity];
+    const properties = unresolvedProperties.get(object);
     if (properties && properties.length) {
       const attributes = {};
       properties.forEach((property) => {
@@ -896,7 +899,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       });
 
       this.processProperties(object, attributes);
-      delete unresolvedProperties[object.entity];
+      unresolvedProperties.delete(object);
     }
   }
 

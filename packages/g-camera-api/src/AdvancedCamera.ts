@@ -280,4 +280,29 @@ export class AdvancedCamera extends Camera {
     this.distance = landmark.distance;
     this.zoom = landmark.zoom;
   }
+
+  /**
+   * Sets the camera to a distance such that the area covered by the bounding box is viewed.
+   */
+  // shot(displayObject: DisplayObject) {
+  //   const aabb = displayObject.getBounds();
+
+  //   if (!AABB.isEmpty(aabb)) {
+  //     this.setElevation(0);
+  //     this.setAzimuth(0);
+  //     this.setRoll(0);
+
+  //     const { halfExtents, center } = aabb;
+  //     const maxDim = Math.max(halfExtents[0] * 2, halfExtents[1] * 2);
+
+  //     const cc = center.map((c: number) => Math.round(c * 1000) / 1000) as [number, number, number];
+
+  //     if (maxDim !== 0) {
+  //       const d = (1.5 * maxDim) / Math.tan(this.fov * DEG_2_RAD);
+  //       this.setPosition([cc[0], cc[1], cc[2] + d]);
+  //     }
+
+  //     this.setFocalPoint(cc);
+  //   }
+  // }
 }

@@ -2,6 +2,7 @@ import { isNumber, isString } from '@antv/util';
 import type { ParsedTextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
+const stringRegExp = /([\"\'])[^\'\"]+\1/;
 
 export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
   const { fontSize, fontFamily, fontStyle, fontVariant, fontWeight } = attributes;
@@ -19,7 +20,7 @@ export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
     // Trim any extra white-space
     let fontFamily = fontFamilies[i].trim();
     // Check if font already contains strings
-    if (!/([\"\'])[^\'\"]+\1/.test(fontFamily) && genericFontFamilies.indexOf(fontFamily) < 0) {
+    if (!stringRegExp.test(fontFamily) && genericFontFamilies.indexOf(fontFamily) < 0) {
       fontFamily = `"${fontFamily}"`;
     }
     (fontFamilies as string[])[i] = fontFamily;
