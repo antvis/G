@@ -47,15 +47,15 @@ const FORMAT_ATTR_MAP = {
   },
 };
 
-const formatAttributeName = memoize((name: string) => {
+export const formatAttributeName = memoize((name: string) => {
   let attributeName = camelCase(name);
   const map = FORMAT_ATTR_MAP[attributeName];
   attributeName = map?.alias || attributeName;
-  return [attributeName, map];
+  return attributeName;
 });
 
-export function formatAttribute(name: string, value: any): [string, any] {
-  const [attributeName, map] = formatAttributeName(name);
-  const attributeValue = (isString(value) && map?.values?.[value]) || value;
-  return [attributeName, attributeValue];
-}
+// export function formatAttribute(name: string, value: any): [string, any] {
+//   const attributeName = formatAttributeName(name);
+//   // const attributeValue = (isString(value) && map?.values?.[value]) || value;
+//   return [attributeName, value];
+// }

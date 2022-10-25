@@ -4,7 +4,7 @@ import type { DisplayObject } from '../display-objects';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { formatAttribute, isFunction } from '../utils';
+import { formatAttributeName, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
@@ -659,10 +659,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     let attributeNames = Object.keys(attributes);
 
     attributeNames.forEach((attributeName) => {
-      const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
+      const name = formatAttributeName(attributeName);
 
       if (!skipUpdateAttribute) {
-        object.attributes[name] = value;
+        object.attributes[name] = attributes[attributeName];
       }
 
       if (!needUpdateGeometry && propertyMetadataCache[name as string]?.l) {

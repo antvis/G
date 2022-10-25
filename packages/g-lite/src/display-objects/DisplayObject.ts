@@ -17,7 +17,7 @@ import { Shape } from '../types';
 import {
   createVec3,
   decompose,
-  formatAttribute,
+  formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
   rad2deg,
@@ -288,18 +288,15 @@ export class DisplayObject<
   }
 
   setAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key], force = false) {
-    const [attributeName, attributeValue] = formatAttribute(name as string, value) as [
-      Key,
-      StyleProps[Key],
-    ];
+    const attributeName = formatAttributeName(name as string) as Key;
     // ignore undefined value
     if (isUndefined(value)) {
       return;
     }
 
-    if (force || attributeValue !== this.attributes[attributeName]) {
-      this.internalSetAttribute(attributeName, attributeValue);
-      super.setAttribute(attributeName, attributeValue);
+    if (force || value !== this.attributes[attributeName]) {
+      this.internalSetAttribute(attributeName, value);
+      super.setAttribute(attributeName, value);
     }
   }
 
