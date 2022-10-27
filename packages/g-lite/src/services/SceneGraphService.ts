@@ -421,9 +421,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const set = new Set<number>();
 
     const trigger = (element, detail) => {
-      if (!set.has(element.entity)) {
+      if (element.isConnected && !set.has(element.entity)) {
         this.boundsChangedEvent.detail = detail;
-        element.dispatchEvent(this.boundsChangedEvent);
+        this.boundsChangedEvent.target = element;
+        element.ownerDocument.defaultView.dispatchEvent(this.boundsChangedEvent, true);
         set.add(element.entity);
       }
     };
@@ -438,6 +439,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       }
     });
     this.pendingEvents = [];
+    set.clear();
   }
 
   dirtifyToRoot(element: INode, affectChildren = false) {

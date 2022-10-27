@@ -28,6 +28,7 @@ export class MatterJSPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
     const simulate = () => {
       if (this.engine) {
         const { timeStep } = this.options;
@@ -108,9 +109,9 @@ export class MatterJSPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(MatterJSPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
 
       this.createScene();
       this.handlePendingDisplayObjects();
@@ -123,9 +124,9 @@ export class MatterJSPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
   }
 

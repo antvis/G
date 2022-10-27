@@ -249,7 +249,7 @@ Adjusts the position of the marker graphic at the "end point".
 
 # Methods
 
-## getTotalLength(): number
+## getTotalLength
 
 Get the length of the line.
 
@@ -259,19 +259,16 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getTotalLeng
 line.getTotalLength(); // 200
 ```
 
-## getPointAtLength(distance: number): Point
+## getPointAtLength
 
-Returns the point at a given distance along the path.
+Returns the point along the path at a given distance, controlled by a second optional parameter in the local or world coordinate system.
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+The parameters are as follows.
 
-```js
-line.getPointAtLength(100); // Point {x: 300, y: 100}
-```
+-   `distance` mandatory, the distance value
+-   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
-## getPoint(ratio: number): Point
-
-Obtain the coordinates of a point in the local coordinate system on a line according to the length scale (in the range `[0-1]`), where `Point` is of the form :
+where `Point` has the format:
 
 ```ts
 export type Point = {
@@ -280,7 +277,24 @@ export type Point = {
 };
 ```
 
-For example, to obtain the midpoint of the line defined above.
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+For example, to obtain the coordinates of a point in the local coordinate system on a line at a distance of 100 from the starting point.
+
+```js
+line.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
+## getPoint
+
+Get the coordinates of the point on the line in the local or world coordinate system according to the length scale (in the range `[0-1]`).
+
+The parameters are as follows.
+
+-   `ratio` mandatory, the length ratio
+-   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+
+For example, to get the midpoint of the line defined above.
 
 ```js
 line.getPoint(0.5); // Point {x: 300, y: 100}

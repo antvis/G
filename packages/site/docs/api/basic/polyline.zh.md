@@ -177,15 +177,22 @@ polyline.style.markerMid = circleMarker;
 
 # 方法
 
-## getTotalLength(): number
+## getTotalLength
 
 获取折线长度。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
-## getPoint(ratio: number): Point
+## getPoint
 
-根据长度比例（取值范围 `[0-1]`）获取点，其中 `Point` 的格式为:
+根据长度比例（取值范围 `[0-1]`）获取点。
+
+参数如下：
+
+-   `ratio` 必填，长度比例
+-   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+
+其中 `Point` 的格式为:
 
 ```ts
 export type Point = {
@@ -194,9 +201,14 @@ export type Point = {
 };
 ```
 
-## getPointAtLength(distance: number): Point
+## getPointAtLength
 
 沿路径返回给定距离的点。
+
+参数如下：
+
+-   `distance` 必填，从起点出发的距离值
+-   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
 
@@ -204,10 +216,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 polyline.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent(): number[][]
+## getStartTangent
 
 获取起点的切向量，形如: `[[10, 10], [20, 20]]`
 
-## getEndTangent(): number[][]
+## getEndTangent
 
 获取终点的切向量，形如: `[[10, 10], [20, 20]]`

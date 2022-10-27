@@ -520,11 +520,20 @@ export class EventService {
     this.freeEvent(wheelEvent);
   };
 
-  dispatchEvent(e: FederatedEvent, type?: string) {
-    e.propagationStopped = false;
-    e.propagationImmediatelyStopped = false;
+  dispatchEvent(e: FederatedEvent, type?: string, skipPropagate?: boolean) {
+    // Canvas should skip
+    if (!skipPropagate) {
+      e.propagationStopped = false;
+      e.propagationImmediatelyStopped = false;
+      this.propagate(e, type);
+    } else {
+      // target phase
+      e.eventPhase = e.AT_TARGET;
+      const canvas = (this.rootTarget as IDocument).defaultView || null;
+      e.currentTarget = canvas;
+      this.notifyListeners(e, type);
+    }
 
-    this.propagate(e, type);
     this.emitter.emit(type || e.type, e);
   }
 

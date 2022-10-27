@@ -1,6 +1,7 @@
-import type { Canvas, DisplayObject, PointLike, Rectangle } from '@antv/g-lite';
+import type { Canvas, DisplayObject, IAnimation, PointLike, Rectangle } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
-import type { PathArray } from '@antv/util';
+import { AbsoluteArray, isNumber, PathArray } from '@antv/util';
+// import { mat4, quat, vec3 } from 'gl-matrix';
 import type {
   CustomElementOption,
   KeyframeAnimation,
@@ -35,6 +36,8 @@ export class LottieAnimation {
   private displayObjects: DisplayObject[];
   private keyframeAnimationMap = new WeakMap<DisplayObject, KeyframeAnimation[]>();
   private displayObjectElementMap = new WeakMap<DisplayObject, CustomElementOption>();
+
+  private animations: IAnimation[] = [];
 
   private generateTransform(tx: number, ty: number, scaleX: number, scaleY: number, rotation) {
     let transformStr = '';
@@ -71,6 +74,13 @@ export class LottieAnimation {
 
     let displayObject: DisplayObject;
     const transform = this.generateTransform(x - anchorX, y - anchorY, scaleX, scaleY, rotation);
+    // const transformMat = mat4.fromRotationTranslationScaleOrigin(
+    //   mat4.create(),
+    //   quat.fromEuler(quat.create(), 0, 0, rotation),
+    //   [x - anchorX, y - anchorY, 0],
+    //   [scaleX, scaleY, 1],
+    //   [anchorX, anchorY, 0],
+    // );
 
     // TODO: repeater @see https://lottiefiles.github.io/lottie-docs/shapes/#repeater
 
@@ -85,8 +95,13 @@ export class LottieAnimation {
       });
     } else if (type === Shape.ELLIPSE) {
       const { cx, cy, rx, ry } = shape;
+      // const center = vec3.fromValues(cx, cy, 0);
+      // vec3.transformMat4(center, center, transformMat);
+
       displayObject = new Ellipse({
         style: {
+          // cx: center[0],
+          // cy: center[1],
           cx,
           cy,
           rx,
@@ -122,6 +137,7 @@ export class LottieAnimation {
         ]);
         d.push(['Z']);
       }
+
       displayObject = new Path({
         style: {
           d, // use Path Array which can be skipped when parsing
@@ -168,7 +184,7 @@ export class LottieAnimation {
     // TODO: match name `mn`, used in expressions
 
     if (style) {
-      // { fill, fillOpacity, opacity, lineDash, lineDashOffset }
+      // { fill, fillOpacity, fillRule, opacity, lineDash, lineDashOffset }
       displayObject.attr(style);
     }
 
@@ -187,10 +203,15 @@ export class LottieAnimation {
   }
 
   /**
-   * Returns the animation duration in seconds.
+   * Returns the animation duration in seconds or frames.
+   * @see https://github.com/airbnb/lottie-web#getdurationinframes
    */
-  duration() {
-    return (this.context.endFrame - this.context.startFrame) * this.context.frameTime;
+  getDuration(inFrames = false) {
+    return (
+      (inFrames ? this.fps() : 1) *
+      (this.context.endFrame - this.context.startFrame) *
+      this.context.frameTime
+    );
   }
   /**
    * Returns the animation frame rate (frames / second).
@@ -219,7 +240,7 @@ export class LottieAnimation {
   }
 
   /**
-   * Draws current animation frame. Must call seek or seekFrame first.
+   * Draws current animation frame
    */
   render(canvas: Canvas) {
     const wrapper = new Group();
@@ -243,7 +264,7 @@ export class LottieAnimation {
               delay,
               duration,
               easing,
-              iterations: !!loop ? Infinity : 1,
+              iterations: isNumber(loop) ? loop : !!loop ? Infinity : 1,
             }) as Omit<KeyframeAnimation, 'keyframes'>;
 
             keyframesOptions.push([formattedKeyframes, options]);
@@ -283,17 +304,25 @@ export class LottieAnimation {
             }
           }
 
-          // TODO: return animations
-          mergedKeyframesOptions.map(([merged, options]) => {
-            // format interpolated properties, e.g. scaleX -> transform
-            const formatted = this.formatKeyframes(merged, child);
+          // restore animations for later use
+          this.animations.push(
+            ...mergedKeyframesOptions
+              .map(([merged, options]) => {
+                // format interpolated properties, e.g. scaleX -> transform
+                const formatted = this.formatKeyframes(merged, child);
 
-            if (formatted.length) {
-              console.log(child, formatted);
+                if (formatted.length) {
+                  console.log(child, formatted);
 
-              return child.animate(formatted, options);
-            }
-          });
+                  const animation = child.animate(formatted, options);
+                  if (!this.context.autoplay) {
+                    animation.pause();
+                  }
+                  return animation;
+                }
+              })
+              .filter((animation) => !!animation),
+          );
         }
       });
     });
@@ -305,18 +334,41 @@ export class LottieAnimation {
     keyframes.forEach((keyframe) => {
       if ('offsetPath' in keyframe) {
         if (!object.style.offsetPath) {
-          object.style.offsetPath = new Path({
+          const [ox, oy] = object.getOrigin();
+          (keyframe.offsetPath as AbsoluteArray).forEach((segment) => {
+            if (segment[0] === 'M') {
+              segment[1] -= ox;
+              segment[2] -= oy;
+            } else if (segment[0] === 'C') {
+              segment[1] -= ox;
+              segment[2] -= oy;
+              segment[3] -= ox;
+              segment[4] -= oy;
+              segment[5] -= ox;
+              segment[6] -= oy;
+            }
+          });
+
+          const offsetPath = new Path({
             style: {
               d: keyframe.offsetPath,
-              // d: 'M200 200 L 400 200',
             },
           });
+
+          object.style.offsetPath = offsetPath;
         }
         delete keyframe.offsetPath;
         // offsetPath should override x/y
         delete keyframe.x;
         delete keyframe.y;
       }
+
+      // should keep transform during initialization
+      if (!object.style.offsetPath) {
+        keyframe.transform = object.style.transform || '';
+      }
+
+      // TODO: transforms with different easing functions will conflict
 
       if ('scaleX' in keyframe) {
         keyframe.transform =
@@ -335,15 +387,15 @@ export class LottieAnimation {
         delete keyframe.rotation;
       }
 
-      // manipulate cx/cy instead of x/y on ellipse
-      if ('x' in keyframe && object.nodeName === Shape.ELLIPSE) {
-        keyframe.cx = keyframe.x;
+      if ('x' in keyframe) {
+        keyframe.transform = (keyframe.transform || '') + ` translateX(${keyframe.x}px)`;
         delete keyframe.x;
       }
-      if ('y' in keyframe && object.nodeName === Shape.ELLIPSE) {
-        keyframe.cy = keyframe.y;
+      if ('y' in keyframe) {
+        keyframe.transform = (keyframe.transform || '') + ` translateY(${keyframe.y}px)`;
         delete keyframe.y;
       }
+
       // { style: { opacity: 1 } }
       if ('style' in keyframe) {
         Object.keys(keyframe.style).forEach((name) => {
@@ -383,20 +435,6 @@ export class LottieAnimation {
   }
 
   /**
-   * Update the animation state to match |t|, specified as a frame index
-   * i.e. relative to duration() * fps().
-   *
-   * Returns the rectangle that was affected by this animation.
-   *
-   * @param frame - Fractional values are allowed and meaningful - e.g.
-   *                0.0 -> first frame
-   *                1.0 -> second frame
-   *                0.5 -> halfway between first and second frame
-   * @param damageRect - will copy damage frame into this if provided.
-   */
-  seekFrame(frame: number, damageRect?: Rectangle) {}
-
-  /**
    * Return the size of this animation.
    * @param outputSize - If provided, the size will be copied into here as width, height.
    */
@@ -409,5 +447,79 @@ export class LottieAnimation {
    */
   version() {
     return this.context.version;
+  }
+
+  private isPaused = false;
+  play() {
+    this.isPaused = false;
+    this.animations.forEach((animation) => {
+      animation.play();
+    });
+  }
+
+  pause() {
+    this.isPaused = true;
+    this.animations.forEach((animation) => {
+      animation.pause();
+    });
+  }
+
+  /**
+   *
+   */
+  togglePause() {
+    if (this.isPaused) {
+      this.play();
+    } else {
+      this.pause();
+    }
+  }
+
+  /**
+   * split goToAndStop/Play into goTo & stop/play
+   * @see https://github.com/airbnb/lottie-web
+   */
+  goTo(value: number, isFrame = false) {
+    if (isFrame) {
+      this.animations.forEach((animation) => {
+        animation.currentTime = (value / this.fps()) * this.getDuration();
+      });
+    } else {
+      this.animations.forEach((animation) => {
+        animation.currentTime = value;
+      });
+    }
+  }
+
+  /**
+   * @see https://github.com/airbnb/lottie-web#stop
+   */
+  stop() {
+    this.animations.forEach((animation) => {
+      animation.finish();
+    });
+  }
+
+  /**
+   * 1 is normal speed.
+   * @see https://github.com/airbnb/lottie-web#setspeedspeed
+   */
+  setSpeed(speed: number) {
+    this.animations.forEach((animation) => {
+      animation.playbackRate = speed * this.direction;
+    });
+  }
+
+  private direction = 1;
+
+  /**
+   * 1 is forward, -1 is reverse.
+   * @see https://github.com/airbnb/lottie-web#setdirectiondirection
+   */
+  setDirection(direction: 1 | -1) {
+    this.direction = direction;
+    this.animations.forEach((animation) => {
+      animation.playbackRate *= direction;
+    });
   }
 }

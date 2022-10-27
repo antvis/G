@@ -37,7 +37,7 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, async () => {
-  const data = await d3.json('../examples/data/lottie-transform.json');
+  const data = await d3.json('../examples/data/lottie/transform.json');
   const animation = loadAnimation(data, { loop: true });
   const wrapper = animation.render(canvas);
 });

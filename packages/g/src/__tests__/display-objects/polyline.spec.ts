@@ -94,6 +94,9 @@ describe('Polyline', () => {
     let point = polyline.getPoint(0);
     expect(point.x).eqls(50);
     expect(point.y).eqls(50);
+    point = polyline.getPoint(0, true);
+    expect(point.x).eqls(50);
+    expect(point.y).eqls(50);
 
     point = polyline.getPoint(0.5);
     expect(point.x).eqls(100);
@@ -109,6 +112,9 @@ describe('Polyline', () => {
     expect(point.y).eqls(50);
 
     point = polyline.getPointAtLength(0);
+    expect(point.x).eqls(50);
+    expect(point.y).eqls(50);
+    point = polyline.getPointAtLength(0, true);
     expect(point.x).eqls(50);
     expect(point.y).eqls(50);
 

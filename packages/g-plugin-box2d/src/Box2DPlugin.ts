@@ -46,6 +46,8 @@ export class Box2DPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
+
     const simulate = () => {
       if (this.world) {
         const { timeStep, velocityIterations, positionIterations } = this.options;
@@ -142,9 +144,9 @@ export class Box2DPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
 
       this.Box2D = await this.loadBox2D();
 
@@ -154,16 +156,13 @@ export class Box2DPlugin implements RenderingPlugin {
       this.handlePendingDisplayObjects();
 
       // do simulation each frame
-      renderingContext.root.ownerDocument.defaultView.addEventListener(
-        CanvasEvent.BEFORE_RENDER,
-        simulate,
-      );
+      canvas.addEventListener(CanvasEvent.BEFORE_RENDER, simulate);
     });
 
     renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
 
       if (this.world) {
         // memory leak

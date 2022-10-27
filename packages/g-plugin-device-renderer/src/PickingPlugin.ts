@@ -44,6 +44,7 @@ export class PickingPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     this.context = context;
     const { renderingService, renderingContext } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -58,11 +59,11 @@ export class PickingPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(PickingPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
     renderingService.hooks.destroy.tap(PickingPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 
     /**

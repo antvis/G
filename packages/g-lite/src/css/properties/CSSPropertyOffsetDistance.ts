@@ -13,18 +13,18 @@ export class CSSPropertyOffsetDistance implements Partial<CSSProperty<CSSUnitVal
   mixer = clampedMergeNumbers(0, 1);
 
   postProcessor(object: DisplayObject) {
-    if (!object.attributes.offsetPath) {
+    const { offsetPath, offsetDistance } = object.parsedStyle;
+    if (!offsetPath) {
       return;
     }
 
-    const offsetPathNodeName = object.attributes.offsetPath.nodeName;
-    if (
-      offsetPathNodeName === Shape.LINE ||
-      offsetPathNodeName === Shape.PATH ||
-      offsetPathNodeName === Shape.POLYLINE
-    ) {
-      const point = object.attributes.offsetPath.getPoint(object.parsedStyle.offsetDistance);
+    const { nodeName } = offsetPath;
+    if (nodeName === Shape.LINE || nodeName === Shape.PATH || nodeName === Shape.POLYLINE) {
+      // set position in world space
+      const point = offsetPath.getPoint(offsetDistance);
       if (point) {
+        object.parsedStyle.defX = point.x;
+        object.parsedStyle.defY = point.y;
         object.setLocalPosition(point.x, point.y);
       }
     }

@@ -37,10 +37,16 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, async () => {
-  // const data = await d3.json('../examples/data/lottie.json');
-  const data = await d3.json('../examples/data/lottie/flower.json');
-  const animation = loadAnimation(data, { loop: true });
-  const wrapper = animation.render(canvas);
+  const data1 = await d3.json('../examples/data/lottie/complex.json');
+  const animation1 = loadAnimation(data1, { loop: true, autoplay: true });
+  const wrapper1 = animation1.render(canvas);
+  wrapper1.scale(0.5);
+
+  const data2 = await d3.json('../examples/data/lottie/flower.json');
+  const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
+  const wrapper2 = animation2.render(canvas);
+  wrapper2.scale(0.5);
+  wrapper2.translate(0, 200);
 });
 
 // stats

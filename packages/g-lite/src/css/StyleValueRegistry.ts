@@ -907,7 +907,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * update geometry when relative props changed,
    * eg. r of Circle, width/height of Rect
    */
-  updateGeometry(object: DisplayObject) {
+  private updateGeometry(object: DisplayObject) {
     const geometryUpdater = runtime.geometryUpdaterFactory[object.nodeName];
     if (geometryUpdater) {
       const geometry = object.geometry;

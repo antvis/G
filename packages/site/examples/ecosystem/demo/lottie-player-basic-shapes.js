@@ -620,7 +620,7 @@ const gradient = {
 const gradientAnimation = loadAnimation(gradient);
 const rectAnimation = loadAnimation(rect);
 const pathAnimation = loadAnimation(path);
-const ballAnimation = loadAnimation(bouncy_ball, { loop: true });
+const ballAnimation = loadAnimation(bouncy_ball, { loop: true, autoplay: true });
 canvas.addEventListener(CanvasEvent.READY, () => {
   gradientAnimation.render(canvas);
   rectAnimation.render(canvas);
@@ -668,3 +668,32 @@ rendererFolder
     canvas.setRenderer(renderer);
   });
 rendererFolder.open();
+
+const controlFolder = gui.addFolder('control');
+const controlConfig = {
+  pause: () => {
+    ballAnimation.pause();
+  },
+  play: () => {
+    ballAnimation.play();
+  },
+  stop: () => {
+    ballAnimation.stop();
+  },
+  speed: 1,
+  goToCurrentTime: 0,
+  goToFrame: 0,
+};
+controlFolder.add(controlConfig, 'play');
+controlFolder.add(controlConfig, 'pause');
+controlFolder.add(controlConfig, 'stop');
+controlFolder.add(controlConfig, 'speed', -3, 3).onChange((speed) => {
+  ballAnimation.setSpeed(speed);
+});
+controlFolder.add(controlConfig, 'goToCurrentTime', 0, 2000).onChange((time) => {
+  ballAnimation.goTo(time);
+});
+controlFolder.add(controlConfig, 'goToFrame', 0, 100).onChange((frame) => {
+  ballAnimation.goTo(frame, true);
+});
+controlFolder.open();

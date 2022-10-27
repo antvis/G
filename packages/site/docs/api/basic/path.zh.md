@@ -179,7 +179,7 @@ path.style.markerMid = circleMarker;
 
 # 方法
 
-## getTotalLength(): number
+## getTotalLength
 
 获取路径长度。
 
@@ -214,9 +214,16 @@ const path = new Path({
 path.getTotalLength(); // 0
 ```
 
-## getPoint(ratio: number): Point
+## getPoint
 
-根据长度比例（取值范围 `[0-1]`）获取局部坐标系下点的坐标，其中 `Point` 的格式为:
+根据长度比例（取值范围 `[0-1]`）获取局部或世界坐标系下点的坐标。
+
+参数如下：
+
+-   `ratio` 必填，长度比例
+-   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
+
+其中 `Point` 的格式为:
 
 ```ts
 export type Point = {
@@ -247,9 +254,14 @@ path.getPoint(0.5); // Point {x: 100, y: 150}
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
-## getPointAtLength(distance: number): Point
+## getPointAtLength
 
 沿路径返回给定距离的点。
+
+参数如下：
+
+-   `distance` 必填，从起点出发的距离值
+-   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
 
@@ -257,10 +269,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 path.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent(): number[][]
+## getStartTangent
 
-获取起点的切向量，形如: `[[10, 10], [20, 20]]`
+获取起点的切向量 `number[][]`，形如: `[[10, 10], [20, 20]]`
 
-## getEndTangent(): number[][]
+## getEndTangent
 
-获取终点的切向量，形如: `[[10, 10], [20, 20]]`
+获取终点的切向量 `number[][]`，形如: `[[10, 10], [20, 20]]`

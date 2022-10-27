@@ -118,6 +118,9 @@ describe('Line', () => {
     let point = line.getPoint(0);
     expect(point.x).eqls(200);
     expect(point.y).eqls(100);
+    point = line.getPoint(0, true);
+    expect(point.x).eqls(200);
+    expect(point.y).eqls(100);
 
     point = line.getPoint(0.5);
     expect(point.x).eqls(300);
@@ -128,6 +131,9 @@ describe('Line', () => {
     expect(point.y).eqls(100);
 
     point = line.getPointAtLength(0);
+    expect(point.x).eqls(200);
+    expect(point.y).eqls(100);
+    point = line.getPointAtLength(0, true);
     expect(point.x).eqls(200);
     expect(point.y).eqls(100);
 

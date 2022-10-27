@@ -231,7 +231,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Returns the point at a given distance along the path.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
    */
-  getPointAtLength(distance: number): Point {
+  getPointAtLength(distance: number, inWorldSpace = false): Point {
     const {
       defX,
       defY,
@@ -242,7 +242,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
     const transformed = vec3.transformMat4(
       vec3.create(),
       vec3.fromValues(x - defX, y - defY, 0),
-      this.getLocalTransform(),
+      inWorldSpace ? this.getWorldTransform() : this.getLocalTransform(),
     );
 
     // apply local transformation
@@ -252,8 +252,8 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   /**
    * Returns the point at a given ratio of the total length in path.
    */
-  getPoint(ratio: number): Point {
-    return this.getPointAtLength(ratio * getOrCalculatePathTotalLength(this));
+  getPoint(ratio: number, inWorldSpace = false): Point {
+    return this.getPointAtLength(ratio * getOrCalculatePathTotalLength(this), inWorldSpace);
   }
 
   /**

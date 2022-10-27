@@ -2,10 +2,26 @@ import type * as Lottie from './parser/lottie-type';
 import { LottieAnimation } from './LottieAnimation';
 import { parse } from './parser';
 
+export interface LoadAnimationOptions {
+  /**
+   * @see https://github.com/airbnb/lottie-web/blob/master/player/js/animation/AnimationItem.js#L43
+   */
+  loop: boolean;
+
+  /**
+   * @see https://github.com/airbnb/lottie-web/blob/master/player/js/animation/AnimationItem.js#L42
+   */
+  autoplay: boolean;
+}
+
 /**
  * @see https://github.com/airbnb/lottie-web/wiki/loadAnimation-options
+ * @see https://github.com/airbnb/lottie-web#other-loading-options
  */
-export function loadAnimation(data: Lottie.Animation, option: { loop: boolean }): LottieAnimation {
-  const { width, height, elements, context } = parse(data, option);
+export function loadAnimation(
+  data: Lottie.Animation,
+  options: Partial<LoadAnimationOptions>,
+): LottieAnimation {
+  const { width, height, elements, context } = parse(data, options);
   return new LottieAnimation(width, height, elements, context);
 }

@@ -123,7 +123,7 @@ export class EventTarget implements IEventTarget {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
    */
-  dispatchEvent<T extends FederatedEvent>(e: T): boolean {
+  dispatchEvent<T extends FederatedEvent>(e: T, skipPropagate = false): boolean {
     if (!(e instanceof FederatedEvent)) {
       throw new Error('DisplayObject cannot propagate events outside of the Federated Events API');
     }
@@ -149,8 +149,11 @@ export class EventTarget implements IEventTarget {
 
       e.defaultPrevented = false;
       e.path = [];
-      e.target = this;
-      e.manager?.dispatchEvent(e);
+
+      if (!skipPropagate) {
+        e.target = this;
+      }
+      e.manager?.dispatchEvent(e, e.type, skipPropagate);
     }
 
     return !e.defaultPrevented;

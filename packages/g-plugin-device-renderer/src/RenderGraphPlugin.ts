@@ -98,6 +98,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     this.context = context;
     const { renderingService, renderingContext } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -168,14 +169,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      renderingContext.root.addEventListener(
-        ElementEvent.RENDER_ORDER_CHANGED,
-        handleRenderOrderChanged,
-      );
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.addEventListener(ElementEvent.RENDER_ORDER_CHANGED, handleRenderOrderChanged);
       this.context.config.renderer.getConfig().enableDirtyRectangleRendering = false;
 
       const $canvas = this.context.contextService.getDomElement() as HTMLCanvasElement;
@@ -191,7 +189,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.renderInstManager.disableSimpleMode();
       this.swapChain.configureSwapChain($canvas.width, $canvas.height);
 
-      renderingContext.root.ownerDocument.defaultView.addEventListener(CanvasEvent.RESIZE, () => {
+      canvas.addEventListener(CanvasEvent.RESIZE, () => {
         this.swapChain.configureSwapChain($canvas.width, $canvas.height);
       });
 
@@ -204,14 +202,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
 
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      renderingContext.root.removeEventListener(
-        ElementEvent.RENDER_ORDER_CHANGED,
-        handleRenderOrderChanged,
-      );
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(ElementEvent.RENDER_ORDER_CHANGED, handleRenderOrderChanged);
     });
 
     /**
