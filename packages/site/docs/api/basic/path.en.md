@@ -181,7 +181,7 @@ See the [markerEndOffset](/en/docs/api/basic/polyline) property of [Polyline](/e
 
 # Methods
 
-## getTotalLength(): number
+## getTotalLength
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
@@ -214,9 +214,16 @@ const path = new Path({
 path.getTotalLength(); // 0
 ```
 
-## getPoint(ratio: number): Point
+## getPoint
 
-Get the coordinates of a point in the local coordinate system according to the length scale (in the range `[0-1]`), where `Point` has the format :
+Get the coordinates of the point on the line in the local or world coordinate system according to the length scale (in the range `[0-1]`).
+
+The parameters are as follows.
+
+-   `ratio` mandatory, the length ratio
+-   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+
+where `Point` has the format :
 
 ```ts
 export type Point = {
@@ -247,9 +254,14 @@ Also the transformations applied on the original path, in the local coordinate s
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
-## getPointAtLength(distance: number): Point
+## getPointAtLength
 
-Returns the point at a given distance along the path.
+Returns the point along the path at a given distance, controlled by a second optional parameter in the local or world coordinate system.
+
+The parameters are as follows.
+
+-   `distance` mandatory, the distance value
+-   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
 
@@ -257,10 +269,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 path.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent(): number[][]
+## getStartTangent
 
 Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 
-## getEndTangent(): number[][]
+## getEndTangent
 
 Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`

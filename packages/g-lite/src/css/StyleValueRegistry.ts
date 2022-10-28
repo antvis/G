@@ -4,7 +4,7 @@ import type { DisplayObject } from '../display-objects';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { formatAttribute, isFunction } from '../utils';
+import { formatAttributeName, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
@@ -552,7 +552,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     n: 'textAlign',
     l: true,
     inh: true,
-    k: ['start', 'center', 'end', 'left', 'right'],
+    k: ['start', 'center', 'middle', 'end', 'left', 'right'],
     d: 'start',
   },
   // {
@@ -659,10 +659,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     let attributeNames = Object.keys(attributes);
 
     attributeNames.forEach((attributeName) => {
-      const [name, value] = formatAttribute(attributeName, attributes[attributeName]);
+      const name = formatAttributeName(attributeName);
 
       if (!skipUpdateAttribute) {
-        object.attributes[name] = value;
+        object.attributes[name] = attributes[attributeName];
       }
 
       if (!needUpdateGeometry && propertyMetadataCache[name as string]?.l) {
@@ -907,7 +907,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * update geometry when relative props changed,
    * eg. r of Circle, width/height of Rect
    */
-  updateGeometry(object: DisplayObject) {
+  private updateGeometry(object: DisplayObject) {
     const geometryUpdater = runtime.geometryUpdaterFactory[object.nodeName];
     if (geometryUpdater) {
       const geometry = object.geometry;

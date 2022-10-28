@@ -17,7 +17,7 @@ import { Shape } from '../types';
 import {
   createVec3,
   decompose,
-  formatAttribute,
+  formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
   rad2deg,
@@ -76,6 +76,27 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   shadowType: 'outer',
 };
 
+const INHERITABLE_STYLE_PROPS = [
+  'opacity',
+  'fillOpacity',
+  'strokeOpacity',
+  'transformOrigin',
+  'visibility',
+  'pointerEvents',
+  'lineWidth',
+  'lineCap',
+  'lineJoin',
+  'increasedLineWidthForHitTesting',
+  'fontSize',
+  'fontFamily',
+  'fontStyle',
+  'fontWeight',
+  'fontVariant',
+  'textAlign',
+  'textBaseline',
+  'textTransform',
+];
+
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
  *
@@ -104,6 +125,8 @@ export class DisplayObject<
   config: DisplayObjectConfig<StyleProps>;
 
   isCustomElement = false;
+
+  isMutationObserved = false;
 
   /**
    * push to active animations after calling `animate()`
@@ -254,33 +277,7 @@ export class DisplayObject<
     // account for FCP, process properties as less as possible
     runtime.styleValueRegistry.processProperties(this, attributes, {
       forceUpdateGeometry: true,
-      usedAttributes: [
-        // 'anchor',
-        // 'transform',
-        // 'zIndex',
-        // 'filter',
-        // 'shadowType',
-        // 'fill',
-        // 'stroke',
-        'opacity',
-        'fillOpacity',
-        'strokeOpacity',
-        'transformOrigin',
-        'visibility',
-        'pointerEvents',
-        'lineWidth',
-        'lineCap',
-        'lineJoin',
-        'increasedLineWidthForHitTesting',
-        'fontSize',
-        'fontFamily',
-        'fontStyle',
-        'fontWeight',
-        'fontVariant',
-        'textAlign',
-        'textBaseline',
-        'textTransform',
-      ],
+      usedAttributes: INHERITABLE_STYLE_PROPS,
     });
 
     // redraw at next frame
@@ -288,18 +285,15 @@ export class DisplayObject<
   }
 
   setAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key], force = false) {
-    const [attributeName, attributeValue] = formatAttribute(name as string, value) as [
-      Key,
-      StyleProps[Key],
-    ];
+    const attributeName = formatAttributeName(name as string) as Key;
     // ignore undefined value
     if (isUndefined(value)) {
       return;
     }
 
-    if (force || attributeValue !== this.attributes[attributeName]) {
-      this.internalSetAttribute(attributeName, attributeValue);
-      super.setAttribute(attributeName, attributeValue);
+    if (force || value !== this.attributes[attributeName]) {
+      this.internalSetAttribute(attributeName, value);
+      super.setAttribute(attributeName, value);
     }
   }
 
@@ -335,7 +329,12 @@ export class DisplayObject<
       mutationEvent.attrName = name as string;
       mutationEvent.prevParsedValue = oldParsedValue;
       mutationEvent.newParsedValue = newParsedValue;
-      this.dispatchEvent(mutationEvent);
+      if (this.isMutationObserved) {
+        this.dispatchEvent(mutationEvent);
+      } else {
+        mutationEvent.target = this;
+        this.ownerDocument.defaultView.dispatchEvent(mutationEvent, true);
+      }
     }
 
     if (

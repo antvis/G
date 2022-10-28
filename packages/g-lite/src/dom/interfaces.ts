@@ -96,7 +96,7 @@ export interface IEventTarget {
   ) => void;
   // removeAllEventListeners: () => void;
 
-  dispatchEvent: <T extends FederatedEvent>(e: T) => boolean;
+  dispatchEvent: <T extends FederatedEvent>(e: T, skipPropagate?: boolean) => boolean;
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   // emit: (eventName: string, object: object) => void;

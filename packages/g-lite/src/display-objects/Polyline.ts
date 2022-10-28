@@ -65,11 +65,11 @@ export class Polyline extends Polygon {
     return this.parsedStyle.points.totalLength;
   }
 
-  getPointAtLength(distance: number): Point {
-    return this.getPoint(distance / this.getTotalLength());
+  getPointAtLength(distance: number, inWorldSpace = false): Point {
+    return this.getPoint(distance / this.getTotalLength(), inWorldSpace);
   }
 
-  getPoint(ratio: number): Point {
+  getPoint(ratio: number, inWorldSpace = false): Point {
     const {
       defX,
       defY,
@@ -96,7 +96,7 @@ export class Polyline extends Polygon {
     const transformed = vec3.transformMat4(
       vec3.create(),
       vec3.fromValues(x - defX, y - defY, 0),
-      this.getLocalTransform(),
+      inWorldSpace ? this.getWorldTransform() : this.getLocalTransform(),
     );
 
     // apply local transformation

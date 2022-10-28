@@ -1,6 +1,8 @@
 import { definedProps, rad2deg, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
-import { distanceSquareRoot, isNil } from '@antv/util';
+import { isNumber } from '@antv/util';
+import { distanceSquareRoot, isNil, getTotalLength } from '@antv/util';
+import type { LoadAnimationOptions } from '..';
 import { completeData } from './complete-data';
 import * as Lottie from './lottie-type';
 
@@ -14,7 +16,6 @@ export interface KeyframeAnimation {
   duration?: number;
   delay?: number;
   easing?: string;
-  loop?: boolean;
   keyframes: Record<string, any>[];
 }
 
@@ -45,6 +46,8 @@ export class ParseContext {
   startFrame = 0;
   endFrame: number;
   version: string;
+  autoplay = false;
+  iterations = 0;
 
   assetsMap: Map<string, Lottie.Asset> = new Map();
 
@@ -161,7 +164,8 @@ function parseKeyframe(
     if (!isDiscrete) {
       outKeyframe.easing = getMultiDimensionEasingBezierString(kf, nextKf, bezierEasingDimIndex);
     }
-    // Use end state of laster frame if start state not exits.
+    // Use end state of later frame if start state not exits.
+    // @see https://lottiefiles.github.io/lottie-docs/concepts/#old-lottie-keyframes
     const startVal = kf.s || prevKf?.e;
     if (startVal) {
       setVal(outKeyframe, startVal);
@@ -207,7 +211,6 @@ function parseOffsetKeyframe(
   context: ParseContext,
   convertVal?: (val: number) => number,
 ) {
-  // TODO merge if bezier easing is same.
   for (let dimIndex = 0; dimIndex < propNames.length; dimIndex++) {
     const propName = propNames[dimIndex];
     const keyframeAnim = parseKeyframe(kfs, dimIndex, context, (outKeyframe, startVal) => {
@@ -218,22 +221,45 @@ function parseOffsetKeyframe(
       (targetPropName ? (outKeyframe[targetPropName] = {} as any) : outKeyframe)[propName] = val;
     });
 
-    const offsetPath: PathArray = [] as unknown as PathArray;
-    kfs.forEach((kf, i) => {
-      // convert to & ti(Tangent for values (eg: moving position around a curved path)) to offsetPath & offsetDistance
-      if (kf.ti && kf.to) {
-        if (i === 0) {
-          offsetPath.push(['M', kf.s[0], kf.s[1]]);
-        }
-        offsetPath.push(['C', kf.to[0], kf.to[1], kf.ti[0], kf.ti[1], kf.e[0], kf.e[1]]);
+    // moving position around a curved path
+    const needOffsetPath = kfs.some((kf) => kf.ti && kf.to);
+    if (needOffsetPath) {
+      const offsetPath: PathArray = [] as unknown as PathArray;
 
+      kfs.forEach((kf, i) => {
         keyframeAnim.keyframes[i].offsetPath = offsetPath;
-        keyframeAnim.keyframes[i].offsetDistance = keyframeAnim.keyframes[i].offset;
-      } else if (offsetPath.length) {
-        keyframeAnim.keyframes[i].offsetPath = offsetPath;
-        keyframeAnim.keyframes[i].offsetDistance = 1;
-      }
-    });
+
+        // convert to & ti(Tangent for values (eg: moving position around a curved path)) to offsetPath & offsetDistance
+        // @see https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
+        if (kf.ti && kf.to) {
+          if (i === 0) {
+            offsetPath.push(['M', kf.s[0], kf.s[1]]);
+          }
+
+          keyframeAnim.keyframes[i].segmentLength = getTotalLength(offsetPath);
+
+          // @see https://lottiefiles.github.io/lottie-docs/concepts/#bezier
+          // The nth bezier segment is defined as:
+          // v[n], v[n]+o[n], v[n+1]+i[n+1], v[n+1]
+          offsetPath.push([
+            'C',
+            kf.s[0] + kf.to[0],
+            kf.s[1] + kf.to[1],
+            kf.s[0] + kf.ti[0],
+            kf.s[1] + kf.ti[1],
+            kf.e[0],
+            kf.e[1],
+          ]);
+        }
+      });
+
+      // calculate offsetDistance: segmentLength / totalLength
+      const totalLength = getTotalLength(offsetPath);
+      keyframeAnim.keyframes.forEach((kf) => {
+        kf.offsetDistance = isNil(kf.segmentLength) ? 1 : kf.segmentLength / totalLength;
+        delete kf.segmentLength;
+      });
+    }
 
     if (keyframeAnim.keyframes.length) {
       keyframeAnimations.push(keyframeAnim);
@@ -441,6 +467,9 @@ function parseFill(
     }
   }
 
+  // FillRule @see https://lottiefiles.github.io/lottie-docs/constants/#fillrule
+  attrs.style.fillRule = fl.r === Lottie.FillRule.EvenOdd ? 'evenodd' : 'nonzero';
+
   // Opacity
   parseValue(
     fl.o,
@@ -451,8 +480,6 @@ function parseFill(
     context,
     (opacity) => opacity / 100,
   );
-
-  // TODO: FillRule @see https://lottiefiles.github.io/lottie-docs/constants/#fillrule
 }
 
 function parseStroke(
@@ -844,6 +871,7 @@ function addLayerOpacity(
     );
 
     if (opacityAttrs.style?.opacity || opacityAnimations.length) {
+      // apply opacity to group's children
       traverse(layerGroup, (el) => {
         if (el.type !== Shape.GROUP && el.style) {
           Object.assign(el.style, opacityAttrs.style);
@@ -889,8 +917,8 @@ function parseLayers(
     // Layer time is offseted by the precomp layer.
 
     // Use the ip, op, st of ref from.
-    const layerIp = offsetTime + layer.ip;
-    const layerOp = offsetTime + layer.op;
+    // const layerIp = offsetTime + layer.ip;
+    // const layerOp = offsetTime + layer.op;
     const layerSt = offsetTime + layer.st;
     context.layerOffsetTime = offsetTime;
 
@@ -963,11 +991,13 @@ function parseLayers(
       layerGroup.extra = {
         layerParent: layer.parent,
       };
-      // Masks
-      // TODO not support alpha and other modes.
+      // Masks @see https://lottiefiles.github.io/lottie-docs/layers/#masks
+      // @see https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
+      // TODO: not support alpha and other modes.
+      // @see https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/
       if (layer.hasMask && layer.masksProperties?.length) {
         const maskKeyframeAnimations: KeyframeAnimation[] = [];
-        // TODO Only support one mask now.
+        // TODO: Only support one mask now.
         const attrs = parseShapePaths(
           {
             ks: layer.masksProperties[0].pt,
@@ -980,8 +1010,6 @@ function parseLayers(
           type: Shape.PATH,
           ...attrs,
         };
-        // Must have fill
-        layerGroup.clipPath!.style!.fill = '#000';
         if (maskKeyframeAnimations.length) {
           layerGroup.clipPath!.keyframeAnimation = maskKeyframeAnimations;
         }
@@ -990,37 +1018,37 @@ function parseLayers(
       addLayerOpacity(layer, layerGroup, context);
 
       // Update in and out animation.
-      if (
-        layerIp != null &&
-        layerOp != null &&
-        (layerIp > context.startFrame || layerOp < context.endFrame)
-      ) {
-        const duration = context.endFrame - context.startFrame;
-        const enterAndLeaveAnim = {
-          duration: duration * context.frameTime,
-          keyframes: [
-            {
-              ignore: false,
-              offset: (layerIp - context.startFrame) / duration,
-            },
-          ],
-        };
-        if (layerIp > context.startFrame) {
-          // Add initial keyframe.
-          // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
-          enterAndLeaveAnim.keyframes.unshift({
-            ignore: true,
-            offset: 0,
-          });
-        }
-        if ((layerOp - context.startFrame) / duration < 1) {
-          enterAndLeaveAnim.keyframes.push({
-            ignore: true,
-            offset: (layerOp - context.startFrame) / duration,
-          });
-        }
-        keyframeAnimations.push(enterAndLeaveAnim);
-      }
+      // if (
+      //   layerIp != null &&
+      //   layerOp != null &&
+      //   (layerIp > context.startFrame || layerOp < context.endFrame)
+      // ) {
+      //   const duration = context.endFrame - context.startFrame;
+      //   const enterAndLeaveAnim = {
+      //     duration: duration * context.frameTime,
+      //     keyframes: [
+      //       {
+      //         ignore: false,
+      //         offset: (layerIp - context.startFrame) / duration,
+      //       },
+      //     ],
+      //   };
+      //   if (layerIp > context.startFrame) {
+      //     // Add initial keyframe.
+      //     // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
+      //     enterAndLeaveAnim.keyframes.unshift({
+      //       ignore: true,
+      //       offset: 0,
+      //     });
+      //   }
+      //   if ((layerOp - context.startFrame) / duration < 1) {
+      //     enterAndLeaveAnim.keyframes.push({
+      //       ignore: true,
+      //       offset: (layerOp - context.startFrame) / duration,
+      //     });
+      //   }
+      //   keyframeAnimations.push(enterAndLeaveAnim);
+      // }
       if (keyframeAnimations.length) {
         layerGroup.keyframeAnimation = keyframeAnimations;
       }
@@ -1042,20 +1070,22 @@ function parseLayers(
 
 export function parse(
   data: Lottie.Animation,
-  opts?: {
-    loop?: boolean;
+  options: Partial<LoadAnimationOptions> = {
+    loop: true,
+    autoplay: false,
   },
 ) {
   completeData(data);
+  const { loop, autoplay } = options;
   const context = new ParseContext();
-  opts = opts || {};
 
   context.fps = data.fr || 30;
   context.frameTime = 1000 / context.fps;
   context.startFrame = data.ip;
   context.endFrame = data.op;
   context.version = data.v;
-
+  context.autoplay = !!autoplay;
+  context.iterations = isNumber(loop) ? loop : !!loop ? Infinity : 1;
   // @see https://lottiefiles.github.io/lottie-docs/assets/
   data.assets?.forEach((asset) => {
     context.assetsMap.set(asset.id, asset);
@@ -1063,35 +1093,10 @@ export function parse(
 
   const elements = parseLayers(data.layers || [], context);
 
-  function eachElement(elements: CustomElementOption[], cb: (el: CustomElementOption) => void) {
-    elements.forEach((el) => {
-      // el.keyframeAnimation?.forEach((anim) => {
-      //   anim.loop = true;
-      // });
-      cb(el);
-
-      if (el.children) {
-        eachElement(el.children, cb);
-      }
-    });
-  }
-
-  if (opts.loop) {
-    eachElement(elements, (el) => {
-      el.keyframeAnimation?.forEach((anim) => {
-        anim.loop = true;
-      });
-    });
-  }
-
   return {
     width: data.w,
     height: data.h,
     elements,
     context,
-
-    each: (cb: (el: CustomElementOption) => void) => {
-      eachElement(elements, cb);
-    },
   };
 }

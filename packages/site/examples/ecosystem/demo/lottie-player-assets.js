@@ -31,16 +31,43 @@ const canvaskitRenderer = new CanvaskitRenderer({
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
-  width: 500,
-  height: 500,
+  width: 600,
+  height: 600,
   renderer: canvasRenderer,
 });
 
+let pointerAnimation;
 canvas.addEventListener(CanvasEvent.READY, async () => {
-  // const data = await d3.json('../examples/data/lottie.json');
-  const data = await d3.json('../examples/data/lottie/flower.json');
-  const animation = loadAnimation(data, { loop: true });
-  const wrapper = animation.render(canvas);
+  const data1 = await d3.json('../examples/data/lottie/data1.json');
+  const animation1 = loadAnimation(data1, { loop: true, autoplay: true });
+  const wrapper1 = animation1.render(canvas);
+  wrapper1.scale(0.5);
+
+  const data2 = await d3.json('../examples/data/lottie/data4.json');
+  const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
+  const wrapper2 = animation2.render(canvas);
+  wrapper2.scale(0.5);
+  wrapper2.translate(300, 0);
+
+  const data3 = await d3.json('../examples/data/lottie/data3.json');
+  const animation3 = loadAnimation(data3, { loop: true, autoplay: true });
+  const wrapper3 = animation3.render(canvas);
+  wrapper3.scale(0.5);
+  wrapper3.translate(300, 200);
+
+  // const flower = await d3.json('../examples/data/lottie/flower.json');
+  // flowerAnimation = loadAnimation(flower, { loop: true, autoplay: true });
+  // const wrapper = flowerAnimation.render(canvas);
+  // wrapper.scale(0.5);
+  // wrapper.translate(0, 200);
+
+  const pointer = await d3.json(
+    'https://gw.alipayobjects.com/os/OasisHub/3ccdf4d8-78e6-48c9-b06e-9e518057d144/data.json',
+  );
+  pointerAnimation = loadAnimation(pointer, { loop: true, autoplay: true });
+  const wrapper = pointerAnimation.render(canvas);
+  wrapper.scale(0.5);
+  wrapper.translate(0, 200);
 });
 
 // stats
@@ -83,3 +110,32 @@ rendererFolder
     canvas.setRenderer(renderer);
   });
 rendererFolder.open();
+
+const controlFolder = gui.addFolder('control');
+const controlConfig = {
+  pause: () => {
+    pointerAnimation.pause();
+  },
+  play: () => {
+    pointerAnimation.play();
+  },
+  stop: () => {
+    pointerAnimation.stop();
+  },
+  speed: 1,
+  goToCurrentTime: 0,
+  goToFrame: 0,
+};
+controlFolder.add(controlConfig, 'play');
+controlFolder.add(controlConfig, 'pause');
+controlFolder.add(controlConfig, 'stop');
+controlFolder.add(controlConfig, 'speed', -3, 3).onChange((speed) => {
+  pointerAnimation.setSpeed(speed);
+});
+controlFolder.add(controlConfig, 'goToCurrentTime', 0, 2000).onChange((time) => {
+  pointerAnimation.goTo(time);
+});
+controlFolder.add(controlConfig, 'goToFrame', 0, 100).onChange((frame) => {
+  pointerAnimation.goTo(frame, true);
+});
+controlFolder.open();

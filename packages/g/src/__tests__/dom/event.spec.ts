@@ -9,6 +9,7 @@ import {
   MutationObserver,
   MutationRecord,
   Rect,
+  CSS,
 } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
@@ -124,7 +125,7 @@ describe('Event API', () => {
     expect(destroyCallbackSpy).to.have.been.called;
   });
 
-  it('should emit attribute-changed event correctly', async () => {
+  it('should emit attribute-changed event correctly', async (done) => {
     const circle = new Circle({
       style: {
         r: 10,
@@ -134,7 +135,7 @@ describe('Event API', () => {
     canvas.appendChild(circle);
 
     const attributeChangedCallback = sinon.spy();
-    circle.addEventListener(ElementEvent.ATTR_MODIFIED, attributeChangedCallback);
+    canvas.addEventListener(ElementEvent.ATTR_MODIFIED, attributeChangedCallback);
 
     // should not emit if value unchanged
     circle.setAttribute('r', 10);
@@ -149,15 +150,18 @@ describe('Event API', () => {
     const attributeModifiedCallback = function (e: MutationEvent) {
       // @see https://github.com/antvis/g/issues/929
       expect(this).eqls(e.currentTarget);
+      expect(circle).eqls(e.target);
       expect(e.type).eqls(ElementEvent.ATTR_MODIFIED);
       expect(e.attrChange).eqls(MutationEvent.MODIFICATION);
       expect(e.attrName).eqls('r');
       expect(e.prevValue).eqls(20);
       expect(e.newValue).eqls(30);
-      expect(e.prevParsedValue).eqls({ unit: 'px', value: 20 });
-      expect(e.newParsedValue).eqls({ unit: 'px', value: 30 });
+      expect(e.prevParsedValue).eqls(20);
+      expect(e.newParsedValue).eqls(30);
+
+      done();
     };
-    circle.addEventListener(ElementEvent.ATTR_MODIFIED, attributeModifiedCallback);
+    canvas.addEventListener(ElementEvent.ATTR_MODIFIED, attributeModifiedCallback);
 
     // use mutation observer
     const config = { attributes: true, childList: true, subtree: true };
@@ -177,8 +181,6 @@ describe('Event API', () => {
     circle.attr('r', 30);
     // @ts-ignore
     expect(attributeChangedCallback).to.have.been.called;
-
-    await sleep(500);
   });
 
   it('should emit destroy event correctly', async () => {

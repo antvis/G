@@ -70,7 +70,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     // default 'left'
     let anchor: [number, number] = [0, 1];
     let lineXOffset = 0;
-    if (textAlign === 'center') {
+    if (textAlign === 'center' || textAlign === 'middle') {
       lineXOffset = lineWidth / 2;
       anchor = [0.5, 1];
     } else if (textAlign === 'right' || textAlign === 'end') {

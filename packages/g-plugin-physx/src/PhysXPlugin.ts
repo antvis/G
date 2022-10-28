@@ -29,6 +29,8 @@ export class PhysXPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
+
     const handleMounted = (e: FederatedEvent) => {
       const PhysX = this.PhysX;
       const target = e.target as DisplayObject;
@@ -41,7 +43,7 @@ export class PhysXPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(PhysXPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
 
       this.PhysX = (await this.initPhysX()) as any;
       this.createScene();
@@ -69,7 +71,7 @@ export class PhysXPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
     });
   }
 

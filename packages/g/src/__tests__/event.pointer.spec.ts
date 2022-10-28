@@ -350,7 +350,9 @@ describe('Event API', () => {
 
   it('should use event delegation correctly.', async () => {
     const parent = new Group({ id: 'parent' });
+    parent.isMutationObserved = true;
     const child = new Group({ id: 'child' });
+    child.isMutationObserved = true;
 
     const eventStack = [];
     parent.addEventListener(ElementEvent.MOUNTED, (e: FederatedEvent) => {
@@ -369,7 +371,9 @@ describe('Event API', () => {
 
   it('should use event delegation with capture correctly.', async () => {
     const parent = new Group({ id: 'parent' });
+    parent.isMutationObserved = true;
     const child = new Group({ id: 'child' });
+    child.isMutationObserved = true;
 
     const eventStack = [];
     parent.addEventListener(

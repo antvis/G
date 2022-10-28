@@ -25,6 +25,8 @@ export class A11yPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     this.context = context;
     const { renderingService, renderingContext } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
+
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
@@ -67,10 +69,10 @@ export class A11yPlugin implements RenderingPlugin {
       const { enableExtractingText } = this.a11yPluginOptions;
       if (enableExtractingText && !this.isSVG()) {
         this.textExtractor.activate();
-        renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-        renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-        renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-        renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+        canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+        canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
       }
 
       this.ariaManager.activate();
@@ -80,13 +82,10 @@ export class A11yPlugin implements RenderingPlugin {
       const { enableExtractingText } = this.a11yPluginOptions;
       if (enableExtractingText && !this.isSVG()) {
         this.textExtractor.deactivate();
-        renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-        renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-        renderingContext.root.removeEventListener(
-          ElementEvent.ATTR_MODIFIED,
-          handleAttributeChanged,
-        );
-        renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+        canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+        canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+        canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
       }
 
       this.ariaManager.deactivate();

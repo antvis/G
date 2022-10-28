@@ -97,9 +97,10 @@ export class TextRenderer implements RendererContribution {
       heightMultiplier,
     } = object.parsedStyle as ParsedTextStyleProps;
 
-    const TEXT_ALIGN_MAP: Record<CanvasTextAlign, EmbindEnumEntity> = {
+    const TEXT_ALIGN_MAP: Record<CanvasTextAlign | 'middle', EmbindEnumEntity> = {
       left: CanvasKit.TextAlign.Left,
       center: CanvasKit.TextAlign.Center,
+      middle: CanvasKit.TextAlign.Center,
       right: CanvasKit.TextAlign.Right,
       end: CanvasKit.TextAlign.End,
       start: CanvasKit.TextAlign.Start,
@@ -259,7 +260,7 @@ export class TextRenderer implements RendererContribution {
       const paragraphMaxWidth = paragraph.getMaxWidth();
       let offsetX = 0;
       // handle horizontal text align
-      if (textAlign === 'center') {
+      if (textAlign === 'center' || textAlign === 'middle') {
         offsetX -= paragraphMaxWidth / 2;
       } else if (textAlign === 'right' || textAlign === 'end') {
         offsetX -= paragraphMaxWidth;

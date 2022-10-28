@@ -219,6 +219,7 @@ export class TextService {
             positionInPath = reverse ? totalPathLength - width : 0;
             break;
           case 'center':
+          case 'middle':
             positionInPath = (totalPathLength - width) / 2;
             break;
           case 'right':
@@ -298,7 +299,7 @@ export class TextService {
         lineMetrics: lineWidths.map((width, i) => {
           let offsetX = 0;
           // handle horizontal text align
-          if (textAlign === 'center') {
+          if (textAlign === 'center' || textAlign === 'middle') {
             offsetX -= width / 2;
           } else if (textAlign === 'right' || textAlign === 'end') {
             offsetX -= width;

@@ -5,7 +5,7 @@ import { Strategy } from '../components';
 import { unsetKeywordValue } from '../css/CSSStyleValuePool';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, formatAttribute } from '../utils';
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, formatAttributeName } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import type { IChildNode, ICSSStyleDeclaration, IElement, IEventTarget, INode } from './interfaces';
 import { ElementEvent } from './interfaces';
@@ -512,7 +512,7 @@ export class Element<
   getAttribute(name: keyof StyleProps) {
     let value = this.attributes[name];
     if (value === undefined) {
-      const [attributeName] = formatAttribute(name as string, '');
+      const attributeName = formatAttributeName(name as string);
       value = this.attributes[attributeName];
 
       // if the given attribute does not exist, the value returned will either be null or ""

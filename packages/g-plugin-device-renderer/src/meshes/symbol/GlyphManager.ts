@@ -61,7 +61,7 @@ export class GlyphManager {
     lines: string[],
     fontStack: string,
     lineHeight: number,
-    textAlign: CanvasTextAlign,
+    textAlign: CanvasTextAlign | 'middle',
     letterSpacing: number,
     offsetX: number,
     offsetY: number,

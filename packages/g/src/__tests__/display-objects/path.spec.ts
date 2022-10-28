@@ -143,9 +143,11 @@ describe('Path', () => {
     let point = path.getPoint(0);
     expect(point.x).eqls(0);
     expect(point.y).eqls(0);
+    point = path.getPoint(0, true);
+    expect(point.x).eqls(0);
+    expect(point.y).eqls(0);
 
     point = path.getPoint(0.5);
-
     expect(point.x).eqls(50);
     expect(point.y).eqls(0);
 
@@ -181,6 +183,9 @@ describe('Path', () => {
     path.translate(-800, -150);
 
     let point = path.getPoint(0);
+    expect(point.x).eqls(168);
+    expect(point.y).eqls(250);
+    point = path.getPoint(0, true);
     expect(point.x).eqls(168);
     expect(point.y).eqls(250);
 

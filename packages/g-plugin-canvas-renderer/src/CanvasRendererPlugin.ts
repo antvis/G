@@ -103,8 +103,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(CanvasRendererPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.CULLED, handleCulled);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.CULLED, handleCulled);
 
       // clear fullscreen
       const dpr = contextService.getDPR();
@@ -114,8 +114,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.CULLED, handleCulled);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.CULLED, handleCulled);
     });
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {

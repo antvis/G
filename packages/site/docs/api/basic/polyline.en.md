@@ -177,15 +177,22 @@ Moves the marker graphic in the direction of the last line segment of the fold. 
 
 # Methods
 
-## getTotalLength(): number
+## getTotalLength
 
 Get the length of the polyline.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
-## getPoint(ratio: number): Point
+## getPoint
 
-Obtain the coordinates of a point in the local coordinate system on a line according to the length scale (in the range `[0-1]`), where `Point` is of the form :
+Get the coordinates of the point on the line in the local or world coordinate system according to the length scale (in the range `[0-1]`).
+
+The parameters are as follows.
+
+-   `ratio` mandatory, the length ratio
+-   `inWorldSpace` optional, if or not it is calculated in the world coordinate system. The default value is `false`.
+
+where `Point` has the format :
 
 ```ts
 export type Point = {
@@ -194,9 +201,14 @@ export type Point = {
 };
 ```
 
-## getPointAtLength(distance: number): Point
+## getPointAtLength
 
-Returns the point at a given distance along the path.
+Returns the point along the path at a given distance, controlled by a second optional parameter in the local or world coordinate system.
+
+The parameters are as follows.
+
+-   `distance` mandatory, the distance value
+-   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
 https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
 
@@ -204,10 +216,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 polyline.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent(): number[][]
+## getStartTangent
 
 Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 
-## getEndTangent(): number[][]
+## getEndTangent
 
 Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`

@@ -249,7 +249,7 @@ line.childNodes[0].style.stroke = 'red';
 
 # 方法
 
-## getTotalLength(): number
+## getTotalLength
 
 获取直线长度。
 
@@ -259,19 +259,16 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLeng
 line.getTotalLength(); // 200
 ```
 
-## getPointAtLength(distance: number): Point
+## getPointAtLength
 
-沿路径返回给定距离的点。
+沿路径返回给定距离的点，通过第二个可选参数控制在局部还是世界坐标系下：
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+参数如下：
 
-```js
-line.getPointAtLength(100); // Point {x: 300, y: 100}
-```
+-   `distance` 必填，距离值
+-   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
-## getPoint(ratio: number): Point
-
-根据长度比例（取值范围 `[0-1]`）获取直线上局部坐标系下的点坐标，其中 `Point` 的格式为:
+其中 `Point` 的格式为:
 
 ```ts
 export type Point = {
@@ -279,6 +276,23 @@ export type Point = {
     y: number;
 };
 ```
+
+https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+
+例如获取直线上局部坐标系下从起点出发 100 距离的点坐标：
+
+```js
+line.getPointAtLength(100); // Point {x: 300, y: 100}
+```
+
+## getPoint
+
+根据长度比例（取值范围 `[0-1]`）获取直线上局部或世界坐标系下的点坐标。
+
+参数如下：
+
+-   `ratio` 必填，长度比例
+-   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
 例如获取上面定义直线的中点：
 

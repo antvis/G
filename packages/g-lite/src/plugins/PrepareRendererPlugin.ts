@@ -2,7 +2,7 @@ import type RBush from 'rbush';
 import { runtime } from '../global-runtime';
 import type { RBushNodeAABB } from '../components';
 import type { DisplayObject } from '../display-objects';
-import type { Element, FederatedEvent } from '../dom';
+import type { FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
 
@@ -14,16 +14,13 @@ export class PrepareRendererPlugin implements RenderingPlugin {
    * sync to RBush later
    */
   private toSync = new Set<DisplayObject>();
-  private pushToSync(list: DisplayObject[]) {
-    list.forEach((i) => {
-      this.toSync.add(i);
-    });
-  }
 
   // private isFirstTimeRendering = true;
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext, rBushRoot } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
+
     this.rBush = rBushRoot;
 
     const handleAttributeChanged = (e: FederatedEvent) => {
@@ -35,22 +32,26 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const handleBoundsChanged = (e: FederatedEvent) => {
       const { affectChildren } = e.detail;
       const object = e.target as DisplayObject;
-
       if (affectChildren) {
         object.forEach((node: DisplayObject) => {
-          this.pushToSync([node]);
+          this.toSync.add(node);
         });
       }
 
-      this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
+      let p = object;
+      while (p) {
+        if (p.renderable) {
+          this.toSync.add(p);
+        }
+        p = p.parentElement as DisplayObject;
+      }
 
+      // this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
       renderingService.dirtify();
     };
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-
-      this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
 
       // recalc style values
       runtime.styleValueRegistry.recalc(object);
@@ -68,22 +69,22 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
       this.toSync.delete(object);
 
-      runtime.sceneGraphService.dirtifyToRoot(e.target as Element);
+      runtime.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
     };
 
     renderingService.hooks.init.tapPromise(PrepareRendererPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {

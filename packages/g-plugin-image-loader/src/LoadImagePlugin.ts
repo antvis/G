@@ -14,6 +14,7 @@ export class LoadImagePlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     // @ts-ignore
     const { renderingService, renderingContext, imagePool } = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       const { nodeName, attributes } = object;
@@ -48,13 +49,13 @@ export class LoadImagePlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(LoadImagePlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
 
     renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
   }
 }

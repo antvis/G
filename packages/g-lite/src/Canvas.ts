@@ -8,7 +8,8 @@ import type { IRenderer } from './AbstractRenderer';
 import { CameraTrackingMode, CameraType } from './camera';
 import { CameraEvent, CameraProjectionMode } from './camera';
 import type { RBushNodeAABB } from './components';
-import { CustomElement, DisplayObject } from './display-objects';
+import type { CustomElement } from './display-objects';
+import { DisplayObject } from './display-objects';
 import type { CanvasContext, Element, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
@@ -41,8 +42,8 @@ const DEFAULT_CAMERA_FAR = 1000;
 /**
  * reuse custom event preventing from re-create them in every frame
  */
-const mountEvent = new CustomEvent(ElementEvent.MOUNTED);
-const unmountEvent = new CustomEvent(ElementEvent.UNMOUNTED);
+const mountedEvent = new CustomEvent(ElementEvent.MOUNTED);
+const unmountedEvent = new CustomEvent(ElementEvent.UNMOUNTED);
 const beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
 const afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
 
@@ -530,13 +531,18 @@ export class Canvas extends EventTarget implements ICanvas {
       // unmount from leaf to root
       path.reverse().forEach((child: DisplayObject) => {
         // trigger before unmounted
-        if (child instanceof CustomElement) {
-          if (child.disconnectedCallback) {
-            child.disconnectedCallback();
+        if (child.isCustomElement) {
+          if ((child as CustomElement<any>).disconnectedCallback) {
+            (child as CustomElement<any>).disconnectedCallback();
           }
         }
 
-        child.dispatchEvent(unmountEvent);
+        if (child.isMutationObserved) {
+          child.dispatchEvent(unmountedEvent);
+        } else {
+          unmountedEvent.target = child;
+          this.dispatchEvent(unmountedEvent, true);
+        }
 
         // skip document.documentElement
         if (child !== this.document.documentElement) {
@@ -549,16 +555,22 @@ export class Canvas extends EventTarget implements ICanvas {
 
   mountChildren(parent: DisplayObject) {
     if (this.inited) {
-      parent.forEach((child) => {
+      parent.forEach((child: DisplayObject) => {
         if (!child.isConnected) {
           child.ownerDocument = this.document;
           child.isConnected = true;
-          child.dispatchEvent(mountEvent);
+
+          if (child.isMutationObserved) {
+            child.dispatchEvent(mountedEvent);
+          } else {
+            mountedEvent.target = child;
+            this.dispatchEvent(mountedEvent, true);
+          }
 
           // trigger after mounted
-          if (child instanceof CustomElement) {
-            if (child.connectedCallback) {
-              child.connectedCallback();
+          if (child.isCustomElement) {
+            if ((child as CustomElement<any>).connectedCallback) {
+              (child as CustomElement<any>).connectedCallback();
             }
           }
         }

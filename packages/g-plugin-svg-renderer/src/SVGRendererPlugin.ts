@@ -150,6 +150,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     this.context = context;
+    const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const { document } = this.context.config;
 
@@ -220,23 +221,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.applyTransform(this.$camera, this.context.camera.getOrthoMatrix());
       $svg.appendChild(this.$camera);
 
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.addEventListener(
-        ElementEvent.BOUNDS_CHANGED,
-        handleGeometryBoundsChanged,
-      );
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleGeometryBoundsChanged);
     });
 
     renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.removeEventListener(
-        ElementEvent.BOUNDS_CHANGED,
-        handleGeometryBoundsChanged,
-      );
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleGeometryBoundsChanged);
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {

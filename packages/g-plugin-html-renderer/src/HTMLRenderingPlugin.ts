@@ -105,10 +105,10 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       this.$camera = this.createCamera(camera);
 
       canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
     renderingService.hooks.endFrame.tap(HTMLRenderingPlugin.tag, () => {
@@ -124,10 +124,10 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
 
       canvas.removeEventListener(CanvasEvent.RESIZE, handleCanvasResize);
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
   }
 

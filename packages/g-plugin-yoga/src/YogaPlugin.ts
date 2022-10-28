@@ -54,7 +54,7 @@ export class YogaPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
-
+    const canvas = renderingContext.root.ownerDocument.defaultView;
     /**
      * create YogaNode for every displayObject
      */
@@ -145,21 +145,21 @@ export class YogaPlugin implements RenderingPlugin {
     };
 
     renderingService.hooks.init.tapPromise(YogaPlugin.tag, async () => {
-      renderingContext.root.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.addEventListener(ElementEvent.INSERTED, handleInserted);
-      renderingContext.root.addEventListener(ElementEvent.REMOVED, handleRemoved);
-      renderingContext.root.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      renderingContext.root.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.INSERTED, handleInserted);
+      canvas.addEventListener(ElementEvent.REMOVED, handleRemoved);
+      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
 
     renderingService.hooks.destroy.tap(YogaPlugin.tag, () => {
-      renderingContext.root.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      renderingContext.root.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      renderingContext.root.removeEventListener(ElementEvent.INSERTED, handleInserted);
-      renderingContext.root.removeEventListener(ElementEvent.REMOVED, handleRemoved);
-      renderingContext.root.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      renderingContext.root.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.INSERTED, handleInserted);
+      canvas.removeEventListener(ElementEvent.REMOVED, handleRemoved);
+      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
     });
 
     // const printYogaTree = (node: YogaNode) => {

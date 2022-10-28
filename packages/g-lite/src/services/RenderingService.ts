@@ -223,10 +223,11 @@ export class RenderingService {
 
     if (renderOrderChanged) {
       displayObject.forEach((child: DisplayObject) => {
+        this.renderOrderChangedEvent.target = child;
         this.renderOrderChangedEvent.detail = {
           renderOrder: child.sortable.renderOrder,
         };
-        child.dispatchEvent(this.renderOrderChangedEvent);
+        child.ownerDocument.defaultView.dispatchEvent(this.renderOrderChangedEvent, true);
       });
     }
   }

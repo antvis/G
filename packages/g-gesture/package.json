@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-gesture",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "description": "G Gesture",
   "keywords": [
     "antv",
@@ -34,8 +34,8 @@
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {
-    "@antv/g-mobile-canvas": "^0.8.20",
-    "@antv/g-mobile-canvas-element": "^0.6.23"
+    "@antv/g-mobile-canvas": "^0.8.21",
+    "@antv/g-mobile-canvas-element": "^0.6.24"
   },
   "publishConfig": {
     "access": "public"

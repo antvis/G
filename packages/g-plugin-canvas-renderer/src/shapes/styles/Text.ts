@@ -32,7 +32,7 @@ export class TextRenderer implements StyleRenderer {
 
     context.font = font;
     context.lineWidth = lineWidth;
-    context.textAlign = textAlign;
+    context.textAlign = textAlign === 'middle' ? 'center' : textAlign;
     context.textBaseline = textBaseline;
     context.lineJoin = lineJoin;
     if (!isNil(miterLimit)) {
@@ -103,7 +103,7 @@ export class TextRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     text: string,
     lineMetrics: Rectangle,
-    textAlign: CanvasTextAlign,
+    textAlign: CanvasTextAlign | 'middle',
     x: number,
     y: number,
     letterSpacing: number,
@@ -127,7 +127,7 @@ export class TextRenderer implements StyleRenderer {
     context.textAlign = 'left';
 
     let currentPosition = x;
-    if (textAlign === 'center') {
+    if (textAlign === 'center' || textAlign === 'middle') {
       currentPosition = x - lineMetrics.width / 2;
     } else if (textAlign === 'right' || textAlign === 'end') {
       currentPosition = x - lineMetrics.width;
