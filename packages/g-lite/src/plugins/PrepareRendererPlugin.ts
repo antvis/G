@@ -38,7 +38,13 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         });
       }
 
-      this.toSync.add(object);
+      let p = object;
+      while (p) {
+        if (p.renderable) {
+          this.toSync.add(p);
+        }
+        p = p.parentElement as DisplayObject;
+      }
 
       // this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
       renderingService.dirtify();

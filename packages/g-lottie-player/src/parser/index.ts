@@ -1012,8 +1012,6 @@ function parseLayers(
         if (maskKeyframeAnimations.length) {
           layerGroup.clipPath!.keyframeAnimation = maskKeyframeAnimations;
         }
-
-        console.log('clip', layerGroup.clipPath, layerGroup);
       }
 
       addLayerOpacity(layer, layerGroup, context);
