@@ -1,4 +1,4 @@
-import { isString, memoize } from '@antv/util';
+import { memoize } from '@antv/util';
 import { camelCase } from './string';
 
 export function DCHECK(bool: boolean) {
@@ -38,9 +38,6 @@ const FORMAT_ATTR_MAP = {
   },
   textAnchor: {
     alias: 'textAlign',
-    values: {
-      middle: 'center',
-    },
   },
   src: {
     alias: 'img',
@@ -53,9 +50,3 @@ export const formatAttributeName = memoize((name: string) => {
   attributeName = map?.alias || attributeName;
   return attributeName;
 });
-
-// export function formatAttribute(name: string, value: any): [string, any] {
-//   const attributeName = formatAttributeName(name);
-//   // const attributeValue = (isString(value) && map?.values?.[value]) || value;
-//   return [attributeName, value];
-// }

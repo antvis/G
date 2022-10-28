@@ -1,7 +1,7 @@
 import { definedProps, rad2deg, Shape } from '@antv/g-lite';
-import type { PathArray } from '@antv/util';
+import { isNumber, PathArray } from '@antv/util';
 import { distanceSquareRoot, isNil, getTotalLength } from '@antv/util';
-import { LoadAnimationOptions } from '..';
+import type { LoadAnimationOptions } from '..';
 import { completeData } from './complete-data';
 import * as Lottie from './lottie-type';
 
@@ -15,7 +15,6 @@ export interface KeyframeAnimation {
   duration?: number;
   delay?: number;
   easing?: string;
-  loop?: number | boolean;
   keyframes: Record<string, any>[];
 }
 
@@ -47,6 +46,7 @@ export class ParseContext {
   endFrame: number;
   version: string;
   autoplay = false;
+  iterations = 0;
 
   assetsMap: Map<string, Lottie.Asset> = new Map();
 
@@ -870,6 +870,7 @@ function addLayerOpacity(
     );
 
     if (opacityAttrs.style?.opacity || opacityAnimations.length) {
+      // apply opacity to group's children
       traverse(layerGroup, (el) => {
         if (el.type !== Shape.GROUP && el.style) {
           Object.assign(el.style, opacityAttrs.style);
@@ -915,8 +916,8 @@ function parseLayers(
     // Layer time is offseted by the precomp layer.
 
     // Use the ip, op, st of ref from.
-    const layerIp = offsetTime + layer.ip;
-    const layerOp = offsetTime + layer.op;
+    // const layerIp = offsetTime + layer.ip;
+    // const layerOp = offsetTime + layer.op;
     const layerSt = offsetTime + layer.st;
     context.layerOffsetTime = offsetTime;
 
@@ -989,11 +990,13 @@ function parseLayers(
       layerGroup.extra = {
         layerParent: layer.parent,
       };
-      // Masks
-      // TODO not support alpha and other modes.
+      // Masks @see https://lottiefiles.github.io/lottie-docs/layers/#masks
+      // @see https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
+      // TODO: not support alpha and other modes.
+      // @see https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/
       if (layer.hasMask && layer.masksProperties?.length) {
         const maskKeyframeAnimations: KeyframeAnimation[] = [];
-        // TODO Only support one mask now.
+        // TODO: Only support one mask now.
         const attrs = parseShapePaths(
           {
             ks: layer.masksProperties[0].pt,
@@ -1006,47 +1009,47 @@ function parseLayers(
           type: Shape.PATH,
           ...attrs,
         };
-        // Must have fill
-        layerGroup.clipPath!.style!.fill = '#000';
         if (maskKeyframeAnimations.length) {
           layerGroup.clipPath!.keyframeAnimation = maskKeyframeAnimations;
         }
+
+        console.log('clip', layerGroup.clipPath, layerGroup);
       }
 
       addLayerOpacity(layer, layerGroup, context);
 
       // Update in and out animation.
-      if (
-        layerIp != null &&
-        layerOp != null &&
-        (layerIp > context.startFrame || layerOp < context.endFrame)
-      ) {
-        const duration = context.endFrame - context.startFrame;
-        const enterAndLeaveAnim = {
-          duration: duration * context.frameTime,
-          keyframes: [
-            {
-              ignore: false,
-              offset: (layerIp - context.startFrame) / duration,
-            },
-          ],
-        };
-        if (layerIp > context.startFrame) {
-          // Add initial keyframe.
-          // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
-          enterAndLeaveAnim.keyframes.unshift({
-            ignore: true,
-            offset: 0,
-          });
-        }
-        if ((layerOp - context.startFrame) / duration < 1) {
-          enterAndLeaveAnim.keyframes.push({
-            ignore: true,
-            offset: (layerOp - context.startFrame) / duration,
-          });
-        }
-        keyframeAnimations.push(enterAndLeaveAnim);
-      }
+      // if (
+      //   layerIp != null &&
+      //   layerOp != null &&
+      //   (layerIp > context.startFrame || layerOp < context.endFrame)
+      // ) {
+      //   const duration = context.endFrame - context.startFrame;
+      //   const enterAndLeaveAnim = {
+      //     duration: duration * context.frameTime,
+      //     keyframes: [
+      //       {
+      //         ignore: false,
+      //         offset: (layerIp - context.startFrame) / duration,
+      //       },
+      //     ],
+      //   };
+      //   if (layerIp > context.startFrame) {
+      //     // Add initial keyframe.
+      //     // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
+      //     enterAndLeaveAnim.keyframes.unshift({
+      //       ignore: true,
+      //       offset: 0,
+      //     });
+      //   }
+      //   if ((layerOp - context.startFrame) / duration < 1) {
+      //     enterAndLeaveAnim.keyframes.push({
+      //       ignore: true,
+      //       offset: (layerOp - context.startFrame) / duration,
+      //     });
+      //   }
+      //   keyframeAnimations.push(enterAndLeaveAnim);
+      // }
       if (keyframeAnimations.length) {
         layerGroup.keyframeAnimation = keyframeAnimations;
       }
@@ -1074,6 +1077,7 @@ export function parse(
   },
 ) {
   completeData(data);
+  const { loop, autoplay } = options;
   const context = new ParseContext();
 
   context.fps = data.fr || 30;
@@ -1081,44 +1085,19 @@ export function parse(
   context.startFrame = data.ip;
   context.endFrame = data.op;
   context.version = data.v;
-  context.autoplay = !!options.autoplay;
-
-  // @see https://lottiefiles.github.io/lottie-docs/assets/
-  data.assets?.forEach((asset) => {
-    context.assetsMap.set(asset.id, asset);
-  });
+  context.autoplay = !!autoplay;
+  (context.iterations = isNumber(loop) ? loop : !!loop ? Infinity : 1),
+    // @see https://lottiefiles.github.io/lottie-docs/assets/
+    data.assets?.forEach((asset) => {
+      context.assetsMap.set(asset.id, asset);
+    });
 
   const elements = parseLayers(data.layers || [], context);
-
-  function eachElement(elements: CustomElementOption[], cb: (el: CustomElementOption) => void) {
-    elements.forEach((el) => {
-      // el.keyframeAnimation?.forEach((anim) => {
-      //   anim.loop = true;
-      // });
-      cb(el);
-
-      if (el.children) {
-        eachElement(el.children, cb);
-      }
-    });
-  }
-
-  if (options.loop) {
-    eachElement(elements, (el) => {
-      el.keyframeAnimation?.forEach((anim) => {
-        anim.loop = options.loop;
-      });
-    });
-  }
 
   return {
     width: data.w,
     height: data.h,
     elements,
     context,
-
-    each: (cb: (el: CustomElementOption) => void) => {
-      eachElement(elements, cb);
-    },
   };
 }

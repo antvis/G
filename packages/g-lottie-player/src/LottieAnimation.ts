@@ -1,6 +1,7 @@
-import type { Canvas, DisplayObject, IAnimation, PointLike, Rectangle } from '@antv/g-lite';
+import type { Canvas, DisplayObject, IAnimation, PointLike } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
-import { AbsoluteArray, isNumber, PathArray } from '@antv/util';
+import type { PathArray } from '@antv/util';
+import { isNumber, path2String } from '@antv/util';
 // import { mat4, quat, vec3 } from 'gl-matrix';
 import type {
   CustomElementOption,
@@ -112,32 +113,7 @@ export class LottieAnimation {
         },
       });
     } else if (type === Shape.PATH) {
-      // @see https://lottiefiles.github.io/lottie-docs/shapes/#path
-      const { close, v, in: i, out } = shape;
-      const d: PathArray = [] as unknown as PathArray;
-
-      d.push(['M', v[0][0], v[0][1]]);
-
-      for (let n = 1; n < v.length; n++) {
-        // @see https://lottiefiles.github.io/lottie-docs/concepts/#bezier
-        // The nth bezier segment is defined as:
-        // v[n], v[n]+o[n], v[n+1]+i[n+1], v[n+1]
-        d.push(['C', out[n - 1][0], out[n - 1][1], i[n][0], i[n][1], v[n][0], v[n][1]]);
-      }
-
-      if (close) {
-        d.push([
-          'C',
-          out[v.length - 1][0],
-          out[v.length - 1][1],
-          i[0][0],
-          i[0][1],
-          v[0][0],
-          v[0][1],
-        ]);
-        d.push(['Z']);
-      }
-
+      const d = this.generatePathFromShape(shape);
       displayObject = new Path({
         style: {
           d, // use Path Array which can be skipped when parsing
@@ -227,8 +203,7 @@ export class LottieAnimation {
     return (
       options1.delay === options2.delay &&
       options1.duration === options2.duration &&
-      options1.easing === options2.easing &&
-      options1.loop === options2.loop
+      options1.easing === options2.easing
     );
   }
 
@@ -237,6 +212,28 @@ export class LottieAnimation {
     keyframe2: KeyframeAnimationKeyframe,
   ) {
     return keyframe1.easing === keyframe2.easing && keyframe1.offset === keyframe2.offset;
+  }
+
+  private generatePathFromShape(shape: Record<string, any>): PathArray {
+    // @see https://lottiefiles.github.io/lottie-docs/shapes/#path
+    const { close, v, in: i, out } = shape;
+    const d: PathArray = [] as unknown as PathArray;
+
+    d.push(['M', v[0][0], v[0][1]]);
+
+    for (let n = 1; n < v.length; n++) {
+      // @see https://lottiefiles.github.io/lottie-docs/concepts/#bezier
+      // The nth bezier segment is defined as:
+      // v[n], v[n]+o[n], v[n+1]+i[n+1], v[n+1]
+      d.push(['C', out[n - 1][0], out[n - 1][1], i[n][0], i[n][1], v[n][0], v[n][1]]);
+    }
+
+    if (close) {
+      d.push(['C', out[v.length - 1][0], out[v.length - 1][1], i[0][0], i[0][1], v[0][0], v[0][1]]);
+      d.push(['Z']);
+    }
+
+    return d;
   }
 
   /**
@@ -250,13 +247,50 @@ export class LottieAnimation {
     this.displayObjects.forEach((parent) => {
       parent.forEach((child: DisplayObject) => {
         const keyframeAnimation = this.keyframeAnimationMap.get(child);
+        const element = this.displayObjectElementMap.get(child);
+        if (element && element.clipPath) {
+          const { shape, keyframeAnimation } = element.clipPath;
+
+          const clipPath = new Path();
+          // use clipPath as target's siblings
+          child.parentElement.appendChild(clipPath);
+          child.style.clipPath = clipPath;
+          if (shape) {
+            clipPath.style.d = this.generatePathFromShape(shape);
+          }
+
+          // TODO: only support one clipPath now
+          if (keyframeAnimation && keyframeAnimation.length) {
+            const { delay, duration, easing, keyframes } = keyframeAnimation[0];
+
+            // animate clipPath with its `d` property
+            const clipPathAnimation = clipPath.animate(
+              keyframes.map(({ offset, shape, easing }) => {
+                return {
+                  offset,
+                  d: path2String(this.generatePathFromShape(shape)),
+                  easing,
+                };
+              }),
+              //
+              {
+                delay,
+                duration,
+                easing,
+                iterations: this.context.iterations,
+              },
+            );
+            this.animations.push(clipPathAnimation);
+          }
+        }
+
         if (keyframeAnimation && keyframeAnimation.length) {
           const keyframesOptions: [
             KeyframeAnimationKeyframe[],
             Omit<KeyframeAnimation, 'keyframes'>,
           ][] = [];
 
-          keyframeAnimation.map(({ delay = 0, duration, easing, loop, keyframes }) => {
+          keyframeAnimation.map(({ delay = 0, duration, easing, keyframes }) => {
             const formattedKeyframes = keyframes.map((keyframe) =>
               definedProps(keyframe),
             ) as KeyframeAnimationKeyframe[];
@@ -264,7 +298,7 @@ export class LottieAnimation {
               delay,
               duration,
               easing,
-              iterations: isNumber(loop) ? loop : !!loop ? Infinity : 1,
+              iterations: this.context.iterations,
             }) as Omit<KeyframeAnimation, 'keyframes'>;
 
             keyframesOptions.push([formattedKeyframes, options]);
@@ -312,7 +346,7 @@ export class LottieAnimation {
                 const formatted = this.formatKeyframes(merged, child);
 
                 if (formatted.length) {
-                  console.log(child, formatted);
+                  // console.log(child, formatted);
 
                   const animation = child.animate(formatted, options);
                   if (!this.context.autoplay) {
@@ -332,41 +366,43 @@ export class LottieAnimation {
 
   private formatKeyframes(keyframes: Record<string, any>[], object: DisplayObject) {
     keyframes.forEach((keyframe) => {
-      if ('offsetPath' in keyframe) {
-        if (!object.style.offsetPath) {
-          const [ox, oy] = object.getOrigin();
-          (keyframe.offsetPath as AbsoluteArray).forEach((segment) => {
-            if (segment[0] === 'M') {
-              segment[1] -= ox;
-              segment[2] -= oy;
-            } else if (segment[0] === 'C') {
-              segment[1] -= ox;
-              segment[2] -= oy;
-              segment[3] -= ox;
-              segment[4] -= oy;
-              segment[5] -= ox;
-              segment[6] -= oy;
-            }
-          });
+      // if ('offsetPath' in keyframe) {
+      //   if (!object.style.offsetPath) {
+      //     const [ox, oy] = object.getOrigin();
+      //     (keyframe.offsetPath as AbsoluteArray).forEach((segment) => {
+      //       if (segment[0] === 'M') {
+      //         segment[1] -= ox;
+      //         segment[2] -= oy;
+      //       } else if (segment[0] === 'C') {
+      //         segment[1] -= ox;
+      //         segment[2] -= oy;
+      //         segment[3] -= ox;
+      //         segment[4] -= oy;
+      //         segment[5] -= ox;
+      //         segment[6] -= oy;
+      //       }
+      //     });
 
-          const offsetPath = new Path({
-            style: {
-              d: keyframe.offsetPath,
-            },
-          });
+      //     const offsetPath = new Path({
+      //       style: {
+      //         d: keyframe.offsetPath,
+      //       },
+      //     });
 
-          object.style.offsetPath = offsetPath;
-        }
-        delete keyframe.offsetPath;
-        // offsetPath should override x/y
-        delete keyframe.x;
-        delete keyframe.y;
-      }
+      //     object.style.offsetPath = offsetPath;
+      //   }
+      //   delete keyframe.offsetPath;
+      //   // offsetPath should override x/y
+      //   delete keyframe.x;
+      //   delete keyframe.y;
+      // }
 
-      // should keep transform during initialization
-      if (!object.style.offsetPath) {
-        keyframe.transform = object.style.transform || '';
-      }
+      // // should keep transform during initialization
+      // if (!object.style.offsetPath) {
+      //   keyframe.transform = object.style.transform || '';
+      // }
+
+      keyframe.transform = object.style.transform || '';
 
       // TODO: transforms with different easing functions will conflict
 
@@ -381,11 +417,16 @@ export class LottieAnimation {
         delete keyframe.scaleY;
       }
 
-      // TODO: rotation, skew
       if ('rotation' in keyframe) {
         keyframe.transform = (keyframe.transform || '') + ` rotate(${keyframe.rotation}deg)`;
         delete keyframe.rotation;
       }
+
+      // TODO: skew & skewAxis
+      // if ('skew' in keyframe) {
+      //   keyframe.transform = (keyframe.transform || '') + ` skew(${keyframe.skew}deg)`;
+      //   delete keyframe.skew;
+      // }
 
       if ('x' in keyframe) {
         keyframe.transform = (keyframe.transform || '') + ` translateX(${keyframe.x}px)`;
@@ -407,9 +448,12 @@ export class LottieAnimation {
 
     // ignore empty interpolable attributes
     keyframes = keyframes.filter((keyframe) => {
+      // TODO: support negative offset
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { ignore, easing, offset, ...rest } = keyframe;
-      return Object.keys(rest).length > 0;
+      return offset >= 0 && Object.keys(rest).length > 0;
+      // return Object.keys(rest).length > 0;
     });
 
     if (keyframes.length) {
@@ -421,6 +465,9 @@ export class LottieAnimation {
         });
       }
     }
+
+    // sort by offset
+    keyframes.sort((a, b) => a.offset - b.offset);
 
     return keyframes;
   }

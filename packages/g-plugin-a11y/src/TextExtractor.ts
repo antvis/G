@@ -79,7 +79,7 @@ color: transparent !important;
 
         let offsetX = '0';
         // handle horizontal text align
-        if (textAlign === 'center') {
+        if (textAlign === 'center' || textAlign === 'middle') {
           offsetX = '-50%';
         } else if (textAlign === 'right' || textAlign === 'end') {
           offsetX = '-100%';

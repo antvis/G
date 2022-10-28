@@ -552,7 +552,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     n: 'textAlign',
     l: true,
     inh: true,
-    k: ['start', 'center', 'end', 'left', 'right'],
+    k: ['start', 'center', 'middle', 'end', 'left', 'right'],
     d: 'start',
   },
   // {

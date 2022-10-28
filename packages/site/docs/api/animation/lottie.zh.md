@@ -5,6 +5,10 @@ order: 2
 
 除了使用 [Web Animations API](/zh/docs/api/animation/waapi) 描述动画，我们还支持播放 [Lottie](https://airbnb.design/lottie/) 格式，为此我们提供了一个类似 [lottie-web](https://github.com/airbnb/lottie-web/) 的播放器。在内部我们会将其中定义的图形和关键帧动画转换成我们的[基础图形](/zh/docs/api/basic/display-object) 和动画描述，同时提供简单的动画控制方法例如播放、暂停以及跳转到指定时刻或帧，加入到画布后就可以像基础图形一样任意操作它们。
 
+[示例](/zh/examples/ecosystem#lottie-player-assets)
+
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*NVmwSb89Y3kAAAAAAAAAAAAAARQnAQ" alt="lottie player" width="400">
+
 # 使用方式
 
 首先安装播放器：
@@ -58,7 +62,7 @@ const ballAnimation = loadAnimation(bouncy_ball, { loop: true, autoplay: true })
 
 ### render
 
-渲染到[画布](/zh/docs/api/canvas)并返回一个 [Group](/zh/docs/api/basic/group) 作为容器，随后可以对其进行变换：
+渲染到[画布](/zh/docs/api/canvas)并返回一个 [Group](/zh/docs/api/basic/group) 作为容器，添加到画布根节点下，随后可以对其进行变换：
 
 ```js
 const wrapper = animation.render(canvas);
@@ -231,7 +235,11 @@ https://lottiefiles.github.io/lottie-docs/concepts/#transform
 
 在该[示例](/zh/examples/ecosystem#lottie-player-transform)中，深蓝色为基准矩形，我们以红色圆点为 [transformOrigin]()，旋转一定角度得到淡蓝色矩形。
 
-<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="400">
+<img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="200">
+
+### [WIP] Offset Path
+
+https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
 
 ### Style
 
@@ -292,7 +300,7 @@ https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer
 
 https://lottiefiles.github.io/lottie-docs/layers/#image-layer https://lottiefiles.github.io/lottie-docs/assets/#image
 
-### Text
+### [WIP] Text
 
 https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles.github.io/lottie-docs/text/
 
@@ -300,9 +308,20 @@ https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles
 
 https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer https://lottiefiles.github.io/lottie-docs/assets/#precomposition
 
-### Merge Paths
+### [WIP] Merge Paths
 
 https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property
+
+### Clipping Mask
+
+内部会转换成 [clipPath](/zh/docs/api/basic/display-object#clippath) 应用在目标元素上，并支持对其进行路径动画。
+
+注意事项：
+
+-   受限于 SVG 的实现。目前仅支持单一 Clipping Mask，声明多个也只有第一个会生效
+-   [Mask Mode Type](https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/) 仅支持 `Add` 运算符
+
+https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
 
 ## Layer Effects
 

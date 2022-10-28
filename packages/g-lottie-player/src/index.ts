@@ -6,7 +6,7 @@ export interface LoadAnimationOptions {
   /**
    * @see https://github.com/airbnb/lottie-web/blob/master/player/js/animation/AnimationItem.js#L43
    */
-  loop: boolean;
+  loop: boolean | number;
 
   /**
    * @see https://github.com/airbnb/lottie-web/blob/master/player/js/animation/AnimationItem.js#L42

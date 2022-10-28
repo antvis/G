@@ -21,7 +21,7 @@ export interface TextStyleProps extends BaseStyleProps {
    * The text-align property sets the horizontal alignment of the inline-level content.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-align
    */
-  textAlign?: CSSGlobalKeywords | 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: CSSGlobalKeywords | 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';
 
   /**
    * It specifies the current text baseline used when drawing text.
@@ -167,7 +167,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   x: number;
   y: number;
   text: string;
-  textAlign?: 'start' | 'center' | 'end' | 'left' | 'right';
+  textAlign?: 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';
   textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
   fontStyle?: 'normal' | 'italic' | 'oblique';
   fontSize?: number;
