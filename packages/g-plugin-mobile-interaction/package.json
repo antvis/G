@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-mobile-interaction",
-  "version": "0.7.23",
+  "version": "0.7.24",
   "description": "A G plugin listening events in mobile environment",
   "keywords": [
     "antv",
