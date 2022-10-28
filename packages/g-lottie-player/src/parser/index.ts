@@ -1,5 +1,6 @@
 import { definedProps, rad2deg, Shape } from '@antv/g-lite';
-import { isNumber, PathArray } from '@antv/util';
+import type { PathArray } from '@antv/util';
+import { isNumber } from '@antv/util';
 import { distanceSquareRoot, isNil, getTotalLength } from '@antv/util';
 import type { LoadAnimationOptions } from '..';
 import { completeData } from './complete-data';
@@ -1084,11 +1085,11 @@ export function parse(
   context.endFrame = data.op;
   context.version = data.v;
   context.autoplay = !!autoplay;
-  (context.iterations = isNumber(loop) ? loop : !!loop ? Infinity : 1),
-    // @see https://lottiefiles.github.io/lottie-docs/assets/
-    data.assets?.forEach((asset) => {
-      context.assetsMap.set(asset.id, asset);
-    });
+  context.iterations = isNumber(loop) ? loop : !!loop ? Infinity : 1;
+  // @see https://lottiefiles.github.io/lottie-docs/assets/
+  data.assets?.forEach((asset) => {
+    context.assetsMap.set(asset.id, asset);
+  });
 
   const elements = parseLayers(data.layers || [], context);
 

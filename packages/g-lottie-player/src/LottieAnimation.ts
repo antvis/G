@@ -1,7 +1,7 @@
 import type { Canvas, DisplayObject, IAnimation, PointLike } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
-import { isNumber, path2String } from '@antv/util';
+import { path2String } from '@antv/util';
 // import { mat4, quat, vec3 } from 'gl-matrix';
 import type {
   CustomElementOption,
