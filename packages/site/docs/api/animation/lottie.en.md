@@ -1,19 +1,19 @@
 ---
-title: Lottie 动画
+title: Lottie
 order: 2
 ---
 
-除了使用 [Web Animations API](/zh/docs/api/animation/waapi) 描述动画，我们还支持播放 Lottie 格式，为此我们提供了一个类似 [lottie-web](https://github.com/airbnb/lottie-web/) 的播放器。在内部我们会将其中定义的图形和 Keyframe 动画转换成我们的[基础图形](/zh/docs/api/basic/display-object) 和动画描述，同时提供简单的动画控制方法。
+In addition to describing animations using the [Web Animations API](/en/docs/api/animation/waapi), we also support playback of Lottie formats, for which we provide a player like [lottie-web](https://github.com/airbnb/lottie- web/) player. Internally we will convert the graphics and Keyframe animations defined there into our [basic graphics](/en/docs/api/basic/display-object) and animation descriptions, while providing simple animation control methods.
 
-# 使用方式
+# Usage
 
-首先安装播放器：
+Install player first:
 
 ```bash
 npm install @antv/g-lottie-player --save
 ```
 
-然后使用播放器提供的 [loadAnimation](/zh/docs/api/animation/lottie#createanimation) 方法创建一个 [LottieAnimation](/zh/docs/api/animation/lottie#lottieanimation) 对象，传入 Lottie JSON：
+Then use the [loadAnimation](/en/docs/api/animation/lottie#createanimation) method provided by the player to create a [LottieAnimation](/en/docs/api/animation/lottie#lottieanimation) object, passing in the Lottie JSON.
 
 ```js
 import { loadAnimation } from '@antv/g-lottie-player';
@@ -21,7 +21,7 @@ import { loadAnimation } from '@antv/g-lottie-player';
 const ballAnimation = loadAnimation(bouncy_ball, { loop: true });
 ```
 
-最后在合适的时机渲染到画布：
+Finally, render to canvas at the right time.
 
 ```js
 canvas.addEventListener(CanvasEvent.READY, () => {
@@ -31,20 +31,18 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
 # API
 
-播放器提供以下 API。
-
 ## loadAnimation
 
-参考 [lottie-web](https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/AnimationManager.js#L227) 的同名方法，用于加载 Lottie 文件创建 [LottieAnimation](/zh/docs/api/animation/lottie#lottieanimation)。
+Reference [lottie-web](https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/ AnimationManager.js#L227) method of the same name for loading Lottie files to create [LottieAnimation](/en/docs/api/animation/lottie#lottieanimation).
 
-参数如下：
+The parameters are as follows.
 
 -   `data` Lottie JSON
--   `options` 配置项
-    -   `loop` 类型为 `boolean | number`。是否开启循环播放，默认值为 `true` 即无限循环。当传入 `number` 时代表循环次数。
-    -   `autoplay` 类型为 `boolean`。加载完成后立刻开始自动播放，默认值为 `false`
+-   `options` configuration item
+    -   `loop` is of type `boolean | number`. If or not loop is enabled, the default value is `true` which means infinite loop. When `number` is passed in, it means the number of loops.
+    -   `autoplay` is of type `boolean`. The default value is `false` to start autoplay immediately after loading.
 
-例如创建一个无限循环、立即播放的动画：
+For example, to create an infinitely looping, immediately playable animation.
 
 ```js
 import { loadAnimation } from '@antv/g-lottie-player';
@@ -54,11 +52,11 @@ const ballAnimation = loadAnimation(bouncy_ball, { loop: true, autoplay: true })
 
 ## LottieAnimation
 
-通过 [loadAnimation](/zh/docs/api/animation/lottie#loadanimation) 可以创建该对象，进而对动画过程进行控制。
+This object can be created by [loadAnimation](/en/docs/api/animation/lottie#loadanimation) to control the animation process.
 
 ### render
 
-渲染到[画布](/zh/docs/api/canvas)并返回一个 [Group](/zh/docs/api/basic/group) 作为容器，随后可以对其进行变换：
+Renders to [canvas](/en/docs/api/canvas) and returns a [Group](/en/docs/api/basic/group) as a container, which can subsequently be transformed to.
 
 ```js
 const wrapper = animation.render(canvas);
@@ -67,11 +65,16 @@ wrapper.scale(0.5);
 wrapper.translate(100, 100);
 ```
 
-值得注意的是，和动画一样需要在[画布初始化完成后](/zh/docs/api/canvas#ready)进行。
+The following two parameters are supported to be passed in.
+
+-   Canvas. This will be added to the canvas under the root node
+-   Any element that has been added to the canvas
+
+It is worth noting that, like animation, it needs to be done [after canvas initialization is complete](/en/docs/api/canvas#ready).
 
 ### play
 
-开始播放
+Start the animation.
 
 ```js
 animation.play();
@@ -79,7 +82,7 @@ animation.play();
 
 ### pause
 
-暂停播放
+Pause the animation.
 
 ```js
 animation.pause();
@@ -87,7 +90,7 @@ animation.pause();
 
 ### togglePause
 
-如果正在播放则暂停，反之亦然
+Pause if it is playing and vice versa.
 
 ```js
 animation.togglePause();
@@ -95,7 +98,7 @@ animation.togglePause();
 
 ### stop
 
-结束播放
+Stop the animation.
 
 ```js
 animation.stop();
@@ -103,28 +106,28 @@ animation.stop();
 
 ### goTo
 
-跳转到指定时刻或帧。
+Jump to the specified moment or frame.
 
-参数如下：
+The parameters are as follows.
 
--   `value` 指定毫秒时刻或者帧数
--   `isFrame` 表示 `value` 是否传入的是帧数，默认值为 `false`
+-   `value` specifies the millisecond moment or frame
+-   `isFrame` indicates whether `value` is passed in as a frame, the default value is `false`.
 
 ```js
-// 跳转到时间轴的 2000ms 时刻
+// Jump to the 2000ms moment of the timeline
 animation.goTo(2000);
 
-// 跳转到第 10 帧
+// Jump to frame 10
 animation.goTo(10, true);
 ```
 
 ### getDuration
 
-返回持续时间，以毫秒或者帧为单位。
+Returns the duration, in milliseconds or frames.
 
-参数如下：
+The parameters are as follows.
 
--   `inFrames` 是否以帧为单位，默认为 `false`
+-   `inFrames` if or not in frames, default is `false`
 
 ```js
 animation.getDuration(); // 2000
@@ -133,7 +136,7 @@ animation.getDuration(true); // 120
 
 ### setSpeed
 
-控制播放速度，默认为 `1`。大于 `1` 表示加速，小于 `1` 表示减速：
+Controls the playback speed, default is `1`. Greater than `1` means speed up, less than `1` means speed down.
 
 ```js
 // 2x
@@ -142,7 +145,7 @@ animation.setSpeed(2);
 
 ### setDirection
 
-`1` 表示正向，`-1` 表示反向。默认正向播放：
+`1` means forward, `-1` means reverse. Default forward play.
 
 ```js
 animation.setSpeed(1);
@@ -151,7 +154,7 @@ animation.setSpeed(-1);
 
 ### destroy
 
-销毁全部内部对象，当然同时也会终止动画。
+Destroys all internal objects and, of course, terminates the animation at the same time.
 
 ```js
 animation.destroy();
@@ -159,7 +162,7 @@ animation.destroy();
 
 ### size
 
-返回 Lottie 文件尺寸：
+Return to Lottie file size.
 
 ```js
 animation.size(); // { width: 1080, height: 260 }
@@ -167,13 +170,13 @@ animation.size(); // { width: 1080, height: 260 }
 
 ### version
 
-返回 Lottie 文件中包含的 [Bodymovin](https://aescripts.com/bodymovin/) 版本
+Returns the version of [Bodymovin](https://aescripts.com/bodymovin/) contained in the Lottie file
 
 ```js
 animation.version();
 ```
 
-# 支持特性
+# Features
 
 ## Shapes
 
@@ -187,19 +190,19 @@ animation.version();
 
 ### Rectangle
 
-会转换成 [Rect](/zh/docs/api/basic/rect) 进行渲染。
+It will be converted to [Rect](/en/docs/api/basic/rect) for rendering.
 
 https://lottiefiles.github.io/lottie-docs/shapes/#rectangle
 
 ### Ellipse
 
-会转换成 [Ellipse](/zh/docs/api/basic/ellipse) 进行渲染。
+It will be converted to [Ellipse](/en/docs/api/basic/ellipse) for rendering.
 
 https://lottiefiles.github.io/lottie-docs/shapes/#ellipse
 
 ### Path
 
-会转换成 [Path](/zh/docs/api/basic/path) 进行渲染。
+It will be converted to [Path](/en/docs/api/basic/path) for rendering.
 
 https://lottiefiles.github.io/lottie-docs/shapes/#path
 
@@ -209,7 +212,7 @@ https://lottiefiles.github.io/lottie-docs/shapes/#polystar
 
 ### Group
 
-会转换成 [Group](/zh/docs/api/basic/group) 进行渲染。
+It will be converted to [Group](/en/docs/api/basic/group) for rendering.
 
 https://lottiefiles.github.io/lottie-docs/shapes/#group
 
@@ -217,25 +220,29 @@ https://lottiefiles.github.io/lottie-docs/shapes/#group
 
 https://lottiefiles.github.io/lottie-docs/concepts/#transform
 
-支持以下特性：
+The following features are supported.
 
--   [anchor]() 对应 `a` 字段
--   [translation]() 对应 `p` 字段
--   [scaling]() 对应 `s` 字段
--   [rotation]() 对应 `r` 字段
+-   [anchor]() corresponds to the `a` field
+-   [translation]() corresponds to the `p` field
+-   [scaling]() for the `s` field
+-   [rotation]() corresponds to the `r` field
 
-暂不支持以下特性：
+The following features are not supported at this time.
 
--   [skew]() 对应 `sk` 字段
--   [skewAxis]() 对应 `sa` 字段
+-   [skew]() corresponds to the `sk` field
+-   [skewAxis]() corresponds to the `sa` field
 
-在该[示例](/zh/examples/ecosystem#lottie-player-transform)中，深蓝色为基准矩形，我们以红色圆点为 [transformOrigin]()，旋转一定角度得到淡蓝色矩形。
+In this [example](/en/examples/ecosystem#lottie-player-transform), the dark blue is the base rectangle, and we use the red dot as the [transformOrigin]() to rotate it by a certain angle to get the light blue rectangle.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="400">
 
+### [WIP] Offset Path
+
+https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
+
 ### Style
 
-支持以下样式属性：
+The following style attributes are supported.
 
 -   [x] Fill
 -   [x] Stroke
@@ -245,37 +252,34 @@ https://lottiefiles.github.io/lottie-docs/concepts/#transform
 
 https://lottiefiles.github.io/lottie-docs/shapes/#fill
 
-填充色，同时支持以下特性：
+Fill color, while supporting the following features.
 
--   [fillOpacity](/zh/docs/api/basic/display-object#fillopacity) 对应 `o` 字段
-
-暂不支持以下特性：
-
--   [FillRule](https://lottiefiles.github.io/lottie-docs/constants/#fillrule)
+-   [fillOpacity](/en/docs/api/basic/display-object#fillopacity) 对应 `o` 字段
+-   [fillRule](/en/docs/api/basic/display-object#fillrule) 对应 `r` 字段
 
 #### Stroke
 
 https://lottiefiles.github.io/lottie-docs/shapes/#stroke
 
-描边色，同时支持以下特性：
+Stroke color, while supporting the following features.
 
--   [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity) 对应 `o` 字段
--   [strokeWidth](/zh/docs/api/basic/display-object#strokewidth) 对应 `w` 字段
--   [lineCap](/zh/docs/api/basic/display-object#linecap) 对应 `lc` 字段
--   [lineJoin](/zh/docs/api/basic/display-object#linejoin) 对应 `lj` 字段
--   [miterLimit](/zh/docs/api/basic/display-object#miterlimit) 对应 `ml` 字段
--   [lineDash](/zh/docs/api/basic/display-object#linedash) 对应 `d` 字段
+-   [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity) 对应 `o` 字段
+-   [strokeWidth](/en/docs/api/basic/display-object#strokewidth) 对应 `w` 字段
+-   [lineCap](/en/docs/api/basic/display-object#linecap) 对应 `lc` 字段
+-   [lineJoin](/en/docs/api/basic/display-object#linejoin) 对应 `lj` 字段
+-   [miterLimit](/en/docs/api/basic/display-object#miterlimit) 对应 `ml` 字段
+-   [lineDash](/en/docs/api/basic/display-object#linedash) 对应 `d` 字段
 
 #### Gradients
 
 https://lottiefiles.github.io/lottie-docs/shapes/#gradients
 
-支持[线性](/zh/docs/api/css/css-properties-values-api#linear-gradient)和[放射](/zh/docs/api/css/css-properties-values-api#radial-gradient)渐变。
+Support [linear](/en/docs/api/css/css-properties-values-api#linear-gradient) and [radial](/en/docs/api/css/css-properties-values-api#radial-gradient) gradients.
 
-暂不支持以下特性：
+The following features are not supported at this time.
 
--   对渐变应用动画
--   Highlight length & angle (`h` 和 `a` 字段)
+-   Apply animations to gradients
+-   Highlight length & angle (`h` and `a` fields)
 
 ### Modifiers
 
@@ -295,7 +299,7 @@ https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer
 
 https://lottiefiles.github.io/lottie-docs/layers/#image-layer https://lottiefiles.github.io/lottie-docs/assets/#image
 
-### Text
+### [WIP] Text
 
 https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles.github.io/lottie-docs/text/
 
@@ -303,8 +307,29 @@ https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles
 
 https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer https://lottiefiles.github.io/lottie-docs/assets/#precomposition
 
+### [WIP] Merge Paths
+
+https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property
+
+### Clipping Mask
+
+Internally, it will be converted to [clipPath](/en/docs/api/basic/display-object#clippath) to be applied to the target element and support path animation on it.
+
+Caution.
+
+-   Limited by the SVG implementation. Currently only a single Clipping Mask is supported, and only the first one will take effect if multiple are declared
+-   [Mask Mode Type](https://lottie-animation-community.github.io/docs/specs/properties/mask-mode-types/) only supports the `Add` operator
+
+https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
+
+## Layer Effects
+
+Post-processing effects for Layer are not supported at this time.
+
+https://lottiefiles.github.io/lottie-docs/effects/#layer-effects
+
 ## Expressions
 
-暂不支持。
+Expressions are not supported at this time.
 
 https://lottiefiles.github.io/lottie-docs/expressions/
