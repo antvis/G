@@ -464,20 +464,15 @@ function getArcParams(startPoint: [number, number], params: ASegment): PathArcPa
 function commandsToPathString(
   commands: AbsoluteArray,
   object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
-  applyLocalTransform = true,
+  transform?: mat4,
 ) {
-  let transform: mat4;
-  if (applyLocalTransform) {
-    transform = object.getLocalTransform();
-  }
-
   const { defX = 0, defY = 0 } = object.parsedStyle;
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
       const p = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
 
-      if (applyLocalTransform) {
+      if (transform) {
         vec3.transformMat4(p, p, transform);
       }
 
@@ -489,7 +484,7 @@ function commandsToPathString(
       const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
       const p3 = vec3.fromValues(cur[5] - defX, cur[6] - defY, 0);
 
-      if (applyLocalTransform) {
+      if (transform) {
         vec3.transformMat4(p1, p1, transform);
         vec3.transformMat4(p2, p2, transform);
         vec3.transformMat4(p3, p3, transform);
@@ -498,7 +493,7 @@ function commandsToPathString(
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
     } else if (cur[0] === 'A') {
       const c = vec3.fromValues(cur[6] - defX, cur[7] - defY, 0);
-      if (applyLocalTransform) {
+      if (transform) {
         vec3.transformMat4(c, c, transform);
       }
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
@@ -591,7 +586,7 @@ function rectToCommands(
  */
 export function convertToPath(
   object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
-  applyLocalTransform = true,
+  transform: mat4 = object.getLocalTransform(),
 ) {
   let commands: AbsoluteArray = [] as unknown as AbsoluteArray;
   switch (object.nodeName) {
@@ -644,7 +639,7 @@ export function convertToPath(
   }
 
   if (commands.length) {
-    return commandsToPathString(commands, object, applyLocalTransform);
+    return commandsToPathString(commands, object, transform);
   }
 }
 

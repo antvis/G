@@ -1,4 +1,4 @@
-import type {
+import {
   ICamera,
   CSSGradientValue,
   DataURLOptions,
@@ -11,6 +11,9 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
+  convertToPath,
+  Path,
+  findClosestClipPathTarget,
 } from '@antv/g-lite';
 import { UnitType } from '@antv/g-lite';
 import {
@@ -40,6 +43,7 @@ import { mat4, quat, vec3 } from 'gl-matrix';
 import type { FontLoader } from './FontLoader';
 import type { CanvasKitContext, RendererContribution } from './interfaces';
 import type { CanvaskitRendererPluginOptions } from './interfaces';
+import { generateSkPath } from './renderers';
 
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
@@ -71,6 +75,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     particles: Particles;
     onFrame: (canvas: Canvas) => void;
   }[] = [];
+
+  /**
+   * This stack is only used by clipPath for now.
+   */
+  // private restoreStack: DisplayObject[] = [];
 
   private enableCapture: boolean;
   private captureOptions: Partial<DataURLOptions>;
@@ -156,6 +165,13 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         this.drawAnimations(canvas, firstFrame);
         this.drawParticles(canvas);
         this.drawWithSurface(canvas, renderingContext.root);
+
+        // // pop restore stack, eg. root -> parent -> child
+        // this.restoreStack.forEach(() => {
+        //   canvas.restore();
+        // });
+        // // clear restore stack
+        // this.restoreStack = [];
 
         canvas.restore();
 
@@ -248,7 +264,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   }
 
   private drawWithSurface(canvas: Canvas, object: DisplayObject) {
-    this.renderDisplayObject(object, canvas);
+    if (object.isVisible() && !object.isCulled()) {
+      this.renderDisplayObject(object, canvas);
+    }
+
     const sorted = object.sortable.sorted || object.childNodes;
 
     // should account for z-index
@@ -389,17 +408,14 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
 
-    if (
-      !object.isVisible() ||
-      object.isCulled() ||
-      object.nodeName == Shape.GROUP ||
-      object.nodeName == Shape.HTML ||
-      object.nodeName == Shape.MESH
-    ) {
-      return;
-    }
+    // restore to its ancestor
+    // const parent = this.restoreStack[this.restoreStack.length - 1];
+    // if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
+    //   canvas.restore();
+    //   this.restoreStack.pop();
+    // }
 
-    canvas.save();
+    const renderer = this.rendererContributionFactory[object.nodeName];
 
     const {
       fill,
@@ -417,159 +433,186 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       shadowColor,
     } = object.parsedStyle as ParsedBaseStyleProps;
 
-    const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
-    const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
-    const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
+    if (renderer) {
+      canvas.save();
 
-    let fillPaint: Paint = null;
-    let strokePaint: Paint = null;
-    let shadowFillPaint: Paint = null;
-    let shadowStrokePaint: Paint = null;
+      // apply clipPath
+      const closest = findClosestClipPathTarget(object);
+      if (closest) {
+        const clipPath = closest.style.clipPath;
+        /**
+         * Since there's no resetMatrix in CanvasKit, so clipPath cannot be saved alone.
+         * @see https://api.skia.org/classSkCanvas.html#aba129108fc68dca01850faf73d5db148
+         * @see https://fiddle.skia.org/c/@Canvas_clipPath
+         */
+        if (clipPath) {
+          const d = convertToPath(clipPath);
+          const path = new Path({ style: { d } });
+          const skPath = generateSkPath(CanvasKit, path);
 
-    if (hasFill) {
-      fillPaint = new CanvasKit.Paint();
-      fillPaint.setAntiAlias(true);
-      fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
-      // should not affect transparent
-      if (fill instanceof CSSRGB && !fill.isNone) {
-        fillPaint.setColorComponents(
-          Number(fill.r) / 255,
-          Number(fill.g) / 255,
-          Number(fill.b) / 255,
-          Number(fill.alpha) * fillOpacity * opacity,
-        );
-      } else if (Array.isArray(fill)) {
-        fillPaint.setAlphaf(fillOpacity * opacity);
-        const shader = this.generateGradientsShader(object, fill);
-        fillPaint.setShader(shader);
-        shader.delete();
-      } else if (isPattern(fill)) {
-        fillPaint.setAlphaf(fillOpacity * opacity);
-        const shader = this.generatePattern(object, fill);
-        if (shader) {
-          fillPaint.setShader(shader);
-          shader.delete();
+          // const [tx, ty] = clipPath.getPosition();
+          // const [sx, sy] = clipPath.getScale();
+          // const rot = clipPath.getEulerAngles();
+          // const [ax, ay] = clipPath.getLocalSkew();
+
+          // skPath.transform(fromRotationTranslationScale(0, 0, 0, 1, 1));
+          // skPath.transform([1, 0, 150, 0, 1, 150, 0, 0, 1]);
+          // CanvasKit only support clip Path now.
+          canvas.clipPath(skPath, CanvasKit.ClipOp.Intersect, true);
         }
       }
-    }
 
-    if (hasStroke) {
-      strokePaint = new CanvasKit.Paint();
       /**
-       * stroke
+       * world transform
        */
-      if (lineWidth > 0) {
-        strokePaint.setAntiAlias(true);
-        strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
-        if (stroke instanceof CSSRGB && !stroke.isNone) {
-          strokePaint.setColor(
-            CanvasKit.Color4f(
-              Number(stroke.r) / 255,
-              Number(stroke.g) / 255,
-              Number(stroke.b) / 255,
-              Number(stroke.alpha) * strokeOpacity * opacity,
-            ),
+      const [tx, ty] = object.getPosition();
+      const [sx, sy] = object.getScale();
+      const rot = object.getEulerAngles();
+      const [ax, ay] = object.getLocalSkew();
+
+      // @see https://fiddle.skia.org/c/68b54cb7d3435f46e532e6d565a59c49
+      canvas.translate(tx, ty);
+      // FIXME
+      canvas.skew(ax, ay);
+      canvas.rotate(rot, 0, 0);
+      canvas.scale(sx, sy);
+
+      const bounds = object.getGeometryBounds();
+      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+      const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
+
+      const translateX = -(((anchor && anchor[0]) || 0) * width);
+      const translateY = -(((anchor && anchor[1]) || 0) * height);
+      if (translateX !== 0 || translateY !== 0) {
+        // apply anchor, use true size, not include stroke,
+        // eg. bounds = true size + half lineWidth
+        canvas.translate(translateX, translateY);
+      }
+
+      const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
+      const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
+      const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
+
+      let fillPaint: Paint = null;
+      let strokePaint: Paint = null;
+      let shadowFillPaint: Paint = null;
+      let shadowStrokePaint: Paint = null;
+
+      if (hasFill) {
+        fillPaint = new CanvasKit.Paint();
+        fillPaint.setAntiAlias(true);
+        fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
+        // should not affect transparent
+        if (fill instanceof CSSRGB && !fill.isNone) {
+          fillPaint.setColorComponents(
+            Number(fill.r) / 255,
+            Number(fill.g) / 255,
+            Number(fill.b) / 255,
+            Number(fill.alpha) * fillOpacity * opacity,
           );
-        } else if (Array.isArray(stroke)) {
-          strokePaint.setAlphaf(strokeOpacity * opacity);
-          const shader = this.generateGradientsShader(object, stroke);
-          strokePaint.setShader(shader);
+        } else if (Array.isArray(fill)) {
+          fillPaint.setAlphaf(fillOpacity * opacity);
+          const shader = this.generateGradientsShader(object, fill);
+          fillPaint.setShader(shader);
           shader.delete();
-        } else if (isPattern(stroke)) {
-          strokePaint.setAlphaf(strokeOpacity * opacity);
-          const shader = this.generatePattern(object, stroke);
+        } else if (isPattern(fill)) {
+          fillPaint.setAlphaf(fillOpacity * opacity);
+          const shader = this.generatePattern(object, fill);
           if (shader) {
-            strokePaint.setShader(shader);
+            fillPaint.setShader(shader);
             shader.delete();
           }
         }
+      }
 
-        strokePaint.setStrokeWidth(lineWidth);
-        const STROKE_CAP_MAP = {
-          butt: CanvasKit.StrokeCap.Butt,
-          round: CanvasKit.StrokeCap.Round,
-          square: CanvasKit.StrokeCap.Square,
-        };
-        strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap]);
-        const STROKE_JOIN_MAP = {
-          bevel: CanvasKit.StrokeJoin.Bevel,
-          round: CanvasKit.StrokeJoin.Round,
-          miter: CanvasKit.StrokeJoin.Miter,
-        };
-        strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin]);
-        if (!isNil(miterLimit)) {
-          strokePaint.setStrokeMiter(miterLimit);
-        }
+      if (hasStroke) {
+        strokePaint = new CanvasKit.Paint();
+        /**
+         * stroke
+         */
+        if (lineWidth > 0) {
+          strokePaint.setAntiAlias(true);
+          strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
+          if (stroke instanceof CSSRGB && !stroke.isNone) {
+            strokePaint.setColor(
+              CanvasKit.Color4f(
+                Number(stroke.r) / 255,
+                Number(stroke.g) / 255,
+                Number(stroke.b) / 255,
+                Number(stroke.alpha) * strokeOpacity * opacity,
+              ),
+            );
+          } else if (Array.isArray(stroke)) {
+            strokePaint.setAlphaf(strokeOpacity * opacity);
+            const shader = this.generateGradientsShader(object, stroke);
+            strokePaint.setShader(shader);
+            shader.delete();
+          } else if (isPattern(stroke)) {
+            strokePaint.setAlphaf(strokeOpacity * opacity);
+            const shader = this.generatePattern(object, stroke);
+            if (shader) {
+              strokePaint.setShader(shader);
+              shader.delete();
+            }
+          }
 
-        if (lineDash) {
-          strokePaint.setPathEffect(CanvasKit.PathEffect.MakeDash(lineDash, lineDashOffset || 0));
+          strokePaint.setStrokeWidth(lineWidth);
+          const STROKE_CAP_MAP = {
+            butt: CanvasKit.StrokeCap.Butt,
+            round: CanvasKit.StrokeCap.Round,
+            square: CanvasKit.StrokeCap.Square,
+          };
+          strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap]);
+          const STROKE_JOIN_MAP = {
+            bevel: CanvasKit.StrokeJoin.Bevel,
+            round: CanvasKit.StrokeJoin.Round,
+            miter: CanvasKit.StrokeJoin.Miter,
+          };
+          strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin]);
+          if (!isNil(miterLimit)) {
+            strokePaint.setStrokeMiter(miterLimit);
+          }
+
+          if (lineDash) {
+            strokePaint.setPathEffect(CanvasKit.PathEffect.MakeDash(lineDash, lineDashOffset || 0));
+          }
         }
       }
-    }
 
-    if (hasFill && hasShadow) {
-      shadowFillPaint = fillPaint.copy();
-      shadowFillPaint.setAntiAlias(true);
-      shadowFillPaint.setColor(
-        CanvasKit.Color4f(
-          Number(shadowColor.r) / 255,
-          Number(shadowColor.g) / 255,
-          Number(shadowColor.b) / 255,
-          Number(shadowColor.alpha),
-        ),
-      );
-      const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
-      shadowFillPaint.setMaskFilter(
-        CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
-      );
-    }
-    if (hasStroke && hasShadow) {
-      shadowStrokePaint = strokePaint.copy();
-      shadowStrokePaint.setAntiAlias(true);
-      shadowStrokePaint.setColor(
-        CanvasKit.Color4f(
-          Number(shadowColor.r) / 255,
-          Number(shadowColor.g) / 255,
-          Number(shadowColor.b) / 255,
-          Number(shadowColor.alpha),
-        ),
-      );
-      const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
-      shadowStrokePaint.setMaskFilter(
-        CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
-      );
-    }
+      if (hasFill && hasShadow) {
+        shadowFillPaint = fillPaint.copy();
+        shadowFillPaint.setAntiAlias(true);
+        shadowFillPaint.setColor(
+          CanvasKit.Color4f(
+            Number(shadowColor.r) / 255,
+            Number(shadowColor.g) / 255,
+            Number(shadowColor.b) / 255,
+            Number(shadowColor.alpha),
+          ),
+        );
+        const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
+        shadowFillPaint.setMaskFilter(
+          CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
+        );
+      }
+      if (hasStroke && hasShadow) {
+        shadowStrokePaint = strokePaint.copy();
+        shadowStrokePaint.setAntiAlias(true);
+        shadowStrokePaint.setColor(
+          CanvasKit.Color4f(
+            Number(shadowColor.r) / 255,
+            Number(shadowColor.g) / 255,
+            Number(shadowColor.b) / 255,
+            Number(shadowColor.alpha),
+          ),
+        );
+        const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
+        shadowStrokePaint.setMaskFilter(
+          CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
+        );
+      }
 
-    /**
-     * world transform
-     */
-    const [tx, ty] = object.getPosition();
-    const [sx, sy] = object.getScale();
-    const rot = object.getEulerAngles();
-    const [ax, ay] = object.getLocalSkew();
-
-    // @see https://fiddle.skia.org/c/68b54cb7d3435f46e532e6d565a59c49
-    canvas.translate(tx, ty);
-    // FIXME
-    canvas.skew(ax, ay);
-    canvas.rotate(rot, 0, 0);
-    canvas.scale(sx, sy);
-
-    const bounds = object.getGeometryBounds();
-    const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-    const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-    const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-
-    const translateX = -(((anchor && anchor[0]) || 0) * width);
-    const translateY = -(((anchor && anchor[1]) || 0) * height);
-    if (translateX !== 0 || translateY !== 0) {
-      // apply anchor, use true size, not include stroke,
-      // eg. bounds = true size + half lineWidth
-      canvas.translate(translateX, translateY);
-    }
-
-    const renderer = this.rendererContributionFactory[object.nodeName];
-    if (renderer) {
       renderer.render(object, {
         fillPaint,
         strokePaint,
@@ -577,14 +620,17 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         shadowStrokePaint,
         canvas,
       });
+
+      fillPaint?.delete();
+      strokePaint?.delete();
+      shadowFillPaint?.delete();
+      shadowStrokePaint?.delete();
+
+      canvas.restore();
     }
 
-    fillPaint?.delete();
-    strokePaint?.delete();
-    shadowFillPaint?.delete();
-    shadowStrokePaint?.delete();
-
-    canvas.restore();
+    // finish rendering, clear dirty flag
+    object.renderable.dirty = false;
   }
 
   async toDataURL(options: Partial<DataURLOptions>) {

@@ -1,4 +1,5 @@
 import chai, { expect } from 'chai';
+import { mat4 } from 'gl-matrix';
 import { convertToPath, Circle, Ellipse, Line, Path, Polygon, Polyline, Rect } from '@antv/g-lite';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
@@ -93,7 +94,7 @@ describe('Path utils', () => {
     expect(convertToPath(line)).to.be.eqls('M200,100L200,200');
 
     // ignore all local transformation
-    expect(convertToPath(line, false)).to.be.eqls('M0,0L0,100');
+    expect(convertToPath(line, mat4.identity(mat4.create()))).to.be.eqls('M0,0L0,100');
   });
 
   it('should convert Polyline to Path string correctly', () => {
