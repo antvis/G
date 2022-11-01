@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.7.24",
+  "version": "1.7.25",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
@@ -30,7 +30,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-shader-components": "^1.7.24",
+    "@antv/g-shader-components": "^1.7.25",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
