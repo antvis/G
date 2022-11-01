@@ -33,7 +33,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   }
 
   apply(context: RenderingPluginContext) {
-    const { camera, renderingContext, renderingService } = context;
+    const { camera, renderingContext, renderingService, displayObjectPool } = context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
@@ -44,6 +44,10 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       if (object.nodeName === Shape.HTML) {
+        if (!this.$camera) {
+          this.$camera = this.createCamera(camera);
+        }
+
         // create DOM element
         const $el = this.getOrCreateEl(object);
         this.$camera.appendChild($el);
@@ -95,14 +99,18 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     };
 
     const handleCanvasResize = () => {
-      const { width, height } = this.context.config;
-      this.$camera.style.width = `${width || 0}px`;
-      this.$camera.style.height = `${height || 0}px`;
+      if (this.$camera) {
+        const { width, height } = this.context.config;
+        this.$camera.style.width = `${width || 0}px`;
+        this.$camera.style.height = `${height || 0}px`;
+      }
     };
 
     renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
-      // append camera
-      this.$camera = this.createCamera(camera);
+      if (displayObjectPool.getHTMLs().length) {
+        // append camera
+        this.$camera = this.createCamera(camera);
+      }
 
       canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);

@@ -1,4 +1,4 @@
-import {
+import type {
   ICamera,
   CSSGradientValue,
   DataURLOptions,
@@ -11,11 +11,10 @@ import {
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
-  convertToPath,
-  Path,
-  findClosestClipPathTarget,
 } from '@antv/g-lite';
+import { convertToPath, Path, fromRotationTranslationScale } from '@antv/g-lite';
 import { UnitType } from '@antv/g-lite';
+import type { Shape } from '@antv/g-lite';
 import {
   computeLinearGradient,
   computeRadialGradient,
@@ -25,7 +24,6 @@ import {
   isPattern,
   parseColor,
   rad2deg,
-  Shape,
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil, isString } from '@antv/util';
@@ -39,7 +37,7 @@ import type {
   Particles,
   TextureSource,
 } from 'canvaskit-wasm';
-import { mat4, quat, vec3 } from 'gl-matrix';
+import { mat4, quat, vec3, mat3 } from 'gl-matrix';
 import type { FontLoader } from './FontLoader';
 import type { CanvasKitContext, RendererContribution } from './interfaces';
 import type { CanvaskitRendererPluginOptions } from './interfaces';
@@ -79,7 +77,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   /**
    * This stack is only used by clipPath for now.
    */
-  // private restoreStack: DisplayObject[] = [];
+  private restoreStack: DisplayObject[] = [];
 
   private enableCapture: boolean;
   private captureOptions: Partial<DataURLOptions>;
@@ -166,12 +164,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         this.drawParticles(canvas);
         this.drawWithSurface(canvas, renderingContext.root);
 
-        // // pop restore stack, eg. root -> parent -> child
-        // this.restoreStack.forEach(() => {
-        //   canvas.restore();
-        // });
-        // // clear restore stack
-        // this.restoreStack = [];
+        // pop restore stack, eg. root -> parent -> child
+        this.restoreStack.forEach(() => {
+          canvas.restore();
+        });
+        // clear restore stack
+        this.restoreStack = [];
 
         canvas.restore();
 
@@ -409,11 +407,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     ).getContext();
 
     // restore to its ancestor
-    // const parent = this.restoreStack[this.restoreStack.length - 1];
-    // if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
-    //   canvas.restore();
-    //   this.restoreStack.pop();
-    // }
+    const parent = this.restoreStack[this.restoreStack.length - 1];
+    if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
+      canvas.restore();
+      this.restoreStack.pop();
+    }
 
     const renderer = this.rendererContributionFactory[object.nodeName];
 
@@ -431,36 +429,48 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       strokeOpacity,
       shadowBlur,
       shadowColor,
+      clipPath,
     } = object.parsedStyle as ParsedBaseStyleProps;
+
+    // apply clipPath
+    if (clipPath) {
+      canvas.save();
+      // save clip
+      this.restoreStack.push(object);
+
+      /**
+       * Since there's no resetMatrix in CanvasKit, so clipPath cannot be saved alone.
+       * @see https://api.skia.org/classSkCanvas.html#aba129108fc68dca01850faf73d5db148
+       * @see https://fiddle.skia.org/c/@Canvas_clipPath
+       */
+      const d = convertToPath(clipPath, clipPath.getWorldTransform());
+      const path = new Path({ style: { d } });
+      const skPath = generateSkPath(CanvasKit, path);
+
+      const [tx, ty] = clipPath.getPosition();
+      // FIXME: account for local skew
+      // const [ax, ay] = clipPath.getLocalSkew();
+      const [sx, sy] = clipPath.getScale();
+      const rot = clipPath.getEulerAngles();
+
+      const m = fromRotationTranslationScale(rot, tx, ty, sx, sy);
+
+      const bounds = clipPath.getGeometryBounds();
+      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
+      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+      const { anchor } = (clipPath.parsedStyle || {}) as ParsedBaseStyleProps;
+      const translateX = -(((anchor && anchor[0]) || 0) * width);
+      const translateY = -(((anchor && anchor[1]) || 0) * height);
+
+      mat3.translate(m, m, [translateX, translateY]);
+
+      skPath.transform([m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]]);
+      // CanvasKit only support clip Path now.
+      canvas.clipPath(skPath, CanvasKit.ClipOp.Intersect, true);
+    }
 
     if (renderer) {
       canvas.save();
-
-      // apply clipPath
-      const closest = findClosestClipPathTarget(object);
-      if (closest) {
-        const clipPath = closest.style.clipPath;
-        /**
-         * Since there's no resetMatrix in CanvasKit, so clipPath cannot be saved alone.
-         * @see https://api.skia.org/classSkCanvas.html#aba129108fc68dca01850faf73d5db148
-         * @see https://fiddle.skia.org/c/@Canvas_clipPath
-         */
-        if (clipPath) {
-          const d = convertToPath(clipPath);
-          const path = new Path({ style: { d } });
-          const skPath = generateSkPath(CanvasKit, path);
-
-          // const [tx, ty] = clipPath.getPosition();
-          // const [sx, sy] = clipPath.getScale();
-          // const rot = clipPath.getEulerAngles();
-          // const [ax, ay] = clipPath.getLocalSkew();
-
-          // skPath.transform(fromRotationTranslationScale(0, 0, 0, 1, 1));
-          // skPath.transform([1, 0, 150, 0, 1, 150, 0, 0, 1]);
-          // CanvasKit only support clip Path now.
-          canvas.clipPath(skPath, CanvasKit.ClipOp.Intersect, true);
-        }
-      }
 
       /**
        * world transform

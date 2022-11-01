@@ -14,6 +14,9 @@ const DIV_HOOK_POS_X = -1000;
 const DIV_HOOK_POS_Y = -1000;
 const DIV_HOOK_ZINDEX = 2;
 
+/**
+ * Inspired by @pixi/accessibility, create an overlay which sits over the canvas element.
+ */
 export class AriaManager {
   constructor(private context: CanvasContext) {}
 
@@ -44,6 +47,15 @@ export class AriaManager {
     this.stop();
   };
 
+  private removeOverlay() {
+    if (this.$container) {
+      this.$container.remove();
+    }
+  }
+
+  /**
+   * Create an overlay which sits over the Canvas element.
+   */
   private createOverlay() {
     const { document: doc } = this.context.config;
     const $domElement = this.context.contextService.getDomElement() as HTMLCanvasElement;
@@ -84,9 +96,9 @@ export class AriaManager {
     this.isActive = false;
 
     globalThis.document.removeEventListener('mousemove', this.onMouseMove, true);
-    this.deactivate();
-
     globalThis.addEventListener('keydown', this.onKeyDown, false);
+
+    this.removeOverlay();
   }
 
   private createTouchHook() {
@@ -133,9 +145,9 @@ export class AriaManager {
   }
 
   deactivate() {
-    if (this.$container) {
-      this.$container.remove();
-    }
+    this.destroyTouchHook();
+
+    this.removeOverlay();
 
     globalThis.removeEventListener('keydown', this.onKeyDown, false);
   }

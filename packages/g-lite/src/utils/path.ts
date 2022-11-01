@@ -652,12 +652,11 @@ export function translatePathToString(
   endOffsetX = 0,
   endOffsetY = 0,
 ) {
-  const isClosed = pathArray[pathArray.length - 1][0] === 'Z';
-
   const newValue = pathArray
     .map((params, i) => {
       const command = params[0];
 
+      const isClosed = pathArray[pathArray.length - 1][0] === 'Z';
       const offsetX = i === pathArray.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
       const offsetY = i === pathArray.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
 
