@@ -216,12 +216,12 @@ describe('Path', () => {
     });
 
     expect(path.getStartTangent()).eqls([
-      [50, 0],
+      [100, 0],
       [0, 0],
     ]);
 
     expect(path.getEndTangent()).eqls([
-      [68.75, 0],
+      [0, 0],
       [100, 0],
     ]);
   });

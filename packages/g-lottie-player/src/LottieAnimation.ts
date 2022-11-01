@@ -1,4 +1,5 @@
-import type { Canvas, DisplayObject, IAnimation, PointLike } from '@antv/g-lite';
+import type { IAnimation, PointLike } from '@antv/g-lite';
+import { Canvas, DisplayObject } from '@antv/g-lite';
 import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
 import { path2String } from '@antv/util';
@@ -237,12 +238,25 @@ export class LottieAnimation {
   }
 
   /**
-   * Draws current animation frame
+   * render Lottie Group to canvas or a mounted display object
    */
-  render(canvas: Canvas) {
+  render(canvasOrDisplayObject: Canvas | DisplayObject) {
     const wrapper = new Group();
     wrapper.append(...this.displayObjects);
-    canvas.appendChild(wrapper);
+
+    if (canvasOrDisplayObject instanceof Canvas) {
+      canvasOrDisplayObject.appendChild(wrapper);
+    } else if (canvasOrDisplayObject instanceof DisplayObject) {
+      if (!canvasOrDisplayObject.isConnected) {
+        throw new Error('[g-lottie-player]: Cannot render Lottie to an unmounted DisplayObject.');
+      } else {
+        canvasOrDisplayObject.appendChild(wrapper);
+      }
+    } else {
+      throw new Error(
+        '[g-lottie-player]: We should render Lottie to a mounted DisplayObject or Canvas.',
+      );
+    }
 
     this.displayObjects.forEach((parent) => {
       parent.forEach((child: DisplayObject) => {

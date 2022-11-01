@@ -92,7 +92,7 @@ createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
 ```js
 convertToPath(
     object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
-    applyLocalTransformation = true
+    transform = object.getLocalTransform()
 ): string;
 ```
 
@@ -138,4 +138,4 @@ const circlePath = new Path({
 // circlePath.translate(100, 0);
 ```
 
-在某些情况下不需要考虑局部坐标系下的变换，可以传入第二个参数为 `false`。
+在某些情况下不需要考虑局部坐标系下的变换，可以传入第二个参数为 `mat4.identity()`。

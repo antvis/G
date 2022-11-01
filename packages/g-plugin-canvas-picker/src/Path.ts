@@ -4,23 +4,44 @@ import type {
   Path,
   PathStyleProps,
   Point,
+  PathSegment,
 } from '@antv/g-lite';
-import { getOrCalculatePathTotalLength, isFillOrStrokeAffected } from '@antv/g-lite';
-import { Cubic as CubicUtil } from '@antv/g-math';
-import { inLine, inPolygons } from './utils/math';
+import {
+  getOrCalculatePathTotalLength,
+  isFillOrStrokeAffected,
+  fromRotationTranslationScale,
+} from '@antv/g-lite';
+import { Cubic as CubicUtil, Quad as QuadUtil } from '@antv/g-math';
+import { vec3 } from 'gl-matrix';
+import { inArc, inBox, inLine, inPolygons } from './utils/math';
 
 // TODO: replace it with method in @antv/util
 function isPointInStroke(
-  segments: any[],
+  segments: PathSegment[],
   lineWidth: number,
   px: number,
   py: number,
   length: number,
 ) {
   let isHit = false;
+  const halfWidth = lineWidth / 2;
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
-    const { currentPoint, params, prePoint } = segment;
+    const { currentPoint, params, prePoint, box } = segment;
+    // 如果在前面已经生成过包围盒，直接按照包围盒计算
+    if (
+      box &&
+      !inBox(
+        box.x - halfWidth,
+        box.y - halfWidth,
+        box.width + lineWidth,
+        box.height + lineWidth,
+        px,
+        py,
+      )
+    ) {
+      continue;
+    }
     switch (segment.command) {
       // L 和 Z 都是直线， M 不进行拾取
       case 'L':
@@ -34,6 +55,19 @@ function isPointInStroke(
           px,
           py,
         );
+        break;
+      case 'Q':
+        const qDistance = QuadUtil.pointDistance(
+          prePoint[0],
+          prePoint[1],
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+          px,
+          py,
+        );
+        isHit = qDistance <= lineWidth / 2;
         break;
       case 'C':
         const cDistance = CubicUtil.pointDistance(
@@ -50,6 +84,21 @@ function isPointInStroke(
           length,
         );
         isHit = cDistance <= lineWidth / 2;
+        break;
+      case 'A':
+        // 计算点到椭圆圆弧的距离，暂时使用近似算法，后面可以改成切割法求最近距离
+        const arcParams = segment.arcParams;
+        const { cx, cy, rx, ry, startAngle, endAngle, xRotation } = arcParams;
+        const p = vec3.fromValues(px, py, 1);
+        const r = rx > ry ? rx : ry;
+        const scaleX = rx > ry ? 1 : rx / ry;
+        const scaleY = rx > ry ? ry / rx : 1;
+        vec3.transformMat3(
+          p,
+          p,
+          fromRotationTranslationScale(-xRotation, -cx, -cy, 1 / scaleX, 1 / scaleY),
+        );
+        isHit = inArc(0, 0, r, startAngle, endAngle, lineWidth, p[0], p[1]);
         break;
       default:
         break;

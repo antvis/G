@@ -52,6 +52,7 @@ export {
   turn2deg,
   getAngle,
   createVec3,
+  fromRotationTranslationScale,
   findClosestClipPathTarget,
   getOrCalculatePathTotalLength,
   definedProps,

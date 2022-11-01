@@ -63,10 +63,8 @@ export class PathRenderer extends Batch {
       const eps = 0.01;
       // only contains M & L commands
       if (curve.length === 2 && curve[0][0] === 'M' && curve[1][0] === 'C') {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_1, p1x, p1y] = curve[0];
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_2, cpx1, cpy1, cpx2, cpy2, p2x, p2y] = curve[1];
+        const [, p1x, p1y] = curve[0];
+        const [, cpx1, cpy1, cpx2, cpy2, p2x, p2y] = curve[1];
         const tangent = (p1x - p2x) / (p1y - p2y);
 
         return (

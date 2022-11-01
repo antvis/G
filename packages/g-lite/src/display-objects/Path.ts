@@ -1,4 +1,4 @@
-import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
+import type { AbsoluteArray, AbsoluteSegment, CurveArray, PathArray } from '@antv/util';
 import { getPointAtLength } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
@@ -34,14 +34,36 @@ export interface PathStyleProps extends BaseStyleProps {
    */
   markerEndOffset?: number;
 }
+
+export interface PathSegmentBBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 export interface PathSegment {
-  command: PathArray[0];
+  command: 'M' | 'L' | 'V' | 'H' | 'C' | 'S' | 'Q' | 'T' | 'A' | 'Z';
   currentPoint: [number, number];
-  prePoint: [number, number] | null;
-  nextPoint: [number, number] | null;
-  startTangent: [number, number] | null;
-  endTangent: [number, number] | null;
-  params: PathArray[0];
+  prePoint: [number, number];
+  nextPoint: [number, number];
+  startTangent: [number, number];
+  endTangent: [number, number];
+  params: AbsoluteSegment;
+  arcParams: PathArcParams;
+  box: PathSegmentBBox;
+}
+
+export interface PathArcParams {
+  cx: number;
+  cy: number;
+  // 弧形的起点和终点相同时，长轴和短轴的长度按 0 处理
+  rx: number;
+  ry: number;
+  startAngle: number;
+  endAngle: number;
+  xRotation: number;
+  arcFlag: number;
+  sweepFlag: number;
 }
 export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   path: {

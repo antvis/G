@@ -3,8 +3,6 @@ import {
   clonePath,
   equalizeSegments,
   getDrawDirection,
-  getPathBBox,
-  // getPathBBoxTotalLength,
   getRotatedCurve,
   isString,
   memoize,
@@ -14,7 +12,7 @@ import {
 } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
-import { extractPolygons, hasArcOrBezier, path2Segments } from '../../utils';
+import { extractPolygons, getPathBBox, hasArcOrBezier, path2Segments } from '../../utils';
 
 const internalParsePath = (path: string | PathArray) => {
   // empty path
@@ -54,11 +52,10 @@ const internalParsePath = (path: string | PathArray) => {
   const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
 
   // for later use
-  const segments = path2Segments(curve);
+  const segments = path2Segments(absolutePath);
 
   // Only calculate bbox here since we don't need length now.
-  const { x, y, width, height } = getPathBBox(absolutePath);
-  // const { x, y, width, height, length } = getPathBBoxTotalLength(absolutePath);
+  const { x, y, width, height } = getPathBBox(segments, 0);
 
   return {
     absolutePath,
@@ -68,15 +65,8 @@ const internalParsePath = (path: string | PathArray) => {
     polylines,
     curve,
     // Delay the calculation of length.
-    // totalLength: length,
     totalLength: 0,
     zCommandIndexes,
-    // rect: new Rectangle(
-    //   Number.isFinite(x) ? x : 0,
-    //   Number.isFinite(y) ? y : 0,
-    //   Number.isFinite(width) ? width : 0,
-    //   Number.isFinite(height) ? height : 0,
-    // ),
     rect: {
       x: Number.isFinite(x) ? x : 0,
       y: Number.isFinite(y) ? y : 0,

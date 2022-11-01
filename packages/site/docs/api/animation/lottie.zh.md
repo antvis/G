@@ -62,7 +62,7 @@ const ballAnimation = loadAnimation(bouncy_ball, { loop: true, autoplay: true })
 
 ### render
 
-渲染到[画布](/zh/docs/api/canvas)并返回一个 [Group](/zh/docs/api/basic/group) 作为容器，添加到画布根节点下，随后可以对其进行变换：
+渲染到[画布](/zh/docs/api/canvas)并返回一个 [Group](/zh/docs/api/basic/group) 作为容器，添加到画布或者任意已挂载的元素下，随后可以对其进行变换：
 
 ```js
 const wrapper = animation.render(canvas);
@@ -70,6 +70,11 @@ const wrapper = animation.render(canvas);
 wrapper.scale(0.5);
 wrapper.translate(100, 100);
 ```
+
+支持传入以下两种参数：
+
+-   画布。此时会添加到画布根节点下
+-   任意已添加到画布中的元素
 
 值得注意的是，和动画一样需要在[画布初始化完成后](/zh/docs/api/canvas#ready)进行。
 

@@ -21,7 +21,6 @@
     "limit-size": "limit-size",
     "lint": "npm run eslint",
     "lint-staged": "lint-staged",
-    "prepublishOnly": "yarn build",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "publish": "lerna publish",
     "postpublish": "yarn sync",

@@ -92,7 +92,7 @@ The method signature is as follows.
 ```js
 convertToPath(
     object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
-    applyLocalTransformation = true
+    transform = object.getLocalTransform()
 ): string;
 ```
 
@@ -138,4 +138,4 @@ const circlePath = new Path({
 // circlePath.translate(100, 0);
 ```
 
-In some cases it is not necessary to consider the transformation in the local coordinate system, and the second parameter can be passed as `false`.
+In some cases it is not necessary to consider the transformation in the local coordinate system, and the second parameter can be passed as `mat4.identity()`.
