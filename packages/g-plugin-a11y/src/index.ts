@@ -2,7 +2,7 @@ import { AbstractRendererPlugin } from '@antv/g-lite';
 import { A11yPlugin } from './A11yPlugin';
 import { AriaManager } from './AriaManager';
 import { TextExtractor } from './TextExtractor';
-import type { A11yPluginOptions } from './tokens';
+import type { A11yPluginOptions } from './interfaces';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'a11y';
@@ -17,6 +17,7 @@ export class Plugin extends AbstractRendererPlugin {
 
     const a11yPluginOptions = {
       enableExtractingText: false,
+      enableARIA: true,
       ...this.options,
     };
 
