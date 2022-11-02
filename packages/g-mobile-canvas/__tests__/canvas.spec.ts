@@ -46,7 +46,7 @@ describe('canvas', () => {
       console.log('pointerover');
     });
     canvas.addEventListener('dragstart', (e) => {
-      console.log('dragend');
+      console.log('dragstart');
     });
     canvas.addEventListener('drag', (e) => {
       console.log('drag');

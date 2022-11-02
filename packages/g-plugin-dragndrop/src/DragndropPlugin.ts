@@ -118,8 +118,17 @@ export class DragndropPlugin implements RenderingPlugin {
 
         canvas.addEventListener('pointermove', handlePointermove);
 
-        const stopDragging = function () {
+        const stopDragging = function (originalPointerUpEvent: FederatedPointerEvent) {
           if (dragstartTriggered) {
+            // prevent click event being triggerd
+            // @see https://github.com/antvis/G/issues/1091
+            originalPointerUpEvent.detail = {
+              preventClick: true,
+            };
+
+            // clone event first
+            const event = originalPointerUpEvent.clone();
+
             // drop should fire before dragend
             // @see https://javascript.tutorialink.com/is-there-a-defined-ordering-between-dragend-and-drop-events/
 
@@ -132,11 +141,6 @@ export class DragndropPlugin implements RenderingPlugin {
 
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
             event.type = 'dragend';
-            // prevent click event being triggerd
-            // @see https://github.com/antvis/G/issues/1091
-            event.detail = {
-              preventClick: true,
-            };
             draggableEventTarget.dispatchEvent(event);
 
             dragstartTriggered = false;
