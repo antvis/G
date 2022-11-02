@@ -16,6 +16,7 @@ import { mat4, vec3 } from 'gl-matrix';
 export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,
+  isClipPath?: boolean,
   isPointInPath?: (displayObject: DisplayObject<T>, point: Point) => boolean,
 ) => boolean;
 
@@ -87,13 +88,13 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     const pickedDisplayObjects: DisplayObject[] = [];
     for (const displayObject of hitTestList) {
       const worldTransform = displayObject.getWorldTransform();
-      const isHitOriginShape = this.isHit(displayObject, position, worldTransform);
+      const isHitOriginShape = this.isHit(displayObject, position, worldTransform, false);
       if (isHitOriginShape) {
         // should look up in the ancestor node
         const clipped = findClosestClipPathTarget(displayObject);
         if (clipped) {
           const { clipPath } = clipped.parsedStyle as ParsedBaseStyleProps;
-          const isHitClipPath = this.isHit(clipPath, position, clipPath.getWorldTransform());
+          const isHitClipPath = this.isHit(clipPath, position, clipPath.getWorldTransform(), true);
           if (isHitClipPath) {
             if (topmost) {
               result.picked = [displayObject];
@@ -117,7 +118,12 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     return result;
   }
 
-  private isHit = (displayObject: DisplayObject, position: vec3, worldTransform: mat4) => {
+  private isHit = (
+    displayObject: DisplayObject,
+    position: vec3,
+    worldTransform: mat4,
+    isClipPath: boolean,
+  ) => {
     // use picker for current shape's type
     const pick = this.pointInPathPickerFactory[displayObject.nodeName];
     if (pick) {
@@ -136,7 +142,14 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       const { anchor } = displayObject.parsedStyle as ParsedBaseStyleProps;
       localPosition[0] += ((anchor && anchor[0]) || 0) * halfExtents[0] * 2;
       localPosition[1] += ((anchor && anchor[1]) || 0) * halfExtents[1] * 2;
-      if (pick(displayObject, new Point(localPosition[0], localPosition[1]), this.isPointInPath)) {
+      if (
+        pick(
+          displayObject,
+          new Point(localPosition[0], localPosition[1]),
+          isClipPath,
+          this.isPointInPath,
+        )
+      ) {
         return true;
       }
     }

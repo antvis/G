@@ -6,6 +6,7 @@ import { inArc, inBox, inLine, inRect } from './utils/math';
 export function isPointInPath(
   displayObject: DisplayObject<RectStyleProps>,
   position: Point,
+  isClipPath: boolean,
   isPointInPath: (displayObject: DisplayObject<RectStyleProps>, position: Point) => boolean,
 ): boolean {
   const {
@@ -16,10 +17,8 @@ export function isPointInPath(
     increasedLineWidthForHitTesting,
     width,
     height,
-    clipPathTargets,
     pointerEvents,
   } = displayObject.parsedStyle as ParsedRectStyleProps;
-  const isClipPath = !!clipPathTargets?.length;
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 

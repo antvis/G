@@ -178,3 +178,70 @@ const clippedShapesConfig = {
     });
 });
 clippedShapesFolder.open();
+
+const foreGroup = canvas.appendChild(new Group({}));
+foreGroup.appendChild(
+  new Rect({
+    id: 'redRect',
+    style: {
+      width: 50,
+      height: 50,
+      fill: 'red',
+      zIndex: 1,
+    },
+  }),
+);
+const headerGroup = foreGroup.appendChild(
+  new Group({
+    style: {
+      y: 90,
+    },
+  }),
+);
+
+const rowCell = headerGroup.appendChild(
+  new Group({
+    style: {},
+  }),
+);
+rowCell.appendChild(
+  new Rect({
+    id: 'yellowRect',
+    style: {
+      width: 100,
+      height: 100,
+      fill: 'yellow',
+    },
+  }),
+);
+
+// 加上 clip yellow rect 就不能被 pick 到了
+headerGroup.setClip(
+  new Rect({
+    style: {
+      x: 0,
+      y: 0,
+      width: 300,
+      height: 600,
+    },
+  }),
+);
+
+// show clipPath
+canvas.appendChild(
+  new Rect({
+    style: {
+      fill: 'green',
+      opacity: 0.2,
+      pointerEvents: 'none',
+      x: 0,
+      y: 0,
+      width: 300,
+      height: 600,
+    },
+  }),
+);
+
+canvas.addEventListener('click', (evt) => {
+  console.log('clicked', evt.target.id ?? '没有pick到');
+});

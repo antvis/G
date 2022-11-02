@@ -5,19 +5,12 @@ import { distance } from './utils/math';
 export function isPointInPath(
   displayObject: DisplayObject<CircleStyleProps>,
   position: Point,
+  isClipPath: boolean,
 ): boolean {
-  const {
-    r,
-    fill,
-    stroke,
-    lineWidth,
-    increasedLineWidthForHitTesting,
-    clipPathTargets,
-    pointerEvents,
-  } = displayObject.parsedStyle as ParsedCircleStyleProps;
+  const { r, fill, stroke, lineWidth, increasedLineWidthForHitTesting, pointerEvents } =
+    displayObject.parsedStyle as ParsedCircleStyleProps;
   const halfLineWidth = ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
   const absDistance = distance(r, r, position.x, position.y);
-  const isClipPath = !!clipPathTargets?.length;
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 

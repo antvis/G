@@ -10,6 +10,7 @@ import { inPolygon, inPolyline } from './utils/math';
 export function isPointInPath(
   displayObject: DisplayObject<PolylineStyleProps>,
   position: Point,
+  isClipPath: boolean,
 ): boolean {
   const {
     stroke,
@@ -19,11 +20,8 @@ export function isPointInPath(
     points,
     defX: x = 0,
     defY: y = 0,
-    clipPathTargets,
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPolygonStyleProps;
-  const isClipPath = !!clipPathTargets?.length;
-
   const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   let isHit = false;

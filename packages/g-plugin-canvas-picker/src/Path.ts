@@ -113,6 +113,7 @@ function isPointInStroke(
 export function isPointInPath(
   displayObject: DisplayObject<PathStyleProps>,
   position: Point,
+  isClipPath: boolean,
   isPointInPath: (displayObject: DisplayObject<PathStyleProps>, position: Point) => boolean,
 ): boolean {
   const {
@@ -122,7 +123,6 @@ export function isPointInPath(
     fill,
     defX: x = 0,
     defY: y = 0,
-    clipPathTargets,
     path,
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPathStyleProps;
@@ -132,8 +132,6 @@ export function isPointInPath(
   const { segments, hasArc, polylines, polygons } = path;
 
   const totalLength = getOrCalculatePathTotalLength(displayObject as Path);
-
-  const isClipPath = !!clipPathTargets?.length;
 
   let isHit = false;
 

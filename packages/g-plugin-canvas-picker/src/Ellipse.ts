@@ -1,4 +1,9 @@
-import type { DisplayObject, EllipseStyleProps, ParsedEllipseStyleProps } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  EllipseStyleProps,
+  ParsedEllipseStyleProps,
+  Point,
+} from '@antv/g-lite';
 import { isFillOrStrokeAffected } from '@antv/g-lite';
 
 function ellipseDistance(squareX: number, squareY: number, rx: number, ry: number) {
@@ -7,20 +12,13 @@ function ellipseDistance(squareX: number, squareY: number, rx: number, ry: numbe
 
 export function isPointInPath(
   displayObject: DisplayObject<EllipseStyleProps>,
-  { x, y }: { x: number; y: number },
+  position: Point,
+  isClipPath: boolean,
 ): boolean {
-  const {
-    rx,
-    ry,
-    fill,
-    stroke,
-    lineWidth,
-    increasedLineWidthForHitTesting,
-    clipPathTargets,
-    pointerEvents,
-  } = displayObject.parsedStyle as ParsedEllipseStyleProps;
-  const isClipPath = !!clipPathTargets?.length;
+  const { rx, ry, fill, stroke, lineWidth, increasedLineWidthForHitTesting, pointerEvents } =
+    displayObject.parsedStyle as ParsedEllipseStyleProps;
 
+  const { x, y } = position;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   const halfLineWith = ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
