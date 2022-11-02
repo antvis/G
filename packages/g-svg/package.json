@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "1.8.22",
+  "version": "1.8.23",
   "description": "A renderer implemented by SVG",
   "keywords": [
     "antv",
@@ -30,9 +30,9 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-plugin-dom-interaction": "^1.7.25",
-    "@antv/g-plugin-svg-picker": "^1.7.25",
-    "@antv/g-plugin-svg-renderer": "^1.8.22",
+    "@antv/g-plugin-dom-interaction": "^1.7.26",
+    "@antv/g-plugin-svg-picker": "^1.7.26",
+    "@antv/g-plugin-svg-renderer": "^1.8.23",
     "@antv/util": "^3.2.4",
     "tslib": "^2.3.1"
   },

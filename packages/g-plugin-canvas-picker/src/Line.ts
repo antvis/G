@@ -1,13 +1,11 @@
-import type { DisplayObject, LineStyleProps, ParsedLineStyleProps } from '@antv/g-lite';
+import type { DisplayObject, LineStyleProps, ParsedLineStyleProps, Point } from '@antv/g-lite';
 import { isFillOrStrokeAffected } from '@antv/g-lite';
 import { inLine } from './utils/math';
 
 export function isPointInPath(
   displayObject: DisplayObject<LineStyleProps>,
-  position: {
-    x: number;
-    y: number;
-  },
+  position: Point,
+  isClipPath: boolean,
 ): boolean {
   const {
     x1,
@@ -18,13 +16,10 @@ export function isPointInPath(
     increasedLineWidthForHitTesting,
     defX: x = 0,
     defY: y = 0,
-    clipPathTargets,
     pointerEvents,
     fill,
     stroke,
   } = displayObject.parsedStyle as ParsedLineStyleProps;
-
-  const isClipPath = !!clipPathTargets?.length;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);

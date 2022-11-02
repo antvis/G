@@ -10,6 +10,7 @@ import { inPolyline } from './utils/math';
 export function isPointInPath(
   displayObject: DisplayObject<PolylineStyleProps>,
   position: Point,
+  isClipPath: boolean,
 ): boolean {
   const {
     lineWidth,
@@ -17,15 +18,11 @@ export function isPointInPath(
     points,
     defX: x = 0,
     defY: y = 0,
-    clipPathTargets,
     pointerEvents,
     fill,
     stroke,
   } = displayObject.parsedStyle as ParsedPolylineStyleProps;
-  const isClipPath = !!clipPathTargets?.length;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+  const [, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   if ((!hasStroke && !isClipPath) || !lineWidth) {
     return false;

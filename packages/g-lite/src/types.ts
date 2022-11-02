@@ -91,14 +91,12 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path
    */
   clipPath?: DisplayObject | null;
-  clipPathTargets?: DisplayObject[];
 
   /**
    * offset path
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Motion_Path
    */
   offsetPath?: DisplayObject | null;
-  offsetPathTargets?: DisplayObject[];
   offsetDistance?: number;
 
   stroke?: ColorType | Pattern;

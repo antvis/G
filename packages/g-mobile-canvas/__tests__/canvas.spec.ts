@@ -33,20 +33,29 @@ describe('canvas', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    circle.addEventListener('pointerdown', (e) => {
+    canvas.addEventListener('pointerdown', (e) => {
       console.log('pointerdown');
     });
-    circle.addEventListener('pointerup', (e) => {
+    canvas.addEventListener('pointerup', (e) => {
       console.log('pointerup');
     });
-    circle.addEventListener('pointermove', (e) => {
+    canvas.addEventListener('pointermove', (e) => {
       console.log('pointermove');
     });
-    circle.addEventListener('pointerover', (e) => {
+    canvas.addEventListener('pointerover', (e) => {
       console.log('pointerover');
     });
+    canvas.addEventListener('dragstart', (e) => {
+      console.log('dragstart');
+    });
+    canvas.addEventListener('drag', (e) => {
+      console.log('drag');
+    });
+    canvas.addEventListener('dragend', (e) => {
+      console.log('dragend');
+    });
 
-    circle.addEventListener('click', (e) => {
+    canvas.addEventListener('click', (e) => {
       console.log('click');
     });
   });

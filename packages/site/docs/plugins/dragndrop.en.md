@@ -221,3 +221,27 @@ gate.addEventListener('drop', function (e) {
     gateText.style.text = 'gate drop';
 });
 ```
+
+# Cautions
+
+## Event triggering sequence
+
+The `drag` series of events has a sequential triggering order with other interaction events. Take the `pointer` series of events as an example, in a typical drag and drop process, the following events are triggered in sequence.
+
+-   `pointerdown` press
+-   `pointermove * n` dragging a certain distance, and then the dragging process will be decided
+-   `dragstart` Start dragging
+-   `drag` Dragging in progress
+-   `pointermove`
+-   `drag` dragging
+-   `pointermove`
+-   `drag` dragging
+-   `pointermove`
+-   `dragend` end of drag
+-   `pointerup` lifting
+
+## Relationship to Click events
+
+In the Drag'n'drop implementation of HTML, only one `click` and `drag` event will be triggered at the same time: https://plnkr.co/edit/5mdl7oTg0dPWXIip
+
+We have also kept this setting in our implementation, so that `click` is not triggered after the `dragend` event is fired.

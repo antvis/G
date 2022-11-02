@@ -1,4 +1,4 @@
-import type { CanvasContext } from '@antv/g-lite';
+import type { CanvasContext, DisplayObject } from '@antv/g-lite';
 import { isMobile } from './util';
 
 const CLASSNAME_PREFIX = 'g-a11y-screen-reader';
@@ -31,6 +31,8 @@ export class AriaManager {
    */
   private hookDiv: HTMLElement;
 
+  private accessibleButtonMap = new WeakMap<DisplayObject, HTMLButtonElement>();
+
   private onKeyDown = (e: KeyboardEvent) => {
     if (e.keyCode !== KEY_CODE_TAB) {
       return;
@@ -62,7 +64,10 @@ export class AriaManager {
     const $parentElement = $domElement.parentNode;
 
     if ($parentElement) {
-      const div = (doc || document).createElement('div');
+      let div = $parentElement.querySelector<HTMLDivElement>(`#${CLASSNAME_PREFIX}-mask`);
+      if (!div) {
+        div = (doc || document).createElement('div');
+      }
 
       div.style.width = `${DIV_TOUCH_SIZE}px`;
       div.style.height = `${DIV_TOUCH_SIZE}px`;
@@ -86,6 +91,12 @@ export class AriaManager {
 
     globalThis.document.addEventListener('mousemove', this.onMouseMove, true);
     globalThis.removeEventListener('keydown', this.onKeyDown, false);
+
+    this.createOverlay();
+
+    this.context.renderingContext.root.forEach((object: DisplayObject) => {
+      this.createOrUpdateA11yDOM(object);
+    });
   }
 
   private stop() {
@@ -150,5 +161,84 @@ export class AriaManager {
     this.removeOverlay();
 
     globalThis.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  private dispatchEvent(e: UIEvent, types: string[]): void {
+    console.log(types);
+
+    // const { displayObject: target } = e.target as IAccessibleHTMLElement;
+    // const boundry = this.renderer.events.rootBoundary;
+    // const event: FederatedEvent = Object.assign(new FederatedEvent(boundry), { target });
+    // boundry.rootTarget = this.renderer.lastObjectRendered as DisplayObject;
+    // types.forEach((type) => boundry.dispatchEvent(event, type));
+  }
+
+  private onClick = (e: KeyboardEvent) => {
+    this.dispatchEvent(e, ['click', 'pointertap', 'tap']);
+  };
+
+  private onFocus = (e: FocusEvent) => {
+    const target = e.target as Element;
+    // @see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live
+    if (!target.getAttribute('aria-live')) {
+      target.setAttribute('aria-live', 'assertive');
+    }
+
+    this.dispatchEvent(e, ['mouseover']);
+  };
+
+  private onFocusOut = (e: FocusEvent) => {
+    const target = e.target as Element;
+    if (!target.getAttribute('aria-live')) {
+      target.setAttribute('aria-live', 'polite');
+    }
+
+    this.dispatchEvent(e, ['mouseout']);
+  };
+
+  createOrUpdateA11yDOM(object: DisplayObject) {
+    if (object.isVisible() && object.style.accessible) {
+      const { tabIndex, ariaLabel } = object.style;
+
+      let $div = this.accessibleButtonMap.get(object);
+      if (!$div) {
+        $div = document.createElement('button');
+
+        $div.style.width = `${DIV_TOUCH_SIZE}px`;
+        $div.style.height = `${DIV_TOUCH_SIZE}px`;
+        $div.style.backgroundColor = 'transparent';
+        $div.style.position = 'absolute';
+        $div.style.zIndex = DIV_TOUCH_ZINDEX.toString();
+        $div.style.borderStyle = 'none';
+
+        this.accessibleButtonMap.set(object, $div);
+
+        // trigger events
+        $div.addEventListener('click', this.onClick);
+        $div.addEventListener('focus', this.onFocus);
+        $div.addEventListener('focusout', this.onFocusOut);
+      }
+
+      // @see https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
+      $div.tabIndex = tabIndex;
+
+      // @see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label
+      $div.setAttribute('aria-label', ariaLabel);
+
+      this.$container.appendChild($div);
+    }
+  }
+
+  removeA11yDOM(object: DisplayObject) {
+    const $div = this.accessibleButtonMap.get(object);
+    if ($div) {
+      $div.removeEventListener('click', this.onClick);
+      $div.removeEventListener('focus', this.onFocus);
+      $div.removeEventListener('focusout', this.onFocusOut);
+
+      this.accessibleButtonMap.delete(object);
+
+      this.$container.removeChild($div);
+    }
   }
 }

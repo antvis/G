@@ -221,3 +221,27 @@ gate.addEventListener('drop', function (e) {
     gateText.style.text = 'gate drop';
 });
 ```
+
+# 注意事项
+
+## 事件触发顺序
+
+`drag` 系列事件与其它交互事件存在先后触发的顺序问题，以 `pointer` 系列事件为例，在一个典型的拖拽过程中，会依次触发以下事件：
+
+-   `pointerdown` 按下
+-   `pointermove * n` 拖动一定距离后判定通过，进入拖拽流程
+-   `dragstart` 开始拖拽
+-   `drag` 拖拽中
+-   `pointermove`
+-   `drag` 拖拽中
+-   `pointermove`
+-   `drag` 拖拽中
+-   `pointermove`
+-   `dragend` 拖拽结束
+-   `pointerup` 抬起
+
+## 与 Click 事件的关系
+
+在 HTML 的 Drag'n'drop 实现中，`click` 和 `drag` 事件同时只会触发一个：https://plnkr.co/edit/5mdl7oTg0dPWXIip
+
+我们在实现中也保留了这一设定，在触发 `dragend` 事件之后不会再触发 `click`。

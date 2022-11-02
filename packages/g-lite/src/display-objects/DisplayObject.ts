@@ -579,12 +579,6 @@ export class DisplayObject<
   ): IAnimation | null {
     const timeline = this.ownerDocument?.timeline;
 
-    // account for clip path, use target's timeline
-    // if (this.parsedStyle.clipPathTargets && this.parsedStyle.clipPathTargets.length) {
-    //   const target = this.parsedStyle.clipPathTargets[0];
-    //   timeline = target.ownerDocument?.timeline;
-    // }
-
     if (timeline) {
       return timeline.play(this as IElement, keyframes, options);
     }
