@@ -32,6 +32,7 @@
   "dependencies": {
     "@antv/util": "^3.2.4",
     "detect-browser": "^5.0.0",
+    "gl-matrix": "^3.1.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

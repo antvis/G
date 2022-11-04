@@ -17,7 +17,7 @@ export class A11yPlugin implements RenderingPlugin {
   private context: RenderingPluginContext;
 
   constructor(
-    private a11yPluginOptions: A11yPluginOptions,
+    private a11yPluginOptions: Partial<A11yPluginOptions>,
     private textExtractor: TextExtractor,
     private ariaManager: AriaManager,
   ) {}
