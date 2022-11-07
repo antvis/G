@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-webgl",
-  "version": "0.7.29",
+  "version": "0.7.30",
   "description": "A renderer implemented by WebGL1/2 in mobile environment",
   "keywords": [
     "antv",
@@ -30,12 +30,12 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.7.29",
-    "@antv/g-plugin-dragndrop": "^1.6.26",
-    "@antv/g-plugin-html-renderer": "^1.7.26",
-    "@antv/g-plugin-image-loader": "^1.1.27",
-    "@antv/g-plugin-mobile-interaction": "^0.7.26",
-    "@antv/g-plugin-webgl-device": "^1.7.26",
+    "@antv/g-plugin-device-renderer": "^1.7.30",
+    "@antv/g-plugin-dragndrop": "^1.6.27",
+    "@antv/g-plugin-html-renderer": "^1.7.27",
+    "@antv/g-plugin-image-loader": "^1.1.28",
+    "@antv/g-plugin-mobile-interaction": "^0.7.27",
+    "@antv/g-plugin-webgl-device": "^1.7.27",
     "@antv/util": "^3.2.4"
   },
   "devDependencies": {
