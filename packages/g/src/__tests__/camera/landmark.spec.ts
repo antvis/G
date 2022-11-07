@@ -29,7 +29,7 @@ const canvas = new Canvas({
 
 describe('Camera landmark', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

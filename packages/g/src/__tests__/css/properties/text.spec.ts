@@ -19,7 +19,7 @@ const canvas = new Canvas({
  */
 describe('CSSPropertyText', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

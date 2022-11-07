@@ -127,26 +127,39 @@ export class TextRenderer implements RendererContribution {
     if (alongPath) {
       const skPath = new CanvasKit.Path();
       const { path: parsedPath } = alongPath.parsedStyle as ParsedPathStyleProps;
-
-      const { curve, zCommandIndexes } = parsedPath;
-      const pathCommand = [...curve];
-      zCommandIndexes.forEach((zIndex, index) => {
-        // @ts-ignore
-        pathCommand.splice(zIndex + index + 1, 0, ['Z']);
-      });
-
-      for (let i = 0; i < pathCommand.length; i++) {
-        const params = pathCommand[i]; // eg. M 100 200
+      const { absolutePath, segments } = parsedPath;
+      for (let i = 0; i < absolutePath.length; i++) {
+        const params = absolutePath[i]; // eg. M 100 200
         const command = params[0];
         // V,H,S,T 都在前面被转换成标准形式
         switch (command) {
           case 'M':
             skPath.moveTo(params[1], params[2]);
             break;
+          case 'L':
+            skPath.lineTo(params[1], params[2]);
+            break;
+          case 'Q':
+            skPath.quadTo(params[1], params[2], params[3], params[4]);
+            break;
           case 'C':
             skPath.cubicTo(params[1], params[2], params[3], params[4], params[5], params[6]);
             break;
-          // @ts-ignore
+          case 'A': {
+            const arcParams = segments[i].arcParams;
+            const { rx, ry, sweepFlag } = arcParams;
+            const largeArcFlag = params[4];
+            skPath.arcToRotated(
+              rx,
+              ry,
+              params[3],
+              !largeArcFlag, // useSmallArc
+              !!(1 - sweepFlag),
+              params[6],
+              params[7],
+            );
+            break;
+          }
           case 'Z':
             skPath.close();
             break;

@@ -26,7 +26,7 @@ const canvas = new Canvas({
 
 describe('Text', () => {
   // afterEach(() => {
-  //   canvas.removeChildren();
+  //   canvas.destroyChildren();
   // });
 
   // afterAll(() => {

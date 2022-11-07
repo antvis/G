@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvaskit",
-  "version": "0.8.14",
+  "version": "0.8.15",
   "description": "A renderer implemented by CanvasKit",
   "keywords": [
     "antv",
@@ -32,12 +32,12 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-plugin-canvas-path-generator": "^1.1.26",
-    "@antv/g-plugin-canvas-picker": "^1.8.23",
-    "@antv/g-plugin-canvaskit-renderer": "^1.1.27",
-    "@antv/g-plugin-dom-interaction": "^1.7.26",
-    "@antv/g-plugin-html-renderer": "^1.7.26",
-    "@antv/g-plugin-image-loader": "^1.1.27",
+    "@antv/g-plugin-canvas-path-generator": "^1.1.27",
+    "@antv/g-plugin-canvas-picker": "^1.8.24",
+    "@antv/g-plugin-canvaskit-renderer": "^1.1.28",
+    "@antv/g-plugin-dom-interaction": "^1.7.27",
+    "@antv/g-plugin-html-renderer": "^1.7.27",
+    "@antv/g-plugin-image-loader": "^1.1.28",
     "@antv/util": "^3.2.4",
     "canvaskit-wasm": "^0.34.0",
     "tslib": "^2.3.1"

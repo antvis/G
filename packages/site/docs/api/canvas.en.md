@@ -436,11 +436,19 @@ To be consistent with the DOM API, just removing the object does not destroy it.
 
 ## removeChildren()
 
-Removes and destroys all objects in the canvas.
+Removes all objects in the canvas.
 
 ```js
 canvas.removeChildren();
 // or canvas.document.documentElement.removeChildren();
+```
+
+## destroyChildren()
+
+Removes and destroys all objects in the canvas.
+
+```js
+canvas.destroyChildren();
 ```
 
 # Modify the initialization configuration

@@ -433,11 +433,19 @@ canvas.removeChild(circle);
 
 ## removeChildren()
 
-移除并销毁画布中所有对象。
+移除画布中所有对象。
 
 ```js
 canvas.removeChildren();
 // or canvas.document.documentElement.removeChildren();
+```
+
+## destroyChildren()
+
+移除并销毁画布中所有对象。
+
+```js
+canvas.destroyChildren();
 ```
 
 # 修改初始化配置

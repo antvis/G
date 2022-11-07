@@ -1,4 +1,4 @@
-import type { AbsoluteArray, CurveArray } from '@antv/util';
+import type { AbsoluteArray } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
 import { Rectangle } from '../../shapes';
 import { Shape } from '../../types';
@@ -27,9 +27,8 @@ export class CSSPropertyPath
         segments: [],
         polygons: [],
         polylines: [],
-        curve: [] as unknown as CurveArray,
+        curve: null,
         totalLength: 0,
-        zCommandIndexes: [],
         rect: new Rectangle(0, 0, 0, 0),
       };
     }

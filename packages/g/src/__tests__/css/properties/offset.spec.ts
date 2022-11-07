@@ -20,7 +20,7 @@ const canvas = new Canvas({
  */
 describe('CSSPropertyOffsetDistance', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

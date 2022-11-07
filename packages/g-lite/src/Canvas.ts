@@ -404,8 +404,19 @@ export class Canvas extends EventTarget implements ICanvas {
   removeChild<T extends IChildNode>(child: T): T {
     return this.document.documentElement.removeChild(child);
   }
+
+  /**
+   * Remove all children which can be appended to its original parent later again.
+   */
   removeChildren() {
     this.document.documentElement.removeChildren();
+  }
+
+  /**
+   * Recursively destroy all children which can not be appended to its original parent later again.
+   */
+  destroyChildren() {
+    this.document.documentElement.destroyChildren();
   }
 
   render() {
@@ -520,67 +531,65 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   unmountChildren(parent: DisplayObject) {
+    // unmountChildren recursively
+    parent.childNodes.forEach((child: DisplayObject) => {
+      this.unmountChildren(child);
+    });
+
     if (this.inited) {
-      const path = [];
-      parent.forEach((child) => {
-        if (child.isConnected) {
-          path.push(child);
-        }
-      });
+      if (parent.isMutationObserved) {
+        parent.dispatchEvent(unmountedEvent);
+      } else {
+        unmountedEvent.target = parent;
+        this.dispatchEvent(unmountedEvent, true);
+      }
 
-      // unmount from leaf to root
-      path.reverse().forEach((child: DisplayObject) => {
-        // trigger before unmounted
-        if (child.isCustomElement) {
-          if ((child as CustomElement<any>).disconnectedCallback) {
-            (child as CustomElement<any>).disconnectedCallback();
-          }
-        }
+      // skip document.documentElement
+      if (parent !== this.document.documentElement) {
+        parent.ownerDocument = null;
+      }
+      parent.isConnected = false;
+    }
 
-        if (child.isMutationObserved) {
-          child.dispatchEvent(unmountedEvent);
-        } else {
-          unmountedEvent.target = child;
-          this.dispatchEvent(unmountedEvent, true);
-        }
-
-        // skip document.documentElement
-        if (child !== this.document.documentElement) {
-          child.ownerDocument = null;
-        }
-        child.isConnected = false;
-      });
+    // trigger after unmounted
+    if (parent.isCustomElement) {
+      if ((parent as CustomElement<any>).disconnectedCallback) {
+        (parent as CustomElement<any>).disconnectedCallback();
+      }
     }
   }
 
   mountChildren(parent: DisplayObject) {
     if (this.inited) {
-      parent.forEach((child: DisplayObject) => {
-        if (!child.isConnected) {
-          child.ownerDocument = this.document;
-          child.isConnected = true;
+      if (!parent.isConnected) {
+        parent.ownerDocument = this.document;
+        parent.isConnected = true;
 
-          if (child.isMutationObserved) {
-            child.dispatchEvent(mountedEvent);
-          } else {
-            mountedEvent.target = child;
-            this.dispatchEvent(mountedEvent, true);
-          }
-
-          // trigger after mounted
-          if (child.isCustomElement) {
-            if ((child as CustomElement<any>).connectedCallback) {
-              (child as CustomElement<any>).connectedCallback();
-            }
-          }
+        if (parent.isMutationObserved) {
+          parent.dispatchEvent(mountedEvent);
+        } else {
+          mountedEvent.target = parent;
+          this.dispatchEvent(mountedEvent, true);
         }
-      });
+      }
     } else {
       console.warn(
         "[g]: You are trying to call `canvas.appendChild` before canvas' initialization finished. You can either await `canvas.ready` or listen to `CanvasEvent.READY` manually.",
         'appended child: ',
         parent.nodeName,
       );
+    }
+
+    // recursively mount children
+    parent.childNodes.forEach((child: DisplayObject) => {
+      this.mountChildren(child);
+    });
+
+    // trigger after mounted
+    if (parent.isCustomElement) {
+      if ((parent as CustomElement<any>).connectedCallback) {
+        (parent as CustomElement<any>).connectedCallback();
+      }
     }
   }
 

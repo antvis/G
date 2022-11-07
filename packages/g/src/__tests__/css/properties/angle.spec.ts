@@ -32,7 +32,7 @@ interface AProps {
  */
 describe('CSSPropertyAngle', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

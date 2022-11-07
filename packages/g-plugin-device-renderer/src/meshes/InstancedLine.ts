@@ -95,7 +95,7 @@ export class InstancedLineMesh extends Instanced {
         totalLength = (object as Polyline).getTotalLength();
       } else if (object.nodeName === Shape.PATH) {
         const {
-          path: { curve },
+          path: { absolutePath },
           defX,
           defY,
           lineCap,
@@ -105,10 +105,10 @@ export class InstancedLineMesh extends Instanced {
           markerEndOffset,
         } = (object as Path).parsedStyle;
         parsedLineStyleProps = {
-          x1: curve[0][1],
-          y1: curve[0][2],
-          x2: curve[1][5],
-          y2: curve[1][6],
+          x1: absolutePath[0][1],
+          y1: absolutePath[0][2],
+          x2: absolutePath[1][1],
+          y2: absolutePath[1][2],
           z1: 0,
           z2: 0,
           defX,
@@ -288,7 +288,7 @@ export class InstancedLineMesh extends Instanced {
           object.renderable.proxyNodeName === Shape.LINE
         ) {
           const {
-            path: { curve },
+            path: { absolutePath },
             defX,
             defY,
             lineCap,
@@ -298,10 +298,10 @@ export class InstancedLineMesh extends Instanced {
             markerEndOffset,
           } = (object as Path).parsedStyle;
           parsedLineStyleProps = {
-            x1: curve[0][1],
-            y1: curve[0][2],
-            x2: curve[1][5],
-            y2: curve[1][6],
+            x1: absolutePath[0][1],
+            y1: absolutePath[0][2],
+            x2: absolutePath[1][1],
+            y2: absolutePath[1][2],
             z1: 0,
             z2: 0,
             defX,

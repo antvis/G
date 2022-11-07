@@ -466,7 +466,7 @@ const canvas = new Canvas({
 
 describe('Use sector as a clipPath', () => {
   // afterEach(() => {
-  //   canvas.removeChildren();
+  //   canvas.destroyChildren();
   // });
 
   // afterAll(() => {

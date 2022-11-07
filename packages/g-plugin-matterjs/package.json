@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-matterjs",
-  "version": "1.7.26",
+  "version": "1.7.27",
   "description": "A G plugin for matter.js physics engine",
   "keywords": [
     "antv",
@@ -30,6 +30,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
+    "gl-matrix": "^3.1.0",
     "matter-js": "^0.18.0",
     "tslib": "^2.3.1"
   },

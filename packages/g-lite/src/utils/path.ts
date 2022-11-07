@@ -21,6 +21,7 @@ import type {
 } from '../display-objects';
 import { Shape } from '../types';
 import { deg2rad } from './math';
+import type { PointLike } from '../shapes';
 
 export function getOrCalculatePathTotalLength(path: Path) {
   if (path.parsedStyle.path.totalLength === 0) {
@@ -229,6 +230,152 @@ function toSymmetry(point: number[], center: number[]) {
   return [center[0] + (center[0] - point[0]), center[1] + (center[1] - point[1])];
 }
 
+const angleBetween = (v0: PointLike, v1: PointLike) => {
+  const p = v0.x * v1.x + v0.y * v1.y;
+  const n = Math.sqrt(
+    (Math.pow(v0.x, 2) + Math.pow(v0.y, 2)) * (Math.pow(v1.x, 2) + Math.pow(v1.y, 2)),
+  );
+  const sign = v0.x * v1.y - v0.y * v1.x < 0 ? -1 : 1;
+  const angle = sign * Math.acos(p / n);
+
+  return angle;
+};
+interface PointOnEllipticalArc {
+  x: number;
+  y: number;
+  ellipticalArcAngle: number;
+}
+/**
+ * @see https://github.com/rveciana/svg-path-properties/blob/b6bd9a322966f6ef7a311872d80c56e3718de861/src/arc.ts#L121
+ */
+const pointOnEllipticalArc = (
+  p0: PointLike,
+  rx: number,
+  ry: number,
+  xAxisRotation: number,
+  largeArcFlag: boolean,
+  sweepFlag: boolean,
+  p1: PointLike,
+  t: number,
+): PointOnEllipticalArc => {
+  // In accordance to: http://www.w3.org/TR/SVG/implnote.html#ArcOutOfRangeParameters
+  rx = Math.abs(rx);
+  ry = Math.abs(ry);
+  xAxisRotation = mod(xAxisRotation, 360);
+  const xAxisRotationRadians = deg2rad(xAxisRotation);
+  // If the endpoints are identical, then this is equivalent to omitting the elliptical arc segment entirely.
+  if (p0.x === p1.x && p0.y === p1.y) {
+    return { x: p0.x, y: p0.y, ellipticalArcAngle: 0 }; // Check if angle is correct
+  }
+
+  // If rx = 0 or ry = 0 then this arc is treated as a straight line segment joining the endpoints.
+  if (rx === 0 || ry === 0) {
+    //return this.pointOnLine(p0, p1, t);
+    return { x: 0, y: 0, ellipticalArcAngle: 0 }; // Check if angle is correct
+  }
+
+  // Following "Conversion from endpoint to center parameterization"
+  // http://www.w3.org/TR/SVG/implnote.html#ArcConversionEndpointToCenter
+
+  // Step #1: Compute transformedPoint
+  const dx = (p0.x - p1.x) / 2;
+  const dy = (p0.y - p1.y) / 2;
+  const transformedPoint = {
+    x: Math.cos(xAxisRotationRadians) * dx + Math.sin(xAxisRotationRadians) * dy,
+    y: -Math.sin(xAxisRotationRadians) * dx + Math.cos(xAxisRotationRadians) * dy,
+  };
+  // Ensure radii are large enough
+  const radiiCheck =
+    Math.pow(transformedPoint.x, 2) / Math.pow(rx, 2) +
+    Math.pow(transformedPoint.y, 2) / Math.pow(ry, 2);
+  if (radiiCheck > 1) {
+    rx = Math.sqrt(radiiCheck) * rx;
+    ry = Math.sqrt(radiiCheck) * ry;
+  }
+
+  // Step #2: Compute transformedCenter
+  const cSquareNumerator =
+    Math.pow(rx, 2) * Math.pow(ry, 2) -
+    Math.pow(rx, 2) * Math.pow(transformedPoint.y, 2) -
+    Math.pow(ry, 2) * Math.pow(transformedPoint.x, 2);
+  const cSquareRootDenom =
+    Math.pow(rx, 2) * Math.pow(transformedPoint.y, 2) +
+    Math.pow(ry, 2) * Math.pow(transformedPoint.x, 2);
+  let cRadicand = cSquareNumerator / cSquareRootDenom;
+  // Make sure this never drops below zero because of precision
+  cRadicand = cRadicand < 0 ? 0 : cRadicand;
+  const cCoef = (largeArcFlag !== sweepFlag ? 1 : -1) * Math.sqrt(cRadicand);
+  const transformedCenter = {
+    x: cCoef * ((rx * transformedPoint.y) / ry),
+    y: cCoef * (-(ry * transformedPoint.x) / rx),
+  };
+
+  // Step #3: Compute center
+  const center = {
+    x:
+      Math.cos(xAxisRotationRadians) * transformedCenter.x -
+      Math.sin(xAxisRotationRadians) * transformedCenter.y +
+      (p0.x + p1.x) / 2,
+    y:
+      Math.sin(xAxisRotationRadians) * transformedCenter.x +
+      Math.cos(xAxisRotationRadians) * transformedCenter.y +
+      (p0.y + p1.y) / 2,
+  };
+
+  // Step #4: Compute start/sweep angles
+  // Start angle of the elliptical arc prior to the stretch and rotate operations.
+  // Difference between the start and end angles
+  const startVector = {
+    x: (transformedPoint.x - transformedCenter.x) / rx,
+    y: (transformedPoint.y - transformedCenter.y) / ry,
+  };
+  const startAngle = angleBetween(
+    {
+      x: 1,
+      y: 0,
+    },
+    startVector,
+  );
+
+  const endVector = {
+    x: (-transformedPoint.x - transformedCenter.x) / rx,
+    y: (-transformedPoint.y - transformedCenter.y) / ry,
+  };
+  let sweepAngle = angleBetween(startVector, endVector);
+
+  if (!sweepFlag && sweepAngle > 0) {
+    sweepAngle -= 2 * Math.PI;
+  } else if (sweepFlag && sweepAngle < 0) {
+    sweepAngle += 2 * Math.PI;
+  }
+  // We use % instead of `mod(..)` because we want it to be -360deg to 360deg(but actually in radians)
+  sweepAngle %= 2 * Math.PI;
+
+  // From http://www.w3.org/TR/SVG/implnote.html#ArcParameterizationAlternatives
+  const angle = startAngle + sweepAngle * t;
+  const ellipseComponentX = rx * Math.cos(angle);
+  const ellipseComponentY = ry * Math.sin(angle);
+
+  const point = {
+    x:
+      Math.cos(xAxisRotationRadians) * ellipseComponentX -
+      Math.sin(xAxisRotationRadians) * ellipseComponentY +
+      center.x,
+    y:
+      Math.sin(xAxisRotationRadians) * ellipseComponentX +
+      Math.cos(xAxisRotationRadians) * ellipseComponentY +
+      center.y,
+    ellipticalArcStartAngle: startAngle,
+    ellipticalArcEndAngle: startAngle + sweepAngle,
+    ellipticalArcAngle: angle,
+    ellipticalArcCenter: center,
+    resultantRx: rx,
+    resultantRy: ry,
+  };
+
+  return point;
+};
+
 export function path2Segments(path: AbsoluteArray): PathSegment[] {
   const segments = [];
   let currentPoint = null; // 当前图形
@@ -241,7 +388,7 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
     nextParams = path[i + 1];
     const command = params[0];
     // 数学定义上的参数，便于后面的计算
-    const segment = {
+    const segment: PathSegment = {
       command,
       prePoint: currentPoint,
       params,
@@ -250,6 +397,7 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
       currentPoint: null,
       nextPoint: null,
       arcParams: null,
+      box: null,
     };
     switch (command) {
       case 'M':
@@ -291,7 +439,7 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
     const nextPoint = nextParams
       ? [nextParams[nextParams.length - 2], nextParams[nextParams.length - 1]]
       : null;
-    segment.nextPoint = nextPoint;
+    segment.nextPoint = nextPoint as [number, number];
     // Add startTangent and endTangent
     const { prePoint } = segment;
     if (['L', 'H', 'V'].includes(command)) {
@@ -345,29 +493,49 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
         segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
       }
     } else if (command === 'A') {
-      let d = 0.001;
-      const {
-        cx = 0,
-        cy = 0,
-        rx = 0,
-        ry = 0,
-        sweepFlag = 0,
-        startAngle = 0,
-        endAngle = 0,
-      } = segment.arcParams || {};
-      if (sweepFlag === 0) {
-        d *= -1;
-      }
-      const dx1 = rx * Math.cos(startAngle - d) + cx;
-      const dy1 = ry * Math.sin(startAngle - d) + cy;
-      segment.startTangent = [dx1 - startMovePoint[0], dy1 - startMovePoint[1]];
-      const dx2 = rx * Math.cos(startAngle + endAngle + d) + cx;
-      const dy2 = ry * Math.sin(startAngle + endAngle - d) + cy;
-      segment.endTangent = [prePoint[0] - dx2, prePoint[1] - dy2];
+      const { x: dx1, y: dy1 } = getTangentAtRatio(segment, 0);
+      const { x: dx2, y: dy2 } = getTangentAtRatio(segment, 1, false);
+
+      segment.startTangent = [dx1, dy1];
+      segment.endTangent = [dx2, dy2];
     }
     segments.push(segment);
   }
   return segments;
+}
+
+/**
+ * Use length instead of ratio
+ */
+function getTangentAtRatio(segment: PathSegment, ratio: number, sign = true) {
+  const { rx = 0, ry = 0, xRotation, arcFlag, sweepFlag } = segment.arcParams;
+  const p1 = pointOnEllipticalArc(
+    { x: segment.prePoint[0], y: segment.prePoint[1] },
+    rx,
+    ry,
+    xRotation,
+    !!arcFlag,
+    !!sweepFlag,
+    { x: segment.currentPoint[0], y: segment.currentPoint[1] },
+    ratio,
+  );
+
+  const p2 = pointOnEllipticalArc(
+    { x: segment.prePoint[0], y: segment.prePoint[1] },
+    rx,
+    ry,
+    xRotation,
+    !!arcFlag,
+    !!sweepFlag,
+    { x: segment.currentPoint[0], y: segment.currentPoint[1] },
+    sign ? ratio + 0.005 : ratio - 0.005,
+  );
+
+  const xDist = p2.x - p1.x;
+  const yDist = p2.y - p1.y;
+
+  const dist = Math.sqrt(xDist * xDist + yDist * yDist);
+  return { x: -xDist / dist, y: -yDist / dist };
 }
 
 // 向量长度
@@ -497,6 +665,14 @@ function commandsToPathString(
         vec3.transformMat4(c, c, transform);
       }
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
+    } else if (cur[0] === 'Q') {
+      const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
+      const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
+      if (transform) {
+        vec3.transformMat4(p1, p1, transform);
+        vec3.transformMat4(p2, p2, transform);
+      }
+      path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]}}`;
     }
 
     return (prev += path);
@@ -628,13 +804,8 @@ export function convertToPath(
       );
       break;
     case Shape.PATH:
-      const { curve, zCommandIndexes } = (object as Path).parsedStyle.path;
-
-      commands = [...curve];
-      zCommandIndexes.forEach((zIndex, index) => {
-        commands.splice(zIndex + index + 1, 0, ['Z']);
-      });
-
+      const { absolutePath } = (object as Path).parsedStyle.path;
+      commands = [...absolutePath];
       break;
   }
 
@@ -644,39 +815,64 @@ export function convertToPath(
 }
 
 export function translatePathToString(
-  pathArray: AbsoluteArray,
-  x: number,
-  y: number,
+  absolutePath: AbsoluteArray,
+  defX: number,
+  defY: number,
   startOffsetX = 0,
   startOffsetY = 0,
   endOffsetX = 0,
   endOffsetY = 0,
 ) {
-  const newValue = pathArray
+  const newValue = absolutePath
     .map((params, i) => {
       const command = params[0];
-
-      const isClosed = pathArray[pathArray.length - 1][0] === 'Z';
-      const offsetX = i === pathArray.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
-      const offsetY = i === pathArray.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
+      const nextSegment = absolutePath[i + 1];
+      const useStartOffset = i === 0 && startOffsetX !== 0 && startOffsetY !== 0;
+      const useEndOffset =
+        (i === absolutePath.length - 1 ||
+          (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
+        endOffsetX !== 0 &&
+        endOffsetY !== 0;
 
       switch (command) {
         case 'M':
-          return `M ${params[1]! - x + startOffsetX},${params[2]! - y + startOffsetY}`;
+          // Use start marker offset
+          if (useStartOffset) {
+            return `M ${params[1] - defX + startOffsetX},${params[2] - defY + startOffsetY} L ${
+              params[1] - defX
+            },${params[2] - defY}`;
+          } else {
+            return `M ${params[1] - defX},${params[2] - defY}`;
+          }
         case 'L':
-          return `L ${params[1]! - x + offsetX},${params[2]! - y + offsetY}`;
-        case 'Q':
-          return `Q ${params[1]! - x} ${params[2]! - y},${params[3]! - x + offsetX} ${
-            params[4]! - y + offsetY
+          return `L ${params[1] - defX + (useEndOffset ? endOffsetX : 0)},${
+            params[2] - defY + (useEndOffset ? endOffsetY : 0)
           }`;
+        case 'Q':
+          return (
+            `Q ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${params[4] - defY}` +
+            (useEndOffset
+              ? ` L ${params[3] - defX + endOffsetX},${params[4] - defY + endOffsetY}`
+              : '')
+          );
         case 'C':
-          return `C ${params[1]! - x} ${params[2]! - y},${params[3]! - x} ${params[4]! - y},${
-            params[5]! - x + offsetX
-          } ${params[6]! - y + offsetY}`;
+          return (
+            `C ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${params[4] - defY},${
+              params[5] - defX
+            } ${params[6] - defY}` +
+            (useEndOffset
+              ? ` L ${params[5] - defX + endOffsetX},${params[6] - defY + endOffsetY}`
+              : '')
+          );
         case 'A':
-          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${
-            params[6]! - x + offsetX
-          } ${params[7]! - y + offsetY}`;
+          return (
+            `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${
+              params[6] - defX
+            } ${params[7] - defY}` +
+            (useEndOffset
+              ? ` L ${params[6] - defX + endOffsetX},${params[7] - defY + endOffsetY}`
+              : '')
+          );
         case 'Z':
           return 'Z';
         default:

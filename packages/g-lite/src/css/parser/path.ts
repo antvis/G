@@ -1,4 +1,5 @@
 import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
+import { path2Curve } from '@antv/util';
 import {
   clonePath,
   equalizeSegments,
@@ -7,7 +8,6 @@ import {
   isString,
   memoize,
   normalizePath,
-  path2Curve,
   reverseCurve,
 } from '@antv/util';
 import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
@@ -23,9 +23,8 @@ const internalParsePath = (path: string | PathArray) => {
       segments: [],
       polygons: [],
       polylines: [],
-      curve: [],
+      curve: null,
       totalLength: 0,
-      zCommandIndexes: [],
       rect: {
         x: 0,
         y: 0,
@@ -47,10 +46,6 @@ const internalParsePath = (path: string | PathArray) => {
 
   const { polygons, polylines } = extractPolygons(absolutePath);
 
-  // convert to curves to do morphing & picking later
-  // @see http://thednp.github.io/kute.js/svgCubicMorph.html
-  const [curve, zCommandIndexes] = path2Curve(absolutePath, true) as [CurveArray, number[]];
-
   // for later use
   const segments = path2Segments(absolutePath);
 
@@ -63,10 +58,9 @@ const internalParsePath = (path: string | PathArray) => {
     segments,
     polygons,
     polylines,
-    curve,
+    // curve,
     // Delay the calculation of length.
     totalLength: 0,
-    zCommandIndexes,
     rect: {
       x: Number.isFinite(x) ? x : 0,
       y: Number.isFinite(y) ? y : 0,
@@ -99,8 +93,19 @@ export function mergePaths(
   right: ParsedPathStyleProps['path'],
   object: IElement,
 ): [CurveArray, CurveArray, (b: CurveArray) => CurveArray] {
-  const curve1 = left.curve;
-  const curve2 = right.curve;
+  let curve1 = left.curve;
+  let curve2 = right.curve;
+  if (!curve1 || curve1.length === 0) {
+    // convert to curves to do morphing & picking later
+    // @see http://thednp.github.io/kute.js/svgCubicMorph.html
+    curve1 = path2Curve(left.absolutePath, false) as CurveArray;
+    left.curve = curve1;
+  }
+  if (!curve2 || curve2.length === 0) {
+    curve2 = path2Curve(right.absolutePath, false) as CurveArray;
+    right.curve = curve2;
+  }
+
   let curves = [curve1, curve2];
   if (curve1.length !== curve2.length) {
     curves = equalizeSegments(curve1, curve2);

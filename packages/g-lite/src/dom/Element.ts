@@ -5,7 +5,11 @@ import { Strategy } from '../components';
 import { unsetKeywordValue } from '../css/CSSStyleValuePool';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { ERROR_MSG_METHOD_NOT_IMPLEMENTED, formatAttributeName } from '../utils';
+import {
+  ERROR_MSG_APPEND_DESTROYED_ELEMENT,
+  ERROR_MSG_METHOD_NOT_IMPLEMENTED,
+  formatAttributeName,
+} from '../utils';
 import { CustomEvent } from './CustomEvent';
 import type { IChildNode, ICSSStyleDeclaration, IElement, IEventTarget, INode } from './interfaces';
 import { ElementEvent } from './interfaces';
@@ -186,6 +190,10 @@ export class Element<
   }
 
   appendChild<T extends INode>(child: T, index?: number): T {
+    if ((child as unknown as Element).destroyed) {
+      throw new Error(ERROR_MSG_APPEND_DESTROYED_ELEMENT);
+    }
+
     runtime.sceneGraphService.attach(child, this, index);
 
     if (this.ownerDocument?.defaultView) {
@@ -230,11 +238,20 @@ export class Element<
   }
 
   /**
-   * Remove all children and destroy them.
+   * Remove all children which can be appended to its original parent later again.
    */
   removeChildren() {
     this.childNodes.slice().forEach((child) => {
       this.removeChild(child);
+    });
+  }
+
+  /**
+   * Recursively destroy all children which can not be appended to its original parent later again.
+   */
+  destroyChildren() {
+    this.childNodes.slice().forEach((child: this) => {
+      child.destroyChildren();
       child.destroy();
     });
   }

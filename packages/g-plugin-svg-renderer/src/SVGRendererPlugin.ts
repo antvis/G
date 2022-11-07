@@ -280,7 +280,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
           const $useRefs = this.clipPathUseMap.get(object);
           if ($useRefs && $useRefs.length) {
             $useRefs.forEach(($use) => {
-              this.applyTransform($use, localTransform);
+              // <clipPath transform="matrix()"><circle /></clipPath>
+              this.applyTransform($use, object.getWorldTransform());
+              // const parentInvert = mat4.invert(
+              //   mat4.create(),
+              //   (object as DisplayObject).getWorldTransform(),
+              // );
+              // this.applyTransform($clipPath, parentInvert);
             });
           }
 

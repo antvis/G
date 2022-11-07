@@ -12,14 +12,14 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    const textExtractor = new TextExtractor(this.context);
-    const ariaManager = new AriaManager(this.context);
-
-    const a11yPluginOptions = {
+    const a11yPluginOptions: Partial<A11yPluginOptions> = {
       enableExtractingText: false,
       enableARIA: true,
       ...this.options,
     };
+
+    const textExtractor = new TextExtractor(this.context);
+    const ariaManager = new AriaManager(this.context, a11yPluginOptions);
 
     this.addRenderingPlugin(new A11yPlugin(a11yPluginOptions, textExtractor, ariaManager));
   }

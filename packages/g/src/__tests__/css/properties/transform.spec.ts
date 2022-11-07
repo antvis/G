@@ -20,7 +20,7 @@ const canvas = new Canvas({
  */
 describe('CSSPropertyTransform', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

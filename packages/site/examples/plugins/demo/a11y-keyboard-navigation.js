@@ -38,6 +38,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 const plugin = new Plugin({
   enableExtractingText: true,
+  containerAriaLabel: 'D3 barchart',
 });
 canvasRenderer.registerPlugin(plugin);
 svgRenderer.registerPlugin(plugin);
@@ -115,6 +116,9 @@ const drawBars = async () => {
     .attr('width', (d) => d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]))
     .attr('height', (d) => dimensions.boundedHeight - yScale(yAccessor(d)))
     .attr('fill', 'cornflowerblue')
+    .attr('accessible', true)
+    .attr('tab-index', 0)
+    .attr('aria-label', yAccessor)
     .on('mouseenter', function (e) {
       d3.select(e.target).attr('fill', 'red');
     })

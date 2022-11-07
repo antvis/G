@@ -1,5 +1,5 @@
 import type { DisplayObjectConfig } from '@antv/g';
-import { Canvas, Circle, CustomElement } from '@antv/g';
+import { Canvas, Circle, Text, CustomElement } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
@@ -38,7 +38,7 @@ interface BProps {
 
 describe('CustomElement', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {
@@ -58,6 +58,14 @@ describe('CustomElement', () => {
           id: 'circle',
           style: { r: options.style?.size || 0, fill: 'red' },
         });
+        const text = new Text({
+          style: {
+            text: 'A',
+            fill: 'red',
+          },
+        });
+
+        circle.appendChild(text);
         this.appendChild(circle);
       }
       connectedCallback() {

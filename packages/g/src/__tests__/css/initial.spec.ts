@@ -30,7 +30,7 @@ const canvas = new Canvas({
  */
 describe('StyleValueRegistry initialization', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {
