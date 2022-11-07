@@ -43,7 +43,7 @@ const BUBBLING_PHASE = 3;
 
 describe('Event API', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

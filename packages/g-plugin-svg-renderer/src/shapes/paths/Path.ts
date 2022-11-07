@@ -30,7 +30,6 @@ export function updatePathElementAttribute($el: SVGElement, parsedStyle: ParsedP
     startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
-  let useMarkerEnd = false;
   if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
     const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
     x = p1[0] - p2[0];
@@ -38,13 +37,12 @@ export function updatePathElementAttribute($el: SVGElement, parsedStyle: ParsedP
     rad = Math.atan2(y, x);
     endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
     endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
-    useMarkerEnd = true;
   }
 
   $el.setAttribute(
     'd',
     translatePathToString(
-      !useMarkerEnd ? path.absolutePath : path.curve,
+      path.absolutePath,
       defX,
       defY,
       startOffsetX,

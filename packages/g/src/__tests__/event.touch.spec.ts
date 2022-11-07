@@ -32,7 +32,7 @@ const canvas = new Canvas({
 
 describe('Event API', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

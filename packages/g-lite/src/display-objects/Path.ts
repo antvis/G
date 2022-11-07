@@ -74,7 +74,6 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
     polylines: [number, number][][];
     curve: CurveArray;
     totalLength: number;
-    zCommandIndexes: number[];
     rect: Rectangle;
   };
   d?: {
@@ -85,7 +84,6 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
     polylines: [number, number][][];
     curve: CurveArray;
     totalLength: number;
-    zCommandIndexes: number[];
     rect: Rectangle;
   };
   markerStart?: DisplayObject;
@@ -229,7 +227,6 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       marker.remove();
     });
     if (marker && marker instanceof DisplayObject) {
-      // FIXME: should use original path instead of parsed curve
       for (let i = 1; i < segments.length - 1; i++) {
         const [ox, oy] = segments[i].currentPoint;
         const cloned = i === 1 ? marker : marker.cloneNode(true);

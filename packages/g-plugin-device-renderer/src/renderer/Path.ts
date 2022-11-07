@@ -57,19 +57,12 @@ export class PathRenderer extends Batch {
   private isLine(object: DisplayObject) {
     if (object.nodeName === Shape.PATH) {
       const {
-        path: { curve },
+        path: { absolutePath },
       } = object.parsedStyle as ParsedPathStyleProps;
 
-      const eps = 0.01;
       // only contains M & L commands
-      if (curve.length === 2 && curve[0][0] === 'M' && curve[1][0] === 'C') {
-        const [, p1x, p1y] = curve[0];
-        const [, cpx1, cpy1, cpx2, cpy2, p2x, p2y] = curve[1];
-        const tangent = (p1x - p2x) / (p1y - p2y);
-
-        return (
-          (p1x - cpx1) / (p1y - cpy1) - tangent < eps && (cpx2 - p2x) / (cpy2 - p2y) - tangent < eps
-        );
+      if (absolutePath.length === 2 && absolutePath[0][0] === 'M' && absolutePath[1][0] === 'L') {
+        return true;
       }
     } else if (object.nodeName === Shape.POLYLINE) {
       const {

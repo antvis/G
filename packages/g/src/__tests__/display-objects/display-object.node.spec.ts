@@ -26,7 +26,7 @@ const canvas = new Canvas({
 
 describe('DisplayObject Node API', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {
@@ -265,12 +265,15 @@ describe('DisplayObject Node API', () => {
 
     group1.removeChildren();
     expect(group1.children.length).to.be.eqls(0);
+    expect(group2.destroyed).to.be.false;
+    expect(group3.destroyed).to.be.false;
 
     group1.appendChild(group2);
     group2.appendChild(group3);
     group1.appendChild(group4);
     // remove
     group4.remove();
+    expect(group4.destroyed).to.be.false;
     expect(group1.children.length).to.be.eqls(1);
 
     // re-append
@@ -285,6 +288,39 @@ describe('DisplayObject Node API', () => {
     group1.appendChild(group4);
     [...group1.children].forEach((child) => child.remove());
     expect(group1.children.length).to.be.eqls(0);
+  });
+
+  it('should destroy children recursively', () => {
+    const group1 = new Group({
+      id: 'id1',
+      name: 'group1',
+    });
+    const group2 = new Group({
+      id: 'id2',
+      name: 'group2',
+    });
+    const group3 = new Group({
+      id: 'id3',
+      name: 'group3',
+    });
+    const group4 = new Group({
+      id: 'id4',
+      name: 'group4',
+      className: 'className4',
+    });
+
+    // 1 -> 2 -> 3
+    // 1 -> 4
+    group1.appendChild(group2);
+    group2.appendChild(group3);
+    group1.appendChild(group4);
+
+    group1.destroyChildren();
+    expect(group1.children.length).to.be.eqls(0);
+    expect(group1.destroyed).to.be.false;
+    expect(group2.destroyed).to.be.true;
+    expect(group3.destroyed).to.be.true;
+    expect(group4.destroyed).to.be.true;
   });
 
   it('should set attr & style correctly', () => {

@@ -18,7 +18,7 @@ const canvas = new Canvas({
 
 describe('Mixin Visible', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

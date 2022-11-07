@@ -1427,7 +1427,7 @@ circle.ownerDocument; // canvas.document
 
 Used to determine if a graph has been destroyed.
 
-By calling `destroy()` to actively destroy itself, or the parent node by `removeChildren()` to actively remove and destroy all children, etc.
+By calling `destroy()` to actively destroy itself, or the parent node by `destroyChildren()` to actively remove and destroy all children, etc.
 
 ```js
 circle.destroyed; // false

@@ -26,7 +26,7 @@ const canvas = new Canvas({
 
 describe('Animation Timeline', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

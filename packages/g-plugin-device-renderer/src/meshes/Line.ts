@@ -10,14 +10,13 @@ import type {
   Tuple4Number,
 } from '@antv/g-lite';
 import { convertToPath, CSSRGB, DisplayObject, parsePath, Shape } from '@antv/g-lite';
-import { Cubic as CubicUtil } from '@antv/g-math';
-import type { CurveArray } from '@antv/util';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
+import { bezierCurveTo, quadCurveTo } from '../utils';
 import { enumToObject } from '../utils/enum';
 import { Instanced } from './Instanced';
 
@@ -374,69 +373,6 @@ export class LineMesh extends Instanced {
   }
 }
 
-function curveTo(
-  cpX: number,
-  cpY: number,
-  cpX2: number,
-  cpY2: number,
-  toX: number,
-  toY: number,
-  points: number[],
-): void {
-  const fromX = points[points.length - 2];
-  const fromY = points[points.length - 1];
-
-  points.length -= 2;
-
-  const l = CubicUtil.length(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY);
-  const n = segmentsCount(l);
-
-  let dt = 0;
-  let dt2 = 0;
-  let dt3 = 0;
-  let t2 = 0;
-  let t3 = 0;
-
-  points.push(fromX, fromY);
-
-  for (let i = 1, j = 0; i <= n; ++i) {
-    j = i / n;
-
-    dt = 1 - j;
-    dt2 = dt * dt;
-    dt3 = dt2 * dt;
-
-    t2 = j * j;
-    t3 = t2 * j;
-
-    points.push(
-      dt3 * fromX + 3 * dt2 * j * cpX + 3 * dt * t2 * cpX2 + t3 * toX,
-      dt3 * fromY + 3 * dt2 * j * cpY + 3 * dt * t2 * cpY2 + t3 * toY,
-    );
-  }
-}
-
-// const adaptive = true;
-const maxLength = 10;
-const minSegments = 8;
-const maxSegments = 2048;
-
-function segmentsCount(length: number, defaultSegments = 20) {
-  // if (!adaptive || !length || isNaN(length)) {
-  //   return defaultSegments;
-  // }
-
-  let result = Math.ceil(length / maxLength);
-
-  if (result < minSegments) {
-    result = minSegments;
-  } else if (result > maxSegments) {
-    result = maxSegments;
-  }
-
-  return result;
-}
-
 export function updateBuffer(object: DisplayObject, needEarcut = false) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
@@ -530,14 +466,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     } else {
       path = object.parsedStyle.path;
     }
-    const { zCommandIndexes } = path;
-
-    const curve = [...path.curve].map((c, i) =>
-      zCommandIndexes.includes(i) ? ['Z'] : c,
-    ) as CurveArray;
-
-    // @ts-ignore
-    const isClosed = curve.length && curve[curve.length - 1][0] === 'Z';
+    const { absolutePath } = path;
+    const isClosed = absolutePath.length && absolutePath[absolutePath.length - 1][0] === 'Z';
 
     let startOffsetX = 0;
     let startOffsetY = 0;
@@ -569,18 +499,41 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
 
     let startPointIndex = -1;
     let mCommandsNum = -1;
-    curve.forEach(([command, ...params], i) => {
+    absolutePath.forEach(([command, ...params], i) => {
       if (command === 'M') {
         mCommandsNum++;
         points[mCommandsNum] = [];
         startPointIndex = points[mCommandsNum].length;
         points[mCommandsNum].push(params[0] - defX + startOffsetX, params[1] - defY + startOffsetY);
+      } else if (command === 'L') {
+        // lineTo(params[0] - defX, params[1] - defY, points[mCommandsNum]);
+        points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+      } else if (command === 'Q') {
+        quadCurveTo(
+          params[0] - defX,
+          params[1] - defY,
+          params[2] - defX,
+          params[3] - defY,
+          points[mCommandsNum],
+        );
+      } else if (command === 'A') {
+        // convert to cubic first
+        // segmentToCubic
+        // arcTo(
+        //   params[0] - defX,
+        //   params[1] - defY,
+        //   params[2] - defX,
+        //   params[3] - defY,
+        //   params[4] - defX + offsetX,
+        //   params[5] - defY + offsetY,
+        //   points[mCommandsNum],
+        // );
       } else if (command === 'C') {
         // the last C command
-        const offsetX = i === curve.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
-        const offsetY = i === curve.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
+        const offsetX = i === absolutePath.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
+        const offsetY = i === absolutePath.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
 
-        curveTo(
+        bezierCurveTo(
           params[0] - defX,
           params[1] - defY,
           params[2] - defX,

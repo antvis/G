@@ -1271,7 +1271,7 @@ solarSystem.findAll((element) => element.style.r === 25);
 | after | `...nodes: DisplayObject[]` |  | 在当前节点之后批量添加一些兄弟节点 |
 | before | `...nodes: DisplayObject[]` |  | 在当前节点之前批量添加一些兄弟节点 |
 | removeChild | `child: DisplayObject` | `DisplayObject` | 删除子节点，返回被删除的节点。 |
-| removeChildren |  |  | 删除并销毁全部子节点。 |
+| removeChildren |  |  | 删除全部子节点。 |
 | remove | `destroy = true` | `DisplayObject` | 从父节点（如有）中移除自身，`destroy` 表示是否要销毁 |
 | replaceChild | `child: DisplayObject` | `DisplayObject` | 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点 |
 | replaceWith | `...nodes: DisplayObject[]` |  | 在父节点的子节点列表中，用传入的节点列表替换该节点 |
@@ -1439,7 +1439,7 @@ circle.ownerDocument; // canvas.document
 
 用于判断一个图形是否已经被销毁。
 
-通过调用 `destroy()` 主动销毁自身，或者父节点通过 `removeChildren()` 主动移除并销毁所有子节点等：
+通过调用 `destroy()` 主动销毁自身，或者父节点通过 `destroyChildren()` 主动移除并销毁所有子节点等：
 
 ```js
 circle.destroyed; // false

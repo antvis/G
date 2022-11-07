@@ -28,7 +28,7 @@ const canvas = new Canvas({
 
 describe('Canvas', () => {
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   afterAll(() => {

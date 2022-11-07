@@ -1,10 +1,10 @@
 import type { CanvasContext, DisplayObject } from '@antv/g-lite';
-import { A11yPluginOptions } from './interfaces';
+import type { A11yPluginOptions } from './interfaces';
 // import { isMobile } from './util';
 
 const CLASSNAME_PREFIX = 'g-a11y-screen-reader';
 
-const KEY_CODE_TAB = 9;
+// const KEY_CODE_TAB = 9;
 const DIV_TOUCH_SIZE = 100;
 const DIV_TOUCH_POS_X = 0;
 const DIV_TOUCH_POS_Y = 0;
@@ -113,9 +113,9 @@ export class AriaManager {
       $exitAnchor.setAttribute('aria-hidden', 'false');
 
       $exitAnchor.addEventListener('focus', (ev: MouseEvent) => {
-        const focusComesFromChart =
-          ev.relatedTarget && $parentElement.contains(ev.relatedTarget as any);
-        const comingInBackwards = !(focusComesFromChart || this.exiting);
+        // const focusComesFromChart =
+        //   ev.relatedTarget && $parentElement.contains(ev.relatedTarget as any);
+        // const comingInBackwards = !(focusComesFromChart || this.exiting);
 
         console.log('focus exit el...');
       });

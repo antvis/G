@@ -28,7 +28,7 @@ describe('Document', () => {
   });
 
   afterEach(() => {
-    canvas.removeChildren();
+    canvas.destroyChildren();
   });
 
   it('should createElement correctly', async () => {
