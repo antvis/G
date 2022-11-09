@@ -22,13 +22,13 @@ canvas.removeChild(fog);
 
 整个场景中只会有一个 Fog 生效，因此添加多个无效。
 
-# 基础样式
+## 基础样式
 
-## fill
+### fill
 
 颜色，默认值为 `'black'`
 
-## type
+### type
 
 类型，支持以下枚举值，默认为 `FogType.NONE`，即无效果：
 
@@ -41,14 +41,14 @@ export enum FogType {
 }
 ```
 
-## density
+### density
 
 效果强度，默认值为 0
 
-## start
+### start
 
 type 取 `FogType.LINEAR` 时生效。最近距离，默认值为 1
 
-## end
+### end
 
 type 取 `FogType.LINEAR` 时生效。最远距离，默认值为 1000

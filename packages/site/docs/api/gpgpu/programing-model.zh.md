@@ -5,7 +5,7 @@ order: 1
 
 参考 CUDA 的编程模型，了解它有助于我们写出高性能的并行代码： https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#programming-model
 
-# Host & Device
+## Host & Device
 
 在 CUDA 中 Kernel（核函数）在 GPU 侧（Device）并行，CPU 侧（Host）负责写入、读取数据，指定线程组大小，调用 Kernel 等串行任务：
 
@@ -46,7 +46,7 @@ int main()
 }
 ```
 
-# CUDA vs Compute Shader
+## CUDA vs Compute Shader
 
 “single source” 无疑是 CUDA 的一大亮点，即 Host、Device 代码都用 C++ 编写，对于使用者无疑大大减少了学习成本。而使用渲染 API 的 Compute Shader 肯定无法做到这一点，Device 代码必须使用 Shader 语言写，类似 RPC 调用使得同步变得困难，同时 Shader 语言限制颇多（无递归、参数类型受限）。
 
@@ -65,11 +65,11 @@ CUDA C++ 让开发者可以用 C++ 编写核函数，使用 nvcc 编译成 GPU �
 
 尽管 CUDA 和 Compute Shader 用法差异大，但对于同一个算法来说，将 CUDA 实现移植到 Compute Shader 中并不难，只要 Compute Shader 的特性足够丰富。
 
-# 线程 & 组 & 网格
+## 线程 & 组 & 网格
 
 GPU 线程和通常意义上我们理解的线程还不太一样，这些线程执行同样的指令，只是使用不同的数据（SIMD）。在核函数中每个线程通过 ID 找到自己负责的数据。
 
-## 逻辑视图
+### 逻辑视图
 
 下图来自 [http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf](http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf)，仅展示网格与线程组的层次关系，并不局限于 DirectCompute。
 
@@ -95,7 +95,7 @@ MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C); // 调用 Kernel 函数
 @compute @workgroup_size(8,4,1)
 ```
 
-## 硬件视图
+### 硬件视图
 
 网格、线程组与线程的对应关系也体现在 GPU 的硬件实现上。
 
@@ -107,7 +107,7 @@ GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多�
 
 <img src="https://user-images.githubusercontent.com/3608471/83829297-1ebbd700-a715-11ea-9083-ced1728ee10d.png" alt="GPU execution model" width="60%">
 
-## 线程变量
+### 线程变量
 
 现在我们了解了网格、线程组和线程的层次关系，在每一个线程执行 Shader 程序时，需要了解自己在所在线程组中的坐标、线程组在整个线程网格中的坐标。下图来自 [https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN](https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN)，展示了这些坐标的计算逻辑：
 
@@ -122,7 +122,7 @@ GPU 上有很多个 SM(Streaming Multiprocessor)，每一个 SM 包含了很多�
 | globalInvocationID | ivec3 | 当前线程在全局线程组中的索引。计算方法为 `workGroupID * workGroupSize + localInvocationID` |
 | localInvocationIndex | int | 当前线程在自己线程组中的一维索引，计算方法为 `localInvocationID.z * workGroupSize.x * workGroupSize.y + localInvocationID.y * workGroupSize.x + localInvocationID.x` |
 
-## 共享内存与同步
+### 共享内存与同步
 
 在某些计算任务中，每个线程不仅需要处理自己负责的那一部分数据，可能还需要读取、修改其他线程处理过的数据，此时就需要共享内存与同步了。
 

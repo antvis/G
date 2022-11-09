@@ -10,7 +10,7 @@ Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lot
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-# 安装方式
+## 安装方式
 
 `g-canvaskit` 渲染器默认内置，因此无需手动引入。
 
@@ -20,9 +20,9 @@ import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 const canvaskitRenderer = new CanvaskitRenderer();
 ```
 
-# API
+## API
 
-## playAnimation
+### playAnimation
 
 [Lottie](https://airbnb.design/introducing-lottie/) 动画通过 After Effects 的 [Bodymovin](https://github.com/bodymovin/bodymovin) 插件创建，导出成 JSON 格式。
 
@@ -73,7 +73,7 @@ const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 animation.delete();
 ```
 
-## createParticles
+### createParticles
 
 例如烟火、火焰等粒子特效需要生成大量“粒子”并应用动画，通常在 GPU 中通过 Shader 编程实现，例如用以改变每个粒子位置的插值计算，应当放在 GPU 而非在 CPU 中完成。
 

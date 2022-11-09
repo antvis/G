@@ -10,13 +10,13 @@ The following inheritance relationships exist in G.
 -   Document -> Node -> EventTarget
 -   DisplayObject -> Element -> Node -> EventTarget
 
-# Inherited from
+## Inherited from
 
 [EventTarget](/en/docs/api/builtin-objects/event-target)
 
-# Properties
+## Properties
 
-## nodeName
+### nodeName
 
 Read-only, returns the node name, e.g.
 
@@ -46,7 +46,7 @@ export enum Shape {
 }
 ```
 
-## nodeValue
+### nodeValue
 
 Read-only, return node string, default is null.[Text](/en/docs/api/basic/text) will return text string.
 
@@ -60,7 +60,7 @@ const text = new Text({ style: { text: 'test' } });
 text.nodeValue; // 'test'
 ```
 
-## isConnected
+### isConnected
 
 Read-only, whether it is added to the canvas, e.g.
 
@@ -72,7 +72,7 @@ circle.isConnected; // true
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
 
-## ownerDocument
+### ownerDocument
 
 Read-only, pointing to the entry [Document](/en/docs/api/builtin-objects/document) of the canvas. Returns null if not yet added to the canvas, e.g.
 
@@ -84,49 +84,49 @@ circle.ownerDocument; // canvas.document
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument
 
-## parentNode
+### parentNode
 
 Read-only, returns the parent node of the current node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode
 
-## parentElement
+### parentElement
 
 Read-only, same as parentNode in the current implementation.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement
 
-## childNodes
+### childNodes
 
 Read-only, returns the list of child nodes of the current node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes
 
-## firstChild
+### firstChild
 
 Read-only, returns the first child of the current node, or null if there are no children.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild
 
-## lastChild
+### lastChild
 
 Read-only, returns the last child of the current node, or null if there are no children.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild
 
-## nextSibling
+### nextSibling
 
 Read-only, returns the next sibling of the current node, or null if none.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling
 
-## previousSibling
+### previousSibling
 
 Read-only, returns the previous sibling of the current node, or null if there is none.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
 
-## textContent
+### textContent
 
 Read/write property to get or set the text content of the node. The default returns the empty string, [Text](/en/docs/api/basic/text) will return the text string.
 
@@ -154,15 +154,15 @@ group.textContent = 'changed';
 group.childNodes; // [Text]
 ```
 
-# Methods
+## Methods
 
-## appendChild
+### appendChild
 
 Adds a node to the end of the child node list of the specified parent node. If the node is already in the scene graph, it will be removed from its original position and then added to the new position.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild
 
-## cloneNode
+### cloneNode
 
 The method signature is `cloneNode(deep?: boolean): this`, with optional arguments for whether a deep copy is needed, and returns the new node obtained by cloning.
 
@@ -192,13 +192,13 @@ In this [example](/en/examples/scenegraph#clone), we demonstrate the above featu
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
-## contains
+### contains
 
 Determine if the incoming node is a descendant of this node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains
 
-## getRootNode
+### getRootNode
 
 Returns the root node of the current node. If it has already been added to the canvas, it returns canvas.document For example
 
@@ -210,7 +210,7 @@ circle.getRootNode(); // canvas.document
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
 
-## getAncestor
+### getAncestor
 
 Returns the ancestor node at the specified level, e.g.
 
@@ -224,13 +224,13 @@ If the lookup goes beyond the root node, null is returned.
 circle.getAncestor(100); // null
 ```
 
-## hasChildNodes
+### hasChildNodes
 
 If or not there are child nodes.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes
 
-## insertBefore
+### insertBefore
 
 The full method signature is:
 
@@ -242,7 +242,7 @@ Inserts a child node with the specified parent node before the reference node. I
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore
 
-## removeChild
+### removeChild
 
 The full method signature is:
 
@@ -254,19 +254,19 @@ Deletes a child node, finally returns the deleted child node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild
 
-## replaceChild
+### replaceChild
 
 Replaces a child node of the current node with the specified node, and returns the replaced node.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
 
-## isEqualNode
+### isEqualNode
 
 Determines if two nodes are equal.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
 
-## compareDocumentPosition
+### compareDocumentPosition
 
 Compare the positions of the two nodes in the scene graph.
 

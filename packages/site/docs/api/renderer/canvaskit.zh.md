@@ -16,11 +16,11 @@ Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lot
 
 [Codesandbox 例子](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
 
-# 使用方式
+## 使用方式
 
 和 `@antv/g` 一样，也有以下两种使用方式。
 
-## NPM Module
+### NPM Module
 
 安装 `@antv/g-canvaskit` 后可以从中获取渲染器：
 
@@ -38,7 +38,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN 方式
+### CDN 方式
 
 ```html
 <script
@@ -52,9 +52,9 @@ const canvas = new Canvas({
 const canvasRenderer = new window.G.Canvaskit.Renderer();
 ```
 
-# 初始化配置
+## 初始化配置
 
-## wasmDir
+### wasmDir
 
 CanvasKit 的 WASM 文件夹路径。默认值为 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full/'`，即从 CDN 上下载。
 
@@ -72,7 +72,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 -   全量功能，约 7.9MB，包含完整的[增强功能](/zh/docs/api/renderer/canvaskit#增强功能)，推荐使用该版本 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
 -   开发版本，约 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
-## fonts
+### fonts
 
 CanvasKit 相较于我们熟悉的 Canvas 2D API，在文本尤其是段落方面提供了多行布局、装饰、省略等功能。唯一的问题是需要在运行时加载字体文件。
 
@@ -111,7 +111,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 });
 ```
 
-# 内置插件
+## 内置插件
 
 该渲染器内置了以下插件：
 
@@ -119,7 +119,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 拾取图形
 -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
 
-# 增强功能
+## 增强功能
 
 CanvasKit（完整版本）相较于我们熟悉的 Canvas 2D API，提供了以下增强功能：
 
@@ -127,7 +127,7 @@ CanvasKit（完整版本）相较于我们熟悉的 Canvas 2D API，提供了以
 -   粒子特效
 -   段落排版
 
-## Lottie 动画播放器
+### Lottie 动画播放器
 
 [Lottie](https://airbnb.design/introducing-lottie/) 动画通过 After Effects 的 [Bodymovin](https://github.com/bodymovin/bodymovin) 插件创建，导出成 JSON 格式。CanvasKit 提供了 [Skottie](https://skia.org/docs/user/modules/skottie/) 这个 Lottie 动画播放器。
 
@@ -171,7 +171,7 @@ const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 animation.delete();
 ```
 
-## 粒子特效
+### 粒子特效
 
 例如烟火、火焰等粒子特效需要生成大量“粒子”并应用动画，通常在 GPU 中通过 Shader 编程实现，例如用以改变每个粒子位置的插值计算，应当放在 GPU 而非在 CPU 中完成。
 
@@ -249,7 +249,7 @@ const text = {
 };
 ```
 
-## 沿路径绘制文本
+### 沿路径绘制文本
 
 相较于 Canvas2D API 中的 [fillText](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillText)，CanvasKit 提供了沿指定路径绘制文本的能力。
 
@@ -277,7 +277,7 @@ const text = new Text({
 });
 ```
 
-## Emoji
+### Emoji
 
 一般的字体是无法支持 Emoji 的：
 
@@ -326,11 +326,11 @@ const emoji = new Text({
 });
 ```
 
-## 文本段落
+### 文本段落
 
 CanvasKit 提供了增强的[段落绘制能力](https://skia.org/docs/user/modules/quickstart/#text-shaping)。
 
-### 修饰线
+#### 修饰线
 
 在 CSS 中可以使用 [text-decoration](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 属性设置文本的修饰线外观。
 
@@ -362,7 +362,7 @@ const decoratedText = new Text({
 -   decorationThickness，对应 CSS [text-decoration-thickness](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-thickness) 属性，目前仅支持 `number` 类型
 -   decorationStyle，对应 CSS [text-decoration-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) 属性。支持 `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
 
-### 文本截断
+#### 文本截断
 
 在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，使用 `maxLines` 和 `ellipsis` 可以实现超出后截断并添加省略号的效果：
 
@@ -392,19 +392,19 @@ const text = new Text({
 -   https://github.com/flutter/flutter/issues/76473
 -   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
 
-### 文本方向
+#### 文本方向
 
 使用 `direction` 可以指定文本方向从左向右或者从右向左，支持 `'ltr'` 和 `'rtl'`，默认为 `'ltr'`。下图为 `'rtl'` 的效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8oWlSpL5hGAAAAAAAAAAAAAAARQnAQ" width="160" alt="text direction">
 
-### 前景 / 背景色
+#### 前景 / 背景色
 
 使用 `foregroundColor` 和 `backgroundColor` 可以指定文本的前景和背景色：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OaRqRa-ZiAcAAAAAAAAAAAAAARQnAQ" width="160" alt="text background-color">
 
-### 阴影
+#### 阴影
 
 在 CSS 中可以使用 [text-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-shadow) 属性为文本添加多个阴影。
 
@@ -436,7 +436,7 @@ const shadowedText = new Text({
 });
 ```
 
-### StrutStyle
+#### StrutStyle
 
 Strut（意为“支柱”）可以设置相对于 baseline 的最小行高。类似 CSS 中的 [line-height](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) 属性。
 
@@ -466,7 +466,7 @@ decoratedText.style.strutStyle = {
 };
 ```
 
-### 高级印刷功能
+#### 高级印刷功能
 
 可参考 CSS 中的 [font-feature-settings](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings) 属性，控制 OpenType 字体中的高级印刷功能。
 
@@ -495,7 +495,7 @@ const fontFeaturesText = new Text({
 });
 ```
 
-### Harfbuzz
+#### Harfbuzz
 
 Skia 本身是不包含 Harfbuzz 的： https://skia.org/docs/user/tips/
 
@@ -507,6 +507,6 @@ https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa
 
 > Text shaping with ShapedText object and SkCanvas.drawText. At compile time, one can choose between using Harfbuzz/ICU (default) or a primitive one (“primitive_shaper”) which just does line breaking. Using Harfbuzz/ICU substantially increases code size (4.3 MB to 6.4 MB).
 
-# 性能
+## 性能
 
 CanvasKit 通过 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 进行绘制，在每一帧都会进行全量重绘。

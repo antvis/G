@@ -7,7 +7,7 @@ order: 4
 
 除了用于最终渲染，在使用 [isPointInPath()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath) 前也需要在离屏画布中绘制。
 
-# Token
+## Token
 
 该插件提供两个 Token，使用时通过 Token 注入：
 
@@ -16,7 +16,7 @@ export const PathGeneratorFactory = Syringe.defineToken('PathGeneratorFactory');
 export const PathGenerator = Syringe.defineToken('PathGenerator');
 ```
 
-## PathGeneratorFactory
+### PathGeneratorFactory
 
 例如目前在 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 和 [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 这两个插件中都能看到通过 `PathGeneratorFactory` 这个 token 将工厂方法注入，传入 [nodeName](/zh/docs/api/builtin-objects/node#nodename) 就能得到对应图形路径的绘制方法：
 
@@ -27,7 +27,7 @@ private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
 const circlePathGenerator = this.pathGeneratorFactory(Shape.CIRCLE);
 ```
 
-## PathGenerator
+### PathGenerator
 
 具体到每一种基础图形的路径绘制方法，它接受 CanvasRenderingContext2D 上下文和解析后的图形样式属性作为参数：
 

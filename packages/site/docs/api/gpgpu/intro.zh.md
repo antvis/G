@@ -3,7 +3,7 @@ title: 简介
 order: 0
 ---
 
-# 什么是 GPGPU ？
+## 什么是 GPGPU ？
 
 由于硬件结构不同，GPU 与 CPU 擅长执行不同类型的计算任务。特别的，在单指令流多数据流（SIMD）场景下，GPU 的运算速度远超 CPU。
 
@@ -23,7 +23,7 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 而作为前端开发者，我们面对的适合并行的数据密集型计算任务也越来越多，是否能在 Web 端使用 GPGPU 技术呢？
 
-# 在 Web 端应用
+## 在 Web 端应用
 
 事实上，在 Web 端已经有了很多优秀的 GPGPU 实践，例如：
 
@@ -31,7 +31,7 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 -   [GPU.js](https://github.com/gpujs/gpu.js)。用户使用 JS 编写简单的计算任务。
 -   [Stardust.js](https://stardustjs.github.io/)。用户使用 Mark 语言定义计算任务，实现 Sanddance 效果。
 
-## WebGL 实现
+### WebGL 实现
 
 从实现角度看，以上方案都使用 WebGL 图形 API 来模拟并不支持的 Compute Shader，具体来说都是通过常规渲染管线中可编程的 Vertex/Fragment Shader 完成，如果对我们的实现感兴趣，可以阅读[经典 GPGPU 的实现原理](/zh/docs/api/implements)。下图来自 [http://www.vizitsolutions.com/portfolio/webgl/gpgpu/](http://www.vizitsolutions.com/portfolio/webgl/gpgpu/)，简单展示了基本的实现过程：
 
@@ -47,7 +47,7 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 
 <img src="https://user-images.githubusercontent.com/3608471/83636450-959f8580-a5d8-11ea-8881-6496f16b1311.png" alt="WebGL vs OpenGL" width="500">
 
-## WebGPU 实现
+### WebGPU 实现
 
 而作为 WebGL 的继任者 WebGPU，目前得到了各大浏览器厂商的[支持](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status)，可以在以下浏览器中体验（需要开启实验特性 webgpu flag）：
 
@@ -68,7 +68,7 @@ GPU 强大的计算能力早已不局限于渲染，<strong>G</strong>eneral-<st
 -   tensorflow.js 正在尝试 [基于 WebGPU 的 backend 实现](https://github.com/tensorflow/tfjs/tree/master/tfjs-backend-webgpu/src)。
 -   Babylon.js 正在尝试实现 [基于 WebGPU 渲染引擎](https://doc.babylonjs.com/extensions/webgpu)。
 
-# 我们面对的计算场景与挑战
+## 我们面对的计算场景与挑战
 
 当我们从通用计算领域聚焦到可视化场景时，会发现存在着很多适合 GPU 执行的可并行计算任务，例如：
 

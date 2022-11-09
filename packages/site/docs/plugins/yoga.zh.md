@@ -17,7 +17,7 @@ order: -1
 
 该插件使用 [yoga-layout-prebuilt](https://www.npmjs.com/package/yoga-layout-prebuilt)，包体积较大，后续我们会使用自己开发的轻量版布局引擎。
 
-# 安装方式
+## 安装方式
 
 首先注册插件：
 
@@ -66,11 +66,11 @@ container.appendChild(node1);
 container.appendChild(node2);
 ```
 
-# 支持属性
+## 支持属性
 
 不同的属性支持的单位也不同，例如 `number` 类型的绝对像素值、`'100%'` 字符串类型的百分比以及特殊含义的 `'auto'`。
 
-## 声明 Flex 容器
+### 声明 Flex 容器
 
 使用 `display: 'flex'` 可以声明一个 Flex 容器，容器内所有直系子元素按照布局引擎计算结果进行布局，暂时仅支持 [Rect](/zh/docs/api/basic/rect) 和 [Group](/zh/docs/api/basic/group) 作为容器：
 
@@ -97,11 +97,11 @@ const container = new Rect({
 
 另外容器支持嵌套，例如上图中 Node1 自身也是一个 Flex 容器，因此其中的文本可以水平垂直居中。
 
-## Layout
+### Layout
 
 Layout 属性用于设置自身在容器中的布局效果，例如相对于已有结果进行调整。
 
-### position
+#### position
 
 支持以下取值，可以配合 top / right / botton / left 使用，和 CSS 完全一致：
 
@@ -114,7 +114,7 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*AcD0R4SLDe8AAAAAAAAAAAAAARQnAQ" width="300px">
 
-### top / right / botton / left
+#### top / right / botton / left
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -132,7 +132,7 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xj7YT4DOTOEAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### width / height
+#### width / height
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -144,7 +144,7 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*GzGKRarp_EEAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### minWidth / minHeight / maxWidth / maxHeight
+#### minWidth / minHeight / maxWidth / maxHeight
 
 最大最小约束，优先级高于其他属性。可以配合 [flexGrow](/zh/docs/plugins/yoga#flexgrow) 使用。
 
@@ -154,7 +154,7 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cUDJSI8WKNIAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### padding
+#### padding
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -179,19 +179,19 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 }
 ```
 
-### paddingAll
+#### paddingAll
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
 数据类型为 `number | string`，统一设置上右下左的 padding。
 
-### paddingTop / paddingRight / paddingBottom / paddingLeft
+#### paddingTop / paddingRight / paddingBottom / paddingLeft
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
 单独设置上右下左的 padding。
 
-### margin
+#### margin
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -221,25 +221,25 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*GCpwRa6aFsIAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### marginAll
+#### marginAll
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
 数据类型为 `YogaSize`，统一设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
 
-### marginTop / marginRight / marginBottom / marginLeft
+#### marginTop / marginRight / marginBottom / marginLeft
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
 单独设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
 
-### border
+#### border
 
 暂不支持。
 
-## Flex
+### Flex
 
-### flexDirection
+#### flexDirection
 
 来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#flexbox_%E7%9A%84%E4%B8%A4%E6%A0%B9%E8%BD%B4%E7%BA%BF)
 
@@ -258,7 +258,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LfmcToFtFr4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-### flexWrap
+#### flexWrap
 
 来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#%E7%94%A8flex-wrap%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%8Cflex%E5%AE%B9%E5%99%A8)：
 
@@ -276,7 +276,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qOimRKvKZ8UAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### flexGrow
+#### flexGrow
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -300,7 +300,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VpsQR72y3dsAAAAAAAAAAAAAARQnAQ" width="400px">
 
-### flexShrink
+#### flexShrink
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -312,7 +312,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kf8jQKLjAA4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-### flexBasis
+#### flexBasis
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
@@ -326,13 +326,13 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 默认值为 NaN。
 
-## Alignment
+### Alignment
 
 来自 [MDN 的说明](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#%E5%85%83%E7%B4%A0%E9%97%B4%E7%9A%84%E5%AF%B9%E9%BD%90%E5%92%8C%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D)
 
 > flexbox 的一个关键特性是能够设置 flex 元素沿主轴方向和交叉轴方向的对齐方式，以及它们之间的空间分配。
 
-### justifyContent
+#### justifyContent
 
 该属性用来使元素在主轴方向上对齐。
 
@@ -353,7 +353,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0rFhR7wNbr8AAAAAAAAAAAAAARQnAQ" width="300px">
 
-### alignItems
+#### alignItems
 
 该属性可以使元素在交叉轴方向对齐。
 
@@ -372,7 +372,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*es0mTatBlHEAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### alignSelf
+#### alignSelf
 
 用于子元素覆盖容器中已有的 [alignItems](/zh/docs/plugins/yoga#alignitems) 的值：
 
@@ -380,7 +380,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*G5HKSpnYVkAAAAAAAAAAAAAAARQnAQ" width="300px">
 
-### alignContent
+#### alignContent
 
 容器如何分配子元素周围空间，只有当 [flexWrap](/zh/docs/plugins/yoga#flexwrap) 取值为 `wrap` 时生效：
 
@@ -401,21 +401,21 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VI4HRaZlQe4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 其他常见问题
+## 其他常见问题
 
-## Flex 容器是否支持嵌套？
+### Flex 容器是否支持嵌套？
 
 支持，每个容器内单独计算布局并影响内部的子元素。
 
-## 支持非 Rect / Group 图形作为 Flex 容器吗？
+### 支持非 Rect / Group 图形作为 Flex 容器吗？
 
 暂不支持。如果容器本身不需要被渲染，应该使用 Group。以上例子为了更好地展示容器尺寸，我们选择了 Rect。
 
-## Flex 容器内子元素还支持使用 `setPosition/setLocalPosition()` 调整位置吗？
+### Flex 容器内子元素还支持使用 `setPosition/setLocalPosition()` 调整位置吗？
 
 一旦容器使用了 Flex，它内部的子元素都应该使用 Flex 相关属性进行定位。虽然不禁止使用 `setPosition`，但它显然会和布局引擎的计算结果冲突。
 
-## 支持除绝对值之外的百分比吗？
+### 支持除绝对值之外的百分比吗？
 
 支持。但不同属性使用百分比的参考值并不相同。
 
@@ -428,7 +428,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 }
 ```
 
-## 是否支持文本自动换行？
+### 是否支持文本自动换行？
 
 目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行，但需要用户手动设置 `wordWrapWidth`，超出后换行。
 
@@ -451,7 +451,7 @@ const text = new Text({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 
-## 新增的属性是否支持动画？
+### 新增的属性是否支持动画？
 
 Flex 布局新增了很多新属性，例如 [padding](/zh/docs/plugins/yoga#padding) [margin](/zh/docs/plugins/yoga#margin) 等，在 CSS 中是可以对这些属性进行动画的。
 
@@ -473,7 +473,7 @@ node1.animate(
 );
 ```
 
-## 3D 图形是否可以使用布局？
+### 3D 图形是否可以使用布局？
 
 需要指定一个平面，然后才能应用 Yoga 这样的 2D 布局引擎。
 

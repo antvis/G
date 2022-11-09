@@ -52,7 +52,7 @@ solarSystem.querySelectorAll('[r=25]');
 // [moon]
 ```
 
-# Usage
+## Usage
 
 Create plug-ins and register them in the renderer.
 

@@ -5,7 +5,7 @@ order: 3
 
 提供基于 Canvas2D 的渲染能力。
 
-# 安装方式
+## 安装方式
 
 [g-canvas](/zh/docs/api/renderer/canvas) 渲染器默认内置，因此无需手动引入。
 
@@ -15,9 +15,9 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 const canvasRenderer = new CanvasRenderer();
 ```
 
-# 扩展点
+## 扩展点
 
-## StyleRenderer
+### StyleRenderer
 
 在使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染基础图形时，在使用 [g-plugin-canvas-path-generator](/zh/docs/plugins/canvas-path-generator) 生成图形路径之后，实现该接口即可完成绘制样式。
 

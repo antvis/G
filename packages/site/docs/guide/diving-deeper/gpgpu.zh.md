@@ -18,7 +18,7 @@ order: 10
 3. 创建 Kernel，编写 Compute Shader
 4. 传入输入数据，获取计算结果
 
-# 创建画布、渲染器与 GPGPU 插件
+## 创建画布、渲染器与 GPGPU 插件
 
 创建画布，使用渲染器的方式和之前渲染相关的教程并无差别，只是在创建渲染器时，需要确认在支持 WebGPU 的浏览器环境下运行。另外由于不涉及渲染，画布大小我们选择长宽为 1 即可。
 
@@ -44,7 +44,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 获取 Device
+## 获取 Device
 
 在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在执行这些操作前，需要确保画布的初始化工作（特别是渲染服务）准备就绪，有两种方式：
 
@@ -71,7 +71,7 @@ const plugin = renderer.getPlugin('device-renderer');
 const device = plugin.getDevice();
 ```
 
-# 创建 Kernel
+## 创建 Kernel
 
 不同于 CUDA 中的 "single source"（Host 和 Device 代码都用 C++）编写，WebGPU 的 Device 代码需要通过 Compute Shader 使用 [WGSL](https://www.w3.org/TR/WGSL) 语言编写。
 
@@ -144,7 +144,7 @@ fn main(
 }
 ```
 
-# 输入与输出
+## 输入与输出
 
 定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer([createBuffer](/zh/docs/plugins/device-renderer#createbuffer))，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
 
@@ -186,7 +186,7 @@ const readback = device.createReadback();
 const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 ```
 
-# 更多算法实现
+## 更多算法实现
 
 上述矩阵乘法更多用于演示目的，在图场景中有非常多适合并行的布局和分析算法，我们可以从 CUDA 实现中进行移植，例如：
 

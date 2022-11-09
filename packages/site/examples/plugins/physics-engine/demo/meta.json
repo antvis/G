@@ -1,0 +1,31 @@
+{
+  "title": {
+    "zh": "物理引擎",
+    "en": "Physics Engine"
+  },
+  "demos": [
+    {
+      "filename": "box2d.js",
+      "title": {
+        "zh": "在 2D 场景中使用 Box2D 物理引擎",
+        "en": "Use Box2D in 2D scene"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "matterjs.js",
+      "title": {
+        "zh": "在 2D 场景中使用 MatterJS 物理引擎",
+        "en": "Use MatterJS in 2D scene"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "physx.js",
+      "title": {
+        "zh": "在 3D 场景中使用 PhysX 物理引擎",
+        "en": "Use PhysX in 3D scene"
+      }
+    }
+  ]
+}

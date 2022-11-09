@@ -1,0 +1,24 @@
+{
+  "title": {
+    "zh": "直线",
+    "en": "Line"
+  },
+  "demos": [
+    {
+      "filename": "line.js",
+      "title": {
+        "zh": "直线",
+        "en": "Line"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7YsyTJDA_CMAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "marker.js",
+      "title": {
+        "zh": "标记图形",
+        "en": "Marker"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

@@ -18,7 +18,7 @@ The full version `@antv/g` consists of the following parts.
 -   `@antv/g-css-layout-api` Provides CSS Layout API]
 -   `@antv/g-dom-mutation-observer-api` Provides DOM Mutation Observer API
 
-# Usage
+## Usage
 
 The Lite version is identical to the full version in the use of core functions, such as creating canvases, basic graphics, using the renderer, etc.
 
@@ -42,11 +42,11 @@ import '@antv/g-web-animations-api';
 
 Other progressive features can be introduced on-demand using a similar approach.
 
-# Function Introduction
+## Function Introduction
 
 The following is a detailed description of the functions of each part after splitting.
 
-## g-lite
+### g-lite
 
 Contains core functions such as [canvas](/en/docs/api/canvas), [basic graphics](/en/docs/api/basic/concept), [event system](/en/docs/api/event), [plugins system](/en/docs/plugins/intro).
 
@@ -68,7 +68,7 @@ const circle = new Circle({
 });
 ```
 
-## g-camera-api
+### g-camera-api
 
 `@antv/g-lite` contains a simple camera implementation, but it does not work with [camera action](/en/docs/api/camera#actions) and [camera animation](/en/docs/api/camera#animation).
 
@@ -77,27 +77,27 @@ camera.pan(); // throw new Error('Method not implemented.');
 camera.createLandmark(); // throw new Error('Method not implemented.');
 ```
 
-## g-web-animations-api
+### g-web-animations-api
 
 Provides [animation capabilities](/en/docs/api/animation/waapi) for base graphics compatible with the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API). The `object.animate()` method can still be called without this capability, but without any effect.
 
-## g-css-typed-om-api
+### g-css-typed-om-api
 
 The [CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) allows parsed property values to be manipulated using JS, which is also the basis of CSS Houdini. In the case of `width: '50%'`, the property value in string form is parsed to `CSS.percent(50)`, facilitating the next calculation.
 
 We provide [similar capabilities](/en/docs/api/css/css-typed-om).
 
-## g-css-layout-api
+### g-css-layout-api
 
 Reference [CSS Layout API](https://drafts.css-houdini.org/css-layout-api) provides [layout capabilities](/en/docs/api/css/css-layout-api).
 
-## g-dom-mutation-observer-api
+### g-dom-mutation-observer-api
 
 In the DOM API, we can use [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) when we want to sense modifications in the DOM tree nodes, such as new nodes added, attribute values changed.
 
 In G we also implement this [API](/en/docs/api/builtin-objects/mutation-observer) to listen to changes in the scene graph.
 
-## g-compat
+### g-compat
 
 Methods compatible with older versions are provided on the base graphics, most of which have DOM API-compatible implementations in newer versions. The use of these methods is therefore not recommended and may be removed at any time subsequently.
 

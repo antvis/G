@@ -5,7 +5,7 @@ redirect_from:
     - /en/docs/plugins
 ---
 
-# Set of plug-ins
+## Set of plug-ins
 
 Extensible plug-in mechanism and rich set of plug-ins：
 
@@ -39,7 +39,7 @@ Extensible plug-in mechanism and rich set of plug-ins：
 -   A11y
     -   [g-plugin-a11y](/en/docs/plugins/a11y) Provides accessibility features.
 
-## CDN
+### CDN
 
 [Import the core and renderer code](/en/docs/guide/introduce#cdn) in UMD format first, then import plugin code in the same way.
 
@@ -55,7 +55,7 @@ const plugin = new window.G.RoughCanvasRenderer.Plugin();
 
 [Codesandbox Example](https://codesandbox.io/s/yi-umd-xing-shi-shi-yong-g-yi-ji-cha-jian-zsoln8?file=/index.js)
 
-## NPM Module
+### NPM Module
 
 [Install core and renderer from NPM](/en/docs/guide/introduce#npm-module) first, then we can install plugins in the same way. Take [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-renderer) as an example:
 
@@ -71,7 +71,7 @@ import { Plugin } from '@antv/g-plugin-rough-canvas-renderer';
 renderer.registerPlugin(new Plugin());
 ```
 
-# Relationship with Renderer
+## Relationship with Renderer
 
 These [renderers](/en/docs/api/renderer/renderer) essentially consist of a set of plug-ins through which their capabilities can also be extended.
 
@@ -81,11 +81,11 @@ renderer.registerPlugin(new Plugin());
 
 In terms of naming convention, all plugin names start with `g-plugin-`. Let's take a deeper look into the structure of the plugin by analyzing `g-plugin-canvas-renderer`, which uses Canvas2D rendering and is one of the core plugins of `g-canvas`.
 
-# Basic Structure
+## Basic Structure
 
 https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
 
-## package.json
+### package.json
 
 As you can see from the `peerDependencies` of `package.json`, the most core dependency of a plugin is `@antv/g`, the core layer of G, which contains core objects such as dependency injection, canvas, base graphics, events, etc.
 
@@ -95,7 +95,7 @@ As you can see from the `peerDependencies` of `package.json`, the most core depe
 },
 ```
 
-## index.js
+### index.js
 
 Opening the plugin's entry file, we can find that a plugin that inherits from `AbstractRendererPlugin` needs to implement two methods.
 
@@ -129,7 +129,7 @@ In the module we can register dependencies with the current container (one per c
 
 Here we have registered a `CanvasRendererPlugin`, let's go ahead and take a deeper look.
 
-## CanvasRendererPlugin
+### CanvasRendererPlugin
 
 The `inject` provided by `mana-syringe` allows us to get objects we care about, such as the original configuration when creating the canvas, the default camera, the context, and other services, with the injection of dependencies done by the container.
 
@@ -182,6 +182,6 @@ apply(renderingService: RenderingService) {
 
 All plugins follow the above structure implementation.
 
-# Relationship between plug-ins
+## Relationship between plug-ins
 
 There are also dependencies between plugins, for example [g-plugin-gpgpu](/en/docs/plugins/gpgpu) depends on [g-plugin-device-renderer](/en/docs/plugins/device-renderer). You need to exclude dependencies when building UMD independently, see [build instructions]() for details.

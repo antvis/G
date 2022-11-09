@@ -5,7 +5,7 @@ order: 7
 
 基于 DOM API 绑定事件。
 
-# 安装方式
+## 安装方式
 
 `g-webgl/canvas/svg` 渲染器默认内置，因此无需手动引入。
 

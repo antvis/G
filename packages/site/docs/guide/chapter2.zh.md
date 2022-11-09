@@ -9,7 +9,7 @@ order: 2
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 选择渲染器
+## 选择渲染器
 
 首先我们需要引入一个或多个渲染器，如果引入了多个，还可以在[运行时切换](/zh/docs/guide/diving-deeper/switch-renderer#运行时切换)。本例中我们只选择了一个 Canvas2D 渲染器：
 
@@ -19,7 +19,7 @@ import { Renderer } from '@antv/g-canvas';
 const renderer = new Renderer();
 ```
 
-# 创建画布
+## 创建画布
 
 然后我们需要创建画布，使用上面引入的渲染器：
 
@@ -32,7 +32,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 向画布中添加图形
+## 向画布中添加图形
 
 有了画布，我们可以把场景图中的两个节点和一条边加入画布，当然这一切要等待画布就绪之后。我们有两种方式获知画布何时就绪，一是监听 [就绪事件](/zh/docs/api/canvas#ready-事件)，二是[等待就绪的 Promise 返回](/zh/docs/api/canvas#ready)：
 
@@ -68,7 +68,7 @@ canvas.appendChild(node2);
 
 或者，我们也可以通过 `zIndex` 手动调整。
 
-# 设置展示次序
+## 设置展示次序
 
 类似 CSS 中的 `zIndex`，我们可以手动设置两个节点的绘制顺序，让它们比边高（默认为 0）即可：
 

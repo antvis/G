@@ -7,7 +7,7 @@ Referring to the CUDA programming model, understanding it helps us to write high
 
 https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#programming-model
 
-# Host & Device
+## Host & Device
 
 In CUDA the Kernel is parallelized on the GPU side (Device), while the CPU side (Host) is responsible for serial tasks such as writing and reading data, specifying the size of the thread group, and calling the Kernel.
 
@@ -48,7 +48,7 @@ int main()
 }
 ```
 
-# CUDA vs Compute Shader
+## CUDA vs Compute Shader
 
 "single source" is undoubtedly one of the highlights of CUDA, i.e. Host and Device code are written in C++, which definitely reduces the learning cost for users. This is definitely not possible with Compute Shader, which uses the rendering API. Device code must be written in the Shader language, which makes synchronization difficult due to RPC-like calls, and the Shader language has a lot of limitations (no recursion, restricted parameter types).
 
@@ -67,11 +67,11 @@ A simple approach is to write the Device code in a string, taking advantage of t
 
 Although the usage of CUDA and Compute Shader is quite different, it is not difficult to port a CUDA implementation to Compute Shader for the same algorithm, as long as Compute Shader is feature-rich enough.
 
-# Thread, Block and Grid
+## Thread, Block and Grid
 
 GPU threads are not quite the same as what we normally understand as threads, these threads execute the same instructions, but just use different data (SIMD). In the kernel function each thread finds the data it is responsible for by its ID.
 
-## Logic View
+### Logic View
 
 The image below is from: [http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf](http://on-demand.gputechconf.com/gtc/2010/presentations/S12312-DirectCompute-Pre-Conference-Tutorial.pdf). It only shows the hierarchical relationship between grids and thread groups, and is not limited to DirectCompute.
 
@@ -97,7 +97,7 @@ Instead, the following syntax is used in the Compute Shader. https://www.w3.org/
 @compute @workgroup_size(8,4,1)
 ```
 
-## Hardware View
+### Hardware View
 
 The correspondence between grids, thread groups and threads is also reflected in the hardware implementation of the GPU.
 
@@ -109,7 +109,7 @@ The image below is from: http://www.adms-conf.org/2019-presentations/ADMS19_nvid
 
 <img src="https://user-images.githubusercontent.com/3608471/83829297-1ebbd700-a715-11ea-9083-ced1728ee10d.png" alt="GPU execution model" width="60%">
 
-## Thread Variables
+### Thread Variables
 
 Now that we understand the hierarchy of grids, thread groups and threads, each thread needs to know its own coordinates in the thread group it is in, and the coordinates of the thread group in the entire thread grid when it executes the Shader program. The following figure is from [https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN](https://docs. microsoft.com/en-us/windows/win32/direct3dhlsl/sm5-attributes-numthreads?redirectedfrom=MSDN), shows the logic for calculating these coordinates.
 
@@ -124,7 +124,7 @@ Now that we understand the hierarchy of grids, thread groups and threads, each t
 | globalInvocationID | ivec3 | The index of the current thread in the global thread group. It is calculated as `workGroupID * workGroupSize + localInvocationID` |
 | localInvocationIndex | int | The one-dimensional index of the current thread in its own thread group, calculated as `localInvocationID.z * workGroupSize.x * workGroupSize.y + localInvocationID.y * workGroupSize.x + localInvocationID.x` |
 
-## Shared memory and Synchronization
+### Shared memory and Synchronization
 
 In some computing tasks, each thread not only needs to process the part of data it is responsible for, but may also need to read and modify the data processed by other threads, which requires shared memory and synchronization.
 

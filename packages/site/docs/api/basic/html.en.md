@@ -27,7 +27,7 @@ canvas.appendChild(html);
 
 The reason why you must specify the width and height (or at least the initial width and height) is that the [\<foreignObject\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) element of the SVG must be specified or it will not be displayed. .
 
-# DOM structure
+## DOM structure
 
 In the implementation `g-canvas/webgl` wraps the HTML content in `<div>`, placing it inside the container as a sibling node of `<canvas>`. And in `g-svg` the content is wrapped using `<foreignObject>`.
 
@@ -50,7 +50,7 @@ In the implementation `g-canvas/webgl` wraps the HTML content in `<div>`, placin
 </div>
 ```
 
-# Inherited from
+## Inherited from
 
 -   [DisplayObject](/en/docs/api/basic/display-object)
 
@@ -61,33 +61,33 @@ Where [id](/en/docs/api/basic/display-object#id), [name](/en/docs/api/basic/disp
 
 Other style attributes are applied via CSS.
 
-## fill
+### fill
 
 Corresponds to the CSS [background](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) property.
 
-## stroke
+### stroke
 
 Corresponds to the CSS [border-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-color) property.
 
-## lineWidth
+### lineWidth
 
 Corresponds to the CSS [border-width](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-width) property.
 
-## lineDash
+### lineDash
 
 Corresponds to the CSS [border-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style) property.
 
 Use the `dashed` value, but there is no precise control over the length of `dash` and `gap`.
 
-## opacity
+### opacity
 
 Corresponds to the CSS [opacity](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity) property.
 
-## visibility
+### visibility
 
 Corresponds to the CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web/CSS/visibility) property.
 
-## pointerEvents
+### pointerEvents
 
 Corresponds to the CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) property.
 
@@ -110,19 +110,19 @@ const tooltip = new HTML({
 });
 ```
 
-## transform
+### transform
 
 Corresponds to the [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) property.
 
 Use to generate the matrix string form in the global coordinate system.
 
-## transformOrigin
+### transformOrigin
 
 Corresponds to the [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) property.
 
-# Additional Properties
+## Additional Properties
 
-## x
+### x
 
 The x-axis coordinate of the top-left vertex of the container in the local coordinate system.
 
@@ -132,7 +132,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## y
+### y
 
 The y-axis coordinate of the top-left vertex of the container in the local coordinate system.
 
@@ -142,7 +142,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## innerHTML
+### innerHTML
 
 HTML content, either as a string or as an HTMLElement.
 
@@ -164,7 +164,7 @@ const html = new HTML({
 html.style.innerHTML = '<h1>This is Title</h1>';
 ```
 
-## width
+### width
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
@@ -172,15 +172,15 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 | --- | --- | --- | --- | --- |
 | 'auto' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## height
+### height
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | 'auto' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Methods
+## Methods
 
-## getDomElement()
+### getDomElement()
 
 Gets the container element, e.g. `<div>` in `g-canvas/webgl`, and `<foreignObject>` in `g-svg`.
 
@@ -192,11 +192,11 @@ const $div = html.getDomElement(); // HTMLDivElement
 const $foreignObject = html.getDomElement(); // <foreignObject>
 ```
 
-# Caveats
+## Caveats
 
-## Scenegraph capability
+### Scenegraph capability
 
-### Transformation
+#### Transformation
 
 Most of the scenegraph capabilities are available on HTML, such as [transform operations](/en/docs/api/basic/display-object#transformation-operations).
 
@@ -208,7 +208,7 @@ html.rotate(30); // 旋转
 
 When getting the enclosing box, we will use the native DOM API [getBoundingClientRect](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect), so calling it before the first call before the rendering is done will give incorrect results.
 
-### Node Operations
+#### Node Operations
 
 For HTML elements, it does not make much sense to add other base graphics as its child elements. In this case, you can use [getDomElement](/en/docs/api/basic/html#getdomelement) to get the container element and then perform subsequent DOM operations, such as adding child nodes.
 
@@ -222,7 +222,7 @@ html.appendChild($div);
 html.getDomElement().appendChild($div);
 ```
 
-### Visibility and rendering order
+#### Visibility and rendering order
 
 The hidden displays all work properly.
 
@@ -245,7 +245,7 @@ html1.style.zIndex = 2;
 html2.style.zIndex = 100;
 ```
 
-## Specify width and height
+### Specify width and height
 
 Since [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) requires a specified width and height to be rendered, it can also be modified after being specified at creation time.
 
@@ -254,6 +254,6 @@ html.style.width = 100;
 html.style.height = 100;
 ```
 
-## Animation
+### Animation
 
 Currently, all other basic graphics animations are redrawn after interpolation by Keyframe. For HTML graphics, the ideal situation is obviously to use CSS Animation directly.

@@ -18,21 +18,21 @@ const ellipse = new Ellipse({
 });
 ```
 
-# 继承自
+## 继承自
 
 继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
-## anchor
+### anchor
 
 默认值为 `[0.5, 0.5]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
 
-## transformOrigin
+### transformOrigin
 
 默认值为 `center`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
 
-# 额外属性
+## 额外属性
 
-## cx
+### cx
 
 圆心在局部坐标系下的 x 轴坐标。
 
@@ -42,7 +42,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## cy
+### cy
 
 圆心在局部坐标系下的 y 轴坐标。
 
@@ -52,7 +52,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## rx
+### rx
 
 椭圆的水平半径
 
@@ -62,7 +62,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rx
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## ry
+### ry
 
 椭圆的垂直半径
 

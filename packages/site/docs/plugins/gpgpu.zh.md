@@ -13,7 +13,7 @@ order: -1
 
 在图中节点/边数目达到一定规模时会带来非常可观的性能提升效果。以 pagerank 为例，在 1k 节点和 50w 条边的测试数据中，GPU 版本相较 CPU 版本有 100 倍以上的提升（300ms vs 30s）。
 
-# 安装方式
+## 安装方式
 
 只能配合 `g-webgpu` 渲染器使用：
 
@@ -25,7 +25,7 @@ const webgpuRenderer = new Renderer();
 webgpuRenderer.registerPlugin(new Plugin());
 ```
 
-# 获取 Device
+## 获取 Device
 
 在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/docs/api/canvas#画布特有事件) 事件处理器中，我们可以通过渲染器获取 Device：
 
@@ -42,7 +42,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 });
 ```
 
-# 创建 Kernel
+## 创建 Kernel
 
 因此 g-plugin-gpgpu 插件提供了 Kernel 用于描述计算任务，除了传入上一节获取的 device，还需要通过 computeShader 使用字符串描述：
 
@@ -54,7 +54,7 @@ const kernel = new Kernel(device, {
 });
 ```
 
-# setBinding
+## setBinding
 
 定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
 
@@ -71,7 +71,7 @@ const firstMatrixBuffer = device.createBuffer({
 kernel.setBinding(0, firstMatrixBuffer);
 ```
 
-# dispatch
+## dispatch
 
 使用 [dispatch](https://www.w3.org/TR/WGSL/#dispatch-command) 可以分配线程网格大小，执行计算管线。在矩阵乘法的例子中，如果线程组的大小为 `1 * 1`，网格大小就是 `M * N`：
 

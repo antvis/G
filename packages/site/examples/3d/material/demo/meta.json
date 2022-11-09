@@ -1,0 +1,16 @@
+{
+  "title": {
+    "zh": "材质",
+    "en": "Material"
+  },
+  "demos": [
+    {
+      "filename": "shader-material.js",
+      "title": {
+        "zh": "自定义 Material",
+        "en": "Use ShaderMaterial"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*Nm5iSqYuF0IAAAAAAAAAAAAADmJ7AQ"
+    }
+  ]
+}

@@ -15,11 +15,11 @@ DisplayObject 是所有图形的基类，例如 [Group](/zh/docs/api/basic/group
 -   保留 D3 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/d3)
 -   保留 Observable Plot 的数据处理，[替换渲染层](/zh/docs/guide/diving-deeper/plot)
 
-# 继承自
+## 继承自
 
 [Element](/zh/docs/api/builtin-objects/element)
 
-# id
+## id
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/id
 
@@ -36,7 +36,7 @@ circle.id; // 'my-circle-id'
 canvas.getElementById('my-circle-id'); // circle
 ```
 
-# name
+## name
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
 
@@ -53,7 +53,7 @@ circle.name; // 'my-circle-name'
 canvas.getElementsByName('my-circle-name'); // [circle]
 ```
 
-# className
+## className
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
@@ -98,7 +98,7 @@ group.setAttribute('class', 'my-classname');
 group.class;
 ```
 
-# interactive
+## interactive
 
 是否支持响应[事件](/zh/docs/api/event)，默认为 `true`。在某些不需要支持交互的图形上可以关闭。
 
@@ -123,7 +123,7 @@ circle.interactive = false;
 circle.style.pointerEvents = 'none';
 ```
 
-# 绘图属性
+## 绘图属性
 
 绘图属性通过 `style` 设置，通常包含了填充色、透明度等**通用属性**，不同类型的图形也有自己的**额外属性**，例如在下面的圆角矩形中，填充色 `fill`、描边色 `stroke` 就是通用属性，而矩形的左上角顶点位置`(x, y)`、尺寸 `width/height` 和圆角半径 `radius` 则是额外属性：
 
@@ -157,7 +157,7 @@ rect.style.setProperty('lineWidth', 4);
 rect.style.setProperty('line-width', 4);
 ```
 
-## 位置
+### 位置
 
 图形在局部坐标系下的初始位置，根据图形种类使用不同属性描述，后续也可以通过 [setLocalPosition](/zh/docs/api/display-object#平移) 重新设置。
 
@@ -190,7 +190,7 @@ circle.style.anchor = [0, 0];
 circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 ```
 
-### anchor
+#### anchor
 
 图形的原点（锚点）位置，基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。
 
@@ -212,7 +212,7 @@ circle.style.anchor = '0.5 0.5';
 | --- | --- | --- | --- | --- |
 | `'0 0'` | 所有 | 否 | 否 | `<array>` |
 
-### transform
+#### transform
 
 我们提供了在局部坐标系下进行变换的快捷方式，同时与 [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 保持一致，支持以下[transform-function 变换函数](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function)：
 
@@ -272,7 +272,7 @@ const circle = new Circle({
 circle.translateLocal(100, 100);
 ```
 
-### transformOrigin
+#### transformOrigin
 
 旋转与缩放中心，也称作变换中心，相对于 Bounds 定义。
 
@@ -308,9 +308,9 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 | --- | --- | --- | --- | --- |
 | 不同图形各异 | 所有 | 否 | 否 | `<transform-origin>` |
 
-## 填充
+### 填充
 
-### opacity
+#### opacity
 
 图形整体透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
 
@@ -323,7 +323,7 @@ circle.style.opacity = '0.5';
 | --- | --- | --- | --- | --- |
 | '1' | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
-### fillOpacity
+#### fillOpacity
 
 填充色透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
 
@@ -336,7 +336,7 @@ circle.style.fillOpacity = '0.5';
 | --- | --- | --- | --- | --- |
 | '1' | 所有 | 是 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
-### fill
+#### fill
 
 填充色，支持 `string` 类型，详见 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint)：
 
@@ -349,7 +349,7 @@ circle.style.fill = 'rgb(255, 0, 0)';
 | --- | --- | --- | --- | --- |
 | 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
 
-### fillRule
+#### fillRule
 
 该属性定义了用来确定一个多边形内部区域的算法，支持以下取值：
 
@@ -360,9 +360,9 @@ circle.style.fill = 'rgb(255, 0, 0)';
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*LgwCQ7mL4GoAAAAAAAAAAAAAARQnAQ" alt="fill rule" width="200">
 
-## 描边
+### 描边
 
-### strokeOpacity
+#### strokeOpacity
 
 描边透明度，取值范围为 `[0, 1]`，支持 `number` 与 `string` 两种类型，因此以下两种写法等价：
 
@@ -375,7 +375,7 @@ circle.style.strokeOpacity = '0.5';
 | --- | --- | --- | --- | --- |
 | '1' | 所有 | 是 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
-### stroke
+#### stroke
 
 描边色，支持 `string` 类型，详见 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint)：
 
@@ -388,19 +388,19 @@ circle.style.stroke = 'rgb(255, 0, 0)';
 | --- | --- | --- | --- | --- |
 | 'none' | 所有 | 否 | 是 | [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) |
 
-### strokeWidth
+#### strokeWidth
 
 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-width)保持一致。
 
-### strokeDasharray
+#### strokeDasharray
 
 [lineDash](/zh/docs/api/basic/display-object#linedash) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-dasharray)保持一致。
 
-### strokeDashoffset
+#### strokeDashoffset
 
 [lineDashOffset](/zh/docs/api/basic/display-object#linedash) 的别名，和 [SVG 属性名](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-dashoffset)保持一致。
 
-### lineWidth
+#### lineWidth
 
 描边宽度。与我们熟悉的 [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing) 不同，边框的一半宽度在图形内，一半在图形外。例如下面这个圆的包围盒宽度为：`r + lineWidth / 2 = 110`
 
@@ -418,7 +418,7 @@ circle.style.lineWidth = '1px';
 | --- | --- | --- | --- | --- |
 | '1' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-### lineCap
+#### lineCap
 
 端点样式，支持以下取值：
 
@@ -428,7 +428,7 @@ circle.style.lineWidth = '1px';
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap
 
-### lineJoin
+#### lineJoin
 
 连接处样式，支持以下取值：
 
@@ -438,13 +438,13 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCa
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin
 
-### miterLimit
+#### miterLimit
 
 斜接面限制比例。SVG 和 Canvas2D 的默认值不同，前者为 4 而后者为 10。我们给 [Path](/zh/docs/api/basic/path) [Polyline](/zh/docs/api/basic/polyline) [Polygon](/zh/docs/api/basic/polygon) 这三种图形设置为 4，其余图形设置为 10。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit
 
-### lineDash
+#### lineDash
 
 使用 `number[]` 描述交替绘制的线段和间距。可参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
 
@@ -458,7 +458,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterL
 | --- | --- | --- | --- | --- |
 | 无 | 所有 | 是 | 是 |  |
 
-### lineDashOffset
+#### lineDashOffset
 
 虚线偏移量，`number` 类型，对它进行变换可以实现[蚂蚁线动画](/zh/docs/api/animation/waapi#蚂蚁线)
 
@@ -468,7 +468,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterL
 | --- | --- | --- | --- | --- |
 | '0' | 所有 | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## 阴影
+### 阴影
 
 在图形底部增加阴影效果，支持配置阴影颜色，模糊半径和水平/垂直偏移距离。[示例](/zh/examples/shape#circle)
 
@@ -486,7 +486,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 最后，阴影会对渲染性能造成非常大影响。
 
-### shadowType
+#### shadowType
 
 目前我们支持两种阴影：
 
@@ -495,7 +495,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0uHfQa00ZeYAAAAAAAAAAAAAARQnAQ" width="200" alt="inner shadow">
 
-### shadowColor
+#### shadowColor
 
 阴影色，支持 `string` 类型，例如 `'#1890FF'`。不支持渐变或者纹理写法。
 
@@ -503,7 +503,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 | --- | --- | --- | --- | --- |
 | 无 | 所有 | 否 | 是 | [\<color\>](/zh/docs/api/css/css-properties-values-api#color) |
 
-### shadowBlur
+#### shadowBlur
 
 阴影效果模糊程度，`number` 类型，不允许为负数。越大代表越模糊，为 0 时无模糊效果。
 
@@ -511,7 +511,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 | --- | --- | --- | --- | --- |
 | 无 | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
-### shadowOffsetX
+#### shadowOffsetX
 
 水平方向偏移量，支持 `number` 或 `string` 类型，例如负数让阴影往左移，正数向右
 
@@ -519,7 +519,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 | --- | --- | --- | --- | --- |
 | 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-### shadowOffsetY
+#### shadowOffsetY
 
 垂直方向偏移量，例如负数让阴影往上移，正数向下
 
@@ -527,7 +527,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 | --- | --- | --- | --- | --- |
 | 无 | 所有 | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## 滤镜
+### 滤镜
 
 滤镜（Filter）可以对已生成的图像进行一些处理，例如模糊、高亮、提升对比度等。在 Web 端有以下实现：
 
@@ -552,7 +552,7 @@ circle.style.filter = 'blur(5px) brightness(0.4)'; // 可叠加
 -   可以施加在所有基础图形以及 Group 上
 -   该属性暂不支持动画
 
-### blur
+#### blur
 
 将高斯模糊应用于输入图像。其中 radius 定义了高斯函数的标准偏差值，或者屏幕上有多少像素相互融合，因此较大的值将产生更多的模糊，默认值为 0。该参数可以指定为 CSS 长度，但不接受百分比值。
 
@@ -566,7 +566,7 @@ circle.style.filter = 'blur(5px)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ)
 
-### brightness
+#### brightness
 
 将线性乘法器应用于输入图像，让它变亮或变暗，默认值为 1。值为 0％ 将创建全黑图像。值为 100％ 会使输入保持不变。其他值是效果的线性乘数。如果值大于 100% 提供更明亮的结果。
 
@@ -579,7 +579,7 @@ circle.style.filter = 'brightness(200%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ)
 
-### drop-shadow
+#### drop-shadow
 
 在图像下展示阴影，可以设置阴影颜色、偏移量与模糊效果，依次传入以下参数：
 
@@ -598,7 +598,7 @@ circle.style.filter = 'drop-shadow(16px 16px 10px black)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ)
 
-### contrast
+#### contrast
 
 调节图像的对比度。当数值为 0% 时，图像会完全变黑。当数值为 100% 时，图像没有任何变化。
 
@@ -611,7 +611,7 @@ circle.style.filter = 'contrast(200%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ)
 
-### grayscale
+#### grayscale
 
 将图像转换成灰色的图片。当值为 100% 时，图像会完全变成灰色。 当值为 0% 时，图像没有任何变化。
 
@@ -624,7 +624,7 @@ circle.style.filter = 'grayscale(100%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ)
 
-### saturate
+#### saturate
 
 对图像进行饱和度的处理。当值为 0% 时，图像完全不饱和。当值为 100% 时，图像没有任何变化。
 
@@ -637,7 +637,7 @@ circle.style.filter = 'saturate(100%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ)
 
-### sepia
+#### sepia
 
 对图像进行深褐色处理（怀旧风格）。当值为 100% 时，图像完全变成深褐色。当值为 0% 时，图像没有任何变化。
 
@@ -650,7 +650,7 @@ circle.style.filter = 'sepia(100%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ)
 
-### hue-rotate
+#### hue-rotate
 
 在输入图像上应用色相旋转，可设定图像会被调整的色环角度值。值为 0deg 时图像无变化。
 
@@ -663,7 +663,7 @@ circle.style.filter = 'hue-rotate(180deg)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ)
 
-### invert
+#### invert
 
 反转输入图像的颜色。amount 的值定义转换的比例，100% 代表完全反转，0% 则图像无变化。
 
@@ -676,7 +676,7 @@ circle.style.filter = 'invert(100%)';
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ)
 
-## zIndex
+### zIndex
 
 类似 CSS 的 `zIndex` 属性，用于控制渲染次序，需要注意：
 
@@ -718,7 +718,7 @@ group.setZIndex(100);
 // or group.style.zIndex = 100;
 ```
 
-## visibility
+### visibility
 
 控制图形的可见性，可参考：https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
 
@@ -752,9 +752,9 @@ group.style.visibility = 'visible';
 1. 隐藏的图形仍然可以被拾取，此时需要配合 [pointerEvents](/zh/docs/api/basic/display-object#pointerevents) 使用
 2. 隐藏的元素仍然需要参与包围盒运算，即仍会占据空间。如果想完全移除元素，应该使用 [removeChild](/zh/docs/api/basic/display-object#添加删除节点)
 
-## 裁剪
+### 裁剪
 
-### clipPath
+#### clipPath
 
 使用裁剪方式创建元素的可显示区域，区域内的部分显示，区域外的隐藏。可参考 CSS 的 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)。该属性值可以是任意图形，例如 Circle、Rect 等等。同一个裁剪区域可以被多个图形共享使用。最后，裁剪区域也会影响图形的拾取区域，[示例](/zh/examples/event#shapes)。
 
@@ -814,7 +814,7 @@ image.style.clipPath = null;
 image.setClip(null);
 ```
 
-### 注意事项
+#### 注意事项
 
 裁剪区域图形本身也是支持修改属性的，受它影响，被裁剪图形会立刻重绘。
 
@@ -832,7 +832,7 @@ clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
 
 我们暂不支持复合的裁剪区域，例如自定义图形以及 Group.
 
-## 运动轨迹
+### 运动轨迹
 
 在[路径动画](/zh/docs/api/animation/waapi#路径动画)中，我们可以使用 `offsetPath` 指定一个图形的运动轨迹，配合[动画系统](/zh/docs/api/animation/waapi#路径动画)对 `offsetDistance` 属性应用变换：
 
@@ -866,11 +866,11 @@ const animation = circle.animate(
 );
 ```
 
-### offsetPath
+#### offsetPath
 
 指定路径轨迹，目前支持 [Line](/zh/docs/api/basic/line) [Path](/zh/docs/api/basic/path) 和 [Polyline](/zh/docs/api/basic/polyline) 这三种图形。
 
-### offsetDistance
+#### offsetDistance
 
 从路径起点出发行进的距离，取值范围为 `[0-1]`，0 代表路径起点，1 代表终点。
 
@@ -878,7 +878,7 @@ const animation = circle.animate(
 | --- | --- | --- | --- | --- |
 | '0' | 所有 | 否 | 是 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
-## 鼠标样式
+### 鼠标样式
 
 当鼠标悬停在图形上时，我们可以改变它的样式，通过修改容器的 CSS 样式实现。
 
@@ -893,11 +893,11 @@ const circle = new Circle({
 });
 ```
 
-## 响应交互事件
+### 响应交互事件
 
 我们可以设置图形如何响应交互事件，例如命中拾取时展示鼠标样式，或者增大拾取区域。
 
-### pointerEvents
+#### pointerEvents
 
 设置图形如何响应交互事件，可参考：https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
 
@@ -940,7 +940,7 @@ canvas.document.documentElement.style.pointerEvents = 'none';
 | --- | --- | --- | --- | --- |
 | 'auto' | 所有 | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#关键词) |
 
-### increasedLineWidthForHitTesting
+#### increasedLineWidthForHitTesting
 
 当 [lineWidth](/zh/docs/api/basic/display-object#linewidth) 较小时，可交互区域也随之变小，有时我们想增大这个区域，让“细线”更容易被拾取到。注意该属性并不会影响渲染效果。
 
@@ -958,11 +958,11 @@ line.style.increasedLineWidthForHitTesting = 50;
 | --- | --- | --- | --- | --- |
 | '0' | 所有 | 否 | 否 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-# 变换操作
+## 变换操作
 
 我们提供了一系列变换方法。
 
-## 平移
+### 平移
 
 对于平移操作，我们提供了局部/世界坐标系下，移动绝对/相对距离的 API：
 
@@ -983,7 +983,7 @@ circle.translate(100, 0); // number, number
 circle.translate(100); // number
 ```
 
-## 缩放
+### 缩放
 
 和平移不同，我们无法提供 `setScale` 这样设置世界坐标系下缩放的方法，因此全局坐标系下缩放是只读的，这在 Unity 中称之为 [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
@@ -1008,7 +1008,7 @@ circle.scaleLocal(2); // number
 circle.setLocalScale(-1, 1);
 ```
 
-## 旋转
+### 旋转
 
 在 3D 场景中，旋转可以用矩阵、轴角、欧拉角和四元数表示，它们彼此之间可以互相转换。虽然考虑到未来的扩展性，在 G 内部实现中我们使用了四元数。
 
@@ -1025,7 +1025,7 @@ circle.setLocalScale(-1, 1);
 | getLocalRotation | 无 | `quat` | 获取 **局部坐标系** 下的四元数 |
 | getRotation | 无 | `quat` | 获取 **世界坐标系** 下的四元数 |
 
-## 拉伸
+### 拉伸
 
 在 2D 场景中，可以进行拉伸，在一定方向上以一定角度扭曲元素上的每个点。可参考 [CSS 同名变换函数](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function#skew)。
 
@@ -1034,7 +1034,7 @@ circle.setLocalScale(-1, 1);
 | setLocalSkew | `vec2` | 无     | 在 **局部坐标系** 下，沿着横/纵坐标扭曲元素的角度，单位为 `rad` |
 | getLocalSkew | 无     | `vec2` | 获取 **局部坐标系** 下的扭曲角度，单位为 `rad`                  |
 
-## 设置缩放和旋转中心
+### 设置缩放和旋转中心
 
 除了使用 [transformOrigin](/zh/docs/api/basic/display-object#transformorigin) 属性，还可以手动计算相对于 [anchor](/zh/docs/api/basic/display-object#anchor) 位置的偏移量，再通过 `setOrigin` 重新设置变换中心。
 
@@ -1112,11 +1112,11 @@ circle.style.transformOrigin = '0% 0%';
 
 两者的区别在于 origin 相对于锚点定义，而 transformOrigin 相对于包围盒定义。
 
-# 获取包围盒
+## 获取包围盒
 
 基于不同的[包围盒定义](/zh/docs/api/basic/display-object#包围盒)，我们提供了以下获取方法。
 
-## getGeometryBounds(): AABB | null
+### getGeometryBounds(): AABB | null
 
 获取基础图形的几何包围盒，除了定义所需的样式属性（例如 Circle 的 r，Rect 的 width/height），它不受其他绘图属性（例如 lineWidth，fitler，shadowBlur 等）影响：
 
@@ -1140,7 +1140,7 @@ const group = new Group();
 group.getGeometryBounds(); // null
 ```
 
-## getBounds(): AABB | null
+### getBounds(): AABB | null
 
 合并自身以及子节点在世界坐标系下的 Geometry Bounds。这应当是最常用的计算方式：
 
@@ -1155,7 +1155,7 @@ const circle = new Circle({
 circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 ```
 
-## getRenderBounds(): AABB | null
+### getRenderBounds(): AABB | null
 
 合并自身以及子节点在世界坐标系下的 Render Bounds，在 Geometry Bounds 基础上，受以下样式属性影响： lineWidth，shadowBlur，filter：
 
@@ -1172,11 +1172,11 @@ const circle = new Circle({
 circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
 ```
 
-## getLocalBounds(): AABB | null
+### getLocalBounds(): AABB | null
 
 getBounds 的唯一区别是在父节点的局部坐标系下计算。
 
-## getBBox(): Rect
+### getBBox(): Rect
 
 兼容 [SVG 同名方法](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox)，计算方式等同于 getBounds，区别仅在于返回值类型不同，后者返回的是 AABB，而该方法返回一个 [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect)：
 
@@ -1191,15 +1191,15 @@ interface DOMRect {
 }
 ```
 
-## getBoundingClientRect(): DOMRect
+### getBoundingClientRect(): DOMRect
 
 获取浏览器坐标系下的 Geometry Bounds，应用世界坐标系下的变换后，再加上画布相对于浏览器的偏移量。
 
-# 节点操作
+## 节点操作
 
 在场景图中，我们需要构建父子关系，快速获取父子节点，有时还需要在子树中查询某一类型的节点列表。基于继承关系，每个 DisplayObject 都拥有 [Node](/zh/docs/api/builtin-objects/node) 和 [Element](/zh/docs/api/builtin-objects/element) 能力。
 
-## 简单节点查询
+### 简单节点查询
 
 | 名称            | 属性/方法 | 返回值            | 备注                           |
 | --------------- | --------- | ----------------- | ------------------------------ | ------------------------------------ |
@@ -1216,7 +1216,7 @@ interface DOMRect {
 | ownerDocument   | 属性      | `Document`        | 返回画布入口 Document          |
 | isConnected     | 属性      | `boolean`         | 节点是否被添加到画布中         |
 
-## 高级查询
+### 高级查询
 
 参考 CSS 选择器，我们提供了以下查询方法，查询范围是当前节点的**整棵子树**，并不仅仅是直接的子节点列表，而是所有子孙节点。
 
@@ -1258,7 +1258,7 @@ solarSystem.querySelectorAll('[r=25]');
 solarSystem.findAll((element) => element.style.r === 25);
 ```
 
-## 添加/删除节点
+### 添加/删除节点
 
 以下添加/删除节点能力来自继承的 [Element](/zh/docs/api/builtin-objects/element) 基类。
 
@@ -1305,7 +1305,7 @@ parent.replaceChildren();
 1. 添加节点时会依次触发 ChildInserted 和 Inserted 事件
 2. 删除节点时会依次触发 Removed 和 ChildRemoved 事件，默认会调用 [destroy](/zh/docs/api/basic/display-object#销毁) 销毁自身。如果只是暂时从场景图中移除，后续还可能继续添加回来，可以使用 `remove(false)`
 
-## 克隆节点
+### 克隆节点
 
 方法签名为 `cloneNode(deep?: boolean): this`，可选参数为是否需要深拷贝，返回克隆得到的新节点。
 
@@ -1335,7 +1335,7 @@ clonedCircle.getPosition(); // [10, 20]
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
-## 获取/设置属性值
+### 获取/设置属性值
 
 | 名称         | 参数                         | 返回值 | 备注       |
 | ------------ | ---------------------------- | ------ | ---------- | -------------------- |
@@ -1374,7 +1374,7 @@ circle.style.r = 20;
 circle.style.setProperty('r', 20);
 ```
 
-## 获取解析后的属性值
+### 获取解析后的属性值
 
 部分属性例如 [Rect](/zh/docs/api/basic/rect) 的 width / height 是支持单位的，如果想获取[计算后的值](/zh/docs/api/css/css-typed-om#cssunitvalue)，可以使用 `parsedStyle`：
 
@@ -1392,7 +1392,7 @@ animation.onframe = () => {
 };
 ```
 
-## 销毁
+### 销毁
 
 调用 `destroy()` 将销毁节点。被销毁的节点将无法被再次加入画布渲染。通过 [destroyed](/zh/docs/api/basic/display-object#destroyed) 属性可以判断一个节点是否已经被销毁。
 
@@ -1407,11 +1407,11 @@ circle.destroy();
 3. 移除该节点上的所有事件监听器和动画对象
 4. 将 [destroyed](/zh/docs/api/basic/display-object#destroyed) 标志置为 true
 
-## 状态
+### 状态
 
 通过以下属性可以判断图形当前的状态，例如是否被加入到画布中，是否已经被销毁等。
 
-### isConnected
+#### isConnected
 
 用于判断一个图形是否已经被加入到画布中。
 
@@ -1423,7 +1423,7 @@ canvas.appendChild(circle); // add to canvas
 circle.isConnected; // true
 ```
 
-### ownerDocument
+#### ownerDocument
 
 指向画布的入口 Document。如果还未加入到画布中，返回 null。
 
@@ -1435,7 +1435,7 @@ canvas.appendChild(circle); // add to canvas
 circle.ownerDocument; // canvas.document
 ```
 
-### destroyed
+#### destroyed
 
 用于判断一个图形是否已经被销毁。
 
@@ -1447,7 +1447,7 @@ circle.destroy();
 circle.destroyed; // true
 ```
 
-## 生命周期事件监听
+### 生命周期事件监听
 
 在[事件系统](/zh/docs/api/event)中，我们可以使用类似 DOM Event API 的方式给添加到画布中的节点增加事件监听器。
 
@@ -1483,7 +1483,7 @@ parent.appendChild(child);
 -   ATTR_MODIFIED 修改属性时触发
 -   DESTROY 销毁时触发
 
-# 动画
+## 动画
 
 参考 Web Animations API，可以使用 animate 完成 keyframe 动画，下面是一个 ScaleIn 动画效果：
 

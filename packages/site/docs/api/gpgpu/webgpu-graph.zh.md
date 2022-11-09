@@ -12,11 +12,11 @@ order: 6
 | SSSP     | 1k 节点 5k 边   | 27687.10 ms | 261.60 ms | ~100x    |
 | PageRank | 1k 节点 500k 边 | 13641.50 ms | 130.20 ms | ~100x    |
 
-# 前置条件
+## 前置条件
 
 在使用前需要确认运行环境与数据这两项前置条件。
 
-## WebGPU 运行环境
+### WebGPU 运行环境
 
 目前（2022-3-21）在 Chrome 94 正式版本以上即支持 WebGPU，但由于我们使用最新的 WGSL 语法，推荐更新浏览器到最新版。
 
@@ -34,7 +34,7 @@ document.head.appendChild(tokenElement);
 
 我们的官网已经添加了该 token，因此只需要使用最新版 Chrome 就能正常运行全部算法示例。
 
-## 图数据格式
+### 图数据格式
 
 我们使用 G6 的[图数据格式](https://g6.antv.vision/zh/docs/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)，它也是以下所有算法的第一个固定参数。在内部我们会将其转换成 GPU 内存友好的图存储格式例如 CSR(compressed sparse row)：
 
@@ -65,14 +65,14 @@ const data = {
 
 如果数据格式不满足以上要求，算法将无法正常执行。
 
-# 使用方式
+## 使用方式
 
 我们提供以下两种方式使用：
 
 -   没有 G 的 [Canvas 画布](/zh/docs/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
 -   已有 G 的 [Canvas 画布](/zh/docs/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
 
-## 方法一
+### 方法一
 
 创建一个 WebGPUGraph，内部会完成画布创建、插件注册等一系列初始化工作。完成后直接调用算法：
 
@@ -86,7 +86,7 @@ const graph = new WebGPUGraph();
 })();
 ```
 
-## 方法二
+### 方法二
 
 如果已经在使用 G 的 Canvas 画布进行渲染，可以复用它，并执行以下操作：
 
@@ -126,9 +126,9 @@ const canvas = new Canvas({
 
 以下所有算法均为异步调用。
 
-# Link Analysis
+## Link Analysis
 
-## PageRank
+### PageRank
 
 为图中每一个节点计算 PageRank 得分。
 
@@ -165,9 +165,9 @@ const result = await graph.pageRank(data);
 
 ⚠️ 目前我们的实现需要使用 V \* V 的存储空间，因此节点数量太多会触发 JS 的数组的 [RangeError](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Errors/Invalid_array_length)。
 
-# Traversal
+## Traversal
 
-## SSSP
+### SSSP
 
 单源最短路径，即从一个节点出发，到其他所有节点的最短路径。
 
@@ -232,59 +232,59 @@ const result = await graph.sssp(data, 'A', 'weight');
 | ------ | ------------- | ----------- | --------- | -------- |
 | SSSP   | 1k 节点 5k 边 | 27687.10 ms | 261.60 ms | ~100x    |
 
-## APSP
+### APSP
 
 [Accelerating large graph algorithms on the GPU using CUDA](https://link.zhihu.com/?target=http%3A//citeseerx.ist.psu.edu/viewdoc/download%3Fdoi%3D10.1.1.102.4206%26rep%3Drep1%26type%3Dpdf)
 
-## BFS
+### BFS
 
 -   [Scalable GPU Graph Traversal](https://research.nvidia.com/publication/scalable-gpu-graph-traversal)
 -   https://github.com/rafalk342/bfs-cuda
 -   https://github.com/kaletap/bfs-cuda-gpu
 
-## DFS
+### DFS
 
 https://github.com/divyanshu-talwar/Parallel-DFS
 
-# Nodes clustering
+## Nodes clustering
 
-## K-Means
+### K-Means
 
 -   [A CUDA Implementation of the K-Means Clustering Algorithm](http://alexminnaar.com/2019/03/05/cuda-kmeans.html)
 -   ["Yinyang" K-means and K-nn using NVIDIA CUDA](https://github.com/src-d/kmcuda)
 
-# Community Detection
+## Community Detection
 
-## Louvain
+### Louvain
 
 -   [Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
 -   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.louvain.html
 -   https://github.com/rapidsai/cugraph/tree/branch-22.08/cpp/src/community
 
-## K-Core
+### K-Core
 
 [K-Core Decomposition with CUDA](https://bora.uib.no/bora-xmlui/bitstream/handle/11250/2720504/Master_Thesis_done.pdf?sequence=1)
 
-## Label Propagation
+### Label Propagation
 
 -   [Parallel Graph Component Labelling with GPUs and CUDA](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.618.6084&rep=rep1&type=pdf)
 -   [GPU-Accelerated Graph Label Propagation for Real-Time Fraud Detection](https://bora.uib.no/bora-xmlui/bitstream/handle/11250/2720504/Master_Thesis_done.pdf?sequence=1)
 
-## minimumSpanningTree
+### minimumSpanningTree
 
 -   https://github.com/jiachengpan/cudaMST
 -   https://github.com/Dibyadarshan/GPU-Based-Fast-Minimum-Spanning-Tree
 
-# Similarity
+## Similarity
 
-## Cosine Similarity
+### Cosine Similarity
 
 https://github.com/adamantmc/CudaCosineSimilarity
 
-## Nodes Cosine Similarity
+### Nodes Cosine Similarity
 
-# Others
+## Others
 
-## Cycle Detection
+### Cycle Detection
 
 https://github.com/hamham240/cudaGraph/blob/main/src/algos/cudaCD.cu

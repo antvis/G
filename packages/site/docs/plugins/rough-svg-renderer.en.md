@@ -7,7 +7,7 @@ Hand-drawn style rendering using the SVG version of [rough.js](https://roughjs.c
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
-# Usage
+## Usage
 
 First you need to use the [g-svg](/en/docs/api/renderer/svg) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-svg-renderer](/en/docs/plugins/svg-renderer).
 
@@ -31,11 +31,11 @@ const canvas = new Canvas({
 
 In addition, we support all 2D graphics, among which [Text](/en/docs/api/basic/text), [Image](/en/docs/api/basic/image) and [HTML](/en/docs/api/basic/html) have no hand-drawn style.
 
-# Style properties
+## Style properties
 
 In addition to the style properties of 2D graphics, the configuration items provided byrough.js can also be used.
 
-## opacity
+### opacity
 
 rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer).
 
@@ -47,7 +47,7 @@ Note, however, that `fillOpacity` and `strokeOpacity` do not work because rough.
 circle.style.opacity = 0.5;
 ```
 
-## shadow
+### shadow
 
 rough.js does not support `shadow` related effects, but we do provide them.
 
@@ -62,7 +62,7 @@ circle.style.shadowOffsetX = 0;
 circle.style.shadowOffsetY = 0;
 ```
 
-## rough.js Related Properties
+### rough.js Related Properties
 
 rough.js provides a number of configuration items that affect the hand-drawn effect, all of which work properly.
 
@@ -74,6 +74,6 @@ For example, we can modify the fill style and adjust more configuration items in
 circle.style.fillStyle = 'zigzag';
 ```
 
-# Picking
+## Picking
 
 Non-`solid` fill styles leave a lot of white space, and these blank areas do not trigger interaction events. This is inconsistent with [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer).

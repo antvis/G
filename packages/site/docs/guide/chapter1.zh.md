@@ -13,7 +13,7 @@ order: 1
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 创建节点
+## 创建节点
 
 首先我们从 `@antv/g` 中引入基础图形 [Circle](/zh/docs/api/circle)，我们的节点用它来实现：
 
@@ -37,7 +37,7 @@ const node1 = new Circle({
 
 同样我们可以创建第二个节点。
 
-# 给节点添加文本
+## 给节点添加文本
 
 我们想在节点上展示描述性文本，同样我们从 `@antv/g` 中引入基础图形 [Text](/zh/docs/api/text)：
 
@@ -68,7 +68,7 @@ node1.appendChild(text1);
 node1.setPosition(200, 200);
 ```
 
-# 创建边
+## 创建边
 
 我们从 `@antv/g` 中引入基础图形 [Line](/zh/docs/api/line)，将两个端点连接起来：
 

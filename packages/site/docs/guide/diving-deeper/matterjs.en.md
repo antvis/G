@@ -11,7 +11,7 @@ order: 12
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 注册插件
+## 注册插件
 
 创建一个渲染器并注册插件：
 
@@ -32,7 +32,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 开启 debug
+## 开启 debug
 
 在开发时，我们常常希望能把物理引擎中的世界也渲染出来，便于和“现实世界”对照。
 
@@ -51,7 +51,7 @@ const plugin = new PluginMatterjs({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5XLQ5zRKzkAAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 创建静态地面
+## 创建静态地面
 
 我们使用 [Line](/zh/docs/api/basic/line) 创建一个平地，需要特别注意 [rigid](/zh/docs/plugins/box2d#rigid) 属性，设置为 `static` 表明它不受重力等作用力影响：
 
@@ -67,7 +67,7 @@ const ground = new Line({
 canvas.appendChild(ground);
 ```
 
-# 创建动态弹力球
+## 创建动态弹力球
 
 接下来我们创建一个受重力影响的“弹力球”，其中：
 
@@ -87,7 +87,7 @@ const circle = new Circle({
 canvas.appendChild(circle);
 ```
 
-# 施加外力
+## 施加外力
 
 插件会自动完成仿真过程，你可以看到小球自由落体至地面并弹起。
 

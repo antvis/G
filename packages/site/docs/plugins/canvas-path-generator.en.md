@@ -7,7 +7,7 @@ Use CanvasRenderingContext2D to draw the path of individual shapes, for example 
 
 In addition to being used for final rendering, you also need to draw in the off-screen canvas before using [isPointInPath()](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath) .
 
-# Token
+## Token
 
 The plugin provides two Tokens, which are injected via Token when used.
 
@@ -16,7 +16,7 @@ export const PathGeneratorFactory = Syringe.defineToken('PathGeneratorFactory');
 export const PathGenerator = Syringe.defineToken('PathGenerator');
 ```
 
-## PathGeneratorFactory
+### PathGeneratorFactory
 
 For example, you can currently see the factory method injected into [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer) and [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) in both plugins. You can see that the factory method is injected via the token `PathGeneratorFactory`, and passing [nodeName](/en/docs/api/builtin-objects/node#nodename) will give you the drawing method for the corresponding graphic path: `PathGeneratorFactory`.
 
@@ -27,7 +27,7 @@ private pathGeneratorFactory: (tagName: Shape | string) => PathGenerator<any>;
 const circlePathGenerator = this.pathGeneratorFactory(Shape.CIRCLE);
 ```
 
-## PathGenerator
+### PathGenerator
 
 The path drawing method specific to each base drawing accepts as parameters the CanvasRenderingContext2D context and the parsed drawing style property.
 

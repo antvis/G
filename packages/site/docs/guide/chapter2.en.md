@@ -10,7 +10,7 @@ In the previous section we defined a simple scene, in this section we will learn
 -   [Example of this section](/en/examples/guide#chapter2)
 -   [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# Choosing a renderer
+## Choosing a renderer
 
 First we need to introduce one or more renderers, and if we introduce more than one, we can also switch them [at runtime](/en/docs/guide/diving-deeper/switch-renderer#runtime). In this example we have selected only one Canvas2D renderer:
 
@@ -20,7 +20,7 @@ import { Renderer } from '@antv/g-canvas';
 const renderer = new Renderer();
 ```
 
-# Creating a canvas
+## Creating a canvas
 
 Then we need to create the canvas, using the renderer introduced above:.
 
@@ -33,7 +33,7 @@ const canvas = new Canvas({
 });
 ```
 
-# Adding graphics to the canvas
+## Adding graphics to the canvas
 
 With the canvas, we can add two nodes and an edge from the scene graph to the canvas, but of course we have to wait until the canvas is ready. We have two ways to know when the canvas is ready, either by listening to the [ready event](/en/docs/api/canvas#ready-event) or [waiting for the ready Promise to return](/en/docs/api/canvas#ready).
 
@@ -71,7 +71,7 @@ At this point the effect is normal.
 
 Alternatively, we can manually adjust the `zIndex`.
 
-# Setting the display order
+## Setting the display order
 
 Similar to `zIndex` in CSS, we can manually set the drawing order of the two nodes so that they are higher than the edge (default is 0)：
 

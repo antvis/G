@@ -7,15 +7,15 @@ Provides simple single/multi-line text layout capabilities, with single-line sup
 
 The following properties can be adjusted in this [example](/en/examples/shape#text).
 
-# Inherited from
+## Inherited from
 
 -   [DisplayObject](/en/docs/api/basic/display-object)
 
 The position of a text/text block is described by a text anchor point around which it adjusts itself through properties such as `textBaseline` (single/multi-line), `textAlign` (multi-line), etc.
 
-# Additional Properties
+## Additional Properties
 
-## text
+### text
 
 Text content, which can contain line breaks, e.g. `"test text \n another line"`
 
@@ -23,7 +23,7 @@ Text content, which can contain line breaks, e.g. `"test text \n another line"`
 | --- | --- | --- | --- | --- |
 | '' | - | no | no | [\<string\>](/en/docs/api/css/css-properties-values-api#string) |
 
-## textTransform
+### textTransform
 
 Consistent with [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform), the following enumeration values are supported for text content transformation.
 
@@ -36,7 +36,7 @@ Consistent with [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/We
 | --- | --- | --- | --- | --- |
 | 'none' | - | no | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-## dx / dy
+### dx / dy
 
 Corresponds to the [SVG dx / dy attribute](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/dx) to add offsets in the horizontal and vertical directions.
 
@@ -54,9 +54,9 @@ Both `px` and `em` units are supported, and the default `px` unit when using the
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## Font Related
+### Font Related
 
-### fontFamily
+#### fontFamily
 
 Font type, e.g. `'PingFang SC'` `'Microsoft Yahei'`
 
@@ -66,7 +66,7 @@ Corresponds to the [CSS font-family](https://developer.mozilla.org/en-US/docs/We
 | --- | --- | --- | --- | --- |
 | '' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-### fontSize
+#### fontSize
 
 Corresponds to the [CSS font-size](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size).
 
@@ -74,7 +74,7 @@ Corresponds to the [CSS font-size](https://developer.mozilla.org/en-US/docs/Web/
 | --- | --- | --- | --- | --- |
 | '16px' | - | yes | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-### fontWeight
+#### fontWeight
 
 Corresponds to the [CSS font-weight](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight).
 
@@ -88,7 +88,7 @@ Corresponds to the [CSS font-weight](https://developer.mozilla.org/en-US/docs/We
 | --- | --- | --- | --- | --- |
 | 'normal' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-### fontStyle
+#### fontStyle
 
 Corresponds to the [CSS font-style](https://developer.mozilla.org/en-US/docs/Web/CSS/font-style).
 
@@ -100,7 +100,7 @@ Font style, for example, the image below shows the tilted `italic` effect.
 | --- | --- | --- | --- | --- |
 | 'normal' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-### fontVariant
+#### fontVariant
 
 Corresponds to the [CSS font-variant](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant).
 
@@ -112,9 +112,9 @@ Font style, for example, the following image is the `small-cap` effect.
 | --- | --- | --- | --- | --- |
 | 'normal' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-## Single row layout
+### Single row layout
 
-### textBaseline
+#### textBaseline
 
 Corresponds to the [Canvas textBaseline](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textBaseline).
 
@@ -130,7 +130,7 @@ Using the current position of the text as the anchor point, the following figure
 | --- | --- | --- | --- | --- |
 | 'alphabetic' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-### letterSpacing
+#### letterSpacing
 
 Corresponds to the [Canvas letterSpacing](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/letterSpacing).
 
@@ -138,7 +138,7 @@ Corresponds to the [Canvas letterSpacing](https://developer.mozilla.org/en-US/do
 | --- | --- | --- | --- | --- |
 | '0' | - | yes | no | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## Multi-row layout
+### Multi-row layout
 
 Line feeds occur in the following two cases:
 
@@ -147,7 +147,7 @@ Line feeds occur in the following two cases:
 
 Therefore, both cases need to be considered when parsing raw text. However, when dealing with CJK (Chinese/Japanese/Korean) characters, their special language specification needs to be taken into account. In fact, the CSS `word-break` also provides a value that takes into account the CJK case.
 
-### textAlign
+#### textAlign
 
 Corresponds to the [CSS text-align](https://developer.mozilla.org/en-US/docs/Web/CSS/text-align).
 
@@ -167,11 +167,11 @@ The following figure shows the effect of `left`, `center` and `right` in that or
 | --- | --- | --- | --- | --- |
 | 'left' | - | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-### wordWrap
+#### wordWrap
 
 Whether to turn on automatic line feed, default value is `false`.
 
-### wordWrapWidth
+#### wordWrapWidth
 
 When `wordWrap` is turned on, the line will break beyond that width.
 
@@ -181,7 +181,7 @@ When `wordWrap` is turned on, the line will break beyond that width.
 | --- | --- | --- | --- | --- |
 | '0' | - | yes | no | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-### textOverflow
+#### textOverflow
 
 Used to determine how to prompt the user for the presence of hidden text overflow content, such as direct cropping, appending an ellipsis or a custom string. Need to be used with [wordWrap](/en/docs/api/basic/text#wordwrap), [wordWrapWidth](/en/docs/api/basic/text#wordwrapwidth) and [maxLines](/en/docs/api/ basic/text#maxlines) are used together.
 
@@ -203,7 +203,7 @@ Caution.
 | --- | --- | --- | --- | --- |
 | 'clip' | - | no | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords) |
 
-### maxLines
+#### maxLines
 
 Max lines, text overflow will be truncated, need to use with [wordWrap](/en/docs/api/basic/text#wordwrap), [wordWrapWidth](/en/docs/api/basic/text#wordwrapwidth) and [ textOverflow](/en/docs/api/basic/text#textoverflow) are used together.
 
@@ -215,7 +215,7 @@ The following figure shows limiting text to be displayed on one line and truncat
 | --- | --- | --- | --- | --- |
 | 'Infinity' | - | no | no | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-### lineHeight
+#### lineHeight
 
 Corresponds to the [CSS line-height](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height).
 
@@ -223,15 +223,15 @@ Corresponds to the [CSS line-height](https://developer.mozilla.org/en-US/docs/We
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-### leading
+#### leading
 
 | [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
 | --- | --- | --- | --- | --- |
 | '0' | - | no | no | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Methods
+## Methods
 
-## getLineBoundingRects(): Rectangle[]
+### getLineBoundingRects(): Rectangle[]
 
 Get the bounding box for each line of text, e.g.:
 
@@ -270,7 +270,7 @@ text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
 });
 ```
 
-## isOverflowing
+### isOverflowing
 
 Used to determine if there is overflow content. Useful for Tooltip-like components to determine if the full text needs to be displayed.
 
@@ -286,7 +286,7 @@ And only if the content does overflow, i.e. the [textOverflow](/en/docs/api/basi
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*vGk_TL5e2gEAAAAAAAAAAAAAARQnAQ" alt="text overflow" width="400">
 
-# Loading Fonts
+## Loading Fonts
 
 In addition to the system default fonts, sometimes we want to load third-party fonts.
 
@@ -317,6 +317,6 @@ WebFont.load({
 });
 ```
 
-# More CanvasKit-based configuration items
+## More CanvasKit-based configuration items
 
 CanvasKit provides [enhanced paragraph drawing capabilities](/en/docs/api/renderer/canvaskit#text-paragraphs). We've integrated them into our [g-canvaskit](/en/docs/api/renderer/canvaskit) renderer.

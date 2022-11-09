@@ -13,7 +13,7 @@ In this section, we will learn how to make graphics respond to events, [example 
 
 [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# Activate highlighting
+## Activate highlighting
 
 We want node 1 to respond to an activation event: turn the node red when the mouse is moved in, change the mouse style, and restore it when it is moved out.
 
@@ -43,13 +43,13 @@ const node1 = new Circle({
 
 Our [event system](/en/docs/api/event) is fully compatible with the DOM Event API, which means that it is possible to bind/unbind event listeners, trigger custom events, delegate events, and more using the familiar API on the front-end. Besides the fact that these method names are better remembered, we will see another big advantage of it in the next section.
 
-# Dragging
+## Dragging
 
 Dragging is a common interaction and we want to implement dragging for node 1 while changing the endpoint position of the edge.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ" width="400" alt="dragging">
 
-## Drag and Drop with interact.js
+### Drag and Drop with interact.js
 
 We can certainly drag and drop by combining listening to the base events (pointerup, pointermove, pointerdown). But here we go with a simpler approach. Since our [event system](/en/docs/api/event) is fully compatible with the DOM Event API, we can directly use a web-side off-the-shelf drag-and-drop library such as [interact.js](https://interactjs.io/) to do most of the of the "dirty work". Instead, we only need to do two things:
 
@@ -79,7 +79,7 @@ interact(node1, {
 
 You may have noticed that the mouse style automatically changes to a `move` shape when dragging and dropping, thanks to interact.js. This is possible because [interact.js](https://interactjs.io/) does not assume that it is necessarily running in the real DOM environment. In other words, we can "trick" G's graphics by disguising them as the DOM. By the same token, we can also use gesture libraries like [hammer.js](/en/docs/api/event#directly-hammerjs).
 
-## Change node position
+### Change node position
 
 Back in the `onmove` callback function, we need to change the position of the node, and the offset interact.js already tells us.
 

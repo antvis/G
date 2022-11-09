@@ -7,7 +7,7 @@ order: 5
 
 在 G 中我们同样实现了这个 API，用来监听场景图中的变化。
 
-# 构造函数
+## 构造函数
 
 创建一个 MutationObserver 需要传入一个 callback：
 
@@ -34,7 +34,7 @@ const records = observer.takeRecords();
 observer.disconnect();
 ```
 
-# observe
+## observe
 
 监听场景图中一个节点的变化，可以通过配置选择监听单个节点或者全部子孙节点。
 
@@ -52,13 +52,13 @@ mutationObserver.observe(target[, options])
 -   `attributeOldValue` 当监视节点的属性改动时，将此属性设为 true 将记录任何有改动的属性的上一个值。
 -   `attributeFilter` 要监视的特定属性名称的数组。如果未包含此属性，则对所有属性的更改都会触发变动通知。无默认值。
 
-# disconnect
+## disconnect
 
 断开监听。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver/disconnect
 
-# takeRecords
+## takeRecords
 
 获取变更记录。
 

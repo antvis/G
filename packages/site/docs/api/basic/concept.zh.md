@@ -5,7 +5,7 @@ order: -1
 
 首先需要明确一些概念，例如包围盒、坐标、锚点、变换中心等。了解它们有助于更好地使用具体的 API。
 
-# 层次结构
+## 层次结构
 
 在[场景图](/zh/docs/guide/diving-deeper/scenegraph)中我们了解到可以在图形之间构建父子关系，这种父子关系有时会与我们的直觉相悖，例如给一根直线（[Line](/zh/docs/api/basic/line)）添加一个子节点文本（[Text](/zh/docs/api/basic/text)）：
 
@@ -15,7 +15,7 @@ line.appendChild(text);
 
 但本质上这种层次结构只是定义了一种父子关系，在计算变换时把它考虑进去。例如我们不需要再单独移动直线以及文本，基于这种父子关系，移动直线即可，文本会跟随它移动。在变换过程中，文本相对于直线的位置始终并没有变，即文本在父节点直线的局部坐标系下的坐标没有变。
 
-# 包围盒
+## 包围盒
 
 为了简化计算，我们需要用一个规则的几何体包裹住图形，通常使用[轴对齐包围盒](https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis-aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89)（Axis Aligned Bounding Box），它是一个非旋转的立方体，下图来自：https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis-aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89 ![](https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection/screen_shot_2015-10-16_at_15.11.21.png)
 
@@ -55,7 +55,7 @@ interface AABB {
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RjRuQ7iMtwgAAAAAAAAAAAAAARQnAQ)
 
-# 锚点
+## 锚点
 
 一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/zh/docs/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
 
@@ -80,7 +80,7 @@ rect.style.anchor = [0.5, 0.5];
 rect.getPosition(); // [200, 200]
 ```
 
-# 变换中心
+## 变换中心
 
 对图形进行缩放、旋转变换时，需要指定一个变换中心。例如同样是 `scale(2)`，以圆心作为变换中心与圆的 Geometry Bounds 左上角为变换中心，最终得到的效果完全不一样。在 `gl-matrix` 这样的库中，得到 RTS 变换矩阵通常也需要指定变换中心：
 

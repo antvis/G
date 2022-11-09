@@ -40,29 +40,29 @@ For the line, the default anchor point is defined at the top left vertex of the 
 polyline.getLocalPosition(); // [50, 50]
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-## anchor
+### anchor
 
 The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-## lineWidth
+### lineWidth
 
 Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
-## miterLimit
+### miterLimit
 
 Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
 
-# Additional Properties
+## Additional Properties
 
-## points
+### points
 
 The following two writing methods are supported.
 
@@ -82,7 +82,7 @@ polyline.style.points = [
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
 
-## markerStart
+### markerStart
 
 See the [markerStart](/en/docs/api/basic/line) property of [Line](/en/docs/api/basic/line#markerstart).
 
@@ -105,7 +105,7 @@ const arrowMarker = new Path({
 polyline.style.markerStart = arrowMarker;
 ```
 
-## markerEnd
+### markerEnd
 
 See the [markerEnd](/en/docs/api/basic/line) attribute of [Line](/en/docs/api/basic/line#markerend).
 
@@ -130,7 +130,7 @@ const imageMarker = new Image({
 polyline.style.markerEnd = imageMarker;
 ```
 
-## markerMid
+### markerMid
 
 You can refer to the SVG's [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid).
 
@@ -151,7 +151,7 @@ polyline.style.markerMid = circleMarker;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Rsd9R7U4zdcAAAAAAAAAAAAAARQnAQ" alt="marker mid" width="200">
 
-## markerStartOffset
+### markerStartOffset
 
 You can refer to the [markerStartOffset](/en/docs/api/basic/line#markerstartoffset) property of [Line](/en/docs/api/basic/line).
 
@@ -163,7 +163,7 @@ Moves the marker graphic in the direction of the first line segment of the fold.
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 You can refer to the [markerEndOffset](/en/docs/api/basic/line#markerendoffset) property of [Line](/en/docs/api/basic/line).
 
@@ -175,15 +175,15 @@ Moves the marker graphic in the direction of the last line segment of the fold. 
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Methods
+## Methods
 
-## getTotalLength
+### getTotalLength
 
 Get the length of the polyline.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
-## getPoint
+### getPoint
 
 Get the coordinates of the point on the line in the local or world coordinate system according to the length scale (in the range `[0-1]`).
 
@@ -201,7 +201,7 @@ export type Point = {
 };
 ```
 
-## getPointAtLength
+### getPointAtLength
 
 Returns the point along the path at a given distance, controlled by a second optional parameter in the local or world coordinate system.
 
@@ -216,10 +216,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 polyline.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent
+### getStartTangent
 
 Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 
-## getEndTangent
+### getEndTangent
 
 Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`

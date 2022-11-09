@@ -18,6 +18,6 @@ group.translate(100, 0);
 group.getElementsByTagName('circle'); // [circle]
 ```
 
-# Inherited from
+## Inherited from
 
 -   [DisplayObject](/en/docs/api/basic/display-object)

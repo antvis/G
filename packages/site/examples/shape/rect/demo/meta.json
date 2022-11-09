@@ -1,0 +1,16 @@
+{
+  "title": {
+    "zh": "矩形",
+    "en": "Rectangle"
+  },
+  "demos": [
+    {
+      "filename": "rect.js",
+      "title": {
+        "zh": "矩形",
+        "en": "Rectangle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*owKfQKVFG1wAAAAAAAAAAABkARQnAQ"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ Drag and drop based on [PointerEvents](/en/docs/api/event#interaction events). I
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
-# Usage
+## Usage
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
@@ -17,7 +17,7 @@ const canvasRenderer = new CanvasRenderer();
 canvasRenderer.registerPlugin(new Plugin());
 ```
 
-# Plugin configuration items
+## Plugin configuration items
 
 We provide the following configuration items that can be passed in when creating plugins, for example [overlap](/en/docs/plugins/dragndrop#overlap).
 
@@ -27,7 +27,7 @@ new Plugin({
 });
 ```
 
-## isDocumentDraggable
+### isDocumentDraggable
 
 Since there is no "style" on [Document](/en/docs/api/builtin-objects/document), when we want to drag and drop on a blank area of the canvas, we cannot do so.
 
@@ -57,7 +57,7 @@ canvas.addEventListener('drag', function (e) {
 
 In the above example we have `e.target === canvas.document` to avoid moving non-[Document](/en/docs/api/builtin-objects/document) elements like "soccer". element also causes the camera to move.
 
-## isDocumentDroppable
+### isDocumentDroppable
 
 Similarly, if we want to make [Document](/en/docs/api/builtin-objects/document) a "placeable area", we can use this configuration item.
 
@@ -81,7 +81,7 @@ canvas.addEventListener('drop', function (e) {
 });
 ```
 
-## dragstartDistanceThreshold
+### dragstartDistanceThreshold
 
 We provide the following configurations for what conditions are met to determine `dragstart`: based on drag distance and time, respectively. Only if all these conditions are met, a series of drag events such as `dragstart` will be triggered.
 
@@ -95,7 +95,7 @@ const plugin = new Plugin({
 });
 ```
 
-## dragstartTimeThreshold
+### dragstartTimeThreshold
 
 This configuration item is used to configure the detection threshold of drag and drop time in milliseconds, and only ** greater than ** this value will be passed. The default value is 0.
 
@@ -107,18 +107,18 @@ const plugin = new Plugin({
 });
 ```
 
-## overlap
+### overlap
 
 Used to determine if the graph in the drag is in the `dropzone`, supports the following two values.
 
 -   `'pointer'` Default value. The mouse position enters the `dropzone` area by determining
 -   `'center'` The center of the dropzone is determined if the center of the dropzone is in the dropzone.
 
-# Usage
+## Usage
 
 Drag and Drop related events are both bubbly.
 
-## Drag
+### Drag
 
 After registering the plugin, you need to set the `draggable` property to `true` in order to make the graphics support drag and drop. For example, for the soccer ball above.
 
@@ -177,7 +177,7 @@ ball.addEventListener('dragend', function (e) {
 });
 ```
 
-## Drop
+### Drop
 
 Similarly, we can enable `droppable` for graphics that support placement.
 
@@ -222,9 +222,9 @@ gate.addEventListener('drop', function (e) {
 });
 ```
 
-# Cautions
+## Cautions
 
-## Event triggering sequence
+### Event triggering sequence
 
 The `drag` series of events has a sequential triggering order with other interaction events. Take the `pointer` series of events as an example, in a typical drag and drop process, the following events are triggered in sequence.
 
@@ -240,7 +240,7 @@ The `drag` series of events has a sequential triggering order with other interac
 -   `dragend` end of drag
 -   `pointerup` lifting
 
-## Relationship to Click events
+### Relationship to Click events
 
 In the Drag'n'drop implementation of HTML, only one `click` and `drag` event will be triggered at the same time: https://plnkr.co/edit/5mdl7oTg0dPWXIip
 

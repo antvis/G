@@ -5,7 +5,7 @@ redirect_from:
     - /zh/docs/plugins
 ---
 
-# 插件集
+## 插件集
 
 -   渲染相关
     -   [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
@@ -37,9 +37,9 @@ redirect_from:
 -   CSS 选择器
     -   [g-plugin-css-select](/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
-# 使用方式
+## 使用方式
 
-## CDN
+### CDN
 
 首先[引入核心和渲染器](/zh/docs/guide/introduce#cdn-方式)，然后在 HTML 中引入插件的 UMD：
 
@@ -56,7 +56,7 @@ const plugin = new window.G.RoughCanvasRenderer.Plugin();
 
 [Codesandbox 例子](https://codesandbox.io/s/yi-umd-xing-shi-shi-yong-g-yi-ji-cha-jian-zsoln8?file=/index.js)
 
-## NPM Module
+### NPM Module
 
 首先[安装核心包和渲染器](/zh/docs/guide/introduce#npm-module)，然后安装插件，以 [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 为例：
 
@@ -72,7 +72,7 @@ import { Plugin } from '@antv/g-plugin-rough-canvas-renderer';
 renderer.registerPlugin(new Plugin());
 ```
 
-# 与渲染器的关系
+## 与渲染器的关系
 
 `g-canvas/svg/webgl` 这些渲染器本质上是由一组插件组成，通过插件也可以扩展它们的能力：
 
@@ -83,11 +83,11 @@ renderer.registerPlugin(new Plugin());
 
 在命名方式上，所有的插件名都以 `g-plugin-` 开头。下面我们通过对于 `g-plugin-canvas-renderer` 这个使用 Canvas2D 渲染的插件分析，深入了解一下插件的结构，它也是 `g-canvas` 的核心插件之一。
 
-# 基本结构
+## 基本结构
 
 https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
 
-## package.json
+### package.json
 
 从 `package.json` 的 `peerDependencies` 可以看出，一个插件的最核心依赖就是 `@antv/g`，即 G 的核心层，包含了依赖注入、画布、基础图形、事件等核心对象。
 
@@ -97,7 +97,7 @@ https://github.com/antvis/G/tree/next/packages/g-plugin-canvas-renderer
 },
 ```
 
-## index.js
+### index.js
 
 打开插件的入口文件，我们可以发现一个继承了 `AbstractRendererPlugin` 的插件需要实现两个方法：
 
@@ -133,7 +133,7 @@ export class Plugin extends AbstractRendererPlugin {
 
 这里我们注册了一个 `CanvasRendererPlugin`，让我们继续深入看看。
 
-## CanvasRendererPlugin
+### CanvasRendererPlugin
 
 通过 `mana-syringe` 提供的 `inject` 可以获取我们关心的对象，例如创建画布时的原始配置、默认相机、上下文等服务，注入依赖由容器完成。
 
@@ -191,6 +191,6 @@ apply(renderingService: RenderingService) {
 
 所有插件都遵循以上的结构实现。
 
-# 插件之间的关系
+## 插件之间的关系
 
 插件之间也会存在依赖关系，例如 `g-plugin-gpgpu` 就依赖 `g-plugin-device-renderer`。在独立构建 UMD 时需要排除掉依赖，详见[构建说明]()。

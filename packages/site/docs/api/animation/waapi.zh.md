@@ -57,13 +57,13 @@ const scaleInCenter = circle.animate(
 }
 ```
 
-# Animation
+## Animation
 
 一个动画对象通常由两部分组成：target 目标图形和 KeyframeEffect 动画效果。前者在通过 `object.animate()` 创建时已经指定，后者又由两部分组成：一组 Keyframe 和 EffectTiming。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation
 
-## 创建
+### 创建
 
 通过 `DisplayObject.animate()` 可以创建一个 Animation 对象：
 
@@ -83,7 +83,7 @@ canvas.appendChild(circle);
 const animation = circle.animate(keyframes, options);
 ```
 
-### keyframes
+#### keyframes
 
 支持 [KeyframeFormats](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats)
 
@@ -109,7 +109,7 @@ circle.animate(
 
 keyframes 数组中的元素为 [Keyframe](/zh/docs/api/animation/waapi#keyframe)。
 
-### options
+#### options
 
 `options` 支持两种类型：
 
@@ -125,9 +125,9 @@ circle.animate(keyframes, {
 circle.animate(keyframes, 100);
 ```
 
-## 属性
+### 属性
 
-### effect
+#### effect
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
 
@@ -139,13 +139,13 @@ const effect = animation.effect;
 effect.getTiming().ease = 'linear';
 ```
 
-### startTime
+#### startTime
 
 获取动画开始时间。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/startTime
 
-### currentTime
+#### currentTime
 
 获取或设置动画相对于时间线的当前时间。
 
@@ -161,7 +161,7 @@ animation.currentTime = newTime;
 
 在该[示例](/zh/examples/animation#offset-path)中，可以随时修改改属性，由于该动画单次执行时间为 3500ms，缓动函数又是线性，因此小圆形会回到路径对应的位置，再继续移动。
 
-### playState
+#### playState
 
 返回动画的运行状态。当一些手动控制方法（例如 `pause()`）被调用后，状态发生改变。
 
@@ -172,13 +172,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation/playState
 -   paused 动画处于暂停状态
 -   finished 动画运行完毕.
 
-### pending
+#### pending
 
 动画正在等待一些异步任务完成，例如正在暂停一个运行中的动画。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/pending
 
-### ready
+#### ready
 
 返回一个动画准备开始时 resolve 的 Promise。
 
@@ -191,7 +191,7 @@ animation.ready.then(() => {
 });
 ```
 
-### finished
+#### finished
 
 返回一个动画结束时 resolve 的 Promise。
 
@@ -234,7 +234,7 @@ Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
   );
 ```
 
-### onfinish
+#### onfinish
 
 设置动画完成后的回调函数，类似 [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) 事件。[示例](/zh/examples/animation#lifecycle)
 
@@ -253,7 +253,7 @@ animation.onfinish = function (e) {
 -   currentTime 动画当前时间
 -   timelineTime 时间线时间
 
-### onframe
+#### onframe
 
 处于运行中的动画，在每一帧结束后调用，此时属性已经完成插值。如果动画处于暂停、未开始或者结束状态不会被调用。[示例](/zh/examples/animation#onframe)
 
@@ -264,7 +264,7 @@ animation.onframe = function (e) {
 };
 ```
 
-### playbackRate
+#### playbackRate
 
 动画播放的速率，默认值为 1
 
@@ -283,11 +283,11 @@ animation.playbackRate *= 0.9;
 animation.playbackRate *= 1.1;
 ```
 
-## 方法
+### 方法
 
 通过以下方法可以手动控制动画的运行状态，例如暂停、重启、结束等。[示例](/zh/examples/animation#lifecycle)
 
-### play()
+#### play()
 
 开始或者继续动画。当动画处于 `finished` 状态时，调用它会重启动画。
 
@@ -296,7 +296,7 @@ animation.play();
 animation.playState; // 'running'
 ```
 
-### pause()
+#### pause()
 
 暂停动画
 
@@ -307,7 +307,7 @@ animation.pause();
 animation.playState; // 'paused'
 ```
 
-### finish()
+#### finish()
 
 将动画的运行时间调整到最后（和运行方向有关）。
 
@@ -318,19 +318,19 @@ animation.finish();
 animation.playState; // 'finished'
 ```
 
-### cancel()
+#### cancel()
 
 清除该动画效果，将 `startTime` 和 `currentTime` 设置为 `null`
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/cancel
 
-### reverse()
+#### reverse()
 
 翻转动画运行方向，效果等同于设置 playbackRate 为 -1。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/reverse
 
-### updatePlaybackRate()
+#### updatePlaybackRate()
 
 控制动画运行速率，默认速率为 1，[示例](/zh/examples/animation#easing)：
 
@@ -342,13 +342,13 @@ animation.updatePlaybackRate(-1); // 反向
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate
 
-# KeyframeEffect
+## KeyframeEffect
 
 动画效果，可以通过 `getTiming()` 获取该效果对应的时间配置对象。由两部分组成：一组 Keyframe 和 [EffectTiming](/zh/docs/api/animation/waapi#effecttiming)。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
 
-## target
+### target
 
 返回当前处于动画中的图形
 
@@ -362,7 +362,7 @@ const animation = circle.animate({
 animation.effect.target; // circle
 ```
 
-## getTiming()
+### getTiming()
 
 返回 [EffectTiming](/zh/docs/api/animation/waapi#effecttiming) 对象
 
@@ -373,7 +373,7 @@ const timing = animation.effect.getTiming();
 timing.ease = 'linear';
 ```
 
-## getComputedTiming()
+### getComputedTiming()
 
 返回 [ComputedEffectTiming](/zh/docs/api/animation/waapi#effecttiming) 对象，它与 [EffectTiming](/zh/docs/api/animation/waapi#effecttiming) 的区别在于前者会把后者的一些字面量计算后返回：
 
@@ -382,7 +382,7 @@ timing.ease = 'linear';
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming
 
-## updateTiming()
+### updateTiming()
 
 更新 [EffectTiming](/zh/docs/api/animation/waapi#effecttiming) 属性，例如以下两种写法等价：
 
@@ -395,7 +395,7 @@ animation.updateTiming({ ease: 'linear' });
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 
-# Keyframe
+## Keyframe
 
 在开头的例子中，我们定义了两个 Keyframe：
 
@@ -410,7 +410,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 ],
 ```
 
-## 支持变换的属性
+### 支持变换的属性
 
 目前支持对以下属性进行变换 [示例](/zh/examples/animation#multiple-attributes)：
 
@@ -464,7 +464,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 -   `calc()`。例如 `translate(calc(100% + 10px))`
 -   `perspective`
 
-## offset
+### offset
 
 关键帧的偏移量，取值范围为 `[0-1]`。
 
@@ -482,7 +482,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 ],
 ```
 
-## easing
+### easing
 
 可以通过 `easing` 指明相邻 keyframe 之间的缓动函数：
 
@@ -495,7 +495,7 @@ circle.animate(
 
 内置缓动函数详见 [easing](/zh/docs/api/animation/waapi#easing-1)
 
-## 常见的动画效果
+### 常见的动画效果
 
 一些常见的动画效果，例如 fadeIn 等等，可以参考 https://github.com/wellyshen/use-web-animations/tree/master/src/animations
 
@@ -510,7 +510,7 @@ export default {
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ)
 
-# EffectTiming
+## EffectTiming
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
 
@@ -518,7 +518,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
 const timing = animation.effect.getTiming();
 ```
 
-## delay
+### delay
 
 开始动画前的延迟，以毫秒为单位，默认值为 0，因此动画会立即开始。
 
@@ -530,7 +530,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay
 
 **是否必须**：`false`
 
-## direction
+### direction
 
 动画在时间线上的运行方向，也会影响到每次迭代结束后的行为。通过该属性我们可以实现往复运动的效果。
 
@@ -549,7 +549,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/direction
 -   alternate 每次迭代结束后更换方向，例如第一次迭代从前往后，第二次迭代从后往前
 -   alternate-reverse 每次迭代结束后更换方向，例如第一次迭代从后往前，第二次迭代从前往后
 
-## duration
+### duration
 
 动画运行时长，以毫秒为单位，默认为 `auto`，和 0 效果相同。
 
@@ -563,7 +563,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/duration
 
 **说明** 不能为负数
 
-## easing
+### easing
 
 缓动函数，默认为 `linear`，我们也内置了一系列常用函数。[示例](/zh/examples/animation#easing)
 
@@ -598,7 +598,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing
 
 当以上内置缓动函数无法满足时，可以通过 `easingFunction` 手动传入自定义函数。
 
-## easingFunction
+### easingFunction
 
 自定义缓动函数。在绝大多数情况下都不需要使用到这个属性，内置缓动函数基本能满足需求。
 
@@ -623,7 +623,7 @@ timing.easingFunction = (x) => {
 };
 ```
 
-## endDelay
+### endDelay
 
 动画结束前的延迟，以毫秒为单位，默认值为 0，因此动画运行完毕会立即结束。
 
@@ -645,7 +645,7 @@ const animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale
 });
 ```
 
-## fill
+### fill
 
 该属性规定了图形在动画处于非运行状态（例如动画开始前，结束后）时的展示效果。支持以下值：
 
@@ -672,7 +672,7 @@ const animation = circle.animate(
 );
 ```
 
-## iterations
+### iterations
 
 循环次数，默认值为 1，也可以取大于 0 的小数。当我们想让动画一直运行下去时，可以取 `Infinity`。
 
@@ -684,7 +684,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
 
 **是否必须**：`false`
 
-## iterationStart
+### iterationStart
 
 从何处开始执行动画，例如动画总是从 0 开始运行，设置为 0.5 代表动画会从当中开始运行。
 
@@ -696,7 +696,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
 
 **是否必须**：`false`
 
-# ComputedEffectTiming
+## ComputedEffectTiming
 
 继承了 [EffectTiming](/zh/docs/api/animation/waapi#effecttiming) 的所有属性，同时包含一些只读的、计算后的额外属性。
 
@@ -704,23 +704,23 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
 const computedTiming = animation.effect.getComputedTiming();
 ```
 
-## endTime
+### endTime
 
 动画的预计结束时间，需要考虑前后延迟。计算方式为：[delay](/zh/docs/api/animation/waapi#delay) + [activeDuration](/zh/docs/api/animation/waapi#activeduration) + [endDelay](/zh/docs/api/animation/waapi#enddelay)
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
 
-## activeDuration
+### activeDuration
 
 动画效果运行的预计时长，单位毫秒。计算方式为 [duration](/zh/docs/api/animation/waapi#duration) \* [iterations](/zh/docs/api/animation/waapi#iterations)
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
 
-## localTime
+### localTime
 
 同 [currentTime](/zh/docs/api/animation/waapi#currenttime)，单位毫秒。
 
-## progress
+### progress
 
 返回在当前 iteration 内的进度，取值范围为 `[0-1]`。当动画不在运行中时返回 null。
 
@@ -732,11 +732,11 @@ animation.onframe = (e) => {
 };
 ```
 
-## currentIteration
+### currentIteration
 
 返回动画当前循环执行的次数，从 0 开始。当动画不在运行中时返回 null。
 
-# 其他类型的 Transition
+## 其他类型的 Transition
 
 我们熟悉的缓动函数（又称 Tween）是一种基于当前运行时间的动画效果，即使能够自定义缓动函数，仍然有一些动画效果无法实现。例如现已被广泛使用的 Spring 效果，在 [React Spring Visualizer](https://react-spring-visualizer.com/) 中可以看到该动画效果并非仅仅依靠当前运行时间，而是一种基于物理弹簧属性（自重、摩擦力等）的效果： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6MaCQbloUQQAAAAAAAAAAAAAARQnAQ)
 
@@ -762,7 +762,7 @@ const animation = image.animate([{ transform: 'rotate(0)' }, { transform: 'rotat
 });
 ```
 
-# 路径动画
+## 路径动画
 
 让图形沿着某个路径移动是一个常见的需求，在 CSS 中通过 [MotionPath](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Motion_Path) 实现：
 
@@ -815,7 +815,7 @@ circle.animate(
 
 [完整示例](/zh/examples/animation#offset-path)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ)
 
-# 蚂蚁线
+## 蚂蚁线
 
 在 PS 中常见的套索工具就是一种“蚂蚁线”效果。
 
@@ -836,7 +836,7 @@ circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
 
 [完整示例](/zh/examples/animation#marching-ants)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ)
 
-# 笔迹动画
+## 笔迹动画
 
 一种常见的动画效果是让描边的轨迹从无到有展现出来，[lineDash](/api/basic/display-object#linedash) 属性指定了描边实线和间隔的长度，笔迹初始状态“无”可以用 `[0, length]` 表示，而完整状态可以用 `[length, 0]` 表示。其中描边的长度可以通过图形上的方法取得，例如 Path 的 [getTotalLength](/zh/docs/api/basic/path#gettotallength-number) 方法：
 
@@ -852,7 +852,7 @@ path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
 
 [完整示例](/zh/examples/animation#line-dash)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ)
 
-# 形变动画
+## 形变动画
 
 在很多 SVG 相关的库中都能看到形变动画的例子，例如：
 
@@ -883,7 +883,7 @@ path.animate([{ path: path1 }, { path: path2 }], {
 
 [完整示例](/zh/examples/animation#morph)效果如下： ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ)
 
-## 基础图形变换
+### 基础图形变换
 
 由于只能对 path 属性进行变换，对于其他基础图形例如 Circle、Rect、Line，我们提供了工具方法 [convertToPath](/zh/docs/api/builtin-objects/utils#converttopath) 进行转换：
 
@@ -918,7 +918,7 @@ starPath.scale(0.2); // 先缩放
 const pathString = convertToPath(starPath); // 再转换成 path 字符串
 ```
 
-## 注意事项
+### 注意事项
 
 在形变动画中，我们暂不支持多于两组 keyframes，例如：
 
@@ -952,6 +952,6 @@ animation1.finished.then(() => {
 });
 ```
 
-# [WIP] 高性能动画
+## [WIP] 高性能动画
 
 在 `g-webgl` 中支持基于 WebGL Transform Feedback 的 GPU 动画。

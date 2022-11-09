@@ -57,13 +57,13 @@ Developers familiar with CSS Transform/Animation will be familiar with it. Its C
 }
 ```
 
-# Animation
+## Animation
 
 An animation object usually consists of two parts: a target and a KeyframeEffect animation. The former is specified when it is created with `object.animate()`, and the latter consists of two parts: a set of Keyframe and EffectTiming.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation
 
-## Creation
+### Creation
 
 We can create an Animation object with `displayObject.animate()`.
 
@@ -83,7 +83,7 @@ canvas.appendChild(circle);
 const animation = circle.animate(keyframes, options);
 ```
 
-### keyframes
+#### keyframes
 
 [KeyframeFormats](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats)
 
@@ -109,7 +109,7 @@ circle.animate(
 
 The elements in the keyframes array are [Keyframe](/en/docs/api/animation/waapi#keyframe).
 
-### options
+#### options
 
 `options` supports two types.
 
@@ -125,9 +125,9 @@ circle.animate(keyframes, {
 circle.animate(keyframes, 100);
 ```
 
-## Properties
+### Properties
 
-### effect
+#### effect
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
 
@@ -139,13 +139,13 @@ const effect = animation.effect;
 effect.getTiming().ease = 'linear';
 ```
 
-### startTime
+#### startTime
 
 Get the start time of the animation.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/startTime
 
-### currentTime
+#### currentTime
 
 Get or set the current time of the animation relative to the timeline.
 
@@ -160,7 +160,7 @@ animation.currentTime = newTime;
 
 In this [example](/en/examples/animation#offset-path), you can change the properties at any time. Since the single execution time of this animation is 3500ms, and the jogging function is linear, the small circle will return to the position corresponding to the path, and then continue to move.
 
-### playState
+#### playState
 
 Returns the running state of the animation. The state is changed when some manual control methods (e.g. `pause()`) are called.
 
@@ -171,13 +171,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation/playState
 -   `'paused'` Animation is paused.
 -   `'finished'` Animation is finished.
 
-### pending
+#### pending
 
 The animation is waiting for some asynchronous task to complete, such as pausing a running animation.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/pending
 
-### ready
+#### ready
 
 Returns a Promise that resolves when the animation is ready to start. https://developer.mozilla.org/en-US/docs/Web/API/Animation/ready
 
@@ -188,7 +188,7 @@ animation.ready.then(() => {
 });
 ```
 
-### finished
+#### finished
 
 Returns a Promise that resolves at the end of the animation.
 
@@ -233,7 +233,7 @@ Or to complete a set of sequential animations, such as having a circle move firs
 })();
 ```
 
-### onfinish
+#### onfinish
 
 Set the callback function when the animation is finished, similar to [animationend](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/animationend_event) event. [example](/en/examples/animation#lifecycle)
 
@@ -252,7 +252,7 @@ The event object in the callback function is [AnimationPlaybackEvent](https://de
 -   `currentTime`
 -   `timelineTime`
 
-### onframe
+#### onframe
 
 Called for animations that are running, at the end of each frame, when the properties have finished interpolating. It will not be called if the animation is paused, not started or finished. [example](/en/examples/animation#onframe)
 
@@ -263,7 +263,7 @@ animation.onframe = function (e) {
 };
 ```
 
-### playbackRate
+#### playbackRate
 
 The rate of the animation playback, the default value is 1.
 
@@ -282,11 +282,11 @@ animation.playbackRate *= 0.9;
 animation.playbackRate *= 1.1;
 ```
 
-## Functions
+### Functions
 
 The following methods allow you to manually control the running state of the animation, such as pause, restart, end, etc. [example](/en/examples/animation#lifecycle)
 
-### play()
+#### play()
 
 Start or resume the animation. When the animation is in the `finished` state, call it to restart the animation.
 
@@ -295,7 +295,7 @@ animation.play();
 animation.playState; // 'running'
 ```
 
-### pause()
+#### pause()
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/pause
 
@@ -304,7 +304,7 @@ animation.pause();
 animation.playState; // 'paused'
 ```
 
-### finish()
+#### finish()
 
 Adjust the running time of the animation to the end (related to the running direction).
 
@@ -315,19 +315,19 @@ animation.finish();
 animation.playState; // 'finished'
 ```
 
-### cancel()
+#### cancel()
 
 Clear the animation and set `startTime` and `currentTime` to `null`.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/cancel
 
-### reverse()
+#### reverse()
 
 Flip the animation running direction, the effect is the same as setting playbackRate to -1.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/reverse
 
-### updatePlaybackRate()
+#### updatePlaybackRate()
 
 Controls the animation run rate, the default rate is 1, [example](/en/examples/animation#easing).
 
@@ -339,13 +339,13 @@ animation.updatePlaybackRate(-1); // reverse the playback rate
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate
 
-# KeyframeEffect
+## KeyframeEffect
 
 Animation effect, you can get the timing object corresponding to this effect by `getTiming()`. It consists of two parts: a set of Keyframe and [EffectTiming](/en/docs/api/animation/waapi#effecttiming).
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
 
-## target
+### target
 
 Returns the display object currently in animation.
 
@@ -359,7 +359,7 @@ const animation = circle.animate({
 animation.effect.target; // circle
 ```
 
-## getTiming()
+### getTiming()
 
 Return [EffectTiming](/en/docs/api/animation/waapi#effecttiming) object.
 
@@ -370,7 +370,7 @@ const timing = animation.effect.getTiming();
 timing.ease = 'linear';
 ```
 
-## getComputedTiming()
+### getComputedTiming()
 
 Returns a [ComputedEffectTiming](/en/docs/api/animation/waapi#effecttiming) object, which differs from [EffectTiming](/en/docs/api/animation/waapi#effecttiming) in that the former takes some literal quantities of the latter and returns.
 
@@ -379,7 +379,7 @@ Returns a [ComputedEffectTiming](/en/docs/api/animation/waapi#effecttiming) obje
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming
 
-## updateTiming()
+### updateTiming()
 
 Update the [EffectTiming](/en/docs/api/animation/waapi#effecttiming) attribute, e.g. the following two writeups are equivalent.
 
@@ -392,7 +392,7 @@ animation.updateTiming({ ease: 'linear' });
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/updateTiming
 
-# Keyframe
+## Keyframe
 
 In the opening example, we defined two Keyframes.
 
@@ -407,7 +407,7 @@ In the opening example, we defined two Keyframes.
 ],
 ```
 
-## Properties that support transformations
+### Properties that support transformations
 
 The following attributes are currently supported for transformations, [example](/en/examples/animation#multiple-attributes).
 
@@ -461,7 +461,7 @@ where transform is consistent with [CSS Transform](https://developer.mozilla.org
 -   `calc()` e.g. `translate(calc(100% + 10px))`
 -   `perspective`
 
-## offset
+### offset
 
 Offset of the keyframe in the range `[0-1]`.
 
@@ -479,7 +479,7 @@ When not specified, the offset is automatically calculated by the adjacent keyfr
 ],
 ```
 
-## easing
+### easing
 
 The easing function between adjacent keyframes can be specified by `easing`.
 
@@ -492,7 +492,7 @@ circle.animate(
 
 The built-in easing function is described in [easing](/en/docs/api/animation/waapi#easing-1)
 
-## Common animation effects
+### Common animation effects
 
 Some common animation effects, such as fadeIn, etc., can be found in https://github.com/wellyshen/use-web-animations/tree/master/src/animations
 
@@ -507,7 +507,7 @@ export default {
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ)
 
-# EffectTiming
+## EffectTiming
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
 
@@ -515,7 +515,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming
 const timing = animation.effect.getTiming();
 ```
 
-## delay
+### delay
 
 The delay, in milliseconds, before starting the animation. The default value is 0, so the animation will start immediately.
 
@@ -527,7 +527,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay
 
 **required**：`false`
 
-## direction
+### direction
 
 The direction in which the animation runs on the timeline also affects the behavior at the end of each iteration. With this property we can achieve the effect of reciprocal motion.
 
@@ -546,7 +546,7 @@ The following values can be taken.
 -   `'alternate'` Change the direction at the end of each iteration, e.g. first iteration from front to back, second iteration from back to front.
 -   `'alternate-reverse'` Change the direction at the end of each iteration, e.g. back to front for the first iteration and front to back for the second iteration.
 
-## duration
+### duration
 
 The duration of the animation, in milliseconds, default is `auto`, same effect as 0.
 
@@ -560,7 +560,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/duration
 
 **description** Cannot be a negative number
 
-## easing
+### easing
 
 The easing function, which defaults to `linear`, we also have a series of common functions built in. [example](/en/examples/animation#easing)
 
@@ -595,7 +595,7 @@ In addition, you can also customize functions like cubic Bezier curves with `cub
 
 When the above built-in easing functions cannot be satisfied, you can manually pass in a custom function via `easingFunction`.
 
-## easingFunction
+### easingFunction
 
 Custom jogging function. In the vast majority of cases there is no need to use this property, and the built-in jogging functions are basically sufficient.
 
@@ -620,7 +620,7 @@ timing.easingFunction = (x) => {
 };
 ```
 
-## endDelay
+### endDelay
 
 The delay before the end of the animation, in milliseconds, default value is 0, so the animation will end as soon as it finishes running.
 
@@ -642,7 +642,7 @@ const animation = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale
 });
 ```
 
-## fill
+### fill
 
 This property specifies how the graph will be displayed when the animation is in a non-running state (e.g. before the animation starts, after it ends). The following values are supported.
 
@@ -669,7 +669,7 @@ const animation = circle.animate(
 );
 ```
 
-## iterations
+### iterations
 
 The number of loops, default value is 1, or we can take a decimal number greater than 0. When we want the animation to run forever, we can take `Infinity`.
 
@@ -681,7 +681,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
 
 **required**：`false`
 
-## iterationStart
+### iterationStart
 
 Where to start the animation, e.g. the animation always starts from 0, set to 0.5 means the animation will start from the middle.
 
@@ -693,7 +693,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
 
 **required**：`false`
 
-# ComputedEffectTiming
+## ComputedEffectTiming
 
 Inherits all the properties of [EffectTiming](/en/docs/api/animation/waapi#effecttiming) and includes some read-only, computed extra properties.
 
@@ -701,23 +701,23 @@ Inherits all the properties of [EffectTiming](/en/docs/api/animation/waapi#effec
 const computedTiming = animation.effect.getComputedTiming();
 ```
 
-## endTime
+### endTime
 
 The estimated end time of the animation, which needs to take into account the delay before and after. Calculated as: [delay](/en/docs/api/animation/waapi#delay) + [activeDuration](/en/docs/api/animation/waapi#activeduration) + [endDelay](/en/docs/api/ animation#enddelay).
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
 
-## activeDuration
+### activeDuration
 
 The estimated duration of the animation effect run, in milliseconds. It is calculated as [duration](/en/docs/api/animation/waapi#duration) \* [iterations](/en/docs/api/animation/waapi#iterations)
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
 
-## localTime
+### localTime
 
 Same as [currentTime](/en/docs/api/animation/waapi#currenttime), in milliseconds.
 
-## progress
+### progress
 
 Returns the progress within the current iteration, in the range `[0-1]`. Returns null when the animation is not running.
 
@@ -729,11 +729,11 @@ animation.onframe = (e) => {
 };
 ```
 
-## currentIteration
+### currentIteration
 
 Returns the number of times the animation is currently looped, starting from 0. Returns null when the animation is not running.
 
-# Other Transition
+## Other Transition
 
 The familiar easing function (aka Tween) is an animation effect based on the current runtime, but even if you can customize the jogging function, there are still some animation effects that cannot be implemented. For example, the now widely used Spring effect can be seen in the [React Spring Visualizer](https://react-spring-visualizer.com/) which does not rely solely on the current runtime, but is an effect based on physical spring properties (self-weight, friction, etc.).
 
@@ -751,7 +751,7 @@ There are also libraries like https://react-spring.io/.
 
 https://blog.maximeheckel.com/posts/the-physics-behind-spring-animations
 
-So how do you implement this non-jogging effect using CSS Animation or WAAPI? This issue has been discussed in the W3C for a long time: https://github.com/w3c/csswg-drafts/issues/229. We currently have the spring family of transform effects built in, but do not provide configuration of the spring parameters yet [example](/en/examples/animation# easing).
+So how do you implement this non-jogging effect using CSS Animation or WAAPI? This issue has been discussed in the W3C for a long time: https://github.com/w3c/csswg-drafts/issues/229. We currently have the spring family of transform effects built in, but do not provide configuration of the spring parameters yet [example](/en/examples/animation## easing).
 
 ```js
 const animation = image.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }], {
@@ -761,7 +761,7 @@ const animation = image.animate([{ transform: 'rotate(0)' }, { transform: 'rotat
 });
 ```
 
-# Path Animation
+## Path Animation
 
 Moving graphics along a path is a common requirement, and is accomplished in CSS via [MotionPath](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Motion_Path).
 
@@ -810,7 +810,7 @@ circle.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nk1YSrbkQPMAAAAAAAAAAAAAARQnAQ" width="400" alt="path animation">
 
-# Marching Ant Animation
+## Marching Ant Animation
 
 The common lasso tool in PS is an "Marching Ant" effect.
 
@@ -832,7 +832,7 @@ circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400" alt="marching ant animation">
 
-# Stroke Animation
+## Stroke Animation
 
 A common animation effect is to show the stroke from nothing to something. The [lineDash](/api/basic/display-object#linedash) attribute specifies the length of the solid line and interval of the stroke, and the initial state of the stroke, `nothing', can be represented by `[0, length]`, while the full state can be represented by `[length, 0]`. The length of the stroke can be obtained by graphical methods, such as Path's [getTotalLength](/en/docs/api/basic/path#gettotallength-number) method.
 
@@ -850,7 +850,7 @@ path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400" alt="stroke animation">
 
-# Morping
+## Morping
 
 Examples of morping animation can be found in many SVG-related libraries, such as
 
@@ -882,7 +882,7 @@ path.animate([{ path: path1 }, { path: path2 }], {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qCHaTJUg_aEAAAAAAAAAAAAAARQnAQ" width="400" alt="morphing">
 
-## Basic graphic transformation
+### Basic graphic transformation
 
 Since only the path attribute can be transformed, for other base shapes such as Circle, Rect, Line, we provide the tool method [convertToPath](/en/docs/api/builtin-objects/utils#converttopath) for conversion.
 
@@ -919,7 +919,7 @@ starPath.scale(0.2); // do scaling first
 const pathString = convertToPath(starPath); // then do conversion
 ```
 
-## Caveats
+### Caveats
 
 We do not support more than two sets of keyframes for the time being in the shape change animation, e.g.
 
@@ -953,6 +953,6 @@ animation1.finished.then(() => {
 });
 ```
 
-# [WIP] High Performance Animation
+## [WIP] High Performance Animation
 
 Support for WebGL Transform Feedback-based GPU animations in `g-webgl`.

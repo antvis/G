@@ -20,7 +20,7 @@ order: 1
 -   [官网示例](/zh/examples/scenegraph#hierarchy)
 -   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-tai-yang-xi-li-zi-1bphz)
 
-# 创建场景图
+## 创建场景图
 
 它具有以下层次关系：
 
@@ -92,7 +92,7 @@ moonOrbit.appendChild(moon);
 canvas.getElementsByName('sun'); // [sun]
 ```
 
-# 确定位置
+## 确定位置
 
 此时我们使用 [setPosition](/zh/docs/api/basic/display-object#平移) 将整个太阳系移动到画布中央，基于场景图内的父子关系，太阳、地球轨道、地球、月球轨道和月球都被移动到了 `(300, 250)`，如下图（左）所示：
 
@@ -117,7 +117,7 @@ moonOrbit.translate(100, 0);
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*XcUqQJowVKMAAAAAAAAAAAAAARQnAQ)
 
-# 旋转起来！
+## 旋转起来！
 
 现在我们需要让地球和月球都旋转起来。首先使用 [addEventListener](/zh/docs/api/event#addeventlistener) 给画布添加一个事件监听器，监听 [AFTER_RENDER](/zh/docs/api/canvas#画布特有事件) 事件，该事件会在每一帧渲染完毕后触发。然后我们分别让太阳系和地球轨道在局部坐标系中沿 Z 轴旋转 1 度（你也可以让地球轨道转的更快点）：
 

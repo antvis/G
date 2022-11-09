@@ -13,7 +13,7 @@ order: 3
 
 [完整 CodeSandbox 例子](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# 激活高亮
+## 激活高亮
 
 我们想让节点 1 响应激活事件：当鼠标移入时将节点变成红色，同时改变鼠标样式，移出后恢复。
 
@@ -45,13 +45,13 @@ const node1 = new Circle({
 
 我们的[事件系统](/zh/docs/api/event)完全兼容 DOM Event API，这意味着可以使用前端熟悉的 API 实现事件监听器的绑定/解绑、触发自定义事件、事件委托等等功能。除了这些方法名更好记外，在下一节中我们还将看到它的另一大优势。
 
-# 拖拽
+## 拖拽
 
 拖拽是一个常见的交互动作，我们想实现对于节点 1 的拖拽功能，同时改变边的端点位置：
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5irUQKZPTVoAAAAAAAAAAAAAARQnAQ)
 
-## 使用 interact.js 实现拖拽
+### 使用 interact.js 实现拖拽
 
 我们当然可以通过组合对基础事件（pointerup、pointermove、pointerdown）的监听来实现拖拽。但这里我们用一种更简单的方法，由于我们的[事件系统](/zh/docs/api/event)完全兼容 DOM Event API，因此可以直接使用 Web 端现成的拖拽库，例如 [interact.js](https://interactjs.io/) 来完成绝大部分“脏活累活”。而我们只需要做两件事：
 
@@ -82,7 +82,7 @@ interact(node1, {
 
 你可能注意到了，在拖拽时鼠标样式自动变成了 `move` 的形状，这完全是 interact.js 的功劳。之所以能这么做，是因为 [interact.js](https://interactjs.io/) 并不假设自身一定运行在真实的 DOM 环境。换言之，我们可以将 G 的图形伪装成 DOM 来“欺骗”它们。同样的道理，我们也可以直接使用 [hammer.js](/zh/docs/api/event#直接使用-hammerjs) 这样的手势库。
 
-## 改变节点位置
+### 改变节点位置
 
 回到 `onmove` 回调函数中，我们需要改变节点的位置，而偏移量 interact.js 已经告诉我们了：
 

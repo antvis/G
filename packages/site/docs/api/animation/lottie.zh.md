@@ -9,7 +9,7 @@ order: 2
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*NVmwSb89Y3kAAAAAAAAAAAAAARQnAQ" alt="lottie player" width="400">
 
-# 使用方式
+## 使用方式
 
 首先安装播放器：
 
@@ -33,11 +33,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 });
 ```
 
-# API
+## API
 
 播放器提供以下 API。
 
-## loadAnimation
+### loadAnimation
 
 参考 [lottie-web](https://github.com/airbnb/lottie-web/blob/6faae912910b2d7be6c5422ef4621f3933c19d60/player/js/animation/AnimationManager.js#L227) 的同名方法，用于加载 Lottie 文件创建 [LottieAnimation](/zh/docs/api/animation/lottie#lottieanimation)。
 
@@ -56,11 +56,11 @@ import { loadAnimation } from '@antv/g-lottie-player';
 const ballAnimation = loadAnimation(bouncy_ball, { loop: true, autoplay: true });
 ```
 
-## LottieAnimation
+### LottieAnimation
 
 通过 [loadAnimation](/zh/docs/api/animation/lottie#loadanimation) 可以创建该对象，进而对动画过程进行控制。
 
-### render
+#### render
 
 渲染到[画布](/zh/docs/api/canvas)并返回一个 [Group](/zh/docs/api/basic/group) 作为容器，添加到画布或者任意已挂载的元素下，随后可以对其进行变换：
 
@@ -78,7 +78,7 @@ wrapper.translate(100, 100);
 
 值得注意的是，和动画一样需要在[画布初始化完成后](/zh/docs/api/canvas#ready)进行。
 
-### play
+#### play
 
 开始播放
 
@@ -86,7 +86,7 @@ wrapper.translate(100, 100);
 animation.play();
 ```
 
-### pause
+#### pause
 
 暂停播放
 
@@ -94,7 +94,7 @@ animation.play();
 animation.pause();
 ```
 
-### togglePause
+#### togglePause
 
 如果正在播放则暂停，反之亦然
 
@@ -102,7 +102,7 @@ animation.pause();
 animation.togglePause();
 ```
 
-### stop
+#### stop
 
 结束播放
 
@@ -110,7 +110,7 @@ animation.togglePause();
 animation.stop();
 ```
 
-### goTo
+#### goTo
 
 跳转到指定时刻或帧。
 
@@ -127,7 +127,7 @@ animation.goTo(2000);
 animation.goTo(10, true);
 ```
 
-### getDuration
+#### getDuration
 
 返回持续时间，以毫秒或者帧为单位。
 
@@ -140,7 +140,7 @@ animation.getDuration(); // 2000
 animation.getDuration(true); // 120
 ```
 
-### setSpeed
+#### setSpeed
 
 控制播放速度，默认为 `1`。大于 `1` 表示加速，小于 `1` 表示减速：
 
@@ -149,7 +149,7 @@ animation.getDuration(true); // 120
 animation.setSpeed(2);
 ```
 
-### setDirection
+#### setDirection
 
 `1` 表示正向，`-1` 表示反向。默认正向播放：
 
@@ -158,7 +158,7 @@ animation.setSpeed(1);
 animation.setSpeed(-1);
 ```
 
-### destroy
+#### destroy
 
 销毁全部内部对象，当然同时也会终止动画。
 
@@ -166,7 +166,7 @@ animation.setSpeed(-1);
 animation.destroy();
 ```
 
-### size
+#### size
 
 返回 Lottie 文件尺寸：
 
@@ -174,7 +174,7 @@ animation.destroy();
 animation.size(); // { width: 1080, height: 260 }
 ```
 
-### version
+#### version
 
 返回 Lottie 文件中包含的 [Bodymovin](https://aescripts.com/bodymovin/) 版本
 
@@ -182,9 +182,9 @@ animation.size(); // { width: 1080, height: 260 }
 animation.version();
 ```
 
-# 支持特性
+## 支持特性
 
-## Shapes
+### Shapes
 
 支持 [Shape Layer](https://lottiefiles.github.io/lottie-docs/layers/#shape-layer) 中定义的以下[元素](https://lottiefiles.github.io/lottie-docs/shapes/#shape-element)：
 
@@ -194,35 +194,35 @@ animation.version();
 -   [x] Group
 -   [ ] PolyStar
 
-### Rectangle
+#### Rectangle
 
 会转换成 [Rect](/zh/docs/api/basic/rect) 进行渲染。
 
 https://lottiefiles.github.io/lottie-docs/shapes/#rectangle
 
-### Ellipse
+#### Ellipse
 
 会转换成 [Ellipse](/zh/docs/api/basic/ellipse) 进行渲染。
 
 https://lottiefiles.github.io/lottie-docs/shapes/#ellipse
 
-### Path
+#### Path
 
 会转换成 [Path](/zh/docs/api/basic/path) 进行渲染。
 
 https://lottiefiles.github.io/lottie-docs/shapes/#path
 
-### [WIP] PolyStar
+#### [WIP] PolyStar
 
 https://lottiefiles.github.io/lottie-docs/shapes/#polystar
 
-### Group
+#### Group
 
 会转换成 [Group](/zh/docs/api/basic/group) 进行渲染。
 
 https://lottiefiles.github.io/lottie-docs/shapes/#group
 
-### Transform
+#### Transform
 
 https://lottiefiles.github.io/lottie-docs/concepts/#transform
 
@@ -242,11 +242,11 @@ https://lottiefiles.github.io/lottie-docs/concepts/#transform
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*Nlj4SYJXKccAAAAAAAAAAAAAARQnAQ" alt="transform" width="200">
 
-### [WIP] Offset Path
+#### [WIP] Offset Path
 
 https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
 
-### Style
+#### Style
 
 支持以下样式属性：
 
@@ -254,7 +254,7 @@ https://lottiefiles.github.io/lottie-docs/concepts/#animated-position
 -   [x] Stroke
 -   [x] Gradients
 
-#### Fill
+##### Fill
 
 https://lottiefiles.github.io/lottie-docs/shapes/#fill
 
@@ -263,7 +263,7 @@ https://lottiefiles.github.io/lottie-docs/shapes/#fill
 -   [fillOpacity](/zh/docs/api/basic/display-object#fillopacity) 对应 `o` 字段
 -   [fillRule](/zh/docs/api/basic/display-object#fillrule) 对应 `r` 字段
 
-#### Stroke
+##### Stroke
 
 https://lottiefiles.github.io/lottie-docs/shapes/#stroke
 
@@ -276,7 +276,7 @@ https://lottiefiles.github.io/lottie-docs/shapes/#stroke
 -   [miterLimit](/zh/docs/api/basic/display-object#miterlimit) 对应 `ml` 字段
 -   [lineDash](/zh/docs/api/basic/display-object#linedash) 对应 `d` 字段
 
-#### Gradients
+##### Gradients
 
 https://lottiefiles.github.io/lottie-docs/shapes/#gradients
 
@@ -287,37 +287,37 @@ https://lottiefiles.github.io/lottie-docs/shapes/#gradients
 -   对渐变应用动画
 -   Highlight length & angle (`h` 和 `a` 字段)
 
-### Modifiers
+#### Modifiers
 
-#### [WIP] Repeater
+##### [WIP] Repeater
 
-#### [WIP] Trim Path
+##### [WIP] Trim Path
 
-## Layers
+### Layers
 
 https://lottiefiles.github.io/lottie-docs/layers/#layers
 
-### Solid Color
+#### Solid Color
 
 https://lottiefiles.github.io/lottie-docs/layers/#solid-color-layer
 
-### Image
+#### Image
 
 https://lottiefiles.github.io/lottie-docs/layers/#image-layer https://lottiefiles.github.io/lottie-docs/assets/#image
 
-### [WIP] Text
+#### [WIP] Text
 
 https://lottiefiles.github.io/lottie-docs/layers/#text-layer https://lottiefiles.github.io/lottie-docs/text/
 
-### Precomposition
+#### Precomposition
 
 https://lottiefiles.github.io/lottie-docs/layers/#precomposition-layer https://lottiefiles.github.io/lottie-docs/assets/#precomposition
 
-### [WIP] Merge Paths
+#### [WIP] Merge Paths
 
 https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-paths-property
 
-### Clipping Mask
+#### Clipping Mask
 
 内部会转换成 [clipPath](/zh/docs/api/basic/display-object#clippath) 应用在目标元素上，并支持对其进行路径动画。
 
@@ -328,13 +328,13 @@ https://lottie-animation-community.github.io/docs/specs/layers/shapes/#merge-pat
 
 https://lottie-animation-community.github.io/docs/specs/layers/common/#clipping-masks
 
-## Layer Effects
+### Layer Effects
 
 针对 Layer 的后处理效果暂不支持。
 
 https://lottiefiles.github.io/lottie-docs/effects/#layer-effects
 
-## Expressions
+### Expressions
 
 暂不支持表达式。
 

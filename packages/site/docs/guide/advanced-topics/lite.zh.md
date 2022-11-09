@@ -18,7 +18,7 @@ order: 6
 -   `@antv/g-css-layout-api` 提供 [CSS Layout API]()
 -   `@antv/g-dom-mutation-observer-api` 提供 DOM Mutation Observer API
 
-# 使用方式
+## 使用方式
 
 精简版使用方式和完整版在核心功能使用上完全一致，例如创建画布、基础图形、使用渲染器等：
 
@@ -42,11 +42,11 @@ import '@antv/g-web-animations-api';
 
 其他渐进式功能可使用类似方式按需引入。
 
-# 功能介绍
+## 功能介绍
 
 下面详细介绍下拆分后各部分的功能。
 
-## g-lite
+### g-lite
 
 包含 [画布](/zh/docs/api/canvas)，[基础图形](/zh/docs/api/basic/concept)，[事件系统](/zh/docs/api/event)，[插件系统](/zh/docs/plugins/intro) 等核心功能。
 
@@ -68,7 +68,7 @@ const circle = new Circle({
 });
 ```
 
-## g-camera-api
+### g-camera-api
 
 `@antv/g-lite` 中包含了一个简单的相机实现，但无法使用[相机动作](/zh/docs/api/camera#相机动作)和[相机动画](/zh/docs/api/camera#相机动画)：
 
@@ -79,27 +79,27 @@ camera.createLandmark(); // throw new Error('Method not implemented.');
 
 引入后方可正常使用。
 
-## g-web-animations-api
+### g-web-animations-api
 
 为基础图形提供兼容 [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API) 的[动画能力](/zh/docs/api/animation/waapi)。缺少该功能仍可以调用 `object.animate()` 方法，但无任何效果。
 
-## g-css-typed-om-api
+### g-css-typed-om-api
 
 [CSS Typed OM API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Typed_OM_API) 允许使用 JS 操作解析后的属性值，它也是 CSS Houdini 的基础。以 `width: '50%'` 为例，字符串形式的属性值会被解析成 `CSS.percent(50)`，方便进行下一步的计算。
 
 我们提供了[类似能力](/zh/docs/api/css/css-typed-om)。
 
-## g-css-layout-api
+### g-css-layout-api
 
 参考 [CSS Layout API](https://drafts.css-houdini.org/css-layout-api) 提供[布局能力](/zh/docs/api/css/css-layout-api)。
 
-## g-dom-mutation-observer-api
+### g-dom-mutation-observer-api
 
 在 DOM API 中，当我们想感知 DOM 树节点的修改，例如新节点加入、属性值变更，可以使用 [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)。
 
 在 G 中我们同样实现了这个 [API](/zh/docs/api/builtin-objects/mutation-observer)，用来监听场景图中的变化。
 
-## g-compat
+### g-compat
 
 在基础图形上提供兼容旧版本的方法，大部分在新版中都有兼容 DOM API 的实现。因此不推荐使用这些方法，后续随时可能移除：
 

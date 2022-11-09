@@ -50,25 +50,25 @@ line.style.anchor = [0.5, 0.5];
 line.getLocalPosition(); // [200, 100]
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-## anchor
+### anchor
 
 The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-## lineWidth
+### lineWidth
 
 Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
-# Additional Properties
+## Additional Properties
 
-## x1
+### x1
 
 The x-axis coordinate of the first endpoint in the local coordinate system.
 
@@ -78,7 +78,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## y1
+### y1
 
 The y-axis coordinate of the first endpoint in the local coordinate system.
 
@@ -88,7 +88,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## z1
+### z1
 
 The z-axis coordinate of the first endpoint in the local coordinate system.
 
@@ -96,7 +96,7 @@ The z-axis coordinate of the first endpoint in the local coordinate system.
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## x2
+### x2
 
 The x-axis coordinate of the second endpoint in the local coordinate system.
 
@@ -106,7 +106,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## y2
+### y2
 
 The y-axis coordinate of the second endpoint in the local coordinate system.
 
@@ -116,7 +116,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## z2
+### z2
 
 The z-axis coordinate of the second endpoint in the local coordinate system.
 
@@ -124,11 +124,11 @@ The z-axis coordinate of the second endpoint in the local coordinate system.
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## isBillboard
+### isBillboard
 
 Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`. [example](/en/examples/3d#force-3d)
 
-## markerStart
+### markerStart
 
 You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start) of SVG.
 
@@ -202,7 +202,7 @@ line.style.markerStart = arrowHead;
 line.childNodes; // [Path]
 ```
 
-The "start point" and "end point" can be set to the same marker graph, and internally it will first use [cloneNode](/en/docs/api/builtin-objects/node# clonenode) to generate a new graph. So once we specify a marker graph, subsequent attempts to modify its properties cannot operate on the original graph, but need to be obtained by [childNodes](/en/docs/api/builtin-objects/node#childnodes).
+The "start point" and "end point" can be set to the same marker graph, and internally it will first use [cloneNode](/en/docs/api/builtin-objects/node## clonenode) to generate a new graph. So once we specify a marker graph, subsequent attempts to modify its properties cannot operate on the original graph, but need to be obtained by [childNodes](/en/docs/api/builtin-objects/node#childnodes).
 
 ```js
 line.style.markerStart = arrowhead;
@@ -215,13 +215,13 @@ arrowhead.style.stroke = 'red';
 line.childNodes[0].style.stroke = 'red';
 ```
 
-## markerEnd
+### markerEnd
 
 Add a marker graphic to the "endpoint" of the line, where "endpoint" is the endpoint defined by [x2/y2](/en/docs/api/basic/line#x2).
 
 You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end) of SVG.
 
-## markerStartOffset
+### markerStartOffset
 
 Sometimes we want to adjust the position of the marker shape, so we provide the option to increase the offset along the line by a certain amount, positive offset inward and negative offset outward.
 
@@ -239,7 +239,7 @@ In [example](/en/examples/shape#marker), the endpoints of the line coincide with
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 Adjusts the position of the marker graphic at the "end point".
 
@@ -247,9 +247,9 @@ Adjusts the position of the marker graphic at the "end point".
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Methods
+## Methods
 
-## getTotalLength
+### getTotalLength
 
 Get the length of the line.
 
@@ -259,7 +259,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getTotalLeng
 line.getTotalLength(); // 200
 ```
 
-## getPointAtLength
+### getPointAtLength
 
 Returns the point along the path at a given distance, controlled by a second optional parameter in the local or world coordinate system.
 
@@ -285,7 +285,7 @@ For example, to obtain the coordinates of a point in the local coordinate system
 line.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getPoint
+### getPoint
 
 Get the coordinates of the point on the line in the local or world coordinate system according to the length scale (in the range `[0-1]`).
 
@@ -300,7 +300,7 @@ For example, to get the midpoint of the line defined above.
 line.getPoint(0.5); // Point {x: 300, y: 100}
 ```
 
-# Lines in 3D scenes
+## Lines in 3D scenes
 
 Requires use with [g-webgl](/en/docs/api/renderer/webgl) renderer and [g-plugin-3d](/en/docs/plugins/3d) plug-in.
 

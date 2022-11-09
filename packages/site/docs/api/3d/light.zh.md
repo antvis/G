@@ -13,10 +13,10 @@ order: 3
 import { DirectionalLight } from '@antv/g-plugin-3d';
 // 创建一个平行光
 const light = new DirectionalLight({
-  style: {
-    fill: 'white',
-    direction: [-1, 0, 1],
-  },
+    style: {
+        fill: 'white',
+        direction: [-1, 0, 1],
+    },
 });
 // 加入画布
 canvas.appendChild(light);
@@ -29,7 +29,7 @@ light.translate();
 light.setPosition();
 ```
 
-# 通用属性
+## 通用属性
 
 我们复用 G 中基础图形的部分样式属性，不同光源也有独有的属性。例如我们可以随时改变一个光源的颜色：
 
@@ -37,19 +37,19 @@ light.setPosition();
 light.style.fill = 'red';
 ```
 
-## fill
+### fill
 
 光源颜色
 
-## intensity
+### intensity
 
 光照强度，默认为 `Math.PI`
 
-# 内置光源
+## 内置光源
 
-## 平行光
+### 平行光
 
-### direction
+#### direction
 
 世界坐标系下的方向，类型为 `[number, number, number]`。[示例](/zh/examples/3d#sphere)
 
@@ -57,22 +57,22 @@ light.style.fill = 'red';
 light.style.direction = [-1, 0, 1];
 ```
 
-## 点光源
+### 点光源
 
-## 聚光灯
+### 聚光灯
 
-## 环境光
+### 环境光
 
 严格意义上讲这并不是一种光源，它是一种简单模拟全局光照的手段。当我们想提亮整个场景时，可以使用它。[示例](/zh/examples/3d#sphere)
 
 ```js
 import { AmbientLight } from '@antv/g-plugin-3d';
 const ambientLight = new AmbientLight({
-  style: {
-    fill: 'white',
-  },
+    style: {
+        fill: 'white',
+    },
 });
 canvas.appendChild(ambientLight);
 ```
 
-# 阴影
+## 阴影

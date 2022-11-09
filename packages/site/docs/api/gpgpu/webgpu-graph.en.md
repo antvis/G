@@ -12,11 +12,11 @@ This is a significant improvement over the [CPU serial version](https://github.c
 | SSSP           | 1k Nodes & 5k Edges   | 27687.10 ms          | 261.60 ms            | ~100x    |
 | PageRank       | 1k Nodes & 500k Edges | 13641.50 ms          | 130.20 ms            | ~100x    |
 
-# Pre-requisites
+## Pre-requisites
 
 Before using it, you need to confirm the operating environment and data as two preconditions.
 
-## WebGPU Operating Environment
+### WebGPU Operating Environment
 
 WebGPU is currently (2022-3-21) supported in Chrome 94 official version and above, but since we are using the latest WGSL syntax, it is recommended to update your browser to the latest version.
 
@@ -32,7 +32,7 @@ tokenElement.content = 'AkIL...5fQ==';
 document.head.appendChild(tokenElement);
 ```
 
-## Graph data format
+### Graph data format
 
 We use G6's [graph data format](https://g6.antv.vision/en/docs/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87), which is also the first fixed of all the following algorithms parameters.
 
@@ -63,14 +63,14 @@ const data = {
 
 If the data format does not meet the above requirements, the algorithm will not execute properly.
 
-# Usage
+## Usage
 
 We offer the following two ways to use it.
 
 -   [Canvas](/en/docs/api/canvas) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
 -   There is already a [Canvas](/en/docs/api/canvas) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
 
-## Method 1
+### Method 1
 
 A WebGPUGraph is created and a series of initialization work such as canvas creation and plugin registration is done internally. Once completed, the algorithm is called directly.
 
@@ -83,7 +83,7 @@ const graph = new WebGPUGraph();
 })();
 ```
 
-## Method 2
+### Method 2
 
 If you are already using G's Canvas for rendering, you can reuse it and do the following.
 
@@ -123,9 +123,9 @@ const canvas = new Canvas({
 
 All the following algorithms are called asynchronously.
 
-# Link Analysis
+## Link Analysis
 
-## PageRank
+### PageRank
 
 The list of parameters is as follows.
 
@@ -158,9 +158,9 @@ There is a very significant improvement in larger point-side scenarios.
 | -------------- | --------------------- | -------------------- | -------------------- | -------- |
 | PageRank       | 1k Nodes & 500k Edges | 13641.50 ms          | 130.20 ms            | ~100x    |
 
-# Traversal
+## Traversal
 
-## SSSP
+### SSSP
 
 Single source shortest path, i.e., the shortest path from one node to all other nodes.
 
@@ -177,63 +177,63 @@ Refer to the following CUDA version implementations.
 -   https://github.com/sengorajkumar/gpu_graph_algorithms
 -   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.traversal.sssp.sssp.html
 
-## APSP
+### APSP
 
 [Accelerating large graph algorithms on the GPU using CUDA](https://link.zhihu.com/?target=http%3A//citeseerx.ist.psu.edu/viewdoc/download%3Fdoi%3D10.1.1.102.4206%26rep%3Drep1%26type%3Dpdf)
 
-## BFS
+### BFS
 
 -   [Scalable GPU Graph Traversal](https://research.nvidia.com/publication/scalable-gpu-graph-traversal)
 -   https://github.com/rafalk342/bfs-cuda
 -   https://github.com/kaletap/bfs-cuda-gpu
 
-## DFS
+### DFS
 
 https://github.com/divyanshu-talwar/Parallel-DFS
 
-# Nodes clustering
+## Nodes clustering
 
-## K-Means
+### K-Means
 
 -   [A CUDA Implementation of the K-Means Clustering Algorithm](http://alexminnaar.com/2019/03/05/cuda-kmeans.html)
 -   ["Yinyang" K-means and K-nn using NVIDIA CUDA](https://github.com/src-d/kmcuda)
 
-# Community Detection
+## Community Detection
 
-## Louvain
+### Louvain
 
 -   [Demystifying Louvain’s Algorithm and Its implementation in GPU](https://medium.com/walmartglobaltech/demystifying-louvains-algorithm-and-its-implementation-in-gpu-9a07cdd3b010)
 -   https://docs.rapids.ai/api/cugraph/stable/api_docs/api/cugraph.louvain.html
 -   https://github.com/rapidsai/cugraph/tree/branch-22.08/cpp/src/community
 
-## K-Core
+### K-Core
 
 [K-Core Decomposition with CUDA](https://bora.uib.no/bora-xmlui/bitstream/handle/11250/2720504/Master_Thesis_done.pdf?sequence=1)
 
-## Label Propagation
+### Label Propagation
 
 -   Parallel Graph Component Labelling with GPUs and CUDA
 -   GPU-Accelerated Graph Label Propagation for Real-Time Fraud Detection
 
-## minimumSpanningTree
+### minimumSpanningTree
 
 -   https://github.com/jiachengpan/cudaMST
 -   https://github.com/Dibyadarshan/GPU-Based-Fast-Minimum-Spanning-Tree
 
-# Similarity
+## Similarity
 
-## Cosine Similarity
+### Cosine Similarity
 
 https://github.com/adamantmc/CudaCosineSimilarity
 
-## Nodes Cosine Similarity
+### Nodes Cosine Similarity
 
-# Others
+## Others
 
-## DFS
+### DFS
 
 https://github.com/divyanshu-talwar/Parallel-DFS
 
-## Cycle Detection
+### Cycle Detection
 
 https://github.com/hamham240/cudaGraph/blob/main/src/algos/cudaCD.cu

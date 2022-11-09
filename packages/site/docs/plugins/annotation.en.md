@@ -9,7 +9,7 @@ In addition to rendering the drawing out, sometimes we want to perform transform
 
 [Example](/en/examples/plugins#annotation)
 
-# Installation
+## Installation
 
 This plugin relies on [g-plugin-dragndrop](/en/docs/plugins/dragndrop) for drag-and-drop capabilities, so it needs to be used with the following registration.
 
@@ -21,14 +21,14 @@ renderer.registerPlugin(new PluginDragndrop());
 renderer.registerPlugin(new PluginAnnotation());
 ```
 
-# Usage
+## Usage
 
 The plugin provides two modes which can be switched via [setDrawingMode](/en/docs/plugins/annotation#setdrawingmode).
 
 -   Drawing mode. This mode allows drawing graphics in preset steps.
 -   Edit mode. In this mode, select `selectable` graphics and the corresponding editing component will appear, so you can finish editing operations such as panning and resizing the graphics through component interaction.
 
-## Drawing mode
+### Drawing mode
 
 After entering drawing mode, use [setDrawer](/en/docs/plugins/annotation#setdrawer) to set the drawing tool for the corresponding graph and start drawing. For example, we want to draw a line.
 
@@ -63,11 +63,11 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 });
 ```
 
-### Drawing keypoint
+#### Drawing keypoint
 
 Press the mouse to determine the position of the point, which can then be used to draw any figure such as [Circle](/en/docs/api/basic/circle).
 
-### Drawing rectangles
+#### Drawing rectangles
 
 Press the mouse, drag and drop and then lift to finish drawing.
 
@@ -77,7 +77,7 @@ The following keyboard shortcuts are supported.
 
 -   `esc` to cancel drawing
 
-### Drawing polyline
+#### Drawing polyline
 
 Press the mouse in sequence to determine the vertices, double-click the mouse or successive vertices close to each other is considered to be the end of the drawing, the line between the vertices form the final fold line.
 
@@ -89,7 +89,7 @@ The following keyboard shortcuts are supported.
 -   `shift` + `Z` to undo the latest line segment
 -   `space` to finish drawing
 
-### Drawing polygon
+#### Drawing polygon
 
 Press the mouse in sequence to determine the vertices and close them to form a polygon.
 
@@ -101,7 +101,7 @@ The following keyboard shortcuts are supported.
 -   `shift` + `Z` to undo the latest line segment
 -   `space` to finish drawing
 
-## Edit mode
+### Edit mode
 
 The base graph can be made interactive by turning on `selectable`.
 
@@ -111,7 +111,7 @@ circle.style.selectable = true;
 
 We currently support the following **basic graphics**: [Circle](/en/docs/api/basic/circle)、[Ellipse](/en/docs/api/basic/ellipse)、[Rect](/en/docs/api/basic/rect)、[Image](/en/docs/api/basic/image)、[Line](/en/docs/api/basic/line)、[Polyline](/en/docs/api/basic/polyline)
 
-### Select graphics
+#### Select graphics
 
 We support selecting single or multiple graphics either interactively or via API.
 
@@ -124,7 +124,7 @@ Clicking on the graphic will complete a single selection, which is the most comm
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*kf-wR5_SY4YAAAAAAAAAAAAAARQnAQ" alt="multi-select" width="300">
 
-### Deselect graphics
+#### Deselect graphics
 
 As opposed to selecting a graphic, there are two ways to unselect it.
 
@@ -133,7 +133,7 @@ As opposed to selecting a graphic, there are two ways to unselect it.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
-### Move graphics
+#### Move graphics
 
 After selecting the shape, drag and drop it on the mask to move it.
 
@@ -143,38 +143,38 @@ The corresponding [event]() will be triggered during and after the movement.
 
 You can also use the keyboard up/down/left/right arrow keys to move the drawing after it is selected, and the step length can be configured by [arrowKeyStepLength](/en/docs/plugins/annotation#arrowkeysteplength).
 
-### Resize graphics
+#### Resize graphics
 
 Dragging the anchor point can change the size of the graphic. Take the following figure as an example, when dragging the anchor point in the bottom right corner, it actually fixes the top left corner first, and then modifies the width and height of the image.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gmraRLDxW_kAAAAAAAAAAAAAARQnAQ" alt="resize target">
 
-# Plugin initialization configuration
+## Plugin initialization configuration
 
 When creating a plugin, you can pass in some initialization configuration.
 
-## isDrawingMode
+### isDrawingMode
 
 If or not draw mode, the default value is `true`.
 
-## enableAutoSwitchDrawingMode
+### enableAutoSwitchDrawingMode
 
 Automatically switch in some scenes, the default value is `false`.
 
 -   Clicking on an interactive drawing in drawing mode will automatically switch to editing mode.
 -   Clicking on a blank area in edit mode will automatically switch to draw mode.
 
-## enableDeleteTargetWithShortcuts
+### enableDeleteTargetWithShortcuts
 
 The default value is `false` to delete the selected interactive graphics using keyboard shortcuts.
 
 When enabled, you can use the `Delete` / `Esc` / `Backspace` keys to delete the selected interactive graphics.
 
-## arrowKeyStepLength
+### arrowKeyStepLength
 
 In edit mode, use the keyboard up, down, left and right arrow keys to move the graph in steps, the default value is `4`.
 
-## selectableStyle
+### selectableStyle
 
 Some of the styles of the auxiliary actions component support customization, so you can pass in style configurations during initialization, for example to make the fill color of the mask black.
 
@@ -211,7 +211,7 @@ export interface SelectableStyle {
 
 In addition to specifying it when initializing the plugin, it can be modified at any time later using the [updateSelectableStyle](/en/docs/plugins/annotation#updateselectablestyle) method.
 
-### selectionFill
+#### selectionFill
 
 For the mask fill color, you can refer to [fill](/en/docs/api/basic/display-object#fill) for the value, e.g.
 
@@ -223,11 +223,11 @@ const plugin = new PluginAnnotation({
 });
 ```
 
-### selectionFillOpacity
+#### selectionFillOpacity
 
 For the opacity of the mask fill color, you can refer to [fillOpacity](/en/docs/api/basic/display-object#fillopacity) for the value.
 
-### selectionStroke
+#### selectionStroke
 
 Stroke color of the mask. You can refer to [stroke](/en/docs/api/basic/display-object#stroke) for the value.
 
@@ -239,43 +239,43 @@ const plugin = new PluginAnnotation({
 });
 ```
 
-### selectionStrokeOpacity
+#### selectionStrokeOpacity
 
 Mask stroke opacity, you can refer to [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity) for the value.
 
-### selectionStrokeWidth
+#### selectionStrokeWidth
 
 Stroke width of the mask. You can refer to [strokeWidth](/en/docs/api/basic/display-object#strokewidth) for the value.
 
-### selectionLineDash
+#### selectionLineDash
 
 The mask stroke dashed line. You can refer to [lineDash](/en/docs/api/basic/display-object#linedash) for the value.
 
-### anchorFill
+#### anchorFill
 
 The anchor fill color.
 
-### anchorFillOpacity
+#### anchorFillOpacity
 
 The opacity of the anchor fill color.
 
-### anchorStroke
+#### anchorStroke
 
 The anchor stroke color.
 
-### anchorStrokeOpacity
+#### anchorStrokeOpacity
 
 The opacity of the anchor stroke color.
 
-### anchorStrokeWidth
+#### anchorStrokeWidth
 
 The width of the anchor stroke line.
 
-### anchorSize
+#### anchorSize
 
 The size of the anchor point. For now we only support circular anchors, so this property is equivalent to the radius of a circle.
 
-## drawerStyle
+### drawerStyle
 
 Auxiliary drawing style for the component. The initial value is specified by the constructor `drawStyle` parameter and can be updated by [updateDrawerStyle](/en/docs/plugins/annotation#updatedrawerstyle).
 
@@ -289,31 +289,31 @@ const annotationPlugin = new AnnotationPlugin({
 });
 ```
 
-### rectFill
+#### rectFill
 
 See [fill](/en/docs/api/basic/display-object#fill), the default value is `'none'`.
 
-### rectFillOpacity
+#### rectFillOpacity
 
 See [fillOpacity](/en/docs/api/basic/display-object#fillopacity), the default value is `1`.
 
-### rectStroke
+#### rectStroke
 
 See [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
-### rectStrokeOpacity
+#### rectStrokeOpacity
 
 See [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity), the default value is `1`.
 
-### rectStrokeWidth
+#### rectStrokeWidth
 
 See [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2.5`.
 
-### rectLineDash
+#### rectLineDash
 
 You can refer to [lineDash](/en/docs/api/basic/display-object#linedash), the default value is `6`.
 
-### polylineVertexSize
+#### polylineVertexSize
 
 The size of the drawn vertex of the folded line. For now, we only support circular vertices, so this property is equivalent to the radius of a circle, and the default value is `6`.
 
@@ -321,67 +321,67 @@ In the following figure, the hollow circle is the drawn vertex and the solid lin
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*RDKsRIgEAqIAAAAAAAAAAAAAARQnAQ" alt="draw polyline" width="300">
 
-### polylineVertexFill
+#### polylineVertexFill
 
 See [fill](/en/docs/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
 
-### polylineVertexFillOpacity
+#### polylineVertexFillOpacity
 
 See [fillOpacity](/en/docs/api/basic/display-object#fillopacity), the default value is `1`.
 
-### polylineVertexStroke
+#### polylineVertexStroke
 
 See [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
-### polylineVertexStrokeOpacity
+#### polylineVertexStrokeOpacity
 
 See [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity), the default value is `1`.
 
-### polylineVertexStrokeWidth
+#### polylineVertexStrokeWidth
 
 See [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2`.
 
-### polylineSegmentStroke
+#### polylineSegmentStroke
 
 The color of the drawn line segment of the fold line, see [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
-### polylineSegmentStrokeWidth
+#### polylineSegmentStrokeWidth
 
 The line width of the drawn line segment of the folded line, refer to [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2`.
 
-### polylineActiveVertexSize
+#### polylineActiveVertexSize
 
 The size of the vertex being drawn by the fold. For now we only support circular vertices, so this property is equivalent to the radius of a circle, and the default value is `6`.
 
-### polylineActiveVertexFill
+#### polylineActiveVertexFill
 
 See [fill](/en/docs/api/basic/display-object#fill), the default value is `'#FFFFFF'`.
 
-### polylineActiveVertexFillOpacity
+#### polylineActiveVertexFillOpacity
 
 See [fillOpacity](/en/docs/api/basic/display-object#fillopacity), the default value is `1`.
 
-### polylineActiveVertexStroke
+#### polylineActiveVertexStroke
 
 See [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
-### polylineActiveVertexStrokeOpacity
+#### polylineActiveVertexStrokeOpacity
 
 See [strokeOpacity](/en/docs/api/basic/display-object#strokeopacity), the default value is `0.2`.
 
-### polylineActiveVertexStrokeWidth
+#### polylineActiveVertexStrokeWidth
 
 See [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2`.
 
-### polylineActiveSegmentStroke
+#### polylineActiveSegmentStroke
 
 The fold line is drawing line color, see [stroke](/en/docs/api/basic/display-object#stroke), the default value is `'#FAAD14'`.
 
-### polylineActiveSegmentStrokeWidth
+#### polylineActiveSegmentStrokeWidth
 
 The line width of the line segment being drawn, refer to [strokeWidth](/en/docs/api/basic/display-object#strokewidth), the default value is `2.5`.
 
-# API
+## API
 
 The following APIs can be called through plugin instances, e.g.
 
@@ -392,7 +392,7 @@ circle.style.selectable = true;
 plugin.selectDisplayObject(circle);
 ```
 
-## setDrawingMode
+### setDrawingMode
 
 Sets whether draw mode is enabled.
 
@@ -404,7 +404,7 @@ plugin.setDrawingMode(true);
 plugin.setDrawingMode(false);
 ```
 
-## setDrawer
+### setDrawer
 
 In drawing mode, we provide the ability to draw the following graphics.
 
@@ -420,7 +420,7 @@ plugin.setDrawingMode(true);
 plugin.setDrawer('rect');
 ```
 
-## selectDisplayObject
+### selectDisplayObject
 
 Selects a graphic. Does not apply the cancel operation to other selected graphs.
 
@@ -428,7 +428,7 @@ Selects a graphic. Does not apply the cancel operation to other selected graphs.
 plugin.selectedDisplayObject(circle);
 ```
 
-## deselectDisplayObject
+### deselectDisplayObject
 
 Deselects a graphic.
 
@@ -436,7 +436,7 @@ Deselects a graphic.
 plugin.deselectedDisplayObject(circle);
 ```
 
-## getSelectedDisplayObjects
+### getSelectedDisplayObjects
 
 Get the list of currently selected graphs.
 
@@ -444,7 +444,7 @@ Get the list of currently selected graphs.
 plugin.getSelectedDisplayObjects(); // [circle, path]
 ```
 
-## updateSelectableStyle
+### updateSelectableStyle
 
 Update the [style](/en/docs/plugins/annotation#assist manipulation component style) of the interactive component in real time, e.g. modify the mask fill color in [example](/en/examples/plugins#annotation).
 
@@ -454,7 +454,7 @@ plugin.updateSelectableStyle({
 });
 ```
 
-## updateDrawerStyle
+### updateDrawerStyle
 
 Update the style of the auxiliary drawing component, e.g.
 
@@ -464,7 +464,7 @@ plugin.updateDrawerStyle({
 });
 ```
 
-## markSelectableUIAsDirty
+### markSelectableUIAsDirty
 
 Sometimes the definition of the target graph is modified and needs to be sensed and regenerated by the auxiliary operation component, in which case the method can be called manually.
 
@@ -475,11 +475,11 @@ circle.style.cy = 100;
 plugin.markSelectableUIAsDirty(circle);
 ```
 
-# Events
+## Events
 
 Different events will be triggered in different modes, for example, drawing mode will trigger on plug-ins, while editing mode will trigger on graphics.
 
-## Drawing mode
+### Drawing mode
 
 Unlike the "free drawing" mode of Fabric.js, the plugin listens for events triggered at different drawing stages, gets the geometry information contained in the event object, creates the corresponding shapes and applies custom styles to complete the drawing.
 
@@ -504,13 +504,13 @@ The event object contains the following data, where the key properties are
 plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {});
 ```
 
-### Start drawing
+#### Start drawing
 
-### Drawing
+#### Drawing
 
-### Cancel drawing
+#### Cancel drawing
 
-### Complete drawing
+#### Complete drawing
 
 At the end of the drawing, the auxiliary drawing UI is automatically hidden and we can use the vertex data to draw the final shape.
 
@@ -535,7 +535,7 @@ plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {
 });
 ```
 
-## Edit mode
+### Edit mode
 
 When a drawing is selected, unselected, moved, or changed in size, the corresponding event is triggered.
 
@@ -549,7 +549,7 @@ export enum SelectableEvent {
 }
 ```
 
-### Selected Event
+#### Selected Event
 
 Triggered when the target graphic is selected. In [example](/en/examples/plugins#annotation), we listen to the selected event of the image.
 
@@ -561,7 +561,7 @@ image.addEventListener('selected', () => {});
 image.addEventListener(SelectableEvent.SELECTED, () => {});
 ```
 
-### Deselected Event
+#### Deselected Event
 
 Triggered when the target graphic is deselected. In [example](/en/examples/plugins#annotation), we listen to the deselected event of the image.
 
@@ -573,7 +573,7 @@ image.addEventListener('deselected', () => {});
 image.addEventListener(SelectableEvent.DESELECTED, () => {});
 ```
 
-### Moving Event
+#### Moving Event
 
 When dragging a mask, the target graphic will move with it, and this process will continue to trigger in-motion events, similar to `dragging` in [g-plugin-dragndrop](/en/docs/plugins/dragndrop).
 
@@ -593,7 +593,7 @@ image.addEventListener('moving', (e) => {
 });
 ```
 
-### Moved Event
+#### Moved Event
 
 This event is triggered when the dragging is finished, similar to `dragend` in [g-plugin-dragndrop](/en/docs/plugins/dragndrop).
 
@@ -605,7 +605,7 @@ image.addEventListener('moved', () => {});
 image.addEventListener(SelectableEvent.MOVED, () => {});
 ```
 
-### Modified Event
+#### Modified Event
 
 Dragging and dropping on the anchor point scales the drawing, and this process also continuously triggers modification events.
 

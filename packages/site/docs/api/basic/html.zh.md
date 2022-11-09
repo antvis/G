@@ -27,7 +27,7 @@ canvas.appendChild(html);
 
 之所以一定要指定宽高（至少是初始宽高），是由于 SVG 的 [\<foreignObject\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 元素必须指定否则无法显示。
 
-# DOM 结构
+## DOM 结构
 
 在实现中 g-canvas/webgl 会将 HTML 内容包裹在 `<div>` 中，以 `<canvas>` 的兄弟节点放在容器内。而在 g-svg 中使用 `<foreignObject>` 包裹内容：
 
@@ -50,7 +50,7 @@ canvas.appendChild(html);
 </div>
 ```
 
-# 继承自
+## 继承自
 
 -   [DisplayObject](/zh/docs/api/basic/display-object)
 
@@ -61,33 +61,33 @@ canvas.appendChild(html);
 
 其他样式属性通过 CSS 应用。
 
-## fill
+### fill
 
 对应 CSS [background](https://developer.mozilla.org/zh-CN/docs/Web/CSS/background) 属性。
 
-## stroke
+### stroke
 
 对应 CSS [border-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-color) 属性。
 
-## lineWidth
+### lineWidth
 
 对应 CSS [border-width](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-width) 属性。
 
-## lineDash
+### lineDash
 
 对应 CSS [border-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-style) 属性。
 
 使用 `dashed` 值，但无法精确控制 `dash` 和 `gap` 的长度。
 
-## opacity
+### opacity
 
 对应 CSS [opacity](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity) 属性。
 
-## visibility
+### visibility
 
 对应 CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web/CSS/visibility) 属性。
 
-## pointerEvents
+### pointerEvents
 
 对应 CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) 属性。
 
@@ -110,19 +110,19 @@ const tooltip = new HTML({
 });
 ```
 
-## transform
+### transform
 
 对应 CSS [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) 属性。
 
 使用生成全局坐标系下的 matrix 字符串形式。
 
-## transformOrigin
+### transformOrigin
 
 对应 CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin) 属性。
 
-# 额外属性
+## 额外属性
 
-## x
+### x
 
 局部坐标系下，容器左上角顶点的 x 轴坐标。
 
@@ -132,7 +132,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## y
+### y
 
 局部坐标系下，容器左上角顶点的 y 轴坐标。
 
@@ -142,7 +142,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## innerHTML
+### innerHTML
 
 **类型**： `string | HTMLElement`
 
@@ -166,7 +166,7 @@ const html = new HTML({
 html.style.innerHTML = '<h1>This is Title</h1>';
 ```
 
-## width
+### width
 
 容器宽度，默认值为 `'auto'`。
 
@@ -176,7 +176,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## height
+### height
 
 容器宽度，默认值为 `'auto'`。
 
@@ -186,9 +186,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-# 额外方法
+## 额外方法
 
-## getDomElement()
+### getDomElement()
 
 获取容器元素，例如在 g-canvas/webgl 中会得到 `<div>`，而在 g-svg 中会得到 `<foreignObject>`：
 
@@ -200,11 +200,11 @@ const $div = html.getDomElement(); // HTMLDivElement
 const $foreignObject = html.getDomElement(); // <foreignObject>
 ```
 
-# 注意事项
+## 注意事项
 
-## 场景图能力
+### 场景图能力
 
-### 变换
+#### 变换
 
 绝大部分场景图能力都可以在 HTML 上使用，例如[变换操作](/zh/docs/api/basic/display-object#变换操作)：
 
@@ -216,7 +216,7 @@ html.rotate(30); // 旋转
 
 在获取包围盒时，我们会使用原生 DOM API [getBoundingClientRect](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect)，因此在首次渲染完成之前调用会得到不正确的结果。
 
-### 节点操作
+#### 节点操作
 
 对于 HTML 元素，添加其他基础图形作为它的子元素意义不大。此时可以使用 [getDomElement](/zh/docs/api/basic/html#getdomelement) 获取容器元素后再进行后续的 DOM 操作，例如添加子节点：
 
@@ -230,7 +230,7 @@ html.appendChild($div);
 html.getDomElement().appendChild($div);
 ```
 
-### 可见性与渲染次序
+#### 可见性与渲染次序
 
 隐藏展示都可以正常使用：
 
@@ -253,7 +253,7 @@ html1.style.zIndex = 2;
 html2.style.zIndex = 100;
 ```
 
-## 指定宽高
+### 指定宽高
 
 由于 [foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject) 需要指定宽高才能渲染，在创建时指定后也可以进行修改：
 
@@ -262,6 +262,6 @@ html.style.width = 100;
 html.style.height = 100;
 ```
 
-## 动画
+### 动画
 
 目前其他基础图形动画都是通过 Keyframe 插值后重绘完成。对于 HTML 图形，理想状况显然是直接使用 CSS Animation。

@@ -5,7 +5,7 @@ order: 7
 
 Bind events based on the DOM API.
 
-# Usage
+## Usage
 
 Every renderer is built-in by default, so there is no need to introduce it manually.
 

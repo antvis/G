@@ -22,29 +22,29 @@ const polygon = new Polygon({
 });
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-## anchor
+### anchor
 
 The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-## lineWidth
+### lineWidth
 
 Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
-## miterLimit
+### miterLimit
 
 Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
 
-# Additional Properties
+## Additional Properties
 
-## points
+### points
 
 The following two writing methods are supported.
 
@@ -64,7 +64,7 @@ polygon.style.points = [
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
 
-## markerStart
+### markerStart
 
 See [markerStart](/en/docs/api/basic/polyline#markerstart) property of [Polyline](/en/docs/api/basic/polyline).
 
@@ -89,7 +89,7 @@ const arrowMarker = new Path({
 polygon.style.markerStart = arrowMarker;
 ```
 
-## markerEnd
+### markerEnd
 
 See [markerEnd](/en/docs/api/basic/polyline#markerend) property of [Polyline](/en/docs/api/basic/polyline).
 
@@ -114,7 +114,7 @@ const imageMarker = new Image({
 polygon.style.markerEnd = imageMarker;
 ```
 
-## markerMid
+### markerMid
 
 You can refer to the [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid) of SVG.
 
@@ -135,7 +135,7 @@ polygon.style.markerMid = circleMarker;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jaFPRbpzpJwAAAAAAAAAAAAAARQnAQ" alt="marker mid" width="200">
 
-## markerStartOffset
+### markerStartOffset
 
 See the [markerStartOffset](/en/docs/api/basic/polyline#markerstartoffset) property of [Polyline](/en/docs/api/basic/polyline).
 
@@ -147,7 +147,7 @@ Moving the marker graphic in the direction of the first line segment of the poly
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 See the [markerEndOffset](/en/docs/api/basic/polyline#markerendoffset) property of [Polyline](/en/docs/api/basic/polyline).
 

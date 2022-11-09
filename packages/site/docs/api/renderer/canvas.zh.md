@@ -5,11 +5,11 @@ order: 0
 
 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 绘制 2D 图形。会在容器中创建一个 `<canvas>` 元素。
 
-# 使用方式
+## 使用方式
 
 和 `@antv/g` 一样，也有以下两种使用方式。
 
-## NPM Module
+### NPM Module
 
 安装 `@antv/g-canvas` 后可以从中获取渲染器：
 
@@ -27,7 +27,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN 方式
+### CDN 方式
 
 ```html
 <script
@@ -41,7 +41,7 @@ const canvas = new Canvas({
 const canvasRenderer = new window.G.Canvas2D.Renderer();
 ```
 
-# 初始化配置
+## 初始化配置
 
 在创建渲染器时，可以传入一些初始化配置项，例如：
 
@@ -52,7 +52,7 @@ const renderer = new Renderer({
 });
 ```
 
-## enableDirtyRectangleRendering
+### enableDirtyRectangleRendering
 
 是否开启“脏矩形”渲染。开启后将大幅提升 Canvas2D 环境下的渲染性能。默认开启。
 
@@ -73,7 +73,7 @@ const renderer = new Renderer({
 
 但在可视化这类相对静态的场景下就显得有意义了，例如在触发拾取后只更新图表的局部，其余部分保持不变。
 
-## enableDirtyRectangleRenderingDebug
+### enableDirtyRectangleRenderingDebug
 
 用于 debug，默认关闭，开启后画布会触发 `CanvasEvent.DIRTY_RECTANGLE` 事件并携带脏矩形信息，可用于后续可视化。
 
@@ -107,7 +107,7 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 });
 ```
 
-# 内置插件
+## 内置插件
 
 该渲染器内置了以下插件：
 
@@ -115,11 +115,11 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 拾取图形
 -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
 
-# 可选插件
+## 可选插件
 
 除了内置插件，还有以下可选插件。
 
-## 手绘风格渲染
+### 手绘风格渲染
 
 使用 [rough.js](https://roughjs.com/) 的 Canvas 版本进行手绘风格的渲染。
 
@@ -129,7 +129,7 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
-# 服务端渲染
+## 服务端渲染
 
 该渲染器依赖 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染能力，并不局限在浏览器端，因此也可以使用 [node-canvas](https://github.com/Automattic/node-canvas) 进行服务端渲染。
 

@@ -15,11 +15,11 @@ We tried to make it as compatible as possible with [DOM Element](https://develop
 -   [Taking over D3's rendering implementation](/en/docs/guide/diving-deeper/d3)
 -   [Taking over Observable Plot's rendering implementation](/en/docs/guide/diving-deeper/plot)
 
-# Inherited from
+## Inherited from
 
 [Element](/en/docs/api/builtin-objects/element)
 
-# id
+## id
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/id
 
@@ -36,7 +36,7 @@ circle.id; // 'my-circle-id'
 canvas.getElementById('my-circle-id'); // circle
 ```
 
-# name
+## name
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
 
@@ -53,7 +53,7 @@ circle.name; // 'my-circle-name'
 canvas.getElementsByName('my-circle-name'); // [circle]
 ```
 
-# className
+## className
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
@@ -98,7 +98,7 @@ group.setAttribute('class', 'my-classname');
 group.class;
 ```
 
-# interactive
+## interactive
 
 Whether to support responding to [events](/en/docs/api/event), default is `true`. Can be turned off on some graphics that do not need to support interaction.
 
@@ -122,7 +122,7 @@ It is recommended to use the [pointerEvents](/en/docs/api/basic/display-object#p
 circle.style.pointerEvents = 'none';
 ```
 
-# Drawing Properties
+## Drawing Properties
 
 The drawing properties are set by `style` and usually contain **generic properties** such as fill color, transparency, etc. Different types of shapes also have their own **additional properties**, for example, in the following rounded rectangle, the fill color `fill` and stroke color `stroke` are generic properties, while the top-left vertex position `(x, y)`, the size `width/height` and the radius `radius` of the rectangle are additional properties.
 
@@ -156,7 +156,7 @@ rect.style.setProperty('lineWidth', 4);
 rect.style.setProperty('line-width', 4);
 ```
 
-## Position
+### Position
 
 The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/docs/api/display-object#panning).
 
@@ -189,7 +189,7 @@ circle.style.anchor = [0, 0];
 circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 ```
 
-### anchor
+#### anchor
 
 The position of the origin (anchor) of the graph, based on [Geometry Bounds](/en/docs/api/basic/display-object#enclosing-box), is defined in the range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper-left corner of Geometry Bounds and `[1, 1]` represents the lower right corner.
 
@@ -211,7 +211,7 @@ circle.style.anchor = '0.5 0.5';
 | --- | --- | --- | --- | --- |
 | `'0 0'` | all | no | no | `<array>` |
 
-### transform
+#### transform
 
 We provide shortcuts for transformations in local coordinate systems, while keeping in line with [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform), supporting the following [transform-function transformations function](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function).
 
@@ -271,7 +271,7 @@ const circle = new Circle({
 circle.translateLocal(100, 100);
 ```
 
-### transformOrigin
+#### transformOrigin
 
 Rotation and scaling centers, also called transform origin, are defined relative to Bounds.
 
@@ -307,9 +307,9 @@ As with [anchor](/en/docs/api/basic/display-object#anchor), the default value va
 | --- | --- | --- | --- | --- |
 | - | all | no | no | `<transform-origin>` |
 
-## Fill
+### Fill
 
-### opacity
+#### opacity
 
 The overall transparency of the graph, with values in the range `[0, 1]`, supports both `number` and `string` types, so the following two ways of writing it are equivalent.
 
@@ -322,7 +322,7 @@ circle.style.opacity = '0.5';
 | --- | --- | --- | --- | --- |
 | '1' | all | no | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-### fillOpacity
+#### fillOpacity
 
 The fill color transparency, in the range `[0, 1]`, supports both `number` and `string` types, so the following two ways of writing are equivalent.
 
@@ -335,7 +335,7 @@ circle.style.fillOpacity = '0.5';
 | --- | --- | --- | --- | --- |
 | '1' | all | yes | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-### fill
+#### fill
 
 Fill color, supports `string` type, see [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)：
 
@@ -348,7 +348,7 @@ circle.style.fill = 'rgb(255, 0, 0)';
 | --- | --- | --- | --- | --- |
 | 'none' | all | no | yes | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint) |
 
-### fillRule
+#### fillRule
 
 This attribute is a presentation attribute defining the algorithm to use to determine the inside part of a shape.
 
@@ -359,9 +359,9 @@ This [example](/en/examples/shape#polygon) shows the fill effects of `'nonzero'`
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*LgwCQ7mL4GoAAAAAAAAAAAAAARQnAQ" alt="fill rule" width="200">
 
-## Stroke
+### Stroke
 
-### strokeOpacity
+#### strokeOpacity
 
 Stroke transparency, which takes values in the range `[0, 1]`, supports both `number` and `string` types, so the following two ways of writing it are equivalent.
 
@@ -374,7 +374,7 @@ circle.style.strokeOpacity = '0.5';
 | --- | --- | --- | --- | --- |
 | '1' | all | yes | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-### stroke
+#### stroke
 
 Stroke color, supports `string` type, see [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)：
 
@@ -387,19 +387,19 @@ circle.style.stroke = 'rgb(255, 0, 0)';
 | --- | --- | --- | --- | --- |
 | 'none' | all | no | yes | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint) |
 
-### strokeWidth
+#### strokeWidth
 
 Alias of [lineWidth](/en/docs/api/basic/display-object#linewidth), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-width).
 
-### strokeDasharray
+#### strokeDasharray
 
 Alias of [lineDash](/en/docs/api/basic/display-object#linedash), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-dasharray) to be consistent.
 
-### strokeDashoffset
+#### strokeDashoffset
 
 Alias of [lineDashOffset](/en/docs/api/basic/display-object#linedash), and [SVG Attribute Name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/ Attribute/stroke-dashoffset) to be consistent.
 
-### lineWidth
+#### lineWidth
 
 The width of the stroke. Unlike the familiar [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing), half of the width of the border is inside the graphic and half is outside the graphic. For example, the width of the enclosing box for the circle below is: `r + lineWidth / 2 = 110`
 
@@ -417,7 +417,7 @@ circle.style.lineWidth = '1px';
 | --- | --- | --- | --- | --- |
 | '1' | all | yes | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-### lineCap
+#### lineCap
 
 Endpoint style, supporting the following values.
 
@@ -427,7 +427,7 @@ Endpoint style, supporting the following values.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap
 
-### lineJoin
+#### lineJoin
 
 Supporting the following values.
 
@@ -437,13 +437,13 @@ Supporting the following values.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin
 
-### miterLimit
+#### miterLimit
 
 The default value for SVG and Canvas2D is different, the former is 4 and the latter is 10. We set [Path](/en/docs/api/basic/path) [Polyline](/en/docs/api/basic/polyline) [Polygon](/en/docs/api/basic/polygon) to 4 and the rest to 10. api/basic/polygon) These three graphs are set to 4, and the rest are set to 10.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit
 
-### lineDash
+#### lineDash
 
 Use `number[]` to describe the alternate line segments and spacing. Reference can be made to: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
 
@@ -457,7 +457,7 @@ Applying animation to it can achieve [handwriting animation effect](/en/docs/api
 | --- | --- | --- | --- | --- |
 | - | all | yes | yes |  |
 
-### lineDashOffset
+#### lineDashOffset
 
 Dashed line offset, type `number`, transform it to achieve [marching ants animation](/en/docs/api/animation/waapi#marching-ant-animation)
 
@@ -467,7 +467,7 @@ Dashed line offset, type `number`, transform it to achieve [marching ants animat
 | --- | --- | --- | --- | --- |
 | '0' | all | yes | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## Shadow
+### Shadow
 
 Add shadow effect at the bottom of the shape, support configuring shadow color, blur radius and horizontal/vertical offset distance. [example](/en/examples/shape#circle).
 
@@ -485,7 +485,7 @@ Of course outer shadows increase the [Render Bounds](/en/docs/api/basic/concept#
 
 Finally, shadows can have a very big impact on rendering performance.
 
-### shadowType
+#### shadowType
 
 We currently support two kinds of shadow.
 
@@ -494,7 +494,7 @@ We currently support two kinds of shadow.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0uHfQa00ZeYAAAAAAAAAAAAAARQnAQ" width="200" alt="inner shadow">
 
-### shadowColor
+#### shadowColor
 
 Shade color, supports `string` type, for example `'#1890FF'`. Gradient or pattern writing is not supported.
 
@@ -502,7 +502,7 @@ Shade color, supports `string` type, for example `'#1890FF'`. Gradient or patter
 | --- | --- | --- | --- | --- |
 | - | all | no | yes | [\<color\>](/en/docs/api/css/css-properties-values-api#color) |
 
-### shadowBlur
+#### shadowBlur
 
 The blurring degree of the shading effect, `number` type, negative numbers are not allowed. Larger means more blurred, 0 means no blurring effect.
 
@@ -510,7 +510,7 @@ The blurring degree of the shading effect, `number` type, negative numbers are n
 | --- | --- | --- | --- | --- |
 | - | all | no | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-### shadowOffsetX
+#### shadowOffsetX
 
 Horizontal offset, supports `number` or `string` types, e.g. negative numbers move shadows to the left, positive numbers to the right.
 
@@ -518,7 +518,7 @@ Horizontal offset, supports `number` or `string` types, e.g. negative numbers mo
 | --- | --- | --- | --- | --- |
 | - | all | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-### shadowOffsetY
+#### shadowOffsetY
 
 Vertical offset, e.g. a negative number moves the shadow up, a positive number down.
 
@@ -526,7 +526,7 @@ Vertical offset, e.g. a negative number moves the shadow up, a positive number d
 | --- | --- | --- | --- | --- |
 | - | all | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## Filter
+### Filter
 
 Filters can perform some processing on the generated image, such as blurring, highlighting, boosting contrast, etc. The following implementations are available on the web side.
 
@@ -551,7 +551,7 @@ Filters can currently be used in the g-canvas/svg/webgl renderer with the follow
 -   Can be applied to all base graphs and Groups
 -   This property does not support animation at this time
 
-### blur
+#### blur
 
 Applies a Gaussian blur to the input image. where radius defines the standard deviation value of the Gaussian function, or how many pixels on the screen blend into each other so that larger values will produce more blur, with a default value of 0. This parameter can be specified as a CSS length, but does not accept percentage values.
 
@@ -565,7 +565,7 @@ The following figure shows the blurring effect of 2px 4px and 10px in order, [ex
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*rYA_TLechgYAAAAAAAAAAAAAARQnAQ" width="300" alt="blur filter">
 
-### brightness
+#### brightness
 
 Applies a linear multiplier to the input image to make it lighter or darker, with a default value of 1. A value of 0% will create an all-black image. A value of 100% will leave the input unchanged. Other values are linear multipliers of the effect. Values greater than 100% provide brighter results.
 
@@ -578,7 +578,7 @@ The following figure shows the bright effects of 0 100% and 200% in order, [exam
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*LG_pQ6GzA3wAAAAAAAAAAAAAARQnAQ" width="300" alt="brightness filter">
 
-### drop-shadow
+#### drop-shadow
 
 To display the shadows under the image, you can set the shadow color, offset and blur effect by passing in the following parameters in order.
 
@@ -597,7 +597,7 @@ The following figure shows the effect of the above configuration in turn, [examp
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="300" alt="drop-shadow filter">
 
-### contrast
+#### contrast
 
 Adjusts the contrast of the image. When the value is 0%, the image becomes completely black. When the value is 100%, the image does not change at all.
 
@@ -610,7 +610,7 @@ The following figure shows the contrast effect of 0, 1 and 10 in order，[exampl
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gc-1QJYr2awAAAAAAAAAAAAAARQnAQ" width="300" alt="contrast filter">
 
-### grayscale
+#### grayscale
 
 Converts the image to a gray picture. When the value is 100%, the image turns completely gray. When the value is 0%, the image does not change at all.
 
@@ -623,7 +623,7 @@ The following figure shows the grayscale effect of 0 50% and 100% in order, [exa
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OadOQLl_bH0AAAAAAAAAAAAAARQnAQ" alt="grayscale filter" width="300">
 
-### saturate
+#### saturate
 
 Saturation is applied to the image. When the value is 0%, the image is not saturated at all. When the value is 100%, there is no change in the image.
 
@@ -636,7 +636,7 @@ The following figure shows the saturation effect at 0 50% and 100% in order, [ex
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8J4IRJTJcVUAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
-### sepia
+#### sepia
 
 Applies sepia processing to the image (nostalgic style). When the value is 100%, the image becomes completely sepia. When the value is 0%, the image does not change at all.
 
@@ -649,7 +649,7 @@ The following figure shows the results of 0 50% and 100% processing in order, [e
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*79UARqYrimcAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
-### hue-rotate
+#### hue-rotate
 
 Applying hue rotation to the input image sets the value of the color ring angle at which the image will be adjusted. The image does not change when the value is 0deg.
 
@@ -662,7 +662,7 @@ The following figure shows the effect of 0, 90deg and 180deg processing in turn,
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*k8rsSbW4WRwAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
-### invert
+#### invert
 
 Inverts the color of the input image. amount defines the percentage of conversion, 100% means complete inversion, 0% means no change in the image.
 
@@ -675,7 +675,7 @@ The following figure shows in turn the effect of 0, 50% and 100% inversions, [ex
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N1OjR6pR0CMAAAAAAAAAAAAAARQnAQ" alt="saturate filter" width="300">
 
-## zIndex
+### zIndex
 
 Similar to CSS's `z-index` property, used to control the rendering order, it needs to be noted that
 
@@ -717,7 +717,7 @@ group.setZIndex(100);
 // or group.style.zIndex = 100;
 ```
 
-## visibility
+### visibility
 
 To control the visibility of the graph, see. https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
 
@@ -751,7 +751,7 @@ There are two points to note about visibility.
 1. Hidden graphics can still be picked up, so use [pointerEvents](/en/docs/api/basic/display-object#pointerevents)
 2. Hidden elements still need to participate in enclosing box operations, i.e. they still occupy space. If you want to remove the element completely, you should use [removeChild](/en/docs/api/basic/display-object#addremove-nodese)
 
-## clipPath
+### clipPath
 
 Use clipping to create a displayable region of an element, with the parts inside the region shown and the parts outside the region hidden. See CSS's [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path). The value of this property can be any shape, such as Circle, Rect, etc. The same clipping region can be shared by multiple shapes. Finally, the crop region also affects the pickup area of the shapes, [example](/en/examples/event#shapes).
 
@@ -811,7 +811,7 @@ image.style.clipPath = null;
 image.setClip(null);
 ```
 
-### Caveats
+#### Caveats
 
 The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/docs/api/animation/waapi) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
 
@@ -827,7 +827,7 @@ clipPathCircle.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
 
 We do not yet support composite clipped areas, such as custom graphics and Group.
 
-## Offset Path
+### Offset Path
 
 In [path-animation](/en/docs/api/animation/waapi#path-animation), we can use `offsetPath` to specify the trajectory of a drawing, applying a transformation to the `offsetDistance` property.
 
@@ -854,11 +854,11 @@ const animation = circle.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }],
 });
 ```
 
-### offsetPath
+#### offsetPath
 
 Specify path trajectory, currently support [Line](/en/docs/api/basic/line) [Path](/en/docs/api/basic/path) and [Polyline](/en/docs/api/basic/polyline) these three graphics.
 
-### offsetDistance
+#### offsetDistance
 
 The distance to travel from the start of the path, in the range of `[0-1]`, where 0 is the start of the path and 1 is the end.
 
@@ -866,7 +866,7 @@ The distance to travel from the start of the path, in the range of `[0-1]`, wher
 | --- | --- | --- | --- | --- |
 | '0' | all | no | yes | [\<number\>](/en/docs/api/css/css-properties-values-api#number) |
 
-## Cursor style
+### Cursor style
 
 We can change the style of a graphic when the mouse hovers over it, by modifying the CSS style of the container.
 
@@ -881,11 +881,11 @@ const circle = new Circle({
 });
 ```
 
-## Responding to interaction events
+### Responding to interaction events
 
 We can set how the graph responds to interaction events, such as displaying the mouse style when hitting a pickup, or increasing the pickup area.
 
-### pointerEvents
+#### pointerEvents
 
 To set how the graph responds to interaction events, see. https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
 
@@ -926,7 +926,7 @@ canvas.document.documentElement.style.pointerEvents = 'none';
 | --- | --- | --- | --- | --- |
 | 'auto' | all | yes | no | [\<keywords\>](/en/docs/api/css/css-properties-values-api#关键词) |
 
-### increasedLineWidthForHitTesting
+#### increasedLineWidthForHitTesting
 
 When [lineWidth](/en/docs/api/basic/display-object#linewidth) is small, the interactable area becomes smaller, sometimes we want to increase this area to make the "thin line" easier to be picked up. Note that this property does not affect the rendering effect.
 
@@ -946,11 +946,11 @@ Also like [lineWidth](/en/docs/api/basic/display-object#linewidth), this propert
 | --- | --- | --- | --- | --- |
 | '0' | all | no | no | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Transformation operations
+## Transformation operations
 
 We offer a range of transformation methods.
 
-## Translation
+### Translation
 
 For translation operations, we provide APIs for moving absolute/relative distances in local/world coordinate systems.
 
@@ -971,7 +971,7 @@ circle.translate(100, 0); // number, number
 circle.translate(100); // number
 ```
 
-## Scaling
+### Scaling
 
 Unlike panning, we can't provide a method like `setScale` to set scaling in the world coordinate system, so scaling in the global coordinate system is read-only, which in Unity is called [lossyScale](https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/)。
 
@@ -996,7 +996,7 @@ If you want to flip along the X / Y axis, you can pass in a negative value, e.g.
 circle.setLocalScale(-1, 1);
 ```
 
-## Rotation
+### Rotation
 
 In 3D scenes, rotations can be represented by matrices, axis angles, Euler angles and quaternions, which are interconvertible with each other. Although, considering future scalability, we use quaternions in the G internal implementation.
 
@@ -1013,7 +1013,7 @@ In 3D scenes, rotations can be represented by matrices, axis angles, Euler angle
 | getLocalRotation | - | `quat` | Get the quaternion in **local coordinate system** |
 | getRotation | - | `quat` | Get the quaternion in **world coordinate system** |
 
-## Skew
+### Skew
 
 In 2D scenes, stretching can be performed to distort each point on an element in a certain direction at a certain angle. See [CSS eponymous transform function](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function#skew).
 
@@ -1022,7 +1022,7 @@ In 2D scenes, stretching can be performed to distort each point on an element in
 | setLocalSkew | `vec2` | - | The angle in `rad` that distorts the element along the horizontal/vertical coordinates in the **local coordinate system**. |
 | getLocalSkew | - | `vec2` | Gets the distortion angle in `rad` under the **local coordinate system**. |
 
-## Set the scaling and rotation center
+### Set the scaling and rotation center
 
 Besides using the [transformOrigin](/en/docs/api/basic/display-object#transformorigin) property, you can also manually calculate the offset relative to the [anchor](/en/docs/api/basic/display-object#anchor) position and then reset the transform center by `setOrigin`.
 
@@ -1100,11 +1100,11 @@ circle.style.transformOrigin = '0% 0%';
 
 The difference between the two is that origin is defined relative to the anchor point, while transformOrigin is defined relative to the bounding box.
 
-# Get Bounding box
+## Get Bounding box
 
 Based on different [bounding box definitions](/en/docs/api/basic/display-object#bounding-box), we provide the following methods to obtain them.
 
-## getGeometryBounds(): AABB | null
+### getGeometryBounds(): AABB | null
 
 Gets the geometric bouding box of the base drawing, which is independent of other drawing properties (e.g. [lineWidth](/en/docs/api/basic/display-object#linewidth), [filter](/en/docs/api/basic/display-object#filter), [shadowBlur](/en/docs/api/basic/display-object#shadowblur), etc.), except for defining the required style properties (e.g. r for Circle, width/height for Rect).
 
@@ -1128,7 +1128,7 @@ const group = new Group();
 group.getGeometryBounds(); // null
 ```
 
-## getBounds(): AABB | null
+### getBounds(): AABB | null
 
 This should be the most common way of calculating the Geometry Bounds of itself and its children in the world coordinate system.
 
@@ -1143,7 +1143,7 @@ const circle = new Circle({
 circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 ```
 
-## getRenderBounds(): AABB | null
+### getRenderBounds(): AABB | null
 
 Merge the Render Bounds of itself and its children in the world coordinate system, based on the Geometry Bounds, affected by the following style properties: [lineWidth](/en/docs/api/basic/display-object#linewidth), [filter](/en/docs/api/basic/display-object#filter), [shadowBlur](/en/docs/api/basic/display-object#shadowblur), etc.
 
@@ -1160,11 +1160,11 @@ const circle = new Circle({
 circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
 ```
 
-## getLocalBounds(): AABB | null
+### getLocalBounds(): AABB | null
 
 The only difference in getBounds is that it is calculated under the local coordinate system of the parent node.
 
-## getBBox(): Rect
+### getBBox(): Rect
 
 Compatible with [SVG method of the same name](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox), the calculation is equivalent to getBounds, except that the return value type is different, the latter returns AABB. This method returns a [DOMRect](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMRect).
 
@@ -1179,15 +1179,15 @@ interface DOMRect {
 }
 ```
 
-## getBoundingClientRect(): DOMRect
+### getBoundingClientRect(): DOMRect
 
 Get the Geometry Bounds in the browser coordinate system, apply the transformation in the world coordinate system, and then add the offset of the canvas relative to the browser.
 
-# Node Operations
+## Node Operations
 
 In the scene graph, we need to construct parent-child relationships, get parent-child nodes quickly, and sometimes query the list of nodes of a certain type in the subtree. Based on the inheritance relationship, each DisplayObject has [Node](/en/docs/api/builtin-objects/node) and [Element](/en/docs/api/builtin-objects/element) capabilities.
 
-## Simple Node Query
+### Simple Node Query
 
 | method/property name | method/property | return value | remarks |
 | --- | --- | --- | --- | --- |
@@ -1204,7 +1204,7 @@ In the scene graph, we need to construct parent-child relationships, get parent-
 | ownerDocument | property | `Document` | Back to the canvas entrance Document |
 | isConnected | property | `boolean` | Whether the node is added to the canvas |
 
-## Advanced Search
+### Advanced Search
 
 Referring to the CSS selector, we provide the following query that looks at the **entire subtree** of the current node, and not just the direct list of children, but all descendant nodes.
 
@@ -1246,7 +1246,7 @@ solarSystem.querySelectorAll('[r=25]');
 solarSystem.findAll((element) => element.style.r === 25);
 ```
 
-## Add/Remove Nodes
+### Add/Remove Nodes
 
 The following add/remove node capabilities come from the inherited [Element](/en/docs/api/builtin-objects/element) base class.
 
@@ -1293,7 +1293,7 @@ The following points are noted when adding/removing nodes.
 1. The ChildInserted and Inserted events are triggered sequentially when a node is added.
 2. Removed and ChildRemoved events will be triggered sequentially, and [destroy](/en/docs/api/basic/display-object#destroy) will be called by default to destroy itself. If the node is only temporarily removed from the scene graph and may be added back later, you can use `remove(false)`.
 
-## Clone node
+### Clone node
 
 The method signature is `cloneNode(deep?: boolean): this`, with optional arguments for whether a deep copy is needed, and returns the new node obtained by cloning.
 
@@ -1323,7 +1323,7 @@ In this [example](/en/examples/scenegraph#clone), we demonstrate the above featu
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
-## Get/Set attribute values
+### Get/Set attribute values
 
 | method name  | parameters                   | return values | remarks             |
 | ------------ | ---------------------------- | ------------- | ------------------- | ------------------------------------------- |
@@ -1362,7 +1362,7 @@ circle.style.r = 20;
 circle.style.setProperty('r', 20);
 ```
 
-## Get the parsed attribute value
+### Get the parsed attribute value
 
 Some properties such as [Rect](/en/docs/api/basic/rect) support units for width / height, if you want to get the [calculated value](/en/docs/api/css/css-typed-om#cssunitvalue), you can use `parsedStyle`.
 
@@ -1380,7 +1380,7 @@ animation.onframe = () => {
 };
 ```
 
-## Destroy
+### Destroy
 
 Calling `destroy()` will destroy the node. Destroyed nodes will not be added to the canvas rendering again. The [destroyed](/en/docs/api/basic/display-object#destroyed) attribute allows you to determine if a node has been destroyed.
 
@@ -1395,11 +1395,11 @@ When this method is invoked, the following actions are performed in sequence.
 3. Remove all event listeners and animations on this node
 4. Set the [destroyed](/en/docs/api/basic/display-object#destroyed) flag to true
 
-## Status
+### Status
 
 The following properties allow you to determine the current state of the drawing, such as whether it has been added to the canvas, whether it has been destroyed, etc.
 
-### isConnected
+#### isConnected
 
 用于判断一个图形是否已经被加入到画布中。
 
@@ -1411,7 +1411,7 @@ canvas.appendChild(circle); // add to canvas
 circle.isConnected; // true
 ```
 
-### ownerDocument
+#### ownerDocument
 
 Used to determine if a drawing has been added to the canvas.
 
@@ -1423,7 +1423,7 @@ canvas.appendChild(circle); // add to canvas
 circle.ownerDocument; // canvas.document
 ```
 
-### destroyed
+#### destroyed
 
 Used to determine if a graph has been destroyed.
 
@@ -1435,7 +1435,7 @@ circle.destroy();
 circle.destroyed; // true
 ```
 
-## Lifecycle Event Listening
+### Lifecycle Event Listening
 
 In the [event system](/en/docs/api/event), we can add event listeners to nodes added to the canvas using a DOM Event API-like approach.
 
@@ -1471,7 +1471,7 @@ We currently support the following scenario map related events.
 -   `ATTR_MODIFIED` Triggered when modifying properties
 -   `DESTROY` Triggered on destruction
 
-# Animation
+## Animation
 
 Referring to the Web Animations API, you can use animate to complete the keyframe animation, the following is a ScaleIn animation effect.
 

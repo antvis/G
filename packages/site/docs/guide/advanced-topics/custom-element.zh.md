@@ -28,11 +28,11 @@ order: 3
 -   [完整 DEMO](/zh/examples/shape#arrow)
 -   [源码](https://github.com/antvis/g/blob/next/packages/g-components/src/Arrow.ts)
 
-# 问题背景
+## 问题背景
 
 一个箭头由躯干部分 + 一或两个端点组成。如下图所示，躯干部分可以是 Line / Polyline / Path，而端点可以是任意基础/高级图形，我们提供的默认端点是 Path。可见箭头就是一个由若干基础图形组合而成的“高级图形”。
 
-# 继承 CustomElement
+## 继承 CustomElement
 
 首先所有自定义图形都需要继承 CustomElement 基类：
 
@@ -65,7 +65,7 @@ export interface ArrowStyleProps extends BaseStyleProps {
 
 有了自定义属性，下一步需要通过场景图组合基础图形。
 
-# 定义场景图
+## 定义场景图
 
 我们需要在构造函数中完成场景图的定义。这里会使用到基础图形的节点操作能力，例如使用 [appendChild](/zh/docs/api/basic/display-object#添加删除节点) 添加箭头的躯干和端点部分。
 
@@ -105,7 +105,7 @@ constructor(config: DisplayObjectConfig<ArrowStyleProps>) {
 }
 ```
 
-## 添加端点
+### 添加端点
 
 我们支持内置端点和用户传入的端点，即使是由用户传入，它也只用于描述端点的形状，为了确保箭头和躯干部分朝向一致，我们还需要对端点进行变换。另外，我们使用了 [zIndex](/zh/docs/api/basic/display-object#zindex)，由于默认 zIndex 为 0，因此设置成 1 就可以保证端点的展示次序在躯干部分之上。
 
@@ -159,7 +159,7 @@ private createDefaultArrowHead() {
 
 下一步需要对端点进行变换，确保它出现在正确的位置（躯干的两端）以及拥有正确的朝向。
 
-## 变换端点
+### 变换端点
 
 对于端点的变换可以分成两步，设置位置（躯干的起始还是结束）以及朝向。
 
@@ -199,7 +199,7 @@ private transformArrowHead(head: DisplayObject, isStart: boolean) {
 
 下面我们来看不同类型的躯干如何计算切线，这部分纯粹是简单的数学运算，和本文的主题关系不大。
 
-## 计算切线
+### 计算切线
 
 对于 Line 和 Polyline 只需要找到两个端点坐标相减即可，对于 Path 我们提供了[计算切线的 API](/zh/docs/api/basic/path#getstarttangent-number)：
 
@@ -211,11 +211,11 @@ private getTangent(path: Path, isStart: boolean): number[][] {
 
 至此一个简单的箭头就组装完成了。
 
-# 使用自定义图形
+## 使用自定义图形
 
 自定义图形可以使用大部分基础图形的能力，例如节点操作、变换、动画、响应事件等。
 
-## 节点操作
+### 节点操作
 
 使用箭头这样的高级图形和其他基础图形一样，例如我们可以创建一个躯干为 Line 的箭头。随后对它使用变换方法，例如平移。同样也可以使用场景图的节点查询能力，例如 getElementById：
 
@@ -245,7 +245,7 @@ lineArrow.translate(200, 100);
 canvas.document.getElementById('lineArrow'); // Arrow lineArrow
 ```
 
-## 应用动画
+### 应用动画
 
 同样也可以对它[应用动画](/zh/docs/api/animation/waapi)，例如对 transform stroke 和 opacity 这三个属性：
 
@@ -265,7 +265,7 @@ lineArrow.animate(
 
 [完整 DEMO](/zh/examples/shape#arrow)
 
-## 响应事件
+### 响应事件
 
 自定义图形也可以[响应事件](/zh/docs/api/event)，例如当鼠标移入移出时更改颜色：
 
@@ -278,7 +278,7 @@ lineArrow.addEventListener('mouseleave', () => {
 });
 ```
 
-# 处理属性更新
+## 处理属性更新
 
 自定义属性有可能发生更新，例如在创建后改变箭头端点的样式，因此需要监听属性值的变化。参考 Web Components 标准，我们提供了以下生命周期方法供子类实现，这里我们着重关注 attributeChangedCallback。
 
@@ -359,7 +359,7 @@ private destroyArrowHead(isStart: boolean) {
 }
 ```
 
-# 注意事项
+## 注意事项
 
 一旦挂载到画布后，自定义组件就视作一个整体，内部的图形不能再通过场景图查询能力（例如 getElementById）获得。因此可以暴露方法给使用者，例如获取箭头的躯干、端点部分。
 

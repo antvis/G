@@ -18,7 +18,7 @@ order: -1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 安装方式
+## 安装方式
 
 创建插件并在渲染器中注册：
 
@@ -39,11 +39,11 @@ new Circle({
 });
 ```
 
-# 全局配置
+## 全局配置
 
 全局物理世界配置。
 
-## gravity
+### gravity
 
 重力方向向量，默认值为 `[0, 100]`。
 
@@ -55,19 +55,19 @@ new PluginBox2D({
 }),
 ```
 
-## timeStep
+### timeStep
 
 仿真时间间隔，默认值为 `1/60`
 
-## velocityIterations
+### velocityIterations
 
 计算加速度迭代次数，默认值为 `8`，越高计算开销越大
 
-## positionIterations
+### positionIterations
 
 计算位置迭代次数，默认值为 `3`，越高计算开销越大
 
-## onContact
+### onContact
 
 可以监听两个物体表面接触：
 
@@ -81,7 +81,7 @@ new PluginBox2D({
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md105
 
-# 图形物理属性
+## 图形物理属性
 
 Box2D 使用如下物理单位：米、千克和秒。
 
@@ -95,7 +95,7 @@ https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_loose_ends.html#auto
 circle.style.density = 100;
 ```
 
-## rigid
+### rigid
 
 刚体类型：
 
@@ -104,47 +104,47 @@ circle.style.density = 100;
 
 <!-- - kinematic -->
 
-## density
+### density
 
 密度，千克/平方米。静态物体为 0。
 
-## linearVelocity
+### linearVelocity
 
 线速度，默认值为 `[0, 0]`。
 
-## angularVelocity
+### angularVelocity
 
 角速度，默认值为 `0`。
 
-## gravityScale
+### gravityScale
 
 重力因子，默认值为 `1`。 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md60
 
-## linearDamping
+### linearDamping
 
 阻尼，默认值为 `0`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
 
-## angularDamping
+### angularDamping
 
 角阻尼，默认值为 `0`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
 
-## fixedRotation
+### fixedRotation
 
 固定旋转角度，默认值为 `false`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md62
 
-## bullet
+### bullet
 
 默认值为 `false`。https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md63
 
-## friction
+### friction
 
 摩擦力，取值范围为 `[0 - 1]`
 
-## restitution
+### restitution
 
 恢复力，取值范围为 `[0 - 1]`。例如一个球落向地面，恢复力为 0 时则不会弹起。
 
-# [WIP] 对物体施加外力
+## [WIP] 对物体施加外力
 
 除了通过初始化参数进行仿真，在任意时刻都可以通过施加外力，改变物体的位置和旋转角度。
 
@@ -157,25 +157,25 @@ void b2Body::ApplyLinearImpulse(const b2Vec2& impulse, const b2Vec2& point);
 void b2Body::ApplyAngularImpulse(float impulse);
 ```
 
-## applyForce
+### applyForce
 
 ```js
 const plugin = new PluginBox2D();
 plugin.applyForce(circle, [0, 0], [0, 0]);
 ```
 
-## applyTorque
+### applyTorque
 
-## applyLinearImpulse
+### applyLinearImpulse
 
-## applyAngularImpulse
+### applyAngularImpulse
 
-# [WIP] Joint
+## [WIP] Joint
 
 物理间的连接会导致作用力的发生。Box2D 提供了一系列连接的描述。
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md82
 
-# [WIP] 流体
+## [WIP] 流体
 
 使用 liquidfun：https://github.com/Birch-san/box2d-wasm/blob/c04514c040/README.md#alternative-distributions

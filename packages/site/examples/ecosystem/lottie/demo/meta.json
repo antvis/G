@@ -1,0 +1,31 @@
+{
+  "title": {
+    "zh": "Lottie",
+    "en": "Lottie"
+  },
+  "demos": [
+    {
+      "filename": "lottie-player-basic-shapes.js",
+      "title": {
+        "zh": "Lottie 播放器 - 基础图形",
+        "en": "Lottie Player - Basic shapes"
+      }
+    },
+    {
+      "filename": "lottie-player-transform.js",
+      "title": {
+        "zh": "Lottie 播放器 - 变换",
+        "en": "Lottie Player - Transform"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*U_bTSJXuQMQAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "lottie-player-assets.js",
+      "title": {
+        "zh": "Lottie 播放器 - 图片资产",
+        "en": "Lottie Player - Displaying assets"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1667977747890/A_NVmwSb89Y3kAAAAAAAAAAAAAARQnAQ.gif"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "title": {
+    "zh": "圆",
+    "en": "Circle"
+  },
+  "demos": [
+    {
+      "filename": "circle.js",
+      "title": {
+        "zh": "圆",
+        "en": "Circle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "gradient.js",
+      "title": {
+        "zh": "带渐变色和模式的圆",
+        "en": "Circle with gradient & pattern"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WK1jQIIUP0cAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "filter.js",
+      "title": {
+        "zh": "带滤镜的圆",
+        "en": "Circle with filter"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8BomR52SOm4AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

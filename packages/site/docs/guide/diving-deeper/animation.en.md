@@ -17,7 +17,7 @@ order: 3
 -   [官网示例](/zh/examples/animation#lifecycle)
 -   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-dong-hua-li-zi-sfphx?file=/index.js)
 
-# 使用 Keyframe 定义动画
+## 使用 Keyframe 定义动画
 
 在定义动画效果时，关键帧是一种非常好用的描述方式。通过用户定义对象在某几个“关键”时间点上的状态，渲染引擎自动完成插值让对象的这些属性连续变化。
 
@@ -66,7 +66,7 @@ const scaleInCenter = circle.animate(
 
 恭喜你！此时这个 circle 已经可以运动起来了。
 
-# 监听动画结束事件
+## 监听动画结束事件
 
 当我们想获知动画当前的状态，例如是否已经结束，或者想手动控制它的运行状态，例如暂停/恢复时，就需要使用到上一节创建的 Animation 对象。
 
@@ -94,7 +94,7 @@ animation.pause();
 
 除了暂停，[Animation 完整方法](/zh/docs/api/animation/waapi#方法)中还包含了恢复、停止、重启、反向播放、设置播放速度（加减速）等。
 
-# 更多动画效果
+## 更多动画效果
 
 除了这个简单的 Scale-In 效果，我们还能实现更多复杂效果，例如：
 

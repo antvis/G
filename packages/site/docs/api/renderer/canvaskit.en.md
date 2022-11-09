@@ -16,11 +16,11 @@ Skia offers more features than the Canvas2D API, such as text paragraph layout, 
 
 [DEMO in Codesandbox](https://codesandbox.io/s/g-canvaskit-q8gt6p?file=/src/App.tsx)
 
-# Usage
+## Usage
 
 As with `@antv/g`, there are two ways to use it.
 
-## NPM Module
+### NPM Module
 
 After installing `@antv/g-canvaskit` you can get the renderer from.
 
@@ -38,7 +38,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN
+### CDN
 
 ```html
 <script
@@ -52,9 +52,9 @@ The renderer is available from the `G.Canvaskit` namespace under.
 const canvasRenderer = new window.G.Canvaskit.Renderer();
 ```
 
-# Initial Configuration
+## Initial Configuration
 
-## wasmDir
+### wasmDir
 
 The path to the WASM folder for CanvasKit. The default value is `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full/'`, which means that it is downloaded from a CDN.
 
@@ -72,7 +72,7 @@ It is worth noting that CanvasKit provides several versions of the WASM file.
 -   Full-featured, about 7.9MB, includes full [enhancements](/en/docs/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
 -   Development version, approx. 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
-## fonts
+### fonts
 
 CanvasKit provides multi-line layout, decoration, omission, etc. in text and especially paragraphs compared to the familiar Canvas 2D API. The only problem is that the font file needs to be loaded at runtime.
 
@@ -111,7 +111,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 });
 ```
 
-# Built-in plug-ins
+## Built-in plug-ins
 
 The renderer has the following plug-ins built in.
 
@@ -119,7 +119,7 @@ The renderer has the following plug-ins built in.
 -   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D)
 -   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
 
-# Enhanced Features
+## Enhanced Features
 
 CanvasKit (full version) provides the following enhancements compared to the familiar Canvas 2D API.
 
@@ -127,7 +127,7 @@ CanvasKit (full version) provides the following enhancements compared to the fam
 -   Particle effect
 -   Paragraph
 
-## Lottie Player
+### Lottie Player
 
 The [Lottie](https://airbnb.design/introducing-lottie/) animation is created with the [Bodymovin](https://github.com/bodymovin/bodymovin) plugin for After Effects and exported to JSON format. JSON format. CanvasKit provides [Skottie](https://skia.org/docs/user/modules/skottie/), a Lottie animation player.
 
@@ -169,7 +169,7 @@ If you want to remove the animation, you can call.
 animation.delete();
 ```
 
-## Particle Effects
+### Particle Effects
 
 For example, particle effects such as fireworks, flames, etc. require generating and animating a large number of "particles", which are usually programmed in the GPU through the shader, e.g. interpolation calculations to change the position of each particle should be done in the GPU instead of the CPU.
 
@@ -245,7 +245,7 @@ const text = {
 };
 ```
 
-## Draw text along the path
+### Draw text along the path
 
 Compared to [fillText](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillText) in the Canvas2D API, CanvasKit provides the ability to draw along a specified path text along a specified path.
 
@@ -273,7 +273,7 @@ const text = new Text({
 });
 ```
 
-## Emoji
+### Emoji
 
 Emoji cannot be supported by normal fonts.
 
@@ -322,11 +322,11 @@ const emoji = new Text({
 });
 ```
 
-## Text Paragraphs
+### Text Paragraphs
 
 CanvasKit provides enhanced [paragraph drawing capabilities](https://skia.org/docs/user/modules/quickstart/#text-shaping).
 
-### Text Decoration
+#### Text Decoration
 
 The [text-decoration](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) property can be used in CSS to set the appearance of the text's modifier lines.
 
@@ -358,7 +358,7 @@ The following attributes are supported.
 -   decorationThickness [text-decoration-thickness](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-thickness)
 -   decorationStyle [text-decoration-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) support: `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
 
-### Text Ellipsis
+#### Text Ellipsis
 
 In this [example](/en/examples/plugins#canvaskit-paragraph), using `maxLines` and `ellipsis` allows you to truncate and add ellipses after exceeding.
 
@@ -388,19 +388,19 @@ The reason is that Skia will add a blank character after the ellipsis, and the m
 -   https://github.com/flutter/flutter/issues/76473
 -   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
 
-### Text Direction
+#### Text Direction
 
 Using `direction` you can specify the text direction from left to right or right to left, supporting `'ltr'` and `'rtl'`, the default is `'ltr'`. The following figure shows the effect of `'rtl'`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8oWlSpL5hGAAAAAAAAAAAAAAARQnAQ" width="160" alt="text direction">
 
-### Foreground / BackgroundColor
+#### Foreground / BackgroundColor
 
 The foreground and background colors of text can be specified using `foregroundColor` and `backgroundColor`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OaRqRa-ZiAcAAAAAAAAAAAAAARQnAQ" width="160" alt="text background-color">
 
-### Text Shadow
+#### Text Shadow
 
 Multiple shadows can be added to text in CSS using the [text-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-shadow) property.
 
@@ -432,7 +432,7 @@ const shadowedText = new Text({
 });
 ```
 
-### StrutStyle
+#### StrutStyle
 
 Strut (meaning "pillar") sets the minimum line height relative to the baseline. Similar to the [line-height](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) property in CSS.
 
@@ -462,7 +462,7 @@ decoratedText.style.strutStyle = {
 };
 ```
 
-### Advanced Printing Features
+#### Advanced Printing Features
 
 The [font-feature-settings](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings) property in CSS can be consulted to control the advanced printing features in OpenType fonts.
 
@@ -491,7 +491,7 @@ const fontFeaturesText = new Text({
 });
 ```
 
-### Harfbuzz
+#### Harfbuzz
 
 Skia itself does not include Harfbuzz.
 
@@ -505,6 +505,6 @@ https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa
 
 > Text shaping with ShapedText object and SkCanvas.drawText. At compile time, one can choose between using Harfbuzz/ICU (default) or a primitive one (“primitive_shaper”) which just does line breaking. Using Harfbuzz/ICU substantially increases code size (4.3 MB to 6.4 MB).
 
-# Performance
+## Performance
 
 CanvasKit draws via [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) and does a full redraw at each frame.

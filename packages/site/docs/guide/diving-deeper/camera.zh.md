@@ -21,7 +21,7 @@ order: 2
 -   [官网示例](/zh/examples/perf#nodes-8k)
 -   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-yong-xiang-ji-041xm?file=/index.js)
 
-# 使用 g-webgl 渲染器
+## 使用 g-webgl 渲染器
 
 我们和之前一样创建一个画布，不同的是我们选择 `g-webgl` 渲染器：
 
@@ -41,7 +41,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 创建场景
+## 创建场景
 
 这次我们的场景中包含大量的节点、边以及文本，节点和边的位置信息直接使用预计算的结果，我们通过 fetch 请求这个包含了结果的 JSON 数据：
 
@@ -76,11 +76,11 @@ data.edges.forEach(({ startPoint, endPoint }) => {
 
 到这里都和之前的教程没有太大不同，接下来我们会给场景增加一些交互。
 
-# 场景交互
+## 场景交互
 
 我们希望给整个场景添加缩放、平移这两个交互，通过相机来实现。
 
-## 获取相机
+### 获取相机
 
 前面提到过，每个画布内置了一个相机，我们可以使用 [getCamera](/zh/docs/api/canvas#getcamera-camera) 获取画布相机：
 
@@ -88,7 +88,7 @@ data.edges.forEach(({ startPoint, endPoint }) => {
 const camera = canvas.getCamera();
 ```
 
-## 实现缩放
+### 实现缩放
 
 我们希望通过鼠标滚轮实现对于整个场景的缩放，很自然的，我们使用 addEventListener 监听 wheel 事件。在获取到原生滚轮事件对象上携带的 deltaY 信息后，我们调用 [setZoom()](/zh/docs/api/camera#setzoomzoom-number) 设置相机缩放参数，当然通过 [getZoom()](/zh/docs/api/camera#setzoomzoom-number) 可以随时获取这个参数。当这个参数的值大于 1 时代表放大（好比我们拿着一个放大镜观察世界），小于 1 时代表缩小：
 
@@ -114,7 +114,7 @@ canvas.addEventListener(
 );
 ```
 
-## 实现平移
+### 实现平移
 
 有了缩放，很自然地我们也想实现利用鼠标拖拽完成场景的平移。在[入门教程](/zh/docs/guide/chapter3)中我们借助 interact.js 实现了节点的拖拽，这里我们使用 hammer.js 帮助我们完成手势操作。
 
@@ -144,7 +144,7 @@ const zoom = Math.pow(2, camera.getZoom());
 camera.pan(-ev.deltaX / zoom, -ev.deltaY / zoom);
 ```
 
-# 性能提升的秘密
+## 性能提升的秘密
 
 既然平移相机等价于反向操作画布，那前者相比后者的优势是什么呢？
 
@@ -163,7 +163,7 @@ canvas.document.documentElement.translate(-100, -100);
 mat4 MVPMatrix = ProjectionViewMatrix * ModelMatrix;
 ```
 
-# 更多相机设置
+## 更多相机设置
 
 除了使用 pan 平移相机，我们还可以进行以下[相机动作](/zh/docs/api/camera#相机动作)：
 

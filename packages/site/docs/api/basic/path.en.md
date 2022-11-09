@@ -19,7 +19,7 @@ const line = new Path({
 });
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
@@ -47,25 +47,25 @@ line.getBounds(); // 包围盒 { min: [100, 100], max: [200, 200] }
 line.translateLocal(100, 0); // 沿 X 轴平移
 ```
 
-## anchor
+### anchor
 
 The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-## lineWidth
+### lineWidth
 
 Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
 
-## miterLimit
+### miterLimit
 
 Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
 
-# Additional Properties
+## Additional Properties
 
-## path
+### path
 
 Paths, both `string` and `Array` forms are supported, see [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths).
 
@@ -74,11 +74,11 @@ Paths, both `string` and `Array` forms are supported, see [SVG path](https://dev
 
 https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
-## d
+### d
 
 Alias for the [path](/en/docs/api/basic/path#path) attribute, consistent with the `<path>` naming in SVG.
 
-## markerStart
+### markerStart
 
 Since Path can be closed by `Z` command, the definition of "start point" differs in two cases.
 
@@ -106,7 +106,7 @@ const arrowMarker = new Path({
 path.style.markerStart = arrowMarker;
 ```
 
-## markerEnd
+### markerEnd
 
 See the [markerEnd](/en/docs/api/basic/polyline#markerend) attribute of [Polyline](/en/docs/api/basic/polyline).
 
@@ -134,7 +134,7 @@ const imageMarker = new Image({
 path.style.markerEnd = imageMarker;
 ```
 
-## markerMid
+### markerMid
 
 You can refer to SVG's [attribute of the same name](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid).
 
@@ -157,7 +157,7 @@ path.style.markerMid = circleMarker;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2Pi6SpcqPwAAAAAAAAAAAAAAARQnAQ" alt="unclosed path marker" width="200">
 
-## markerStartOffset
+### markerStartOffset
 
 See the [markerStartOffset](/en/docs/api/basic/polyline) property of [Polyline](/en/docs/api/basic/polyline#markerstartoffset). marker will move along the tangent of the first segment in the path. The marker will be moved in the direction of the first segment of the path, and the body path will be lengthened or shortened accordingly.
 
@@ -171,7 +171,7 @@ This property is therefore suitable for "fine-tuning", rather than drastically c
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 See the [markerEndOffset](/en/docs/api/basic/polyline) property of [Polyline](/en/docs/api/basic/polyline#markerendoffset). marker will move along the tangent direction of the last section of the path. The marker will move in the direction of the tangent of the last section of the path, and the body path will be extended or shortened accordingly.
 
@@ -179,9 +179,9 @@ See the [markerEndOffset](/en/docs/api/basic/polyline) property of [Polyline](/e
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Methods
+## Methods
 
-## getTotalLength
+### getTotalLength
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
@@ -214,7 +214,7 @@ const path = new Path({
 path.getTotalLength(); // 0
 ```
 
-## getPoint
+### getPoint
 
 Get the coordinates of the point on the line in the local or world coordinate system according to the length scale (in the range `[0-1]`).
 
@@ -254,7 +254,7 @@ Also the transformations applied on the original path, in the local coordinate s
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
-## getPointAtLength
+### getPointAtLength
 
 Returns the point along the path at a given distance, controlled by a second optional parameter in the local or world coordinate system.
 
@@ -269,10 +269,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 path.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent
+### getStartTangent
 
 Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 
-## getEndTangent
+### getEndTangent
 
 Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`

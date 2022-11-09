@@ -5,7 +5,7 @@ order: 3
 
 Provides Canvas2D-based rendering capabilities.
 
-# Usage
+## Usage
 
 The [g-canvas](/en/docs/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
 
@@ -15,9 +15,9 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 const canvasRenderer = new CanvasRenderer();
 ```
 
-# Contributions
+## Contributions
 
-## StyleRenderer
+### StyleRenderer
 
 When rendering the base graphics using [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D), you can implement this interface after using [g-plugin- canvas-path-generator](/en/docs/plugins/canvas-path-generator) to generate the graphical path, implement this interface to finish drawing the style.
 

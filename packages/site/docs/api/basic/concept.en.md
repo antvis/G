@@ -5,7 +5,7 @@ order: -1
 
 First, you need to clarify some concepts, such as bounding boxes, coordinates, anchor points, transform centers, etc. Understanding them helps to better use the specific API. Understanding them helps to better use the specific API.
 
-# Hierarchy
+## Hierarchy
 
 In [scene graph](/en/docs/guide/diving-deeper/scenegraph) we learned that it is possible to construct parent-child relationships between graphs, and that such parent-child relationships can sometimes be counter-intuitive, for example adding a child node text ([Text](/en/docs/api/basic/text)) to a line ([Line](/en/docs/api/basic/line)).
 
@@ -15,7 +15,7 @@ line.appendChild(text);
 
 But essentially this hierarchy just defines a parent-child relationship that is taken into account when computing the transformation. For example, we don't need to move the line and the text separately anymore, based on this parent-child relationship, we can just move the line and the text will follow it. During the transformation, the position of the text relative to the line remains unchanged, i.e., the coordinates of the text in the local coordinate system of the parent line remain unchanged.
 
-# Bounding Box
+## Bounding Box
 
 To simplify the calculation, we need to wrap the figure in a regular geometry, usually using [axis-aligned bounding boxes](https://developer.mozilla.org/zh-CN/docs/Games/Techniques/3D_collision_detection#axis- aligned_bounding_boxes%EF%BC%88aabb%E5%8C%85%E5%9B%B4%E7%9B%92%EF%BC%89) (Axis Aligned Bounding Box), which is a non-rotating cube, and the following figure from
 
@@ -59,7 +59,7 @@ In the figure below, ul1 has two word nodes, li1 and li2, which are not consider
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RjRuQ7iMtwgAAAAAAAAAAAAAARQnAQ" width="300" alt="bounds">
 
-# Anchor
+## Anchor
 
 How should the anchor point (origin) of a graph be defined? We can define it based on Geometry Bounds, with the value range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper left corner of Geometry Bounds and `[1, 1]` represents the lower right corner. And the default anchor points for different shapes due to different geometry definitions are as follows.
 
@@ -84,7 +84,7 @@ rect.style.anchor = [0.5, 0.5];
 rect.getPosition(); // [200, 200]
 ```
 
-# Transform Origin
+## Transform Origin
 
 When scaling or rotating a drawing, you need to specify a transformation center. For example, if you use `scale(2)` as the center of a circle, you will get a completely different result than if you use the upper left corner of the Geometry Bounds of a circle as the center of the transformation. In a library like `gl-matrix`, the RTS transformation matrix is usually obtained by specifying the transformation center.
 

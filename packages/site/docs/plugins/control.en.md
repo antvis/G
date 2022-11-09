@@ -5,7 +5,7 @@ order: 10
 
 Provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/en/docs/api/camera#camera#camera type), different interactions are provided.
 
-# Usage
+## Usage
 
 Create the `g-webgl` renderer and register the plugin.
 

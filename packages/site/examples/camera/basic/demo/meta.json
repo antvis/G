@@ -1,0 +1,63 @@
+{
+  "title": {
+    "zh": "中文分类",
+    "en": "Category"
+  },
+  "demos": [
+    {
+      "filename": "ortho.js",
+      "title": {
+        "zh": "正交投影相机",
+        "en": "Orthographic camera"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5cbxQ5CF1GEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "perspective.js",
+      "title": {
+        "zh": "透视投影相机",
+        "en": "Perspective camera"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*wrMTSZeQGvsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "landmark.js",
+      "title": {
+        "zh": "3D 场景下的相机动画",
+        "en": "Landmark"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*o4eKT4ZQfJcAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "landmark2.js",
+      "title": {
+        "zh": "2D 场景下的相机动画",
+        "en": "Landmark"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EL2XSL5qSQ8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "action.js",
+      "title": {
+        "zh": "相机动作",
+        "en": "Camera actions"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "view-offset.js",
+      "title": {
+        "zh": "View Offset",
+        "en": "View Offset"
+      }
+    },
+    {
+      "filename": "zoom-by-point.js",
+      "title": {
+        "zh": "以指定视点缩放",
+        "en": "Zoom by specified viewport point"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1667978070897/Nov-09-2022%25252015-13-27.gif"
+    }
+  ]
+}
