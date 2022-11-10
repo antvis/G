@@ -17,39 +17,37 @@ if (window) {
   (window as any).d3Force3d = require('d3-force-3d');
   (window as any).d3SvgAnnotation = require('d3-svg-annotation');
   // core
-  (window as any).g = require('../../g/src/index');
-  (window as any).gLite = require('../../g-lite/src/index');
+  (window as any).g = require('@antv/g');
+  (window as any).gLite = require('@antv/g-lite');
   // renderers
-  (window as any).gCanvas = require('../../g-canvas/src/index');
-  (window as any).gWebgl = require('../../g-webgl/src/index');
-  (window as any).gSvg = require('../../g-svg/src/index');
-  (window as any).gWebgpu = require('../../g-webgpu/src/index');
-  (window as any).gCanvaskit = require('../../g-canvaskit/src/index');
+  (window as any).gCanvas = require('@antv/g-canvas');
+  (window as any).gWebgl = require('@antv/g-webgl');
+  (window as any).gSvg = require('@antv/g-svg');
+  (window as any).gWebgpu = require('@antv/g-webgpu');
+  (window as any).gCanvaskit = require('@antv/g-canvaskit');
   // plugins
-  (window as any).gPluginCssSelect = require('../../g-plugin-css-select/src/index');
-  (window as any).gPlugin3d = require('../../g-plugin-3d/src/index');
-  (window as any).gPluginControl = require('../../g-plugin-control/src/index');
-  (window as any).gPluginGpgpu = require('../../g-plugin-gpgpu/src/index');
-  (window as any).gPluginPhysx = require('../../g-plugin-physx/src/index');
-  (window as any).gPluginBox2d = require('../..//g-plugin-box2d/src/index');
-  (window as any).gPluginMatterjs = require('../../g-plugin-matterjs/src/index');
-  (window as any).gPluginYoga = require('../../g-plugin-yoga');
-  (
-    window as any
-  ).gPluginRoughCanvasRenderer = require('../../g-plugin-rough-canvas-renderer/src/index');
-  (window as any).gPluginRoughSvgRenderer = require('../../g-plugin-rough-svg-renderer/src/index');
-  (window as any).gPluginSvgRenderer = require('../../g-plugin-svg-renderer/src/index');
-  (window as any).gPluginDragndrop = require('../../g-plugin-dragndrop/src/index');
-  (window as any).gPluginA11y = require('../../g-plugin-a11y/src/index');
-  (window as any).gPluginAnnotation = require('../../g-plugin-annotation/src/index');
+  (window as any).gPluginCssSelect = require('@antv/g-plugin-css-select');
+  (window as any).gPlugin3d = require('@antv/g-plugin-3d');
+  (window as any).gPluginControl = require('@antv/g-plugin-control');
+  (window as any).gPluginGpgpu = require('@antv/g-plugin-gpgpu');
+  (window as any).gPluginPhysx = require('@antv/g-plugin-physx');
+  (window as any).gPluginBox2d = require('@antv/g-plugin-box2d');
+  (window as any).gPluginMatterjs = require('@antv/g-plugin-matterjs');
+  (window as any).gPluginYoga = require('@antv/g-plugin-yoga');
+  (window as any).gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-renderer');
+  (window as any).gPluginRoughSvgRenderer = require('@antv/g-plugin-rough-svg-renderer');
+  (window as any).gPluginSvgRenderer = require('@antv/g-plugin-svg-renderer');
+  (window as any).gPluginDragndrop = require('@antv/g-plugin-dragndrop');
+  (window as any).gPluginA11y = require('@antv/g-plugin-a11y');
+  (window as any).gPluginAnnotation = require('@antv/g-plugin-annotation');
   // compiler for GPGPU
-  // (window as any).webgpuGraph = require('@antv/webgpu-graph');
-  (window as any).gComponents = require('../../g-components/src/index');
-  (window as any).gWebComponents = require('../../g-web-components/src/index');
-  (window as any).gImageExporter = require('../../g-image-exporter/src/index');
-  (window as any).gLottiePlayer = require('../../g-lottie-player/src/index');
+  (window as any).webgpuGraph = require('@antv/webgpu-graph');
+  (window as any).gComponents = require('@antv/g-components');
+  (window as any).gWebComponents = require('@antv/g-web-components');
+  (window as any).gImageExporter = require('@antv/g-image-exporter');
+  (window as any).gLottiePlayer = require('@antv/g-lottie-player');
 
-  (window as any).reactG = require('../../react-g');
+  (window as any).reactG = require('@antv/react-g');
   // (window as any).mainWorker = require('./examples/canvas/demo/main.worker.js');
   (window as any).workerizeTransferable = require('@naoak/workerize-transferable');
   (window as any).webfontloader = require('webfontloader');

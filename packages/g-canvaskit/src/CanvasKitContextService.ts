@@ -98,9 +98,6 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
   destroy() {
     // @ts-ignore
     if (this.$container && this.$canvas && this.$canvas.parentNode) {
-      if (this.context?.surface) {
-        this.context.surface.dispose();
-      }
       // destroy context
       // @ts-ignore
       this.$container.removeChild(this.$canvas);

@@ -147,6 +147,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           return;
         }
 
+        console.log('draw frame...');
+
         canvas.save();
 
         this.applyCamera(canvas, this.context.camera, tmpVec3, tmpQuat);
@@ -200,7 +202,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.destroy.tap(CanvaskitRendererPlugin.tag, () => {
-      this.destroyed = true;
+      const canvasKitContext = (
+        this.context.contextService as ContextService<CanvasKitContext>
+      ).getContext();
+      const { surface } = canvasKitContext;
+
       this.animations.forEach(({ animation }) => {
         animation.delete();
       });
@@ -210,6 +216,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       });
       this.particlesList = [];
       this.fontLoader.destroy();
+
+      surface.deleteLater();
+      this.destroyed = true;
     });
   }
 

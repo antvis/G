@@ -60,6 +60,7 @@
   },
   "devDependencies": {
     "@antv/dumi-theme-antv": "^0.3.0-beta.10",
-    "dumi": "^2.0.0-rc.1"
+    "dumi": "^2.0.0-rc.1",
+    "workerize-loader": "^2.0.2"
   }
 }

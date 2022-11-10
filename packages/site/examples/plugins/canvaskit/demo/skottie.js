@@ -38,7 +38,7 @@ const canvas = new Canvas({
     fetch(cdn + 'skottie_sample_multiframe.json').then((response) => response.text()),
     fetch(cdn + 'flightAnim.gif').then((response) => response.arrayBuffer()),
     fetch(cdn + 'onboarding.json').then((response) => response.text()),
-    fetch('/twitter-favorite-heart.json').then((response) => response.text()),
+    fetch('/lottie/twitter-favorite-heart.json').then((response) => response.text()),
   ]);
 
   plugin.playAnimation('sk_legos', legoJSON, [-100, -100, 300, 300]);

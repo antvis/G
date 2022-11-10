@@ -13,9 +13,7 @@ order: 1
 
 文本/文本块的位置通过文本锚点描述，围绕该锚点通过 `textBaseline`（单行/多行）、`textAlign`（多行）等属性调整自身位置。
 
-## 额外属性
-
-### text
+## text
 
 必填项，文本内容，可以包含换行符，例如 `"测试文本\n另起一行"`
 
@@ -23,7 +21,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '' | - | 否 | 否 | [\<string\>](/zh/docs/api/css/css-properties-values-api#string) |
 
-### textTransform
+## textTransform
 
 与 [CSS text-transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-transform) 一致，对文本内容进行转换，仅影响视觉效果，原始文本内容不变，支持以下枚举值：
 
@@ -36,7 +34,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'none' | - | 否 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-### dx / dy
+## dx / dy
 
 与 [SVG dx / dy 属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/dx)对应，在水平和垂直方向增加偏移量
 
@@ -54,9 +52,9 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-### 字体相关
+## 字体相关
 
-#### fontFamily
+### fontFamily
 
 字体类型，例如 `'PingFang SC'` `'Microsoft Yahei'`。
 
@@ -66,7 +64,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '' | - | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-#### fontSize
+### fontSize
 
 字体大小。
 
@@ -76,7 +74,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '16px' | - | 是 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-#### fontWeight
+### fontWeight
 
 字体粗细。
 
@@ -94,7 +92,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'normal' | - | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-#### fontStyle
+### fontStyle
 
 字体样式。
 
@@ -108,7 +106,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'normal' | - | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-#### fontVariant
+### fontVariant
 
 字体样式。
 
@@ -127,9 +125,9 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'normal' | - | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-### 单行布局
+## 单行布局
 
-#### textBaseline
+### textBaseline
 
 在垂直方向的对齐通过该属性实现，
 
@@ -145,7 +143,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'alphabetic' | - | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-#### letterSpacing
+### letterSpacing
 
 字符间距。
 
@@ -155,7 +153,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '0' | - | 是 | 否 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-### 多行布局
+## 多行布局
 
 在以下两种情况下会出现换行：
 
@@ -164,7 +162,7 @@ order: 1
 
 因此在解析原始文本时，需要考虑这两种情况。但在处理 CJK(Chinese/Japanese/Korean) 字符时，需要考虑它们的特殊语言规范。事实上 CSS 的 `word-break` 也提供了考虑 CJK 情况的值。
 
-#### textAlign
+### textAlign
 
 在多行文本中，每一行可以在水平方向以锚点（anchor）对齐。
 
@@ -186,11 +184,11 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'left' | - | 是 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-#### wordWrap
+### wordWrap
 
 是否开启自动折行，默认值为 `false`。
 
-#### wordWrapWidth
+### wordWrapWidth
 
 开启自动折行后，超出该宽度则换行。
 
@@ -200,7 +198,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 否 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-#### textOverflow
+### textOverflow
 
 用于确定如何提示用户存在隐藏的文本溢出内容，例如直接裁剪、追加省略号或一个自定义字符串。需要配合 [wordWrap](/zh/docs/api/basic/text#wordwrap) ，[wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth) 和 [maxLines](/zh/docs/api/basic/text#maxlines) 一起使用。
 
@@ -222,7 +220,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'clip' | - | 否 | 否 | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
 
-#### maxLines
+### maxLines
 
 最大行数，文本超出后将被截断，需要配合 [wordWrap](/zh/docs/api/basic/text#wordwrap) ，[wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth) 和 [textOverflow](/zh/docs/api/basic/text#textoverflow) 一起使用。
 
@@ -234,7 +232,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | 'Infinity' | - | 否 | 否 | [\<number\>](/zh/docs/api/css/css-properties-values-api#number) |
 
-#### lineHeight
+### lineHeight
 
 行高。
 
@@ -244,7 +242,7 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-#### leading
+### leading
 
 行间距。
 
@@ -252,11 +250,11 @@ order: 1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 否 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-### [WIP] 阴影
+## [WIP] 阴影
 
 ## 方法
 
-### getLineBoundingRects(): Rectangle[]
+### getLineBoundingRects
 
 获取每一行文本的包围盒，例如：
 
