@@ -11,6 +11,22 @@
         "en": "Text"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FdtgQLndl8IAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "text-overflow.js",
+      "title": {
+        "zh": "文本溢出",
+        "en": "Text Overflow"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*qQawT5L1jGEAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "web-font-loader.js",
+      "title": {
+        "zh": "加载字体",
+        "en": "Use Web Font Loader"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*V2CyT5XfZ3AAAAAAAAAAAAAADmJ7AQ"
     }
   ]
 }

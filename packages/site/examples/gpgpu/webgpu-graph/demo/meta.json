@@ -1,0 +1,29 @@
+{
+  "title": {
+    "zh": "GPGPU",
+    "en": "GPGPU"
+  },
+  "demos": [
+    {
+      "filename": "webgpu-graph-pagerank.js",
+      "title": {
+        "zh": "WebGPU Graph PageRank",
+        "en": "WebGPU Graph PageRank"
+      }
+    },
+    {
+      "filename": "webgpu-graph-sssp.js",
+      "title": {
+        "zh": "WebGPU Graph SSSP",
+        "en": "WebGPU Graph SSSP"
+      }
+    },
+    {
+      "filename": "webgpu-graph-bfs.js",
+      "title": {
+        "zh": "WebGPU Graph BFS",
+        "en": "WebGPU Graph BFS"
+      }
+    }
+  ]
+}

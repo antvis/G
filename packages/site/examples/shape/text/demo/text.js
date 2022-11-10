@@ -6,7 +6,6 @@ import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import WebFont from 'webfontloader';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -66,28 +65,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(bounds);
   canvas.appendChild(text);
   canvas.appendChild(origin);
-
-  WebFont.load({
-    google: {
-      families: ['Gaegu'],
-    },
-    active: () => {
-      const text = new Text({
-        style: {
-          x: 100,
-          y: 100,
-          fontFamily: 'Gaegu',
-          text: 'Almost before we knew it, we had left the ground.',
-          textOverflow: 'ellipsis',
-          fontSize: 30,
-          fill: '#1890FF',
-          stroke: '#F04864',
-          lineWidth: 5,
-        },
-      });
-      canvas.appendChild(text);
-    },
-  });
 });
 
 // stats
@@ -280,63 +257,6 @@ layoutFolder.add(layoutConfig, 'textPathSide', ['left', 'right']).onChange((text
 layoutFolder.add(layoutConfig, 'textPathStartOffset', 0, 100).onChange((textPathStartOffset) => {
   text.attr('textPathStartOffset', textPathStartOffset);
 });
-
-const multilineFolder = gui.addFolder('multiline');
-const multilineConfig = {
-  wordWrap: false,
-  wordWrapWidth: 100,
-  maxLines: Infinity,
-  textOverflow: '...',
-  lineHeight: 0,
-  leading: 0,
-  textAlign: 'start',
-};
-multilineFolder.add(multilineConfig, 'wordWrap').onChange((wordWrap) => {
-  text.attr('wordWrap', wordWrap);
-});
-
-const lineBlocks = [];
-multilineFolder.add(multilineConfig, 'wordWrapWidth', 0, 500).onChange((wordWrapWidth) => {
-  text.attr('wordWrapWidth', wordWrapWidth);
-  lineBlocks.forEach((block) => block.remove());
-
-  text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
-    const block = new Rect({
-      style: {
-        x,
-        y,
-        width,
-        height,
-        stroke: 'black',
-        lineWidth: 2,
-      },
-    });
-    lineBlocks.push(block);
-    text.appendChild(block);
-  });
-});
-multilineFolder.add(multilineConfig, 'maxLines', 1, 10, 1).onChange((maxLines) => {
-  text.attr('maxLines', maxLines);
-});
-multilineFolder.add(multilineConfig, 'textOverflow').onChange((textOverflow) => {
-  text.attr('textOverflow', textOverflow);
-});
-multilineFolder.add(multilineConfig, 'lineHeight', 0, 100).onChange((lineHeight) => {
-  text.attr('lineHeight', lineHeight);
-});
-multilineFolder.add(multilineConfig, 'leading', 0, 30).onChange((leading) => {
-  text.attr('leading', leading);
-});
-multilineFolder
-  .add(multilineConfig, 'textAlign', ['start', 'end', 'center', 'left', 'right'])
-  .onChange((textAlign) => {
-    text.attr('textAlign', textAlign);
-  });
-// multilineFolder
-//   .add(multilineConfig, 'whiteSpace', ['pre', 'normal', 'pre-line'])
-//   .onChange((whiteSpace) => {
-//     text.attr('whiteSpace', whiteSpace);
-//   });
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
