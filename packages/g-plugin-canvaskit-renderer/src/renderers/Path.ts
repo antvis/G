@@ -52,7 +52,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
     const params = absolutePath[i]; // eg. M 100 200
     const command = params[0];
     const nextSegment = absolutePath[i + 1];
-    const useStartOffset = i === 0 && startOffsetX !== 0 && startOffsetY !== 0;
+    const useStartOffset = i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
     const useEndOffset =
       (i === absolutePath.length - 1 ||
         (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&

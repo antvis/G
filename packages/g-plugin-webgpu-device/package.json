@@ -31,7 +31,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "eventemitter3": "^4.0.0",
     "tslib": "^2.3.1"
   },

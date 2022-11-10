@@ -8,7 +8,10 @@ import type { CanvasRendererPluginOptions } from './interfaces';
 
 export * from './shapes/styles';
 
-export class Plugin extends AbstractRendererPlugin {
+export class Plugin extends AbstractRendererPlugin<{
+  defaultStyleRendererFactory: Record<Shape, StyleRenderer>;
+  styleRendererFactory: Record<Shape, StyleRenderer>;
+}> {
   name = 'canvas-renderer';
 
   constructor(private options: Partial<CanvasRendererPluginOptions> = {}) {
@@ -42,9 +45,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.MESH]: undefined,
     };
 
-    // @ts-ignore
     this.context.defaultStyleRendererFactory = defaultStyleRendererFactory;
-    // @ts-ignore
     this.context.styleRendererFactory = defaultStyleRendererFactory;
 
     this.addRenderingPlugin(new CanvasRendererPlugin(canvasRendererPluginOptions));
@@ -52,9 +53,7 @@ export class Plugin extends AbstractRendererPlugin {
   destroy(): void {
     this.removeAllRenderingPlugins();
 
-    // @ts-ignore
     delete this.context.defaultStyleRendererFactory;
-    // @ts-ignore
     delete this.context.styleRendererFactory;
   }
 }

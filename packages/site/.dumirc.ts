@@ -208,13 +208,6 @@ export default defineConfig({
     ],
     examples: [
       {
-        slug: 'guide',
-        title: {
-          zh: '教程',
-          en: 'Guide',
-        },
-      },
-      {
         slug: 'canvas',
         title: {
           zh: '画布',
@@ -226,13 +219,6 @@ export default defineConfig({
         title: {
           zh: '相机',
           en: 'Camera',
-        },
-      },
-      {
-        slug: 'scenegraph',
-        title: {
-          zh: '场景图',
-          en: 'Scene Graph',
         },
       },
       {
@@ -261,6 +247,13 @@ export default defineConfig({
         title: {
           zh: '动画',
           en: 'Animation',
+        },
+      },
+      {
+        slug: 'scenegraph',
+        title: {
+          zh: '场景图',
+          en: 'Scene Graph',
         },
       },
       {
@@ -296,6 +289,13 @@ export default defineConfig({
         title: {
           zh: '性能',
           en: 'Performance',
+        },
+      },
+      {
+        slug: 'guide',
+        title: {
+          zh: '教程',
+          en: 'Guide',
         },
       },
     ],

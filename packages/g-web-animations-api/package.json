@@ -32,7 +32,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4"
+    "@antv/util": "^3.3.1"
   },
   "peerDependencies": {
     "@antv/g-lite": "^1.0.0"

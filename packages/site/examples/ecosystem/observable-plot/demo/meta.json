@@ -1,0 +1,24 @@
+{
+  "title": {
+    "zh": "Observable Plot",
+    "en": "Observable Plot"
+  },
+  "demos": [
+    {
+      "filename": "dot.js",
+      "title": {
+        "zh": "散点图",
+        "en": "Dot Plot"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EyjlTIwCrlgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "rough-dot.js",
+      "title": {
+        "zh": "手绘风格的散点图",
+        "en": "Rough + Dot Plot"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*022sTZrfznEAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

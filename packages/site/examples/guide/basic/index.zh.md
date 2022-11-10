@@ -1,4 +1,4 @@
 ---
 title: 教程
-order: 10
+order: 1000
 ---

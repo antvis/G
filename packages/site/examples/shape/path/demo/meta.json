@@ -7,10 +7,66 @@
     {
       "filename": "path.js",
       "title": {
-        "zh": "路径",
-        "en": "Path"
+        "zh": "路径样式",
+        "en": "Style of path"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nw3DSKlj9t4AAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*p7WOQ4-tspIAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "l-command.js",
+      "title": {
+        "zh": "包含 L 命令",
+        "en": "Path with L commands"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*w8O1R5RGv9gAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "a-command.js",
+      "title": {
+        "zh": "包含 A 命令",
+        "en": "Path with A commands"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*iwBNR5uP3J4AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "multi-segments.js",
+      "title": {
+        "zh": "路径定义中包含多段",
+        "en": "Multi segments in a path definition"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*9Q4iQaoxsS0AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "group.js",
+      "title": {
+        "zh": "使用 Group 组合多条路径",
+        "en": "Compose multiple paths with a group"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*EaDjS48jEY0AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "marker.js",
+      "title": {
+        "zh": "标记图形",
+        "en": "Marker"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*6jTFTrigNVkAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "get-point.js",
+      "title": {
+        "zh": "获取路径上的点",
+        "en": "Get point from path"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*tXOjRJUyDEMAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "picking.js",
+      "title": {
+        "zh": "拾取区域配置",
+        "en": "Picking"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1668060557459/Nov-10-2022%25252014-09-04.gif"
     }
   ]
 }

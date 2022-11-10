@@ -705,10 +705,10 @@
     csstype "^3.0.8"
     tslib "^2.0.3"
 
-"@antv/util@^3.2.4":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@antv/util/-/util-3.2.5.tgz#c482c3f9f67276d072cebc52f6b6ca88b0007439"
-  integrity sha512-5qFvH+NPzB79pxEdjVdBPChe2Bbxmh2Z72iGAnPSibNhtLpn+d03laqXTeNJ4+1BhBG8Y+KKZoRpE6GR4d2zUQ==
+"@antv/util@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.npm.alibaba-inc.com/@antv/util/download/@antv/util-3.3.1.tgz#9c6930ff29e130d3fb98a49083c25626571959e7"
+  integrity sha512-9p2SLovz4iBo6OsAdV1MU9lShwqCez2CMLCL0voIXNsIDxG2t17l8EN8/hoADCTH5AigC2U3ru9/HdD5YtOiQg==
   dependencies:
     fast-deep-equal "^3.1.3"
     tslib "^2.3.1"
@@ -4956,6 +4956,15 @@
   dependencies:
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
+
+"@observablehq/plot@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@observablehq/plot/-/plot-0.5.2.tgz#5217812cad2926f7e335cc5c78c0b0b17b367493"
+  integrity sha512-RmQRjm2+CIkOIJAGG/elAjFGupgCgyNv7GAijmX8McDo0xerezD/A96ZLqPBrxmTgmJPRDcx1+o24lpnm+jy2g==
+  dependencies:
+    d3 "^7.5.0"
+    interval-tree-1d "1"
+    isoformat "0.2"
 
 "@octokit/auth-token@^2.4.0":
   version "2.5.0"
@@ -10178,6 +10187,11 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
+binary-search-bounds@^2.0.0:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/binary-search-bounds/-/binary-search-bounds-2.0.5.tgz#125e5bd399882f71e6660d4bf1186384e989fba7"
+  integrity sha512-H0ea4Fd3lS1+sTEB2TgcLoK21lLhwEJzlQv3IN47pJS976Gx4zoWe0ak3q+uYh60ppQxg9F16Ri4tS1sfD4+jA==
+
 binaryextensions@^2.1.2:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/binaryextensions/-/binaryextensions-2.3.0.tgz#1d269cbf7e6243ea886aa41453c3651ccbe13c22"
@@ -13191,7 +13205,7 @@ d3-zoom@3:
     d3-selection "2 - 3"
     d3-transition "2 - 3"
 
-d3@^7.3.0:
+d3@^7.3.0, d3@^7.5.0:
   version "7.6.1"
   resolved "https://registry.yarnpkg.com/d3/-/d3-7.6.1.tgz#b21af9563485ed472802f8c611cc43be6c37c40c"
   integrity sha512-txMTdIHFbcpLx+8a0IFhZsbp+PfBBPt8yfbmukZTQFroKuFqIwqswF0qE5JXWefylaAVpSXFoKm3yP+jpNLFLw==
@@ -19422,6 +19436,13 @@ intersection-observer@^0.7.0:
   resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.7.0.tgz#ee16bee978db53516ead2f0a8154b09b400bbdc9"
   integrity sha512-Id0Fij0HsB/vKWGeBe9PxeY45ttRiBmhFyyt/geBdDHBYNctMRTE3dC1U3ujzz3lap+hVXlEcVaB56kZP/eEUg==
 
+interval-tree-1d@1:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/interval-tree-1d/-/interval-tree-1d-1.0.4.tgz#b44f657de7ddae69ea3f98e0a9ad4bb046b07d11"
+  integrity sha512-wY8QJH+6wNI0uh4pDQzMvl+478Qh7Rl4qLmqiluxALlNvl+I+o5x38Pw3/z7mDPTPS1dQalZJXsmbvxx5gclhQ==
+  dependencies:
+    binary-search-bounds "^2.0.0"
+
 intl-format-cache@^4.2.21:
   version "4.3.1"
   resolved "https://registry.npm.alibaba-inc.com/intl-format-cache/download/intl-format-cache-4.3.1.tgz#484d31a9872161e6c02139349b259a6229ade377"
@@ -20317,6 +20338,11 @@ isobject@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-4.0.0.tgz#3f1c9155e73b192022a80819bacd0343711697b0"
   integrity sha512-S/2fF5wH8SJA/kmwr6HYhK/RI/OkhD84k8ntalo0iJjZikgq1XFvR5M8NPT1x5F7fBwCG3qHfnzeP/Vh/ZxCUA==
+
+isoformat@0.2:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/isoformat/-/isoformat-0.2.1.tgz#2526344a4276a101b2881848dc337d1d2ae74494"
+  integrity sha512-tFLRAygk9NqrRPhJSnNGh7g7oaVWDwR0wKh/GM2LgmPa50Eg4UfyaCO4I8k6EqJHl1/uh2RAD6g06n5ygEnrjQ==
 
 isomorphic-fetch@^2.1.1:
   version "2.2.1"

@@ -30,7 +30,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "roughjs": "^4.5.2",
     "tslib": "^2.3.1"
   },

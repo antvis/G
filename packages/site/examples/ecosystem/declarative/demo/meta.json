@@ -1,7 +1,7 @@
 {
   "title": {
-    "zh": "其它",
-    "en": "Others"
+    "zh": "声明式用法",
+    "en": "Declarative Usage"
   },
   "demos": [
     {
@@ -23,20 +23,6 @@
       "title": {
         "zh": "ReactG",
         "en": "ReactG"
-      }
-    },
-    {
-      "filename": "image-exporter.js",
-      "title": {
-        "zh": "导出画布内容成图片",
-        "en": "Export canvas' contents to image"
-      }
-    },
-    {
-      "filename": "lite.js",
-      "title": {
-        "zh": "使用轻量版",
-        "en": "Use lightweight version of G"
       }
     }
   ]
