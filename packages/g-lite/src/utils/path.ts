@@ -398,6 +398,7 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
       nextPoint: null,
       arcParams: null,
       box: null,
+      cubicParams: null,
     };
     switch (command) {
       case 'M':

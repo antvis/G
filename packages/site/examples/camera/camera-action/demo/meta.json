@@ -1,0 +1,27 @@
+{
+  "demos": [
+    {
+      "filename": "action.js",
+      "title": {
+        "zh": "相机动作",
+        "en": "Camera actions"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*goX8QqgVSMEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "view-offset.js",
+      "title": {
+        "zh": "View Offset",
+        "en": "View Offset"
+      }
+    },
+    {
+      "filename": "zoom-by-point.js",
+      "title": {
+        "zh": "以指定视点缩放",
+        "en": "Zoom by specified viewport point"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1667978070897/Nov-09-2022%25252015-13-27.gif"
+    }
+  ]
+}

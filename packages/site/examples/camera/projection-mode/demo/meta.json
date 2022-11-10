@@ -1,0 +1,20 @@
+{
+  "demos": [
+    {
+      "filename": "ortho.js",
+      "title": {
+        "zh": "正交投影相机",
+        "en": "Orthographic camera"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*5cbxQ5CF1GEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "perspective.js",
+      "title": {
+        "zh": "透视投影相机",
+        "en": "Perspective camera"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*wrMTSZeQGvsAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

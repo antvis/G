@@ -1,6 +1,6 @@
 import { setupTransferableMethodsOnMain } from '@naoak/workerize-transferable';
 // @ts-ignore
-import Worker from 'workerize-loader!./main.worker.js';
+import Worker from 'workerize-loader?inline!./main.worker.js';
 
 const worker = new Worker();
 

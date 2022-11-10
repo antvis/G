@@ -72,8 +72,8 @@ const drawBars = async () => {
 
   const valueline = d3
     .line()
-    .x((d) => x(d.date))
-    .y((d) => y(d.close));
+    .x((d) => x(d.date) || 0)
+    .y((d) => y(d.close) || 0);
 
   const data = await d3.json(
     'https://gw.alipayobjects.com/os/bmw-prod/e5e0e405-e0b0-4585-a10d-caf6b657dc9f.json',

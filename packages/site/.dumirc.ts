@@ -68,13 +68,13 @@ export default defineConfig({
           en: 'Plugins',
         },
       },
-      {
-        slug: 'docs/inside-g',
-        title: {
-          zh: '开发文档',
-          en: 'Inside G',
-        },
-      },
+      // {
+      //   slug: 'docs/inside-g',
+      //   title: {
+      //     zh: '开发文档',
+      //     en: 'Inside G',
+      //   },
+      // },
     ],
     docs: [
       {
@@ -189,21 +189,6 @@ export default defineConfig({
           en: 'Devtools',
         },
         order: 12,
-      },
-      {
-        slug: 'inside-g',
-        title: {
-          zh: 'Inside G',
-          en: 'Inside G',
-        },
-      },
-      // 插件
-      {
-        slug: 'plugins',
-        title: {
-          zh: '插件',
-          en: 'Plugins',
-        },
       },
     ],
     examples: [
@@ -436,4 +421,7 @@ export default defineConfig({
     '@': __dirname,
   },
   copy: ['static'],
+  // chainWebpack(memo, { env, webpack }) {
+
+  // }
 });

@@ -1,0 +1,41 @@
+{
+  "demos": [
+    {
+      "filename": "dom-canvas.js",
+      "title": {
+        "zh": "canvas.container 使用 DOM 元素",
+        "en": "Use a DOM element for container"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "user-defined-canvas.js",
+      "title": {
+        "zh": "使用用户创建的 <canvas>",
+        "en": "Use user-defined <canvas>"
+      }
+    },
+    {
+      "filename": "multi-canvas.tsx",
+      "title": {
+        "zh": "多个画布",
+        "en": "Multiple canvas"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*VSOLRbXqEeMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "supports-css-transform.js",
+      "title": {
+        "zh": "支持在容器上应用 CSS Transform",
+        "en": "Support applying CSS Transform on container"
+      }
+    },
+    {
+      "filename": "offscreen-canvas.ts",
+      "title": {
+        "zh": "OffscreenCanvas",
+        "en": "OffscreenCanvas"
+      }
+    }
+  ]
+}
