@@ -15,7 +15,7 @@ import type { Path } from './Path';
 export interface TextStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
-  text: string;
+  text: number | string;
 
   /**
    * The text-align property sets the horizontal alignment of the inline-level content.
