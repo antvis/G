@@ -45,8 +45,26 @@ const path = new Path({
   },
 });
 
+const arrowMarker = new Path({
+  style: {
+    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    stroke: '#1890FF',
+    anchor: '0.5 0.5',
+    transformOrigin: 'center',
+  },
+});
+const arc = new Path({
+  style: {
+    d: 'M 100 100 A 90 90 0 0 1 100 300',
+    stroke: 'black',
+    markerStart: arrowMarker,
+    markerEnd: arrowMarker,
+  },
+});
+
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(path);
+  canvas.appendChild(arc);
 });
 
 // stats
@@ -90,3 +108,16 @@ rendererFolder
     canvas.setRenderer(renderer);
   });
 rendererFolder.open();
+
+const markerFolder = gui.addFolder('marker');
+const markerConfig = {
+  markerStartOffset: 0,
+  markerEndOffset: 0,
+};
+markerFolder.add(markerConfig, 'markerStartOffset', -20, 20).onChange((markerStartOffset) => {
+  arc.style.markerStartOffset = markerStartOffset;
+});
+markerFolder.add(markerConfig, 'markerEndOffset', -20, 20).onChange((markerEndOffset) => {
+  arc.style.markerEndOffset = markerEndOffset;
+});
+markerFolder.open();

@@ -151,18 +151,7 @@ const arrow3 = new Line({
   },
 });
 
-const arc = new Path({
-  style: {
-    d: 'M 100 100 A 90 90 0 0 1 100 300',
-    stroke: 'black',
-    markerStart: arrowMarker,
-    markerEnd: arrowMarker,
-  },
-});
-
 canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(arc);
-
   canvas.appendChild(arrow1);
   canvas.appendChild(handle1);
   canvas.appendChild(handle2);
@@ -254,16 +243,3 @@ rendererFolder
     canvas.setRenderer(renderer);
   });
 rendererFolder.open();
-
-const markerFolder = gui.addFolder('marker');
-const markerConfig = {
-  markerStartOffset: 0,
-  markerEndOffset: 0,
-};
-markerFolder.add(markerConfig, 'markerStartOffset', -20, 20).onChange((markerStartOffset) => {
-  arc.style.markerStartOffset = markerStartOffset;
-});
-markerFolder.add(markerConfig, 'markerEndOffset', -20, 20).onChange((markerEndOffset) => {
-  arc.style.markerEndOffset = markerEndOffset;
-});
-markerFolder.open();

@@ -10,6 +10,7 @@ import type {
   Tuple4Number,
 } from '@antv/g-lite';
 import { convertToPath, CSSRGB, DisplayObject, parsePath, Shape } from '@antv/g-lite';
+import { arcToCubic } from '@antv/util';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
@@ -466,8 +467,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     } else {
       path = object.parsedStyle.path;
     }
-    const { absolutePath } = path;
-    const isClosed = absolutePath.length && absolutePath[absolutePath.length - 1][0] === 'Z';
+    const { absolutePath, segments } = path;
 
     let startOffsetX = 0;
     let startOffsetY = 0;
@@ -500,14 +500,35 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     let startPointIndex = -1;
     let mCommandsNum = -1;
     absolutePath.forEach(([command, ...params], i) => {
+      const nextSegment = absolutePath[i + 1];
+      const useStartOffset = i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
+      const useEndOffset =
+        (i === absolutePath.length - 1 ||
+          (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
+        endOffsetX !== 0 &&
+        endOffsetY !== 0;
+
       if (command === 'M') {
         mCommandsNum++;
         points[mCommandsNum] = [];
         startPointIndex = points[mCommandsNum].length;
-        points[mCommandsNum].push(params[0] - defX + startOffsetX, params[1] - defY + startOffsetY);
+
+        if (useStartOffset) {
+          points[mCommandsNum].push(
+            params[0] - defX + startOffsetX,
+            params[1] - defY + startOffsetY,
+            params[0] - defX,
+            params[1] - defY,
+          );
+        } else {
+          points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+        }
       } else if (command === 'L') {
-        // lineTo(params[0] - defX, params[1] - defY, points[mCommandsNum]);
-        points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+        if (useEndOffset) {
+          points[mCommandsNum].push(params[0] - defX + endOffsetX, params[1] - defY + endOffsetY);
+        } else {
+          points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+        }
       } else if (command === 'Q') {
         quadCurveTo(
           params[0] - defX,
@@ -516,32 +537,54 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[3] - defY,
           points[mCommandsNum],
         );
+        if (useEndOffset) {
+          points[mCommandsNum].push(params[2] - defX + endOffsetX, params[3] - defY + endOffsetY);
+        }
       } else if (command === 'A') {
-        // convert to cubic first
-        // segmentToCubic
-        // arcTo(
-        //   params[0] - defX,
-        //   params[1] - defY,
-        //   params[2] - defX,
-        //   params[3] - defY,
-        //   params[4] - defX + offsetX,
-        //   params[5] - defY + offsetY,
-        //   points[mCommandsNum],
-        // );
-      } else if (command === 'C') {
-        // the last C command
-        const offsetX = i === absolutePath.length - (isClosed ? 2 : 1) ? endOffsetX : 0;
-        const offsetY = i === absolutePath.length - (isClosed ? 2 : 1) ? endOffsetY : 0;
+        // convert Arc to Cubic
 
+        const [px1, py1] = segments[i].prePoint;
+        const args = arcToCubic(
+          px1,
+          py1,
+          params[0],
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+          params[5],
+          params[6],
+          undefined,
+        );
+
+        // fixArc
+        for (let i = 0; i < args.length; i += 6) {
+          bezierCurveTo(
+            args[i] - defX,
+            args[i + 1] - defY,
+            args[i + 2] - defX,
+            args[i + 3] - defY,
+            args[i + 4] - defX,
+            args[i + 5] - defY,
+            points[mCommandsNum],
+          );
+        }
+        if (useEndOffset) {
+          points[mCommandsNum].push(params[5] - defX + endOffsetX, params[6] - defY + endOffsetY);
+        }
+      } else if (command === 'C') {
         bezierCurveTo(
           params[0] - defX,
           params[1] - defY,
           params[2] - defX,
           params[3] - defY,
-          params[4] - defX + offsetX,
-          params[5] - defY + offsetY,
+          params[4] - defX,
+          params[5] - defY,
           points[mCommandsNum],
         );
+        if (useEndOffset) {
+          points[mCommandsNum].push(params[4] - defX + endOffsetX, params[5] - defY + endOffsetY);
+        }
       } else if (
         command === 'Z' &&
         (object.nodeName === Shape.PATH || object.nodeName === Shape.RECT)
