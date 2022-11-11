@@ -33,46 +33,7 @@ const canvas = new Canvas({
 
 ## 样式属性
 
-除了 2D 图形的样式属性，rough.js 提供的配置项也可以使用。
-
-### opacity
-
-rough.js 并不支持 `opacity`，这一点和 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 一样。
-
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
-
-但需要注意的是，由于 rough.js 未开放相关配置项，因此 `fillOpacity` 和 `strokeOpacity` 并不生效：
-
-```js
-circle.style.opacity = 0.5;
-```
-
-### shadow
-
-rough.js 并不支持 `shadow` 相关效果，但我们提供了相关效果：
-
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
-
-配置项可以参考 [阴影](/zh/docs/api/basic/display-object#阴影)：
-
-```js
-circle.style.shadowColor = '#000';
-circle.style.shadowBlur = 0;
-circle.style.shadowOffsetX = 0;
-circle.style.shadowOffsetY = 0;
-```
-
-### rough.js 相关属性
-
-rough.js 提供了很多影响手绘效果的配置项，都可以正常使用：
-
-https://github.com/rough-stuff/rough/wiki#options
-
-例如我们可以修改填充风格，在该 [示例](/zh/examples/plugins#rough) 中可以调节更多配置项：
-
-```js
-circle.style.fillStyle = 'zigzag';
-```
+除了 2D 图形的样式属性，rough.js 提供的配置项也可以使用。可以完全参考 [g-plugin-rough-canvas-renderer](/plugins/rough-canvas-renderer)。
 
 ## 拾取行为
 

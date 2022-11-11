@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import type { Options } from 'roughjs/bin/core';
 
 export const SUPPORTED_ROUGH_OPTIONS = [
@@ -27,12 +27,22 @@ export const SUPPORTED_ROUGH_OPTIONS = [
   'preserveVertices',
 ];
 
+function mergeOpacity(color: CSSRGB, opacity: number) {
+  // since rough.js doesn't support fill/strokeOpacity
+  let colorString = color.toString();
+  if (opacity !== 1) {
+    const { r, g, b, alpha } = color;
+    colorString = `rgba(${r},${g},${b},${Number(alpha) * opacity})`;
+  }
+  return colorString;
+}
+
 export function generateRoughOptions(object: DisplayObject) {
   const {
+    fillOpacity,
+    strokeOpacity,
     bowing,
     roughness,
-    fill,
-    stroke,
     lineWidth,
     seed,
     fillStyle,
@@ -54,6 +64,8 @@ export function generateRoughOptions(object: DisplayObject) {
     preserveVertices,
   } = object.parsedStyle as ParsedBaseStyleProps & Options;
 
+  const { stroke, fill } = object.computedStyle;
+
   // @see https://github.com/rough-stuff/rough/wiki#options
   const options: Options = {
     bowing,
@@ -61,8 +73,8 @@ export function generateRoughOptions(object: DisplayObject) {
     // If seed is not defined, or set to 0, no seed is used when computing random values.
     // @see https://github.com/rough-stuff/rough/wiki#seed
     seed: seed || object.entity,
-    fill: fill.toString(),
-    stroke: stroke.toString(),
+    fill: mergeOpacity(fill, fillOpacity),
+    stroke: mergeOpacity(stroke, strokeOpacity),
     strokeWidth: lineWidth,
     fillStyle,
     fillWeight,

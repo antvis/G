@@ -5,9 +5,15 @@ export default defineConfig({
     { id: 'zh', name: '中文' },
     { id: 'en', name: 'English' },
   ],
+  title: 'G',
+  favicons: [
+    'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*7svFR6wkPMoAAAAAAAAAAAAADmJ7AQ/original',
+  ], // 网站 favicon
   themeConfig: {
     title: 'G',
     description: 'A flexible rendering engine for visualization.',
+    defaultLanguage: 'zh', // 默认语言
+    isAntVSite: false, // 是否是 AntV 的大官网
     siteUrl: 'https://g-next.antv.vision',
     githubUrl: 'https://github.com/antvis/g',
     detail: {
@@ -44,7 +50,7 @@ export default defineConfig({
         slug: 'docs/guide',
         title: {
           zh: '教程',
-          en: 'Guide',
+          en: 'Tutorials',
         },
       },
       {
@@ -416,10 +422,6 @@ export default defineConfig({
   mfsu: false,
   links: [],
   scripts: [],
-  alias: {
-    // 根据自己项目结构书写绝对路径
-    '@': __dirname,
-  },
   copy: ['static'],
   // chainWebpack(memo, { env, webpack }) {
 

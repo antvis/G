@@ -16,16 +16,16 @@ redirect_from:
 As the underlying rendering engine of AntV, G is dedicated to provide consistent and high performance 2D / 3D graphics rendering capabilities for upper layer products, adapting all underlying rendering APIs (Canvas2D / SVG / WebGL / WebGPU / CanvasKit / Node.js) on the web side. In particular, it provides GPGPU support for algorithms suitable for parallel computing in graph scenarios.
 
 <p>
-  <a href="https://g-next.antv.vision/en/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/en/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
+  <a href="/en/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/en/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
 
 </p>
 
@@ -35,38 +35,38 @@ As the underlying rendering engine of AntV, G is dedicated to provide consistent
 
 **Support multiple rendering environments**。Support Canvas2D / SVG / WebGL / WebGPU / CanvasKit and runtime switching, and also server-side rendering.
 
-**High performance rendering and computing**。WebGPU-based GPGPU support for parallelizable algorithms. [webgpu-graph](https://g-next.antv.vision/en/docs/api/gpgpu/webgpu-graph) is a library of graph analysis algorithms using GPU acceleration.
+**High performance rendering and computing**。WebGPU-based GPGPU support for parallelizable algorithms. [webgpu-graph](/en/docs/api/gpgpu/webgpu-graph) is a library of graph analysis algorithms using GPU acceleration.
 
 Extensible plug-in mechanism and rich set of plug-ins：
 
 -   Rendering Related
-    -   [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-    -   [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
-    -   [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-    -   [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
-    -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
-    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvas2D.
-    -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
-    -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+    -   [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+    -   [g-plugin-canvaskit-renderer](/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+    -   [g-plugin-svg-renderer](/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+    -   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
+    -   [g-plugin-html-renderer](/en/docs/plugins/html-renderer) Rendering DOM with HTML.
+    -   [g-plugin-3d](/en/docs/plugins/3d) Extended 3D capabilities.
+    -   [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvas2D.
+    -   [g-plugin-rough-svg-renderer](/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
 -   Picking
-    -   [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-    -   [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
+    -   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+    -   [g-plugin-svg-picker](/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
+-   Accessibility
+    -   [g-plugin-a11y](/en/docs/plugins/a11y) Provides SEO, screen reader support and keyboard navigation.
 -   Interaction
-    -   [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
-    -   [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides camera interaction for 3D scenes.
-    -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+    -   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
+    -   [g-plugin-control](/en/docs/plugins/control) Provides camera interaction for 3D scenes.
+    -   [g-plugin-dragndrop](/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
 -   Physics Engine
-    -   [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
-    -   [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-    -   [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+    -   [g-plugin-box2d](/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
+    -   [g-plugin-matterjs](/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+    -   [g-plugin-physx](/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
 -   Layout Engine
-    -   [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
+    -   [g-plugin-yoga](/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
 -   GPGPU
-    -   [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+    -   [g-plugin-gpgpu](/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
 -   CSS Selector
-    -   [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
--   A11y
-    -   [g-plugin-a11y](https://g-next.antv.vision/en/docs/plugins/a11y) Provides accessibility features.
+    -   [g-plugin-css-select](/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
 
 Full [API Spec](/api.html).
 

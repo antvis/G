@@ -33,46 +33,7 @@ In addition, we support all 2D graphics, among which [Text](/en/docs/api/basic/t
 
 ## Style properties
 
-In addition to the style properties of 2D graphics, the configuration items provided byrough.js can also be used.
-
-### opacity
-
-rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer).
-
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
-
-Note, however, that `fillOpacity` and `strokeOpacity` do not work because rough.js does not open the relevant configuration items.
-
-```js
-circle.style.opacity = 0.5;
-```
-
-### shadow
-
-rough.js does not support `shadow` related effects, but we do provide them.
-
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
-
-Configuration items can be found in [shadow](/en/docs/api/basic/display-object#shadow).
-
-```js
-circle.style.shadowColor = '#000';
-circle.style.shadowBlur = 0;
-circle.style.shadowOffsetX = 0;
-circle.style.shadowOffsetY = 0;
-```
-
-### rough.js Related Properties
-
-rough.js provides a number of configuration items that affect the hand-drawn effect, all of which work properly.
-
-https://github.com/rough-stuff/rough/wiki#options
-
-For example, we can modify the fill style and adjust more configuration items in this [example](/en/examples/plugins#rough).
-
-```js
-circle.style.fillStyle = 'zigzag';
-```
+In addition to the style properties of 2D graphics, the configuration items provided by rough.js can also be used. See [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer).
 
 ## Picking
 

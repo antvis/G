@@ -16,16 +16,16 @@ redirect_from:
 G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高性能的 2D / 3D 图形渲染能力，适配 Web 端全部底层渲染 API（Canvas2D / SVG / WebGL / WebGPU / CanvasKit）。特别的，针对图场景下适合并行计算的算法提供 GPGPU 支持。
 
 <p>
-  <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
+  <a href="/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
+<a href="/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
 
 </p>
 
@@ -35,36 +35,39 @@ G 作为 AntV 底层的渲染引擎，致力于为上层产品提供一致、高
 
 **适配多种渲染环境**。支持 Canvas2D / SVG / WebGL / WebGPU / CanvasKit 以及运行时切换，并支持服务端渲染。
 
-**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](https://g-next.antv.vision/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
+**高性能的渲染与计算**。为可并行算法提供基于 WebGPU 的 GPGPU 支持。[webgpu-graph](/zh/docs/api/gpgpu/webgpu-graph) 使用 GPU 加速的图分析算法库。
 
 可扩展的插件机制以及丰富的插件集：
 
 -   渲染相关
-    -   [g-plugin-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
-    -   [g-plugin-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
-    -   [g-plugin-device-renderer](https://g-next.antv.vision/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
-    -   [g-plugin-html-renderer](https://g-next.antv.vision/zh/docs/plugins/html-renderer) 渲染 DOM 元素
-    -   [g-plugin-3d](https://g-next.antv.vision/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
-    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvas2D 进行手绘风格渲染
-    -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/zh/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
-    -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+    -   [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 基于 Canvas2D 渲染 2D 图形
+    -   [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 基于 [Skia](https://skia.org/docs/user/modules/quickstart) 渲染 2D 图形
+    -   [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 基于 SVG 渲染 2D 图形
+    -   [g-plugin-device-renderer](/zh/docs/plugins/device-renderer) 基于 GPUDevice 渲染 2D 图形
+    -   [g-plugin-html-renderer](/zh/docs/plugins/html-renderer) 渲染 DOM 元素
+    -   [g-plugin-3d](/zh/docs/plugins/3d) 基于 g-plugin-device-renderer 扩展 3D 能力
+    -   [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 使用 [rough.js](https://roughjs.com/) 和 Canvas2D 进行手绘风格渲染
+    -   [g-plugin-rough-svg-renderer](/zh/docs/plugins/rough-svg-renderer) 使用 [rough.js](https://roughjs.com/) 和 SVG 进行手绘风格渲染
 -   拾取
-    -   [g-plugin-canvas-picker](https://g-next.antv.vision/zh/docs/plugins/canvas-picker) 基于 Canvas2D
-    -   [g-plugin-svg-picker](https://g-next.antv.vision/zh/docs/plugins/svg-picker) 基于 SVG
+    -   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于 Canvas2D
+    -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 SVG
+-   无障碍
+    -   [g-plugin-a11y](/zh/docs/plugins/a11y) 提供文本提取、Screen Reader、键盘导航等无障碍功能
 -   交互
-    -   [g-plugin-dom-interaction](https://g-next.antv.vision/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
-    -   [g-plugin-control](https://g-next.antv.vision/zh/docs/plugins/control) 为 3D 场景提供相机交互
-    -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
+    -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+    -   [g-plugin-control](/zh/docs/plugins/control) 为 3D 场景提供相机交互
+    -   [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 基于 PointerEvents 提供 Drag 'n' Drop
+    -   [g-plugin-annotation](/zh/docs/plugins/annotation) 提供基础图形的绘制和编辑能力，类似 Fabric.js 和 Konva.js
 -   物理引擎
-    -   [g-plugin-box2d](https://g-next.antv.vision/zh/docs/plugins/box2d) 基于 Box2D
-    -   [g-plugin-matterjs](https://g-next.antv.vision/zh/docs/plugins/matterjs) 基于 matter.js
-    -   [g-plugin-physx](https://g-next.antv.vision/zh/docs/plugins/physx) 基于 PhysX
+    -   [g-plugin-box2d](/zh/docs/plugins/box2d) 基于 Box2D
+    -   [g-plugin-matterjs](/zh/docs/plugins/matterjs) 基于 matter.js
+    -   [g-plugin-physx](/zh/docs/plugins/physx) 基于 PhysX
 -   布局引擎
-    -   [g-plugin-yoga](https://g-next.antv.vision/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
+    -   [g-plugin-yoga](/zh/docs/plugins/yoga) 基于 Yoga 提供 Flex 布局能力
 -   GPGPU
-    -   [g-plugin-gpgpu](https://g-next.antv.vision/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
+    -   [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 基于 WebGPU 提供 GPGPU 能力
 -   CSS 选择器
-    -   [g-plugin-css-select](https://g-next.antv.vision/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
+    -   [g-plugin-css-select](/zh/docs/plugins/css-select) 支持使用 CSS 选择器在场景图中检索
 
 完整 [API Spec](/api.html)。
 
