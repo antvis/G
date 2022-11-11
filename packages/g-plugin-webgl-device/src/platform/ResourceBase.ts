@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import type { Disposable, Resource, ResourceBase } from '@antv/g-plugin-device-renderer';
 import type { Device_GL } from './Device';
 
