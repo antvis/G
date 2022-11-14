@@ -1,4 +1,5 @@
-import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import type { CSSGradientValue, Pattern } from '@antv/g-lite';
 import type { Options } from 'roughjs/bin/core';
 
 export const SUPPORTED_ROUGH_OPTIONS = [
@@ -27,18 +28,24 @@ export const SUPPORTED_ROUGH_OPTIONS = [
   'preserveVertices',
 ];
 
-function mergeOpacity(color: CSSRGB, opacity: number) {
+function mergeOpacity(color: CSSRGB | CSSGradientValue[] | Pattern, opacity: number) {
   // since rough.js doesn't support fill/strokeOpacity
   let colorString = color.toString();
-  if (opacity !== 1) {
-    const { r, g, b, alpha } = color;
-    colorString = `rgba(${r},${g},${b},${Number(alpha) * opacity})`;
+
+  if (color instanceof CSSRGB) {
+    if (opacity !== 1) {
+      const { r, g, b, alpha } = color;
+      colorString = `rgba(${r},${g},${b},${Number(alpha) * opacity})`;
+    }
   }
+
   return colorString;
 }
 
 export function generateRoughOptions(object: DisplayObject) {
   const {
+    fill,
+    stroke,
     fillOpacity,
     strokeOpacity,
     bowing,
@@ -63,8 +70,6 @@ export function generateRoughOptions(object: DisplayObject) {
     zigzagOffset,
     preserveVertices,
   } = object.parsedStyle as ParsedBaseStyleProps & Options;
-
-  const { stroke, fill } = object.computedStyle;
 
   // @see https://github.com/rough-stuff/rough/wiki#options
   const options: Options = {
