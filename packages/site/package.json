@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-site",
-  "version": "1.8.24",
+  "version": "1.8.25",
   "private": true,
   "description": "G sites deployed on gh-pages",
   "keywords": [
@@ -25,19 +25,16 @@
     "README.md"
   ],
   "scripts": {
-    "site:build": "npm run site:clean && GATSBY=true gatsby build --prefix-paths && cp ../../spec/api.html public",
-    "site:clean": "gatsby clean",
-    "site:copy-mirror-action": "mkdir -p public/.github/workflows && cp .github/workflows/mirror.yml public/.github/workflows",
-    "site:deploy": "npm run site:build && npm run site:copy-mirror-action && gh-pages -d public",
-    "site:develop": "GATSBY=true gatsby develop --open",
-    "start": "npm run site:clean && npm run site:develop"
+    "site:build": "dumi build && cp ../../spec/api.html public",
+    "site:dev": "dumi dev",
+    "start": "npm run site:develop"
   },
   "dependencies": {
     "@antv/g6": "^4.5.2",
-    "@antv/gatsby-theme-antv": "^1.1.15",
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "@antv/webgpu-graph": "^1.0.0",
     "@naoak/workerize-transferable": "^0.1.0",
+    "@observablehq/plot": "0.5.2",
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0",
     "@types/react": "^16.9.35",
@@ -45,8 +42,6 @@
     "d3": "^7.3.0",
     "d3-force-3d": "^3.0.3",
     "d3-svg-annotation": "^2.5.0",
-    "gatsby": "^2.24.40",
-    "gatsby-plugin-workerize-loader": "^1.5.0",
     "gh-pages": "^3.2.3",
     "hammer-touchemulator": "^0.0.2",
     "hammerjs": "^2.0.8",
@@ -63,5 +58,10 @@
     "typedoc-plugin-markdown": "^2.2.11",
     "versor": "^0.2.0",
     "webfontloader": "1.6.28"
+  },
+  "devDependencies": {
+    "@antv/dumi-theme-antv": "^0.3.0-beta.10",
+    "dumi": "^2.0.0-rc.1",
+    "workerize-loader": "^2.0.2"
   }
 }

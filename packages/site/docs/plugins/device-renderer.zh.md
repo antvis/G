@@ -5,7 +5,7 @@ order: 2
 
 提供基于 WebGL 1/2 和 WebGPU 的渲染能力，也包括基于 GPU 的拾取能力。内置 G 核心包提供的全部 2D 基础图形，同时暴露其他自定义 2D/3D 图形的扩展能力。
 
-# 安装方式
+## 安装方式
 
 `g-webgl` 和 `g-webgpu` 渲染器默认内置，因此无需手动引入。
 
@@ -15,7 +15,7 @@ import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 const renderer = new WebGLRenderer();
 ```
 
-# Device
+## Device
 
 它代表 GPU 设备（与之相对 Host 通常指指 CPU），提供统一的 HAL 硬件适配层供 WebGL 1/2 和 WebGPU 实现。在设计相关 API 时大量参考了 WebGPU [相关 API](https://www.w3.org/TR/webgpu/)。
 
@@ -40,7 +40,7 @@ const device = plugin.getDevice();
 
 获取 Device 之后可以使用它创建一系列 GPU 相关的资源，例如 Buffer、Texture 等。
 
-## Buffer
+### Buffer
 
 Buffer 代表 GPU 操作中使用的一块内存，在创建时可以指定初始化数据，随后也可以对其中部分数据进行修改。数据以线性布局的方式存储。当需要在 CPU 侧（Host）读取其中的数据时，需要通过 [Readback](/zh/docs/plugins/device-renderer#readback) 完成。
 
@@ -57,7 +57,7 @@ export interface Buffer {
 }
 ```
 
-### createBuffer
+#### createBuffer
 
 创建 Buffer 方式如下，需要指定：
 
@@ -104,7 +104,7 @@ const buffer = device.createBuffer({
 });
 ```
 
-### setSubData
+#### setSubData
 
 -   dstByteOffset 必填，目标 Buffer 中的偏移量，以 Byte 为单位
 -   src 必填，类型为 ArrayBufferView
@@ -117,7 +117,7 @@ const buffer = device.createBuffer({
 paramBuffer.setSubData(5 * Float32Array.BYTES_PER_ELEMENT, new Float32Array([maxDisplace]));
 ```
 
-### destroy
+#### destroy
 
 释放 Buffer 资源。
 
@@ -125,11 +125,11 @@ paramBuffer.setSubData(5 * Float32Array.BYTES_PER_ELEMENT, new Float32Array([max
 buffer.destroy();
 ```
 
-## Readback
+### Readback
 
 有时我们需要在 CPU 侧(Host)读取 GPU 侧(Device) Buffer 或者 Texture 中的数据，此时需要通过 Readback 对象实现，它提供异步读取方法。
 
-### createReadback
+#### createReadback
 
 ```js
 interface Device {
@@ -137,7 +137,7 @@ interface Device {
 }
 ```
 
-### readBuffer
+#### readBuffer
 
 异步读取 Buffer 内容。
 
@@ -173,7 +173,7 @@ export interface Readback {
 const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 ```
 
-### readTexture
+#### readTexture
 
 读取纹理内容。
 
@@ -222,7 +222,7 @@ const pickedColors = await readback.readTexture(
 );
 ```
 
-### destroy
+#### destroy
 
 释放 Readback 资源。
 
@@ -230,7 +230,7 @@ const pickedColors = await readback.readTexture(
 readback.destroy();
 ```
 
-## Texture
+### Texture
 
 纹理是很常用的 GPU 资源。
 
@@ -240,7 +240,7 @@ export interface Texture {
 }
 ```
 
-### createTexture
+#### createTexture
 
 ```js
 interface Device {
@@ -264,7 +264,7 @@ export interface TextureDescriptor {
 }
 ```
 
-### setImageData
+#### setImageData
 
 例如在加载图片成功后，设置纹理内容：
 
@@ -279,7 +279,7 @@ image.crossOrigin = 'Anonymous';
 image.src = src;
 ```
 
-### destroy
+#### destroy
 
 释放 Texture 资源。
 
@@ -287,9 +287,9 @@ image.src = src;
 texture.destroy();
 ```
 
-## Sampler
+### Sampler
 
-### createSampler
+#### createSampler
 
 ```js
 interface Device {
@@ -310,7 +310,7 @@ export interface SamplerDescriptor {
 }
 ```
 
-### destroy
+#### destroy
 
 释放 Sampler 资源。
 
@@ -318,9 +318,9 @@ export interface SamplerDescriptor {
 sampler.destroy();
 ```
 
-## RenderTarget
+### RenderTarget
 
-### createRenderTarget
+#### createRenderTarget
 
 有两种方式可以创建：
 
@@ -339,7 +339,7 @@ export interface RenderTargetDescriptor {
 }
 ```
 
-### destroy
+#### destroy
 
 释放 RenderTarget 资源。
 
@@ -347,9 +347,9 @@ export interface RenderTargetDescriptor {
 renderTarget.destroy();
 ```
 
-## Program
+### Program
 
-### createProgram
+#### createProgram
 
 ```js
 interface Device {
@@ -365,7 +365,7 @@ export interface ProgramDescriptor {
 }
 ```
 
-### destroy
+#### destroy
 
 释放 Program 资源。
 
@@ -373,7 +373,7 @@ export interface ProgramDescriptor {
 program.destroy();
 ```
 
-# 基于 GPU 的拾取
+## 基于 GPU 的拾取
 
 与 [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 和 [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 这些基于 CPU 的拾取方案不同，我们使用使用一种基于 GPU 称作“颜色编码”的方式。
 

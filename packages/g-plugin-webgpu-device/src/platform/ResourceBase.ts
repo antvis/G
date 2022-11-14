@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import type { Disposable, ResourceBase, ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU } from './interfaces';
 

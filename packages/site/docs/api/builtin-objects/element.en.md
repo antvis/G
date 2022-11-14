@@ -7,13 +7,13 @@ The following inheritance relationships exist in G.
 
 -   DisplayObject -> Element -> Node -> EventTarget
 
-# Inherited from
+## Inherited from
 
 [Node](/en/docs/api/builtin-objects/node)
 
-# Properties
+## Properties
 
-## id
+### id
 
 Unique in the scenario map, which can be subsequently queried by `getElementById`.
 
@@ -28,15 +28,15 @@ circle.id; // 'my-id';
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/id
 
-## name
+### name
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/name
 
-## className
+### className
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
 
-## classList
+### classList
 
 Read-only property that returns a list of class names.
 
@@ -47,7 +47,7 @@ circle.className = 'c1 c2';
 circle.classList; // ['c1', 'c2']
 ```
 
-## attributes
+### attributes
 
 Read-only, returns style attributes, e.g.
 
@@ -59,69 +59,69 @@ circle.attributes.r; // 10;
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/attributes
 
-## children
+### children
 
 Returns a list of child elements, equivalent to Node.childNodes.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/children
 
-## childElementCount
+### childElementCount
 
 Return the length of the list of child elements.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/childElementCount
 
-## firstElementChild
+### firstElementChild
 
 Equals [Node.firstChild](/en/docs/api/builtin-objects/node#firstchild).
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild
 
-## lastElementChild
+### lastElementChild
 
 Equals [Node.lastChild](/en/docs/api/builtin-objects/node#lastchild).
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild
 
-## clientTop / clientLeft
+### clientTop / clientLeft
 
 Since border is not supported at the moment, it always returns 0.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop
 
-# Methods
+## Methods
 
-## getAttributeNames
+### getAttributeNames
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames
 
-## getAttribute
+### getAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
 
-## removeAttribute
+### removeAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
 
-## setAttribute
+### setAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
 
-## hasAttribute
+### hasAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
 
-## getBoundingClientRect
+### getBoundingClientRect
 
 Returns the enclosing box in the browser coordinate system, regardless of child elements.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
 
-## getClientRects
+### getClientRects
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
 
-## computedStyleMap
+### computedStyleMap
 
 Get the parsed style Map of [style system](/en/docs/api/css/intro), e.g.
 
@@ -153,39 +153,35 @@ expect(fill.alpha).to.be.eqls(1);
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
 
-## destroy
+### destroy
 
 Destroying itself will remove all event listeners and stop the ongoing animation.
 
-## Node Query
+### Node Query
 
-### matches
+#### matches
 
 Whether or not to match the selector string
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
 
-### getElementById
+#### getElementById
 
-### getElementsByName
+#### getElementsByName
 
-### getElementsByClassName
+#### getElementsByClassName
 
-### getElementsByTagName
+#### getElementsByTagName
 
-### querySelector
+#### querySelector
 
-### querySelectorAll
+#### querySelectorAll
 
-### find
+#### find
 
-### findAll
+#### findAll
 
-## Node Operations
-
-Based on Node's existing node manipulation capabilities, it provides some more convenient operations, such as bulk adding sibling nodes, replacing all child nodes, etc.
-
-### append(...nodes: this[])
+### append
 
 Add a group of nodes in bulk at the end of the child node list of the current node.
 
@@ -197,7 +193,7 @@ parent.append(child3, child34); // parent -> [child1, child2, child3, child4]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
 
-### prepend(...nodes: this[])
+### prepend
 
 Add a group of nodes in bulk to the head of the current node's child node list.
 
@@ -209,7 +205,7 @@ parent.prepend(child3, child34); // parent -> [child3, child4, child1, child2]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
 
-### after(...nodes: Element[])
+### after
 
 Add some sibling nodes in bulk after the current node, e.g. add a batch at once.
 
@@ -219,7 +215,7 @@ circle.after(sibling1, sibling2); // [circle, sibling1, sibling2]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
 
-### before(...nodes: Element[])
+### before
 
 Add some sibling nodes in bulk before the current node, e.g. add a batch at once.
 
@@ -229,9 +225,9 @@ circle.before(sibling1, sibling2); // [sibling1, sibling2, circle]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
 
-### remove(destroy = true)
+### remove
 
-Remove itself from the scene graph, you can choose whether to destroy it at the same time, the default will be destroyed.
+Remove itself from the scene graph.
 
 ```js
 circle.remove();
@@ -239,15 +235,15 @@ circle.remove();
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
 
-### removeChildren()
+### removeChildren
 
-Remove and destroy all child nodes from the scene graph.
+Remove all child nodes from the scene graph.
 
 ```js
 parent.removeChildren();
 ```
 
-### replaceWith(...nodes: Element[])
+### replaceWith
 
 In the list of children of the parent node, replace the node with the list of nodes passed in.
 
@@ -259,7 +255,7 @@ child1.replaceWith(node1, node2); // parent -> [node1, node2, child2]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
 
-### replaceChildren(...nodes: Element[])
+### replaceChildren
 
 Replace all children of the node. If no parameters are passed, all children of the node are cleared and destroyed.
 
@@ -269,8 +265,6 @@ parent.replaceChildren(); // 清空
 ```
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
-
-## Animation
 
 ### getAnimations
 

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-rough-svg-renderer",
-  "version": "1.7.27",
+  "version": "1.7.29",
   "description": "A G plugin of renderer implementation with rough.js",
   "keywords": [
     "antv",
@@ -30,7 +30,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "roughjs": "^4.5.2",
     "tslib": "^2.3.1"
   },

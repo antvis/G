@@ -10,7 +10,7 @@ order: 4
 -   [官网示例](/zh/examples/event#delegate)
 -   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-jian-wei-tuo-lq7wz?file=/index.js)
 
-# 事件传播机制
+## 事件传播机制
 
 这次我们的场景十分简单，类似 DOM 中的 ul/li：
 
@@ -43,7 +43,7 @@ ul.addEventListener('click', (ev) => {
 });
 ```
 
-# 事件对象
+## 事件对象
 
 事件对象上有很多有用的属性，我们先来看看上一节中提到的事件传播路径，通过[composedPath()](/zh/docs/api/event#composedpath)方法可以获取它。当我们点击 li1 时，此时路径会返回如下结果：
 
@@ -63,7 +63,7 @@ ev.composedPath(); // [Rect(li1), Group(ul), Group(root), Document, Canvas];
 -   [currentTarget](/zh/docs/api/event#currenttarget) 总是指向事件绑定的图形
 -   各个坐标系下的[事件坐标](/zh/docs/api/event#canvasxy)
 
-# 添加事件监听器的高级用法
+## 添加事件监听器的高级用法
 
 还有一些常见的需求可以在绑定事件时做到，例如绑定一个“一次性”的监听器：
 

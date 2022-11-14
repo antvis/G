@@ -5,7 +5,7 @@ order: 2
 
 Provides WebGL 1/2 and WebGPU-based rendering capabilities, and also includes GPU-based pickup capabilities. All 2D base graphics provided by the built-in G Core package, while exposing the ability to extend other custom 2D/3D graphics.
 
-# Usage
+## Usage
 
 The `g-webgl` and `g-webgpu` renderers are built in by default, so there is no need to introduce them manually.
 
@@ -14,7 +14,7 @@ import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 const renderer = new WebGLRenderer();
 ```
 
-# Device
+## Device
 
 It represents a GPU device (as opposed to a Host, which usually refers to a CPU) and provides a unified HAL hardware adaptation layer for WebGL 1/2 and WebGPU implementations. The WebGPU [related API](https://www.w3.org/TR/webgpu/) has been heavily referenced in the design of the related APIs.
 
@@ -39,7 +39,7 @@ const device = plugin.getDevice();
 
 After acquiring a Device, you can use it to create a series of GPU-related resources, such as Buffer, Texture, etc.
 
-## Buffer
+### Buffer
 
 Buffer represents a piece of memory used in GPU operations that can be specified at creation time to initialize the data and subsequently modify some of it. The data is stored in a linear layout. When you need to read the data on the CPU side (Host), you need to do it by [Readback](/en/docs/plugins/device-renderer#readback).
 
@@ -56,7 +56,7 @@ export interface Buffer {
 }
 ```
 
-### createBuffer
+#### createBuffer
 
 The Buffer is created in the following way and needs to be specified.
 
@@ -103,7 +103,7 @@ const buffer = device.createBuffer({
 });
 ```
 
-### setSubData
+#### setSubData
 
 -   dstByteOffset required, the offset in the target Buffer, in Byte units
 -   src Mandatory, type is ArrayBufferView
@@ -116,7 +116,7 @@ For example, to modify a variable in Uniform, which is located at the 20th bytes
 paramBuffer.setSubData(5 * Float32Array.BYTES_PER_ELEMENT, new Float32Array([maxDisplace]));
 ```
 
-### destroy
+#### destroy
 
 Free Buffer resources.
 
@@ -124,11 +124,11 @@ Free Buffer resources.
 buffer.destroy();
 ```
 
-## Readback
+### Readback
 
 Sometimes we need to read data from the GPU side (Device) Buffer or Texture on the CPU side (Host), and this is done with the Readback object, which provides asynchronous read methods.
 
-### createReadback
+#### createReadback
 
 ```js
 interface Device {
@@ -136,7 +136,7 @@ interface Device {
 }
 ```
 
-### readBuffer
+#### readBuffer
 
 Reads the Buffer contents asynchronously.
 
@@ -172,7 +172,7 @@ For example, when used with [g-plugin-gpgpu](/en/docs/plugins/gpgpu), reads the 
 const result = await readback.readBuffer(resultBuffer); // Float32Array([...])
 ```
 
-### readTexture
+#### readTexture
 
 Reads the texture content.
 
@@ -221,7 +221,7 @@ const pickedColors = await readback.readTexture(
 );
 ```
 
-### destroy
+#### destroy
 
 Releases the Readback resource.
 
@@ -229,7 +229,7 @@ Releases the Readback resource.
 readback.destroy();
 ```
 
-## Texture
+### Texture
 
 Textures are a very common GPU resource.
 
@@ -239,7 +239,7 @@ export interface Texture {
 }
 ```
 
-### createTexture
+#### createTexture
 
 ```js
 interface Device {
@@ -263,7 +263,7 @@ export interface TextureDescriptor {
 }
 ```
 
-### setImageData
+#### setImageData
 
 For example, after loading the image successfully, set the texture content.
 
@@ -278,7 +278,7 @@ image.crossOrigin = 'Anonymous';
 image.src = src;
 ```
 
-### destroy
+#### destroy
 
 Frees the Texture resource.
 
@@ -286,9 +286,9 @@ Frees the Texture resource.
 texture.destroy();
 ```
 
-## Sampler
+### Sampler
 
-### createSampler
+#### createSampler
 
 ```js
 interface Device {
@@ -309,7 +309,7 @@ export interface SamplerDescriptor {
 }
 ```
 
-### destroy
+#### destroy
 
 Frees the Sampler resource.
 
@@ -317,9 +317,9 @@ Frees the Sampler resource.
 sampler.destroy();
 ```
 
-## RenderTarget
+### RenderTarget
 
-### createRenderTarget
+#### createRenderTarget
 
 There are two ways to create.
 
@@ -338,7 +338,7 @@ export interface RenderTargetDescriptor {
 }
 ```
 
-### destroy
+#### destroy
 
 Frees the RenderTarget resource.
 
@@ -346,9 +346,9 @@ Frees the RenderTarget resource.
 renderTarget.destroy();
 ```
 
-## Program
+### Program
 
-### createProgram
+#### createProgram
 
 ```js
 interface Device {
@@ -364,7 +364,7 @@ export interface ProgramDescriptor {
 }
 ```
 
-### destroy
+#### destroy
 
 Frees the Program resource.
 
@@ -372,7 +372,7 @@ Frees the Program resource.
 program.destroy();
 ```
 
-# GPU-based pickup
+## GPU-based pickup
 
 Unlike [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) and [g-plugin-svg-picker](/en/docs/plugins/svg-picker), which are CPU-based picking schemes, we use A GPU-based approach called "color coding".
 

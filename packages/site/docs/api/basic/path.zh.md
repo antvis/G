@@ -19,7 +19,7 @@ const line = new Path({
 });
 ```
 
-# 继承自
+## 继承自
 
 继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
@@ -47,25 +47,25 @@ line.getBounds(); // 包围盒 { min: [100, 100], max: [200, 200] }
 line.translateLocal(100, 0); // 沿 X 轴平移
 ```
 
-## anchor
+### anchor
 
 默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
 
-## transformOrigin
+### transformOrigin
 
 默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
 
-## lineWidth
+### lineWidth
 
 默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
 
-## miterLimit
+### miterLimit
 
 默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
 
-# 额外属性
+## 额外属性
 
-## path
+### path
 
 路径，支持 `字符串`和 `数组` 两种形式，可参考 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)：
 
@@ -74,11 +74,11 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
-## d
+### d
 
 [path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
 
-## markerStart
+### markerStart
 
 由于 Path 可通过 `Z` 命令闭合，因此对于 “起始点” 的定义在两种情况下有差别：
 
@@ -106,7 +106,7 @@ const arrowMarker = new Path({
 path.style.markerStart = arrowMarker;
 ```
 
-## markerEnd
+### markerEnd
 
 可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEnd](/zh/docs/api/basic/polyline#markerend) 属性。
 
@@ -134,7 +134,7 @@ const imageMarker = new Image({
 path.style.markerEnd = imageMarker;
 ```
 
-## markerMid
+### markerMid
 
 可以参考 SVG 的[同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)。
 
@@ -157,7 +157,7 @@ path.style.markerMid = circleMarker;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2Pi6SpcqPwAAAAAAAAAAAAAAARQnAQ" alt="unclosed path marker" width="200">
 
-## markerStartOffset
+### markerStartOffset
 
 可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStartOffset](/zh/docs/api/basic/polyline#markerstartoffset) 属性。marker 会沿路径中第一段的切线方向移动，同时主体路径也会进行相应延长或缩短。需要注意的是主体路径的伸缩距离也是有限的，当超过了第一段的长度，会产生“拐弯”的效果，如下图所示：
 
@@ -169,7 +169,7 @@ path.style.markerMid = circleMarker;
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEndOffset](/zh/docs/api/basic/polyline#markerendoffset) 属性。marker 会沿路径中最后一段的切线方向移动，同时主体路径也会进行相应延长或缩短。
 
@@ -177,9 +177,9 @@ path.style.markerMid = circleMarker;
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-# 方法
+## 方法
 
-## getTotalLength
+### getTotalLength
 
 获取路径长度。
 
@@ -214,7 +214,7 @@ const path = new Path({
 path.getTotalLength(); // 0
 ```
 
-## getPoint
+### getPoint
 
 根据长度比例（取值范围 `[0-1]`）获取局部或世界坐标系下点的坐标。
 
@@ -254,7 +254,7 @@ path.getPoint(0.5); // Point {x: 100, y: 150}
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
-## getPointAtLength
+### getPointAtLength
 
 沿路径返回给定距离的点。
 
@@ -269,10 +269,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 path.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent
+### getStartTangent
 
 获取起点的切向量 `number[][]`，形如: `[[10, 10], [20, 20]]`
 
-## getEndTangent
+### getEndTangent
 
 获取终点的切向量 `number[][]`，形如: `[[10, 10], [20, 20]]`

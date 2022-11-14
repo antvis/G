@@ -17,21 +17,21 @@ const circle = new Circle({
 });
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-## anchor
+### anchor
 
 The default value is `[0.5, 0.5]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `center`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-# Additional Properties
+## Additional Properties
 
-## cx
+### cx
 
 The x-axis coordinates of the center of the circle in the local coordinate system.
 
@@ -41,7 +41,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## cy
+### cy
 
 The y-axis coordinates of the center of the circle in the local coordinate system.
 
@@ -51,7 +51,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## r
+### r
 
 The radius of the circle.
 

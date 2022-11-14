@@ -7,11 +7,11 @@ order: 1
 
 SVG 在文本渲染上直接依赖浏览器的能力，因而有独特的优势。另外通过 `<foreignObject>` 也可以嵌入 HTML 片段。
 
-# 使用方式
+## 使用方式
 
 和 `@antv/g` 一样，也有以下两种使用方式。
 
-## NPM Module
+### NPM Module
 
 安装 `@antv/g-svg` 后可以从中获取渲染器：
 
@@ -29,7 +29,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN 方式
+### CDN 方式
 
 ```html
 <script
@@ -43,7 +43,7 @@ const canvas = new Canvas({
 const svgRenderer = new window.G.SVG.Renderer();
 ```
 
-# 初始化配置
+## 初始化配置
 
 在创建渲染器时，可以传入一些初始化配置项，例如：
 
@@ -54,7 +54,7 @@ const renderer = new Renderer({
 });
 ```
 
-## outputSVGElementId
+### outputSVGElementId
 
 该渲染器在生成 SVGElement 时会添加 `id` 属性，用于交互时拾取判定反查元素。但在服务端渲染这样的场景下，不存在交互也就无需生成，此时可通过该配置项关闭。
 
@@ -66,7 +66,7 @@ const renderer = new Renderer({
 <g fill="none"></g>
 ```
 
-# 插件列表
+## 插件列表
 
 该渲染器内置了以下插件：
 
@@ -74,11 +74,11 @@ const renderer = new Renderer({
 -   [g-plugin-svg-picker](/zh/docs/plugins/svg-picker) 基于 [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API 拾取图形
 -   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
 
-# 可选插件
+## 可选插件
 
 除了内置插件，还有以下可选插件。
 
-## 手绘风格渲染
+### 手绘风格渲染
 
 使用 [rough.js](https://roughjs.com/) 的 SVG 版本进行手绘风格的渲染。
 
@@ -88,7 +88,7 @@ const renderer = new Renderer({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
-# 服务端渲染
+## 服务端渲染
 
 该渲染器依赖 SVG DOM API 的渲染能力，并不局限在浏览器端，因此也可以使用 [JSDOM](https://github.com/jsdom/node-jsdom) 进行服务端渲染。
 

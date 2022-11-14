@@ -1,0 +1,24 @@
+{
+  "title": {
+    "zh": "3D",
+    "en": "3D"
+  },
+  "demos": [
+    {
+      "filename": "force-3d.js",
+      "title": {
+        "zh": "3D 力导布局",
+        "en": "Force 3D"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "music-viz.tsx",
+      "title": {
+        "zh": "音乐可视化",
+        "en": "Music Visualization"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nKFQQZdL3-IAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

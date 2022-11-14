@@ -1,0 +1,15 @@
+{
+  "title": {
+    "zh": "使用轻量版",
+    "en": "Use lightweight version"
+  },
+  "demos": [
+    {
+      "filename": "lite.js",
+      "title": {
+        "zh": "使用轻量版",
+        "en": "Use lightweight version of G"
+      }
+    }
+  ]
+}

@@ -33,6 +33,16 @@ describe('Text', () => {
   //   canvas.destroy();
   // });
 
+  it('should allow number as valid content', () => {
+    const text = new Text({
+      style: {
+        text: 1,
+      },
+    });
+    expect(text.style.text).eqls(1);
+    expect(text.parsedStyle.text).eqls('1');
+  });
+
   it('should calc global bounds correctly', () => {
     const text = new Text({
       style: {

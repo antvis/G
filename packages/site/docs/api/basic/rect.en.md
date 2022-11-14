@@ -22,21 +22,21 @@ const rect = new Rect({
 });
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-## anchor
+### anchor
 
 The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-# Additional Properties
+## Additional Properties
 
-## x
+### x
 
 The x-axis coordinate of the top-left vertex of the rectangle in the local coordinate system.
 
@@ -46,7 +46,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## y
+### y
 
 The y-axis coordinate of the top-left vertex of the rectangle in the local coordinate system.
 
@@ -56,7 +56,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## width
+### width
 
 The width of the rectangle. Supports taking **negative numbers** with the effect of reversing along the Y-axis, [example](/en/examples/shape#rect).
 
@@ -74,7 +74,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## height
+### height
 
 The height of the rectangle. Supports taking **negative numbers** with the effect of reversing along the X-axis, [example](/en/examples/shape#rect).
 
@@ -86,7 +86,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## radius
+### radius
 
 Corner radius, unlike SVG `<rect>` which only supports `cx/cy` uniform settings, here you can specify the radius of each of the four corners, [example](/en/examples/shape#rect).
 

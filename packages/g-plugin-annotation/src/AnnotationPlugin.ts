@@ -7,7 +7,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import { DrawerEvent, DrawerTool } from './constants/enum';
 import { CircleDrawer } from './drawers/circle';
 import { PolygonDrawer } from './drawers/polygon';

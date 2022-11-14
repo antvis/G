@@ -1,0 +1,48 @@
+{
+  "title": {
+    "zh": "Canvaskit",
+    "en": "Canvaskit"
+  },
+  "demos": [
+    {
+      "filename": "skottie.js",
+      "title": {
+        "zh": "使用 Skottie 播放 Lottie 动画",
+        "en": "Use Skottie playing Lottie animations"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "canvaskit-particles.js",
+      "title": {
+        "zh": "使用 CanvasKit 绘制粒子",
+        "en": "Use CanvasKit drawing particles"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "canvaskit-emoji.js",
+      "title": {
+        "zh": "绘制 emoji",
+        "en": "Draw emoji"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_q9uQLTx6ssAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "canvaskit-text-along-path.js",
+      "title": {
+        "zh": "沿路径绘制文本",
+        "en": "Draw text along path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "canvaskit-paragraph.js",
+      "title": {
+        "zh": "使用 CanvasKit 绘制文本段落",
+        "en": "Draw paragraph with CanvasKit"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

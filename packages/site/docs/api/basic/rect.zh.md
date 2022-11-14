@@ -22,21 +22,21 @@ const rect = new Rect({
 });
 ```
 
-# 继承自
+## 继承自
 
 继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
-## anchor
+### anchor
 
 默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
 
-## transformOrigin
+### transformOrigin
 
 默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
 
-# 额外属性
+## 额外属性
 
-## x
+### x
 
 局部坐标系下，矩形左上角顶点的 x 轴坐标。
 
@@ -46,7 +46,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## y
+### y
 
 局部坐标系下，矩形左上角顶点的 y 轴坐标。
 
@@ -56,7 +56,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## width
+### width
 
 矩形宽度。支持取**负数**，效果为沿 Y 轴反转，[示例](/zh/examples/shape#rect)：
 
@@ -74,7 +74,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## height
+### height
 
 矩形高度。支持取**负数**，效果为沿 X 轴反转，[示例](/zh/examples/shape#rect)：
 
@@ -86,7 +86,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## radius
+### radius
 
 圆角半径，不同于 SVG `<rect>` 仅支持 `cx/cy` 统一设置，这里可以分别指定四个角的圆角半径，[示例](/zh/examples/shape#rect)：
 

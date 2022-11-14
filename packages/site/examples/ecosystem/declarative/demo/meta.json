@@ -1,0 +1,29 @@
+{
+  "title": {
+    "zh": "声明式用法",
+    "en": "Declarative Usage"
+  },
+  "demos": [
+    {
+      "filename": "web-components.js",
+      "title": {
+        "zh": "使用 Web Components",
+        "en": "Use Web Components"
+      }
+    },
+    {
+      "filename": "web-components-react.tsx",
+      "title": {
+        "zh": "使用 Web Components 和 React",
+        "en": "Use Web Components and React"
+      }
+    },
+    {
+      "filename": "react-g.js",
+      "title": {
+        "zh": "ReactG",
+        "en": "ReactG"
+      }
+    }
+  ]
+}

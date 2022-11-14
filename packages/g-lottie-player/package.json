@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-lottie-player",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "A lottie player for G",
   "keywords": [
     "antv",
@@ -31,7 +31,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
 import type { HTML } from '../display-objects';
 import { Element } from '../dom/Element';

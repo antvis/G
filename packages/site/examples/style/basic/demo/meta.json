@@ -1,0 +1,61 @@
+{
+  "demos": [
+    {
+      "filename": "inheritance.js",
+      "title": {
+        "zh": "属性继承",
+        "en": "Inheritance"
+      }
+    },
+    {
+      "filename": "color.js",
+      "title": {
+        "zh": "<color>",
+        "en": "<color>"
+      }
+    },
+    {
+      "filename": "gradient.js",
+      "title": {
+        "zh": "<gradient>",
+        "en": "<gradient>"
+      }
+    },
+    {
+      "filename": "pattern.js",
+      "title": {
+        "zh": "<pattern>",
+        "en": "<pattern>"
+      }
+    },
+    {
+      "filename": "paint.js",
+      "title": {
+        "zh": "<paint>",
+        "en": "<paint>"
+      }
+    },
+    {
+      "filename": "length.js",
+      "title": {
+        "zh": "<length>",
+        "en": "<length>"
+      }
+    },
+    {
+      "filename": "clip.js",
+      "title": {
+        "zh": "裁剪区域",
+        "en": "Clip Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-property.js",
+      "title": {
+        "zh": "自定义属性",
+        "en": "Use custom property"
+      }
+    }
+  ]
+}

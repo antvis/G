@@ -50,7 +50,14 @@ export interface PathSegment {
   endTangent: [number, number];
   params: AbsoluteSegment;
   arcParams: PathArcParams;
+  /**
+   * Used for hit test.
+   */
   box: PathSegmentBBox;
+  /**
+   * Convert A to C.
+   */
+  cubicParams: [number, number, number, number, number, number];
 }
 
 export interface PathArcParams {

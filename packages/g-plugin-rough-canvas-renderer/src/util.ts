@@ -1,13 +1,30 @@
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import { CSSRGB } from '@antv/g-lite';
+import type { CSSGradientValue, DisplayObject, ParsedBaseStyleProps, Pattern } from '@antv/g-lite';
 import type { Options } from 'roughjs/bin/core';
+
+function mergeOpacity(color: CSSRGB | CSSGradientValue[] | Pattern, opacity: number) {
+  // since rough.js doesn't support fill/strokeOpacity
+  let colorString = color.toString();
+
+  if (color instanceof CSSRGB) {
+    if (opacity !== 1) {
+      const { r, g, b, alpha } = color;
+      colorString = `rgba(${r},${g},${b},${Number(alpha) * opacity})`;
+    }
+  }
+
+  return colorString;
+}
 
 export function generateRoughOptions(object: DisplayObject) {
   const {
-    bowing,
-    roughness,
     fill,
     stroke,
+    fillOpacity,
+    strokeOpacity,
     lineWidth,
+    bowing,
+    roughness,
     seed,
     fillStyle,
     fillWeight,
@@ -33,8 +50,8 @@ export function generateRoughOptions(object: DisplayObject) {
     bowing,
     roughness,
     seed: seed || object.entity,
-    fill: fill.toString(),
-    stroke: stroke.toString(),
+    fill: mergeOpacity(fill, fillOpacity),
+    stroke: mergeOpacity(stroke, strokeOpacity),
     strokeWidth: lineWidth,
     fillStyle,
     fillWeight,

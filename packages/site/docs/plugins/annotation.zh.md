@@ -9,7 +9,7 @@ order: -1
 
 [示例](/zh/examples/plugins#annotation)
 
-# 安装方式
+## 安装方式
 
 该插件依赖 [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 提供的拖拽能力，因此在使用时需要同时注册：
 
@@ -21,14 +21,14 @@ renderer.registerPlugin(new PluginDragndrop());
 renderer.registerPlugin(new PluginAnnotation());
 ```
 
-# 使用方式
+## 使用方式
 
 该插件提供两种模式，可以通过 [setDrawingMode](/zh/docs/plugins/annotation#setdrawingmode) 进行切换：
 
 -   绘制模式。该模式下可按预设步骤绘制图形。
 -   编辑模式。该模式下选中 `selectable` 图形会出现对应的编辑组件，通过组件交互完成图形平移、resize 等编辑操作。
 
-## 绘制模式
+### 绘制模式
 
 进入绘制模式后，使用 [setDrawer](/zh/docs/plugins/annotation#setdrawer) 设置对应图形的绘制工具，即可开始绘制。例如我们想绘制折线：
 
@@ -63,11 +63,11 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 });
 ```
 
-### 绘制关键点
+#### 绘制关键点
 
 按下鼠标确定点的位置，随后可以使用该位置绘制任意图形例如 [Circle](/zh/docs/api/basic/circle)。
 
-### 绘制矩形
+#### 绘制矩形
 
 按下鼠标、拖拽再抬起即可完成绘制。
 
@@ -77,7 +77,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 
 -   `esc` 取消绘制
 
-### 绘制折线
+#### 绘制折线
 
 依次按下鼠标确定顶点，双击鼠标或者连续顶点距离很近即视为结束绘制，顶点间连线形成最终的折线。
 
@@ -89,7 +89,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 -   `shift` + `Z` 撤销最新的一个线段
 -   `space` 完成绘制
 
-### 绘制多边形
+#### 绘制多边形
 
 依次按下鼠标确定顶点，闭合形成多边形。
 
@@ -101,7 +101,7 @@ annotationPlugin.addEventListener('draw:complete', ({ type, path }) => {
 -   `shift` + `Z` 撤销最新的一个线段
 -   `space` 完成绘制
 
-## 编辑模式
+### 编辑模式
 
 通过开启 `selectable` 可以让基础图形具备交互功能：
 
@@ -111,7 +111,7 @@ circle.style.selectable = true;
 
 目前我们支持以下**基础图形**：[Circle](/zh/docs/api/basic/circle)、[Ellipse](/zh/docs/api/basic/ellipse)、[Rect](/zh/docs/api/basic/rect)、[Image](/zh/docs/api/basic/image)、[Line](/zh/docs/api/basic/line)、[Polyline](/zh/docs/api/basic/polyline)
 
-### 选中图形
+#### 选中图形
 
 我们支持通过交互或者 API 选中单个或者多个图形。
 
@@ -124,7 +124,7 @@ circle.style.selectable = true;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*kf-wR5_SY4YAAAAAAAAAAAAAARQnAQ" alt="multi-select" width="300">
 
-### 取消选中图形
+#### 取消选中图形
 
 和选中图形相对，取消选中也有两种方式：
 
@@ -133,7 +133,7 @@ circle.style.selectable = true;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gLusRqf4zmQAAAAAAAAAAAAAARQnAQ" alt="deselect target" width="200">
 
-### 移动图形
+#### 移动图形
 
 选中图形后，在蒙层上拖拽即可实现图形移动：
 
@@ -143,38 +143,38 @@ circle.style.selectable = true;
 
 另外也可以在选中图形后，使用键盘上下左右方向键移动图形，移动的步长可以通过 [arrowKeyStepLength](/zh/docs/plugins/annotation#arrowkeysteplength) 配置。
 
-### 改变图形大小
+#### 改变图形大小
 
 拖拽锚点可以改变图形的大小。以下图为例，拖拽右下角的锚点时，实际上是先固定了左上角，再修改图片的宽高。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gmraRLDxW_kAAAAAAAAAAAAAARQnAQ" alt="resize target">
 
-# 插件初始化配置
+## 插件初始化配置
 
 在创建插件时，可以传入一些初始化配置。
 
-## isDrawingMode
+### isDrawingMode
 
 是否为绘制模式，默认值为 `true`。
 
-## enableAutoSwitchDrawingMode
+### enableAutoSwitchDrawingMode
 
 在某些场景下自动切换，默认值为 `false`。
 
 -   在绘制模式下点击可交互图形，将自动切换成编辑模式。
 -   在编辑模式下点击空白区域，将自动切换成绘制模式。
 
-## enableDeleteTargetWithShortcuts
+### enableDeleteTargetWithShortcuts
 
 支持使用键盘快捷键删除已选中的可交互图形，默认值为 `false`。
 
 开启后，可使用 `Delete` / `Esc` / `Backspace` 按键删除已选中的可交互图形。
 
-## arrowKeyStepLength
+### arrowKeyStepLength
 
 编辑模式下，使用键盘上下左右方向键移动图形的步长，默认值为 `4`。
 
-## selectableStyle
+### selectableStyle
 
 辅助操作组件的部分样式支持自定义，因此可以在初始化时传入样式配置，例如将蒙层的填充色变成黑色：
 
@@ -211,7 +211,7 @@ export interface SelectableStyle {
 
 除了在初始化插件时指定，后续也可以随时使用 [updateSelectableStyle](/zh/docs/plugins/annotation#updateselectablestyle) 方法修改。
 
-### selectionFill
+#### selectionFill
 
 蒙层填充色，可以参考 [fill](/zh/docs/api/basic/display-object#fill) 的取值，例如：
 
@@ -223,11 +223,11 @@ const plugin = new PluginAnnotation({
 });
 ```
 
-### selectionFillOpacity
+#### selectionFillOpacity
 
 蒙层填充色透明度，可以参考 [fillOpacity](/zh/docs/api/basic/display-object#fillopacity) 的取值。
 
-### selectionStroke
+#### selectionStroke
 
 蒙层描边颜色。可以参考 [stroke](/zh/docs/api/basic/display-object#stroke) 的取值。
 
@@ -239,43 +239,43 @@ const plugin = new PluginAnnotation({
 });
 ```
 
-### selectionStrokeOpacity
+#### selectionStrokeOpacity
 
 蒙层描边透明度，可以参考 [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity) 的取值。
 
-### selectionStrokeWidth
+#### selectionStrokeWidth
 
 蒙层描边线宽。可以参考 [strokeWidth](/zh/docs/api/basic/display-object#strokewidth) 的取值。
 
-### selectionLineDash
+#### selectionLineDash
 
 蒙层描边虚线。可以参考 [lineDash](/zh/docs/api/basic/display-object#linedash) 的取值。
 
-### anchorFill
+#### anchorFill
 
 锚点填充色。
 
-### anchorFillOpacity
+#### anchorFillOpacity
 
 锚点填充色透明度。
 
-### anchorStroke
+#### anchorStroke
 
 锚点描边色。
 
-### anchorStrokeOpacity
+#### anchorStrokeOpacity
 
 锚点描边色透明度。
 
-### anchorStrokeWidth
+#### anchorStrokeWidth
 
 锚点描边线宽。
 
-### anchorSize
+#### anchorSize
 
 锚点尺寸。暂时我们仅支持圆形锚点，因此该属性等同于圆的半径。
 
-## drawerStyle
+### drawerStyle
 
 辅助绘制组件样式。初始值通过构造函数 `drawStyle` 参数指定，后续可通过 [updateDrawerStyle](/zh/docs/plugins/annotation#updatedrawerstyle) 更新。
 
@@ -289,31 +289,31 @@ const annotationPlugin = new AnnotationPlugin({
 });
 ```
 
-### rectFill
+#### rectFill
 
 可参考 [fill](/zh/docs/api/basic/display-object#fill)，默认值为 `'none'`。
 
-### rectFillOpacity
+#### rectFillOpacity
 
 可参考 [fillOpacity](/zh/docs/api/basic/display-object#fillopacity)，默认值为 `1`。
 
-### rectStroke
+#### rectStroke
 
 可参考 [stroke](/zh/docs/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
-### rectStrokeOpacity
+#### rectStrokeOpacity
 
 可参考 [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity)，默认值为 `1`。
 
-### rectStrokeWidth
+#### rectStrokeWidth
 
 可参考 [strokeWidth](/zh/docs/api/basic/display-object#strokewidth)，默认值为 `2.5`。
 
-### rectLineDash
+#### rectLineDash
 
 可参考 [lineDash](/zh/docs/api/basic/display-object#linedash)，默认值为 `6`。
 
-### polylineVertexSize
+#### polylineVertexSize
 
 折线已绘制顶点尺寸。暂时我们仅支持圆形顶点，因此该属性等同于圆的半径，默认值为 `6`。
 
@@ -321,67 +321,67 @@ const annotationPlugin = new AnnotationPlugin({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*RDKsRIgEAqIAAAAAAAAAAAAAARQnAQ" alt="draw polyline" width="300">
 
-### polylineVertexFill
+#### polylineVertexFill
 
 可参考 [fill](/zh/docs/api/basic/display-object#fill)，默认值为 `'#FFFFFF'`。
 
-### polylineVertexFillOpacity
+#### polylineVertexFillOpacity
 
 可参考 [fillOpacity](/zh/docs/api/basic/display-object#fillopacity)，默认值为 `1`。
 
-### polylineVertexStroke
+#### polylineVertexStroke
 
 可参考 [stroke](/zh/docs/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
-### polylineVertexStrokeOpacity
+#### polylineVertexStrokeOpacity
 
 可参考 [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity)，默认值为 `1`。
 
-### polylineVertexStrokeWidth
+#### polylineVertexStrokeWidth
 
 可参考 [strokeWidth](/zh/docs/api/basic/display-object#strokewidth)，默认值为 `2`。
 
-### polylineSegmentStroke
+#### polylineSegmentStroke
 
 折线已绘制线段颜色，可参考 [stroke](/zh/docs/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
-### polylineSegmentStrokeWidth
+#### polylineSegmentStrokeWidth
 
 折线已绘制线段线宽，可参考 [strokeWidth](/zh/docs/api/basic/display-object#strokewidth)，默认值为 `2`。
 
-### polylineActiveVertexSize
+#### polylineActiveVertexSize
 
 折线正在绘制顶点的尺寸。暂时我们仅支持圆形顶点，因此该属性等同于圆的半径，默认值为 `6`。
 
-### polylineActiveVertexFill
+#### polylineActiveVertexFill
 
 可参考 [fill](/zh/docs/api/basic/display-object#fill)，默认值为 `'#FFFFFF'`。
 
-### polylineActiveVertexFillOpacity
+#### polylineActiveVertexFillOpacity
 
 可参考 [fillOpacity](/zh/docs/api/basic/display-object#fillopacity)，默认值为 `1`。
 
-### polylineActiveVertexStroke
+#### polylineActiveVertexStroke
 
 可参考 [stroke](/zh/docs/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
-### polylineActiveVertexStrokeOpacity
+#### polylineActiveVertexStrokeOpacity
 
 可参考 [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity)，默认值为 `0.2`。
 
-### polylineActiveVertexStrokeWidth
+#### polylineActiveVertexStrokeWidth
 
 可参考 [strokeWidth](/zh/docs/api/basic/display-object#strokewidth)，默认值为 `2`。
 
-### polylineActiveSegmentStroke
+#### polylineActiveSegmentStroke
 
 折线正在绘制线段颜色，可参考 [stroke](/zh/docs/api/basic/display-object#stroke)，默认值为 `'#FAAD14'`。
 
-### polylineActiveSegmentStrokeWidth
+#### polylineActiveSegmentStrokeWidth
 
 折线正在绘制线段线宽，可参考 [strokeWidth](/zh/docs/api/basic/display-object#strokewidth)，默认值为 `2.5`。
 
-# API
+## API
 
 以下 API 可以通过插件实例调用，例如：
 
@@ -392,7 +392,7 @@ circle.style.selectable = true;
 plugin.selectDisplayObject(circle);
 ```
 
-## setDrawingMode
+### setDrawingMode
 
 设置是否开启绘制模式。
 
@@ -404,7 +404,7 @@ plugin.setDrawingMode(true);
 plugin.setDrawingMode(false);
 ```
 
-## setDrawer
+### setDrawer
 
 在绘制模式下，我们提供以下图形的绘制能力：
 
@@ -420,7 +420,7 @@ plugin.setDrawingMode(true);
 plugin.setDrawer('rect');
 ```
 
-## selectDisplayObject
+### selectDisplayObject
 
 选中一个图形。并不会对其他已选择的图形应用取消操作。
 
@@ -428,7 +428,7 @@ plugin.setDrawer('rect');
 plugin.selectedDisplayObject(circle);
 ```
 
-## deselectDisplayObject
+### deselectDisplayObject
 
 取消选中一个图形。
 
@@ -436,7 +436,7 @@ plugin.selectedDisplayObject(circle);
 plugin.deselectedDisplayObject(circle);
 ```
 
-## getSelectedDisplayObjects
+### getSelectedDisplayObjects
 
 获取当前选中的图形列表。
 
@@ -444,7 +444,7 @@ plugin.deselectedDisplayObject(circle);
 plugin.getSelectedDisplayObjects(); // [circle, path]
 ```
 
-## updateSelectableStyle
+### updateSelectableStyle
 
 实时更新交互组件的[样式](/zh/docs/plugins/annotation#辅助操作组件样式)，例如在 [示例](/zh/examples/plugins#annotation) 中修改蒙层填充色：
 
@@ -454,7 +454,7 @@ plugin.updateSelectableStyle({
 });
 ```
 
-## updateDrawerStyle
+### updateDrawerStyle
 
 更新辅助绘制组件的样式，例如：
 
@@ -464,7 +464,7 @@ plugin.updateDrawerStyle({
 });
 ```
 
-## markSelectableUIAsDirty
+### markSelectableUIAsDirty
 
 有时目标图形的定义发生了修改，需要让辅助操作组件感知并重新生成，此时可以手动调用该方法：
 
@@ -475,11 +475,11 @@ circle.style.cy = 100;
 plugin.markSelectableUIAsDirty(circle);
 ```
 
-# 事件
+## 事件
 
 在不同模式下会触发不同事件，例如绘制模式下会在插件上触发，而编辑模式下会在图形上触发。
 
-## 绘制模式
+### 绘制模式
 
 不同于 Fabric.js 的“自由绘制”模式，在插件上监听不同绘制阶段触发的事件，获取事件对象中包含的几何信息，自行创建对应图形并应用自定义样式完成绘制。
 
@@ -504,13 +504,13 @@ export enum DrawerEvent {
 plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {});
 ```
 
-### 开始绘制
+#### 开始绘制
 
-### 绘制中
+#### 绘制中
 
-### 取消绘制
+#### 取消绘制
 
-### 结束绘制
+#### 结束绘制
 
 在结束绘制后，辅助绘制 UI 会自动隐藏，此时我们可以使用顶点数据绘制最终图形。
 
@@ -535,7 +535,7 @@ plugin.addEventListener(DrawerEvent.COMPLETE, ({ type, path }) => {
 });
 ```
 
-## 编辑模式
+### 编辑模式
 
 当图形被选中、取消选中、移动、改变尺寸时，会触发对应事件。
 
@@ -549,7 +549,7 @@ export enum SelectableEvent {
 }
 ```
 
-### 选中事件
+#### 选中事件
 
 当目标图形被选中时触发。在 [示例](/zh/examples/plugins#annotation) 中，我们监听了图片的选中事件：
 
@@ -561,7 +561,7 @@ image.addEventListener('selected', () => {});
 image.addEventListener(SelectableEvent.SELECTED, () => {});
 ```
 
-### 取消选中事件
+#### 取消选中事件
 
 当目标图形被取消选中时触发。在 [示例](/zh/examples/plugins#annotation) 中，我们监听了图片的取消选中事件：
 
@@ -573,7 +573,7 @@ image.addEventListener('deselected', () => {});
 image.addEventListener(SelectableEvent.DESELECTED, () => {});
 ```
 
-### 移动中事件
+#### 移动中事件
 
 拖拽蒙层时目标图形会跟着移动，此过程会持续触发移动中事件，类似 [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 中的 `dragging`：
 
@@ -593,7 +593,7 @@ image.addEventListener('moving', (e) => {
 });
 ```
 
-### 移动完毕事件
+#### 移动完毕事件
 
 当拖拽结束后，会触发该事件，类似 [g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 中的 `dragend`：
 
@@ -605,7 +605,7 @@ image.addEventListener('moved', () => {});
 image.addEventListener(SelectableEvent.MOVED, () => {});
 ```
 
-### 修改事件
+#### 修改事件
 
 在锚点上拖拽可以对图形进行缩放，此过程也会持续触发修改事件：
 

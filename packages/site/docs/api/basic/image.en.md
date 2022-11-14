@@ -30,21 +30,21 @@ const image = new Image({
 });
 ```
 
-# Inherited from
+## Inherited from
 
 Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
 
-## anchor
+### anchor
 
 The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
 
-## transformOrigin
+### transformOrigin
 
 The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
 
-# Additional Properties
+## Additional Properties
 
-## x
+### x
 
 The x-axis coordinates of the top-left vertex of the image in the local coordinate system.
 
@@ -54,7 +54,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## y
+### y
 
 The y-axis coordinates of the top-left vertex of the image in the local coordinate system.
 
@@ -64,7 +64,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## img
+### img
 
 Image sources, supports the following types:
 
@@ -92,11 +92,11 @@ img.onload = () => {
 };
 ```
 
-## src
+### src
 
 This attribute is an alias for [img](/en/docs/api/basic/image).
 
-## width
+### width
 
 Image width.
 
@@ -106,7 +106,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 | --- | --- | --- | --- | --- |
 | '0' | - | no | yes | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-## height
+### height
 
 Image height.
 

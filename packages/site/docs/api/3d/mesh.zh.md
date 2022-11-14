@@ -38,23 +38,23 @@ const sphere = new Mesh({
 canvas.appendChild(sphere);
 ```
 
-# 基础样式属性
+## 基础样式属性
 
 我们复用 2D 图形的部分样式属性名。
 
-## fill
+### fill
 
 填充色
 
-## opacity
+### opacity
 
 透明度
 
-## z
+### z
 
 局部坐标系下 Z 轴坐标
 
-# 变换操作
+## 变换操作
 
 和 2D 图形一样，简单推广到 3D 即可。例如平移、缩放、旋转：
 
@@ -72,7 +72,7 @@ mesh.setLocalScale(1, 1, 1);
 mesh.rotate(0, 0.1, 0);
 ```
 
-# 包围盒
+## 包围盒
 
 轴对齐包围盒也从 2D 的矩形推广到 3D 中的立方体：
 

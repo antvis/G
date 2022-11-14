@@ -5,7 +5,7 @@ order: 5
 
 Provides SVG-based rendering capabilities.
 
-# Usage
+## Usage
 
 The [g-svg](/en/docs/api/renderer/svg) renderer is built in by default, so there is no need to introduce it manually.
 
@@ -15,11 +15,11 @@ import { Renderer as SvgRenderer } from '@antv/g-svg';
 const svgRenderer = new SvgRenderer();
 ```
 
-# Contributions
+## Contributions
 
 The plugin exposes the following contributions.
 
-## ElementLifeCycleContribution
+### ElementLifeCycleContribution
 
 This contribution provides the lifecycle of SVG elements from creation, update to destruction.
 
@@ -44,20 +44,20 @@ export class DefaultElementLifeCycleContribution implements ElementLifeCycleCont
 export class RoughElementLifeCycleContribution implements ElementLifeCycleContribution {}
 ```
 
-### createElement
+#### createElement
 
 This method uses the DOM API to create the corresponding SVGElement based on the incoming base drawing, and is called when the [ElementEvent.MOUNTED](/en/docs/api/basic/display-object#lifecycle-event-listening) event is triggered.
 
-### shouldUpdateElementAttribute
+#### shouldUpdateElementAttribute
 
 Redrawing is expressed as attribute update in SVG, but some attributes (e.g. [visibility](/en/docs/api/basic/display-object#hidden display), [z-index](/en/docs/api/basic/display-object#zindex), etc.) of updates we have a unified internal implementation and do not intend to open up custom capabilities. So there needs to be a judgment method to decide whether to trigger an attribute update or not.
 
 This method gets called when [MOUNTED](/en/docs/api/basic/display-object#lifecycle-event-listening) triggered for the first time and [ElementEvent.ATTR_MODIFIED](/en/docs/api/basic/display-object#lifecycle-event-listening) for subsequent property updates.
 
-### updateElementAttribute
+#### updateElementAttribute
 
 After passing the attribute update judgment method, the update attribute logic is executed.
 
-### destroyElement
+#### destroyElement
 
 This method is called when [ElementEvent.UNMOUNTED](/en/docs/api/basic/display-object#lifecycle-event-listening) is triggered when the drawing is removed from the canvas.

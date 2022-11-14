@@ -9,7 +9,7 @@ Some chart libraries offer the ability to save content to an image, the image be
 
 For this purpose, we provide `g-image-exporter`, which supports functions such as selecting canvas area, exporting dataURL in specified format or saving it as image, [example](/en/examples/ecosystem#image-exporter). Some of the functions depend on DOM API, for non-browser environment, please refer to [special platform adaptation of canvas](/en/docs/api/canvas#special platform adaptation). For example, the download function needs to be implemented by `document.createElement('a')`, non-browser environment needs to pass `document` object by itself.
 
-# Configuration
+## Configuration
 
 When creating, you can specify the following configuration items, where `canvas` is required, to pass the canvas into.
 
@@ -22,13 +22,13 @@ const exporter = new ImageExporter({
 });
 ```
 
-## defaultFilename
+### defaultFilename
 
 When calling [downloadImage](/en/docs/guide/advanced-topics/image-exporter#downloadimage) to save and download an image, the value of this configuration item will be used as the default file name if no file name is specified.
 
-# API
+## API
 
-## toCanvas
+### toCanvas
 
 This method is used to draw the canvas content of the specified area to an additional HTMLCanvasElement, which can then be further processed as needed, such as adding background colors, watermarks, etc.
 
@@ -94,7 +94,7 @@ ignoreElements: (element) => {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D8jdTK6xoJgAAAAAAAAAAAAAARQnAQ" alt="export html" width="400">
 
-## toSVGDataURL
+### toSVGDataURL
 
 Sometimes we want to export vector images. Unlike [toCanvas](/en/docs/guide/advanced-topics/image-exporter#tocanvas) which is supported for all renderers, only [g-svg](/en/docs/api/renderer/svg) renderer supports generating SVG type dataURL, if other renderer is selected, `Promise<undefined>` will be returned.
 
@@ -106,7 +106,7 @@ toSVGDataURL(): Promise<string>;
 
 Implemented internally using [XMLSerializer](https://developer.mozilla.org/en-US/docs/Web/API/XMLSerializer) to serialize SVGElement into an XML string.
 
-## downloadImage
+### downloadImage
 
 To trigger browser download behavior, you can pass [exported dataURL](/en/docs/plugins/image-exporter#export-dataurl) and specify the name of the saved file.
 
@@ -136,7 +136,7 @@ exporter.downloadImage({
 
 The download behavior is achieved by creating an HTMLAnchorElement using `document` and triggering its default click behavior.
 
-# Export dataURL
+## Export dataURL
 
 With [toCanvas](/en/docs/plugins/image-exporter#tocanvas) we get the HTMLCanvasElement containing the canvas content, using its native method [toDataURL](https://developer.mozilla. org/zh-cn/docs/Web/API/HTMLCanvasElement/toDataURL) to get the dataURL.
 
@@ -147,7 +147,7 @@ const dataURL = canvas.toDataURL(); // data:...
 
 The [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) method allows you to specify the image format, which defaults to `image/png`, and the image quality, as described in [parameters] (https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL#%E5%8F%82%E6%95%B0).
 
-# Export ImageData
+## Export ImageData
 
 HTMLCanvasElement also provides the [getImageData](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/getImageData) method for getting pixel data of the specified area.
 
@@ -156,17 +156,17 @@ const canvas = await exporter.toCanvas();
 const imageData = canvas.getContext('2d').getImageData(50, 50, 100, 100); // ImageData { width: 100, height: 100, data: Uint8ClampedArray[40000] }
 ```
 
-# Export PDF
+## Export PDF
 
 If we also want to generate PDF based on the image in the front-end, you can refer to. https://github.com/parallax/jsPDF
 
-# Cautions
+## Cautions
 
-## Physical size of the exported image
+### Physical size of the exported image
 
 The physical size of the exported image already includes resolution, i.e. for a canvas with a specified width and height of 400 x 400, if the [devicePixelRatio](https://developer.mozilla.org/en-US/docs/Web/API/Window/) of the current environment is 2 devicePixelRatio) is 2, an 800 x 800 image will be generated.
 
-## Can I export HTML?
+### Can I export HTML?
 
 Yes, if the canvas contains [HTML](/en/docs/api/basic/html), the different renderers currently implement the following.
 
@@ -175,7 +175,7 @@ Yes, if the canvas contains [HTML](/en/docs/api/basic/html), the different rende
 
 In this [example](/en/examples/ecosystem#image-exporter), the Tooltip in the top left corner is an HTML.
 
-## Why is toCanvas an asynchronous method?
+### Why is toCanvas an asynchronous method?
 
 HTMLCanvasElement's native method [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) is indeed a synchronization method.
 
@@ -183,10 +183,10 @@ However, since WebGL / Canvaskit uses a double buffering mechanism, with a drawi
 
 Also when exporting [HTML](/en/docs/api/basic/html) content, using the export method provided by [html2canvas](https://html2canvas.hertzen.com/) is also an asynchronous operation.
 
-## How do I export graphics outside of the canvas viewport?
+### How do I export graphics outside of the canvas viewport?
 
 The export methods we provide are only for the canvas viewport range, even cropping is relative to [viewport coordinate system](/en/docs/api/canvas#viewport). So if you want to export graphics outside the viewport, you can use [camera API](/en/docs/api/camera) to change the viewport range without changing the scene structure, for example by [setZoom](http://localhost:8000/en/docs/api/camera#setzoom) to zoom in and out to allow more graphics to fit inside the viewport.
 
-## toDataURL polyfill
+### toDataURL polyfill
 
 The HTMLCanvasElement's native method [toDataURL](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL) may not be supported on some ancient browsers, in which case you can use polyfill: https://stackoverflow.com/a/47148969

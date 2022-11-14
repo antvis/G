@@ -1,0 +1,58 @@
+{
+  "title": {
+    "zh": "GPGPU",
+    "en": "GPGPU"
+  },
+  "demos": [
+    {
+      "filename": "bfs.js",
+      "title": {
+        "zh": "Breadth First Search",
+        "en": "Breadth First Search"
+      }
+    },
+    {
+      "filename": "louvain.js",
+      "title": {
+        "zh": "Louvain Clustering Algorithm",
+        "en": "Louvain Clustering Algorithm"
+      }
+    },
+    {
+      "filename": "bellman-ford.js",
+      "title": {
+        "zh": "Bellman-Ford 最短路径算法",
+        "en": "Bellman-Ford SSSP"
+      }
+    },
+    {
+      "filename": "bellman-ford-big-dataset.js",
+      "title": {
+        "zh": "Bellman-Ford 最短路径算法（1k 节点 5k 边）",
+        "en": "Bellman-Ford SSSP(1k vertices & 5k edges)"
+      }
+    },
+    {
+      "filename": "pagerank.js",
+      "title": {
+        "zh": "Pagerank 算法",
+        "en": "Pagerank"
+      }
+    },
+    {
+      "filename": "pagerank-big-dataset.js",
+      "title": {
+        "zh": "Pagerank 算法（1k 节点 50w 边）",
+        "en": "Pagerank(1k vertices & 50w edges)"
+      }
+    },
+    {
+      "filename": "fruchterman.js",
+      "title": {
+        "zh": "Fruchterman 布局算法",
+        "en": "Fruchterman Layout"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*awdETLjRlqgAAAAAAAAAAAAADmJ7AQ"
+    }
+  ]
+}

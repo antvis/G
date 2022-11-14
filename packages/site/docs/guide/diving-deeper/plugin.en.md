@@ -16,7 +16,7 @@ order: 3
 -   [官网示例](/zh/examples/3d#cube)
 -   [CodeSandbox 示例](https://codesandbox.io/s/jiao-cheng-shi-yong-3d-cha-jian-hzfdo?file=/index.js)
 
-# 使用 WebGL 渲染器
+## 使用 WebGL 渲染器
 
 我们使用 `g-webgl` 渲染器，并为其注册：
 
@@ -46,7 +46,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 创建一个立方体
+## 创建一个立方体
 
 我们创建一个 `200 * 200 * 200` 的立方体，并通过 `map` 给它贴个图：
 
@@ -79,7 +79,7 @@ canvas.appendChild(cube);
 cube.setPosition(300, 250, 0);
 ```
 
-# 调整相机视角
+## 调整相机视角
 
 现在让我们将相机位置稍稍调整一下，来到立方体的斜上方观察。
 
@@ -91,7 +91,7 @@ const camera = canvas.getCamera();
 camera.setPosition(300, 0, 500);
 ```
 
-# 旋转起来！
+## 旋转起来！
 
 让立方体旋转和其他基础图形一样，使用 [rotate](/zh/docs/api/basic/display-object#旋转) 即可：
 

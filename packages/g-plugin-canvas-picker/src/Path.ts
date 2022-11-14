@@ -6,14 +6,10 @@ import type {
   Point,
   PathSegment,
 } from '@antv/g-lite';
-import {
-  getOrCalculatePathTotalLength,
-  isFillOrStrokeAffected,
-  fromRotationTranslationScale,
-} from '@antv/g-lite';
+import { getOrCalculatePathTotalLength, isFillOrStrokeAffected } from '@antv/g-lite';
 import { Cubic as CubicUtil, Quad as QuadUtil } from '@antv/g-math';
-import { vec3 } from 'gl-matrix';
-import { inArc, inBox, inLine, inPolygons } from './utils/math';
+import { arcToCubic } from '@antv/util';
+import { inBox, inLine, inPolygons } from './utils/math';
 
 // TODO: replace it with method in @antv/util
 function isPointInStroke(
@@ -55,6 +51,9 @@ function isPointInStroke(
           px,
           py,
         );
+        if (isHit) {
+          return true;
+        }
         break;
       case 'Q':
         const qDistance = QuadUtil.pointDistance(
@@ -68,6 +67,9 @@ function isPointInStroke(
           py,
         );
         isHit = qDistance <= lineWidth / 2;
+        if (isHit) {
+          return true;
+        }
         break;
       case 'C':
         const cDistance = CubicUtil.pointDistance(
@@ -84,27 +86,55 @@ function isPointInStroke(
           length,
         );
         isHit = cDistance <= lineWidth / 2;
+        if (isHit) {
+          return true;
+        }
         break;
       case 'A':
-        // 计算点到椭圆圆弧的距离，暂时使用近似算法，后面可以改成切割法求最近距离
-        const arcParams = segment.arcParams;
-        const { cx, cy, rx, ry, startAngle, endAngle, xRotation } = arcParams;
-        const p = vec3.fromValues(px, py, 1);
-        const r = rx > ry ? rx : ry;
-        const scaleX = rx > ry ? 1 : rx / ry;
-        const scaleY = rx > ry ? ry / rx : 1;
-        vec3.transformMat3(
-          p,
-          p,
-          fromRotationTranslationScale(-xRotation, -cx, -cy, 1 / scaleX, 1 / scaleY),
-        );
-        isHit = inArc(0, 0, r, startAngle, endAngle, lineWidth, p[0], p[1]);
+        // cache conversion result
+        if (!segment.cubicParams) {
+          segment.cubicParams = arcToCubic(
+            prePoint[0],
+            prePoint[1],
+            params[1],
+            params[2],
+            params[3],
+            params[4],
+            params[5],
+            params[6],
+            params[7],
+            undefined,
+          ) as [number, number, number, number, number, number];
+        }
+
+        const args = segment.cubicParams;
+
+        // fixArc
+        let prePointInCubic = prePoint;
+        for (let i = 0; i < args.length; i += 6) {
+          const cDistance = CubicUtil.pointDistance(
+            prePointInCubic[0], // 上一段结束位置, 即 C 的起始点
+            prePointInCubic[1],
+            args[i],
+            args[i + 1],
+            args[i + 2],
+            args[i + 3],
+            args[i + 4],
+            args[i + 5],
+            px,
+            py,
+            length,
+          );
+          prePointInCubic = [args[i + 4], args[i + 5]];
+          isHit = cDistance <= lineWidth / 2;
+
+          if (isHit) {
+            return true;
+          }
+        }
         break;
       default:
         break;
-    }
-    if (isHit) {
-      break;
     }
   }
   return isHit;
@@ -156,27 +186,5 @@ export function isPointInPath(
     );
   }
 
-  // if (hasStroke || isClipPath) {
-  //   isHit = isPointInStroke(
-  //     segments,
-  //     (lineWidth?.value || 0) + (increasedLineWidthForHitTesting?.value || 0),
-  //     position.x + x,
-  //     position.y + y,
-  //     totalLength,
-  //     x,
-  //     y,
-  //   );
-  // }
-  // if (!isHit && (hasFill || isClipPath)) {
-  //   if (hasArc) {
-  //     // 存在曲线时，暂时使用 canvas 的 api 计算，后续可以进行多边形切割
-  //     isHit = isPointInPath(displayObject, position);
-  //   } else {
-  //     // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
-  //     isHit =
-  //       inPolygons(polygons, position.x + x, position.y + y) ||
-  //       inPolygons(polylines, position.x + x, position.y + y);
-  //   }
-  // }
   return isHit;
 }

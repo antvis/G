@@ -1,0 +1,64 @@
+{
+  "title": {
+    "zh": "D3",
+    "en": "D3"
+  },
+  "demos": [
+    {
+      "filename": "d3-piechart.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 饼图",
+        "en": "D3's Piechart"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Wq7wSK_0p3AAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "d3-barchart.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 柱状图",
+        "en": "Takeover D3's rendering layer"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "d3-linechart.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 折线图",
+        "en": "D3's Linechart"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*j50URoC5hSMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "d3-scatterplot.js",
+      "title": {
+        "zh": "替换 D3 渲染层 - 散点图",
+        "en": "D3's Scatterplot"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JTbHSYrWlYQAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "d3-force-directed-graph.js",
+      "title": {
+        "zh": "D3 力导",
+        "en": "D3's ForceDirectedGraph"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "d3-geo.js",
+      "title": {
+        "zh": "D3 Geo",
+        "en": "D3 Geo"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cG62RqGKMXsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "d3-annotation.js",
+      "title": {
+        "zh": "D3 标注",
+        "en": "D3's Annotation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*vrV5TbXidQwAAAAAAAAAAAAADmJ7AQ"
+    }
+  ]
+}

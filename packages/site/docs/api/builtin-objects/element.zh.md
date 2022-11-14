@@ -7,13 +7,13 @@ order: 3
 
 -   DisplayObject -> Element -> Node -> EventTarget
 
-# 继承自
+## 继承自
 
 [Node](/zh/docs/api/builtin-objects/node)
 
-# 属性
+## 属性
 
-## id
+### id
 
 场景图中唯一，后续可以通过 getElementById 查询：
 
@@ -28,15 +28,15 @@ circle.id; // 'my-id';
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/id
 
-## name
+### name
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/name
 
-## className
+### className
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className
 
-## classList
+### classList
 
 只读属性，返回类名列表。
 
@@ -47,7 +47,7 @@ circle.className = 'c1 c2';
 circle.classList; // ['c1', 'c2']
 ```
 
-## attributes
+### attributes
 
 只读，返回样式属性，例如：
 
@@ -59,69 +59,69 @@ circle.attributes.r; // 10;
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/attributes
 
-## children
+### children
 
 返回子元素列表，和 Node.childNodes 等价。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/children
 
-## childElementCount
+### childElementCount
 
 返回子元素列表长度。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/childElementCount
 
-## firstElementChild
+### firstElementChild
 
 和 [Node.firstChild](/zh/docs/api/builtin-objects/node#firstchild) 等价。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/firstElementChild
 
-## lastElementChild
+### lastElementChild
 
 和 [Node.lastChild](/zh/docs/api/builtin-objects/node#lastchild) 等价。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/lastElementChild
 
-## clientTop / clientLeft
+### clientTop / clientLeft
 
 由于暂不支持 border，始终返回 0。
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/clientTop
 
-# 方法
+## 方法
 
-## getAttributeNames
+### getAttributeNames
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttributeNames
 
-## getAttribute
+### getAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
 
-## removeAttribute
+### removeAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
 
-## setAttribute
+### setAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
 
-## hasAttribute
+### hasAttribute
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
 
-## getBoundingClientRect
+### getBoundingClientRect
 
 返回浏览器坐标系下的包围盒，不考虑子元素。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
 
-## getClientRects
+### getClientRects
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getClientRects
 
-## computedStyleMap
+### computedStyleMap
 
 获取[样式系统](/zh/docs/api/css/intro)解析后的样式 Map，例如：
 
@@ -153,41 +153,43 @@ expect(fill.alpha).to.be.eqls(1);
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap
 
-## destroy
+### destroy
 
 销毁自身，会移除一切事件监听器，停止正在进行的动画。
 
-## 节点查询
+### 节点查询
 
-### matches
+#### matches
 
 是否匹配选择器字符串
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
 
-### getElementById
+#### getElementById
 
-### getElementsByName
+#### getElementsByName
 
-### getElementsByClassName
+#### getElementsByClassName
 
-### getElementsByTagName
+#### getElementsByTagName
 
-### querySelector
+#### querySelector
 
-### querySelectorAll
+#### querySelectorAll
 
-### find
+#### find
 
-### findAll
-
-## 节点操作
+#### findAll
 
 基于 Node 已有的节点操作能力，提供一些更便捷的操作，例如批量添加兄弟节点、替换所有子节点等。
 
-### append(...nodes: this[])
+### append
 
-在当前节点的子节点列表末尾批量添加一组节点。
+在当前节点的子节点列表末尾批量添加一组节点。方法签名如下：
+
+```
+append(...nodes: Element[]): void
+```
 
 ```js
 parent.appendChild(child1);
@@ -197,9 +199,13 @@ parent.append(child3, child34); // parent -> [child1, child2, child3, child4]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/append
 
-### prepend(...nodes: this[])
+### prepend
 
-在当前节点的子节点列表头部批量添加一组节点。
+在当前节点的子节点列表头部批量添加一组节点。方法签名如下：
+
+```
+prepend(...nodes: Element[]): void
+```
 
 ```js
 parent.appendChild(child1);
@@ -209,7 +215,7 @@ parent.prepend(child3, child34); // parent -> [child3, child4, child1, child2]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
 
-### after(...nodes: Element[])
+### after
 
 在当前节点之后批量添加一些兄弟节点，例如一次性添加一批：
 
@@ -217,9 +223,15 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/prepend
 circle.after(sibling1, sibling2); // [circle, sibling1, sibling2]
 ```
 
+方法签名如下：
+
+```
+after(...nodes: Element[]): void
+```
+
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
 
-### before(...nodes: Element[])
+### before
 
 在当前节点之前批量添加一些兄弟节点，例如一次性添加一批：
 
@@ -227,27 +239,39 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Element/after
 circle.before(sibling1, sibling2); // [sibling1, sibling2, circle]
 ```
 
+方法签名如下：
+
+```
+before(...nodes: Element[]): void
+```
+
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/before
 
-### remove(destroy = true)
+### remove
 
-将自身从场景图中移除，可以选择是否同时销毁，默认会销毁。
+将自身从场景图中移除。
 
 ```js
 circle.remove();
 ```
 
+方法签名如下：
+
+```
+remove(): void
+```
+
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/remove
 
-### removeChildren()
+### removeChildren
 
-将所有子节点从场景图中移除并销毁。
+将所有子节点从场景图中移除。
 
 ```js
 parent.removeChildren();
 ```
 
-### replaceWith(...nodes: Element[])
+### replaceWith
 
 在父节点的子节点列表中，用传入的节点列表替换该节点：
 
@@ -259,7 +283,7 @@ child1.replaceWith(node1, node2); // parent -> [node1, node2, child2]
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceWith
 
-### replaceChildren(...nodes: Element[])
+### replaceChildren
 
 替换该节点的所有子节点。不传参数时则会清空并销毁该节点的所有子节点：
 
@@ -268,9 +292,13 @@ parent.replaceChildren(child1, child2);
 parent.replaceChildren(); // 清空
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
+方法签名如下：
 
-## 动画
+```
+replaceChildren(...nodes: Element[]): void
+```
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Element/replaceChildren
 
 ### getAnimations
 

@@ -13,7 +13,7 @@ order: 4
 
 下面我们将以 [g-canvas](/zh/docs/api/renderer/canvas) 为例，展示如何完成以上步骤。
 
-# 实现自定义渲染器
+## 实现自定义渲染器
 
 继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/zh/docs/api/renderer/renderer#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [g-plugin-canvas-path-generator](/zh/docs/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker)。
 
@@ -50,7 +50,7 @@ export class Renderer extends AbstractRenderer {
 
 除了这些现成的内置插件，我们需要额外开发一个。
 
-# 实现一个自定义上下文注册插件
+## 实现一个自定义上下文注册插件
 
 关于如何实现一个插件可以参考 [插件基本结构](/zh/docs/plugins/intro#基本结构)，该插件只做一件事，那就是注册渲染上下文服务。
 
@@ -78,7 +78,7 @@ export class ContextRegisterPlugin extends AbstractRendererPlugin {
 
 渲染上下文服务向上屏蔽了底层渲染 API 的细节，这样在使用该服务时不会感知到 Canvas2D、SVG 或者 WebGL。
 
-# 自定义渲染环境上下文服务
+## 自定义渲染环境上下文服务
 
 一个渲染上下文服务需要通过 `ContextService` token 注册，并实现 `ContextService` 接口：
 
@@ -107,7 +107,7 @@ export interface ContextService<Context> {
 
 下面我们详细介绍每一个方法的含义。
 
-## init
+### init
 
 不同的底层渲染 API 有不同的初始化方式，例如 Canvas2D / WebGL / WebGPU 虽然都可以通过 DOM API 从 `<canvas>` 元素中获取上下文，但 WebGPU 为异步方式，因此我们将该方法设计成异步：
 
@@ -125,17 +125,17 @@ async init() {
 
 关于调用时机，除了首次初始化画布时会调用，在后续运行时切换渲染器时也会调用。
 
-## destroy
+### destroy
 
 在该方法中，我们可以做一些上下文销毁工作。
 
 关于调用时机，除了首次初始化画布时会调用，在后续运行时切换渲染器时也会调用，其中旧的渲染器上下文会先销毁。
 
-## resize
+### resize
 
 在运行过程中，有时初始化的[画布尺寸](/zh/docs/api/canvas#width--height)会发生改变，此时 `canvas.resize()` 最终会调用到该方法。
 
-## getContext
+### getContext
 
 返回自定义渲染上下文，不同的渲染器返回不同的对象，例如：
 
@@ -151,23 +151,23 @@ interface WebGLRenderingContext {
 }
 ```
 
-## getDomElement
+### getDomElement
 
 返回上下文所属的 DOM 元素。例如 `g-canvas/webgl` 会返回 `<canvas>`，而 `g-svg` 会返回 `<svg>`。
 
-## getDPR
+### getDPR
 
 返回 devicePixelRatio。
 
-## getBoundingClientRect
+### getBoundingClientRect
 
 在大部分渲染环境中都可以通过 DOM API 同名方法获取。
 
-## applyCursorStyle
+### applyCursorStyle
 
 设置鼠标样式。在大部分渲染环境中都可以通过 DOM API 设置。
 
-## toDataURL
+### toDataURL
 
 在实现[导出图片](/zh/docs/guide/advanced-topics/image-exporter)这样的需求时，需要依靠渲染上下文的能力。
 

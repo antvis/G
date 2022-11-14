@@ -5,7 +5,7 @@ order: 3
 
 在使用 G 开发时，有很多通用的第三方工具可以辅助我们开发调试。
 
-# stats.js
+## stats.js
 
 [stats.js](https://github.com/mrdoob/stats.js/) 常用于展示 FPS。配合 G 使用时可以监听 [CanvasEvent 画布事件](/zh/docs/api/canvas#画布特有事件)，在每一帧结束时更新：
 
@@ -30,7 +30,7 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
 });
 ```
 
-# Spector.js
+## Spector.js
 
 如果使用 `g-webgl` 作为[渲染器](/zh/docs/api/renderer)，可以安装 Chrome 浏览器插件 [Spector.js](https://spector.babylonjs.com/)，捕获当前帧执行的所有 WebGL API：
 

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-html-renderer",
-  "version": "1.7.27",
+  "version": "1.7.28",
   "description": "A G plugin for rendering HTML",
   "keywords": [
     "antv",
@@ -30,7 +30,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "gl-matrix": "^3.1.0",
     "tslib": "^2.3.1"
   },

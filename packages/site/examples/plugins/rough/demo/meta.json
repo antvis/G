@@ -1,0 +1,32 @@
+{
+  "title": {
+    "zh": "手绘风格",
+    "en": "Rough"
+  },
+  "demos": [
+    {
+      "filename": "rough.js",
+      "title": {
+        "zh": "使用 rough.js 手绘风格渲染",
+        "en": "Use rough.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "rough-options.js",
+      "title": {
+        "zh": "rough.js 参数",
+        "en": "rough.js options"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1668150000221/Nov-11-2022%25252014-59-41.gif"
+    },
+    {
+      "filename": "rough-d3-barchart.js",
+      "title": {
+        "zh": "手绘风格的 D3 条形图",
+        "en": "Use rough.js and D3 barchart"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*j_F5Saag18oAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

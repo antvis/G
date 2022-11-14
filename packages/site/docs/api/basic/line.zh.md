@@ -50,25 +50,25 @@ line.style.anchor = [0.5, 0.5];
 line.getLocalPosition(); // [200, 100]
 ```
 
-# 继承自
+## 继承自
 
 继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
-## anchor
+### anchor
 
 默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
 
-## transformOrigin
+### transformOrigin
 
 默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
 
-## lineWidth
+### lineWidth
 
 默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
 
-# 额外属性
+## 额外属性
 
-## x1
+### x1
 
 局部坐标系下，第一个端点的 x 轴坐标。
 
@@ -78,7 +78,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## y1
+### y1
 
 局部坐标系下，第一个端点的 y 轴坐标。
 
@@ -88,7 +88,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## z1
+### z1
 
 局部坐标系下，第一个端点的 z 轴坐标。
 
@@ -96,7 +96,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## x2
+### x2
 
 局部坐标系下，第二个端点的 x 轴坐标。
 
@@ -106,7 +106,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## y2
+### y2
 
 局部坐标系下，第二个端点的 y 轴坐标。
 
@@ -116,7 +116,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## z2
+### z2
 
 局部坐标系下，第二个端点的 z 轴坐标。
 
@@ -124,11 +124,11 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## isBillboard
+### isBillboard
 
 3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。默认值为 `false`。[示例](/zh/examples/3d#force-3d)
 
-## markerStart
+### markerStart
 
 可以参考 SVG 的 [同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)。
 
@@ -215,13 +215,13 @@ arrowhead.style.stroke = 'red';
 line.childNodes[0].style.stroke = 'red';
 ```
 
-## markerEnd
+### markerEnd
 
 可以参考 SVG 的 [同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)。
 
 在直线的 “终止点” 处添加一个标记图形，其中 “终止点” 为 [x2/y2](/zh/docs/api/basic/line#x2) 定义的端点。
 
-## markerStartOffset
+### markerStartOffset
 
 有时我们想调整标记图形的位置，为此我们提供了该选项沿直线方向增加一定偏移量，正偏移量向内，负偏移量向外。
 
@@ -239,7 +239,7 @@ line.childNodes[0].style.stroke = 'red';
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 调整 “终止点” 处标记图形的位置，正偏移量向内，负偏移量向外。
 
@@ -247,9 +247,9 @@ line.childNodes[0].style.stroke = 'red';
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-# 方法
+## 方法
 
-## getTotalLength
+### getTotalLength
 
 获取直线长度。
 
@@ -259,7 +259,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLeng
 line.getTotalLength(); // 200
 ```
 
-## getPointAtLength
+### getPointAtLength
 
 沿路径返回给定距离的点，通过第二个可选参数控制在局部还是世界坐标系下：
 
@@ -285,7 +285,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 line.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getPoint
+### getPoint
 
 根据长度比例（取值范围 `[0-1]`）获取直线上局部或世界坐标系下的点坐标。
 
@@ -300,7 +300,7 @@ line.getPointAtLength(100); // Point {x: 300, y: 100}
 line.getPoint(0.5); // Point {x: 300, y: 100}
 ```
 
-# 3D 场景中的线
+## 3D 场景中的线
 
 需要配合 `g-webgl` 渲染器与 `g-plugin-3d` 插件使用。
 

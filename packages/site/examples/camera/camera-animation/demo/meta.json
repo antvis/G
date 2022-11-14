@@ -1,0 +1,20 @@
+{
+  "demos": [
+    {
+      "filename": "landmark2.js",
+      "title": {
+        "zh": "2D 场景下的相机动画",
+        "en": "Landmark"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EL2XSL5qSQ8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "landmark.js",
+      "title": {
+        "zh": "3D 场景下的相机动画",
+        "en": "Landmark"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*o4eKT4ZQfJcAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

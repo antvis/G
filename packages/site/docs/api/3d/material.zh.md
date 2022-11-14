@@ -52,7 +52,7 @@ const sphere = new Mesh({
 canvas.appendChild(sphere);
 ```
 
-# 基础属性
+## 基础属性
 
 我们可以随时修改以下属性，例如：
 
@@ -61,15 +61,15 @@ material.wireframe = true;
 material.cullMode = CullMode.BACK;
 ```
 
-## vertexShader
+### vertexShader
 
 使用 GLSL 300 语法编写的 Shader 字符串。
 
-## fragmentShader
+### fragmentShader
 
 使用 GLSL 300 语法编写的 Shader 字符串。
 
-## wireframe
+### wireframe
 
 是否绘制 wireframe，常用于直观展示三角面。开启后将额外生成重心坐标，原理详见 https://zhuanlan.zhihu.com/p/48499247。
 
@@ -82,15 +82,15 @@ const basicMaterial = new MeshBasicMaterial({
 });
 ```
 
-## wireframeColor
+### wireframeColor
 
 开启 wireframe 后可指定颜色，默认为 `'black'`。
 
-## wireframeLineWidth
+### wireframeLineWidth
 
 开启 wireframe 后可指定线宽，默认为 1。
 
-## cullMode
+### cullMode
 
 支持以下枚举值，默认使用 `CullMode.NONE`，即不开启背面剔除：
 
@@ -103,7 +103,7 @@ export enum CullMode {
 }
 ```
 
-## frontFace
+### frontFace
 
 默认使用 `FrontFaceMode.CCW`，即逆时针方向作为正面 winding order：
 
@@ -114,11 +114,11 @@ export enum FrontFaceMode {
 }
 ```
 
-## depthWrite
+### depthWrite
 
 是否开启深度测试，默认开启。
 
-## depthCompare
+### depthCompare
 
 默认使用 `CompareMode.LessEqual`，不同于 WebGL 的默认值 `CompareMode.Less`：
 
@@ -135,15 +135,15 @@ export enum CompareMode {
 }
 ```
 
-## stencilWrite
+### stencilWrite
 
 是否开启模版测试，默认不开启。
 
-## stencilCompare
+### stencilCompare
 
 默认使用 `CompareMode.Never`，枚举值同 `depthCompare`。
 
-## stencilPassOp
+### stencilPassOp
 
 默认使用 `StencilOp.Keep`，支持以下枚举值：
 
@@ -160,7 +160,7 @@ export enum StencilOp {
 }
 ```
 
-## blendEquation
+### blendEquation
 
 混合模式支持以下枚举值：
 
@@ -172,11 +172,11 @@ export enum BlendMode {
 }
 ```
 
-## blendEquationAlpha
+### blendEquationAlpha
 
 枚举值同 blendEquation
 
-## blendSrc
+### blendSrc
 
 ```js
 export enum BlendFactor {
@@ -193,21 +193,21 @@ export enum BlendFactor {
 }
 ```
 
-## blendDst
+### blendDst
 
 枚举值同 blendSrc
 
-## blendSrcAlpha
+### blendSrcAlpha
 
 枚举值同 blendSrc
 
-## blendDstAlpha
+### blendDstAlpha
 
 枚举值同 blendSrc
 
-# 基础方法
+## 基础方法
 
-## setUniforms
+### setUniforms
 
 添加一组 Uniform，需要与 Shader 中声明的变量类型匹配。
 
@@ -236,7 +236,7 @@ layout(std140) uniform ub_MaterialParams {
 uniform sampler2D u_Map;
 ```
 
-### 纹理
+#### 纹理
 
 一个特殊的情况是纹理，例如上面的例子中 `u_Map` 为采样器，在设置时就需要使用纹理：
 
@@ -249,7 +249,7 @@ material.setUniform({
 });
 ```
 
-### 结构体
+#### 结构体
 
 例如我们为平行光定义了如下结构体：
 
@@ -276,21 +276,21 @@ material.setUniform({
 });
 ```
 
-# 内置材质
+## 内置材质
 
-## PointMaterial
+### PointMaterial
 
 使用 Point 原语绘制。[示例](/zh/examples/3d#point)
 
-### size
+#### size
 
 默认值为 1。例如 WebGL 有最大值限制 `gl.ALIASED_POINT_SIZE_RANGE`。
 
-### map
+#### map
 
 贴图。
 
-## MeshBasicMaterial
+### MeshBasicMaterial
 
 和 Three.js 保持一致：https://threejs.org/docs/#api/en/materials/MeshBasicMaterial
 
@@ -325,7 +325,7 @@ void main() {
 }
 ```
 
-### map
+#### map
 
 漫反射贴图，例如：
 
@@ -338,7 +338,7 @@ const basicMaterial = new MeshBasicMaterial({
 });
 ```
 
-## MeshPhongMaterial
+### MeshPhongMaterial
 
 继承自 MeshBasicMaterial，使用 Blinn-Phong 光照模型。
 
@@ -354,35 +354,35 @@ const basicMaterial = new MeshBasicMaterial({
 
 以下参数可以在该[示例](/zh/examples/3d#sphere)中调整。
 
-### emissive
+#### emissive
 
 自发光颜色。
 
-### specular
+#### specular
 
 高光颜色。
 
-### specularMap
+#### specularMap
 
 高光贴图。例如[示例](/zh/examples/3d#sphere)中使用的：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8wz0QaP_bjoAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-### shininess
+#### shininess
 
 高光闪亮程度
 
-### bumpMap
+#### bumpMap
 
 凹凸贴图，用于干扰法线。例如[示例](/zh/examples/3d#sphere)中使用的：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IZNyQ4_m7aMAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-### bumpScale
+#### bumpScale
 
 凹凸贴图影响程度。
 
-## ShaderMaterial
+### ShaderMaterial
 
 自定义材质，其中 vertex/fragmentShader 需要指定：
 
@@ -393,9 +393,9 @@ const shaderMaterial = new ShaderMaterial(device, {
 });
 ```
 
-# 注意事项
+## 注意事项
 
-## 尽可能复用
+### 尽可能复用
 
 考虑到渲染性能，在使用过程中应该尽可能少地创建材质。特别是在可视化场景下，完全可以做到大量图形共享同一个材质：
 
@@ -414,7 +414,7 @@ for (let i = 0; i < 1000; i++) {
 }
 ```
 
-# Shader 工程化
+## Shader 工程化
 
 我们尝试解决以下问题：
 
@@ -422,7 +422,7 @@ for (let i = 0; i < 1000; i++) {
 -   Shader 开发体验，例如编辑器的高亮、智能提示
 -   模块化，即 Shader chunks 的复用
 
-## Shader 语言选择
+### Shader 语言选择
 
 在 Shader 语言上我们选择 WebGL 2 使用的 GLSL 300，通过运行时简单字符串替换完成对 WebGL 1 使用的 GLSL 100 的兼容。同时使用 Rust 社区的 naga（打包成 wasm 形式）完成在运行时从 GLSL 到 WGSL 的转译，以支持 WebGPU。
 
@@ -447,7 +447,7 @@ struct ub_SceneParams {
 };
 ```
 
-## Shader 语法高亮
+### Shader 语法高亮
 
 很多引擎使用模版字符串存放 Shader 代码，例如 Three.js、Clay.gl 等：
 
@@ -475,7 +475,7 @@ import frag from './xxx.frag';
 
 我们希望使用同一个构建工具打 esm / cjs / umd，另外考虑到 wasm，最终选择 rollup-plugin-glslify，并且这个插件还有另一个好处。
 
-## Shader chunks 复用
+### Shader chunks 复用
 
 如何组织 shader chunks 是一个很麻烦的问题，总有需要复用的代码片段。
 
@@ -511,7 +511,7 @@ void main() {
 
 参考 stack.gl 建立的一系列 shader components：https://github.com/glslify/glsl-easings 我们也提供一个 `@antv/g-shader-components` 包提供内置的所有 chunks。
 
-## Shader 压缩
+### Shader 压缩
 
 Shader 代码中多余的空格、换行、注释最好压缩掉，因为经过上述基于 glslify 的构建流程后，它们都包含在字符串中：
 

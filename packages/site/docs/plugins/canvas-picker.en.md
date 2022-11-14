@@ -5,7 +5,7 @@ order: 4
 
 Provides Canvas2D-based pickup capabilities.
 
-# Usage
+## Usage
 
 The [g-canvas](/en/docs/api/renderer/canvas) renderer is built in by default, so there is no need to introduce it manually.
 
@@ -15,7 +15,7 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 const canvasRenderer = new CanvasRenderer();
 ```
 
-# Principle of implementation
+## Principle of implementation
 
 Pickups based on the Canvas2D API implementation.
 

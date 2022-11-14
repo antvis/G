@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-camera-api",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A simple implementation of Camera API.",
   "keywords": [
     "antv",
@@ -32,7 +32,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/util": "^3.2.4",
+    "@antv/util": "^3.3.1",
     "gl-matrix": "^3.1.0"
   },
   "peerDependencies": {

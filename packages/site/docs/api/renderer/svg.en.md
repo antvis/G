@@ -7,11 +7,11 @@ Use [SVG](https://developer.mozilla.org/zh-CN/docs/Web/SVG) to draw 2D graphics.
 
 SVG has the unique advantage of relying directly on the browser's ability to render text. It is also possible to embed HTML fragments via `<foreignObject>`.
 
-# Usage
+## Usage
 
 As with `@antv/g`, there are two ways to use it.
 
-## NPM Module
+### NPM Module
 
 After installing `@antv/g-svg` you can get the renderer from.
 
@@ -29,7 +29,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN
+### CDN
 
 ```html
 <script
@@ -43,7 +43,7 @@ The renderer is available from the `G.SVG` namespace under.
 const svgRenderer = new window.G.SVG.Renderer();
 ```
 
-# Initial Configuration
+## Initial Configuration
 
 When creating a renderer, you can pass in some initialization configuration items, such as.
 
@@ -54,7 +54,7 @@ const renderer = new Renderer({
 });
 ```
 
-## outputSVGElementId
+### outputSVGElementId
 
 The renderer adds the `id` attribute when generating the SVGElement, which is used to pick up the decision to counter-check the element when interacting. However, in scenarios like server-side rendering, where there is no interaction and no need for generation, this can be turned off with this configuration item.
 
@@ -66,7 +66,7 @@ The renderer adds the `id` attribute when generating the SVGElement, which is us
 <g fill="none"></g>
 ```
 
-# Built-in plug-ins
+## Built-in plug-ins
 
 The renderer has the following plug-ins built in.
 
@@ -74,11 +74,11 @@ The renderer has the following plug-ins built in.
 -   [g-plugin-svg-picker](/en/docs/plugins/svg-picker) Pick up graphics based on [elementFromPoint](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint) DOM API
 -   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
 
-# Optional plug-ins
+## Optional plug-ins
 
 In addition to the built-in plug-ins, the following optional plug-ins are available.
 
-## Hand-drawn style rendering
+### Hand-drawn style rendering
 
 Use the SVG version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
@@ -88,7 +88,7 @@ The effect of [example](/en/examples/plugins#rough) is as follows.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
-# Server-side rendering
+## Server-side rendering
 
 The renderer relies on the rendering capabilities of the SVG DOM API and is not limited to the browser side, so server-side rendering is also possible using [JSDOM](https://github.com/jsdom/node-jsdom).
 

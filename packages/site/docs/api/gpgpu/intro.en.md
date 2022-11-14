@@ -3,7 +3,7 @@ title: Introduction
 order: 0
 ---
 
-# What is GPGPU?
+## What is GPGPU?
 
 GPUs and CPUs are good at performing different types of computational tasks due to different hardware architectures. In particular, in single instruction stream multiple data stream (SIMD) scenarios, GPUs are much faster than CPUs.
 
@@ -23,7 +23,7 @@ To lower the barrier to GPU-oriented programming for developers, Nvidia has prop
 
 And as front-end developers, we are facing more and more data-intensive computing tasks suitable for parallelism, can we use GPGPU technology on the web side?
 
-# Using GPGPU on the web side
+## Using GPGPU on the web side
 
 In fact, there are already many excellent GPGPU practices on the Web side, such as:
 
@@ -31,7 +31,7 @@ In fact, there are already many excellent GPGPU practices on the Web side, such 
 -   [GPU.js](https://github.com/gpujs/gpu.js)
 -   [Stardust.js](https://stardustjs.github.io/)
 
-## Implementation based on WebGL
+### Implementation based on WebGL
 
 From an implementation point of view, the above solutions all use the WebGL graphics API to emulate Compute Shaders that are not supported, specifically through programmable Vertex/Fragment Shaders in the regular rendering pipeline, if you are interested in our implementation, you can read [Principles of Classic GPGPU Implementation](/zh/docs/ api/implements). The following diagram from [http://www.vizitsolutions.com/portfolio/webgl/gpgpu/](http://www.vizitsolutions.com/portfolio/webgl/gpgpu/) briefly shows the basic implementation.
 
@@ -47,7 +47,7 @@ The image below is from: [https://slideplayer.com/slide/16710114/](https://slide
 
 <img src="https://user-images.githubusercontent.com/3608471/83636450-959f8580-a5d8-11ea-8881-6496f16b1311.png" alt="WebGL vs OpenGL" width="500">
 
-## Implementation based on WebGPU
+### Implementation based on WebGPU
 
 WebGPU, the successor to WebGL, is currently [supported](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status) by major browser vendors and can be experienced in the following browsers (experimental feature webgpu flag needs to be enabled).
 
@@ -68,7 +68,7 @@ Although WebGPU is still in the development stage, there are many good practices
 -   tensorflow.js is trying [WebGPU-based backend implementation](https://github.com/tensorflow/tfjs/tree/master/tfjs-backend-webgpu/src)。
 -   Babylon.js is trying to implement [a WebGPU-based rendering engine](https://doc.babylonjs.com/extensions/webgpu)。
 
-# The computing scenarios and challenges we face
+## The computing scenarios and challenges we face
 
 When we focus from the field of general-purpose computing to visualization scenarios, we find that many parallelizable computational tasks exist that are suitable for GPU execution, such as:
 

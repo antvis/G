@@ -1,0 +1,24 @@
+{
+  "title": {
+    "zh": "折线",
+    "en": "Polyline"
+  },
+  "demos": [
+    {
+      "filename": "polyline.js",
+      "title": {
+        "zh": "折线",
+        "en": "Polyline"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bo4rRK0U8PIAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "marker.js",
+      "title": {
+        "zh": "标记图形",
+        "en": "Marker"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*ZoM4QIkPU2oAAAAAAAAAAAAADmJ7AQ"
+    }
+  ]
+}

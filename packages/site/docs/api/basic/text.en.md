@@ -7,13 +7,11 @@ Provides simple single/multi-line text layout capabilities, with single-line sup
 
 The following properties can be adjusted in this [example](/en/examples/shape#text).
 
-# Inherited from
+## Inherited from
 
 -   [DisplayObject](/en/docs/api/basic/display-object)
 
 The position of a text/text block is described by a text anchor point around which it adjusts itself through properties such as `textBaseline` (single/multi-line), `textAlign` (multi-line), etc.
-
-# Additional Properties
 
 ## text
 
@@ -229,9 +227,9 @@ Corresponds to the [CSS line-height](https://developer.mozilla.org/en-US/docs/We
 | --- | --- | --- | --- | --- |
 | '0' | - | no | no | [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
 
-# Methods
+## Methods
 
-## getLineBoundingRects(): Rectangle[]
+### getLineBoundingRects
 
 Get the bounding box for each line of text, e.g.:
 
@@ -270,7 +268,7 @@ text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
 });
 ```
 
-## isOverflowing
+### isOverflowing
 
 Used to determine if there is overflow content. Useful for Tooltip-like components to determine if the full text needs to be displayed.
 
@@ -286,7 +284,7 @@ And only if the content does overflow, i.e. the [textOverflow](/en/docs/api/basi
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*vGk_TL5e2gEAAAAAAAAAAAAAARQnAQ" alt="text overflow" width="400">
 
-# Loading Fonts
+## Loading Fonts
 
 In addition to the system default fonts, sometimes we want to load third-party fonts.
 
@@ -317,6 +315,6 @@ WebFont.load({
 });
 ```
 
-# More CanvasKit-based configuration items
+## More CanvasKit-based configuration items
 
 CanvasKit provides [enhanced paragraph drawing capabilities](/en/docs/api/renderer/canvaskit#text-paragraphs). We've integrated them into our [g-canvaskit](/en/docs/api/renderer/canvaskit) renderer.

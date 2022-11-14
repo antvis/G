@@ -5,11 +5,11 @@ order: 0
 
 Use [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) to draw 2D graphics. A `<canvas>` element will be created in the container.
 
-# Usage
+## Usage
 
 As with `@antv/g`, there are two ways to use it.
 
-## NPM Module
+### NPM Module
 
 After installing `@antv/g-canvas` you can get the renderer from it.
 
@@ -27,7 +27,7 @@ const canvas = new Canvas({
 });
 ```
 
-## CDN
+### CDN
 
 ```html
 <script
@@ -41,7 +41,7 @@ The renderer can be obtained from the `G.Canvas2D` namespace under.
 const canvasRenderer = new window.G.Canvas2D.Renderer();
 ```
 
-# Initial Configuration
+## Initial Configuration
 
 When creating a renderer, you can pass in some initialization configuration items, such as.
 
@@ -52,7 +52,7 @@ const renderer = new Renderer({
 });
 ```
 
-## enableDirtyRectangleRendering
+### enableDirtyRectangleRendering
 
 Indicates if "dirty rectangle" rendering is enabled. Enabled will improve the rendering performance in Canvas2D environment significantly. Enabled by default.
 
@@ -73,7 +73,7 @@ Obviously, when the number of dynamically changing objects is too large, this op
 
 But it makes sense in relatively static scenarios like visualization, where for example only parts of the chart are updated after triggering a pickup, and the rest remains unchanged.
 
-## enableDirtyRectangleRenderingDebug
+### enableDirtyRectangleRenderingDebug
 
 Used for debug, disabled by default, when enabled the canvas will trigger `CanvasEvent.DIRTY_RECTANGLE` event and carry dirty rectangle information which can be used for subsequent visualization.
 
@@ -107,7 +107,7 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 });
 ```
 
-# Built-in plug-ins
+## Built-in plug-ins
 
 The renderer has the following plug-ins built in.
 
@@ -115,11 +115,11 @@ The renderer has the following plug-ins built in.
 -   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D).
 -   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding.
 
-# Optional plug-ins
+## Optional plug-ins
 
 In addition to the built-in plug-ins, the following optional plug-ins are available.
 
-## Hand-drawn style rendering
+### Hand-drawn style rendering
 
 Use the Canvas version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
@@ -129,7 +129,7 @@ We provide [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-render
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
-# Server-side rendering
+## Server-side rendering
 
 This renderer relies on [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) rendering capabilities and is not limited to the browser side, so you can also use [ node-canvas](https://github.com/Automattic/node-canvas) for server-side rendering.
 

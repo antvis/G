@@ -1,0 +1,22 @@
+{
+  "title": {
+    "zh": "无障碍",
+    "en": "A11y"
+  },
+  "demos": [
+    {
+      "filename": "a11y-text-extractor.js",
+      "title": {
+        "zh": "使用浏览器搜索（command + F）文本内容",
+        "en": "Search text content in browser"
+      }
+    },
+    {
+      "filename": "a11y-keyboard-navigation.js",
+      "title": {
+        "zh": "使用键盘导航",
+        "en": "Use keyboard navigation"
+      }
+    }
+  ]
+}

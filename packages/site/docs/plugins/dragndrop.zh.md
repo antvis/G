@@ -7,7 +7,7 @@ order: 7
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
-# 安装方式
+## 安装方式
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
@@ -17,7 +17,7 @@ const canvasRenderer = new CanvasRenderer();
 canvasRenderer.registerPlugin(new Plugin());
 ```
 
-# 插件配置项
+## 插件配置项
 
 我们提供了以下配置项，可以在创建插件时传入，例如 [overlap](/zh/docs/plugins/dragndrop#overlap)：
 
@@ -27,7 +27,7 @@ new Plugin({
 });
 ```
 
-## isDocumentDraggable
+### isDocumentDraggable
 
 由于 [Document](/zh/docs/api/builtin-objects/document) 上并没有“样式”，因此当我们想在画布的空白区域进行拖拽时，并不能这么做：
 
@@ -57,7 +57,7 @@ canvas.addEventListener('drag', function (e) {
 
 在上面的例子中我们有 `e.target === canvas.document` 这样的判断，是为了避免移动“足球”等非 [Document](/zh/docs/api/builtin-objects/document) 元素也造成相机移动。
 
-## isDocumentDroppable
+### isDocumentDroppable
 
 同样的，如果我们想让 [Document](/zh/docs/api/builtin-objects/document) 也成为“可放置区域”，可以使用该配置项：
 
@@ -81,7 +81,7 @@ canvas.addEventListener('drop', function (e) {
 });
 ```
 
-## dragstartDistanceThreshold
+### dragstartDistanceThreshold
 
 对于满足何种条件判定“开始拖拽”，我们提供了以下配置项：分别基于拖拽距离和时间。只有这些判定条件全部满足，才会触发 `dragstart` 等一系列拖放事件。
 
@@ -95,7 +95,7 @@ const plugin = new Plugin({
 });
 ```
 
-## dragstartTimeThreshold
+### dragstartTimeThreshold
 
 该配置项用于配置拖放时间的检测阈值，单位为毫秒，只有 **大于** 该值才会判定通过。默认值为 0。
 
@@ -107,18 +107,18 @@ const plugin = new Plugin({
 });
 ```
 
-## overlap
+### overlap
 
 用以判断拖拽中的图形是否进入 `dropzone`，支持以下两个取值：
 
 -   `'pointer'` 默认值。鼠标位置进入 `dropzone` 区域则通过判定
 -   `'center'` 拖拽中图形包围盒中心进入 `dropzone` 区域则通过判定
 
-# 使用方式
+## 使用方式
 
 通过配置图形支持 Drag（拖拽）、Drop（放置），我们可以监听相关的事件。Drag 和 Drop 相关的事件都是可冒泡的。
 
-## Drag
+### Drag
 
 注册插件完毕之后，为了让图形支持拖拽，需要设置 `draggable` 属性为 `true`。例如上面的足球：
 
@@ -177,7 +177,7 @@ ball.addEventListener('dragend', function (e) {
 });
 ```
 
-## Drop
+### Drop
 
 同样，我们可以为支持放置的图形开启 `droppable`：
 
@@ -222,9 +222,9 @@ gate.addEventListener('drop', function (e) {
 });
 ```
 
-# 注意事项
+## 注意事项
 
-## 事件触发顺序
+### 事件触发顺序
 
 `drag` 系列事件与其它交互事件存在先后触发的顺序问题，以 `pointer` 系列事件为例，在一个典型的拖拽过程中，会依次触发以下事件：
 
@@ -240,7 +240,7 @@ gate.addEventListener('drop', function (e) {
 -   `dragend` 拖拽结束
 -   `pointerup` 抬起
 
-## 与 Click 事件的关系
+### 与 Click 事件的关系
 
 在 HTML 的 Drag'n'drop 实现中，`click` 和 `drag` 事件同时只会触发一个：https://plnkr.co/edit/5mdl7oTg0dPWXIip
 

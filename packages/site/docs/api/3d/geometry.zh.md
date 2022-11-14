@@ -17,7 +17,7 @@ material.wireframe = true;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-# 内置几何
+## 内置几何
 
 当我们想修改几何信息时，例如改变一个几何形状为 CubeGeometry 的 Mesh 时，应该在几何而非 Mesh 上操作：
 
@@ -51,99 +51,99 @@ cube.style.geometry.width = 300;
 cube.style.width = 300;
 ```
 
-## CubeGeometry
+### CubeGeometry
 
 立方体，[示例](/zh/examples/3d#cube)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sHGXQpeIYzoAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-### width
+#### width
 
 宽度，必填。
 
-### height
+#### height
 
 高度，必填。
 
-### depth
+#### depth
 
 深度，必填。
 
-### widthSegments
+#### widthSegments
 
 影响程序化生成，默认值为 1
 
-### heightSegments
+#### heightSegments
 
 影响程序化生成，默认值为 1
 
-### depthSegments
+#### depthSegments
 
 影响程序化生成，默认值为 1
 
-## SphereGeometry
+### SphereGeometry
 
 球体，[示例](/zh/examples/3d#sphere)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-### radius
+#### radius
 
 球半径，必填，默认值为 0.5
 
-### latitudeBands
+#### latitudeBands
 
 默认值为 16
 
-### longitudeBands
+#### longitudeBands
 
 默认值为 16
 
-## PlaneGeometry
+### PlaneGeometry
 
 平面，默认躺在 XZ 平面上，[示例](/zh/examples/3d#plane)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jN9zQp3RflAAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-### width
+#### width
 
 必填，宽度
 
-### depth
+#### depth
 
 必填，深度
 
-### widthSegments
+#### widthSegments
 
 选填，默认值为 5
 
-### depthSegments
+#### depthSegments
 
 选填，默认值为 5
 
-## TorusGeometry
+### TorusGeometry
 
 圆环，[示例](/zh/examples/3d#torus)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*So7oT4qDvLkAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-### tubeRadius
+#### tubeRadius
 
 选填，默认值为 0.2
 
-### ringRadius
+#### ringRadius
 
 选填，默认值为 0.3
 
-### segments
+#### segments
 
 选填，默认值为 30
 
-### sides
+#### sides
 
 选填，默认值为 20
 
-# BufferGeometry
+## BufferGeometry
 
 以上内置几何都继承自 BufferGeometry，因此需要自定义时也可以使用它。
 
@@ -198,7 +198,7 @@ bufferGeometry.setVertexBuffer({
 bufferGeometry.vertexCount = 6;
 ```
 
-## vertexCount
+### vertexCount
 
 设置需要绘制的顶点数目，默认全部绘制，后续可以随时修改。
 
@@ -206,7 +206,7 @@ bufferGeometry.vertexCount = 6;
 geometry.vertexCount = 10;
 ```
 
-## instancedCount
+### instancedCount
 
 在 instanced 模式下，绘制的实例数目。
 
@@ -214,7 +214,7 @@ geometry.vertexCount = 10;
 geometry.instancedCount = 10;
 ```
 
-## indexStart
+### indexStart
 
 使用索引数组（drawElements）绘制时的起始位置，默认为 0。
 
@@ -222,7 +222,7 @@ geometry.instancedCount = 10;
 geometry.indexStart = 3;
 ```
 
-## primitiveStart
+### primitiveStart
 
 使用非索引数组（drawArrays）绘制时的起始位置，默认为 0。
 
@@ -230,9 +230,9 @@ geometry.indexStart = 3;
 geometry.primitiveStart = 3;
 ```
 
-# 通用方法
+## 通用方法
 
-## setIndices
+### setIndices
 
 设置索引数组。
 
@@ -246,7 +246,7 @@ geometry.primitiveStart = 3;
 geometry.setIndices(new Uint32Array(indices));
 ```
 
-## setVertexBuffer
+### setVertexBuffer
 
 设置顶点数组。
 
@@ -307,7 +307,7 @@ geometry.setVertexBuffer({
 });
 ```
 
-## updateVertexBuffer
+### updateVertexBuffer
 
 在初始化之后，顶点数据有时也需要修改。
 
@@ -322,7 +322,7 @@ geometry.updateVertexBuffer(
 );
 ```
 
-## applyMat4
+### applyMat4
 
 对程序化生成的几何应用变换矩阵。由于 G 的坐标系 Y 轴正向向下，因此在生成后需要进行 Y 轴翻转。该方法对位置、法线应用变换。
 

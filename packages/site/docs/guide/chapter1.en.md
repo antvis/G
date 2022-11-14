@@ -13,7 +13,7 @@ Our scene is very simple, it contains two nodes implemented with [Circle](/en/do
 
 [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
-# Create Node
+## Create Node
 
 First we import the base graph [Circle](/en/docs/api/circle) from `@antv/g`, which our node uses to implement:
 
@@ -36,7 +36,7 @@ const node1 = new Circle({
 
 We can create a second node in the same way.
 
-# Adding text to a node
+## Adding text to a node
 
 We want to display descriptive text on the node, again we bring in the base graph [Text](/en/docs/api/text) from `@antv/g`:
 
@@ -67,7 +67,7 @@ We only need to set the position of the node, and all its children (text) will f
 node1.setPosition(200, 200);
 ```
 
-# Create edge
+## Create edge
 
 We can import [Line](/en/docs/api/line) from `@antv/g` to connect the two endpoints:
 

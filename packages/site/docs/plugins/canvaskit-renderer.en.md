@@ -10,7 +10,7 @@ Skia offers more features than the Canvas2D API, such as text paragraph layout, 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-# Usage
+## Usage
 
 The [g-canvaskit](/en/docs/api/renderer/canvaskit) renderer is built-in by default, so there is no need to introduce it manually.
 
@@ -20,9 +20,9 @@ import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 const canvaskitRenderer = new CanvaskitRenderer();
 ```
 
-# API
+## API
 
-## playAnimation
+### playAnimation
 
 The [Lottie](https://airbnb.design/introducing-lottie/) animation was created with the [Bodymovin](https://github.com/bodymovin/bodymovin) plugin for After Effects and exported to JSON format.
 
@@ -71,7 +71,7 @@ If you want to remove the animation, you can call the `delete()` method on the r
 animation.delete();
 ```
 
-## createParticles
+### createParticles
 
 For example, particle effects such as fireworks, flames, etc. require generating and animating a large number of "particles", which are usually programmed in the GPU through the shader, e.g. interpolation calculations to change the position of each particle should be done in the GPU instead of the CPU.
 

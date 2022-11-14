@@ -2,3 +2,7 @@ node_modules
 .cache
 public
 pkg
+
+# dumi2 website builder
+.dumi/tmp
+.dumi/tmp-production

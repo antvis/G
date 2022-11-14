@@ -10,13 +10,13 @@ order: 2
 -   Document -> Node -> EventTarget
 -   DisplayObject -> Element -> Node -> EventTarget
 
-# 继承自
+## 继承自
 
 [EventTarget](/zh/docs/api/builtin-objects/event-target)
 
-# 属性
+## 属性
 
-## nodeName
+### nodeName
 
 只读，返回节点名称，例如：
 
@@ -46,7 +46,7 @@ export enum Shape {
 }
 ```
 
-## nodeValue
+### nodeValue
 
 只读，返回节点字符串，默认为 null。[Text](/zh/docs/api/basic/text) 会返回文本字符串。
 
@@ -60,7 +60,7 @@ const text = new Text({ style: { text: 'test' } });
 text.nodeValue; // 'test'
 ```
 
-## isConnected
+### isConnected
 
 只读，是否被加入到画布中，例如：
 
@@ -72,7 +72,7 @@ circle.isConnected; // true
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
 
-## ownerDocument
+### ownerDocument
 
 只读，指向画布的入口 [Document](/zh/docs/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
 
@@ -84,49 +84,49 @@ circle.ownerDocument; // canvas.document
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/ownerDocument
 
-## parentNode
+### parentNode
 
 只读，返回当前节点的父节点。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentNode
 
-## parentElement
+### parentElement
 
 只读，在目前的实现中同 parentNode。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/parentElement
 
-## childNodes
+### childNodes
 
 只读，返回当前节点的子节点列表。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/childNodes
 
-## firstChild
+### firstChild
 
 只读，返回当前节点的第一个子节点，如果无子节点，则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/firstChild
 
-## lastChild
+### lastChild
 
 只读，返回当前节点的最后一个子节点，如果无子节点，则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/lastChild
 
-## nextSibling
+### nextSibling
 
 只读，返回当前节点的后一个兄弟节点，没有则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nextSibling
 
-## previousSibling
+### previousSibling
 
 只读，返回当前节点的前一个兄弟节点，没有则返回 null。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
 
-## textContent
+### textContent
 
 读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/zh/docs/api/basic/text) 会返回文本字符串。
 
@@ -154,15 +154,15 @@ group.textContent = 'changed';
 group.childNodes; // [Text]
 ```
 
-# 方法
+## 方法
 
-## appendChild
+### appendChild
 
 将一个节点添加到指定父节点的子节点列表末尾处。如果该节点已经在场景图中，会先从原位置处移除，再添加到新的位置。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild
 
-## cloneNode
+### cloneNode
 
 方法签名为 `cloneNode(deep?: boolean): this`，可选参数为是否需要深拷贝，返回克隆得到的新节点。
 
@@ -192,13 +192,13 @@ clonedCircle.getPosition(); // [10, 20]
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
-## contains
+### contains
 
 判断传入的节点是否为该节点的后代节点。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/contains
 
-## getRootNode
+### getRootNode
 
 返回当前节点的根节点。如果已经被添加到画布中，会返回 canvas.document 例如：
 
@@ -210,7 +210,7 @@ circle.getRootNode(); // canvas.document
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/getRootNode
 
-## getAncestor
+### getAncestor
 
 返回指定层次的祖先节点，例如：
 
@@ -224,13 +224,13 @@ circle.getAncestor(2); // circle.parentNode.parentNode
 circle.getAncestor(100); // null
 ```
 
-## hasChildNodes
+### hasChildNodes
 
 是否有子节点。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/hasChildNodes
 
-## insertBefore
+### insertBefore
 
 完整方法签名为：
 
@@ -242,7 +242,7 @@ insertBefore(child: Node, reference?: Node): Node
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore
 
-## removeChild
+### removeChild
 
 完整方法签名为：
 
@@ -254,19 +254,19 @@ removeChild(child: Node): Node
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild
 
-## replaceChild
+### replaceChild
 
 用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild
 
-## isEqualNode
+### isEqualNode
 
 判断两个节点是否相等。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isEqualNode
 
-## compareDocumentPosition
+### compareDocumentPosition
 
 比较两个节点在场景图中的位置。
 

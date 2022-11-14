@@ -5,7 +5,7 @@ order: 5
 
 提供基于 SVG 的渲染能力。
 
-# 安装方式
+## 安装方式
 
 `g-svg` 渲染器默认内置，因此无需手动引入。
 
@@ -15,11 +15,11 @@ import { Renderer as SvgRenderer } from '@antv/g-svg';
 const svgRenderer = new SvgRenderer();
 ```
 
-# 扩展点
+## 扩展点
 
 该插件暴露以下扩展点。
 
-## ElementLifeCycleContribution
+### ElementLifeCycleContribution
 
 该扩展点提供 SVG 元素从创建、更新到销毁的生命周期。
 
@@ -44,20 +44,20 @@ export class DefaultElementLifeCycleContribution implements ElementLifeCycleCont
 export class RoughElementLifeCycleContribution implements ElementLifeCycleContribution {}
 ```
 
-### createElement
+#### createElement
 
 该方法根据传入的基础图形，使用 DOM API 创建对应的 SVGElement。在触发 [ElementEvent.MOUNTED](/zh/docs/api/basic/display-object#生命周期事件监听) 事件时调用。
 
-### shouldUpdateElementAttribute
+#### shouldUpdateElementAttribute
 
 重绘在 SVG 中表现为属性更新，但部分属性（例如 [visibility](/zh/docs/api/basic/display-object#隐藏显示)，[z-index](/zh/docs/api/basic/display-object#zindex) 等）的更新我们有统一的内部实现，并不打算开放自定义能力。因此需要有一个判断方法决定是否触发属性更新。
 
 当图形首次挂载触发 [ElementEvent.MOUNTED](/zh/docs/api/basic/display-object#生命周期事件监听) 以及后续属性更新触发 [ElementEvent.ATTR_MODIFIED](/zh/docs/api/basic/display-object#生命周期事件监听) 事件时调用。
 
-### updateElementAttribute
+#### updateElementAttribute
 
 通过属性更新判断方法后，执行更新属性逻辑。
 
-### destroyElement
+#### destroyElement
 
 当图形从画布中移除触发 [ElementEvent.UNMOUNTED](/zh/docs/api/basic/display-object#生命周期事件监听) 时调用该方法。

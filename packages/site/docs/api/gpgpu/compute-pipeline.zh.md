@@ -3,7 +3,7 @@ title: Kernel API
 order: 2
 ---
 
-# 安装 GPGPU 插件
+## 安装 GPGPU 插件
 
 创建画布，使用渲染器的方式和之前渲染相关的教程并无差别，只是在创建渲染器时，需要确认在支持 WebGPU 的浏览器环境下运行。另外由于不涉及渲染，画布大小我们选择长宽为 1 即可。
 
@@ -28,7 +28,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 获取 Device
+## 获取 Device
 
 在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/docs/api/canvas#画布特有事件) 事件处理器中或者等待 `canvas.ready` Promise 完成后，我们都可以通过渲染器获取 Device，[完整 Device API](/zh/docs/plugins/device-renderer#device)：
 
@@ -50,7 +50,7 @@ const plugin = renderer.getPlugin('device-renderer');
 const device = plugin.getDevice();
 ```
 
-# 创建 Kernel
+## 创建 Kernel
 
 因此 g-plugin-gpgpu 插件提供了 Kernel 用于描述计算任务，除了传入上一节获取的 device，还需要通过 computeShader 使用字符串描述：
 
@@ -62,7 +62,7 @@ const kernel = new Kernel(device, {
 });
 ```
 
-# setBinding
+## setBinding
 
 定义好了 Kernel，我们需要向它传递输入，结束后获取输出结果。分配内存的工作在 Host 侧执行，通过 Device 创建 Buffer，其中 `usage` 需要与 Compute Shader 中定义的内存用途对应，同时进行内存初始数据的写入。
 
@@ -85,7 +85,7 @@ kernel.setBinding(0, firstMatrixBuffer);
 -   `var<storage, read_write>` 对应 `BufferUsage.STORAGE | BufferUsage.COPY_SRC`
 -   `var<uniform>` 对应 `BufferUsage.UNIFORM | BufferUsage.COPY_DST | BufferUsage.COPY_SRC`
 
-# dispatch
+## dispatch
 
 使用 [dispatch](https://www.w3.org/TR/WGSL/#dispatch-command) 可以分配线程网格大小，执行计算管线。在矩阵乘法的例子中，如果线程组的大小为 `1 * 1`，网格大小就是 `M * N`：
 

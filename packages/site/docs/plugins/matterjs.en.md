@@ -11,7 +11,7 @@ In this [example](/en/examples/plugins#matterjs), we create a series of dynamic 
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# Usage
+## Usage
 
 Create plug-ins and register them in the renderer.
 
@@ -32,11 +32,11 @@ new Circle({
 });
 ```
 
-# Global Configuration
+## Global Configuration
 
 Global physical world configuration.
 
-## debug
+### debug
 
 matter.js itself supports rendering. With [debugContainer](/en/docs/plugins/matterjs#debugcontainer) on, you can draw a wireframe of each object in the physics engine world for debug.
 
@@ -53,19 +53,19 @@ For example, the following figure shows a wireframe with three static walls and 
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5XLQ5zRKzkAAAAAAAAAAAAAARQnAQ" width="300px">
 
-## debugContainer
+### debugContainer
 
 The type is `HTMLElement`, matter.js will create `<canvas>` inside the container for rendering.
 
-## debugCanvasWidth
+### debugCanvasWidth
 
 The width of the `<canvas>` of type `number` for debugging.
 
-## debugCanvasHeight
+### debugCanvasHeight
 
 The height of the `<canvas>` of type `number` for debugging.
 
-## gravity
+### gravity
 
 The direction of gravity vector, the default value is `[0, 1]`.
 
@@ -79,29 +79,29 @@ new PluginMatterjs({
 }),
 ```
 
-## gravityScale
+### gravityScale
 
 Type is `number`, the gravity scaling factor.
 
 https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale
 
-## timeStep
+### timeStep
 
 Simulation time interval, default value is `1/60`
 
-## velocityIterations
+### velocityIterations
 
 Calculate the number of acceleration iterations, the default value is `4`, the higher the calculation overhead
 
 https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
 
-## positionIterations
+### positionIterations
 
 Calculate the number of position iterations, the default value is `6`, the higher the computation overhead
 
 https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
 
-# Graphical Physical Properties
+## Graphical Physical Properties
 
 Most of the following properties are supported for runtime modification, such as modifying the density.
 
@@ -109,7 +109,7 @@ Most of the following properties are supported for runtime modification, such as
 circle.style.density = 100;
 ```
 
-## rigid
+### rigid
 
 Rigid body type.
 
@@ -118,51 +118,51 @@ Rigid body type.
 
 <!-- - kinematic -->
 
-## density
+### density
 
 Density, kg/m2. Static objects are 0.
 
 https://brm.io/matter-js/docs/classes/Body.html#property_density
 
-## velocity
+### velocity
 
 Line speed, the default value is `[0, 0]`.
 
 https://brm.io/matter-js/docs/classes/Body.html#property_velocity
 
-## angularVelocity
+### angularVelocity
 
 Angular velocity, the default value is `0`.
 
 https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity
 
-## friction
+### friction
 
 Friction, the range is `[0 - 1]`, and the default value is `0.1`. `0` means the object will slide indefinitely, `1` means the object will stop immediately after the force is applied.
 
 https://brm.io/matter-js/docs/classes/Body.html#property_friction
 
-## frictionAir
+### frictionAir
 
 Defines the friction force in air, `0` means no gravity, the higher the value the more significant the deceleration of the object moving in space, the default value is `0.01`.
 
 https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir
 
-## frictionStatic
+### frictionStatic
 
 The default value is `0.5`.
 
 https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic
 
-## restitution
+### restitution
 
 The recovery force, in the range `[0 - 1]`. For example, if a ball falls to the ground, it will not bounce if the restoring force is 0.
 
-# Applying an external force to an object
+## Applying an external force to an object
 
 In addition to the simulation by initializing parameters, the position and rotation angle of the object can be changed at any moment by applying external forces.
 
-## applyForce
+### applyForce
 
 Method signature, applying a force to a figure at a point.
 

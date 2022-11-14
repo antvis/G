@@ -1,0 +1,32 @@
+{
+  "title": {
+    "zh": "多边形",
+    "en": "Polygon"
+  },
+  "demos": [
+    {
+      "filename": "polygon.js",
+      "title": {
+        "zh": "多边形",
+        "en": "Polygon"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ooeZRJF65nIAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "marker.js",
+      "title": {
+        "zh": "标记图形",
+        "en": "Marker"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*4OujQbUBUd0AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "fillrule.js",
+      "title": {
+        "zh": "填充算法",
+        "en": "Fillrule"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*VVoJSrtsmO0AAAAAAAAAAAAADmJ7AQ"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "title": {
+    "zh": "拖放",
+    "en": "Drag'n'Drop"
+  },
+  "demos": [
+    {
+      "filename": "interact.js",
+      "title": {
+        "zh": "使用 Interact.js 拖拽库",
+        "en": "Drag'n'Drop with Interact.js"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*9YqIQo56RasAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "drag.js",
+      "title": {
+        "zh": "使用 PointerEvents 实现拖拽",
+        "en": "Drag with PointerEvents"
+      }
+    }
+  ]
+}

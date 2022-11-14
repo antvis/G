@@ -1,5 +1,5 @@
 import type { CanvasLike } from '@antv/g-lite';
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 
 class CanvasElement implements CanvasLike {
   width: number;

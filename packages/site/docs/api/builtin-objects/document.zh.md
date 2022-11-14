@@ -16,13 +16,13 @@ order: 4
 
 我们尽可能实现了以上浏览器提供的 API。
 
-# 继承自
+## 继承自
 
 [Node](/zh/docs/api/builtin-objects/node)
 
-# 属性
+## 属性
 
-## nodeName
+### nodeName
 
 实现了 [Node.nodeName](/zh/docs/api/builtin-objects/node#nodename)，返回 `'document'`，在事件处理器中可用来快速判断 target，例如点击了画布的空白区域时：
 
@@ -36,7 +36,7 @@ canvas.addEventListener('click', (e) => {
 });
 ```
 
-## defaultView
+### defaultView
 
 指向画布，例如：
 
@@ -46,7 +46,7 @@ canvas.document.defaultView; // canvas
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
 
-## documentElement
+### documentElement
 
 返回场景图中的根节点，在创建画布时会默认使用 [Group](/zh/docs/api/basic/group) 创建一个：
 
@@ -57,17 +57,17 @@ canvas.document.documentElement.getBounds(); // 获取整个场景的包围盒
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
 
-## timeline
+### timeline
 
 默认时间轴，在动画系统中使用。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/timeline
 
-## ownerDocument
+### ownerDocument
 
 返回 null
 
-# 方法
+## 方法
 
 由于继承自 [Node](/zh/docs/api/builtin-objects/node)，因此显然拥有了事件绑定能力：
 
@@ -77,7 +77,7 @@ canvas.document.addEventListener('click', () => {});
 
 但在一些方法特别是节点操作上和 Node 有差异。
 
-## 节点操作
+### 节点操作
 
 虽然继承了 [Node](/zh/docs/api/builtin-objects/node)，但在 Document 上无法调用一些节点操作方法，正如在浏览器中调用 `document.appendChild` 会返回如下错误一样：
 
@@ -85,35 +85,35 @@ canvas.document.addEventListener('click', () => {});
 Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.
 ```
 
-## 节点查询
+### 节点查询
 
 以下节点查询方法等同于在 document.documentElement 上执行。
 
-### getElementById
+#### getElementById
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementById
 
-### getElementsByName
+#### getElementsByName
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByName
 
-### getElementsByClassName
+#### getElementsByClassName
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByClassName
 
-### getElementsByTagName
+#### getElementsByTagName
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByTagName
 
-### querySelector
+#### querySelector
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector
 
-### querySelectorAll
+#### querySelectorAll
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll
 
-## createElement
+### createElement
 
 通常我们建议使用 `new Circle()` 这样的方式创建内置或者自定义图形，但我们也提供了类似 DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) API，可以使用 [document.createElement](/zh/docs/api/builtin-objects/document#createelement) 创建完成注册的图形，因此以下写法等价：
 
@@ -128,11 +128,11 @@ const circle = new Circle({ style: { r: 100 } });
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
 
-## createElementNS
+### createElementNS
 
 目前实现同 createElement。
 
-## elementFromPoint
+### elementFromPoint
 
 当我们想知道画布中某个点上堆叠了多少个图形，除了通过交互事件，还可以通过 API 方式完成拾取。
 
@@ -161,7 +161,7 @@ await canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
 
-## elementsFromPoint
+### elementsFromPoint
 
 当目标点上有多个图形堆叠时，该方法会按照 [z-index](/zh/docs/api/basic/display-object#zindex) 排序后返回它们，返回结果中的第一个元素为最顶层的图形。
 
@@ -182,7 +182,7 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint
 
-## elementsFromBBox
+### elementsFromBBox
 
 区域查询特别是基于包围盒的检测在以下场景中特别适用：
 
@@ -203,7 +203,7 @@ const elements = document.elementsFromBBox(minX, minY, maxX, maxY);
 2. 无需考虑 WebGL / WebGPU 这样基于 GPU 的拾取实现，为同步方法
 3. 返回的元素数组按实际渲染次序排序
 
-## elementFromPointSync
+### elementFromPointSync
 
 [elementFromPoint](/zh/docs/api/builtin-objects/document#elementfrompoint) 的同步版本，值得注意的是，并不是所有[渲染器](/zh/docs/api/renderer/renderer)都会实现该方法，目前仅有 [g-canvas](/zh/docs/api/renderer/canvas)，[g-svg](/zh/docs/api/renderer/svg) 和 [g-canvaskit](/zh/docs/api/renderer/canvaskit) 提供了对应实现：
 
@@ -211,7 +211,7 @@ const elements = document.elementsFromBBox(minX, minY, maxX, maxY);
 const element = canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
 ```
 
-## elementsFromPointSync
+### elementsFromPointSync
 
 [elementsFromPoint](/zh/docs/api/builtin-objects/document#elementsfrompoint) 的同步版本，值得注意的是，并不是所有[渲染器](/zh/docs/api/renderer/renderer)都会实现该方法，目前仅有 [g-canvas](/zh/docs/api/renderer/canvas)，[g-svg](/zh/docs/api/renderer/svg) 和 [g-canvaskit](/zh/docs/api/renderer/canvaskit) 提供了对应实现：
 

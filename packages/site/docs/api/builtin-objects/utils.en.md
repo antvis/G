@@ -9,11 +9,11 @@ We provide a range of tool methods for use with the core as well as plug-ins, su
 import { convertToPath } from '@antv/g';
 ```
 
-# Math
+## Math
 
 It mainly involves the conversion between different angle units.
 
-## deg2rad
+### deg2rad
 
 Angle conversion to radians.
 
@@ -21,7 +21,7 @@ Angle conversion to radians.
 deg2rad(deg: number): number;
 ```
 
-## rad2deg
+### rad2deg
 
 Radians conversion to angle.
 
@@ -29,7 +29,7 @@ Radians conversion to angle.
 rad2deg(rad: number): number;
 ```
 
-## deg2turn
+### deg2turn
 
 Angle conversion to turn.
 
@@ -37,7 +37,7 @@ Angle conversion to turn.
 deg2turn(deg: number): number;
 ```
 
-## turn2deg
+### turn2deg
 
 Turn conversion to angle.
 
@@ -45,11 +45,11 @@ Turn conversion to angle.
 turn2deg(turn: number): number;
 ```
 
-# Matrix
+## Matrix
 
 In the vast majority of cases, we can use the graphics' own transformation capabilities, which are implemented internally via [gl-matrix](https://github.com/toji/gl-matrix).
 
-## decompose
+### decompose
 
 Decompose the 3x3 transformation matrix to obtain translation, scaling and rotation angles.
 
@@ -59,7 +59,7 @@ https://www.w3.org/TR/css-transforms-1/#decomposing-a-2d-matrix
 const [tx, ty, scalingX, scalingY, angle] = decompose(mat3);
 ```
 
-## getEuler
+### getEuler
 
 Get the Euler angles from `quat` or `mat4`. The method signature is as follows.
 
@@ -69,7 +69,7 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 
 来自：https://github.com/toji/gl-matrix/issues/329
 
-## createVec3
+### createVec3
 
 Create `vec3` that accepts multiple types of arguments. The method signature is as follows.
 
@@ -77,11 +77,11 @@ Create `vec3` that accepts multiple types of arguments. The method signature is 
 createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
 ```
 
-# Path
+## Path
 
 Most calculations involving paths rely on `@antv/util`.
 
-## convertToPath
+### convertToPath
 
 [Morph animation](/en/docs/api/animation/waapi#morping) is implemented by interpolating the [path/d](/en/docs/api/basic/path#d) property of [Path](/en/docs/api/basic/path).
 

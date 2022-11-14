@@ -5,7 +5,7 @@ order: 4
 
 提供基于 Canvas2D 的拾取能力。
 
-# 安装方式
+## 安装方式
 
 `g-canvas` 渲染器默认内置，因此无需手动引入。
 
@@ -15,7 +15,7 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 const canvasRenderer = new CanvasRenderer();
 ```
 
-# 实现原理
+## 实现原理
 
 基于 Canvas2D API 实现的拾取：
 

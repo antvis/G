@@ -13,7 +13,7 @@ When the existing renderer does not satisfy the current rendering context, custo
 
 Here we will take [g-canvas](/en/docs/api/renderer/canvas) as an example to show how to complete the above steps.
 
-# Implementing a custom renderer
+## Implementing a custom renderer
 
 After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/docs/api/renderer/renderer#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/docs/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/docs/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/en/docs/ plugins/canvas-picker).
 
@@ -50,7 +50,7 @@ export class Renderer extends AbstractRenderer {
 
 In addition to these ready-made built-in plugins, we need to develop an additional one.
 
-# Implement a custom contextual registration plugin
+## Implement a custom contextual registration plugin
 
 You can refer to [plugin basic structure](/en/docs/plugins/intro#basic-structure) on how to implement a plugin that does only one thing, and that is to register the rendering context service.
 
@@ -78,7 +78,7 @@ export class ContextRegisterPlugin extends AbstractRendererPlugin {
 
 The rendering context service masks the details of the underlying rendering API upwards so that Canvas2D, SVG, or WebGL are not perceived when using the service.
 
-# Custom Rendering Environment Context Service
+## Custom Rendering Environment Context Service
 
 A rendering context service needs to be registered with the `ContextService` token and implement the `ContextService` interface.
 
@@ -107,7 +107,7 @@ export interface ContextService<Context> {
 
 Below we detail the meaning of each method.
 
-## init
+### init
 
 Different underlying rendering APIs have different initialization methods, for example, while Canvas2D / WebGL / WebGPU can all get the context from the `<canvas>` element via the DOM API, WebGPU is asynchronous, so we designed the method to be asynchronous.
 
@@ -125,17 +125,17 @@ In this method, we can get the parameters passed by the user when creating [Canv
 
 Regarding the timing of the call, it will be called not only when initializing the canvas for the first time, but also when switching the renderer at subsequent runtimes.
 
-## destroy
+### destroy
 
 In this method, we can do some context destruction.
 
 Regarding the timing of the call, in addition to being called when the canvas is initialized for the first time, it will also be called when switching renderers at subsequent runtimes, where the old renderer context will be destroyed first.
 
-## resize
+### resize
 
 During runtime, sometimes the initialized [canvas size](/en/docs/api/canvas#width--height) will change, and then `canvas.resize()` will eventually call this method.
 
-## getContext
+### getContext
 
 Returns a custom rendering context, with different renderers returning different objects, e.g.
 
@@ -151,23 +151,23 @@ interface WebGLRenderingContext {
 }
 ```
 
-## getDomElement
+### getDomElement
 
 Returns the DOM element to which the context belongs. For example, `g-canvas/webgl` will return `<canvas>`, while `g-svg` will return `<svg>`.
 
-## getDPR
+### getDPR
 
 Returns devicePixelRatio.
 
-## getBoundingClientRect
+### getBoundingClientRect
 
 It is available in most rendering environments via the DOM API method of the same name.
 
-## applyCursorStyle
+### applyCursorStyle
 
 Set the mouse style. This can be set in most rendering environments via the DOM API.
 
-## toDataURL
+### toDataURL
 
 When implementing requirements like [export-image](/en/docs/guide/advanced-topics/image-exporter), you need to rely on the capabilities of the rendering context.
 

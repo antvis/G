@@ -11,7 +11,7 @@ order: 13
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 注册插件
+## 注册插件
 
 创建一个渲染器并注册插件：
 
@@ -32,7 +32,7 @@ const canvas = new Canvas({
 });
 ```
 
-# 创建 Flex 容器
+## 创建 Flex 容器
 
 我们使用 [Rect](/zh/docs/api/basic/rect) 创建一个淡蓝色背景容器。
 
@@ -59,7 +59,7 @@ const root = new Rect({
 canvas.appendChild(root);
 ```
 
-# 创建顶部 Header
+## 创建顶部 Header
 
 接下来我们往容器中添加第一个元素，一个固定高度的 Header。
 
@@ -79,7 +79,7 @@ const topPanel = new Rect({
 });
 ```
 
-# 创建下方自适应区域
+## 创建下方自适应区域
 
 固定 Header 之后，我们希望下方区域占满容器的剩余空间。
 
@@ -97,7 +97,7 @@ const bottomPanel = new Group({
 });
 ```
 
-# 继续划分区域
+## 继续划分区域
 
 接下来我们继续划分刚创建的下方区域，这次创建一个水平方向的两栏布局。
 
@@ -106,7 +106,7 @@ bottomPanel.appendChild(leftPanel);
 bottomPanel.appendChild(rightPanel);
 ```
 
-# 元素居中
+## 元素居中
 
 居中也是一个常见的需求，例如顶部 Header 中使用 [justifyContent](/zh/docs/plugins/yoga#justifycontent) 和 [alignItems](/zh/docs/plugins/yoga#alignitems) 实现：
 

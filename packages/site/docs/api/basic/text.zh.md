@@ -7,13 +7,11 @@ order: 1
 
 可以在该 [示例](/zh/examples/shape#text) 中调整以下属性。
 
-# 继承自
+## 继承自
 
 -   [DisplayObject](/zh/docs/api/basic/display-object)
 
 文本/文本块的位置通过文本锚点描述，围绕该锚点通过 `textBaseline`（单行/多行）、`textAlign`（多行）等属性调整自身位置。
-
-# 额外属性
 
 ## text
 
@@ -254,9 +252,9 @@ order: 1
 
 ## [WIP] 阴影
 
-# 方法
+## 方法
 
-## getLineBoundingRects(): Rectangle[]
+### getLineBoundingRects
 
 获取每一行文本的包围盒，例如：
 
@@ -295,7 +293,7 @@ text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
 });
 ```
 
-## isOverflowing
+### isOverflowing
 
 用于判断是否有溢出内容。便于类似 Tooltip 组件判定是否需要展示完整文本。
 
@@ -311,7 +309,7 @@ text.isOverflowing(); // true
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*vGk_TL5e2gEAAAAAAAAAAAAAARQnAQ" alt="text overflow" width="400">
 
-# 加载字体
+## 加载字体
 
 除了系统默认字体，有时我们希望加载第三方字体。
 
@@ -342,6 +340,6 @@ WebFont.load({
 });
 ```
 
-# 更多基于 CanvasKit 的配置项
+## 更多基于 CanvasKit 的配置项
 
 CanvasKit 提供了 [众多文本段落增强功能](/zh/docs/api/renderer/canvaskit#text-paragraphs)。 我们将这些能力整合进了 [g-canvaskit](/zh/docs/api/renderer/canvaskit) 渲染器中。

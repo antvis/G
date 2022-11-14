@@ -1,0 +1,32 @@
+{
+  "title": {
+    "zh": "拾取",
+    "en": "Picking"
+  },
+  "demos": [
+    {
+      "filename": "circle.js",
+      "title": {
+        "zh": "单个圆拾取",
+        "en": "Single circle picking"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*xJB7TY68IVUAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "circles.js",
+      "title": {
+        "zh": "多个圆拾取",
+        "en": "Multiple circle picking"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dc0NTrzOwHYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "shapes.js",
+      "title": {
+        "zh": "多种图形拾取",
+        "en": "Multiple shapes picking"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D7xLQp4L4VoAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

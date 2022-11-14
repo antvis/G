@@ -11,7 +11,7 @@ order: -1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# 安装方式
+## 安装方式
 
 创建插件并在渲染器中注册：
 
@@ -32,11 +32,11 @@ new Circle({
 });
 ```
 
-# 全局配置
+## 全局配置
 
 全局物理世界配置。
 
-## debug
+### debug
 
 matter.js  本身支持渲染。开启后配合 [debugContainer](/zh/docs/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
 
@@ -53,19 +53,19 @@ const plugin = new PluginMatterjs({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Z5XLQ5zRKzkAAAAAAAAAAAAAARQnAQ" width="300px">
 
-## debugContainer
+### debugContainer
 
 类型为 `HTMLElement`，matter.js 会在容器内创建 `<canvas>` 用于渲染。
 
-## debugCanvasWidth
+### debugCanvasWidth
 
 类型为 `number`，用于调试的 `<canvas>` 的宽度。
 
-## debugCanvasHeight
+### debugCanvasHeight
 
 类型为 `number`，用于调试的 `<canvas>` 的高度。
 
-## gravity
+### gravity
 
 重力方向向量，默认值为 `[0, 1]`。
 
@@ -79,29 +79,29 @@ new PluginMatterjs({
 }),
 ```
 
-## gravityScale
+### gravityScale
 
 类型为 `number`，重力缩放系数。
 
 https://brm.io/matter-js/docs/classes/Engine.html#property_gravity.scale
 
-## timeStep
+### timeStep
 
 仿真时间间隔，默认值为 `1/60`
 
-## velocityIterations
+### velocityIterations
 
 计算加速度迭代次数，默认值为 `4`，越高计算开销越大
 
 https://brm.io/matter-js/docs/classes/Engine.html#property_velocityIterations
 
-## positionIterations
+### positionIterations
 
 计算位置迭代次数，默认值为 `6`，越高计算开销越大
 
 https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
 
-# 图形物理属性
+## 图形物理属性
 
 以下属性大部分都支持运行时修改，例如修改密度：
 
@@ -109,7 +109,7 @@ https://brm.io/matter-js/docs/classes/Engine.html#property_positionIterations
 circle.style.density = 100;
 ```
 
-## rigid
+### rigid
 
 刚体类型：
 
@@ -118,51 +118,51 @@ circle.style.density = 100;
 
 <!-- - kinematic -->
 
-## density
+### density
 
 密度，千克/平方米。静态物体为 0。
 
 https://brm.io/matter-js/docs/classes/Body.html#property_density
 
-## velocity
+### velocity
 
 线速度，默认值为 `[0, 0]`。
 
 https://brm.io/matter-js/docs/classes/Body.html#property_velocity
 
-## angularVelocity
+### angularVelocity
 
 角速度，默认值为 `0`。
 
 https://brm.io/matter-js/docs/classes/Body.html#property_angularVelocity
 
-## friction
+### friction
 
 摩擦力，取值范围为 `[0 - 1]`，默认值为 `0.1`。`0` 代表物体会无限滑动下去，`1` 表示物体受力后会立刻停止。
 
 https://brm.io/matter-js/docs/classes/Body.html#property_friction
 
-## frictionAir
+### frictionAir
 
 定义在空气中的摩擦力，`0` 表示无重力，值越高物体在空间中移动减速就越明显，默认值为 `0.01`。
 
 https://brm.io/matter-js/docs/classes/Body.html#property_frictionAir
 
-## frictionStatic
+### frictionStatic
 
 默认值为 `0.5`
 
 https://brm.io/matter-js/docs/classes/Body.html#property_frictionStatic
 
-## restitution
+### restitution
 
 恢复力，取值范围为 `[0 - 1]`。例如一个球落向地面，恢复力为 0 时则不会弹起。
 
-# 对物体施加外力
+## 对物体施加外力
 
 除了通过初始化参数进行仿真，在任意时刻都可以通过施加外力，改变物体的位置和旋转角度。
 
-## applyForce
+### applyForce
 
 方法签名，对一个图形在某个点上施加力：
 

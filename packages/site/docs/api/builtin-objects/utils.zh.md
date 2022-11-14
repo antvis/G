@@ -9,11 +9,11 @@ order: 6
 import { convertToPath } from '@antv/g';
 ```
 
-# 数学计算
+## 数学计算
 
 主要涉及不同角度单位之间的换算。
 
-## deg2rad
+### deg2rad
 
 角度转换到弧度。
 
@@ -21,7 +21,7 @@ import { convertToPath } from '@antv/g';
 deg2rad(deg: number): number;
 ```
 
-## rad2deg
+### rad2deg
 
 弧度转换到角度。
 
@@ -29,7 +29,7 @@ deg2rad(deg: number): number;
 rad2deg(rad: number): number;
 ```
 
-## deg2turn
+### deg2turn
 
 角度转换到圈数。
 
@@ -37,7 +37,7 @@ rad2deg(rad: number): number;
 deg2turn(deg: number): number;
 ```
 
-## turn2deg
+### turn2deg
 
 圈数转换到角度。
 
@@ -45,11 +45,11 @@ deg2turn(deg: number): number;
 turn2deg(turn: number): number;
 ```
 
-# 矩阵计算
+## 矩阵计算
 
 在绝大部分情况下，我们都可以使用图形自带的变换能力，内部通过 [gl-matrix](https://github.com/toji/gl-matrix) 实现。
 
-## decompose
+### decompose
 
 分解 3x3 变换矩阵，得到平移、缩放和旋转角度。
 
@@ -59,7 +59,7 @@ turn2deg(turn: number): number;
 const [tx, ty, scalingX, scalingY, angle] = decompose(mat3);
 ```
 
-## getEuler
+### getEuler
 
 从 `quat` 或者 `mat4` 中获取欧拉角。方法签名如下：
 
@@ -69,7 +69,7 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 
 来自：https://github.com/toji/gl-matrix/issues/329
 
-## createVec3
+### createVec3
 
 创建 `vec3`，接受多种类型参数。方法签名如下：
 
@@ -77,11 +77,11 @@ getEuler(out: vec3, quat: quat | mat4): vec3
 createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0): vec3;
 ```
 
-# Path 计算
+## Path 计算
 
 大部分涉及 path 的计算都依赖于 `@antv/util`。
 
-## convertToPath
+### convertToPath
 
 [Morph 形变动画](/zh/docs/api/animation/waapi#形变动画)是通过对 [Path](/zh/docs/api/basic/path) 的 [path/d](/zh/docs/api/basic/path#d) 属性进行插值实现的。
 

@@ -1,0 +1,30 @@
+{
+  "title": {
+    "zh": "GPGPU",
+    "en": "GPGPU"
+  },
+  "demos": [
+    {
+      "filename": "matrix-multiplication.js",
+      "title": {
+        "zh": "矩阵乘法",
+        "en": "Matrix multiplication"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*PzQMRKjwro4AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "reduce.js",
+      "title": {
+        "zh": "Reduce Sum",
+        "en": "Reduce Sum"
+      }
+    },
+    {
+      "filename": "compute-shader-test.js",
+      "title": {
+        "zh": "Compute Shader 测试",
+        "en": "Compute Shader"
+      }
+    }
+  ]
+}

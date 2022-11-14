@@ -9,8 +9,8 @@ export interface RendererPlugin {
   destroy: () => void;
 }
 
-export abstract class AbstractRendererPlugin implements RendererPlugin {
-  context: CanvasContext;
+export abstract class AbstractRendererPlugin<T = any> implements RendererPlugin {
+  context: CanvasContext & T;
   protected plugins = [];
 
   protected addRenderingPlugin(plugin: RenderingPlugin) {

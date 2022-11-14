@@ -1,0 +1,55 @@
+{
+  "title": {
+    "zh": "几何",
+    "en": "Geometry"
+  },
+  "demos": [
+    {
+      "filename": "point.js",
+      "title": {
+        "zh": "点",
+        "en": "Point"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*gPLVTK2YDxAAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "plane.js",
+      "title": {
+        "zh": "平面",
+        "en": "Plane"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*MdWeQJCW_hoAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "cube.js",
+      "title": {
+        "zh": "立方体",
+        "en": "Cube"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*xZcvSrlYoE8AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "sphere.js",
+      "title": {
+        "zh": "球",
+        "en": "Sphere"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*zjiQSol4PdcAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "torus.js",
+      "title": {
+        "zh": "圆环",
+        "en": "Torus"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*C5ZXT7TaG9cAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "buffer-geometry.js",
+      "title": {
+        "zh": "自定义 Geometry",
+        "en": "Use BufferGeometry"
+      }
+    }
+  ]
+}

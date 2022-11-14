@@ -40,29 +40,29 @@ const polyline = new Polyline({
 polyline.getLocalPosition(); // [50, 50]
 ```
 
-# 继承自
+## 继承自
 
 继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
 
-## anchor
+### anchor
 
 默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
 
-## transformOrigin
+### transformOrigin
 
 默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
 
-## lineWidth
+### lineWidth
 
 默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
 
-## miterLimit
+### miterLimit
 
 默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
 
-# 额外属性
+## 额外属性
 
-## points
+### points
 
 支持以下两种写法：
 
@@ -82,7 +82,7 @@ polyline.style.points = [
 
 可以参考 SVG 的[同名属性](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points)。
 
-## markerStart
+### markerStart
 
 可以参考 [Line](/zh/docs/api/basic/line) 的 [markerStart](/zh/docs/api/basic/line#markerstart) 属性。
 
@@ -105,7 +105,7 @@ const arrowMarker = new Path({
 polyline.style.markerStart = arrowMarker;
 ```
 
-## markerEnd
+### markerEnd
 
 可以参考 [Line](/zh/docs/api/basic/line) 的 [markerEnd](/zh/docs/api/basic/line#markerend) 属性。
 
@@ -130,7 +130,7 @@ const imageMarker = new Image({
 polyline.style.markerEnd = imageMarker;
 ```
 
-## markerMid
+### markerMid
 
 可以参考 SVG 的[同名属性](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)。
 
@@ -151,7 +151,7 @@ polyline.style.markerMid = circleMarker;
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Rsd9R7U4zdcAAAAAAAAAAAAAARQnAQ" alt="marker mid" width="200">
 
-## markerStartOffset
+### markerStartOffset
 
 可以参考 [Line](/zh/docs/api/basic/line) 的 [markerStartOffset](/zh/docs/api/basic/line#markerstartoffset) 属性。
 
@@ -163,7 +163,7 @@ polyline.style.markerMid = circleMarker;
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-## markerEndOffset
+### markerEndOffset
 
 可以参考 [Line](/zh/docs/api/basic/line) 的 [markerEndOffset](/zh/docs/api/basic/line#markerendoffset) 属性。
 
@@ -175,15 +175,15 @@ polyline.style.markerMid = circleMarker;
 | --- | --- | --- | --- | --- |
 | '0' | - | 否 | 是 | [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
 
-# 方法
+## 方法
 
-## getTotalLength
+### getTotalLength
 
 获取折线长度。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
 
-## getPoint
+### getPoint
 
 根据长度比例（取值范围 `[0-1]`）获取点。
 
@@ -201,7 +201,7 @@ export type Point = {
 };
 ```
 
-## getPointAtLength
+### getPointAtLength
 
 沿路径返回给定距离的点。
 
@@ -216,10 +216,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLe
 polyline.getPointAtLength(100); // Point {x: 300, y: 100}
 ```
 
-## getStartTangent
+### getStartTangent
 
 获取起点的切向量，形如: `[[10, 10], [20, 20]]`
 
-## getEndTangent
+### getEndTangent
 
 获取终点的切向量，形如: `[[10, 10], [20, 20]]`

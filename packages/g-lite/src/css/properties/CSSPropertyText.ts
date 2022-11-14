@@ -16,7 +16,9 @@ export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | st
         return parsed.value;
       }
     }
-    return parsed;
+
+    // allow number as valid text content
+    return `${parsed}`;
   }
 
   postProcessor(object: DisplayObject) {

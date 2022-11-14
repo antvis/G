@@ -16,13 +16,13 @@ We can analogize `Document` to `window.document` in the browser environment, e.g
 
 We have implemented the above browser-provided API as much as possible.
 
-# Inherited from
+## Inherited from
 
 [Node](/en/docs/api/builtin-objects/node)
 
-# Properties
+## Properties
 
-## nodeName
+### nodeName
 
 implements [Node.nodeName](/en/docs/api/builtin-objects/node#nodename), which returns `'document'` and can be used in event handlers to quickly determine the target, e.g. when clicking on a blank area of the canvas.
 
@@ -36,7 +36,7 @@ canvas.addEventListener('click', (e) => {
 });
 ```
 
-## defaultView
+### defaultView
 
 Point to the [canvas](/en/docs/api/canvas), e.g.
 
@@ -46,7 +46,7 @@ canvas.document.defaultView; // canvas
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
 
-## documentElement
+### documentElement
 
 Returns the root node in the scene graph. When creating a canvas, [Group](/en/docs/api/basic/group) is used by default to create a.
 
@@ -57,17 +57,17 @@ canvas.document.documentElement.getBounds(); // Get the whole scene bounding box
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
 
-## timeline
+### timeline
 
 The default timeline, used in the animation system.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/timeline
 
-## ownerDocument
+### ownerDocument
 
 Return null.
 
-# Methods
+## Methods
 
 Since it inherits from [Node](/en/docs/api/builtin-objects/node), it obviously has event binding capabilities.
 
@@ -77,7 +77,7 @@ canvas.document.addEventListener('click', () => {});
 
 However, some of the methods, especially the node operations, differ from Node.
 
-## Node Operations
+### Node Operations
 
 Although it inherits from [Node](/en/docs/api/builtin-objects/node), some node manipulation methods cannot be called on the Document, just as calling `document.appendChild` in the browser returns the following error.
 
@@ -85,35 +85,35 @@ Although it inherits from [Node](/en/docs/api/builtin-objects/node), some node m
 Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.
 ```
 
-## Node Query
+### Node Query
 
 The following node query methods are equivalent to executing on [document.documentElement](/en/docs/api/builtin-objects/document#documentelement).
 
-### getElementById
+#### getElementById
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementById
 
-### getElementsByName
+#### getElementsByName
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByName
 
-### getElementsByClassName
+#### getElementsByClassName
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByClassName
 
-### getElementsByTagName
+#### getElementsByTagName
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByTagName
 
-### querySelector
+#### querySelector
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector
 
-### querySelectorAll
+#### querySelectorAll
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll
 
-## createElement
+### createElement
 
 Usually we recommend using `new Circle()` to create built-in or custom graphics, but we also provide something like the DOM [CustomElementRegistry](https://developer.mozilla.org/en-US/docs/Web/API/ CustomElementRegistry) API to create a completed registered graph using [document.createElement](/en/docs/api/builtin-objects/document#createelement), so the following writeup is equivalent.
 
@@ -128,11 +128,11 @@ const circle = new Circle({ style: { r: 100 } });
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
 
-## createElementNS
+### createElementNS
 
 The current implementation is the same as [createElement](/en/docs/api/builtin-objects/document#createelement).
 
-## elementFromPoint
+### elementFromPoint
 
 When we want to know how many shapes are stacked on a certain point in the canvas, we can do the pickup by API way, besides the interactive events.
 
@@ -161,7 +161,7 @@ There are three points to note.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
 
-## elementsFromPoint
+### elementsFromPoint
 
 When there are multiple graphs stacked on the target point, this method returns them sorted by [z-index](/en/docs/api/basic/display-object#zindex), with the first element of the result being the topmost graph.
 
@@ -182,7 +182,7 @@ Caveats.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint
 
-## elementsFromBBox
+### elementsFromBBox
 
 Area queries, especially boundingbox-based detection, are particularly useful in scenarios such as
 
@@ -203,7 +203,7 @@ Caveats.
 2. no need to consider GPU-based picking implementations like WebGL / WebGPU, synchronous methods
 3. the returned array of elements is sorted by the actual rendering order
 
-## elementFromPointSync
+### elementFromPointSync
 
 The synchronized version of [elementFromPoint](/en/docs/api/builtin-objects/document#elementfrompoint), it is worth noting that not all [renderers](/en/docs/api/renderer/renderer) will implement this method, currently only [g-canvas](/en/docs/api/renderer/canvas), [g-svg](/en/docs/api/renderer/svg) and [g-canvaskit](/en/docs/api/renderer/ canvaskit) provide the corresponding implementations.
 
@@ -211,7 +211,7 @@ The synchronized version of [elementFromPoint](/en/docs/api/builtin-objects/docu
 const element = canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
 ```
 
-## elementsFromPointSync
+### elementsFromPointSync
 
 The synchronized version of [elementsFromPoint](/en/docs/api/builtin-objects/document#elementsfrompoint), it is worth noting that not all [renderers](/en/docs/api/renderer/renderer) will implement this method, currently only [g-canvas](/en/docs/api/renderer/canvas), [g-svg](/en/docs/api/renderer/svg) and [g-canvaskit](/en/docs/api/renderer/ canvaskit) provide the corresponding implementations.
 

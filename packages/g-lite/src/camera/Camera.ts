@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import type { Canvas } from '../Canvas';

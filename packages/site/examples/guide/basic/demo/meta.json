@@ -1,0 +1,19 @@
+{
+  "demos": [
+    {
+      "filename": "chapter2.js",
+      "title": {
+        "zh": "基础教程第二节：使用渲染器",
+        "en": "Guide chapter2: use renderer"
+      }
+    },
+    {
+      "filename": "chapter3.js",
+      "title": {
+        "zh": "基础教程第三节：添加交互",
+        "en": "Guide chapter3: interaction"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1667978028753/A_Xw7JTZTFqMgAAAAAAAAAAAAAARQnAQ.gif"
+    }
+  ]
+}

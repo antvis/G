@@ -18,7 +18,7 @@ In this [example](/en/examples/plugins#box2d), we create a series of dynamic obj
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" width="300px">
 
-# Usage
+## Usage
 
 Create plug-ins and register them in the renderer.
 
@@ -39,11 +39,11 @@ new Circle({
 });
 ```
 
-# Global Configuration
+## Global Configuration
 
 Global physical world configuration.
 
-## gravity
+### gravity
 
 The gravity direction vector, the default value is `[0, 100]`.
 
@@ -55,19 +55,19 @@ new PluginBox2D({
 }),
 ```
 
-## timeStep
+### timeStep
 
 Simulation time interval, default value is `1/60`
 
-## velocityIterations
+### velocityIterations
 
 Calculate the number of acceleration iterations, the default value is `8`, the higher the calculation overhead
 
-## positionIterations
+### positionIterations
 
 Calculate the number of position iterations, the default value is `3`, the higher the computation overhead
 
-## onContact
+### onContact
 
 It is possible to listen to the surface contact of two objects.
 
@@ -81,7 +81,7 @@ new PluginBox2D({
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md105
 
-# Graphical Physical Properties
+## Graphical Physical Properties
 
 Box2D uses the following physical units: meters, kilograms, and seconds.
 
@@ -95,7 +95,7 @@ Most of the following properties are supported for runtime modification, such as
 circle.style.density = 100;
 ```
 
-## rigid
+### rigid
 
 Rigid body type.
 
@@ -104,57 +104,57 @@ Rigid body type.
 
 <!-- - kinematic -->
 
-## density
+### density
 
 Density, kg/m2. Static objects are 0.
 
-## linearVelocity
+### linearVelocity
 
 Line speed, the default value is `[0, 0]`.
 
-## angularVelocity
+### angularVelocity
 
 Angular velocity, the default value is `0`.
 
-## gravityScale
+### gravityScale
 
 Gravity factor, the default value is `1`.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md60
 
-## linearDamping
+### linearDamping
 
 Damping, the default value is `0`.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
 
-## angularDamping
+### angularDamping
 
 AngularDamping, the default value is `0`.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md59
 
-## fixedRotation
+### fixedRotation
 
 Fixed rotation angle, the default value is `false`.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md62
 
-## bullet
+### bullet
 
 The default value is `false`。
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md63
 
-## friction
+### friction
 
 Friction, The default value is `[0 - 1]`.
 
-## restitution
+### restitution
 
 The recovery force, in the range `[0 - 1]`. For example, if a ball falls to the ground, it will not bounce if the restoring force is 0.
 
-# [WIP] Applying an external force to an object
+## [WIP] Applying an external force to an object
 
 In addition to the simulation by initializing parameters, the position and rotation angle of the object can be changed at any moment by applying external forces.
 
@@ -167,25 +167,25 @@ void b2Body::ApplyLinearImpulse(const b2Vec2& impulse, const b2Vec2& point);
 void b2Body::ApplyAngularImpulse(float impulse);
 ```
 
-## applyForce
+### applyForce
 
 ```js
 const plugin = new PluginBox2D();
 plugin.applyForce(circle, [0, 0], [0, 0]);
 ```
 
-## applyTorque
+### applyTorque
 
-## applyLinearImpulse
+### applyLinearImpulse
 
-## applyAngularImpulse
+### applyAngularImpulse
 
-# [WIP] Joint
+## [WIP] Joint
 
 Box2D provides a series of descriptions of the connections between the physics that cause the forces to occur.
 
 https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md82
 
-# [WIP] Fluids
+## [WIP] Fluids
 
 Using liquidfun: https://github.com/Birch-san/box2d-wasm/blob/c04514c040/README.md#alternative-distributions
