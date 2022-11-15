@@ -57,7 +57,7 @@ import Stats from 'stats.js';
       },
       {
         name: 'sans-serif',
-        url: '/NotoSans-Regular.ttf',
+        url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
       },
     ],
   });
