@@ -25,9 +25,10 @@
     "README.md"
   ],
   "scripts": {
+    "build": "dumi build",
     "site:build": "dumi build && cp ../../spec/api.html public",
     "site:dev": "dumi dev",
-    "start": "npm run site:develop"
+    "start": "npm run site:dev"
   },
   "dependencies": {
     "@antv/g6": "^4.5.2",
@@ -49,6 +50,7 @@
     "lil-gui": "^0.16.0",
     "react": "^16.0.2",
     "react-dom": "^16.0.2",
+    "react-helmet": "^6.1.0",
     "react-i18next": "^11.1.0",
     "react-split-pane": "^0.1.92",
     "simplex-noise": "^3.0.0",
@@ -60,8 +62,8 @@
     "webfontloader": "1.6.28"
   },
   "devDependencies": {
-    "@antv/dumi-theme-antv": "^0.3.0-beta.10",
-    "dumi": "^2.0.0-rc.1",
+    "@antv/dumi-theme-antv": "^0.3.0-beta.18",
+    "dumi": "^2.0.0-rc.6",
     "workerize-loader": "^2.0.2"
   }
 }

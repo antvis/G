@@ -1,5 +1,5 @@
-import { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
-import type { CSSGradientValue, Pattern } from '@antv/g-lite';
+import { CSSRGB } from '@antv/g-lite';
+import type { CSSGradientValue, Pattern , DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import type { Options } from 'roughjs/bin/core';
 
 export const SUPPORTED_ROUGH_OPTIONS = [

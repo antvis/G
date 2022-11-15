@@ -66,7 +66,6 @@
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",
     "cross-env": "^6.0.3",
-    "dumi": "^1.1.37",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
     "father": "^2.30.13",

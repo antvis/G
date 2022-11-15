@@ -13,7 +13,7 @@ interface ResolveParam {
 }
 
 class GraphImpl {
-  [Symbol.species]?: 'RGGraph';
+  // [Symbol.species]?: 'RGGraph';
 
   // Used for determining scheduling.
   renderTargetDescriptions: Readonly<RGRenderTargetDescription>[] = [];

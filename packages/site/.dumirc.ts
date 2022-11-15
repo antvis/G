@@ -419,11 +419,8 @@ export default defineConfig({
       en: '',
     },
   },
-  mfsu: false,
-  links: [],
-  scripts: [],
+  alias: {
+    '@': __dirname
+  },
   copy: ['static'],
-  // chainWebpack(memo, { env, webpack }) {
-
-  // }
 });
