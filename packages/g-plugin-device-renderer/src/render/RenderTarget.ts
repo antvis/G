@@ -11,16 +11,16 @@ export class RGRenderTarget {
   readonly numLevels = 1;
 
   pixelFormat: Format;
-  width: number = 0;
-  height: number = 0;
-  sampleCount: number = 0;
+  width = 0;
+  height = 0;
+  sampleCount = 0;
   usage: TextureUsage = TextureUsage.RenderTarget;
   immutable = true;
 
-  needsClear: boolean = true;
+  needsClear = true;
   texture: Texture | null = null;
   attachment: RenderTarget;
-  age: number = 0;
+  age = 0;
 
   constructor(device: Device, desc: Readonly<RGRenderTargetDescription>) {
     this.pixelFormat = desc.pixelFormat;

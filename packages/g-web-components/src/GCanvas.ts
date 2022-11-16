@@ -2,7 +2,7 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import type { IRenderer } from '@antv/g-lite';
 import { Canvas } from '@antv/g-lite';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import GElement from './GElement';
+import { GElement } from './GElement';
 
 const registerToDevtool = (canvas: Canvas) => {
   if (!window.__g_instances__) {
@@ -30,7 +30,8 @@ export class GCanvasElement extends GElement {
       container: element,
       width,
       height,
-      renderer: renderer === 'canvas' ? new CanvasRenderer() : new WebGLRenderer(),
+      renderer:
+        renderer === 'canvas' ? new CanvasRenderer() : new WebGLRenderer(),
     });
     this.gCanvas = canvas;
     this.gElement = canvas.getRoot();

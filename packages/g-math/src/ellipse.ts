@@ -51,7 +51,14 @@ export default {
    * @param {number} y0  指定的点 y
    * @return {object} 椭圆上距离指定点最近的点
    */
-  nearestPoint(x: number, y: number, rx: number, ry: number, x0: number, y0: number) {
+  nearestPoint(
+    x: number,
+    y: number,
+    rx: number,
+    ry: number,
+    x0: number,
+    y0: number,
+  ) {
     const a = rx;
     const b = ry;
     // 假如椭圆半径为0则返回圆心
@@ -70,8 +77,8 @@ export default {
     const squareB = b * b;
     // const angle0 = Math.atan2(relativeY, relativeX);
     let t = Math.PI / 4;
-    let nearestX: number = 0; // 椭圆上的任一点
-    let nearestY: number = 0;
+    let nearestX = 0; // 椭圆上的任一点
+    let nearestY = 0;
     // 迭代 4 次
     for (let i = 0; i < 4; i++) {
       nearestX = a * Math.cos(t);
@@ -89,7 +96,10 @@ export default {
 
       const delta_c = r * Math.asin((rx1 * qy - ry1 * qx) / (r * q));
       const delta_t =
-        delta_c / Math.sqrt(squareA + squareB - nearestX * nearestX - nearestY * nearestY);
+        delta_c /
+        Math.sqrt(
+          squareA + squareB - nearestX * nearestX - nearestY * nearestY,
+        );
 
       t += delta_t;
       t = Math.min(Math.PI / 2, Math.max(0, t));
@@ -110,7 +120,14 @@ export default {
    * @param {number} y0  指定的点 y
    * @return {number} 点到椭圆的距离
    */
-  pointDistance(x: number, y: number, rx: number, ry: number, x0: number, y0: number) {
+  pointDistance(
+    x: number,
+    y: number,
+    rx: number,
+    ry: number,
+    x0: number,
+    y0: number,
+  ) {
     const nearestPoint = this.nearestPoint(x, y, rx, ry, x0, y0);
     return distance(nearestPoint.x, nearestPoint.y, x0, y0);
   },
@@ -142,7 +159,10 @@ export default {
   tangentAngle(x: number, y: number, rx: number, ry: number, t: number) {
     const angle = 2 * Math.PI * t; // 按照角度进行计算，而不按照周长计算
     // 直接使用 x,y 的导数计算， x' = -rx * sin(t); y' = ry * cos(t);
-    const tangentAngle = Math.atan2(ry * Math.cos(angle), -rx * Math.sin(angle));
+    const tangentAngle = Math.atan2(
+      ry * Math.cos(angle),
+      -rx * Math.sin(angle),
+    );
     // 也可以使用指定点的切线方程计算，成本有些高
     // const point = this.pointAt(0, 0, rx, ry, t); // 椭圆的切线同椭圆的中心不相关
     // let tangentAngle = -1 * Math.atan((ry * ry * point.x) / (rx * rx * point.y));

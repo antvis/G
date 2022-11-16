@@ -4,8 +4,7 @@ import { AnnotationPlugin } from './AnnotationPlugin';
 import type { DrawerTool } from './constants/enum';
 import type { DrawerOption, DrawerStyle } from './interface/drawer';
 import { SelectablePlugin } from './SelectablePlugin';
-import type { SelectableStyle } from './tokens';
-import type { AnnotationPluginOptions } from './tokens';
+import type { SelectableStyle, AnnotationPluginOptions } from './tokens';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'annotation';

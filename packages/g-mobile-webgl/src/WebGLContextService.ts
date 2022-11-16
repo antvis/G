@@ -1,9 +1,17 @@
-import type { CanvasContext, CanvasLike, DataURLOptions, GlobalRuntime } from '@antv/g-lite';
-import type { CanvasConfig, ContextService } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  CanvasLike,
+  DataURLOptions,
+  GlobalRuntime,
+  CanvasConfig,
+  ContextService,
+} from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { isCanvasElement } from './dom';
 
-export class WebGLContextService implements ContextService<WebGLRenderingContext> {
+export class WebGLContextService
+  implements ContextService<WebGLRenderingContext>
+{
   private $canvas: CanvasLike | null;
   private dpr: number;
   private context: WebGLRenderingContext | null;
@@ -44,7 +52,9 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
 
   getBoundingClientRect() {
     if ((this.$canvas as unknown as HTMLCanvasElement).getBoundingClientRect) {
-      return (this.$canvas as unknown as HTMLCanvasElement).getBoundingClientRect();
+      return (
+        this.$canvas as unknown as HTMLCanvasElement
+      ).getBoundingClientRect();
     }
   }
 

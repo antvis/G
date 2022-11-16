@@ -11,7 +11,7 @@ export function getAngle(angle?: number) {
   return angle;
 }
 
-export function createVec3(x: number | vec2 | vec3 | vec4, y: number = 0, z: number = 0) {
+export function createVec3(x: number | vec2 | vec3 | vec4, y = 0, z = 0) {
   if (isNumber(x)) {
     return vec3.fromValues(x, y, z);
   }
@@ -158,7 +158,17 @@ export function fromRotationTranslationScale(
 ): mat3 {
   const cos = Math.cos(rotation);
   const sin = Math.sin(rotation);
-  return mat3.fromValues(scaleX * cos, scaleY * sin, 0, -scaleX * sin, scaleY * cos, 0, x, y, 1);
+  return mat3.fromValues(
+    scaleX * cos,
+    scaleY * sin,
+    0,
+    -scaleX * sin,
+    scaleY * cos,
+    0,
+    x,
+    y,
+    1,
+  );
 }
 
 export function makePerspective(
@@ -358,10 +368,14 @@ export function decomposeMat4(
   }
 
   // Now, get the rotations out
-  quaternion[0] = 0.5 * Math.sqrt(Math.max(1 + row[0][0] - row[1][1] - row[2][2], 0));
-  quaternion[1] = 0.5 * Math.sqrt(Math.max(1 - row[0][0] + row[1][1] - row[2][2], 0));
-  quaternion[2] = 0.5 * Math.sqrt(Math.max(1 - row[0][0] - row[1][1] + row[2][2], 0));
-  quaternion[3] = 0.5 * Math.sqrt(Math.max(1 + row[0][0] + row[1][1] + row[2][2], 0));
+  quaternion[0] =
+    0.5 * Math.sqrt(Math.max(1 + row[0][0] - row[1][1] - row[2][2], 0));
+  quaternion[1] =
+    0.5 * Math.sqrt(Math.max(1 - row[0][0] + row[1][1] - row[2][2], 0));
+  quaternion[2] =
+    0.5 * Math.sqrt(Math.max(1 - row[0][0] - row[1][1] + row[2][2], 0));
+  quaternion[3] =
+    0.5 * Math.sqrt(Math.max(1 + row[0][0] + row[1][1] + row[2][2], 0));
 
   if (row[2][1] > row[1][2]) quaternion[0] = -quaternion[0];
   if (row[0][2] > row[2][0]) quaternion[1] = -quaternion[1];

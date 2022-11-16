@@ -28,9 +28,9 @@ export class TextureMapping {
   lateBinding: string | null = null;
   // These are not used when binding to samplers, and are conveniences for custom behavior.
   // TODO(jstpierre): Are any of these really worth anything?
-  width: number = 0;
-  height: number = 0;
-  lodBias: number = 0;
+  width = 0;
+  height = 0;
+  lodBias = 0;
   // GL sucks. This is a convenience when building texture matrices.
   // The core renderer does not use this code at all.
   // flipY: boolean = false;

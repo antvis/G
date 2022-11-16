@@ -4,7 +4,7 @@ export class RenderInstPool {
   // The pool contains all render insts that we've ever created.
   pool: RenderInst[] = [];
   // The number of render insts currently allocated out to the user.
-  allocCount: number = 0;
+  allocCount = 0;
 
   allocRenderInstIndex(): number {
     this.allocCount++;

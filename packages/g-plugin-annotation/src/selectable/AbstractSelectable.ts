@@ -32,7 +32,10 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
 
   abstract triggerMovedEvent(): void;
 
-  constructor({ style, ...rest }: Partial<DisplayObjectConfig<SelectableProps>>) {
+  constructor({
+    style,
+    ...rest
+  }: Partial<DisplayObjectConfig<SelectableProps>>) {
     super({
       style: {
         selectionFill: 'transparent',
@@ -61,7 +64,11 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
     this.destroy();
   }
 
-  attributeChangedCallback<Key extends never>(name: Key, oldValue: {}[Key], newValue: {}[Key]) {
+  attributeChangedCallback<Key extends never>(
+    name: Key,
+    oldValue: Record<string, any>[Key],
+    newValue: Record<string, any>[Key],
+  ) {
     if (name === 'selectionStroke') {
       this.mask.style.stroke = newValue;
     } else if (name === 'selectionFill') {

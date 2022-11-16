@@ -3,8 +3,8 @@ import type {
   Bindings,
   BindingsDescriptor,
 } from '@antv/g-plugin-device-renderer';
-import { getFormatSamplerKind } from '@antv/g-plugin-device-renderer';
 import {
+  getFormatSamplerKind,
   ResourceType,
   assert,
   defaultBindingLayoutSamplerDescriptor,
@@ -51,7 +51,10 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
           offset: 0,
           size: binding.wordCount << 2,
         };
-        gpuBindGroupEntries[0].push({ binding: numBindings++, resource: gpuBufferBinding });
+        gpuBindGroupEntries[0].push({
+          binding: numBindings++,
+          resource: gpuBufferBinding,
+        });
       }
     }
 
@@ -63,7 +66,10 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
         offset: 0,
         size: binding.wordCount << 2,
       };
-      gpuBindGroupEntries[0].push({ binding: numBindings++, resource: gpuBufferBinding });
+      gpuBindGroupEntries[0].push({
+        binding: numBindings++,
+        resource: gpuBufferBinding,
+      });
     }
 
     numBindings = 0;
@@ -75,17 +81,29 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
 
       const binding = descriptor.samplerBindings[i];
       const texture =
-        binding.texture !== null ? binding.texture : this.device.getFallbackTexture(samplerEntry);
+        binding.texture !== null
+          ? binding.texture
+          : this.device.getFallbackTexture(samplerEntry);
       assert(samplerEntry.dimension === (texture as Texture_WebGPU).dimension);
       assert(
-        samplerEntry.formatKind === getFormatSamplerKind((texture as Texture_WebGPU).pixelFormat),
+        samplerEntry.formatKind ===
+          getFormatSamplerKind((texture as Texture_WebGPU).pixelFormat),
       );
       const gpuTextureView = (texture as Texture_WebGPU).gpuTextureView;
-      gpuBindGroupEntries[1].push({ binding: numBindings++, resource: gpuTextureView });
+      gpuBindGroupEntries[1].push({
+        binding: numBindings++,
+        resource: gpuTextureView,
+      });
 
-      const sampler = binding.sampler !== null ? binding.sampler : this.device.fallbackSampler;
+      const sampler =
+        binding.sampler !== null
+          ? binding.sampler
+          : this.device.fallbackSampler;
       const gpuSampler = getPlatformSampler(sampler);
-      gpuBindGroupEntries[1].push({ binding: numBindings++, resource: gpuSampler });
+      gpuBindGroupEntries[1].push({
+        binding: numBindings++,
+        resource: gpuSampler,
+      });
     }
 
     this.gpuBindGroup = gpuBindGroupEntries.map((gpuBindGroupEntry, i) =>

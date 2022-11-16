@@ -6,7 +6,12 @@ import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
-import type { ICanvas, IDocument, IEventTarget, INode } from '../dom/interfaces';
+import type {
+  ICanvas,
+  IDocument,
+  IEventTarget,
+  INode,
+} from '../dom/interfaces';
 import { Node } from '../dom/Node';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
@@ -34,7 +39,10 @@ export type EmitterListeners = Record<
 const PROPAGATION_LIMIT = 2048;
 
 export class EventService {
-  constructor(private globalRuntime: GlobalRuntime, private context: CanvasContext) {}
+  constructor(
+    private globalRuntime: GlobalRuntime,
+    private context: CanvasContext,
+  ) {}
 
   private rootTarget: IEventTarget;
 
@@ -89,9 +97,18 @@ export class EventService {
 
     const projectionMatrixInverse = camera.getPerspectiveInverse();
     const worldMatrix = camera.getWorldTransform();
-    const vpMatrix = mat4.multiply(this.tmpMatrix, worldMatrix, projectionMatrixInverse);
+    const vpMatrix = mat4.multiply(
+      this.tmpMatrix,
+      worldMatrix,
+      projectionMatrixInverse,
+    );
 
-    const viewport = vec3.set(this.tmpVec3, (x / width) * 2 - 1, (1 - y / height) * 2 - 1, 0);
+    const viewport = vec3.set(
+      this.tmpVec3,
+      (x / width) * 2 - 1,
+      (1 - y / height) * 2 - 1,
+      0,
+    );
 
     vec3.transformMat4(viewport, viewport, vpMatrix);
 
@@ -105,14 +122,21 @@ export class EventService {
     // World -> Clip
     const projectionMatrix = camera.getPerspective();
     const viewMatrix = camera.getViewTransform();
-    const vpMatrix = mat4.multiply(this.tmpMatrix, projectionMatrix, viewMatrix);
+    const vpMatrix = mat4.multiply(
+      this.tmpMatrix,
+      projectionMatrix,
+      viewMatrix,
+    );
 
     const clip = vec3.set(this.tmpVec3, canvasP.x, canvasP.y, 0);
     vec3.transformMat4(this.tmpVec3, this.tmpVec3, vpMatrix);
 
     // Clip -> NDC -> Viewport, flip Y
     const { width, height } = this.context.config;
-    return new Point(((clip[0] + 1) / 2) * width, (1 - (clip[1] + 1) / 2) * height);
+    return new Point(
+      ((clip[0] + 1) / 2) * width,
+      (1 - (clip[1] + 1) / 2) * height,
+    );
   }
 
   setPickHandler(pickHandler: Picker) {
@@ -188,7 +212,9 @@ export class EventService {
     }
 
     const trackingData = this.trackingData(from.pointerId);
-    const pressTarget = this.findMountedTarget(trackingData.pressTargetsByButton[from.button]);
+    const pressTarget = this.findMountedTarget(
+      trackingData.pressTargetsByButton[from.button],
+    );
 
     let clickTarget = pressTarget;
 
@@ -207,7 +233,10 @@ export class EventService {
         } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
           const isRightButton = e.button === 2;
 
-          this.notifyTarget(e, isRightButton ? 'rightupoutside' : 'mouseupoutside');
+          this.notifyTarget(
+            e,
+            isRightButton ? 'rightupoutside' : 'mouseupoutside',
+          );
         }
 
         if (Node.isNode(currentTarget)) {
@@ -238,7 +267,10 @@ export class EventService {
 
       const clickHistory = trackingData.clicksByButton[from.button];
 
-      if (clickHistory.target === clickEvent.target && now - clickHistory.timeStamp < 200) {
+      if (
+        clickHistory.target === clickEvent.target &&
+        now - clickHistory.timeStamp < 200
+      ) {
         ++clickHistory.clickCount;
       } else {
         clickHistory.clickCount = 1;
@@ -251,7 +283,10 @@ export class EventService {
 
       // @see https://github.com/antvis/G/issues/1091
       if (!e.detail?.preventClick) {
-        if (clickEvent.pointerType === 'mouse' || clickEvent.pointerType === 'touch') {
+        if (
+          clickEvent.pointerType === 'mouse' ||
+          clickEvent.pointerType === 'touch'
+        ) {
           this.dispatchEvent(clickEvent, 'click');
         }
         this.dispatchEvent(clickEvent, 'pointertap');
@@ -277,7 +312,11 @@ export class EventService {
     if (trackingData.overTargets && outTarget !== e.target) {
       // pointerout always occurs on the overTarget when the pointer hovers over another element.
       const outType = from.type === 'mousemove' ? 'mouseout' : 'pointerout';
-      const outEvent = await this.createPointerEvent(from, outType, outTarget || undefined);
+      const outEvent = await this.createPointerEvent(
+        from,
+        outType,
+        outTarget || undefined,
+      );
 
       this.dispatchEvent(outEvent, 'pointerout');
       if (isMouse) this.dispatchEvent(outEvent, 'mouseout');
@@ -293,7 +332,10 @@ export class EventService {
 
         leaveEvent.eventPhase = leaveEvent.AT_TARGET;
 
-        while (leaveEvent.target && !e.composedPath().includes(leaveEvent.target)) {
+        while (
+          leaveEvent.target &&
+          !e.composedPath().includes(leaveEvent.target)
+        ) {
           leaveEvent.currentTarget = leaveEvent.target;
 
           this.notifyTarget(leaveEvent);
@@ -322,11 +364,13 @@ export class EventService {
       if (isMouse) this.dispatchEvent(overEvent, 'mouseover');
 
       // Probe whether the newly hovered Node is an ancestor of the original overTarget.
-      let overTargetAncestor = outTarget && Node.isNode(outTarget) && outTarget.parentNode;
+      let overTargetAncestor =
+        outTarget && Node.isNode(outTarget) && outTarget.parentNode;
 
       while (
         overTargetAncestor &&
-        overTargetAncestor !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
+        overTargetAncestor !==
+          (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
       ) {
         if (overTargetAncestor === e.target) break;
 
@@ -337,7 +381,8 @@ export class EventService {
       // event.
       const didPointerEnter =
         !overTargetAncestor ||
-        overTargetAncestor === (Node.isNode(this.rootTarget) && this.rootTarget.parentNode);
+        overTargetAncestor ===
+          (Node.isNode(this.rootTarget) && this.rootTarget.parentNode);
 
       if (didPointerEnter) {
         const enterEvent = this.clonePointerEvent(e, 'pointerenter');
@@ -347,7 +392,8 @@ export class EventService {
         while (
           enterEvent.target &&
           enterEvent.target !== outTarget &&
-          enterEvent.target !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
+          enterEvent.target !==
+            (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
         ) {
           enterEvent.currentTarget = enterEvent.target;
 
@@ -388,11 +434,16 @@ export class EventService {
     const trackingData = this.trackingData(from.pointerId);
 
     if (trackingData.overTargets) {
-      const isMouse = from.pointerType === 'mouse' || from.pointerType === 'pen';
+      const isMouse =
+        from.pointerType === 'mouse' || from.pointerType === 'pen';
       const outTarget = this.findMountedTarget(trackingData.overTargets);
 
       // pointerout first
-      const outEvent = await this.createPointerEvent(from, 'pointerout', outTarget || undefined);
+      const outEvent = await this.createPointerEvent(
+        from,
+        'pointerout',
+        outTarget || undefined,
+      );
 
       this.dispatchEvent(outEvent);
       if (isMouse) this.dispatchEvent(outEvent, 'mouseout');
@@ -409,7 +460,8 @@ export class EventService {
 
       while (
         leaveEvent.target &&
-        leaveEvent.target !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
+        leaveEvent.target !==
+          (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
       ) {
         leaveEvent.currentTarget = leaveEvent.target;
 
@@ -453,7 +505,8 @@ export class EventService {
 
     while (
       enterEvent.target &&
-      enterEvent.target !== (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
+      enterEvent.target !==
+        (Node.isNode(this.rootTarget) && this.rootTarget.parentNode)
     ) {
       enterEvent.currentTarget = enterEvent.target;
 
@@ -481,7 +534,9 @@ export class EventService {
     }
 
     const trackingData = this.trackingData(from.pointerId);
-    const pressTarget = this.findMountedTarget(trackingData.pressTargetsByButton[from.button]);
+    const pressTarget = this.findMountedTarget(
+      trackingData.pressTargetsByButton[from.button],
+    );
     const e = await this.createPointerEvent(from);
 
     if (pressTarget) {
@@ -495,7 +550,10 @@ export class EventService {
         if (e.pointerType === 'touch') {
           // this.notifyTarget(e, 'touchendoutside');
         } else if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
-          this.notifyTarget(e, e.button === 2 ? 'rightupoutside' : 'mouseupoutside');
+          this.notifyTarget(
+            e,
+            e.button === 2 ? 'rightupoutside' : 'mouseupoutside',
+          );
         }
 
         if (Node.isNode(currentTarget)) {
@@ -606,7 +664,12 @@ export class EventService {
     const { viewportX, viewportY } = position;
     const { width, height } = this.context.config;
     // outside canvas
-    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+    if (
+      viewportX < 0 ||
+      viewportY < 0 ||
+      viewportX > width ||
+      viewportY > height
+    ) {
       return null;
     }
 
@@ -659,7 +722,9 @@ export class EventService {
     return null;
   }
 
-  private async pickTarget(event: FederatedPointerEvent | FederatedWheelEvent): Promise<INode> {
+  private async pickTarget(
+    event: FederatedPointerEvent | FederatedWheelEvent,
+  ): Promise<INode> {
     return this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
@@ -687,7 +752,9 @@ export class EventService {
     const existedHTML = this.getExistedHTML(event);
     event.target =
       target ??
-      (existedHTML || (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event))));
+      (existedHTML ||
+        (this.isNativeEventFromCanvas(event) &&
+          (await this.pickTarget(event))));
 
     if (typeof type === 'string') {
       event.type = type;
@@ -696,7 +763,9 @@ export class EventService {
     return event;
   }
 
-  private async createWheelEvent(from: FederatedWheelEvent): Promise<FederatedWheelEvent> {
+  private async createWheelEvent(
+    from: FederatedWheelEvent,
+  ): Promise<FederatedWheelEvent> {
     const event = this.allocateEvent(FederatedWheelEvent);
 
     this.copyWheelData(from, event);
@@ -707,7 +776,8 @@ export class EventService {
     event.originalEvent = from;
     const existedHTML = this.getExistedHTML(event);
     event.target =
-      existedHTML || (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event)));
+      existedHTML ||
+      (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event)));
     return event;
   }
 
@@ -735,12 +805,15 @@ export class EventService {
 
     event.target = from.target;
     event.path = from.composedPath().slice();
-    event.type = event.type;
+    event.type = from.type;
 
     return event;
   }
 
-  clonePointerEvent(from: FederatedPointerEvent, type?: string): FederatedPointerEvent {
+  clonePointerEvent(
+    from: FederatedPointerEvent,
+    type?: string,
+  ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     event.nativeEvent = from.nativeEvent;
@@ -758,7 +831,13 @@ export class EventService {
   }
 
   private copyPointerData(from: FederatedEvent, to: FederatedEvent) {
-    if (!(from instanceof FederatedPointerEvent && to instanceof FederatedPointerEvent)) return;
+    if (
+      !(
+        from instanceof FederatedPointerEvent &&
+        to instanceof FederatedPointerEvent
+      )
+    )
+      return;
 
     to.pointerId = from.pointerId;
     to.width = from.width;
@@ -773,7 +852,12 @@ export class EventService {
   }
 
   private copyMouseData(from: FederatedEvent, to: FederatedEvent) {
-    if (!(from instanceof FederatedMouseEvent && to instanceof FederatedMouseEvent)) return;
+    if (
+      !(
+        from instanceof FederatedMouseEvent && to instanceof FederatedMouseEvent
+      )
+    )
+      return;
 
     to.altKey = from.altKey;
     to.button = from.button;
@@ -814,7 +898,9 @@ export class EventService {
     }
 
     // @ts-ignore
-    const event = (this.eventPool.get(constructor as any).pop() as T) || new constructor(this);
+    const event =
+      (this.eventPool.get(constructor as any).pop() as T) ||
+      new constructor(this);
 
     event.eventPhase = event.NONE;
     event.currentTarget = null;
@@ -826,7 +912,9 @@ export class EventService {
 
   private freeEvent<T extends FederatedEvent>(event: T) {
     if (event.manager !== this)
-      throw new Error('It is illegal to free an event not managed by this EventBoundary!');
+      throw new Error(
+        'It is illegal to free an event not managed by this EventBoundary!',
+      );
 
     const { constructor } = event;
 
@@ -841,7 +929,9 @@ export class EventService {
   private notifyTarget(e: FederatedEvent, type?: string) {
     type = type ?? e.type;
     const key =
-      e.eventPhase === e.CAPTURING_PHASE || e.eventPhase === e.AT_TARGET ? `${type}capture` : type;
+      e.eventPhase === e.CAPTURING_PHASE || e.eventPhase === e.AT_TARGET
+        ? `${type}capture`
+        : type;
 
     this.notifyListeners(e, key);
 
@@ -866,7 +956,11 @@ export class EventService {
       listeners.fn.call(e.currentTarget || listeners.context, e);
       // listeners.fn.call(listeners.context, e);
     } else {
-      for (let i = 0; i < listeners.length && !e.propagationImmediatelyStopped; i++) {
+      for (
+        let i = 0;
+        i < listeners.length && !e.propagationImmediatelyStopped;
+        i++
+      ) {
         if (listeners[i].once) {
           emitter.removeListener(type, listeners[i].fn, undefined, true);
         }
@@ -879,7 +973,9 @@ export class EventService {
   /**
    * some detached nodes may exist in propagation path, need to skip them
    */
-  private findMountedTarget(propagationPath: IEventTarget[] | null): IEventTarget | null {
+  private findMountedTarget(
+    propagationPath: IEventTarget[] | null,
+  ): IEventTarget | null {
     if (!propagationPath) {
       return null;
     }

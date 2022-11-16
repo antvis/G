@@ -12,11 +12,11 @@ export class SingleSampledTexture {
   readonly usage = TextureUsage.RenderTarget;
 
   pixelFormat: Format;
-  width: number = 0;
-  height: number = 0;
+  width = 0;
+  height = 0;
 
   texture: Texture;
-  age: number = 0;
+  age = 0;
   immutable = true;
 
   constructor(device: Device, desc: Readonly<RGRenderTargetDescription>) {

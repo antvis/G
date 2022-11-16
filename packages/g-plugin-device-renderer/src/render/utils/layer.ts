@@ -17,7 +17,11 @@ const MAX_DEPTH = 0x10000;
 
 const DEPTH_BITS = 16;
 
-export function makeDepthKey(depth: number, flipDepth: boolean, maxDepth: number = MAX_DEPTH) {
+export function makeDepthKey(
+  depth: number,
+  flipDepth: boolean,
+  maxDepth: number = MAX_DEPTH,
+) {
   // Input depth here is: 0 is the closest to the camera, positive values are further away. Negative values (behind camera) are clamped to 0.
   // normalizedDepth: 0.0 is closest to camera, 1.0 is farthest from camera.
   // These values are flipped if flipDepth is set.
@@ -40,7 +44,10 @@ export function setSortKeyLayer(sortKey: number, layer: number): number {
   return ((sortKey & 0x00ffffff) | ((layer & 0xff) << 24)) >>> 0;
 }
 
-export function setSortKeyProgramKey(sortKey: number, programKey: number): number {
+export function setSortKeyProgramKey(
+  sortKey: number,
+  programKey: number,
+): number {
   const isTransparent = !!((sortKey >>> 31) & 1);
   if (isTransparent) return sortKey;
   else return ((sortKey & 0xff0000ff) | ((programKey & 0xffff) << 8)) >>> 0;
@@ -56,7 +63,10 @@ export function makeSortKeyOpaque(layer: number, programKey: number): number {
   return setSortKeyLayer(setSortKeyProgramKey(0, programKey), layer);
 }
 
-export function setSortKeyOpaqueDepth(sortKey: number, depthKey: number): number {
+export function setSortKeyOpaqueDepth(
+  sortKey: number,
+  depthKey: number,
+): number {
   assert(depthKey >= 0);
   return ((sortKey & 0xffffff00) | ((depthKey >>> 8) & 0xff)) >>> 0;
 }
@@ -65,12 +75,15 @@ export function makeSortKeyTranslucent(layer: number): number {
   return setSortKeyLayer(0, layer);
 }
 
-export function setSortKeyTranslucentDepth(sortKey: number, depthKey: number): number {
+export function setSortKeyTranslucentDepth(
+  sortKey: number,
+  depthKey: number,
+): number {
   assert(depthKey >= 0);
   return ((sortKey & 0xff0000ff) | (depthKey << 8)) >>> 0;
 }
 
-export function makeSortKey(layer: RendererLayer, programKey: number = 0): number {
+export function makeSortKey(layer: RendererLayer, programKey = 0): number {
   if (layer & RendererLayer.TRANSLUCENT) return makeSortKeyTranslucent(layer);
   else return makeSortKeyOpaque(layer, programKey);
 }

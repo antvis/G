@@ -1,6 +1,11 @@
-import type { CanvasContext, DataURLOptions, GlobalRuntime } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  DataURLOptions,
+  GlobalRuntime,
+  CanvasConfig,
+  ContextService,
+} from '@antv/g-lite';
 import { isBrowser } from '@antv/g-lite';
-import type { CanvasConfig, ContextService } from '@antv/g-lite';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 import { isString } from '@antv/util';
 
@@ -19,7 +24,9 @@ export class SVGContextService implements ContextService<SVGElement> {
     const { container, document: doc, devicePixelRatio } = this.canvasConfig;
 
     // create container
-    this.$container = isString(container) ? (doc || document).getElementById(container) : container;
+    this.$container = isString(container)
+      ? (doc || document).getElementById(container)
+      : container;
     if (this.$container) {
       if (!this.$container.style.position) {
         this.$container.style.position = 'relative';

@@ -45,7 +45,11 @@ export function alignNonPowerOfTwo(n: number, multiple: number): number {
 }
 
 // @see https://github.com/d3/d3-array#bisectRight
-export function bisectRight<T>(L: T[], e: T, compare: (a: T, b: T) => number): number {
+export function bisectRight<T>(
+  L: T[],
+  e: T,
+  compare: (a: T, b: T) => number,
+): number {
   let lo = 0,
     hi = L.length;
   while (lo < hi) {
@@ -57,12 +61,20 @@ export function bisectRight<T>(L: T[], e: T, compare: (a: T, b: T) => number): n
   return lo;
 }
 
-export function spliceBisectRight<T>(L: T[], e: T, compare: (a: T, b: T) => number): void {
+export function spliceBisectRight<T>(
+  L: T[],
+  e: T,
+  compare: (a: T, b: T) => number,
+): void {
   const idx = bisectRight(L, e, compare);
   L.splice(idx, 0, e);
 }
 
-export function setBitFlagEnabled(v: number, mask: number, enabled: boolean): number {
+export function setBitFlagEnabled(
+  v: number,
+  mask: number,
+  enabled: boolean,
+): number {
   if (enabled) v |= mask;
   else v &= ~mask;
   return v;
@@ -74,12 +86,14 @@ export function nArray<T>(n: number, c: () => T): T[] {
   return d;
 }
 
-export function prependLineNo(str: string, lineStart: number = 1) {
+export function prependLineNo(str: string, lineStart = 1) {
   const lines = str.split('\n');
-  return lines.map((s, i) => `${leftPad('' + (lineStart + i), 4, ' ')}  ${s}`).join('\n');
+  return lines
+    .map((s, i) => `${leftPad('' + (lineStart + i), 4, ' ')}  ${s}`)
+    .join('\n');
 }
 
-export function leftPad(S: string, spaces: number, ch: string = '0'): string {
+export function leftPad(S: string, spaces: number, ch = '0'): string {
   while (S.length < spaces) S = `${ch}${S}`;
   return S;
 }
@@ -90,7 +104,10 @@ export function range(start: number, count: number): number[] {
   return L;
 }
 
-function copyChannelBlendState(dst: ChannelBlendState, src: ChannelBlendState): void {
+function copyChannelBlendState(
+  dst: ChannelBlendState,
+  src: ChannelBlendState,
+): void {
   dst.blendDstFactor = src.blendDstFactor;
   dst.blendSrcFactor = src.blendSrcFactor;
   dst.blendMode = src.blendMode;
@@ -114,9 +131,13 @@ export function copyAttachmentState(
   return dst;
 }
 
-function copyAttachmentsState(dst: AttachmentState[], src: AttachmentState[]): void {
+function copyAttachmentsState(
+  dst: AttachmentState[],
+  src: AttachmentState[],
+): void {
   if (dst.length !== src.length) dst.length = src.length;
-  for (let i = 0; i < src.length; i++) dst[i] = copyAttachmentState(dst[i], src[i]);
+  for (let i = 0; i < src.length; i++)
+    dst[i] = copyAttachmentState(dst[i], src[i]);
 }
 
 export function setMegaStateFlags(
@@ -133,7 +154,10 @@ export function setMegaStateFlags(
 
   dst.depthCompare = fallbackUndefined(src.depthCompare, dst.depthCompare);
   dst.depthWrite = fallbackUndefined(src.depthWrite, dst.depthWrite);
-  dst.stencilCompare = fallbackUndefined(src.stencilCompare, dst.stencilCompare);
+  dst.stencilCompare = fallbackUndefined(
+    src.stencilCompare,
+    dst.stencilCompare,
+  );
   dst.stencilWrite = fallbackUndefined(src.stencilWrite, dst.stencilWrite);
   dst.stencilPassOp = fallbackUndefined(src.stencilPassOp, dst.stencilPassOp);
   dst.stencilRef = fallbackUndefined(src.stencilRef, dst.stencilRef);
@@ -241,14 +265,18 @@ export function setAttachmentStateSimple(
 ): Partial<MegaStateDescriptor> {
   if (dst.attachmentsState === undefined) {
     dst.attachmentsState = [];
-    copyAttachmentsState(dst.attachmentsState, defaultMegaState.attachmentsState);
+    copyAttachmentsState(
+      dst.attachmentsState,
+      defaultMegaState.attachmentsState,
+    );
   }
 
   copyAttachmentStateFromSimple(dst.attachmentsState![0], simple);
   return dst;
 }
 
-export const defaultBindingLayoutSamplerDescriptor: BindingLayoutSamplerDescriptor = {
-  formatKind: SamplerFormatKind.Float,
-  dimension: TextureDimension.n2D,
-};
+export const defaultBindingLayoutSamplerDescriptor: BindingLayoutSamplerDescriptor =
+  {
+    formatKind: SamplerFormatKind.Float,
+    dimension: TextureDimension.n2D,
+  };

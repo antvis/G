@@ -3,9 +3,13 @@ import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import type { Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
-import { MutationEvent } from '../dom';
-import { CustomEvent } from '../dom';
-import type { IChildNode, IElement, INode, IParentNode } from '../dom/interfaces';
+import { MutationEvent, CustomEvent } from '../dom';
+import type {
+  IChildNode,
+  IElement,
+  INode,
+  IParentNode,
+} from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
@@ -27,30 +31,47 @@ export class DefaultSceneGraphService implements SceneGraphService {
     return this.runtime.sceneGraphSelector.is(query, root);
   }
 
-  querySelector<R extends IElement, T extends IElement>(query: string, root: R): T | null {
+  querySelector<R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ): T | null {
     return this.runtime.sceneGraphSelector.selectOne<R, T>(query, root);
   }
 
-  querySelectorAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
+  querySelectorAll<R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ): T[] {
     return this.runtime.sceneGraphSelector.selectAll<R, T>(query, root);
     // .filter((node) => !node.shadow);
   }
 
-  attach<C extends INode, P extends INode & IParentNode>(child: C, parent: P, index?: number) {
+  attach<C extends INode, P extends INode & IParentNode>(
+    child: C,
+    parent: P,
+    index?: number,
+  ) {
     if (child.parentNode) {
       this.detach(child);
     }
 
     child.parentNode = parent;
     if (!isNil(index)) {
-      child.parentNode.childNodes.splice(index, 0, child as unknown as INode & IChildNode);
+      child.parentNode.childNodes.splice(
+        index,
+        0,
+        child as unknown as INode & IChildNode,
+      );
     } else {
       child.parentNode.childNodes.push(child as unknown as INode & IChildNode);
     }
 
     // parent needs re-sort
     const sortable = (parent as unknown as Element).sortable;
-    if (sortable?.sorted?.length || (child as unknown as Element).style?.zIndex) {
+    if (
+      sortable?.sorted?.length ||
+      (child as unknown as Element).style?.zIndex
+    ) {
       // if (sortable) {
       // only child has z-Index
       sortable.dirty = true;
@@ -82,11 +103,16 @@ export class DefaultSceneGraphService implements SceneGraphService {
       // parent needs re-sort
       const sortable = (child.parentNode as Element).sortable;
       // if (sortable) {
-      if (sortable?.sorted?.length || (child as unknown as Element).style?.zIndex) {
+      if (
+        sortable?.sorted?.length ||
+        (child as unknown as Element).style?.zIndex
+      ) {
         sortable.dirty = true;
       }
 
-      const index = child.parentNode.childNodes.indexOf(child as unknown as IChildNode & INode);
+      const index = child.parentNode.childNodes.indexOf(
+        child as unknown as IChildNode & INode,
+      );
       if (index > -1) {
         child.parentNode.childNodes.splice(index, 1);
       }
@@ -140,7 +166,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       const transform = (element as Element).transformable;
 
-      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
+      if (
+        element.parentNode === null ||
+        !(element.parentNode as Element).transformable
+      ) {
         this.rotateLocal(element, degrees);
       } else {
         const rotation = quat.create();
@@ -190,13 +219,25 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       const transform = (element as Element).transformable;
 
-      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
+      if (
+        element.parentNode === null ||
+        !(element.parentNode as Element).transformable
+      ) {
         this.setLocalEulerAngles(element, degrees);
       } else {
-        quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
+        quat.fromEuler(
+          transform.localRotation,
+          degrees[0],
+          degrees[1],
+          degrees[2],
+        );
         const parentRotation = this.getRotation(element.parentNode);
         quat.copy(invParentRot, quat.invert(quat.create(), parentRotation));
-        quat.mul(transform.localRotation, transform.localRotation, invParentRot);
+        quat.mul(
+          transform.localRotation,
+          transform.localRotation,
+          invParentRot,
+        );
 
         this.dirtifyLocal(element, transform);
       }
@@ -225,7 +266,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * ```
    */
   translateLocal = (() => {
-    return (element: INode, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (element: INode, translation: vec3 | number, y = 0, z = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -263,13 +304,20 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       vec3.copy(transform.position, tmpPosition);
 
-      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
+      if (
+        element.parentNode === null ||
+        !(element.parentNode as Element).transformable
+      ) {
         vec3.copy(transform.localPosition, tmpPosition);
       } else {
         const parentTransform = (element.parentNode as Element).transformable;
         mat4.copy(parentInvertMatrix, parentTransform.worldTransform);
         mat4.invert(parentInvertMatrix, parentInvertMatrix);
-        vec3.transformMat4(transform.localPosition, tmpPosition, parentInvertMatrix);
+        vec3.transformMat4(
+          transform.localPosition,
+          tmpPosition,
+          parentInvertMatrix,
+        );
       }
 
       this.dirtifyLocal(element, transform);
@@ -344,7 +392,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const tmpVec3 = vec3.create();
     const tr = vec3.create();
 
-    return (element: INode, translation: vec3 | number, y: number = 0, z: number = 0) => {
+    return (element: INode, translation: vec3 | number, y = 0, z = 0) => {
       if (typeof translation === 'number') {
         translation = vec3.set(tmpVec3, translation, y, z);
       }
@@ -360,13 +408,22 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   setRotation = () => {
     const parentInvertRotation = quat.create();
-    return (element: INode, rotation: quat | number, y?: number, z?: number, w?: number) => {
+    return (
+      element: INode,
+      rotation: quat | number,
+      y?: number,
+      z?: number,
+      w?: number,
+    ) => {
       const transform = (element as Element).transformable;
       if (typeof rotation === 'number') {
         rotation = quat.fromValues(rotation, y, z, w);
       }
 
-      if (element.parentNode === null || !(element.parentNode as Element).transformable) {
+      if (
+        element.parentNode === null ||
+        !(element.parentNode as Element).transformable
+      ) {
         this.setLocalRotation(element, rotation);
       } else {
         const parentRot = this.getRotation(element.parentNode);
@@ -381,7 +438,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
     };
   };
 
-  setLocalRotation(element: INode, rotation: quat | number, y?: number, z?: number, w?: number) {
+  setLocalRotation(
+    element: INode,
+    rotation: quat | number,
+    y?: number,
+    z?: number,
+    w?: number,
+  ) {
     if (typeof rotation === 'number') {
       rotation = quat.fromValues(rotation, y, z, w);
     }
@@ -424,7 +487,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
       if (element.isConnected && !set.has(element.entity)) {
         this.boundsChangedEvent.detail = detail;
         this.boundsChangedEvent.target = element;
-        element.ownerDocument.defaultView.dispatchEvent(this.boundsChangedEvent, true);
+        element.ownerDocument.defaultView.dispatchEvent(
+          this.boundsChangedEvent,
+          true,
+        );
         set.add(element.entity);
       }
     };
@@ -466,8 +532,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.pendingEvents.push([element, { affectChildren }]);
   }
 
-  private displayObjectDependencyMap: WeakMap<DisplayObject, Record<string, DisplayObject[]>> =
-    new WeakMap();
+  private displayObjectDependencyMap: WeakMap<
+    DisplayObject,
+    Record<string, DisplayObject[]>
+  > = new WeakMap();
   updateDisplayObjectDependency(
     name: string,
     oldPath: DisplayObject,
@@ -518,7 +586,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
           if (target.isCustomElement && target.isConnected) {
             if ((target as CustomElement<any>).attributeChangedCallback) {
-              (target as CustomElement<any>).attributeChangedCallback(name, this, this);
+              (target as CustomElement<any>).attributeChangedCallback(
+                name,
+                this,
+                this,
+              );
             }
           }
         });
@@ -528,20 +600,32 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   getPosition(element: INode) {
     const transform = (element as Element).transformable;
-    return mat4.getTranslation(transform.position, this.getWorldTransform(element, transform));
+    return mat4.getTranslation(
+      transform.position,
+      this.getWorldTransform(element, transform),
+    );
   }
 
   getRotation(element: INode) {
     const transform = (element as Element).transformable;
-    return mat4.getRotation(transform.rotation, this.getWorldTransform(element, transform));
+    return mat4.getRotation(
+      transform.rotation,
+      this.getWorldTransform(element, transform),
+    );
   }
 
   getScale(element: INode) {
     const transform = (element as Element).transformable;
-    return mat4.getScaling(transform.scaling, this.getWorldTransform(element, transform));
+    return mat4.getScaling(
+      transform.scaling,
+      this.getWorldTransform(element, transform),
+    );
   }
 
-  getWorldTransform(element: INode, transform: Transform = (element as Element).transformable) {
+  getWorldTransform(
+    element: INode,
+    transform: Transform = (element as Element).transformable,
+  ) {
     if (!transform.localDirtyFlag && !transform.dirtyFlag) {
       return transform.worldTransform;
     }
@@ -577,7 +661,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const tmpQuat = quat.fromValues(0, 0, 0, 1);
 
     return (transform: Transform) => {
-      const hasSkew = transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0;
+      const hasSkew =
+        transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0;
 
       if (hasSkew) {
         mat4.fromRotationTranslationScaleOrigin(
@@ -593,7 +678,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
           const tmpMat4 = mat4.identity(tmpMat);
           tmpMat4[4] = Math.tan(transform.localSkew[0]);
           tmpMat4[1] = Math.tan(transform.localSkew[1]);
-          mat4.multiply(transform.localTransform, transform.localTransform, tmpMat4);
+          mat4.multiply(
+            transform.localTransform,
+            transform.localTransform,
+            tmpMat4,
+          );
         }
 
         const scaling = mat4.fromRotationTranslationScaleOrigin(
@@ -603,7 +692,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
           transform.localScale,
           transform.origin,
         );
-        mat4.multiply(transform.localTransform, transform.localTransform, scaling);
+        mat4.multiply(
+          transform.localTransform,
+          transform.localTransform,
+          scaling,
+        );
       } else {
         // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
         mat4.fromRotationTranslationScaleOrigin(
@@ -662,7 +755,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
-    const bounds = render ? geometry.renderBounds : geometry.contentBounds || null;
+    const bounds = render
+      ? geometry.renderBounds
+      : geometry.contentBounds || null;
     // return (bounds && new AABB(bounds.center, bounds.halfExtents)) || new AABB();
     return bounds || new AABB();
   }
@@ -685,7 +780,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const existedAABB = render ? renderable.renderBounds : renderable.bounds;
 
     // reset with geometry's aabb
-    let aabb: AABB = this.getTransformedGeometryBounds(element, render, existedAABB);
+    let aabb: AABB = this.getTransformedGeometryBounds(
+      element,
+      render,
+      existedAABB,
+    );
 
     // merge children's aabbs
     const children = element.childNodes as IElement[];
@@ -743,7 +842,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
     if (element.parentNode) {
       let parentInvert = mat4.create();
       if ((element.parentNode as Element).transformable) {
-        parentInvert = mat4.invert(mat4.create(), this.getWorldTransform(element.parentNode));
+        parentInvert = mat4.invert(
+          mat4.create(),
+          this.getWorldTransform(element.parentNode),
+        );
       }
 
       const bounds = this.getBounds(element);
@@ -768,7 +870,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     // calc context's offset
-    const bbox = element.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
+    const bbox = element.ownerDocument?.defaultView
+      ?.getContextService()
+      .getBoundingClientRect();
 
     if (aabb) {
       const [left, top] = aabb.getMin();

@@ -10,7 +10,9 @@
 //       0: U;
 //       length: T;
 //     };
-type Measure<T extends number> = T extends 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 ? T : never;
+type Measure<T extends number> = T extends 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+  ? T
+  : never;
 type Append<T extends any[], U> = {
   0: [U];
   1: [T[0], U];
@@ -28,14 +30,14 @@ export declare class UnsetAdditionalOptions {
   _UnsetAdditionalOptions: true;
 }
 
-type IfSet<X> = X extends UnsetAdditionalOptions ? {} : X;
+type IfSet<X> = X extends UnsetAdditionalOptions ? Record<string, unknown> : X;
 
 type Callback<E, T> = (error: E | null, result?: T) => void;
 type InnerCallback<E, T> = (error?: E | null | false, result?: T) => void;
 
 type FullTap = Tap & {
   type: 'sync' | 'async' | 'promise';
-  fn: Function;
+  fn: () => any;
 };
 
 type Tap = TapOptions & {
@@ -94,14 +96,6 @@ export class Hook<T, R, AdditionalOptions = UnsetAdditionalOptions> {
   callAsync(...args: Append<AsArray<T>, Callback<Error, R>>): void;
   promise: (...args: AsArray<T>) => Promise<R>;
   call(...args: AsArray<T>): R;
-  tapAsync(
-    options: string | (Tap & IfSet<AdditionalOptions>),
-    fn: (...args: Append<AsArray<T>, InnerCallback<Error, R>>) => void,
-  ): void;
-  tapPromise(
-    options: string | (Tap & IfSet<AdditionalOptions>),
-    fn: (...args: AsArray<T>) => Promise<R>,
-  ): void;
 
   private _promise: (...args: AsArray<T>) => Promise<R>;
 
@@ -160,15 +154,32 @@ export class Hook<T, R, AdditionalOptions = UnsetAdditionalOptions> {
     this._insert(options);
   }
 
-  tap(options: string | (Tap & IfSet<AdditionalOptions>), fn: (...args: AsArray<T>) => R) {
+  tap(
+    options: string | (Tap & IfSet<AdditionalOptions>),
+    fn: (...args: AsArray<T>) => R,
+  ) {
     this._tap('sync', options, fn);
   }
 
-  tapAsync(options: string | (Tap & IfSet<AdditionalOptions>), fn: (...args: AsArray<T>) => R) {
+  tapAsync(
+    options: string | (Tap & IfSet<AdditionalOptions>),
+    fn: (...args: Append<AsArray<T>, InnerCallback<Error, R>>) => void,
+  ): void;
+  tapAsync(
+    options: string | (Tap & IfSet<AdditionalOptions>),
+    fn: (...args: AsArray<T>) => R,
+  ) {
     this._tap('async', options, fn);
   }
 
-  tapPromise(options: string | (Tap & IfSet<AdditionalOptions>), fn: (...args: AsArray<T>) => R) {
+  tapPromise(
+    options: string | (Tap & IfSet<AdditionalOptions>),
+    fn: (...args: AsArray<T>) => Promise<R>,
+  ): void;
+  tapPromise(
+    options: string | (Tap & IfSet<AdditionalOptions>),
+    fn: (...args: AsArray<T>) => R,
+  ) {
     this._tap('promise', options, fn);
   }
 

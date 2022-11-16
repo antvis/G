@@ -92,8 +92,9 @@ import {
 export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private swapChainWidth = 0;
   private swapChainHeight = 0;
-  private swapChainTextureUsage = GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_DST;
-  private _resourceUniqueId: number = 0;
+  private swapChainTextureUsage =
+    GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_DST;
+  private _resourceUniqueId = 0;
 
   private renderPassPool: RenderPass_WebGPU[] = [];
   private computePassPool: ComputePass_WebGPU[] = [];
@@ -109,7 +110,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private fallbackTexture3D: Texture_WebGPU;
   private fallbackTextureCube: Texture_WebGPU;
   fallbackSampler: Sampler;
-  private featureTextureCompressionBC: boolean = false;
+  private featureTextureCompressionBC = false;
 
   // private fullscreenAlphaClear: FullscreenAlphaClear;
 
@@ -173,7 +174,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
     // Firefox doesn't support GPUDevice.features yet...
     if (this.device.features) {
-      this.featureTextureCompressionBC = this.device.features.has('texture-compression-bc');
+      this.featureTextureCompressionBC = this.device.features.has(
+        'texture-compression-bc',
+      );
     }
 
     this.device.onuncapturederror = (event) => {
@@ -185,7 +188,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
   // SwapChain
   configureSwapChain(width: number, height: number): void {
-    if (this.swapChainWidth === width && this.swapChainHeight === height) return;
+    if (this.swapChainWidth === width && this.swapChainHeight === height)
+      return;
     this.swapChainWidth = width;
     this.swapChainHeight = height;
     // @see https://www.w3.org/TR/webgpu/#canvas-configuration
@@ -389,9 +393,11 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       return formatKind === SamplerFormatKind.Depth
         ? this.fallbackTexture2DDepth
         : this.fallbackTexture2D;
-    else if (dimension === TextureDimension.n2DArray) return this.fallbackTexture2DArray;
+    else if (dimension === TextureDimension.n2DArray)
+      return this.fallbackTexture2DArray;
     else if (dimension === TextureDimension.n3D) return this.fallbackTexture3D;
-    else if (dimension === TextureDimension.Cube) return this.fallbackTextureCube;
+    else if (dimension === TextureDimension.Cube)
+      return this.fallbackTextureCube;
     else throw new Error('whoops');
   }
 
@@ -400,7 +406,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     formatKind: SamplerFormatKind,
   ): Texture_WebGPU {
     const depth = dimension === TextureDimension.Cube ? 6 : 1;
-    const pixelFormat = formatKind === SamplerFormatKind.Float ? Format.U8_RGBA_NORM : Format.D24;
+    const pixelFormat =
+      formatKind === SamplerFormatKind.Float ? Format.U8_RGBA_NORM : Format.D24;
     return this.createTexture({
       dimension,
       pixelFormat,
@@ -443,7 +450,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
-  createComputePipeline(descriptor: ComputePipelineDescriptor): ComputePipeline {
+  createComputePipeline(
+    descriptor: ComputePipelineDescriptor,
+  ): ComputePipeline {
     return new ComputePipeline_WebGPU({
       id: this.getNextUniqueId(),
       device: this,
@@ -473,7 +482,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
-  _createBindGroupLayout(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
+  _createBindGroupLayout(
+    bindingLayout: BindingLayoutDescriptor,
+  ): BindGroupLayout {
     let gpuBindGroupLayout = this.bindGroupLayoutCache.get(bindingLayout);
     if (gpuBindGroupLayout === null) {
       gpuBindGroupLayout = this._createBindGroupLayoutInternal(bindingLayout);
@@ -482,7 +493,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     return gpuBindGroupLayout;
   }
 
-  private _createBindGroupLayoutInternal(bindingLayout: BindingLayoutDescriptor): BindGroupLayout {
+  private _createBindGroupLayoutInternal(
+    bindingLayout: BindingLayoutDescriptor,
+  ): BindGroupLayout {
     const entries: GPUBindGroupLayoutEntry[][] = [[], []];
 
     if (bindingLayout.storageEntries) {
@@ -525,9 +538,12 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     return { gpuBindGroupLayout };
   }
 
-  private _createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout {
+  private _createPipelineLayout(
+    bindingLayouts: BindingLayoutDescriptor[],
+  ): GPUPipelineLayout {
     const bindGroupLayouts = bindingLayouts.flatMap(
-      (bindingLayout) => this._createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
+      (bindingLayout) =>
+        this._createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
     );
     return this.device.createPipelineLayout({ bindGroupLayouts });
   }
@@ -544,7 +560,10 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     if (vertexStage === null || fragmentStage === null) return;
 
     const layout = this._createPipelineLayout(descriptor.bindingLayouts);
-    const primitive = translatePrimitiveState(descriptor.topology, descriptor.megaStateDescriptor);
+    const primitive = translatePrimitiveState(
+      descriptor.topology,
+      descriptor.megaStateDescriptor,
+    );
     const targets = translateTargets(
       descriptor.colorAttachmentFormats,
       descriptor.megaStateDescriptor,
@@ -580,7 +599,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
     // TODO: async creation
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createrenderpipeline
-    renderPipeline.gpuRenderPipeline = this.device.createRenderPipeline(gpuRenderPipeline);
+    renderPipeline.gpuRenderPipeline =
+      this.device.createRenderPipeline(gpuRenderPipeline);
 
     if (renderPipeline.name !== undefined)
       renderPipeline.gpuRenderPipeline.label = renderPipeline.name;
@@ -643,8 +663,14 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
     const dst = dst_ as Texture_WebGPU;
     const src = src_ as Texture_WebGPU;
-    const srcCopy: GPUImageCopyTexture = { texture: src.gpuTexture, origin: [srcX, srcY, 0] };
-    const dstCopy: GPUImageCopyTexture = { texture: dst.gpuTexture, origin: [dstX, dstY, 0] };
+    const srcCopy: GPUImageCopyTexture = {
+      texture: src.gpuTexture,
+      origin: [srcX, srcY, 0],
+    };
+    const dstCopy: GPUImageCopyTexture = {
+      texture: dst.gpuTexture,
+      origin: [dstX, dstY, 0],
+    };
     assert(!!(src.usage & GPUTextureUsage.COPY_SRC));
     assert(!!(dst.usage & GPUTextureUsage.COPY_DST));
     cmd.copyTextureToTexture(srcCopy, dstCopy, [src.width, src.height, 1]);
@@ -662,7 +688,11 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     };
   }
 
-  queryTextureFormatSupported(format: Format, width: number, height: number): boolean {
+  queryTextureFormatSupported(
+    format: Format,
+    width: number,
+    height: number,
+  ): boolean {
     if (isFormatTextureCompressionBC(format)) {
       if (!this.featureTextureCompressionBC) return false;
 

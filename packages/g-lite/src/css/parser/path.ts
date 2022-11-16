@@ -1,6 +1,6 @@
 import type { AbsoluteArray, CurveArray, PathArray } from '@antv/util';
-import { path2Curve } from '@antv/util';
 import {
+  path2Curve,
   clonePath,
   equalizeSegments,
   getDrawDirection,
@@ -10,9 +10,17 @@ import {
   normalizePath,
   reverseCurve,
 } from '@antv/util';
-import type { DisplayObject, ParsedPathStyleProps } from '../../display-objects';
+import type {
+  DisplayObject,
+  ParsedPathStyleProps,
+} from '../../display-objects';
 import type { IElement } from '../../dom';
-import { extractPolygons, getPathBBox, hasArcOrBezier, path2Segments } from '../../utils';
+import {
+  extractPolygons,
+  getPathBBox,
+  hasArcOrBezier,
+  path2Segments,
+} from '../../utils';
 
 const internalParsePath = (path: string | PathArray) => {
   // empty path

@@ -21,7 +21,7 @@ export class RenderInstList {
   renderInsts: RenderInst[] = [];
   compareFunction: RenderInstCompareFunc | null;
   executionOrder: RenderInstExecutionOrder;
-  private usePostSort: boolean = false;
+  private usePostSort = false;
 
   constructor(
     compareFunction: RenderInstCompareFunc | null = renderInstCompareSortKey,
@@ -36,7 +36,8 @@ export class RenderInstList {
    */
   checkUsePostSort(): void {
     // Over a certain threshold, it's faster to push and then sort than insort directly...
-    this.usePostSort = this.compareFunction !== null && this.renderInsts.length >= 500;
+    this.usePostSort =
+      this.compareFunction !== null && this.renderInsts.length >= 500;
   }
 
   /**
@@ -79,12 +80,16 @@ export class RenderInstList {
 
   ensureSorted(): void {
     if (this.usePostSort) {
-      if (this.renderInsts.length !== 0) this.renderInsts.sort(this.compareFunction!);
+      if (this.renderInsts.length !== 0)
+        this.renderInsts.sort(this.compareFunction!);
       this.usePostSort = false;
     }
   }
 
-  drawOnPassRendererNoReset(cache: RenderCache, passRenderer: RenderPass): number {
+  drawOnPassRendererNoReset(
+    cache: RenderCache,
+    passRenderer: RenderPass,
+  ): number {
     this.ensureSorted();
 
     let numDrawn = 0;

@@ -5,7 +5,12 @@ import type {
   Texture,
 } from '../platform';
 import { assert } from '../platform/utils';
-import type { IRenderGraphPass, PassExecFunc, PassPostFunc, RGAttachmentSlot } from './interfaces';
+import type {
+  IRenderGraphPass,
+  PassExecFunc,
+  PassPostFunc,
+  RGAttachmentSlot,
+} from './interfaces';
 import { IdentityViewportCoords } from './interfaces';
 import type { RGRenderTarget } from './RenderTarget';
 
@@ -41,10 +46,10 @@ export class RenderGraphPass implements IRenderGraphPass {
     occlusionQueryPool: null,
   };
 
-  viewportX: number = 0;
-  viewportY: number = 0;
-  viewportW: number = 0;
-  viewportH: number = 0;
+  viewportX = 0;
+  viewportY = 0;
+  viewportW = 0;
+  viewportH = 0;
 
   // Execution callback from user.
   execFunc: PassExecFunc | null = null;
@@ -66,7 +71,10 @@ export class RenderGraphPass implements IRenderGraphPass {
     this.viewport = viewport;
   }
 
-  attachRenderTargetID(attachmentSlot: RGAttachmentSlot, renderTargetID: number): void {
+  attachRenderTargetID(
+    attachmentSlot: RGAttachmentSlot,
+    renderTargetID: number,
+  ): void {
     assert(this.renderTargetIDs[attachmentSlot] === undefined);
     this.renderTargetIDs[attachmentSlot] = renderTargetID;
   }
@@ -79,7 +87,10 @@ export class RenderGraphPass implements IRenderGraphPass {
     this.descriptor.occlusionQueryPool = queryPool;
   }
 
-  resolveToExternalTexture(attachmentSlot: RGAttachmentSlot, texture: Texture): void {
+  resolveToExternalTexture(
+    attachmentSlot: RGAttachmentSlot,
+    texture: Texture,
+  ): void {
     this.resolveTextureOutputExternalTextures[attachmentSlot] = texture;
   }
 

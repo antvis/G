@@ -7,9 +7,14 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { CanvasEvent } from '@antv/g-lite';
-import { RenderReason } from '@antv/g-lite';
-import { CSSRGB, ElementEvent, isPattern, Shape } from '@antv/g-lite';
+import {
+  CanvasEvent,
+  RenderReason,
+  CSSRGB,
+  ElementEvent,
+  isPattern,
+  Shape,
+} from '@antv/g-lite';
 import { isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
@@ -27,18 +32,26 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   private $camera: HTMLDivElement;
 
   private joinTransformMatrix(matrix: mat4) {
-    return `matrix(${[matrix[0], matrix[1], matrix[4], matrix[5], matrix[12], matrix[13]].join(
-      ',',
-    )})`;
+    return `matrix(${[
+      matrix[0],
+      matrix[1],
+      matrix[4],
+      matrix[5],
+      matrix[12],
+      matrix[13],
+    ].join(',')})`;
   }
 
   apply(context: RenderingPluginContext) {
-    const { camera, renderingContext, renderingService, displayObjectPool } = context;
+    const { camera, renderingContext, renderingService, displayObjectPool } =
+      context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const setTransform = (object: DisplayObject, $el: HTMLElement) => {
-      $el.style.transform = this.joinTransformMatrix(object.getWorldTransform());
+      $el.style.transform = this.joinTransformMatrix(
+        object.getWorldTransform(),
+      );
     };
 
     const handleMounted = (e: FederatedEvent) => {
@@ -106,22 +119,36 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(HTMLRenderingPlugin.tag, async () => {
-      if (displayObjectPool.getHTMLs().length) {
-        // append camera
-        this.$camera = this.createCamera(camera);
-      }
+    renderingService.hooks.init.tapPromise(
+      HTMLRenderingPlugin.tag,
+      async () => {
+        if (displayObjectPool.getHTMLs().length) {
+          // append camera
+          this.$camera = this.createCamera(camera);
+        }
 
-      canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
-      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-    });
+        canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
+        canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        canvas.addEventListener(
+          ElementEvent.ATTR_MODIFIED,
+          handleAttributeChanged,
+        );
+        canvas.addEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
+      },
+    );
 
     renderingService.hooks.endFrame.tap(HTMLRenderingPlugin.tag, () => {
-      if (this.$camera && renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
-        this.$camera.style.transform = this.joinTransformMatrix(camera.getOrthoMatrix());
+      if (
+        this.$camera &&
+        renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
+      ) {
+        this.$camera.style.transform = this.joinTransformMatrix(
+          camera.getOrthoMatrix(),
+        );
       }
     });
 
@@ -134,8 +161,14 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       canvas.removeEventListener(CanvasEvent.RESIZE, handleCanvasResize);
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
     });
   }
 
@@ -145,11 +178,14 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private createCamera(camera: ICamera) {
     const { document: doc, width, height } = this.context.config;
-    const $canvas = this.context.contextService.getDomElement() as unknown as HTMLElement;
+    const $canvas =
+      this.context.contextService.getDomElement() as unknown as HTMLElement;
     const $container = $canvas.parentNode;
     if ($container) {
       const cameraId = CANVAS_CAMERA_ID;
-      let $existedCamera = $container.querySelector<HTMLDivElement>('#' + cameraId);
+      let $existedCamera = $container.querySelector<HTMLDivElement>(
+        '#' + cameraId,
+      );
       if (!$existedCamera) {
         const $camera = (doc || document).createElement('div');
         $existedCamera = $camera;
@@ -160,7 +196,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $camera.style.left = `${$canvas.offsetLeft || 0}px`;
         $camera.style.top = `${$canvas.offsetTop || 0}px`;
         $camera.style.transformOrigin = 'left top';
-        $camera.style.transform = this.joinTransformMatrix(camera.getOrthoMatrix());
+        $camera.style.transform = this.joinTransformMatrix(
+          camera.getOrthoMatrix(),
+        );
         // HTML elements should not overflow with canvas @see https://github.com/antvis/G/issues/1163
         $camera.style.overflow = 'hidden';
         $camera.style.pointerEvents = 'none';
@@ -179,7 +217,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const { document: doc } = this.context.config;
     const existedId = this.getId(object);
 
-    let $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
+    let $existedElement: HTMLElement | null = this.$camera.querySelector(
+      '#' + existedId,
+    );
     if (!$existedElement) {
       $existedElement = (doc || document).createElement('div');
       object.parsedStyle.$el = $existedElement;
@@ -198,7 +238,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       $existedElement.style.left = `0px`;
       $existedElement.style.top = `0px`;
       $existedElement.style['will-change'] = 'transform';
-      $existedElement.style.transform = this.joinTransformMatrix(object.getWorldTransform());
+      $existedElement.style.transform = this.joinTransformMatrix(
+        object.getWorldTransform(),
+      );
     }
 
     return $existedElement;
@@ -218,7 +260,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         break;
       case 'transformOrigin':
         const { transformOrigin } = object.parsedStyle;
-        $el.style['transform-origin'] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
+        $el.style[
+          'transform-origin'
+        ] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
         break;
       case 'width':
         const width = object.computedStyleMap().get('width');

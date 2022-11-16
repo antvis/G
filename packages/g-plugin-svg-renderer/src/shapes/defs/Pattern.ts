@@ -1,4 +1,9 @@
-import type { DisplayObject, LinearGradient, Pattern, RadialGradient } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  LinearGradient,
+  Pattern,
+  RadialGradient,
+} from '@antv/g-lite';
 import {
   computeLinearGradient,
   computeRadialGradient,
@@ -36,22 +41,43 @@ export function createOrUpdateGradientAndPattern(
       $el?.setAttribute(name, 'currentColor');
     } else {
       // constant value, eg. '#fff'
-      $el?.setAttribute(name, parsedColor.isNone ? 'none' : parsedColor.toString());
+      $el?.setAttribute(
+        name,
+        parsedColor.isNone ? 'none' : parsedColor.toString(),
+      );
     }
   } else if (isPattern(parsedColor)) {
-    const patternId = createOrUpdatePattern(document, $def, object, parsedColor, createImage);
+    const patternId = createOrUpdatePattern(
+      document,
+      $def,
+      object,
+      parsedColor,
+      createImage,
+    );
     // use style instead of attribute when applying <pattern>
     // @see https://stackoverflow.com/a/7723115
     $el.style[name] = `url(#${patternId})`;
     return patternId;
   } else {
     if (parsedColor.length === 1) {
-      const gradientId = createOrUpdateGradient(document, object, $def, $el, parsedColor[0]);
+      const gradientId = createOrUpdateGradient(
+        document,
+        object,
+        $def,
+        $el,
+        parsedColor[0],
+      );
       $el?.setAttribute(name, `url(#${gradientId})`);
       return gradientId;
     } else {
       // @see https://stackoverflow.com/questions/20671502/can-i-blend-gradients-in-svg
-      const filterId = createOrUpdateMultiGradient(document, object, $def, $el, parsedColor);
+      const filterId = createOrUpdateMultiGradient(
+        document,
+        object,
+        $def,
+        $el,
+        parsedColor,
+      );
       $el?.setAttribute('filter', `url(#${filterId})`);
       $el?.setAttribute('fill', 'black');
       return filterId;
@@ -61,16 +87,27 @@ export function createOrUpdateGradientAndPattern(
   return '';
 }
 
-function generateCacheKey(src: CSSGradientValue | CSSRGB | Pattern, options: any = {}): string {
+function generateCacheKey(
+  src: CSSGradientValue | CSSRGB | Pattern,
+  options: any = {},
+): string {
   let cacheKey = '';
   if (src instanceof CSSGradientValue) {
     const { type, value } = src;
-    if (type === GradientType.LinearGradient || type === GradientType.RadialGradient) {
+    if (
+      type === GradientType.LinearGradient ||
+      type === GradientType.RadialGradient
+    ) {
       // @ts-ignore
-      const { type, width, height, steps, angle, cx, cy, size } = { ...value, ...options };
-      cacheKey = `gradient-${type}-${angle?.toString() || 0}-${cx?.toString() || 0}-${
-        cy?.toString() || 0
-      }-${size?.toString() || 0}-${width}-${height}-${steps
+      const { type, width, height, steps, angle, cx, cy, size } = {
+        ...value,
+        ...options,
+      };
+      cacheKey = `gradient-${type}-${angle?.toString() || 0}-${
+        cx?.toString() || 0
+      }-${cy?.toString() || 0}-${
+        size?.toString() || 0
+      }-${width}-${height}-${steps
         .map(({ offset, color }) => `${offset}${color}`)
         .join('-')}`;
     }
@@ -120,7 +157,10 @@ function createOrUpdatePattern(
 
     if (imageURL) {
       // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
-      const $pattern = createSVGElement('pattern', document) as SVGPatternElement;
+      const $pattern = createSVGElement(
+        'pattern',
+        document,
+      ) as SVGPatternElement;
       $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
 
       const $image = createSVGElement('image', document);
@@ -174,7 +214,7 @@ function createOrUpdatePattern(
       } else {
         img.onload = onload;
         // Fix onload() bug in IE9
-        img.src = img.src;
+        // img.src = img.src;
       }
     }
   }
@@ -200,7 +240,9 @@ function createOrUpdateGradient(
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/linearGradient
     // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/radialGradient
     $existed = createSVGElement(
-      parsedColor.type === GradientType.LinearGradient ? 'linearGradient' : 'radialGradient',
+      parsedColor.type === GradientType.LinearGradient
+        ? 'linearGradient'
+        : 'radialGradient',
       document,
     );
     // @see https://github.com/antvis/g/issues/1025
@@ -212,7 +254,9 @@ function createOrUpdateGradient(
       .sort((a, b) => a.offset.value - b.offset.value)
       .forEach(({ offset, color }) => {
         // TODO: support absolute unit like `px`
-        innerHTML += `<stop offset="${offset.value / 100}" stop-color="${color}"></stop>`;
+        innerHTML += `<stop offset="${
+          offset.value / 100
+        }" stop-color="${color}"></stop>`;
       });
     $existed.innerHTML = innerHTML;
     $existed.id = gradientId;
@@ -276,7 +320,13 @@ function createOrUpdateMultiGradient(
 
   let blended = 0;
   gradients.forEach((gradient, i) => {
-    const gradientId = createOrUpdateGradient(document, object, $def, $el, gradient);
+    const gradientId = createOrUpdateGradient(
+      document,
+      object,
+      $def,
+      $el,
+      gradient,
+    );
 
     const rectId = gradientId + '_rect';
     const $rect = createSVGElement('rect', document) as SVGRectElement;
@@ -294,7 +344,10 @@ function createOrUpdateMultiGradient(
     $existed.appendChild($feImage);
 
     if (i > 0) {
-      const $feBlend = createSVGElement('feBlend', document) as SVGFEBlendElement;
+      const $feBlend = createSVGElement(
+        'feBlend',
+        document,
+      ) as SVGFEBlendElement;
       $feBlend.setAttribute(
         'in',
         i === 1 ? `${filterId}-${i - 1}` : `${filterId}-blended-${blended - 1}`,
@@ -307,7 +360,10 @@ function createOrUpdateMultiGradient(
     }
   });
 
-  const $feComposite = createSVGElement('feComposite', document) as SVGFECompositeElement;
+  const $feComposite = createSVGElement(
+    'feComposite',
+    document,
+  ) as SVGFECompositeElement;
   $feComposite.setAttribute('in', `${filterId}-blended-${blended}`);
   $feComposite.setAttribute('in2', 'SourceGraphic');
   $feComposite.setAttribute('operator', 'in');

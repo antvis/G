@@ -27,7 +27,12 @@ import {
   renderPipelineDescriptorEquals,
   samplerDescriptorEquals,
 } from '../platform/utils/hash';
-import { hashCodeNumberFinish, hashCodeNumberUpdate, HashMap, nullHashFunc } from './HashMap';
+import {
+  hashCodeNumberFinish,
+  hashCodeNumberUpdate,
+  HashMap,
+  nullHashFunc,
+} from './HashMap';
 
 function programDescriptorSimpleEquals(
   a: ProgramDescriptorSimple,
@@ -35,10 +40,15 @@ function programDescriptorSimpleEquals(
 ): boolean {
   assert(a.preprocessedVert !== '' && b.preprocessedVert !== '');
   assert(a.preprocessedFrag !== '' && b.preprocessedFrag !== '');
-  return a.preprocessedVert === b.preprocessedVert && a.preprocessedFrag === b.preprocessedFrag;
+  return (
+    a.preprocessedVert === b.preprocessedVert &&
+    a.preprocessedFrag === b.preprocessedFrag
+  );
 }
 
-function programDescriptorSimpleCopy(a: ProgramDescriptorSimple): ProgramDescriptorSimple {
+function programDescriptorSimpleCopy(
+  a: ProgramDescriptorSimple,
+): ProgramDescriptorSimple {
   const preprocessedVert = a.preprocessedVert;
   const preprocessedFrag = a.preprocessedFrag;
   const vert = a.vert;
@@ -46,7 +56,10 @@ function programDescriptorSimpleCopy(a: ProgramDescriptorSimple): ProgramDescrip
   return { preprocessedVert, preprocessedFrag, vert, frag };
 }
 
-function renderBindingLayoutHash(hash: number, a: BindingLayoutDescriptor): number {
+function renderBindingLayoutHash(
+  hash: number,
+  a: BindingLayoutDescriptor,
+): number {
   hash = hashCodeNumberUpdate(hash, a.numUniformBuffers);
   hash = hashCodeNumberUpdate(hash, a.numSamplers);
   return hash;
@@ -67,7 +80,10 @@ function attachmentStateHash(hash: number, a: AttachmentState): number {
 }
 
 function colorHash(hash: number, a: Color): number {
-  hash = hashCodeNumberUpdate(hash, (a.r << 24) | (a.g << 16) | (a.b << 8) | a.a);
+  hash = hashCodeNumberUpdate(
+    hash,
+    (a.r << 24) | (a.g << 16) | (a.b << 8) | a.a,
+  );
   return hash;
 }
 
@@ -89,7 +105,8 @@ function megaStateDescriptorHash(hash: number, a: MegaStateDescriptor): number {
 function renderPipelineDescriptorHash(a: RenderPipelineDescriptor): number {
   let hash = 0;
   hash = hashCodeNumberUpdate(hash, a.program.id);
-  if (a.inputLayout !== null) hash = hashCodeNumberUpdate(hash, a.inputLayout.id);
+  if (a.inputLayout !== null)
+    hash = hashCodeNumberUpdate(hash, a.inputLayout.id);
   for (let i = 0; i < a.bindingLayouts.length; i++)
     hash = renderBindingLayoutHash(hash, a.bindingLayouts[i]);
   hash = megaStateDescriptorHash(hash, a.megaStateDescriptor);
@@ -100,7 +117,7 @@ function renderPipelineDescriptorHash(a: RenderPipelineDescriptor): number {
 }
 
 function bindingsDescriptorHash(a: BindingsDescriptor): number {
-  let hash: number = 0;
+  let hash = 0;
   for (let i = 0; i < a.samplerBindings.length; i++) {
     const binding = a.samplerBindings[i];
     if (binding !== null && binding.texture !== null)
@@ -127,10 +144,10 @@ export class RenderCache {
     bindingsDescriptorEquals,
     bindingsDescriptorHash,
   );
-  private renderPipelinesCache = new HashMap<RenderPipelineDescriptor, RenderPipeline>(
-    renderPipelineDescriptorEquals,
-    renderPipelineDescriptorHash,
-  );
+  private renderPipelinesCache = new HashMap<
+    RenderPipelineDescriptor,
+    RenderPipeline
+  >(renderPipelineDescriptorEquals, renderPipelineDescriptorHash);
   private inputLayoutsCache = new HashMap<InputLayoutDescriptor, InputLayout>(
     inputLayoutDescriptorEquals,
     nullHashFunc,
@@ -178,10 +195,14 @@ export class RenderCache {
     return inputLayout;
   }
 
-  createProgramSimple(programDescriptorSimple: ProgramDescriptorSimple): Program {
+  createProgramSimple(
+    programDescriptorSimple: ProgramDescriptorSimple,
+  ): Program {
     let program = this.programCache.get(programDescriptorSimple);
     if (program === null) {
-      const descriptorCopy = programDescriptorSimpleCopy(programDescriptorSimple);
+      const descriptorCopy = programDescriptorSimpleCopy(
+        programDescriptorSimple,
+      );
       program = this.device.createProgramSimple(descriptorCopy);
       this.programCache.add(descriptorCopy, program);
     }
@@ -205,8 +226,10 @@ export class RenderCache {
 
   destroy(): void {
     for (const bindings of this.bindingsCache.values()) bindings.destroy();
-    for (const renderPipeline of this.renderPipelinesCache.values()) renderPipeline.destroy();
-    for (const inputLayout of this.inputLayoutsCache.values()) inputLayout.destroy();
+    for (const renderPipeline of this.renderPipelinesCache.values())
+      renderPipeline.destroy();
+    for (const inputLayout of this.inputLayoutsCache.values())
+      inputLayout.destroy();
     for (const program of this.programCache.values()) program.destroy();
     for (const sampler of this.samplerCache.values()) sampler.destroy();
     this.bindingsCache.clear();

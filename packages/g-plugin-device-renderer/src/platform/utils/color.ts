@@ -16,7 +16,12 @@ export function colorNewCopy(src: Readonly<Color>): Color {
   return { r, g, b, a };
 }
 
-export function colorNewFromRGBA(r: number, g: number, b: number, a: number = 1.0): Color {
+export function colorNewFromRGBA(
+  r: number,
+  g: number,
+  b: number,
+  a = 1.0,
+): Color {
   return { r, g, b, a };
 }
 

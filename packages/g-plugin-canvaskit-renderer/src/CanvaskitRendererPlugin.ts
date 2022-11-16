@@ -11,11 +11,13 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
+  Shape,
 } from '@antv/g-lite';
-import { convertToPath, Path, fromRotationTranslationScale } from '@antv/g-lite';
-import { UnitType } from '@antv/g-lite';
-import type { Shape } from '@antv/g-lite';
 import {
+  convertToPath,
+  Path,
+  fromRotationTranslationScale,
+  UnitType,
   computeLinearGradient,
   computeRadialGradient,
   CSSRGB,
@@ -39,8 +41,11 @@ import type {
 } from 'canvaskit-wasm';
 import { mat4, quat, vec3, mat3 } from 'gl-matrix';
 import type { FontLoader } from './FontLoader';
-import type { CanvasKitContext, RendererContribution } from './interfaces';
-import type { CanvaskitRendererPluginOptions } from './interfaces';
+import type {
+  CanvasKitContext,
+  RendererContribution,
+  CanvaskitRendererPluginOptions,
+} from './interfaces';
 import { generateSkPath } from './renderers';
 
 /**
@@ -84,7 +89,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
   private capturePromise: Promise<any> | undefined;
   private resolveCapturePromise: (dataURL: string) => void;
 
-  playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
+  playAnimation(
+    name: string,
+    jsonStr: string,
+    bounds?: InputRect,
+    assets?: any,
+  ) {
     const canvasKitContext = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
@@ -104,7 +114,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     return animation;
   }
 
-  createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
+  createParticles(
+    jsonStr: string,
+    onFrame?: (canvas: Canvas) => void,
+    assets?: any,
+  ) {
     const canvasKitContext = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
@@ -118,88 +132,94 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     this.context = context;
     const { renderingService, renderingContext } = context;
 
-    renderingService.hooks.init.tapPromise(CanvaskitRendererPlugin.tag, async () => {
-      const canvasKitContext = (
-        this.context.contextService as ContextService<CanvasKitContext>
-      ).getContext();
-      const { surface, CanvasKit } = canvasKitContext;
-      const { fonts } = this.canvaskitRendererPluginOptions;
+    renderingService.hooks.init.tapPromise(
+      CanvaskitRendererPlugin.tag,
+      async () => {
+        const canvasKitContext = (
+          this.context.contextService as ContextService<CanvasKitContext>
+        ).getContext();
+        const { surface, CanvasKit } = canvasKitContext;
+        const { fonts } = this.canvaskitRendererPluginOptions;
 
-      // load default fonts 'sans-serif', 'NotoSansCJK-Regular.ttf'
-      await Promise.all(
-        fonts.map(({ name, url }) => this.fontLoader.loadFont(CanvasKit, name, url)),
-      );
-
-      const { background } = this.context.config;
-      const clearColor = parseColor(background) as CSSRGB;
-
-      // scale all drawing operations by the dpr
-      // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      const dpr = this.context.contextService.getDPR();
-      surface.getCanvas().scale(dpr, dpr);
-
-      const firstFrame = Date.now();
-      const tmpVec3 = vec3.create();
-      const tmpQuat = quat.create();
-
-      const drawFrame = (canvas: Canvas) => {
-        if (this.destroyed || surface.isDeleted()) {
-          return;
-        }
-
-        console.log('draw frame...');
-
-        canvas.save();
-
-        this.applyCamera(canvas, this.context.camera, tmpVec3, tmpQuat);
-
-        canvas.clear(
-          CanvasKit.Color4f(
-            Number(clearColor.r) / 255,
-            Number(clearColor.g) / 255,
-            Number(clearColor.b) / 255,
-            Number(clearColor.alpha),
+        // load default fonts 'sans-serif', 'NotoSansCJK-Regular.ttf'
+        await Promise.all(
+          fonts.map(({ name, url }) =>
+            this.fontLoader.loadFont(CanvasKit, name, url),
           ),
         );
 
-        this.drawAnimations(canvas, firstFrame);
-        this.drawParticles(canvas);
-        this.drawWithSurface(canvas, renderingContext.root);
+        const { background } = this.context.config;
+        const clearColor = parseColor(background) as CSSRGB;
 
-        // pop restore stack, eg. root -> parent -> child
-        this.restoreStack.forEach(() => {
+        // scale all drawing operations by the dpr
+        // @see https://www.html5rocks.com/en/tutorials/canvas/hidpi/
+        const dpr = this.context.contextService.getDPR();
+        surface.getCanvas().scale(dpr, dpr);
+
+        const firstFrame = Date.now();
+        const tmpVec3 = vec3.create();
+        const tmpQuat = quat.create();
+
+        const drawFrame = (canvas: Canvas) => {
+          if (this.destroyed || surface.isDeleted()) {
+            return;
+          }
+
+          console.log('draw frame...');
+
+          canvas.save();
+
+          this.applyCamera(canvas, this.context.camera, tmpVec3, tmpQuat);
+
+          canvas.clear(
+            CanvasKit.Color4f(
+              Number(clearColor.r) / 255,
+              Number(clearColor.g) / 255,
+              Number(clearColor.b) / 255,
+              Number(clearColor.alpha),
+            ),
+          );
+
+          this.drawAnimations(canvas, firstFrame);
+          this.drawParticles(canvas);
+          this.drawWithSurface(canvas, renderingContext.root);
+
+          // pop restore stack, eg. root -> parent -> child
+          this.restoreStack.forEach(() => {
+            canvas.restore();
+          });
+          // clear restore stack
+          this.restoreStack = [];
+
           canvas.restore();
-        });
-        // clear restore stack
-        this.restoreStack = [];
 
-        canvas.restore();
+          // capture here since we don't preserve drawing buffer
+          if (this.enableCapture && this.resolveCapturePromise) {
+            const { type = 'image/png', encoderOptions = 1 } =
+              this.captureOptions;
 
-        // capture here since we don't preserve drawing buffer
-        if (this.enableCapture && this.resolveCapturePromise) {
-          const { type = 'image/png', encoderOptions = 1 } = this.captureOptions;
+            const typeMap: Record<DataURLType, EncodedImageFormat> = {
+              'image/png': CanvasKit.ImageFormat.PNG,
+              'image/jpeg': CanvasKit.ImageFormat.JPEG,
+              'image/webp': CanvasKit.ImageFormat.WEBP,
+              'image/bmp': undefined,
+            };
 
-          const typeMap: Record<DataURLType, EncodedImageFormat> = {
-            'image/png': CanvasKit.ImageFormat.PNG,
-            'image/jpeg': CanvasKit.ImageFormat.JPEG,
-            'image/webp': CanvasKit.ImageFormat.WEBP,
-            'image/bmp': undefined,
-          };
+            // TODO: transparent image
+            const snapshot = surface.makeImageSnapshot();
+            const bytes = snapshot.encodeToBytes(typeMap[type], encoderOptions);
+            const blobObj = new Blob([bytes], { type });
+            this.resolveCapturePromise(window.URL.createObjectURL(blobObj));
+            this.enableCapture = false;
+            this.captureOptions = undefined;
+            this.resolveCapturePromise = undefined;
+          }
 
-          // TODO: transparent image
-          const snapshot = surface.makeImageSnapshot();
-          const bytes = snapshot.encodeToBytes(typeMap[type], encoderOptions);
-          const blobObj = new Blob([bytes], { type });
-          this.resolveCapturePromise(window.URL.createObjectURL(blobObj));
-          this.enableCapture = false;
-          this.captureOptions = undefined;
-          this.resolveCapturePromise = undefined;
-        }
-
+          surface.requestAnimationFrame(drawFrame);
+        };
         surface.requestAnimationFrame(drawFrame);
-      };
-      surface.requestAnimationFrame(drawFrame);
-    });
+      },
+    );
 
     renderingService.hooks.destroy.tap(CanvaskitRendererPlugin.tag, () => {
       const canvasKitContext = (
@@ -222,7 +242,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private applyCamera(canvas: Canvas, camera: ICamera, tmpVec3: vec3, tmpQuat: quat) {
+  private applyCamera(
+    canvas: Canvas,
+    camera: ICamera,
+    tmpVec3: vec3,
+    tmpQuat: quat,
+  ) {
     const transform = camera.getOrthoMatrix();
     const [tx, ty] = mat4.getTranslation(tmpVec3, transform);
     const [sx, sy] = mat4.getScaling(tmpVec3, transform);
@@ -248,7 +273,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       const seek = ((Date.now() - firstFrame) / duration) % 1.0;
       const damage = animation.seek(seek);
 
-      if (damage[rectRight] > damage[rectLeft] && damage[rectBottom] > damage[rectTop]) {
+      if (
+        damage[rectRight] > damage[rectLeft] &&
+        damage[rectBottom] > damage[rectTop]
+      ) {
         animation.render(canvas, bounds);
       }
     });
@@ -393,11 +421,16 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private generateGradientsShader(object: DisplayObject, fill: CSSGradientValue[]) {
+  private generateGradientsShader(
+    object: DisplayObject,
+    fill: CSSGradientValue[],
+  ) {
     const { CanvasKit } = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
-    const gradientShaders = fill.map((gradient) => this.generateGradient(object, gradient));
+    const gradientShaders = fill.map((gradient) =>
+      this.generateGradient(object, gradient),
+    );
     let previousShader = gradientShaders[0];
     for (let i = 1; i < gradientShaders.length; i++) {
       previousShader = CanvasKit.Shader.MakeBlend(
@@ -417,7 +450,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     // restore to its ancestor
     const parent = this.restoreStack[this.restoreStack.length - 1];
-    if (parent && !(object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS)) {
+    if (
+      parent &&
+      !(
+        object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS
+      )
+    ) {
       canvas.restore();
       this.restoreStack.pop();
     }
@@ -594,7 +632,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           }
 
           if (lineDash) {
-            strokePaint.setPathEffect(CanvasKit.PathEffect.MakeDash(lineDash, lineDashOffset || 0));
+            strokePaint.setPathEffect(
+              CanvasKit.PathEffect.MakeDash(lineDash, lineDashOffset || 0),
+            );
           }
         }
       }
@@ -612,7 +652,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         );
         const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
         shadowFillPaint.setMaskFilter(
-          CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
+          CanvasKit.MaskFilter.MakeBlur(
+            CanvasKit.BlurStyle.Normal,
+            blurSigma,
+            false,
+          ),
         );
       }
       if (hasStroke && hasShadow) {
@@ -628,7 +672,11 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         );
         const blurSigma = ((shadowBlur && shadowBlur) || 0) / 2;
         shadowStrokePaint.setMaskFilter(
-          CanvasKit.MaskFilter.MakeBlur(CanvasKit.BlurStyle.Normal, blurSigma, false),
+          CanvasKit.MaskFilter.MakeBlur(
+            CanvasKit.BlurStyle.Normal,
+            blurSigma,
+            false,
+          ),
         );
       }
 

@@ -158,14 +158,20 @@ export class DisplayObject<
       ...this.config.attrs,
     };
     if (this.config.visible != null) {
-      this.config.style.visibility = this.config.visible === false ? 'hidden' : 'visible';
+      this.config.style.visibility =
+        this.config.visible === false ? 'hidden' : 'visible';
     }
     if (this.config.interactive != null) {
-      this.config.style.pointerEvents = this.config.interactive === false ? 'none' : 'auto';
+      this.config.style.pointerEvents =
+        this.config.interactive === false ? 'none' : 'auto';
     }
 
     // merge parsed value
-    Object.assign(this.parsedStyle, DEFAULT_PARSED_STYLE_PROPS, this.config.initialParsedStyle);
+    Object.assign(
+      this.parsedStyle,
+      DEFAULT_PARSED_STYLE_PROPS,
+      this.config.initialParsedStyle,
+    );
 
     Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
 
@@ -224,7 +230,10 @@ export class DisplayObject<
     });
   }
 
-  cloneNode(deep?: boolean, customCloneFunc?: (name: string, attribute: any) => any): this {
+  cloneNode(
+    deep?: boolean,
+    customCloneFunc?: (name: string, attribute: any) => any,
+  ): this {
     const clonedStyle = { ...this.attributes };
     for (const attributeName in clonedStyle) {
       const attribute = clonedStyle[attributeName];
@@ -284,7 +293,11 @@ export class DisplayObject<
     renderable.dirty = true;
   }
 
-  setAttribute<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key], force = false) {
+  setAttribute<Key extends keyof StyleProps>(
+    name: Key,
+    value: StyleProps[Key],
+    force = false,
+  ) {
     const attributeName = formatAttributeName(name as string) as Key;
     // ignore undefined value
     if (isUndefined(value)) {
@@ -366,7 +379,7 @@ export class DisplayObject<
     return new Rectangle(left, top, right - left, bottom - top);
   }
 
-  setOrigin(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+  setOrigin(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.setOrigin(this, createVec3(position, y, z));
     return this;
   }
@@ -378,7 +391,7 @@ export class DisplayObject<
   /**
    * set position in world space
    */
-  setPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+  setPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.setPosition(this, createVec3(position, y, z));
     return this;
   }
@@ -386,15 +399,18 @@ export class DisplayObject<
   /**
    * set position in local space
    */
-  setLocalPosition(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
-    runtime.sceneGraphService.setLocalPosition(this, createVec3(position, y, z));
+  setLocalPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
+    runtime.sceneGraphService.setLocalPosition(
+      this,
+      createVec3(position, y, z),
+    );
     return this;
   }
 
   /**
    * translate in world space
    */
-  translate(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+  translate(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.translate(this, createVec3(position, y, z));
     return this;
   }
@@ -402,7 +418,7 @@ export class DisplayObject<
   /**
    * translate in local space
    */
-  translateLocal(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+  translateLocal(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.translateLocal(this, createVec3(position, y, z));
     return this;
   }
@@ -468,7 +484,10 @@ export class DisplayObject<
    * only return degrees of Z axis in world space
    */
   getEulerAngles() {
-    const [, , ez] = getEuler(vec3.create(), runtime.sceneGraphService.getWorldTransform(this));
+    const [, , ez] = getEuler(
+      vec3.create(),
+      runtime.sceneGraphService.getWorldTransform(this),
+    );
     return rad2deg(ez);
   }
 
@@ -476,7 +495,10 @@ export class DisplayObject<
    * only return degrees of Z axis in local space
    */
   getLocalEulerAngles() {
-    const [, , ez] = getEuler(vec3.create(), runtime.sceneGraphService.getLocalRotation(this));
+    const [, , ez] = getEuler(
+      vec3.create(),
+      runtime.sceneGraphService.getLocalRotation(this),
+    );
     return rad2deg(ez);
   }
 
@@ -521,7 +543,12 @@ export class DisplayObject<
     return this;
   }
 
-  setLocalRotation(rotation: quat | number, y?: number, z?: number, w?: number) {
+  setLocalRotation(
+    rotation: quat | number,
+    y?: number,
+    z?: number,
+    w?: number,
+  ) {
     runtime.sceneGraphService.setLocalRotation(this, rotation, y, z, w);
     return this;
   }
@@ -615,7 +642,11 @@ export class DisplayObject<
   toFront() {
     if (this.parentNode) {
       this.style.zIndex =
-        Math.max(...this.parentNode.children.map((child) => Number(child.style.zIndex))) + 1;
+        Math.max(
+          ...this.parentNode.children.map((child) =>
+            Number(child.style.zIndex),
+          ),
+        ) + 1;
     }
     return this;
   }
@@ -626,7 +657,11 @@ export class DisplayObject<
   toBack() {
     if (this.parentNode) {
       this.style.zIndex =
-        Math.min(...this.parentNode.children.map((child) => Number(child.style.zIndex))) - 1;
+        Math.min(
+          ...this.parentNode.children.map((child) =>
+            Number(child.style.zIndex),
+          ),
+        ) - 1;
     }
     return this;
   }
@@ -653,7 +688,10 @@ export class DisplayObject<
   attr(): StyleProps;
   attr(name: Partial<StyleProps>): DisplayObject<StyleProps>;
   attr<Key extends keyof StyleProps>(name: Key): StyleProps[Key];
-  attr<Key extends keyof StyleProps>(name: Key, value: StyleProps[Key]): DisplayObject<StyleProps>;
+  attr<Key extends keyof StyleProps>(
+    name: Key,
+    value: StyleProps[Key],
+  ): DisplayObject<StyleProps>;
   attr(...args: any): any {
     const [name, value] = args;
     if (!name) {
@@ -703,7 +741,9 @@ export class DisplayObject<
    */
   setMatrix(mat: mat3) {
     const [tx, ty, scalingX, scalingY, angle] = decompose(mat);
-    this.setEulerAngles(angle).setPosition(tx, ty).setLocalScale(scalingX, scalingY);
+    this.setEulerAngles(angle)
+      .setPosition(tx, ty)
+      .setLocalScale(scalingX, scalingY);
   }
 
   /**
@@ -712,7 +752,9 @@ export class DisplayObject<
    */
   setLocalMatrix(mat: mat3) {
     const [tx, ty, scalingX, scalingY, angle] = decompose(mat);
-    this.setLocalEulerAngles(angle).setLocalPosition(tx, ty).setLocalScale(scalingX, scalingY);
+    this.setLocalEulerAngles(angle)
+      .setLocalPosition(tx, ty)
+      .setLocalScale(scalingX, scalingY);
   }
 
   /**
@@ -806,10 +848,10 @@ export class DisplayObject<
   /**
    * @deprecated
    */
-  set<StyleProps extends BaseStyleProps, Key extends keyof DisplayObjectConfig<StyleProps>>(
-    name: Key,
-    value: DisplayObjectConfig<StyleProps>[Key],
-  ) {
+  set<
+    StyleProps extends BaseStyleProps,
+    Key extends keyof DisplayObjectConfig<StyleProps>,
+  >(name: Key, value: DisplayObjectConfig<StyleProps>[Key]) {
     // @ts-ignore
     this.config[name] = value;
   }
@@ -817,7 +859,9 @@ export class DisplayObject<
   /**
    * @deprecated
    */
-  get<StyleProps extends BaseStyleProps>(name: keyof DisplayObjectConfig<StyleProps>) {
+  get<StyleProps extends BaseStyleProps>(
+    name: keyof DisplayObjectConfig<StyleProps>,
+  ) {
     return this.config[name];
   }
 
@@ -825,7 +869,7 @@ export class DisplayObject<
    * Use `setPosition` instead.
    * @deprecated
    */
-  moveTo(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+  moveTo(position: vec3 | vec2 | number, y = 0, z = 0) {
     (this as unknown as DisplayObject).setPosition(position, y, z);
     return this;
   }
@@ -834,7 +878,7 @@ export class DisplayObject<
    * Use `setPosition` instead.
    * @deprecated
    */
-  move(position: vec3 | vec2 | number, y: number = 0, z: number = 0) {
+  move(position: vec3 | vec2 | number, y = 0, z = 0) {
     (this as unknown as DisplayObject).setPosition(position, y, z);
     return this;
   }

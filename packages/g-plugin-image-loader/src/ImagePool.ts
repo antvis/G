@@ -1,6 +1,11 @@
-import type { LinearGradient, Pattern, RadialGradient, CanvasConfig } from '@antv/g-lite';
-import { UnitType } from '@antv/g-lite';
+import type {
+  LinearGradient,
+  Pattern,
+  RadialGradient,
+  CanvasConfig,
+} from '@antv/g-lite';
 import {
+  UnitType,
   computeLinearGradient,
   computeRadialGradient,
   GradientType,
@@ -95,7 +100,10 @@ export class ImagePool {
     return canvasPattern;
   }
 
-  getOrCreateGradient(params: GradientParams, context: CanvasRenderingContext2D) {
+  getOrCreateGradient(
+    params: GradientParams,
+    context: CanvasRenderingContext2D,
+  ) {
     const key = this.generateGradientKey(params);
     const { type, steps, width, height, angle, cx, cy, size } = params;
 

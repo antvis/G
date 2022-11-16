@@ -5,16 +5,16 @@ import type { ShaderFeatureMap } from '../shader/compiler';
 import { preprocessShader_GLSL } from '../shader/compiler';
 
 export class DeviceProgram {
-  name: string = '(unnamed)';
+  name = '(unnamed)';
 
   // Compiled program.
-  preprocessedVert: string = '';
-  preprocessedFrag: string = '';
+  preprocessedVert = '';
+  preprocessedFrag = '';
 
   // Inputs.
-  both: string = '';
-  vert: string = '';
-  frag: string = '';
+  both = '';
+  vert = '';
+  frag = '';
   defines: Record<string, string> = {};
   features: ShaderFeatureMap = {
     MRT: true,

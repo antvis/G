@@ -3,8 +3,11 @@ import type { ICamera } from '../camera';
 import type { DisplayObject } from '../display-objects';
 import type { CanvasContext } from '../dom';
 import { CustomEvent, ElementEvent } from '../dom';
-import type { EventPosition, InteractivePointerEvent } from '../types';
-import type { CanvasConfig } from '../types';
+import type {
+  EventPosition,
+  InteractivePointerEvent,
+  CanvasConfig,
+} from '../types';
 import {
   AsyncParallelHook,
   AsyncSeriesWaterfallHook,
@@ -43,7 +46,10 @@ export interface PickingResult {
  * * end frame
  */
 export class RenderingService {
-  constructor(private globalRuntime: GlobalRuntime, private context: CanvasContext) {}
+  constructor(
+    private globalRuntime: GlobalRuntime,
+    private context: CanvasContext,
+  ) {}
 
   private inited = false;
 
@@ -63,7 +69,9 @@ export class RenderingService {
   /**
    * avoid re-creating too many custom events
    */
-  private renderOrderChangedEvent = new CustomEvent(ElementEvent.RENDER_ORDER_CHANGED);
+  private renderOrderChangedEvent = new CustomEvent(
+    ElementEvent.RENDER_ORDER_CHANGED,
+  );
 
   hooks = {
     /**
@@ -77,7 +85,10 @@ export class RenderingService {
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null, ICamera]>(['object', 'camera']),
+    cull: new SyncWaterfallHook<[DisplayObject | null, ICamera]>([
+      'object',
+      'camera',
+    ]),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
@@ -99,7 +110,9 @@ export class RenderingService {
     /**
      * use async but faster method such as GPU-based picking in `g-plugin-device-renderer`
      */
-    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(['result']),
+    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>([
+      'result',
+    ]),
 
     /**
      * Unsafe but sync version of pick.
@@ -143,7 +156,9 @@ export class RenderingService {
     const { enableDirtyRectangleRendering } = renderer.getConfig();
     return (
       !enableDirtyRectangleRendering ||
-      this.context.renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)
+      this.context.renderingContext.renderReasons.has(
+        RenderReason.CAMERA_CHANGED,
+      )
     );
   }
 
@@ -158,7 +173,11 @@ export class RenderingService {
     this.globalRuntime.sceneGraphService.triggerPendingEvents();
 
     if (renderingContext.renderReasons.size && this.inited) {
-      this.renderDisplayObject(renderingContext.root, canvasConfig, renderingContext);
+      this.renderDisplayObject(
+        renderingContext.root,
+        canvasConfig,
+        renderingContext,
+      );
 
       this.hooks.beginFrame.call();
 
@@ -181,7 +200,8 @@ export class RenderingService {
     canvasConfig: Partial<CanvasConfig>,
     renderingContext: RenderingContext,
   ) {
-    const { enableDirtyCheck, enableCulling } = canvasConfig.renderer.getConfig();
+    const { enableDirtyCheck, enableCulling } =
+      canvasConfig.renderer.getConfig();
     // recalc style values
     this.globalRuntime.styleValueRegistry.recalc(displayObject);
 
@@ -217,9 +237,11 @@ export class RenderingService {
     }
 
     // recursive rendering its children
-    (sortable.sorted || displayObject.childNodes).forEach((child: DisplayObject) => {
-      this.renderDisplayObject(child, canvasConfig, renderingContext);
-    });
+    (sortable.sorted || displayObject.childNodes).forEach(
+      (child: DisplayObject) => {
+        this.renderDisplayObject(child, canvasConfig, renderingContext);
+      },
+    );
 
     if (renderOrderChanged) {
       displayObject.forEach((child: DisplayObject) => {
@@ -227,7 +249,10 @@ export class RenderingService {
         this.renderOrderChangedEvent.detail = {
           renderOrder: child.sortable.renderOrder,
         };
-        child.ownerDocument.defaultView.dispatchEvent(this.renderOrderChangedEvent, true);
+        child.ownerDocument.defaultView.dispatchEvent(
+          this.renderOrderChangedEvent,
+          true,
+        );
       });
     }
   }
@@ -239,6 +264,8 @@ export class RenderingService {
 
   dirtify() {
     // need re-render
-    this.context.renderingContext.renderReasons.add(RenderReason.DISPLAY_OBJECT_CHANGED);
+    this.context.renderingContext.renderReasons.add(
+      RenderReason.DISPLAY_OBJECT_CHANGED,
+    );
   }
 }

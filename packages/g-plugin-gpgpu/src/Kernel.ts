@@ -46,7 +46,10 @@ export class Kernel {
     bindingType: 'uniform' | 'storage' | 'read-only-storage';
   }[] = [];
 
-  constructor(device: DeviceRenderer.Device, { computeShader, bundle }: KernelOptions) {
+  constructor(
+    device: DeviceRenderer.Device,
+    { computeShader, bundle }: KernelOptions,
+  ) {
     this.device = device;
     this.computeShader = computeShader;
     this.bundle = bundle;
@@ -55,7 +58,8 @@ export class Kernel {
   }
 
   private init() {
-    const target = platformString2Target[this.device.queryVendorInfo().platformString];
+    const target =
+      platformString2Target[this.device.queryVendorInfo().platformString];
 
     if (this.computeShader) {
       this.bundle = {
@@ -115,14 +119,18 @@ export class Kernel {
       // @ts-ignore
       wordCount: buffer.size / 4,
       binding,
-      bindingType: isUniform ? 'uniform' : isWritable ? 'storage' : 'read-only-storage',
+      bindingType: isUniform
+        ? 'uniform'
+        : isWritable
+        ? 'storage'
+        : 'read-only-storage',
       group: 0, // fixed group 0
     });
 
     return null;
   }
 
-  dispatch(x: [number, number, number] | number, y: number = 1, z: number = 1) {
+  dispatch(x: [number, number, number] | number, y = 1, z = 1) {
     let dispatchParams: [number, number, number];
     if (Array.isArray(x)) {
       dispatchParams = x;
@@ -133,14 +141,20 @@ export class Kernel {
     const computePass = this.device.createComputePass({});
     computePass.setPipeline(this.computePipeline);
 
-    const uniforms = this.buffers.filter(({ bindingType }) => bindingType === 'uniform');
-    const storages = this.buffers.filter(({ bindingType }) => bindingType !== 'uniform');
+    const uniforms = this.buffers.filter(
+      ({ bindingType }) => bindingType === 'uniform',
+    );
+    const storages = this.buffers.filter(
+      ({ bindingType }) => bindingType !== 'uniform',
+    );
 
     const bindings = this.device.createBindings({
       pipeline: this.computePipeline,
       bindingLayout: {
         numUniformBuffers: uniforms.length,
-        storageEntries: storages.map(({ bindingType }) => ({ type: bindingType })),
+        storageEntries: storages.map(({ bindingType }) => ({
+          type: bindingType,
+        })),
       },
       uniformBufferBindings: uniforms.map(({ buffer, wordCount }) => ({
         buffer,

@@ -1,5 +1,4 @@
-import type { IElement } from '@antv/g-lite';
-import type { SceneGraphSelector } from '@antv/g-lite';
+import type { IElement, SceneGraphSelector } from '@antv/g-lite';
 import { is, selectAll, selectOne } from 'css-select';
 import type { SceneGraphAdapter } from './SceneGraphAdapter';
 
@@ -10,11 +9,19 @@ export class CSSSceneGraphSelector implements SceneGraphSelector {
     return is(element, query, { adapter: this.sceneGraphAdapter });
   }
 
-  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
-    return selectOne(query, root, { adapter: this.sceneGraphAdapter }) as T | null;
+  selectOne<R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ): T | null {
+    return selectOne(query, root, {
+      adapter: this.sceneGraphAdapter,
+    }) as T | null;
   }
 
-  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
+  selectAll<R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ): T[] {
     return selectAll(query, root, { adapter: this.sceneGraphAdapter }) as T[];
   }
 }

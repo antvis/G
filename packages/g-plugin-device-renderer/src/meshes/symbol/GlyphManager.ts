@@ -111,10 +111,10 @@ export class GlyphManager {
   }
 
   generateAtlas(
-    fontStack: string = '',
+    fontStack = '',
     fontFamily: string,
     fontWeight: string,
-    fontStyle: string = '',
+    fontStyle = '',
     text: string,
     device: Device,
   ) {
@@ -133,7 +133,13 @@ export class GlyphManager {
     if (newChars.length) {
       const glyphMap = newChars
         .map((char) => {
-          return this.generateSDF(fontStack, fontFamily, fontWeight, fontStyle, char);
+          return this.generateSDF(
+            fontStack,
+            fontFamily,
+            fontWeight,
+            fontStyle,
+            char,
+          );
         })
         .reduce((prev, cur) => {
           // @ts-ignore
@@ -146,7 +152,11 @@ export class GlyphManager {
         ...glyphMap,
       };
       this.glyphAtlas = new GlyphAtlas(this.glyphMap);
-      const { width: atlasWidth, height: atlasHeight, data } = this.glyphAtlas.image;
+      const {
+        width: atlasWidth,
+        height: atlasHeight,
+        data,
+      } = this.glyphAtlas.image;
 
       if (this.glyphAtlasTexture) {
         this.glyphAtlasTexture.destroy();
@@ -165,7 +175,7 @@ export class GlyphManager {
   }
 
   private generateSDF(
-    fontStack: string = '',
+    fontStack = '',
     fontFamily: string,
     fontWeight: string,
     fontStyle: string,
@@ -196,12 +206,21 @@ export class GlyphManager {
       // 使用 mapbox/tiny-sdf 中的 context
       // @see https://stackoverflow.com/questions/46126565/how-to-get-font-glyphs-metrics-details-in-javascript
       // @ts-ignore
-      this.textMetricsCache[fontStack][char] = sdfGenerator.ctx.measureText(char).width;
+      this.textMetricsCache[fontStack][char] =
+        sdfGenerator.ctx.measureText(char).width;
     }
 
     // use sdf 2.x @see https://github.com/mapbox/tiny-sdf
-    const { data, width, height, glyphWidth, glyphHeight, glyphLeft, glyphTop, glyphAdvance } =
-      sdfGenerator.draw(char);
+    const {
+      data,
+      width,
+      height,
+      glyphWidth,
+      glyphHeight,
+      glyphLeft,
+      glyphTop,
+      glyphAdvance,
+    } = sdfGenerator.draw(char);
 
     return {
       id: charCode,

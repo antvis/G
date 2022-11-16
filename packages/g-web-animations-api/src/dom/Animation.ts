@@ -153,17 +153,18 @@ export class Animation implements IAnimation {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Animation/currentTime
    */
+  private _currentTime = 0;
   get currentTime(): number | null {
     this.updatePromises();
     return this._idle || this.currentTimePending ? null : this._currentTime;
   }
-  private _currentTime: number = 0;
   set currentTime(newTime: number | null) {
     newTime = Number(newTime);
     if (isNaN(newTime)) return;
     this.timeline.restart();
     if (!this._paused && this._startTime !== null) {
-      this._startTime = Number(this.timeline?.currentTime) - newTime / this.playbackRate;
+      this._startTime =
+        Number(this.timeline?.currentTime) - newTime / this.playbackRate;
     }
     this.currentTimePending = false;
     if (this._currentTime === newTime) {
@@ -192,7 +193,8 @@ export class Animation implements IAnimation {
       if (this._paused || this._idle) return;
       this._startTime = newTime;
       this.tickCurrentTime(
-        (Number(this.timeline.currentTime) - this._startTime) * this.playbackRate,
+        (Number(this.timeline.currentTime) - this._startTime) *
+          this.playbackRate,
       );
       this.timeline.applyDirtiedAnimation(this);
       this.updatePromises();
@@ -227,7 +229,8 @@ export class Animation implements IAnimation {
   get _isFinished() {
     return (
       !this._idle &&
-      ((this._playbackRate > 0 && Number(this._currentTime) >= this._totalDuration) ||
+      ((this._playbackRate > 0 &&
+        Number(this._currentTime) >= this._totalDuration) ||
         (this._playbackRate < 0 && Number(this._currentTime) <= 0))
     );
   }
@@ -398,7 +401,9 @@ export class Animation implements IAnimation {
           this.startTime = timelineTime - this._currentTime / this.playbackRate;
         }
       } else if (!this._isFinished) {
-        this.tickCurrentTime((timelineTime - this._startTime) * this.playbackRate);
+        this.tickCurrentTime(
+          (timelineTime - this._startTime) * this.playbackRate,
+        );
       }
     }
 
@@ -414,7 +419,9 @@ export class Animation implements IAnimation {
     } else if (this._totalDuration < Infinity) {
       this.currentTime = this._totalDuration;
     } else {
-      throw new Error('Unable to rewind negative playback rate animation with infinite duration');
+      throw new Error(
+        'Unable to rewind negative playback rate animation with infinite duration',
+      );
     }
   }
 
@@ -489,7 +496,12 @@ export class Animation implements IAnimation {
     if (this._isFinished) {
       if (!this._finishedFlag) {
         if (this.onfinish) {
-          const event = new AnimationEvent(null, this, this.currentTime, baseTime);
+          const event = new AnimationEvent(
+            null,
+            this,
+            this.currentTime,
+            baseTime,
+          );
           setTimeout(() => {
             if (this.onfinish) {
               this.onfinish(event);
@@ -500,7 +512,12 @@ export class Animation implements IAnimation {
       }
     } else {
       if (this.onframe && this.playState === 'running') {
-        const event = new AnimationEvent(null, this, this.currentTime, baseTime);
+        const event = new AnimationEvent(
+          null,
+          this,
+          this.currentTime,
+          baseTime,
+        );
         this.onframe(event);
       }
       this._finishedFlag = false;

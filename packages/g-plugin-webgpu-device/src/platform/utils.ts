@@ -33,12 +33,14 @@ import type { Buffer_WebGPU } from './Buffer';
 import type { Sampler_WebGPU } from './Sampler';
 import type { QueryPool_WebGPU } from './QueryPool';
 
-export function translateTextureUsage(usage: TextureUsage): GPUTextureUsageFlags {
+export function translateTextureUsage(
+  usage: TextureUsage,
+): GPUTextureUsageFlags {
   let gpuUsage: GPUTextureUsageFlags = 0;
 
-  if (!!(usage & TextureUsage.Sampled))
+  if (usage & TextureUsage.Sampled)
     gpuUsage |= GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST;
-  if (!!(usage & TextureUsage.RenderTarget))
+  if (usage & TextureUsage.RenderTarget)
     gpuUsage |=
       GPUTextureUsage.RENDER_ATTACHMENT |
       GPUTextureUsage.TEXTURE_BINDING |
@@ -70,7 +72,9 @@ export function translateTextureFormat(format: Format): GPUTextureFormat {
   else throw new Error('whoops');
 }
 
-export function translateTextureDimension(dimension: TextureDimension): GPUTextureDimension {
+export function translateTextureDimension(
+  dimension: TextureDimension,
+): GPUTextureDimension {
   if (dimension === TextureDimension.n2D) return '2d';
   else if (dimension === TextureDimension.Cube) return '3d';
   else if (dimension === TextureDimension.n2DArray) return '3d';
@@ -104,7 +108,9 @@ function translateSampleType(type: SamplerFormatKind): GPUTextureSampleType {
   else throw new Error('whoops');
 }
 
-function translateViewDimension(dimension: TextureDimension): GPUTextureViewDimension {
+function translateViewDimension(
+  dimension: TextureDimension,
+): GPUTextureViewDimension {
   if (dimension === TextureDimension.n2D) return '2d';
   else if (dimension === TextureDimension.n2DArray) return '2d-array';
   else if (dimension === TextureDimension.n3D) return '3d';
@@ -142,7 +148,9 @@ export function translateQueryPoolType(type: QueryPoolType): GPUQueryType {
 }
 
 // @see https://www.w3.org/TR/webgpu/#primitive-state
-export function translateTopology(topology: PrimitiveTopology): GPUPrimitiveTopology {
+export function translateTopology(
+  topology: PrimitiveTopology,
+): GPUPrimitiveTopology {
   switch (topology) {
     case PrimitiveTopology.Triangles:
       return 'triangle-list';
@@ -191,9 +199,11 @@ export function translateBlendFactor(factor: BlendFactor): GPUBlendFactor {
   else if (factor === BlendFactor.Dst) return 'dst';
   else if (factor === BlendFactor.OneMinusDst) return 'one-minus-dst';
   else if (factor === BlendFactor.SrcAlpha) return 'src-alpha';
-  else if (factor === BlendFactor.OneMinusSrcAlpha) return 'one-minus-src-alpha';
+  else if (factor === BlendFactor.OneMinusSrcAlpha)
+    return 'one-minus-src-alpha';
   else if (factor === BlendFactor.DstAlpha) return 'dst-alpha';
-  else if (factor === BlendFactor.OneMinusDstAlpha) return 'one-minus-dst-alpha';
+  else if (factor === BlendFactor.OneMinusDstAlpha)
+    return 'one-minus-dst-alpha';
   else throw new Error('whoops');
 }
 
@@ -204,7 +214,9 @@ export function translateBlendMode(mode: BlendMode): GPUBlendOperation {
   else throw new Error('whoops');
 }
 
-export function translateBlendState(blendState: ChannelBlendState): GPUBlendComponent {
+export function translateBlendState(
+  blendState: ChannelBlendState,
+): GPUBlendComponent {
   return {
     operation: translateBlendMode(blendState.blendMode),
     srcFactor: translateBlendFactor(blendState.blendSrcFactor),
@@ -235,7 +247,9 @@ export function translateTargets(
   });
 }
 
-export function translateCompareMode(compareMode: CompareMode): GPUCompareFunction {
+export function translateCompareMode(
+  compareMode: CompareMode,
+): GPUCompareFunction {
   if (compareMode === CompareMode.Never) return 'never';
   else if (compareMode === CompareMode.Less) return 'less';
   else if (compareMode === CompareMode.Equal) return 'equal';
@@ -262,7 +276,9 @@ export function translateDepthStencilState(
   };
 }
 
-export function translateIndexFormat(format: Format | null): GPUIndexFormat | undefined {
+export function translateIndexFormat(
+  format: Format | null,
+): GPUIndexFormat | undefined {
   if (format === null) return undefined;
   else if (format === Format.U16_R) return 'uint16';
   else if (format === Format.U32_R) return 'uint32';
@@ -424,7 +440,9 @@ export function allocateAndCopyTypedBuffer(
       const buffer =
         sizeOrDstBuffer instanceof ArrayBuffer
           ? new Uint16Array(sizeOrDstBuffer)
-          : new Uint16Array(sizeInBytes ? sizeOrDstBuffer / 2 : sizeOrDstBuffer);
+          : new Uint16Array(
+              sizeInBytes ? sizeOrDstBuffer / 2 : sizeOrDstBuffer,
+            );
       if (copyBuffer) {
         buffer.set(new Uint16Array(copyBuffer));
       }
@@ -445,7 +463,9 @@ export function allocateAndCopyTypedBuffer(
       const buffer =
         sizeOrDstBuffer instanceof ArrayBuffer
           ? new Uint32Array(sizeOrDstBuffer)
-          : new Uint32Array(sizeInBytes ? sizeOrDstBuffer / 4 : sizeOrDstBuffer);
+          : new Uint32Array(
+              sizeInBytes ? sizeOrDstBuffer / 4 : sizeOrDstBuffer,
+            );
       if (copyBuffer) {
         buffer.set(new Uint32Array(copyBuffer));
       }
@@ -458,7 +478,9 @@ export function allocateAndCopyTypedBuffer(
       const buffer =
         sizeOrDstBuffer instanceof ArrayBuffer
           ? new Float32Array(sizeOrDstBuffer)
-          : new Float32Array(sizeInBytes ? sizeOrDstBuffer / 4 : sizeOrDstBuffer);
+          : new Float32Array(
+              sizeInBytes ? sizeOrDstBuffer / 4 : sizeOrDstBuffer,
+            );
       if (copyBuffer) {
         buffer.set(new Float32Array(copyBuffer));
       }

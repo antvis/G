@@ -43,7 +43,7 @@ export interface RenderInstUniform {
 }
 
 export class RenderInst {
-  sortKey: number = 0;
+  sortKey = 0;
 
   // Debugging pointer for whomever wants it...
   debug: any = null;
@@ -65,9 +65,9 @@ export class RenderInst {
 
   flags: RenderInstFlags = 0;
   private inputState: InputState | null = null;
-  private drawStart: number = 0;
-  private drawCount: number = 0;
-  private drawInstanceCount: number = 0;
+  private drawStart = 0;
+  private drawCount = 0;
+  private drawInstanceCount = 0;
 
   constructor() {
     this.renderPipelineDescriptor = {
@@ -105,18 +105,25 @@ export class RenderInst {
       o.renderPipelineDescriptor.megaStateDescriptor,
     );
     this.renderPipelineDescriptor.program = o.renderPipelineDescriptor.program;
-    this.renderPipelineDescriptor.inputLayout = o.renderPipelineDescriptor.inputLayout;
-    this.renderPipelineDescriptor.topology = o.renderPipelineDescriptor.topology;
+    this.renderPipelineDescriptor.inputLayout =
+      o.renderPipelineDescriptor.inputLayout;
+    this.renderPipelineDescriptor.topology =
+      o.renderPipelineDescriptor.topology;
     this.renderPipelineDescriptor.colorAttachmentFormats.length = Math.max(
       this.renderPipelineDescriptor.colorAttachmentFormats.length,
       o.renderPipelineDescriptor.colorAttachmentFormats.length,
     );
-    for (let i = 0; i < o.renderPipelineDescriptor.colorAttachmentFormats.length; i++)
+    for (
+      let i = 0;
+      i < o.renderPipelineDescriptor.colorAttachmentFormats.length;
+      i++
+    )
       this.renderPipelineDescriptor.colorAttachmentFormats[i] =
         o.renderPipelineDescriptor.colorAttachmentFormats[i];
     this.renderPipelineDescriptor.depthStencilAttachmentFormat =
       o.renderPipelineDescriptor.depthStencilAttachmentFormat;
-    this.renderPipelineDescriptor.sampleCount = o.renderPipelineDescriptor.sampleCount;
+    this.renderPipelineDescriptor.sampleCount =
+      o.renderPipelineDescriptor.sampleCount;
     this.inputState = o.inputState;
     this.uniformBuffer = o.uniformBuffer;
     this.uniforms = [...o.uniforms];
@@ -124,21 +131,27 @@ export class RenderInst {
     this.drawStart = o.drawStart;
     this.drawInstanceCount = o.drawInstanceCount;
     this.flags =
-      (this.flags & ~RenderInstFlags.InheritedFlags) | (o.flags & RenderInstFlags.InheritedFlags);
+      (this.flags & ~RenderInstFlags.InheritedFlags) |
+      (o.flags & RenderInstFlags.InheritedFlags);
     this.sortKey = o.sortKey;
     const tbd = this.bindingDescriptors[0],
       obd = o.bindingDescriptors[0];
     if (obd.bindingLayout !== null) this.setBindingLayout(obd.bindingLayout);
     for (
       let i = 0;
-      i < Math.min(tbd.uniformBufferBindings.length, obd.uniformBufferBindings.length);
+      i <
+      Math.min(
+        tbd.uniformBufferBindings.length,
+        obd.uniformBufferBindings.length,
+      );
       i++
     )
       tbd.uniformBufferBindings[i].wordCount =
         o.bindingDescriptors[0].uniformBufferBindings[i].wordCount;
     this.setSamplerBindingsFromTextureMappings(obd.samplerBindings);
     for (let i = 0; i < o.dynamicUniformBufferByteOffsets.length; i++)
-      this.dynamicUniformBufferByteOffsets[i] = o.dynamicUniformBufferByteOffsets[i];
+      this.dynamicUniformBufferByteOffsets[i] =
+        o.dynamicUniformBufferByteOffsets[i];
   }
 
   /**
@@ -174,13 +187,19 @@ export class RenderInst {
    * The {@see InputLayout} is used to construct the pipeline as part of the automatic pipeline building
    * facilities, while {@see InputState} is used for the render.
    */
-  setInputLayoutAndState(inputLayout: InputLayout | null, inputState: InputState | null): void {
+  setInputLayoutAndState(
+    inputLayout: InputLayout | null,
+    inputState: InputState | null,
+  ): void {
     this.inputState = inputState;
     this.renderPipelineDescriptor.inputLayout = inputLayout;
   }
 
   private setBindingLayout(bindingLayout: BindingLayoutDescriptor): void {
-    assert(bindingLayout.numUniformBuffers < this.dynamicUniformBufferByteOffsets.length);
+    assert(
+      bindingLayout.numUniformBuffers <
+        this.dynamicUniformBufferByteOffsets.length,
+    );
     this.renderPipelineDescriptor.bindingLayouts[0] = bindingLayout;
     this.bindingDescriptors[0].bindingLayout = bindingLayout;
 
@@ -189,7 +208,10 @@ export class RenderInst {
       i < bindingLayout.numUniformBuffers;
       i++
     )
-      this.bindingDescriptors[0].uniformBufferBindings.push({ buffer: null, wordCount: 0 });
+      this.bindingDescriptors[0].uniformBufferBindings.push({
+        buffer: null,
+        wordCount: 0,
+      });
     for (
       let i = this.bindingDescriptors[0].samplerBindings.length;
       i < bindingLayout.numSamplers;
@@ -211,21 +233,25 @@ export class RenderInst {
     this.setBindingLayout(bindingLayouts[0]);
   }
 
-  drawIndexes(indexCount: number, indexStart: number = 0): void {
+  drawIndexes(indexCount: number, indexStart = 0): void {
     this.flags = setBitFlagEnabled(this.flags, RenderInstFlags.Indexed, true);
     this.drawCount = indexCount;
     this.drawStart = indexStart;
     this.drawInstanceCount = 1;
   }
 
-  drawIndexesInstanced(indexCount: number, instanceCount: number, indexStart: number = 0): void {
+  drawIndexesInstanced(
+    indexCount: number,
+    instanceCount: number,
+    indexStart = 0,
+  ): void {
     this.flags = setBitFlagEnabled(this.flags, RenderInstFlags.Indexed, true);
     this.drawCount = indexCount;
     this.drawStart = indexStart;
     this.drawInstanceCount = instanceCount;
   }
 
-  drawPrimitives(primitiveCount: number, primitiveStart: number = 0): void {
+  drawPrimitives(primitiveCount: number, primitiveStart = 0): void {
     this.flags = setBitFlagEnabled(this.flags, RenderInstFlags.Indexed, false);
     this.drawCount = primitiveCount;
     this.drawStart = primitiveStart;
@@ -250,7 +276,11 @@ export class RenderInst {
       const { value } = uniform;
 
       // number | number[] | Float32Array
-      if (isNumber(value) || Array.isArray(value) || value instanceof Float32Array) {
+      if (
+        isNumber(value) ||
+        Array.isArray(value) ||
+        value instanceof Float32Array
+      ) {
         const array = isNumber(value) ? [value] : value;
         const formatByteSize = array.length > 4 ? 4 : array.length;
 
@@ -284,7 +314,14 @@ export class RenderInst {
     let offs = this.allocateUniformBuffer(bufferIndex, uboBuffer.length);
     const d = this.mapUniformBufferF32(bufferIndex);
     for (let i = 0; i < uboBuffer.length; i += 4) {
-      offs += fillVec4(d, offs, uboBuffer[i], uboBuffer[i + 1], uboBuffer[i + 2], uboBuffer[i + 3]);
+      offs += fillVec4(
+        d,
+        offs,
+        uboBuffer[i],
+        uboBuffer[i + 1],
+        uboBuffer[i + 2],
+        uboBuffer[i + 3],
+      );
     }
   }
 
@@ -325,7 +362,11 @@ export class RenderInst {
    * to be {@param wordOffset}. Use this if you have already allocated a uniform buffer chunk through
    * some other means and wish to directly assign it to this render inst.
    */
-  setUniformBufferOffset(bufferIndex: number, wordOffset: number, wordCount: number): void {
+  setUniformBufferOffset(
+    bufferIndex: number,
+    wordOffset: number,
+    wordCount: number,
+  ): void {
     this.dynamicUniformBufferByteOffsets[bufferIndex] = wordOffset << 2;
 
     const dst = this.bindingDescriptors[0].uniformBufferBindings[bufferIndex];
@@ -358,9 +399,15 @@ export class RenderInst {
    * SamplerBinding to record that it can be resolved later, and use {@see RenderInst.resolveLateSamplerBinding}
    * or equivalent to fill it in later.
    */
-  setSamplerBindingsFromTextureMappings(mappings: (SamplerBinding | null)[]): void {
+  setSamplerBindingsFromTextureMappings(
+    mappings: (SamplerBinding | null)[],
+  ): void {
     mappings = mappings.filter((m) => m);
-    for (let i = 0; i < this.bindingDescriptors[0].samplerBindings.length; i++) {
+    for (
+      let i = 0;
+      i < this.bindingDescriptors[0].samplerBindings.length;
+      i++
+    ) {
       const dst = this.bindingDescriptors[0].samplerBindings[i];
       const binding = mappings[i];
 
@@ -378,7 +425,11 @@ export class RenderInst {
   }
 
   hasLateSamplerBinding(name: string): boolean {
-    for (let i = 0; i < this.bindingDescriptors[0].samplerBindings.length; i++) {
+    for (
+      let i = 0;
+      i < this.bindingDescriptors[0].samplerBindings.length;
+      i++
+    ) {
       const dst = this.bindingDescriptors[0].samplerBindings[i];
       if (dst.lateBinding === name) return true;
     }
@@ -393,8 +444,15 @@ export class RenderInst {
    * This is intended to be called by high-level code, and is especially helpful when juggling render targets
    * for framebuffer effects.
    */
-  resolveLateSamplerBinding(name: string, binding: SamplerBinding | null): void {
-    for (let i = 0; i < this.bindingDescriptors[0].samplerBindings.length; i++) {
+  resolveLateSamplerBinding(
+    name: string,
+    binding: SamplerBinding | null,
+  ): void {
+    for (
+      let i = 0;
+      i < this.bindingDescriptors[0].samplerBindings.length;
+      i++
+    ) {
       const dst = this.bindingDescriptors[0].samplerBindings[i];
       if (dst.lateBinding === name) {
         if (binding === null) {
@@ -421,10 +479,17 @@ export class RenderInst {
    * By default, this is true.
    */
   setAllowSkippingIfPipelineNotReady(v: boolean): void {
-    this.flags = setBitFlagEnabled(this.flags, RenderInstFlags.AllowSkippingIfPipelineNotReady, v);
+    this.flags = setBitFlagEnabled(
+      this.flags,
+      RenderInstFlags.AllowSkippingIfPipelineNotReady,
+      v,
+    );
   }
 
-  private setAttachmentFormatsFromRenderPass(device: Device, passRenderer: RenderPass): void {
+  private setAttachmentFormatsFromRenderPass(
+    device: Device,
+    passRenderer: RenderPass,
+  ): void {
     const passDescriptor = device.queryRenderPass(passRenderer);
 
     let sampleCount = -1;
@@ -434,9 +499,12 @@ export class RenderInst {
           ? device.queryRenderTarget(passDescriptor.colorAttachment[i]!)
           : null;
       this.renderPipelineDescriptor.colorAttachmentFormats[i] =
-        colorAttachmentDescriptor !== null ? colorAttachmentDescriptor.pixelFormat : null;
+        colorAttachmentDescriptor !== null
+          ? colorAttachmentDescriptor.pixelFormat
+          : null;
       if (colorAttachmentDescriptor !== null) {
-        if (sampleCount === -1) sampleCount = colorAttachmentDescriptor.sampleCount;
+        if (sampleCount === -1)
+          sampleCount = colorAttachmentDescriptor.sampleCount;
         else assert(sampleCount === colorAttachmentDescriptor.sampleCount);
       }
     }
@@ -450,7 +518,8 @@ export class RenderInst {
         ? depthStencilAttachmentDescriptor.pixelFormat
         : null;
     if (depthStencilAttachmentDescriptor !== null) {
-      if (sampleCount === -1) sampleCount = depthStencilAttachmentDescriptor.sampleCount;
+      if (sampleCount === -1)
+        sampleCount = depthStencilAttachmentDescriptor.sampleCount;
       else assert(sampleCount == depthStencilAttachmentDescriptor.sampleCount);
     }
 
@@ -462,11 +531,13 @@ export class RenderInst {
     const device = cache.device;
     this.setAttachmentFormatsFromRenderPass(device, passRenderer);
 
-    const gfxPipeline = cache.createRenderPipeline(this.renderPipelineDescriptor);
+    const gfxPipeline = cache.createRenderPipeline(
+      this.renderPipelineDescriptor,
+    );
 
     const pipelineReady = device.pipelineQueryReady(gfxPipeline);
     if (!pipelineReady) {
-      if (!!(this.flags & RenderInstFlags.AllowSkippingIfPipelineNotReady)) {
+      if (this.flags & RenderInstFlags.AllowSkippingIfPipelineNotReady) {
         return false;
       }
       device.pipelineForceReady(gfxPipeline);
@@ -477,7 +548,11 @@ export class RenderInst {
     passRenderer.setInputState(this.inputState);
 
     // upload uniforms
-    for (let i = 0; i < this.bindingDescriptors[0].uniformBufferBindings.length; i++)
+    for (
+      let i = 0;
+      i < this.bindingDescriptors[0].uniformBufferBindings.length;
+      i++
+    )
       this.bindingDescriptors[0].uniformBufferBindings[i].buffer = assertExists(
         this.uniformBuffer.buffer,
       );
@@ -497,12 +572,20 @@ export class RenderInst {
       ...this.bindingDescriptors[0],
       pipeline: gfxPipeline,
     });
-    passRenderer.setBindings(0, gfxBindings, this.dynamicUniformBufferByteOffsets);
+    passRenderer.setBindings(
+      0,
+      gfxBindings,
+      this.dynamicUniformBufferByteOffsets,
+    );
 
     // if (this.drawInstanceCount > 0) {
     if (this.drawInstanceCount > 1) {
       assert(!!(this.flags & RenderInstFlags.Indexed));
-      passRenderer.drawIndexedInstanced(this.drawCount, this.drawStart, this.drawInstanceCount);
+      passRenderer.drawIndexedInstanced(
+        this.drawCount,
+        this.drawStart,
+        this.drawInstanceCount,
+      );
     } else if (this.flags & RenderInstFlags.Indexed) {
       passRenderer.drawIndexed(this.drawCount, this.drawStart);
     } else {

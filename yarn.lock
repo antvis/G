@@ -6447,7 +6447,7 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^16", "@types/react@^16.9.35":
+"@types/react@^15.x || ^16.x", "@types/react@^16", "@types/react@^16.9.35":
   version "16.14.34"
   resolved "https://registry.npm.alibaba-inc.com/@types/react/download/@types/react-16.14.34.tgz#d129324ffda312044e1c47aab18696e4ed493282"
   integrity sha512-b99nWeGGReLh6aKBppghVqp93dFJtgtDOzc8NXM6hewD8PQ2zZG5kBLgbx+VJr7Q7WBMjHxaIl3dwpwwPIUgyA==
@@ -6931,7 +6931,7 @@
   resolved "https://registry.npm.alibaba-inc.com/@umijs/did-you-know/download/@umijs/did-you-know-1.0.1.tgz#f8c26d62278b82f7642da3b87868ea394d4eb448"
   integrity sha512-FnKZbWb/X3Nk5vmQ4u2qEtB20+fv1kt4WCSvMIhln/kjh+oS6RA4WfvB+EHsfxdotD4qSaj5cqIDgbCYoCNzEA==
 
-"@umijs/fabric@^2.5.13", "@umijs/fabric@^2.5.6":
+"@umijs/fabric@^2.5.6":
   version "2.14.0"
   resolved "https://registry.npm.alibaba-inc.com/@umijs/fabric/download/@umijs/fabric-2.14.0.tgz#dd3b3188ae7cb6ffc52e1aaf3e33ba5b350177de"
   integrity sha512-tiqKWYFwK9dgrdC8U1IjdIqeIv6W3NhROJHb07u1D72KWpGoN2U7/gVRtyMq7psBSK4EwHyXL6sFtIGUibs2ng==
@@ -8244,7 +8244,7 @@ array.prototype.find@^2.1.1:
     es-abstract "^1.20.4"
     es-shim-unscopables "^1.0.0"
 
-array.prototype.flat@^1.2.1, array.prototype.flat@^1.2.3:
+array.prototype.flat@^1.2.1, array.prototype.flat@^1.2.3, array.prototype.flat@^1.2.5:
   version "1.3.1"
   resolved "https://registry.npm.alibaba-inc.com/array.prototype.flat/download/array.prototype.flat-1.3.1.tgz#ffc6576a7ca3efc2f46a143b9d1dda9b4b3cf5e2"
   integrity sha512-roTU0KWIOmJ4DRLmwKd19Otg0/mT3qPNt0Qb3GWW8iObuZXxrjB/pzn0R3hqpRSWg4HCwqx+0vwOnWnvlOyeIA==
@@ -14423,12 +14423,46 @@ eslint-formatter-pretty@^4.0.0:
     string-width "^4.2.0"
     supports-hyperlinks "^2.0.0"
 
+eslint-import-resolver-node@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.npm.alibaba-inc.com/eslint-import-resolver-node/download/eslint-import-resolver-node-0.3.6.tgz#4048b958395da89668252001dbd9eca6b83bacbd"
+  integrity sha1-QEi5WDldqJZoJSAB29nsprg7rL0=
+  dependencies:
+    debug "^3.2.7"
+    resolve "^1.20.0"
+
+eslint-module-utils@^2.7.3:
+  version "2.7.4"
+  resolved "https://registry.npm.alibaba-inc.com/eslint-module-utils/download/eslint-module-utils-2.7.4.tgz#4f3e41116aaf13a20792261e61d3a2e7e0583974"
+  integrity sha512-j4GT+rqzCoRKHwURX7pddtIPGySnX9Si/cgMI5ztrcqOPtk5dDEeZ34CQVPphnqkJytlc97Vuk05Um2mJ3gEQA==
+  dependencies:
+    debug "^3.2.7"
+
 eslint-plugin-babel@^5.3.0:
   version "5.3.1"
   resolved "https://registry.npm.alibaba-inc.com/eslint-plugin-babel/download/eslint-plugin-babel-5.3.1.tgz#75a2413ffbf17e7be57458301c60291f2cfbf560"
   integrity sha1-daJBP/vxfnvldFgwHGApHyz79WA=
   dependencies:
     eslint-rule-composer "^0.3.0"
+
+eslint-plugin-import@^2.26.0:
+  version "2.26.0"
+  resolved "https://registry.npm.alibaba-inc.com/eslint-plugin-import/download/eslint-plugin-import-2.26.0.tgz#f812dc47be4f2b72b478a021605a59fc6fe8b88b"
+  integrity sha512-hYfi3FXaM8WPLf4S1cikh/r4IxnO6zrhZbEGz2b660EJRbuxgpDS5gkCuYgGWg2xxh2rBuIr4Pvhve/7c31koA==
+  dependencies:
+    array-includes "^3.1.4"
+    array.prototype.flat "^1.2.5"
+    debug "^2.6.9"
+    doctrine "^2.1.0"
+    eslint-import-resolver-node "^0.3.6"
+    eslint-module-utils "^2.7.3"
+    has "^1.0.3"
+    is-core-module "^2.8.1"
+    is-glob "^4.0.3"
+    minimatch "^3.1.2"
+    object.values "^1.1.5"
+    resolve "^1.22.0"
+    tsconfig-paths "^3.14.1"
 
 eslint-plugin-jest@24.3.6:
   version "24.3.6"
@@ -18452,7 +18486,7 @@ is-color-stop@^1.0.0:
     rgb-regex "^1.0.1"
     rgba-regex "^1.0.0"
 
-is-core-module@^2.5.0, is-core-module@^2.9.0:
+is-core-module@^2.5.0, is-core-module@^2.8.1, is-core-module@^2.9.0:
   version "2.11.0"
   resolved "https://registry.npm.alibaba-inc.com/is-core-module/download/is-core-module-2.11.0.tgz#ad4cb3e3863e814523c96f3f58d26cc570ff0144"
   integrity sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==
@@ -22789,10 +22823,17 @@ moment@~2.24.0:
   resolved "https://registry.npm.alibaba-inc.com/moment/download/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
 
-monaco-editor@^0.25.0:
-  version "0.25.2"
-  resolved "https://registry.npm.alibaba-inc.com/monaco-editor/download/monaco-editor-0.25.2.tgz#119e2b15bbd968a1a99c03cac9c329316d7c37e9"
-  integrity sha1-EZ4rFbvZaKGpnAPKycMpMW18N+k=
+monaco-editor-webpack-plugin@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.npm.alibaba-inc.com/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-1.9.1.tgz#eb4bbb1c5e5bfb554541c1ae1542e74c2a9f43fd"
+  integrity sha1-60u7HF5b+1VFQcGuFULnTCqfQ/0=
+  dependencies:
+    loader-utils "^1.2.3"
+
+monaco-editor@0.20.0, monaco-editor@^0.25.0:
+  version "0.20.0"
+  resolved "https://registry.npm.alibaba-inc.com/monaco-editor/download/monaco-editor-0.20.0.tgz#5d5009343a550124426cb4d965a4d27a348b4dea"
+  integrity sha1-XVAJNDpVASRCbLTZZaTSejSLTeo=
 
 moo@^0.5.0, moo@^0.5.1:
   version "0.5.2"
@@ -23281,30 +23322,10 @@ normalize-selector@^0.2.0:
   resolved "https://registry.npm.alibaba-inc.com/normalize-selector/download/normalize-selector-0.2.0.tgz#d0b145eb691189c63a78d201dc4fdb1293ef0c03"
   integrity sha1-0LFF62kRicY6eNIB3E/bEpPvDAM=
 
-normalize-url@1.9.1, normalize-url@^1.0.0:
-  version "1.9.1"
-  resolved "https://registry.npm.alibaba-inc.com/normalize-url/download/normalize-url-1.9.1.tgz#2cc0d66b31ea23036458436e3620d85954c66c3c"
-  integrity sha1-LMDWazHqIwNkWENuNiDYWVTGbDw=
-  dependencies:
-    object-assign "^4.0.1"
-    prepend-http "^1.0.0"
-    query-string "^4.1.0"
-    sort-keys "^1.0.0"
-
-normalize-url@^3.0.0:
-  version "3.3.0"
-  resolved "https://registry.npm.alibaba-inc.com/normalize-url/download/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
-  integrity sha1-suHE3E98bVd0PfczpPWXjRhlBVk=
-
-normalize-url@^4.1.0:
+normalize-url@1.9.1, normalize-url@^1.0.0, normalize-url@^3.0.0, normalize-url@^4.0.1, normalize-url@^4.1.0, normalize-url@^6.1.0:
   version "4.5.1"
   resolved "https://registry.npm.alibaba-inc.com/normalize-url/download/normalize-url-4.5.1.tgz#0dd90cf1288ee1d1313b87081c9a5932ee48518a"
   integrity sha1-DdkM8SiO4dExO4cIHJpZMu5IUYo=
-
-normalize-url@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.npm.alibaba-inc.com/normalize-url/download/normalize-url-6.1.0.tgz#40d0885b535deffe3f3147bec877d05fe4c5668a"
-  integrity sha1-QNCIW1Nd7/4/MUe+yHfQX+TFZoo=
 
 now-and-later@^2.0.0:
   version "2.0.1"
@@ -25596,7 +25617,7 @@ prelude-ls@~1.1.2:
   resolved "https://registry.npm.alibaba-inc.com/prelude-ls/download/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
-prepend-http@^1.0.0, prepend-http@^1.0.1:
+prepend-http@^1.0.1:
   version "1.0.4"
   resolved "https://registry.npm.alibaba-inc.com/prepend-http/download/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=
@@ -26022,14 +26043,6 @@ qs@~6.5.2:
   version "6.5.3"
   resolved "https://registry.npm.alibaba-inc.com/qs/download/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
   integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
-
-query-string@^4.1.0:
-  version "4.3.4"
-  resolved "https://registry.npm.alibaba-inc.com/query-string/download/query-string-4.3.4.tgz#bbb693b9ca915c232515b228b1a02b609043dbeb"
-  integrity sha1-u7aTucqRXCMlFbIosaArYJBD2+s=
-  dependencies:
-    object-assign "^4.1.0"
-    strict-uri-encode "^1.0.0"
 
 query-string@^6.13.6, query-string@^6.13.8:
   version "6.14.1"
@@ -27457,6 +27470,14 @@ react-merge-refs@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npm.alibaba-inc.com/react-merge-refs/download/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
   integrity sha1-c9iLiSxsaMu3pm4IAPqjdPTDiwY=
+
+react-monaco-editor@0.34.0:
+  version "0.34.0"
+  resolved "https://registry.npm.alibaba-inc.com/react-monaco-editor/download/react-monaco-editor-0.34.0.tgz#14ec8b10d448bf11f85f711ab9d91117bc46b3b8"
+  integrity sha1-FOyLENRIvxH4X3EaudkRF7xGs7g=
+  dependencies:
+    "@types/react" "^15.x || ^16.x"
+    prop-types "^15.7.2"
 
 react-perfect-scrollbar@^1.4.4:
   version "1.5.8"
@@ -29613,15 +29634,10 @@ side-channel@^1.0.4:
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
 
-signal-exit@^3.0.0, signal-exit@^3.0.2:
+signal-exit@3.0.3, signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.7:
   version "3.0.3"
   resolved "https://registry.npm.alibaba-inc.com/signal-exit/download/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha1-oUEMLt2PB3sItOJTyOrPyvBXRhw=
-
-signal-exit@^3.0.7:
-  version "3.0.7"
-  resolved "https://registry.npm.alibaba-inc.com/signal-exit/download/signal-exit-3.0.7.tgz#a9a1767f8af84155114eaabd73f99273c8f59ad9"
-  integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
 
 signale@1.4.0, signale@^1.3.0, signale@^1.4.0:
   version "1.4.0"
@@ -29918,13 +29934,6 @@ sonic-boom@^2.2.1:
   integrity sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==
   dependencies:
     atomic-sleep "^1.0.0"
-
-sort-keys@^1.0.0:
-  version "1.1.2"
-  resolved "https://registry.npm.alibaba-inc.com/sort-keys/download/sort-keys-1.1.2.tgz#441b6d4d346798f1b4e49e8920adfba0e543f9ad"
-  integrity sha1-RBttTTRnmPG05J6JIK37oOVD+a0=
-  dependencies:
-    is-plain-obj "^1.0.0"
 
 sort-keys@^2.0.0:
   version "2.0.0"
@@ -30348,11 +30357,6 @@ stream-slice@^0.1.2:
   version "0.1.2"
   resolved "https://registry.npm.alibaba-inc.com/stream-slice/download/stream-slice-0.1.2.tgz#2dc4f4e1b936fb13f3eb39a2def1932798d07a4b"
   integrity sha1-LcT04bk2+xPz6zmi3vGTJ5jQeks=
-
-strict-uri-encode@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.npm.alibaba-inc.com/strict-uri-encode/download/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
-  integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
 
 strict-uri-encode@^2.0.0:
   version "2.0.0"
@@ -31715,7 +31719,7 @@ ts-pnp@^1.1.2:
   resolved "https://registry.npm.alibaba-inc.com/ts-pnp/download/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha1-pQCtCEsHmPHDBxrzkeZZEshrypI=
 
-tsconfig-paths@^3.10.1:
+tsconfig-paths@^3.10.1, tsconfig-paths@^3.14.1:
   version "3.14.1"
   resolved "https://registry.npm.alibaba-inc.com/tsconfig-paths/download/tsconfig-paths-3.14.1.tgz#ba0734599e8ea36c862798e920bcf163277b137a"
   integrity sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==

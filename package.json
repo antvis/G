@@ -60,7 +60,6 @@
     "@types/node": "^14.0.23",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
-    "@umijs/fabric": "^2.5.13",
     "antd": "^4.2.4",
     "canvas": "^2.9.1",
     "chai": "^4.3.4",
