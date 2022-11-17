@@ -2,7 +2,7 @@
 title: Introduction
 order: -100
 redirect_from:
-    - /en/docs/api
+    - /en/api
 ---
 
 We provide the Canvas as a core object in the `@antv/g`, which is a "mini-browser" from a rendering perspective implemented in the browser and hosts three types of objects:

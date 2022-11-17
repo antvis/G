@@ -9,7 +9,7 @@ Hand-drawn style rendering using the Canvas version of [rough.js](https://roughj
 
 ## Usage
 
-First you need to use the [g-canvas](/en/docs/api/renderer/canvas) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer).
+First you need to use the [g-canvas](/en/api/renderer/canvas) renderer, register the plugin and it will replace the rendering of 2D graphics in [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
 
 ```js
 import { Canvas } from '@antv/g';
@@ -31,7 +31,7 @@ const canvas = new Canvas({
 
 Note that once the plugin is used, "Dirty Rectangle Rendering" is not available, which means that any change in the style properties of any graphic will result in a full redraw of the canvas.
 
-In addition, we support all 2D graphics, among which [Text](/en/docs/api/basic/text), [Image](/en/docs/api/basic/image) and [HTML](/en/docs/api/basic/html) have no hand-drawn style.
+In addition, we support all 2D graphics, among which [Text](/en/api/basic/text), [Image](/en/api/basic/image) and [HTML](/en/api/basic/html) have no hand-drawn style.
 
 ## Style properties
 
@@ -39,7 +39,7 @@ In addition to the style properties of 2D graphics, the configuration items prov
 
 ### opacity
 
-rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer).
+rough.js doesn't support `opacity`, but we can achieve it with `globalAlpha`, same as [g-plugin-canvas-renderer](/en/plugins/canvas-renderer).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -55,7 +55,7 @@ rough.js does not support `shadow` related effects, but we do provide them.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
 
-Configuration items can be found in [shadow](/en/docs/api/basic/display-object#shadow).
+Configuration items can be found in [shadow](/en/api/basic/display-object#shadow).
 
 ```js
 circle.style.shadowColor = '#000';
@@ -236,6 +236,6 @@ When filling a shape using the zigzag-line style, this property indicates the no
 
 ## Picking
 
-In [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) we use the spatial index for quick filtering and the mathematical calculation of the geometric definition of the figure for exact picking.
+In [g-plugin-canvas-picker](/en/plugins/canvas-picker) we use the spatial index for quick filtering and the mathematical calculation of the geometric definition of the figure for exact picking.
 
 However, in the hand-drawn style, it seems impossible and unnecessary to do exact picking, so we still use this plugin.

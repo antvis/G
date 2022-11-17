@@ -9,7 +9,7 @@ order: 3
 
 ## 安装方式
 
-首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
+首先需要使用 `g-canvas` 渲染器，注册该插件，它会替换掉 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 中对于 2D 图形的渲染效果：
 
 ```js
 import { Canvas } from '@antv/g';
@@ -31,7 +31,7 @@ const canvas = new Canvas({
 
 需要注意的是一旦使用该插件，“脏矩形渲染”便无法使用，这意味着任何图形的任何样式属性改变，都会导致画布的全量重绘。
 
-另外，我们支持所有 2D 图形，其中 [Text](/zh/docs/api/basic/text)、[Image](/zh/docs/api/basic/image) 和 [HTML](/zh/docs/api/basic/html) 无手绘风格。
+另外，我们支持所有 2D 图形，其中 [Text](/zh/api/basic/text)、[Image](/zh/api/basic/image) 和 [HTML](/zh/api/basic/html) 无手绘风格。
 
 ## 样式属性
 
@@ -39,7 +39,7 @@ const canvas = new Canvas({
 
 ### opacity
 
-rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 一样。
+rough.js 并不支持 `opacity`，但我们可以通过 `globalAlpha` 实现，这一点和 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 一样。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gl6ETYiyCCQAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -49,7 +49,7 @@ rough.js 并不支持 `shadow` 相关效果，但我们提供了相关效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*JKLVSrYk7BYAAAAAAAAAAAAAARQnAQ" width="300">
 
-配置项可以参考 [阴影](/zh/docs/api/basic/display-object#阴影)：
+配置项可以参考 [阴影](/zh/api/basic/display-object#阴影)：
 
 ```js
 circle.style.shadowColor = '#000';
@@ -228,6 +228,6 @@ circle.style.disableMultiStrokeFill = true;
 
 ## 拾取
 
-在 [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
+在 [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 中我们使用空间索引快速过滤，再配合图形几何定义的数学计算完成精确拾取。
 
 但在手绘风格下，似乎无法也没必要做精确拾取，因此我们仍使用该插件。

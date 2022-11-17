@@ -15,7 +15,7 @@ p { color: green; }
 <p>This paragraph has <em>emphasized text</em> in it.</p>
 ```
 
-我们在 G 中实现了一套样式系统，同样支持继承。例如我们创建一个 [Text](/zh/docs/api/basic/text)，并未指定 `fontSize` 或者 `fontFamily` 这些属性，但它依然可以被渲染出来，因为它加入画布后继承了根节点上的默认样式：`fontSize: '16px'; fontFamily: 'sans-serif'`：
+我们在 G 中实现了一套样式系统，同样支持继承。例如我们创建一个 [Text](/zh/api/basic/text)，并未指定 `fontSize` 或者 `fontFamily` 这些属性，但它依然可以被渲染出来，因为它加入画布后继承了根节点上的默认样式：`fontSize: '16px'; fontFamily: 'sans-serif'`：
 
 ```js
 const text = new Text({

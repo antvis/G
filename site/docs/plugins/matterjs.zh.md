@@ -5,7 +5,7 @@ order: -1
 
 支持 [matter.js](https://brm.io/matter-js/) 物理引擎（仅支持刚体）。2D 图形初始化后开始仿真，除了受重力和表面摩擦力，在任意时刻也可以施加外力改变图形的位置和旋转角度。
 
-支持以下 2D 图形：[Circle](/zh/docs/api/basic/circle)、[Rect](/zh/docs/api/basic/rect)、[Line](/zh/docs/api/basic/line)、[Image](/zh/docs/api/basic/image)、[Polygon](/zh/docs/api/basic/polygon)
+支持以下 2D 图形：[Circle](/zh/api/basic/circle)、[Rect](/zh/api/basic/rect)、[Line](/zh/api/basic/line)、[Image](/zh/api/basic/image)、[Polygon](/zh/api/basic/polygon)
 
 在该[示例](/zh/examples/plugins#matterjs)中，我们创建了一系列动态物体，让它们进行自由落体，最终停留在“U 形槽”中。
 
@@ -38,7 +38,7 @@ new Circle({
 
 ### debug
 
-matter.js  本身支持渲染。开启后配合 [debugContainer](/zh/docs/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
+matter.js  本身支持渲染。开启后配合 [debugContainer](/zh/plugins/matterjs#debugcontainer) 可以绘制物理引擎世界中每个对象的 wireframe，便于 debug：
 
 ```js
 const plugin = new PluginMatterjs({

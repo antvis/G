@@ -2,18 +2,18 @@
 title: Introduction
 order: -99
 redirect_from:
-    - /en/docs/api/renderer
+    - /en/api/renderer
 ---
 
 Renderers use the underlying rendering API to draw various types of graphics. We currently provide the following renderers, which are:
 
--   [g-canvas](/en/docs/api/renderer/canvas) based on Canvas2D API
--   [g-canvaskit](/en/docs/api/renderer/canvaskit) based on Canvaskit / Skia
--   [g-svg](/en/docs/api/renderer/svg) based on SVG
--   [g-webgl](/en/docs/api/renderer/webgl) based on WebGL 2/1
--   [g-webgpu](/en/docs/api/renderer/webgpu) based on WebGPU
+-   [g-canvas](/en/api/renderer/canvas) based on Canvas2D API
+-   [g-canvaskit](/en/api/renderer/canvaskit) based on Canvaskit / Skia
+-   [g-svg](/en/api/renderer/svg) based on SVG
+-   [g-webgl](/en/api/renderer/webgl) based on WebGL 2/1
+-   [g-webgpu](/en/api/renderer/webgpu) based on WebGPU
 
-The renderer consists of a rendering context and a set of [plugins](/en/docs/plugins/intro) that allow the capabilities of the renderer to be dynamically extended at runtime.
+The renderer consists of a rendering context and a set of [plugins](/en/plugins) that allow the capabilities of the renderer to be dynamically extended at runtime.
 
 Using the `g-canvas` renderer as an example, the basic usage is as follows.
 
@@ -68,7 +68,7 @@ We provide a number of ways to operate the plug-in.
 
 ### registerPlugin
 
-Renders can dynamically add plugins at runtime to extend their capabilities, e.g. `g-webgl` can render 3D scenes via [g-pluin-3d](/en/docs/plugins/3d).
+Renders can dynamically add plugins at runtime to extend their capabilities, e.g. `g-webgl` can render 3D scenes via [g-pluin-3d](/en/plugins/3d).
 
 ```js
 import { Plugin } from '@antv/g-plugin-3d';

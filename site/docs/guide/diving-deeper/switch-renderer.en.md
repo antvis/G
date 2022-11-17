@@ -3,18 +3,18 @@ title: Choose a renderer
 order: 99
 ---
 
-通过场景图描述待渲染对象后，我们需要将它们交给渲染器。使用何种渲染器由用户按需引入，并且可以在运行时切换。
+After describing the objects to be rendered by the scene graph, we need to give them to the renderer. Which renderer to use is introduced by the user on demand and can be switched at runtime.
 
-## 按需引入渲染器
+## Use renderer on demand
 
-目前我们提供了三种渲染器：`@antv/g-canvas/svg/webgl`，用户可以像插件一样按需引入，但至少需要一种：
+We currently provide a variety of [renderers](/en/api/renderer/intro) that users can introduce on-demand like plugins, but at least one is required.
 
 ```js
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 ```
 
-这样在创建 `Canvas` 画布时可以选择引入的渲染器之一，例如我们引入了 Canvas 和 WebGL 渲染器，就可以在两者之间选择：
+This allows you to choose one of the renderers introduced when creating [Canvas](/zh/api/canvas/intro), e.g. if we introduce a Canvas and a WebGL renderer, we can choose between the two.
 
 ```js
 import { Canvas } from '@antv/g';
@@ -22,15 +22,16 @@ const canvas = new Canvas({
     container: 'container',
     width: 600,
     height: 500,
+    // renderer: new CanvasRenderer(),
     renderer: new WebGLRenderer(),
 });
 ```
 
-很多渲染引擎会为用户选择默认渲染器，例如 Pixi.js 会优先使用 WebGL，如果不支持则降级成 Canvas。在 G 中这个选择权交给用户。
+Many rendering engines choose the default renderer for the user, for example Pixi.js gives preference to WebGL and downgrades to Canvas if it is not supported. in G this choice is left to the user.
 
-## 运行时切换
+## Switching at runtime
 
-如果引入了多个渲染器，可以在运行时切换。目前 G 官网中的所有 DEMO 都可以在 `renderer` 面板中切换，并不会中断动画效果。再比如 G6 中可以通过节点和边的数目动态判断，是否需要切换到 WebGL 渲染器。
+If multiple renderers are introduced, they can be switched at runtime. Currently all DEMOs on the G website can be switched in the `renderer` panel without interrupting the animation. In G6, for example, you can dynamically determine whether you need to switch to the WebGL renderer by the number of nodes and edges.
 
 ```js
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -45,7 +46,3 @@ if (tooManyShapes) {
     canvas.setRenderer(svgRenderer);
 }
 ```
-
-## [WIP]自定义渲染器
-
-如果已有的渲染器满足不了新的渲染环境，可以按照规范自定义新的渲染器。

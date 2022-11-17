@@ -10,15 +10,15 @@ order: -3
 
 熟悉 [DOM 事件流](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) 的开发者对以下概念肯定不陌生：
 
--   事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 [EventTarget](/zh/docs/api/builtin-objects/event-target)
+-   事件对象上有一个指向 EventTarget 的引用，在 DOM 中自然是 DOM 元素，在 G 中是 [EventTarget](/zh/api/builtin-objects/event-target)
 -   事件流包含捕获和冒泡阶段，可以通过事件对象上的某些方法介入它们
 -   可以为某个事件添加一个或多个监听器，它们按照注册顺序依次触发
 
-下图展示了事件传播的三个阶段，在捕获阶段自顶向下依次触发监听器，到达目标节点后向上冒泡。在监听器中可以通过 [eventPhase](/zh/docs/api/event#eventphase) 获取当前所处的阶段。下图来自 https://javascript.info/bubbling-and-capturing#capturing
+下图展示了事件传播的三个阶段，在捕获阶段自顶向下依次触发监听器，到达目标节点后向上冒泡。在监听器中可以通过 [eventPhase](/zh/api/event#eventphase) 获取当前所处的阶段。下图来自 https://javascript.info/bubbling-and-capturing#capturing
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zJBbSL2D5mkAAAAAAAAAAAAAARQnAQ" width="500" alt="event capture">
 
-目前我们支持以下[基础事件](/zh/docs/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
+目前我们支持以下[基础事件](/zh/api/event#type)，尽可能兼容了 DOM 事件流，因此在下面的很多 API 介绍中我们都附上了 DOM Event API 对应的参考链接。
 
 例如我们想给这个圆形增加简单的鼠标移入/移出的交互效果，[示例](/zh/examples/event#shapes)
 
@@ -84,7 +84,7 @@ Mouse 系列：
 -   rightup 鼠标右键抬起
 -   mouseupoutside 鼠标左键抬起时与按下时图形不同
 -   rightupoutside 鼠标右键抬起与按下时图形不同
--   click 单击 & 双击 [如何区分?](/zh/docs/api/event#鼠标双击事件)
+-   click 单击 & 双击 [如何区分?](/zh/api/event#鼠标双击事件)
 -   mousemove 鼠标持续在该图形上移动
 -   mouseover 鼠标从该图形上移入，会冒泡
 -   mouseout 鼠标从该图形上移出，会冒泡
@@ -158,7 +158,7 @@ target.addEventListener(type, listener, useCapture);
 
 其中参数为：
 
--   type 事件名称，[内置标准事件](/zh/docs/api/event#type) 或[自定义事件名]()
+-   type 事件名称，[内置标准事件](/zh/api/event#type) 或[自定义事件名]()
 -   listener 事件监听器，支持以下两种写法：
     -   处理函数 `Function`
     -   [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
@@ -195,7 +195,7 @@ circle.addEventListener('mouseenter', () => {});
 circle.on('mouseenter', () => {});
 ```
 
-关于监听器内 this 的指向问题可以参考[该小节](/zh/docs/api/event#事件监听器内-this-指向问题)。
+关于监听器内 this 的指向问题可以参考[该小节](/zh/api/event#事件监听器内-this-指向问题)。
 
 ### removeEventListener
 

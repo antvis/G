@@ -3,7 +3,7 @@ title: webgpu-graph
 order: 6
 ---
 
-We refer to [cuGraph](https://github.com/rapidsai/cugraph) and other CUDA implementations to implement common graph analysis algorithms based on the WebGPU capabilities behind [g-plugin-gpgpu](/en/docs/plugins/gpgpu) to achieve large-scale node edge data volume.
+We refer to [cuGraph](https://github.com/rapidsai/cugraph) and other CUDA implementations to implement common graph analysis algorithms based on the WebGPU capabilities behind [g-plugin-gpgpu](/en/plugins/gpgpu) to achieve large-scale node edge data volume.
 
 This is a significant improvement over the [CPU serial version](https://github.com/antvis/algorithm) currently offered by G6.
 
@@ -34,7 +34,7 @@ document.head.appendChild(tokenElement);
 
 ### Graph data format
 
-We use G6's [graph data format](https://g6.antv.vision/en/docs/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87), which is also the first fixed of all the following algorithms parameters.
+We use G6's [graph data format](https://g6.antv.vision/en/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87), which is also the first fixed of all the following algorithms parameters.
 
 ```js
 const data = {
@@ -67,8 +67,8 @@ If the data format does not meet the above requirements, the algorithm will not 
 
 We offer the following two ways to use it.
 
--   [Canvas](/en/docs/api/canvas) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
--   There is already a [Canvas](/en/docs/api/canvas) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
+-   [Canvas](/en/api/canvas) without G. You only want to use it to execute the algorithm, no rendering is involved. This is also the easiest way to use it.
+-   There is already a [Canvas](/en/api/canvas) for G, e.g. it is being used for rendering, and only the algorithm needs to be called at this point.
 
 ### Method 1
 
@@ -87,9 +87,9 @@ const graph = new WebGPUGraph();
 
 If you are already using G's Canvas for rendering, you can reuse it and do the following.
 
--   Register [g-plugin-gpgpu](/en/docs/plugins/gpgpu)
+-   Register [g-plugin-gpgpu](/en/plugins/gpgpu)
 -   Waiting for the canvas to initialize
--   Get GPU [Device](/en/docs/plugins/device-renderer#device)
+-   Get GPU [Device](/en/plugins/device-renderer#device)
 -   The algorithm is called, and the first parameter of the algorithm is the Device obtained in the previous step
 
 ```js

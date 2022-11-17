@@ -2,17 +2,17 @@
 title: Web Animations API
 order: -4
 redirect_from:
-    - /en/docs/api/animation
+    - /en/api/animation
 ---
 
 Referring to the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API), we add animation capabilities to each DisplayObject.
 
 Currently we support Keyframe based animations, where the user needs to define a series of keyframes, each of which can contain parameters such as transformation attributes, frame offsets, easing functions, etc. G internally interpolates the values of each attribute at the current time and applies them to the target graphics (as shown below). In addition, the transformation of some special attributes will bring special animation effects, for example:
 
--   Using `offsetDistance` in [path animation](/en/docs/api/animation/waapi#path-animation)
--   Using `lineDashOffset` in [marching ant animation](/en/docs/api/animation/waapi#marching-ant-animation)
--   Using `lineDash` in [stroke animation](/en/docs/api/animation/waapi#stroke-animation)
--   Using `path` in [morphing animation](/en/docs/api/animation/waapi#morping)
+-   Using `offsetDistance` in [path animation](/en/api/animation/waapi#path-animation)
+-   Using `lineDashOffset` in [marching ant animation](/en/api/animation/waapi#marching-ant-animation)
+-   Using `lineDash` in [stroke animation](/en/api/animation/waapi#stroke-animation)
+-   Using `path` in [morphing animation](/en/api/animation/waapi#morping)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kF2uS4gpDh0AAAAAAAAAAAAAARQnAQ)
 
@@ -107,13 +107,13 @@ circle.animate(
 );
 ```
 
-The elements in the keyframes array are [Keyframe](/en/docs/api/animation/waapi#keyframe).
+The elements in the keyframes array are [Keyframe](/en/api/animation/waapi#keyframe).
 
 #### options
 
 `options` supports two types.
 
--   [EffectTiming](/en/docs/api/animation/waapi#effecttiming)
+-   [EffectTiming](/en/api/animation/waapi#effecttiming)
 -   `number` is equivalent to `{ duration }`
 
 Therefore the following two ways of writing are equivalent.
@@ -131,7 +131,7 @@ circle.animate(keyframes, 100);
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
 
-Return [KeyframeEffect](/en/docs/api/animation/waapi#keyframeeffect) object. The animation effect can be adjusted later at runtime, e.g. by modifying the easing function, etc.
+Return [KeyframeEffect](/en/api/animation/waapi#keyframeeffect) object. The animation effect can be adjusted later at runtime, e.g. by modifying the easing function, etc.
 
 ```js
 const effect = animation.effect;
@@ -343,7 +343,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation/updatePlaybackRate
 
 ## KeyframeEffect
 
-Animation effect, you can get the timing object corresponding to this effect by `getTiming()`. It consists of two parts: a set of Keyframe and [EffectTiming](/en/docs/api/animation/waapi#effecttiming).
+Animation effect, you can get the timing object corresponding to this effect by `getTiming()`. It consists of two parts: a set of Keyframe and [EffectTiming](/en/api/animation/waapi#effecttiming).
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/effect
 
@@ -363,7 +363,7 @@ animation.effect.target; // circle
 
 ### getTiming()
 
-Return [EffectTiming](/en/docs/api/animation/waapi#effecttiming) object.
+Return [EffectTiming](/en/api/animation/waapi#effecttiming) object.
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getTiming
 
@@ -374,7 +374,7 @@ timing.ease = 'linear';
 
 ### getComputedTiming()
 
-Returns a [ComputedEffectTiming](/en/docs/api/animation/waapi#effecttiming) object, which differs from [EffectTiming](/en/docs/api/animation/waapi#effecttiming) in that the former takes some literal quantities of the latter and returns.
+Returns a [ComputedEffectTiming](/en/api/animation/waapi#effecttiming) object, which differs from [EffectTiming](/en/api/animation/waapi#effecttiming) in that the former takes some literal quantities of the latter and returns.
 
 -   `duration` Returns 0 when `duration` is 'auto'.
 -   `fill` Returns 'none' if 'auto'.
@@ -383,7 +383,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTimi
 
 ### updateTiming()
 
-Update the [EffectTiming](/en/docs/api/animation/waapi#effecttiming) attribute, e.g. the following two writeups are equivalent.
+Update the [EffectTiming](/en/api/animation/waapi#effecttiming) attribute, e.g. the following two writeups are equivalent.
 
 ```js
 const timing = animation.effect.getTiming();
@@ -426,12 +426,12 @@ The following attributes are currently supported for transformations, [example](
 | width          | `number`           | e.g. `10` `20`             | width of Rect/Image                                                                     |
 | height         | `number`           | e.g. `10` `20`             | height of Rect/Image                                                                    |
 | x1/y1/x2/y2    | `number`           | e.g. `10` `20`             | points of Line                                                                          |
-| offsetDistance | `number`           | `[0-1]`                    | 路径偏移，在[路径动画](/en/docs/api/animation/waapi#路径动画)中使用                     |
-| lineDash       | `[number, number]` | e.g. `[0, 100]`            | 实线和间隔的长度，在[笔迹动画](/en/docs/api/animation/waapi#笔迹动画)中使用             |
-| lineDashOffset | `number`           | e.g. `-20` `0` `20`        | 设置虚线的偏移量，在[蚂蚁线效果](/en/docs/api/animation/waapi#蚂蚁线)中使用             |
-| path           | `string`           | e.g. `M 100,100 L 200,200` | Path 的定义，在[形变动画](/en/docs/api/animation/waapi#形变动画)中使用                  |
+| offsetDistance | `number`           | `[0-1]`                    | 路径偏移，在[路径动画](/en/api/animation/waapi#路径动画)中使用                          |
+| lineDash       | `[number, number]` | e.g. `[0, 100]`            | 实线和间隔的长度，在[笔迹动画](/en/api/animation/waapi#笔迹动画)中使用                  |
+| lineDashOffset | `number`           | e.g. `-20` `0` `20`        | 设置虚线的偏移量，在[蚂蚁线效果](/en/api/animation/waapi#蚂蚁线)中使用                  |
+| path           | `string`           | e.g. `M 100,100 L 200,200` | Path 的定义，在[形变动画](/en/api/animation/waapi#形变动画)中使用                       |
 
-For custom properties, you can [register them in the style system](/en/docs/api/css/css-properties-values-api#custom-properties). In this [example](/en/examples/style#custom-property), we register several different types of custom properties to allow them to support interpolation.
+For custom properties, you can [register them in the style system](/en/api/css/css-properties-values-api#custom-properties). In this [example](/en/examples/style#custom-property), we register several different types of custom properties to allow them to support interpolation.
 
 where transform is consistent with [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) and supports the following property values:
 
@@ -496,7 +496,7 @@ circle.animate(
 );
 ```
 
-The built-in easing function is described in [easing](/en/docs/api/animation/waapi#easing-1)
+The built-in easing function is described in [easing](/en/api/animation/waapi#easing-1)
 
 ### Common animation effects
 
@@ -709,7 +709,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
 
 ## ComputedEffectTiming
 
-Inherits all the properties of [EffectTiming](/en/docs/api/animation/waapi#effecttiming) and includes some read-only, computed extra properties.
+Inherits all the properties of [EffectTiming](/en/api/animation/waapi#effecttiming) and includes some read-only, computed extra properties.
 
 ```js
 const computedTiming = animation.effect.getComputedTiming();
@@ -717,25 +717,25 @@ const computedTiming = animation.effect.getComputedTiming();
 
 ### endTime
 
-The estimated end time of the animation, which needs to take into account the delay before and after. Calculated as: [delay](/en/docs/api/animation/waapi#delay) + [activeDuration](/en/docs/api/animation/waapi#activeduration) + [endDelay](/en/docs/api/ animation#enddelay).
+The estimated end time of the animation, which needs to take into account the delay before and after. Calculated as: [delay](/en/api/animation/waapi#delay) + [activeDuration](/en/api/animation/waapi#activeduration) + [endDelay](/en/api/ animation#enddelay).
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
 
 ### activeDuration
 
-The estimated duration of the animation effect run, in milliseconds. It is calculated as [duration](/en/docs/api/animation/waapi#duration) \* [iterations](/en/docs/api/animation/waapi#iterations)
+The estimated duration of the animation effect run, in milliseconds. It is calculated as [duration](/en/api/animation/waapi#duration) \* [iterations](/en/api/animation/waapi#iterations)
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming#return_value
 
 ### localTime
 
-Same as [currentTime](/en/docs/api/animation/waapi#currenttime), in milliseconds.
+Same as [currentTime](/en/api/animation/waapi#currenttime), in milliseconds.
 
 ### progress
 
 Returns the progress within the current iteration, in the range `[0-1]`. Returns null when the animation is not running.
 
-In this [example](/en/examples/animation#lifecycle), we print the progress value in the [onframe](/en/docs/api/animation/waapi#onframe) callback function at the end of each frame.
+In this [example](/en/examples/animation#lifecycle), we print the progress value in the [onframe](/en/api/animation/waapi#onframe) callback function at the end of each frame.
 
 ```js
 animation.onframe = (e) => {
@@ -797,7 +797,7 @@ Moving graphics along a path is a common requirement, and is accomplished in CSS
 }
 ```
 
-First create a motion path by offsetPath, currently support [Line](/en/docs/api/basic/line) [Path](/en/docs/api/basic/path) and [Polyline](/en/docs/api/basic/polyline). The effect is then achieved by transforming the offsetDistance (in the range `[0-1]`) to.
+First create a motion path by offsetPath, currently support [Line](/en/api/basic/line) [Path](/en/api/basic/path) and [Polyline](/en/api/basic/polyline). The effect is then achieved by transforming the offsetDistance (in the range `[0-1]`) to.
 
 ```js
 const circle = new Circle({
@@ -831,7 +831,7 @@ circle.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
 
 The common lasso tool in PS is an "Marching Ant" effect.
 
-The [lineDashOffset](/en/docs/api/basic/display-object#linedashoffset) property is used to set the offset of the dashed line, which can be transformed to achieve the effect.
+The [lineDashOffset](/en/api/basic/display-object#linedashoffset) property is used to set the offset of the dashed line, which can be transformed to achieve the effect.
 
 ```js
 const circle = new Circle({
@@ -851,7 +851,7 @@ circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
 
 ## Stroke Animation
 
-A common animation effect is to show the stroke from nothing to something. The [lineDash](/api/basic/display-object#linedash) attribute specifies the length of the solid line and interval of the stroke, and the initial state of the stroke, `nothing', can be represented by `[0, length]`, while the full state can be represented by `[length, 0]`. The length of the stroke can be obtained by graphical methods, such as Path's [getTotalLength](/en/docs/api/basic/path#gettotallength-number) method.
+A common animation effect is to show the stroke from nothing to something. The [lineDash](/api/basic/display-object#linedash) attribute specifies the length of the solid line and interval of the stroke, and the initial state of the stroke, `nothing', can be represented by `[0, length]`, while the full state can be represented by `[length, 0]`. The length of the stroke can be obtained by graphical methods, such as Path's [getTotalLength](/en/api/basic/path#gettotallength-number) method.
 
 ```js
 const length = path.getTotalLength();
@@ -901,7 +901,7 @@ path.animate([{ path: path1 }, { path: path2 }], {
 
 ### Basic graphic transformation
 
-Since only the path attribute can be transformed, for other base shapes such as Circle, Rect, Line, we provide the tool method [convertToPath](/en/docs/api/builtin-objects/utils#converttopath) for conversion.
+Since only the path attribute can be transformed, for other base shapes such as Circle, Rect, Line, we provide the tool method [convertToPath](/en/api/builtin-objects/utils#converttopath) for conversion.
 
 ```js
 import { Circle, convertToPath } from '@antv/g';
@@ -920,7 +920,7 @@ path.animate([{ path: originalPath }, { path: circlePath }], {
 });
 ```
 
-The base graphics that currently support conversion paths are: [Circle](/en/docs/api/basic/circle) [Ellipse](/en/docs/api/basic/ellipse) [Rect](/en/docs/api/basic/rect) [Line](/en/docs/api/basic/line) [Polyline](/en/docs/api/basic/polyline) [Polygon](/en/docs/api/basic/polygon) [Path](/en/docs/api/basic/path).
+The base graphics that currently support conversion paths are: [Circle](/en/api/basic/circle) [Ellipse](/en/api/basic/ellipse) [Rect](/en/api/basic/rect) [Line](/en/api/basic/line) [Polyline](/en/api/basic/polyline) [Polygon](/en/api/basic/polygon) [Path](/en/api/basic/path).
 
 [Example](/en/examples/animation#morph)
 

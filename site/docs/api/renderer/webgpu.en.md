@@ -5,7 +5,7 @@ order: 3
 
 Based on [WebGPU](https://www.w3.org/TR/webgpu/) to provide rendering and computation capabilities.
 
-In particular, the ability to use the GPU for parallel computation is not available with WebGL, and we provide [g-plugin-gpgpu](/en/docs/plugins/gpgpu) to help simplify this process.
+In particular, the ability to use the GPU for parallel computation is not available with WebGL, and we provide [g-plugin-gpgpu](/en/plugins/gpgpu) to help simplify this process.
 
 ## Pre-requisites
 
@@ -67,9 +67,9 @@ const webgpuRenderer = new window.G.WebGPU.Renderer();
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-device-renderer](/en/docs/plugins/device-renderer) GPUDevice based rendering capabilities
--   [g-plugin-webgpu-device](/en/docs/plugins/webgl-device) Implementing GPUDevice Capabilities based on WebGPU
--   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
+-   [g-plugin-device-renderer](/en/plugins/device-renderer) GPUDevice based rendering capabilities
+-   [g-plugin-webgpu-device](/en/plugins/webgl-device) Implementing GPUDevice Capabilities based on WebGPU
+-   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Optional plug-ins
 
@@ -77,12 +77,12 @@ In addition to the built-in plug-ins, the following plug-ins are also available
 
 ### GPGPU
 
-[g-plugin-gpgpu](/en/docs/plugins/gpgpu) provides GPGPU capabilities. Thanks to the WebGPU's support for Compute Shader, we can implement many parallelizable algorithms.
+[g-plugin-gpgpu](/en/plugins/gpgpu) provides GPGPU capabilities. Thanks to the WebGPU's support for Compute Shader, we can implement many parallelizable algorithms.
 
 ### 3D rendering capabilities
 
-[g-plugin-3d](/en/docs/plugins/3d) Provides 3D rendering capabilities, including common objects such as [Mesh](/en/docs/api/3d/mesh) [Material](/en/docs/api/3d/material) [Geometry](/en/docs/api/3d/geometry).
+[g-plugin-3d](/en/plugins/3d) Provides 3D rendering capabilities, including common objects such as [Mesh](/en/api/3d/mesh) [Material](/en/api/3d/material) [Geometry](/en/api/3d/geometry).
 
 ### Camera Interaction
 
-[g-plugin-control](/en/docs/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/en/docs/api/camera#%E7%9B%B8%E6%9C%BA%E7%B1%BB%E5%9E%8B)，提供不同的交互效果。
+[g-plugin-control](/en/plugins/control) provides camera interaction for 3D scenes, internally using Hammer.js to respond to mouse-over, scroll-wheel events. Depending on the [camera type](/en/api/camera/intro), different interaction effects are provided.

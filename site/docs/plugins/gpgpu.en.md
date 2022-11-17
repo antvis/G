@@ -27,7 +27,7 @@ webgpuRenderer.registerPlugin(new Plugin());
 
 ## Get Device
 
-When creating a compute task, we need to get the GPU device (Device) and use it to create the underlying objects such as Buffer. In the [READY](/en/docs/api/canvas#canvas-specific events) event handler of the canvas, we can get the Device through the renderer.
+When creating a compute task, we need to get the GPU device (Device) and use it to create the underlying objects such as Buffer. In the [READY](/en/api/canvas#canvas-specific events) event handler of the canvas, we can get the Device through the renderer.
 
 ```js
 import { CanvasEvent } from '@antv/g';

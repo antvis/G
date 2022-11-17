@@ -52,12 +52,12 @@ In the implementation `g-canvas/webgl` wraps the HTML content in `<div>`, placin
 
 ## Inherited from
 
--   [DisplayObject](/en/docs/api/basic/display-object)
+-   [DisplayObject](/en/api/basic/display-object)
 
-Where [id](/en/docs/api/basic/display-object#id), [name](/en/docs/api/basic/display-object#name), [className](/en/docs/api/basic/ display-object#classname) are applied to the container element if passed in, so there are two ways to get to the container element.
+Where [id](/en/api/basic/display-object#id), [name](/en/api/basic/display-object#name), [className](/en/api/basic/ display-object#classname) are applied to the container element if passed in, so there are two ways to get to the container element.
 
 -   Get it through a DOM API like `getElementById`
--   using [getDomElement()](/en/docs/api/basic/html#getdomelement)
+-   using [getDomElement()](/en/api/basic/html#getdomelement)
 
 Other style attributes are applied via CSS.
 
@@ -128,9 +128,9 @@ The x-axis coordinate of the top-left vertex of the container in the local coord
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -138,17 +138,17 @@ The y-axis coordinate of the top-left vertex of the container in the local coord
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### innerHTML
 
 HTML content, either as a string or as an HTMLElement.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- | ------------ |
-| -                                                                         | -                   | no                                          | no         | `string                                                                     | HTMLElement` |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- | ------------ |
+| -                                                                    | -                   | no                                     | no         | `string                                                                | HTMLElement` |
 
 ```js
 const html = new HTML({
@@ -168,15 +168,15 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 'auto'                                                                    | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 'auto'                                                               | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 'auto'                                                                    | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 'auto'                                                               | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ## Methods
 
@@ -198,7 +198,7 @@ const $foreignObject = html.getDomElement(); // <foreignObject>
 
 #### Transformation
 
-Most of the scenegraph capabilities are available on HTML, such as [transform operations](/en/docs/api/basic/display-object#transformation-operations).
+Most of the scenegraph capabilities are available on HTML, such as [transform operations](/en/api/basic/display-object#transformation-operations).
 
 ```js
 html.translate(100, 0); // 平移
@@ -210,7 +210,7 @@ When getting the enclosing box, we will use the native DOM API [getBoundingClien
 
 #### Node Operations
 
-For HTML elements, it does not make much sense to add other base graphics as its child elements. In this case, you can use [getDomElement](/en/docs/api/basic/html#getdomelement) to get the container element and then perform subsequent DOM operations, such as adding child nodes.
+For HTML elements, it does not make much sense to add other base graphics as its child elements. In this case, you can use [getDomElement](/en/api/basic/html#getdomelement) to get the container element and then perform subsequent DOM operations, such as adding child nodes.
 
 ```js
 const $div = document.createElement('div');
@@ -234,7 +234,7 @@ html.hide();
 html.style.visibility = 'hidden';
 ```
 
-However, when specifying the rendering order by [z-index](/en/docs/api/basic/display-object#zindex), it is limited by the specific implementation and only works between individual HTML contents. In the following example, html1 cannot be displayed between circle1 and circle2.
+However, when specifying the rendering order by [z-index](/en/api/basic/display-object#zindex), it is limited by the specific implementation and only works between individual HTML contents. In the following example, html1 cannot be displayed between circle1 and circle2.
 
 ```js
 // 在 <canvas> 中渲染的两个 circle

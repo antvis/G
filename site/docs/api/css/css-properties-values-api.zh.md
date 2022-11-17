@@ -3,7 +3,7 @@ title: CSS Properties & Values API
 order: 2
 ---
 
-有了 [CSS Typed OM](/zh/docs/api/css/css-typed-om) 我们能方便地定义例如 `CSS.px(5)` 这样的属性值，但属性并不只有值。
+有了 [CSS Typed OM](/zh/api/css/css-typed-om) 我们能方便地定义例如 `CSS.px(5)` 这样的属性值，但属性并不只有值。
 
 在浏览器中 [CSS Properties & Values API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Properties_and_Values_API) 允许用户自定义 CSS 属性并为其配置类型检查、默认值、是否支持继承等元数据，它也是 CSS Houdini 的一部分。
 
@@ -39,7 +39,7 @@ CSS 属性值包含各种类型：https://drafts.csswg.org/css-values-4/
 
 ## 关键词
 
-对应 [CSS Typed OM](/zh/docs/api/css/css-typed-om) 中的 [CSSKeywordValue](/zh/docs/api/css/css-typed-om#csskeywordvalue)。
+对应 [CSS Typed OM](/zh/api/css/css-typed-om) 中的 [CSSKeywordValue](/zh/api/css/css-typed-om#csskeywordvalue)。
 
 例如会被解析成：
 
@@ -85,13 +85,13 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/unset
 
 ## \<number\>
 
-对应 [CSS Typed OM](/zh/docs/api/css/css-typed-om) 中的 [CSSUnitValue](/zh/docs/api/css/css-typed-om#cssunitvalue)，无单位。
+对应 [CSS Typed OM](/zh/api/css/css-typed-om) 中的 [CSSUnitValue](/zh/api/css/css-typed-om#cssunitvalue)，无单位。
 
 目前使用该类型的属性值包括：
 
--   [opacity](/zh/docs/api/basic/display-object#opacity)
--   [fillOpacity](/zh/docs/api/basic/display-object#fillopacity)
--   [strokeOpacity](/zh/docs/api/basic/display-object#strokeopacity)
+-   [opacity](/zh/api/basic/display-object#opacity)
+-   [fillOpacity](/zh/api/basic/display-object#fillopacity)
+-   [strokeOpacity](/zh/api/basic/display-object#strokeopacity)
 
 ```js
 circle.style.opacity = '0.5';
@@ -155,7 +155,7 @@ https://drafts.csswg.org/css-values-4/#angle-value
 
 参考 CSS 规范中对于 [\<color\>](https://www.w3.org/TR/css-color-3/#valuea-def-color) 类型的定义，我们支持以下颜色值类型，它们都以 JS 中的 `string` 类型存在。
 
-它是 [\<paint\>](/zh/docs/api/css/painting) 包含的一种类型。
+它是 [\<paint\>](/zh/api/css/painting) 包含的一种类型。
 
 [示例](/zh/examples/style#color)。
 
@@ -170,7 +170,7 @@ CSS 定义了一系列基础的颜色关键词，它们都是**大小写敏感**
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*NFB5T69VUUwAAAAAAAAAAAAAARQnAQ" width="300"/>
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PKSDR4_nEgIAAAAAAAAAAAAAARQnAQ" width="300"/>
 
-在内部实现中，我们会把关键词字符串传给 [d3-color](https://github.com/d3/d3-color) 解析，得到 [CSSRGB](/zh/docs/api/css/css-typed-om#cssrgb)。
+在内部实现中，我们会把关键词字符串传给 [d3-color](https://github.com/d3/d3-color) 解析，得到 [CSSRGB](/zh/api/css/css-typed-om#cssrgb)。
 
 使用示例如下：
 
@@ -210,7 +210,7 @@ circle.style.fill = 'rgba(100%,0%,0%,1)';
 
 等同于 `rgba(0,0,0,0)` 即完全透明的黑色。
 
-注意它和 [\<paint\>](/zh/docs/api/css/css-properties-values-api#paint) 支持的 `none` 是不同的含义。
+注意它和 [\<paint\>](/zh/api/css/css-properties-values-api#paint) 支持的 `none` 是不同的含义。
 
 #### [WIP] hsl
 
@@ -240,7 +240,7 @@ background: linear-gradient(#e66465, #9198e5);
 rect.style.fill = 'linear-gradient(#e66465, #9198e5)';
 ```
 
-其中渐变色列表 `<color-stop-list>` 形如：`radial-gradient(cyan 0%, transparent 20%, salmon 40%)`，使用 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 和 [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) 的组合。
+其中渐变色列表 `<color-stop-list>` 形如：`radial-gradient(cyan 0%, transparent 20%, salmon 40%)`，使用 [\<color\>](/zh/api/css/css-properties-values-api#color) 和 [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) 的组合。
 
 在该[示例](/zh/examples/style#gradient)中我们展示了目前支持的渐变效果，包括线性和径向渐变、多个渐变叠加等：
 
@@ -438,12 +438,12 @@ fill: 'p(a)https://gw.alipayobjects.com/zos/rmsportal/ibtwzHXSxomqbZCPMLqS.png';
 
 目前使用的属性有：
 
--   [fill](/zh/docs/api/basic/display-object#fill) 填充色
--   [stroke](/zh/docs/api/basic/display-object#stroke) 描边色
+-   [fill](/zh/api/basic/display-object#fill) 填充色
+-   [stroke](/zh/api/basic/display-object#stroke) 描边色
 
 ### none
 
-不使用任何颜色，并不等于 [\<color\>](/zh/docs/api/css/css-properties-values-api#color) 的 [transparent](/zh/docs/api/css/css-properties-values-api#transparent) 关键词。以 `fill` 属性为例，两者从视觉效果上看相同，但设置为 `'transparent'` 依然可以被拾取到，设置成 `'none'` 则不会。
+不使用任何颜色，并不等于 [\<color\>](/zh/api/css/css-properties-values-api#color) 的 [transparent](/zh/api/css/css-properties-values-api#transparent) 关键词。以 `fill` 属性为例，两者从视觉效果上看相同，但设置为 `'transparent'` 依然可以被拾取到，设置成 `'none'` 则不会。
 
 例如当图形在初始化未设置 `fill` 属性时，等同于创建后手动修改为 `none`：
 
@@ -505,10 +505,10 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/computed_value
 
 在这一步需要：
 
--   处理特殊的关键词（通常是通用的），例如 [initial](/zh/docs/api/css/css-properties-values-api#initial) [inherit](/zh/docs/api/css/css-properties-values-api#inherit)
+-   处理特殊的关键词（通常是通用的），例如 [initial](/zh/api/css/css-properties-values-api#initial) [inherit](/zh/api/css/css-properties-values-api#inherit)
 -   做一些值计算，需要布局阶段参与的除外
 
-通过 [computedStyleMap](/zh/docs/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
+通过 [computedStyleMap](/zh/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
 
 ```js
 /**
@@ -592,7 +592,7 @@ const animation = myCustomElement.animate(
 
 ## interpolate
 
-是否支持插值。只有支持才能应用[动画](/zh/docs/api/animation/waapi)。
+是否支持插值。只有支持才能应用[动画](/zh/api/animation/waapi)。
 
 例如在下面的自定义元素中，我们定义了自定义属性 `angle`，它使用 `<angle>` 解析器并支持插值：
 

@@ -29,7 +29,7 @@ hammer.on('press', (e) => {
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
 
-核心思路是无需关心 Mouse/TouchEvent，通过监听 PointerEvents 根据事件对象上的 [pointerId](/zh/docs/api/event#pointerid) 跟踪管理屏幕上的触控点。
+核心思路是无需关心 Mouse/TouchEvent，通过监听 PointerEvents 根据事件对象上的 [pointerId](/zh/api/event#pointerid) 跟踪管理屏幕上的触控点。
 
 ## 直接使用 Interact.js
 
@@ -61,15 +61,15 @@ interact(
 
 ## 使用 g-plugin-dragndrop
 
-如果觉得 interact.js 太重，可以选择使用我们提供的简单拖放插件：[g-plugin-dragndrop](/zh/docs/plugins/dragndrop)。
+如果觉得 interact.js 太重，可以选择使用我们提供的简单拖放插件：[g-plugin-dragndrop](/zh/plugins/dragndrop)。
 
-该插件完全基于 [PointerEvents](/zh/docs/api/event#交互事件) 实现拖放功能。在该[示例](/zh/examples/plugins#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
+该插件完全基于 [PointerEvents](/zh/api/event#交互事件) 实现拖放功能。在该[示例](/zh/examples/plugins#dragndrop)中，我们监听了足球的 drag 事件，用以移动它到正确的位置，同时监听了球门的 dragover 事件，当足球划过球门区域时改变透明度：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
 ## 实现简单的拖拽
 
-除了使用以上现成的库，我们还可以通过组合监听 PointerEvents 实现简单的拖拽效果，[g-plugin-dragndrop](/zh/docs/plugins/dragndrop) 内部就是这么实现的，参考了 [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop)：
+除了使用以上现成的库，我们还可以通过组合监听 PointerEvents 实现简单的拖拽效果，[g-plugin-dragndrop](/zh/plugins/dragndrop) 内部就是这么实现的，参考了 [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop)：
 
 ```js
 ball.addEventListener('pointerdown', function (event) {

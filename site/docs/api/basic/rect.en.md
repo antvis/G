@@ -24,15 +24,15 @@ const rect = new Rect({
 
 ## Inherited from
 
-Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ## Additional Properties
 
@@ -42,9 +42,9 @@ The x-axis coordinate of the top-left vertex of the rectangle in the local coord
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -52,9 +52,9 @@ The y-axis coordinate of the top-left vertex of the rectangle in the local coord
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### width
 
@@ -66,13 +66,13 @@ This is consistent with the Canvas2D API, [see](https://stackoverflow.com/a/1559
 
 > The width and height properties define the overall width and height of the rectangle. A negative value for either property is illegal and must be ignored as a parsing error. A computed value of zero for either dimension disables rendering of the element.
 
-We circumvent this problem by using `<path>` instead of `<rect>` for drawing in [g-svg](/en/docs/api/renderer/svg).
+We circumvent this problem by using `<path>` instead of `<rect>` for drawing in [g-svg](/en/api/renderer/svg).
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -82,9 +82,9 @@ The height of the rectangle. Supports taking **negative numbers** with the effec
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### radius
 
@@ -119,6 +119,6 @@ const [tlr, trr, brr, blr] = radius.map((r) =>
 );
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |

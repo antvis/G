@@ -2,7 +2,7 @@
 title: Introduction
 order: 0
 redirect_from:
-    - /en/docs/api/css
+    - /en/api/css
 ---
 
 We use a large number of style attributes in CSS, some of which affect the appearance of an element, and some of which affect the layout of an element.
@@ -70,7 +70,7 @@ circle.style.r = '5px';
 circle.style.r = '50%';
 ```
 
-We will parse such strings as [CSSStyleValue](/en/docs/api/css/css-typed-om#cssstylevalue), for example `CSS.px(5)` and `CSS.percent(50)`, for more information see [CSS Typed OM](/en/ docs/api/css/css-typed-om).
+We will parse such strings as [CSSStyleValue](/en/api/css/css-typed-om#cssstylevalue), for example `CSS.px(5)` and `CSS.percent(50)`, for more information see [CSS Typed OM](/en/ docs/api/css/css-typed-om).
 
 # CSS Properties & Values API
 

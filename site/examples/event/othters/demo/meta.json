@@ -33,14 +33,6 @@
       }
     },
     {
-      "filename": "coordinates.js",
-      "title": {
-        "zh": "坐标系转换",
-        "en": "Coordinates"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ"
-    },
-    {
       "filename": "mutation-observer.js",
       "title": {
         "zh": "使用 MutationObserver",

@@ -70,14 +70,14 @@ export function triggerEvent(event, ev) {
 }
 ```
 
-3. [cursor](/en/docs/api/basic/display-object#鼠标样式) The mouse style obviously cannot be applied in the worker. We can tell the main thread to change the mouse style on `<canvas>` via `postMessage` in the Worker when we pick up the image.
+3. [cursor](/en/api/basic/display-object#鼠标样式) The mouse style obviously cannot be applied in the worker. We can tell the main thread to change the mouse style on `<canvas>` via `postMessage` in the Worker when we pick up the image.
 
 ## Server-side rendering
 
 Depending on the renderer, we offer the following server-side rendering options:
 
--   [g-canvas + node-canvas](/en/docs/api/renderer/canvas#服务端渲染)
--   [g-svg + JSDOM](/en/docs/api/renderer/svg#服务端渲染)
+-   [g-canvas + node-canvas](/en/api/renderer/canvas#服务端渲染)
+-   [g-svg + JSDOM](/en/api/renderer/svg#服务端渲染)
 -   [g-webgl + headless-gl]()
 
 We currently use them in [integration tests](https://github.com/antvis/g/tree/next/integration/__node__tests__/).

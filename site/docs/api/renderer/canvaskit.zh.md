@@ -3,9 +3,9 @@ title: Canvaskit 渲染器
 order: 0
 ---
 
-使用 [Skia](https://skia.org/docs/user/api/) 绘制 2D 图形。在运行时异步加载 WASM 格式的 [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit)，将 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 封装成 `SkSurface` ，进而通过页面上的 `<canvas>` 元素进行绘制。
+使用 [Skia](https://skia.org/user/api/) 绘制 2D 图形。在运行时异步加载 WASM 格式的 [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit)，将 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) 封装成 `SkSurface` ，进而通过页面上的 `<canvas>` 元素进行绘制。
 
-Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lottie 动画](https://skia.org/docs/user/modules/skottie/)、粒子特效等。除了 Chrome 和 Android，一些跨平台的方案例如 [Flutter](https://docs.flutter.dev/resources/architectural-overview)、[Weex](https://github.com/alibaba/weex) 中也使用了它作为底层渲染引擎。
+Skia 相比 Canvas2D API 提供了更多特性，例如文本段落排版、[Lottie 动画](https://skia.org/user/modules/skottie/)、粒子特效等。除了 Chrome 和 Android，一些跨平台的方案例如 [Flutter](https:/.flutter.dev/resources/architectural-overview)、[Weex](https://github.com/alibaba/weex) 中也使用了它作为底层渲染引擎。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
@@ -69,7 +69,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 值得一提的是 CanvasKit 提供了多个版本的 WASM 文件：
 
 -   精简版，约 7.1MB，`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
--   全量功能，约 7.9MB，包含完整的[增强功能](/zh/docs/api/renderer/canvaskit#增强功能)，推荐使用该版本 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
+-   全量功能，约 7.9MB，包含完整的[增强功能](/zh/api/renderer/canvaskit#增强功能)，推荐使用该版本 `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
 -   开发版本，约 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
 ### fonts
@@ -115,27 +115,27 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 该渲染器内置了以下插件：
 
--   [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
--   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 拾取图形
--   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+-   [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 使用 CanvasKit 渲染 2D 图形
+-   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
+-   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 增强功能
 
 CanvasKit（完整版本）相较于我们熟悉的 Canvas 2D API，提供了以下增强功能：
 
--   [Skottie](https://skia.org/docs/user/modules/skottie/) Lottie 动画播放器
+-   [Skottie](https://skia.org/user/modules/skottie/) Lottie 动画播放器
 -   粒子特效
 -   段落排版
 
 ### Lottie 动画播放器
 
-[Lottie](https://airbnb.design/introducing-lottie/) 动画通过 After Effects 的 [Bodymovin](https://github.com/bodymovin/bodymovin) 插件创建，导出成 JSON 格式。CanvasKit 提供了 [Skottie](https://skia.org/docs/user/modules/skottie/) 这个 Lottie 动画播放器。
+[Lottie](https://airbnb.design/introducing-lottie/) 动画通过 After Effects 的 [Bodymovin](https://github.com/bodymovin/bodymovin) 插件创建，导出成 JSON 格式。CanvasKit 提供了 [Skottie](https://skia.org/user/modules/skottie/) 这个 Lottie 动画播放器。
 
-在该[示例](/zh/examples/plugins#skottie)中我们展示了如何播放一个乐高动画：
+在该[示例](/zh/examples/plugins/canvaskit/#skottie)中我们展示了如何播放一个乐高动画：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 
-首先创建渲染器并通过 [getPlugin](/zh/docs/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 插件：
+首先创建渲染器并通过 [getPlugin](/zh/api/renderer/intro#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -148,7 +148,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-然后等待画布初始化完成，并加载 Lottie 动画描述文件，完成后调用 [playAnimation](/zh/docs/plugins/canvaskit-renderer#playanimation) 立刻开始播放：
+然后等待画布初始化完成，并加载 Lottie 动画描述文件，完成后调用 [playAnimation](/zh/plugins/canvaskit-renderer#playanimation) 立刻开始播放：
 
 ```js
 (async () => {
@@ -179,13 +179,13 @@ animation.delete();
 
 例如烟火、火焰等粒子特效需要生成大量“粒子”并应用动画，通常在 GPU 中通过 Shader 编程实现，例如用以改变每个粒子位置的插值计算，应当放在 GPU 而非在 CPU 中完成。
 
-CanvasKit 提供了基于 Skia 的编程语言 [SkSL(Skia’s shading language)](https://skia.org/docs/user/sksl/) 实现，语法上十分接近 GLSL，在 Shader 中用以控制粒子的生成以及动画，对于没接触过 Shader 编程的开发者存在一定门槛。
+CanvasKit 提供了基于 Skia 的编程语言 [SkSL(Skia’s shading language)](https://skia.org/user/sksl/) 实现，语法上十分接近 GLSL，在 Shader 中用以控制粒子的生成以及动画，对于没接触过 Shader 编程的开发者存在一定门槛。
 
-在该[示例](/zh/examples/plugins#canvaskit-particles)中，我们实现了一些粒子特效：
+在该[示例](/zh/examples/plugins/canvaskit/#canvaskit-particles)中，我们实现了一些粒子特效：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-首先创建渲染器并通过 [getPlugin](/zh/docs/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 插件：
+首先创建渲染器并通过 [getPlugin](/zh/api/renderer/intro#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -198,7 +198,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-然后调用插件的 [createParticles](/zh/docs/plugins/canvaskit-renderer#createparticles) 创建粒子效果，在每一帧的回调函数中对画布进行变换以调整粒子的位置，最后通过 [start]() 开始生成粒子：
+然后调用插件的 [createParticles](/zh/plugins/canvaskit-renderer#createparticles) 创建粒子效果，在每一帧的回调函数中对画布进行变换以调整粒子的位置，最后通过 [start]() 开始生成粒子：
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {
@@ -255,9 +255,9 @@ const text = {
 
 ### 沿路径绘制文本
 
-相较于 Canvas2D API 中的 [fillText](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillText)，CanvasKit 提供了沿指定路径绘制文本的能力。
+相较于 Canvas2D API 中的 [fillText](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/fillText)，CanvasKit 提供了沿指定路径绘制文本的能力。
 
-在该[示例](/zh/examples/plugins#canvaskit-text-along-path)中，我们可以沿 [Path](/zh/docs/api/basic/path) 绘制文本：
+在该[示例](/zh/examples/plugins/canvaskit/#canvaskit-text-along-path)中，我们可以沿 [Path](/zh/api/basic/path) 绘制文本：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ" width="300" alt="draw text along path">
 
@@ -300,7 +300,7 @@ const emoji = new Text({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ADTaRYju0GsAAAAAAAAAAAAAARQnAQ" width="160" alt="broken emoji">
 
-在该[示例](/zh/examples/plugins#canvaskit-emoji)中，我们加载支持 Emoji 的字体例如 [NotoColorEmoji](https://github.com/googlefonts/noto-emoji)，它也在 Android 和 Chrome 中使用：
+在该[示例](/zh/examples/plugins/canvaskit/#canvaskit-emoji)中，我们加载支持 Emoji 的字体例如 [NotoColorEmoji](https://github.com/googlefonts/noto-emoji)，它也在 Android 和 Chrome 中使用：
 
 ```js
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -332,13 +332,13 @@ const emoji = new Text({
 
 ### 文本段落
 
-CanvasKit 提供了增强的[段落绘制能力](https://skia.org/docs/user/modules/quickstart/#text-shaping)。
+CanvasKit 提供了增强的[段落绘制能力](https://skia.org/user/modules/quickstart/#text-shaping)。
 
-#### 修饰线
+### 修饰线
 
-在 CSS 中可以使用 [text-decoration](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) 属性设置文本的修饰线外观。
+在 CSS 中可以使用 [text-decoration](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration) 属性设置文本的修饰线外观。
 
-在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，我们使用下划线：
+在该[示例](/zh/examples/plugins/canvaskit/#canvaskit-paragraph)中，我们使用下划线：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DI1kQ6A8qQ8AAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph decoration">
 
@@ -361,14 +361,14 @@ const decoratedText = new Text({
 
 支持以下属性：
 
--   decorationLine，对应 CSS [text-decoration-line](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-line) 属性。支持 `'none'` `'underline'` `'overline'` `'line-through'`
--   decorationColor，对应 CSS [text-decoration-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-color) 属性
--   decorationThickness，对应 CSS [text-decoration-thickness](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-thickness) 属性，目前仅支持 `number` 类型
--   decorationStyle，对应 CSS [text-decoration-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) 属性。支持 `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
+-   decorationLine，对应 CSS [text-decoration-line](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-line) 属性。支持 `'none'` `'underline'` `'overline'` `'line-through'`
+-   decorationColor，对应 CSS [text-decoration-color](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-color) 属性
+-   decorationThickness，对应 CSS [text-decoration-thickness](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-thickness) 属性，目前仅支持 `number` 类型
+-   decorationStyle，对应 CSS [text-decoration-style](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-style) 属性。支持 `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
 
-#### 文本截断
+### 文本截断
 
-在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，使用 `maxLines` 和 `ellipsis` 可以实现超出后截断并添加省略号的效果：
+在该[示例](/zh/examples/plugins/canvaskit/#canvaskit-paragraph)中，使用 `maxLines` 和 `ellipsis` 可以实现超出后截断并添加省略号的效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 
@@ -396,21 +396,21 @@ const text = new Text({
 -   https://github.com/flutter/flutter/issues/76473
 -   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
 
-#### 文本方向
+### 文本方向
 
 使用 `direction` 可以指定文本方向从左向右或者从右向左，支持 `'ltr'` 和 `'rtl'`，默认为 `'ltr'`。下图为 `'rtl'` 的效果：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8oWlSpL5hGAAAAAAAAAAAAAAARQnAQ" width="160" alt="text direction">
 
-#### 前景 / 背景色
+### 前景 / 背景色
 
 使用 `foregroundColor` 和 `backgroundColor` 可以指定文本的前景和背景色：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OaRqRa-ZiAcAAAAAAAAAAAAAARQnAQ" width="160" alt="text background-color">
 
-#### 阴影
+### 阴影
 
-在 CSS 中可以使用 [text-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-shadow) 属性为文本添加多个阴影。
+在 CSS 中可以使用 [text-shadow](https://developer.mozilla.org/zh-CN/Web/CSS/text-shadow) 属性为文本添加多个阴影。
 
 我们支持通过 `shadows` 属性指定一组阴影，其中每一个阴影支持如下配置：
 
@@ -440,9 +440,9 @@ const shadowedText = new Text({
 });
 ```
 
-#### StrutStyle
+### StrutStyle
 
-Strut（意为“支柱”）可以设置相对于 baseline 的最小行高。类似 CSS 中的 [line-height](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) 属性。
+Strut（意为“支柱”）可以设置相对于 baseline 的最小行高。类似 CSS 中的 [line-height](https://developer.mozilla.org/zh-CN/Web/CSS/line-height) 属性。
 
 在 SkParagraph 中可以通过 StrutStyle 进行配置，Flutter 中也有同名文档：https://api.flutter.dev/flutter/painting/StrutStyle-class.html
 
@@ -470,9 +470,9 @@ decoratedText.style.strutStyle = {
 };
 ```
 
-#### 高级印刷功能
+### 高级印刷功能
 
-可参考 CSS 中的 [font-feature-settings](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings) 属性，控制 OpenType 字体中的高级印刷功能。
+可参考 CSS 中的 [font-feature-settings](https://developer.mozilla.org/zh-CN/Web/CSS/font-feature-settings) 属性，控制 OpenType 字体中的高级印刷功能。
 
 我们提供 `fontFeatures` 属性控制，它接受一个特性数组。在该[示例](/zh/examples/plugins#canvaskit-paragraph)中，我们使用 Roboto 字体并开启了 small-cap 特性（注意首字母 D）：
 
@@ -499,9 +499,9 @@ const fontFeaturesText = new Text({
 });
 ```
 
-#### Harfbuzz
+### Harfbuzz
 
-Skia 本身是不包含 Harfbuzz 的： https://skia.org/docs/user/tips/
+Skia 本身是不包含 Harfbuzz 的： https://skia.org/user/tips/
 
 但 CanvasKit 默认会将它打包进来：
 
@@ -513,4 +513,4 @@ https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa
 
 ## 性能
 
-CanvasKit 通过 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) 进行绘制，在每一帧都会进行全量重绘。
+CanvasKit 通过 [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) 进行绘制，在每一帧都会进行全量重绘。

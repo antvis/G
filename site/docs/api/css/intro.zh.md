@@ -2,7 +2,7 @@
 title: 简介
 order: 0
 redirect_from:
-    - /zh/docs/api/css
+    - /zh/api/css
 ---
 
 我们在 CSS 中会使用到大量的样式属性（`style`），有些会影响元素的外观，有些会影响元素的布局：
@@ -70,7 +70,7 @@ circle.style.r = '5px';
 circle.style.r = '50%';
 ```
 
-我们会将这样的字符串解析成 [CSSStyleValue](/zh/docs/api/css/css-typed-om#cssstylevalue)，例如 `CSS.px(5)` 和 `CSS.percent(50)`，更多信息详见 [CSS Typed OM](/zh/docs/api/css/css-typed-om)。
+我们会将这样的字符串解析成 [CSSStyleValue](/zh/api/css/css-typed-om#cssstylevalue)，例如 `CSS.px(5)` 和 `CSS.percent(50)`，更多信息详见 [CSS Typed OM](/zh/api/css/css-typed-om)。
 
 # CSS Properties & Values API
 

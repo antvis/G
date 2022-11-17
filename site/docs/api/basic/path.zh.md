@@ -21,9 +21,9 @@ const line = new Path({
 
 ## 继承自
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+继承了 [DisplayObject](/zh/api/basic/display-object) 的 [样式属性](/zh/api/basic/display-object#绘图属性)。
 
-默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/docs/api/display-object#anchor) 改变。
+默认锚点定义的位置为包围盒左上角顶点，可以通过 [anchor](/zh/api/display-object#anchor) 改变。
 
 关于这一点我们参考了 SVG 的实际表现，以下图为例我们以 `[100, 100]` 为起点定义了一段圆弧，显然它的包围盒左上角顶点并不是 `[0, 0]` 或者 `[100, 100]`，而是需要根据 path 的真实形状计算得出，我们将把这个计算结果作为默认锚点位置，也是局部坐标系下的坐标：
 
@@ -49,19 +49,19 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 ### anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/api/basic/display-object#anchor)
 
 ### transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/api/basic/display-object#transformOrigin)
 
 ### lineWidth
 
-默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/docs/api/basic/display-object#lineWidth)
+默认值为 `'1'`。详见 [DisplayObject lineWidth](/zh/api/basic/display-object#lineWidth)
 
 ### miterLimit
 
-默认值 `4`。详见 [DisplayObject miterLimit](/zh/docs/api/basic/display-object#miterLimit)
+默认值 `4`。详见 [DisplayObject miterLimit](/zh/api/basic/display-object#miterLimit)
 
 ## 额外属性
 
@@ -76,14 +76,14 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
 ### d
 
-[path](/zh/docs/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
+[path](/zh/api/basic/path#path) 属性的别名，与 SVG 中的 `<path>` 命名保持一致。
 
 ### markerStart
 
 由于 Path 可通过 `Z` 命令闭合，因此对于 “起始点” 的定义在两种情况下有差别：
 
--   如果未闭合，可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStart](/zh/docs/api/basic/polyline#markerstart) 属性。
--   如果已闭合，可以参考 [Polygon](/zh/docs/api/basic/polygon) 的 [markerStart](/zh/docs/api/basic/polygon#markerstart) 属性。
+-   如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerStart](/zh/api/basic/polyline#markerstart) 属性。
+-   如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerStart](/zh/api/basic/polygon#markerstart) 属性。
 
 例如下图中，同样指定了 markerStart 和 markerEnd 为“箭头”，左侧展示了一个未闭合路径的效果，右侧展示了闭合路径的效果：
 
@@ -108,12 +108,12 @@ path.style.markerStart = arrowMarker;
 
 ### markerEnd
 
-可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEnd](/zh/docs/api/basic/polyline#markerend) 属性。
+可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEnd](/zh/api/basic/polyline#markerend) 属性。
 
 由于 Path 可通过 `Z` 命令闭合，因此对于 “终止点” 的定义在两种情况下有差别：
 
--   如果未闭合，可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEnd](/zh/docs/api/basic/polyline#markerend) 属性。
--   如果已闭合，可以参考 [Polygon](/zh/docs/api/basic/polygon) 的 [markerEnd](/zh/docs/api/basic/polygon#markerend) 属性。
+-   如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEnd](/zh/api/basic/polyline#markerend) 属性。
+-   如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerEnd](/zh/api/basic/polygon#markerend) 属性。
 
 在该[示例](/zh/examples/shape#path)中，我们在多边形的终止点上放置了一个图片：
 
@@ -140,7 +140,7 @@ path.style.markerEnd = imageMarker;
 
 在路径除了 “起始点” 和 “终止点” 之外的每一个顶点上放置标记图形。在内部实现中，由于我们会把路径中部分命令转换成 C 命令，因此这些顶点实际是三阶贝塞尔曲线的控制点。
 
-例如下图中在路径上除首尾的每个顶点上都放置了一个 [Circle](/en/docs/api/basic/circle)：
+例如下图中在路径上除首尾的每个顶点上都放置了一个 [Circle](/en/api/basic/circle)：
 
 ```js
 const circleMarker = new Circle({
@@ -159,23 +159,23 @@ path.style.markerMid = circleMarker;
 
 ### markerStartOffset
 
-可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerStartOffset](/zh/docs/api/basic/polyline#markerstartoffset) 属性。marker 会沿路径中第一段的切线方向移动，同时主体路径也会进行相应延长或缩短。需要注意的是主体路径的伸缩距离也是有限的，当超过了第一段的长度，会产生“拐弯”的效果，如下图所示：
+可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerStartOffset](/zh/api/basic/polyline#markerstartoffset) 属性。marker 会沿路径中第一段的切线方向移动，同时主体路径也会进行相应延长或缩短。需要注意的是主体路径的伸缩距离也是有限的，当超过了第一段的长度，会产生“拐弯”的效果，如下图所示：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2DI5TpGasHcAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
 
 因此该属性适合“微调”，而非大幅改变路径定义。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<length\>](/zh/docs/api/css/css-properties-values-api#length)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
 ### markerEndOffset
 
-可以参考 [Polyline](/zh/docs/api/basic/polyline) 的 [markerEndOffset](/zh/docs/api/basic/polyline#markerendoffset) 属性。marker 会沿路径中最后一段的切线方向移动，同时主体路径也会进行相应延长或缩短。
+可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEndOffset](/zh/api/basic/polyline#markerendoffset) 属性。marker 会沿路径中最后一段的切线方向移动，同时主体路径也会进行相应延长或缩短。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<length\>](/zh/docs/api/css/css-properties-values-api#length)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
 ## 方法
 

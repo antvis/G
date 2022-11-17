@@ -52,12 +52,12 @@ canvas.appendChild(html);
 
 ## 继承自
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/zh/api/basic/display-object)
 
-其中的 [id](/zh/docs/api/basic/display-object#id)，[name](/zh/docs/api/basic/display-object#name)，[className](/zh/docs/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
+其中的 [id](/zh/api/basic/display-object#id)，[name](/zh/api/basic/display-object#name)，[className](/zh/api/basic/display-object#classname) 如果传入都会被应用在容器元素上，因此有两种方式获取到容器元素：
 
 -   通过类似 `getElementById` 这样的 DOM API 获取
--   使用 [getDomElement()](/zh/docs/api/basic/html#getdomelement)
+-   使用 [getDomElement()](/zh/api/basic/html#getdomelement)
 
 其他样式属性通过 CSS 应用。
 
@@ -128,9 +128,9 @@ const tooltip = new HTML({
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -138,9 +138,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### innerHTML
 
@@ -172,9 +172,9 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -182,9 +182,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ## 额外方法
 
@@ -206,7 +206,7 @@ const $foreignObject = html.getDomElement(); // <foreignObject>
 
 #### 变换
 
-绝大部分场景图能力都可以在 HTML 上使用，例如[变换操作](/zh/docs/api/basic/display-object#变换操作)：
+绝大部分场景图能力都可以在 HTML 上使用，例如[变换操作](/zh/api/basic/display-object#变换操作)：
 
 ```js
 html.translate(100, 0); // 平移
@@ -218,7 +218,7 @@ html.rotate(30); // 旋转
 
 #### 节点操作
 
-对于 HTML 元素，添加其他基础图形作为它的子元素意义不大。此时可以使用 [getDomElement](/zh/docs/api/basic/html#getdomelement) 获取容器元素后再进行后续的 DOM 操作，例如添加子节点：
+对于 HTML 元素，添加其他基础图形作为它的子元素意义不大。此时可以使用 [getDomElement](/zh/api/basic/html#getdomelement) 获取容器元素后再进行后续的 DOM 操作，例如添加子节点：
 
 ```js
 const $div = document.createElement('div');
@@ -242,7 +242,7 @@ html.hide();
 html.style.visibility = 'hidden';
 ```
 
-但是在通过 [z-index](/zh/docs/api/basic/display-object#zindex) 指定渲染顺序时，受限于具体实现，仅在各个 HTML 内容间生效。在下面的例子中，html1 无法在 circle1 和 circle2 之间展示：
+但是在通过 [z-index](/zh/api/basic/display-object#zindex) 指定渲染顺序时，受限于具体实现，仅在各个 HTML 内容间生效。在下面的例子中，html1 无法在 circle1 和 circle2 之间展示：
 
 ```js
 // 在 <canvas> 中渲染的两个 circle

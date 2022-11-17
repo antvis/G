@@ -9,7 +9,7 @@ order: 3
 
 ## 安装方式
 
-首先需要使用 `g-svg` 渲染器，注册该插件，它会替换掉 [g-plugin-svg-renderer](/zh/docs/plugins/svg-renderer) 中对于 2D 图形的渲染效果：
+首先需要使用 `g-svg` 渲染器，注册该插件，它会替换掉 [g-plugin-svg-renderer](/zh/plugins/svg-renderer) 中对于 2D 图形的渲染效果：
 
 ```js
 import { Canvas } from '@antv/g';
@@ -29,7 +29,7 @@ const canvas = new Canvas({
 });
 ```
 
-另外，我们支持所有 2D 图形，其中 [Text](/zh/docs/api/basic/text)、[Image](/zh/docs/api/basic/image) 和 [HTML](/zh/docs/api/basic/html) 无手绘风格。
+另外，我们支持所有 2D 图形，其中 [Text](/zh/api/basic/text)、[Image](/zh/api/basic/image) 和 [HTML](/zh/api/basic/html) 无手绘风格。
 
 ## 样式属性
 
@@ -37,4 +37,4 @@ const canvas = new Canvas({
 
 ## 拾取行为
 
-非 `solid` 的填充样式会留下很多空白，这些空白区域并不会触发交互事件。这一点和 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 不一致。
+非 `solid` 的填充样式会留下很多空白，这些空白区域并不会触发交互事件。这一点和 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 不一致。

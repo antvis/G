@@ -39,7 +39,7 @@ const canvaskitRenderer = new CanvaskitRenderer();
 playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any): ManagedSkottieAnimation;
 ```
 
-首先创建渲染器并通过 [getPlugin](/zh/docs/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer]() 插件：
+首先创建渲染器并通过 [getPlugin](/zh/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer]() 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -87,7 +87,7 @@ CanvasKit 提供了基于 Skia 的编程语言 [SkSL(Skia’s shading language)]
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-首先创建渲染器并通过 [getPlugin](/zh/docs/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/docs/plugins/canvaskit-renderer) 插件：
+首先创建渲染器并通过 [getPlugin](/zh/api/renderer/renderer#getplugin) 获取 [g-plugin-canvaskit-renderer](/zh/plugins/canvaskit-renderer) 插件：
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -100,7 +100,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-然后调用插件的 [createParticles](/zh/docs/plugins/canvaskit-renderer#createparticles) 创建粒子效果，在每一帧的回调函数中对画布进行变换以调整粒子的位置，最后通过 [start]() 开始生成粒子：
+然后调用插件的 [createParticles](/zh/plugins/canvaskit-renderer#createparticles) 创建粒子效果，在每一帧的回调函数中对画布进行变换以调整粒子的位置，最后通过 [start]() 开始生成粒子：
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {

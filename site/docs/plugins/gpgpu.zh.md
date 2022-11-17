@@ -27,7 +27,7 @@ webgpuRenderer.registerPlugin(new Plugin());
 
 ## 获取 Device
 
-在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/docs/api/canvas#画布特有事件) 事件处理器中，我们可以通过渲染器获取 Device：
+在创建一个计算任务时，我们需要获取 GPU 设备（Device），用它创建 Buffer 等底层对象。在画布的 [READY](/zh/api/canvas#画布特有事件) 事件处理器中，我们可以通过渲染器获取 Device：
 
 ```js
 import { CanvasEvent } from '@antv/g';

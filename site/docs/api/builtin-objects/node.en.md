@@ -12,7 +12,7 @@ The following inheritance relationships exist in G.
 
 ## Inherited from
 
-[EventTarget](/en/docs/api/builtin-objects/event-target)
+[EventTarget](/en/api/builtin-objects/event-target)
 
 ## Properties
 
@@ -48,7 +48,7 @@ export enum Shape {
 
 ### nodeValue
 
-Read-only, return node string, default is null.[Text](/en/docs/api/basic/text) will return text string.
+Read-only, return node string, default is null.[Text](/en/api/basic/text) will return text string.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
 
@@ -74,7 +74,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
 
 ### ownerDocument
 
-Read-only, pointing to the entry [Document](/en/docs/api/builtin-objects/document) of the canvas. Returns null if not yet added to the canvas, e.g.
+Read-only, pointing to the entry [Document](/en/api/builtin-objects/document) of the canvas. Returns null if not yet added to the canvas, e.g.
 
 ```js
 circle.ownerDocument; // null
@@ -128,7 +128,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
 
 ### textContent
 
-Read/write property to get or set the text content of the node. The default returns the empty string, [Text](/en/docs/api/basic/text) will return the text string.
+Read/write property to get or set the text content of the node. The default returns the empty string, [Text](/en/api/basic/text) will return the text string.
 
 When reading, this method recursively computes the sub-nodes and returns the final stitched string as.
 
@@ -143,7 +143,7 @@ text.textContent; // 'test'
 group.textContent; // 'test'
 ```
 
-When setting, all children of this node will be removed first, if the node is [Text](/en/docs/api/basic/text), the text content will be modified directly; if the node is not [Text](/en/docs/api/basic/text), a [Text](/en/docs/api/basic/text) will be created as a child node and the text content will be set.
+When setting, all children of this node will be removed first, if the node is [Text](/en/api/basic/text), the text content will be modified directly; if the node is not [Text](/en/api/basic/text), a [Text](/en/api/basic/text) will be created as a child node and the text content will be set.
 
 ```js
 const text = new Text({ style: { text: 'test' } });

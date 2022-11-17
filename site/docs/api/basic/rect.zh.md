@@ -24,15 +24,15 @@ const rect = new Rect({
 
 ## 继承自
 
-继承了 [DisplayObject](/zh/docs/api/basic/display-object) 的 [样式属性](/zh/docs/api/basic/display-object#绘图属性)。
+继承了 [DisplayObject](/zh/api/basic/display-object) 的 [样式属性](/zh/api/basic/display-object#绘图属性)。
 
 ### anchor
 
-默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/docs/api/basic/display-object#anchor)
+默认值为 `[0, 0]`。详见 [DisplayObject anchor](/zh/api/basic/display-object#anchor)
 
 ### transformOrigin
 
-默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/docs/api/basic/display-object#transformOrigin)
+默认值为 `left top`。详见 [DisplayObject transformOrigin](/zh/api/basic/display-object#transformOrigin)
 
 ## 额外属性
 
@@ -42,9 +42,9 @@ const rect = new Rect({
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -52,9 +52,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### width
 
@@ -66,13 +66,13 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
 > The width and height properties define the overall width and height of the rectangle. A negative value for either property is illegal and must be ignored as a parsing error. A computed value of zero for either dimension disables rendering of the element.
 
-我们在 [g-svg](/zh/docs/api/renderer/svg) 中使用 `<path>` 代替 `<rect>` 绘制规避了这个问题。
+我们在 [g-svg](/zh/api/renderer/svg) 中使用 `<path>` 代替 `<rect>` 绘制规避了这个问题。
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -82,9 +82,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### radius
 
@@ -119,6 +119,6 @@ const [tlr, trr, brr, blr] = radius.map((r) =>
 );
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                              |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| '0'                                                                | -        | 否                                         | 是           | ([\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length)) {1, 4} |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                         |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | ([\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length)) {1, 4} |

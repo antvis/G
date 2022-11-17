@@ -11,7 +11,7 @@ order: 1
 
 当然除了内置的材质，也可以通过 ShaderMaterial 这种完全自定义的方式使用。
 
-在[示例](/zh/examples/3d#sphere)中，我们使用 [Mesh](/zh/docs/api/3d/mesh) 创建了一个球体，它的几何形体由 [Geometry](/zh/docs/api/3d/geometry) 定义，而外观由 [MeshPhongMaterial](/zh/docs/api/3d/material#meshphongmaterial) 决定。可以看到它的很多用法和 2D 基础图形完全一样，例如添加到画布、变换等：
+在[示例](/zh/examples/3d#sphere)中，我们使用 [Mesh](/zh/api/3d/mesh) 创建了一个球体，它的几何形体由 [Geometry](/zh/api/3d/geometry) 定义，而外观由 [MeshPhongMaterial](/zh/api/3d/material#meshphongmaterial) 决定。可以看到它的很多用法和 2D 基础图形完全一样，例如添加到画布、变换等：
 
 ```js
 import {

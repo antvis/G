@@ -12,7 +12,7 @@ Skia offers more features than the Canvas2D API, such as text paragraph layout, 
 
 ## Usage
 
-The [g-canvaskit](/en/docs/api/renderer/canvaskit) renderer is built-in by default, so there is no need to introduce it manually.
+The [g-canvaskit](/en/api/renderer/canvaskit) renderer is built-in by default, so there is no need to introduce it manually.
 
 ```js
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
@@ -39,7 +39,7 @@ Returns a `ManagedSkottieAnimation` object
 playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any): ManagedSkottieAnimation;
 ```
 
-First create the renderer and get the g-plugin-canvaskit-renderer via [getPlugin](/en/docs/api/renderer/renderer#getplugin).
+First create the renderer and get the g-plugin-canvaskit-renderer via [getPlugin](/en/api/renderer/renderer#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -85,7 +85,7 @@ In this [example](/en/examples/plugins#canvaskit-particles), we have implemented
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/docs/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/docs/plugins/canvaskit-renderer).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/plugins/canvaskit-renderer).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -96,7 +96,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-Then call the plugin's [createParticles](/en/docs/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
+Then call the plugin's [createParticles](/en/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {

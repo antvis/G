@@ -3,7 +3,7 @@ title: Canvas 渲染器
 order: 0
 ---
 
-使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 绘制 2D 图形。会在容器中创建一个 `<canvas>` 元素。
+使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 绘制 2D 图形。会在容器中创建一个 `<canvas>` 元素。
 
 ## 使用方式
 
@@ -62,10 +62,10 @@ const renderer = new Renderer({
 
 -   当鼠标悬停在圆上时，我们知道了对应的“脏矩形”，也就是这个圆的包围盒
 -   找到场景中与这个包围盒区域相交的其他图形，这里找到了另一个矩形
--   使用 [clearRect](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
+-   使用 [clearRect](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/clearRect) 清除这个“脏矩形”，代替清空整个画布
 -   按照 z-index 依次绘制一个矩形和圆形
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
 
 在以上求交与区域查询的过程中，我们可以复用剔除方案中的优化手段，例如加速结构。在实现中我们使用了 [RBush](https://github.com/mourner/rbush)。
 
@@ -77,11 +77,11 @@ const renderer = new Renderer({
 
 用于 debug，默认关闭，开启后画布会触发 `CanvasEvent.DIRTY_RECTANGLE` 事件并携带脏矩形信息，可用于后续可视化。
 
-在该[示例](/zh/examples/perf#canvas-dirty-rectangle)中，当鼠标划过各个圆时，能展示出当前需要被清除的脏矩形，当前帧仅会重绘该区域：
+在该[示例](/zh/examples/perf/basic/#canvas-dirty-rectangle)中，当鼠标划过各个圆时，能展示出当前需要被清除的脏矩形，当前帧仅会重绘该区域：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*iIJcRpUFEBUAAAAAAAAAAAAAARQnAQ" alt="dirty rectangle rendering" width="300">
 
-需要注意的是，脏矩形的坐标在 [Canvas 坐标系下](/zh/docs/api/canvas#canvas-1)，如果想使用 HTML 绘制浮层，需要使用[坐标系转换方法](/zh/docs/api/canvas#canvas---viewport)：
+需要注意的是，脏矩形的坐标在 [Canvas 坐标系下](/zh/api/canvas/coordinates)，如果想使用 HTML 绘制浮层，需要使用[坐标系转换方法](/zh/api/canvas/coordinates#canvas---viewport)：
 
 ```js
 // display dirty rectangle
@@ -111,9 +111,9 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 该渲染器内置了以下插件：
 
--   [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染 2D 图形
--   [g-plugin-canvas-picker](/zh/docs/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 拾取图形
--   [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction) 基于 DOM API 绑定事件
+-   [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 渲染 2D 图形
+-   [g-plugin-canvas-picker](/zh/plugins/canvas-picker) 基于数学方法和 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 拾取图形
+-   [g-plugin-dom-interaction](/zh/plugins/dom-interaction) 基于 DOM API 绑定事件
 
 ## 可选插件
 
@@ -123,21 +123,21 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 使用 [rough.js](https://roughjs.com/) 的 Canvas 版本进行手绘风格的渲染。
 
-我们提供了 [g-plugin-rough-canvas-renderer](/zh/docs/plugins/rough-canvas-renderer) 插件，注册后会替换掉 [g-plugin-canvas-renderer](/zh/docs/plugins/canvas-renderer) 对于部分 2D 图形的渲染能力。
+我们提供了 [g-plugin-rough-canvas-renderer](/zh/plugins/rough-canvas-renderer) 插件，注册后会替换掉 [g-plugin-canvas-renderer](/zh/plugins/canvas-renderer) 对于部分 2D 图形的渲染能力。
 
-[示例](/zh/examples/plugins#rough)效果如下：
+[示例](/zh/examples/plugins/rough/#rough)效果如下：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
 ## 服务端渲染
 
-该渲染器依赖 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) 渲染能力，并不局限在浏览器端，因此也可以使用 [node-canvas](https://github.com/Automattic/node-canvas) 进行服务端渲染。
+该渲染器依赖 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 渲染能力，并不局限在浏览器端，因此也可以使用 [node-canvas](https://github.com/Automattic/node-canvas) 进行服务端渲染。
 
 在我们的[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas)中，会在 Node 端配合 [node-canvas](https://github.com/Automattic/node-canvas) 渲染结果图片，与基准图片进行比对。其他服务端渲染场景也可以按照以下步骤进行：
 
-1. 使用 [unregisterPlugin](/zh/docs/api/renderer/renderer#unregisterplugin) 卸载掉 [g-canvas](/zh/docs/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/docs/plugins/dom-interaction)
-2. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 创建一个类 `Canvas` 对象，通过 [canvas](/zh/docs/api/canvas#canvas) 属性传入画布
-3. 正常使用 [g-canvas](/zh/docs/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
+1. 使用 [unregisterPlugin](/zh/api/renderer/renderer#unregisterplugin) 卸载掉 [g-canvas](/zh/api/renderer/canvas) 中内置的与 DOM API 相关的插件，例如负责事件绑定的 [g-plugin-dom-interaction](/zh/plugins/dom-interaction)
+2. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 创建一个类 `Canvas` 对象，通过 [canvas](/zh/api/canvas#canvas) 属性传入画布
+3. 正常使用 [g-canvas](/zh/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
 4. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 提供的方法（例如 [createPNGStream](https://github.com/Automattic/node-canvas#canvascreatepngstream)）输出结果图片
 
 https://github.com/antvis/g/blob/next/integration/__node__tests__/canvas/circle.spec.js

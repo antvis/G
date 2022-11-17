@@ -20,15 +20,15 @@ const ellipse = new Ellipse({
 
 ## Inherited from
 
-Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0.5, 0.5]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
+The default value is `[0.5, 0.5]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `center`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
+The default value is `center`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ## Additional Properties
 
@@ -38,9 +38,9 @@ The x-axis coordinates of the center of the circle in the local coordinate syste
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### cy
 
@@ -48,9 +48,9 @@ The y-axis coordinates of the center of the circle in the local coordinate syste
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### rx
 
@@ -58,9 +58,9 @@ Horizontal radius of the ellipse
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rx
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### ry
 
@@ -68,6 +68,6 @@ The vertical radius of the ellipse
 
 https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ry
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |

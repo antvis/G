@@ -12,7 +12,7 @@ The WASM method is loaded at runtime and the UMD is used for entry.
 
 Currently using Box2D latest version 2.4, refer to the documentation: https://box2d.org/documentation/。
 
-The following 2D graphics are supported: [Circle](/en/docs/api/basic/circle), [Rect](/en/docs/api/basic/rect), [Line](/en/docs/api/basic/line), [Image](/en/docs/api/basic/image) and [Polygon](/en/docs/api/basic/polygon).
+The following 2D graphics are supported: [Circle](/en/api/basic/circle), [Rect](/en/api/basic/rect), [Line](/en/api/basic/line), [Image](/en/api/basic/image) and [Polygon](/en/api/basic/polygon).
 
 In this [example](/en/examples/plugins#box2d), we create a series of dynamic objects that will free fall and end up in a "U-shaped slot".
 

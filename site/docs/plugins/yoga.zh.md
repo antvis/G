@@ -29,7 +29,7 @@ const renderer = new Renderer();
 renderer.registerPlugin(new Plugin());
 ```
 
-通过 `display: 'flex'` 可以声明一个图形使用 Flex 布局。目前我们仅支持 [Rect](/zh/docs/api/basic/rect) 和 [Group](/zh/docs/api/basic/group) 两类图形作为 Flex 容器：
+通过 `display: 'flex'` 可以声明一个图形使用 Flex 布局。目前我们仅支持 [Rect](/zh/api/basic/rect) 和 [Group](/zh/api/basic/group) 两类图形作为 Flex 容器：
 
 ```js
 // 声明一个容器
@@ -72,7 +72,7 @@ container.appendChild(node2);
 
 ### 声明 Flex 容器
 
-使用 `display: 'flex'` 可以声明一个 Flex 容器，容器内所有直系子元素按照布局引擎计算结果进行布局，暂时仅支持 [Rect](/zh/docs/api/basic/rect) 和 [Group](/zh/docs/api/basic/group) 作为容器：
+使用 `display: 'flex'` 可以声明一个 Flex 容器，容器内所有直系子元素按照布局引擎计算结果进行布局，暂时仅支持 [Rect](/zh/api/basic/rect) 和 [Group](/zh/api/basic/group) 作为容器：
 
 ```js
 // 或者使用 Group
@@ -91,7 +91,7 @@ const container = new Rect({
 });
 ```
 
-容器内子元素无类型限制，例如下图中可以看到 [Image](/zh/docs/api/basic/image) 也可以按照计算结果正常布局。
+容器内子元素无类型限制，例如下图中可以看到 [Image](/zh/api/basic/image) 也可以按照计算结果正常布局。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*B_DmQ6lzHcIAAAAAAAAAAAAAARQnAQ" width="300px">
 
@@ -146,7 +146,7 @@ Layout 属性用于设置自身在容器中的布局效果，例如相对于已�
 
 #### minWidth / minHeight / maxWidth / maxHeight
 
-最大最小约束，优先级高于其他属性。可以配合 [flexGrow](/zh/docs/plugins/yoga#flexgrow) 使用。
+最大最小约束，优先级高于其他属性。可以配合 [flexGrow](/zh/plugins/yoga#flexgrow) 使用。
 
 默认值为 NaN，即无约束。支持百分比和绝对值，取百分比时相对于父元素尺寸，例如 `{ minWidth: 50% }`。
 
@@ -225,13 +225,13 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
-数据类型为 `YogaSize`，统一设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
+数据类型为 `YogaSize`，统一设置上右下左的 margin。详见 [margin](/zh/plugins/yoga#margin)。
 
 #### marginTop / marginRight / marginBottom / marginLeft
 
 <tag color="green" text="可应用动画">可应用动画</tag>
 
-单独设置上右下左的 margin。详见 [margin](/zh/docs/plugins/yoga#margin)。
+单独设置上右下左的 margin。详见 [margin](/zh/plugins/yoga#margin)。
 
 #### border
 
@@ -292,7 +292,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 可以在该[示例](/zh/examples/plugins#yoga-available-space)中调整以观察效果。特别适合实现“自适应”布局，当容器宽度发生修改时，剩余空间也跟着改变。
 
-另外，剩余空间的分配也会考虑到子元素上 [min/maxWidth/Height](/zh/docs/plugins/yoga#minwidth--minheight--maxwidth--maxheight) 这样的约束条件，在该[示例](/zh/examples/plugins#yoga-available-space)中，Node1 同时设置了 `{ maxWidth: 200 }`，因此即使容器还有更多剩余空间，也不会分配给它（注意下图右侧容器的空白部分）：
+另外，剩余空间的分配也会考虑到子元素上 [min/maxWidth/Height](/zh/plugins/yoga#minwidth--minheight--maxwidth--maxheight) 这样的约束条件，在该[示例](/zh/examples/plugins#yoga-available-space)中，Node1 同时设置了 `{ maxWidth: 200 }`，因此即使容器还有更多剩余空间，也不会分配给它（注意下图右侧容器的空白部分）：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fbvlTpdHR0IAAAAAAAAAAAAAARQnAQ" width="500px">
 
@@ -374,7 +374,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 #### alignSelf
 
-用于子元素覆盖容器中已有的 [alignItems](/zh/docs/plugins/yoga#alignitems) 的值：
+用于子元素覆盖容器中已有的 [alignItems](/zh/plugins/yoga#alignitems) 的值：
 
 在下图中，容器设置的 `alignItems` 为默认值 `stretch`，但 Node1 可以通过 `alignSelf: center` 让自身脱离原本 Node2 和 Node3 的布局效果：
 
@@ -382,7 +382,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 #### alignContent
 
-容器如何分配子元素周围空间，只有当 [flexWrap](/zh/docs/plugins/yoga#flexwrap) 取值为 `wrap` 时生效：
+容器如何分配子元素周围空间，只有当 [flexWrap](/zh/plugins/yoga#flexwrap) 取值为 `wrap` 时生效：
 
 支持以下枚举值：
 
@@ -419,7 +419,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 支持。但不同属性使用百分比的参考值并不相同。
 
-例如 [width/height](/zh/docs/plugins/yoga#width--height) 相对于父元素的宽高：
+例如 [width/height](/zh/plugins/yoga#width--height) 相对于父元素的宽高：
 
 ```js
 {
@@ -430,7 +430,7 @@ type YogaSize = PixelsOrPercentage | 'auto';
 
 ### 是否支持文本自动换行？
 
-目前 [Text](/zh/docs/api/basic/text) 已经支持多行文本，自动换行，但需要用户手动设置 `wordWrapWidth`，超出后换行。
+目前 [Text](/zh/api/basic/text) 已经支持多行文本，自动换行，但需要用户手动设置 `wordWrapWidth`，超出后换行。
 
 在 Flex 布局中，当文本作为子元素时，无需用户手动设置文本行宽，只需要开启 `wordWrap`，配合 `width` 即可：
 
@@ -453,7 +453,7 @@ const text = new Text({
 
 ### 新增的属性是否支持动画？
 
-Flex 布局新增了很多新属性，例如 [padding](/zh/docs/plugins/yoga#padding) [margin](/zh/docs/plugins/yoga#margin) 等，在 CSS 中是可以对这些属性进行动画的。
+Flex 布局新增了很多新属性，例如 [padding](/zh/plugins/yoga#padding) [margin](/zh/plugins/yoga#margin) 等，在 CSS 中是可以对这些属性进行动画的。
 
 目前支持了部分属性，在该[示例](/zh/examples/plugins#yoga-animation)中可以查看：
 

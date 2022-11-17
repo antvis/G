@@ -9,7 +9,7 @@ order: 1
 
 ## 继承自
 
--   [DisplayObject](/zh/docs/api/basic/display-object)
+-   [DisplayObject](/zh/api/basic/display-object)
 
 文本/文本块的位置通过文本锚点描述，围绕该锚点通过 `textBaseline`（单行/多行）、`textAlign`（多行）等属性调整自身位置。
 
@@ -17,9 +17,9 @@ order: 1
 
 必填项，文本内容，可以包含换行符，例如 `"测试文本\n另起一行"`
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| ''                                                                 | -        | 否                                         | 否           | [\<string\>](/zh/docs/api/css/css-properties-values-api#string)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| ''                                                            | -        | 否                                    | 否           | [\<string\>](/zh/api/css/css-properties-values-api#string)     |
 
 ## textTransform
 
@@ -30,9 +30,9 @@ order: 1
 -   `'lowercase'` 全小写
 -   `'none'` 不做转换，默认值
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'none'                                                             | -        | 否                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'none'                                                        | -        | 否                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ## dx / dy
 
@@ -48,9 +48,9 @@ order: 1
 }
 ```
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ## 字体相关
 
@@ -60,9 +60,9 @@ order: 1
 
 与 [CSS font-family](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) 一致。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| ''                                                                 | -        | 是                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| ''                                                            | -        | 是                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ### fontSize
 
@@ -70,9 +70,9 @@ order: 1
 
 与 [CSS font-size](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size) 一致。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value)                                                                     |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '16px'                                                             | -        | 是                                         | 是           | [\<percentage\>](/zh/docs/api/css/css-properties-values-api#percentage) [\<length\>](/zh/docs/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| '16px'                                                        | -        | 是                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### fontWeight
 
@@ -88,9 +88,9 @@ order: 1
 -   `'lighter'`
 -   `number` `1` 到 `1000` 之间的值。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'normal'                                                           | -        | 是                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'normal'                                                      | -        | 是                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ### fontStyle
 
@@ -102,9 +102,9 @@ order: 1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ" alt="fontstyle" width="400">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'normal'                                                           | -        | 是                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'normal'                                                      | -        | 是                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ### fontVariant
 
@@ -121,9 +121,9 @@ order: 1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ" alt="font variant" width="400">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'normal'                                                           | -        | 是                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'normal'                                                      | -        | 是                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ## 单行布局
 
@@ -139,9 +139,9 @@ order: 1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZJzIQKBhAnUAAAAAAAAAAAAAARQnAQ" alt="text baseline" width="400">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'alphabetic'                                                       | -        | 是                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'alphabetic'                                                  | -        | 是                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ### letterSpacing
 
@@ -149,9 +149,9 @@ order: 1
 
 与 [Canvas letterSpacing](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/letterSpacing) 一致。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| '0'                                                                | -        | 是                                         | 否           | [\<length\>](/zh/docs/api/css/css-properties-values-api#length)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| '0'                                                           | -        | 是                                    | 否           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
 ## 多行布局
 
@@ -180,9 +180,9 @@ order: 1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tyAzR7Y11oIAAAAAAAAAAAAAARQnAQ" alt="text align" width="400">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'left'                                                             | -        | 是                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'left'                                                        | -        | 是                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ### wordWrap
 
@@ -194,13 +194,13 @@ order: 1
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FdtgQLndl8IAAAAAAAAAAAAAARQnAQ" alt="wordWrapWidth" width="600">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 否           | [\<length\>](/zh/docs/api/css/css-properties-values-api#length)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 否           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
 ### textOverflow
 
-用于确定如何提示用户存在隐藏的文本溢出内容，例如直接裁剪、追加省略号或一个自定义字符串。需要配合 [wordWrap](/zh/docs/api/basic/text#wordwrap) ，[wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth) 和 [maxLines](/zh/docs/api/basic/text#maxlines) 一起使用。
+用于确定如何提示用户存在隐藏的文本溢出内容，例如直接裁剪、追加省略号或一个自定义字符串。需要配合 [wordWrap](/zh/api/basic/text#wordwrap) ，[wordWrapWidth](/zh/api/basic/text#wordwrapwidth) 和 [maxLines](/zh/api/basic/text#maxlines) 一起使用。
 
 与 [CSS text-overflow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-overflow) 一致。
 
@@ -213,24 +213,24 @@ order: 1
 注意事项：
 
 -   `'clip'` 和 `'ellipsis'` 为保留字，因此自定义字符串不能使用它们。
--   如果自定义文本长度超出 [wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth)，将直接截断，效果等同于 `'clip'`。
--   截断仅影响视觉效果，原始文本内容 [text](/zh/docs/api/basic/text#text) 不受影响
+-   如果自定义文本长度超出 [wordWrapWidth](/zh/api/basic/text#wordwrapwidth)，将直接截断，效果等同于 `'clip'`。
+-   截断仅影响视觉效果，原始文本内容 [text](/zh/api/basic/text#text) 不受影响
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'clip'                                                             | -        | 否                                         | 否           | [\<keywords\>](/zh/docs/api/css/css-properties-values-api#keywords) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'clip'                                                        | -        | 否                                    | 否           | [\<keywords\>](/zh/api/css/css-properties-values-api#keywords) |
 
 ### maxLines
 
-最大行数，文本超出后将被截断，需要配合 [wordWrap](/zh/docs/api/basic/text#wordwrap) ，[wordWrapWidth](/zh/docs/api/basic/text#wordwrapwidth) 和 [textOverflow](/zh/docs/api/basic/text#textoverflow) 一起使用。
+最大行数，文本超出后将被截断，需要配合 [wordWrap](/zh/api/basic/text#wordwrap) ，[wordWrapWidth](/zh/api/basic/text#wordwrapwidth) 和 [textOverflow](/zh/api/basic/text#textoverflow) 一起使用。
 
 下图展示了限制文本在一行展示，超出后使用省略号截断：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*vGk_TL5e2gEAAAAAAAAAAAAAARQnAQ" alt="text overflow" width="400">
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| 'Infinity'                                                         | -        | 否                                         | 否           | [\<number\>](/zh/docs/api/css/css-properties-values-api#number)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 'Infinity'                                                    | -        | 否                                    | 否           | [\<number\>](/zh/api/css/css-properties-values-api#number)     |
 
 ### lineHeight
 
@@ -238,17 +238,17 @@ order: 1
 
 与 [CSS line-height](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height) 保持一致。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 是           | [\<length\>](/zh/docs/api/css/css-properties-values-api#length)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
 ### leading
 
 行间距。
 
-| [初始值](/zh/docs/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/docs/api/css/inheritance) | 是否支持动画 | [计算值](/zh/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------ | -------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| '0'                                                                | -        | 否                                         | 否           | [\<length\>](/zh/docs/api/css/css-properties-values-api#length)     |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
+| '0'                                                           | -        | 否                                    | 否           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
 ## [WIP] 阴影
 
@@ -305,7 +305,7 @@ text.isOverflowing(); // true
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ" alt="no onverflowing" width="200">
 
-而只有内容确实存在溢出情况，即 [textOverflow](/zh/docs/api/basic/text#textoverflow) 属性确实生效（无论它的取值是啥），才会返回 `true`：
+而只有内容确实存在溢出情况，即 [textOverflow](/zh/api/basic/text#textoverflow) 属性确实生效（无论它的取值是啥），才会返回 `true`：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_dfc253/afts/img/A*vGk_TL5e2gEAAAAAAAAAAAAAARQnAQ" alt="text overflow" width="400">
 
@@ -342,4 +342,4 @@ WebFont.load({
 
 ## 更多基于 CanvasKit 的配置项
 
-CanvasKit 提供了 [众多文本段落增强功能](/zh/docs/api/renderer/canvaskit#text-paragraphs)。 我们将这些能力整合进了 [g-canvaskit](/zh/docs/api/renderer/canvaskit) 渲染器中。
+CanvasKit 提供了 [众多文本段落增强功能](/zh/api/renderer/canvaskit#text-paragraphs)。 我们将这些能力整合进了 [g-canvaskit](/zh/api/renderer/canvaskit) 渲染器中。

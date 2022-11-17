@@ -3,7 +3,7 @@ title: webgpu-graph
 order: 6
 ---
 
-我们参考 [cuGraph](https://github.com/rapidsai/cugraph) 以及其他 CUDA 实现，基于 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 背后的 WebGPU 能力实现常见的图分析算法，达到大规模节点边数据量下并行加速的目的。
+我们参考 [cuGraph](https://github.com/rapidsai/cugraph) 以及其他 CUDA 实现，基于 [g-plugin-gpgpu](/zh/plugins/gpgpu) 背后的 WebGPU 能力实现常见的图分析算法，达到大规模节点边数据量下并行加速的目的。
 
 对比 G6 目前提供的 [CPU 串行版本](https://github.com/antvis/algorithm)有很大提升。
 
@@ -36,7 +36,7 @@ document.head.appendChild(tokenElement);
 
 ### 图数据格式
 
-我们使用 G6 的[图数据格式](https://g6.antv.vision/zh/docs/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)，它也是以下所有算法的第一个固定参数。在内部我们会将其转换成 GPU 内存友好的图存储格式例如 CSR(compressed sparse row)：
+我们使用 G6 的[图数据格式](https://g6.antv.vision/zh/manual/getting-started#step-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87)，它也是以下所有算法的第一个固定参数。在内部我们会将其转换成 GPU 内存友好的图存储格式例如 CSR(compressed sparse row)：
 
 ```js
 const data = {
@@ -69,8 +69,8 @@ const data = {
 
 我们提供以下两种方式使用：
 
--   没有 G 的 [Canvas 画布](/zh/docs/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
--   已有 G 的 [Canvas 画布](/zh/docs/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
+-   没有 G 的 [Canvas 画布](/zh/api/canvas)，仅希望用它执行算法，不涉及渲染。这也是最简单的使用方式。
+-   已有 G 的 [Canvas 画布](/zh/api/canvas)，例如正在使用它渲染，此时仅需要调用算法。
 
 ### 方法一
 
@@ -90,9 +90,9 @@ const graph = new WebGPUGraph();
 
 如果已经在使用 G 的 Canvas 画布进行渲染，可以复用它，并执行以下操作：
 
--   注册 [g-plugin-gpgpu](/zh/docs/plugins/gpgpu) 插件
+-   注册 [g-plugin-gpgpu](/zh/plugins/gpgpu) 插件
 -   等待画布初始化
--   获取 GPU [Device](/zh/docs/plugins/device-renderer#device)
+-   获取 GPU [Device](/zh/plugins/device-renderer#device)
 -   调用算法，此时算法的第一个参数为上一步获取到的 Device
 
 ```js

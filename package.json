@@ -19,6 +19,7 @@
     "eslint": "eslint --ext .ts,.js ./packages",
     "eslint-fix": "eslint --fix --ext .ts,.js ./packages",
     "limit-size": "limit-size",
+    "link-site": "node ./scripts/link-site.js",
     "lint": "npm run eslint",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",

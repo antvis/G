@@ -2,28 +2,28 @@
 title: DisplayObject
 order: 0
 redirect_from:
-    - /en/docs/api/basic
+    - /en/api/basic
 ---
 
-DisplayObject is the base class of all graph like [Group](/en/docs/api/basic/group), [Circle](/en/docs/api/basic/circle), [Text](/en/docs/api/basic/text) etc.
+DisplayObject is the base class of all graph like [Group](/en/api/basic/group), [Circle](/en/api/basic/circle), [Text](/en/api/basic/text) etc.
 
 We tried to make it as compatible as possible with [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element), which in addition to reducing learning costs, allows us to take advantage of the existing Web ecosystem by disguising ourselves as a DOM Element, e.g.
 
--   Using CSS selectors for [advanced queries](/en/docs/plugins/css-select).
--   Using Hammer.js for [gesture](/en/docs/api/event#直接使用-hammerjs)
--   Using Interact.js for [Drag'n'Drop and Resize](/en/docs/api/event#直接使用-interactjs)
--   [Taking over D3's rendering implementation](/en/docs/guide/diving-deeper/d3)
--   [Taking over Observable Plot's rendering implementation](/en/docs/guide/diving-deeper/plot)
+-   Using CSS selectors for [advanced queries](/en/plugins/css-select).
+-   Using Hammer.js for [gesture](/en/api/event#直接使用-hammerjs)
+-   Using Interact.js for [Drag'n'Drop and Resize](/en/api/event#直接使用-interactjs)
+-   [Taking over D3's rendering implementation](/en/guide/diving-deeper/d3)
+-   [Taking over Observable Plot's rendering implementation](/en/guide/diving-deeper/plot)
 
 ## Inherited from
 
-[Element](/en/docs/api/builtin-objects/element)
+[Element](/en/api/builtin-objects/element)
 
 ## id
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/id
 
-Globally unique identifier, can be queried by [getElementById](/en/docs/api/display-object#advanced query).
+Globally unique identifier, can be queried by [getElementById](/en/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
@@ -40,7 +40,7 @@ canvas.getElementById('my-circle-id'); // circle
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName
 
-Graph name, not required to be globally unique, can be queried by [getElementsByName](/en/docs/api/display-object#advanced query).
+Graph name, not required to be globally unique, can be queried by [getElementsByName](/en/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
@@ -57,7 +57,7 @@ canvas.getElementsByName('my-circle-name'); // [circle]
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/className
 
-The class name owned by the graphic, which can be used to get/set the class name of the graphic. It can be queried later using [getElementsByClassName](/en/docs/api/display-object#advanced query).
+The class name owned by the graphic, which can be used to get/set the class name of the graphic. It can be queried later using [getElementsByClassName](/en/api/display-object#advanced query).
 
 ```js
 const circle = new Circle({
@@ -70,7 +70,7 @@ circle.className; // 'my-circle-classname'
 canvas.getElementsByClassName('my-circle-classname'); // [circle]
 ```
 
-You can use spaces to separate multiple class names, and then use [classList](/en/docs/api/builtin-objects/element#classlist) read-only attribute to get a list of class names.
+You can use spaces to separate multiple class names, and then use [classList](/en/api/builtin-objects/element#classlist) read-only attribute to get a list of class names.
 
 ```js
 circle.className = 'c1 c2';
@@ -100,7 +100,7 @@ group.class;
 
 ## interactive
 
-Whether to support responding to [events](/en/docs/api/event), default is `true`. Can be turned off on some graphics that do not need to support interaction.
+Whether to support responding to [events](/en/api/event), default is `true`. Can be turned off on some graphics that do not need to support interaction.
 
 For example, we don't want the following circle to respond to the mouse `mouseenter/leave` event, [example](/en/examples/event#circle)
 
@@ -116,7 +116,7 @@ const circle = new Circle({
 circle.interactive = false;
 ```
 
-It is recommended to use the [pointerEvents](/en/docs/api/basic/display-object#pointerevents) attribute, so the above prohibited interactions are equivalent to
+It is recommended to use the [pointerEvents](/en/api/basic/display-object#pointerevents) attribute, so the above prohibited interactions are equivalent to
 
 ```js
 circle.style.pointerEvents = 'none';
@@ -142,7 +142,7 @@ const rect = new Rect({
 });
 ```
 
-Property names can also be hyphenated, so the following writeups are fully equivalent, see [get/set property values](/en/docs/api/basic/display-object#获取设置属性值) for full usage.
+Property names can also be hyphenated, so the following writeups are fully equivalent, see [get/set property values](/en/api/basic/display-object#获取设置属性值) for full usage.
 
 ```js
 const rect = new Rect({
@@ -158,16 +158,16 @@ rect.style.setProperty('line-width', 4);
 
 ### Position
 
-The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/docs/api/display-object#panning).
+The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/api/display-object#panning).
 
 The geometric meaning of "position" is also different for different shapes, e.g.
 
--   Using [cx/cy](/en/docs/api/basic/circle#cx) for [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse).
--   [Group](/en/docs/api/group) [Rect](/en/docs/api/rect)，[Image](/en/docs/api/image) 为左上角顶点位置，使用 [x/y](/en/docs/api/basic/rect#x)
--   [Text](/en/docs/api/text) 为文本锚点位置
--   [Line](/en/docs/api/line)，[Polyline](/en/docs/api/polyline)，[Polygon](/en/docs/api/polygon)，[Path](/en/docs/api/path) 为包围盒左上角顶点位置
+-   Using [cx/cy](/en/api/basic/circle#cx) for [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse).
+-   [Group](/en/api/group) [Rect](/en/api/rect)，[Image](/en/api/image) 为左上角顶点位置，使用 [x/y](/en/api/basic/rect#x)
+-   [Text](/en/api/text) 为文本锚点位置
+-   [Line](/en/api/line)，[Polyline](/en/api/polyline)，[Polygon](/en/api/polygon)，[Path](/en/api/path) 为包围盒左上角顶点位置
 
-Sometimes we need to change the geometric meaning of this `position`, for example to set the center of Rect instead of the top left corner as the `anchor`, we can use [anchor](/en/docs/api/display-object#anchor) to set it to `[0.5, 0.5]`. Note that the coordinates of the graph in the local coordinate system do not change before and after the modification.
+Sometimes we need to change the geometric meaning of this `position`, for example to set the center of Rect instead of the top left corner as the `anchor`, we can use [anchor](/en/api/display-object#anchor) to set it to `[0.5, 0.5]`. Note that the coordinates of the graph in the local coordinate system do not change before and after the modification.
 
 For example, we define a circle with a radius of 100, and since the anchor defaults to `[0.5, 0.5]`, we get the coordinates of the circle in the local coordinate system as `[100, 100]`, i.e., the location of the center of the circle.
 
@@ -191,14 +191,14 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 #### anchor
 
-The position of the origin (anchor) of the graph, based on [Geometry Bounds](/en/docs/api/basic/display-object#enclosing-box), is defined in the range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper-left corner of Geometry Bounds and `[1, 1]` represents the lower right corner.
+The position of the origin (anchor) of the graph, based on [Geometry Bounds](/en/api/basic/display-object#enclosing-box), is defined in the range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper-left corner of Geometry Bounds and `[1, 1]` represents the lower right corner.
 
 The default anchor points for different shapes are as follows, [example](/en/examples/shape#rect).
 
--   The center of [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse) is `[0.5, 0.5]`
--   The top left corner of [Rect](/en/docs/api/rect), [Image](/en/docs/api/image), [Line](/en/docs/api/line), [Polyline](/en/docs/api/polyline), [Polygon](/en/docs/api/polygon) and [Path](/en/docs/api/path) is `[0, 0]`.
--   We should always use [textBaseline](/en/docs/api/basic/text#textbaseline) and [textAlign](/en/docs/api/basic/text#textalign) to set the anchor of [Text](/en/docs/api/text).
--   Since [Group](/en/docs/api/text) has no geometry bounds, so its anchor is `[0, 0]`.
+-   The center of [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse) is `[0.5, 0.5]`
+-   The top left corner of [Rect](/en/api/rect), [Image](/en/api/image), [Line](/en/api/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path) is `[0, 0]`.
+-   We should always use [textBaseline](/en/api/basic/text#textbaseline) and [textAlign](/en/api/basic/text#textalign) to set the anchor of [Text](/en/api/text).
+-   Since [Group](/en/api/text) has no geometry bounds, so its anchor is `[0, 0]`.
 
 In addition to using arrays, you can also use space-separated array strings, so the following two ways of writing them are equivalent.
 
@@ -207,9 +207,9 @@ circle.style.anchor = [0.5, 0.5];
 circle.style.anchor = '0.5 0.5';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| `'0 0'`                                                                   | all                 | no                                          | no         | `<array>`                                                                   |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| `'0 0'`                                                              | all                 | no                                     | no         | `<array>`                                                              |
 
 #### transform
 
@@ -238,9 +238,9 @@ We provide shortcuts for transformations in local coordinate systems, while keep
     -   matrix3d()
 -   none
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| `'none'`                                                                  | all                 | no                                          | yes        | `<transform>`                                                               |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| `'none'`                                                             | all                 | no                                     | yes        | `<transform>`                                                          |
 
 Since the transformation is performed in a local coordinate system, the following write-ups are visually consistent.
 
@@ -297,15 +297,15 @@ circle.style.transformOrigin = '0 100px'; // The distance to the left edge of th
 
 ⚠️ Writing with three values is not supported at the moment.
 
-As with [anchor](/en/docs/api/basic/display-object#anchor), the default value varies from graph to graph.
+As with [anchor](/en/api/basic/display-object#anchor), the default value varies from graph to graph.
 
--   `'center'` in [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse).
--   `'left top'` in [Group](/en/docs/api/text), [Rect](/en/docs/api/rect)，[Image](/en/docs/api/image), [Line](/en/docs/api/line), [Polyline](/en/docs/api/polyline), [Polygon](/en/docs/api/polygon) and [Path](/en/docs/api/path).
--   [Text](/en/docs/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/en/docs/api/basic/text#textbaseline) 与 [textAlign](/en/docs/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   `'center'` in [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse).
+-   `'left top'` in [Group](/en/api/text), [Rect](/en/api/rect)，[Image](/en/api/image), [Line](/en/api/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path).
+-   [Text](/en/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/en/api/basic/text#textbaseline) 与 [textAlign](/en/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| -                                                                         | all                 | no                                          | no         | `<transform-origin>`                                                        |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| -                                                                    | all                 | no                                     | no         | `<transform-origin>`                                                   |
 
 ### Fill
 
@@ -318,9 +318,9 @@ circle.style.opacity = 0.5;
 circle.style.opacity = '0.5';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '1'                                                                       | all                 | no                                          | yes        | [\<number\>](/en/docs/api/css/css-properties-values-api#number)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '1'                                                                  | all                 | no                                     | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
 
 #### fillOpacity
 
@@ -331,22 +331,22 @@ circle.style.fillOpacity = 0.5;
 circle.style.fillOpacity = '0.5';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------- |
-| '1'                                                                       | all                 | yes                                         | yes        | [\<number\>](/en/docs/api/css/css-properties-values-api#number)       |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------- |
+| '1'                                                                  | all                 | yes                                    | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)       |
 
 #### fill
 
-Fill color, supports `string` type, see [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)：
+Fill color, supports `string` type, see [\<paint\>](/en/api/css/css-properties-values-api#paint)：
 
 ```js
 circle.style.fill = 'red';
 circle.style.fill = 'rgb(255, 0, 0)';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| 'none'                                                                    | all                 | no                                          | yes        | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)               |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| 'none'                                                               | all                 | no                                     | yes        | [\<paint\>](/en/api/css/css-properties-values-api#paint)               |
 
 #### fillRule
 
@@ -370,34 +370,34 @@ circle.style.strokeOpacity = 0.5;
 circle.style.strokeOpacity = '0.5';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '1'                                                                       | all                 | yes                                         | yes        | [\<number\>](/en/docs/api/css/css-properties-values-api#number)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '1'                                                                  | all                 | yes                                    | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
 
 #### stroke
 
-Stroke color, supports `string` type, see [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)：
+Stroke color, supports `string` type, see [\<paint\>](/en/api/css/css-properties-values-api#paint)：
 
 ```js
 circle.style.stroke = 'red';
 circle.style.stroke = 'rgb(255, 0, 0)';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| 'none'                                                                    | all                 | no                                          | yes        | [\<paint\>](/en/docs/api/css/css-properties-values-api#paint)               |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| 'none'                                                               | all                 | no                                     | yes        | [\<paint\>](/en/api/css/css-properties-values-api#paint)               |
 
 #### strokeWidth
 
-Alias of [lineWidth](/en/docs/api/basic/display-object#linewidth), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-width).
+Alias of [lineWidth](/en/api/basic/display-object#linewidth), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-width).
 
 #### strokeDasharray
 
-Alias of [lineDash](/en/docs/api/basic/display-object#linedash), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-dasharray) to be consistent.
+Alias of [lineDash](/en/api/basic/display-object#linedash), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-dasharray) to be consistent.
 
 #### strokeDashoffset
 
-Alias of [lineDashOffset](/en/docs/api/basic/display-object#linedash), and [SVG Attribute Name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/ Attribute/stroke-dashoffset) to be consistent.
+Alias of [lineDashOffset](/en/api/basic/display-object#linedash), and [SVG Attribute Name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/ Attribute/stroke-dashoffset) to be consistent.
 
 #### lineWidth
 
@@ -413,9 +413,9 @@ circle.style.lineWidth = '1';
 circle.style.lineWidth = '1px';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '1'                                                                       | all                 | yes                                         | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '1'                                                                  | all                 | yes                                    | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 #### lineCap
 
@@ -431,7 +431,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCa
 
 Supporting the following values.
 
--   'miter' Default. An additional diamond-shaped area is formed by extending the outer edges of the connected sections so that they intersect at a point. The effect of this setting can be seen with the [miterLimit](/en/docs/api/basic/display-object#miterlimit) property.
+-   'miter' Default. An additional diamond-shaped area is formed by extending the outer edges of the connected sections so that they intersect at a point. The effect of this setting can be seen with the [miterLimit](/en/api/basic/display-object#miterlimit) property.
 -   'round' Draws the shape of the corner by filling an additional, circular sector with the center of the circle at the end of the connected section. The radius of the rounded corner is the width of the line segment.
 -   'bevel' An additional triangular-base area is filled in at the end of the connected sections, each with its own separate rectangular corner.
 
@@ -439,7 +439,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJo
 
 #### miterLimit
 
-The default value for SVG and Canvas2D is different, the former is 4 and the latter is 10. We set [Path](/en/docs/api/basic/path) [Polyline](/en/docs/api/basic/polyline) [Polygon](/en/docs/api/basic/polygon) to 4 and the rest to 10. api/basic/polygon) These three graphs are set to 4, and the rest are set to 10.
+The default value for SVG and Canvas2D is different, the former is 4 and the latter is 10. We set [Path](/en/api/basic/path) [Polyline](/en/api/basic/polyline) [Polygon](/en/api/basic/polygon) to 4 and the rest to 10. api/basic/polygon) These three graphs are set to 4, and the rest are set to 10.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit
 
@@ -449,29 +449,29 @@ Use `number[]` to describe the alternate line segments and spacing. Reference ca
 
 Currently only the form `[dash, gap]` is supported, if there is only one element in the array, i.e. `[dash]` is equivalent to `[dash, dash]`.
 
-Applying animation to it can achieve [handwriting animation effect](/en/docs/api/animation/waapi#stroke-animation).
+Applying animation to it can achieve [handwriting animation effect](/en/api/animation/waapi#stroke-animation).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8NOsQoWLm2IAAAAAAAAAAAAAARQnAQ" width="400" alt="stroke animation">
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| -                                                                         | all                 | yes                                         | yes        |                                                                             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| -                                                                    | all                 | yes                                    | yes        |                                                                        |
 
 #### lineDashOffset
 
-Dashed line offset, type `number`, transform it to achieve [marching ants animation](/en/docs/api/animation/waapi#marching-ant-animation)
+Dashed line offset, type `number`, transform it to achieve [marching ants animation](/en/api/animation/waapi#marching-ant-animation)
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*TTyTTISXlKAAAAAAAAAAAAAAARQnAQ" width="400" alt="marching ants animation">
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | all                 | yes                                         | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | all                 | yes                                    | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### Shadow
 
 Add shadow effect at the bottom of the shape, support configuring shadow color, blur radius and horizontal/vertical offset distance. [example](/en/examples/shape#circle).
 
-Shadows do not affect the graph's [Geometry Bounds](/en/docs/api/basic/concept#bounding-box), e.g. in the following figure, after adding a shadow to a circle with a radius of 100, the geometry wrapping box size remains the same.
+Shadows do not affect the graph's [Geometry Bounds](/en/api/basic/concept#bounding-box), e.g. in the following figure, after adding a shadow to a circle with a radius of 100, the geometry wrapping box size remains the same.
 
 ```js
 circle.getBounds(); // { halfExtents: [100, 100] }
@@ -481,7 +481,7 @@ circle.getBounds(); // { halfExtents: [100, 100] }
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*shbSR55j_iQAAAAAAAAAAAAAARQnAQ" width="200" alt="outer shadow">
 
-Of course outer shadows increase the [Render Bounds](/en/docs/api/basic/concept#bounding-box), inner shadows do not.
+Of course outer shadows increase the [Render Bounds](/en/api/basic/concept#bounding-box), inner shadows do not.
 
 Finally, shadows can have a very big impact on rendering performance.
 
@@ -498,33 +498,33 @@ We currently support two kinds of shadow.
 
 Shade color, supports `string` type, for example `'#1890FF'`. Gradient or pattern writing is not supported.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| -                                                                         | all                 | no                                          | yes        | [\<color\>](/en/docs/api/css/css-properties-values-api#color)               |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| -                                                                    | all                 | no                                     | yes        | [\<color\>](/en/api/css/css-properties-values-api#color)               |
 
 #### shadowBlur
 
 The blurring degree of the shading effect, `number` type, negative numbers are not allowed. Larger means more blurred, 0 means no blurring effect.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| -                                                                         | all                 | no                                          | yes        | [\<number\>](/en/docs/api/css/css-properties-values-api#number)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| -                                                                    | all                 | no                                     | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
 
 #### shadowOffsetX
 
 Horizontal offset, supports `number` or `string` types, e.g. negative numbers move shadows to the left, positive numbers to the right.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| -                                                                         | all                 | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| -                                                                    | all                 | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 #### shadowOffsetY
 
 Vertical offset, e.g. a negative number moves the shadow up, a positive number down.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| -                                                                         | all                 | no                                          | yes        | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| -                                                                    | all                 | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### Filter
 
@@ -683,9 +683,9 @@ Similar to CSS's `z-index` property, used to control the rendering order, it nee
 2. Effective only in the current context.
 3. The default display order is the order in which the scenes are added, with those added later on top of the previously added elements.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '0'                                                                       | all                 | no                                          | no         | [\<number\>](/en/docs/api/css/css-properties-values-api#number)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '0'                                                                  | all                 | no                                     | no         | [\<number\>](/en/api/css/css-properties-values-api#number)             |
 
 For example, in the scene below, li2 is displayed on top of li1 by default because li2 was added to the canvas after li1. If you want to change this display order, you can modify the zIndex of li1:
 
@@ -742,14 +742,14 @@ group.style.visibility = 'visible';
 // or group.show();
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| 'visible'                                                                 | all                 | yes                                         | no         | [\<keywords\>](/en/docs/api/css/css-properties-values-api#keywords)         |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| 'visible'                                                            | all                 | yes                                    | no         | [\<keywords\>](/en/api/css/css-properties-values-api#keywords)         |
 
 There are two points to note about visibility.
 
-1. Hidden graphics can still be picked up, so use [pointerEvents](/en/docs/api/basic/display-object#pointerevents)
-2. Hidden elements still need to participate in enclosing box operations, i.e. they still occupy space. If you want to remove the element completely, you should use [removeChild](/en/docs/api/basic/display-object#addremove-nodese)
+1. Hidden graphics can still be picked up, so use [pointerEvents](/en/api/basic/display-object#pointerevents)
+2. Hidden elements still need to participate in enclosing box operations, i.e. they still occupy space. If you want to remove the element completely, you should use [removeChild](/en/api/basic/display-object#addremove-nodese)
 
 ### clipPath
 
@@ -813,7 +813,7 @@ image.setClip(null);
 
 #### Caveats
 
-The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/docs/api/animation/waapi) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
+The crop area graphic itself is also supported to modify the property, and affected by it, the cropped graphic will be redrawn immediately. For example, with [animation system](/en/api/animation/waapi) we can transform the cropped area graphic to achieve the following effect, [example](/en/examples/shape#clip).
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Iy4RQZgT3EUAAAAAAAAAAAAAARQnAQ)
 
@@ -832,7 +832,7 @@ We do not yet support composite clipped areas, such as custom graphics and Group
 
 ### Offset Path
 
-In [path-animation](/en/docs/api/animation/waapi#path-animation), we can use `offsetPath` to specify the trajectory of a drawing, applying a transformation to the `offsetDistance` property.
+In [path-animation](/en/api/animation/waapi#path-animation), we can use `offsetPath` to specify the trajectory of a drawing, applying a transformation to the `offsetDistance` property.
 
 ```js
 const circle = new Circle({
@@ -862,15 +862,15 @@ const animation = circle.animate(
 
 #### offsetPath
 
-Specify path trajectory, currently support [Line](/en/docs/api/basic/line) [Path](/en/docs/api/basic/path) and [Polyline](/en/docs/api/basic/polyline) these three graphics.
+Specify path trajectory, currently support [Line](/en/api/basic/line) [Path](/en/api/basic/path) and [Polyline](/en/api/basic/polyline) these three graphics.
 
 #### offsetDistance
 
 The distance to travel from the start of the path, in the range of `[0-1]`, where 0 is the start of the path and 1 is the end.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '0'                                                                       | all                 | no                                          | yes        | [\<number\>](/en/docs/api/css/css-properties-values-api#number)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '0'                                                                  | all                 | no                                     | yes        | [\<number\>](/en/api/css/css-properties-values-api#number)             |
 
 ### Cursor style
 
@@ -895,27 +895,27 @@ We can set how the graph responds to interaction events, such as displaying the 
 
 To set how the graph responds to interaction events, see. https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
 
-简而言之，[fill](/en/docs/api/basic/display-object#fill) [stroke](/en/docs/api/basic/display-object#stroke) 和 [visibility](/en/docs/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
+简而言之，[fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) 和 [visibility](/en/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
 
 -   `'auto'` Default value, equivalent to `'visiblepainted'`.
 -   `'none'` Will never be the target of a response event.
 -   `'visiblepainted'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible.
-    -   Trigger while [fill](/en/docs/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/docs/api/basic/display-object#stroke) takes a value other than `'none'` when triggered in the drawing stroke area.
+    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible.
+    -   Trigger while [fill](/en/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/api/basic/display-object#stroke) takes a value other than `'none'` when triggered in the drawing stroke area.
 -   `'visiblefill'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [fill](/en/docs/api/basic/display-object#fill).
+    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [fill](/en/api/basic/display-object#fill).
 -   `'visiblestroke'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [stroke](/en/docs/api/basic/display-object#stroke).
+    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [stroke](/en/api/basic/display-object#stroke).
 -   `'visible'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/docs/api/basic/display-object#visibility) takes `'visible'`.
-    -   Triggered in drawing fill or stroke area, not affected by [fill](/en/docs/api/basic/display-object#fill) and [stroke](/en/docs/api/basic/display-object#stroke) values.
+    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'`.
+    -   Triggered in drawing fill or stroke area, not affected by [fill](/en/api/basic/display-object#fill) and [stroke](/en/api/basic/display-object#stroke) values.
 -   `'painted'` The following conditions are met before the event is responded to.
-    -   Trigger while [fill](/en/docs/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/docs/api/basic/display-object#stroke) takes a value other than `'none'` when the drawing stroke area is triggered. Not affected by the value of [visibility](/en/docs/api/basic/display-object#visibility).
+    -   Trigger while [fill](/en/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/api/basic/display-object#stroke) takes a value other than `'none'` when the drawing stroke area is triggered. Not affected by the value of [visibility](/en/api/basic/display-object#visibility).
 -   `'fill'` The following conditions are met before the event is responded to.
-    -   Triggered in graphics fill area, not affected by [fill](/en/docs/api/basic/display-object#fill) and [visibility](/en/docs/api/basic/display-object#visibility) values.
+    -   Triggered in graphics fill area, not affected by [fill](/en/api/basic/display-object#fill) and [visibility](/en/api/basic/display-object#visibility) values.
 -   `'stroke'` The following conditions are met before the event is responded to.
-    -   Triggered in graphics fill area, not affected by [stroke](/en/docs/api/basic/display-object#stroke) and [visibility](/en/docs/api/basic/display-object#visibility) values.
--   `'all'` The events are responded to whenever the fill and stroke areas of the drawing are entered. So it will not be affected by [fill](/en/docs/api/basic/display-object#fill) [stroke](/en/docs/api/basic/display-object#stroke) [visibility](/en/docs/api/ basic/display-object#visibility) is affected by the value of
+    -   Triggered in graphics fill area, not affected by [stroke](/en/api/basic/display-object#stroke) and [visibility](/en/api/basic/display-object#visibility) values.
+-   `'all'` The events are responded to whenever the fill and stroke areas of the drawing are entered. So it will not be affected by [fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) [visibility](/en/api/ basic/display-object#visibility) is affected by the value of
 
 In this [example](/en/examples/shape#circle), we set the property to `stroke`, so the filled area will not respond to events.
 
@@ -928,13 +928,13 @@ In this [example](/en/examples/style#inheritance), we can easily control the int
 canvas.document.documentElement.style.pointerEvents = 'none';
 ```
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| 'auto'                                                                    | all                 | yes                                         | no         | [\<keywords\>](/en/docs/api/css/css-properties-values-api#关键词)           |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| 'auto'                                                               | all                 | yes                                    | no         | [\<keywords\>](/en/api/css/css-properties-values-api#关键词)           |
 
 #### increasedLineWidthForHitTesting
 
-When [lineWidth](/en/docs/api/basic/display-object#linewidth) is small, the interactable area becomes smaller, sometimes we want to increase this area to make the "thin line" easier to be picked up. Note that this property does not affect the rendering effect.
+When [lineWidth](/en/api/basic/display-object#linewidth) is small, the interactable area becomes smaller, sometimes we want to increase this area to make the "thin line" easier to be picked up. Note that this property does not affect the rendering effect.
 
 In the [example](/en/examples/shape#polyline) below, we set this property to `50`, so that the line width is equal to `50 + the original line width` when picking up, making it easier to pick up when close:
 
@@ -944,13 +944,13 @@ In the [example](/en/examples/shape#polyline) below, we set this property to `50
 line.style.increasedLineWidthForHitTesting = 50;
 ```
 
-Also like [lineWidth](/en/docs/api/basic/display-object#linewidth), this property also extends to the sides, and in the image below the unfilled [Path](/en/docs/api/basic/path) internal pickup area has been enlarged.
+Also like [lineWidth](/en/api/basic/display-object#linewidth), this property also extends to the sides, and in the image below the unfilled [Path](/en/api/basic/path) internal pickup area has been enlarged.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ude1Qo6PVNYAAAAAAAAAAAAAARQnAQ">
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value)                                                             |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                       | all                 | no                                          | no         | [\<percentage\>](/en/docs/api/css/css-properties-values-api#percentage) [\<length\>](/en/docs/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| '0'                                                                  | all                 | no                                     | no         | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ## Transformation operations
 
@@ -1030,7 +1030,7 @@ In 2D scenes, stretching can be performed to distort each point on an element in
 
 ### Set the scaling and rotation center
 
-Besides using the [transformOrigin](/en/docs/api/basic/display-object#transformorigin) property, you can also manually calculate the offset relative to the [anchor](/en/docs/api/basic/display-object#anchor) position and then reset the transform center by `setOrigin`.
+Besides using the [transformOrigin](/en/api/basic/display-object#transformorigin) property, you can also manually calculate the offset relative to the [anchor](/en/api/basic/display-object#anchor) position and then reset the transform center by `setOrigin`.
 
 | method name | parameters                                                                                       | return value | remarks                                                             |
 | ----------- | ------------------------------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------- |
@@ -1039,7 +1039,7 @@ Besides using the [transformOrigin](/en/docs/api/basic/display-object#transformo
 
 Set the center of scaling and rotation in the local coordinate system, [example](/en/examples/scenegraph#origin).
 
-The value is the offset relative to [anchor](/en/docs/api/basic/display-object#anchor), the default value is `[0, 0]`, so that is the anchor position.
+The value is the offset relative to [anchor](/en/api/basic/display-object#anchor), the default value is `[0, 0]`, so that is the anchor position.
 
 In the following example, we have placed a circle with a radius of 100 at `[100, 100]`.
 
@@ -1108,11 +1108,11 @@ The difference between the two is that origin is defined relative to the anchor 
 
 ## Get Bounding box
 
-Based on different [bounding box definitions](/en/docs/api/basic/display-object#bounding-box), we provide the following methods to obtain them.
+Based on different [bounding box definitions](/en/api/basic/display-object#bounding-box), we provide the following methods to obtain them.
 
 ### getGeometryBounds(): AABB | null
 
-Gets the geometric bouding box of the base drawing, which is independent of other drawing properties (e.g. [lineWidth](/en/docs/api/basic/display-object#linewidth), [filter](/en/docs/api/basic/display-object#filter), [shadowBlur](/en/docs/api/basic/display-object#shadowblur), etc.), except for defining the required style properties (e.g. r for Circle, width/height for Rect).
+Gets the geometric bouding box of the base drawing, which is independent of other drawing properties (e.g. [lineWidth](/en/api/basic/display-object#linewidth), [filter](/en/api/basic/display-object#filter), [shadowBlur](/en/api/basic/display-object#shadowblur), etc.), except for defining the required style properties (e.g. r for Circle, width/height for Rect).
 
 ```js
 const circle = new Circle({
@@ -1151,7 +1151,7 @@ circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 
 ### getRenderBounds(): AABB | null
 
-Merge the Render Bounds of itself and its children in the world coordinate system, based on the Geometry Bounds, affected by the following style properties: [lineWidth](/en/docs/api/basic/display-object#linewidth), [filter](/en/docs/api/basic/display-object#filter), [shadowBlur](/en/docs/api/basic/display-object#shadowblur), etc.
+Merge the Render Bounds of itself and its children in the world coordinate system, based on the Geometry Bounds, affected by the following style properties: [lineWidth](/en/api/basic/display-object#linewidth), [filter](/en/api/basic/display-object#filter), [shadowBlur](/en/api/basic/display-object#shadowblur), etc.
 
 ```js
 const circle = new Circle({
@@ -1191,7 +1191,7 @@ Get the Geometry Bounds in the browser coordinate system, apply the transformati
 
 ## Node Operations
 
-In the scene graph, we need to construct parent-child relationships, get parent-child nodes quickly, and sometimes query the list of nodes of a certain type in the subtree. Based on the inheritance relationship, each DisplayObject has [Node](/en/docs/api/builtin-objects/node) and [Element](/en/docs/api/builtin-objects/element) capabilities.
+In the scene graph, we need to construct parent-child relationships, get parent-child nodes quickly, and sometimes query the list of nodes of a certain type in the subtree. Based on the inheritance relationship, each DisplayObject has [Node](/en/api/builtin-objects/node) and [Element](/en/api/builtin-objects/element) capabilities.
 
 ### Simple Node Query
 
@@ -1254,7 +1254,7 @@ solarSystem.findAll((element) => element.style.r === 25);
 
 ### Add/Remove Nodes
 
-The following add/remove node capabilities come from the inherited [Element](/en/docs/api/builtin-objects/element) base class.
+The following add/remove node capabilities come from the inherited [Element](/en/api/builtin-objects/element) base class.
 
 | method name     | parameters                                            | return value    | remarks                                                                                                 |
 | --------------- | ----------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------- |
@@ -1297,7 +1297,7 @@ parent.replaceChildren();
 The following points are noted when adding/removing nodes.
 
 1. The ChildInserted and Inserted events are triggered sequentially when a node is added.
-2. Removed and ChildRemoved events will be triggered sequentially, and [destroy](/en/docs/api/basic/display-object#destroy) will be called by default to destroy itself. If the node is only temporarily removed from the scene graph and may be added back later, you can use `remove(false)`.
+2. Removed and ChildRemoved events will be triggered sequentially, and [destroy](/en/api/basic/display-object#destroy) will be called by default to destroy itself. If the node is only temporarily removed from the scene graph and may be added back later, you can use `remove(false)`.
 
 ### Clone node
 
@@ -1370,14 +1370,14 @@ circle.style.setProperty('r', 20);
 
 ### Get the parsed attribute value
 
-Some properties such as [Rect](/en/docs/api/basic/rect) support units for width / height, if you want to get the [calculated value](/en/docs/api/css/css-typed-om#cssunitvalue), you can use `parsedStyle`.
+Some properties such as [Rect](/en/api/basic/rect) support units for width / height, if you want to get the [calculated value](/en/api/css/css-typed-om#cssunitvalue), you can use `parsedStyle`.
 
 ```js
 rect.style.width = '100px';
 rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 ```
 
-Note that currently, when using [animation](/en/docs/api/animation/waapi), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation#onframe).
+Note that currently, when using [animation](/en/api/animation/waapi), we also convert the values of the attributes to be interpolated, so if you want to get the absolute values in px, you need to use `parsedStyle` [example](/en/examples/animation#onframe).
 
 ```js
 animation.onframe = () => {
@@ -1388,7 +1388,7 @@ animation.onframe = () => {
 
 ### Destroy
 
-Calling `destroy()` will destroy the node. Destroyed nodes will not be added to the canvas rendering again. The [destroyed](/en/docs/api/basic/display-object#destroyed) attribute allows you to determine if a node has been destroyed.
+Calling `destroy()` will destroy the node. Destroyed nodes will not be added to the canvas rendering again. The [destroyed](/en/api/basic/display-object#destroyed) attribute allows you to determine if a node has been destroyed.
 
 ```js
 circle.destroy();
@@ -1399,7 +1399,7 @@ When this method is invoked, the following actions are performed in sequence.
 1. Trigger Destroy event
 2. Call `remove()` to remove itself from the scene graph, so it will trigger the Removed and ChildRemoved events
 3. Remove all event listeners and animations on this node
-4. Set the [destroyed](/en/docs/api/basic/display-object#destroyed) flag to true
+4. Set the [destroyed](/en/api/basic/display-object#destroyed) flag to true
 
 ### Status
 
@@ -1443,7 +1443,7 @@ circle.destroyed; // true
 
 ### Lifecycle Event Listening
 
-In the [event system](/en/docs/api/event), we can add event listeners to nodes added to the canvas using a DOM Event API-like approach.
+In the [event system](/en/api/event), we can add event listeners to nodes added to the canvas using a DOM Event API-like approach.
 
 In addition to interactive events such as click and mouseenter, we also provide a series of built-in node lifecycle events, such as listening for node additions and deletions, which also have full propagation paths (bubbling, capturing), [example](/en/examples/event#builtin).
 
@@ -1499,4 +1499,4 @@ circle.animate(
 );
 ```
 
-See [animation system](/en/docs/api/animation/waapi) for more details on usage.
+See [animation system](/en/api/animation/waapi) for more details on usage.

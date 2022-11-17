@@ -70,14 +70,14 @@ export function triggerEvent(event, ev) {
 }
 ```
 
-3. [cursor](/zh/docs/api/basic/display-object#鼠标样式) 鼠标样式显然无法在 Worker 中应用。我们可以在拾取到图形时在 Worker 中通过 `postMessage` 告知主线程修改 `<canvas>` 上的鼠标样式。
+3. [cursor](/zh/api/basic/display-object#鼠标样式) 鼠标样式显然无法在 Worker 中应用。我们可以在拾取到图形时在 Worker 中通过 `postMessage` 告知主线程修改 `<canvas>` 上的鼠标样式。
 
 ## 服务端渲染
 
 依据不同的渲染器，我们提供了以下服务端渲染方案：
 
--   [g-canvas + node-canvas](/zh/docs/api/renderer/canvas#服务端渲染)
--   [g-svg + JSDOM](/zh/docs/api/renderer/svg#服务端渲染)
+-   [g-canvas + node-canvas](/zh/api/renderer/canvas#服务端渲染)
+-   [g-svg + JSDOM](/zh/api/renderer/svg#服务端渲染)
 -   [g-webgl + headless-gl]()
 
 目前我们在[集成测试](https://github.com/antvis/g/tree/next/integration/__node__tests__/)中使用它们。

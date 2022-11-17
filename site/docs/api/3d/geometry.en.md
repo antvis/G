@@ -7,7 +7,7 @@ order: 2
 
 我们内置了一些常用的几何，例如 Cube、Sphere 等，它们在运行时程序化生成。
 
-可以随时启用材质的 [wireframe](/zh/docs/api/3d/material#wireframe) 属性查看几何中包含的三角面：
+可以随时启用材质的 [wireframe](/zh/api/3d/material#wireframe) 属性查看几何中包含的三角面：
 
 ```js
 material.wireframe = true;
@@ -152,7 +152,7 @@ cube.style.width = 300;
 
 以上内置几何都继承自 BufferGeometry，因此需要自定义时也可以使用它。
 
-在[示例](/zh/examples/3d#buffer-geometry)中，我们创建了一个完全自定义的几何体，配合 [Mesh](/zh/docs/api/3d/mesh) 和 [MeshBasicMaterial](/zh/docs/api/3d/material#meshbasicmaterial)：
+在[示例](/zh/examples/3d#buffer-geometry)中，我们创建了一个完全自定义的几何体，配合 [Mesh](/zh/api/3d/mesh) 和 [MeshBasicMaterial](/zh/api/3d/material#meshbasicmaterial)：
 
 ```js
 import { BufferGeometry, MeshBasicMaterial, Mesh } from '@antv/g-plugin-3d';

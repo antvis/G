@@ -29,7 +29,7 @@ The Pinch gesture is implemented in this [example](/en/examples/event#pinch-with
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*MkM3TYXZsHsAAAAAAAAAAAAAARQnAQ" width="300">
 
-The core idea is to manage the touch points on the screen by listening to PointerEvents based on the [pointerId](/en/docs/api/event#pointerid) on the event object without caring about Mouse/TouchEvent.
+The core idea is to manage the touch points on the screen by listening to PointerEvents based on the [pointerId](/en/api/event#pointerid) on the event object without caring about Mouse/TouchEvent.
 
 ## Direct use of Interact.js
 
@@ -61,15 +61,15 @@ interact(
 
 ## Using g-plugin-dragndrop
 
-If you find interact.js too heavy, you can choose to use the simple drag-and-drop plugin we provide: [g-plugin-dragndrop](/en/docs/plugins/dragndrop).
+If you find interact.js too heavy, you can choose to use the simple drag-and-drop plugin we provide: [g-plugin-dragndrop](/en/plugins/dragndrop).
 
-This plugin is completely based on [PointerEvents](/en/docs/api/event#interaction events) to implement drag and drop functionality. In this [example](/en/examples/plugins#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
+This plugin is completely based on [PointerEvents](/en/api/event#interaction events) to implement drag and drop functionality. In this [example](/en/examples/plugins#dragndrop), we listen to the drag event of the soccer ball to move it to the right position and the dragover event of the goal to change the transparency when the soccer ball crosses the goal area.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*A14uTY9_5UEAAAAAAAAAAAAAARQnAQ" alt="dragndrop">
 
 ## Implementing simple drag'n'drop
 
-In addition to using the above off-the-shelf libraries, we can also implement simple drag-and-drop effects by combining PointerEvents listeners, which is what [g-plugin-dragndrop](/en/docs/plugins/dragndrop) does internally, as referenced in [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop).
+In addition to using the above off-the-shelf libraries, we can also implement simple drag-and-drop effects by combining PointerEvents listeners, which is what [g-plugin-dragndrop](/en/plugins/dragndrop) does internally, as referenced in [Drag'n'Drop with mouse events](https://javascript.info/mouse-drag-and-drop).
 
 ```js
 ball.addEventListener('pointerdown', function (event) {

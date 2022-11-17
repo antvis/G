@@ -12,7 +12,7 @@ order: 2
 
 ## 继承自
 
-[EventTarget](/zh/docs/api/builtin-objects/event-target)
+[EventTarget](/zh/api/builtin-objects/event-target)
 
 ## 属性
 
@@ -48,7 +48,7 @@ export enum Shape {
 
 ### nodeValue
 
-只读，返回节点字符串，默认为 null。[Text](/zh/docs/api/basic/text) 会返回文本字符串。
+只读，返回节点字符串，默认为 null。[Text](/zh/api/basic/text) 会返回文本字符串。
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
 
@@ -74,7 +74,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/isConnected
 
 ### ownerDocument
 
-只读，指向画布的入口 [Document](/zh/docs/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
+只读，指向画布的入口 [Document](/zh/api/builtin-objects/document)。如果还未加入到画布中，返回 null，例如：
 
 ```js
 circle.ownerDocument; // null
@@ -128,7 +128,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Node/previousSibling
 
 ### textContent
 
-读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/zh/docs/api/basic/text) 会返回文本字符串。
+读写属性，获取或者设置节点的文本内容。默认返回空字符串，[Text](/zh/api/basic/text) 会返回文本字符串。
 
 在读取时，该方法会递归计算子节点，将最终拼接而成的字符串返回：
 
@@ -143,7 +143,7 @@ text.textContent; // 'test'
 group.textContent; // 'test'
 ```
 
-在设置时，会首先移除该节点的所有子节点，如果该节点是 [Text](/zh/docs/api/basic/text)，直接修改文本内容；如果该节点不是 [Text](/zh/docs/api/basic/text)，会创建一个 [Text](/zh/docs/api/basic/text) 作为子节点并设置文本内容。
+在设置时，会首先移除该节点的所有子节点，如果该节点是 [Text](/zh/api/basic/text)，直接修改文本内容；如果该节点不是 [Text](/zh/api/basic/text)，会创建一个 [Text](/zh/api/basic/text) 作为子节点并设置文本内容。
 
 ```js
 const text = new Text({ style: { text: 'test' } });

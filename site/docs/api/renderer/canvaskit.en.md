@@ -3,9 +3,9 @@ title: Canvaskit Renderer
 order: 0
 ---
 
-Use [Skia](https://skia.org/docs/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](https://developer .mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
+Use [Skia](https://skia.org/user/api/) to draw 2D graphics. Load [Canvaskit](https://github.com/google/skia/tree/main/modules/canvaskit) in WASM format asynchronously at runtime, and wrap [WebGL2RenderingContext](https://developer .mozilla.org/en-US/Web/API/WebGL2RenderingContext) into `SkSurface`, which in turn is drawn by the `<canvas>` element on the page.
 
-Skia offers more features than the Canvas2D API, such as text paragraph layout, [Lottie animation](https://skia.org/docs/user/modules/skottie/), particle effects, and more. In addition to Chrome and Android, some cross-platform solutions such as [Flutter](https://docs.flutter.dev/resources/architectural-overview), [Weex](https://github.com/alibaba/) weex) also use it as the underlying rendering engine.
+Skia offers more features than the Canvas2D API, such as text paragraph layout, [Lottie animation](https://skia.org/user/modules/skottie/), particle effects, and more. In addition to Chrome and Android, some cross-platform solutions such as [Flutter](https:/.flutter.dev/resources/architectural-overview), [Weex](https://github.com/alibaba/) weex) also use it as the underlying rendering engine.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
@@ -69,7 +69,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 It is worth noting that CanvasKit provides several versions of the WASM file.
 
 -   Lite version, about 7.1MB`'https://unpkg.com/canvaskit-wasm@0.34.1/bin/'`
--   Full-featured, about 7.9MB, includes full [enhancements](/en/docs/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
+-   Full-featured, about 7.9MB, includes full [enhancements](/en/api/renderer/canvaskit#enhancements), this version is recommended `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/full'`
 -   Development version, approx. 9.1MB `'https://unpkg.com/canvaskit-wasm@0.34.1/bin/profiling'`
 
 ### fonts
@@ -115,27 +115,27 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-canvaskit-renderer](/en/docs/plugins/canvaskit-renderer) Rendering with CanvasKit.
--   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D)
--   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding
+-   [g-plugin-canvaskit-renderer](/en/plugins/canvaskit-renderer) Rendering with CanvasKit.
+-   [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D)
+-   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding
 
 ## Enhanced Features
 
 CanvasKit (full version) provides the following enhancements compared to the familiar Canvas 2D API.
 
--   [Skottie](https://skia.org/docs/user/modules/skottie/) Lottie Player
+-   [Skottie](https://skia.org/user/modules/skottie/) Lottie Player
 -   Particle effect
 -   Paragraph
 
 ### Lottie Player
 
-The [Lottie](https://airbnb.design/introducing-lottie/) animation is created with the [Bodymovin](https://github.com/bodymovin/bodymovin) plugin for After Effects and exported to JSON format. JSON format. CanvasKit provides [Skottie](https://skia.org/docs/user/modules/skottie/), a Lottie animation player.
+The [Lottie](https://airbnb.design/introducing-lottie/) animation is created with the [Bodymovin](https://github.com/bodymovin/bodymovin) plugin for After Effects and exported to JSON format. JSON format. CanvasKit provides [Skottie](https://skia.org/user/modules/skottie/), a Lottie animation player.
 
-In this [example](/en/examples/plugins#skottie) we show how to play a Lego animation.
+In this [example](/en/examples/plugins/canvaskit/#skottie) we show how to play a Lego animation.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" width="200" alt="skottie lego">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/docs/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/docs/plugins/canvaskit-renderer).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -146,7 +146,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-Then wait for the canvas initialization to complete, load the Lottie animation description file, and call [playAnimation](/en/docs/plugins/canvaskit-renderer#playanimation) to start playing immediately when it's done.
+Then wait for the canvas initialization to complete, load the Lottie animation description file, and call [playAnimation](/en/plugins/canvaskit-renderer#playanimation) to start playing immediately when it's done.
 
 ```js
 (async () => {
@@ -177,13 +177,13 @@ animation.delete();
 
 For example, particle effects such as fireworks, flames, etc. require generating and animating a large number of "particles", which are usually programmed in the GPU through the shader, e.g. interpolation calculations to change the position of each particle should be done in the GPU instead of the CPU.
 
-CanvasKit provides a Skia-based programming language [SkSL(Skia's shading language)](https://skia.org/docs/user/sksl/) implementation, which is syntactically very close to GLSL and is used in the shader to control particle generation and animation. and animation in the shader, which is a certain threshold for developers who have not been exposed to shader programming.
+CanvasKit provides a Skia-based programming language [SkSL(Skia's shading language)](https://skia.org/user/sksl/) implementation, which is syntactically very close to GLSL and is used in the shader to control particle generation and animation. and animation in the shader, which is a certain threshold for developers who have not been exposed to shader programming.
 
-In this [example](/en/examples/plugins#canvaskit-particles), we have implemented some particle effects.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-particles), we have implemented some particle effects.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" width="300" alt="canvaskit particles">
 
-First create the renderer and get the [g-plugin-canvaskit-renderer](/en/docs/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/docs/plugins/canvaskit-renderer).
+First create the renderer and get the [g-plugin-canvaskit-renderer](/en/api/renderer/renderer#getplugin) plugin via [getPlugin](/en/api/renderer/intro#getplugin).
 
 ```js
 import { Renderer } from '@antv/g-canvaskit';
@@ -194,7 +194,7 @@ const canvaskitRenderer = new Renderer({
 const plugin = canvaskitRenderer.getPlugin('canvaskit-renderer');
 ```
 
-Then call the plugin's [createParticles](/en/docs/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
+Then call the plugin's [createParticles](/en/plugins/canvaskit-renderer#createparticles) to create the particle effect, transform the canvas to adjust the position of the particles in the callback function at each frame, and finally start the particle generation with [start]().
 
 ```js
 const textParticles = plugin.createParticles(JSON.stringify(text), (canvas) => {
@@ -251,9 +251,9 @@ const text = {
 
 ### Draw text along the path
 
-Compared to [fillText](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillText) in the Canvas2D API, CanvasKit provides the ability to draw along a specified path text along a specified path.
+Compared to [fillText](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/fillText) in the Canvas2D API, CanvasKit provides the ability to draw along a specified path text along a specified path.
 
-In this [example](/en/examples/plugins#canvaskit-text-along-path), we can draw text along [Path](/en/docs/api/basic/path).
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-text-along-path), we can draw text along [Path](/en/api/basic/path).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*7voUQqLoKrEAAAAAAAAAAAAAARQnAQ" width="300" alt="draw text along path">
 
@@ -296,7 +296,7 @@ For example, `NotoSansCJKsc-VF` will show the following effect.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ADTaRYju0GsAAAAAAAAAAAAAARQnAQ" width="160" alt="broken emoji">
 
-In this [example](/en/examples/plugins#canvaskit-emoji), we load fonts that support Emoji such as [NotoColorEmoji](https://github.com/googlefonts/noto-emoji), which is also used in Android and Chrome use.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-emoji), we load fonts that support Emoji such as [NotoColorEmoji](https://github.com/googlefonts/noto-emoji), which is also used in Android and Chrome use.
 
 ```js
 const canvaskitRenderer = new CanvaskitRenderer({
@@ -328,13 +328,13 @@ const emoji = new Text({
 
 ### Text Paragraphs
 
-CanvasKit provides enhanced [paragraph drawing capabilities](https://skia.org/docs/user/modules/quickstart/#text-shaping).
+CanvasKit provides enhanced [paragraph drawing capabilities](https://skia.org/user/modules/quickstart/#text-shaping).
 
-#### Text Decoration
+### Text Decoration
 
-The [text-decoration](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration) property can be used in CSS to set the appearance of the text's modifier lines.
+The [text-decoration](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration) property can be used in CSS to set the appearance of the text's modifier lines.
 
-In this [example](/en/examples/plugins#canvaskit-paragraph), we use underscores.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), we use underscores.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DI1kQ6A8qQ8AAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph decoration">
 
@@ -357,14 +357,14 @@ const decoratedText = new Text({
 
 The following attributes are supported.
 
--   decorationLine [text-decoration-line](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-line) support: `'none'` `'underline'` `'overline'` `'line-through'`
--   decorationColor [text-decoration-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-color)
--   decorationThickness [text-decoration-thickness](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-thickness)
--   decorationStyle [text-decoration-style](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-decoration-style) support: `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
+-   decorationLine [text-decoration-line](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-line) support: `'none'` `'underline'` `'overline'` `'line-through'`
+-   decorationColor [text-decoration-color](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-color)
+-   decorationThickness [text-decoration-thickness](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-thickness)
+-   decorationStyle [text-decoration-style](https://developer.mozilla.org/zh-CN/Web/CSS/text-decoration-style) support: `'solid'` `'double'` `'dotted'` `'dashed'` `'wavy'`
 
-#### Text Ellipsis
+### Text Ellipsis
 
-In this [example](/en/examples/plugins#canvaskit-paragraph), using `maxLines` and `ellipsis` allows you to truncate and add ellipses after exceeding.
+In this [example](/en/examples/plugins/canvaskit/#canvaskit-paragraph), using `maxLines` and `ellipsis` allows you to truncate and add ellipses after exceeding.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DYqRQLtqtIUAAAAAAAAAAAAAARQnAQ" width="200" alt="paragraph ellipsis">
 
@@ -392,21 +392,21 @@ The reason is that Skia will add a blank character after the ellipsis, and the m
 -   https://github.com/flutter/flutter/issues/76473
 -   https://github.com/flutter/flutter/issues/90135#issuecomment-984916656
 
-#### Text Direction
+### Text Direction
 
 Using `direction` you can specify the text direction from left to right or right to left, supporting `'ltr'` and `'rtl'`, the default is `'ltr'`. The following figure shows the effect of `'rtl'`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8oWlSpL5hGAAAAAAAAAAAAAAARQnAQ" width="160" alt="text direction">
 
-#### Foreground / BackgroundColor
+### Foreground / BackgroundColor
 
 The foreground and background colors of text can be specified using `foregroundColor` and `backgroundColor`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OaRqRa-ZiAcAAAAAAAAAAAAAARQnAQ" width="160" alt="text background-color">
 
-#### Text Shadow
+### Text Shadow
 
-Multiple shadows can be added to text in CSS using the [text-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/text-shadow) property.
+Multiple shadows can be added to text in CSS using the [text-shadow](https://developer.mozilla.org/zh-CN/Web/CSS/text-shadow) property.
 
 We support specifying a set of shadows via the `shadows` property, where each shadow supports the following configuration.
 
@@ -436,9 +436,9 @@ const shadowedText = new Text({
 });
 ```
 
-#### StrutStyle
+### StrutStyle
 
-Strut (meaning "pillar") sets the minimum line height relative to the baseline. Similar to the [line-height](https://developer.mozilla.org/zh-CN/docs/Web/CSS/line-height) property in CSS.
+Strut (meaning "pillar") sets the minimum line height relative to the baseline. Similar to the [line-height](https://developer.mozilla.org/zh-CN/Web/CSS/line-height) property in CSS.
 
 StrutStyle can be configured in SkParagraph, and a document with the same name is available in Flutter: https://api.flutter.dev/flutter/painting/StrutStyle-class.html
 
@@ -466,9 +466,9 @@ decoratedText.style.strutStyle = {
 };
 ```
 
-#### Advanced Printing Features
+### Advanced Printing Features
 
-The [font-feature-settings](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings) property in CSS can be consulted to control the advanced printing features in OpenType fonts.
+The [font-feature-settings](https://developer.mozilla.org/zh-CN/Web/CSS/font-feature-settings) property in CSS can be consulted to control the advanced printing features in OpenType fonts.
 
 We provide control of the `fontFeatures` property, which accepts an array of features. In this [example](/en/examples/plugins#canvaskit-paragraph), we use the Roboto font and turn on the small-cap feature (note the initial D).
 
@@ -495,11 +495,11 @@ const fontFeaturesText = new Text({
 });
 ```
 
-#### Harfbuzz
+### Harfbuzz
 
 Skia itself does not include Harfbuzz.
 
-https://skia.org/docs/user/tips/
+https://skia.org/user/tips/
 
 But CanvasKit packages it in by default.
 
@@ -511,4 +511,4 @@ https://skia.googlesource.com/skia.git/+/4bd08c52c07d1f2ae313a54b45e5937b80fe2fa
 
 ## Performance
 
-CanvasKit draws via [WebGL2RenderingContext](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext) and does a full redraw at each frame.
+CanvasKit draws via [WebGL2RenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGL2RenderingContext) and does a full redraw at each frame.

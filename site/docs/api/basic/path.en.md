@@ -21,9 +21,9 @@ const line = new Path({
 
 ## Inherited from
 
-Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
-The default anchor definition is the top-left corner of the enclosing box, which can be changed by [anchor](/en/docs/api/display-object#anchor).
+The default anchor definition is the top-left corner of the enclosing box, which can be changed by [anchor](/en/api/display-object#anchor).
 
 On this point we refer to the actual performance of SVG, the following figure as an example we defined a segment of arc with `[100, 100]` as the starting point, obviously its top left corner of the enclosing box vertex is not `[0, 0]` or `[100, 100]`, but needs to be calculated according to the real shape of the path, we will use this calculation as the default anchor position, but also the coordinates of the local coordinate system: `[0, 0]`.
 
@@ -49,19 +49,19 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ### lineWidth
 
-Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/api/basic/display-object#lineWidth) for details.
 
 ### miterLimit
 
-Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
+Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-object#miterLimit)
 
 ## Additional Properties
 
@@ -76,14 +76,14 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
 ### d
 
-Alias for the [path](/en/docs/api/basic/path#path) attribute, consistent with the `<path>` naming in SVG.
+Alias for the [path](/en/api/basic/path#path) attribute, consistent with the `<path>` naming in SVG.
 
 ### markerStart
 
 Since Path can be closed by `Z` command, the definition of "start point" differs in two cases.
 
--   If it is not closed, you can refer to the [markerStart](/en/docs/api/basic/polyline#markerstart) attribute of [Polyline](/en/docs/api/basic/polyline).
--   If it is closed, you can refer to the [markerStart](/en/docs/api/basic/polygon#markerstart) property of [Polygon](/en/docs/api/basic/polygon).
+-   If it is not closed, you can refer to the [markerStart](/en/api/basic/polyline#markerstart) attribute of [Polyline](/en/api/basic/polyline).
+-   If it is closed, you can refer to the [markerStart](/en/api/basic/polygon#markerstart) property of [Polygon](/en/api/basic/polygon).
 
 For example, in the following figure, where markerStart and markerEnd are also specified as "arrows", the effect of an unclosed path is shown on the left, and the effect of a closed path is shown on the right.
 
@@ -108,12 +108,12 @@ path.style.markerStart = arrowMarker;
 
 ### markerEnd
 
-See the [markerEnd](/en/docs/api/basic/polyline#markerend) attribute of [Polyline](/en/docs/api/basic/polyline).
+See the [markerEnd](/en/api/basic/polyline#markerend) attribute of [Polyline](/en/api/basic/polyline).
 
 Since Path can be closed by the `Z` command, the definition of the "end point" differs in two cases.
 
--   If it is not closed, you can refer to the [markerEnd](/en/docs/api/basic/polyline#markerend) attribute of [Polyline](/en/docs/api/basic/polyline).
--   If closed, see the [markerEnd](/en/docs/api/basic/polygon#markerend) property of [Polygon](/en/docs/api/basic/polygon).
+-   If it is not closed, you can refer to the [markerEnd](/en/api/basic/polyline#markerend) attribute of [Polyline](/en/api/basic/polyline).
+-   If closed, see the [markerEnd](/en/api/basic/polygon#markerend) property of [Polygon](/en/api/basic/polygon).
 
 In this [example](/en/examples/shape#path), we have placed an image at the termination point of the polygon.
 
@@ -140,7 +140,7 @@ You can refer to SVG's [attribute of the same name](https://developer.mozilla.or
 
 Place marker graphics on each vertex of the path except for the "start" and "end" points. In the internal implementation, these vertices are actually control points for the third-order Bessel curve, since we convert some of the commands in the path to C commands.
 
-For example, in the following figure, a [Circle](/en/docs/api/basic/circle) is placed on each vertex of the path except the first and last.
+For example, in the following figure, a [Circle](/en/api/basic/circle) is placed on each vertex of the path except the first and last.
 
 ```js
 const circleMarker = new Circle({
@@ -159,25 +159,25 @@ path.style.markerMid = circleMarker;
 
 ### markerStartOffset
 
-See the [markerStartOffset](/en/docs/api/basic/polyline) property of [Polyline](/en/docs/api/basic/polyline#markerstartoffset). marker will move along the tangent of the first segment in the path. The marker will be moved in the direction of the first segment of the path, and the body path will be lengthened or shortened accordingly.
+See the [markerStartOffset](/en/api/basic/polyline) property of [Polyline](/en/api/basic/polyline#markerstartoffset). marker will move along the tangent of the first segment in the path. The marker will be moved in the direction of the first segment of the path, and the body path will be lengthened or shortened accordingly.
 
-See the [markerStartOffset](/en/docs/api/basic/polyline) property of [Polyline](/en/docs/api/basic/polyline#markerstartoffset). marker will move along the tangent of the first section of the path. The marker will move in the direction of the tangent of the first segment in the path, and the body path will be extended or shortened accordingly. Note that the stretching distance of the body path is also limited, and when it exceeds the length of the first segment, a "bend" effect will occur, as shown in the following figure.
+See the [markerStartOffset](/en/api/basic/polyline) property of [Polyline](/en/api/basic/polyline#markerstartoffset). marker will move along the tangent of the first section of the path. The marker will move in the direction of the tangent of the first segment in the path, and the body path will be extended or shortened accordingly. Note that the stretching distance of the body path is also limited, and when it exceeds the length of the first segment, a "bend" effect will occur, as shown in the following figure.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2DI5TpGasHcAAAAAAAAAAAAAARQnAQ" alt="marker start offset" width="200">
 
 This property is therefore suitable for "fine-tuning", rather than drastically changing the path definition.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<length\>](/en/docs/api/css/css-properties-values-api#length)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
 
 ### markerEndOffset
 
-See the [markerEndOffset](/en/docs/api/basic/polyline) property of [Polyline](/en/docs/api/basic/polyline#markerendoffset). marker will move along the tangent direction of the last section of the path. The marker will move in the direction of the tangent of the last section of the path, and the body path will be extended or shortened accordingly.
+See the [markerEndOffset](/en/api/basic/polyline) property of [Polyline](/en/api/basic/polyline#markerendoffset). marker will move along the tangent direction of the last section of the path. The marker will move in the direction of the tangent of the last section of the path, and the body path will be extended or shortened accordingly.
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<length\>](/en/docs/api/css/css-properties-values-api#length)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
 
 ## Methods
 

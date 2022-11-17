@@ -3,7 +3,7 @@ title: Canvas Renderer
 order: 0
 ---
 
-Use [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) to draw 2D graphics. A `<canvas>` element will be created in the container.
+Use [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) to draw 2D graphics. A `<canvas>` element will be created in the container.
 
 ## Usage
 
@@ -62,7 +62,7 @@ The following diagram illustrates this idea.
 
 -   When the mouse hovers over the circle, we know the corresponding "dirty rectangle", which is the enclosing box of the circle.
 -   Find other shapes in the scene that intersect with this enclosing box area, here another rectangle is found.
--   Use [clearRect](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect) to clear this "dirty rectangle ", instead of clearing the entire canvas
+-   Use [clearRect](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D/clearRect) to clear this "dirty rectangle ", instead of clearing the entire canvas
 -   Draws a rectangle and a circle in order of z-index
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*6zyLTL-AIbQAAAAAAAAAAAAAARQnAQ" width="400" alt="dirty rectangle rendering">
@@ -77,11 +77,11 @@ But it makes sense in relatively static scenarios like visualization, where for 
 
 Used for debug, disabled by default, when enabled the canvas will trigger `CanvasEvent.DIRTY_RECTANGLE` event and carry dirty rectangle information which can be used for subsequent visualization.
 
-In this [example](/en/examples/perf#canvas-dirty-rectangle), the current dirty rectangle that needs to be cleared is displayed as the mouse passes over the individual circles, and the current frame will only redraw the area.
+In this [example](/en/examples/perf/basic/#canvas-dirty-rectangle), the current dirty rectangle that needs to be cleared is displayed as the mouse passes over the individual circles, and the current frame will only redraw the area.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*iIJcRpUFEBUAAAAAAAAAAAAAARQnAQ" alt="dirty rectangle rendering" width="300">
 
-Note that the coordinates of the dirty rectangle are under the [Canvas coordinate system](/en/docs/api/canvas#canvas-1), so if you want to draw the floating layer using HTML, you need to use the [coordinate system conversion method](/en/docs/api/canvas#canvas--viewport).
+Note that the coordinates of the dirty rectangle are under the [Canvas coordinate system](/en/api/canvas/coordinates), so if you want to draw the floating layer using HTML, you need to use the [coordinate system conversion method](/en/api/canvas/coordinates#canvas---viewport).
 
 ```js
 // display dirty rectangle
@@ -111,9 +111,9 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 
 The renderer has the following plug-ins built in.
 
--   [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer) Rendering with [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D).
--   [g-plugin-canvas-picker](/en/docs/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D).
--   [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) DOM API-based event binding.
+-   [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) Rendering with [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
+-   [g-plugin-canvas-picker](/en/plugins/canvas-picker) Picking up graphics based on mathematical methods and [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D).
+-   [g-plugin-dom-interaction](/en/plugins/dom-interaction) DOM API-based event binding.
 
 ## Optional plug-ins
 
@@ -123,21 +123,21 @@ In addition to the built-in plug-ins, the following optional plug-ins are availa
 
 Use the Canvas version of [rough.js](https://roughjs.com/) for hand-drawn style rendering.
 
-We provide [g-plugin-rough-canvas-renderer](/en/docs/plugins/rough-canvas-renderer) plugin, which will replace [g-plugin-canvas-renderer](/en/docs/plugins/canvas-renderer) for partial 2D graphics rendering capability after registration.
+We provide [g-plugin-rough-canvas-renderer](/en/plugins/rough-canvas-renderer) plugin, which will replace [g-plugin-canvas-renderer](/en/plugins/canvas-renderer) for partial 2D graphics rendering capability after registration.
 
-[Example](/en/examples/plugins#rough).
+[Example](/en/examples/plugins/rough/#rough).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" width="500">
 
 ## Server-side rendering
 
-This renderer relies on [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D) rendering capabilities and is not limited to the browser side, so you can also use [ node-canvas](https://github.com/Automattic/node-canvas) for server-side rendering.
+This renderer relies on [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) rendering capabilities and is not limited to the browser side, so you can also use [ node-canvas](https://github.com/Automattic/node-canvas) for server-side rendering.
 
 In our [integration test](https://github.com/antvis/g/tree/next/integration/__node__tests__/canvas), it will be paired with [node-canvas](https://github.com/) on the Node side Automattic/node-canvas) to render the result image and compare it with the baseline image. Other server-side rendering scenarios can also follow the following steps.
 
-1. Use [unregisterPlugin](/en/docs/api/renderer/renderer#unregisterplugin) to uninstall the DOM API-related plugins built into [g-canvas](/en/docs/api/renderer/canvas). For example [g-plugin-dom-interaction](/en/docs/plugins/dom-interaction) which is responsible for event binding
-2. Use [node-canvas](https://github.com/Automattic/node-canvas) to create a class `Canvas` object to be passed into the canvas via the [canvas](/en/docs/api/canvas#canvas) property
-3. Normal use of [g-canvas](/en/docs/api/renderer/canvas) renderer to create scenes via G's API
+1. Use [unregisterPlugin](/en/api/renderer/renderer#unregisterplugin) to uninstall the DOM API-related plugins built into [g-canvas](/en/api/renderer/canvas). For example [g-plugin-dom-interaction](/en/plugins/dom-interaction) which is responsible for event binding
+2. Use [node-canvas](https://github.com/Automattic/node-canvas) to create a class `Canvas` object to be passed into the canvas via the [canvas](/en/api/canvas#canvas) property
+3. Normal use of [g-canvas](/en/api/renderer/canvas) renderer to create scenes via G's API
 4. Use the methods provided by [node-canvas](https://github.com/Automattic/node-canvas) (e.g. [createPNGStream](https://github.com/Automattic/node-canvas# canvascreatepngstream)) to output the resulting image
 
 https://github.com/antvis/g/blob/next/integration/__node__tests__/canvas/circle.spec.js

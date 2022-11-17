@@ -10,15 +10,15 @@ The event system can provide rich interactions and we follow two principles in i
 
 Developers familiar with [DOM Event Stream](https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-flow-h2) will be familiar with the following concepts.
 
--   Event objects have a reference to the EventTarget, which is naturally a DOM element in the DOM and [EventTarget](/en/docs/api/builtin-objects/event-target) in G.
+-   Event objects have a reference to the EventTarget, which is naturally a DOM element in the DOM and [EventTarget](/en/api/builtin-objects/event-target) in G.
 -   The event stream contains capture and bubble phases, and you can intervene in them through certain methods on the event object.
 -   One or more listeners can be added to an event, and they are triggered sequentially in the order in which they are registered.
 
-The following diagram shows the three phases of event propagation, the listener is triggered from top to bottom in the capture phase, and bubbles up after reaching the target node. In the listener, you can get the current phase by [eventPhase](/en/docs/api/event#eventphase). The following image is from https://javascript.info/bubbling-and-capturing#capturing
+The following diagram shows the three phases of event propagation, the listener is triggered from top to bottom in the capture phase, and bubbles up after reaching the target node. In the listener, you can get the current phase by [eventPhase](/en/api/event#eventphase). The following image is from https://javascript.info/bubbling-and-capturing#capturing
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*zJBbSL2D5mkAAAAAAAAAAAAAARQnAQ" width="500" alt="event capture">
 
-We currently support the following [base events](/en/docs/api/event#type), which are compatible with DOM event streams as much as possible, so we have included reference links to the corresponding DOM Event APIs in many of the API introductions below.
+We currently support the following [base events](/en/api/event#type), which are compatible with DOM event streams as much as possible, so we have included reference links to the corresponding DOM Event APIs in many of the API introductions below.
 
 For example, we want to add a simple mouse-in/out interaction to this circle, [example](/en/examples/event#shapes).
 
@@ -86,7 +86,7 @@ MouseEvents:
 -   `rightup` Right mouse button lift
 -   `mouseupoutside` Different graphics when the left mouse button is lifted and when it is pressed
 -   `rightupoutside` Different graphics when the right mouse button is raised and pressed
--   `click` Click & double click [how to distinguish?](/en/docs/api/event#doubleclick)
+-   `click` Click & double click [how to distinguish?](/en/api/event#doubleclick)
 -   `mousemove` The mouse continuously moves over the graph
 -   `mouseover` Mouse over the graph will bubble
 -   `mouseout` The mouse is removed from the graph and will bubble up
@@ -160,7 +160,7 @@ target.addEventListener(type, listener, useCapture);
 
 Parameters:
 
--   type 事件名称，[内置标准事件](/en/docs/api/event#type) 或[自定义事件名](/en/docs/api/event#custom-events)
+-   type 事件名称，[内置标准事件](/en/api/event#type) 或[自定义事件名](/en/api/event#custom-events)
 -   listener 事件监听器，支持以下两种写法：
     -   处理函数 `Function`
     -   [EventListener](https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener/handleEvent) 对象，形如 `{ handleEvent: Function }`
@@ -196,7 +196,7 @@ circle.addEventListener('mouseenter', () => {});
 circle.on('mouseenter', () => {});
 ```
 
-You can refer to [this section](/en/docs/api/event#the-problem-of-this-within-the-event-listener) for more information about the pointing of this in the listener.
+You can refer to [this section](/en/api/event#the-problem-of-this-within-the-event-listener) for more information about the pointing of this in the listener.
 
 ### removeEventListener
 

@@ -3,7 +3,7 @@ title: Introduction
 order: 0
 ---
 
-The camera describes the angle from which we view the world. The viewpoint and camera position all affect the final image. When creating the [Canvas](/en/docs/api/canvas) canvas, there is already a built-in camera that uses orthogonal projection by default. So we don't need to create it manually, we can get it as follows.
+The camera describes the angle from which we view the world. The viewpoint and camera position all affect the final image. When creating the [Canvas](/en/api/canvas) canvas, there is already a built-in camera that uses orthogonal projection by default. So we don't need to create it manually, we can get it as follows.
 
 ```js
 const camera = canvas.getCamera();
@@ -13,10 +13,10 @@ By manipulating the camera we can easily achieve many effects, such as panning a
 
 The camera currently supports the following features.
 
--   Two projection modes: Orthographic [Orthogonal](/en/docs/api/camera#projection mode) and Perspective [Perspective](/en/docs/api/camera#projection mode), the former is used by default.
--   Three camera types: [Exploring](/en/docs/api/camera#exploring), [Orbiting](/en/docs/api/camera#orbiting) and [Tracking](/en/docs/api/camera#tracking), Exploring is used by default.
--   Camera action. For example [pan](/en/docs/api/camera#pan), [dolly](/en/docs/api/camera#dolly), [rotate](/en/docs/api/camera#rotate)
--   Customize [camera animation](/en/docs/api/camera#camera animation) to create/save the current camera state as a Landmark and smoothly switch between multiple Landmarks.
+-   Two projection modes: Orthographic [Orthogonal](/en/api/camera/intro#projection-mode) and Perspective [Perspective](/en/api/camera/intro#projection-modee), the former is used by default.
+-   Three camera types: [Exploring](/en/api/camera/intro#exploring), [Orbiting](/en/api/camera/intro#orbiting) and [Tracking](/en/api/camera/intro#tracking), Exploring is used by default.
+-   Camera action. For example [pan](/en/api/camera/action#pan), [dolly](/en/api/camera/action#dolly), [rotate](/en/api/camera/action#rotate)
+-   Customize [camera animation](/en/api/camera/animation) to create/save the current camera state as a Landmark and smoothly switch between multiple Landmarks.
 
 ## Projection Mode
 
@@ -64,7 +64,7 @@ The list of parameters is as follows.
 -   `near` Near plane
 -   `far` Far plane
 
-The default camera settings for G are as follows, where `width/height` is the size of [Canvas](/en/docs/api/canvas) and [usage example](/en/examples/camera#ortho).
+The default camera settings for G are as follows, where `width/height` is the size of [Canvas](/en/api/canvas) and [usage example](/en/examples/camera/projection-mode/#ortho).
 
 ```js
 const camera = new Camera()
@@ -90,7 +90,7 @@ Parameters:
 -   `fov` Viewing angle, larger means more objects in the scene can be accommodated
 -   `aspect` Width-to-Height Ratio
 
-[Example](/en/examples/camera#perspective)：
+[Example](/en/examples/camera/projection-mode/#perspective)：
 
 ```js
 camera
@@ -118,15 +118,15 @@ export enum CameraType {
 
 ```
 
-With [g-plugin-control](/en/docs/plugins/control) you can interact with mouse panning and zooming, [example](/en/examples/camera#landmark).
+With [g-plugin-control](/en/plugins/control) you can interact with mouse panning and zooming, [example](/en/examples/camera/camera-animation/#landmark).
 
 ### Orbiting
 
 Fixes the viewpoint `focalPoint` and changes the camera position `position`. Commonly used in scenarios like CAD viewing models, but not across the north and south poles.
 
-Called [OrbitControls](https://threejs.org/docs/#examples/en/controls/OrbitControls) in Three.js.
+Called [OrbitControls](https://threejs.org/#examples/en/controls/OrbitControls) in Three.js.
 
-In this [example](/en/examples/camera#landmark), we control the camera by mouse panning to complete the [pan](/en/docs/api/camera#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
+In this [example](/en/examples/camera/camera-animation#landmark), we control the camera by mouse panning to complete the [pan](/en/api/camera/action#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
@@ -136,7 +136,7 @@ Similar to `Orbiting` mode, also fixed viewpoint `focalPoint`, but can span Nort
 
 G's **Default Camera** has this mode selected.
 
-Called [TrackballControls](https://threejs.org/docs/#examples/en/controls/TrackballControls) in Three.js.
+Called [TrackballControls](https://threejs.org/#examples/en/controls/TrackballControls) in Three.js.
 
 In this [example](/en/examples/camera#landmark), we control the camera via mouse panning to complete the [pan]() action, allowing the camera to "rotate" around a fixed point of view.
 
@@ -146,7 +146,7 @@ In this [example](/en/examples/camera#landmark), we control the camera via mouse
 
 The fixed camera position `position` rotates around it, so the viewpoint `focalPoint` position will change.
 
-Called [FirstPersonControls](https://threejs.org/docs/#examples/en/controls/FirstPersonControls) in Three.js.
+Called [FirstPersonControls](https://threejs.org/#examples/en/controls/FirstPersonControls) in Three.js.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3OPVQajsb3YAAAAAAAAAAAAAARQnAQ">
 

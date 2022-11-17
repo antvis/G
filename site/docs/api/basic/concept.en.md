@@ -7,7 +7,7 @@ First, you need to clarify some concepts, such as bounding boxes, coordinates, a
 
 ## Hierarchy
 
-In [scene graph](/en/docs/guide/diving-deeper/scenegraph) we learned that it is possible to construct parent-child relationships between graphs, and that such parent-child relationships can sometimes be counter-intuitive, for example adding a child node text ([Text](/en/docs/api/basic/text)) to a line ([Line](/en/docs/api/basic/line)).
+In [scene graph](/en/guide/diving-deeper/scenegraph) we learned that it is possible to construct parent-child relationships between graphs, and that such parent-child relationships can sometimes be counter-intuitive, for example adding a child node text ([Text](/en/api/basic/text)) to a line ([Line](/en/api/basic/line)).
 
 ```js
 line.appendChild(text);
@@ -47,13 +47,13 @@ And for rendering pipelines, these style properties obviously need to be taken i
 
 It is easy to define geometric enclosing boxes based on different types of graphs.
 
--   **Geometry Bounds**。Determined only by the geometric definition of the figure, disregard most of the drawing properties(like radius of [Circle](/en/docs/api/basic/circle) , width/height of [Rect](/en/docs/api/basic/rect), path definition of [Path](/en/docs/api/basic/path)) and transformation. We can use [getGeometryBounds](/en/docs/api/basic/display-object#getgeometrybounds-aabb) to get them.
+-   **Geometry Bounds**。Determined only by the geometric definition of the figure, disregard most of the drawing properties(like radius of [Circle](/en/api/basic/circle) , width/height of [Rect](/en/api/basic/rect), path definition of [Path](/en/api/basic/path)) and transformation. We can use [getGeometryBounds](/en/api/basic/display-object#getgeometrybounds-aabb) to get them.
 
 Once a node has child nodes, it should be considered in the calculation of the enclosing box. For example, if we want to rotate it as a whole, we need to find the center of the enclosing box as the center of rotation. Therefore, the following enclosing boxes are considered for the hierarchy.
 
--   **Bounds**。It is calculated in the world coordinate system and obtained by merging the Geometry Bounds of itself and all its children. Users usually use this wrapping box most often. We can use [getBounds](/en/docs/api/basic/display-object#getbounds-aabb) to get them.
--   **Local Bounds**。The only difference with Bounds is that it is calculated in the local coordinate system of the parent node. We can use [getLocalBounds](/en/docs/api/basic/display-object#getlocalbounds-aabb) to get them.
--   **Render Bounds**。Calculated in the world coordinate system, based on Bounds, influenced by some rendering properties, such as border width, shadows, some filters, etc., while merging the Render Bounds of all child nodes. We can use [getRenderBounds](/en/docs/api/basic/display-object#getrenderbounds-aabb) to get them.
+-   **Bounds**。It is calculated in the world coordinate system and obtained by merging the Geometry Bounds of itself and all its children. Users usually use this wrapping box most often. We can use [getBounds](/en/api/basic/display-object#getbounds-aabb) to get them.
+-   **Local Bounds**。The only difference with Bounds is that it is calculated in the local coordinate system of the parent node. We can use [getLocalBounds](/en/api/basic/display-object#getlocalbounds-aabb) to get them.
+-   **Render Bounds**。Calculated in the world coordinate system, based on Bounds, influenced by some rendering properties, such as border width, shadows, some filters, etc., while merging the Render Bounds of all child nodes. We can use [getRenderBounds](/en/api/basic/display-object#getrenderbounds-aabb) to get them.
 
 In the figure below, ul1 has two word nodes, li1 and li2, which are not considered in the calculation of its own Geometry Bounds, but are needed in the calculation of Bounds. Since ul1 also has shadows, its Render Bounds are one turn larger.
 
@@ -63,10 +63,10 @@ In the figure below, ul1 has two word nodes, li1 and li2, which are not consider
 
 How should the anchor point (origin) of a graph be defined? We can define it based on Geometry Bounds, with the value range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper left corner of Geometry Bounds and `[1, 1]` represents the lower right corner. And the default anchor points for different shapes due to different geometry definitions are as follows.
 
--   The center of [Circle](/en/docs/api/circle) and [Ellipse](/en/docs/api/ellipse) is `[0.5, 0.5]`
--   The top left corner of [Rect](/en/docs/api/rect), [Image](/en/docs/api/image), [Line](/en/docs/api/line), [Polyline](/en/docs/api/polyline), [Polygon](/en/docs/api/polygon) and [Path](/en/docs/api/path) is `[0, 0]`.
--   We should always use [textBaseline](/en/docs/api/basic/text#textbaseline) and [textAlign](/en/docs/api/basic/text#textalign) to set the anchor of [Text](/en/docs/api/text).
--   Since [Group](/en/docs/api/text) has no geometry bounds, so its anchor is `[0, 0]`.
+-   The center of [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse) is `[0.5, 0.5]`
+-   The top left corner of [Rect](/en/api/rect), [Image](/en/api/image), [Line](/en/api/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path) is `[0, 0]`.
+-   We should always use [textBaseline](/en/api/basic/text#textbaseline) and [textAlign](/en/api/basic/text#textalign) to set the anchor of [Text](/en/api/text).
+-   Since [Group](/en/api/text) has no geometry bounds, so its anchor is `[0, 0]`.
 
 Sometimes we want to change the definition of the origin of a base graph, for example by defining the anchor of Rect as the center instead of the top left corner, [example](/en/examples/shape#rect)：
 

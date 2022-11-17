@@ -3,7 +3,7 @@ title: g-plugin-css-select
 order: 0
 ---
 
-When finding nodes in the scene graph, we can use some [advanced query methods](/en/docs/api/basic/display-object#advanced-query) similar to the DOM API.
+When finding nodes in the scene graph, we can use some [advanced query methods](/en/api/basic/display-object#advanced-query) similar to the DOM API.
 
 -   **getElementById** Find a single element by id in the subtree of the current node
 -   **getElementsByName** Find a list of elements by name in the subtree of the current node

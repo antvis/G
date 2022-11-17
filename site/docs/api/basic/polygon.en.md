@@ -24,23 +24,23 @@ const polygon = new Polygon({
 
 ## Inherited from
 
-Inherits [style property](/en/docs/api/basic/display-object#drawing-properties) from [DisplayObject](/en/docs/api/basic/display-object).
+Inherits [style property](/en/api/basic/display-object#drawing-properties) from [DisplayObject](/en/api/basic/display-object).
 
 ### anchor
 
-The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/docs/api/basic/display-object#anchor).
+The default value is `[0, 0]`. For details, see [DisplayObject's anchor](/en/api/basic/display-object#anchor).
 
 ### transformOrigin
 
-The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/docs/api/basic/display-object#transformOrigin).
+The default value is `left top`. For details, see [DisplayObject's transformOrigin](/en/api/basic/display-object#transformOrigin).
 
 ### lineWidth
 
-Default value is `'1'`. See [DisplayObject's lineWidth](/en/docs/api/basic/display-object#lineWidth) for details.
+Default value is `'1'`. See [DisplayObject's lineWidth](/en/api/basic/display-object#lineWidth) for details.
 
 ### miterLimit
 
-Default value is `'4'`. See [DisplayObject's miterLimit](/en/docs/api/basic/display-object#miterLimit)
+Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-object#miterLimit)
 
 ## Additional Properties
 
@@ -66,9 +66,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
 
 ### markerStart
 
-See [markerStart](/en/docs/api/basic/polyline#markerstart) property of [Polyline](/en/docs/api/basic/polyline).
+See [markerStart](/en/api/basic/polyline#markerstart) property of [Polyline](/en/api/basic/polyline).
 
-But unlike Polyline, since polygons are **closed**, the positions of the "start" and "end" points coincide exactly, as determined by the first point in [points](/en/docs/api/basic/polygon#points). This is also consistent with the native SVG implementation, and the following figure shows the overlap effect after defining both markerStart and markerEnd.
+But unlike Polyline, since polygons are **closed**, the positions of the "start" and "end" points coincide exactly, as determined by the first point in [points](/en/api/basic/polygon#points). This is also consistent with the native SVG implementation, and the following figure shows the overlap effect after defining both markerStart and markerEnd.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*mXYATLithEUAAAAAAAAAAAAAARQnAQ" alt="polygon end/start overlap" width="400">
 
@@ -91,9 +91,9 @@ polygon.style.markerStart = arrowMarker;
 
 ### markerEnd
 
-See [markerEnd](/en/docs/api/basic/polyline#markerend) property of [Polyline](/en/docs/api/basic/polyline).
+See [markerEnd](/en/api/basic/polyline#markerend) property of [Polyline](/en/api/basic/polyline).
 
-However, unlike Polyline, since polygons are **closed**, the positions of the "start point" and "end point" coincide exactly. The "end point" is determined by the first point in [points](/en/docs/api/basic/polygon#points).
+However, unlike Polyline, since polygons are **closed**, the positions of the "start point" and "end point" coincide exactly. The "end point" is determined by the first point in [points](/en/api/basic/polygon#points).
 
 In this [example](/en/examples/shape#polygon), we have placed a picture at the termination point of the polygon.
 
@@ -120,7 +120,7 @@ You can refer to the [attribute of the same name](https://developer.mozilla.org/
 
 Place markers on each vertex of the polygon except for the "start" and "end" points.
 
-For example, in the following figure, a [Circle](/en/docs/api/basic/circle) is placed on each vertex of the polygon except for the beginning and end.
+For example, in the following figure, a [Circle](/en/api/basic/circle) is placed on each vertex of the polygon except for the beginning and end.
 
 ```js
 const circleMarker = new Circle({
@@ -137,20 +137,20 @@ polygon.style.markerMid = circleMarker;
 
 ### markerStartOffset
 
-See the [markerStartOffset](/en/docs/api/basic/polyline#markerstartoffset) property of [Polyline](/en/docs/api/basic/polyline).
+See the [markerStartOffset](/en/api/basic/polyline#markerstartoffset) property of [Polyline](/en/api/basic/polyline).
 
 Moving the marker graphic in the direction of the first line segment of the polygon will change the shape of the original polygon at the same time.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4l7xQoYcXngAAAAAAAAAAAAAARQnAQ" alt="marker start offset">
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<length\>](/en/docs/api/css/css-properties-values-api#length)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
 
 ### markerEndOffset
 
-See the [markerEndOffset](/en/docs/api/basic/polyline#markerendoffset) property of [Polyline](/en/docs/api/basic/polyline).
+See the [markerEndOffset](/en/api/basic/polyline#markerendoffset) property of [Polyline](/en/api/basic/polyline).
 
-| [Initial value](/en/docs/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/docs/api/css/inheritance) | Animatable | [Computed value](/en/docs/api/css/css-properties-values-api#computed-value) |
-| ------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| '0'                                                                       | -                   | no                                          | yes        | [\<length\>](/en/docs/api/css/css-properties-values-api#length)             |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |

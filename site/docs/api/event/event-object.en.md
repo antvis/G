@@ -5,11 +5,11 @@ order: 50
 
 In the event listener's callback function, we can get the event object and access the properties and methods on it. These properties and methods are consistent with the DOM Event API, so you can directly refer to their documentation.
 
-We will try to normalize the native events to [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) event object and then handle them uniformly, which can be accessed on [nativeEvent](/en/docs/api/event#nativeevent) to access native events.
+We will try to normalize the native events to [PointerEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/PointerEvent) event object and then handle them uniformly, which can be accessed on [nativeEvent](/en/api/event#nativeevent) to access native events.
 
 ## General Properties
 
-Common properties on the event object include event type, graphics of the current triggered event, location, etc., where location is related to [coordinate system](/en/docs/api/canvas#coordinate system).
+Common properties on the event object include event type, graphics of the current triggered event, location, etc., where location is related to [coordinate system](/en/api/canvas#coordinate system).
 
 ### type
 
@@ -25,11 +25,11 @@ https://developer.mozilla.org/en-US/docs/Web/API/Event/type
 
 ### nativeEvent
 
-Native event object. When we call [preventDefault](/en/docs/api/event#preventdefault) method, it will call the method of the same name on the native event object.
+Native event object. When we call [preventDefault](/en/api/event#preventdefault) method, it will call the method of the same name on the native event object.
 
 ### view
 
-Point to [Canvas](/en/docs/api/canvas).
+Point to [Canvas](/en/api/canvas).
 
 https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
 
@@ -95,7 +95,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
 
-The [EventTarget](/en/docs/api/builtin-objects/event-target) of the current triggering event.
+The [EventTarget](/en/api/builtin-objects/event-target) of the current triggering event.
 
 Useful when implementing event delegation, for example in a scenario like this, similar to `ul/li` in the DOM.
 
@@ -144,7 +144,7 @@ ul.addEventListener(
 
 ### canvasX/Y
 
-Under [Canvas coordinate system/world coordinate system](/en/docs/api/canvas#canvas), the upper left corner of the canvas DOM element is the origin, the X-axis is pointing to the right side of the screen and the Y-axis is pointing to the bottom of the screen. Can be interconverted with [viewportX/Y](/en/docs/api/event#viewportxy), [see](/en/docs/api/canvas#canvas--viewport).
+Under [Canvas coordinate system/world coordinate system](/en/api/canvas#canvas), the upper left corner of the canvas DOM element is the origin, the X-axis is pointing to the right side of the screen and the Y-axis is pointing to the bottom of the screen. Can be interconverted with [viewportX/Y](/en/api/event#viewportxy), [see](/en/api/canvas#canvas--viewport).
 
 ```js
 canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
@@ -163,16 +163,16 @@ e.y;
 
 ### viewportX/Y
 
-Under [Viewport coordinate system](/en/docs/api/canvas#viewport), consider the camera transformation.
+Under [Viewport coordinate system](/en/api/canvas#viewport), consider the camera transformation.
 
-Can be interconverted with [canvasX/Y](/en/docs/api/event#canvasxy), [see](/en/docs/api/canvas#canvas--viewport).
+Can be interconverted with [canvasX/Y](/en/api/event#canvasxy), [see](/en/api/canvas#canvas--viewport).
 
 ```js
 canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY }); // Point { x: 100, y: 100 }
 canvas.viewport2Canvas({ x: e.viewportX, y: e.viewportY }); // Point { x: 0, y: 0 }
 ```
 
-Can be interconverted with [clientX/Y](/en/docs/api/event#clientxy), [see](/en/docs/api/canvas#client--viewport).
+Can be interconverted with [clientX/Y](/en/api/event#clientxy), [see](/en/api/canvas#client--viewport).
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
@@ -183,14 +183,14 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
 
-Under [browser coordinate system](/en/docs/api/canvas#client), the upper left corner is `(0, 0)`. G does not modify this property on the native event, so they are identical.
+Under [browser coordinate system](/en/api/canvas#client), the upper left corner is `(0, 0)`. G does not modify this property on the native event, so they are identical.
 
 ```js
 e.clientX;
 e.nativeEvent.clientX;
 ```
 
-Can be interconverted with [viewportX/Y](/en/docs/api/event#viewportxy), [see](/en/docs/api/canvas#client--viewport).
+Can be interconverted with [viewportX/Y](/en/api/event#viewportxy), [see](/en/api/canvas#client--viewport).
 
 ```js
 canvas.viewport2Client({ x: 0, y: 0 }); // Point { x: 100, y: 100 }
@@ -201,7 +201,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
 
-Under [screen coordinate system](/en/docs/api/canvas#screen), page scrolling is not considered. g does not modify this property on native events, so they are identical.
+Under [screen coordinate system](/en/api/canvas#screen), page scrolling is not considered. g does not modify this property on native events, so they are identical.
 
 ```js
 e.screenX;
@@ -212,7 +212,7 @@ e.nativeEvent.screenX;
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
 
-Under [page coordinate system](/en/docs/api/canvas#page), consider page scrolling. g does not modify this property on native events, so they are identical.
+Under [page coordinate system](/en/api/canvas#page), consider page scrolling. g does not modify this property on native events, so they are identical.
 
 ```js
 e.pageX;
@@ -374,13 +374,13 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
 
 Block the default browser behavior. Calling this method for Passive events is not valid and will throw a warning.
 
-A solution for wheel events can be found at [Disable default page scrolling behavior in Chrome](/en/docs/api/event#en/docs/api/event#disable-default-page-scrolling-behavior-in-chrome).
+A solution for wheel events can be found at [Disable default page scrolling behavior in Chrome](/en/api/event#en/docs/api/event#disable-default-page-scrolling-behavior-in-chrome).
 
 ### composedPath
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
 
-Returns the event path, which is an array containing [EventTarget](/en/docs/api/builtin-objects/event-target), similar to `propagationPath` in the old G version. In this array, `event.target` is the first element of the array, [scene graph root](/en/docs/api/canvas#the-root-node), [Document](/en/docs/api/builtin-objects/document) and [Canvas](/en/docs/api/canvas) are the three elements at the end of the array.
+Returns the event path, which is an array containing [EventTarget](/en/api/builtin-objects/event-target), similar to `propagationPath` in the old G version. In this array, `event.target` is the first element of the array, [scene graph root](/en/api/canvas#the-root-node), [Document](/en/api/builtin-objects/document) and [Canvas](/en/api/canvas) are the three elements at the end of the array.
 
 Still using a DOM-like `ul/li` scenario as an example.
 
@@ -424,4 +424,4 @@ circle.addEventListener('click', (e) => {
 
 The cloned event object will retain all the properties on the original event object.
 
-Currently, we only support interactive events, namely [PointerEvent](/en/docs/api/event#pointerevent) and [WheelEvent](/en/docs/api/event#wheelevent). Other events such as AnimationEvent and CustomEvent are not supported at the moment.
+Currently, we only support interactive events, namely [PointerEvent](/en/api/event#pointerevent) and [WheelEvent](/en/api/event#wheelevent). Other events such as AnimationEvent and CustomEvent are not supported at the moment.

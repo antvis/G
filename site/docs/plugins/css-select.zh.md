@@ -3,7 +3,7 @@ title: g-plugin-css-select
 order: 0
 ---
 
-在场景图中查找节点时，我们可以使用一些类似 DOM API 的[高级查询方式](/zh/docs/api/basic/display-object#高级查询)：
+在场景图中查找节点时，我们可以使用一些类似 DOM API 的[高级查询方式](/zh/api/basic/display-object#高级查询)：
 
 -   **getElementById** 在当前节点子树下按 id 查找单一元素
 -   **getElementsByName** 在当前节点子树下按 name 查找元素列表
