@@ -5,31 +5,33 @@ order: 1
 
 在创建一个画布时，我们可以传入以下初始化参数，这也是最简单的初始化方式：
 
--   container 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
--   width / height 画布宽度和高度
--   renderer 渲染器，目前支持 `g-canvas` `g-svg` 和 `g-webgl`
+-   `container` 画布容器的 id 或 DOM 元素，后续在该 DOM 元素内自动创建 `<canvas>/<svg>`
+-   `width / height` 画布宽度和高度
+-   `renderer` 渲染器，目前支持 [g-canvas](/zh/api/renderer/canvas)、[g-svg](/zh/api/renderer/svg)、[g-webgl](/zh/api/renderer/webgl) 等
+
+以 [g-canvas](/zh/api/renderer/canvas) 为例：
 
 ```js
 import { Canvas } from '@antv/g';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-canvas';
 
 // 创建渲染器
-const webglRenderer = new WebGLRenderer();
+const renderer = new Renderer();
 
 // 创建画布
 const canvas = new Canvas({
     container: 'container', // 画布 DOM 容器 id
     width: 600, // 画布宽度
     height: 500, // 画布高度
-    renderer: webglRenderer, // 指定渲染器
+    renderer, // 指定渲染器
 });
 ```
 
 以上初始化方式只需要提供一个承载 `<canvas>/<svg>` 的容器 `container`，但有时我们有如下自定义需求：
 
--   自行创建 `<canvas>`，[详见](/zh/docs/api/canvas#使用创建好的-canvas-元素)
--   在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/docs/api/canvas#在-webworker-中使用-offscreencanvas)
--   在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/docs/api/canvas#服务端渲染)
+-   自行创建 `<canvas>`，[详见](/zh/api/canvas/faq#使用创建好的-canvas-元素)
+-   在 WebWorker 中使用 OffscreenCanvas，[详见](/zh/api/canvas/offscreen-canvas-ssr)
+-   在 Node 端使用 node-canvas 进行服务端渲染，[详见](/zh/api/canvas/offscreen-canvas-ssr#服务端渲染)
 
 此时可以使用 `canvas` 代替 `container`，更多初始化参数如下。
 

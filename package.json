@@ -45,13 +45,6 @@
       "git add"
     ]
   },
-  "resolutions": {
-    "monaco-editor": "0.20.0",
-    "monaco-editor-webpack-plugin": "1.9.1",
-    "normalize-url": "^4.0.1",
-    "react-monaco-editor": "0.34.0",
-    "signal-exit": "3.0.3"
-  },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-angular": "^9.0.1",

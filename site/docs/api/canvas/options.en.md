@@ -5,29 +5,29 @@ order: 1
 
 When creating a canvas, we can pass in the following initialization parameters, which is the simplest way to initialize it.
 
--   container The id or DOM element of the canvas container, and the subsequent `<canvas>/<svg>` is automatically created within that DOM element.
--   width / height
--   renderer
+-   `container` The id or DOM element of the canvas container, and the subsequent `<canvas>/<svg>` is automatically created within that DOM element.
+-   `width / height`
+-   `renderer` Currently we provides [g-canvas](/en/api/renderer/canvas), [g-svg](/en/api/renderer/svg), [g-webgl](/en/api/renderer/webgl) etc.
 
 ```js
 import { Canvas } from '@antv/g';
-import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer } from '@antv/g-canvas';
 
-const webglRenderer = new WebGLRenderer();
+const renderer = new Renderer();
 
 const canvas = new Canvas({
     container: 'container',
     width: 600,
     height: 500,
-    renderer: webglRenderer,
+    renderer,
 });
 ```
 
 The above initialization approach only requires providing a container `container` that carries `<canvas>/<svg>`, but sometimes we have custom requirements as follows:
 
--   [Using existed `<canvas>`](/en/docs/api/canvas#使用创建好的-canvas-元素)
--   [Using OffscreenCanvas in WebWorker](/en/docs/api/canvas#在-webworker-中使用-offscreencanvas)
--   [Server-side rendering in Node.js](/en/docs/api/canvas#服务端渲染)
+-   [Using existed `<canvas>`](/en/api/canvas/faq#using-the-created-canvas-element)
+-   [Using OffscreenCanvas in WebWorker](/en/api/canvas/offscreen-canvas-ssr#using-offscreencanvas-in-webworker)
+-   [Server-side rendering in Node.js](/en/api/canvas/offscreen-canvas-ssr#server-side-rendering)
 
 In this case you can use `canvas` instead of `container`, and more initialization parameters are as follows.
 

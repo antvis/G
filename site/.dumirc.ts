@@ -423,4 +423,5 @@ export default defineConfig({
     '@': __dirname,
   },
   copy: ['static'],
+  jsMinifier: 'terser',
 });

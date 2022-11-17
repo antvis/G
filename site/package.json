@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build": "dumi build",
-    "site:build": "dumi build && cp ../../spec/api.html public",
+    "site:build": "dumi build && cp ../spec/api.html public",
     "site:dev": "dumi dev",
     "start": "npm run site:dev"
   },
