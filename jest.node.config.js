@@ -20,7 +20,9 @@ const moduleNameMapper = {
 module.exports = {
   moduleNameMapper: moduleNameMapper,
 
-  testMatch: ['<rootDir>/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)'],
+  testMatch: [
+    '<rootDir>/__tests__/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)',
+  ],
   preset: 'ts-jest',
   globals: {
     'ts-jest': {

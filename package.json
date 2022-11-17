@@ -25,7 +25,7 @@
     "publish": "lerna publish",
     "postpublish": "yarn sync",
     "publish:next": "lerna publish prerelease --dist-tag next",
-    "start": "cd ./packages/site && npm run start",
+    "start": "cd ./site && npm run start",
     "sync": "lerna run sync --parallel",
     "test": "npm run test:browser & npm run test:serverside",
     "test:browser": "jest --config jest.config.js",
