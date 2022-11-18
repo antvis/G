@@ -14,11 +14,11 @@ export const defaultSquarePatternCfg = {
   size: 6,
   padding: 1,
   isStagger: true,
-  backgroundColor: 'none',
+  backgroundColor: 'transparent',
   opacity: 1,
   fill: '#fff',
   fillOpacity: 1,
-  stroke: 'none',
+  stroke: 'transparent',
   lineWidth: 0,
 };
 

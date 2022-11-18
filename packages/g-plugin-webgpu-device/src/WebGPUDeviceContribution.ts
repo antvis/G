@@ -7,11 +7,11 @@ export class WebGPUDeviceContribution implements DeviceContribution {
   constructor(private pluginOptions: Partial<WebGPUDeviceOptions>) {}
 
   async createSwapChain($canvas: HTMLCanvasElement) {
-    if (navigator.gpu === undefined) return null;
+    if ((globalThis.navigator as any).gpu === undefined) return null;
 
     let adapter = null;
     try {
-      adapter = await navigator.gpu.requestAdapter();
+      adapter = await (globalThis.navigator as any).gpu.requestAdapter();
     } catch (e) {
       console.log(e);
     }
@@ -24,7 +24,9 @@ export class WebGPUDeviceContribution implements DeviceContribution {
       'depth32float-stencil8',
       'texture-compression-bc',
     ];
-    const requiredFeatures = optionalFeatures.filter((feature) => adapter.features.has(feature));
+    const requiredFeatures = optionalFeatures.filter((feature) =>
+      adapter.features.has(feature),
+    );
     const device = await adapter.requestDevice({ requiredFeatures });
 
     if (device === null) return null;

@@ -371,11 +371,6 @@ export class TextService {
 
     const chars = Array.from(text);
     for (let i = 0; i < chars.length; i++) {
-      // account for maxLines
-      // if (currentIndex >= maxLines) {
-      //   break;
-      // }
-
       const char = chars[i];
 
       const prevChar = text[i - 1];
@@ -384,6 +379,13 @@ export class TextService {
 
       if (this.isNewline(char)) {
         currentIndex++;
+
+        // exceed maxLines, break immediately
+        if (currentIndex >= maxLines) {
+          parsedStyle.isOverflowing = true;
+          break;
+        }
+
         currentWidth = 0;
         lines[currentIndex] = '';
         continue;

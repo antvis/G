@@ -432,15 +432,15 @@ rect.style.fill = {
 
 Common configuration for all types of pattern:
 
-| Attribute       | Type   | Description                                                                                                  |
-| --------------- | ------ | ------------------------------------------------------------------------------------------------------------ |
-| backgroundColor | string | Background color of the pattern, default to `'none'`                                                         |
-| fill            | string | Fill color of the symbol in pattern, `dots` and `squares` default to `'#fff'`，                              |
-| fillOpacity     | number | Transparency of the symbol in pattern, default to `1`                                                        |
-| stroke          | string | Stroke color of the symbol in pattern, `dots` and `squares` default to `'none'`, `lines` default to `'#fff'` |
-| strokeOpacity   | number | Stroke opacity of the symbol in pattern, default to `1`                                                      |
-| lineWidth       | number | The thickness of the symbol's stroke, `dots` and `squares` default to `0`, `lines` default to `2`            |
-| opacity         | number | Overall transparency of the pattern, default to `1`                                                          |
+| Attribute       | Type   | Description                                                                                                         |
+| --------------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| backgroundColor | string | Background color of the pattern, default to `'transparent'`                                                         |
+| fill            | string | Fill color of the symbol in pattern, `dots` and `squares` default to `'#fff'`，                                     |
+| fillOpacity     | number | Transparency of the symbol in pattern, default to `1`                                                               |
+| stroke          | string | Stroke color of the symbol in pattern, `dots` and `squares` default to `'transparent'`, `lines` default to `'#fff'` |
+| strokeOpacity   | number | Stroke opacity of the symbol in pattern, default to `1`                                                             |
+| lineWidth       | number | The thickness of the symbol's stroke, `dots` and `squares` default to `0`, `lines` default to `2`                   |
+| opacity         | number | Overall transparency of the pattern, default to `1`                                                                 |
 
 Additional configuration for `dots`, [example](/en/examples/ecosystem/pattern/#dots)：
 

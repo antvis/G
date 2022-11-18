@@ -8,7 +8,7 @@ import { drawBackground, initCanvas } from './util';
 export const defaultLinePatternCfg = {
   spacing: 5,
   opacity: 1,
-  backgroundColor: 'none',
+  backgroundColor: 'transparent',
   strokeOpacity: 1,
   stroke: '#fff',
   lineWidth: 2,

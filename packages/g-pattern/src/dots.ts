@@ -10,11 +10,11 @@ import {
 export const defaultDotPatternCfg = {
   size: 6,
   padding: 2,
-  backgroundColor: 'none',
+  backgroundColor: 'transparent',
   opacity: 1,
   fill: '#fff',
   fillOpacity: 1,
-  stroke: 'none',
+  stroke: 'transparent',
   strokeOpacity: 1,
   lineWidth: 0,
   isStagger: true,

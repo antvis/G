@@ -460,15 +460,15 @@ rect.style.fill = {
 
 三种模式支持的样式配置公共属性如下：
 
-| 属性名          | 类型   | 介绍                                                                   |
-| --------------- | ------ | ---------------------------------------------------------------------- |
-| backgroundColor | string | 贴图的背景色，默认值为 `'none'`                                        |
-| fill            | string | 贴图元素的填充色，`dots` 和 `squares` 默认值为 `'#fff'`，              |
-| fillOpacity     | number | 贴图元素填充的透明度，默认值为 1                                       |
-| stroke          | string | 贴图元素的描边色，`dots` 和 `squares` 为 `'none'`，`lines` 为 `'#fff'` |
-| strokeOpacity   | number | 贴图元素的描边透明度色，默认值为 1                                     |
-| lineWidth       | number | 贴图元素的描边粗细，`dots` 和 `squares` 为 `0`，`lines` 为 `2`         |
-| opacity         | number | 贴图整体的透明度，默认值为 1                                           |
+| 属性名          | 类型   | 介绍                                                                          |
+| --------------- | ------ | ----------------------------------------------------------------------------- |
+| backgroundColor | string | 贴图的背景色，默认值为 `'transparent'`                                        |
+| fill            | string | 贴图元素的填充色，`dots` 和 `squares` 默认值为 `'#fff'`，                     |
+| fillOpacity     | number | 贴图元素填充的透明度，默认值为 1                                              |
+| stroke          | string | 贴图元素的描边色，`dots` 和 `squares` 为 `'transparent'`，`lines` 为 `'#fff'` |
+| strokeOpacity   | number | 贴图元素的描边透明度色，默认值为 1                                            |
+| lineWidth       | number | 贴图元素的描边粗细，`dots` 和 `squares` 为 `0`，`lines` 为 `2`                |
+| opacity         | number | 贴图整体的透明度，默认值为 1                                                  |
 
 `dots` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#dots)：
 
