@@ -409,9 +409,98 @@ const rect3 = new Rect({
 -   repeat-y 沿垂直方向平铺
 -   no-repeat 不平铺
 
+### transform
+
+有时我们希望对模式进行变换，例如旋转一定角度，此时可以使用 `transform` 属性，取值和 CSS Transform 完全一致。
+
+在下面的[示例](/zh/examples/ecosystem/pattern/#dots)中，我们希望让模式旋转起来：
+
+<img src="https://gw.alipayobjects.com/zos/raptor/1668740048992/Nov-18-2022%25252010-53-54.gif" alt="transform pattern">
+
+```js
+rect.style.fill = {
+    image: canvas,
+    repetition: 'repeat',
+    transform: `rotate(30deg)`,
+};
+```
+
+### g-pattern
+
+参考 [nivo patterns](https://nivo.rocks/guides/patterns/) 我们提供了一些内置模式，还可以通过更加友好的参数调整外观。目前我们支持以下三种模式：
+
+-   `dots` 由圆点构成的模式
+-   `lines` 由直线构成的模式
+-   `squares` 由正方形构成的模式
+
+这三种模式方法签名如下，第一个参数为 [Canvas](/zh/api/canvas/intro)，第二个参数为模式的样式配置：
+
+```ts
+dots(canvas: Canvas, cfg?: DotPatternCfg): HTMLCanvasElement;
+lines(canvas: Canvas, cfg?: LinePatternCfg): HTMLCanvasElement;
+squares(canvas: Canvas, cfg?: SquarePatternCfg): HTMLCanvasElement;
+```
+
+在该[示例](/zh/examples/ecosystem/pattern/#dots)中，我们使用了圆点模式，并通过 [transform](/api/css/css-properties-values-api#transform) 对其进行了一些变换：
+
+```js
+import { dots } from '@antv/g-pattern';
+
+rect.style.fill = {
+    image: dots(canvas, {
+        size: 6,
+        padding: 2,
+        fill: '#ff0000',
+        isStagger: true,
+    }),
+    repetition: 'repeat',
+    transform: `rotate(30deg) scale(1.2)`,
+};
+```
+
+三种模式支持的样式配置公共属性如下：
+
+| 属性名          | 类型   | 介绍                                                                   |
+| --------------- | ------ | ---------------------------------------------------------------------- |
+| backgroundColor | string | 贴图的背景色，默认值为 `'none'`                                        |
+| fill            | string | 贴图元素的填充色，`dots` 和 `squares` 默认值为 `'#fff'`，              |
+| fillOpacity     | number | 贴图元素填充的透明度，默认值为 1                                       |
+| stroke          | string | 贴图元素的描边色，`dots` 和 `squares` 为 `'none'`，`lines` 为 `'#fff'` |
+| strokeOpacity   | number | 贴图元素的描边透明度色，默认值为 1                                     |
+| lineWidth       | number | 贴图元素的描边粗细，`dots` 和 `squares` 为 `0`，`lines` 为 `2`         |
+| opacity         | number | 贴图整体的透明度，默认值为 1                                           |
+
+`dots` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#dots)：
+
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Xce3RrT3zAMAAAAAAAAAAAAADmJ7AQ/original" alt="dots pattern" width="200">
+
+| 属性名    | 类型    | 介绍                          |
+| --------- | ------- | ----------------------------- |
+| size      | number  | 圆点的大小，默认为 6          |
+| padding   | number  | 圆点之间的间隔，默认为 2      |
+| isStagger | boolean | 圆点之间是否交错，默认为 true |
+
+`lines` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#lines)：
+
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*cQp7TrgGMoUAAAAAAAAAAAAADmJ7AQ/original" alt="lines pattern" width="200">
+
+| 属性名  | 类型   | 介绍                       |
+| ------- | ------ | -------------------------- |
+| spacing | number | 两条线之间的距离，默认为 5 |
+
+`squares` 模式支持额外配置如下，[示例](/zh/examples/ecosystem/pattern/#squares)：
+
+<img src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JB3lRoeyzdIAAAAAAAAAAAAADmJ7AQ/original" alt="squares pattern" width="200">
+
+| 属性名    | 类型    | 介绍                          |
+| --------- | ------- | ----------------------------- |
+| size      | number  | 矩形的大小，默认为 6          |
+| padding   | number  | 矩形之间的间隔，默认为 1      |
+| isStagger | boolean | 矩形之间是否交错，默认为 true |
+
 ### 历史用法
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ)
+<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8FjsSoqE1mYAAAAAAAAAAABkARQnAQ" alt="legacy usage of pattern">
 
 -   `p`: 表示使用纹理，绿色的字体为可变量，由用户自己填写。
 -   `a`: 该模式在水平和垂直方向重复；

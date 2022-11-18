@@ -1,16 +1,22 @@
-import type {
+import {
   CanvasContext,
   CSSGradientValue,
   DisplayObject,
   LinearGradient,
+  parsedTransformToMat4,
   Pattern,
   RadialGradient,
 } from '@antv/g-lite';
-import { isBrowser, runtime } from '@antv/g-lite';
+import { isBrowser, runtime, parseTransform } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from './platform';
-import { Format, TextureDimension, TextureEvent, TextureUsage } from './platform';
+import {
+  Format,
+  TextureDimension,
+  TextureEvent,
+  TextureUsage,
+} from './platform';
 
 export interface GradientParams {
   width: number;
@@ -92,7 +98,9 @@ export class TexturePool {
   }
 
   getOrCreateCanvas() {
-    return runtime.offscreenCanvas.getOrCreateCanvas(this.context.config.offscreenCanvas);
+    return runtime.offscreenCanvas.getOrCreateCanvas(
+      this.context.config.offscreenCanvas,
+    );
   }
 
   getOrCreateGradient(params: GradientParams) {
@@ -133,8 +141,12 @@ export class TexturePool {
     });
   }
 
-  getOrCreatePattern(pattern: Pattern, instance: DisplayObject, callback: () => void) {
-    const { image, repetition } = pattern;
+  getOrCreatePattern(
+    pattern: Pattern,
+    instance: DisplayObject,
+    callback: () => void,
+  ) {
+    const { image, repetition, transform } = pattern;
     const { halfExtents } = instance.getGeometryBounds();
     const width = halfExtents[0] * 2 || 1;
     const height = halfExtents[1] * 2 || 1;
@@ -156,6 +168,19 @@ export class TexturePool {
     }
 
     const canvasPattern = src && context.createPattern(src, repetition);
+
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
+    if (transform) {
+      const mat = parsedTransformToMat4(parseTransform(transform));
+      canvasPattern.setTransform({
+        a: mat[0],
+        b: mat[1],
+        c: mat[4],
+        d: mat[5],
+        e: mat[12],
+        f: mat[13],
+      });
+    }
 
     context.fillStyle = canvasPattern;
     context.fillRect(0, 0, width, height);

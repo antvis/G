@@ -21,6 +21,7 @@ export {
   parsePath,
   parseLength,
   mergeColors,
+  parseTransform,
   Pattern,
   propertyMetadataCache,
   PropertySyntax,
@@ -56,5 +57,6 @@ export {
   findClosestClipPathTarget,
   getOrCalculatePathTotalLength,
   definedProps,
+  parsedTransformToMat4,
 } from './utils';
 export { RBush };

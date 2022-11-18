@@ -51,6 +51,7 @@ if (window) {
   (window as any).gWebComponents = require('@antv/g-web-components');
   (window as any).gImageExporter = require('@antv/g-image-exporter');
   (window as any).gLottiePlayer = require('@antv/g-lottie-player');
+  (window as any).gPattern = require('@antv/g-pattern');
 
   (window as any).reactG = require('@antv/react-g');
   // (window as any).mainWorker = require('./examples/canvas/demo/main.worker.js');

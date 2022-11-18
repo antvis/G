@@ -392,9 +392,10 @@ export class LottieAnimation {
                 );
 
                 if (existedKeyframe) {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     offset,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     easing: e = 'linear',
                     ...rest
                   } = currentKeyframe;

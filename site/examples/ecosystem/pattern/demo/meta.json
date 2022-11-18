@@ -1,0 +1,32 @@
+{
+  "title": {
+    "zh": "使用 Pattern",
+    "en": "Use Pattern"
+  },
+  "demos": [
+    {
+      "filename": "dots.js",
+      "title": {
+        "zh": "Dots Pattern",
+        "en": "Dots Pattern"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Xce3RrT3zAMAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "lines.js",
+      "title": {
+        "zh": "Lines Pattern",
+        "en": "Lines Pattern"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*cQp7TrgGMoUAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "squares.js",
+      "title": {
+        "zh": "Squares Pattern",
+        "en": "Squares Pattern"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JB3lRoeyzdIAAAAAAAAAAAAADmJ7AQ/original"
+    }
+  ]
+}
