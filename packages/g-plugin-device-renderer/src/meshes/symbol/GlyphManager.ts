@@ -205,8 +205,8 @@ export class GlyphManager {
     if (!this.textMetricsCache[fontStack][char]) {
       // 使用 mapbox/tiny-sdf 中的 context
       // @see https://stackoverflow.com/questions/46126565/how-to-get-font-glyphs-metrics-details-in-javascript
-      // @ts-ignore
       this.textMetricsCache[fontStack][char] =
+        // @ts-ignore
         sdfGenerator.ctx.measureText(char).width;
     }
 

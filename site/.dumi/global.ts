@@ -82,7 +82,7 @@ if (window) {
   const tokenElement3 = document.createElement('meta');
   tokenElement3.httpEquiv = 'origin-trial';
   tokenElement3.content =
-    // https://antv-g-next.gitee.io
-    'AmzNijXrcUZyb44A2IdX8oeviklulN/QSoVqhnuIsoeVhmuFz3zgGydSQXO1/D+SR+l3w1xLSwIToHfDxnGCvgwAAABneyJvcmlnaW4iOiJodHRwczovL2FudHYtZy1uZXh0LmdpdGVlLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJHUFUiLCJleHBpcnkiOjE2NzUyMDk1OTksImlzU3ViZG9tYWluIjp0cnVlfQ==';
+    // https://g.antv.antgroup.com
+    'Arli/2DAFTlSJnJOlkUa6HNKU9jRibQoNGFhS4RC1pi2A4cuP4n8ds7Td9IKQhHnjhs0QLEpRUnEdZBWLwSvsAMAAABTeyJvcmlnaW4iOiJodHRwczovL2cuYW50di5hbnRncm91cC5jb206NDQzIiwiZmVhdHVyZSI6IldlYkdQVSIsImV4cGlyeSI6MTY3NTIwOTU5OX0=';
   document.head.appendChild(tokenElement3);
 }
