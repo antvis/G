@@ -111,6 +111,8 @@ circle.style.selectable = true;
 
 We currently support the following **basic graphics**: [Circle](/en/api/basic/circle)、[Ellipse](/en/api/basic/ellipse)、[Rect](/en/api/basic/rect)、[Image](/en/api/basic/image)、[Line](/en/api/basic/line)、[Polyline](/en/api/basic/polyline)
 
+In addition `anchorsVisibility` can control anchor visibility. `maskDraggable` can control whether the mask is draggable or not.
+
 #### Select graphics
 
 We support selecting single or multiple graphics either interactively or via API.

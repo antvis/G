@@ -70,7 +70,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
     // set anchors' style
     this.anchors.forEach((anchor) => {
-      if (target.style.anchorsDraggable === false) {
+      if (target.style.anchorsVisibility === 'hidden') {
         anchor.style.visibility = 'hidden';
       }
 

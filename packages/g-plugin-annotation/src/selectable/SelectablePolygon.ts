@@ -63,7 +63,7 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
 
     // set anchors' style
     this.anchors.forEach((anchor) => {
-      if (target.style.anchorsDraggable === false) {
+      if (target.style.anchorsVisibility === 'hidden') {
         anchor.style.visibility = 'hidden';
       }
       anchor.style.stroke = anchorStroke;

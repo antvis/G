@@ -121,7 +121,7 @@ export class SelectableRect extends AbstractSelectable<Rect> {
 
     // set anchors' style
     this.anchors.forEach((anchor, i) => {
-      if (target.style.anchorsDraggable === false) {
+      if (target.style.anchorsVisibility === 'hidden') {
         anchor.style.visibility = 'hidden';
       }
 

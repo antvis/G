@@ -111,6 +111,8 @@ circle.style.selectable = true;
 
 目前我们支持以下**基础图形**：[Circle](/zh/api/basic/circle)、[Ellipse](/zh/api/basic/ellipse)、[Rect](/zh/api/basic/rect)、[Image](/zh/api/basic/image)、[Line](/zh/api/basic/line)、[Polyline](/zh/api/basic/polyline)
 
+另外 `anchorsVisibility` 可以控制锚点可见性。`maskDraggable` 可以控制蒙层是否可拖拽。
+
 #### 选中图形
 
 我们支持通过交互或者 API 选中单个或者多个图形。
