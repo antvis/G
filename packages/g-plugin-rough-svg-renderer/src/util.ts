@@ -1,5 +1,10 @@
-import { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
-import type { CSSGradientValue, Pattern } from '@antv/g-lite';
+import { CSSRGB } from '@antv/g-lite';
+import type {
+  CSSGradientValue,
+  Pattern,
+  DisplayObject,
+  ParsedBaseStyleProps,
+} from '@antv/g-lite';
 import type { Options } from 'roughjs/bin/core';
 
 export const SUPPORTED_ROUGH_OPTIONS = [
@@ -28,7 +33,10 @@ export const SUPPORTED_ROUGH_OPTIONS = [
   'preserveVertices',
 ];
 
-function mergeOpacity(color: CSSRGB | CSSGradientValue[] | Pattern, opacity: number) {
+function mergeOpacity(
+  color: CSSRGB | CSSGradientValue[] | Pattern,
+  opacity: number,
+) {
   // since rough.js doesn't support fill/strokeOpacity
   let colorString = color.toString();
 
@@ -41,6 +49,8 @@ function mergeOpacity(color: CSSRGB | CSSGradientValue[] | Pattern, opacity: num
 
   return colorString;
 }
+
+const MIN_STROKE_WIDTH = 0.1;
 
 export function generateRoughOptions(object: DisplayObject) {
   const {
@@ -80,7 +90,7 @@ export function generateRoughOptions(object: DisplayObject) {
     seed: seed || object.entity,
     fill: mergeOpacity(fill, fillOpacity),
     stroke: mergeOpacity(stroke, strokeOpacity),
-    strokeWidth: lineWidth,
+    strokeWidth: lineWidth === 0 ? MIN_STROKE_WIDTH : lineWidth,
     fillStyle,
     fillWeight,
     hachureAngle,

@@ -21,13 +21,17 @@ export interface RepeatingLinearGradientNode {
 
 export interface RadialGradientNode {
   type: 'radial-gradient';
-  orientation?: (ShapeNode | DefaultRadialNode | ExtentKeywordNode)[] | undefined;
+  orientation?:
+    | (ShapeNode | DefaultRadialNode | ExtentKeywordNode)[]
+    | undefined;
   colorStops: ColorStop[];
 }
 
 export interface RepeatingRadialGradientNode {
   type: 'repeating-radial-gradient';
-  orientation?: (ShapeNode | DefaultRadialNode | ExtentKeywordNode)[] | undefined;
+  orientation?:
+    | (ShapeNode | DefaultRadialNode | ExtentKeywordNode)[]
+    | undefined;
   colorStops: ColorStop[];
 }
 
@@ -79,7 +83,13 @@ export interface RgbaNode {
 
 export interface ShapeNode {
   type: 'shape';
-  style?: ExtentKeywordNode | PxNode | EmNode | PercentNode | PositionKeywordNode | undefined;
+  style?:
+    | ExtentKeywordNode
+    | PxNode
+    | EmNode
+    | PercentNode
+    | PositionKeywordNode
+    | undefined;
   value: 'ellipse' | 'circle';
   at?: PositionNode | undefined;
 }
@@ -201,23 +211,39 @@ export const parseGradient = (function () {
 
   function matchDefinition() {
     return (
-      matchGradient('linear-gradient', tokens.linearGradient, matchLinearOrientation) ||
+      matchGradient(
+        'linear-gradient',
+        tokens.linearGradient,
+        matchLinearOrientation,
+      ) ||
       matchGradient(
         'repeating-linear-gradient',
         tokens.repeatingLinearGradient,
         matchLinearOrientation,
       ) ||
-      matchGradient('radial-gradient', tokens.radialGradient, matchListRadialOrientations) ||
+      matchGradient(
+        'radial-gradient',
+        tokens.radialGradient,
+        matchListRadialOrientations,
+      ) ||
       matchGradient(
         'repeating-radial-gradient',
         tokens.repeatingRadialGradient,
         matchListRadialOrientations,
       ) ||
-      matchGradient('conic-gradient', tokens.conicGradient, matchListRadialOrientations)
+      matchGradient(
+        'conic-gradient',
+        tokens.conicGradient,
+        matchListRadialOrientations,
+      )
     );
   }
 
-  function matchGradient(gradientType: string, pattern: RegExp, orientationMatcher) {
+  function matchGradient(
+    gradientType: string,
+    pattern: RegExp,
+    orientationMatcher,
+  ) {
     return matchCall(pattern, function (captures) {
       const orientation = orientationMatcher();
       if (orientation) {
@@ -373,7 +399,7 @@ export const parseGradient = (function () {
     };
   }
 
-  function matchListing(matcher: Function) {
+  function matchListing(matcher: () => any) {
     let captures = matcher();
     const result = [];
 
@@ -404,7 +430,12 @@ export const parseGradient = (function () {
   }
 
   function matchColor() {
-    return matchHexColor() || matchRGBAColor() || matchRGBColor() || matchLiteralColor();
+    return (
+      matchHexColor() ||
+      matchRGBAColor() ||
+      matchRGBColor() ||
+      matchLiteralColor()
+    );
   }
 
   function matchLiteralColor() {
@@ -438,7 +469,11 @@ export const parseGradient = (function () {
   }
 
   function matchDistance() {
-    return match('%', tokens.percentageValue, 1) || matchPositionKeyword() || matchLength();
+    return (
+      match('%', tokens.percentageValue, 1) ||
+      matchPositionKeyword() ||
+      matchLength()
+    );
   }
 
   function matchPositionKeyword() {
@@ -483,7 +518,11 @@ export const parseGradient = (function () {
   };
 })();
 
-export function computeLinearGradient(width: number, height: number, angle: CSSUnitValue) {
+export function computeLinearGradient(
+  width: number,
+  height: number,
+  angle: CSSUnitValue,
+) {
   const rad = deg2rad(angle.value);
   const rx = 0;
   const ry = 0;
@@ -491,7 +530,8 @@ export function computeLinearGradient(width: number, height: number, angle: CSSU
   const rcy = ry + height / 2;
   // get the length of gradient line
   // @see https://observablehq.com/@danburzo/css-gradient-line
-  const length = Math.abs(width * Math.cos(rad)) + Math.abs(height * Math.sin(rad));
+  const length =
+    Math.abs(width * Math.cos(rad)) + Math.abs(height * Math.sin(rad));
   const x1 = rcx - (Math.cos(rad) * length) / 2;
   const y1 = rcy - (Math.sin(rad) * length) / 2;
   const x2 = rcx + (Math.cos(rad) * length) / 2;

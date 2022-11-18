@@ -20,7 +20,7 @@ export class DefaultLayoutRegistry implements LayoutRegistry {
    * @param name layout name, default to 'absolute'
    * @returns layout object
    */
-  getLayout(name: string = 'absolute') {
+  getLayout(name = 'absolute') {
     if (!this.hasLayout(name)) {
       throw new Error(`invalid layout property: ${name}`);
     }

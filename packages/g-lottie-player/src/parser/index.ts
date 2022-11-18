@@ -1,7 +1,11 @@
 import { definedProps, rad2deg, Shape } from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
-import { isNumber } from '@antv/util';
-import { distanceSquareRoot, isNil, getTotalLength } from '@antv/util';
+import {
+  isNumber,
+  distanceSquareRoot,
+  isNil,
+  getTotalLength,
+} from '@antv/util';
 import type { LoadAnimationOptions } from '..';
 import { completeData } from './complete-data';
 import * as Lottie from './lottie-type';
@@ -74,7 +78,9 @@ function isValue(val?: { k?: any }): val is { k: number } {
   return typeof val?.k === 'number';
 }
 
-function isKeyframedValue(val?: { k?: any }): val is { k: Lottie.OffsetKeyframe[] } {
+function isKeyframedValue(val?: {
+  k?: any;
+}): val is { k: Lottie.OffsetKeyframe[] } {
   const k = val?.k;
   return Array.isArray(k) && k[0].t !== undefined && typeof k[0].s === 'number';
 }
@@ -91,7 +97,11 @@ function toColorString(val: number | number[]) {
 }
 
 function getMultiDimensionValue(val: number | number[], dimIndex?: number) {
-  return val != null ? (typeof val === 'number' ? val : val[dimIndex || 0]) : NaN;
+  return val != null
+    ? typeof val === 'number'
+      ? val
+      : val[dimIndex || 0]
+    : NaN;
 }
 
 /**
@@ -104,13 +114,21 @@ function getMultiDimensionEasingBezierString(
 ) {
   const bezierEasing: number[] = [];
   bezierEasing.push(
-    (kf.o?.x && (getMultiDimensionValue(kf.o.x, dimIndex) || getMultiDimensionValue(kf.o.x, 0))) ||
+    (kf.o?.x &&
+      (getMultiDimensionValue(kf.o.x, dimIndex) ||
+        getMultiDimensionValue(kf.o.x, 0))) ||
       0,
-    (kf.o?.y && (getMultiDimensionValue(kf.o.y, dimIndex) || getMultiDimensionValue(kf.o.y, 0))) ||
+    (kf.o?.y &&
+      (getMultiDimensionValue(kf.o.y, dimIndex) ||
+        getMultiDimensionValue(kf.o.y, 0))) ||
       0,
-    (kf.i?.x && (getMultiDimensionValue(kf.i.x, dimIndex) || getMultiDimensionValue(kf.i.x, 0))) ||
+    (kf.i?.x &&
+      (getMultiDimensionValue(kf.i.x, dimIndex) ||
+        getMultiDimensionValue(kf.i.x, 0))) ||
       1,
-    (kf.i?.y && (getMultiDimensionValue(kf.i.y, dimIndex) || getMultiDimensionValue(kf.i.y, 0))) ||
+    (kf.i?.y &&
+      (getMultiDimensionValue(kf.i.y, dimIndex) ||
+        getMultiDimensionValue(kf.i.y, 0))) ||
       1,
     // nextKf?.o?.x ? getMultiDimensionValue(nextKf.o.x, dimIndex) : 1,
     // nextKf?.o?.y ? getMultiDimensionValue(nextKf.o.y, dimIndex) : 1,
@@ -156,13 +174,18 @@ function parseKeyframe(
     // If h is present and it's 1, you don't need i and o,
     // as the property will keep the same value until the next keyframe.
     const isDiscrete = kf.h === 1;
-    const offset = (kf.t + context.layerOffsetTime - context.startFrame) / duration;
+    const offset =
+      (kf.t + context.layerOffsetTime - context.startFrame) / duration;
 
     const outKeyframe: KeyframeAnimationKeyframe = {
       offset,
     };
     if (!isDiscrete) {
-      outKeyframe.easing = getMultiDimensionEasingBezierString(kf, nextKf, bezierEasingDimIndex);
+      outKeyframe.easing = getMultiDimensionEasingBezierString(
+        kf,
+        nextKf,
+        bezierEasingDimIndex,
+      );
     }
     // Use end state of later frame if start state not exits.
     // @see https://lottiefiles.github.io/lottie-docs/concepts/#old-lottie-keyframes
@@ -187,7 +210,10 @@ function parseKeyframe(
     if (isDiscrete && nextKf) {
       // Use two keyframe to simulate the discrete animation.
       const extraKeyframe: KeyframeAnimationKeyframe = {
-        offset: Math.max((nextKf.t + context.layerOffsetTime - context.startFrame) / duration, 0),
+        offset: Math.max(
+          (nextKf.t + context.layerOffsetTime - context.startFrame) / duration,
+          0,
+        ),
       };
       setVal(extraKeyframe, startVal);
       out.keyframes!.push(extraKeyframe);
@@ -213,13 +239,20 @@ function parseOffsetKeyframe(
 ) {
   for (let dimIndex = 0; dimIndex < propNames.length; dimIndex++) {
     const propName = propNames[dimIndex];
-    const keyframeAnim = parseKeyframe(kfs, dimIndex, context, (outKeyframe, startVal) => {
-      let val = getMultiDimensionValue(startVal, dimIndex);
-      if (convertVal) {
-        val = convertVal(val);
-      }
-      (targetPropName ? (outKeyframe[targetPropName] = {} as any) : outKeyframe)[propName] = val;
-    });
+    const keyframeAnim = parseKeyframe(
+      kfs,
+      dimIndex,
+      context,
+      (outKeyframe, startVal) => {
+        let val = getMultiDimensionValue(startVal, dimIndex);
+        if (convertVal) {
+          val = convertVal(val);
+        }
+        (targetPropName
+          ? (outKeyframe[targetPropName] = {} as any)
+          : outKeyframe)[propName] = val;
+      },
+    );
 
     // moving position around a curved path
     const needOffsetPath = kfs.some((kf) => kf.ti && kf.to);
@@ -256,7 +289,9 @@ function parseOffsetKeyframe(
       // calculate offsetDistance: segmentLength / totalLength
       const totalLength = getTotalLength(offsetPath);
       keyframeAnim.keyframes.forEach((kf) => {
-        kf.offsetDistance = isNil(kf.segmentLength) ? 1 : kf.segmentLength / totalLength;
+        kf.offsetDistance = isNil(kf.segmentLength)
+          ? 1
+          : kf.segmentLength / totalLength;
         delete kf.segmentLength;
       });
     }
@@ -274,10 +309,16 @@ function parseColorOffsetKeyframe(
   keyframeAnimations: KeyframeAnimation[],
   context: ParseContext,
 ) {
-  const keyframeAnim = parseKeyframe(kfs, 0, context, (outKeyframe, startVal) => {
-    (targetPropName ? (outKeyframe[targetPropName] = {} as any) : outKeyframe)[propName] =
-      toColorString(startVal);
-  });
+  const keyframeAnim = parseKeyframe(
+    kfs,
+    0,
+    context,
+    (outKeyframe, startVal) => {
+      (targetPropName
+        ? (outKeyframe[targetPropName] = {} as any)
+        : outKeyframe)[propName] = toColorString(startVal);
+    },
+  );
   if (keyframeAnim.keyframes.length) {
     keyframeAnimations.push(keyframeAnim);
   }
@@ -301,7 +342,14 @@ function parseValue(
     const val = lottieVal.k;
     target[propNames[0]] = convertVal ? convertVal(val) : val;
   } else if (isKeyframedValue(lottieVal)) {
-    parseOffsetKeyframe(lottieVal.k, targetPropName, propNames, animations, context, convertVal);
+    parseOffsetKeyframe(
+      lottieVal.k,
+      targetPropName,
+      propNames,
+      animations,
+      context,
+      convertVal,
+    );
   } else if (isMultiDimensionalValue(lottieVal)) {
     for (let i = 0; i < propNames.length; i++) {
       const val = getMultiDimensionValue(lottieVal.k, i);
@@ -309,7 +357,14 @@ function parseValue(
     }
   } else if (isMultiDimensionalKeyframedValue(lottieVal)) {
     // TODO Merge dimensions
-    parseOffsetKeyframe(lottieVal.k, targetPropName, propNames, animations, context, convertVal);
+    parseOffsetKeyframe(
+      lottieVal.k,
+      targetPropName,
+      propNames,
+      animations,
+      context,
+      convertVal,
+    );
   }
 }
 
@@ -371,7 +426,14 @@ function parseTransforms(
     context,
     (val) => val / 100,
   );
-  parseValue(ks.r, attrs, targetProp, [transformProps.rotation], animations, context);
+  parseValue(
+    ks.r,
+    attrs,
+    targetProp,
+    [transformProps.rotation],
+    animations,
+    context,
+  );
 
   parseValue(
     ks.a,
@@ -382,9 +444,23 @@ function parseTransforms(
     context,
   );
 
-  parseValue(ks.sk, attrs, targetProp, [transformProps.skew], animations, context);
+  parseValue(
+    ks.sk,
+    attrs,
+    targetProp,
+    [transformProps.skew],
+    animations,
+    context,
+  );
 
-  parseValue(ks.sa, attrs, targetProp, [transformProps.skewAxis], animations, context);
+  parseValue(
+    ks.sa,
+    attrs,
+    targetProp,
+    [transformProps.skewAxis],
+    animations,
+    context,
+  );
 }
 
 function isGradientFillOrStroke(
@@ -409,7 +485,9 @@ function convertColorStops(arr: number[], count: number) {
 }
 
 function joinColorStops(colorStops: any[]) {
-  return `${colorStops.map(({ offset, color }) => `${color} ${offset * 100}%`).join(', ')}`;
+  return `${colorStops
+    .map(({ offset, color }) => `${color} ${offset * 100}%`)
+    .join(', ')}`;
 }
 
 /**
@@ -420,7 +498,9 @@ function joinColorStops(colorStops: any[]) {
  * @see https://lottiefiles.github.io/lottie-docs/concepts/#gradients
  * @see https://lottiefiles.github.io/lottie-docs/shapes/#gradients
  */
-function parseGradient(shape: Lottie.GradientFillShape | Lottie.GradientStrokeShape) {
+function parseGradient(
+  shape: Lottie.GradientFillShape | Lottie.GradientStrokeShape,
+) {
   const colorArr = shape.g.k.k as number[];
   const colorStops = convertColorStops(colorArr, shape.g.p);
   // @see https://lottiefiles.github.io/lottie-docs/constants/#gradienttype
@@ -438,7 +518,10 @@ function parseGradient(shape: Lottie.GradientFillShape | Lottie.GradientStrokeSh
     // TODO: highlight length & angle (h & a)
     // Highlight Length, as a percentage between s and e
     // Highlight Angle, relative to the direction from s to e
-    const size = distanceSquareRoot(shape.e.k as [number, number], shape.s.k as [number, number]);
+    const size = distanceSquareRoot(
+      shape.e.k as [number, number],
+      shape.s.k as [number, number],
+    );
 
     // @see https://g-next.antv.vision/zh/docs/api/css/css-properties-values-api#radial-gradient
     return `radial-gradient(circle ${size}px at ${shape.s.k[0] as number}px ${
@@ -468,7 +551,8 @@ function parseFill(
   }
 
   // FillRule @see https://lottiefiles.github.io/lottie-docs/constants/#fillrule
-  attrs.style.fillRule = fl.r === Lottie.FillRule.EvenOdd ? 'evenodd' : 'nonzero';
+  attrs.style.fillRule =
+    fl.r === Lottie.FillRule.EvenOdd ? 'evenodd' : 'nonzero';
 
   // Opacity
   parseValue(
@@ -672,23 +756,46 @@ function parseShapeEllipse(
   };
 
   parseValue(shape.p, attrs, 'shape', ['cx', 'cy'], animations, context);
-  parseValue(shape.s, attrs, 'shape', ['rx', 'ry'], animations, context, (val) => val / 2);
+  parseValue(
+    shape.s,
+    attrs,
+    'shape',
+    ['rx', 'ry'],
+    animations,
+    context,
+    (val) => val / 2,
+  );
   return attrs;
 }
 
 function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
-  function tryCreateShape(shape: Lottie.ShapeElement, keyframeAnimations: KeyframeAnimation[]) {
+  function tryCreateShape(
+    shape: Lottie.ShapeElement,
+    keyframeAnimations: KeyframeAnimation[],
+  ) {
     let ecEl: any;
     // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
     switch (shape.ty) {
       case Lottie.ShapeType.Path:
-        ecEl = parseShapePaths(shape as Lottie.PathShape, keyframeAnimations, context);
+        ecEl = parseShapePaths(
+          shape as Lottie.PathShape,
+          keyframeAnimations,
+          context,
+        );
         break;
       case Lottie.ShapeType.Ellipse:
-        ecEl = parseShapeEllipse(shape as Lottie.EllipseShape, keyframeAnimations, context);
+        ecEl = parseShapeEllipse(
+          shape as Lottie.EllipseShape,
+          keyframeAnimations,
+          context,
+        );
         break;
       case Lottie.ShapeType.Rectangle:
-        ecEl = parseShapeRect(shape as Lottie.RectShape, keyframeAnimations, context);
+        ecEl = parseShapeRect(
+          shape as Lottie.RectShape,
+          keyframeAnimations,
+          context,
+        );
         break;
       case Lottie.ShapeType.PolyStar:
         // TODO: parseShapePolyStar
@@ -797,14 +904,29 @@ function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
         // TODO Multiple fill and stroke
         case Lottie.ShapeType.Fill:
         case Lottie.ShapeType.GradientFill:
-          parseFill(shape as Lottie.FillShape, attrs, keyframeAnimations, context);
+          parseFill(
+            shape as Lottie.FillShape,
+            attrs,
+            keyframeAnimations,
+            context,
+          );
           break;
         case Lottie.ShapeType.Stroke:
         case Lottie.ShapeType.GradientStroke:
-          parseStroke(shape as Lottie.StrokeShape, attrs, keyframeAnimations, context);
+          parseStroke(
+            shape as Lottie.StrokeShape,
+            attrs,
+            keyframeAnimations,
+            context,
+          );
           break;
         case Lottie.ShapeType.Transform:
-          parseTransforms(shape as Lottie.TransformShape, attrs, keyframeAnimations, context);
+          parseTransforms(
+            shape as Lottie.TransformShape,
+            attrs,
+            keyframeAnimations,
+            context,
+          );
           break;
         // TODO Multiple shapes.
         default:
@@ -825,7 +947,10 @@ function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
       };
 
       if (keyframeAnimations.length || modifiers.keyframeAnimations.length) {
-        el.keyframeAnimation = [...modifiers.keyframeAnimations, ...keyframeAnimations];
+        el.keyframeAnimation = [
+          ...modifiers.keyframeAnimations,
+          ...keyframeAnimations,
+        ];
       }
 
       ecEls[idx] = el;
@@ -842,7 +967,10 @@ function parseShapeLayer(layer: Lottie.ShapeLayer, context: ParseContext) {
   } as CustomElementOption;
 }
 
-function traverse(el: CustomElementOption, cb: (el: CustomElementOption) => void) {
+function traverse(
+  el: CustomElementOption,
+  cb: (el: CustomElementOption) => void,
+) {
   cb(el);
   if (el.type === Shape.GROUP) {
     el.children?.forEach((child) => {
@@ -876,7 +1004,9 @@ function addLayerOpacity(
         if (el.type !== Shape.GROUP && el.style) {
           Object.assign(el.style, opacityAttrs.style);
           if (opacityAnimations.length) {
-            el.keyframeAnimation = (el.keyframeAnimation || []).concat(opacityAnimations);
+            el.keyframeAnimation = (el.keyframeAnimation || []).concat(
+              opacityAnimations,
+            );
           }
         }
       });
@@ -945,7 +1075,9 @@ function parseLayers(
         // Anything you can do with solid layers, you can do better with a shape layer and a rectangle shape
         // since none of this layer's own properties can be animated.
         if ((layer as Lottie.SolidColorLayer).sc) {
-          layerGroup.children.push(parseSolidShape(layer as Lottie.SolidColorLayer));
+          layerGroup.children.push(
+            parseSolidShape(layer as Lottie.SolidColorLayer),
+          );
         }
         break;
       case Lottie.LayerType.precomp:
@@ -953,8 +1085,11 @@ function parseLayers(
         layerGroup = {
           type: Shape.GROUP,
           children: parseLayers(
-            (context.assetsMap.get((layer as Lottie.PrecompLayer).refId) as Lottie.PrecompAsset)
-              ?.layers || [],
+            (
+              context.assetsMap.get(
+                (layer as Lottie.PrecompLayer).refId,
+              ) as Lottie.PrecompAsset
+            )?.layers || [],
             context,
             {
               st: layerSt,
@@ -1085,7 +1220,7 @@ export function parse(
   context.endFrame = data.op;
   context.version = data.v;
   context.autoplay = !!autoplay;
-  context.iterations = isNumber(loop) ? loop : !!loop ? Infinity : 1;
+  context.iterations = isNumber(loop) ? loop : loop ? Infinity : 1;
   // @see https://lottiefiles.github.io/lottie-docs/assets/
   data.assets?.forEach((asset) => {
     context.assetsMap.set(asset.id, asset);

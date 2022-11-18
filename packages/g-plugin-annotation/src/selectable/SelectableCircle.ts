@@ -8,27 +8,28 @@ import { AbstractSelectable } from './AbstractSelectable';
  */
 export class SelectableCircle extends AbstractSelectable<Circle> {
   init() {
-    const { cx, cy, r } = this.style.target.parsedStyle;
-
-    this.mask = new Circle({
-      style: {
-        cx,
-        cy,
-        r,
-        draggable: true,
-        increasedLineWidthForHitTesting: 20,
-        cursor: 'move',
-      },
-    });
-    this.appendChild(this.mask);
-
     const {
       selectionFill,
       selectionFillOpacity,
       selectionStroke,
       selectionStrokeOpacity,
       selectionStrokeWidth,
+      target,
     } = this.style;
+
+    const { cx, cy, r } = target.parsedStyle;
+
+    this.mask = new Circle({
+      style: {
+        cx,
+        cy,
+        r,
+        draggable: target.style.maskDraggable === false ? false : true,
+        increasedLineWidthForHitTesting: 20,
+        cursor: 'move',
+      },
+    });
+    this.appendChild(this.mask);
 
     // resize according to target
     this.mask.style.fill = selectionFill;
@@ -85,7 +86,10 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
         const selectable = this.plugin.getOrCreateSelectableUI(selected);
-        selectable.triggerMovingEvent(canvasX - shiftX - cx, canvasY - shiftY - cy);
+        selectable.triggerMovingEvent(
+          canvasX - shiftX - cx,
+          canvasY - shiftY - cy,
+        );
       });
     };
 

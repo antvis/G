@@ -62,49 +62,153 @@ export function makeFormat(
 export enum Format {
   ALPHA = makeFormat(FormatTypeFlags.U8, FormatCompFlags.A, FormatFlags.None),
   F16_R = makeFormat(FormatTypeFlags.F16, FormatCompFlags.R, FormatFlags.None),
-  F16_RG = makeFormat(FormatTypeFlags.F16, FormatCompFlags.RG, FormatFlags.None),
-  F16_RGB = makeFormat(FormatTypeFlags.F16, FormatCompFlags.RGB, FormatFlags.None),
-  F16_RGBA = makeFormat(FormatTypeFlags.F16, FormatCompFlags.RGBA, FormatFlags.None),
+  F16_RG = makeFormat(
+    FormatTypeFlags.F16,
+    FormatCompFlags.RG,
+    FormatFlags.None,
+  ),
+  F16_RGB = makeFormat(
+    FormatTypeFlags.F16,
+    FormatCompFlags.RGB,
+    FormatFlags.None,
+  ),
+  F16_RGBA = makeFormat(
+    FormatTypeFlags.F16,
+    FormatCompFlags.RGBA,
+    FormatFlags.None,
+  ),
   F32_R = makeFormat(FormatTypeFlags.F32, FormatCompFlags.R, FormatFlags.None),
-  F32_RG = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RG, FormatFlags.None),
-  F32_RGB = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RGB, FormatFlags.None),
-  F32_RGBA = makeFormat(FormatTypeFlags.F32, FormatCompFlags.RGBA, FormatFlags.None),
+  F32_RG = makeFormat(
+    FormatTypeFlags.F32,
+    FormatCompFlags.RG,
+    FormatFlags.None,
+  ),
+  F32_RGB = makeFormat(
+    FormatTypeFlags.F32,
+    FormatCompFlags.RGB,
+    FormatFlags.None,
+  ),
+  F32_RGBA = makeFormat(
+    FormatTypeFlags.F32,
+    FormatCompFlags.RGBA,
+    FormatFlags.None,
+  ),
   U8_R = makeFormat(FormatTypeFlags.U8, FormatCompFlags.R, FormatFlags.None),
-  U8_R_NORM = makeFormat(FormatTypeFlags.U8, FormatCompFlags.R, FormatFlags.Normalized),
+  U8_R_NORM = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.R,
+    FormatFlags.Normalized,
+  ),
   U8_RG = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RG, FormatFlags.None),
-  U8_RG_NORM = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RG, FormatFlags.Normalized),
-  U8_RGB = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RGB, FormatFlags.None),
-  U8_RGB_NORM = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RGB, FormatFlags.Normalized),
+  U8_RG_NORM = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RG,
+    FormatFlags.Normalized,
+  ),
+  U8_RGB = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RGB,
+    FormatFlags.None,
+  ),
+  U8_RGB_NORM = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RGB,
+    FormatFlags.Normalized,
+  ),
   U8_RGB_SRGB = makeFormat(
     FormatTypeFlags.U8,
     FormatCompFlags.RGB,
     FormatFlags.sRGB | FormatFlags.Normalized,
   ),
-  U8_RGBA = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RGBA, FormatFlags.None),
-  U8_RGBA_NORM = makeFormat(FormatTypeFlags.U8, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  U8_RGBA = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RGBA,
+    FormatFlags.None,
+  ),
+  U8_RGBA_NORM = makeFormat(
+    FormatTypeFlags.U8,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
   U8_RGBA_SRGB = makeFormat(
     FormatTypeFlags.U8,
     FormatCompFlags.RGBA,
     FormatFlags.sRGB | FormatFlags.Normalized,
   ),
   U16_R = makeFormat(FormatTypeFlags.U16, FormatCompFlags.R, FormatFlags.None),
-  U16_R_NORM = makeFormat(FormatTypeFlags.U16, FormatCompFlags.R, FormatFlags.Normalized),
-  U16_RG_NORM = makeFormat(FormatTypeFlags.U16, FormatCompFlags.RG, FormatFlags.Normalized),
-  U16_RGBA_NORM = makeFormat(FormatTypeFlags.U16, FormatCompFlags.RGBA, FormatFlags.Normalized),
-  U16_RGB = makeFormat(FormatTypeFlags.U16, FormatCompFlags.RGB, FormatFlags.None),
+  U16_R_NORM = makeFormat(
+    FormatTypeFlags.U16,
+    FormatCompFlags.R,
+    FormatFlags.Normalized,
+  ),
+  U16_RG_NORM = makeFormat(
+    FormatTypeFlags.U16,
+    FormatCompFlags.RG,
+    FormatFlags.Normalized,
+  ),
+  U16_RGBA_NORM = makeFormat(
+    FormatTypeFlags.U16,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
+  U16_RGB = makeFormat(
+    FormatTypeFlags.U16,
+    FormatCompFlags.RGB,
+    FormatFlags.None,
+  ),
   U32_R = makeFormat(FormatTypeFlags.U32, FormatCompFlags.R, FormatFlags.None),
-  U32_RG = makeFormat(FormatTypeFlags.U32, FormatCompFlags.RG, FormatFlags.None),
+  U32_RG = makeFormat(
+    FormatTypeFlags.U32,
+    FormatCompFlags.RG,
+    FormatFlags.None,
+  ),
   S8_R = makeFormat(FormatTypeFlags.S8, FormatCompFlags.R, FormatFlags.None),
-  S8_R_NORM = makeFormat(FormatTypeFlags.S8, FormatCompFlags.R, FormatFlags.Normalized),
-  S8_RG_NORM = makeFormat(FormatTypeFlags.S8, FormatCompFlags.RG, FormatFlags.Normalized),
-  S8_RGB_NORM = makeFormat(FormatTypeFlags.S8, FormatCompFlags.RGB, FormatFlags.Normalized),
-  S8_RGBA_NORM = makeFormat(FormatTypeFlags.S8, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  S8_R_NORM = makeFormat(
+    FormatTypeFlags.S8,
+    FormatCompFlags.R,
+    FormatFlags.Normalized,
+  ),
+  S8_RG_NORM = makeFormat(
+    FormatTypeFlags.S8,
+    FormatCompFlags.RG,
+    FormatFlags.Normalized,
+  ),
+  S8_RGB_NORM = makeFormat(
+    FormatTypeFlags.S8,
+    FormatCompFlags.RGB,
+    FormatFlags.Normalized,
+  ),
+  S8_RGBA_NORM = makeFormat(
+    FormatTypeFlags.S8,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
   S16_R = makeFormat(FormatTypeFlags.S16, FormatCompFlags.R, FormatFlags.None),
-  S16_RG = makeFormat(FormatTypeFlags.S16, FormatCompFlags.RG, FormatFlags.None),
-  S16_RG_NORM = makeFormat(FormatTypeFlags.S16, FormatCompFlags.RG, FormatFlags.Normalized),
-  S16_RGB_NORM = makeFormat(FormatTypeFlags.S16, FormatCompFlags.RGB, FormatFlags.Normalized),
-  S16_RGBA = makeFormat(FormatTypeFlags.S16, FormatCompFlags.RGBA, FormatFlags.None),
-  S16_RGBA_NORM = makeFormat(FormatTypeFlags.S16, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  S16_RG = makeFormat(
+    FormatTypeFlags.S16,
+    FormatCompFlags.RG,
+    FormatFlags.None,
+  ),
+  S16_RG_NORM = makeFormat(
+    FormatTypeFlags.S16,
+    FormatCompFlags.RG,
+    FormatFlags.Normalized,
+  ),
+  S16_RGB_NORM = makeFormat(
+    FormatTypeFlags.S16,
+    FormatCompFlags.RGB,
+    FormatFlags.Normalized,
+  ),
+  S16_RGBA = makeFormat(
+    FormatTypeFlags.S16,
+    FormatCompFlags.RGBA,
+    FormatFlags.None,
+  ),
+  S16_RGBA_NORM = makeFormat(
+    FormatTypeFlags.S16,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
   S32_R = makeFormat(FormatTypeFlags.S32, FormatCompFlags.R, FormatFlags.None),
 
   // Packed texture formats.
@@ -115,28 +219,56 @@ export enum Format {
   ),
 
   // Compressed
-  BC1 = makeFormat(FormatTypeFlags.BC1, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  BC1 = makeFormat(
+    FormatTypeFlags.BC1,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
   BC1_SRGB = makeFormat(
     FormatTypeFlags.BC1,
     FormatCompFlags.RGBA,
     FormatFlags.Normalized | FormatFlags.sRGB,
   ),
-  BC2 = makeFormat(FormatTypeFlags.BC2, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  BC2 = makeFormat(
+    FormatTypeFlags.BC2,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
   BC2_SRGB = makeFormat(
     FormatTypeFlags.BC2,
     FormatCompFlags.RGBA,
     FormatFlags.Normalized | FormatFlags.sRGB,
   ),
-  BC3 = makeFormat(FormatTypeFlags.BC3, FormatCompFlags.RGBA, FormatFlags.Normalized),
+  BC3 = makeFormat(
+    FormatTypeFlags.BC3,
+    FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
   BC3_SRGB = makeFormat(
     FormatTypeFlags.BC3,
     FormatCompFlags.RGBA,
     FormatFlags.Normalized | FormatFlags.sRGB,
   ),
-  BC4_UNORM = makeFormat(FormatTypeFlags.BC4_UNORM, FormatCompFlags.R, FormatFlags.Normalized),
-  BC4_SNORM = makeFormat(FormatTypeFlags.BC4_SNORM, FormatCompFlags.R, FormatFlags.Normalized),
-  BC5_UNORM = makeFormat(FormatTypeFlags.BC5_UNORM, FormatCompFlags.RG, FormatFlags.Normalized),
-  BC5_SNORM = makeFormat(FormatTypeFlags.BC5_SNORM, FormatCompFlags.RG, FormatFlags.Normalized),
+  BC4_UNORM = makeFormat(
+    FormatTypeFlags.BC4_UNORM,
+    FormatCompFlags.R,
+    FormatFlags.Normalized,
+  ),
+  BC4_SNORM = makeFormat(
+    FormatTypeFlags.BC4_SNORM,
+    FormatCompFlags.R,
+    FormatFlags.Normalized,
+  ),
+  BC5_UNORM = makeFormat(
+    FormatTypeFlags.BC5_UNORM,
+    FormatCompFlags.RG,
+    FormatFlags.Normalized,
+  ),
+  BC5_SNORM = makeFormat(
+    FormatTypeFlags.BC5_SNORM,
+    FormatCompFlags.RG,
+    FormatFlags.Normalized,
+  ),
 
   // Depth/Stencil
   D24 = makeFormat(FormatTypeFlags.D24, FormatCompFlags.R, FormatFlags.Depth),
@@ -182,7 +314,9 @@ export function getFormatFlags(fmt: Format): FormatFlags {
   return fmt & 0xff;
 }
 
-export function getFormatTypeFlagsByteSize(typeFlags: FormatTypeFlags): 1 | 2 | 4 {
+export function getFormatTypeFlagsByteSize(
+  typeFlags: FormatTypeFlags,
+): 1 | 2 | 4 {
   switch (typeFlags) {
     case FormatTypeFlags.F32:
     case FormatTypeFlags.U32:
@@ -214,7 +348,9 @@ export function getFormatComponentCount(fmt: Format): number {
 
 export function getFormatByteSize(fmt: Format): number {
   const typeByteSize = getFormatTypeFlagsByteSize(getFormatTypeFlags(fmt));
-  const componentCount = getFormatCompFlagsComponentCount(getFormatCompFlags(fmt));
+  const componentCount = getFormatCompFlagsComponentCount(
+    getFormatCompFlags(fmt),
+  );
   return typeByteSize * componentCount;
 }
 
@@ -222,16 +358,19 @@ export function setFormatFlags(fmt: Format, flags: FormatFlags): Format {
   return (fmt & 0xffffff00) | flags;
 }
 
-export function setFormatComponentCount(fmt: Format, compFlags: FormatCompFlags): Format {
+export function setFormatComponentCount(
+  fmt: Format,
+  compFlags: FormatCompFlags,
+): Format {
   return (fmt & 0xffff00ff) | (compFlags << 8);
 }
 
 export function getFormatSamplerKind(fmt: Format): SamplerFormatKind {
   const flags = getFormatFlags(fmt);
-  if (!!(flags & FormatFlags.Depth)) {
+  if (flags & FormatFlags.Depth) {
     return SamplerFormatKind.Depth;
   }
-  if (!!(flags & FormatFlags.Normalized)) {
+  if (flags & FormatFlags.Normalized) {
     return SamplerFormatKind.Float;
   }
   const typeFlags = getFormatTypeFlags(fmt);

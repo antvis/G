@@ -1,10 +1,17 @@
-import type { LinearGradient, Pattern, RadialGradient, CanvasConfig } from '@antv/g-lite';
-import { UnitType } from '@antv/g-lite';
+import type {
+  LinearGradient,
+  Pattern,
+  RadialGradient,
+  CanvasConfig,
+} from '@antv/g-lite';
 import {
+  UnitType,
   computeLinearGradient,
   computeRadialGradient,
   GradientType,
   isBrowser,
+  parseTransform,
+  parsedTransformToMat4,
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
@@ -76,7 +83,7 @@ export class ImagePool {
       return this.patternCache[patternKey];
     }
 
-    const { image, repetition } = pattern;
+    const { image, repetition, transform } = pattern;
     let src: CanvasImageSource;
     // Image URL
     if (isString(image)) {
@@ -88,6 +95,19 @@ export class ImagePool {
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createPattern
     const canvasPattern = src && context.createPattern(src, repetition);
 
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
+    if (transform) {
+      const mat = parsedTransformToMat4(parseTransform(transform));
+      canvasPattern.setTransform({
+        a: mat[0],
+        b: mat[1],
+        c: mat[4],
+        d: mat[5],
+        e: mat[12],
+        f: mat[13],
+      });
+    }
+
     if (patternKey && canvasPattern) {
       this.patternCache[patternKey] = canvasPattern;
     }
@@ -95,7 +115,10 @@ export class ImagePool {
     return canvasPattern;
   }
 
-  getOrCreateGradient(params: GradientParams, context: CanvasRenderingContext2D) {
+  getOrCreateGradient(
+    params: GradientParams,
+    context: CanvasRenderingContext2D,
+  ) {
     const key = this.generateGradientKey(params);
     const { type, steps, width, height, angle, cx, cy, size } = params;
 

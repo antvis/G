@@ -3,8 +3,10 @@ import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
 import type { Canvas, InputRect } from 'canvaskit-wasm';
 import { CanvaskitRendererPlugin } from './CanvaskitRendererPlugin';
 import { FontLoader } from './FontLoader';
-import type { RendererContribution } from './interfaces';
-import type { CanvaskitRendererPluginOptions } from './interfaces';
+import type {
+  RendererContribution,
+  CanvaskitRendererPluginOptions,
+} from './interfaces';
 import {
   CircleRenderer,
   EllipseRenderer,
@@ -62,11 +64,20 @@ export class Plugin extends AbstractRendererPlugin {
     this.removeAllRenderingPlugins();
   }
 
-  playAnimation(name: string, jsonStr: string, bounds?: InputRect, assets?: any) {
+  playAnimation(
+    name: string,
+    jsonStr: string,
+    bounds?: InputRect,
+    assets?: any,
+  ) {
     return this.plugins[0].playAnimation(name, jsonStr, bounds, assets);
   }
 
-  createParticles(jsonStr: string, onFrame?: (canvas: Canvas) => void, assets?: any) {
+  createParticles(
+    jsonStr: string,
+    onFrame?: (canvas: Canvas) => void,
+    assets?: any,
+  ) {
     return this.plugins[0].createParticles(jsonStr, onFrame, assets);
   }
 

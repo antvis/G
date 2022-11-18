@@ -49,7 +49,8 @@ const TEXT_METRICS = {
   ],
 };
 
-const LATIN_REGEX = /[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff!"#$%&'()*+,-./:;]/;
+const LATIN_REGEX =
+  /[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff!"#$%&'()*+,-./:;]/;
 
 // Line breaking rules in CJK (Kinsoku Shori)
 // Refer from https://en.wikipedia.org/wiki/Line_breaking_rules_in_East_Asian_languages
@@ -62,7 +63,8 @@ const regexCannotEndZhTw = /[([{£¥'"‵〈《「『〔〝︴﹙﹛（｛︵︷
 const regexCannotStartJaJp =
   /[)\]｝〕〉》」』】〙〗〟'"｠»ヽヾーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇺㇻㇼㇽㇾㇿ々〻‐゠–〜?!‼⁇⁈⁉・、:;,。.]/;
 const regexCannotEndJaJp = /[([｛〔〈《「『【〘〖〝'"｟«—...‥〳〴〵]/;
-const regexCannotStartKoKr = /[!%),.:;?\]}¢°'"†‡℃〆〈《「『〕！％），．：；？］｝]/;
+const regexCannotStartKoKr =
+  /[!%),.:;?\]}¢°'"†‡℃〆〈《「『〕！％），．：；？］｝]/;
 const regexCannotEndKoKr = /[$([{£¥'"々〇〉》」〔＄（［｛｠￥￦#]/;
 
 const regexCannotStart = new RegExp(
@@ -97,13 +99,18 @@ export class TextService {
       fontSize: 0,
     };
 
-    const canvas = this.runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context = this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const canvas =
+      this.runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
+    const context =
+      this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
 
     context.font = font;
-    const metricsString = TEXT_METRICS.MetricsString + TEXT_METRICS.BaselineSymbol;
+    const metricsString =
+      TEXT_METRICS.MetricsString + TEXT_METRICS.BaselineSymbol;
     const width = Math.ceil(context.measureText(metricsString).width);
-    let baseline = Math.ceil(context.measureText(TEXT_METRICS.BaselineSymbol).width);
+    let baseline = Math.ceil(
+      context.measureText(TEXT_METRICS.BaselineSymbol).width,
+    );
     const height = TEXT_METRICS.HeightMultiplier * baseline;
     baseline = (baseline * TEXT_METRICS.BaselineMultiplier) | 0;
     // @ts-ignore
@@ -190,12 +197,15 @@ export class TextService {
       fontProperties.ascent = fontSize;
     }
 
-    const context = this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const context =
+      this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     context.font = font;
 
     // no overflowing by default
     parsedStyle.isOverflowing = false;
-    const outputText = wordWrap ? this.wordWrap(text, parsedStyle, offscreenCanvas) : text;
+    const outputText = wordWrap
+      ? this.wordWrap(text, parsedStyle, offscreenCanvas)
+      : text;
 
     const lines = outputText.split(/(?:\r\n|\r|\n)/);
     const lineWidths = new Array<number>(lines.length);
@@ -209,7 +219,9 @@ export class TextService {
 
       for (let i = 0; i < lines.length; i++) {
         let positionInPath: number;
-        const width = context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
+        const width =
+          context.measureText(lines[i]).width +
+          (lines[i].length - 1) * letterSpacing;
         const reverse = textPathSide === 'right';
 
         // TODO: should we support textPathStartOffsetY?
@@ -255,7 +267,8 @@ export class TextService {
       for (let i = 0; i < lines.length; i++) {
         // char width + letterSpacing
         const lineWidth =
-          context.measureText(lines[i]).width + (lines[i].length - 1) * letterSpacing;
+          context.measureText(lines[i]).width +
+          (lines[i].length - 1) * letterSpacing;
         lineWidths[i] = lineWidth;
         maxLineWidth = Math.max(maxLineWidth, lineWidth);
       }
@@ -323,8 +336,14 @@ export class TextService {
     parsedStyle: ParsedTextStyleProps,
     offscreenCanvas: CanvasLike,
   ): string {
-    const { wordWrapWidth = 0, letterSpacing, maxLines = Infinity, textOverflow } = parsedStyle;
-    const context = this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const {
+      wordWrapWidth = 0,
+      letterSpacing,
+      maxLines = Infinity,
+      textOverflow,
+    } = parsedStyle;
+    const context =
+      this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
     let ellipsis = '';
     if (textOverflow === 'ellipsis') {
@@ -339,7 +358,12 @@ export class TextService {
 
     const cache: { [key in string]: number } = {};
     const calcWidth = (char: string): number => {
-      return this.getFromCache(char, letterSpacing, cache, context as CanvasRenderingContext2D);
+      return this.getFromCache(
+        char,
+        letterSpacing,
+        cache,
+        context as CanvasRenderingContext2D,
+      );
     };
     const ellipsisWidth = Array.from(ellipsis).reduce((prev, cur) => {
       return prev + calcWidth(cur);
@@ -351,16 +375,23 @@ export class TextService {
 
       const prevChar = text[i - 1];
       const nextChar = text[i + 1];
-      const width = calcWidth(char);
+      const charWidth = calcWidth(char);
 
       if (this.isNewline(char)) {
         currentIndex++;
+
+        // exceed maxLines, break immediately
+        if (currentIndex >= maxLines) {
+          parsedStyle.isOverflowing = true;
+          break;
+        }
+
         currentWidth = 0;
         lines[currentIndex] = '';
         continue;
       }
 
-      if (currentWidth > 0 && currentWidth + width > maxWidth) {
+      if (currentWidth > 0 && currentWidth + charWidth > maxWidth) {
         if (currentIndex + 1 >= maxLines) {
           parsedStyle.isOverflowing = true;
 
@@ -380,7 +411,8 @@ export class TextService {
               lastLineWidth += width;
             }
 
-            lines[currentIndex] = (lines[currentIndex] || '').slice(0, lastLineIndex) + ellipsis;
+            lines[currentIndex] =
+              (lines[currentIndex] || '').slice(0, lastLineIndex) + ellipsis;
           }
 
           break;
@@ -396,7 +428,10 @@ export class TextService {
 
         if (!this.canBreakInLastChar(char)) {
           lines = this.trimToBreakable(lines);
-          currentWidth = this.sumTextWidthByCache(lines[currentIndex] || '', cache);
+          currentWidth = this.sumTextWidthByCache(
+            lines[currentIndex] || '',
+            cache,
+          );
         }
 
         if (this.shouldBreakByKinsokuShorui(char, nextChar)) {
@@ -405,9 +440,10 @@ export class TextService {
         }
       }
 
-      currentWidth += width;
+      currentWidth += charWidth;
       lines[currentIndex] = (lines[currentIndex] || '') + char;
     }
+
     return lines.join('\n');
   }
 
@@ -443,7 +479,10 @@ export class TextService {
     return next;
   }
 
-  private shouldBreakByKinsokuShorui = (char: string | undefined, nextChar: string): boolean => {
+  private shouldBreakByKinsokuShorui = (
+    char: string | undefined,
+    nextChar: string,
+  ): boolean => {
     if (this.isBreakingSpace(nextChar)) return false;
 
     if (char) {
@@ -474,7 +513,10 @@ export class TextService {
     return true;
   }
 
-  private sumTextWidthByCache(text: string, cache: { [key in string]: number }) {
+  private sumTextWidthByCache(
+    text: string,
+    cache: { [key in string]: number },
+  ) {
     return text.split('').reduce((sum: number, c) => {
       if (!cache[c]) throw Error('cannot count the word without cache');
       return sum + cache[c];

@@ -8,8 +8,8 @@ export class DynamicUniformBuffer {
   private uniformBufferWordAlignment: number;
   private uniformBufferMaxPageWordSize: number;
 
-  private currentBufferWordSize: number = -1;
-  private currentWordOffset: number = 0;
+  private currentBufferWordSize = -1;
+  private currentWordOffset = 0;
   buffer: Buffer | null = null;
 
   private shadowBufferF32: Float32Array | null = null;
@@ -38,8 +38,14 @@ export class DynamicUniformBuffer {
     let wordOffset = this.currentWordOffset;
 
     // If we straddle the page, then put it at the start of the next one.
-    if (this.findPageIndex(wordOffset) !== this.findPageIndex(wordOffset + wordCount - 1))
-      wordOffset = alignNonPowerOfTwo(wordOffset, this.uniformBufferMaxPageWordSize);
+    if (
+      this.findPageIndex(wordOffset) !==
+      this.findPageIndex(wordOffset + wordCount - 1)
+    )
+      wordOffset = alignNonPowerOfTwo(
+        wordOffset,
+        this.uniformBufferMaxPageWordSize,
+      );
 
     this.currentWordOffset = wordOffset + wordCount;
     this.ensureShadowBuffer(wordOffset, wordCount);
@@ -57,7 +63,8 @@ export class DynamicUniformBuffer {
       this.shadowBufferF32 = new Float32Array(this.shadowBufferU8.buffer);
     } else if (wordOffset + wordCount >= this.shadowBufferF32.length) {
       assert(
-        wordOffset < this.currentWordOffset && wordOffset + wordCount <= this.currentWordOffset,
+        wordOffset < this.currentWordOffset &&
+          wordOffset + wordCount <= this.currentWordOffset,
       );
 
       // Grow logarithmically, aligned to page size.
@@ -107,7 +114,10 @@ export class DynamicUniformBuffer {
       });
     }
 
-    const wordCount = alignNonPowerOfTwo(this.currentWordOffset, this.uniformBufferMaxPageWordSize);
+    const wordCount = alignNonPowerOfTwo(
+      this.currentWordOffset,
+      this.uniformBufferMaxPageWordSize,
+    );
     if (!(wordCount <= this.currentBufferWordSize))
       throw new Error(
         `Assert fail: wordCount [${wordCount}] (${this.currentWordOffset} aligned ${this.uniformBufferMaxPageWordSize}) <= this.currentBufferWordSize [${this.currentBufferWordSize}]`,

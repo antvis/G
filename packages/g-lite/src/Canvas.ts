@@ -5,8 +5,12 @@ import {
 } from 'request-animation-frame-polyfill';
 import { runtime } from './global-runtime';
 import type { IRenderer } from './AbstractRenderer';
-import { CameraTrackingMode, CameraType } from './camera';
-import { CameraEvent, CameraProjectionMode } from './camera';
+import {
+  CameraTrackingMode,
+  CameraType,
+  CameraEvent,
+  CameraProjectionMode,
+} from './camera';
 import type { RBushNodeAABB } from './components';
 import type { CustomElement } from './display-objects';
 import { DisplayObject } from './display-objects';
@@ -21,8 +25,7 @@ import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { EventService, RenderingService, RenderReason } from './services';
 import type { PointLike } from './shapes';
-import type { Cursor, InteractivePointerEvent } from './types';
-import type { CanvasConfig } from './types';
+import type { Cursor, InteractivePointerEvent, CanvasConfig } from './types';
 import { cleanExistedCanvas, getHeight, getWidth, isBrowser } from './utils';
 
 export enum CanvasEvent {
@@ -169,15 +172,18 @@ export class Canvas extends EventTarget implements ICanvas {
      */
     this.devicePixelRatio = dpr;
     this.requestAnimationFrame = requestAnimationFrame ?? rAF.bind(globalThis);
-    this.cancelAnimationFrame = cancelAnimationFrame ?? cancelRAF.bind(globalThis);
+    this.cancelAnimationFrame =
+      cancelAnimationFrame ?? cancelRAF.bind(globalThis);
 
     /**
      * limits query
      */
     // the following feature-detect from hammer.js
     // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
-    this.supportsTouchEvents = supportsTouchEvents ?? 'ontouchstart' in globalThis;
-    this.supportsPointerEvents = supportsPointerEvents ?? !!globalThis.PointerEvent;
+    this.supportsTouchEvents =
+      supportsTouchEvents ?? 'ontouchstart' in globalThis;
+    this.supportsPointerEvents =
+      supportsPointerEvents ?? !!globalThis.PointerEvent;
     this.isTouchEvent =
       isTouchEvent ??
       ((event: InteractivePointerEvent): event is TouchEvent =>
@@ -187,7 +193,8 @@ export class Canvas extends EventTarget implements ICanvas {
       ((event: InteractivePointerEvent): event is MouseEvent =>
         !globalThis.MouseEvent ||
         (event instanceof globalThis.MouseEvent &&
-          (!this.supportsPointerEvents || !(event instanceof globalThis.PointerEvent))));
+          (!this.supportsPointerEvents ||
+            !(event instanceof globalThis.PointerEvent))));
 
     this.initRenderingContext({
       container,
@@ -258,7 +265,9 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // redraw when camera changed
     camera.eventEmitter.on(CameraEvent.UPDATED, () => {
-      this.context.renderingContext.renderReasons.add(RenderReason.CAMERA_CHANGED);
+      this.context.renderingContext.renderReasons.add(
+        RenderReason.CAMERA_CHANGED,
+      );
     });
 
     // bind camera
@@ -330,7 +339,8 @@ export class Canvas extends EventTarget implements ICanvas {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
     if (this.frameId) {
-      const cancelRAF = this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
+      const cancelRAF =
+        this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
       cancelRAF(this.frameId);
     }
 
@@ -398,7 +408,10 @@ export class Canvas extends EventTarget implements ICanvas {
   appendChild<T extends IChildNode>(child: T, index?: number): T {
     return this.document.documentElement.appendChild(child, index);
   }
-  insertBefore<T extends IChildNode, N extends IChildNode>(newChild: T, refChild: N | null): T {
+  insertBefore<T extends IChildNode, N extends IChildNode>(
+    newChild: T,
+    refChild: N | null,
+  ): T {
     return this.document.documentElement.insertBefore(newChild, refChild);
   }
   removeChild<T extends IChildNode>(child: T): T {

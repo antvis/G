@@ -3,7 +3,12 @@ import type { ReadonlyVec3, ReadonlyVec4, ReadonlyMat4 } from 'gl-matrix';
 // import { ReadonlyMat2d } from 'gl-matrix';
 import type { Color } from '../../platform';
 
-export function fillVec3v(d: Float32Array, offs: number, v: ReadonlyVec3, v3: number = 0): number {
+export function fillVec3v(
+  d: Float32Array,
+  offs: number,
+  v: ReadonlyVec3,
+  v3 = 0,
+): number {
   d[offs + 0] = v[0];
   d[offs + 1] = v[1];
   d[offs + 2] = v[2];
@@ -15,9 +20,9 @@ export function fillVec4(
   d: Float32Array,
   offs: number,
   v0: number,
-  v1: number = 0,
-  v2: number = 0,
-  v3: number = 0,
+  v1 = 0,
+  v2 = 0,
+  v3 = 0,
 ): number {
   d[offs + 0] = v0;
   d[offs + 1] = v1;
@@ -26,7 +31,11 @@ export function fillVec4(
   return 4;
 }
 
-export function fillVec4v(d: Float32Array, offs: number, v: ReadonlyVec4): number {
+export function fillVec4v(
+  d: Float32Array,
+  offs: number,
+  v: ReadonlyVec4,
+): number {
   d[offs + 0] = v[0];
   d[offs + 1] = v[1];
   d[offs + 2] = v[2];
@@ -48,7 +57,11 @@ export function fillColor(
 }
 
 // All of our matrices are row-major.
-export function fillMatrix4x4(d: Float32Array, offs: number, m: ReadonlyMat4): number {
+export function fillMatrix4x4(
+  d: Float32Array,
+  offs: number,
+  m: ReadonlyMat4,
+): number {
   // d[offs + 0] = m[0];
   // d[offs + 1] = m[4];
   // d[offs + 2] = m[8];

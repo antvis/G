@@ -1,6 +1,15 @@
 import type { IAnimation, PointLike } from '@antv/g-lite';
-import { Canvas, DisplayObject } from '@antv/g-lite';
-import { definedProps, Ellipse, Group, Rect, Path, Image, Shape } from '@antv/g-lite';
+import {
+  Canvas,
+  DisplayObject,
+  definedProps,
+  Ellipse,
+  Group,
+  Rect,
+  Path,
+  Image,
+  Shape,
+} from '@antv/g-lite';
 import type { PathArray } from '@antv/util';
 import { path2String } from '@antv/util';
 // import { mat4, quat, vec3 } from 'gl-matrix';
@@ -29,25 +38,41 @@ export class LottieAnimation {
     private elements: CustomElementOption[],
     private context: ParseContext,
   ) {
-    this.displayObjects = elements.map((element) => this.buildHierachy(element));
+    this.displayObjects = elements.map((element) =>
+      this.buildHierachy(element),
+    );
 
     // TODO: preload images
     // TODO: preload fonts
   }
 
   private displayObjects: DisplayObject[];
-  private keyframeAnimationMap = new WeakMap<DisplayObject, KeyframeAnimation[]>();
-  private displayObjectElementMap = new WeakMap<DisplayObject, CustomElementOption>();
+  private keyframeAnimationMap = new WeakMap<
+    DisplayObject,
+    KeyframeAnimation[]
+  >();
+  private displayObjectElementMap = new WeakMap<
+    DisplayObject,
+    CustomElementOption
+  >();
 
   private animations: IAnimation[] = [];
 
-  private generateTransform(tx: number, ty: number, scaleX: number, scaleY: number, rotation) {
+  private generateTransform(
+    tx: number,
+    ty: number,
+    scaleX: number,
+    scaleY: number,
+    rotation,
+  ) {
     let transformStr = '';
     if (tx !== 0 || ty !== 0) {
       transformStr += `translate(${tx}, ${ty})`;
     }
     if (scaleX !== 1 || scaleY !== 1) {
-      transformStr += ` scale(${scaleX === 0 ? eps : scaleX}, ${scaleY === 0 ? eps : scaleY})`;
+      transformStr += ` scale(${scaleX === 0 ? eps : scaleX}, ${
+        scaleY === 0 ? eps : scaleY
+      })`;
     }
     if (rotation !== 0) {
       transformStr += ` rotate(${rotation}deg)`;
@@ -75,7 +100,13 @@ export class LottieAnimation {
     } = element;
 
     let displayObject: DisplayObject;
-    const transform = this.generateTransform(x - anchorX, y - anchorY, scaleX, scaleY, rotation);
+    const transform = this.generateTransform(
+      x - anchorX,
+      y - anchorY,
+      scaleX,
+      scaleY,
+      rotation,
+    );
     // const transformMat = mat4.fromRotationTranslationScaleOrigin(
     //   mat4.create(),
     //   quat.fromEuler(quat.create(), 0, 0, rotation),
@@ -134,7 +165,9 @@ export class LottieAnimation {
           height,
           anchor: [0.5, 0.5], // position means the center of the rectangle
           radius: r,
-          transformOrigin: `${anchorX - cx + width / 2}px ${anchorY - cy + height / 2}px`,
+          transformOrigin: `${anchorX - cx + width / 2}px ${
+            anchorY - cy + height / 2
+          }px`,
           transform,
         },
       });
@@ -212,7 +245,10 @@ export class LottieAnimation {
     keyframe1: KeyframeAnimationKeyframe,
     keyframe2: KeyframeAnimationKeyframe,
   ) {
-    return keyframe1.easing === keyframe2.easing && keyframe1.offset === keyframe2.offset;
+    return (
+      keyframe1.easing === keyframe2.easing &&
+      keyframe1.offset === keyframe2.offset
+    );
   }
 
   private generatePathFromShape(shape: Record<string, any>): PathArray {
@@ -226,11 +262,27 @@ export class LottieAnimation {
       // @see https://lottiefiles.github.io/lottie-docs/concepts/#bezier
       // The nth bezier segment is defined as:
       // v[n], v[n]+o[n], v[n+1]+i[n+1], v[n+1]
-      d.push(['C', out[n - 1][0], out[n - 1][1], i[n][0], i[n][1], v[n][0], v[n][1]]);
+      d.push([
+        'C',
+        out[n - 1][0],
+        out[n - 1][1],
+        i[n][0],
+        i[n][1],
+        v[n][0],
+        v[n][1],
+      ]);
     }
 
     if (close) {
-      d.push(['C', out[v.length - 1][0], out[v.length - 1][1], i[0][0], i[0][1], v[0][0], v[0][1]]);
+      d.push([
+        'C',
+        out[v.length - 1][0],
+        out[v.length - 1][1],
+        i[0][0],
+        i[0][1],
+        v[0][0],
+        v[0][1],
+      ]);
       d.push(['Z']);
     }
 
@@ -248,7 +300,9 @@ export class LottieAnimation {
       canvasOrDisplayObject.appendChild(wrapper);
     } else if (canvasOrDisplayObject instanceof DisplayObject) {
       if (!canvasOrDisplayObject.isConnected) {
-        throw new Error('[g-lottie-player]: Cannot render Lottie to an unmounted DisplayObject.');
+        throw new Error(
+          '[g-lottie-player]: Cannot render Lottie to an unmounted DisplayObject.',
+        );
       } else {
         canvasOrDisplayObject.appendChild(wrapper);
       }
@@ -304,19 +358,21 @@ export class LottieAnimation {
             Omit<KeyframeAnimation, 'keyframes'>,
           ][] = [];
 
-          keyframeAnimation.map(({ delay = 0, duration, easing, keyframes }) => {
-            const formattedKeyframes = keyframes.map((keyframe) =>
-              definedProps(keyframe),
-            ) as KeyframeAnimationKeyframe[];
-            const options = definedProps({
-              delay,
-              duration,
-              easing,
-              iterations: this.context.iterations,
-            }) as Omit<KeyframeAnimation, 'keyframes'>;
+          keyframeAnimation.map(
+            ({ delay = 0, duration, easing, keyframes }) => {
+              const formattedKeyframes = keyframes.map((keyframe) =>
+                definedProps(keyframe),
+              ) as KeyframeAnimationKeyframe[];
+              const options = definedProps({
+                delay,
+                duration,
+                easing,
+                iterations: this.context.iterations,
+              }) as Omit<KeyframeAnimation, 'keyframes'>;
 
-            keyframesOptions.push([formattedKeyframes, options]);
-          });
+              keyframesOptions.push([formattedKeyframes, options]);
+            },
+          );
 
           const mergedKeyframesOptions = [keyframesOptions[0]];
           // merge [{ offset: 0, cx: 1 }, { offset: 0, cy: 1 }] into { offset: 0, cx: 1, cy: 1 }
@@ -331,13 +387,18 @@ export class LottieAnimation {
 
             if (existedKeyframeOptions) {
               currentKeyframes.forEach((currentKeyframe) => {
-                const existedKeyframe = existedKeyframeOptions[0].find((keyframe) =>
-                  this.isSameKeyframes(currentKeyframe, keyframe),
+                const existedKeyframe = existedKeyframeOptions[0].find(
+                  (keyframe) => this.isSameKeyframes(currentKeyframe, keyframe),
                 );
 
                 if (existedKeyframe) {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  const { offset, easing: e = 'linear', ...rest } = currentKeyframe;
+                  const {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    offset,
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    easing: e = 'linear',
+                    ...rest
+                  } = currentKeyframe;
 
                   // merge interpolated properties
                   Object.assign(existedKeyframe, rest);
@@ -378,7 +439,10 @@ export class LottieAnimation {
     return wrapper;
   }
 
-  private formatKeyframes(keyframes: Record<string, any>[], object: DisplayObject) {
+  private formatKeyframes(
+    keyframes: Record<string, any>[],
+    object: DisplayObject,
+  ) {
     keyframes.forEach((keyframe) => {
       // if ('offsetPath' in keyframe) {
       //   if (!object.style.offsetPath) {
@@ -422,17 +486,20 @@ export class LottieAnimation {
 
       if ('scaleX' in keyframe) {
         keyframe.transform =
-          (keyframe.transform || '') + ` scaleX(${keyframe.scaleX === 0 ? eps : keyframe.scaleX})`;
+          (keyframe.transform || '') +
+          ` scaleX(${keyframe.scaleX === 0 ? eps : keyframe.scaleX})`;
         delete keyframe.scaleX;
       }
       if ('scaleY' in keyframe) {
         keyframe.transform =
-          (keyframe.transform || '') + ` scaleY(${keyframe.scaleY === 0 ? eps : keyframe.scaleY})`;
+          (keyframe.transform || '') +
+          ` scaleY(${keyframe.scaleY === 0 ? eps : keyframe.scaleY})`;
         delete keyframe.scaleY;
       }
 
       if ('rotation' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` rotate(${keyframe.rotation}deg)`;
+        keyframe.transform =
+          (keyframe.transform || '') + ` rotate(${keyframe.rotation}deg)`;
         delete keyframe.rotation;
       }
 
@@ -443,11 +510,13 @@ export class LottieAnimation {
       // }
 
       if ('x' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` translateX(${keyframe.x}px)`;
+        keyframe.transform =
+          (keyframe.transform || '') + ` translateX(${keyframe.x}px)`;
         delete keyframe.x;
       }
       if ('y' in keyframe) {
-        keyframe.transform = (keyframe.transform || '') + ` translateY(${keyframe.y}px)`;
+        keyframe.transform =
+          (keyframe.transform || '') + ` translateY(${keyframe.y}px)`;
         delete keyframe.y;
       }
 

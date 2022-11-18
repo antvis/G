@@ -1,8 +1,15 @@
-import type { CanvasContext, DataURLOptions, GlobalRuntime } from '@antv/g-lite';
-import type { CanvasConfig, ContextService } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  DataURLOptions,
+  GlobalRuntime,
+  CanvasConfig,
+  ContextService,
+} from '@antv/g-lite';
 import { isCanvasElement } from './dom';
 
-export class Canvas2DContextService implements ContextService<CanvasRenderingContext2D> {
+export class Canvas2DContextService
+  implements ContextService<CanvasRenderingContext2D>
+{
   private $canvas: HTMLCanvasElement;
   private dpr: number;
   private context: CanvasRenderingContext2D;
@@ -78,6 +85,9 @@ export class Canvas2DContextService implements ContextService<CanvasRenderingCon
 
   async toDataURL(options: Partial<DataURLOptions>) {
     const { type, encoderOptions } = options;
-    return (this.context.canvas as HTMLCanvasElement).toDataURL(type, encoderOptions);
+    return (this.context.canvas as HTMLCanvasElement).toDataURL(
+      type,
+      encoderOptions,
+    );
   }
 }

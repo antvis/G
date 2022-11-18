@@ -1,17 +1,36 @@
-import type { DisplayObject, FederatedEvent, ParsedPolygonStyleProps } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  FederatedEvent,
+  ParsedPolygonStyleProps,
+} from '@antv/g-lite';
 import { Circle, CustomEvent, Polygon, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 
 export class SelectablePolygon extends AbstractSelectable<Polygon> {
   init() {
-    const { points: parsedPoints } = this.style.target.parsedStyle as ParsedPolygonStyleProps;
+    const {
+      anchorFill,
+      anchorStroke,
+      anchorFillOpacity,
+      anchorStrokeOpacity,
+      anchorSize,
+      selectionFill,
+      selectionFillOpacity,
+      selectionStroke,
+      selectionStrokeOpacity,
+      selectionStrokeWidth,
+      target,
+    } = this.style;
+
+    const { points: parsedPoints } =
+      target.parsedStyle as ParsedPolygonStyleProps;
     const points = parsedPoints.points;
 
     this.mask = new Polygon({
       style: {
         points,
-        draggable: true,
+        draggable: target.style.maskDraggable === false ? false : true,
         increasedLineWidthForHitTesting: 20,
         cursor: 'move',
       },
@@ -35,19 +54,6 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
       anchor.setPosition(point);
     });
 
-    const {
-      anchorFill,
-      anchorStroke,
-      anchorFillOpacity,
-      anchorStrokeOpacity,
-      anchorSize,
-      selectionFill,
-      selectionFillOpacity,
-      selectionStroke,
-      selectionStrokeOpacity,
-      selectionStrokeWidth,
-    } = this.style;
-
     // resize according to target
     this.mask.style.fill = selectionFill;
     this.mask.style.stroke = selectionStroke;
@@ -57,6 +63,9 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
 
     // set anchors' style
     this.anchors.forEach((anchor) => {
+      if (target.style.anchorsVisibility === 'hidden') {
+        anchor.style.visibility = 'hidden';
+      }
       anchor.style.stroke = anchorStroke;
       anchor.style.fill = anchorFill;
       anchor.style.fillOpacity = anchorFillOpacity;
@@ -71,7 +80,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
 
   moveMask(dx: number, dy: number) {
     // change definition of polyline
-    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [x + dx, y + dy]);
+    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
+      x + dx,
+      y + dy,
+    ]);
 
     // re-position anchors in canvas coordinates
     this.repositionAnchors();
@@ -118,7 +130,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
         const selectable = this.plugin.getOrCreateSelectableUI(selected);
-        selectable.triggerMovingEvent(canvasX - shiftX - defX, canvasY - shiftY - defY);
+        selectable.triggerMovingEvent(
+          canvasX - shiftX - defX,
+          canvasY - shiftY - defY,
+        );
       });
     };
 

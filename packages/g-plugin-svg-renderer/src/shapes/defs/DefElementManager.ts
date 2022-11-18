@@ -5,8 +5,8 @@ import type {
   DisplayObject,
   ParsedBaseStyleProps,
   Pattern,
+  ContextService,
 } from '@antv/g-lite';
-import type { ContextService } from '@antv/g-lite';
 import { createSVGElement } from '../../utils/dom';
 import { createOrUpdateFilter } from './Filter';
 import { createOrUpdateGradientAndPattern } from './Pattern';
@@ -30,7 +30,9 @@ export class DefElementManager {
 
   init() {
     const { document } = this.context.config;
-    const $svg = (this.context.contextService as ContextService<SVGElement>).getContext();
+    const $svg = (
+      this.context.contextService as ContextService<SVGElement>
+    ).getContext();
     this.$def = createSVGElement('defs', document) as SVGDefsElement;
     $svg.appendChild(this.$def);
   }
@@ -41,7 +43,11 @@ export class DefElementManager {
     });
   }
 
-  private clearUnusedDefElement(cache: Record<string, Set<number>>, id: string, entity: number) {
+  private clearUnusedDefElement(
+    cache: Record<string, Set<number>>,
+    id: string,
+    entity: number,
+  ) {
     if (cache[id] && cache[id].size === 1 && cache[id].has(entity)) {
       const targetElement = this.$def.querySelector(`#${id}`);
       if (targetElement) {
@@ -62,7 +68,11 @@ export class DefElementManager {
       // `url(#${gradientId})`
       const matches = $el.getAttribute(name)?.match(urlRegexp);
       if (matches && matches.length > 1) {
-        this.clearUnusedDefElement(this.gradientCache, matches[1], object.entity);
+        this.clearUnusedDefElement(
+          this.gradientCache,
+          matches[1],
+          object.entity,
+        );
       }
 
       const newDefElementId = createOrUpdateGradientAndPattern(

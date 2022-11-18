@@ -18,7 +18,12 @@ import {
   TextureDimension,
   WrapMode,
 } from '@antv/g-plugin-device-renderer';
-import type { Buffer, ChannelBlendState, Sampler, Texture } from '@antv/g-plugin-device-renderer';
+import type {
+  Buffer,
+  ChannelBlendState,
+  Sampler,
+  Texture,
+} from '@antv/g-plugin-device-renderer';
 import type { Buffer_GL } from './Buffer';
 import type { Sampler_GL } from './Sampler';
 import type { Texture_GL } from './Texture';
@@ -27,7 +32,10 @@ import type { Texture_GL } from './Texture';
 export function isWebGL2(
   gl: WebGL2RenderingContext | WebGLRenderingContext,
 ): gl is WebGL2RenderingContext {
-  if (typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext) {
+  if (
+    typeof WebGL2RenderingContext !== 'undefined' &&
+    gl instanceof WebGL2RenderingContext
+  ) {
     return true;
   }
   // Look for debug contexts, headless gl etc
@@ -53,7 +61,7 @@ export function isTextureFormatCompressed(fmt: Format): boolean {
 
 export function isFormatSizedInteger(fmt: Format): boolean {
   const flags = getFormatFlags(fmt);
-  if (!!(flags & FormatFlags.Normalized)) return false;
+  if (flags & FormatFlags.Normalized) return false;
 
   const typeFlags = getFormatTypeFlags(fmt);
   // Check for integer types.
@@ -92,7 +100,9 @@ export function translateBufferUsageToTarget(usage: BufferUsage): GLenum {
   }
 }
 
-export function translatePrimitiveTopology(topology: PrimitiveTopology): GLenum {
+export function translatePrimitiveTopology(
+  topology: PrimitiveTopology,
+): GLenum {
   switch (topology) {
     case PrimitiveTopology.Triangles:
       return GL.TRIANGLES;
@@ -186,14 +196,20 @@ export function translateWrapMode(wrapMode: WrapMode): GLenum {
   }
 }
 
-export function translateFilterMode(filter: TexFilterMode, mipFilter: MipFilterMode): GLenum {
+export function translateFilterMode(
+  filter: TexFilterMode,
+  mipFilter: MipFilterMode,
+): GLenum {
   if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Bilinear) {
     return GL.LINEAR_MIPMAP_LINEAR;
   }
   if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Point) {
     return GL.NEAREST_MIPMAP_LINEAR;
   }
-  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Bilinear) {
+  if (
+    mipFilter === MipFilterMode.Nearest &&
+    filter === TexFilterMode.Bilinear
+  ) {
     return GL.LINEAR_MIPMAP_NEAREST;
   }
   if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Point) {
@@ -208,7 +224,10 @@ export function translateFilterMode(filter: TexFilterMode, mipFilter: MipFilterM
   throw new Error('Unknown texture filter mode');
 }
 
-export function getPlatformBuffer(buffer_: Buffer, byteOffset: number = 0): WebGLBuffer {
+export function getPlatformBuffer(
+  buffer_: Buffer,
+  byteOffset = 0,
+): WebGLBuffer {
   const buffer = buffer_ as Buffer_GL;
   return buffer.gl_buffer_pages[(byteOffset / buffer.pageByteSize) | 0];
 }
@@ -263,7 +282,12 @@ export function translateTextureDimension(dimension: TextureDimension): GLenum {
   else throw new Error('whoops');
 }
 
-export function isBlockCompressSized(w: number, h: number, bw: number, bh: number): boolean {
+export function isBlockCompressSized(
+  w: number,
+  h: number,
+  bw: number,
+  bh: number,
+): boolean {
   if (w % bw !== 0) return false;
   if (h % bh !== 0) return false;
   return true;

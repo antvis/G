@@ -141,7 +141,7 @@ export function baseTypeToString(baseType: BaseType) {
 
 export class CSSNumericValueType {
   private exponents: number[] = [];
-  private numNonZeroEntries: number = 0;
+  private numNonZeroEntries = 0;
 
   percentHint = BaseType.kPercent;
   hasPercentHint = false;
@@ -155,7 +155,10 @@ export class CSSNumericValueType {
 
   applyPercentHint(hint: BaseType) {
     DCHECK_NE(hint, BaseType.kPercent);
-    this.setExponent(hint, this.exponent(hint) + this.exponent(BaseType.kPercent));
+    this.setExponent(
+      hint,
+      this.exponent(hint) + this.exponent(BaseType.kPercent),
+    );
     this.setExponent(BaseType.kPercent, 0);
     this.percentHint = hint;
     this.hasPercentHint = true;
@@ -200,7 +203,10 @@ export class CSSNumericValueType {
 
   matchesBaseTypePercentage(baseType: BaseType) {
     DCHECK_NE(baseType, BaseType.kPercent);
-    return this.isOnlyNonZeroEntry(baseType, 1) || this.isOnlyNonZeroEntry(BaseType.kPercent, 1);
+    return (
+      this.isOnlyNonZeroEntry(baseType, 1) ||
+      this.isOnlyNonZeroEntry(BaseType.kPercent, 1)
+    );
   }
 
   matchesNumber() {
@@ -208,11 +214,21 @@ export class CSSNumericValueType {
   }
 
   matchesNumberPercentage() {
-    return !this.hasNonZeroEntries() || this.isOnlyNonZeroEntry(BaseType.kPercent, 1);
+    return (
+      !this.hasNonZeroEntries() || this.isOnlyNonZeroEntry(BaseType.kPercent, 1)
+    );
   }
 
-  static add(type1: CSSNumericValueType, type2: CSSNumericValueType, error: boolean) {
-    if (type1.hasPercentHint && type2.hasPercentHint && type1.percentHint != type2.percentHint) {
+  static add(
+    type1: CSSNumericValueType,
+    type2: CSSNumericValueType,
+    error: boolean,
+  ) {
+    if (
+      type1.hasPercentHint &&
+      type2.hasPercentHint &&
+      type1.percentHint != type2.percentHint
+    ) {
       error = true;
       return type1;
     }
@@ -242,8 +258,16 @@ export class CSSNumericValueType {
     return type1;
   }
 
-  static multiply(type1: CSSNumericValueType, type2: CSSNumericValueType, error: boolean) {
-    if (type1.hasPercentHint && type2.hasPercentHint && type1.percentHint != type2.percentHint) {
+  static multiply(
+    type1: CSSNumericValueType,
+    type2: CSSNumericValueType,
+    error: boolean,
+  ) {
+    if (
+      type1.hasPercentHint &&
+      type2.hasPercentHint &&
+      type1.percentHint != type2.percentHint
+    ) {
       error = true;
       return type1;
     }
@@ -253,7 +277,10 @@ export class CSSNumericValueType {
 
     for (let i = 0; i < BaseType.kNumBaseTypes; ++i) {
       const base_type: BaseType = i;
-      type1.setExponent(base_type, type1.exponent(base_type) + type2.exponent(base_type));
+      type1.setExponent(
+        base_type,
+        type1.exponent(base_type) + type2.exponent(base_type),
+      );
     }
 
     error = false;
@@ -519,7 +546,9 @@ export abstract class CSSNumericValue extends CSSStyleValue {
       type.percent = exponent;
     }
     if (this.type_.hasPercentHint) {
-      type.percentHint = baseTypeToString(this.type_.percentHint) as CSSNumericBaseType;
+      type.percentHint = baseTypeToString(
+        this.type_.percentHint,
+      ) as CSSNumericBaseType;
     }
     return type;
   }
@@ -553,7 +582,9 @@ export abstract class CSSNumericValue extends CSSStyleValue {
   // abstract toCalcExpressionNode(): CSSMathExpressionNode;
 }
 
-function cssNumberishesToNumericValues(values: CSSNumberish[]): CSSNumericValue[] {
+function cssNumberishesToNumericValues(
+  values: CSSNumberish[],
+): CSSNumericValue[] {
   return values.map(fromNumberish);
 }
 
@@ -574,13 +605,19 @@ function cssNumericSumValueEntryToUnitValue(term: Term) {
   if (Object.keys(term.units).length === 0) {
     return new CSSUnitValue(term.value);
   }
-  if (Object.keys(term.units).length === 1 && term.units[Object.keys(term.units)[0]] === 1) {
+  if (
+    Object.keys(term.units).length === 1 &&
+    term.units[Object.keys(term.units)[0]] === 1
+  ) {
     return new CSSUnitValue(term.value, Number(Object.keys(term.units)[0]));
   }
   return null;
 }
 
-function maybeSimplifyAsUnitValue(values: CSSNumericValue[], operator: CSSMathOperator) {
+function maybeSimplifyAsUnitValue(
+  values: CSSNumericValue[],
+  operator: CSSMathOperator,
+) {
   DCHECK(!!values.length);
 
   const first_unit_value = values[0] instanceof CSSUnitValue ? values[0] : null;
@@ -588,7 +625,9 @@ function maybeSimplifyAsUnitValue(values: CSSNumericValue[], operator: CSSMathOp
 
   let final_value = first_unit_value.value;
   for (let i = 1; i < values.length; i++) {
-    const unit_value = (values[i] instanceof CSSUnitValue ? values[i] : null) as CSSUnitValue;
+    const unit_value = (
+      values[i] instanceof CSSUnitValue ? values[i] : null
+    ) as CSSUnitValue;
     if (!unit_value || unit_value.unit !== first_unit_value.unit) return null;
 
     if (operator === CSSMathOperator.kAdd) {
@@ -611,7 +650,9 @@ function maybeMultiplyAsUnitValue(values: CSSNumericValue[]) {
 
   let final_value = 1.0;
   for (let i = 0; i < values.length; i++) {
-    const unit_value = (values[i] instanceof CSSUnitValue ? values[i] : null) as CSSUnitValue;
+    const unit_value = (
+      values[i] instanceof CSSUnitValue ? values[i] : null
+    ) as CSSUnitValue;
     if (!unit_value) return null;
 
     if (unit_value.unit !== UnitType.kNumber) {
@@ -629,7 +670,7 @@ export const toCanonicalUnit = (unit: UnitType) => {
   return canonicalUnitTypeForCategory(unitTypeToUnitCategory(unit));
 };
 
-const formatInfinityOrNaN = (number: number, suffix: string = '') => {
+const formatInfinityOrNaN = (number: number, suffix = '') => {
   let result = '';
   if (!Number.isFinite(number)) {
     if (number > 0) result = 'infinity';
@@ -693,7 +734,10 @@ export class CSSUnitValue extends CSSNumericValue {
     // we simply convert to the canonical unit and back since we already have
     // the scale factors for canonical units.
     const canonical_unit = toCanonicalUnit(this.unit);
-    if (canonical_unit !== toCanonicalUnit(target_unit) || canonical_unit === UnitType.kUnknown) {
+    if (
+      canonical_unit !== toCanonicalUnit(target_unit) ||
+      canonical_unit === UnitType.kUnknown
+    ) {
       return null;
     }
 
@@ -706,7 +750,10 @@ export class CSSUnitValue extends CSSNumericValue {
 
   equals(other: CSSNumericValue): boolean {
     const other_unit_value = other as unknown as CSSUnitValue;
-    return this.value === other_unit_value.value && this.unit === other_unit_value.unit;
+    return (
+      this.value === other_unit_value.value &&
+      this.unit === other_unit_value.unit
+    );
   }
 
   getType() {
@@ -783,9 +830,7 @@ export class CSSUnitValue extends CSSNumericValue {
       case UnitType.kSeconds:
       // case UnitType.kHertz:
       // case UnitType.kKilohertz:
-      case UnitType.kTurns: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
-      // case UnitType.kDynamicViewportMin:
-      // case UnitType.kDynamicViewportMax:
+      case UnitType.kTurns: // case UnitType.kDynamicViewportMax: // case UnitType.kDynamicViewportMin: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
       // case UnitType.kContainerWidth:
       // case UnitType.kContainerHeight:
       // case UnitType.kContainerInlineSize:
@@ -990,7 +1035,11 @@ export class CSSMathNegate extends CSSMathValue {
 
 export function typeCheck(
   values: CSSNumericValue[],
-  op: Function,
+  op: (
+    type1: CSSNumericValueType,
+    type2: CSSNumericValueType,
+    error: boolean,
+  ) => CSSNumericValueType,
   error: boolean,
 ): CSSNumericValueType {
   error = false;
@@ -1019,7 +1068,9 @@ export abstract class CSSMathVariadic extends CSSMathValue {
       return false;
     }
 
-    return this.values.every((value, i) => value.equals((other as CSSMathVariadic).values[i]));
+    return this.values.every((value, i) =>
+      value.equals((other as CSSMathVariadic).values[i]),
+    );
   }
 
   // toCalcExporessionNodeForVariadic(op: CSSMathOperator) {
@@ -1212,7 +1263,11 @@ export class CSSMathSum extends CSSMathVariadic {
     Object.keys(units).forEach((key) => {
       const exp = units[key];
       const error = false;
-      type = CSSNumericValueType.multiply(type, new CSSNumericValueType(Number(key), exp), error);
+      type = CSSNumericValueType.multiply(
+        type,
+        new CSSNumericValueType(Number(key), exp),
+        error,
+      );
       DCHECK(!error);
     });
     return type;
@@ -1225,7 +1280,11 @@ export class CSSMathSum extends CSSMathVariadic {
 
     return sum.every((term) => {
       const error = false;
-      CSSNumericValueType.add(first_type, this.numericTypeFromUnitMap(term.units), error);
+      CSSNumericValueType.add(
+        first_type,
+        this.numericTypeFromUnitMap(term.units),
+        error,
+      );
       return !error;
     });
   }
@@ -1254,7 +1313,9 @@ export class CSSMathSum extends CSSMathVariadic {
       }
 
       child_sum.forEach((term) => {
-        const index = sum.findIndex((s) => JSON.stringify(s.units) === JSON.stringify(term.units));
+        const index = sum.findIndex(
+          (s) => JSON.stringify(s.units) === JSON.stringify(term.units),
+        );
         if (index === -1) {
           sum.push({ ...term });
         } else {
@@ -1280,7 +1341,11 @@ export class CSSMathSum extends CSSMathVariadic {
       const arg = values[i];
       if (arg.getType() === CSSStyleValueType.kNegateType) {
         result += ' - ';
-        result = (arg as CSSMathNegate).value.buildCSSText(Nested.kYes, ParenLess.kNo, result);
+        result = (arg as CSSMathNegate).value.buildCSSText(
+          Nested.kYes,
+          ParenLess.kNo,
+          result,
+        );
       } else {
         result += ' + ';
         result = arg.buildCSSText(Nested.kYes, ParenLess.kNo, result);
@@ -1374,7 +1439,11 @@ export class CSSMathProduct extends CSSMathVariadic {
       const arg = values[i];
       if (arg.getType() === CSSStyleValueType.kInvertType) {
         result += ' / ';
-        result = (arg as CSSMathNegate).value.buildCSSText(Nested.kYes, ParenLess.kNo, result);
+        result = (arg as CSSMathNegate).value.buildCSSText(
+          Nested.kYes,
+          ParenLess.kNo,
+          result,
+        );
       } else {
         result += ' * ';
         result = arg.buildCSSText(Nested.kYes, ParenLess.kNo, result);

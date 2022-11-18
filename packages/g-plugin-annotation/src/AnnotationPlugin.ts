@@ -29,7 +29,7 @@ export class AnnotationPlugin implements RenderingPlugin {
 
   constructor(public annotationPluginOptions: AnnotationPluginOptions) {}
 
-  private hotkeyActive: boolean = false;
+  private hotkeyActive = false;
   public drawer: BaseDrawer;
   public emmiter = new EventEmitter();
   public canvas: Canvas;

@@ -57,5 +57,6 @@ export default {
     'react-g',
     'g-image-exporter',
     'g-lottie-player',
+    'g-pattern',
   ],
 };

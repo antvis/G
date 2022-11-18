@@ -1,0 +1,50 @@
+{
+  "title": {
+    "zh": "其它",
+    "en": "Others"
+  },
+  "demos": [
+    {
+      "filename": "delegate.js",
+      "title": {
+        "zh": "事件委托",
+        "en": "Delegate"
+      }
+    },
+    {
+      "filename": "custom.js",
+      "title": {
+        "zh": "触发自定义事件",
+        "en": "Dispatch custom event"
+      }
+    },
+    {
+      "filename": "deprecated-delegate.js",
+      "title": {
+        "zh": "兼容旧版的事件委托写法",
+        "en": "Delegate with event's name"
+      }
+    },
+    {
+      "filename": "builtin.js",
+      "title": {
+        "zh": "内置场景图事件",
+        "en": "SceneGraph Events"
+      }
+    },
+    {
+      "filename": "mutation-observer.js",
+      "title": {
+        "zh": "使用 MutationObserver",
+        "en": "Use MutationObserver"
+      }
+    },
+    {
+      "filename": "touch.js",
+      "title": {
+        "zh": "TouchEvents",
+        "en": "TouchEvents"
+      }
+    }
+  ]
+}

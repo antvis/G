@@ -19,11 +19,11 @@ export function DCHECK_NE(a: any, b: any) {
   }
 }
 
-export function isFunction(func: any): func is Function {
+export function isFunction(func: any): func is (...args: any[]) => any {
   return typeof func === 'function';
 }
 
-export const definedProps = (obj: object) =>
+export const definedProps = (obj: Record<string, unknown>) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 
 const FORMAT_ATTR_MAP = {

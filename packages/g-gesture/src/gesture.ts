@@ -1,7 +1,12 @@
-import type { DisplayObject, FederatedPointerEvent, PointLike as Point } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  FederatedPointerEvent,
+  PointLike as Point,
+} from '@antv/g-lite';
 import EE from 'eventemitter3';
 
-const clock = typeof performance === 'object' && performance.now ? performance : Date;
+const clock =
+  typeof performance === 'object' && performance.now ? performance : Date;
 
 const PRESS_DELAY = 250;
 
@@ -62,7 +67,7 @@ class Gesture extends EE {
   private prevMovePoint: Point;
   private prevMoveTime: number;
   private lastMovePoint: Point;
-  private throttleTimer: number = 0;
+  private throttleTimer = 0;
   private emitThrottles: EmitEventObject[] = [];
 
   constructor(el: DisplayObject) {
@@ -207,7 +212,8 @@ class Gesture extends EE {
           const prevMovePoint = this.prevMovePoint || startPoints[0];
           const lastMovePoint = this.lastMovePoint || startPoints[0];
           // move速率
-          const velocity = calcDistance(prevMovePoint, lastMovePoint) / intervalTime;
+          const velocity =
+            calcDistance(prevMovePoint, lastMovePoint) / intervalTime;
           // 0.3 是参考hammerjs的设置
           if (velocity > 0.3) {
             ev.velocity = velocity;
@@ -249,7 +255,10 @@ class Gesture extends EE {
     } else {
       // 如果有pan事件的处理，press则需要停顿250ms, 且移动距离小于10
       const now = clock.now();
-      if (now - startTime > PRESS_DELAY && calcDistance(startPoints[0], point) < 10) {
+      if (
+        now - startTime > PRESS_DELAY &&
+        calcDistance(startPoints[0], point) < 10
+      ) {
         type = 'press';
       } else {
         type = 'pan';

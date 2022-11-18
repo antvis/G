@@ -1,0 +1,44 @@
+{
+  "demos": [
+    {
+      "filename": "background.js",
+      "title": {
+        "zh": "设置画布背景色",
+        "en": "Set background of Canvas"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*qq3MR53YLD0AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "resize.tsx",
+      "title": {
+        "zh": "改变画布大小",
+        "en": "Resize canvas"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*tJDfSaJOfmgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "rendering-on-demand.js",
+      "title": {
+        "zh": "按需渲染",
+        "en": "Rendering on demand"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "coordinates.js",
+      "title": {
+        "zh": "坐标系转换",
+        "en": "Coordinates"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kPfcTKwZG90AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "element-from-point.js",
+      "title": {
+        "zh": "通过 API 方式完成拾取",
+        "en": "Use picking API"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*74P9SbUsM5QAAAAAAAAAAAAADmJ7AQ"
+    }
+  ]
+}

@@ -6,11 +6,19 @@ class CanvasElement implements CanvasLike {
   height: number;
   isCanvasElement = true;
 
-  private context: CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext;
+  private context:
+    | CanvasRenderingContext2D
+    | WebGLRenderingContext
+    | WebGL2RenderingContext;
 
   private emitter = new EventEmitter();
 
-  constructor(ctx: CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext) {
+  constructor(
+    ctx:
+      | CanvasRenderingContext2D
+      | WebGLRenderingContext
+      | WebGL2RenderingContext,
+  ) {
     this.context = ctx;
 
     // 有可能是 node canvas 创建的 context 对象
@@ -23,7 +31,10 @@ class CanvasElement implements CanvasLike {
     contextId: '2d',
     contextAttributes?: CanvasRenderingContext2DSettings,
   ): CanvasRenderingContext2D;
-  getContext(contextId: 'webgl', contextAttributes?: WebGLContextAttributes): WebGLRenderingContext;
+  getContext(
+    contextId: 'webgl',
+    contextAttributes?: WebGLContextAttributes,
+  ): WebGLRenderingContext;
   getContext(
     contextId: 'webgl2',
     contextAttributes?: WebGLContextAttributes,
@@ -94,7 +105,11 @@ function supportEventListener(canvas: HTMLCanvasElement) {
     return false;
   }
   // 非 HTMLCanvasElement
-  if (canvas.nodeType !== 1 || !canvas.nodeName || canvas.nodeName.toLowerCase() !== 'canvas') {
+  if (
+    canvas.nodeType !== 1 ||
+    !canvas.nodeName ||
+    canvas.nodeName.toLowerCase() !== 'canvas'
+  ) {
     return false;
   }
   // 微信小程序canvas.getContext('2d')时也是CanvasRenderingContext2D
@@ -112,13 +127,16 @@ function supportEventListener(canvas: HTMLCanvasElement) {
 }
 
 export function createMobileCanvasElement(
-  ctx: CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext,
+  ctx:
+    | CanvasRenderingContext2D
+    | WebGLRenderingContext
+    | WebGL2RenderingContext,
 ): CanvasLike {
   if (!ctx) {
     return null;
   }
-  if (supportEventListener(ctx.canvas)) {
-    return ctx.canvas;
+  if (supportEventListener(ctx.canvas as HTMLCanvasElement)) {
+    return ctx.canvas as CanvasLike;
   }
 
   return new CanvasElement(ctx);

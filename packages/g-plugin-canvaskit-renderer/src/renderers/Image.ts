@@ -1,5 +1,9 @@
-import type { CanvasContext, DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
-import type { ContextService } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  DisplayObject,
+  ParsedImageStyleProps,
+  ContextService,
+} from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type {

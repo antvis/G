@@ -86,13 +86,19 @@ export const ObjectTyped = {
   /**
    * Object.keys, but with nice typing (`Array<keyof T>`)
    */
-  keys: Object.keys as <T extends {}>(yourObject: T) => (keyof T)[],
+  keys: Object.keys as <T extends Record<string, unknown>>(
+    yourObject: T,
+  ) => (keyof T)[],
   /**
    * Object.values, but with nice typing
    */
-  values: Object.values as <T extends {}>(yourObject: T) => T[keyof T][],
+  values: Object.values as <T extends Record<string, unknown>>(
+    yourObject: T,
+  ) => T[keyof T][],
   /**
    * Object.entries, but with nice typing
    */
-  entries: Object.entries as <T extends {}>(yourObject: T) => [keyof T, T[keyof T]][],
+  entries: Object.entries as <T extends Record<string, unknown>>(
+    yourObject: T,
+  ) => [keyof T, T[keyof T]][],
 };

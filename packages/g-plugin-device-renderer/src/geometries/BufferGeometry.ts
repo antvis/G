@@ -1,8 +1,18 @@
 import { AABB } from '@antv/g-lite';
 import EventEmitter from 'eventemitter3';
 import type { Mesh } from '../Mesh';
-import type { Buffer, Device, InputLayoutDescriptor, VertexBufferFrequency } from '../platform';
-import { BufferFrequencyHint, BufferUsage, Format, PrimitiveTopology } from '../platform';
+import type {
+  Buffer,
+  Device,
+  InputLayoutDescriptor,
+  VertexBufferFrequency,
+} from '../platform';
+import {
+  BufferFrequencyHint,
+  BufferUsage,
+  Format,
+  PrimitiveTopology,
+} from '../platform';
 import { align } from '../platform/utils';
 
 export function makeStaticDataBuffer(
@@ -83,19 +93,22 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     indexBufferFormat: Format.U32_R,
   };
 
-  vertexCount: number = 0;
+  vertexCount = 0;
 
-  instancedCount: number = 0;
+  instancedCount = 0;
 
-  indexStart: number = 0;
+  indexStart = 0;
 
-  primitiveStart: number = 0;
+  primitiveStart = 0;
 
   dirty = true;
 
   meshes: Mesh[] = [];
 
-  constructor(public device: Device, public props: Partial<GeometryProps> = {}) {
+  constructor(
+    public device: Device,
+    public props: Partial<GeometryProps> = {},
+  ) {
     super();
   }
 
@@ -117,7 +130,8 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     this.indexBuffer = makeStaticDataBuffer(
       this.device,
       BufferUsage.INDEX | BufferUsage.COPY_DST,
-      new Uint32Array(ArrayBuffer.isView(indices) ? indices.buffer : indices).buffer,
+      new Uint32Array(ArrayBuffer.isView(indices) ? indices.buffer : indices)
+        .buffer,
     );
 
     this.indices = indices;
@@ -135,26 +149,29 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
     this.vertices[bufferIndex] = data;
 
-    attributes.forEach(({ format, bufferByteOffset, location, divisor, byteStride }) => {
-      const existed = this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
-        (e) => e.bufferIndex === bufferIndex && e.location === location,
-      );
-      if (existed) {
-        existed.format = format;
-        existed.bufferByteOffset = bufferByteOffset;
-        existed.byteStride = byteStride;
-        existed.divisor = divisor;
-      } else {
-        this.inputLayoutDescriptor.vertexAttributeDescriptors.push({
-          format,
-          bufferIndex,
-          bufferByteOffset,
-          location,
-          byteStride,
-          divisor,
-        });
-      }
-    });
+    attributes.forEach(
+      ({ format, bufferByteOffset, location, divisor, byteStride }) => {
+        const existed =
+          this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
+            (e) => e.bufferIndex === bufferIndex && e.location === location,
+          );
+        if (existed) {
+          existed.format = format;
+          existed.bufferByteOffset = bufferByteOffset;
+          existed.byteStride = byteStride;
+          existed.divisor = divisor;
+        } else {
+          this.inputLayoutDescriptor.vertexAttributeDescriptors.push({
+            format,
+            bufferIndex,
+            bufferByteOffset,
+            location,
+            byteStride,
+            divisor,
+          });
+        }
+      },
+    );
 
     // create GPUBuffer
     if (this.vertexBuffers[bufferIndex]) {
@@ -175,12 +192,19 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     return this.vertexBuffers[bufferIndex];
   }
 
-  updateVertexBuffer(bufferIndex: number, location: number, index: number, data: Uint8Array) {
-    const { byteStride } = this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex];
+  updateVertexBuffer(
+    bufferIndex: number,
+    location: number,
+    index: number,
+    data: Uint8Array,
+  ) {
+    const { byteStride } =
+      this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex];
 
-    const descriptor = this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
-      (d) => d.location === location,
-    );
+    const descriptor =
+      this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
+        (d) => d.location === location,
+      );
 
     if (descriptor) {
       const vertexBuffer = this.getVertexBuffer(bufferIndex);
@@ -194,7 +218,7 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     this.emit(GeometryEvent.CHANGED);
   }
 
-  updateIndices(indices: IndicesArray, offset: number = 0) {
+  updateIndices(indices: IndicesArray, offset = 0) {
     if (this.indexBuffer) {
       this.indexBuffer.setSubData(
         offset,

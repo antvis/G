@@ -34,11 +34,14 @@ export function getAttributeLocations(
   defines: Record<string, number>,
 ): { location: number; name: string }[] {
   const locations = [];
-  vert.replace(/^\s*layout\(location\s*=\s*(\S*)\)\s*in\s+\S+\s*(.*);$/gm, (_, location, name) => {
-    const l = Number(location);
-    locations.push({ location: isNaN(l) ? defines[location] : l, name });
-    return '';
-  });
+  vert.replace(
+    /^\s*layout\(location\s*=\s*(\S*)\)\s*in\s+\S+\s*(.*);$/gm,
+    (_, location, name) => {
+      const l = Number(location);
+      locations.push({ location: isNaN(l) ? defines[location] : l, name });
+      return '';
+    },
+  );
   return locations;
 }
 
@@ -60,24 +63,27 @@ export function getUniforms(vert: string) {
   const uniformNames: string[] = [];
   const structs: StructInfo[] = [];
 
-  vert.replace(/\s*struct\s*(.*)\s*{((?:\s*.*\s*)*?)};/g, (_, type, uniformStr) => {
-    const uniforms = [];
-    uniformStr
-      .trim()
-      .split('\n')
-      .forEach((line) => {
-        const [type, name] = line.trim().split(/\s+/);
-        uniforms.push({
-          type: type.trim(),
-          name: name.replace(';', '').trim(),
+  vert.replace(
+    /\s*struct\s*(.*)\s*{((?:\s*.*\s*)*?)};/g,
+    (_, type, uniformStr) => {
+      const uniforms = [];
+      uniformStr
+        .trim()
+        .split('\n')
+        .forEach((line) => {
+          const [type, name] = line.trim().split(/\s+/);
+          uniforms.push({
+            type: type.trim(),
+            name: name.replace(';', '').trim(),
+          });
         });
+      structs.push({
+        type: type.trim(),
+        uniforms,
       });
-    structs.push({
-      type: type.trim(),
-      uniforms,
-    });
-    return '';
-  });
+      return '';
+    },
+  );
 
   vert.replace(/\s*uniform\s*.*\s*{((?:\s*.*\s*)*?)};/g, (_, uniforms) => {
     uniforms
@@ -147,14 +153,15 @@ export function preprocessShader_GLSL(
     });
 
   // #define KEY VAR
-  let definesString: string = '';
+  let definesString = '';
   if (defines !== null)
     definesString = Object.keys(defines)
       .map((key) => defineStr(key, defines[key]))
       .join('\n');
 
   const precision =
-    lines.find((line) => line.startsWith('precision')) || 'precision mediump float;';
+    lines.find((line) => line.startsWith('precision')) ||
+    'precision mediump float;';
   let rest = lines.filter((line) => !line.startsWith('precision')).join('\n');
   let extraDefines = '';
 
@@ -170,10 +177,13 @@ export function preprocessShader_GLSL(
       binding = 0,
       location = 0;
 
-    rest = rest.replace(/^(layout\((.*)\))?\s*uniform(.+{)$/gm, (substr, cap, layout, rest) => {
-      const layout2 = layout ? `${layout}, ` : ``;
-      return `layout(${layout2}set = ${set}, binding = ${binding++}) uniform ${rest}`;
-    });
+    rest = rest.replace(
+      /^(layout\((.*)\))?\s*uniform(.+{)$/gm,
+      (substr, cap, layout, rest) => {
+        const layout2 = layout ? `${layout}, ` : ``;
+        return `layout(${layout2}set = ${set}, binding = ${binding++}) uniform ${rest}`;
+      },
+    );
 
     // XXX(jstpierre): WebGPU now binds UBOs and textures in different sets as a porting hack, hrm...
     set++;
@@ -242,7 +252,11 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
   // #version directive must occur before anything else, except for comments and white space
   let concat = `${isGLSL100 ? '' : vendorInfo.glslVersion}
 ${isGLSL100 && supportMRT ? '#extension GL_EXT_draw_buffers : require' : ''}
-${isGLSL100 && type === 'frag' ? '#extension GL_OES_standard_derivatives : enable' : ''}
+${
+  isGLSL100 && type === 'frag'
+    ? '#extension GL_OES_standard_derivatives : enable'
+    : ''
+}
 ${precision}
 ${extraDefines}
 ${definesString}
@@ -261,15 +275,21 @@ ${rest}
   if (isGLSL100) {
     // in -> varying
     if (type === 'frag') {
-      concat = concat.replace(/^\s*in\s+(\S+)\s*(.*);$/gm, (_, dataType, name) => {
-        return `varying ${dataType} ${name};\n`;
-      });
+      concat = concat.replace(
+        /^\s*in\s+(\S+)\s*(.*);$/gm,
+        (_, dataType, name) => {
+          return `varying ${dataType} ${name};\n`;
+        },
+      );
     }
     if (type === 'vert') {
       // out -> varying
-      concat = concat.replace(/^\s*out\s+(\S+)\s*(.*);$/gm, (_, dataType, name) => {
-        return `varying ${dataType} ${name};\n`;
-      });
+      concat = concat.replace(
+        /^\s*out\s+(\S+)\s*(.*);$/gm,
+        (_, dataType, name) => {
+          return `varying ${dataType} ${name};\n`;
+        },
+      );
       // in -> attribute
       concat = concat.replace(
         // /^\s*layout\(location\s*=\s*\d*\)\s*in\s*(.*)\s*(.*);$/gm,
@@ -281,23 +301,29 @@ ${rest}
     }
 
     // interface blocks supported in GLSL ES 3.00 and above only
-    concat = concat.replace(/\s*uniform\s*.*\s*{((?:\s*.*\s*)*?)};/g, (substr, uniforms) => {
-      return uniforms.trim().replace(/^.*$/gm, (uniform: string) => {
-        // eg. #ifdef
-        const trimmed = uniform.trim();
-        if (trimmed.startsWith('#')) {
-          return trimmed;
-        }
-        return uniform ? `uniform ${trimmed}` : '';
-      });
-    });
+    concat = concat.replace(
+      /\s*uniform\s*.*\s*{((?:\s*.*\s*)*?)};/g,
+      (substr, uniforms) => {
+        return uniforms.trim().replace(/^.*$/gm, (uniform: string) => {
+          // eg. #ifdef
+          const trimmed = uniform.trim();
+          if (trimmed.startsWith('#')) {
+            return trimmed;
+          }
+          return uniform ? `uniform ${trimmed}` : '';
+        });
+      },
+    );
 
     if (type === 'frag') {
       let glFragColor: string;
-      concat = concat.replace(/^\s*out\s+(\S+)\s*(.*);$/gm, (_, dataType, name) => {
-        glFragColor = name;
-        return `${dataType} ${name};\n`;
-      });
+      concat = concat.replace(
+        /^\s*out\s+(\S+)\s*(.*);$/gm,
+        (_, dataType, name) => {
+          glFragColor = name;
+          return `${dataType} ${name};\n`;
+        },
+      );
 
       const lastIndexOfMain = concat.lastIndexOf('}');
       concat =
@@ -346,7 +372,8 @@ ${rest}
   return concat;
 }
 
-export interface ProgramDescriptorSimpleWithOrig extends ProgramDescriptorSimple {
+export interface ProgramDescriptorSimpleWithOrig
+  extends ProgramDescriptorSimple {
   vert: string;
   frag: string;
 }
@@ -358,8 +385,20 @@ export function preprocessProgram_GLSL(
   defines: Record<string, string> | null = null,
   features: ShaderFeatureMap | null = null,
 ): ProgramDescriptorSimpleWithOrig {
-  const preprocessedVert = preprocessShader_GLSL(vendorInfo, 'vert', vert, defines, features);
-  const preprocessedFrag = preprocessShader_GLSL(vendorInfo, 'frag', frag, defines, features);
+  const preprocessedVert = preprocessShader_GLSL(
+    vendorInfo,
+    'vert',
+    vert,
+    defines,
+    features,
+  );
+  const preprocessedFrag = preprocessShader_GLSL(
+    vendorInfo,
+    'frag',
+    frag,
+    defines,
+    features,
+  );
   return { vert, frag, preprocessedVert, preprocessedFrag };
 }
 
@@ -379,5 +418,11 @@ export function preprocessProgramObj_GLSL(
   const features = obj.features !== undefined ? obj.features : null;
   const vert = obj.both !== undefined ? obj.both + obj.vert : obj.vert;
   const frag = obj.both !== undefined ? obj.both + obj.frag : obj.frag;
-  return preprocessProgram_GLSL(device.queryVendorInfo(), vert, frag, defines, features);
+  return preprocessProgram_GLSL(
+    device.queryVendorInfo(),
+    vert,
+    frag,
+    defines,
+    features,
+  );
 }

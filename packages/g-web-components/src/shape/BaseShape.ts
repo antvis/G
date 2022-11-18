@@ -1,6 +1,6 @@
 import type { DisplayObject } from '@antv/g-lite';
 import { styleAttributeNames } from '../enum';
-import GElement from '../GElement';
+import { GElement } from '../GElement';
 
 const getGParents = (el: GElement) => {
   let result: GElement | null = el.parentElement as GElement;

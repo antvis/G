@@ -18,7 +18,7 @@ export function nearestPoint(
   tCallback: (...arr: number[]) => number,
   length?: number,
 ): Point {
-  let t: number = -1;
+  let t = -1;
   let d = Infinity;
   const v0: PointTuple = [x, y];
 
@@ -32,7 +32,10 @@ export function nearestPoint(
 
   for (let i = 0; i <= segNum; i++) {
     const _t = i * increaseRate;
-    const v1: PointTuple = [tCallback(...xArr.concat([_t])), tCallback(...yArr.concat([_t]))];
+    const v1: PointTuple = [
+      tCallback(...xArr.concat([_t])),
+      tCallback(...yArr.concat([_t])),
+    ];
 
     const d1 = distance(v0[0], v0[1], v1[0], v1[1]);
     if (d1 < d) {
@@ -64,14 +67,20 @@ export function nearestPoint(
     const prev = t - interval;
     const next = t + interval;
 
-    const v1 = [tCallback(...xArr.concat([prev])), tCallback(...yArr.concat([prev]))];
+    const v1 = [
+      tCallback(...xArr.concat([prev])),
+      tCallback(...yArr.concat([prev])),
+    ];
 
     const d1 = distance(v0[0], v0[1], v1[0], v1[1]);
     if (prev >= 0 && d1 < d) {
       t = prev;
       d = d1;
     } else {
-      const v2 = [tCallback(...xArr.concat([next])), tCallback(...yArr.concat([next]))];
+      const v2 = [
+        tCallback(...xArr.concat([next])),
+        tCallback(...yArr.concat([next])),
+      ];
       const d2 = distance(v0[0], v0[1], v2[0], v2[1]);
       if (next <= 1 && d2 < d) {
         t = next;

@@ -8,7 +8,7 @@ export class AnimationEffectTiming implements EffectTiming {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/delay
    */
-  delay: number = 0;
+  delay = 0;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/direction
@@ -23,7 +23,7 @@ export class AnimationEffectTiming implements EffectTiming {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/easing
    */
-  private _easing: string = 'linear';
+  private _easing = 'linear';
   easingFunction = linear;
   get easing() {
     return this._easing;
@@ -36,7 +36,7 @@ export class AnimationEffectTiming implements EffectTiming {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/endDelay
    */
-  endDelay: number = 0;
+  endDelay = 0;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill
@@ -46,12 +46,12 @@ export class AnimationEffectTiming implements EffectTiming {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterationStart
    */
-  iterationStart: number = 0;
+  iterationStart = 0;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/iterations
    */
-  iterations: number = 1;
+  iterations = 1;
 
   /**
    * @deprecated

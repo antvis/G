@@ -1,6 +1,5 @@
 import type { DataURLOptions } from '@antv/g-lite';
-import { runtime, Shape } from '@antv/g-lite';
-import { AbstractRendererPlugin } from '@antv/g-lite';
+import { runtime, Shape, AbstractRendererPlugin } from '@antv/g-lite';
 import 'regenerator-runtime/runtime';
 import { Renderable3D } from './components/Renderable3D';
 import { LightPool } from './LightPool';
@@ -63,7 +62,12 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.HTML]: undefined,
     };
 
-    const batchManager = new BatchManager(renderHelper, rendererFactory, texturePool, lightPool);
+    const batchManager = new BatchManager(
+      renderHelper,
+      rendererFactory,
+      texturePool,
+      lightPool,
+    );
 
     const renderGraphPlugin = new RenderGraphPlugin(
       renderHelper,
@@ -73,7 +77,12 @@ export class Plugin extends AbstractRendererPlugin {
     );
     this.addRenderingPlugin(renderGraphPlugin);
     this.addRenderingPlugin(
-      new PickingPlugin(renderHelper, renderGraphPlugin, pickingIdGenerator, batchManager),
+      new PickingPlugin(
+        renderHelper,
+        renderGraphPlugin,
+        pickingIdGenerator,
+        batchManager,
+      ),
     );
   }
   destroy(): void {
@@ -93,7 +102,11 @@ export class Plugin extends AbstractRendererPlugin {
     descriptor?: TextureDescriptor,
     successCallback?: (t: Texture) => void,
   ) {
-    return this.getRenderGraphPlugin().loadTexture(src, descriptor, successCallback);
+    return this.getRenderGraphPlugin().loadTexture(
+      src,
+      descriptor,
+      successCallback,
+    );
   }
 
   toDataURL(options: Partial<DataURLOptions>) {

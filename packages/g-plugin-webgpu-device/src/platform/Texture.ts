@@ -5,13 +5,15 @@ import type {
   TextureDimension,
 } from '@antv/g-plugin-device-renderer';
 import { ResourceType } from '@antv/g-plugin-device-renderer';
-import type { IDevice_WebGPU } from './interfaces';
-import type { TextureShared_WebGPU } from './interfaces';
+import type { IDevice_WebGPU, TextureShared_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
 // @see https://toji.github.io/webgpu-best-practices/img-textures.html
 
-export class Texture_WebGPU extends ResourceBase_WebGPU implements TextureShared_WebGPU, Texture {
+export class Texture_WebGPU
+  extends ResourceBase_WebGPU
+  implements TextureShared_WebGPU, Texture
+{
   type: ResourceType.Texture = ResourceType.Texture;
   pixelFormat: Format;
   dimension: TextureDimension;

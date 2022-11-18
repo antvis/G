@@ -1,10 +1,13 @@
-import type { DisplayObject, RenderingPluginContext, Shape } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  RenderingPluginContext,
+  Shape,
+} from '@antv/g-lite';
 import type { Renderable3D } from '../components/Renderable3D';
 import type { LightPool } from '../LightPool';
 import type { Instanced } from '../meshes/Instanced';
 import type { Device } from '../platform';
-import type { RenderInstList } from '../render';
-import type { RenderHelper } from '../render';
+import type { RenderInstList, RenderHelper } from '../render';
 import type { TexturePool } from '../TexturePool';
 import type { Batch } from './Batch';
 
@@ -96,10 +99,16 @@ export class BatchManager {
           if (shouldSubmit) {
             let existedMesh = this.meshes.find(
               (mesh) =>
-                meshTag === mesh.constructor && mesh.index === i && mesh.shouldMerge(object, i),
+                meshTag === mesh.constructor &&
+                mesh.index === i &&
+                mesh.shouldMerge(object, i),
             );
             if (!existedMesh) {
-              existedMesh = new meshTag(this.renderHelper, this.texturePool, this.lightPool);
+              existedMesh = new meshTag(
+                this.renderHelper,
+                this.texturePool,
+                this.lightPool,
+              );
               existedMesh.renderer = renderer;
               existedMesh.index = i;
               this.meshes.push(existedMesh);
@@ -163,18 +172,25 @@ export class BatchManager {
             if (existedMesh.objects.length === 0) {
               this.meshes.splice(this.meshes.indexOf(existedMesh), 1);
             }
-            renderable3D.meshes[renderable3D.meshes.indexOf(existedMesh)] = undefined;
+            renderable3D.meshes[renderable3D.meshes.indexOf(existedMesh)] =
+              undefined;
           }
 
           if (shouldSubmit) {
             // clear first
             existedMesh = this.meshes.find(
               (mesh) =>
-                meshCtor === mesh.constructor && mesh.index === i && mesh.shouldMerge(object, i),
+                meshCtor === mesh.constructor &&
+                mesh.index === i &&
+                mesh.shouldMerge(object, i),
             );
 
             if (!existedMesh) {
-              existedMesh = new meshCtor(this.renderHelper, this.texturePool, this.lightPool);
+              existedMesh = new meshCtor(
+                this.renderHelper,
+                this.texturePool,
+                this.lightPool,
+              );
               existedMesh.renderer = renderer;
               existedMesh.index = i;
               existedMesh.init(this.context);
@@ -188,11 +204,21 @@ export class BatchManager {
           }
         }
 
-        if (shouldSubmit && existedMesh && existedMesh.inited && !existedMesh.geometryDirty) {
+        if (
+          shouldSubmit &&
+          existedMesh &&
+          existedMesh.inited &&
+          !existedMesh.geometryDirty
+        ) {
           const objectIdx = existedMesh.objects.indexOf(object);
           if (immediately) {
             object.parsedStyle[attributeName] = newValue;
-            existedMesh.updateAttribute([object], objectIdx, attributeName, newValue);
+            existedMesh.updateAttribute(
+              [object],
+              objectIdx,
+              attributeName,
+              newValue,
+            );
           } else {
             const patchKey = existedMesh.id + attributeName;
             if (!this.pendingUpdatePatches[patchKey]) {
@@ -203,7 +229,11 @@ export class BatchManager {
                 value: newValue,
               };
             }
-            if (this.pendingUpdatePatches[patchKey].objectIndices.indexOf(objectIdx) === -1) {
+            if (
+              this.pendingUpdatePatches[patchKey].objectIndices.indexOf(
+                objectIdx,
+              ) === -1
+            ) {
               this.pendingUpdatePatches[patchKey].objectIndices.push(objectIdx);
             }
           }
@@ -218,7 +248,10 @@ export class BatchManager {
     if (renderable3D && renderable3D.meshes.length) {
       renderable3D.meshes.forEach((mesh) => {
         if (mesh && mesh.inited && !mesh.geometryDirty) {
-          const shouldSubmit = mesh.renderer.shouldSubmitRenderInst(object, mesh.index);
+          const shouldSubmit = mesh.renderer.shouldSubmitRenderInst(
+            object,
+            mesh.index,
+          );
           if (shouldSubmit && mesh.inited) {
             mesh.changeRenderOrder(object, renderOrder);
           }
@@ -237,14 +270,18 @@ export class BatchManager {
   private updatePendingPatches() {
     // merge update patches to reduce `setSubData` calls
     Object.keys(this.pendingUpdatePatches).forEach((patchKey) => {
-      const { instance, objectIndices, name, value } = this.pendingUpdatePatches[patchKey];
+      const { instance, objectIndices, name, value } =
+        this.pendingUpdatePatches[patchKey];
       objectIndices.sort((a, b) => a - b);
 
       const updatePatches: number[][] = [];
       objectIndices.forEach((i) => {
         const lastUpdateBatch = updatePatches[updatePatches.length - 1];
 
-        if (!lastUpdateBatch || i !== lastUpdateBatch[lastUpdateBatch.length - 1] + 1) {
+        if (
+          !lastUpdateBatch ||
+          i !== lastUpdateBatch[lastUpdateBatch.length - 1] + 1
+        ) {
           updatePatches.push([i]);
         } else {
           lastUpdateBatch.push(i);

@@ -1,9 +1,9 @@
 import type { Color, Format } from '../platform';
 
 export class RGRenderTargetDescription {
-  width: number = 0;
-  height: number = 0;
-  sampleCount: number = 0;
+  width = 0;
+  height = 0;
+  sampleCount = 0;
 
   colorClearColor: Readonly<Color> | 'load' = 'load';
   depthClearValue: number | 'load' = 'load';

@@ -12,6 +12,7 @@ import { parseGradient } from './gradient';
 export interface Pattern {
   image: string | CanvasImageSource;
   repetition: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
+  transform: string;
 }
 
 export function isPattern(object: any): object is Pattern {
@@ -21,45 +22,47 @@ export function isPattern(object: any): object is Pattern {
 /**
  * @see https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/parser/CSSParser.cpp#L97
  */
-export const parseColor = memoize((colorStr: string): CSSRGB | CSSGradientValue[] | Pattern => {
-  if (isPattern(colorStr)) {
-    return {
-      repetition: 'repeat',
-      ...(colorStr as Pattern),
-    };
-  }
+export const parseColor = memoize(
+  (colorStr: string): CSSRGB | CSSGradientValue[] | Pattern => {
+    if (isPattern(colorStr)) {
+      return {
+        repetition: 'repeat',
+        ...(colorStr as Pattern),
+      };
+    }
 
-  if (isNil(colorStr)) {
-    colorStr = '';
-  }
+    if (isNil(colorStr)) {
+      colorStr = '';
+    }
 
-  if (colorStr === 'transparent') {
-    // transparent black
-    return transparentColor;
-  } else if (colorStr === 'currentColor') {
-    // @see https://github.com/adobe-webplatform/Snap.svg/issues/526
-    colorStr = 'black';
-  }
+    if (colorStr === 'transparent') {
+      // transparent black
+      return transparentColor;
+    } else if (colorStr === 'currentColor') {
+      // @see https://github.com/adobe-webplatform/Snap.svg/issues/526
+      colorStr = 'black';
+    }
 
-  // support CSS gradient syntax
-  const g = parseGradient(colorStr);
-  if (g) {
-    return g;
-  }
+    // support CSS gradient syntax
+    const g = parseGradient(colorStr);
+    if (g) {
+      return g;
+    }
 
-  // constants
-  const color = d3.color(colorStr) as d3.RGBColor;
-  const rgba: Tuple4Number = [0, 0, 0, 0];
-  if (color !== null) {
-    rgba[0] = color.r || 0;
-    rgba[1] = color.g || 0;
-    rgba[2] = color.b || 0;
-    rgba[3] = color.opacity;
-  }
+    // constants
+    const color = d3.color(colorStr) as d3.RGBColor;
+    const rgba: Tuple4Number = [0, 0, 0, 0];
+    if (color !== null) {
+      rgba[0] = color.r || 0;
+      rgba[1] = color.g || 0;
+      rgba[2] = color.b || 0;
+      rgba[3] = color.opacity;
+    }
 
-  // return new CSSRGB(...rgba);
-  return getOrCreateRGBA(...rgba);
-});
+    // return new CSSRGB(...rgba);
+    return getOrCreateRGBA(...rgba);
+  },
+);
 
 export function mergeColors(
   left: CSSRGB | CSSGradientValue[] | Pattern,
@@ -76,7 +79,8 @@ export function mergeColors(
     (color: number[]) => {
       const rgba = color.slice();
       if (rgba[3]) {
-        for (let i = 0; i < 3; i++) rgba[i] = Math.round(clamp(rgba[i], 0, 255));
+        for (let i = 0; i < 3; i++)
+          rgba[i] = Math.round(clamp(rgba[i], 0, 255));
       }
       rgba[3] = clamp(rgba[3], 0, 1);
       return `rgba(${rgba.join(',')})`;

@@ -1,4 +1,9 @@
-import type { BaseStyleProps, Canvas, CircleStyleProps, FederatedEvent } from '@antv/g-lite';
+import type {
+  BaseStyleProps,
+  Canvas,
+  CircleStyleProps,
+  FederatedEvent,
+} from '@antv/g-lite';
 import EventEmitter from 'eventemitter3';
 import type { DrawerTool } from '../constants/enum';
 
@@ -62,9 +67,9 @@ export abstract class BaseDrawer extends EventEmitter {
   /** 构造参数 */
   drawerOptions: DrawerOption;
   /** 是否正在绘制 */
-  isDrawing: boolean = false;
+  isDrawing = false;
   /** 绘制激活 */
-  isActive: boolean = true;
+  isActive = true;
   /** 绘制路径 */
   path: Point[] = [];
   /** 画布 */

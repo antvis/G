@@ -38,15 +38,19 @@ export class DragndropPlugin implements RenderingPlugin {
 
       // `draggable` may be set on ancestor nodes:
       // @see https://github.com/antvis/G/issues/1088
-      if (!!draggableEventTarget) {
+      if (draggableEventTarget) {
         // delay triggering dragstart event
         let dragstartTriggered = false;
         const dragstartTimeStamp = event.timeStamp;
-        const dragstartClientCoordinates: [number, number] = [event.clientX, event.clientY];
+        const dragstartClientCoordinates: [number, number] = [
+          event.clientX,
+          event.clientY,
+        ];
 
         let currentDroppable = null;
         let lastDragClientCoordinates = [event.clientX, event.clientY];
         // @ts-ignore
+        // eslint-disable-next-line no-inner-declarations
         async function handlePointermove(event: FederatedPointerEvent) {
           if (!dragstartTriggered) {
             const timeElapsed = event.timeStamp - dragstartTimeStamp;
@@ -80,14 +84,21 @@ export class DragndropPlugin implements RenderingPlugin {
 
           if (!isDocument) {
             const point =
-              overlap === 'pointer' ? [event.canvasX, event.canvasY] : target.getBounds().center;
-            const elementsBelow = await document.elementsFromPoint(point[0], point[1]);
+              overlap === 'pointer'
+                ? [event.canvasX, event.canvasY]
+                : target.getBounds().center;
+            const elementsBelow = await document.elementsFromPoint(
+              point[0],
+              point[1],
+            );
 
             // prevent from picking the dragging element
-            const elementBelow = elementsBelow[elementsBelow.indexOf(target) + 1];
+            const elementBelow =
+              elementsBelow[elementsBelow.indexOf(target) + 1];
 
             const droppableBelow =
-              elementBelow?.closest('[droppable=true]') || (isDocumentDroppable ? document : null);
+              elementBelow?.closest('[droppable=true]') ||
+              (isDocumentDroppable ? document : null);
             if (currentDroppable !== droppableBelow) {
               if (currentDroppable) {
                 // null when we were not over a droppable before this event
@@ -118,7 +129,9 @@ export class DragndropPlugin implements RenderingPlugin {
 
         canvas.addEventListener('pointermove', handlePointermove);
 
-        const stopDragging = function (originalPointerUpEvent: FederatedPointerEvent) {
+        const stopDragging = function (
+          originalPointerUpEvent: FederatedPointerEvent,
+        ) {
           if (dragstartTriggered) {
             // prevent click event being triggerd
             // @see https://github.com/antvis/G/issues/1091
@@ -150,7 +163,9 @@ export class DragndropPlugin implements RenderingPlugin {
         };
 
         target.addEventListener('pointerup', stopDragging, { once: true });
-        target.addEventListener('pointerupoutside', stopDragging, { once: true });
+        target.addEventListener('pointerupoutside', stopDragging, {
+          once: true,
+        });
       }
     };
 

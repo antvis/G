@@ -81,12 +81,12 @@ export abstract class Node extends EventTarget implements INode {
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
    */
-  nodeType: number = 0;
+  nodeType = 0;
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeName
    */
-  nodeName: string = '';
+  nodeName = '';
 
   /**
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeValue
@@ -202,7 +202,9 @@ export abstract class Node extends EventTarget implements INode {
     return this.childNodes.length > 0 ? this.childNodes[0] : null;
   }
   get lastChild(): IChildNode | null {
-    return this.childNodes.length > 0 ? this.childNodes[this.childNodes.length - 1] : null;
+    return this.childNodes.length > 0
+      ? this.childNodes[this.childNodes.length - 1]
+      : null;
   }
 
   /**
@@ -245,11 +247,17 @@ export abstract class Node extends EventTarget implements INode {
     }
 
     const longerHierarchy =
-      node1Hierarchy.length > node2Hierarchy.length ? node1Hierarchy : node2Hierarchy;
-    const shorterHierarchy = longerHierarchy === node1Hierarchy ? node2Hierarchy : node1Hierarchy;
+      node1Hierarchy.length > node2Hierarchy.length
+        ? node1Hierarchy
+        : node2Hierarchy;
+    const shorterHierarchy =
+      longerHierarchy === node1Hierarchy ? node2Hierarchy : node1Hierarchy;
 
     // Check if either is a container of the other
-    if (longerHierarchy[longerHierarchy.length - shorterHierarchy.length] === shorterHierarchy[0]) {
+    if (
+      longerHierarchy[longerHierarchy.length - shorterHierarchy.length] ===
+      shorterHierarchy[0]
+    ) {
       return longerHierarchy === node1Hierarchy
         ? // other is a child of this
           Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING
@@ -268,7 +276,10 @@ export abstract class Node extends EventTarget implements INode {
       if (longerHierarchyNode !== shorterHierarchyNode) {
         const siblings = shorterHierarchyNode.parentNode.childNodes as INode[];
 
-        if (siblings.indexOf(shorterHierarchyNode) < siblings.indexOf(longerHierarchyNode)) {
+        if (
+          siblings.indexOf(shorterHierarchyNode) <
+          siblings.indexOf(longerHierarchyNode)
+        ) {
           // Shorter is before longer
           if (shorterHierarchy === node1Hierarchy) {
             // Other is before this
@@ -306,7 +317,10 @@ export abstract class Node extends EventTarget implements INode {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore
    */
-  abstract insertBefore<T extends INode>(newChild: T, refChild: INode | null): T;
+  abstract insertBefore<T extends INode>(
+    newChild: T,
+    refChild: INode | null,
+  ): T;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Node/removeChild

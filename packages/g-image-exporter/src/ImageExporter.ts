@@ -60,7 +60,9 @@ export class ImageExporter {
     );
 
     if (!this.isSVG()) {
-      const $dom = this.options.canvas.getContextService().getDomElement() as HTMLCanvasElement;
+      const $dom = this.options.canvas
+        .getContextService()
+        .getDomElement() as HTMLCanvasElement;
       if ($dom && $dom.parentElement) {
         // screenshot HTML
         // @see https://html2canvas.hertzen.com/configuration
@@ -109,7 +111,9 @@ export class ImageExporter {
 
   private isSVG() {
     return (
-      isBrowser && this.options.canvas.getContextService().getDomElement() instanceof SVGSVGElement
+      isBrowser &&
+      this.options.canvas.getContextService().getDomElement() instanceof
+        SVGSVGElement
     );
   }
 
@@ -125,7 +129,10 @@ export class ImageExporter {
     // retrieve context at runtime
     const { defaultFilename } = this.options;
     const { dataURL, name = defaultFilename || 'g' } = options;
-    const mimeType = dataURL.substring(dataURL.indexOf(':') + 1, dataURL.indexOf(';'));
+    const mimeType = dataURL.substring(
+      dataURL.indexOf(':') + 1,
+      dataURL.indexOf(';'),
+    );
     const suffix = mimeType.split('/')[1];
 
     // g-svg only support .svg
@@ -160,8 +167,8 @@ export class ImageExporter {
 
       // account for IE
       // @see https://stackoverflow.com/a/41434373
-      if ((window.navigator as any).msSaveBlob) {
-        (window.navigator as any).msSaveBlob(blobObj, fileName);
+      if ((globalThis.navigator as any).msSaveBlob) {
+        (globalThis.navigator as any).msSaveBlob(blobObj, fileName);
       } else {
         link.addEventListener('click', () => {
           link.download = fileName;

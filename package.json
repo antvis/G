@@ -19,13 +19,14 @@
     "eslint": "eslint --ext .ts,.js ./packages",
     "eslint-fix": "eslint --fix --ext .ts,.js ./packages",
     "limit-size": "limit-size",
+    "link-site": "node ./scripts/link-site.js",
     "lint": "npm run eslint",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "publish": "lerna publish",
     "postpublish": "yarn sync",
     "publish:next": "lerna publish prerelease --dist-tag next",
-    "start": "cd ./packages/site && npm run start",
+    "start": "cd ./site && npm run start",
     "sync": "lerna run sync --parallel",
     "test": "npm run test:browser & npm run test:serverside",
     "test:browser": "jest --config jest.config.js",
@@ -45,13 +46,6 @@
       "git add"
     ]
   },
-  "resolutions": {
-    "monaco-editor": "0.20.0",
-    "monaco-editor-webpack-plugin": "1.9.1",
-    "normalize-url": "^4.0.1",
-    "react-monaco-editor": "0.34.0",
-    "signal-exit": "3.0.3"
-  },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-angular": "^9.0.1",
@@ -60,13 +54,11 @@
     "@types/node": "^14.0.23",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
-    "@umijs/fabric": "^2.5.13",
     "antd": "^4.2.4",
     "canvas": "^2.9.1",
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",
     "cross-env": "^6.0.3",
-    "dumi": "^1.1.37",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
     "father": "^2.30.13",

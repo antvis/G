@@ -63,7 +63,6 @@ export class TextRenderer implements RendererContribution {
       dy,
       // @ts-ignore
       alongPath,
-      // @ts-ignore
       maxLines,
       // @ts-ignore
       ellipsis,
@@ -97,14 +96,15 @@ export class TextRenderer implements RendererContribution {
       heightMultiplier,
     } = object.parsedStyle as ParsedTextStyleProps;
 
-    const TEXT_ALIGN_MAP: Record<CanvasTextAlign | 'middle', EmbindEnumEntity> = {
-      left: CanvasKit.TextAlign.Left,
-      center: CanvasKit.TextAlign.Center,
-      middle: CanvasKit.TextAlign.Center,
-      right: CanvasKit.TextAlign.Right,
-      end: CanvasKit.TextAlign.End,
-      start: CanvasKit.TextAlign.Start,
-    };
+    const TEXT_ALIGN_MAP: Record<CanvasTextAlign | 'middle', EmbindEnumEntity> =
+      {
+        left: CanvasKit.TextAlign.Left,
+        center: CanvasKit.TextAlign.Center,
+        middle: CanvasKit.TextAlign.Center,
+        right: CanvasKit.TextAlign.Right,
+        end: CanvasKit.TextAlign.End,
+        start: CanvasKit.TextAlign.Start,
+      };
     const TEXT_BASELINE_MAP: Record<CanvasTextBaseline, EmbindEnumEntity> = {
       alphabetic: CanvasKit.TextBaseline.Alphabetic,
       bottom: undefined,
@@ -126,7 +126,8 @@ export class TextRenderer implements RendererContribution {
 
     if (alongPath) {
       const skPath = new CanvasKit.Path();
-      const { path: parsedPath } = alongPath.parsedStyle as ParsedPathStyleProps;
+      const { path: parsedPath } =
+        alongPath.parsedStyle as ParsedPathStyleProps;
       const { absolutePath, segments } = parsedPath;
       for (let i = 0; i < absolutePath.length; i++) {
         const params = absolutePath[i]; // eg. M 100 200
@@ -143,7 +144,14 @@ export class TextRenderer implements RendererContribution {
             skPath.quadTo(params[1], params[2], params[3], params[4]);
             break;
           case 'C':
-            skPath.cubicTo(params[1], params[2], params[3], params[4], params[5], params[6]);
+            skPath.cubicTo(
+              params[1],
+              params[2],
+              params[3],
+              params[4],
+              params[5],
+              params[6],
+            );
             break;
           case 'A': {
             const arcParams = segments[i].arcParams;
@@ -255,7 +263,10 @@ export class TextRenderer implements RendererContribution {
       });
 
       // use cached font manager
-      const fontMgr = this.fontLoader.getOrCreateFontMgr(CanvasKit, loadedFontFamilies);
+      const fontMgr = this.fontLoader.getOrCreateFontMgr(
+        CanvasKit,
+        loadedFontFamilies,
+      );
 
       const builder = CanvasKit.ParagraphBuilder.Make(paraStyle, fontMgr);
       builder.addText(text);

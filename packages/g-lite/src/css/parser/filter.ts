@@ -7,7 +7,8 @@ export interface ParsedFilterStyleProperty {
   params: CSSUnitValue[];
 }
 
-export const parseParam = (css: string) => parseDimension(/deg|rad|grad|turn|px|%/g, css);
+export const parseParam = (css: string) =>
+  parseDimension(/deg|rad|grad|turn|px|%/g, css);
 
 const supportedFilters = [
   'blur',
@@ -21,7 +22,7 @@ const supportedFilters = [
   'invert',
 ];
 
-export function parseFilter(filterStr: string = ''): ParsedFilterStyleProperty[] {
+export function parseFilter(filterStr = ''): ParsedFilterStyleProperty[] {
   filterStr = filterStr.toLowerCase().trim();
   if (filterStr === 'none') {
     return [];
