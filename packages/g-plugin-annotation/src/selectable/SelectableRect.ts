@@ -1,4 +1,9 @@
-import type { Cursor, DisplayObject, FederatedEvent, ParsedBaseStyleProps } from '@antv/g-lite';
+import type {
+  Cursor,
+  DisplayObject,
+  FederatedEvent,
+  ParsedBaseStyleProps,
+} from '@antv/g-lite';
 import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
@@ -38,11 +43,27 @@ export class SelectableRect extends AbstractSelectable<Rect> {
   private brAnchor: Circle;
 
   init() {
+    const {
+      anchorFill,
+      anchorStroke,
+      anchorFillOpacity,
+      anchorStrokeOpacity,
+      anchorSize,
+      anchorStrokeWidth,
+      selectionFill,
+      selectionFillOpacity,
+      selectionStroke,
+      selectionStrokeOpacity,
+      selectionStrokeWidth,
+      selectionLineDash,
+      target,
+    } = this.style;
+
     this.mask = new Rect({
       style: {
         width: 0,
         height: 0,
-        draggable: true,
+        draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
       },
     });
@@ -74,22 +95,6 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     this.mask.appendChild(this.brAnchor);
     this.mask.appendChild(this.blAnchor);
 
-    const {
-      anchorFill,
-      anchorStroke,
-      anchorFillOpacity,
-      anchorStrokeOpacity,
-      anchorSize,
-      anchorStrokeWidth,
-      selectionFill,
-      selectionFillOpacity,
-      selectionStroke,
-      selectionStrokeOpacity,
-      selectionStrokeWidth,
-      selectionLineDash,
-      target,
-    } = this.style;
-
     const { halfExtents } = target.getGeometryBounds();
     const width = halfExtents[0] * 2;
     const height = halfExtents[1] * 2;
@@ -116,13 +121,20 @@ export class SelectableRect extends AbstractSelectable<Rect> {
 
     // set anchors' style
     this.anchors.forEach((anchor, i) => {
+      if (target.style.anchorsDraggable === false) {
+        anchor.style.visibility = 'hidden';
+      }
+
       anchor.style.stroke = anchorStroke;
       anchor.style.fill = anchorFill;
       anchor.style.fillOpacity = anchorFillOpacity;
       anchor.style.strokeOpacity = anchorStrokeOpacity;
       anchor.style.strokeWidth = anchorStrokeWidth;
       anchor.style.r = anchorSize;
-      anchor.style.cursor = this.scaleCursorStyleHandler(controls[i], target) as Cursor;
+      anchor.style.cursor = this.scaleCursorStyleHandler(
+        controls[i],
+        target,
+      ) as Cursor;
     });
 
     // TODO: UI should not be scaled
@@ -382,7 +394,11 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     return false;
   }
 
-  private scalingIsForbidden(object: DisplayObject, by: string, scaleProportionally: boolean) {
+  private scalingIsForbidden(
+    object: DisplayObject,
+    by: string,
+    scaleProportionally: boolean,
+  ) {
     const lockX = object.style.lockScalingX,
       lockY = object.style.lockScalingY;
     if (lockX && lockY) {

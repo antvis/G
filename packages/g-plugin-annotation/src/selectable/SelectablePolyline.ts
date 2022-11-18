@@ -1,24 +1,43 @@
-import type { DisplayObject, FederatedEvent, ParsedPolylineStyleProps } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  FederatedEvent,
+  ParsedPolylineStyleProps,
+} from '@antv/g-lite';
 import { Circle, CustomEvent, Polyline, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 
 export class SelectablePolyline extends AbstractSelectable<Polyline> {
   init() {
+    const {
+      anchorFill,
+      anchorStroke,
+      anchorFillOpacity,
+      anchorStrokeOpacity,
+      anchorSize,
+      selectionFill,
+      selectionFillOpacity,
+      selectionStroke,
+      selectionStrokeOpacity,
+      selectionStrokeWidth,
+      target,
+    } = this.style;
+
     let points = [];
-    if (this.style.target.nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2 } = this.style.target.parsedStyle;
+    if (target.nodeName === Shape.LINE) {
+      const { x1, y1, x2, y2 } = target.parsedStyle;
       points.push([x1, y1]);
       points.push([x2, y2]);
-    } else if (this.style.target.nodeName === Shape.POLYLINE) {
-      const { points: parsedPoints } = this.style.target.parsedStyle as ParsedPolylineStyleProps;
+    } else if (target.nodeName === Shape.POLYLINE) {
+      const { points: parsedPoints } =
+        target.parsedStyle as ParsedPolylineStyleProps;
       points = parsedPoints.points;
     }
 
     this.mask = new Polyline({
       style: {
         points,
-        draggable: true,
+        draggable: target.style.maskDraggable === false ? false : true,
         increasedLineWidthForHitTesting: 20,
         cursor: 'move',
       },
@@ -42,19 +61,6 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       anchor.setPosition(point);
     });
 
-    const {
-      anchorFill,
-      anchorStroke,
-      anchorFillOpacity,
-      anchorStrokeOpacity,
-      anchorSize,
-      selectionFill,
-      selectionFillOpacity,
-      selectionStroke,
-      selectionStrokeOpacity,
-      selectionStrokeWidth,
-    } = this.style;
-
     // resize according to target
     this.mask.style.fill = selectionFill;
     this.mask.style.stroke = selectionStroke;
@@ -64,6 +70,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
     // set anchors' style
     this.anchors.forEach((anchor) => {
+      if (target.style.anchorsDraggable === false) {
+        anchor.style.visibility = 'hidden';
+      }
+
       anchor.style.stroke = anchorStroke;
       anchor.style.fill = anchorFill;
       anchor.style.fillOpacity = anchorFillOpacity;
@@ -78,7 +88,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
   moveMask(dx: number, dy: number) {
     // change definition of polyline
-    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [x + dx, y + dy]);
+    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
+      x + dx,
+      y + dy,
+    ]);
 
     // re-position anchors in canvas coordinates
     this.repositionAnchors();
@@ -125,7 +138,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
         const selectable = this.plugin.getOrCreateSelectableUI(selected);
-        selectable.triggerMovingEvent(canvasX - shiftX - defX, canvasY - shiftY - defY);
+        selectable.triggerMovingEvent(
+          canvasX - shiftX - defX,
+          canvasY - shiftY - defY,
+        );
       });
     };
 
@@ -167,7 +183,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
           const selectable = this.plugin.getOrCreateSelectableUI(selected);
           selectable.triggerMovedEvent();
         });
-      } else if (targetObject.nodeName === Shape.POLYLINE || targetObject.nodeName === Shape.LINE) {
+      } else if (
+        targetObject.nodeName === Shape.POLYLINE ||
+        targetObject.nodeName === Shape.LINE
+      ) {
         targetObject.dispatchEvent(
           new CustomEvent(SelectableEvent.MODIFIED, {
             polyline: {
