@@ -108,9 +108,9 @@ const folder = gui.addFolder('squares');
 const config = {
   size: 6,
   padding: 1,
-  backgroundColor: 'none',
+  backgroundColor: 'transparent',
   fill: '#ff0000',
-  stroke: 'none',
+  stroke: 'transparent',
   opacity: 1,
   fillOpacity: 1,
   strokeOpacity: 1,

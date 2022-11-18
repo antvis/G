@@ -107,7 +107,7 @@ rendererFolder.open();
 const folder = gui.addFolder('lines');
 const config = {
   spacing: 5,
-  backgroundColor: 'none',
+  backgroundColor: 'transparent',
   stroke: '#000000',
   opacity: 1,
   strokeOpacity: 1,

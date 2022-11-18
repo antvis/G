@@ -108,9 +108,9 @@ const folder = gui.addFolder('dots');
 const config = {
   size: 6,
   padding: 2,
-  backgroundColor: 'none',
+  backgroundColor: 'transparent',
   fill: '#ff0000',
-  stroke: 'none',
+  stroke: 'transparent',
   opacity: 1,
   fillOpacity: 1,
   strokeOpacity: 1,
