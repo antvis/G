@@ -1,4 +1,3 @@
-import { mat4 } from 'gl-matrix';
 import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
 import { parsedTransformToMat4 } from '../../utils';
@@ -43,8 +42,6 @@ export class CSSPropertyTransform
       CSSProperty<CSSKeywordValue | ParsedTransform[], ParsedTransform[]>
     >
 {
-  private tmpMat4 = mat4.create();
-
   parser = parseTransform;
 
   calculator(

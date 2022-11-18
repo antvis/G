@@ -415,6 +415,7 @@ function combine(out: vec3, a: vec3, b: vec3, scale1: number, scale2: number) {
   out[2] = a[2] * scale1 + b[2] * scale2;
 }
 
+const tmpMat4 = mat4.create();
 export function parsedTransformToMat4(
   transform: ParsedTransform[],
   object?: DisplayObject,
@@ -507,7 +508,7 @@ export function parsedTransformToMat4(
         const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
         object.setLocalTransform(
           mat4.set(
-            this.tmpMat4,
+            tmpMat4,
             a,
             b,
             0,
@@ -528,11 +529,11 @@ export function parsedTransformToMat4(
         );
       } else if (t === 'matrix3d') {
         // @ts-ignore
-        mat4.set(this.tmpMat4, ...d.map((s) => s.value));
+        mat4.set(tmpMat4, ...d.map((s) => s.value));
 
-        this.tmpMat4[12] += defX;
-        this.tmpMat4[13] += defY;
-        object.setLocalTransform(this.tmpMat4);
+        tmpMat4[12] += defX;
+        tmpMat4[13] += defY;
+        object.setLocalTransform(tmpMat4);
       }
     });
   }
