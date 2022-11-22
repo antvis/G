@@ -37,9 +37,6 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const dotsCanvas = dots(canvas, {
-  fill: 'red',
-});
 const rect = new Rect({
   style: {
     x: 50,
@@ -47,7 +44,9 @@ const rect = new Rect({
     width: 200,
     height: 100,
     fill: {
-      image: dotsCanvas,
+      image: dots({
+        fill: 'red',
+      }),
       repetition: 'repeat',
     },
   },
@@ -126,10 +125,7 @@ const transformConfig = {
 function updatePattern(name, value) {
   const { translateX, translateY, scale, rotate } = transformConfig;
   rect.style.fill = {
-    image: dots(
-      canvas,
-      Object.assign({}, config, name ? { [name]: value } : {}),
-    ),
+    image: dots(Object.assign({}, config, name ? { [name]: value } : {})),
     repetition: 'repeat',
     transform: `translate(${translateX}, ${translateY}) rotate(${rotate}deg) scale(${scale})`,
   };

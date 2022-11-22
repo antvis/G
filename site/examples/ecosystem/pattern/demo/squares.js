@@ -37,9 +37,6 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const squaresCanvas = squares(canvas, {
-  fill: 'red',
-});
 const rect = new Rect({
   style: {
     x: 50,
@@ -47,7 +44,9 @@ const rect = new Rect({
     width: 200,
     height: 100,
     fill: {
-      image: squaresCanvas,
+      image: squares({
+        fill: 'red',
+      }),
       repetition: 'repeat',
     },
   },
@@ -126,10 +125,7 @@ const transformConfig = {
 function updatePattern(name, value) {
   const { translateX, translateY, scale, rotate } = transformConfig;
   rect.style.fill = {
-    image: squares(
-      canvas,
-      Object.assign({}, config, name ? { [name]: value } : {}),
-    ),
+    image: squares(Object.assign({}, config, name ? { [name]: value } : {})),
     repetition: 'repeat',
     transform: `translate(${translateX}, ${translateY}) rotate(${rotate}deg) scale(${scale})`,
   };

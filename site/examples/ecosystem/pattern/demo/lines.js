@@ -37,9 +37,6 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const linesCanvas = lines(canvas, {
-  stroke: '#000000',
-});
 const rect = new Rect({
   style: {
     x: 50,
@@ -47,7 +44,9 @@ const rect = new Rect({
     width: 200,
     height: 100,
     fill: {
-      image: linesCanvas,
+      image: lines({
+        stroke: '#000000',
+      }),
       repetition: 'repeat',
     },
   },
@@ -122,10 +121,7 @@ const transformConfig = {
 function updatePattern(name, value) {
   const { translateX, translateY, scale, rotate } = transformConfig;
   rect.style.fill = {
-    image: lines(
-      canvas,
-      Object.assign({}, config, name ? { [name]: value } : {}),
-    ),
+    image: lines(Object.assign({}, config, name ? { [name]: value } : {})),
     repetition: 'repeat',
     transform: `translate(${translateX}, ${translateY}) rotate(${rotate}deg) scale(${scale})`,
   };

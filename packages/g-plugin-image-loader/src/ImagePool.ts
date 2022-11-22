@@ -1,8 +1,9 @@
-import type {
+import {
   LinearGradient,
   Pattern,
   RadialGradient,
   CanvasConfig,
+  Rect,
 } from '@antv/g-lite';
 import {
   UnitType,
@@ -14,6 +15,7 @@ import {
   parsedTransformToMat4,
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
+import { mat4 } from 'gl-matrix';
 
 export type GradientParams = (LinearGradient & RadialGradient) & {
   width: number;
@@ -76,6 +78,8 @@ export class ImagePool {
   getOrCreatePatternSync(
     pattern: Pattern,
     context: CanvasRenderingContext2D,
+    $offscreenCanvas: HTMLCanvasElement,
+    dpr: number,
     callback: () => void,
   ) {
     const patternKey = this.generatePatternKey(pattern);
@@ -88,6 +92,8 @@ export class ImagePool {
     // Image URL
     if (isString(image)) {
       src = this.getImageSync(image, callback);
+    } else if ($offscreenCanvas) {
+      src = $offscreenCanvas;
     } else {
       src = image as CanvasImageSource;
     }
@@ -95,18 +101,24 @@ export class ImagePool {
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createPattern
     const canvasPattern = src && context.createPattern(src, repetition);
 
+    let mat: mat4;
     // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
     if (transform) {
-      const mat = parsedTransformToMat4(parseTransform(transform));
-      canvasPattern.setTransform({
-        a: mat[0],
-        b: mat[1],
-        c: mat[4],
-        d: mat[5],
-        e: mat[12],
-        f: mat[13],
-      });
+      mat = parsedTransformToMat4(parseTransform(transform));
+    } else {
+      mat = mat4.identity(mat4.create());
     }
+
+    mat4.scale(mat, mat, [1 / dpr, 1 / dpr, 1]);
+
+    canvasPattern.setTransform({
+      a: mat[0],
+      b: mat[1],
+      c: mat[4],
+      d: mat[5],
+      e: mat[12],
+      f: mat[13],
+    });
 
     if (patternKey && canvasPattern) {
       this.patternCache[patternKey] = canvasPattern;
@@ -164,6 +176,8 @@ export class ImagePool {
     // only generate cache for Image
     if (isString(image)) {
       return `pattern-${image}-${repetition}`;
+    } else if (image instanceof Rect) {
+      return `pattern-${image.entity}-${repetition}`;
     }
   }
 }

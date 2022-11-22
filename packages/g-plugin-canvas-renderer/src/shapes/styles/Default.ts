@@ -1,4 +1,5 @@
-import type {
+import {
+  CanvasContext,
   CSSGradientValue,
   CSSRGB,
   DisplayObject,
@@ -6,11 +7,13 @@ import type {
   ParsedBaseStyleProps,
   Pattern,
   RadialGradient,
-  RenderingService,
+  Rect,
+  runtime,
 } from '@antv/g-lite';
 import { GradientType, isPattern, Shape } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
+import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
 import type { StyleRenderer } from './interfaces';
 
 export class DefaultRenderer implements StyleRenderer {
@@ -20,7 +23,8 @@ export class DefaultRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedBaseStyleProps,
     object: DisplayObject,
-    renderingService: RenderingService,
+    canvasContext: CanvasContext,
+    plugin: CanvasRendererPlugin,
   ) {
     const {
       fill,
@@ -39,7 +43,8 @@ export class DefaultRenderer implements StyleRenderer {
       miterLimit,
     } = parsedStyle;
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
-    const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth > 0;
+    const hasStroke =
+      !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth > 0;
     const isFillTransparent = (fill as CSSRGB).alpha === 0;
     const hasFilter = !!(filter && filter.length);
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
@@ -61,7 +66,7 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, hasShadow);
       }
 
-      this.fill(context, object, fill, fillRule, renderingService);
+      this.fill(context, object, fill, fillRule, canvasContext, plugin);
 
       if (!shouldDrawShadowWithStroke) {
         this.clearShadowAndFilter(context, hasFilter, hasShadow);
@@ -90,13 +95,13 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, true);
 
         if (isInnerShadow) {
-          this.stroke(context, object, stroke, renderingService);
+          this.stroke(context, object, stroke, canvasContext, plugin);
           context.globalCompositeOperation = 'source-over';
           this.clearShadowAndFilter(context, hasFilter, true);
         }
       }
 
-      this.stroke(context, object, stroke, renderingService);
+      this.stroke(context, object, stroke, canvasContext, plugin);
     }
   }
 
@@ -114,7 +119,8 @@ export class DefaultRenderer implements StyleRenderer {
       // save drop-shadow filter
       const oldFilter = context.filter;
       if (!isNil(oldFilter) && oldFilter.indexOf('drop-shadow') > -1) {
-        context.filter = oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
+        context.filter =
+          oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
       }
     }
   }
@@ -124,7 +130,8 @@ export class DefaultRenderer implements StyleRenderer {
     object: DisplayObject,
     fill: CSSRGB | CSSGradientValue[] | Pattern,
     fillRule: 'nonzero' | 'evenodd',
-    renderingService: RenderingService,
+    canvasContext: CanvasContext,
+    plugin: CanvasRendererPlugin,
   ) {
     if (Array.isArray(fill)) {
       fill.forEach((gradient) => {
@@ -133,7 +140,13 @@ export class DefaultRenderer implements StyleRenderer {
       });
     } else {
       if (isPattern(fill)) {
-        context.fillStyle = this.getPattern(fill, object, context, renderingService);
+        context.fillStyle = this.getPattern(
+          fill,
+          object,
+          context,
+          canvasContext,
+          plugin,
+        );
       }
       context.fill(fillRule);
     }
@@ -143,7 +156,8 @@ export class DefaultRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     object: DisplayObject,
     stroke: CSSRGB | CSSGradientValue[] | Pattern,
-    renderingService: RenderingService,
+    canvasContext: CanvasContext,
+    plugin: CanvasRendererPlugin,
   ) {
     if (Array.isArray(stroke)) {
       stroke.forEach((gradient) => {
@@ -152,7 +166,13 @@ export class DefaultRenderer implements StyleRenderer {
       });
     } else {
       if (isPattern(stroke)) {
-        context.strokeStyle = this.getPattern(stroke, object, context, renderingService);
+        context.strokeStyle = this.getPattern(
+          stroke,
+          object,
+          context,
+          canvasContext,
+          plugin,
+        );
       }
       context.stroke();
     }
@@ -162,13 +182,55 @@ export class DefaultRenderer implements StyleRenderer {
     pattern: Pattern,
     object: DisplayObject,
     context: CanvasRenderingContext2D,
-    renderingService: RenderingService,
+    canvasContext: CanvasContext,
+    plugin: CanvasRendererPlugin,
   ): CanvasPattern {
-    const canvasPattern = this.imagePool.getOrCreatePatternSync(pattern, context, () => {
-      // set dirty rectangle flag
-      object.renderable.dirty = true;
-      renderingService.dirtify();
-    });
+    let $offscreenCanvas: HTMLCanvasElement;
+    let dpr: number;
+    if (pattern.image instanceof Rect) {
+      const { width, height } = pattern.image.parsedStyle;
+      dpr = canvasContext.contextService.getDPR();
+      const { offscreenCanvas } = canvasContext.config;
+      $offscreenCanvas = runtime.offscreenCanvas.getOrCreateCanvas(
+        offscreenCanvas,
+      ) as HTMLCanvasElement;
+
+      $offscreenCanvas.width = width * dpr;
+      $offscreenCanvas.height = height * dpr;
+
+      const offscreenCanvasContext = runtime.offscreenCanvas.getOrCreateContext(
+        offscreenCanvas,
+      ) as CanvasRenderingContext2D;
+
+      const restoreStack = [];
+
+      // offscreenCanvasContext.scale(1 / dpr, 1 / dpr);
+
+      pattern.image.forEach((object: DisplayObject) => {
+        plugin.renderDisplayObject(
+          object,
+          offscreenCanvasContext,
+          canvasContext,
+          restoreStack,
+        );
+      });
+
+      restoreStack.forEach(() => {
+        offscreenCanvasContext.restore();
+      });
+    }
+
+    const canvasPattern = this.imagePool.getOrCreatePatternSync(
+      pattern,
+      context,
+      $offscreenCanvas,
+      dpr,
+      () => {
+        // set dirty rectangle flag
+        object.renderable.dirty = true;
+        canvasContext.renderingService.dirtify();
+      },
+    );
 
     return canvasPattern;
   }

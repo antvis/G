@@ -1,4 +1,4 @@
-import type {
+import {
   CanvasContext,
   CSSGradientValue,
   CSSRGB,
@@ -6,13 +6,15 @@ import type {
   ParsedBaseStyleProps,
   Pattern,
   ContextService,
+  isPattern,
 } from '@antv/g-lite';
+import { SVGRendererPlugin } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { createOrUpdateFilter } from './Filter';
 import { createOrUpdateGradientAndPattern } from './Pattern';
 import { createOrUpdateShadow } from './Shadow';
 
-const urlRegexp = /url\(#(.*)\)/;
+const urlRegexp = /url\("?#(.*)\)/;
 
 export class DefElementManager {
   constructor(private context: CanvasContext) {}
@@ -61,16 +63,25 @@ export class DefElementManager {
     $el: SVGElement,
     parsedColor: CSSGradientValue[] | CSSRGB | Pattern,
     name: string,
+    plugin: SVGRendererPlugin,
   ) {
     const { document: doc, createImage } = this.context.config;
 
     if ($el) {
-      // `url(#${gradientId})`
-      const matches = $el.getAttribute(name)?.match(urlRegexp);
+      let attributeValue = '';
+      if (isPattern(parsedColor)) {
+        // `fill: url(#${patternId})`
+        attributeValue = $el.style[name];
+      } else {
+        // `url(#${gradientId})`
+        attributeValue = $el.getAttribute(name) || '';
+      }
+
+      const matches = attributeValue.match(urlRegexp);
       if (matches && matches.length > 1) {
         this.clearUnusedDefElement(
           this.gradientCache,
-          matches[1],
+          matches[1].replace('"', ''),
           object.entity,
         );
       }
@@ -83,6 +94,7 @@ export class DefElementManager {
         parsedColor,
         name,
         createImage,
+        plugin,
       );
       if (!this.gradientCache[newDefElementId]) {
         this.gradientCache[newDefElementId] = new Set();

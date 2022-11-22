@@ -1,11 +1,6 @@
-import { Canvas } from '@antv/g-lite';
+import { Circle, Rect } from '@antv/g-lite';
 import type { DotPatternCfg } from './interfaces';
-import {
-  drawBackground,
-  getSymbolsPosition,
-  getUnitPatternSize,
-  initCanvas,
-} from './util';
+import { getSymbolsPosition, getUnitPatternSize } from './util';
 
 export const defaultDotPatternCfg = {
   size: 6,
@@ -20,49 +15,65 @@ export const defaultDotPatternCfg = {
   isStagger: true,
 };
 
-export function drawDot(
-  context: CanvasRenderingContext2D,
-  cfg: DotPatternCfg,
-  x: number,
-  y: number,
-) {
-  const { size, fill, lineWidth, stroke, opacity, fillOpacity, strokeOpacity } =
-    cfg;
-
-  context.beginPath();
-  context.fillStyle = fill;
-  context.strokeStyle = stroke;
-  context.lineWidth = lineWidth;
-  context.arc(x, y, size / 2, 0, 2 * Math.PI, false);
-  context.globalAlpha = opacity * fillOpacity;
-  context.fill();
-  if (lineWidth) {
-    context.globalAlpha = opacity * strokeOpacity;
-    context.stroke();
-  }
-  context.closePath();
-}
-
-export function dots(canvas: Canvas, cfg?: DotPatternCfg): HTMLCanvasElement {
+export function dots(cfg?: DotPatternCfg): Rect {
   const dotCfg = {
     ...defaultDotPatternCfg,
     ...cfg,
   };
 
-  const { size, padding, isStagger } = dotCfg;
+  const {
+    size,
+    padding,
+    isStagger,
+    backgroundColor,
+    opacity,
+    fill,
+    fillOpacity,
+    lineWidth,
+    stroke,
+    strokeOpacity,
+  } = dotCfg;
 
   // 计算 画布大小，dots的位置
   const unitSize = getUnitPatternSize(size, padding, isStagger);
   const dots = getSymbolsPosition(unitSize, isStagger);
 
-  // 初始化 patternCanvas
-  const [$canvas, context] = initCanvas(canvas, unitSize, unitSize);
+  const background = new Rect({
+    style: {
+      width: unitSize,
+      height: unitSize,
+      fill: backgroundColor,
+      opacity,
+    },
+  });
 
-  // 绘制 background，dots
-  drawBackground(context, dotCfg, unitSize);
-  for (const [x, y] of dots) {
-    drawDot(context, dotCfg, x, y);
+  for (const [cx, cy] of dots) {
+    const circle = new Circle({
+      style: {
+        opacity,
+        fill,
+        fillOpacity,
+        cx,
+        cy,
+        r: size / 2,
+        lineWidth,
+        stroke,
+        strokeOpacity,
+      },
+    });
+    background.appendChild(circle);
   }
 
-  return $canvas;
+  return background;
+
+  // return {
+  //   offscreenCanvasSize: [unitSize, unitSize],
+  //   processCanvasRenderingContext2D: (context: CanvasRenderingContext2D) => {
+  //     // 绘制 background，dots
+  //     drawBackground(context, dotCfg, unitSize);
+  //     for (const [x, y] of dots) {
+  //       drawDot(context, dotCfg, x, y);
+  //     }
+  //   },
+  // };
 }
