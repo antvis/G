@@ -96,10 +96,12 @@ export class DefElementManager {
         createImage,
         plugin,
       );
-      if (!this.gradientCache[newDefElementId]) {
-        this.gradientCache[newDefElementId] = new Set();
+      if (newDefElementId) {
+        if (!this.gradientCache[newDefElementId]) {
+          this.gradientCache[newDefElementId] = new Set();
+        }
+        this.gradientCache[newDefElementId].add(object.entity);
       }
-      this.gradientCache[newDefElementId].add(object.entity);
     }
   }
 
