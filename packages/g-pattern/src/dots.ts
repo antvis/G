@@ -26,6 +26,7 @@ export function dots(cfg?: DotPatternCfg): Rect {
     padding,
     isStagger,
     backgroundColor,
+    backgroundOpacity,
     opacity,
     fill,
     fillOpacity,
@@ -43,7 +44,8 @@ export function dots(cfg?: DotPatternCfg): Rect {
       width: unitSize,
       height: unitSize,
       fill: backgroundColor,
-      opacity,
+      opacity: 1,
+      fillOpacity: backgroundOpacity,
     },
   });
 
@@ -65,15 +67,4 @@ export function dots(cfg?: DotPatternCfg): Rect {
   }
 
   return background;
-
-  // return {
-  //   offscreenCanvasSize: [unitSize, unitSize],
-  //   processCanvasRenderingContext2D: (context: CanvasRenderingContext2D) => {
-  //     // 绘制 background，dots
-  //     drawBackground(context, dotCfg, unitSize);
-  //     for (const [x, y] of dots) {
-  //       drawDot(context, dotCfg, x, y);
-  //     }
-  //   },
-  // };
 }

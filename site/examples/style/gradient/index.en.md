@@ -1,4 +1,4 @@
 ---
-title: Pattern
+title: Gradient
 order: 1
 ---

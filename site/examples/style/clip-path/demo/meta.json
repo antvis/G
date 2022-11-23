@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "clip.js",
+      "title": {
+        "zh": "裁剪区域",
+        "en": "Clip Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669181270740/Nov-23-2022%25252013-25-56.gif"
+    }
+  ]
+}

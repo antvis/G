@@ -108,6 +108,7 @@ const config = {
   size: 6,
   padding: 1,
   backgroundColor: 'transparent',
+  backgroundOpacity: 1,
   fill: '#ff0000',
   stroke: 'transparent',
   opacity: 1,
@@ -138,6 +139,9 @@ folder.add(config, 'padding', 0, 20).onChange((padding) => {
 });
 folder.addColor(config, 'backgroundColor').onChange((backgroundColor) => {
   updatePattern('backgroundColor', backgroundColor);
+});
+folder.add(config, 'backgroundOpacity', 0, 1).onChange((backgroundOpacity) => {
+  updatePattern('backgroundOpacity', backgroundOpacity);
 });
 folder.addColor(config, 'fill').onChange((fill) => {
   updatePattern('fill', fill);

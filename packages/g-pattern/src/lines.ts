@@ -8,32 +8,11 @@ export const defaultLinePatternCfg = {
   spacing: 5,
   opacity: 1,
   backgroundColor: 'transparent',
+  backgroundOpacity: 1,
   strokeOpacity: 1,
   stroke: '#fff',
   lineWidth: 2,
 };
-
-/**
- * 绘制line
- *
- * @param context canvasContext
- * @param cfg linePattern 的配置
- * @param d 绘制 path 所需的 d
- */
-// export function drawLine(
-//   context: CanvasRenderingContext2D,
-//   cfg: LinePatternCfg,
-//   d: string,
-// ) {
-//   const { stroke, lineWidth, strokeOpacity, opacity } = cfg;
-//   const path = new Path2D(d);
-
-//   context.globalAlpha = opacity * strokeOpacity;
-//   context.lineCap = 'square';
-//   context.strokeStyle = lineWidth ? stroke : 'transparent';
-//   context.lineWidth = lineWidth;
-//   context.stroke(path);
-// }
 
 /**
  * 创建 linePattern
@@ -48,6 +27,7 @@ export function lines(cfg?: LinePatternCfg): Rect {
     spacing,
     lineWidth,
     backgroundColor,
+    backgroundOpacity,
     opacity,
     stroke,
     strokeOpacity,
@@ -66,7 +46,8 @@ export function lines(cfg?: LinePatternCfg): Rect {
       width,
       height,
       fill: backgroundColor,
-      opacity,
+      opacity: 1,
+      fillOpacity: backgroundOpacity,
     },
   });
 
@@ -76,6 +57,7 @@ export function lines(cfg?: LinePatternCfg): Rect {
       opacity,
       stroke,
       strokeOpacity,
+      fillOpacity: 1,
       lineWidth,
     },
   });

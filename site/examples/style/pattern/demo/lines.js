@@ -107,6 +107,7 @@ const folder = gui.addFolder('lines');
 const config = {
   spacing: 5,
   backgroundColor: 'transparent',
+  backgroundOpacity: 1,
   stroke: '#000000',
   opacity: 1,
   strokeOpacity: 1,
@@ -131,6 +132,9 @@ folder.add(config, 'spacing', 0, 20).onChange((spacing) => {
 });
 folder.addColor(config, 'backgroundColor').onChange((backgroundColor) => {
   updatePattern('backgroundColor', backgroundColor);
+});
+folder.add(config, 'backgroundOpacity', 0, 1).onChange((backgroundOpacity) => {
+  updatePattern('backgroundOpacity', backgroundOpacity);
 });
 folder.addColor(config, 'stroke').onChange((stroke) => {
   updatePattern('stroke', stroke);

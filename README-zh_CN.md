@@ -145,6 +145,15 @@ $ yarn build
 $ yarn test
 ```
 
+### 启动站点
+
+```bash
+$ cd ./site
+$ yarn install
+$ cd ../
+$ yarn link-site
+```
+
 ## Inspired by
 
 -   [Sprite.js](https://github.com/spritejs/spritejs)

@@ -1,9 +1,21 @@
 {
-  "title": {
-    "zh": "使用 Pattern",
-    "en": "Use Pattern"
-  },
   "demos": [
+    {
+      "filename": "pattern.js",
+      "title": {
+        "zh": "Pattern",
+        "en": "Pattern"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*cRmFTItZOtYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "rect.js",
+      "title": {
+        "zh": "Rect as pattern",
+        "en": "Rect as pattern"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8kA4QZ8xU88AAAAAAAAAAAAADmJ7AQ/original"
+    },
     {
       "filename": "dots.js",
       "title": {
@@ -34,7 +46,7 @@
         "zh": "Pie Chart",
         "en": "Pie Chart"
       },
-      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JB3lRoeyzdIAAAAAAAAAAAAADmJ7AQ/original"
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*zf6PSJ4u6yAAAAAAAAAAAAAADmJ7AQ/original"
     }
   ]
 }

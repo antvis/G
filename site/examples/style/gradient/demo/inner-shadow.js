@@ -1,21 +1,11 @@
-import { Canvas, CanvasEvent } from '@antv/g';
+import { Canvas, CanvasEvent, Path } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
-import * as d3 from 'd3';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import { dots, lines, squares } from '@antv/g-pattern';
-
-/**
- * inspired by sprite.js
- * @see http://spritejs.com/#/en/guide/d3
- *
- * ported from fullstack-d3
- * @see https://codesandbox.io/s/z375662r0p?file=/src/index.js
- */
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -24,16 +14,6 @@ const webglRenderer = new WebGLRenderer();
 const webgpuRenderer = new WebGPURenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
-  fonts: [
-    {
-      name: 'Roboto',
-      url: '/Roboto-Regular.ttf',
-    },
-    {
-      name: 'sans-serif',
-      url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
-    },
-  ],
 });
 
 // create a canvas
@@ -44,58 +24,21 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const data = [38024.7, 209484.6, 6201.2, 17741.9, 24377.7];
-const total = d3.sum(data);
-const colors = 'blue red maroon gray orange'.split(' ');
-const width = 600;
-const sectorArc = d3
-  .arc()
-  .innerRadius(width / 8)
-  .outerRadius(width / 5);
-const tweens = [
-  function (sectorData) {
-    const currentPath = this.getAttribute('d');
-    return d3.interpolate(currentPath, sectorArc(sectorData));
+const path = new Path({
+  style: {
+    d: 'M33.6,51S44.36,31.65,48.15,18,64.38,7.42,66.62,18s10.6,33.6,13.15,33.1',
+    transform: 'scale(3) translate(200, 100)',
+    lineWidth: 1,
+    stroke: '#54BECC',
+    fill: 'linear-gradient(-90deg, rgba(178, 230, 181, 0), rgba(178, 230, 181, 0.6) 14%, rgba(166, 221, 179, 0.82) 23%, rgba(101, 171, 170, 0.9) 67%, rgb(23, 80, 157))',
+    shadowType: 'inner',
+    shadowColor: 'red',
+    shadowBlur: 10,
   },
-  function (sectorData) {
-    const interpolator = d3.interpolate(this._current, sectorData);
-    this._current = interpolator(0);
-    return (t) => sectorArc(interpolator(t));
-  },
-];
-let svg;
-
-function drawCharts(data) {
-  const pieData = d3.pie().sort(null)(data);
-  const sectors = svg.selectAll('path').data(pieData);
-
-  sectors
-    .enter()
-    .append('path')
-    .attr('stroke', 'black')
-    .attr('fill', (_, i) => {
-      return {
-        image: dots({ fill: colors[i] }),
-        repetition: 'repeat',
-      };
-    })
-    .attr('d', sectorArc)
-    .property('_current', (d) => d);
-
-  sectors.transition().duration(1000).attrTween('d', tweens[1]);
-}
+});
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  const wrapper = d3.select(
-    canvas.document.documentElement, // use GCanvas' document element instead of a real DOM
-  );
-
-  const bounds = wrapper
-    .append('g')
-    .style('transform', `translate(${width / 2}px, ${width / 2}px)`);
-  svg = bounds.append('g');
-
-  drawCharts(data);
+  canvas.appendChild(path);
 });
 
 // stats
@@ -107,7 +50,7 @@ $stats.style.left = '0px';
 $stats.style.top = '0px';
 const $wrapper = document.getElementById('container');
 $wrapper.appendChild($stats);
-canvas.on('afterrender', () => {
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }

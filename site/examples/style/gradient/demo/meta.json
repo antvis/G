@@ -1,0 +1,20 @@
+{
+  "demos": [
+    {
+      "filename": "gradient.js",
+      "title": {
+        "zh": "Gradient",
+        "en": "Gradient"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*rWIvR729TqwAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "inner-shadow.js",
+      "title": {
+        "zh": "Inner Shadow",
+        "en": "Inner Shadow"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*kFlaT5Ph1gYAAAAAAAAAAAAADmJ7AQ/original"
+    }
+  ]
+}

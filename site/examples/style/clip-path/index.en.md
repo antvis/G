@@ -1,4 +1,4 @@
 ---
-title: Pattern
+title: ClipPath
 order: 1
 ---
