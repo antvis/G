@@ -1,4 +1,4 @@
 ---
 title: Pattern
-order: 300
+order: 1
 ---

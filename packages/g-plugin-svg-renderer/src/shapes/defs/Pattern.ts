@@ -1,8 +1,10 @@
-import type {
+import {
   DisplayObject,
   LinearGradient,
+  parseTransform,
   Pattern,
   RadialGradient,
+  Rect,
 } from '@antv/g-lite';
 import {
   computeLinearGradient,
@@ -14,6 +16,7 @@ import {
   isPattern,
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
+import { SVGRendererPlugin } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { FILTER_PREFIX } from './Filter';
 
@@ -29,6 +32,7 @@ export function createOrUpdateGradientAndPattern(
   parsedColor: CSSGradientValue[] | CSSRGB | Pattern,
   name: string,
   createImage: (url: string) => HTMLImageElement,
+  plugin: SVGRendererPlugin,
 ) {
   // eg. clipPath don't have fill/stroke
   if (!parsedColor) {
@@ -53,6 +57,7 @@ export function createOrUpdateGradientAndPattern(
       object,
       parsedColor,
       createImage,
+      plugin,
     );
     // use style instead of attribute when applying <pattern>
     // @see https://stackoverflow.com/a/7723115
@@ -114,6 +119,9 @@ function generateCacheKey(
   } else if (isPattern(src)) {
     if (isString(src.image)) {
       cacheKey = `pattern-${src.image}-${src.repetition}`;
+    } else if (src.image instanceof Rect) {
+      // use rect's entity as key
+      cacheKey = `pattern-rect-${src.image.entity}`;
     } else {
       cacheKey = `pattern-${counter}`;
     }
@@ -128,17 +136,103 @@ function generateCacheKey(
   return cacheKey2IDMap[cacheKey];
 }
 
+function formatTransform(transform: string) {
+  // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternTransform
+  // should remove unit: rotate(20deg) -> rotate(20)
+  return parseTransform(transform)
+    .map((parsed) => {
+      const { t, d } = parsed;
+      if (t === 'translate') {
+        return `translate(${d[0].value} ${d[1].value})`;
+      } else if (t === 'translatex') {
+        return `translate(${d[0].value} 0)`;
+      } else if (t === 'translatey') {
+        return `translate(0 ${d[0].value})`;
+      } else if (t === 'rotate') {
+        return `rotate(${d[0].value})`;
+      } else if (t === 'scale') {
+        // scale(1) scale(1, 1)
+        const newScale = d?.map((s) => s.value) || [1, 1];
+        return `scale(${newScale[0]}, ${newScale[1]})`;
+      } else if (t === 'scalex') {
+        const newScale = d?.map((s) => s.value) || [1];
+        return `scale(${newScale[0]}, 1)`;
+      } else if (t === 'scaley') {
+        const newScale = d?.map((s) => s.value) || [1];
+        return `scale(1, ${newScale[0]})`;
+      } else if (t === 'skew') {
+        const newSkew = d?.map((s) => s.value) || [0, 0];
+        return `skewX(${newSkew[0]}) skewY(${newSkew[1]})`;
+      } else if (t === 'skewx') {
+        const newSkew = d?.map((s) => s.value) || [0];
+        return `skewX(${newSkew[0]})`;
+      } else if (t === 'skewy') {
+        const newSkew = d?.map((s) => s.value) || [0];
+        return `skewY(${newSkew[0]})`;
+      } else if (t === 'matrix') {
+        const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
+        return `matrix(${a} ${b} ${c} ${dd} ${tx} ${ty})`;
+      }
+    })
+    .join(' ');
+}
+
+function create$Pattern(
+  document: Document,
+  $def: SVGDefsElement,
+  object: DisplayObject,
+  pattern: Pattern,
+  patternId: string,
+  width: number,
+  height: number,
+) {
+  const { repetition, transform } = pattern;
+
+  // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
+  const $pattern = createSVGElement('pattern', document) as SVGPatternElement;
+  if (transform) {
+    $pattern.setAttribute('patternTransform', formatTransform(transform));
+  }
+  $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+
+  $pattern.id = patternId;
+  $def.appendChild($pattern);
+
+  $pattern.setAttribute('x', '0');
+  $pattern.setAttribute('y', '0');
+
+  const { halfExtents } = object.getGeometryBounds();
+
+  // There is no equivalent to CSS no-repeat for SVG patterns
+  // @see https://stackoverflow.com/a/33481956
+  let patternWidth = width;
+  let patternHeight = height;
+  if (repetition === 'repeat-x') {
+    patternHeight = halfExtents[1] * 2;
+  } else if (repetition === 'repeat-y') {
+    patternWidth = halfExtents[0] * 2;
+  } else if (repetition === 'no-repeat') {
+    patternWidth = halfExtents[0] * 2;
+    patternHeight = halfExtents[1] * 2;
+  }
+  $pattern.setAttribute('width', `${patternWidth}`);
+  $pattern.setAttribute('height', `${patternHeight}`);
+
+  return $pattern;
+}
+
 function createOrUpdatePattern(
   document: Document,
   $def: SVGDefsElement,
   object: DisplayObject,
   pattern: Pattern,
   createImage: (url: string) => HTMLImageElement,
+  plugin: SVGRendererPlugin,
 ) {
   const patternId = generateCacheKey(pattern);
   const $existed = $def.querySelector(`#${patternId}`);
   if (!$existed) {
-    const { image, repetition } = pattern;
+    const { image } = pattern;
 
     let imageURL = '';
     if (isString(image)) {
@@ -156,18 +250,7 @@ function createOrUpdatePattern(
     }
 
     if (imageURL) {
-      // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/pattern
-      const $pattern = createSVGElement(
-        'pattern',
-        document,
-      ) as SVGPatternElement;
-      $pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-
       const $image = createSVGElement('image', document);
-
-      $pattern.appendChild($image);
-      $pattern.id = patternId;
-      $def.appendChild($pattern);
       // use href instead of xlink:href
       // @see https://stackoverflow.com/a/13379007
       $image.setAttribute('href', imageURL);
@@ -184,25 +267,18 @@ function createOrUpdatePattern(
       }
       img.src = imageURL;
       const onload = function () {
-        $pattern.setAttribute('x', '0');
-        $pattern.setAttribute('y', '0');
+        const $pattern = create$Pattern(
+          document,
+          $def,
+          object,
+          pattern,
+          patternId,
+          img.width,
+          img.height,
+        );
 
-        const { halfExtents } = object.getGeometryBounds();
-
-        // There is no equivalent to CSS no-repeat for SVG patterns
-        // @see https://stackoverflow.com/a/33481956
-        let patternWidth = img.width;
-        let patternHeight = img.height;
-        if (repetition === 'repeat-x') {
-          patternHeight = halfExtents[1] * 2;
-        } else if (repetition === 'repeat-y') {
-          patternWidth = halfExtents[0] * 2;
-        } else if (repetition === 'no-repeat') {
-          patternWidth = halfExtents[0] * 2;
-          patternHeight = halfExtents[1] * 2;
-        }
-        $pattern.setAttribute('width', `${patternWidth}`);
-        $pattern.setAttribute('height', `${patternHeight}`);
+        $def.appendChild($pattern);
+        $pattern.appendChild($image);
 
         $image.setAttribute('x', '0');
         $image.setAttribute('y', '0');
@@ -216,6 +292,37 @@ function createOrUpdatePattern(
         // Fix onload() bug in IE9
         // img.src = img.src;
       }
+    }
+
+    if (image instanceof Rect) {
+      const { width, height } = image.parsedStyle;
+
+      const $pattern = create$Pattern(
+        document,
+        $def,
+        image,
+        pattern,
+        patternId,
+        width,
+        height,
+      );
+
+      // traverse subtree of pattern
+      image.forEach((object: DisplayObject) => {
+        plugin.createSVGDom(document, object, null);
+
+        // @ts-ignore
+        const svgElement = object.elementSVG;
+
+        // apply local RTS transformation to <group> wrapper
+        // account for anchor
+        const localTransform = object.getLocalTransform();
+        plugin.applyTransform(svgElement.$groupEl, localTransform);
+      });
+
+      // @ts-ignore
+      const svgElement = image.elementSVG;
+      $pattern.appendChild(svgElement.$groupEl);
     }
   }
   return patternId;

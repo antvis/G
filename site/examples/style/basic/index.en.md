@@ -1,4 +1,4 @@
 ---
-title: Style System
+title: Pattern
 order: 1
 ---

@@ -1,4 +1,4 @@
-import type {
+import {
   ICamera,
   CSSGradientValue,
   DataURLOptions,
@@ -12,6 +12,9 @@ import type {
   RenderingPluginContext,
   ContextService,
   Shape,
+  Rect,
+  parsedTransformToMat4,
+  parseTransform,
 } from '@antv/g-lite';
 import {
   convertToPath,
@@ -165,8 +168,6 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
             return;
           }
 
-          console.log('draw frame...');
-
           canvas.save();
 
           this.applyCamera(canvas, this.context.camera, tmpVec3, tmpQuat);
@@ -315,7 +316,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const { surface, CanvasKit } = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
-    const { image, repetition } = pattern;
+    const { image, repetition, transform } = pattern;
 
     let src: TextureSource;
     if (isString(image)) {
@@ -325,6 +326,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         object.renderable.dirty = true;
         this.context.renderingService.dirtify();
       });
+    } else if (image instanceof Rect) {
+      // image.forEach((object: DisplayObject) => {
+      // });
     } else {
       // @ts-ignore
       src = image;
@@ -350,7 +354,26 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           tx = CanvasKit.TileMode.Decal;
           ty = CanvasKit.TileMode.Decal;
         }
-        const pattern = decoded.makeShaderCubic(tx, ty, 1 / 3, 1 / 3);
+
+        let mat: mat4;
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
+        if (transform) {
+          mat = parsedTransformToMat4(parseTransform(transform));
+        } else {
+          mat = mat4.identity(mat4.create());
+        }
+
+        const pattern = decoded.makeShaderCubic(tx, ty, 1 / 3, 1 / 3, [
+          mat[0],
+          mat[4],
+          mat[12],
+          mat[1],
+          mat[5],
+          mat[13],
+          0,
+          0,
+          1,
+        ]);
         return pattern;
       }
     }

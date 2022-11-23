@@ -1,5 +1,6 @@
 import { clamp, isNil, isObject, memoize } from '@antv/util';
 import * as d3 from 'd3-color';
+import { Rect } from '../..';
 import type { Tuple4Number } from '../../types';
 import type { CSSGradientValue } from '../cssom';
 import { CSSRGB } from '../cssom';
@@ -10,7 +11,7 @@ import { parseGradient } from './gradient';
  * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createPattern
  */
 export interface Pattern {
-  image: string | CanvasImageSource;
+  image: string | CanvasImageSource | Rect;
   repetition: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
   transform: string;
 }

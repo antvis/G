@@ -5,6 +5,8 @@ export type PatternCfg = {
    * @default "inherit"
    */
   backgroundColor?: string;
+
+  backgroundOpacity?: number;
   /**
    * @title 贴图图案填充色
    */

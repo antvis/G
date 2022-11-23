@@ -9,7 +9,13 @@ import type {
   RenderingPluginContext,
   ContextService,
 } from '@antv/g-lite';
-import { CSSRGB, ElementEvent, propertyMetadataCache, RenderReason, Shape } from '@antv/g-lite';
+import {
+  CSSRGB,
+  ElementEvent,
+  propertyMetadataCache,
+  RenderReason,
+  Shape,
+} from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import type { DefElementManager } from './shapes/defs';
@@ -145,7 +151,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
    *  </use>
    * </clipPath>
    */
-  private clipPathUseMap: WeakMap<DisplayObject, SVGUseElement[]> = new WeakMap();
+  private clipPathUseMap: WeakMap<DisplayObject, SVGUseElement[]> =
+    new WeakMap();
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
@@ -195,10 +202,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
 
       if (fill && !(fill instanceof CSSRGB)) {
-        this.defElementManager.createOrUpdateGradientAndPattern(object, $el, fill, 'fill');
+        this.defElementManager.createOrUpdateGradientAndPattern(
+          object,
+          $el,
+          fill,
+          'fill',
+          this,
+        );
       }
       if (stroke && !(stroke instanceof CSSRGB)) {
-        this.defElementManager.createOrUpdateGradientAndPattern(object, $el, stroke, 'stroke');
+        this.defElementManager.createOrUpdateGradientAndPattern(
+          object,
+          $el,
+          stroke,
+          'stroke',
+          this,
+        );
       }
     };
 
@@ -208,7 +227,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // <defs>
       this.defElementManager.init();
 
-      const $svg = (this.context.contextService as ContextService<SVGElement>).getContext()!;
+      const $svg = (
+        this.context.contextService as ContextService<SVGElement>
+      ).getContext()!;
       if (background) {
         $svg.style.background = background;
       }
@@ -223,22 +244,37 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleGeometryBoundsChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.addEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleGeometryBoundsChanged,
+      );
     });
 
     renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleGeometryBoundsChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleGeometryBoundsChanged,
+      );
     });
 
-    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (object: DisplayObject) => {
-      // if (!object.isCulled()) {
-      this.renderQueue.push(object);
-      // }
-    });
+    renderingService.hooks.render.tap(
+      SVGRendererPlugin.tag,
+      (object: DisplayObject) => {
+        // if (!object.isCulled()) {
+        this.renderQueue.push(object);
+        // }
+      },
+    );
 
     renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
       const { document: doc } = this.context.config;
@@ -251,7 +287,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
             object?.elementSVG?.$groupEl;
 
           if ($parentGroupEl) {
-            this.reorderChildren(doc || document, $parentGroupEl, children || []);
+            this.reorderChildren(
+              doc || document,
+              $parentGroupEl,
+              children || [],
+            );
           }
         });
         this.pendingReorderQueue.clear();
@@ -305,7 +345,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
               const children = (parent?.children || []).slice();
 
               if ($groupEl) {
-                this.reorderChildren(document, $groupEl, children as DisplayObject[]);
+                this.reorderChildren(
+                  document,
+                  $groupEl,
+                  children as DisplayObject[],
+                );
               }
             } else if (attrName === 'increasedLineWidthForHitTesting') {
               this.createOrUpdateHitArea(object, $el, $groupEl);
@@ -325,7 +369,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
     return `${G_SVG_PREFIX}-${object.nodeName}-${object.entity}`;
   }
 
-  private reorderChildren(doc: Document, $groupEl: SVGElement, children: DisplayObject[]) {
+  private reorderChildren(
+    doc: Document,
+    $groupEl: SVGElement,
+    children: DisplayObject[],
+  ) {
     // need to reorder parent's children
     children.sort((a, b) => a.sortable.renderOrder - b.sortable.renderOrder);
 
@@ -346,16 +394,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private applyTransform($el: SVGElement, rts: mat4) {
+  applyTransform($el: SVGElement, rts: mat4) {
     // use proper precision avoiding too long string in `transform`
     // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
     $el.setAttribute(
       'transform',
-      `matrix(${numberToLongString(rts[0])},${numberToLongString(rts[1])},${numberToLongString(
-        rts[4],
-      )},${numberToLongString(rts[5])},${numberToLongString(rts[12])},${numberToLongString(
-        rts[13],
-      )})`,
+      `matrix(${numberToLongString(rts[0])},${numberToLongString(
+        rts[1],
+      )},${numberToLongString(rts[4])},${numberToLongString(
+        rts[5],
+      )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`,
     );
   }
 
@@ -385,7 +433,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const { parsedStyle, computedStyle } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
       // @ts-ignore
-      this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(object, name),
+      this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(
+        object,
+        name,
+      ),
     );
 
     // need re-generate path
@@ -393,7 +444,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       [$el, $hitTestingEl].forEach(($el) => {
         if ($el) {
           // @ts-ignore
-          this.context.SVGElementLifeCycleContribution.updateElementAttribute(object, $el);
+          this.context.SVGElementLifeCycleContribution.updateElementAttribute(
+            object,
+            $el,
+          );
           if (object.nodeName !== Shape.TEXT) {
             this.updateAnchorWithTransform(object);
           }
@@ -406,7 +460,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const usedName = SVG_ATTR_MAP[name];
       const computedValue = computedStyle[name];
       const computedValueStr = computedValue && computedValue.toString();
-      const formattedValueStr = FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
+      const formattedValueStr =
+        FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
       const inherited = !!propertyMetadataCache[name]?.inh;
 
@@ -427,19 +482,34 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (object.nodeName === Shape.HTML) {
           $el.style.background = usedValue.toString();
         } else {
-          this.defElementManager.createOrUpdateGradientAndPattern(object, $el, usedValue, usedName);
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            usedValue,
+            usedName,
+            this,
+          );
         }
       } else if (name === 'stroke') {
         if (object.nodeName === Shape.HTML) {
           $el.style['border-color'] = usedValue.toString();
           $el.style['border-style'] = 'solid';
         } else {
-          this.defElementManager.createOrUpdateGradientAndPattern(object, $el, usedValue, usedName);
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            usedValue,
+            usedName,
+            this,
+          );
         }
       } else if (inherited && usedName) {
         // use computed value
         // update `visibility` on <group>
-        if (computedValueStr !== 'unset' && computedValueStr !== DEFAULT_VALUE_MAP[name]) {
+        if (
+          computedValueStr !== 'unset' &&
+          computedValueStr !== DEFAULT_VALUE_MAP[name]
+        ) {
           $groupEl?.setAttribute(usedName, formattedValueStr);
         } else {
           $groupEl?.removeAttribute(usedName);
@@ -471,7 +541,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
           // ignore 'unset' and default value
           [$el, $hitTestingEl].forEach(($el: SVGElement) => {
             if ($el && usedName) {
-              if (computedValueStr !== 'unset' && computedValueStr !== DEFAULT_VALUE_MAP[name]) {
+              if (
+                computedValueStr !== 'unset' &&
+                computedValueStr !== DEFAULT_VALUE_MAP[name]
+              ) {
                 $el.setAttribute(usedName, formattedValueStr);
               } else {
                 $el.removeAttribute(usedName);
@@ -483,7 +556,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
   }
 
-  private createSVGDom(
+  createSVGDom(
     document: Document,
     object: DisplayObject,
     root: SVGElement,
@@ -496,8 +569,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = object.elementSVG;
 
     // use <group> as default, eg. CustomElement
-    // @ts-ignore
-    const $el = this.context.SVGElementLifeCycleContribution.createElement(object);
+    const $el =
+      // @ts-ignore
+      this.context.SVGElementLifeCycleContribution.createElement(object);
     if ($el) {
       let $groupEl: SVGElement;
 
@@ -513,7 +587,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $el.setAttribute('name', object.name);
       }
 
-      if (($el.hasAttribute('data-wrapgroup') || $el.nodeName !== 'g') && !noWrapWithGroup) {
+      if (
+        ($el.hasAttribute('data-wrapgroup') || $el.nodeName !== 'g') &&
+        !noWrapWithGroup
+      ) {
         $groupEl = createSVGElement('g', document);
         $groupEl.appendChild($el);
       } else {
@@ -549,16 +626,24 @@ export class SVGRendererPlugin implements RenderingPlugin {
       $groupEl.parentNode.removeChild($groupEl);
 
       // @ts-ignore
-      this.context.SVGElementLifeCycleContribution.destroyElement(object, $groupEl);
+      this.context.SVGElementLifeCycleContribution.destroyElement(
+        object,
+        $groupEl,
+      );
       // object.entity.removeComponent(ElementSVG, true);
     }
   }
 
-  private createOrUpdateHitArea(object: DisplayObject, $el: SVGElement, $groupEl: SVGElement) {
+  private createOrUpdateHitArea(
+    object: DisplayObject,
+    $el: SVGElement,
+    $groupEl: SVGElement,
+  ) {
     // @ts-ignore
     const svgElement = object.elementSVG as ElementSVG;
     let $hitTestingEl = svgElement.$hitTestingEl;
-    const increasedLineWidthForHitTesting = object.parsedStyle.increasedLineWidthForHitTesting;
+    const increasedLineWidthForHitTesting =
+      object.parsedStyle.increasedLineWidthForHitTesting;
 
     // account for hitArea
     if (increasedLineWidthForHitTesting) {
@@ -594,7 +679,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
     }
   }
 
-  private createOrUpdateInnerHTML(doc: Document, $el: SVGElement, usedValue: any) {
+  private createOrUpdateInnerHTML(
+    doc: Document,
+    $el: SVGElement,
+    usedValue: any,
+  ) {
     const $div = (doc || document).createElement('div');
     if (typeof usedValue === 'string') {
       $div.innerHTML = usedValue;
@@ -632,7 +721,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         } else {
           // the clipPath is allowed to be detached from canvas
           if (!clipPath.isConnected) {
-            const $existedClipPath = $def.querySelector(`#${this.getId(clipPath)}`);
+            const $existedClipPath = $def.querySelector(
+              `#${this.getId(clipPath)}`,
+            );
             if (!$existedClipPath) {
               this.createSVGDom(document, clipPath, $def, true);
             }
@@ -692,26 +783,31 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
     // @ts-ignore
-    [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(($el: SVGElement) => {
-      if ($el) {
-        const tx = -(anchor[0] * width);
-        const ty = -(anchor[1] * height);
+    [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(
+      ($el: SVGElement) => {
+        if ($el) {
+          const tx = -(anchor[0] * width);
+          const ty = -(anchor[1] * height);
 
-        if (tx !== 0 || ty !== 0) {
-          // apply anchor to element's `transform` property
-          $el.setAttribute(
-            'transform',
-            // can't use percent unit like translate(-50%, -50%)
-            // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-            `translate(${tx},${ty})`,
-          );
-        }
+          if (tx !== 0 || ty !== 0) {
+            // apply anchor to element's `transform` property
+            $el.setAttribute(
+              'transform',
+              // can't use percent unit like translate(-50%, -50%)
+              // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
+              `translate(${tx},${ty})`,
+            );
+          }
 
-        if (object.nodeName === Shape.CIRCLE || object.nodeName === Shape.ELLIPSE) {
-          $el.setAttribute('cx', `${width / 2}`);
-          $el.setAttribute('cy', `${height / 2}`);
+          if (
+            object.nodeName === Shape.CIRCLE ||
+            object.nodeName === Shape.ELLIPSE
+          ) {
+            $el.setAttribute('cx', `${width / 2}`);
+            $el.setAttribute('cy', `${height / 2}`);
+          }
         }
-      }
-    });
+      },
+    );
   }
 }

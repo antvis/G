@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-shader-components",
-  "version": "1.7.29",
+  "version": "1.7.30",
   "description": "Shader components based on glslify",
   "keywords": [
     "antv",

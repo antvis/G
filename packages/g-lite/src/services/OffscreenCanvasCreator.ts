@@ -5,6 +5,8 @@ import type { CanvasLike } from '..';
  * - g `ctx.measureText`
  * - g-plugin-canvas-picker `ctx.isPointInPath`
  * - g-plugin-device-renderer `ctx.createLinearGradient` and generate texture
+ *
+ * @see https://blog.scottlogic.com/2020/03/19/offscreen-canvas.html
  */
 export class OffscreenCanvasCreator {
   private canvas: CanvasLike;
@@ -22,16 +24,15 @@ export class OffscreenCanvasCreator {
     } else {
       try {
         // OffscreenCanvas2D measureText can be up to 40% faster.
-        // @ts-ignore
-        this.canvas = new window.OffscreenCanvas(0, 0);
-        this.context = this.canvas.getContext('2d')!;
+        this.canvas = new window.OffscreenCanvas(0, 0) as unknown as CanvasLike;
+        this.context = this.canvas.getContext('2d');
         if (!this.context || !this.context.measureText) {
           this.canvas = document.createElement('canvas');
-          this.context = this.canvas.getContext('2d')!;
+          this.context = this.canvas.getContext('2d');
         }
       } catch (ex) {
         this.canvas = document.createElement('canvas');
-        this.context = this.canvas.getContext('2d')!;
+        this.context = this.canvas.getContext('2d');
       }
     }
 

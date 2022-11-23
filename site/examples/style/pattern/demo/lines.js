@@ -37,9 +37,6 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-const linesCanvas = lines(canvas, {
-  stroke: '#000000',
-});
 const rect = new Rect({
   style: {
     x: 50,
@@ -47,7 +44,9 @@ const rect = new Rect({
     width: 200,
     height: 100,
     fill: {
-      image: linesCanvas,
+      image: lines({
+        stroke: '#000000',
+      }),
       repetition: 'repeat',
     },
   },
@@ -108,6 +107,7 @@ const folder = gui.addFolder('lines');
 const config = {
   spacing: 5,
   backgroundColor: 'transparent',
+  backgroundOpacity: 1,
   stroke: '#000000',
   opacity: 1,
   strokeOpacity: 1,
@@ -122,10 +122,7 @@ const transformConfig = {
 function updatePattern(name, value) {
   const { translateX, translateY, scale, rotate } = transformConfig;
   rect.style.fill = {
-    image: lines(
-      canvas,
-      Object.assign({}, config, name ? { [name]: value } : {}),
-    ),
+    image: lines(Object.assign({}, config, name ? { [name]: value } : {})),
     repetition: 'repeat',
     transform: `translate(${translateX}, ${translateY}) rotate(${rotate}deg) scale(${scale})`,
   };
@@ -135,6 +132,9 @@ folder.add(config, 'spacing', 0, 20).onChange((spacing) => {
 });
 folder.addColor(config, 'backgroundColor').onChange((backgroundColor) => {
   updatePattern('backgroundColor', backgroundColor);
+});
+folder.add(config, 'backgroundOpacity', 0, 1).onChange((backgroundOpacity) => {
+  updatePattern('backgroundOpacity', backgroundOpacity);
 });
 folder.addColor(config, 'stroke').onChange((stroke) => {
   updatePattern('stroke', stroke);
