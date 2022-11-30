@@ -31,6 +31,7 @@ export function squares(cfg?: SquarePatternCfg): Rect {
     padding,
     isStagger,
     backgroundColor,
+    backgroundOpacity,
     opacity,
     fill,
     fillOpacity,
@@ -48,7 +49,8 @@ export function squares(cfg?: SquarePatternCfg): Rect {
       width: unitSize,
       height: unitSize,
       fill: backgroundColor,
-      opacity,
+      opacity: 1,
+      fillOpacity: backgroundOpacity,
     },
   });
 
