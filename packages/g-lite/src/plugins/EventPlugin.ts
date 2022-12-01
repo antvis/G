@@ -29,14 +29,17 @@ export class EventPlugin implements RenderingPlugin {
 
     const canvas = this.context.renderingContext.root.ownerDocument.defaultView;
 
-    this.context.eventService.setPickHandler(async (position: EventPosition) => {
-      const { picked } = await this.context.renderingService.hooks.pick.promise({
-        position,
-        picked: [],
-        topmost: true, // we only concern the topmost element
-      });
-      return picked[0] || null;
-    });
+    this.context.eventService.setPickHandler(
+      async (position: EventPosition) => {
+        const { picked } =
+          await this.context.renderingService.hooks.pick.promise({
+            position,
+            picked: [],
+            topmost: true, // we only concern the topmost element
+          });
+        return picked[0] || null;
+      },
+    );
 
     renderingService.hooks.pointerWheel.tap(
       EventPlugin.tag,
@@ -50,13 +53,17 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerDown.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch')
+        if (
+          canvas.supportsTouchEvents &&
+          (nativeEvent as PointerEvent).pointerType === 'touch'
+        )
           return;
 
         const events = this.normalizeToPointerEvent(nativeEvent, canvas);
 
         if (this.autoPreventDefault && (events[0] as any).isNormalized) {
-          const cancelable = nativeEvent.cancelable || !('cancelable' in nativeEvent);
+          const cancelable =
+            nativeEvent.cancelable || !('cancelable' in nativeEvent);
 
           if (cancelable) {
             nativeEvent.preventDefault();
@@ -64,7 +71,11 @@ export class EventPlugin implements RenderingPlugin {
         }
 
         for (const event of events) {
-          const federatedEvent = this.bootstrapEvent(this.rootPointerEvent, event, canvas);
+          const federatedEvent = this.bootstrapEvent(
+            this.rootPointerEvent,
+            event,
+            canvas,
+          );
           this.context.eventService.mapEvent(federatedEvent);
         }
 
@@ -75,25 +86,41 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerUp.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {
-        if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch')
+        if (
+          canvas.supportsTouchEvents &&
+          (nativeEvent as PointerEvent).pointerType === 'touch'
+        )
           return;
 
         // account for element in SVG
-        const $element = this.context.contextService.getDomElement();
-        const outside =
-          $element &&
-          nativeEvent.target &&
-          nativeEvent.target !== $element &&
-          // @ts-ignore
-          $element.contains &&
-          // @ts-ignore
-          !$element.contains(nativeEvent.target)
-            ? 'outside'
-            : '';
-        const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
+        const $element =
+          this.context.contextService.getDomElement() as HTMLCanvasElement;
+
+        let outside = 'outside';
+        try {
+          outside =
+            $element &&
+            nativeEvent.target &&
+            nativeEvent.target !== $element &&
+            $element.contains &&
+            !$element.contains(nativeEvent.target as Node)
+              ? 'outside'
+              : '';
+        } catch (e) {
+          // nativeEvent.target maybe not Node, such as Window
+          // @see https://github.com/antvis/G/issues/1235
+        }
+        const normalizedEvents = this.normalizeToPointerEvent(
+          nativeEvent,
+          canvas,
+        );
 
         for (const normalizedEvent of normalizedEvents) {
-          const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
+          const event = this.bootstrapEvent(
+            this.rootPointerEvent,
+            normalizedEvent,
+            canvas,
+          );
           event.type += outside;
           this.context.eventService.mapEvent(event);
         }
@@ -110,13 +137,22 @@ export class EventPlugin implements RenderingPlugin {
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
-    const canvas = this.context.renderingContext.root?.ownerDocument?.defaultView;
-    if (canvas.supportsTouchEvents && (nativeEvent as PointerEvent).pointerType === 'touch') return;
+    const canvas =
+      this.context.renderingContext.root?.ownerDocument?.defaultView;
+    if (
+      canvas.supportsTouchEvents &&
+      (nativeEvent as PointerEvent).pointerType === 'touch'
+    )
+      return;
 
     const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
 
     for (const normalizedEvent of normalizedEvents) {
-      const event = this.bootstrapEvent(this.rootPointerEvent, normalizedEvent, canvas);
+      const event = this.bootstrapEvent(
+        this.rootPointerEvent,
+        normalizedEvent,
+        canvas,
+      );
 
       this.context.eventService.mapEvent(event);
     }
@@ -133,11 +169,17 @@ export class EventPlugin implements RenderingPlugin {
      * @see https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/offsetX
      */
     const { offsetX, offsetY, clientX, clientY } = nativeEvent;
-    if (this.context.config.supportsCSSTransform && !isNil(offsetX) && !isNil(offsetY)) {
+    if (
+      this.context.config.supportsCSSTransform &&
+      !isNil(offsetX) &&
+      !isNil(offsetY)
+    ) {
       x = offsetX;
       y = offsetY;
     } else {
-      const point = this.context.eventService.client2Viewport(new Point(clientX, clientY));
+      const point = this.context.eventService.client2Viewport(
+        new Point(clientX, clientY),
+      );
       x = point.x;
       y = point.y;
     }
@@ -168,7 +210,8 @@ export class EventPlugin implements RenderingPlugin {
     const { x, y } = this.getViewportXY(nativeEvent);
     event.viewport.x = x;
     event.viewport.y = y;
-    const { x: canvasX, y: canvasY } = this.context.eventService.viewport2Canvas(event.viewport);
+    const { x: canvasX, y: canvasY } =
+      this.context.eventService.viewport2Canvas(event.viewport);
     event.canvas.x = canvasX;
     event.canvas.y = canvasY;
     event.global.copyFrom(event.canvas);
@@ -200,7 +243,8 @@ export class EventPlugin implements RenderingPlugin {
     const { x, y } = this.getViewportXY(nativeEvent);
     event.viewport.x = x;
     event.viewport.y = y;
-    const { x: canvasX, y: canvasY } = this.context.eventService.viewport2Canvas(event.viewport);
+    const { x: canvasX, y: canvasY } =
+      this.context.eventService.viewport2Canvas(event.viewport);
     event.canvas.x = canvasX;
     event.canvas.y = canvasY;
     event.global.copyFrom(event.canvas);
@@ -215,7 +259,10 @@ export class EventPlugin implements RenderingPlugin {
   /**
    * Transfers base & mouse event data from the nativeEvent to the federated event.
    */
-  private transferMouseData(event: FederatedMouseEvent, nativeEvent: MouseEvent): void {
+  private transferMouseData(
+    event: FederatedMouseEvent,
+    nativeEvent: MouseEvent,
+  ): void {
     event.isTrusted = nativeEvent.isTrusted;
     event.srcElement = nativeEvent.srcElement;
     event.timeStamp = performance.now();
@@ -239,10 +286,15 @@ export class EventPlugin implements RenderingPlugin {
   }
 
   private setCursor(cursor: Cursor | null) {
-    this.context.contextService.applyCursorStyle(cursor || this.context.config.cursor || 'default');
+    this.context.contextService.applyCursorStyle(
+      cursor || this.context.config.cursor || 'default',
+    );
   }
 
-  private normalizeToPointerEvent(event: InteractivePointerEvent, canvas: ICanvas): PointerEvent[] {
+  private normalizeToPointerEvent(
+    event: InteractivePointerEvent,
+    canvas: ICanvas,
+  ): PointerEvent[] {
     const normalizedEvents = [];
     if (canvas.isTouchEvent(event)) {
       for (let i = 0; i < event.changedTouches.length; i++) {
@@ -253,7 +305,8 @@ export class EventPlugin implements RenderingPlugin {
         if (isUndefined(touch.button)) touch.button = 0;
         if (isUndefined(touch.buttons)) touch.buttons = 1;
         if (isUndefined(touch.isPrimary)) {
-          touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
+          touch.isPrimary =
+            event.touches.length === 1 && event.type === 'touchstart';
         }
         if (isUndefined(touch.width)) touch.width = touch.radiusX || 1;
         if (isUndefined(touch.height)) touch.height = touch.radiusY || 1;
@@ -261,7 +314,8 @@ export class EventPlugin implements RenderingPlugin {
         if (isUndefined(touch.tiltY)) touch.tiltY = 0;
         if (isUndefined(touch.pointerType)) touch.pointerType = 'touch';
         // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Touch/identifier
-        if (isUndefined(touch.pointerId)) touch.pointerId = touch.identifier || 0;
+        if (isUndefined(touch.pointerId))
+          touch.pointerId = touch.identifier || 0;
         if (isUndefined(touch.pressure)) touch.pressure = touch.force || 0.5;
         if (isUndefined(touch.twist)) touch.twist = 0;
         if (isUndefined(touch.tangentialPressure)) touch.tangentialPressure = 0;
@@ -278,10 +332,12 @@ export class EventPlugin implements RenderingPlugin {
       if (isUndefined(tempEvent.tiltX)) tempEvent.tiltX = 0;
       if (isUndefined(tempEvent.tiltY)) tempEvent.tiltY = 0;
       if (isUndefined(tempEvent.pointerType)) tempEvent.pointerType = 'mouse';
-      if (isUndefined(tempEvent.pointerId)) tempEvent.pointerId = MOUSE_POINTER_ID;
+      if (isUndefined(tempEvent.pointerId))
+        tempEvent.pointerId = MOUSE_POINTER_ID;
       if (isUndefined(tempEvent.pressure)) tempEvent.pressure = 0.5;
       if (isUndefined(tempEvent.twist)) tempEvent.twist = 0;
-      if (isUndefined(tempEvent.tangentialPressure)) tempEvent.tangentialPressure = 0;
+      if (isUndefined(tempEvent.tangentialPressure))
+        tempEvent.tangentialPressure = 0;
       tempEvent.isNormalized = true;
 
       normalizedEvents.push(tempEvent);
