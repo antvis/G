@@ -51,6 +51,7 @@ export class ParseContext {
   endFrame: number;
   version: string;
   autoplay = false;
+  fill: FillMode = 'auto';
   iterations = 0;
 
   assetsMap: Map<string, Lottie.Asset> = new Map();
@@ -1203,15 +1204,20 @@ function parseLayers(
   });
 }
 
+const DEFAULT_LOAD_ANIMATION_OPTIONS: LoadAnimationOptions = {
+  loop: true,
+  autoplay: false,
+  fill: 'both',
+};
 export function parse(
   data: Lottie.Animation,
-  options: Partial<LoadAnimationOptions> = {
-    loop: true,
-    autoplay: false,
-  },
+  options: Partial<LoadAnimationOptions>,
 ) {
   completeData(data);
-  const { loop, autoplay } = options;
+  const { loop, autoplay, fill } = {
+    ...DEFAULT_LOAD_ANIMATION_OPTIONS,
+    ...options,
+  };
   const context = new ParseContext();
 
   context.fps = data.fr || 30;
@@ -1220,6 +1226,7 @@ export function parse(
   context.endFrame = data.op;
   context.version = data.v;
   context.autoplay = !!autoplay;
+  context.fill = fill;
   context.iterations = isNumber(loop) ? loop : loop ? Infinity : 1;
   // @see https://lottiefiles.github.io/lottie-docs/assets/
   data.assets?.forEach((asset) => {

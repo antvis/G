@@ -363,11 +363,15 @@ export class LottieAnimation {
               const formattedKeyframes = keyframes.map((keyframe) =>
                 definedProps(keyframe),
               ) as KeyframeAnimationKeyframe[];
+
+              console.log(this.context.fill);
+
               const options = definedProps({
                 delay,
                 duration,
                 easing,
                 iterations: this.context.iterations,
+                fill: this.context.fill,
               }) as Omit<KeyframeAnimation, 'keyframes'>;
 
               keyframesOptions.push([formattedKeyframes, options]);
