@@ -363,9 +363,6 @@ export class LottieAnimation {
               const formattedKeyframes = keyframes.map((keyframe) =>
                 definedProps(keyframe),
               ) as KeyframeAnimationKeyframe[];
-
-              console.log(this.context.fill);
-
               const options = definedProps({
                 delay,
                 duration,
@@ -530,6 +527,11 @@ export class LottieAnimation {
           keyframe[name] = keyframe.style[name];
         });
         delete keyframe.style;
+      }
+
+      if ('ignore' in keyframe) {
+        keyframe.visibility = keyframe.ignore ? 'hidden' : 'visible';
+        delete keyframe.ignore;
       }
     });
 
