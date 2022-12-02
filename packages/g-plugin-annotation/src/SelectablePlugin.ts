@@ -10,8 +10,17 @@ import { CustomEvent, ElementEvent, Group, Shape } from '@antv/g-lite';
 import { DrawerEvent, SelectableEvent } from './constants/enum';
 import { RectDrawer } from './drawers/rect';
 import type { DrawerState } from './interface/drawer';
-import { getHeightFromBbox, getWidthFromBbox, renderRect } from './rendering/rect-render';
-import { SelectableCircle, SelectablePolyline, SelectableRect } from './selectable';
+import {
+  getHeightFromBbox,
+  getWidthFromBbox,
+  renderRect,
+} from './rendering/rect-render';
+import {
+  SelectableCircle,
+  SelectablePolyline,
+  SelectableRect,
+} from './selectable';
+import { AbstractSelectable } from './selectable/AbstractSelectable';
 import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
 import type { AnnotationPluginOptions } from './tokens';
@@ -122,7 +131,10 @@ export class SelectablePlugin implements RenderingPlugin {
         constructor = SelectableRect;
       } else if (object.nodeName === Shape.CIRCLE) {
         constructor = SelectableCircle;
-      } else if (object.nodeName === Shape.LINE || object.nodeName === Shape.POLYLINE) {
+      } else if (
+        object.nodeName === Shape.LINE ||
+        object.nodeName === Shape.POLYLINE
+      ) {
         constructor = SelectablePolyline;
       } else if (object.nodeName === Shape.POLYGON) {
         constructor = SelectablePolygon;
@@ -162,7 +174,8 @@ export class SelectablePlugin implements RenderingPlugin {
   }
 
   apply(context: RenderingPluginContext) {
-    const { renderingService, renderingContext } = context;
+    const { renderingService, renderingContext, contextService } = context;
+    const $canvas = contextService.getDomElement() as HTMLCanvasElement;
     const document = renderingContext.root.ownerDocument;
     const canvas = document.defaultView as Canvas;
     this.canvas = canvas;
@@ -228,13 +241,28 @@ export class SelectablePlugin implements RenderingPlugin {
         }
 
         this.selectDisplayObject(object);
+      } else if (e.shiftKey) {
+        const selectable = e
+          .composedPath()
+          .find(
+            (el) => el instanceof AbstractSelectable,
+          ) as AbstractSelectable<any>;
+        if (selectable) {
+          const { target } = selectable.style;
+          // if already selected, deselect it
+          if (this.selected.indexOf(target) > -1) {
+            this.deselectDisplayObject(target);
+          }
+        }
       }
     };
 
     const handleMovingTarget = (e: CustomEvent) => {
       const { dx, dy } = e.detail;
       // move selectableUI at the same time
-      const selectable = this.getOrCreateSelectableUI(e.target as DisplayObject);
+      const selectable = this.getOrCreateSelectableUI(
+        e.target as DisplayObject,
+      );
       if (selectable) {
         selectable.moveMask(dx, dy);
       }
@@ -428,7 +456,8 @@ export class SelectablePlugin implements RenderingPlugin {
       canvas.addEventListener('pointermove', handleMouseMove);
       canvas.addEventListener('pointerup', handleMouseUp);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      window.addEventListener('keydown', handleKeyDown);
+      $canvas.setAttribute('tabindex', '0');
+      $canvas.addEventListener('keydown', handleKeyDown);
       canvas.appendChild(this.activeSelectableLayer);
 
       canvas.addEventListener(SelectableEvent.MOVED, handleMovedTarget);
@@ -442,11 +471,15 @@ export class SelectablePlugin implements RenderingPlugin {
       canvas.removeEventListener('pointermove', handleMouseMove);
       canvas.removeEventListener('pointerup', handleMouseUp);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      window.removeEventListener('keydown', handleKeyDown);
+      $canvas.removeAttribute('tabindex');
+      $canvas.removeEventListener('keydown', handleKeyDown);
       canvas.removeChild(this.activeSelectableLayer);
 
       canvas.removeEventListener(SelectableEvent.MOVED, handleMovedTarget);
-      canvas.removeEventListener(SelectableEvent.MODIFIED, handleModifiedTarget);
+      canvas.removeEventListener(
+        SelectableEvent.MODIFIED,
+        handleModifiedTarget,
+      );
       canvas.removeEventListener(SelectableEvent.MOVING, handleMovingTarget);
     });
   }

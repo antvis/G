@@ -399,9 +399,10 @@ export class TextService {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
           if (ellipsisWidth > 0 && ellipsisWidth <= maxWidth) {
             // Backspace from line's end.
+            const currentLineLength = lines[currentIndex].length;
             let lastLineWidth = 0;
-            let lastLineIndex = 0;
-            for (let i = 0; i < lines[currentIndex].length; i++) {
+            let lastLineIndex = currentLineLength;
+            for (let i = 0; i < currentLineLength; i++) {
               const width = calcWidth(lines[currentIndex][i]);
               if (lastLineWidth + width + ellipsisWidth > maxWidth) {
                 lastLineIndex = i;

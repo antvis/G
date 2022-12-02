@@ -368,6 +368,7 @@ export class LottieAnimation {
                 duration,
                 easing,
                 iterations: this.context.iterations,
+                fill: this.context.fill,
               }) as Omit<KeyframeAnimation, 'keyframes'>;
 
               keyframesOptions.push([formattedKeyframes, options]);
@@ -526,6 +527,11 @@ export class LottieAnimation {
           keyframe[name] = keyframe.style[name];
         });
         delete keyframe.style;
+      }
+
+      if ('ignore' in keyframe) {
+        keyframe.visibility = keyframe.ignore ? 'hidden' : 'visible';
+        delete keyframe.ignore;
       }
     });
 

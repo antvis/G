@@ -8,7 +8,11 @@ import { formatAttributeName, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
-import type { PropertyMetadata, PropertyParseOptions, StyleValueRegistry } from './interfaces';
+import type {
+  PropertyMetadata,
+  PropertyParseOptions,
+  StyleValueRegistry,
+} from './interfaces';
 import { PropertySyntax } from './interfaces';
 import type { ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser/dimension';
@@ -210,10 +214,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     ind: true,
     inh: true,
     /**
-     * TODO: support interpolation
+     * support interpolation
      * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility#interpolation
      */
-    // int: true,
+    int: true,
     d: 'visible',
   },
   {
@@ -514,7 +518,11 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     l: true,
     syntax: PropertySyntax.NUMBER,
     d: (nodeName: string) => {
-      if (nodeName === Shape.PATH || nodeName === Shape.POLYGON || nodeName === Shape.POLYLINE) {
+      if (
+        nodeName === Shape.PATH ||
+        nodeName === Shape.POLYGON ||
+        nodeName === Shape.POLYLINE
+      ) {
         return '4';
       }
       return '10';
@@ -653,7 +661,12 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       usedAttributes: [],
     },
   ) {
-    const { skipUpdateAttribute, skipParse, forceUpdateGeometry, usedAttributes } = options;
+    const {
+      skipUpdateAttribute,
+      skipParse,
+      forceUpdateGeometry,
+      usedAttributes,
+    } = options;
 
     let needUpdateGeometry = forceUpdateGeometry;
     let attributeNames = Object.keys(attributes);
@@ -735,7 +748,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * string -> parsed value
    */
-  parseProperty(name: string, value: any, object: DisplayObject): CSSStyleValue {
+  parseProperty(
+    name: string,
+    value: any,
+    object: DisplayObject,
+  ): CSSStyleValue {
     const metadata = propertyMetadataCache[name];
 
     let computed: CSSStyleValue = value;
@@ -768,7 +785,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   /**
    * computed value -> used value
    */
-  computeProperty(name: string, computed: CSSStyleValue, object: DisplayObject) {
+  computeProperty(
+    name: string,
+    computed: CSSStyleValue,
+    object: DisplayObject,
+  ) {
     const metadata = propertyMetadataCache[name];
     const isDocumentElement = object.id === 'g-root';
 
@@ -796,14 +817,18 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           if (!isNil(defaultValue)) {
             computed = this.parseProperty(
               name,
-              isFunction(defaultValue) ? defaultValue(object.nodeName) : defaultValue,
+              isFunction(defaultValue)
+                ? defaultValue(object.nodeName)
+                : defaultValue,
               object,
             );
           }
         } else if (value === 'inherit') {
           // @see https://developer.mozilla.org/en-US/docs/Web/CSS/inherit
           // behave like `inherit`
-          const resolved = this.tryToResolveProperty(object, name, { inherited: true });
+          const resolved = this.tryToResolveProperty(object, name, {
+            inherited: true,
+          });
           if (!isNil(resolved)) {
             // object.parsedStyle[name] = resolved;
             // return false;
@@ -836,7 +861,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const metadata = propertyMetadataCache[name];
 
     if (metadata && metadata.syntax) {
-      const handler = metadata.syntax && this.getPropertySyntax(metadata.syntax);
+      const handler =
+        metadata.syntax && this.getPropertySyntax(metadata.syntax);
       const propertyHandler = handler;
 
       if (propertyHandler && propertyHandler.postProcessor) {
@@ -860,11 +886,18 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
   }
 
-  tryToResolveProperty(object: DisplayObject, name: string, options: { inherited?: boolean } = {}) {
+  tryToResolveProperty(
+    object: DisplayObject,
+    name: string,
+    options: { inherited?: boolean } = {},
+  ) {
     const { inherited } = options;
 
     if (inherited) {
-      if (object.parentElement && isPropertyResolved(object.parentElement as DisplayObject, name)) {
+      if (
+        object.parentElement &&
+        isPropertyResolved(object.parentElement as DisplayObject, name)
+      ) {
         // const computedValue = object.parentElement.computedStyle[name];
         const usedValue = object.parentElement.parsedStyle[name];
         if (
@@ -935,7 +968,12 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const flipX = height < 0;
 
       // init with content box
-      const halfExtents = vec3.set(tmpVec3a, Math.abs(width) / 2, Math.abs(height) / 2, depth / 2);
+      const halfExtents = vec3.set(
+        tmpVec3a,
+        Math.abs(width) / 2,
+        Math.abs(height) / 2,
+        depth / 2,
+      );
 
       // anchor is center by default, don't account for lineWidth here
       const {
@@ -986,11 +1024,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const hasStroke = stroke && !(stroke as CSSRGB).isNone;
       if (hasStroke) {
         const halfLineWidth =
-          ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) * expansion;
+          ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) *
+          expansion;
         // halfExtents[0] += halfLineWidth[0];
         // halfExtents[1] += halfLineWidth[1];
 
-        vec3.add(halfExtents, halfExtents, vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0));
+        vec3.add(
+          halfExtents,
+          halfExtents,
+          vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
+        );
       }
       geometry.renderBounds.update(center, halfExtents);
 
@@ -998,14 +1041,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (shadowColor && shadowType && shadowType !== 'inner') {
         const { min, max } = geometry.renderBounds;
 
-        const { shadowBlur, shadowOffsetX, shadowOffsetY } = parsedStyle as ParsedBaseStyleProps;
+        const { shadowBlur, shadowOffsetX, shadowOffsetY } =
+          parsedStyle as ParsedBaseStyleProps;
         const shadowBlurInPixels = shadowBlur || 0;
         const shadowOffsetXInPixels = shadowOffsetX || 0;
         const shadowOffsetYInPixels = shadowOffsetY || 0;
         const shadowLeft = min[0] - shadowBlurInPixels + shadowOffsetXInPixels;
         const shadowRight = max[0] + shadowBlurInPixels + shadowOffsetXInPixels;
         const shadowTop = min[1] - shadowBlurInPixels + shadowOffsetYInPixels;
-        const shadowBottom = max[1] + shadowBlurInPixels + shadowOffsetYInPixels;
+        const shadowBottom =
+          max[1] + shadowBlurInPixels + shadowOffsetYInPixels;
         min[0] = Math.min(min[0], shadowLeft);
         max[0] = Math.max(max[0], shadowRight);
         min[1] = Math.min(min[1], shadowTop);
@@ -1048,14 +1093,22 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       anchor = parsedStyle.anchor;
 
       // set transform origin
-      let usedOriginXValue = (flipY ? -1 : 1) * convertPercentUnit(transformOrigin[0], 0, object);
-      let usedOriginYValue = (flipX ? -1 : 1) * convertPercentUnit(transformOrigin[1], 1, object);
+      let usedOriginXValue =
+        (flipY ? -1 : 1) * convertPercentUnit(transformOrigin[0], 0, object);
+      let usedOriginYValue =
+        (flipX ? -1 : 1) * convertPercentUnit(transformOrigin[1], 1, object);
       usedOriginXValue =
         usedOriginXValue -
-        (flipY ? -1 : 1) * ((anchor && anchor[0]) || 0) * geometry.contentBounds.halfExtents[0] * 2;
+        (flipY ? -1 : 1) *
+          ((anchor && anchor[0]) || 0) *
+          geometry.contentBounds.halfExtents[0] *
+          2;
       usedOriginYValue =
         usedOriginYValue -
-        (flipX ? -1 : 1) * ((anchor && anchor[1]) || 0) * geometry.contentBounds.halfExtents[1] * 2;
+        (flipX ? -1 : 1) *
+          ((anchor && anchor[1]) || 0) *
+          geometry.contentBounds.halfExtents[1] *
+          2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
       runtime.sceneGraphService.dirtifyToRoot(object);

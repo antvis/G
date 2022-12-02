@@ -14,7 +14,7 @@
         "zh": "动画生命周期控制方法",
         "en": "Lifecycle of animation"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669864923715/Dec-01-2022%25252011-21-31.gif"
     },
     {
       "filename": "delay.js",
@@ -29,7 +29,8 @@
       "title": {
         "zh": "使用 currentTime 属性",
         "en": "Use currentTime"
-      }
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669864987249/Dec-01-2022%25252011-22-51.gif"
     },
     {
       "filename": "sequence.js",
@@ -37,7 +38,7 @@
         "zh": "连续动画",
         "en": "Sequence of animations"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*hafUTp9MrfYAAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669865042797/Dec-01-2022%25252011-23-50.gif"
     },
     {
       "filename": "multiple-attributes.js",
@@ -46,6 +47,14 @@
         "en": "Animatable attributes"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dZ03S7gEjz8AAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "visibility.js",
+      "title": {
+        "zh": "对 visibility 属性应用动画",
+        "en": "Interpolate visibility"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669865094705/Dec-01-2022%25252011-24-46.gif"
     },
     {
       "filename": "onframe.js",

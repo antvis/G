@@ -28,10 +28,25 @@
       "screenshot": "https://gw.alipayobjects.com/zos/raptor/1667977747890/A_NVmwSb89Y3kAAAAAAAAAAAAAARQnAQ.gif"
     },
     {
+      "filename": "radar.js",
+      "title": {
+        "zh": "雷达",
+        "en": "Radar"
+      },
+      "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669793623610/radar.gif"
+    },
+    {
       "filename": "ant.js",
       "title": {
         "zh": "蚂蚁形象",
         "en": "Ant"
+      }
+    },
+    {
+      "filename": "spring.js",
+      "title": {
+        "zh": "弹簧",
+        "en": "Spring"
       }
     }
   ]

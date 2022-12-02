@@ -12,6 +12,11 @@ export interface LoadAnimationOptions {
    * @see https://github.com/airbnb/lottie-web/blob/master/player/js/animation/AnimationItem.js#L42
    */
   autoplay: boolean;
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill
+   */
+  fill: FillMode;
 }
 
 /**
