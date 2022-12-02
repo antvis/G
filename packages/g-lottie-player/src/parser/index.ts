@@ -1048,8 +1048,8 @@ function parseLayers(
     // Layer time is offseted by the precomp layer.
 
     // Use the ip, op, st of ref from.
-    const layerIp = offsetTime + layer.ip;
-    const layerOp = offsetTime + layer.op;
+    // const layerIp = offsetTime + layer.ip;
+    // const layerOp = offsetTime + layer.op;
     const layerSt = offsetTime + layer.st;
     context.layerOffsetTime = offsetTime;
 

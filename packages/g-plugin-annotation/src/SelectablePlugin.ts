@@ -20,6 +20,7 @@ import {
   SelectablePolyline,
   SelectableRect,
 } from './selectable';
+import { AbstractSelectable } from './selectable/AbstractSelectable';
 import type { Selectable } from './selectable/interface';
 import { SelectablePolygon } from './selectable/SelectablePolygon';
 import type { AnnotationPluginOptions } from './tokens';
@@ -240,6 +241,19 @@ export class SelectablePlugin implements RenderingPlugin {
         }
 
         this.selectDisplayObject(object);
+      } else if (e.shiftKey) {
+        const selectable = e
+          .composedPath()
+          .find(
+            (el) => el instanceof AbstractSelectable,
+          ) as AbstractSelectable<any>;
+        if (selectable) {
+          const { target } = selectable.style;
+          // if already selected, deselect it
+          if (this.selected.indexOf(target) > -1) {
+            this.deselectDisplayObject(target);
+          }
+        }
       }
     };
 
