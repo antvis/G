@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-physx",
-  "version": "1.7.30",
+  "version": "1.7.31",
   "description": "A G plugin for PhysX",
   "keywords": [
     "antv",
