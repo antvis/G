@@ -40,6 +40,11 @@ canvas.addEventListener(CanvasEvent.READY, async () => {
   const data = await d3.json('/lottie/radar.json');
   const animation = loadAnimation(data, { loop: true });
   const wrapper = animation.render(canvas);
+
+  const data2 = await d3.json('/lottie/radar2.json');
+  const animation2 = loadAnimation(data2, { loop: true });
+  const wrapper2 = animation2.render(canvas);
+  wrapper2.translate(0, 200);
 });
 
 // stats
