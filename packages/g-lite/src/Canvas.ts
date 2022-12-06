@@ -1,4 +1,4 @@
-import RBush from 'rbush';
+import RBush from 'rbush/rbush.js';
 import {
   cancelAnimationFrame as cancelRAF,
   requestAnimationFrame as rAF,
