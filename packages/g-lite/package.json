@@ -39,7 +39,6 @@
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
     "rbush": "^3.0.1",
-    "request-animation-frame-polyfill": "^1.1.2",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
