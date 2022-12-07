@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, HTML, Rectangle } from '@antv/g';
+import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { loadAnimation } from '@antv/g-lottie-player';
@@ -61,9 +61,7 @@ canvas.addEventListener(CanvasEvent.READY, async () => {
   // wrapper.scale(0.5);
   // wrapper.translate(0, 200);
 
-  const pointer = await d3.json(
-    'https://gw.alipayobjects.com/os/OasisHub/3ccdf4d8-78e6-48c9-b06e-9e518057d144/data.json',
-  );
+  const pointer = await d3.json('/lottie/pointer.json');
   pointerAnimation = loadAnimation(pointer, { loop: true, autoplay: true });
   const wrapper = pointerAnimation.render(canvas);
   wrapper.scale(0.5);

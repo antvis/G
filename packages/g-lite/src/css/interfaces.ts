@@ -146,8 +146,16 @@ export interface StyleValueRegistry {
     options?: Partial<PropertyParseOptions>,
   ) => void;
 
-  parseProperty: (name: string, value: any, object: DisplayObject) => CSSStyleValue;
-  computeProperty: (name: string, computed: CSSStyleValue, object: DisplayObject) => any;
+  parseProperty: (
+    name: string,
+    value: any,
+    object: DisplayObject,
+  ) => CSSStyleValue;
+  computeProperty: (
+    name: string,
+    computed: CSSStyleValue,
+    object: DisplayObject,
+  ) => any;
 }
 
 export interface LayoutRegistry {

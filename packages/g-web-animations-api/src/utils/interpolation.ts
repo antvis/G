@@ -13,22 +13,42 @@ export function convertEffectInput(
   timing: IAnimationEffectTiming,
   target: IElement | null,
 ) {
-  const propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(keyframes, timing);
-  const interpolations = makeInterpolations(propertySpecificKeyframeGroups, target);
+  const propertySpecificKeyframeGroups = makePropertySpecificKeyframeGroups(
+    keyframes,
+    timing,
+  );
+  const interpolations = makeInterpolations(
+    propertySpecificKeyframeGroups,
+    target,
+  );
 
   return function (target: IElement, fraction: number) {
     if (fraction !== null) {
       interpolations
         .filter((interpolation) => {
-          return fraction >= interpolation.applyFrom && fraction < interpolation.applyTo;
+          return (
+            fraction >= interpolation.applyFrom &&
+            fraction < interpolation.applyTo
+          );
         })
         .forEach((interpolation) => {
           const offsetFraction = fraction - interpolation.startOffset;
-          const localDuration = interpolation.endOffset - interpolation.startOffset;
+          const localDuration =
+            interpolation.endOffset - interpolation.startOffset;
           const scaledLocalTime =
-            localDuration === 0 ? 0 : interpolation.easingFunction(offsetFraction / localDuration);
+            localDuration === 0
+              ? 0
+              : interpolation.easingFunction(offsetFraction / localDuration);
           // apply updated attribute
-          target.style[interpolation.property] = interpolation.interpolation(scaledLocalTime);
+          target.style[interpolation.property] =
+            interpolation.interpolation(scaledLocalTime);
+
+          // if (interpolation.property === 'visibility') {
+          //   console.log(
+          //     scaledLocalTime,
+          //     interpolation.interpolation(scaledLocalTime),
+          //   );
+          // }
         });
     } else {
       for (const property in propertySpecificKeyframeGroups)
@@ -61,7 +81,10 @@ function makePropertySpecificKeyframeGroups(
   keyframes: ComputedKeyframe[],
   timing: IAnimationEffectTiming,
 ) {
-  const propertySpecificKeyframeGroups: Record<string, PropertySpecificKeyframe[]> = {};
+  const propertySpecificKeyframeGroups: Record<
+    string,
+    PropertySpecificKeyframe[]
+  > = {};
 
   for (let i = 0; i < keyframes.length; i++) {
     for (const member in keyframes[i]) {
@@ -70,10 +93,12 @@ function makePropertySpecificKeyframeGroups(
           offset: keyframes[i].offset,
           computedOffset: keyframes[i].computedOffset,
           easing: keyframes[i].easing,
-          easingFunction: parseEasingFunction(keyframes[i].easing) || timing.easingFunction,
+          easingFunction:
+            parseEasingFunction(keyframes[i].easing) || timing.easingFunction,
           value: keyframes[i][member],
         };
-        propertySpecificKeyframeGroups[member] = propertySpecificKeyframeGroups[member] || [];
+        propertySpecificKeyframeGroups[member] =
+          propertySpecificKeyframeGroups[member] || [];
         propertySpecificKeyframeGroups[member].push(propertySpecificKeyframe);
       }
     }
@@ -150,8 +175,22 @@ function propertyInterpolation(
 ) {
   const metadata = propertyMetadataCache[property];
 
+  // discrete step
+  // if (property === 'visibility') {
+  //   return function (t: number) {
+  //     if (t === 0) return left;
+  //     if (t === 1) return right;
+
+  //     debugger;
+
+  //     return t < 0.5 ? left : right;
+  //   };
+  // }
+
   if (metadata && metadata.syntax && metadata.int) {
-    const propertyHandler = runtime.styleValueRegistry.getPropertySyntax(metadata.syntax);
+    const propertyHandler = runtime.styleValueRegistry.getPropertySyntax(
+      metadata.syntax,
+    );
 
     if (propertyHandler) {
       const computedLeft = runtime.styleValueRegistry.parseProperty(
@@ -206,7 +245,11 @@ function propertyInterpolation(
       // }
 
       // merger [left, right, n2string()]
-      const interpolationArgs = propertyHandler.mixer(usedLeft, usedRight, target);
+      const interpolationArgs = propertyHandler.mixer(
+        usedLeft,
+        usedRight,
+        target,
+      );
       if (interpolationArgs) {
         // @ts-ignore
         const interp = InterpolationFactory(...interpolationArgs);
@@ -228,7 +271,11 @@ function propertyInterpolation(
 /**
  * interpolate with number, boolean, number[], boolean[]
  */
-function interpolate(from: Interpolatable, to: Interpolatable, f: number): Interpolatable {
+function interpolate(
+  from: Interpolatable,
+  to: Interpolatable,
+  f: number,
+): Interpolatable {
   if (typeof from === 'number' && typeof to === 'number') {
     return from * (1 - f) + to * f;
   }

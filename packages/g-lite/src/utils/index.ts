@@ -10,3 +10,4 @@ export * from './pointer-events';
 export * from './string';
 export * from './tapable';
 export * from './text';
+export * from './raf';

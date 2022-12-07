@@ -444,6 +444,7 @@ export class LottieAnimation {
     keyframes: Record<string, any>[],
     object: DisplayObject,
   ) {
+    // let hasVisibility = false;
     keyframes.forEach((keyframe) => {
       // if ('offsetPath' in keyframe) {
       //   if (!object.style.offsetPath) {
@@ -532,6 +533,7 @@ export class LottieAnimation {
       if ('ignore' in keyframe) {
         keyframe.visibility = keyframe.ignore ? 'hidden' : 'visible';
         delete keyframe.ignore;
+        // hasVisibility = true;
       }
     });
 
@@ -557,6 +559,18 @@ export class LottieAnimation {
 
     // sort by offset
     keyframes.sort((a, b) => a.offset - b.offset);
+
+    // //
+    // if (hasVisibility) {
+    //   keyframes.forEach((keyframe, i) => {
+    //     if (!keyframe.visibility) {
+    //       const prev = keyframes[i - 1];
+    //       const next = keyframes[i + 1];
+    //       if (keyframe.offset)
+    //       keyframe.visibility = keyframes[i - 1].visibility;
+    //     }
+    //   });
+    // }
 
     return keyframes;
   }

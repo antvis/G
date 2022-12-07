@@ -1,4 +1,5 @@
-import RBush from 'rbush';
+// @see https://github.com/antvis/G/issues/1239
+import RBush from 'rbush/rbush.js';
 
 export * from './global-runtime';
 export * from './AbstractRenderer';

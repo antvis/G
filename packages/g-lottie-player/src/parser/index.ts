@@ -1048,8 +1048,8 @@ function parseLayers(
     // Layer time is offseted by the precomp layer.
 
     // Use the ip, op, st of ref from.
-    // const layerIp = offsetTime + layer.ip;
-    // const layerOp = offsetTime + layer.op;
+    const layerIp = offsetTime + layer.ip;
+    const layerOp = offsetTime + layer.op;
     const layerSt = offsetTime + layer.st;
     context.layerOffsetTime = offsetTime;
 
@@ -1154,37 +1154,37 @@ function parseLayers(
       addLayerOpacity(layer, layerGroup, context);
 
       // Update in and out animation.
-      // if (
-      //   layerIp != null &&
-      //   layerOp != null &&
-      //   (layerIp > context.startFrame || layerOp < context.endFrame)
-      // ) {
-      //   const duration = context.endFrame - context.startFrame;
-      //   const enterAndLeaveAnim = {
-      //     duration: duration * context.frameTime,
-      //     keyframes: [
-      //       {
-      //         ignore: false,
-      //         offset: (layerIp - context.startFrame) / duration,
-      //       },
-      //     ],
-      //   };
-      //   if (layerIp > context.startFrame) {
-      //     // Add initial keyframe.
-      //     // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
-      //     enterAndLeaveAnim.keyframes.unshift({
-      //       ignore: true,
-      //       offset: 0,
-      //     });
-      //   }
-      //   if ((layerOp - context.startFrame) / duration < 1) {
-      //     enterAndLeaveAnim.keyframes.push({
-      //       ignore: true,
-      //       offset: (layerOp - context.startFrame) / duration,
-      //     });
-      //   }
-      //   keyframeAnimations.push(enterAndLeaveAnim);
-      // }
+      if (
+        layerIp != null &&
+        layerOp != null &&
+        (layerIp > context.startFrame || layerOp < context.endFrame)
+      ) {
+        const duration = context.endFrame - context.startFrame;
+        const enterAndLeaveAnim = {
+          duration: duration * context.frameTime,
+          keyframes: [
+            {
+              ignore: false,
+              offset: (layerIp - context.startFrame) / duration,
+            },
+          ],
+        };
+        if (layerIp > context.startFrame) {
+          // Add initial keyframe.
+          // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
+          enterAndLeaveAnim.keyframes.unshift({
+            ignore: true,
+            offset: 0,
+          });
+        }
+        if ((layerOp - context.startFrame) / duration < 1) {
+          enterAndLeaveAnim.keyframes.push({
+            ignore: true,
+            offset: (layerOp - context.startFrame) / duration,
+          });
+        }
+        keyframeAnimations.push(enterAndLeaveAnim);
+      }
       if (keyframeAnimations.length) {
         layerGroup.keyframeAnimation = keyframeAnimations;
       }

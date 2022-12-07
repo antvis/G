@@ -205,7 +205,13 @@ export class SelectablePlugin implements RenderingPlugin {
 
       document
         .elementsFromBBox(x, y, x + width, y + height)
-        .filter((intersection) => intersection.style.selectable)
+        .filter((intersection) => {
+          const { minX, minY, maxX, maxY } = intersection.rBushNode.aabb;
+          // @see https://github.com/antvis/G/issues/1242
+          const isTotallyContains =
+            minX < x && minY < y && maxX > x + width && maxY > y + height;
+          return !isTotallyContains && intersection.style.selectable;
+        })
         .forEach((selected) => {
           this.selectDisplayObject(selected);
         });
@@ -232,8 +238,11 @@ export class SelectablePlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       // @ts-ignore
       if (object === document) {
-        this.deselectAllDisplayObjects();
-        this.selected = [];
+        // allow continuous selection @see https://github.com/antvis/G/issues/1240
+        if (!e.shiftKey) {
+          this.deselectAllDisplayObjects();
+          this.selected = [];
+        }
       } else if (object.style?.selectable) {
         if (!e.shiftKey) {
           // multi-select

@@ -1,8 +1,4 @@
-import RBush from 'rbush';
-import {
-  cancelAnimationFrame as cancelRAF,
-  requestAnimationFrame as rAF,
-} from 'request-animation-frame-polyfill';
+import RBush from 'rbush/rbush.js';
 import { runtime } from './global-runtime';
 import type { IRenderer } from './AbstractRenderer';
 import {
@@ -26,7 +22,14 @@ import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { EventService, RenderingService, RenderReason } from './services';
 import type { PointLike } from './shapes';
 import type { Cursor, InteractivePointerEvent, CanvasConfig } from './types';
-import { cleanExistedCanvas, getHeight, getWidth, isBrowser } from './utils';
+import {
+  cleanExistedCanvas,
+  getHeight,
+  getWidth,
+  isBrowser,
+  raf,
+  caf,
+} from './utils';
 
 export enum CanvasEvent {
   READY = 'ready',
@@ -171,9 +174,8 @@ export class Canvas extends EventTarget implements ICanvas {
      * implements `Window` interface
      */
     this.devicePixelRatio = dpr;
-    this.requestAnimationFrame = requestAnimationFrame ?? rAF.bind(globalThis);
-    this.cancelAnimationFrame =
-      cancelAnimationFrame ?? cancelRAF.bind(globalThis);
+    this.requestAnimationFrame = requestAnimationFrame ?? raf.bind(globalThis);
+    this.cancelAnimationFrame = cancelAnimationFrame ?? caf.bind(globalThis);
 
     /**
      * limits query
