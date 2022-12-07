@@ -232,8 +232,11 @@ export class SelectablePlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
       // @ts-ignore
       if (object === document) {
-        this.deselectAllDisplayObjects();
-        this.selected = [];
+        // allow continuous selection @see https://github.com/antvis/G/issues/1240
+        if (!e.shiftKey) {
+          this.deselectAllDisplayObjects();
+          this.selected = [];
+        }
       } else if (object.style?.selectable) {
         if (!e.shiftKey) {
           // multi-select
