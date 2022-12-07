@@ -205,7 +205,13 @@ export class SelectablePlugin implements RenderingPlugin {
 
       document
         .elementsFromBBox(x, y, x + width, y + height)
-        .filter((intersection) => intersection.style.selectable)
+        .filter((intersection) => {
+          const { minX, minY, maxX, maxY } = intersection.rBushNode.aabb;
+          // @see https://github.com/antvis/G/issues/1242
+          const isTotallyContains =
+            minX < x && minY < y && maxX > x + width && maxY > y + height;
+          return !isTotallyContains && intersection.style.selectable;
+        })
         .forEach((selected) => {
           this.selectDisplayObject(selected);
         });
