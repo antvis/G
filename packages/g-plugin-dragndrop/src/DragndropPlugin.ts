@@ -44,7 +44,7 @@ export class DragndropPlugin implements RenderingPlugin {
         let lastDragClientCoordinates = [event.clientX, event.clientY];
         // @ts-ignore
         // eslint-disable-next-line no-inner-declarations
-        async function handlePointermove(event: FederatedPointerEvent) {
+        const handlePointermove = async (event: FederatedPointerEvent) => {
           if (!dragstartTriggered) {
             const timeElapsed = event.timeStamp - dragstartTimeStamp;
             const distanceMoved = distanceSquareRoot(
@@ -122,7 +122,7 @@ export class DragndropPlugin implements RenderingPlugin {
               }
             }
           }
-        }
+        };
 
         canvas.addEventListener('pointermove', handlePointermove);
 

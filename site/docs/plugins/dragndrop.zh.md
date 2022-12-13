@@ -114,6 +114,16 @@ const plugin = new Plugin({
 -   `'pointer'` 默认值。鼠标位置进入 `dropzone` 区域则通过判定
 -   `'center'` 拖拽中图形包围盒中心进入 `dropzone` 区域则通过判定
 
+### 修改配置项
+
+除了在插件初始化时传入，还可以在后续任意时刻使用 `setOptions` 对以上配置项进行修改：
+
+```js
+plugin.setOptions({
+    dragstartTimeThreshold: 200,
+});
+```
+
 ## 使用方式
 
 通过配置图形支持 Drag（拖拽）、Drop（放置），我们可以监听相关的事件。Drag 和 Drop 相关的事件都是可冒泡的。
