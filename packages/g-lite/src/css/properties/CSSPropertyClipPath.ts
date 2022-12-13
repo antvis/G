@@ -6,14 +6,26 @@ import type { CSSProperty } from '../CSSProperty';
 /**
  * clipPath / textPath / offsetPath
  */
-export class CSSPropertyClipPath implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
-  calculator(name: string, oldPath: DisplayObject, newPath: DisplayObject, object: DisplayObject) {
+export class CSSPropertyClipPath
+  implements Partial<CSSProperty<DisplayObject, DisplayObject>>
+{
+  calculator(
+    name: string,
+    oldPath: DisplayObject,
+    newPath: DisplayObject,
+    object: DisplayObject,
+  ) {
     // unset
     if (newPath instanceof CSSKeywordValue) {
       newPath = null;
     }
 
-    runtime.sceneGraphService.updateDisplayObjectDependency(name, oldPath, newPath, object);
+    runtime.sceneGraphService.updateDisplayObjectDependency(
+      name,
+      oldPath,
+      newPath,
+      object,
+    );
 
     if (name === 'clipPath') {
       // should affect children

@@ -48,6 +48,13 @@
         "zh": "弹簧",
         "en": "Spring"
       }
+    },
+    {
+      "filename": "arrow.js",
+      "title": {
+        "zh": "箭头",
+        "en": "Arrow"
+      }
     }
   ]
 }

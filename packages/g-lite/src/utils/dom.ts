@@ -17,7 +17,9 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   return zIndex1 - zIndex2;
 }
 
-export function findClosestClipPathTarget(object: DisplayObject): DisplayObject {
+export function findClosestClipPathTarget(
+  object: DisplayObject,
+): DisplayObject {
   let el = object;
   do {
     const clipPath = el.style?.clipPath;
@@ -37,7 +39,9 @@ export function setDOMSize($el: CanvasLike, width: number, height: number) {
 
 export function getStyle($el: HTMLElement | CanvasLike, property: string) {
   if (isBrowser) {
-    return document.defaultView.getComputedStyle($el as Element, null).getPropertyValue(property);
+    return document.defaultView
+      .getComputedStyle($el as Element, null)
+      .getPropertyValue(property);
   }
 }
 

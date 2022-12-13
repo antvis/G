@@ -73,18 +73,33 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       renderingService.dirtify();
     };
 
-    renderingService.hooks.init.tapPromise(PrepareRendererPlugin.tag, async () => {
-      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-    });
+    renderingService.hooks.init.tapPromise(
+      PrepareRendererPlugin.tag,
+      async () => {
+        canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        canvas.addEventListener(
+          ElementEvent.ATTR_MODIFIED,
+          handleAttributeChanged,
+        );
+        canvas.addEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
+      },
+    );
 
     renderingService.hooks.destroy.tap(PrepareRendererPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
     });
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
