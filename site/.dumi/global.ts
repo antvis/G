@@ -86,3 +86,13 @@ if (window) {
     'Arli/2DAFTlSJnJOlkUa6HNKU9jRibQoNGFhS4RC1pi2A4cuP4n8ds7Td9IKQhHnjhs0QLEpRUnEdZBWLwSvsAMAAABTeyJvcmlnaW4iOiJodHRwczovL2cuYW50di5hbnRncm91cC5jb206NDQzIiwiZmVhdHVyZSI6IldlYkdQVSIsImV4cGlyeSI6MTY3NTIwOTU5OX0=';
   document.head.appendChild(tokenElement3);
 }
+
+if (
+  location.host === 'g-next.antv.vision' ||
+  location.host === 'antv-g-next.gitee.io'
+) {
+  (window as any).location.href = location.href.replace(
+    location.origin,
+    'https://g.antv.antgroup.com',
+  );
+}

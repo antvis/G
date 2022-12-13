@@ -10,7 +10,7 @@ import {
   Image,
   Shape,
 } from '@antv/g-lite';
-import type { PathArray } from '@antv/util';
+import { isNil, PathArray } from '@antv/util';
 import { path2String } from '@antv/util';
 // import { mat4, quat, vec3 } from 'gl-matrix';
 import type {
@@ -314,7 +314,7 @@ export class LottieAnimation {
 
     this.displayObjects.forEach((parent) => {
       parent.forEach((child: DisplayObject) => {
-        const keyframeAnimation = this.keyframeAnimationMap.get(child);
+        let keyframeAnimation = this.keyframeAnimationMap.get(child);
         const element = this.displayObjectElementMap.get(child);
         if (element && element.clipPath) {
           const { shape, keyframeAnimation } = element.clipPath;
@@ -340,7 +340,6 @@ export class LottieAnimation {
                   easing,
                 };
               }),
-              //
               {
                 delay,
                 duration,
@@ -350,6 +349,24 @@ export class LottieAnimation {
             );
             this.animations.push(clipPathAnimation);
           }
+        }
+
+        // account for animation only apply to visibility, e.g. spring
+        const { visibilityStartOffset, visibilityEndOffset, visibilityFrame } =
+          element;
+        if (
+          visibilityFrame &&
+          (!keyframeAnimation || !keyframeAnimation.length)
+        ) {
+          keyframeAnimation = [
+            {
+              duration: this.context.frameTime * visibilityFrame,
+              keyframes: [
+                { offset: 0, style: { opacity: 1 } },
+                { offset: 1, style: { opacity: 1 } },
+              ],
+            },
+          ];
         }
 
         if (keyframeAnimation && keyframeAnimation.length) {
@@ -425,6 +442,24 @@ export class LottieAnimation {
                   // console.log(child, formatted);
 
                   const animation = child.animate(formatted, options);
+                  if (
+                    !isNil(visibilityStartOffset) &&
+                    !isNil(visibilityEndOffset)
+                  ) {
+                    child.style.visibility = 'hidden';
+                    animation.onframe = () => {
+                      const { progress } = animation.effect.getComputedTiming();
+                      if (
+                        progress >= visibilityStartOffset &&
+                        progress < visibilityEndOffset
+                      ) {
+                        child.style.visibility = 'visible';
+                      } else {
+                        child.style.visibility = 'hidden';
+                      }
+                    };
+                  }
+
                   if (!this.context.autoplay) {
                     animation.pause();
                   }
@@ -530,11 +565,11 @@ export class LottieAnimation {
         delete keyframe.style;
       }
 
-      if ('ignore' in keyframe) {
-        keyframe.visibility = keyframe.ignore ? 'hidden' : 'visible';
-        delete keyframe.ignore;
-        // hasVisibility = true;
-      }
+      // if ('ignore' in keyframe) {
+      //   keyframe.visibility = keyframe.ignore ? 'hidden' : 'visible';
+      //   delete keyframe.ignore;
+      //   hasVisibility = true;
+      // }
     });
 
     // ignore empty interpolable attributes
@@ -560,7 +595,7 @@ export class LottieAnimation {
     // sort by offset
     keyframes.sort((a, b) => a.offset - b.offset);
 
-    // //
+    //
     // if (hasVisibility) {
     //   keyframes.forEach((keyframe, i) => {
     //     if (!keyframe.visibility) {
@@ -606,6 +641,11 @@ export class LottieAnimation {
       animation.play();
     });
   }
+
+  /**
+   * @see https://github.com/airbnb/lottie-web#playsegmentssegments-forceflag
+   */
+  playSegments(segments: [number, number], forceFlag = true) {}
 
   pause() {
     this.isPaused = true;

@@ -55,6 +55,13 @@
         "zh": "箭头",
         "en": "Arrow"
       }
+    },
+    {
+      "filename": "use-animations.js",
+      "title": {
+        "zh": "图标",
+        "en": "Icons"
+      }
     }
   ]
 }
