@@ -17,14 +17,16 @@
       "title": {
         "zh": "在 Group 上使用拖放",
         "en": "Use Drag'n'Drop on Group"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*TBlQQYoxQfQAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "dragndrop-perf.js",
       "title": {
         "zh": "拖放性能测试",
         "en": "Drag'n'Drop Perf"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*68gxTJFGvO4AAAAAAAAAAAAADmJ7AQ/original"
     }
   ]
 }

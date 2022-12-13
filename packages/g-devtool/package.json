@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-devtool",
-  "version": "0.10.32",
+  "version": "0.10.33",
   "private": true,
   "description": "devtool for g in browser",
   "license": "MIT",

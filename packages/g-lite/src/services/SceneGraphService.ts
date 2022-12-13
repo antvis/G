@@ -16,6 +16,14 @@ import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
 import type { GlobalRuntime } from '../global-runtime';
 
+function markRenderableDirty(e: Element) {
+  const renderable = e.renderable;
+  if (renderable) {
+    renderable.renderBoundsDirty = true;
+    renderable.boundsDirty = true;
+  }
+}
+
 /**
  * update transform in scene graph
  *
@@ -517,12 +525,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     while (p) {
-      const renderable = (p as Element).renderable;
-      if (renderable) {
-        renderable.renderBoundsDirty = true;
-        renderable.boundsDirty = true;
-      }
+      markRenderableDirty(p as Element);
       p = p.parentNode;
+    }
+
+    if (affectChildren) {
+      element.forEach((e: Element) => {
+        markRenderableDirty(e);
+      });
     }
 
     // inform dependencies
@@ -569,7 +579,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     if (dependencyMap) {
       Object.keys(dependencyMap).forEach((name) => {
         dependencyMap[name].forEach((target) => {
-          this.dirtifyToRoot(target);
+          this.dirtifyToRoot(target, true);
 
           target.dispatchEvent(
             new MutationEvent(

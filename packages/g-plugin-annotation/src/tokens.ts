@@ -30,6 +30,11 @@ export interface AnnotationPluginOptions {
    * Delete target with shortcuts, e.g. Delete, Esc
    */
   enableDeleteTargetWithShortcuts: boolean;
+
+  /**
+   * Enable to do brush selections continuously.
+   */
+  enableContinuousBrush: boolean;
 }
 
 // @see http://fabricjs.com/fabric-intro-part-4#customization

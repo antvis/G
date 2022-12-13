@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "annotation.js",
+      "title": {
+        "zh": "使用标注",
+        "en": "Use annotation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*joHKRpe9U4YAAAAAAAAAAAAADrd2AQ/Dec-13-2022%2015-08-49.gif"
+    }
+  ]
+}

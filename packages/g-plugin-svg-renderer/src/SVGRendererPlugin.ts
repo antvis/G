@@ -163,6 +163,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+
+      // should remove clipPath already existed in <defs>
+      const $useRefs = this.clipPathUseMap.get(object);
+      if ($useRefs) {
+        const $def = this.defElementManager.getDefElement();
+        const existed = $def.querySelector(`#${this.getId(object)}`);
+        if (existed) {
+          existed.remove();
+        }
+      }
+
       // create SVG DOM Node
       this.createSVGDom(document, object, this.$camera);
     };
@@ -607,8 +618,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.createOrUpdateHitArea(object, $el, $groupEl);
 
       const $parentGroupEl =
+        root ||
         // @ts-ignore
-        (object.parentNode && object.parentNode.elementSVG?.$groupEl) || root;
+        (object.parentNode && object.parentNode.elementSVG?.$groupEl);
 
       if ($parentGroupEl) {
         $parentGroupEl.appendChild($groupEl);

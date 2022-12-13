@@ -7,6 +7,14 @@
         "en": "Clip Path"
       },
       "screenshot": "https://gw.alipayobjects.com/zos/raptor/1669181270740/Nov-23-2022%25252013-25-56.gif"
+    },
+    {
+      "filename": "animated.ts",
+      "title": {
+        "zh": "对裁剪区域应用动画",
+        "en": "Animated ClipPath"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*2OssQK89ur0AAAAAAAAAAAAADrd2AQ/Dec-13-2022%2011-55-46.gif"
     }
   ]
 }

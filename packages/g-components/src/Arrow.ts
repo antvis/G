@@ -58,8 +58,16 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       type: Arrow.tag,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
+    const {
+      body,
+      startHead,
+      endHead,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      startHeadOffset,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      endHeadOffset,
+      ...rest
+    } = this.attributes;
 
     if (!body) {
       throw new Error("Arrow's body is required");
@@ -123,24 +131,52 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       name === 'lineWidth' ||
       name === 'increasedLineWidthForHitTesting'
     ) {
-      this.applyArrowStyle({ [name]: newValue }, [this.body, this.startHead, this.endHead]);
+      this.applyArrowStyle({ [name]: newValue }, [
+        this.body,
+        this.startHead,
+        this.endHead,
+      ]);
     } else if (name === 'startHead' || name === 'endHead') {
       const isStart = name === 'startHead';
       // delete existed arrow head first
       this.destroyArrowHead(isStart);
 
       if (newValue) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } =
-          this.attributes;
+        const {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          body,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          startHead,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          endHead,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          startHeadOffset,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          endHeadOffset,
+          ...rest
+        } = this.attributes;
         // append new arrow head
 
-        this.appendArrowHead(this.getArrowHeadType(newValue as ArrowHead), isStart);
+        this.appendArrowHead(
+          this.getArrowHeadType(newValue as ArrowHead),
+          isStart,
+        );
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { body, startHead, endHead, startHeadOffset, endHeadOffset, ...rest } = this.attributes;
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        body,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        startHead,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        endHead,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        startHeadOffset,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        endHeadOffset,
+        ...rest
+      } = this.attributes;
       this.body.destroy();
       // @ts-ignore
       this.body = newValue;
@@ -183,7 +219,9 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
     this.appendChild(head);
 
-    const offset = isStart ? this.attributes.startHeadOffset : this.attributes.endHeadOffset;
+    const offset = isStart
+      ? this.attributes.startHeadOffset
+      : this.attributes.endHeadOffset;
     if (offset) {
       this.moveArrowHeadAlongTangent(offset, isStart);
     }
@@ -203,7 +241,12 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     const bodyType = this.body && this.body.nodeName;
 
     if (bodyType === Shape.LINE) {
-      const { x1: _x1, x2: _x2, y1: _y1, y2: _y2 } = (this.body as Line).attributes;
+      const {
+        x1: _x1,
+        x2: _x2,
+        y1: _y1,
+        y2: _y2,
+      } = (this.body as Line).attributes;
       x1 = isStart ? _x2 : _x1;
       x2 = isStart ? _x1 : _x2;
       y1 = isStart ? _y2 : _y1;
@@ -237,7 +280,9 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     }
 
     head.setLocalPosition(position);
-    head.setLocalEulerAngles((rad * 180) / Math.PI + head.getLocalEulerAngles());
+    head.setLocalEulerAngles(
+      (rad * 180) / Math.PI + head.getLocalEulerAngles(),
+    );
   }
 
   private moveArrowHeadAlongTangent(offset: number, isStart: boolean) {
@@ -291,9 +336,9 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return new Path({
       style: {
         // draw an angle '<'
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${10 * cos(PI / 6)},-${
-          10 * sin(PI / 6)
-        }`,
+        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${
+          10 * cos(PI / 6)
+        },-${10 * sin(PI / 6)}`,
         stroke,
         lineWidth,
         transformOrigin: 'center',
@@ -302,9 +347,17 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     });
   }
 
-  private applyArrowStyle(attributes: ArrowStyleProps, objects: (DisplayObject | undefined)[]) {
-    const { opacity, stroke, strokeOpacity, lineWidth, increasedLineWidthForHitTesting } =
-      attributes;
+  private applyArrowStyle(
+    attributes: ArrowStyleProps,
+    objects: (DisplayObject | undefined)[],
+  ) {
+    const {
+      opacity,
+      stroke,
+      strokeOpacity,
+      lineWidth,
+      increasedLineWidthForHitTesting,
+    } = attributes;
     objects.forEach((shape) => {
       if (shape) {
         if (!isNil(opacity)) {
@@ -324,7 +377,8 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
         }
 
         if (!isNil(increasedLineWidthForHitTesting)) {
-          shape.style.increasedLineWidthForHitTesting = increasedLineWidthForHitTesting;
+          shape.style.increasedLineWidthForHitTesting =
+            increasedLineWidthForHitTesting;
         }
       }
     });

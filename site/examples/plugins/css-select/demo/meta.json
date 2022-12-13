@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "css-select.js",
+      "title": {
+        "zh": "CSS 选择器插件",
+        "en": "CSS Selector Plugin"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*enWBR60fAnEAAAAAAAAAAAAADmJ7AQ/original"
+    }
+  ]
+}

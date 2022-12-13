@@ -9,7 +9,8 @@
       "title": {
         "zh": "使用 PointerEvents 实现 Pinch 手势",
         "en": "Pinch zoom gestures with PointerEvents"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*0cgWSKwc53EAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "hammer.js",
@@ -24,7 +25,8 @@
       "title": {
         "zh": "使用 Hammer.js 手势库实现图片缩放",
         "en": "Gesture with Hammer.js"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*sXIXRbjkgVAAAAAAAAAAAAAADrd2AQ/Dec-13-2022%2014-00-07.gif"
     }
   ]
 }
