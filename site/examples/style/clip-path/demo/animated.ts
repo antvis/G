@@ -36,7 +36,7 @@ const sector = new Sector({
     x: 150,
     y: 100,
     lineWidth: 1,
-    r: 100,
+    sr: 100,
     startAngle: -90,
     fill: 'yellow',
     opacity: 0.5,

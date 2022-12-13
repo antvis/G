@@ -16,13 +16,13 @@ const e = 1e-4;
 // 注册 css 属性
 const SECTOR_CSS_PROPERTY = [
   {
-    name: 'r',
+    name: 'sr',
     inherits: false,
     interpolable: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
   },
   {
-    name: 'r0',
+    name: 'sr0',
     inherits: false,
     interpolable: true,
     syntax: PropertySyntax.LENGTH_PERCENTAGE,
@@ -144,22 +144,22 @@ export class Sector extends Path {
   }
   setAttribute(name, value, force?: boolean) {
     super.setAttribute(name, value, force);
-    if (['startAngle', 'endAngle', 'r', 'r0', 'radius'].indexOf(name) > -1) {
+    if (['startAngle', 'endAngle', 'sr', 'sr0', 'radius'].indexOf(name) > -1) {
       this.updatePath();
     }
   }
 
   private updatePath() {
     // @ts-ignore
-    const { x, y, startAngle, endAngle, r, r0, radius } = this.parsedStyle;
+    const { x, y, startAngle, endAngle, sr, sr0, radius } = this.parsedStyle;
 
     const path = this.createPath(
       x,
       y,
       startAngle ? deg2rad(startAngle) : 0,
       endAngle ? deg2rad(endAngle) : Math.PI * 2,
-      r ? r : 0,
-      r0 ? r0 : 0,
+      sr ? sr : 0,
+      sr0 ? sr0 : 0,
       radius ? radius : [0, 0, 0, 0],
     );
     super.setAttribute('path', path);
