@@ -58,12 +58,13 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       type: Arrow.tag,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {
       body,
       startHead,
       endHead,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       startHeadOffset,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       endHeadOffset,
       ...rest
     } = this.attributes;
@@ -141,12 +142,16 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       this.destroyArrowHead(isStart);
 
       if (newValue) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           body,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           startHead,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           endHead,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           startHeadOffset,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           endHeadOffset,
           ...rest
         } = this.attributes;
@@ -159,12 +164,16 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
         this.applyArrowStyle(rest, [isStart ? this.startHead : this.endHead]);
       }
     } else if (name === 'body') {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         body,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         startHead,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         endHead,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         startHeadOffset,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         endHeadOffset,
         ...rest
       } = this.attributes;

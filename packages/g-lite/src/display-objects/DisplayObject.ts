@@ -221,7 +221,7 @@ export class DisplayObject<
   destroy() {
     super.destroy();
 
-    // remove from into pool
+    // remove from pool
     runtime.displayObjectPool.remove(this.entity);
 
     // stop all active animations

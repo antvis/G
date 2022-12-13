@@ -1,11 +1,4 @@
-import type {
-  BaseStyleProps,
-  DisplayObject,
-  DisplayObjectConfig,
-  Line,
-  MutationEvent,
-  Polyline,
-} from '@antv/g-lite';
+import type { BaseStyleProps, DisplayObjectConfig } from '@antv/g-lite';
 import {
   CustomElement,
   PropertySyntax,
@@ -171,6 +164,7 @@ export class Sector extends CustomElement<SectorStyleProps> {
       type: Sector.tag,
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { startAngle, endAngle, sr, sr0, sradius, sx, sy, ...rest } =
       this.attributes;
     this.path = new Path({
@@ -359,12 +353,6 @@ export class Sector extends CustomElement<SectorStyleProps> {
       if (limitedOutBorderRadiusMax < outBorderRadiusMax && crStart === crEnd) {
         const outStartBorderRadiusStartAngle = mathATan2(ct0.y0, ct0.x0);
         const outStartBorderRadiusEndAngle = mathATan2(ct1.y0, ct1.x0);
-        const outStartBorderRadiusEndPoint = polarToCartesian(
-          x,
-          y,
-          r,
-          outStartBorderRadiusEndAngle,
-        );
         sectorPathCommands.push([
           'A',
           limitedOutBorderRadiusMax,

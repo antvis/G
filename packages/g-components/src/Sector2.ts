@@ -309,12 +309,6 @@ export class Sector extends Path {
       if (limitedOutBorderRadiusMax < outBorderRadiusMax && crStart === crEnd) {
         const outStartBorderRadiusStartAngle = mathATan2(ct0.y0, ct0.x0);
         const outStartBorderRadiusEndAngle = mathATan2(ct1.y0, ct1.x0);
-        const outStartBorderRadiusEndPoint = polarToCartesian(
-          x,
-          y,
-          r,
-          outStartBorderRadiusEndAngle,
-        );
         sectorPathCommands.push([
           'A',
           limitedOutBorderRadiusMax,
