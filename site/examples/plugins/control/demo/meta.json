@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "orbit-control.js",
+      "title": {
+        "zh": "使用 Orbit Control",
+        "en": "Use orbit control"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1u8eRKMbVX8AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

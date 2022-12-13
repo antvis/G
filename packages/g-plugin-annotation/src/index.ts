@@ -21,6 +21,7 @@ export class Plugin extends AbstractRendererPlugin {
       arrowKeyStepLength: 4,
       enableAutoSwitchDrawingMode: false,
       enableDeleteTargetWithShortcuts: false,
+      enableContinuousBrush: true,
       ...this.options,
     };
 
