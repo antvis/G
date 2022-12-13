@@ -172,6 +172,12 @@ circle.style.selectable = true;
 
 开启后，可使用 `Delete` / `Esc` / `Backspace` 按键删除已选中的可交互图形。
 
+### enableContinuousBrush
+
+是否支持连续按住 `shift` 进行框选，默认值为 `true`。
+
+关闭后，每次框选都会清除上一次的结果，重新选择。
+
 ### arrowKeyStepLength
 
 编辑模式下，使用键盘上下左右方向键移动图形的步长，默认值为 `4`。

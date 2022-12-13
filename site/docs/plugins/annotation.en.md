@@ -172,6 +172,12 @@ The default value is `false` to delete the selected interactive graphics using k
 
 When enabled, you can use the `Delete` / `Esc` / `Backspace` keys to delete the selected interactive graphics.
 
+### enableContinuousBrush
+
+Whether to support continuous pressing of `shift` for frame selection, the default value is `true`.
+
+After closing, each frame selection will clear the previous result and re-select.
+
 ### arrowKeyStepLength
 
 In edit mode, use the keyboard up, down, left and right arrow keys to move the graph in steps, the default value is `4`.

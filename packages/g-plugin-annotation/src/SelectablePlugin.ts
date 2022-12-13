@@ -228,10 +228,13 @@ export class SelectablePlugin implements RenderingPlugin {
     this.brush.on(DrawerEvent.CANCEL, onCancel);
 
     const handleClick = (e: FederatedPointerEvent) => {
-      if (
-        !this.annotationPluginOptions.enableAutoSwitchDrawingMode &&
-        this.annotationPluginOptions.isDrawingMode
-      ) {
+      const {
+        enableAutoSwitchDrawingMode,
+        enableContinuousBrush,
+        isDrawingMode,
+      } = this.annotationPluginOptions;
+
+      if (!enableAutoSwitchDrawingMode && isDrawingMode) {
         return;
       }
 
@@ -239,7 +242,7 @@ export class SelectablePlugin implements RenderingPlugin {
       // @ts-ignore
       if (object === document) {
         // allow continuous selection @see https://github.com/antvis/G/issues/1240
-        if (!e.shiftKey) {
+        if (!e.shiftKey || (e.shiftKey && !enableContinuousBrush)) {
           this.deselectAllDisplayObjects();
           this.selected = [];
         }
