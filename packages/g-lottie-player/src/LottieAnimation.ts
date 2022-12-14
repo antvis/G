@@ -245,9 +245,20 @@ export class LottieAnimation {
     keyframe1: KeyframeAnimationKeyframe,
     keyframe2: KeyframeAnimationKeyframe,
   ) {
+    // const { offset: o1, easing: e1, ...rest1 } = keyframe1;
+    // const { offset: o2, easing: e2, ...rest2 } = keyframe2;
+    // const isAllApplyToTransform =
+    //   Object.keys(rest1).every((key) =>
+    //     ['x', 'y', 'scaleX', 'scaleY', 'rotation'].includes(key),
+    //   ) &&
+    //   Object.keys(rest2).every((key) =>
+    //     ['x', 'y', 'scaleX', 'scaleY', 'rotation'].includes(key),
+    //   );
+
     return (
-      keyframe1.easing === keyframe2.easing &&
-      keyframe1.offset === keyframe2.offset
+      keyframe1.offset === keyframe2.offset &&
+      keyframe1.easing === keyframe2.easing
+      // (keyframe1.easing === keyframe2.easing || isAllApplyToTransform)
     );
   }
 
@@ -315,6 +326,9 @@ export class LottieAnimation {
     this.displayObjects.forEach((parent) => {
       parent.forEach((child: DisplayObject) => {
         let keyframeAnimation = this.keyframeAnimationMap.get(child);
+
+        // console.log('keyframeAnimation', keyframeAnimation);
+
         const element = this.displayObjectElementMap.get(child);
         if (element && element.clipPath) {
           const { shape, keyframeAnimation } = element.clipPath;
@@ -479,7 +493,6 @@ export class LottieAnimation {
     keyframes: Record<string, any>[],
     object: DisplayObject,
   ) {
-    // let hasVisibility = false;
     keyframes.forEach((keyframe) => {
       // if ('offsetPath' in keyframe) {
       //   if (!object.style.offsetPath) {
@@ -505,6 +518,8 @@ export class LottieAnimation {
       //     });
 
       //     object.style.offsetPath = offsetPath;
+
+      //     console.log(offsetPath);
       //   }
       //   delete keyframe.offsetPath;
       //   // offsetPath should override x/y
@@ -512,7 +527,7 @@ export class LottieAnimation {
       //   delete keyframe.y;
       // }
 
-      // // should keep transform during initialization
+      // should keep transform during initialization
       // if (!object.style.offsetPath) {
       //   keyframe.transform = object.style.transform || '';
       // }
@@ -564,12 +579,6 @@ export class LottieAnimation {
         });
         delete keyframe.style;
       }
-
-      // if ('ignore' in keyframe) {
-      //   keyframe.visibility = keyframe.ignore ? 'hidden' : 'visible';
-      //   delete keyframe.ignore;
-      //   hasVisibility = true;
-      // }
     });
 
     // ignore empty interpolable attributes
@@ -595,17 +604,14 @@ export class LottieAnimation {
     // sort by offset
     keyframes.sort((a, b) => a.offset - b.offset);
 
-    //
-    // if (hasVisibility) {
-    //   keyframes.forEach((keyframe, i) => {
-    //     if (!keyframe.visibility) {
-    //       const prev = keyframes[i - 1];
-    //       const next = keyframes[i + 1];
-    //       if (keyframe.offset)
-    //       keyframe.visibility = keyframes[i - 1].visibility;
-    //     }
-    //   });
-    // }
+    // remove empty attributes
+    keyframes.forEach((keyframe) => {
+      Object.keys(keyframe).forEach((name) => {
+        if (keyframe[name] === '') {
+          delete keyframe[name];
+        }
+      });
+    });
 
     return keyframes;
   }

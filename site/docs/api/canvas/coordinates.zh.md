@@ -22,7 +22,7 @@ canvas.addEventListener('click', (e) => {
 
 ⚠️ 如果使用了 [g-plugin-3d](/zh/plugins/3d) 插件，Z 轴正向指向屏幕外。
 
-我们提供了它们之间的转换方法，在这个[示例](/zh/examples/canvas/basic/#coordinates)中，移动鼠标可以看到鼠标所在位置在各个坐标系下的值：
+我们提供了它们之间的转换方法，在这个[示例](/zh/examples/canvas/canvas-basic/#coordinates)中，移动鼠标可以看到鼠标所在位置在各个坐标系下的值：
 
 -   Client <-> Viewport
 -   Canvas <-> Viewport
@@ -63,7 +63,7 @@ https://developer.mozilla.org/en-US/Web/API/MouseEvent/clientX
 
 ## 转换方法
 
-我们提供以下转换方法需要使用到 Point，它的结构如下，可以从 G 核心包中引入，[示例](/zh/examples/canvas/basic/#coordinates)：
+我们提供以下转换方法需要使用到 Point，它的结构如下，可以从 G 核心包中引入，[示例](/zh/examples/canvas/canvas-basic/#coordinates)：
 
 ```js
 interface Point {
@@ -76,7 +76,7 @@ import type { Point } from '@antv/g';
 
 ### Client <-> Viewport
 
-我们提供了从浏览器的 Client 坐标系到画布 Viewport 视口坐标系的转换方法，[示例](/zh/examples/canvas/basic/#coordinates)：
+我们提供了从浏览器的 Client 坐标系到画布 Viewport 视口坐标系的转换方法，[示例](/zh/examples/canvas/canvas-basic/#coordinates)：
 
 -   client2Viewport(client: Point): Point
 -   viewport2Client(canvas: Point): Point
@@ -108,7 +108,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 [相机](/zh/api/camera)决定了我们观察世界的角度，如果相机没有发生移动，Viewport 视口坐标系和 Canvas 坐标系将完全重合，因此在我们的可见范围内，视口左上角坐标与 Canvas 坐标系原点一样，都是 `[0, 0]`。但如果相机发生了平移、旋转、缩放，视口也会发生相应变化，此时视口左上角 `[0, 0]` 对应 Canvas 坐标系下的位置就不再是 `[0, 0]` 了。
 
-在[示例](/zh/examples/canvas/basic/#coordinates)中，我们将相机向上移动了一段距离（整个世界在观察者眼中向下移动），可以发现圆心在 Canvas 坐标系下位置不变，仍然为 `[300, 200]`，但在 Viewport 坐标系下发生了偏移：
+在[示例](/zh/examples/canvas/canvas-basic/#coordinates)中，我们将相机向上移动了一段距离（整个世界在观察者眼中向下移动），可以发现圆心在 Canvas 坐标系下位置不变，仍然为 `[300, 200]`，但在 Viewport 坐标系下发生了偏移：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qe5tR4G5AD4AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas to viewport">
 

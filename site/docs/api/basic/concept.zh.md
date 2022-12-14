@@ -59,10 +59,10 @@ interface AABB {
 
 一个图形的锚点（原点）应该如何定义呢？我们可以基于 [Geometry Bounds](/zh/api/basic/display-object#包围盒) 定义，取值范围 `[0, 0] ~ [1, 1]`，其中 `[0, 0]` 代表 Geometry Bounds 左上角，`[1, 1]` 代表右下角。而不同图形由于几何定义不同，默认锚点如下：
 
--   [Circle](/zh/api/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置 `[0.5, 0.5]`
--   [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `[0, 0]`
--   [Text](/zh/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
--   [Group](/zh/api/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
+-   [Circle](/zh/api/basic/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置 `[0.5, 0.5]`
+-   [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/basic/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `[0, 0]`
+-   [Text](/zh/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   [Group](/zh/api/basic/text) 无几何定义，因此锚点始终为 `[0, 0]`，设置此属性也无效
 
 有时我们希望改变一个基础图形的原点定义，例如将 Rect 的原点定义为中心而非左上角，[示例](/zh/examples/shape#rect)：
 

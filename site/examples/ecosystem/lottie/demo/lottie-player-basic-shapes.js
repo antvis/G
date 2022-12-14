@@ -618,17 +618,17 @@ const gradient = {
   },
 };
 
-const gradientAnimation = loadAnimation(gradient);
-const rectAnimation = loadAnimation(rect);
-const pathAnimation = loadAnimation(path);
+// const gradientAnimation = loadAnimation(gradient);
+// const rectAnimation = loadAnimation(rect);
+// const pathAnimation = loadAnimation(path);
 const ballAnimation = loadAnimation(bouncy_ball, {
   loop: true,
   autoplay: true,
 });
 canvas.addEventListener(CanvasEvent.READY, () => {
-  gradientAnimation.render(canvas);
-  rectAnimation.render(canvas);
-  pathAnimation.render(canvas);
+  // gradientAnimation.render(canvas);
+  // rectAnimation.render(canvas);
+  // pathAnimation.render(canvas);
   ballAnimation.render(canvas);
 });
 

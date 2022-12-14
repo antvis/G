@@ -69,7 +69,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {});
 
 ### render
 
-Rendering the canvas, since the renderer has auto-rendering enabled by default, there is no need to call it manually in most cases. However, some scenes require manual control of rendering timing, in which case [rendering-on-demand](/en/guide/diving-deeper/rendering-on-demand) [example](/en/examples/canvas/basic/#rendering-on-demand).
+Rendering the canvas, since the renderer has auto-rendering enabled by default, there is no need to call it manually in most cases. However, some scenes require manual control of rendering timing, in which case [rendering-on-demand](/en/guide/diving-deeper/rendering-on-demand) [example](/en/examples/canvas/canvas-basic/#rendering-on-demand).
 
 ```js
 const webglRenderer = new WebGLRenderer({
