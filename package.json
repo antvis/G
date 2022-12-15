@@ -13,6 +13,7 @@
     "build": "father build",
     "bundle-viz": "cross-env BUNDLE_VIS=1 PACKAGE=g npm run build",
     "check-circular-deps": "madge --circular --extensions ts ./packages/",
+    "clean": "lerna clean",
     "contributor": "git-contributor",
     "cov": "jest --config jest.config.js --coverage",
     "doc": "dumi dev",

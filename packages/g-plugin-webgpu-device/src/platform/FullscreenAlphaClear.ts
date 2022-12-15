@@ -32,6 +32,7 @@ fn fs() -> FragmentOutput {
   constructor(device: GPUDevice) {
     const format: GPUTextureFormat = 'bgra8unorm';
     this.shaderModule = device.createShaderModule({ code: this.shaderText });
+    // @ts-ignore
     this.pipeline = device.createRenderPipeline({
       vertex: { module: this.shaderModule, entryPoint: 'vs' },
       fragment: {
@@ -49,6 +50,7 @@ fn fs() -> FragmentOutput {
         {
           view: onscreenTexture,
           loadOp: 'load',
+          // @ts-ignore
           loadValue: 'load',
           storeOp: 'store',
         },

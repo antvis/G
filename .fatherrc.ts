@@ -1,6 +1,10 @@
 export default {
-  cjs: 'rollup',
-  esm: 'rollup',
+  cjs: {
+    type: 'babel',
+  },
+  esm: {
+    type: 'babel',
+  },
   umd: false,
   nodeResolveOpts: {
     mainFields: ['module', 'browser', 'main'],

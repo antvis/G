@@ -2,8 +2,6 @@ import glslify from 'rollup-plugin-glslify';
 // import { wasm } from '@rollup/plugin-wasm';
 
 export default {
-  cjs: 'rollup',
-  esm: 'rollup',
   extraRollupPlugins: [
     glslify({
       // disable compressing shader

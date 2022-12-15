@@ -9,7 +9,6 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    // @ts-ignore
     this.context.deviceContribution = new WebGLDeviceContribution({
       ...this.options,
     });
