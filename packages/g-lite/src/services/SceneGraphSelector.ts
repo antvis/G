@@ -1,8 +1,14 @@
 import { isNil } from '@antv/util';
 import type { IElement } from '../dom/interfaces';
 export interface SceneGraphSelector {
-  selectOne: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
-  selectAll: <R extends IElement, T extends IElement>(query: string, root: R) => T[];
+  selectOne: <R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ) => T | null;
+  selectAll: <R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ) => T[];
   is: <T extends IElement>(query: string, element: T) => boolean;
 }
 
@@ -18,11 +24,16 @@ const ATTRIBUTE_REGEXP = /\[\s*(.*)=(.*)\s*\]/;
  * * querySelectorAll
  */
 export class DefaultSceneGraphSelector implements SceneGraphSelector {
-  selectOne<R extends IElement, T extends IElement>(query: string, root: R): T | null {
+  selectOne<R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ): T | null {
     if (query.startsWith('.')) {
       return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
-        return (node?.classList || []).indexOf(this.getIdOrClassname(query)) > -1;
+        return (
+          (node?.classList || []).indexOf(this.getIdOrClassname(query)) > -1
+        );
       });
     } else if (query.startsWith('#')) {
       // getElementById('id')
@@ -37,18 +48,25 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
         return root.find(
           (node) =>
             (root as unknown as T) !== node &&
-            (name === 'name' ? node.name === value : this.attributeToString(node, name) === value),
+            (name === 'name'
+              ? node.name === value
+              : this.attributeToString(node, name) === value),
         );
       } else {
         return null;
       }
     } else {
       // getElementsByTag('circle');
-      return root.find((node) => (root as unknown as T) !== node && node.nodeName === query);
+      return root.find(
+        (node) => (root as unknown as T) !== node && node.nodeName === query,
+      );
     }
   }
 
-  selectAll<R extends IElement, T extends IElement>(query: string, root: R): T[] {
+  selectAll<R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ): T[] {
     // only support `[name="${name}"]` `.className` `#id`
     if (query.startsWith('.')) {
       // getElementsByClassName('className');
@@ -60,7 +78,9 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
       );
     } else if (query.startsWith('#')) {
       return root.findAll(
-        (node) => (root as unknown as T) !== node && node.id === this.getIdOrClassname(query),
+        (node) =>
+          (root as unknown as T) !== node &&
+          node.id === this.getIdOrClassname(query),
       );
     } else if (query.startsWith('[')) {
       const { name, value } = this.getAttribute(query);
@@ -69,18 +89,21 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
         return root.findAll(
           (node) =>
             (root as unknown as T) !== node &&
-            (name === 'name' ? node.name === value : this.attributeToString(node, name) === value),
+            (name === 'name'
+              ? node.name === value
+              : this.attributeToString(node, name) === value),
         );
       } else {
         return [];
       }
     } else {
       // getElementsByTag('circle');
-      return root.findAll((node) => (root as unknown as T) !== node && node.nodeName === query);
+      return root.findAll(
+        (node) => (root as unknown as T) !== node && node.nodeName === query,
+      );
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   is<T extends IElement>(query: string, node: T): boolean {
     // a simple `matches` implementation
     if (query.startsWith('.')) {
@@ -89,7 +112,9 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
       return node.id === this.getIdOrClassname(query);
     } else if (query.startsWith('[')) {
       const { name, value } = this.getAttribute(query);
-      return name === 'name' ? node.name === value : this.attributeToString(node, name) === value;
+      return name === 'name'
+        ? node.name === value
+        : this.attributeToString(node, name) === value;
     } else {
       return node.nodeName === query;
     }

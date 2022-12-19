@@ -164,7 +164,6 @@ export class Sector extends CustomElement<SectorStyleProps> {
       type: Sector.tag,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { startAngle, endAngle, sr, sr0, sradius, sx, sy, ...rest } =
       this.attributes;
     this.path = new Path({

@@ -10,6 +10,13 @@
         "zh": "导出画布内容成图片",
         "en": "Export canvas' contents to image"
       }
+    },
+    {
+      "filename": "animated-svg.js",
+      "title": {
+        "zh": "导出包含动画的 SVG",
+        "en": "Export SVG includes animation"
+      }
     }
   ]
 }

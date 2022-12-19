@@ -1,6 +1,13 @@
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import type { Cullable, Geometry, RBushNode, Renderable, Sortable, Transform } from '../components';
+import type {
+  Cullable,
+  Geometry,
+  RBushNode,
+  Renderable,
+  Sortable,
+  Transform,
+} from '../components';
 import { Strategy } from '../components';
 import { unsetKeywordValue } from '../css/CSSStyleValuePool';
 import type { AABB, Rectangle } from '../shapes';
@@ -11,7 +18,13 @@ import {
   formatAttributeName,
 } from '../utils';
 import { CustomEvent } from './CustomEvent';
-import type { IChildNode, ICSSStyleDeclaration, IElement, IEventTarget, INode } from './interfaces';
+import type {
+  IChildNode,
+  ICSSStyleDeclaration,
+  IElement,
+  IEventTarget,
+  INode,
+} from './interfaces';
 import { ElementEvent } from './interfaces';
 import { MutationEvent } from './MutationEvent';
 import { Node } from './Node';
@@ -22,8 +35,26 @@ export function resetEntityCounter() {
   entityCounter = 0;
 }
 
-const insertedEvent = new MutationEvent(ElementEvent.INSERTED, null, '', '', '', 0, '', '');
-const removedEvent = new MutationEvent(ElementEvent.REMOVED, null, '', '', '', 0, '', '');
+const insertedEvent = new MutationEvent(
+  ElementEvent.INSERTED,
+  null,
+  '',
+  '',
+  '',
+  0,
+  '',
+  '',
+);
+const removedEvent = new MutationEvent(
+  ElementEvent.REMOVED,
+  null,
+  '',
+  '',
+  '',
+  0,
+  '',
+  '',
+);
 const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
 
 /**
@@ -39,7 +70,9 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
-  static isElement(target: IEventTarget | INode | IElement): target is IElement {
+  static isElement(
+    target: IEventTarget | INode | IElement,
+  ): target is IElement {
     return !!(target as IElement).getAttribute;
   }
 
@@ -184,7 +217,6 @@ export class Element<
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cloneNode(deep?: boolean): this {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
@@ -263,7 +295,10 @@ export class Element<
     return runtime.sceneGraphService.matches(selector, this as IElement);
   }
   getElementById<E extends IElement = IElement>(id: string): E | null {
-    return runtime.sceneGraphService.querySelector<IElement, E>(`#${id}`, this as IElement);
+    return runtime.sceneGraphService.querySelector<IElement, E>(
+      `#${id}`,
+      this as IElement,
+    );
   }
   getElementsByName<E extends IElement = IElement>(name: string): E[] {
     return runtime.sceneGraphService.querySelectorAll<IElement, E>(
@@ -271,20 +306,31 @@ export class Element<
       this as IElement,
     );
   }
-  getElementsByClassName<E extends IElement = IElement>(className: string): E[] {
+  getElementsByClassName<E extends IElement = IElement>(
+    className: string,
+  ): E[] {
     return runtime.sceneGraphService.querySelectorAll<IElement, E>(
       `.${className}`,
       this as IElement,
     );
   }
   getElementsByTagName<E extends IElement = IElement>(tagName: string): E[] {
-    return runtime.sceneGraphService.querySelectorAll<IElement, E>(tagName, this as IElement);
+    return runtime.sceneGraphService.querySelectorAll<IElement, E>(
+      tagName,
+      this as IElement,
+    );
   }
   querySelector<E extends IElement = IElement>(selectors: string): E | null {
-    return runtime.sceneGraphService.querySelector<IElement, E>(selectors, this as IElement);
+    return runtime.sceneGraphService.querySelector<IElement, E>(
+      selectors,
+      this as IElement,
+    );
   }
   querySelectorAll<E extends IElement = IElement>(selectors: string): E[] {
-    return runtime.sceneGraphService.querySelectorAll<IElement, E>(selectors, this as IElement);
+    return runtime.sceneGraphService.querySelectorAll<IElement, E>(
+      selectors,
+      this as IElement,
+    );
   }
 
   /**
@@ -332,7 +378,9 @@ export class Element<
   after(...nodes: INode[]) {
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
-      nodes.forEach((node, i) => this.parentNode?.appendChild(node!, index + i + 1));
+      nodes.forEach((node, i) =>
+        this.parentNode?.appendChild(node!, index + i + 1),
+      );
     }
   }
 
@@ -568,7 +616,7 @@ export class Element<
   setAttribute<Key extends keyof StyleProps>(
     attributeName: Key,
     value: StyleProps[Key],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     force = false,
   ) {
     this.attributes[attributeName] = value;
@@ -596,7 +644,11 @@ export class Element<
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
 
-  setAttributeNS(namespace: string, qualifiedName: string, value: string): void {
+  setAttributeNS(
+    namespace: string,
+    qualifiedName: string,
+    value: string,
+  ): void {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
   setAttributeNode(attr: Attr): Attr {

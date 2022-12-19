@@ -92,10 +92,10 @@ export class Document extends Node implements IDocument {
   /**
    * @example const circle = document.createElement('circle', { style: { r: 10 } });
    */
-  createElement<T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(
-    tagName: string,
-    options: DisplayObjectConfig<StyleProps>,
-  ): T {
+  createElement<
+    T extends DisplayObject<StyleProps>,
+    StyleProps extends BaseStyleProps,
+  >(tagName: string, options: DisplayObjectConfig<StyleProps>): T {
     // @observablehq/plot will create <svg>
     if (tagName === 'svg') {
       return this.documentElement as unknown as T;
@@ -114,7 +114,10 @@ export class Document extends Node implements IDocument {
     return shape;
   }
 
-  createElementNS<T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(
+  createElementNS<
+    T extends DisplayObject<StyleProps>,
+    StyleProps extends BaseStyleProps,
+  >(
     namespaceURI: string,
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
@@ -122,7 +125,6 @@ export class Document extends Node implements IDocument {
     return this.createElement(tagName, options);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cloneNode(deep?: boolean): this {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
@@ -136,14 +138,20 @@ export class Document extends Node implements IDocument {
   /**
    * Picking 2D graphics with RBush based on BBox, fast but inaccurate.
    */
-  elementsFromBBox(minX: number, minY: number, maxX: number, maxY: number): DisplayObject[] {
+  elementsFromBBox(
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
+  ): DisplayObject[] {
     const rBush = this.defaultView.context.rBushRoot;
     const rBushNodes = rBush.search({ minX, minY, maxX, maxY });
 
     const hitTestList: DisplayObject[] = [];
     rBushNodes.forEach(({ id }) => {
       const displayObject = runtime.displayObjectPool.getByEntity(id);
-      const { pointerEvents } = displayObject.parsedStyle as ParsedBaseStyleProps;
+      const { pointerEvents } =
+        displayObject.parsedStyle as ParsedBaseStyleProps;
 
       // account for `visibility`
       // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events
@@ -156,7 +164,8 @@ export class Document extends Node implements IDocument {
       ].includes(pointerEvents);
 
       if (
-        (!isVisibilityAffected || (isVisibilityAffected && displayObject.isVisible())) &&
+        (!isVisibilityAffected ||
+          (isVisibilityAffected && displayObject.isVisible())) &&
         !displayObject.isCulled() &&
         displayObject.isInteractive()
       ) {
@@ -170,10 +179,18 @@ export class Document extends Node implements IDocument {
   }
 
   elementFromPointSync(x: number, y: number): DisplayObject {
-    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({
+      x,
+      y,
+    });
     const { width, height } = this.defaultView.getConfig();
     // outside canvas' viewport
-    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+    if (
+      viewportX < 0 ||
+      viewportY < 0 ||
+      viewportX > width ||
+      viewportY > height
+    ) {
       return null;
     }
 
@@ -182,18 +199,20 @@ export class Document extends Node implements IDocument {
       y: viewportY,
     });
 
-    const { picked } = this.defaultView.getRenderingService().hooks.pickSync.call({
-      topmost: true,
-      position: {
-        x,
-        y,
-        viewportX,
-        viewportY,
-        clientX,
-        clientY,
-      },
-      picked: [],
-    });
+    const { picked } = this.defaultView
+      .getRenderingService()
+      .hooks.pickSync.call({
+        topmost: true,
+        position: {
+          x,
+          y,
+          viewportX,
+          viewportY,
+          clientX,
+          clientY,
+        },
+        picked: [],
+      });
     return (picked && picked[0]) || this.documentElement;
   }
 
@@ -203,10 +222,18 @@ export class Document extends Node implements IDocument {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
    */
   async elementFromPoint(x: number, y: number): Promise<DisplayObject> {
-    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({
+      x,
+      y,
+    });
     const { width, height } = this.defaultView.getConfig();
     // outside canvas' viewport
-    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+    if (
+      viewportX < 0 ||
+      viewportY < 0 ||
+      viewportX > width ||
+      viewportY > height
+    ) {
       return null;
     }
 
@@ -215,26 +242,36 @@ export class Document extends Node implements IDocument {
       y: viewportY,
     });
 
-    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
-      topmost: true,
-      position: {
-        x,
-        y,
-        viewportX,
-        viewportY,
-        clientX,
-        clientY,
-      },
-      picked: [],
-    });
+    const { picked } = await this.defaultView
+      .getRenderingService()
+      .hooks.pick.promise({
+        topmost: true,
+        position: {
+          x,
+          y,
+          viewportX,
+          viewportY,
+          clientX,
+          clientY,
+        },
+        picked: [],
+      });
     return (picked && picked[0]) || this.documentElement;
   }
 
   elementsFromPointSync(x: number, y: number): DisplayObject[] {
-    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({
+      x,
+      y,
+    });
     const { width, height } = this.defaultView.getConfig();
     // outside canvas' viewport
-    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+    if (
+      viewportX < 0 ||
+      viewportY < 0 ||
+      viewportX > width ||
+      viewportY > height
+    ) {
       return [];
     }
 
@@ -243,18 +280,20 @@ export class Document extends Node implements IDocument {
       y: viewportY,
     });
 
-    const { picked } = this.defaultView.getRenderingService().hooks.pickSync.call({
-      topmost: false,
-      position: {
-        x,
-        y,
-        viewportX,
-        viewportY,
-        clientX,
-        clientY,
-      },
-      picked: [],
-    });
+    const { picked } = this.defaultView
+      .getRenderingService()
+      .hooks.pickSync.call({
+        topmost: false,
+        position: {
+          x,
+          y,
+          viewportX,
+          viewportY,
+          clientX,
+          clientY,
+        },
+        picked: [],
+      });
 
     if (picked[picked.length - 1] !== this.documentElement) {
       picked.push(this.documentElement);
@@ -268,10 +307,18 @@ export class Document extends Node implements IDocument {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementsFromPoint
    */
   async elementsFromPoint(x: number, y: number): Promise<DisplayObject[]> {
-    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({ x, y });
+    const { x: viewportX, y: viewportY } = this.defaultView.canvas2Viewport({
+      x,
+      y,
+    });
     const { width, height } = this.defaultView.getConfig();
     // outside canvas' viewport
-    if (viewportX < 0 || viewportY < 0 || viewportX > width || viewportY > height) {
+    if (
+      viewportX < 0 ||
+      viewportY < 0 ||
+      viewportX > width ||
+      viewportY > height
+    ) {
       return [];
     }
 
@@ -280,18 +327,20 @@ export class Document extends Node implements IDocument {
       y: viewportY,
     });
 
-    const { picked } = await this.defaultView.getRenderingService().hooks.pick.promise({
-      topmost: false,
-      position: {
-        x,
-        y,
-        viewportX,
-        viewportY,
-        clientX,
-        clientY,
-      },
-      picked: [],
-    });
+    const { picked } = await this.defaultView
+      .getRenderingService()
+      .hooks.pick.promise({
+        topmost: false,
+        position: {
+          x,
+          y,
+          viewportX,
+          viewportY,
+          clientX,
+          clientY,
+        },
+        picked: [],
+      });
 
     if (picked[picked.length - 1] !== this.documentElement) {
       picked.push(this.documentElement);
@@ -302,27 +351,31 @@ export class Document extends Node implements IDocument {
   /**
    * eg. Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   appendChild<T extends INode>(newChild: T, index?: number): T {
     throw new Error(ERROR_MSG_USE_DOCUMENT_ELEMENT);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   insertBefore<T extends INode>(newChild: T, refChild: INode | null): T {
     throw new Error(ERROR_MSG_USE_DOCUMENT_ELEMENT);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   removeChild<T extends INode>(oldChild: T, destroy?: boolean): T {
     throw new Error(ERROR_MSG_USE_DOCUMENT_ELEMENT);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  replaceChild<T extends INode>(newChild: INode, oldChild: T, destroy?: boolean): T {
+
+  replaceChild<T extends INode>(
+    newChild: INode,
+    oldChild: T,
+    destroy?: boolean,
+  ): T {
     throw new Error(ERROR_MSG_USE_DOCUMENT_ELEMENT);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   append(...nodes: INode[]): void {
     throw new Error(ERROR_MSG_USE_DOCUMENT_ELEMENT);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   prepend(...nodes: INode[]): void {
     throw new Error(ERROR_MSG_USE_DOCUMENT_ELEMENT);
   }
@@ -339,7 +392,9 @@ export class Document extends Node implements IDocument {
   getElementsByTagName<E extends IElement = IElement>(tagName: string): E[] {
     return this.documentElement.getElementsByTagName(tagName);
   }
-  getElementsByClassName<E extends IElement = IElement>(className: string): E[] {
+  getElementsByClassName<E extends IElement = IElement>(
+    className: string,
+  ): E[] {
     return this.documentElement.getElementsByClassName(className);
   }
   querySelector<E extends IElement = IElement>(selectors: string): E | null {

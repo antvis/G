@@ -425,9 +425,8 @@ export class LottieAnimation {
 
                 if (existedKeyframe) {
                   const {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     offset,
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
                     easing: e = 'linear',
                     ...rest
                   } = currentKeyframe;
@@ -585,7 +584,6 @@ export class LottieAnimation {
     keyframes = keyframes.filter((keyframe) => {
       // TODO: support negative offset
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { ignore, easing, offset, ...rest } = keyframe;
       return offset >= 0 && Object.keys(rest).length > 0;
       // return Object.keys(rest).length > 0;
