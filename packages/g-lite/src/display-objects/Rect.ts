@@ -15,8 +15,8 @@ export interface RectStyleProps extends BaseStyleProps {
 }
 
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   width: number;
   height: number;
   radius?: [number, number, number, number];
