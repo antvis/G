@@ -7,11 +7,11 @@ export class WebGPUDeviceContribution implements DeviceContribution {
   constructor(private pluginOptions: Partial<WebGPUDeviceOptions>) {}
 
   async createSwapChain($canvas: HTMLCanvasElement) {
-    if ((globalThis.navigator as any).gpu === undefined) return null;
+    if ((window.navigator as any).gpu === undefined) return null;
 
     let adapter = null;
     try {
-      adapter = await (globalThis.navigator as any).gpu.requestAdapter();
+      adapter = await (window.navigator as any).gpu.requestAdapter();
     } catch (e) {
       console.log(e);
     }
