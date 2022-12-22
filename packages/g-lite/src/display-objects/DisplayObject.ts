@@ -76,7 +76,7 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   shadowType: 'outer',
 };
 
-const INHERITABLE_STYLE_PROPS = [
+const INHERITABLE_BASE_STYLE_PROPS = [
   'opacity',
   'fillOpacity',
   'strokeOpacity',
@@ -87,6 +87,10 @@ const INHERITABLE_STYLE_PROPS = [
   'lineCap',
   'lineJoin',
   'increasedLineWidthForHitTesting',
+];
+
+const INHERITABLE_STYLE_PROPS = [
+  ...INHERITABLE_BASE_STYLE_PROPS,
   'fontSize',
   'fontFamily',
   'fontStyle',
@@ -286,7 +290,11 @@ export class DisplayObject<
     // account for FCP, process properties as less as possible
     runtime.styleValueRegistry.processProperties(this, attributes, {
       forceUpdateGeometry: true,
-      usedAttributes: INHERITABLE_STYLE_PROPS,
+      usedAttributes:
+        // only Group / Text should account for text relative props
+        this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
+          ? INHERITABLE_STYLE_PROPS
+          : INHERITABLE_BASE_STYLE_PROPS,
     });
 
     // redraw at next frame
