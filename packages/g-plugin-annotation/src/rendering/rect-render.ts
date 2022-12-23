@@ -5,21 +5,21 @@ import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
 
 export function getWidthFromBbox(path: PointLike[]) {
-  const [tl, tr, br, bl] = path;
+  const [tl, tr] = path;
   const dy = tr.y - tl.y;
   const dx = tr.x - tl.x;
   return Math.sqrt(dy * dy + dx * dx);
 }
 
 export function getHeightFromBbox(path: PointLike[]) {
-  const [tl, tr, br, bl] = path;
+  const [, tr, br] = path;
   const dy = br.y - tr.y;
   const dx = br.x - tr.x;
   return Math.sqrt(dy * dy + dx * dx);
 }
 
 function getRotationFromBbox(path: PointLike[]) {
-  const [tl, tr, br, bl] = path;
+  const [tl, tr] = path;
   const dy = tr.y - tl.y;
   const dx = tr.x - tl.x;
   return (Math.atan(dy / dx) * 180) / Math.PI;

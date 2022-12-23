@@ -1,11 +1,15 @@
-import { isNil, isString, memoize } from '@antv/util';
+import { isNil, isString } from '@antv/util';
 import type {
   AngularNode,
   ColorStop,
   DirectionalNode,
   PositionNode,
 } from '../../utils';
-import { colorStopToString, parseGradient as parse } from '../../utils';
+import {
+  colorStopToString,
+  parseGradient as parse,
+  memoize,
+} from '../../utils';
 import type {
   CSSKeywordValue,
   CSSUnitValue,

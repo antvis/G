@@ -79,6 +79,13 @@ export class EventService {
     this.addEventMapping('wheel', this.onWheel);
   }
 
+  destroy() {
+    this.emitter.removeAllListeners();
+    this.mappingTable = {};
+    this.mappingState = {};
+    this.eventPool.clear();
+  }
+
   client2Viewport(client: PointLike): PointLike {
     const bbox = this.context.contextService.getBoundingClientRect();
     return new Point(client.x - (bbox?.left || 0), client.y - (bbox?.top || 0));

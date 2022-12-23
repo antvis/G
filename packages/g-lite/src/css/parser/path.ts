@@ -6,7 +6,6 @@ import {
   getDrawDirection,
   getRotatedCurve,
   isString,
-  memoize,
   normalizePath,
   reverseCurve,
 } from '@antv/util';
@@ -20,6 +19,7 @@ import {
   getPathBBox,
   hasArcOrBezier,
   path2Segments,
+  memoize,
 } from '../../utils';
 
 const internalParsePath = (path: string | PathArray) => {

@@ -88,10 +88,11 @@
       });
 
       document.getElementById('remove all').addEventListener('click', () => {
-        for (let i = 0; i < circles.length; i++) {
-          circles[i].destroy();
-        }
-        circles = [];
+        // for (let i = 0; i < circles.length; i++) {
+        //   circles[i].destroy();
+        // }
+        // circles = [];
+        canvas.destroy();
       });
     </script>
   </body>

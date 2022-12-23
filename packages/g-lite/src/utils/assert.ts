@@ -1,4 +1,4 @@
-import { memoize } from '@antv/util';
+import { memoize } from '../utils';
 import { camelCase } from './string';
 
 export function DCHECK(bool: boolean) {

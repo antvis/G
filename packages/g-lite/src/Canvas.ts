@@ -364,6 +364,12 @@ export class Canvas extends EventTarget implements ICanvas {
     // destroy services
     this.getRenderingService().destroy();
     this.getContextService().destroy();
+    this.getEventService().destroy();
+
+    // clear rbush
+    this.context.rBushRoot.clear();
+    this.context.rBushRoot = null;
+    this.context.renderingContext.root = null;
 
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));

@@ -426,8 +426,8 @@ export class LottieAnimation {
                 if (existedKeyframe) {
                   const {
                     offset,
-
-                    easing: e = 'linear',
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    easing = 'linear',
                     ...rest
                   } = currentKeyframe;
 

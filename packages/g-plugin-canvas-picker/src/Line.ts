@@ -26,7 +26,7 @@ export function isPointInPath(
     stroke,
   } = displayObject.parsedStyle as ParsedLineStyleProps;
 
-  const [_, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+  const [, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   if ((!hasStroke && !isClipPath) || !lineWidth) {
     return false;

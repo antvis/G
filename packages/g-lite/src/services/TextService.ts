@@ -215,7 +215,7 @@ export class TextService {
     if (textPath) {
       const totalPathLength = textPath.getTotalLength();
 
-      const startingPoint = textPath.getPoint(0);
+      // const startingPoint = textPath.getPoint(0);
 
       for (let i = 0; i < lines.length; i++) {
         let positionInPath: number;
@@ -240,6 +240,7 @@ export class TextService {
             break;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         positionInPath += textPathStartOffset * (reverse ? -1 : 1);
         // for (
         //   let i = reverse ? lines[0].length - 1 : 0;

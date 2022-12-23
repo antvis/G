@@ -11,3 +11,4 @@ export * from './string';
 export * from './tapable';
 export * from './text';
 export * from './raf';
+export * from './memoize';

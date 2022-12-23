@@ -1,4 +1,4 @@
-import { isNil, memoize } from '@antv/util';
+import { isNil } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { AABB } from '../shapes';
@@ -597,10 +597,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
 
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
-const priorityMap: Record<string, number> = {};
-const sortAttributeNames = memoize((attributeNames: string[]) => {
-  return attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
-});
+// const uniqueAttributeSet = new Set<string>();
 
 const tmpVec3a = vec3.create();
 const tmpVec3b = vec3.create();
@@ -630,7 +627,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   registerMetadata(metadata: PropertyMetadata) {
     [metadata.n, ...(metadata.a || [])].forEach((name) => {
       propertyMetadataCache[name] = metadata;
-      priorityMap[name] = metadata.p || 0;
     });
   }
 
@@ -696,12 +692,35 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     // let hasUnresolvedProperties = false;
 
     // parse according to priority
-    attributeNames = sortAttributeNames(
-      usedAttributes?.length
-        ? Array.from(new Set(attributeNames.concat(usedAttributes)))
-        : attributeNames,
-    );
-    // attributeNames.sort((a, b) => priorityMap[a] - priorityMap[b]);
+    // path 50
+    // points 50
+    // text 50
+    // textTransform 51
+    // anchor 99
+    // transform 100
+    // transformOrigin 100
+    if (usedAttributes?.length) {
+      // uniqueAttributeSet.clear();
+      attributeNames = Array.from(
+        new Set(attributeNames.concat(usedAttributes)),
+      );
+    }
+
+    [
+      'path',
+      'points',
+      'text',
+      'textTransform',
+      'anchor',
+      'transform',
+      'transformOrigin',
+    ].forEach((name) => {
+      const index = attributeNames.indexOf(name);
+      if (index > -1) {
+        attributeNames.splice(index, 1);
+        attributeNames.push(name);
+      }
+    });
 
     attributeNames.forEach((name) => {
       // some style props maybe deleted after parsing such as `anchor` in Text
