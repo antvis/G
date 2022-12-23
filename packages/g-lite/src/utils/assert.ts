@@ -1,4 +1,4 @@
-import { memoize } from '../utils';
+import { memoize } from './memoize';
 import { camelCase } from './string';
 
 export function DCHECK(bool: boolean) {

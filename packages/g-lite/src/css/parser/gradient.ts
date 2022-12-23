@@ -5,11 +5,8 @@ import type {
   DirectionalNode,
   PositionNode,
 } from '../../utils';
-import {
-  colorStopToString,
-  parseGradient as parse,
-  memoize,
-} from '../../utils';
+import { colorStopToString, parseGradient as parse } from '../../utils';
+import { memoize } from '../../utils/memoize';
 import type {
   CSSKeywordValue,
   CSSUnitValue,

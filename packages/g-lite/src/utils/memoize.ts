@@ -1,4 +1,4 @@
-export function memoize(func, resolver?: (...args: any[]) => any) {
+export function memoize(func: any, resolver?: (...args: any[]) => any) {
   if (
     typeof func !== 'function' ||
     (resolver != null && typeof resolver !== 'function')
@@ -20,4 +20,4 @@ export function memoize(func, resolver?: (...args: any[]) => any) {
   return memoized;
 }
 
-memoize.Cache = WeakMap;
+memoize.Cache = Map;

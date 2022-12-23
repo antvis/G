@@ -1,4 +1,4 @@
-import { memoize } from '../utils';
+import { memoize } from '../utils/memoize';
 import { CSSKeywordValue, CSSRGB, CSSUnitValue, UnitType } from './cssom';
 
 /**

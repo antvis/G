@@ -2,7 +2,7 @@ import { isString } from '@antv/util';
 import type { CSSUnitValue } from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 import { parseLengthOrPercentage } from './dimension';
-import { memoize } from '../../utils';
+import { memoize } from '../../utils/memoize';
 
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin

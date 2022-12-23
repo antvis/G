@@ -452,13 +452,6 @@ export class Element<
     // remove event listeners
     this.emitter.removeAllListeners();
 
-    this.renderable = null;
-    this.cullable = null;
-    this.transformable = null;
-    this.rBushNode = null;
-    this.geometry = null;
-    this.sortable = null;
-
     this.destroyed = true;
   }
 

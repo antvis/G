@@ -1,7 +1,7 @@
 import { clamp, isNil, isObject } from '@antv/util';
 import * as d3 from 'd3-color';
 import { Rect } from '../..';
-import { memoize } from '../../utils';
+import { memoize } from '../../utils/memoize';
 import type { Tuple4Number } from '../../types';
 import type { CSSGradientValue } from '../cssom';
 import { CSSRGB } from '../cssom';

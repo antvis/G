@@ -19,8 +19,8 @@ import {
   getPathBBox,
   hasArcOrBezier,
   path2Segments,
-  memoize,
 } from '../../utils';
+import { memoize } from '../../utils/memoize';
 
 const internalParsePath = (path: string | PathArray) => {
   // empty path

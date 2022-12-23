@@ -1,5 +1,5 @@
 import { clamp, isString } from '@antv/util';
-import { memoize } from '../../utils';
+import { memoize } from '../../utils/memoize';
 import type { CSSUnitValue } from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 

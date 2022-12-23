@@ -232,6 +232,13 @@ export class DisplayObject<
     this.getAnimations().forEach((animation) => {
       animation.cancel();
     });
+
+    this.renderable = null;
+    this.cullable = null;
+    this.transformable = null;
+    this.rBushNode = null;
+    this.geometry = null;
+    this.sortable = null;
   }
 
   cloneNode(
