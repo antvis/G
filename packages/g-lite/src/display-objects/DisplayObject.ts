@@ -297,11 +297,12 @@ export class DisplayObject<
     // account for FCP, process properties as less as possible
     runtime.styleValueRegistry.processProperties(this, attributes, {
       forceUpdateGeometry: true,
-      usedAttributes:
-        // only Group / Text should account for text relative props
-        this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
-          ? INHERITABLE_STYLE_PROPS
-          : INHERITABLE_BASE_STYLE_PROPS,
+      usedAttributes: INHERITABLE_STYLE_PROPS,
+      // usedAttributes:
+      //   // only Group / Text should account for text relative props
+      //   this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
+      //     ? INHERITABLE_STYLE_PROPS
+      //     : INHERITABLE_BASE_STYLE_PROPS,
     });
 
     // redraw at next frame
