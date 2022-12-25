@@ -77,7 +77,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: svgRenderer,
+  renderer: canvasRenderer,
 });
 
 const g = new Group();
@@ -98,16 +98,16 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
   canvas.appendChild(g);
 
-  g.style.x = 200;
-  g.style.y = 200;
+  // g.style.x = 200;
+  // g.style.y = 200;
 
-  // clipPathCircle.animate(
-  //   [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
-  //   {
-  //     duration: 1500,
-  //     iterations: Infinity,
-  //   },
-  // );
+  clipPathCircle.animate(
+    [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
+    {
+      duration: 1500,
+      iterations: Infinity,
+    },
+  );
 });
 
 // stats
