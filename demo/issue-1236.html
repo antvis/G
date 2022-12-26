@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>OOM</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <p style="font-family: sans-serif; font-size: 60px">new york</p>
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Text, Canvas } = window.G;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      canvas.addEventListener('ready', () => {
+        const text = new Text({
+          style: {
+            x: 100,
+            y: 300,
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            text: 'new york',
+            fontSize: 60,
+          },
+        });
+        canvas.appendChild(text);
+      });
+    </script>
+  </body>
+</html>

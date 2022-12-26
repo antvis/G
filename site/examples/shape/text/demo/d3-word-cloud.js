@@ -1,32 +1,41 @@
-import { Canvas, CanvasEvent } from '@antv/g';
+import { Canvas, CanvasEvent, Text, Group } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { loadAnimation } from '@antv/g-lottie-player';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-import * as d3 from 'd3';
+import cloud from 'd3-cloud';
 
-/**
- * @see https://lottiefiles.github.io/lottie-docs/concepts/#transform
- */
+const words = [
+  'Hello',
+  'world',
+  'normally',
+  'you',
+  'want',
+  'more',
+  'words',
+  'than',
+  'this',
+].map(function (d) {
+  return { text: d, size: 10 + Math.random() * 90 };
+});
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
-const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
-const webgpuRenderer = new WebGPURenderer();
+const svgRenderer = new SVGRenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
   fonts: [
     {
       name: 'sans-serif',
-      url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
+      url: '/NotoSansCJKsc-VF.ttf',
     },
   ],
 });
+const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -36,20 +45,54 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
-canvas.addEventListener(CanvasEvent.READY, async () => {
-  const data = await d3.json('/lottie/spring.json');
-  const animation = loadAnimation(data, { loop: true, autoplay: true });
-  const wrapper = animation.render(canvas);
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const layout = cloud()
+    .size([600, 500])
+    .words(words)
+    .padding(5)
+    .rotate(() => Math.floor(Math.random() * 2) * 90)
+    .font('Impact')
+    .fontSize((d) => d.size)
+    .on('end', draw);
+  layout.start();
 
-  const data2 = await d3.json('/lottie/spring2.json');
-  const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
-  const wrapper2 = animation2.render(canvas);
-  wrapper2.translate(150, 0);
+  function draw(words) {
+    const wrapper = new Group({
+      style: {
+        x: layout.size()[0] / 2,
+        y: layout.size()[1] / 2,
+      },
+    });
+    canvas.appendChild(wrapper);
+    words.forEach((d) => {
+      const text = new Text({
+        style: {
+          x: d.x,
+          y: d.y,
+          fontFamily: 'Verdana',
+          text: d.text,
+          fontSize: d.size,
+          textAlign: 'center',
+          fill: '#1890FF',
+          // stroke: '#F04864',
+          // lineWidth: 5,
+          transform: `rotate(${d.rotate}deg)`,
+        },
+      });
+      wrapper.appendChild(text);
 
-  const data3 = await d3.json('/lottie/spring3.json');
-  const animation3 = loadAnimation(data3, { loop: true, autoplay: true });
-  const wrapper3 = animation3.render(canvas);
-  wrapper3.translate(250, 0);
+      text.addEventListener('mouseenter', () => {
+        text.style.fontSize = d.size * 1.2;
+        text.style.stroke = '#F04864';
+        text.style.lineWidth = 5;
+      });
+      text.addEventListener('mouseleave', () => {
+        text.style.fontSize = d.size;
+        text.style.stroke = 'none';
+        text.style.lineWidth = 0;
+      });
+    });
+  }
 });
 
 // stats

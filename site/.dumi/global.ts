@@ -14,6 +14,7 @@ if (window) {
   (window as any).topojson = require('topojson');
   (window as any).versor = require('versor');
   (window as any).d3 = require('d3');
+  (window as any).d3Cloud = require('d3-cloud');
   (window as any).d3Force3d = require('d3-force-3d');
   (window as any).d3SvgAnnotation = require('d3-svg-annotation');
   (window as any).plot = require('@observablehq/plot');
