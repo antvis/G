@@ -1,5 +1,5 @@
 import type { Canvas, DataURLOptions } from '@antv/g-lite';
-import { isBrowser, Rectangle } from '@antv/g-lite';
+import { isBrowser, Rectangle, runtime } from '@antv/g-lite';
 import html2canvas from 'html2canvas';
 import type { CanvasOptions, DownloadImageOptions } from './types';
 
@@ -167,8 +167,8 @@ export class ImageExporter {
 
       // account for IE
       // @see https://stackoverflow.com/a/41434373
-      if ((globalThis.navigator as any).msSaveBlob) {
-        (globalThis.navigator as any).msSaveBlob(blobObj, fileName);
+      if ((runtime.globalThis.navigator as any).msSaveBlob) {
+        (runtime.globalThis.navigator as any).msSaveBlob(blobObj, fileName);
       } else {
         link.addEventListener('click', () => {
           link.download = fileName;

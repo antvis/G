@@ -1,5 +1,5 @@
 import type { DisplayObject, IElement } from '@antv/g-lite';
-import { ElementEvent, MutationEvent } from '@antv/g-lite';
+import { ElementEvent, MutationEvent, runtime } from '@antv/g-lite';
 import { MutationRecord } from './MutationRecord';
 
 let uidCounter = 0;
@@ -42,11 +42,13 @@ export class Registration {
 
   private addListeners_(node: IElement) {
     const options = this.options;
-    if (options.attributes) node.addEventListener(ElementEvent.ATTR_MODIFIED, this, true);
+    if (options.attributes)
+      node.addEventListener(ElementEvent.ATTR_MODIFIED, this, true);
 
     // if (options.characterData) node.addEventListener('DOMCharacterDataModified', this, true);
 
-    if (options.childList) node.addEventListener(ElementEvent.INSERTED, this, true);
+    if (options.childList)
+      node.addEventListener(ElementEvent.INSERTED, this, true);
 
     if (options.childList || options.subtree)
       node.addEventListener(ElementEvent.REMOVED, this, true);
@@ -58,11 +60,13 @@ export class Registration {
 
   removeListeners_(node: IElement) {
     const options = this.options;
-    if (options.attributes) node.removeEventListener(ElementEvent.ATTR_MODIFIED, this, true);
+    if (options.attributes)
+      node.removeEventListener(ElementEvent.ATTR_MODIFIED, this, true);
 
     // if (options.characterData) node.removeEventListener('DOMCharacterDataModified', this, true);
 
-    if (options.childList) node.removeEventListener(ElementEvent.INSERTED, this, true);
+    if (options.childList)
+      node.removeEventListener(ElementEvent.INSERTED, this, true);
 
     if (options.childList || options.subtree)
       node.removeEventListener(ElementEvent.REMOVED, this, true);
@@ -131,27 +135,32 @@ export class Registration {
         record.attributeNamespace = namespace;
 
         // 2.
-        const oldValue = e.attrChange === MutationEvent.ADDITION ? null : e.prevValue;
+        const oldValue =
+          e.attrChange === MutationEvent.ADDITION ? null : e.prevValue;
 
-        forEachAncestorAndObserverEnqueueRecord(target as IElement, (options) => {
-          // 3.1, 4.2
-          if (!options.attributes) return;
+        forEachAncestorAndObserverEnqueueRecord(
+          target as IElement,
+          (options) => {
+            // 3.1, 4.2
+            if (!options.attributes) return;
 
-          // 3.2, 4.3
-          if (
-            options.attributeFilter &&
-            options.attributeFilter.length &&
-            options.attributeFilter.indexOf(name) === -1 &&
-            options.attributeFilter.indexOf(namespace) === -1
-          ) {
-            return;
-          }
-          // 3.3, 4.4
-          if (options.attributeOldValue) return getRecordWithOldValue(oldValue);
+            // 3.2, 4.3
+            if (
+              options.attributeFilter &&
+              options.attributeFilter.length &&
+              options.attributeFilter.indexOf(name) === -1 &&
+              options.attributeFilter.indexOf(namespace) === -1
+            ) {
+              return;
+            }
+            // 3.3, 4.4
+            if (options.attributeOldValue)
+              return getRecordWithOldValue(oldValue);
 
-          // 3.4, 4.5
-          return record;
-        });
+            // 3.4, 4.5
+            return record;
+          },
+        );
 
         break;
 
@@ -206,13 +215,16 @@ export class Registration {
         record.previousSibling = previousSibling as IElement;
         record.nextSibling = nextSibling as IElement;
 
-        forEachAncestorAndObserverEnqueueRecord(target as IElement, function (options) {
-          // 2.1, 3.2
-          if (!options.childList) return;
+        forEachAncestorAndObserverEnqueueRecord(
+          target as IElement,
+          function (options) {
+            // 2.1, 3.2
+            if (!options.childList) return;
 
-          // 2.2, 3.3
-          return record;
-        });
+            // 2.2, 3.3
+            return record;
+          },
+        );
     }
 
     clearRecords();
@@ -237,7 +249,9 @@ export class MutationObserver {
       // 1.2
       (options.attributeOldValue && !options.attributes) ||
       // 1.3
-      (options.attributeFilter && options.attributeFilter.length && !options.attributes) ||
+      (options.attributeFilter &&
+        options.attributeFilter.length &&
+        !options.attributes) ||
       // 1.4
       (options.characterDataOldValue && !options.characterData)
     ) {
@@ -342,7 +356,8 @@ function selectRecord(lastRecord: MutationRecord, newRecord: MutationRecord) {
 
   // Check if the the record we are adding represents the same record. If
   // so, we keep the one with the oldValue in it.
-  if (recordWithOldValue && recordRepresentsCurrentMutation(lastRecord)) return recordWithOldValue;
+  if (recordWithOldValue && recordRepresentsCurrentMutation(lastRecord))
+    return recordWithOldValue;
 
   return null;
 }
@@ -352,7 +367,8 @@ function removeTransientObserversFor(observer: MutationObserver) {
     const registrations = registrationsTable.get(node);
     if (!registrations) return;
     registrations.forEach(function (registration) {
-      if (registration.observer === observer) registration.removeTransientObservers();
+      if (registration.observer === observer)
+        registration.removeTransientObservers();
     });
   });
 }
@@ -402,8 +418,8 @@ function scheduleCallback(observer: MutationObserver) {
   if (!isScheduled) {
     isScheduled = true;
     // setImmediate(dispatchCallbacks);
-    if (typeof globalThis !== 'undefined') {
-      globalThis.setTimeout(dispatchCallbacks);
+    if (typeof runtime.globalThis !== 'undefined') {
+      runtime.globalThis.setTimeout(dispatchCallbacks);
     } else {
       dispatchCallbacks();
     }

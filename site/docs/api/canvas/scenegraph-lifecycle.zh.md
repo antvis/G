@@ -81,7 +81,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {});
 
 ### render
 
-渲染画布，由于渲染器默认开启了自动渲染，大多数情况下不需要手动调用。但有些场景需要手动控制渲染时机，此时可以进行[按需渲染](/zh/guide/diving-deeper/rendering-on-demand) [示例](/zh/examples/canvas/basic/#rendering-on-demand)：
+渲染画布，由于渲染器默认开启了自动渲染，大多数情况下不需要手动调用。但有些场景需要手动控制渲染时机，此时可以进行[按需渲染](/zh/guide/diving-deeper/rendering-on-demand) [示例](/zh/examples/canvas/canvas-basic/#rendering-on-demand)：
 
 ```js
 // 关闭自动渲染

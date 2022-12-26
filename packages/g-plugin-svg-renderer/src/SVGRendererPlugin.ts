@@ -210,7 +210,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       const $el = object.elementSVG?.$el;
 
-      const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
+      const { fill, stroke, clipPath } =
+        object.parsedStyle as ParsedBaseStyleProps;
 
       if (fill && !(fill instanceof CSSRGB)) {
         this.defElementManager.createOrUpdateGradientAndPattern(
@@ -229,6 +230,20 @@ export class SVGRendererPlugin implements RenderingPlugin {
           'stroke',
           this,
         );
+      }
+      if (clipPath) {
+        const parentInvert = mat4.invert(
+          mat4.create(),
+          (object as DisplayObject).getWorldTransform(),
+        );
+
+        const clipPathId =
+          CLIP_PATH_PREFIX + clipPath.entity + '-' + object.entity;
+        const $def = this.defElementManager.getDefElement();
+        const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
+        if ($existed) {
+          this.applyTransform($existed, parentInvert);
+        }
       }
     };
 
@@ -377,7 +392,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private getId(object: DisplayObject) {
-    return `${G_SVG_PREFIX}-${object.nodeName}-${object.entity}`;
+    return `${G_SVG_PREFIX}-${object.entity}`;
   }
 
   private reorderChildren(
@@ -603,6 +618,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         !noWrapWithGroup
       ) {
         $groupEl = createSVGElement('g', document);
+        $groupEl.id = $el.id + '-g';
         $groupEl.appendChild($el);
       } else {
         $groupEl = $el;

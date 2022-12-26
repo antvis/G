@@ -3,6 +3,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
@@ -50,11 +51,15 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     };
 
     const addPointerEventListener = ($el: HTMLElement) => {
-      globalThis.document.addEventListener('pointermove', onPointerMove, true);
+      runtime.globalThis.document.addEventListener(
+        'pointermove',
+        onPointerMove,
+        true,
+      );
       $el.addEventListener('pointerdown', onPointerDown, true);
       $el.addEventListener('pointerleave', onPointerOut, true);
       $el.addEventListener('pointerover', onPointerOver, true);
-      globalThis.addEventListener('pointerup', onPointerUp, true);
+      runtime.globalThis.addEventListener('pointerup', onPointerUp, true);
     };
 
     const addTouchEventListener = ($el: HTMLElement) => {
@@ -65,19 +70,27 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     };
 
     const addMouseEventListener = ($el: HTMLElement) => {
-      globalThis.document.addEventListener('mousemove', onPointerMove, true);
+      runtime.globalThis.document.addEventListener(
+        'mousemove',
+        onPointerMove,
+        true,
+      );
       $el.addEventListener('mousedown', onPointerDown, true);
       $el.addEventListener('mouseout', onPointerOut, true);
       $el.addEventListener('mouseover', onPointerOver, true);
-      globalThis.addEventListener('mouseup', onPointerUp, true);
+      runtime.globalThis.addEventListener('mouseup', onPointerUp, true);
     };
 
     const removePointerEventListener = ($el: HTMLElement) => {
-      globalThis.document.removeEventListener('pointermove', onPointerMove, true);
+      runtime.globalThis.document.removeEventListener(
+        'pointermove',
+        onPointerMove,
+        true,
+      );
       $el.removeEventListener('pointerdown', onPointerDown, true);
       $el.removeEventListener('pointerleave', onPointerOut, true);
       $el.removeEventListener('pointerover', onPointerOver, true);
-      globalThis.removeEventListener('pointerup', onPointerUp, true);
+      runtime.globalThis.removeEventListener('pointerup', onPointerUp, true);
     };
 
     const removeTouchEventListener = ($el: HTMLElement) => {
@@ -88,49 +101,58 @@ export class DOMInteractionPlugin implements RenderingPlugin {
     };
 
     const removeMouseEventListener = ($el: HTMLElement) => {
-      globalThis.document.removeEventListener('mousemove', onPointerMove, true);
+      runtime.globalThis.document.removeEventListener(
+        'mousemove',
+        onPointerMove,
+        true,
+      );
       $el.removeEventListener('mousedown', onPointerDown, true);
       $el.removeEventListener('mouseout', onPointerOut, true);
       $el.removeEventListener('mouseover', onPointerOver, true);
-      globalThis.removeEventListener('mouseup', onPointerUp, true);
+      runtime.globalThis.removeEventListener('mouseup', onPointerUp, true);
     };
 
-    renderingService.hooks.init.tapPromise(DOMInteractionPlugin.tag, async () => {
-      const $el = this.context.contextService.getDomElement() as unknown as HTMLElement;
+    renderingService.hooks.init.tapPromise(
+      DOMInteractionPlugin.tag,
+      async () => {
+        const $el =
+          this.context.contextService.getDomElement() as unknown as HTMLElement;
 
-      // @ts-ignore
-      if (globalThis.navigator.msPointerEnabled) {
         // @ts-ignore
-        $el.style.msContentZooming = 'none';
-        // @ts-ignore
-        $el.style.msTouchAction = 'none';
-      } else if (canvas.supportsPointerEvents) {
-        $el.style.touchAction = 'none';
-      }
+        if (runtime.globalThis.navigator.msPointerEnabled) {
+          // @ts-ignore
+          $el.style.msContentZooming = 'none';
+          // @ts-ignore
+          $el.style.msTouchAction = 'none';
+        } else if (canvas.supportsPointerEvents) {
+          $el.style.touchAction = 'none';
+        }
 
-      if (canvas.supportsPointerEvents) {
-        addPointerEventListener($el);
-      } else {
-        addMouseEventListener($el);
-      }
+        if (canvas.supportsPointerEvents) {
+          addPointerEventListener($el);
+        } else {
+          addMouseEventListener($el);
+        }
 
-      if (canvas.supportsTouchEvents) {
-        addTouchEventListener($el);
-      }
+        if (canvas.supportsTouchEvents) {
+          addTouchEventListener($el);
+        }
 
-      // use passive event listeners
-      // @see https://zhuanlan.zhihu.com/p/24555031
-      $el.addEventListener('wheel', onPointerWheel, {
-        passive: true,
-        capture: true,
-      });
-    });
+        // use passive event listeners
+        // @see https://zhuanlan.zhihu.com/p/24555031
+        $el.addEventListener('wheel', onPointerWheel, {
+          passive: true,
+          capture: true,
+        });
+      },
+    );
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
-      const $el = this.context.contextService.getDomElement() as unknown as HTMLElement;
+      const $el =
+        this.context.contextService.getDomElement() as unknown as HTMLElement;
 
       // @ts-ignore
-      if (globalThis.navigator.msPointerEnabled) {
+      if (runtime.globalThis.navigator.msPointerEnabled) {
         // @ts-ignore
         $el.style.msContentZooming = '';
         // @ts-ignore

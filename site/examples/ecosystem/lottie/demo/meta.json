@@ -47,13 +47,22 @@
       "title": {
         "zh": "弹簧",
         "en": "Spring"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*RxrUQKfhT_AAAAAAAAAAAAAADrd2AQ/Dec-14-2022%2015-15-29.gif"
     },
     {
       "filename": "arrow.js",
       "title": {
         "zh": "箭头",
         "en": "Arrow"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*wi6FS4B16roAAAAAAAAAAAAADrd2AQ/Dec-14-2022%2015-16-27.gif"
+    },
+    {
+      "filename": "use-animations.js",
+      "title": {
+        "zh": "图标",
+        "en": "Icons"
       }
     }
   ]

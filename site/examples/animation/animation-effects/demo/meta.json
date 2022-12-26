@@ -43,6 +43,14 @@
         "en": "Useful animations"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*WRp0SbVfgjUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "multiple-animations-per-element.js",
+      "title": {
+        "zh": "每个元素上应用多个动画",
+        "en": "Multiple Animations Per Element"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*epyYTa3DaM0AAAAAAAAAAAAADrd2AQ/Dec-14-2022%2010-18-22.gif"
     }
   ]
 }

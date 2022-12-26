@@ -162,10 +162,10 @@ The initial position of the drawing in the local coordinate system is described 
 
 The geometric meaning of "position" is also different for different shapes, e.g.
 
--   Using [cx/cy](/en/api/basic/circle#cx) for [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse).
+-   Using [cx/cy](/en/api/basic/circle#cx) for [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse).
 -   [Group](/en/api/group) [Rect](/en/api/rect)，[Image](/en/api/image) 为左上角顶点位置，使用 [x/y](/en/api/basic/rect#x)
--   [Text](/en/api/text) 为文本锚点位置
--   [Line](/en/api/line)，[Polyline](/en/api/polyline)，[Polygon](/en/api/polygon)，[Path](/en/api/path) 为包围盒左上角顶点位置
+-   [Text](/en/api/basic/text) 为文本锚点位置
+-   [Line](/en/api/basic/line)，[Polyline](/en/api/polyline)，[Polygon](/en/api/polygon)，[Path](/en/api/path) 为包围盒左上角顶点位置
 
 Sometimes we need to change the geometric meaning of this `position`, for example to set the center of Rect instead of the top left corner as the `anchor`, we can use [anchor](/en/api/display-object#anchor) to set it to `[0.5, 0.5]`. Note that the coordinates of the graph in the local coordinate system do not change before and after the modification.
 
@@ -195,10 +195,10 @@ The position of the origin (anchor) of the graph, based on [Geometry Bounds](/en
 
 The default anchor points for different shapes are as follows, [example](/en/examples/shape#rect).
 
--   The center of [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse) is `[0.5, 0.5]`
--   The top left corner of [Rect](/en/api/rect), [Image](/en/api/image), [Line](/en/api/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path) is `[0, 0]`.
--   We should always use [textBaseline](/en/api/basic/text#textbaseline) and [textAlign](/en/api/basic/text#textalign) to set the anchor of [Text](/en/api/text).
--   Since [Group](/en/api/text) has no geometry bounds, so its anchor is `[0, 0]`.
+-   The center of [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse) is `[0.5, 0.5]`
+-   The top left corner of [Rect](/en/api/rect), [Image](/en/api/image), [Line](/en/api/basic/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path) is `[0, 0]`.
+-   We should always use [textBaseline](/en/api/basic/text#textbaseline) and [textAlign](/en/api/basic/text#textalign) to set the anchor of [Text](/en/api/basic/text).
+-   Since [Group](/en/api/basic/text) has no geometry bounds, so its anchor is `[0, 0]`.
 
 In addition to using arrays, you can also use space-separated array strings, so the following two ways of writing them are equivalent.
 
@@ -299,9 +299,9 @@ circle.style.transformOrigin = '0 100px'; // The distance to the left edge of th
 
 As with [anchor](/en/api/basic/display-object#anchor), the default value varies from graph to graph.
 
--   `'center'` in [Circle](/en/api/circle) and [Ellipse](/en/api/ellipse).
--   `'left top'` in [Group](/en/api/text), [Rect](/en/api/rect)，[Image](/en/api/image), [Line](/en/api/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path).
--   [Text](/en/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/en/api/basic/text#textbaseline) 与 [textAlign](/en/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   `'center'` in [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse).
+-   `'left top'` in [Group](/en/api/basic/text), [Rect](/en/api/rect)，[Image](/en/api/image), [Line](/en/api/basic/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path).
+-   [Text](/en/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/en/api/basic/text#textbaseline) 与 [textAlign](/en/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
@@ -1195,35 +1195,35 @@ In the scene graph, we need to construct parent-child relationships, get parent-
 
 ### Simple Node Query
 
-| method/property name | method/property | return value      | remarks                                     |
-| -------------------- | --------------- | ----------------- | ------------------------------------------- | ---------------------------------------------------------- |
-| parentNode           | property        | `DisplayObject    | null`                                       | Parent node (if any)                                       |
-| parentElement        | property        | `DisplayObject    | null`                                       | Parent node (if any)                                       |
-| childNodes           | property        | `DisplayObject[]` | Child Node List                             |
-| children             | property        | `DisplayObject[]` | Child Node List                             |
-| firstChild           | property        | `DisplayObject    | null`                                       | Returns the first node in the list of child nodes (if any) |
-| lastChild            | property        | `DisplayObject    | null`                                       | Returns the last node in the list of child nodes (if any)  |
-| nextSibling          | property        | `DisplayObject    | null`                                       | Return the next sibling node (if any)                      |
-| previousSibling      | property        | `DisplayObject    | null`                                       | Return the previous sibling node (if any)                  |
-| contains             | method          | `boolean`         | Whether the subtree contains a node (entry) |
-| getRootNode          | method          | `Node`            | Returns the root node of the current node   |
-| ownerDocument        | property        | `Document`        | Back to the canvas entrance Document        |
-| isConnected          | property        | `boolean`         | Whether the node is added to the canvas     |
+| method/property name | method/property | return value            | remarks                                                    |
+| -------------------- | --------------- | ----------------------- | ---------------------------------------------------------- |
+| parentNode           | property        | `DisplayObject \| null` | Parent node (if any)                                       |
+| parentElement        | property        | `DisplayObject \| null` | Parent node (if any)                                       |
+| childNodes           | property        | `DisplayObject[]`       | Child Node List                                            |
+| children             | property        | `DisplayObject[]`       | Child Node List                                            |
+| firstChild           | property        | `DisplayObject \| null` | Returns the first node in the list of child nodes (if any) |
+| lastChild            | property        | `DisplayObject \| null` | Returns the last node in the list of child nodes (if any)  |
+| nextSibling          | property        | `DisplayObject \| null` | Return the next sibling node (if any)                      |
+| previousSibling      | property        | `DisplayObject \| null` | Return the previous sibling node (if any)                  |
+| contains             | method          | `boolean`               | Whether the subtree contains a node (entry)                |
+| getRootNode          | method          | `Node`                  | Returns the root node of the current node                  |
+| ownerDocument        | property        | `Document`              | Back to the canvas entrance Document                       |
+| isConnected          | property        | `boolean`               | Whether the node is added to the canvas                    |
 
 ### Advanced Search
 
 Referring to the CSS selector, we provide the following query that looks at the **entire subtree** of the current node, and not just the direct list of children, but all descendant nodes.
 
-| method name            | parameters            | return value            | remarks                                                      |
-| ---------------------- | --------------------- | ----------------------- | ------------------------------------------------------------ | ------------------------- |
-| getElementById         | `(id: string)`        | `DisplayObject          | null`                                                        | Query child nodes by `id` |
-| getElementsByName      | `(name: string)`      | `DisplayObject[]`       | Query the list of child nodes by `name`                      |
-| getElementsByClassName | `(className: string)` | `DisplayObject[]`       | Query the list of child nodes by `className`                 |
-| getElementsByTagName   | `(tagName: string)`   | `DisplayObject[]`       | Query the list of child nodes by `tagName`                   |
-| querySelector          | `(selector: string)`  | `DisplayObject ｜ null` | Query the first child node that satisfies the condition      |
-| querySelectorAll       | `(selector: string)`  | `DisplayObject[]`       | Query the list of all child nodes that satisfy the condition |
-| find                   | `(filter: Function)`  | `DisplayObject ｜ null` | Query the first child node that satisfies the condition      |
-| findAll                | `(filter: Function)`  | `DisplayObject[]`       | Query the list of all child nodes that satisfy the condition |
+| method name            | parameters            | return value             | remarks                                                      |
+| ---------------------- | --------------------- | ------------------------ | ------------------------------------------------------------ |
+| getElementById         | `(id: string)`        | `DisplayObject \| null`  | Query child nodes by `id`                                    |
+| getElementsByName      | `(name: string)`      | `DisplayObject[]`        | Query the list of child nodes by `name`                      |
+| getElementsByClassName | `(className: string)` | `DisplayObject[]`        | Query the list of child nodes by `className`                 |
+| getElementsByTagName   | `(tagName: string)`   | `DisplayObject[]`        | Query the list of child nodes by `tagName`                   |
+| querySelector          | `(selector: string)`  | `DisplayObject \｜ null` | Query the first child node that satisfies the condition      |
+| querySelectorAll       | `(selector: string)`  | `DisplayObject[]`        | Query the list of all child nodes that satisfy the condition |
+| find                   | `(filter: Function)`  | `DisplayObject \｜ null` | Query the first child node that satisfies the condition      |
+| findAll                | `(filter: Function)`  | `DisplayObject[]`        | Query the list of all child nodes that satisfy the condition |
 
 We demonstrate how to use these query methods using the above example of the solar system.
 
@@ -1331,10 +1331,10 @@ In this [example](/en/examples/scenegraph#clone), we demonstrate the above featu
 
 ### Get/Set attribute values
 
-| method name  | parameters                   | return values | remarks             |
-| ------------ | ---------------------------- | ------------- | ------------------- | ------------------------------------------- |
-| getAttribute | `(name: string)`             | `null         | any`                | Get attribute value based on attribute name |
-| setAttribute | `(name: string, value: any)` | -             | Set attribute value |
+| method name  | parameters                   | return values | remarks                                     |
+| ------------ | ---------------------------- | ------------- | ------------------------------------------- |
+| getAttribute | `(name: string)`             | `null \| any` | Get attribute value based on attribute name |
+| setAttribute | `(name: string, value: any)` | -             | Set attribute value                         |
 
 ⚠️ Compatible with the old `attr(name: string, value?: any)`, get and set attribute values.
 

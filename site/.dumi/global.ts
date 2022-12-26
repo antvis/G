@@ -14,6 +14,7 @@ if (window) {
   (window as any).topojson = require('topojson');
   (window as any).versor = require('versor');
   (window as any).d3 = require('d3');
+  (window as any).d3Cloud = require('d3-cloud');
   (window as any).d3Force3d = require('d3-force-3d');
   (window as any).d3SvgAnnotation = require('d3-svg-annotation');
   (window as any).plot = require('@observablehq/plot');
@@ -85,4 +86,14 @@ if (window) {
     // https://g.antv.antgroup.com
     'Arli/2DAFTlSJnJOlkUa6HNKU9jRibQoNGFhS4RC1pi2A4cuP4n8ds7Td9IKQhHnjhs0QLEpRUnEdZBWLwSvsAMAAABTeyJvcmlnaW4iOiJodHRwczovL2cuYW50di5hbnRncm91cC5jb206NDQzIiwiZmVhdHVyZSI6IldlYkdQVSIsImV4cGlyeSI6MTY3NTIwOTU5OX0=';
   document.head.appendChild(tokenElement3);
+}
+
+if (
+  location.host === 'g-next.antv.vision' ||
+  location.host === 'antv-g-next.gitee.io'
+) {
+  (window as any).location.href = location.href.replace(
+    location.origin,
+    'https://g.antv.antgroup.com',
+  );
 }

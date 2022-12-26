@@ -439,7 +439,7 @@ export class Animation implements IAnimation {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
   ): void;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   addEventListener(type: any, listener: any, options?: any): void {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
@@ -453,11 +453,11 @@ export class Animation implements IAnimation {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions,
   ): void;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   removeEventListener(type: any, listener: any, options?: any): void {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   dispatchEvent(event: Event): boolean {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }

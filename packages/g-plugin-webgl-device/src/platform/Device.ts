@@ -1894,8 +1894,7 @@ export class Device_GL implements SwapChain, Device {
 
       if (isWebGL2(gl)) {
         for (let i = 0; i < uniformBlocks.length; i++) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const [m, blockName, contents] = uniformBlocks[i];
+          const [, blockName] = uniformBlocks[i];
           // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getUniformBlockIndex
           const blockIdx = gl.getUniformBlockIndex(prog, blockName);
           if (blockIdx !== -1 && blockIdx !== 0xffffffff) {
@@ -1910,8 +1909,7 @@ export class Device_GL implements SwapChain, Device {
         /^uniform .*sampler\S+ (\w+);\s* \/\/ BINDING=(\d+)$/gm,
       );
       for (let i = 0; i < samplers.length; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [m, name, location] = samplers[i];
+        const [, name, location] = samplers[i];
         const samplerUniformLocation = gl.getUniformLocation(prog, name);
         gl.uniform1i(samplerUniformLocation, parseInt(location));
       }

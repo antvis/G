@@ -11,7 +11,7 @@ import type { DragndropPluginOptions } from './interfaces';
 export class DragndropPlugin implements RenderingPlugin {
   static tag = 'Dragndrop';
 
-  constructor(private dragndropPluginOptions: DragndropPluginOptions) {}
+  constructor(public dragndropPluginOptions: DragndropPluginOptions) {}
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
@@ -19,20 +19,13 @@ export class DragndropPlugin implements RenderingPlugin {
 
     // TODO: should we add an option like `draggable` to Canvas
     const canvas = document.defaultView;
-    const {
-      overlap,
-      isDocumentDraggable,
-      isDocumentDroppable,
-      dragstartDistanceThreshold,
-      dragstartTimeThreshold,
-    } = this.dragndropPluginOptions;
 
     const handlePointerdown = (event: FederatedPointerEvent) => {
       const target = event.target as DisplayObject;
       const isDocument = (target as unknown as IDocument) === document;
 
       const draggableEventTarget =
-        isDocument && isDocumentDraggable
+        isDocument && this.dragndropPluginOptions.isDocumentDraggable
           ? document
           : target.closest && target.closest('[draggable=true]');
 
@@ -51,7 +44,7 @@ export class DragndropPlugin implements RenderingPlugin {
         let lastDragClientCoordinates = [event.clientX, event.clientY];
         // @ts-ignore
         // eslint-disable-next-line no-inner-declarations
-        async function handlePointermove(event: FederatedPointerEvent) {
+        const handlePointermove = async (event: FederatedPointerEvent) => {
           if (!dragstartTriggered) {
             const timeElapsed = event.timeStamp - dragstartTimeStamp;
             const distanceMoved = distanceSquareRoot(
@@ -60,8 +53,10 @@ export class DragndropPlugin implements RenderingPlugin {
             );
             // check thresholds
             if (
-              timeElapsed <= dragstartTimeThreshold ||
-              distanceMoved <= dragstartDistanceThreshold
+              timeElapsed <=
+                this.dragndropPluginOptions.dragstartTimeThreshold ||
+              distanceMoved <=
+                this.dragndropPluginOptions.dragstartDistanceThreshold
             ) {
               return;
             }
@@ -84,7 +79,7 @@ export class DragndropPlugin implements RenderingPlugin {
 
           if (!isDocument) {
             const point =
-              overlap === 'pointer'
+              this.dragndropPluginOptions.overlap === 'pointer'
                 ? [event.canvasX, event.canvasY]
                 : target.getBounds().center;
             const elementsBelow = await document.elementsFromPoint(
@@ -98,7 +93,9 @@ export class DragndropPlugin implements RenderingPlugin {
 
             const droppableBelow =
               elementBelow?.closest('[droppable=true]') ||
-              (isDocumentDroppable ? document : null);
+              (this.dragndropPluginOptions.isDocumentDroppable
+                ? document
+                : null);
             if (currentDroppable !== droppableBelow) {
               if (currentDroppable) {
                 // null when we were not over a droppable before this event
@@ -125,7 +122,7 @@ export class DragndropPlugin implements RenderingPlugin {
               }
             }
           }
-        }
+        };
 
         canvas.addEventListener('pointermove', handlePointermove);
 

@@ -80,6 +80,8 @@ const canvas = new Canvas({
   renderer: canvasRenderer,
 });
 
+const g = new Group();
+
 canvas.addEventListener(CanvasEvent.READY, () => {
   const group = new Group({
     style: {
@@ -87,12 +89,18 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       y: 100,
     },
   });
-  canvas.appendChild(clipPathCircle);
+  g.appendChild(clipPathCircle);
   group.appendChild(rect1);
   group.appendChild(rect2);
   group.appendChild(rect3);
   group.appendChild(rect4);
-  canvas.appendChild(group);
+  g.appendChild(group);
+
+  canvas.appendChild(g);
+
+  // g.style.x = 200;
+  // g.style.y = 200;
+
   clipPathCircle.animate(
     [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
     {

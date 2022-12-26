@@ -33,7 +33,7 @@ export default defineConfig({
             zh: '开始使用',
             en: 'Getting Started',
           },
-          link: `/docs/guide/getting-started`,
+          link: `/guide/getting-started`,
         },
         {
           text: {

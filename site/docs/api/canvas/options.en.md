@@ -90,7 +90,7 @@ Optional. The color used to clear the canvas when it is initialized, similar to 
 
 Using [\<color\>](/en/api/css/css-properties-values-api#color), defaults to `'transparent'`.
 
-In [this example](/en/examples/canvas/basic/#background), we have set a translucent red color for the Canvas, and the bottom `<div>` has a background gray color set by CSS: `<div>`.
+In [this example](/en/examples/canvas/canvas-basic/#background), we have set a translucent red color for the Canvas, and the bottom `<div>` has a background gray color set by CSS: `<div>`.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 

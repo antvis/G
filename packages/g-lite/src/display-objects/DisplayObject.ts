@@ -76,7 +76,7 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   shadowType: 'outer',
 };
 
-const INHERITABLE_STYLE_PROPS = [
+const INHERITABLE_BASE_STYLE_PROPS = [
   'opacity',
   'fillOpacity',
   'strokeOpacity',
@@ -87,6 +87,10 @@ const INHERITABLE_STYLE_PROPS = [
   'lineCap',
   'lineJoin',
   'increasedLineWidthForHitTesting',
+];
+
+const INHERITABLE_STYLE_PROPS = [
+  ...INHERITABLE_BASE_STYLE_PROPS,
   'fontSize',
   'fontFamily',
   'fontStyle',
@@ -228,6 +232,13 @@ export class DisplayObject<
     this.getAnimations().forEach((animation) => {
       animation.cancel();
     });
+
+    this.renderable = null;
+    this.cullable = null;
+    this.transformable = null;
+    this.rBushNode = null;
+    this.geometry = null;
+    this.sortable = null;
   }
 
   cloneNode(
@@ -287,6 +298,11 @@ export class DisplayObject<
     runtime.styleValueRegistry.processProperties(this, attributes, {
       forceUpdateGeometry: true,
       usedAttributes: INHERITABLE_STYLE_PROPS,
+      // usedAttributes:
+      //   // only Group / Text should account for text relative props
+      //   this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
+      //     ? INHERITABLE_STYLE_PROPS
+      //     : INHERITABLE_BASE_STYLE_PROPS,
     });
 
     // redraw at next frame

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>OOM</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <button id="add">add 1000</button>
+    <button id="remove all">remove all</button>
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Circle, Canvas } = window.G;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      canvas.addEventListener('ready', () => {
+        // for (let i = 0; i < 1000; i++) {
+        //   const circle = new Circle({
+        //     style: {
+        //       cx: Math.random() * 600,
+        //       cy: Math.random() * 500,
+        //       r: 10,
+        //       fill: '#1890FF',
+        //       stroke: '#F04864',
+        //       lineWidth: 4,
+        //     },
+        //   });
+        //   canvas.appendChild(circle);
+        // }
+      });
+
+      let circles = [];
+      document.getElementById('add').addEventListener('click', () => {
+        for (let i = 0; i < 1000; i++) {
+          const circle = new Circle({
+            style: {
+              cx: Math.random() * 600,
+              cy: Math.random() * 500,
+              r: 10,
+              fill: '#1890FF',
+              stroke: '#F04864',
+              lineWidth: 4,
+            },
+          });
+          circles.push(circle);
+
+          canvas.appendChild(circle);
+        }
+      });
+
+      document.getElementById('remove all').addEventListener('click', () => {
+        // for (let i = 0; i < circles.length; i++) {
+        //   circles[i].destroy();
+        // }
+        // circles = [];
+        canvas.destroy();
+      });
+    </script>
+  </body>
+</html>

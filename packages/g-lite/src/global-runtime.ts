@@ -26,7 +26,11 @@ import {
 } from './css/properties';
 import { DisplayObjectPool } from './display-objects';
 import { Camera } from './camera';
-import type { GeometryAABBUpdater, SceneGraphSelector, SceneGraphService } from './services';
+import type {
+  GeometryAABBUpdater,
+  SceneGraphSelector,
+  SceneGraphService,
+} from './services';
 import {
   CircleUpdater,
   DefaultSceneGraphSelector,
@@ -57,7 +61,11 @@ export interface GlobalRuntime {
   geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>>;
   styleValueRegistry: DefaultStyleValueRegistry;
   layoutRegistry: LayoutRegistry;
-  CSSPropertySyntaxFactory: Record<PropertySyntax, Partial<CSSProperty<any, any>>>;
+  CSSPropertySyntaxFactory: Record<
+    PropertySyntax,
+    Partial<CSSProperty<any, any>>
+  >;
+  globalThis: any;
 }
 
 /**
@@ -82,7 +90,10 @@ const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>> = (() => {
   };
 })();
 
-const CSSPropertySyntaxFactory: Record<PropertySyntax, Partial<CSSProperty<any, any>>> = (() => {
+const CSSPropertySyntaxFactory: Record<
+  PropertySyntax,
+  Partial<CSSProperty<any, any>>
+> = (() => {
   const color = new CSSPropertyColor();
   const length = new CSSPropertyLengthOrPercentage();
   return {
@@ -95,8 +106,10 @@ const CSSPropertySyntaxFactory: Record<PropertySyntax, Partial<CSSProperty<any, 
     [PropertySyntax.FILTER]: new CSSPropertyFilter(),
     [PropertySyntax.LENGTH]: length,
     [PropertySyntax.LENGTH_PERCENTAGE]: length,
-    [PropertySyntax.LENGTH_PERCENTAGE_12]: new CSSPropertyLengthOrPercentage12(),
-    [PropertySyntax.LENGTH_PERCENTAGE_14]: new CSSPropertyLengthOrPercentage14(),
+    [PropertySyntax.LENGTH_PERCENTAGE_12]:
+      new CSSPropertyLengthOrPercentage12(),
+    [PropertySyntax.LENGTH_PERCENTAGE_14]:
+      new CSSPropertyLengthOrPercentage14(),
     [PropertySyntax.COORDINATE]: new CSSPropertyLocalPosition(),
     [PropertySyntax.OFFSET_DISTANCE]: new CSSPropertyOffsetDistance(),
     [PropertySyntax.OPACITY_VALUE]: new CSSPropertyOpacity(),
@@ -111,6 +124,16 @@ const CSSPropertySyntaxFactory: Record<PropertySyntax, Partial<CSSProperty<any, 
     [PropertySyntax.MARKER]: new CSSPropertyMarker(),
   };
 })();
+
+const getGlobalThis = () => {
+  if (typeof globalThis !== 'undefined') return globalThis;
+  if (typeof self !== 'undefined') return self;
+  if (typeof window !== 'undefined') return window;
+  // @ts-ignore
+  if (typeof global !== 'undefined') return global;
+  if (typeof this !== 'undefined') return this;
+  throw new Error('Unable to locate global `this`');
+};
 
 /**
  * Camera
@@ -140,3 +163,4 @@ runtime.geometryUpdaterFactory = geometryUpdaterFactory;
 runtime.CSSPropertySyntaxFactory = CSSPropertySyntaxFactory;
 runtime.styleValueRegistry = new DefaultStyleValueRegistry();
 runtime.layoutRegistry = null;
+runtime.globalThis = getGlobalThis();

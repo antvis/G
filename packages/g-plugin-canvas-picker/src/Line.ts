@@ -1,4 +1,9 @@
-import type { DisplayObject, LineStyleProps, ParsedLineStyleProps, Point } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  LineStyleProps,
+  ParsedLineStyleProps,
+  Point,
+} from '@antv/g-lite';
 import { isFillOrStrokeAffected } from '@antv/g-lite';
 import { inLine } from './utils/math';
 
@@ -21,8 +26,7 @@ export function isPointInPath(
     stroke,
   } = displayObject.parsedStyle as ParsedLineStyleProps;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+  const [, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   if ((!hasStroke && !isClipPath) || !lineWidth) {
     return false;

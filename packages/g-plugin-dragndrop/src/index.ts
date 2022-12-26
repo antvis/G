@@ -24,4 +24,10 @@ export class Plugin extends AbstractRendererPlugin {
   destroy(): void {
     this.removeAllRenderingPlugins();
   }
+  setOptions(options: Partial<DragndropPluginOptions>): void {
+    Object.assign(
+      (this.plugins[0] as DragndropPlugin).dragndropPluginOptions,
+      options,
+    );
+  }
 }

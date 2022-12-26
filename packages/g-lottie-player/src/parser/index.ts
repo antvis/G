@@ -42,6 +42,10 @@ export interface CustomElementOption {
   scaleY?: number;
   x?: number;
   y?: number;
+
+  visibilityStartOffset?: number;
+  visibilityEndOffset?: number;
+  visibilityFrame?: number;
 }
 
 export class ParseContext {
@@ -1160,30 +1164,11 @@ function parseLayers(
         (layerIp > context.startFrame || layerOp < context.endFrame)
       ) {
         const duration = context.endFrame - context.startFrame;
-        const enterAndLeaveAnim = {
-          duration: duration * context.frameTime,
-          keyframes: [
-            {
-              ignore: false,
-              offset: (layerIp - context.startFrame) / duration,
-            },
-          ],
-        };
-        if (layerIp > context.startFrame) {
-          // Add initial keyframe.
-          // NOTE: layerIp may be earlier than startFrame. In this case the first frame has negative percent.
-          enterAndLeaveAnim.keyframes.unshift({
-            ignore: true,
-            offset: 0,
-          });
-        }
-        if ((layerOp - context.startFrame) / duration < 1) {
-          enterAndLeaveAnim.keyframes.push({
-            ignore: true,
-            offset: (layerOp - context.startFrame) / duration,
-          });
-        }
-        keyframeAnimations.push(enterAndLeaveAnim);
+        const visibilityStartOffset = (layerIp - context.startFrame) / duration;
+        const visibilityEndOffset = (layerOp - context.startFrame) / duration;
+        layerGroup.visibilityStartOffset = visibilityStartOffset;
+        layerGroup.visibilityEndOffset = visibilityEndOffset;
+        layerGroup.visibilityFrame = duration;
       }
       if (keyframeAnimations.length) {
         layerGroup.keyframeAnimation = keyframeAnimations;

@@ -96,7 +96,7 @@ const canvas = new Canvas({
 
 支持 [\<color\>](/zh/api/css/css-properties-values-api#color) 取值，默认值为 `'transparent'`。
 
-在该[示例](/zh/examples/canvas/basic/#background)中，我们为 Canvas 设置了一个半透明的红色，而最底层的 `<div>` 通过 CSS 设置了背景灰色：
+在该[示例](/zh/examples/canvas/canvas-basic/#background)中，我们为 Canvas 设置了一个半透明的红色，而最底层的 `<div>` 通过 CSS 设置了背景灰色：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4QY6Rb9jIy8AAAAAAAAAAAAAARQnAQ" width="300" alt="canvas's background">
 

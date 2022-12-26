@@ -1,4 +1,4 @@
-import { isNil, isString, memoize } from '@antv/util';
+import { isNil, isString } from '@antv/util';
 import type {
   AngularNode,
   ColorStop,
@@ -6,6 +6,7 @@ import type {
   PositionNode,
 } from '../../utils';
 import { colorStopToString, parseGradient as parse } from '../../utils';
+import { memoize } from '../../utils/memoize';
 import type {
   CSSKeywordValue,
   CSSUnitValue,

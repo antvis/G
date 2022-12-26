@@ -5,9 +5,9 @@ order: 2
 
 In this tutorial series, we will step-by-step implement a simple visualization scene that shows nodes and edges and gives them basic interaction capabilities such as dragging and picking.
 
-In the previous section we defined a simple scene, in this section we will learn how to use [renderer](/en/api/renderer/renderer) to complete the rendering.
+In the previous section we defined a simple scene, in this section we will learn how to use [renderer](/en/api/renderer/intro) to complete the rendering.
 
--   [Example of this section](/en/examples/guide#chapter2)
+-   [Example of this section](/en/examples/guide/basic/#chapter2)
 -   [DEMO in CodeSandbox](https://codesandbox.io/s/ru-men-jiao-cheng-qs3zn?file=/index.js)
 
 ## Choosing a renderer

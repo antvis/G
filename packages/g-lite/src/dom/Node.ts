@@ -150,15 +150,15 @@ export abstract class Node extends EventTarget implements INode {
   hasChildNodes(): boolean {
     return this.childNodes.length > 0;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   isDefaultNamespace(namespace: string | null): boolean {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   lookupNamespaceURI(prefix: string | null): string | null {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   lookupPrefix(namespace: string | null): string | null {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }

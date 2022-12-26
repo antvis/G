@@ -174,8 +174,10 @@ export class Canvas extends EventTarget implements ICanvas {
      * implements `Window` interface
      */
     this.devicePixelRatio = dpr;
-    this.requestAnimationFrame = requestAnimationFrame ?? raf.bind(globalThis);
-    this.cancelAnimationFrame = cancelAnimationFrame ?? caf.bind(globalThis);
+    this.requestAnimationFrame =
+      requestAnimationFrame ?? raf.bind(runtime.globalThis);
+    this.cancelAnimationFrame =
+      cancelAnimationFrame ?? caf.bind(runtime.globalThis);
 
     /**
      * limits query
@@ -183,20 +185,21 @@ export class Canvas extends EventTarget implements ICanvas {
     // the following feature-detect from hammer.js
     // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
     this.supportsTouchEvents =
-      supportsTouchEvents ?? 'ontouchstart' in globalThis;
+      supportsTouchEvents ?? 'ontouchstart' in runtime.globalThis;
     this.supportsPointerEvents =
-      supportsPointerEvents ?? !!globalThis.PointerEvent;
+      supportsPointerEvents ?? !!runtime.globalThis.PointerEvent;
     this.isTouchEvent =
       isTouchEvent ??
       ((event: InteractivePointerEvent): event is TouchEvent =>
-        this.supportsTouchEvents && event instanceof globalThis.TouchEvent);
+        this.supportsTouchEvents &&
+        event instanceof runtime.globalThis.TouchEvent);
     this.isMouseEvent =
       isMouseEvent ??
       ((event: InteractivePointerEvent): event is MouseEvent =>
-        !globalThis.MouseEvent ||
-        (event instanceof globalThis.MouseEvent &&
+        !runtime.globalThis.MouseEvent ||
+        (event instanceof runtime.globalThis.MouseEvent &&
           (!this.supportsPointerEvents ||
-            !(event instanceof globalThis.PointerEvent))));
+            !(event instanceof runtime.globalThis.PointerEvent))));
 
     this.initRenderingContext({
       container,
@@ -356,6 +359,12 @@ export class Canvas extends EventTarget implements ICanvas {
     if (destroyScenegraph) {
       // destroy Document
       this.document.destroy();
+      this.getEventService().destroy();
+
+      // clear rbush
+      this.context.rBushRoot.clear();
+      this.context.rBushRoot = null;
+      this.context.renderingContext.root = null;
     }
 
     // destroy services

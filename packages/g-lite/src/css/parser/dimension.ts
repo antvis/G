@@ -1,18 +1,27 @@
-import { isNil, isNumber, isString, memoize } from '@antv/util';
+import { isNil, isNumber, isString } from '@antv/util';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { AABB } from '../../shapes';
 import { Shape } from '../../types';
 import { rad2deg, turn2deg } from '../../utils';
+import { memoize } from '../../utils/memoize';
 import type { CSSStyleValue } from '../cssom';
-import { CSSUnitValue, toCanonicalUnit, UnitType, unitTypeToString } from '../cssom';
+import {
+  CSSUnitValue,
+  toCanonicalUnit,
+  UnitType,
+  unitTypeToString,
+} from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 
 type LengthUnit = 'px' | '%' | 'em' | 'rem';
 type AngleUnit = 'deg' | 'rad' | 'turn';
 type Unit = LengthUnit | AngleUnit | '';
 
-export function parseDimension(unitRegExp: RegExp, string: string): CSSStyleValue | undefined {
+export function parseDimension(
+  unitRegExp: RegExp,
+  string: string,
+): CSSStyleValue | undefined {
   if (isNil(string)) {
     return getOrCreateUnitValue(0, 'px');
   }
@@ -77,7 +86,10 @@ export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
 });
 
 export const parseAngle = memoize((css: string): CSSUnitValue => {
-  return parseDimension(new RegExp('deg|rad|grad|turn', 'g'), css) as CSSUnitValue;
+  return parseDimension(
+    new RegExp('deg|rad|grad|turn', 'g'),
+    css,
+  ) as CSSUnitValue;
 });
 
 /**
@@ -146,7 +158,9 @@ export function convertAngleUnit(value: CSSUnitValue) {
   return deg;
 }
 
-export function parseDimensionArray(string: string | (string | number)[]): CSSUnitValue[] {
+export function parseDimensionArray(
+  string: string | (string | number)[],
+): CSSUnitValue[] {
   if (isString(string)) {
     // "1px 2px 3px"
     return string.split(' ').map((segment) => parseLengthOrPercentage(segment));
@@ -185,7 +199,9 @@ export function convertPercentUnit(
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
     const bounds =
-      target.nodeName === Shape.GROUP ? target.getLocalBounds() : target.getGeometryBounds();
+      target.nodeName === Shape.GROUP
+        ? target.getLocalBounds()
+        : target.getGeometryBounds();
     let size = 0;
     if (!AABB.isEmpty(bounds)) {
       size = bounds.halfExtents[vec3Index] * 2;

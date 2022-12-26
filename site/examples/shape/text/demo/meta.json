@@ -27,6 +27,13 @@
         "en": "Use Web Font Loader"
       },
       "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*V2CyT5XfZ3AAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "d3-word-cloud.js",
+      "title": {
+        "zh": "D3 词云",
+        "en": "D3 Word Cloud"
+      }
     }
   ]
 }

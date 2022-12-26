@@ -4,11 +4,13 @@ import type {
   ICamera,
   CanvasConfig,
 } from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import Hammer from 'hammerjs';
 
 const MOTION_FACTOR = 10;
 // https://gist.github.com/handleman/3c99e754065f647b082f
-const isMac = globalThis.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+const isMac =
+  runtime.globalThis.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
 export class ControlPlugin implements RenderingPlugin {
   static tag = 'Control';

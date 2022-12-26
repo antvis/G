@@ -1,4 +1,5 @@
-import { clamp, isString, memoize } from '@antv/util';
+import { clamp, isString } from '@antv/util';
+import { memoize } from '../../utils/memoize';
 import type { CSSUnitValue } from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 
@@ -31,20 +32,28 @@ export const parseNumber = memoize((string: string | number): CSSUnitValue => {
  * eg.
  * * [0.5, 0.5] -> [CSSUnitValue, CSSUnitValue]
  */
-export const parseNumberList = memoize((string: string | number[]): CSSUnitValue[] => {
-  if (isString(string)) {
-    return string.split(' ').map(parseNumber);
-  } else {
-    return string.map(parseNumber);
-  }
-});
+export const parseNumberList = memoize(
+  (string: string | number[]): CSSUnitValue[] => {
+    if (isString(string)) {
+      return string.split(' ').map(parseNumber);
+    } else {
+      return string.map(parseNumber);
+    }
+  },
+);
 
-export function mergeNumbers(left: number, right: number): [number, number, (n: number) => string] {
+export function mergeNumbers(
+  left: number,
+  right: number,
+): [number, number, (n: number) => string] {
   return [left, right, numberToString];
 }
 
 export function clampedMergeNumbers(min: number, max: number) {
-  return (left: number, right: number): [number, number, (i: number) => string] => [
+  return (
+    left: number,
+    right: number,
+  ): [number, number, (i: number) => string] => [
     left,
     right,
     (x: number) => numberToString(clamp(x, min, max)),

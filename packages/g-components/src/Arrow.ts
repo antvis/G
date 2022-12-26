@@ -62,9 +62,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       body,
       startHead,
       endHead,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       startHeadOffset,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       endHeadOffset,
       ...rest
     } = this.attributes;
@@ -143,15 +141,10 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
 
       if (newValue) {
         const {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           body,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           startHead,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           endHead,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           startHeadOffset,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           endHeadOffset,
           ...rest
         } = this.attributes;
@@ -165,15 +158,10 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       }
     } else if (name === 'body') {
       const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         body,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         startHead,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         endHead,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         startHeadOffset,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         endHeadOffset,
         ...rest
       } = this.attributes;

@@ -38,8 +38,9 @@ const canvas = new Canvas({
 
 canvas.addEventListener(CanvasEvent.READY, async () => {
   const data = await d3.json('/lottie/arrow.json');
-  const animation = loadAnimation(data, { loop: true });
+  const animation = loadAnimation(data, { loop: true, autoplay: true });
   const wrapper = animation.render(canvas);
+  wrapper.scale(0.5);
 });
 
 // stats

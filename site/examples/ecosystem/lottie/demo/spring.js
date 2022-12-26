@@ -40,6 +40,16 @@ canvas.addEventListener(CanvasEvent.READY, async () => {
   const data = await d3.json('/lottie/spring.json');
   const animation = loadAnimation(data, { loop: true, autoplay: true });
   const wrapper = animation.render(canvas);
+
+  const data2 = await d3.json('/lottie/spring2.json');
+  const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
+  const wrapper2 = animation2.render(canvas);
+  wrapper2.translate(150, 0);
+
+  const data3 = await d3.json('/lottie/spring3.json');
+  const animation3 = loadAnimation(data3, { loop: true, autoplay: true });
+  const wrapper3 = animation3.render(canvas);
+  wrapper3.translate(250, 0);
 });
 
 // stats

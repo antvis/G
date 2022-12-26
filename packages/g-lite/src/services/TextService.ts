@@ -214,8 +214,8 @@ export class TextService {
     // account for textPath
     if (textPath) {
       const totalPathLength = textPath.getTotalLength();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const startingPoint = textPath.getPoint(0);
+
+      // const startingPoint = textPath.getPoint(0);
 
       for (let i = 0; i < lines.length; i++) {
         let positionInPath: number;

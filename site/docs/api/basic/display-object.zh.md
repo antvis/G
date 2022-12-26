@@ -163,10 +163,10 @@ rect.style.setProperty('line-width', 4);
 
 对于不同的图形，“位置”的几何意义也不同，例如：
 
--   [Circle](/zh/api/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置，使用 [cx/cy](/zh/api/basic/circle#cx)
+-   [Circle](/zh/api/basic/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置，使用 [cx/cy](/zh/api/basic/circle#cx)
 -   [Group](/zh/api/group) [Rect](/zh/api/rect)，[Image](/zh/api/image) 为左上角顶点位置，使用 [x/y](/zh/api/basic/rect#x)
--   [Text](/zh/api/text) 为文本锚点位置
--   [Line](/zh/api/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置
+-   [Text](/zh/api/basic/text) 为文本锚点位置
+-   [Line](/zh/api/basic/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置
 
 有时我们需要更改这个 “位置” 的几何意义，例如将 Rect 的中心而非左上角设置成 “锚点”，此时我们可以使用 [anchor](/zh/api/display-object#anchor)，将它设置成 `[0.5, 0.5]`。需要注意的是，修改前后图形在局部坐标系下的坐标并不会改变。
 
@@ -196,10 +196,10 @@ circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
 
 不同图形的默认锚点如下，[示例](/zh/examples/shape#rect)：
 
--   [Circle](/zh/api/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置 `[0.5, 0.5]`
--   [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `[0, 0]`
--   [Text](/zh/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
--   [Group](/zh/api/text) 无几何定义，因此设置此属性无效
+-   [Circle](/zh/api/basic/circle)，[Ellipse](/zh/api/ellipse) 为圆心位置 `[0.5, 0.5]`
+-   [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/basic/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `[0, 0]`
+-   [Text](/zh/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   [Group](/zh/api/basic/text) 无几何定义，因此设置此属性无效
 
 除了使用数组，还可以使用空格分隔的数组字符串，因此以下两种写法等价：
 
@@ -300,9 +300,9 @@ circle.style.transformOrigin = '0 100px'; // 包围盒水平方向左侧边缘�
 
 和 [anchor](/zh/api/basic/display-object#anchor) 一样，不同图形的默认值也不同：
 
--   [Circle](/zh/api/circle)，[Ellipse](/zh/api/ellipse) 为 `'center'`
--   [Group](/zh/api/text) [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `'left top'`
--   [Text](/zh/api/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
+-   [Circle](/zh/api/basic/circle)，[Ellipse](/zh/api/ellipse) 为 `'center'`
+-   [Group](/zh/api/basic/text) [Rect](/zh/api/rect)，[Image](/zh/api/image)，[Line](/zh/api/basic/line)，[Polyline](/zh/api/polyline)，[Polygon](/zh/api/polygon)，[Path](/zh/api/path) 为包围盒左上角顶点位置 `'left top'`
+-   [Text](/zh/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/zh/api/basic/text#textbaseline) 与 [textAlign](/zh/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
@@ -1204,34 +1204,34 @@ interface DOMRect {
 
 ### 简单节点查询
 
-| 名称            | 属性/方法 | 返回值            | 备注                           |
-| --------------- | --------- | ----------------- | ------------------------------ | ------------------------------------ |
-| parentNode      | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
-| parentElement   | 属性      | `DisplayObject    | null`                          | 父节点（如有）                       |
-| childNodes      | 属性      | `DisplayObject[]` | 子节点列表                     |
-| children        | 属性      | `DisplayObject[]` | 子节点列表                     |
-| firstChild      | 属性      | `DisplayObject    | null`                          | 返回子节点列表中第一个节点（如有）   |
-| lastChild       | 属性      | `DisplayObject    | null`                          | 返回子节点列表中最后一个节点（如有） |
-| nextSibling     | 属性      | `DisplayObject    | null`                          | 返回后一个兄弟节点（如有）           |
-| previousSibling | 属性      | `DisplayObject    | null`                          | 返回前一个兄弟节点（如有）           |
-| contains        | 方法      | `boolean`         | 子树中是否包含某个节点（入参） |
-| getRootNode     | 方法      | `Node`            | 返回当前节点的根节点           |
-| ownerDocument   | 属性      | `Document`        | 返回画布入口 Document          |
-| isConnected     | 属性      | `boolean`         | 节点是否被添加到画布中         |
+| 名称            | 属性/方法 | 返回值                  | 备注                                 |
+| --------------- | --------- | ----------------------- | ------------------------------------ |
+| parentNode      | 属性      | `DisplayObject \| null` | 父节点（如有）                       |
+| parentElement   | 属性      | `DisplayObject \| null` | 父节点（如有）                       |
+| childNodes      | 属性      | `DisplayObject[]`       | 子节点列表                           |
+| children        | 属性      | `DisplayObject[]`       | 子节点列表                           |
+| firstChild      | 属性      | `DisplayObject \| null` | 返回子节点列表中第一个节点（如有）   |
+| lastChild       | 属性      | `DisplayObject \| null` | 返回子节点列表中最后一个节点（如有） |
+| nextSibling     | 属性      | `DisplayObject \| null` | 返回后一个兄弟节点（如有）           |
+| previousSibling | 属性      | `DisplayObject \| null` | 返回前一个兄弟节点（如有）           |
+| contains        | 方法      | `boolean`               | 子树中是否包含某个节点（入参）       |
+| getRootNode     | 方法      | `Node`                  | 返回当前节点的根节点                 |
+| ownerDocument   | 属性      | `Document`              | 返回画布入口 Document                |
+| isConnected     | 属性      | `boolean`               | 节点是否被添加到画布中               |
 
 ### 高级查询
 
 参考 CSS 选择器，我们提供了以下查询方法，查询范围是当前节点的**整棵子树**，并不仅仅是直接的子节点列表，而是所有子孙节点。
 
 | 名称                   | 参数                  | 返回值                  | 备注                            |
-| ---------------------- | --------------------- | ----------------------- | ------------------------------- | -------------------- |
-| getElementById         | `(id: string)`        | `DisplayObject          | null`                           | 通过 `id` 查询子节点 |
+| ---------------------- | --------------------- | ----------------------- | ------------------------------- |
+| getElementById         | `(id: string)`        | `DisplayObject \| null` | 通过 `id` 查询子节点            |
 | getElementsByName      | `(name: string)`      | `DisplayObject[]`       | 通过 `name` 查询子节点列表      |
 | getElementsByClassName | `(className: string)` | `DisplayObject[]`       | 通过 `className` 查询子节点列表 |
 | getElementsByTagName   | `(tagName: string)`   | `DisplayObject[]`       | 通过 `tagName` 查询子节点列表   |
-| querySelector          | `(selector: string)`  | `DisplayObject ｜ null` | 查询满足条件的第一个子节点      |
+| querySelector          | `(selector: string)`  | `DisplayObject \| null` | 查询满足条件的第一个子节点      |
 | querySelectorAll       | `(selector: string)`  | `DisplayObject[]`       | 查询满足条件的所有子节点列表    |
-| find                   | `(filter: Function)`  | `DisplayObject ｜ null` | 查询满足条件的第一个子节点      |
+| find                   | `(filter: Function)`  | `DisplayObject \| null` | 查询满足条件的第一个子节点      |
 | findAll                | `(filter: Function)`  | `DisplayObject[]`       | 查询满足条件的所有子节点列表    |
 
 下面我们以上面太阳系的例子，演示如何使用这些查询方法。
@@ -1340,10 +1340,10 @@ clonedCircle.getPosition(); // [10, 20]
 
 ### 获取/设置属性值
 
-| 名称         | 参数                         | 返回值 | 备注       |
-| ------------ | ---------------------------- | ------ | ---------- | -------------------- |
-| getAttribute | `(name: string)`             | `null  | any`       | 根据属性名获取属性值 |
-| setAttribute | `(name: string, value: any)` | 无     | 设置属性值 |
+| 名称         | 参数                         | 返回值        | 备注                 |
+| ------------ | ---------------------------- | ------------- | -------------------- |
+| getAttribute | `(name: string)`             | `null \| any` | 根据属性名获取属性值 |
+| setAttribute | `(name: string, value: any)` | 无            | 设置属性值           |
 
 ⚠️ 兼容旧版 `attr(name: string, value?: any)`，获取以及设置属性值。
 

@@ -114,6 +114,16 @@ Used to determine if the graph in the drag is in the `dropzone`, supports the fo
 -   `'pointer'` Default value. The mouse position enters the `dropzone` area by determining
 -   `'center'` The center of the dropzone is determined if the center of the dropzone is in the dropzone.
 
+### Modify configuration items
+
+In addition to passing in when the plugin is initialized, you can also use `setOptions` to modify the above configuration items at any time later:
+
+```js
+plugin.setOptions({
+    dragstartTimeThreshold: 200,
+});
+```
+
 ## Usage
 
 Drag and Drop related events are both bubbly.

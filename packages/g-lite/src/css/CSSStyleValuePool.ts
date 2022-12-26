@@ -1,4 +1,4 @@
-import { memoize } from '@antv/util';
+import { memoize } from '../utils/memoize';
 import { CSSKeywordValue, CSSRGB, CSSUnitValue, UnitType } from './cssom';
 
 /**
