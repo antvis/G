@@ -233,12 +233,13 @@ export class DisplayObject<
       animation.cancel();
     });
 
-    this.renderable = null;
-    this.cullable = null;
-    this.transformable = null;
-    this.rBushNode = null;
-    this.geometry = null;
-    this.sortable = null;
+    // FIXME
+    // this.renderable = null;
+    // this.cullable = null;
+    // this.transformable = null;
+    // this.rBushNode = null;
+    // this.geometry = null;
+    // this.sortable = null;
   }
 
   cloneNode(
