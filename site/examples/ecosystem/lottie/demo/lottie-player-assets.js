@@ -62,10 +62,16 @@ canvas.addEventListener(CanvasEvent.READY, async () => {
   // wrapper.translate(0, 200);
 
   const pointer = await d3.json('/lottie/pointer.json');
-  pointerAnimation = loadAnimation(pointer, { loop: true, autoplay: true });
+  pointerAnimation = loadAnimation(pointer, { loop: false, autoplay: false });
   const wrapper = pointerAnimation.render(canvas);
   wrapper.scale(0.5);
   wrapper.translate(0, 200);
+
+  console.log(
+    pointerAnimation.fps(),
+    pointerAnimation.getDuration(false),
+    pointerAnimation.getDuration(true),
+  );
 });
 
 // stats
@@ -129,6 +135,8 @@ const controlConfig = {
   speed: 1,
   goToCurrentTime: 0,
   goToFrame: 0,
+  playSegmentsFirstFrame: 0,
+  playSegmentsLastFrame: 0,
 };
 controlFolder.add(controlConfig, 'play');
 controlFolder.add(controlConfig, 'pause');
@@ -137,11 +145,29 @@ controlFolder.add(controlConfig, 'speed', -3, 3).onChange((speed) => {
   pointerAnimation.setSpeed(speed);
 });
 controlFolder
-  .add(controlConfig, 'goToCurrentTime', 0, 2000)
+  .add(controlConfig, 'goToCurrentTime', 0, 4.04)
   .onChange((time) => {
     pointerAnimation.goTo(time);
+    pointerAnimation.play();
   });
-controlFolder.add(controlConfig, 'goToFrame', 0, 100).onChange((frame) => {
+controlFolder.add(controlConfig, 'goToFrame', 0, 101).onChange((frame) => {
   pointerAnimation.goTo(frame, true);
+  pointerAnimation.play();
 });
+controlFolder
+  .add(controlConfig, 'playSegmentsFirstFrame', 0, 101)
+  .onChange((firstFrame) => {
+    pointerAnimation.playSegments([
+      firstFrame,
+      controlConfig.playSegmentsLastFrame,
+    ]);
+  });
+controlFolder
+  .add(controlConfig, 'playSegmentsLastFrame', 0, 101)
+  .onChange((lastFrame) => {
+    pointerAnimation.playSegments([
+      controlConfig.playSegmentsFirstFrame,
+      lastFrame,
+    ]);
+  });
 controlFolder.open();

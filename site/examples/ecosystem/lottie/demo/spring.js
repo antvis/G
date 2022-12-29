@@ -42,14 +42,66 @@ canvas.addEventListener(CanvasEvent.READY, async () => {
   const wrapper = animation.render(canvas);
 
   const data2 = await d3.json('/lottie/spring2.json');
-  const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
+  const animation2 = loadAnimation(data2, { loop: false, autoplay: false });
   const wrapper2 = animation2.render(canvas);
   wrapper2.translate(150, 0);
+
+  console.log(
+    animation2.fps(),
+    animation2.getDuration(),
+    animation2.getDuration(true),
+  );
 
   const data3 = await d3.json('/lottie/spring3.json');
   const animation3 = loadAnimation(data3, { loop: true, autoplay: true });
   const wrapper3 = animation3.render(canvas);
   wrapper3.translate(250, 0);
+
+  // GUI
+  const gui = new lil.GUI({ autoPlace: false });
+  $wrapper.appendChild(gui.domElement);
+  const rendererFolder = gui.addFolder('renderer');
+  const rendererConfig = {
+    renderer: 'canvas',
+  };
+  rendererFolder
+    .add(rendererConfig, 'renderer', [
+      'canvas',
+      'svg',
+      'webgl',
+      'webgpu',
+      'canvaskit',
+    ])
+    .onChange((rendererName) => {
+      let renderer;
+      if (rendererName === 'canvas') {
+        renderer = canvasRenderer;
+      } else if (rendererName === 'svg') {
+        renderer = svgRenderer;
+      } else if (rendererName === 'webgl') {
+        renderer = webglRenderer;
+      } else if (rendererName === 'webgpu') {
+        renderer = webgpuRenderer;
+      } else if (rendererName === 'canvaskit') {
+        renderer = canvaskitRenderer;
+      }
+      canvas.setRenderer(renderer);
+    });
+  rendererFolder.open();
+
+  const folder = gui.addFolder('playSegments');
+  const config = {
+    playSegmentsFirstFrame: 0,
+    playSegmentsLastFrame: 24,
+  };
+
+  folder.add(config, 'playSegmentsFirstFrame', 0, 24).onChange((firstFrame) => {
+    animation2.playSegments([firstFrame, config.playSegmentsLastFrame]);
+  });
+  folder.add(config, 'playSegmentsLastFrame', 0, 24).onChange((lastFrame) => {
+    animation2.playSegments([config.playSegmentsFirstFrame, lastFrame]);
+  });
+  folder.open();
 });
 
 // stats
@@ -66,35 +118,3 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
     stats.update();
   }
 });
-
-// GUI
-const gui = new lil.GUI({ autoPlace: false });
-$wrapper.appendChild(gui.domElement);
-const rendererFolder = gui.addFolder('renderer');
-const rendererConfig = {
-  renderer: 'canvas',
-};
-rendererFolder
-  .add(rendererConfig, 'renderer', [
-    'canvas',
-    'svg',
-    'webgl',
-    'webgpu',
-    'canvaskit',
-  ])
-  .onChange((rendererName) => {
-    let renderer;
-    if (rendererName === 'canvas') {
-      renderer = canvasRenderer;
-    } else if (rendererName === 'svg') {
-      renderer = svgRenderer;
-    } else if (rendererName === 'webgl') {
-      renderer = webglRenderer;
-    } else if (rendererName === 'webgpu') {
-      renderer = webgpuRenderer;
-    } else if (rendererName === 'canvaskit') {
-      renderer = canvaskitRenderer;
-    }
-    canvas.setRenderer(renderer);
-  });
-rendererFolder.open();

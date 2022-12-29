@@ -1,12 +1,19 @@
 import type { IElement, IKeyframeEffect } from '@antv/g-lite';
-import { calculateActiveDuration, calculateIterationProgress, convertEffectInput } from '../utils';
+import {
+  calculateActiveDuration,
+  calculateIterationProgress,
+  convertEffectInput,
+} from '../utils';
 import type { Animation } from './Animation';
 import { AnimationEffectTiming } from './AnimationEffectTiming';
 import { normalizeKeyframes } from './KeyframeList';
 
 const fills = 'backwards|forwards|both|none'.split('|');
 const directions = 'reverse|alternate|alternate-reverse'.split('|');
-export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean) {
+export function makeTiming(
+  timingInput: KeyframeEffectOptions,
+  forGroup: boolean,
+) {
   const timing = new AnimationEffectTiming();
   if (forGroup) {
     timing.fill = 'both';
@@ -22,14 +29,23 @@ export function makeTiming(timingInput: KeyframeEffectOptions, forGroup: boolean
         timingInput[property] !== 'auto'
       ) {
         if (typeof timing[property] === 'number' || property === 'duration') {
-          if (typeof timingInput[property] !== 'number' || isNaN(timingInput[property] as number)) {
+          if (
+            typeof timingInput[property] !== 'number' ||
+            isNaN(timingInput[property] as number)
+          ) {
             return;
           }
         }
-        if (property === 'fill' && fills.indexOf(timingInput[property]!) === -1) {
+        if (
+          property === 'fill' &&
+          fills.indexOf(timingInput[property]!) === -1
+        ) {
           return;
         }
-        if (property === 'direction' && directions.indexOf(timingInput[property]!) === -1) {
+        if (
+          property === 'direction' &&
+          directions.indexOf(timingInput[property]!) === -1
+        ) {
           return;
         }
         // @ts-ignore
@@ -48,7 +64,9 @@ export function normalizeTimingInput(
   return makeTiming(timingInput, forGroup);
 }
 
-export function numericTimingToObject(timingInput: KeyframeEffectOptions | number) {
+export function numericTimingToObject(
+  timingInput: KeyframeEffectOptions | number,
+) {
   if (typeof timingInput === 'number') {
     if (isNaN(timingInput)) {
       timingInput = { duration: 'auto' };
@@ -104,7 +122,11 @@ export class KeyframeEffect implements IKeyframeEffect {
     );
 
     this.normalizedKeyframes = normalizeKeyframes(effectInput, this.timing);
-    this.interpolations = convertEffectInput(this.normalizedKeyframes, this.timing, this.target);
+    this.interpolations = convertEffectInput(
+      this.normalizedKeyframes,
+      this.timing,
+      this.target,
+    );
 
     this.computedTiming = new Proxy<AnimationEffectTiming>(this.timing, {
       get: (target, prop) => {
@@ -134,7 +156,10 @@ export class KeyframeEffect implements IKeyframeEffect {
   }
 
   applyInterpolations() {
-    this.interpolations(this.target as unknown as IElement, Number(this.timeFraction));
+    this.interpolations(
+      this.target as unknown as IElement,
+      Number(this.timeFraction),
+    );
   }
 
   update(localTime: number | null): boolean {
@@ -172,7 +197,7 @@ export class KeyframeEffect implements IKeyframeEffect {
    */
   updateTiming(timing?: OptionalEffectTiming): void {
     Object.keys(timing || {}).forEach((name) => {
-      this.timing = timing[name];
+      this.timing[name] = timing[name];
     });
   }
 }
