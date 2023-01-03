@@ -50,6 +50,7 @@ export default {
     'g-plugin-yoga',
     'g-plugin-rough-canvas-renderer',
     'g-plugin-rough-svg-renderer',
+    'g-plugin-zdog-canvas-renderer',
     'g-plugin-a11y',
     'g-plugin-annotation',
     'g-components',

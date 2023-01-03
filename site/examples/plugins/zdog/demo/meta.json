@@ -1,0 +1,15 @@
+{
+  "title": {
+    "zh": "Zdog 伪 3D 效果",
+    "en": "Zdog"
+  },
+  "demos": [
+    {
+      "filename": "Zdog.js",
+      "title": {
+        "zh": "使用 Zdog 渲染",
+        "en": "Use Zdog"
+      }
+    }
+  ]
+}
