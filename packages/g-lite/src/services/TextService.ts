@@ -341,16 +341,10 @@ export class TextService {
       letterSpacing,
       maxLines = Infinity,
       textOverflow,
-      metrics,
     } = parsedStyle;
     const context =
       this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
-
-    // single line & no need to wrap
-    if (maxLines === 1 && metrics.width <= maxWidth) {
-      return text;
-    }
 
     let ellipsis = '';
     if (textOverflow === 'ellipsis') {
