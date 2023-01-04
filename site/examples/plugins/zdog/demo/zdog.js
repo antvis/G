@@ -1,19 +1,23 @@
 import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-zdog-canvas-renderer';
+import { Plugin as PluginRoughSvgRenderer } from '@antv/g-plugin-zdog-svg-renderer';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 canvasRenderer.registerPlugin(new PluginRoughCanvasRenderer());
+const svgRenderer = new SVGRenderer();
+svgRenderer.registerPlugin(new PluginRoughSvgRenderer());
 
 // create a canvas & use `g-canvas`
 const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: canvasRenderer,
+  renderer: svgRenderer,
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {

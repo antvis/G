@@ -45,6 +45,9 @@ if (window) {
   (
     window as any
   ).gPluginZdogCanvasRenderer = require('@antv/g-plugin-zdog-canvas-renderer');
+  (
+    window as any
+  ).gPluginZdogSvgRenderer = require('@antv/g-plugin-zdog-svg-renderer');
   (window as any).gPluginSvgRenderer = require('@antv/g-plugin-svg-renderer');
   (window as any).gPluginDragndrop = require('@antv/g-plugin-dragndrop');
   (window as any).gPluginA11y = require('@antv/g-plugin-a11y');

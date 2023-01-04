@@ -51,6 +51,7 @@ export default {
     'g-plugin-rough-canvas-renderer',
     'g-plugin-rough-svg-renderer',
     'g-plugin-zdog-canvas-renderer',
+    'g-plugin-zdog-svg-renderer',
     'g-plugin-a11y',
     'g-plugin-annotation',
     'g-components',

@@ -10,12 +10,20 @@ export class CircleRenderer implements CanvasRenderer.StyleRenderer {
   ) {
     const { r, lineWidth, fill } = parsedStyle as ParsedCircleStyleProps;
 
-    new Ellipse({
+    const c = new Ellipse({
       // @ts-ignore
-      addTo: context.illo,
+      addTo: context.scene,
       diameter: 2 * r,
       stroke: lineWidth,
-      color: fill.toString(),
+      color: '#f00',
+      translate: {
+        x: 200,
+        y: 200,
+        z: 40,
+      },
     });
+
+    // @ts-ignore
+    console.log(context.scene);
   }
 }
