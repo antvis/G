@@ -1,5 +1,9 @@
-import type { DisplayObject, ParsedBaseStyleProps, Tuple4Number } from '@antv/g-lite';
-import { CSSRGB, Shape } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  ParsedBaseStyleProps,
+  Tuple4Number,
+} from '@antv/g-lite';
+import { Shape, isCSSRGB } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import {
   FILL_TEXTURE_MAPPING,
@@ -63,7 +67,7 @@ export class FillMesh extends Instanced {
     const { fill, opacity, fillOpacity, anchor, visibility } =
       instance.parsedStyle as ParsedBaseStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill instanceof CSSRGB) {
+    if (isCSSRGB(fill)) {
       fillColor = [
         Number(fill.r) / 255,
         Number(fill.g) / 255,
@@ -102,7 +106,12 @@ export class FillMesh extends Instanced {
     });
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ): void {
     super.updateAttribute(objects, startIndex, name, value);
 
     objects.forEach((object) => {
@@ -127,7 +136,7 @@ export class FillMesh extends Instanced {
         this.material.geometryDirty = true;
         this.material.programDirty = true;
       } else if (name === 'fill') {
-        if (fill instanceof CSSRGB) {
+        if (isCSSRGB(fill)) {
           const fillColor = [
             Number(fill.r) / 255,
             Number(fill.g) / 255,
@@ -138,8 +147,12 @@ export class FillMesh extends Instanced {
             [Uniform.FILL_COLOR]: fillColor,
           });
         } else {
-          const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
-          const fillTextureMapping = this.createFillGradientTextureMapping([this.instance]);
+          const i = this.textureMappings.findIndex(
+            (m) => m.name === FILL_TEXTURE_MAPPING,
+          );
+          const fillTextureMapping = this.createFillGradientTextureMapping([
+            this.instance,
+          ]);
           if (i >= 0) {
             this.textureMappings.splice(i, 1, fillTextureMapping);
           }

@@ -27,6 +27,7 @@ import {
   getEuler,
   GradientType,
   isPattern,
+  isCSSRGB,
   parseColor,
   rad2deg,
 } from '@antv/g-lite';
@@ -584,7 +585,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         fillPaint.setAntiAlias(true);
         fillPaint.setStyle(CanvasKit.PaintStyle.Fill);
         // should not affect transparent
-        if (fill instanceof CSSRGB && !fill.isNone) {
+        if (isCSSRGB(fill) && !fill.isNone) {
           fillPaint.setColorComponents(
             Number(fill.r) / 255,
             Number(fill.g) / 255,
@@ -614,7 +615,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         if (lineWidth > 0) {
           strokePaint.setAntiAlias(true);
           strokePaint.setStyle(CanvasKit.PaintStyle.Stroke);
-          if (stroke instanceof CSSRGB && !stroke.isNone) {
+          if (isCSSRGB(stroke) && !stroke.isNone) {
             strokePaint.setColor(
               CanvasKit.Color4f(
                 Number(stroke.r) / 255,

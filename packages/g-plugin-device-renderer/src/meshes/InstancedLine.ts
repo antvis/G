@@ -1,10 +1,14 @@
 import type { Line, ParsedLineStyleProps, Path, Polyline } from '@antv/g-lite';
-import { DisplayObject, Shape } from '@antv/g-lite';
+import { DisplayObject, Shape, isDisplayObject } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';
 import { enumToObject } from '../utils/enum';
-import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
+import {
+  Instanced,
+  VertexAttributeBufferIndex,
+  VertexAttributeLocation,
+} from './Instanced';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
@@ -131,14 +135,13 @@ export class InstancedLineMesh extends Instanced {
         totalLength = (object as Path).getTotalLength();
       }
 
-      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } = parsedLineStyleProps;
+      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } =
+        parsedLineStyleProps;
 
       const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
         this.calcOffset(parsedLineStyleProps);
-      const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
-        parsedLineStyleProps,
-        totalLength,
-      );
+      const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } =
+        this.calcDash(parsedLineStyleProps, totalLength);
 
       packedCap.push(
         // caps
@@ -160,7 +163,14 @@ export class InstancedLineMesh extends Instanced {
         y2 - defY + endOffsetY,
         z2,
       );
-      indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
+      indices.push(
+        0 + offset,
+        2 + offset,
+        1 + offset,
+        0 + offset,
+        3 + offset,
+        2 + offset,
+      );
       offset += 4;
     });
 
@@ -237,7 +247,12 @@ export class InstancedLineMesh extends Instanced {
     });
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ) {
     super.updateAttribute(objects, startIndex, name, value);
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
@@ -347,10 +362,8 @@ export class InstancedLineMesh extends Instanced {
       objects.forEach((object) => {
         const totalLength = (object as Line).getTotalLength();
 
-        const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } = this.calcDash(
-          object.parsedStyle,
-          totalLength,
-        );
+        const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } =
+          this.calcDash(object.parsedStyle, totalLength);
         packed.push(
           dashOffset,
           dashSegmentPercent,
@@ -381,8 +394,16 @@ export class InstancedLineMesh extends Instanced {
   }
 
   private calcOffset(parsedStyle: Partial<ParsedLineStyleProps>) {
-    const { x1, y1, x2, y2, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-      parsedStyle;
+    const {
+      x1,
+      y1,
+      x2,
+      y2,
+      markerStart,
+      markerEnd,
+      markerStartOffset,
+      markerEndOffset,
+    } = parsedStyle;
 
     let startOffsetX = 0;
     let startOffsetY = 0;
@@ -393,7 +414,7 @@ export class InstancedLineMesh extends Instanced {
     let x: number;
     let y: number;
 
-    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+    if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
       x = x2 - x1;
       y = y2 - y1;
       rad = Math.atan2(y, x);
@@ -401,7 +422,7 @@ export class InstancedLineMesh extends Instanced {
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+    if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
       x = x1 - x2;
       y = y1 - y2;
       rad = Math.atan2(y, x);
@@ -417,7 +438,10 @@ export class InstancedLineMesh extends Instanced {
     };
   }
 
-  private calcDash(parsedLineStyle: Partial<ParsedLineStyleProps>, totalLength: number) {
+  private calcDash(
+    parsedLineStyle: Partial<ParsedLineStyleProps>,
+    totalLength: number,
+  ) {
     const { lineDash, lineDashOffset } = parsedLineStyle;
     let dashOffset = 0;
     let dashSegmentPercent = 1;

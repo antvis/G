@@ -10,11 +10,11 @@ import type {
   ContextService,
 } from '@antv/g-lite';
 import {
-  CSSRGB,
   ElementEvent,
   propertyMetadataCache,
   RenderReason,
   Shape,
+  isCSSRGB,
 } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
@@ -213,7 +213,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const { fill, stroke, clipPath } =
         object.parsedStyle as ParsedBaseStyleProps;
 
-      if (fill && !(fill instanceof CSSRGB)) {
+      if (fill && !isCSSRGB(fill)) {
         this.defElementManager.createOrUpdateGradientAndPattern(
           object,
           $el,
@@ -222,7 +222,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this,
         );
       }
-      if (stroke && !(stroke instanceof CSSRGB)) {
+      if (stroke && !isCSSRGB(stroke)) {
         this.defElementManager.createOrUpdateGradientAndPattern(
           object,
           $el,

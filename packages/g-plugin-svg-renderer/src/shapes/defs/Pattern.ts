@@ -1,19 +1,16 @@
+import type { CSSRGB, Pattern, RadialGradient } from '@antv/g-lite';
 import {
   DisplayObject,
   LinearGradient,
   parseTransform,
-  Pattern,
-  RadialGradient,
-  Rect,
-} from '@antv/g-lite';
-import {
   computeLinearGradient,
   computeRadialGradient,
   CSSGradientValue,
-  CSSRGB,
   GradientType,
+  Rect,
   isBrowser,
   isPattern,
+  isCSSRGB,
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
 import { SVGRendererPlugin } from '../../SVGRendererPlugin';
@@ -39,7 +36,7 @@ export function createOrUpdateGradientAndPattern(
     return '';
   }
 
-  if (parsedColor instanceof CSSRGB) {
+  if (isCSSRGB(parsedColor)) {
     // keep using currentColor @see https://github.com/d3/d3-axis/issues/49
     if (object.style[name] === 'currentColor') {
       $el?.setAttribute(name, 'currentColor');

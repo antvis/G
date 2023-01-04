@@ -10,7 +10,7 @@ import type {
 import {
   CanvasEvent,
   RenderReason,
-  CSSRGB,
+  isCSSRGB,
   ElementEvent,
   isPattern,
   Shape,
@@ -291,7 +291,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       case 'fill':
         const { fill } = object.parsedStyle;
         let color = '';
-        if (fill instanceof CSSRGB) {
+        if (isCSSRGB(fill)) {
           if (fill.isNone) {
             color = 'transparent';
           } else {
@@ -307,7 +307,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       case 'stroke':
         const { stroke } = object.parsedStyle;
         let borderColor = '';
-        if (stroke instanceof CSSRGB) {
+        if (isCSSRGB(stroke)) {
           if (stroke.isNone) {
             borderColor = 'transparent';
           } else {

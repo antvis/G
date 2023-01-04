@@ -21,6 +21,15 @@ export function isPattern(object: any): object is Pattern {
   return isObject(object) && !!(object as Pattern).image;
 }
 
+export function isCSSRGB(object: any): object is CSSRGB {
+  return (
+    isObject(object) &&
+    !isNil((object as CSSRGB).r) &&
+    !isNil((object as CSSRGB).g) &&
+    !isNil((object as CSSRGB).b)
+  );
+}
+
 /**
  * @see https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/parser/CSSParser.cpp#L97
  */
@@ -71,7 +80,7 @@ export function mergeColors(
   right: CSSRGB | CSSGradientValue[] | Pattern,
 ): [number[], number[], (color: number[]) => string] | undefined {
   // only support constant value, exclude gradient & pattern
-  if (!(left instanceof CSSRGB) || !(right instanceof CSSRGB)) {
+  if (!isCSSRGB(left) || !isCSSRGB(right)) {
     return;
   }
 

@@ -1,7 +1,10 @@
 import type { ParsedPathStyleProps, Path } from '@antv/g-lite';
-import { DisplayObject, translatePathToString } from '@antv/g-lite';
+import { isDisplayObject, translatePathToString } from '@antv/g-lite';
 
-export function updatePathElementAttribute($el: SVGElement, parsedStyle: ParsedPathStyleProps) {
+export function updatePathElementAttribute(
+  $el: SVGElement,
+  parsedStyle: ParsedPathStyleProps,
+) {
   const {
     path,
     defX = 0,
@@ -21,7 +24,7 @@ export function updatePathElementAttribute($el: SVGElement, parsedStyle: ParsedP
   let x: number;
   let y: number;
 
-  if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+  if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
     const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];
@@ -30,7 +33,7 @@ export function updatePathElementAttribute($el: SVGElement, parsedStyle: ParsedP
     startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
-  if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+  if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
     const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];

@@ -9,6 +9,8 @@ import {
   Path,
   Image,
   Shape,
+  isCanvas,
+  isDisplayObject,
 } from '@antv/g-lite';
 import { isNil, PathArray } from '@antv/util';
 import { path2String } from '@antv/util';
@@ -312,9 +314,9 @@ export class LottieAnimation {
     const wrapper = new Group();
     wrapper.append(...this.displayObjects);
 
-    if (canvasOrDisplayObject instanceof Canvas) {
+    if (isCanvas(canvasOrDisplayObject)) {
       canvasOrDisplayObject.appendChild(wrapper);
-    } else if (canvasOrDisplayObject instanceof DisplayObject) {
+    } else if (isDisplayObject(canvasOrDisplayObject)) {
       if (!canvasOrDisplayObject.isConnected) {
         throw new Error(
           '[g-lottie-player]: Cannot render Lottie to an unmounted DisplayObject.',

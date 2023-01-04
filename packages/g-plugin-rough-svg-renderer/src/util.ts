@@ -1,5 +1,6 @@
-import { CSSRGB } from '@antv/g-lite';
+import { isCSSRGB } from '@antv/g-lite';
 import type {
+  CSSRGB,
   CSSGradientValue,
   Pattern,
   DisplayObject,
@@ -40,7 +41,7 @@ function mergeOpacity(
   // since rough.js doesn't support fill/strokeOpacity
   let colorString = color.toString();
 
-  if (color instanceof CSSRGB) {
+  if (isCSSRGB(color)) {
     if (opacity !== 1) {
       const { r, g, b, alpha } = color;
       colorString = `rgba(${r},${g},${b},${Number(alpha) * opacity})`;

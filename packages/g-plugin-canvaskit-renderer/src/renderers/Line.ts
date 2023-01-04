@@ -1,6 +1,9 @@
 import type { ParsedLineStyleProps } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
-import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import { DisplayObject, isDisplayObject } from '@antv/g-lite';
+import type {
+  RendererContribution,
+  RendererContributionContext,
+} from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawLine
@@ -32,7 +35,7 @@ export class LineRenderer implements RendererContribution {
     let x: number;
     let y: number;
 
-    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+    if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
       x = x2 - x1;
       y = y2 - y1;
       rad = Math.atan2(y, x);
@@ -40,7 +43,7 @@ export class LineRenderer implements RendererContribution {
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+    if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
       x = x1 - x2;
       y = y1 - y2;
       rad = Math.atan2(y, x);

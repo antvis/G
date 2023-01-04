@@ -4,8 +4,9 @@ import type {
   ParsedPathStyleProps,
   ParsedTextStyleProps,
   ContextService,
+  CSSRGB,
 } from '@antv/g-lite';
-import { CSSRGB } from '@antv/g-lite';
+import { isCSSRGB } from '@antv/g-lite';
 import type { EmbindEnumEntity, Typeface } from 'canvaskit-wasm';
 import type { FontLoader } from '../FontLoader';
 import type {
@@ -179,7 +180,7 @@ export class TextRenderer implements RendererContribution {
       const textPaint = new CanvasKit.Paint();
       textPaint.setAntiAlias(true);
       textPaint.setStyle(CanvasKit.PaintStyle.Fill);
-      if (fill instanceof CSSRGB && !fill.isNone) {
+      if (isCSSRGB(fill) && !fill.isNone) {
         textPaint.setColor(
           CanvasKit.Color4f(
             Number(fill.r) / 255,

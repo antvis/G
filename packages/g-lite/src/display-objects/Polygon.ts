@@ -1,7 +1,7 @@
 import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { DisplayObject } from './DisplayObject';
+import { DisplayObject, isDisplayObject } from './DisplayObject';
 
 export interface PolygonStyleProps extends BaseStyleProps {
   points: [number, number][];
@@ -42,7 +42,10 @@ export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   isClosed?: boolean;
 }
 
-export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyleProps> {
+export class Polygon extends DisplayObject<
+  PolygonStyleProps,
+  ParsedPolygonStyleProps
+> {
   private markerStartAngle = 0;
   private markerEndAngle = 0;
 
@@ -65,16 +68,16 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
 
     const { markerStart, markerEnd, markerMid } = this.parsedStyle;
 
-    if (markerStart && markerStart instanceof DisplayObject) {
+    if (markerStart && isDisplayObject(markerStart)) {
       this.markerStartAngle = markerStart.getLocalEulerAngles();
       this.appendChild(markerStart);
     }
 
-    if (markerMid && markerMid instanceof DisplayObject) {
+    if (markerMid && isDisplayObject(markerMid)) {
       this.placeMarkerMid(markerMid);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject) {
+    if (markerEnd && isDisplayObject(markerEnd)) {
       this.markerEndAngle = markerEnd.getLocalEulerAngles();
       this.appendChild(markerEnd);
     }
@@ -95,28 +98,31 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
       this.transformMarker(true);
       this.transformMarker(false);
       this.placeMarkerMid(this.parsedStyle.markerMid);
-    } else if (attrName === 'markerStartOffset' || attrName === 'markerEndOffset') {
+    } else if (
+      attrName === 'markerStartOffset' ||
+      attrName === 'markerEndOffset'
+    ) {
       this.transformMarker(true);
       this.transformMarker(false);
     } else if (attrName === 'markerStart') {
-      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+      if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerStartAngle = 0;
         (prevParsedValue as DisplayObject).remove();
       }
 
       // CSSKeyword 'unset'
-      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+      if (newParsedValue && isDisplayObject(newParsedValue)) {
         this.markerStartAngle = newParsedValue.getLocalEulerAngles();
         this.appendChild(newParsedValue);
         this.transformMarker(true);
       }
     } else if (attrName === 'markerEnd') {
-      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+      if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerEndAngle = 0;
         (prevParsedValue as DisplayObject).remove();
       }
 
-      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+      if (newParsedValue && isDisplayObject(newParsedValue)) {
         this.markerEndAngle = newParsedValue.getLocalEulerAngles();
         this.appendChild(newParsedValue);
         this.transformMarker(false);
@@ -138,7 +144,7 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     } = this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
-    if (!marker || !(marker instanceof DisplayObject)) {
+    if (!marker || !isDisplayObject(marker)) {
       return;
     }
 
@@ -177,7 +183,10 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
 
     // account for markerOffset
     marker.setLocalEulerAngles((rad * 180) / Math.PI + originalAngle);
-    marker.setLocalPosition(ox + Math.cos(rad) * offset, oy + Math.sin(rad) * offset);
+    marker.setLocalPosition(
+      ox + Math.cos(rad) * offset,
+      oy + Math.sin(rad) * offset,
+    );
   }
 
   private placeMarkerMid(marker: DisplayObject) {
@@ -193,8 +202,12 @@ export class Polygon extends DisplayObject<PolygonStyleProps, ParsedPolygonStyle
     });
     this.markerMidList = [];
 
-    if (marker && marker instanceof DisplayObject) {
-      for (let i = 1; i < (this.style.isClosed ? points.length : points.length - 1); i++) {
+    if (marker && isDisplayObject(marker)) {
+      for (
+        let i = 1;
+        i < (this.style.isClosed ? points.length : points.length - 1);
+        i++
+      ) {
         const ox = points[i][0] - defX;
         const oy = points[i][1] - defY;
 

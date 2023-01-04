@@ -15,7 +15,7 @@ export class CircleRenderer implements CanvasRenderer.StyleRenderer {
       addTo: context.scene,
       diameter: 2 * r,
       stroke: lineWidth,
-      color: '#f00',
+      color: fill.toString(),
       translate: {
         x: 200,
         y: 200,
@@ -24,6 +24,6 @@ export class CircleRenderer implements CanvasRenderer.StyleRenderer {
     });
 
     // @ts-ignore
-    console.log(context.scene);
+    console.log(c, context.scene);
   }
 }

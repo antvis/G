@@ -1,5 +1,10 @@
-import type { CanvasContext, ParsedPolygonStyleProps, ContextService } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  ParsedPolygonStyleProps,
+  ContextService,
+  DisplayObject,
+} from '@antv/g-lite';
+import { isDisplayObject } from '@antv/g-lite';
 import type {
   CanvasKitContext,
   RendererContribution,
@@ -16,7 +21,13 @@ export class PolygonRenderer implements RendererContribution {
     const { CanvasKit } = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
-    const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
+    const {
+      canvas,
+      fillPaint,
+      strokePaint,
+      shadowFillPaint,
+      shadowStrokePaint,
+    } = context;
 
     const {
       shadowOffsetX,
@@ -40,7 +51,7 @@ export class PolygonRenderer implements RendererContribution {
     let x: number;
     let y: number;
 
-    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+    if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
       x = points[1][0] - points[0][0];
       y = points[1][1] - points[0][1];
       rad = Math.atan2(y, x);
@@ -48,7 +59,7 @@ export class PolygonRenderer implements RendererContribution {
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+    if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
       x = points[length - 2][0] - points[length - 1][0];
       y = points[length - 2][1] - points[length - 1][1];
       rad = Math.atan2(y, x);
@@ -75,7 +86,9 @@ export class PolygonRenderer implements RendererContribution {
       const path = new CanvasKit.Path();
       path.addPoly(
         formattedPoints.map(
-          (x, i) => x + (i % 2 === 0 ? (shadowOffsetX || 0) / 2 : (shadowOffsetY || 0) / 2),
+          (x, i) =>
+            x +
+            (i % 2 === 0 ? (shadowOffsetX || 0) / 2 : (shadowOffsetY || 0) / 2),
         ),
         true,
       );

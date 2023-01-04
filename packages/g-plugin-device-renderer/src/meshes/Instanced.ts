@@ -5,7 +5,7 @@ import type {
   Pattern,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB, isPattern, parseColor, Shape } from '@antv/g-lite';
+import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { LightPool } from '../LightPool';
@@ -25,7 +25,12 @@ import {
   WrapMode,
 } from '../platform';
 import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
-import { DeviceProgram, makeSortKeyOpaque, RendererLayer, TextureMapping } from '../render';
+import {
+  DeviceProgram,
+  makeSortKeyOpaque,
+  RendererLayer,
+  TextureMapping,
+} from '../render';
 import type { BatchContext } from '../renderer';
 import type { Batch } from '../renderer/Batch';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -181,17 +186,25 @@ export abstract class Instanced {
     const target = o2.parsedStyle[name];
 
     // constant color value
-    if (source instanceof CSSRGB && target instanceof CSSRGB) {
+    if (isCSSRGB(source) && isCSSRGB(target)) {
       return true;
     }
 
     // pattern
-    if (isPattern(source) && isPattern(target) && source.image === target.image) {
+    if (
+      isPattern(source) &&
+      isPattern(target) &&
+      source.image === target.image
+    ) {
       return true;
     }
 
     // gradients
-    if (Array.isArray(source) && Array.isArray(target) && o1.style[name] === o2.style[name]) {
+    if (
+      Array.isArray(source) &&
+      Array.isArray(target) &&
+      o1.style[name] === o2.style[name]
+    ) {
       return true;
     }
 
@@ -255,7 +268,7 @@ export abstract class Instanced {
         increasedLineWidthForHitTesting,
       } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
-      if (fill instanceof CSSRGB) {
+      if (isCSSRGB(fill)) {
         fillColor = [
           Number(fill.r) / 255,
           Number(fill.g) / 255,
@@ -264,7 +277,7 @@ export abstract class Instanced {
         ];
       }
       let strokeColor: Tuple4Number = [0, 0, 0, 0];
-      if (stroke instanceof CSSRGB) {
+      if (isCSSRGB(stroke)) {
         strokeColor = [
           Number(stroke.r) / 255,
           Number(stroke.g) / 255,
@@ -277,11 +290,19 @@ export abstract class Instanced {
         // account for target's rts
         mat4.copy(modelMatrix, object.getLocalTransform());
         fillColor = [1, 1, 1, 1];
-        mat4.mul(modelMatrix, this.clipPathTarget.getWorldTransform(), modelMatrix);
+        mat4.mul(
+          modelMatrix,
+          this.clipPathTarget.getWorldTransform(),
+          modelMatrix,
+        );
       } else {
         mat4.copy(modelMatrix, object.getWorldTransform());
       }
-      mat4.mul(modelViewMatrix, this.context.camera.getViewTransform(), modelMatrix);
+      mat4.mul(
+        modelViewMatrix,
+        this.context.camera.getViewTransform(),
+        modelMatrix,
+      );
 
       const encodedPickingColor = (object.isInteractive() &&
         // @ts-ignore
@@ -299,7 +320,10 @@ export abstract class Instanced {
         anchor[1],
         increasedLineWidthForHitTesting || 0,
       );
-      packedPicking.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
+      packedPicking.push(
+        ...encodedPickingColor,
+        object.sortable.renderOrder * RENDER_ORDER_SCALE,
+      );
 
       // if (useNormal) {
       //   // should not calc normal matrix in shader, mat3.invert is not cheap
@@ -488,12 +512,19 @@ export abstract class Instanced {
       }
 
       Object.keys(this.material.textures)
-        .sort((a, b) => this.material.samplers.indexOf(a) - this.material.samplers.indexOf(b))
+        .sort(
+          (a, b) =>
+            this.material.samplers.indexOf(a) -
+            this.material.samplers.indexOf(b),
+        )
         .forEach((key) => {
           const mapping = new TextureMapping();
           mapping.name = key;
           mapping.texture = this.material.textures[key];
-          this.context.device.setResourceName(mapping.texture, 'Material Texture ' + key);
+          this.context.device.setResourceName(
+            mapping.texture,
+            'Material Texture ' + key,
+          );
           mapping.sampler = this.renderHelper.getCache().createSampler({
             wrapS: WrapMode.Clamp,
             wrapT: WrapMode.Clamp,
@@ -518,10 +549,17 @@ export abstract class Instanced {
       this.material.textureDirty = false;
     }
 
-    const needRecompileProgram = compareDefines(oldDefines, this.material.defines);
+    const needRecompileProgram = compareDefines(
+      oldDefines,
+      this.material.defines,
+    );
 
     // re-compile program, eg. DEFINE changed
-    if (needRecompileProgram || this.material.programDirty || this.materialDirty) {
+    if (
+      needRecompileProgram ||
+      this.material.programDirty ||
+      this.materialDirty
+    ) {
       // set defines
       this.material.defines = {
         ...this.material.defines,
@@ -596,7 +634,9 @@ export abstract class Instanced {
           buffer,
           byteOffset: 0,
         })),
-        useIndexes ? { buffer: this.geometry.indexBuffer, byteOffset: 0 } : null,
+        useIndexes
+          ? { buffer: this.geometry.indexBuffer, byteOffset: 0 }
+          : null,
         program,
       );
       this.inputStateDirty = false;
@@ -619,10 +659,16 @@ export abstract class Instanced {
       );
     } else {
       // drawArrays
-      renderInst.drawPrimitives(this.geometry.vertexCount, this.geometry.primitiveStart);
+      renderInst.drawPrimitives(
+        this.geometry.vertexCount,
+        this.geometry.primitiveStart,
+      );
     }
     // FIXME: 暂时都当作非透明物体，按照创建顺序排序
-    renderInst.sortKey = makeSortKeyOpaque(RendererLayer.OPAQUE, objects[0].sortable.renderOrder);
+    renderInst.sortKey = makeSortKeyOpaque(
+      RendererLayer.OPAQUE,
+      objects[0].sortable.renderOrder,
+    );
   }
 
   /**
@@ -651,7 +697,7 @@ export abstract class Instanced {
         const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
 
         let fillColor: Tuple4Number = [0, 0, 0, 0];
-        if (fill instanceof CSSRGB) {
+        if (isCSSRGB(fill)) {
           fillColor = [
             Number(fill.r) / 255,
             Number(fill.g) / 255,
@@ -660,7 +706,7 @@ export abstract class Instanced {
           ];
         }
         let strokeColor: Tuple4Number = [0, 0, 0, 0];
-        if (stroke instanceof CSSRGB) {
+        if (isCSSRGB(stroke)) {
           strokeColor = [
             Number(stroke.r) / 255,
             Number(stroke.g) / 255,
@@ -680,15 +726,19 @@ export abstract class Instanced {
       );
 
       const { fill } = this.instance.parsedStyle;
-      const i = this.textureMappings.findIndex((m) => m.name === FILL_TEXTURE_MAPPING);
-      if (fill instanceof CSSRGB) {
+      const i = this.textureMappings.findIndex(
+        (m) => m.name === FILL_TEXTURE_MAPPING,
+      );
+      if (isCSSRGB(fill)) {
         if (i >= 0) {
           // remove original fill texture mapping
           this.textureMappings.splice(i, -1);
           this.material.textureDirty = true;
         }
       } else {
-        const fillTextureMapping = this.createFillGradientTextureMapping([this.instance]);
+        const fillTextureMapping = this.createFillGradientTextureMapping([
+          this.instance,
+        ]);
         if (i >= 0) {
           this.textureMappings.splice(i, 1, fillTextureMapping);
         }
@@ -727,7 +777,10 @@ export abstract class Instanced {
     } else if (name === 'modelMatrix') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
+        const modelMatrix = mat4.copy(
+          mat4.create(),
+          object.getWorldTransform(),
+        );
         packed.push(...modelMatrix);
       });
 
@@ -744,7 +797,10 @@ export abstract class Instanced {
           object.isInteractive() &&
           // @ts-ignore
           object.renderable3D?.encodedPickingColor) || [0, 0, 0];
-        packed.push(...encodedPickingColor, object.sortable.renderOrder * RENDER_ORDER_SCALE);
+        packed.push(
+          ...encodedPickingColor,
+          object.sortable.renderOrder * RENDER_ORDER_SCALE,
+        );
       });
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.PICKING_COLOR,
@@ -755,7 +811,12 @@ export abstract class Instanced {
     }
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ): void {
     if (name === 'clipPath') {
       if (this.clipPath) {
         this.geometryDirty = true;
@@ -774,7 +835,10 @@ export abstract class Instanced {
       VertexAttributeLocation.PICKING_COLOR,
       index,
       new Uint8Array(
-        new Float32Array([...encodedPickingColor, renderOrder * RENDER_ORDER_SCALE]).buffer,
+        new Float32Array([
+          ...encodedPickingColor,
+          renderOrder * RENDER_ORDER_SCALE,
+        ]).buffer,
       ),
     );
   }
@@ -789,8 +853,13 @@ export abstract class Instanced {
       return buffer.slice();
     }) as ArrayBufferView[];
 
-    for (let i = VertexAttributeBufferIndex.PICKING_COLOR; i < geometry.vertexBuffers.length; i++) {
-      const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
+    for (
+      let i = VertexAttributeBufferIndex.PICKING_COLOR;
+      i < geometry.vertexBuffers.length;
+      i++
+    ) {
+      const { byteStride } =
+        geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
       geometry.vertices[i] = new Float32Array((byteStride / 4) * indiceNum);
     }
 
@@ -801,11 +870,13 @@ export abstract class Instanced {
       const ii = indices[i];
 
       for (let j = 1; j < geometry.vertices.length; j++) {
-        const { byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
+        const { byteStride } =
+          geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
         const size = byteStride / 4;
 
         for (let k = 0; k < size; k++) {
-          geometry.vertices[j][cursor * size + k] = originalVertexBuffers[j][ii * size + k];
+          geometry.vertices[j][cursor * size + k] =
+            originalVertexBuffers[j][ii * size + k];
         }
       }
 
@@ -822,13 +893,16 @@ export abstract class Instanced {
       //   continue;
       // }
 
-      const { frequency, byteStride } = geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
+      const { frequency, byteStride } =
+        geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
 
-      const descriptor = geometry.inputLayoutDescriptor.vertexAttributeDescriptors.find(
-        ({ bufferIndex }) => bufferIndex === i,
-      );
+      const descriptor =
+        geometry.inputLayoutDescriptor.vertexAttributeDescriptors.find(
+          ({ bufferIndex }) => bufferIndex === i,
+        );
       if (descriptor) {
-        const { location, bufferIndex, bufferByteOffset, format, divisor } = descriptor;
+        const { location, bufferIndex, bufferByteOffset, format, divisor } =
+          descriptor;
 
         geometry.setVertexBuffer({
           bufferIndex,
@@ -873,7 +947,11 @@ export abstract class Instanced {
     geometry.setIndexBuffer(uniqueIndices);
   }
 
-  protected beforeUploadUBO(renderInst: RenderInst, objects: DisplayObject[], i: number): void {}
+  protected beforeUploadUBO(
+    renderInst: RenderInst,
+    objects: DisplayObject[],
+    i: number,
+  ): void {}
   private uploadUBO(renderInst: RenderInst): void {
     const numUniformBuffers = 1; // Scene UBO
     const material = this.material;
@@ -922,7 +1000,8 @@ export abstract class Instanced {
 
     uniforms.sort(
       (a, b) =>
-        this.material.uniformNames.indexOf(a.name) - this.material.uniformNames.indexOf(b.name),
+        this.material.uniformNames.indexOf(a.name) -
+        this.material.uniformNames.indexOf(b.name),
     );
 
     // TODO: should not upload all uniforms if no change
@@ -960,7 +1039,8 @@ export abstract class Instanced {
       polygonOffset,
     });
 
-    const currentAttachmentsState = renderInst.getMegaStateFlags().attachmentsState[0];
+    const currentAttachmentsState =
+      renderInst.getMegaStateFlags().attachmentsState[0];
 
     renderInst.setMegaStateFlags({
       attachmentsState: [
@@ -1005,7 +1085,7 @@ export abstract class Instanced {
   private uploadFog(uniforms: RenderInstUniform[], fog: Fog) {
     const { type, fill, start, end, density } = fog.parsedStyle;
 
-    if (fill instanceof CSSRGB) {
+    if (isCSSRGB(fill)) {
       const fillColor = [
         Number(fill.r) / 255,
         Number(fill.g) / 255,
@@ -1032,11 +1112,15 @@ export abstract class Instanced {
     uniforms.push(...materialUniforms);
   }
 
-  protected createFillGradientTextureMapping(objects: DisplayObject[]): TextureMapping | null {
+  protected createFillGradientTextureMapping(
+    objects: DisplayObject[],
+  ): TextureMapping | null {
     const instance = objects[0];
 
     const fill = (
-      instance.nodeName === Shape.LINE ? instance.parsedStyle.stroke : instance.parsedStyle.fill
+      instance.nodeName === Shape.LINE
+        ? instance.parsedStyle.stroke
+        : instance.parsedStyle.fill
     ) as CSSRGB | CSSGradientValue[] | Pattern;
 
     let texImageSource: string | TexImageSource;
@@ -1080,7 +1164,10 @@ export abstract class Instanced {
           });
           this.material.textureDirty = true;
         });
-        this.context.device.setResourceName(fillMapping.texture, 'Fill Texture' + this.id);
+        this.context.device.setResourceName(
+          fillMapping.texture,
+          'Fill Texture' + this.id,
+        );
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
           wrapS: WrapMode.Repeat,
           wrapT: WrapMode.Repeat,

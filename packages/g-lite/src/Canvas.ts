@@ -31,6 +31,10 @@ import {
   caf,
 } from './utils';
 
+export function isCanvas(value: any): value is Canvas {
+  return !!(value as Canvas).document;
+}
+
 export enum CanvasEvent {
   READY = 'ready',
   BEFORE_RENDER = 'beforerender',
