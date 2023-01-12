@@ -178,10 +178,10 @@ export class EventService {
     }
   }
 
-  onPointerDown = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
+  onPointerDown = async (from: FederatedPointerEvent) => {
+    // if (!(from instanceof FederatedPointerEvent)) {
+    //   return;
+    // }
 
     const e = await this.createPointerEvent(from);
 
@@ -201,10 +201,10 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerUp = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
+  onPointerUp = async (from: FederatedPointerEvent) => {
+    // if (!(from instanceof FederatedPointerEvent)) {
+    //   return;
+    // }
 
     const now = performance.now();
     const e = await this.createPointerEvent(from);
@@ -305,10 +305,10 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerMove = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
+  onPointerMove = async (from: FederatedPointerEvent) => {
+    // if (!(from instanceof FederatedPointerEvent)) {
+    //   return;
+    // }
 
     const e = await this.createPointerEvent(from);
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
@@ -433,10 +433,10 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerOut = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
+  onPointerOut = async (from: FederatedPointerEvent) => {
+    // if (!(from instanceof FederatedPointerEvent)) {
+    //   return;
+    // }
 
     const trackingData = this.trackingData(from.pointerId);
 
@@ -491,10 +491,10 @@ export class EventService {
     this.cursor = null;
   };
 
-  onPointerOver = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
+  onPointerOver = async (from: FederatedPointerEvent) => {
+    // if (!(from instanceof FederatedPointerEvent)) {
+    //   return;
+    // }
 
     const trackingData = this.trackingData(from.pointerId);
     const e = await this.createPointerEvent(from);
@@ -535,10 +535,10 @@ export class EventService {
     this.freeEvent(enterEvent);
   };
 
-  onPointerUpOutside = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedPointerEvent)) {
-      return;
-    }
+  onPointerUpOutside = async (from: FederatedPointerEvent) => {
+    // if (!(from instanceof FederatedPointerEvent)) {
+    //   return;
+    // }
 
     const trackingData = this.trackingData(from.pointerId);
     const pressTarget = this.findMountedTarget(
@@ -574,10 +574,10 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onWheel = async (from: FederatedEvent) => {
-    if (!(from instanceof FederatedWheelEvent)) {
-      return;
-    }
+  onWheel = async (from: FederatedWheelEvent) => {
+    // if (!(from instanceof FederatedWheelEvent)) {
+    //   return;
+    // }
 
     const wheelEvent = await this.createWheelEvent(from);
 
@@ -837,14 +837,17 @@ export class EventService {
     return event;
   }
 
-  private copyPointerData(from: FederatedEvent, to: FederatedEvent) {
-    if (
-      !(
-        from instanceof FederatedPointerEvent &&
-        to instanceof FederatedPointerEvent
-      )
-    )
-      return;
+  private copyPointerData(
+    from: FederatedPointerEvent,
+    to: FederatedPointerEvent,
+  ) {
+    // if (
+    //   !(
+    //     from instanceof FederatedPointerEvent &&
+    //     to instanceof FederatedPointerEvent
+    //   )
+    // )
+    //   return;
 
     to.pointerId = from.pointerId;
     to.width = from.width;
@@ -858,13 +861,13 @@ export class EventService {
     to.twist = from.twist;
   }
 
-  private copyMouseData(from: FederatedEvent, to: FederatedEvent) {
-    if (
-      !(
-        from instanceof FederatedMouseEvent && to instanceof FederatedMouseEvent
-      )
-    )
-      return;
+  private copyMouseData(from: FederatedMouseEvent, to: FederatedMouseEvent) {
+    // if (
+    //   !(
+    //     from instanceof FederatedMouseEvent && to instanceof FederatedMouseEvent
+    //   )
+    // )
+    //   return;
 
     to.altKey = from.altKey;
     to.button = from.button;
