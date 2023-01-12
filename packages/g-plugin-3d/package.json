@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.7.35",
+  "version": "1.7.36-alpha.0",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
