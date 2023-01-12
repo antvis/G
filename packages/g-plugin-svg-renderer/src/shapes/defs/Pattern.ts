@@ -11,6 +11,7 @@ import {
   isBrowser,
   isPattern,
   isCSSRGB,
+  isCSSGradientValue,
 } from '@antv/g-lite';
 import { isString } from '@antv/util';
 import { SVGRendererPlugin } from '../../SVGRendererPlugin';
@@ -94,7 +95,7 @@ function generateCacheKey(
   options: any = {},
 ): string {
   let cacheKey = '';
-  if (src instanceof CSSGradientValue) {
+  if (isCSSGradientValue(src)) {
     const { type, value } = src;
     if (
       type === GradientType.LinearGradient ||
@@ -116,9 +117,9 @@ function generateCacheKey(
   } else if (isPattern(src)) {
     if (isString(src.image)) {
       cacheKey = `pattern-${src.image}-${src.repetition}`;
-    } else if (src.image instanceof Rect) {
+    } else if ((src.image as Rect).nodeName === 'rect') {
       // use rect's entity as key
-      cacheKey = `pattern-rect-${src.image.entity}`;
+      cacheKey = `pattern-rect-${(src.image as Rect).entity}`;
     } else {
       cacheKey = `pattern-${counter}`;
     }
@@ -291,13 +292,13 @@ function createOrUpdatePattern(
       }
     }
 
-    if (image instanceof Rect) {
-      const { width, height } = image.parsedStyle;
+    if ((image as Rect).nodeName === 'rect') {
+      const { width, height } = (image as Rect).parsedStyle;
 
       const $pattern = create$Pattern(
         document,
         $def,
-        image,
+        image as Rect,
         pattern,
         patternId,
         width,
@@ -305,7 +306,7 @@ function createOrUpdatePattern(
       );
 
       // traverse subtree of pattern
-      image.forEach((object: DisplayObject) => {
+      (image as Rect).forEach((object: DisplayObject) => {
         plugin.createSVGDom(document, object, null);
 
         // @ts-ignore

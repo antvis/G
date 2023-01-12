@@ -187,8 +187,8 @@ export class DefaultRenderer implements StyleRenderer {
   ): CanvasPattern {
     let $offscreenCanvas: HTMLCanvasElement;
     let dpr: number;
-    if (pattern.image instanceof Rect) {
-      const { width, height } = pattern.image.parsedStyle;
+    if ((pattern.image as Rect).nodeName === 'rect') {
+      const { width, height } = (pattern.image as Rect).parsedStyle;
       dpr = canvasContext.contextService.getDPR();
       const { offscreenCanvas } = canvasContext.config;
       $offscreenCanvas = runtime.offscreenCanvas.getOrCreateCanvas(
@@ -206,7 +206,7 @@ export class DefaultRenderer implements StyleRenderer {
 
       // offscreenCanvasContext.scale(1 / dpr, 1 / dpr);
 
-      pattern.image.forEach((object: DisplayObject) => {
+      (pattern.image as Rect).forEach((object: DisplayObject) => {
         plugin.renderDisplayObject(
           object,
           offscreenCanvasContext,

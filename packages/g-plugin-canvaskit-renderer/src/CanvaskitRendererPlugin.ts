@@ -327,7 +327,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         object.renderable.dirty = true;
         this.context.renderingService.dirtify();
       });
-    } else if (image instanceof Rect) {
+    } else if ((image as Rect).nodeName === 'rect') {
       // image.forEach((object: DisplayObject) => {
       // });
     } else {

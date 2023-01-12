@@ -182,8 +182,8 @@ export class ImagePool {
     // only generate cache for Image
     if (isString(image)) {
       return `pattern-${image}-${repetition}`;
-    } else if (image instanceof Rect) {
-      return `pattern-${image.entity}-${repetition}`;
+    } else if ((image as Rect).nodeName === 'rect') {
+      return `pattern-${(image as Rect).entity}-${repetition}`;
     }
   }
 }

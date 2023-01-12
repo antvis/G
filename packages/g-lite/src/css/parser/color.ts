@@ -17,6 +17,12 @@ export interface Pattern {
   transform: string;
 }
 
+export function isCSSGradientValue(object: any): object is CSSGradientValue {
+  return (
+    !!(object as CSSGradientValue).type && !!(object as CSSGradientValue).value
+  );
+}
+
 export function isPattern(object: any): object is Pattern {
   return isObject(object) && !!(object as Pattern).image;
 }
