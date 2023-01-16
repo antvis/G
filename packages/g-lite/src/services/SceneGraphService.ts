@@ -512,8 +512,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
         trigger(element, detail);
       }
     });
-    this.pendingEvents = [];
+
+    this.clearPendingEvents();
     set.clear();
+  }
+
+  clearPendingEvents() {
+    this.pendingEvents = [];
   }
 
   dirtifyToRoot(element: INode, affectChildren = false) {

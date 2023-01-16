@@ -140,6 +140,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.removeEventListener(ElementEvent.CULLED, handleCulled);
+      // this.renderQueue = [];
+      // this.removedRBushNodeAABBs = [];
+      // this.restoreStack = [];
     });
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {

@@ -16,7 +16,7 @@
     "contributor": "git-contributor",
     "cov": "jest --config jest.config.js --coverage",
     "doc": "dumi dev",
-    "eslint": "eslint --ext .ts,.js ./packages",
+    "eslint": "eslint --ext .ts,.js ./packages --quiet",
     "eslint-fix": "eslint --fix --ext .ts,.js ./packages",
     "limit-size": "limit-size",
     "link-site": "node ./scripts/link-site.js",

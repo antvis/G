@@ -23,7 +23,7 @@ export function isFunction(func: any): func is (...args: any[]) => any {
   return typeof func === 'function';
 }
 
-export function isSymbol(value: any): value is Symbol {
+export function isSymbol(value: any): value is symbol {
   // @see https://github.com/lodash/lodash/blob/master/isSymbol.js
   return typeof value === 'symbol';
 }

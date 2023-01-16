@@ -263,6 +263,7 @@ export class RenderingService {
   destroy() {
     this.inited = false;
     this.hooks.destroy.call();
+    this.globalRuntime.sceneGraphService.clearPendingEvents();
   }
 
   dirtify() {
