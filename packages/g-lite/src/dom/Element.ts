@@ -16,6 +16,7 @@ import {
   ERROR_MSG_APPEND_DESTROYED_ELEMENT,
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   formatAttributeName,
+  isSymbol,
 } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import type {
@@ -575,6 +576,11 @@ export class Element<
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
   getAttribute(name: keyof StyleProps) {
+    // @see https://github.com/antvis/G/issues/1267
+    if (isSymbol(name)) {
+      return null;
+    }
+
     let value = this.attributes[name];
     if (value === undefined) {
       const attributeName = formatAttributeName(name as string);

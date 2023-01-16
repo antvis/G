@@ -23,6 +23,11 @@ export function isFunction(func: any): func is (...args: any[]) => any {
   return typeof func === 'function';
 }
 
+export function isSymbol(value: any): value is Symbol {
+  // @see https://github.com/lodash/lodash/blob/master/isSymbol.js
+  return typeof value === 'symbol';
+}
+
 export const definedProps = (obj: Record<string, unknown>) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 
