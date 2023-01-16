@@ -39,7 +39,7 @@
       type="application/javascript"
     ></script>
     <script>
-      const { Circle, Canvas } = window.G;
+      const { Circle, Canvas, Group } = window.G;
 
       // create a renderer
       const canvasRenderer = new window.G.Canvas2D.Renderer();
@@ -52,21 +52,12 @@
         renderer: canvasRenderer,
       });
 
-      canvas.addEventListener('ready', () => {
-        // for (let i = 0; i < 1000; i++) {
-        //   const circle = new Circle({
-        //     style: {
-        //       cx: Math.random() * 600,
-        //       cy: Math.random() * 500,
-        //       r: 10,
-        //       fill: '#1890FF',
-        //       stroke: '#F04864',
-        //       lineWidth: 4,
-        //     },
-        //   });
-        //   canvas.appendChild(circle);
-        // }
-      });
+      // const g1 = new Group();
+      // const g2 = new Group();
+      // const g3 = new Group();
+      // g1.appendChild(g2);
+      // g2.appendChild(g3);
+      // canvas.appendChild(g3);
 
       let circles = [];
       document.getElementById('add').addEventListener('click', () => {
@@ -83,6 +74,7 @@
           });
           circles.push(circle);
 
+          // g3.appendChild(circle);
           canvas.appendChild(circle);
         }
       });
