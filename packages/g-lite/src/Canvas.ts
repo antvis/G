@@ -38,6 +38,7 @@ export function isCanvas(value: any): value is Canvas {
 export enum CanvasEvent {
   READY = 'ready',
   BEFORE_RENDER = 'beforerender',
+  RERENDER = 'rerender',
   AFTER_RENDER = 'afterrender',
   BEFORE_DESTROY = 'beforedestroy',
   AFTER_DESTROY = 'afterdestroy',
@@ -55,6 +56,7 @@ const DEFAULT_CAMERA_FAR = 1000;
 const mountedEvent = new CustomEvent(ElementEvent.MOUNTED);
 const unmountedEvent = new CustomEvent(ElementEvent.UNMOUNTED);
 const beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
+const rerenderEvent = new CustomEvent(CanvasEvent.RERENDER);
 const afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
 
 /**
@@ -454,7 +456,11 @@ export class Canvas extends EventTarget implements ICanvas {
     this.dispatchEvent(beforeRenderEvent);
 
     const renderingService = this.getRenderingService();
-    renderingService.render(this.getConfig());
+    renderingService.render(this.getConfig(), () => {
+      // trigger actual rerender event
+      // @see https://github.com/antvis/G/issues/1268
+      this.dispatchEvent(rerenderEvent);
+    });
 
     this.dispatchEvent(afterRenderEvent);
   }

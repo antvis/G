@@ -163,7 +163,7 @@ export class RenderingService {
     );
   }
 
-  render(canvasConfig: Partial<CanvasConfig>) {
+  render(canvasConfig: Partial<CanvasConfig>, rerenderCallback: () => void) {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
@@ -191,6 +191,8 @@ export class RenderingService {
       this.hooks.endFrame.call();
       renderingContext.renderListCurrentFrame = [];
       renderingContext.renderReasons.clear();
+
+      rerenderCallback();
     }
 
     // console.log('stats', this.stats);
