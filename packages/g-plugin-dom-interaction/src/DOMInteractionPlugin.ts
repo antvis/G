@@ -1,9 +1,9 @@
 import type {
+  GlobalRuntime,
   InteractivePointerEvent,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { runtime } from '@antv/g-lite';
 
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
 
@@ -15,7 +15,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
   private context: RenderingPluginContext;
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const { renderingService, renderingContext } = context;
     this.context = context;
 

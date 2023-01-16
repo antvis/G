@@ -530,7 +530,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const plugins = renderer.getPlugins();
     plugins.forEach((plugin) => {
       plugin.context = this.context;
-      plugin.init();
+      plugin.init(runtime);
     });
   }
 
@@ -549,7 +549,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // destroy all plugins, reverse will mutate origin array
     [...oldRenderer?.getPlugins()].reverse().forEach((plugin) => {
-      plugin.destroy();
+      plugin.destroy(runtime);
     });
 
     await this.initRenderer(renderer);

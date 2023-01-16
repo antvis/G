@@ -3,12 +3,12 @@ import {
   CSSGradientValue,
   CSSRGB,
   DisplayObject,
+  GlobalRuntime,
   LinearGradient,
   ParsedBaseStyleProps,
   Pattern,
   RadialGradient,
   Rect,
-  runtime,
 } from '@antv/g-lite';
 import { GradientType, isPattern, Shape } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
@@ -25,6 +25,7 @@ export class DefaultRenderer implements StyleRenderer {
     object: DisplayObject,
     canvasContext: CanvasContext,
     plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
   ) {
     const {
       fill,
@@ -66,7 +67,15 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, hasShadow);
       }
 
-      this.fill(context, object, fill, fillRule, canvasContext, plugin);
+      this.fill(
+        context,
+        object,
+        fill,
+        fillRule,
+        canvasContext,
+        plugin,
+        runtime,
+      );
 
       if (!shouldDrawShadowWithStroke) {
         this.clearShadowAndFilter(context, hasFilter, hasShadow);
@@ -95,13 +104,13 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, true);
 
         if (isInnerShadow) {
-          this.stroke(context, object, stroke, canvasContext, plugin);
+          this.stroke(context, object, stroke, canvasContext, plugin, runtime);
           context.globalCompositeOperation = 'source-over';
           this.clearShadowAndFilter(context, hasFilter, true);
         }
       }
 
-      this.stroke(context, object, stroke, canvasContext, plugin);
+      this.stroke(context, object, stroke, canvasContext, plugin, runtime);
     }
   }
 
@@ -132,6 +141,7 @@ export class DefaultRenderer implements StyleRenderer {
     fillRule: 'nonzero' | 'evenodd',
     canvasContext: CanvasContext,
     plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
   ) {
     if (Array.isArray(fill)) {
       fill.forEach((gradient) => {
@@ -146,6 +156,7 @@ export class DefaultRenderer implements StyleRenderer {
           context,
           canvasContext,
           plugin,
+          runtime,
         );
       }
       context.fill(fillRule);
@@ -158,6 +169,7 @@ export class DefaultRenderer implements StyleRenderer {
     stroke: CSSRGB | CSSGradientValue[] | Pattern,
     canvasContext: CanvasContext,
     plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
   ) {
     if (Array.isArray(stroke)) {
       stroke.forEach((gradient) => {
@@ -172,6 +184,7 @@ export class DefaultRenderer implements StyleRenderer {
           context,
           canvasContext,
           plugin,
+          runtime,
         );
       }
       context.stroke();
@@ -184,6 +197,7 @@ export class DefaultRenderer implements StyleRenderer {
     context: CanvasRenderingContext2D,
     canvasContext: CanvasContext,
     plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
   ): CanvasPattern {
     let $offscreenCanvas: HTMLCanvasElement;
     let dpr: number;
@@ -212,6 +226,7 @@ export class DefaultRenderer implements StyleRenderer {
           offscreenCanvasContext,
           canvasContext,
           restoreStack,
+          runtime,
         );
       });
 
