@@ -26,7 +26,7 @@ import type { CustomElement } from './CustomElement';
 import { runtime } from '../global-runtime';
 
 export function isDisplayObject(value: any): value is DisplayObject {
-  return !!(value as DisplayObject).nodeName;
+  return !!(value as DisplayObject)?.nodeName;
 }
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
