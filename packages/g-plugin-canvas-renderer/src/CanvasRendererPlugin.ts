@@ -9,12 +9,12 @@ import type {
   RenderingPluginContext,
   ContextService,
   CanvasContext,
+  GlobalRuntime,
 } from '@antv/g-lite';
 import {
   AABB,
   CanvasEvent,
   CustomEvent,
-  runtime,
   ElementEvent,
   Shape,
 } from '@antv/g-lite';
@@ -73,7 +73,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private vec3c = vec3.create();
   private vec3d = vec3.create();
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     this.context = context;
 
     const {
@@ -140,6 +140,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.removeEventListener(ElementEvent.CULLED, handleCulled);
+      // this.renderQueue = [];
+      // this.removedRBushNodeAABBs = [];
+      // this.restoreStack = [];
     });
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
@@ -183,6 +186,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           context,
           this.context,
           this.restoreStack,
+          runtime,
         );
         // if we did a full screen rendering last frame
         this.saveDirtyAABB(object);
@@ -293,7 +297,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         }
 
         // search objects intersect with dirty rectangle
-        const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
+        const dirtyObjects = this.searchDirtyObjects(
+          runtime,
+          dirtyRenderBounds,
+        );
 
         // do rendering
         dirtyObjects
@@ -307,6 +314,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
                 context,
                 this.context,
                 this.restoreStack,
+                runtime,
               );
             }
           });
@@ -362,6 +370,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context: CanvasRenderingContext2D,
     canvasContext: CanvasContext,
     restoreStack: DisplayObject[],
+    runtime: GlobalRuntime,
   ) {
     const nodeName = object.nodeName;
 
@@ -433,6 +442,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         object,
         canvasContext,
         this,
+        runtime,
       );
 
       // restore applied attributes, eg. shadowBlur shadowColor...
@@ -480,7 +490,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     return aabb;
   }
 
-  private searchDirtyObjects(dirtyRectangle: AABB): DisplayObject[] {
+  private searchDirtyObjects(
+    runtime: GlobalRuntime,
+    dirtyRectangle: AABB,
+  ): DisplayObject[] {
     // search in r-tree, get all affected nodes
     const [minX, minY] = dirtyRectangle.getMin();
     const [maxX, maxY] = dirtyRectangle.getMax();

@@ -4,7 +4,7 @@
 
 <img src="https://user-images.githubusercontent.com/3608471/174998577-df1c54e9-d981-4d82-a4aa-7f0bedfb11a1.png" width="200" alt="exporter in highcharts">
 
-为此我们提供了 `g-image-exporter`，它支持选定画布区域，导出指定格式的 dataURL 或保存成图片等功能，[示例](/zh/examples/ecosystem#image-exporter)。其中部分功能依赖 DOM API，对于非浏览器运行环境，请参考 [画布的特殊运行平台适配](/zh/docs/api/canvas#特殊运行平台适配)。例如下载功能需要通过 `document.createElement('a')` 实现，非浏览器环境需要自行传入 `document` 对象。
+为此我们提供了 `g-image-exporter`，它支持选定画布区域，导出指定格式的 dataURL 或保存成图片等功能，[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)。其中部分功能依赖 DOM API，对于非浏览器运行环境，请参考 [画布的特殊运行平台适配](/zh/docs/api/canvas#特殊运行平台适配)。例如下载功能需要通过 `document.createElement('a')` 实现，非浏览器环境需要自行传入 `document` 对象。
 
 # 配置项
 
@@ -48,7 +48,7 @@ interface CanvasOptions {
 -   afterDrawImage 在绘制画布内容后调用，适合绘制水印
 -   ignoreElements 在导出 HTML 内容时，如何判断容器内一个 HTMLElement 是否被忽略
 
-在该[示例](/zh/examples/ecosystem#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
+在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，我们添加了背景色和水印，通过传入的 [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) 可以调用 Canvas2D API 进行绘制：
 
 ```js
 import { Rectangle } from '@antv/g';
@@ -81,7 +81,7 @@ const canvas = await exporter.toCanvas({
 
 注意裁剪区域使用的是 `Rectangle` 而非 [Rect](/zh/docs/api/basic/rect) 图形。它的构造函数中包含 `x/y/width/height` 四个参数。它相对于[视口坐标系](/zh/docs/api/canvas#viewport)下，即对于一个 400 x 400 的画布，裁剪的最大宽高就是 400。
 
-在导出 [HTML](/zh/docs/api/basic/html) 时，默认会导出容器内的全部 HTMLElement，但有时有些元素并不是我们想导出的，此时可以使用 `ignoreElements: (element: Element): boolean;` 方法进行过滤。例如该[示例](/zh/examples/ecosystem#image-exporter)中容器内还有 stats.js 和 lil-gui 添加的 DOM 元素，我们并不希望导出，此时可以：
+在导出 [HTML](/zh/docs/api/basic/html) 时，默认会导出容器内的全部 HTMLElement，但有时有些元素并不是我们想导出的，此时可以使用 `ignoreElements: (element: Element): boolean;` 方法进行过滤。例如该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中容器内还有 stats.js 和 lil-gui 添加的 DOM 元素，我们并不希望导出，此时可以：
 
 ```js
 ignoreElements: (element) => {
@@ -118,7 +118,7 @@ interface DownloadImageOptions {
 }
 ```
 
-在该[示例](/zh/examples/ecosystem#image-exporter)中，点击按钮立即开始下载图片，如果选择了 `image/png` 格式，最终保存成 `my-file.png` 文件：
+在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，点击按钮立即开始下载图片，如果选择了 `image/png` 格式，最终保存成 `my-file.png` 文件：
 
 ```js
 const canvas = await exporter.toCanvas();
@@ -170,7 +170,7 @@ const imageData = canvas.getImageData(50, 50, 100, 100); // ImageData { width: 1
 -   导出 SVG，其中天然包含 [foreignObject](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
 -   导出其他图片格式，内部使用 [html2canvas](https://html2canvas.hertzen.com/) 实现
 
-在该[示例](/zh/examples/ecosystem#image-exporter)中，左上角 Tooltip 就是一个 HTML。
+在该[示例](/zh/examples/ecosystem/image-exporter/#image-exporter)中，左上角 Tooltip 就是一个 HTML。
 
 ## 为何 toCanvas 为异步方法？
 

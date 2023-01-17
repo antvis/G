@@ -1,15 +1,18 @@
 import type { CanvasContext } from './dom';
+import { GlobalRuntime } from './global-runtime';
 import type { RenderingPlugin } from './services';
 import type { RendererConfig } from './types';
 
 export interface RendererPlugin {
   name: string;
   context: CanvasContext;
-  init: () => void;
-  destroy: () => void;
+  init: (runtime: GlobalRuntime) => void;
+  destroy: (runtime: GlobalRuntime) => void;
 }
 
-export abstract class AbstractRendererPlugin<T = any> implements RendererPlugin {
+export abstract class AbstractRendererPlugin<T = any>
+  implements RendererPlugin
+{
   context: CanvasContext & T;
   protected plugins = [];
 
@@ -28,8 +31,8 @@ export abstract class AbstractRendererPlugin<T = any> implements RendererPlugin 
   }
 
   abstract name: string;
-  abstract init(): void;
-  abstract destroy(): void;
+  abstract init(runtime: GlobalRuntime): void;
+  abstract destroy(runtime: GlobalRuntime): void;
 }
 
 export interface IRenderer {

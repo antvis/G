@@ -5,8 +5,12 @@ import type {
   PathStyleProps,
   Point,
   PathSegment,
+  GlobalRuntime,
 } from '@antv/g-lite';
-import { getOrCalculatePathTotalLength, isFillOrStrokeAffected } from '@antv/g-lite';
+import {
+  getOrCalculatePathTotalLength,
+  isFillOrStrokeAffected,
+} from '@antv/g-lite';
 import { Cubic as CubicUtil, Quad as QuadUtil } from '@antv/g-math';
 import { arcToCubic } from '@antv/util';
 import { inBox, inLine, inPolygons } from './utils/math';
@@ -144,7 +148,12 @@ export function isPointInPath(
   displayObject: DisplayObject<PathStyleProps>,
   position: Point,
   isClipPath: boolean,
-  isPointInPath: (displayObject: DisplayObject<PathStyleProps>, position: Point) => boolean,
+  isPointInPath: (
+    runtime: GlobalRuntime,
+    displayObject: DisplayObject<PathStyleProps>,
+    position: Point,
+  ) => boolean,
+  runtime: GlobalRuntime,
 ): boolean {
   const {
     lineWidth,
@@ -157,7 +166,11 @@ export function isPointInPath(
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPathStyleProps;
 
-  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(
+    pointerEvents,
+    fill,
+    stroke,
+  );
 
   const { segments, hasArc, polylines, polygons } = path;
 
@@ -168,7 +181,7 @@ export function isPointInPath(
   if (hasFill || isClipPath) {
     if (hasArc) {
       // 存在曲线时，暂时使用 canvas 的 api 计算，后续可以进行多边形切割
-      isHit = isPointInPath(displayObject, position);
+      isHit = isPointInPath(runtime, displayObject, position);
     } else {
       // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
       isHit =

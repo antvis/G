@@ -2,8 +2,14 @@ import { isBoolean, isObject } from '@antv/util';
 import EventEmitter from 'eventemitter3';
 import { isFunction } from '../utils';
 import { CustomEvent } from './CustomEvent';
-import { FederatedEvent } from './FederatedEvent';
-import type { ICanvas, IDocument, IElement, IEventTarget, INode } from './interfaces';
+import { FederatedEvent, isFederatedEvent } from './FederatedEvent';
+import type {
+  ICanvas,
+  IDocument,
+  IElement,
+  IEventTarget,
+  INode,
+} from './interfaces';
 
 const DELEGATION_SPLITTER = ':';
 
@@ -39,7 +45,8 @@ export class EventTarget implements IEventTarget {
     listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
   ) {
-    const capture = (isBoolean(options) && options) || (isObject(options) && options.capture);
+    const capture =
+      (isBoolean(options) && options) || (isObject(options) && options.capture);
     const once = isObject(options) && options.once;
     const context = isFunction(listener) ? undefined : listener;
 
@@ -102,7 +109,8 @@ export class EventTarget implements IEventTarget {
     listener?: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
   ) {
-    const capture = (isBoolean(options) && options) || (isObject(options) && options.capture);
+    const capture =
+      (isBoolean(options) && options) || (isObject(options) && options.capture);
     const context = isFunction(listener) ? undefined : listener;
 
     type = capture ? `${type}capture` : type;
@@ -123,9 +131,14 @@ export class EventTarget implements IEventTarget {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
    */
-  dispatchEvent<T extends FederatedEvent>(e: T, skipPropagate = false): boolean {
-    if (!(e instanceof FederatedEvent)) {
-      throw new Error('DisplayObject cannot propagate events outside of the Federated Events API');
+  dispatchEvent<T extends FederatedEvent>(
+    e: T,
+    skipPropagate = false,
+  ): boolean {
+    if (!isFederatedEvent(e)) {
+      throw new Error(
+        'DisplayObject cannot propagate events outside of the Federated Events API',
+      );
     }
 
     // should account for Element / Document / Canvas

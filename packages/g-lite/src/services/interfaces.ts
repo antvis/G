@@ -6,6 +6,7 @@ import type { DisplayObject } from '../display-objects';
 
 export interface SceneGraphService {
   triggerPendingEvents: () => void;
+  clearPendingEvents: () => void;
   updateDisplayObjectDependency: (
     name: string,
     oldPath: DisplayObject,
@@ -15,8 +16,14 @@ export interface SceneGraphService {
   informDependentDisplayObjects: (object: DisplayObject) => void;
   dirtifyToRoot: (element: INode, affectChildren?: boolean) => void;
   matches: <T extends IElement>(query: string, root: T) => boolean;
-  querySelector: <R extends IElement, T extends IElement>(query: string, root: R) => T | null;
-  querySelectorAll: <R extends IElement, T extends IElement>(query: string, root: R) => T[];
+  querySelector: <R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ) => T | null;
+  querySelectorAll: <R extends IElement, T extends IElement>(
+    query: string,
+    root: R,
+  ) => T[];
   attach: <C extends INode, P extends INode & IParentNode>(
     child: C,
     parent: P,
@@ -24,7 +31,12 @@ export interface SceneGraphService {
   ) => void;
   detach: <C extends INode>(child: C) => void;
   getOrigin: (element: INode) => vec3;
-  setOrigin: (element: INode, origin: vec3 | number, y?: number, z?: number) => void;
+  setOrigin: (
+    element: INode,
+    origin: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
   setPosition: (element: INode, position: vec3 | vec2) => void;
   setLocalPosition: (element: INode, position: vec3 | vec2) => void;
   scaleLocal: (element: INode, scaling: vec3 | vec2) => void;
@@ -32,15 +44,45 @@ export interface SceneGraphService {
   getLocalScale: (element: INode) => vec3;
   getScale: (element: INode) => vec3;
   getLocalSkew: (element: INode) => vec2;
-  translate: (element: INode, translation: vec3 | number, y?: number, z?: number) => void;
-  translateLocal: (element: INode, translation: vec3 | number, y?: number, z?: number) => void;
+  translate: (
+    element: INode,
+    translation: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
+  translateLocal: (
+    element: INode,
+    translation: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
   getPosition: (element: INode) => vec3;
   getLocalPosition: (element: INode) => vec3;
   setLocalSkew: (element: INode, skew: vec2 | number, y?: number) => void;
-  setEulerAngles: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
-  setLocalEulerAngles: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
-  rotateLocal: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
-  rotate: (element: INode, degrees: vec3 | number, y?: number, z?: number) => void;
+  setEulerAngles: (
+    element: INode,
+    degrees: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
+  setLocalEulerAngles: (
+    element: INode,
+    degrees: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
+  rotateLocal: (
+    element: INode,
+    degrees: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
+  rotate: (
+    element: INode,
+    degrees: vec3 | number,
+    y?: number,
+    z?: number,
+  ) => void;
   getRotation: (element: INode) => quat;
   setRotation: (
     element: INode,

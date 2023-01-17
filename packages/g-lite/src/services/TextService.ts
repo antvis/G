@@ -345,6 +345,7 @@ export class TextService {
     const context =
       this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
+
     let ellipsis = '';
     if (textOverflow === 'ellipsis') {
       ellipsis = '...';

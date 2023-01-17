@@ -1,5 +1,5 @@
-import type { DataURLOptions } from '@antv/g-lite';
-import { runtime, Shape, AbstractRendererPlugin } from '@antv/g-lite';
+import type { DataURLOptions, GlobalRuntime } from '@antv/g-lite';
+import { Shape, AbstractRendererPlugin } from '@antv/g-lite';
 import 'regenerator-runtime/runtime';
 import { Renderable3D } from './components/Renderable3D';
 import { LightPool } from './LightPool';
@@ -37,7 +37,7 @@ export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 export class Plugin extends AbstractRendererPlugin {
   name = 'device-renderer';
 
-  init(): void {
+  init(runtime: GlobalRuntime): void {
     runtime.geometryUpdaterFactory[Shape.MESH] = new MeshUpdater();
 
     const renderHelper = new RenderHelper();
@@ -85,7 +85,7 @@ export class Plugin extends AbstractRendererPlugin {
       ),
     );
   }
-  destroy(): void {
+  destroy(runtime: GlobalRuntime): void {
     delete runtime.geometryUpdaterFactory[Shape.MESH];
   }
 

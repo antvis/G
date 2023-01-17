@@ -1,5 +1,10 @@
-import type { CanvasContext, ParsedPathStyleProps, Path, ContextService } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  ParsedPathStyleProps,
+  Path,
+  ContextService,
+} from '@antv/g-lite';
+import { isDisplayObject } from '@antv/g-lite';
 import { mat3 } from 'gl-matrix';
 import type { CanvasKit } from 'canvaskit-wasm';
 import type {
@@ -15,8 +20,15 @@ import type {
 export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
   const skPath = new CanvasKit.Path();
 
-  const { defX, defY, path, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    object.parsedStyle as ParsedPathStyleProps;
+  const {
+    defX,
+    defY,
+    path,
+    markerStart,
+    markerEnd,
+    markerStartOffset,
+    markerEndOffset,
+  } = object.parsedStyle as ParsedPathStyleProps;
 
   let startOffsetX = 0;
   let startOffsetY = 0;
@@ -27,7 +39,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
   let x: number;
   let y: number;
 
-  if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+  if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
     const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];
@@ -37,7 +49,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
     startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
-  if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+  if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
     const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];
@@ -52,7 +64,8 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
     const params = absolutePath[i]; // eg. M 100 200
     const command = params[0];
     const nextSegment = absolutePath[i + 1];
-    const useStartOffset = i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
+    const useStartOffset =
+      i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
     const useEndOffset =
       (i === absolutePath.length - 1 ||
         (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
@@ -63,7 +76,10 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
       case 'M':
         // Use start marker offset
         if (useStartOffset) {
-          skPath.moveTo(params[1] - defX + startOffsetX, params[2] - defY + startOffsetY);
+          skPath.moveTo(
+            params[1] - defX + startOffsetX,
+            params[2] - defY + startOffsetY,
+          );
           skPath.lineTo(params[1] - defX, params[2] - defY);
         } else {
           skPath.moveTo(params[1] - defX, params[2] - defY);
@@ -71,15 +87,26 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
         break;
       case 'L':
         if (useEndOffset) {
-          skPath.lineTo(params[1] - defX + endOffsetX, params[2] - defY + endOffsetY);
+          skPath.lineTo(
+            params[1] - defX + endOffsetX,
+            params[2] - defY + endOffsetY,
+          );
         } else {
           skPath.lineTo(params[1] - defX, params[2] - defY);
         }
         break;
       case 'Q':
-        skPath.quadTo(params[1] - defX, params[2] - defY, params[3] - defX, params[4] - defY);
+        skPath.quadTo(
+          params[1] - defX,
+          params[2] - defY,
+          params[3] - defX,
+          params[4] - defY,
+        );
         if (useEndOffset) {
-          skPath.lineTo(params[3] - defX + endOffsetX, params[4] - defY + endOffsetY);
+          skPath.lineTo(
+            params[3] - defX + endOffsetX,
+            params[4] - defY + endOffsetY,
+          );
         }
         break;
       case 'C':
@@ -93,7 +120,10 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
         );
 
         if (useEndOffset) {
-          skPath.lineTo(params[5] - defX + endOffsetX, params[6] - defY + endOffsetY);
+          skPath.lineTo(
+            params[5] - defX + endOffsetX,
+            params[6] - defY + endOffsetY,
+          );
         }
         break;
       case 'A': {
@@ -111,7 +141,10 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
         );
 
         if (useEndOffset) {
-          skPath.lineTo(params[6] - defX + endOffsetX, params[7] - defY + endOffsetY);
+          skPath.lineTo(
+            params[6] - defX + endOffsetX,
+            params[7] - defY + endOffsetY,
+          );
         }
         break;
       }
@@ -136,18 +169,31 @@ export class PathRenderer implements RendererContribution {
     const { CanvasKit } = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
-    const { canvas, fillPaint, strokePaint, shadowFillPaint, shadowStrokePaint } = context;
+    const {
+      canvas,
+      fillPaint,
+      strokePaint,
+      shadowFillPaint,
+      shadowStrokePaint,
+    } = context;
 
-    const { shadowOffsetX, shadowOffsetY } = object.parsedStyle as ParsedPathStyleProps;
+    const { shadowOffsetX, shadowOffsetY } =
+      object.parsedStyle as ParsedPathStyleProps;
 
     const skPath = generateSkPath(CanvasKit, object);
 
     if (shadowFillPaint || shadowStrokePaint) {
       const shadowPath = skPath.copy();
       shadowPath.transform(
-        mat3.fromTranslation(mat3.create(), [(shadowOffsetX || 0) / 2, (shadowOffsetY || 0) / 2]),
+        mat3.fromTranslation(mat3.create(), [
+          (shadowOffsetX || 0) / 2,
+          (shadowOffsetY || 0) / 2,
+        ]),
       );
-      canvas.drawPath(shadowPath, fillPaint ? shadowFillPaint : shadowStrokePaint);
+      canvas.drawPath(
+        shadowPath,
+        fillPaint ? shadowFillPaint : shadowStrokePaint,
+      );
     }
 
     if (fillPaint) {

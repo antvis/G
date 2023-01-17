@@ -9,7 +9,14 @@ import type {
   Polyline,
   Tuple4Number,
 } from '@antv/g-lite';
-import { convertToPath, CSSRGB, DisplayObject, parsePath, Shape } from '@antv/g-lite';
+import {
+  convertToPath,
+  DisplayObject,
+  parsePath,
+  Shape,
+  isCSSRGB,
+  isDisplayObject,
+} from '@antv/g-lite';
 import { arcToCubic } from '@antv/util';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
@@ -83,7 +90,12 @@ export class LineMesh extends Instanced {
     return false;
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ): void {
     super.updateAttribute(objects, startIndex, name, value);
 
     objects.forEach((object) => {
@@ -107,7 +119,8 @@ export class LineMesh extends Instanced {
         name === 'markerStartOffset' ||
         name === 'markerEndOffset' ||
         (object.nodeName === Shape.CIRCLE && name === 'r') ||
-        (object.nodeName === Shape.ELLIPSE && (name === 'rx' || name === 'ry')) ||
+        (object.nodeName === Shape.ELLIPSE &&
+          (name === 'rx' || name === 'ry')) ||
         (object.nodeName === Shape.RECT &&
           (name === 'width' || name === 'height' || name === 'radius')) ||
         (object.nodeName === Shape.LINE &&
@@ -121,7 +134,7 @@ export class LineMesh extends Instanced {
         this.material.programDirty = true;
       } else if (name === 'stroke') {
         let strokeColor: Tuple4Number = [0, 0, 0, 0];
-        if (stroke instanceof CSSRGB) {
+        if (isCSSRGB(stroke)) {
           strokeColor = [
             Number(stroke.r) / 255,
             Number(stroke.g) / 255,
@@ -150,7 +163,8 @@ export class LineMesh extends Instanced {
         });
       } else if (name === 'increasedLineWidthForHitTesting') {
         this.material.setUniforms({
-          [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting || 0,
+          [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]:
+            increasedLineWidthForHitTesting || 0,
         });
       } else if (name === 'anchor' || name === 'modelMatrix') {
         let translateX = 0;
@@ -227,7 +241,7 @@ export class LineMesh extends Instanced {
       visibility,
     } = instance.parsedStyle as ParsedLineStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill instanceof CSSRGB) {
+    if (isCSSRGB(fill)) {
       fillColor = [
         Number(fill.r) / 255,
         Number(fill.g) / 255,
@@ -236,7 +250,7 @@ export class LineMesh extends Instanced {
       ];
     }
     let strokeColor: Tuple4Number = [0, 0, 0, 0];
-    if (stroke instanceof CSSRGB) {
+    if (isCSSRGB(stroke)) {
       strokeColor = [
         Number(stroke.r) / 255,
         Number(stroke.g) / 255,
@@ -269,7 +283,8 @@ export class LineMesh extends Instanced {
       [Uniform.FILL_COLOR]: fillColor,
       [Uniform.STROKE_COLOR]: strokeColor,
       [Uniform.STROKE_WIDTH]: lineWidth,
-      [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]: increasedLineWidthForHitTesting || 0,
+      [Uniform.INCREASED_LINE_WIDTH_FOR_HIT_TESTING]:
+        increasedLineWidthForHitTesting || 0,
       [Uniform.OPACITY]: opacity,
       [Uniform.FILL_OPACITY]: fillOpacity,
       [Uniform.STROKE_OPACITY]: strokeOpacity,
@@ -291,7 +306,8 @@ export class LineMesh extends Instanced {
     const instance = objects[0];
 
     // use triangles for Polygon
-    const { pointsBuffer, travelBuffer, instancedCount } = updateBuffer(instance);
+    const { pointsBuffer, travelBuffer, instancedCount } =
+      updateBuffer(instance);
 
     this.geometry.setVertexBuffer({
       bufferIndex: LineVertexAttributeBufferIndex.PACKED,
@@ -370,7 +386,9 @@ export class LineMesh extends Instanced {
     this.geometry.vertexCount = 15;
     this.geometry.instancedCount = instancedCount;
 
-    this.geometry.setIndexBuffer(new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]));
+    this.geometry.setIndexBuffer(
+      new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]),
+    );
   }
 }
 
@@ -384,7 +402,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   let triangles: number[] = [];
 
   if (object.nodeName === Shape.POLYLINE || object.nodeName === Shape.POLYGON) {
-    const polylineControlPoints = (object as Polyline).parsedStyle.points.points;
+    const polylineControlPoints = (object as Polyline).parsedStyle.points
+      .points;
     const length = polylineControlPoints.length;
     let startOffsetX = 0;
     let startOffsetY = 0;
@@ -395,7 +414,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     let x: number;
     let y: number;
 
-    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+    if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
       x = polylineControlPoints[1][0] - polylineControlPoints[0][0];
       y = polylineControlPoints[1][1] - polylineControlPoints[0][1];
       rad = Math.atan2(y, x);
@@ -403,9 +422,13 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
-      x = polylineControlPoints[length - 2][0] - polylineControlPoints[length - 1][0];
-      y = polylineControlPoints[length - 2][1] - polylineControlPoints[length - 1][1];
+    if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
+      x =
+        polylineControlPoints[length - 2][0] -
+        polylineControlPoints[length - 1][0];
+      y =
+        polylineControlPoints[length - 2][1] -
+        polylineControlPoints[length - 1][1];
       rad = Math.atan2(y, x);
       endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
       endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
@@ -439,7 +462,14 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
         };
       } else {
         points[0].push(points[0][0], points[0][1]);
-        points[0].push(...addTailSegment(points[0][0], points[0][1], points[0][2], points[0][3]));
+        points[0].push(
+          ...addTailSegment(
+            points[0][0],
+            points[0][1],
+            points[0][2],
+            points[0][3],
+          ),
+        );
       }
     }
   } else if (
@@ -450,7 +480,10 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   ) {
     let path: ParsedPathStyleProps['path'];
     if (object.nodeName !== Shape.PATH) {
-      path = parsePath(convertToPath(object, mat4.identity(mat4.create())), object);
+      path = parsePath(
+        convertToPath(object, mat4.identity(mat4.create())),
+        object,
+      );
       defX = path.rect.x;
       defY = path.rect.y;
 
@@ -478,7 +511,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     let x: number;
     let y: number;
 
-    if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+    if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
       const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
@@ -488,7 +521,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+    if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
       const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
@@ -501,10 +534,12 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     let mCommandsNum = -1;
     absolutePath.forEach(([command, ...params], i) => {
       const nextSegment = absolutePath[i + 1];
-      const useStartOffset = i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
+      const useStartOffset =
+        i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
       const useEndOffset =
         (i === absolutePath.length - 1 ||
-          (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
+          (nextSegment &&
+            (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
         endOffsetX !== 0 &&
         endOffsetY !== 0;
 
@@ -525,7 +560,10 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
         }
       } else if (command === 'L') {
         if (useEndOffset) {
-          points[mCommandsNum].push(params[0] - defX + endOffsetX, params[1] - defY + endOffsetY);
+          points[mCommandsNum].push(
+            params[0] - defX + endOffsetX,
+            params[1] - defY + endOffsetY,
+          );
         } else {
           points[mCommandsNum].push(params[0] - defX, params[1] - defY);
         }
@@ -538,7 +576,10 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           points[mCommandsNum],
         );
         if (useEndOffset) {
-          points[mCommandsNum].push(params[2] - defX + endOffsetX, params[3] - defY + endOffsetY);
+          points[mCommandsNum].push(
+            params[2] - defX + endOffsetX,
+            params[3] - defY + endOffsetY,
+          );
         }
       } else if (command === 'A') {
         // convert Arc to Cubic
@@ -570,7 +611,10 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           );
         }
         if (useEndOffset) {
-          points[mCommandsNum].push(params[5] - defX + endOffsetX, params[6] - defY + endOffsetY);
+          points[mCommandsNum].push(
+            params[5] - defX + endOffsetX,
+            params[6] - defY + endOffsetY,
+          );
         }
       } else if (command === 'C') {
         bezierCurveTo(
@@ -583,7 +627,10 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           points[mCommandsNum],
         );
         if (useEndOffset) {
-          points[mCommandsNum].push(params[4] - defX + endOffsetX, params[5] - defY + endOffsetY);
+          points[mCommandsNum].push(
+            params[4] - defX + endOffsetX,
+            params[5] - defY + endOffsetY,
+          );
         }
       } else if (
         command === 'Z' &&
@@ -660,7 +707,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
         // if (needDash) {
         if (i > 1) {
           dist += Math.sqrt(
-            Math.pow(points[i] - points[i - 2], 2) + Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+            Math.pow(points[i] - points[i - 2], 2) +
+              Math.pow(points[i + 1] - points[i + 1 - 2], 2),
           );
         }
         travelBuffer.push(dist);
@@ -752,7 +800,12 @@ function getCapType(lineCap: CanvasLineCap) {
   return cap;
 }
 
-function addTailSegment(x1: number, y1: number, x2: number = x1, y2: number = y1) {
+function addTailSegment(
+  x1: number,
+  y1: number,
+  x2: number = x1,
+  y2: number = y1,
+) {
   const vec = [x2 - x1, y2 - y1];
   const length = 0.01;
   return [x1 + vec[0] * length, y1 + vec[1] * length];

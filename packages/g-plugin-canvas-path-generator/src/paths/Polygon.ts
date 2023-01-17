@@ -1,5 +1,5 @@
 import type { ParsedPolygonStyleProps } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import { isDisplayObject } from '@antv/g-lite';
 
 export function generatePath(
   context: CanvasRenderingContext2D,
@@ -30,7 +30,7 @@ export function generatePath(
   let x: number;
   let y: number;
 
-  if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+  if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
     x = points[1][0] - points[0][0];
     y = points[1][1] - points[0][1];
     rad = Math.atan2(y, x);
@@ -38,7 +38,7 @@ export function generatePath(
     startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
-  if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+  if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
     x = points[length - 1][0] - points[0][0];
     y = points[length - 1][1] - points[0][1];
     rad = Math.atan2(y, x);
@@ -46,7 +46,10 @@ export function generatePath(
     endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
-  context.moveTo(x1 + (startOffsetX || endOffsetX), y1 + (startOffsetY || endOffsetY));
+  context.moveTo(
+    x1 + (startOffsetX || endOffsetX),
+    y1 + (startOffsetY || endOffsetY),
+  );
   for (let i = 1; i < length - 1; i++) {
     const point = points[i];
     context.lineTo(point[0] - defX, point[1] - defY);

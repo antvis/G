@@ -1,4 +1,5 @@
 import type { GlobalRuntime } from '../global-runtime';
+import { runtime } from '../global-runtime';
 import type { ICamera } from '../camera';
 import type { DisplayObject } from '../display-objects';
 import type { CanvasContext } from '../dom';
@@ -21,7 +22,7 @@ import { RenderReason } from './RenderingContext';
 export type RenderingPluginContext = CanvasContext & GlobalRuntime;
 
 export interface RenderingPlugin {
-  apply: (context: RenderingPluginContext) => void;
+  apply: (context: RenderingPluginContext, runtime: GlobalRuntime) => void;
 }
 
 export interface PickingResult {
@@ -135,7 +136,7 @@ export class RenderingService {
 
     // register rendering plugins
     this.context.renderingPlugins.forEach((plugin) => {
-      plugin.apply(context);
+      plugin.apply(context, runtime);
     });
     // await this.hooks.init.callPromise();
     await this.hooks.init.promise();
@@ -162,7 +163,7 @@ export class RenderingService {
     );
   }
 
-  render(canvasConfig: Partial<CanvasConfig>) {
+  render(canvasConfig: Partial<CanvasConfig>, rerenderCallback: () => void) {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
@@ -190,6 +191,8 @@ export class RenderingService {
       this.hooks.endFrame.call();
       renderingContext.renderListCurrentFrame = [];
       renderingContext.renderReasons.clear();
+
+      rerenderCallback();
     }
 
     // console.log('stats', this.stats);
@@ -260,6 +263,7 @@ export class RenderingService {
   destroy() {
     this.inited = false;
     this.hooks.destroy.call();
+    this.globalRuntime.sceneGraphService.clearPendingEvents();
   }
 
   dirtify() {

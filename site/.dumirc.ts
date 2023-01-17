@@ -1,4 +1,5 @@
 import { defineConfig } from 'dumi';
+import { version } from '../packages/g/package.json';
 
 export default defineConfig({
   locales: [
@@ -14,7 +15,12 @@ export default defineConfig({
     description: 'A flexible rendering engine for visualization.',
     defaultLanguage: 'zh', // 默认语言
     isAntVSite: false, // 是否是 AntV 的大官网
-    siteUrl: 'https://g-next.antv.vision',
+    versions: {
+      // 历史版本以及切换下拉菜单
+      [version]: 'https://g.antv.antgroup.com',
+      '4.x': 'https://g.antv.vision/',
+    },
+    siteUrl: 'https://g.antv.antgroup.com',
     githubUrl: 'https://github.com/antvis/g',
     detail: {
       title: {

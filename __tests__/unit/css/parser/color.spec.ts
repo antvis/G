@@ -8,6 +8,7 @@ import {
   LinearGradient,
   RadialGradient,
   CSSUnitValue,
+  isCSSRGB,
 } from '../../../../packages/g-lite/src/css';
 
 // @ts-ignore
@@ -22,29 +23,37 @@ describe('Property Color', () => {
   it('should parse constant color correctly', () => {
     let result = parseColor('transparent');
     expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+    expect(isCSSRGB(result)).to.be.true;
 
     result = parseColor('red');
     expect(result.toString()).to.be.eqls('rgba(255,0,0,1)');
+    expect(isCSSRGB(result)).to.be.true;
 
     result = parseColor('#fff');
     expect(result.toString()).to.be.eqls('rgba(255,255,255,1)');
+    expect(isCSSRGB(result)).to.be.true;
 
     result = parseColor('rgba(255, 255, 255, 1)');
     expect(result.toString()).to.be.eqls('rgba(255,255,255,1)');
+    expect(isCSSRGB(result)).to.be.true;
 
     // @see https://github.com/d3/d3-color/issues/52
     result = parseColor('rgba(0,0,0,0)');
     expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+    expect(isCSSRGB(result)).to.be.true;
 
     // invalid color
     result = parseColor('xxx');
     expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+    expect(isCSSRGB(result)).to.be.true;
 
     result = parseColor(null);
     expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+    expect(isCSSRGB(result)).to.be.true;
 
     result = parseColor(undefined);
     expect(result.toString()).to.be.eqls('rgba(0,0,0,0)');
+    expect(isCSSRGB(result)).to.be.true;
   });
 
   it('should parse CSS linear-gradient() correctly', () => {

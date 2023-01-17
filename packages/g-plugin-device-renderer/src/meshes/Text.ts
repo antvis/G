@@ -4,14 +4,18 @@ import type {
   Text as TextShape,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB } from '@antv/g-lite';
+import { isCSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/text.frag';
 import vert from '../shader/text.vert';
 import { enumToObject } from '../utils/enum';
-import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
+import {
+  Instanced,
+  VertexAttributeBufferIndex,
+  VertexAttributeLocation,
+} from './Instanced';
 import type GlyphAtlas from './symbol/GlyphAtlas';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
@@ -64,7 +68,9 @@ export class TextMesh extends Instanced {
     // }
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
-      instancedAttributes.some((name) => instance.parsedStyle[name] !== object.parsedStyle[name])
+      instancedAttributes.some(
+        (name) => instance.parsedStyle[name] !== object.parsedStyle[name],
+      )
     ) {
       return false;
     }
@@ -106,18 +112,22 @@ export class TextMesh extends Instanced {
       }
 
       const glyphAtlas = this.glyphManager.getAtlas();
-      const { indicesOffset, indexBuffer, charUVOffsetBuffer, charPackedBuffer } =
-        this.buildTextBuffers({
-          object,
-          lines,
-          fontStack: font,
-          lineHeight: fontScale * lineHeight,
-          offsetX: fontScale * offsetX,
-          offsetY: fontScale * (linePositionY + offsetY),
-          letterSpacing: fontScale * letterSpacing,
-          glyphAtlas,
-          indicesOffset: indicesOff,
-        });
+      const {
+        indicesOffset,
+        indexBuffer,
+        charUVOffsetBuffer,
+        charPackedBuffer,
+      } = this.buildTextBuffers({
+        object,
+        lines,
+        fontStack: font,
+        lineHeight: fontScale * lineHeight,
+        offsetX: fontScale * offsetX,
+        offsetY: fontScale * (linePositionY + offsetY),
+        letterSpacing: fontScale * letterSpacing,
+        glyphAtlas,
+        indicesOffset: indicesOff,
+      });
       indicesOff = indicesOffset;
 
       packed.push(...charPackedBuffer);
@@ -272,7 +282,12 @@ export class TextMesh extends Instanced {
     }
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any): void {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ): void {
     if (
       name === 'text' ||
       name === 'fontFamily' ||
@@ -330,10 +345,18 @@ export class TextMesh extends Instanced {
     glyphAtlas: GlyphAtlas;
     indicesOffset: number;
   }) {
-    const { textAlign, fill, stroke, opacity, fillOpacity, strokeOpacity, lineWidth, visibility } =
-      object.parsedStyle as ParsedTextStyleProps;
+    const {
+      textAlign,
+      fill,
+      stroke,
+      opacity,
+      fillOpacity,
+      strokeOpacity,
+      lineWidth,
+      visibility,
+    } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
-    if (fill instanceof CSSRGB) {
+    if (isCSSRGB(fill)) {
       fillColor = [
         Number(fill.r) / 255,
         Number(fill.g) / 255,
@@ -343,7 +366,7 @@ export class TextMesh extends Instanced {
     }
 
     let strokeColor: Tuple4Number = [0, 0, 0, 0];
-    if (stroke instanceof CSSRGB) {
+    if (isCSSRGB(stroke)) {
       strokeColor = [
         Number(stroke.r) / 255,
         Number(stroke.g) / 255,
@@ -400,14 +423,24 @@ export class TextMesh extends Instanced {
 
       // interleaved uv & offsets
       charUVOffsetBuffer.push(quad.tex.x, quad.tex.y, quad.tl.x, quad.tl.y);
-      charUVOffsetBuffer.push(quad.tex.x + quad.tex.w, quad.tex.y, quad.tr.x, quad.tr.y);
+      charUVOffsetBuffer.push(
+        quad.tex.x + quad.tex.w,
+        quad.tex.y,
+        quad.tr.x,
+        quad.tr.y,
+      );
       charUVOffsetBuffer.push(
         quad.tex.x + quad.tex.w,
         quad.tex.y + quad.tex.h,
         quad.br.x,
         quad.br.y,
       );
-      charUVOffsetBuffer.push(quad.tex.x, quad.tex.y + quad.tex.h, quad.bl.x, quad.bl.y);
+      charUVOffsetBuffer.push(
+        quad.tex.x,
+        quad.tex.y + quad.tex.h,
+        quad.bl.x,
+        quad.bl.y,
+      );
 
       indexBuffer.push(0 + i, 2 + i, 1 + i);
       indexBuffer.push(2 + i, 0 + i, 3 + i);

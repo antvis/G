@@ -1,7 +1,10 @@
 import type { ParsedPathStyleProps, Path } from '@antv/g-lite';
-import { DisplayObject } from '@antv/g-lite';
+import { isDisplayObject } from '@antv/g-lite';
 
-export function generatePath(context: CanvasRenderingContext2D, parsedStyle: ParsedPathStyleProps) {
+export function generatePath(
+  context: CanvasRenderingContext2D,
+  parsedStyle: ParsedPathStyleProps,
+) {
   const {
     defX = 0,
     defY = 0,
@@ -21,7 +24,7 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
   let x: number;
   let y: number;
 
-  if (markerStart && markerStart instanceof DisplayObject && markerStartOffset) {
+  if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
     const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];
@@ -31,7 +34,7 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
     startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
   }
 
-  if (markerEnd && markerEnd instanceof DisplayObject && markerEndOffset) {
+  if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
     const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
     x = p1[0] - p2[0];
     y = p1[1] - p2[1];
@@ -44,7 +47,8 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
     const params = absolutePath[i];
     const command = params[0];
     const nextSegment = absolutePath[i + 1];
-    const useStartOffset = i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
+    const useStartOffset =
+      i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
     const useEndOffset =
       (i === absolutePath.length - 1 ||
         (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
@@ -55,7 +59,10 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
       case 'M':
         // Use start marker offset
         if (useStartOffset) {
-          context.moveTo(params[1] - defX + startOffsetX, params[2] - defY + startOffsetY);
+          context.moveTo(
+            params[1] - defX + startOffsetX,
+            params[2] - defY + startOffsetY,
+          );
           context.lineTo(params[1] - defX, params[2] - defY);
         } else {
           context.moveTo(params[1] - defX, params[2] - defY);
@@ -63,7 +70,10 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
         break;
       case 'L':
         if (useEndOffset) {
-          context.lineTo(params[1] - defX + endOffsetX, params[2] - defY + endOffsetY);
+          context.lineTo(
+            params[1] - defX + endOffsetX,
+            params[2] - defY + endOffsetY,
+          );
         } else {
           context.lineTo(params[1] - defX, params[2] - defY);
         }
@@ -76,7 +86,10 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
           params[4] - defY,
         );
         if (useEndOffset) {
-          context.lineTo(params[3] - defX + endOffsetX, params[4] - defY + endOffsetY);
+          context.lineTo(
+            params[3] - defX + endOffsetX,
+            params[4] - defY + endOffsetY,
+          );
         }
         break;
       case 'C':
@@ -89,12 +102,16 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
           params[6] - defY,
         );
         if (useEndOffset) {
-          context.lineTo(params[5] - defX + endOffsetX, params[6] - defY + endOffsetY);
+          context.lineTo(
+            params[5] - defX + endOffsetX,
+            params[6] - defY + endOffsetY,
+          );
         }
         break;
       case 'A': {
         const arcParams = segments[i].arcParams;
-        const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } = arcParams;
+        const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } =
+          arcParams;
         // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse
         if (context.ellipse) {
           context.ellipse(
@@ -122,7 +139,10 @@ export function generatePath(context: CanvasRenderingContext2D, parsedStyle: Par
         }
 
         if (useEndOffset) {
-          context.lineTo(params[6] - defX + endOffsetX, params[7] - defY + endOffsetY);
+          context.lineTo(
+            params[6] - defX + endOffsetX,
+            params[7] - defY + endOffsetY,
+          );
         }
         break;
       }

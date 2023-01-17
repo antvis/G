@@ -361,11 +361,13 @@ export abstract class Node extends EventTarget implements INode {
     return temp;
   }
 
-  forEach(callback: (o: INode) => void | boolean) {
+  forEach(callback: (o: INode) => void | boolean, assigned = false) {
     if (!callback(this)) {
-      this.childNodes.forEach((child) => {
-        child.forEach(callback);
-      });
+      (assigned ? this.childNodes.slice() : this.childNodes).forEach(
+        (child) => {
+          child.forEach(callback);
+        },
+      );
     }
   }
 }

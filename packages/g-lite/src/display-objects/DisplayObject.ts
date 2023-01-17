@@ -25,6 +25,10 @@ import {
 import type { CustomElement } from './CustomElement';
 import { runtime } from '../global-runtime';
 
+export function isDisplayObject(value: any): value is DisplayObject {
+  return !!(value as DisplayObject).nodeName;
+}
+
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const mutationEvent: MutationEvent = new MutationEvent(
@@ -233,12 +237,13 @@ export class DisplayObject<
       animation.cancel();
     });
 
-    this.renderable = null;
-    this.cullable = null;
-    this.transformable = null;
-    this.rBushNode = null;
-    this.geometry = null;
-    this.sortable = null;
+    // FIXME
+    // this.renderable = null;
+    // this.cullable = null;
+    // this.transformable = null;
+    // this.rBushNode = null;
+    // this.geometry = null;
+    // this.sortable = null;
   }
 
   cloneNode(
@@ -251,7 +256,7 @@ export class DisplayObject<
 
       // @see https://github.com/antvis/G/issues/1095
       if (
-        attribute instanceof DisplayObject &&
+        isDisplayObject(attribute) &&
         // share the same clipPath if possible
         attributeName !== 'clipPath' &&
         attributeName !== 'offsetPath' &&

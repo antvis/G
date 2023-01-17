@@ -1,6 +1,7 @@
 import chai, { expect } from 'chai';
 import {
   isFunction,
+  isSymbol,
   DCHECK,
   DCHECK_EQ,
   DCHECK_NE,
@@ -20,6 +21,15 @@ describe('Assert utils', () => {
     expect(isFunction('')).to.be.false;
     expect(isFunction(() => {})).to.be.true;
     expect(isFunction(async () => {})).to.be.true;
+  });
+
+  it('should check isSymbol correctly', () => {
+    expect(isSymbol(undefined)).to.be.false;
+    expect(isSymbol(null)).to.be.false;
+    expect(isSymbol('')).to.be.false;
+    expect(isSymbol(() => {})).to.be.false;
+    expect(isSymbol(20)).to.be.false;
+    expect(isSymbol(Symbol('test'))).to.be.true;
   });
 
   it('should assert correctly', () => {

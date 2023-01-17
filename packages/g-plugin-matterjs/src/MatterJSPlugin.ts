@@ -1,6 +1,7 @@
 import type {
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   MutationEvent,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
@@ -10,7 +11,14 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { AABB, CanvasEvent, deg2rad, runtime, ElementEvent, rad2deg, Shape } from '@antv/g-lite';
+import {
+  AABB,
+  CanvasEvent,
+  deg2rad,
+  ElementEvent,
+  rad2deg,
+  Shape,
+} from '@antv/g-lite';
 import { vec2 } from 'gl-matrix';
 import { Bodies, Body, Composite, Engine, Render, World } from 'matter-js';
 import type { MatterJSPluginOptions } from './interfaces';
@@ -26,7 +34,7 @@ export class MatterJSPlugin implements RenderingPlugin {
   private bodies: Record<number, Body> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
     const simulate = () => {
@@ -38,11 +46,14 @@ export class MatterJSPlugin implements RenderingPlugin {
         }
 
         Object.keys(this.bodies).forEach((entity) => {
-          const displayObject = runtime.displayObjectPool.getByEntity(Number(entity));
+          const displayObject = runtime.displayObjectPool.getByEntity(
+            Number(entity),
+          );
           const bounds = displayObject.getBounds();
 
           if (!AABB.isEmpty(bounds)) {
-            const { anchor } = displayObject.parsedStyle as ParsedBaseStyleProps;
+            const { anchor } =
+              displayObject.parsedStyle as ParsedBaseStyleProps;
             const { halfExtents } = bounds;
             const body = this.bodies[entity] as Body;
             const x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
@@ -85,7 +96,16 @@ export class MatterJSPlugin implements RenderingPlugin {
       const body = this.bodies[object.entity];
 
       if (body) {
-        const geometryAttributes = ['points', 'r', 'width', 'height', 'x1', 'y1', 'x2', 'y2'];
+        const geometryAttributes = [
+          'points',
+          'r',
+          'width',
+          'height',
+          'x1',
+          'y1',
+          'x2',
+          'y2',
+        ];
         if (geometryAttributes.indexOf(attrName) > -1) {
           // need re-create body
         } else if (attrName === 'rigid') {
@@ -111,7 +131,10 @@ export class MatterJSPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(MatterJSPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
 
       this.createScene();
       this.handlePendingDisplayObjects();
@@ -126,17 +149,28 @@ export class MatterJSPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(MatterJSPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
   }
 
   /**
    * @see https://brm.io/matter-js/docs/classes/Body.html#method_applyForce
    */
-  applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
+  applyForce(
+    object: DisplayObject,
+    force: [number, number],
+    point: [number, number],
+  ) {
     const body = this.bodies[object.entity];
     if (body) {
-      Body.applyForce(body, { x: point[0], y: point[1] }, { x: force[0], y: force[1] });
+      Body.applyForce(
+        body,
+        { x: point[0], y: point[1] },
+        { x: force[0], y: force[1] },
+      );
     }
   }
 
@@ -221,19 +255,52 @@ export class MatterJSPlugin implements RenderingPlugin {
 
       let body: Body;
       if (nodeName === Shape.LINE) {
-        const { x1, y1, x2, y2, defX, defY, lineWidth } = parsedStyle as ParsedLineStyleProps;
+        const { x1, y1, x2, y2, defX, defY, lineWidth } =
+          parsedStyle as ParsedLineStyleProps;
         const p1 = vec2.fromValues(x1 - defX, y1 - defY);
         const p2 = vec2.fromValues(x2 - defX, y2 - defY);
         const basis = vec2.sub(vec2.create(), p2, p1);
-        const normal = vec2.normalize(vec2.create(), vec2.fromValues(-basis[1], basis[0]));
-        const extrude1 = vec2.scaleAndAdd(vec2.create(), p1, normal, lineWidth / 2);
-        const extrude2 = vec2.scaleAndAdd(vec2.create(), p1, normal, -lineWidth / 2);
-        const extrude3 = vec2.scaleAndAdd(vec2.create(), p2, normal, lineWidth / 2);
-        const extrude4 = vec2.scaleAndAdd(vec2.create(), p2, normal, -lineWidth / 2);
+        const normal = vec2.normalize(
+          vec2.create(),
+          vec2.fromValues(-basis[1], basis[0]),
+        );
+        const extrude1 = vec2.scaleAndAdd(
+          vec2.create(),
+          p1,
+          normal,
+          lineWidth / 2,
+        );
+        const extrude2 = vec2.scaleAndAdd(
+          vec2.create(),
+          p1,
+          normal,
+          -lineWidth / 2,
+        );
+        const extrude3 = vec2.scaleAndAdd(
+          vec2.create(),
+          p2,
+          normal,
+          lineWidth / 2,
+        );
+        const extrude4 = vec2.scaleAndAdd(
+          vec2.create(),
+          p2,
+          normal,
+          -lineWidth / 2,
+        );
 
-        // @ts-ignore
-        const points = sortPointsInCCW([extrude1, extrude2, extrude3, extrude4]);
-        body = Bodies.fromVertices(0, 0, [points.map(([x, y]) => ({ x, y }))], config);
+        const points = sortPointsInCCW([
+          extrude1 as [number, number],
+          extrude2 as [number, number],
+          extrude3 as [number, number],
+          extrude4 as [number, number],
+        ]);
+        body = Bodies.fromVertices(
+          0,
+          0,
+          [points.map(([x, y]) => ({ x, y }))],
+          config,
+        );
       } else if (nodeName === Shape.POLYLINE) {
         //   const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
         //   const pointsInCCW = sortPointsInCCW(points.points);
@@ -265,9 +332,16 @@ export class MatterJSPlugin implements RenderingPlugin {
       } else if (nodeName === Shape.POLYGON) {
         // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon
         const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
-        const pts = sortPointsInCCW(points.points.map(([x, y]) => [x - defX, y - defY]));
+        const pts = sortPointsInCCW(
+          points.points.map(([x, y]) => [x - defX, y - defY]),
+        );
         target.style.transformOrigin = 'center center';
-        body = Bodies.fromVertices(0, 0, [pts.map(([x, y]) => ({ x, y }))], config);
+        body = Bodies.fromVertices(
+          0,
+          0,
+          [pts.map(([x, y]) => ({ x, y }))],
+          config,
+        );
       } else if (nodeName === Shape.PATH) {
       } else if (nodeName === Shape.TEXT) {
       }

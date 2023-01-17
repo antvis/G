@@ -31,9 +31,14 @@ import {
   caf,
 } from './utils';
 
+export function isCanvas(value: any): value is Canvas {
+  return !!(value as Canvas).document;
+}
+
 export enum CanvasEvent {
   READY = 'ready',
   BEFORE_RENDER = 'beforerender',
+  RERENDER = 'rerender',
   AFTER_RENDER = 'afterrender',
   BEFORE_DESTROY = 'beforedestroy',
   AFTER_DESTROY = 'afterdestroy',
@@ -51,6 +56,7 @@ const DEFAULT_CAMERA_FAR = 1000;
 const mountedEvent = new CustomEvent(ElementEvent.MOUNTED);
 const unmountedEvent = new CustomEvent(ElementEvent.UNMOUNTED);
 const beforeRenderEvent = new CustomEvent(CanvasEvent.BEFORE_RENDER);
+const rerenderEvent = new CustomEvent(CanvasEvent.RERENDER);
 const afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
 
 /**
@@ -360,16 +366,19 @@ export class Canvas extends EventTarget implements ICanvas {
       // destroy Document
       this.document.destroy();
       this.getEventService().destroy();
-
-      // clear rbush
-      this.context.rBushRoot.clear();
-      this.context.rBushRoot = null;
-      this.context.renderingContext.root = null;
     }
 
     // destroy services
     this.getRenderingService().destroy();
     this.getContextService().destroy();
+
+    // clear root after renderservice destroyed
+    if (destroyScenegraph && this.context.rBushRoot) {
+      // clear rbush
+      this.context.rBushRoot.clear();
+      this.context.rBushRoot = null;
+      this.context.renderingContext.root = null;
+    }
 
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
@@ -447,7 +456,11 @@ export class Canvas extends EventTarget implements ICanvas {
     this.dispatchEvent(beforeRenderEvent);
 
     const renderingService = this.getRenderingService();
-    renderingService.render(this.getConfig());
+    renderingService.render(this.getConfig(), () => {
+      // trigger actual rerender event
+      // @see https://github.com/antvis/G/issues/1268
+      this.dispatchEvent(rerenderEvent);
+    });
 
     this.dispatchEvent(afterRenderEvent);
   }
@@ -523,7 +536,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const plugins = renderer.getPlugins();
     plugins.forEach((plugin) => {
       plugin.context = this.context;
-      plugin.init();
+      plugin.init(runtime);
     });
   }
 
@@ -542,7 +555,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // destroy all plugins, reverse will mutate origin array
     [...oldRenderer?.getPlugins()].reverse().forEach((plugin) => {
-      plugin.destroy();
+      plugin.destroy(runtime);
     });
 
     await this.initRenderer(renderer);

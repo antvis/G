@@ -1,4 +1,9 @@
-import type { AbsoluteArray, AbsoluteSegment, CurveArray, PathArray } from '@antv/util';
+import type {
+  AbsoluteArray,
+  AbsoluteSegment,
+  CurveArray,
+  PathArray,
+} from '@antv/util';
 import { getPointAtLength } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
@@ -7,7 +12,7 @@ import type { Rectangle } from '../shapes/Rectangle';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { getOrCalculatePathTotalLength } from '../utils';
-import { DisplayObject } from './DisplayObject';
+import { DisplayObject, isDisplayObject } from './DisplayObject';
 
 export interface PathStyleProps extends BaseStyleProps {
   path?: string | PathArray;
@@ -121,16 +126,16 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
 
     const { markerStart, markerEnd, markerMid } = this.parsedStyle;
 
-    if (markerStart && markerStart instanceof DisplayObject) {
+    if (markerStart && isDisplayObject(markerStart)) {
       this.markerStartAngle = markerStart.getLocalEulerAngles();
       this.appendChild(markerStart);
     }
 
-    if (markerMid && markerMid instanceof DisplayObject) {
+    if (markerMid && isDisplayObject(markerMid)) {
       this.placeMarkerMid(markerMid);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject) {
+    if (markerEnd && isDisplayObject(markerEnd)) {
       this.markerEndAngle = markerEnd.getLocalEulerAngles();
       this.appendChild(markerEnd);
     }
@@ -151,28 +156,31 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       this.transformMarker(true);
       this.transformMarker(false);
       this.placeMarkerMid(this.parsedStyle.markerMid);
-    } else if (attrName === 'markerStartOffset' || attrName === 'markerEndOffset') {
+    } else if (
+      attrName === 'markerStartOffset' ||
+      attrName === 'markerEndOffset'
+    ) {
       this.transformMarker(true);
       this.transformMarker(false);
     } else if (attrName === 'markerStart') {
-      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+      if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerStartAngle = 0;
         (prevParsedValue as DisplayObject).remove();
       }
 
       // CSSKeyword 'unset'
-      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+      if (newParsedValue && isDisplayObject(newParsedValue)) {
         this.markerStartAngle = newParsedValue.getLocalEulerAngles();
         this.appendChild(newParsedValue);
         this.transformMarker(true);
       }
     } else if (attrName === 'markerEnd') {
-      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+      if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerEndAngle = 0;
         (prevParsedValue as DisplayObject).remove();
       }
 
-      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+      if (newParsedValue && isDisplayObject(newParsedValue)) {
         this.markerEndAngle = newParsedValue.getLocalEulerAngles();
         this.appendChild(newParsedValue);
         this.transformMarker(false);
@@ -183,11 +191,17 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   }
 
   private transformMarker(isStart: boolean) {
-    const { markerStart, markerEnd, markerStartOffset, markerEndOffset, defX, defY } =
-      this.parsedStyle;
+    const {
+      markerStart,
+      markerEnd,
+      markerStartOffset,
+      markerEndOffset,
+      defX,
+      defY,
+    } = this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
-    if (!marker || !(marker instanceof DisplayObject)) {
+    if (!marker || !isDisplayObject(marker)) {
       return;
     }
 
@@ -220,7 +234,10 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
 
     // account for markerOffset
     marker.setLocalEulerAngles((rad * 180) / Math.PI + originalAngle);
-    marker.setLocalPosition(ox + Math.cos(rad) * offset, oy + Math.sin(rad) * offset);
+    marker.setLocalPosition(
+      ox + Math.cos(rad) * offset,
+      oy + Math.sin(rad) * offset,
+    );
   }
 
   private placeMarkerMid(marker: DisplayObject) {
@@ -233,7 +250,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
     this.markerMidList.forEach((marker) => {
       marker.remove();
     });
-    if (marker && marker instanceof DisplayObject) {
+    if (marker && isDisplayObject(marker)) {
       for (let i = 1; i < segments.length - 1; i++) {
         const [ox, oy] = segments[i].currentPoint;
         const cloned = i === 1 ? marker : marker.cloneNode(true);
@@ -279,7 +296,10 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Returns the point at a given ratio of the total length in path.
    */
   getPoint(ratio: number, inWorldSpace = false): Point {
-    return this.getPointAtLength(ratio * getOrCalculatePathTotalLength(this), inWorldSpace);
+    return this.getPointAtLength(
+      ratio * getOrCalculatePathTotalLength(this),
+      inWorldSpace,
+    );
   }
 
   /**

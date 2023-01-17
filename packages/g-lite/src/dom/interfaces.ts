@@ -10,7 +10,7 @@ import type {
   RenderingPlugin,
   RenderingService,
 } from '../services';
-import type { PointLike } from '../shapes';
+import type { AABB, PointLike, Rectangle } from '../shapes';
 import type {
   BaseStyleProps,
   CanvasConfig,
@@ -96,7 +96,10 @@ export interface IEventTarget {
   ) => void;
   // removeAllEventListeners: () => void;
 
-  dispatchEvent: <T extends FederatedEvent>(e: T, skipPropagate?: boolean) => boolean;
+  dispatchEvent: <T extends FederatedEvent>(
+    e: T,
+    skipPropagate?: boolean,
+  ) => boolean;
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   // emit: (eventName: string, object: object) => void;
@@ -179,7 +182,7 @@ export interface INode extends IEventTarget {
   /**
    * Traverse in sub tree.
    */
-  forEach: (callback: (o: INode) => void | boolean) => void;
+  forEach: (callback: (o: INode) => void | boolean, assigned?: boolean) => void;
   /**
    * Returns whether node has children.
    */
@@ -243,7 +246,9 @@ export interface IParentNode {
   /**
    * Similar to querySelector, use custom filter instead of selectors.
    */
-  find: <E extends IElement = IElement>(filter: (node: E) => boolean) => E | null;
+  find: <E extends IElement = IElement>(
+    filter: (node: E) => boolean,
+  ) => E | null;
   /**
    * Similar to querySelectorAll, use custom filter instead of selectors.
    */
@@ -363,13 +368,22 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
 
   getElementById: <E extends IElement = IElement>(id: string) => E | null;
   getElementsByName: <E extends IElement = IElement>(name: string) => E[];
-  getElementsByClassName: <E extends IElement = IElement>(className: string) => E[];
+  getElementsByClassName: <E extends IElement = IElement>(
+    className: string,
+  ) => E[];
   getElementsByTagName: <E extends IElement = IElement>(tagName: string) => E[];
 
   scrollLeft: number;
   scrollTop: number;
   clientLeft: number;
   clientTop: number;
+
+  getGeometryBounds(): AABB;
+  getRenderBounds(): AABB;
+  getBounds(): AABB;
+  getLocalBounds(): AABB;
+  getBoundingClientRect(): Rectangle;
+  getClientRects(): Rectangle[];
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
@@ -383,7 +397,9 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
    */
-  getAttribute: (attributeName: keyof StyleProps) => StyleProps[keyof StyleProps] | undefined;
+  getAttribute: (
+    attributeName: keyof StyleProps,
+  ) => StyleProps[keyof StyleProps] | undefined;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
@@ -451,7 +467,9 @@ export interface IKeyframeEffect {
 
   getKeyframes: () => ComputedKeyframe[];
 
-  setKeyframes: (keyframes: Keyframe[] | PropertyIndexedKeyframes | null) => void;
+  setKeyframes: (
+    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+  ) => void;
 
   getComputedTiming: () => ComputedEffectTiming;
 
@@ -477,14 +495,22 @@ export interface IDocument extends INode, IParentNode {
   /**
    * Creates an instance of the element for the specified tag.
    */
-  createElement: <T extends DisplayObject<StyleProps>, StyleProps extends BaseStyleProps>(
+  createElement: <
+    T extends DisplayObject<StyleProps>,
+    StyleProps extends BaseStyleProps,
+  >(
     tagName: string,
     options: DisplayObjectConfig<StyleProps>,
   ) => T;
 
   elementFromPoint: (x: number, y: number) => Promise<DisplayObject>;
   elementsFromPoint: (x: number, y: number) => Promise<DisplayObject[]>;
-  elementsFromBBox: (minX: number, minY: number, maxX: number, maxY: number) => DisplayObject[];
+  elementsFromBBox: (
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
+  ) => DisplayObject[];
 }
 
 /**
@@ -496,7 +522,9 @@ export interface ICSSStyleDeclaration<StyleProps> {
     value: StyleProps[Key],
     priority?: string,
   ) => void;
-  getPropertyValue: (propertyName: keyof StyleProps) => StyleProps[keyof StyleProps] | undefined;
+  getPropertyValue: (
+    propertyName: keyof StyleProps,
+  ) => StyleProps[keyof StyleProps] | undefined;
   removeProperty: (propertyName: keyof StyleProps) => void;
   item: (index: number) => string;
 }
@@ -508,7 +536,9 @@ export interface CanvasContext {
   /**
    * ContextServiceContribution
    */
-  ContextService: new (context: GlobalRuntime & CanvasContext) => ContextService<unknown>;
+  ContextService: new (
+    context: GlobalRuntime & CanvasContext,
+  ) => ContextService<unknown>;
 
   contextService: ContextService<unknown>;
   renderingService: RenderingService;

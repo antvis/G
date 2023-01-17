@@ -8,8 +8,9 @@ import type {
   IDocument,
   RenderingPluginContext,
   CanvasConfig,
+  GlobalRuntime,
 } from '@antv/g-lite';
-import { findClosestClipPathTarget, runtime, Point } from '@antv/g-lite';
+import { findClosestClipPathTarget, Point } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { mat4, vec3 } from 'gl-matrix';
 
@@ -17,7 +18,12 @@ export type PointInPathPicker<T extends BaseStyleProps> = (
   displayObject: DisplayObject<T>,
   point: Point,
   isClipPath?: boolean,
-  isPointInPath?: (displayObject: DisplayObject<T>, point: Point) => boolean,
+  isPointInPath?: (
+    runtime: GlobalRuntime,
+    displayObject: DisplayObject<T>,
+    point: Point,
+  ) => boolean,
+  runtime?: GlobalRuntime,
 ) => boolean;
 
 const tmpVec3a = vec3.create();
@@ -38,7 +44,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
   private pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
   private pointInPathPickerFactory: Record<Shape, PointInPathPicker<any>>;
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const {
       config,
       renderingService,
@@ -57,16 +63,23 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     renderingService.hooks.pick.tapPromise(
       CanvasPickerPlugin.tag,
       async (result: PickingResult) => {
-        return this.pick(document, result);
+        return this.pick(document, result, runtime);
       },
     );
 
-    renderingService.hooks.pickSync.tap(CanvasPickerPlugin.tag, (result: PickingResult) => {
-      return this.pick(document, result);
-    });
+    renderingService.hooks.pickSync.tap(
+      CanvasPickerPlugin.tag,
+      (result: PickingResult) => {
+        return this.pick(document, result, runtime);
+      },
+    );
   }
 
-  private pick(document: IDocument, result: PickingResult) {
+  private pick(
+    document: IDocument,
+    result: PickingResult,
+    runtime: GlobalRuntime,
+  ) {
     const {
       topmost,
       position: { x, y },
@@ -88,13 +101,25 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     const pickedDisplayObjects: DisplayObject[] = [];
     for (const displayObject of hitTestList) {
       const worldTransform = displayObject.getWorldTransform();
-      const isHitOriginShape = this.isHit(displayObject, position, worldTransform, false);
+      const isHitOriginShape = this.isHit(
+        displayObject,
+        position,
+        worldTransform,
+        false,
+        runtime,
+      );
       if (isHitOriginShape) {
         // should look up in the ancestor node
         const clipped = findClosestClipPathTarget(displayObject);
         if (clipped) {
           const { clipPath } = clipped.parsedStyle as ParsedBaseStyleProps;
-          const isHitClipPath = this.isHit(clipPath, position, clipPath.getWorldTransform(), true);
+          const isHitClipPath = this.isHit(
+            clipPath,
+            position,
+            clipPath.getWorldTransform(),
+            true,
+            runtime,
+          );
           if (isHitClipPath) {
             if (topmost) {
               result.picked = [displayObject];
@@ -123,6 +148,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
     position: vec3,
     worldTransform: mat4,
     isClipPath: boolean,
+    runtime: GlobalRuntime,
   ) => {
     // use picker for current shape's type
     const pick = this.pointInPathPickerFactory[displayObject.nodeName];
@@ -148,6 +174,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
           new Point(localPosition[0], localPosition[1]),
           isClipPath,
           this.isPointInPath,
+          runtime,
         )
       ) {
         return true;
@@ -161,7 +188,11 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * use native picking method
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
-  private isPointInPath = (displayObject: DisplayObject, position: Point) => {
+  private isPointInPath = (
+    runtime: GlobalRuntime,
+    displayObject: DisplayObject,
+    position: Point,
+  ) => {
     const context = runtime.offscreenCanvas.getOrCreateContext(
       this.canvasConfig.offscreenCanvas,
     ) as CanvasRenderingContext2D;

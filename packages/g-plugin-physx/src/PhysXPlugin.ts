@@ -1,10 +1,11 @@
 import type {
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { AABB, CanvasEvent, runtime, ElementEvent } from '@antv/g-lite';
+import { AABB, CanvasEvent, ElementEvent } from '@antv/g-lite';
 
 /**
  * PhysX runtime mode.
@@ -27,7 +28,7 @@ export class PhysXPlugin implements RenderingPlugin {
   private bodies: Record<number, any> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
@@ -59,11 +60,22 @@ export class PhysXPlugin implements RenderingPlugin {
 
             Object.keys(this.bodies).forEach((entity) => {
               const body = this.bodies[entity];
-              const displayObject = runtime.displayObjectPool.getByEntity(Number(entity));
+              const displayObject = runtime.displayObjectPool.getByEntity(
+                Number(entity),
+              );
               const transform = body.getGlobalPose();
               const { translation, rotation } = transform;
-              displayObject.setPosition(translation.x, translation.y, translation.z);
-              displayObject.setRotation(rotation.x, rotation.y, rotation.z, rotation.w);
+              displayObject.setPosition(
+                translation.x,
+                translation.y,
+                translation.z,
+              );
+              displayObject.setRotation(
+                rotation.x,
+                rotation.y,
+                rotation.z,
+                rotation.w,
+              );
             });
           }
         },
@@ -76,7 +88,9 @@ export class PhysXPlugin implements RenderingPlugin {
   }
 
   // @see https://github.com/oasis-engine/engine/blob/main/packages/physics-physx/src/PhysXPhysics.ts#L39
-  private initPhysX(runtimeMode: PhysXRuntimeMode = PhysXRuntimeMode.Auto): Promise<void> {
+  private initPhysX(
+    runtimeMode: PhysXRuntimeMode = PhysXRuntimeMode.Auto,
+  ): Promise<void> {
     const scriptPromise = new Promise((resolve) => {
       const script = document.createElement('script');
       document.body.appendChild(script);
@@ -85,12 +99,17 @@ export class PhysXPlugin implements RenderingPlugin {
 
       const supported = (() => {
         try {
-          if (typeof WebAssembly === 'object' && typeof WebAssembly.instantiate === 'function') {
+          if (
+            typeof WebAssembly === 'object' &&
+            typeof WebAssembly.instantiate === 'function'
+          ) {
             const module = new WebAssembly.Module(
               Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00),
             );
             if (module instanceof WebAssembly.Module)
-              return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
+              return (
+                new WebAssembly.Instance(module) instanceof WebAssembly.Instance
+              );
           }
         } catch (e) {}
         return false;
@@ -126,7 +145,11 @@ export class PhysXPlugin implements RenderingPlugin {
     const version = PhysX.PX_PHYSICS_VERSION;
     const defaultErrorCallback = new PhysX.PxDefaultErrorCallback();
     const allocator = new PhysX.PxDefaultAllocator();
-    const foundation = PhysX.PxCreateFoundation(version, allocator, defaultErrorCallback);
+    const foundation = PhysX.PxCreateFoundation(
+      version,
+      allocator,
+      defaultErrorCallback,
+    );
     const triggerCallback = {
       onContactBegin: () => {},
       onContactEnd: () => {},
@@ -173,7 +196,8 @@ export class PhysXPlugin implements RenderingPlugin {
       const material = this.physics.createMaterial(0.2, 0.2, 0.2);
       const flags = new PhysX.PxShapeFlags(
         // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/structPxShapeFlag.html#a6edb481aaa3a998c5d6dd3fc4ad87f1aa7fa4fea0eecda9cc80a7aaa11a22df52
-        PhysX.PxShapeFlag.eSCENE_QUERY_Shape.value | PhysX.PxShapeFlag.eSIMULATION_Shape.value,
+        PhysX.PxShapeFlag.eSCENE_QUERY_Shape.value |
+          PhysX.PxShapeFlag.eSIMULATION_Shape.value,
       );
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxPhysics.html#abc564607f208cbc1944880172a3d62fe
       const shape = this.physics.createShape(geometry, material, false, flags);

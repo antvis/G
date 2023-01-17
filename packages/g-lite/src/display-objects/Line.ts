@@ -4,7 +4,7 @@ import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
-import { DisplayObject } from './DisplayObject';
+import { DisplayObject, isDisplayObject } from './DisplayObject';
 
 export interface LineStyleProps extends BaseStyleProps {
   x1: number;
@@ -78,12 +78,12 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
     const { markerStart, markerEnd } = this.parsedStyle;
 
-    if (markerStart && markerStart instanceof DisplayObject) {
+    if (markerStart && isDisplayObject(markerStart)) {
       this.markerStartAngle = markerStart.getLocalEulerAngles();
       this.appendChild(markerStart);
     }
 
-    if (markerEnd && markerEnd instanceof DisplayObject) {
+    if (markerEnd && isDisplayObject(markerEnd)) {
       this.markerEndAngle = markerEnd.getLocalEulerAngles();
       this.appendChild(markerEnd);
     }
@@ -110,24 +110,24 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
       this.transformMarker(true);
       this.transformMarker(false);
     } else if (attrName === 'markerStart') {
-      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+      if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerStartAngle = 0;
         (prevParsedValue as DisplayObject).remove();
       }
 
       // CSSKeyword 'unset'
-      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+      if (newParsedValue && isDisplayObject(newParsedValue)) {
         this.markerStartAngle = newParsedValue.getLocalEulerAngles();
         this.appendChild(newParsedValue);
         this.transformMarker(true);
       }
     } else if (attrName === 'markerEnd') {
-      if (prevParsedValue && prevParsedValue instanceof DisplayObject) {
+      if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerEndAngle = 0;
         (prevParsedValue as DisplayObject).remove();
       }
 
-      if (newParsedValue && newParsedValue instanceof DisplayObject) {
+      if (newParsedValue && isDisplayObject(newParsedValue)) {
         this.markerEndAngle = newParsedValue.getLocalEulerAngles();
         this.appendChild(newParsedValue);
         this.transformMarker(false);
@@ -150,7 +150,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
     } = this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
-    if (!marker || !(marker instanceof DisplayObject)) {
+    if (!marker || !isDisplayObject(marker)) {
       return;
     }
 
@@ -181,7 +181,10 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
     // account for markerOffset
     marker.setLocalEulerAngles((rad * 180) / Math.PI + originalAngle);
-    marker.setLocalPosition(ox + Math.cos(rad) * offset, oy + Math.sin(rad) * offset);
+    marker.setLocalPosition(
+      ox + Math.cos(rad) * offset,
+      oy + Math.sin(rad) * offset,
+    );
   }
 
   getPoint(ratio: number, inWorldSpace = false): Point {

@@ -9,6 +9,8 @@ import {
   Path,
   Image,
   Shape,
+  isCanvas,
+  isDisplayObject,
 } from '@antv/g-lite';
 import { isNil, PathArray } from '@antv/util';
 import { path2String } from '@antv/util';
@@ -212,15 +214,20 @@ export class LottieAnimation {
     return displayObject;
   }
 
+  getAnimations() {
+    return this.animations;
+  }
+
   /**
    * Returns the animation duration in seconds or frames.
    * @see https://github.com/airbnb/lottie-web#getdurationinframes
    */
   getDuration(inFrames = false) {
     return (
-      (inFrames ? this.fps() : 1) *
-      (this.context.endFrame - this.context.startFrame) *
-      this.context.frameTime
+      ((inFrames ? this.fps() : 1) *
+        (this.context.endFrame - this.context.startFrame) *
+        this.context.frameTime) /
+      1000
     );
   }
   /**
@@ -307,9 +314,9 @@ export class LottieAnimation {
     const wrapper = new Group();
     wrapper.append(...this.displayObjects);
 
-    if (canvasOrDisplayObject instanceof Canvas) {
+    if (isCanvas(canvasOrDisplayObject)) {
       canvasOrDisplayObject.appendChild(wrapper);
-    } else if (canvasOrDisplayObject instanceof DisplayObject) {
+    } else if (isDisplayObject(canvasOrDisplayObject)) {
       if (!canvasOrDisplayObject.isConnected) {
         throw new Error(
           '[g-lottie-player]: Cannot render Lottie to an unmounted DisplayObject.',
@@ -647,9 +654,35 @@ export class LottieAnimation {
   }
 
   /**
+   * Can contain 2 numeric values that will be used as first and last frame of the animation.
    * @see https://github.com/airbnb/lottie-web#playsegmentssegments-forceflag
    */
-  playSegments(segments: [number, number], forceFlag = true) {}
+  playSegments(segments: [number, number]) {
+    const [firstFrame, lastFrame] = segments;
+
+    this.isPaused = false;
+    this.animations.forEach((animation) => {
+      animation.currentTime = (firstFrame / this.fps()) * 1000;
+      const originOnFrame = animation.onframe;
+      animation.onframe = (e) => {
+        if (originOnFrame) {
+          // @ts-ignore
+          originOnFrame(e);
+        }
+
+        if (animation.currentTime >= (lastFrame / this.fps()) * 1000) {
+          animation.finish();
+
+          if (originOnFrame) {
+            animation.onframe = originOnFrame;
+          } else {
+            animation.onframe = null;
+          }
+        }
+      };
+      animation.play();
+    });
+  }
 
   pause() {
     this.isPaused = true;
@@ -670,17 +703,18 @@ export class LottieAnimation {
   }
 
   /**
-   * split goToAndStop/Play into goTo & stop/play
+   * Goto and stop at a specific time(in seconds) or frame.
+   * Split goToAndStop/Play into goTo & stop/play
    * @see https://github.com/airbnb/lottie-web
    */
   goTo(value: number, isFrame = false) {
     if (isFrame) {
       this.animations.forEach((animation) => {
-        animation.currentTime = (value / this.fps()) * this.getDuration();
+        animation.currentTime = (value / this.fps()) * 1000;
       });
     } else {
       this.animations.forEach((animation) => {
-        animation.currentTime = value;
+        animation.currentTime = value * 1000;
       });
     }
   }

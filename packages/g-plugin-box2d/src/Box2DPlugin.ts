@@ -1,6 +1,7 @@
 import type {
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   MutationEvent,
   ParsedCircleStyleProps,
   ParsedLineStyleProps,
@@ -10,7 +11,13 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { CanvasEvent, deg2rad, runtime, ElementEvent, rad2deg, Shape } from '@antv/g-lite';
+import {
+  CanvasEvent,
+  deg2rad,
+  ElementEvent,
+  rad2deg,
+  Shape,
+} from '@antv/g-lite';
 import type Box2D from 'box2d-wasm';
 import type { Box2DPluginOptions } from './interfaces';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
@@ -44,17 +51,20 @@ export class Box2DPlugin implements RenderingPlugin {
   private fixtures: Record<number, Box2D.b2Fixture> = {};
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const simulate = () => {
       if (this.world) {
-        const { timeStep, velocityIterations, positionIterations } = this.options;
+        const { timeStep, velocityIterations, positionIterations } =
+          this.options;
         // @see https://box2d.org/documentation/classb2_world.html#a82c081319af9a47e282dde807e4cd7b8
         this.world.Step(timeStep, velocityIterations, positionIterations);
         Object.keys(this.bodies).forEach((entity) => {
-          const displayObject = runtime.displayObjectPool.getByEntity(Number(entity));
+          const displayObject = runtime.displayObjectPool.getByEntity(
+            Number(entity),
+          );
           const body = this.bodies[entity] as Box2D.b2Body;
           const bpos = body.GetPosition();
           const x = bpos.get_x();
@@ -110,7 +120,16 @@ export class Box2DPlugin implements RenderingPlugin {
       const fixture = this.fixtures[object.entity];
 
       if (body) {
-        const geometryAttributes = ['points', 'r', 'width', 'height', 'x1', 'y1', 'x2', 'y2'];
+        const geometryAttributes = [
+          'points',
+          'r',
+          'width',
+          'height',
+          'x1',
+          'y1',
+          'x2',
+          'y2',
+        ];
         if (geometryAttributes.indexOf(attrName) > -1) {
           // need re-create body
         } else if (attrName === 'rigid') {
@@ -146,13 +165,16 @@ export class Box2DPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
 
       this.Box2D = await this.loadBox2D();
 
       this.temp = new this.Box2D.b2Vec2(0, 0);
       this.temp2 = new this.Box2D.b2Vec2(0, 0);
-      this.createScene();
+      this.createScene(runtime);
       this.handlePendingDisplayObjects();
 
       // do simulation each frame
@@ -162,7 +184,10 @@ export class Box2DPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
 
       if (this.world) {
         // memory leak
@@ -172,7 +197,11 @@ export class Box2DPlugin implements RenderingPlugin {
     });
   }
 
-  applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
+  applyForce(
+    object: DisplayObject,
+    force: [number, number],
+    point: [number, number],
+  ) {
     const body = this.bodies[object.entity];
     if (body) {
       this.temp.set_x(force[0]);
@@ -185,7 +214,7 @@ export class Box2DPlugin implements RenderingPlugin {
     }
   }
 
-  private createScene() {
+  private createScene(runtime: GlobalRuntime) {
     const { b2World, JSContactListener, wrapPointer, b2Contact } = this.Box2D;
     const { gravity, onContact } = this.options;
     this.temp.set_x(gravity[0]);
@@ -209,8 +238,12 @@ export class Box2DPlugin implements RenderingPlugin {
         );
 
         if (entityA && entityB) {
-          const displayObjectA = runtime.displayObjectPool.getByEntity(Number(entityA));
-          const displayObjectB = runtime.displayObjectPool.getByEntity(Number(entityB));
+          const displayObjectA = runtime.displayObjectPool.getByEntity(
+            Number(entityA),
+          );
+          const displayObjectB = runtime.displayObjectPool.getByEntity(
+            Number(entityB),
+          );
           onContact(displayObjectA, displayObjectB);
         }
       };
@@ -224,13 +257,24 @@ export class Box2DPlugin implements RenderingPlugin {
   }
 
   private addActor(target: DisplayObject) {
-    const { b2Vec2, b2EdgeShape, b2CircleShape, b2PolygonShape, b2BodyDef, b2_dynamicBody } =
-      this.Box2D;
+    const {
+      b2Vec2,
+      b2EdgeShape,
+      b2CircleShape,
+      b2PolygonShape,
+      b2BodyDef,
+      b2_dynamicBody,
+    } = this.Box2D;
     const { entity, nodeName, parsedStyle } = target;
 
-    let shape: Box2D.b2EdgeShape | Box2D.b2CircleShape | Box2D.b2PolygonShape | Box2D.b2ChainShape;
+    let shape:
+      | Box2D.b2EdgeShape
+      | Box2D.b2CircleShape
+      | Box2D.b2PolygonShape
+      | Box2D.b2ChainShape;
     if (nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2, defX, defY } = parsedStyle as ParsedLineStyleProps;
+      const { x1, y1, x2, y2, defX, defY } =
+        parsedStyle as ParsedLineStyleProps;
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md39
       shape = new b2EdgeShape();
       const points = sortPointsInCCW([
@@ -245,7 +289,9 @@ export class Box2DPlugin implements RenderingPlugin {
     } else if (nodeName === Shape.POLYLINE) {
       const { points, defX, defY } = parsedStyle as ParsedPolylineStyleProps;
       const pointsInCCW = sortPointsInCCW(points.points);
-      const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
+      const vertices: Box2D.b2Vec2[] = pointsInCCW.map(
+        ([x, y]) => new b2Vec2(x - defX, y - defY),
+      );
       // const prev = pointsInCCW[0];
       // const next = pointsInCCW[pointsInCCW.length - 1];
       // const eps = 0.1;
@@ -263,7 +309,12 @@ export class Box2DPlugin implements RenderingPlugin {
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
       // @ts-ignore
-      shape.SetAsBox(width / 2, height / 2, new b2Vec2(width / 2, height / 2), 0);
+      shape.SetAsBox(
+        width / 2,
+        height / 2,
+        new b2Vec2(width / 2, height / 2),
+        0,
+      );
     } else if (nodeName === Shape.CIRCLE) {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md37
       const { r } = parsedStyle as ParsedCircleStyleProps;
@@ -275,7 +326,9 @@ export class Box2DPlugin implements RenderingPlugin {
       const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
 
       const pointsInCCW = sortPointsInCCW(points.points);
-      const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
+      const vertices: Box2D.b2Vec2[] = pointsInCCW.map(
+        ([x, y]) => new b2Vec2(x - defX, y - defY),
+      );
       shape = createPolygonShape(this.Box2D, vertices);
     } else if (nodeName === Shape.PATH) {
     } else if (nodeName === Shape.TEXT) {
@@ -324,7 +377,10 @@ export class Box2DPlugin implements RenderingPlugin {
         // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md63
         bodyDef.bullet = bullet;
 
-        bodyDef.linearVelocity = new b2Vec2(linearVelocity[0], linearVelocity[1]);
+        bodyDef.linearVelocity = new b2Vec2(
+          linearVelocity[0],
+          linearVelocity[1],
+        );
         bodyDef.angularVelocity = angularVelocity;
 
         const [x, y] = target.getPosition();
@@ -332,7 +388,10 @@ export class Box2DPlugin implements RenderingPlugin {
         body = this.world.CreateBody(bodyDef);
         // create fixture
         // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html#autotoc_md75
-        const fixture = body.CreateFixture(shape, rigid === 'static' ? 0 : density);
+        const fixture = body.CreateFixture(
+          shape,
+          rigid === 'static' ? 0 : density,
+        );
         fixture.SetDensity(density);
         body.ResetMassData();
         // @see https://box2d.org/documentation/classb2_fixture.html#a097aa48046dd2686db47b7ab8e2cde92

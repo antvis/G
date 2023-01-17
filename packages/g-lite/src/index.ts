@@ -16,6 +16,8 @@ export {
   GradientType,
   Interpolatable,
   isPattern,
+  isCSSRGB,
+  isCSSGradientValue,
   LayoutRegistry,
   LinearGradient,
   parseColor,
