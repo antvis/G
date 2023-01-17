@@ -8,6 +8,10 @@ import {
   definedProps,
   formatAttributeName,
 } from '../../../packages/g-lite/src/utils';
+import {
+  isDisplayObject,
+  Circle,
+} from '../../../packages/g-lite/src/display-objects';
 import chaiAlmost from 'chai-almost';
 import sinonChai from 'sinon-chai';
 
@@ -30,6 +34,15 @@ describe('Assert utils', () => {
     expect(isSymbol(() => {})).to.be.false;
     expect(isSymbol(20)).to.be.false;
     expect(isSymbol(Symbol('test'))).to.be.true;
+  });
+
+  it('should check isDisplayObject correctly', () => {
+    expect(isDisplayObject(undefined)).to.be.false;
+    expect(isDisplayObject(null)).to.be.false;
+    expect(isDisplayObject('')).to.be.false;
+    expect(isDisplayObject(() => {})).to.be.false;
+    expect(isDisplayObject(20)).to.be.false;
+    expect(isDisplayObject(new Circle())).to.be.true;
   });
 
   it('should assert correctly', () => {

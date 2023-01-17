@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-picker",
-  "version": "1.7.37",
+  "version": "1.7.38",
   "description": "A G plugin for picking in SVG",
   "keywords": [
     "antv",
