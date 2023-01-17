@@ -495,10 +495,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
       if (element.isConnected && !set.has(element.entity)) {
         this.boundsChangedEvent.detail = detail;
         this.boundsChangedEvent.target = element;
-        element.ownerDocument.defaultView.dispatchEvent(
-          this.boundsChangedEvent,
-          true,
-        );
+        if (element.isMutationObserved) {
+          element.dispatchEvent(this.boundsChangedEvent);
+        } else {
+          element.ownerDocument.defaultView.dispatchEvent(
+            this.boundsChangedEvent,
+            true,
+          );
+        }
         set.add(element.entity);
       }
     };
