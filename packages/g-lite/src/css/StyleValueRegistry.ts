@@ -749,7 +749,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     });
 
-    if (object.children.length) {
+    if (runtime.enableCSSParsing && object.children.length) {
       attributeNames.forEach((name) => {
         if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
           // update children's inheritable
@@ -1113,9 +1113,15 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       // set transform origin
       let usedOriginXValue =
-        (flipY ? -1 : 1) * convertPercentUnit(transformOrigin[0], 0, object);
+        (flipY ? -1 : 1) *
+        (transformOrigin
+          ? convertPercentUnit(transformOrigin[0], 0, object)
+          : 0);
       let usedOriginYValue =
-        (flipX ? -1 : 1) * convertPercentUnit(transformOrigin[1], 1, object);
+        (flipX ? -1 : 1) *
+        (transformOrigin
+          ? convertPercentUnit(transformOrigin[1], 1, object)
+          : 0);
       usedOriginXValue =
         usedOriginXValue -
         (flipY ? -1 : 1) *

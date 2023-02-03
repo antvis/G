@@ -181,7 +181,9 @@ export class DisplayObject<
       this.config.initialParsedStyle,
     );
 
-    Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
+    if (runtime.enableCSSParsing) {
+      Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
+    }
 
     // start to process attributes
     this.initAttributes(this.config.style);
@@ -299,16 +301,22 @@ export class DisplayObject<
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
     const renderable = this.renderable;
 
-    // account for FCP, process properties as less as possible
-    runtime.styleValueRegistry.processProperties(this, attributes, {
+    const options = {
       forceUpdateGeometry: true,
-      usedAttributes: INHERITABLE_STYLE_PROPS,
       // usedAttributes:
       //   // only Group / Text should account for text relative props
       //   this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
       //     ? INHERITABLE_STYLE_PROPS
       //     : INHERITABLE_BASE_STYLE_PROPS,
-    });
+    };
+
+    if (runtime.enableCSSParsing) {
+      // @ts-ignore
+      options.usedAttributes = INHERITABLE_STYLE_PROPS;
+    }
+
+    // account for FCP, process properties as less as possible
+    runtime.styleValueRegistry.processProperties(this, attributes, options);
 
     // redraw at next frame
     renderable.dirty = true;

@@ -66,6 +66,7 @@ export interface GlobalRuntime {
     Partial<CSSProperty<any, any>>
   >;
   globalThis: any;
+  enableCSSParsing: boolean;
 }
 
 /**

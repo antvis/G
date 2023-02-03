@@ -78,12 +78,20 @@ export const parserPercentage = memoize((css: string) => {
  *
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
-export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
+// export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
+//   if (isNumber(css) || isFinite(Number(css))) {
+//     return getOrCreateUnitValue(Number(css), 'px');
+//   }
+//   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
+// });
+
+export const parseLengthOrPercentage = (css: string): CSSUnitValue | number => {
   if (isNumber(css) || isFinite(Number(css))) {
-    return getOrCreateUnitValue(Number(css), 'px');
+    // return getOrCreateUnitValue(Number(css), 'px');
+    return Number(css);
   }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
-});
+};
 
 export const parseAngle = memoize((css: string): CSSUnitValue => {
   return parseDimension(
@@ -160,7 +168,7 @@ export function convertAngleUnit(value: CSSUnitValue) {
 
 export function parseDimensionArray(
   string: string | (string | number)[],
-): CSSUnitValue[] {
+): (CSSUnitValue | number)[] {
   if (isString(string)) {
     // "1px 2px 3px"
     return string.split(' ').map((segment) => parseLengthOrPercentage(segment));
