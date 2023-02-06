@@ -51,9 +51,15 @@ interface EmitEventObject {
   ev: GestureEvent;
 }
 
+interface evCacheObject {
+  pointerId: number;
+  x: number;
+  y: number;
+  ev: GestureEvent;
+}
 class Gesture extends EE {
   private el: DisplayObject;
-  private evCache: GestureEvent[] = [];
+  private evCache: evCacheObject[] = [];
   private startTime: number;
   private pressTimeout: NodeJS.Timeout;
   private startPoints: Point[] = [];
@@ -93,9 +99,14 @@ class Gesture extends EE {
     this.startTime = clock.now();
 
     const { evCache, startPoints } = this;
-
     if (ev) {
-      evCache.push(ev);
+      const { pointerId, x, y } = ev;
+      evCache.push({
+        pointerId,
+        x,
+        y,
+        ev,
+      });
     }
     // 重置 startPoints
     startPoints.length = evCache.length;
@@ -107,7 +118,7 @@ class Gesture extends EE {
 
     // 单指事件
     if (startPoints.length === 1) {
-      const event = evCache[0];
+      const event = evCache[0].ev;
       // 如果touchstart后停顿250ms, 则也触发press事件
       this.pressTimeout = setTimeout(() => {
         // 这里固定触发press事件
@@ -138,13 +149,36 @@ class Gesture extends EE {
 
     const { x, y, pointerId } = ev;
 
+    let isTriggerStart = false;
     // Find this event in the cache and update its record with this event
     for (let i = 0, len = evCache.length; i < len; i++) {
       if (pointerId === evCache[i].pointerId) {
-        evCache[i] = ev;
+        evCache[i] = {
+          pointerId,
+          x,
+          y,
+          ev,
+        };
+        isTriggerStart = true;
         break;
       }
     }
+
+    // 无触发start事件 需保留startPoints重新触发start
+    if (!isTriggerStart) {
+      const point = { x, y };
+      startPoints.push(point);
+      evCache.push({
+        pointerId,
+        x,
+        y,
+        ev,
+      });
+      // 目前只处理双指
+      this.startDistance = calcDistance(startPoints[0], startPoints[1]);
+      this.center = getCenter(startPoints[0], startPoints[1]);
+    }
+
     const point = { x, y };
     const points = evCache.map((ev) => {
       return { x: ev.x, y: ev.y };
