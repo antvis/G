@@ -80,6 +80,21 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   shadowType: 'outer',
 };
 
+const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
+  ...DEFAULT_PARSED_STYLE_PROPS,
+  opacity: 1,
+  fillOpacity: 1,
+  strokeOpacity: 1,
+  visibility: 'visible',
+  pointerEvents: 'auto',
+  lineWidth: 1,
+  lineCap: 'butt',
+  lineJoin: 'miter',
+  increasedLineWidthForHitTesting: 0,
+  fillRule: 'nonzero',
+  // TODO: transformOrigin
+};
+
 const INHERITABLE_BASE_STYLE_PROPS = [
   'opacity',
   'fillOpacity',
@@ -160,11 +175,12 @@ export class DisplayObject<
     this.nodeName = this.config.type || Shape.GROUP;
 
     // compatible with G 3.0
-    this.config.style = {
-      // ...DEFAULT_STYLE_PROPS,
-      ...this.config.style,
-      ...this.config.attrs,
-    };
+    Object.assign(this.config.style, this.config.attrs);
+    // this.config.style = {
+    //   // ...DEFAULT_STYLE_PROPS,
+    //   ...this.config.style,
+    //   ...this.config.attrs,
+    // };
     if (this.config.visible != null) {
       this.config.style.visibility =
         this.config.visible === false ? 'hidden' : 'visible';
@@ -177,7 +193,9 @@ export class DisplayObject<
     // merge parsed value
     Object.assign(
       this.parsedStyle,
-      DEFAULT_PARSED_STYLE_PROPS,
+      runtime.enableCSSParsing
+        ? DEFAULT_PARSED_STYLE_PROPS
+        : DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
       this.config.initialParsedStyle,
     );
 

@@ -1,10 +1,14 @@
 import { isNil } from '@antv/util';
-import { vec3 } from 'gl-matrix';
+// import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { AABB } from '../shapes';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import type {
+  BaseStyleProps,
+  ParsedBaseStyleProps,
+  Tuple3Number,
+} from '../types';
 import { Shape } from '../types';
-import { formatAttributeName, isFunction } from '../utils';
+import { addVec3, formatAttributeName, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
@@ -14,7 +18,7 @@ import type {
   StyleValueRegistry,
 } from './interfaces';
 import { PropertySyntax } from './interfaces';
-import type { ParsedFilterStyleProperty } from './parser';
+import { parseColor, ParsedFilterStyleProperty } from './parser';
 import { convertPercentUnit } from './parser/dimension';
 import { runtime } from '../global-runtime';
 
@@ -599,9 +603,9 @@ export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
 // const uniqueAttributeSet = new Set<string>();
 
-const tmpVec3a = vec3.create();
-const tmpVec3b = vec3.create();
-const tmpVec3c = vec3.create();
+// const tmpVec3a = vec3.create();
+// const tmpVec3b = vec3.create();
+// const tmpVec3c = vec3.create();
 
 const isPropertyResolved = (object: DisplayObject, name: string) => {
   const properties = unresolvedProperties.get(object);
@@ -657,6 +661,30 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       usedAttributes: [],
     },
   ) {
+    if (!runtime.enableCSSParsing) {
+      Object.assign(object.attributes, attributes);
+
+      object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+
+      if (attributes.fill) {
+        object.parsedStyle.fill = parseColor(attributes.fill);
+      }
+      if (attributes.stroke) {
+        object.parsedStyle.stroke = parseColor(attributes.stroke);
+      }
+      // @ts-ignore
+      if (attributes.cx || attributes.cy) {
+        runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(object);
+      }
+
+      // console.log(object.parsedStyle);
+
+      // console.log(attributes);
+
+      this.updateGeometry(object);
+      return;
+    }
+
     const {
       skipUpdateAttribute,
       skipParse,
@@ -987,12 +1015,17 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const flipX = height < 0;
 
       // init with content box
-      const halfExtents = vec3.set(
-        tmpVec3a,
+      const halfExtents: Tuple3Number = [
         Math.abs(width) / 2,
         Math.abs(height) / 2,
         depth / 2,
-      );
+      ];
+      // const halfExtents = vec3.set(
+      //   tmpVec3a,
+      //   Math.abs(width) / 2,
+      //   Math.abs(height) / 2,
+      //   depth / 2,
+      // );
 
       // anchor is center by default, don't account for lineWidth here
       const {
@@ -1014,12 +1047,18 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         delete parsedStyle.anchor;
       }
 
-      const center = vec3.set(
-        tmpVec3b,
+      const center: Tuple3Number = [
         ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
         ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
         (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
-      );
+      ];
+
+      // const center = vec3.set(
+      //   tmpVec3b,
+      //   ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
+      //   ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
+      //   (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
+      // );
 
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
@@ -1048,11 +1087,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         // halfExtents[0] += halfLineWidth[0];
         // halfExtents[1] += halfLineWidth[1];
 
-        vec3.add(
-          halfExtents,
-          halfExtents,
-          vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
-        );
+        halfExtents[0] += halfLineWidth;
+        halfExtents[1] += halfLineWidth;
+
+        // vec3.add(
+        //   halfExtents,
+        //   halfExtents,
+        //   vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
+        // );
       }
       geometry.renderBounds.update(center, halfExtents);
 
@@ -1084,11 +1126,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           const blurRadius = params[0].value as number;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
-            vec3.add(
+            addVec3(
               geometry.renderBounds.halfExtents,
               geometry.renderBounds.halfExtents,
-              vec3.fromValues(blurRadius, blurRadius, 0),
+              [blurRadius, blurRadius, 0],
             ),
+            // vec3.add(
+            //   geometry.renderBounds.halfExtents,
+            //   geometry.renderBounds.halfExtents,
+            //   vec3.fromValues(blurRadius, blurRadius, 0),
+            // ),
           );
         } else if (name === 'drop-shadow') {
           const shadowOffsetX = params[0].value;

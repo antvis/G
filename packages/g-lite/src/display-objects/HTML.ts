@@ -70,15 +70,21 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
     const clientRect = this.getBoundingClientRect();
     // calc context's offset
     // @ts-ignore
-    const canvasRect = this.ownerDocument?.defaultView?.getContextService().getBoundingClientRect();
+    const canvasRect = this.ownerDocument?.defaultView
+      ?.getContextService()
+      .getBoundingClientRect();
     if (canvasRect) {
       const minX = clientRect.left - canvasRect.left;
       const minY = clientRect.top - canvasRect.top;
 
       const aabb = new AABB();
+      // aabb.setMinMax(
+      //   vec3.fromValues(minX, minY, 0),
+      //   vec3.fromValues(minX + clientRect.width, minY + clientRect.height, 0),
+      // );
       aabb.setMinMax(
-        vec3.fromValues(minX, minY, 0),
-        vec3.fromValues(minX + clientRect.width, minY + clientRect.height, 0),
+        [minX, minY, 0],
+        [minX + clientRect.width, minY + clientRect.height, 0],
       );
 
       return aabb;

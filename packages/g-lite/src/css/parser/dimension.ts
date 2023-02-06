@@ -85,10 +85,10 @@ export const parserPercentage = memoize((css: string) => {
 //   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
 // });
 
-export const parseLengthOrPercentage = (css: string): CSSUnitValue | number => {
+export const parseLengthOrPercentage = (css: string): CSSUnitValue => {
   if (isNumber(css) || isFinite(Number(css))) {
-    // return getOrCreateUnitValue(Number(css), 'px');
-    return Number(css);
+    return getOrCreateUnitValue(Number(css), 'px');
+    // return Number(css);
   }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
 };
@@ -168,7 +168,7 @@ export function convertAngleUnit(value: CSSUnitValue) {
 
 export function parseDimensionArray(
   string: string | (string | number)[],
-): (CSSUnitValue | number)[] {
+): CSSUnitValue[] {
   if (isString(string)) {
     // "1px 2px 3px"
     return string.split(' ').map((segment) => parseLengthOrPercentage(segment));

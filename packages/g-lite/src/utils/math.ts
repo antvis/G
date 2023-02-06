@@ -3,6 +3,49 @@ import type { quat, vec2 } from 'gl-matrix';
 import { mat3, mat4, vec3, vec4 } from 'gl-matrix';
 import { Odeg, Opx, ParsedTransform } from '../css';
 import { DisplayObject } from '../display-objects';
+import { Tuple3Number } from '../types';
+
+export function copyVec3(a: Tuple3Number, b: Tuple3Number) {
+  a[0] = b[0];
+  a[1] = b[1];
+  a[2] = b[2];
+  return a;
+}
+
+export function subVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
+  o[0] = a[0] - b[0];
+  o[1] = a[1] - b[1];
+  o[2] = a[2] - b[2];
+  return o;
+}
+
+export function addVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
+  o[0] = a[0] + b[0];
+  o[1] = a[1] + b[1];
+  o[2] = a[2] + b[2];
+  return o;
+}
+
+export function scaleVec3(o: Tuple3Number, a: Tuple3Number, b: number) {
+  o[0] = a[0] * b;
+  o[1] = a[1] * b;
+  o[2] = a[2] * b;
+  return o;
+}
+
+export function maxVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
+  o[0] = Math.max(a[0], b[0]);
+  o[1] = Math.max(a[1], b[1]);
+  o[2] = Math.max(a[2], b[2]);
+  return o;
+}
+
+export function minVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
+  o[0] = Math.min(a[0], b[0]);
+  o[1] = Math.min(a[1], b[1]);
+  o[2] = Math.min(a[2], b[2]);
+  return o;
+}
 
 export function getAngle(angle?: number) {
   if (angle === undefined) {
