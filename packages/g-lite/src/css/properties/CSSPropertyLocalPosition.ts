@@ -1,6 +1,7 @@
 import { isNil } from '@antv/util';
 import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
-import { Shape } from '../../types';
+import { ParsedBaseStyleProps, Shape } from '../../types';
+import { parsedTransformToMat4 } from '../../utils';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
@@ -67,8 +68,18 @@ export class CSSPropertyLocalPosition
 
     const needResetLocalPosition = !isNil(x) || !isNil(y) || !isNil(z);
     if (needResetLocalPosition) {
-      const [ox, oy, oz] = object.getLocalPosition();
-      object.setLocalPosition(isNil(x) ? ox : x, isNil(y) ? oy : y, isNil(z) ? oz : z);
+      // account for current transform if needed
+      const { transform } = object.parsedStyle as ParsedBaseStyleProps;
+      if (transform && transform.length) {
+        parsedTransformToMat4(transform, object);
+      } else {
+        const [ox, oy, oz] = object.getLocalPosition();
+        object.setLocalPosition(
+          isNil(x) ? ox : x,
+          isNil(y) ? oy : y,
+          isNil(z) ? oz : z,
+        );
+      }
     }
   }
 }
