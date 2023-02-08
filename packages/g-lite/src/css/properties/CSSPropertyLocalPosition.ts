@@ -16,7 +16,7 @@ export class CSSPropertyLocalPosition
   /**
    * update local position
    */
-  postProcessor(object: DisplayObject) {
+  postProcessor(object: DisplayObject, attributes: string[]) {
     let x: number;
     let y: number;
     let z: number;
@@ -67,7 +67,8 @@ export class CSSPropertyLocalPosition
     }
 
     const needResetLocalPosition = !isNil(x) || !isNil(y) || !isNil(z);
-    if (needResetLocalPosition) {
+    // only if `transform` won't be processed later
+    if (needResetLocalPosition && attributes.indexOf('transform') === -1) {
       // account for current transform if needed
       const { transform } = object.parsedStyle as ParsedBaseStyleProps;
       if (transform && transform.length) {

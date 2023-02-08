@@ -45,6 +45,13 @@
         "zh": "TouchEvents",
         "en": "TouchEvents"
       }
+    },
+    {
+      "filename": "pointerupoutside.js",
+      "title": {
+        "zh": "pointerupoutside 事件",
+        "en": "pointerupoutside"
+      }
     }
   ]
 }

@@ -2,7 +2,9 @@ import type { DisplayObject } from '../display-objects';
 import type { IElement } from '../dom';
 import type { StyleValueRegistry } from './interfaces';
 
-export type CSSPropertySyntaxFactory = <P, U>(syntax: string) => CSSProperty<P, U>;
+export type CSSPropertySyntaxFactory = <P, U>(
+  syntax: string,
+) => CSSProperty<P, U>;
 
 export type Interpolatable = number | boolean | number[] | boolean[];
 type CSSPropertyMixer<Parsed = any, T extends Interpolatable = any> = (
@@ -11,7 +13,10 @@ type CSSPropertyMixer<Parsed = any, T extends Interpolatable = any> = (
   displayObject: IElement | null,
 ) => [T, T, (i: T) => string | any] | undefined;
 
-type CSSPropertyParser<Parsed> = (value: string | any, object: DisplayObject) => Parsed;
+type CSSPropertyParser<Parsed> = (
+  value: string | any,
+  object: DisplayObject,
+) => Parsed;
 
 type CSSPropertyCalculator<Parsed, Used> = (
   name: string,
@@ -56,5 +61,5 @@ export interface CSSProperty<Parsed, Used> {
   /**
    * eg. update local position after x/y/z caculated
    */
-  postProcessor: (object: IElement) => void;
+  postProcessor: (object: IElement, attributes: string[]) => void;
 }
