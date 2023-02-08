@@ -4,7 +4,11 @@ function delay(time) {
   });
 }
 
-const createContext = (title = '', { width = '300px', height = '225px' } = {}, type = '2d') => {
+const createContext = (
+  title = '',
+  { width = '300px', height = '225px' } = {},
+  type = '2d',
+) => {
   if (title) {
     const titleEl = document.createElement('p');
     titleEl.innerText = title + ':';
