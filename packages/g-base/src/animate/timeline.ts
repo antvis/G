@@ -1,6 +1,6 @@
 import { isEqual, isNumber, isFunction } from '@antv/util';
 import * as d3Timer from 'd3-timer';
-import { interpolate, interpolateArray } from 'd3-interpolate'; // 目前整体动画只需要数值和数组的差值计算
+import { interpolate, interpolateArray } from '@antv/d3-interpolate'; // 目前整体动画只需要数值和数组的差值计算
 import { getEasing } from './register';
 import * as PathUtil from '../util/path';
 import { isColorProp, isGradientColor } from '../util/color';
