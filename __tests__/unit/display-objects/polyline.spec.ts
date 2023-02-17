@@ -31,7 +31,7 @@ describe('Polyline', () => {
     });
 
     // get local position, left top corner
-    expect(polyline.getLocalPosition()).eqls(vec3.fromValues(50, 50, 0));
+    expect(polyline.getLocalPosition()).eqls([50, 50, 0]);
 
     // get length
     expect(polyline.getTotalLength()).eqls(750);
@@ -39,27 +39,27 @@ describe('Polyline', () => {
     // get bounds
     let bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(250, 225, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 175, 0));
+      expect(bounds.center).eqls([250, 225, 0]);
+      expect(bounds.halfExtents).eqls([200, 175, 0]);
     }
 
     // change lineWidth
     polyline.style.lineWidth = 20;
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(250, 225, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 175, 0));
+      expect(bounds.center).eqls([250, 225, 0]);
+      expect(bounds.halfExtents).eqls([200, 175, 0]);
     }
 
     // change first point
     let newPoints = [...points];
     newPoints[0] = [0, 0];
     polyline.style.points = newPoints;
-    expect(polyline.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(polyline.getLocalPosition()).eqls([0, 0, 0]);
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(225, 200, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(225, 200, 0));
+      expect(bounds.center).eqls([225, 200, 0]);
+      expect(bounds.halfExtents).eqls([225, 200, 0]);
     }
 
     polyline.translate(100, 0);
@@ -70,11 +70,11 @@ describe('Polyline', () => {
     // should override x/y when points changed
     newPoints[0] = [50, 50];
     polyline.style.points = newPoints;
-    expect(polyline.getLocalPosition()).eqls(vec3.fromValues(50, 50, 0));
+    expect(polyline.getLocalPosition()).eqls([50, 50, 0]);
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(250, 225, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(200, 175, 0));
+      expect(bounds.center).eqls([250, 225, 0]);
+      expect(bounds.halfExtents).eqls([200, 175, 0]);
     }
     expect(polyline.getTotalLength()).eqls(750);
   });

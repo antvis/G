@@ -234,8 +234,8 @@ export class AABB {
     const intersection = new AABB();
     // const min = vec3.max(vec3.create(), this.getMin(), aabb.getMin());
     // const max = vec3.min(vec3.create(), this.getMax(), aabb.getMax());
-    const min = minVec3([0, 0, 0], this.getMin(), aabb.getMin());
-    const max = maxVec3([0, 0, 0], this.getMax(), aabb.getMax());
+    const min = maxVec3([0, 0, 0], this.getMin(), aabb.getMin());
+    const max = minVec3([0, 0, 0], this.getMax(), aabb.getMax());
     intersection.setMinMax(min, max);
 
     return intersection;

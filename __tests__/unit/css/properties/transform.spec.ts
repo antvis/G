@@ -1,7 +1,6 @@
 import { Canvas, Circle, CSS, ParsedTransform } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -50,11 +49,11 @@ describe('CSSPropertyTransform', () => {
     expect(used[0].d.length).to.be.eqls(2);
     expect(used[0].d[0].equals(CSS.px(10))).to.be.true;
     expect(used[0].d[1].equals(CSS.px(10))).to.be.true;
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(20, 20, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([20, 20, 0]);
 
     // translateX
     circle.style.transform = 'translateX(20)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(30, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([30, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('translatex');
@@ -63,7 +62,7 @@ describe('CSSPropertyTransform', () => {
 
     // translateY
     circle.style.transform = 'translateY(20)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 30, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 30, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('translatey');
@@ -72,7 +71,7 @@ describe('CSSPropertyTransform', () => {
 
     // translateZ
     circle.style.transform = 'translateZ(20)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 20));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 20]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('translatez');
@@ -81,7 +80,7 @@ describe('CSSPropertyTransform', () => {
 
     // translate3d
     circle.style.transform = 'translate3d(10, 10px, 10px)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(20, 20, 10));
+    expect(circle.getLocalPosition()).to.be.eqls([20, 20, 10]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('translate3d');
@@ -92,7 +91,7 @@ describe('CSSPropertyTransform', () => {
 
     // scaleX
     circle.style.transform = 'scaleX(2)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('scalex');
@@ -101,7 +100,7 @@ describe('CSSPropertyTransform', () => {
 
     // scaleY
     circle.style.transform = 'scaleY(2)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('scaley');
@@ -110,7 +109,7 @@ describe('CSSPropertyTransform', () => {
 
     // scaleZ
     circle.style.transform = 'scaleZ(2)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('scalez');
@@ -119,7 +118,7 @@ describe('CSSPropertyTransform', () => {
 
     // scale3d
     circle.style.transform = 'scale3d(2,2,2)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('scale3d');
@@ -130,7 +129,7 @@ describe('CSSPropertyTransform', () => {
 
     // scale
     circle.style.transform = 'scale(2)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('scale');
@@ -140,7 +139,7 @@ describe('CSSPropertyTransform', () => {
 
     // scale
     circle.style.transform = 'scale(2,3)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('scale');
@@ -150,7 +149,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotate
     circle.style.transform = 'rotate(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotate');
@@ -159,7 +158,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotate
     circle.style.transform = 'rotate(1rad)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotate');
@@ -168,7 +167,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotate
     circle.style.transform = 'rotate(1turn)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotate');
@@ -177,7 +176,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotate
     circle.style.transform = 'rotate(1grad)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotate');
@@ -186,7 +185,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotateX
     circle.style.transform = 'rotateX(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotatex');
@@ -195,7 +194,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotateY
     circle.style.transform = 'rotateY(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotatey');
@@ -204,7 +203,7 @@ describe('CSSPropertyTransform', () => {
 
     // rotateZ
     circle.style.transform = 'rotateZ(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
     expect(used.length).to.be.eqls(1);
     expect(used[0].t).to.be.eqls('rotatez');
@@ -225,12 +224,8 @@ describe('CSSPropertyTransform', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(10, 10, 0));
-    expect(circle.getLocalBounds().center).to.be.eqls(
-      vec3.fromValues(10, 10, 0),
-    );
-    expect(circle.getLocalBounds().halfExtents).to.be.eqls(
-      vec3.fromValues(25, 25, 0),
-    );
+    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalBounds().center).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalBounds().halfExtents).to.be.eqls([25, 25, 0]);
   });
 });

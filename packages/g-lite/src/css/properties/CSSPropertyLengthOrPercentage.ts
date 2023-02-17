@@ -20,7 +20,6 @@ function getFontSize(object: DisplayObject): number {
 export class CSSPropertyLengthOrPercentage
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {
-  // @ts-ignore
   parser = parseLengthOrPercentage;
 
   mixer = mergeNumbers;

@@ -1,6 +1,5 @@
 import { Rect } from '@antv/g';
 import { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
 
 describe('Rect', () => {
   it("should calc Rect's GeometryBounds, RenderBounds, Bounds and LocalBounds correctly", () => {
@@ -66,20 +65,20 @@ describe('Rect', () => {
     expect(bbox.height).to.eqls(200);
 
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([100, 100, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(localBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(localBounds.center).eqls([100, 100, 0]);
+      expect(localBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(geometryBounds.center).eqls([100, 100, 0]);
+      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(renderBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(renderBounds.center).eqls([100, 100, 0]);
+      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
     }
 
     // model matrix changed
@@ -90,20 +89,20 @@ describe('Rect', () => {
     renderBounds = rect.getRenderBounds();
     bbox = rect.getBBox();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(200, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([200, 100, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls(vec3.fromValues(200, 100, 0));
-      expect(localBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(localBounds.center).eqls([200, 100, 0]);
+      expect(localBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls(vec3.fromValues(100, 100, 0));
-      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(geometryBounds.center).eqls([100, 100, 0]);
+      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls(vec3.fromValues(200, 100, 0));
-      expect(renderBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(renderBounds.center).eqls([200, 100, 0]);
+      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
     }
     expect(bbox.x).to.eqls(100);
     expect(bbox.y).to.eqls(0);
@@ -114,30 +113,30 @@ describe('Rect', () => {
     rect.setAttribute('lineWidth', 10);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(200, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([200, 100, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
 
     // radius
     rect.setAttribute('radius', '10 20');
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(200, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([200, 100, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
 
     // change anchor from left-top corner to center,
     rect.style.anchor = [0.5, 0.5];
-    expect(rect.getLocalPosition()).eqls(vec3.fromValues(100, 0, 0));
+    expect(rect.getLocalPosition()).eqls([100, 0, 0]);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(100, 0, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([100, 0, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
     geometryBounds = rect.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
-      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(geometryBounds.center).eqls([0, 0, 0]);
+      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
     }
   });
 
@@ -163,20 +162,20 @@ describe('Rect', () => {
     expect(bbox.height).to.eqls(200);
 
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(-100, 100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([-100, 100, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls(vec3.fromValues(-100, 100, 0));
-      expect(localBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(localBounds.center).eqls([-100, 100, 0]);
+      expect(localBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls(vec3.fromValues(-100, 100, 0));
-      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(geometryBounds.center).eqls([-100, 100, 0]);
+      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls(vec3.fromValues(-100, 100, 0));
-      expect(renderBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(renderBounds.center).eqls([-100, 100, 0]);
+      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
     }
 
     // negative height
@@ -192,34 +191,34 @@ describe('Rect', () => {
     expect(bbox.height).to.eqls(200);
 
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(-100, -100, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([-100, -100, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls(vec3.fromValues(-100, -100, 0));
-      expect(localBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(localBounds.center).eqls([-100, -100, 0]);
+      expect(localBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls(vec3.fromValues(-100, -100, 0));
-      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(geometryBounds.center).eqls([-100, -100, 0]);
+      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls(vec3.fromValues(-100, -100, 0));
-      expect(renderBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(renderBounds.center).eqls([-100, -100, 0]);
+      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
     }
 
     // change anchor from left-top corner to center,
     rect.style.anchor = [0.5, 0.5];
-    expect(rect.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(rect.getLocalPosition()).eqls([0, 0, 0]);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(bounds.center).eqls([0, 0, 0]);
+      expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
     geometryBounds = rect.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls(vec3.fromValues(0, 0, 0));
-      expect(geometryBounds.halfExtents).eqls(vec3.fromValues(100, 100, 0));
+      expect(geometryBounds.center).eqls([0, 0, 0]);
+      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
     }
   });
 });

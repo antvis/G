@@ -48,7 +48,7 @@
       const { Circle, Canvas, runtime } = window.G;
 
       // disable CSS Parsing
-      runtime.enableCSSParsing = false;
+      // runtime.enableCSSParsing = false;
 
       // create a renderer
       const canvasRenderer = new window.G.Canvas2D.Renderer();
@@ -59,7 +59,6 @@
         width: 600,
         height: 500,
         renderer: canvasRenderer,
-        enableCSSParsing: false,
       });
 
       canvas.addEventListener('ready', () => {

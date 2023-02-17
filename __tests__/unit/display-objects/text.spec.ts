@@ -70,7 +70,7 @@ describe('Text', () => {
     expect(text.textContent).eqls('这是测试文本This is text');
 
     // get local position
-    expect(text.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(text.getLocalPosition()).eqls([0, 0, 0]);
 
     text.style.text = 'changed';
     expect(text.nodeValue).eqls('changed');

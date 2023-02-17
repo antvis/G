@@ -1,7 +1,6 @@
 import { AABB, Path, Circle } from '@antv/g';
 import type { PathArray } from '@antv/util';
 import { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
 
 describe('Path', () => {
   it('should support empty path definition', () => {
@@ -15,16 +14,16 @@ describe('Path', () => {
 
     let bounds = path.getBounds();
     expect(AABB.isEmpty(bounds)).to.be.true;
-    expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
-    expect(bounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
+    expect(bounds.center).eqls([0, 0, 0]);
+    expect(bounds.halfExtents).eqls([0, 0, 0]);
 
     // use empty path array
     // @ts-ignore
     path.style.path = [];
     bounds = path.getBounds();
     expect(AABB.isEmpty(bounds)).to.be.true;
-    expect(bounds.center).eqls(vec3.fromValues(0, 0, 0));
-    expect(bounds.halfExtents).eqls(vec3.fromValues(0, 0, 0));
+    expect(bounds.center).eqls([0, 0, 0]);
+    expect(bounds.halfExtents).eqls([0, 0, 0]);
   });
 
   it('should calc global bounds correctly', () => {
@@ -41,39 +40,39 @@ describe('Path', () => {
     });
 
     // get local position, left top corner
-    expect(path.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(path.getLocalPosition()).eqls([0, 0, 0]);
 
     // get length
     expect(path.getTotalLength()).eqls(100);
 
     path.style.setProperty('d', 'M 0 0 L 200 0');
-    expect(path.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(path.getLocalPosition()).eqls([0, 0, 0]);
     expect(path.getTotalLength()).eqls(200);
 
     // // get bounds
     // let bounds = polyline.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(250, 225, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(210, 185, 0));
+    //   expect(bounds.center).eqls([250, 225, 0));
+    //   expect(bounds.halfExtents).eqls([210, 185, 0));
     // }
 
     // // change lineWidth
     // polyline.style.lineWidth = 20;
     // bounds = polyline.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(250, 225, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(220, 195, 0));
+    //   expect(bounds.center).eqls([250, 225, 0));
+    //   expect(bounds.halfExtents).eqls([220, 195, 0));
     // }
 
     // // change first point
     // let newPoints = [...points];
     // newPoints[0] = [0, 0];
     // polyline.style.points = newPoints;
-    // expect(polyline.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    // expect(polyline.getLocalPosition()).eqls([0, 0, 0));
     // bounds = polyline.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(225, 200, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(245, 220, 0));
+    //   expect(bounds.center).eqls([225, 200, 0));
+    //   expect(bounds.halfExtents).eqls([245, 220, 0));
     // }
 
     // polyline.translate(100, 0);
@@ -82,11 +81,11 @@ describe('Path', () => {
     // newPoints = [...points];
     // newPoints[0] = [50, 50];
     // polyline.style.points = newPoints;
-    // expect(polyline.getLocalPosition()).eqls(vec3.fromValues(150, 50, 0));
+    // expect(polyline.getLocalPosition()).eqls([150, 50, 0));
     // bounds = polyline.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(350, 225, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(220, 195, 0));
+    //   expect(bounds.center).eqls([350, 225, 0));
+    //   expect(bounds.halfExtents).eqls([220, 195, 0));
     // }
     // expect(polyline.getTotalLength()).eqls(750);
   });

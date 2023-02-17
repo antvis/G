@@ -175,6 +175,8 @@ export class DisplayObject<
     this.nodeName = this.config.type || Shape.GROUP;
 
     // compatible with G 3.0
+    this.config.style =
+      this.config.style || this.config.attrs || ({} as StyleProps);
     Object.assign(this.config.style, this.config.attrs);
     // this.config.style = {
     //   // ...DEFAULT_STYLE_PROPS,

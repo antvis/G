@@ -165,3 +165,4 @@ runtime.CSSPropertySyntaxFactory = CSSPropertySyntaxFactory;
 runtime.styleValueRegistry = new DefaultStyleValueRegistry();
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
+runtime.enableCSSParsing = true;

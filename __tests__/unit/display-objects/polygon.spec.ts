@@ -1,6 +1,5 @@
 import { Polygon, Circle } from '@antv/g';
 import { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
 
 describe('Polygon', () => {
   it('should calc global bounds correctly', () => {
@@ -18,13 +17,13 @@ describe('Polygon', () => {
     });
 
     // get local position, left top corner
-    expect(polygon.getLocalPosition()).eqls(vec3.fromValues(0, 0, 0));
+    expect(polygon.getLocalPosition()).eqls([0, 0, 0]);
 
     // get bounds
     const bounds = polygon.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls(vec3.fromValues(50, 50, 0));
-      expect(bounds.halfExtents).eqls(vec3.fromValues(50, 50, 0));
+      expect(bounds.center).eqls([50, 50, 0]);
+      expect(bounds.halfExtents).eqls([50, 50, 0]);
     }
   });
 
