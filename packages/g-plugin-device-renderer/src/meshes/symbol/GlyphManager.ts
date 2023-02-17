@@ -1,6 +1,7 @@
-import TinySDF from '@mapbox/tiny-sdf';
+import { CanvasLike } from '@antv/g-lite';
 import type { Device, Texture } from '../../platform';
 import { Format, makeTextureDescriptor2D } from '../../platform';
+import { TinySDF } from '../../utils';
 import type { StyleGlyph } from './AlphaImage';
 import { AlphaImage } from './AlphaImage';
 import GlyphAtlas from './GlyphAtlas';
@@ -111,6 +112,7 @@ export class GlyphManager {
   }
 
   generateAtlas(
+    canvas: CanvasLike,
     fontStack = '',
     fontFamily: string,
     fontWeight: string,
@@ -134,6 +136,7 @@ export class GlyphManager {
       const glyphMap = newChars
         .map((char) => {
           return this.generateSDF(
+            canvas,
             fontStack,
             fontFamily,
             fontWeight,
@@ -175,6 +178,7 @@ export class GlyphManager {
   }
 
   private generateSDF(
+    canvas: CanvasLike,
     fontStack = '',
     fontFamily: string,
     fontWeight: string,
@@ -188,6 +192,7 @@ export class GlyphManager {
       sdfGenerator = this.sdfGeneratorCache[fontStack] =
         // TODO: use OffscreenCanvas in TextService
         new TinySDF({
+          canvas,
           fontSize,
           fontFamily,
           fontWeight,
