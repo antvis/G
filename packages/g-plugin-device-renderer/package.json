@@ -37,7 +37,6 @@
     "@antv/g-plugin-image-loader": "^1.1.40",
     "@antv/g-shader-components": "^1.7.37",
     "@antv/util": "^3.3.1",
-    "@mapbox/tiny-sdf": "^2.0.4",
     "@types/offscreencanvas": "^2019.6.4",
     "@webgpu/types": "^0.1.6",
     "earcut": "^2.2.3",

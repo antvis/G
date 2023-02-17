@@ -24,8 +24,13 @@ export interface ParsedMeshStyleProps extends ParsedBaseStyleProps {
   material: Material;
 }
 
-export class Mesh<GeometryProps = any> extends DisplayObject<GeometryProps & MeshStyleProps> {
-  constructor({ style, ...rest }: DisplayObjectConfig<GeometryProps & MeshStyleProps>) {
+export class Mesh<GeometryProps = any> extends DisplayObject<
+  GeometryProps & MeshStyleProps
+> {
+  constructor({
+    style,
+    ...rest
+  }: DisplayObjectConfig<GeometryProps & MeshStyleProps>) {
     super({
       type: Shape.MESH,
       style: {

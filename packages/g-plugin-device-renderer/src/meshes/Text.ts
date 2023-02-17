@@ -251,6 +251,7 @@ export class TextMesh extends Instanced {
     const allText = objects.map((object) => object.parsedStyle.text).join('');
 
     this.glyphManager.generateAtlas(
+      this.texturePool.context.config.offscreenCanvas,
       font,
       fontFamily,
       fontWeight.toString(),
