@@ -136,7 +136,7 @@ fn calc_attractive(i: u32, current_node: vec2<f32>) -> vec2<f32> {
   return vec2<f32>(dx, dy);
 }
 
-@stage(compute) @workgroup_size(1, 1)
+@compute @workgroup_size(1, 1)
 fn main(
   @builtin(global_invocation_id) global_id : vec3<u32>,
 ) {

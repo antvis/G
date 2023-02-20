@@ -9,7 +9,7 @@ struct VertexOutput {
   @builtin(position) pos: vec4<f32>;
 };
 
-@stage(vertex)
+@vertex
 fn vs(
   @builtin(vertex_index) index: u32
 ) -> VertexOutput {
@@ -46,7 +46,12 @@ fn fs() -> FragmentOutput {
     const encoder = device.createCommandEncoder();
     const renderPass = encoder.beginRenderPass({
       colorAttachments: [
-        { view: onscreenTexture, loadOp: 'load', loadValue: 'load', storeOp: 'store' },
+        {
+          view: onscreenTexture,
+          loadOp: 'load',
+          loadValue: 'load',
+          storeOp: 'store',
+        },
       ],
     });
     renderPass.setPipeline(this.pipeline);

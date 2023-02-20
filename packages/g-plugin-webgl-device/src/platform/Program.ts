@@ -1,4 +1,7 @@
-import type { Program, ProgramDescriptorSimple } from '@antv/g-plugin-device-renderer';
+import type {
+  Program,
+  ProgramDescriptorSimple,
+} from '@antv/g-plugin-device-renderer';
 import {
   assert,
   getAttributeLocations,
@@ -6,12 +9,28 @@ import {
   getUniformSetter,
   parseUniformName,
   ResourceType,
+  preprocessShader_GLSL,
 } from '@antv/g-plugin-device-renderer';
 import { isNil } from '@antv/util';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import { Texture_GL } from './Texture';
 import { isWebGL2 } from './utils';
+
+const quadVert = `
+layout(location = 0) in vec2 a_Position;
+
+out vec2 v_TexCoord;
+
+void main() {
+  v_TexCoord = 0.5 * (a_Position + 1.0);
+  gl_Position = vec4(a_Position, 0., 1.);
+
+  #ifdef VIEWPORT_ORIGIN_TL
+    v_TexCoord.y = 1.0 - v_TexCoord.y;
+  #endif
+}
+`;
 
 export enum ProgramCompileState_GL {
   NeedsCompile,
@@ -74,8 +93,27 @@ export class Program_GL extends ResourceBase_GL implements Program {
     const gl = this.device.gl;
     if (this.gl_shader_vert !== null) gl.deleteShader(this.gl_shader_vert);
     if (this.gl_shader_frag !== null) gl.deleteShader(this.gl_shader_frag);
-    this.gl_shader_vert = this.compileShader(descriptor.preprocessedVert, gl.VERTEX_SHADER);
-    this.gl_shader_frag = this.compileShader(descriptor.preprocessedFrag, gl.FRAGMENT_SHADER);
+
+    if (descriptor.preprocessedCompute) {
+      this.gl_shader_vert = this.compileShader(
+        preprocessShader_GLSL(this.device.queryVendorInfo(), 'vert', quadVert),
+        gl.VERTEX_SHADER,
+      );
+      this.gl_shader_frag = this.compileShader(
+        descriptor.preprocessedCompute,
+        gl.FRAGMENT_SHADER,
+      );
+    } else {
+      this.gl_shader_vert = this.compileShader(
+        descriptor.preprocessedVert,
+        gl.VERTEX_SHADER,
+      );
+      this.gl_shader_frag = this.compileShader(
+        descriptor.preprocessedFrag,
+        gl.FRAGMENT_SHADER,
+      );
+    }
+
     gl.attachShader(this.gl_program, this.gl_shader_vert);
     gl.attachShader(this.gl_program, this.gl_shader_frag);
     gl.linkProgram(this.gl_program);
@@ -116,7 +154,10 @@ export class Program_GL extends ResourceBase_GL implements Program {
 
   private readUniformLocationsFromLinkedProgram() {
     const gl = this.device.gl;
-    const numUniforms = gl.getProgramParameter(this.gl_program, gl.ACTIVE_UNIFORMS);
+    const numUniforms = gl.getProgramParameter(
+      this.gl_program,
+      gl.ACTIVE_UNIFORMS,
+    );
 
     for (let i = 0; i < numUniforms; i++) {
       const info = gl.getActiveUniform(this.gl_program, i);
@@ -126,7 +167,11 @@ export class Program_GL extends ResourceBase_GL implements Program {
       if (info && info.size > 1) {
         for (let l = 0; l < info.size; l++) {
           location = gl.getUniformLocation(this.gl_program, `${name}[${l}]`);
-          this.uniformSetters[`${name}[${l}]`] = getUniformSetter(gl, location, info);
+          this.uniformSetters[`${name}[${l}]`] = getUniformSetter(
+            gl,
+            location,
+            info,
+          );
         }
       }
     }
@@ -134,7 +179,9 @@ export class Program_GL extends ResourceBase_GL implements Program {
 
   private compileShader(contents: string, type: GLenum): WebGLShader {
     const gl = this.device.gl;
-    const shader: WebGLShader = this.device.ensureResourceExists(gl.createShader(type));
+    const shader: WebGLShader = this.device.ensureResourceExists(
+      gl.createShader(type),
+    );
     gl.shaderSource(shader, contents);
     gl.compileShader(shader);
     return shader;

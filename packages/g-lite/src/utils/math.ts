@@ -1,7 +1,7 @@
 import { isNumber } from '@antv/util';
 import type { quat, vec2 } from 'gl-matrix';
 import { mat3, mat4, vec3, vec4 } from 'gl-matrix';
-import { Odeg, Opx, ParsedTransform } from '../css';
+import { convertAngleUnit, Odeg, Opx, ParsedTransform } from '../css';
 import { DisplayObject } from '../display-objects';
 import { Tuple3Number } from '../types';
 
@@ -519,16 +519,16 @@ export function parsedTransformToMat4(
         );
       } else if (t === 'rotate') {
         const newAngles = d || [Odeg];
-        object.rotateLocal(0, 0, newAngles[0].value);
+        object.rotateLocal(0, 0, convertAngleUnit(newAngles[0]));
       } else if (t === 'rotatex') {
         const newAngles = d || [Odeg];
-        object.rotateLocal(newAngles[0].value, 0, 0);
+        object.rotateLocal(convertAngleUnit(newAngles[0]), 0, 0);
       } else if (t === 'rotatey') {
         const newAngles = d || [Odeg];
-        object.rotateLocal(0, newAngles[0].value, 0);
+        object.rotateLocal(0, convertAngleUnit(newAngles[0]), 0);
       } else if (t === 'rotatez') {
         const newAngles = d || [Odeg];
-        object.rotateLocal(0, 0, newAngles[0].value);
+        object.rotateLocal(0, 0, convertAngleUnit(newAngles[0]));
       } else if (t === 'rotate3d') {
         // 暂不支持绕指定轴旋转
         // const newAngles = value && value.d || [Odeg, Odeg, Odeg];

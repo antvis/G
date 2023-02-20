@@ -343,3 +343,30 @@ WebFont.load({
 ## 更多基于 CanvasKit 的配置项
 
 CanvasKit 提供了 [众多文本段落增强功能](/zh/api/renderer/canvaskit#text-paragraphs)。 我们将这些能力整合进了 [g-canvaskit](/zh/api/renderer/canvaskit) 渲染器中。
+
+## 常见问题
+
+### 包围盒获取不准确
+
+由于 Text 的很多属性都是可继承的，这意味着如果未显式传入它们的值，只有在加入文档后才能获取到正确的继承值，从而计算得到精确的包围盒。如果确实想在加入文档前获取包围盒大小，例如实例化之后立刻获取到精确的包围盒，需要手动传入它们的值：
+
+```js
+const text = new Text({
+    style: {
+        text: 'abcde',
+    },
+});
+text.getBounds(); // Wrong empty bounding box.
+
+text.attr({
+    fontSize: '16px',
+    fontFamily: 'sans-serif',
+    fontWeight: 'normal',
+    fontVariant: 'normal',
+    fontStyle: 'normal',
+    textAlign: 'start',
+    textBaseline: 'alphabetic',
+    lineWidth: 0,
+});
+text.getBounds(); // Right bounding box.
+```
