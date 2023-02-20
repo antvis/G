@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-webgl-device",
-  "version": "1.7.38",
+  "version": "1.7.39",
   "description": "A G plugin implements GPUDevice interface with WebGL API",
   "keywords": [
     "antv",
