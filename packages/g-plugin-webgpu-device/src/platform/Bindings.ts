@@ -106,13 +106,15 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
       });
     }
 
-    this.gpuBindGroup = gpuBindGroupEntries.map((gpuBindGroupEntry, i) =>
-      this.device.device.createBindGroup({
-        layout: (pipeline as RenderPipeline_WebGPU).getBindGroupLayout(i),
-        // layout: bindGroupLayout.gpuBindGroupLayout[i],
-        entries: gpuBindGroupEntry,
-      }),
-    );
+    this.gpuBindGroup = gpuBindGroupEntries
+      .filter((entries) => entries.length > 0)
+      .map((gpuBindGroupEntry, i) =>
+        this.device.device.createBindGroup({
+          layout: (pipeline as RenderPipeline_WebGPU).getBindGroupLayout(i),
+          // layout: bindGroupLayout.gpuBindGroupLayout[i],
+          entries: gpuBindGroupEntry,
+        }),
+      );
     this.bindingLayout = descriptor.bindingLayout;
     this.bindGroupLayout = bindGroupLayout;
   }

@@ -1,4 +1,3 @@
-import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '@antv/g-lite';
 import type {
   AttachmentState,
   BindingLayoutDescriptor,
@@ -91,6 +90,7 @@ import { QueryPool_GL } from './QueryPool';
 import { Readback_GL } from './Readback';
 import { RenderPipeline_GL } from './RenderPipeline';
 import { RenderTarget_GL } from './RenderTarget';
+import { ComputePipeline_GL } from './ComputePipeline';
 import { ResourceCreationTracker } from './ResourceCreationTracker';
 import { Sampler_GL } from './Sampler';
 import { Texture_GL } from './Texture';
@@ -106,6 +106,7 @@ import {
   isTextureFormatCompressed,
   isWebGL2,
 } from './utils';
+import { ComputePass_GL } from './ComputePass';
 
 // This is a workaround for ANGLE not supporting UBOs greater than 64kb (the limit of D3D).
 // https://bugs.chromium.org/p/angleproject/issues/detail?id=3388
@@ -809,13 +810,17 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createComputePass(computePassDescriptor: ComputePassDescriptor): ComputePass {
-    throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
+    return new ComputePass_GL();
   }
 
   createComputePipeline(
     descriptor: ComputePipelineDescriptor,
   ): ComputePipeline {
-    throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
+    return new ComputePipeline_GL({
+      id: this.getNextUniqueId(),
+      device: this,
+      descriptor,
+    });
   }
 
   // createReadback(byteCount: number): Readback {
@@ -1183,19 +1188,19 @@ export class Device_GL implements SwapChain, Device {
     if (attachment === null) {
       gl.framebufferRenderbuffer(framebuffer, binding, gl.RENDERBUFFER, null);
     } else if (attachment.type === ResourceType.RenderTarget) {
-      if (attachment.gl_renderbuffer !== null) {
+      if ((attachment as RenderTarget_GL).gl_renderbuffer !== null) {
         gl.framebufferRenderbuffer(
           framebuffer,
           binding,
           gl.RENDERBUFFER,
-          attachment.gl_renderbuffer,
+          (attachment as RenderTarget_GL).gl_renderbuffer,
         );
-      } else if (attachment.texture !== null) {
+      } else if ((attachment as RenderTarget_GL).texture !== null) {
         gl.framebufferTexture2D(
           framebuffer,
           binding,
           GL.TEXTURE_2D,
-          getPlatformTexture(attachment.texture),
+          getPlatformTexture((attachment as RenderTarget_GL).texture),
           0,
         );
       }

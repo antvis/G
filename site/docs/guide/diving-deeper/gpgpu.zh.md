@@ -111,13 +111,13 @@ interface Matrix {
 // 第二个矩阵
 @group(0) @binding(1) var<storage, read> secondMatrix : Matrix;
 // 结果矩阵
-@group(0) @binding(2) var<storage, write> resultMatrix : Matrix;
+@group(0) @binding(2) var<storage, read_write> resultMatrix : Matrix;
 ```
 
 接下来就需要定义具体的算法了，每个线程都会执行相同的 Compute Shader 处理不同的数据（SIMD），这就要求每个线程知道自己的 ID，才能从全局数据中获取自己感兴趣的部分数据。在 WGSL 中通过 main 函数的入参获取，这里我们使用内置变量 [`global_invocation_id`](https://www.w3.org/TR/WGSL/#builtin-values)，它的类型是 `vec3<u32>` ，`xyz` 分量都从 0 开始，三者相乘不能超过 256。
 
 ```wgsl
-@stage(compute) @workgroup_size(${WORKGROUP_SIZE_X}, ${WORKGROUP_SIZE_Y})
+@compute @workgroup_size(${WORKGROUP_SIZE_X}, ${WORKGROUP_SIZE_Y})
 fn main(
   @builtin(global_invocation_id) global_id : vec3<u32> // 当前线程全局 ID
 ) {

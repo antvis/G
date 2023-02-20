@@ -62,26 +62,30 @@ export class Kernel {
       platformString2Target[this.device.queryVendorInfo().platformString];
 
     if (this.computeShader) {
-      this.bundle = {
-        shaders: {
-          WGSL: this.computeShader,
-          GLSL450: '',
-          GLSL100: '',
-        },
-        context: {
-          name: '',
-          dispatch: [0, 0, 0],
-          threadGroupSize: [0, 0, 0],
-          maxIteration: 1,
-          needPingpong: false,
-          output: {
-            name: '',
+      if (!this.bundle) {
+        this.bundle = {
+          shaders: {
+            WGSL: this.computeShader,
+            GLSL450: '',
+            GLSL100: '',
           },
-          uniforms: [],
-          defines: [],
-          globalDeclarations: [],
-        },
-      };
+          context: {
+            name: '',
+            dispatch: [0, 0, 0],
+            threadGroupSize: [0, 0, 0],
+            maxIteration: 1,
+            needPingpong: false,
+            output: {
+              name: '',
+            },
+            uniforms: [],
+            defines: [],
+            globalDeclarations: [],
+          },
+        };
+      } else {
+        this.bundle.shaders.WGSL = this.computeShader;
+      }
     }
 
     const program = this.device.createProgramSimple({

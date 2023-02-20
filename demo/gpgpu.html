@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
     <title>GPGPU implemented with WebGPU</title>
     <style>
       * {
@@ -26,9 +29,18 @@
   <body>
     <div id="container"></div>
 
-    <script src="../packages/g/dist/index.umd.min.js" type="application/javascript"></script>
-    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script>
-    <script src="../packages/g-webgpu/dist/index.umd.min.js" type="application/javascript"></script>
+    <script
+      src="../packages/g/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-webgl/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-webgpu/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
     <script
       src="../packages/g-plugin-gpgpu/dist/index.umd.min.js"
       type="application/javascript"
@@ -182,7 +194,7 @@
         return vec2<f32>(dx, dy);
       }
 
-      @stage(compute) @workgroup_size(1, 1)
+      @compute @workgroup_size(1, 1)
       fn main(
         @builtin(global_invocation_id) global_id : vec3<u32>,
       ) {
@@ -239,7 +251,8 @@
           viewOrSize: new Float32Array(positions),
         });
         const paramBuffer = device.createBuffer({
-          usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST | BufferUsage.COPY_SRC,
+          usage:
+            BufferUsage.UNIFORM | BufferUsage.COPY_DST | BufferUsage.COPY_SRC,
           viewOrSize: new Float32Array([
             nodeNum,
             k,
@@ -268,9 +281,9 @@
         const result = await readback.readBuffer(positionsBuffer);
 
         console.log(
-          `GPU Time Elapsed: ${Number.parseFloat(window.performance.now() - startTime).toFixed(
-            2,
-          )}ms`,
+          `GPU Time Elapsed: ${Number.parseFloat(
+            window.performance.now() - startTime,
+          ).toFixed(2)}ms`,
         );
 
         renderCircles(edges, indices, result);

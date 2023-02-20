@@ -1,5 +1,13 @@
-import type { Buffer, BufferDescriptor, BufferFrequencyHint } from '@antv/g-plugin-device-renderer';
-import { assert, BufferUsage, ResourceType } from '@antv/g-plugin-device-renderer';
+import type {
+  Buffer,
+  BufferDescriptor,
+  BufferFrequencyHint,
+} from '@antv/g-plugin-device-renderer';
+import {
+  assert,
+  BufferUsage,
+  ResourceType,
+} from '@antv/g-plugin-device-renderer';
 import { isNumber } from '@antv/util';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
@@ -32,6 +40,27 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
 
     const { viewOrSize, usage, hint } = descriptor;
     const { uniformBufferMaxPageByteSize, gl } = device;
+
+    const isStorageTexture = usage & BufferUsage.STORAGE;
+
+    if (isStorageTexture) {
+      // // Use Texture as storage instead of Buffer.
+      // const texture = this.createTexture({
+      //   dimension: TextureDimension.n2D,
+      //   pixelFormat: Format.U8_RGBA_NORM,
+      //   usage: TextureUsage.Sampled,
+      //   width: 1,
+      //   height: 1,
+      //   depth: 1,
+      //   numLevels: 1,
+      //   immutable: true,
+      // });
+      // texture.setImageData([new Uint8Array(4 * depth)], 0);
+
+      // Create later.
+      return this;
+    }
+
     const isUBO = usage & BufferUsage.UNIFORM;
 
     if (!isUBO) {
@@ -43,7 +72,9 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       }
     }
 
-    const byteSize = isNumber(viewOrSize) ? viewOrSize * 4 : viewOrSize.byteLength * 4;
+    const byteSize = isNumber(viewOrSize)
+      ? viewOrSize * 4
+      : viewOrSize.byteLength * 4;
     this.gl_buffer_pages = [];
 
     let pageByteSize: number;
@@ -52,7 +83,11 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       let byteSizeLeft = byteSize;
       while (byteSizeLeft > 0) {
         this.gl_buffer_pages.push(
-          this.createBufferPage(Math.min(byteSizeLeft, uniformBufferMaxPageByteSize), usage, hint),
+          this.createBufferPage(
+            Math.min(byteSizeLeft, uniformBufferMaxPageByteSize),
+            usage,
+            hint,
+          ),
         );
         byteSizeLeft -= uniformBufferMaxPageByteSize;
       }
@@ -74,7 +109,9 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       if (isWebGL2(gl)) {
         gl.bindVertexArray(this.device.currentBoundVAO);
       } else {
-        device.OES_vertex_array_object.bindVertexArrayOES(this.device.currentBoundVAO);
+        device.OES_vertex_array_object.bindVertexArrayOES(
+          this.device.currentBoundVAO,
+        );
       }
     }
   }
@@ -86,7 +123,11 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
     byteSize: number = data.byteLength - srcByteOffset,
   ): void {
     const gl = this.device.gl;
-    const { gl_target, byteSize: dstByteSize, pageByteSize: dstPageByteSize } = this;
+    const {
+      gl_target,
+      byteSize: dstByteSize,
+      pageByteSize: dstPageByteSize,
+    } = this;
     // Account for setSubData being called with a dstByteOffset that is beyond the end of the buffer.
     // if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
     //   // Manually check asserts for speed.
@@ -124,7 +165,10 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
           physBufferByteOffset,
           data,
           srcByteOffset,
-          Math.min(virtBufferByteOffsetEnd - virtBufferByteOffset, dstPageByteSize),
+          Math.min(
+            virtBufferByteOffsetEnd - virtBufferByteOffset,
+            dstPageByteSize,
+          ),
         );
       } else {
         gl.bufferSubData(target, physBufferByteOffset, data);

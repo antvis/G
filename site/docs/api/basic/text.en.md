@@ -318,3 +318,30 @@ WebFont.load({
 ## More CanvasKit-based configuration items
 
 CanvasKit provides [enhanced paragraph drawing capabilities](/en/api/renderer/canvaskit#text-paragraphs). We've integrated them into our [g-canvaskit](/en/api/renderer/canvaskit) renderer.
+
+## FAQ
+
+### The bounding box acquisition is not accurate
+
+Since many properties of Text are inheritable, this means that if their values are not explicitly passed in, the correct inherited value can only be obtained after adding the document, so as to calculate an accurate bounding box. If you really want to get the size of the bounding box before adding the document, for example, to get the exact bounding box immediately after instantiation, you need to manually pass in their values:
+
+```js
+const text = new Text({
+    style: {
+        text: 'abcde',
+    },
+});
+text.getBounds(); // Wrong empty bounding box.
+
+text.attr({
+    fontSize: '16px',
+    fontFamily: 'sans-serif',
+    fontWeight: 'normal',
+    fontVariant: 'normal',
+    fontStyle: 'normal',
+    textAlign: 'start',
+    textBaseline: 'alphabetic',
+    lineWidth: 0,
+});
+text.getBounds(); // Right bounding box.
+```
