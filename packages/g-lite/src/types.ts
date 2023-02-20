@@ -477,8 +477,6 @@ export interface CanvasConfig {
    */
   cursor?: Cursor;
 
-  enableCSSParsing?: boolean;
-
   [key: string]: any;
 }
 

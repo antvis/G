@@ -674,6 +674,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       // @ts-ignore
       if (attributes.cx || attributes.cy) {
+        // @ts-ignore
         runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(object);
       }
 

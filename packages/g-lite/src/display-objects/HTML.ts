@@ -1,4 +1,4 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { AABB } from '../shapes';

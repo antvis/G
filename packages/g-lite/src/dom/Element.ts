@@ -1,5 +1,5 @@
 import { isNil } from '@antv/util';
-import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 import type {
   Cullable,
   Geometry,

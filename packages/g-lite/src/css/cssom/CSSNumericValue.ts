@@ -1,6 +1,7 @@
-import { DCHECK, DCHECK_EQ, DCHECK_NE } from '../../utils/assert';
-import { CSSMathOperator } from './CSSMathOperator';
-import type { CSSNumericSumValue, Term, UnitMap } from './CSSNumericSumValue';
+import { DCHECK } from '../../utils/assert';
+// import { DCHECK, DCHECK_EQ, DCHECK_NE } from '../../utils/assert';
+// import { CSSMathOperator } from './CSSMathOperator';
+// import type { CSSNumericSumValue, Term, UnitMap } from './CSSNumericSumValue';
 import {
   canonicalUnitTypeForCategory,
   conversionToCanonicalUnitsScaleFactor,
@@ -14,26 +15,26 @@ import { Nested, ParenLess, UnitType } from './types';
 
 export type CSSNumberish = number;
 
-type CSSNumericBaseType =
-  | 'length'
-  | 'angle'
-  | 'time'
-  | 'frequency'
-  | 'resolution'
-  | 'flex'
-  | 'percent';
+// type CSSNumericBaseType =
+//   | 'length'
+//   | 'angle'
+//   | 'time'
+//   | 'frequency'
+//   | 'resolution'
+//   | 'flex'
+//   | 'percent';
 
 // https://drafts.css-houdini.org/css-typed-om/#dictdef-cssnumerictype
-interface CSSNumericType {
-  length: number;
-  angle: number;
-  time: number;
-  frequency: number;
-  resolution: number;
-  flex: number;
-  percent: number;
-  percentHint: CSSNumericBaseType;
-}
+// interface CSSNumericType {
+//   length: number;
+//   angle: number;
+//   time: number;
+//   frequency: number;
+//   resolution: number;
+//   flex: number;
+//   percent: number;
+//   percentHint: CSSNumericBaseType;
+// }
 
 const formatInfinityOrNaN = (number: number, suffix = '') => {
   let result = '';
@@ -153,10 +154,7 @@ export class CSSUnitValue extends CSSStyleValue {
       case UnitType.kSeconds:
       // case UnitType.kHertz:
       // case UnitType.kKilohertz:
-      case UnitType.kTurns: // case UnitType.kContainerInlineSize: // case UnitType.kContainerHeight: // case UnitType.kContainerWidth: // case UnitType.kDynamicViewportMax: // case UnitType.kDynamicViewportMin: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
-      // case UnitType.kContainerBlockSize:
-      // case UnitType.kContainerMin:
-      // case UnitType.kContainerMax: {
+      case UnitType.kTurns: // case UnitType.kContainerMax: { // case UnitType.kContainerMin: // case UnitType.kContainerBlockSize: // case UnitType.kContainerInlineSize: // case UnitType.kContainerHeight: // case UnitType.kContainerWidth: // case UnitType.kDynamicViewportMax: // case UnitType.kDynamicViewportMin: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
       {
         const kMinInteger = -999999;
         const kMaxInteger = 999999;
