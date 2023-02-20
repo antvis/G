@@ -56,9 +56,9 @@ import { Algorithm } from '@antv/g6';
 // };
 
 // @group(0) @binding(0) var<storage, read> r : Buffer;
-// @group(0) @binding(1) var<storage, write> r_last : Buffer;
+// @group(0) @binding(1) var<storage, read_write> r_last : Buffer;
 
-// @stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
+// @compute @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 // fn main(
 //   @builtin(global_invocation_id) global_id : vec3<u32>
 // ) {
@@ -79,7 +79,7 @@ import { Algorithm } from '@antv/g6';
 // @group(0) @binding(1) var<storage, read_write> r : Buffer;
 // @group(0) @binding(2) var<storage, read> r_last : Buffer;
 
-// @stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
+// @compute @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 // fn main(
 //   @builtin(global_invocation_id) global_id : vec3<u32>
 // ) {
@@ -104,7 +104,7 @@ import { Algorithm } from '@antv/g6';
 // @group(0) @binding(0) var<storage, read> r : Buffer;
 // @group(0) @binding(1) var<storage, read_write> r_last : Buffer;
 
-// @stage(compute) @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
+// @compute @workgroup_size(${BLOCKS}, ${BLOCK_SIZE})
 // fn main(
 //   @builtin(global_invocation_id) global_id : vec3<u32>
 // ) {

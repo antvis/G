@@ -5,6 +5,20 @@
   },
   "demos": [
     {
+      "filename": "add-2-vectors.js",
+      "title": {
+        "zh": "向量相加 WebGPU",
+        "en": "Add 2 vectors"
+      }
+    },
+    {
+      "filename": "add-2-vectors-webgl.js",
+      "title": {
+        "zh": "向量相加 WebGL",
+        "en": "Add 2 vectors"
+      }
+    },
+    {
       "filename": "matrix-multiplication.js",
       "title": {
         "zh": "矩阵乘法",

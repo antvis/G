@@ -38,9 +38,9 @@ struct Array {
 
 @group(0) @binding(0) var<storage, read_write> input : Array;
 
-var<workgroup> shared : array<f32, ${workgroupSize}>;
+var<workgroup> sharedData : array<f32, ${workgroupSize}>;
 
-@stage(compute) @workgroup_size(${workgroupSize}, 1)
+@compute @workgroup_size(${workgroupSize}, 1)
 fn main(
   @builtin(global_invocation_id) global_id : vec3<u32>,
   @builtin(local_invocation_id) local_id : vec3<u32>,
@@ -51,8 +51,8 @@ fn main(
 
   // version 4
   var i = workgroup_id.x * ${workgroupSize}u * 2u + local_id.x;
-  shared[tid] = input.data[i] + input.data[i + ${workgroupSize}u];
-  // shared[tid] = input.data[i];
+  sharedData[tid] = input.data[i] + input.data[i + ${workgroupSize}u];
+  // sharedData[tid] = input.data[i];
   workgroupBarrier();
 
   // version 5
@@ -60,36 +60,36 @@ fn main(
   // version 3
   for (var s = ${workgroupSize}u / 2u; s > 0u; s = s >> 1u) {
     if (tid < s) {
-      shared[tid] = shared[tid] + shared[tid + s];
+      sharedData[tid] = sharedData[tid] + sharedData[tid + s];
     }
 
   // for (var s = 1u; s < ${workgroupSize}u; s = s * 2u) {
     // version 1
     // if (tid % (s * 2u) == 0u) {
-    //   shared[tid] = shared[tid] + shared[tid + s];
+    //   sharedData[tid] = sharedData[tid] + sharedData[tid + s];
     // }
 
     // version 2
     // var index = 2u * s * tid;
     // if (index < ${workgroupSize}u) {
-    //   shared[index] = shared[index] + shared[index + s];
+    //   sharedData[index] = sharedData[index] + sharedData[index + s];
     // }
     
     workgroupBarrier();
   }
 
   // if (tid < 32u) {
-  //   shared[tid] =
-  //     shared[tid + 32u]
-  //     + shared[tid + 16u]
-  //     + shared[tid + 8u]
-  //     + shared[tid + 4u]
-  //     + shared[tid + 2u]
-  //     + shared[tid + 1u];
+  //   sharedData[tid] =
+  //     sharedData[tid + 32u]
+  //     + sharedData[tid + 16u]
+  //     + sharedData[tid + 8u]
+  //     + sharedData[tid + 4u]
+  //     + sharedData[tid + 2u]
+  //     + sharedData[tid + 1u];
   // }
 
   if (tid == 0u) {
-    input.data[workgroup_id.x] = shared[0u];
+    input.data[workgroup_id.x] = sharedData[0u];
   }
 }`,
   });
