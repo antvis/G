@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.15.14",
+  "version": "5.15.15",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -32,12 +32,12 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-camera-api": "^1.0.27",
-    "@antv/g-css-layout-api": "^1.0.27",
-    "@antv/g-css-typed-om-api": "^1.0.27",
-    "@antv/g-dom-mutation-observer-api": "^1.0.27",
-    "@antv/g-lite": "^1.0.34",
-    "@antv/g-web-animations-api": "^1.0.27"
+    "@antv/g-camera-api": "^1.0.28",
+    "@antv/g-css-layout-api": "^1.0.28",
+    "@antv/g-css-typed-om-api": "^1.0.28",
+    "@antv/g-dom-mutation-observer-api": "^1.0.28",
+    "@antv/g-lite": "^1.0.35",
+    "@antv/g-web-animations-api": "^1.0.28"
   },
   "publishConfig": {
     "access": "public"
