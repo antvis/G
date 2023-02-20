@@ -745,7 +745,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     attributeNames.forEach((name) => {
       if (name in object.parsedStyle) {
-        this.postProcessProperty(name as string, object);
+        this.postProcessProperty(name as string, object, attributeNames);
       }
     });
 
@@ -876,7 +876,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     return used;
   }
 
-  postProcessProperty(name: string, object: DisplayObject) {
+  postProcessProperty(
+    name: string,
+    object: DisplayObject,
+    attributes: string[],
+  ) {
     const metadata = propertyMetadataCache[name];
 
     if (metadata && metadata.syntax) {
@@ -885,7 +889,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const propertyHandler = handler;
 
       if (propertyHandler && propertyHandler.postProcessor) {
-        propertyHandler.postProcessor(object);
+        propertyHandler.postProcessor(object, attributes);
       }
     }
   }
