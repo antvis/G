@@ -26,8 +26,12 @@ export class CSSPropertyPoints
   /**
    * update local position
    */
-  postProcessor(object: DisplayObject) {
-    if (object.nodeName === Shape.POLYGON || object.nodeName === Shape.POLYLINE) {
+  postProcessor(object: DisplayObject, attributes: string[]) {
+    if (
+      (object.nodeName === Shape.POLYGON ||
+        object.nodeName === Shape.POLYLINE) &&
+      attributes.indexOf('transform') === -1
+    ) {
       const { defX, defY } = object.parsedStyle as ParsedBaseStyleProps;
       object.setLocalPosition(defX, defY);
     }

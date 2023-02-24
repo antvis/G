@@ -40,6 +40,7 @@ module.exports = {
   testEnvironment: 'jest-electron/environment',
   testMatch: [
     '<rootDir>/__tests__/unit/**/*/*.spec.+(ts|tsx|js)',
+    '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
     // '<rootDir>/packages/**/*/*.spec.+(ts|tsx|js)'
   ],
   testPathIgnorePatterns: ['<rootDir>/packages/g-gesture'],

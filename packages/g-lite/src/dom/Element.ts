@@ -285,19 +285,23 @@ export class Element<
    * Remove all children which can be appended to its original parent later again.
    */
   removeChildren() {
-    this.childNodes.slice().forEach((child) => {
+    for (let i = this.childNodes.length - 1; i >= 0; i--) {
+      const child = this.childNodes[i] as this;
       this.removeChild(child);
-    });
+    }
   }
 
   /**
    * Recursively destroy all children which can not be appended to its original parent later again.
    */
   destroyChildren() {
-    this.childNodes.slice().forEach((child: this) => {
-      child.destroyChildren();
+    for (let i = this.childNodes.length - 1; i >= 0; i--) {
+      const child = this.childNodes[i] as this;
+      if (child.childNodes.length) {
+        child.destroyChildren();
+      }
       child.destroy();
-    });
+    }
   }
 
   /**

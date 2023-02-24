@@ -130,11 +130,7 @@ export class Document extends Node implements IDocument {
   }
   destroy(): void {
     try {
-      this.documentElement.childNodes.slice().forEach((child) => {
-        child.forEach((object) => {
-          object.destroy();
-        }, true);
-      });
+      this.documentElement.destroyChildren();
       this.timeline.destroy();
     } catch (e) {}
   }

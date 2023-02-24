@@ -18,7 +18,11 @@ import type {
   StyleValueRegistry,
 } from './interfaces';
 import { PropertySyntax } from './interfaces';
-import { parseColor, ParsedFilterStyleProperty } from './parser';
+import {
+  parseColor,
+  ParsedFilterStyleProperty,
+  parseTransform,
+} from './parser';
 import { convertPercentUnit } from './parser/dimension';
 import { runtime } from '../global-runtime';
 
@@ -672,10 +676,21 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (attributes.stroke) {
         object.parsedStyle.stroke = parseColor(attributes.stroke);
       }
+      if (attributes.transform) {
+        object.parsedStyle.transform = parseTransform(attributes.transform);
+      }
       // @ts-ignore
-      if (attributes.cx || attributes.cy) {
-        // @ts-ignore
-        runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(object);
+      if (attributes.cx || attributes.cy || attributes.x || attributes.y) {
+        runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
+          object,
+          [],
+        );
+      }
+      if (attributes.transform) {
+        runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
+          object,
+          [],
+        );
       }
 
       // console.log(object.parsedStyle);
@@ -735,21 +750,21 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
 
-    [
-      'path',
-      'points',
-      'text',
-      'textTransform',
-      'anchor',
-      'transform',
-      'transformOrigin',
-    ].forEach((name) => {
-      const index = attributeNames.indexOf(name);
-      if (index > -1) {
-        attributeNames.splice(index, 1);
-        attributeNames.push(name);
-      }
-    });
+    // [
+    //   'path',
+    //   'points',
+    //   'text',
+    //   'textTransform',
+    //   'anchor',
+    //   'transform',
+    //   'transformOrigin',
+    // ].forEach((name) => {
+    //   const index = attributeNames.indexOf(name);
+    //   if (index > -1) {
+    //     attributeNames.splice(index, 1);
+    //     attributeNames.push(name);
+    //   }
+    // });
 
     attributeNames.forEach((name) => {
       // some style props maybe deleted after parsing such as `anchor` in Text

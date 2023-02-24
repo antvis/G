@@ -489,8 +489,8 @@ describe('Event API', () => {
 
     expect(addedNodes.length).to.eqls(0);
     expect(removedNodes.length).to.eqls(3);
-    expect(removedNodes[0]).to.eqls(a);
+    expect(removedNodes[0]).to.eqls(c);
     expect(removedNodes[1]).to.eqls(b);
-    expect(removedNodes[2]).to.eqls(c);
+    expect(removedNodes[2]).to.eqls(a);
   });
 });
