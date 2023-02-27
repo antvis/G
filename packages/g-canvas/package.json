@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "1.9.30",
+  "version": "1.9.31",
   "description": "A renderer implemented by Canvas 2D API",
   "keywords": [
     "antv",
@@ -36,7 +36,7 @@
     "@antv/g-plugin-canvas-picker": "^1.8.39",
     "@antv/g-plugin-canvas-renderer": "^1.7.44",
     "@antv/g-plugin-dom-interaction": "^1.7.40",
-    "@antv/g-plugin-html-renderer": "^1.7.41",
+    "@antv/g-plugin-html-renderer": "^1.7.42",
     "@antv/g-plugin-image-loader": "^1.1.42",
     "@antv/util": "^3.3.1",
     "@types/offscreencanvas": "^2019.6.4",
