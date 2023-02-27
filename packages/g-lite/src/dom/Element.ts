@@ -515,33 +515,35 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
-  computedStyle: any = {
-    anchor: unsetKeywordValue,
-    opacity: unsetKeywordValue,
-    fillOpacity: unsetKeywordValue,
-    strokeOpacity: unsetKeywordValue,
-    fill: unsetKeywordValue,
-    stroke: unsetKeywordValue,
-    transform: unsetKeywordValue,
-    transformOrigin: unsetKeywordValue,
-    visibility: unsetKeywordValue,
-    pointerEvents: unsetKeywordValue,
-    lineWidth: unsetKeywordValue,
-    lineCap: unsetKeywordValue,
-    lineJoin: unsetKeywordValue,
-    increasedLineWidthForHitTesting: unsetKeywordValue,
-    fontSize: unsetKeywordValue,
-    fontFamily: unsetKeywordValue,
-    fontStyle: unsetKeywordValue,
-    fontWeight: unsetKeywordValue,
-    fontVariant: unsetKeywordValue,
-    textAlign: unsetKeywordValue,
-    textBaseline: unsetKeywordValue,
-    textTransform: unsetKeywordValue,
-    zIndex: unsetKeywordValue,
-    filter: unsetKeywordValue,
-    shadowType: unsetKeywordValue,
-  };
+  computedStyle: any = runtime.enableCSSParsing
+    ? {
+        anchor: unsetKeywordValue,
+        opacity: unsetKeywordValue,
+        fillOpacity: unsetKeywordValue,
+        strokeOpacity: unsetKeywordValue,
+        fill: unsetKeywordValue,
+        stroke: unsetKeywordValue,
+        transform: unsetKeywordValue,
+        transformOrigin: unsetKeywordValue,
+        visibility: unsetKeywordValue,
+        pointerEvents: unsetKeywordValue,
+        lineWidth: unsetKeywordValue,
+        lineCap: unsetKeywordValue,
+        lineJoin: unsetKeywordValue,
+        increasedLineWidthForHitTesting: unsetKeywordValue,
+        fontSize: unsetKeywordValue,
+        fontFamily: unsetKeywordValue,
+        fontStyle: unsetKeywordValue,
+        fontWeight: unsetKeywordValue,
+        fontVariant: unsetKeywordValue,
+        textAlign: unsetKeywordValue,
+        textBaseline: unsetKeywordValue,
+        textTransform: unsetKeywordValue,
+        zIndex: unsetKeywordValue,
+        filter: unsetKeywordValue,
+        shadowType: unsetKeywordValue,
+      }
+    : null;
 
   /**
    * Renderers will use these used values.

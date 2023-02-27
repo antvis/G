@@ -1,3 +1,5 @@
+import { runtime } from '..';
+import { getOrCreateUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -13,7 +15,10 @@ export interface ParsedCircleStyleProps extends ParsedBaseStyleProps {
   cy: number;
   r: number;
 }
-export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStyleProps> {
+export class Circle extends DisplayObject<
+  CircleStyleProps,
+  ParsedCircleStyleProps
+> {
   constructor({ style, ...rest }: DisplayObjectConfig<CircleStyleProps> = {}) {
     super({
       type: Shape.CIRCLE,
@@ -25,6 +30,9 @@ export class Circle extends DisplayObject<CircleStyleProps, ParsedCircleStylePro
       },
       initialParsedStyle: {
         anchor: [0.5, 0.5],
+        transformOrigin: runtime.enableCSSParsing
+          ? null
+          : [getOrCreateUnitValue(50, '%'), getOrCreateUnitValue(50, '%')],
       },
       ...rest,
     });

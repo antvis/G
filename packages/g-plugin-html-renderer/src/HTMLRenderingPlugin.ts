@@ -1,4 +1,4 @@
-import type {
+import {
   DisplayObject,
   FederatedEvent,
   HTML,
@@ -6,6 +6,7 @@ import type {
   MutationEvent,
   RenderingPlugin,
   RenderingPluginContext,
+  runtime,
 } from '@antv/g-lite';
 import {
   CanvasEvent,
@@ -265,12 +266,22 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         ] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
         break;
       case 'width':
-        const width = object.computedStyleMap().get('width');
-        $el.style.width = width.toString();
+        if (runtime.enableCSSParsing) {
+          const width = object.computedStyleMap().get('width');
+          $el.style.width = width.toString();
+        } else {
+          const { width } = object.parsedStyle;
+          $el.style.width = `${width}px`;
+        }
         break;
       case 'height':
-        const height = object.computedStyleMap().get('height');
-        $el.style.height = height.toString();
+        if (runtime.enableCSSParsing) {
+          const height = object.computedStyleMap().get('height');
+          $el.style.height = height.toString();
+        } else {
+          const { height } = object.parsedStyle;
+          $el.style.height = `${height}px`;
+        }
         break;
       case 'zIndex':
         const { zIndex } = object.parsedStyle;

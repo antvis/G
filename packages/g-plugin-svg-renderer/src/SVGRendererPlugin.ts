@@ -1,4 +1,4 @@
-import type {
+import {
   DisplayObject,
   FederatedEvent,
   LinearGradient,
@@ -8,6 +8,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
+  runtime,
 } from '@antv/g-lite';
 import {
   ElementEvent,
@@ -484,12 +485,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      const computedValue = computedStyle[name];
+      const computedValue = runtime.enableCSSParsing
+        ? computedStyle[name]
+        : parsedStyle[name];
       const computedValueStr = computedValue && computedValue.toString();
       const formattedValueStr =
         FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited = !!propertyMetadataCache[name]?.inh;
+      const inherited =
+        runtime.enableCSSParsing && !!propertyMetadataCache[name]?.inh;
 
       if (!usedName) {
         return;

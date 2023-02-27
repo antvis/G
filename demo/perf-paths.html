@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,shrink-to-fit=no"
     />
-    <title>OOM</title>
+    <title>Path perf</title>
     <style>
       * {
         box-sizing: border-box;
@@ -45,7 +45,7 @@
       type="application/javascript"
     ></script>
     <script>
-      const { Circle, Canvas, runtime } = window.G;
+      const { Path, Canvas, runtime } = window.G;
 
       // disable CSS Parsing
       runtime.enableCSSParsing = false;
@@ -63,17 +63,16 @@
 
       canvas.addEventListener('ready', () => {
         for (let i = 0; i < 10000; i++) {
-          const circle = new Circle({
+          const path = new Path({
             style: {
-              cx: Math.random() * 600,
-              cy: Math.random() * 500,
-              r: 10,
-              fill: '#1890FF',
+              path: `M ${Math.random() * 600} ${Math.random() * 600} L ${
+                Math.random() * 600
+              } ${Math.random() * 600}`,
               stroke: '#F04864',
               lineWidth: 4,
             },
           });
-          canvas.appendChild(circle);
+          canvas.appendChild(path);
         }
       });
     </script>

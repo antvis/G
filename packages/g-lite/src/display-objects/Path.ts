@@ -7,8 +7,9 @@ import type {
 import { getPointAtLength } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import { Point } from '../shapes';
-import type { Rectangle } from '../shapes/Rectangle';
+import { Rectangle } from '../shapes/Rectangle';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { getOrCalculatePathTotalLength } from '../utils';
@@ -64,6 +65,17 @@ export interface PathSegment {
    */
   cubicParams: [number, number, number, number, number, number];
 }
+
+export const EMPTY_PARSED_PATH = {
+  absolutePath: [] as unknown as AbsoluteArray,
+  hasArc: false,
+  segments: [],
+  polygons: [],
+  polylines: [],
+  curve: null,
+  totalLength: 0,
+  rect: new Rectangle(0, 0, 0, 0),
+};
 
 export interface PathArcParams {
   cx: number;
@@ -121,6 +133,13 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
         miterLimit: '',
         ...style,
       },
+      initialParsedStyle: runtime.enableCSSParsing
+        ? null
+        : {
+            path: {
+              ...EMPTY_PARSED_PATH,
+            },
+          },
       ...rest,
     });
 

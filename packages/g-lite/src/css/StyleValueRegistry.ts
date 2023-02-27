@@ -1,6 +1,6 @@
 import { isNil } from '@antv/util';
 // import { vec3 } from 'gl-matrix';
-import type { DisplayObject } from '../display-objects';
+import { DisplayObject, EMPTY_PARSED_PATH } from '../display-objects';
 import { AABB } from '../shapes';
 import type {
   BaseStyleProps,
@@ -21,9 +21,16 @@ import { PropertySyntax } from './interfaces';
 import {
   parseColor,
   ParsedFilterStyleProperty,
+  parseFilter,
+  parsePath,
+  parsePoints,
   parseTransform,
+  parseTransformOrigin,
 } from './parser';
-import { convertPercentUnit } from './parser/dimension';
+import {
+  convertPercentUnit,
+  parseDimensionArrayFormat,
+} from './parser/dimension';
 import { runtime } from '../global-runtime';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
@@ -666,7 +673,35 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     },
   ) {
     if (!runtime.enableCSSParsing) {
+      // alias
+      // @ts-ignore
+      if (attributes.src) {
+        // @ts-ignore
+        attributes.img = attributes.src;
+      }
+      // @ts-ignore
+      if (attributes.d) {
+        // @ts-ignore
+        attributes.path = attributes.d;
+      }
+      if (attributes.strokeDasharray) {
+        attributes.lineDash = attributes.strokeDasharray;
+      }
+      if (attributes.strokeWidth) {
+        attributes.lineWidth = attributes.strokeWidth;
+      }
+      // @ts-ignore
+      if (attributes.textAnchor) {
+        // @ts-ignore
+        attributes.textAlign = attributes.textAnchor;
+      }
+
       Object.assign(object.attributes, attributes);
+      const attributeNames = Object.keys(attributes);
+
+      // clipPath
+      const oldClipPath = object.parsedStyle.clipPath;
+      const oldOffsetPath = object.parsedStyle.offsetPath;
 
       object.parsedStyle = Object.assign(object.parsedStyle, attributes);
 
@@ -676,26 +711,200 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (attributes.stroke) {
         object.parsedStyle.stroke = parseColor(attributes.stroke);
       }
+      if (attributes.shadowColor) {
+        object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
+      }
+      if (attributes.filter) {
+        object.parsedStyle.filter = parseFilter(attributes.filter);
+      }
+      // Rect
+      // @ts-ignore
+      if (attributes.radius) {
+        // @ts-ignore
+        object.parsedStyle.radius = parseDimensionArrayFormat(
+          // @ts-ignore
+          attributes.radius,
+          4,
+        );
+      }
+      // Polyline
+      if (attributes.lineDash) {
+        object.parsedStyle.lineDash = parseDimensionArrayFormat(
+          attributes.lineDash,
+          2,
+        );
+      }
+      // @ts-ignore
+      if (attributes.points) {
+        // @ts-ignore
+        object.parsedStyle.points = parsePoints(attributes.points, object);
+      }
+      // Path
+      // @ts-ignore
+      if (attributes.path === '') {
+        object.parsedStyle.path = {
+          ...EMPTY_PARSED_PATH,
+        };
+      }
+      // @ts-ignore
+      if (attributes.path) {
+        object.parsedStyle.path = parsePath(
+          // @ts-ignore
+          attributes.path,
+          object,
+        );
+      }
+      // Text
+      if (attributes.textTransform) {
+        runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
+          null,
+          null,
+          { value: attributes.textTransform },
+          object,
+          null,
+        );
+      }
+      if (attributes.clipPath) {
+        runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+          'clipPath',
+          oldClipPath,
+          attributes.clipPath,
+          object,
+          this,
+        );
+      }
+      if (attributes.offsetPath) {
+        runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+          'offsetPath',
+          oldOffsetPath,
+          attributes.offsetPath,
+          object,
+          this,
+        );
+      }
+      if (attributes.anchor) {
+        object.parsedStyle.anchor = parseDimensionArrayFormat(
+          // @ts-ignorex
+          attributes.anchor,
+          2,
+        );
+      }
       if (attributes.transform) {
         object.parsedStyle.transform = parseTransform(attributes.transform);
       }
+      if (attributes.transformOrigin) {
+        object.parsedStyle.transformOrigin = parseTransformOrigin(
+          attributes.transformOrigin,
+        );
+      }
+      // Marker
       // @ts-ignore
-      if (attributes.cx || attributes.cy || attributes.x || attributes.y) {
+      if (attributes.markerStart) {
+        // @ts-ignore
+        object.parsedStyle.markerStart = runtime.CSSPropertySyntaxFactory[
+          '<marker>'
+        ].calculator(
+          null,
+          // @ts-ignore
+          attributes.markerStart,
+          // @ts-ignore
+          attributes.markerStart,
+          null,
+          null,
+        );
+      }
+      // @ts-ignore
+      if (attributes.markerEnd) {
+        // @ts-ignore
+        object.parsedStyle.markerEnd = runtime.CSSPropertySyntaxFactory[
+          '<marker>'
+        ].calculator(
+          null,
+          // @ts-ignore
+          attributes.markerEnd,
+          // @ts-ignore
+          attributes.markerEnd,
+          null,
+          null,
+        );
+      }
+      // @ts-ignore
+      if (attributes.markerMid) {
+        // @ts-ignore
+        object.parsedStyle.markerMid = runtime.CSSPropertySyntaxFactory[
+          '<marker>'
+        ].calculator(
+          '',
+          // @ts-ignore
+          attributes.markerMid,
+          // @ts-ignore
+          attributes.markerMid,
+          null,
+          null,
+        );
+      }
+
+      if (
+        // @ts-ignore
+        attributes.cx ||
+        // @ts-ignore
+        attributes.cy ||
+        // @ts-ignore
+        attributes.x ||
+        // @ts-ignore
+        attributes.y ||
+        // @ts-ignore
+        attributes.z ||
+        // @ts-ignore
+        attributes.x1 ||
+        // @ts-ignore
+        attributes.y1 ||
+        // @ts-ignore
+        attributes.z1 ||
+        // @ts-ignore
+        attributes.x2 ||
+        // @ts-ignore
+        attributes.y2 ||
+        // @ts-ignore
+        attributes.z2
+      ) {
         runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
           object,
-          [],
+          attributeNames,
+        );
+      }
+      if (attributes.zIndex) {
+        runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      // @ts-ignore
+      if (attributes.path) {
+        runtime.CSSPropertySyntaxFactory['<path>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      // @ts-ignore
+      if (attributes.points) {
+        runtime.CSSPropertySyntaxFactory['<list-of-points>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      if (attributes.offsetDistance) {
+        runtime.CSSPropertySyntaxFactory['<offset-distance>'].postProcessor(
+          object,
+          attributeNames,
         );
       }
       if (attributes.transform) {
         runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
           object,
-          [],
+          attributeNames,
         );
       }
-
-      // console.log(object.parsedStyle);
-
-      // console.log(attributes);
 
       this.updateGeometry(object);
       return;

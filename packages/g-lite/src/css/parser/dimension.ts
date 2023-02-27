@@ -166,6 +166,40 @@ export function convertAngleUnit(value: CSSUnitValue) {
   return deg;
 }
 
+export function parseDimensionArrayFormat(
+  string: string | number | (string | number)[],
+  size: number,
+): number[] {
+  let parsed: number[];
+
+  if (isString(string)) {
+    parsed = string.split(' ').map((segment) => Number(segment));
+  } else if (isNumber(string)) {
+    parsed = [string];
+  } else {
+    // [1, '2px', 3]
+    parsed = string.map((segment) => Number(segment));
+  }
+
+  if (size === 2) {
+    if (parsed.length === 1) {
+      return [parsed[0], parsed[0]];
+    } else {
+      return [parsed[0], parsed[1]];
+    }
+  } else {
+    if (parsed.length === 1) {
+      return [parsed[0], parsed[0], parsed[0], parsed[0]];
+    } else if (parsed.length === 2) {
+      return [parsed[0], parsed[1], parsed[0], parsed[1]];
+    } else if (parsed.length === 3) {
+      return [parsed[0], parsed[1], parsed[2], parsed[1]];
+    } else {
+      return [parsed[0], parsed[1], parsed[2], parsed[3]];
+    }
+  }
+}
+
 export function parseDimensionArray(
   string: string | (string | number)[],
 ): CSSUnitValue[] {
