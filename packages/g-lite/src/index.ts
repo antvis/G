@@ -25,6 +25,7 @@ export {
   parseLength,
   mergeColors,
   parseTransform,
+  ParsedTransform,
   Pattern,
   propertyMetadataCache,
   PropertySyntax,

@@ -182,7 +182,57 @@ export class SelectablePlugin implements RenderingPlugin {
 
     this.brush.setCanvas(canvas);
 
+    // 基于 RBush 空间索引进行快速区域查询
+    const regionQuery = (toolstate: any) => {
+      const { path } = toolstate;
+      const [tl] = path;
+      const { x, y } = tl;
+      const width = getWidthFromBbox(path);
+      const height = getHeightFromBbox(path);
+
+      return document
+        .elementsFromBBox(x, y, x + width, y + height)
+        .filter((intersection) => {
+          const { minX, minY, maxX, maxY } = intersection.rBushNode.aabb;
+          // @see https://github.com/antvis/G/issues/1242
+          const isTotallyContains =
+            minX < x && minY < y && maxX > x + width && maxY > y + height;
+          return !isTotallyContains && intersection.style.selectable;
+        });
+    };
+
+    // 按照框选过程排序后的选中图形列表
+    let selectedStack: DisplayObject[][] = [];
+    const isSameStackItem = (a: DisplayObject[], b: DisplayObject[]) => {
+      if (a.length === 0 && b.length === 0) {
+        return true;
+      }
+
+      if (a.length !== b.length) {
+        return false;
+      }
+
+      return a.every((o, i) => o === b[i]);
+    };
+
+    const sortSelectedStack = (stack: DisplayObject[][]) => {
+      for (let i = 0; i < stack.length; i++) {
+        const prev = stack[i - 1];
+        if (prev) {
+          stack[i].sort((a, b) => {
+            const indexA = prev.indexOf(a);
+            const indexB = prev.indexOf(b);
+            return (
+              (indexA === -1 ? Infinity : indexA) -
+              (indexB === -1 ? Infinity : indexB)
+            );
+          });
+        }
+      }
+    };
+
     const onStart = (toolstate: any) => {
+      selectedStack = [];
       this.renderDrawer(toolstate);
     };
 
@@ -191,30 +241,21 @@ export class SelectablePlugin implements RenderingPlugin {
     };
 
     const onModify = (toolstate: any) => {
+      const selected = regionQuery(toolstate);
+      const last = selectedStack[selectedStack.length - 1];
+      if (!last || !isSameStackItem(selected, last)) {
+        selectedStack.push(selected);
+      }
       this.renderDrawer(toolstate);
     };
 
     const onComplete = (toolstate: any) => {
       this.hideDrawer(toolstate);
 
-      const { path } = toolstate;
-      const [tl] = path;
-      const { x, y } = tl;
-      const width = getWidthFromBbox(path);
-      const height = getHeightFromBbox(path);
-
-      document
-        .elementsFromBBox(x, y, x + width, y + height)
-        .filter((intersection) => {
-          const { minX, minY, maxX, maxY } = intersection.rBushNode.aabb;
-          // @see https://github.com/antvis/G/issues/1242
-          const isTotallyContains =
-            minX < x && minY < y && maxX > x + width && maxY > y + height;
-          return !isTotallyContains && intersection.style.selectable;
-        })
-        .forEach((selected) => {
-          this.selectDisplayObject(selected);
-        });
+      sortSelectedStack(selectedStack);
+      selectedStack[selectedStack.length - 1].forEach((selected) => {
+        this.selectDisplayObject(selected);
+      });
     };
 
     const onCancel = (toolstate: any) => {
