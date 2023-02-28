@@ -78,6 +78,13 @@
         "zh": "大量文本",
         "en": "Instanced Text"
       }
+    },
+    {
+      "filename": "disable-css.js",
+      "title": {
+        "zh": "关闭 CSS 解析",
+        "en": "Disable CSS parsing"
+      }
     }
   ]
 }

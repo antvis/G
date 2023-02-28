@@ -1,5 +1,8 @@
-import { isNil } from '@antv/util';
-import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
+import { isNil, isNumber } from '@antv/util';
+import type {
+  DisplayObject,
+  ParsedTextStyleProps,
+} from '../../display-objects';
 import { CSSUnitValue, UnitType } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import type { StyleValueRegistry } from '../interfaces';
@@ -14,7 +17,9 @@ function getFontSize(object: DisplayObject): number {
 /**
  * <length> & <percentage>
  */
-export class CSSPropertyLengthOrPercentage implements Partial<CSSProperty<CSSUnitValue, number>> {
+export class CSSPropertyLengthOrPercentage
+  implements Partial<CSSProperty<CSSUnitValue, number>>
+{
   parser = parseLengthOrPercentage;
 
   mixer = mergeNumbers;
@@ -32,6 +37,10 @@ export class CSSPropertyLengthOrPercentage implements Partial<CSSProperty<CSSUni
     object: DisplayObject,
     registry: StyleValueRegistry,
   ): number {
+    if (isNumber(computed)) {
+      return computed;
+    }
+
     if (CSSUnitValue.isRelativeUnit(computed.unit)) {
       if (computed.unit === UnitType.kPercentage) {
         // TODO: merge dimensions
@@ -51,7 +60,9 @@ export class CSSPropertyLengthOrPercentage implements Partial<CSSProperty<CSSUni
         return 0;
       } else if (computed.unit === UnitType.kRems) {
         if (object?.ownerDocument?.documentElement) {
-          let fontSize = getFontSize(object.ownerDocument.documentElement as DisplayObject);
+          let fontSize = getFontSize(
+            object.ownerDocument.documentElement as DisplayObject,
+          );
 
           if (fontSize) {
             fontSize *= computed.value;

@@ -66,6 +66,7 @@ export interface GlobalRuntime {
     Partial<CSSProperty<any, any>>
   >;
   globalThis: any;
+  enableCSSParsing: boolean;
 }
 
 /**
@@ -164,3 +165,4 @@ runtime.CSSPropertySyntaxFactory = CSSPropertySyntaxFactory;
 runtime.styleValueRegistry = new DefaultStyleValueRegistry();
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
+runtime.enableCSSParsing = true;

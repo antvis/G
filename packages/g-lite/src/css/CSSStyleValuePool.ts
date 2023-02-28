@@ -35,11 +35,18 @@ export const getOrCreateRGBA = memoize(
   },
 );
 
-export const getOrCreateUnitValue = memoize(
-  (value: number, unitOrName: UnitType | string = UnitType.kNumber) => {
-    return new CSSUnitValue(value, unitOrName);
-  },
-  (value: number, unitOrName: UnitType | string = UnitType.kNumber) => {
-    return `${value}${unitOrName}`;
-  },
-);
+// export const getOrCreateUnitValue = memoize(
+//   (value: number, unitOrName: UnitType | string = UnitType.kNumber) => {
+//     return new CSSUnitValue(value, unitOrName);
+//   },
+//   (value: number, unitOrName: UnitType | string = UnitType.kNumber) => {
+//     return `${value}${unitOrName}`;
+//   },
+// );
+
+export const getOrCreateUnitValue = (
+  value: number,
+  unitOrName: UnitType | string = UnitType.kNumber,
+) => {
+  return new CSSUnitValue(value, unitOrName);
+};

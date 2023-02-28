@@ -1,5 +1,5 @@
 import { isNil } from '@antv/util';
-import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 import type {
   Cullable,
   Geometry,
@@ -103,16 +103,27 @@ export class Element<
     dirtyFlag: false,
     localDirtyFlag: false,
     frozen: false,
-    localPosition: vec3.fromValues(0, 0, 0),
-    localRotation: quat.fromValues(0, 0, 0, 1),
-    localScale: vec3.fromValues(1, 1, 1),
+    // localPosition: vec3.fromValues(0, 0, 0),
+    // localRotation: quat.fromValues(0, 0, 0, 1),
+    // localScale: vec3.fromValues(1, 1, 1),
+    // localTransform: mat4.create(),
+    // localSkew: vec2.fromValues(0, 0),
+    // position: vec3.fromValues(0, 0, 0),
+    // rotation: quat.fromValues(0, 0, 0, 1),
+    // scaling: vec3.fromValues(1, 1, 1),
+    // worldTransform: mat4.create(),
+    // origin: vec3.fromValues(0, 0, 0),
+
+    localPosition: [0, 0, 0],
+    localRotation: [0, 0, 0, 1],
+    localScale: [1, 1, 1],
     localTransform: mat4.create(),
-    localSkew: vec2.fromValues(0, 0),
-    position: vec3.fromValues(0, 0, 0),
-    rotation: quat.fromValues(0, 0, 0, 1),
-    scaling: vec3.fromValues(1, 1, 1),
+    localSkew: [0, 0],
+    position: [0, 0, 0],
+    rotation: [0, 0, 0, 1],
+    scaling: [1, 1, 1],
     worldTransform: mat4.create(),
-    origin: vec3.fromValues(0, 0, 0),
+    origin: [0, 0, 0],
   };
 
   sortable: Sortable = {
@@ -274,19 +285,23 @@ export class Element<
    * Remove all children which can be appended to its original parent later again.
    */
   removeChildren() {
-    this.childNodes.slice().forEach((child) => {
+    for (let i = this.childNodes.length - 1; i >= 0; i--) {
+      const child = this.childNodes[i] as this;
       this.removeChild(child);
-    });
+    }
   }
 
   /**
    * Recursively destroy all children which can not be appended to its original parent later again.
    */
   destroyChildren() {
-    this.childNodes.slice().forEach((child: this) => {
-      child.destroyChildren();
+    for (let i = this.childNodes.length - 1; i >= 0; i--) {
+      const child = this.childNodes[i] as this;
+      if (child.childNodes.length) {
+        child.destroyChildren();
+      }
       child.destroy();
-    });
+    }
   }
 
   /**
@@ -500,33 +515,35 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
-  computedStyle: any = {
-    anchor: unsetKeywordValue,
-    opacity: unsetKeywordValue,
-    fillOpacity: unsetKeywordValue,
-    strokeOpacity: unsetKeywordValue,
-    fill: unsetKeywordValue,
-    stroke: unsetKeywordValue,
-    transform: unsetKeywordValue,
-    transformOrigin: unsetKeywordValue,
-    visibility: unsetKeywordValue,
-    pointerEvents: unsetKeywordValue,
-    lineWidth: unsetKeywordValue,
-    lineCap: unsetKeywordValue,
-    lineJoin: unsetKeywordValue,
-    increasedLineWidthForHitTesting: unsetKeywordValue,
-    fontSize: unsetKeywordValue,
-    fontFamily: unsetKeywordValue,
-    fontStyle: unsetKeywordValue,
-    fontWeight: unsetKeywordValue,
-    fontVariant: unsetKeywordValue,
-    textAlign: unsetKeywordValue,
-    textBaseline: unsetKeywordValue,
-    textTransform: unsetKeywordValue,
-    zIndex: unsetKeywordValue,
-    filter: unsetKeywordValue,
-    shadowType: unsetKeywordValue,
-  };
+  computedStyle: any = runtime.enableCSSParsing
+    ? {
+        anchor: unsetKeywordValue,
+        opacity: unsetKeywordValue,
+        fillOpacity: unsetKeywordValue,
+        strokeOpacity: unsetKeywordValue,
+        fill: unsetKeywordValue,
+        stroke: unsetKeywordValue,
+        transform: unsetKeywordValue,
+        transformOrigin: unsetKeywordValue,
+        visibility: unsetKeywordValue,
+        pointerEvents: unsetKeywordValue,
+        lineWidth: unsetKeywordValue,
+        lineCap: unsetKeywordValue,
+        lineJoin: unsetKeywordValue,
+        increasedLineWidthForHitTesting: unsetKeywordValue,
+        fontSize: unsetKeywordValue,
+        fontFamily: unsetKeywordValue,
+        fontStyle: unsetKeywordValue,
+        fontWeight: unsetKeywordValue,
+        fontVariant: unsetKeywordValue,
+        textAlign: unsetKeywordValue,
+        textBaseline: unsetKeywordValue,
+        textTransform: unsetKeywordValue,
+        zIndex: unsetKeywordValue,
+        filter: unsetKeywordValue,
+        shadowType: unsetKeywordValue,
+      }
+    : null;
 
   /**
    * Renderers will use these used values.

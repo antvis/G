@@ -39,7 +39,8 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
     // get VP matrix from camera
     const frustum = camera.getFrustum();
 
-    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable?.visibilityPlaneMask;
+    const parentVisibilityPlaneMask = (object.parentNode as Element)?.cullable
+      ?.visibilityPlaneMask;
     cullable.visibilityPlaneMask = this.computeVisibilityWithPlaneMask(
       object,
       renderBounds,
@@ -102,10 +103,16 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
       // p-vertex n-vertex <-|plane p-vertex n-vertex
       // 使用 p-vertex 和 n-vertex 加速，避免进行平面和 aabb 全部顶点的相交检测
       const { normal, distance } = planes[k];
-      if (vec3.dot(normal, aabb.getPositiveFarPoint(planes[k])) + distance < 0) {
+      if (
+        vec3.dot(normal, aabb.getPositiveFarPoint(planes[k])) + distance <
+        0
+      ) {
         return Mask.OUTSIDE;
       }
-      if (vec3.dot(normal, aabb.getNegativeFarPoint(planes[k])) + distance < 0) {
+      if (
+        vec3.dot(normal, aabb.getNegativeFarPoint(planes[k])) + distance <
+        0
+      ) {
         // 和当前面相交，对应位置为1，继续检测下一个面
         mask |= flag;
       }

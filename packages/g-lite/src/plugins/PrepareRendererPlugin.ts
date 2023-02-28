@@ -53,8 +53,10 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
-      // recalc style values
-      runtime.styleValueRegistry.recalc(object);
+      if (runtime.enableCSSParsing) {
+        // recalc style values
+        runtime.styleValueRegistry.recalc(object);
+      }
 
       runtime.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
@@ -100,6 +102,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
+
+      this.toSync.clear();
     });
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {

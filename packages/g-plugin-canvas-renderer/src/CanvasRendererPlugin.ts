@@ -205,7 +205,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const context = contextService.getContext();
       // clear & clip dirty rectangle
       const dpr = contextService.getDPR();
-      mat4.fromScaling(this.dprMatrix, vec3.fromValues(dpr, dpr, 1));
+      mat4.fromScaling(this.dprMatrix, [dpr, dpr, 1]);
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
@@ -217,8 +217,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           ...this.removedRBushNodeAABBs.map(({ minX, minY, maxX, maxY }) => {
             const aabb = new AABB();
             aabb.setMinMax(
-              vec3.fromValues(minX, minY, 0),
-              vec3.fromValues(maxX, maxY, 0),
+              // vec3.fromValues(minX, minY, 0),
+              // vec3.fromValues(maxX, maxY, 0),
+              [minX, minY, 0],
+              [maxX, maxY, 0],
             );
             return aabb;
           }),
@@ -233,24 +235,20 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         const dirtyRect = this.convertAABB2Rect(dirtyRenderBounds);
         const { x, y, width, height } = dirtyRect;
 
-        const tl = vec3.transformMat4(
-          this.vec3a,
-          vec3.fromValues(x, y, 0),
-          this.vpMatrix,
-        );
+        const tl = vec3.transformMat4(this.vec3a, [x, y, 0], this.vpMatrix);
         const tr = vec3.transformMat4(
           this.vec3b,
-          vec3.fromValues(x + width, y, 0),
+          [x + width, y, 0],
           this.vpMatrix,
         );
         const bl = vec3.transformMat4(
           this.vec3c,
-          vec3.fromValues(x, y + height, 0),
+          [x, y + height, 0],
           this.vpMatrix,
         );
         const br = vec3.transformMat4(
           this.vec3d,
-          vec3.fromValues(x + width, y + height, 0),
+          [x + width, y + height, 0],
           this.vpMatrix,
         );
 

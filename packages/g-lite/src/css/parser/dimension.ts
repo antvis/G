@@ -78,12 +78,20 @@ export const parserPercentage = memoize((css: string) => {
  *
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
-export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
+// export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
+//   if (isNumber(css) || isFinite(Number(css))) {
+//     return getOrCreateUnitValue(Number(css), 'px');
+//   }
+//   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
+// });
+
+export const parseLengthOrPercentage = (css: string): CSSUnitValue => {
   if (isNumber(css) || isFinite(Number(css))) {
     return getOrCreateUnitValue(Number(css), 'px');
+    // return Number(css);
   }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
-});
+};
 
 export const parseAngle = memoize((css: string): CSSUnitValue => {
   return parseDimension(
@@ -156,6 +164,40 @@ export function convertAngleUnit(value: CSSUnitValue) {
     deg = turn2deg(Number(value.value));
   }
   return deg;
+}
+
+export function parseDimensionArrayFormat(
+  string: string | number | (string | number)[],
+  size: number,
+): number[] {
+  let parsed: number[];
+
+  if (isString(string)) {
+    parsed = string.split(' ').map((segment) => Number(segment));
+  } else if (isNumber(string)) {
+    parsed = [string];
+  } else {
+    // [1, '2px', 3]
+    parsed = string.map((segment) => Number(segment));
+  }
+
+  if (size === 2) {
+    if (parsed.length === 1) {
+      return [parsed[0], parsed[0]];
+    } else {
+      return [parsed[0], parsed[1]];
+    }
+  } else {
+    if (parsed.length === 1) {
+      return [parsed[0], parsed[0], parsed[0], parsed[0]];
+    } else if (parsed.length === 2) {
+      return [parsed[0], parsed[1], parsed[0], parsed[1]];
+    } else if (parsed.length === 3) {
+      return [parsed[0], parsed[1], parsed[2], parsed[1]];
+    } else {
+      return [parsed[0], parsed[1], parsed[2], parsed[3]];
+    }
+  }
 }
 
 export function parseDimensionArray(

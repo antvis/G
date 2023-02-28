@@ -345,7 +345,10 @@ export class Canvas extends EventTarget implements ICanvas {
     return this.readyPromise;
   }
 
-  destroy(destroyScenegraph = true, skipTriggerEvent = false) {
+  /**
+   * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
+   */
+  destroy(cleanUp = true, skipTriggerEvent = false) {
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
@@ -358,11 +361,8 @@ export class Canvas extends EventTarget implements ICanvas {
     // unmount all children
     const root = this.getRoot();
     this.unmountChildren(root);
-    // root.children.forEach((child: DisplayObject) => {
-    //   this.unmountChildren(child);
-    // });
 
-    if (destroyScenegraph) {
+    if (cleanUp) {
       // destroy Document
       this.document.destroy();
       this.getEventService().destroy();
@@ -373,7 +373,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().destroy();
 
     // clear root after renderservice destroyed
-    if (destroyScenegraph && this.context.rBushRoot) {
+    if (cleanUp && this.context.rBushRoot) {
       // clear rbush
       this.context.rBushRoot.clear();
       this.context.rBushRoot = null;
@@ -447,6 +447,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   /**
    * Recursively destroy all children which can not be appended to its original parent later again.
+   * But the canvas remains running which means display objects can be appended later.
    */
   destroyChildren() {
     this.document.documentElement.destroyChildren();

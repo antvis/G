@@ -11,7 +11,6 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
-import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import sinonChai from 'sinon-chai';
 
@@ -46,10 +45,10 @@ describe('DisplayObject Node API', () => {
 
     group1.setPosition(0, 0);
 
-    expect(group1.getPosition()).to.eqls(vec3.create());
-    expect(group2.getPosition()).to.eqls(vec3.create());
-    expect(group1.getLocalPosition()).to.eqls(vec3.create());
-    expect(group2.getLocalPosition()).to.eqls(vec3.create());
+    expect(group1.getPosition()).to.eqls([0, 0, 0]);
+    expect(group2.getPosition()).to.eqls([0, 0, 0]);
+    expect(group1.getLocalPosition()).to.eqls([0, 0, 0]);
+    expect(group2.getLocalPosition()).to.eqls([0, 0, 0]);
 
     // group1 -> group2
     group1.add(group2);
@@ -58,18 +57,18 @@ describe('DisplayObject Node API', () => {
     group1.translate([10, 0, 0]);
 
     // group2's world transform should be the same with group1
-    expect(group1.getPosition()).to.eqls(vec3.fromValues(10, 0, 0));
-    expect(group2.getPosition()).to.eqls(vec3.fromValues(10, 0, 0));
-    expect(group1.getLocalPosition()).to.eqls(vec3.fromValues(10, 0, 0));
-    expect(group2.getLocalPosition()).to.eqls(vec3.create());
+    expect(group1.getPosition()).to.eqls([10, 0, 0]);
+    expect(group2.getPosition()).to.eqls([10, 0, 0]);
+    expect(group1.getLocalPosition()).to.eqls([10, 0, 0]);
+    expect(group2.getLocalPosition()).to.eqls([0, 0, 0]);
 
     // now move group2 to (20, 0, 0) in local space
     group2.translateLocal([10, 0, 0]);
 
     // group1's position (10, 0, 0)
     // group2's position (20, 0, 0)
-    expect(group1.getPosition()).to.eqls(vec3.fromValues(10, 0, 0));
-    expect(group2.getPosition()).to.eqls(vec3.fromValues(20, 0, 0));
+    expect(group1.getPosition()).to.eqls([10, 0, 0]);
+    expect(group2.getPosition()).to.eqls([20, 0, 0]);
 
     // move group1 to (10, 10, 10)
     group1.move(10, 10, 10);
@@ -84,17 +83,17 @@ describe('DisplayObject Node API', () => {
     group2.setLocalPosition([0, 0, 0]);
     group2.setLocalPosition([0, 0]);
 
-    expect(group1.getPosition()).to.eqls(vec3.fromValues(10, 10, 10));
-    expect(group2.getPosition()).to.eqls(vec3.fromValues(10, 10, 10));
+    expect(group1.getPosition()).to.eqls([10, 10, 10]);
+    expect(group2.getPosition()).to.eqls([10, 10, 10]);
   });
 
   it('should update scaling with its parent group', () => {
     const group1 = new DisplayObject({});
     const group2 = new DisplayObject({});
 
-    expect(group1.getScale()).to.eqls(vec3.fromValues(1, 1, 1));
-    expect(group2.getScale()).to.eqls(vec3.fromValues(1, 1, 1));
-    expect(group1.getLocalScale()).to.eqls(vec3.fromValues(1, 1, 1));
+    expect(group1.getScale()).to.eqls([1, 1, 1]);
+    expect(group2.getScale()).to.eqls([1, 1, 1]);
+    expect(group1.getLocalScale()).to.eqls([1, 1, 1]);
 
     // group1 -> group2
     group1.add(group2);
@@ -105,8 +104,8 @@ describe('DisplayObject Node API', () => {
     group1.scale([1, 1]);
 
     // group2's world transform should be the same with group1
-    expect(group1.getScale()).to.eqls(vec3.fromValues(10, 10, 10));
-    expect(group2.getScale()).to.eqls(vec3.fromValues(10, 10, 10));
+    expect(group1.getScale()).to.eqls([10, 10, 10]);
+    expect(group2.getScale()).to.eqls([10, 10, 10]);
 
     // now scale group2 in local space
     group2.setLocalScale(2);
@@ -114,17 +113,17 @@ describe('DisplayObject Node API', () => {
 
     // group1's scaling (10)
     // group2's scaling (20)
-    expect(group1.getScale()).to.eqls(vec3.fromValues(10, 10, 10));
-    expect(group2.getScale()).to.eqls(vec3.fromValues(20, 20, 20));
+    expect(group1.getScale()).to.eqls([10, 10, 10]);
+    expect(group2.getScale()).to.eqls([20, 20, 20]);
 
     // remove group2 from group1
     group1.removeChild(group2);
     group1.removeChildren();
 
-    expect(group1.getScale()).to.eqls(vec3.fromValues(10, 10, 10));
+    expect(group1.getScale()).to.eqls([10, 10, 10]);
     // should not keep scaling when detached
     // @see https://github.com/antvis/g/issues/935
-    expect(group2.getScale()).to.eqls(vec3.fromValues(2, 2, 2));
+    expect(group2.getScale()).to.eqls([2, 2, 2]);
   });
 
   it('should update rotation with its parent group', () => {

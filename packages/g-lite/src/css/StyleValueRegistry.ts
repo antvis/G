@@ -1,10 +1,14 @@
 import { isNil } from '@antv/util';
-import { vec3 } from 'gl-matrix';
-import type { DisplayObject } from '../display-objects';
+// import { vec3 } from 'gl-matrix';
+import { DisplayObject, EMPTY_PARSED_PATH } from '../display-objects';
 import { AABB } from '../shapes';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import type {
+  BaseStyleProps,
+  ParsedBaseStyleProps,
+  Tuple3Number,
+} from '../types';
 import { Shape } from '../types';
-import { formatAttributeName, isFunction } from '../utils';
+import { addVec3, formatAttributeName, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
@@ -14,8 +18,19 @@ import type {
   StyleValueRegistry,
 } from './interfaces';
 import { PropertySyntax } from './interfaces';
-import type { ParsedFilterStyleProperty } from './parser';
-import { convertPercentUnit } from './parser/dimension';
+import {
+  parseColor,
+  ParsedFilterStyleProperty,
+  parseFilter,
+  parsePath,
+  parsePoints,
+  parseTransform,
+  parseTransformOrigin,
+} from './parser';
+import {
+  convertPercentUnit,
+  parseDimensionArrayFormat,
+} from './parser/dimension';
 import { runtime } from '../global-runtime';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
@@ -599,9 +614,9 @@ export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
 // const uniqueAttributeSet = new Set<string>();
 
-const tmpVec3a = vec3.create();
-const tmpVec3b = vec3.create();
-const tmpVec3c = vec3.create();
+// const tmpVec3a = vec3.create();
+// const tmpVec3b = vec3.create();
+// const tmpVec3c = vec3.create();
 
 const isPropertyResolved = (object: DisplayObject, name: string) => {
   const properties = unresolvedProperties.get(object);
@@ -657,6 +672,244 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       usedAttributes: [],
     },
   ) {
+    if (!runtime.enableCSSParsing) {
+      // alias
+      // @ts-ignore
+      if (attributes.src) {
+        // @ts-ignore
+        attributes.img = attributes.src;
+      }
+      // @ts-ignore
+      if (attributes.d) {
+        // @ts-ignore
+        attributes.path = attributes.d;
+      }
+      if (attributes.strokeDasharray) {
+        attributes.lineDash = attributes.strokeDasharray;
+      }
+      if (attributes.strokeWidth) {
+        attributes.lineWidth = attributes.strokeWidth;
+      }
+      // @ts-ignore
+      if (attributes.textAnchor) {
+        // @ts-ignore
+        attributes.textAlign = attributes.textAnchor;
+      }
+
+      Object.assign(object.attributes, attributes);
+      const attributeNames = Object.keys(attributes);
+
+      // clipPath
+      const oldClipPath = object.parsedStyle.clipPath;
+      const oldOffsetPath = object.parsedStyle.offsetPath;
+
+      object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+
+      if (attributes.fill) {
+        object.parsedStyle.fill = parseColor(attributes.fill);
+      }
+      if (attributes.stroke) {
+        object.parsedStyle.stroke = parseColor(attributes.stroke);
+      }
+      if (attributes.shadowColor) {
+        object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
+      }
+      if (attributes.filter) {
+        object.parsedStyle.filter = parseFilter(attributes.filter);
+      }
+      // Rect
+      // @ts-ignore
+      if (attributes.radius) {
+        // @ts-ignore
+        object.parsedStyle.radius = parseDimensionArrayFormat(
+          // @ts-ignore
+          attributes.radius,
+          4,
+        );
+      }
+      // Polyline
+      if (attributes.lineDash) {
+        object.parsedStyle.lineDash = parseDimensionArrayFormat(
+          attributes.lineDash,
+          2,
+        );
+      }
+      // @ts-ignore
+      if (attributes.points) {
+        // @ts-ignore
+        object.parsedStyle.points = parsePoints(attributes.points, object);
+      }
+      // Path
+      // @ts-ignore
+      if (attributes.path === '') {
+        object.parsedStyle.path = {
+          ...EMPTY_PARSED_PATH,
+        };
+      }
+      // @ts-ignore
+      if (attributes.path) {
+        object.parsedStyle.path = parsePath(
+          // @ts-ignore
+          attributes.path,
+          object,
+        );
+      }
+      // Text
+      if (attributes.textTransform) {
+        runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
+          null,
+          null,
+          { value: attributes.textTransform },
+          object,
+          null,
+        );
+      }
+      if (attributes.clipPath) {
+        runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+          'clipPath',
+          oldClipPath,
+          attributes.clipPath,
+          object,
+          this,
+        );
+      }
+      if (attributes.offsetPath) {
+        runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+          'offsetPath',
+          oldOffsetPath,
+          attributes.offsetPath,
+          object,
+          this,
+        );
+      }
+      if (attributes.anchor) {
+        object.parsedStyle.anchor = parseDimensionArrayFormat(
+          // @ts-ignorex
+          attributes.anchor,
+          2,
+        );
+      }
+      if (attributes.transform) {
+        object.parsedStyle.transform = parseTransform(attributes.transform);
+      }
+      if (attributes.transformOrigin) {
+        object.parsedStyle.transformOrigin = parseTransformOrigin(
+          attributes.transformOrigin,
+        );
+      }
+      // Marker
+      // @ts-ignore
+      if (attributes.markerStart) {
+        // @ts-ignore
+        object.parsedStyle.markerStart = runtime.CSSPropertySyntaxFactory[
+          '<marker>'
+        ].calculator(
+          null,
+          // @ts-ignore
+          attributes.markerStart,
+          // @ts-ignore
+          attributes.markerStart,
+          null,
+          null,
+        );
+      }
+      // @ts-ignore
+      if (attributes.markerEnd) {
+        // @ts-ignore
+        object.parsedStyle.markerEnd = runtime.CSSPropertySyntaxFactory[
+          '<marker>'
+        ].calculator(
+          null,
+          // @ts-ignore
+          attributes.markerEnd,
+          // @ts-ignore
+          attributes.markerEnd,
+          null,
+          null,
+        );
+      }
+      // @ts-ignore
+      if (attributes.markerMid) {
+        // @ts-ignore
+        object.parsedStyle.markerMid = runtime.CSSPropertySyntaxFactory[
+          '<marker>'
+        ].calculator(
+          '',
+          // @ts-ignore
+          attributes.markerMid,
+          // @ts-ignore
+          attributes.markerMid,
+          null,
+          null,
+        );
+      }
+
+      if (
+        // @ts-ignore
+        attributes.cx ||
+        // @ts-ignore
+        attributes.cy ||
+        // @ts-ignore
+        attributes.x ||
+        // @ts-ignore
+        attributes.y ||
+        // @ts-ignore
+        attributes.z ||
+        // @ts-ignore
+        attributes.x1 ||
+        // @ts-ignore
+        attributes.y1 ||
+        // @ts-ignore
+        attributes.z1 ||
+        // @ts-ignore
+        attributes.x2 ||
+        // @ts-ignore
+        attributes.y2 ||
+        // @ts-ignore
+        attributes.z2
+      ) {
+        runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      if (attributes.zIndex) {
+        runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      // @ts-ignore
+      if (attributes.path) {
+        runtime.CSSPropertySyntaxFactory['<path>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      // @ts-ignore
+      if (attributes.points) {
+        runtime.CSSPropertySyntaxFactory['<list-of-points>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      if (attributes.offsetDistance) {
+        runtime.CSSPropertySyntaxFactory['<offset-distance>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+      if (attributes.transform) {
+        runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
+          object,
+          attributeNames,
+        );
+      }
+
+      this.updateGeometry(object);
+      return;
+    }
+
     const {
       skipUpdateAttribute,
       skipParse,
@@ -706,21 +959,21 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
 
-    [
-      'path',
-      'points',
-      'text',
-      'textTransform',
-      'anchor',
-      'transform',
-      'transformOrigin',
-    ].forEach((name) => {
-      const index = attributeNames.indexOf(name);
-      if (index > -1) {
-        attributeNames.splice(index, 1);
-        attributeNames.push(name);
-      }
-    });
+    // [
+    //   'path',
+    //   'points',
+    //   'text',
+    //   'textTransform',
+    //   'anchor',
+    //   'transform',
+    //   'transformOrigin',
+    // ].forEach((name) => {
+    //   const index = attributeNames.indexOf(name);
+    //   if (index > -1) {
+    //     attributeNames.splice(index, 1);
+    //     attributeNames.push(name);
+    //   }
+    // });
 
     attributeNames.forEach((name) => {
       // some style props maybe deleted after parsing such as `anchor` in Text
@@ -749,7 +1002,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     });
 
-    if (object.children.length) {
+    if (runtime.enableCSSParsing && object.children.length) {
       attributeNames.forEach((name) => {
         if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
           // update children's inheritable
@@ -991,12 +1244,17 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const flipX = height < 0;
 
       // init with content box
-      const halfExtents = vec3.set(
-        tmpVec3a,
+      const halfExtents: Tuple3Number = [
         Math.abs(width) / 2,
         Math.abs(height) / 2,
         depth / 2,
-      );
+      ];
+      // const halfExtents = vec3.set(
+      //   tmpVec3a,
+      //   Math.abs(width) / 2,
+      //   Math.abs(height) / 2,
+      //   depth / 2,
+      // );
 
       // anchor is center by default, don't account for lineWidth here
       const {
@@ -1018,12 +1276,18 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         delete parsedStyle.anchor;
       }
 
-      const center = vec3.set(
-        tmpVec3b,
+      const center: Tuple3Number = [
         ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
         ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
         (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
-      );
+      ];
+
+      // const center = vec3.set(
+      //   tmpVec3b,
+      //   ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
+      //   ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
+      //   (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
+      // );
 
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
@@ -1052,11 +1316,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         // halfExtents[0] += halfLineWidth[0];
         // halfExtents[1] += halfLineWidth[1];
 
-        vec3.add(
-          halfExtents,
-          halfExtents,
-          vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
-        );
+        halfExtents[0] += halfLineWidth;
+        halfExtents[1] += halfLineWidth;
+
+        // vec3.add(
+        //   halfExtents,
+        //   halfExtents,
+        //   vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
+        // );
       }
       geometry.renderBounds.update(center, halfExtents);
 
@@ -1088,11 +1355,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           const blurRadius = params[0].value as number;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
-            vec3.add(
+            addVec3(
               geometry.renderBounds.halfExtents,
               geometry.renderBounds.halfExtents,
-              vec3.fromValues(blurRadius, blurRadius, 0),
+              [blurRadius, blurRadius, 0],
             ),
+            // vec3.add(
+            //   geometry.renderBounds.halfExtents,
+            //   geometry.renderBounds.halfExtents,
+            //   vec3.fromValues(blurRadius, blurRadius, 0),
+            // ),
           );
         } else if (name === 'drop-shadow') {
           const shadowOffsetX = params[0].value;
@@ -1117,9 +1389,15 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       // set transform origin
       let usedOriginXValue =
-        (flipY ? -1 : 1) * convertPercentUnit(transformOrigin[0], 0, object);
+        (flipY ? -1 : 1) *
+        (transformOrigin
+          ? convertPercentUnit(transformOrigin[0], 0, object)
+          : 0);
       let usedOriginYValue =
-        (flipX ? -1 : 1) * convertPercentUnit(transformOrigin[1], 1, object);
+        (flipX ? -1 : 1) *
+        (transformOrigin
+          ? convertPercentUnit(transformOrigin[1], 1, object)
+          : 0);
       usedOriginXValue =
         usedOriginXValue -
         (flipY ? -1 : 1) *

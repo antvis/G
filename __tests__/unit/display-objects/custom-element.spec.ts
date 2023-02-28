@@ -4,7 +4,6 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
-import { vec3 } from 'gl-matrix';
 // @ts-ignore
 import sinon from 'sinon';
 // @ts-ignore
@@ -87,7 +86,7 @@ describe('CustomElement', () => {
 
     a.style.x = 50;
     a.style.y = 50;
-    expect(a.getLocalPosition()).to.be.eqls(vec3.fromValues(50, 50, 0));
+    expect(a.getLocalPosition()).to.be.eqls([50, 50, 0]);
 
     expect(a.style.size).to.be.eqls(10);
     a.setAttribute('size', 20);
@@ -139,6 +138,6 @@ describe('CustomElement', () => {
     }
     const a = new ElementB({ style: { size: 10, path: 'M100,100 L200,200' } });
     // conflict with built-in props
-    expect(a.getLocalPosition()).to.be.eqls(vec3.fromValues(0, 0, 0));
+    expect(a.getLocalPosition()).to.be.eqls([0, 0, 0]);
   });
 });

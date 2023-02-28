@@ -1,5 +1,6 @@
 import type { CSSGlobalKeywords, CSSRGB } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
+import { runtime } from '../global-runtime';
 import type { TextMetrics } from '../services';
 import type {
   BaseStyleProps,
@@ -21,7 +22,14 @@ export interface TextStyleProps extends BaseStyleProps {
    * The text-align property sets the horizontal alignment of the inline-level content.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-align
    */
-  textAlign?: CSSGlobalKeywords | 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';
+  textAlign?:
+    | CSSGlobalKeywords
+    | 'start'
+    | 'center'
+    | 'middle'
+    | 'end'
+    | 'left'
+    | 'right';
 
   /**
    * It specifies the current text baseline used when drawing text.
@@ -102,7 +110,13 @@ export interface TextStyleProps extends BaseStyleProps {
    * The font-weight property sets the weight (or boldness) of the font. The weights available depend on the font-family that is currently set.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
    */
-  fontWeight?: CSSGlobalKeywords | 'normal' | 'bold' | 'bolder' | 'lighter' | number;
+  fontWeight?:
+    | CSSGlobalKeywords
+    | 'normal'
+    | 'bold'
+    | 'bolder'
+    | 'lighter'
+    | number;
 
   /**
    * The font-variant shorthand property allows you to set all the font variants for a font.
@@ -168,7 +182,13 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   y: number;
   text: string;
   textAlign?: 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';
-  textBaseline?: 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
+  textBaseline?:
+    | 'top'
+    | 'hanging'
+    | 'middle'
+    | 'alphabetic'
+    | 'ideographic'
+    | 'bottom';
   fontStyle?: 'normal' | 'italic' | 'oblique';
   fontSize?: number;
   fontFamily?: string;
@@ -210,30 +230,54 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
     super({
       type: Shape.TEXT,
-      style: {
-        x: '',
-        y: '',
-        text: '',
-        fontSize: '',
-        fontFamily: '',
-        fontStyle: '',
-        fontWeight: '',
-        fontVariant: '',
-        textAlign: '',
-        textBaseline: '',
-        textTransform: '',
-        fill: 'black',
-        letterSpacing: '',
-        lineHeight: '',
-        miterLimit: '',
-        // whiteSpace: 'pre',
-        wordWrap: false,
-        wordWrapWidth: 0,
-        leading: 0,
-        dx: '',
-        dy: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            x: '',
+            y: '',
+            text: '',
+            fontSize: '',
+            fontFamily: '',
+            fontStyle: '',
+            fontWeight: '',
+            fontVariant: '',
+            textAlign: '',
+            textBaseline: '',
+            textTransform: '',
+            fill: 'black',
+            letterSpacing: '',
+            lineHeight: '',
+            miterLimit: '',
+            // whiteSpace: 'pre',
+            wordWrap: false,
+            wordWrapWidth: 0,
+            leading: 0,
+            dx: '',
+            dy: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
+      initialParsedStyle: runtime.enableCSSParsing
+        ? {}
+        : {
+            fill: 'black',
+            fontSize: 16,
+            fontFamily: 'sans-serif',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontVariant: 'normal',
+            lineHeight: 0,
+            letterSpacing: 0,
+            textBaseline: 'alphabetic',
+            textAlign: 'start',
+            miterLimit: 10,
+            wordWrap: false,
+            wordWrapWidth: 0,
+            leading: 0,
+            dx: 0,
+            dy: 0,
+          },
       ...rest,
     });
   }

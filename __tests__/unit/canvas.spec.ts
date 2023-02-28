@@ -1,5 +1,5 @@
 import type { FederatedPointerEvent } from '@antv/g';
-import { Canvas, CanvasEvent, Circle, Group } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Group, runtime } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import chai, { expect } from 'chai';
@@ -31,6 +31,7 @@ const canvas = new Canvas({
 describe('Canvas', () => {
   afterEach(() => {
     canvas.destroyChildren();
+    expect(runtime.displayObjectPool.getAll().length).eqls(1);
   });
 
   afterAll(() => {
@@ -51,7 +52,7 @@ describe('Canvas', () => {
     expect(beforeDestroyCallback).to.have.been.not.called;
   });
 
-  it('should generate correct composed path', async (done) => {
+  it('should generate correct composed path', (done) => {
     let point = canvas.getClientByPoint(0, 0);
     expect(point.x).eqls(8);
     expect(point.y).eqls(8);
@@ -69,8 +70,22 @@ describe('Canvas', () => {
       },
     });
 
-    await canvas.ready;
     canvas.appendChild(circle);
+
+    setTimeout(() => {
+      const $canvas = canvas.getContextService().getDomElement();
+
+      $canvas.dispatchEvent(
+        // @ts-ignore
+        new PointerEvent('pointerdown', {
+          pointerType: 'mouse',
+          clientX: 100,
+          clientY: 100,
+          screenX: 200,
+          screenY: 200,
+        }),
+      );
+    }, 300);
 
     const handlePointerDown = (e) => {
       // target
@@ -99,21 +114,6 @@ describe('Canvas', () => {
     };
 
     canvas.addEventListener('pointerdown', handlePointerDown, { once: true });
-
-    await sleep(100);
-
-    const $canvas = canvas.getContextService().getDomElement();
-
-    $canvas.dispatchEvent(
-      // @ts-ignore
-      new PointerEvent('pointerdown', {
-        pointerType: 'mouse',
-        clientX: 100,
-        clientY: 100,
-        screenX: 200,
-        screenY: 200,
-      }),
-    );
   });
 
   it('should return Document & Canvas when hit nothing', async (done) => {

@@ -1,7 +1,6 @@
 import { Canvas, Circle, CSS, CSSUnitValue, Line } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -54,11 +53,11 @@ describe('CSSPropertyOffsetDistance', () => {
     // used value
     let used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
     expect(used.equals(CSS.number(0))).to.be.true;
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(0, 0, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([0, 0, 0]);
 
     circle.style.offsetDistance = 1;
     used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
     expect(used.equals(CSS.number(1))).to.be.true;
-    expect(circle.getLocalPosition()).to.be.eqls(vec3.fromValues(100, 100, 0));
+    expect(circle.getLocalPosition()).to.be.eqls([100, 100, 0]);
   });
 });

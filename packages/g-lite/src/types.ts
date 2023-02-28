@@ -1,8 +1,17 @@
 import type { vec2, vec3 } from 'gl-matrix';
 import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';
-import type { CSSGlobalKeywords, CSSGradientValue, CSSRGB, CSSUnitValue } from './css';
-import type { ParsedFilterStyleProperty, ParsedTransform, Pattern } from './css/parser';
+import type {
+  CSSGlobalKeywords,
+  CSSGradientValue,
+  CSSRGB,
+  CSSUnitValue,
+} from './css';
+import type {
+  ParsedFilterStyleProperty,
+  ParsedTransform,
+  Pattern,
+} from './css/parser';
 import type { DisplayObject } from './display-objects';
 
 export enum Shape {
@@ -34,7 +43,12 @@ export interface EventPosition {
 export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
 export type TextOverflow = 'clip' | 'ellipsis' | string;
 export type TextDecorationLine = string | 'none';
-export type TextDecorationStyle = 'solid' | 'double' | 'dotted' | 'dashed' | 'wavy';
+export type TextDecorationStyle =
+  | 'solid'
+  | 'double'
+  | 'dotted'
+  | 'dashed'
+  | 'wavy';
 
 export interface BaseStyleProps {
   class?: string;
@@ -475,7 +489,11 @@ export type TypeEasingFunction = (
   duration?: number,
 ) => number;
 
-export type InteractivePointerEvent = PointerEvent | TouchEvent | MouseEvent | WheelEvent;
+export type InteractivePointerEvent =
+  | PointerEvent
+  | TouchEvent
+  | MouseEvent
+  | WheelEvent;
 
 // @see https://github.com/zhanba/pailye/blob/master/packages/flex/src/types.ts
 export type Tuple4<T> = [T, T, T, T];

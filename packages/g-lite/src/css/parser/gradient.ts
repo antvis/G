@@ -145,7 +145,7 @@ export const parseGradient = memoize((colorStr: string) => {
       const steps = colorStops.map<LinearColorStop>((colorStop) => {
         // TODO: only support % for now, should calc percentage of axis length when using px/em
         return {
-          offset: getOrCreateUnitValue(colorStop.length.value, '%'),
+          offset: getOrCreateUnitValue(Number(colorStop.length.value), '%'),
           color: colorStopToString(colorStop),
         };
       });

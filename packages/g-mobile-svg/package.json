@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-svg",
-  "version": "0.8.37",
+  "version": "0.8.39",
   "description": "A renderer implemented by SVG in mobile environment",
   "keywords": [
     "antv",
@@ -30,9 +30,9 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-plugin-mobile-interaction": "^0.7.38",
-    "@antv/g-plugin-svg-picker": "^1.7.39",
-    "@antv/g-plugin-svg-renderer": "^1.8.37",
+    "@antv/g-plugin-mobile-interaction": "^0.7.39",
+    "@antv/g-plugin-svg-picker": "^1.7.40",
+    "@antv/g-plugin-svg-renderer": "^1.8.39",
     "@antv/util": "^3.3.1",
     "tslib": "^2.3.1"
   },
