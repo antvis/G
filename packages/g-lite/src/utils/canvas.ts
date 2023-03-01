@@ -1,7 +1,4 @@
 import type { Canvas } from '../Canvas';
-import type { isMobileResult } from 'ismobilejs';
-import isMobileCall from 'ismobilejs';
-import { runtime } from '../global-runtime';
 
 const canvasMap: Record<string, Canvas> = {};
 let defaultCanvasIdCounter = 0;
@@ -28,7 +25,3 @@ export function cleanExistedCanvas(
 
 export const isBrowser =
   typeof window !== 'undefined' && typeof window.document !== 'undefined';
-
-export const isMobile: isMobileResult = isMobileCall(
-  runtime.globalThis.navigator,
-);

@@ -79,6 +79,7 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   zIndex: 0,
   filter: [],
   shadowType: 'outer',
+  miterLimit: 10,
 };
 
 const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
