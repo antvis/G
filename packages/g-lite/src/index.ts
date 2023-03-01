@@ -50,6 +50,7 @@ export {
   grad2deg,
   decompose,
   isBrowser,
+  isMobile,
   isFillOrStrokeAffected,
   rad2deg,
   setDOMSize,

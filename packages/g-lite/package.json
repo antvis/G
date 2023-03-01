@@ -38,6 +38,7 @@
     "d3-color": "^1.4.0",
     "eventemitter3": "^4.0.0",
     "gl-matrix": "^3.1.0",
+    "ismobilejs": "^1.1.0",
     "rbush": "^3.0.1",
     "tslib": "^2.3.1"
   },
