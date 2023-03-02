@@ -51,8 +51,8 @@ export class MobileInteractionPlugin implements RenderingPlugin {
         // 否则无法判断是否移出了 canvasEl
         // canvasEl.addEventListener('mousemove', onPointerMove, true);
         // canvasEl.addEventListener('mousedown', onPointerDown, true);
-        // canvasEl.addEventListener('mouseout', onPointerOut, true);
-        // canvasEl.addEventListener('mouseover', onPointerOver, true);
+        canvasEl.addEventListener('mouseout', onPointerOut, true);
+        canvasEl.addEventListener('mouseover', onPointerOver, true);
         // canvasEl.addEventListener('mouseup', onPointerUp, true);
       },
     );
@@ -66,8 +66,8 @@ export class MobileInteractionPlugin implements RenderingPlugin {
 
       // canvasEl.removeEventListener('mousemove', onPointerMove, true);
       // canvasEl.removeEventListener('mousedown', onPointerDown, true);
-      // canvasEl.removeEventListener('mouseout', onPointerOut, true);
-      // canvasEl.removeEventListener('mouseover', onPointerOver, true);
+      canvasEl.removeEventListener('mouseout', onPointerOut, true);
+      canvasEl.removeEventListener('mouseover', onPointerOver, true);
       // canvasEl.removeEventListener('mouseup', onPointerUp, true);
     });
   }
