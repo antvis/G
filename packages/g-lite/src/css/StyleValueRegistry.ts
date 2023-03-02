@@ -719,7 +719,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       // Rect
       // @ts-ignore
-      if (attributes.radius) {
+      if (!isNil(attributes.radius)) {
         // @ts-ignore
         object.parsedStyle.radius = parseDimensionArrayFormat(
           // @ts-ignore
@@ -728,7 +728,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         );
       }
       // Polyline
-      if (attributes.lineDash) {
+      if (!isNil(attributes.lineDash)) {
         object.parsedStyle.lineDash = parseDimensionArrayFormat(
           attributes.lineDash,
           2,
@@ -845,35 +845,46 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
 
       if (
-        // @ts-ignore
-        attributes.cx ||
-        // @ts-ignore
-        attributes.cy ||
-        // @ts-ignore
-        attributes.x ||
-        // @ts-ignore
-        attributes.y ||
-        // @ts-ignore
-        attributes.z ||
-        // @ts-ignore
-        attributes.x1 ||
-        // @ts-ignore
-        attributes.y1 ||
-        // @ts-ignore
-        attributes.z1 ||
-        // @ts-ignore
-        attributes.x2 ||
-        // @ts-ignore
-        attributes.y2 ||
-        // @ts-ignore
-        attributes.z2
+        // Circle & Ellipse
+        ((object.nodeName === Shape.CIRCLE ||
+          object.nodeName === Shape.ELLIPSE) &&
+          // @ts-ignore
+          (!isNil(attributes.cx) ||
+            // @ts-ignore
+            !isNil(attributes.cy))) ||
+        ((object.nodeName === Shape.RECT ||
+          object.nodeName === Shape.IMAGE ||
+          object.nodeName === Shape.GROUP ||
+          object.nodeName === Shape.HTML ||
+          object.nodeName === Shape.TEXT ||
+          object.nodeName === Shape.MESH) &&
+          // @ts-ignore
+          (!isNil(attributes.x) ||
+            // @ts-ignore
+            !isNil(attributes.y) ||
+            // @ts-ignore
+            !isNil(attributes.z))) ||
+        // Line
+        (object.nodeName === Shape.LINE &&
+          // @ts-ignore
+          (!isNil(attributes.x1) ||
+            // @ts-ignore
+            !isNil(attributes.y1) ||
+            // @ts-ignore
+            !isNil(attributes.z1) ||
+            // @ts-ignore
+            !isNil(attributes.x2) ||
+            // @ts-ignore
+            !isNil(attributes.y2) ||
+            // @ts-ignore
+            !isNil(attributes.z2)))
       ) {
         runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
           object,
           attributeNames,
         );
       }
-      if (attributes.zIndex) {
+      if (!isNil(attributes.zIndex)) {
         runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
           object,
           attributeNames,
@@ -893,7 +904,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           attributeNames,
         );
       }
-      if (attributes.offsetDistance) {
+      if (!isNil(attributes.offsetDistance)) {
         runtime.CSSPropertySyntaxFactory['<offset-distance>'].postProcessor(
           object,
           attributeNames,

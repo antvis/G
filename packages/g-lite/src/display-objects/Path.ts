@@ -136,6 +136,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       initialParsedStyle: runtime.enableCSSParsing
         ? null
         : {
+            miterLimit: 4,
             path: {
               ...EMPTY_PARSED_PATH,
             },

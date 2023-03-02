@@ -24,13 +24,15 @@ export class Ellipse extends DisplayObject<
   constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps> = {}) {
     super({
       type: Shape.ELLIPSE,
-      style: {
-        cx: '',
-        cy: '',
-        rx: '',
-        ry: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            cx: '',
+            cy: '',
+            rx: '',
+            ry: '',
+            ...style,
+          }
+        : { ...style },
       initialParsedStyle: {
         anchor: [0.5, 0.5],
         transformOrigin: runtime.enableCSSParsing

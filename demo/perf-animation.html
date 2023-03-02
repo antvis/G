@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>Animation when CSS Parsing disabled</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <!-- <script
+      src="../packages/g/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script> -->
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-svg/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const {
+        Text,
+        Rect,
+        Path,
+        Circle,
+        Group,
+        Canvas,
+        convertToPath,
+        runtime,
+      } = window.G;
+
+      // disable CSS Parsing
+      runtime.enableCSSParsing = false;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+      // const svgRenderer = new window.G.SVG.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+        // renderer: svgRenderer,
+      });
+
+      canvas.addEventListener('ready', () => {
+        const text = new Text({
+          style: {
+            text: 'Test',
+          },
+        });
+        canvas.appendChild(text);
+        text.animate(
+          [
+            { x: 100, y: 100, fill: 'black', opacity: 1 },
+            { x: 300, y: 300, fill: 'red', opacity: 0 },
+          ],
+          {
+            duration: 2000,
+            fill: 'both',
+            iterations: Infinity,
+          },
+        );
+
+        const rect = new Rect({
+          style: {
+            x: 100,
+            y: 100,
+            width: 200,
+            height: 200,
+            fill: 'red',
+            zIndex: -1,
+          },
+        });
+        canvas.appendChild(rect);
+        rect.animate([{ radius: 20 }, { radius: 0 }], {
+          duration: 2000,
+          fill: 'both',
+          iterations: Infinity,
+        });
+
+        /**
+         * Morphing
+         */
+        const rectPathStr = convertToPath(
+          new Rect({
+            style: {
+              x: 300,
+              y: 200,
+              width: 200,
+              height: 100,
+              transformOrigin: 'center',
+            },
+          }),
+        );
+        const circle = new Circle({
+          style: {
+            cx: 100,
+            cy: 100,
+            r: 50,
+          },
+        });
+        circle.scale(2);
+        const circlePathStr = convertToPath(circle);
+        const pathF = new Path({
+          style: {
+            path: rectPathStr,
+            stroke: '#F04864',
+            fill: '',
+            opacity: 0.5,
+            lineWidth: 10,
+          },
+        });
+        canvas.appendChild(pathF);
+        pathF.animate(
+          [
+            { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
+            { path: circlePathStr, stroke: 'blue', fill: '#F04864' },
+          ],
+          {
+            duration: 2500,
+            easing: 'ease',
+            iterations: Infinity,
+            direction: 'alternate',
+          },
+        );
+
+        /**
+         * Ant marching
+         */
+        const circle2 = new Circle({
+          style: {
+            cx: 200,
+            cy: 200,
+            r: 60,
+            stroke: '#F04864',
+            lineWidth: 4,
+            lineDash: [10, 10],
+          },
+        });
+        canvas.appendChild(circle2);
+        circle2.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
+          duration: 500,
+          iterations: Infinity,
+        });
+
+        const path2 = new Path({
+          style: {
+            stroke: 'black',
+            path:
+              'M 100,300' +
+              'l 50,-25' +
+              'a25,25 -30 0,1 50,-25' +
+              'l 50,-25' +
+              'a25,50 -30 0,1 50,-25' +
+              'l 50,-25' +
+              'a25,75 -30 0,1 50,-25' +
+              'l 50,-25' +
+              'a25,100 -30 0,1 50,-25' +
+              'l 50,-25' +
+              'l 0, 200,' +
+              'z',
+          },
+        });
+        canvas.appendChild(path2);
+        const length = path2.getTotalLength();
+        path2.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
+          duration: 3500,
+          easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+          iterations: Infinity,
+          direction: 'alternate',
+        });
+
+        /**
+         * ported from https://github.com/wellyshen/use-web-animations/tree/master/src/animations
+         */
+        const transformOrigin = 'center bottom';
+        const effects = [
+          () => ({
+            name: 'backInDown',
+            keyframes: [
+              {
+                transform: 'translateY(-1200px) scale(0.7)',
+                opacity: 0.7,
+                offset: 0,
+              },
+              {
+                transform: 'translateY(0px) scale(0.7)',
+                opacity: 0.7,
+                offset: 0.8,
+              },
+              { transform: 'translateY(0px)', opacity: 1, offset: 1 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'fadeIn',
+            keyframes: [{ opacity: 0 }, { opacity: 1 }],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'fadeInBottomLeft',
+            keyframes: [
+              { transform: 'translate3d(-100%, 100%, 0)', opacity: 0 },
+              { transform: 'translate3d(0, 0, 0)', opacity: 1 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'fadeInBottomRight',
+            keyframes: [
+              { transform: 'translate3d(100%, 100%, 0)', opacity: 0 },
+              { transform: 'translate3d(0, 0, 0)', opacity: 1 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'fadeOutTopRight',
+            keyframes: [
+              { transform: 'translate3d(0, 0, 0)', opacity: 1 },
+              { transform: 'translate3d(100%, -100%, 0)', opacity: 0 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => {
+            const easing1 = 'cubic-bezier(0.215, 0.61, 0.355, 1)';
+            const easing2 = 'cubic-bezier(0.755, 0.05, 0.855, 0.06)';
+            const frame1 = {
+              transform: 'translate3d(0, 0, 0) scaleY(1)',
+              easing: easing1,
+              transformOrigin,
+            };
+            const frame2 = {
+              transform: 'translate3d(0, -30px, 0) scaleY(1.1)',
+              easing: easing2,
+              transformOrigin,
+            };
+            return {
+              name: 'bounce',
+              keyframes: [
+                { ...frame1, offset: 0 },
+                { ...frame1, offset: 0.2 },
+                { ...frame2, offset: 0.4 },
+                { ...frame2, offset: 0.43 },
+                { ...frame1, offset: 0.53 },
+                {
+                  transform: 'translate3d(0, -15px, 0) scaleY(1.05)',
+                  easing: easing2,
+                  transformOrigin,
+                  offset: 0.7,
+                },
+                {
+                  transform: 'translate3d(0, 0, 0) scaleY(0.95)',
+                  easing: easing1,
+                  transformOrigin,
+                  offset: 0.8,
+                },
+                {
+                  transform: 'translate3d(0, -4px, 0) scaleY(1.02)',
+                  transformOrigin,
+                  offset: 0.9,
+                },
+                { ...frame1, offset: 1 },
+              ],
+              animationOptions: { duration: 1000, fill: 'both' },
+            };
+          },
+          () => {
+            const easing = 'cubic-bezier(0.215, 0.61, 0.355, 1)';
+            return {
+              name: 'bounceIn',
+              keyframes: [
+                {
+                  transform: 'scale3d(0.3, 0.3, 0.3)',
+                  opacity: 0,
+                  easing,
+                  offset: 0,
+                },
+                { transform: 'scale3d(1.1, 1.1, 1.1)', easing, offset: 0.2 },
+                { transform: 'scale3d(0.9, 0.9, 0.9)', easing, offset: 0.4 },
+                {
+                  transform: 'scale3d(1.03, 1.03, 1.03)',
+                  opacity: 1,
+                  easing,
+                  offset: 0.6,
+                },
+                { transform: 'scale3d(0.97, 0.97, 0.97)', easing, offset: 0.8 },
+                {
+                  transform: 'scale3d(1, 1, 1)',
+                  opacity: 1,
+                  easing,
+                  offset: 1,
+                },
+              ],
+              animationOptions: { duration: 750, fill: 'both' },
+            };
+          },
+          () => {
+            const frame = { transform: 'scale3d(1.1, 1.1, 1.1)', opacity: 1 };
+            return {
+              name: 'bounceOut',
+              keyframes: [
+                { transform: 'none', opacity: 1, offset: 0 },
+                { transform: 'scale3d(0.9, 0.9, 0.9)', offset: 0.2 },
+                { ...frame, offset: 0.5 },
+                { ...frame, offset: 0.55 },
+                { transform: 'scale3d(0.3, 0.3, 0.3)', opacity: 0, offset: 1 },
+              ],
+              animationOptions: { duration: 750, fill: 'both' },
+            };
+          },
+          () => {
+            const frame1 = { opacity: 1 };
+            const frame2 = { opacity: 0 };
+            return {
+              name: 'flash',
+              keyframes: [
+                { ...frame1, offset: 0 },
+                { ...frame2, offset: 0.25 },
+                { ...frame1, offset: 0.5 },
+                { ...frame2, offset: 0.75 },
+                { ...frame1, offset: 1 },
+              ],
+              animationOptions: { duration: 1000, fill: 'both' },
+            };
+          },
+          () => ({
+            name: 'headShake',
+            keyframes: [
+              { transform: 'translateX(0)', offset: 0 },
+              { transform: 'translateX(-6px) rotateY(-9deg)', offset: 0.065 },
+              { transform: 'translateX(5px) rotateY(7deg)', offset: 0.185 },
+              { transform: 'translateX(-3px) rotateY(-5deg)', offset: 0.315 },
+              { transform: 'translateX(2px) rotateY(3deg)', offset: 0.435 },
+              { transform: 'translateX(0)', offset: 0.5 },
+              { transform: 'none', offset: 1 },
+            ],
+            animationOptions: {
+              duration: 1000,
+              fill: 'both',
+              easing: 'ease-in-out',
+            },
+          }),
+          () => {
+            const frame1 = { transform: 'scale(1)' };
+            const frame2 = { transform: 'scale(1.3)' };
+            return {
+              name: 'heartBeat',
+              keyframes: [
+                { ...frame1, offset: 0 },
+                { ...frame2, offset: 0.14 },
+                { ...frame1, offset: 0.28 },
+                { ...frame2, offset: 0.42 },
+                { ...frame1, offset: 0.7 },
+                { transform: 'none', offset: 1 },
+              ],
+              animationOptions: {
+                duration: 1300,
+                fill: 'both',
+                easing: 'ease-in-out',
+              },
+            };
+          },
+          () => ({
+            name: 'swing',
+            keyframes: [
+              { transform: 'rotateZ(0deg)', transformOrigin, offset: 0 },
+              { transform: 'rotateZ(15deg)', transformOrigin, offset: 0.2 },
+              { transform: 'rotateZ(-10deg)', transformOrigin, offset: 0.4 },
+              { transform: 'rotateZ(5deg)', transformOrigin, offset: 0.6 },
+              { transform: 'rotateZ(-5deg)', transformOrigin, offset: 0.8 },
+              { transform: 'rotateZ(0deg)', transformOrigin, offset: 1 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'skewX',
+            keyframes: [
+              { transform: 'skewX(0deg)', transformOrigin, offset: 0 },
+              { transform: 'skewX(30deg)', transformOrigin, offset: 0.25 },
+              { transform: 'skewX(-30deg)', transformOrigin, offset: 0.75 },
+              { transform: 'skewX(0deg)', transformOrigin, offset: 1 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'skewY',
+            keyframes: [
+              { transform: 'skewY(0deg)', transformOrigin, offset: 0 },
+              { transform: 'skewY(30deg)', transformOrigin, offset: 0.25 },
+              { transform: 'skewY(-30deg)', transformOrigin, offset: 0.75 },
+              { transform: 'skewY(0deg)', transformOrigin, offset: 1 },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'flipX',
+            keyframes: [
+              { transform: 'scaleX(1)', transformOrigin },
+              { transform: 'scaleX(-1)', transformOrigin },
+              { transform: 'scaleX(1)', transformOrigin },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'flipY',
+            keyframes: [
+              { transform: 'scaleY(1)', transformOrigin: 'center' },
+              { transform: 'scaleY(-1)', transformOrigin: 'center' },
+              { transform: 'scaleY(1)', transformOrigin: 'center' },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+          () => ({
+            name: 'matrix interpolation',
+            keyframes: [
+              { transform: 'skewY(30deg)', transformOrigin: 'center' },
+              {
+                transform: 'matrix(0.2,0,0,0.2,-50,0)',
+                transformOrigin: 'center',
+              },
+            ],
+            animationOptions: { duration: 1000, fill: 'both' },
+          }),
+        ];
+
+        effects.forEach((f, i) => {
+          const { name, keyframes, animationOptions } = f();
+          const row = Math.floor(i / 4);
+          const group = new Group();
+          const circle = new Circle({
+            style: {
+              r: 50,
+              fill: '#1890FF',
+              stroke: '#F04864',
+              lineWidth: 4,
+            },
+          });
+          const text = new Text({
+            style: {
+              text: name,
+              fontSize: 10,
+              fill: '#000',
+              textAlign: 'center',
+              textBaseline: 'middle',
+            },
+          });
+          circle.appendChild(text);
+          group.appendChild(circle);
+          canvas.appendChild(group);
+
+          group.setPosition(50 + 150 * (i % 4), 50 + 120 * row);
+
+          circle.animate(keyframes, {
+            ...animationOptions,
+            iterations: Infinity,
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

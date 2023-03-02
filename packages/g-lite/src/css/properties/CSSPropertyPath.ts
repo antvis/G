@@ -19,6 +19,7 @@ export class CSSPropertyPath
    * path2Curve
    */
   parser = parsePath;
+  parserWithCSSDisabled = parsePath;
 
   calculator(
     name: string,

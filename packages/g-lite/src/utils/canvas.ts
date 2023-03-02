@@ -5,9 +5,15 @@ let defaultCanvasIdCounter = 0;
 /**
  * destroy existed canvas with the same id
  */
-export function cleanExistedCanvas(container: string | HTMLElement, canvas: Canvas) {
+export function cleanExistedCanvas(
+  container: string | HTMLElement,
+  canvas: Canvas,
+) {
   if (container) {
-    const id = typeof container === 'string' ? container : container.id || defaultCanvasIdCounter++;
+    const id =
+      typeof container === 'string'
+        ? container
+        : container.id || defaultCanvasIdCounter++;
 
     if (canvasMap[id]) {
       canvasMap[id].destroy();
@@ -17,4 +23,5 @@ export function cleanExistedCanvas(container: string | HTMLElement, canvas: Canv
   }
 }
 
-export const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+export const isBrowser =
+  typeof window !== 'undefined' && typeof window.document !== 'undefined';

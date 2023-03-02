@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-dragndrop",
-  "version": "1.6.39",
+  "version": "1.6.40",
   "description": "A G plugin for Drag n Drop implemented with PointerEvents",
   "keywords": [
     "antv",

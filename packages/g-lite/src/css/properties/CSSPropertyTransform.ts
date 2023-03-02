@@ -43,6 +43,7 @@ export class CSSPropertyTransform
     >
 {
   parser = parseTransform;
+  parserWithCSSDisabled = parseTransform;
 
   calculator(
     name: string,

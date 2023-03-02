@@ -5,10 +5,17 @@ import { clampedMergeNumbers, parseNumber } from '../parser/numeric';
 /**
  * opacity
  */
-export class CSSPropertyOpacity implements Partial<CSSProperty<CSSUnitValue, number>> {
+export class CSSPropertyOpacity
+  implements Partial<CSSProperty<CSSUnitValue, number>>
+{
   parser = parseNumber;
+  parserWithCSSDisabled = null;
 
-  calculator(name: string, oldParsed: CSSUnitValue, computed: CSSUnitValue): number {
+  calculator(
+    name: string,
+    oldParsed: CSSUnitValue,
+    computed: CSSUnitValue,
+  ): number {
     return computed.value;
   }
 

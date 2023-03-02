@@ -1500,3 +1500,25 @@ circle.animate(
 ```
 
 See [animation system](/en/api/animation/waapi) for more details on usage.
+
+## Dataset API
+
+https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+
+`data-*` attributes allow us to store extra information on standard.
+
+```js
+group.dataset.type = 'a';
+group.getAttribute('data-type'); // 'a'
+```
+
+It should be noted that the part after the `data-` prefix needs to use camel case when accessing through `dataset`:
+
+```js
+group.setAttribute('data-a-b-c');
+group.dataset.aBC;
+
+// Wrong
+group.dataset.abc;
+group.dataset.abC;
+```

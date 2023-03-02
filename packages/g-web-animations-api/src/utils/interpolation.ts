@@ -6,6 +6,7 @@ import type {
   TypeEasingFunction,
 } from '@antv/g-lite';
 import { propertyMetadataCache, runtime } from '@antv/g-lite';
+import { isNumber } from '@antv/util';
 import { parseEasingFunction } from './animation';
 
 export function convertEffectInput(
@@ -163,7 +164,10 @@ const InterpolationFactory = (
   convertToString: Function,
 ) => {
   return (f: number) => {
-    return convertToString(interpolate(from, to, f));
+    const interpolated = interpolate(from, to, f);
+    return !runtime.enableCSSParsing && isNumber(interpolated)
+      ? interpolated
+      : convertToString(interpolated);
   };
 };
 
@@ -193,56 +197,35 @@ function propertyInterpolation(
     );
 
     if (propertyHandler) {
-      const computedLeft = runtime.styleValueRegistry.parseProperty(
-        property,
-        left,
-        target as DisplayObject,
-      );
-      const computedRight = runtime.styleValueRegistry.parseProperty(
-        property,
-        right,
-        target as DisplayObject,
-      );
+      let usedLeft;
+      let usedRight;
+      if (runtime.enableCSSParsing) {
+        const computedLeft = runtime.styleValueRegistry.parseProperty(
+          property,
+          left,
+          target as DisplayObject,
+        );
+        const computedRight = runtime.styleValueRegistry.parseProperty(
+          property,
+          right,
+          target as DisplayObject,
+        );
 
-      const usedLeft = runtime.styleValueRegistry.computeProperty(
-        property,
-        computedLeft,
-        target as DisplayObject,
-      );
-      const usedRight = runtime.styleValueRegistry.computeProperty(
-        property,
-        computedRight,
-        target as DisplayObject,
-      );
-
-      // use defaultValue
-      // const parsedDefaultLeft = parseDefaultValue(metadata, target, property, left);
-      // const parsedDefaultRight = parseDefaultValue(metadata, target, property, right);
-
-      // if (!isNil(parsedDefaultLeft)) {
-      //   // @ts-ignore
-      //   parsedLeft = parsedDefaultLeft;
-      // } else if (propertyHandler.parser) {
-      //   parsedLeft = propertyHandler.parser(left, target as DisplayObject);
-      // }
-      // if (!isNil(parsedDefaultRight)) {
-      //   // @ts-ignore
-      //   parsedRight = parsedDefaultRight;
-      // } else if (propertyHandler.parser) {
-      //   parsedRight = propertyHandler.parser(right, target as DisplayObject);
-      // }
-
-      // if (propertyHandler.parser) {
-      //   parsedLeft = propertyHandler.parser(left, target as DisplayObject);
-      //   parsedRight = propertyHandler.parser(right, target as DisplayObject);
-      // }
-
-      // // no need to calculate
-      // if (propertyHandler.calculator) {
-      //   parsedLeft = propertyHandler.calculator(parsedLeft);
-      //   parsedRight = propertyHandler.calculator(parsedRight);
-      //   // parsedLeft = handler.calculator
-      // }
+        usedLeft = runtime.styleValueRegistry.computeProperty(
+          property,
+          computedLeft,
+          target as DisplayObject,
+        );
+        usedRight = runtime.styleValueRegistry.computeProperty(
+          property,
+          computedRight,
+          target as DisplayObject,
+        );
+      } else {
+        const parser = propertyHandler.parserWithCSSDisabled;
+        usedLeft = parser ? parser(left, target) : left;
+        usedRight = parser ? parser(right, target) : right;
+      }
 
       // merger [left, right, n2string()]
       const interpolationArgs = propertyHandler.mixer(
@@ -251,8 +234,10 @@ function propertyInterpolation(
         target,
       );
       if (interpolationArgs) {
-        // @ts-ignore
-        const interp = InterpolationFactory(...interpolationArgs);
+        const interp = InterpolationFactory(
+          // @ts-ignore
+          ...interpolationArgs,
+        );
         return function (t: number) {
           if (t === 0) return left;
           if (t === 1) return right;

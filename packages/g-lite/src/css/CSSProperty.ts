@@ -42,6 +42,7 @@ export interface CSSProperty<Parsed, Used> {
    * '180deg' -> CSS.deg(180)
    */
   parser: CSSPropertyParser<Parsed>;
+  parserWithCSSDisabled: CSSPropertyParser<Parsed>;
 
   /**
    * convert parsed value to used value.

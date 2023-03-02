@@ -1,4 +1,5 @@
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject, isDisplayObject } from './DisplayObject';
@@ -63,6 +64,11 @@ export class Polygon extends DisplayObject<
         isClosed: true,
         ...style,
       },
+      initialParsedStyle: runtime.enableCSSParsing
+        ? null
+        : {
+            miterLimit: 4,
+          },
       ...rest,
     });
 

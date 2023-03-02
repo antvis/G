@@ -1,4 +1,5 @@
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 export interface BaseCustomElementStyleProps extends BaseStyleProps {
@@ -10,9 +11,9 @@ export interface BaseCustomElementStyleProps extends BaseStyleProps {
  * shadow root
  * @see https://yuque.antfin-inc.com/antv/czqvg5/pgqipg
  */
-export abstract class CustomElement<CustomElementStyleProps> extends DisplayObject<
-  CustomElementStyleProps & BaseCustomElementStyleProps
-> {
+export abstract class CustomElement<
+  CustomElementStyleProps,
+> extends DisplayObject<CustomElementStyleProps & BaseCustomElementStyleProps> {
   // static get observedAttributes(): string[] {
   //   return [];
   // }
@@ -21,15 +22,24 @@ export abstract class CustomElement<CustomElementStyleProps> extends DisplayObje
 
   // private shadowNodes: DisplayObject[] = [];
 
-  constructor({ style, ...rest }: DisplayObjectConfig<CustomElementStyleProps> = {}) {
-    super({
-      style: {
-        x: '',
-        y: '',
-        ...style,
-      },
-      ...rest,
-    });
+  constructor({
+    style,
+    ...rest
+  }: DisplayObjectConfig<CustomElementStyleProps> = {}) {
+    super(
+      runtime.enableCSSParsing
+        ? {
+            style: {
+              x: '',
+              y: '',
+              ...style,
+            },
+            ...rest,
+          }
+        : {
+            ...style,
+          },
+    );
   }
 
   /**

@@ -1509,3 +1509,25 @@ circle.animate(
 ```
 
 更多用法详见[动画系统](/zh/api/animation/waapi)
+
+## Dataset API
+
+https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Howto/Use_data_attributes
+
+提供 `data-*` 属性用于存储额外信息。
+
+```js
+group.dataset.type = 'a';
+group.getAttribute('data-type'); // 'a'
+```
+
+需要注意的是，`data-` 前缀之后的部分通过 `dataset` 访问时需要使用驼峰形式：
+
+```js
+group.setAttribute('data-a-b-c');
+group.dataset.aBC;
+
+// Wrong
+group.dataset.abc;
+group.dataset.abC;
+```

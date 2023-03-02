@@ -1,4 +1,4 @@
-import type { CSSGlobalKeywords, CSSRGB } from '../css';
+import { CSSGlobalKeywords, CSSRGB } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { runtime } from '../global-runtime';
 import type { TextMetrics } from '../services';
@@ -256,12 +256,14 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             ...style,
           }
         : {
+            fill: 'black',
             ...style,
           },
       initialParsedStyle: runtime.enableCSSParsing
         ? {}
         : {
-            fill: 'black',
+            x: 0,
+            y: 0,
             fontSize: 16,
             fontFamily: 'sans-serif',
             fontStyle: 'normal',
@@ -271,7 +273,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             letterSpacing: 0,
             textBaseline: 'alphabetic',
             textAlign: 'start',
-            miterLimit: 10,
             wordWrap: false,
             wordWrapWidth: 0,
             leading: 0,

@@ -1,6 +1,7 @@
 import { mat4 } from 'gl-matrix';
 import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -31,14 +32,18 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<HTMLStyleProps> = {}) {
     super({
       type: Shape.HTML,
-      style: {
-        x: '',
-        y: '',
-        width: 'auto',
-        height: 'auto',
-        innerHTML: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            x: '',
+            y: '',
+            width: 'auto',
+            height: 'auto',
+            innerHTML: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
       ...rest,
     });
 

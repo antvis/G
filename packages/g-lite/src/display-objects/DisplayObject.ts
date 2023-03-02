@@ -15,6 +15,7 @@ import { Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import {
+  kebabize,
   createVec3,
   decompose,
   formatAttributeName,
@@ -78,6 +79,7 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   zIndex: 0,
   filter: [],
   shadowType: 'outer',
+  miterLimit: 10,
 };
 
 const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
@@ -120,6 +122,8 @@ const INHERITABLE_STYLE_PROPS = [
   'textTransform',
 ];
 
+const DATASET_PREFIX = 'data-';
+
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
  *
@@ -155,6 +159,15 @@ export class DisplayObject<
    * push to active animations after calling `animate()`
    */
   private activeAnimations: IAnimation[] = [];
+
+  /**
+   * Use data-* attribute.
+   * @see https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+   * @example
+   * group.dataset.prop1 = 1;
+   * group.getAttribute('data-prop1'); // 1
+   */
+  dataset: any;
 
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
@@ -207,6 +220,26 @@ export class DisplayObject<
 
     // start to process attributes
     this.initAttributes(this.config.style);
+
+    this.dataset = new Proxy<any>(
+      {},
+      {
+        get: (target, name: string) => {
+          const formattedName = `${DATASET_PREFIX}${kebabize(name)}`;
+          if (target[formattedName] !== undefined) {
+            return target[formattedName];
+          }
+          return this.getAttribute(formattedName as keyof StyleProps);
+        },
+        set: (_, prop, value) => {
+          this.setAttribute(
+            `${DATASET_PREFIX}${kebabize(prop as string)}` as keyof StyleProps,
+            value,
+          );
+          return true;
+        },
+      },
+    );
 
     this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
       // @ts-ignore
