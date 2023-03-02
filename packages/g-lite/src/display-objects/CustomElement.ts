@@ -26,20 +26,18 @@ export abstract class CustomElement<
     style,
     ...rest
   }: DisplayObjectConfig<CustomElementStyleProps> = {}) {
-    super(
-      runtime.enableCSSParsing
+    super({
+      style: runtime.enableCSSParsing
         ? {
-            style: {
-              x: '',
-              y: '',
-              ...style,
-            },
-            ...rest,
+            x: '',
+            y: '',
+            ...style,
           }
         : {
             ...style,
           },
-    );
+      ...rest,
+    });
   }
 
   /**
