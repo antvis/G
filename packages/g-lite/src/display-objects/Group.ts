@@ -1,5 +1,6 @@
 import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -32,21 +33,17 @@ export class Group extends DisplayObject {
   constructor({ style, ...rest }: DisplayObjectConfig<GroupStyleProps> = {}) {
     super({
       type: Shape.GROUP,
-      style: {
-        x: '',
-        y: '',
-        width: '',
-        height: '',
-        // fontSize: '',
-        // fontFamily: '',
-        // fontStyle: '',
-        // fontWeight: '',
-        // fontVariant: '',
-        // textAlign: '',
-        // textBaseline: '',
-        // textTransform: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            x: '',
+            y: '',
+            width: '',
+            height: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
       ...rest,
     });
   }

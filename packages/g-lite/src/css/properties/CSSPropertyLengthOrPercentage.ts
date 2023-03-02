@@ -21,6 +21,7 @@ export class CSSPropertyLengthOrPercentage
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {
   parser = parseLengthOrPercentage;
+  parserWithCSSDisabled = null;
 
   mixer = mergeNumbers;
 

@@ -22,12 +22,16 @@ export class Circle extends DisplayObject<
   constructor({ style, ...rest }: DisplayObjectConfig<CircleStyleProps> = {}) {
     super({
       type: Shape.CIRCLE,
-      style: {
-        cx: '',
-        cy: '',
-        r: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            cx: '',
+            cy: '',
+            r: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
       initialParsedStyle: {
         anchor: [0.5, 0.5],
         transformOrigin: runtime.enableCSSParsing
