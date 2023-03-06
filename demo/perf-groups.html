@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>Group perf</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <!-- <script
+      src="../packages/g/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script> -->
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-svg/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Group, Line, Canvas, runtime } = window.G;
+
+      // disable CSS Parsing
+      runtime.enableCSSParsing = false;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+      // const svgRenderer = new window.G.SVG.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      canvas.addEventListener('ready', () => {
+        const group = new Group({
+          style: {
+            x: 100,
+            y: 100,
+          },
+        });
+        const line = new Line({
+          style: {
+            x1: 100,
+            y1: 100,
+            x2: 300,
+            y2: 300,
+            stroke: '#F04864',
+            lineWidth: 4,
+            lineDash: 4,
+          },
+        });
+        group.appendChild(line);
+        canvas.appendChild(group);
+      });
+    </script>
+  </body>
+</html>

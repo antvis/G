@@ -186,6 +186,22 @@ export class SVGRendererPlugin implements RenderingPlugin {
       this.removeSVGDom(object);
     };
 
+    const reorderChildren = (object: DisplayObject) => {
+      const parent = object.parentNode;
+      // @ts-ignore
+      const $groupEl = object.parentNode?.elementSVG?.$groupEl;
+      const children = (parent?.children || []).slice();
+
+      if ($groupEl) {
+        this.reorderChildren(document, $groupEl, children as DisplayObject[]);
+      }
+    };
+
+    const handleReparent = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+      reorderChildren(object);
+    };
+
     const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
 
@@ -271,6 +287,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.REPARENT, handleReparent);
       canvas.addEventListener(
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
@@ -284,6 +301,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(SVGRendererPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.removeEventListener(ElementEvent.REPARENT, handleReparent);
       canvas.removeEventListener(
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
@@ -366,18 +384,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (attributes) {
           attributes.forEach((attrName) => {
             if (attrName === 'zIndex') {
-              const parent = object.parentNode;
-              // @ts-ignore
-              const $groupEl = object.parentNode?.elementSVG?.$groupEl;
-              const children = (parent?.children || []).slice();
-
-              if ($groupEl) {
-                this.reorderChildren(
-                  document,
-                  $groupEl,
-                  children as DisplayObject[],
-                );
-              }
+              reorderChildren(object);
             } else if (attrName === 'increasedLineWidthForHitTesting') {
               this.createOrUpdateHitArea(object, $el, $groupEl);
             }

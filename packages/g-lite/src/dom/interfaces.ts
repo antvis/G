@@ -29,6 +29,8 @@ import type { FederatedEvent } from './FederatedEvent';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
  */
 export enum ElementEvent {
+  REPARENT = 'reparent',
+
   DESTROY = 'destroy',
 
   /**
