@@ -58,16 +58,26 @@ export class Polygon extends DisplayObject<
   constructor({ style, ...rest }: DisplayObjectConfig<PolygonStyleProps> = {}) {
     super({
       type: Shape.POLYGON,
-      style: {
-        points: '',
-        miterLimit: '',
-        isClosed: true,
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            points: '',
+            miterLimit: '',
+            isClosed: true,
+            ...style,
+          }
+        : {
+            ...style,
+          },
       initialParsedStyle: runtime.enableCSSParsing
         ? null
         : {
+            points: {
+              points: [],
+              totalLength: 0,
+              segments: [],
+            },
             miterLimit: 4,
+            isClosed: true,
           },
       ...rest,
     });
@@ -173,7 +183,7 @@ export class Polygon extends DisplayObject<
     } else {
       const { length } = points;
 
-      if (!this.style.isClosed) {
+      if (!this.parsedStyle.isClosed) {
         ox = points[length - 1][0] - defX;
         oy = points[length - 1][1] - defY;
         x = points[length - 2][0] - points[length - 1][0];
@@ -211,7 +221,7 @@ export class Polygon extends DisplayObject<
     if (marker && isDisplayObject(marker)) {
       for (
         let i = 1;
-        i < (this.style.isClosed ? points.length : points.length - 1);
+        i < (this.parsedStyle.isClosed ? points.length : points.length - 1);
         i++
       ) {
         const ox = points[i][0] - defX;

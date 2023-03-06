@@ -65,15 +65,16 @@
         for (let i = 0; i < 10000; i++) {
           const polyline = new Polyline({
             style: {
-              points: [
-                [Math.random() * 600, Math.random() * 500],
-                [Math.random() * 600, Math.random() * 600],
-              ],
               stroke: '#F04864',
               lineWidth: 4,
             },
           });
           canvas.appendChild(polyline);
+
+          polyline.style.points = [
+            [Math.random() * 600, Math.random() * 500],
+            [Math.random() * 600, Math.random() * 600],
+          ];
         }
       });
     </script>
