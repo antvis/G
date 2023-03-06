@@ -1,4 +1,5 @@
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -19,18 +20,25 @@ export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   width?: number;
   height?: number;
 }
-export class Image extends DisplayObject<ImageStyleProps, ParsedImageStyleProps> {
+export class Image extends DisplayObject<
+  ImageStyleProps,
+  ParsedImageStyleProps
+> {
   constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps> = {}) {
     super({
       type: Shape.IMAGE,
-      style: {
-        x: '',
-        y: '',
-        img: '',
-        width: '',
-        height: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            x: '',
+            y: '',
+            img: '',
+            width: '',
+            height: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
       ...rest,
     });
   }

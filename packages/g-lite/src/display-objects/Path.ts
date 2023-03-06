@@ -128,11 +128,15 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps> = {}) {
     super({
       type: Shape.PATH,
-      style: {
-        path: '',
-        miterLimit: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            path: '',
+            miterLimit: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
       initialParsedStyle: runtime.enableCSSParsing
         ? null
         : {

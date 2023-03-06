@@ -48,17 +48,23 @@
       src="../packages/g-svg/dist/index.umd.js"
       type="application/javascript"
     ></script>
+    <script
+      src="../packages/g-components/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
     <script>
       const {
         Text,
         Rect,
         Path,
         Circle,
+        Polyline,
         Group,
         Canvas,
         convertToPath,
         runtime,
       } = window.G;
+      const { Arrow } = window.G.Components;
 
       // disable CSS Parsing
       runtime.enableCSSParsing = false;
@@ -489,6 +495,38 @@
             iterations: Infinity,
           });
         });
+
+        const polylineArrow = new Arrow({
+          id: 'polylineArrow',
+          style: {
+            body: new Polyline({
+              style: {
+                points: [
+                  [0, 0],
+                  [50, 0],
+                  [50, 50],
+                  [100, 50],
+                  [100, 100],
+                  [150, 100],
+                ],
+              },
+            }),
+            startHead: true,
+            stroke: '#1890FF',
+            lineWidth: 10,
+            cursor: 'pointer',
+          },
+        });
+        polylineArrow.translate(200, 400);
+        canvas.appendChild(polylineArrow);
+        polylineArrow.animate(
+          [{ transform: 'translate(0)' }, { transform: 'translate(100, 100)' }],
+          {
+            duration: 2000,
+            fill: 'both',
+            iterations: Infinity,
+          },
+        );
       });
     </script>
   </body>

@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,shrink-to-fit=no"
     />
-    <title>Polyline perf</title>
+    <title>Group perf</title>
     <style>
       * {
         box-sizing: border-box;
@@ -44,14 +44,19 @@
       src="../packages/g-canvas/dist/index.umd.js"
       type="application/javascript"
     ></script>
+    <script
+      src="../packages/g-svg/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
     <script>
-      const { Polyline, Canvas, runtime } = window.G;
+      const { Group, Line, Canvas, runtime } = window.G;
 
       // disable CSS Parsing
       runtime.enableCSSParsing = false;
 
       // create a renderer
       const canvasRenderer = new window.G.Canvas2D.Renderer();
+      // const svgRenderer = new window.G.SVG.Renderer();
 
       // create a canvas
       const canvas = new Canvas({
@@ -62,20 +67,25 @@
       });
 
       canvas.addEventListener('ready', () => {
-        for (let i = 0; i < 10000; i++) {
-          const polyline = new Polyline({
-            style: {
-              stroke: '#F04864',
-              lineWidth: 4,
-            },
-          });
-          canvas.appendChild(polyline);
-
-          polyline.style.points = [
-            [Math.random() * 600, Math.random() * 500],
-            [Math.random() * 600, Math.random() * 600],
-          ];
-        }
+        const group = new Group({
+          style: {
+            x: 100,
+            y: 100,
+          },
+        });
+        const line = new Line({
+          style: {
+            x1: 100,
+            y1: 100,
+            x2: 300,
+            y2: 300,
+            stroke: '#F04864',
+            lineWidth: 4,
+            lineDash: 4,
+          },
+        });
+        group.appendChild(line);
+        canvas.appendChild(group);
       });
     </script>
   </body>

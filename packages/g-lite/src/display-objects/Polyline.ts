@@ -55,16 +55,26 @@ export class Polyline extends Polygon {
   }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
       type: Shape.POLYLINE,
-      style: {
-        points: '',
-        miterLimit: '',
-        isClosed: false,
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            points: '',
+            miterLimit: '',
+            isClosed: false,
+            ...style,
+          }
+        : {
+            ...style,
+          },
       initialParsedStyle: runtime.enableCSSParsing
         ? null
         : {
+            points: {
+              points: [],
+              totalLength: 0,
+              segments: [],
+            },
             miterLimit: 4,
+            isClosed: false,
           },
       ...rest,
     });

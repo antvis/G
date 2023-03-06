@@ -1,4 +1,5 @@
 import type { DisplayObjectConfig } from '../dom';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -26,14 +27,18 @@ export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<RectStyleProps> = {}) {
     super({
       type: Shape.RECT,
-      style: {
-        x: '',
-        y: '',
-        width: '',
-        height: '',
-        radius: '',
-        ...style,
-      },
+      style: runtime.enableCSSParsing
+        ? {
+            x: '',
+            y: '',
+            width: '',
+            height: '',
+            radius: '',
+            ...style,
+          }
+        : {
+            ...style,
+          },
       ...rest,
     });
   }

@@ -24,6 +24,17 @@ function markRenderableDirty(e: Element) {
   }
 }
 
+const reparentEvent = new MutationEvent(
+  ElementEvent.REPARENT,
+  null,
+  '',
+  '',
+  '',
+  0,
+  '',
+  '',
+);
+
 /**
  * update transform in scene graph
  *
@@ -59,7 +70,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     parent: P,
     index?: number,
   ) {
+    let detached = false;
     if (child.parentNode) {
+      detached = child.parentNode !== parent;
       this.detach(child);
     }
 
@@ -94,6 +107,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     if (transform.frozen) {
       this.unfreezeParentToRoot(child);
+    }
+
+    if (detached) {
+      child.dispatchEvent(reparentEvent);
     }
   }
 
