@@ -86,13 +86,14 @@
         const text = new Text({
           style: {
             text: 'Test',
+            stroke: 'black',
           },
         });
         canvas.appendChild(text);
         text.animate(
           [
-            { x: 100, y: 100, fill: 'black', opacity: 1 },
-            { x: 300, y: 300, fill: 'red', opacity: 0 },
+            { x: 100, y: 100, fill: 'black', strokeOpacity: 0 },
+            { x: 300, y: 300, fill: 'red', strokeOpacity: 0.45 },
           ],
           {
             duration: 2000,
