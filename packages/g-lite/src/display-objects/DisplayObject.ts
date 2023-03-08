@@ -844,7 +844,13 @@ export class DisplayObject<
    * @deprecated
    */
   show() {
-    this.style.visibility = 'visible';
+    if (runtime.enableCSSParsing) {
+      this.style.visibility = 'visible';
+    } else {
+      this.forEach((object: DisplayObject) => {
+        object.style.visibility = 'visible';
+      });
+    }
   }
 
   /**
@@ -852,7 +858,13 @@ export class DisplayObject<
    * @deprecated
    */
   hide() {
-    this.style.visibility = 'hidden';
+    if (runtime.enableCSSParsing) {
+      this.style.visibility = 'hidden';
+    } else {
+      this.forEach((object: DisplayObject) => {
+        object.style.visibility = 'hidden';
+      });
+    }
   }
 
   /**
