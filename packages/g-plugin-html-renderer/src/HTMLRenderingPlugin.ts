@@ -16,7 +16,7 @@ import {
   isPattern,
   Shape,
 } from '@antv/g-lite';
-import { isString } from '@antv/util';
+import { isNumber, isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
 const HTML_PREFIX = 'g-html-';
@@ -271,7 +271,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $el.style.width = width.toString();
         } else {
           const { width } = object.parsedStyle;
-          $el.style.width = `${width}px`;
+          $el.style.width = isNumber(width) ? `${width}px` : width.toString();
         }
         break;
       case 'height':
@@ -280,7 +280,9 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $el.style.height = height.toString();
         } else {
           const { height } = object.parsedStyle;
-          $el.style.height = `${height}px`;
+          $el.style.height = isNumber(height)
+            ? `${height}px`
+            : height.toString();
         }
         break;
       case 'zIndex':

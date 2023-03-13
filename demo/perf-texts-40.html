@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>Circles perf</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script
+      src="https://unpkg.com/@antv/g-canvas@0.5.13/dist/g.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Canvas } = window.G;
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+      });
+
+      const group = canvas.addGroup();
+
+      for (let i = 0; i < 10000; i++) {
+        group.addShape('text', {
+          attrs: {
+            text: `${i}`,
+            fill: 'black',
+            x: Math.random() * 600,
+            y: Math.random() * 500,
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,4 +1,11 @@
-import { Camera, CameraType, getAngle, createVec3, deg2rad, runtime } from '@antv/g-lite';
+import {
+  Camera,
+  CameraType,
+  getAngle,
+  createVec3,
+  deg2rad,
+  runtime,
+} from '@antv/g-lite';
 import { isString, isNumber } from '@antv/util';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { vec2 } from 'gl-matrix';
@@ -40,7 +47,11 @@ export class AdvancedCamera extends Camera {
         deg2rad((this.rotateWorld ? 1 : -1) * this.relAzimuth),
       );
 
-      const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], deg2rad(this.relRoll));
+      const rotZ = quat.setAxisAngle(
+        quat.create(),
+        [0, 0, 1],
+        deg2rad(this.relRoll),
+      );
       let rotQ = quat.multiply(quat.create(), rotY, rotX);
       rotQ = quat.multiply(quat.create(), rotQ, rotZ);
       const rotMatrix = mat4.fromQuat(mat4.create(), rotQ);
@@ -55,7 +66,10 @@ export class AdvancedCamera extends Camera {
     }
 
     this._getAxes();
-    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
+    if (
+      this.type === CameraType.ORBITING ||
+      this.type === CameraType.EXPLORING
+    ) {
       this._getPosition();
     } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
@@ -92,13 +106,18 @@ export class AdvancedCamera extends Camera {
     const updatedDistance = this.distance + value * this.dollyingStep;
 
     // 限制视点距离范围
-    step = Math.max(Math.min(updatedDistance, this.maxDistance), this.minDistance) - this.distance;
+    step =
+      Math.max(Math.min(updatedDistance, this.maxDistance), this.minDistance) -
+      this.distance;
     pos[0] += step * n[0];
     pos[1] += step * n[1];
     pos[2] += step * n[2];
 
     this._setPosition(pos);
-    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
+    if (
+      this.type === CameraType.ORBITING ||
+      this.type === CameraType.EXPLORING
+    ) {
       // 重新计算视点距离
       this._getDistance();
     } else if (this.type === CameraType.TRACKING) {
@@ -119,22 +138,27 @@ export class AdvancedCamera extends Camera {
       roll: number;
     }> = {},
   ): Landmark {
-    const { position = this.position, focalPoint = this.focalPoint, roll, zoom } = params;
+    const {
+      position = this.position,
+      focalPoint = this.focalPoint,
+      roll,
+      zoom,
+    } = params;
 
     const camera = new runtime.CameraContribution() as AdvancedCamera;
     camera.setType(this.type, undefined);
     camera.setPosition(
       position[0],
-      position[1] || this.position[1],
-      position[2] || this.position[2],
+      position[1] ?? this.position[1],
+      position[2] ?? this.position[2],
     );
     camera.setFocalPoint(
       focalPoint[0],
-      focalPoint[1] || this.focalPoint[1],
-      focalPoint[2] || this.focalPoint[2],
+      focalPoint[1] ?? this.focalPoint[1],
+      focalPoint[2] ?? this.focalPoint[2],
     );
-    camera.setRoll(roll || this.roll);
-    camera.setZoom(zoom || this.zoom);
+    camera.setRoll(roll ?? this.roll);
+    camera.setZoom(zoom ?? this.zoom);
 
     const landmark: Landmark = {
       name,
@@ -171,7 +195,9 @@ export class AdvancedCamera extends Camera {
           onfinish: () => void;
         }> = {},
   ) {
-    const landmark = isString(name) ? this.landmarks.find((l) => l.name === name) : name;
+    const landmark = isString(name)
+      ? this.landmarks.find((l) => l.name === name)
+      : name;
     if (landmark) {
       const {
         easing = 'linear',
@@ -243,7 +269,8 @@ export class AdvancedCamera extends Camera {
         this.setZoom(interZoom);
 
         const dist =
-          vec3.dist(interFocalPoint, destFocalPoint) + vec3.dist(interPosition, destPosition);
+          vec3.dist(interFocalPoint, destFocalPoint) +
+          vec3.dist(interPosition, destPosition);
         if (dist <= epsilon) {
           endAnimation();
           return;
@@ -268,7 +295,10 @@ export class AdvancedCamera extends Camera {
     this.forward = vec3.copy(this.forward, landmark.forward);
     this.position = vec3.copy(this.position, landmark.position);
     this.focalPoint = vec3.copy(this.focalPoint, landmark.focalPoint);
-    this.distanceVector = vec3.copy(this.distanceVector, landmark.distanceVector);
+    this.distanceVector = vec3.copy(
+      this.distanceVector,
+      landmark.distanceVector,
+    );
 
     this.azimuth = landmark.azimuth;
     this.elevation = landmark.elevation;

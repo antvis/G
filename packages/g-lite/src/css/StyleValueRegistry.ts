@@ -610,6 +610,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
+const GEOMETRY_ATTRIBUTE_NAMES = BUILT_IN_PROPERTIES.filter((n) => !!n.l).map(
+  (n) => n.n,
+);
+
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
 // const uniqueAttributeSet = new Set<string>();
@@ -704,6 +708,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       const oldOffsetPath = object.parsedStyle.offsetPath;
 
       object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+
+      let needUpdateGeometry = false;
+      for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
+        if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
+          needUpdateGeometry = true;
+          break;
+        }
+      }
 
       if (attributes.fill) {
         object.parsedStyle.fill = parseColor(attributes.fill);
@@ -917,7 +929,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         );
       }
 
-      this.updateGeometry(object);
+      if (needUpdateGeometry) {
+        this.updateGeometry(object);
+      }
       return;
     }
 

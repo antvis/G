@@ -166,13 +166,13 @@ export function isPointInPath(
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPathStyleProps;
 
+  const { segments, hasArc, polylines, polygons } = path;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,
-    fill,
+    // Only a closed path can be filled.
+    polygons?.length && fill,
     stroke,
   );
-
-  const { segments, hasArc, polylines, polygons } = path;
 
   const totalLength = getOrCalculatePathTotalLength(displayObject as Path);
 

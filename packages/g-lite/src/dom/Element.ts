@@ -595,7 +595,7 @@ export class Element<
   getAttribute(name: keyof StyleProps) {
     // @see https://github.com/antvis/G/issues/1267
     if (isSymbol(name)) {
-      return null;
+      return runtime.enableCSSParsing ? null : undefined;
     }
 
     let value = this.attributes[name];
@@ -604,7 +604,7 @@ export class Element<
       value = this.attributes[attributeName];
 
       // if the given attribute does not exist, the value returned will either be null or ""
-      return isNil(value) ? null : value;
+      return runtime.enableCSSParsing ? (isNil(value) ? null : value) : value;
     } else {
       return value;
     }
