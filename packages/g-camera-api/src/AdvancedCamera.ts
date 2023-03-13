@@ -129,6 +129,12 @@ export class AdvancedCamera extends Camera {
     return this;
   }
 
+  cancelLandmarkAnimation() {
+    if (this.landmarkAnimationID !== undefined) {
+      this.canvas.cancelAnimationFrame(this.landmarkAnimationID);
+    }
+  }
+
   createLandmark(
     name: string,
     params: Partial<{
@@ -216,9 +222,7 @@ export class AdvancedCamera extends Camera {
       }
 
       // cancel ongoing animation
-      if (this.landmarkAnimationID !== undefined) {
-        this.canvas.cancelAnimationFrame(this.landmarkAnimationID);
-      }
+      this.cancelLandmarkAnimation();
 
       const destPosition = landmark.position;
       const destFocalPoint = landmark.focalPoint;

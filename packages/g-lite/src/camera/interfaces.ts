@@ -128,8 +128,20 @@ export interface ICamera {
   clearViewOffset: () => this;
   setZoom: (zoom: number) => this;
   setZoomByViewportPoint: (zoom: number, viewportPoint: vec2) => this;
-  setPerspective: (near: number, far: number, fov: number, aspect: number) => this;
-  setOrthographic: (l: number, r: number, t: number, b: number, near: number, far: number) => this;
+  setPerspective: (
+    near: number,
+    far: number,
+    fov: number,
+    aspect: number,
+  ) => this;
+  setOrthographic: (
+    l: number,
+    r: number,
+    t: number,
+    b: number,
+    near: number,
+    far: number,
+  ) => this;
   /**
    * Move the camera in world coordinates.
    * It will keep looking at the current focal point.
@@ -208,4 +220,8 @@ export interface ICamera {
           onfinish: () => void;
         }>,
   ) => void;
+  /**
+   * Stop camera animation immediately.
+   */
+  cancelLandmarkAnimation: () => void;
 }
