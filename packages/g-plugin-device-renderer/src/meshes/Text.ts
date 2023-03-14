@@ -91,7 +91,7 @@ export class TextMesh extends Instanced {
     let indicesOff = 0;
     objects.forEach((object) => {
       const { metrics, dx, dy } = object.parsedStyle as ParsedTextStyleProps;
-      const { font, lines, height, lineHeight } = metrics;
+      const { font, lines, height, lineHeight, fontProperties } = metrics;
 
       // account for dx & dy
       const offsetX = dx || 0;
@@ -107,6 +107,7 @@ export class TextMesh extends Instanced {
         linePositionY = 0;
       } else if (textBaseline === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
+        // linePositionY = -height + fontProperties.ascent;
       } else if (textBaseline === 'ideographic') {
         linePositionY = -height;
       }

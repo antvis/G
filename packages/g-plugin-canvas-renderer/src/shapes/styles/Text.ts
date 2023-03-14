@@ -1,4 +1,10 @@
-import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g-lite';
+import type {
+  CSSRGB,
+  DisplayObject,
+  ParsedTextStyleProps,
+  Rectangle,
+} from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
@@ -33,7 +39,11 @@ export class TextRenderer implements StyleRenderer {
     context.font = font;
     context.lineWidth = lineWidth;
     context.textAlign = textAlign === 'middle' ? 'center' : textAlign;
-    context.textBaseline = textBaseline;
+    if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
+      context.textBaseline = 'bottom';
+    } else {
+      context.textBaseline = textBaseline;
+    }
     context.lineJoin = lineJoin;
     if (!isNil(miterLimit)) {
       context.miterLimit = miterLimit;
@@ -139,9 +149,22 @@ export class TextRenderer implements StyleRenderer {
     for (let i = 0; i < stringArray.length; ++i) {
       const currentChar = stringArray[i];
       if (isStroke) {
-        this.strokeText(context, currentChar, currentPosition, y, strokeOpacity);
+        this.strokeText(
+          context,
+          currentChar,
+          currentPosition,
+          y,
+          strokeOpacity,
+        );
       } else {
-        this.fillText(context, currentChar, currentPosition, y, fillOpacity, opacity);
+        this.fillText(
+          context,
+          currentChar,
+          currentPosition,
+          y,
+          fillOpacity,
+          opacity,
+        );
       }
       currentWidth = context.measureText(text.substring(i + 1)).width;
       currentPosition += previousWidth - currentWidth + letterSpacing;

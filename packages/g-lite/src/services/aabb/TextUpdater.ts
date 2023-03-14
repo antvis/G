@@ -1,11 +1,17 @@
 import { isNil } from '@antv/util';
-import type { DisplayObject, ParsedTextStyleProps } from '../../display-objects';
+import type {
+  DisplayObject,
+  ParsedTextStyleProps,
+} from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
-import type { GlobalRuntime } from '../../global-runtime';
+import { GlobalRuntime, runtime } from '../../global-runtime';
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   constructor(private globalRuntime: GlobalRuntime) {}
 
-  private isReadyToMeasure(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
+  private isReadyToMeasure(
+    parsedStyle: ParsedTextStyleProps,
+    object: DisplayObject,
+  ) {
     const {
       text,
       textAlign,
@@ -31,7 +37,8 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
     const { text, textAlign, lineWidth, textBaseline, dx, dy } = parsedStyle;
-    const { offscreenCanvas } = object?.ownerDocument?.defaultView?.getConfig() || {};
+    const { offscreenCanvas } =
+      object?.ownerDocument?.defaultView?.getConfig() || {};
 
     if (!this.isReadyToMeasure(parsedStyle, object)) {
       parsedStyle.metrics = {
@@ -59,7 +66,11 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       };
     }
 
-    const metrics = this.globalRuntime.textService.measureText(text, parsedStyle, offscreenCanvas);
+    const metrics = this.globalRuntime.textService.measureText(
+      text,
+      parsedStyle,
+      offscreenCanvas,
+    );
     parsedStyle.metrics = metrics;
 
     const { width, height, lineHeight, fontProperties } = metrics;
@@ -85,7 +96,10 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       lineYOffset = halfExtents[1] * 2;
     } else if (textBaseline === 'alphabetic') {
-      lineYOffset = lineHeight - fontProperties.ascent;
+      // prevent calling getImageData for ascent metrics
+      lineYOffset = runtime.enableCSSParsing
+        ? lineHeight - fontProperties.ascent
+        : 0;
     } else if (textBaseline === 'bottom' || textBaseline === 'ideographic') {
       lineYOffset = 0;
     }

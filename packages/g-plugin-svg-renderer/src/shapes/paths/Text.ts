@@ -1,4 +1,5 @@
 import type { ParsedTextStyleProps } from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import { detect } from 'detect-browser';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
@@ -25,9 +26,11 @@ const BASELINE_MAP_FOR_FIREFOX: Record<string, string> = {
   hanging: 'hanging',
 };
 
-export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
+export function updateTextElementAttribute(
+  $el: SVGElement,
+  parsedStyle: ParsedTextStyleProps,
+) {
   const {
-    textBaseline,
     lineWidth,
     metrics,
     dx,
@@ -39,13 +42,24 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
     textDecorationColor = '',
     textDecorationStyle = '',
   } = parsedStyle;
+  let { textBaseline } = parsedStyle;
+
+  if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
+    textBaseline = 'bottom';
+  }
 
   const browser = detect();
   if (browser && browser.name === 'firefox') {
     // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
-    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline] || 'alphabetic');
+    $el.setAttribute(
+      'dominant-baseline',
+      BASELINE_MAP_FOR_FIREFOX[textBaseline] || 'alphabetic',
+    );
   } else {
-    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline]);
+    $el.setAttribute(
+      'dominant-baseline',
+      BASELINE_MAP_FOR_FIREFOX[textBaseline],
+    );
     $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline]);
   }
 
@@ -111,7 +125,9 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
         } else {
           dy = lineHeight;
         }
-        return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(line)}</tspan>`;
+        return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(
+          line,
+        )}</tspan>`;
       })
       .join('');
   }

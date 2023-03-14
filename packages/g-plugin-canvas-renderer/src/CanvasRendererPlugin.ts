@@ -62,8 +62,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private clearFullScreen = false;
 
-  private isFirstTimeRendering = true;
-
   /**
    * view projection matrix
    */
@@ -190,8 +188,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.restoreStack,
           runtime,
         );
+
+        // if (object.renderable.) {
         // if we did a full screen rendering last frame
         this.saveDirtyAABB(object);
+        // }
       }
 
       const sorted = object.sortable.sorted || object.childNodes;
@@ -210,9 +211,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.fromScaling(this.dprMatrix, [dpr, dpr, 1]);
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
+      // if (this.clearFullScreen) {
       if (this.clearFullScreen) {
-        // if (this.clearFullScreen || this.isFirstTimeRendering) {
-        // this.isFirstTimeRendering = false;
         // console.log('canvas renderer fcp...');
         renderByZIndex(renderingContext.root, context);
       } else {
@@ -377,6 +377,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     runtime: GlobalRuntime,
   ) {
     const nodeName = object.nodeName;
+
+    // console.log('canvas render:', object);
 
     // restore to its ancestor
 

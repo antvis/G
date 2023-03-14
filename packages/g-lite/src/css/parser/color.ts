@@ -24,12 +24,12 @@ export function isCSSGradientValue(object: any): object is CSSGradientValue {
 }
 
 export function isPattern(object: any): object is Pattern {
-  return isObject(object) && !!(object as Pattern).image;
+  return object && !!(object as Pattern).image;
 }
 
 export function isCSSRGB(object: any): object is CSSRGB {
   return (
-    isObject(object) &&
+    object &&
     !isNil((object as CSSRGB).r) &&
     !isNil((object as CSSRGB).g) &&
     !isNil((object as CSSRGB).b)

@@ -172,13 +172,13 @@ export function parseDimensionArrayFormat(
 ): number[] {
   let parsed: number[];
 
-  if (isString(string)) {
+  if (Array.isArray(string)) {
+    // [1, '2px', 3]
+    parsed = string.map((segment) => Number(segment));
+  } else if (isString(string)) {
     parsed = string.split(' ').map((segment) => Number(segment));
   } else if (isNumber(string)) {
     parsed = [string];
-  } else {
-    // [1, '2px', 3]
-    parsed = string.map((segment) => Number(segment));
   }
 
   if (size === 2) {

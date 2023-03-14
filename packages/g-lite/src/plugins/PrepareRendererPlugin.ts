@@ -15,8 +15,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
    */
   private toSync = new Set<DisplayObject>();
 
-  private isFirstTimeRendering = true;
-  private syncing = false;
+  // private isFirstTimeRendering = true;
+  // private syncing = false;
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext, rBushRoot } = context;
@@ -118,16 +118,15 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       //   });
       // } else {
       //   console.log('next...');
-      //   this.syncRTree();
-      // }
       this.syncRTree();
+      // }
     });
   }
 
   private syncRTree() {
-    if (this.syncing) {
-      return;
-    }
+    // if (this.syncing) {
+    //   return;
+    // }
 
     // bounds changed, need re-inserting its children
     const bulk: RBushNodeAABB[] = [];
@@ -178,6 +177,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     bulk.length = 0;
     this.toSync.clear();
-    this.syncing = false;
+    // this.syncing = false;
   }
 }

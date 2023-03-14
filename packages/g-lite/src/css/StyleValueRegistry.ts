@@ -933,7 +933,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       if (needUpdateGeometry) {
         object.geometry.dirty = true;
-        // this.updateGeometry(object);
+        runtime.sceneGraphService.dirtifyToRoot(object);
       }
       return;
     }
@@ -1021,7 +1021,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     // update geometry
     if (needUpdateGeometry) {
-      this.updateGeometry(object);
+      object.geometry.dirty = true;
+      runtime.sceneGraphService.dirtifyToRoot(object);
     }
 
     attributeNames.forEach((name) => {
@@ -1442,7 +1443,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       geometry.dirty = false;
 
-      runtime.sceneGraphService.dirtifyToRoot(object);
+      // console.log('calc geometry', object);
+
+      // FIXME setOrigin may have already dirtified to root.
+      // runtime.sceneGraphService.dirtifyToRoot(object);
     }
   }
 
