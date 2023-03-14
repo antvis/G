@@ -1416,6 +1416,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       anchor = parsedStyle.anchor;
 
+      geometry.dirty = false;
+
       // set transform origin
       let usedOriginXValue =
         (flipY ? -1 : 1) *
@@ -1440,8 +1442,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           geometry.contentBounds.halfExtents[1] *
           2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
-
-      geometry.dirty = false;
 
       // console.log('calc geometry', object);
 
