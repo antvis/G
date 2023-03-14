@@ -62,6 +62,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private clearFullScreen = false;
 
+  private isFirstTimeRendering = true;
+
   /**
    * view projection matrix
    */
@@ -209,8 +211,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
+        // if (this.clearFullScreen || this.isFirstTimeRendering) {
+        // this.isFirstTimeRendering = false;
+        // console.log('canvas renderer fcp...');
         renderByZIndex(renderingContext.root, context);
       } else {
+        // console.log('canvas renderer next...');
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),

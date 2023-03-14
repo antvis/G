@@ -14,7 +14,7 @@ import { ElementEvent } from '../dom/interfaces';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
-import type { GlobalRuntime } from '../global-runtime';
+import { GlobalRuntime, runtime } from '../global-runtime';
 
 function markRenderableDirty(e: Element) {
   const renderable = e.renderable;
@@ -791,6 +791,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
+    if (geometry.dirty) {
+      runtime.styleValueRegistry.updateGeometry(element as DisplayObject);
+    }
+
     const bounds = render
       ? geometry.renderBounds
       : geometry.contentBounds || null;

@@ -709,11 +709,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       object.parsedStyle = Object.assign(object.parsedStyle, attributes);
 
-      let needUpdateGeometry = false;
-      for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
-        if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
-          needUpdateGeometry = true;
-          break;
+      let needUpdateGeometry = !!options.forceUpdateGeometry;
+      if (!needUpdateGeometry) {
+        for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
+          if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
+            needUpdateGeometry = true;
+            break;
+          }
         }
       }
 
@@ -930,7 +932,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
 
       if (needUpdateGeometry) {
-        this.updateGeometry(object);
+        object.geometry.dirty = true;
+        // this.updateGeometry(object);
       }
       return;
     }
@@ -1241,7 +1244,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * update geometry when relative props changed,
    * eg. r of Circle, width/height of Rect
    */
-  private updateGeometry(object: DisplayObject) {
+  updateGeometry(object: DisplayObject) {
     const geometryUpdater = runtime.geometryUpdaterFactory[object.nodeName];
     if (geometryUpdater) {
       const geometry = object.geometry;
@@ -1436,6 +1439,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           geometry.contentBounds.halfExtents[1] *
           2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
+
+      geometry.dirty = false;
 
       runtime.sceneGraphService.dirtifyToRoot(object);
     }

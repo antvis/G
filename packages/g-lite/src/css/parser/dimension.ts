@@ -243,7 +243,8 @@ export function convertPercentUnit(
     const bounds =
       target.nodeName === Shape.GROUP
         ? target.getLocalBounds()
-        : target.getGeometryBounds();
+        : // : target.getGeometryBounds();
+          target.geometry.contentBounds;
     let size = 0;
     if (!AABB.isEmpty(bounds)) {
       size = bounds.halfExtents[vec3Index] * 2;

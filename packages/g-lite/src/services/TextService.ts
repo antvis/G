@@ -1,4 +1,4 @@
-import type { CanvasLike, GlobalRuntime } from '..';
+import { CanvasLike, GlobalRuntime } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';
 import { toFontString } from '../utils';

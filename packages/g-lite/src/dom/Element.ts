@@ -134,6 +134,7 @@ export class Element<
   };
 
   geometry: Geometry = {
+    dirty: false,
     contentBounds: undefined,
     renderBounds: undefined,
   };
