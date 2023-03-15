@@ -1,4 +1,4 @@
-import type { ParsedTextStyleProps } from '@antv/g-lite';
+import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
 import { runtime } from '@antv/g-lite';
 import { detect } from 'detect-browser';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
@@ -29,10 +29,10 @@ const BASELINE_MAP_FOR_FIREFOX: Record<string, string> = {
 export function updateTextElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedTextStyleProps,
+  text: Text,
 ) {
   const {
     lineWidth,
-    metrics,
     dx,
     dy,
     textPath,
@@ -42,7 +42,7 @@ export function updateTextElementAttribute(
     textDecorationColor = '',
     textDecorationStyle = '',
   } = parsedStyle;
-  let { textBaseline } = parsedStyle;
+  let { textBaseline, metrics } = parsedStyle;
 
   if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
     textBaseline = 'bottom';
@@ -64,6 +64,12 @@ export function updateTextElementAttribute(
   }
 
   $el.setAttribute('paint-order', 'stroke');
+
+  // Since the geometry calculation is delayed, do it here if needed.
+  if (!metrics) {
+    text.isOverflowing();
+    metrics = text.parsedStyle.metrics;
+  }
   const { lines, lineHeight, height } = metrics;
 
   const lineNum = lines.length;

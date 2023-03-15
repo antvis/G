@@ -1,6 +1,7 @@
 import type {
   CanvasContext,
   DisplayObject,
+  Text,
   // ParsedCircleStyleProps,
   // ParsedEllipseStyleProps,
   // ParsedLineStyleProps,
@@ -78,7 +79,11 @@ export class ZdogElementLifeCycleContribution
         break;
       }
       case Shape.TEXT: {
-        SVGRenderer.updateTextElementAttribute($el, parsedStyle);
+        SVGRenderer.updateTextElementAttribute(
+          $el,
+          parsedStyle,
+          object as Text,
+        );
         break;
       }
     }

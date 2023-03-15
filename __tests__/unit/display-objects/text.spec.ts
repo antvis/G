@@ -174,7 +174,9 @@ describe('Text', () => {
     // clip
     text.style.wordWrapWidth = 200;
     text.style.maxLines = 2;
-    expect(text.isOverflowing()).eqls(true);
+    debugger;
+    const r = text.isOverflowing();
+    expect(r).eqls(true);
     // bounds = text.getBounds();
     // if (bounds) {
     //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
