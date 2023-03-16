@@ -237,6 +237,10 @@ export function convertPercentUnit(
   vec3Index: number,
   target: DisplayObject,
 ): number {
+  if (valueWithUnit.value === 0) {
+    return 0;
+  }
+
   if (valueWithUnit.unit === UnitType.kPixels) {
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
@@ -245,11 +249,7 @@ export function convertPercentUnit(
         ? target.getLocalBounds()
         : // : target.getGeometryBounds();
           target.geometry.contentBounds;
-    let size = 0;
-    if (!AABB.isEmpty(bounds)) {
-      size = bounds.halfExtents[vec3Index] * 2;
-    }
-    return (Number(valueWithUnit.value) / 100) * size;
+    return (valueWithUnit.value / 100) * bounds.halfExtents[vec3Index] * 2;
   }
   return 0;
 }

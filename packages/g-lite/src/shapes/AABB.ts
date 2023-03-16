@@ -38,13 +38,6 @@ export class AABB {
   // min: vec3 = vec3.create();
   // max: vec3 = vec3.create();
 
-  constructor(
-    center: Tuple3Number = [0, 0, 0],
-    halfExtents: Tuple3Number = [0, 0, 0],
-  ) {
-    this.update(center, halfExtents);
-  }
-
   update(center: Tuple3Number, halfExtents: Tuple3Number) {
     copyVec3(this.center, center);
     copyVec3(this.halfExtents, halfExtents);

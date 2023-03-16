@@ -66,6 +66,13 @@ export class TextMesh extends Instanced {
     // if (instance.parsedStyle.fontSize !== object.parsedStyle.fontSize) {
     //   return false;
     // }
+    if (!instance.parsedStyle.metrics) {
+      (instance as TextShape).isOverflowing();
+    }
+    if (!object.parsedStyle.metrics) {
+      (object as TextShape).isOverflowing();
+    }
+
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
       instancedAttributes.some(
