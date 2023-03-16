@@ -75,6 +75,7 @@ export class EventPlugin implements RenderingPlugin {
             this.rootPointerEvent,
             event,
             canvas,
+            nativeEvent,
           );
           this.context.eventService.mapEvent(federatedEvent);
         }
@@ -120,6 +121,7 @@ export class EventPlugin implements RenderingPlugin {
             this.rootPointerEvent,
             normalizedEvent,
             canvas,
+            nativeEvent,
           );
           event.type += outside;
           this.context.eventService.mapEvent(event);
@@ -152,6 +154,7 @@ export class EventPlugin implements RenderingPlugin {
         this.rootPointerEvent,
         normalizedEvent,
         canvas,
+        nativeEvent,
       );
 
       this.context.eventService.mapEvent(event);
@@ -188,26 +191,27 @@ export class EventPlugin implements RenderingPlugin {
 
   private bootstrapEvent(
     event: FederatedPointerEvent,
-    nativeEvent: PointerEvent,
+    normalizedEvent: PointerEvent,
     view: ICanvas,
+    nativeEvent: PointerEvent | MouseEvent | TouchEvent,
   ): FederatedPointerEvent {
     event.view = view;
     event.originalEvent = null;
     event.nativeEvent = nativeEvent;
 
-    event.pointerId = nativeEvent.pointerId;
-    event.width = nativeEvent.width;
-    event.height = nativeEvent.height;
-    event.isPrimary = nativeEvent.isPrimary;
-    event.pointerType = nativeEvent.pointerType;
-    event.pressure = nativeEvent.pressure;
-    event.tangentialPressure = nativeEvent.tangentialPressure;
-    event.tiltX = nativeEvent.tiltX;
-    event.tiltY = nativeEvent.tiltY;
-    event.twist = nativeEvent.twist;
-    this.transferMouseData(event, nativeEvent);
+    event.pointerId = normalizedEvent.pointerId;
+    event.width = normalizedEvent.width;
+    event.height = normalizedEvent.height;
+    event.isPrimary = normalizedEvent.isPrimary;
+    event.pointerType = normalizedEvent.pointerType;
+    event.pressure = normalizedEvent.pressure;
+    event.tangentialPressure = normalizedEvent.tangentialPressure;
+    event.tiltX = normalizedEvent.tiltX;
+    event.tiltY = normalizedEvent.tiltY;
+    event.twist = normalizedEvent.twist;
+    this.transferMouseData(event, normalizedEvent);
 
-    const { x, y } = this.getViewportXY(nativeEvent);
+    const { x, y } = this.getViewportXY(normalizedEvent);
     event.viewport.x = x;
     event.viewport.y = y;
     const { x: canvasX, y: canvasY } =
