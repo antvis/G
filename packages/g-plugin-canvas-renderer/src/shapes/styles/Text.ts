@@ -39,11 +39,16 @@ export class TextRenderer implements StyleRenderer {
     context.font = font;
     context.lineWidth = lineWidth;
     context.textAlign = textAlign === 'middle' ? 'center' : textAlign;
-    if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
-      context.textBaseline = 'bottom';
-    } else {
-      context.textBaseline = textBaseline;
+
+    let formattedTextBaseline = textBaseline;
+    if (
+      formattedTextBaseline === 'bottom' ||
+      (!runtime.enableCSSParsing && formattedTextBaseline === 'alphabetic')
+    ) {
+      formattedTextBaseline = 'ideographic';
     }
+
+    context.textBaseline = formattedTextBaseline;
     context.lineJoin = lineJoin;
     if (!isNil(miterLimit)) {
       context.miterLimit = miterLimit;
