@@ -88,6 +88,7 @@ class Gesture extends EE {
     el.addEventListener('pointerdown', this._start);
     el.addEventListener('pointermove', this._move);
     el.addEventListener('pointerup', this._end);
+    el.addEventListener('pointercancel', this._cancel);
     el.addEventListener('pointerupoutside', this._end);
   }
 
@@ -273,6 +274,17 @@ class Gesture extends EE {
     if (evCache.length > 0) {
       this._start();
     }
+  };
+
+  private _cancel = (ev: GestureEvent) => {
+    const { evCache, startPoints } = this;
+    const points = evCache.map((ev) => {
+      return { x: ev.x, y: ev.y };
+    });
+    ev.points = points;
+    this.emitEnd(ev);
+    this.evCache = [];
+    this.reset();
   };
 
   private getEventType(point: Point) {

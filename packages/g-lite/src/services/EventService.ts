@@ -74,6 +74,7 @@ export class EventService {
     this.addEventMapping('pointermove', this.onPointerMove);
     this.addEventMapping('pointerout', this.onPointerOut);
     this.addEventMapping('pointerleave', this.onPointerOut);
+    this.addEventMapping('pointercancel', this.onPointerCancel);
     this.addEventMapping('pointerover', this.onPointerOver);
     this.addEventMapping('pointerupoutside', this.onPointerUpOutside);
     this.addEventMapping('wheel', this.onWheel);
@@ -583,6 +584,13 @@ export class EventService {
 
     this.dispatchEvent(wheelEvent);
     this.freeEvent(wheelEvent);
+  };
+
+  onPointerCancel = async (from: FederatedPointerEvent) => {
+    const e = await this.createPointerEvent(from);
+
+    this.dispatchEvent(e);
+    this.freeEvent(e);
   };
 
   dispatchEvent(e: FederatedEvent, type?: string, skipPropagate?: boolean) {

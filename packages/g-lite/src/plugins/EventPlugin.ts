@@ -136,6 +136,27 @@ export class EventPlugin implements RenderingPlugin {
     renderingService.hooks.pointerOver.tap(EventPlugin.tag, this.onPointerMove);
 
     renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
+
+    renderingService.hooks.pointerCancel.tap(
+      EventPlugin.tag,
+      (nativeEvent: InteractivePointerEvent) => {
+        const normalizedEvents = this.normalizeToPointerEvent(
+          nativeEvent,
+          canvas,
+        );
+
+        for (const normalizedEvent of normalizedEvents) {
+          const event = this.bootstrapEvent(
+            this.rootPointerEvent,
+            normalizedEvent,
+            canvas,
+            nativeEvent,
+          );
+          this.context.eventService.mapEvent(event);
+        }
+        this.setCursor(this.context.eventService.cursor);
+      },
+    );
   }
 
   private onPointerMove = (nativeEvent: InteractivePointerEvent) => {
