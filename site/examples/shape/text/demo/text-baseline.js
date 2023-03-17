@@ -7,7 +7,7 @@ import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
-// runtime.enableCSSParsing = false;
+runtime.enableCSSParsing = false;
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
@@ -29,7 +29,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: svgRenderer,
+  renderer: canvasRenderer,
 });
 
 // create a line of text
@@ -203,7 +203,7 @@ const gui = new lil.GUI({ autoPlace: false });
 $wrapper.appendChild(gui.domElement);
 const rendererFolder = gui.addFolder('renderer');
 const rendererConfig = {
-  renderer: 'svg',
+  renderer: 'canvas',
 };
 rendererFolder
   .add(rendererConfig, 'renderer', [

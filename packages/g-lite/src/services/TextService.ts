@@ -1,4 +1,4 @@
-import { CanvasLike, GlobalRuntime, runtime } from '..';
+import { CanvasLike, GlobalRuntime } from '..';
 import type { ParsedTextStyleProps } from '../display-objects';
 import { Rectangle } from '../shapes';
 import { toFontString } from '../utils';
@@ -190,20 +190,19 @@ export class TextService {
 
     const font = toFontString(parsedStyle);
 
-    let fontProperties;
-    if (runtime.enableCSSParsing) {
-      fontProperties = this.measureFont(font, offscreenCanvas);
-      // fallback in case UA disallow canvas data extraction
-      // (toDataURI, getImageData functions)
-      if (fontProperties.fontSize === 0) {
-        fontProperties.fontSize = fontSize;
-        fontProperties.ascent = fontSize;
-      }
-    } else {
-      fontProperties = {
-        fontSize,
-      };
+    // if (runtime.enableCSSParsing) {
+    const fontProperties = this.measureFont(font, offscreenCanvas);
+    // fallback in case UA disallow canvas data extraction
+    // (toDataURI, getImageData functions)
+    if (fontProperties.fontSize === 0) {
+      fontProperties.fontSize = fontSize;
+      fontProperties.ascent = fontSize;
     }
+    // } else {
+    //   fontProperties = {
+    //     fontSize,
+    //   };
+    // }
 
     const context =
       this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);

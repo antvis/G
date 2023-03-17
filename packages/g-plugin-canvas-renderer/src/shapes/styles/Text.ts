@@ -49,7 +49,6 @@ export class TextRenderer implements StyleRenderer {
       formattedTextBaseline = 'bottom';
     }
 
-    context.textBaseline = formattedTextBaseline;
     context.lineJoin = lineJoin;
     if (!isNil(miterLimit)) {
       context.miterLimit = miterLimit;
@@ -72,6 +71,17 @@ export class TextRenderer implements StyleRenderer {
     // account for dx & dy
     const offsetX = dx || 0;
     linePositionY += dy || 0;
+
+    if (lines.length === 1) {
+      if (formattedTextBaseline === 'bottom') {
+        formattedTextBaseline = 'middle';
+        linePositionY -= 0.5 * height;
+      } else if (formattedTextBaseline === 'top') {
+        formattedTextBaseline = 'middle';
+        linePositionY += 0.5 * height;
+      }
+    }
+    context.textBaseline = formattedTextBaseline;
 
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
     setShadowAndFilter(object, context, hasShadow);

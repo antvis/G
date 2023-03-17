@@ -1,4 +1,4 @@
-import { getOrCreateUnitValue, PECENTAGE_50 } from '../css';
+import { PECENTAGE_50 } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';

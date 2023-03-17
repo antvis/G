@@ -1,4 +1,4 @@
-import { clamp, isNil, isObject } from '@antv/util';
+import { clamp, isNil } from '@antv/util';
 import * as d3 from 'd3-color';
 import { Rect } from '../..';
 import { memoize } from '../../utils/memoize';

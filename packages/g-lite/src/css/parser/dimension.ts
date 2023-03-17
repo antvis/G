@@ -1,7 +1,6 @@
 import { isNil, isNumber, isString } from '@antv/util';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
-import { AABB } from '../../shapes';
 import { Shape } from '../../types';
 import { rad2deg, turn2deg } from '../../utils';
 import { memoize } from '../../utils/memoize';

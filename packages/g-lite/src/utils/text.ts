@@ -1,4 +1,4 @@
-import { isNumber, isString } from '@antv/util';
+import { isNumber } from '@antv/util';
 import type { ParsedTextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = [

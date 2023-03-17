@@ -92,7 +92,7 @@ export class TextMesh extends Instanced {
     let indicesOff = 0;
     objects.forEach((object) => {
       const { metrics, dx, dy } = object.parsedStyle as ParsedTextStyleProps;
-      const { font, lines, height, lineHeight, fontProperties } = metrics;
+      const { font, lines, height, lineHeight } = metrics;
 
       // account for dx & dy
       const offsetX = dx || 0;

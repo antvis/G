@@ -61,6 +61,12 @@ export function updateTextElementAttribute(
     const textContent = convertHTML(lines[0]);
     $el.setAttribute('dx', `${lineWidth / 2}`);
 
+    // Since `text-after-edge` is not a standard property value, we use `dy` instead.
+    if (textBaseline === 'bottom' || textBaseline === 'top') {
+      $el.setAttribute('dominant-baseline', 'middle');
+      $el.setAttribute('dy', textBaseline === 'bottom' ? `-0.5em` : '0.5em');
+    }
+
     // <textPath> only support one line
     // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath
     if (textPath) {

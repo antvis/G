@@ -14,7 +14,7 @@ import { ElementEvent } from '../dom/interfaces';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
-import { GlobalRuntime, runtime } from '../global-runtime';
+import { GlobalRuntime } from '../global-runtime';
 
 function markRenderableDirty(e: Element) {
   const renderable = e.renderable;
