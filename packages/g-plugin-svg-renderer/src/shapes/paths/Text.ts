@@ -1,26 +1,14 @@
 import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
 import { runtime } from '@antv/g-lite';
-import { detect } from 'detect-browser';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { convertHTML } from '../../utils/format';
 
-// @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
-const BASELINE_MAP: Record<string, string> = {
-  top: 'before-edge', // TODO: different with canvas' `top`
-  middle: 'central',
-  bottom: 'after-edge',
-  alphabetic: 'alphabetic',
-  ideographic: 'ideographic',
-  hanging: 'hanging',
-};
-
-// for FireFox
 // @see https://github.com/plouc/nivo/issues/164
-const BASELINE_MAP_FOR_FIREFOX: Record<string, string> = {
-  top: 'text-before-edge',
+const BASELINE_MAP: Record<string, string> = {
+  top: 'hanging', // Use hanging here.
   middle: 'central',
-  bottom: 'text-after-edge',
+  bottom: 'text-after-edge', // FIXME: It is not a standard property.
   alphabetic: 'alphabetic',
   ideographic: 'ideographic',
   hanging: 'hanging',
@@ -41,35 +29,18 @@ export function updateTextElementAttribute(
     textDecorationLine = '',
     textDecorationColor = '',
     textDecorationStyle = '',
+    metrics,
   } = parsedStyle;
-  let { textBaseline, metrics } = parsedStyle;
+  let { textBaseline } = parsedStyle;
 
   if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
     textBaseline = 'bottom';
   }
 
-  const browser = detect();
-  if (browser && browser.name === 'firefox') {
-    // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
-    $el.setAttribute(
-      'dominant-baseline',
-      BASELINE_MAP_FOR_FIREFOX[textBaseline] || 'alphabetic',
-    );
-  } else {
-    $el.setAttribute(
-      'dominant-baseline',
-      BASELINE_MAP_FOR_FIREFOX[textBaseline],
-    );
-    $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline]);
-  }
+  $el.setAttribute('dominant-baseline', BASELINE_MAP[textBaseline]);
 
   $el.setAttribute('paint-order', 'stroke');
 
-  // Since the geometry calculation is delayed, do it here if needed.
-  if (!metrics) {
-    text.isOverflowing();
-    metrics = text.parsedStyle.metrics;
-  }
   const { lines, lineHeight, height } = metrics;
 
   const lineNum = lines.length;

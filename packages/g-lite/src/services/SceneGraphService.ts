@@ -795,10 +795,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
-    if (geometry.dirty) {
-      runtime.styleValueRegistry.updateGeometry(element as DisplayObject);
-    }
-
     const bounds = render
       ? geometry.renderBounds
       : geometry.contentBounds || null;

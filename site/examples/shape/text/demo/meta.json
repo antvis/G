@@ -21,6 +21,14 @@
       "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*qQawT5L1jGEAAAAAAAAAAAAADmJ7AQ"
     },
     {
+      "filename": "text-baseline.js",
+      "title": {
+        "zh": "文本基线",
+        "en": "Text Baseline"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*VAQWQbMdQkQAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "web-font-loader.js",
       "title": {
         "zh": "加载字体",
@@ -33,7 +41,8 @@
       "title": {
         "zh": "D3 词云",
         "en": "D3 Word Cloud"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*3WR1RZMQrAQAAAAAAAAAAAAADmJ7AQ/original"
     }
   ]
 }

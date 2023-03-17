@@ -139,7 +139,6 @@ export interface StyleValueRegistry {
   unregisterMetadata: (name: string) => void;
   getPropertySyntax: (syntax: string) => CSSProperty<any, any>;
   addUnresolveProperty: (object: DisplayObject, name: string) => void;
-  updateGeometry: (displayObject: DisplayObject) => void;
 
   processProperties: (
     object: DisplayObject,

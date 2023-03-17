@@ -932,8 +932,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
 
       if (needUpdateGeometry) {
-        object.geometry.dirty = true;
-        runtime.sceneGraphService.dirtifyToRoot(object);
+        this.updateGeometry(object);
       }
       return;
     }
@@ -1021,8 +1020,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     // update geometry
     if (needUpdateGeometry) {
-      object.geometry.dirty = true;
-      runtime.sceneGraphService.dirtifyToRoot(object);
+      // object.geometry.dirty = true;
+      // runtime.sceneGraphService.dirtifyToRoot(object);
+      this.updateGeometry(object);
     }
 
     attributeNames.forEach((name) => {
@@ -1245,7 +1245,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * update geometry when relative props changed,
    * eg. r of Circle, width/height of Rect
    */
-  updateGeometry(object: DisplayObject) {
+  private updateGeometry(object: DisplayObject) {
     const { nodeName } = object;
     const geometryUpdater = runtime.geometryUpdaterFactory[nodeName];
     if (geometryUpdater) {
@@ -1412,8 +1412,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       anchor = parsedStyle.anchor;
 
-      geometry.dirty = false;
-
       // if (nodeName === Shape.RECT) {
       // account for negative width / height of Rect
       // @see https://github.com/antvis/g/issues/957
@@ -1449,7 +1447,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
       // FIXME setOrigin may have already dirtified to root.
-      // runtime.sceneGraphService.dirtifyToRoot(object);
+      runtime.sceneGraphService.dirtifyToRoot(object);
     }
   }
 

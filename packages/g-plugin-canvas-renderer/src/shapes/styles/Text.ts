@@ -42,10 +42,11 @@ export class TextRenderer implements StyleRenderer {
 
     let formattedTextBaseline = textBaseline;
     if (
-      formattedTextBaseline === 'bottom' ||
-      (!runtime.enableCSSParsing && formattedTextBaseline === 'alphabetic')
+      // formattedTextBaseline === 'bottom' ||
+      !runtime.enableCSSParsing &&
+      formattedTextBaseline === 'alphabetic'
     ) {
-      formattedTextBaseline = 'ideographic';
+      formattedTextBaseline = 'bottom';
     }
 
     context.textBaseline = formattedTextBaseline;

@@ -1,7 +1,7 @@
 import type { AABB } from '../shapes';
 
 export interface Geometry {
-  dirty: boolean;
+  // dirty: boolean;
   /**
    * excluding all children
    */
