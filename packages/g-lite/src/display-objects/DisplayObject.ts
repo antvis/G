@@ -220,7 +220,9 @@ export class DisplayObject<
 
     // start to process attributes
     this.initAttributes(this.config.style);
-
+    const Proxy: ProxyConstructor = runtime.globalThis.Proxy
+      ? runtime.globalThis.Proxy
+      : function () {};
     this.dataset = new Proxy<any>(
       {},
       {

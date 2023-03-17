@@ -87,7 +87,8 @@ export const parserPercentage = memoize((css: string) => {
 
 export const parseLengthOrPercentage = (css: string): CSSUnitValue => {
   if (isNumber(css) || isFinite(Number(css))) {
-    return getOrCreateUnitValue(Number(css), 'px');
+    // Number(css) is NaN
+    return getOrCreateUnitValue(Number(css) || 0, 'px');
     // return Number(css);
   }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;

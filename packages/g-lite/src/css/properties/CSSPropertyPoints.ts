@@ -2,7 +2,7 @@ import type { DisplayObject } from '../../display-objects';
 import type { ParsedBaseStyleProps } from '../../types';
 import { Shape } from '../../types';
 import type { CSSProperty } from '../CSSProperty';
-import { parsePoints } from '../parser/points';
+import { parsePoints, mergePoints } from '../parser/points';
 
 export class CSSPropertyPoints
   implements
@@ -36,4 +36,6 @@ export class CSSPropertyPoints
       object.setLocalPosition(defX, defY);
     }
   }
+
+  mixer = mergePoints;
 }

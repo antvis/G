@@ -451,6 +451,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   // Polyline & Polygon
   {
     n: 'points',
+    /**
+     * support interpolation
+     */
+    int: true,
     l: true,
     syntax: PropertySyntax.LIST_OF_POINTS,
     p: 50,

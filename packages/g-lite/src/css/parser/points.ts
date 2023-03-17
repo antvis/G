@@ -8,7 +8,10 @@ import type { DisplayObject } from '../..';
  * @example
  * points="100,10 250,150 200,110"
  */
-export function parsePoints(pointsOrStr: string | [number, number][], object: DisplayObject) {
+export function parsePoints(
+  pointsOrStr: string | [number, number][],
+  object: DisplayObject,
+) {
   let points: [number, number][];
   if (isString(pointsOrStr)) {
     points = pointsOrStr.split(' ').map((pointStr) => {
@@ -30,7 +33,12 @@ export function parsePoints(pointsOrStr: string | [number, number][], object: Di
     if (points[i + 1]) {
       segmentT = [0, 0];
       segmentT[0] = tempLength / totalLength;
-      segmentL = LineUtil.length(p[0], p[1], points[i + 1][0], points[i + 1][1]);
+      segmentL = LineUtil.length(
+        p[0],
+        p[1],
+        points[i + 1][0],
+        points[i + 1][1],
+      );
       tempLength += segmentL;
       segmentT[1] = tempLength / totalLength;
       segments.push(segmentT);
@@ -50,4 +58,23 @@ export function parsePoints(pointsOrStr: string | [number, number][], object: Di
     totalLength,
     segments,
   };
+}
+
+export function mergePoints(
+  left,
+  right,
+):
+  | [
+      [number, number][],
+      [number, number][],
+      (numberList: [number, number][]) => [number, number][],
+    ]
+  | undefined {
+  return [
+    left.points,
+    right.points,
+    (points) => {
+      return points;
+    },
+  ];
 }

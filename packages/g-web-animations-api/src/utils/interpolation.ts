@@ -41,8 +41,10 @@ export function convertEffectInput(
               ? 0
               : interpolation.easingFunction(offsetFraction / localDuration);
           // apply updated attribute
-          target.style[interpolation.property] =
-            interpolation.interpolation(scaledLocalTime);
+          target.setAttribute(
+            interpolation.property,
+            interpolation.interpolation(scaledLocalTime),
+          );
 
           // if (interpolation.property === 'visibility') {
           //   console.log(
@@ -55,7 +57,7 @@ export function convertEffectInput(
       for (const property in propertySpecificKeyframeGroups)
         if (isNotReservedWord(property)) {
           // clear attribute
-          target.style[property] = null;
+          target.setAttribute(property, null);
         }
     }
   };
@@ -273,13 +275,21 @@ function interpolate(
 
   if (Array.isArray(from) && Array.isArray(to)) {
     // interpolate arrays/matrix
-    if (from.length === to.length) {
-      const r: number[] = [];
-      for (let i = 0; i < from.length; i++) {
-        r.push(interpolate(from[i], to[i], f) as number);
-      }
-      return r;
+    const fromLength = from.length;
+    const toLength = to.length;
+    const length = Math.max(fromLength, toLength);
+
+    const r: number[] = [];
+    for (let i = 0; i < length; i++) {
+      r.push(
+        interpolate(
+          from[i < fromLength ? i : fromLength - 1],
+          to[i < toLength ? i : toLength - 1],
+          f,
+        ) as number,
+      );
     }
+    return r;
   }
   throw new Error('Mismatched interpolation arguments ' + from + ':' + to);
 }
