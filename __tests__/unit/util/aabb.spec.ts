@@ -3,7 +3,8 @@ import { AABB, Plane } from '../../../packages/g-lite/src';
 
 describe('AABB', () => {
   test('should construct correctly.', () => {
-    const aabb = new AABB([0, 0, 0], [0.5, 0.5, 0.5]);
+    const aabb = new AABB();
+    aabb.update([0, 0, 0], [0.5, 0.5, 0.5]);
 
     expect(aabb.getMin()).to.eqls([-0.5, -0.5, -0.5]);
     expect(aabb.getMax()).to.eqls([0.5, 0.5, 0.5]);
@@ -16,8 +17,10 @@ describe('AABB', () => {
   });
 
   test('should merge 2 AABBs correctly.', () => {
-    const aabb1 = new AABB([0, 0, 0], [0.5, 0.5, 0.5]);
-    const aabb2 = new AABB([1, 1, 1], [0.5, 0.5, 0.5]);
+    const aabb1 = new AABB();
+    aabb1.update([0, 0, 0], [0.5, 0.5, 0.5]);
+    const aabb2 = new AABB();
+    aabb2.update([1, 1, 1], [0.5, 0.5, 0.5]);
 
     aabb1.add(aabb2);
 
@@ -28,9 +31,12 @@ describe('AABB', () => {
   });
 
   test('should intersects with another AABB.', () => {
-    const aabb1 = new AABB([0, 0, 0], [0.5, 0.5, 0.5]);
-    const aabb2 = new AABB([1, 1, 1], [0.5, 0.5, 0.5]);
-    const aabb3 = new AABB([2, 2, 2], [0.5, 0.5, 0.5]);
+    const aabb1 = new AABB();
+    aabb1.update([0, 0, 0], [0.5, 0.5, 0.5]);
+    const aabb2 = new AABB();
+    aabb2.update([1, 1, 1], [0.5, 0.5, 0.5]);
+    const aabb3 = new AABB();
+    aabb3.update([2, 2, 2], [0.5, 0.5, 0.5]);
 
     expect(aabb1.intersects(aabb2)).to.true;
     expect(aabb1.intersects(aabb3)).to.false;
@@ -64,7 +70,8 @@ describe('AABB', () => {
   // });
 
   test('should get p-vertex & n-vertex based on each plane of culling volume.', () => {
-    const aabb = new AABB([0, 0, 0], [0.5, 0.5, 0.5]);
+    const aabb = new AABB();
+    aabb.update([0, 0, 0], [0.5, 0.5, 0.5]);
     let plane = new Plane(0, [1, 1, 1]);
     expect(aabb.getNegativeFarPoint(plane)).to.eqls([-0.5, -0.5, -0.5]);
     expect(aabb.getPositiveFarPoint(plane)).to.eqls([0.5, 0.5, 0.5]);

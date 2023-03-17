@@ -70,13 +70,17 @@ describe('Mixin Transformable', () => {
     expect(group1.getLocalPosition()).to.eqls([0, 0, 0]);
     expect(group1.getLocalScale()).to.eqls([1, 1, 1]);
     expect(group1.getLocalEulerAngles()).to.eqls(0);
-    expect(group1.getLocalTransform()).to.eqls(mat4.identity(mat4.create()));
+    expect(group1.getLocalTransform()).to.eqls([
+      1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+    ]);
 
     group2.resetLocalTransform();
     expect(group2.getLocalPosition()).to.eqls([0, 0, 0]);
     expect(group2.getLocalScale()).to.eqls([1, 1, 1]);
     expect(group2.getLocalEulerAngles()).to.eqls(0);
-    expect(group2.getLocalTransform()).to.eqls(mat4.identity(mat4.create()));
+    expect(group2.getLocalTransform()).to.eqls([
+      1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+    ]);
   });
 
   it('should update scaling with its parent group', () => {
