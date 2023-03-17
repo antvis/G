@@ -1,4 +1,4 @@
-import type { IElement, IKeyframeEffect } from '@antv/g-lite';
+import { IElement, IKeyframeEffect, runtime } from '@antv/g-lite';
 import {
   calculateActiveDuration,
   calculateIterationProgress,
@@ -128,31 +128,35 @@ export class KeyframeEffect implements IKeyframeEffect {
       this.target,
     );
 
-    this.computedTiming = new Proxy<AnimationEffectTiming>(this.timing, {
-      get: (target, prop) => {
-        if (prop === 'duration') {
-          return target.duration === 'auto' ? 0 : target.duration;
-        } else if (prop === 'fill') {
-          return target.fill === 'auto' ? 'none' : target.fill;
-        } else if (prop === 'localTime') {
-          return (this.animation && this.animation.currentTime) || null;
-        } else if (prop === 'currentIteration') {
-          if (!this.animation || this.animation.playState !== 'running') {
-            return null;
-          }
-          return target.currentIteration || 0;
-        } else if (prop === 'progress') {
-          if (!this.animation || this.animation.playState !== 'running') {
-            return null;
-          }
-          return target.progress || 0;
-        }
-        return target[prop];
-      },
-      set: () => {
-        return true;
-      },
-    });
+    // 不支持 proxy 时降级成 this.timing
+    const Proxy: ProxyConstructor = runtime.globalThis.Proxy;
+    this.computedTiming = Proxy
+      ? new Proxy<AnimationEffectTiming>(this.timing, {
+          get: (target, prop) => {
+            if (prop === 'duration') {
+              return target.duration === 'auto' ? 0 : target.duration;
+            } else if (prop === 'fill') {
+              return target.fill === 'auto' ? 'none' : target.fill;
+            } else if (prop === 'localTime') {
+              return (this.animation && this.animation.currentTime) || null;
+            } else if (prop === 'currentIteration') {
+              if (!this.animation || this.animation.playState !== 'running') {
+                return null;
+              }
+              return target.currentIteration || 0;
+            } else if (prop === 'progress') {
+              if (!this.animation || this.animation.playState !== 'running') {
+                return null;
+              }
+              return target.progress || 0;
+            }
+            return target[prop];
+          },
+          set: () => {
+            return true;
+          },
+        })
+      : this.timing;
   }
 
   applyInterpolations() {

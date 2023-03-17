@@ -41,8 +41,10 @@ export function convertEffectInput(
               ? 0
               : interpolation.easingFunction(offsetFraction / localDuration);
           // apply updated attribute
-          target.style[interpolation.property] =
-            interpolation.interpolation(scaledLocalTime);
+          target.setAttribute(
+            interpolation.property,
+            interpolation.interpolation(scaledLocalTime),
+          );
 
           // if (interpolation.property === 'visibility') {
           //   console.log(
@@ -55,7 +57,7 @@ export function convertEffectInput(
       for (const property in propertySpecificKeyframeGroups)
         if (isNotReservedWord(property)) {
           // clear attribute
-          target.style[property] = null;
+          target.setAttribute(property, null);
         }
     }
   };

@@ -146,7 +146,8 @@ export class DefaultRenderer implements StyleRenderer {
     if (Array.isArray(fill)) {
       fill.forEach((gradient) => {
         context.fillStyle = this.getColor(gradient, object, context);
-        context.fill(fillRule);
+
+        fillRule ? context.fill(fillRule) : context.fill();
       });
     } else {
       if (isPattern(fill)) {
@@ -159,7 +160,7 @@ export class DefaultRenderer implements StyleRenderer {
           runtime,
         );
       }
-      context.fill(fillRule);
+      fillRule ? context.fill(fillRule) : context.fill();
     }
   }
 

@@ -162,7 +162,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           ratio > dirtyObjectRatioThreshold);
 
       if (context) {
-        context.resetTransform();
+        context.resetTransform
+          ? context.resetTransform()
+          : context.setTransform(1, 0, 0, 1, 0, 0);
         if (this.clearFullScreen) {
           this.clearRect(
             context,
