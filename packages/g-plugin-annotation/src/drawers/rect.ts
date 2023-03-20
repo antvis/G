@@ -12,25 +12,36 @@ const sortBboxPoint = (points: Point[]) => {
   return t.concat(b);
 };
 export class RectDrawer extends BaseDrawer {
-  private start: { canvas: Point; viewport: Point } | undefined;
-  private end: { canvas: Point; viewport: Point } | undefined;
+  start: { canvas: Point; viewport: Point } | undefined;
+  end: { canvas: Point; viewport: Point } | undefined;
   type = DrawerTool.Rect;
 
   get state() {
     if (!this.start || !this.end) return null;
 
     const tr = {
-      canvas: this.canvas.viewport2Canvas({ x: this.end.viewport.x, y: this.start.viewport.y }),
+      canvas: this.canvas.viewport2Canvas({
+        x: this.end.viewport.x,
+        y: this.start.viewport.y,
+      }),
       viewport: { x: this.end.viewport.x, y: this.start.viewport.y },
     };
     const bl = {
-      canvas: this.canvas.viewport2Canvas({ x: this.start.viewport.x, y: this.end.viewport.y }),
+      canvas: this.canvas.viewport2Canvas({
+        x: this.start.viewport.x,
+        y: this.end.viewport.y,
+      }),
       viewport: { x: this.start.viewport.x, y: this.end.viewport.y },
     };
 
     return {
       type: this.type,
-      path: sortBboxPoint([this.start.canvas, tr.canvas, this.end.canvas, bl.canvas]),
+      path: sortBboxPoint([
+        this.start.canvas,
+        tr.canvas,
+        this.end.canvas,
+        bl.canvas,
+      ]),
       id: this.id,
       isDrawing: this.isDrawing,
     };
@@ -42,15 +53,24 @@ export class RectDrawer extends BaseDrawer {
       return;
     }
     this.isDrawing = true;
-    this.start = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
-    this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
+    this.start = {
+      canvas: Object.assign({}, e.canvas),
+      viewport: Object.assign({}, e.viewport),
+    };
+    this.end = {
+      canvas: Object.assign({}, e.canvas),
+      viewport: Object.assign({}, e.viewport),
+    };
     this.id = uuidv4();
     this.emit(DrawerEvent.START, this.state);
   }
 
   onMouseMove(e: FederatedEvent) {
     if (!this.isDrawing) return;
-    this.end = { canvas: Object.assign({}, e.canvas), viewport: Object.assign({}, e.viewport) };
+    this.end = {
+      canvas: Object.assign({}, e.canvas),
+      viewport: Object.assign({}, e.viewport),
+    };
     this.emit(DrawerEvent.MODIFIED, this.state);
   }
 

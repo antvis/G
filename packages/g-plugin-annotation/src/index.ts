@@ -14,7 +14,7 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    const annotationPluginOptions = {
+    const annotationPluginOptions: AnnotationPluginOptions = {
       selectableStyle: {},
       drawerStyle: {},
       isDrawingMode: true,
@@ -22,6 +22,7 @@ export class Plugin extends AbstractRendererPlugin {
       enableAutoSwitchDrawingMode: false,
       enableDeleteTargetWithShortcuts: false,
       enableContinuousBrush: true,
+      brushSelectionSortMode: 'directional',
       ...this.options,
     };
 

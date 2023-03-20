@@ -35,6 +35,11 @@ export interface AnnotationPluginOptions {
    * Enable to do brush selections continuously.
    */
   enableContinuousBrush: boolean;
+
+  /**
+   * How do we sort the selected objects duration a brush selection.
+   */
+  brushSelectionSortMode: 'behavior' | 'directional';
 }
 
 // @see http://fabricjs.com/fabric-intro-part-4#customization
