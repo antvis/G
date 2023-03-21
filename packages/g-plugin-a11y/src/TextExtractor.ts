@@ -9,7 +9,8 @@ export class TextExtractor {
 
   activate() {
     const { document: doc } = this.context.config;
-    const $domElement = this.context.contextService.getDomElement() as HTMLCanvasElement;
+    const $domElement =
+      this.context.contextService.getDomElement() as HTMLCanvasElement;
     const $parentElement = $domElement.parentNode;
 
     if ($parentElement) {
@@ -74,7 +75,9 @@ color: transparent !important;
       case 'dy':
         const { transformOrigin, textAlign, textBaseline, dx, dy } =
           text.parsedStyle as ParsedTextStyleProps;
-        $el.style['transform-origin'] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
+        $el.style['transform-origin'] = `${
+          (transformOrigin && transformOrigin[0].value) || 0
+        } ${(transformOrigin && transformOrigin[1].value) || 0}`;
         const worldTransform = text.getWorldTransform();
 
         let offsetX = '0';
