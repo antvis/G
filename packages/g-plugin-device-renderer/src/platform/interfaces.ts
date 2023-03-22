@@ -36,7 +36,10 @@ export interface Buffer extends ResourceBase {
 }
 export interface Texture extends ResourceBase {
   type: ResourceType.Texture;
-  setImageData: (data: TexImageSource | ArrayBufferView[], firstMipLevel?: number) => void;
+  setImageData: (
+    data: TexImageSource | ArrayBufferView[],
+    firstMipLevel?: number,
+  ) => void;
 }
 export interface RenderTarget extends ResourceBase {
   type: ResourceType.RenderTarget;
@@ -76,7 +79,7 @@ export interface Readback extends ResourceBase {
     dst: ArrayBufferView,
     dstOffset?: number,
     length?: number,
-  ) => Promise<ArrayBufferView>;
+  ) => ArrayBufferView;
 
   readBuffer: (
     b: Buffer,
@@ -516,7 +519,11 @@ export interface RenderPass {
   // Draw commands.
   draw: (vertexCount: number, firstVertex: number) => void;
   drawIndexed: (indexCount: number, firstIndex: number) => void;
-  drawIndexedInstanced: (indexCount: number, firstIndex: number, instanceCount: number) => void;
+  drawIndexedInstanced: (
+    indexCount: number,
+    firstIndex: number,
+    instanceCount: number,
+  ) => void;
 
   // Query system.
   beginOcclusionQuery: (dstOffs: number) => void;
@@ -566,20 +573,28 @@ export interface Device {
   createProgram: (program: ProgramDescriptor) => Program;
   createProgramSimple: (program: ProgramDescriptorSimple) => Program;
   createBindings: (bindingsDescriptor: BindingsDescriptor) => Bindings;
-  createInputLayout: (inputLayoutDescriptor: InputLayoutDescriptor) => InputLayout;
+  createInputLayout: (
+    inputLayoutDescriptor: InputLayoutDescriptor,
+  ) => InputLayout;
   createInputState: (
     inputLayout: InputLayout,
     buffers: (VertexBufferDescriptor | null)[],
     indexBuffer: IndexBufferDescriptor | null,
     program?: Program,
   ) => InputState;
-  createRenderPipeline: (descriptor: RenderPipelineDescriptor) => RenderPipeline;
-  createComputePipeline: (descriptor: ComputePipelineDescriptor) => ComputePipeline;
+  createRenderPipeline: (
+    descriptor: RenderPipelineDescriptor,
+  ) => RenderPipeline;
+  createComputePipeline: (
+    descriptor: ComputePipelineDescriptor,
+  ) => ComputePipeline;
   createReadback: () => Readback;
   createQueryPool: (type: QueryPoolType, elemCount: number) => QueryPool;
 
   createRenderPass: (renderPassDescriptor: RenderPassDescriptor) => RenderPass;
-  createComputePass: (computePassDescriptor: ComputePassDescriptor) => ComputePass;
+  createComputePass: (
+    computePassDescriptor: ComputePassDescriptor,
+  ) => ComputePass;
   submitPass: (pass: RenderPass | ComputePass) => void;
 
   // Render pipeline compilation control.
@@ -597,7 +612,11 @@ export interface Device {
 
   // Information queries.
   queryLimits: () => DeviceLimits;
-  queryTextureFormatSupported: (format: Format, width: number, height: number) => boolean;
+  queryTextureFormatSupported: (
+    format: Format,
+    width: number,
+    height: number,
+  ) => boolean;
   queryPlatformAvailable: () => boolean;
   queryVendorInfo: () => VendorInfo;
   queryRenderPass: (o: RenderPass) => Readonly<RenderPassDescriptor>;

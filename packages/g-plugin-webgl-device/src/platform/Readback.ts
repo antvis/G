@@ -17,7 +17,11 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     super({ id, device });
   }
 
-  private clientWaitAsync(sync: WebGLSync, flags = 0, interval_ms = 10): Promise<void> {
+  private clientWaitAsync(
+    sync: WebGLSync,
+    flags = 0,
+    interval_ms = 10,
+  ): Promise<void> {
     const gl = this.device.gl as WebGL2RenderingContext;
     return new Promise((resolve, reject) => {
       function test() {
@@ -28,7 +32,10 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
           return;
         }
         if (res == gl.TIMEOUT_EXPIRED) {
-          setTimeout(test, clamp(interval_ms, 0, gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL));
+          setTimeout(
+            test,
+            clamp(interval_ms, 0, gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL),
+          );
           return;
         }
         resolve();
@@ -64,7 +71,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#use_non-blocking_async_data_readback
    */
-  async readTexture(
+  readTexture(
     t: Texture,
     x: number,
     y: number,
@@ -73,7 +80,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     dstBuffer: ArrayBufferView,
     dstOffset = 0,
     length = dstBuffer.byteLength || 0,
-  ): Promise<ArrayBufferView> {
+  ): ArrayBufferView {
     const gl = this.device.gl;
 
     const texture = t as Texture_GL;
@@ -125,7 +132,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei
     gl.pixelStorei(gl.PACK_ALIGNMENT, 4);
     gl.readPixels(x, y, width, height, gl.RGBA, gl_type, dstBuffer);
-    return Promise.resolve(dstBuffer);
+    return dstBuffer;
     // }
   }
 

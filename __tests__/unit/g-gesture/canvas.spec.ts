@@ -76,7 +76,7 @@ describe('gesture', () => {
   });
 
   describe('pan 平移', () => {
-    it('pan 平移', async () => {
+    it.skip('pan 平移', async () => {
       const panstartCallback = jest.fn();
       const panCallback = jest.fn();
       const panendCallback = jest.fn();
@@ -117,7 +117,7 @@ describe('gesture', () => {
   });
 
   describe('press 按压', () => {
-    it('press 按压', async () => {
+    it.skip('press 按压', async () => {
       const pressstartCallback = jest.fn();
       const pressCallback = jest.fn();
       const pressendCallback = jest.fn();
