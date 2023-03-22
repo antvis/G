@@ -137,6 +137,8 @@ export class EventPlugin implements RenderingPlugin {
 
     renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
 
+    renderingService.hooks.click.tap(EventPlugin.tag, this.onPointerMove);
+
     renderingService.hooks.pointerCancel.tap(
       EventPlugin.tag,
       (nativeEvent: InteractivePointerEvent) => {

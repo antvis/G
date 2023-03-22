@@ -52,6 +52,13 @@
         "zh": "pointerupoutside 事件",
         "en": "pointerupoutside"
       }
+    },
+    {
+      "filename": "use-native-click.js",
+      "title": {
+        "zh": "监听原生 click 事件",
+        "en": "Listen to native click event"
+      }
     }
   ]
 }

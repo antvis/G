@@ -78,6 +78,7 @@ export class EventService {
     this.addEventMapping('pointerover', this.onPointerOver);
     this.addEventMapping('pointerupoutside', this.onPointerUpOutside);
     this.addEventMapping('wheel', this.onWheel);
+    this.addEventMapping('click', this.onClick);
   }
 
   destroy() {
@@ -292,8 +293,9 @@ export class EventService {
       // @see https://github.com/antvis/G/issues/1091
       if (!e.detail?.preventClick) {
         if (
-          clickEvent.pointerType === 'mouse' ||
-          clickEvent.pointerType === 'touch'
+          !this.context.config.useNativeClickEvent &&
+          (clickEvent.pointerType === 'mouse' ||
+            clickEvent.pointerType === 'touch')
         ) {
           this.dispatchEvent(clickEvent, 'click');
         }
@@ -584,6 +586,14 @@ export class EventService {
 
     this.dispatchEvent(wheelEvent);
     this.freeEvent(wheelEvent);
+  };
+
+  onClick = async (from: FederatedPointerEvent) => {
+    if (this.context.config.useNativeClickEvent) {
+      const e = await this.createPointerEvent(from);
+      this.dispatchEvent(e);
+      this.freeEvent(e);
+    }
   };
 
   onPointerCancel = async (from: FederatedPointerEvent) => {

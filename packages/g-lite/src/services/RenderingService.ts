@@ -129,6 +129,7 @@ export class RenderingService {
     pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
     pointerCancel: new SyncHook<[InteractivePointerEvent]>(['event']),
+    click: new SyncHook<[InteractivePointerEvent]>(['event']),
   };
 
   async init() {

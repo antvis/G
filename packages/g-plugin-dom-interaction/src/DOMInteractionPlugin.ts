@@ -16,7 +16,7 @@ export class DOMInteractionPlugin implements RenderingPlugin {
   private context: RenderingPluginContext;
 
   apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
-    const { renderingService, renderingContext } = context;
+    const { renderingService, renderingContext, config } = context;
     this.context = context;
 
     const canvas = renderingContext.root.ownerDocument.defaultView;
@@ -48,6 +48,10 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
     const onPointerWheel = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerWheel.call(ev);
+    };
+
+    const onClick = (ev: InteractivePointerEvent) => {
+      renderingService.hooks.click.call(ev);
     };
 
     const addPointerEventListener = ($el: HTMLElement) => {
@@ -138,6 +142,10 @@ export class DOMInteractionPlugin implements RenderingPlugin {
           addTouchEventListener($el);
         }
 
+        if (config.useNativeClickEvent) {
+          $el.addEventListener('click', onClick, true);
+        }
+
         // use passive event listeners
         // @see https://zhuanlan.zhihu.com/p/24555031
         $el.addEventListener('wheel', onPointerWheel, {
@@ -169,6 +177,10 @@ export class DOMInteractionPlugin implements RenderingPlugin {
 
       if (canvas.supportsTouchEvents) {
         removeTouchEventListener($el);
+      }
+
+      if (config.useNativeClickEvent) {
+        $el.removeEventListener('click', onClick, true);
       }
 
       $el.removeEventListener('wheel', onPointerWheel, true);
