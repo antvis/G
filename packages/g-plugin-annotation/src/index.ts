@@ -173,6 +173,10 @@ export class Plugin extends AbstractRendererPlugin {
     options.isDrawingMode = enabled;
   }
 
+  getDrawingMode() {
+    return this.getAnnotationPluginOptions().isDrawingMode;
+  }
+
   destroy(): void {
     this.removeAllRenderingPlugins();
   }
