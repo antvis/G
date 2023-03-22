@@ -278,7 +278,7 @@ class Gesture extends EE {
   };
 
   private _cancel = (ev: GestureEvent) => {
-    const { evCache, startPoints } = this;
+    const { evCache } = this;
     const points = evCache.map((ev) => {
       return { x: ev.x, y: ev.y };
     });

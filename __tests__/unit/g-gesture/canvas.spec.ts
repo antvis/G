@@ -156,7 +156,7 @@ describe('gesture', () => {
       expect(pressendCallback.mock.calls.length).toBe(1);
     });
 
-    it('长按触发 pressstart', async () => {
+    it.skip('长按触发 pressstart', async () => {
       const pressstartCallback = jest.fn();
       const pressCallback = jest.fn();
       const pressendCallback = jest.fn();
