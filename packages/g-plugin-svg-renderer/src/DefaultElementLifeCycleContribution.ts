@@ -1,4 +1,4 @@
-import type { CanvasContext, DisplayObject } from '@antv/g-lite';
+import type { CanvasContext, DisplayObject, Text } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import {
   updateImageElementAttribute,
@@ -94,7 +94,9 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
   ],
 };
 
-export class DefaultElementLifeCycleContribution implements ElementLifeCycleContribution {
+export class DefaultElementLifeCycleContribution
+  implements ElementLifeCycleContribution
+{
   constructor(private context: CanvasContext) {}
 
   createElement(object: DisplayObject): SVGElement {
@@ -139,7 +141,7 @@ export class DefaultElementLifeCycleContribution implements ElementLifeCycleCont
         break;
       }
       case Shape.TEXT: {
-        updateTextElementAttribute($el, parsedStyle);
+        updateTextElementAttribute($el, parsedStyle, object as Text);
         break;
       }
     }

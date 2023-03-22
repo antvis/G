@@ -1,5 +1,4 @@
 import { isNil } from '@antv/util';
-import { mat4 } from 'gl-matrix';
 import type {
   Cullable,
   Geometry,
@@ -117,12 +116,12 @@ export class Element<
     localPosition: [0, 0, 0],
     localRotation: [0, 0, 0, 1],
     localScale: [1, 1, 1],
-    localTransform: mat4.create(),
+    localTransform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     localSkew: [0, 0],
     position: [0, 0, 0],
     rotation: [0, 0, 0, 1],
     scaling: [1, 1, 1],
-    worldTransform: mat4.create(),
+    worldTransform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     origin: [0, 0, 0],
   };
 

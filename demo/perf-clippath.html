@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>Perf clipPath</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Circle, Group, Canvas, runtime } = window.G;
+
+      // disable CSS Parsing
+      runtime.enableCSSParsing = false;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      const group = new Group({
+        style: {
+          transformOrigin: 'center',
+        },
+      });
+      const circle = new Circle({
+        style: {
+          cx: Math.random() * 600,
+          cy: Math.random() * 500,
+          r: 10,
+          fill: '#1890FF',
+          stroke: '#F04864',
+          lineWidth: 4,
+        },
+      });
+      group.appendChild(circle);
+      canvas.appendChild(group);
+
+      console.log(group.getBBox());
+    </script>
+  </body>
+</html>

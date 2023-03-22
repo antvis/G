@@ -190,8 +190,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.restoreStack,
           runtime,
         );
+
+        // if (object.renderable.) {
         // if we did a full screen rendering last frame
         this.saveDirtyAABB(object);
+        // }
       }
 
       const sorted = object.sortable.sorted || object.childNodes;
@@ -210,9 +213,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.fromScaling(this.dprMatrix, [dpr, dpr, 1]);
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
+      // if (this.clearFullScreen) {
       if (this.clearFullScreen) {
+        // console.log('canvas renderer fcp...');
         renderByZIndex(renderingContext.root, context);
       } else {
+        // console.log('canvas renderer next...');
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),
@@ -373,6 +379,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     runtime: GlobalRuntime,
   ) {
     const nodeName = object.nodeName;
+
+    // console.log('canvas render:', object);
 
     // restore to its ancestor
 
@@ -571,7 +579,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const anchorX = (anchor && anchor[0]) || 0;
     const anchorY = (anchor && anchor[1]) || 0;
     if (anchorX !== 0 || anchorY !== 0) {
-      const bounds = object.getGeometryBounds();
+      // const bounds = object.getGeometryBounds();
+      const bounds = object.geometry.contentBounds;
       const width = (bounds && bounds.halfExtents[0] * 2) || 0;
       const height = (bounds && bounds.halfExtents[1] * 2) || 0;
       tx = -(anchorX * width);

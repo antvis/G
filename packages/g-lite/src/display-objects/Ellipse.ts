@@ -1,4 +1,4 @@
-import { getOrCreateUnitValue } from '../css';
+import { PECENTAGE_50 } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
 import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -37,7 +37,7 @@ export class Ellipse extends DisplayObject<
         anchor: [0.5, 0.5],
         transformOrigin: runtime.enableCSSParsing
           ? null
-          : [getOrCreateUnitValue(50, '%'), getOrCreateUnitValue(50, '%')],
+          : [PECENTAGE_50, PECENTAGE_50],
       },
       ...rest,
     });

@@ -13,7 +13,12 @@ import {
   rad2deg,
 } from '../utils';
 import type { ICamera } from './interfaces';
-import { CameraEvent, CameraProjectionMode, CameraTrackingMode, CameraType } from './interfaces';
+import {
+  CameraEvent,
+  CameraProjectionMode,
+  CameraTrackingMode,
+  CameraType,
+} from './interfaces';
 import type { Landmark } from './Landmark';
 
 const MIN_DISTANCE = 0.0002;
@@ -237,7 +242,9 @@ export class Camera implements ICamera {
 
   setTrackingMode(trackingMode: CameraTrackingMode) {
     if (this.type !== CameraType.TRACKING) {
-      throw new Error('Impossible to set a tracking mode if the camera is not of tracking type');
+      throw new Error(
+        'Impossible to set a tracking mode if the camera is not of tracking type',
+      );
     }
     this.trackingMode = trackingMode;
     return this;
@@ -309,7 +316,14 @@ export class Camera implements ICamera {
     if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(near, this.far, this.fov, this.aspect);
     } else {
-      this.setOrthographic(this.left, this.rright, this.top, this.bottom, near, this.far);
+      this.setOrthographic(
+        this.left,
+        this.rright,
+        this.top,
+        this.bottom,
+        near,
+        this.far,
+      );
     }
     return this;
   }
@@ -318,7 +332,14 @@ export class Camera implements ICamera {
     if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, far, this.fov, this.aspect);
     } else {
-      this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, far);
+      this.setOrthographic(
+        this.left,
+        this.rright,
+        this.top,
+        this.bottom,
+        this.near,
+        far,
+      );
     }
     return this;
   }
@@ -358,7 +379,14 @@ export class Camera implements ICamera {
     if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, this.far, this.fov, this.aspect);
     } else {
-      this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
+      this.setOrthographic(
+        this.left,
+        this.rright,
+        this.top,
+        this.bottom,
+        this.near,
+        this.far,
+      );
     }
     return this;
   }
@@ -371,7 +399,14 @@ export class Camera implements ICamera {
     if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, this.far, this.fov, this.aspect);
     } else {
-      this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
+      this.setOrthographic(
+        this.left,
+        this.rright,
+        this.top,
+        this.bottom,
+        this.near,
+        this.far,
+      );
     }
     return this;
   }
@@ -379,7 +414,14 @@ export class Camera implements ICamera {
   setZoom(zoom: number) {
     this.zoom = zoom;
     if (this.projectionMode === CameraProjectionMode.ORTHOGRAPHIC) {
-      this.setOrthographic(this.left, this.rright, this.top, this.bottom, this.near, this.far);
+      this.setOrthographic(
+        this.left,
+        this.rright,
+        this.top,
+        this.bottom,
+        this.near,
+        this.far,
+      );
     } else if (this.projectionMode === CameraProjectionMode.PERSPECTIVE) {
       this.setPerspective(this.near, this.far, this.fov, this.aspect);
     }
@@ -440,9 +482,21 @@ export class Camera implements ICamera {
       height *= this.view.height / fullHeight;
     }
 
-    makePerspective(this.projectionMatrix, left, left + width, top, top - height, near, this.far);
+    makePerspective(
+      this.projectionMatrix,
+      left,
+      left + width,
+      top,
+      top - height,
+      near,
+      this.far,
+    );
     // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
-    mat4.scale(this.projectionMatrix, this.projectionMatrix, vec3.fromValues(1, -1, 1));
+    mat4.scale(
+      this.projectionMatrix,
+      this.projectionMatrix,
+      vec3.fromValues(1, -1, 1),
+    );
 
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
 
@@ -450,7 +504,14 @@ export class Camera implements ICamera {
     return this;
   }
 
-  setOrthographic(l: number, r: number, t: number, b: number, near: number, far: number) {
+  setOrthographic(
+    l: number,
+    r: number,
+    t: number,
+    b: number,
+    near: number,
+    far: number,
+  ) {
     this.projectionMode = CameraProjectionMode.ORTHOGRAPHIC;
     this.rright = r;
     this.left = l;
@@ -470,8 +531,10 @@ export class Camera implements ICamera {
     let bottom = cy - dy;
 
     if (this.view?.enabled) {
-      const scaleW = (this.rright - this.left) / this.view.fullWidth / this.zoom;
-      const scaleH = (this.top - this.bottom) / this.view.fullHeight / this.zoom;
+      const scaleW =
+        (this.rright - this.left) / this.view.fullWidth / this.zoom;
+      const scaleH =
+        (this.top - this.bottom) / this.view.fullHeight / this.zoom;
 
       left += scaleW * this.view.offsetX;
       right = left + scaleW * this.view.width;
@@ -482,7 +545,11 @@ export class Camera implements ICamera {
     mat4.ortho(this.projectionMatrix, left, right, bottom, top, near, far);
 
     // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
-    mat4.scale(this.projectionMatrix, this.projectionMatrix, vec3.fromValues(1, -1, 1));
+    mat4.scale(
+      this.projectionMatrix,
+      this.projectionMatrix,
+      vec3.fromValues(1, -1, 1),
+    );
 
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
 
@@ -500,7 +567,11 @@ export class Camera implements ICamera {
    * setPosition(1, 2, 3);
    * setPosition([1, 2, 3]);
    */
-  setPosition(x: number | vec2 | vec3, y: number = this.position[1], z: number = this.position[2]) {
+  setPosition(
+    x: number | vec2 | vec3,
+    y: number = this.position[1],
+    z: number = this.position[2],
+  ) {
     const position = createVec3(x, y, z);
     this._setPosition(position);
     this.setFocalPoint(this.focalPoint);
@@ -539,7 +610,10 @@ export class Camera implements ICamera {
       up = vec3.transformMat4(vec3.create(), [0, 1, 0], m);
     }
 
-    mat4.invert(this.matrix, mat4.lookAt(mat4.create(), this.position, this.focalPoint, up));
+    mat4.invert(
+      this.matrix,
+      mat4.lookAt(mat4.create(), this.position, this.focalPoint, up),
+    );
 
     this._getAxes();
     this._getDistance();
@@ -604,7 +678,10 @@ export class Camera implements ICamera {
     this.computeMatrix();
 
     this._getAxes();
-    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
+    if (
+      this.type === CameraType.ORBITING ||
+      this.type === CameraType.EXPLORING
+    ) {
       this._getPosition();
     } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
@@ -626,7 +703,10 @@ export class Camera implements ICamera {
     this.computeMatrix();
 
     this._getAxes();
-    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
+    if (
+      this.type === CameraType.ORBITING ||
+      this.type === CameraType.EXPLORING
+    ) {
       this._getPosition();
     } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
@@ -648,7 +728,10 @@ export class Camera implements ICamera {
     this.computeMatrix();
 
     this._getAxes();
-    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
+    if (
+      this.type === CameraType.ORBITING ||
+      this.type === CameraType.EXPLORING
+    ) {
       this._getPosition();
     } else if (this.type === CameraType.TRACKING) {
       this._getFocalPoint();
@@ -681,7 +764,11 @@ export class Camera implements ICamera {
   protected computeMatrix() {
     // 使用四元数描述 3D 旋转
     // @see https://xiaoiver.github.io/coding/2018/12/28/Camera-%E8%AE%BE%E8%AE%A1-%E4%B8%80.html
-    const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], deg2rad(this.roll));
+    const rotZ = quat.setAxisAngle(
+      quat.create(),
+      [0, 0, 1],
+      deg2rad(this.roll),
+    );
 
     mat4.identity(this.matrix);
 
@@ -711,7 +798,10 @@ export class Camera implements ICamera {
     rotQ = quat.multiply(quat.create(), rotQ, rotZ);
     const rotMatrix = mat4.fromQuat(mat4.create(), rotQ);
 
-    if (this.type === CameraType.ORBITING || this.type === CameraType.EXPLORING) {
+    if (
+      this.type === CameraType.ORBITING ||
+      this.type === CameraType.EXPLORING
+    ) {
       mat4.translate(this.matrix, this.matrix, this.focalPoint);
       mat4.multiply(this.matrix, this.matrix, rotMatrix);
       mat4.translate(this.matrix, this.matrix, [0, 0, this.distance]);
@@ -739,8 +829,14 @@ export class Camera implements ICamera {
    * Recalculates axes based on the current matrix
    */
   protected _getAxes() {
-    vec3.copy(this.right, createVec3(vec4.transformMat4(vec4.create(), [1, 0, 0, 0], this.matrix)));
-    vec3.copy(this.up, createVec3(vec4.transformMat4(vec4.create(), [0, 1, 0, 0], this.matrix)));
+    vec3.copy(
+      this.right,
+      createVec3(vec4.transformMat4(vec4.create(), [1, 0, 0, 0], this.matrix)),
+    );
+    vec3.copy(
+      this.up,
+      createVec3(vec4.transformMat4(vec4.create(), [0, 1, 0, 0], this.matrix)),
+    );
     vec3.copy(
       this.forward,
       createVec3(vec4.transformMat4(vec4.create(), [0, 0, 1, 0], this.matrix)),
@@ -813,7 +909,11 @@ export class Camera implements ICamera {
    * 重新计算视距
    */
   protected _getDistance() {
-    this.distanceVector = vec3.subtract(vec3.create(), this.focalPoint, this.position);
+    this.distanceVector = vec3.subtract(
+      vec3.create(),
+      this.focalPoint,
+      this.position,
+    );
     this.distance = vec3.length(this.distanceVector);
     this.dollyingStep = this.distance / 100;
   }
@@ -824,7 +924,11 @@ export class Camera implements ICamera {
     }
 
     const position = this.position;
-    const rotZ = quat.setAxisAngle(quat.create(), [0, 0, 1], (-this.roll * Math.PI) / 180);
+    const rotZ = quat.setAxisAngle(
+      quat.create(),
+      [0, 0, 1],
+      (-this.roll * Math.PI) / 180,
+    );
     mat4.fromRotationTranslationScaleOrigin(
       this.orthoMatrix,
       rotZ,
@@ -842,7 +946,11 @@ export class Camera implements ICamera {
     if (this.enableUpdate) {
       // update frustum
       const viewMatrix = this.getViewTransform();
-      const vpMatrix = mat4.multiply(mat4.create(), this.getPerspective(), viewMatrix);
+      const vpMatrix = mat4.multiply(
+        mat4.create(),
+        this.getPerspective(),
+        viewMatrix,
+      );
       this.getFrustum().extractFromVPMatrix(vpMatrix);
 
       this.eventEmitter.emit(CameraEvent.UPDATED);
@@ -880,6 +988,9 @@ export class Camera implements ICamera {
           onfinish: () => void;
         }>,
   ): void {
+    throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
+  }
+  cancelLandmarkAnimation(): void {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
   }
 }

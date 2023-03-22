@@ -1,4 +1,10 @@
-import type { CSSRGB, DisplayObject, ParsedTextStyleProps, Rectangle } from '@antv/g-lite';
+import type {
+  CSSRGB,
+  DisplayObject,
+  ParsedTextStyleProps,
+  Rectangle,
+} from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
@@ -33,7 +39,16 @@ export class TextRenderer implements StyleRenderer {
     context.font = font;
     context.lineWidth = lineWidth;
     context.textAlign = textAlign === 'middle' ? 'center' : textAlign;
-    context.textBaseline = textBaseline;
+
+    let formattedTextBaseline = textBaseline;
+    if (
+      // formattedTextBaseline === 'bottom' ||
+      !runtime.enableCSSParsing &&
+      formattedTextBaseline === 'alphabetic'
+    ) {
+      formattedTextBaseline = 'bottom';
+    }
+
     context.lineJoin = lineJoin;
     if (!isNil(miterLimit)) {
       context.miterLimit = miterLimit;
@@ -56,6 +71,17 @@ export class TextRenderer implements StyleRenderer {
     // account for dx & dy
     const offsetX = dx || 0;
     linePositionY += dy || 0;
+
+    if (lines.length === 1) {
+      if (formattedTextBaseline === 'bottom') {
+        formattedTextBaseline = 'middle';
+        linePositionY -= 0.5 * height;
+      } else if (formattedTextBaseline === 'top') {
+        formattedTextBaseline = 'middle';
+        linePositionY += 0.5 * height;
+      }
+    }
+    context.textBaseline = formattedTextBaseline;
 
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
     setShadowAndFilter(object, context, hasShadow);
@@ -139,9 +165,22 @@ export class TextRenderer implements StyleRenderer {
     for (let i = 0; i < stringArray.length; ++i) {
       const currentChar = stringArray[i];
       if (isStroke) {
-        this.strokeText(context, currentChar, currentPosition, y, strokeOpacity);
+        this.strokeText(
+          context,
+          currentChar,
+          currentPosition,
+          y,
+          strokeOpacity,
+        );
       } else {
-        this.fillText(context, currentChar, currentPosition, y, fillOpacity, opacity);
+        this.fillText(
+          context,
+          currentChar,
+          currentPosition,
+          y,
+          fillOpacity,
+          opacity,
+        );
       }
       currentWidth = context.measureText(text.substring(i + 1)).width;
       currentPosition += previousWidth - currentWidth + letterSpacing;

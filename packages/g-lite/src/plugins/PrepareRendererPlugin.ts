@@ -16,6 +16,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   private toSync = new Set<DisplayObject>();
 
   // private isFirstTimeRendering = true;
+  // private syncing = false;
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext, rBushRoot } = context;
@@ -108,18 +109,25 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       // if (this.isFirstTimeRendering) {
-      //   // @see https://github.com/antvis/G/issues/1117
-      //   setTimeout(() => this.syncRTree());
       //   this.isFirstTimeRendering = false;
+      //   this.syncing = true;
+      //   // @see https://github.com/antvis/G/issues/1117
+      //   setTimeout(() => {
+      //     this.syncRTree();
+      //     console.log('fcp...');
+      //   });
       // } else {
-      //   this.syncRTree();
-      // }
-
+      //   console.log('next...');
       this.syncRTree();
+      // }
     });
   }
 
   private syncRTree() {
+    // if (this.syncing) {
+    //   return;
+    // }
+
     // bounds changed, need re-inserting its children
     const bulk: RBushNodeAABB[] = [];
 
@@ -169,5 +177,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     bulk.length = 0;
     this.toSync.clear();
+    // this.syncing = false;
   }
 }

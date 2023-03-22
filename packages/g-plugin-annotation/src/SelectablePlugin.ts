@@ -182,21 +182,39 @@ export class SelectablePlugin implements RenderingPlugin {
 
     this.brush.setCanvas(canvas);
 
-    // 基于 RBush 空间索引进行快速区域查询
-    const regionQuery = (toolstate: any) => {
+    const { brushSelectionSortMode } = this.annotationPluginOptions;
+
+    const getRegionFromToolstate = (toolstate: any) => {
       const { path } = toolstate;
       const [tl] = path;
       const { x, y } = tl;
       const width = getWidthFromBbox(path);
       const height = getHeightFromBbox(path);
+      return {
+        minX: x,
+        minY: y,
+        maxX: x + width,
+        maxY: y + height,
+      };
+    };
 
+    // 基于 RBush 空间索引进行快速区域查询
+    const regionQuery = (region: {
+      minX: number;
+      minY: number;
+      maxX: number;
+      maxY: number;
+    }) => {
       return document
-        .elementsFromBBox(x, y, x + width, y + height)
+        .elementsFromBBox(region.minX, region.minY, region.maxX, region.maxY)
         .filter((intersection) => {
           const { minX, minY, maxX, maxY } = intersection.rBushNode.aabb;
           // @see https://github.com/antvis/G/issues/1242
           const isTotallyContains =
-            minX < x && minY < y && maxX > x + width && maxY > y + height;
+            minX < region.minX &&
+            minY < region.minY &&
+            maxX > region.maxX &&
+            maxY > region.maxY;
           return !isTotallyContains && intersection.style.selectable;
         });
     };
@@ -241,10 +259,13 @@ export class SelectablePlugin implements RenderingPlugin {
     };
 
     const onModify = (toolstate: any) => {
-      const selected = regionQuery(toolstate);
-      const last = selectedStack[selectedStack.length - 1];
-      if (!last || !isSameStackItem(selected, last)) {
-        selectedStack.push(selected);
+      if (brushSelectionSortMode === 'behavior') {
+        const region = getRegionFromToolstate(toolstate);
+        const selected = regionQuery(region);
+        const last = selectedStack[selectedStack.length - 1];
+        if (!last || !isSameStackItem(selected, last)) {
+          selectedStack.push(selected);
+        }
       }
       this.renderDrawer(toolstate);
     };
@@ -252,10 +273,73 @@ export class SelectablePlugin implements RenderingPlugin {
     const onComplete = (toolstate: any) => {
       this.hideDrawer(toolstate);
 
-      sortSelectedStack(selectedStack);
-      selectedStack[selectedStack.length - 1].forEach((selected) => {
-        this.selectDisplayObject(selected);
-      });
+      if (brushSelectionSortMode === 'behavior') {
+        sortSelectedStack(selectedStack);
+        selectedStack[selectedStack.length - 1].forEach((selected) => {
+          this.selectDisplayObject(selected);
+        });
+      } else if (brushSelectionSortMode === 'directional') {
+        const region = getRegionFromToolstate(toolstate);
+
+        const { start, end } = this.brush;
+
+        // Direction of region, horizontal or vertical?
+        const direction =
+          region.maxX - region.minX > region.maxY - region.minY ? 'h' : 'v';
+        let sortDirection: 'lr' | 'rl' | 'tb' | 'bt';
+        if (start.canvas.x < end.canvas.x && start.canvas.y < end.canvas.y) {
+          if (direction === 'h') {
+            sortDirection = 'lr';
+          } else {
+            sortDirection = 'tb';
+          }
+        } else if (
+          start.canvas.x > end.canvas.x &&
+          start.canvas.y > end.canvas.y
+        ) {
+          if (direction === 'h') {
+            sortDirection = 'rl';
+          } else {
+            sortDirection = 'bt';
+          }
+        } else if (
+          start.canvas.x < end.canvas.x &&
+          start.canvas.y > end.canvas.y
+        ) {
+          if (direction === 'h') {
+            sortDirection = 'lr';
+          } else {
+            sortDirection = 'bt';
+          }
+        } else if (
+          start.canvas.x > end.canvas.x &&
+          start.canvas.y < end.canvas.y
+        ) {
+          if (direction === 'h') {
+            sortDirection = 'rl';
+          } else {
+            sortDirection = 'tb';
+          }
+        }
+
+        regionQuery(region)
+          .sort((a, b) => {
+            const bboxA = a.getBBox();
+            const bboxB = b.getBBox();
+            if (sortDirection === 'lr') {
+              return bboxA.x - bboxB.x;
+            } else if (sortDirection === 'rl') {
+              return bboxB.x + bboxB.width - (bboxA.x + bboxA.width);
+            } else if (sortDirection === 'tb') {
+              return bboxA.y - bboxB.y;
+            } else if (sortDirection === 'bt') {
+              return bboxB.y + bboxB.height - (bboxA.y + bboxA.height);
+            }
+          })
+          .forEach((selected) => {
+            this.selectDisplayObject(selected);
+          });
+      }
     };
 
     const onCancel = (toolstate: any) => {

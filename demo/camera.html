@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>Camera</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <button id="reset">reset</button>
+    <button id="look-at-red-circle">look at red circle</button>
+    <button id="cancel">cancel</button>
+    <script
+      src="../packages/g/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <!-- <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
+    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
+    <script
+      src="../packages/g-plugin-css-select/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Circle, CanvasEvent, Canvas } = window.G;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+      canvasRenderer.registerPlugin(new window.G.CSSSelect.Plugin());
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      const camera = canvas.getCamera();
+
+      // create landmarks
+      camera.createLandmark('reset', {
+        position: [300, 250],
+        focalPoint: [300, 250],
+        zoom: 1,
+      });
+      camera.createLandmark('look at red circle', {
+        position: [200, 200],
+        focalPoint: [200, 200],
+        zoom: 2,
+        roll: 30,
+      });
+
+      const circle1 = new Circle({
+        style: {
+          cx: 200,
+          cy: 200,
+          r: 50,
+          fill: 'red',
+        },
+      });
+      const circle2 = circle1.cloneNode();
+      circle2.setPosition(400, 400);
+      circle2.style.fill = 'green';
+
+      canvas.addEventListener(CanvasEvent.READY, () => {
+        canvas.appendChild(circle1);
+        canvas.appendChild(circle2);
+      });
+
+      const cameraConfig = {
+        goToMark1: () => {
+          camera.gotoLandmark('reset', {
+            duration: 4000,
+            easing: 'ease-in',
+            onfinish: () => {
+              console.log('reset finished');
+            },
+          });
+        },
+        goToMark2: () => {
+          camera.gotoLandmark('look at red circle', {
+            duration: 4000,
+            easing: 'linear',
+          });
+        },
+        goToMark3: () => {
+          camera.gotoLandmark('look at green circle', {
+            duration: 300,
+            easing: 'linear',
+          });
+        },
+        cancel: () => {
+          camera.cancelLandmarkAnimation();
+        },
+      };
+
+      document.getElementById('reset').onclick = cameraConfig.goToMark1;
+      document.getElementById('look-at-red-circle').onclick =
+        cameraConfig.goToMark2;
+      document.getElementById('cancel').onclick = cameraConfig.cancel;
+    </script>
+  </body>
+</html>

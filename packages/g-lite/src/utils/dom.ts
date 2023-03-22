@@ -22,7 +22,7 @@ export function findClosestClipPathTarget(
 ): DisplayObject {
   let el = object;
   do {
-    const clipPath = el.style?.clipPath;
+    const clipPath = el.parsedStyle?.clipPath;
     if (clipPath) return el;
     el = el.parentElement as DisplayObject;
   } while (el !== null);

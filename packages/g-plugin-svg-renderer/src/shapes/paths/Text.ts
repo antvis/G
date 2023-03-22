@@ -1,35 +1,26 @@
-import type { ParsedTextStyleProps } from '@antv/g-lite';
-import { detect } from 'detect-browser';
+import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
+import { runtime } from '@antv/g-lite';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { convertHTML } from '../../utils/format';
 
-// @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/alignment-baseline
-const BASELINE_MAP: Record<string, string> = {
-  top: 'before-edge', // TODO: different with canvas' `top`
-  middle: 'central',
-  bottom: 'after-edge',
-  alphabetic: 'alphabetic',
-  ideographic: 'ideographic',
-  hanging: 'hanging',
-};
-
-// for FireFox
 // @see https://github.com/plouc/nivo/issues/164
-const BASELINE_MAP_FOR_FIREFOX: Record<string, string> = {
-  top: 'text-before-edge',
+const BASELINE_MAP: Record<string, string> = {
+  top: 'hanging', // Use hanging here.
   middle: 'central',
-  bottom: 'text-after-edge',
+  bottom: 'text-after-edge', // FIXME: It is not a standard property.
   alphabetic: 'alphabetic',
   ideographic: 'ideographic',
   hanging: 'hanging',
 };
 
-export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedTextStyleProps) {
+export function updateTextElementAttribute(
+  $el: SVGElement,
+  parsedStyle: ParsedTextStyleProps,
+  text: Text,
+) {
   const {
-    textBaseline,
     lineWidth,
-    metrics,
     dx,
     dy,
     textPath,
@@ -38,18 +29,18 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
     textDecorationLine = '',
     textDecorationColor = '',
     textDecorationStyle = '',
+    metrics,
   } = parsedStyle;
+  let { textBaseline } = parsedStyle;
 
-  const browser = detect();
-  if (browser && browser.name === 'firefox') {
-    // compatible with FireFox browser, ref: https://github.com/antvis/g/issues/119
-    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline] || 'alphabetic');
-  } else {
-    $el.setAttribute('dominant-baseline', BASELINE_MAP_FOR_FIREFOX[textBaseline]);
-    $el.setAttribute('alignment-baseline', BASELINE_MAP[textBaseline]);
+  if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
+    textBaseline = 'bottom';
   }
 
+  $el.setAttribute('dominant-baseline', BASELINE_MAP[textBaseline]);
+
   $el.setAttribute('paint-order', 'stroke');
+
   const { lines, lineHeight, height } = metrics;
 
   const lineNum = lines.length;
@@ -69,6 +60,12 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
   if (lineNum === 1) {
     const textContent = convertHTML(lines[0]);
     $el.setAttribute('dx', `${lineWidth / 2}`);
+
+    // Since `text-after-edge` is not a standard property value, we use `dy` instead.
+    if (textBaseline === 'bottom' || textBaseline === 'top') {
+      $el.setAttribute('dominant-baseline', 'middle');
+      $el.setAttribute('dy', textBaseline === 'bottom' ? `-0.5em` : '0.5em');
+    }
 
     // <textPath> only support one line
     // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath
@@ -111,7 +108,9 @@ export function updateTextElementAttribute($el: SVGElement, parsedStyle: ParsedT
         } else {
           dy = lineHeight;
         }
-        return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(line)}</tspan>`;
+        return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(
+          line,
+        )}</tspan>`;
       })
       .join('');
   }

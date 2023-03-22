@@ -66,6 +66,7 @@ export class TextMesh extends Instanced {
     // if (instance.parsedStyle.fontSize !== object.parsedStyle.fontSize) {
     //   return false;
     // }
+
     if (
       instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
       instancedAttributes.some(
@@ -107,6 +108,7 @@ export class TextMesh extends Instanced {
         linePositionY = 0;
       } else if (textBaseline === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
+        // linePositionY = -height + fontProperties.ascent;
       } else if (textBaseline === 'ideographic') {
         linePositionY = -height;
       }

@@ -14,7 +14,7 @@ import { ElementEvent } from '../dom/interfaces';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
-import type { GlobalRuntime } from '../global-runtime';
+import { GlobalRuntime } from '../global-runtime';
 
 function markRenderableDirty(e: Element) {
   const renderable = e.renderable;
@@ -160,10 +160,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   setOrigin(element: INode, origin: vec3 | number, y = 0, z = 0) {
     if (typeof origin === 'number') {
-      origin = vec3.fromValues(origin, y, z);
+      origin = [origin, y, z];
     }
     const transform = (element as Element).transformable;
-    if (vec3.equals(origin, transform.origin)) {
+    if (
+      origin[0] === transform.origin[0] &&
+      origin[1] === transform.origin[1] &&
+      origin[2] === transform.origin[2]
+    ) {
       return;
     }
 
@@ -841,7 +845,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       const clipped = findClosestClipPathTarget(element as DisplayObject);
       if (clipped) {
         // use bounds under world space
-        const clipPathBounds = clipped.style.clipPath.getBounds(render);
+        const clipPathBounds = clipped.parsedStyle.clipPath.getBounds(render);
         if (!aabb) {
           aabb = clipPathBounds;
         } else if (clipPathBounds) {

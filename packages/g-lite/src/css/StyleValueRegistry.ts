@@ -713,11 +713,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       object.parsedStyle = Object.assign(object.parsedStyle, attributes);
 
-      let needUpdateGeometry = false;
-      for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
-        if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
-          needUpdateGeometry = true;
-          break;
+      let needUpdateGeometry = !!options.forceUpdateGeometry;
+      if (!needUpdateGeometry) {
+        for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
+          if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
+            needUpdateGeometry = true;
+            break;
+          }
         }
       }
 
@@ -1022,6 +1024,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     // update geometry
     if (needUpdateGeometry) {
+      // object.geometry.dirty = true;
+      // runtime.sceneGraphService.dirtifyToRoot(object);
       this.updateGeometry(object);
     }
 
@@ -1246,7 +1250,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * eg. r of Circle, width/height of Rect
    */
   private updateGeometry(object: DisplayObject) {
-    const geometryUpdater = runtime.geometryUpdaterFactory[object.nodeName];
+    const { nodeName } = object;
+    const geometryUpdater = runtime.geometryUpdaterFactory[nodeName];
     if (geometryUpdater) {
       const geometry = object.geometry;
       if (!geometry.contentBounds) {
@@ -1266,11 +1271,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         offsetY = 0,
         offsetZ = 0,
       } = geometryUpdater.update(parsedStyle, object);
-
-      // account for negative width / height of Rect
-      // @see https://github.com/antvis/g/issues/957
-      const flipY = width < 0;
-      const flipX = height < 0;
 
       // init with content box
       const halfExtents: Tuple3Number = [
@@ -1301,7 +1301,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       let anchor = parsedStyle.anchor;
 
       // <Text> use textAlign & textBaseline instead of anchor
-      if (object.nodeName === Shape.TEXT) {
+      if (nodeName === Shape.TEXT) {
         delete parsedStyle.anchor;
       }
 
@@ -1323,9 +1323,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       // @see https://github.molgen.mpg.de/git-mirror/cairo/blob/master/src/cairo-stroke-style.c#L97..L128
       const expansion =
-        object.nodeName === Shape.POLYLINE ||
-        object.nodeName === Shape.POLYGON ||
-        object.nodeName === Shape.PATH
+        nodeName === Shape.POLYLINE ||
+        nodeName === Shape.POLYGON ||
+        nodeName === Shape.PATH
           ? Math.SQRT2
           : 0.5;
       // if (lineCap?.value === 'square') {
@@ -1416,6 +1416,15 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       anchor = parsedStyle.anchor;
 
+      // if (nodeName === Shape.RECT) {
+      // account for negative width / height of Rect
+      // @see https://github.com/antvis/g/issues/957
+      const flipY = width < 0;
+      const flipX = height < 0;
+      // } else {
+
+      // }
+
       // set transform origin
       let usedOriginXValue =
         (flipY ? -1 : 1) *
@@ -1441,6 +1450,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           2;
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
+      // FIXME setOrigin may have already dirtified to root.
       runtime.sceneGraphService.dirtifyToRoot(object);
     }
   }

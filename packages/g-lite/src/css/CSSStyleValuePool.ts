@@ -50,3 +50,4 @@ export const getOrCreateUnitValue = (
 ) => {
   return new CSSUnitValue(value, unitOrName);
 };
+export const PECENTAGE_50 = new CSSUnitValue(50, '%');

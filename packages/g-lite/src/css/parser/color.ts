@@ -1,4 +1,4 @@
-import { clamp, isNil, isObject } from '@antv/util';
+import { clamp, isNil } from '@antv/util';
 import * as d3 from 'd3-color';
 import { Rect } from '../..';
 import { memoize } from '../../utils/memoize';
@@ -24,12 +24,12 @@ export function isCSSGradientValue(object: any): object is CSSGradientValue {
 }
 
 export function isPattern(object: any): object is Pattern {
-  return isObject(object) && !!(object as Pattern).image;
+  return object && !!(object as Pattern).image;
 }
 
 export function isCSSRGB(object: any): object is CSSRGB {
   return (
-    isObject(object) &&
+    object &&
     !isNil((object as CSSRGB).r) &&
     !isNil((object as CSSRGB).g) &&
     !isNil((object as CSSRGB).b)

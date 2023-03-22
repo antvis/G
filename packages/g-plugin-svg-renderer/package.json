@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-renderer",
-  "version": "1.8.43",
+  "version": "1.8.46",
   "description": "A G plugin of renderer implementation with SVG",
   "keywords": [
     "antv",
@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@antv/util": "^3.3.1",
-    "detect-browser": "^5.0.0",
     "gl-matrix": "^3.1.0",
     "tslib": "^2.3.1"
   },

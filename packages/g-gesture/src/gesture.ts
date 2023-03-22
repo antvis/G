@@ -61,7 +61,7 @@ class Gesture extends EE {
   private el: DisplayObject;
   private evCache: evCacheObject[] = [];
   private startTime: number;
-  private pressTimeout: NodeJS.Timeout;
+  private pressTimeout: number;
   private startPoints: Point[] = [];
   // 用来记录当前触发的事件
   private processEvent: Record<string, boolean> = {};
@@ -121,6 +121,7 @@ class Gesture extends EE {
     if (startPoints.length === 1) {
       const event = evCache[0].ev;
       // 如果touchstart后停顿250ms, 则也触发press事件
+      // @ts-ignore
       this.pressTimeout = setTimeout(() => {
         // 这里固定触发press事件
         const eventType = 'press';

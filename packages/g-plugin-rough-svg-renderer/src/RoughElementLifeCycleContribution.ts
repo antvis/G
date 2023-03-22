@@ -8,13 +8,16 @@ import type {
   ParsedPolygonStyleProps,
   ParsedPolylineStyleProps,
   ParsedRectStyleProps,
+  Text,
 } from '@antv/g-lite';
 import { Shape, translatePathToString } from '@antv/g-lite';
 import { SVGRenderer } from '@antv/g-svg';
 import type { RoughSVG } from 'roughjs/bin/svg';
 import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 
-export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLifeCycleContribution {
+export class RoughElementLifeCycleContribution
+  implements SVGRenderer.ElementLifeCycleContribution
+{
   constructor(private context: CanvasContext) {}
 
   createElement(object: DisplayObject<any, any>): SVGElement {
@@ -50,9 +53,10 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
   shouldUpdateElementAttribute(object: DisplayObject, attributeName: string) {
     const { nodeName } = object;
     return (
-      [...(SVGRenderer.SHAPE_UPDATE_DEPS[nodeName] || []), ...SUPPORTED_ROUGH_OPTIONS].indexOf(
-        attributeName,
-      ) > -1
+      [
+        ...(SVGRenderer.SHAPE_UPDATE_DEPS[nodeName] || []),
+        ...SUPPORTED_ROUGH_OPTIONS,
+      ].indexOf(attributeName) > -1
     );
   }
 
@@ -81,7 +85,11 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
         break;
       }
       case Shape.TEXT: {
-        SVGRenderer.updateTextElementAttribute($el, parsedStyle);
+        SVGRenderer.updateTextElementAttribute(
+          $el,
+          parsedStyle,
+          object as Text,
+        );
         break;
       }
     }
@@ -89,8 +97,9 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
 
   private generateSVGElement(object: DisplayObject<any, any>) {
     const { nodeName, parsedStyle } = object;
-    // @ts-ignore
-    const roughSVG = this.context.contextService.getContext().roughSVG as unknown as RoughSVG;
+
+    const roughSVG = // @ts-ignore
+      this.context.contextService.getContext().roughSVG as unknown as RoughSVG;
 
     let $roughG: SVGGElement = null;
 
@@ -104,17 +113,36 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
       }
       case Shape.ELLIPSE: {
         const { rx, ry } = parsedStyle as ParsedEllipseStyleProps;
-        $roughG = roughSVG.ellipse(rx, ry, rx * 2, ry * 2, generateRoughOptions(object));
+        $roughG = roughSVG.ellipse(
+          rx,
+          ry,
+          rx * 2,
+          ry * 2,
+          generateRoughOptions(object),
+        );
         break;
       }
       case Shape.RECT: {
         const { width, height } = parsedStyle as ParsedRectStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
-        $roughG = roughSVG.rectangle(0, 0, width, height, generateRoughOptions(object));
+        $roughG = roughSVG.rectangle(
+          0,
+          0,
+          width,
+          height,
+          generateRoughOptions(object),
+        );
         break;
       }
       case Shape.LINE: {
-        const { x1, y1, x2, y2, defX = 0, defY = 0 } = parsedStyle as ParsedLineStyleProps;
+        const {
+          x1,
+          y1,
+          x2,
+          y2,
+          defX = 0,
+          defY = 0,
+        } = parsedStyle as ParsedLineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
         $roughG = roughSVG.line(
           x1 - defX,
@@ -126,7 +154,11 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
         break;
       }
       case Shape.POLYLINE: {
-        const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolylineStyleProps;
+        const {
+          points,
+          defX = 0,
+          defY = 0,
+        } = parsedStyle as ParsedPolylineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
         $roughG = roughSVG.linearPath(
           points.points.map(([x, y]) => [x - defX, y - defY]),
@@ -135,7 +167,11 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
         break;
       }
       case Shape.POLYGON: {
-        const { points, defX = 0, defY = 0 } = parsedStyle as ParsedPolygonStyleProps;
+        const {
+          points,
+          defX = 0,
+          defY = 0,
+        } = parsedStyle as ParsedPolygonStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#polygon-vertices--options
         $roughG = roughSVG.polygon(
           points.points.map(([x, y]) => [x - defX, y - defY]),
@@ -144,7 +180,11 @@ export class RoughElementLifeCycleContribution implements SVGRenderer.ElementLif
         break;
       }
       case Shape.PATH: {
-        const { path, defX = 0, defY = 0 } = parsedStyle as ParsedPathStyleProps;
+        const {
+          path,
+          defX = 0,
+          defY = 0,
+        } = parsedStyle as ParsedPathStyleProps;
         $roughG = roughSVG.path(
           translatePathToString(path.absolutePath, defX, defY),
           generateRoughOptions(object),

@@ -1,4 +1,4 @@
-import { isNumber, isString } from '@antv/util';
+import { isNumber } from '@antv/util';
 import type { ParsedTextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = [
@@ -22,10 +22,7 @@ export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
   // Clean-up fontFamily property by quoting each font name
   // this will support font names with spaces
 
-  // @ts-ignore
-  const fontFamilies: string[] = isString(fontFamily)
-    ? fontFamily.split(',')
-    : [fontFamily];
+  const fontFamilies: string[] = fontFamily.split(',');
 
   for (let i = fontFamilies.length - 1; i >= 0; i--) {
     // Trim any extra white-space

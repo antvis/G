@@ -1,7 +1,6 @@
 import { isNil, isNumber, isString } from '@antv/util';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
-import { AABB } from '../../shapes';
 import { Shape } from '../../types';
 import { rad2deg, turn2deg } from '../../utils';
 import { memoize } from '../../utils/memoize';
@@ -173,13 +172,13 @@ export function parseDimensionArrayFormat(
 ): number[] {
   let parsed: number[];
 
-  if (isString(string)) {
+  if (Array.isArray(string)) {
+    // [1, '2px', 3]
+    parsed = string.map((segment) => Number(segment));
+  } else if (isString(string)) {
     parsed = string.split(' ').map((segment) => Number(segment));
   } else if (isNumber(string)) {
     parsed = [string];
-  } else {
-    // [1, '2px', 3]
-    parsed = string.map((segment) => Number(segment));
   }
 
   if (size === 2) {
@@ -238,18 +237,19 @@ export function convertPercentUnit(
   vec3Index: number,
   target: DisplayObject,
 ): number {
+  if (valueWithUnit.value === 0) {
+    return 0;
+  }
+
   if (valueWithUnit.unit === UnitType.kPixels) {
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
     const bounds =
       target.nodeName === Shape.GROUP
         ? target.getLocalBounds()
-        : target.getGeometryBounds();
-    let size = 0;
-    if (!AABB.isEmpty(bounds)) {
-      size = bounds.halfExtents[vec3Index] * 2;
-    }
-    return (Number(valueWithUnit.value) / 100) * size;
+        : // : target.getGeometryBounds();
+          target.geometry.contentBounds;
+    return (valueWithUnit.value / 100) * bounds.halfExtents[vec3Index] * 2;
   }
   return 0;
 }
