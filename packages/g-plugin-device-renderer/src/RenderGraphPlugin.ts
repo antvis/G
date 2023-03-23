@@ -383,8 +383,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       renderInstManager.resetRenderInsts();
 
-      console.log('render...');
-
       // output to screen
       this.swapChain.present();
 
