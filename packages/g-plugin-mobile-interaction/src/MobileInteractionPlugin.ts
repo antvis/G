@@ -10,7 +10,7 @@ export class MobileInteractionPlugin implements RenderingPlugin {
   static tag = 'MobileInteraction';
 
   apply(context: RenderingPluginContext) {
-    const { renderingService, contextService } = context;
+    const { renderingService, contextService, config } = context;
     // 获取小程序上下文
     const canvasEl = contextService.getDomElement();
 
@@ -35,6 +35,10 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       renderingService.hooks.pointerOut.call(ev);
     };
 
+    const onClick = (ev: InteractivePointerEvent) => {
+      renderingService.hooks.click.call(ev);
+    };
+
     const onPointerCancel = (ev: InteractivePointerEvent) => {
       renderingService.hooks.pointerCancel.call(ev);
     };
@@ -54,6 +58,10 @@ export class MobileInteractionPlugin implements RenderingPlugin {
         canvasEl.addEventListener('mouseout', onPointerOut, true);
         canvasEl.addEventListener('mouseover', onPointerOver, true);
         // canvasEl.addEventListener('mouseup', onPointerUp, true);
+
+        if (config.useNativeClickEvent) {
+          canvasEl.addEventListener('click', onClick, true);
+        }
       },
     );
 
@@ -69,6 +77,10 @@ export class MobileInteractionPlugin implements RenderingPlugin {
       canvasEl.removeEventListener('mouseout', onPointerOut, true);
       canvasEl.removeEventListener('mouseover', onPointerOver, true);
       // canvasEl.removeEventListener('mouseup', onPointerUp, true);
+
+      if (config.useNativeClickEvent) {
+        canvasEl.removeEventListener('click', onClick, true);
+      }
     });
   }
 }

@@ -452,6 +452,10 @@ export interface CanvasConfig {
   supportsTouchEvents?: boolean;
   isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
+  /**
+   * Listen to native click event instead of mocking with pointerup & down events.
+   */
+  useNativeClickEvent?: boolean;
 
   /**
    * Should we account for CSS Transform applied on container?

@@ -171,19 +171,29 @@ export class RenderGraphPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
       canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      canvas.addEventListener(ElementEvent.RENDER_ORDER_CHANGED, handleRenderOrderChanged);
-      this.context.config.renderer.getConfig().enableDirtyRectangleRendering = false;
+      canvas.addEventListener(
+        ElementEvent.RENDER_ORDER_CHANGED,
+        handleRenderOrderChanged,
+      );
+      this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
+        false;
 
-      const $canvas = this.context.contextService.getDomElement() as HTMLCanvasElement;
+      const $canvas =
+        this.context.contextService.getDomElement() as HTMLCanvasElement;
 
       const { width, height } = this.context.config;
       this.context.contextService.resize(width, height);
 
       // create swap chain and get device
       // @ts-ignore
-      this.swapChain = await this.context.deviceContribution.createSwapChain($canvas);
+      this.swapChain = await this.context.deviceContribution.createSwapChain(
+        $canvas,
+      );
       this.device = this.swapChain.getDevice();
       this.renderHelper.setDevice(this.device);
       this.renderHelper.renderInstManager.disableSimpleMode();
@@ -204,9 +214,18 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      canvas.removeEventListener(ElementEvent.RENDER_ORDER_CHANGED, handleRenderOrderChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.RENDER_ORDER_CHANGED,
+        handleRenderOrderChanged,
+      );
     });
 
     /**
@@ -222,7 +241,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
       // use canvas.background
-      const backgroundColor = parseColor(this.context.config.background) as CSSRGB;
+      const backgroundColor = parseColor(
+        this.context.config.background,
+      ) as CSSRGB;
       const clearColor = this.context.config.background
         ? // use premultipliedAlpha
           // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
@@ -252,16 +273,28 @@ export class RenderGraphPlugin implements RenderingPlugin {
         renderInput,
         opaqueWhiteFullClearRenderPassDescriptor,
       );
-      const mainColorTargetID = this.builder.createRenderTargetID(mainRenderDesc, 'Main Color');
-      const mainDepthTargetID = this.builder.createRenderTargetID(mainDepthDesc, 'Main Depth');
+      const mainColorTargetID = this.builder.createRenderTargetID(
+        mainRenderDesc,
+        'Main Color',
+      );
+      const mainDepthTargetID = this.builder.createRenderTargetID(
+        mainDepthDesc,
+        'Main Depth',
+      );
 
       // main render pass
       this.builder.pushPass((pass) => {
         pass.setDebugName('Main Render Pass');
         pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
-        pass.attachRenderTargetID(RGAttachmentSlot.DepthStencil, mainDepthTargetID);
+        pass.attachRenderTargetID(
+          RGAttachmentSlot.DepthStencil,
+          mainDepthTargetID,
+        );
         pass.exec((passRenderer) => {
-          this.renderLists.world.drawOnPassRenderer(renderInstManager.renderCache, passRenderer);
+          this.renderLists.world.drawOnPassRenderer(
+            renderInstManager.renderCache,
+            passRenderer,
+          );
         });
       });
 
@@ -350,6 +383,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       renderInstManager.resetRenderInsts();
 
+      console.log('render...');
+
       // output to screen
       this.swapChain.present();
 
@@ -375,11 +410,16 @@ export class RenderGraphPlugin implements RenderingPlugin {
     descriptor?: TextureDescriptor,
     successCallback?: (t: Texture) => void,
   ) {
-    return this.texturePool.getOrCreateTexture(this.device, src, descriptor, (t) => {
-      if (successCallback) {
-        successCallback(t);
-      }
-    });
+    return this.texturePool.getOrCreateTexture(
+      this.device,
+      src,
+      descriptor,
+      (t) => {
+        if (successCallback) {
+          successCallback(t);
+        }
+      },
+    );
   }
 
   async toDataURL(options: Partial<DataURLOptions>) {
