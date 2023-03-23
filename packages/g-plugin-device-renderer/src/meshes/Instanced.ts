@@ -471,15 +471,6 @@ export abstract class Instanced {
     const useFog = !!fog;
     const useLight = !!lights.length;
 
-    const oldDefines = { ...this.material.defines };
-
-    this.material.defines.USE_FOG = useFog;
-    this.material.defines.USE_LIGHT = useLight;
-    this.material.defines = {
-      ...this.material.defines,
-      ...this.lightPool.getDefines(),
-    };
-
     if (this.clipPathTarget || this.clipPath) {
       if (this.clipPathTarget) {
         this.material.stencilWrite = true;
@@ -500,6 +491,15 @@ export abstract class Instanced {
     if (this.materialDirty || this.material.programDirty) {
       this.createMaterial(objects);
     }
+
+    const oldDefines = { ...this.material.defines };
+
+    this.material.defines.USE_FOG = useFog;
+    this.material.defines.USE_LIGHT = useLight;
+    this.material.defines = {
+      ...this.material.defines,
+      ...this.lightPool.getDefines(),
+    };
 
     // re-upload textures
     if (this.material.textureDirty) {
@@ -549,7 +549,7 @@ export abstract class Instanced {
       this.material.textureDirty = false;
     }
 
-    const needRecompileProgram = compareDefines(
+    const needRecompileProgram = !compareDefines(
       oldDefines,
       this.material.defines,
     );

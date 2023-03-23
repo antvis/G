@@ -43,7 +43,9 @@ module.exports = {
     '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
     // '<rootDir>/packages/**/*/*.spec.+(ts|tsx|js)'
   ],
-  testPathIgnorePatterns: ['<rootDir>/packages/g-gesture'],
+  testPathIgnorePatterns: process.env.CI
+    ? ['<rootDir>/__tests__/unit/g-gesture']
+    : [],
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
