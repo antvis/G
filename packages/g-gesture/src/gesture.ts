@@ -131,7 +131,7 @@ class Gesture extends EE {
         event.deltaY = 0;
         event.points = startPoints;
         this.emitStart(eventType, event);
-        this._emit(eventType, event);
+        this.emit(eventType, event);
         this.eventType = eventType;
         this.direction = direction;
       }, PRESS_DELAY);
@@ -208,7 +208,7 @@ class Gesture extends EE {
       ev.deltaY = deltaY;
       ev.points = points;
       this.emitStart(eventType, ev);
-      this._emit(eventType, ev);
+      this.emit(eventType, ev);
       return;
     }
 
@@ -222,7 +222,8 @@ class Gesture extends EE {
     ev.points = points;
     // 触发缩放事件
     this.emitStart('pinch', ev);
-    this._emit('pinch', ev);
+    // touch 多指会被拆成多个手指的 move, 会触发多次 move，所以这里需要做节流
+    this._throttleEmit('pinch', ev);
   };
 
   private _end = (ev: GestureEvent) => {
@@ -254,7 +255,7 @@ class Gesture extends EE {
           if (velocity > 0.3) {
             ev.velocity = velocity;
             ev.direction = calcDirection(prevMovePoint, lastMovePoint);
-            this._emit('swipe', ev);
+            this.emit('swipe', ev);
           }
         }
       }
@@ -278,7 +279,7 @@ class Gesture extends EE {
   };
 
   private _cancel = (ev: GestureEvent) => {
-    const { evCache, startPoints } = this;
+    const { evCache } = this;
     const points = evCache.map((ev) => {
       return { x: ev.x, y: ev.y };
     });
@@ -330,14 +331,14 @@ class Gesture extends EE {
       return;
     }
     this.enable(type);
-    this._emit(`${type}start`, ev);
+    this.emit(`${type}start`, ev);
   }
 
   // 触发事件
-  private _emit(type: string, ev: GestureEvent) {
+  private _throttleEmit(type: string, ev: GestureEvent) {
     // 主要是节流处理
     this.pushEvent(type, ev);
-    const { el, throttleTimer, emitThrottles } = this;
+    const { el, throttleTimer, emitThrottles, processEvent } = this;
     if (throttleTimer) {
       return;
     }
@@ -347,7 +348,9 @@ class Gesture extends EE {
     this.throttleTimer = global.requestAnimationFrame(() => {
       for (let i = 0, len = emitThrottles.length; i < len; i++) {
         const { type, ev } = emitThrottles[i];
-        this.emit(type, ev);
+        if (processEvent[type]) {
+          this.emit(type, ev);
+        }
       }
       // 清空
       this.throttleTimer = 0;
@@ -359,7 +362,7 @@ class Gesture extends EE {
   private emitEnd(ev: GestureEvent) {
     const processEvent = this.processEvent;
     Object.keys(processEvent).forEach((type) => {
-      this._emit(`${type}end`, ev);
+      this.emit(`${type}end`, ev);
       delete processEvent[type];
     });
   }
