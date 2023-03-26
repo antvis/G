@@ -296,27 +296,39 @@ export function getMergedRegion(elements): Region {
   if (!elements.length) {
     return null;
   }
-  const minXArr = [];
-  const minYArr = [];
-  const maxXArr = [];
-  const maxYArr = [];
+  let mergedMinX;
+  let mergedMinY;
+  let mergedMaxX;
+  let mergedMaxY;
   each(elements, (el: IElement) => {
     const region = getRefreshRegion(el);
-    if (region) {
-      minXArr.push(region.minX);
-      minYArr.push(region.minY);
-      maxXArr.push(region.maxX);
-      maxYArr.push(region.maxY);
+
+    if (!region) {
+      return;
+    }
+
+    const { minX, minY, maxX, maxY } = region;
+
+    if (minX < mergedMinX) {
+      mergedMinX = minX;
+    }
+    if (minY < mergedMinY) {
+      mergedMinY = minY;
+    }
+    if (maxX > mergedMaxX) {
+      mergedMaxX = maxX;
+    }
+    if (maxY > mergedMaxY) {
+      mergedMaxY = maxY;
     }
   });
   return {
-    minX: min(minXArr),
-    minY: min(minYArr),
-    maxX: max(maxXArr),
-    maxY: max(maxYArr),
+    minX: mergedMinX,
+    minY: mergedMinY,
+    maxX: mergedMaxX,
+    maxY: mergedMaxY,
   };
 }
-
 export function mergeView(region, viewRegion) {
   if (!region || !viewRegion) {
     return null;
