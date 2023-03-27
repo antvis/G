@@ -23,6 +23,7 @@ import type { DefElementManager } from './shapes/defs';
 import type { SVGRendererPluginOptions } from './interfaces';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
+import { isNil } from '@antv/util';
 
 export const SVG_ATTR_MAP: Record<string, string> = {
   opacity: 'opacity',
@@ -495,7 +496,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValue = runtime.enableCSSParsing
         ? computedStyle[name]
         : parsedStyle[name];
-      const computedValueStr = computedValue && computedValue.toString();
+      const computedValueStr =
+        !isNil(computedValue) && computedValue.toString();
       const formattedValueStr =
         FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
@@ -573,7 +575,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.updateAnchorWithTransform(object);
         }
       } else {
-        if (computedValue) {
+        if (!isNil(computedValue)) {
           // use computed value so that we can use cascaded effect in SVG
           // ignore 'unset' and default value
           [$el, $hitTestingEl].forEach(($el: SVGElement) => {
