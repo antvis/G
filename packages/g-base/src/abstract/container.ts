@@ -136,7 +136,7 @@ abstract class Container extends Element implements IContainer {
         (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
       ) {
         hitChild = true;
-        const { minX: childMinX, maxX: childMaxX, minY: childMinY, maxY: childMaxY } = child.getBBox();
+        const { minX: childMinX, maxX: childMaxX, minY: childMinY, maxY: childMaxY } = child.getCanvasBBox();
 
         if (childMinX < minX) {
           minX = childMinX;
