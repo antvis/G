@@ -1,7 +1,6 @@
 import type {
   DisplayObject,
   FederatedEvent,
-  GlobalRuntime,
   MutationEvent,
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
@@ -21,7 +20,7 @@ import {
 } from '@antv/g-lite';
 import { vec2 } from 'gl-matrix';
 import { Bodies, Body, Composite, Engine, Render, World } from 'matter-js';
-import type { MatterJSPluginOptions } from './interfaces';
+import type { MatterJSBody, MatterJSPluginOptions } from './interfaces';
 import { sortPointsInCCW } from './utils';
 
 export class MatterJSPlugin implements RenderingPlugin {
@@ -31,31 +30,27 @@ export class MatterJSPlugin implements RenderingPlugin {
 
   private engine: Engine;
 
-  private bodies: Record<number, Body> = {};
+  private bodies: Map<DisplayObject, MatterJSBody> = new Map();
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
+  apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
     const simulate = () => {
       if (this.engine) {
         const { timeStep } = this.options;
 
-        if (Object.keys(this.bodies).length) {
+        if (this.bodies.size) {
           Engine.update(this.engine, 1000 * timeStep);
         }
 
-        Object.keys(this.bodies).forEach((entity) => {
-          const displayObject = runtime.displayObjectPool.getByEntity(
-            Number(entity),
-          );
+        this.bodies.forEach(({ body, displayObject }) => {
           const bounds = displayObject.getBounds();
 
           if (!AABB.isEmpty(bounds)) {
             const { anchor } =
               displayObject.parsedStyle as ParsedBaseStyleProps;
             const { halfExtents } = bounds;
-            const body = this.bodies[entity] as Body;
             const x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
             const y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
             const angle = body.angle;
@@ -79,10 +74,10 @@ export class MatterJSPlugin implements RenderingPlugin {
     const handleUnmounted = (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
       if (this.engine) {
-        const body = this.bodies[target.entity];
+        const { body } = this.bodies.get(target) || {};
         if (body) {
           World.remove(this.engine.world, body);
-          delete this.bodies[target.entity];
+          this.bodies.delete(target);
         }
       }
     };
@@ -93,8 +88,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       }
       const object = e.target as DisplayObject;
       const { attrName, newValue } = e;
-      const body = this.bodies[object.entity];
-
+      const { body } = this.bodies.get(object) || {};
       if (body) {
         const geometryAttributes = [
           'points',
@@ -153,6 +147,9 @@ export class MatterJSPlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+
+      this.bodies.clear();
+      this.bodies = null;
     });
   }
 
@@ -164,7 +161,7 @@ export class MatterJSPlugin implements RenderingPlugin {
     force: [number, number],
     point: [number, number],
   ) {
-    const body = this.bodies[object.entity];
+    const { body } = this.bodies.get(object) || {};
     if (body) {
       Body.applyForce(
         body,
@@ -215,7 +212,7 @@ export class MatterJSPlugin implements RenderingPlugin {
   }
 
   private addActor(target: DisplayObject) {
-    const { entity, nodeName, parsedStyle } = target;
+    const { nodeName, parsedStyle } = target;
     const {
       rigid,
       restitution = 0,
@@ -346,7 +343,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       } else if (nodeName === Shape.TEXT) {
       }
       if (body) {
-        this.bodies[entity] = body;
+        this.bodies.set(target, { body, displayObject: target });
 
         Composite.add(this.engine.world, body);
       }

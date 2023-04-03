@@ -1,7 +1,6 @@
 import type {
   DisplayObject,
   FederatedEvent,
-  GlobalRuntime,
   MutationEvent,
   ParsedCircleStyleProps,
   ParsedLineStyleProps,
@@ -19,7 +18,7 @@ import {
   Shape,
 } from '@antv/g-lite';
 import type Box2D from 'box2d-wasm';
-import type { Box2DPluginOptions } from './interfaces';
+import type { Box2DBody, Box2DPluginOptions } from './interfaces';
 import { createChainShape, createPolygonShape, sortPointsInCCW } from './utils';
 
 // v2.4
@@ -47,11 +46,11 @@ export class Box2DPlugin implements RenderingPlugin {
   private temp: Box2D.b2Vec2;
   private temp2: Box2D.b2Vec2;
 
-  private bodies: Record<number, Box2D.b2Body> = {};
-  private fixtures: Record<number, Box2D.b2Fixture> = {};
+  private bodies: Map<DisplayObject, Box2DBody> = new Map();
+  private fixtures: WeakMap<Box2D.b2Fixture, DisplayObject> = new WeakMap();
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
+  apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
@@ -61,11 +60,7 @@ export class Box2DPlugin implements RenderingPlugin {
           this.options;
         // @see https://box2d.org/documentation/classb2_world.html#a82c081319af9a47e282dde807e4cd7b8
         this.world.Step(timeStep, velocityIterations, positionIterations);
-        Object.keys(this.bodies).forEach((entity) => {
-          const displayObject = runtime.displayObjectPool.getByEntity(
-            Number(entity),
-          );
-          const body = this.bodies[entity] as Box2D.b2Body;
+        this.bodies.forEach(({ body, displayObject }) => {
           const bpos = body.GetPosition();
           const x = bpos.get_x();
           const y = bpos.get_y();
@@ -95,14 +90,13 @@ export class Box2DPlugin implements RenderingPlugin {
 
       const target = e.target as DisplayObject;
       if (this.world) {
-        const body = this.bodies[target.entity];
-        const fixture = this.fixtures[target.entity];
+        const { body, fixture } = this.bodies.get(target) || {};
         if (body) {
           if (fixture) {
             body.DestroyFixture(fixture);
           }
           this.world.DestroyBody(body);
-          delete this.bodies[target.entity];
+          this.bodies.delete(target);
         }
       }
     };
@@ -116,8 +110,7 @@ export class Box2DPlugin implements RenderingPlugin {
       const { attrName, newValue } = e;
       const { b2_staticBody, b2_dynamicBody } = this.Box2D;
 
-      const body = this.bodies[object.entity];
-      const fixture = this.fixtures[object.entity];
+      const { body, fixture } = this.bodies.get(object) || {};
 
       if (body) {
         const geometryAttributes = [
@@ -174,7 +167,7 @@ export class Box2DPlugin implements RenderingPlugin {
 
       this.temp = new this.Box2D.b2Vec2(0, 0);
       this.temp2 = new this.Box2D.b2Vec2(0, 0);
-      this.createScene(runtime);
+      this.createScene();
       this.handlePendingDisplayObjects();
 
       // do simulation each frame
@@ -194,6 +187,10 @@ export class Box2DPlugin implements RenderingPlugin {
         // @see https://github.com/Birch-san/box2d-wasm/blob/c04514c040/docs/memory-model.md#every-new-needs-a-corresponding-destroy
         this.Box2D.destroy(this.world);
       }
+
+      this.bodies.clear();
+      this.bodies = null;
+      this.fixtures = null;
     });
   }
 
@@ -202,7 +199,7 @@ export class Box2DPlugin implements RenderingPlugin {
     force: [number, number],
     point: [number, number],
   ) {
-    const body = this.bodies[object.entity];
+    const { body } = this.bodies.get(object) || {};
     if (body) {
       this.temp.set_x(force[0]);
       this.temp.set_y(force[1]);
@@ -214,7 +211,7 @@ export class Box2DPlugin implements RenderingPlugin {
     }
   }
 
-  private createScene(runtime: GlobalRuntime) {
+  private createScene() {
     const { b2World, JSContactListener, wrapPointer, b2Contact } = this.Box2D;
     const { gravity, onContact } = this.options;
     this.temp.set_x(gravity[0]);
@@ -227,23 +224,13 @@ export class Box2DPlugin implements RenderingPlugin {
 
       this.contactListener.BeginContact = (contactPtr) => {
         const contact = wrapPointer(contactPtr as number, b2Contact);
-        const fixtureA = contact.GetFixtureA();
-        const fixtureB = contact.GetFixtureB();
+        const fixtureA = contact.GetFixtureA() as Box2D.b2Fixture;
+        const fixtureB = contact.GetFixtureB() as Box2D.b2Fixture;
 
-        const entityA = Object.keys(this.fixtures).find(
-          (entity) => this.fixtures[entity] === fixtureA,
-        );
-        const entityB = Object.keys(this.fixtures).find(
-          (entity) => this.fixtures[entity] === fixtureB,
-        );
+        const displayObjectA = this.fixtures.get(fixtureA);
+        const displayObjectB = this.fixtures.get(fixtureB);
 
-        if (entityA && entityB) {
-          const displayObjectA = runtime.displayObjectPool.getByEntity(
-            Number(entityA),
-          );
-          const displayObjectB = runtime.displayObjectPool.getByEntity(
-            Number(entityB),
-          );
+        if (displayObjectA && displayObjectB) {
           onContact(displayObjectA, displayObjectB);
         }
       };
@@ -265,7 +252,7 @@ export class Box2DPlugin implements RenderingPlugin {
       b2BodyDef,
       b2_dynamicBody,
     } = this.Box2D;
-    const { entity, nodeName, parsedStyle } = target;
+    const { nodeName, parsedStyle } = target;
 
     let shape:
       | Box2D.b2EdgeShape
@@ -408,8 +395,12 @@ export class Box2DPlugin implements RenderingPlugin {
         // body.SetAwake(true);
         body.SetEnabled(enabled);
 
-        this.bodies[entity] = body;
-        this.fixtures[entity] = fixture;
+        this.bodies.set(target, {
+          displayObject: target,
+          fixture,
+          body,
+        });
+        this.fixtures.set(fixture, target);
       }
     }
   }

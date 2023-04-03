@@ -124,6 +124,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     private context: RenderingPluginContext,
   ) {}
 
+  private svgElementMap: WeakMap<SVGElement, DisplayObject> = new WeakMap();
+
   /**
    * <camera>
    */
@@ -159,6 +161,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     this.context = context;
+    // @ts-ignore
+    this.context.svgElementMap = this.svgElementMap;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const { document } = this.context.config;
@@ -639,6 +643,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       svgElement.$el = $el;
       svgElement.$groupEl = $groupEl;
+
+      this.svgElementMap.set($el, object);
 
       // apply attributes at first time
       this.applyAttributes(object);

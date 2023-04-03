@@ -5,7 +5,6 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
 
 /**
  * pick shape(s) with Mouse/Touch event
@@ -20,24 +19,30 @@ export class SVGPickerPlugin implements RenderingPlugin {
     const {
       config: { document: doc },
       renderingService,
+      // @ts-ignore
+      svgElementMap,
     } = context;
 
     renderingService.hooks.pick.tapPromise(
       SVGPickerPlugin.tag,
       async (result: PickingResult) => {
-        return this.pick(runtime, doc, result);
+        return this.pick(svgElementMap, doc, result);
       },
     );
 
     renderingService.hooks.pickSync.tap(
       SVGPickerPlugin.tag,
       (result: PickingResult) => {
-        return this.pick(runtime, doc, result);
+        return this.pick(svgElementMap, doc, result);
       },
     );
   }
 
-  private pick(runtime: GlobalRuntime, doc: Document, result: PickingResult) {
+  private pick(
+    svgElementMap: WeakMap<SVGElement, DisplayObject>,
+    doc: Document,
+    result: PickingResult,
+  ) {
     const {
       topmost,
       position: { clientX, clientY },
@@ -50,22 +55,14 @@ export class SVGPickerPlugin implements RenderingPlugin {
         clientX,
         clientY,
       )) {
-        // eg. g_svg_circle_345
-        const id = element && element.getAttribute('id');
-        if (id && id.startsWith(G_SVG_PREFIX)) {
-          const index = id.lastIndexOf('-');
-          const target = runtime.displayObjectPool.getByEntity(
-            id.substring(index + 1),
-          );
+        const target = svgElementMap.get(element as SVGElement);
+        // don't need to account for `visibility` since DOM API already does
+        if (target && target.isInteractive()) {
+          targets.push(target);
 
-          // don't need to account for `visibility` since DOM API already does
-          if (target && target.isInteractive()) {
-            targets.push(target);
-
-            if (topmost) {
-              result.picked = targets;
-              return result;
-            }
+          if (topmost) {
+            result.picked = targets;
+            return result;
           }
         }
       }

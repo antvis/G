@@ -24,7 +24,7 @@ import {
   CSSPropertyTransformOrigin,
   CSSPropertyZIndex,
 } from './css/properties';
-import { DisplayObjectPool } from './display-objects';
+import type { HTML } from './display-objects';
 import { Camera } from './camera';
 import type {
   GeometryAABBUpdater,
@@ -53,7 +53,6 @@ export interface GlobalRuntime {
   // AnimationTimeline: new (doc: IDocument) => IAnimationTimeline;
   AnimationTimeline: any;
   EasingFunction: (...args: any[]) => (t: number) => number;
-  displayObjectPool: DisplayObjectPool;
   offscreenCanvas: OffscreenCanvasCreator;
   sceneGraphSelector: SceneGraphSelector;
   sceneGraphService: SceneGraphService;
@@ -67,6 +66,7 @@ export interface GlobalRuntime {
   >;
   globalThis: any;
   enableCSSParsing: boolean;
+  nativeHTMLMap: WeakMap<HTMLElement, HTML>;
 }
 
 /**
@@ -151,7 +151,7 @@ runtime.EasingFunction = null;
 
 runtime.offscreenCanvas = new OffscreenCanvasCreator();
 
-runtime.displayObjectPool = new DisplayObjectPool();
+runtime.nativeHTMLMap = new WeakMap();
 
 runtime.sceneGraphSelector = new DefaultSceneGraphSelector();
 

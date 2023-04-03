@@ -148,10 +148,9 @@ export class PrepareRendererPlugin implements RenderingPlugin {
           const [maxX, maxY] = renderBounds.getMax();
 
           if (!rBushNode.aabb) {
-            // @ts-ignore
-            rBushNode.aabb = {};
+            rBushNode.aabb = {} as RBushNodeAABB;
           }
-          rBushNode.aabb.id = node.entity;
+          rBushNode.aabb.displayObject = node;
           rBushNode.aabb.minX = minX;
           rBushNode.aabb.minY = minY;
           rBushNode.aabb.maxX = maxX;

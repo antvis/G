@@ -1,7 +1,6 @@
 export * from './Circle';
 export * from './CustomElement';
 export * from './DisplayObject';
-export * from './DisplayObjectPool';
 export * from './Ellipse';
 export * from './Group';
 export * from './HTML';

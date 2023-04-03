@@ -1,5 +1,7 @@
+import { DisplayObject } from '../display-objects';
+
 export interface RBushNodeAABB {
-  id: number;
+  displayObject: DisplayObject;
   minX: number;
   minY: number;
   maxX: number;

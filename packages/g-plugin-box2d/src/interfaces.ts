@@ -7,3 +7,9 @@ export interface Box2DPluginOptions {
   positionIterations: number;
   onContact: (objectA: DisplayObject, object: DisplayObject) => void;
 }
+
+export interface Box2DBody {
+  body: Box2D.b2Body;
+  fixture: Box2D.b2Fixture;
+  displayObject: DisplayObject;
+}

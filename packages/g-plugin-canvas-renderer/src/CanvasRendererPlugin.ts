@@ -303,10 +303,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         }
 
         // search objects intersect with dirty rectangle
-        const dirtyObjects = this.searchDirtyObjects(
-          runtime,
-          dirtyRenderBounds,
-        );
+        const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
 
         // do rendering
         dirtyObjects
@@ -498,10 +495,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     return aabb;
   }
 
-  private searchDirtyObjects(
-    runtime: GlobalRuntime,
-    dirtyRectangle: AABB,
-  ): DisplayObject[] {
+  private searchDirtyObjects(dirtyRectangle: AABB): DisplayObject[] {
     // search in r-tree, get all affected nodes
     const [minX, minY] = dirtyRectangle.getMin();
     const [maxX, maxY] = dirtyRectangle.getMax();
@@ -512,9 +506,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       maxY,
     });
 
-    return rBushNodes.map(({ id }) =>
-      runtime.displayObjectPool.getByEntity(id),
-    );
+    return rBushNodes.map(({ displayObject }) => displayObject);
   }
 
   private saveDirtyAABB(object: DisplayObject) {

@@ -278,16 +278,10 @@ export class DisplayObject<
         },
       },
     );
-
-    // insert this group into pool
-    runtime.displayObjectPool.add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
-
-    // remove from pool
-    runtime.displayObjectPool.remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
