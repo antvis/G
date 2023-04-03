@@ -173,7 +173,6 @@ export class PhysXPlugin implements RenderingPlugin {
   }
 
   private addActor(target: DisplayObject) {
-    const entity = target.entity;
     const bounds = target.getBounds();
     if (!AABB.isEmpty(bounds) && target.parsedStyle.rigid) {
       const { halfExtents } = bounds;

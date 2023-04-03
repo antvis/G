@@ -469,7 +469,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     // @ts-ignore
     const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
-    const { parsedStyle, computedStyle } = object;
+    const { parsedStyle, computedStyle, nodeName } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
       // @ts-ignore
       this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(
@@ -505,15 +505,17 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const formattedValueStr =
         FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited =
-        runtime.enableCSSParsing && !!propertyMetadataCache[name]?.inh;
+      const inherited = usedName && !!propertyMetadataCache[name]?.inh;
 
-      if (!usedName) {
+      if (
+        !usedName ||
+        (nodeName === Shape.GROUP && !runtime.enableCSSParsing && inherited)
+      ) {
         return;
       }
 
       // <foreignObject>
-      if (object.nodeName === Shape.HTML) {
+      if (nodeName === Shape.HTML) {
         if (name === 'lineWidth') {
           $el.style['border-width'] = `${usedValue || 0}px`;
         } else if (name === 'lineDash') {
@@ -522,7 +524,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       if (name === 'fill') {
-        if (object.nodeName === Shape.HTML) {
+        if (nodeName === Shape.HTML) {
           $el.style.background = usedValue.toString();
         } else {
           this.defElementManager.createOrUpdateGradientAndPattern(
@@ -534,7 +536,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           );
         }
       } else if (name === 'stroke') {
-        if (object.nodeName === Shape.HTML) {
+        if (nodeName === Shape.HTML) {
           $el.style['border-color'] = usedValue.toString();
           $el.style['border-style'] = 'solid';
         } else {
@@ -546,7 +548,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
             this,
           );
         }
-      } else if (inherited && usedName) {
+      } else if (runtime.enableCSSParsing && inherited) {
         // use computed value
         // update `visibility` on <group>
         if (
@@ -575,7 +577,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.createOrUpdateInnerHTML(document, $el, usedValue);
       } else if (name === 'anchor') {
         // text' anchor is controlled by `textAnchor` property
-        if (object.nodeName !== Shape.TEXT) {
+        if (nodeName !== Shape.TEXT) {
           this.updateAnchorWithTransform(object);
         }
       } else {

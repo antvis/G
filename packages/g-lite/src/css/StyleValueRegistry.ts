@@ -1,5 +1,4 @@
 import { isNil } from '@antv/util';
-// import { vec3 } from 'gl-matrix';
 import { DisplayObject, EMPTY_PARSED_PATH } from '../display-objects';
 import { AABB } from '../shapes';
 import type {
@@ -108,6 +107,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     k: ['none'],
     d: 'none',
     syntax: PropertySyntax.PAINT,
+    /**
+     * Stroke 'none' won't affect geometry but others will.
+     */
+    l: true,
   },
   {
     n: 'shadowType',
