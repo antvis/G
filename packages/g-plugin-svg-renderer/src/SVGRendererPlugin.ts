@@ -509,7 +509,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       if (
         !usedName ||
-        (nodeName === Shape.GROUP && !runtime.enableCSSParsing && inherited)
+        ((nodeName === Shape.GROUP || object.isCustomElement) &&
+          !runtime.enableCSSParsing &&
+          inherited)
       ) {
         return;
       }
