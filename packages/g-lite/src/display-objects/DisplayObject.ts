@@ -365,7 +365,16 @@ export class DisplayObject<
     }
 
     // account for FCP, process properties as less as possible
-    runtime.styleValueRegistry.processProperties(this, attributes, options);
+    const formattedAttributes = {};
+    for (const name in attributes) {
+      const attributeName = formatAttributeName(name);
+      formattedAttributes[attributeName] = attributes[name];
+    }
+    runtime.styleValueRegistry.processProperties(
+      this,
+      formattedAttributes,
+      options,
+    );
 
     // redraw at next frame
     renderable.dirty = true;

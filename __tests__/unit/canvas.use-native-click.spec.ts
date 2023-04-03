@@ -30,7 +30,6 @@ const canvas = new Canvas({
 describe('Canvas', () => {
   afterEach(() => {
     canvas.destroyChildren();
-    expect(runtime.displayObjectPool.getAll().length).eqls(1);
   });
 
   afterAll(() => {

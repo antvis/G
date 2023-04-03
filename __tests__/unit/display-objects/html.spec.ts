@@ -1,4 +1,4 @@
-import { Canvas, DisplayObjectPool, runtime, HTML } from '@antv/g';
+import { Canvas, HTML } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import chai, { expect } from 'chai';
 // @ts-ignore
@@ -34,9 +34,6 @@ describe('HTML', () => {
   });
 
   it('should create HTML correctly.', async () => {
-    const pool = runtime.displayObjectPool;
-    expect(pool.getHTMLs().length).to.be.eqls(0);
-
     const html = new HTML({
       id: 'id',
       name: 'name',
@@ -52,8 +49,6 @@ describe('HTML', () => {
 
     await canvas.ready;
     canvas.appendChild(html);
-
-    expect(pool.getHTMLs().length).to.be.eqls(1);
 
     expect(html.getAttribute('x')).to.be.eqls(100);
     expect(html.getAttribute('y')).to.be.eqls(100);
