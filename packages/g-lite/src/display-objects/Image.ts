@@ -7,18 +7,22 @@ import { DisplayObject } from './DisplayObject';
 export interface ImageStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
+  z?: number;
   img?: string | HTMLImageElement;
   src?: string | HTMLImageElement;
   width?: number | string;
   height?: number | string;
+  isBillboard?: boolean;
 }
 export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   x: number;
   y: number;
+  z?: number;
   img?: string | HTMLImageElement;
   src?: string | HTMLImageElement;
   width?: number;
   height?: number;
+  isBillboard?: boolean;
 }
 export class Image extends DisplayObject<
   ImageStyleProps,

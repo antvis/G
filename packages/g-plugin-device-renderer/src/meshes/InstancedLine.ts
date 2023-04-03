@@ -357,7 +357,11 @@ export class InstancedLineMesh extends Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'lineDashOffset' || name === 'lineDash') {
+    } else if (
+      name === 'lineDashOffset' ||
+      name === 'lineDash' ||
+      name === 'isBillboard'
+    ) {
       const packed: number[] = [];
       objects.forEach((object) => {
         const totalLength = (object as Line).getTotalLength();
