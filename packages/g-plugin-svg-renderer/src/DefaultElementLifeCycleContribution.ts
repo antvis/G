@@ -99,11 +99,17 @@ export class DefaultElementLifeCycleContribution
 {
   constructor(private context: CanvasContext) {}
 
-  createElement(object: DisplayObject): SVGElement {
+  createElement(
+    object: DisplayObject,
+    svgElementMap: WeakMap<SVGElement, DisplayObject>,
+  ): SVGElement {
     const { document: doc } = this.context.config;
 
     const type = SHAPE2TAGS[object.nodeName] || 'g';
-    return createSVGElement(type, doc || document);
+    const $el = createSVGElement(type, doc || document);
+
+    svgElementMap.set($el, object);
+    return $el;
   }
 
   destroyElement(object: DisplayObject, $el: SVGElement) {}

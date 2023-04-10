@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>SVG Flicker</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <p style="font-family: sans-serif; font-size: 60px">new york</p>
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-svg/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Circle, Rect, Canvas } = window.G;
+
+      // create a renderer
+      const svgRenderer = new window.G.SVG.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: svgRenderer,
+      });
+
+      canvas.addEventListener('ready', () => {
+        const circle = new Circle({
+          style: {
+            cx: 100,
+            cy: 100,
+            r: 100,
+            fill: 'black',
+          },
+        });
+
+        const rect = new Rect({
+          style: {
+            x: 100,
+            y: 100,
+            width: 100,
+            height: 100,
+            fill: 'black',
+          },
+        });
+
+        canvas.appendChild(circle);
+
+        let i = 0;
+        // setInterval(() => {
+        //   if (i === 0) {
+        canvas.document.documentElement.replaceChild(rect, circle);
+        //     i = 1;
+        //   } else {
+        //     canvas.document.documentElement.replaceChild(rect, circle);
+        //     i = 0;
+        //   }
+        // }, 1000);
+      });
+    </script>
+  </body>
+</html>

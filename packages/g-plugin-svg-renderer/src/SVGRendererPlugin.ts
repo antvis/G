@@ -17,13 +17,13 @@ import {
   Shape,
   isCSSRGB,
 } from '@antv/g-lite';
+import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import type { DefElementManager } from './shapes/defs';
 import type { SVGRendererPluginOptions } from './interfaces';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
-import { isNil } from '@antv/util';
 
 export const SVG_ATTR_MAP: Record<string, string> = {
   opacity: 'opacity',
@@ -124,6 +124,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     private context: RenderingPluginContext,
   ) {}
 
+  /**
+   * Will be used in g-plugin-svg-picker for finding relative SVG element of current DisplayObject.
+   */
   private svgElementMap: WeakMap<SVGElement, DisplayObject> = new WeakMap();
 
   /**
@@ -140,11 +143,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
    * dirty attributes at the end of frame
    */
   private dirtyAttributes: WeakMap<DisplayObject, string[]> = new WeakMap();
-
-  /**
-   * reorder after mounted
-   */
-  private pendingReorderQueue: Set<DisplayObject> = new Set();
 
   /**
    * <use> elements in <clipPath>, which should be sync with clipPath
@@ -320,33 +318,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap(
       SVGRendererPlugin.tag,
       (object: DisplayObject) => {
-        // if (!object.isCulled()) {
         this.renderQueue.push(object);
-        // }
       },
     );
-
-    renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
-      const { document: doc } = this.context.config;
-
-      if (this.pendingReorderQueue.size) {
-        this.pendingReorderQueue.forEach((object) => {
-          const children = (object?.children || []).slice() as DisplayObject[];
-          const $parentGroupEl =
-            // @ts-ignore
-            object?.elementSVG?.$groupEl;
-
-          if ($parentGroupEl) {
-            this.reorderChildren(
-              doc || document,
-              $parentGroupEl,
-              children || [],
-            );
-          }
-        });
-        this.pendingReorderQueue.clear();
-      }
-    });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
       if (renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
@@ -486,6 +460,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.context.SVGElementLifeCycleContribution.updateElementAttribute(
             object,
             $el,
+            this.svgElementMap,
           );
           if (object.nodeName !== Shape.TEXT) {
             this.updateAnchorWithTransform(object);
@@ -511,7 +486,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         !usedName ||
         ((nodeName === Shape.GROUP || object.isCustomElement) &&
           !runtime.enableCSSParsing &&
-          inherited)
+          (inherited || usedName === 'fill' || usedName === 'stroke'))
       ) {
         return;
       }
@@ -618,7 +593,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // use <group> as default, eg. CustomElement
     const $el =
       // @ts-ignore
-      this.context.SVGElementLifeCycleContribution.createElement(object);
+      this.context.SVGElementLifeCycleContribution.createElement(
+        object,
+        this.svgElementMap,
+      );
     if ($el) {
       let $groupEl: SVGElement;
 
@@ -648,8 +626,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
       svgElement.$el = $el;
       svgElement.$groupEl = $groupEl;
 
-      this.svgElementMap.set($el, object);
-
       // apply attributes at first time
       this.applyAttributes(object);
 
@@ -665,7 +641,18 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $parentGroupEl.appendChild($groupEl);
 
         // need reorder children later
-        this.pendingReorderQueue.add(object.parentNode as DisplayObject);
+        {
+          const children = (
+            object.parentNode?.children || []
+          ).slice() as DisplayObject[];
+          const $parentGroupEl =
+            // @ts-ignore
+            object.parentNode?.elementSVG?.$groupEl;
+
+          if ($parentGroupEl) {
+            this.reorderChildren(document, $parentGroupEl, children || []);
+          }
+        }
       }
     }
   }
