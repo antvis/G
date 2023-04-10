@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "1.8.51",
+  "version": "1.8.52",
   "description": "A renderer implemented by SVG",
   "keywords": [
     "antv",
@@ -32,7 +32,7 @@
   "dependencies": {
     "@antv/g-plugin-dom-interaction": "^1.7.45",
     "@antv/g-plugin-svg-picker": "^1.7.46",
-    "@antv/g-plugin-svg-renderer": "^1.8.51",
+    "@antv/g-plugin-svg-renderer": "^1.8.52",
     "@antv/util": "^3.3.1",
     "tslib": "^2.3.1"
   },
