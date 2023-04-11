@@ -1,3 +1,6 @@
+import { DisplayObject } from '@antv/g-lite';
+import { Body } from 'matter-js';
+
 export interface MatterJSPluginOptions {
   debug: boolean;
   debugContainer: HTMLElement;
@@ -8,4 +11,9 @@ export interface MatterJSPluginOptions {
   timeStep: number;
   velocityIterations: number;
   positionIterations: number;
+}
+
+export interface MatterJSBody {
+  body: Body;
+  displayObject: DisplayObject;
 }

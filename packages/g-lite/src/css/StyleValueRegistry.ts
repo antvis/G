@@ -1,5 +1,4 @@
 import { isNil } from '@antv/util';
-// import { vec3 } from 'gl-matrix';
 import { DisplayObject, EMPTY_PARSED_PATH } from '../display-objects';
 import { AABB } from '../shapes';
 import type {
@@ -8,7 +7,7 @@ import type {
   Tuple3Number,
 } from '../types';
 import { Shape } from '../types';
-import { addVec3, formatAttributeName, isFunction } from '../utils';
+import { addVec3, isFunction } from '../utils';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
@@ -108,6 +107,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     k: ['none'],
     d: 'none',
     syntax: PropertySyntax.PAINT,
+    /**
+     * Stroke 'none' won't affect geometry but others will.
+     */
+    l: true,
   },
   {
     n: 'shadowType',
@@ -681,29 +684,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     },
   ) {
     if (!runtime.enableCSSParsing) {
-      // alias
-      // @ts-ignore
-      if (attributes.src) {
-        // @ts-ignore
-        attributes.img = attributes.src;
-      }
-      // @ts-ignore
-      if (attributes.d) {
-        // @ts-ignore
-        attributes.path = attributes.d;
-      }
-      if (attributes.strokeDasharray) {
-        attributes.lineDash = attributes.strokeDasharray;
-      }
-      if (attributes.strokeWidth) {
-        attributes.lineWidth = attributes.strokeWidth;
-      }
-      // @ts-ignore
-      if (attributes.textAnchor) {
-        // @ts-ignore
-        attributes.textAlign = attributes.textAnchor;
-      }
-
       Object.assign(object.attributes, attributes);
       const attributeNames = Object.keys(attributes);
 
@@ -952,13 +932,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     let attributeNames = Object.keys(attributes);
 
     attributeNames.forEach((attributeName) => {
-      const name = formatAttributeName(attributeName);
-
       if (!skipUpdateAttribute) {
-        object.attributes[name] = attributes[attributeName];
+        object.attributes[attributeName] = attributes[attributeName];
       }
 
-      if (!needUpdateGeometry && propertyMetadataCache[name as string]?.l) {
+      if (!needUpdateGeometry && propertyMetadataCache[attributeName]?.l) {
         needUpdateGeometry = true;
       }
     });

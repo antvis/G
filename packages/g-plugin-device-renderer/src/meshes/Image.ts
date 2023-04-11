@@ -50,21 +50,28 @@ export class ImageMesh extends Instanced {
     objects.forEach((object, i) => {
       const image = object as ImageShape;
       const offset = i * 4;
-      const { width, height } = image.parsedStyle;
-      instanced.push(width, height);
+      const { width, height, z, isBillboard } = image.parsedStyle;
+      instanced.push(width, height, z, isBillboard ? 1 : 0);
       interleaved.push(0, 0, 1, 0, 1, 1, 0, 1);
-      indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
+      indices.push(
+        0 + offset,
+        2 + offset,
+        1 + offset,
+        0 + offset,
+        3 + offset,
+        2 + offset,
+      );
     });
 
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
-      byteStride: 4 * 2,
+      byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
-          format: Format.F32_RG,
+          format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.POSITION,
         },
@@ -86,17 +93,27 @@ export class ImageMesh extends Instanced {
     });
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ) {
     super.updateAttribute(objects, startIndex, name, value);
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
 
-    if (name === 'width' || name === 'height') {
+    if (
+      name === 'width' ||
+      name === 'height' ||
+      name === 'z' ||
+      name === 'isBillboard'
+    ) {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { width, height } = image.parsedStyle;
-        packed.push(width, height);
+        const { width, height, z, isBillboard } = image.parsedStyle;
+        packed.push(width, height, z, isBillboard ? 1 : 0);
       });
 
       this.geometry.updateVertexBuffer(
@@ -106,7 +123,10 @@ export class ImageMesh extends Instanced {
         new Uint8Array(new Float32Array(packed).buffer),
       );
     } else if (name === 'img') {
-      const map = this.texturePool.getOrCreateTexture(this.context.device, value);
+      const map = this.texturePool.getOrCreateTexture(
+        this.context.device,
+        value,
+      );
       this.material.setUniforms({
         u_Map: map,
       });

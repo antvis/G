@@ -148,8 +148,7 @@ export class Document extends Node implements IDocument {
     const rBushNodes = rBush.search({ minX, minY, maxX, maxY });
 
     const hitTestList: DisplayObject[] = [];
-    rBushNodes.forEach(({ id }) => {
-      const displayObject = runtime.displayObjectPool.getByEntity(id);
+    rBushNodes.forEach(({ displayObject }) => {
       const { pointerEvents } =
         displayObject.parsedStyle as ParsedBaseStyleProps;
 

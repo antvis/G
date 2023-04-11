@@ -20,7 +20,10 @@ export class RoughElementLifeCycleContribution
 {
   constructor(private context: CanvasContext) {}
 
-  createElement(object: DisplayObject<any, any>): SVGElement {
+  createElement(
+    object: DisplayObject<any, any>,
+    svgElementMap: WeakMap<SVGElement, DisplayObject>,
+  ): SVGElement {
     const { nodeName } = object;
 
     switch (nodeName) {
@@ -31,7 +34,7 @@ export class RoughElementLifeCycleContribution
       case Shape.POLYGON:
       case Shape.POLYLINE:
       case Shape.PATH:
-        return this.wrapGroup(this.generateSVGElement(object));
+        return this.wrapGroup(this.generateSVGElement(object, svgElementMap));
       case Shape.GROUP:
       case Shape.IMAGE:
       case Shape.TEXT:
@@ -60,7 +63,11 @@ export class RoughElementLifeCycleContribution
     );
   }
 
-  updateElementAttribute(object: DisplayObject<any, any>, $el: SVGElement) {
+  updateElementAttribute(
+    object: DisplayObject<any, any>,
+    $el: SVGElement,
+    svgElementMap: WeakMap<SVGElement, DisplayObject>,
+  ) {
     const { nodeName, parsedStyle } = object;
     switch (nodeName) {
       case Shape.CIRCLE:
@@ -71,7 +78,7 @@ export class RoughElementLifeCycleContribution
       case Shape.POLYLINE:
       case Shape.PATH: {
         // regenerate rough path
-        const $updatedEl = this.generateSVGElement(object);
+        const $updatedEl = this.generateSVGElement(object, svgElementMap);
         const $updatedChildren = [];
         for (let i = 0; i < $updatedEl.childNodes.length; i++) {
           $updatedChildren.push($updatedEl.childNodes[i]);
@@ -95,7 +102,10 @@ export class RoughElementLifeCycleContribution
     }
   }
 
-  private generateSVGElement(object: DisplayObject<any, any>) {
+  private generateSVGElement(
+    object: DisplayObject<any, any>,
+    svgElementMap: WeakMap<SVGElement, DisplayObject>,
+  ) {
     const { nodeName, parsedStyle } = object;
 
     const roughSVG = // @ts-ignore
@@ -197,9 +207,7 @@ export class RoughElementLifeCycleContribution
       for (let i = 0; i < $roughG.children.length; i++) {
         // <g> cannot be a target for hit testing
         // @see https://bugzilla.mozilla.org/show_bug.cgi?id=1428780
-        $roughG.children[
-          i
-        ].id = `${SVGRenderer.G_SVG_PREFIX}-${object.nodeName}-rough${i}-${object.entity}`;
+        svgElementMap.set($roughG.children[i] as SVGElement, object);
       }
     }
 

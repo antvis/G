@@ -16,7 +16,7 @@ import { Node } from '../dom/Node';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
-import type { CanvasContext, GlobalRuntime } from '..';
+import { CanvasContext, GlobalRuntime, runtime } from '..';
 
 type Picker = (position: EventPosition) => IEventTarget | null;
 type TrackingData = {
@@ -734,12 +734,15 @@ export class EventService {
     return false;
   }
 
+  /**
+   * Find HTML from composed path in native UI event.
+   */
   private getExistedHTML(event: FederatedEvent): HTML {
     if (event.nativeEvent.composedPath) {
-      const htmls = this.globalRuntime.displayObjectPool.getHTMLs();
-      for (const html of htmls) {
-        if (event.nativeEvent.composedPath().indexOf(html) > -1) {
-          return html;
+      for (const eventTarget of event.nativeEvent.composedPath() as HTMLElement[]) {
+        const existed = runtime.nativeHTMLMap.get(eventTarget);
+        if (existed) {
+          return existed;
         }
       }
     }

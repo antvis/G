@@ -278,16 +278,10 @@ export class DisplayObject<
         },
       },
     );
-
-    // insert this group into pool
-    runtime.displayObjectPool.add(this.entity, this);
   }
 
   destroy() {
     super.destroy();
-
-    // remove from pool
-    runtime.displayObjectPool.remove(this.entity);
 
     // stop all active animations
     this.getAnimations().forEach((animation) => {
@@ -371,7 +365,16 @@ export class DisplayObject<
     }
 
     // account for FCP, process properties as less as possible
-    runtime.styleValueRegistry.processProperties(this, attributes, options);
+    const formattedAttributes = {};
+    for (const name in attributes) {
+      const attributeName = formatAttributeName(name);
+      formattedAttributes[attributeName] = attributes[name];
+    }
+    runtime.styleValueRegistry.processProperties(
+      this,
+      formattedAttributes,
+      options,
+    );
 
     // redraw at next frame
     renderable.dirty = true;

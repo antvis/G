@@ -528,4 +528,102 @@ describe('DisplayObject Bounds API', () => {
       expect(bounds.halfExtents).eqls([100, 100, 0]);
     }
   });
+
+  it('should update geometry when stroke changed from `none` to `red`.', () => {
+    const circle1 = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        lineWidth: 20,
+      },
+    });
+
+    let circle1Bounds = circle1.getBounds();
+    let circle1LocalBounds = circle1.getLocalBounds();
+    let circle1RenderBounds = circle1.getRenderBounds();
+    if (circle1Bounds && circle1LocalBounds) {
+      expect(circle1Bounds.center).eqls([100, 100, 0]);
+      expect(circle1Bounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.center).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.center).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.halfExtents).eqls([100, 100, 0]);
+    }
+
+    circle1.style.stroke = 'red';
+    circle1Bounds = circle1.getBounds();
+    circle1LocalBounds = circle1.getLocalBounds();
+    circle1RenderBounds = circle1.getRenderBounds();
+    if (circle1Bounds && circle1LocalBounds) {
+      expect(circle1Bounds.center).eqls([100, 100, 0]);
+      expect(circle1Bounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.center).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.center).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.halfExtents).eqls([110, 110, 0]);
+    }
+
+    circle1.style.stroke = 'none';
+    circle1Bounds = circle1.getBounds();
+    circle1LocalBounds = circle1.getLocalBounds();
+    circle1RenderBounds = circle1.getRenderBounds();
+    if (circle1Bounds && circle1LocalBounds) {
+      expect(circle1Bounds.center).eqls([100, 100, 0]);
+      expect(circle1Bounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.center).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.center).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.halfExtents).eqls([100, 100, 0]);
+    }
+  });
+
+  it('should update geometry when stroke changed from `none` to `red`.', () => {
+    const circle1 = new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 100,
+        strokeWidth: 20,
+      },
+    });
+
+    let circle1Bounds = circle1.getBounds();
+    let circle1LocalBounds = circle1.getLocalBounds();
+    let circle1RenderBounds = circle1.getRenderBounds();
+    if (circle1Bounds && circle1LocalBounds) {
+      expect(circle1Bounds.center).eqls([100, 100, 0]);
+      expect(circle1Bounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.center).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.center).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.halfExtents).eqls([100, 100, 0]);
+    }
+
+    circle1.style.stroke = 'red';
+    circle1Bounds = circle1.getBounds();
+    circle1LocalBounds = circle1.getLocalBounds();
+    circle1RenderBounds = circle1.getRenderBounds();
+    if (circle1Bounds && circle1LocalBounds) {
+      expect(circle1Bounds.center).eqls([100, 100, 0]);
+      expect(circle1Bounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.center).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.center).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.halfExtents).eqls([110, 110, 0]);
+    }
+
+    circle1.style.stroke = 'none';
+    circle1Bounds = circle1.getBounds();
+    circle1LocalBounds = circle1.getLocalBounds();
+    circle1RenderBounds = circle1.getRenderBounds();
+    if (circle1Bounds && circle1LocalBounds) {
+      expect(circle1Bounds.center).eqls([100, 100, 0]);
+      expect(circle1Bounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.center).eqls([100, 100, 0]);
+      expect(circle1LocalBounds.halfExtents).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.center).eqls([100, 100, 0]);
+      expect(circle1RenderBounds.halfExtents).eqls([100, 100, 0]);
+    }
+  });
 });

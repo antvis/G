@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Line } from '@antv/g';
+import { Canvas, CanvasEvent, Line, Text, Image } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import {
   MeshPhongMaterial,
@@ -1684,6 +1684,32 @@ const canvas = new Canvas({
     sphere.addEventListener('mouseleave', () => {
       sphere.style.fill = fill;
     });
+
+    const icon = new Image({
+      style: {
+        x: node.x + 300,
+        y: node.y + 250,
+        z: node.z,
+        width: 50,
+        height: 50,
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        isBillboard: true,
+      },
+    });
+    canvas.appendChild(icon);
+
+    // const label = new Text({
+    //   style: {
+    //     x: node.x + 300,
+    //     y: node.y + 250,
+    //     z: node.z,
+    //     fontFamily: 'sans-serif',
+    //     text: node.id,
+    //     fontSize: 50,
+    //     fill: 'black',
+    //   },
+    // });
+    // canvas.appendChild(label);
   });
 
   dataset.links.forEach((edge) => {

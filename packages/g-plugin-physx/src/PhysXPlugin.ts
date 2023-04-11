@@ -1,11 +1,11 @@
 import type {
   DisplayObject,
   FederatedEvent,
-  GlobalRuntime,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
 import { AABB, CanvasEvent, ElementEvent } from '@antv/g-lite';
+import { PhysxBody } from './interfaces';
 
 /**
  * PhysX runtime mode.
@@ -25,10 +25,10 @@ export class PhysXPlugin implements RenderingPlugin {
   private PhysX: any;
   private physics: any;
   private scene: any;
-  private bodies: Record<number, any> = {};
+  private bodies: Map<DisplayObject, PhysxBody> = new Map();
   private pendingDisplayObjects: DisplayObject[] = [];
 
-  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
+  apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
@@ -58,11 +58,7 @@ export class PhysXPlugin implements RenderingPlugin {
             this.scene.simulate(1 / 60, true);
             this.scene.fetchResults(true);
 
-            Object.keys(this.bodies).forEach((entity) => {
-              const body = this.bodies[entity];
-              const displayObject = runtime.displayObjectPool.getByEntity(
-                Number(entity),
-              );
+            this.bodies.forEach(({ body, displayObject }) => {
               const transform = body.getGlobalPose();
               const { translation, rotation } = transform;
               displayObject.setPosition(
@@ -177,7 +173,6 @@ export class PhysXPlugin implements RenderingPlugin {
   }
 
   private addActor(target: DisplayObject) {
-    const entity = target.entity;
     const bounds = target.getBounds();
     if (!AABB.isEmpty(bounds) && target.parsedStyle.rigid) {
       const { halfExtents } = bounds;
@@ -226,7 +221,10 @@ export class PhysXPlugin implements RenderingPlugin {
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxRigidActor.html#a022e098ea67bc8ec87f93c2f18a4db6f
       body.attachShape(shape);
-      this.bodies[entity] = body;
+      this.bodies.set(target, {
+        displayObject: target,
+        body,
+      });
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxScene.html#a033c70c3094db21a2c51246e1a65a0e5
       this.scene.addActor(body, null);

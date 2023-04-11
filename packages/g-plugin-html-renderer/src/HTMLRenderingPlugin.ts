@@ -44,19 +44,18 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
   }
 
   apply(context: RenderingPluginContext) {
-    const { camera, renderingContext, renderingService, displayObjectPool } =
-      context;
+    const { camera, renderingContext, renderingService } = context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
-    const setTransform = (object: DisplayObject, $el: HTMLElement) => {
+    const setTransform = (object: HTML, $el: HTMLElement) => {
       $el.style.transform = this.joinTransformMatrix(
         object.getWorldTransform(),
       );
     };
 
     const handleMounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
+      const object = e.target as HTML;
       if (object.nodeName === Shape.HTML) {
         if (!this.$camera) {
           this.$camera = this.createCamera(camera);
@@ -77,15 +76,18 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         });
 
         setTransform(object, $el);
+
+        runtime.nativeHTMLMap.set($el, object);
       }
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
+      const object = e.target as HTML;
       if (object.nodeName === Shape.HTML && this.$camera) {
         const $el = this.getOrCreateEl(object);
         if ($el) {
           $el.remove();
+          runtime.nativeHTMLMap.delete($el);
         }
 
         // const existedId = this.getId(object);
@@ -123,11 +125,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     renderingService.hooks.init.tapPromise(
       HTMLRenderingPlugin.tag,
       async () => {
-        if (displayObjectPool.getHTMLs().length) {
-          // append camera
-          this.$camera = this.createCamera(camera);
-        }
-
         canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
         canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
         canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);

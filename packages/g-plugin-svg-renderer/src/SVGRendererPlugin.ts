@@ -17,6 +17,7 @@ import {
   Shape,
   isCSSRGB,
 } from '@antv/g-lite';
+import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
 import type { DefElementManager } from './shapes/defs';
@@ -124,6 +125,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
   ) {}
 
   /**
+   * Will be used in g-plugin-svg-picker for finding relative SVG element of current DisplayObject.
+   */
+  private svgElementMap: WeakMap<SVGElement, DisplayObject> = new WeakMap();
+
+  /**
    * <camera>
    */
   private $camera: SVGElement;
@@ -158,6 +164,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
     this.context = context;
+    // @ts-ignore
+    this.context.svgElementMap = this.svgElementMap;
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const { document } = this.context.config;
@@ -315,9 +323,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap(
       SVGRendererPlugin.tag,
       (object: DisplayObject) => {
-        // if (!object.isCulled()) {
         this.renderQueue.push(object);
-        // }
       },
     );
 
@@ -464,7 +470,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
     // @ts-ignore
     const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
-    const { parsedStyle, computedStyle } = object;
+    const { parsedStyle, computedStyle, nodeName } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
       // @ts-ignore
       this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(
@@ -481,6 +487,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.context.SVGElementLifeCycleContribution.updateElementAttribute(
             object,
             $el,
+            this.svgElementMap,
           );
           if (object.nodeName !== Shape.TEXT) {
             this.updateAnchorWithTransform(object);
@@ -495,19 +502,24 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const computedValue = runtime.enableCSSParsing
         ? computedStyle[name]
         : parsedStyle[name];
-      const computedValueStr = computedValue && computedValue.toString();
+      const computedValueStr =
+        !isNil(computedValue) && computedValue.toString();
       const formattedValueStr =
         FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
       const usedValue = parsedStyle[name];
-      const inherited =
-        runtime.enableCSSParsing && !!propertyMetadataCache[name]?.inh;
+      const inherited = usedName && !!propertyMetadataCache[name]?.inh;
 
-      if (!usedName) {
+      if (
+        !usedName ||
+        ((nodeName === Shape.GROUP || object.isCustomElement) &&
+          !runtime.enableCSSParsing &&
+          (inherited || usedName === 'fill' || usedName === 'stroke'))
+      ) {
         return;
       }
 
       // <foreignObject>
-      if (object.nodeName === Shape.HTML) {
+      if (nodeName === Shape.HTML) {
         if (name === 'lineWidth') {
           $el.style['border-width'] = `${usedValue || 0}px`;
         } else if (name === 'lineDash') {
@@ -516,7 +528,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       if (name === 'fill') {
-        if (object.nodeName === Shape.HTML) {
+        if (nodeName === Shape.HTML) {
           $el.style.background = usedValue.toString();
         } else {
           this.defElementManager.createOrUpdateGradientAndPattern(
@@ -528,7 +540,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           );
         }
       } else if (name === 'stroke') {
-        if (object.nodeName === Shape.HTML) {
+        if (nodeName === Shape.HTML) {
           $el.style['border-color'] = usedValue.toString();
           $el.style['border-style'] = 'solid';
         } else {
@@ -540,7 +552,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
             this,
           );
         }
-      } else if (inherited && usedName) {
+      } else if (runtime.enableCSSParsing && inherited) {
         // use computed value
         // update `visibility` on <group>
         if (
@@ -569,11 +581,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.createOrUpdateInnerHTML(document, $el, usedValue);
       } else if (name === 'anchor') {
         // text' anchor is controlled by `textAnchor` property
-        if (object.nodeName !== Shape.TEXT) {
+        if (nodeName !== Shape.TEXT) {
           this.updateAnchorWithTransform(object);
         }
       } else {
-        if (computedValue) {
+        if (!isNil(computedValue)) {
           // use computed value so that we can use cascaded effect in SVG
           // ignore 'unset' and default value
           [$el, $hitTestingEl].forEach(($el: SVGElement) => {
@@ -608,7 +620,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // use <group> as default, eg. CustomElement
     const $el =
       // @ts-ignore
-      this.context.SVGElementLifeCycleContribution.createElement(object);
+      this.context.SVGElementLifeCycleContribution.createElement(
+        object,
+        this.svgElementMap,
+      );
     if ($el) {
       let $groupEl: SVGElement;
 
