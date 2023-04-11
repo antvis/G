@@ -145,6 +145,11 @@ export class SVGRendererPlugin implements RenderingPlugin {
   private dirtyAttributes: WeakMap<DisplayObject, string[]> = new WeakMap();
 
   /**
+   * reorder after mounted
+   */
+  private pendingReorderQueue: Set<DisplayObject> = new Set();
+
+  /**
    * <use> elements in <clipPath>, which should be sync with clipPath
    *
    * @example
@@ -321,6 +326,28 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.renderQueue.push(object);
       },
     );
+
+    renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
+      const { document: doc } = this.context.config;
+
+      if (this.pendingReorderQueue.size) {
+        this.pendingReorderQueue.forEach((object) => {
+          const children = (object?.children || []).slice() as DisplayObject[];
+          const $parentGroupEl =
+            // @ts-ignore
+            object?.elementSVG?.$groupEl;
+
+          if ($parentGroupEl) {
+            this.reorderChildren(
+              doc || document,
+              $parentGroupEl,
+              children || [],
+            );
+          }
+        });
+        this.pendingReorderQueue.clear();
+      }
+    });
 
     renderingService.hooks.endFrame.tap(SVGRendererPlugin.tag, () => {
       if (renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED)) {
@@ -641,18 +668,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $parentGroupEl.appendChild($groupEl);
 
         // need reorder children later
-        {
-          const children = (
-            object.parentNode?.children || []
-          ).slice() as DisplayObject[];
-          const $parentGroupEl =
-            // @ts-ignore
-            object.parentNode?.elementSVG?.$groupEl;
-
-          if ($parentGroupEl) {
-            this.reorderChildren(document, $parentGroupEl, children || []);
-          }
-        }
+        this.pendingReorderQueue.add(object.parentNode as DisplayObject);
       }
     }
   }
