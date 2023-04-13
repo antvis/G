@@ -77,8 +77,6 @@ abstract class Container extends Element implements IContainer {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-    const xArr = [];
-    const yArr = [];
     // 将可见元素、图形以及不为空的图形分组筛选出来，用于包围盒合并
     const children = this.getChildren().filter(
       (child) =>
@@ -86,14 +84,20 @@ abstract class Container extends Element implements IContainer {
     );
     if (children.length > 0) {
       each(children, (child: IElement) => {
-        const box = child.getBBox();
-        xArr.push(box.minX, box.maxX);
-        yArr.push(box.minY, box.maxY);
+        const { minX: childMinX, maxX: childMaxX, minY: childMinY, maxY: childMaxY } = child.getBBox();
+        if (childMinX < minX) {
+          minX = childMinX;
+        }
+        if (childMaxX > maxX) {
+          maxX = childMaxX;
+        }
+        if (childMinY < minY) {
+          minY = childMinY;
+        }
+        if (childMaxY > maxY) {
+          maxY = childMaxY;
+        }
       });
-      minX = min(xArr);
-      maxX = max(xArr);
-      minY = min(yArr);
-      maxY = max(yArr);
     } else {
       minX = 0;
       maxX = 0;
@@ -119,8 +123,6 @@ abstract class Container extends Element implements IContainer {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-    const xArr = [];
-    const yArr = [];
     // 将可见元素、图形以及不为空的图形分组筛选出来，用于包围盒合并
     const children = this.getChildren().filter(
       (child) =>
@@ -128,14 +130,20 @@ abstract class Container extends Element implements IContainer {
     );
     if (children.length > 0) {
       each(children, (child: IElement) => {
-        const box = child.getCanvasBBox();
-        xArr.push(box.minX, box.maxX);
-        yArr.push(box.minY, box.maxY);
+        const { minX: childMinX, maxX: childMaxX, minY: childMinY, maxY: childMaxY } = child.getCanvasBBox();
+        if (childMinX < minX) {
+          minX = childMinX;
+        }
+        if (childMaxX > maxX) {
+          maxX = childMaxX;
+        }
+        if (childMinY < minY) {
+          minY = childMinY;
+        }
+        if (childMaxY > maxY) {
+          maxY = childMaxY;
+        }
       });
-      minX = min(xArr);
-      maxX = max(xArr);
-      minY = min(yArr);
-      maxY = max(yArr);
     } else {
       minX = 0;
       maxX = 0;

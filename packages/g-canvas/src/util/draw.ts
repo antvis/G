@@ -116,6 +116,9 @@ export function clearChanged(elements: IElement[]) {
 function setChildrenRefresh(children: IElement[], region: Region) {
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as IElement;
+    if (!child.cfg.visible) {
+      continue;
+    }
     // let refresh = true;
     // 获取缓存的 bbox，如果这个 bbox 还存在则说明父元素不是矩阵发生了改变
     // const bbox = child.cfg.canvasBBox;
