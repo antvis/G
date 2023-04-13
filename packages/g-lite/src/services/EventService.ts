@@ -695,7 +695,7 @@ export class EventService {
       viewportX > width ||
       viewportY > height
     ) {
-      return null;
+      return this.rootTarget;
     }
 
     return (
