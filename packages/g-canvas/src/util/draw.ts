@@ -114,13 +114,8 @@ export function clearChanged(elements: IElement[]) {
 
 // 当某个父元素发生改变时，调用这个方法级联设置 refresh
 function setChildrenRefresh(children: IElement[], region: Region) {
-  const len = children.length;
-  for (let i = 0; i < len; i++) {
-    const child = children[i];
-    const { cfg } = child;
-    if (!cfg.visible) {
-      continue;
-    }
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i] as IElement;
     // let refresh = true;
     // 获取缓存的 bbox，如果这个 bbox 还存在则说明父元素不是矩阵发生了改变
     // const bbox = child.cfg.canvasBBox;
@@ -128,10 +123,10 @@ function setChildrenRefresh(children: IElement[], region: Region) {
     //   // 如果这时候
     //   refresh = intersectRect(bbox, region);
     // }
-    cfg.refresh = true;
+    child.cfg.refresh = true;
     // 如果需要刷新当前节点，所有的子元素设置 refresh
     if (child.isGroup()) {
-      setChildrenRefresh(cfg.children, region);
+      setChildrenRefresh(child.get('children'), region);
     }
   }
 }
@@ -296,39 +291,27 @@ export function getMergedRegion(elements): Region {
   if (!elements.length) {
     return null;
   }
-  let mergedMinX;
-  let mergedMinY;
-  let mergedMaxX;
-  let mergedMaxY;
+  const minXArr = [];
+  const minYArr = [];
+  const maxXArr = [];
+  const maxYArr = [];
   each(elements, (el: IElement) => {
     const region = getRefreshRegion(el);
-
-    if (!region) {
-      return;
-    }
-
-    const { minX, minY, maxX, maxY } = region;
-
-    if (minX < mergedMinX) {
-      mergedMinX = minX;
-    }
-    if (minY < mergedMinY) {
-      mergedMinY = minY;
-    }
-    if (maxX > mergedMaxX) {
-      mergedMaxX = maxX;
-    }
-    if (maxY > mergedMaxY) {
-      mergedMaxY = maxY;
+    if (region) {
+      minXArr.push(region.minX);
+      minYArr.push(region.minY);
+      maxXArr.push(region.maxX);
+      maxYArr.push(region.maxY);
     }
   });
   return {
-    minX: mergedMinX,
-    minY: mergedMinY,
-    maxX: mergedMaxX,
-    maxY: mergedMaxY,
+    minX: min(minXArr),
+    minY: min(minYArr),
+    maxX: max(maxXArr),
+    maxY: max(maxYArr),
   };
 }
+
 export function mergeView(region, viewRegion) {
   if (!region || !viewRegion) {
     return null;

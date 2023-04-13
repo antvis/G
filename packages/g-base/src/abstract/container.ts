@@ -77,38 +77,29 @@ abstract class Container extends Element implements IContainer {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-    let hitChild = false;
+    const xArr = [];
+    const yArr = [];
     // 将可见元素、图形以及不为空的图形分组筛选出来，用于包围盒合并
-    this.getChildren().forEach((child) => {
-      if (
-        child.get('visible') &&
-        (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
-      ) {
-        hitChild = true;
-        const { minX: childMinX, maxX: childMaxX, minY: childMinY, maxY: childMaxY } = child.getBBox();
-
-        if (childMinX < minX) {
-          minX = childMinX;
-        }
-        if (childMaxX > maxX) {
-          maxX = childMaxX;
-        }
-        if (childMinY < minY) {
-          minY = childMinY;
-        }
-        if (childMaxY > maxY) {
-          maxY = childMaxY;
-        }
-      }
-    });
-
-    if (!hitChild) {
+    const children = this.getChildren().filter(
+      (child) =>
+        child.get('visible') && (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
+    );
+    if (children.length > 0) {
+      each(children, (child: IElement) => {
+        const box = child.getBBox();
+        xArr.push(box.minX, box.maxX);
+        yArr.push(box.minY, box.maxY);
+      });
+      minX = min(xArr);
+      maxX = max(xArr);
+      minY = min(yArr);
+      maxY = max(yArr);
+    } else {
       minX = 0;
       maxX = 0;
       minY = 0;
       maxY = 0;
     }
-
     const box = {
       x: minX,
       y: minY,
@@ -128,38 +119,29 @@ abstract class Container extends Element implements IContainer {
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-    let hitChild = false;
+    const xArr = [];
+    const yArr = [];
     // 将可见元素、图形以及不为空的图形分组筛选出来，用于包围盒合并
-    this.getChildren().forEach((child) => {
-      if (
-        child.get('visible') &&
-        (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
-      ) {
-        hitChild = true;
-        const { minX: childMinX, maxX: childMaxX, minY: childMinY, maxY: childMaxY } = child.getCanvasBBox();
-
-        if (childMinX < minX) {
-          minX = childMinX;
-        }
-        if (childMaxX > maxX) {
-          maxX = childMaxX;
-        }
-        if (childMinY < minY) {
-          minY = childMinY;
-        }
-        if (childMaxY > maxY) {
-          maxY = childMaxY;
-        }
-      }
-    });
-
-    if (!hitChild) {
+    const children = this.getChildren().filter(
+      (child) =>
+        child.get('visible') && (!child.isGroup() || (child.isGroup() && (child as IGroup).getChildren().length > 0))
+    );
+    if (children.length > 0) {
+      each(children, (child: IElement) => {
+        const box = child.getCanvasBBox();
+        xArr.push(box.minX, box.maxX);
+        yArr.push(box.minY, box.maxY);
+      });
+      minX = min(xArr);
+      maxX = max(xArr);
+      minY = min(yArr);
+      maxY = max(yArr);
+    } else {
       minX = 0;
       maxX = 0;
       minY = 0;
       maxY = 0;
     }
-
     const box = {
       x: minX,
       y: minY,
