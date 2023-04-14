@@ -18,12 +18,12 @@ export class ComputePass_WebGPU implements ComputePass {
    * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatch
    */
   dispatch(x: number, y?: number, z?: number): void {
-    this.gpuComputePassEncoder.dispatchWorkgroups(x, y, z);
+    this.gpuComputePassEncoder.dispatch(x, y, z);
     // TODO: dispatchIndirect read from GPUBuffer
   }
 
   finish() {
-    this.gpuComputePassEncoder.end();
+    this.gpuComputePassEncoder.endPass();
     this.gpuComputePassEncoder = null;
 
     return this.commandEncoder.finish();
@@ -48,7 +48,10 @@ export class ComputePass_WebGPU implements ComputePass {
 
   setBindings(bindingLayoutIndex: number, bindings_: Bindings): void {
     const bindings = bindings_ as Bindings_WebGPU;
-    this.gpuComputePassEncoder.setBindGroup(bindingLayoutIndex, bindings.gpuBindGroup[0]);
+    this.gpuComputePassEncoder.setBindGroup(
+      bindingLayoutIndex,
+      bindings.gpuBindGroup[0],
+    );
   }
 
   private setComputePassDescriptor(descriptor: ComputePassDescriptor): void {

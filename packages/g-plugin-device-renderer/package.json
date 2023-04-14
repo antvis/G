@@ -16,24 +16,29 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "main": "dist/index.js",
-  "unpkg": "dist/index.umd.min.js",
-  "module": "dist/index.esm.js",
-  "browser": {
-    "fs": false,
-    "path": false
-  },
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "unpkg": "dist/index.min.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "package.json",
     "dist",
+    "esm",
+    "lib",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
+    "clean": "rimraf dist && rimraf lib && rimraf esm",
+    "build:umd": "rimraf ./dist && rollup -c",
+    "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib",
+    "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm",
+    "build": "npm run clean && run-p build:*",
     "sync": "tnpm sync"
   },
   "dependencies": {
+    "@antv/g-lite": "^1.0.0",
+    "@antv/g-math": "^1.0.0",
     "@antv/g-plugin-image-loader": "^1.1.47",
     "@antv/g-shader-components": "^1.7.44",
     "@antv/util": "^3.3.1",
@@ -41,7 +46,7 @@
     "@webgpu/types": "^0.1.6",
     "earcut": "^2.2.3",
     "eventemitter3": "^4.0.0",
-    "gl-matrix": "^3.1.0",
+    "gl-matrix": "^3.3.0",
     "regenerator-runtime": "^0.13.9",
     "tslib": "^2.3.1"
   },
@@ -51,9 +56,6 @@
     "@types/jest": "^25.0.0",
     "glslify-import": "3.1.0",
     "rollup-plugin-glslify": "^1.2.1"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

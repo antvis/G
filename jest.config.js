@@ -57,7 +57,7 @@ module.exports = {
     },
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-  modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  modulePathIgnorePatterns: ['dist'],
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },

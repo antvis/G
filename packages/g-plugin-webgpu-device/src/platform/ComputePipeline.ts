@@ -1,10 +1,16 @@
-import type { ComputePipeline, ComputePipelineDescriptor } from '@antv/g-plugin-device-renderer';
+import type {
+  ComputePipeline,
+  ComputePipelineDescriptor,
+} from '@antv/g-plugin-device-renderer';
 import { ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU } from './interfaces';
 import type { Program_WebGPU } from './Program';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
-export class ComputePipeline_WebGPU extends ResourceBase_WebGPU implements ComputePipeline {
+export class ComputePipeline_WebGPU
+  extends ResourceBase_WebGPU
+  implements ComputePipeline
+{
   type: ResourceType.ComputePipeline = ResourceType.ComputePipeline;
 
   descriptor: ComputePipelineDescriptor;
@@ -31,11 +37,11 @@ export class ComputePipeline_WebGPU extends ResourceBase_WebGPU implements Compu
       compute: {
         ...computeStage,
       },
-      layout: 'auto',
     };
 
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createrenderpipeline
-    this.gpuComputePipeline = this.device.device.createComputePipeline(gpuComputePipeline);
+    this.gpuComputePipeline =
+      this.device.device.createComputePipeline(gpuComputePipeline);
 
     if (this.name !== undefined) {
       this.gpuComputePipeline.label = this.name;

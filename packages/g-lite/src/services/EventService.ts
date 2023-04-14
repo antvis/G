@@ -727,7 +727,7 @@ export class EventService {
     }
 
     if (event.nativeEvent.composedPath) {
-      return event.nativeEvent.composedPath().indexOf($el) > -1;
+      return event.nativeEvent.composedPath().indexOf($el as EventTarget) > -1;
     }
 
     // account for Touch

@@ -288,6 +288,7 @@ export class EventPlugin implements RenderingPlugin {
     nativeEvent: MouseEvent,
   ): void {
     event.isTrusted = nativeEvent.isTrusted;
+    // @ts-ignore
     event.srcElement = nativeEvent.srcElement;
     event.timeStamp = performance.now();
     event.type = nativeEvent.type;

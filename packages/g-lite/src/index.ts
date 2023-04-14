@@ -6,6 +6,15 @@ export * from './AbstractRenderer';
 export * from './camera';
 export * from './Canvas';
 export * from './components';
+export type {
+  Interpolatable,
+  LayoutRegistry,
+  LinearGradient,
+  ParsedTransform,
+  Pattern,
+  RadialGradient,
+  StyleValueRegistry,
+} from './css';
 export {
   CSS,
   CSSGradientValue,
@@ -14,23 +23,16 @@ export {
   CSSStyleValue,
   CSSUnitValue,
   GradientType,
-  Interpolatable,
   isPattern,
   isCSSRGB,
   isCSSGradientValue,
-  LayoutRegistry,
-  LinearGradient,
   parseColor,
   parsePath,
   parseLength,
   mergeColors,
   parseTransform,
-  ParsedTransform,
-  Pattern,
   propertyMetadataCache,
   PropertySyntax,
-  RadialGradient,
-  StyleValueRegistry,
   UnitType,
   BUILT_IN_PROPERTIES,
 } from './css';

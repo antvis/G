@@ -200,7 +200,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       // @see https://developer.chrome.com/blog/new-in-chrome-94/#canvas-colorspace
       // colorSpace: 'srgb',
       // @see https://www.w3.org/TR/webgpu/#enumdef-gpucanvascompositingalphamode
-      alphaMode: 'premultiplied',
+      compositingAlphaMode: 'premultiplied',
     });
   }
 

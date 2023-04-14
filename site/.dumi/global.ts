@@ -1,7 +1,6 @@
 if (window) {
   (window as any).react = require('react');
   (window as any).reactDom = require('react-dom');
-  (window as any).antd = require('antd');
   (window as any).reactSplitPane = require('react-split-pane');
   (window as any).g6 = require('@antv/g6');
   (window as any).util = require('@antv/util');

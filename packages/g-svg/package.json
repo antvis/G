@@ -16,20 +16,28 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "main": "dist/index.js",
-  "unpkg": "dist/index.umd.min.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "unpkg": "dist/index.min.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "package.json",
     "dist",
+    "esm",
+    "lib",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
+    "clean": "rimraf dist && rimraf lib && rimraf esm",
+    "build:umd": "rimraf ./dist && rollup -c",
+    "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib",
+    "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm",
+    "build": "npm run clean && run-p build:*",
     "sync": "tnpm sync"
   },
   "dependencies": {
+    "@antv/g-lite": "^1.0.0",
     "@antv/g-plugin-dom-interaction": "^1.7.45",
     "@antv/g-plugin-svg-picker": "^1.7.46",
     "@antv/g-plugin-svg-renderer": "^1.8.53",
@@ -39,9 +47,6 @@
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
     "@types/jest": "^25.0.0"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -48,7 +48,7 @@ fn fs() -> FragmentOutput {
       colorAttachments: [
         {
           view: onscreenTexture,
-          loadOp: 'load',
+          // loadOp: 'load',
           loadValue: 'load',
           storeOp: 'store',
         },
@@ -56,7 +56,7 @@ fn fs() -> FragmentOutput {
     });
     renderPass.setPipeline(this.pipeline);
     renderPass.draw(3);
-    renderPass.end();
+    renderPass.endPass();
     device.queue.submit([encoder.finish()]);
   }
 }

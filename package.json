@@ -6,11 +6,8 @@
   },
   "license": "MIT",
   "author": "xiaoiver",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "build": "father build",
+    "build": "pnpm -r run build",
     "bundle-viz": "cross-env BUNDLE_VIS=1 PACKAGE=g npm run build",
     "check-circular-deps": "madge --circular --extensions ts ./packages/",
     "contributor": "git-contributor",
@@ -22,6 +19,7 @@
     "link-site": "node ./scripts/link-site.js",
     "lint": "npm run eslint",
     "lint-staged": "lint-staged",
+    "prepare": "husky install",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "publish": "lerna publish",
     "postpublish": "yarn sync",
@@ -32,51 +30,49 @@
     "test:browser": "jest --config jest.config.js",
     "test:serverside": "jest --config jest.node.config.js",
     "wasm": "wasm-pack build ./rust --target web",
-    "watch": "father build -w"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+    "watch": "pnpm --parallel -r run watch"
   },
   "lint-staged": {
-    "**/*.{js,ts,md}": [
+    "*.{ts,tsx}": [
+      "eslint --fix",
       "prettier --write",
       "git add"
     ]
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.1",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-angular": "^9.0.1",
+    "@rollup/plugin-commonjs": "^21.0.2",
     "@types/chai": "^4.2.18",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.0.23",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
-    "antd": "^4.2.4",
-    "canvas": "^2.9.1",
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",
     "cross-env": "^6.0.3",
     "d3": "^7.8.2",
     "eslint": "^7.28.0",
     "eslint-plugin-jest": "24.3.6",
-    "father": "^2.30.13",
     "git-contributor": "~1.0.8",
-    "gl": "^5.0.0",
-    "husky": "^4.2.5",
+    "husky": "^7.0.0",
     "is-ci": "2.0.0",
     "jest": "^26.6.3",
-    "jest-electron": "^0.1.12",
     "jsdom": "^19.0.0",
-    "lerna": "^3.4.3",
     "limit-size": "^0.1.4",
     "lint-staged": "^10.2.2",
     "madge": "^5.0.0",
+    "npm-run-all": "^4.1.5",
     "pixelmatch": "5.3.0",
     "pngjs": "^6.0.0",
     "prettier": "^2.0.5",
+    "rimraf": "^4.4.0",
+    "rollup": "^3.20.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-polyfill-node": "^0.8.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-uglify": "^6.0.4",
     "rollup-plugin-visualizer": "^5.6.0",
     "sinon": "^11.1.1",
     "sinon-chai": "^3.7.0",

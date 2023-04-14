@@ -34,34 +34,34 @@ As the underlying rendering engine of AntV, G is dedicated to provide consistent
 
 Extensible plug-in mechanism and rich set of plug-ins：
 
--   Rendering Related
-    -   [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
-    -   [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
-    -   [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
-    -   [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
-    -   [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
-    -   [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
-    -   [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
-    -   [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
--   Picking
-    -   [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
-    -   [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
--   Interaction
-    -   [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
-    -   [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides camera interaction for 3D scenes.
-    -   [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
--   Physics Engine
-    -   [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
-    -   [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
-    -   [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
--   Layout Engine
-    -   [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
--   GPGPU
-    -   [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
--   CSS Selector
-    -   [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
--   A11y
-    -   [g-plugin-a11y](https://g-next.antv.vision/en/docs/plugins/a11y) Provides accessibility features.
+- Rendering Related
+  - [g-plugin-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/canvas-renderer) Rendering 2D graphics based on Canvas2D.
+  - [g-plugin-svg-renderer](https://g-next.antv.vision/en/docs/plugins/svg-renderer) Rendering 2D graphics based on SVG.
+  - [g-plugin-device-renderer](https://g-next.antv.vision/en/docs/plugins/device-renderer) Rendering 2D graphics based on GPUDevice.
+  - [g-plugin-html-renderer](https://g-next.antv.vision/en/docs/plugins/html-renderer) Rendering DOM with HTML.
+  - [g-plugin-3d](https://g-next.antv.vision/en/docs/plugins/3d) Extended 3D capabilities.
+  - [g-plugin-rough-canvas-renderer](https://g-next.antv.vision/en/docs/plugins/rough-canvas-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and Canvs2D.
+  - [g-plugin-rough-svg-renderer](https://g-next.antv.vision/en/docs/plugins/rough-svg-renderer) Perform hand-drawn style rendering with [rough.js](https://roughjs.com/) and SVG.
+  - [g-plugin-canvaskit-renderer](https://g-next.antv.vision/en/docs/plugins/canvaskit-renderer) Rendering 2D graphics based on [Skia](https://skia.org/docs/user/modules/quickstart).
+- Picking
+  - [g-plugin-canvas-picker](https://g-next.antv.vision/en/docs/plugins/canvas-picker) Do picking with Canvas2D and mathematical calculations.
+  - [g-plugin-svg-picker](https://g-next.antv.vision/en/docs/plugins/svg-picker) Do picking with SVG and DOM API.
+- Interaction
+  - [g-plugin-dom-interaction](https://g-next.antv.vision/en/docs/plugins/dom-interaction) Binds event listeners with DOM API.
+  - [g-plugin-control](https://g-next.antv.vision/en/docs/plugins/control) Provides camera interaction for 3D scenes.
+  - [g-plugin-dragndrop](https://g-next.antv.vision/en/docs/plugins/dragndrop) Provides Drag 'n' Drop based on PointerEvents.
+- Physics Engine
+  - [g-plugin-box2d](https://g-next.antv.vision/en/docs/plugins/box2d) Based on [Box2D](https://box2d.org/).
+  - [g-plugin-matterjs](https://g-next.antv.vision/en/docs/plugins/matterjs) Based on [matter.js](https://brm.io/matter-js/).
+  - [g-plugin-physx](https://g-next.antv.vision/en/docs/plugins/physx) Based on [PhysX](https://developer.nvidia.com/physx-sdk).
+- Layout Engine
+  - [g-plugin-yoga](https://g-next.antv.vision/en/docs/plugins/yoga) Provides Flex layout capabilities based on Yoga.
+- GPGPU
+  - [g-plugin-gpgpu](https://g-next.antv.vision/en/docs/plugins/gpgpu) Provides GPGPU capabilities based on WebGPU.
+- CSS Selector
+  - [g-plugin-css-select](https://g-next.antv.vision/en/docs/plugins/css-select) Supports for retrieval in the scene graph using CSS selectors.
+- A11y
+  - [g-plugin-a11y](https://g-next.antv.vision/en/docs/plugins/a11y) Provides accessibility features.
 
 ## 📦 Install
 
@@ -91,32 +91,32 @@ import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 // create a canvas
 const canvas = new Canvas({
-    container: 'container',
-    width: 500,
-    height: 500,
-    renderer: new CanvasRenderer(), // select a renderer
+  container: 'container',
+  width: 500,
+  height: 500,
+  renderer: new CanvasRenderer(), // select a renderer
 });
 
 // create a circle
 const circle = new Circle({
-    style: {
-        cx: 100,
-        cy: 100,
-        r: 50,
-        fill: 'red',
-        stroke: 'blue',
-        lineWidth: 5,
-    },
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 50,
+    fill: 'red',
+    stroke: 'blue',
+    lineWidth: 5,
+  },
 });
 
 canvas.addEventListener(CanvasEvent.READY, function () {
-    // append to canvas
-    canvas.appendChild(circle);
+  // append to canvas
+  canvas.appendChild(circle);
 
-    // add listener for `click` event
-    circle.addEventListener('click', function () {
-        this.style.fill = 'green';
-    });
+  // add listener for `click` event
+  circle.addEventListener('click', function () {
+    this.style.fill = 'green';
+  });
 });
 ```
 
@@ -127,8 +127,8 @@ Start previewing site:
 ```bash
 $ git clone git@github.com:antvis/g.git
 $ cd g
-$ yarn install
-$ yarn start
+$ pnpm install
+$ pnpm start
 ```
 
 ### API Spec
@@ -161,10 +161,10 @@ $ yarn link-site
 
 ## Inspired by
 
--   [Sprite.js](https://github.com/spritejs/spritejs)
--   [Pixi.js](https://pixijs.com/)
--   [PlayCanvas](https://playcanvas.com/)
--   [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
+- [Sprite.js](https://github.com/spritejs/spritejs)
+- [Pixi.js](https://pixijs.com/)
+- [PlayCanvas](https://playcanvas.com/)
+- [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
 
 <!-- GITCONTRIBUTOR_START -->
 
