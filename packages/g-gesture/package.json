@@ -18,7 +18,7 @@
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "main": "lib/index.js",
-  "unpkg": "dist/index.min.js",
+  "unpkg": "dist/index.umd.min.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -31,19 +31,19 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf lib && rimraf esm",
-    "build:umd": "rimraf ./dist && rollup -c",
-    "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib",
-    "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm",
+    "build:umd": "rollup -c",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:esm": "tsc --module ESNext --outDir esm",
     "build": "npm run clean && run-p build:*",
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-lite": "^1.0.0",
+    "@antv/g-lite": "workspace:*",
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {
-    "@antv/g-mobile-canvas": "^0.8.49",
-    "@antv/g-mobile-canvas-element": "^0.6.44"
+    "@antv/g-mobile-canvas": "workspace:*",
+    "@antv/g-mobile-canvas-element": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

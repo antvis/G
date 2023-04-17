@@ -12,10 +12,10 @@ module.exports = [
   {
     input: 'src/index.ts',
     output: {
-      file: 'dist/index.min.js',
+      file: 'dist/index.umd.min.js',
       name: 'G.CSSSelect',
       format: 'umd',
-      sourcemap: false,
+      sourcemap: true,
       globals: {
         '@antv/g-lite': 'window.G',
       },

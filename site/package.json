@@ -1,5 +1,4 @@
 {
-  "name": "@antv/g-site",
   "private": true,
   "description": "G sites deployed on gh-pages",
   "keywords": [
@@ -17,14 +16,8 @@
   },
   "license": "ISC",
   "author": "https://github.com/orgs/antvis/people",
-  "files": [
-    "package.json",
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
   "scripts": {
-    "build": "dumi build",
+    "build-bak": "dumi build",
     "site:build": "dumi build && cp ../spec/api.html public",
     "site:dev": "dumi dev",
     "start": "npm run site:dev"
@@ -33,6 +26,35 @@
     "@antv/g6": "^4.5.2",
     "@antv/util": "^3.3.1",
     "@antv/webgpu-graph": "^1.0.0",
+    "@antv/g": "workspace:*",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-canvas": "workspace:*",
+    "@antv/g-svg": "workspace:*",
+    "@antv/g-webgl": "workspace:*",
+    "@antv/g-canvaskit": "workspace:*",
+    "@antv/g-webgpu": "workspace:*",
+    "@antv/g-plugin-css-select": "workspace:*",
+    "@antv/g-plugin-3d": "workspace:*",
+    "@antv/g-plugin-control": "workspace:*",
+    "@antv/g-plugin-gpgpu": "workspace:*",
+    "@antv/g-plugin-physx": "workspace:*",
+    "@antv/g-plugin-box2d": "workspace:*",
+    "@antv/g-plugin-matterjs": "workspace:*",
+    "@antv/g-plugin-yoga": "workspace:*",
+    "@antv/g-plugin-rough-canvas-renderer": "workspace:*",
+    "@antv/g-plugin-rough-svg-renderer": "workspace:*",
+    "@antv/g-plugin-zdog-canvas-renderer": "workspace:*",
+    "@antv/g-plugin-zdog-svg-renderer": "workspace:*",
+    "@antv/g-plugin-svg-renderer": "workspace:*",
+    "@antv/g-plugin-dragndrop": "workspace:*",
+    "@antv/g-plugin-a11y": "workspace:*",
+    "@antv/g-plugin-annotation": "workspace:*",
+    "@antv/g-components": "workspace:*",
+    "@antv/g-web-components": "workspace:*",
+    "@antv/g-image-exporter": "workspace:*",
+    "@antv/g-lottie-player": "workspace:*",
+    "@antv/g-pattern": "workspace:*",
+    "@antv/react-g": "workspace:*",
     "@naoak/workerize-transferable": "^0.1.0",
     "@observablehq/plot": "0.5.2",
     "@types/gl-matrix": "^2.4.5",
@@ -44,6 +66,7 @@
     "d3-force-3d": "^3.0.3",
     "d3-svg-annotation": "^2.5.0",
     "gh-pages": "^3.2.3",
+    "gl-matrix": "^3.3.0",
     "hammer-touchemulator": "^0.0.2",
     "hammerjs": "^2.0.8",
     "interactjs": "^1.10.11",
@@ -63,7 +86,7 @@
   },
   "devDependencies": {
     "@antv/dumi-theme-antv": "^0.3.7",
-    "dumi": "^2.0.0-rc.6",
+    "dumi": "^2.1.21",
     "workerize-loader": "^2.0.2"
   }
 }

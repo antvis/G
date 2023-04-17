@@ -17,7 +17,7 @@
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "main": "lib/index.js",
-  "unpkg": "dist/index.min.js",
+  "unpkg": "dist/index.umd.min.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -30,17 +30,17 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf lib && rimraf esm",
-    "build:umd": "rimraf ./dist && rollup -c",
-    "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib",
-    "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm",
+    "build:umd": "rollup -c",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:esm": "tsc --module ESNext --outDir esm",
     "build": "npm run clean && run-p build:*",
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-lite": "^1.0.0",
-    "@antv/g-plugin-dom-interaction": "^1.7.45",
-    "@antv/g-plugin-svg-picker": "^1.7.46",
-    "@antv/g-plugin-svg-renderer": "^1.8.53",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-plugin-dom-interaction": "workspace:*",
+    "@antv/g-plugin-svg-picker": "workspace:*",
+    "@antv/g-plugin-svg-renderer": "workspace:*",
     "@antv/util": "^3.3.1",
     "tslib": "^2.3.1"
   },

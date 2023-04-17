@@ -1,10 +1,3 @@
-import '@antv/g-camera-api';
-// import '@antv/g-css-layout-api';
-// import '@antv/g-css-typed-om-api';
-import '@antv/g-dom-mutation-observer-api';
-import '@antv/g-lite';
-import '@antv/g-web-animations-api';
-
 export * from '@antv/g-camera-api';
 // export * from '@antv/g-css-layout-api';
 // export * from '@antv/g-css-typed-om-api';

@@ -3,3 +3,4 @@ lib
 dist
 build
 tsconfig.json
+__tests__

@@ -13,10 +13,10 @@ module.exports = [
     input: 'src/index.ts',
     output: [
       {
-        file: 'dist/index.min.js',
+        file: 'dist/index.umd.min.js',
         name: 'G.3D',
         format: 'umd',
-        sourcemap: false,
+        sourcemap: true,
         globals: {
           '@antv/g-lite': 'window.G',
           '@antv/g-plugin-device-renderer': 'window.G.WebGL.DeviceRenderer',
@@ -25,12 +25,12 @@ module.exports = [
       {
         file: 'lib/index.js',
         format: 'cjs',
-        sourcemap: false,
+        sourcemap: true,
       },
       {
         file: 'esm/index.js',
         format: 'esm',
-        sourcemap: false,
+        sourcemap: true,
       },
     ],
     external: ['@antv/g-lite', '@antv/g-plugin-device-renderer'],

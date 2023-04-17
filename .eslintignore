@@ -6,3 +6,4 @@ dist
 mocks
 **/*.spec.ts
 node_modules
+__tests__

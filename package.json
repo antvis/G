@@ -7,6 +7,7 @@
   "license": "MIT",
   "author": "xiaoiver",
   "scripts": {
+    "dev": "vite",
     "build": "pnpm -r run build",
     "bundle-viz": "cross-env BUNDLE_VIS=1 PACKAGE=g npm run build",
     "check-circular-deps": "madge --circular --extensions ts ./packages/",
@@ -16,16 +17,15 @@
     "eslint": "eslint --ext .ts,.js ./packages --quiet",
     "eslint-fix": "eslint --fix --ext .ts,.js ./packages",
     "limit-size": "limit-size",
-    "link-site": "node ./scripts/link-site.js",
     "lint": "npm run eslint",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "publish": "lerna publish",
-    "postpublish": "yarn sync",
+    "postpublish": "npm run sync",
     "publish:next": "lerna publish prerelease --dist-tag next",
     "start": "cd ./site && npm run start",
-    "sync": "lerna run sync --parallel",
+    "sync": "pnpm -r run sync",
     "test": "npm run test:browser & npm run test:serverside",
     "test:browser": "jest --config jest.config.js",
     "test:serverside": "jest --config jest.node.config.js",
@@ -79,7 +79,9 @@
     "ts-jest": "^26.4.4",
     "ts-loader": "8.2.0",
     "typescript": "^4.3.4",
-    "xmlserializer": "^0.6.1"
+    "vite": "^3.1.0",
+    "xmlserializer": "^0.6.1",
+    "webfontloader": "1.6.28"
   },
   "limit-size": [
     {

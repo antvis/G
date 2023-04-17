@@ -17,7 +17,7 @@
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "main": "lib/index.js",
-  "unpkg": "dist/index.min.js",
+  "unpkg": "dist/index.umd.min.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -30,17 +30,17 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf lib && rimraf esm",
-    "build:umd": "rimraf ./dist && rollup -c",
-    "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib",
-    "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm",
+    "build:umd": "rollup -c",
+    "build:cjs": "tsc --emitDeclarationOnly --outDir lib",
+    "build:esm": "tsc --emitDeclarationOnly --outDir esm",
     "build": "npm run clean && run-p build:*",
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-lite": "^1.0.0",
-    "@antv/g-math": "^1.0.0",
-    "@antv/g-plugin-image-loader": "^1.1.47",
-    "@antv/g-shader-components": "^1.7.44",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-math": "workspace:*",
+    "@antv/g-plugin-image-loader": "workspace:*",
+    "@antv/g-shader-components": "workspace:*",
     "@antv/util": "^3.3.1",
     "@types/offscreencanvas": "^2019.6.4",
     "@webgpu/types": "^0.1.6",

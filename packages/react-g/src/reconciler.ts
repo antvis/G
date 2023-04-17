@@ -60,14 +60,19 @@ export const reconcilor = ReactReconciler<
     internalInstanceHandle: OpaqueHandle,
   ): Instance {
     const canvas = rootContainerInstance as unknown as Canvas;
-    const instance = canvas.document.createElement(type, { style: props }) as unknown as Element;
+    const instance = canvas.document.createElement(type, {
+      style: props,
+    }) as unknown as Element;
     // @ts-ignore
     bindShapeEvent(props, instance);
     log('createInstance ', type, instance);
     // @ts-ignore
     return instance;
   },
-  appendInitialChild(parentInstance: Instance, child: Instance | TextInstance): void {
+  appendInitialChild(
+    parentInstance: Instance,
+    child: Instance | TextInstance,
+  ): void {
     log('appendInitialChild', parentInstance, child);
     parentInstance.appendChild(child);
   },
@@ -112,7 +117,10 @@ export const reconcilor = ReactReconciler<
   // scheduleDeferredCallback,
   // cancelDeferredCallback(callbackID: any): void {},
 
-  scheduleTimeout(handler: (...args: any[]) => void, timeout: number): TimeoutHandle | NoTimeout {},
+  scheduleTimeout(
+    handler: (...args: any[]) => void,
+    timeout: number,
+  ): TimeoutHandle | NoTimeout {},
   cancelTimeout(handle: TimeoutHandle | NoTimeout): void {},
   noTimeout: undefined,
 
@@ -135,11 +143,18 @@ export const reconcilor = ReactReconciler<
     log('appendChild');
     parentInstance.appendChild(child);
   },
-  appendChildToContainer(container: Container, child: Instance | TextInstance): void {
+  appendChildToContainer(
+    container: Container,
+    child: Instance | TextInstance,
+  ): void {
     log('appendChildToContainer', container, child);
     container.appendChild(child);
   },
-  commitTextUpdate(textInstance: TextInstance, oldText: string, newText: string): void {},
+  commitTextUpdate(
+    textInstance: TextInstance,
+    oldText: string,
+    newText: string,
+  ): void {},
   commitMount(
     instance: Instance,
     type: Type,
@@ -175,7 +190,10 @@ export const reconcilor = ReactReconciler<
     log('removeChild', parentInstance, child);
     parentInstance.removeChild(child);
   },
-  removeChildFromContainer(container: Container, child: Instance | TextInstance): void {
+  removeChildFromContainer(
+    container: Container,
+    child: Instance | TextInstance,
+  ): void {
     container.removeChild(child);
   },
   resetTextContent(instance: Instance): void {},
@@ -194,11 +212,13 @@ export const reconcilor = ReactReconciler<
   /**
    * This method should make the `instance` visible, undoing what `hideInstance` did.
    */
+  // @ts-ignore
   unhideInstance(instance: Instance, props: Props): void {},
 
   /**
    * Same as `unhideInstance`, but for nodes created by `createTextInstance`.
    */
+  // @ts-ignore
   unhideTextInstance(textInstance: TextInstance, text: string): void {},
 
   /**
@@ -227,25 +247,43 @@ export const reconcilor = ReactReconciler<
 
   createContainerChildSet(container: Container): ChildSet {},
 
-  appendChildToContainerChildSet(childSet: ChildSet, child: Instance | TextInstance): void {},
-  finalizeContainerChildren(container: Container, newChildren: ChildSet): void {},
+  appendChildToContainerChildSet(
+    childSet: ChildSet,
+    child: Instance | TextInstance,
+  ): void {},
+  finalizeContainerChildren(
+    container: Container,
+    newChildren: ChildSet,
+  ): void {},
 
-  replaceContainerChildren(container: Container, newChildren: ChildSet): void {},
+  replaceContainerChildren(
+    container: Container,
+    newChildren: ChildSet,
+  ): void {},
 
   // -------------------
   //     Hydration
   //     (optional)
   // -------------------
-  canHydrateInstance(instance: HydratableInstance, type: Type, props: Props): null | Instance {
+  canHydrateInstance(
+    instance: HydratableInstance,
+    type: Type,
+    props: Props,
+  ): null | Instance {
     return instance;
   },
-  canHydrateTextInstance(instance: HydratableInstance, text: string): null | TextInstance {
+  canHydrateTextInstance(
+    instance: HydratableInstance,
+    text: string,
+  ): null | TextInstance {
     return null;
   },
   getNextHydratableSibling(
     instance: Instance | TextInstance | HydratableInstance,
   ): null | HydratableInstance {},
-  getFirstHydratableChild(parentInstance: Instance | Container): null | HydratableInstance {},
+  getFirstHydratableChild(
+    parentInstance: Instance | Container,
+  ): null | HydratableInstance {},
   hydrateInstance(
     instance: Instance,
     type: Type,
@@ -288,7 +326,10 @@ export const reconcilor = ReactReconciler<
     type: Type,
     props: Props,
   ): void {},
-  didNotFindHydratableContainerTextInstance(parentContainer: Container, text: string): void {},
+  didNotFindHydratableContainerTextInstance(
+    parentContainer: Container,
+    text: string,
+  ): void {},
   didNotFindHydratableInstance(
     parentType: Type,
     parentProps: Props,

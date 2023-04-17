@@ -17,7 +17,7 @@
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "main": "lib/index.js",
-  "unpkg": "dist/index.min.js",
+  "unpkg": "dist/index.umd.min.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -30,19 +30,19 @@
   ],
   "scripts": {
     "clean": "rimraf dist && rimraf lib && rimraf esm",
-    "build:umd": "rimraf ./dist && rollup -c",
-    "build:cjs": "rimraf ./lib && tsc --module commonjs --outDir lib",
-    "build:esm": "rimraf ./esm && tsc --module ESNext --outDir esm",
+    "build:umd": "rollup -c",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:esm": "tsc --module ESNext --outDir esm",
     "build": "npm run clean && run-p build:*",
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-lite": "^1.0.0",
-    "@antv/g-plugin-device-renderer": "^1.7.52",
-    "@antv/g-plugin-dom-interaction": "^1.7.45",
-    "@antv/g-plugin-html-renderer": "^1.7.49",
-    "@antv/g-plugin-image-loader": "^1.1.47",
-    "@antv/g-plugin-webgl-device": "^1.7.45",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-plugin-device-renderer": "workspace:*",
+    "@antv/g-plugin-dom-interaction": "workspace:*",
+    "@antv/g-plugin-html-renderer": "workspace:*",
+    "@antv/g-plugin-image-loader": "workspace:*",
+    "@antv/g-plugin-webgl-device": "workspace:*",
     "@antv/util": "^3.3.1"
   },
   "devDependencies": {

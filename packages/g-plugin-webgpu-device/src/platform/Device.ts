@@ -293,6 +293,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     }) as unknown as Attachment_WebGPU;
 
     texture.depthOrArrayLayers = 1;
+    // @ts-ignore
     texture.type = ResourceType.RenderTarget;
     return texture;
   }

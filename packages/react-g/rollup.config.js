@@ -1,6 +1,6 @@
 const { uglify } = require('rollup-plugin-uglify');
 const resolve = require('rollup-plugin-node-resolve');
-const typescript = require('rollup-plugin-typescript');
+const typescript = require('@rollup/plugin-typescript');
 const commonjs = require('@rollup/plugin-commonjs');
 const nodePolyfills = require('rollup-plugin-polyfill-node');
 const { visualizer } = require('rollup-plugin-visualizer');
@@ -11,10 +11,10 @@ module.exports = [
   {
     input: 'src/index.ts',
     output: {
-      file: 'dist/index.min.js',
+      file: 'dist/index.umd.min.js',
       name: 'G.WebGPU',
       format: 'umd',
-      sourcemap: false,
+      sourcemap: true,
     },
     plugins: [
       nodePolyfills(),

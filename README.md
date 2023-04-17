@@ -122,13 +122,14 @@ canvas.addEventListener(CanvasEvent.READY, function () {
 
 ## ⌨️ Development
 
-Start previewing site:
+Start previewing demos:
 
 ```bash
 $ git clone git@github.com:antvis/g.git
 $ cd g
 $ pnpm install
-$ pnpm start
+$ pnpm build
+$ pnpm dev
 ```
 
 ### API Spec
@@ -146,17 +147,8 @@ Open api.html on `localhost:9090/spec/api.html`.
 Build and run test cases:
 
 ```bash
-$ yarn build
-$ yarn test
-```
-
-### Run site demos
-
-```bash
-$ cd ./site
-$ yarn install
-$ cd ../
-$ yarn link-site
+$ pnpm build
+$ pnpm test
 ```
 
 ## Inspired by
