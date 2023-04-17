@@ -1,4 +1,5 @@
 {
+  "name": "@antv/g-site",
   "private": true,
   "description": "G sites deployed on gh-pages",
   "keywords": [

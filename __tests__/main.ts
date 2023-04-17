@@ -9,6 +9,7 @@ import * as basic3d from './demos/3d';
 import * as animation from './demos/animation';
 import * as d3 from './demos/d3';
 import * as plugin from './demos/plugin';
+import * as hammerjs from './demos/hammerjs';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -16,6 +17,7 @@ const tests = {
   ...createSpecRender(namespace(animation, 'animation')),
   ...createSpecRender(namespace(d3, 'd3')),
   ...createSpecRender(namespace(plugin, 'plugin')),
+  ...createSpecRender(namespace(hammerjs, 'hammerjs')),
 };
 
 const renderers = {
