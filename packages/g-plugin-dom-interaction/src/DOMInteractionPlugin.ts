@@ -64,6 +64,11 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       $el.addEventListener('pointerleave', onPointerOut, true);
       $el.addEventListener('pointerover', onPointerOver, true);
       runtime.globalThis.addEventListener('pointerup', onPointerUp, true);
+      runtime.globalThis.addEventListener(
+        'pointercancel',
+        onPointerCancel,
+        true,
+      );
     };
 
     const addTouchEventListener = ($el: HTMLElement) => {

@@ -209,7 +209,14 @@ export class EventService {
     // }
 
     const now = performance.now();
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
 
     this.dispatchEvent(e, 'pointerup');
 
@@ -317,7 +324,7 @@ export class EventService {
       from,
       undefined,
       undefined,
-      this.context.config.alwaysTriggerPointermoveEvent
+      this.context.config.alwaysTriggerPointerEventOnCanvas
         ? this.rootTarget
         : undefined,
     );
@@ -605,7 +612,14 @@ export class EventService {
   };
 
   onPointerCancel = (from: FederatedPointerEvent) => {
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
 
     this.dispatchEvent(e);
     this.freeEvent(e);
