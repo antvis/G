@@ -29,6 +29,7 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer: canvasRenderer,
+  alwaysTriggerPointermoveEvent: true,
 });
 
 // add a circle to canvas
@@ -77,6 +78,10 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   });
   hammer.on('panleft panright tap press', (ev) => {
     text.attr('text', `${ev.type} gesture detected.`);
+  });
+
+  canvas.addEventListener('pointermove', (ev) => {
+    console.log(ev.target.nodeName);
   });
 });
 

@@ -62,8 +62,8 @@
     "webfontloader": "1.6.28"
   },
   "devDependencies": {
-    "@antv/dumi-theme-antv": "^0.3.0-beta.18",
-    "dumi": "^2.0.0-rc.6",
+    "@antv/dumi-theme-antv": "^0.3.0",
+    "dumi": "^2.0.0",
     "workerize-loader": "^2.0.2"
   }
 }

@@ -458,6 +458,11 @@ export interface CanvasConfig {
   useNativeClickEvent?: boolean;
 
   /**
+   * Pointermove event will get triggered even outside Canvas.
+   */
+  alwaysTriggerPointermoveEvent?: boolean;
+
+  /**
    * Should we account for CSS Transform applied on container?
    */
   supportsCSSTransform?: boolean;
