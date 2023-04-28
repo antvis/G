@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>OOM caused by Animations</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <button id="add">add 100 animations</button>
+    <button id="remove all">cancel all animations</button>
+    <script
+      src="../packages/g/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../packages/g-canvas/dist/index.umd.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Circle, Canvas, Group } = window.G;
+
+      // create a renderer
+      const canvasRenderer = new window.G.Canvas2D.Renderer();
+
+      // create a canvas
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      canvas.addEventListener('ready', () => {
+        let circles = [];
+        for (let i = 0; i < 1000; i++) {
+          const circle = new Circle({
+            style: {
+              cx: Math.random() * 600,
+              cy: Math.random() * 500,
+              r: 10,
+              fill: '#1890FF',
+              stroke: '#F04864',
+              lineWidth: 4,
+            },
+          });
+          circles.push(circle);
+          canvas.appendChild(circle);
+        }
+
+        let i = 0;
+        const timer = setInterval(() => {
+          if (i === 10) {
+            clearInterval(timer);
+          }
+
+          circles.forEach((circle) => {
+            circle.getAnimations().forEach((animation) => {
+              animation.cancel();
+            });
+
+            circle.animate(
+              [
+                {
+                  opacity: 0,
+                },
+                {
+                  opacity: 1,
+                },
+              ],
+              { iterations: 1, duration: 1000 },
+            );
+          });
+
+          i++;
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

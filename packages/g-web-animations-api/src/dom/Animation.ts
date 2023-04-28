@@ -354,6 +354,23 @@ export class Animation implements IAnimation {
     this.timeline.applyDirtiedAnimation(this);
 
     this.updatePromises();
+
+    /**
+     * 1. Reject the current finished promise with a DOMException named "AbortError".
+     * 2. Let current finished promise be a new promise
+     * @see https://w3c.github.io/csswg-drafts/web-animations-1/#canceling-an-animation-section
+     */
+    if (this.finishedPromise) {
+      this.rejectFinishedPromise();
+      this.finishedPromise = undefined;
+    }
+
+    if (this.oncancel) {
+      const event = new AnimationEvent(null, this, this.currentTime, null);
+      setTimeout(() => {
+        this.oncancel(event);
+      });
+    }
   }
 
   reverse() {
