@@ -1,64 +1,23 @@
-// @ts-nocheck
+import type { AsArray } from './Hook';
+export class SyncWaterfallHook<T, R> {
+  private callbacks: ((...args: AsArray<T>) => R)[] = [];
 
-import type { AsArray, UnsetAdditionalOptions } from './Hook';
-import { HookCodeFactory } from './HookCodeFactory';
-import { SyncHook } from './SyncHook';
+  tap(options: string, fn: (...args: AsArray<T>) => R) {
+    this.callbacks.push(fn);
+  }
 
-class SyncWaterfallHookCodeFactory extends HookCodeFactory {
-  content({ onError, onResult, resultReturns, rethrowIfPossible }) {
-    return this.callTapsSeries({
-      onError: (i, err) => onError(err),
-      onResult: (i, result, next) => {
-        let code = '';
-        code += `if(${result} !== undefined) {\n`;
-        code += `${this._args[0]} = ${result};\n`;
-        code += `}\n`;
-        code += next();
-        return code;
-      },
-      onDone: () => onResult(this._args[0]),
-      doneReturns: resultReturns,
-      rethrowIfPossible,
-    });
+  call(...args: AsArray<T>): R {
+    if (this.callbacks.length) {
+      let result: R = this.callbacks[0](...args);
+      for (let i = 0; i < this.callbacks.length - 1; i++) {
+        const callback = this.callbacks[i];
+        // @ts-ignore
+        result = callback(result);
+      }
+
+      return result;
+    }
+
+    return null;
   }
 }
-
-const factory = new SyncWaterfallHookCodeFactory();
-
-const TAP_ASYNC = () => {
-  throw new Error('tapAsync is not supported on a SyncWaterfallHook');
-};
-
-const TAP_PROMISE = () => {
-  throw new Error('tapPromise is not supported on a SyncWaterfallHook');
-};
-
-const COMPILE = function (options) {
-  factory.setup(this, options);
-  return factory.create(options);
-};
-
-export class SyncWaterfallHook<T, AdditionalOptions = UnsetAdditionalOptions> extends SyncHook<
-  T,
-  AsArray<T>[0],
-  AdditionalOptions
-> {
-  constructor(args = [], name = undefined) {
-    super(args, name);
-    this.tapAsync = TAP_ASYNC;
-    this.tapPromise = TAP_PROMISE;
-    this.compile = COMPILE;
-  }
-}
-
-// export function SyncWaterfallHook(args = [], name = undefined) {
-//   if (args.length < 1) throw new Error('Waterfall hooks must have at least one argument');
-//   const hook = new Hook(args, name);
-//   hook.constructor = SyncWaterfallHook;
-//   hook.tapAsync = TAP_ASYNC;
-//   hook.tapPromise = TAP_PROMISE;
-//   hook.compile = COMPILE;
-//   return hook;
-// }
-
-// SyncWaterfallHook.prototype = null;

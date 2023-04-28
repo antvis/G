@@ -430,4 +430,5 @@ export default defineConfig({
   },
   copy: ['static'],
   jsMinifier: 'terser',
+  mfsu: false,
 });
