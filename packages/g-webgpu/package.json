@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "1.7.55",
+  "version": "1.7.56",
   "description": "A renderer implemented by WebGPU",
   "keywords": [
     "antv",
@@ -30,11 +30,11 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.7.52",
-    "@antv/g-plugin-dom-interaction": "^1.7.45",
-    "@antv/g-plugin-html-renderer": "^1.7.49",
-    "@antv/g-plugin-image-loader": "^1.1.47",
-    "@antv/g-plugin-webgpu-device": "^1.7.45",
+    "@antv/g-plugin-device-renderer": "^1.7.53",
+    "@antv/g-plugin-dom-interaction": "^1.7.46",
+    "@antv/g-plugin-html-renderer": "^1.7.50",
+    "@antv/g-plugin-image-loader": "^1.1.48",
+    "@antv/g-plugin-webgpu-device": "^1.7.46",
     "@antv/util": "^3.3.1",
     "@webgpu/types": "^0.1.6"
   },
