@@ -1,5 +1,5 @@
 import { isNil, isUndefined } from '@antv/util';
-import type { FederatedMouseEvent, ICanvas } from '../dom';
+import type { FederatedMouseEvent, ICanvas, IEventTarget } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
@@ -288,7 +288,7 @@ export class EventPlugin implements RenderingPlugin {
     nativeEvent: MouseEvent,
   ): void {
     event.isTrusted = nativeEvent.isTrusted;
-    event.srcElement = nativeEvent.srcElement;
+    event.srcElement = nativeEvent.srcElement as IEventTarget;
     event.timeStamp = performance.now();
     event.type = nativeEvent.type;
 
