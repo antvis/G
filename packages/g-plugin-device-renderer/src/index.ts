@@ -17,6 +17,7 @@ import {
   LineRenderer,
   MeshRenderer,
   PathRenderer,
+  RectRenderer,
   TextRenderer,
 } from './renderer';
 import { RenderGraphPlugin } from './RenderGraphPlugin';
@@ -53,7 +54,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.POLYLINE]: pathRenderer,
       [Shape.PATH]: pathRenderer,
       [Shape.POLYGON]: pathRenderer,
-      [Shape.RECT]: pathRenderer,
+      [Shape.RECT]: new RectRenderer(),
       [Shape.IMAGE]: new ImageRenderer(),
       [Shape.LINE]: new LineRenderer(),
       [Shape.TEXT]: new TextRenderer(),

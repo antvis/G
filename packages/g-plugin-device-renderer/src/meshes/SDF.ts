@@ -5,13 +5,18 @@ import type {
   ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
+  ParsedRectStyleProps,
 } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';
 import { enumToObject } from '../utils/enum';
-import { Instanced, VertexAttributeBufferIndex, VertexAttributeLocation } from './Instanced';
+import {
+  Instanced,
+  VertexAttributeBufferIndex,
+  VertexAttributeLocation,
+} from './Instanced';
 
 enum SDFVertexAttributeBufferIndex {
   PACKED_STYLE = VertexAttributeBufferIndex.POSITION + 1,
@@ -22,7 +27,7 @@ enum SDFVertexAttributeLocation {
   SIZE,
 }
 
-const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE];
+const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE, Shape.RECT];
 
 /**
  * Use SDF to render 2D shapes, eg. circle, ellipse.
@@ -43,7 +48,8 @@ export class SDFMesh extends Instanced {
       return false;
     }
 
-    const { fill: instanceFill } = this.instance.parsedStyle as ParsedBaseStyleProps;
+    const { fill: instanceFill } = this.instance
+      .parsedStyle as ParsedBaseStyleProps;
     const { fill } = object.parsedStyle as ParsedBaseStyleProps;
     if ((instanceFill as CSSRGB).isNone !== (fill as CSSRGB).isNone) {
       return false;
@@ -83,7 +89,14 @@ export class SDFMesh extends Instanced {
         0,
       );
       interleaved.push(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1);
-      indices.push(0 + offset, 2 + offset, 1 + offset, 0 + offset, 3 + offset, 2 + offset);
+      indices.push(
+        0 + offset,
+        2 + offset,
+        1 + offset,
+        0 + offset,
+        3 + offset,
+        2 + offset,
+      );
     });
 
     this.geometry.setIndexBuffer(new Uint32Array(indices));
@@ -128,7 +141,12 @@ export class SDFMesh extends Instanced {
     });
   }
 
-  updateAttribute(objects: DisplayObject[], startIndex: number, name: string, value: any) {
+  updateAttribute(
+    objects: DisplayObject[],
+    startIndex: number,
+    name: string,
+    value: any,
+  ) {
     super.updateAttribute(objects, startIndex, name, value);
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
@@ -137,6 +155,8 @@ export class SDFMesh extends Instanced {
       name === 'r' ||
       name === 'rx' ||
       name === 'ry' ||
+      name === 'width' ||
+      name === 'height' ||
       name === 'lineWidth' ||
       name === 'stroke' ||
       name === 'lineDash' ||
@@ -147,7 +167,10 @@ export class SDFMesh extends Instanced {
         const circle = object as Circle;
         const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
 
-        const [halfWidth, halfHeight] = this.getSize(object.parsedStyle, object.nodeName);
+        const [halfWidth, halfHeight] = this.getSize(
+          object.parsedStyle,
+          object.nodeName,
+        );
         const size = [halfWidth, halfHeight];
         packed.push(
           ...size,
@@ -166,7 +189,13 @@ export class SDFMesh extends Instanced {
     }
   }
 
-  private getSize(parsed: ParsedCircleStyleProps | ParsedEllipseStyleProps, tagName: string) {
+  private getSize(
+    parsed:
+      | ParsedCircleStyleProps
+      | ParsedEllipseStyleProps
+      | ParsedRectStyleProps,
+    tagName: string,
+  ) {
     let size: [number, number] = [0, 0];
     if (tagName === Shape.CIRCLE) {
       const { r } = parsed as ParsedCircleStyleProps;
@@ -174,6 +203,9 @@ export class SDFMesh extends Instanced {
     } else if (tagName === Shape.ELLIPSE) {
       const { rx, ry } = parsed as ParsedEllipseStyleProps;
       size = [rx, ry];
+    } else if (tagName === Shape.RECT) {
+      const { width, height } = parsed as ParsedRectStyleProps;
+      size = [width / 2, height / 2];
     }
 
     return size;
@@ -182,7 +214,8 @@ export class SDFMesh extends Instanced {
   private shouldOmitStroke(parsedStyle: ParsedBaseStyleProps) {
     const { lineDash, stroke, strokeOpacity } = parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+    const hasLineDash =
+      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
     const hasStrokeOpacity = strokeOpacity < 1;
     return !hasStroke || (hasStroke && (hasLineDash || hasStrokeOpacity));
   }
@@ -190,7 +223,8 @@ export class SDFMesh extends Instanced {
   private needDrawStrokeSeparately(parsedStyle: ParsedBaseStyleProps) {
     const { stroke, lineDash, lineWidth, strokeOpacity } = parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasLineDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+    const hasLineDash =
+      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
     const hasStrokeOpacity = strokeOpacity < 1;
     return hasStroke && lineWidth > 0 && (hasLineDash || hasStrokeOpacity);
   }
