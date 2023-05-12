@@ -32,6 +32,16 @@ export interface AnnotationPluginOptions {
   enableDeleteTargetWithShortcuts: boolean;
 
   /**
+   * Delete anchors with shortcuts, e.g. Delete, Esc
+   */
+  enableDeleteAnchorsWithShortcuts: boolean;
+
+  /**
+   * Mid anchors used to append new vertex in Polyline & Polygon.
+   */
+  enableDisplayMidAnchors: boolean;
+
+  /**
    * Enable to do brush selections continuously.
    */
   enableContinuousBrush: boolean;
@@ -50,10 +60,34 @@ export interface SelectableStyle {
   selectionStrokeOpacity: number;
   selectionStrokeWidth: number;
   selectionLineDash: number | string | (string | number)[];
+
+  /**
+   * Unselected state of anchor.
+   */
   anchorFill: string;
   anchorStroke: string;
   anchorSize: string | number;
   anchorFillOpacity: number;
   anchorStrokeOpacity: number;
   anchorStrokeWidth: number;
+
+  /**
+   * Selected state of anchor.
+   */
+  selectedAnchorFill: string;
+  selectedAnchorStroke: string;
+  selectedAnchorSize: string | number;
+  selectedAnchorFillOpacity: number;
+  selectedAnchorStrokeOpacity: number;
+  selectedAnchorStrokeWidth: number;
+
+  /**
+   * Unselected state of midAnchor.
+   */
+  midAnchorFill: string;
+  midAnchorStroke: string;
+  midAnchorSize: string | number;
+  midAnchorFillOpacity: number;
+  midAnchorStrokeOpacity: number;
+  midAnchorStrokeWidth: number;
 }
