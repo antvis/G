@@ -12,6 +12,7 @@ out vec4 outputColor;
 
 #pragma glslify: sdCircle = require('@antv/g-shader-components/sdf.circle.glsl')
 #pragma glslify: sdEllipsoidApproximated = require('@antv/g-shader-components/sdf.ellipse.glsl')
+#pragma glslify: sdRoundedBox = require('@antv/g-shader-components/sdf.rect.glsl')
 
 void main() {
   int shape = int(floor(v_Data.w + 0.5));
@@ -35,6 +36,9 @@ void main() {
   } else if (shape == 1) {
     outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(1.0));
     inner_df = sdEllipsoidApproximated(v_Data.xy, r);
+  } else if (shape == 2) {
+    outer_df = sdRoundedBox(v_Data.xy, vec2(1.0), vec2(0.0));
+    inner_df = sdRoundedBox(v_Data.xy, r, vec2(0.0));
   }
 
   float opacity_t = smoothstep(0.0, antialiased_blur, outer_df);

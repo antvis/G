@@ -5,8 +5,8 @@ export class AsyncParallelHook<T> {
     this.callbacks.push(fn);
   }
 
-  async promise(...args: T[]): Promise<void> {
-    await Promise.all(
+  promise(...args: T[]): Promise<void[]> {
+    return Promise.all(
       this.callbacks.map((callback) => {
         return callback(...args);
       }),
