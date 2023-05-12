@@ -143,6 +143,8 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     this.bindEventListeners();
   }
 
+  deleteSelectedAnchors(): void {}
+
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {

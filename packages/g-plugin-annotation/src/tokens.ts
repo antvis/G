@@ -37,6 +37,11 @@ export interface AnnotationPluginOptions {
   enableDeleteAnchorsWithShortcuts: boolean;
 
   /**
+   * Mid anchors used to append new vertex in Polyline & Polygon.
+   */
+  enableDisplayMidAnchors: boolean;
+
+  /**
    * Enable to do brush selections continuously.
    */
   enableContinuousBrush: boolean;

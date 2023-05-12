@@ -41,7 +41,7 @@ import type { AnnotationPluginOptions } from './tokens';
 export class SelectablePlugin implements RenderingPlugin {
   static tag = 'Selectable';
 
-  constructor(private annotationPluginOptions: AnnotationPluginOptions) {}
+  constructor(public annotationPluginOptions: AnnotationPluginOptions) {}
 
   /**
    * the topmost operation layer, which will be appended to documentElement directly

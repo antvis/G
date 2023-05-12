@@ -85,6 +85,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
   }
 
   private createMidAnchor() {
+    if (!this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
+      return;
+    }
+
     const {
       anchorFill,
       anchorStroke,
@@ -191,15 +195,17 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
       const anchor = this.anchors[i];
       anchor.setPosition(point);
 
-      const midAnchors = this.midAnchors[i];
-      const nextPoint =
-        i === points.points.length - 1
-          ? points.points[0]
-          : points.points[i + 1];
-      midAnchors.setPosition([
-        (nextPoint[0] + point[0]) / 2,
-        (nextPoint[1] + point[1]) / 2,
-      ]);
+      if (this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
+        const midAnchors = this.midAnchors[i];
+        const nextPoint =
+          i === points.points.length - 1
+            ? points.points[0]
+            : points.points[i + 1];
+        midAnchors.setPosition([
+          (nextPoint[0] + point[0]) / 2,
+          (nextPoint[1] + point[1]) / 2,
+        ]);
+      }
     });
   }
 

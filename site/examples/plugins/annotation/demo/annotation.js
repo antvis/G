@@ -38,6 +38,7 @@ const annotationPlugin = new AnnotationPlugin({
   enableDeleteTargetWithShortcuts: true,
   enableDeleteAnchorsWithShortcuts: true,
   enableAutoSwitchDrawingMode: true,
+  enableDisplayMidAnchors: true,
   selectableStyle: {
     selectionFill: 'rgba(24,144,255,0.15)',
     selectionStroke: '#1890FF',

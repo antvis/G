@@ -91,6 +91,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
   }
 
   private createMidAnchor() {
+    if (!this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
+      return;
+    }
+
     const {
       anchorFill,
       anchorStroke,
@@ -201,13 +205,15 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       const anchor = this.anchors[i];
       anchor.setPosition(point);
 
-      const midAnchors = this.midAnchors[i];
-      if (midAnchors) {
-        const nextPoint = points.points[i + 1];
-        midAnchors.setPosition([
-          (nextPoint[0] + point[0]) / 2,
-          (nextPoint[1] + point[1]) / 2,
-        ]);
+      if (this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
+        const midAnchors = this.midAnchors[i];
+        if (midAnchors) {
+          const nextPoint = points.points[i + 1];
+          midAnchors.setPosition([
+            (nextPoint[0] + point[0]) / 2,
+            (nextPoint[1] + point[1]) / 2,
+          ]);
+        }
       }
     });
   }

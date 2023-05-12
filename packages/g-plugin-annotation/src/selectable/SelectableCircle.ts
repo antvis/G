@@ -41,6 +41,8 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
     this.bindEventListeners();
   }
 
+  deleteSelectedAnchors(): void {}
+
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
