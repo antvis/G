@@ -2,6 +2,7 @@ import type { Circle, DisplayObject, DisplayObjectConfig } from '@antv/g-lite';
 import { CustomElement } from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { Selectable, SelectableProps } from './interface';
+import { SelectableStyle } from '../tokens';
 
 export abstract class AbstractSelectable<MaskType extends DisplayObject>
   extends CustomElement<SelectableProps>
@@ -18,9 +19,38 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
   anchors: Circle[] = [];
 
   /**
+   * Selected anchors which can be deleted with keypress.
+   */
+  selectedAnchors: Set<Circle> = new Set();
+
+  /**
+   * Potential added anchors.
+   */
+  midAnchors: Circle[] = [];
+
+  /**
    * Ref to plugin
    */
   plugin: SelectablePlugin;
+
+  private defaultAnchorStyle: Pick<
+    SelectableStyle,
+    | 'anchorFill'
+    | 'anchorFillOpacity'
+    | 'anchorSize'
+    | 'anchorStroke'
+    | 'anchorStrokeOpacity'
+    | 'anchorStrokeWidth'
+  >;
+  private selectedAnchorStyle: Pick<
+    SelectableStyle,
+    | 'anchorFill'
+    | 'anchorFillOpacity'
+    | 'anchorSize'
+    | 'anchorStroke'
+    | 'anchorStrokeOpacity'
+    | 'anchorStrokeWidth'
+  >;
 
   abstract init(): void;
 
@@ -31,6 +61,8 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
   abstract triggerMovingEvent(dx: number, dy: number): void;
 
   abstract triggerMovedEvent(): void;
+
+  abstract deleteSelectedAnchors(): void;
 
   constructor({
     style,
@@ -53,6 +85,84 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
         ...style,
       },
       ...rest,
+    });
+
+    this.saveAnchorStyle();
+  }
+
+  private saveAnchorStyle() {
+    this.defaultAnchorStyle = {
+      anchorFill: this.style.anchorFill,
+      anchorStroke: this.style.anchorStroke,
+      anchorStrokeOpacity: this.style.anchorStrokeOpacity,
+      anchorStrokeWidth: this.style.anchorStrokeWidth,
+      anchorFillOpacity: this.style.anchorFillOpacity,
+      anchorSize: this.style.anchorSize,
+    };
+    this.selectedAnchorStyle = {
+      anchorFill: this.style.selectedAnchorFill ?? this.style.anchorFill,
+      anchorStroke: this.style.selectedAnchorStroke ?? this.style.anchorStroke,
+      anchorStrokeOpacity:
+        this.style.selectedAnchorStrokeOpacity ??
+        this.style.anchorStrokeOpacity,
+      anchorStrokeWidth:
+        this.style.selectedAnchorStrokeWidth ?? this.style.anchorStrokeWidth,
+      anchorFillOpacity:
+        this.style.selectedAnchorFillOpacity ?? this.style.anchorFillOpacity,
+      anchorSize: this.style.selectedAnchorSize ?? this.style.anchorSize,
+    };
+  }
+
+  selectAnchor(anchor: Circle) {
+    this.selectedAnchors.add(anchor);
+    const {
+      anchorFill,
+      anchorStroke,
+      anchorStrokeOpacity,
+      anchorStrokeWidth,
+      anchorFillOpacity,
+      anchorSize,
+    } = this.selectedAnchorStyle;
+
+    anchor.attr({
+      fill: anchorFill,
+      stroke: anchorStroke,
+      strokeOpacity: anchorStrokeOpacity,
+      strokeWidth: anchorStrokeWidth,
+      fillOpacity: anchorFillOpacity,
+      r: anchorSize,
+    });
+  }
+
+  deselectAnchor(anchor: Circle) {
+    this.selectedAnchors.delete(anchor);
+
+    const {
+      anchorFill,
+      anchorStroke,
+      anchorStrokeOpacity,
+      anchorStrokeWidth,
+      anchorFillOpacity,
+      anchorSize,
+    } = this.defaultAnchorStyle;
+
+    anchor.attr({
+      fill: anchorFill,
+      stroke: anchorStroke,
+      strokeOpacity: anchorStrokeOpacity,
+      strokeWidth: anchorStrokeWidth,
+      fillOpacity: anchorFillOpacity,
+      r: anchorSize,
+    });
+  }
+
+  protected bindAnchorEvent(anchor: Circle) {
+    anchor.addEventListener('click', () => {
+      if (this.selectedAnchors.has(anchor)) {
+        this.deselectAnchor(anchor);
+      } else {
+        this.selectAnchor(anchor);
+      }
     });
   }
 
@@ -105,6 +215,32 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       this.anchors.forEach((anchor) => {
         anchor.style.fillOpacity = newValue;
       });
+    } else if (name === 'selectedAnchorFill') {
+      this.selectedAnchors.forEach((anchor) => {
+        anchor.style.fill = newValue;
+      });
+    } else if (name === 'selectedAnchorStrokeWidth') {
+      this.selectedAnchors.forEach((anchor) => {
+        anchor.style.strokeWidth = newValue;
+      });
+    } else if (name === 'selectedAnchorStroke') {
+      this.selectedAnchors.forEach((anchor) => {
+        anchor.style.stroke = newValue;
+      });
+    } else if (name === 'selectedAnchorSize') {
+      this.selectedAnchors.forEach((anchor) => {
+        anchor.style.r = newValue;
+      });
+    } else if (name === 'selectedAnchorStrokeOpacity') {
+      this.selectedAnchors.forEach((anchor) => {
+        anchor.style.strokeOpacity = newValue;
+      });
+    } else if (name === 'selectedAnchorFillOpacity') {
+      this.selectedAnchors.forEach((anchor) => {
+        anchor.style.fillOpacity = newValue;
+      });
     }
+
+    this.saveAnchorStyle();
   }
 }

@@ -94,8 +94,15 @@ export class SelectablePlugin implements RenderingPlugin {
   deselectDisplayObject(displayObject: DisplayObject) {
     const index = this.selected.indexOf(displayObject);
     if (index > -1) {
-      const selectable = this.getOrCreateSelectableUI(displayObject);
+      const selectable = this.getOrCreateSelectableUI(
+        displayObject,
+      ) as AbstractSelectable<any>;
       if (selectable) {
+        // deselect all anchors
+        selectable.selectedAnchors.forEach((anchor) => {
+          selectable.deselectAnchor(anchor);
+        });
+
         selectable.style.visibility = 'hidden';
       }
       this.selected.splice(index, 1);
@@ -546,16 +553,40 @@ export class SelectablePlugin implements RenderingPlugin {
           }
         });
       } else if (
-        this.annotationPluginOptions.enableDeleteTargetWithShortcuts &&
-        (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete')
+        e.key === 'Escape' ||
+        e.key === 'Backspace' ||
+        e.key === 'Delete'
       ) {
-        /** 退出/删除/回退键 删除 */
-
         [...this.selected].forEach((target) => {
-          target.destroy();
+          const selectable = this.getOrCreateSelectableUI(
+            target,
+          ) as AbstractSelectable<any>;
+          if (selectable) {
+            if (selectable.selectedAnchors.size) {
+              if (
+                selectable.selectedAnchors.size === selectable.anchors.length
+              ) {
+                if (
+                  this.annotationPluginOptions.enableDeleteTargetWithShortcuts
+                ) {
+                  target.destroy();
+                  this.deselectDisplayObject(target);
+                }
+              } else if (
+                this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts
+              ) {
+                selectable.deleteSelectedAnchors();
+              }
+            } else {
+              if (
+                this.annotationPluginOptions.enableDeleteTargetWithShortcuts
+              ) {
+                target.destroy();
+                this.deselectDisplayObject(target);
+              }
+            }
+          }
         });
-
-        this.deselectAllDisplayObjects();
       }
     };
 

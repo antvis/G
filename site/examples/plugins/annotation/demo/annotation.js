@@ -36,6 +36,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 const annotationPlugin = new AnnotationPlugin({
   enableDeleteTargetWithShortcuts: true,
+  enableDeleteAnchorsWithShortcuts: true,
   enableAutoSwitchDrawingMode: true,
   selectableStyle: {
     selectionFill: 'rgba(24,144,255,0.15)',
@@ -43,6 +44,12 @@ const annotationPlugin = new AnnotationPlugin({
     selectionStrokeWidth: 2.5,
     anchorFill: '#1890FF',
     anchorStroke: '#1890FF',
+    selectedAnchorSize: 10,
+    selectedAnchorFill: 'red',
+    selectedAnchorStroke: 'blue',
+    selectedAnchorStrokeWidth: 10,
+    selectedAnchorStrokeOpacity: 0.6,
+    midAnchorFillOpacity: 0.6,
   },
 });
 canvasRenderer.registerPlugin(annotationPlugin);
@@ -281,6 +288,7 @@ const selectableConfig = {
   anchorStrokeOpacity: 1,
   anchorStrokeWidth: 1,
   anchorSize: 6,
+  selectedAnchorFill: '#1890FF',
 };
 selectableFolder
   .addColor(selectableConfig, 'selectionFill')
@@ -364,6 +372,13 @@ selectableFolder
   .onChange((anchorStrokeOpacity) => {
     annotationPlugin.updateSelectableStyle({
       anchorStrokeOpacity,
+    });
+  });
+selectableFolder
+  .addColor(selectableConfig, 'selectedAnchorFill')
+  .onChange((selectedAnchorFill) => {
+    annotationPlugin.updateSelectableStyle({
+      selectedAnchorFill,
     });
   });
 selectableFolder.open();
