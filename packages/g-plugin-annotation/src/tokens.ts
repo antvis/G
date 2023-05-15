@@ -47,6 +47,11 @@ export interface AnnotationPluginOptions {
   enableContinuousBrush: boolean;
 
   /**
+   * Rotate anchor.
+   */
+  enableRotateAnchor: boolean;
+
+  /**
    * How do we sort the selected objects duration a brush selection.
    */
   brushSelectionSortMode: 'behavior' | 'directional';

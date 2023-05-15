@@ -39,6 +39,7 @@ const annotationPlugin = new AnnotationPlugin({
   enableDeleteAnchorsWithShortcuts: true,
   enableAutoSwitchDrawingMode: true,
   enableDisplayMidAnchors: true,
+  enableRotateAnchor: true,
   selectableStyle: {
     selectionFill: 'rgba(24,144,255,0.15)',
     selectionStroke: '#1890FF',

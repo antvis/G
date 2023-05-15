@@ -1,5 +1,9 @@
-import type { Circle, DisplayObject, DisplayObjectConfig } from '@antv/g-lite';
-import { CustomElement } from '@antv/g-lite';
+import {
+  Circle,
+  DisplayObject,
+  DisplayObjectConfig,
+  CustomElement,
+} from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { Selectable, SelectableProps } from './interface';
 import { SelectableStyle } from '../tokens';
@@ -27,6 +31,12 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
    * Potential added anchors.
    */
   midAnchors: Circle[] = [];
+
+  /**
+   * Anchor for rotate.
+   */
+  rotateAnchor: Circle;
+  origin: [number, number, number];
 
   /**
    * Ref to plugin
@@ -168,6 +178,38 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
 
   connectedCallback() {
     this.init();
+
+    if (this.plugin.annotationPluginOptions.enableRotateAnchor) {
+      const {
+        anchorFill,
+        anchorStroke,
+        anchorFillOpacity,
+        anchorStrokeOpacity,
+        anchorSize,
+        target,
+      } = this.style;
+      this.rotateAnchor = new Circle({
+        style: {
+          cx: 0,
+          cy: 0,
+          r: anchorSize,
+          stroke: anchorStroke,
+          fill: anchorFill,
+          fillOpacity: anchorFillOpacity,
+          strokeOpacity: anchorStrokeOpacity,
+          cursor: 'move',
+          draggable: true,
+          visibility:
+            target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+        },
+      });
+      this.mask.appendChild(this.rotateAnchor);
+
+      const { x, y, width, height } = this.style.target.getBBox();
+      this.rotateAnchor.setPosition(x + width / 2, y - 50);
+
+      this.origin = [x + width / 2, y + height / 2, 0];
+    }
   }
 
   disconnectedCallback() {

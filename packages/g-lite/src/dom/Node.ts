@@ -217,11 +217,11 @@ export abstract class Node extends EventTarget implements INode {
       return 0;
     }
 
-    if (!(other instanceof Node)) {
-      throw new TypeError(
-        'Node.compareDocumentPosition: Argument 1 does not implement interface Node.',
-      );
-    }
+    // if (!(other instanceof Node)) {
+    //   throw new TypeError(
+    //     'Node.compareDocumentPosition: Argument 1 does not implement interface Node.',
+    //   );
+    // }
 
     let node1Root: INode = other;
     // eslint-disable-next-line @typescript-eslint/no-this-alias

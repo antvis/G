@@ -559,8 +559,14 @@ export class SelectablePlugin implements RenderingPlugin {
           ) as AbstractSelectable<any>;
           if (selectable) {
             if (selectable.selectedAnchors.size) {
+              const unselectedAnchorsRemain =
+                selectable.anchors.length - selectable.selectedAnchors.size;
               if (
-                selectable.selectedAnchors.size === selectable.anchors.length
+                // Delete all anchors.
+                unselectedAnchorsRemain <= 1 ||
+                // Or 2 anchors remains in Polygon
+                (target.nodeName === Shape.POLYGON &&
+                  unselectedAnchorsRemain <= 2)
               ) {
                 if (
                   this.annotationPluginOptions.enableDeleteTargetWithShortcuts
