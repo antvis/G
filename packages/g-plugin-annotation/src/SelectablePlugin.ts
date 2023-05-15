@@ -552,11 +552,7 @@ export class SelectablePlugin implements RenderingPlugin {
             selectable.triggerMovedEvent();
           }
         });
-      } else if (
-        e.key === 'Escape' ||
-        e.key === 'Backspace' ||
-        e.key === 'Delete'
-      ) {
+      } else if (e.key === 'Escape' || e.key === 'Delete') {
         [...this.selected].forEach((target) => {
           const selectable = this.getOrCreateSelectableUI(
             target,
