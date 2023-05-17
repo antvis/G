@@ -17,7 +17,7 @@ out vec4 v_Dash;
 // out vec2 v_Normal;
 
 bool isPerspectiveMatrix(mat4 m) {
-	return m[ 2 ][ 3 ] == - 1.0;
+  return m[ 2 ][ 3 ] == - 1.0;
 }
 
 void main() {

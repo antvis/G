@@ -16,6 +16,18 @@ import type { Path } from './Path';
 export interface TextStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
+  z?: number | string;
+
+  /**
+   * Always face the camera.
+   */
+  isBillboard?: boolean;
+
+  /**
+   * Whether the size of the sprite is attenuated by the camera depth. (Perspective camera only.)
+   */
+  sizeAttenuation?: boolean;
+
   text: number | string;
 
   /**
@@ -180,6 +192,9 @@ export interface TextStyleProps extends BaseStyleProps {
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   x: number;
   y: number;
+  z?: number;
+  isBillboard?: boolean;
+  sizeAttenuation?: boolean;
   text: string;
   textAlign?: 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';
   textBaseline?:
@@ -253,6 +268,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             leading: 0,
             dx: '',
             dy: '',
+            isBillboard: false,
+            sizeAttenuation: true,
             ...style,
           }
         : {
@@ -278,6 +295,8 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             leading: 0,
             dx: 0,
             dy: 0,
+            isBillboard: false,
+            sizeAttenuation: true,
           },
       ...rest,
     });

@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedTextStyleProps } from '@antv/g-lite';
+import type { CSSRGB, DisplayObject, ParsedTextStyleProps } from '@antv/g-lite';
 import type { Instanced } from '../meshes';
 import { TextMesh, TextUniform } from '../meshes';
 import type { RenderInst } from '../render/RenderInst';
@@ -12,7 +12,7 @@ export class TextRenderer extends Batch {
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
     const { stroke, lineWidth } = object.parsedStyle as ParsedTextStyleProps;
-    const hasStroke = !!(stroke && lineWidth);
+    const hasStroke = !!(stroke && !(stroke as CSSRGB).isNone && lineWidth);
 
     if (!hasStroke && index === 0) {
       // skip rendering stroke

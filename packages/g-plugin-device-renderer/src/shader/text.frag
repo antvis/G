@@ -1,13 +1,12 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
-#pragma glslify: import('@antv/g-shader-components/text.both.glsl')
-
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
+#pragma glslify: import('@antv/g-shader-components/text.both.glsl')
+#pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
 
 uniform sampler2D u_SDFMap;
 
 #define SDF_PX 8.0
 
-in vec2 v_UV;
 in float v_GammaScale;
 
 out vec4 outputColor;
@@ -15,7 +14,7 @@ out vec4 outputColor;
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
 
-  float dist = texture(SAMPLER_2D(u_SDFMap), v_UV).a;
+  float dist = texture(SAMPLER_2D(u_SDFMap), v_Uv).a;
 
   float EDGE_GAMMA = 0.105 / u_DevicePixelRatio;
   float fontScale = u_FontSize / 24.0;
