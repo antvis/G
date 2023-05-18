@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.16.21",
+  "version": "5.16.22",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -36,7 +36,7 @@
     "@antv/g-css-layout-api": "^1.0.35",
     "@antv/g-css-typed-om-api": "^1.0.35",
     "@antv/g-dom-mutation-observer-api": "^1.0.35",
-    "@antv/g-lite": "^1.0.58",
+    "@antv/g-lite": "^1.0.59",
     "@antv/g-web-animations-api": "^1.0.36"
   },
   "publishConfig": {
