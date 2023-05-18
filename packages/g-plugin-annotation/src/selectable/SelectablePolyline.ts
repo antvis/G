@@ -2,10 +2,8 @@ import {
   DisplayObject,
   FederatedEvent,
   ParsedPolylineStyleProps,
-  // rad2deg,
 } from '@antv/g-lite';
 import { Circle, CustomEvent, Polyline, Shape } from '@antv/g-lite';
-// import { mat4, vec3, quat, vec2 } from 'gl-matrix';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 
@@ -148,14 +146,16 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     const points = this.mask.style.points.slice();
     this.selectedAnchors.forEach((anchor) => {
       const index = this.anchors.indexOf(anchor);
+      const midAnchorIndex =
+        index !== this.anchors.length - 1 ? index : index - 1;
 
       // Destroy anchor & midAnchor
       this.anchors.splice(index, 1);
       anchor.destroy();
 
-      const midAnchor = this.midAnchors[index];
+      const midAnchor = this.midAnchors[midAnchorIndex];
       if (midAnchor) {
-        this.midAnchors.splice(index, 1);
+        this.midAnchors.splice(midAnchorIndex, 1);
         midAnchor.destroy();
       }
 
@@ -220,7 +220,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       if (this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
         const midAnchors = this.midAnchors[i];
         if (midAnchors) {
-          const nextPoint = points.points[i + 1];
+          const nextPoint =
+            i === points.points.length - 1
+              ? points.points[0]
+              : points.points[i + 1];
           midAnchors.setPosition([
             (nextPoint[0] + point[0]) / 2,
             (nextPoint[1] + point[1]) / 2,
