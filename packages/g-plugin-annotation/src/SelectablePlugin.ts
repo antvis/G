@@ -203,6 +203,16 @@ export class SelectablePlugin implements RenderingPlugin {
     });
   }
 
+  private updateAnchorsSelectable(selectable: AbstractSelectable<any>) {
+    selectable?.anchors.forEach((anchor) => {
+      if (this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts) {
+        selectable.bindAnchorEvent(anchor);
+      } else {
+        selectable.unbindAnchorEvent(anchor);
+      }
+    });
+  }
+
   showMidAnchors() {
     this.midAnchorsVisible = true;
     this.selected.forEach((selected) => {
@@ -216,6 +226,24 @@ export class SelectablePlugin implements RenderingPlugin {
     this.midAnchorsVisible = false;
     this.selected.forEach((selected) => {
       this.updateMidAnchorsVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  enableAnchorsSelectable() {
+    this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts = true;
+    this.selected.forEach((selected) => {
+      this.updateAnchorsSelectable(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  disableAnchorsSelectable() {
+    this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts = false;
+    this.selected.forEach((selected) => {
+      this.updateAnchorsSelectable(
         this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
       );
     });

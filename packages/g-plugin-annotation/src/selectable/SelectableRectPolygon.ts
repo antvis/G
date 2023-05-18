@@ -158,7 +158,7 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
   }
 
   private repositionAnchors() {
-    const { rotateAnchorDistance } = this.plugin.annotationPluginOptions;
+    const { rotateAnchorDistance } = this.style;
     const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
       const anchor = this.anchors[i];

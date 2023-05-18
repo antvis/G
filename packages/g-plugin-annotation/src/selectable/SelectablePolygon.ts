@@ -78,7 +78,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
     });
     this.anchors.push(anchor);
     this.mask.appendChild(anchor);
-    this.bindAnchorEvent(anchor);
+
+    if (this.plugin.annotationPluginOptions.enableDeleteAnchorsWithShortcuts) {
+      this.bindAnchorEvent(anchor);
+    }
   }
 
   private createMidAnchor() {

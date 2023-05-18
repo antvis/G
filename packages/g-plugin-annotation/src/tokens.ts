@@ -52,11 +52,6 @@ export interface AnnotationPluginOptions {
   enableRotateAnchor: boolean;
 
   /**
-   * The vertical distance from rotate anchor to the upper edge.
-   */
-  rotateAnchorDistance: number;
-
-  /**
    * How do we sort the selected objects duration a brush selection.
    */
   brushSelectionSortMode: 'behavior' | 'directional';
@@ -102,4 +97,9 @@ export interface SelectableStyle {
   midAnchorStrokeWidth: number;
 
   maskIncreasedLineWidthForHitTesting: number;
+
+  /**
+   * The vertical distance from rotate anchor to the upper edge.
+   */
+  rotateAnchorDistance: number;
 }

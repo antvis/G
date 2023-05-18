@@ -25,7 +25,6 @@ export class Plugin extends AbstractRendererPlugin {
       enableDisplayMidAnchors: false,
       enableContinuousBrush: true,
       enableRotateAnchor: false,
-      rotateAnchorDistance: 50,
       brushSelectionSortMode: 'directional',
       ...this.options,
     };
@@ -181,12 +180,18 @@ export class Plugin extends AbstractRendererPlugin {
     return this.getAnnotationPluginOptions().isDrawingMode;
   }
 
-  showMidAnchors() {
-    this.getSelectablePlugin().showMidAnchors();
-  }
-
-  hideMidAnchors() {
-    this.getSelectablePlugin().hideMidAnchors();
+  allowVertexAdditionAndDeletion(allowed: boolean) {
+    if (allowed) {
+      this.getSelectablePlugin().showMidAnchors();
+      if (!this.getAnnotationPluginOptions().enableDeleteAnchorsWithShortcuts) {
+        this.getSelectablePlugin().enableAnchorsSelectable();
+      }
+    } else {
+      this.getSelectablePlugin().hideMidAnchors();
+      if (this.getAnnotationPluginOptions().enableDeleteAnchorsWithShortcuts) {
+        this.getSelectablePlugin().disableAnchorsSelectable();
+      }
+    }
   }
 
   destroy(): void {

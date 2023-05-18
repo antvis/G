@@ -3,6 +3,7 @@ import {
   DisplayObject,
   DisplayObjectConfig,
   CustomElement,
+  FederatedEvent,
 } from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { Selectable, SelectableProps } from './interface';
@@ -92,6 +93,7 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
         anchorFillOpacity: 1,
         anchorSize: 6,
         maskIncreasedLineWidthForHitTesting: 10,
+        rotateAnchorDistance: 50,
         ...style,
       },
       ...rest,
@@ -166,15 +168,22 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
     });
   }
 
-  protected bindAnchorEvent(anchor: Circle) {
-    anchor.addEventListener('click', () => {
-      if (this.selectedAnchors.has(anchor)) {
-        this.deselectAnchor(anchor);
-      } else {
-        this.selectAnchor(anchor);
-      }
-    });
+  bindAnchorEvent(anchor: Circle) {
+    anchor.addEventListener('click', this.handleClickAnchor);
   }
+
+  unbindAnchorEvent(anchor: Circle) {
+    anchor.removeEventListener('click', this.handleClickAnchor);
+  }
+
+  private handleClickAnchor = (e: FederatedEvent) => {
+    const anchor = e.currentTarget as Circle;
+    if (this.selectedAnchors.has(anchor)) {
+      this.deselectAnchor(anchor);
+    } else {
+      this.selectAnchor(anchor);
+    }
+  };
 
   connectedCallback() {
     this.init();

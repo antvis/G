@@ -305,7 +305,7 @@ const selectableConfig = {
   anchorStrokeWidth: 1,
   anchorSize: 6,
   selectedAnchorFill: '#1890FF',
-  midAnchorsVisible: true,
+  allowVertexAdditionAndDeletion: true,
 };
 selectableFolder
   .addColor(selectableConfig, 'selectionFill')
@@ -399,13 +399,9 @@ selectableFolder
     });
   });
 selectableFolder
-  .add(selectableConfig, 'midAnchorsVisible')
-  .onChange((midAnchorsVisible) => {
-    if (midAnchorsVisible) {
-      annotationPlugin.showMidAnchors();
-    } else {
-      annotationPlugin.hideMidAnchors();
-    }
+  .add(selectableConfig, 'allowVertexAdditionAndDeletion')
+  .onChange((allowed) => {
+    annotationPlugin.allowVertexAdditionAndDeletion(allowed);
   });
 selectableFolder.open();
 
