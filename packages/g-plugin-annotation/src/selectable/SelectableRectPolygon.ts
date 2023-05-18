@@ -1,12 +1,15 @@
-import type {
+import {
   Cursor,
   DisplayObject,
   FederatedEvent,
-  ParsedBaseStyleProps,
+  ParsedPolygonStyleProps,
+  Polygon,
 } from '@antv/g-lite';
-import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g-lite';
+import { Circle, CustomEvent, rad2deg } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
+import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import { getABC, getFootOfPerpendicular, lineIntersect } from '../utils/drawer';
 
 interface Control {
   x: number;
@@ -34,7 +37,7 @@ const controls: Control[] = [
   },
 ];
 
-export class SelectableRect extends AbstractSelectable<Rect> {
+export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
   private tlAnchor: Circle;
   private trAnchor: Circle;
   private blAnchor: Circle;
@@ -57,15 +60,17 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       target,
     } = this.style;
 
-    this.mask = new Rect({
+    const { points: parsedPoints } =
+      target.parsedStyle as ParsedPolygonStyleProps;
+    const points = parsedPoints.points;
+
+    this.mask = new Polygon({
       style: {
-        width: 0,
-        height: 0,
+        points,
         draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
       },
     });
-
     this.appendChild(this.mask);
 
     this.tlAnchor = new Circle({
@@ -93,29 +98,13 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     this.mask.appendChild(this.brAnchor);
     this.mask.appendChild(this.blAnchor);
 
-    const { halfExtents } = target.getGeometryBounds();
-    const width = halfExtents[0] * 2;
-    const height = halfExtents[1] * 2;
-    const transform = target.getWorldTransform();
-
-    // account for origin object's anchor such as Circle and Ellipse
-    const { anchor } = target.parsedStyle as ParsedBaseStyleProps;
-    this.mask.translateLocal(-anchor[0] * width, -anchor[1] * height);
-
     // resize according to target
-    this.mask.style.width = width;
-    this.mask.style.height = height;
     this.mask.style.fill = selectionFill;
     this.mask.style.stroke = selectionStroke;
     this.mask.style.fillOpacity = selectionFillOpacity;
     this.mask.style.strokeOpacity = selectionStrokeOpacity;
     this.mask.style.lineWidth = selectionStrokeWidth;
     this.mask.style.lineDash = selectionLineDash;
-
-    // position anchors
-    this.trAnchor.setLocalPosition(width, 0);
-    this.blAnchor.setLocalPosition(0, height);
-    this.brAnchor.setLocalPosition(width, height);
 
     // set anchors' style
     this.anchors.forEach((anchor, i) => {
@@ -135,10 +124,60 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       ) as Cursor;
     });
 
-    // TODO: UI should not be scaled
-    this.setLocalTransform(transform);
+    if (this.plugin.annotationPluginOptions.enableRotateAnchor) {
+      const {
+        anchorFill,
+        anchorStroke,
+        anchorFillOpacity,
+        anchorStrokeOpacity,
+        anchorSize,
+        target,
+      } = this.style;
+
+      this.rotateAnchor = new Circle({
+        style: {
+          cx: 0,
+          cy: 0,
+          r: anchorSize,
+          stroke: anchorStroke,
+          fill: anchorFill,
+          fillOpacity: anchorFillOpacity,
+          strokeOpacity: anchorStrokeOpacity,
+          cursor: 'move',
+          draggable: true,
+          visibility:
+            target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+        },
+      });
+      this.mask.appendChild(this.rotateAnchor);
+    }
+
+    this.repositionAnchors();
 
     this.bindEventListeners();
+  }
+
+  private repositionAnchors() {
+    const { rotateAnchorDistance } = this.plugin.annotationPluginOptions;
+    const { points } = this.mask.parsedStyle;
+    points.points.forEach((point, i) => {
+      const anchor = this.anchors[i];
+      anchor.setPosition(point);
+    });
+
+    // mid point of upper edge
+    const midPoint = [
+      (points.points[0][0] + points.points[1][0]) / 2,
+      (points.points[0][1] + points.points[1][1]) / 2,
+    ];
+    const handleVec = vec2.normalize(
+      vec2.create(),
+      vec2.sub(vec2.create(), points.points[0], points.points[3]),
+    );
+    this.rotateAnchor.setPosition(
+      handleVec[0] * rotateAnchorDistance + midPoint[0],
+      handleVec[1] * rotateAnchorDistance + midPoint[1],
+    );
   }
 
   deleteSelectedAnchors(): void {}
@@ -146,15 +185,22 @@ export class SelectableRect extends AbstractSelectable<Rect> {
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
-    this.translate(dx, dy);
+    // change definition of polyline
+    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
+      x + dx,
+      y + dy,
+    ]);
+
+    // re-position anchors in canvas coordinates
+    this.repositionAnchors();
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const [ox, oy] = this.getPosition();
+    const { defX, defY } = this.mask.parsedStyle;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
-        movingX: ox + dx,
-        movingY: oy + dy,
+        movingX: dx + defX,
+        movingY: dy + defY,
         dx,
         dy,
       }),
@@ -162,12 +208,10 @@ export class SelectableRect extends AbstractSelectable<Rect> {
   }
 
   triggerMovedEvent() {
-    const [x, y] = this.getPosition();
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVED, {
-        rect: {
-          x,
-          y,
+        polygon: {
+          points: this.mask.style.points,
         },
       }),
     );
@@ -185,14 +229,15 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const [ox, oy] = this.getPosition();
-      const dx = canvasX - shiftX - ox;
-      const dy = canvasY - shiftY - oy;
+      const { defX, defY } = this.mask.parsedStyle;
 
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
         const selectable = this.plugin.getOrCreateSelectableUI(selected);
-        selectable.triggerMovingEvent(dx, dy);
+        selectable.triggerMovingEvent(
+          canvasX - shiftX - defX,
+          canvasY - shiftY - defY,
+        );
       });
     };
 
@@ -200,30 +245,29 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        const [x, y] = this.getPosition();
-        shiftX = e.canvasX - x;
-        shiftY = e.canvasY - y;
+        const { defX, defY } = this.mask.parsedStyle;
+        shiftX = e.canvasX - defX;
+        shiftY = e.canvasY - defY;
 
         moveAt(e.canvasX, e.canvasY);
       }
     });
 
-    let maskX: number;
-    let maskY: number;
-    let maskWidth: number;
-    let maskHeight: number;
-
+    const tmpMat = mat4.create();
+    const tmpQuat = quat.create();
+    const tmpVec = vec3.create();
+    const translateVec3 = vec3.create();
+    const scalingVec3 = vec3.fromValues(1, 1, 1);
     this.addEventListener('drag', (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
 
       // event in canvas coordinates
       const { canvasX, canvasY } = e;
-      const originMaskWidth = Number(this.mask.style.width);
-      const originMaskHeight = Number(this.mask.style.height);
-
       // position in canvas coordinates
-      const [ox, oy] = this.getPosition();
-      // const angles = this.getEulerAngles();
+      const [tl, tr, br, bl] = this.mask.style.points.map(([x, y]) => ({
+        x,
+        y,
+      }));
 
       if (target === this.mask) {
         moveAt(canvasX, canvasY);
@@ -234,47 +278,109 @@ export class SelectableRect extends AbstractSelectable<Rect> {
         target === this.brAnchor
       ) {
         if (target === this.tlAnchor) {
-          maskWidth = originMaskWidth - (canvasX - ox);
-          maskHeight = originMaskHeight - (canvasY - oy);
-          maskX = canvasX;
-          maskY = canvasY;
+          tl.x = canvasX;
+          tl.y = canvasY;
+          {
+            const { A, B, C } = getABC(br, tr);
+            const { x, y } = getFootOfPerpendicular(tl, A, B, C);
+            tr.x = x;
+            tr.y = y;
+          }
+          {
+            const { A, B, C } = getABC(br, bl);
+            const { x, y } = getFootOfPerpendicular(tl, A, B, C);
+            bl.x = x;
+            bl.y = y;
+          }
         } else if (target === this.trAnchor) {
-          maskWidth = canvasX - ox;
-          maskHeight = originMaskHeight - (canvasY - oy);
-          maskX = ox;
-          maskY = canvasY;
+          tr.x = canvasX;
+          tr.y = canvasY;
+          {
+            const { A, B, C } = getABC(bl, tl);
+            const { x, y } = getFootOfPerpendicular(tr, A, B, C);
+            tl.x = x;
+            tl.y = y;
+          }
+          {
+            const { A, B, C } = getABC(br, bl);
+            const { x, y } = getFootOfPerpendicular(tr, A, B, C);
+            br.x = x;
+            br.y = y;
+          }
         } else if (target === this.blAnchor) {
-          maskWidth = originMaskWidth - (canvasX - ox);
-          maskHeight = canvasY - oy;
-          maskX = canvasX;
-          maskY = oy;
+          bl.x = canvasX;
+          bl.y = canvasY;
+          {
+            const { A, B, C } = getABC(tr, tl);
+            const { x, y } = getFootOfPerpendicular(bl, A, B, C);
+            tl.x = x;
+            tl.y = y;
+          }
+          {
+            const { A, B, C } = getABC(br, tr);
+            const { x, y } = getFootOfPerpendicular(bl, A, B, C);
+            br.x = x;
+            br.y = y;
+          }
         } else if (target === this.brAnchor) {
-          // const height = distanceFromPointToLine({ x: ox, y: oy }, deg2rad(angles), {
-          //   x: canvasX,
-          //   y: canvasY,
-          // });
-          // const width = distanceFromPointToLine({ x: ox, y: oy }, deg2rad(90 - angles), {
-          //   x: canvasX,
-          //   y: canvasY,
-          // });
-          // maskWidth = width;
-          // maskHeight = -height;
-          maskWidth = canvasX - ox;
-          maskHeight = canvasY - oy;
-          maskX = ox;
-          maskY = oy;
+          br.x = canvasX;
+          br.y = canvasY;
+          {
+            const { A, B, C } = getABC(tl, tr);
+            const { x, y } = getFootOfPerpendicular(br, A, B, C);
+            tr.x = x;
+            tr.y = y;
+          }
+          {
+            const { A, B, C } = getABC(tl, bl);
+            const { x, y } = getFootOfPerpendicular(br, A, B, C);
+            bl.x = x;
+            bl.y = y;
+          }
         }
 
-        // resize mask
-        this.mask.style.width = maskWidth;
-        this.mask.style.height = maskHeight;
-        this.setPosition(maskX, maskY);
+        this.mask.style.points = [
+          [tl.x, tl.y],
+          [tr.x, tr.y],
+          [br.x, br.y],
+          [bl.x, bl.y],
+        ];
+        this.repositionAnchors();
+      } else if (target === this.rotateAnchor) {
+        const { x: ox, y: oy } = lineIntersect(tl, br, tr, bl);
 
-        // re-position anchors
-        this.tlAnchor.setLocalPosition(0, 0);
-        this.trAnchor.setLocalPosition(maskWidth, 0);
-        this.blAnchor.setLocalPosition(0, maskHeight);
-        this.brAnchor.setLocalPosition(maskWidth, maskHeight);
+        const [rx, ry] = this.rotateAnchor.getPosition();
+        const v1 = [rx - ox, ry - oy];
+        const v2 = [canvasX - ox, canvasY - oy];
+        // @see https://www.mathworks.com/matlabcentral/answers/180131-how-can-i-find-the-angle-between-two-vectors-including-directional-information
+        const angle = rad2deg(
+          Math.atan2(
+            v1[0] * v2[1] - v1[1] * v2[0],
+            v1[0] * v2[0] + v1[1] * v2[1],
+          ),
+        );
+
+        const m = mat4.fromRotationTranslationScaleOrigin(
+          tmpMat,
+          quat.fromEuler(tmpQuat, 0, 0, angle),
+          translateVec3,
+          scalingVec3,
+          [ox, oy, 0],
+        );
+
+        [tl, tr, br, bl].forEach((corner) => {
+          vec3.transformMat4(tmpVec, vec3.fromValues(corner.x, corner.y, 0), m);
+          corner.x = tmpVec[0];
+          corner.y = tmpVec[1];
+        });
+
+        this.mask.style.points = [
+          [tl.x, tl.y],
+          [tr.x, tr.y],
+          [br.x, br.y],
+          [bl.x, bl.y],
+        ];
+        this.repositionAnchors();
       }
     });
 
@@ -290,95 +396,19 @@ export class SelectableRect extends AbstractSelectable<Rect> {
         target === this.tlAnchor ||
         target === this.trAnchor ||
         target === this.blAnchor ||
-        target === this.brAnchor
+        target === this.brAnchor ||
+        target === this.rotateAnchor
       ) {
         targetObject.dispatchEvent(
           new CustomEvent(SelectableEvent.MODIFIED, {
-            rect: {
-              x: maskX,
-              y: maskY,
-              width: maskWidth,
-              height: maskHeight,
+            polygon: {
+              points: this.mask.style.points,
             },
           }),
         );
       }
     });
   }
-
-  // private scaleObject(target: DisplayObject, canvasX: number, canvasY: number, options: any = {}) {
-  //   const scaleProportionally = this.scaleIsProportional(target);
-  //   const by = options.by;
-  //   const forbidScaling = this.scalingIsForbidden(target, by, scaleProportionally);
-  //   let signX: number;
-  //   let signY: number;
-  //   let scaleX: number;
-  //   let scaleY: number;
-  //   const { lockScalingX, lockScalingY } = target.style;
-
-  //   if (forbidScaling) {
-  //     return false;
-  //   }
-
-  //   // TODO: account for rotation
-  //   const transform = target.getWorldTransform();
-  //   const invert = mat4.invert(mat4.create(), transform);
-  //   const newPoint = vec3.transformMat4(
-  //     vec3.create(),
-  //     vec3.fromValues(canvasX, canvasY, 0),
-  //     invert,
-  //   );
-
-  //   signX = by !== 'y' ? Math.sign(newPoint[0]) : 1;
-  //   signY = by !== 'x' ? Math.sign(newPoint[1]) : 1;
-  //   if (!target.style.signX) {
-  //     target.style.signX = signX;
-  //   }
-  //   if (!target.style.signY) {
-  //     target.style.signY = signY;
-  //   }
-
-  //   if (
-  //     target.style.lockScalingFlip &&
-  //     (target.style.signX !== signX || target.style.signY !== signY)
-  //   ) {
-  //     return false;
-  //   }
-
-  //   // TODO: scaleProportionally
-  //   // if (scaleProportionally && !by) {
-  //   //   // uniform scaling
-  //   // } else {
-  //   //   scaleX = Math.abs(newPoint[0] * target.scaleX / dim.x);
-  //   //   scaleY = Math.abs(newPoint[1] * target.scaleY / dim.y);
-  //   // }
-
-  //   //
-
-  //   // if (target.style.signX !== signX && by !== 'y') {
-  //   //   transform.originX = opposite[transform.originX];
-  //   //   scaleX *= -1;
-  //   //   target.style.signX = signX;
-  //   // }
-  //   // if (target.style.signY !== signY && by !== 'x') {
-  //   //   transform.originY = opposite[transform.originY];
-  //   //   scaleY *= -1;
-  //   //   target.style.signY = signY;
-  //   // }
-
-  //   // // minScale is taken are in the setter.
-  //   // var oldScaleX = target.scaleX, oldScaleY = target.scaleY;
-  //   // if (!by) {
-  //   //   !lockScalingX && target.set('scaleX', scaleX);
-  //   //   !lockScalingY && target.set('scaleY', scaleY);
-  //   // }
-  //   // else {
-  //   //   // forbidden cases already handled on top here.
-  //   //   by === 'x' && target.set('scaleX', scaleX);
-  //   //   by === 'y' && target.set('scaleY', scaleY);
-  //   // }
-  //   // return oldScaleX !== target.scaleX || oldScaleY !== target.scaleY;
-  // }
 
   private findCornerQuadrant(object: DisplayObject, control: Control) {
     const angle = object.getEulerAngles();

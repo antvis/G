@@ -19,6 +19,7 @@ import {
   SelectableCircle,
   SelectablePolyline,
   SelectableRect,
+  SelectableRectPolygon,
 } from './selectable';
 import { AbstractSelectable } from './selectable/AbstractSelectable';
 import type { Selectable } from './selectable/interface';
@@ -73,6 +74,11 @@ export class SelectablePlugin implements RenderingPlugin {
    */
   brushRect: Rect;
   canvas: Canvas;
+
+  /**
+   * Toggle visibility of mid anchors
+   */
+  midAnchorsVisible = true;
 
   getSelectedDisplayObjects() {
     return this.selected;
@@ -133,10 +139,9 @@ export class SelectablePlugin implements RenderingPlugin {
 
       const selectableUI = object.nodeName;
       if (
-        selectableUI === Shape.POLYGON &&
-        object.style.selectableUI === Shape.RECT
-        // selectableUI === Shape.IMAGE ||
-        // selectableUI === Shape.ELLIPSE
+        selectableUI === Shape.RECT ||
+        selectableUI === Shape.IMAGE ||
+        selectableUI === Shape.ELLIPSE
       ) {
         constructor = SelectableRect;
       } else if (selectableUI === Shape.CIRCLE) {
@@ -147,7 +152,10 @@ export class SelectablePlugin implements RenderingPlugin {
       ) {
         constructor = SelectablePolyline;
       } else if (selectableUI === Shape.POLYGON) {
-        constructor = SelectablePolygon;
+        constructor =
+          object.style.selectableUI === Shape.RECT
+            ? SelectableRectPolygon
+            : SelectablePolygon;
       }
 
       if (constructor) {
@@ -166,6 +174,10 @@ export class SelectablePlugin implements RenderingPlugin {
       }
     }
 
+    this.updateMidAnchorsVisibility(
+      this.selectableMap[object.entity] as AbstractSelectable<any>,
+    );
+
     return this.selectableMap[object.entity];
   }
 
@@ -183,6 +195,30 @@ export class SelectablePlugin implements RenderingPlugin {
     for (const entity in this.selectableMap) {
       this.selectableMap[entity].attr(selectableStyle);
     }
+  }
+
+  private updateMidAnchorsVisibility(selectable: AbstractSelectable<any>) {
+    selectable?.midAnchors.forEach((midAnchor) => {
+      midAnchor.style.visibility = this.midAnchorsVisible ? 'unset' : 'hidden';
+    });
+  }
+
+  showMidAnchors() {
+    this.midAnchorsVisible = true;
+    this.selected.forEach((selected) => {
+      this.updateMidAnchorsVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  hideMidAnchors() {
+    this.midAnchorsVisible = false;
+    this.selected.forEach((selected) => {
+      this.updateMidAnchorsVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
   }
 
   apply(context: RenderingPluginContext) {

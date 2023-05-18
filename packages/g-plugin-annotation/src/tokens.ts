@@ -100,4 +100,6 @@ export interface SelectableStyle {
   midAnchorFillOpacity: number;
   midAnchorStrokeOpacity: number;
   midAnchorStrokeWidth: number;
+
+  maskIncreasedLineWidthForHitTesting: number;
 }

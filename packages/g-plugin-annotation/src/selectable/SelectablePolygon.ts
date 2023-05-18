@@ -26,7 +26,9 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
       style: {
         points,
         draggable: target.style.maskDraggable === false ? false : true,
-        increasedLineWidthForHitTesting: 20,
+        increasedLineWidthForHitTesting:
+          this.plugin.annotationPluginOptions.selectableStyle
+            .maskIncreasedLineWidthForHitTesting,
         cursor: 'move',
       },
     });
@@ -115,6 +117,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
     });
     this.midAnchors.push(midAnchor);
     this.mask.appendChild(midAnchor);
+
+    if (!this.plugin.midAnchorsVisible) {
+      midAnchor.style.visibility = 'hidden';
+    }
   }
 
   destroy(): void {}

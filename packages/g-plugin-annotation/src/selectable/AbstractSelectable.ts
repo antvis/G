@@ -91,6 +91,7 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
         anchorStrokeWidth: 1,
         anchorFillOpacity: 1,
         anchorSize: 6,
+        maskIncreasedLineWidthForHitTesting: 10,
         ...style,
       },
       ...rest,
@@ -200,30 +201,50 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       this.mask.style.lineWidth = newValue;
     } else if (name === 'selectionLineDash') {
       this.mask.style.lineDash = newValue;
+    } else if (name === 'maskIncreasedLineWidthForHitTesting') {
+      this.mask.style.increasedLineWidthForHitTesting = newValue;
     } else if (name === 'anchorFill') {
       this.anchors.forEach((anchor) => {
         anchor.style.fill = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.fill = newValue;
+      }
     } else if (name === 'anchorStrokeWidth') {
       this.anchors.forEach((anchor) => {
         anchor.style.strokeWidth = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.strokeWidth = newValue;
+      }
     } else if (name === 'anchorStroke') {
       this.anchors.forEach((anchor) => {
         anchor.style.stroke = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.stroke = newValue;
+      }
     } else if (name === 'anchorSize') {
       this.anchors.forEach((anchor) => {
         anchor.style.r = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.r = newValue;
+      }
     } else if (name === 'anchorStrokeOpacity') {
       this.anchors.forEach((anchor) => {
         anchor.style.strokeOpacity = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.strokeOpacity = newValue;
+      }
     } else if (name === 'anchorFillOpacity') {
       this.anchors.forEach((anchor) => {
         anchor.style.fillOpacity = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.fillOpacity = newValue;
+      }
     } else if (name === 'selectedAnchorFill') {
       this.selectedAnchors.forEach((anchor) => {
         anchor.style.fill = newValue;

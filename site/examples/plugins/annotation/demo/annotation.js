@@ -305,6 +305,7 @@ const selectableConfig = {
   anchorStrokeWidth: 1,
   anchorSize: 6,
   selectedAnchorFill: '#1890FF',
+  midAnchorsVisible: true,
 };
 selectableFolder
   .addColor(selectableConfig, 'selectionFill')
@@ -396,6 +397,15 @@ selectableFolder
     annotationPlugin.updateSelectableStyle({
       selectedAnchorFill,
     });
+  });
+selectableFolder
+  .add(selectableConfig, 'midAnchorsVisible')
+  .onChange((midAnchorsVisible) => {
+    if (midAnchorsVisible) {
+      annotationPlugin.showMidAnchors();
+    } else {
+      annotationPlugin.hideMidAnchors();
+    }
   });
 selectableFolder.open();
 

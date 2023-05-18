@@ -181,6 +181,14 @@ export class Plugin extends AbstractRendererPlugin {
     return this.getAnnotationPluginOptions().isDrawingMode;
   }
 
+  showMidAnchors() {
+    this.getSelectablePlugin().showMidAnchors();
+  }
+
+  hideMidAnchors() {
+    this.getSelectablePlugin().hideMidAnchors();
+  }
+
   destroy(): void {
     this.removeAllRenderingPlugins();
   }
