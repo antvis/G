@@ -130,34 +130,39 @@ export class SelectablePlugin implements RenderingPlugin {
   getOrCreateSelectableUI(object: DisplayObject): Selectable {
     if (!this.selectableMap[object.entity]) {
       let constructor: any;
+
+      const selectableUI = object.nodeName;
       if (
-        object.nodeName === Shape.IMAGE ||
-        object.nodeName === Shape.RECT ||
-        object.nodeName === Shape.ELLIPSE
+        selectableUI === Shape.POLYGON &&
+        object.style.selectableUI === Shape.RECT
+        // selectableUI === Shape.IMAGE ||
+        // selectableUI === Shape.ELLIPSE
       ) {
         constructor = SelectableRect;
-      } else if (object.nodeName === Shape.CIRCLE) {
+      } else if (selectableUI === Shape.CIRCLE) {
         constructor = SelectableCircle;
       } else if (
-        object.nodeName === Shape.LINE ||
-        object.nodeName === Shape.POLYLINE
+        selectableUI === Shape.LINE ||
+        selectableUI === Shape.POLYLINE
       ) {
         constructor = SelectablePolyline;
-      } else if (object.nodeName === Shape.POLYGON) {
+      } else if (selectableUI === Shape.POLYGON) {
         constructor = SelectablePolygon;
       }
 
-      const created: Selectable = new constructor({
-        style: {
-          target: object,
-          ...this.annotationPluginOptions.selectableStyle,
-        },
-      });
+      if (constructor) {
+        const created: Selectable = new constructor({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
+          },
+        });
 
-      if (created) {
-        created.plugin = this;
-        this.selectableMap[object.entity] = created;
-        this.activeSelectableLayer.appendChild(created);
+        if (created) {
+          created.plugin = this;
+          this.selectableMap[object.entity] = created;
+          this.activeSelectableLayer.appendChild(created);
+        }
       }
     }
 
@@ -456,18 +461,6 @@ export class SelectablePlugin implements RenderingPlugin {
           r,
         });
       }
-
-      // re-position target
-      // target.setPosition(positionX, positionY);
-
-      // if (target.nodeName === Shape.RECT) {
-      //   target.attr({
-      //     width: maskWidth,
-      //     height: maskHeight,
-      //   });
-      // } else {
-      //   target.scale(scaleX, scaleY);
-      // }
     };
 
     const handleMovedTarget = (e: CustomEvent) => {

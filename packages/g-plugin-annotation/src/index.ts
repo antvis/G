@@ -25,6 +25,7 @@ export class Plugin extends AbstractRendererPlugin {
       enableDisplayMidAnchors: false,
       enableContinuousBrush: true,
       enableRotateAnchor: false,
+      rotateAnchorDistance: 50,
       brushSelectionSortMode: 'directional',
       ...this.options,
     };

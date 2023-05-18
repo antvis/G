@@ -10,11 +10,6 @@ import { AbstractSelectable } from './AbstractSelectable';
 export class SelectablePolygon extends AbstractSelectable<Polygon> {
   init() {
     const {
-      anchorFill,
-      anchorStroke,
-      anchorFillOpacity,
-      anchorStrokeOpacity,
-      anchorSize,
       selectionFill,
       selectionFillOpacity,
       selectionStroke,
