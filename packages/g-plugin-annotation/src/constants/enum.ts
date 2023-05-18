@@ -35,4 +35,9 @@ export enum SelectableEvent {
    * dragging
    */
   MOVING = 'moving',
+
+  /**
+   * deleted
+   */
+  DELETED = 'deleted',
 }

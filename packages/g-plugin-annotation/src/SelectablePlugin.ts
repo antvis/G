@@ -564,8 +564,11 @@ export class SelectablePlugin implements RenderingPlugin {
                 if (
                   this.annotationPluginOptions.enableDeleteTargetWithShortcuts
                 ) {
-                  target.destroy();
+                  target.dispatchEvent(
+                    new CustomEvent(SelectableEvent.DELETED),
+                  );
                   this.deselectDisplayObject(target);
+                  target.destroy();
                 }
               } else if (
                 this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts
@@ -576,8 +579,9 @@ export class SelectablePlugin implements RenderingPlugin {
               if (
                 this.annotationPluginOptions.enableDeleteTargetWithShortcuts
               ) {
-                target.destroy();
+                target.dispatchEvent(new CustomEvent(SelectableEvent.DELETED));
                 this.deselectDisplayObject(target);
+                target.destroy();
               }
             }
           }
