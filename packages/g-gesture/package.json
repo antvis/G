@@ -37,6 +37,9 @@
     "@antv/g-mobile-canvas": "^0.8.49",
     "@antv/g-mobile-canvas-element": "^0.6.44"
   },
+  "peerDependencies": {
+    "@antv/g-lite": "^1.0.0"
+  },
   "publishConfig": {
     "access": "public"
   },
