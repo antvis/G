@@ -47,6 +47,9 @@
     "@types/offscreencanvas": "^2019.6.1",
     "@types/rbush": "^3.0.0"
   },
+  "peerDependencies": {
+    "@antv/g-lite": "^1.0.0"
+  },
   "publishConfig": {
     "access": "public"
   },

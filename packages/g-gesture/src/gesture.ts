@@ -1,3 +1,4 @@
+import { ElementEvent } from '@antv/g-lite';
 import type {
   DisplayObject,
   FederatedPointerEvent,
@@ -84,10 +85,32 @@ class Gesture extends EE {
 
   private _initEvent() {
     const { el } = this;
+    if (el.isConnected) {
+      // @ts-ignore
+      el.ownerDocument?.defaultView.addEventListener('pointermove', this._move);
+    } else {
+      el.isMutationObserved = true;
+      el.on(ElementEvent.MOUNTED, (e) =>
+        el.ownerDocument?.defaultView.addEventListener(
+          'pointermove',
+          // @ts-ignore
+          this._move,
+        ),
+      );
+    }
 
     el.addEventListener('pointerdown', this._start);
-    el.addEventListener('pointermove', this._move);
-    el.addEventListener('pointerup', this._end);
+
+    if (el.isConnected) {
+      // @ts-ignore
+      el.ownerDocument?.defaultView.addEventListener('pointerup', this._end);
+    } else {
+      el.on(ElementEvent.MOUNTED, (e) =>
+        // @ts-ignore
+        el.ownerDocument?.defaultView.addEventListener('pointerup', this._end),
+      );
+    }
+
     el.addEventListener('pointercancel', this._cancel);
     el.addEventListener('pointerupoutside', this._end);
   }
