@@ -3,7 +3,7 @@ import type {
   Circle,
   FederatedPointerEvent,
   Polyline,
-  Rect,
+  Polygon,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -37,7 +37,7 @@ export class AnnotationPlugin implements RenderingPlugin {
   /**
    * draw a dashed rect when brushing
    */
-  brushRect: Rect;
+  brushRect: Polygon;
 
   /**
    * draw a static point

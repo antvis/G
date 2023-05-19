@@ -357,6 +357,8 @@ export class TextMesh extends Instanced {
       strokeOpacity,
       lineWidth,
       visibility,
+      isBillboard,
+      sizeAttenuation,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
@@ -415,8 +417,8 @@ export class TextMesh extends Instanced {
         strokeOpacity,
         lineWidth,
         visibility === 'visible' ? 1 : 0,
-        0,
-        0,
+        isBillboard ? 1 : 0,
+        sizeAttenuation ? 1 : 0,
         0,
         ...encodedPickingColor,
         object.sortable.renderOrder * RENDER_ORDER_SCALE,

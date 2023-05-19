@@ -19,6 +19,7 @@ import {
   SelectableCircle,
   SelectablePolyline,
   SelectableRect,
+  SelectableRectPolygon,
 } from './selectable';
 import { AbstractSelectable } from './selectable/AbstractSelectable';
 import type { Selectable } from './selectable/interface';
@@ -73,6 +74,11 @@ export class SelectablePlugin implements RenderingPlugin {
    */
   brushRect: Rect;
   canvas: Canvas;
+
+  /**
+   * Toggle visibility of mid anchors
+   */
+  midAnchorsVisible = true;
 
   getSelectedDisplayObjects() {
     return this.selected;
@@ -130,36 +136,47 @@ export class SelectablePlugin implements RenderingPlugin {
   getOrCreateSelectableUI(object: DisplayObject): Selectable {
     if (!this.selectableMap[object.entity]) {
       let constructor: any;
+
+      const selectableUI = object.nodeName;
       if (
-        object.nodeName === Shape.IMAGE ||
-        object.nodeName === Shape.RECT ||
-        object.nodeName === Shape.ELLIPSE
+        selectableUI === Shape.RECT ||
+        selectableUI === Shape.IMAGE ||
+        selectableUI === Shape.ELLIPSE
       ) {
         constructor = SelectableRect;
-      } else if (object.nodeName === Shape.CIRCLE) {
+      } else if (selectableUI === Shape.CIRCLE) {
         constructor = SelectableCircle;
       } else if (
-        object.nodeName === Shape.LINE ||
-        object.nodeName === Shape.POLYLINE
+        selectableUI === Shape.LINE ||
+        selectableUI === Shape.POLYLINE
       ) {
         constructor = SelectablePolyline;
-      } else if (object.nodeName === Shape.POLYGON) {
-        constructor = SelectablePolygon;
+      } else if (selectableUI === Shape.POLYGON) {
+        constructor =
+          object.style.selectableUI === Shape.RECT
+            ? SelectableRectPolygon
+            : SelectablePolygon;
       }
 
-      const created: Selectable = new constructor({
-        style: {
-          target: object,
-          ...this.annotationPluginOptions.selectableStyle,
-        },
-      });
+      if (constructor) {
+        const created: Selectable = new constructor({
+          style: {
+            target: object,
+            ...this.annotationPluginOptions.selectableStyle,
+          },
+        });
 
-      if (created) {
-        created.plugin = this;
-        this.selectableMap[object.entity] = created;
-        this.activeSelectableLayer.appendChild(created);
+        if (created) {
+          created.plugin = this;
+          this.selectableMap[object.entity] = created;
+          this.activeSelectableLayer.appendChild(created);
+        }
       }
     }
+
+    this.updateMidAnchorsVisibility(
+      this.selectableMap[object.entity] as AbstractSelectable<any>,
+    );
 
     return this.selectableMap[object.entity];
   }
@@ -178,6 +195,58 @@ export class SelectablePlugin implements RenderingPlugin {
     for (const entity in this.selectableMap) {
       this.selectableMap[entity].attr(selectableStyle);
     }
+  }
+
+  private updateMidAnchorsVisibility(selectable: AbstractSelectable<any>) {
+    selectable?.midAnchors.forEach((midAnchor) => {
+      midAnchor.style.visibility = this.midAnchorsVisible ? 'unset' : 'hidden';
+    });
+  }
+
+  private updateAnchorsSelectable(selectable: AbstractSelectable<any>) {
+    selectable?.anchors.forEach((anchor) => {
+      if (this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts) {
+        selectable.bindAnchorEvent(anchor);
+      } else {
+        selectable.unbindAnchorEvent(anchor);
+      }
+    });
+  }
+
+  showMidAnchors() {
+    this.midAnchorsVisible = true;
+    this.selected.forEach((selected) => {
+      this.updateMidAnchorsVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  hideMidAnchors() {
+    this.midAnchorsVisible = false;
+    this.selected.forEach((selected) => {
+      this.updateMidAnchorsVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  enableAnchorsSelectable() {
+    this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts = true;
+    this.selected.forEach((selected) => {
+      this.updateAnchorsSelectable(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  disableAnchorsSelectable() {
+    this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts = false;
+    this.selected.forEach((selected) => {
+      this.updateAnchorsSelectable(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
   }
 
   apply(context: RenderingPluginContext) {
@@ -456,18 +525,6 @@ export class SelectablePlugin implements RenderingPlugin {
           r,
         });
       }
-
-      // re-position target
-      // target.setPosition(positionX, positionY);
-
-      // if (target.nodeName === Shape.RECT) {
-      //   target.attr({
-      //     width: maskWidth,
-      //     height: maskHeight,
-      //   });
-      // } else {
-      //   target.scale(scaleX, scaleY);
-      // }
     };
 
     const handleMovedTarget = (e: CustomEvent) => {
@@ -552,25 +609,30 @@ export class SelectablePlugin implements RenderingPlugin {
             selectable.triggerMovedEvent();
           }
         });
-      } else if (
-        e.key === 'Escape' ||
-        e.key === 'Backspace' ||
-        e.key === 'Delete'
-      ) {
+      } else if (e.key === 'Escape' || e.key === 'Delete') {
         [...this.selected].forEach((target) => {
           const selectable = this.getOrCreateSelectableUI(
             target,
           ) as AbstractSelectable<any>;
           if (selectable) {
             if (selectable.selectedAnchors.size) {
+              const unselectedAnchorsRemain =
+                selectable.anchors.length - selectable.selectedAnchors.size;
               if (
-                selectable.selectedAnchors.size === selectable.anchors.length
+                // Delete all anchors.
+                unselectedAnchorsRemain <= 1 ||
+                // Or 2 anchors remains in Polygon
+                (target.nodeName === Shape.POLYGON &&
+                  unselectedAnchorsRemain <= 2)
               ) {
                 if (
                   this.annotationPluginOptions.enableDeleteTargetWithShortcuts
                 ) {
-                  target.destroy();
+                  target.dispatchEvent(
+                    new CustomEvent(SelectableEvent.DELETED),
+                  );
                   this.deselectDisplayObject(target);
+                  target.destroy();
                 }
               } else if (
                 this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts
@@ -581,8 +643,9 @@ export class SelectablePlugin implements RenderingPlugin {
               if (
                 this.annotationPluginOptions.enableDeleteTargetWithShortcuts
               ) {
-                target.destroy();
+                target.dispatchEvent(new CustomEvent(SelectableEvent.DELETED));
                 this.deselectDisplayObject(target);
+                target.destroy();
               }
             }
           }

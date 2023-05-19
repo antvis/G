@@ -1,5 +1,10 @@
-import type { Circle, DisplayObject, DisplayObjectConfig } from '@antv/g-lite';
-import { CustomElement } from '@antv/g-lite';
+import {
+  Circle,
+  DisplayObject,
+  DisplayObjectConfig,
+  CustomElement,
+  FederatedEvent,
+} from '@antv/g-lite';
 import type { SelectablePlugin } from '../SelectablePlugin';
 import type { Selectable, SelectableProps } from './interface';
 import { SelectableStyle } from '../tokens';
@@ -27,6 +32,11 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
    * Potential added anchors.
    */
   midAnchors: Circle[] = [];
+
+  /**
+   * Anchor for rotate.
+   */
+  rotateAnchor: Circle;
 
   /**
    * Ref to plugin
@@ -82,6 +92,8 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
         anchorStrokeWidth: 1,
         anchorFillOpacity: 1,
         anchorSize: 6,
+        maskIncreasedLineWidthForHitTesting: 10,
+        rotateAnchorDistance: 50,
         ...style,
       },
       ...rest,
@@ -156,15 +168,22 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
     });
   }
 
-  protected bindAnchorEvent(anchor: Circle) {
-    anchor.addEventListener('click', () => {
-      if (this.selectedAnchors.has(anchor)) {
-        this.deselectAnchor(anchor);
-      } else {
-        this.selectAnchor(anchor);
-      }
-    });
+  bindAnchorEvent(anchor: Circle) {
+    anchor.addEventListener('click', this.handleClickAnchor);
   }
+
+  unbindAnchorEvent(anchor: Circle) {
+    anchor.removeEventListener('click', this.handleClickAnchor);
+  }
+
+  private handleClickAnchor = (e: FederatedEvent) => {
+    const anchor = e.currentTarget as Circle;
+    if (this.selectedAnchors.has(anchor)) {
+      this.deselectAnchor(anchor);
+    } else {
+      this.selectAnchor(anchor);
+    }
+  };
 
   connectedCallback() {
     this.init();
@@ -191,30 +210,50 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       this.mask.style.lineWidth = newValue;
     } else if (name === 'selectionLineDash') {
       this.mask.style.lineDash = newValue;
+    } else if (name === 'maskIncreasedLineWidthForHitTesting') {
+      this.mask.style.increasedLineWidthForHitTesting = newValue;
     } else if (name === 'anchorFill') {
       this.anchors.forEach((anchor) => {
         anchor.style.fill = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.fill = newValue;
+      }
     } else if (name === 'anchorStrokeWidth') {
       this.anchors.forEach((anchor) => {
         anchor.style.strokeWidth = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.strokeWidth = newValue;
+      }
     } else if (name === 'anchorStroke') {
       this.anchors.forEach((anchor) => {
         anchor.style.stroke = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.stroke = newValue;
+      }
     } else if (name === 'anchorSize') {
       this.anchors.forEach((anchor) => {
         anchor.style.r = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.r = newValue;
+      }
     } else if (name === 'anchorStrokeOpacity') {
       this.anchors.forEach((anchor) => {
         anchor.style.strokeOpacity = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.strokeOpacity = newValue;
+      }
     } else if (name === 'anchorFillOpacity') {
       this.anchors.forEach((anchor) => {
         anchor.style.fillOpacity = newValue;
       });
+      if (this.rotateAnchor) {
+        this.rotateAnchor.style.fillOpacity = newValue;
+      }
     } else if (name === 'selectedAnchorFill') {
       this.selectedAnchors.forEach((anchor) => {
         anchor.style.fill = newValue;

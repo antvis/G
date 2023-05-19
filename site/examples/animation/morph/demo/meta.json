@@ -19,6 +19,13 @@
         "en": "Convert DisplayObject to CubicBezier Path string"
       },
       "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*O4qsQ4QFkuMAAAAAAAAAAAAADmJ7AQ"
+    },
+    {
+      "filename": "issue.js",
+      "title": {
+        "zh": "转换基础图形到路径定义",
+        "en": "Convert DisplayObject to CubicBezier Path string"
+      }
     }
   ]
 }

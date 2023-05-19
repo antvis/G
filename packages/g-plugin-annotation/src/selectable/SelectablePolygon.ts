@@ -10,11 +10,6 @@ import { AbstractSelectable } from './AbstractSelectable';
 export class SelectablePolygon extends AbstractSelectable<Polygon> {
   init() {
     const {
-      anchorFill,
-      anchorStroke,
-      anchorFillOpacity,
-      anchorStrokeOpacity,
-      anchorSize,
       selectionFill,
       selectionFillOpacity,
       selectionStroke,
@@ -31,7 +26,9 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
       style: {
         points,
         draggable: target.style.maskDraggable === false ? false : true,
-        increasedLineWidthForHitTesting: 20,
+        increasedLineWidthForHitTesting:
+          this.plugin.annotationPluginOptions.selectableStyle
+            .maskIncreasedLineWidthForHitTesting,
         cursor: 'move',
       },
     });
@@ -81,7 +78,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
     });
     this.anchors.push(anchor);
     this.mask.appendChild(anchor);
-    this.bindAnchorEvent(anchor);
+
+    if (this.plugin.annotationPluginOptions.enableDeleteAnchorsWithShortcuts) {
+      this.bindAnchorEvent(anchor);
+    }
   }
 
   private createMidAnchor() {
@@ -120,6 +120,10 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
     });
     this.midAnchors.push(midAnchor);
     this.mask.appendChild(midAnchor);
+
+    if (!this.plugin.midAnchorsVisible) {
+      midAnchor.style.visibility = 'hidden';
+    }
   }
 
   destroy(): void {}

@@ -1,4 +1,4 @@
-import type {
+import {
   DisplayObject,
   FederatedEvent,
   ParsedPolylineStyleProps,
@@ -33,7 +33,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       style: {
         points,
         draggable: target.style.maskDraggable === false ? false : true,
-        increasedLineWidthForHitTesting: 20,
+        increasedLineWidthForHitTesting:
+          this.plugin.annotationPluginOptions.selectableStyle
+            .maskIncreasedLineWidthForHitTesting,
         cursor: 'move',
       },
     });
@@ -42,8 +44,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     points.forEach((_, i) => {
       this.createAnchor();
 
-      if (i !== points.length - 1) {
-        this.createMidAnchor();
+      if (target.nodeName !== Shape.LINE) {
+        if (i !== points.length - 1) {
+          this.createMidAnchor();
+        }
       }
     });
 
@@ -87,7 +91,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     this.anchors.push(anchor);
     this.mask.appendChild(anchor);
 
-    this.bindAnchorEvent(anchor);
+    if (this.plugin.annotationPluginOptions.enableDeleteAnchorsWithShortcuts) {
+      this.bindAnchorEvent(anchor);
+    }
   }
 
   private createMidAnchor() {
@@ -126,6 +132,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     });
     this.midAnchors.push(midAnchor);
     this.mask.appendChild(midAnchor);
+
+    if (!this.plugin.midAnchorsVisible) {
+      midAnchor.style.visibility = 'hidden';
+    }
   }
 
   destroy(): void {}
@@ -136,14 +146,16 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     const points = this.mask.style.points.slice();
     this.selectedAnchors.forEach((anchor) => {
       const index = this.anchors.indexOf(anchor);
+      const midAnchorIndex =
+        index !== this.anchors.length - 1 ? index : index - 1;
 
       // Destroy anchor & midAnchor
       this.anchors.splice(index, 1);
       anchor.destroy();
 
-      const midAnchor = this.midAnchors[index];
+      const midAnchor = this.midAnchors[midAnchorIndex];
       if (midAnchor) {
-        this.midAnchors.splice(index, 1);
+        this.midAnchors.splice(midAnchorIndex, 1);
         midAnchor.destroy();
       }
 
@@ -208,7 +220,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       if (this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
         const midAnchors = this.midAnchors[i];
         if (midAnchors) {
-          const nextPoint = points.points[i + 1];
+          const nextPoint =
+            i === points.points.length - 1
+              ? points.points[0]
+              : points.points[i + 1];
           midAnchors.setPosition([
             (nextPoint[0] + point[0]) / 2,
             (nextPoint[1] + point[1]) / 2,
@@ -235,6 +250,11 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         );
       });
     };
+
+    // const tmpMat = mat4.create();
+    // const tmpQuat = quat.create();
+    // const translateVec3 = vec3.create();
+    // const scalingVec3 = vec3.fromValues(1, 1, 1);
 
     let midAnchorIndexInDrag = -1;
     this.addEventListener('dragstart', (e: FederatedEvent) => {
@@ -287,6 +307,55 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         this.mask.style.points = originPoints;
         // change anchors' position
         this.repositionAnchors();
+      } else if (target === this.rotateAnchor) {
+        // // @ts-ignore
+        // const dx = e.dx;
+        // // @ts-ignore
+        // const dy = e.dy;
+        // const rotateAnchorPosition = this.rotateAnchor.getPosition();
+        // const draggedRotateAnchorPosition: vec3 = [
+        //   rotateAnchorPosition[0] + dx,
+        //   rotateAnchorPosition[1] + dy,
+        //   0,
+        // ];
+        // const angle = vec3.angle(
+        //   rotateAnchorPosition,
+        //   draggedRotateAnchorPosition,
+        // );
+        // let angle = Math.atan2(dy, dx);
+        // normalize angle to positive value
+        // if (angle < 0) {
+        //   angle = 360 + angle;
+        // }
+        // angle %= 360;
+        // const m = mat4.fromRotationTranslationScaleOrigin(
+        //   tmpMat,
+        //   quat.fromEuler(tmpQuat, 0, 0, rad2deg(angle)),
+        //   translateVec3,
+        //   scalingVec3,
+        //   this.origin,
+        // );
+        // const p = this.rotateAnchor.getPosition();
+        // const v = vec3.transformMat4(
+        //   vec3.create(),
+        //   vec3.fromValues(p[0], p[1], 0),
+        //   m,
+        // );
+        // this.rotateAnchor.setPosition([v[0], v[1], p[2]]);
+        // const { points } = this.mask.parsedStyle;
+        // const originPoints = [...points.points];
+        // originPoints.forEach((point) => {
+        //   const v = vec3.transformMat4(
+        //     vec3.create(),
+        //     vec3.fromValues(point[0], point[1], 0),
+        //     m,
+        //   );
+        //   point[0] = v[0];
+        //   point[1] = v[1];
+        // });
+        // this.mask.style.points = originPoints;
+        // // change anchors' position
+        // this.repositionAnchors();
       }
     });
     this.addEventListener('dragend', (e: FederatedEvent) => {

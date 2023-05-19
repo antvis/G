@@ -1,5 +1,5 @@
 import type { PointLike } from '@antv/g-lite';
-import { Rect, definedProps } from '@antv/g-lite';
+import { Polygon, definedProps } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
@@ -18,13 +18,6 @@ export function getHeightFromBbox(path: PointLike[]) {
   return Math.sqrt(dy * dy + dx * dx);
 }
 
-function getRotationFromBbox(path: PointLike[]) {
-  const [tl, tr] = path;
-  const dy = tr.y - tl.y;
-  const dx = tr.x - tl.x;
-  return (Math.atan(dy / dx) * 180) / Math.PI;
-}
-
 export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   const { path } = anno;
   const style = anno.isDrawing ? DASH_LINE_STYLE : DEFAULT_STYLE;
@@ -37,20 +30,15 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     rectLineDash,
   } = context.annotationPluginOptions.drawerStyle;
 
-  const [tl] = path;
-  const { x, y } = tl;
-  const width = getWidthFromBbox(path);
-  const height = getHeightFromBbox(path);
-  const rotation = getRotationFromBbox(path);
+  const [tl, tr, br, bl] = path;
 
   let brushRect = context.brushRect;
   if (!brushRect) {
-    brushRect = new Rect({
+    brushRect = new Polygon({
       id: anno.id,
       className: anno.id,
       style: {
-        width: 0,
-        height: 0,
+        points: [],
       },
     });
 
@@ -59,10 +47,12 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
   }
 
   brushRect.attr({
-    x,
-    y,
-    height,
-    width,
+    points: [
+      [tl.x, tl.y],
+      [tr.x, tr.y],
+      [br.x, br.y],
+      [bl.x, bl.y],
+    ],
     visibility: 'visible',
     ...style,
     ...definedProps({
@@ -74,7 +64,4 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
       lineDash: rectLineDash,
     }),
   });
-  if (!isNaN(rotation)) {
-    brushRect.setLocalEulerAngles(rotation);
-  }
 };
