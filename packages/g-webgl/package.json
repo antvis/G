@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "1.7.63",
+  "version": "1.7.64",
   "description": "A renderer implemented by WebGL1/2",
   "keywords": [
     "antv",
@@ -30,11 +30,11 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.7.59",
-    "@antv/g-plugin-dom-interaction": "^1.7.47",
-    "@antv/g-plugin-html-renderer": "^1.7.51",
-    "@antv/g-plugin-image-loader": "^1.1.49",
-    "@antv/g-plugin-webgl-device": "^1.7.48",
+    "@antv/g-plugin-device-renderer": "^1.7.60",
+    "@antv/g-plugin-dom-interaction": "^1.7.48",
+    "@antv/g-plugin-html-renderer": "^1.7.52",
+    "@antv/g-plugin-image-loader": "^1.1.50",
+    "@antv/g-plugin-webgl-device": "^1.7.49",
     "@antv/util": "^3.3.1"
   },
   "devDependencies": {
