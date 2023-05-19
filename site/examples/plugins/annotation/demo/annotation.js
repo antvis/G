@@ -306,6 +306,7 @@ const selectableConfig = {
   anchorSize: 6,
   selectedAnchorFill: '#1890FF',
   allowVertexAdditionAndDeletion: true,
+  allowTargetRotation: true,
 };
 selectableFolder
   .addColor(selectableConfig, 'selectionFill')
@@ -402,6 +403,11 @@ selectableFolder
   .add(selectableConfig, 'allowVertexAdditionAndDeletion')
   .onChange((allowed) => {
     annotationPlugin.allowVertexAdditionAndDeletion(allowed);
+  });
+selectableFolder
+  .add(selectableConfig, 'allowTargetRotation')
+  .onChange((allowed) => {
+    annotationPlugin.allowTargetRotation(allowed);
   });
 selectableFolder.open();
 

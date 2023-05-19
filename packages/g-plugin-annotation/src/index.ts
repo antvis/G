@@ -194,6 +194,14 @@ export class Plugin extends AbstractRendererPlugin {
     }
   }
 
+  allowTargetRotation(allowed: boolean) {
+    if (allowed) {
+      this.getSelectablePlugin().showRotateAnchor();
+    } else {
+      this.getSelectablePlugin().hideRotateAnchor();
+    }
+  }
+
   destroy(): void {
     this.removeAllRenderingPlugins();
   }
