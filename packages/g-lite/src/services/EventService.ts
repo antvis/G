@@ -209,7 +209,14 @@ export class EventService {
     // }
 
     const now = performance.now();
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
 
     this.dispatchEvent(e, 'pointerup');
 
@@ -313,7 +320,15 @@ export class EventService {
     //   return;
     // }
 
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
+
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
     const trackingData = this.trackingData(from.pointerId);
     const outTarget = this.findMountedTarget(trackingData.overTargets);
@@ -597,7 +612,14 @@ export class EventService {
   };
 
   onPointerCancel = (from: FederatedPointerEvent) => {
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
 
     this.dispatchEvent(e);
     this.freeEvent(e);
@@ -727,7 +749,7 @@ export class EventService {
     }
 
     if (event.nativeEvent.composedPath) {
-      return event.nativeEvent.composedPath().indexOf($el) > -1;
+      return event.nativeEvent.composedPath().indexOf($el as EventTarget) > -1;
     }
 
     // account for Touch
@@ -767,6 +789,7 @@ export class EventService {
     from: FederatedPointerEvent,
     type?: string,
     target?: IEventTarget,
+    fallbackTarget?: IEventTarget,
   ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
@@ -781,7 +804,8 @@ export class EventService {
     event.target =
       target ??
       (existedHTML ||
-        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)));
+        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)) ||
+        fallbackTarget);
 
     if (typeof type === 'string') {
       event.type = type;

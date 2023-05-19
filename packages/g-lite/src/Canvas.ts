@@ -159,6 +159,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsTouchEvents,
       supportsCSSTransform,
       useNativeClickEvent,
+      alwaysTriggerPointerEventOnCanvas,
       isTouchEvent,
       isMouseEvent,
     } = config;
@@ -222,6 +223,7 @@ export class Canvas extends EventTarget implements ICanvas {
       document,
       supportsCSSTransform,
       useNativeClickEvent,
+      alwaysTriggerPointerEventOnCanvas,
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);
