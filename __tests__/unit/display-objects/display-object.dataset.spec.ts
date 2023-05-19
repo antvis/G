@@ -2,11 +2,13 @@ import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-import { Group } from '@antv/g';
+import { Group, runtime } from '@antv/g';
 import sinonChai from 'sinon-chai';
 
 chai.use(chaiAlmost());
 chai.use(sinonChai);
+
+runtime.enableDataset = true;
 
 describe('DisplayObject dataset API', () => {
   it('should setAttribute data-* with dataset API', () => {

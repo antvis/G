@@ -36,13 +36,22 @@ const canvaskitRenderer = new CanvaskitRenderer({
 
 const annotationPlugin = new AnnotationPlugin({
   enableDeleteTargetWithShortcuts: true,
+  enableDeleteAnchorsWithShortcuts: true,
   enableAutoSwitchDrawingMode: true,
+  enableDisplayMidAnchors: true,
+  enableRotateAnchor: true,
   selectableStyle: {
     selectionFill: 'rgba(24,144,255,0.15)',
     selectionStroke: '#1890FF',
     selectionStrokeWidth: 2.5,
     anchorFill: '#1890FF',
     anchorStroke: '#1890FF',
+    selectedAnchorSize: 10,
+    selectedAnchorFill: 'red',
+    selectedAnchorStroke: 'blue',
+    selectedAnchorStrokeWidth: 10,
+    selectedAnchorStrokeOpacity: 0.6,
+    midAnchorFillOpacity: 0.6,
   },
 });
 canvasRenderer.registerPlugin(annotationPlugin);
@@ -148,6 +157,21 @@ const polyline = new Polyline({
   },
 });
 
+const polygon = new Polygon({
+  style: {
+    points: [
+      [100, 100],
+      [300, 100],
+      [300, 300],
+      [100, 300],
+    ],
+    lineWidth: 10,
+    stroke: 'red',
+    selectable: true,
+    selectableUI: 'rect',
+  },
+});
+
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(circle);
   canvas.appendChild(ellipse);
@@ -155,6 +179,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(rect);
   canvas.appendChild(line);
   canvas.appendChild(polyline);
+  canvas.appendChild(polygon);
 
   annotationPlugin.setDrawingMode(true);
   annotationPlugin.setDrawer('rect');
@@ -192,13 +217,11 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       });
       canvas.appendChild(polygon);
     } else if (type === 'rect') {
-      const rect = new Rect({
+      const rect = new Polygon({
         style: {
           ...brush,
-          x: path[0].x,
-          y: path[0].y,
-          width: path[2].x - path[0].x,
-          height: path[2].y - path[0].y,
+          selectableUI: 'rect',
+          points: path.map(({ x, y }) => [x, y]),
         },
       });
       canvas.appendChild(rect);
@@ -281,6 +304,8 @@ const selectableConfig = {
   anchorStrokeOpacity: 1,
   anchorStrokeWidth: 1,
   anchorSize: 6,
+  selectedAnchorFill: '#1890FF',
+  allowVertexAdditionAndDeletion: true,
 };
 selectableFolder
   .addColor(selectableConfig, 'selectionFill')
@@ -365,6 +390,18 @@ selectableFolder
     annotationPlugin.updateSelectableStyle({
       anchorStrokeOpacity,
     });
+  });
+selectableFolder
+  .addColor(selectableConfig, 'selectedAnchorFill')
+  .onChange((selectedAnchorFill) => {
+    annotationPlugin.updateSelectableStyle({
+      selectedAnchorFill,
+    });
+  });
+selectableFolder
+  .add(selectableConfig, 'allowVertexAdditionAndDeletion')
+  .onChange((allowed) => {
+    annotationPlugin.allowVertexAdditionAndDeletion(allowed);
   });
 selectableFolder.open();
 

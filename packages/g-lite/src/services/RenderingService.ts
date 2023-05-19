@@ -82,54 +82,49 @@ export class RenderingService {
     /**
      * only dirty object which has sth changed will be rendered
      */
-    dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    dirtycheck: new SyncWaterfallHook<[DisplayObject], DisplayObject>(),
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null, ICamera]>([
-      'object',
-      'camera',
-    ]),
+    cull: new SyncWaterfallHook<[DisplayObject, ICamera], DisplayObject>(),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
-    beginFrame: new SyncHook<[]>([]),
+    beginFrame: new SyncHook<[]>(),
     /**
      * called before every dirty object get rendered
      */
-    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    beforeRender: new SyncHook<[DisplayObject]>(),
     /**
      * called when every dirty object rendering even it's culled
      */
-    render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    render: new SyncHook<[DisplayObject]>(),
     /**
      * called after every dirty object get rendered
      */
-    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
-    endFrame: new SyncHook<[]>([]),
-    destroy: new SyncHook<[]>([]),
+    afterRender: new SyncHook<[DisplayObject]>(),
+    endFrame: new SyncHook<[]>(),
+    destroy: new SyncHook<[]>(),
     /**
      * use async but faster method such as GPU-based picking in `g-plugin-device-renderer`
      */
-    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>([
-      'result',
-    ]),
+    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(),
 
     /**
      * Unsafe but sync version of pick.
      */
-    pickSync: new SyncWaterfallHook<[PickingResult], PickingResult>(['result']),
+    pickSync: new SyncWaterfallHook<[PickingResult], PickingResult>(),
     /**
      * used in event system
      */
-    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerCancel: new SyncHook<[InteractivePointerEvent]>(['event']),
-    click: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerDown: new SyncHook<[InteractivePointerEvent]>(),
+    pointerUp: new SyncHook<[InteractivePointerEvent]>(),
+    pointerMove: new SyncHook<[InteractivePointerEvent]>(),
+    pointerOut: new SyncHook<[InteractivePointerEvent]>(),
+    pointerOver: new SyncHook<[InteractivePointerEvent]>(),
+    pointerWheel: new SyncHook<[InteractivePointerEvent]>(),
+    pointerCancel: new SyncHook<[InteractivePointerEvent]>(),
+    click: new SyncHook<[InteractivePointerEvent]>(),
   };
 
   async init() {

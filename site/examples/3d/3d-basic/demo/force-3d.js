@@ -1668,6 +1668,9 @@ const canvas = new Canvas({
     // create a mesh
     const sphere = new Mesh({
       style: {
+        x: node.x + 300,
+        y: node.y + 250,
+        z: node.z,
         fill,
         opacity: 1,
         geometry: sphereGeometry,
@@ -1675,7 +1678,6 @@ const canvas = new Canvas({
         cursor: 'pointer',
       },
     });
-    sphere.setPosition(node.x + 300, node.y + 250, node.z);
     canvas.appendChild(sphere);
 
     sphere.addEventListener('mouseenter', () => {
@@ -1685,31 +1687,32 @@ const canvas = new Canvas({
       sphere.style.fill = fill;
     });
 
-    const icon = new Image({
-      style: {
-        x: node.x + 300,
-        y: node.y + 250,
-        z: node.z,
-        width: 50,
-        height: 50,
-        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        isBillboard: true,
-      },
-    });
-    canvas.appendChild(icon);
-
-    // const label = new Text({
+    // const icon = new Image({
     //   style: {
     //     x: node.x + 300,
     //     y: node.y + 250,
     //     z: node.z,
-    //     fontFamily: 'sans-serif',
-    //     text: node.id,
-    //     fontSize: 50,
-    //     fill: 'black',
+    //     width: 50,
+    //     height: 50,
+    //     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    //     isBillboard: true,
     //   },
     // });
-    // canvas.appendChild(label);
+    // canvas.appendChild(icon);
+
+    const label = new Text({
+      style: {
+        x: node.x + 310,
+        y: node.y + 250,
+        z: node.z,
+        fontFamily: 'sans-serif',
+        text: node.id,
+        fontSize: 6,
+        fill: 'black',
+        isBillboard: true,
+      },
+    });
+    canvas.appendChild(label);
   });
 
   dataset.links.forEach((edge) => {

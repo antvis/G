@@ -80,6 +80,13 @@
       }
     },
     {
+      "filename": "rects.js",
+      "title": {
+        "zh": "大量矩形",
+        "en": "Instanced Rect"
+      }
+    },
+    {
       "filename": "disable-css.js",
       "title": {
         "zh": "关闭 CSS 解析",

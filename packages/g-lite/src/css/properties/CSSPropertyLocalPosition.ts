@@ -1,5 +1,11 @@
 import { isNil } from '@antv/util';
-import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
+import type {
+  Circle,
+  DisplayObject,
+  Line,
+  Rect,
+  Text,
+} from '../../display-objects';
 import { ParsedBaseStyleProps, Shape } from '../../types';
 import { parsedTransformToMat4 } from '../../utils';
 import type { CSSUnitValue } from '../cssom';
@@ -51,6 +57,9 @@ export class CSSPropertyLocalPosition
         }
         if (!isNil((object as Rect).parsedStyle.y)) {
           y = (object as Rect).parsedStyle.y;
+        }
+        if (!isNil((object as Text).parsedStyle.z)) {
+          z = (object as Text).parsedStyle.z;
         }
         break;
       default:

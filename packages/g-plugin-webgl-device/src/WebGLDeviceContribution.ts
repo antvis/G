@@ -24,13 +24,19 @@ export class WebGLDeviceContribution implements DeviceContribution {
     if (targets.includes('webgl2')) {
       gl =
         $canvas.getContext('webgl2', options) ||
-        ($canvas.getContext('experimental-webgl2', options) as WebGL2RenderingContext);
+        ($canvas.getContext(
+          'experimental-webgl2',
+          options,
+        ) as WebGL2RenderingContext);
     }
 
     if (!gl && targets.includes('webgl1')) {
       gl =
         $canvas.getContext('webgl', options) ||
-        ($canvas.getContext('experimental-webgl', options) as WebGLRenderingContext);
+        ($canvas.getContext(
+          'experimental-webgl',
+          options,
+        ) as WebGLRenderingContext);
     }
 
     return new Device_GL(gl as WebGLRenderingContext | WebGL2RenderingContext, {

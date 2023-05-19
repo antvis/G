@@ -129,6 +129,11 @@ export abstract class Instanced {
   protected textureMappings: TextureMapping[] = [];
   protected samplerEntries: BindingLayoutSamplerDescriptor[];
 
+  /**
+   * Receiving light e.g. Mesh.
+   */
+  protected lightReceived = false;
+
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
   get instance() {
@@ -958,7 +963,7 @@ export abstract class Instanced {
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
-    const useLight = !!lights.length;
+    const useLight = this.lightReceived && !!lights.length;
     const useWireframe = material.defines.USE_WIREFRAME;
 
     // collect uniforms

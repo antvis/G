@@ -67,6 +67,17 @@ export interface GlobalRuntime {
   globalThis: any;
   enableCSSParsing: boolean;
   nativeHTMLMap: WeakMap<HTMLElement, HTML>;
+
+  /**
+   * Enable using dataset property.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
+   */
+  enableDataset: boolean;
+
+  /**
+   * circle.style.r = 100;
+   */
+  enableStyleSyntax: boolean;
 }
 
 /**
@@ -166,3 +177,5 @@ runtime.styleValueRegistry = new DefaultStyleValueRegistry();
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
 runtime.enableCSSParsing = true;
+runtime.enableDataset = false;
+runtime.enableStyleSyntax = true;
