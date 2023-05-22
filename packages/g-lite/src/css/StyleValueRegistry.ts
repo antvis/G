@@ -1281,6 +1281,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // <Text> use textAlign & textBaseline instead of anchor
       if (nodeName === Shape.TEXT) {
         delete parsedStyle.anchor;
+      } else if (nodeName === Shape.MESH) {
+        parsedStyle.anchor[2] = 0.5;
       }
 
       const center: Tuple3Number = [
