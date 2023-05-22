@@ -30,12 +30,15 @@ export class CSSPropertyLocalPosition
     switch (object.nodeName) {
       case Shape.CIRCLE:
       case Shape.ELLIPSE:
-        const { cx, cy } = (object as Circle).parsedStyle;
+        const { cx, cy, cz } = (object as Circle).parsedStyle;
         if (!isNil(cx)) {
           x = cx;
         }
         if (!isNil(cy)) {
           y = cy;
+        }
+        if (!isNil(cz)) {
+          z = cz;
         }
         break;
       case Shape.LINE:

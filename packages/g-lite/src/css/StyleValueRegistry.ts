@@ -333,6 +333,12 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     syntax: PropertySyntax.COORDINATE,
   },
   {
+    n: 'cz',
+    int: true,
+    d: '0',
+    syntax: PropertySyntax.COORDINATE,
+  },
+  {
     n: 'r',
     int: true,
     l: true,

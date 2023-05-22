@@ -7,8 +7,10 @@ import { DisplayObject } from './DisplayObject';
 export interface RectStyleProps extends BaseStyleProps {
   x?: number | string;
   y?: number | string;
+  z?: number;
   width: number | string;
   height: number | string;
+  isBillboard?: boolean;
   /**
    * top-left, top-right, bottom-right, bottom-left
    */
@@ -18,8 +20,10 @@ export interface RectStyleProps extends BaseStyleProps {
 export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
   x?: number;
   y?: number;
+  z?: number;
   width: number;
   height: number;
+  isBillboard?: boolean;
   radius?: [number, number, number, number];
 }
 
