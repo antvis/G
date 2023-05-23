@@ -150,6 +150,10 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
         },
       });
       this.mask.appendChild(this.rotateAnchor);
+
+      if (!this.plugin.rotateAnchorVisible) {
+        this.rotateAnchor.style.visibility = 'hidden';
+      }
     }
 
     this.repositionAnchors();

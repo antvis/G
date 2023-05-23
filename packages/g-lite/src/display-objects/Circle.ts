@@ -8,12 +8,16 @@ import { DisplayObject } from './DisplayObject';
 export interface CircleStyleProps extends BaseStyleProps {
   cx?: number | string | null;
   cy?: number | string | null;
+  cz?: number | string | null;
   r: number | string | null;
+  isBillboard?: boolean;
 }
 export interface ParsedCircleStyleProps extends ParsedBaseStyleProps {
   cx: number;
   cy: number;
+  cz?: number;
   r: number;
+  isBillboard?: boolean;
 }
 export class Circle extends DisplayObject<
   CircleStyleProps,

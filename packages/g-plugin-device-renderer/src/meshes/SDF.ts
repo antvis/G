@@ -86,7 +86,7 @@ export class SDFMesh extends Instanced {
         SDF_Shape.indexOf(circle.nodeName),
         radius || 0,
         omitStroke ? 1 : 0,
-        0,
+        circle.parsedStyle.isBillboard ? 1 : 0,
       );
       interleaved.push(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1);
       indices.push(
@@ -177,7 +177,7 @@ export class SDFMesh extends Instanced {
           SDF_Shape.indexOf(object.nodeName),
           object.parsedStyle.radius || 0,
           omitStroke ? 1 : 0,
-          0,
+          circle.parsedStyle.isBillboard ? 1 : 0,
         );
       });
       this.geometry.updateVertexBuffer(

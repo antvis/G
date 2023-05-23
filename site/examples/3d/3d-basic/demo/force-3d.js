@@ -1,4 +1,13 @@
-import { Canvas, CanvasEvent, Line, Text, Image } from '@antv/g';
+import {
+  runtime,
+  Canvas,
+  CanvasEvent,
+  Line,
+  Text,
+  Rect,
+  Image,
+  Circle,
+} from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import {
   MeshPhongMaterial,
@@ -16,6 +25,8 @@ import {
   forceManyBody,
   forceCenter,
 } from 'd3-force-3d';
+
+runtime.enableCSSParsing = false;
 
 // https://bl.ocks.org/vasturiano/f59675656258d3f490e9faa40828c0e7
 const dataset = {
@@ -1639,7 +1650,7 @@ const canvas = new Canvas({
 
   // create a sphere geometry
   const sphereGeometry = new SphereGeometry(device, {
-    radius: 10,
+    radius: 5,
     latitudeBands: 32,
     longitudeBands: 32,
   });
@@ -1687,24 +1698,36 @@ const canvas = new Canvas({
       sphere.style.fill = fill;
     });
 
-    // const icon = new Image({
-    //   style: {
-    //     x: node.x + 300,
-    //     y: node.y + 250,
-    //     z: node.z,
-    //     width: 50,
-    //     height: 50,
-    //     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    //     isBillboard: true,
-    //   },
-    // });
-    // canvas.appendChild(icon);
+    const icon = new Image({
+      style: {
+        x: node.x + 310,
+        y: node.y + 250,
+        z: node.z - 1,
+        width: 10,
+        height: 10,
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        isBillboard: true,
+      },
+    });
+    canvas.appendChild(icon);
+
+    const circle = new Circle({
+      style: {
+        cx: node.x + 310,
+        cy: node.y + 250,
+        cz: node.z - 2,
+        r: 2.5,
+        fill: 'red',
+        isBillboard: true,
+      },
+    });
+    canvas.appendChild(circle);
 
     const label = new Text({
       style: {
         x: node.x + 310,
         y: node.y + 250,
-        z: node.z,
+        z: node.z + 1,
         fontFamily: 'sans-serif',
         text: node.id,
         fontSize: 6,
@@ -1712,6 +1735,20 @@ const canvas = new Canvas({
         isBillboard: true,
       },
     });
+
+    const rect = new Rect({
+      style: {
+        x: node.x + 310,
+        y: node.y + 250,
+        z: node.z,
+        width: label.getBBox().width,
+        height: 8,
+        fill: 'grey',
+        isBillboard: true,
+        fillOpacity: 0.6,
+      },
+    });
+    canvas.appendChild(rect);
     canvas.appendChild(label);
   });
 
@@ -1745,7 +1782,7 @@ const canvas = new Canvas({
 
   // adjust camera's position
   const camera = canvas.getCamera();
-  camera.setPerspective(0.1, 1000, 45, 600 / 500);
+  camera.setPerspective(0.1, 5000, 45, 600 / 500);
 
   // stats
   const stats = new Stats();

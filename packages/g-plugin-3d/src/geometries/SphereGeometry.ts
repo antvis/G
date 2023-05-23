@@ -64,7 +64,11 @@ export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {
     let u: number;
     let v: number;
 
-    const { radius = 0.5, latitudeBands = 16, longitudeBands = 16 } = this.props;
+    const {
+      radius = 0.5,
+      latitudeBands = 16,
+      longitudeBands = 16,
+    } = this.props;
 
     const positions: number[] = [];
     const normals: number[] = [];

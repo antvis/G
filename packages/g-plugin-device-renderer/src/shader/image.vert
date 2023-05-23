@@ -20,11 +20,11 @@ void main() {
 
   bool isPerspective = isPerspectiveMatrix(u_ProjectionMatrix);
 
-  float isBillboard = a_Size.w;
-  if (isBillboard < 0.5) {
-    gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  bool isBillboard = a_Size.w > 0.5;
+  if (isBillboard) {
+    #pragma glslify: import('@antv/g-shader-components/billboard.vert')
   } else {
-    gl_Position = project(vec4(offset, a_Size.z, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+    gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   }
 
   #pragma glslify: import('@antv/g-shader-components/uv.vert')

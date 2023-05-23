@@ -32,7 +32,12 @@ void main() {
   vec2 radius = a_Size + vec2(omitStroke ? 0.0 : strokeWidth / 2.0);
   vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * u_Anchor.xy) * radius;
 
-  gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  bool isBillboard = a_StylePacked3.w > 0.5;
+  if (isBillboard) {
+    #pragma glslify: import('@antv/g-shader-components/billboard.vert')
+  } else {
+    gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  }
   
   v_Radius = radius;
   v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked3.x);

@@ -80,6 +80,11 @@ export class SelectablePlugin implements RenderingPlugin {
    */
   midAnchorsVisible = true;
 
+  /**
+   * Toggle visibility of rotate anchor
+   */
+  rotateAnchorVisible = true;
+
   getSelectedDisplayObjects() {
     return this.selected;
   }
@@ -177,6 +182,9 @@ export class SelectablePlugin implements RenderingPlugin {
     this.updateMidAnchorsVisibility(
       this.selectableMap[object.entity] as AbstractSelectable<any>,
     );
+    this.updateRotateAnchorVisibility(
+      this.selectableMap[object.entity] as AbstractSelectable<any>,
+    );
 
     return this.selectableMap[object.entity];
   }
@@ -203,6 +211,14 @@ export class SelectablePlugin implements RenderingPlugin {
     });
   }
 
+  private updateRotateAnchorVisibility(selectable: AbstractSelectable<any>) {
+    if (selectable?.rotateAnchor) {
+      selectable.rotateAnchor.style.visibility = this.rotateAnchorVisible
+        ? 'unset'
+        : 'hidden';
+    }
+  }
+
   private updateAnchorsSelectable(selectable: AbstractSelectable<any>) {
     selectable?.anchors.forEach((anchor) => {
       if (this.annotationPluginOptions.enableDeleteAnchorsWithShortcuts) {
@@ -226,6 +242,24 @@ export class SelectablePlugin implements RenderingPlugin {
     this.midAnchorsVisible = false;
     this.selected.forEach((selected) => {
       this.updateMidAnchorsVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  showRotateAnchor() {
+    this.rotateAnchorVisible = true;
+    this.selected.forEach((selected) => {
+      this.updateRotateAnchorVisibility(
+        this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
+      );
+    });
+  }
+
+  hideRotateAnchor() {
+    this.rotateAnchorVisible = false;
+    this.selected.forEach((selected) => {
+      this.updateRotateAnchorVisibility(
         this.getOrCreateSelectableUI(selected) as AbstractSelectable<any>,
       );
     });

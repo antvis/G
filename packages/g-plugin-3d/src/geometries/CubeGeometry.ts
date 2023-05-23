@@ -148,7 +148,11 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
     const indices: number[] = [];
     let vcounter = 0;
 
-    const generateFace = (side: number, uSegments: number, vSegments: number) => {
+    const generateFace = (
+      side: number,
+      uSegments: number,
+      vSegments: number,
+    ) => {
       let u: number;
       let v: number;
       let i: number;
@@ -160,15 +164,29 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
           const temp2 = vec3.create();
           const temp3 = vec3.create();
           const r = vec3.create();
-          vec3.lerp(temp1, corners[faceAxes[side][0]], corners[faceAxes[side][1]], i / uSegments);
-          vec3.lerp(temp2, corners[faceAxes[side][0]], corners[faceAxes[side][2]], j / vSegments);
+          vec3.lerp(
+            temp1,
+            corners[faceAxes[side][0]],
+            corners[faceAxes[side][1]],
+            i / uSegments,
+          );
+          vec3.lerp(
+            temp2,
+            corners[faceAxes[side][0]],
+            corners[faceAxes[side][2]],
+            j / vSegments,
+          );
           vec3.sub(temp3, temp2, corners[faceAxes[side][0]]);
           vec3.add(r, temp1, temp3);
           u = i / uSegments;
           v = j / vSegments;
 
           positions.push(r[0], r[1], r[2]);
-          normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
+          normals.push(
+            faceNormals[side][0],
+            faceNormals[side][1],
+            faceNormals[side][2],
+          );
           uvs.push(u, 1.0 - v);
           // pack as 3x2
           // 1/3 will be empty, but it's either that or stretched pixels
@@ -183,7 +201,11 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
 
           if (i < uSegments && j < vSegments) {
             indices.push(vcounter + vSegments + 1, vcounter + 1, vcounter);
-            indices.push(vcounter + vSegments + 1, vcounter + vSegments + 2, vcounter + 1);
+            indices.push(
+              vcounter + vSegments + 1,
+              vcounter + vSegments + 2,
+              vcounter + 1,
+            );
           }
 
           vcounter++;
