@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-lite",
-  "version": "1.0.62",
+  "version": "1.0.63",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -32,7 +32,7 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
-    "@antv/g-math": "^1.7.48",
+    "@antv/g-math": "^1.7.49",
     "@antv/util": "^3.3.1",
     "@types/offscreencanvas": "^2019.6.4",
     "d3-color": "^1.4.0",
