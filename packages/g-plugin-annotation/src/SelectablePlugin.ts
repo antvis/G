@@ -17,6 +17,7 @@ import {
 } from './rendering/rect-render';
 import {
   SelectableCircle,
+  SelectableImage,
   SelectablePolyline,
   SelectableRect,
   SelectableRectPolygon,
@@ -143,12 +144,10 @@ export class SelectablePlugin implements RenderingPlugin {
       let constructor: any;
 
       const selectableUI = object.nodeName;
-      if (
-        selectableUI === Shape.RECT ||
-        selectableUI === Shape.IMAGE ||
-        selectableUI === Shape.ELLIPSE
-      ) {
+      if (selectableUI === Shape.RECT || selectableUI === Shape.ELLIPSE) {
         constructor = SelectableRect;
+      } else if (selectableUI === Shape.IMAGE) {
+        constructor = SelectableImage;
       } else if (selectableUI === Shape.CIRCLE) {
         constructor = SelectableCircle;
       } else if (
