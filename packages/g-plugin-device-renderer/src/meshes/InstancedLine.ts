@@ -1,3 +1,7 @@
+/**
+ * Instanced line which has a  better performance.
+ * @see https://www.yuque.com/antv/ou292n/gg1gh5
+ */
 import type { Line, ParsedLineStyleProps, Path, Polyline } from '@antv/g-lite';
 import { DisplayObject, Shape, isDisplayObject } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';

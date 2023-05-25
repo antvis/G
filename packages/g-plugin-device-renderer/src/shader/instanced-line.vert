@@ -14,7 +14,7 @@ layout(location = CAP) in float a_Cap;
 layout(location = DASH) in vec4 a_Dash;
 
 out vec4 v_Dash;
-// out vec2 v_Normal;
+out vec2 v_Distance;
 
 bool isPerspectiveMatrix(mat4 m) {
   return m[ 2 ][ 3 ] == - 1.0;
@@ -59,9 +59,10 @@ void main() {
     if (a_Cap > 1.0) {
       point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(strokeWidth / 2.0);
     }
-
     gl_Position = project(vec4(point, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   }
 
+  float antialiasblur = 1.0 / strokeWidth;
+  v_Distance = vec2(a_Position.y * 2.0, antialiasblur);
   v_Dash = vec4(a_Position.x, a_Dash.xyz);
 }
