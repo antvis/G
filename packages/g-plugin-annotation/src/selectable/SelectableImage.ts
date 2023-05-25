@@ -67,12 +67,12 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         cursor: 'move',
       },
     });
-    this.image = new Image({
-      style: {
-        width: 0,
-        height: 0,
-        src: target.style.src,
-      },
+    this.image = target.cloneNode();
+    // @ts-ignore
+    this.image.attr({
+      x: 0,
+      y: 0,
+      selectable: false,
     });
 
     this.appendChild(this.mask);
