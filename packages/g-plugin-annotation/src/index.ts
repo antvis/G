@@ -202,6 +202,10 @@ export class Plugin extends AbstractRendererPlugin {
     }
   }
 
+  getSelectableUI(target: DisplayObject) {
+    return this.getSelectablePlugin().getOrCreateSelectableUI(target);
+  }
+
   destroy(): void {
     this.removeAllRenderingPlugins();
   }
