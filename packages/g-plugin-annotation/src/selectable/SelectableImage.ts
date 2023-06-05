@@ -73,6 +73,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       x: 0,
       y: 0,
       selectable: false,
+      visibility: 'visible',
     });
 
     this.appendChild(this.mask);

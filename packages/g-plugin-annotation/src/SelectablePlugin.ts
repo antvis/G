@@ -130,6 +130,11 @@ export class SelectablePlugin implements RenderingPlugin {
    * Need re-create SelectableUI for object since its definition was already changed.
    */
   markSelectableUIAsDirty(object: DisplayObject) {
+    if (this.selectableMap[object.entity]) {
+      this.selectableMap[object.entity].forEach((child) => {
+        child.destroy();
+      });
+    }
     this.selectableMap[object.entity] = null;
   }
 
