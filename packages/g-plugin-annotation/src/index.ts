@@ -113,7 +113,7 @@ export class Plugin extends AbstractRendererPlugin {
     return this.plugins[1] as AnnotationPlugin;
   }
 
-  private getAnnotationPluginOptions() {
+  getAnnotationPluginOptions() {
     return this.getAnnotationPlugin().annotationPluginOptions;
   }
 
@@ -133,8 +133,8 @@ export class Plugin extends AbstractRendererPlugin {
    * show selectable UI of target displayobject
    * @see http://fabricjs.com/docs/fabric.Canvas.html#setActiveObject
    */
-  selectDisplayObject(displayObject: DisplayObject) {
-    this.getSelectablePlugin().selectDisplayObject(displayObject);
+  selectDisplayObject(displayObject: DisplayObject, skipEvent = false) {
+    this.getSelectablePlugin().selectDisplayObject(displayObject, skipEvent);
   }
 
   /**
@@ -150,6 +150,14 @@ export class Plugin extends AbstractRendererPlugin {
 
   markSelectableUIAsDirty(object: DisplayObject) {
     return this.getSelectablePlugin().markSelectableUIAsDirty(object);
+  }
+
+  /**
+   * Keep selectable state and don't trigger SELECT event
+   */
+  refreshSelectableUI(object: DisplayObject) {
+    this.markSelectableUIAsDirty(object);
+    this.selectDisplayObject(object, false);
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {

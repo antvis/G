@@ -90,12 +90,15 @@ export class SelectablePlugin implements RenderingPlugin {
     return this.selected;
   }
 
-  selectDisplayObject(displayObject: DisplayObject) {
+  selectDisplayObject(displayObject: DisplayObject, skipEvent = false) {
     const selectable = this.getOrCreateSelectableUI(displayObject);
     if (selectable && this.selected.indexOf(displayObject) === -1) {
       selectable.style.visibility = 'visible';
       this.selected.push(displayObject);
-      displayObject.dispatchEvent(new CustomEvent(SelectableEvent.SELECTED));
+
+      if (!skipEvent) {
+        displayObject.dispatchEvent(new CustomEvent(SelectableEvent.SELECTED));
+      }
 
       if (this.annotationPluginOptions.enableAutoSwitchDrawingMode) {
         this.annotationPluginOptions.isDrawingMode = false;
