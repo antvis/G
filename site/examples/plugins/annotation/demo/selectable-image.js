@@ -248,6 +248,12 @@ selectableFolder.open();
 const targetFolder = gui.addFolder('change image');
 const targetConfig = {
   opacity: 1,
+  reposition: () => {
+    annotationPlugin.markSelectableUIAsDirty(image);
+    image.setPosition(200, 200);
+    image.style.width = 100;
+    // annotationPlugin.getSelectableUI(image);
+  },
 };
 targetFolder.add(targetConfig, 'opacity', 0, 1).onChange((opacity) => {
   image.style.opacity = opacity;
@@ -256,4 +262,6 @@ targetFolder.add(targetConfig, 'opacity', 0, 1).onChange((opacity) => {
   const maskImage = ui.querySelector('image');
   maskImage.style.opacity = opacity;
 });
+targetFolder.add(targetConfig, 'reposition');
+
 targetFolder.open();
