@@ -47,6 +47,8 @@ export class TextMesh extends Instanced {
     [number, number]
   >();
 
+  private tmpMat4 = mat4.create();
+
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
 
@@ -304,13 +306,9 @@ export class TextMesh extends Instanced {
     this.geometry.updateVertexBuffer(
       TextVertexAttributeBufferIndex.INSTANCED,
       VertexAttributeLocation.MODEL_MATRIX0,
-      start / byteStride,
+      start / bytes,
       new Uint8Array(sliced.buffer),
     );
-    if (this.material) {
-      this.material.programDirty = true;
-      this.material.geometryDirty = true;
-    }
   }
 
   updateAttribute(
@@ -332,7 +330,6 @@ export class TextMesh extends Instanced {
       name === 'lineHeight' ||
       name === 'wordWrap' ||
       name === 'textAlign' ||
-      name === 'modelMatrix' ||
       name === 'visibility' ||
       name === 'dx' ||
       name === 'dy'
@@ -342,6 +339,7 @@ export class TextMesh extends Instanced {
       // need re-upload SDF texture
       this.material.textureDirty = true;
     } else if (
+      name === 'modelMatrix' ||
       name === 'fill' ||
       name === 'fillOpacity' ||
       name === 'stroke' ||
@@ -350,7 +348,107 @@ export class TextMesh extends Instanced {
       name === 'lineWidth' ||
       name === 'pointerEvents'
     ) {
-      this.material.geometryDirty = true;
+      const vertice = this.geometry.vertices[
+        TextVertexAttributeBufferIndex.INSTANCED
+      ] as Float32Array;
+      const { byteStride } =
+        this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[
+          TextVertexAttributeBufferIndex.INSTANCED
+        ];
+      const bytes = byteStride / 4;
+
+      objects.forEach((object) => {
+        const {
+          fill,
+          stroke,
+          opacity,
+          fillOpacity,
+          strokeOpacity,
+          lineWidth,
+          visibility,
+          isBillboard,
+          sizeAttenuation,
+        } = object.parsedStyle as ParsedTextStyleProps;
+        let fillColor: Tuple4Number = [0, 0, 0, 0];
+        if (isCSSRGB(fill)) {
+          fillColor = [
+            Number(fill.r) / 255,
+            Number(fill.g) / 255,
+            Number(fill.b) / 255,
+            Number(fill.alpha),
+          ];
+        }
+
+        let strokeColor: Tuple4Number = [0, 0, 0, 0];
+        if (isCSSRGB(stroke)) {
+          strokeColor = [
+            Number(stroke.r) / 255,
+            Number(stroke.g) / 255,
+            Number(stroke.b) / 255,
+            Number(stroke.alpha),
+          ];
+        }
+
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
+
+        const modelMatrix =
+          name === 'modelMatrix'
+            ? mat4.copy(this.tmpMat4, object.getWorldTransform())
+            : null;
+
+        const [start, end] = this.packedBufferObjectMap.get(object);
+        const sliced = vertice.slice(start, end);
+        for (let i = 0; i < end - start; i += bytes) {
+          if (name === 'modelMatrix') {
+            sliced[i + 0] = modelMatrix[0];
+            sliced[i + 1] = modelMatrix[1];
+            sliced[i + 2] = modelMatrix[2];
+            sliced[i + 3] = modelMatrix[3];
+            sliced[i + 4] = modelMatrix[4];
+            sliced[i + 5] = modelMatrix[5];
+            sliced[i + 6] = modelMatrix[6];
+            sliced[i + 7] = modelMatrix[7];
+            sliced[i + 8] = modelMatrix[8];
+            sliced[i + 9] = modelMatrix[9];
+            sliced[i + 10] = modelMatrix[10];
+            sliced[i + 11] = modelMatrix[11];
+            sliced[i + 12] = modelMatrix[12];
+            sliced[i + 13] = modelMatrix[13];
+            sliced[i + 14] = modelMatrix[14];
+            sliced[i + 15] = modelMatrix[15];
+          } else if (name === 'fill') {
+            sliced[i + 16] = fillColor[0];
+            sliced[i + 17] = fillColor[1];
+            sliced[i + 18] = fillColor[2];
+            sliced[i + 19] = fillColor[3];
+          } else if (name === 'stroke') {
+            sliced[i + 20] = strokeColor[0];
+            sliced[i + 21] = strokeColor[1];
+            sliced[i + 22] = strokeColor[2];
+            sliced[i + 23] = strokeColor[3];
+          }
+          sliced[i + 24] = opacity;
+          sliced[i + 25] = fillOpacity;
+          sliced[i + 26] = strokeOpacity;
+          sliced[i + 27] = lineWidth;
+          sliced[i + 28] = visibility === 'visible' ? 1 : 0;
+          sliced[i + 29] = isBillboard ? 1 : 0;
+          sliced[i + 30] = sizeAttenuation ? 1 : 0;
+          sliced[i + 31] = 0;
+          sliced[i + 32] = encodedPickingColor[0];
+          sliced[i + 33] = encodedPickingColor[1];
+          sliced[i + 34] = encodedPickingColor[2];
+        }
+
+        this.geometry.updateVertexBuffer(
+          TextVertexAttributeBufferIndex.INSTANCED,
+          VertexAttributeLocation.MODEL_MATRIX0,
+          start / bytes,
+          new Uint8Array(sliced.buffer),
+        );
+      });
     }
   }
 
@@ -411,7 +509,7 @@ export class TextMesh extends Instanced {
       // @ts-ignore
       object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
-    const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
+    const modelMatrix = mat4.copy(this.tmpMat4, object.getWorldTransform());
 
     const charPackedBuffer: number[] = [];
     const charUVOffsetBuffer: number[] = [];

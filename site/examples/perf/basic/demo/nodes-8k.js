@@ -132,6 +132,7 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
     let c1;
     circle.addEventListener('mouseenter', (e) => {
       circle.style.fill = '#2FC25B';
+      text.style.fill = 'red';
 
       c1 = new Circle({
         style: {
@@ -158,6 +159,7 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
 
     circle.addEventListener('mouseleave', (e) => {
       circle.style.fill = '#C6E5FF';
+      text.style.fill = '#1890FF';
 
       if (c1) {
         canvas.removeChild(c1);
