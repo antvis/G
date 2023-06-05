@@ -90,6 +90,12 @@ export abstract class Instanced {
   renderer: Batch;
 
   /**
+   * assigned by user which help BatchManager deciding whether to merge,
+   * e.g. `will-change` property in CSS
+   */
+  key: string;
+
+  /**
    * index in renderer.meshes
    */
   index = -1;
@@ -504,6 +510,7 @@ export abstract class Instanced {
     this.material.defines = {
       ...this.material.defines,
       ...this.lightPool.getDefines(),
+      ...this.renderHelper.getDefines(),
     };
 
     // re-upload textures
@@ -573,10 +580,10 @@ export abstract class Instanced {
 
       Object.keys(this.material.defines).forEach((key) => {
         const value = this.material.defines[key];
-        if (typeof value === 'number') {
-          this.program.setDefineString(key, `${value}`);
-        } else {
+        if (typeof value === 'boolean') {
           this.program.setDefineBool(key, value);
+        } else {
+          this.program.setDefineString(key, `${value}`);
         }
       });
 

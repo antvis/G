@@ -9,6 +9,7 @@ import type {
   IElement,
   IEventTarget,
   INode,
+  EventListenerOrEventListenerObject,
 } from './interfaces';
 
 const DELEGATION_SPLITTER = ':';

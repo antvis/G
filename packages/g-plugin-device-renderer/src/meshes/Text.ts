@@ -42,6 +42,11 @@ export enum TextUniform {
 export class TextMesh extends Instanced {
   private glyphManager = new GlyphManager();
 
+  private packedBufferObjectMap = new WeakMap<
+    DisplayObject,
+    [number, number]
+  >();
+
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
 
@@ -132,7 +137,11 @@ export class TextMesh extends Instanced {
       });
       indicesOff = indicesOffset;
 
+      const start = packed.length;
       packed.push(...charPackedBuffer);
+      const end = packed.length;
+      this.packedBufferObjectMap.set(object, [start, end]);
+
       uvOffsets.push(...charUVOffsetBuffer);
       indices.push(...indexBuffer);
     });
@@ -141,7 +150,7 @@ export class TextMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.INSTANCED,
-      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4),
+      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4), // 36
       // frequency: VertexBufferFrequency.PerInstance,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -279,6 +288,25 @@ export class TextMesh extends Instanced {
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
+    const vertice = this.geometry.vertices[
+      TextVertexAttributeBufferIndex.INSTANCED
+    ] as Float32Array;
+    const { byteStride } =
+      this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[
+        TextVertexAttributeBufferIndex.INSTANCED
+      ];
+    const bytes = byteStride / 4;
+    const [start, end] = this.packedBufferObjectMap.get(object);
+    const sliced = vertice.slice(start, end);
+    for (let i = 0; i < end - start; i += bytes) {
+      sliced[i + bytes - 1] = renderOrder * RENDER_ORDER_SCALE;
+    }
+    this.geometry.updateVertexBuffer(
+      TextVertexAttributeBufferIndex.INSTANCED,
+      VertexAttributeLocation.MODEL_MATRIX0,
+      start / byteStride,
+      new Uint8Array(sliced.buffer),
+    );
     if (this.material) {
       this.material.programDirty = true;
       this.material.geometryDirty = true;
@@ -320,7 +348,6 @@ export class TextMesh extends Instanced {
       name === 'strokeOpacity' ||
       name === 'opacity' ||
       name === 'lineWidth' ||
-      name === 'visibility' ||
       name === 'pointerEvents'
     ) {
       this.material.geometryDirty = true;

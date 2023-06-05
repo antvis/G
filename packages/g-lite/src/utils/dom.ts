@@ -7,7 +7,6 @@ export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.parsedStyle.zIndex);
   const zIndex2 = Number(o2.parsedStyle.zIndex);
   if (zIndex1 === zIndex2) {
-    // return o1.entity.getComponent(Sortable).lastSortedIndex - o2.entity.getComponent(Sortable).lastSortedIndex;
     const parent = o1.parentNode;
     if (parent) {
       const children = parent.childNodes || [];

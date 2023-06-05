@@ -3,3 +3,17 @@ import type { SwapChain } from './platform';
 export interface DeviceContribution {
   createSwapChain: ($canvas: HTMLCanvasElement) => Promise<SwapChain>;
 }
+
+export enum ToneMapping {
+  NONE = 'none',
+  LINEAR = 'LinearToneMapping',
+  REINHARD = 'ReinhardToneMapping',
+  CINEON = 'OptimizedCineonToneMapping',
+  ACES_FILMIC = 'ACESFilmicToneMapping',
+  CUSTOM = 'CustomToneMapping',
+}
+
+export interface RendererParameters {
+  toneMapping: ToneMapping;
+  toneMappingExposure: number;
+}

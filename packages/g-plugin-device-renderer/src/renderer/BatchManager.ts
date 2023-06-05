@@ -103,7 +103,10 @@ export class BatchManager {
                 mesh.index === i &&
                 mesh.shouldMerge(object, i),
             );
-            if (!existedMesh) {
+            if (
+              !existedMesh ||
+              existedMesh.key !== object.parsedStyle.batchKey
+            ) {
               existedMesh = new meshTag(
                 this.renderHelper,
                 this.texturePool,
@@ -112,6 +115,10 @@ export class BatchManager {
               existedMesh.renderer = renderer;
               existedMesh.index = i;
               this.meshes.push(existedMesh);
+
+              if (object.parsedStyle.batchKey) {
+                existedMesh.key = object.parsedStyle.batchKey;
+              }
             }
 
             if (existedMesh) {

@@ -23,6 +23,13 @@
         "en": "Zoom by specified viewport point"
       },
       "screenshot": "https://gw.alipayobjects.com/zos/raptor/1667978070897/Nov-09-2022%25252015-13-27.gif"
+    },
+    {
+      "filename": "minmax-distance.js",
+      "title": {
+        "zh": "相机到视点的最小最大距离",
+        "en": "Min/max distance from camera's position to focal point"
+      }
     }
   ]
 }

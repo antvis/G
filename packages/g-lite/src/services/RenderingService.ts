@@ -2,8 +2,7 @@ import type { GlobalRuntime } from '../global-runtime';
 import { runtime } from '../global-runtime';
 import type { ICamera } from '../camera';
 import type { DisplayObject } from '../display-objects';
-import type { CanvasContext } from '../dom';
-import { CustomEvent, ElementEvent } from '../dom';
+import type { CanvasContext, IChildNode } from '../dom';
 import type {
   EventPosition,
   InteractivePointerEvent,
@@ -18,6 +17,7 @@ import {
 } from '../utils';
 import type { RenderingContext } from './RenderingContext';
 import { RenderReason } from './RenderingContext';
+import { SortReason, Sortable } from '../components';
 
 export type RenderingPluginContext = CanvasContext & GlobalRuntime;
 
@@ -66,13 +66,6 @@ export class RenderingService {
   };
 
   private zIndexCounter = 0;
-
-  /**
-   * avoid re-creating too many custom events
-   */
-  private renderOrderChangedEvent = new CustomEvent(
-    ElementEvent.RENDER_ORDER_CHANGED,
-  );
 
   hooks = {
     /**
@@ -229,13 +222,13 @@ export class RenderingService {
 
     this.stats.total++;
 
-    // sort is very expensive, use cached result if posible
+    // sort is very expensive, use cached result if possible
     const sortable = displayObject.sortable;
-    let renderOrderChanged = false;
     if (sortable.dirty) {
-      sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
-      renderOrderChanged = true;
+      this.sort(displayObject, sortable);
       sortable.dirty = false;
+      sortable.dirtyChildren = [];
+      sortable.dirtyReason = undefined;
     }
 
     // recursive rendering its children
@@ -244,18 +237,67 @@ export class RenderingService {
         this.renderDisplayObject(child, canvasConfig, renderingContext);
       },
     );
+  }
 
-    if (renderOrderChanged) {
-      displayObject.forEach((child: DisplayObject) => {
-        this.renderOrderChangedEvent.target = child;
-        this.renderOrderChangedEvent.detail = {
-          renderOrder: child.sortable.renderOrder,
-        };
-        child.ownerDocument.defaultView.dispatchEvent(
-          this.renderOrderChangedEvent,
-          true,
-        );
+  private sort(displayObject: DisplayObject, sortable: Sortable) {
+    if (
+      sortable.sorted &&
+      sortable.dirtyReason !== SortReason.Z_INDEX_CHANGED
+    ) {
+      // avoid re-sorting the whole children list
+      sortable.dirtyChildren.forEach((child) => {
+        const index = displayObject.childNodes.indexOf(child as IChildNode);
+        if (index === -1) {
+          // remove from sorted list
+          const index = sortable.sorted.indexOf(child);
+          sortable.sorted.splice(index, 1);
+        } else {
+          const zIndex = Number((child as DisplayObject).parsedStyle.zIndex);
+          const firstZIndex = Number(
+            (sortable.sorted[0] as DisplayObject).parsedStyle.zIndex,
+          );
+          const lastZIndex = Number(
+            (sortable.sorted[sortable.sorted.length - 1] as DisplayObject)
+              .parsedStyle.zIndex,
+          );
+          if (zIndex < firstZIndex) {
+            sortable.sorted.unshift(child);
+          } else if (zIndex > lastZIndex) {
+            sortable.sorted.push(child);
+          } else {
+            // insert into sorted list
+            for (let i = 0; i < sortable.sorted.length; i++) {
+              const prevZIndex =
+                Number(
+                  (sortable.sorted[i - 1] as DisplayObject)?.parsedStyle.zIndex,
+                ) || -Infinity;
+              const currentZIndex = Number(
+                (sortable.sorted[i] as DisplayObject)?.parsedStyle.zIndex,
+              );
+              if (zIndex > prevZIndex && zIndex < currentZIndex) {
+                sortable.sorted.splice(i, 0, child);
+                break;
+              }
+
+              if (zIndex === currentZIndex) {
+                const currentIndex = displayObject.childNodes.indexOf(
+                  sortable.sorted[i] as IChildNode,
+                );
+                const nextIndex =
+                  displayObject.childNodes.indexOf(
+                    sortable.sorted[i + 1] as IChildNode,
+                  ) || Infinity;
+                if (index > currentIndex && index < nextIndex) {
+                  sortable.sorted.splice(i + 1, 0, child);
+                  break;
+                }
+              }
+            }
+          }
+        }
       });
+    } else {
+      sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
     }
   }
 

@@ -3,6 +3,7 @@ import type {
   RenderingPlugin,
   ICamera,
   CanvasConfig,
+  FederatedWheelEvent,
 } from '@antv/g-lite';
 import { runtime } from '@antv/g-lite';
 import Hammer from 'hammerjs';
@@ -98,7 +99,7 @@ export class ControlPlugin implements RenderingPlugin {
     this.dolly(deltaZ);
   };
 
-  private onMousewheel = (e: WheelEvent) => {
+  private onMousewheel = (e: FederatedWheelEvent) => {
     this.dolly(e.deltaY);
   };
 
