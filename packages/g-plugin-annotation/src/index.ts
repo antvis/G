@@ -157,7 +157,7 @@ export class Plugin extends AbstractRendererPlugin {
    */
   refreshSelectableUI(object: DisplayObject) {
     this.markSelectableUIAsDirty(object);
-    this.selectDisplayObject(object, false);
+    this.selectDisplayObject(object, true);
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
