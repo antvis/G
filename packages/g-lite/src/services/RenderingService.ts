@@ -252,44 +252,49 @@ export class RenderingService {
           const index = sortable.sorted.indexOf(child);
           sortable.sorted.splice(index, 1);
         } else {
-          const zIndex = Number((child as DisplayObject).parsedStyle.zIndex);
-          const firstZIndex = Number(
-            (sortable.sorted[0] as DisplayObject).parsedStyle.zIndex,
-          );
-          const lastZIndex = Number(
-            (sortable.sorted[sortable.sorted.length - 1] as DisplayObject)
-              .parsedStyle.zIndex,
-          );
-          if (zIndex < firstZIndex) {
-            sortable.sorted.unshift(child);
-          } else if (zIndex > lastZIndex) {
+          if (sortable.sorted.length === 0) {
             sortable.sorted.push(child);
           } else {
-            // insert into sorted list
-            for (let i = 0; i < sortable.sorted.length; i++) {
-              const prevZIndex =
-                Number(
-                  (sortable.sorted[i - 1] as DisplayObject)?.parsedStyle.zIndex,
-                ) || -Infinity;
-              const currentZIndex = Number(
-                (sortable.sorted[i] as DisplayObject)?.parsedStyle.zIndex,
-              );
-              if (zIndex > prevZIndex && zIndex < currentZIndex) {
-                sortable.sorted.splice(i, 0, child);
-                break;
-              }
-
-              if (zIndex === currentZIndex) {
-                const currentIndex = displayObject.childNodes.indexOf(
-                  sortable.sorted[i] as IChildNode,
+            const zIndex = Number((child as DisplayObject).parsedStyle.zIndex);
+            const firstZIndex = Number(
+              (sortable.sorted[0] as DisplayObject).parsedStyle.zIndex,
+            );
+            const lastZIndex = Number(
+              (sortable.sorted[sortable.sorted.length - 1] as DisplayObject)
+                .parsedStyle.zIndex,
+            );
+            if (zIndex < firstZIndex) {
+              sortable.sorted.unshift(child);
+            } else if (zIndex > lastZIndex) {
+              sortable.sorted.push(child);
+            } else {
+              // insert into sorted list
+              for (let i = 0; i < sortable.sorted.length; i++) {
+                const prevZIndex =
+                  Number(
+                    (sortable.sorted[i - 1] as DisplayObject)?.parsedStyle
+                      .zIndex,
+                  ) || -Infinity;
+                const currentZIndex = Number(
+                  (sortable.sorted[i] as DisplayObject)?.parsedStyle.zIndex,
                 );
-                const nextIndex =
-                  displayObject.childNodes.indexOf(
-                    sortable.sorted[i + 1] as IChildNode,
-                  ) || Infinity;
-                if (index > currentIndex && index < nextIndex) {
-                  sortable.sorted.splice(i + 1, 0, child);
+                if (zIndex > prevZIndex && zIndex < currentZIndex) {
+                  sortable.sorted.splice(i, 0, child);
                   break;
+                }
+
+                if (zIndex === currentZIndex) {
+                  const currentIndex = displayObject.childNodes.indexOf(
+                    sortable.sorted[i] as IChildNode,
+                  );
+                  const nextIndex =
+                    displayObject.childNodes.indexOf(
+                      sortable.sorted[i + 1] as IChildNode,
+                    ) || Infinity;
+                  if (index > currentIndex && index < nextIndex) {
+                    sortable.sorted.splice(i + 1, 0, child);
+                    break;
+                  }
                 }
               }
             }
