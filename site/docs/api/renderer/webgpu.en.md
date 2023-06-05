@@ -33,7 +33,7 @@ As with `@antv/g`, there are two ways to use it.
 
 ### NPM Module
 
-After installing `@antv/g-webgl` you can get the renderer from.
+After installing `@antv/g-webgpu` you can get the renderer from.
 
 ```js
 import { Canvas } from '@antv/g';
