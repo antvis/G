@@ -2,7 +2,7 @@ import type { GlobalRuntime } from '../global-runtime';
 import { runtime } from '../global-runtime';
 import type { ICamera } from '../camera';
 import type { DisplayObject } from '../display-objects';
-import type { CanvasContext, IChildNode } from '../dom';
+import type { CanvasContext, IChildNode, IElement } from '../dom';
 import type {
   EventPosition,
   InteractivePointerEvent,
@@ -12,6 +12,7 @@ import {
   AsyncParallelHook,
   AsyncSeriesWaterfallHook,
   sortByZIndex,
+  sortedIndex,
   SyncHook,
   SyncWaterfallHook,
 } from '../utils';
@@ -255,49 +256,11 @@ export class RenderingService {
           if (sortable.sorted.length === 0) {
             sortable.sorted.push(child);
           } else {
-            const zIndex = Number((child as DisplayObject).parsedStyle.zIndex);
-            const firstZIndex = Number(
-              (sortable.sorted[0] as DisplayObject).parsedStyle.zIndex,
+            const index = sortedIndex(
+              sortable.sorted as IElement[],
+              child as IElement,
             );
-            const lastZIndex = Number(
-              (sortable.sorted[sortable.sorted.length - 1] as DisplayObject)
-                .parsedStyle.zIndex,
-            );
-            if (zIndex < firstZIndex) {
-              sortable.sorted.unshift(child);
-            } else if (zIndex > lastZIndex) {
-              sortable.sorted.push(child);
-            } else {
-              // insert into sorted list
-              for (let i = 0; i < sortable.sorted.length; i++) {
-                const prevZIndex =
-                  Number(
-                    (sortable.sorted[i - 1] as DisplayObject)?.parsedStyle
-                      .zIndex,
-                  ) || -Infinity;
-                const currentZIndex = Number(
-                  (sortable.sorted[i] as DisplayObject)?.parsedStyle.zIndex,
-                );
-                if (zIndex > prevZIndex && zIndex < currentZIndex) {
-                  sortable.sorted.splice(i, 0, child);
-                  break;
-                }
-
-                if (zIndex === currentZIndex) {
-                  const currentIndex = displayObject.childNodes.indexOf(
-                    sortable.sorted[i] as IChildNode,
-                  );
-                  const nextIndex =
-                    displayObject.childNodes.indexOf(
-                      sortable.sorted[i + 1] as IChildNode,
-                    ) || Infinity;
-                  if (index > currentIndex && index < nextIndex) {
-                    sortable.sorted.splice(i + 1, 0, child);
-                    break;
-                  }
-                }
-              }
-            }
+            sortable.sorted.splice(index, 0, child);
           }
         }
       });
