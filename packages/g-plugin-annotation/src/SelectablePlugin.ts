@@ -90,12 +90,15 @@ export class SelectablePlugin implements RenderingPlugin {
     return this.selected;
   }
 
-  selectDisplayObject(displayObject: DisplayObject) {
+  selectDisplayObject(displayObject: DisplayObject, skipEvent = false) {
     const selectable = this.getOrCreateSelectableUI(displayObject);
     if (selectable && this.selected.indexOf(displayObject) === -1) {
       selectable.style.visibility = 'visible';
       this.selected.push(displayObject);
-      displayObject.dispatchEvent(new CustomEvent(SelectableEvent.SELECTED));
+
+      if (!skipEvent) {
+        displayObject.dispatchEvent(new CustomEvent(SelectableEvent.SELECTED));
+      }
 
       if (this.annotationPluginOptions.enableAutoSwitchDrawingMode) {
         this.annotationPluginOptions.isDrawingMode = false;
@@ -130,6 +133,15 @@ export class SelectablePlugin implements RenderingPlugin {
    * Need re-create SelectableUI for object since its definition was already changed.
    */
   markSelectableUIAsDirty(object: DisplayObject) {
+    const index = this.selected.indexOf(object);
+    if (index > -1) {
+      this.selected.splice(index, 1);
+    }
+    if (this.selectableMap[object.entity]) {
+      this.selectableMap[object.entity].forEach((child) => {
+        child.destroy();
+      });
+    }
     this.selectableMap[object.entity] = null;
   }
 

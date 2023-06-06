@@ -102,17 +102,6 @@ export class Element<
     dirtyFlag: false,
     localDirtyFlag: false,
     frozen: false,
-    // localPosition: vec3.fromValues(0, 0, 0),
-    // localRotation: quat.fromValues(0, 0, 0, 1),
-    // localScale: vec3.fromValues(1, 1, 1),
-    // localTransform: mat4.create(),
-    // localSkew: vec2.fromValues(0, 0),
-    // position: vec3.fromValues(0, 0, 0),
-    // rotation: quat.fromValues(0, 0, 0, 1),
-    // scaling: vec3.fromValues(1, 1, 1),
-    // worldTransform: mat4.create(),
-    // origin: vec3.fromValues(0, 0, 0),
-
     localPosition: [0, 0, 0],
     localRotation: [0, 0, 0, 1],
     localScale: [1, 1, 1],
@@ -128,8 +117,9 @@ export class Element<
   sortable: Sortable = {
     dirty: false,
     sorted: undefined,
-    lastSortedIndex: undefined,
     renderOrder: 0,
+    dirtyChildren: [],
+    dirtyReason: undefined,
   };
 
   geometry: Geometry = {

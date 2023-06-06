@@ -1,4 +1,8 @@
-import type { IMaterial, Texture, Device } from '@antv/g-plugin-device-renderer';
+import type {
+  IMaterial,
+  Texture,
+  Device,
+} from '@antv/g-plugin-device-renderer';
 import { Material, CullMode } from '@antv/g-plugin-device-renderer';
 import vert from '../shaders/material.basic.vert';
 import frag from '../shaders/material.basic.frag';
@@ -24,7 +28,9 @@ export interface IMeshBasicMaterial extends IMaterial {
  * not affected by lights
  * @see https://threejs.org/docs/#api/en/materials/MeshBasicMaterial
  */
-export class MeshBasicMaterial<T extends IMeshBasicMaterial> extends Material<T> {
+export class MeshBasicMaterial<
+  T extends IMeshBasicMaterial,
+> extends Material<T> {
   /**
    * color map, will override fill color
    */

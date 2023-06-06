@@ -62,13 +62,6 @@ export enum ElementEvent {
 
   BOUNDS_CHANGED = 'bounds-changed',
 
-  // GEOMETRY_BOUNDS_CHANGED = 'geometry-bounds-changed',
-
-  /**
-   * trigger when z-index changed
-   */
-  RENDER_ORDER_CHANGED = 'render-order-changed',
-
   CULLED = 'culled',
 }
 
@@ -583,3 +576,14 @@ export interface ICanvas extends IEventTarget {
   canvas2Viewport: (canvas: PointLike) => PointLike;
   viewport2Canvas: (viewport: PointLike) => PointLike;
 }
+
+interface EventListener {
+  (evt: FederatedEvent): void;
+}
+interface EventListenerObject {
+  handleEvent(object: FederatedEvent): void;
+}
+
+export type EventListenerOrEventListenerObject =
+  | EventListener
+  | EventListenerObject;

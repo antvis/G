@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Text, Group } from '@antv/g';
+import { Canvas, CanvasEvent, Text, Group, Circle } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -19,7 +19,7 @@ const words = [
   'than',
   'this',
 ].map(function (d) {
-  return { text: d, size: 10 + Math.random() * 90 };
+  return { text: d, size: 50 };
 });
 
 // create a renderer
@@ -42,7 +42,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: canvasRenderer,
+  renderer: webglRenderer,
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
@@ -81,15 +81,31 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       });
       wrapper.appendChild(text);
 
+      let circle;
       text.addEventListener('mouseenter', () => {
-        text.style.fontSize = d.size * 1.2;
-        text.style.stroke = '#F04864';
-        text.style.lineWidth = 5;
+        text.style.fill = '#F04864';
+
+        // circle = new Circle({
+        //   style: {
+        //     cx: 100,
+        //     cy: 100,
+        //     r: 30,
+        //     fill: 'red',
+        //     zIndex: -1,
+        //   },
+        // });
+        // canvas.appendChild(circle);
       });
       text.addEventListener('mouseleave', () => {
-        text.style.fontSize = d.size;
-        text.style.stroke = 'none';
-        text.style.lineWidth = 0;
+        text.style.fill = '#1890FF';
+        // text.style.fontSize = d.size;
+        // text.style.stroke = 'none';
+        // text.style.lineWidth = 0;
+
+        if (circle) {
+          canvas.removeChild(circle);
+          circle = undefined;
+        }
       });
     });
   }

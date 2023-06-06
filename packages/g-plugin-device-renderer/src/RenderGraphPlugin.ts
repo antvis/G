@@ -147,25 +147,22 @@ export class RenderGraphPlugin implements RenderingPlugin {
     const handleAttributeChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
       const { attrName, newValue } = e;
-      this.batchManager.updateAttribute(object, attrName, newValue);
+
+      if (attrName === 'zIndex') {
+        object.parentNode.forEach((child: DisplayObject) => {
+          this.batchManager.changeRenderOrder(
+            child,
+            child.sortable.renderOrder,
+          );
+        });
+      } else {
+        this.batchManager.updateAttribute(object, attrName, newValue);
+      }
     };
 
     const handleBoundsChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
-      // const { affectChildren } = e.detail;
-      // if (affectChildren) {
-      //   object.forEach(() => {
-      //     this.batchManager.updateAttribute(object, 'modelMatrix', null);
-      //   });
-      // } else {
       this.batchManager.updateAttribute(object, 'modelMatrix', null);
-      // }
-    };
-
-    const handleRenderOrderChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      const { renderOrder } = e.detail;
-      this.batchManager.changeRenderOrder(object, renderOrder);
     };
 
     renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
@@ -176,10 +173,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
         handleAttributeChanged,
       );
       canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      canvas.addEventListener(
-        ElementEvent.RENDER_ORDER_CHANGED,
-        handleRenderOrderChanged,
-      );
       this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
         false;
 
@@ -221,10 +214,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       canvas.removeEventListener(
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
-      );
-      canvas.removeEventListener(
-        ElementEvent.RENDER_ORDER_CHANGED,
-        handleRenderOrderChanged,
       );
     });
 

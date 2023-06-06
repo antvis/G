@@ -1,6 +1,6 @@
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import type { Transform } from '../components';
+import { SortReason, Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
 import { MutationEvent, CustomEvent } from '../dom';
@@ -93,9 +93,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
       sortable?.sorted?.length ||
       (child as unknown as Element).style?.zIndex
     ) {
+      sortable.dirtyChildren.push(child);
       // if (sortable) {
       // only child has z-Index
       sortable.dirty = true;
+      sortable.dirtyReason = SortReason.ADDED;
     }
 
     // this.updateGraphDepth(child);
@@ -132,7 +134,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
         sortable?.sorted?.length ||
         (child as unknown as Element).style?.zIndex
       ) {
+        sortable.dirtyChildren.push(child);
         sortable.dirty = true;
+        sortable.dirtyReason = SortReason.REMOVED;
       }
 
       const index = child.parentNode.childNodes.indexOf(

@@ -285,7 +285,7 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
   }
 
   // USE_XXX
-  defines: Record<string, number | boolean> = {};
+  defines: Record<string, number | boolean | string> = {};
 
   uniforms: Record<string, number | number[] | Float32Array> = {};
   // used when sorting before inserted into WebGL2's UBO
@@ -352,10 +352,13 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
 
   private compile() {
     // uniform sampler2D u_Texture0;
-    this.props.fragmentShader.replace(/^\s*uniform\s*sampler2D\s*(.*)\s*;$/gm, (_, name) => {
-      this.samplers.push(name);
-      return '';
-    });
+    this.props.fragmentShader.replace(
+      /^\s*uniform\s*sampler2D\s*(.*)\s*;$/gm,
+      (_, name) => {
+        this.samplers.push(name);
+        return '';
+      },
+    );
 
     /**
      * extract from uniform buffer object, should account for struct & pre-defines, eg.
@@ -379,7 +382,9 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
    *   u_Map: texture,
    * })
    */
-  setUniforms(uniforms: Record<string, null | number | number[] | Float32Array | Texture>) {
+  setUniforms(
+    uniforms: Record<string, null | number | number[] | Float32Array | Texture>,
+  ) {
     let shoudDispatchMutationEvent = false;
     Object.keys(uniforms).forEach((key) => {
       const value = uniforms[key];

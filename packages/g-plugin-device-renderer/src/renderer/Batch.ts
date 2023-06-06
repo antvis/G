@@ -7,42 +7,16 @@ import type { RenderInst } from '../render/RenderInst';
  */
 export const RENDER_ORDER_SCALE = 1 / 200;
 
-let counter = 1;
-
 /**
  * A container for multiple display objects with the same `style`,
  * eg. 1000 Circles with the same stroke color, but their position, radius can be different
  */
 export abstract class Batch {
-  // @inject(RenderHelper)
-  // protected renderHelper: RenderHelper;
-
-  // @inject(TexturePool)
-  // protected texturePool: TexturePool;
-
-  // @inject(DefaultCamera)
-  // protected camera: ICamera;
-
-  // @inject(LightPool)
-  // protected lightPool: LightPool;
-
-  // @inject(BatchManager)
-  // protected batchManager: BatchManager;
-
-  // @inject(MeshFactory)
-  // protected meshFactory: (shape: string) => Instanced;
-
-  // device: Device;
-
-  // renderingService: RenderingService;
-
-  id = counter++;
-
   /**
    * describe render insts used in this draw call
    * eg. a Polygon with stroke will use 2 renderInsts
    */
-  meshes: typeof Instanced[] = [];
+  meshes: (typeof Instanced)[] = [];
   private clipPathMeshCreated = false;
 
   shouldSubmitRenderInst(object: DisplayObject, index: number): boolean {

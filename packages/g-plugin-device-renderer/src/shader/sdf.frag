@@ -49,10 +49,6 @@ void main() {
     inner_df
   );
 
-  // vec2 imagecoord = mod(v_Uv, 0.1);
-  // vec4 texel = texture(SAMPLER_2D(u_Map), imagecoord);
-  // u_Color = texel;
-
   vec4 diffuseColor;
   vec4 strokeColor;
   if (u_IsPicking > 0.5) {

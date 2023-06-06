@@ -248,6 +248,13 @@ selectableFolder.open();
 const targetFolder = gui.addFolder('change image');
 const targetConfig = {
   opacity: 1,
+  reposition: () => {
+    image.setPosition(200, 200);
+    image.style.width = 100;
+    image.style.src =
+      'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ';
+    annotationPlugin.refreshSelectableUI(image);
+  },
 };
 targetFolder.add(targetConfig, 'opacity', 0, 1).onChange((opacity) => {
   image.style.opacity = opacity;
@@ -256,4 +263,6 @@ targetFolder.add(targetConfig, 'opacity', 0, 1).onChange((opacity) => {
   const maskImage = ui.querySelector('image');
   maskImage.style.opacity = opacity;
 });
+targetFolder.add(targetConfig, 'reposition');
+
 targetFolder.open();
