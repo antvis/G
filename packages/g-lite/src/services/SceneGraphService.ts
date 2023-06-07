@@ -93,7 +93,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
       sortable?.sorted?.length ||
       (child as unknown as Element).style?.zIndex
     ) {
-      sortable.dirtyChildren.push(child);
+      if (sortable.dirtyChildren.indexOf(child) === -1) {
+        sortable.dirtyChildren.push(child);
+      }
       // if (sortable) {
       // only child has z-Index
       sortable.dirty = true;
@@ -134,7 +136,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
         sortable?.sorted?.length ||
         (child as unknown as Element).style?.zIndex
       ) {
-        sortable.dirtyChildren.push(child);
+        if (sortable.dirtyChildren.indexOf(child) === -1) {
+          sortable.dirtyChildren.push(child);
+        }
         sortable.dirty = true;
         sortable.dirtyReason = SortReason.REMOVED;
       }

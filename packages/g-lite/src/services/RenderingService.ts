@@ -251,7 +251,9 @@ export class RenderingService {
         if (index === -1) {
           // remove from sorted list
           const index = sortable.sorted.indexOf(child);
-          sortable.sorted.splice(index, 1);
+          if (index >= 0) {
+            sortable.sorted.splice(index, 1);
+          }
         } else {
           if (sortable.sorted.length === 0) {
             sortable.sorted.push(child);
