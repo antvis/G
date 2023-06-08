@@ -56,6 +56,9 @@ jobs:
         run: yarn run build
 
       - name: Test
+        run: yarn run test
+
+      - name: Cov
         run: |
           yarn run cov
         env:
