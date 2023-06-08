@@ -57,7 +57,7 @@ describe('Render <Ellipse> with g-webgl', () => {
     canvas.destroy();
   });
 
-  it('should render circle on server-side correctly.', async () => {
+  it('should render ellipse on server-side correctly.', async () => {
     await canvas.ready;
 
     const ellipse1 = new Ellipse({
