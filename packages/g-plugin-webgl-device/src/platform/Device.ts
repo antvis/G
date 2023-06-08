@@ -236,7 +236,7 @@ export class Device_GL implements SwapChain, Device {
       this.OES_texture_float = gl.getExtension('OES_texture_float');
       // this.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
-      this.WEBGL_depth_texture = gl.getExtension('WEBGL_depth_texture');
+      // this.WEBGL_depth_texture = gl.getExtension('WEBGL_depth_texture');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/EXT_frag_depth
       gl.getExtension('EXT_frag_depth');
       // @see https://developer.mozilla.org/en-US/docs/Web/API/OES_element_index_uint
@@ -374,10 +374,13 @@ export class Device_GL implements SwapChain, Device {
     formatKind: SamplerFormatKind,
   ): WebGLTexture {
     const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    // const supportDepthTexture =
+    //   isWebGL2(this.gl) || (!isWebGL2(this.gl) && !!this.WEBGL_depth_texture);
     const pixelFormat =
       formatKind === SamplerFormatKind.Depth
         ? Format.D32F
         : Format.U8_RGBA_NORM;
+
     const texture = this.createTexture({
       dimension,
       pixelFormat,
@@ -579,13 +582,29 @@ export class Device_GL implements SwapChain, Device {
         return this.EXT_texture_compression_rgtc!
           .COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT;
       case Format.D32F_S8:
-        return isWebGL2(this.gl) ? GL.DEPTH32F_STENCIL8 : GL.DEPTH_STENCIL;
+        return isWebGL2(this.gl)
+          ? GL.DEPTH32F_STENCIL8
+          : this.WEBGL_depth_texture
+          ? GL.DEPTH_STENCIL
+          : GL.DEPTH_COMPONENT16;
       case Format.D24_S8:
-        return isWebGL2(this.gl) ? GL.DEPTH24_STENCIL8 : GL.DEPTH_STENCIL;
+        return isWebGL2(this.gl)
+          ? GL.DEPTH24_STENCIL8
+          : this.WEBGL_depth_texture
+          ? GL.DEPTH_STENCIL
+          : GL.DEPTH_COMPONENT16;
       case Format.D32F:
-        return isWebGL2(this.gl) ? GL.DEPTH_COMPONENT32F : GL.DEPTH_COMPONENT;
+        return isWebGL2(this.gl)
+          ? GL.DEPTH_COMPONENT32F
+          : this.WEBGL_depth_texture
+          ? GL.DEPTH_COMPONENT
+          : GL.DEPTH_COMPONENT16;
       case Format.D24:
-        return isWebGL2(this.gl) ? GL.DEPTH_COMPONENT24 : GL.DEPTH_COMPONENT;
+        return isWebGL2(this.gl)
+          ? GL.DEPTH_COMPONENT24
+          : this.WEBGL_depth_texture
+          ? GL.DEPTH_COMPONENT
+          : GL.DEPTH_COMPONENT16;
       default:
         throw new Error('whoops');
     }
@@ -609,14 +628,24 @@ export class Device_GL implements SwapChain, Device {
       case FormatTypeFlags.U16_PACKED_5551:
         return GL.UNSIGNED_SHORT_5_5_5_1;
       case FormatTypeFlags.D32F:
-        return isWebGL2(this.gl) ? GL.FLOAT : GL.UNSIGNED_INT;
+        return isWebGL2(this.gl)
+          ? GL.FLOAT
+          : this.WEBGL_depth_texture
+          ? GL.UNSIGNED_INT
+          : GL.UNSIGNED_BYTE;
       case FormatTypeFlags.D24:
-        return isWebGL2(this.gl) ? GL.UNSIGNED_INT_24_8 : GL.UNSIGNED_SHORT;
+        return isWebGL2(this.gl)
+          ? GL.UNSIGNED_INT_24_8
+          : this.WEBGL_depth_texture
+          ? GL.UNSIGNED_SHORT
+          : GL.UNSIGNED_BYTE;
       case FormatTypeFlags.D24S8:
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
         return isWebGL2(this.gl)
           ? GL.UNSIGNED_INT_24_8
-          : GL.UNSIGNED_INT_24_8_WEBGL;
+          : this.WEBGL_depth_texture
+          ? GL.UNSIGNED_INT_24_8_WEBGL
+          : GL.UNSIGNED_BYTE;
       case FormatTypeFlags.D32FS8:
         return GL.FLOAT_32_UNSIGNED_INT_24_8_REV;
       default:
@@ -625,16 +654,21 @@ export class Device_GL implements SwapChain, Device {
   }
 
   translateTextureFormat(fmt: Format): GLenum {
-    if (isTextureFormatCompressed(fmt))
+    if (isTextureFormatCompressed(fmt)) {
       return this.translateTextureInternalFormat(fmt);
+    }
+
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
+    const supportDepthTexture =
+      isWebGL2(this.gl) || (!isWebGL2(this.gl) && !!this.WEBGL_depth_texture);
 
     switch (fmt) {
       case Format.D24_S8:
       case Format.D32F_S8:
-        return GL.DEPTH_STENCIL;
+        return supportDepthTexture ? GL.DEPTH_STENCIL : GL.RGBA;
       case Format.D24:
       case Format.D32F:
-        return GL.DEPTH_COMPONENT;
+        return supportDepthTexture ? GL.DEPTH_COMPONENT : GL.RGBA;
       default:
         break;
     }
@@ -717,6 +751,16 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createTexture(descriptor: TextureDescriptor): Texture {
+    // const { pixelFormat } = descriptor;
+    // // @see https://blog.tojicode.com/2012/07/using-webgldepthtexture.html
+    // if (
+    //   (pixelFormat === Format.D32F || pixelFormat === Format.D24_S8) &&
+    //   !isWebGL2(this.gl) &&
+    //   !this.WEBGL_depth_texture
+    // ) {
+    //   return null;
+    // }
+
     return new Texture_GL({
       id: this.getNextUniqueId(),
       device: this,
@@ -1210,7 +1254,7 @@ export class Device_GL implements SwapChain, Device {
         framebuffer,
         binding,
         GL.TEXTURE_2D,
-        getPlatformTexture(attachment),
+        getPlatformTexture(attachment as Texture_GL),
         0,
       );
     }
@@ -1226,14 +1270,25 @@ export class Device_GL implements SwapChain, Device {
       attachment !== null
         ? getFormatFlags(attachment.pixelFormat)
         : FormatFlags.Depth | FormatFlags.Stencil;
-    const depth = !!(flags & FormatFlags.Depth),
-      stencil = !!(flags & FormatFlags.Stencil);
+    const depth = !!(flags & FormatFlags.Depth);
+    const stencil = !!(flags & FormatFlags.Stencil);
+
     if (depth && stencil) {
-      this.bindFramebufferAttachment(
-        framebuffer,
-        gl.DEPTH_STENCIL_ATTACHMENT,
-        attachment,
-      );
+      const supportDepthTexture =
+        isWebGL2(this.gl) || (!isWebGL2(this.gl) && !!this.WEBGL_depth_texture);
+      if (supportDepthTexture) {
+        this.bindFramebufferAttachment(
+          framebuffer,
+          gl.DEPTH_STENCIL_ATTACHMENT,
+          attachment,
+        );
+      } else {
+        this.bindFramebufferAttachment(
+          framebuffer,
+          gl.DEPTH_ATTACHMENT,
+          attachment,
+        );
+      }
     } else if (depth) {
       this.bindFramebufferAttachment(
         framebuffer,

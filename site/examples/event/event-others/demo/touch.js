@@ -28,6 +28,8 @@ const canvas = new Canvas({
   width: 600,
   height: 500,
   renderer: canvasRenderer,
+  supportsPointerEvents: false,
+  useNativeClickEvent: true,
 });
 
 // add a circle to canvas
@@ -44,6 +46,10 @@ const circle = new Circle({
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(circle);
+
+  circle.addEventListener('click', function (e) {
+    console.log('click');
+  });
 
   circle.addEventListener('touchstart', function (e) {
     console.log('touchstart');

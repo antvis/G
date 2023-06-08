@@ -82,3 +82,5 @@ packages/**/*/__node__tests__/*.png
 
 # ignore bundleviz stats.html
 stats.html
+
+*.diff.png

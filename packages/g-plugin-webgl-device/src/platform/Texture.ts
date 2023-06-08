@@ -8,7 +8,7 @@ import {
   assert,
   isPowerOfTwo,
 } from '@antv/g-plugin-device-renderer';
-import type {
+import {
   Format,
   SamplerFormatKind,
   Texture,
@@ -68,7 +68,9 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       gl_texture = this.device.ensureResourceExists(gl.createTexture());
       const gl_type = this.device.translateTextureType(descriptor.pixelFormat);
 
-      const internalformat = this.device.translateTextureInternalFormat(descriptor.pixelFormat);
+      const internalformat = this.device.translateTextureInternalFormat(
+        descriptor.pixelFormat,
+      );
       this.device.setActiveTexture(gl.TEXTURE0);
       this.device.currentTextures[0] = null;
 
@@ -93,28 +95,49 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           } else {
             // texImage2D: level must be 0 for DEPTH_COMPONENT format
             // const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : numLevels;
-            const level = internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : 0;
+            const level =
+              internalformat === GL.DEPTH_COMPONENT || this.isNPOT() ? 0 : 0;
 
-            // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
-            gl.texImage2D(
-              gl_target,
-              level,
-              internalformat,
-              descriptor.width,
-              descriptor.height,
-              0,
-              internalformat,
-              gl_type,
-              null,
-            );
+            if (
+              (this.pixelFormat === Format.D32F ||
+                this.pixelFormat === Format.D24_S8) &&
+              !isWebGL2(gl) &&
+              !device.WEBGL_depth_texture
+            ) {
+            } else {
+              // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+              gl.texImage2D(
+                gl_target,
+                level,
+                internalformat,
+                descriptor.width,
+                descriptor.height,
+                0,
+                internalformat,
+                gl_type,
+                null,
+              );
 
-            // @see https://stackoverflow.com/questions/21954036/dartweb-gl-render-warning-texture-bound-to-texture-unit-0-is-not-renderable
-            // [.WebGL-0x106ad0400]RENDER WARNING: texture bound to texture unit 0 is not renderable. It might be non-power-of-2 or have incompatible texture filtering (maybe)?
-            if (this.mipmaps && this.isNPOT()) {
-              this.mipmaps = false;
-              gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-              gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-              gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+              // @see https://stackoverflow.com/questions/21954036/dartweb-gl-render-warning-texture-bound-to-texture-unit-0-is-not-renderable
+              // [.WebGL-0x106ad0400]RENDER WARNING: texture bound to texture unit 0 is not renderable. It might be non-power-of-2 or have incompatible texture filtering (maybe)?
+              if (this.mipmaps && this.isNPOT()) {
+                this.mipmaps = false;
+                gl.texParameteri(
+                  GL.TEXTURE_2D,
+                  GL.TEXTURE_MIN_FILTER,
+                  GL.LINEAR,
+                );
+                gl.texParameteri(
+                  GL.TEXTURE_2D,
+                  GL.TEXTURE_WRAP_S,
+                  GL.CLAMP_TO_EDGE,
+                );
+                gl.texParameteri(
+                  GL.TEXTURE_2D,
+                  GL.TEXTURE_WRAP_T,
+                  GL.CLAMP_TO_EDGE,
+                );
+              }
             }
           }
         }
@@ -276,8 +299,13 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   }
 
   private clampNumLevels(descriptor: TextureDescriptor): number {
-    if (descriptor.dimension === TextureDimension.n2DArray && descriptor.depth > 1) {
-      const typeFlags: FormatTypeFlags = getFormatTypeFlags(descriptor.pixelFormat);
+    if (
+      descriptor.dimension === TextureDimension.n2DArray &&
+      descriptor.depth > 1
+    ) {
+      const typeFlags: FormatTypeFlags = getFormatTypeFlags(
+        descriptor.pixelFormat,
+      );
       if (typeFlags === FormatTypeFlags.BC1) {
         // Chrome/ANGLE seems to have issues with compressed miplevels of size 1/2, so clamp before they arrive...
         // https://bugs.chromium.org/p/angleproject/issues/detail?id=4056
@@ -319,7 +347,11 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     if (this.gl_texture && this.gl_target) {
       gl.bindTexture(this.gl_target, this.gl_texture);
       gl.generateMipmap(this.gl_target);
-      gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST_MIPMAP_LINEAR);
+      gl.texParameteri(
+        GL.TEXTURE_2D,
+        GL.TEXTURE_MIN_FILTER,
+        GL.NEAREST_MIPMAP_LINEAR,
+      );
       gl.bindTexture(this.gl_target, null);
     }
     return this;
