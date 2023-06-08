@@ -381,8 +381,6 @@ export class Device_GL implements SwapChain, Device {
         ? Format.D32F
         : Format.U8_RGBA_NORM;
 
-    debugger;
-
     const texture = this.createTexture({
       dimension,
       pixelFormat,
@@ -1285,7 +1283,6 @@ export class Device_GL implements SwapChain, Device {
           attachment,
         );
       } else {
-        debugger;
         this.bindFramebufferAttachment(
           framebuffer,
           gl.DEPTH_ATTACHMENT,
