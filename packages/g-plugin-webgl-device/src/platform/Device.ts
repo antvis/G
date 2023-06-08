@@ -584,25 +584,25 @@ export class Device_GL implements SwapChain, Device {
       case Format.D32F_S8:
         return isWebGL2(this.gl)
           ? GL.DEPTH32F_STENCIL8
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.DEPTH_STENCIL
           : GL.DEPTH_COMPONENT16;
       case Format.D24_S8:
         return isWebGL2(this.gl)
           ? GL.DEPTH24_STENCIL8
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.DEPTH_STENCIL
           : GL.DEPTH_COMPONENT16;
       case Format.D32F:
         return isWebGL2(this.gl)
           ? GL.DEPTH_COMPONENT32F
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.DEPTH_COMPONENT
           : GL.DEPTH_COMPONENT16;
       case Format.D24:
         return isWebGL2(this.gl)
           ? GL.DEPTH_COMPONENT24
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.DEPTH_COMPONENT
           : GL.DEPTH_COMPONENT16;
       default:
@@ -630,20 +630,20 @@ export class Device_GL implements SwapChain, Device {
       case FormatTypeFlags.D32F:
         return isWebGL2(this.gl)
           ? GL.FLOAT
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.UNSIGNED_INT
           : GL.UNSIGNED_BYTE;
       case FormatTypeFlags.D24:
         return isWebGL2(this.gl)
           ? GL.UNSIGNED_INT_24_8
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.UNSIGNED_SHORT
           : GL.UNSIGNED_BYTE;
       case FormatTypeFlags.D24S8:
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_depth_texture
         return isWebGL2(this.gl)
           ? GL.UNSIGNED_INT_24_8
-          : !!this.WEBGL_depth_texture
+          : this.WEBGL_depth_texture
           ? GL.UNSIGNED_INT_24_8_WEBGL
           : GL.UNSIGNED_BYTE;
       case FormatTypeFlags.D32FS8:

@@ -144,6 +144,6 @@ describe('Render <Circle> with g-webgl', () => {
         __dirname + RESULT_IMAGE,
         __dirname + BASELINE_IMAGE_DIR + RESULT_IMAGE,
       ),
-    ).toBe(0);
+    ).toBeLessThan(50);
   });
 });

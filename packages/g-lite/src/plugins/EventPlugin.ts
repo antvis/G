@@ -134,7 +134,7 @@ export class EventPlugin implements RenderingPlugin {
 
     renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
 
-    renderingService.hooks.click.tap(EventPlugin.tag, this.onPointerMove);
+    renderingService.hooks.click.tap(EventPlugin.tag, this.onClick);
 
     renderingService.hooks.pointerCancel.tap(
       EventPlugin.tag,
@@ -166,6 +166,26 @@ export class EventPlugin implements RenderingPlugin {
       (nativeEvent as PointerEvent).pointerType === 'touch'
     )
       return;
+
+    const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
+
+    for (const normalizedEvent of normalizedEvents) {
+      const event = this.bootstrapEvent(
+        this.rootPointerEvent,
+        normalizedEvent,
+        canvas,
+        nativeEvent,
+      );
+
+      this.context.eventService.mapEvent(event);
+    }
+
+    this.setCursor(this.context.eventService.cursor);
+  };
+
+  private onClick = (nativeEvent: InteractivePointerEvent) => {
+    const canvas =
+      this.context.renderingContext.root?.ownerDocument?.defaultView;
 
     const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
 
