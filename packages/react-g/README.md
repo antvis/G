@@ -29,8 +29,8 @@ const App = () => {
     return (
         <Canvas width={600} height={400} renderer={renderer}>
             <Circle
-                x={100}
-                y={200}
+                cx={100}
+                cy={200}
                 r={size}
                 fill="#1890FF"
                 stroke="#F04864"
@@ -64,8 +64,8 @@ const App = () => {
         <Canvas width={600} height={400} renderer={renderer}>
             <Circle
                 ref={circleRef}
-                x={100}
-                y={200}
+                cx={100}
+                cy={200}
                 r={size}
                 fill="#1890FF"
                 stroke="#F04864"
@@ -98,8 +98,8 @@ const CircleComponent = () => {
     const [size, setSize] = useState(50);
     return (
         <Circle
-            x={100}
-            y={200}
+            cx={100}
+            cy={200}
             r={size}
             fill="#1890FF"
             stroke="#F04864"
