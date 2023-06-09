@@ -33,7 +33,7 @@ if ('gpu' in navigator) {
 
 ### NPM Module
 
-安装 `@antv/g-webgl` 后可以从中获取渲染器：
+安装 `@antv/g-webgpu` 后可以从中获取渲染器：
 
 ```js
 import { Canvas } from '@antv/g';
