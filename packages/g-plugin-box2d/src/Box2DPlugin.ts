@@ -155,7 +155,7 @@ export class Box2DPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
+    renderingService.hooks.init.tap(Box2DPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.addEventListener(
@@ -163,15 +163,17 @@ export class Box2DPlugin implements RenderingPlugin {
         handleAttributeChanged,
       );
 
-      this.Box2D = await this.loadBox2D();
+      (async () => {
+        this.Box2D = await this.loadBox2D();
 
-      this.temp = new this.Box2D.b2Vec2(0, 0);
-      this.temp2 = new this.Box2D.b2Vec2(0, 0);
-      this.createScene();
-      this.handlePendingDisplayObjects();
+        this.temp = new this.Box2D.b2Vec2(0, 0);
+        this.temp2 = new this.Box2D.b2Vec2(0, 0);
+        this.createScene();
+        this.handlePendingDisplayObjects();
 
-      // do simulation each frame
-      canvas.addEventListener(CanvasEvent.BEFORE_RENDER, simulate);
+        // do simulation each frame
+        canvas.addEventListener(CanvasEvent.BEFORE_RENDER, simulate);
+      })();
     });
 
     renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
@@ -412,22 +414,35 @@ export class Box2DPlugin implements RenderingPlugin {
     this.pendingDisplayObjects = [];
   }
 
-  private loadBox2D(): Promise<typeof Box2D & EmscriptenModule> {
-    const scriptPromise = new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.setAttribute('data-box2d-dir', BOX2D_UMD_DIR);
-      document.body.appendChild(script);
-      script.async = true;
-      script.onload = resolve;
-      script.src = `${BOX2D_UMD_DIR}entry.js`;
+  private async loadBox2D(): Promise<typeof Box2D & EmscriptenModule> {
+    const hasSIMD = WebAssembly.validate(
+      new Uint8Array([
+        0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10,
+        1, 8, 0, 65, 0, 253, 15, 253, 98, 11,
+      ]),
+    );
+    const moduleName = hasSIMD ? './Box2D.simd' : './Box2D';
+
+    // awaiting gives us a better stack trace (at the cost of an extra microtask)
+    const modulePromise = await new Promise<any>((resolve, reject) => {
+      const tag = document.createElement('script');
+      tag.onload = () => {
+        resolve(<any>window.Box2D);
+        return false;
+      };
+      tag.onerror = () => {
+        reject(
+          new Error(
+            `Failed to load Box2D. Check your browser console for network errors.`,
+          ),
+        );
+        return false;
+      };
+      tag.src = `${BOX2D_UMD_DIR}/${moduleName}.js`;
+      document.getElementsByTagName('head')[0].appendChild(tag);
     });
 
-    return new Promise((resolve) => {
-      scriptPromise.then(() => {
-        (<any>window).Box2D().then((Box2D: any) => {
-          resolve(Box2D);
-        });
-      });
-    });
+    const Box2DFactory = await modulePromise;
+    return await Box2DFactory();
   }
 }

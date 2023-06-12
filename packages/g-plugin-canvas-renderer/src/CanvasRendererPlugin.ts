@@ -116,26 +116,23 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(
-      CanvasRendererPlugin.tag,
-      async () => {
-        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-        canvas.addEventListener(ElementEvent.CULLED, handleCulled);
+    renderingService.hooks.init.tap(CanvasRendererPlugin.tag, () => {
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(ElementEvent.CULLED, handleCulled);
 
-        // clear fullscreen
-        const dpr = contextService.getDPR();
-        const { width, height } = config;
-        const context = contextService.getContext();
-        this.clearRect(
-          context,
-          0,
-          0,
-          width * dpr,
-          height * dpr,
-          config.background,
-        );
-      },
-    );
+      // clear fullscreen
+      const dpr = contextService.getDPR();
+      const { width, height } = config;
+      const context = contextService.getContext();
+      this.clearRect(
+        context,
+        0,
+        0,
+        width * dpr,
+        height * dpr,
+        config.background,
+      );
+    });
 
     renderingService.hooks.destroy.tap(CanvasRendererPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);

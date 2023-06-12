@@ -10,7 +10,9 @@ import { isBrowser, setDOMSize } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { isString } from '@antv/util';
 
-export class WebGLContextService implements ContextService<WebGLRenderingContext> {
+export class WebGLContextService
+  implements ContextService<WebGLRenderingContext>
+{
   private $container: HTMLElement | null;
   private $canvas: CanvasLike | null;
   private dpr: number;
@@ -24,13 +26,16 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
     this.deviceRendererPlugin = context.deviceRendererPlugin;
   }
 
-  async init() {
+  init() {
     const { container, canvas } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
 
-      if (container && (canvas as HTMLCanvasElement).parentElement !== container) {
+      if (
+        container &&
+        (canvas as HTMLCanvasElement).parentElement !== container
+      ) {
         (container as HTMLElement).appendChild(canvas as HTMLCanvasElement);
       }
 
@@ -38,7 +43,9 @@ export class WebGLContextService implements ContextService<WebGLRenderingContext
       this.canvasConfig.container = this.$container;
     } else if (container) {
       // create container
-      this.$container = isString(container) ? document.getElementById(container) : container;
+      this.$container = isString(container)
+        ? document.getElementById(container)
+        : container;
       if (this.$container) {
         // create canvas
         const $canvas = document.createElement('canvas');

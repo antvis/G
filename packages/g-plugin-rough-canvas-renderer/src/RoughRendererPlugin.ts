@@ -7,7 +7,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { config, contextService, renderingService } = context;
-    renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
+    renderingService.hooks.init.tap(RoughRendererPlugin.tag, () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
        */
@@ -17,7 +17,9 @@ export class RoughRendererPlugin implements RenderingPlugin {
       const context = contextService.getContext();
       // @see https://github.com/rough-stuff/rough/wiki#roughcanvas-canvaselement--config
       // @ts-ignore
-      context.roughCanvas = rough.canvas(contextService.getDomElement() as HTMLCanvasElement);
+      context.roughCanvas = rough.canvas(
+        contextService.getDomElement() as HTMLCanvasElement,
+      );
     });
 
     renderingService.hooks.destroy.tap(RoughRendererPlugin.tag, () => {});

@@ -58,7 +58,7 @@ export class ZdogRendererPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(ZdogRendererPlugin.tag, async () => {
+    renderingService.hooks.init.tap(ZdogRendererPlugin.tag, () => {
       this.scene = new Anchor();
 
       const $svg = contextService.getContext() as SVGSVGElement;

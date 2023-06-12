@@ -28,7 +28,7 @@ export class Canvas2DContextService
     this.canvasConfig = context.config;
   }
 
-  async init() {
+  init() {
     const { container, canvas } = this.canvasConfig;
 
     if (canvas) {

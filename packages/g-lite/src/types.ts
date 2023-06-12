@@ -1,5 +1,4 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -363,7 +362,7 @@ export interface RendererConfig {
 /**
  * eg. NodeCanvas, OffscreenCanvas, HTMLCanvasElement
  */
-export interface CanvasLike extends IEventTarget {
+export interface CanvasLike extends EventTarget {
   width: number;
   height: number;
 

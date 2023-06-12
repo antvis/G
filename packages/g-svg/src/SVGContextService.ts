@@ -21,7 +21,7 @@ export class SVGContextService implements ContextService<SVGElement> {
     this.canvasConfig = context.config;
   }
 
-  async init() {
+  init() {
     const { container, document: doc, devicePixelRatio } = this.canvasConfig;
 
     // create container

@@ -24,13 +24,16 @@ export class WebGPUContextService implements ContextService<GPUCanvasContext> {
     this.deviceRendererPlugin = context.deviceRendererPlugin;
   }
 
-  async init() {
+  init() {
     const { container, canvas } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
 
-      if (container && (canvas as HTMLCanvasElement).parentElement !== container) {
+      if (
+        container &&
+        (canvas as HTMLCanvasElement).parentElement !== container
+      ) {
         (container as HTMLElement).appendChild(canvas as HTMLCanvasElement);
       }
 
@@ -38,7 +41,9 @@ export class WebGPUContextService implements ContextService<GPUCanvasContext> {
       this.canvasConfig.container = this.$container;
     } else if (container) {
       // create container
-      this.$container = isString(container) ? document.getElementById(container) : container;
+      this.$container = isString(container)
+        ? document.getElementById(container)
+        : container;
       if (this.$container) {
         // create canvas
         const $canvas = document.createElement('canvas');
@@ -58,8 +63,10 @@ export class WebGPUContextService implements ContextService<GPUCanvasContext> {
   }
 
   getContext() {
-    // @ts-ignore
-    return this.deviceRendererPlugin.getDevice().canvasContext as GPUCanvasContext;
+    return (
+      // @ts-ignore
+      this.deviceRendererPlugin.getDevice().canvasContext as GPUCanvasContext
+    );
   }
 
   getBoundingClientRect() {

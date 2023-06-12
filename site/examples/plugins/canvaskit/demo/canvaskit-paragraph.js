@@ -23,7 +23,7 @@ const canvaskitRenderer = new CanvaskitRenderer({
     },
     {
       name: 'sans-serif',
-      url: '/NotoSansCJKsc-VF.ttf',
+      url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
     },
   ],
 });

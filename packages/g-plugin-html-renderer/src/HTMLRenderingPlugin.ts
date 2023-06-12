@@ -122,22 +122,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(
-      HTMLRenderingPlugin.tag,
-      async () => {
-        canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
-        canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
-        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-        canvas.addEventListener(
-          ElementEvent.ATTR_MODIFIED,
-          handleAttributeChanged,
-        );
-        canvas.addEventListener(
-          ElementEvent.BOUNDS_CHANGED,
-          handleBoundsChanged,
-        );
-      },
-    );
+    renderingService.hooks.init.tap(HTMLRenderingPlugin.tag, () => {
+      canvas.addEventListener(CanvasEvent.RESIZE, handleCanvasResize);
+      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+    });
 
     renderingService.hooks.endFrame.tap(HTMLRenderingPlugin.tag, () => {
       if (
