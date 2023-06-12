@@ -82,7 +82,7 @@ export class A11yPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(A11yPlugin.tag, async () => {
+    renderingService.hooks.init.tap(A11yPlugin.tag, () => {
       if (enableExtractingText && !this.isSVG()) {
         this.textExtractor.activate();
       }
@@ -93,7 +93,10 @@ export class A11yPlugin implements RenderingPlugin {
 
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
       canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
     });
 
@@ -108,12 +111,21 @@ export class A11yPlugin implements RenderingPlugin {
 
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
-      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
     });
   }
 
   private isSVG() {
-    return isBrowser && this.context.contextService.getDomElement() instanceof SVGSVGElement;
+    return (
+      isBrowser &&
+      this.context.contextService.getDomElement() instanceof SVGSVGElement
+    );
   }
 }

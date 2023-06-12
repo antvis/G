@@ -726,7 +726,7 @@ export class SelectablePlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(SelectablePlugin.tag, async () => {
+    renderingService.hooks.init.tap(SelectablePlugin.tag, () => {
       canvas.addEventListener('pointerdown', handleClick);
       canvas.addEventListener('pointerdown', handleMouseDown);
       canvas.addEventListener('pointermove', handleMouseMove);

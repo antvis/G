@@ -136,15 +136,15 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     this.context = context;
     const { renderingService, renderingContext } = context;
 
-    renderingService.hooks.init.tapPromise(
-      CanvaskitRendererPlugin.tag,
-      async () => {
-        const canvasKitContext = (
-          this.context.contextService as ContextService<CanvasKitContext>
-        ).getContext();
-        const { surface, CanvasKit } = canvasKitContext;
-        const { fonts } = this.canvaskitRendererPluginOptions;
+    renderingService.hooks.init.tap(CanvaskitRendererPlugin.tag, () => {
+      const canvasKitContext = (
+        this.context.contextService as ContextService<CanvasKitContext>
+      ).getContext();
+      const { surface, CanvasKit } = canvasKitContext;
 
+      const { fonts } = this.canvaskitRendererPluginOptions;
+
+      (async () => {
         // load default fonts 'sans-serif', 'NotoSansCJK-Regular.ttf'
         await Promise.all(
           fonts.map(({ name, url }) =>
@@ -220,8 +220,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           surface.requestAnimationFrame(drawFrame);
         };
         surface.requestAnimationFrame(drawFrame);
-      },
-    );
+      })();
+    });
 
     renderingService.hooks.destroy.tap(CanvaskitRendererPlugin.tag, () => {
       const canvasKitContext = (

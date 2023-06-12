@@ -48,14 +48,20 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(LoadImagePlugin.tag, async () => {
+    renderingService.hooks.init.tap(LoadImagePlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
 
     renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
   }
 }

@@ -267,7 +267,7 @@ export class AnnotationPlugin implements RenderingPlugin {
       this.hotkeyActive = false;
     };
 
-    renderingService.hooks.init.tapPromise(AnnotationPlugin.tag, async () => {
+    renderingService.hooks.init.tap(AnnotationPlugin.tag, () => {
       canvas.addEventListener('click', handleClick);
       canvas.addEventListener('pointerdown', handleMouseDown);
       canvas.addEventListener('pointermove', handleMouseMove);

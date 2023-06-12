@@ -7,7 +7,13 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { AABB, CSSKeywordValue, ElementEvent, Shape, UnitType } from '@antv/g-lite';
+import {
+  AABB,
+  CSSKeywordValue,
+  ElementEvent,
+  Shape,
+  UnitType,
+} from '@antv/g-lite';
 import type {
   YogaAlign,
   YogaDisplay,
@@ -144,13 +150,16 @@ export class YogaPlugin implements RenderingPlugin {
       this.needRecalculateLayout = true;
     };
 
-    renderingService.hooks.init.tapPromise(YogaPlugin.tag, async () => {
+    renderingService.hooks.init.tap(YogaPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.addEventListener(ElementEvent.INSERTED, handleInserted);
       canvas.addEventListener(ElementEvent.REMOVED, handleRemoved);
       canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      canvas.addEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
 
     renderingService.hooks.destroy.tap(YogaPlugin.tag, () => {
@@ -158,8 +167,14 @@ export class YogaPlugin implements RenderingPlugin {
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.removeEventListener(ElementEvent.INSERTED, handleInserted);
       canvas.removeEventListener(ElementEvent.REMOVED, handleRemoved);
-      canvas.removeEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      canvas.removeEventListener(ElementEvent.ATTR_MODIFIED, handleAttributeChanged);
+      canvas.removeEventListener(
+        ElementEvent.BOUNDS_CHANGED,
+        handleBoundsChanged,
+      );
+      canvas.removeEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        handleAttributeChanged,
+      );
     });
 
     // const printYogaTree = (node: YogaNode) => {
@@ -232,7 +247,10 @@ export class YogaPlugin implements RenderingPlugin {
   /**
    * sync YogaNode
    */
-  private syncAttributes(object: DisplayObject, parsed: Record<string, any>): boolean {
+  private syncAttributes(
+    object: DisplayObject,
+    parsed: Record<string, any>,
+  ): boolean {
     const node = this.nodes[object.entity];
     const { yogaUpdatingFlag } = object.style;
 
@@ -243,25 +261,41 @@ export class YogaPlugin implements RenderingPlugin {
       const newValue = parsed[attributeName];
       if (attributeName === 'flexDirection') {
         node.setFlexDirection(
-          <YogaFlexDirection>YogaConstants.FlexDirection[newValue as keyof typeof FlexDirection],
+          <YogaFlexDirection>(
+            YogaConstants.FlexDirection[newValue as keyof typeof FlexDirection]
+          ),
         );
         needRecalculateLayout = true;
       } else if (attributeName === 'justifyContent') {
         node.setJustifyContent(
-          <YogaJustifyContent>YogaConstants.JustifyContent[newValue as keyof typeof JustifyContent],
+          <YogaJustifyContent>(
+            YogaConstants.JustifyContent[
+              newValue as keyof typeof JustifyContent
+            ]
+          ),
         );
         needRecalculateLayout = true;
       } else if (attributeName === 'alignContent') {
-        node.setAlignContent(<YogaAlign>YogaConstants.Align[newValue as keyof typeof Align]);
+        node.setAlignContent(
+          <YogaAlign>YogaConstants.Align[newValue as keyof typeof Align],
+        );
         needRecalculateLayout = true;
       } else if (attributeName === 'alignItems') {
-        node.setAlignItems(<YogaAlign>YogaConstants.Align[newValue as keyof typeof Align]);
+        node.setAlignItems(
+          <YogaAlign>YogaConstants.Align[newValue as keyof typeof Align],
+        );
         needRecalculateLayout = true;
       } else if (attributeName === 'alignSelf') {
-        node.setAlignSelf(<YogaAlign>YogaConstants.Align[newValue as keyof typeof Align]);
+        node.setAlignSelf(
+          <YogaAlign>YogaConstants.Align[newValue as keyof typeof Align],
+        );
         needRecalculateLayout = true;
       } else if (attributeName === 'flexWrap') {
-        node.setFlexWrap(<YogaFlexWrap>YogaConstants.FlexWrap[newValue as keyof typeof FlexWrap]);
+        node.setFlexWrap(
+          <YogaFlexWrap>(
+            YogaConstants.FlexWrap[newValue as keyof typeof FlexWrap]
+          ),
+        );
         needRecalculateLayout = true;
       } else if (attributeName === 'flexGrow') {
         node.setFlexGrow((newValue as CSSUnitValue).value);
@@ -274,11 +308,18 @@ export class YogaPlugin implements RenderingPlugin {
         needRecalculateLayout = true;
       } else if (attributeName === 'position') {
         node.setPositionType(
-          <YogaPositionType>YogaConstants.PositionType[newValue as keyof typeof PositionType],
+          <YogaPositionType>(
+            YogaConstants.PositionType[newValue as keyof typeof PositionType]
+          ),
         );
         needRecalculateLayout = true;
       } else if (attributeName === 'padding') {
-        const margin = newValue as [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
+        const margin = newValue as [
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+        ];
         YogaEdges.forEach((edge, index) => {
           const value = margin[index];
           this.setPadding(node, edge, value);
@@ -309,7 +350,12 @@ export class YogaPlugin implements RenderingPlugin {
         this.setPadding(node, EDGE_LEFT, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'margin') {
-        const margin = newValue as [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
+        const margin = newValue as [
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+          CSSUnitValue,
+        ];
         YogaEdges.forEach((edge, index) => {
           const value = margin[index];
           this.setMargin(node, edge, value);
@@ -364,7 +410,9 @@ export class YogaPlugin implements RenderingPlugin {
         this.setMaxHeight(node, newValue as CSSUnitValue);
         needRecalculateLayout = true;
       } else if (attributeName === 'display') {
-        node.setDisplay(<YogaDisplay>YogaConstants.Display[newValue as keyof typeof Display]);
+        node.setDisplay(
+          <YogaDisplay>YogaConstants.Display[newValue as keyof typeof Display],
+        );
         needRecalculateLayout = true;
       } else if (attributeName === 'width' && !yogaUpdatingFlag) {
         this.setWidth(node, newValue as CSSUnitValue | CSSKeywordValue);
@@ -500,7 +548,9 @@ export class YogaPlugin implements RenderingPlugin {
   }
 
   private updateDisplayObjectPosition(object: DisplayObject, node: YogaNode) {
-    const isInFlexContainer = this.isFlex(object?.parentElement as DisplayObject);
+    const isInFlexContainer = this.isFlex(
+      object?.parentElement as DisplayObject,
+    );
     if (isInFlexContainer) {
       const layout = node.getComputedLayout();
       let { top, left } = layout;

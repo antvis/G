@@ -122,7 +122,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(MatterJSPlugin.tag, async () => {
+    renderingService.hooks.init.tap(MatterJSPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.addEventListener(

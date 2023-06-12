@@ -43,39 +43,41 @@ export class PhysXPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(PhysXPlugin.tag, async () => {
+    renderingService.hooks.init.tap(PhysXPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
 
-      this.PhysX = (await this.initPhysX()) as any;
-      this.createScene();
-      this.handlePendingDisplayObjects();
+      (async () => {
+        this.PhysX = (await this.initPhysX()) as any;
+        this.createScene();
+        this.handlePendingDisplayObjects();
 
-      // do simulation each frame
-      renderingContext.root.ownerDocument.defaultView.addEventListener(
-        CanvasEvent.BEFORE_RENDER,
-        () => {
-          if (this.scene) {
-            this.scene.simulate(1 / 60, true);
-            this.scene.fetchResults(true);
+        // do simulation each frame
+        renderingContext.root.ownerDocument.defaultView.addEventListener(
+          CanvasEvent.BEFORE_RENDER,
+          () => {
+            if (this.scene) {
+              this.scene.simulate(1 / 60, true);
+              this.scene.fetchResults(true);
 
-            this.bodies.forEach(({ body, displayObject }) => {
-              const transform = body.getGlobalPose();
-              const { translation, rotation } = transform;
-              displayObject.setPosition(
-                translation.x,
-                translation.y,
-                translation.z,
-              );
-              displayObject.setRotation(
-                rotation.x,
-                rotation.y,
-                rotation.z,
-                rotation.w,
-              );
-            });
-          }
-        },
-      );
+              this.bodies.forEach(({ body, displayObject }) => {
+                const transform = body.getGlobalPose();
+                const { translation, rotation } = transform;
+                displayObject.setPosition(
+                  translation.x,
+                  translation.y,
+                  translation.z,
+                );
+                displayObject.setRotation(
+                  rotation.x,
+                  rotation.y,
+                  rotation.z,
+                  rotation.w,
+                );
+              });
+            }
+          },
+        );
+      })();
     });
 
     renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {

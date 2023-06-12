@@ -44,6 +44,7 @@ export enum CanvasEvent {
   AFTER_DESTROY = 'afterdestroy',
   RESIZE = 'resize',
   DIRTY_RECTANGLE = 'dirtyrectangle',
+  RENDERER_CHANGED = 'rendererchanged',
 }
 
 const DEFAULT_CAMERA_Z = 500;
@@ -228,15 +229,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     this.initDefaultCamera(canvasWidth, canvasHeight);
 
-    (async () => {
-      await this.initRenderer(renderer);
-
-      this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
-
-      if (this.readyPromise) {
-        this.resolveReadyPromise();
-      }
-    })();
+    this.initRenderer(renderer, true);
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
@@ -473,12 +466,12 @@ export class Canvas extends EventTarget implements ICanvas {
   private run() {
     const tick = () => {
       this.render();
-      this.frameId = requestAnimationFrame(tick);
+      this.frameId = this.requestAnimationFrame(tick);
     };
     tick();
   }
 
-  private async initRenderer(renderer: IRenderer) {
+  private initRenderer(renderer: IRenderer, firstContentfullPaint = false) {
     if (!renderer) {
       throw new Error('Renderer is required.');
     }
@@ -514,19 +507,53 @@ export class Canvas extends EventTarget implements ICanvas {
     // init event service
     this.context.eventService = new EventService(runtime, this.context);
     this.context.eventService.init();
-    await this.context.contextService.init();
-    await this.context.renderingService.init();
+
+    if (this.context.contextService.init) {
+      this.context.contextService.init();
+      this.initRenderingService(renderer, firstContentfullPaint);
+      if (firstContentfullPaint) {
+        this.requestAnimationFrame(() => {
+          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+        });
+        if (this.readyPromise) {
+          this.resolveReadyPromise();
+        }
+      } else {
+        this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
+      }
+    } else {
+      this.context.contextService.initAsync().then(() => {
+        this.initRenderingService(renderer, firstContentfullPaint);
+        if (firstContentfullPaint) {
+          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+          if (this.readyPromise) {
+            this.resolveReadyPromise();
+          }
+        } else {
+          this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
+        }
+      });
+    }
+  }
+
+  private initRenderingService(
+    renderer: IRenderer,
+    firstContentfullPaint = false,
+  ) {
+    this.context.renderingService.init();
 
     this.inited = true;
 
-    this.getRoot().forEach((node) => {
-      const renderable = (node as Element).renderable;
-      if (renderable) {
-        renderable.renderBoundsDirty = true;
-        renderable.boundsDirty = true;
-        renderable.dirty = true;
-      }
-    });
+    if (!firstContentfullPaint) {
+      this.getRoot().forEach((node) => {
+        const renderable = (node as Element).renderable;
+        if (renderable) {
+          renderable.renderBoundsDirty = true;
+          renderable.boundsDirty = true;
+          renderable.dirty = true;
+        }
+      });
+    }
 
     // keep current scenegraph unchanged, just trigger mounted event
     this.mountChildren(this.getRoot());
@@ -545,7 +572,7 @@ export class Canvas extends EventTarget implements ICanvas {
     });
   }
 
-  async setRenderer(renderer: IRenderer) {
+  setRenderer(renderer: IRenderer) {
     // update canvas' config
     const canvasConfig = this.getConfig();
     if (canvasConfig.renderer === renderer) {
@@ -563,7 +590,7 @@ export class Canvas extends EventTarget implements ICanvas {
       plugin.destroy(runtime);
     });
 
-    await this.initRenderer(renderer);
+    this.initRenderer(renderer);
   }
 
   setCursor(cursor: Cursor) {

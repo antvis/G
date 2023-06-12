@@ -9,7 +9,6 @@ import type {
   CanvasConfig,
 } from '../types';
 import {
-  AsyncParallelHook,
   AsyncSeriesWaterfallHook,
   sortByZIndex,
   sortedIndex,
@@ -72,7 +71,7 @@ export class RenderingService {
     /**
      * called before any frame rendered
      */
-    init: new AsyncParallelHook<[]>(),
+    init: new SyncHook<[]>(),
     /**
      * only dirty object which has sth changed will be rendered
      */
@@ -121,15 +120,14 @@ export class RenderingService {
     click: new SyncHook<[InteractivePointerEvent]>(),
   };
 
-  async init() {
+  init() {
     const context = { ...this.globalRuntime, ...this.context };
 
     // register rendering plugins
     this.context.renderingPlugins.forEach((plugin) => {
       plugin.apply(context, runtime);
     });
-    // await this.hooks.init.callPromise();
-    await this.hooks.init.promise();
+    this.hooks.init.call();
     this.inited = true;
   }
 

@@ -121,44 +121,41 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       runtime.globalThis.removeEventListener('mouseup', onPointerUp, true);
     };
 
-    renderingService.hooks.init.tapPromise(
-      DOMInteractionPlugin.tag,
-      async () => {
-        const $el =
-          this.context.contextService.getDomElement() as unknown as HTMLElement;
+    renderingService.hooks.init.tap(DOMInteractionPlugin.tag, () => {
+      const $el =
+        this.context.contextService.getDomElement() as unknown as HTMLElement;
 
+      // @ts-ignore
+      if (runtime.globalThis.navigator.msPointerEnabled) {
         // @ts-ignore
-        if (runtime.globalThis.navigator.msPointerEnabled) {
-          // @ts-ignore
-          $el.style.msContentZooming = 'none';
-          // @ts-ignore
-          $el.style.msTouchAction = 'none';
-        } else if (canvas.supportsPointerEvents) {
-          $el.style.touchAction = 'none';
-        }
+        $el.style.msContentZooming = 'none';
+        // @ts-ignore
+        $el.style.msTouchAction = 'none';
+      } else if (canvas.supportsPointerEvents) {
+        $el.style.touchAction = 'none';
+      }
 
-        if (canvas.supportsPointerEvents) {
-          addPointerEventListener($el);
-        } else {
-          addMouseEventListener($el);
-        }
+      if (canvas.supportsPointerEvents) {
+        addPointerEventListener($el);
+      } else {
+        addMouseEventListener($el);
+      }
 
-        if (canvas.supportsTouchEvents) {
-          addTouchEventListener($el);
-        }
+      if (canvas.supportsTouchEvents) {
+        addTouchEventListener($el);
+      }
 
-        if (config.useNativeClickEvent) {
-          $el.addEventListener('click', onClick, true);
-        }
+      if (config.useNativeClickEvent) {
+        $el.addEventListener('click', onClick, true);
+      }
 
-        // use passive event listeners
-        // @see https://zhuanlan.zhihu.com/p/24555031
-        $el.addEventListener('wheel', onPointerWheel, {
-          passive: true,
-          capture: true,
-        });
-      },
-    );
+      // use passive event listeners
+      // @see https://zhuanlan.zhihu.com/p/24555031
+      $el.addEventListener('wheel', onPointerWheel, {
+        passive: true,
+        capture: true,
+      });
+    });
 
     renderingService.hooks.destroy.tap(DOMInteractionPlugin.tag, () => {
       const $el =

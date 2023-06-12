@@ -64,7 +64,7 @@ export class PickingPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(PickingPlugin.tag, async () => {
+    renderingService.hooks.init.tap(PickingPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
     });
 

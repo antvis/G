@@ -7,7 +7,7 @@ export class RoughRendererPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { contextService, renderingService } = context;
-    renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
+    renderingService.hooks.init.tap(RoughRendererPlugin.tag, () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
        */

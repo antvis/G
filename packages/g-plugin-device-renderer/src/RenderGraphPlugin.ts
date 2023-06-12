@@ -78,6 +78,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
    */
   private builder: RGGraphBuilder;
 
+  private pendingDisplayObjects: DisplayObject[] = [];
+
   private enableCapture: boolean;
   private captureOptions: Partial<DataURLOptions>;
   private capturePromise: Promise<any> | undefined;
@@ -120,7 +122,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // @ts-ignore
       object.renderable3D = renderable3D;
 
-      this.batchManager.add(object);
+      if (this.swapChain) {
+        this.batchManager.add(object);
+      } else {
+        this.pendingDisplayObjects.push(object);
+      }
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -134,7 +140,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
         return;
       }
 
-      this.batchManager.remove(object);
+      if (this.swapChain) {
+        this.batchManager.remove(object);
+      }
 
       // @ts-ignore
       delete object.renderable3D;
@@ -145,27 +153,31 @@ export class RenderGraphPlugin implements RenderingPlugin {
     };
 
     const handleAttributeChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      const { attrName, newValue } = e;
+      if (this.swapChain) {
+        const object = e.target as DisplayObject;
+        const { attrName, newValue } = e;
 
-      if (attrName === 'zIndex') {
-        object.parentNode.forEach((child: DisplayObject) => {
-          this.batchManager.changeRenderOrder(
-            child,
-            child.sortable.renderOrder,
-          );
-        });
-      } else {
-        this.batchManager.updateAttribute(object, attrName, newValue);
+        if (attrName === 'zIndex') {
+          object.parentNode.forEach((child: DisplayObject) => {
+            this.batchManager.changeRenderOrder(
+              child,
+              child.sortable.renderOrder,
+            );
+          });
+        } else {
+          this.batchManager.updateAttribute(object, attrName, newValue);
+        }
       }
     };
 
     const handleBoundsChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      this.batchManager.updateAttribute(object, 'modelMatrix', null);
+      if (this.swapChain) {
+        const object = e.target as DisplayObject;
+        this.batchManager.updateAttribute(object, 'modelMatrix', null);
+      }
     };
 
-    renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
+    renderingService.hooks.init.tap(RenderGraphPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.addEventListener(
@@ -182,24 +194,34 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const { width, height } = this.context.config;
       this.context.contextService.resize(width, height);
 
-      // create swap chain and get device
-      // @ts-ignore
-      this.swapChain = await this.context.deviceContribution.createSwapChain(
-        $canvas,
-      );
-      this.device = this.swapChain.getDevice();
-      this.renderHelper.setDevice(this.device);
-      this.renderHelper.renderInstManager.disableSimpleMode();
-      this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-
-      canvas.addEventListener(CanvasEvent.RESIZE, () => {
+      (async () => {
+        // create swap chain and get device
+        // @ts-ignore
+        this.swapChain = await this.context.deviceContribution.createSwapChain(
+          $canvas,
+        );
+        this.device = this.swapChain.getDevice();
+        this.renderHelper.setDevice(this.device);
+        this.renderHelper.renderInstManager.disableSimpleMode();
         this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-      });
 
-      this.batchManager.attach({
-        device: this.device,
-        ...context,
-      });
+        canvas.addEventListener(CanvasEvent.RESIZE, () => {
+          this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+        });
+
+        this.batchManager.attach({
+          device: this.device,
+          ...context,
+        });
+
+        this.pendingDisplayObjects.forEach((object) => {
+          this.batchManager.add(object);
+        });
+        this.pendingDisplayObjects = [];
+
+        // trigger rerender
+        this.context.renderingService.dirtify();
+      })();
     });
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
@@ -221,9 +243,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      // if (renderingContext.renderListCurrentFrame.length === 0) {
-      //   return;
-      // }
+      if (!this.swapChain) {
+        return;
+      }
 
       const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
@@ -299,9 +321,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
-      // if (renderingContext.renderListCurrentFrame.length === 0) {
-      //   return;
-      // }
+      if (!this.swapChain) {
+        return;
+      }
 
       const renderInstManager = this.renderHelper.renderInstManager;
 
