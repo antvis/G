@@ -9,6 +9,7 @@ import type {
   BindingLayoutSamplerDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import {
+  BufferUsage,
   WrapMode,
   TexFilterMode,
   MipFilterMode,
@@ -82,6 +83,17 @@ export function translateTextureDimension(
   else throw new Error('whoops');
 }
 
+export function translateBufferUsage(usage_: BufferUsage): GPUBufferUsageFlags {
+  let usage = 0;
+  if (usage_ & BufferUsage.INDEX) usage |= GPUBufferUsage.INDEX;
+  if (usage_ & BufferUsage.VERTEX) usage |= GPUBufferUsage.VERTEX;
+  if (usage_ & BufferUsage.UNIFORM) usage |= GPUBufferUsage.UNIFORM;
+  if (usage_ & BufferUsage.STORAGE) usage |= GPUBufferUsage.STORAGE;
+  if (usage_ & BufferUsage.COPY_SRC) usage |= GPUBufferUsage.COPY_SRC;
+  usage |= GPUBufferUsage.COPY_DST;
+  return usage;
+}
+
 export function translateWrapMode(wrapMode: WrapMode): GPUAddressMode {
   if (wrapMode === WrapMode.Clamp) return 'clamp-to-edge';
   else if (wrapMode === WrapMode.Repeat) return 'repeat';
@@ -106,6 +118,18 @@ function translateSampleType(type: SamplerFormatKind): GPUTextureSampleType {
   if (type === SamplerFormatKind.Float) return 'float';
   else if (type === SamplerFormatKind.Depth) return 'depth';
   else throw new Error('whoops');
+}
+
+export function translateBindGroupSamplerBinding(
+  sampler: BindingLayoutSamplerDescriptor,
+): GPUSamplerBindingLayout {
+  if (sampler.formatKind === SamplerFormatKind.Depth && sampler.comparison) {
+    return { type: 'comparison' };
+  } else if (sampler.formatKind === SamplerFormatKind.Float) {
+    return { type: 'filtering' };
+  } else {
+    return { type: 'non-filtering' };
+  }
 }
 
 function translateViewDimension(
@@ -214,14 +238,36 @@ export function translateBlendMode(mode: BlendMode): GPUBlendOperation {
   else throw new Error('whoops');
 }
 
-export function translateBlendState(
-  blendState: ChannelBlendState,
-): GPUBlendComponent {
+function translateBlendComponent(ch: ChannelBlendState): GPUBlendComponent {
   return {
-    operation: translateBlendMode(blendState.blendMode),
-    srcFactor: translateBlendFactor(blendState.blendSrcFactor),
-    dstFactor: translateBlendFactor(blendState.blendDstFactor),
+    operation: translateBlendMode(ch.blendMode),
+    srcFactor: translateBlendFactor(ch.blendSrcFactor),
+    dstFactor: translateBlendFactor(ch.blendDstFactor),
   };
+}
+
+function blendComponentIsNil(ch: ChannelBlendState): boolean {
+  return (
+    ch.blendMode === BlendMode.Add &&
+    ch.blendSrcFactor === BlendFactor.One &&
+    ch.blendDstFactor === BlendFactor.Zero
+  );
+}
+
+function translateBlendState(
+  attachmentState: AttachmentState,
+): GPUBlendState | undefined {
+  if (
+    blendComponentIsNil(attachmentState.rgbBlendState) &&
+    blendComponentIsNil(attachmentState.alphaBlendState)
+  ) {
+    return undefined;
+  } else {
+    return {
+      color: translateBlendComponent(attachmentState.rgbBlendState),
+      alpha: translateBlendComponent(attachmentState.alphaBlendState),
+    };
+  }
 }
 
 export function translateColorState(
@@ -230,10 +276,7 @@ export function translateColorState(
 ): GPUColorTargetState {
   return {
     format: translateTextureFormat(format),
-    blend: {
-      color: translateBlendState(attachmentState.rgbBlendState),
-      alpha: translateBlendState(attachmentState.alphaBlendState),
-    },
+    blend: translateBlendState(attachmentState),
     writeMask: attachmentState.channelWriteMask,
   };
 }
@@ -298,15 +341,22 @@ export function translateVertexFormat(format: Format): GPUVertexFormat {
   else if (format === Format.U8_RG) return 'uint8x2';
   else if (format === Format.U8_RGB) return 'uint8x4';
   else if (format === Format.U8_RGBA) return 'uint8x4';
+  else if (format === Format.U8_RG_NORM) return 'unorm8x2';
   else if (format === Format.U8_RGBA_NORM) return 'unorm8x4';
   else if (format === Format.S8_RGB_NORM) return 'snorm8x4';
   else if (format === Format.S8_RGBA_NORM) return 'snorm8x4';
+  else if (format === Format.U16_RG_NORM) return 'unorm16x2';
+  else if (format === Format.U16_RGBA_NORM) return 'unorm16x4';
+  else if (format === Format.S16_RG_NORM) return 'snorm16x2';
+  else if (format === Format.S16_RGBA_NORM) return 'snorm16x4';
   else if (format === Format.S16_RG) return 'uint16x2';
+  else if (format === Format.F16_RG) return 'float16x2';
+  else if (format === Format.F16_RGBA) return 'float16x4';
   else if (format === Format.F32_R) return 'float32';
   else if (format === Format.F32_RG) return 'float32x2';
   else if (format === Format.F32_RGB) return 'float32x3';
   else if (format === Format.F32_RGBA) return 'float32x4';
-  else throw new Error('whoops');
+  else throw 'whoops';
 }
 
 export function isFormatTextureCompressionBC(format: Format): boolean {

@@ -32,6 +32,14 @@ export class WebGPUDeviceContribution implements DeviceContribution {
     );
     const device = await adapter.requestDevice({ requiredFeatures });
 
+    // @see https://github.com/gpuweb/gpuweb/blob/main/design/ErrorHandling.md#fatal-errors-requestadapter-requestdevice-and-devicelost
+    const { onContextLost } = this.pluginOptions;
+    device.lost.then(() => {
+      if (onContextLost) {
+        onContextLost();
+      }
+    });
+
     if (device === null) return null;
 
     const context = $canvas.getContext('webgpu');
@@ -39,7 +47,7 @@ export class WebGPUDeviceContribution implements DeviceContribution {
     if (!context) return null;
 
     try {
-      await init('/glsl_wgsl_compiler_bg.wasm');
+      await init(this.pluginOptions.shaderCompilerPath);
     } catch (e) {}
     return new Device_WebGPU(adapter, device, $canvas, context, glsl_compile);
   }

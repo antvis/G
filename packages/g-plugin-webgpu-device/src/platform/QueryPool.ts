@@ -8,6 +8,9 @@ export class QueryPool_WebGPU extends ResourceBase_WebGPU implements QueryPool {
   type: ResourceType.QueryPool = ResourceType.QueryPool;
 
   querySet: GPUQuerySet;
+  resolveBuffer: GPUBuffer;
+  cpuBuffer: GPUBuffer;
+  results: BigUint64Array | null;
 
   constructor({
     id,
@@ -28,9 +31,26 @@ export class QueryPool_WebGPU extends ResourceBase_WebGPU implements QueryPool {
       type: translateQueryPoolType(type),
       count: elemCount,
     });
+
+    this.resolveBuffer = this.device.device.createBuffer({
+      size: elemCount * 8,
+      usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC,
+    });
+    this.cpuBuffer = this.device.device.createBuffer({
+      size: elemCount * 8,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+    this.results = null;
   }
 
   queryResultOcclusion(dstOffs: number): boolean | null {
-    return true;
+    if (this.results === null) return null;
+    return this.results[dstOffs] !== BigInt(0);
+  }
+
+  destroy(): void {
+    this.querySet.destroy();
+    this.resolveBuffer.destroy();
+    this.cpuBuffer.destroy();
   }
 }

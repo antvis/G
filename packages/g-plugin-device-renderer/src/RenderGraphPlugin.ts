@@ -78,8 +78,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
    */
   private builder: RGGraphBuilder;
 
-  private pendingDisplayObjects: DisplayObject[] = [];
-
   private enableCapture: boolean;
   private captureOptions: Partial<DataURLOptions>;
   private capturePromise: Promise<any> | undefined;
@@ -122,11 +120,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // @ts-ignore
       object.renderable3D = renderable3D;
 
-      if (this.swapChain) {
-        this.batchManager.add(object);
-      } else {
-        this.pendingDisplayObjects.push(object);
-      }
+      this.batchManager.add(object);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -177,24 +171,28 @@ export class RenderGraphPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tap(RenderGraphPlugin.tag, () => {
-      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
-        false;
+    renderingService.hooks.initAsync.tapPromise(
+      RenderGraphPlugin.tag,
+      async () => {
+        canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        canvas.addEventListener(
+          ElementEvent.ATTR_MODIFIED,
+          handleAttributeChanged,
+        );
+        canvas.addEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
+        this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
+          false;
 
-      const $canvas =
-        this.context.contextService.getDomElement() as HTMLCanvasElement;
+        const $canvas =
+          this.context.contextService.getDomElement() as HTMLCanvasElement;
 
-      const { width, height } = this.context.config;
-      this.context.contextService.resize(width, height);
+        const { width, height } = this.context.config;
+        this.context.contextService.resize(width, height);
 
-      (async () => {
         // create swap chain and get device
         // @ts-ignore
         this.swapChain = await this.context.deviceContribution.createSwapChain(
@@ -213,16 +211,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
           device: this.device,
           ...context,
         });
-
-        this.pendingDisplayObjects.forEach((object) => {
-          this.batchManager.add(object);
-        });
-        this.pendingDisplayObjects = [];
-
-        // trigger rerender
-        this.context.renderingService.dirtify();
-      })();
-    });
+      },
+    );
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
@@ -243,10 +233,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      if (!this.swapChain) {
-        return;
-      }
-
       const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
@@ -321,10 +307,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
-      if (!this.swapChain) {
-        return;
-      }
-
       const renderInstManager = this.renderHelper.renderInstManager;
 
       // TODO: time for GPU Animation
@@ -393,9 +375,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.renderGraph.execute();
 
       renderInstManager.resetRenderInsts();
-
-      // output to screen
-      this.swapChain.present();
 
       // capture here since we don't preserve drawing buffer
       if (this.enableCapture && this.resolveCapturePromise) {

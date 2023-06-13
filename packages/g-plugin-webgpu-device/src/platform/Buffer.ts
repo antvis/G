@@ -2,8 +2,11 @@ import type { Buffer, BufferDescriptor } from '@antv/g-plugin-device-renderer';
 import { BufferUsage, ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
+import { translateBufferUsage } from './utils';
 
-function isView(viewOrSize: ArrayBufferView | number): viewOrSize is ArrayBufferView {
+function isView(
+  viewOrSize: ArrayBufferView | number,
+): viewOrSize is ArrayBufferView {
   return (viewOrSize as ArrayBufferView).byteLength !== undefined;
 }
 
@@ -32,38 +35,41 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
     super({ id, device });
 
     const { usage, viewOrSize } = descriptor;
+    const useMapRead = !!(usage & BufferUsage.MAP_READ);
 
-    const alignedLength = isView(viewOrSize)
-      ? (viewOrSize.byteLength + 3) & ~3
-      : (viewOrSize + 3) & ~3; // 4 bytes alignments (because of the upload which requires this)
+    // const alignedLength = isView(viewOrSize)
+    //   ? viewOrSize.byteLength
+    //   : viewOrSize * 4; // 4 bytes alignments (because of the upload which requires this)
 
-    this.usage = usage;
+    this.usage = translateBufferUsage(usage);
 
     // Buffer usages (BufferUsage::(MapRead|CopyDst|Storage)) is invalid. If a buffer usage contains BufferUsage::MapRead the only other allowed usage is BufferUsage::CopyDst.
     // @see https://www.w3.org/TR/webgpu/#dom-gpubufferusage-copy_dst
-    if (this.usage & BufferUsage.MAP_READ) {
+    if (useMapRead) {
       this.usage = BufferUsage.MAP_READ | BufferUsage.COPY_DST;
     }
 
     const mapBuffer = isView(viewOrSize);
 
-    this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize;
+    this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize * 4;
     this.view = isView(viewOrSize) ? viewOrSize : null;
     this.gpuBuffer = this.device.device.createBuffer({
       usage: this.usage,
-      size: alignedLength,
-      mappedAtCreation: mapBuffer,
+      size: this.size,
+      mappedAtCreation: useMapRead ? mapBuffer : false,
     });
 
-    if (mapBuffer) {
-      const arrayBuffer = this.gpuBuffer.getMappedRange();
-      // @ts-expect-error
-      new viewOrSize.constructor(arrayBuffer).set(viewOrSize);
-      this.gpuBuffer.unmap();
+    if (isView(viewOrSize)) {
+      this.setSubData(0, new Uint8Array(viewOrSize.buffer));
     }
   }
 
-  setSubData(dstByteOffset: number, src: ArrayBufferView, srcByteOffset = 0, byteLength = 0): void {
+  setSubData(
+    dstByteOffset: number,
+    src: Uint8Array,
+    srcByteOffset = 0,
+    byteLength = 0,
+  ): void {
     const buffer = this.gpuBuffer;
 
     byteLength = byteLength || src.byteLength;

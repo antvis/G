@@ -26,6 +26,13 @@
         "zh": "Sprite",
         "en": "Sprite"
       }
+    },
+    {
+      "filename": "webgpu.js",
+      "title": {
+        "zh": "WebGPU",
+        "en": "WebGPU"
+      }
     }
   ]
 }

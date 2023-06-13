@@ -142,7 +142,7 @@ export class Kernel {
       dispatchParams = [x, y, z];
     }
 
-    const computePass = this.device.createComputePass({});
+    const computePass = this.device.createComputePass();
     computePass.setPipeline(this.computePipeline);
 
     const uniforms = this.buffers.filter(
@@ -171,7 +171,7 @@ export class Kernel {
     });
 
     // fixed bind group 0
-    computePass.setBindings(0, bindings);
+    computePass.setBindings(0, bindings, []);
     computePass.dispatch(...dispatchParams);
     this.device.submitPass(computePass);
   }

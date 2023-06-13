@@ -1,9 +1,4 @@
-import type {
-  NormalizedViewportCoords,
-  QueryPool,
-  RenderPassDescriptor,
-  Texture,
-} from '../platform';
+import type { QueryPool, RenderPassDescriptor, Texture } from '../platform';
 import { assert } from '../platform/utils';
 import type {
   IRenderGraphPass,
@@ -11,22 +6,21 @@ import type {
   PassPostFunc,
   RGAttachmentSlot,
 } from './interfaces';
-import { IdentityViewportCoords } from './interfaces';
 import type { RGRenderTarget } from './RenderTarget';
 
 export class RenderGraphPass implements IRenderGraphPass {
   // RenderTargetAttachmentSlot => renderTargetID
   renderTargetIDs: number[] = [];
+  renderTargetLevels: number[] = [];
   // RenderTargetAttachmentSlot => resolveTextureID
   resolveTextureOutputIDs: number[] = [];
   // RenderTargetAttachmentSlot => Texture
   resolveTextureOutputExternalTextures: Texture[] = [];
+  resolveTextureOutputExternalTextureLevel: number[] = [];
   // List of resolveTextureIDs that we have a reference to.
   resolveTextureInputIDs: number[] = [];
   // RGAttachmentSlot => refcount.
   renderTargetExtraRefs: boolean[] = [];
-
-  viewport: NormalizedViewportCoords = IdentityViewportCoords;
 
   resolveTextureInputTextures: Texture[] = [];
 
@@ -35,7 +29,9 @@ export class RenderGraphPass implements IRenderGraphPass {
   // Execution state computed by scheduling.
   descriptor: RenderPassDescriptor = {
     colorAttachment: [],
+    colorAttachmentLevel: [],
     colorResolveTo: [],
+    colorResolveToLevel: [],
     colorStore: [],
     depthStencilAttachment: null,
     depthStencilResolveTo: null,
@@ -48,8 +44,8 @@ export class RenderGraphPass implements IRenderGraphPass {
 
   viewportX = 0;
   viewportY = 0;
-  viewportW = 0;
-  viewportH = 0;
+  viewportW = 1;
+  viewportH = 1;
 
   // Execution callback from user.
   execFunc: PassExecFunc | null = null;
@@ -67,16 +63,21 @@ export class RenderGraphPass implements IRenderGraphPass {
     this.debugThumbnails[attachmentSlot] = true;
   }
 
-  setViewport(viewport: Readonly<NormalizedViewportCoords>): void {
-    this.viewport = viewport;
+  setViewport(x: number, y: number, w: number, h: number): void {
+    this.viewportX = x;
+    this.viewportY = y;
+    this.viewportW = w;
+    this.viewportH = h;
   }
 
   attachRenderTargetID(
     attachmentSlot: RGAttachmentSlot,
     renderTargetID: number,
+    level = 0,
   ): void {
     assert(this.renderTargetIDs[attachmentSlot] === undefined);
     this.renderTargetIDs[attachmentSlot] = renderTargetID;
+    this.renderTargetLevels[attachmentSlot] = level;
   }
 
   attachResolveTexture(resolveTextureID: number): void {

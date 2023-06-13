@@ -1,4 +1,7 @@
-import type { Program, ProgramDescriptorSimple } from '@antv/g-plugin-device-renderer';
+import type {
+  Program,
+  ProgramDescriptorSimple,
+} from '@antv/g-plugin-device-renderer';
 import { ResourceType } from '@antv/g-plugin-device-renderer';
 import type { Device_WebGPU } from './Device';
 import type { IDevice_WebGPU } from './interfaces';
@@ -24,14 +27,23 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
 
     this.descriptor = descriptor;
     if (descriptor.preprocessedVert) {
-      this.vertexStage = this.createShaderStage(descriptor.preprocessedVert, 'vertex');
+      this.vertexStage = this.createShaderStage(
+        descriptor.preprocessedVert,
+        'vertex',
+      );
     }
     if (descriptor.preprocessedFrag) {
-      this.fragmentStage = this.createShaderStage(descriptor.preprocessedFrag, 'fragment');
+      this.fragmentStage = this.createShaderStage(
+        descriptor.preprocessedFrag,
+        'fragment',
+      );
     }
     if (descriptor.preprocessedCompute) {
       // FIXME: Only support WGSL now
-      this.computeStage = this.createShaderStage(descriptor.preprocessedCompute, 'compute');
+      this.computeStage = this.createShaderStage(
+        descriptor.preprocessedCompute,
+        'compute',
+      );
     }
   }
 
