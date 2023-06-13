@@ -32,13 +32,15 @@ export class WebGPUDeviceContribution implements DeviceContribution {
     );
     const device = await adapter.requestDevice({ requiredFeatures });
 
-    // @see https://github.com/gpuweb/gpuweb/blob/main/design/ErrorHandling.md#fatal-errors-requestadapter-requestdevice-and-devicelost
-    const { onContextLost } = this.pluginOptions;
-    device.lost.then(() => {
-      if (onContextLost) {
-        onContextLost();
-      }
-    });
+    if (device) {
+      // @see https://github.com/gpuweb/gpuweb/blob/main/design/ErrorHandling.md#fatal-errors-requestadapter-requestdevice-and-devicelost
+      const { onContextLost } = this.pluginOptions;
+      device.lost.then(() => {
+        if (onContextLost) {
+          onContextLost();
+        }
+      });
+    }
 
     if (device === null) return null;
 
