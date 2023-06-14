@@ -63,6 +63,7 @@ export class ImagePool {
 
       if (image) {
         image.onload = () => {
+          this.imageCache[src] = image;
           resolve(image);
         };
         image.onerror = (ev) => {
@@ -70,7 +71,6 @@ export class ImagePool {
         };
         image.crossOrigin = 'Anonymous';
         image.src = src;
-        this.imageCache[src] = image;
       }
     });
   }
