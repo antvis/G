@@ -80,7 +80,7 @@ class Gesture extends EE {
   constructor(el: DisplayObject) {
     super();
     this.el = el;
-    this._initEvent();
+    // this._initEvent();
   }
 
   private _initEvent() {
