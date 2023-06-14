@@ -25,6 +25,7 @@ import {
 import type { BatchManager } from './renderer';
 import type { RenderGraphPlugin } from './RenderGraphPlugin';
 import { SceneUniform, SceneUniformBufferIndex } from './RenderGraphPlugin';
+import { Renderable3D } from './components/Renderable3D';
 
 /**
  * max depth when doing multi-layer picking
@@ -53,15 +54,20 @@ export class PickingPlugin implements RenderingPlugin {
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
+
+      // @ts-ignore
+      if (!object.renderable3D) {
+        // @ts-ignore
+        object.renderable3D = new Renderable3D();
+      }
+
       // @ts-ignore
       const renderable3D = object.renderable3D;
-      if (renderable3D) {
-        // generate picking id for later use
-        const pickingId = this.pickingIdGenerator.getId(object);
-        renderable3D.pickingId = pickingId;
-        renderable3D.encodedPickingColor =
-          this.pickingIdGenerator.encodePickingColor(pickingId);
-      }
+      // generate picking id for later use
+      const pickingId = this.pickingIdGenerator.getId(object);
+      renderable3D.pickingId = pickingId;
+      renderable3D.encodedPickingColor =
+        this.pickingIdGenerator.encodePickingColor(pickingId);
     };
 
     renderingService.hooks.init.tap(PickingPlugin.tag, () => {

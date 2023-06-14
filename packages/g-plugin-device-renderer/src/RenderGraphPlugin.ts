@@ -112,13 +112,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
         return;
       }
 
-      const renderable3D = new Renderable3D();
-
-      // add geometry & material required by Renderable3D
-      // object.entity.addComponent(Geometry3D);
-      // object.entity.addComponent(Material3D);
       // @ts-ignore
-      object.renderable3D = renderable3D;
+      if (!object.renderable3D) {
+        // @ts-ignore
+        object.renderable3D = new Renderable3D();
+      }
 
       this.batchManager.add(object);
     };
