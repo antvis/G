@@ -42,6 +42,7 @@ const image = new Image({
     height: 200,
     img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     cursor: 'pointer',
+    pointerEvents: 'pixels',
   },
 });
 
