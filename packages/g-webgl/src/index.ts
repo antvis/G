@@ -11,6 +11,9 @@ export { DomInteraction, DeviceRenderer, WebGLDevice, HTMLRenderer };
 
 interface WebGLRendererConfig extends RendererConfig {
   targets: ('webgl1' | 'webgl2')[];
+  onContextLost: (e: Event) => void;
+  onContextRestored: (e: Event) => void;
+  onContextCreationError: (e: Event) => void;
 }
 
 export class Renderer extends AbstractRenderer {
@@ -22,15 +25,18 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(new ContextRegisterPlugin(deviceRendererPlugin));
     this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(
-      new WebGLDevice.Plugin(
-        config?.targets
+      new WebGLDevice.Plugin({
+        ...(config?.targets
           ? {
               targets: config.targets,
             }
           : {
               targets: ['webgl2', 'webgl1'],
-            },
-      ),
+            }),
+        onContextLost: config?.onContextLost,
+        onContextRestored: config?.onContextRestored,
+        onContextCreationError: config?.onContextCreationError,
+      }),
     );
     this.registerPlugin(deviceRendererPlugin);
     this.registerPlugin(new DomInteraction.Plugin());

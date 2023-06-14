@@ -11,6 +11,7 @@ export { DomInteraction, DeviceRenderer, WebGPUDevice, HTMLRenderer };
 
 interface WebGPURendererConfig extends RendererConfig {
   shaderCompilerPath: string;
+  onContextLost: () => void;
 }
 
 export class Renderer extends AbstractRenderer {
@@ -23,6 +24,7 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(
       new WebGPUDevice.Plugin({
         shaderCompilerPath: config?.shaderCompilerPath,
+        onContextLost: config?.onContextLost,
       }),
     );
     this.registerPlugin(deviceRendererPlugin);
