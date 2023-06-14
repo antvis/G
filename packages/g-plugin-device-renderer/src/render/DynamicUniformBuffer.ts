@@ -109,7 +109,7 @@ export class DynamicUniformBuffer {
 
       this.buffer = this.device.createBuffer({
         viewOrSize: this.currentBufferWordSize,
-        usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
+        usage: BufferUsage.UNIFORM,
         hint: BufferFrequencyHint.Dynamic,
       });
     }

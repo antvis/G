@@ -13,7 +13,6 @@ export class RenderPipeline_WebGPU
   type: ResourceType.RenderPipeline = ResourceType.RenderPipeline;
 
   descriptor: RenderPipelineDescriptor;
-  isCreating = false;
   isCreatingAsync = false;
   gpuRenderPipeline: GPURenderPipeline | null = null;
 

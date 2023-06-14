@@ -510,28 +510,10 @@ export class Canvas extends EventTarget implements ICanvas {
 
     if (this.context.contextService.init) {
       this.context.contextService.init();
-      this.initRenderingService(renderer, firstContentfullPaint);
-      if (firstContentfullPaint) {
-        this.requestAnimationFrame(() => {
-          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
-        });
-        if (this.readyPromise) {
-          this.resolveReadyPromise();
-        }
-      } else {
-        this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
-      }
+      this.initRenderingService(renderer, firstContentfullPaint, true);
     } else {
       this.context.contextService.initAsync().then(() => {
         this.initRenderingService(renderer, firstContentfullPaint);
-        if (firstContentfullPaint) {
-          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
-          if (this.readyPromise) {
-            this.resolveReadyPromise();
-          }
-        } else {
-          this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
-        }
       });
     }
   }
@@ -539,28 +521,44 @@ export class Canvas extends EventTarget implements ICanvas {
   private initRenderingService(
     renderer: IRenderer,
     firstContentfullPaint = false,
+    async = false,
   ) {
-    this.context.renderingService.init();
+    this.context.renderingService.init(() => {
+      this.inited = true;
 
-    this.inited = true;
-
-    if (!firstContentfullPaint) {
-      this.getRoot().forEach((node) => {
-        const renderable = (node as Element).renderable;
-        if (renderable) {
-          renderable.renderBoundsDirty = true;
-          renderable.boundsDirty = true;
-          renderable.dirty = true;
+      if (firstContentfullPaint) {
+        if (async) {
+          this.requestAnimationFrame(() => {
+            this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+          });
+        } else {
+          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
         }
-      });
-    }
+        if (this.readyPromise) {
+          this.resolveReadyPromise();
+        }
+      } else {
+        this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
+      }
 
-    // keep current scenegraph unchanged, just trigger mounted event
-    this.mountChildren(this.getRoot());
+      if (!firstContentfullPaint) {
+        this.getRoot().forEach((node) => {
+          const renderable = (node as Element).renderable;
+          if (renderable) {
+            renderable.renderBoundsDirty = true;
+            renderable.boundsDirty = true;
+            renderable.dirty = true;
+          }
+        });
+      }
 
-    if (renderer.getConfig().enableAutoRendering) {
-      this.run();
-    }
+      // keep current scenegraph unchanged, just trigger mounted event
+      this.mountChildren(this.getRoot());
+
+      if (renderer.getConfig().enableAutoRendering) {
+        this.run();
+      }
+    });
   }
 
   private loadRendererContainerModule(renderer: IRenderer) {

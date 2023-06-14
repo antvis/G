@@ -1,14 +1,14 @@
 import type {
   Bindings,
   ComputePass,
-  ComputePassDescriptor,
   ComputePipeline,
 } from '@antv/g-plugin-device-renderer';
 // import { assert, assertExists } from '@antv/g-plugin-device-renderer';
 // import type { ComputePipeline_GL } from './ComputePipeline';
 
 export class ComputePass_GL implements ComputePass {
-  descriptor: ComputePassDescriptor;
+  beginDebugGroup: (name: string) => void;
+  endDebugGroup: () => void;
 
   /**
    * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatch
@@ -24,7 +24,7 @@ export class ComputePass_GL implements ComputePass {
   /**
    * @see https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-begincomputepass
    */
-  beginComputePass(computePassDescriptor: ComputePassDescriptor): void {
+  beginComputePass(): void {
     // assert(this.gpuComputePassEncoder === null);
     // this.setComputePassDescriptor(computePassDescriptor);
     // this.gpuComputePassEncoder = this.commandEncoder.beginComputePass(
@@ -41,9 +41,5 @@ export class ComputePass_GL implements ComputePass {
   setBindings(bindingLayoutIndex: number, bindings_: Bindings): void {
     // const bindings = bindings_ as Bindings_WebGPU;
     // this.gpuComputePassEncoder.setBindGroup(bindingLayoutIndex, bindings.gpuBindGroup[0]);
-  }
-
-  private setComputePassDescriptor(descriptor: ComputePassDescriptor): void {
-    this.descriptor = descriptor;
   }
 }

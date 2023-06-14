@@ -29,7 +29,7 @@ export interface Buffer extends ResourceBase {
   type: ResourceType.Buffer;
   setSubData: (
     dstByteOffset: number,
-    src: ArrayBufferView,
+    src: Uint8Array,
     srcByteOffset?: number,
     byteLength?: number,
   ) => void;
@@ -336,6 +336,7 @@ export type BufferBindingType = 'uniform' | 'storage' | 'read-only-storage';
 export interface BindingLayoutSamplerDescriptor {
   dimension: TextureDimension;
   formatKind: SamplerFormatKind;
+  comparison?: boolean;
 }
 
 export interface BindingLayoutStorageDescriptor {
@@ -430,8 +431,10 @@ export interface Color {
 
 export interface RenderPassDescriptor {
   colorAttachment: (RenderTarget | null)[];
+  colorAttachmentLevel: number[];
   colorClearColor: (Color | 'load')[];
   colorResolveTo: (Texture | null)[];
+  colorResolveToLevel: number[];
   colorStore: boolean[];
   depthStencilAttachment: RenderTarget | null;
   depthStencilResolveTo: Texture | null;
@@ -442,9 +445,6 @@ export interface RenderPassDescriptor {
   // Query system.
   occlusionQueryPool: QueryPool | null;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ComputePassDescriptor {}
 
 export interface DeviceLimits {
   uniformBufferWordAlignment: number;
@@ -482,14 +482,6 @@ export interface VendorInfo {
 
 export type PlatformFramebuffer = WebGLFramebuffer;
 
-// Viewport in normalized coordinate space, from 0 to 1.
-export interface NormalizedViewportCoords {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
 export interface SwapChain {
   // @see https://www.w3.org/TR/webgpu/#canvas-configuration
   configureSwapChain: (
@@ -500,7 +492,6 @@ export interface SwapChain {
   getDevice: () => Device;
   getCanvas: () => HTMLCanvasElement | OffscreenCanvas;
   getOnscreenTexture: () => Texture;
-  present: () => void;
 }
 
 export interface RenderPass {
@@ -536,11 +527,18 @@ export interface RenderPass {
 
 export interface ComputePass {
   setPipeline: (pipeline: ComputePipeline) => void;
-  setBindings: (bindingLayoutIndex: number, bindings: Bindings) => void;
+  setBindings: (
+    bindingLayoutIndex: number,
+    bindings: Bindings,
+    dynamicByteOffsets: number[],
+  ) => void;
   /**
    * @see https://www.w3.org/TR/webgpu/#compute-pass-encoder-dispatch
    */
   dispatch: (x: number, y?: number, z?: number) => void;
+  // Debug.
+  beginDebugGroup: (name: string) => void;
+  endDebugGroup: () => void;
 }
 
 export enum QueryPoolType {
@@ -592,9 +590,10 @@ export interface Device {
   createQueryPool: (type: QueryPoolType, elemCount: number) => QueryPool;
 
   createRenderPass: (renderPassDescriptor: RenderPassDescriptor) => RenderPass;
-  createComputePass: (
-    computePassDescriptor: ComputePassDescriptor,
-  ) => ComputePass;
+  createComputePass: () => ComputePass;
+
+  beginFrame(): void;
+  endFrame(): void;
   submitPass: (pass: RenderPass | ComputePass) => void;
 
   // Render pipeline compilation control.

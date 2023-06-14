@@ -8,13 +8,12 @@ export class Plugin extends AbstractRendererPlugin {
   }
 
   init(): void {
-    // @ts-ignore
     this.context.deviceContribution = new WebGPUDeviceContribution({
+      shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
       ...this.options,
     });
   }
   destroy(): void {
-    // @ts-ignore
     delete this.context.deviceContribution;
   }
 }

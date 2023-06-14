@@ -76,6 +76,7 @@ const canvas = new Canvas({
     if (stats) {
       stats.update();
     }
+    torus.setOrigin(0, 0, 0);
     torus.rotate(0, 0.2, 0);
   });
 

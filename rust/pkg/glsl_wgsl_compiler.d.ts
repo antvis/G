@@ -6,13 +6,29 @@
  * @param {boolean} validation_enabled
  * @returns {string}
  */
-export function glsl_compile(source: string, stage: string, validation_enabled: boolean): string;
+export function glsl_compile(
+  source: string,
+  stage: string,
+  validation_enabled: boolean,
+): string;
 
-export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
+export type InitInput =
+  | RequestInfo
+  | URL
+  | Response
+  | BufferSource
+  | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly glsl_compile: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+  readonly glsl_compile: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+  ) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
@@ -27,4 +43,6 @@ export interface InitOutput {
  *
  * @returns {Promise<InitOutput>}
  */
-export default function init(module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;
+export default function init(
+  module_or_path?: InitInput | Promise<InitInput>,
+): Promise<InitOutput>;

@@ -1,12 +1,18 @@
 let wasm;
 
-let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+let cachedTextDecoder = new TextDecoder('utf-8', {
+  ignoreBOM: true,
+  fatal: true,
+});
 
 cachedTextDecoder.decode();
 
 let cachegetUint8Memory0 = null;
 function getUint8Memory0() {
-  if (cachegetUint8Memory0 === null || cachegetUint8Memory0.buffer !== wasm.memory.buffer) {
+  if (
+    cachegetUint8Memory0 === null ||
+    cachegetUint8Memory0.buffer !== wasm.memory.buffer
+  ) {
     cachegetUint8Memory0 = new Uint8Array(wasm.memory.buffer);
   }
   return cachegetUint8Memory0;
@@ -106,7 +112,10 @@ function passStringToWasm0(arg, malloc, realloc) {
 
 let cachegetInt32Memory0 = null;
 function getInt32Memory0() {
-  if (cachegetInt32Memory0 === null || cachegetInt32Memory0.buffer !== wasm.memory.buffer) {
+  if (
+    cachegetInt32Memory0 === null ||
+    cachegetInt32Memory0.buffer !== wasm.memory.buffer
+  ) {
     cachegetInt32Memory0 = new Int32Array(wasm.memory.buffer);
   }
   return cachegetInt32Memory0;
@@ -120,9 +129,17 @@ function getInt32Memory0() {
 export function glsl_compile(source, stage, validation_enabled) {
   try {
     const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-    var ptr0 = passStringToWasm0(source, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var ptr0 = passStringToWasm0(
+      source,
+      wasm.__wbindgen_malloc,
+      wasm.__wbindgen_realloc,
+    );
     var len0 = WASM_VECTOR_LEN;
-    var ptr1 = passStringToWasm0(stage, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var ptr1 = passStringToWasm0(
+      stage,
+      wasm.__wbindgen_malloc,
+      wasm.__wbindgen_realloc,
+    );
     var len1 = WASM_VECTOR_LEN;
     wasm.glsl_compile(retptr, ptr0, len0, ptr1, len1, validation_enabled);
     var r0 = getInt32Memory0()[retptr / 4 + 0];

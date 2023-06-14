@@ -44,16 +44,20 @@ export interface BindGroupLayout {
 
 export interface IDevice_WebGPU extends Device {
   device: GPUDevice;
-  fallbackSampler: Sampler;
-
+  getFallbackSampler: (samplerEntry: BindingLayoutSamplerDescriptor) => Sampler;
   getFallbackTexture: (samplerEntry: BindingLayoutSamplerDescriptor) => Texture;
   createTextureShared: (
     descriptor: TextureSharedDescriptor,
     texture: TextureShared_WebGPU,
     skipCreate: boolean,
   ) => void;
-  _createRenderPipeline: (renderPipeline: RenderPipeline, async?: boolean) => void;
-  _createBindGroupLayout: (bindingLayout: BindingLayoutDescriptor) => BindGroupLayout;
+  _createRenderPipeline: (
+    renderPipeline: RenderPipeline,
+    async?: boolean,
+  ) => void;
+  _createBindGroupLayout: (
+    bindingLayout: BindingLayoutDescriptor,
+  ) => BindGroupLayout;
   // ensureRenderPipeline: (renderPipeline: RenderPipeline) => void;
   // createBindGroupLayout(bindingLayout: Partial<BindingLayoutDescriptor>): BindGroupLayout;
   // createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout;

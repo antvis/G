@@ -48,7 +48,6 @@ export class Box2DPlugin implements RenderingPlugin {
 
   private bodies: Map<DisplayObject, Box2DBody> = new Map();
   private fixtures: WeakMap<Box2D.b2Fixture, DisplayObject> = new WeakMap();
-  private pendingDisplayObjects: DisplayObject[] = [];
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
@@ -74,13 +73,8 @@ export class Box2DPlugin implements RenderingPlugin {
     };
 
     const handleMounted = (e: FederatedEvent) => {
-      const Box2D = this.Box2D;
       const target = e.target as DisplayObject;
-      if (Box2D) {
-        this.addActor(target);
-      } else {
-        this.pendingDisplayObjects.push(target);
-      }
+      this.addActor(target);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -155,7 +149,7 @@ export class Box2DPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tap(Box2DPlugin.tag, () => {
+    renderingService.hooks.initAsync.tapPromise(Box2DPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.addEventListener(
@@ -163,17 +157,14 @@ export class Box2DPlugin implements RenderingPlugin {
         handleAttributeChanged,
       );
 
-      (async () => {
-        this.Box2D = await this.loadBox2D();
+      this.Box2D = await this.loadBox2D();
 
-        this.temp = new this.Box2D.b2Vec2(0, 0);
-        this.temp2 = new this.Box2D.b2Vec2(0, 0);
-        this.createScene();
-        this.handlePendingDisplayObjects();
+      this.temp = new this.Box2D.b2Vec2(0, 0);
+      this.temp2 = new this.Box2D.b2Vec2(0, 0);
+      this.createScene();
 
-        // do simulation each frame
-        canvas.addEventListener(CanvasEvent.BEFORE_RENDER, simulate);
-      })();
+      // do simulation each frame
+      canvas.addEventListener(CanvasEvent.BEFORE_RENDER, simulate);
     });
 
     renderingService.hooks.destroy.tap(Box2DPlugin.tag, () => {
@@ -405,13 +396,6 @@ export class Box2DPlugin implements RenderingPlugin {
         this.fixtures.set(fixture, target);
       }
     }
-  }
-
-  private handlePendingDisplayObjects() {
-    this.pendingDisplayObjects.forEach((object) => {
-      this.addActor(object);
-    });
-    this.pendingDisplayObjects = [];
   }
 
   private async loadBox2D(): Promise<typeof Box2D & EmscriptenModule> {

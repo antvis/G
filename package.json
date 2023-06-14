@@ -23,6 +23,7 @@
     "lint": "npm run eslint",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
+    "prepublish": "cp -r rust/pkg packages/g-webgpu/dist",
     "publish": "lerna publish",
     "postpublish": "yarn sync",
     "publish:next": "lerna publish prerelease --dist-tag next",

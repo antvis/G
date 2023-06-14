@@ -6,7 +6,6 @@ import type {
   Buffer,
   BufferDescriptor,
   ComputePass,
-  ComputePassDescriptor,
   ComputePipeline,
   ComputePipelineDescriptor,
   DebugGroup,
@@ -155,7 +154,9 @@ export class Device_GL implements SwapChain, Device {
 
   // Cached GL driver state
   private currentColorAttachments: (RenderTarget_GL | null)[] = [];
+  private currentColorAttachmentLevels: number[] = [];
   private currentColorResolveTos: (Texture_GL | null)[] = [];
+  private currentColorResolveToLevels: number[] = [];
   private currentDepthStencilAttachment: RenderTarget_GL | null;
   private currentDepthStencilResolveTo: Texture_GL | null = null;
   private currentSampleCount = -1;
@@ -476,25 +477,9 @@ export class Device_GL implements SwapChain, Device {
     return this.scTexture!;
   }
 
-  present(): void {
-    // const gl = this.gl;
-    // // Force alpha to white.
-    // if (this.currentMegaState.attachmentsState[0].channelWriteMask !== ChannelWriteMask.Alpha) {
-    //   gl.colorMask(false, false, false, true);
-    //   this.currentMegaState.attachmentsState[0].channelWriteMask = ChannelWriteMask.Alpha;
-    // }
-    // // TODO: clear depth & stencil
-    // // @see https://github.com/visgl/luma.gl/blob/30a1039573/modules/webgl/src/classes/clear.ts
-    // const { r, g, b, a } = OpaqueBlack;
-    // if (isWebGL2(gl)) {
-    //   gl.clearBufferfv(gl.COLOR, 0, [r, g, b, a]);
-    // } else {
-    //   gl.clearColor(r, g, b, a);
-    //   gl.clear(gl.COLOR_BUFFER_BIT);
-    // }
-    // @see https://stackoverflow.com/questions/2143240/opengl-glflush-vs-glfinish
-    // gl.flush();
-  }
+  beginFrame(): void {}
+
+  endFrame(): void {}
   //#endregion
 
   //#region Device
@@ -751,16 +736,6 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createTexture(descriptor: TextureDescriptor): Texture {
-    // const { pixelFormat } = descriptor;
-    // // @see https://blog.tojicode.com/2012/07/using-webgldepthtexture.html
-    // if (
-    //   (pixelFormat === Format.D32F || pixelFormat === Format.D24_S8) &&
-    //   !isWebGL2(this.gl) &&
-    //   !this.WEBGL_depth_texture
-    // ) {
-    //   return null;
-    // }
-
     return new Texture_GL({
       id: this.getNextUniqueId(),
       device: this,
@@ -853,7 +828,7 @@ export class Device_GL implements SwapChain, Device {
     });
   }
 
-  createComputePass(computePassDescriptor: ComputePassDescriptor): ComputePass {
+  createComputePass(): ComputePass {
     return new ComputePass_GL();
   }
 
@@ -867,12 +842,10 @@ export class Device_GL implements SwapChain, Device {
     });
   }
 
-  // createReadback(byteCount: number): Readback {
   createReadback(): Readback {
     return new Readback_GL({
       id: this.getNextUniqueId(),
       device: this,
-      // byteCount,
     });
   }
 
@@ -893,8 +866,10 @@ export class Device_GL implements SwapChain, Device {
 
     const {
       colorAttachment,
+      colorAttachmentLevel,
       colorClearColor,
       colorResolveTo,
+      colorResolveToLevel,
       depthStencilAttachment,
       depthClearValue,
       stencilClearValue,
@@ -905,7 +880,9 @@ export class Device_GL implements SwapChain, Device {
       this.setRenderPassParametersColor(
         i,
         colorAttachment[i] as RenderTarget_GL | null,
+        colorAttachmentLevel[i],
         colorResolveTo[i] as Texture_GL | null,
+        colorResolveToLevel[i],
       );
     }
     this.setRenderPassParametersDepthStencil(
@@ -964,6 +941,7 @@ export class Device_GL implements SwapChain, Device {
           gl.DRAW_FRAMEBUFFER,
           gl.COLOR_ATTACHMENT0,
           dst,
+          0,
         );
       }
 
@@ -972,6 +950,7 @@ export class Device_GL implements SwapChain, Device {
         gl.READ_FRAMEBUFFER,
         gl.COLOR_ATTACHMENT0,
         src,
+        0,
       );
 
       gl.blitFramebuffer(
@@ -1226,6 +1205,7 @@ export class Device_GL implements SwapChain, Device {
     framebuffer: GLenum,
     binding: GLenum,
     attachment: RenderTarget_GL | Texture_GL | null,
+    level: number,
   ): void {
     const gl = this.gl;
 
@@ -1245,7 +1225,7 @@ export class Device_GL implements SwapChain, Device {
           binding,
           GL.TEXTURE_2D,
           getPlatformTexture((attachment as RenderTarget_GL).texture),
-          0,
+          level,
         );
       }
     } else if (attachment.type === ResourceType.Texture) {
@@ -1255,7 +1235,7 @@ export class Device_GL implements SwapChain, Device {
         binding,
         GL.TEXTURE_2D,
         getPlatformTexture(attachment as Texture_GL),
-        0,
+        level,
       );
     }
   }
@@ -1281,12 +1261,14 @@ export class Device_GL implements SwapChain, Device {
           framebuffer,
           gl.DEPTH_STENCIL_ATTACHMENT,
           attachment,
+          0,
         );
       } else {
         this.bindFramebufferAttachment(
           framebuffer,
           gl.DEPTH_ATTACHMENT,
           attachment,
+          0,
         );
       }
     } else if (depth) {
@@ -1294,15 +1276,22 @@ export class Device_GL implements SwapChain, Device {
         framebuffer,
         gl.DEPTH_ATTACHMENT,
         attachment,
+        0,
       );
-      this.bindFramebufferAttachment(framebuffer, gl.STENCIL_ATTACHMENT, null);
+      this.bindFramebufferAttachment(
+        framebuffer,
+        gl.STENCIL_ATTACHMENT,
+        null,
+        0,
+      );
     } else if (stencil) {
       this.bindFramebufferAttachment(
         framebuffer,
         gl.STENCIL_ATTACHMENT,
         attachment,
+        0,
       );
-      this.bindFramebufferAttachment(framebuffer, gl.DEPTH_ATTACHMENT, null);
+      this.bindFramebufferAttachment(framebuffer, gl.DEPTH_ATTACHMENT, null, 0);
     }
   }
 
@@ -1397,12 +1386,18 @@ export class Device_GL implements SwapChain, Device {
   private setRenderPassParametersColor(
     i: number,
     colorAttachment: RenderTarget_GL | null,
+    attachmentLevel: number,
     colorResolveTo: Texture_GL | null,
+    resolveToLevel: number,
   ): void {
     const gl = this.gl;
 
-    if (this.currentColorAttachments[i] !== colorAttachment) {
+    if (
+      this.currentColorAttachments[i] !== colorAttachment ||
+      this.currentColorAttachmentLevels[i] !== attachmentLevel
+    ) {
       this.currentColorAttachments[i] = colorAttachment;
+      this.currentColorAttachmentLevels[i] = attachmentLevel;
 
       // disable MRT in WebGL1
       if (isWebGL2(gl) || i === 0) {
@@ -1411,14 +1406,19 @@ export class Device_GL implements SwapChain, Device {
           (isWebGL2(gl) ? GL.COLOR_ATTACHMENT0 : GL.COLOR_ATTACHMENT0_WEBGL) +
             i,
           colorAttachment,
+          attachmentLevel,
         );
       }
 
       this.resolveColorAttachmentsChanged = true;
     }
 
-    if (this.currentColorResolveTos[i] !== colorResolveTo) {
+    if (
+      this.currentColorResolveTos[i] !== colorResolveTo ||
+      this.currentColorResolveToLevels[i] !== resolveToLevel
+    ) {
       this.currentColorResolveTos[i] = colorResolveTo;
+      this.currentColorResolveToLevels[i] = resolveToLevel;
 
       if (colorResolveTo !== null) {
         this.resolveColorAttachmentsChanged = true;
@@ -2117,6 +2117,7 @@ export class Device_GL implements SwapChain, Device {
                 gl.READ_FRAMEBUFFER,
                 gl.COLOR_ATTACHMENT0,
                 colorResolveFrom,
+                this.currentColorAttachmentLevels[i],
               );
             }
           }
@@ -2175,6 +2176,7 @@ export class Device_GL implements SwapChain, Device {
                 isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
                 gl.COLOR_ATTACHMENT0,
                 colorResolveFrom,
+                this.currentColorAttachmentLevels[i],
               );
           }
 
@@ -2405,9 +2407,11 @@ export class Device_GL implements SwapChain, Device {
 
     const blitRenderPass = this.createRenderPass({
       colorAttachment: [resolveFrom],
+      colorResolveToLevel: [0],
       colorResolveTo: [resolveTo],
       colorClearColor: [TransparentBlack],
       colorStore: [true],
+      colorAttachmentLevel: [0],
       depthStencilAttachment: null,
       depthStencilResolveTo: null,
       depthStencilStore: true,
