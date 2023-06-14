@@ -12,6 +12,7 @@ const canvas = new Canvas({
   canvas: canvasElement,
   renderer,
   supportsTouchEvents: true,
+  supportsPointerEvents: false,
   width: 300,
   height: 225,
 });
