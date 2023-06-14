@@ -87,7 +87,7 @@ export interface BaseStyleProps {
     | 'visiblepainted'
     // | 'bounding-box'
     | 'all'
-    | 'pixels' // valid only for Image
+    | 'non-transparent-pixel' // valid only for Image
     | CSSGlobalKeywords;
 
   /**
