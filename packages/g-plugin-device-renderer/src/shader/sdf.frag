@@ -25,7 +25,8 @@ void main() {
 
   float antialiasblur = v_Data.z;
   float antialiased_blur = -max(0.0, antialiasblur);
-  vec2 r = (v_Radius - (omitStroke ? 0.0 : u_StrokeWidth)) / v_Radius;
+  vec2 r = (v_Radius - (omitStroke ? 0.0 : u_StrokeWidth)) / v_Radius.y;
+  float wh = v_Radius.x / v_Radius.y;
 
   float outer_df;
   float inner_df;
@@ -34,11 +35,12 @@ void main() {
     outer_df = sdCircle(v_Data.xy, 1.0);
     inner_df = sdCircle(v_Data.xy, r.x);
   } else if (shape == 1) {
-    outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(1.0));
+    outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(wh, 1.0));
     inner_df = sdEllipsoidApproximated(v_Data.xy, r);
   } else if (shape == 2) {
-    outer_df = sdRoundedBox(v_Data.xy, vec2(1.0), vec2(0.0));
-    inner_df = sdRoundedBox(v_Data.xy, r, vec2(0.0));
+    // outer_df = sdRoundedBox(v_Data.xy, vec2(wh, 1.0), 16.0 / (v_Radius.y / 2.0));
+    outer_df = sdRoundedBox(v_Data.xy, vec2(wh, 1.0), 0.0);
+    inner_df = sdRoundedBox(v_Data.xy, r, 0.0);
   }
 
   float opacity_t = smoothstep(0.0, antialiased_blur, outer_df);
