@@ -4,7 +4,8 @@
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
 layout(location = POSITION) in vec2 a_Extrude;
-layout(location = PACKED_STYLE3) in vec4 a_StylePacked3; // shape, radius, omitStroke, isBillboard
+// shape, radius, omitStroke, isBillboard
+layout(location = PACKED_STYLE3) in vec4 a_StylePacked3;
 layout(location = SIZE) in vec2 a_Size;
 #ifdef USE_UV
   layout(location = UV) in vec2 a_Uv;
