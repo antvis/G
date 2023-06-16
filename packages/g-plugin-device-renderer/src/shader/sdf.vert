@@ -12,7 +12,7 @@ layout(location = SIZE) in vec2 a_Size;
   out vec2 v_Uv;
 #endif
 
-out vec4 v_Data;
+out vec3 v_Data;
 out vec2 v_Radius;
 out vec4 v_StylePacked3;
 
@@ -40,6 +40,6 @@ void main() {
   }
   
   v_Radius = radius;
-  v_Data = vec4(a_Extrude * radius / radius.y, antialiasblur, a_StylePacked3.x);
+  v_Data = vec3(a_Extrude * radius / radius.y, antialiasblur);
   v_StylePacked3 = a_StylePacked3;
 }

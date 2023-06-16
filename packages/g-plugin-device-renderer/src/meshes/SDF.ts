@@ -175,7 +175,7 @@ export class SDFMesh extends Instanced {
         packed.push(
           ...size,
           SDF_Shape.indexOf(object.nodeName),
-          object.parsedStyle.radius || 0,
+          (object.parsedStyle.radius && object.parsedStyle.radius[0]) || 0,
           omitStroke ? 1 : 0,
           circle.parsedStyle.isBillboard ? 1 : 0,
         );
