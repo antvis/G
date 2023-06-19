@@ -84,7 +84,7 @@ export class SDFMesh extends Instanced {
       instanced.push(
         ...size,
         SDF_Shape.indexOf(circle.nodeName),
-        radius || 0,
+        (radius && radius[0]) || 0,
         omitStroke ? 1 : 0,
         circle.parsedStyle.isBillboard ? 1 : 0,
       );
@@ -160,7 +160,8 @@ export class SDFMesh extends Instanced {
       name === 'lineWidth' ||
       name === 'stroke' ||
       name === 'lineDash' ||
-      name === 'strokeOpacity'
+      name === 'strokeOpacity' ||
+      name === 'radius'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
@@ -175,7 +176,7 @@ export class SDFMesh extends Instanced {
         packed.push(
           ...size,
           SDF_Shape.indexOf(object.nodeName),
-          object.parsedStyle.radius || 0,
+          (object.parsedStyle.radius && object.parsedStyle.radius[0]) || 0,
           omitStroke ? 1 : 0,
           circle.parsedStyle.isBillboard ? 1 : 0,
         );
@@ -215,7 +216,9 @@ export class SDFMesh extends Instanced {
     const { lineDash, stroke, strokeOpacity } = parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
     const hasLineDash =
-      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+      lineDash &&
+      lineDash.length &&
+      lineDash.every((item: number) => item !== 0);
     const hasStrokeOpacity = strokeOpacity < 1;
     return !hasStroke || (hasStroke && (hasLineDash || hasStrokeOpacity));
   }
@@ -224,7 +227,9 @@ export class SDFMesh extends Instanced {
     const { stroke, lineDash, lineWidth, strokeOpacity } = parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
     const hasLineDash =
-      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+      lineDash &&
+      lineDash.length &&
+      lineDash.every((item: number) => item !== 0);
     const hasStrokeOpacity = strokeOpacity < 1;
     return hasStroke && lineWidth > 0 && (hasLineDash || hasStrokeOpacity);
   }

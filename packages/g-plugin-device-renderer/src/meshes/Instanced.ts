@@ -48,7 +48,7 @@ export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
  */
 export enum VertexAttributeBufferIndex {
   MODEL_MATRIX = 0,
-  FILL_STROKE,
+  PACKED_COLOR,
   PACKED_STYLE,
   PICKING_COLOR, // built-in
   POSITION,
@@ -414,7 +414,7 @@ export abstract class Instanced {
     });
 
     this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.FILL_STROKE,
+      bufferIndex: VertexAttributeBufferIndex.PACKED_COLOR,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
@@ -735,7 +735,7 @@ export abstract class Instanced {
       });
 
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.FILL_STROKE,
+        VertexAttributeBufferIndex.PACKED_COLOR,
         VertexAttributeLocation.PACKED_COLOR,
         startIndex,
         new Uint8Array(new Float32Array(packedFillStroke).buffer),

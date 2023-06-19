@@ -4,6 +4,7 @@
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
 layout(location = POSITION) in vec2 a_Extrude;
+// shape, radius, omitStroke, isBillboard
 layout(location = PACKED_STYLE3) in vec4 a_StylePacked3;
 layout(location = SIZE) in vec2 a_Size;
 #ifdef USE_UV
@@ -11,7 +12,7 @@ layout(location = SIZE) in vec2 a_Size;
   out vec2 v_Uv;
 #endif
 
-out vec4 v_Data;
+out vec3 v_Data;
 out vec2 v_Radius;
 out vec4 v_StylePacked3;
 
@@ -26,11 +27,10 @@ void main() {
     strokeWidth = u_StrokeWidth;
   }
 
-  float antialiasblur = 1.0 / (a_Size.x + strokeWidth);
-
   bool omitStroke = a_StylePacked3.z == 1.0;
   vec2 radius = a_Size + vec2(omitStroke ? 0.0 : strokeWidth / 2.0);
-  vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * u_Anchor.xy) * radius;
+  vec2 offset = (a_Extrude + vec2(1.0) - 2.0 * u_Anchor.xy) * a_Size + a_Extrude * vec2(omitStroke ? 0.0 : strokeWidth / 2.0);
+  float antialiasblur = 1.0 / radius.y;
 
   bool isBillboard = a_StylePacked3.w > 0.5;
   if (isBillboard) {
@@ -40,6 +40,6 @@ void main() {
   }
   
   v_Radius = radius;
-  v_Data = vec4(a_Extrude, antialiasblur, a_StylePacked3.x);
+  v_Data = vec3(a_Extrude * radius / radius.y, antialiasblur);
   v_StylePacked3 = a_StylePacked3;
 }
