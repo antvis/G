@@ -38,8 +38,9 @@ void main() {
     outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(wh, 1.0));
     inner_df = sdEllipsoidApproximated(v_Data.xy, r);
   } else if (shape == 2) {
-    outer_df = sdRoundedBox(v_Data.xy, vec2(wh, 1.0), (v_StylePacked3.y + u_StrokeWidth / 2.0) / v_Radius.y);
-    inner_df = sdRoundedBox(v_Data.xy, r, (v_StylePacked3.y - u_StrokeWidth / 2.0) / v_Radius.y);
+    bool useRadius = v_StylePacked3.y > epsilon;
+    outer_df = sdRoundedBox(v_Data.xy, vec2(wh, 1.0), useRadius ? (v_StylePacked3.y + u_StrokeWidth / 2.0) / v_Radius.y : 0.0);
+    inner_df = sdRoundedBox(v_Data.xy, r, useRadius ? (v_StylePacked3.y - u_StrokeWidth / 2.0) / v_Radius.y : 0.0);
   }
 
   float opacity_t = smoothstep(0.0, antialiased_blur, outer_df);

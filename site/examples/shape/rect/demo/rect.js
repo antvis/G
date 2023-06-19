@@ -31,7 +31,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: webglRenderer,
+  renderer: canvasRenderer,
 });
 
 const rect = new Rect({
@@ -43,7 +43,7 @@ const rect = new Rect({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
-    radius: [0],
+    radius: [0, 4, 8, 16],
     cursor: 'pointer',
   },
 });

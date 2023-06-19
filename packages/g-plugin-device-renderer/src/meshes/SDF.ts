@@ -160,7 +160,8 @@ export class SDFMesh extends Instanced {
       name === 'lineWidth' ||
       name === 'stroke' ||
       name === 'lineDash' ||
-      name === 'strokeOpacity'
+      name === 'strokeOpacity' ||
+      name === 'radius'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
