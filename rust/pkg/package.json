@@ -11,5 +11,7 @@
   ],
   "module": "glsl_wgsl_compiler.js",
   "types": "glsl_wgsl_compiler.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./snippets/*"
+  ]
 }

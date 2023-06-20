@@ -1,13 +1,33 @@
-import type { IElement } from '../dom';
 import type { DisplayObject } from '../display-objects';
+import type { IElement, IEventTarget, INode } from '../dom';
 import type { CanvasLike } from '../types';
 import { isBrowser } from './canvas';
+
+export function isElement(
+  target: IEventTarget | INode | IElement,
+): target is IElement {
+  return !!(target as IElement).getAttribute;
+}
+
+export function sortedIndex(array: IElement[], value: IElement) {
+  let low = 0;
+  let high = array.length;
+
+  while (low < high) {
+    const mid = (low + high) >>> 1;
+    if (sortByZIndex(array[mid], value) < 0) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+  return low;
+}
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
   const zIndex1 = Number(o1.parsedStyle.zIndex);
   const zIndex2 = Number(o2.parsedStyle.zIndex);
   if (zIndex1 === zIndex2) {
-    // return o1.entity.getComponent(Sortable).lastSortedIndex - o2.entity.getComponent(Sortable).lastSortedIndex;
     const parent = o1.parentNode;
     if (parent) {
       const children = parent.childNodes || [];

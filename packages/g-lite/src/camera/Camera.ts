@@ -4,14 +4,15 @@ import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import type { Canvas } from '../Canvas';
 import { Frustum } from '../shapes';
 import type { TypeEasingFunction } from '../types';
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '../utils/error';
 import {
-  ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   createVec3,
   deg2rad,
   getAngle,
   makePerspective,
   rad2deg,
-} from '../utils';
+} from '../utils/math';
+import type { Landmark } from './Landmark';
 import type { ICamera } from './interfaces';
 import {
   CameraEvent,
@@ -19,7 +20,6 @@ import {
   CameraTrackingMode,
   CameraType,
 } from './interfaces';
-import type { Landmark } from './Landmark';
 
 const MIN_DISTANCE = 0.0002;
 

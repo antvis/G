@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.7.46",
+  "version": "1.7.57",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
@@ -16,24 +16,24 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "main": "lib/index.js",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
+  "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
-  "module": "esm/index.js",
-  "types": "lib/index.d.ts",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "package.json",
     "dist",
-    "esm",
-    "lib",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "clean": "rimraf dist && rimraf lib && rimraf esm",
-    "build:umd": "rollup -c",
-    "build:cjs": "tsc --emitDeclarationOnly --outDir lib",
-    "build:esm": "tsc --emitDeclarationOnly --outDir esm",
-    "build": "npm run clean && run-p build:*",
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
     "sync": "tnpm sync"
   },
   "dependencies": {
@@ -41,11 +41,10 @@
     "@antv/g-plugin-device-renderer": "workspace:*",
     "@antv/g-shader-components": "workspace:*",
     "gl-matrix": "^3.1.0",
-    "tslib": "^2.3.1"
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
-    "@types/jest": "^25.0.0",
     "glslify-import": "3.1.0",
     "rollup-plugin-glslify": "^1.2.1"
   },

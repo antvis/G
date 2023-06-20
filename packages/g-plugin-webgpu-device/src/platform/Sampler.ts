@@ -1,6 +1,19 @@
-import type { Sampler, SamplerDescriptor } from '@antv/g-plugin-device-renderer';
-import { MipFilterMode, ResourceType, TexFilterMode, assert } from '@antv/g-plugin-device-renderer';
-import { translateMinMagFilter, translateMipFilter, translateWrapMode } from './utils';
+import type {
+  Sampler,
+  SamplerDescriptor,
+} from '@antv/g-plugin-device-renderer';
+import {
+  MipFilterMode,
+  ResourceType,
+  TexFilterMode,
+  assert,
+} from '@antv/g-plugin-device-renderer';
+import {
+  translateMinMagFilter,
+  translateMipFilter,
+  translateWrapMode,
+  translateCompareMode,
+} from './utils';
 import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 
@@ -23,7 +36,9 @@ export class Sampler_WebGPU extends ResourceBase_WebGPU implements Sampler {
 
     const lodMinClamp = descriptor.minLOD;
     const lodMaxClamp =
-      descriptor.mipFilter === MipFilterMode.NoMip ? descriptor.minLOD : descriptor.maxLOD;
+      descriptor.mipFilter === MipFilterMode.NoMip
+        ? descriptor.minLOD
+        : descriptor.maxLOD;
 
     const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
     if (maxAnisotropy > 1)
@@ -42,6 +57,10 @@ export class Sampler_WebGPU extends ResourceBase_WebGPU implements Sampler {
       minFilter: translateMinMagFilter(descriptor.minFilter),
       magFilter: translateMinMagFilter(descriptor.magFilter),
       mipmapFilter: translateMipFilter(descriptor.mipFilter),
+      compare:
+        descriptor.compareMode !== undefined
+          ? translateCompareMode(descriptor.compareMode)
+          : undefined,
       maxAnisotropy,
     });
   }

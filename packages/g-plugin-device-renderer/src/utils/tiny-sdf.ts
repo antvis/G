@@ -58,9 +58,9 @@ export class TinySDF {
     $offscreenCanvas.width = size;
     $offscreenCanvas.height = size;
 
-    const ctx = runtime.offscreenCanvas.getOrCreateContext(
-      canvas,
-    ) as CanvasRenderingContext2D;
+    const ctx = runtime.offscreenCanvas.getOrCreateContext(canvas, {
+      willReadFrequently: true,
+    }) as CanvasRenderingContext2D;
     this.ctx = ctx;
 
     // const ctx = (this.ctx = canvas.getContext('2d', {

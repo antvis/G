@@ -33,9 +33,9 @@ export class RenderPass_WebGPU implements RenderPass {
 
     this.gpuDepthStencilAttachment = {
       view: null!,
-      depthLoadValue: 'load',
+      depthLoadOp: 'load',
       depthStoreOp: 'store',
-      stencilLoadValue: 'load',
+      stencilLoadOp: 'load',
       stencilStoreOp: 'store',
     };
 
@@ -76,13 +76,12 @@ export class RenderPass_WebGPU implements RenderPass {
         const dstAttachment = this.gpuColorAttachments[i];
         dstAttachment.view = colorAttachment.gpuTextureView;
         const clearColor = descriptor.colorClearColor[i];
-        dstAttachment.loadValue = clearColor;
-        // if (clearColor === 'load') {
-        //   dstAttachment.loadValue = 'load';
-        // } else {
-        //   dstAttachment.loadOp = 'clear';
-        //   dstAttachment.clearValue = clearColor;
-        // }
+        if (clearColor === 'load') {
+          dstAttachment.loadOp = 'load';
+        } else {
+          dstAttachment.loadOp = 'clear';
+          dstAttachment.clearValue = clearColor;
+        }
         dstAttachment.storeOp = descriptor.colorStore[i] ? 'store' : 'discard';
         dstAttachment.resolveTarget = undefined;
         if (colorResolveTo !== null) {
@@ -112,21 +111,19 @@ export class RenderPass_WebGPU implements RenderPass {
       const dstAttachment = this.gpuDepthStencilAttachment;
       dstAttachment.view = dsAttachment.gpuTextureView;
 
-      dstAttachment.depthLoadValue = descriptor.depthClearValue;
-      // if (descriptor.depthClearValue === 'load') {
-      //   dstAttachment.depthLoadValue = 'load';
-      // } else {
-      //   dstAttachment.depthLoadOp = 'clear';
-      //   dstAttachment.depthClearValue = descriptor.depthClearValue;
-      // }
+      if (descriptor.depthClearValue === 'load') {
+        dstAttachment.depthLoadOp = 'load';
+      } else {
+        dstAttachment.depthLoadOp = 'clear';
+        dstAttachment.depthClearValue = descriptor.depthClearValue;
+      }
 
-      dstAttachment.stencilLoadValue = descriptor.stencilClearValue;
-      // if (descriptor.stencilClearValue === 'load') {
-      //   dstAttachment.stencilLoadValue = 'load';
-      // } else {
-      //   dstAttachment.stencilLoadOp = 'clear';
-      //   dstAttachment.stencilClearValue = descriptor.stencilClearValue;
-      // }
+      if (descriptor.stencilClearValue === 'load') {
+        dstAttachment.stencilLoadOp = 'load';
+      } else {
+        dstAttachment.stencilLoadOp = 'clear';
+        dstAttachment.stencilClearValue = descriptor.stencilClearValue;
+      }
       dstAttachment.depthStoreOp = descriptor.depthStencilStore
         ? 'store'
         : 'discard';
@@ -207,10 +204,12 @@ export class RenderPass_WebGPU implements RenderPass {
       bindings.gpuBindGroup[0],
       dynamicByteOffsets.slice(0, bindings.bindingLayout.numUniformBuffers),
     );
-    this.gpuRenderPassEncoder.setBindGroup(
-      bindingLayoutIndex + 1,
-      bindings.gpuBindGroup[1],
-    );
+    if (bindings.gpuBindGroup[1]) {
+      this.gpuRenderPassEncoder.setBindGroup(
+        bindingLayoutIndex + 1,
+        bindings.gpuBindGroup[1],
+      );
+    }
   }
 
   setStencilRef(ref: number): void {
@@ -262,7 +261,7 @@ export class RenderPass_WebGPU implements RenderPass {
   }
 
   finish(): GPUCommandBuffer {
-    this.gpuRenderPassEncoder.endPass();
+    this.gpuRenderPassEncoder.end();
     this.gpuRenderPassEncoder = null;
 
     // Fake a resolve with a copy for non-MSAA.

@@ -33,8 +33,18 @@ export function arrayCopy<T>(a: T[], copyFunc: CopyFunc<T>): T[] {
   return b;
 }
 
-function bufferBindingEquals(a: Readonly<BufferBinding>, b: Readonly<BufferBinding>): boolean {
+function bufferBindingEquals(
+  a: Readonly<BufferBinding>,
+  b: Readonly<BufferBinding>,
+): boolean {
   return a.buffer === b.buffer && a.wordCount === b.wordCount;
+}
+
+function bindingLayoutSamplerDescriptorEqual(
+  a: Readonly<BindingLayoutSamplerDescriptor>,
+  b: Readonly<BindingLayoutSamplerDescriptor>,
+): boolean {
+  return a.dimension === b.dimension && a.formatKind === b.formatKind;
 }
 
 function samplerBindingEquals(
@@ -52,6 +62,17 @@ export function bindingLayoutDescriptorEqual(
 ): boolean {
   if (a.numSamplers !== b.numSamplers) return false;
   if (a.numUniformBuffers !== b.numUniformBuffers) return false;
+  if ((a.samplerEntries === undefined) !== (b.samplerEntries === undefined))
+    return false;
+  if (
+    a.samplerEntries !== undefined &&
+    !arrayEqual(
+      a.samplerEntries!,
+      b.samplerEntries!,
+      bindingLayoutSamplerDescriptorEqual,
+    )
+  )
+    return false;
   return true;
 }
 
@@ -60,8 +81,15 @@ export function bindingsDescriptorEquals(
   b: Readonly<BindingsDescriptor>,
 ): boolean {
   if (a.samplerBindings.length !== b.samplerBindings.length) return false;
-  if (!arrayEqual(a.samplerBindings, b.samplerBindings, samplerBindingEquals)) return false;
-  if (!arrayEqual(a.uniformBufferBindings, b.uniformBufferBindings, bufferBindingEquals))
+  if (!arrayEqual(a.samplerBindings, b.samplerBindings, samplerBindingEquals))
+    return false;
+  if (
+    !arrayEqual(
+      a.uniformBufferBindings,
+      b.uniformBufferBindings,
+      bufferBindingEquals,
+    )
+  )
     return false;
   if (!bindingLayoutEquals(a.bindingLayout, b.bindingLayout)) return false;
   return true;
@@ -83,13 +111,20 @@ function attachmentStateEquals(
   b: Readonly<AttachmentState>,
 ): boolean {
   if (!channelBlendStateEquals(a.rgbBlendState, b.rgbBlendState)) return false;
-  if (!channelBlendStateEquals(a.alphaBlendState, b.alphaBlendState)) return false;
+  if (!channelBlendStateEquals(a.alphaBlendState, b.alphaBlendState))
+    return false;
   if (a.channelWriteMask !== b.channelWriteMask) return false;
   return true;
 }
 
-function megaStateDescriptorEquals(a: MegaStateDescriptor, b: MegaStateDescriptor): boolean {
-  if (!arrayEqual(a.attachmentsState, b.attachmentsState, attachmentStateEquals)) return false;
+function megaStateDescriptorEquals(
+  a: MegaStateDescriptor,
+  b: MegaStateDescriptor,
+): boolean {
+  if (
+    !arrayEqual(a.attachmentsState, b.attachmentsState, attachmentStateEquals)
+  )
+    return false;
   if (!colorEqual(a.blendConstant, b.blendConstant)) return false;
 
   return (
@@ -109,7 +144,10 @@ function bindingLayoutEquals(
   a: Readonly<BindingLayoutDescriptor>,
   b: Readonly<BindingLayoutDescriptor>,
 ): boolean {
-  return a.numSamplers === b.numSamplers && a.numUniformBuffers === b.numUniformBuffers;
+  return (
+    a.numSamplers === b.numSamplers &&
+    a.numUniformBuffers === b.numUniformBuffers
+  );
 }
 
 function programEquals(a: Readonly<Program>, b: Readonly<Program>): boolean {
@@ -127,11 +165,21 @@ export function renderPipelineDescriptorEquals(
   if (a.topology !== b.topology) return false;
   if (a.inputLayout !== b.inputLayout) return false;
   if (a.sampleCount !== b.sampleCount) return false;
-  if (!megaStateDescriptorEquals(a.megaStateDescriptor, b.megaStateDescriptor)) return false;
+  if (!megaStateDescriptorEquals(a.megaStateDescriptor, b.megaStateDescriptor))
+    return false;
   if (!programEquals(a.program, b.program)) return false;
-  if (!arrayEqual(a.bindingLayouts, b.bindingLayouts, bindingLayoutEquals)) return false;
-  if (!arrayEqual(a.colorAttachmentFormats, b.colorAttachmentFormats, formatEquals)) return false;
-  if (a.depthStencilAttachmentFormat !== b.depthStencilAttachmentFormat) return false;
+  if (!arrayEqual(a.bindingLayouts, b.bindingLayouts, bindingLayoutEquals))
+    return false;
+  if (
+    !arrayEqual(
+      a.colorAttachmentFormats,
+      b.colorAttachmentFormats,
+      formatEquals,
+    )
+  )
+    return false;
+  if (a.depthStencilAttachmentFormat !== b.depthStencilAttachmentFormat)
+    return false;
   return true;
 }
 
@@ -197,7 +245,9 @@ export function samplerDescriptorEquals(
   );
 }
 
-export function samplerBindingCopy(a: Readonly<SamplerBinding>): SamplerBinding {
+export function samplerBindingCopy(
+  a: Readonly<SamplerBinding>,
+): SamplerBinding {
   const sampler = a.sampler;
   const texture = a.texture;
   const lateBinding = a.lateBinding;
@@ -214,11 +264,21 @@ export function bufferBindingCopy(a: Readonly<BufferBinding>): BufferBinding {
   return { buffer, wordCount };
 }
 
-export function bindingsDescriptorCopy(a: Readonly<BindingsDescriptor>): BindingsDescriptor {
+export function bindingsDescriptorCopy(
+  a: Readonly<BindingsDescriptor>,
+): BindingsDescriptor {
   const bindingLayout = a.bindingLayout;
   const samplerBindings = arrayCopy(a.samplerBindings, samplerBindingCopy);
-  const uniformBufferBindings = arrayCopy(a.uniformBufferBindings, bufferBindingCopy);
-  return { bindingLayout, samplerBindings, uniformBufferBindings, pipeline: a.pipeline };
+  const uniformBufferBindings = arrayCopy(
+    a.uniformBufferBindings,
+    bufferBindingCopy,
+  );
+  return {
+    bindingLayout,
+    samplerBindings,
+    uniformBufferBindings,
+    pipeline: a.pipeline,
+  };
 }
 
 export function bindingLayoutSamplerDescriptorCopy(
@@ -244,7 +304,10 @@ export function bindingLayoutDescriptorCopy(
 export function renderPipelineDescriptorCopy(
   a: Readonly<RenderPipelineDescriptor>,
 ): RenderPipelineDescriptor {
-  const bindingLayouts = arrayCopy(a.bindingLayouts, bindingLayoutDescriptorCopy);
+  const bindingLayouts = arrayCopy(
+    a.bindingLayouts,
+    bindingLayoutDescriptorCopy,
+  );
   const inputLayout = a.inputLayout;
   const program = a.program;
   const topology = a.topology;
@@ -273,7 +336,14 @@ export function vertexAttributeDescriptorCopy(
   const bufferByteOffset = a.bufferByteOffset;
   const byteStride = a.byteStride;
   const divisor = a.divisor;
-  return { location, format, bufferIndex, bufferByteOffset, byteStride, divisor };
+  return {
+    location,
+    format,
+    bufferIndex,
+    bufferByteOffset,
+    byteStride,
+    divisor,
+  };
 }
 
 export function inputLayoutBufferDescriptorCopy(
@@ -300,5 +370,9 @@ export function inputLayoutDescriptorCopy(
     inputLayoutBufferDescriptorCopy,
   );
   const indexBufferFormat = a.indexBufferFormat;
-  return { vertexAttributeDescriptors, vertexBufferDescriptors, indexBufferFormat };
+  return {
+    vertexAttributeDescriptors,
+    vertexBufferDescriptors,
+    indexBufferFormat,
+  };
 }

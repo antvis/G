@@ -118,7 +118,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
 
   setSubData(
     dstByteOffset: number,
-    data: ArrayBufferView,
+    data: Uint8Array,
     srcByteOffset = 0,
     byteSize: number = data.byteLength - srcByteOffset,
   ): void {

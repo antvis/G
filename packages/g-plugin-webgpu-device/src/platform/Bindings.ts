@@ -13,7 +13,7 @@ import { getPlatformBuffer, getPlatformSampler } from './utils';
 import type { BindGroupLayout, IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import type { Texture_WebGPU } from './Texture';
-import type { RenderPipeline_WebGPU } from './RenderPipeline';
+import { ComputePipeline_WebGPU } from './ComputePipeline';
 
 export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
   type: ResourceType.Bindings = ResourceType.Bindings;
@@ -98,7 +98,7 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
       const sampler =
         binding.sampler !== null
           ? binding.sampler
-          : this.device.fallbackSampler;
+          : this.device.getFallbackSampler(samplerEntry);
       const gpuSampler = getPlatformSampler(sampler);
       gpuBindGroupEntries[1].push({
         binding: numBindings++,
@@ -108,11 +108,11 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
 
     this.gpuBindGroup = gpuBindGroupEntries
       .filter((entries) => entries.length > 0)
-      .map((gpuBindGroupEntry, i) =>
+      .map((gpuBindGroupEntries, i) =>
         this.device.device.createBindGroup({
-          layout: (pipeline as RenderPipeline_WebGPU).getBindGroupLayout(i),
           // layout: bindGroupLayout.gpuBindGroupLayout[i],
-          entries: gpuBindGroupEntry,
+          layout: (pipeline as ComputePipeline_WebGPU).getBindGroupLayout(i),
+          entries: gpuBindGroupEntries,
         }),
       );
     this.bindingLayout = descriptor.bindingLayout;

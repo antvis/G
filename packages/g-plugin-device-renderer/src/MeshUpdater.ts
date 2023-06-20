@@ -4,19 +4,18 @@ export class MeshUpdater implements GeometryAABBUpdater<ParsedMeshStyleProps> {
   update(parsedStyle: ParsedMeshStyleProps) {
     const { geometry } = parsedStyle;
 
-    geometry.computeBoundingBox();
-    // const minX = Math.min(x1, x2);
-    // const maxX = Math.max(x1, x2);
-    // const minY = Math.min(y1, y2);
-    // const maxY = Math.max(y1, y2);
+    const aabb = geometry.computeBoundingBox();
+    const max = aabb.getMax();
+    const min = aabb.getMin();
 
-    // const width = maxX - minX;
-    // const height = maxY - minY;
+    const width = max[0] - min[0];
+    const height = max[1] - min[1];
+    const depth = max[2] - min[2];
 
     return {
-      width: 0,
-      height: 0,
-      depth: 0,
+      width,
+      height,
+      depth,
     };
   }
 }

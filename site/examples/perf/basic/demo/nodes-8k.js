@@ -1,4 +1,12 @@
-import { Canvas, CanvasEvent, Circle, Line, Text } from '@antv/g';
+import {
+  Canvas,
+  CanvasEvent,
+  Circle,
+  Line,
+  Image,
+  Text,
+  runtime,
+} from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
@@ -7,6 +15,8 @@ import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import Hammer from 'hammerjs';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
+
+runtime.enableCSSParsing = false;
 
 // create a renderer
 // enable culling for canvas & svg renderer
@@ -104,6 +114,7 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
         stroke: '#5B8FF9',
         r: size * 10,
         lineWidth: 1,
+        batchKey: 'node', // merge all circles into a single batch
       },
     });
     canvas.appendChild(circle);
@@ -118,12 +129,42 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
     });
     circle.appendChild(text);
 
+    let c1;
     circle.addEventListener('mouseenter', (e) => {
       circle.style.fill = '#2FC25B';
+      text.style.fill = 'red';
+
+      c1 = new Circle({
+        style: {
+          cx: 100,
+          cy: 100,
+          r: 1000,
+          fill: '#2FC25B',
+          zIndex: -1,
+        },
+      });
+
+      // c1 = new Image({
+      //   style: {
+      //     x: 100,
+      //     y: 100,
+      //     width: 1000,
+      //     height: 1000,
+      //     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      //     zIndex: -1,
+      //   },
+      // });
+      canvas.appendChild(c1);
     });
 
     circle.addEventListener('mouseleave', (e) => {
       circle.style.fill = '#C6E5FF';
+      text.style.fill = '#1890FF';
+
+      if (c1) {
+        canvas.removeChild(c1);
+        c1 = undefined;
+      }
     });
   });
 })();
@@ -145,7 +186,7 @@ canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
   if (stats) {
     stats.update();
   }
-  console.log(canvas.getStats());
+  // console.log(canvas.getStats());
 
   // manipulate camera instead of the root of canvas
   camera.rotate(0, 0, 0.1);

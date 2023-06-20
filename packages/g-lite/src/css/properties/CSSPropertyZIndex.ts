@@ -1,9 +1,12 @@
+import { SortReason } from '../../components';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import { parseNumber } from '../parser/numeric';
 
-export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, number>> {
+export class CSSPropertyZIndex
+  implements Partial<CSSProperty<CSSUnitValue, number>>
+{
   parser = parseNumber;
 
   calculator(
@@ -26,6 +29,7 @@ export class CSSPropertyZIndex implements Partial<CSSProperty<CSSUnitValue, numb
       // need re-sort on parent
       if (parentSortable) {
         parentSortable.dirty = true;
+        parentSortable.dirtyReason = SortReason.Z_INDEX_CHANGED;
       }
     }
   }

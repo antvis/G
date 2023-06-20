@@ -124,6 +124,7 @@ const canvas = new Canvas({
     if (stats) {
       stats.update();
     }
+    sphere.setOrigin(0, 0, 0);
     sphere.rotate(0, 0.2, 0);
   });
 

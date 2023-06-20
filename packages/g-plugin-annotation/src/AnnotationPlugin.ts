@@ -2,8 +2,8 @@ import type {
   Canvas,
   Circle,
   FederatedPointerEvent,
+  Polygon,
   Polyline,
-  Rect,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -37,7 +37,7 @@ export class AnnotationPlugin implements RenderingPlugin {
   /**
    * draw a dashed rect when brushing
    */
-  brushRect: Rect;
+  brushRect: Polygon;
 
   /**
    * draw a static point
@@ -267,7 +267,7 @@ export class AnnotationPlugin implements RenderingPlugin {
       this.hotkeyActive = false;
     };
 
-    renderingService.hooks.init.tapPromise(AnnotationPlugin.tag, async () => {
+    renderingService.hooks.init.tap(AnnotationPlugin.tag, () => {
       canvas.addEventListener('click', handleClick);
       canvas.addEventListener('pointerdown', handleMouseDown);
       canvas.addEventListener('pointermove', handleMouseMove);

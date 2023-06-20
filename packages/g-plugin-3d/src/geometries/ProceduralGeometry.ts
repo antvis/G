@@ -6,24 +6,39 @@ import {
   VertexAttributeLocation,
   VertexBufferFrequency,
 } from '@antv/g-plugin-device-renderer';
+import type { Device } from '@antv/g-plugin-device-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 
-export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<GeometryProps> {
+export interface Topology {
+  indices: number[];
+  positions: number[];
+  normals: number[];
+  uvs: number[];
+  uv1s: number[];
+}
+
+export abstract class ProceduralGeometry<
+  GeometryProps,
+> extends BufferGeometry<GeometryProps> {
+  constructor(device: Device, props: Partial<GeometryProps> = {}) {
+    super(device, props);
+    this.topology = this.createTopology();
+  }
+
+  protected topology: Topology;
+
   /**
    * flip Y, since +Y is down in G's world coords
    */
-  protected flipYMatrix = mat4.fromScaling(mat4.create(), vec3.fromValues(1, -1, 1));
+  protected flipYMatrix = mat4.fromScaling(
+    mat4.create(),
+    vec3.fromValues(1, -1, 1),
+  );
 
   /**
    * create geometry attributes
    */
-  protected abstract createTopology(): {
-    indices: number[];
-    positions: number[];
-    normals: number[];
-    uvs: number[];
-    uv1s: number[];
-  };
+  protected abstract createTopology(): Topology;
 
   protected applyMa4Position(mat: mat4, positions: ArrayBufferView) {
     const v = vec4.create();
@@ -71,29 +86,53 @@ export abstract class ProceduralGeometry<GeometryProps> extends BufferGeometry<G
   }
 
   protected rebuildPosition() {
-    const { positions } = this.createTopology();
+    this.topology = this.createTopology();
 
-    const p = Float32Array.from(positions);
+    const p = Float32Array.from(this.topology.positions);
     this.applyMa4Position(this.flipYMatrix, p);
 
     this.dirty = true;
   }
 
   applyMat4(mat: mat4) {
-    this.applyMa4Position(mat, this.vertices[VertexAttributeBufferIndex.POSITION]);
+    this.applyMa4Position(
+      mat,
+      this.vertices[VertexAttributeBufferIndex.POSITION],
+    );
     this.applyMa4Normal(mat, this.vertices[VertexAttributeBufferIndex.NORMAL]);
     // transform tangent
   }
 
   computeBoundingBox(): AABB {
-    // 根据 ProceduralGeometryAttributeLocation.POSITION 计算
-    // const buffer = this.getVertexBuffer(VertexAttributeBufferIndex.POSITION);
+    const { positions } = this.topology;
 
-    return new AABB();
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    let maxZ = -Infinity;
+    let minX = Infinity;
+    let minY = Infinity;
+    let minZ = Infinity;
+    for (let i = 0; i < positions.length; i += 3) {
+      const x = positions[i];
+      const y = positions[i + 1];
+      const z = positions[i + 2];
+
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+      maxZ = Math.max(maxZ, z);
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      minZ = Math.min(minZ, z);
+    }
+
+    const aabb = new AABB();
+    aabb.setMinMax([minX, minY, minZ], [maxX, maxY, maxZ]);
+
+    return aabb;
   }
 
   build() {
-    const { indices, positions, normals, uvs } = this.createTopology();
+    const { indices, positions, normals, uvs } = this.topology;
 
     this.setIndexBuffer(new Uint32Array(indices));
     this.vertexCount = indices.length;

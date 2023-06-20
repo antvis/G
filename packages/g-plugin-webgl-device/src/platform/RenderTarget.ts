@@ -1,5 +1,5 @@
 import { GL, ResourceType } from '@antv/g-plugin-device-renderer';
-import type {
+import {
   Format,
   RenderTarget,
   RenderTargetDescriptor,
@@ -31,19 +31,40 @@ export class RenderTarget_GL extends ResourceBase_GL implements RenderTarget {
 
     const gl = this.device.gl;
 
-    const { pixelFormat, width, height, texture, sampleCount } = descriptor;
+    const { pixelFormat, width, height, sampleCount, texture } = descriptor;
 
-    if (texture) {
+    let useRenderbuffer = false;
+    // @see https://blog.tojicode.com/2012/07/using-webgldepthtexture.html
+    if (
+      (pixelFormat === Format.D32F || pixelFormat === Format.D24_S8) &&
+      texture &&
+      !isWebGL2(gl) &&
+      !device.WEBGL_depth_texture
+    ) {
+      // texture.destroy();
+      // texture = null;
+      useRenderbuffer = true;
+    }
+
+    if (!useRenderbuffer && texture) {
       this.texture = texture;
     } else {
-      this.gl_renderbuffer = this.device.ensureResourceExists(gl.createRenderbuffer());
+      this.gl_renderbuffer = this.device.ensureResourceExists(
+        gl.createRenderbuffer(),
+      );
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.gl_renderbuffer);
 
       const gl_format = this.device.translateTextureInternalFormat(pixelFormat);
 
       if (isWebGL2(gl)) {
         // @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#multisampled-renderbuffers
-        gl.renderbufferStorageMultisample(GL.RENDERBUFFER, sampleCount, gl_format, width, height);
+        gl.renderbufferStorageMultisample(
+          GL.RENDERBUFFER,
+          sampleCount,
+          gl_format,
+          width,
+          height,
+        );
       } else {
         // WebGL1 can only use FXAA or other post-processing methods
         gl.renderbufferStorage(GL.RENDERBUFFER, gl_format, width, height);

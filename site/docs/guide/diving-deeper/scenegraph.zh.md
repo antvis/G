@@ -190,27 +190,27 @@ earthOrbit.rotateLocal(1);
 
 ### 简单节点查询
 
-| 名称            | 属性/方法 | 返回值    | 备注                           |
-| --------------- | --------- | --------- | ------------------------------ | ------------------------------------ |
-| parentNode      | 属性      | `Group    | null`                          | 父节点（如有）                       |
-| children        | 属性      | `Group[]` | 子节点列表                     |
-| firstChild      | 属性      | `Group    | null`                          | 返回子节点列表中第一个节点（如有）   |
-| lastChild       | 属性      | `Group    | null`                          | 返回子节点列表中最后一个节点（如有） |
-| nextSibling     | 属性      | `Group    | null`                          | 返回后一个兄弟节点（如有）           |
-| previousSibling | 属性      | `Group    | null`                          | 返回前一个兄弟节点（如有）           |
-| contains        | 方法      | `boolean` | 子树中是否包含某个节点（入参） |
+| 名称            | 属性/方法 | 返回值         | 备注                                 |
+| --------------- | --------- | -------------- | ------------------------------------ |
+| parentNode      | 属性      | `Group / null` | 父节点（如有）                       |
+| children        | 属性      | `Group[]`      | 子节点列表                           |
+| firstChild      | 属性      | `Group / null` | 返回子节点列表中第一个节点（如有）   |
+| lastChild       | 属性      | `Group / null` | 返回子节点列表中最后一个节点（如有） |
+| nextSibling     | 属性      | `Group / null` | 返回后一个兄弟节点（如有）           |
+| previousSibling | 属性      | `Group / null` | 返回前一个兄弟节点（如有）           |
+| contains        | 方法      | `boolean`      | 子树中是否包含某个节点（入参）       |
 
 ### 高级查询
 
 参考 CSS 选择器，我们提供了以下查询方法，查询范围是当前节点的**整棵子树**，并不仅仅是直接的子节点列表，而是所有子孙节点。
 
 | 名称                   | 参数                  | 返回值          | 备注                            |
-| ---------------------- | --------------------- | --------------- | ------------------------------- | -------------------- |
-| getElementById         | `(id: string)`        | `Group          | null`                           | 通过 `id` 查询子节点 |
+| ---------------------- | --------------------- | --------------- | ------------------------------- |
+| getElementById         | `(id: string)`        | `Group / null`  | 通过 `id` 查询子节点            |
 | getElementsByName      | `(name: string)`      | `Group[]`       | 通过 `name` 查询子节点列表      |
 | getElementsByClassName | `(className: string)` | `Group[]`       | 通过 `className` 查询子节点列表 |
 | getElementsByTagName   | `(tagName: string)`   | `Group[]`       | 通过 `tagName` 查询子节点列表   |
-| querySelector          | `(selector: string)`  | `Group ｜ null` | 查询满足条件的第一个子节点      |
+| querySelector          | `(selector: string)`  | `Group / null`  | 查询满足条件的第一个子节点      |
 | querySelectorAll       | `(selector: string)`  | `Group[]`       | 查询满足条件的所有子节点列表    |
 
 下面我们以上面太阳系的例子，演示如何使用这些查询方法。
@@ -240,10 +240,10 @@ solarSystem.querySelectorAll('[r=25]');
 
 ### 获取/设置属性值
 
-| 名称         | 参数                         | 返回值 | 备注       |
-| ------------ | ---------------------------- | ------ | ---------- | -------------------- |
-| getAttribute | `(name: string)`             | `null  | any`       | 根据属性名获取属性值 |
-| setAttribute | `(name: string, value: any)` | 无     | 设置属性值 |
+| 名称         | 参数                         | 返回值       | 备注                 |
+| ------------ | ---------------------------- | ------------ | -------------------- |
+| getAttribute | `(name: string)`             | `null / any` | 根据属性名获取属性值 |
+| setAttribute | `(name: string, value: any)` | 无           | 设置属性值           |
 
 ⚠️ 兼容旧版 `attr(name: string, value?: any)`，获取以及设置属性值。
 

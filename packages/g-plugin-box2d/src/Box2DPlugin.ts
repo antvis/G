@@ -48,7 +48,6 @@ export class Box2DPlugin implements RenderingPlugin {
 
   private bodies: Map<DisplayObject, Box2DBody> = new Map();
   private fixtures: WeakMap<Box2D.b2Fixture, DisplayObject> = new WeakMap();
-  private pendingDisplayObjects: DisplayObject[] = [];
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
@@ -74,13 +73,8 @@ export class Box2DPlugin implements RenderingPlugin {
     };
 
     const handleMounted = (e: FederatedEvent) => {
-      const Box2D = this.Box2D;
       const target = e.target as DisplayObject;
-      if (Box2D) {
-        this.addActor(target);
-      } else {
-        this.pendingDisplayObjects.push(target);
-      }
+      this.addActor(target);
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -155,7 +149,7 @@ export class Box2DPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(Box2DPlugin.tag, async () => {
+    renderingService.hooks.initAsync.tapPromise(Box2DPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       canvas.addEventListener(
@@ -168,7 +162,6 @@ export class Box2DPlugin implements RenderingPlugin {
       this.temp = new this.Box2D.b2Vec2(0, 0);
       this.temp2 = new this.Box2D.b2Vec2(0, 0);
       this.createScene();
-      this.handlePendingDisplayObjects();
 
       // do simulation each frame
       canvas.addEventListener(CanvasEvent.BEFORE_RENDER, simulate);
@@ -405,29 +398,35 @@ export class Box2DPlugin implements RenderingPlugin {
     }
   }
 
-  private handlePendingDisplayObjects() {
-    this.pendingDisplayObjects.forEach((object) => {
-      this.addActor(object);
-    });
-    this.pendingDisplayObjects = [];
-  }
+  private async loadBox2D(): Promise<typeof Box2D & EmscriptenModule> {
+    const hasSIMD = WebAssembly.validate(
+      new Uint8Array([
+        0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10,
+        1, 8, 0, 65, 0, 253, 15, 253, 98, 11,
+      ]),
+    );
+    const moduleName = hasSIMD ? './Box2D.simd' : './Box2D';
 
-  private loadBox2D(): Promise<typeof Box2D & EmscriptenModule> {
-    const scriptPromise = new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.setAttribute('data-box2d-dir', BOX2D_UMD_DIR);
-      document.body.appendChild(script);
-      script.async = true;
-      script.onload = resolve;
-      script.src = `${BOX2D_UMD_DIR}entry.js`;
+    // awaiting gives us a better stack trace (at the cost of an extra microtask)
+    const modulePromise = await new Promise<any>((resolve, reject) => {
+      const tag = document.createElement('script');
+      tag.onload = () => {
+        resolve(<any>window.Box2D);
+        return false;
+      };
+      tag.onerror = () => {
+        reject(
+          new Error(
+            `Failed to load Box2D. Check your browser console for network errors.`,
+          ),
+        );
+        return false;
+      };
+      tag.src = `${BOX2D_UMD_DIR}/${moduleName}.js`;
+      document.getElementsByTagName('head')[0].appendChild(tag);
     });
 
-    return new Promise((resolve) => {
-      scriptPromise.then(() => {
-        (<any>window).Box2D().then((Box2D: any) => {
-          resolve(Box2D);
-        });
-      });
-    });
+    const Box2DFactory = await modulePromise;
+    return await Box2DFactory();
   }
 }

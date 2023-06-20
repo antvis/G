@@ -35,8 +35,6 @@ const controls: Control[] = [
 ];
 
 export class SelectableRect extends AbstractSelectable<Rect> {
-  // private rotateAnchor: Circle;
-
   private tlAnchor: Circle;
   private trAnchor: Circle;
   private blAnchor: Circle;
@@ -142,6 +140,8 @@ export class SelectableRect extends AbstractSelectable<Rect> {
 
     this.bindEventListeners();
   }
+
+  deleteSelectedAnchors(): void {}
 
   destroy(): void {}
 

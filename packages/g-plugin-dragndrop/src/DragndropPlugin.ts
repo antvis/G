@@ -166,7 +166,7 @@ export class DragndropPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(DragndropPlugin.tag, async () => {
+    renderingService.hooks.init.tap(DragndropPlugin.tag, () => {
       canvas.addEventListener('pointerdown', handlePointerdown);
     });
 

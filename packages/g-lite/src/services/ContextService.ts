@@ -1,6 +1,10 @@
 import type { CanvasLike } from '../types';
 
-export type DataURLType = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/bmp';
+export type DataURLType =
+  | 'image/png'
+  | 'image/jpeg'
+  | 'image/webp'
+  | 'image/bmp';
 /**
  * The created image data will have a resolution of 96dpi.
  * @see https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toDataURL#%E5%8F%82%E6%95%B0
@@ -18,7 +22,8 @@ export interface DataURLOptions {
 
 // 1 of 1 in each Canvas
 export interface ContextService<Context> {
-  init: () => Promise<void>;
+  init?: () => void;
+  initAsync?: () => Promise<void>;
   destroy: () => void;
   getContext: () => Context | null;
   getDomElement: () => CanvasLike | null;

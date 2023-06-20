@@ -1,3 +1,6 @@
+vec4 a_Color = decode_color(a_PackedColor.xy);
+vec4 a_StrokeColor = decode_color(a_PackedColor.zw);
+
 mat4 u_ModelMatrix = mat4(a_ModelMatrix0, a_ModelMatrix1, a_ModelMatrix2, a_ModelMatrix3);
 vec4 u_StrokeColor = a_StrokeColor;
 float u_Opacity = a_StylePacked1.x;

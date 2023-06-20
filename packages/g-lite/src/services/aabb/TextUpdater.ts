@@ -3,8 +3,8 @@ import type {
   DisplayObject,
   ParsedTextStyleProps,
 } from '../../display-objects';
+import { GlobalRuntime } from '../../global-runtime';
 import type { GeometryAABBUpdater } from './interfaces';
-import { GlobalRuntime, runtime } from '../../global-runtime';
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   constructor(private globalRuntime: GlobalRuntime) {}
 
@@ -97,7 +97,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       lineYOffset = halfExtents[1] * 2;
     } else if (textBaseline === 'alphabetic') {
       // prevent calling getImageData for ascent metrics
-      lineYOffset = runtime.enableCSSParsing
+      lineYOffset = this.globalRuntime.enableCSSParsing
         ? lineHeight - fontProperties.ascent
         : 0;
     } else if (textBaseline === 'bottom' || textBaseline === 'ideographic') {

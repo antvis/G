@@ -21,7 +21,10 @@ export class Plugin extends AbstractRendererPlugin {
       arrowKeyStepLength: 4,
       enableAutoSwitchDrawingMode: false,
       enableDeleteTargetWithShortcuts: false,
+      enableDeleteAnchorsWithShortcuts: false,
+      enableDisplayMidAnchors: false,
       enableContinuousBrush: true,
+      enableRotateAnchor: false,
       brushSelectionSortMode: 'directional',
       ...this.options,
     };
@@ -110,7 +113,7 @@ export class Plugin extends AbstractRendererPlugin {
     return this.plugins[1] as AnnotationPlugin;
   }
 
-  private getAnnotationPluginOptions() {
+  getAnnotationPluginOptions() {
     return this.getAnnotationPlugin().annotationPluginOptions;
   }
 
@@ -130,8 +133,8 @@ export class Plugin extends AbstractRendererPlugin {
    * show selectable UI of target displayobject
    * @see http://fabricjs.com/docs/fabric.Canvas.html#setActiveObject
    */
-  selectDisplayObject(displayObject: DisplayObject) {
-    this.getSelectablePlugin().selectDisplayObject(displayObject);
+  selectDisplayObject(displayObject: DisplayObject, skipEvent = false) {
+    this.getSelectablePlugin().selectDisplayObject(displayObject, skipEvent);
   }
 
   /**
@@ -147,6 +150,14 @@ export class Plugin extends AbstractRendererPlugin {
 
   markSelectableUIAsDirty(object: DisplayObject) {
     return this.getSelectablePlugin().markSelectableUIAsDirty(object);
+  }
+
+  /**
+   * Keep selectable state and don't trigger SELECT event
+   */
+  refreshSelectableUI(object: DisplayObject) {
+    this.markSelectableUIAsDirty(object);
+    this.selectDisplayObject(object, true);
   }
 
   addEventListener(eventName: string, fn: (...args: any[]) => void) {
@@ -175,6 +186,32 @@ export class Plugin extends AbstractRendererPlugin {
 
   getDrawingMode() {
     return this.getAnnotationPluginOptions().isDrawingMode;
+  }
+
+  allowVertexAdditionAndDeletion(allowed: boolean) {
+    if (allowed) {
+      this.getSelectablePlugin().showMidAnchors();
+      if (!this.getAnnotationPluginOptions().enableDeleteAnchorsWithShortcuts) {
+        this.getSelectablePlugin().enableAnchorsSelectable();
+      }
+    } else {
+      this.getSelectablePlugin().hideMidAnchors();
+      if (this.getAnnotationPluginOptions().enableDeleteAnchorsWithShortcuts) {
+        this.getSelectablePlugin().disableAnchorsSelectable();
+      }
+    }
+  }
+
+  allowTargetRotation(allowed: boolean) {
+    if (allowed) {
+      this.getSelectablePlugin().showRotateAnchor();
+    } else {
+      this.getSelectablePlugin().hideRotateAnchor();
+    }
+  }
+
+  getSelectableUI(target: DisplayObject) {
+    return this.getSelectablePlugin().getOrCreateSelectableUI(target);
   }
 
   destroy(): void {

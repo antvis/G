@@ -1,4 +1,4 @@
-const { createCanvas, Image: CanvasImage } = require('canvas');
+const { createCanvas, Image: CanvasImage, loadImage } = require('canvas');
 const fs = require('fs');
 const { Image, Canvas } = require('@antv/g');
 const { Renderer } = require('@antv/g-canvas');
@@ -39,16 +39,36 @@ describe('Render <Image> with g-canvas', () => {
 
   it('should render image on server-side correctly.', async () => {
     await canvas.ready;
+
+    const src = await loadImage(__dirname + '/antv.png');
+
+    // URL src
     const image = new Image({
       style: {
         width: 100,
         height: 100,
-        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src,
       },
     });
     canvas.appendChild(image);
 
-    await sleep(300);
+    // <canvas> src
+    const nodeCanvasSrc = createCanvas(50, 50);
+    const context = nodeCanvasSrc.getContext('2d');
+    context.fillStyle = 'red';
+    context.fillRect(0, 0, 50, 50);
+    const image2 = new Image({
+      style: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        src: nodeCanvasSrc,
+      },
+    });
+    canvas.appendChild(image2);
+
+    await sleep(1000);
 
     await new Promise((resolve) => {
       const out = fs.createWriteStream(__dirname + RESULT_IMAGE);

@@ -1,9 +1,15 @@
 import { isNil } from '@antv/util';
-import type { Circle, DisplayObject, Line, Rect } from '../../display-objects';
+import type {
+  Circle,
+  DisplayObject,
+  Line,
+  Rect,
+  Text,
+} from '../../display-objects';
 import { ParsedBaseStyleProps, Shape } from '../../types';
-import { parsedTransformToMat4 } from '../../utils';
-import type { CSSUnitValue } from '../cssom';
+import { parsedTransformToMat4 } from '../../utils/transform-mat4';
 import type { CSSProperty } from '../CSSProperty';
+import type { CSSUnitValue } from '../cssom';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
 /**
@@ -24,12 +30,15 @@ export class CSSPropertyLocalPosition
     switch (object.nodeName) {
       case Shape.CIRCLE:
       case Shape.ELLIPSE:
-        const { cx, cy } = (object as Circle).parsedStyle;
+        const { cx, cy, cz } = (object as Circle).parsedStyle;
         if (!isNil(cx)) {
           x = cx;
         }
         if (!isNil(cy)) {
           y = cy;
+        }
+        if (!isNil(cz)) {
+          z = cz;
         }
         break;
       case Shape.LINE:
@@ -51,6 +60,9 @@ export class CSSPropertyLocalPosition
         }
         if (!isNil((object as Rect).parsedStyle.y)) {
           y = (object as Rect).parsedStyle.y;
+        }
+        if (!isNil((object as Text).parsedStyle.z)) {
+          z = (object as Text).parsedStyle.z;
         }
         break;
       default:

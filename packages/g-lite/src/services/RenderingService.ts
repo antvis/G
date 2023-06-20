@@ -1,20 +1,20 @@
-import type { GlobalRuntime } from '../global-runtime';
-import { runtime } from '../global-runtime';
 import type { ICamera } from '../camera';
+import { SortReason, Sortable } from '../components';
 import type { DisplayObject } from '../display-objects';
-import type { CanvasContext } from '../dom';
-import { CustomEvent, ElementEvent } from '../dom';
+import type { CanvasContext, IChildNode, IElement } from '../dom';
+import type { GlobalRuntime } from '../global-runtime';
 import type {
+  CanvasConfig,
   EventPosition,
   InteractivePointerEvent,
-  CanvasConfig,
 } from '../types';
 import {
   AsyncParallelHook,
   AsyncSeriesWaterfallHook,
-  sortByZIndex,
   SyncHook,
   SyncWaterfallHook,
+  sortByZIndex,
+  sortedIndex,
 } from '../utils';
 import type { RenderingContext } from './RenderingContext';
 import { RenderReason } from './RenderingContext';
@@ -67,81 +67,78 @@ export class RenderingService {
 
   private zIndexCounter = 0;
 
-  /**
-   * avoid re-creating too many custom events
-   */
-  private renderOrderChangedEvent = new CustomEvent(
-    ElementEvent.RENDER_ORDER_CHANGED,
-  );
-
   hooks = {
     /**
      * called before any frame rendered
      */
-    init: new AsyncParallelHook<[]>(),
+    init: new SyncHook<[]>(),
+    initAsync: new AsyncParallelHook<[]>(),
     /**
      * only dirty object which has sth changed will be rendered
      */
-    dirtycheck: new SyncWaterfallHook<[DisplayObject | null]>(['object']),
+    dirtycheck: new SyncWaterfallHook<[DisplayObject], DisplayObject>(),
     /**
      * do culling
      */
-    cull: new SyncWaterfallHook<[DisplayObject | null, ICamera]>([
-      'object',
-      'camera',
-    ]),
+    cull: new SyncWaterfallHook<[DisplayObject, ICamera], DisplayObject>(),
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
-    beginFrame: new SyncHook<[]>([]),
+    beginFrame: new SyncHook<[]>(),
     /**
      * called before every dirty object get rendered
      */
-    beforeRender: new SyncHook<[DisplayObject]>(['objectToRender']),
+    beforeRender: new SyncHook<[DisplayObject]>(),
     /**
      * called when every dirty object rendering even it's culled
      */
-    render: new SyncHook<[DisplayObject]>(['objectToRender']),
+    render: new SyncHook<[DisplayObject]>(),
     /**
      * called after every dirty object get rendered
      */
-    afterRender: new SyncHook<[DisplayObject]>(['objectToRender']),
-    endFrame: new SyncHook<[]>([]),
-    destroy: new SyncHook<[]>([]),
+    afterRender: new SyncHook<[DisplayObject]>(),
+    endFrame: new SyncHook<[]>(),
+    destroy: new SyncHook<[]>(),
     /**
      * use async but faster method such as GPU-based picking in `g-plugin-device-renderer`
      */
-    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>([
-      'result',
-    ]),
+    pick: new AsyncSeriesWaterfallHook<[PickingResult], PickingResult>(),
 
     /**
      * Unsafe but sync version of pick.
      */
-    pickSync: new SyncWaterfallHook<[PickingResult], PickingResult>(['result']),
+    pickSync: new SyncWaterfallHook<[PickingResult], PickingResult>(),
     /**
      * used in event system
      */
-    pointerDown: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerUp: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerMove: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOut: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerOver: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerWheel: new SyncHook<[InteractivePointerEvent]>(['event']),
-    pointerCancel: new SyncHook<[InteractivePointerEvent]>(['event']),
-    click: new SyncHook<[InteractivePointerEvent]>(['event']),
+    pointerDown: new SyncHook<[InteractivePointerEvent]>(),
+    pointerUp: new SyncHook<[InteractivePointerEvent]>(),
+    pointerMove: new SyncHook<[InteractivePointerEvent]>(),
+    pointerOut: new SyncHook<[InteractivePointerEvent]>(),
+    pointerOver: new SyncHook<[InteractivePointerEvent]>(),
+    pointerWheel: new SyncHook<[InteractivePointerEvent]>(),
+    pointerCancel: new SyncHook<[InteractivePointerEvent]>(),
+    click: new SyncHook<[InteractivePointerEvent]>(),
   };
 
-  async init() {
+  init(callback: () => void) {
     const context = { ...this.globalRuntime, ...this.context };
 
     // register rendering plugins
     this.context.renderingPlugins.forEach((plugin) => {
-      plugin.apply(context, runtime);
+      plugin.apply(context, this.globalRuntime);
     });
-    // await this.hooks.init.callPromise();
-    await this.hooks.init.promise();
-    this.inited = true;
+    this.hooks.init.call();
+
+    if (this.hooks.initAsync.getCallbacksNum() === 0) {
+      this.inited = true;
+      callback();
+    } else {
+      this.hooks.initAsync.promise().then(() => {
+        this.inited = true;
+        callback();
+      });
+    }
   }
 
   getStats() {
@@ -234,13 +231,13 @@ export class RenderingService {
 
     this.stats.total++;
 
-    // sort is very expensive, use cached result if posible
+    // sort is very expensive, use cached result if possible
     const sortable = displayObject.sortable;
-    let renderOrderChanged = false;
     if (sortable.dirty) {
-      sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
-      renderOrderChanged = true;
+      this.sort(displayObject, sortable);
       sortable.dirty = false;
+      sortable.dirtyChildren = [];
+      sortable.dirtyReason = undefined;
     }
 
     // recursive rendering its children
@@ -249,18 +246,36 @@ export class RenderingService {
         this.renderDisplayObject(child, canvasConfig, renderingContext);
       },
     );
+  }
 
-    if (renderOrderChanged) {
-      displayObject.forEach((child: DisplayObject) => {
-        this.renderOrderChangedEvent.target = child;
-        this.renderOrderChangedEvent.detail = {
-          renderOrder: child.sortable.renderOrder,
-        };
-        child.ownerDocument.defaultView.dispatchEvent(
-          this.renderOrderChangedEvent,
-          true,
-        );
+  private sort(displayObject: DisplayObject, sortable: Sortable) {
+    if (
+      sortable.sorted &&
+      sortable.dirtyReason !== SortReason.Z_INDEX_CHANGED
+    ) {
+      // avoid re-sorting the whole children list
+      sortable.dirtyChildren.forEach((child) => {
+        const index = displayObject.childNodes.indexOf(child as IChildNode);
+        if (index === -1) {
+          // remove from sorted list
+          const index = sortable.sorted.indexOf(child);
+          if (index >= 0) {
+            sortable.sorted.splice(index, 1);
+          }
+        } else {
+          if (sortable.sorted.length === 0) {
+            sortable.sorted.push(child);
+          } else {
+            const index = sortedIndex(
+              sortable.sorted as IElement[],
+              child as IElement,
+            );
+            sortable.sorted.splice(index, 0, child);
+          }
+        }
       });
+    } else {
+      sortable.sorted = displayObject.childNodes.slice().sort(sortByZIndex);
     }
   }
 

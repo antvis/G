@@ -2,12 +2,14 @@ import {
   CanvasContext,
   CSSGradientValue,
   DisplayObject,
+  isBrowser,
   LinearGradient,
   parsedTransformToMat4,
+  parseTransform,
   Pattern,
   RadialGradient,
+  runtime,
 } from '@antv/g-lite';
-import { isBrowser, runtime, parseTransform } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from './platform';
@@ -171,7 +173,10 @@ export class TexturePool {
 
     // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
     if (transform) {
-      const mat = parsedTransformToMat4(parseTransform(transform));
+      const mat = parsedTransformToMat4(
+        parseTransform(transform),
+        new DisplayObject({}),
+      );
       canvasPattern.setTransform({
         a: mat[0],
         b: mat[1],

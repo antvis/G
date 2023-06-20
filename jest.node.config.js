@@ -11,7 +11,8 @@ const moduleNameMapper = {
   ...packages.reduce(
     (acc, name) => ({
       ...acc,
-      [`@antv/${name}$`]: `<rootDir>/packages/./${name}/src/`,
+      // FIXME: use `src` so that we can collect coverage?
+      [`@antv/${name}$`]: `<rootDir>/packages/./${name}/`,
     }),
     {},
   ),

@@ -1,3 +1,4 @@
+import { RendererParameters, ToneMapping } from '../interfaces';
 import type { Device } from '../platform';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
@@ -13,6 +14,8 @@ export class RenderHelper {
   // debugThumbnails: DebugThumbnailDrawer;
 
   private device: Device;
+
+  constructor(private parameters: RendererParameters) {}
 
   getDevice(): Device {
     return this.device;
@@ -55,5 +58,14 @@ export class RenderHelper {
 
   getCache(): RenderCache {
     return this.renderCache;
+  }
+
+  getDefines() {
+    return {
+      USE_TONEMAPPING:
+        this.parameters?.toneMapping &&
+        this.parameters?.toneMapping !== ToneMapping.NONE,
+      toneMapping: this.parameters?.toneMapping,
+    };
   }
 }

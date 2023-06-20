@@ -272,7 +272,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
     };
 
-    renderingService.hooks.init.tapPromise(SVGRendererPlugin.tag, async () => {
+    renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
       const { background, document } = this.context.config;
 
       // <defs>

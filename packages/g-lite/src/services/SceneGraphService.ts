@@ -1,9 +1,10 @@
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
-import type { Transform } from '../components';
+import { SortReason, Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
-import { MutationEvent, CustomEvent } from '../dom';
+import { CustomEvent } from '../dom/CustomEvent';
+import { MutationEvent } from '../dom/MutationEvent';
 import type {
   IChildNode,
   IElement,
@@ -11,10 +12,10 @@ import type {
   IParentNode,
 } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
+import { GlobalRuntime } from '../global-runtime';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
-import { GlobalRuntime } from '../global-runtime';
 
 function markRenderableDirty(e: Element) {
   const renderable = e.renderable;
@@ -93,9 +94,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
       sortable?.sorted?.length ||
       (child as unknown as Element).style?.zIndex
     ) {
+      if (sortable.dirtyChildren.indexOf(child) === -1) {
+        sortable.dirtyChildren.push(child);
+      }
       // if (sortable) {
       // only child has z-Index
       sortable.dirty = true;
+      sortable.dirtyReason = SortReason.ADDED;
     }
 
     // this.updateGraphDepth(child);
@@ -132,7 +137,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
         sortable?.sorted?.length ||
         (child as unknown as Element).style?.zIndex
       ) {
+        if (sortable.dirtyChildren.indexOf(child) === -1) {
+          sortable.dirtyChildren.push(child);
+        }
         sortable.dirty = true;
+        sortable.dirtyReason = SortReason.REMOVED;
       }
 
       const index = child.parentNode.childNodes.indexOf(

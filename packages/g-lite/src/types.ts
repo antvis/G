@@ -1,5 +1,4 @@
 import type { vec2, vec3 } from 'gl-matrix';
-import type { IEventTarget } from '.';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -88,6 +87,7 @@ export interface BaseStyleProps {
     | 'visiblepainted'
     // | 'bounding-box'
     | 'all'
+    | 'non-transparent-pixel' // valid only for Image
     | CSSGlobalKeywords;
 
   /**
@@ -363,7 +363,7 @@ export interface RendererConfig {
 /**
  * eg. NodeCanvas, OffscreenCanvas, HTMLCanvasElement
  */
-export interface CanvasLike extends IEventTarget {
+export interface CanvasLike extends EventTarget {
   width: number;
   height: number;
 
@@ -456,6 +456,11 @@ export interface CanvasConfig {
    * Listen to native click event instead of mocking with pointerup & down events.
    */
   useNativeClickEvent?: boolean;
+
+  /**
+   * Pointermove / up / cancel event will get triggered even outside Canvas.
+   */
+  alwaysTriggerPointerEventOnCanvas?: boolean;
 
   /**
    * Should we account for CSS Transform applied on container?

@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-dom-interaction",
-  "version": "1.7.45",
+  "version": "1.7.52",
   "description": "A G plugin",
   "keywords": [
     "antv",
@@ -16,32 +16,29 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "main": "lib/index.js",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
+  "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
-  "module": "esm/index.js",
-  "types": "lib/index.d.ts",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "package.json",
     "dist",
-    "esm",
-    "lib",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "clean": "rimraf dist && rimraf lib && rimraf esm",
-    "build:umd": "rollup -c",
-    "build:cjs": "tsc --module commonjs --outDir lib",
-    "build:esm": "tsc --module ESNext --outDir esm",
-    "build": "npm run clean && run-p build:*",
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
     "sync": "tnpm sync"
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "tslib": "^2.3.1"
-  },
-  "devDependencies": {
-    "@types/jest": "^25.0.0"
+    "tslib": "^2.5.3"
   },
   "publishConfig": {
     "access": "public"

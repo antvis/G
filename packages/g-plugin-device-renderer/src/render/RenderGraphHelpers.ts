@@ -1,5 +1,10 @@
 import type { Color } from '../platform';
-import { Format, colorNewFromRGBA, OpaqueBlack, OpaqueWhite } from '../platform';
+import {
+  Format,
+  colorNewFromRGBA,
+  OpaqueBlack,
+  OpaqueWhite,
+} from '../platform';
 // import { reverseDepthForClearValue } from '../platform/utils';
 import { RGAttachmentSlot } from './interfaces';
 import { RGRenderTargetDescription } from './RenderTargetDescription';
@@ -15,11 +20,12 @@ export function makeAttachmentClearDescriptor(
   };
 }
 
-export const standardFullClearRenderPassDescriptor = makeAttachmentClearDescriptor(
-  colorNewFromRGBA(0.88, 0.88, 0.88, 1.0),
-);
-export const opaqueBlackFullClearRenderPassDescriptor = makeAttachmentClearDescriptor(OpaqueBlack);
-export const opaqueWhiteFullClearRenderPassDescriptor = makeAttachmentClearDescriptor(OpaqueWhite);
+export const standardFullClearRenderPassDescriptor =
+  makeAttachmentClearDescriptor(colorNewFromRGBA(0.88, 0.88, 0.88, 1.0));
+export const opaqueBlackFullClearRenderPassDescriptor =
+  makeAttachmentClearDescriptor(OpaqueBlack);
+export const opaqueWhiteFullClearRenderPassDescriptor =
+  makeAttachmentClearDescriptor(OpaqueWhite);
 
 export enum AntialiasingMode {
   None,
@@ -56,7 +62,11 @@ export function setBackbufferDescSimple(
   renderInput: RenderInput,
 ): void {
   const sampleCount = selectSampleCount(renderInput);
-  desc.setDimensions(renderInput.backbufferWidth, renderInput.backbufferHeight, sampleCount);
+  desc.setDimensions(
+    renderInput.backbufferWidth,
+    renderInput.backbufferHeight,
+    sampleCount,
+  );
 }
 
 export interface GfxrAttachmentClearDescriptor {

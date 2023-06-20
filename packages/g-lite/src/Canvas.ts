@@ -1,34 +1,34 @@
-import RBush from 'rbush/rbush.js';
-import { runtime } from './global-runtime';
+import RBush from 'rbush';
 import type { IRenderer } from './AbstractRenderer';
 import {
-  CameraTrackingMode,
-  CameraType,
   CameraEvent,
   CameraProjectionMode,
+  CameraTrackingMode,
+  CameraType,
 } from './camera';
 import type { RBushNodeAABB } from './components';
 import type { CustomElement } from './display-objects';
-import { DisplayObject } from './display-objects';
+import { DisplayObject } from './display-objects/DisplayObject';
 import type { CanvasContext, Element, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import type { ICanvas } from './dom/interfaces';
+import { runtime } from './global-runtime';
 import { CullingPlugin } from './plugins/CullingPlugin';
 import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { EventPlugin } from './plugins/EventPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
-import { EventService, RenderingService, RenderReason } from './services';
+import { EventService, RenderReason, RenderingService } from './services';
 import type { PointLike } from './shapes';
-import type { Cursor, InteractivePointerEvent, CanvasConfig } from './types';
+import type { CanvasConfig, Cursor, InteractivePointerEvent } from './types';
 import {
+  caf,
   cleanExistedCanvas,
   getHeight,
   getWidth,
   isBrowser,
   raf,
-  caf,
 } from './utils';
 
 export function isCanvas(value: any): value is Canvas {
@@ -44,6 +44,7 @@ export enum CanvasEvent {
   AFTER_DESTROY = 'afterdestroy',
   RESIZE = 'resize',
   DIRTY_RECTANGLE = 'dirtyrectangle',
+  RENDERER_CHANGED = 'rendererchanged',
 }
 
 const DEFAULT_CAMERA_Z = 500;
@@ -159,6 +160,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsTouchEvents,
       supportsCSSTransform,
       useNativeClickEvent,
+      alwaysTriggerPointerEventOnCanvas,
       isTouchEvent,
       isMouseEvent,
     } = config;
@@ -222,19 +224,12 @@ export class Canvas extends EventTarget implements ICanvas {
       document,
       supportsCSSTransform,
       useNativeClickEvent,
+      alwaysTriggerPointerEventOnCanvas,
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight);
 
-    (async () => {
-      await this.initRenderer(renderer);
-
-      this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
-
-      if (this.readyPromise) {
-        this.resolveReadyPromise();
-      }
-    })();
+    this.initRenderer(renderer, true);
   }
 
   private initRenderingContext(mergedConfig: CanvasConfig) {
@@ -471,12 +466,12 @@ export class Canvas extends EventTarget implements ICanvas {
   private run() {
     const tick = () => {
       this.render();
-      this.frameId = requestAnimationFrame(tick);
+      this.frameId = this.requestAnimationFrame(tick);
     };
     tick();
   }
 
-  private async initRenderer(renderer: IRenderer) {
+  private initRenderer(renderer: IRenderer, firstContentfullPaint = false) {
     if (!renderer) {
       throw new Error('Renderer is required.');
     }
@@ -512,26 +507,58 @@ export class Canvas extends EventTarget implements ICanvas {
     // init event service
     this.context.eventService = new EventService(runtime, this.context);
     this.context.eventService.init();
-    await this.context.contextService.init();
-    await this.context.renderingService.init();
 
-    this.inited = true;
+    if (this.context.contextService.init) {
+      this.context.contextService.init();
+      this.initRenderingService(renderer, firstContentfullPaint, true);
+    } else {
+      this.context.contextService.initAsync().then(() => {
+        this.initRenderingService(renderer, firstContentfullPaint);
+      });
+    }
+  }
 
-    this.getRoot().forEach((node) => {
-      const renderable = (node as Element).renderable;
-      if (renderable) {
-        renderable.renderBoundsDirty = true;
-        renderable.boundsDirty = true;
-        renderable.dirty = true;
+  private initRenderingService(
+    renderer: IRenderer,
+    firstContentfullPaint = false,
+    async = false,
+  ) {
+    this.context.renderingService.init(() => {
+      this.inited = true;
+
+      if (firstContentfullPaint) {
+        if (async) {
+          this.requestAnimationFrame(() => {
+            this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+          });
+        } else {
+          this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
+        }
+        if (this.readyPromise) {
+          this.resolveReadyPromise();
+        }
+      } else {
+        this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
+      }
+
+      if (!firstContentfullPaint) {
+        this.getRoot().forEach((node) => {
+          const renderable = (node as Element).renderable;
+          if (renderable) {
+            renderable.renderBoundsDirty = true;
+            renderable.boundsDirty = true;
+            renderable.dirty = true;
+          }
+        });
+      }
+
+      // keep current scenegraph unchanged, just trigger mounted event
+      this.mountChildren(this.getRoot());
+
+      if (renderer.getConfig().enableAutoRendering) {
+        this.run();
       }
     });
-
-    // keep current scenegraph unchanged, just trigger mounted event
-    this.mountChildren(this.getRoot());
-
-    if (renderer.getConfig().enableAutoRendering) {
-      this.run();
-    }
   }
 
   private loadRendererContainerModule(renderer: IRenderer) {
@@ -543,7 +570,7 @@ export class Canvas extends EventTarget implements ICanvas {
     });
   }
 
-  async setRenderer(renderer: IRenderer) {
+  setRenderer(renderer: IRenderer) {
     // update canvas' config
     const canvasConfig = this.getConfig();
     if (canvasConfig.renderer === renderer) {
@@ -561,7 +588,7 @@ export class Canvas extends EventTarget implements ICanvas {
       plugin.destroy(runtime);
     });
 
-    await this.initRenderer(renderer);
+    this.initRenderer(renderer);
   }
 
   setCursor(cursor: Cursor) {

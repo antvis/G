@@ -7,6 +7,13 @@
         "en": "Use annotation"
       },
       "screenshot": "https://mdn.alipayobjects.com/antforest/afts/img/A*joHKRpe9U4YAAAAAAAAAAAAADrd2AQ/Dec-13-2022%2015-08-49.gif"
+    },
+    {
+      "filename": "selectable-image.js",
+      "title": {
+        "zh": "操作图片",
+        "en": "Select image"
+      }
     }
   ]
 }

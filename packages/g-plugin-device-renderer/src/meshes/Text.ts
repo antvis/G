@@ -19,6 +19,7 @@ import {
 import type GlyphAtlas from './symbol/GlyphAtlas';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
+import { packUint8ToFloat } from '../utils/compression';
 
 enum TextVertexAttributeBufferIndex {
   INSTANCED = VertexAttributeBufferIndex.POSITION + 1,
@@ -41,6 +42,13 @@ export enum TextUniform {
 
 export class TextMesh extends Instanced {
   private glyphManager = new GlyphManager();
+
+  private packedBufferObjectMap = new WeakMap<
+    DisplayObject,
+    [number, number]
+  >();
+
+  private tmpMat4 = mat4.create();
 
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
@@ -132,7 +140,11 @@ export class TextMesh extends Instanced {
       });
       indicesOff = indicesOffset;
 
+      const start = packed.length;
       packed.push(...charPackedBuffer);
+      const end = packed.length;
+      this.packedBufferObjectMap.set(object, [start, end]);
+
       uvOffsets.push(...charUVOffsetBuffer);
       indices.push(...indexBuffer);
     });
@@ -141,7 +153,7 @@ export class TextMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.INSTANCED,
-      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4),
+      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4), // 32
       // frequency: VertexBufferFrequency.PerInstance,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
@@ -176,34 +188,27 @@ export class TextMesh extends Instanced {
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 16,
-          location: VertexAttributeLocation.COLOR,
+          location: VertexAttributeLocation.PACKED_COLOR,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 20,
-          location: VertexAttributeLocation.STROKE_COLOR,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
-        },
-        {
-          format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 24,
           location: VertexAttributeLocation.PACKED_STYLE1,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 28,
+          bufferByteOffset: 4 * 24,
           location: VertexAttributeLocation.PACKED_STYLE2,
           // byteStride: 4 * 4,
           //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 32,
+          bufferByteOffset: 4 * 28,
           location: VertexAttributeLocation.PICKING_COLOR,
           // byteStride: 4 * 4,
           //          divisor: 1,
@@ -279,10 +284,25 @@ export class TextMesh extends Instanced {
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
-    if (this.material) {
-      this.material.programDirty = true;
-      this.material.geometryDirty = true;
+    const vertice = this.geometry.vertices[
+      TextVertexAttributeBufferIndex.INSTANCED
+    ] as Float32Array;
+    const { byteStride } =
+      this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[
+        TextVertexAttributeBufferIndex.INSTANCED
+      ];
+    const bytes = byteStride / 4;
+    const [start, end] = this.packedBufferObjectMap.get(object);
+    const sliced = vertice.slice(start, end);
+    for (let i = 0; i < end - start; i += bytes) {
+      sliced[i + bytes - 1] = renderOrder * RENDER_ORDER_SCALE;
     }
+    this.geometry.updateVertexBuffer(
+      TextVertexAttributeBufferIndex.INSTANCED,
+      VertexAttributeLocation.MODEL_MATRIX0,
+      start / bytes,
+      new Uint8Array(sliced.buffer),
+    );
   }
 
   updateAttribute(
@@ -304,7 +324,6 @@ export class TextMesh extends Instanced {
       name === 'lineHeight' ||
       name === 'wordWrap' ||
       name === 'textAlign' ||
-      name === 'modelMatrix' ||
       name === 'visibility' ||
       name === 'dx' ||
       name === 'dy'
@@ -314,16 +333,112 @@ export class TextMesh extends Instanced {
       // need re-upload SDF texture
       this.material.textureDirty = true;
     } else if (
+      name === 'modelMatrix' ||
       name === 'fill' ||
       name === 'fillOpacity' ||
       name === 'stroke' ||
       name === 'strokeOpacity' ||
       name === 'opacity' ||
       name === 'lineWidth' ||
-      name === 'visibility' ||
       name === 'pointerEvents'
     ) {
-      this.material.geometryDirty = true;
+      const vertice = this.geometry.vertices[
+        TextVertexAttributeBufferIndex.INSTANCED
+      ] as Float32Array;
+      const { byteStride } =
+        this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[
+          TextVertexAttributeBufferIndex.INSTANCED
+        ];
+      const bytes = byteStride / 4;
+
+      objects.forEach((object) => {
+        const {
+          fill,
+          stroke,
+          opacity,
+          fillOpacity,
+          strokeOpacity,
+          lineWidth,
+          visibility,
+          isBillboard,
+          sizeAttenuation,
+        } = object.parsedStyle as ParsedTextStyleProps;
+        let fillColor: Tuple4Number = [0, 0, 0, 0];
+        if (isCSSRGB(fill)) {
+          fillColor = [
+            Number(fill.r),
+            Number(fill.g),
+            Number(fill.b),
+            Number(fill.alpha) * 255,
+          ];
+        }
+
+        let strokeColor: Tuple4Number = [0, 0, 0, 0];
+        if (isCSSRGB(stroke)) {
+          strokeColor = [
+            Number(stroke.r),
+            Number(stroke.g),
+            Number(stroke.b),
+            Number(stroke.alpha) * 255,
+          ];
+        }
+
+        const encodedPickingColor = (object.isInteractive() &&
+          // @ts-ignore
+          object.renderable3D?.encodedPickingColor) || [0, 0, 0];
+
+        const modelMatrix =
+          name === 'modelMatrix'
+            ? mat4.copy(this.tmpMat4, object.getWorldTransform())
+            : null;
+
+        const [start, end] = this.packedBufferObjectMap.get(object);
+        const sliced = vertice.slice(start, end);
+        for (let i = 0; i < end - start; i += bytes) {
+          if (name === 'modelMatrix') {
+            sliced[i + 0] = modelMatrix[0];
+            sliced[i + 1] = modelMatrix[1];
+            sliced[i + 2] = modelMatrix[2];
+            sliced[i + 3] = modelMatrix[3];
+            sliced[i + 4] = modelMatrix[4];
+            sliced[i + 5] = modelMatrix[5];
+            sliced[i + 6] = modelMatrix[6];
+            sliced[i + 7] = modelMatrix[7];
+            sliced[i + 8] = modelMatrix[8];
+            sliced[i + 9] = modelMatrix[9];
+            sliced[i + 10] = modelMatrix[10];
+            sliced[i + 11] = modelMatrix[11];
+            sliced[i + 12] = modelMatrix[12];
+            sliced[i + 13] = modelMatrix[13];
+            sliced[i + 14] = modelMatrix[14];
+            sliced[i + 15] = modelMatrix[15];
+          } else if (name === 'fill') {
+            sliced[i + 16] = packUint8ToFloat(fillColor[0], fillColor[1]);
+            sliced[i + 17] = packUint8ToFloat(fillColor[2], fillColor[3]);
+          } else if (name === 'stroke') {
+            sliced[i + 18] = packUint8ToFloat(strokeColor[0], strokeColor[1]);
+            sliced[i + 19] = packUint8ToFloat(strokeColor[2], strokeColor[3]);
+          }
+          sliced[i + 20] = opacity;
+          sliced[i + 21] = fillOpacity;
+          sliced[i + 22] = strokeOpacity;
+          sliced[i + 23] = lineWidth;
+          sliced[i + 24] = visibility === 'visible' ? 1 : 0;
+          sliced[i + 25] = isBillboard ? 1 : 0;
+          sliced[i + 26] = sizeAttenuation ? 1 : 0;
+          sliced[i + 27] = 0;
+          sliced[i + 28] = encodedPickingColor[0];
+          sliced[i + 29] = encodedPickingColor[1];
+          sliced[i + 30] = encodedPickingColor[2];
+        }
+
+        this.geometry.updateVertexBuffer(
+          TextVertexAttributeBufferIndex.INSTANCED,
+          VertexAttributeLocation.MODEL_MATRIX0,
+          start / bytes,
+          new Uint8Array(sliced.buffer),
+        );
+      });
     }
   }
 
@@ -357,24 +472,26 @@ export class TextMesh extends Instanced {
       strokeOpacity,
       lineWidth,
       visibility,
+      isBillboard,
+      sizeAttenuation,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
       fillColor = [
-        Number(fill.r) / 255,
-        Number(fill.g) / 255,
-        Number(fill.b) / 255,
-        Number(fill.alpha),
+        Number(fill.r),
+        Number(fill.g),
+        Number(fill.b),
+        Number(fill.alpha) * 255,
       ];
     }
 
     let strokeColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(stroke)) {
       strokeColor = [
-        Number(stroke.r) / 255,
-        Number(stroke.g) / 255,
-        Number(stroke.b) / 255,
-        Number(stroke.alpha),
+        Number(stroke.r),
+        Number(stroke.g),
+        Number(stroke.b),
+        Number(stroke.alpha) * 255,
       ];
     }
 
@@ -382,7 +499,7 @@ export class TextMesh extends Instanced {
       // @ts-ignore
       object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
-    const modelMatrix = mat4.copy(mat4.create(), object.getWorldTransform());
+    const modelMatrix = mat4.copy(this.tmpMat4, object.getWorldTransform());
 
     const charPackedBuffer: number[] = [];
     const charUVOffsetBuffer: number[] = [];
@@ -408,15 +525,17 @@ export class TextMesh extends Instanced {
       temp.push(...modelMatrix);
       const packed: number[] = [
         ...temp,
-        ...fillColor,
-        ...strokeColor,
+        packUint8ToFloat(fillColor[0], fillColor[1]),
+        packUint8ToFloat(fillColor[2], fillColor[3]),
+        packUint8ToFloat(strokeColor[0], strokeColor[1]),
+        packUint8ToFloat(strokeColor[2], strokeColor[3]),
         opacity,
         fillOpacity,
         strokeOpacity,
         lineWidth,
         visibility === 'visible' ? 1 : 0,
-        0,
-        0,
+        isBillboard ? 1 : 0,
+        sizeAttenuation ? 1 : 0,
         0,
         ...encodedPickingColor,
         object.sortable.renderOrder * RENDER_ORDER_SCALE,

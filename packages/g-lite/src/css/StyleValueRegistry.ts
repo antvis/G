@@ -1,5 +1,7 @@
 import { isNil } from '@antv/util';
-import { DisplayObject, EMPTY_PARSED_PATH } from '../display-objects';
+import type { DisplayObject } from '../display-objects';
+import { EMPTY_PARSED_PATH } from '../display-objects/constants';
+import type { GlobalRuntime } from '../global-runtime';
 import { AABB } from '../shapes';
 import type {
   BaseStyleProps,
@@ -7,10 +9,11 @@ import type {
   Tuple3Number,
 } from '../types';
 import { Shape } from '../types';
-import { addVec3, isFunction } from '../utils';
+import { isFunction } from '../utils/assert';
+import { addVec3 } from '../utils/math';
+import { getOrCreateKeyword } from './CSSStyleValuePool';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
-import { getOrCreateKeyword } from './CSSStyleValuePool';
 import type {
   PropertyMetadata,
   PropertyParseOptions,
@@ -18,8 +21,8 @@ import type {
 } from './interfaces';
 import { PropertySyntax } from './interfaces';
 import {
-  parseColor,
   ParsedFilterStyleProperty,
+  parseColor,
   parseFilter,
   parsePath,
   parsePoints,
@@ -30,7 +33,6 @@ import {
   convertPercentUnit,
   parseDimensionArrayFormat,
 } from './parser/dimension';
-import { runtime } from '../global-runtime';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 
@@ -328,6 +330,12 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   {
     n: 'cy',
+    int: true,
+    d: '0',
+    syntax: PropertySyntax.COORDINATE,
+  },
+  {
+    n: 'cz',
     int: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
@@ -644,7 +652,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    */
   // dirty = false;
 
-  constructor() {
+  constructor(private runtime: GlobalRuntime) {
     BUILT_IN_PROPERTIES.forEach((property) => {
       this.registerMetadata(property);
     });
@@ -661,7 +669,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   }
 
   getPropertySyntax(syntax: string) {
-    return runtime.CSSPropertySyntaxFactory[syntax];
+    return this.runtime.CSSPropertySyntaxFactory[syntax];
   }
 
   /**
@@ -683,7 +691,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       usedAttributes: [],
     },
   ) {
-    if (!runtime.enableCSSParsing) {
+    if (!this.runtime.enableCSSParsing) {
       Object.assign(object.attributes, attributes);
       const attributeNames = Object.keys(attributes);
 
@@ -754,7 +762,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       // Text
       if (attributes.textTransform) {
-        runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
+        this.runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
           null,
           null,
           { value: attributes.textTransform },
@@ -763,21 +771,21 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         );
       }
       if (attributes.clipPath) {
-        runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
           'clipPath',
           oldClipPath,
           attributes.clipPath,
           object,
-          this,
+          this.runtime,
         );
       }
       if (attributes.offsetPath) {
-        runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
           'offsetPath',
           oldOffsetPath,
           attributes.offsetPath,
           object,
-          this,
+          this.runtime,
         );
       }
       if (attributes.anchor) {
@@ -877,39 +885,38 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
             // @ts-ignore
             !isNil(attributes.z2)))
       ) {
-        runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
+        this.runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
           object,
           attributeNames,
         );
       }
       if (!isNil(attributes.zIndex)) {
-        runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
+        this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
           object,
           attributeNames,
         );
       }
       // @ts-ignore
       if (attributes.path) {
-        runtime.CSSPropertySyntaxFactory['<path>'].postProcessor(
+        this.runtime.CSSPropertySyntaxFactory['<path>'].postProcessor(
           object,
           attributeNames,
         );
       }
       // @ts-ignore
       if (attributes.points) {
-        runtime.CSSPropertySyntaxFactory['<list-of-points>'].postProcessor(
+        this.runtime.CSSPropertySyntaxFactory['<list-of-points>'].postProcessor(
           object,
           attributeNames,
         );
       }
       if (!isNil(attributes.offsetDistance)) {
-        runtime.CSSPropertySyntaxFactory['<offset-distance>'].postProcessor(
-          object,
-          attributeNames,
-        );
+        this.runtime.CSSPropertySyntaxFactory[
+          '<offset-distance>'
+        ].postProcessor(object, attributeNames);
       }
       if (attributes.transform) {
-        runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
+        this.runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
           object,
           attributeNames,
         );
@@ -1013,7 +1020,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     });
 
-    if (runtime.enableCSSParsing && object.children.length) {
+    if (this.runtime.enableCSSParsing && object.children.length) {
       attributeNames.forEach((name) => {
         if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
           // update children's inheritable
@@ -1127,7 +1134,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (handler && handler.calculator) {
         // convert computed value to used value
         const oldParsedValue = object.parsedStyle[name];
-        used = handler.calculator(name, oldParsedValue, computed, object, this);
+        used = handler.calculator(
+          name,
+          oldParsedValue,
+          computed,
+          object,
+          this.runtime,
+        );
       } else if (computed instanceof CSSKeywordValue) {
         used = computed.value;
       } else {
@@ -1229,7 +1242,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    */
   private updateGeometry(object: DisplayObject) {
     const { nodeName } = object;
-    const geometryUpdater = runtime.geometryUpdaterFactory[nodeName];
+    const geometryUpdater = this.runtime.geometryUpdaterFactory[nodeName];
     if (geometryUpdater) {
       const geometry = object.geometry;
       if (!geometry.contentBounds) {
@@ -1281,6 +1294,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // <Text> use textAlign & textBaseline instead of anchor
       if (nodeName === Shape.TEXT) {
         delete parsedStyle.anchor;
+      } else if (nodeName === Shape.MESH) {
+        parsedStyle.anchor[2] = 0.5;
       }
 
       const center: Tuple3Number = [
@@ -1429,7 +1444,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       object.setOrigin(usedOriginXValue, usedOriginYValue);
 
       // FIXME setOrigin may have already dirtified to root.
-      runtime.sceneGraphService.dirtifyToRoot(object);
+      this.runtime.sceneGraphService.dirtifyToRoot(object);
     }
   }
 

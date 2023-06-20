@@ -1,10 +1,4 @@
-import type {
-  NormalizedViewportCoords,
-  QueryPool,
-  RenderPass,
-  RenderTarget,
-  Texture,
-} from '../platform';
+import type { QueryPool, RenderPass, RenderTarget, Texture } from '../platform';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export enum RGAttachmentSlot {
@@ -22,15 +16,11 @@ export interface RGPassScope {
   getRenderTargetTexture: (slot: RGAttachmentSlot) => Texture | null;
 }
 
-export const IdentityViewportCoords: Readonly<NormalizedViewportCoords> = {
-  x: 0,
-  y: 0,
-  w: 1,
-  h: 1,
-};
-
 export type PassSetupFunc = (renderPass: IRenderGraphPass) => void;
-export type PassExecFunc = (passRenderer: RenderPass, scope: RGPassScope) => void;
+export type PassExecFunc = (
+  passRenderer: RenderPass,
+  scope: RGPassScope,
+) => void;
 export type PassPostFunc = (scope: RGPassScope) => void;
 
 export interface IRenderGraphPass {
@@ -48,7 +38,10 @@ export interface IRenderGraphPass {
    * Attach the given renderTargetID to the given attachmentSlot.
    * This determines which render targets this pass will render to.
    */
-  attachRenderTargetID: (attachmentSlot: RGAttachmentSlot, renderTargetID: number) => void;
+  attachRenderTargetID: (
+    attachmentSlot: RGAttachmentSlot,
+    renderTargetID: number,
+  ) => void;
 
   /**
    * Attach the occlusion query pool used by this rendering pass.
@@ -56,9 +49,10 @@ export interface IRenderGraphPass {
   attachOcclusionQueryPool: (queryPool: QueryPool) => void;
 
   /**
-   * Set the viewport used by this rendering pass.
+   * Set the viewport for the given render pass in *normalized* coordinates (0..1).
+   * Not required; defaults to full viewport.
    */
-  setViewport: (viewport: Readonly<NormalizedViewportCoords>) => void;
+  setViewport(x: number, y: number, w: number, h: number): void;
 
   /**
    * Attach the resolve texture ID to the given pass. All resolve textures used within the pass
@@ -103,7 +97,10 @@ export interface RGGraphBuilder {
    * use the {@see GfxrPassScope} given to the pass's execution or post callbacks, however
    * this usage should be rarer than the resolve case.
    */
-  createRenderTargetID: (desc: Readonly<RGRenderTargetDescription>, debugName: string) => number;
+  createRenderTargetID: (
+    desc: Readonly<RGRenderTargetDescription>,
+    debugName: string,
+  ) => number;
 
   /**
    * Resolve the render target in slot {@param attachmentSlot} of pass {@param pass}, and return
@@ -141,13 +138,18 @@ export interface RGGraphBuilder {
    *
    * Warning: This API might change in the near future.
    */
-  resolveRenderTargetToExternalTexture: (renderTargetID: number, texture: Texture) => void;
+  resolveRenderTargetToExternalTexture: (
+    renderTargetID: number,
+    texture: Texture,
+  ) => void;
 
   /**
    * Return the description that a render target was created with. This allows the creator to
    * not have to pass information to any dependent modules to derive from it.
    */
-  getRenderTargetDescription: (renderTargetID: number) => Readonly<RGRenderTargetDescription>;
+  getRenderTargetDescription: (
+    renderTargetID: number,
+  ) => Readonly<RGRenderTargetDescription>;
 
   /**
    * Internal API.
@@ -158,6 +160,9 @@ export interface RGGraphBuilder {
 export interface RGGraphBuilderDebug {
   getPasses: () => IRenderGraphPass[];
   getPassDebugThumbnails: (pass: IRenderGraphPass) => boolean[];
-  getPassRenderTargetID: (pass: IRenderGraphPass, slot: RGAttachmentSlot) => number;
+  getPassRenderTargetID: (
+    pass: IRenderGraphPass,
+    slot: RGAttachmentSlot,
+  ) => number;
   getRenderTargetIDDebugName: (renderTargetID: number) => string;
 }

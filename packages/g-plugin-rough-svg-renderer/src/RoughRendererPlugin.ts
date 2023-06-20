@@ -1,13 +1,13 @@
 import type { RenderingPlugin, RenderingPluginContext } from '@antv/g-lite';
 // @see https://github.com/rough-stuff/rough/issues/145
-import rough from 'roughjs/bin/rough';
+import rough from 'roughjs';
 
 export class RoughRendererPlugin implements RenderingPlugin {
   static tag = 'RoughSVGRenderer';
 
   apply(context: RenderingPluginContext) {
     const { contextService, renderingService } = context;
-    renderingService.hooks.init.tapPromise(RoughRendererPlugin.tag, async () => {
+    renderingService.hooks.init.tap(RoughRendererPlugin.tag, () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
        */

@@ -2,8 +2,8 @@ import chai, { expect } from 'chai';
 // @ts-ignore
 import chaiAlmost from 'chai-almost';
 // @ts-ignore
-// @ts-ignore
 import { Circle, Group, Rect } from '@antv/g';
+// @ts-ignore
 import sinonChai from 'sinon-chai';
 
 chai.use(chaiAlmost());

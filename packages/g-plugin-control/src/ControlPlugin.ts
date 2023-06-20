@@ -1,8 +1,9 @@
 import type {
-  RenderingPluginContext,
-  RenderingPlugin,
-  ICamera,
   CanvasConfig,
+  FederatedWheelEvent,
+  ICamera,
+  RenderingPlugin,
+  RenderingPluginContext,
 } from '@antv/g-lite';
 import { runtime } from '@antv/g-lite';
 import Hammer from 'hammerjs';
@@ -32,7 +33,7 @@ export class ControlPlugin implements RenderingPlugin {
     this.canvasConfig = config;
     this.camera = camera;
 
-    renderingService.hooks.init.tapPromise(ControlPlugin.tag, async () => {
+    renderingService.hooks.init.tap(ControlPlugin.tag, () => {
       const root = renderingContext.root.ownerDocument.defaultView;
       // @ts-ignore
       this.hammertime = new Hammer(root);
@@ -98,7 +99,7 @@ export class ControlPlugin implements RenderingPlugin {
     this.dolly(deltaZ);
   };
 
-  private onMousewheel = (e: WheelEvent) => {
+  private onMousewheel = (e: FederatedWheelEvent) => {
     this.dolly(e.deltaY);
   };
 

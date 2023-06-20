@@ -1,22 +1,22 @@
 import EventEmitter from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
+import type { CanvasContext, GlobalRuntime } from '..';
 import type { HTML } from '../display-objects';
-import { Element } from '../dom/Element';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
+import { Node } from '../dom/Node';
 import type {
   ICanvas,
   IDocument,
   IEventTarget,
   INode,
 } from '../dom/interfaces';
-import { Node } from '../dom/Node';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
-import { CanvasContext, GlobalRuntime, runtime } from '..';
+import { isElement } from '../utils/dom';
 
 type Picker = (position: EventPosition) => IEventTarget | null;
 type TrackingData = {
@@ -209,7 +209,14 @@ export class EventService {
     // }
 
     const now = performance.now();
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
 
     this.dispatchEvent(e, 'pointerup');
 
@@ -313,7 +320,15 @@ export class EventService {
     //   return;
     // }
 
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
+
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
     const trackingData = this.trackingData(from.pointerId);
     const outTarget = this.findMountedTarget(trackingData.overTargets);
@@ -597,7 +612,14 @@ export class EventService {
   };
 
   onPointerCancel = (from: FederatedPointerEvent) => {
-    const e = this.createPointerEvent(from);
+    const e = this.createPointerEvent(
+      from,
+      undefined,
+      undefined,
+      this.context.config.alwaysTriggerPointerEventOnCanvas
+        ? this.rootTarget
+        : undefined,
+    );
 
     this.dispatchEvent(e);
     this.freeEvent(e);
@@ -740,7 +762,7 @@ export class EventService {
   private getExistedHTML(event: FederatedEvent): HTML {
     if (event.nativeEvent.composedPath) {
       for (const eventTarget of event.nativeEvent.composedPath() as HTMLElement[]) {
-        const existed = runtime.nativeHTMLMap.get(eventTarget);
+        const existed = this.globalRuntime.nativeHTMLMap.get(eventTarget);
         if (existed) {
           return existed;
         }
@@ -767,6 +789,7 @@ export class EventService {
     from: FederatedPointerEvent,
     type?: string,
     target?: IEventTarget,
+    fallbackTarget?: IEventTarget,
   ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
@@ -781,7 +804,8 @@ export class EventService {
     event.target =
       target ??
       (existedHTML ||
-        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)));
+        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)) ||
+        fallbackTarget);
 
     if (typeof type === 'string') {
       event.type = type;
@@ -1027,7 +1051,7 @@ export class EventService {
   private getCursor(target: IEventTarget | null) {
     let tmp: IEventTarget | null = target;
     while (tmp) {
-      const cursor = Element.isElement(tmp) && tmp.getAttribute('cursor');
+      const cursor = isElement(tmp) && tmp.getAttribute('cursor');
       if (cursor) {
         return cursor;
       }

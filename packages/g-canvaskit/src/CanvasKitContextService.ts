@@ -20,7 +20,9 @@ export interface ContextRegisterPluginOptions {
 /**
  * @see https://skia.org/docs/user/modules/quickstart/
  */
-export class CanvasKitContextService implements ContextService<CanvasKitContext> {
+export class CanvasKitContextService
+  implements ContextService<CanvasKitContext>
+{
   private $container: HTMLElement | null;
   private $canvas: CanvasLike | null;
   private dpr: number;
@@ -35,13 +37,16 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
     this.contextRegisterPluginOptions = context.contextRegisterPluginOptions;
   }
 
-  async init() {
+  async initAsync() {
     const { container, canvas, devicePixelRatio } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
 
-      if (container && (canvas as HTMLCanvasElement).parentElement !== container) {
+      if (
+        container &&
+        (canvas as HTMLCanvasElement).parentElement !== container
+      ) {
         (container as HTMLElement).appendChild(canvas as HTMLCanvasElement);
       }
 
@@ -49,7 +54,9 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
       this.canvasConfig.container = this.$container;
     } else if (container) {
       // create container
-      this.$container = isString(container) ? document.getElementById(container) : container;
+      this.$container = isString(container)
+        ? document.getElementById(container)
+        : container;
       if (this.$container) {
         // create canvas
         const $canvas = document.createElement('canvas');
@@ -70,7 +77,9 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
 
     // making surface must after canvas init
     const CanvasKit = await this.loadCanvaskit();
-    const surface = CanvasKit.MakeWebGLCanvasSurface(this.$canvas as HTMLCanvasElement);
+    const surface = CanvasKit.MakeWebGLCanvasSurface(
+      this.$canvas as HTMLCanvasElement,
+    );
     this.context = {
       surface,
       CanvasKit,
@@ -96,11 +105,13 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
   }
 
   destroy() {
-    // @ts-ignore
-    if (this.$container && this.$canvas && this.$canvas.parentNode) {
+    if (
+      this.$container &&
+      this.$canvas &&
+      (this.$canvas as HTMLCanvasElement).parentNode
+    ) {
       // destroy context
-      // @ts-ignore
-      this.$container.removeChild(this.$canvas);
+      this.$container.removeChild(this.$canvas as HTMLCanvasElement);
     }
   }
 
@@ -122,12 +133,15 @@ export class CanvasKitContextService implements ContextService<CanvasKitContext>
   }
 
   async toDataURL(options: Partial<DataURLOptions>) {
-    return this.contextRegisterPluginOptions.canvaskitRendererPlugin.toDataURL(options);
+    return this.contextRegisterPluginOptions.canvaskitRendererPlugin.toDataURL(
+      options,
+    );
   }
 
   private loadCanvaskit(): Promise<CanvasKit> {
     return CanvasKitInit({
-      locateFile: (file: string) => this.contextRegisterPluginOptions.wasmDir + file,
+      locateFile: (file: string) =>
+        this.contextRegisterPluginOptions.wasmDir + file,
     });
   }
 }

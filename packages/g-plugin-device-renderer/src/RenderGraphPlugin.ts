@@ -112,13 +112,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
         return;
       }
 
-      const renderable3D = new Renderable3D();
-
-      // add geometry & material required by Renderable3D
-      // object.entity.addComponent(Geometry3D);
-      // object.entity.addComponent(Material3D);
       // @ts-ignore
-      object.renderable3D = renderable3D;
+      if (!object.renderable3D) {
+        // @ts-ignore
+        object.renderable3D = new Renderable3D();
+      }
 
       this.batchManager.add(object);
     };
@@ -134,7 +132,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
         return;
       }
 
-      this.batchManager.remove(object);
+      if (this.swapChain) {
+        this.batchManager.remove(object);
+      }
 
       // @ts-ignore
       delete object.renderable3D;
@@ -145,69 +145,72 @@ export class RenderGraphPlugin implements RenderingPlugin {
     };
 
     const handleAttributeChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      const { attrName, newValue } = e;
-      this.batchManager.updateAttribute(object, attrName, newValue);
+      if (this.swapChain) {
+        const object = e.target as DisplayObject;
+        const { attrName, newValue } = e;
+
+        if (attrName === 'zIndex') {
+          object.parentNode.forEach((child: DisplayObject) => {
+            this.batchManager.changeRenderOrder(
+              child,
+              child.sortable.renderOrder,
+            );
+          });
+        } else {
+          this.batchManager.updateAttribute(object, attrName, newValue);
+        }
+      }
     };
 
     const handleBoundsChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      // const { affectChildren } = e.detail;
-      // if (affectChildren) {
-      //   object.forEach(() => {
-      //     this.batchManager.updateAttribute(object, 'modelMatrix', null);
-      //   });
-      // } else {
-      this.batchManager.updateAttribute(object, 'modelMatrix', null);
-      // }
+      if (this.swapChain) {
+        const object = e.target as DisplayObject;
+        this.batchManager.updateAttribute(object, 'modelMatrix', null);
+      }
     };
 
-    const handleRenderOrderChanged = (e: FederatedEvent) => {
-      const object = e.target as DisplayObject;
-      const { renderOrder } = e.detail;
-      this.batchManager.changeRenderOrder(object, renderOrder);
-    };
+    renderingService.hooks.initAsync.tapPromise(
+      RenderGraphPlugin.tag,
+      async () => {
+        canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+        canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
+        canvas.addEventListener(
+          ElementEvent.ATTR_MODIFIED,
+          handleAttributeChanged,
+        );
+        canvas.addEventListener(
+          ElementEvent.BOUNDS_CHANGED,
+          handleBoundsChanged,
+        );
+        this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
+          false;
 
-    renderingService.hooks.init.tapPromise(RenderGraphPlugin.tag, async () => {
-      canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
-      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
-      canvas.addEventListener(
-        ElementEvent.ATTR_MODIFIED,
-        handleAttributeChanged,
-      );
-      canvas.addEventListener(ElementEvent.BOUNDS_CHANGED, handleBoundsChanged);
-      canvas.addEventListener(
-        ElementEvent.RENDER_ORDER_CHANGED,
-        handleRenderOrderChanged,
-      );
-      this.context.config.renderer.getConfig().enableDirtyRectangleRendering =
-        false;
+        const $canvas =
+          this.context.contextService.getDomElement() as HTMLCanvasElement;
 
-      const $canvas =
-        this.context.contextService.getDomElement() as HTMLCanvasElement;
+        const { width, height } = this.context.config;
+        this.context.contextService.resize(width, height);
 
-      const { width, height } = this.context.config;
-      this.context.contextService.resize(width, height);
-
-      // create swap chain and get device
-      // @ts-ignore
-      this.swapChain = await this.context.deviceContribution.createSwapChain(
-        $canvas,
-      );
-      this.device = this.swapChain.getDevice();
-      this.renderHelper.setDevice(this.device);
-      this.renderHelper.renderInstManager.disableSimpleMode();
-      this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-
-      canvas.addEventListener(CanvasEvent.RESIZE, () => {
+        // create swap chain and get device
+        // @ts-ignore
+        this.swapChain = await this.context.deviceContribution.createSwapChain(
+          $canvas,
+        );
+        this.device = this.swapChain.getDevice();
+        this.renderHelper.setDevice(this.device);
+        this.renderHelper.renderInstManager.disableSimpleMode();
         this.swapChain.configureSwapChain($canvas.width, $canvas.height);
-      });
 
-      this.batchManager.attach({
-        device: this.device,
-        ...context,
-      });
-    });
+        canvas.addEventListener(CanvasEvent.RESIZE, () => {
+          this.swapChain.configureSwapChain($canvas.width, $canvas.height);
+        });
+
+        this.batchManager.attach({
+          device: this.device,
+          ...context,
+        });
+      },
+    );
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
@@ -222,20 +225,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
-      canvas.removeEventListener(
-        ElementEvent.RENDER_ORDER_CHANGED,
-        handleRenderOrderChanged,
-      );
     });
 
     /**
      * build frame graph at the beginning of each frame
      */
     renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      // if (renderingContext.renderListCurrentFrame.length === 0) {
-      //   return;
-      // }
-
       const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
@@ -310,10 +305,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
-      // if (renderingContext.renderListCurrentFrame.length === 0) {
-      //   return;
-      // }
-
       const renderInstManager = this.renderHelper.renderInstManager;
 
       // TODO: time for GPU Animation
@@ -382,9 +373,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       this.renderHelper.renderGraph.execute();
 
       renderInstManager.resetRenderInsts();
-
-      // output to screen
-      this.swapChain.present();
 
       // capture here since we don't preserve drawing buffer
       if (this.enableCapture && this.resolveCapturePromise) {

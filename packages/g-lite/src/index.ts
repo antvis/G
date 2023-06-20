@@ -1,11 +1,30 @@
 // @see https://github.com/antvis/G/issues/1239
-import RBush from 'rbush/rbush.js';
-
-export * from './global-runtime';
+import RBush from 'rbush';
 export * from './AbstractRenderer';
-export * from './camera';
 export * from './Canvas';
+export * from './camera';
 export * from './components';
+export {
+  BUILT_IN_PROPERTIES,
+  CSS,
+  CSSGradientValue,
+  CSSKeywordValue,
+  CSSRGB,
+  CSSStyleValue,
+  CSSUnitValue,
+  GradientType,
+  PropertySyntax,
+  UnitType,
+  isCSSGradientValue,
+  isCSSRGB,
+  isPattern,
+  mergeColors,
+  parseColor,
+  parseLength,
+  parsePath,
+  parseTransform,
+  propertyMetadataCache,
+} from './css';
 export type {
   Interpolatable,
   LayoutRegistry,
@@ -15,54 +34,34 @@ export type {
   RadialGradient,
   StyleValueRegistry,
 } from './css';
-export {
-  CSS,
-  CSSGradientValue,
-  CSSKeywordValue,
-  CSSRGB,
-  CSSStyleValue,
-  CSSUnitValue,
-  GradientType,
-  isPattern,
-  isCSSRGB,
-  isCSSGradientValue,
-  parseColor,
-  parsePath,
-  parseLength,
-  mergeColors,
-  parseTransform,
-  propertyMetadataCache,
-  PropertySyntax,
-  UnitType,
-  BUILT_IN_PROPERTIES,
-} from './css';
 export * from './display-objects';
 export * from './dom';
+export * from './global-runtime';
 export * from './services';
 export * from './shapes';
 export * from './types';
 export {
+  ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   computeLinearGradient,
   computeRadialGradient,
   convertToPath,
+  createVec3,
+  decompose,
+  definedProps,
   deg2rad,
   deg2turn,
-  ERROR_MSG_METHOD_NOT_IMPLEMENTED,
+  findClosestClipPathTarget,
+  fromRotationTranslationScale,
+  getAngle,
   getEuler,
+  getOrCalculatePathTotalLength,
   grad2deg,
-  decompose,
   isBrowser,
   isFillOrStrokeAffected,
+  parsedTransformToMat4,
   rad2deg,
   setDOMSize,
   translatePathToString,
   turn2deg,
-  getAngle,
-  createVec3,
-  fromRotationTranslationScale,
-  findClosestClipPathTarget,
-  getOrCalculatePathTotalLength,
-  definedProps,
-  parsedTransformToMat4,
 } from './utils';
 export { RBush };

@@ -26,7 +26,6 @@ export class PhysXPlugin implements RenderingPlugin {
   private physics: any;
   private scene: any;
   private bodies: Map<DisplayObject, PhysxBody> = new Map();
-  private pendingDisplayObjects: DisplayObject[] = [];
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext } = context;
@@ -38,17 +37,14 @@ export class PhysXPlugin implements RenderingPlugin {
 
       if (PhysX) {
         this.addActor(target);
-      } else {
-        this.pendingDisplayObjects.push(target);
       }
     };
 
-    renderingService.hooks.init.tapPromise(PhysXPlugin.tag, async () => {
+    renderingService.hooks.initAsync.tapPromise(PhysXPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
 
       this.PhysX = (await this.initPhysX()) as any;
       this.createScene();
-      this.handlePendingDisplayObjects();
 
       // do simulation each frame
       renderingContext.root.ownerDocument.defaultView.addEventListener(
@@ -234,12 +230,5 @@ export class PhysXPlugin implements RenderingPlugin {
         z: 0,
       });
     }
-  }
-
-  private handlePendingDisplayObjects() {
-    this.pendingDisplayObjects.forEach((object) => {
-      this.addActor(object);
-    });
-    this.pendingDisplayObjects = [];
   }
 }

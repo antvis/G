@@ -1,7 +1,6 @@
 import type {
   Bindings,
   ComputePass,
-  ComputePassDescriptor,
   ComputePipeline,
 } from '@antv/g-plugin-device-renderer';
 import { assert, assertExists } from '@antv/g-plugin-device-renderer';
@@ -10,7 +9,6 @@ import type { ComputePipeline_WebGPU } from './ComputePipeline';
 
 export class ComputePass_WebGPU implements ComputePass {
   commandEncoder: GPUCommandEncoder | null = null;
-  descriptor: ComputePassDescriptor;
   private gpuComputePassDescriptor: GPUComputePassDescriptor;
   private gpuComputePassEncoder: GPUComputePassEncoder | null = null;
 
@@ -18,12 +16,12 @@ export class ComputePass_WebGPU implements ComputePass {
    * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatch
    */
   dispatch(x: number, y?: number, z?: number): void {
-    this.gpuComputePassEncoder.dispatch(x, y, z);
+    this.gpuComputePassEncoder.dispatchWorkgroups(x, y, z);
     // TODO: dispatchIndirect read from GPUBuffer
   }
 
   finish() {
-    this.gpuComputePassEncoder.endPass();
+    this.gpuComputePassEncoder.end();
     this.gpuComputePassEncoder = null;
 
     return this.commandEncoder.finish();
@@ -32,9 +30,8 @@ export class ComputePass_WebGPU implements ComputePass {
   /**
    * @see https://www.w3.org/TR/webgpu/#dom-gpucommandencoder-begincomputepass
    */
-  beginComputePass(computePassDescriptor: ComputePassDescriptor): void {
+  beginComputePass(): void {
     assert(this.gpuComputePassEncoder === null);
-    this.setComputePassDescriptor(computePassDescriptor);
     this.gpuComputePassEncoder = this.commandEncoder.beginComputePass(
       this.gpuComputePassDescriptor,
     );
@@ -46,15 +43,30 @@ export class ComputePass_WebGPU implements ComputePass {
     this.gpuComputePassEncoder.setPipeline(gpuComputePipeline);
   }
 
-  setBindings(bindingLayoutIndex: number, bindings_: Bindings): void {
+  setBindings(
+    bindingLayoutIndex: number,
+    bindings_: Bindings,
+    dynamicByteOffsets: number[],
+  ): void {
     const bindings = bindings_ as Bindings_WebGPU;
     this.gpuComputePassEncoder.setBindGroup(
       bindingLayoutIndex,
       bindings.gpuBindGroup[0],
+      dynamicByteOffsets,
     );
   }
 
-  private setComputePassDescriptor(descriptor: ComputePassDescriptor): void {
-    this.descriptor = descriptor;
+  public beginDebugGroup(name: string): void {
+    // FIREFOX MISSING
+    if (this.gpuComputePassEncoder!.pushDebugGroup === undefined) return;
+
+    this.gpuComputePassEncoder!.pushDebugGroup(name);
+  }
+
+  public endDebugGroup(): void {
+    // FIREFOX MISSING
+    if (this.gpuComputePassEncoder!.popDebugGroup === undefined) return;
+
+    this.gpuComputePassEncoder!.popDebugGroup();
   }
 }

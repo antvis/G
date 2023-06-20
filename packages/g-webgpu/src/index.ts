@@ -9,7 +9,10 @@ import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export { DomInteraction, DeviceRenderer, WebGPUDevice, HTMLRenderer };
 
-type WebGPURendererConfig = RendererConfig;
+interface WebGPURendererConfig extends RendererConfig {
+  shaderCompilerPath: string;
+  onContextLost: () => void;
+}
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<WebGPURendererConfig>) {
@@ -18,7 +21,12 @@ export class Renderer extends AbstractRenderer {
     const deviceRendererPlugin = new DeviceRenderer.Plugin();
     this.registerPlugin(new ContextRegisterPlugin(deviceRendererPlugin));
     this.registerPlugin(new ImageLoader.Plugin());
-    this.registerPlugin(new WebGPUDevice.Plugin());
+    this.registerPlugin(
+      new WebGPUDevice.Plugin({
+        shaderCompilerPath: config?.shaderCompilerPath,
+        onContextLost: config?.onContextLost,
+      }),
+    );
     this.registerPlugin(deviceRendererPlugin);
     this.registerPlugin(new DomInteraction.Plugin());
     this.registerPlugin(new HTMLRenderer.Plugin());

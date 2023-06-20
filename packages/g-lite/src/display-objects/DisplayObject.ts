@@ -2,29 +2,31 @@ import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { PropertyParseOptions } from '../css';
-import { noneColor } from '../css';
+import { noneColor } from '../css/CSSStyleValuePool';
 import type {
   DisplayObjectConfig,
   IAnimation,
-  IChildNode,
   ICSSStyleDeclaration,
+  IChildNode,
   IElement,
 } from '../dom';
-import { Element, ElementEvent, MutationEvent } from '../dom';
+import { Element } from '../dom/Element';
+import { MutationEvent } from '../dom/MutationEvent';
+import { ElementEvent } from '../dom/interfaces';
+import { runtime } from '../global-runtime';
 import { Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import {
-  kebabize,
   createVec3,
   decompose,
   formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
+  kebabize,
   rad2deg,
 } from '../utils';
 import type { CustomElement } from './CustomElement';
-import { runtime } from '../global-runtime';
 
 export function isDisplayObject(value: any): value is DisplayObject {
   return !!(value as DisplayObject)?.nodeName;
@@ -223,61 +225,68 @@ export class DisplayObject<
     const Proxy: ProxyConstructor = runtime.globalThis.Proxy
       ? runtime.globalThis.Proxy
       : function () {};
-    this.dataset = new Proxy<any>(
-      {},
-      {
-        get: (target, name: string) => {
-          const formattedName = `${DATASET_PREFIX}${kebabize(name)}`;
-          if (target[formattedName] !== undefined) {
-            return target[formattedName];
-          }
-          return this.getAttribute(formattedName as keyof StyleProps);
-        },
-        set: (_, prop, value) => {
-          this.setAttribute(
-            `${DATASET_PREFIX}${kebabize(prop as string)}` as keyof StyleProps,
-            value,
-          );
-          return true;
-        },
-      },
-    );
 
-    this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
-      // @ts-ignore
-      {
-        // ...this.attributes,
-        setProperty: <Key extends keyof StyleProps>(
-          propertyName: Key,
-          value: StyleProps[Key],
-          // priority?: string,
-        ) => {
-          this.setAttribute(propertyName, value);
+    if (runtime.enableDataset) {
+      this.dataset = new Proxy<any>(
+        {},
+        {
+          get: (target, name: string) => {
+            const formattedName = `${DATASET_PREFIX}${kebabize(name)}`;
+            if (target[formattedName] !== undefined) {
+              return target[formattedName];
+            }
+            return this.getAttribute(formattedName as keyof StyleProps);
+          },
+          set: (_, prop, value) => {
+            this.setAttribute(
+              `${DATASET_PREFIX}${kebabize(
+                prop as string,
+              )}` as keyof StyleProps,
+              value,
+            );
+            return true;
+          },
         },
-        getPropertyValue: (propertyName: keyof StyleProps) => {
-          return this.getAttribute(propertyName);
+      );
+    }
+
+    if (runtime.enableStyleSyntax) {
+      this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
+        // @ts-ignore
+        {
+          // ...this.attributes,
+          setProperty: <Key extends keyof StyleProps>(
+            propertyName: Key,
+            value: StyleProps[Key],
+            // priority?: string,
+          ) => {
+            this.setAttribute(propertyName, value);
+          },
+          getPropertyValue: (propertyName: keyof StyleProps) => {
+            return this.getAttribute(propertyName);
+          },
+          removeProperty: (propertyName: keyof StyleProps) => {
+            this.removeAttribute(propertyName);
+          },
+          item: () => {
+            return '';
+          },
         },
-        removeProperty: (propertyName: keyof StyleProps) => {
-          this.removeAttribute(propertyName);
+        {
+          get: (target, name: string) => {
+            if (target[name] !== undefined) {
+              // if (name in target) {
+              return target[name];
+            }
+            return this.getAttribute(name as keyof StyleProps);
+          },
+          set: (_, prop, value) => {
+            this.setAttribute(prop as keyof StyleProps, value);
+            return true;
+          },
         },
-        item: () => {
-          return '';
-        },
-      },
-      {
-        get: (target, name: string) => {
-          if (target[name] !== undefined) {
-            // if (name in target) {
-            return target[name];
-          }
-          return this.getAttribute(name as keyof StyleProps);
-        },
-        set: (_, prop, value) => {
-          this.setAttribute(prop as keyof StyleProps, value);
-          return true;
-        },
-      },
-    );
+      );
+    }
   }
 
   destroy() {

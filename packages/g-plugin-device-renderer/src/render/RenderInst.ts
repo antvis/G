@@ -26,6 +26,7 @@ import type { RenderCache } from './RenderCache';
 import { fillVec4 } from './utils';
 
 export enum RenderInstFlags {
+  None = 0,
   Indexed = 1 << 0,
   AllowSkippingIfPipelineNotReady = 1 << 1,
 
@@ -578,7 +579,6 @@ export class RenderInst {
       this.dynamicUniformBufferByteOffsets,
     );
 
-    // if (this.drawInstanceCount > 0) {
     if (this.drawInstanceCount > 1) {
       assert(!!(this.flags & RenderInstFlags.Indexed));
       passRenderer.drawIndexedInstanced(

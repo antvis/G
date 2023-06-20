@@ -14,6 +14,11 @@ void main() {
     if (u_PickingColor.x == 0.0 && u_PickingColor.y == 0.0 && u_PickingColor.z == 0.0) {
       discard;
     }
+
+    // TODO: pointer-events: non-transparent-pixel
+    // if (u_Color.x == 0.0 && u_Color.y == 0.0 && u_Color.z == 0.0) {
+    //   discard;
+    // }
     outputColor = vec4(u_PickingColor, 1.0);
   } else {
     outputColor = u_Color;

@@ -14,7 +14,11 @@ layout(location = CAP) in float a_Cap;
 layout(location = DASH) in vec4 a_Dash;
 
 out vec4 v_Dash;
-// out vec2 v_Normal;
+out vec2 v_Distance;
+
+bool isPerspectiveMatrix(mat4 m) {
+  return m[ 2 ][ 3 ] == - 1.0;
+}
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')
@@ -28,20 +32,9 @@ void main() {
   }
 
   float isBillboard = a_Dash.w;
-  if (isBillboard < 0.5) {
-    vec2 xBasis = a_PointB.xy - a_PointA.xy;
-    vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
+  bool isPerspective = isPerspectiveMatrix(u_ProjectionMatrix);
 
-    vec2 point = a_PointA.xy + xBasis * a_Position.x + yBasis * strokeWidth * a_Position.y;
-    point = point - u_Anchor.xy * abs(xBasis);
-
-    // round & square
-    if (a_Cap > 1.0) {
-      point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(strokeWidth / 2.0);
-    }
-
-    gl_Position = project(vec4(point, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
-  } else {
+  if (isBillboard > 0.5 && isPerspective) {
     // clip space
     vec4 clip0 = project(vec4(a_PointA, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
     vec4 clip1 = project(vec4(a_PointB, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
@@ -55,7 +48,21 @@ void main() {
     vec2 pt = mix(pt0, pt1, a_Position.z);
     vec4 clip = mix(clip0, clip1, a_Position.z);
     gl_Position = vec4(clip.w * (2.0 * pt / u_Viewport - 1.0), clip.z, clip.w);
+  } else {
+    vec2 xBasis = a_PointB.xy - a_PointA.xy;
+    vec2 yBasis = normalize(vec2(-xBasis.y, xBasis.x));
+
+    vec2 point = a_PointA.xy + xBasis * a_Position.x + yBasis * strokeWidth * a_Position.y;
+    point = point - u_Anchor.xy * abs(xBasis);
+
+    // round & square
+    if (a_Cap > 1.0) {
+      point += sign(a_Position.x - 0.5) * normalize(xBasis) * vec2(strokeWidth / 2.0);
+    }
+    gl_Position = project(vec4(point, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   }
 
+  float antialiasblur = 1.0 / strokeWidth;
+  v_Distance = vec2(a_Position.y * 2.0, antialiasblur);
   v_Dash = vec4(a_Position.x, a_Dash.xyz);
 }

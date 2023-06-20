@@ -1,25 +1,8 @@
 {
-    "compilerOptions": {
-      "outDir": "lib",
-      "module": "commonjs",
-      "target": "es6",
-      "jsx": "preserve",
-      "moduleResolution": "node",
-      "experimentalDecorators": true,
-      "declaration": true,
-      "sourceMap": true,
-      "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true,
-      "isolatedModules": true,
-      "pretty": true,
-      "lib": ["dom", "esnext"],
-      "types": ["jest", "@webgpu/types"],
-      "skipLibCheck": true,
-      "sourceRoot": "src",
-      "baseUrl": "src",
-      "resolveJsonModule": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
-  }
-  
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["@webgpu/types"],
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

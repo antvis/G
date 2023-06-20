@@ -11,7 +11,7 @@ export class ZdogRendererPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     const { config, contextService, renderingService } = context;
-    renderingService.hooks.init.tapPromise(ZdogRendererPlugin.tag, async () => {
+    renderingService.hooks.init.tap(ZdogRendererPlugin.tag, () => {
       /**
        * disable dirtycheck & dirty rectangle rendering
        */

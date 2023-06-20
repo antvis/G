@@ -3,7 +3,7 @@ import { Renderer as CanvasRenderer } from '../packages/g-canvas';
 import { Plugin as DragAndDropPlugin } from '../packages/g-plugin-dragndrop';
 import { Renderer as SVGRenderer } from '../packages/g-svg';
 // WebGL need to be built with rollup first.
-import { Renderer as WebGLRenderer } from '../packages/g-webgl/esm';
+import { Renderer as WebGLRenderer } from '../packages/g-webgl';
 import * as basic2d from './demos/2d';
 import * as basic3d from './demos/3d';
 import * as animation from './demos/animation';

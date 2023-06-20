@@ -1,5 +1,5 @@
 import { isNil, isUndefined } from '@antv/util';
-import type { FederatedMouseEvent, ICanvas } from '../dom';
+import type { FederatedMouseEvent, ICanvas, IEventTarget } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
@@ -134,7 +134,7 @@ export class EventPlugin implements RenderingPlugin {
 
     renderingService.hooks.pointerOut.tap(EventPlugin.tag, this.onPointerMove);
 
-    renderingService.hooks.click.tap(EventPlugin.tag, this.onPointerMove);
+    renderingService.hooks.click.tap(EventPlugin.tag, this.onClick);
 
     renderingService.hooks.pointerCancel.tap(
       EventPlugin.tag,
@@ -166,6 +166,26 @@ export class EventPlugin implements RenderingPlugin {
       (nativeEvent as PointerEvent).pointerType === 'touch'
     )
       return;
+
+    const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
+
+    for (const normalizedEvent of normalizedEvents) {
+      const event = this.bootstrapEvent(
+        this.rootPointerEvent,
+        normalizedEvent,
+        canvas,
+        nativeEvent,
+      );
+
+      this.context.eventService.mapEvent(event);
+    }
+
+    this.setCursor(this.context.eventService.cursor);
+  };
+
+  private onClick = (nativeEvent: InteractivePointerEvent) => {
+    const canvas =
+      this.context.renderingContext.root?.ownerDocument?.defaultView;
 
     const normalizedEvents = this.normalizeToPointerEvent(nativeEvent, canvas);
 
@@ -288,8 +308,7 @@ export class EventPlugin implements RenderingPlugin {
     nativeEvent: MouseEvent,
   ): void {
     event.isTrusted = nativeEvent.isTrusted;
-    // @ts-ignore
-    event.srcElement = nativeEvent.srcElement;
+    event.srcElement = nativeEvent.srcElement as IEventTarget;
     event.timeStamp = performance.now();
     event.type = nativeEvent.type;
 

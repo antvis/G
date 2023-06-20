@@ -34,6 +34,7 @@ export class ComputePipeline_WebGPU
     if (computeStage === null) return;
 
     const gpuComputePipeline: GPUComputePipelineDescriptor = {
+      layout: 'auto',
       compute: {
         ...computeStage,
       },

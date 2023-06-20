@@ -4,6 +4,7 @@ import { isFunction } from '../utils';
 import { CustomEvent } from './CustomEvent';
 import { FederatedEvent, isFederatedEvent } from './FederatedEvent';
 import type {
+  EventListenerOrEventListenerObject,
   ICanvas,
   IDocument,
   IElement,
