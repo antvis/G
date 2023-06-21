@@ -42,6 +42,7 @@
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
     "@antv/g-webgl": "workspace:*",
+    "@webcomponents/webcomponentsjs": "^2.8.0",
     "tslib": "^2.5.3"
   },
   "devDependencies": {
