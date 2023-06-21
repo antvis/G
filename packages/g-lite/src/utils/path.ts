@@ -2,9 +2,16 @@
  * implements morph animation with cubic splitting
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
+import { arcBox, cubicBox, quadBox } from '@antv/g-math';
 import type { AbsoluteArray, ASegment } from '@antv/util';
-import { getTotalLength, clamp, isNumberEqual, max, min, mod } from '@antv/util';
-import { Cubic as CubicUtil, Quad as QuadUtil, Arc as EllipseArcUtil } from '@antv/g-math';
+import {
+  clamp,
+  getTotalLength,
+  isNumberEqual,
+  max,
+  min,
+  mod,
+} from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 import { vec3 } from 'gl-matrix';
 import type {
@@ -19,13 +26,15 @@ import type {
   Polyline,
   Rect,
 } from '../display-objects';
+import type { PointLike } from '../shapes';
 import { Shape } from '../types';
 import { deg2rad } from './math';
-import type { PointLike } from '../shapes';
 
 export function getOrCalculatePathTotalLength(path: Path) {
   if (path.parsedStyle.path.totalLength === 0) {
-    path.parsedStyle.path.totalLength = getTotalLength(path.parsedStyle.path.absolutePath);
+    path.parsedStyle.path.totalLength = getTotalLength(
+      path.parsedStyle.path.absolutePath,
+    );
   }
   return path.parsedStyle.path.totalLength;
 }
@@ -95,10 +104,17 @@ export function getPathBBox(segments: any[], lineWidth: number) {
     let box: PathSegmentBBox;
     switch (segment.command) {
       case 'Q':
-        box = QuadUtil.box(prePoint[0], prePoint[1], params[1], params[2], params[3], params[4]);
+        box = quadBox(
+          prePoint[0],
+          prePoint[1],
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+        );
         break;
       case 'C':
-        box = CubicUtil.box(
+        box = cubicBox(
           prePoint[0],
           prePoint[1],
           params[1],
@@ -111,7 +127,7 @@ export function getPathBBox(segments: any[], lineWidth: number) {
         break;
       case 'A':
         const arcParams = segment.arcParams;
-        box = EllipseArcUtil.box(
+        box = arcBox(
           arcParams.cx,
           arcParams.cy,
           arcParams.rx,
@@ -143,8 +159,12 @@ export function getPathBBox(segments: any[], lineWidth: number) {
   // bbox calculation should ignore NaN for path attribute
   // ref: https://github.com/antvis/g/issues/210
   // ref: https://github.com/antvis/G2/issues/3109
-  xArr = xArr.filter((item) => !Number.isNaN(item) && item !== Infinity && item !== -Infinity);
-  yArr = yArr.filter((item) => !Number.isNaN(item) && item !== Infinity && item !== -Infinity);
+  xArr = xArr.filter(
+    (item) => !Number.isNaN(item) && item !== Infinity && item !== -Infinity,
+  );
+  yArr = yArr.filter(
+    (item) => !Number.isNaN(item) && item !== Infinity && item !== -Infinity,
+  );
   let minX = min(xArr);
   let minY = min(yArr);
   let maxX = max(xArr);
@@ -187,11 +207,14 @@ export function getPathBBox(segments: any[], lineWidth: number) {
 function getExtraFromSegmentWithAngle(segment, lineWidth: number) {
   const { prePoint, currentPoint, nextPoint } = segment;
   const currentAndPre =
-    Math.pow(currentPoint[0] - prePoint[0], 2) + Math.pow(currentPoint[1] - prePoint[1], 2);
+    Math.pow(currentPoint[0] - prePoint[0], 2) +
+    Math.pow(currentPoint[1] - prePoint[1], 2);
   const currentAndNext =
-    Math.pow(currentPoint[0] - nextPoint[0], 2) + Math.pow(currentPoint[1] - nextPoint[1], 2);
+    Math.pow(currentPoint[0] - nextPoint[0], 2) +
+    Math.pow(currentPoint[1] - nextPoint[1], 2);
   const preAndNext =
-    Math.pow(prePoint[0] - nextPoint[0], 2) + Math.pow(prePoint[1] - nextPoint[1], 2);
+    Math.pow(prePoint[0] - nextPoint[0], 2) +
+    Math.pow(prePoint[1] - nextPoint[1], 2);
   // 以 currentPoint 为顶点的夹角
   const currentAngle = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) /
@@ -199,14 +222,22 @@ function getExtraFromSegmentWithAngle(segment, lineWidth: number) {
   );
   // 夹角为空、 0 或 PI 时，不需要计算夹角处的额外宽度
   // 注意: 由于计算精度问题，夹角为 0 的情况计算出来的角度可能是一个很小的值，还需要判断其与 0 是否近似相等
-  if (!currentAngle || Math.sin(currentAngle) === 0 || isNumberEqual(currentAngle, 0)) {
+  if (
+    !currentAngle ||
+    Math.sin(currentAngle) === 0 ||
+    isNumberEqual(currentAngle, 0)
+  ) {
     return {
       xExtra: 0,
       yExtra: 0,
     };
   }
-  let xAngle = Math.abs(Math.atan2(nextPoint[1] - currentPoint[1], nextPoint[0] - currentPoint[0]));
-  let yAngle = Math.abs(Math.atan2(nextPoint[0] - currentPoint[0], nextPoint[1] - currentPoint[1]));
+  let xAngle = Math.abs(
+    Math.atan2(nextPoint[1] - currentPoint[1], nextPoint[0] - currentPoint[0]),
+  );
+  let yAngle = Math.abs(
+    Math.atan2(nextPoint[0] - currentPoint[0], nextPoint[1] - currentPoint[1]),
+  );
   // 将夹角转为锐角
   xAngle = xAngle > Math.PI / 2 ? Math.PI - xAngle : xAngle;
   yAngle = yAngle > Math.PI / 2 ? Math.PI - yAngle : yAngle;
@@ -215,11 +246,13 @@ function getExtraFromSegmentWithAngle(segment, lineWidth: number) {
   const extra = {
     // 水平方向投影
     xExtra:
-      Math.cos(currentAngle / 2 - xAngle) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
+      Math.cos(currentAngle / 2 - xAngle) *
+        ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
         lineWidth / 2 || 0,
     // 垂直方向投影
     yExtra:
-      Math.cos(yAngle - currentAngle / 2) * ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
+      Math.cos(yAngle - currentAngle / 2) *
+        ((lineWidth / 2) * (1 / Math.sin(currentAngle / 2))) -
         lineWidth / 2 || 0,
   };
   return extra;
@@ -227,13 +260,17 @@ function getExtraFromSegmentWithAngle(segment, lineWidth: number) {
 
 // 点对称
 function toSymmetry(point: number[], center: number[]) {
-  return [center[0] + (center[0] - point[0]), center[1] + (center[1] - point[1])];
+  return [
+    center[0] + (center[0] - point[0]),
+    center[1] + (center[1] - point[1]),
+  ];
 }
 
 const angleBetween = (v0: PointLike, v1: PointLike) => {
   const p = v0.x * v1.x + v0.y * v1.y;
   const n = Math.sqrt(
-    (Math.pow(v0.x, 2) + Math.pow(v0.y, 2)) * (Math.pow(v1.x, 2) + Math.pow(v1.y, 2)),
+    (Math.pow(v0.x, 2) + Math.pow(v0.y, 2)) *
+      (Math.pow(v1.x, 2) + Math.pow(v1.y, 2)),
   );
   const sign = v0.x * v1.y - v0.y * v1.x < 0 ? -1 : 1;
   const angle = sign * Math.acos(p / n);
@@ -281,8 +318,11 @@ const pointOnEllipticalArc = (
   const dx = (p0.x - p1.x) / 2;
   const dy = (p0.y - p1.y) / 2;
   const transformedPoint = {
-    x: Math.cos(xAxisRotationRadians) * dx + Math.sin(xAxisRotationRadians) * dy,
-    y: -Math.sin(xAxisRotationRadians) * dx + Math.cos(xAxisRotationRadians) * dy,
+    x:
+      Math.cos(xAxisRotationRadians) * dx + Math.sin(xAxisRotationRadians) * dy,
+    y:
+      -Math.sin(xAxisRotationRadians) * dx +
+      Math.cos(xAxisRotationRadians) * dy,
   };
   // Ensure radii are large enough
   const radiiCheck =
@@ -444,8 +484,14 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
     // Add startTangent and endTangent
     const { prePoint } = segment;
     if (['L', 'H', 'V'].includes(command)) {
-      segment.startTangent = [prePoint[0] - currentPoint[0], prePoint[1] - currentPoint[1]];
-      segment.endTangent = [currentPoint[0] - prePoint[0], currentPoint[1] - prePoint[1]];
+      segment.startTangent = [
+        prePoint[0] - currentPoint[0],
+        prePoint[1] - currentPoint[1],
+      ];
+      segment.endTangent = [
+        currentPoint[0] - prePoint[0],
+        currentPoint[1] - prePoint[1],
+      ];
     } else if (command === 'Q') {
       // 二次贝塞尔曲线只有一个控制点
       const cp = [params[1], params[2]];
@@ -462,8 +508,14 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
       } else {
         // @ts-ignore
         segment.command = 'TL';
-        segment.startTangent = [prePoint[0] - currentPoint[0], prePoint[1] - currentPoint[1]];
-        segment.endTangent = [currentPoint[0] - prePoint[0], currentPoint[1] - prePoint[1]];
+        segment.startTangent = [
+          prePoint[0] - currentPoint[0],
+          prePoint[1] - currentPoint[1],
+        ];
+        segment.endTangent = [
+          currentPoint[0] - prePoint[0],
+          currentPoint[1] - prePoint[1],
+        ];
       }
     } else if (command === 'C') {
       // 三次贝塞尔曲线有两个控制点
@@ -486,12 +538,18 @@ export function path2Segments(path: AbsoluteArray): PathSegment[] {
       if (preSegment.command === 'C') {
         segment.command = 'C'; // 将 S 命令变换为 C 命令
         segment.startTangent = [prePoint[0] - cp1[0], prePoint[1] - cp1[1]];
-        segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
+        segment.endTangent = [
+          currentPoint[0] - cp2[0],
+          currentPoint[1] - cp2[1],
+        ];
       } else {
         // @ts-ignore
         segment.command = 'SQ'; // 将 S 命令变换为 SQ 命令
         segment.startTangent = [prePoint[0] - cp2[0], prePoint[1] - cp2[1]];
-        segment.endTangent = [currentPoint[0] - cp2[0], currentPoint[1] - cp2[1]];
+        segment.endTangent = [
+          currentPoint[0] - cp2[0],
+          currentPoint[1] - cp2[1],
+        ];
       }
     } else if (command === 'A') {
       const { x: dx1, y: dy1 } = getTangentAtRatio(segment, 0);
@@ -547,7 +605,9 @@ function vMag(v: number[]) {
 // u.v/|u||v|，计算夹角的余弦值
 function vRatio(u: number[], v: number[]) {
   // 当存在一个向量的长度为 0 时，夹角也为 0，即夹角的余弦值为 1
-  return vMag(u) * vMag(v) ? (u[0] * v[0] + u[1] * v[1]) / (vMag(u) * vMag(v)) : 1;
+  return vMag(u) * vMag(v)
+    ? (u[0] * v[0] + u[1] * v[1]) / (vMag(u) * vMag(v))
+    : 1;
 }
 
 // 向量角度
@@ -555,7 +615,10 @@ function vAngle(u: number[], v: number[]) {
   return (u[0] * v[1] < u[1] * v[0] ? -1 : 1) * Math.acos(vRatio(u, v));
 }
 
-function getArcParams(startPoint: [number, number], params: ASegment): PathArcParams {
+function getArcParams(
+  startPoint: [number, number],
+  params: ASegment,
+): PathArcParams {
   let rx = params[1];
   let ry = params[2];
   const xRotation = mod(deg2rad(params[3]), Math.PI * 2);
@@ -567,8 +630,12 @@ function getArcParams(startPoint: [number, number], params: ASegment): PathArcPa
   // 弧形终点坐标
   const x2 = params[6];
   const y2 = params[7];
-  const xp = (Math.cos(xRotation) * (x1 - x2)) / 2.0 + (Math.sin(xRotation) * (y1 - y2)) / 2.0;
-  const yp = (-1 * Math.sin(xRotation) * (x1 - x2)) / 2.0 + (Math.cos(xRotation) * (y1 - y2)) / 2.0;
+  const xp =
+    (Math.cos(xRotation) * (x1 - x2)) / 2.0 +
+    (Math.sin(xRotation) * (y1 - y2)) / 2.0;
+  const yp =
+    (-1 * Math.sin(xRotation) * (x1 - x2)) / 2.0 +
+    (Math.cos(xRotation) * (y1 - y2)) / 2.0;
   const lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
   if (lambda > 1) {
@@ -591,8 +658,10 @@ function getArcParams(startPoint: [number, number], params: ASegment): PathArcPa
   const cyp = rx ? (f * -ry * xp) / rx : 0;
 
   // 椭圆圆心坐标
-  const cx = (x1 + x2) / 2.0 + Math.cos(xRotation) * cxp - Math.sin(xRotation) * cyp;
-  const cy = (y1 + y2) / 2.0 + Math.sin(xRotation) * cxp + Math.cos(xRotation) * cyp;
+  const cx =
+    (x1 + x2) / 2.0 + Math.cos(xRotation) * cxp - Math.sin(xRotation) * cyp;
+  const cy =
+    (y1 + y2) / 2.0 + Math.sin(xRotation) * cxp + Math.cos(xRotation) * cyp;
 
   // 起始点的单位向量
   const u = [(xp - cxp) / rx, (yp - cyp) / ry];
@@ -680,14 +749,24 @@ function commandsToPathString(
   }, '');
 }
 
-function lineToCommands(x1: number, y1: number, x2: number, y2: number): AbsoluteArray {
+function lineToCommands(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): AbsoluteArray {
   return [
     ['M', x1, y1],
     ['L', x2, y2],
   ];
 }
 
-function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): AbsoluteArray {
+function ellipseToCommands(
+  rx: number,
+  ry: number,
+  cx: number,
+  cy: number,
+): AbsoluteArray {
   const factor = ((-1 + Math.sqrt(2)) / 3) * 4;
   const dx = rx * factor;
   const dy = ry * factor;
@@ -706,7 +785,10 @@ function ellipseToCommands(rx: number, ry: number, cx: number, cy: number): Abso
   ];
 }
 
-function polygonToCommands(points: [number, number][], closed: boolean): AbsoluteArray {
+function polygonToCommands(
+  points: [number, number][],
+  closed: boolean,
+): AbsoluteArray {
   const result = points.map((point, i) => {
     return [i === 0 ? 'M' : 'L', point[0], point[1]];
   });
@@ -737,9 +819,13 @@ function rectToCommands(
       ['L', width - signX * trr + x, y],
       trr ? ['A', trr, trr, 0, 0, sweepFlag, width + x, signY * trr + y] : null,
       ['L', width + x, height - signY * brr + y],
-      brr ? ['A', brr, brr, 0, 0, sweepFlag, width + x - signX * brr, height + y] : null,
+      brr
+        ? ['A', brr, brr, 0, 0, sweepFlag, width + x - signX * brr, height + y]
+        : null,
       ['L', x + signX * blr, height + y],
-      blr ? ['A', blr, blr, 0, 0, sweepFlag, x, height + y - signY * blr] : null,
+      blr
+        ? ['A', blr, blr, 0, 0, sweepFlag, x, height + y - signY * blr]
+        : null,
       ['L', x, signY * tlr + y],
       tlr ? ['A', tlr, tlr, 0, 0, sweepFlag, signX * tlr + x, y] : null,
       ['Z'],
@@ -784,7 +870,10 @@ export function convertToPath(
     case Shape.POLYLINE:
     case Shape.POLYGON:
       const { points } = (object as Polyline).parsedStyle;
-      commands = polygonToCommands(points.points, object.nodeName === Shape.POLYGON);
+      commands = polygonToCommands(
+        points.points,
+        object.nodeName === Shape.POLYGON,
+      );
       break;
     case Shape.RECT:
       const { width, height, x, y, radius } = (object as Rect).parsedStyle;
@@ -796,12 +885,9 @@ export function convertToPath(
         x,
         y,
         hasRadius &&
-          (radius.map((r) => clamp(r, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2))) as [
-            number,
-            number,
-            number,
-            number,
-          ]),
+          (radius.map((r) =>
+            clamp(r, 0, Math.min(Math.abs(width) / 2, Math.abs(height) / 2)),
+          ) as [number, number, number, number]),
       );
       break;
     case Shape.PATH:
@@ -828,10 +914,12 @@ export function translatePathToString(
     .map((params, i) => {
       const command = params[0];
       const nextSegment = absolutePath[i + 1];
-      const useStartOffset = i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
+      const useStartOffset =
+        i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
       const useEndOffset =
         (i === absolutePath.length - 1 ||
-          (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
+          (nextSegment &&
+            (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
         endOffsetX !== 0 &&
         endOffsetY !== 0;
 
@@ -839,9 +927,9 @@ export function translatePathToString(
         case 'M':
           // Use start marker offset
           if (useStartOffset) {
-            return `M ${params[1] - defX + startOffsetX},${params[2] - defY + startOffsetY} L ${
-              params[1] - defX
-            },${params[2] - defY}`;
+            return `M ${params[1] - defX + startOffsetX},${
+              params[2] - defY + startOffsetY
+            } L ${params[1] - defX},${params[2] - defY}`;
           } else {
             return `M ${params[1] - defX},${params[2] - defY}`;
           }
@@ -851,27 +939,35 @@ export function translatePathToString(
           }`;
         case 'Q':
           return (
-            `Q ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${params[4] - defY}` +
+            `Q ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${
+              params[4] - defY
+            }` +
             (useEndOffset
-              ? ` L ${params[3] - defX + endOffsetX},${params[4] - defY + endOffsetY}`
+              ? ` L ${params[3] - defX + endOffsetX},${
+                  params[4] - defY + endOffsetY
+                }`
               : '')
           );
         case 'C':
           return (
-            `C ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${params[4] - defY},${
-              params[5] - defX
-            } ${params[6] - defY}` +
+            `C ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${
+              params[4] - defY
+            },${params[5] - defX} ${params[6] - defY}` +
             (useEndOffset
-              ? ` L ${params[5] - defX + endOffsetX},${params[6] - defY + endOffsetY}`
+              ? ` L ${params[5] - defX + endOffsetX},${
+                  params[6] - defY + endOffsetY
+                }`
               : '')
           );
         case 'A':
           return (
-            `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${
-              params[6] - defX
-            } ${params[7] - defY}` +
+            `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${
+              params[5]
+            } ${params[6] - defX} ${params[7] - defY}` +
             (useEndOffset
-              ? ` L ${params[6] - defX + endOffsetX},${params[7] - defY + endOffsetY}`
+              ? ` L ${params[6] - defX + endOffsetX},${
+                  params[7] - defY + endOffsetY
+                }`
               : '')
           );
         case 'Z':

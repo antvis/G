@@ -1,8 +1,8 @@
 import { clamp } from '@antv/util';
 import type { DisplayObject } from '../../display-objects';
-import { decomposeMat4, deg2rad } from '../../utils';
-import { Odeg, Opx, CSSUnitValue } from '../cssom';
+import { decomposeMat4, deg2rad } from '../../utils/math';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
+import { CSSUnitValue, Odeg, Opx } from '../cssom';
 import {
   convertAngleUnit,
   convertPercentUnit,
@@ -274,7 +274,24 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
         1,
       ];
     case 'scale':
-      return [item.d[0].value, 0, 0, 0, 0, item.d[1].value, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+      return [
+        item.d[0].value,
+        0,
+        0,
+        0,
+        0,
+        item.d[1].value,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+      ];
     case 'scalex':
       return [item.d[0].value, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     case 'scaley':
@@ -303,7 +320,24 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
     case 'skew':
       const xAngle = deg2rad(convertAngleUnit(item.d[0]));
       const yAngle = deg2rad(convertAngleUnit(item.d[1]));
-      return [1, Math.tan(yAngle), 0, 0, Math.tan(xAngle), 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+      return [
+        1,
+        Math.tan(yAngle),
+        0,
+        0,
+        Math.tan(xAngle),
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+      ];
     case 'skewx':
       angle = deg2rad(convertAngleUnit(item.d[0]));
       return [1, 0, 0, 0, Math.tan(angle), 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
@@ -395,8 +429,15 @@ function makeMatrixDecomposition(transformList: ParsedTransform[]) {
   const skew = [0, 0, 0];
   const perspective = [0, 0, 0, 1];
   const quaternion = [0, 0, 0, 1];
-  // @ts-ignore
-  decomposeMat4(convertToMatrix(transformList), translate, scale, skew, perspective, quaternion);
+  decomposeMat4(
+    // @ts-ignore
+    convertToMatrix(transformList),
+    translate,
+    scale,
+    skew,
+    perspective,
+    quaternion,
+  );
   return [[translate, scale, skew, quaternion, perspective]];
 }
 
@@ -505,7 +546,14 @@ export const composeMatrix = (function () {
     }
 
     if (is2D(matrix)) {
-      return [matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1], matrix[3][0], matrix[3][1]];
+      return [
+        matrix[0][0],
+        matrix[0][1],
+        matrix[1][0],
+        matrix[1][1],
+        matrix[3][0],
+        matrix[3][1],
+      ];
     }
     return matrix[0].concat(matrix[1], matrix[2], matrix[3]);
   }
@@ -602,7 +650,8 @@ function typeTo3D(type: string) {
 const isMatrixOrPerspective = function (lt: string, rt: string) {
   return (
     (lt === 'perspective' && rt === 'perspective') ||
-    ((lt === 'matrix' || lt === 'matrix3d') && (rt === 'matrix' || rt === 'matrix3d'))
+    ((lt === 'matrix' || lt === 'matrix3d') &&
+      (rt === 'matrix' || rt === 'matrix3d'))
   );
 };
 
@@ -707,7 +756,13 @@ export function mergeTransforms(
       const stringConversions = [];
       for (let j = 0; j < leftArgs.length; j++) {
         // const merge = leftArgs[j].unit === UnitType.kNumber ? mergeDimensions : mergeDimensions;
-        const merged = mergeDimensions(leftArgs[j], rightArgs[j], target, false, j);
+        const merged = mergeDimensions(
+          leftArgs[j],
+          rightArgs[j],
+          target,
+          false,
+          j,
+        );
         leftArgsCopy[j] = merged[0];
         rightArgsCopy[j] = merged[1];
         stringConversions.push(merged[2]);
@@ -735,10 +790,16 @@ export function mergeTransforms(
               return types[i][1][j](arg);
             })
             .join(',');
-          if (types[i][0] === 'matrix' && stringifiedArgs.split(',').length === 16) {
+          if (
+            types[i][0] === 'matrix' &&
+            stringifiedArgs.split(',').length === 16
+          ) {
             types[i][0] = 'matrix3d';
           }
-          if (types[i][0] === 'matrix3d' && stringifiedArgs.split(',').length === 6) {
+          if (
+            types[i][0] === 'matrix3d' &&
+            stringifiedArgs.split(',').length === 6
+          ) {
             types[i][0] = 'matrix';
           }
           return types[i][0] + '(' + stringifiedArgs + ')';

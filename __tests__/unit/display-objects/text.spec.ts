@@ -1,14 +1,5 @@
-import { Canvas, Group, Text } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Canvas, Group, Text } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -39,8 +30,8 @@ describe('Text', () => {
         text: 1,
       },
     });
-    expect(text.style.text).eqls(1);
-    expect(text.parsedStyle.text).eqls('1');
+    expect(text.style.text).toBe(1);
+    expect(text.parsedStyle.text).toBe('1');
   });
 
   it('should calc global bounds correctly', () => {
@@ -60,56 +51,56 @@ describe('Text', () => {
 
     // @ts-ignore
     text.setAttribute('font-size', 30);
-    expect(text.style.fontSize).to.eqls(30);
+    expect(text.style.fontSize).toBe(30);
 
     // parse font size with unit
     text.style.fontSize = '40px';
-    expect(text.parsedStyle.fontSize).eqls(40);
+    expect(text.parsedStyle.fontSize).toBe(40);
 
-    expect(text.nodeValue).eqls('这是测试文本This is text');
-    expect(text.textContent).eqls('这是测试文本This is text');
+    expect(text.nodeValue).toBe('这是测试文本This is text');
+    expect(text.textContent).toBe('这是测试文本This is text');
 
     // get local position
-    expect(text.getLocalPosition()).eqls([0, 0, 0]);
+    expect(text.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     text.style.text = 'changed';
-    expect(text.nodeValue).eqls('changed');
-    expect(text.textContent).eqls('changed');
+    expect(text.nodeValue).toBe('changed');
+    expect(text.textContent).toBe('changed');
 
     const group = new Group();
-    expect(group.nodeValue).to.be.null;
-    expect(group.textContent).eqls('');
+    expect(group.nodeValue).toBeNull();
+    expect(group.textContent).toBe('');
     group.appendChild(text);
-    expect(group.nodeValue).to.be.null;
-    expect(group.textContent).eqls('changed');
+    expect(group.nodeValue).toBeNull();
+    expect(group.textContent).toBe('changed');
 
     text.textContent = 'changed again';
-    expect(text.nodeValue).eqls('changed again');
-    expect(text.textContent).eqls('changed again');
+    expect(text.nodeValue).toBe('changed again');
+    expect(text.textContent).toBe('changed again');
 
     // empty text should return empty AABB
     text.style.text = '';
     const bounds = text.getBounds();
-    expect(bounds.center[0]).to.almost.eqls(0);
-    expect(bounds.center[1]).to.almost.eqls(0);
-    expect(bounds.halfExtents[0]).to.almost.eqls(0);
-    expect(bounds.halfExtents[1]).to.almost.eqls(0);
+    expect(bounds.center[0]).toBeCloseTo(0);
+    expect(bounds.center[1]).toBeCloseTo(0);
+    expect(bounds.halfExtents[0]).toBeCloseTo(0);
+    expect(bounds.halfExtents[1]).toBeCloseTo(0);
 
     // // get bounds
     // let bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center[0]).to.almost.eqls(336.61);
-    //   expect(bounds.center[1]).to.almost.eqls(-19.5);
-    //   expect(bounds.halfExtents[0]).to.almost.eqls(341.6);
-    //   expect(bounds.halfExtents[1]).to.almost.eqls(41.5);
+    //   expect(bounds.center[0]).toBeCloseTo(336.61);
+    //   expect(bounds.center[1]).toBeCloseTo(-19.5);
+    //   expect(bounds.halfExtents[0]).toBeCloseTo(341.6);
+    //   expect(bounds.halfExtents[1]).toBeCloseTo(41.5);
     // }
 
     // // change lineWidth
     // line.style.lineWidth = 20;
     // bounds = line.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(300, 100, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(120, 20, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(300, 100, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(120, 20, 0));
     // }
   });
 
@@ -130,132 +121,132 @@ describe('Text', () => {
 
     canvas.appendChild(text);
 
-    let bounds = text.getBounds();
+    // let bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(436.60992431640625, 80.5, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(336.60992431640625, 36.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(436.60992431640625, 80.5, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(336.60992431640625, 36.5, 0));
     // }
-    bounds = text.getRenderBounds();
+    // let bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(436.60992431640625, 80.5, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(339.10992431640625, 39, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(436.60992431640625, 80.5, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(339.10992431640625, 39, 0));
     // }
 
     // word wrap
     text.style.wordWrap = true;
     text.style.wordWrapWidth = 200;
-    expect(text.isOverflowing()).eqls(false);
+    expect(text.isOverflowing()).toBe(false);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(193.39996337890625, -29, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(93.39996337890625, 146, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(193.39996337890625, -29, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(93.39996337890625, 146, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(193.39996337890625, -29, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(95.89996337890625, 148.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(193.39996337890625, -29, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(95.89996337890625, 148.5, 0));
     // }
 
     // restore
     text.style.wordWrap = true;
     text.style.wordWrapWidth = 2000;
-    expect(text.isOverflowing()).eqls(false);
+    expect(text.isOverflowing()).toBe(false);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(436.60992431640625, 80.5, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(336.60992431640625, 36.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(436.60992431640625, 80.5, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(336.60992431640625, 36.5, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(436.60992431640625, 80.5, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(339.10992431640625, 39, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(436.60992431640625, 80.5, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(339.10992431640625, 39, 0));
     // }
 
     // clip
     text.style.wordWrapWidth = 200;
     text.style.maxLines = 2;
-    debugger;
+
     const r = text.isOverflowing();
-    expect(r).eqls(true);
+    expect(r).toBe(true);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(92.5, 73, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(92.5, 73, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(95, 75.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(95, 75.5, 0));
     // }
 
     // overflow with ellipsis
     text.style.textOverflow = 'ellipsis';
-    expect(text.isOverflowing()).eqls(true);
+    expect(text.isOverflowing()).toBe(true);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(92.5, 73, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(92.5, 73, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(95, 75.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(95, 75.5, 0));
     // }
 
     // overflow with clip
     text.style.textOverflow = 'clip';
-    expect(text.isOverflowing()).eqls(true);
+    expect(text.isOverflowing()).toBe(true);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(92.5, 73, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(92.5, 73, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(95, 75.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(95, 75.5, 0));
     // }
 
     // overflow with custom long string
     text.style.textOverflow = 'long long long long long long long text';
-    expect(text.isOverflowing()).eqls(true);
+    expect(text.isOverflowing()).toBe(true);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(92.5, 73, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(92.5, 73, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(95, 75.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(95, 75.5, 0));
     // }
 
     text.style.textOverflow = '..';
-    expect(text.isOverflowing()).eqls(true);
+    expect(text.isOverflowing()).toBe(true);
     // bounds = text.getBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(92.5, 73, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(92.5, 73, 0));
     // }
     // bounds = text.getRenderBounds();
     // if (bounds) {
-    //   expect(bounds.center).eqls(vec3.fromValues(192.5, 44, 0));
-    //   expect(bounds.halfExtents).eqls(vec3.fromValues(95, 75.5, 0));
+    //   expect(bounds.center).toBe(vec3.fromValues(192.5, 44, 0));
+    //   expect(bounds.halfExtents).toBe(vec3.fromValues(95, 75.5, 0));
     // }
 
     // no overflowing content
     text.style.wordWrapWidth = 2000;
-    expect(text.isOverflowing()).eqls(false);
+    expect(text.isOverflowing()).toBe(false);
     text.style.wordWrapWidth = 200;
-    expect(text.isOverflowing()).eqls(true);
+    expect(text.isOverflowing()).toBe(true);
 
     text.style.maxLines = 100;
-    expect(text.isOverflowing()).eqls(false);
+    expect(text.isOverflowing()).toBe(false);
     text.style.maxLines = 2;
-    expect(text.isOverflowing()).eqls(true);
+    expect(text.isOverflowing()).toBe(true);
 
     // no wrap
     text.style.wordWrap = false;
-    expect(text.isOverflowing()).eqls(false);
+    expect(text.isOverflowing()).toBe(false);
   });
 });

@@ -1,6 +1,4 @@
-import { Polyline } from '@antv/g';
-import { expect } from 'chai';
-import { vec3 } from 'gl-matrix';
+import { Polyline } from '../../../packages/g/src';
 
 describe('Polyline', () => {
   it('should calc global bounds correctly', () => {
@@ -31,35 +29,35 @@ describe('Polyline', () => {
     });
 
     // get local position, left top corner
-    expect(polyline.getLocalPosition()).eqls([50, 50, 0]);
+    expect(polyline.getLocalPosition()).toStrictEqual([50, 50, 0]);
 
     // get length
-    expect(polyline.getTotalLength()).eqls(750);
+    expect(polyline.getTotalLength()).toBe(750);
 
     // get bounds
     let bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([250, 225, 0]);
-      expect(bounds.halfExtents).eqls([200, 175, 0]);
+      expect(bounds.center).toStrictEqual([250, 225, 0]);
+      expect(bounds.halfExtents).toStrictEqual([200, 175, 0]);
     }
 
     // change lineWidth
     polyline.style.lineWidth = 20;
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([250, 225, 0]);
-      expect(bounds.halfExtents).eqls([200, 175, 0]);
+      expect(bounds.center).toStrictEqual([250, 225, 0]);
+      expect(bounds.halfExtents).toStrictEqual([200, 175, 0]);
     }
 
     // change first point
     let newPoints = [...points];
     newPoints[0] = [0, 0];
     polyline.style.points = newPoints;
-    expect(polyline.getLocalPosition()).eqls([0, 0, 0]);
+    expect(polyline.getLocalPosition()).toStrictEqual([0, 0, 0]);
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([225, 200, 0]);
-      expect(bounds.halfExtents).eqls([225, 200, 0]);
+      expect(bounds.center).toStrictEqual([225, 200, 0]);
+      expect(bounds.halfExtents).toStrictEqual([225, 200, 0]);
     }
 
     polyline.translate(100, 0);
@@ -70,13 +68,13 @@ describe('Polyline', () => {
     // should override x/y when points changed
     newPoints[0] = [50, 50];
     polyline.style.points = newPoints;
-    expect(polyline.getLocalPosition()).eqls([50, 50, 0]);
+    expect(polyline.getLocalPosition()).toStrictEqual([50, 50, 0]);
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([250, 225, 0]);
-      expect(bounds.halfExtents).eqls([200, 175, 0]);
+      expect(bounds.center).toStrictEqual([250, 225, 0]);
+      expect(bounds.halfExtents).toStrictEqual([200, 175, 0]);
     }
-    expect(polyline.getTotalLength()).eqls(750);
+    expect(polyline.getTotalLength()).toBe(750);
   });
 
   it('should getPoint at ratio correctly', () => {
@@ -92,35 +90,35 @@ describe('Polyline', () => {
     });
 
     let point = polyline.getPoint(0);
-    expect(point.x).eqls(50);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(50);
+    expect(point.y).toBe(50);
     point = polyline.getPoint(0, true);
-    expect(point.x).eqls(50);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(50);
+    expect(point.y).toBe(50);
 
     point = polyline.getPoint(0.5);
-    expect(point.x).eqls(100);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(100);
+    expect(point.y).toBe(50);
 
     point = polyline.getPoint(1);
-    expect(point.x).eqls(100);
-    expect(point.y).eqls(100);
+    expect(point.x).toBe(100);
+    expect(point.y).toBe(100);
 
     // outside, return p[0]
     point = polyline.getPoint(10);
-    expect(point.x).eqls(50);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(50);
+    expect(point.y).toBe(50);
 
     point = polyline.getPointAtLength(0);
-    expect(point.x).eqls(50);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(50);
+    expect(point.y).toBe(50);
     point = polyline.getPointAtLength(0, true);
-    expect(point.x).eqls(50);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(50);
+    expect(point.y).toBe(50);
 
     point = polyline.getPointAtLength(50);
-    expect(point.x).eqls(100);
-    expect(point.y).eqls(50);
+    expect(point.x).toBe(100);
+    expect(point.y).toBe(50);
   });
 
   it('should calc tangent correctly', () => {
@@ -135,12 +133,12 @@ describe('Polyline', () => {
       },
     });
 
-    expect(polyline.getStartTangent()).eqls([
+    expect(polyline.getStartTangent()).toStrictEqual([
       [100, 50],
       [50, 50],
     ]);
 
-    expect(polyline.getEndTangent()).eqls([
+    expect(polyline.getEndTangent()).toStrictEqual([
       [100, 50],
       [100, 100],
     ]);

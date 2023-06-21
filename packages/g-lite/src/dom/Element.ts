@@ -9,26 +9,24 @@ import type {
 } from '../components';
 import { Strategy } from '../components';
 import { unsetKeywordValue } from '../css/CSSStyleValuePool';
+import { runtime } from '../global-runtime';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import { formatAttributeName, isSymbol } from '../utils/assert';
 import {
   ERROR_MSG_APPEND_DESTROYED_ELEMENT,
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
-  formatAttributeName,
-  isSymbol,
-} from '../utils';
+} from '../utils/error';
 import { CustomEvent } from './CustomEvent';
+import { MutationEvent } from './MutationEvent';
+import { Node } from './Node';
 import type {
-  IChildNode,
   ICSSStyleDeclaration,
+  IChildNode,
   IElement,
-  IEventTarget,
   INode,
 } from './interfaces';
 import { ElementEvent } from './interfaces';
-import { MutationEvent } from './MutationEvent';
-import { Node } from './Node';
-import { runtime } from '../global-runtime';
 
 let entityCounter = 0;
 export function resetEntityCounter() {
@@ -70,12 +68,6 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
-  static isElement(
-    target: IEventTarget | INode | IElement,
-  ): target is IElement {
-    return !!(target as IElement).getAttribute;
-  }
-
   /**
    * Unique id.
    */

@@ -1,6 +1,7 @@
 import type { RenderingPlugin, RenderingPluginContext } from '@antv/g-lite';
 // @see https://github.com/rough-stuff/rough/issues/145
 import rough from 'roughjs/bin/rough';
+import type { RoughSVG } from 'roughjs/bin/svg';
 
 export class RoughRendererPlugin implements RenderingPlugin {
   static tag = 'RoughSVGRenderer';
@@ -15,10 +16,9 @@ export class RoughRendererPlugin implements RenderingPlugin {
       // this.canvasConfig.renderer.getConfig().enableDirtyRectangleRendering = false;
 
       // @see https://github.com/rough-stuff/rough/wiki#roughsvg-svgroot--config
-
-      const $svg = contextService.getContext();
-
-      // @ts-ignore
+      const $svg = contextService.getContext() as SVGSVGElement & {
+        roughSVG: RoughSVG;
+      };
       $svg.roughSVG = rough.svg($svg);
     });
 

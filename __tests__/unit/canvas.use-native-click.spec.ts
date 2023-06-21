@@ -1,16 +1,6 @@
-import { Canvas, Circle, runtime } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Canvas, Circle } from '../../packages/g/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
 import { sleep } from './utils';
-
-chai.use(chaiAlmost(0.0001));
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -38,12 +28,12 @@ describe('Canvas', () => {
 
   it('should generate correct composed path', async (done) => {
     let point = canvas.getClientByPoint(0, 0);
-    expect(point.x).eqls(8);
-    expect(point.y).eqls(8);
+    expect(point.x).toBe(8);
+    expect(point.y).toBe(8);
 
     point = canvas.getPointByClient(8, 8);
-    expect(point.x).eqls(0);
-    expect(point.y).eqls(0);
+    expect(point.x).toBe(0);
+    expect(point.y).toBe(0);
 
     const circle = new Circle({
       style: {
@@ -58,26 +48,26 @@ describe('Canvas', () => {
 
     const handleClick = (e) => {
       // target
-      expect(e.target).to.be.eqls(circle);
+      expect(e.target).toBe(circle);
       // currentTarget
-      expect(e.currentTarget).to.be.eqls(canvas);
+      expect(e.currentTarget).toBe(canvas);
 
       // composed path
       const path = e.composedPath();
-      expect(path.length).to.be.eqls(4);
-      expect(path[0]).to.be.eqls(circle);
-      expect(path[1]).to.be.eqls(canvas.document.documentElement);
-      expect(path[2]).to.be.eqls(canvas.document);
-      expect(path[3]).to.be.eqls(canvas);
+      expect(path.length).toBe(4);
+      expect(path[0]).toBe(circle);
+      expect(path[1]).toBe(canvas.document.documentElement);
+      expect(path[2]).toBe(canvas.document);
+      expect(path[3]).toBe(canvas);
 
       // pointer type
-      expect(e.pointerType).to.be.eqls('mouse');
+      expect(e.pointerType).toBe('mouse');
 
       // coordinates
-      expect(e.clientX).to.be.eqls(100);
-      expect(e.clientY).to.be.eqls(100);
-      expect(e.screenX).to.be.eqls(200);
-      expect(e.screenY).to.be.eqls(200);
+      expect(e.clientX).toBe(100);
+      expect(e.clientY).toBe(100);
+      expect(e.screenX).toBe(200);
+      expect(e.screenY).toBe(200);
 
       done();
     };
@@ -86,7 +76,7 @@ describe('Canvas', () => {
 
     await sleep(300);
 
-    const $canvas = canvas.getContextService().getDomElement();
+    const $canvas = canvas.getContextService().getDomElement()!;
 
     // Create a mouse event(click).
     const event = document.createEvent('MouseEvents');
@@ -94,6 +84,7 @@ describe('Canvas', () => {
       'click',
       true,
       true,
+      // @ts-ignore
       document.defaultView,
       0,
       200,
@@ -108,9 +99,6 @@ describe('Canvas', () => {
       null /* relatedTarget */,
     );
 
-    $canvas.dispatchEvent(
-      // @ts-ignore
-      event,
-    );
+    $canvas.dispatchEvent(event);
   });
 });

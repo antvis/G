@@ -1,6 +1,6 @@
-import type { Format } from './format';
+import type { EventEmitter } from 'eventemitter3';
 import { GL } from './constants';
-import type EventEmitter from 'eventemitter3';
+import type { Format } from './format';
 
 export enum ResourceType {
   Buffer,

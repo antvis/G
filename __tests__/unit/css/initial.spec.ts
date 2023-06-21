@@ -1,3 +1,4 @@
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
 import {
   Canvas,
   Circle,
@@ -9,9 +10,7 @@ import {
   Image,
   Rect,
   Text,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { expect } from 'chai';
+} from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -41,73 +40,65 @@ describe('StyleValueRegistry initialization', () => {
     const documentElement = canvas.document.documentElement;
 
     // default values
-    expect(documentElement.style.fill).to.equal('');
-    expect(documentElement.style.fillOpacity).to.equal('1');
-    expect(documentElement.style.fontFamily).to.equal('sans-serif');
-    expect(documentElement.style.fontSize).to.equal('16px');
-    expect(documentElement.style.fontStyle).to.equal('normal');
-    expect(documentElement.style.fontVariant).to.equal('normal');
-    expect(documentElement.style.fontWeight).to.equal('normal');
-    expect(documentElement.style.height).to.equal('');
-    expect(documentElement.style.lineCap).to.equal('butt');
-    expect(documentElement.style.lineDashOffset).to.equal('0');
-    expect(documentElement.style.lineJoin).to.equal('miter');
-    expect(documentElement.style.lineWidth).to.equal('1');
-    expect(documentElement.style.increasedLineWidthForHitTesting).to.equal('0');
-    expect(documentElement.style.opacity).to.equal('1');
-    expect(documentElement.style.stroke).to.equal('');
-    expect(documentElement.style.strokeOpacity).to.equal('1');
-    expect(documentElement.style.textTransform).to.equal('none');
-    expect(documentElement.style.textAlign).to.equal('start');
-    expect(documentElement.style.textBaseline).to.equal('alphabetic');
-    expect(documentElement.style.transformOrigin).to.equal('');
-    expect(documentElement.style.visibility).to.equal('visible');
-    expect(documentElement.style.pointerEvents).to.equal('auto');
-    expect(documentElement.style.width).to.equal('');
-    expect(documentElement.style.zIndex).to.equal('');
+    expect(documentElement.style.fill).toBe('');
+    expect(documentElement.style.fillOpacity).toBe('1');
+    expect(documentElement.style.fontFamily).toBe('sans-serif');
+    expect(documentElement.style.fontSize).toBe('16px');
+    expect(documentElement.style.fontStyle).toBe('normal');
+    expect(documentElement.style.fontVariant).toBe('normal');
+    expect(documentElement.style.fontWeight).toBe('normal');
+    expect(documentElement.style.height).toBe('');
+    expect(documentElement.style.lineCap).toBe('butt');
+    expect(documentElement.style.lineDashOffset).toBe('0');
+    expect(documentElement.style.lineJoin).toBe('miter');
+    expect(documentElement.style.lineWidth).toBe('1');
+    expect(documentElement.style.increasedLineWidthForHitTesting).toBe('0');
+    expect(documentElement.style.opacity).toBe('1');
+    expect(documentElement.style.stroke).toBe('');
+    expect(documentElement.style.strokeOpacity).toBe('1');
+    expect(documentElement.style.textTransform).toBe('none');
+    expect(documentElement.style.textAlign).toBe('start');
+    expect(documentElement.style.textBaseline).toBe('alphabetic');
+    expect(documentElement.style.transformOrigin).toBe('');
+    expect(documentElement.style.visibility).toBe('visible');
+    expect(documentElement.style.pointerEvents).toBe('auto');
+    expect(documentElement.style.width).toBe('');
+    expect(documentElement.style.zIndex).toBe('');
 
     // hide all children
     documentElement.style.visibility = 'hidden';
     let styleMap = documentElement.computedStyleMap();
-    expect(documentElement.style.visibility).to.equal('hidden');
+    expect(documentElement.style.visibility).toBe('hidden');
     // computed value
-    expect(styleMap.get('visibility').toString()).to.be.eqls('hidden');
+    expect((styleMap.get('visibility') as string).toString()).toBe('hidden');
     // used value
-    expect(documentElement.parsedStyle.visibility.toString()).to.be.eqls(
-      'hidden',
-    );
+    expect(documentElement.parsedStyle.visibility.toString()).toBe('hidden');
 
     documentElement.style.visibility = 'unset';
-    expect(documentElement.style.visibility).to.equal('unset');
+    expect(documentElement.style.visibility).toBe('unset');
     // computed value
     styleMap = documentElement.computedStyleMap();
-    expect(styleMap.get('visibility').toString()).to.be.eqls('unset');
+    expect((styleMap.get('visibility') as string).toString()).toBe('unset');
     // used value
-    expect(documentElement.parsedStyle.visibility.toString()).to.be.eqls(
-      'visible',
-    );
+    expect(documentElement.parsedStyle.visibility.toString()).toBe('visible');
 
     // disable pointerEvents
     documentElement.style.pointerEvents = 'none';
     styleMap = documentElement.computedStyleMap();
-    expect(documentElement.style.pointerEvents).to.equal('none');
+    expect(documentElement.style.pointerEvents).toBe('none');
     // computed value
-    expect(styleMap.get('pointerEvents').toString()).to.be.eqls('none');
+    expect((styleMap.get('pointerEvents') as string).toString()).toBe('none');
     // used value
-    expect(documentElement.parsedStyle.pointerEvents.toString()).to.be.eqls(
-      'none',
-    );
+    expect(documentElement.parsedStyle.pointerEvents.toString()).toBe('none');
 
     // enable pointerEvents
     documentElement.style.pointerEvents = 'auto';
     styleMap = documentElement.computedStyleMap();
-    expect(documentElement.style.pointerEvents).to.equal('auto');
+    expect(documentElement.style.pointerEvents).toBe('auto');
     // computed value
-    expect(styleMap.get('pointerEvents').toString()).to.be.eqls('auto');
+    expect((styleMap.get('pointerEvents') as string).toString()).toBe('auto');
     // used value
-    expect(documentElement.parsedStyle.pointerEvents.toString()).to.be.eqls(
-      'auto',
-    );
+    expect(documentElement.parsedStyle.pointerEvents.toString()).toBe('auto');
   });
 
   it('should parse & compute CSS properties for Circle correctly.', async () => {
@@ -126,120 +117,132 @@ describe('StyleValueRegistry initialization', () => {
      * user-defined values
      */
     // use `getAttribute` to access
-    expect(circle.getAttribute('cx')).to.be.eqls(200);
-    expect(circle.getAttribute('cy')).to.be.eqls(200);
-    expect(circle.getAttribute('r')).to.be.eqls(100);
-    expect(circle.getAttribute('fill')).to.be.eqls('#f00');
-    expect(circle.getAttribute('stroke')).to.be.eqls('black');
-    expect(circle.getAttribute('lineWidth')).to.be.eqls(2);
+    expect(circle.getAttribute('cx')).toBe(200);
+    expect(circle.getAttribute('cy')).toBe(200);
+    expect(circle.getAttribute('r')).toBe(100);
+    expect(circle.getAttribute('fill')).toBe('#f00');
+    expect(circle.getAttribute('stroke')).toBe('black');
+    expect(circle.getAttribute('lineWidth')).toBe(2);
     // use `style` to access
-    expect(circle.style.cx).to.be.eqls(200);
-    expect(circle.style.cy).to.be.eqls(200);
-    expect(circle.style.r).to.be.eqls(100);
-    expect(circle.style.fill).to.be.eqls('#f00');
-    expect(circle.style.stroke).to.be.eqls('black');
-    expect(circle.style.lineWidth).to.be.eqls(2);
+    expect(circle.style.cx).toBe(200);
+    expect(circle.style.cy).toBe(200);
+    expect(circle.style.r).toBe(100);
+    expect(circle.style.fill).toBe('#f00');
+    expect(circle.style.stroke).toBe('black');
+    expect(circle.style.lineWidth).toBe(2);
     // unsupported property
     // @ts-ignore
-    expect(circle.style.xxxxx).to.be.null;
+    expect(circle.style.xxxxx).toBeNull();
 
     /**
      * initial values
      */
-    expect(circle.getAttribute('z')).to.be.null;
-    expect(circle.getAttribute('opacity')).to.be.eqls('');
-    expect(circle.getAttribute('fillOpacity')).to.be.eqls('');
-    expect(circle.getAttribute('strokeOpacity')).to.be.eqls('');
-    expect(circle.getAttribute('visibility')).to.be.eqls('');
-    expect(circle.getAttribute('lineJoin')).to.be.eqls('');
-    expect(circle.getAttribute('lineCap')).to.be.eqls('');
-    expect(circle.getAttribute('transform')).to.be.eqls('');
-    expect(circle.getAttribute('transformOrigin')).to.be.eqls('');
-    expect(circle.getAttribute('anchor')).to.be.eqls('');
+    // @ts-ignore
+    expect(circle.getAttribute('z')).toBeNull();
+    expect(circle.getAttribute('opacity')).toBe('');
+    expect(circle.getAttribute('fillOpacity')).toBe('');
+    expect(circle.getAttribute('strokeOpacity')).toBe('');
+    expect(circle.getAttribute('visibility')).toBe('');
+    expect(circle.getAttribute('lineJoin')).toBe('');
+    expect(circle.getAttribute('lineCap')).toBe('');
+    expect(circle.getAttribute('transform')).toBe('');
+    expect(circle.getAttribute('transformOrigin')).toBe('');
+    expect(circle.getAttribute('anchor')).toBe('');
 
     /**
      * computed values
      */
     const styleMap = circle.computedStyleMap();
     // user-defined
-    expect((styleMap.get('cx') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
-    expect((styleMap.get('cy') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
-    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    expect((styleMap.get('r') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
+    expect(
+      (styleMap.get('cx') as CSSUnitValue).equals(CSS.px(200)),
+    ).toBeTruthy();
+    expect(
+      (styleMap.get('cy') as CSSUnitValue).equals(CSS.px(200)),
+    ).toBeTruthy();
+    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    expect(
+      (styleMap.get('r') as CSSUnitValue).equals(CSS.px(100)),
+    ).toBeTruthy();
     const fill = styleMap.get('fill') as CSSRGB;
-    expect(fill.r).to.be.eqls(255);
-    expect(fill.g).to.be.eqls(0);
-    expect(fill.b).to.be.eqls(0);
-    expect(fill.alpha).to.be.eqls(1);
+    expect(fill.r).toBe(255);
+    expect(fill.g).toBe(0);
+    expect(fill.b).toBe(0);
+    expect(fill.alpha).toBe(1);
     const stroke = styleMap.get('stroke') as CSSRGB;
-    expect(stroke.r).to.be.eqls(0);
-    expect(stroke.g).to.be.eqls(0);
-    expect(stroke.b).to.be.eqls(0);
-    expect(stroke.alpha).to.be.eqls(1);
-    expect((styleMap.get('lineWidth') as CSSUnitValue).equals(CSS.px(2))).to.be
-      .true;
+    expect(stroke.r).toBe(0);
+    expect(stroke.g).toBe(0);
+    expect(stroke.b).toBe(0);
+    expect(stroke.alpha).toBe(1);
+    expect(
+      (styleMap.get('lineWidth') as CSSUnitValue).equals(CSS.px(2)),
+    ).toBeTruthy();
     // default
     const opacity = styleMap.get('opacity') as CSSKeywordValue;
-    expect(opacity instanceof CSSKeywordValue).to.be.true;
-    expect(opacity.value).to.be.eqls('unset');
+    expect(opacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(opacity.value).toBe('unset');
     const fillOpacity = styleMap.get('fillOpacity') as CSSKeywordValue;
-    expect(fillOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(fillOpacity.value).to.be.eqls('unset');
+    expect(fillOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(fillOpacity.value).toBe('unset');
     const strokeOpacity = styleMap.get('strokeOpacity') as CSSKeywordValue;
-    expect(strokeOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(strokeOpacity.value).to.be.eqls('unset');
+    expect(strokeOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(strokeOpacity.value).toBe('unset');
     const visibility = styleMap.get('visibility') as CSSKeywordValue;
-    expect(visibility instanceof CSSKeywordValue).to.be.true;
-    expect(visibility.value).to.be.eqls('unset');
+    expect(visibility instanceof CSSKeywordValue).toBeTruthy();
+    expect(visibility.value).toBe('unset');
     const lineJoin = styleMap.get('lineJoin') as CSSKeywordValue;
-    expect(lineJoin instanceof CSSKeywordValue).to.be.true;
-    expect(lineJoin.value).to.be.eqls('unset');
+    expect(lineJoin instanceof CSSKeywordValue).toBeTruthy();
+    expect(lineJoin.value).toBe('unset');
     const lineCap = styleMap.get('lineCap') as CSSKeywordValue;
-    expect(lineCap instanceof CSSKeywordValue).to.be.true;
-    expect(lineCap.value).to.be.eqls('unset');
+    expect(lineCap instanceof CSSKeywordValue).toBeTruthy();
+    expect(lineCap.value).toBe('unset');
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
-    expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
-    expect(transformOrigin.value).to.be.eqls('unset');
+    expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
+    expect(transformOrigin.value).toBe('unset');
     const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor instanceof CSSKeywordValue).to.be.true;
-    expect(anchor.value).to.be.eqls('unset');
-    expect(styleMap.get('xxxx')).to.be.undefined;
+    expect(anchor instanceof CSSKeywordValue).toBeTruthy();
+    expect(anchor.value).toBe('unset');
+    expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     let parsedStyle = circle.parsedStyle;
-    expect(parsedStyle.cx).to.be.eqls(200);
-    expect(parsedStyle.cy).to.be.eqls(200);
-    expect(parsedStyle.cz).to.be.undefined;
-    expect(parsedStyle.r).to.be.eqls(100);
-    expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(255);
-    expect((parsedStyle.fill as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).to.be.eqls(1);
-    expect(parsedStyle.stroke instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.stroke as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).to.be.eqls(1);
-    expect(parsedStyle.transformOrigin!.length).to.be.eqls(2);
-    expect(parsedStyle.transformOrigin![0].equals(CSS.percent(50))).to.be.true;
-    expect(parsedStyle.transformOrigin![1].equals(CSS.percent(50))).to.be.true;
+    expect(parsedStyle.cx).toBe(200);
+    expect(parsedStyle.cy).toBe(200);
+    expect(parsedStyle.cz).toBeUndefined();
+    expect(parsedStyle.r).toBe(100);
+    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.fill as CSSRGB).r).toBe(255);
+    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).alpha).toBe(1);
+    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(1);
+    expect(parsedStyle.transformOrigin!.length).toBe(2);
+    expect(
+      parsedStyle.transformOrigin![0].equals(CSS.percent(50)),
+    ).toBeTruthy();
+    expect(
+      parsedStyle.transformOrigin![1].equals(CSS.percent(50)),
+    ).toBeTruthy();
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).to.be.eqls(2);
-    expect(parsedStyle.anchor![0]).to.be.eqls(0.5);
-    expect(parsedStyle.anchor![1]).to.be.eqls(0.5);
+    expect(parsedStyle.anchor!.length).toBe(2);
+    expect(parsedStyle.anchor![0]).toBe(0.5);
+    expect(parsedStyle.anchor![1]).toBe(0.5);
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.opacity).to.be.undefined;
-    expect(parsedStyle.fillOpacity).to.be.undefined;
-    expect(parsedStyle.lineCap).to.be.undefined;
-    expect(parsedStyle.lineJoin).to.be.undefined;
-    expect(parsedStyle.strokeOpacity).to.be.undefined;
-    expect(parsedStyle.visibility).to.be.undefined;
-    expect(parsedStyle.pointerEvents).to.be.undefined;
+    expect(parsedStyle.opacity).toBeUndefined();
+    expect(parsedStyle.fillOpacity).toBeUndefined();
+    expect(parsedStyle.lineCap).toBeUndefined();
+    expect(parsedStyle.lineJoin).toBeUndefined();
+    expect(parsedStyle.strokeOpacity).toBeUndefined();
+    expect(parsedStyle.visibility).toBeUndefined();
+    expect(parsedStyle.pointerEvents).toBeUndefined();
     // @ts-ignore
-    expect(parsedStyle.xxxxx).to.be.undefined;
+    expect(parsedStyle.xxxxx).toBeUndefined();
 
     await canvas.ready;
     /**
@@ -249,12 +252,12 @@ describe('StyleValueRegistry initialization', () => {
 
     parsedStyle = circle.parsedStyle;
     // inherit from document.documentElement
-    expect(parsedStyle.fillOpacity).to.be.eqls(1);
-    expect(parsedStyle.strokeOpacity).to.be.eqls(1);
-    expect(parsedStyle.lineCap).to.be.eqls('butt');
-    expect(parsedStyle.lineJoin).to.be.eqls('miter');
-    expect(parsedStyle.visibility).to.be.eqls('visible');
-    expect(parsedStyle.pointerEvents).to.be.eqls('auto');
+    expect(parsedStyle.fillOpacity).toBe(1);
+    expect(parsedStyle.strokeOpacity).toBe(1);
+    expect(parsedStyle.lineCap).toBe('butt');
+    expect(parsedStyle.lineJoin).toBe('miter');
+    expect(parsedStyle.visibility).toBe('visible');
+    expect(parsedStyle.pointerEvents).toBe('auto');
   });
 
   it('should parse & compute CSS properties for Ellipse correctly.', () => {
@@ -274,106 +277,115 @@ describe('StyleValueRegistry initialization', () => {
      * user-defined values
      */
     // use `getAttribute` to access
-    expect(ellipse.getAttribute('cx')).to.be.eqls('');
-    expect(ellipse.getAttribute('cy')).to.be.eqls('');
-    expect(ellipse.getAttribute('opacity')).to.be.eqls(0.5);
-    expect(ellipse.getAttribute('fillOpacity')).to.be.eqls(0.5);
-    expect(ellipse.getAttribute('rx')).to.be.eqls(200);
-    expect(ellipse.getAttribute('ry')).to.be.eqls('100px');
-    expect(ellipse.getAttribute('fill')).to.be.eqls('transparent');
-    expect(ellipse.getAttribute('stroke')).to.be.eqls('');
-    expect(ellipse.getAttribute('lineWidth')).to.be.eqls(2);
-    expect(ellipse.getAttribute('lineJoin')).to.be.eqls('bevel');
+    expect(ellipse.getAttribute('cx')).toBe('');
+    expect(ellipse.getAttribute('cy')).toBe('');
+    expect(ellipse.getAttribute('opacity')).toBe(0.5);
+    expect(ellipse.getAttribute('fillOpacity')).toBe(0.5);
+    expect(ellipse.getAttribute('rx')).toBe(200);
+    expect(ellipse.getAttribute('ry')).toBe('100px');
+    expect(ellipse.getAttribute('fill')).toBe('transparent');
+    expect(ellipse.getAttribute('stroke')).toBe('');
+    expect(ellipse.getAttribute('lineWidth')).toBe(2);
+    expect(ellipse.getAttribute('lineJoin')).toBe('bevel');
     // use `style` to access
-    expect(ellipse.style.stroke).to.be.eqls('');
-    expect(ellipse.style.lineWidth).to.be.eqls(2);
+    expect(ellipse.style.stroke).toBe('');
+    expect(ellipse.style.lineWidth).toBe(2);
     // unsupported property
     // @ts-ignore
-    expect(ellipse.style.xxxxx).to.be.null;
+    expect(ellipse.style.xxxxx).toBeNull();
 
     /**
      * computed values
      */
     const styleMap = ellipse.computedStyleMap();
     // user-defined
-    // expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    // expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    expect((styleMap.get('rx') as CSSUnitValue).equals(CSS.px(200))).to.be.true;
-    expect((styleMap.get('ry') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
+    // expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    // expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    expect(
+      (styleMap.get('rx') as CSSUnitValue).equals(CSS.px(200)),
+    ).toBeTruthy();
+    expect(
+      (styleMap.get('ry') as CSSUnitValue).equals(CSS.px(100)),
+    ).toBeTruthy();
     // 'transparent'
     const fill = styleMap.get('fill') as CSSRGB;
-    expect(fill.r).to.be.eqls(0);
-    expect(fill.g).to.be.eqls(0);
-    expect(fill.b).to.be.eqls(0);
-    expect(fill.alpha).to.be.eqls(0);
+    expect(fill.r).toBe(0);
+    expect(fill.g).toBe(0);
+    expect(fill.b).toBe(0);
+    expect(fill.alpha).toBe(0);
     // 'unset'
     const stroke = styleMap.get('stroke') as CSSKeywordValue;
-    expect(stroke instanceof CSSKeywordValue).to.be.true;
-    expect(stroke.value).eqls('unset');
-    expect((styleMap.get('lineWidth') as CSSUnitValue).equals(CSS.px(2))).to.be
-      .true;
+    expect(stroke instanceof CSSKeywordValue).toBeTruthy();
+    expect(stroke.value).toBe('unset');
+    expect(
+      (styleMap.get('lineWidth') as CSSUnitValue).equals(CSS.px(2)),
+    ).toBeTruthy();
     // default
     const opacity = styleMap.get('opacity') as CSSUnitValue;
-    expect(opacity instanceof CSSUnitValue).to.be.true;
-    expect(opacity.equals(CSS.number(0.5))).to.be.true;
+    expect(opacity instanceof CSSUnitValue).toBeTruthy();
+    expect(opacity.equals(CSS.number(0.5))).toBeTruthy();
     const fillOpacity = styleMap.get('fillOpacity') as CSSUnitValue;
-    expect(fillOpacity instanceof CSSUnitValue).to.be.true;
-    expect(fillOpacity.equals(CSS.number(0.5))).to.be.true;
+    expect(fillOpacity instanceof CSSUnitValue).toBeTruthy();
+    expect(fillOpacity.equals(CSS.number(0.5))).toBeTruthy();
     const lineJoin = styleMap.get('lineJoin') as CSSKeywordValue;
-    expect(lineJoin instanceof CSSKeywordValue).to.be.true;
-    expect(lineJoin.value).to.be.eqls('bevel');
+    expect(lineJoin instanceof CSSKeywordValue).toBeTruthy();
+    expect(lineJoin.value).toBe('bevel');
     const strokeOpacity = styleMap.get('strokeOpacity') as CSSKeywordValue;
-    expect(strokeOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(strokeOpacity.value).to.be.eqls('unset');
+    expect(strokeOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(strokeOpacity.value).toBe('unset');
     const visibility = styleMap.get('visibility') as CSSKeywordValue;
-    expect(visibility instanceof CSSKeywordValue).to.be.true;
-    expect(visibility.value).to.be.eqls('unset');
+    expect(visibility instanceof CSSKeywordValue).toBeTruthy();
+    expect(visibility.value).toBe('unset');
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
-    expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
-    expect(transformOrigin.value).to.be.eqls('unset');
+    expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
+    expect(transformOrigin.value).toBe('unset');
     const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor instanceof CSSKeywordValue).to.be.true;
-    expect(anchor.value).to.be.eqls('unset');
-    expect(styleMap.get('xxxx')).to.be.undefined;
+    expect(anchor instanceof CSSKeywordValue).toBeTruthy();
+    expect(anchor.value).toBe('unset');
+    expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     const parsedStyle = ellipse.parsedStyle;
-    expect(parsedStyle.cx).to.be.eqls(0);
-    expect(parsedStyle.cy).to.be.eqls(0);
-    expect(parsedStyle.rx).to.be.eqls(200);
-    expect(parsedStyle.ry).to.be.eqls(100);
+    expect(parsedStyle.cx).toBe(0);
+    expect(parsedStyle.cy).toBe(0);
+    expect(parsedStyle.rx).toBe(200);
+    expect(parsedStyle.ry).toBe(100);
     // 'transparent'
-    expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).isNone).to.be.false;
+    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.fill as CSSRGB).r).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).alpha).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).isNone).toBeFalsy();
     // 'none'
-    expect(parsedStyle.stroke instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.stroke as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).isNone).to.be.true;
-    expect(parsedStyle.opacity).to.be.eqls(0.5);
-    expect(parsedStyle.fillOpacity).to.be.eqls(0.5);
-    expect(parsedStyle.transformOrigin!.length).to.be.eqls(2);
-    expect(parsedStyle.transformOrigin![0].equals(CSS.percent(50))).to.be.true;
-    expect(parsedStyle.transformOrigin![1].equals(CSS.percent(50))).to.be.true;
+    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).isNone).toBeTruthy();
+    expect(parsedStyle.opacity).toBe(0.5);
+    expect(parsedStyle.fillOpacity).toBe(0.5);
+    expect(parsedStyle.transformOrigin!.length).toBe(2);
+    expect(
+      parsedStyle.transformOrigin![0].equals(CSS.percent(50)),
+    ).toBeTruthy();
+    expect(
+      parsedStyle.transformOrigin![1].equals(CSS.percent(50)),
+    ).toBeTruthy();
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).to.be.eqls(2);
-    expect(parsedStyle.anchor![0]).to.be.eqls(0.5);
-    expect(parsedStyle.anchor![1]).to.be.eqls(0.5);
+    expect(parsedStyle.anchor!.length).toBe(2);
+    expect(parsedStyle.anchor![0]).toBe(0.5);
+    expect(parsedStyle.anchor![1]).toBe(0.5);
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.visibility).to.be.undefined;
-    expect(parsedStyle.lineCap).to.be.undefined;
-    expect(parsedStyle.lineJoin).to.be.eqls('bevel');
+    expect(parsedStyle.visibility).toBeUndefined();
+    expect(parsedStyle.lineCap).toBeUndefined();
+    expect(parsedStyle.lineJoin).toBe('bevel');
     // @ts-ignore
-    expect(parsedStyle.xxxxx).to.be.undefined;
+    expect(parsedStyle.xxxxx).toBeUndefined();
   });
 
   it('should parse & compute CSS properties for Rect correctly.', async () => {
@@ -390,103 +402,105 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * user-defined values
      */
-    expect(rect.getAttribute('x')).to.be.eqls('');
-    expect(rect.getAttribute('y')).to.be.eqls('');
-    expect(rect.getAttribute('z')).to.be.null;
-    expect(rect.getAttribute('width')).to.be.eqls(200);
-    expect(rect.getAttribute('height')).to.be.eqls('100px');
-    expect(rect.getAttribute('fill')).to.be.eqls('none');
+    expect(rect.getAttribute('x')).toBe('');
+    expect(rect.getAttribute('y')).toBe('');
+    expect(rect.getAttribute('z')).toBeNull();
+    expect(rect.getAttribute('width')).toBe(200);
+    expect(rect.getAttribute('height')).toBe('100px');
+    expect(rect.getAttribute('fill')).toBe('none');
     // use `style` to access
-    expect(rect.style.width).to.be.eqls(200);
-    expect(rect.style.height).to.be.eqls('100px');
+    expect(rect.style.width).toBe(200);
+    expect(rect.style.height).toBe('100px');
 
     /**
      * initial values
      */
-    expect(rect.getAttribute('radius')).to.be.eqls('');
-    expect(rect.getAttribute('lineWidth')).to.be.eqls('');
+    expect(rect.getAttribute('radius')).toBe('');
+    expect(rect.getAttribute('lineWidth')).toBe('');
 
     /**
      * computed values
      */
     const styleMap = rect.computedStyleMap();
     // user-defined
-    // expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    // expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    expect((styleMap.get('width') as CSSUnitValue).equals(CSS.px(200))).to.be
-      .true;
-    expect((styleMap.get('height') as CSSUnitValue).equals(CSS.px(100))).to.be
-      .true;
+    // expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    // expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    expect(
+      (styleMap.get('width') as CSSUnitValue).equals(CSS.px(200)),
+    ).toBeTruthy();
+    expect(
+      (styleMap.get('height') as CSSUnitValue).equals(CSS.px(100)),
+    ).toBeTruthy();
     const radius = styleMap.get('radius') as CSSKeywordValue;
-    expect(radius instanceof CSSKeywordValue).to.be.true;
-    expect(radius.value).eqls('unset');
-    expect(styleMap.get('lineWidth').toString()).to.be.eqls('unset');
+    expect(radius instanceof CSSKeywordValue).toBeTruthy();
+    expect(radius.value).toBe('unset');
+    expect((styleMap.get('lineWidth') as string).toString()).toBe('unset');
     // 'none'
     const fill = styleMap.get('fill') as CSSKeywordValue;
-    expect(fill instanceof CSSKeywordValue).to.be.true;
-    expect(fill.value).eqls('none');
+    expect(fill instanceof CSSKeywordValue).toBeTruthy();
+    expect(fill.value).toBe('none');
     // 'unset'
     const stroke = styleMap.get('stroke') as CSSKeywordValue;
-    expect(stroke instanceof CSSKeywordValue).to.be.true;
-    expect(stroke.value).eqls('unset');
+    expect(stroke instanceof CSSKeywordValue).toBeTruthy();
+    expect(stroke.value).toBe('unset');
     // default
     const opacity = styleMap.get('opacity') as CSSKeywordValue;
-    expect(opacity instanceof CSSKeywordValue).to.be.true;
-    expect(opacity.value).to.be.eqls('unset');
+    expect(opacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(opacity.value).toBe('unset');
     const fillOpacity = styleMap.get('fillOpacity') as CSSKeywordValue;
-    expect(fillOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(fillOpacity.value).to.be.eqls('unset');
+    expect(fillOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(fillOpacity.value).toBe('unset');
     const strokeOpacity = styleMap.get('strokeOpacity') as CSSKeywordValue;
-    expect(strokeOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(strokeOpacity.value).to.be.eqls('unset');
+    expect(strokeOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(strokeOpacity.value).toBe('unset');
     const visibility = styleMap.get('visibility') as CSSKeywordValue;
-    expect(visibility instanceof CSSKeywordValue).to.be.true;
-    expect(visibility.value).to.be.eqls('hidden');
+    expect(visibility instanceof CSSKeywordValue).toBeTruthy();
+    expect(visibility.value).toBe('hidden');
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
-    expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
-    expect(transformOrigin.value).to.be.eqls('unset');
+    expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
+    expect(transformOrigin.value).toBe('unset');
     const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor.value).to.be.eqls('unset');
-    expect(styleMap.get('xxxx')).to.be.undefined;
+    expect(anchor.value).toBe('unset');
+    expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     const parsedStyle = rect.parsedStyle;
-    expect(parsedStyle.x).to.be.eqls(0);
-    expect(parsedStyle.y).to.be.eqls(0);
-    // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.width).to.be.eqls(200);
-    expect(parsedStyle.height).to.be.eqls(100);
-    expect(parsedStyle.radius![0]).to.be.eqls(0);
-    expect(parsedStyle.radius![1]).to.be.eqls(0);
-    expect(parsedStyle.radius![2]).to.be.eqls(0);
-    expect(parsedStyle.radius![3]).to.be.eqls(0);
-    expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).to.be.eqls(0);
-    expect(parsedStyle.stroke instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.stroke as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).to.be.eqls(0);
-    expect(parsedStyle.transformOrigin!.length).to.be.eqls(2);
-    expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.x).toBe(0);
+    expect(parsedStyle.y).toBe(0);
+    // expect(parsedStyle.z.equals(CSS.px(0))).toBeTruthy();
+    expect(parsedStyle.width).toBe(200);
+    expect(parsedStyle.height).toBe(100);
+    expect(parsedStyle.radius![0]).toBe(0);
+    expect(parsedStyle.radius![1]).toBe(0);
+    expect(parsedStyle.radius![2]).toBe(0);
+    expect(parsedStyle.radius![3]).toBe(0);
+    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.fill as CSSRGB).r).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).alpha).toBe(0);
+    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
+    expect(parsedStyle.transformOrigin!.length).toBe(2);
+    expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).toBeTruthy();
+    expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).toBeTruthy();
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).to.be.eqls(2);
-    expect(parsedStyle.anchor![0]).to.be.eqls(0);
-    expect(parsedStyle.anchor![1]).to.be.eqls(0);
+    expect(parsedStyle.anchor!.length).toBe(2);
+    expect(parsedStyle.anchor![0]).toBe(0);
+    expect(parsedStyle.anchor![1]).toBe(0);
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.opacity).to.be.undefined;
-    expect(parsedStyle.fillOpacity).to.be.undefined;
-    expect(parsedStyle.strokeOpacity).to.be.undefined;
-    //  expect(parsedStyle.visibility).to.be.undefined;
+    expect(parsedStyle.opacity).toBeUndefined();
+    expect(parsedStyle.fillOpacity).toBeUndefined();
+    expect(parsedStyle.strokeOpacity).toBeUndefined();
+    //  expect(parsedStyle.visibility).toBeUndefined();
     // @ts-ignore
-    expect(parsedStyle.xxxxx).to.be.undefined;
+    expect(parsedStyle.xxxxx).toBeUndefined();
 
     await canvas.ready;
     /**
@@ -495,12 +509,12 @@ describe('StyleValueRegistry initialization', () => {
     canvas.appendChild(rect);
 
     // inherit from document.documentElement
-    expect(parsedStyle.lineWidth).to.be.eqls(1);
-    expect(parsedStyle.fillOpacity).to.be.eqls(1);
-    expect(parsedStyle.strokeOpacity).to.be.eqls(1);
-    expect(parsedStyle.lineCap).to.be.eqls('butt');
-    expect(parsedStyle.lineJoin).to.be.eqls('miter');
-    expect(parsedStyle.pointerEvents).to.be.eqls('auto');
+    expect(parsedStyle.lineWidth).toBe(1);
+    expect(parsedStyle.fillOpacity).toBe(1);
+    expect(parsedStyle.strokeOpacity).toBe(1);
+    expect(parsedStyle.lineCap).toBe('butt');
+    expect(parsedStyle.lineJoin).toBe('miter');
+    expect(parsedStyle.pointerEvents).toBe('auto');
   });
 
   it('should parse & compute CSS properties for Image correctly.', () => {
@@ -517,15 +531,15 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * user-defined values
      */
-    expect(image.getAttribute('x')).to.be.eqls('');
-    expect(image.getAttribute('y')).to.be.eqls('');
-    expect(image.getAttribute('z')).to.be.null;
-    expect(image.getAttribute('width')).to.be.eqls(200);
-    expect(image.getAttribute('height')).to.be.eqls('100px');
-    expect(image.getAttribute('img')).to.be.eqls('url');
+    expect(image.getAttribute('x')).toBe('');
+    expect(image.getAttribute('y')).toBe('');
+    expect(image.getAttribute('z')).toBeNull();
+    expect(image.getAttribute('width')).toBe(200);
+    expect(image.getAttribute('height')).toBe('100px');
+    expect(image.getAttribute('img')).toBe('url');
     // use `style` to access
-    expect(image.style.width).to.be.eqls(200);
-    expect(image.style.height).to.be.eqls('100px');
+    expect(image.style.width).toBe(200);
+    expect(image.style.height).toBe('100px');
 
     /**
      * computed values
@@ -533,68 +547,70 @@ describe('StyleValueRegistry initialization', () => {
     const styleMap = image.computedStyleMap();
 
     // user-defined
-    // expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
-    // expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
-    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).to.be.true;
-    expect(styleMap.get('img')).to.be.eqls('url');
-    expect((styleMap.get('width') as CSSUnitValue).equals(CSS.px(200))).to.be
-      .true;
-    expect((styleMap.get('height') as CSSUnitValue).equals(CSS.px(100))).to.be
-      .true;
+    // expect((styleMap.get('x') as CSSUnitValue).equals(CSS.px(100))).toBeTruthy();
+    // expect((styleMap.get('y') as CSSUnitValue).equals(CSS.px(100))).toBeTruthy();
+    // expect((styleMap.get('z') as CSSUnitValue).equals(CSS.px(0))).toBeTruthy();
+    expect(styleMap.get('img')).toBe('url');
+    expect(
+      (styleMap.get('width') as CSSUnitValue).equals(CSS.px(200)),
+    ).toBeTruthy();
+    expect(
+      (styleMap.get('height') as CSSUnitValue).equals(CSS.px(100)),
+    ).toBeTruthy();
     // default
     const opacity = styleMap.get('opacity') as CSSKeywordValue;
-    expect(opacity instanceof CSSKeywordValue).to.be.true;
-    expect(opacity.value).to.be.eqls('unset');
+    expect(opacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(opacity.value).toBe('unset');
     const fillOpacity = styleMap.get('fillOpacity') as CSSKeywordValue;
-    expect(fillOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(fillOpacity.value).to.be.eqls('unset');
+    expect(fillOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(fillOpacity.value).toBe('unset');
     const strokeOpacity = styleMap.get('strokeOpacity') as CSSKeywordValue;
-    expect(strokeOpacity instanceof CSSKeywordValue).to.be.true;
-    expect(strokeOpacity.value).to.be.eqls('unset');
+    expect(strokeOpacity instanceof CSSKeywordValue).toBeTruthy();
+    expect(strokeOpacity.value).toBe('unset');
     const visibility = styleMap.get('visibility') as CSSKeywordValue;
-    expect(visibility instanceof CSSKeywordValue).to.be.true;
-    expect(visibility.value).to.be.eqls('visible');
+    expect(visibility instanceof CSSKeywordValue).toBeTruthy();
+    expect(visibility.value).toBe('visible');
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
-    expect(transformOrigin instanceof CSSKeywordValue).to.be.true;
-    expect(transformOrigin.value).to.be.eqls('unset');
+    expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
+    expect(transformOrigin.value).toBe('unset');
     const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor.value).to.be.eqls('unset');
-    expect(styleMap.get('xxxx')).to.be.undefined;
+    expect(anchor.value).toBe('unset');
+    expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
     const parsedStyle = image.parsedStyle;
-    expect(parsedStyle.img).to.be.eqls('url');
-    expect(parsedStyle.x).to.be.eqls(0);
-    expect(parsedStyle.y).to.be.eqls(0);
-    // expect(parsedStyle.z.equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.width).to.be.eqls(200);
-    expect(parsedStyle.height).to.be.eqls(100);
-    expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).to.be.eqls(0);
-    expect(parsedStyle.stroke instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.stroke as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).to.be.eqls(0);
-    expect(parsedStyle.visibility).to.be.eqls('visible');
-    expect(parsedStyle.transformOrigin!.length).to.be.eqls(2);
-    expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).to.be.true;
-    expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).to.be.true;
+    expect(parsedStyle.img).toBe('url');
+    expect(parsedStyle.x).toBe(0);
+    expect(parsedStyle.y).toBe(0);
+    // expect(parsedStyle.z.equals(CSS.px(0))).toBeTruthy();
+    expect(parsedStyle.width).toBe(200);
+    expect(parsedStyle.height).toBe(100);
+    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.fill as CSSRGB).r).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).alpha).toBe(0);
+    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
+    expect(parsedStyle.visibility).toBe('visible');
+    expect(parsedStyle.transformOrigin!.length).toBe(2);
+    expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).toBeTruthy();
+    expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).toBeTruthy();
     // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).to.be.eqls(2);
-    expect(parsedStyle.anchor![0]).to.be.eqls(0);
-    expect(parsedStyle.anchor![1]).to.be.eqls(0);
+    expect(parsedStyle.anchor!.length).toBe(2);
+    expect(parsedStyle.anchor![0]).toBe(0);
+    expect(parsedStyle.anchor![1]).toBe(0);
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.opacity).to.be.undefined;
-    expect(parsedStyle.fillOpacity).to.be.undefined;
-    expect(parsedStyle.strokeOpacity).to.be.undefined;
+    expect(parsedStyle.opacity).toBeUndefined();
+    expect(parsedStyle.fillOpacity).toBeUndefined();
+    expect(parsedStyle.strokeOpacity).toBeUndefined();
     // @ts-ignore
-    expect(parsedStyle.xxxxx).to.be.undefined;
+    expect(parsedStyle.xxxxx).toBeUndefined();
   });
 
   it('should parse & compute CSS properties for Text correctly.', async () => {
@@ -607,77 +623,77 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * user-defined values
      */
-    expect(text.getAttribute('text')).to.be.eqls('hello');
-    expect(text.getAttribute('fontFamily')).to.be.eqls('PingFang SC');
-    expect(text.getAttribute('fontSize')).to.be.eqls('');
-    expect(text.getAttribute('fontWeight')).to.be.eqls('');
-    expect(text.getAttribute('fontStyle')).to.be.eqls('');
-    expect(text.getAttribute('fontVariant')).to.be.eqls('');
-    expect(text.getAttribute('textAlign')).to.be.eqls('');
-    expect(text.getAttribute('textBaseline')).to.be.eqls('');
-    expect(text.getAttribute('fill')).to.be.eqls('black');
-    expect(text.getAttribute('stroke')).to.be.eqls('');
-    expect(text.getAttribute('letterSpacing')).to.be.eqls('');
-    expect(text.getAttribute('lineHeight')).to.be.eqls('');
-    expect(text.getAttribute('lineWidth')).to.be.eqls('');
-    expect(text.getAttribute('miterLimit')).to.be.eqls('');
-    // expect(text.getAttribute('whiteSpace')).to.be.eqls('pre');
-    expect(text.getAttribute('wordWrap')).to.be.eqls(false);
-    expect(text.getAttribute('leading')).to.be.eqls(0);
-    expect(text.getAttribute('dx')).to.be.eqls('');
-    expect(text.getAttribute('dy')).to.be.eqls('');
+    expect(text.getAttribute('text')).toBe('hello');
+    expect(text.getAttribute('fontFamily')).toBe('PingFang SC');
+    expect(text.getAttribute('fontSize')).toBe('');
+    expect(text.getAttribute('fontWeight')).toBe('');
+    expect(text.getAttribute('fontStyle')).toBe('');
+    expect(text.getAttribute('fontVariant')).toBe('');
+    expect(text.getAttribute('textAlign')).toBe('');
+    expect(text.getAttribute('textBaseline')).toBe('');
+    expect(text.getAttribute('fill')).toBe('black');
+    expect(text.getAttribute('stroke')).toBe('');
+    expect(text.getAttribute('letterSpacing')).toBe('');
+    expect(text.getAttribute('lineHeight')).toBe('');
+    expect(text.getAttribute('lineWidth')).toBe('');
+    expect(text.getAttribute('miterLimit')).toBe('');
+    // expect(text.getAttribute('whiteSpace')).toBe('pre');
+    expect(text.getAttribute('wordWrap')).toBe(false);
+    expect(text.getAttribute('leading')).toBe(0);
+    expect(text.getAttribute('dx')).toBe('');
+    expect(text.getAttribute('dy')).toBe('');
 
     /**
      * computed values
      */
     const styleMap = text.computedStyleMap();
     // user-defined
-    expect(styleMap.get('text')).to.be.eqls('hello');
-    expect(styleMap.get('fontFamily')).to.be.eqls('PingFang SC');
+    expect(styleMap.get('text')).toBe('hello');
+    expect(styleMap.get('fontFamily')).toBe('PingFang SC');
     const fontSize = styleMap.get('fontSize') as CSSKeywordValue;
-    expect(fontSize instanceof CSSKeywordValue).to.be.true;
-    expect(fontSize.value).to.be.eqls('unset');
+    expect(fontSize instanceof CSSKeywordValue).toBeTruthy();
+    expect(fontSize.value).toBe('unset');
     const fontWeight = styleMap.get('fontWeight') as CSSKeywordValue;
-    expect(fontWeight instanceof CSSKeywordValue).to.be.true;
-    expect(fontWeight.value).to.be.eqls('unset');
+    expect(fontWeight instanceof CSSKeywordValue).toBeTruthy();
+    expect(fontWeight.value).toBe('unset');
     const fontStyle = styleMap.get('fontStyle') as CSSKeywordValue;
-    expect(fontStyle instanceof CSSKeywordValue).to.be.true;
-    expect(fontStyle.value).to.be.eqls('unset');
+    expect(fontStyle instanceof CSSKeywordValue).toBeTruthy();
+    expect(fontStyle.value).toBe('unset');
     const fontVariant = styleMap.get('fontVariant') as CSSKeywordValue;
-    expect(fontVariant instanceof CSSKeywordValue).to.be.true;
-    expect(fontVariant.value).to.be.eqls('unset');
+    expect(fontVariant instanceof CSSKeywordValue).toBeTruthy();
+    expect(fontVariant.value).toBe('unset');
     const textAlign = styleMap.get('textAlign') as CSSKeywordValue;
-    expect(textAlign instanceof CSSKeywordValue).to.be.true;
-    expect(textAlign.value).to.be.eqls('unset');
+    expect(textAlign instanceof CSSKeywordValue).toBeTruthy();
+    expect(textAlign.value).toBe('unset');
     const textBaseline = styleMap.get('textBaseline') as CSSKeywordValue;
-    expect(textBaseline instanceof CSSKeywordValue).to.be.true;
-    expect(textBaseline.value).to.be.eqls('unset');
+    expect(textBaseline instanceof CSSKeywordValue).toBeTruthy();
+    expect(textBaseline.value).toBe('unset');
 
     /**
      * used values
      */
     let parsedStyle = text.parsedStyle;
-    expect(parsedStyle.fill instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.fill as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).to.be.eqls(1);
-    expect(parsedStyle.stroke instanceof CSSRGB).to.be.true;
-    expect((parsedStyle.stroke as CSSRGB).r).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).g).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).b).to.be.eqls(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).to.be.eqls(0);
+    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.fill as CSSRGB).r).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
+    expect((parsedStyle.fill as CSSRGB).alpha).toBe(1);
+    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
+    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
+    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.fillOpacity).to.be.undefined;
-    expect(parsedStyle.strokeOpacity).to.be.undefined;
-    expect(parsedStyle.lineCap).to.be.undefined;
-    expect(parsedStyle.lineJoin).to.be.undefined;
-    expect(parsedStyle.visibility).to.be.undefined;
-    expect(parsedStyle.fontWeight).to.be.undefined;
-    expect(parsedStyle.fontStyle).to.be.undefined;
-    expect(parsedStyle.fontVariant).to.be.undefined;
-    expect(parsedStyle.textAlign).to.be.undefined;
-    expect(parsedStyle.textBaseline).to.be.undefined;
+    expect(parsedStyle.fillOpacity).toBeUndefined();
+    expect(parsedStyle.strokeOpacity).toBeUndefined();
+    expect(parsedStyle.lineCap).toBeUndefined();
+    expect(parsedStyle.lineJoin).toBeUndefined();
+    expect(parsedStyle.visibility).toBeUndefined();
+    expect(parsedStyle.fontWeight).toBeUndefined();
+    expect(parsedStyle.fontStyle).toBeUndefined();
+    expect(parsedStyle.fontVariant).toBeUndefined();
+    expect(parsedStyle.textAlign).toBeUndefined();
+    expect(parsedStyle.textBaseline).toBeUndefined();
 
     await canvas.ready;
     /**
@@ -687,19 +703,19 @@ describe('StyleValueRegistry initialization', () => {
 
     parsedStyle = text.parsedStyle;
     // inherit from document.documentElement
-    expect(parsedStyle.fillOpacity).to.be.eqls(1);
-    expect(parsedStyle.strokeOpacity).to.be.eqls(1);
-    expect(parsedStyle.lineCap).to.be.eqls('butt');
-    expect(parsedStyle.lineJoin).to.be.eqls('miter');
-    expect(parsedStyle.visibility).to.be.eqls('visible');
-    expect(parsedStyle.text).to.be.eqls('hello');
-    expect(parsedStyle.fontFamily).to.be.eqls('PingFang SC');
-    expect(parsedStyle.fontSize).to.be.eqls(16);
-    expect(parsedStyle.fontWeight).to.be.eqls('normal');
-    expect(parsedStyle.fontVariant).to.be.eqls('normal');
-    expect(parsedStyle.fontStyle).to.be.eqls('normal');
-    expect(parsedStyle.textAlign).to.be.eqls('start');
-    expect(parsedStyle.textBaseline).to.be.eqls('alphabetic');
-    expect(parsedStyle.textTransform).to.be.eqls('none');
+    expect(parsedStyle.fillOpacity).toBe(1);
+    expect(parsedStyle.strokeOpacity).toBe(1);
+    expect(parsedStyle.lineCap).toBe('butt');
+    expect(parsedStyle.lineJoin).toBe('miter');
+    expect(parsedStyle.visibility).toBe('visible');
+    expect(parsedStyle.text).toBe('hello');
+    expect(parsedStyle.fontFamily).toBe('PingFang SC');
+    expect(parsedStyle.fontSize).toBe(16);
+    expect(parsedStyle.fontWeight).toBe('normal');
+    expect(parsedStyle.fontVariant).toBe('normal');
+    expect(parsedStyle.fontStyle).toBe('normal');
+    expect(parsedStyle.textAlign).toBe('start');
+    expect(parsedStyle.textBaseline).toBe('alphabetic');
+    expect(parsedStyle.textTransform).toBe('none');
   });
 });

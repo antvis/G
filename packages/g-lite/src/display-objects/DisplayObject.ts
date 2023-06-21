@@ -2,29 +2,31 @@ import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { PropertyParseOptions } from '../css';
-import { noneColor } from '../css';
+import { noneColor } from '../css/CSSStyleValuePool';
 import type {
   DisplayObjectConfig,
   IAnimation,
-  IChildNode,
   ICSSStyleDeclaration,
+  IChildNode,
   IElement,
 } from '../dom';
-import { Element, ElementEvent, MutationEvent } from '../dom';
+import { Element } from '../dom/Element';
+import { MutationEvent } from '../dom/MutationEvent';
+import { ElementEvent } from '../dom/interfaces';
+import { runtime } from '../global-runtime';
 import { Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import {
-  kebabize,
   createVec3,
   decompose,
   formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
+  kebabize,
   rad2deg,
 } from '../utils';
 import type { CustomElement } from './CustomElement';
-import { runtime } from '../global-runtime';
 
 export function isDisplayObject(value: any): value is DisplayObject {
   return !!(value as DisplayObject)?.nodeName;

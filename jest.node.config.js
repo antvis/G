@@ -16,11 +16,14 @@ const moduleNameMapper = {
     }),
     {},
   ),
+  // @see https://stackoverflow.com/a/75928101
+  d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
+  '^d3-(.*)$': '<rootDir>/node_modules/d3-$1/dist/d3-$1.min.js',
 };
 
 module.exports = {
+  testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
-
   testMatch: [
     '<rootDir>/__tests__/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)',
   ],
@@ -30,17 +33,17 @@ module.exports = {
       isolatedModules: true,
       tsconfig: {
         allowJs: true,
-        target: 'ES2019',
+        target: 'esnext',
+        esModuleInterop: true,
       },
     },
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-  modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  modulePathIgnorePatterns: ['dist'],
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
   transformIgnorePatterns: [
-    // '<rootDir>/node_modules/(?!@mapbox)',
     // @see https://stackoverflow.com/a/69179139
     '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
   ],

@@ -16,13 +16,14 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
-  "browser": {
-    "fs": false,
-    "path": false
-  },
   "types": "dist/index.d.ts",
   "files": [
     "package.json",
@@ -31,28 +32,29 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g-plugin-image-loader": "^1.1.54",
-    "@antv/g-shader-components": "^1.7.55",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-math": "workspace:*",
+    "@antv/g-plugin-image-loader": "workspace:*",
+    "@antv/g-shader-components": "workspace:*",
     "@antv/util": "^3.3.1",
-    "@types/offscreencanvas": "^2019.6.4",
     "@webgpu/types": "^0.1.6",
     "earcut": "^2.2.3",
-    "eventemitter3": "^4.0.0",
+    "eventemitter3": "^5.0.1",
     "gl-matrix": "^3.1.0",
-    "tslib": "^2.3.1"
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
     "@rollup/plugin-wasm": "^5.1.2",
     "@types/earcut": "^2.1.1",
-    "@types/jest": "^25.0.0",
+    "@types/offscreencanvas": "^2019.6.4",
     "glslify-import": "3.1.0",
     "rollup-plugin-glslify": "^1.2.1"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

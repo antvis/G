@@ -1,33 +1,32 @@
-import { expect } from 'chai';
 import { parseLength } from '../../../../packages/g-lite/src/css';
 
 describe('Property Dimension', () => {
   it('parse length with unit', () => {
     let result = parseLength('10px');
-    expect(result.toString()).to.be.eqls('10px');
+    expect(result.toString()).toBe('10px');
 
     result = parseLength('10.5px');
-    expect(result.toString()).to.be.eqls('10.5px');
+    expect(result.toString()).toBe('10.5px');
 
     result = parseLength('0.5px');
-    expect(result.toString()).to.be.eqls('0.5px');
+    expect(result.toString()).toBe('0.5px');
 
     result = parseLength('0');
-    expect(result.toString()).to.be.eqls('0px');
+    expect(result.toString()).toBe('0px');
 
     result = parseLength(null);
-    expect(result.toString()).to.be.eqls('0px');
+    expect(result.toString()).toBe('0px');
 
     result = parseLength(undefined);
-    expect(result.toString()).to.be.eqls('0px');
+    expect(result.toString()).toBe('0px');
   });
 
   // it('parse length with percent', () => {
-  //   expect(parseLengthOrPercentage('10px')).to.be.eqls({ unit: 'px', value: 10 });
-  //   expect(parseLengthOrPercentage('10.5px')).to.be.eqls({ unit: 'px', value: 10.5 });
-  //   expect(parseLengthOrPercentage('0.5px')).to.be.eqls({ unit: 'px', value: 0.5 });
-  //   expect(parseLengthOrPercentage('30%')).to.be.eqls({ unit: '%', value: 30 });
-  //   expect(parseLengthOrPercentage('30.5%')).to.be.eqls({ unit: '%', value: 30.5 });
+  //   expect(parseLengthOrPercentage('10px')).toBe({ unit: 'px', value: 10 });
+  //   expect(parseLengthOrPercentage('10.5px')).toBe({ unit: 'px', value: 10.5 });
+  //   expect(parseLengthOrPercentage('0.5px')).toBe({ unit: 'px', value: 0.5 });
+  //   expect(parseLengthOrPercentage('30%')).toBe({ unit: '%', value: 30 });
+  //   expect(parseLengthOrPercentage('30.5%')).toBe({ unit: '%', value: 30.5 });
   // });
 
   // it('parse length with em', () => {
@@ -36,17 +35,17 @@ describe('Property Dimension', () => {
   //       fontSize: 10,
   //     },
   //   });
-  //   expect(parseLengthOrPercent('1.5em', circle)).to.be.eqls({ unit: 'px', value: 0 });
+  //   expect(parseLengthOrPercent('1.5em', circle)).toBe({ unit: 'px', value: 0 });
 
   //   group.appendChild(circle);
-  //   expect(parseLengthOrPercent('1.5em', circle)).to.be.eqls({ unit: 'px', value: 15 });
+  //   expect(parseLengthOrPercent('1.5em', circle)).toBe({ unit: 'px', value: 15 });
   // });
 
   // it('parse angle with unit', () => {
-  //   expect(parseAngle('10deg')).to.be.eqls({ unit: 'deg', value: 10 });
-  //   expect(parseAngle('10rad')).to.be.eqls({ unit: 'rad', value: 10 });
-  //   expect(parseAngle('1turn')).to.be.eqls({ unit: 'turn', value: 1 });
-  //   expect(parseAngle('1grad')).to.be.eqls({ unit: 'grad', value: 1 });
+  //   expect(parseAngle('10deg')).toBe({ unit: 'deg', value: 10 });
+  //   expect(parseAngle('10rad')).toBe({ unit: 'rad', value: 10 });
+  //   expect(parseAngle('1turn')).toBe({ unit: 'turn', value: 1 });
+  //   expect(parseAngle('1grad')).toBe({ unit: 'grad', value: 1 });
   // });
 
   // it('should merge length correctly', () => {
@@ -60,9 +59,9 @@ describe('Property Dimension', () => {
   //       value: 20,
   //     },
   //   );
-  //   expect(left).to.be.eqls(10);
-  //   expect(right).to.be.eqls(20);
-  //   expect(format(30)).to.be.eqls('30px');
+  //   expect(left).toBe(10);
+  //   expect(right).toBe(20);
+  //   expect(format(30)).toBe('30px');
   // });
 
   // it('should merge length with percentage and pixel correctly', () => {
@@ -79,9 +78,9 @@ describe('Property Dimension', () => {
   //     circle,
   //     0,
   //   );
-  //   expect(left).to.be.eqls(10);
-  //   expect(right).to.be.eqls(40);
-  //   expect(format(30)).to.be.eqls('30px');
+  //   expect(left).toBe(10);
+  //   expect(right).toBe(40);
+  //   expect(format(30)).toBe('30px');
   // });
 
   // it('should merge length with percentage correctly', () => {
@@ -98,8 +97,8 @@ describe('Property Dimension', () => {
   //     circle,
   //     0,
   //   );
-  //   expect(left).to.be.eqls(40);
-  //   expect(right).to.be.eqls(40);
-  //   expect(format(30)).to.be.eqls('30px');
+  //   expect(left).toBe(40);
+  //   expect(right).toBe(40);
+  //   expect(format(30)).toBe('30px');
   // });
 });

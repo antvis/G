@@ -1,16 +1,6 @@
-import type { DisplayObjectConfig } from '@antv/g';
-import { Canvas, Circle, Text, CustomElement } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
-
-chai.use(chaiAlmost(0.0001));
-chai.use(sinonChai);
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import type { DisplayObjectConfig } from '../../../packages/g/src';
+import { Canvas, Circle, CustomElement, Text } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -45,9 +35,9 @@ describe('CustomElement', () => {
   });
 
   it('should create custom element correctly.', async () => {
-    const connectedCallback = sinon.spy();
-    const disconnectedCallback = sinon.spy();
-    const attributeChangedCallback = sinon.spy();
+    const connectedCallback = jest.fn();
+    const disconnectedCallback = jest.fn();
+    const attributeChangedCallback = jest.fn();
 
     class ElementA extends CustomElement<AProps> {
       constructor(options: DisplayObjectConfig<AProps>) {
@@ -75,8 +65,8 @@ describe('CustomElement', () => {
       }
       attributeChangedCallback<Key extends never>(
         name: Key,
-        oldValue: {}[Key],
-        newValue: {}[Key],
+        oldValue: any,
+        newValue: any,
       ) {
         attributeChangedCallback();
       }
@@ -86,37 +76,31 @@ describe('CustomElement', () => {
 
     a.style.x = 50;
     a.style.y = 50;
-    expect(a.getLocalPosition()).to.be.eqls([50, 50, 0]);
+    expect(a.getLocalPosition()).toStrictEqual([50, 50, 0]);
 
-    expect(a.style.size).to.be.eqls(10);
+    expect(a.style.size).toBe(10);
     a.setAttribute('size', 20);
-    expect(a.style.size).to.be.eqls(20);
+    expect(a.style.size).toBe(20);
 
     // callback won't get called before mounted
-    // @ts-ignore
-    expect(connectedCallback).to.have.been.not.called;
-    // @ts-ignore
-    expect(disconnectedCallback).to.have.been.not.called;
-    // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.not.called;
+    expect(connectedCallback).not.toHaveBeenCalled();
+    expect(disconnectedCallback).not.toHaveBeenCalled();
+    expect(attributeChangedCallback).not.toHaveBeenCalled();
 
     await canvas.ready;
     // append to canvas
     canvas.appendChild(a);
-    // @ts-ignore
-    expect(connectedCallback).to.have.been.called;
+    expect(connectedCallback).toHaveBeenCalled();
 
     // do query
-    expect(a.querySelector('#circle')).eqls(a.childNodes[0]);
+    expect(a.querySelector('#circle')).toBe(a.childNodes[0]);
 
     a.style.size = 100;
-    // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.called;
+    expect(attributeChangedCallback).toHaveBeenCalled();
 
     // unmounted
     canvas.removeChild(a);
-    // @ts-ignore
-    expect(disconnectedCallback).to.have.been.called;
+    expect(disconnectedCallback).toHaveBeenCalled();
   });
 
   it('should use built-in attributes correctly.', async () => {
@@ -132,12 +116,12 @@ describe('CustomElement', () => {
       disconnectedCallback() {}
       attributeChangedCallback<Key extends never>(
         name: Key,
-        oldValue: {}[Key],
-        newValue: {}[Key],
+        oldValue: any,
+        newValue: any,
       ) {}
     }
     const a = new ElementB({ style: { size: 10, path: 'M100,100 L200,200' } });
     // conflict with built-in props
-    expect(a.getLocalPosition()).to.be.eqls([0, 0, 0]);
+    expect(a.getLocalPosition()).toStrictEqual([0, 0, 0]);
   });
 });

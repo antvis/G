@@ -366,7 +366,12 @@ export class Animation implements IAnimation {
     // }
 
     if (this.oncancel) {
-      const event = new AnimationEvent(null, this, this.currentTime, null);
+      const event = new AnimationEvent(
+        null,
+        this,
+        this.currentTime,
+        null,
+      ) as AnimationPlaybackEvent;
       setTimeout(() => {
         this.oncancel(event);
       });
@@ -518,7 +523,7 @@ export class Animation implements IAnimation {
             this,
             this.currentTime,
             baseTime,
-          );
+          ) as AnimationPlaybackEvent;
           setTimeout(() => {
             if (this.onfinish) {
               this.onfinish(event);
@@ -534,7 +539,7 @@ export class Animation implements IAnimation {
           this,
           this.currentTime,
           baseTime,
-        );
+        ) as AnimationPlaybackEvent;
         this.onframe(event);
       }
       this._finishedFlag = false;

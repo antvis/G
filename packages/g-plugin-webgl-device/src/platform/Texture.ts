@@ -1,18 +1,16 @@
 import {
-  GL,
-  FormatTypeFlags,
-  ResourceType,
-  TextureDimension,
-  getFormatSamplerKind,
-  getFormatTypeFlags,
-  assert,
-  isPowerOfTwo,
-} from '@antv/g-plugin-device-renderer';
-import {
   Format,
+  FormatTypeFlags,
+  GL,
+  ResourceType,
   SamplerFormatKind,
   Texture,
   TextureDescriptor,
+  TextureDimension,
+  assert,
+  getFormatSamplerKind,
+  getFormatTypeFlags,
+  isPowerOfTwo,
 } from '@antv/g-plugin-device-renderer';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
@@ -211,7 +209,11 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       width = this.width;
       height = this.height;
     } else {
+      // FIXME: Property 'width' does not exist on type 'TexImageSource'.
+      // Property 'width' does not exist on type 'VideoFrame'.
+      // @ts-ignore
       width = (data as TexImageSource).width;
+      // @ts-ignore
       height = (data as TexImageSource).height;
       // update size
       this.width = width;

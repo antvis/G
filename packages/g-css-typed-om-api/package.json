@@ -31,8 +31,8 @@
   "scripts": {
     "sync": "tnpm sync"
   },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
+  "dependencies": {
+    "@antv/g-lite": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

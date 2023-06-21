@@ -101,10 +101,12 @@ export class TextService {
 
     const canvas =
       this.runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context =
-      this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas, {
-        willReadFrequently: true
-      });
+    const context = this.runtime.offscreenCanvas.getOrCreateContext(
+      offscreenCanvas,
+      {
+        willReadFrequently: true,
+      },
+    );
 
     context.font = font;
     const metricsString =

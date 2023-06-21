@@ -8,7 +8,7 @@ import {
   minVec3,
   scaleVec3,
   subVec3,
-} from '../utils';
+} from '../utils/math';
 import type { Plane } from './Plane';
 
 /**

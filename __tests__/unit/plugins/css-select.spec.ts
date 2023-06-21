@@ -1,7 +1,6 @@
-import { Canvas, Group, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Plugin } from '@antv/g-plugin-css-select';
-import chai, { expect } from 'chai';
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Plugin } from '../../../packages/g-plugin-css-select/src';
+import { Canvas, Circle, Group } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -29,7 +28,7 @@ describe('CSS Select Plugin', () => {
   });
 
   it('should query with advanced selector correctly.', async () => {
-    expect(plugin.name).to.be.eqls('css-select');
+    expect(plugin.name).toBe('css-select');
 
     await canvas.ready;
 
@@ -84,29 +83,29 @@ describe('CSS Select Plugin', () => {
 
     canvas.appendChild(solarSystem);
 
-    expect(solarSystem.querySelector('#sun')).to.eqls(sun);
-    expect(solarSystem.querySelectorAll('[r=100]')).to.eqls([sun]);
-    expect(solarSystem.querySelectorAll('[r=25]')).to.eqls([moon]);
+    expect(solarSystem.querySelector('#sun')).toBe(sun);
+    expect(solarSystem.querySelectorAll('[r=100]')).toStrictEqual([sun]);
+    expect(solarSystem.querySelectorAll('[r=25]')).toStrictEqual([moon]);
 
-    expect(solarSystem.querySelectorAll('[fill=#1890FF]')).to.eqls([
+    expect(solarSystem.querySelectorAll('[fill=#1890FF]')).toStrictEqual([
       sun,
       earth,
       moon,
     ]);
 
-    expect(solarSystem.querySelectorAll('[line-width=4]')).to.eqls([
+    expect(solarSystem.querySelectorAll('[line-width=4]')).toStrictEqual([
       sun,
       earth,
       moon,
     ]);
 
-    expect(solarSystem.querySelectorAll('[xx=4]')).to.eqls([]);
+    expect(solarSystem.querySelectorAll('[xx=4]')).toStrictEqual([]);
 
-    expect(renderer.getPlugins().length).to.eqls(8);
+    expect(renderer.getPlugins().length).toBe(8);
     renderer.unregisterPlugin(plugin);
-    expect(renderer.getPlugins().length).to.eqls(7);
+    expect(renderer.getPlugins().length).toBe(7);
 
     renderer.unregisterPlugin(plugin);
-    expect(renderer.getPlugins().length).to.eqls(7);
+    expect(renderer.getPlugins().length).toBe(7);
   });
 });

@@ -1,8 +1,15 @@
+import type {
+  Disposable,
+  Resource,
+  ResourceBase,
+} from '@antv/g-plugin-device-renderer';
 import EventEmitter from 'eventemitter3';
-import type { Disposable, Resource, ResourceBase } from '@antv/g-plugin-device-renderer';
 import type { Device_GL } from './Device';
 
-export class ResourceBase_GL extends EventEmitter implements ResourceBase, Disposable {
+export class ResourceBase_GL
+  extends EventEmitter
+  implements ResourceBase, Disposable
+{
   id: number;
 
   name: string;
@@ -16,13 +23,17 @@ export class ResourceBase_GL extends EventEmitter implements ResourceBase, Dispo
     this.device = device;
 
     if (this.device.resourceCreationTracker !== null) {
-      this.device.resourceCreationTracker.trackResourceCreated(this as unknown as Resource);
+      this.device.resourceCreationTracker.trackResourceCreated(
+        this as unknown as Resource,
+      );
     }
   }
 
   destroy() {
     if (this.device.resourceCreationTracker !== null) {
-      this.device.resourceCreationTracker.trackResourceDestroyed(this as unknown as Resource);
+      this.device.resourceCreationTracker.trackResourceDestroyed(
+        this as unknown as Resource,
+      );
     }
   }
 }

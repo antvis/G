@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { AABB, Plane } from '../../../packages/g-lite/src';
 
 describe('AABB', () => {
@@ -6,14 +5,14 @@ describe('AABB', () => {
     const aabb = new AABB();
     aabb.update([0, 0, 0], [0.5, 0.5, 0.5]);
 
-    expect(aabb.getMin()).to.eqls([-0.5, -0.5, -0.5]);
-    expect(aabb.getMax()).to.eqls([0.5, 0.5, 0.5]);
+    expect(aabb.getMin()).toStrictEqual([-0.5, -0.5, -0.5]);
+    expect(aabb.getMax()).toStrictEqual([0.5, 0.5, 0.5]);
 
     aabb.setMinMax([1, 1, 1], [2, 2, 2]);
-    expect(aabb.center).to.eqls([1.5, 1.5, 1.5]);
-    expect(aabb.halfExtents).to.eqls([0.5, 0.5, 0.5]);
-    expect(aabb.getMin()).to.eqls([1, 1, 1]);
-    expect(aabb.getMax()).to.eqls([2, 2, 2]);
+    expect(aabb.center).toStrictEqual([1.5, 1.5, 1.5]);
+    expect(aabb.halfExtents).toStrictEqual([0.5, 0.5, 0.5]);
+    expect(aabb.getMin()).toStrictEqual([1, 1, 1]);
+    expect(aabb.getMax()).toStrictEqual([2, 2, 2]);
   });
 
   test('should merge 2 AABBs correctly.', () => {
@@ -24,10 +23,10 @@ describe('AABB', () => {
 
     aabb1.add(aabb2);
 
-    expect(aabb1.center).to.eqls([0.5, 0.5, 0.5]);
-    expect(aabb1.halfExtents).to.eqls([1, 1, 1]);
-    expect(aabb1.getMin()).to.eqls([-0.5, -0.5, -0.5]);
-    expect(aabb1.getMax()).to.eqls([1.5, 1.5, 1.5]);
+    expect(aabb1.center).toStrictEqual([0.5, 0.5, 0.5]);
+    expect(aabb1.halfExtents).toStrictEqual([1, 1, 1]);
+    expect(aabb1.getMin()).toStrictEqual([-0.5, -0.5, -0.5]);
+    expect(aabb1.getMax()).toStrictEqual([1.5, 1.5, 1.5]);
   });
 
   test('should intersects with another AABB.', () => {
@@ -38,8 +37,8 @@ describe('AABB', () => {
     const aabb3 = new AABB();
     aabb3.update([2, 2, 2], [0.5, 0.5, 0.5]);
 
-    expect(aabb1.intersects(aabb2)).to.true;
-    expect(aabb1.intersects(aabb3)).to.false;
+    expect(aabb1.intersects(aabb2)).toBeTruthy();
+    expect(aabb1.intersects(aabb3)).toBeFalsy();
   });
 
   // test('should contains a Point.', () => {
@@ -48,7 +47,7 @@ describe('AABB', () => {
   //     [0.5, 0.5, 0.5],
   //   );
 
-  //   expect(aabb1.containsPoint([0.1, 0.1, 0.1])).to.true;
+  //   expect(aabb1.containsPoint([0.1, 0.1, 0.1])).toBeTruthy();
   //   expect(aabb1.containsPoint([0.6, 0.1, 0.1])).to.false;
   // });
 
@@ -60,48 +59,48 @@ describe('AABB', () => {
 
   //   let intersection = vec3.create();
   //   let intersects = ray1.intersectsAABB(aabb1, intersection);
-  //   expect(intersects).to.true;
-  //   expect(intersection).to.eqls([0, 0.5, 0));
+  //   expect(intersects).toBeTruthy();
+  //   expect(intersection).toStrictEqual([0, 0.5, 0));
 
   //   intersection = vec3.create();
   //   intersects = ray2.intersectsAABB(aabb1, intersection);
   //   expect(intersects).to.false;
-  //   expect(intersection).to.eqls(vec3.create());
+  //   expect(intersection).toBe(vec3.create());
   // });
 
   test('should get p-vertex & n-vertex based on each plane of culling volume.', () => {
     const aabb = new AABB();
     aabb.update([0, 0, 0], [0.5, 0.5, 0.5]);
     let plane = new Plane(0, [1, 1, 1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([-0.5, -0.5, -0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([0.5, 0.5, 0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([-0.5, -0.5, -0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([0.5, 0.5, 0.5]);
 
     plane = new Plane(0, [1, -1, 1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([-0.5, 0.5, -0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([0.5, -0.5, 0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([-0.5, 0.5, -0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([0.5, -0.5, 0.5]);
 
     plane = new Plane(0, [1, 1, -1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([-0.5, -0.5, 0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([0.5, 0.5, -0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([-0.5, -0.5, 0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([0.5, 0.5, -0.5]);
 
     plane = new Plane(0, [-1, 1, 1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([0.5, -0.5, -0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([-0.5, 0.5, 0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([0.5, -0.5, -0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([-0.5, 0.5, 0.5]);
 
     plane = new Plane(0, [-1, -1, 1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([0.5, 0.5, -0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([-0.5, -0.5, 0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([0.5, 0.5, -0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([-0.5, -0.5, 0.5]);
 
     plane = new Plane(0, [1, -1, -1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([-0.5, 0.5, 0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([0.5, -0.5, -0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([-0.5, 0.5, 0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([0.5, -0.5, -0.5]);
 
     plane = new Plane(0, [-1, 1, -1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([0.5, -0.5, 0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([-0.5, 0.5, -0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([0.5, -0.5, 0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([-0.5, 0.5, -0.5]);
 
     plane = new Plane(0, [-1, -1, -1]);
-    expect(aabb.getNegativeFarPoint(plane)).to.eqls([0.5, 0.5, 0.5]);
-    expect(aabb.getPositiveFarPoint(plane)).to.eqls([-0.5, -0.5, -0.5]);
+    expect(aabb.getNegativeFarPoint(plane)).toStrictEqual([0.5, 0.5, 0.5]);
+    expect(aabb.getPositiveFarPoint(plane)).toStrictEqual([-0.5, -0.5, -0.5]);
   });
 });

@@ -1,6 +1,6 @@
 import type { DisplayObject } from '../display-objects';
 import type { IElement } from '../dom';
-import type { StyleValueRegistry } from './interfaces';
+import type { GlobalRuntime } from '../global-runtime';
 
 export type CSSPropertySyntaxFactory = <P, U>(
   syntax: string,
@@ -23,7 +23,7 @@ type CSSPropertyCalculator<Parsed, Used> = (
   oldParsed: Parsed,
   parsed: Parsed,
   object: IElement,
-  registry: StyleValueRegistry,
+  runtime: GlobalRuntime,
 ) => Used;
 
 /**

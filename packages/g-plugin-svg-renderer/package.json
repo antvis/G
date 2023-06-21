@@ -16,6 +16,11 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -27,18 +32,16 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
+    "@antv/g-lite": "workspace:*",
     "@antv/util": "^3.3.1",
-    "gl-matrix": "^3.1.0",
-    "tslib": "^2.3.1"
-  },
-  "devDependencies": {
-    "@types/jest": "^25.0.0"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
+    "gl-matrix": "^3.3.0",
+    "tslib": "^2.5.3"
   },
   "publishConfig": {
     "access": "public"

@@ -1,3 +1,4 @@
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
 import {
   Canvas,
   Circle,
@@ -6,15 +7,8 @@ import {
   Rect,
   RectStyleProps,
   Shape,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-import chaiAlmost from 'chai-almost';
-import sinonChai from 'sinon-chai';
+} from '../../../packages/g/src';
 import { sleep } from '../utils';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -55,7 +49,7 @@ describe('Document', () => {
 
     await canvas.ready;
     canvas.appendChild(circle);
-    expect(circle.style.r).to.be.eql(50);
+    expect(circle.style.r).toBe(50);
 
     const ellipse = canvas.document.createElement<Ellipse, EllipseStyleProps>(
       Shape.ELLIPSE,
@@ -67,8 +61,8 @@ describe('Document', () => {
       },
     );
     canvas.appendChild(ellipse);
-    expect(ellipse.style.rx).to.be.eql(50);
-    expect(ellipse.style.ry).to.be.eql(50);
+    expect(ellipse.style.rx).toBe(50);
+    expect(ellipse.style.ry).toBe(50);
 
     const rect = canvas.document.createElement<Rect, RectStyleProps>(
       Shape.RECT,
@@ -80,8 +74,8 @@ describe('Document', () => {
       },
     );
     canvas.appendChild(rect);
-    expect(rect.style.width).to.be.eql(50);
-    expect(rect.style.height).to.be.eql(50);
+    expect(rect.style.width).toBe(50);
+    expect(rect.style.height).toBe(50);
 
     // const image = canvas.document.createElement<Image, ImageStyleProps>(Shape.IMAGE, {
     //   style: {
@@ -91,36 +85,36 @@ describe('Document', () => {
     //   },
     // });
     // canvas.appendChild(image);
-    // expect(image.style.width).to.be.eql(50);
-    // expect(image.style.height).to.be.eql(50);
+    // expect(image.style.width).toBe(50);
+    // expect(image.style.height).toBe(50);
   });
 
   it('should create documentElement correctly', () => {
     const element = canvas.document.documentElement;
-    expect(canvas.document.children[0]).to.be.eql(element);
-    expect(canvas.document.childElementCount).to.be.eql(1);
-    expect(canvas.document.firstElementChild).to.be.eql(element);
-    expect(canvas.document.lastElementChild).to.be.eql(element);
+    expect(canvas.document.children[0]).toBe(element);
+    expect(canvas.document.childElementCount).toBe(1);
+    expect(canvas.document.firstElementChild).toBe(element);
+    expect(canvas.document.lastElementChild).toBe(element);
   });
 
   it('should throw errors when calling appendChild', () => {
-    expect(canvas.document.cloneNode).to.throw('Method not implemented.');
-    expect(canvas.document.appendChild).to.throw(
+    expect(canvas.document.cloneNode).toThrow('Method not implemented.');
+    expect(canvas.document.appendChild).toThrow(
       'Use document.documentElement instead.',
     );
-    expect(canvas.document.insertBefore).to.throw(
+    expect(canvas.document.insertBefore).toThrow(
       'Use document.documentElement instead.',
     );
-    expect(canvas.document.removeChild).to.throw(
+    expect(canvas.document.removeChild).toThrow(
       'Use document.documentElement instead.',
     );
-    expect(canvas.document.replaceChild).to.throw(
+    expect(canvas.document.replaceChild).toThrow(
       'Use document.documentElement instead.',
     );
-    expect(canvas.document.append).to.throw(
+    expect(canvas.document.append).toThrow(
       'Use document.documentElement instead.',
     );
-    expect(canvas.document.prepend).to.throw(
+    expect(canvas.document.prepend).toThrow(
       'Use document.documentElement instead.',
     );
   });
@@ -141,63 +135,65 @@ describe('Document', () => {
 
     canvas.appendChild(ellipse);
 
-    expect(canvas.document.getElementById('ellipse') as Ellipse).eqls(ellipse);
-    expect(canvas.document.getElementsByName('ellipse-name')[0]).eqls(ellipse);
-    expect(canvas.document.getElementsByTagName(Shape.ELLIPSE)[0]).eqls(
+    expect(canvas.document.getElementById('ellipse') as Ellipse).toBe(ellipse);
+    expect(canvas.document.getElementsByName('ellipse-name')[0]).toBe(ellipse);
+    expect(canvas.document.getElementsByTagName(Shape.ELLIPSE)[0]).toBe(
       ellipse,
     );
-    expect(canvas.document.getElementsByClassName('ellipse-classname')[0]).eqls(
+    expect(canvas.document.getElementsByClassName('ellipse-classname')[0]).toBe(
       ellipse,
     );
-    expect(canvas.document.querySelector('[name=ellipse-name]')).eqls(ellipse);
-    expect(canvas.document.querySelectorAll('[name=ellipse-name]')[0]).eqls(
+    expect(canvas.document.querySelector('[name=ellipse-name]')).toBe(ellipse);
+    expect(canvas.document.querySelectorAll('[name=ellipse-name]')[0]).toBe(
       ellipse,
     );
-    expect(canvas.document.querySelector(Shape.ELLIPSE)).eqls(ellipse);
-    expect(canvas.document.querySelectorAll(Shape.ELLIPSE)[0]).eqls(ellipse);
-    expect(canvas.document.querySelector('#ellipse')).eqls(ellipse);
-    expect(canvas.document.querySelectorAll('#ellipse')[0]).eqls(ellipse);
-    expect(canvas.document.querySelector('.ellipse-classname')).eqls(ellipse);
-    expect(canvas.document.querySelectorAll('.ellipse-classname')[0]).eqls(
-      ellipse,
-    );
-
-    expect(canvas.document.find(({ id }) => id === 'ellipse')).eqls(ellipse);
-    expect(canvas.document.findAll(({ id }) => id === 'ellipse')[0]).eqls(
+    expect(canvas.document.querySelector(Shape.ELLIPSE)).toBe(ellipse);
+    expect(canvas.document.querySelectorAll(Shape.ELLIPSE)[0]).toBe(ellipse);
+    expect(canvas.document.querySelector('#ellipse')).toBe(ellipse);
+    expect(canvas.document.querySelectorAll('#ellipse')[0]).toBe(ellipse);
+    expect(canvas.document.querySelector('.ellipse-classname')).toBe(ellipse);
+    expect(canvas.document.querySelectorAll('.ellipse-classname')[0]).toBe(
       ellipse,
     );
 
-    expect(canvas.document.find(({ id }) => id === 'non-existed')).eqls(null);
-    expect(canvas.document.findAll(({ id }) => id === 'non-existed')).eqls([]);
+    expect(canvas.document.find(({ id }) => id === 'ellipse')).toBe(ellipse);
+    expect(canvas.document.findAll(({ id }) => id === 'ellipse')[0]).toBe(
+      ellipse,
+    );
+
+    expect(canvas.document.find(({ id }) => id === 'non-existed')).toBe(null);
+    expect(
+      canvas.document.findAll(({ id }) => id === 'non-existed'),
+    ).toStrictEqual([]);
   });
 
   it('should picking with element(s)FromPoint', async () => {
     let target = await canvas.document.elementFromPoint(0, 0);
     let targets = await canvas.document.elementsFromPoint(0, 0);
-    expect(target).to.be.eqls(canvas.document.documentElement);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(target).toBe(canvas.document.documentElement);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
     target = canvas.document.elementFromPointSync(0, 0);
     targets = canvas.document.elementsFromPointSync(0, 0);
-    expect(target).to.be.eqls(canvas.document.documentElement);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(target).toBe(canvas.document.documentElement);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
 
     // outside Canvas' viewport
     target = await canvas.document.elementFromPoint(-100, -100);
     targets = await canvas.document.elementsFromPoint(-100, -100);
-    expect(target).to.be.null;
-    expect(targets).to.be.eqls([]);
+    expect(target).toBeNull();
+    expect(targets).toStrictEqual([]);
     target = canvas.document.elementFromPointSync(-100, -100);
     targets = canvas.document.elementsFromPointSync(-100, -100);
-    expect(target).to.be.null;
-    expect(targets).to.be.eqls([]);
+    expect(target).toBeNull();
+    expect(targets).toStrictEqual([]);
     target = await canvas.document.elementFromPoint(1000, 1000);
     targets = await canvas.document.elementsFromPoint(1000, 1000);
-    expect(target).to.be.null;
-    expect(targets).to.be.eqls([]);
+    expect(target).toBeNull();
+    expect(targets).toStrictEqual([]);
     target = canvas.document.elementFromPointSync(1000, 1000);
     targets = canvas.document.elementsFromPointSync(1000, 1000);
-    expect(target).to.be.null;
-    expect(targets).to.be.eqls([]);
+    expect(target).toBeNull();
+    expect(targets).toStrictEqual([]);
 
     const circle = new Circle({
       style: {
@@ -214,20 +210,20 @@ describe('Document', () => {
     // picking the center of circle
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
-    expect(target).to.be.eqls(circle);
-    expect(targets).to.be.eqls([circle, canvas.document.documentElement]);
+    expect(target).toBe(circle);
+    expect(targets).toStrictEqual([circle, canvas.document.documentElement]);
     target = canvas.document.elementFromPointSync(100, 100);
     targets = canvas.document.elementsFromPointSync(100, 100);
-    expect(target).to.be.eqls(circle);
-    expect(targets).to.be.eqls([circle, canvas.document.documentElement]);
+    expect(target).toBe(circle);
+    expect(targets).toStrictEqual([circle, canvas.document.documentElement]);
     target = await canvas.document.elementFromPoint(0, 0);
     targets = await canvas.document.elementsFromPoint(0, 0);
-    expect(target).to.be.eqls(canvas.document.documentElement);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(target).toBe(canvas.document.documentElement);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
     target = canvas.document.elementFromPointSync(0, 0);
     targets = canvas.document.elementsFromPointSync(0, 0);
-    expect(target).to.be.eqls(canvas.document.documentElement);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(target).toBe(canvas.document.documentElement);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
   });
 
   it('should get element(s)FromPoint correctly, account for some style props such as `interactive`.', async () => {
@@ -255,54 +251,54 @@ describe('Document', () => {
 
     let target = await canvas.document.elementFromPoint(100, 100);
     let targets = await canvas.document.elementsFromPoint(100, 100);
-    expect(target).to.be.eqls(circle2);
-    expect(targets).to.be.eqls([
+    expect(target).toBe(circle2);
+    expect(targets).toStrictEqual([
       circle2,
       circle1,
       canvas.document.documentElement,
     ]);
     target = canvas.document.elementFromPointSync(100, 100);
     targets = canvas.document.elementsFromPointSync(100, 100);
-    expect(target).to.be.eqls(circle2);
-    expect(targets).to.be.eqls([
+    expect(target).toBe(circle2);
+    expect(targets).toStrictEqual([
       circle2,
       circle1,
       canvas.document.documentElement,
     ]);
     target = await canvas.document.elementFromPoint(0, 0);
     targets = await canvas.document.elementsFromPoint(0, 0);
-    expect(target).to.be.eqls(canvas.document.documentElement);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(target).toBe(canvas.document.documentElement);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
     target = canvas.document.elementFromPointSync(0, 0);
     targets = canvas.document.elementsFromPointSync(0, 0);
-    expect(target).to.be.eqls(canvas.document.documentElement);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(target).toBe(canvas.document.documentElement);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
 
     // change circle2's fill to 'none'
     circle2.style.fill = 'none';
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
-    expect(target).to.be.eqls(circle1);
-    expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
+    expect(target).toBe(circle1);
+    expect(targets).toStrictEqual([circle1, canvas.document.documentElement]);
     target = canvas.document.elementFromPointSync(100, 100);
     targets = canvas.document.elementsFromPointSync(100, 100);
-    expect(target).to.be.eqls(circle1);
-    expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
+    expect(target).toBe(circle1);
+    expect(targets).toStrictEqual([circle1, canvas.document.documentElement]);
 
     // change circle2's fill to 'transparent'
     circle2.style.fill = 'transparent';
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
-    expect(target).to.be.eqls(circle2);
-    expect(targets).to.be.eqls([
+    expect(target).toBe(circle2);
+    expect(targets).toStrictEqual([
       circle2,
       circle1,
       canvas.document.documentElement,
     ]);
     target = canvas.document.elementFromPointSync(100, 100);
     targets = canvas.document.elementsFromPointSync(100, 100);
-    expect(target).to.be.eqls(circle2);
-    expect(targets).to.be.eqls([
+    expect(target).toBe(circle2);
+    expect(targets).toStrictEqual([
       circle2,
       circle1,
       canvas.document.documentElement,
@@ -313,21 +309,21 @@ describe('Document', () => {
 
     target = await canvas.document.elementFromPoint(100, 100);
     targets = await canvas.document.elementsFromPoint(100, 100);
-    expect(target).to.be.eqls(circle1);
-    expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
+    expect(target).toBe(circle1);
+    expect(targets).toStrictEqual([circle1, canvas.document.documentElement]);
     target = canvas.document.elementFromPointSync(100, 100);
     targets = canvas.document.elementsFromPointSync(100, 100);
-    expect(target).to.be.eqls(circle1);
-    expect(targets).to.be.eqls([circle1, canvas.document.documentElement]);
+    expect(target).toBe(circle1);
+    expect(targets).toStrictEqual([circle1, canvas.document.documentElement]);
   });
 
   it('should execute region query with elementsFromBBox', async () => {
     let targets = canvas.document.elementsFromBBox(0, 0, 1, 1);
-    expect(targets).to.be.eqls([canvas.document.documentElement]);
+    expect(targets).toStrictEqual([canvas.document.documentElement]);
 
     // outside Canvas' viewport
     targets = canvas.document.elementsFromBBox(-100, -100, -50, -50);
-    expect(targets).to.be.eqls([]);
+    expect(targets).toStrictEqual([]);
 
     const circle = new Circle({
       style: {
@@ -342,9 +338,9 @@ describe('Document', () => {
     await sleep(100);
 
     targets = canvas.document.elementsFromBBox(100, 100, 150, 150);
-    expect(targets).to.be.eqls([circle, canvas.document.documentElement]);
+    expect(targets).toStrictEqual([circle, canvas.document.documentElement]);
 
     targets = canvas.document.elementsFromBBox(-100, -100, -50, -50);
-    expect(targets).to.be.eqls([]);
+    expect(targets).toStrictEqual([]);
   });
 });

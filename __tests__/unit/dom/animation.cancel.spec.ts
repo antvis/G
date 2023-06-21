@@ -1,14 +1,6 @@
-import { Canvas, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Canvas, Circle, IAnimation } from '../../../packages/g/src';
 import { sleep } from '../utils';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -25,7 +17,7 @@ const canvas = new Canvas({
 });
 
 describe('Animation Cancel Event', () => {
-  let animation: Animation;
+  let animation: IAnimation;
 
   beforeEach(async () => {
     const circle = new Circle({
@@ -48,7 +40,7 @@ describe('Animation Cancel Event', () => {
 
     animation = circle.animate([], {
       duration: 4000,
-    });
+    })!;
   });
 
   afterEach(() => {
@@ -62,21 +54,21 @@ describe('Animation Cancel Event', () => {
   it('should trigger oncancel callback correctly', async (done) => {
     const computedTiming = animation.effect.getComputedTiming();
 
-    expect(canvas.document.timeline.currentTime).to.be.eqls(0);
-    expect(animation.currentTime).to.be.eqls(0);
-    expect(animation.playState).to.be.eqls('running');
+    expect(canvas.document.timeline.currentTime).toBe(0);
+    expect(animation.currentTime).toBe(0);
+    expect(animation.playState).toBe('running');
 
     animation.oncancel = (ev) => {
       // According to https://w3c.github.io/csswg-drafts/web-animations-1/#canceling-an-animation-section
       // currentTime should be null.
-      expect(ev.currentTime).to.be.eqls(null);
-      expect(animation.playState).to.be.eqls('idle');
+      expect(ev.currentTime).toBe(null);
+      expect(animation.playState).toBe('idle');
 
-      expect(computedTiming.endTime).to.be.eqls(4000);
-      expect(computedTiming.activeDuration).to.be.eqls(4000);
+      expect(computedTiming.endTime).toBe(4000);
+      expect(computedTiming.activeDuration).toBe(4000);
       // not running
-      expect(computedTiming.progress).to.be.eqls(null);
-      expect(computedTiming.currentIteration).to.be.eqls(null);
+      expect(computedTiming.progress).toBe(null);
+      expect(computedTiming.currentIteration).toBe(null);
 
       done();
     };
@@ -90,10 +82,10 @@ describe('Animation Cancel Event', () => {
   //   // Reject the current finished promise.
   //   animation.finished
   //     .then(() => {
-  //       expect(true).to.be.false;
+  //       expect(true).toBeFalsy();
   //     })
   //     .catch(() => {
-  //       expect(true).to.be.true;
+  //       expect(true).toBeTruthy();
   //       done();
   //     });
 
@@ -103,12 +95,12 @@ describe('Animation Cancel Event', () => {
 
   it('should not trigger onfinish callback when cancelled', async (done) => {
     animation.oncancel = (ev) => {
-      expect(true).to.be.true;
+      expect(true).toBeTruthy();
       done();
     };
 
     animation.onfinish = () => {
-      expect(true).to.be.false;
+      expect(true).toBeFalsy();
     };
 
     await sleep(100);
@@ -117,11 +109,11 @@ describe('Animation Cancel Event', () => {
 
   it('oncancel must not fire when animation finishes', async (done) => {
     animation.oncancel = (ev) => {
-      expect(true).to.be.false;
+      expect(true).toBeFalsy();
     };
 
     animation.onfinish = () => {
-      expect(true).to.be.true;
+      expect(true).toBeTruthy();
       done();
     };
 

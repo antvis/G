@@ -1,15 +1,21 @@
-import { Cubic as CubicUtil, Quad as QuadUtil } from '@antv/g-math';
+import { cubicLength, quadLength } from '@antv/g-math';
 import { clamp } from '@antv/util';
 
 const SEGMENT_LENGTH = 10;
 const MIN_SEGMENT_NUM = 8;
 const MAX_SEGMENT_NUM = 100;
 
-export function quadCurveTo(cpX: number, cpY: number, toX: number, toY: number, points: number[]) {
+export function quadCurveTo(
+  cpX: number,
+  cpY: number,
+  toX: number,
+  toY: number,
+  points: number[],
+) {
   const fromX = points[points.length - 2];
   const fromY = points[points.length - 1];
 
-  const l = QuadUtil.length(fromX, fromY, cpX, cpY, toX, toY);
+  const l = quadLength(fromX, fromY, cpX, cpY, toX, toY);
   const n = clamp(l / SEGMENT_LENGTH, MIN_SEGMENT_NUM, MAX_SEGMENT_NUM);
 
   let xa = 0;
@@ -21,7 +27,10 @@ export function quadCurveTo(cpX: number, cpY: number, toX: number, toY: number, 
     xa = fromX + (cpX - fromX) * j;
     ya = fromY + (cpY - fromY) * j;
 
-    points.push(xa + (cpX + (toX - cpX) * j - xa) * j, ya + (cpY + (toY - cpY) * j - ya) * j);
+    points.push(
+      xa + (cpX + (toX - cpX) * j - xa) * j,
+      ya + (cpY + (toY - cpY) * j - ya) * j,
+    );
   }
 }
 
@@ -39,7 +48,7 @@ export function bezierCurveTo(
 
   points.length -= 2;
 
-  const l = CubicUtil.length(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY);
+  const l = cubicLength(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY);
   const n = clamp(l / SEGMENT_LENGTH, MIN_SEGMENT_NUM, MAX_SEGMENT_NUM);
 
   let dt = 0;

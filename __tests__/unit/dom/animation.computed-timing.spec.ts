@@ -1,5 +1,4 @@
-import { KeyframeEffect } from '@antv/g';
-import { expect } from 'chai';
+import { KeyframeEffect } from '../../../packages/g/src';
 
 interface Test {
   desc: string;
@@ -97,14 +96,14 @@ describe('Animation ComputedTiming', () => {
       };
 
       const ct = effect.getComputedTiming();
-      expect(ct.delay).to.eqls(expected('delay', 0));
-      expect(ct.endDelay).to.eqls(expected('endDelay', 0));
-      expect(ct.fill).to.eqls(expected('fill', 'none'));
-      expect(ct.iterationStart).to.eqls(expected('iterationStart', 0));
-      expect(ct.iterations).to.eqls(expected('iterations', 1));
-      expect(ct.duration).to.eqls(expected('duration', 0));
-      expect(ct.direction).to.eqls(expected('direction', 'normal'));
-      expect(ct.easing).to.eqls(expected('easing', 'linear'));
+      expect(ct.delay).toBe(expected('delay', 0));
+      expect(ct.endDelay).toBe(expected('endDelay', 0));
+      expect(ct.fill).toBe(expected('fill', 'none'));
+      expect(ct.iterationStart).toBe(expected('iterationStart', 0));
+      expect(ct.iterations).toBe(expected('iterations', 1));
+      expect(ct.duration).toBe(expected('duration', 0));
+      expect(ct.direction).toBe(expected('direction', 'normal'));
+      expect(ct.easing).toBe(expected('easing', 'linear'));
     });
   }
 
@@ -185,7 +184,7 @@ describe('Animation ComputedTiming', () => {
     it(`getComputedTiming().activeDuration for ${stest.desc}`, () => {
       const effect = new KeyframeEffect(null, null, stest.input);
 
-      expect(effect.getComputedTiming().activeDuration).to.eqls(stest.expected);
+      expect(effect.getComputedTiming().activeDuration).toBe(stest.expected);
     });
   }
 
@@ -258,7 +257,7 @@ describe('Animation ComputedTiming', () => {
     it(`getComputedTiming().endTime for ${stest.desc}`, () => {
       const effect = new KeyframeEffect(null, null, stest.input);
 
-      expect(effect.getComputedTiming().endTime).to.eqls(stest.expected);
+      expect(effect.getComputedTiming().endTime).toBe(stest.expected);
     });
   }
 });

@@ -1,22 +1,22 @@
 import EventEmitter from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
+import type { CanvasContext, GlobalRuntime } from '..';
 import type { HTML } from '../display-objects';
-import { Element } from '../dom/Element';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
+import { Node } from '../dom/Node';
 import type {
   ICanvas,
   IDocument,
   IEventTarget,
   INode,
 } from '../dom/interfaces';
-import { Node } from '../dom/Node';
 import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
-import { CanvasContext, GlobalRuntime, runtime } from '..';
+import { isElement } from '../utils/dom';
 
 type Picker = (position: EventPosition) => IEventTarget | null;
 type TrackingData = {
@@ -762,7 +762,7 @@ export class EventService {
   private getExistedHTML(event: FederatedEvent): HTML {
     if (event.nativeEvent.composedPath) {
       for (const eventTarget of event.nativeEvent.composedPath() as HTMLElement[]) {
-        const existed = runtime.nativeHTMLMap.get(eventTarget);
+        const existed = this.globalRuntime.nativeHTMLMap.get(eventTarget);
         if (existed) {
           return existed;
         }
@@ -1051,7 +1051,7 @@ export class EventService {
   private getCursor(target: IEventTarget | null) {
     let tmp: IEventTarget | null = target;
     while (tmp) {
-      const cursor = Element.isElement(tmp) && tmp.getAttribute('cursor');
+      const cursor = isElement(tmp) && tmp.getAttribute('cursor');
       if (cursor) {
         return cursor;
       }

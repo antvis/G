@@ -4,7 +4,7 @@
  */
 
 import { distanceSquareRoot } from '@antv/util';
-import { CSSKeywordValue, CSSUnitValue, UnitType } from '../css';
+import { CSSKeywordValue, CSSUnitValue, UnitType } from '../css/cssom';
 import { deg2rad } from './math';
 
 export interface LinearGradientNode {

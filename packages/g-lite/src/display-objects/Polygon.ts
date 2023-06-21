@@ -9,14 +9,14 @@ export interface PolygonStyleProps extends BaseStyleProps {
   /**
    * marker will be positioned at the first point
    */
-  markerStart?: DisplayObject;
+  markerStart?: DisplayObject | null;
 
   /**
    * marker will be positioned at the last point
    */
-  markerEnd?: DisplayObject;
+  markerEnd?: DisplayObject | null;
 
-  markerMid?: DisplayObject;
+  markerMid?: DisplayObject | null;
 
   /**
    * offset relative to original position
@@ -35,9 +35,9 @@ export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
     segments: [number, number][];
     totalLength: number;
   };
-  markerStart?: DisplayObject;
-  markerMid?: DisplayObject;
-  markerEnd?: DisplayObject;
+  markerStart?: DisplayObject | null;
+  markerMid?: DisplayObject | null;
+  markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
   isClosed?: boolean;

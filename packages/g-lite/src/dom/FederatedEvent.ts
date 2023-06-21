@@ -9,7 +9,7 @@ export function isFederatedEvent(value: any): value is FederatedEvent {
 
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
- * FederatedEvent or native {@link https://dom.spec.whatwg.org/#event Event}.
+ * FederatedEvent or native Event.
  */
 export class FederatedEvent<N extends Event = Event, T = any> {
   /**

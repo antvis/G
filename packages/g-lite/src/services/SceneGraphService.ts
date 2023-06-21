@@ -3,7 +3,8 @@ import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { SortReason, Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
-import { MutationEvent, CustomEvent } from '../dom';
+import { CustomEvent } from '../dom/CustomEvent';
+import { MutationEvent } from '../dom/MutationEvent';
 import type {
   IChildNode,
   IElement,
@@ -11,10 +12,10 @@ import type {
   IParentNode,
 } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
+import { GlobalRuntime } from '../global-runtime';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
-import { GlobalRuntime } from '../global-runtime';
 
 function markRenderableDirty(e: Element) {
   const renderable = e.renderable;

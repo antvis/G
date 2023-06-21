@@ -17,6 +17,11 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -28,23 +33,26 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g": "^5.16.33",
+    "@antv/g": "workspace:*",
     "@antv/util": "^3.3.1",
+    "gl-matrix": "^3.3.0",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",
-    "tslib": "^2.3.1"
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
-    "@types/jest": "^25.0.0",
     "@types/node": "^17.0.0",
+    "@types/react": "^16.9.32",
     "@types/react-reconciler": "^0.26.0",
     "@types/scheduler": "^0.16.0"
   },
   "peerDependencies": {
-    "@types/react": "^16.9.32",
     "react": "^16.13.1"
   },
   "publishConfig": {

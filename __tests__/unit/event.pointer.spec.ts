@@ -1,3 +1,5 @@
+import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Plugin } from '../../packages/g-plugin-css-select/src';
 import {
   Canvas,
   Circle,
@@ -6,26 +8,13 @@ import {
   FederatedEvent,
   FederatedPointerEvent,
   Group,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Plugin } from '@antv/g-plugin-css-select';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+} from '../../packages/g/src';
 import { sleep } from './utils';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
 document.body.prepend($container);
 
-// @ts-ignore
 const renderer = new CanvasRenderer();
 renderer.registerPlugin(new Plugin());
 
@@ -71,10 +60,10 @@ describe('Event API', () => {
     // wait next frame
     await sleep(200);
 
-    const pointerdownCallback = sinon.spy();
-    const mousedownCallback = sinon.spy();
-    const rightdownCallback = sinon.spy();
-    const touchstartCallback = sinon.spy();
+    const pointerdownCallback = jest.fn();
+    const mousedownCallback = jest.fn();
+    const rightdownCallback = jest.fn();
+    const touchstartCallback = jest.fn();
     circle.addEventListener('pointerdown', pointerdownCallback);
     circle.addEventListener('mousedown', mousedownCallback);
     circle.addEventListener('touchstart', touchstartCallback);
@@ -191,14 +180,10 @@ describe('Event API', () => {
 
     await sleep(200);
 
-    // @ts-ignore
-    expect(pointerdownCallback).to.have.been.called;
-    // @ts-ignore
-    expect(mousedownCallback).to.have.been.called;
-    // @ts-ignore
-    expect(rightdownCallback).to.have.been.called;
-    // @ts-ignore
-    expect(touchstartCallback).to.have.been.called;
+    expect(pointerdownCallback).toBeCalled();
+    expect(mousedownCallback).toBeCalled();
+    expect(rightdownCallback).toBeCalled();
+    expect(touchstartCallback).toBeCalled();
   });
 
   it('should trigger pointerup/mouseup/touchend/rightup correctly', async () => {
@@ -222,10 +207,10 @@ describe('Event API', () => {
 
     await sleep(200);
 
-    const pointerupCallback = sinon.spy();
-    const mouseupCallback = sinon.spy();
-    const rightupCallback = sinon.spy();
-    const touchendCallback = sinon.spy();
+    const pointerupCallback = jest.fn();
+    const mouseupCallback = jest.fn();
+    const rightupCallback = jest.fn();
+    const touchendCallback = jest.fn();
     circle.addEventListener('pointerup', pointerupCallback);
     circle.addEventListener('mouseup', mouseupCallback);
     circle.addEventListener('rightup', rightupCallback);
@@ -342,14 +327,10 @@ describe('Event API', () => {
 
     await sleep(200);
 
-    // @ts-ignore
-    expect(pointerupCallback).to.have.been.called;
-    // @ts-ignore
-    expect(mouseupCallback).to.have.been.called;
-    // @ts-ignore
-    expect(rightupCallback).to.have.been.called;
-    // @ts-ignore
-    expect(touchendCallback).to.have.been.called;
+    expect(pointerupCallback).toBeCalled();
+    expect(mouseupCallback).toBeCalled();
+    expect(rightupCallback).toBeCalled();
+    expect(touchendCallback).toBeCalled();
   });
 
   it('should use event delegation correctly.', async () => {
@@ -358,7 +339,7 @@ describe('Event API', () => {
     const child = new Group({ id: 'child' });
     child.isMutationObserved = true;
 
-    const eventStack = [];
+    const eventStack: any[] = [];
     parent.addEventListener(ElementEvent.MOUNTED, (e: FederatedEvent) => {
       eventStack.push([e.target, e.eventPhase]);
     });
@@ -368,9 +349,9 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(parent);
 
-    expect(eventStack.length).to.be.eqls(2);
-    expect(eventStack[0]).to.be.eqls([parent, AT_TARGET]);
-    expect(eventStack[1]).to.be.eqls([child, BUBBLING_PHASE]);
+    expect(eventStack.length).toBe(2);
+    expect(eventStack[0]).toStrictEqual([parent, AT_TARGET]);
+    expect(eventStack[1]).toStrictEqual([child, BUBBLING_PHASE]);
   });
 
   it('should use event delegation with capture correctly.', async () => {
@@ -379,7 +360,7 @@ describe('Event API', () => {
     const child = new Group({ id: 'child' });
     child.isMutationObserved = true;
 
-    const eventStack = [];
+    const eventStack: any[] = [];
     parent.addEventListener(
       ElementEvent.MOUNTED,
       (e: FederatedEvent) => {
@@ -393,9 +374,9 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(parent);
 
-    expect(eventStack.length).to.be.eqls(2);
-    expect(eventStack[0]).to.be.eqls([parent, AT_TARGET]);
-    expect(eventStack[1]).to.be.eqls([child, CAPTURING_PHASE]);
+    expect(eventStack.length).toBe(2);
+    expect(eventStack[0]).toStrictEqual([parent, AT_TARGET]);
+    expect(eventStack[1]).toStrictEqual([child, CAPTURING_PHASE]);
   });
 
   it('should keep order in event phases', async () => {
@@ -411,7 +392,7 @@ describe('Event API', () => {
     canvas.appendChild(form);
 
     const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
-    const eventStack = [];
+    const eventStack: any[] = [];
     [form, div, p].forEach((el) => {
       el.addEventListener(
         'build',
@@ -427,13 +408,13 @@ describe('Event API', () => {
 
     p.dispatchEvent(event);
 
-    expect(eventStack.length).to.be.eqls(6);
-    expect(eventStack[0]).to.be.eqls([form, CAPTURING_PHASE]);
-    expect(eventStack[1]).to.be.eqls([div, CAPTURING_PHASE]);
-    expect(eventStack[2]).to.be.eqls([p, CAPTURING_PHASE]);
-    expect(eventStack[3]).to.be.eqls([p, BUBBLING_PHASE]);
-    expect(eventStack[4]).to.be.eqls([div, BUBBLING_PHASE]);
-    expect(eventStack[5]).to.be.eqls([form, BUBBLING_PHASE]);
+    expect(eventStack.length).toBe(6);
+    expect(eventStack[0]).toStrictEqual([form, CAPTURING_PHASE]);
+    expect(eventStack[1]).toStrictEqual([div, CAPTURING_PHASE]);
+    expect(eventStack[2]).toStrictEqual([p, CAPTURING_PHASE]);
+    expect(eventStack[3]).toStrictEqual([p, BUBBLING_PHASE]);
+    expect(eventStack[4]).toStrictEqual([div, BUBBLING_PHASE]);
+    expect(eventStack[5]).toStrictEqual([form, BUBBLING_PHASE]);
   });
 
   it('should clone pointer event correctly', async () => {
@@ -457,7 +438,8 @@ describe('Event API', () => {
 
     await sleep(200);
 
-    let cloned: FederatedPointerEvent;
+    let cloned: FederatedPointerEvent =
+      null as unknown as FederatedPointerEvent;
     circle.addEventListener('pointerup', (event: FederatedPointerEvent) => {
       cloned = event.clone();
     });
@@ -503,12 +485,12 @@ describe('Event API', () => {
 
     await sleep(1000);
 
-    expect(cloned.type).to.be.eqls('pointerup');
-    expect(cloned.pointerType).to.be.eqls('mouse');
-    expect(cloned.pointerId).to.be.eqls(1);
-    expect(cloned.button).to.be.eqls(0);
-    expect(cloned.clientX).to.be.eqls(295.3359375);
-    expect(cloned.clientY).to.be.eqls(201.03515625);
-    expect(cloned.target).to.be.eqls(circle);
+    expect(cloned.type).toBe('pointerup');
+    expect(cloned.pointerType).toBe('mouse');
+    expect(cloned.pointerId).toBe(1);
+    expect(cloned.button).toBe(0);
+    expect(cloned.clientX).toBe(295.3359375);
+    expect(cloned.clientY).toBe(201.03515625);
+    expect(cloned.target).toBe(circle);
   });
 });

@@ -14,6 +14,7 @@ import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { getOrCalculatePathTotalLength } from '../utils';
 import { DisplayObject, isDisplayObject } from './DisplayObject';
+import { EMPTY_PARSED_PATH } from './constants';
 
 export interface PathStyleProps extends BaseStyleProps {
   path?: string | PathArray;
@@ -21,14 +22,14 @@ export interface PathStyleProps extends BaseStyleProps {
   /**
    * marker will be positioned at the first point
    */
-  markerStart?: DisplayObject;
+  markerStart?: DisplayObject | null;
 
   /**
    * marker will be positioned at the last point
    */
-  markerEnd?: DisplayObject;
+  markerEnd?: DisplayObject | null;
 
-  markerMid?: DisplayObject;
+  markerMid?: DisplayObject | null;
 
   /**
    * offset relative to original position
@@ -66,17 +67,6 @@ export interface PathSegment {
   cubicParams: [number, number, number, number, number, number];
 }
 
-export const EMPTY_PARSED_PATH = {
-  absolutePath: [] as unknown as AbsoluteArray,
-  hasArc: false,
-  segments: [],
-  polygons: [],
-  polylines: [],
-  curve: null,
-  totalLength: 0,
-  rect: new Rectangle(0, 0, 0, 0),
-};
-
 export interface PathArcParams {
   cx: number;
   cy: number;
@@ -110,9 +100,9 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
     totalLength: number;
     rect: Rectangle;
   };
-  markerStart?: DisplayObject;
-  markerMid?: DisplayObject;
-  markerEnd?: DisplayObject;
+  markerStart?: DisplayObject | null;
+  markerMid?: DisplayObject | null;
+  markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
 }

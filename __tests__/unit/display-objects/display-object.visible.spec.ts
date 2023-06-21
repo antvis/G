@@ -1,6 +1,5 @@
-import { Canvas, Group } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { expect } from 'chai';
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Canvas, Group } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -27,26 +26,26 @@ describe('Mixin Visible', () => {
 
   it('should hide/show itself correctly', async () => {
     const group = new Group();
-    expect(group.style.visibility).eqls('');
-    expect(group.isVisible()).to.be.false;
+    expect(group.style.visibility).toBe('');
+    expect(group.isVisible()).toBeFalsy();
 
     await canvas.ready;
     // append to canvas
     canvas.appendChild(group);
 
     // inherit from document.documentElement
-    expect(group.parsedStyle.visibility.toString()).to.be.eqls('visible');
-    expect(group.style.visibility).eqls('');
-    expect(group.isVisible()).to.be.true;
+    expect(group.parsedStyle.visibility.toString()).toBe('visible');
+    expect(group.style.visibility).toBe('');
+    expect(group.isVisible()).toBeTruthy();
 
     // hide itself
     group.hide();
-    expect(group.style.visibility).eqls('hidden');
-    expect(group.isVisible()).to.be.false;
+    expect(group.style.visibility).toBe('hidden');
+    expect(group.isVisible()).toBeFalsy();
 
     group.show();
-    expect(group.style.visibility).eqls('visible');
-    expect(group.isVisible()).to.be.true;
+    expect(group.style.visibility).toBe('visible');
+    expect(group.isVisible()).toBeTruthy();
   });
 
   it('should hide/show itself & its children correctly', async () => {
@@ -56,35 +55,35 @@ describe('Mixin Visible', () => {
     group.appendChild(child1);
     group.appendChild(child2);
 
-    expect(group.style.visibility).eqls('');
-    expect(child1.style.visibility).eqls('');
-    expect(child2.style.visibility).eqls('');
+    expect(group.style.visibility).toBe('');
+    expect(child1.style.visibility).toBe('');
+    expect(child2.style.visibility).toBe('');
 
     await canvas.ready;
     // append to document
     canvas.appendChild(group);
 
     // visible by default
-    expect(group.isVisible()).to.be.true;
-    expect(child1.isVisible()).to.be.true;
-    expect(child2.isVisible()).to.be.true;
+    expect(group.isVisible()).toBeTruthy();
+    expect(child1.isVisible()).toBeTruthy();
+    expect(child2.isVisible()).toBeTruthy();
 
     // hide parent group
     group.hide();
-    expect(group.style.visibility).eqls('hidden');
-    expect(child1.style.visibility).eqls('');
-    expect(child2.style.visibility).eqls('');
-    expect(group.isVisible()).to.be.false;
-    expect(child1.isVisible()).to.be.false;
-    expect(child2.isVisible()).to.be.false;
+    expect(group.style.visibility).toBe('hidden');
+    expect(child1.style.visibility).toBe('');
+    expect(child2.style.visibility).toBe('');
+    expect(group.isVisible()).toBeFalsy();
+    expect(child1.isVisible()).toBeFalsy();
+    expect(child2.isVisible()).toBeFalsy();
 
     group.show();
-    expect(group.style.visibility).eqls('visible');
-    expect(child1.style.visibility).eqls('');
-    expect(child2.style.visibility).eqls('');
-    expect(group.isVisible()).to.be.true;
-    expect(child1.isVisible()).to.be.true;
-    expect(child2.isVisible()).to.be.true;
+    expect(group.style.visibility).toBe('visible');
+    expect(child1.style.visibility).toBe('');
+    expect(child2.style.visibility).toBe('');
+    expect(group.isVisible()).toBeTruthy();
+    expect(child1.isVisible()).toBeTruthy();
+    expect(child2.isVisible()).toBeTruthy();
   });
 
   it('should hide/show with a deeper hierarchy correctly', async () => {
@@ -100,53 +99,53 @@ describe('Mixin Visible', () => {
     group.appendChild(child1);
     group.appendChild(child2);
 
-    expect(root.style.visibility).eqls('');
-    expect(group.style.visibility).eqls('');
-    expect(child1.style.visibility).eqls('hidden');
-    expect(child2.style.visibility).eqls('');
+    expect(root.style.visibility).toBe('');
+    expect(group.style.visibility).toBe('');
+    expect(child1.style.visibility).toBe('hidden');
+    expect(child2.style.visibility).toBe('');
 
     await canvas.ready;
     // append to document
     canvas.appendChild(root);
 
     // visible by default
-    expect(root.isVisible()).to.be.true;
-    expect(group.isVisible()).to.be.true;
-    expect(child1.isVisible()).to.be.false;
-    expect(child2.isVisible()).to.be.true;
+    expect(root.isVisible()).toBeTruthy();
+    expect(group.isVisible()).toBeTruthy();
+    expect(child1.isVisible()).toBeFalsy();
+    expect(child2.isVisible()).toBeTruthy();
 
     // hide parent group
     root.hide();
-    expect(root.style.visibility).eqls('hidden');
-    expect(group.style.visibility).eqls('');
-    expect(child1.style.visibility).eqls('hidden');
-    expect(child2.style.visibility).eqls('');
-    expect(root.isVisible()).to.be.false;
-    expect(group.isVisible()).to.be.false;
-    expect(child1.isVisible()).to.be.false;
-    expect(child2.isVisible()).to.be.false;
+    expect(root.style.visibility).toBe('hidden');
+    expect(group.style.visibility).toBe('');
+    expect(child1.style.visibility).toBe('hidden');
+    expect(child2.style.visibility).toBe('');
+    expect(root.isVisible()).toBeFalsy();
+    expect(group.isVisible()).toBeFalsy();
+    expect(child1.isVisible()).toBeFalsy();
+    expect(child2.isVisible()).toBeFalsy();
 
     root.show();
-    expect(root.style.visibility).eqls('visible');
-    expect(group.style.visibility).eqls('');
-    expect(child1.style.visibility).eqls('hidden');
-    expect(child2.style.visibility).eqls('');
-    expect(root.isVisible()).to.be.true;
-    expect(group.isVisible()).to.be.true;
-    expect(child1.isVisible()).to.be.false;
-    expect(child2.isVisible()).to.be.true;
+    expect(root.style.visibility).toBe('visible');
+    expect(group.style.visibility).toBe('');
+    expect(child1.style.visibility).toBe('hidden');
+    expect(child2.style.visibility).toBe('');
+    expect(root.isVisible()).toBeTruthy();
+    expect(group.isVisible()).toBeTruthy();
+    expect(child1.isVisible()).toBeFalsy();
+    expect(child2.isVisible()).toBeTruthy();
 
     child2.hide();
-    expect(child2.style.visibility).eqls('hidden');
-    expect(child2.isVisible()).to.be.false;
+    expect(child2.style.visibility).toBe('hidden');
+    expect(child2.isVisible()).toBeFalsy();
 
     // restore to initial
     child2.style.visibility = 'initial';
-    expect(child2.style.visibility).eqls('initial');
-    expect(child2.isVisible()).to.be.true; // inherit from parent
+    expect(child2.style.visibility).toBe('initial');
+    expect(child2.isVisible()).toBeTruthy(); // inherit from parent
 
     child2.style.visibility = 'unset';
-    expect(child2.style.visibility).eqls('unset');
-    expect(child2.isVisible()).to.be.true;
+    expect(child2.style.visibility).toBe('unset');
+    expect(child2.isVisible()).toBeTruthy();
   });
 });

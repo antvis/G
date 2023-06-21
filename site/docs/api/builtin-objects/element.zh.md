@@ -5,7 +5,7 @@ order: 3
 
 在 G 中有以下继承关系：
 
--   DisplayObject -> Element -> Node -> EventTarget
+- DisplayObject -> Element -> Node -> EventTarget
 
 ## 继承自
 
@@ -19,8 +19,8 @@ order: 3
 
 ```js
 const circle = new Circle({
-    id: 'my-id',
-    style: { r: 10 },
+  id: 'my-id',
+  style: { r: 10 },
 });
 
 circle.id; // 'my-id';
@@ -136,8 +136,8 @@ const circle = new Circle({
 /**
  * user-defined values
  */
-expect(circle.getAttribute('r')).to.be.eqls(100);
-expect(circle.getAttribute('fill')).to.be.eqls('#f00');
+expect(circle.getAttribute('r')).toBe(100);
+expect(circle.getAttribute('fill')).toBe('#f00');
 
 /**
  * computed values
@@ -145,10 +145,10 @@ expect(circle.getAttribute('fill')).to.be.eqls('#f00');
 const styleMap = circle.computedStyleMap();
 expect((styleMap.get('r') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
 const fill = styleMap.get('fill') as CSSRGB;
-expect(fill.r).to.be.eqls(255);
-expect(fill.g).to.be.eqls(0);
-expect(fill.b).to.be.eqls(0);
-expect(fill.alpha).to.be.eqls(1);
+expect(fill.r).toBe(255);
+expect(fill.g).toBe(0);
+expect(fill.b).toBe(0);
+expect(fill.alpha).toBe(1);
 ```
 
 https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap

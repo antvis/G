@@ -51,6 +51,8 @@ export class WebGPUDeviceContribution implements DeviceContribution {
     try {
       await init(this.pluginOptions.shaderCompilerPath);
     } catch (e) {}
+
+    // @ts-ignore
     return new Device_WebGPU(adapter, device, $canvas, context, glsl_compile);
   }
 }

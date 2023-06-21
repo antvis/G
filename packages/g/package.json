@@ -17,7 +17,12 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
-  "sideEffects": true,
+  "sideEffects": false,
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -29,15 +34,16 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g-camera-api": "^1.0.40",
-    "@antv/g-css-layout-api": "^1.0.38",
-    "@antv/g-css-typed-om-api": "^1.0.38",
-    "@antv/g-dom-mutation-observer-api": "^1.0.38",
-    "@antv/g-lite": "^1.0.70",
-    "@antv/g-web-animations-api": "^1.0.39"
+    "@antv/g-camera-api": "workspace:*",
+    "@antv/g-dom-mutation-observer-api": "workspace:*",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-web-animations-api": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

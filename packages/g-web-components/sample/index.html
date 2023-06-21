@@ -3,11 +3,21 @@
   <title>Test G Web Component</title>
   <script src="https://unpkg.com/@antv/g"></script>
   <script src="https://unpkg.com/@antv/g-canvas"></script>
-  <script src="../dist/index.umd.js"></script>
+  <script src="../dist/index.umd.min.js"></script>
 </head>
 <body>
-  <g-canvas renderer="canvas" style="width: 800px; height: 800px; display: block">
-    <g-rect fill="#2f54eb" radius="0 24 24" x="12" y="24" width="200" height="50">
+  <g-canvas
+    renderer="canvas"
+    style="width: 800px; height: 800px; display: block"
+  >
+    <g-rect
+      fill="#2f54eb"
+      radius="0 24 24"
+      x="12"
+      y="24"
+      width="200"
+      height="50"
+    >
       <g-circle fill="#adc6ff" r="16px" cx="25" cy="25"></g-circle>
       <g-text fill="#fff" x="50" y="20">我是一段文字</g-text>
     </g-rect>
