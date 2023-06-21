@@ -1,4 +1,4 @@
-import { Line as LineUtil } from '@antv/g-math';
+import { lineLength, linePointAt } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { Point } from '../shapes';
@@ -190,7 +190,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   getPoint(ratio: number, inWorldSpace = false): Point {
     // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2, defX, defY } = this.parsedStyle;
-    const { x, y } = LineUtil.pointAt(x1, y1, x2, y2, ratio);
+    const { x, y } = linePointAt(x1, y1, x2, y2, ratio);
 
     const transformed = vec3.transformMat4(
       vec3.create(),
@@ -209,6 +209,6 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   getTotalLength() {
     // TODO: account for z1/z2 in 3D line
     const { x1, y1, x2, y2 } = this.parsedStyle;
-    return LineUtil.length(x1, y1, x2, y2);
+    return lineLength(x1, y1, x2, y2);
   }
 }

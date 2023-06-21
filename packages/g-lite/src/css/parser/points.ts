@@ -1,4 +1,4 @@
-import { Line as LineUtil, Polyline as PolylineUtil } from '@antv/g-math';
+import { lineLength, polylineLength } from '@antv/g-math';
 import { isString } from '@antv/util';
 import type { DisplayObject } from '../..';
 
@@ -27,18 +27,13 @@ export function parsePoints(
   let segmentT: [number, number];
   let segmentL: number;
 
-  const totalLength = PolylineUtil.length(points);
+  const totalLength = polylineLength(points);
 
   points.forEach((p, i) => {
     if (points[i + 1]) {
       segmentT = [0, 0];
       segmentT[0] = tempLength / totalLength;
-      segmentL = LineUtil.length(
-        p[0],
-        p[1],
-        points[i + 1][0],
-        points[i + 1][1],
-      );
+      segmentL = lineLength(p[0], p[1], points[i + 1][0], points[i + 1][1]);
       tempLength += segmentL;
       segmentT[1] = tempLength / totalLength;
       segments.push(segmentT);

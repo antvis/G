@@ -1,18 +1,18 @@
 import type {
   DisplayObject,
+  GlobalRuntime,
   ParsedPathStyleProps,
   Path,
+  PathSegment,
   PathStyleProps,
   Point,
-  PathSegment,
-  GlobalRuntime,
   RenderingPluginContext,
 } from '@antv/g-lite';
 import {
   getOrCalculatePathTotalLength,
   isFillOrStrokeAffected,
 } from '@antv/g-lite';
-import { Cubic as CubicUtil, Quad as QuadUtil } from '@antv/g-math';
+import { cubicPointDistance, quadPointDistance } from '@antv/g-math';
 import { arcToCubic } from '@antv/util';
 import { inBox, inLine, inPolygons } from './utils/math';
 
@@ -61,7 +61,7 @@ function isPointInStroke(
         }
         break;
       case 'Q':
-        const qDistance = QuadUtil.pointDistance(
+        const qDistance = quadPointDistance(
           prePoint[0],
           prePoint[1],
           params[1],
@@ -77,7 +77,7 @@ function isPointInStroke(
         }
         break;
       case 'C':
-        const cDistance = CubicUtil.pointDistance(
+        const cDistance = cubicPointDistance(
           prePoint[0], // 上一段结束位置, 即 C 的起始点
           prePoint[1],
           params[1], // 'C' 的参数，1、2 为第一个控制点，3、4 为第二个控制点，5、6 为结束点
@@ -117,7 +117,7 @@ function isPointInStroke(
         // fixArc
         let prePointInCubic = prePoint;
         for (let i = 0; i < args.length; i += 6) {
-          const cDistance = CubicUtil.pointDistance(
+          const cDistance = cubicPointDistance(
             prePointInCubic[0], // 上一段结束位置, 即 C 的起始点
             prePointInCubic[1],
             args[i],

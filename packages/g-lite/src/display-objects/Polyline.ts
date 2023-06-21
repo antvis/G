@@ -1,4 +1,4 @@
-import { Line as LineUtil } from '@antv/g-math';
+import { linePointAt } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { runtime } from '../global-runtime';
@@ -104,7 +104,7 @@ export class Polyline extends Polygon {
       }
     });
 
-    const { x, y } = LineUtil.pointAt(
+    const { x, y } = linePointAt(
       points[index][0],
       points[index][1],
       points[index + 1][0],

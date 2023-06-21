@@ -11,6 +11,16 @@ export function createConfig({
   globals = {},
   plugins = [],
 }) {
+  const sharedPlugins = [
+    ...plugins,
+    nodeResolve({
+      mainFields: ['module', 'browser', 'main'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs'],
+    }),
+    commonjs(),
+    typescript({ sourceMap: true }),
+  ];
+
   return [
     {
       input: 'src/index.ts',
@@ -35,7 +45,7 @@ export function createConfig({
           sourcemap: true,
         },
       ],
-      plugins: [...plugins, typescript({ sourceMap: true })],
+      plugins: sharedPlugins,
     },
     {
       input: 'src/index.ts',
@@ -48,13 +58,7 @@ export function createConfig({
       },
       external,
       plugins: [
-        ...plugins,
-        nodeResolve({
-          mainFields: ['module', 'browser', 'main'],
-          extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs'],
-        }),
-        commonjs(),
-        typescript({ sourceMap: true }),
+        ...sharedPlugins,
         terser({
           compress: {
             pure_getters: true,

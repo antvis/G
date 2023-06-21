@@ -37,7 +37,8 @@
   "scripts": {
     "build": "npm run clean && rollup -c",
     "clean": "rimraf dist",
-    "sync": "tnpm sync"
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
