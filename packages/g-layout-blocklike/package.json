@@ -30,11 +30,9 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
+    "@antv/g-css-layout-api": "workspace:*",
+    "@antv/g-lite": "workspace:*",
     "tslib": "^2.5.3"
-  },
-  "peerDependencies": {
-    "@antv/g-css-layout-api": "^1.0.0",
-    "@antv/g-lite": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

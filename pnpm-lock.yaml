@@ -278,13 +278,13 @@ importers:
   packages/g-css-layout-api:
     dependencies:
       '@antv/g-lite':
-        specifier: ^1.0.0
+        specifier: workspace:*
         version: link:../g-lite
 
   packages/g-css-typed-om-api:
     dependencies:
       '@antv/g-lite':
-        specifier: ^1.0.0
+        specifier: workspace:*
         version: link:../g-lite
 
   packages/g-devtool:
@@ -367,10 +367,10 @@ importers:
   packages/g-layout-blocklike:
     dependencies:
       '@antv/g-css-layout-api':
-        specifier: ^1.0.0
+        specifier: workspace:*
         version: link:../g-css-layout-api
       '@antv/g-lite':
-        specifier: ^1.0.0
+        specifier: workspace:*
         version: link:../g-lite
       tslib:
         specifier: ^2.5.3
