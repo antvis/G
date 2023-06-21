@@ -7,8 +7,11 @@ export class SyncHook<T, R = void> {
   }
 
   call(...args: AsArray<T>): void {
-    this.callbacks.forEach((callback) => {
-      callback(...args);
+    /* eslint-disable-next-line prefer-rest-params */
+    const argsArr = arguments;
+    this.callbacks.forEach(function (callback) {
+      /* eslint-disable-next-line prefer-spread */
+      callback.apply(void 0, argsArr);
     });
   }
 }
