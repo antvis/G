@@ -146,7 +146,17 @@ $ pnpm build
 $ pnpm test
 ```
 
-## Inspired by
+### 启动官网
+
+构建并启动官网：
+
+```bash
+$ pnpm build
+$ pnpm link-site
+$ pnpm start
+```
+
+## 受以下项目启发
 
 - [Sprite.js](https://github.com/spritejs/spritejs)
 - [Pixi.js](https://pixijs.com/)
