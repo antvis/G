@@ -82,7 +82,7 @@ const memoizedParsePath = memoize(internalParsePath);
 
 export function parsePath(
   path: string | PathArray,
-  object: DisplayObject,
+  object?: DisplayObject,
 ): ParsedPathStyleProps['path'] {
   const result = (
     isString(path) ? memoizedParsePath(path) : internalParsePath(path)
@@ -99,7 +99,7 @@ export function parsePath(
 export function mergePaths(
   left: ParsedPathStyleProps['path'],
   right: ParsedPathStyleProps['path'],
-  object: IElement,
+  object?: IElement,
 ): [CurveArray, CurveArray, (b: CurveArray) => CurveArray] {
   let curve1 = left.curve;
   let curve2 = right.curve;

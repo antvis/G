@@ -10,7 +10,7 @@ import type { DisplayObject } from '../..';
  */
 export function parsePoints(
   pointsOrStr: string | [number, number][],
-  object: DisplayObject,
+  object?: DisplayObject,
 ) {
   let points: [number, number][];
   if (isString(pointsOrStr)) {

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { CSS } from '../../../../packages/g-lite/src/css';
 
 /**
@@ -7,33 +6,33 @@ import { CSS } from '../../../../packages/g-lite/src/css';
 describe('CSS numeric factory functions', () => {
   it('should create CSSUnitValue with shortcuts correctly.', () => {
     let result = CSS.number(10);
-    expect(result.toString()).to.be.eqls('10');
+    expect(result.toString()).toBe('10');
 
     result = CSS.percent(10);
-    expect(result.toString()).to.be.eqls('10%');
+    expect(result.toString()).toBe('10%');
 
     result = CSS.px(10);
-    expect(result.toString()).to.be.eqls('10px');
+    expect(result.toString()).toBe('10px');
 
     result = CSS.em(10);
-    expect(result.toString()).to.be.eqls('10em');
+    expect(result.toString()).toBe('10em');
 
     result = CSS.deg(10);
-    expect(result.toString()).to.be.eqls('10deg');
+    expect(result.toString()).toBe('10deg');
 
     result = CSS.grad(10);
-    expect(result.toString()).to.be.eqls('10grad');
+    expect(result.toString()).toBe('10grad');
 
     result = CSS.rad(10);
-    expect(result.toString()).to.be.eqls('10rad');
+    expect(result.toString()).toBe('10rad');
 
     result = CSS.turn(10);
-    expect(result.toString()).to.be.eqls('10turn');
+    expect(result.toString()).toBe('10turn');
 
     result = CSS.s(10);
-    expect(result.toString()).to.be.eqls('10s');
+    expect(result.toString()).toBe('10s');
 
     result = CSS.ms(10);
-    expect(result.toString()).to.be.eqls('10ms');
+    expect(result.toString()).toBe('10ms');
   });
 });

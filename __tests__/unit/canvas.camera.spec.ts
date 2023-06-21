@@ -1,16 +1,6 @@
-import { Canvas, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Canvas, Circle } from '../../packages/g/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
 import { sleep } from './utils';
-
-chai.use(chaiAlmost(0.0001));
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -51,42 +41,42 @@ describe('Canvas', () => {
     canvas.appendChild(circle);
 
     await sleep(100);
-    expect(canvas.document.elementFromPointSync(250, 250)).to.be.eqls(circle);
+    expect(canvas.document.elementFromPointSync(250, 250)).toBe(circle);
     let canvasCoord = canvas.viewport2Canvas({ x: 250, y: 250 });
-    expect(canvasCoord.x).to.be.eqls(250);
-    expect(canvasCoord.y).to.be.eqls(250);
+    expect(canvasCoord.x).toBe(250);
+    expect(canvasCoord.y).toBe(250);
     canvasCoord = canvas.viewport2Canvas({ x: 0, y: 0 });
-    expect(canvasCoord.x).to.be.almost.eqls(0);
-    expect(canvasCoord.y).to.be.almost.eqls(0);
+    expect(canvasCoord.x).toBeCloseTo(0);
+    expect(canvasCoord.y).toBeCloseTo(0);
 
     camera.rotate(0, 0, 90);
     canvasCoord = canvas.viewport2Canvas({ x: 250, y: 250 });
-    expect(canvasCoord.x).to.be.eqls(250);
-    expect(canvasCoord.y).to.be.eqls(250);
+    expect(canvasCoord.x).toBe(250);
+    expect(canvasCoord.y).toBe(250);
     canvasCoord = canvas.viewport2Canvas({ x: 0, y: 0 });
-    expect(canvasCoord.x).to.be.almost.eqls(500);
-    expect(canvasCoord.y).to.be.almost.eqls(0);
+    expect(canvasCoord.x).toBeCloseTo(500);
+    expect(canvasCoord.y).toBeCloseTo(0);
     camera.rotate(0, 0, -90);
 
     camera.setZoom(2);
     await sleep(100);
-    expect(canvas.document.elementFromPointSync(250, 250)).to.be.eqls(circle);
-    expect(camera.getZoom()).to.be.eqls(2);
+    expect(canvas.document.elementFromPointSync(250, 250)).toBe(circle);
+    expect(camera.getZoom()).toBe(2);
     canvasCoord = canvas.viewport2Canvas({ x: 250, y: 250 });
-    expect(canvasCoord.x).to.be.eqls(250);
-    expect(canvasCoord.y).to.be.eqls(250);
+    expect(canvasCoord.x).toBe(250);
+    expect(canvasCoord.y).toBe(250);
     canvasCoord = canvas.viewport2Canvas({ x: 0, y: 0 });
-    expect(canvasCoord.x).to.be.almost.eqls(125);
-    expect(canvasCoord.y).to.be.almost.eqls(125);
+    expect(canvasCoord.x).toBeCloseTo(125);
+    expect(canvasCoord.y).toBeCloseTo(125);
 
     camera.setZoomByViewportPoint(2, [250, 250]);
-    expect(canvas.document.elementFromPointSync(250, 250)).to.be.eqls(circle);
-    expect(camera.getZoom()).to.be.eqls(2);
+    expect(canvas.document.elementFromPointSync(250, 250)).toBe(circle);
+    expect(camera.getZoom()).toBe(2);
     canvasCoord = canvas.viewport2Canvas({ x: 250, y: 250 });
-    expect(canvasCoord.x).to.be.eqls(250);
-    expect(canvasCoord.y).to.be.eqls(250);
+    expect(canvasCoord.x).toBe(250);
+    expect(canvasCoord.y).toBe(250);
     canvasCoord = canvas.viewport2Canvas({ x: 0, y: 0 });
-    expect(canvasCoord.x).to.be.almost.eqls(125);
-    expect(canvasCoord.y).to.be.almost.eqls(125);
+    expect(canvasCoord.x).toBeCloseTo(125);
+    expect(canvasCoord.y).toBeCloseTo(125);
   });
 });

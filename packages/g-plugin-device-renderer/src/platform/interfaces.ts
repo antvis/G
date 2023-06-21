@@ -1,4 +1,4 @@
-import type EventEmitter from 'eventemitter3';
+import type { EventEmitter } from 'eventemitter3';
 import { GL } from './constants';
 import type { Format } from './format';
 

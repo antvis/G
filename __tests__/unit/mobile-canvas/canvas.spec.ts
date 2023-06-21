@@ -1,6 +1,6 @@
-import { Canvas, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-mobile-canvas';
-import { createMobileCanvasElement } from '@antv/g-mobile-canvas-element';
+import { createMobileCanvasElement } from '../../../packages/g-mobile-canvas-element/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-mobile-canvas/src';
+import { Canvas, Circle } from '../../../packages/g/src';
 import { createContext } from './util';
 
 describe('canvas', () => {

@@ -41,18 +41,18 @@ module.exports = {
   testMatch: [
     '<rootDir>/__tests__/unit/**/*/*.spec.+(ts|tsx|js)',
     '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
-    // '<rootDir>/packages/**/*/*.spec.+(ts|tsx|js)'
   ],
   testPathIgnorePatterns: process.env.CI
     ? ['<rootDir>/__tests__/unit/g-gesture']
-    : [],
+    : ['<rootDir>/__tests__/unit/g-gesture'],
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
       isolatedModules: true,
       tsConfig: {
         allowJs: true,
-        target: 'ES2019',
+        target: 'esnext',
+        esModuleInterop: true,
       },
     },
   },
@@ -61,5 +61,7 @@ module.exports = {
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|eventemitter3)',
+  ],
 };

@@ -3,8 +3,5 @@ coverage
 esm
 lib
 dist
-mocks
-**/*.spec.ts
 node_modules
-__tests__
 rollup.config.js

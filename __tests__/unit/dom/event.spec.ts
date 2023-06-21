@@ -1,3 +1,4 @@
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
 import {
   Canvas,
   Circle,
@@ -9,30 +10,16 @@ import {
   MutationObserver,
   MutationRecord,
   Rect,
-  CSS,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
-import { sleep } from '../utils';
+} from '../../../packages/g/src';
 
-let addedNodes: DisplayObject[] = [];
-let removedNodes: DisplayObject[] = [];
+const addedNodes: DisplayObject[] = [];
+const removedNodes: DisplayObject[] = [];
 function mergeRecords(records: MutationRecord[]) {
   records.forEach(function (record) {
-    if (record.addedNodes) addedNodes.push.apply(addedNodes, record.addedNodes);
-    if (record.removedNodes)
-      removedNodes.push.apply(removedNodes, record.removedNodes);
+    if (record.addedNodes) addedNodes.push(...record.addedNodes);
+    if (record.removedNodes) removedNodes.push(...record.removedNodes);
   });
 }
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -60,13 +47,15 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(group);
 
-    const childInsertedCallback = (e) => {
-      // expect(e.view).eqls(canvas);
-      expect(e.detail.child).eqls(childGroup);
-    };
+    const childGroup = new Group();
+
+    // const childInsertedCallback = (e) => {
+    //   // expect(e.view).toBe(canvas);
+    //   expect(e.detail.child).toBe(childGroup);
+    // };
     const insertedCallback = (e: MutationEvent) => {
-      expect(e.target).eqls(childGroup);
-      expect(e.relatedNode).eqls(group);
+      expect(e.target).toBe(childGroup);
+      expect(e.relatedNode).toBe(group);
     };
     // group.addEventListener(ElementEvent.CHILD_INSERTED, childInsertedCallback);
     // group.on(ElementEvent.CHILD_INSERTED, childInsertedCallback);
@@ -74,7 +63,6 @@ describe('Event API', () => {
 
     canvas.addEventListener(ElementEvent.INSERTED, insertedCallback);
 
-    const childGroup = new Group();
     group.appendChild(childGroup);
 
     canvas.removeEventListener(ElementEvent.INSERTED, insertedCallback);
@@ -87,17 +75,17 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(group);
 
-    const childRemovedCallbackSpy = sinon.spy();
+    // const childRemovedCallbackSpy = jest.fn();
     // const childRemovedCallback = (e) => {
-    //   // expect(e.detail.child).eqls(childGroup);
+    //   // expect(e.detail.child).toBe(childGroup);
     // };
-    const removedCallbackSpy = sinon.spy();
+    const removedCallbackSpy = jest.fn();
     // const removedCallback = (e: MutationEvent) => {
-    //   // expect(e.relatedNode).eqls(group);
+    //   // expect(e.relatedNode).toBe(group);
     // };
-    const destroyCallbackSpy = sinon.spy();
+    const destroyCallbackSpy = jest.fn();
     // const destroyCallback = (e) => {
-    //   // expect(e.target).eqls(childGroup);
+    //   // expect(e.target).toBe(childGroup);
     // };
     // group.addEventListener(ElementEvent.CHILD_REMOVED, childRemovedCallback);
     // group.addEventListener(ElementEvent.REMOVED, removedCallback);
@@ -111,19 +99,15 @@ describe('Event API', () => {
     group.appendChild(childGroup);
     group.removeChild(childGroup);
 
-    // @ts-ignore
     // expect(childRemovedCallbackSpy).to.have.been.called;
-    // @ts-ignore
-    expect(removedCallbackSpy).to.have.been.called;
-    // @ts-ignore
-    expect(destroyCallbackSpy).to.have.not.been.called;
+    expect(removedCallbackSpy).toHaveBeenCalled();
+    expect(destroyCallbackSpy).not.toHaveBeenCalled();
 
     // append again
     group.appendChild(childGroup);
     childGroup.destroy();
 
-    // @ts-ignore
-    expect(destroyCallbackSpy).to.have.been.called;
+    expect(destroyCallbackSpy).toHaveBeenCalled();
   });
 
   it('should emit attribute-changed event correctly', async (done) => {
@@ -135,7 +119,7 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    const attributeChangedCallback = sinon.spy();
+    const attributeChangedCallback = jest.fn();
     canvas.addEventListener(
       ElementEvent.ATTR_MODIFIED,
       attributeChangedCallback,
@@ -143,25 +127,23 @@ describe('Event API', () => {
 
     // should not emit if value unchanged
     circle.setAttribute('r', 10);
-    // @ts-ignore
-    expect(attributeChangedCallback).to.have.not.been.called;
+    expect(attributeChangedCallback).not.toHaveBeenCalled();
 
     // trigger attribute changed
     circle.style.r = 20;
-    // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.called;
+    expect(attributeChangedCallback).toHaveBeenCalled();
 
     const attributeModifiedCallback = function (e: MutationEvent) {
       // @see https://github.com/antvis/g/issues/929
-      expect(this).eqls(e.currentTarget);
-      expect(circle).eqls(e.target);
-      expect(e.type).eqls(ElementEvent.ATTR_MODIFIED);
-      expect(e.attrChange).eqls(MutationEvent.MODIFICATION);
-      expect(e.attrName).eqls('r');
-      expect(e.prevValue).eqls(20);
-      expect(e.newValue).eqls(30);
-      expect(e.prevParsedValue).eqls(20);
-      expect(e.newParsedValue).eqls(30);
+      expect(this).toBe(e.currentTarget);
+      expect(circle).toBe(e.target);
+      expect(e.type).toBe(ElementEvent.ATTR_MODIFIED);
+      expect(e.attrChange).toBe(MutationEvent.MODIFICATION);
+      expect(e.attrName).toBe('r');
+      expect(e.prevValue).toBe(20);
+      expect(e.newValue).toBe(30);
+      expect(e.prevParsedValue).toBe(20);
+      expect(e.newParsedValue).toBe(30);
 
       done();
     };
@@ -175,10 +157,10 @@ describe('Event API', () => {
     const observer = new MutationObserver((mutationsList, observer) => {
       for (const mutation of mutationsList) {
         if (mutation.type === 'attributes') {
-          expect(mutation.target).eqls(circle);
-          expect(mutation.attributeName).eqls('r');
-          expect(mutation.attributeNamespace).eqls('g');
-          expect(mutation.oldValue).to.be.null;
+          expect(mutation.target).toBe(circle);
+          expect(mutation.attributeName).toBe('r');
+          expect(mutation.attributeNamespace).toBe('g');
+          expect(mutation.oldValue).toBeNull();
         }
       }
     });
@@ -186,8 +168,7 @@ describe('Event API', () => {
 
     // trigger attribute changed
     circle.attr('r', 30);
-    // @ts-ignore
-    expect(attributeChangedCallback).to.have.been.called;
+    expect(attributeChangedCallback).toHaveBeenCalled();
   });
 
   it('should emit destroy event correctly', async () => {
@@ -199,12 +180,11 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    const destroyChangedCallback = sinon.spy();
+    const destroyChangedCallback = jest.fn();
     circle.addEventListener(ElementEvent.DESTROY, destroyChangedCallback);
 
     circle.destroy();
-    // @ts-ignore
-    expect(destroyChangedCallback).to.have.been.called;
+    expect(destroyChangedCallback).toHaveBeenCalled();
   });
 
   it('should dispatch custom event in delegation correctly', async () => {
@@ -240,9 +220,8 @@ describe('Event API', () => {
     const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
     // delegate to parent
     ul.addEventListener('build', (e) => {
-      expect(e.target).to.be.eqls(li1);
-      // @ts-ignore
-      expect(e.detail).to.be.eqls({ prop1: 'xx' });
+      expect(e.target).toBe(li1);
+      expect(e.detail).toStrictEqual({ prop1: 'xx' });
     });
 
     li1.dispatchEvent(event);
@@ -281,15 +260,13 @@ describe('Event API', () => {
     ul.appendChild(li1);
     ul.appendChild(li2);
 
-    const callback = sinon.spy();
+    const callback = jest.fn();
     ul.addEventListener('test-name:click', callback);
     li2.emit('click', {});
-    // @ts-ignore
-    expect(callback).to.have.been.not.called;
+    expect(callback).not.toHaveBeenCalled();
 
     li1.emit('click', {});
-    // @ts-ignore
-    expect(callback).to.have.been.called;
+    expect(callback).toHaveBeenCalled();
   });
 
   it('should record childList mutations when appendChild correctly', async () => {
@@ -307,18 +284,18 @@ describe('Event API', () => {
     group1.appendChild(group3);
 
     const records = observer.takeRecords();
-    expect(records.length).to.eqls(2);
+    expect(records.length).toBe(2);
 
-    expect(records[0].type).to.eqls('childList');
-    expect(records[0].target).to.eqls(group1);
-    expect(records[0].addedNodes.length).to.eqls(1);
-    expect(records[0].addedNodes[0]).to.eqls(group2);
+    expect(records[0].type).toBe('childList');
+    expect(records[0].target).toBe(group1);
+    expect(records[0].addedNodes.length).toBe(1);
+    expect(records[0].addedNodes[0]).toBe(group2);
 
-    expect(records[1].type).to.eqls('childList');
-    expect(records[1].target).to.eqls(group1);
-    expect(records[1].addedNodes.length).to.eqls(1);
-    expect(records[1].addedNodes[0]).to.eqls(group3);
-    expect(records[1].previousSibling).to.eqls(group2);
+    expect(records[1].type).toBe('childList');
+    expect(records[1].target).toBe(group1);
+    expect(records[1].addedNodes.length).toBe(1);
+    expect(records[1].addedNodes[0]).toBe(group3);
+    expect(records[1].previousSibling).toBe(group2);
   });
 
   it('should record childList mutations when removeChild correctly', async () => {
@@ -340,20 +317,20 @@ describe('Event API', () => {
     div.removeChild(a);
 
     const records = observer.takeRecords();
-    expect(records.length).to.eqls(2);
+    expect(records.length).toBe(2);
 
-    expect(records[0].type).to.eqls('childList');
-    expect(records[0].target).to.eqls(div);
-    expect(records[0].removedNodes.length).to.eqls(1);
-    expect(records[0].removedNodes[0]).to.eqls(b);
-    expect(records[0].nextSibling).to.eqls(c);
-    expect(records[0].previousSibling).to.eqls(a);
+    expect(records[0].type).toBe('childList');
+    expect(records[0].target).toBe(div);
+    expect(records[0].removedNodes.length).toBe(1);
+    expect(records[0].removedNodes[0]).toBe(b);
+    expect(records[0].nextSibling).toBe(c);
+    expect(records[0].previousSibling).toBe(a);
 
-    expect(records[1].type).to.eqls('childList');
-    expect(records[1].target).to.eqls(div);
-    expect(records[1].removedNodes.length).to.eqls(1);
-    expect(records[1].removedNodes[0]).to.eqls(a);
-    expect(records[1].nextSibling).to.eqls(c);
+    expect(records[1].type).toBe('childList');
+    expect(records[1].target).toBe(div);
+    expect(records[1].removedNodes.length).toBe(1);
+    expect(records[1].removedNodes[0]).toBe(a);
+    expect(records[1].nextSibling).toBe(c);
   });
 
   // @see https://github.com/googlearchive/MutationObservers/blob/master/test/childList.js#L137
@@ -372,24 +349,24 @@ describe('Event API', () => {
     div.removeChild(b);
 
     const records = observer.takeRecords();
-    expect(records.length).to.eqls(3);
+    expect(records.length).toBe(3);
 
-    expect(records[0].type).to.eqls('childList');
-    expect(records[0].target).to.eqls(div);
-    expect(records[0].addedNodes.length).to.eqls(1);
-    expect(records[0].addedNodes[0]).to.eqls(a);
+    expect(records[0].type).toBe('childList');
+    expect(records[0].target).toBe(div);
+    expect(records[0].addedNodes.length).toBe(1);
+    expect(records[0].addedNodes[0]).toBe(a);
 
-    expect(records[1].type).to.eqls('childList');
-    expect(records[1].target).to.eqls(div);
-    expect(records[1].addedNodes.length).to.eqls(1);
-    expect(records[1].addedNodes[0]).to.eqls(b);
-    expect(records[1].nextSibling).to.eqls(a);
+    expect(records[1].type).toBe('childList');
+    expect(records[1].target).toBe(div);
+    expect(records[1].addedNodes.length).toBe(1);
+    expect(records[1].addedNodes[0]).toBe(b);
+    expect(records[1].nextSibling).toBe(a);
 
-    expect(records[2].type).to.eqls('childList');
-    expect(records[2].target).to.eqls(div);
-    expect(records[2].removedNodes.length).to.eqls(1);
-    expect(records[2].removedNodes[0]).to.eqls(b);
-    expect(records[2].nextSibling).to.eqls(a);
+    expect(records[2].type).toBe('childList');
+    expect(records[2].target).toBe(div);
+    expect(records[2].removedNodes.length).toBe(1);
+    expect(records[2].removedNodes[0]).toBe(b);
+    expect(records[2].nextSibling).toBe(a);
   });
 
   it('should record childList but not subtree mutations correctly', async () => {
@@ -409,24 +386,24 @@ describe('Event API', () => {
     child.removeChild(b);
 
     const records = observer.takeRecords();
-    expect(records.length).to.eqls(3);
+    expect(records.length).toBe(3);
 
-    expect(records[0].type).to.eqls('childList');
-    expect(records[0].target).to.eqls(child);
-    expect(records[0].addedNodes.length).to.eqls(1);
-    expect(records[0].addedNodes[0]).to.eqls(a);
+    expect(records[0].type).toBe('childList');
+    expect(records[0].target).toBe(child);
+    expect(records[0].addedNodes.length).toBe(1);
+    expect(records[0].addedNodes[0]).toBe(a);
 
-    expect(records[1].type).to.eqls('childList');
-    expect(records[1].target).to.eqls(child);
-    expect(records[1].addedNodes.length).to.eqls(1);
-    expect(records[1].addedNodes[0]).to.eqls(b);
-    expect(records[1].nextSibling).to.eqls(a);
+    expect(records[1].type).toBe('childList');
+    expect(records[1].target).toBe(child);
+    expect(records[1].addedNodes.length).toBe(1);
+    expect(records[1].addedNodes[0]).toBe(b);
+    expect(records[1].nextSibling).toBe(a);
 
-    expect(records[2].type).to.eqls('childList');
-    expect(records[2].target).to.eqls(child);
-    expect(records[2].removedNodes.length).to.eqls(1);
-    expect(records[2].removedNodes[0]).to.eqls(b);
-    expect(records[2].nextSibling).to.eqls(a);
+    expect(records[2].type).toBe('childList');
+    expect(records[2].target).toBe(child);
+    expect(records[2].removedNodes.length).toBe(1);
+    expect(records[2].removedNodes[0]).toBe(b);
+    expect(records[2].nextSibling).toBe(a);
   });
 
   it('should record childList & subtree mutations correctly', async () => {
@@ -451,18 +428,18 @@ describe('Event API', () => {
     div.appendChild(b);
 
     const records = observer.takeRecords();
-    expect(records.length).to.eqls(2);
+    expect(records.length).toBe(2);
 
-    expect(records[0].type).to.eqls('childList');
-    expect(records[0].target).to.eqls(child);
-    expect(records[0].addedNodes.length).to.eqls(1);
-    expect(records[0].addedNodes[0]).to.eqls(a);
+    expect(records[0].type).toBe('childList');
+    expect(records[0].target).toBe(child);
+    expect(records[0].addedNodes.length).toBe(1);
+    expect(records[0].addedNodes[0]).toBe(a);
 
-    expect(records[1].type).to.eqls('childList');
-    expect(records[1].target).to.eqls(div);
-    expect(records[1].addedNodes.length).to.eqls(1);
-    expect(records[1].addedNodes[0]).to.eqls(b);
-    expect(records[1].previousSibling).to.eqls(child);
+    expect(records[1].type).toBe('childList');
+    expect(records[1].target).toBe(div);
+    expect(records[1].addedNodes.length).toBe(1);
+    expect(records[1].addedNodes[0]).toBe(b);
+    expect(records[1].previousSibling).toBe(child);
   });
 
   it('should remove all children', async () => {
@@ -487,10 +464,10 @@ describe('Event API', () => {
     const records = observer.takeRecords();
     mergeRecords(records);
 
-    expect(addedNodes.length).to.eqls(0);
-    expect(removedNodes.length).to.eqls(3);
-    expect(removedNodes[0]).to.eqls(c);
-    expect(removedNodes[1]).to.eqls(b);
-    expect(removedNodes[2]).to.eqls(a);
+    expect(addedNodes.length).toBe(0);
+    expect(removedNodes.length).toBe(3);
+    expect(removedNodes[0]).toBe(c);
+    expect(removedNodes[1]).toBe(b);
+    expect(removedNodes[2]).toBe(a);
   });
 });

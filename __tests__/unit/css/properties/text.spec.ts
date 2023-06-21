@@ -1,6 +1,5 @@
-import { Canvas, CSSUnitValue, Group, Text } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { expect } from 'chai';
+import { Renderer as CanvasRenderer } from '../../../../packages/g-canvas/src';
+import { Canvas, CSSUnitValue, Group, Text } from '../../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -37,49 +36,49 @@ describe('CSSPropertyText', () => {
     canvas.appendChild(text);
 
     // attribute
-    expect(text.getAttribute('text')).to.be.eqls('');
+    expect(text.getAttribute('text')).toBe('');
 
     // used value
     let used = text.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used.toString()).to.be.eqls('unset');
-    expect(text.parsedStyle.text).to.be.eqls('');
+    expect(used.toString()).toBe('unset');
+    expect(text.parsedStyle.text).toBe('');
 
     text.style.text = 'xxx';
     used = text.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used.toString()).to.be.eqls('xxx');
-    expect(text.parsedStyle.text).to.be.eqls('xxx');
+    expect(used.toString()).toBe('xxx');
+    expect(text.parsedStyle.text).toBe('xxx');
 
     text.style.textTransform = 'uppercase';
-    expect(text.getAttribute('text')).to.be.eqls('xxx');
+    expect(text.getAttribute('text')).toBe('xxx');
     used = text.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used.toString()).to.be.eqls('xxx');
-    expect(text.parsedStyle.text).to.be.eqls('XXX');
+    expect(used.toString()).toBe('xxx');
+    expect(text.parsedStyle.text).toBe('XXX');
 
     text.style.textTransform = 'lowercase';
-    expect(text.getAttribute('text')).to.be.eqls('xxx');
+    expect(text.getAttribute('text')).toBe('xxx');
     used = text.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used.toString()).to.be.eqls('xxx');
-    expect(text.parsedStyle.text).to.be.eqls('xxx');
+    expect(used.toString()).toBe('xxx');
+    expect(text.parsedStyle.text).toBe('xxx');
 
     text.style.textTransform = 'capitalize';
-    expect(text.getAttribute('text')).to.be.eqls('xxx');
+    expect(text.getAttribute('text')).toBe('xxx');
     used = text.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used.toString()).to.be.eqls('xxx');
-    expect(text.parsedStyle.text).to.be.eqls('Xxx');
+    expect(used.toString()).toBe('xxx');
+    expect(text.parsedStyle.text).toBe('Xxx');
 
     text.style.textTransform = 'none';
-    expect(text.getAttribute('text')).to.be.eqls('xxx');
+    expect(text.getAttribute('text')).toBe('xxx');
     used = text.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used.toString()).to.be.eqls('xxx');
-    expect(text.parsedStyle.text).to.be.eqls('xxx');
+    expect(used.toString()).toBe('xxx');
+    expect(text.parsedStyle.text).toBe('xxx');
 
     const group = new Group({
       style: {
         textTransform: 'uppercase',
       },
     });
-    expect(group.getAttribute('textTransform')).to.be.eqls('uppercase');
+    expect(group.getAttribute('textTransform')).toBe('uppercase');
     used = group.computedStyleMap().get('text') as CSSUnitValue;
-    expect(used).to.be.undefined;
+    expect(used).toBeUndefined();
   });
 });

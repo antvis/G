@@ -1,10 +1,13 @@
-import { expect } from 'chai';
-import { distance, getBBoxRange, getBBoxByArray } from '../src/util';
-import { pointAtSegments, angleAtSegments, distanceAtSegment } from '../src/segments';
+import {
+  angleAtSegments,
+  distanceAtSegment,
+  pointAtSegments,
+} from '../src/segments';
+import { distance, getBBoxByArray, getBBoxRange } from '../src/util';
 
 describe('util test', () => {
   it('distance', () => {
-    expect(distance(1, 1, 10, 1)).to.eqls(9);
+    expect(distance(1, 1, 10, 1)).toBe(9);
   });
 
   it('point at segments 2 point', () => {
@@ -13,11 +16,11 @@ describe('util test', () => {
       [100, 100],
       [200, 200],
     ];
-    expect(pointAtSegments(points, -1)).to.eqls(null);
-    expect(pointAtSegments(points, 1.2)).to.eqls(null);
-    expect(pointAtSegments(points, 0.5)).to.eqls({ x: 100, y: 100 });
-    expect(pointAtSegments(points, 0)).to.eqls({ x: 0, y: 0 });
-    expect(pointAtSegments(points, 1)).to.eqls({ x: 200, y: 200 });
+    expect(pointAtSegments(points, -1)).toBe(null);
+    expect(pointAtSegments(points, 1.2)).toBe(null);
+    expect(pointAtSegments(points, 0.5)).toBe({ x: 100, y: 100 });
+    expect(pointAtSegments(points, 0)).toBe({ x: 0, y: 0 });
+    expect(pointAtSegments(points, 1)).toBe({ x: 200, y: 200 });
   });
 
   it('point at segments 5 point', () => {
@@ -28,12 +31,12 @@ describe('util test', () => {
       [300, 100],
       [400, 0],
     ];
-    expect(pointAtSegments(points, -1)).to.eqls(null);
-    expect(pointAtSegments(points, 1.2)).to.eqls(null);
-    expect(pointAtSegments(points, 0.5)).to.eqls({ x: 200, y: 200 });
-    expect(pointAtSegments(points, 0)).to.eqls({ x: 0, y: 0 });
-    expect(pointAtSegments(points, 1)).to.eqls({ x: 400, y: 0 });
-    expect(pointAtSegments(points, 0.25)).to.eqls({ x: 100, y: 100 });
+    expect(pointAtSegments(points, -1)).toBe(null);
+    expect(pointAtSegments(points, 1.2)).toBe(null);
+    expect(pointAtSegments(points, 0.5)).toBe({ x: 200, y: 200 });
+    expect(pointAtSegments(points, 0)).toBe({ x: 0, y: 0 });
+    expect(pointAtSegments(points, 1)).toBe({ x: 400, y: 0 });
+    expect(pointAtSegments(points, 0.25)).toBe({ x: 100, y: 100 });
   });
 
   it('point at segements, overlapping', () => {
@@ -46,7 +49,7 @@ describe('util test', () => {
         ],
         0.5,
       ),
-    ).to.eqls({ x: 1, y: 1 });
+    ).toBe({ x: 1, y: 1 });
   });
   it('angle at segment', () => {
     const points: [number, number][] = [
@@ -56,14 +59,14 @@ describe('util test', () => {
       [300, 100],
       [400, 0],
     ];
-    expect(angleAtSegments(points, -1)).to.eqls(0);
-    expect(angleAtSegments(points, 1.2)).to.eqls(0);
-    expect(angleAtSegments(points, 0.5)).to.eqls(Math.PI / 4);
-    expect(angleAtSegments(points, 1)).to.eqls((Math.PI / 4) * -1);
+    expect(angleAtSegments(points, -1)).toBe(0);
+    expect(angleAtSegments(points, 1.2)).toBe(0);
+    expect(angleAtSegments(points, 0.5)).toBe(Math.PI / 4);
+    expect(angleAtSegments(points, 1)).toBe((Math.PI / 4) * -1);
   });
 
   it('angle at segement, special', () => {
-    expect(angleAtSegments([[0, 0]], 0.5)).to.eqls(0);
+    expect(angleAtSegments([[0, 0]], 0.5)).toBe(0);
     expect(
       angleAtSegments(
         [
@@ -72,7 +75,7 @@ describe('util test', () => {
         ],
         0.5,
       ),
-    ).to.eqls(0);
+    ).toBe(0);
   });
 
   it('distance at segment', () => {
@@ -84,13 +87,13 @@ describe('util test', () => {
       [0, 100],
       [0, 0],
     ];
-    expect(distanceAtSegment(points, 10, 10)).to.eqls(10);
-    expect(distanceAtSegment(points, 10, 0)).to.eqls(0);
-    expect(distanceAtSegment(points, 110, 110)).to.eqls(distance(0, 0, 10, 10));
+    expect(distanceAtSegment(points, 10, 10)).toBe(10);
+    expect(distanceAtSegment(points, 10, 0)).toBe(0);
+    expect(distanceAtSegment(points, 110, 110)).toBe(distance(0, 0, 10, 10));
   });
 
   it('getBBoxByArray', () => {
-    expect(getBBoxByArray([2, 4, 6], [3, 5, 7])).to.eqls({
+    expect(getBBoxByArray([2, 4, 6], [3, 5, 7])).toBe({
       x: 2,
       y: 3,
       width: 4,
@@ -99,7 +102,7 @@ describe('util test', () => {
   });
 
   it('getBBoxRange', () => {
-    expect(getBBoxRange(1, 2, 3, 4)).to.eqls({
+    expect(getBBoxRange(1, 2, 3, 4)).toBe({
       minX: 1,
       maxX: 3,
       minY: 2,

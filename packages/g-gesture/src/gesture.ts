@@ -4,7 +4,7 @@ import type {
   PointLike as Point,
 } from '@antv/g-lite';
 import { ElementEvent } from '@antv/g-lite';
-import EE from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 
 const clock =
   typeof performance === 'object' && performance.now ? performance : Date;
@@ -58,7 +58,7 @@ interface evCacheObject {
   y: number;
   ev: GestureEvent;
 }
-class Gesture extends EE {
+class Gesture extends EventEmitter {
   private el: DisplayObject;
   private evCache: evCacheObject[] = [];
   private startTime: number;

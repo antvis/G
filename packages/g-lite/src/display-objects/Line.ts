@@ -17,12 +17,12 @@ export interface LineStyleProps extends BaseStyleProps {
   /**
    * marker will be positioned at x1/y1
    */
-  markerStart?: DisplayObject;
+  markerStart?: DisplayObject | null;
 
   /**
    * marker will be positioned at x2/y2
    */
-  markerEnd?: DisplayObject;
+  markerEnd?: DisplayObject | null;
 
   /**
    * offset relative to original position
@@ -44,8 +44,8 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   defX: number;
   defY: number;
   isBillboard?: boolean;
-  markerStart?: DisplayObject;
-  markerEnd?: DisplayObject;
+  markerStart?: DisplayObject | null;
+  markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
 }

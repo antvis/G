@@ -1,23 +1,11 @@
-import { Canvas, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Plugin } from '@antv/g-plugin-css-select';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Canvas, Circle } from '../../packages/g/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Plugin } from '../../packages/g-plugin-css-select/src';
 import { sleep } from './utils';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
 document.body.prepend($container);
-
-// @ts-ignore
 const renderer = new CanvasRenderer();
 renderer.registerPlugin(new Plugin());
 
@@ -60,7 +48,7 @@ describe('Event API', () => {
 
     await sleep(100);
 
-    const mouseupCallback = sinon.spy();
+    const mouseupCallback = jest.fn();
     circle.addEventListener('mouseup', mouseupCallback);
 
     const $canvas = canvas
@@ -94,7 +82,6 @@ describe('Event API', () => {
     // wait event propgation, especially for picking in an async way
     await sleep(100);
 
-    // @ts-ignore
-    expect(mouseupCallback).to.have.been.called;
+    expect(mouseupCallback).toBeCalled();
   });
 });

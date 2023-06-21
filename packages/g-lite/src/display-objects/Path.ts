@@ -22,14 +22,14 @@ export interface PathStyleProps extends BaseStyleProps {
   /**
    * marker will be positioned at the first point
    */
-  markerStart?: DisplayObject;
+  markerStart?: DisplayObject | null;
 
   /**
    * marker will be positioned at the last point
    */
-  markerEnd?: DisplayObject;
+  markerEnd?: DisplayObject | null;
 
-  markerMid?: DisplayObject;
+  markerMid?: DisplayObject | null;
 
   /**
    * offset relative to original position
@@ -100,9 +100,9 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
     totalLength: number;
     rect: Rectangle;
   };
-  markerStart?: DisplayObject;
-  markerMid?: DisplayObject;
-  markerEnd?: DisplayObject;
+  markerStart?: DisplayObject | null;
+  markerMid?: DisplayObject | null;
+  markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
 }

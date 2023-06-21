@@ -25,12 +25,14 @@ import {
   pointAt as polygonPointAt,
   pointDistance as polygonPointDistance,
   tangentAngle as polygonTangentAngle,
+} from './polygon';
+import {
   box as polylineBox,
   length as polylineLength,
   pointAt as polylinePointAt,
   pointDistance as polylinePointDistance,
   tangentAngle as polylineTangentAngle,
-} from './polygon';
+} from './polyline';
 import {
   box as quadBox,
   length as quadLength,

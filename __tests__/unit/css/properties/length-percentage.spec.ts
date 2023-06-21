@@ -1,6 +1,5 @@
-import { Canvas, Circle, CSS, CSSUnitValue } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { expect } from 'chai';
+import { Renderer as CanvasRenderer } from '../../../../packages/g-canvas/src';
+import { Canvas, Circle, CSS, CSSUnitValue } from '../../../../packages/g/src';
 import { sleep } from '../../utils';
 
 const $container = document.createElement('div');
@@ -40,48 +39,48 @@ describe('CSSPropertyLengthOrPercentage', () => {
     canvas.appendChild(circle);
 
     // attribute
-    expect(circle.getAttribute('cx')).to.be.eqls(10);
-    expect(circle.getAttribute('cy')).to.be.eqls(10);
-    expect(circle.getAttribute('r')).to.be.eqls(50);
+    expect(circle.getAttribute('cx')).toBe(10);
+    expect(circle.getAttribute('cy')).toBe(10);
+    expect(circle.getAttribute('r')).toBe(50);
 
     // computed value
     let computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.px(10))).to.be.true;
+    expect(computed.equals(CSS.px(10))).toBeTruthy();
 
     circle.style.cx = 30;
-    expect(circle.getAttribute('cx')).to.be.eqls(30);
+    expect(circle.getAttribute('cx')).toBe(30);
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.px(30))).to.be.true;
+    expect(computed.equals(CSS.px(30))).toBeTruthy();
 
     circle.style.cx = '20px';
-    expect(circle.getAttribute('cx')).to.be.eqls('20px');
+    expect(circle.getAttribute('cx')).toBe('20px');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.px(20))).to.be.true;
+    expect(computed.equals(CSS.px(20))).toBeTruthy();
 
     circle.style.cx = '50%';
-    expect(circle.getAttribute('cx')).to.be.eqls('50%');
+    expect(circle.getAttribute('cx')).toBe('50%');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.percent(50))).to.be.true;
+    expect(computed.equals(CSS.percent(50))).toBeTruthy();
 
     circle.style.cx = '0';
-    expect(circle.getAttribute('cx')).to.be.eqls('0');
+    expect(circle.getAttribute('cx')).toBe('0');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.px(0))).to.be.true;
+    expect(computed.equals(CSS.px(0))).toBeTruthy();
 
     circle.style.cx = '0.2px';
-    expect(circle.getAttribute('cx')).to.be.eqls('0.2px');
+    expect(circle.getAttribute('cx')).toBe('0.2px');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.px(0.2))).to.be.true;
+    expect(computed.equals(CSS.px(0.2))).toBeTruthy();
 
     circle.style.cx = undefined;
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.px(0.2))).to.be.true;
+    expect(computed.equals(CSS.px(0.2))).toBeTruthy();
 
     circle.style.cx = null;
-    expect(circle.getAttribute('cx')).to.be.null;
+    expect(circle.getAttribute('cx')).toBeNull();
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.toString()).to.be.eqls('unset');
-    expect(circle.parsedStyle.cx).to.be.eqls(0);
+    expect(computed.toString()).toBe('unset');
+    expect(circle.parsedStyle.cx).toBe(0);
 
     circle.animate(
       [
@@ -94,20 +93,20 @@ describe('CSSPropertyLengthOrPercentage', () => {
     );
 
     await sleep(1000);
-    expect(circle.getAttribute('cx')).to.be.eqls('20px');
+    expect(circle.getAttribute('cx')).toBe('20px');
 
     // em
     circle.style.cx = '1em';
-    expect(circle.getAttribute('cx')).to.be.eqls('1em');
+    expect(circle.getAttribute('cx')).toBe('1em');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.em(1))).to.be.true;
-    expect(circle.parsedStyle.cx).to.be.eqls(16);
+    expect(computed.equals(CSS.em(1))).toBeTruthy();
+    expect(circle.parsedStyle.cx).toBe(16);
 
     // rem
     circle.style.cx = '2rem';
-    expect(circle.getAttribute('cx')).to.be.eqls('2rem');
+    expect(circle.getAttribute('cx')).toBe('2rem');
     computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
-    expect(computed.equals(CSS.rem(2))).to.be.true;
-    expect(circle.parsedStyle.cx).to.be.eqls(32);
+    expect(computed.equals(CSS.rem(2))).toBeTruthy();
+    expect(circle.parsedStyle.cx).toBe(32);
   });
 });

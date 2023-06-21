@@ -1,4 +1,4 @@
-import RBush from 'rbush';
+import RBush from 'rbush/rbush.js';
 import type { IRenderer } from './AbstractRenderer';
 import {
   CameraEvent,

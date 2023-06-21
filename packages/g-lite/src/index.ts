@@ -1,5 +1,5 @@
 // @see https://github.com/antvis/G/issues/1239
-import RBush from 'rbush';
+import RBush from 'rbush/rbush.js';
 export * from './AbstractRenderer';
 export * from './Canvas';
 export * from './camera';
