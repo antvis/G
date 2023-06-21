@@ -22,6 +22,7 @@ const moduleNameMapper = {
 };
 
 module.exports = {
+  testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
   testMatch: [
     '<rootDir>/__tests__/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)',

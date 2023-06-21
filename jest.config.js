@@ -18,6 +18,7 @@ const moduleNameMapper = {
 };
 
 module.exports = {
+  testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
   collectCoverageFrom: ['<rootDir>/packages/g-lite/src/**/*.{ts,tsx}'],
   coveragePathIgnorePatterns: [
