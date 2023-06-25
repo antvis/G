@@ -22,7 +22,7 @@
     "prepare": "husky install",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
     "prepublish": "cp -r rust/pkg packages/g-webgpu/dist",
-    "release": "pnpm -r --filter './packages/*' --stream exec npx --no-install semantic-release",
+    "release": "pnpm -rc --filter './packages/*' --stream exec npx --no-install semantic-release --tag-format='${PNPM_PACKAGE_NAME}@\\${version}'",
     "release:preview": "pnpm release --dry-run --no-ci",
     "release:bump-version": "node ./scripts/bump-version.js",
     "start": "cd ./site && npm run start",
