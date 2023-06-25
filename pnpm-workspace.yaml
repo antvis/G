@@ -5,4 +5,3 @@ packages:
   - '!packages/g-css-layout-api'
   - '!packages/g-layout-blocklike'
   - '!packages/g-css-typed-om-api'
-  - '!packages/g-shader-components'
