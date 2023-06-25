@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.7.57",
+  "version": "1.8.0-alpha.1",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
@@ -52,7 +52,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48",
   "glslify": {
     "transform": [
       "glslify-import"

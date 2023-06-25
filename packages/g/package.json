@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.16.33",
+  "version": "5.17.0-alpha.1",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -47,6 +47,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }

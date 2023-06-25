@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvaskit",
-  "version": "0.8.45",
+  "version": "0.9.0-alpha.1",
   "description": "A renderer implemented by CanvasKit",
   "keywords": [
     "antv",
@@ -57,6 +57,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }

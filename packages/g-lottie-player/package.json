@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-lottie-player",
-  "version": "0.0.38",
+  "version": "0.1.0-alpha.1",
   "description": "A lottie player for G",
   "keywords": [
     "antv",
@@ -45,6 +45,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }
