@@ -1,5 +1,5 @@
 packages:
-  - 'packages/*'
+  - 'packages/g-math'
   - 'site'
   - '!packages/g-devtool'
   - '!packages/g-css-layout-api'
