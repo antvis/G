@@ -806,8 +806,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // Marker
       // @ts-ignore
       if (attributes.markerStart) {
-        // @ts-ignore
-        object.parsedStyle.markerStart = runtime.CSSPropertySyntaxFactory[
+        object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
           '<marker>'
         ].calculator(
           null,
@@ -821,8 +820,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       // @ts-ignore
       if (attributes.markerEnd) {
-        // @ts-ignore
-        object.parsedStyle.markerEnd = runtime.CSSPropertySyntaxFactory[
+        object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
           '<marker>'
         ].calculator(
           null,
@@ -836,8 +834,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       // @ts-ignore
       if (attributes.markerMid) {
-        // @ts-ignore
-        object.parsedStyle.markerMid = runtime.CSSPropertySyntaxFactory[
+        object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
           '<marker>'
         ].calculator(
           '',
