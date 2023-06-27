@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-rough-svg-renderer",
-  "version": "1.8.0-beta.1",
+  "version": "1.8.0",
   "description": "A G plugin of renderer implementation with rough.js",
   "keywords": [
     "antv",
