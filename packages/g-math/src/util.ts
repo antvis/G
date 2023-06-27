@@ -6,10 +6,6 @@ export function distance(x1: number, y1: number, x2: number, y2: number) {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-export function isNumberEqual(v1: number, v2: number) {
-  return Math.abs(v1 - v2) < 0.001;
-}
-
 export function getBBoxByArray(xArr: number[], yArr: number[]): BBox {
   const minX = Math.min(...xArr);
   const minY = Math.min(...yArr);

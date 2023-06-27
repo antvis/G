@@ -1,7 +1,8 @@
+import { isNumberEqual } from '@antv/util';
 import { nearestPoint as bezierNearestPoint, snapLength } from './bezier';
 import { pointAt as linePointAt } from './line';
 import type { Point } from './types';
-import { distance, getBBoxByArray, isNumberEqual, piMod } from './util';
+import { distance, getBBoxByArray, piMod } from './util';
 
 function cubicAt(p0: number, p1: number, p2: number, p3: number, t: number) {
   const onet = 1 - t; // t * t * t 的性能大概是 Math.pow(t, 3) 的三倍

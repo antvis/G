@@ -1,7 +1,8 @@
+import { isNumberEqual } from '@antv/util';
 import { nearestPoint as nearestPointBezier } from './bezier';
 import { pointAt as linePointAt } from './line';
 import type { Point } from './types';
-import { distance, getBBoxByArray, isNumberEqual, piMod } from './util';
+import { distance, getBBoxByArray, piMod } from './util';
 
 // 差值公式
 function quadraticAt(p0: number, p1: number, p2: number, t: number) {

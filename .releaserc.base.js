@@ -12,7 +12,6 @@ module.exports = {
         preset: 'angular',
         releaseRules: [
           { type: 'feat', release: 'minor' },
-          { type: 'build', release: 'minor' },
           { type: 'fix', release: 'patch' },
           { type: 'perf', release: 'patch' },
           { type: 'refactor', release: 'patch' },
