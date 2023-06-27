@@ -1,5 +1,19 @@
 # [@antv/g-v5.17.0](https://github.com/antvis/g/compare/@antv/g@5.16.26...@antv/g@5.17.0) (2023-06-27)
 
+## 5.18.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-camera-api@1.2.0
+    -   @antv/g-dom-mutation-observer-api@1.2.0
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-web-animations-api@1.2.0
+
 ### Bug Fixes
 
 -   antialias line [#1352](https://github.com/antvis/g/issues/1352) ([#1355](https://github.com/antvis/g/issues/1355)) ([84eb6d5](https://github.com/antvis/g/commit/84eb6d5c5c99b152a0a5b865c4f76bc3cf59e8e0)), closes [#1356](https://github.com/antvis/g/issues/1356)

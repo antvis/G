@@ -1,5 +1,19 @@
 # [@antv/g-plugin-device-renderer-v1.8.0](https://github.com/antvis/g/compare/@antv/g-plugin-device-renderer@1.7.63...@antv/g-plugin-device-renderer@1.8.0) (2023-06-27)
 
+## 1.9.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-math@2.0.0
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-plugin-image-loader@1.3.0
+    -   @antv/g-shader-components@1.8.0
+
 ### Bug Fixes
 
 -   adjust anchor of SDF [#1377](https://github.com/antvis/g/issues/1377) ([#1378](https://github.com/antvis/g/issues/1378)) ([f339de1](https://github.com/antvis/g/commit/f339de1aff4f93bdcb8f142832932b019bc541cc)), closes [#1367](https://github.com/antvis/g/issues/1367)

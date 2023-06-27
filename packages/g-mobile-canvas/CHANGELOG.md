@@ -1,5 +1,22 @@
 # [@antv/g-mobile-canvas-v0.9.0](https://github.com/antvis/g/compare/@antv/g-mobile-canvas@0.8.54...@antv/g-mobile-canvas@0.9.0) (2023-06-27)
 
+## 0.10.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-plugin-canvas-path-generator@1.3.0
+    -   @antv/g-plugin-canvas-picker@1.10.0
+    -   @antv/g-plugin-canvas-renderer@1.9.0
+    -   @antv/g-plugin-dragndrop@1.8.0
+    -   @antv/g-plugin-image-loader@1.3.0
+    -   @antv/g-plugin-mobile-interaction@0.9.0
+
 ### Bug Fixes
 
 -   change canvas' init hook frin async to sync [#1117](https://github.com/antvis/g/issues/1117) ([#1368](https://github.com/antvis/g/issues/1368)) ([037f76e](https://github.com/antvis/g/commit/037f76e73dfcd47843fcda2e2151139c65ac2934))

@@ -1,5 +1,17 @@
 # [@antv/g-plugin-webgpu-device-v1.8.0](https://github.com/antvis/g/compare/@antv/g-plugin-webgpu-device@1.7.50...@antv/g-plugin-webgpu-device@1.8.0) (2023-06-27)
 
+## 1.9.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-plugin-device-renderer@1.9.0
+
 ### Bug Fixes
 
 -   WebGPU HAL & handle lost context [#863](https://github.com/antvis/g/issues/863) & [#1362](https://github.com/antvis/g/issues/1362) ([#1372](https://github.com/antvis/g/issues/1372)) ([79c6ee1](https://github.com/antvis/g/commit/79c6ee15f47daa858ffe08bf0003fda39dc7947a)), closes [#1094](https://github.com/antvis/g/issues/1094) [#1369](https://github.com/antvis/g/issues/1369)

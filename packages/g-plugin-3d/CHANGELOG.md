@@ -1,5 +1,18 @@
 # [@antv/g-plugin-3d-v1.8.0](https://github.com/antvis/g/compare/@antv/g-plugin-3d@1.7.52...@antv/g-plugin-3d@1.8.0) (2023-06-27)
 
+## 1.9.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-plugin-device-renderer@1.9.0
+    -   @antv/g-shader-components@1.8.0
+
 ### Bug Fixes
 
 -   antialias line [#1352](https://github.com/antvis/g/issues/1352) ([#1355](https://github.com/antvis/g/issues/1355)) ([84eb6d5](https://github.com/antvis/g/commit/84eb6d5c5c99b152a0a5b865c4f76bc3cf59e8e0)), closes [#1356](https://github.com/antvis/g/issues/1356)

@@ -54,6 +54,7 @@
     "@antv/util": "^3.3.1",
     "@commitlint/cli": "^8.3.6",
     "@commitlint/config-angular": "^9.1.2",
+    "@changesets/cli": "^2.26.2",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^21.1.0",
     "@rollup/plugin-node-resolve": "^15.1.0",

@@ -1,5 +1,17 @@
 # [@antv/g-plugin-zdog-canvas-renderer-v1.1.0](https://github.com/antvis/g/compare/@antv/g-plugin-zdog-canvas-renderer@1.0.17...@antv/g-plugin-zdog-canvas-renderer@1.1.0) (2023-06-27)
 
+## 1.2.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.0
+    -   @antv/g-lite@1.2.0
+
 ### Bug Fixes
 
 -   change canvas' init hook frin async to sync [#1117](https://github.com/antvis/g/issues/1117) ([#1368](https://github.com/antvis/g/issues/1368)) ([037f76e](https://github.com/antvis/g/commit/037f76e73dfcd47843fcda2e2151139c65ac2934))

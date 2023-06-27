@@ -24,11 +24,6 @@
     "start": "npm run site:dev"
   },
   "dependencies": {
-    "@antv/g-canvaskit": "^0.8.45",
-    "@antv/g-dom-mutation-observer-api": "^1.0.38",
-    "@antv/g-math": "^1.7.49",
-    "@antv/g-plugin-canvas-path-generator": "^1.1.51",
-    "@antv/g-plugin-device-renderer": "^1.7.70",
     "@antv/g6": "^4.5.2",
     "@antv/react-g": "^1.8.79",
     "@antv/util": "^3.3.1",

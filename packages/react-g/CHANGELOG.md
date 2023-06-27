@@ -1,5 +1,16 @@
 # [@antv/react-g-v1.9.0](https://github.com/antvis/g/compare/@antv/react-g@1.8.72...@antv/react-g@1.9.0) (2023-06-27)
 
+## 1.10.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g@5.18.0
+
 ### Bug Fixes
 
 -   antialias line [#1352](https://github.com/antvis/g/issues/1352) ([#1355](https://github.com/antvis/g/issues/1355)) ([84eb6d5](https://github.com/antvis/g/commit/84eb6d5c5c99b152a0a5b865c4f76bc3cf59e8e0)), closes [#1356](https://github.com/antvis/g/issues/1356)

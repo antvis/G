@@ -1,5 +1,16 @@
 # [@antv/g-gesture-v2.1.0](https://github.com/antvis/g/compare/@antv/g-gesture@2.0.0...@antv/g-gesture@2.1.0) (2023-06-27)
 
+## 2.2.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.2.0
+
 ### Bug Fixes
 
 -   add reflect-metadata to dependencies ([#1154](https://github.com/antvis/g/issues/1154)) ([47e4822](https://github.com/antvis/g/commit/47e4822500e9ef2cf74cbd374662928a1934dedc))

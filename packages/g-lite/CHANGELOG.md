@@ -1,5 +1,16 @@
 # [@antv/g-lite-v1.1.0](https://github.com/antvis/g/compare/@antv/g-lite@1.0.63...@antv/g-lite@1.1.0) (2023-06-27)
 
+## 1.2.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-math@2.0.0
+
 ### Bug Fixes
 
 -   antialias line [#1352](https://github.com/antvis/g/issues/1352) ([#1355](https://github.com/antvis/g/issues/1355)) ([84eb6d5](https://github.com/antvis/g/commit/84eb6d5c5c99b152a0a5b865c4f76bc3cf59e8e0)), closes [#1356](https://github.com/antvis/g/issues/1356)

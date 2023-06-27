@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-svg",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "A renderer implemented by SVG in mobile environment",
   "keywords": [
     "antv",

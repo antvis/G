@@ -1,5 +1,17 @@
 # [@antv/g-plugin-webgl-device-v1.8.0](https://github.com/antvis/g/compare/@antv/g-plugin-webgl-device@1.7.51...@antv/g-plugin-webgl-device@1.8.0) (2023-06-27)
 
+## 1.9.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-plugin-device-renderer@1.9.0
+
 ### Bug Fixes
 
 -   change canvas' init hook frin async to sync [#1117](https://github.com/antvis/g/issues/1117) ([#1368](https://github.com/antvis/g/issues/1368)) ([037f76e](https://github.com/antvis/g/commit/037f76e73dfcd47843fcda2e2151139c65ac2934))

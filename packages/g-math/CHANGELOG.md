@@ -1,5 +1,11 @@
 # [@antv/g-math-v1.8.1](https://github.com/antvis/g/compare/@antv/g-math@1.8.0...@antv/g-math@1.8.1) (2023-06-27)
 
+## 2.0.0
+
+### Major Changes
+
+-   Remove default export in @antv/g-math
+
 ### Bug Fixes
 
 -   change export of g-math so that it can be tree-shaked ([8fde976](https://github.com/antvis/g/commit/8fde97649d05eebd9940066ecc4f39072c50fd0e))

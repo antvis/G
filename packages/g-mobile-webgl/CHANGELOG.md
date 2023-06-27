@@ -1,5 +1,22 @@
 # [@antv/g-mobile-webgl-v0.8.0](https://github.com/antvis/g/compare/@antv/g-mobile-webgl@0.7.67...@antv/g-mobile-webgl@0.8.0) (2023-06-27)
 
+## 0.9.0
+
+### Minor Changes
+
+-   Remove default export in @antv/g-math
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.2.0
+    -   @antv/g-plugin-device-renderer@1.9.0
+    -   @antv/g-plugin-dragndrop@1.8.0
+    -   @antv/g-plugin-html-renderer@1.9.0
+    -   @antv/g-plugin-image-loader@1.3.0
+    -   @antv/g-plugin-mobile-interaction@0.9.0
+    -   @antv/g-plugin-webgl-device@1.9.0
+
 ### Bug Fixes
 
 -   antialias line [#1352](https://github.com/antvis/g/issues/1352) ([#1355](https://github.com/antvis/g/issues/1355)) ([84eb6d5](https://github.com/antvis/g/commit/84eb6d5c5c99b152a0a5b865c4f76bc3cf59e8e0)), closes [#1356](https://github.com/antvis/g/issues/1356)

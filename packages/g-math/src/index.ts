@@ -41,6 +41,7 @@ import {
 } from './quadratic';
 import { distance } from './util';
 
+// Remove default export.
 export {
   distance,
   quadBox,
