@@ -27,6 +27,9 @@
     "test": "npm run test:browser & npm run test:serverside",
     "test:browser": "jest --config jest.config.js",
     "test:serverside": "jest --config jest.node.config.js",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish",
     "wasm": "wasm-pack build ./rust --target web",
     "watch": "pnpm --parallel -r run watch"
   },
