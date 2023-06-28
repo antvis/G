@@ -1,3 +1,5 @@
+# @antv/g-plugin-control
+
 ## 1.9.0
 
 ### Minor Changes

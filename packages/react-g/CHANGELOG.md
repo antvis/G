@@ -1,4 +1,4 @@
-## 1.10.0
+# @antv/react-g
 
 ## 1.10.1
 
@@ -6,6 +6,8 @@
 
 -   Updated dependencies [12a14555]
     -   @antv/g@5.18.1
+
+## 1.10.0
 
 ### Minor Changes
 

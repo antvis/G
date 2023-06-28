@@ -1,3 +1,5 @@
+# @antv/g-plugin-annotation
+
 ## 0.4.0
 
 ### Minor Changes

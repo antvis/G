@@ -1,3 +1,5 @@
+# @antv/g-plugin-zdog-canvas-renderer
+
 ## 1.2.0
 
 ### Minor Changes

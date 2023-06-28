@@ -1,10 +1,12 @@
-## 5.18.0
+# @antv/g
 
 ## 5.18.1
 
 ### Patch Changes
 
 -   12a14555: Declare sideEffects as `true`
+
+## 5.18.0
 
 ### Minor Changes
 

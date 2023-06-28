@@ -1,3 +1,5 @@
+# @antv/g-gesture
+
 ## 2.2.0
 
 ### Minor Changes
