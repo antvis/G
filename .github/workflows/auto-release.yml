@@ -2,14 +2,12 @@ name: 🚀 Auto Release
 on:
   push:
     branches:
-      - beta
-      - alpha
       - next
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]') && startsWith(github.event.head_commit.message , 'chore(release):')"
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
       - uses: actions/checkout@v3
@@ -60,7 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CD_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config_legacy_peer_deps: true
-        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm release
+        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN} & pnpm changeset publish
 
       # 发布失败通知内部开发群
       - name: Release failed ding talk dev group notify
