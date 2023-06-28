@@ -1,10 +1,8 @@
 name: 🎉 Release Notify
 
 on:
+  workflow_dispatch:
   release:
-    # published: latest release 和 pre release 都会触发
-    # prereleased: 只有 pre release 触发
-    # released: 只有 latest release 触发
     types: [published]
 
 jobs:

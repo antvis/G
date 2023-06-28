@@ -131,7 +131,7 @@ This makes it easy to perform version locking.
 
 ### Fully automated semantic releases
 
-Referring to [S2's engineering practices](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY), we use [semantic-release](https://github.com/semantic-release/semantic-release) for fully automated semantic releases. It can automatically create GitHub Releases and automatically associate the release to the corresponding issue.
+Referring to [S2's engineering practices](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY), we use [changesets](https://github.com/changesets/changesets) for fully automated semantic releases. It can automatically create GitHub Releases and automatically associate the release to the corresponding issue.
 
 There are three release branches:
 
@@ -139,7 +139,7 @@ There are three release branches:
 -   The `beta` branch for beta releases
 -   The `alpha` branch for the preview release
 
-Committing a commit starting with `chore(release):` in the branch above, the push code will be released and then handed over to the CI:
+Create a new branch `release` from `next`, each PR will trigger CI on `release`. We publish on `next` branch finally.
 
 ```bash
 git commit -m "chore(release): bump version"

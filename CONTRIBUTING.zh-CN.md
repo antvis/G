@@ -133,15 +133,9 @@ G 使用 [pnpm workspace](https://pnpm.io/workspaces) 作为 monorepo 方案。�
 
 ### 全自动的语义化线上发布
 
-参考 [S2 的工程化实践](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY)，我们使用了 [semantic-release](https://github.com/semantic-release/semantic-release) 进行全自动的语义化发布。它可以自动创建 GitHub Releases，并自动关联发布版本到对应 issue。
+参考 [S2 的工程化实践](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY)，我们使用了 [changesets](https://github.com/changesets/changesets) 进行全自动的语义化发布。它可以自动创建 GitHub Releases。
 
-其中发布分支有三个：
-
--   `next` 分支为当前稳定发布的版本
--   `beta` 分支发布测试版
--   `alpha` 分支发布预览版
-
-在以上分支提交以 `chore(release):` 开头的 commit，push 代码即完成发布，后续交给 CI 即可：
+从 next 分支拉出发布分支 release。每个 release 分支上的提交都会触发 CI，更新 version。最后在 next 分支上触发 publish 流程。
 
 ```bash
 git commit -m "chore(release): bump version"
