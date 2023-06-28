@@ -6,8 +6,8 @@ on:
 
 jobs:
   version:
+    name: Update Package Version
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -32,5 +32,7 @@ jobs:
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
+        with:
+          commit: 'chore(release): bump version'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

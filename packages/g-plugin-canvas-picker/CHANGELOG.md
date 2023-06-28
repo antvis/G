@@ -1,3 +1,5 @@
+# @antv/g-plugin-canvas-picker
+
 ## 1.10.0
 
 ### Minor Changes

@@ -1,3 +1,5 @@
+# @antv/g-image-exporter
+
 ## 0.7.0
 
 ### Minor Changes
