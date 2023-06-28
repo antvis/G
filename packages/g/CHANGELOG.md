@@ -1,5 +1,11 @@
 ## 5.18.0
 
+## 5.18.1
+
+### Patch Changes
+
+-   12a14555: Declare sideEffects as `true`
+
 ### Minor Changes
 
 -   Remove default export in @antv/g-math
