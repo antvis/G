@@ -1,3 +1,5 @@
+# @antv/g-plugin-device-renderer
+
 ## 1.9.0
 
 ### Minor Changes

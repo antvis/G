@@ -1,3 +1,5 @@
+# @antv/g-plugin-canvas-path-generator
+
 ## 1.3.0
 
 ### Minor Changes

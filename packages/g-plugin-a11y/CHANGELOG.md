@@ -1,3 +1,5 @@
+# @antv/g-plugin-a11y
+
 ## 0.6.0
 
 ### Minor Changes
