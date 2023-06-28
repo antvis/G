@@ -32,5 +32,7 @@ jobs:
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
+        with:
+          commit: 'chore(release): bump version'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
