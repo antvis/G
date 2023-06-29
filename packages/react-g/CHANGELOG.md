@@ -1,5 +1,12 @@
 # @antv/react-g
 
+## 1.10.2
+
+### Patch Changes
+
+-   b0dd4788: Remove this syntax in @antv/g-math since it's already an ESM now
+    -   @antv/g@5.18.2
+
 ## 1.10.1
 
 ### Patch Changes

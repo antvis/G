@@ -1,5 +1,13 @@
 # @antv/g-plugin-annotation
 
+## 0.4.1
+
+### Patch Changes
+
+-   b0dd4788: Remove this syntax in @antv/g-math since it's already an ESM now
+-   Updated dependencies [b0dd4788]
+    -   @antv/g-lite@1.2.1
+
 ## 0.4.0
 
 ### Minor Changes

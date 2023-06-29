@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-camera-api",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A simple implementation of Camera API.",
   "keywords": [
     "antv",
