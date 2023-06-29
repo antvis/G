@@ -1,5 +1,16 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.1
+
+### Patch Changes
+
+-   b0dd4788: Remove this syntax in @antv/g-math since it's already an ESM now
+-   Updated dependencies [b0dd4788]
+    -   @antv/g-plugin-image-loader@1.3.1
+    -   @antv/g-shader-components@1.8.1
+    -   @antv/g-lite@1.2.1
+    -   @antv/g-math@2.0.1
+
 ## 1.9.0
 
 ### Minor Changes

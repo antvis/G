@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-gpgpu",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "A G plugin for GPGPU based on WebGPU",
   "keywords": [
     "webgpu",
