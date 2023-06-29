@@ -107,6 +107,7 @@ export class PickingPlugin implements RenderingPlugin {
     const yInDevicePixel = y * dpr;
 
     if (
+      !this.renderHelper.renderGraph ||
       xInDevicePixel > width ||
       xInDevicePixel < 0 ||
       yInDevicePixel > height ||

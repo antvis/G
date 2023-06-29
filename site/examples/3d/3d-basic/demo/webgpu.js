@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Image } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 
 import Stats from 'stats.js';
@@ -10,33 +10,33 @@ const webgpuRenderer = new WebGPURenderer({
 // create a canvas
 const canvas = new Canvas({
   container: 'container',
-  width: 600,
+  width: 500,
   height: 500,
   renderer: webgpuRenderer,
-  background: 'red',
+  // background: 'gray',
 });
 
 const circle = new Circle({
   style: {
-    x: 200,
-    y: 200,
-    r: 50,
+    x: 250,
+    y: 250,
+    r: 250,
     fill: 'green',
     cursor: 'pointer',
   },
 });
 
-const icon = new Image({
-  style: {
-    x: 200,
-    y: 200,
-    z: 0,
-    width: 200,
-    height: 200,
-    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    isBillboard: true,
-  },
-});
+// const icon = new Image({
+//   style: {
+//     x: 200,
+//     y: 200,
+//     z: 0,
+//     width: 200,
+//     height: 200,
+//     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+//     isBillboard: true,
+//   },
+// });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   canvas.appendChild(circle);

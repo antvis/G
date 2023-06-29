@@ -3,6 +3,9 @@ module.exports = {
 
   globals: {
     G: true,
+    window: true,
+    document: true,
+    module: true,
   },
 
   ignorePatterns: [
