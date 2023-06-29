@@ -34,11 +34,13 @@ const canvas = new Canvas({
   );
 
   const planeGeometry = new CubeGeometry(device, {
-    width: 200,
-    height: 200,
-    depth: 200,
+    width: 500,
+    height: 20,
+    depth: 500,
   });
-  const planeMaterial = new MeshBasicMaterial(device);
+  const planeMaterial = new MeshBasicMaterial(device, {
+    wireframe: true,
+  });
   const plane = new Mesh({
     style: {
       fill: '#1890FF',
@@ -48,7 +50,7 @@ const canvas = new Canvas({
     },
   });
   canvas.appendChild(plane);
-  plane.setPosition(300, 250, 0);
+  plane.setPosition(300, 500, 0);
 
   const cubeGeometry = new CubeGeometry(device, {
     width: 200,
@@ -56,7 +58,6 @@ const canvas = new Canvas({
     depth: 200,
   });
   const basicMaterial = new MeshBasicMaterial(device, {
-    // wireframe: true,
     map,
   });
 

@@ -399,34 +399,39 @@ export class Box2DPlugin implements RenderingPlugin {
   }
 
   private async loadBox2D(): Promise<typeof Box2D & EmscriptenModule> {
-    const hasSIMD = WebAssembly.validate(
-      new Uint8Array([
-        0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10,
-        1, 8, 0, 65, 0, 253, 15, 253, 98, 11,
-      ]),
-    );
-    const moduleName = hasSIMD ? './Box2D.simd' : './Box2D';
+    if (<any>window.Box2D) {
+      // @ts-ignore
+      return await (<any>window.Box2D());
+    } else {
+      const hasSIMD = WebAssembly.validate(
+        new Uint8Array([
+          0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10,
+          10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11,
+        ]),
+      );
+      const moduleName = hasSIMD ? './Box2D.simd' : './Box2D';
 
-    // awaiting gives us a better stack trace (at the cost of an extra microtask)
-    const modulePromise = await new Promise<any>((resolve, reject) => {
-      const tag = document.createElement('script');
-      tag.onload = () => {
-        resolve(<any>window.Box2D);
-        return false;
-      };
-      tag.onerror = () => {
-        reject(
-          new Error(
-            `Failed to load Box2D. Check your browser console for network errors.`,
-          ),
-        );
-        return false;
-      };
-      tag.src = `${BOX2D_UMD_DIR}/${moduleName}.js`;
-      document.getElementsByTagName('head')[0].appendChild(tag);
-    });
+      // awaiting gives us a better stack trace (at the cost of an extra microtask)
+      const modulePromise = await new Promise<any>((resolve, reject) => {
+        const tag = document.createElement('script');
+        tag.onload = () => {
+          resolve(<any>window.Box2D);
+          return false;
+        };
+        tag.onerror = () => {
+          reject(
+            new Error(
+              `Failed to load Box2D. Check your browser console for network errors.`,
+            ),
+          );
+          return false;
+        };
+        tag.src = `${BOX2D_UMD_DIR}/${moduleName}.js`;
+        document.getElementsByTagName('head')[0].appendChild(tag);
+      });
 
-    const Box2DFactory = await modulePromise;
-    return await Box2DFactory();
+      const Box2DFactory = await modulePromise;
+      return await Box2DFactory();
+    }
   }
 }
