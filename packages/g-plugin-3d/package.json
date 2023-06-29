@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
@@ -41,7 +41,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-device-renderer": "workspace:*",
     "@antv/g-shader-components": "workspace:*",
-    "gl-matrix": "^3.1.0",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

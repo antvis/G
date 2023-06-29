@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-components",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Components for g",
   "keywords": [
     "antv",
@@ -41,7 +41,7 @@
   "dependencies": {
     "@antv/g-lite": "workspace:*",
     "@antv/util": "^3.3.1",
-    "gl-matrix": "^3.3.0",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

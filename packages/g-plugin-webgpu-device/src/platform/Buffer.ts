@@ -53,14 +53,23 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
 
     this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize * 4;
     this.view = isView(viewOrSize) ? viewOrSize : null;
-    this.gpuBuffer = this.device.device.createBuffer({
-      usage: this.usage,
-      size: this.size,
-      mappedAtCreation: useMapRead ? mapBuffer : false,
-    });
 
     if (isView(viewOrSize)) {
-      this.setSubData(0, new Uint8Array(viewOrSize.buffer));
+      // this.setSubData(0, new Uint8Array(viewOrSize.buffer));
+      this.gpuBuffer = this.device.device.createBuffer({
+        usage: this.usage,
+        size: this.size,
+        mappedAtCreation: true,
+      });
+      // @ts-ignore
+      new Uint8Array(this.gpuBuffer.getMappedRange()).set(viewOrSize);
+      this.gpuBuffer.unmap();
+    } else {
+      this.gpuBuffer = this.device.device.createBuffer({
+        usage: this.usage,
+        size: this.size,
+        mappedAtCreation: useMapRead ? mapBuffer : false,
+      });
     }
   }
 

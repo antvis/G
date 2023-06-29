@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-renderer",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "A G plugin of renderer implementation with Canvas2D API",
   "keywords": [
     "antv",
@@ -43,7 +43,7 @@
     "@antv/g-plugin-canvas-path-generator": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/util": "^3.3.1",
-    "gl-matrix": "^3.3.0",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "publishConfig": {

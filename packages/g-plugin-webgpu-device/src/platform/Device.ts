@@ -243,6 +243,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.sampleCount = 1;
     texture.gpuTexture = gpuTexture;
     texture.gpuTextureView = gpuTextureView;
+    texture.name = 'Onscreen';
 
     return texture;
   }
@@ -323,7 +324,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.depthOrArrayLayers = 1;
     // @ts-ignore
     texture.type = ResourceType.RenderTarget;
-    return texture;
+    return texture as unknown as RenderTarget;
   }
 
   createRenderTargetFromTexture(texture: Texture): RenderTarget {

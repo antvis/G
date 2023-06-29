@@ -12,13 +12,18 @@ import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
 // import { pushFXAAPass } from './passes/FXAA';
-import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
+import {
+  Device,
+  SwapChain,
+  Texture,
+  TextureDescriptor,
+  TransparentWhite,
+} from './platform';
 import {
   BlendFactor,
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
-  TransparentBlack,
 } from './platform';
 import type { RGGraphBuilder, RenderHelper } from './render';
 import {
@@ -80,7 +85,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   private enableCapture: boolean;
   private captureOptions: Partial<DataURLOptions>;
-  private capturePromise: Promise<any> | undefined;
+  private capturePromise: Promise<string> | undefined;
   private resolveCapturePromise: (dataURL: string) => void;
 
   getDevice(): Device {
@@ -248,7 +253,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
             (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
             Number(backgroundColor.alpha),
           )
-        : TransparentBlack;
+        : TransparentWhite;
 
       // retrieve at each frame since canvas may resize
       const renderInput = {
@@ -295,7 +300,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // TODO: other post-processing passes
       // FXAA
-      // pushFXAAPass(this.builder, this.renderHelper, renderInput, mainColorTargetID);
+      // pushFXAAPass(
+      //   this.builder,
+      //   this.renderHelper,
+      //   renderInput,
+      //   mainColorTargetID,
+      // );
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
@@ -318,7 +328,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         setAttachmentStateSimple(
           {
             depthWrite: true,
-            blendConstant: TransparentBlack,
+            blendConstant: TransparentWhite,
           },
           {
             rgbBlendMode: BlendMode.Add,
