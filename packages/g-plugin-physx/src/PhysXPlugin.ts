@@ -32,6 +32,20 @@ export enum ShapeFlag {
   TRIGGER_SHAPE = 1 << 2,
 }
 
+/**
+ * Describes how physics materials of the colliding objects are combined.
+ */
+enum CombineMode {
+  /** Averages the friction/bounce of the two colliding materials. */
+  Average,
+  /** Uses the smaller friction/bounce of the two colliding materials. */
+  Minimum,
+  /** Multiplies the friction/bounce of the two colliding materials. */
+  Multiply,
+  /** Uses the larger friction/bounce of the two colliding materials. */
+  Maximum,
+}
+
 export class PhysXPlugin implements RenderingPlugin {
   static tag = 'PhysX';
 
@@ -53,8 +67,18 @@ export class PhysXPlugin implements RenderingPlugin {
       }
     };
 
+    const handleUnmounted = (e: FederatedEvent) => {
+      const PhysX = this.PhysX;
+      const target = e.target as DisplayObject;
+
+      if (PhysX) {
+        this.bodies.get(target).body.release();
+      }
+    };
+
     renderingService.hooks.initAsync.tapPromise(PhysXPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
 
       this.PhysX = (await this.initPhysX()) as any;
       this.createScene();
@@ -71,7 +95,7 @@ export class PhysXPlugin implements RenderingPlugin {
               const transform = body.getGlobalPose();
               const { translation, rotation } = transform;
 
-              console.log(translation, rotation, displayObject);
+              // console.log(translation, rotation, displayObject);
 
               displayObject.setPosition(
                 translation.x,
@@ -92,6 +116,7 @@ export class PhysXPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
   }
 
@@ -164,11 +189,19 @@ export class PhysXPlugin implements RenderingPlugin {
       defaultErrorCallback,
     );
     const triggerCallback = {
-      onContactBegin: () => {},
-      onContactEnd: () => {},
+      onContactBegin: () => {
+        console.log('begin...');
+      },
+      onContactEnd: (index1, index2) => {
+        console.log('end...', index1, index2);
+      },
       onContactPersist: () => {},
-      onTriggerBegin: () => {},
-      onTriggerEnd: () => {},
+      onTriggerBegin: () => {
+        console.log('triggerbegin...');
+      },
+      onTriggerEnd: () => {
+        console.log('triggerend...');
+      },
     };
     const physxSimulationCallbackInstance =
       PhysX.PxSimulationEventCallback.implement(triggerCallback);
@@ -187,6 +220,11 @@ export class PhysXPlugin implements RenderingPlugin {
       physxSimulationCallbackInstance,
     );
     this.scene = this.physics.createScene(sceneDesc);
+    this.scene.setGravity({
+      x: 0,
+      y: 100,
+      z: 0,
+    });
   }
 
   private addActor(target: DisplayObject) {
@@ -205,14 +243,19 @@ export class PhysXPlugin implements RenderingPlugin {
         halfExtents[1],
         halfExtents[2] || 0.1, // account for 2D shapes
       );
-      const material = this.physics.createMaterial(0.2, 0.2, 0.2);
+      const material = this.physics.createMaterial(0.5, 0.1, 2);
+      material.setFrictionCombineMode(CombineMode.Average);
+      material.setRestitutionCombineMode(CombineMode.Average);
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/structPxShapeFlag.html#a6edb481aaa3a998c5d6dd3fc4ad87f1aa7fa4fea0eecda9cc80a7aaa11a22df52
       const flags = new PhysX.PxShapeFlags(
         ShapeFlag.SCENE_QUERY_SHAPE | ShapeFlag.SIMULATION_SHAPE,
+        // ShapeFlag.TRIGGER_SHAPE,
       );
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxPhysics.html#abc564607f208cbc1944880172a3d62fe
-      const shape = this.physics.createShape(geometry, material, false, flags);
+      const shape = this.physics.createShape(geometry, material, true, flags);
+      shape.setUUID(target.entity);
+
       const transform = {
         translation: {
           x: pos[0],
@@ -238,6 +281,13 @@ export class PhysXPlugin implements RenderingPlugin {
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxRigidActor.html#a022e098ea67bc8ec87f93c2f18a4db6f
       body.attachShape(shape);
+
+      // if (body.setRigidBodyFlag) {
+      //   body.setRigidBodyFlag(PhysX.PxRigidBodyFlag.eENABLE_CCD, true);
+      // }
+
+      body.setGlobalPose(transform, true);
+
       this.bodies.set(target, {
         displayObject: target,
         body,
@@ -245,11 +295,6 @@ export class PhysXPlugin implements RenderingPlugin {
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxScene.html#a033c70c3094db21a2c51246e1a65a0e5
       this.scene.addActor(body, null);
-      this.scene.setGravity({
-        x: 0,
-        y: 100, // flipY
-        z: 0,
-      });
     }
   }
 }
