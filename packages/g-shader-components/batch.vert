@@ -18,6 +18,6 @@ v_StrokeColor = a_StrokeColor;
 v_StylePacked1 = a_StylePacked1;
 v_StylePacked2 = a_StylePacked2;
 
-#ifdef CLIPSPACE_NEAR_ZERO
-    gl_Position.z = gl_Position.z * 0.5 + 0.5;
-#endif
+// #ifdef CLIPSPACE_NEAR_ZERO
+//     gl_Position.z = (gl_Position.z + gl_Position.w) * 0.5;
+// #endif

@@ -24,6 +24,9 @@
     "start": "npm run site:dev"
   },
   "dependencies": {
+    "@antv/g-components": "^1.9.0",
+    "@antv/g-plugin-dragndrop": "^1.8.0",
+    "@antv/g-svg": "^1.10.0",
     "@antv/g6": "^4.5.2",
     "@antv/react-g": "^1.8.79",
     "@antv/util": "^3.3.1",
@@ -38,7 +41,7 @@
     "d3-force-3d": "^3.0.3",
     "d3-svg-annotation": "^2.5.0",
     "gh-pages": "^3.2.3",
-    "gl-matrix": "^3.3.0",
+    "gl-matrix": "^3.4.3",
     "hammer-touchemulator": "^0.0.2",
     "hammerjs": "^2.0.8",
     "interactjs": "^1.10.11",

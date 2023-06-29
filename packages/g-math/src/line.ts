@@ -41,7 +41,7 @@ export function pointDistance(
   if (cross > lengthSquare) {
     return distance(x2, y2, x, y);
   }
-  return this.pointToLine(x1, y1, x2, y2, x, y);
+  return pointToLine(x1, y1, x2, y2, x, y);
 }
 
 export function pointToLine(

@@ -48,8 +48,12 @@ export class RenderHelper {
     if (this.renderInstManager) {
       this.renderInstManager.destroy();
     }
-    this.renderCache.destroy();
-    this.renderGraph.destroy();
+    if (this.renderCache) {
+      this.renderCache.destroy();
+    }
+    if (this.renderGraph) {
+      this.renderGraph.destroy();
+    }
   }
 
   // getDebugTextDrawer(): TextDrawer | null {

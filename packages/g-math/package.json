@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@antv/util": "^3.3.1",
-    "gl-matrix": "^3.1.0",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "publishConfig": {

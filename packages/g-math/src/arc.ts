@@ -216,7 +216,7 @@ export function pointDistance(
   x0: number,
   y0: number,
 ) {
-  const nearestPoint = this.nearestPoint(
+  const np = nearestPoint(
     cx,
     cy,
     rx,
@@ -227,7 +227,7 @@ export function pointDistance(
     x0,
     y0,
   );
-  return distance(nearestPoint.x, nearestPoint.y, x0, y0);
+  return distance(np.x, np.y, x0, y0);
 }
 
 export function pointAt(
