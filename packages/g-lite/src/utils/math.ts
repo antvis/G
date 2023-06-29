@@ -222,14 +222,24 @@ export function makePerspective(
   bottom: number,
   near: number,
   far: number,
+  zero = false,
 ) {
   const x = (2 * near) / (right - left);
   const y = (2 * near) / (top - bottom);
 
   const a = (right + left) / (right - left);
   const b = (top + bottom) / (top - bottom);
-  const c = -(far + near) / (far - near);
-  const d = (-2 * far * near) / (far - near);
+
+  let c: number;
+  let d: number;
+
+  if (zero) {
+    c = -far / (far - near);
+    d = (-far * near) / (far - near);
+  } else {
+    c = -(far + near) / (far - near);
+    d = (-2 * far * near) / (far - near);
+  }
 
   out[0] = x;
   out[1] = 0;

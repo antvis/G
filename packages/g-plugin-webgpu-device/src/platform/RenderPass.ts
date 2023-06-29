@@ -4,7 +4,6 @@ import {
   RenderPass,
   RenderPassDescriptor,
   RenderPipeline,
-  TransparentWhite,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -107,7 +106,6 @@ export class RenderPass_WebGPU implements RenderPass {
           dstAttachment.loadOp = 'load';
         } else {
           dstAttachment.loadOp = 'clear';
-          console.log(clearColor, TransparentWhite);
           dstAttachment.clearValue = clearColor;
         }
         dstAttachment.storeOp = descriptor.colorStore[i] ? 'store' : 'discard';

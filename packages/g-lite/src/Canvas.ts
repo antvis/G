@@ -21,7 +21,12 @@ import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { EventService, RenderReason, RenderingService } from './services';
 import type { PointLike } from './shapes';
-import type { CanvasConfig, Cursor, InteractivePointerEvent } from './types';
+import type {
+  CanvasConfig,
+  ClipSpaceNearZ,
+  Cursor,
+  InteractivePointerEvent,
+} from './types';
 import {
   caf,
   cleanExistedCanvas,
@@ -227,7 +232,7 @@ export class Canvas extends EventTarget implements ICanvas {
       alwaysTriggerPointerEventOnCanvas,
     });
 
-    this.initDefaultCamera(canvasWidth, canvasHeight);
+    this.initDefaultCamera(canvasWidth, canvasHeight, renderer.clipSpaceNearZ);
 
     this.initRenderer(renderer, true);
   }
@@ -251,9 +256,14 @@ export class Canvas extends EventTarget implements ICanvas {
     };
   }
 
-  private initDefaultCamera(width: number, height: number) {
+  private initDefaultCamera(
+    width: number,
+    height: number,
+    clipSpaceNearZ: ClipSpaceNearZ,
+  ) {
     // set a default ortho camera
     const camera = new runtime.CameraContribution();
+    camera.clipSpaceNearZ = clipSpaceNearZ;
 
     camera
       .setType(CameraType.EXPLORING, CameraTrackingMode.DEFAULT)

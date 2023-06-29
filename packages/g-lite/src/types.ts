@@ -331,6 +331,11 @@ export type Cursor =
   | 'zoom-in'
   | 'zoom-out';
 
+export enum ClipSpaceNearZ {
+  ZERO,
+  NEGATIVE_ONE,
+}
+
 export interface RendererConfig {
   /**
    * enable dirty check for displayobject

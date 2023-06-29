@@ -1155,6 +1155,15 @@ importers:
 
   site:
     dependencies:
+      '@antv/g-components':
+        specifier: ^1.9.1
+        version: link:../packages/g-components
+      '@antv/g-mobile-webgl':
+        specifier: ^0.9.1
+        version: link:../packages/g-mobile-webgl
+      '@antv/g-plugin-image-loader':
+        specifier: ^1.3.1
+        version: link:../packages/g-plugin-image-loader
       '@antv/g6':
         specifier: ^4.5.2
         version: 4.5.2
