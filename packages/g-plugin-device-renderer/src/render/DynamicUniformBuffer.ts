@@ -8,6 +8,9 @@ export class DynamicUniformBuffer {
   private uniformBufferWordAlignment: number;
   private uniformBufferMaxPageWordSize: number;
 
+  /**
+   * Word count, 4 bytes per word
+   */
   private currentBufferWordSize = -1;
   private currentWordOffset = 0;
   buffer: Buffer | null = null;
@@ -108,7 +111,8 @@ export class DynamicUniformBuffer {
       }
 
       this.buffer = this.device.createBuffer({
-        viewOrSize: this.currentBufferWordSize,
+        // in bytes length
+        viewOrSize: this.currentBufferWordSize * 4,
         usage: BufferUsage.UNIFORM,
         hint: BufferFrequencyHint.Dynamic,
       });

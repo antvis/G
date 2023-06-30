@@ -31,6 +31,8 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     length = 0,
   ): Promise<ArrayBufferView> {
     const texture = t as Texture_WebGPU;
+
+    // FIXME: default to 0 for now
     const faceIndex = 0;
 
     const blockInformation = this.getBlockInformationFromFormat(texture.format);
@@ -38,6 +40,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     const bytesPerRow =
       Math.ceil(width / blockInformation.width) * blockInformation.length;
 
+    // bytesPerRow (4) is not a multiple of 256, so we need to align it to 256.
     const bytesPerRowAligned = Math.ceil(bytesPerRow / 256) * 256;
 
     const size = bytesPerRowAligned * height;
@@ -78,9 +81,9 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     return this.readBuffer(
       buffer,
       0,
-      dst,
+      dst.byteLength === size ? dst : null,
       dstOffset,
-      length,
+      size,
       texture.pixelFormat,
     );
   }

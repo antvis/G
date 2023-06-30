@@ -1,7 +1,8 @@
-import type {
+import {
   Buffer,
   BufferDescriptor,
   BufferFrequencyHint,
+  align,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -72,9 +73,14 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       }
     }
 
+    // const byteSize = isNumber(viewOrSize)
+    //   ? viewOrSize * 4
+    //   : viewOrSize.byteLength * 4;
+
     const byteSize = isNumber(viewOrSize)
-      ? viewOrSize * 4
-      : viewOrSize.byteLength * 4;
+      ? align(viewOrSize, 4)
+      : align(viewOrSize.byteLength, 4);
+
     this.gl_buffer_pages = [];
 
     let pageByteSize: number;
