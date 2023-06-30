@@ -71,7 +71,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#use_non-blocking_async_data_readback
    */
-  readTexture(
+  async readTexture(
     t: Texture,
     x: number,
     y: number,
@@ -80,7 +80,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     dstBuffer: ArrayBufferView,
     dstOffset = 0,
     length = dstBuffer.byteLength || 0,
-  ): ArrayBufferView {
+  ): Promise<ArrayBufferView> {
     const gl = this.device.gl;
 
     const texture = t as Texture_GL;

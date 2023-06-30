@@ -5,6 +5,7 @@ import {
   AdvancedCamera,
   CameraProjectionMode,
   Canvas,
+  ClipSpaceNearZ,
 } from '../../../packages/g/src';
 
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
@@ -125,6 +126,153 @@ describe('Camera', () => {
     expect(camera.getElevation()).toBe(0);
     camera.setAzimuth(0);
     expect(camera.getAzimuth()).toBe(0);
+  });
+
+  it('should create an orthoZO camera correctly', () => {
+    const width = 600;
+    const height = 500;
+    const camera = new AdvancedCamera();
+    camera.clipSpaceNearZ = ClipSpaceNearZ.ZERO;
+    camera
+      .setPosition(width / 2, height / 2, 500)
+      .setFocalPoint(width / 2, height / 2, 0)
+      .setOrthographic(
+        width / -2,
+        width / 2,
+        height / -2,
+        height / 2,
+        0.1,
+        1000,
+      );
+
+    expect(camera.getProjectionMode()).toBe(CameraProjectionMode.ORTHOGRAPHIC);
+    expect(camera.getZoom()).toBe(1);
+    expect(camera.getFar()).toBe(1000);
+    expect(camera.getNear()).toBe(0.1);
+    expect(camera.getPosition()).toStrictEqual(vec3.fromValues(300, 250, 500));
+    expect(camera.getFocalPoint()).toStrictEqual(vec3.fromValues(300, 250, 0));
+    expect(camera.getDistance()).toBe(500);
+
+    expect(camera.getViewTransform()).toStrictEqual(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -300, -250, -500, 1),
+    );
+    expect(camera.getWorldTransform()).toStrictEqual(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 250, 500, 1),
+    );
+
+    expect(camera.getPerspective()).toBeDeepCloseTo(
+      mat4.fromValues(
+        0.0033333334140479565,
+        0,
+        0,
+        0,
+        -0,
+        0.004000000189989805,
+        -0,
+        -0,
+        0,
+        0,
+        -0.0020002000965178013,
+        0,
+        -0,
+        0,
+        -0.00010001000191550702,
+        1,
+      ),
+    );
+  });
+
+  it('should create an perspective camera correctly', () => {
+    const width = 600;
+    const height = 500;
+    const camera = new AdvancedCamera();
+    camera
+      .setPosition(width / 2, height / 2, 500)
+      .setFocalPoint(width / 2, height / 2, 0)
+      .setPerspective(0.1, 1000, 45, width / height);
+
+    expect(camera.getProjectionMode()).toBe(CameraProjectionMode.PERSPECTIVE);
+    expect(camera.getZoom()).toBe(1);
+    expect(camera.getFar()).toBe(1000);
+    expect(camera.getNear()).toBe(0.1);
+    expect(camera.getPosition()).toStrictEqual(vec3.fromValues(300, 250, 500));
+    expect(camera.getFocalPoint()).toStrictEqual(vec3.fromValues(300, 250, 0));
+    expect(camera.getDistance()).toBe(500);
+
+    expect(camera.getViewTransform()).toStrictEqual(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -300, -250, -500, 1),
+    );
+    expect(camera.getWorldTransform()).toStrictEqual(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 250, 500, 1),
+    );
+
+    expect(camera.getPerspective()).toBeDeepCloseTo(
+      mat4.fromValues(
+        2.0118446350097656,
+        0,
+        0,
+        0,
+        -0,
+        -2.4142136573791504,
+        -0,
+        -0,
+        0,
+        0,
+        -1.0002000331878662,
+        -1,
+        -0,
+        0,
+        -0.20002000033855438,
+        0,
+      ),
+    );
+  });
+
+  it('should create an perspectiveZO camera correctly', () => {
+    const width = 600;
+    const height = 500;
+    const camera = new AdvancedCamera();
+    camera.clipSpaceNearZ = ClipSpaceNearZ.ZERO;
+    camera
+      .setPosition(width / 2, height / 2, 500)
+      .setFocalPoint(width / 2, height / 2, 0)
+      .setPerspective(0.1, 1000, 45, width / height);
+
+    expect(camera.getProjectionMode()).toBe(CameraProjectionMode.PERSPECTIVE);
+    expect(camera.getZoom()).toBe(1);
+    expect(camera.getFar()).toBe(1000);
+    expect(camera.getNear()).toBe(0.1);
+    expect(camera.getPosition()).toStrictEqual(vec3.fromValues(300, 250, 500));
+    expect(camera.getFocalPoint()).toStrictEqual(vec3.fromValues(300, 250, 0));
+    expect(camera.getDistance()).toBe(500);
+
+    expect(camera.getViewTransform()).toStrictEqual(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -300, -250, -500, 1),
+    );
+    expect(camera.getWorldTransform()).toStrictEqual(
+      mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 250, 500, 1),
+    );
+
+    expect(camera.getPerspective()).toBeDeepCloseTo(
+      mat4.fromValues(
+        2.0118446350097656,
+        0,
+        0,
+        0,
+        -0,
+        -2.4142136573791504,
+        -0,
+        -0,
+        0,
+        0,
+        -1.0002000331878662,
+        -1,
+        -0,
+        0,
+        -0.10001000016927719,
+        0,
+      ),
+    );
   });
 
   it('should setDistance correctly.', () => {

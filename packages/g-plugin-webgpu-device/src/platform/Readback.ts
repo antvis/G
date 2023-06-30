@@ -20,7 +20,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     super({ id, device });
   }
 
-  readTexture(
+  async readTexture(
     t: Texture,
     x: number,
     y: number,
@@ -29,7 +29,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     dst: ArrayBufferView,
     dstOffset = 0,
     length = 0,
-  ): ArrayBufferView {
+  ): Promise<ArrayBufferView> {
     const texture = t as Texture_WebGPU;
     const faceIndex = 0;
 
@@ -75,9 +75,14 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
 
     this.device.device.queue.submit([commandEncoder.finish()]);
 
-    // FIXME: read from buffer
-    // return this.readBuffer(buffer, size, dst, dstOffset, length, texture.pixelFormat);
-    return null;
+    return this.readBuffer(
+      buffer,
+      0,
+      dst,
+      dstOffset,
+      length,
+      texture.pixelFormat,
+    );
   }
 
   readBuffer(

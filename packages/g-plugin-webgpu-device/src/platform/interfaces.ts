@@ -9,7 +9,9 @@ import type {
   Device,
   BindingLayoutSamplerDescriptor,
   BindingLayoutDescriptor,
+  Buffer,
 } from '@antv/g-plugin-device-renderer';
+import { BufferDescriptor } from '@antv/g-plugin-device-renderer';
 
 export interface TextureSharedDescriptor {
   dimension: TextureDimension;
@@ -46,6 +48,7 @@ export interface IDevice_WebGPU extends Device {
   device: GPUDevice;
   getFallbackSampler: (samplerEntry: BindingLayoutSamplerDescriptor) => Sampler;
   getFallbackTexture: (samplerEntry: BindingLayoutSamplerDescriptor) => Texture;
+  createBuffer: (descriptor: BufferDescriptor) => Buffer;
   createTextureShared: (
     descriptor: TextureSharedDescriptor,
     texture: TextureShared_WebGPU,

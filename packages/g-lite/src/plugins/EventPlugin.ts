@@ -29,14 +29,17 @@ export class EventPlugin implements RenderingPlugin {
 
     const canvas = this.context.renderingContext.root.ownerDocument.defaultView;
 
-    this.context.eventService.setPickHandler((position: EventPosition) => {
-      const { picked } = this.context.renderingService.hooks.pickSync.call({
-        position,
-        picked: [],
-        topmost: true, // we only concern the topmost element
-      });
-      return picked[0] || null;
-    });
+    this.context.eventService.setPickHandler(
+      async (position: EventPosition) => {
+        const { picked } =
+          await this.context.renderingService.hooks.pick.promise({
+            position,
+            picked: [],
+            topmost: true, // we only concern the topmost element
+          });
+        return picked[0] || null;
+      },
+    );
 
     renderingService.hooks.pointerWheel.tap(
       EventPlugin.tag,
