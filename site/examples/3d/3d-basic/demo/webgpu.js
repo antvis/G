@@ -59,11 +59,11 @@ const rect = new Rect({
 
 const line = new Line({
   style: {
-    x1: 100,
-    y1: 200,
-    x2: 100,
-    y2: 400,
-    stroke: 'red',
+    x1: 200,
+    y1: 100,
+    x2: 400,
+    y2: 100,
+    stroke: '#1890FF',
     lineWidth: 2,
   },
 });
@@ -87,7 +87,6 @@ const image = new Image({
     width: 200,
     height: 200,
     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    isBillboard: true,
   },
 });
 
