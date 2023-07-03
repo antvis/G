@@ -700,8 +700,8 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
 
       // const needDash = !isNil(lineDash);
       let dist = 0;
-      const pointsBuffer = [];
-      const travelBuffer = [];
+      const pointsBuffer: number[] = [];
+      const travelBuffer: number[] = [];
       for (let i = 0; i < points.length; i += stridePoints) {
         // calc travel
         // if (needDash) {

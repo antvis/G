@@ -27,7 +27,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
     },
   ],
 });
-const webgpuRenderer = new WebGPURenderer();
+const webgpuRenderer = new WebGPURenderer({
+  shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 
 // register css select plugin
 canvasRenderer.registerPlugin(new Plugin());

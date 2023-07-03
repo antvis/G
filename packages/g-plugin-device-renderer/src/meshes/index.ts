@@ -1,6 +1,7 @@
 export * from './Instanced';
 export * from './SDF';
 export * from './InstancedLine';
+export * from './InstancedPath';
 export * from './Line';
 export * from './Fill';
 export * from './Image';

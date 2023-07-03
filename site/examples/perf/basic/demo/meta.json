@@ -15,6 +15,13 @@
       }
     },
     {
+      "filename": "webgl-one-command-path.js",
+      "title": {
+        "zh": "g-webgl 渲染包含一条命令的 Path",
+        "en": "Render One-command Path with g-webgl"
+      }
+    },
+    {
       "filename": "vs-g4.0.js",
       "title": {
         "zh": "与 G 4.0 对比",

@@ -21,7 +21,7 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
    */
   size: number;
 
-  view: ArrayBufferView;
+  view: ArrayBufferView | null;
 
   usage: BufferUsage;
 
