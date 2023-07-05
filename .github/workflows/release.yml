@@ -40,7 +40,7 @@ jobs:
               "link": {
                 "title": "🚀 开始自动发布 🚀",
                 "text": "🔗 请点击链接查看详情",
-                "messageUrl": "https://github.com/antvis/G/actions/workflows/auto-release.yml",
+                "messageUrl": "https://github.com/antvis/G/actions/workflows/release.yml",
                 "picUrl": "https://gw.alipayobjects.com/zos/antfincdn/9Ivxcn0hFl/Gtoutu.png"
               }
             }
@@ -73,7 +73,7 @@ jobs:
               "link": {
                 "title": "🚨 自动发布失败 🚨",
                 "text": "🔗 请点击链接查看具体原因, 及时修复, 尝试点击右上角 [Re-run all jobs] 重试, 或手动发布 🚑",
-                "messageUrl": "https://github.com/antvis/G/actions/workflows/auto-release.yml",
+                "messageUrl": "https://github.com/antvis/G/actions/workflows/release.yml",
                 "picUrl": "https://gw.alipayobjects.com/zos/antfincdn/9Ivxcn0hFl/Gtoutu.png"
               }
             }

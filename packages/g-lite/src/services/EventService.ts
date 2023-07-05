@@ -18,7 +18,7 @@ import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
 import { isElement } from '../utils/dom';
 
-type Picker = (position: EventPosition) => IEventTarget | null;
+type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
 type TrackingData = {
   pressTargetsByButton: Record<number, IEventTarget[]>;
   clicksByButton: Record<
@@ -180,12 +180,8 @@ export class EventService {
     }
   }
 
-  onPointerDown = (from: FederatedPointerEvent) => {
-    // if (!(from instanceof FederatedPointerEvent)) {
-    //   return;
-    // }
-
-    const e = this.createPointerEvent(from);
+  onPointerDown = async (from: FederatedPointerEvent) => {
+    const e = await this.createPointerEvent(from);
 
     this.dispatchEvent(e, 'pointerdown');
 
@@ -203,13 +199,9 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerUp = (from: FederatedPointerEvent) => {
-    // if (!(from instanceof FederatedPointerEvent)) {
-    //   return;
-    // }
-
+  onPointerUp = async (from: FederatedPointerEvent) => {
     const now = performance.now();
-    const e = this.createPointerEvent(
+    const e = await this.createPointerEvent(
       from,
       undefined,
       undefined,
@@ -315,12 +307,8 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerMove = (from: FederatedPointerEvent) => {
-    // if (!(from instanceof FederatedPointerEvent)) {
-    //   return;
-    // }
-
-    const e = this.createPointerEvent(
+  onPointerMove = async (from: FederatedPointerEvent) => {
+    const e = await this.createPointerEvent(
       from,
       undefined,
       undefined,
@@ -337,7 +325,7 @@ export class EventService {
     if (trackingData.overTargets && outTarget !== e.target) {
       // pointerout always occurs on the overTarget when the pointer hovers over another element.
       const outType = from.type === 'mousemove' ? 'mouseout' : 'pointerout';
-      const outEvent = this.createPointerEvent(
+      const outEvent = await this.createPointerEvent(
         from,
         outType,
         outTarget || undefined,
@@ -349,7 +337,7 @@ export class EventService {
       // If the pointer exits overTarget and its descendants, then a pointerleave event is also fired. This event
       // is dispatched to all ancestors that no longer capture the pointer.
       if (!e.composedPath().includes(outTarget!)) {
-        const leaveEvent = this.createPointerEvent(
+        const leaveEvent = await this.createPointerEvent(
           from,
           'pointerleave',
           outTarget || undefined,
@@ -451,11 +439,7 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerOut = (from: FederatedPointerEvent) => {
-    // if (!(from instanceof FederatedPointerEvent)) {
-    //   return;
-    // }
-
+  onPointerOut = async (from: FederatedPointerEvent) => {
     const trackingData = this.trackingData(from.pointerId);
 
     if (trackingData.overTargets) {
@@ -464,7 +448,7 @@ export class EventService {
       const outTarget = this.findMountedTarget(trackingData.overTargets);
 
       // pointerout first
-      const outEvent = this.createPointerEvent(
+      const outEvent = await this.createPointerEvent(
         from,
         'pointerout',
         outTarget || undefined,
@@ -475,7 +459,7 @@ export class EventService {
 
       // pointerleave(s) are also dispatched b/c the pointer must've left rootTarget and its descendants to
       // get an upstream pointerout event (upstream events do not know rootTarget has descendants).
-      const leaveEvent = this.createPointerEvent(
+      const leaveEvent = await this.createPointerEvent(
         from,
         'pointerleave',
         outTarget || undefined,
@@ -509,13 +493,9 @@ export class EventService {
     this.cursor = null;
   };
 
-  onPointerOver = (from: FederatedPointerEvent) => {
-    // if (!(from instanceof FederatedPointerEvent)) {
-    //   return;
-    // }
-
+  onPointerOver = async (from: FederatedPointerEvent) => {
     const trackingData = this.trackingData(from.pointerId);
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
 
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
 
@@ -553,16 +533,12 @@ export class EventService {
     this.freeEvent(enterEvent);
   };
 
-  onPointerUpOutside = (from: FederatedPointerEvent) => {
-    // if (!(from instanceof FederatedPointerEvent)) {
-    //   return;
-    // }
-
+  onPointerUpOutside = async (from: FederatedPointerEvent) => {
     const trackingData = this.trackingData(from.pointerId);
     const pressTarget = this.findMountedTarget(
       trackingData.pressTargetsByButton[from.button],
     );
-    const e = this.createPointerEvent(from);
+    const e = await this.createPointerEvent(from);
 
     if (pressTarget) {
       let currentTarget: IEventTarget | null = pressTarget;
@@ -592,27 +568,27 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onWheel = (from: FederatedWheelEvent) => {
+  onWheel = async (from: FederatedWheelEvent) => {
     // if (!(from instanceof FederatedWheelEvent)) {
     //   return;
     // }
 
-    const wheelEvent = this.createWheelEvent(from);
+    const wheelEvent = await this.createWheelEvent(from);
 
     this.dispatchEvent(wheelEvent);
     this.freeEvent(wheelEvent);
   };
 
-  onClick = (from: FederatedPointerEvent) => {
+  onClick = async (from: FederatedPointerEvent) => {
     if (this.context.config.useNativeClickEvent) {
-      const e = this.createPointerEvent(from);
+      const e = await this.createPointerEvent(from);
       this.dispatchEvent(e);
       this.freeEvent(e);
     }
   };
 
-  onPointerCancel = (from: FederatedPointerEvent) => {
-    const e = this.createPointerEvent(
+  onPointerCancel = async (from: FederatedPointerEvent) => {
+    const e = await this.createPointerEvent(
       from,
       undefined,
       undefined,
@@ -707,7 +683,7 @@ export class EventService {
     return propagationPath;
   }
 
-  hitTest(position: EventPosition): IEventTarget | null {
+  async hitTest(position: EventPosition): Promise<IEventTarget | null> {
     const { viewportX, viewportY } = position;
     const { width, height } = this.context.config;
     // outside canvas
@@ -721,7 +697,7 @@ export class EventService {
     }
 
     return (
-      this.pickHandler(position) ||
+      (await this.pickHandler(position)) ||
       this.rootTarget || // return Document
       null
     );
@@ -772,9 +748,9 @@ export class EventService {
     return null;
   }
 
-  private pickTarget(
+  private async pickTarget(
     event: FederatedPointerEvent | FederatedWheelEvent,
-  ): INode {
+  ): Promise<INode> {
     return this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
@@ -782,15 +758,15 @@ export class EventService {
       viewportY: event.viewportY,
       x: event.canvasX,
       y: event.canvasY,
-    }) as INode;
+    }) as Promise<INode>;
   }
 
-  private createPointerEvent(
+  private async createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
     target?: IEventTarget,
     fallbackTarget?: IEventTarget,
-  ): FederatedPointerEvent {
+  ): Promise<FederatedPointerEvent> {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     this.copyPointerData(from, event);
@@ -804,7 +780,8 @@ export class EventService {
     event.target =
       target ??
       (existedHTML ||
-        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)) ||
+        (this.isNativeEventFromCanvas(event) &&
+          (await this.pickTarget(event))) ||
         fallbackTarget);
 
     if (typeof type === 'string') {
@@ -814,7 +791,9 @@ export class EventService {
     return event;
   }
 
-  private createWheelEvent(from: FederatedWheelEvent): FederatedWheelEvent {
+  private async createWheelEvent(
+    from: FederatedWheelEvent,
+  ): Promise<FederatedWheelEvent> {
     const event = this.allocateEvent(FederatedWheelEvent);
 
     this.copyWheelData(from, event);
@@ -826,7 +805,7 @@ export class EventService {
     const existedHTML = this.getExistedHTML(event);
     event.target =
       existedHTML ||
-      (this.isNativeEventFromCanvas(event) && this.pickTarget(event));
+      (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event)));
     return event;
   }
 

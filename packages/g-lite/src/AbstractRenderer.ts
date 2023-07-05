@@ -1,7 +1,7 @@
 import type { CanvasContext } from './dom';
 import { GlobalRuntime } from './global-runtime';
 import type { RenderingPlugin } from './services';
-import type { RendererConfig } from './types';
+import { ClipSpaceNearZ, RendererConfig } from './types';
 
 export interface RendererPlugin {
   name: string;
@@ -36,6 +36,12 @@ export abstract class AbstractRendererPlugin<T = any>
 }
 
 export interface IRenderer {
+  /**
+   * The near/far clip planes correspond to a normalized device coordinate Z range of [0, 1],
+   * which matches WebGPU/Vulkan/DirectX/Metal's clip volume, while [-1, 1] matches WebGL/OpenGL's clip volume.
+   */
+  clipSpaceNearZ: ClipSpaceNearZ;
+
   getConfig: () => RendererConfig;
 
   /**
@@ -60,6 +66,7 @@ export interface IRenderer {
 }
 
 export class AbstractRenderer implements IRenderer {
+  clipSpaceNearZ = ClipSpaceNearZ.NEGATIVE_ONE;
   private plugins: RendererPlugin[] = [];
   private config: RendererConfig;
 

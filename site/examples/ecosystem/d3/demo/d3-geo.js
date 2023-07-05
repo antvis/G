@@ -145,7 +145,9 @@ function zoom(
   canvasRenderer.registerPlugin(new PluginRoughCanvasRenderer());
   const svgRenderer = new SVGRenderer();
   const webglRenderer = new WebGLRenderer();
-  const webgpuRenderer = new WebGPURenderer();
+  const webgpuRenderer = new WebGPURenderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+  });
   const canvaskitRenderer = new CanvaskitRenderer({
     wasmDir: '/',
     fonts: [

@@ -1,3 +1,4 @@
+import { quat } from 'gl-matrix';
 import type {
   DisplayObject,
   FederatedEvent,
@@ -17,6 +18,32 @@ export enum PhysXRuntimeMode {
   WebAssembly,
   /** JavaScript mode. */
   JavaScript,
+}
+
+/**
+ * Flags which affect the behavior of Shapes.
+ */
+export enum ShapeFlag {
+  /** The shape will partake in collision in the physical simulation. */
+  SIMULATION_SHAPE = 1 << 0,
+  /** The shape will partake in scene queries (ray casts, overlap tests, sweeps, ...). */
+  SCENE_QUERY_SHAPE = 1 << 1,
+  /** The shape is a trigger which can send reports whenever other shapes enter/leave its volume. */
+  TRIGGER_SHAPE = 1 << 2,
+}
+
+/**
+ * Describes how physics materials of the colliding objects are combined.
+ */
+enum CombineMode {
+  /** Averages the friction/bounce of the two colliding materials. */
+  Average,
+  /** Uses the smaller friction/bounce of the two colliding materials. */
+  Minimum,
+  /** Multiplies the friction/bounce of the two colliding materials. */
+  Multiply,
+  /** Uses the larger friction/bounce of the two colliding materials. */
+  Maximum,
 }
 
 export class PhysXPlugin implements RenderingPlugin {
@@ -40,8 +67,18 @@ export class PhysXPlugin implements RenderingPlugin {
       }
     };
 
+    const handleUnmounted = (e: FederatedEvent) => {
+      const PhysX = this.PhysX;
+      const target = e.target as DisplayObject;
+
+      if (PhysX) {
+        this.bodies.get(target).body.release();
+      }
+    };
+
     renderingService.hooks.initAsync.tapPromise(PhysXPlugin.tag, async () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
 
       this.PhysX = (await this.initPhysX()) as any;
       this.createScene();
@@ -57,6 +94,9 @@ export class PhysXPlugin implements RenderingPlugin {
             this.bodies.forEach(({ body, displayObject }) => {
               const transform = body.getGlobalPose();
               const { translation, rotation } = transform;
+
+              // console.log(translation, rotation, displayObject);
+
               displayObject.setPosition(
                 translation.x,
                 translation.y,
@@ -76,60 +116,66 @@ export class PhysXPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(PhysXPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
   }
 
   // @see https://github.com/oasis-engine/engine/blob/main/packages/physics-physx/src/PhysXPhysics.ts#L39
-  private initPhysX(
+  private async initPhysX(
     runtimeMode: PhysXRuntimeMode = PhysXRuntimeMode.Auto,
   ): Promise<void> {
-    const scriptPromise = new Promise((resolve) => {
-      const script = document.createElement('script');
-      document.body.appendChild(script);
-      script.async = true;
-      script.onload = resolve;
+    if ((<any>window).PHYSX) {
+      return await (<any>window).PHYSX();
+    } else {
+      const scriptPromise = new Promise((resolve) => {
+        const script = document.createElement('script');
+        document.body.appendChild(script);
+        script.async = true;
+        script.onload = resolve;
 
-      const supported = (() => {
-        try {
-          if (
-            typeof WebAssembly === 'object' &&
-            typeof WebAssembly.instantiate === 'function'
-          ) {
-            const module = new WebAssembly.Module(
-              Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00),
-            );
-            if (module instanceof WebAssembly.Module)
-              return (
-                new WebAssembly.Instance(module) instanceof WebAssembly.Instance
+        const supported = (() => {
+          try {
+            if (
+              typeof WebAssembly === 'object' &&
+              typeof WebAssembly.instantiate === 'function'
+            ) {
+              const module = new WebAssembly.Module(
+                Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00),
               );
+              if (module instanceof WebAssembly.Module)
+                return (
+                  new WebAssembly.Instance(module) instanceof
+                  WebAssembly.Instance
+                );
+            }
+          } catch (e) {}
+          return false;
+        })();
+        if (runtimeMode == PhysXRuntimeMode.Auto) {
+          if (supported) {
+            runtimeMode = PhysXRuntimeMode.WebAssembly;
+          } else {
+            runtimeMode = PhysXRuntimeMode.JavaScript;
           }
-        } catch (e) {}
-        return false;
-      })();
-      if (runtimeMode == PhysXRuntimeMode.Auto) {
-        if (supported) {
-          runtimeMode = PhysXRuntimeMode.WebAssembly;
-        } else {
-          runtimeMode = PhysXRuntimeMode.JavaScript;
         }
-      }
 
-      if (runtimeMode == PhysXRuntimeMode.JavaScript) {
-        script.src =
-          'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/0.6.0-alpha.1/dist/physx.release.js';
-      } else if (runtimeMode == PhysXRuntimeMode.WebAssembly) {
-        script.src =
-          'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/0.6.0-alpha.1/dist/physx.release.js';
-      }
-    });
+        if (runtimeMode == PhysXRuntimeMode.JavaScript) {
+          script.src =
+            'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/1.0.0-alpha.4/libs/physx.release.js.js';
+        } else if (runtimeMode == PhysXRuntimeMode.WebAssembly) {
+          script.src =
+            'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/1.0.0-alpha.4/libs/physx.release.js';
+        }
+      });
 
-    return new Promise((resolve) => {
-      scriptPromise.then(() => {
-        (<any>window).PHYSX().then((PHYSX: any) => {
-          resolve(PHYSX);
+      return new Promise((resolve) => {
+        scriptPromise.then(() => {
+          (<any>window).PHYSX().then((PHYSX: any) => {
+            resolve(PHYSX);
+          });
         });
       });
-    });
+    }
   }
 
   private createScene() {
@@ -143,11 +189,19 @@ export class PhysXPlugin implements RenderingPlugin {
       defaultErrorCallback,
     );
     const triggerCallback = {
-      onContactBegin: () => {},
-      onContactEnd: () => {},
+      onContactBegin: () => {
+        console.log('begin...');
+      },
+      onContactEnd: (index1, index2) => {
+        console.log('end...', index1, index2);
+      },
       onContactPersist: () => {},
-      onTriggerBegin: () => {},
-      onTriggerEnd: () => {},
+      onTriggerBegin: () => {
+        console.log('triggerbegin...');
+      },
+      onTriggerEnd: () => {
+        console.log('triggerend...');
+      },
     };
     const physxSimulationCallbackInstance =
       PhysX.PxSimulationEventCallback.implement(triggerCallback);
@@ -166,6 +220,11 @@ export class PhysXPlugin implements RenderingPlugin {
       physxSimulationCallbackInstance,
     );
     this.scene = this.physics.createScene(sceneDesc);
+    this.scene.setGravity({
+      x: 0,
+      y: 100,
+      z: 0,
+    });
   }
 
   private addActor(target: DisplayObject) {
@@ -175,7 +234,7 @@ export class PhysXPlugin implements RenderingPlugin {
 
       const PhysX = this.PhysX;
       const pos = target.getPosition();
-      const rotation = target.getRotation();
+      const rotation = quat.normalize(quat.create(), target.getRotation());
 
       // use box by default
       const geometry = new PhysX.PxBoxGeometry(
@@ -184,14 +243,19 @@ export class PhysXPlugin implements RenderingPlugin {
         halfExtents[1],
         halfExtents[2] || 0.1, // account for 2D shapes
       );
-      const material = this.physics.createMaterial(0.2, 0.2, 0.2);
+      const material = this.physics.createMaterial(0.5, 0.1, 2);
+      material.setFrictionCombineMode(CombineMode.Average);
+      material.setRestitutionCombineMode(CombineMode.Average);
+
+      // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/structPxShapeFlag.html#a6edb481aaa3a998c5d6dd3fc4ad87f1aa7fa4fea0eecda9cc80a7aaa11a22df52
       const flags = new PhysX.PxShapeFlags(
-        // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/structPxShapeFlag.html#a6edb481aaa3a998c5d6dd3fc4ad87f1aa7fa4fea0eecda9cc80a7aaa11a22df52
-        PhysX.PxShapeFlag.eSCENE_QUERY_Shape.value |
-          PhysX.PxShapeFlag.eSIMULATION_Shape.value,
+        ShapeFlag.SCENE_QUERY_SHAPE | ShapeFlag.SIMULATION_SHAPE,
+        // ShapeFlag.TRIGGER_SHAPE,
       );
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxPhysics.html#abc564607f208cbc1944880172a3d62fe
-      const shape = this.physics.createShape(geometry, material, false, flags);
+      const shape = this.physics.createShape(geometry, material, true, flags);
+      shape.setUUID(target.entity);
+
       const transform = {
         translation: {
           x: pos[0],
@@ -217,6 +281,13 @@ export class PhysXPlugin implements RenderingPlugin {
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxRigidActor.html#a022e098ea67bc8ec87f93c2f18a4db6f
       body.attachShape(shape);
+
+      // if (body.setRigidBodyFlag) {
+      //   body.setRigidBodyFlag(PhysX.PxRigidBodyFlag.eENABLE_CCD, true);
+      // }
+
+      body.setGlobalPose(transform, true);
+
       this.bodies.set(target, {
         displayObject: target,
         body,
@@ -224,11 +295,6 @@ export class PhysXPlugin implements RenderingPlugin {
 
       // @see https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxapi/files/classPxScene.html#a033c70c3094db21a2c51246e1a65a0e5
       this.scene.addActor(body, null);
-      this.scene.setGravity({
-        x: 0,
-        y: 100, // flipY
-        z: 0,
-      });
     }
   }
 }

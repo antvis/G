@@ -79,7 +79,7 @@ export interface Readback extends ResourceBase {
     dst: ArrayBufferView,
     dstOffset?: number,
     length?: number,
-  ) => ArrayBufferView;
+  ) => Promise<ArrayBufferView>;
 
   readBuffer: (
     b: Buffer,

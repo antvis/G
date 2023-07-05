@@ -201,7 +201,7 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
     });
 
     rest = rest.replace(
-      type === 'frag' ? /^\b(varying|in)\b/gm : /^\b(varying|out)\b/gm,
+      type === 'frag' ? /^\s*\b\s*(varying|in)\b/gm : /^\s*\b(varying|out)\b/gm,
       (substr, tok) => {
         return `layout(location = ${location++}) ${tok}`;
       },

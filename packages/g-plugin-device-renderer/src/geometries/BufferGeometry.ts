@@ -13,7 +13,6 @@ import {
   Format,
   PrimitiveTopology,
 } from '../platform';
-import { align } from '../platform/utils';
 
 export function makeStaticDataBuffer(
   device: Device,
@@ -21,7 +20,7 @@ export function makeStaticDataBuffer(
   data: ArrayBufferLike,
 ): Buffer {
   const buffer = device.createBuffer({
-    viewOrSize: align(data.byteLength, 4) / 4,
+    viewOrSize: data.byteLength,
     usage,
     hint: BufferFrequencyHint.Static,
   });

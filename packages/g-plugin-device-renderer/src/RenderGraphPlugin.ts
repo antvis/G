@@ -17,6 +17,7 @@ import {
   SwapChain,
   Texture,
   TextureDescriptor,
+  TransparentBlack,
   TransparentWhite,
 } from './platform';
 import {
@@ -240,20 +241,26 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
-      // use canvas.background
-      const backgroundColor = parseColor(
-        this.context.config.background,
-      ) as CSSRGB;
-      const clearColor = this.context.config.background
-        ? // use premultipliedAlpha
-          // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
-          colorNewFromRGBA(
-            (Number(backgroundColor.r) / 255) * Number(backgroundColor.alpha),
-            (Number(backgroundColor.g) / 255) * Number(backgroundColor.alpha),
-            (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
-            Number(backgroundColor.alpha),
-          )
-        : TransparentWhite;
+      let clearColor;
+      if (this.context.config.background === 'transparent') {
+        clearColor = TransparentBlack;
+      } else {
+        // use canvas.background
+        const backgroundColor = parseColor(
+          this.context.config.background,
+        ) as CSSRGB;
+
+        clearColor = this.context.config.background
+          ? // use premultipliedAlpha
+            // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
+            colorNewFromRGBA(
+              (Number(backgroundColor.r) / 255) * Number(backgroundColor.alpha),
+              (Number(backgroundColor.g) / 255) * Number(backgroundColor.alpha),
+              (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
+              Number(backgroundColor.alpha),
+            )
+          : TransparentWhite;
+      }
 
       // retrieve at each frame since canvas may resize
       const renderInput = {
@@ -328,7 +335,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         setAttachmentStateSimple(
           {
             depthWrite: true,
-            blendConstant: TransparentWhite,
+            blendConstant: TransparentBlack,
           },
           {
             rgbBlendMode: BlendMode.Add,

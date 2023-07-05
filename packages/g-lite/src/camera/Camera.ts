@@ -3,7 +3,7 @@ import type { vec2 } from 'gl-matrix';
 import { mat3, mat4, quat, vec3, vec4 } from 'gl-matrix';
 import type { Canvas } from '../Canvas';
 import { Frustum } from '../shapes';
-import type { TypeEasingFunction } from '../types';
+import { ClipSpaceNearZ, TypeEasingFunction } from '../types';
 import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '../utils/error';
 import {
   createVec3,
@@ -37,47 +37,50 @@ const MIN_DISTANCE = 0.0002;
 export class Camera implements ICamera {
   canvas: Canvas;
 
+  /**
+   * Clip space near Z, default to range `[-1, 1]`
+   */
+  clipSpaceNearZ = ClipSpaceNearZ.NEGATIVE_ONE;
+
   eventEmitter = new EventEmitter();
 
   /**
-   * 相机矩阵
+   * Matrix of camera
    */
   protected matrix = mat4.create();
 
   /**
-   * u 轴
+   * u axis +X is right
    * @see http://learnwebgl.brown37.net/07_cameras/camera_introduction.html#a-camera-definition
    */
   protected right = vec3.fromValues(1, 0, 0);
 
   /**
-   * v 轴 +Y is down
+   * v axis +Y is up
    */
   protected up = vec3.fromValues(0, 1, 0);
 
   /**
-   * n 轴 +Z is inside
+   * n axis +Z is inside
    */
   protected forward = vec3.fromValues(0, 0, 1);
 
   /**
-   * 相机位置
+   * Position of camera.
    */
   protected position = vec3.fromValues(0, 0, 1);
 
   /**
-   * 视点位置
+   * Position of focal point.
    */
   protected focalPoint = vec3.fromValues(0, 0, 0);
 
   /**
-   * 视点到相机位置的向量
-   * focalPoint - position
+   * vector from focalPoint to position
    */
   protected distanceVector = vec3.fromValues(0, 0, -1);
 
   /**
-   * 相机位置到视点距离
    * length(focalPoint - position)
    */
   protected distance = 1;
@@ -490,6 +493,7 @@ export class Camera implements ICamera {
       top - height,
       near,
       this.far,
+      this.clipSpaceNearZ === ClipSpaceNearZ.ZERO,
     );
     // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
     mat4.scale(
@@ -542,7 +546,11 @@ export class Camera implements ICamera {
       bottom = top - scaleH * this.view.height;
     }
 
-    mat4.ortho(this.projectionMatrix, left, right, bottom, top, near, far);
+    if (this.clipSpaceNearZ === ClipSpaceNearZ.NEGATIVE_ONE) {
+      mat4.ortho(this.projectionMatrix, left, right, bottom, top, near, far);
+    } else {
+      mat4.orthoZO(this.projectionMatrix, left, right, bottom, top, near, far);
+    }
 
     // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
     mat4.scale(

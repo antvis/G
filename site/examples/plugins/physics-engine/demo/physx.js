@@ -25,6 +25,10 @@ const canvas = new Canvas({
   renderer,
 });
 
+// adjust camera's position
+const camera = canvas.getCamera();
+camera.setPerspective(0.1, 5000, 45, 600 / 500);
+
 (async () => {
   await canvas.ready;
   const plugin = renderer.getPlugin('device-renderer');
@@ -34,11 +38,13 @@ const canvas = new Canvas({
   );
 
   const planeGeometry = new CubeGeometry(device, {
-    width: 200,
-    height: 200,
-    depth: 200,
+    width: 500,
+    height: 20,
+    depth: 500,
   });
-  const planeMaterial = new MeshBasicMaterial(device);
+  const planeMaterial = new MeshBasicMaterial(device, {
+    wireframe: true,
+  });
   const plane = new Mesh({
     style: {
       fill: '#1890FF',
@@ -47,16 +53,26 @@ const canvas = new Canvas({
       rigid: 'static',
     },
   });
+  plane.setPosition(300, 400, 0);
   canvas.appendChild(plane);
-  plane.setPosition(300, 250, 0);
+
+  const plane2 = new Mesh({
+    style: {
+      fill: '#1890FF',
+      geometry: planeGeometry,
+      material: planeMaterial,
+      rigid: 'static',
+    },
+  });
+  plane2.setPosition(300, 100, 0);
+  canvas.appendChild(plane2);
 
   const cubeGeometry = new CubeGeometry(device, {
-    width: 200,
-    height: 200,
-    depth: 200,
+    width: 100,
+    height: 100,
+    depth: 100,
   });
   const basicMaterial = new MeshBasicMaterial(device, {
-    // wireframe: true,
     map,
   });
 
@@ -68,9 +84,7 @@ const canvas = new Canvas({
       rigid: 'dynamic',
     },
   });
-
-  cube.setPosition(300, 250, 0);
-
+  cube.setPosition(300, -50, 0);
   canvas.appendChild(cube);
 
   // stats
