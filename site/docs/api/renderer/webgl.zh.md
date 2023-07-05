@@ -55,6 +55,42 @@ const webglRenderer = new WebGLRenderer({
 });
 ```
 
+### onContextLost
+
+如果浏览器检测到与 [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) 对象关联的图形缓冲区已丢失，则会触发 WebGL API 中的 `webglcontextlost` 事件，此时 `onContextLost` 回调函数会被触发：
+
+<https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/webglcontextlost_event>
+
+```js
+const webglRenderer = new WebGLRenderer({
+    onContextLost: (e: Event) => {},
+});
+```
+
+### onContextRestored
+
+当 [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) 恢复时，会触发 `webglcontextrestored` 事件，此时 `onContextRestored` 回调函数会被触发：
+
+<https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextrestored_event>
+
+```js
+const webglRenderer = new WebGLRenderer({
+    onContextRestored: (e: Event) => {},
+});
+```
+
+### onContextCreationError
+
+当 [WebGLRenderingContext](https://developer.mozilla.org/en-US/Web/API/WebGLRenderingContext) 创建失败时，会触发 `webglcontextcreationerror` 事件，此时 `onContextCreationError` 回调函数会被触发：
+
+<https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextcreationerror_event>
+
+```js
+const webglRenderer = new WebGLRenderer({
+    onContextCreationError: (e: Event) => {},
+});
+```
+
 ## 内置插件
 
 该渲染器内置了以下插件：

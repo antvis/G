@@ -2,6 +2,7 @@
 
 #ifdef INSTANCED
   #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
+  in vec4 v_Dash;
 #else
   #pragma glslify: import('@antv/g-shader-components/line.both.glsl')
 #endif
@@ -10,6 +11,7 @@ in vec4 v_Distance;
 in vec4 v_Arc;
 in float v_Type;
 in float v_Travel;
+in float v_ScalingFactor;
 
 out vec4 outputColor;
 
@@ -64,15 +66,16 @@ void main(){
   }
 
   #ifdef INSTANCED
-  #else
-    if (u_Dash + u_Gap > 1.0) {
-      float scalingFactor = sqrt(u_ModelMatrix[0][0] * u_ModelMatrix[0][0] + u_ModelMatrix[0][1] * u_ModelMatrix[0][1] + u_ModelMatrix[0][2] * u_ModelMatrix[0][2]);
-      float travel = mod(v_Travel + u_Gap * scalingFactor * 0.5 + u_DashOffset, u_Dash * scalingFactor + u_Gap * scalingFactor) - (u_Gap * scalingFactor * 0.5);
-      float left = max(travel - 0.5, -0.5);
-      float right = min(travel + 0.5, u_Gap * scalingFactor + 0.5);
-      alpha *= max(0.0, right - left);
-    }
+    float u_Dash = v_Dash.x;
+    float u_Gap = v_Dash.y;
+    float u_DashOffset = v_Dash.z;
   #endif
+  if (u_Dash + u_Gap > 1.0) {
+    float travel = mod(v_Travel + u_Gap * v_ScalingFactor * 0.5 + u_DashOffset, u_Dash * v_ScalingFactor + u_Gap * v_ScalingFactor) - (u_Gap * v_ScalingFactor * 0.5);
+    float left = max(travel - 0.5, -0.5);
+    float right = min(travel + 0.5, u_Gap * v_ScalingFactor + 0.5);
+    alpha *= max(0.0, right - left);
+  }
 
   if (u_IsPicking > 0.5) {
     #ifdef INSTANCED

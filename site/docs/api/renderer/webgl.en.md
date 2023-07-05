@@ -55,6 +55,42 @@ const webglRenderer = new WebGLRenderer({
 });
 ```
 
+### onContextLost
+
+The `webglcontextlost` event of the WebGL API is fired if the user agent detects that the drawing buffer associated with a WebGLRenderingContext object has been lost.
+
+<https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/webglcontextlost_event>
+
+```js
+const webglRenderer = new WebGLRenderer({
+    onContextLost: (e: Event) => {},
+});
+```
+
+### onContextRestored
+
+The `webglcontextrestored` event of the WebGL API is fired if the user agent restores the drawing buffer for a WebGLRenderingContext object.
+
+<https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextrestored_event>
+
+```js
+const webglRenderer = new WebGLRenderer({
+    onContextRestored: (e: Event) => {},
+});
+```
+
+### onContextCreationError
+
+The `webglcontextcreationerror` event of the WebGL API is fired if the user agent is unable to create a WebGLRenderingContext context.
+
+<https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextcreationerror_event>
+
+```js
+const webglRenderer = new WebGLRenderer({
+    onContextCreationError: (e: Event) => {},
+});
+```
+
 ## Built-in plug-ins
 
 The renderer has the following plug-ins built in.

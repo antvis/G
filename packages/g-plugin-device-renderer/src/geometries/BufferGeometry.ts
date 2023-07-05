@@ -14,15 +14,16 @@ import {
   PrimitiveTopology,
 } from '../platform';
 
-export function makeStaticDataBuffer(
+export function makeDataBuffer(
   device: Device,
   usage: BufferUsage,
   data: ArrayBufferLike,
+  hint = BufferFrequencyHint.Static,
 ): Buffer {
   const buffer = device.createBuffer({
     viewOrSize: data.byteLength,
     usage,
-    hint: BufferFrequencyHint.Static,
+    hint,
   });
   buffer.setSubData(0, new Uint8Array(data));
   return buffer;
@@ -126,7 +127,7 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       this.indexBuffer.destroy();
     }
 
-    this.indexBuffer = makeStaticDataBuffer(
+    this.indexBuffer = makeDataBuffer(
       this.device,
       BufferUsage.INDEX,
       new Uint32Array(ArrayBuffer.isView(indices) ? indices.buffer : indices)
@@ -177,10 +178,11 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       this.vertexBuffers[bufferIndex].destroy();
     }
 
-    const buffer = makeStaticDataBuffer(
+    const buffer = makeDataBuffer(
       this.device,
       BufferUsage.VERTEX,
       data.buffer,
+      BufferFrequencyHint.Dynamic,
     );
     this.vertexBuffers[bufferIndex] = buffer;
 

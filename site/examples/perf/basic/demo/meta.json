@@ -1,96 +1,10 @@
 {
   "demos": [
     {
-      "filename": "canvas-circle-path.js",
-      "title": {
-        "zh": "g-canvas 渲染 Circle 和 Path",
-        "en": "Render Circle & Path with g-canvas"
-      }
-    },
-    {
-      "filename": "webgl-circle-path.js",
-      "title": {
-        "zh": "g-webgl 渲染 Circle 和 Path",
-        "en": "Render Circle & Path with g-webgl"
-      }
-    },
-    {
-      "filename": "webgl-one-command-path.js",
-      "title": {
-        "zh": "g-webgl 渲染包含一条命令的 Path",
-        "en": "Render One-command Path with g-webgl"
-      }
-    },
-    {
-      "filename": "vs-g4.0.js",
-      "title": {
-        "zh": "与 G 4.0 对比",
-        "en": "Compared with G 4.0"
-      }
-    },
-    {
       "filename": "culling.js",
       "title": {
         "zh": "视口剔除",
         "en": "Viewport culling"
-      }
-    },
-    {
-      "filename": "canvas-dirty-rectangle.js",
-      "title": {
-        "zh": "脏矩形渲染(Canvas)",
-        "en": "Rendering with dirty rectangle(Canvas)"
-      }
-    },
-    {
-      "filename": "redraw.js",
-      "title": {
-        "zh": "移动大量节点",
-        "en": "Move nodes"
-      }
-    },
-    {
-      "filename": "group-move.js",
-      "title": {
-        "zh": "频繁移动 Group",
-        "en": "Move groups"
-      }
-    },
-    {
-      "filename": "nodes-8k.js",
-      "title": {
-        "zh": "8k 节点",
-        "en": "8k nodes"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D-57RohPWVgAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "nodes-5w.js",
-      "title": {
-        "zh": "5.5w 节点",
-        "en": "5.5w nodes"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dwS2Rb3mq5IAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "images.js",
-      "title": {
-        "zh": "大量图片",
-        "en": "Instanced Image"
-      }
-    },
-    {
-      "filename": "texts.js",
-      "title": {
-        "zh": "大量文本",
-        "en": "Instanced Text"
-      }
-    },
-    {
-      "filename": "rects.js",
-      "title": {
-        "zh": "大量矩形",
-        "en": "Instanced Rect"
       }
     },
     {

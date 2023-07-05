@@ -392,7 +392,11 @@ export class LineMesh extends Instanced {
   }
 }
 
-export function updateBuffer(object: DisplayObject, needEarcut = false) {
+export function updateBuffer(
+  object: DisplayObject,
+  needEarcut = false,
+  segmentNum?: number,
+) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
   const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
@@ -574,6 +578,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[2] - defX,
           params[3] - defY,
           points[mCommandsNum],
+          segmentNum,
         );
         if (useEndOffset) {
           points[mCommandsNum].push(
@@ -608,6 +613,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
             args[i + 4] - defX,
             args[i + 5] - defY,
             points[mCommandsNum],
+            segmentNum,
           );
         }
         if (useEndOffset) {
@@ -625,6 +631,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[4] - defX,
           params[5] - defY,
           points[mCommandsNum],
+          segmentNum,
         );
         if (useEndOffset) {
           points[mCommandsNum].push(
@@ -694,10 +701,9 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
   }
 
+  let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
   return points
     .map((points) => {
-      let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
-
       // const needDash = !isNil(lineDash);
       let dist = 0;
       const pointsBuffer: number[] = [];

@@ -14,6 +14,11 @@ layout(location = VERTEX_JOINT) in float a_VertexJoint;
 layout(location = VERTEX_NUM) in float a_VertexNum;
 layout(location = TRAVEL) in float a_Travel;
 
+#ifdef INSTANCED
+  layout(location = DASH) in vec4 a_Dash;
+  out vec4 v_Dash;
+#endif
+
 const float FILL = 1.0;
 const float BEVEL = 4.0;
 const float MITER = 8.0;
@@ -38,6 +43,7 @@ out vec4 v_Distance;
 out vec4 v_Arc;
 out float v_Type;
 out float v_Travel;
+out float v_ScalingFactor;
 
 vec2 doBisect(
   vec2 norm, float len, vec2 norm2, float len2, float dy, float inner
@@ -62,6 +68,7 @@ vec2 doBisect(
 void main() {
   #ifdef INSTANCED
     #pragma glslify: import('@antv/g-shader-components/batch.vert')
+    v_Dash = a_Dash;
   #endif
 
   vec2 pointA = (u_ModelMatrix * vec4(a_Point1, 0., 1.0)).xy;
@@ -325,6 +332,8 @@ void main() {
     v_Arc = v_Arc * u_DevicePixelRatio;
     v_Travel = a_Travel + dot(pos - pointA, vec2(-norm.y, norm.x));
   }
+
+  v_ScalingFactor = sqrt(u_ModelMatrix[0][0] * u_ModelMatrix[0][0] + u_ModelMatrix[0][1] * u_ModelMatrix[0][1] + u_ModelMatrix[0][2] * u_ModelMatrix[0][2]);
 
   gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
 }

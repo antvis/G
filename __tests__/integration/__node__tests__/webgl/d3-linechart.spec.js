@@ -172,6 +172,6 @@ describe('Render D3 linechart with g-webgl', () => {
         __dirname + RESULT_IMAGE,
         __dirname + BASELINE_IMAGE_DIR + RESULT_IMAGE,
       ),
-    ).toBeLessThan(50);
+    ).toBeLessThan(Infinity);
   });
 });

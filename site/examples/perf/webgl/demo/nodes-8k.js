@@ -1,15 +1,4 @@
-import {
-  Canvas,
-  CanvasEvent,
-  Circle,
-  Line,
-  Image,
-  Text,
-  runtime,
-} from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Canvas, CanvasEvent, Circle, Line, Text, runtime } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import Hammer from 'hammerjs';
@@ -19,25 +8,9 @@ import Stats from 'stats.js';
 runtime.enableCSSParsing = false;
 
 // create a renderer
-// enable culling for canvas & svg renderer
-const canvasRenderer = new CanvasRenderer({
-  enableCulling: true,
-});
-const svgRenderer = new SVGRenderer({
-  enableCulling: true,
-});
 const webglRenderer = new WebGLRenderer();
 const webgpuRenderer = new WebGPURenderer({
   shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
-});
-const canvaskitRenderer = new CanvaskitRenderer({
-  wasmDir: '/',
-  fonts: [
-    {
-      name: 'sans-serif',
-      url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
-    },
-  ],
 });
 
 // create a canvas
@@ -131,42 +104,14 @@ const mapNodeSize = (nodes, propertyName, visualRange) => {
     });
     circle.appendChild(text);
 
-    let c1;
     circle.addEventListener('mouseenter', (e) => {
       circle.style.fill = '#2FC25B';
       text.style.fill = 'red';
-
-      c1 = new Circle({
-        style: {
-          cx: 100,
-          cy: 100,
-          r: 1000,
-          fill: '#2FC25B',
-          zIndex: -1,
-        },
-      });
-
-      // c1 = new Image({
-      //   style: {
-      //     x: 100,
-      //     y: 100,
-      //     width: 1000,
-      //     height: 1000,
-      //     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-      //     zIndex: -1,
-      //   },
-      // });
-      canvas.appendChild(c1);
     });
 
     circle.addEventListener('mouseleave', (e) => {
       circle.style.fill = '#C6E5FF';
       text.style.fill = '#1890FF';
-
-      if (c1) {
-        canvas.removeChild(c1);
-        c1 = undefined;
-      }
     });
   });
 })();
@@ -238,27 +183,15 @@ const rendererConfig = {
   renderer: 'webgl',
 };
 rendererFolder
-  .add(rendererConfig, 'renderer', [
-    'canvas',
-    'svg',
-    'webgl',
-    'webgpu',
-    'canvaskit',
-  ])
-  .onChange(async (rendererName) => {
+  .add(rendererConfig, 'renderer', ['webgl', 'webgpu'])
+  .onChange((rendererName) => {
     let renderer;
-    if (rendererName === 'canvas') {
-      renderer = canvasRenderer;
-    } else if (rendererName === 'svg') {
-      renderer = svgRenderer;
-    } else if (rendererName === 'webgl') {
+    if (rendererName === 'webgl') {
       renderer = webglRenderer;
     } else if (rendererName === 'webgpu') {
       renderer = webgpuRenderer;
-    } else if (rendererName === 'canvaskit') {
-      renderer = canvaskitRenderer;
     }
-    await canvas.setRenderer(renderer);
+    canvas.setRenderer(renderer);
     bindWheelHandler();
   });
 rendererFolder.open();
