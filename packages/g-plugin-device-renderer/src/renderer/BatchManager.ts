@@ -202,6 +202,8 @@ export class BatchManager {
               existedMesh.index = i;
               existedMesh.init(this.context);
               this.meshes.push(existedMesh);
+            } else {
+              existedMesh.geometryDirty = true;
             }
 
             if (existedMesh) {

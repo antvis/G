@@ -1,4 +1,4 @@
 ---
-title: Performance
-order: 1
+title: Performance tips
+order: 5
 ---

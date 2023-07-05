@@ -2,7 +2,7 @@
  * Instanced line which has a  better performance.
  * @see https://www.yuque.com/antv/ou292n/gg1gh5
  */
-import { DisplayObject } from '@antv/g-lite';
+import { DisplayObject, ParsedPathStyleProps, Path, Shape } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
@@ -18,6 +18,7 @@ enum LineVertexAttributeBufferIndex {
   PACKED = VertexAttributeBufferIndex.POSITION + 1,
   VERTEX_NUM,
   TRAVEL,
+  DASH,
 }
 
 enum LineVertexAttributeLocation {
@@ -28,12 +29,33 @@ enum LineVertexAttributeLocation {
   VERTEX_JOINT,
   VERTEX_NUM,
   TRAVEL,
+  DASH,
 }
 
+const SEGMENT_NUM = 12;
+
 /**
- * Used for Path only contains 2 commands, e.g. [[M], [C]]
+ * Used for Curve only contains 2 commands, e.g. [[M], [C | Q | A]]
  */
 export class InstancedPathMesh extends Instanced {
+  static isOneCommandCurve(object: DisplayObject) {
+    if (object.nodeName === Shape.PATH) {
+      const {
+        path: { absolutePath },
+      } = object.parsedStyle as ParsedPathStyleProps;
+      if (
+        absolutePath.length === 2 &&
+        absolutePath[0][0] === 'M' &&
+        (absolutePath[1][0] === 'C' ||
+          absolutePath[1][0] === 'A' ||
+          absolutePath[1][0] === 'Q')
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
     if (!shouldMerge) {
@@ -57,6 +79,7 @@ export class InstancedPathMesh extends Instanced {
     const indices: number[] = [];
     const pointsBuffer: number[] = [];
     const travelBuffer: number[] = [];
+    const packedDash: number[] = [];
     let instancedCount = 0;
     let offset = 0;
     objects.forEach((object) => {
@@ -64,11 +87,39 @@ export class InstancedPathMesh extends Instanced {
         pointsBuffer: pBuffer,
         travelBuffer: tBuffer,
         instancedCount: count,
-      } = updateBuffer(object);
+      } = updateBuffer(object, false, SEGMENT_NUM);
+
+      const { lineDash, lineDashOffset, isBillboard } = (object as Path)
+        .parsedStyle;
+
+      packedDash.push(
+        (lineDash && lineDash[0]) || 0, // DASH
+        (lineDash && lineDash[1]) || 0, // GAP
+        lineDashOffset || 0,
+        isBillboard ? 1 : 0,
+      );
 
       instancedCount += count;
 
-      pointsBuffer.push(...pBuffer);
+      // Can't use interleaved buffer here, we should spread them like:
+      // | prev - pointA - pointB - next |. This will allocate ~4x buffer memory space.
+      for (let i = 0; i < pBuffer.length - 3 * 3; i += 3) {
+        pointsBuffer.push(
+          pBuffer[i],
+          pBuffer[i + 1],
+          pBuffer[i + 2],
+          pBuffer[i + 3],
+          pBuffer[i + 4],
+          pBuffer[i + 5],
+          pBuffer[i + 6],
+          pBuffer[i + 7],
+          pBuffer[i + 8],
+          pBuffer[i + 9],
+          pBuffer[i + 10],
+          pBuffer[i + 11],
+        );
+      }
+
       travelBuffer.push(...tBuffer);
 
       indices.push(
@@ -99,35 +150,30 @@ export class InstancedPathMesh extends Instanced {
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          byteStride: 4 * 3,
           location: LineVertexAttributeLocation.PREV,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 3,
-          byteStride: 4 * 3,
           location: LineVertexAttributeLocation.POINT1,
           divisor: 1,
         },
         {
           format: Format.F32_R,
           bufferByteOffset: 4 * 5,
-          byteStride: 4 * 3,
           location: LineVertexAttributeLocation.VERTEX_JOINT,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 6,
-          byteStride: 4 * 3,
           location: LineVertexAttributeLocation.POINT2,
           divisor: 1,
         },
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 9,
-          byteStride: 4 * 3,
           location: LineVertexAttributeLocation.NEXT,
           divisor: 1,
         },
@@ -165,8 +211,24 @@ export class InstancedPathMesh extends Instanced {
       data: new Float32Array(travelBuffer),
     });
 
-    // this attribute only changes for each 9 instance
+    // this attribute only changes for each n instance
     this.divisor = instancedCount / objects.length;
+
+    this.geometry.setVertexBuffer({
+      bufferIndex: LineVertexAttributeBufferIndex.DASH,
+      byteStride: 4 * 4,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
+        {
+          format: Format.F32_RGBA,
+          bufferByteOffset: 4 * 0,
+          location: LineVertexAttributeLocation.DASH,
+          divisor: this.divisor,
+        },
+      ],
+      data: new Float32Array(packedDash),
+    });
+
     // use default common attributes
     super.createGeometry(objects);
 
@@ -184,5 +246,83 @@ export class InstancedPathMesh extends Instanced {
     super.updateAttribute(objects, startIndex, name, value);
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
+
+    if (
+      name === 'path' ||
+      name === 'markerStartOffset' ||
+      name === 'markerEndOffset' ||
+      name === 'markerStart' ||
+      name === 'markerEnd'
+    ) {
+      const pointsBuffer: number[] = [];
+      const travelBuffer: number[] = [];
+      let instancedCount = 0;
+      objects.forEach((object) => {
+        const {
+          pointsBuffer: pBuffer,
+          travelBuffer: tBuffer,
+          instancedCount: iCount,
+        } = updateBuffer(object, false, SEGMENT_NUM);
+        instancedCount = iCount;
+
+        // Can't use interleaved buffer here, we should spread them like:
+        // | prev - pointA - pointB - next |. This will allocate ~4x buffer memory space.
+        for (let i = 0; i < pBuffer.length - 3 * 3; i += 3) {
+          pointsBuffer.push(
+            pBuffer[i],
+            pBuffer[i + 1],
+            pBuffer[i + 2],
+            pBuffer[i + 3],
+            pBuffer[i + 4],
+            pBuffer[i + 5],
+            pBuffer[i + 6],
+            pBuffer[i + 7],
+            pBuffer[i + 8],
+            pBuffer[i + 9],
+            pBuffer[i + 10],
+            pBuffer[i + 11],
+          );
+        }
+
+        travelBuffer.push(...tBuffer);
+      });
+
+      this.geometry.updateVertexBuffer(
+        LineVertexAttributeBufferIndex.PACKED,
+        LineVertexAttributeLocation.PREV,
+        startIndex * instancedCount,
+        new Uint8Array(new Float32Array(pointsBuffer).buffer),
+      );
+      this.geometry.updateVertexBuffer(
+        LineVertexAttributeBufferIndex.TRAVEL,
+        LineVertexAttributeLocation.TRAVEL,
+        startIndex,
+        new Uint8Array(new Float32Array(travelBuffer).buffer),
+      );
+    } else if (
+      name === 'lineDashOffset' ||
+      name === 'lineDash' ||
+      name === 'isBillboard'
+    ) {
+      const packedDash: number[] = [];
+      objects.forEach((object) => {
+        const { lineDash, lineDashOffset, isBillboard } = (object as Path)
+          .parsedStyle;
+
+        packedDash.push(
+          (lineDash && lineDash[0]) || 0, // DASH
+          (lineDash && lineDash[1]) || 0, // GAP
+          lineDashOffset || 0,
+          isBillboard ? 1 : 0,
+        );
+      });
+
+      this.geometry.updateVertexBuffer(
+        LineVertexAttributeBufferIndex.DASH,
+        LineVertexAttributeBufferIndex.DASH,
+        startIndex,
+        new Uint8Array(new Float32Array(packedDash).buffer),
+      );
+    }
   }
 }

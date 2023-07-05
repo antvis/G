@@ -126,7 +126,7 @@ rendererFolder
     'webgpu',
     'canvaskit',
   ])
-  .onChange(async (rendererName) => {
+  .onChange((rendererName) => {
     let renderer;
     if (rendererName === 'canvas') {
       renderer = canvasRenderer;
@@ -139,7 +139,7 @@ rendererFolder
     } else if (rendererName === 'canvaskit') {
       renderer = canvaskitRenderer;
     }
-    await canvas.setRenderer(renderer);
+    canvas.setRenderer(renderer);
     bindWheelHandler();
   });
 rendererFolder.open();

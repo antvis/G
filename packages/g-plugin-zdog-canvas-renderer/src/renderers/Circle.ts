@@ -1,29 +1,28 @@
 import type { CanvasRenderer } from '@antv/g-canvas';
 import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
-import { Ellipse } from 'zdog';
+import { Anchor, Ellipse } from 'zdog';
 
 export class CircleRenderer implements CanvasRenderer.StyleRenderer {
   render(
-    context: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D & { scene: Anchor },
     parsedStyle: ParsedCircleStyleProps,
     object: DisplayObject<any, any>,
   ) {
     const { r, lineWidth, fill } = parsedStyle as ParsedCircleStyleProps;
 
-    const c = new Ellipse({
-      // @ts-ignore
+    new Ellipse({
       addTo: context.scene,
       diameter: 2 * r,
       stroke: lineWidth,
       color: fill.toString(),
       translate: {
-        x: 200,
-        y: 200,
+        x: 0,
+        y: 0,
         z: 40,
       },
     });
 
-    // @ts-ignore
-    console.log(c, context.scene);
+    // @see https://zzz.dog/api#illustration-updaterendergraph
+    context.scene.updateGraph();
   }
 }

@@ -232,4 +232,27 @@ describe('CSSPropertyTransform', () => {
     expect(circle.getLocalBounds().center).toStrictEqual([10, 10, 0]);
     expect(circle.getLocalBounds().halfExtents).toStrictEqual([25, 25, 0]);
   });
+
+  it("should reset transform with 'none' keyword correctly.", async () => {
+    const circle = new Circle({
+      style: {
+        cx: 10,
+        cy: 10,
+        r: 50,
+        transform: 'translate(10, 10)',
+      },
+    });
+
+    await canvas.ready;
+    canvas.appendChild(circle);
+
+    expect(circle.getLocalPosition()).toStrictEqual([20, 20, 0]);
+    expect(circle.getLocalBounds().center).toStrictEqual([20, 20, 0]);
+    expect(circle.getLocalBounds().halfExtents).toStrictEqual([50, 50, 0]);
+
+    circle.style.transform = 'none';
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalBounds().center).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalBounds().halfExtents).toStrictEqual([50, 50, 0]);
+  });
 });

@@ -1,7 +1,4 @@
 import { Canvas, CanvasEvent, Circle, Line } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import Hammer from 'hammerjs';
@@ -11,18 +8,7 @@ import Stats from 'stats.js';
 // ported from G6 @see https://g6.antv.vision/zh/examples/performance/perf#moreData
 
 // create a renderer
-const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
-const svgRenderer = new SVGRenderer();
-const canvaskitRenderer = new CanvaskitRenderer({
-  wasmDir: '/',
-  fonts: [
-    {
-      name: 'sans-serif',
-      url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
-    },
-  ],
-});
 const webgpuRenderer = new WebGPURenderer({
   shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
 });
@@ -168,15 +154,15 @@ const rendererConfig = {
   renderer: 'webgl',
 };
 rendererFolder
-  .add(rendererConfig, 'renderer', ['canvas', 'webgl', 'svg'])
-  .onChange(async (renderer) => {
-    await canvas.setRenderer(
-      renderer === 'canvas'
-        ? canvasRenderer
-        : renderer === 'webgl'
-        ? webglRenderer
-        : svgRenderer,
-    );
+  .add(rendererConfig, 'renderer', ['webgl', 'webgpu'])
+  .onChange((rendererName) => {
+    let renderer;
+    if (rendererName === 'webgl') {
+      renderer = webglRenderer;
+    } else if (rendererName === 'webgpu') {
+      renderer = webgpuRenderer;
+    }
+    canvas.setRenderer(renderer);
     bindWheelHandler();
   });
 rendererFolder.open();

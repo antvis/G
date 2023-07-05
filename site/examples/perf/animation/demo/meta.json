@@ -1,0 +1,32 @@
+{
+  "demos": [
+    {
+      "filename": "circle.js",
+      "title": {
+        "zh": "Circle",
+        "en": "Circle"
+      }
+    },
+    {
+      "filename": "path.js",
+      "title": {
+        "zh": "Path",
+        "en": "Path"
+      }
+    },
+    {
+      "filename": "group-move.js",
+      "title": {
+        "zh": "频繁移动 Group",
+        "en": "Move groups"
+      }
+    },
+    {
+      "filename": "redraw.js",
+      "title": {
+        "zh": "移动大量节点",
+        "en": "Move nodes"
+      }
+    }
+  ]
+}

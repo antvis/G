@@ -2,7 +2,14 @@
  * Instanced line which has a  better performance.
  * @see https://www.yuque.com/antv/ou292n/gg1gh5
  */
-import type { Line, ParsedLineStyleProps, Path, Polyline } from '@antv/g-lite';
+import type {
+  Line,
+  ParsedLineStyleProps,
+  Path,
+  Polyline,
+  ParsedPathStyleProps,
+  ParsedPolylineStyleProps,
+} from '@antv/g-lite';
 import { DisplayObject, Shape, isDisplayObject } from '@antv/g-lite';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/instanced-line.frag';
@@ -40,6 +47,42 @@ const LineCap_MAP = {
 };
 
 export class InstancedLineMesh extends Instanced {
+  static isLine(object: DisplayObject) {
+    if (object.nodeName === Shape.PATH) {
+      const {
+        path: { absolutePath },
+      } = object.parsedStyle as ParsedPathStyleProps;
+
+      // only contains M & L commands
+      if (
+        absolutePath.length === 2 &&
+        absolutePath[0][0] === 'M' &&
+        absolutePath[1][0] === 'L'
+      ) {
+        return true;
+      }
+    } else if (object.nodeName === Shape.POLYLINE) {
+      const {
+        points: { points },
+      } = object.parsedStyle as ParsedPolylineStyleProps;
+      const tangent =
+        (points[1][0] - points[1][1]) / (points[0][0] - points[0][1]);
+      for (let i = 1; i < points.length - 1; i++) {
+        if (
+          (points[i + 1][0] - points[i + 1][1]) /
+            (points[i][0] - points[i][1]) !==
+          tangent
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
     if (!shouldMerge) {
