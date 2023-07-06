@@ -1,5 +1,16 @@
 # @antv/g-plugin-zdog-canvas-renderer
 
+## 1.2.2
+
+### Patch Changes
+
+-   0eb5142d: Avoid overriding defXY when parsing path
+-   71990540: Make picking process async for WebGL2 & WebGPU implementations
+-   Updated dependencies [0eb5142d]
+-   Updated dependencies [71990540]
+    -   @antv/g-lite@1.2.2
+    -   @antv/g-canvas@1.11.2
+
 ## 1.2.1
 
 ### Patch Changes

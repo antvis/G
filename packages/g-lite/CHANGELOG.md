@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 1.2.2
+
+### Patch Changes
+
+-   0eb5142d: Avoid overriding defXY when parsing path
+-   71990540: Make picking process async for WebGL2 & WebGPU implementations
+
 ## 1.2.1
 
 ### Patch Changes
