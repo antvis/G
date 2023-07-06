@@ -85,7 +85,7 @@ canvas.addEventListener('drop', function (e) {
 
 We provide the following configurations for what conditions are met to determine `dragstart`: based on drag distance and time, respectively. Only if all these conditions are met, a series of drag events such as `dragstart` will be triggered.
 
-This configuration item is used to configure the detection threshold of the drag distance in pixels, and only ** greater than ** this value will be passed. The default value is 0.
+This configuration item is used to configure the detection threshold of the drag distance in pixels, and only **greater than** this value will be passed. The default value is 0.
 
 In this [example](/en/examples/plugins#dragndrop), we have configured this option to 10, i.e. only dragging more than 10 pixels will trigger a drag event.
 
@@ -97,7 +97,7 @@ const plugin = new Plugin({
 
 ### dragstartTimeThreshold
 
-This configuration item is used to configure the detection threshold of drag and drop time in milliseconds, and only ** greater than ** this value will be passed. The default value is 0.
+This configuration item is used to configure the detection threshold of drag and drop time in milliseconds, and only **greater than** this value will be passed. The default value is 0.
 
 In this [example](/en/examples/plugins#dragndrop), we have configured this option to 100, i.e. the drag event will only be triggered if the drag exceeds 100 milliseconds.
 
@@ -148,15 +148,15 @@ const ball = new Image({
 
 At this point, you can listen to drag-related events for the graph, including the following three types of events, the [target](/en/api/event#target) of the event object are the graph being dragged.
 
--   dragstart triggered at the start of dragging https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
--   drag Triggered frequently during dragging https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
--   dragend Triggered at the end of the drag https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
+-   dragstart triggered at the start of dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
+-   drag Triggered frequently during dragging <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
+-   dragend Triggered at the end of the drag <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
 
 drag The related events are all [PointerEvents](/en/api/event#interaction events), so you can access the properties on the event object in the event listener.
 
-For example, when we start dragging, we record the offset from mouse position to the position of the dragged element `shiftX/Y`, both under [Canvas/world coordinate system](/en/api/canvas#canvas-1). In the `drag` event we call [setPosition](/en/api/basic/display-object#panning) to finish the panning of the dragged drawing.
+For example, when we start dragging, we record the offset from mouse position to the position of the dragged element `shiftX/Y`, both under [Canvas/world coordinate system](/en/api/canvas/coordinates#canvas). In the `drag` event we call [setPosition](/en/api/basic/display-object#panning) to finish the panning of the dragged drawing.
 
-https://javascript.info/mouse-drag-and-drop#correct-positioning
+<https://javascript.info/mouse-drag-and-drop#correct-positioning>
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1121Q7T2TDAAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -206,10 +206,10 @@ const gate = new Image({
 
 At this point you can listen to drag/drop related events in the placement area, including the following three types of events, the [target](/en/api/event#target) of the event object are the graphics of the placement area.
 
--   dragenter has the graphic being dragged into the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event
--   dragleave has graphics being dragged out of the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event
--   dragover has the graphic being drawn over the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event
--   drop has the graphic placed in the area https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event
+-   dragenter has the graphic being dragged into the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
+-   dragleave has graphics being dragged out of the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>
+-   dragover has the graphic being drawn over the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event>
+-   drop has the graphic placed in the area <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event>
 
 For example, let's have the goal listen for events related to.
 
@@ -252,6 +252,6 @@ The `drag` series of events has a sequential triggering order with other interac
 
 ### Relationship to Click events
 
-In the Drag'n'drop implementation of HTML, only one `click` and `drag` event will be triggered at the same time: https://plnkr.co/edit/5mdl7oTg0dPWXIip
+In the Drag'n'drop implementation of HTML, only one `click` and `drag` event will be triggered at the same time: <https://plnkr.co/edit/5mdl7oTg0dPWXIip>
 
 We have also kept this setting in our implementation, so that `click` is not triggered after the `dragend` event is fired.

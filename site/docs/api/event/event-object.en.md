@@ -21,7 +21,7 @@ Event type：
 -   pointermove
 -   pointercancel
 
-https://developer.mozilla.org/en-US/docs/Web/API/Event/type
+<https://developer.mozilla.org/en-US/docs/Web/API/Event/type>
 
 ### nativeEvent
 
@@ -31,43 +31,43 @@ Native event object. When we call [preventDefault](/en/api/event#preventdefault)
 
 Point to [Canvas](/en/api/canvas).
 
-https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
+<https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view>
 
 ### altKey
 
 If or not the event is triggered with an `alt` press.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey>
 
 ### metaKey
 
 If or not the event is triggered with a `meta` press.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey>
 
 ### ctrlKey
 
 If or not the event is triggered with a `ctrl` press.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey>
 
 ### shiftKey
 
 If or not the event is triggered with a `shift` press.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey>
 
 ### timeStamp
 
 Timestamp when the event was created.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp>
 
 ### eventPhase
 
 The current event phase. There are three enumeration values as follows.
 
-```
+```js
 CAPTURING_PHASE = 1;
 AT_TARGET = 2;
 BUBBLING_PHASE = 3;
@@ -89,20 +89,18 @@ circle.addEventListener(
 
 The data object carried by the event object. For example, when a click is triggered, the number of clicks is carried.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
+<https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail>
 
 ### target
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target>
 
 The [EventTarget](/en/api/builtin-objects/event-target) of the current triggering event.
 
 Useful when implementing event delegation, for example in a scenario like this, similar to `ul/li` in the DOM.
 
-```
-Group(ul)
-    - Rect(li)
-    - Rect(li)
+```js
+Group(ul) - Rect(li) - Rect(li);
 ```
 
 We can listen for events on `ul` that will trigger when each `li` is clicked on.
@@ -128,7 +126,7 @@ ul.addEventListener(
 
 ### currentTarget
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget>
 
 Always points to the event-bound element.
 
@@ -181,7 +179,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 ### clientX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX>
 
 Under [browser coordinate system](/en/api/canvas#client), the upper left corner is `(0, 0)`. G does not modify this property on the native event, so they are identical.
 
@@ -199,7 +197,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 ### screenX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX>
 
 Under [screen coordinate system](/en/api/canvas#screen), page scrolling is not considered. g does not modify this property on native events, so they are identical.
 
@@ -210,7 +208,7 @@ e.nativeEvent.screenX;
 
 ### pageX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX>
 
 Under [page coordinate system](/en/api/canvas#page), consider page scrolling. g does not modify this property on native events, so they are identical.
 
@@ -221,7 +219,7 @@ e.nativeEvent.pageX;
 
 ### movementX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX>
 
 The value of the mouse movement in the horizontal direction between the current event and the previous `mousemove` event. In other words, this value is calculated like this: `currentEvent.movementX = currentEvent.screenX - previousEvent.screenX`
 
@@ -235,69 +233,69 @@ Returns the device type of the event with the following return value.
 -   `'mouse'` [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
 -   `'touch'` [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType>
 
 ### pointerId
 
 Returns a value that uniquely identifies the point in contact with the touch plane. This value remains consistent across all events raised by this finger (or stylus, etc.) until it leaves the touch plane.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId>
 
 ### isPrimary
 
 If or not it is primary pointer, it means the current event is generated by the primary pointer in multi-touch scenario.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary>
 
 ### button
 
-Identifies which button was clicked for the mouse event. 0 is the left button, 1 is the right button.
+Identifies which button was clicked for the mouse event. 0 is the left button, 2 is the right button.
 
-https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+<https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button>
 
 ### buttons
 
-https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+<https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons>
 
 ### width
 
 The width of the contact area. Returns `1` if the native event is MouseEvent.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width>
 
 ### height
 
 The height of the contact area. Returns `1` if the native event is MouseEvent.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height>
 
 ### tiltX
 
 The angle of the contact with the screen in the Y-Z plane. Returns a fixed value of `0` if the native event is MouseEvent.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX>
 
 ### tiltY
 
 The angle of the contact with the screen in the X-Z plane. Returns a fixed value of `0` if the native event is MouseEvent.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY>
 
 ### pressure
 
 Returns the amount of pressure corresponding to the finger squeezing the touch plane, from `0.0` (no pressure) to `1.0` (maximum pressure) as a floating point number. Returns a fixed value of `0.5` if the native event is MouseEvent.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure>
 
 ### tangentialPressure
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure>
 
 ### twist
 
 The clockwise rotation angle. Returns a fixed value of `0` if the native event is MouseEvent.
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist>
 
 ## WheelEvent
 
@@ -307,7 +305,7 @@ In the mouse wheel event, you can get the scroll amount.
 
 <tag color="blue" text="WheelEvent">WheelEvent</tag>
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent
+<https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent>
 
 The amount of lateral/longitudinal/Z-axis roll of the roller.
 
@@ -319,7 +317,7 @@ Certain methods on the event object can control the behavior of the event as it 
 
 Prevents other event listeners listening to the same event from being called, and prevents bubbling.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation>
 
 For example, if multiple click listeners are bound to the graph.
 
@@ -364,13 +362,13 @@ group.on(
 
 Stops further propagation of the current event in the capture and bubble phases.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation>
 
 The difference with `stopImmediatePropagation` is that it does not prevent other event listeners listening to the same event from being called.
 
 ### preventDefault
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault>
 
 Block the default browser behavior. Calling this method for Passive events is not valid and will throw a warning.
 
@@ -378,16 +376,14 @@ A solution for wheel events can be found at [Disable default page scrolling beha
 
 ### composedPath
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath>
 
 Returns the event path, which is an array containing [EventTarget](/en/api/builtin-objects/event-target), similar to `propagationPath` in the old G version. In this array, `event.target` is the first element of the array, [scene graph root](/en/api/canvas#the-root-node), [Document](/en/api/builtin-objects/document) and [Canvas](/en/api/canvas) are the three elements at the end of the array.
 
 Still using a DOM-like `ul/li` scenario as an example.
 
-```
-Group(ul)
-    - Rect(li)
-    - Rect(li)
+```js
+Group(ul) - Rect(li) - Rect(li);
 ```
 
 Listen for events on `ul` that are triggered when each `li` is clicked, with the event propagation path being `[li1, ul, Group, Document, Canvas]`.

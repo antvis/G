@@ -416,7 +416,6 @@ export default defineConfig({
       },
     },
     docsearchOptions: {
-      versionV3: false,
       apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
       indexName: 'antv_g',
     },

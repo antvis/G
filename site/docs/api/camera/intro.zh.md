@@ -20,7 +20,7 @@ const camera = canvas.getCamera();
 
 ## 投影模式
 
-正交投影（左图）常用于 CAD 软件和策略类游戏（模拟人生）中。而透视投影（右图）遵循我们认知中的“近大远小”。 ![](https://www.scratchapixel.com/images/upload/perspective-matrix/projectionsexample.png)
+正交投影（左图）常用于 CAD 软件和策略类游戏（模拟人生）中。而透视投影（右图）遵循我们认知中的“近大远小”。 ![perspective](https://www.scratchapixel.com/images/upload/perspective-matrix/projectionsexample.png)
 
 我们提供了以上两种投影模式：
 
@@ -47,7 +47,7 @@ canvas.getCamera().getProjectionMode(); // CameraProjectionMode.ORTHOGRAPHIC
 
 方法签名如下：
 
-```
+```js
 setOrthographic(left: number, right: number,
                 top: number, bottom: number,
                 near: number, far: number)
@@ -77,7 +77,7 @@ const camera = new Camera()
 
 方法签名如下：
 
-```
+```js
 setPerspective(near: number, far: number, fov: number, aspect: number)
 ```
 
@@ -124,7 +124,7 @@ export enum CameraType {
 
 在 Three.js 中称作 [OrbitControls](https://threejs.org/#examples/zh/controls/OrbitControls)
 
-在该[示例](/zh/examples/camera/camera-animation#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/zh/api/camera/action#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
+在该[示例](/zh/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan](/zh/api/camera/action#pan) 动作，仿佛是在让场景绕固定视点“旋转”。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
@@ -136,7 +136,7 @@ G 的**默认相机**选择了该模式。
 
 在 Three.js 中称作 [TrackballControls](https://threejs.org/#examples/en/controls/TrackballControls)
 
-在该[示例](/zh/examples/camera#landmark)中，我们通过鼠标的平移控制相机完成 [pan]() 动作，让相机绕固定视点“旋转”。
+在该[示例](/zh/examples/camera/camera-animation/#landmark)中，我们通过鼠标的平移控制相机完成 [pan]() 动作，让相机绕固定视点“旋转”。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dGgTTKjUrKoAAAAAAAAAAAAAARQnAQ">
 
