@@ -757,8 +757,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         object.parsedStyle.path = parsePath(
           // @ts-ignore
           attributes.path,
-          object,
         );
+
+        object.parsedStyle.defX = object.parsedStyle.path.rect.x;
+        object.parsedStyle.defY = object.parsedStyle.path.rect.y;
       }
       // Text
       if (attributes.textTransform) {

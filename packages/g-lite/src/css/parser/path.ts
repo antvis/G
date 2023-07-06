@@ -9,10 +9,7 @@ import {
   path2Curve,
   reverseCurve,
 } from '@antv/util';
-import type {
-  DisplayObject,
-  ParsedPathStyleProps,
-} from '../../display-objects';
+import type { ParsedPathStyleProps } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { memoize } from '../../utils/memoize';
 import {
@@ -82,18 +79,10 @@ const memoizedParsePath = memoize(internalParsePath);
 
 export function parsePath(
   path: string | PathArray,
-  object?: DisplayObject,
 ): ParsedPathStyleProps['path'] {
-  const result = (
+  return (
     isString(path) ? memoizedParsePath(path) : internalParsePath(path)
   ) as ParsedPathStyleProps['path'];
-
-  if (object) {
-    object.parsedStyle.defX = result.rect.x;
-    object.parsedStyle.defY = result.rect.y;
-  }
-
-  return result;
 }
 
 export function mergePaths(
