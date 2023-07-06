@@ -154,64 +154,47 @@ export class TextMesh extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.INSTANCED,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4), // 32
-      // frequency: VertexBufferFrequency.PerInstance,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.MODEL_MATRIX0,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.MODEL_MATRIX1,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
           location: VertexAttributeLocation.MODEL_MATRIX2,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
           location: VertexAttributeLocation.MODEL_MATRIX3,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 16,
           location: VertexAttributeLocation.PACKED_COLOR,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 20,
           location: VertexAttributeLocation.PACKED_STYLE1,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 24,
           location: VertexAttributeLocation.PACKED_STYLE2,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 28,
           location: VertexAttributeLocation.PICKING_COLOR,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
       ],
       data: new Float32Array(packed),
@@ -540,7 +523,7 @@ export class TextMesh extends Instanced {
         ...encodedPickingColor,
         object.sortable.renderOrder * RENDER_ORDER_SCALE,
       ];
-      // FIXME: instanced
+      // Can't use instanced here since the total number of each Text can be different.
       charPackedBuffer.push(...packed, ...packed, ...packed, ...packed);
 
       // interleaved uv & offsets

@@ -5,3 +5,5 @@ lib
 dist
 node_modules
 rollup.config.js
+site
+__tests__

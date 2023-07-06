@@ -11,12 +11,18 @@ export function quadCurveTo(
   toX: number,
   toY: number,
   points: number[],
+  segmentNum?: number,
 ) {
   const fromX = points[points.length - 2];
   const fromY = points[points.length - 1];
 
-  const l = quadLength(fromX, fromY, cpX, cpY, toX, toY);
-  const n = clamp(l / SEGMENT_LENGTH, MIN_SEGMENT_NUM, MAX_SEGMENT_NUM);
+  const n =
+    segmentNum ??
+    clamp(
+      quadLength(fromX, fromY, cpX, cpY, toX, toY) / SEGMENT_LENGTH,
+      MIN_SEGMENT_NUM,
+      MAX_SEGMENT_NUM,
+    );
 
   let xa = 0;
   let ya = 0;
@@ -42,14 +48,21 @@ export function bezierCurveTo(
   toX: number,
   toY: number,
   points: number[],
+  segmentNum?: number,
 ): void {
   const fromX = points[points.length - 2];
   const fromY = points[points.length - 1];
 
   points.length -= 2;
 
-  const l = cubicLength(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY);
-  const n = clamp(l / SEGMENT_LENGTH, MIN_SEGMENT_NUM, MAX_SEGMENT_NUM);
+  const n =
+    segmentNum ??
+    clamp(
+      cubicLength(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY) /
+        SEGMENT_LENGTH,
+      MIN_SEGMENT_NUM,
+      MAX_SEGMENT_NUM,
+    );
 
   let dt = 0;
   let dt2 = 0;

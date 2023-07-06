@@ -140,6 +140,11 @@ export abstract class Instanced {
    */
   protected lightReceived = false;
 
+  /**
+   *
+   */
+  protected divisor = 1;
+
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
   get instance() {
@@ -263,6 +268,7 @@ export abstract class Instanced {
     const packedFillStroke: number[] = [];
     const packedStyle: number[] = [];
     const packedPicking: number[] = [];
+    const divisor = this.divisor;
 
     // const useNormal = this.material.defines.NORMAL;
 
@@ -358,19 +364,19 @@ export abstract class Instanced {
       //         format: Format.F32_RGB,
       //         bufferByteOffset: 4 * 0,
       //         location: Number(NORMAL_MATRIX0),
-      //         divisor: 1,
+      //         divisor
       //       },
       //       {
       //         format: Format.F32_RGB,
       //         bufferByteOffset: 4 * 3,
       //         location: Number(NORMAL_MATRIX1),
-      //         divisor: 1,
+      //         divisor
       //       },
       //       {
       //         format: Format.F32_RGB,
       //         bufferByteOffset: 4 * 6,
       //         location: Number(NORMAL_MATRIX2),
-      //         divisor: 1,
+      //         divisor
       //       },
       //     ],
       //     data: new Float32Array(normalMatrix),
@@ -389,25 +395,25 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.MODEL_MATRIX0,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.MODEL_MATRIX1,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
           location: VertexAttributeLocation.MODEL_MATRIX2,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
           location: VertexAttributeLocation.MODEL_MATRIX3,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedModelMatrix),
@@ -422,7 +428,7 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PACKED_COLOR,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedFillStroke),
@@ -437,13 +443,13 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PACKED_STYLE1,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.PACKED_STYLE2,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedStyle),
@@ -458,7 +464,7 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PICKING_COLOR,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedPicking),

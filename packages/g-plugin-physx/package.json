@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-physx",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "A G plugin for PhysX",
   "keywords": [
     "antv",
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "publishConfig": {

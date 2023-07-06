@@ -1,5 +1,14 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 1.9.2
+
+### Patch Changes
+
+-   Updated dependencies [0eb5142d]
+-   Updated dependencies [71990540]
+    -   @antv/g-lite@1.2.2
+    -   @antv/g-canvas@1.11.2
+
 ## 1.9.1
 
 ### Patch Changes

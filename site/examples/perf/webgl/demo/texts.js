@@ -1,26 +1,14 @@
-import { Canvas, CanvasEvent, Image } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Canvas, CanvasEvent, Text } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
-const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
-const svgRenderer = new SVGRenderer();
-const canvaskitRenderer = new CanvaskitRenderer({
-  wasmDir: '/',
-  fonts: [
-    {
-      name: 'sans-serif',
-      url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
-    },
-  ],
+const webgpuRenderer = new WebGPURenderer({
+  shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
 });
-const webgpuRenderer = new WebGPURenderer();
 
 // create a canvas
 const canvas = new Canvas({
@@ -31,29 +19,34 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  for (let i = 0; i < 1000; i++) {
-    const image = new Image({
+  // Different fontSize
+  for (let i = 0; i < 50; i++) {
+    const text = new Text({
       style: {
         x: Math.random() * 600,
         y: Math.random() * 500,
-        width: 100 + Math.random() * 100,
-        height: 100 + Math.random() * 100,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*8eoKRbfOwgAAAAAAAAAAAABkARQnAQ',
+        fontFamily: 'PingFang SC',
+        text: '测试文本' + i,
+        fontSize: 50 + Math.random() * 10,
+        fill: i % 2 === 0 ? '#1890FF' : 'red',
       },
     });
-    canvas.appendChild(image);
+    canvas.appendChild(text);
   }
-  for (let i = 0; i < 1000; i++) {
-    const image = new Image({
+
+  // Different content but with the same fontsize.
+  for (let i = 0; i < 5000; i++) {
+    const text = new Text({
       style: {
         x: Math.random() * 600,
         y: Math.random() * 500,
-        width: 100 + Math.random() * 100,
-        height: 100 + Math.random() * 100,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        fontFamily: 'PingFang SC',
+        text: '测试文本' + i,
+        fontSize: 6,
+        fill: 'green',
       },
     });
-    canvas.appendChild(image);
+    canvas.appendChild(text);
   }
 });
 
@@ -107,25 +100,13 @@ const rendererConfig = {
   renderer: 'webgl',
 };
 rendererFolder
-  .add(rendererConfig, 'renderer', [
-    'canvas',
-    'svg',
-    'webgl',
-    'webgpu',
-    'canvaskit',
-  ])
+  .add(rendererConfig, 'renderer', ['webgl', 'webgpu'])
   .onChange((rendererName) => {
     let renderer;
-    if (rendererName === 'canvas') {
-      renderer = canvasRenderer;
-    } else if (rendererName === 'svg') {
-      renderer = svgRenderer;
-    } else if (rendererName === 'webgl') {
+    if (rendererName === 'webgl') {
       renderer = webglRenderer;
     } else if (rendererName === 'webgpu') {
       renderer = webgpuRenderer;
-    } else if (rendererName === 'canvaskit') {
-      renderer = canvaskitRenderer;
     }
     canvas.setRenderer(renderer);
   });

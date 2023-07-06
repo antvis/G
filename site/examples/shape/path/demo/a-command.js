@@ -13,7 +13,9 @@ const svgRenderer = new SVGRenderer();
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
 });
-const webgpuRenderer = new WebGPURenderer();
+const webgpuRenderer = new WebGPURenderer({
+  shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 
 const canvas = new Canvas({
   container: 'container',

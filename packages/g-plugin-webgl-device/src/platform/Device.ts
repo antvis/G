@@ -60,7 +60,7 @@ import {
   getFormatFlags,
   getFormatTypeFlags,
   GL,
-  makeStaticDataBuffer,
+  makeDataBuffer,
   nullify,
   prependLineNo,
   preprocessProgramObj_GLSL,
@@ -2332,7 +2332,7 @@ export class Device_GL implements SwapChain, Device {
     resolveTo: Texture_GL,
   ) {
     if (!this.blitRenderPipeline) {
-      const vertexBuffer = makeStaticDataBuffer(
+      const vertexBuffer = makeDataBuffer(
         this,
         BufferUsage.VERTEX | BufferUsage.COPY_DST,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,

@@ -13,7 +13,7 @@ order: 3
 
 ### 特性检测
 
-在使用时需要判断当前环境是否支持 WebGPU，下面特性检测代码来自：https://web.dev/gpu/#feature-detection：
+在使用时需要判断当前环境是否支持 WebGPU，下面特性检测代码来自：<https://web.dev/gpu/#feature-detection>：
 
 ```js
 if ('gpu' in navigator) {
@@ -39,7 +39,9 @@ if ('gpu' in navigator) {
 import { Canvas } from '@antv/g';
 import { Renderer } from '@antv/g-webgpu';
 
-const webgpuRenderer = new Renderer();
+const webgpuRenderer = new Renderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 
 const canvas = new Canvas({
     container: 'container',
@@ -60,7 +62,34 @@ const canvas = new Canvas({
 从 `G.WebGPU` 命名空间下可以获取渲染器：
 
 ```js
-const webgpuRenderer = new window.G.WebGPU.Renderer();
+const webgpuRenderer = new window.G.WebGPU.Renderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
+```
+
+## 初始化配置
+
+### shaderCompilerPath
+
+由于我们的 Shader 使用 GLSL 300 编写，因此需要转译到 WGSL 才能在 WebGPU 中运行。这一步我们使用了 naga，编译成 WASM 后便可以在浏览器运行，因此需要在运行时加载它：
+
+```js
+const webgpuRenderer = new WebGPURenderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
+```
+
+### onContextLost
+
+和 WebGL 一样，WebGPU 应用在运行过程中也有可能出现上下文丢失的情况，此时会触发该回调函数。
+
+<https://github.com/gpuweb/gpuweb/blob/main/design/ErrorHandling.md#fatal-errors-requestadapter-requestdevice-and-devicelost>
+
+```js
+const webgpuRenderer = new WebGPURenderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+    onContextLost: () => {},
+});
 ```
 
 ## 内置插件

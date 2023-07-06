@@ -40,6 +40,8 @@ export interface PathStyleProps extends BaseStyleProps {
    * offset relative to original position
    */
   markerEndOffset?: number;
+
+  isBillboard?: boolean;
 }
 
 export interface PathSegmentBBox {
@@ -105,6 +107,7 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
+  isBillboard?: boolean;
 }
 export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   private markerStartAngle = 0;

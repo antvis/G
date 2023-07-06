@@ -206,8 +206,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       device: this.device,
       format: this.swapChainFormat,
       usage: this.swapChainTextureUsage,
-      // @see https://www.w3.org/TR/webgpu/#enumdef-gpucanvascompositingalphamode
-      alphaMode: 'opaque',
+      // @see https://www.w3.org/TR/webgpu/#gpucanvasalphamode
+      // alphaMode: 'opaque',
+      alphaMode: 'premultiplied',
     });
   }
 

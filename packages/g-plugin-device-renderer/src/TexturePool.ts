@@ -80,11 +80,28 @@ export class TexturePool {
 
         if (image) {
           image.onload = () => {
-            this.textureCache[id].setImageData(image);
-            this.textureCache[id].emit(TextureEvent.LOADED);
-            this.context.renderingService.dirtify();
-            if (successCallback) {
-              successCallback(this.textureCache[id]);
+            const onSuccess = (bitmap: ImageBitmap | HTMLImageElement) => {
+              this.textureCache[id].setImageData(bitmap);
+              this.textureCache[id].emit(TextureEvent.LOADED);
+              this.context.renderingService.dirtify();
+              if (successCallback) {
+                successCallback(this.textureCache[id]);
+              }
+            };
+
+            if (runtime.globalThis.createImageBitmap) {
+              runtime.globalThis
+                .createImageBitmap(image)
+                .then((bitmap: ImageBitmap) => onSuccess(bitmap))
+                .catch(() => {
+                  // Unhandled Rejection (InvalidStateError):
+                  // Failed to execute 'createImageBitmap' on 'Window':
+                  // The image element contains an SVG image without intrinsic dimensions,
+                  // and no resize options or crop region are specified.
+                  onSuccess(image);
+                });
+            } else {
+              onSuccess(image);
             }
           };
           image.onerror = () => {};

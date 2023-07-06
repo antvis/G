@@ -15,7 +15,7 @@ import {
   StencilOp,
   TextureDimension,
 } from '../interfaces';
-import { colorCopy, colorNewCopy, TransparentWhite } from './color';
+import { colorCopy, colorNewCopy, TransparentBlack } from './color';
 // import { reverseDepthForCompareMode } from './depth';
 
 export function isPowerOfTwo(n: number): boolean {
@@ -231,7 +231,7 @@ export const defaultMegaState: MegaStateDescriptor = {
     },
   ],
 
-  blendConstant: colorNewCopy(TransparentWhite),
+  blendConstant: colorNewCopy(TransparentBlack),
   depthWrite: true,
   depthCompare: CompareMode.LessEqual,
   // depthCompare: reverseDepthForCompareMode(CompareMode.LessEqual),

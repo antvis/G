@@ -13,7 +13,7 @@ The following pre-requisites need to be met.
 
 ### Feature Detection
 
-When using it, you need to determine whether the current environment supports WebGPU, the following feature detection code from https://web.dev/gpu/#feature-detection.
+When using it, you need to determine whether the current environment supports WebGPU, the following feature detection code from <https://web.dev/gpu/#feature-detection>.
 
 ```js
 if ('gpu' in navigator) {
@@ -39,7 +39,9 @@ After installing `@antv/g-webgpu` you can get the renderer from.
 import { Canvas } from '@antv/g';
 import { Renderer } from '@antv/g-webgpu';
 
-const webgpuRenderer = new Renderer();
+const webgpuRenderer = new Renderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 
 const canvas = new Canvas({
     container: 'container',
@@ -60,7 +62,34 @@ const canvas = new Canvas({
 The renderer is available from the `G.WebGPU` namespace under.
 
 ```js
-const webgpuRenderer = new window.G.WebGPU.Renderer();
+const webgpuRenderer = new window.G.WebGPU.Renderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
+```
+
+## Initial Configuration
+
+### shaderCompilerPath
+
+Since our shader is written in GLSL 300, it needs to be translated to WGSL in order to run in WebGPU. For this step we use naga, which is compiled into WASM to run in the browser, so it needs to be loaded at runtime:
+
+```js
+const webgpuRenderer = new WebGPURenderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
+```
+
+### onContextLost
+
+Like WebGL, WebGPU applications may experience context loss during runtime, and this callback function will be triggered.
+
+<https://github.com/gpuweb/gpuweb/blob/main/design/ErrorHandling.md#fatal-errors-requestadapter-requestdevice-and-devicelost>
+
+```js
+const webgpuRenderer = new WebGPURenderer({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+    onContextLost: () => {},
+});
 ```
 
 ## Built-in plug-ins

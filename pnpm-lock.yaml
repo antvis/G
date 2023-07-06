@@ -812,6 +812,9 @@ importers:
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
+      gl-matrix:
+        specifier: ^3.4.3
+        version: 3.4.3
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1153,14 +1156,14 @@ importers:
   site:
     dependencies:
       '@antv/g-components':
-        specifier: ^1.9.0
+        specifier: ^1.9.1
         version: link:../packages/g-components
-      '@antv/g-plugin-dragndrop':
-        specifier: ^1.8.0
-        version: link:../packages/g-plugin-dragndrop
-      '@antv/g-svg':
-        specifier: ^1.10.0
-        version: link:../packages/g-svg
+      '@antv/g-mobile-webgl':
+        specifier: ^0.9.1
+        version: link:../packages/g-mobile-webgl
+      '@antv/g-plugin-image-loader':
+        specifier: ^1.3.1
+        version: link:../packages/g-plugin-image-loader
       '@antv/g6':
         specifier: ^4.5.2
         version: 4.5.2
@@ -1549,12 +1552,12 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-camera-api@1.0.40(@antv/g-lite@1.0.70):
+  /@antv/g-camera-api@1.0.40(@antv/g-lite@1.2.1):
     resolution: {integrity: sha512-GhhNdrPlT+Pw9RtBqMsBEQxrXhbR8nbva4WxJ381/o4gTdSzF+DBEt4uND3u5mv910HeC2iNbq+8itQhMFvlTw==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.0.70
+      '@antv/g-lite': 1.2.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
       gl-matrix: 3.4.3
     dev: false
@@ -1571,38 +1574,37 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-css-layout-api@1.0.38(@antv/g-lite@1.0.70):
+  /@antv/g-css-layout-api@1.0.38(@antv/g-lite@1.2.1):
     resolution: {integrity: sha512-2KFNXOXVN20hVVFSyDiShLdFF1Bnc2whPDNQpfUgWlwlBTeUDx3Bd1tnNEuPg6MDQkV4luPE/1rEe8o6fOE3zg==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.0.70
+      '@antv/g-lite': 1.2.1
     dev: false
 
-  /@antv/g-css-typed-om-api@1.0.38(@antv/g-lite@1.0.70):
+  /@antv/g-css-typed-om-api@1.0.38(@antv/g-lite@1.2.1):
     resolution: {integrity: sha512-eDLGxlzMyoJGdbORHeajC23JNXV3TjVInegFZdiZdYmS4jNBQzK/8Y7HKdlelfGTJZs4m19i5diHCSyQebNJoQ==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.0.70
+      '@antv/g-lite': 1.2.1
     dev: false
 
-  /@antv/g-dom-mutation-observer-api@1.0.38(@antv/g-lite@1.0.70):
+  /@antv/g-dom-mutation-observer-api@1.0.38(@antv/g-lite@1.2.1):
     resolution: {integrity: sha512-RIuXxTh5cFZz6OWc0D3n0ExlCEqBO/s5EQmLRB7QQTCBjrhBTqvJT7AV8Bp6reeBkCLyZ8eBjwIjc2LX9iWFnw==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.0.70
+      '@antv/g-lite': 1.2.1
     dev: false
 
-  /@antv/g-lite@1.0.70:
-    resolution: {integrity: sha512-/ACSlRJXzC84+szMMKeV9AbvuJclnSMCdSyghqMVzeuYr5YE6mtWwLk+dOWAHgX/F0nJCpjQkIvcMdXGqakLzw==}
+  /@antv/g-lite@1.2.1:
+    resolution: {integrity: sha512-NxSqvhK62fvm+r/SPM1CP0HdUl2mJarV6mM/l77paCgFaEMpU+1veWdF97N1cUQ8QFOmgaodr5aiZBz0rkn8ag==}
     dependencies:
-      '@antv/g-math': 1.7.49
+      '@antv/g-math': 2.0.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
-      '@types/offscreencanvas': 2019.6.4
       d3-color: 1.4.0
-      eventemitter3: 4.0.7
+      eventemitter3: 5.0.1
       gl-matrix: 3.4.3
       rbush: 3.0.1
       tslib: 2.5.3
@@ -1615,36 +1617,33 @@ packages:
       gl-matrix: 3.4.3
     dev: false
 
-  /@antv/g-math@1.7.49:
-    resolution: {integrity: sha512-6eVtmtkmPAjqQrg1TZ6MICtHmBUv2jCDbgRpHl3VmX48KPPOaBlbkZlhh0ZEAEMN1ex075W8kYr/+xDHnhCvKg==}
+  /@antv/g-math@2.0.1:
+    resolution: {integrity: sha512-Y1DREalYzUMaglD0m6V9s9UxsseXgSmwNA3l9zDHRH1CXDLcvtmrku+DQM9oCgPtbPWV43AdyAYoNT3WLyL/WA==}
     dependencies:
+      '@antv/util': 3.3.1(gl-matrix@3.4.3)
       gl-matrix: 3.4.3
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-device-renderer@1.7.70(@antv/g-lite@packages+g-lite):
-    resolution: {integrity: sha512-S7SbGqo9G2z3voBuOBMfTaiNkjTcBWxpVjIyMJ/R3CMqXuLtXC2DMi0VGtte2iAfcFyF2V4S56Y/kAklii7I8A==}
-    peerDependencies:
-      '@antv/g-lite': ^1.0.0
+  /@antv/g-plugin-device-renderer@1.9.1:
+    resolution: {integrity: sha512-Q+/6TKqZOPDkIragpIdzSVPfXEZ72SM0LzBT7K5Hu5ttDL6yFNGACKdhJjdbEhG32ycY6sI8qLLX5aVbrOehVg==}
     dependencies:
-      '@antv/g-lite': link:packages/g-lite
-      '@antv/g-plugin-image-loader': 1.1.54(@antv/g-lite@packages+g-lite)(gl-matrix@3.4.3)
-      '@antv/g-shader-components': 1.7.55
+      '@antv/g-lite': 1.2.1
+      '@antv/g-math': 2.0.1
+      '@antv/g-plugin-image-loader': 1.3.1
+      '@antv/g-shader-components': 1.8.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
-      '@types/offscreencanvas': 2019.6.4
       '@webgpu/types': 0.1.33
       earcut: 2.2.3
-      eventemitter3: 4.0.7
+      eventemitter3: 5.0.1
       gl-matrix: 3.4.3
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-dom-interaction@1.7.52(@antv/g-lite@packages+g-lite):
-    resolution: {integrity: sha512-ZJgzI2CCfqzORsF3LkZkcmpDXzQbZGMVGTnz5CT26/cuBxVARutNjDN/YaUvtdgfG71Rngc5aIHfhO8A1FX7gw==}
-    peerDependencies:
-      '@antv/g-lite': ^1.0.0
+  /@antv/g-plugin-dom-interaction@1.9.1:
+    resolution: {integrity: sha512-wtXIeQwZFm6Ij0HL0B5ZZtbnI4WNMCu8mw5Zl0jlq3RRtyHP/PYYd+3R3QQ5bePpZbPr4qns0sD0EqD4hUDgTg==}
     dependencies:
-      '@antv/g-lite': link:packages/g-lite
+      '@antv/g-lite': 1.2.1
       tslib: 2.5.3
     dev: false
 
@@ -1659,37 +1658,32 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-html-renderer@1.7.56(@antv/g-lite@packages+g-lite):
-    resolution: {integrity: sha512-8EqM3KxHdHmXLhvDWEWSmoBMTkydLiJAgc5nHHXknpCJUQ5SpsATBftnqKi51jPWo8Pm933sQoWSF0tZG/zC1A==}
-    peerDependencies:
-      '@antv/g-lite': ^1.0.0
+  /@antv/g-plugin-html-renderer@1.9.1:
+    resolution: {integrity: sha512-bk94rLrQ2wclVt2aghWytTr8Ur9a0ImMcf2V2vmoatjD1+/k+EtsF230RcoflVk9MGr4Cn0LqFXVIiPSmckYHw==}
     dependencies:
-      '@antv/g-lite': link:packages/g-lite
+      '@antv/g-lite': 1.2.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
       gl-matrix: 3.4.3
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-image-loader@1.1.54(@antv/g-lite@packages+g-lite)(gl-matrix@3.4.3):
-    resolution: {integrity: sha512-3udyGozFpE4mjsLOxegikYNNfb0RpHmSbvrZj5psTX4UVFB3V2eopKoRF2JYa3kUjnRzLJ3sDh0przr2K01tvg==}
-    peerDependencies:
-      '@antv/g-lite': ^1.0.0
+  /@antv/g-plugin-image-loader@1.3.1:
+    resolution: {integrity: sha512-IdrlWjN6vBWjoqSu58ZbeL3Ta8q+Eq+686dMa0yCMCRnVlmym/mcW2JzCCA+IUcaCM39UEiDmyinJs8Ic04X9A==}
     dependencies:
-      '@antv/g-lite': link:packages/g-lite
+      '@antv/g-lite': 1.2.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      gl-matrix: 3.4.3
       tslib: 2.5.3
-    transitivePeerDependencies:
-      - gl-matrix
     dev: false
 
-  /@antv/g-plugin-webgl-device@1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.7.70)(gl-matrix@3.4.3):
+  /@antv/g-plugin-webgl-device@1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.1)(gl-matrix@3.4.3):
     resolution: {integrity: sha512-1Bnf+eb5HcK7plBYSBAKQDc+KWW0VZ3paFv8rEfJCnp7nTt4kHH2j9wdjwHztft4eOaxdRH1hdV1Aom05sahqg==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
       '@antv/g-plugin-device-renderer': ^1.0.0
     dependencies:
       '@antv/g-lite': link:packages/g-lite
-      '@antv/g-plugin-device-renderer': 1.7.70(@antv/g-lite@packages+g-lite)
+      '@antv/g-plugin-device-renderer': 1.9.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
       eventemitter3: 4.0.7
       tslib: 2.5.3
@@ -1697,8 +1691,8 @@ packages:
       - gl-matrix
     dev: false
 
-  /@antv/g-shader-components@1.7.55:
-    resolution: {integrity: sha512-EV7L6yKw/qnQa+xKZiRyGC7ec4OTkrpIhJRsP2A1SHI4LA6q5ptJpR8xEjkc0Hcv4r0MluY6ECV74GDQwQXgeA==}
+  /@antv/g-shader-components@1.8.1:
+    resolution: {integrity: sha512-HzJPafrwhK6Qhjt3LSCYNL/YQOblCsQuUVFDlNXgUSrM20GwJ4kVhMxGxZ1Obo5d05DJ3siiSevFUf+iVmSWLA==}
     dev: false
 
   /@antv/g-svg@0.5.7:
@@ -1711,12 +1705,12 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-web-animations-api@1.0.39(@antv/g-lite@1.0.70)(gl-matrix@3.4.3):
+  /@antv/g-web-animations-api@1.0.39(@antv/g-lite@1.2.1)(gl-matrix@3.4.3):
     resolution: {integrity: sha512-0QXVzjk8kKrVokxHLLphkJsMPvbhLgcQN8/eVUdPaj+A0Yf6Cpg/hquYaGBBuqzwoMVB0ROUsIvwXgRtoXQONA==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.0.70
+      '@antv/g-lite': 1.2.1
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
     transitivePeerDependencies:
       - gl-matrix
@@ -1728,11 +1722,11 @@ packages:
       '@antv/g-lite': ^1.0.0
     dependencies:
       '@antv/g-lite': link:packages/g-lite
-      '@antv/g-plugin-device-renderer': 1.7.70(@antv/g-lite@packages+g-lite)
-      '@antv/g-plugin-dom-interaction': 1.7.52(@antv/g-lite@packages+g-lite)
-      '@antv/g-plugin-html-renderer': 1.7.56(@antv/g-lite@packages+g-lite)
-      '@antv/g-plugin-image-loader': 1.1.54(@antv/g-lite@packages+g-lite)(gl-matrix@3.4.3)
-      '@antv/g-plugin-webgl-device': 1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.7.70)(gl-matrix@3.4.3)
+      '@antv/g-plugin-device-renderer': 1.9.1
+      '@antv/g-plugin-dom-interaction': 1.9.1
+      '@antv/g-plugin-html-renderer': 1.9.1
+      '@antv/g-plugin-image-loader': 1.3.1
+      '@antv/g-plugin-webgl-device': 1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.1)(gl-matrix@3.4.3)
       '@antv/util': 3.3.1(gl-matrix@3.4.3)
     transitivePeerDependencies:
       - gl-matrix
@@ -1853,12 +1847,12 @@ packages:
   /@antv/g@5.16.33(gl-matrix@3.4.3):
     resolution: {integrity: sha512-11F82JsrXeJZTZSREiaPhnILkzoHqajkebA4fkPQ4XXjpoAcpIEow//NF8LbJOr3c1hogTyDh+aofwFeY+JnMw==}
     dependencies:
-      '@antv/g-camera-api': 1.0.40(@antv/g-lite@1.0.70)
-      '@antv/g-css-layout-api': 1.0.38(@antv/g-lite@1.0.70)
-      '@antv/g-css-typed-om-api': 1.0.38(@antv/g-lite@1.0.70)
-      '@antv/g-dom-mutation-observer-api': 1.0.38(@antv/g-lite@1.0.70)
-      '@antv/g-lite': 1.0.70
-      '@antv/g-web-animations-api': 1.0.39(@antv/g-lite@1.0.70)(gl-matrix@3.4.3)
+      '@antv/g-camera-api': 1.0.40(@antv/g-lite@1.2.1)
+      '@antv/g-css-layout-api': 1.0.38(@antv/g-lite@1.2.1)
+      '@antv/g-css-typed-om-api': 1.0.38(@antv/g-lite@1.2.1)
+      '@antv/g-dom-mutation-observer-api': 1.0.38(@antv/g-lite@1.2.1)
+      '@antv/g-lite': 1.2.1
+      '@antv/g-web-animations-api': 1.0.39(@antv/g-lite@1.2.1)(gl-matrix@3.4.3)
     transitivePeerDependencies:
       - gl-matrix
     dev: false

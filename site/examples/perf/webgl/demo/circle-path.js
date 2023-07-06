@@ -35,17 +35,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
           lineWidth: 0.3,
         },
       }),
-      // new Line({
-      //   attrs: {
-      //     x1: x,
-      //     y1: y,
-      //     x2: x + Math.random() * 100,
-      //     y2: y + Math.random() * 50,
-      //     lineWidth: 1,
-      //     stroke: '#000',
-      //     lineWidth: 0.3,
-      //   },
-      // }),
     );
   }
   let nodesNum = 1589;

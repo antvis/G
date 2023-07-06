@@ -21,7 +21,9 @@ import { lines } from '@antv/g-pattern';
 const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
-const webgpuRenderer = new WebGPURenderer();
+const webgpuRenderer = new WebGPURenderer({
+  shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
   fonts: [
@@ -45,7 +47,6 @@ const canvas = new Canvas({
 });
 
 const data = [38024.7, 209484.6, 6201.2, 17741.9, 24377.7];
-const total = d3.sum(data);
 const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb'];
 const width = 600;
 const sectorArc = d3

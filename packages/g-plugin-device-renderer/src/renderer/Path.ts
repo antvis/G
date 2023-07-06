@@ -1,42 +1,57 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import type {
-  CSSRGB,
-  DisplayObject,
-  ParsedBaseStyleProps,
-  ParsedPathStyleProps,
-  ParsedPolylineStyleProps,
-} from '@antv/g-lite';
+import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
-import { FillMesh, InstancedLineMesh, LineMesh } from '../meshes';
+import {
+  FillMesh,
+  InstancedLineMesh,
+  InstancedPathMesh,
+  LineMesh,
+} from '../meshes';
 import { Batch } from './Batch';
 
 /**
- * Try downgrading the "simple" Path / Polyline to InstancedLine.
+ * Use the following perf enhancements:
+ * * Downgrading the "simple" Path / Polyline to {@link InstancedLineMesh}, e.g. 'M 0 0 L 100 0'
+ * * Merge the Path into {@link InstancedPathMesh} which contains only one curve command, e.g 'M 0 0 Q 10 10 100 100'
  * @see https://github.com/antvis/G/issues/1113
  */
 export class PathRenderer extends Batch {
-  meshes = [FillMesh, LineMesh, InstancedLineMesh];
+  meshes = [FillMesh, LineMesh, InstancedLineMesh, InstancedPathMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
     const { fill, stroke, opacity, strokeOpacity, lineDash, lineWidth } =
       object.parsedStyle as ParsedBaseStyleProps;
     const nodeName = object.nodeName;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
-    const isLine = this.isLine(object);
+    const hasDash =
+      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+    const isLine = InstancedLineMesh.isLine(object);
+    const isOneCommandCurve = InstancedPathMesh.isOneCommandCurve(object);
 
     object.renderable.proxyNodeName = isLine ? Shape.LINE : null;
 
     // Polyline don't need fill
-    if (index === 0 && (object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)) {
+    if (
+      index === 0 &&
+      (isOneCommandCurve ||
+        object.nodeName === Shape.POLYLINE ||
+        (fill as CSSRGB).isNone)
+    ) {
       return false;
     }
 
     // stroke mesh
     if (index === 1) {
-      if (isLine || strokeOpacity === 0 || opacity === 0 || lineWidth === 0 || !hasStroke) {
+      if (
+        isLine ||
+        isOneCommandCurve ||
+        strokeOpacity === 0 ||
+        opacity === 0 ||
+        lineWidth === 0 ||
+        !hasStroke
+      ) {
         return false;
       }
 
@@ -51,33 +66,10 @@ export class PathRenderer extends Batch {
       return isLine;
     }
 
-    return true;
-  }
-
-  private isLine(object: DisplayObject) {
-    if (object.nodeName === Shape.PATH) {
-      const {
-        path: { absolutePath },
-      } = object.parsedStyle as ParsedPathStyleProps;
-
-      // only contains M & L commands
-      if (absolutePath.length === 2 && absolutePath[0][0] === 'M' && absolutePath[1][0] === 'L') {
-        return true;
-      }
-    } else if (object.nodeName === Shape.POLYLINE) {
-      const {
-        points: { points },
-      } = object.parsedStyle as ParsedPolylineStyleProps;
-      const tangent = (points[1][0] - points[1][1]) / (points[0][0] - points[0][1]);
-      for (let i = 1; i < points.length - 1; i++) {
-        if ((points[i + 1][0] - points[i + 1][1]) / (points[i][0] - points[i][1]) !== tangent) {
-          return false;
-        }
-      }
-
-      return true;
+    if (index === 3) {
+      return isOneCommandCurve;
     }
 
-    return false;
+    return true;
   }
 }
