@@ -149,6 +149,36 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     }
   }
 
+  readTextureSync(
+    t: Texture,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    dstBuffer: ArrayBufferView,
+    dstOffset = 0,
+    length = dstBuffer.byteLength || 0,
+  ): ArrayBufferView {
+    const gl = this.device.gl;
+
+    const texture = t as Texture_GL;
+    const gl_type = this.device.translateTextureType(texture.pixelFormat);
+
+    gl.bindFramebuffer(GL.FRAMEBUFFER, this.device.readbackFramebuffer);
+    gl.framebufferTexture2D(
+      GL.FRAMEBUFFER,
+      GL.COLOR_ATTACHMENT0,
+      GL.TEXTURE_2D,
+      texture.gl_texture,
+      0,
+    );
+    // slow requires roundtrip to GPU
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei
+    gl.pixelStorei(gl.PACK_ALIGNMENT, 4);
+    gl.readPixels(x, y, width, height, gl.RGBA, gl_type, dstBuffer);
+    return dstBuffer;
+  }
+
   async readBuffer(
     b: Buffer,
     srcByteOffset: number,

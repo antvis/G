@@ -81,6 +81,17 @@ export interface Readback extends ResourceBase {
     length?: number,
   ) => Promise<ArrayBufferView>;
 
+  readTextureSync: (
+    t: Texture,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    dst: ArrayBufferView,
+    dstOffset?: number,
+    length?: number,
+  ) => ArrayBufferView;
+
   readBuffer: (
     b: Buffer,
     srcByteOffset?: number,
