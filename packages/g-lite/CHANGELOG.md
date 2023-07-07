@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.3
+
+### Patch Changes
+
+-   6cbaae4d: Change picking process from async to sync way
+
 ## 1.2.2
 
 ### Patch Changes

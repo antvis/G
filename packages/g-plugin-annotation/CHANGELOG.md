@@ -1,5 +1,12 @@
 # @antv/g-plugin-annotation
 
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [6cbaae4d]
+    -   @antv/g-lite@1.2.3
+
 ## 0.4.2
 
 ### Patch Changes
