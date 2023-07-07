@@ -1,5 +1,12 @@
 # @antv/g-plugin-mobile-interaction
 
+## 0.9.3
+
+### Patch Changes
+
+-   Updated dependencies [6cbaae4d]
+    -   @antv/g-lite@1.2.3
+
 ## 0.9.2
 
 ### Patch Changes
