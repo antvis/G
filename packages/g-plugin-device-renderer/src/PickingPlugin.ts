@@ -84,19 +84,19 @@ export class PickingPlugin implements RenderingPlugin {
     renderingService.hooks.pickSync.tap(
       PickingPlugin.tag,
       (result: PickingResult) => {
-        throw new Error('Sync version is not implemented.');
+        return this.pick(result);
       },
     );
 
     renderingService.hooks.pick.tapPromise(
       PickingPlugin.tag,
       (result: PickingResult) => {
-        return this.pick(result);
+        throw new Error('Async version is not implemented.');
       },
     );
   }
 
-  private async pick(result: PickingResult) {
+  private pick(result: PickingResult) {
     const { topmost, position } = result;
 
     // use viewportX/Y
@@ -121,7 +121,7 @@ export class PickingPlugin implements RenderingPlugin {
 
     // implements multi-layer picking
     // @see https://github.com/antvis/g/issues/948
-    const pickedDisplayObjects = await this.pickByRectangleInDepth(
+    const pickedDisplayObjects = this.pickByRectangleInDepth(
       new Rectangle(
         clamp(Math.round(xInDevicePixel), 0, width - 1),
         clamp(Math.round(yInDevicePixel), 0, height - 1),
@@ -135,16 +135,16 @@ export class PickingPlugin implements RenderingPlugin {
     return result;
   }
 
-  private async pickByRectangleInDepth(
+  private pickByRectangleInDepth(
     rect: Rectangle,
     depth = MAX_PICKING_DEPTH,
-  ): Promise<DisplayObject[]> {
+  ): DisplayObject[] {
     let picked = null;
     let counter = 1;
     const targets = [];
 
     do {
-      picked = await this.pickByRectangle(rect, picked);
+      picked = this.pickByRectangle(rect, picked);
 
       if (picked) {
         counter++;
@@ -171,10 +171,10 @@ export class PickingPlugin implements RenderingPlugin {
   /**
    * return displayobjects in target rectangle
    */
-  private async pickByRectangle(
+  private pickByRectangle(
     rect: Rectangle,
     picked: DisplayObject,
-  ): Promise<DisplayObject | null> {
+  ): DisplayObject | null {
     const device = this.renderGraphPlugin.getDevice();
     const renderLists = this.renderGraphPlugin.getRenderLists();
 
@@ -215,168 +215,161 @@ export class PickingPlugin implements RenderingPlugin {
     // account for current view offset
     const currentView = { ...camera.getView() };
 
-    return new Promise((resolve) => {
-      // prevent unused RTs like main color being destroyed
-      this.renderHelper.renderGraph.renderTargetDeadPool.forEach((rt) => {
-        rt.age = -1;
-      });
-
-      // picking pass
-      builder.pushPass((pass) => {
-        pass.setDebugName('Picking Pass');
-        pass.attachRenderTargetID(
-          RGAttachmentSlot.Color0,
-          pickingColorTargetID,
-        );
-        pass.attachRenderTargetID(
-          RGAttachmentSlot.DepthStencil,
-          mainDepthTargetID,
-        );
-        pass.exec((passRenderer) => {
-          renderLists.picking.drawOnPassRenderer(
-            renderInstManager.renderCache,
-            passRenderer,
-          );
-        });
-        pass.post((scope) => {
-          const texture = scope.getRenderTargetTexture(RGAttachmentSlot.Color0);
-
-          const readback = device.createReadback();
-
-          // restore previous view
-          if (currentView && currentView.enabled) {
-            camera.setViewOffset(
-              currentView.fullWidth,
-              currentView.fullHeight,
-              currentView.offsetX,
-              currentView.offsetY,
-              currentView.width,
-              currentView.height,
-            );
-          } else {
-            camera.clearViewOffset();
-          }
-
-          camera.setEnableUpdate(true);
-
-          readback
-            .readTexture(
-              texture,
-              0,
-              0,
-              width,
-              height,
-              new Uint8Array(width * height * 4),
-            )
-            .then((pickedColors: Uint8Array) => {
-              let target: DisplayObject;
-              let pickedFeatureIdx = -1;
-
-              if (
-                pickedColors &&
-                (pickedColors[0] !== 0 ||
-                  pickedColors[1] !== 0 ||
-                  pickedColors[2] !== 0)
-              ) {
-                pickedFeatureIdx =
-                  this.pickingIdGenerator.decodePickingColor(pickedColors);
-              }
-
-              if (pickedFeatureIdx > -1) {
-                const pickedDisplayObject =
-                  this.pickingIdGenerator.getById(pickedFeatureIdx);
-
-                if (
-                  pickedDisplayObject &&
-                  pickedDisplayObject.isVisible() &&
-                  pickedDisplayObject.isInteractive()
-                ) {
-                  target = pickedDisplayObject;
-                }
-              }
-              readback.destroy();
-
-              resolve(target);
-            });
-        });
-      });
-
-      // Push our outer template, which contains the dynamic UBO bindings...
-      const template = this.renderHelper.pushTemplateRenderInst();
-      // SceneParams: binding = 0, ObjectParams: binding = 1
-      template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
-      template.setMegaStateFlags(
-        setAttachmentStateSimple(
-          {
-            depthWrite: true,
-          },
-          {
-            rgbBlendMode: BlendMode.Add,
-            rgbBlendSrcFactor: BlendFactor.One,
-            rgbBlendDstFactor: BlendFactor.Zero,
-            alphaBlendMode: BlendMode.Add,
-            alphaBlendSrcFactor: BlendFactor.One,
-            alphaBlendDstFactor: BlendFactor.Zero,
-          },
-        ),
-      );
-
-      // Update Scene Params
-      const { width: canvasWidth, height: canvasHeight } = this.context.config;
-      const dpr = this.context.contextService.getDPR();
-
-      camera.setEnableUpdate(false);
-      camera.setViewOffset(
-        canvasWidth * dpr,
-        canvasHeight * dpr,
-        x,
-        y,
-        width,
-        height,
-      );
-
-      template.setUniforms(SceneUniformBufferIndex, [
-        {
-          name: SceneUniform.PROJECTION_MATRIX,
-          value: camera.getPerspective(),
-        },
-        {
-          name: SceneUniform.VIEW_MATRIX,
-          value: camera.getViewTransform(),
-        },
-        {
-          name: SceneUniform.CAMERA_POSITION,
-          value: camera.getPosition(),
-        },
-        {
-          name: SceneUniform.DEVICE_PIXEL_RATIO,
-          value: this.context.contextService.getDPR(),
-        },
-        {
-          name: SceneUniform.VIEWPORT,
-          value: [canvasWidth, canvasHeight],
-        },
-        {
-          name: SceneUniform.IS_ORTHO,
-          value: camera.isOrtho() ? 1 : 0,
-        },
-        {
-          name: SceneUniform.IS_PICKING,
-          value: 1,
-        },
-      ]);
-
-      if (picked) {
-        this.batchManager.updateAttribute(picked, 'pointerEvents', false, true);
-      }
-      this.batchManager.render(renderLists.picking, true);
-
-      renderInstManager.popTemplateRenderInst();
-
-      this.renderHelper.prepareToRender();
-      this.renderHelper.renderGraph.execute();
-
-      renderInstManager.resetRenderInsts();
+    // prevent unused RTs like main color being destroyed
+    this.renderHelper.renderGraph.renderTargetDeadPool.forEach((rt) => {
+      rt.age = -1;
     });
+
+    // picking pass
+    let target: DisplayObject;
+    builder.pushPass((pass) => {
+      pass.setDebugName('Picking Pass');
+      pass.attachRenderTargetID(RGAttachmentSlot.Color0, pickingColorTargetID);
+      pass.attachRenderTargetID(
+        RGAttachmentSlot.DepthStencil,
+        mainDepthTargetID,
+      );
+      pass.exec((passRenderer) => {
+        renderLists.picking.drawOnPassRenderer(
+          renderInstManager.renderCache,
+          passRenderer,
+        );
+      });
+      pass.post((scope) => {
+        const texture = scope.getRenderTargetTexture(RGAttachmentSlot.Color0);
+
+        const readback = device.createReadback();
+
+        // restore previous view
+        if (currentView && currentView.enabled) {
+          camera.setViewOffset(
+            currentView.fullWidth,
+            currentView.fullHeight,
+            currentView.offsetX,
+            currentView.offsetY,
+            currentView.width,
+            currentView.height,
+          );
+        } else {
+          camera.clearViewOffset();
+        }
+
+        camera.setEnableUpdate(true);
+
+        const pickedColors = readback.readTextureSync(
+          texture,
+          0,
+          0,
+          width,
+          height,
+          new Uint8Array(width * height * 4),
+        ) as Uint8Array;
+
+        let pickedFeatureIdx = -1;
+
+        if (
+          pickedColors &&
+          (pickedColors[0] !== 0 ||
+            pickedColors[1] !== 0 ||
+            pickedColors[2] !== 0)
+        ) {
+          pickedFeatureIdx =
+            this.pickingIdGenerator.decodePickingColor(pickedColors);
+        }
+
+        if (pickedFeatureIdx > -1) {
+          const pickedDisplayObject =
+            this.pickingIdGenerator.getById(pickedFeatureIdx);
+
+          if (
+            pickedDisplayObject &&
+            pickedDisplayObject.isVisible() &&
+            pickedDisplayObject.isInteractive()
+          ) {
+            target = pickedDisplayObject;
+          }
+        }
+        readback.destroy();
+      });
+    });
+
+    // Push our outer template, which contains the dynamic UBO bindings...
+    const template = this.renderHelper.pushTemplateRenderInst();
+    // SceneParams: binding = 0, ObjectParams: binding = 1
+    template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
+    template.setMegaStateFlags(
+      setAttachmentStateSimple(
+        {
+          depthWrite: true,
+        },
+        {
+          rgbBlendMode: BlendMode.Add,
+          rgbBlendSrcFactor: BlendFactor.One,
+          rgbBlendDstFactor: BlendFactor.Zero,
+          alphaBlendMode: BlendMode.Add,
+          alphaBlendSrcFactor: BlendFactor.One,
+          alphaBlendDstFactor: BlendFactor.Zero,
+        },
+      ),
+    );
+
+    // Update Scene Params
+    const { width: canvasWidth, height: canvasHeight } = this.context.config;
+    const dpr = this.context.contextService.getDPR();
+
+    camera.setEnableUpdate(false);
+    camera.setViewOffset(
+      canvasWidth * dpr,
+      canvasHeight * dpr,
+      x,
+      y,
+      width,
+      height,
+    );
+
+    template.setUniforms(SceneUniformBufferIndex, [
+      {
+        name: SceneUniform.PROJECTION_MATRIX,
+        value: camera.getPerspective(),
+      },
+      {
+        name: SceneUniform.VIEW_MATRIX,
+        value: camera.getViewTransform(),
+      },
+      {
+        name: SceneUniform.CAMERA_POSITION,
+        value: camera.getPosition(),
+      },
+      {
+        name: SceneUniform.DEVICE_PIXEL_RATIO,
+        value: this.context.contextService.getDPR(),
+      },
+      {
+        name: SceneUniform.VIEWPORT,
+        value: [canvasWidth, canvasHeight],
+      },
+      {
+        name: SceneUniform.IS_ORTHO,
+        value: camera.isOrtho() ? 1 : 0,
+      },
+      {
+        name: SceneUniform.IS_PICKING,
+        value: 1,
+      },
+    ]);
+
+    if (picked) {
+      this.batchManager.updateAttribute(picked, 'pointerEvents', false, true);
+    }
+    this.batchManager.render(renderLists.picking, true);
+
+    renderInstManager.popTemplateRenderInst();
+
+    this.renderHelper.prepareToRender();
+    this.renderHelper.renderGraph.execute();
+
+    renderInstManager.resetRenderInsts();
+
+    return target;
   }
 }
