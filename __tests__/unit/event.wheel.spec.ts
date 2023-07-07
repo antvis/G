@@ -1,23 +1,11 @@
-import { Canvas, Circle, FederatedWheelEvent } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Plugin } from '@antv/g-plugin-css-select';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Canvas, Circle, FederatedWheelEvent } from '../../packages/g/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Plugin } from '../../packages/g-plugin-css-select/src';
 import { sleep } from './utils';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
 document.body.prepend($container);
-
-// @ts-ignore
 const renderer = new CanvasRenderer();
 renderer.registerPlugin(new Plugin());
 
@@ -57,7 +45,7 @@ describe('Event API', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    const wheelCallback = sinon.spy();
+    const wheelCallback = jest.fn();
     circle.addEventListener('wheel', wheelCallback);
 
     const $canvas = canvas
@@ -93,9 +81,7 @@ describe('Event API', () => {
 
     // wait event propgation, especially for picking in an async way
     await sleep(100);
-
-    // @ts-ignore
-    expect(wheelCallback).to.have.been.called;
+    expect(wheelCallback).toBeCalled();
   });
 
   it('should clone wheel event correctly', async () => {
@@ -119,7 +105,7 @@ describe('Event API', () => {
 
     await sleep(200);
 
-    let cloned: FederatedWheelEvent;
+    let cloned: FederatedWheelEvent = null as unknown as FederatedWheelEvent;
     circle.addEventListener('wheel', (event: FederatedWheelEvent) => {
       cloned = event.clone();
     });
@@ -156,11 +142,11 @@ describe('Event API', () => {
 
     await sleep(1000);
 
-    expect(cloned.type).to.be.eqls('wheel');
-    expect(cloned.button).to.be.eqls(0);
-    expect(cloned.clientX).to.be.eqls(295);
-    expect(cloned.clientY).to.be.eqls(201);
-    expect(cloned.deltaX).to.be.eqls(10);
-    expect(cloned.target).to.be.eqls(circle);
+    expect(cloned.type).toBe('wheel');
+    expect(cloned.button).toBe(0);
+    expect(cloned.clientX).toBe(295);
+    expect(cloned.clientY).toBe(201);
+    expect(cloned.deltaX).toBe(10);
+    expect(cloned.target).toBe(circle);
   });
 });

@@ -1,14 +1,14 @@
-import { Canvas, Circle, Path, deg2rad, CSS, PropertySyntax } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { PathArray, isNumberEqual } from '@antv/util';
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import {
+  CSS,
+  Canvas,
+  Circle,
+  Path,
+  PropertySyntax,
+  deg2rad,
+} from '../../../packages/g/src';
 import { sleep } from '../utils';
-import { isNumberEqual, PathArray } from '@antv/util';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
@@ -146,7 +146,6 @@ function computeArcSweep(startAngle: number, endAngle: number) {
 }
 
 export class Sector extends Path {
-  parsedStyle: any;
   constructor(config) {
     super(config);
     this.updatePath();
@@ -159,6 +158,7 @@ export class Sector extends Path {
   }
 
   private updatePath() {
+    // @ts-ignore
     const { x, y, startAngle, endAngle, r, r0, radius } = this.parsedStyle;
 
     const path = this.createPath(
@@ -317,12 +317,12 @@ export class Sector extends Path {
       if (limitedOutBorderRadiusMax < outBorderRadiusMax && crStart === crEnd) {
         const outStartBorderRadiusStartAngle = mathATan2(ct0.y0, ct0.x0);
         const outStartBorderRadiusEndAngle = mathATan2(ct1.y0, ct1.x0);
-        const outStartBorderRadiusEndPoint = polarToCartesian(
-          x,
-          y,
-          r,
-          outStartBorderRadiusEndAngle,
-        );
+        // const outStartBorderRadiusEndPoint = polarToCartesian(
+        //   x,
+        //   y,
+        //   r,
+        //   outStartBorderRadiusEndAngle,
+        // );
         sectorPathCommands.push([
           'A',
           limitedOutBorderRadiusMax,
@@ -543,9 +543,6 @@ export class Sector extends Path {
     return sectorPathCommands as PathArray;
   }
 }
-
-chai.use(chaiAlmost(0.0001));
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';

@@ -1,7 +1,8 @@
-import type {
+import {
   Buffer,
   BufferDescriptor,
   BufferFrequencyHint,
+  align,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -72,9 +73,14 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       }
     }
 
+    // const byteSize = isNumber(viewOrSize)
+    //   ? viewOrSize * 4
+    //   : viewOrSize.byteLength * 4;
+
     const byteSize = isNumber(viewOrSize)
-      ? viewOrSize * 4
-      : viewOrSize.byteLength * 4;
+      ? align(viewOrSize, 4)
+      : align(viewOrSize.byteLength, 4);
+
     this.gl_buffer_pages = [];
 
     let pageByteSize: number;
@@ -129,22 +135,21 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       pageByteSize: dstPageByteSize,
     } = this;
     // Account for setSubData being called with a dstByteOffset that is beyond the end of the buffer.
-    // if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
-    //   // Manually check asserts for speed.
-    //   if (!(dstByteOffset % dstPageByteSize === 0))
-    //     throw new Error(
-    //       `Assert fail: (dstByteOffset [${dstByteOffset}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
-    //     );
-    //   if (!(byteSize % dstPageByteSize === 0))
-    //     throw new Error(
-    //       `Assert fail: (byteSize [${byteSize}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
-    //     );
-    // }
+    if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
+      // Manually check asserts for speed.
+      if (!(dstByteOffset % dstPageByteSize === 0))
+        throw new Error(
+          `Assert fail: (dstByteOffset [${dstByteOffset}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
+        );
+      if (!(byteSize % dstPageByteSize === 0))
+        throw new Error(
+          `Assert fail: (byteSize [${byteSize}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
+        );
+    }
     if (!(dstByteOffset + byteSize <= dstByteSize)) {
       throw new Error(
         `Assert fail: (dstByteOffset [${dstByteOffset}] + byteSize [${byteSize}]) <= dstByteSize [${dstByteSize}], gl_target ${gl_target}`,
       );
-
       // exceed, need to recreate
     }
 

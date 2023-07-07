@@ -11,10 +11,10 @@ order: 2
 
 ```js
 window.CSS.registerProperty({
-    name: '--my-color',
-    syntax: '<color>',
-    inherits: false,
-    initialValue: '#c0ffee',
+  name: '--my-color',
+  syntax: '<color>',
+  inherits: false,
+  initialValue: '#c0ffee',
 });
 ```
 
@@ -26,14 +26,14 @@ CSS 属性值包含各种类型：https://drafts.csswg.org/css-values-4/
 
 在 G 中我们支持以下类型：
 
--   关键词，例如 `unset` `center`
--   数值
-    -   \<color\> 颜色值，例如 `red`
-    -   \<paint\> 绘制，包含颜色值
-    -   \<percentage\> 百分比，例如 `%`
-    -   \<number\> 纯数字
-    -   \<length\> 带单位的长度值 `px` `em` `rem`
-    -   \<angle\> 带单位的角度值，例如 `deg` `rad` `turn`
+- 关键词，例如 `unset` `center`
+- 数值
+  - \<color\> 颜色值，例如 `red`
+  - \<paint\> 绘制，包含颜色值
+  - \<percentage\> 百分比，例如 `%`
+  - \<number\> 纯数字
+  - \<length\> 带单位的长度值 `px` `em` `rem`
+  - \<angle\> 带单位的角度值，例如 `deg` `rad` `turn`
 
 在部分场景下，这些类型可以进行组合，例如：\<length-percentage\> 就是 \<length\> 和 \<percentage\> 的组合。
 
@@ -89,9 +89,9 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/unset
 
 目前使用该类型的属性值包括：
 
--   [opacity](/zh/api/basic/display-object#opacity)
--   [fillOpacity](/zh/api/basic/display-object#fillopacity)
--   [strokeOpacity](/zh/api/basic/display-object#strokeopacity)
+- [opacity](/zh/api/basic/display-object#opacity)
+- [fillOpacity](/zh/api/basic/display-object#fillopacity)
+- [strokeOpacity](/zh/api/basic/display-object#strokeopacity)
 
 ```js
 circle.style.opacity = '0.5';
@@ -161,7 +161,7 @@ https://drafts.csswg.org/css-values-4/#angle-value
 
 目前会使用该类型的属性有：
 
--   [shadowColor]() 阴影色
+- [shadowColor]() 阴影色
 
 ### 基础颜色关键词
 
@@ -242,8 +242,8 @@ Canvas / WebGL 渲染环境中等同于 black，SVG 中为同名属性效果。
 
 目前使用的属性有：
 
--   [fill](/zh/api/basic/display-object#fill) 填充色
--   [stroke](/zh/api/basic/display-object#stroke) 描边色
+- [fill](/zh/api/basic/display-object#fill) 填充色
+- [stroke](/zh/api/basic/display-object#stroke) 描边色
 
 ### none
 
@@ -253,7 +253,7 @@ Canvas / WebGL 渲染环境中等同于 black，SVG 中为同名属性效果。
 
 ```js
 const circle = new Circle({
-    r: 150,
+  r: 150,
 });
 
 circle.style.fill = 'none';
@@ -265,14 +265,14 @@ circle.style.fill = 'none';
 
 属性的元数据包含以下关键信息：
 
--   属性名。例如 fill width r
--   值解析器。从字符串到 CSSStyleValue。不同属性值自然需要不同的解析器，例如 fill stroke 可以共享颜色解析器。注意我们只需要实现对于 “值” 的解析，而非类似 https://github.com/csstree/csstree 这样的实现。
--   是否支持插值。不支持则无法在动画系统中进行平滑过渡。https://drafts.csswg.org/css-values-4/#combining-values
--   是否支持继承。例如 font-size 需要支持。在 D3 中有大量类似的技巧。
--   是否独立。例如 visibility 就不是，需要考虑祖先节点才能得到最终的计算值。
--   默认值。例如 fill 的默认值为 black（SVG 规范）
--   关键词列表。例如 width 属性支持 auto 关键词。
--   别名列表。例如 line-width 的别名 stroke-width。
+- 属性名。例如 fill width r
+- 值解析器。从字符串到 CSSStyleValue。不同属性值自然需要不同的解析器，例如 fill stroke 可以共享颜色解析器。注意我们只需要实现对于 “值” 的解析，而非类似 https://github.com/csstree/csstree 这样的实现。
+- 是否支持插值。不支持则无法在动画系统中进行平滑过渡。https://drafts.csswg.org/css-values-4/#combining-values
+- 是否支持继承。例如 font-size 需要支持。在 D3 中有大量类似的技巧。
+- 是否独立。例如 visibility 就不是，需要考虑祖先节点才能得到最终的计算值。
+- 默认值。例如 fill 的默认值为 black（SVG 规范）
+- 关键词列表。例如 width 属性支持 auto 关键词。
+- 别名列表。例如 line-width 的别名 stroke-width。
 
 ## initial value
 
@@ -280,8 +280,8 @@ circle.style.fill = 'none';
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
 
-> -   For inherited properties, the initial value is used on the root element only, as long as no specified value is supplied.
-> -   For non-inherited properties, the initial value is used on all elements, as long as no specified value is supplied.
+> - For inherited properties, the initial value is used on the root element only, as long as no specified value is supplied.
+> - For non-inherited properties, the initial value is used on all elements, as long as no specified value is supplied.
 
 因此对于 G 的根节点，在创建时需要设置所有 `inherited` 属性的默认值，例如 `visibility` 在属性元数据中定义如下，它支持继承：
 
@@ -302,15 +302,15 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/initial_value
 
 对于属性值的解析经历以下阶段：
 
--   原始值（通常是字符串）转换成 CSSStyleUnit，称作 computed value
--   将 computed value 计算后得到 used value
+- 原始值（通常是字符串）转换成 CSSStyleUnit，称作 computed value
+- 将 computed value 计算后得到 used value
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/computed_value
 
 在这一步需要：
 
--   处理特殊的关键词（通常是通用的），例如 [initial](/zh/api/css/css-properties-values-api#initial) [inherit](/zh/api/css/css-properties-values-api#inherit)
--   做一些值计算，需要布局阶段参与的除外
+- 处理特殊的关键词（通常是通用的），例如 [initial](/zh/api/css/css-properties-values-api#initial) [inherit](/zh/api/css/css-properties-values-api#inherit)
+- 做一些值计算，需要布局阶段参与的除外
 
 通过 [computedStyleMap](/zh/api/builtin-objects/element#computedstylemap) 方法可以获取 computed value map，这是一个 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) 类型：
 
@@ -322,10 +322,10 @@ const styleMap = circle.computedStyleMap();
 
 expect((styleMap.get('r') as CSSUnitValue).equals(CSS.px(100))).to.be.true;
 const fill = styleMap.get('fill') as CSSRGB;
-expect(fill.r).to.be.eqls(255);
-expect(fill.g).to.be.eqls(0);
-expect(fill.b).to.be.eqls(0);
-expect(fill.alpha).to.be.eqls(1);
+expect(fill.r).toBe(255);
+expect(fill.g).toBe(0);
+expect(fill.b).toBe(0);
+expect(fill.alpha).toBe(1);
 ```
 
 但是 computed value 并不能直接用于渲染，例如百分比、相对长度都需要进一步计算。
@@ -346,10 +346,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/CSS/RegisterProperty
 
 ```js
 CSS.registerProperty({
-    name: '--my-color',
-    syntax: '<color>',
-    inherits: false,
-    initialValue: '#c0ffee',
+  name: '--my-color',
+  syntax: '<color>',
+  inherits: false,
+  initialValue: '#c0ffee',
 });
 ```
 
@@ -362,23 +362,23 @@ import { CSS, PropertySyntax } from '@antv/g';
 
 // 注册自定义属性
 CSS.registerProperty({
-    name: 'myNumber',
-    syntax: PropertySyntax.NUMBER, // 使用内置的 “数字” 解析器
-    initialValue: '0',
-    interpolable: true, // 支持动画过程中的插值
+  name: 'myNumber',
+  syntax: PropertySyntax.NUMBER, // 使用内置的 “数字” 解析器
+  initialValue: '0',
+  interpolable: true, // 支持动画过程中的插值
 });
 
 // 对自定义属性应用动画
 const animation = myCustomElement.animate(
-    [
-        {
-            myNumber: 0,
-        },
-        {
-            myNumber: 1,
-        },
-    ],
-    { duration: 2000, fill: 'both' },
+  [
+    {
+      myNumber: 0,
+    },
+    {
+      myNumber: 1,
+    },
+  ],
+  { duration: 2000, fill: 'both' },
 );
 ```
 
@@ -402,10 +402,10 @@ const animation = myCustomElement.animate(
 
 ```js
 CSS.registerProperty({
-    name: 'angle',
-    syntax: PropertySyntax.ANGLE,
-    initialValue: '0',
-    interpolable: true,
+  name: 'angle',
+  syntax: PropertySyntax.ANGLE,
+  initialValue: '0',
+  interpolable: true,
 });
 ```
 

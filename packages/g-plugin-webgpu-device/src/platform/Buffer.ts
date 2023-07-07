@@ -1,14 +1,13 @@
-import type { Buffer, BufferDescriptor } from '@antv/g-plugin-device-renderer';
+import {
+  Buffer,
+  BufferDescriptor,
+  align,
+} from '@antv/g-plugin-device-renderer';
 import { BufferUsage, ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import { translateBufferUsage } from './utils';
-
-function isView(
-  viewOrSize: ArrayBufferView | number,
-): viewOrSize is ArrayBufferView {
-  return (viewOrSize as ArrayBufferView).byteLength !== undefined;
-}
+import { isNumber } from '@antv/util';
 
 export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
   type: ResourceType.Buffer = ResourceType.Buffer;
@@ -17,9 +16,12 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
    */
   gpuBuffer: GPUBuffer;
 
+  /**
+   * size in bytes
+   */
   size: number;
 
-  view: ArrayBufferView;
+  view: ArrayBufferView | null;
 
   usage: BufferUsage;
 
@@ -37,10 +39,6 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
     const { usage, viewOrSize } = descriptor;
     const useMapRead = !!(usage & BufferUsage.MAP_READ);
 
-    // const alignedLength = isView(viewOrSize)
-    //   ? viewOrSize.byteLength
-    //   : viewOrSize * 4; // 4 bytes alignments (because of the upload which requires this)
-
     this.usage = translateBufferUsage(usage);
 
     // Buffer usages (BufferUsage::(MapRead|CopyDst|Storage)) is invalid. If a buffer usage contains BufferUsage::MapRead the only other allowed usage is BufferUsage::CopyDst.
@@ -49,18 +47,33 @@ export class Buffer_WebGPU extends ResourceBase_WebGPU implements Buffer {
       this.usage = BufferUsage.MAP_READ | BufferUsage.COPY_DST;
     }
 
-    const mapBuffer = isView(viewOrSize);
+    const mapBuffer = !isNumber(viewOrSize);
 
-    this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize * 4;
-    this.view = isView(viewOrSize) ? viewOrSize : null;
-    this.gpuBuffer = this.device.device.createBuffer({
-      usage: this.usage,
-      size: this.size,
-      mappedAtCreation: useMapRead ? mapBuffer : false,
-    });
+    // this.size = isView(viewOrSize) ? viewOrSize.byteLength : viewOrSize * 4;
+    this.view = !isNumber(viewOrSize) ? viewOrSize : null;
 
-    if (isView(viewOrSize)) {
-      this.setSubData(0, new Uint8Array(viewOrSize.buffer));
+    // 4 bytes alignments (because of the upload which requires this)
+    this.size = isNumber(viewOrSize)
+      ? align(viewOrSize, 4)
+      : align(viewOrSize.byteLength, 4);
+
+    if (!isNumber(viewOrSize)) {
+      this.gpuBuffer = this.device.device.createBuffer({
+        usage: this.usage,
+        size: this.size,
+        mappedAtCreation: true,
+      });
+
+      const ctor = (viewOrSize && viewOrSize.constructor) || Float32Array;
+      // @ts-ignore
+      new ctor(this.gpuBuffer.getMappedRange()).set(viewOrSize);
+      this.gpuBuffer.unmap();
+    } else {
+      this.gpuBuffer = this.device.device.createBuffer({
+        usage: this.usage,
+        size: this.size,
+        mappedAtCreation: useMapRead ? mapBuffer : false,
+      });
     }
   }
 

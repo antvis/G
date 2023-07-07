@@ -1,0 +1,168 @@
+import { Canvas } from '../packages/g';
+import { Renderer as CanvasRenderer } from '../packages/g-canvas';
+import { Plugin as DragAndDropPlugin } from '../packages/g-plugin-dragndrop';
+import { Renderer as SVGRenderer } from '../packages/g-svg';
+// WebGL need to be built with rollup first.
+import { Renderer as WebGLRenderer } from '../packages/g-webgl';
+import * as basic2d from './demos/2d';
+import * as basic3d from './demos/3d';
+import * as animation from './demos/animation';
+import * as d3 from './demos/d3';
+import * as plugin from './demos/plugin';
+import * as hammerjs from './demos/hammerjs';
+
+const tests = {
+  ...createSpecRender(namespace(basic2d, '2d')),
+  ...createSpecRender(namespace(basic3d, '3d')),
+  ...createSpecRender(namespace(animation, 'animation')),
+  ...createSpecRender(namespace(d3, 'd3')),
+  ...createSpecRender(namespace(plugin, 'plugin')),
+  ...createSpecRender(namespace(hammerjs, 'hammerjs')),
+};
+
+const renderers = {
+  canvas: CanvasRenderer,
+  svg: SVGRenderer,
+  webgl: WebGLRenderer,
+};
+const app = document.getElementById('app') as HTMLElement;
+let currentContainer = document.createElement('div');
+let canvas;
+let prevAfter;
+const normalizeName = (name: string) => name.replace(/-/g, '').toLowerCase();
+const renderOptions = (keyword = '') => {
+  const matched = Object.keys(tests)
+    .filter((key) => normalizeName(key).includes(normalizeName(keyword)))
+    .map(createOption);
+  selectChart.replaceChildren(...matched);
+  selectChart.value = '';
+};
+
+// Select for chart.
+const selectChart = document.createElement('select') as HTMLSelectElement;
+selectChart.style.margin = '1em';
+renderOptions();
+selectChart.onchange = () => {
+  const { value } = selectChart;
+  history.pushState({ value }, '', `?name=${value}`);
+  plot();
+};
+document.onkeydown = (event) => {
+  if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+  switch (event.key) {
+    case 'ArrowLeft': {
+      if (selectChart.selectedIndex > 0) {
+        selectChart.selectedIndex--;
+        // @ts-ignore
+        selectChart.onchange();
+      } else {
+        alert('This is the first test case.');
+      }
+      break;
+    }
+    case 'ArrowRight': {
+      if (selectChart.selectedIndex < selectChart.options.length - 1) {
+        selectChart.selectedIndex++;
+        // @ts-ignore
+        selectChart.onchange();
+      } else {
+        alert('This is the last test case.');
+      }
+      break;
+    }
+  }
+};
+
+// Select for renderer.
+const selectRenderer = document.createElement('select');
+selectRenderer.style.margin = '1em';
+selectRenderer.append(...Object.keys(renderers).map(createOption));
+selectRenderer.onchange = () => {
+  plot();
+};
+
+// Search input
+const searchInput = document.createElement('input');
+searchInput.style.margin = '1em';
+searchInput.placeholder = 'Search test case';
+searchInput.onkeyup = () => {
+  const { value } = searchInput;
+  renderOptions(value);
+};
+
+// Span for tips.
+const span = document.createElement('span');
+span.textContent = 'Press left or right to view more.';
+span.style.fontSize = '10px';
+
+addEventListener('popstate', (event) => {
+  const { value } = history.state;
+  selectChart.value = value;
+  plot();
+});
+
+// @ts-ignore
+const initialValue = new URL(location).searchParams.get('name') as string;
+if (tests[initialValue]) selectChart.value = initialValue;
+app.append(selectChart);
+app.append(searchInput);
+app.append(selectRenderer);
+app.append(span);
+plot();
+
+async function plot() {
+  if (currentContainer) {
+    currentContainer.remove();
+    if (canvas) canvas.destroy();
+    if (prevAfter) prevAfter();
+  }
+  currentContainer = document.createElement('div');
+  app.append(currentContainer);
+  const render = tests[selectChart.value];
+  render(currentContainer);
+}
+
+function createOption(key) {
+  const option = document.createElement('option');
+  option.value = key;
+  option.textContent = key;
+  return option;
+}
+
+function namespace(object, name) {
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]),
+  );
+}
+
+function createSpecRender(object) {
+  const specRender = (generate) => {
+    return async (container) => {
+      // Select render is necessary for spec tests.
+      selectRenderer.style.display = 'inline';
+
+      const renderer = new renderers[selectRenderer.value]();
+      renderer.registerPlugin(
+        new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }),
+      );
+
+      const $div = document.createElement('div');
+      canvas = new Canvas({
+        container: $div,
+        width: 640,
+        height: 640,
+        renderer,
+      });
+
+      // @ts-ignore
+      window.__g_instances__ = [canvas];
+
+      await generate({ canvas, renderer });
+
+      container.append($div);
+    };
+  };
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [key, specRender(value)]),
+  );
+}

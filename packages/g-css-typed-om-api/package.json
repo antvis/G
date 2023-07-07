@@ -31,11 +31,10 @@
   "scripts": {
     "sync": "tnpm sync"
   },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
+  "dependencies": {
+    "@antv/g-lite": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }

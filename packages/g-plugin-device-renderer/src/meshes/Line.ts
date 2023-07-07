@@ -392,7 +392,11 @@ export class LineMesh extends Instanced {
   }
 }
 
-export function updateBuffer(object: DisplayObject, needEarcut = false) {
+export function updateBuffer(
+  object: DisplayObject,
+  needEarcut = false,
+  segmentNum?: number,
+) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
   const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
@@ -480,10 +484,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
   ) {
     let path: ParsedPathStyleProps['path'];
     if (object.nodeName !== Shape.PATH) {
-      path = parsePath(
-        convertToPath(object, mat4.identity(mat4.create())),
-        object,
-      );
+      path = parsePath(convertToPath(object, mat4.identity(mat4.create())));
       defX = path.rect.x;
       defY = path.rect.y;
 
@@ -574,6 +575,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[2] - defX,
           params[3] - defY,
           points[mCommandsNum],
+          segmentNum,
         );
         if (useEndOffset) {
           points[mCommandsNum].push(
@@ -608,6 +610,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
             args[i + 4] - defX,
             args[i + 5] - defY,
             points[mCommandsNum],
+            segmentNum,
           );
         }
         if (useEndOffset) {
@@ -625,6 +628,7 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
           params[4] - defX,
           params[5] - defY,
           points[mCommandsNum],
+          segmentNum,
         );
         if (useEndOffset) {
           points[mCommandsNum].push(
@@ -694,14 +698,13 @@ export function updateBuffer(object: DisplayObject, needEarcut = false) {
     endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
   }
 
+  let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
   return points
     .map((points) => {
-      let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
-
       // const needDash = !isNil(lineDash);
       let dist = 0;
-      const pointsBuffer = [];
-      const travelBuffer = [];
+      const pointsBuffer: number[] = [];
+      const travelBuffer: number[] = [];
       for (let i = 0; i < points.length; i += stridePoints) {
         // calc travel
         // if (needDash) {

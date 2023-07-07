@@ -1,17 +1,9 @@
-import chai, { expect } from 'chai';
 import { parseGradient } from '../../../packages/g-lite/src/utils';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 describe('Gradient parser', () => {
   it('should parse linear-gradient correctly', () => {
     let ast = parseGradient('linear-gradient(#e66465, #9198e5)');
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'hex', value: 'e66465' },
@@ -24,7 +16,7 @@ describe('Gradient parser', () => {
 
     // angular
     ast = parseGradient('linear-gradient(0deg, blue, green 40%, red)');
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'literal', value: 'blue' },
@@ -42,7 +34,7 @@ describe('Gradient parser', () => {
 
     // directional
     ast = parseGradient('linear-gradient(to right, blue, green 40%, red)');
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'literal', value: 'blue' },
@@ -63,7 +55,7 @@ describe('Gradient parser', () => {
       parseGradient(`linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
     linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
     linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`);
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'rgba', value: ['255', '0', '0', '.8'] },
@@ -107,7 +99,7 @@ describe('Gradient parser', () => {
     let ast = parseGradient(
       'radial-gradient(circle at center, red, blue, green 100%)',
     );
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'literal', value: 'red' },
@@ -137,7 +129,7 @@ describe('Gradient parser', () => {
     ]);
 
     ast = parseGradient('radial-gradient(red, blue, green)');
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'literal', value: 'red' },
@@ -153,7 +145,7 @@ describe('Gradient parser', () => {
     ast = parseGradient(
       'radial-gradient(red, blue, green), radial-gradient(red, blue, green)',
     );
-    expect(ast).to.be.eqls([
+    expect(ast).toStrictEqual([
       {
         colorStops: [
           { length: undefined, type: 'literal', value: 'red' },
@@ -177,7 +169,7 @@ describe('Gradient parser', () => {
 
   // it('should parse conic-gradient correctly', () => {
   //   let ast = parseGradient('conic-gradient(red 0deg, blue, green)');
-  //   expect(ast).to.be.eqls(0);
+  //   expect(ast).toBe(0);
 
   //   [
   //     {

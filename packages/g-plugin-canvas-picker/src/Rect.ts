@@ -4,8 +4,7 @@ import type {
   Point,
   RectStyleProps,
 } from '@antv/g-lite';
-import { GlobalRuntime } from '@antv/g-lite';
-import { isFillOrStrokeAffected } from '@antv/g-lite';
+import { GlobalRuntime, isFillOrStrokeAffected } from '@antv/g-lite';
 import { clamp } from '@antv/util';
 import { inArc, inBox, inLine, inRect } from './utils/math';
 
@@ -14,7 +13,6 @@ export function isPointInPath(
   position: Point,
   isClipPath: boolean,
   isPointInPath: (
-    runtime: GlobalRuntime,
     displayObject: DisplayObject<RectStyleProps>,
     position: Point,
   ) => boolean,
@@ -90,7 +88,7 @@ export function isPointInPath(
     // 仅填充时带有圆角的矩形直接通过图形拾取
     // 以后可以改成纯数学的近似拾取，将圆弧切割成多边形
     if (!isHit && (hasFill || isClipPath)) {
-      isHit = isPointInPath(runtime, displayObject, position);
+      isHit = isPointInPath(displayObject, position);
     }
     return isHit;
   }

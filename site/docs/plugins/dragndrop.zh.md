@@ -148,15 +148,15 @@ const ball = new Image({
 
 此时就可以监听该图形的 drag 相关事件，包括以下三类事件，事件对象的 [target](/zh/api/event#target) 都是被拖拽的图形：
 
--   dragstart 在开始拖拽时触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
--   drag 在拖拽中频繁触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event
--   dragend 在拖拽结束后触发 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
+-   dragstart 在开始拖拽时触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event>
+-   drag 在拖拽中频繁触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drag_event>
+-   dragend 在拖拽结束后触发 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event>
 
 drag 相关事件都是 [PointerEvents](/zh/api/event#交互事件)，因此可以在事件监听器中访问事件对象上的属性。
 
-例如开始拖拽时，我们记录下鼠标位置到被拖拽元素位置的偏移量 `shiftX/Y`，两者都在[Canvas/世界坐标系](/zh/api/canvas#canvas-1)下。在 `drag` 事件中我们调用 [setPosition](/zh/api/basic/display-object#平移) 完成被拖拽图形的平移。
+例如开始拖拽时，我们记录下鼠标位置到被拖拽元素位置的偏移量 `shiftX/Y`，两者都在[Canvas/世界坐标系](/zh/api/canvas/coordinates#canvas)下。在 `drag` 事件中我们调用 [setPosition](/zh/api/basic/display-object#平移) 完成被拖拽图形的平移。
 
-https://javascript.info/mouse-drag-and-drop#correct-positioning
+<https://javascript.info/mouse-drag-and-drop#correct-positioning>
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1121Q7T2TDAAAAAAAAAAAAAAARQnAQ" width="200">
 
@@ -206,10 +206,10 @@ const gate = new Image({
 
 此时就可以监听放置区域的 drag/drop 相关事件，包括以下三类事件，事件对象的 [target](/zh/api/event#target) 都是放置区域的图形：
 
--   dragenter 有图形被拖入该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event
--   dragleave 有图形被拖离该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event
--   dragover 有图形正在划过该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event
--   drop 有图形放置在该区域 https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event
+-   dragenter 有图形被拖入该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragenter_event>
+-   dragleave 有图形被拖离该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event>
+-   dragover 有图形正在划过该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event>
+-   drop 有图形放置在该区域 <https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event>
 
 例如我们让球门监听相关事件：
 
@@ -252,6 +252,6 @@ gate.addEventListener('drop', function (e) {
 
 ### 与 Click 事件的关系
 
-在 HTML 的 Drag'n'drop 实现中，`click` 和 `drag` 事件同时只会触发一个：https://plnkr.co/edit/5mdl7oTg0dPWXIip
+在 HTML 的 Drag'n'drop 实现中，`click` 和 `drag` 事件同时只会触发一个：<https://plnkr.co/edit/5mdl7oTg0dPWXIip>
 
 我们在实现中也保留了这一设定，在触发 `dragend` 事件之后不会再触发 `click`。

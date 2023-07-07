@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { CSS } from '../../../../packages/g-lite/src/css';
 
 describe('CSSMathInvert', () => {
@@ -12,7 +12,7 @@ describe('CSSMathInvert', () => {
     expect(invert.equals(CSS.number(0.5))).to.be.true;
     expect(invert.equals(CSS.number(1))).to.be.false;
     expect(invert.equals(CSS.px(1))).to.be.false;
-    expect(invert.toSum().toString()).to.be.eqls('calc(0.5)');
+    expect(invert.toSum().toString()).toBe('calc(0.5)');
   });
 
   it('should invert CSS.px() correctly.', () => {

@@ -25,7 +25,9 @@ const canvaskitRenderer = new CanvaskitRenderer({
     },
   ],
 });
-const webgpuRenderer = new WebGPURenderer();
+const webgpuRenderer = new WebGPURenderer({
+  shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 
 // create a canvas
 const canvas = new Canvas({
@@ -124,7 +126,7 @@ rendererFolder
     'webgpu',
     'canvaskit',
   ])
-  .onChange(async (rendererName) => {
+  .onChange((rendererName) => {
     let renderer;
     if (rendererName === 'canvas') {
       renderer = canvasRenderer;
@@ -137,7 +139,7 @@ rendererFolder
     } else if (rendererName === 'canvaskit') {
       renderer = canvaskitRenderer;
     }
-    await canvas.setRenderer(renderer);
+    canvas.setRenderer(renderer);
     bindWheelHandler();
   });
 rendererFolder.open();

@@ -1,4 +1,4 @@
-import { Line as LineUtil } from '@antv/g-math';
+import { linePointAt } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { runtime } from '../global-runtime';
@@ -13,14 +13,14 @@ export interface PolylineStyleProps extends BaseStyleProps {
   /**
    * marker will be positioned at the first point
    */
-  markerStart?: DisplayObject;
+  markerStart?: DisplayObject | null;
 
   /**
    * marker will be positioned at the last point
    */
-  markerEnd?: DisplayObject;
+  markerEnd?: DisplayObject | null;
 
-  markerMid?: DisplayObject;
+  markerMid?: DisplayObject | null;
 
   /**
    * offset relative to original position
@@ -38,9 +38,9 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
     segments: [number, number][];
     totalLength: number;
   };
-  markerStart?: DisplayObject;
-  markerMid?: DisplayObject;
-  markerEnd?: DisplayObject;
+  markerStart?: DisplayObject | null;
+  markerMid?: DisplayObject | null;
+  markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
 }
@@ -104,7 +104,7 @@ export class Polyline extends Polygon {
       }
     });
 
-    const { x, y } = LineUtil.pointAt(
+    const { x, y } = linePointAt(
       points[index][0],
       points[index][1],
       points[index + 1][0],

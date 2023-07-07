@@ -1,4 +1,4 @@
-import type {
+import {
   AttachmentState,
   BindingLayoutDescriptor,
   Bindings,
@@ -35,6 +35,7 @@ import type {
   SwapChain,
   Texture,
   TextureDescriptor,
+  TransparentWhite,
   VendorInfo,
   VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
@@ -59,7 +60,7 @@ import {
   getFormatFlags,
   getFormatTypeFlags,
   GL,
-  makeStaticDataBuffer,
+  makeDataBuffer,
   nullify,
   prependLineNo,
   preprocessProgramObj_GLSL,
@@ -68,7 +69,6 @@ import {
   SamplerFormatKind,
   TextureDimension,
   TextureUsage,
-  TransparentBlack,
   VertexBufferFrequency,
   ViewportOrigin,
 } from '@antv/g-plugin-device-renderer';
@@ -474,7 +474,7 @@ export class Device_GL implements SwapChain, Device {
   }
 
   getOnscreenTexture(): Texture {
-    return this.scTexture!;
+    return this.scTexture;
   }
 
   beginFrame(): void {}
@@ -538,33 +538,29 @@ export class Device_GL implements SwapChain, Device {
       case Format.U16_RGBA_5551:
         return GL.UNSIGNED_SHORT_5_5_5_1;
       case Format.BC1:
-        return this.WEBGL_compressed_texture_s3tc!
-          .COMPRESSED_RGBA_S3TC_DXT1_EXT;
+        return this.WEBGL_compressed_texture_s3tc.COMPRESSED_RGBA_S3TC_DXT1_EXT;
       case Format.BC1_SRGB:
-        return this.WEBGL_compressed_texture_s3tc_srgb!
+        return this.WEBGL_compressed_texture_s3tc_srgb
           .COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT;
       case Format.BC2:
-        return this.WEBGL_compressed_texture_s3tc!
-          .COMPRESSED_RGBA_S3TC_DXT3_EXT;
+        return this.WEBGL_compressed_texture_s3tc.COMPRESSED_RGBA_S3TC_DXT3_EXT;
       case Format.BC2_SRGB:
-        return this.WEBGL_compressed_texture_s3tc_srgb!
+        return this.WEBGL_compressed_texture_s3tc_srgb
           .COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT;
       case Format.BC3:
-        return this.WEBGL_compressed_texture_s3tc!
-          .COMPRESSED_RGBA_S3TC_DXT5_EXT;
+        return this.WEBGL_compressed_texture_s3tc.COMPRESSED_RGBA_S3TC_DXT5_EXT;
       case Format.BC3_SRGB:
-        return this.WEBGL_compressed_texture_s3tc_srgb!
+        return this.WEBGL_compressed_texture_s3tc_srgb
           .COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT;
       case Format.BC4_UNORM:
         return this.EXT_texture_compression_rgtc!.COMPRESSED_RED_RGTC1_EXT;
       case Format.BC4_SNORM:
-        return this.EXT_texture_compression_rgtc!
+        return this.EXT_texture_compression_rgtc
           .COMPRESSED_SIGNED_RED_RGTC1_EXT;
       case Format.BC5_UNORM:
-        return this.EXT_texture_compression_rgtc!
-          .COMPRESSED_RED_GREEN_RGTC2_EXT;
+        return this.EXT_texture_compression_rgtc.COMPRESSED_RED_GREEN_RGTC2_EXT;
       case Format.BC5_SNORM:
-        return this.EXT_texture_compression_rgtc!
+        return this.EXT_texture_compression_rgtc
           .COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT;
       case Format.D32F_S8:
         return isWebGL2(this.gl)
@@ -2140,7 +2136,7 @@ export class Device_GL implements SwapChain, Device {
                 gl.COLOR_ATTACHMENT0,
                 gl.TEXTURE_2D,
                 colorResolveTo.gl_texture,
-                0,
+                this.currentColorResolveToLevels[i],
               );
           }
 
@@ -2336,7 +2332,7 @@ export class Device_GL implements SwapChain, Device {
     resolveTo: Texture_GL,
   ) {
     if (!this.blitRenderPipeline) {
-      const vertexBuffer = makeStaticDataBuffer(
+      const vertexBuffer = makeDataBuffer(
         this,
         BufferUsage.VERTEX | BufferUsage.COPY_DST,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
@@ -2409,7 +2405,7 @@ export class Device_GL implements SwapChain, Device {
       colorAttachment: [resolveFrom],
       colorResolveToLevel: [0],
       colorResolveTo: [resolveTo],
-      colorClearColor: [TransparentBlack],
+      colorClearColor: [TransparentWhite],
       colorStore: [true],
       colorAttachmentLevel: [0],
       depthStencilAttachment: null,

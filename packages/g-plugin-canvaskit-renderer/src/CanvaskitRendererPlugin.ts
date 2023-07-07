@@ -1,34 +1,32 @@
 import {
-  ICamera,
   CSSGradientValue,
+  CSSRGB,
+  ContextService,
   DataURLOptions,
   DataURLType,
   DisplayObject,
+  GradientType,
+  ICamera,
   LinearGradient,
   ParsedBaseStyleProps,
+  Path,
   Pattern,
   RadialGradient,
+  Rect,
   RenderingPlugin,
   RenderingPluginContext,
-  ContextService,
   Shape,
-  Rect,
-  parsedTransformToMat4,
-  parseTransform,
-} from '@antv/g-lite';
-import {
-  convertToPath,
-  Path,
-  fromRotationTranslationScale,
   UnitType,
   computeLinearGradient,
   computeRadialGradient,
-  CSSRGB,
+  convertToPath,
+  fromRotationTranslationScale,
   getEuler,
-  GradientType,
-  isPattern,
   isCSSRGB,
+  isPattern,
   parseColor,
+  parseTransform,
+  parsedTransformToMat4,
   rad2deg,
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
@@ -43,12 +41,12 @@ import type {
   Particles,
   TextureSource,
 } from 'canvaskit-wasm';
-import { mat4, quat, vec3, mat3 } from 'gl-matrix';
+import { mat3, mat4, quat, vec3 } from 'gl-matrix';
 import type { FontLoader } from './FontLoader';
 import type {
   CanvasKitContext,
-  RendererContribution,
   CanvaskitRendererPluginOptions,
+  RendererContribution,
 } from './interfaces';
 import { generateSkPath } from './renderers';
 
@@ -359,7 +357,10 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         let mat: mat4;
         // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
         if (transform) {
-          mat = parsedTransformToMat4(parseTransform(transform));
+          mat = parsedTransformToMat4(
+            parseTransform(transform),
+            new DisplayObject({}),
+          );
         } else {
           mat = mat4.identity(mat4.create());
         }

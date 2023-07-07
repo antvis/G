@@ -1,5 +1,4 @@
-import { KeyframeEffect } from '@antv/g';
-import { expect } from 'chai';
+import { KeyframeEffect } from '../../../packages/g/src';
 import { gEasingParsingTests } from './utils/easing';
 import {
   gBadKeyframeCompositeValueTests,
@@ -9,18 +8,12 @@ import {
   gKeyframesTests,
 } from './utils/keyframe';
 
-interface Test {
-  desc: string;
-  input: KeyframeEffectOptions | number;
-  expected: KeyframeEffectOptions | number;
-}
-
 function assert_equals(a: any, b: any) {
-  expect(a).to.be.eql(b);
+  expect(a).toBe(b);
 }
 
 function assert_frame_lists_equal(a: any, b: any) {
-  expect(a.length).to.be.eql(b.length);
+  expect(a.length).toBe(b.length);
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     assert_frames_equal(a[i], b[i]);
   }
@@ -28,12 +21,12 @@ function assert_frame_lists_equal(a: any, b: any) {
 
 /** Helper for assert_frame_lists_equal */
 function assert_frames_equal(a: any, b: any) {
-  expect(Object.keys(a).sort().toString()).to.be.eql(
+  expect(Object.keys(a).sort().toString()).toBe(
     Object.keys(b).sort().toString(),
   );
   // Iterates sorted keys to ensure stable failures.
   for (const p of Object.keys(a).sort()) {
-    expect(a[p]).to.be.eql(b[p]);
+    expect(a[p]).toBe(b[p]);
   }
 }
 
@@ -43,9 +36,7 @@ function assert_frames_equal(a: any, b: any) {
 describe('Animation KeyframeEffect', () => {
   it('Can be constructed with no frames', () => {
     for (const frames of gEmptyKeyframeListTests) {
-      expect(new KeyframeEffect(null, frames).getKeyframes().length).to.be.eql(
-        0,
-      );
+      expect(new KeyframeEffect(null, frames).getKeyframes().length).toBe(0);
     }
   });
 
@@ -54,7 +45,7 @@ describe('Animation KeyframeEffect', () => {
       const easing = subtest[0];
       const expected = subtest[1];
       const effect = new KeyframeEffect(null, null, { easing: easing });
-      expect(effect.getTiming().easing).to.be.eql(expected);
+      expect(effect.getTiming().easing).toBe(expected);
     }
   });
 
@@ -62,7 +53,7 @@ describe('Animation KeyframeEffect', () => {
   //   for (const invalidEasing of gInvalidEasings) {
   //     expect(() => {
   //       new KeyframeEffect(null, null, { easing: invalidEasing });
-  //     }).to.throw();
+  //     }).toThrow();
   //   }
   // });
 
@@ -74,14 +65,14 @@ describe('Animation KeyframeEffect', () => {
 
     for (const composite of gGoodKeyframeCompositeValueTests) {
       const effect = new KeyframeEffect(null, getKeyframe(composite));
-      expect(effect.getKeyframes()[0].composite).to.be.eql(composite);
+      expect(effect.getKeyframes()[0].composite).toBe(composite);
     }
 
     for (const composite of gBadKeyframeCompositeValueTests) {
       expect(() => {
         // @ts-ignore
         new KeyframeEffect(null, getKeyframe(composite));
-      }).to.throw();
+      }).toThrow();
     }
   });
 
@@ -93,14 +84,14 @@ describe('Animation KeyframeEffect', () => {
 
     for (const composite of gGoodKeyframeCompositeValueTests) {
       const effect = new KeyframeEffect(null, getKeyframe(composite));
-      expect(effect.getKeyframes()[0].composite).to.be.eql(composite);
+      expect(effect.getKeyframes()[0].composite).toBe(composite);
     }
 
     for (const composite of gBadKeyframeCompositeValueTests) {
       expect(() => {
         // @ts-ignore
         new KeyframeEffect(null, getKeyframe(composite));
-      }).to.throw();
+      }).toThrow();
     }
   });
 
@@ -114,7 +105,7 @@ describe('Animation KeyframeEffect', () => {
         // @ts-ignore
         { composite },
       );
-      expect(effect.getKeyframes()[0].composite).to.be.eql('auto');
+      expect(effect.getKeyframes()[0].composite).toBe('auto');
     }
 
     // for (const composite of gBadOptionsCompositeValueTests) {
@@ -123,7 +114,7 @@ describe('Animation KeyframeEffect', () => {
     //       left: ['10px', '20px']
     //       // @ts-ignore
     //     }, { composite });
-    //   }).to.throw();
+    //   }).toThrow();
     // }
   });
 

@@ -1,24 +1,23 @@
-import type { GlobalRuntime } from '../global-runtime';
-import { runtime } from '../global-runtime';
 import type { ICamera } from '../camera';
+import { SortReason, Sortable } from '../components';
 import type { DisplayObject } from '../display-objects';
 import type { CanvasContext, IChildNode, IElement } from '../dom';
+import type { GlobalRuntime } from '../global-runtime';
 import type {
+  CanvasConfig,
   EventPosition,
   InteractivePointerEvent,
-  CanvasConfig,
 } from '../types';
 import {
   AsyncParallelHook,
   AsyncSeriesWaterfallHook,
-  sortByZIndex,
-  sortedIndex,
   SyncHook,
   SyncWaterfallHook,
+  sortByZIndex,
+  sortedIndex,
 } from '../utils';
 import type { RenderingContext } from './RenderingContext';
 import { RenderReason } from './RenderingContext';
-import { SortReason, Sortable } from '../components';
 
 export type RenderingPluginContext = CanvasContext & GlobalRuntime;
 
@@ -127,7 +126,7 @@ export class RenderingService {
 
     // register rendering plugins
     this.context.renderingPlugins.forEach((plugin) => {
-      plugin.apply(context, runtime);
+      plugin.apply(context, this.globalRuntime);
     });
     this.hooks.init.call();
 

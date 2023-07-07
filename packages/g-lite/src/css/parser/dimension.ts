@@ -2,16 +2,16 @@ import { isNil, isNumber, isString } from '@antv/util';
 import type { DisplayObject } from '../../display-objects';
 import type { IElement } from '../../dom';
 import { Shape } from '../../types';
-import { rad2deg, turn2deg } from '../../utils';
+import { rad2deg, turn2deg } from '../../utils/math';
 import { memoize } from '../../utils/memoize';
+import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 import type { CSSStyleValue } from '../cssom';
 import {
   CSSUnitValue,
-  toCanonicalUnit,
   UnitType,
+  toCanonicalUnit,
   unitTypeToString,
 } from '../cssom';
-import { getOrCreateUnitValue } from '../CSSStyleValuePool';
 
 type LengthUnit = 'px' | '%' | 'em' | 'rem';
 type AngleUnit = 'deg' | 'rad' | 'turn';

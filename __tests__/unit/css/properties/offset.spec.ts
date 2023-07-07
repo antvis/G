@@ -1,6 +1,11 @@
-import { Canvas, Circle, CSS, CSSUnitValue, Line } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { expect } from 'chai';
+import { Renderer as CanvasRenderer } from '../../../../packages/g-canvas/src';
+import {
+  Canvas,
+  Circle,
+  CSS,
+  CSSUnitValue,
+  Line,
+} from '../../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -48,16 +53,16 @@ describe('CSSPropertyOffsetDistance', () => {
     canvas.appendChild(circle);
 
     // attribute
-    expect(circle.getAttribute('offsetDistance')).to.be.eqls(0);
+    expect(circle.getAttribute('offsetDistance')).toBe(0);
 
     // used value
     let used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
-    expect(used.equals(CSS.number(0))).to.be.true;
-    expect(circle.getLocalPosition()).to.be.eqls([0, 0, 0]);
+    expect(used.equals(CSS.number(0))).toBeTruthy();
+    expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     circle.style.offsetDistance = 1;
     used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
-    expect(used.equals(CSS.number(1))).to.be.true;
-    expect(circle.getLocalPosition()).to.be.eqls([100, 100, 0]);
+    expect(used.equals(CSS.number(1))).toBeTruthy();
+    expect(circle.getLocalPosition()).toStrictEqual([100, 100, 0]);
   });
 });

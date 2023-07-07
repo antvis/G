@@ -1,8 +1,9 @@
 build
 coverage
-es
+esm
 lib
 dist
-mocks
-**/*.spec.ts
 node_modules
+rollup.config.js
+site
+__tests__

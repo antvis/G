@@ -1,11 +1,10 @@
-import { AbstractRenderer } from '@antv/g';
-import { expect } from 'chai';
+import { AbstractRenderer, RendererPlugin } from '../../packages/g/src';
 
 describe('Abstract renderer', () => {
   it('should generate correct composed path', () => {
     const renderer = new AbstractRenderer();
 
-    expect(renderer.getConfig()).to.be.eqls({
+    expect(renderer.getConfig()).toStrictEqual({
       enableAutoRendering: true,
       enableDirtyCheck: true,
       enableCulling: false,
@@ -14,7 +13,7 @@ describe('Abstract renderer', () => {
     });
 
     renderer.setConfig({ enableAutoRendering: false });
-    expect(renderer.getConfig()).to.be.eqls({
+    expect(renderer.getConfig()).toStrictEqual({
       enableAutoRendering: false,
       enableDirtyCheck: true,
       enableCulling: false,
@@ -22,24 +21,23 @@ describe('Abstract renderer', () => {
       enableDirtyRectangleRenderingDebug: false,
     });
 
-    expect(renderer.getPlugins().length).to.be.eqls(0);
+    expect(renderer.getPlugins().length).toBe(0);
 
     const plugin = {
       name: 'test',
       init: () => {},
       destroy: () => {},
-    };
+    } as unknown as RendererPlugin;
 
     renderer.registerPlugin(plugin);
-    expect(renderer.getPlugins().length).to.be.eqls(1);
+    expect(renderer.getPlugins().length).toBe(1);
 
-    expect(renderer.getPlugin('test')).to.be.eqls(plugin);
+    expect(renderer.getPlugin('test')).toBe(plugin);
 
     renderer.unregisterPlugin(plugin);
-    expect(renderer.getPlugins().length).to.be.eqls(0);
+    expect(renderer.getPlugins().length).toBe(0);
 
-    // @ts-ignore
-    renderer.unregisterPlugin({ name: 'xx' });
-    expect(renderer.getPlugins().length).to.be.eqls(0);
+    renderer.unregisterPlugin({ name: 'xx' } as RendererPlugin);
+    expect(renderer.getPlugins().length).toBe(0);
   });
 });

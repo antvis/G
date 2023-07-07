@@ -1,14 +1,6 @@
-import { Canvas, Circle } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Canvas, Circle } from '../../../packages/g/src';
 import { sleep } from '../utils';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -53,43 +45,43 @@ describe('Animation Timeline', () => {
 
     const animation = circle.animate([], {
       duration: 500,
-    });
+    })!;
     const computedTiming = animation.effect.getComputedTiming();
 
-    expect(canvas.document.timeline.currentTime).to.be.eqls(0);
-    expect(animation.currentTime).to.be.eqls(0);
-    expect(animation.playState).to.be.eqls('running');
+    expect(canvas.document.timeline.currentTime).toBe(0);
+    expect(animation.currentTime).toBe(0);
+    expect(animation.playState).toBe('running');
 
     animation.ready.then(() => {
-      expect(animation.currentTime).to.be.eqls(0);
-      expect(animation.playState).to.be.eqls('running');
+      expect(animation.currentTime).toBe(0);
+      expect(animation.playState).toBe('running');
 
-      expect(computedTiming.endTime).to.be.eqls(500);
-      expect(computedTiming.activeDuration).to.be.eqls(500);
-      expect(computedTiming.progress).to.be.eqls(0);
-      expect(computedTiming.currentIteration).to.be.eqls(0);
+      expect(computedTiming.endTime).toBe(500);
+      expect(computedTiming.activeDuration).toBe(500);
+      expect(computedTiming.progress).toBe(0);
+      expect(computedTiming.currentIteration).toBe(0);
     });
 
     animation.finished.then(() => {
-      expect(animation.currentTime).to.be.eqls(500);
-      expect(animation.playState).to.be.eqls('finished');
+      expect(animation.currentTime).toBe(500);
+      expect(animation.playState).toBe('finished');
 
-      expect(computedTiming.endTime).to.be.eqls(500);
-      expect(computedTiming.activeDuration).to.be.eqls(500);
+      expect(computedTiming.endTime).toBe(500);
+      expect(computedTiming.activeDuration).toBe(500);
       // not running
-      expect(computedTiming.progress).to.be.eqls(null);
-      expect(computedTiming.currentIteration).to.be.eqls(null);
+      expect(computedTiming.progress).toBe(null);
+      expect(computedTiming.currentIteration).toBe(null);
     });
 
     animation.onfinish = (ev) => {
-      expect(ev.currentTime).to.be.eqls(500);
-      expect(animation.playState).to.be.eqls('finished');
+      expect(ev.currentTime).toBe(500);
+      expect(animation.playState).toBe('finished');
 
-      expect(computedTiming.endTime).to.be.eqls(500);
-      expect(computedTiming.activeDuration).to.be.eqls(500);
+      expect(computedTiming.endTime).toBe(500);
+      expect(computedTiming.activeDuration).toBe(500);
       // not running
-      expect(computedTiming.progress).to.be.eqls(null);
-      expect(computedTiming.currentIteration).to.be.eqls(null);
+      expect(computedTiming.progress).toBe(null);
+      expect(computedTiming.currentIteration).toBe(null);
     };
 
     await sleep(1000);

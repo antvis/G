@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-webgl",
-  "version": "0.7.73",
+  "version": "0.9.2",
   "description": "A renderer implemented by WebGL1/2 in mobile environment",
   "keywords": [
     "antv",
@@ -16,6 +16,11 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -27,27 +32,27 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g-plugin-device-renderer": "^1.7.69",
-    "@antv/g-plugin-dragndrop": "^1.6.50",
-    "@antv/g-plugin-html-renderer": "^1.7.55",
-    "@antv/g-plugin-image-loader": "^1.1.53",
-    "@antv/g-plugin-mobile-interaction": "^0.7.50",
-    "@antv/g-plugin-webgl-device": "^1.7.53",
-    "@antv/util": "^3.3.1"
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-plugin-device-renderer": "workspace:*",
+    "@antv/g-plugin-dragndrop": "workspace:*",
+    "@antv/g-plugin-html-renderer": "workspace:*",
+    "@antv/g-plugin-image-loader": "workspace:*",
+    "@antv/g-plugin-mobile-interaction": "workspace:*",
+    "@antv/g-plugin-webgl-device": "workspace:*",
+    "@antv/util": "^3.3.1",
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
-    "@types/jest": "^25.0.0",
     "@types/offscreencanvas": "^2019.6.4"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }

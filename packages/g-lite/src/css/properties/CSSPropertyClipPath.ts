@@ -1,7 +1,7 @@
-import { runtime } from '../../global-runtime';
 import type { DisplayObject } from '../../display-objects';
-import { CSSKeywordValue } from '../cssom';
+import type { GlobalRuntime } from '../../global-runtime';
 import type { CSSProperty } from '../CSSProperty';
+import { CSSKeywordValue } from '../cssom';
 
 /**
  * clipPath / textPath / offsetPath
@@ -14,6 +14,7 @@ export class CSSPropertyClipPath
     oldPath: DisplayObject,
     newPath: DisplayObject,
     object: DisplayObject,
+    runtime: GlobalRuntime,
   ) {
     // unset
     if (newPath instanceof CSSKeywordValue) {

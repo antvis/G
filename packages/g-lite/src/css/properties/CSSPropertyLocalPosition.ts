@@ -7,9 +7,9 @@ import type {
   Text,
 } from '../../display-objects';
 import { ParsedBaseStyleProps, Shape } from '../../types';
-import { parsedTransformToMat4 } from '../../utils';
-import type { CSSUnitValue } from '../cssom';
+import { parsedTransformToMat4 } from '../../utils/transform-mat4';
 import type { CSSProperty } from '../CSSProperty';
+import type { CSSUnitValue } from '../cssom';
 import { CSSPropertyLengthOrPercentage } from './CSSPropertyLengthOrPercentage';
 
 /**

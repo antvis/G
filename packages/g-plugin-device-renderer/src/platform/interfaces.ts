@@ -1,6 +1,6 @@
-import type { Format } from './format';
+import type { EventEmitter } from 'eventemitter3';
 import { GL } from './constants';
-import type EventEmitter from 'eventemitter3';
+import type { Format } from './format';
 
 export enum ResourceType {
   Buffer,
@@ -79,7 +79,7 @@ export interface Readback extends ResourceBase {
     dst: ArrayBufferView,
     dstOffset?: number,
     length?: number,
-  ) => ArrayBufferView;
+  ) => Promise<ArrayBufferView>;
 
   readBuffer: (
     b: Buffer,

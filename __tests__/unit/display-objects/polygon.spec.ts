@@ -1,5 +1,4 @@
-import { Polygon, Circle } from '@antv/g';
-import { expect } from 'chai';
+import { Circle, Polygon } from '../../../packages/g/src';
 
 describe('Polygon', () => {
   it('should calc global bounds correctly', () => {
@@ -17,13 +16,13 @@ describe('Polygon', () => {
     });
 
     // get local position, left top corner
-    expect(polygon.getLocalPosition()).eqls([0, 0, 0]);
+    expect(polygon.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     // get bounds
     const bounds = polygon.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([50, 50, 0]);
-      expect(bounds.halfExtents).eqls([50, 50, 0]);
+      expect(bounds.center).toStrictEqual([50, 50, 0]);
+      expect(bounds.halfExtents).toStrictEqual([50, 50, 0]);
     }
   });
 
@@ -48,26 +47,26 @@ describe('Polygon', () => {
         markerMid: circle,
       },
     });
-    expect(polygon.childNodes.length).eqls(5);
+    expect(polygon.childNodes.length).toBe(5);
 
     polygon.style.markerStart = null;
-    expect(polygon.childNodes.length).eqls(4);
+    expect(polygon.childNodes.length).toBe(4);
 
     polygon.style.markerEnd = null;
-    expect(polygon.childNodes.length).eqls(3);
+    expect(polygon.childNodes.length).toBe(3);
 
     polygon.style.markerMid = null;
-    expect(polygon.childNodes.length).eqls(0);
+    expect(polygon.childNodes.length).toBe(0);
 
     polygon.style.markerStart = circle;
     polygon.style.markerStartOffset = 10;
-    expect(polygon.childNodes.length).eqls(1);
+    expect(polygon.childNodes.length).toBe(1);
 
     polygon.style.markerEnd = circle;
     polygon.style.markerEndOffset = 10;
-    expect(polygon.childNodes.length).eqls(2);
+    expect(polygon.childNodes.length).toBe(2);
 
     polygon.style.markerMid = circle;
-    expect(polygon.childNodes.length).eqls(5);
+    expect(polygon.childNodes.length).toBe(5);
   });
 });

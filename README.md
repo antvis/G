@@ -2,26 +2,25 @@ English | [简体中文](./README-zh_CN.md)
 
 # G
 
-![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
+![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next) [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](#badge)
 
-![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+![TypeScript](https://img.shields.io/badge/language-typescript-blue.svg) ![License](https://img.shields.io/badge/license-MIT-000000.svg)
 
 [![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
 
 As the underlying rendering engine of AntV, G is dedicated to provide consistent and high performance 2D / 3D graphics rendering capabilities for upper layer products, adapting all underlying rendering APIs (Canvas2D / SVG / WebGL / WebGPU / CanvasKit / Node.js) on the web side. In particular, it provides GPGPU support for algorithms suitable for parallel computing in graph scenarios.
 
 <p>
-  <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
-
+  <a href="https://g.antv.antgroup.com/examples/ecosystem/d3/#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" alt="D3 force directed graph"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/ecosystem/d3/#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" alt="D3 barchart"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/rough/#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" alt="D3 sketchy barchart"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/yoga/#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" alt="Yoga plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/physics-engine/#box2d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" alt="Box2D physics engine plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/rough/#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" alt="Rough.js plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/canvaskit/#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" alt="Canvaskit plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/canvaskit/#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" alt="Yoga plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/3d/geometry/#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" alt="Canvaskit plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/3d/3d-basic/#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" alt="3D force directed graph"/></a>
 </p>
 
 ## ✨ Features
@@ -122,13 +121,14 @@ canvas.addEventListener(CanvasEvent.READY, function () {
 
 ## ⌨️ Development
 
-Start previewing site:
+Start previewing demos:
 
 ```bash
-$ git clone git@github.com:antvis/g.git
-$ cd g
-$ yarn install
-$ yarn start
+git clone git@github.com:antvis/g.git
+cd g
+pnpm install
+pnpm build
+pnpm dev
 ```
 
 ### API Spec
@@ -136,7 +136,7 @@ $ yarn start
 Start a dev-server on root dir, eg. `http-server`:
 
 ```bash
-$ http-server -p 9090
+http-server -p 9090
 ```
 
 Open api.html on `localhost:9090/spec/api.html`.
@@ -146,17 +146,18 @@ Open api.html on `localhost:9090/spec/api.html`.
 Build and run test cases:
 
 ```bash
-$ yarn build
-$ yarn test
+pnpm build
+pnpm test
 ```
 
-### Run site demos
+### Start site
+
+Preview our site:
 
 ```bash
-$ cd ./site
-$ yarn install
-$ cd ../
-$ yarn link-site
+pnpm build
+pnpm link-site
+pnpm start
 ```
 
 ## Inspired by
@@ -164,18 +165,21 @@ $ yarn link-site
 -   [Sprite.js](https://github.com/spritejs/spritejs)
 -   [Pixi.js](https://pixijs.com/)
 -   [PlayCanvas](https://playcanvas.com/)
--   [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
+-   [WebKit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
 
 <!-- GITCONTRIBUTOR_START -->
 
 ## Contributors
 
-|  [<img src="https://avatars.githubusercontent.com/u/14918822?v=4" width="100px;"/><br/><sub><b>dengfuping</b></sub>](https://github.com/dengfuping)<br/>  |   [<img src="https://avatars.githubusercontent.com/u/3608471?v=4" width="100px;"/><br/><sub><b>xiaoiver</b></sub>](https://github.com/xiaoiver)<br/>   | [<img src="https://avatars.githubusercontent.com/u/1264678?v=4" width="100px;"/><br/><sub><b>dxq613</b></sub>](https://github.com/dxq613)<br/>  | [<img src="https://avatars.githubusercontent.com/in/2141?v=4" width="100px;"/><br/><sub><b>dependabot-preview[bot]</b></sub>](https://github.com/apps/dependabot-preview)<br/> |     [<img src="https://avatars.githubusercontent.com/u/507615?v=4" width="100px;"/><br/><sub><b>afc163</b></sub>](https://github.com/afc163)<br/>     |   [<img src="https://avatars.githubusercontent.com/u/4224253?v=4" width="100px;"/><br/><sub><b>zhanba</b></sub>](https://github.com/zhanba)<br/>    |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------: |
-|  [<img src="https://avatars.githubusercontent.com/u/1947344?v=4" width="100px;"/><br/><sub><b>limichange</b></sub>](https://github.com/limichange)<br/>   |  [<img src="https://avatars.githubusercontent.com/u/23075527?v=4" width="100px;"/><br/><sub><b>entronad</b></sub>](https://github.com/entronad)<br/>   | [<img src="https://avatars.githubusercontent.com/u/7856674?v=4" width="100px;"/><br/><sub><b>hustcc</b></sub>](https://github.com/hustcc)<br/>  |                  [<img src="https://avatars.githubusercontent.com/u/6628666?v=4" width="100px;"/><br/><sub><b>simaQ</b></sub>](https://github.com/simaQ)<br/>                  |      [<img src="https://avatars.githubusercontent.com/u/1142242?v=4" width="100px;"/><br/><sub><b>zqlu</b></sub>](https://github.com/zqlu)<br/>       | [<img src="https://avatars.githubusercontent.com/u/19731097?v=4" width="100px;"/><br/><sub><b>Deturium</b></sub>](https://github.com/Deturium)<br/> |
-| [<img src="https://avatars.githubusercontent.com/u/29593318?v=4" width="100px;"/><br/><sub><b>Yanyan-Wang</b></sub>](https://github.com/Yanyan-Wang)<br/> | [<img src="https://avatars.githubusercontent.com/u/8325822?v=4" width="100px;"/><br/><sub><b>elaine1234</b></sub>](https://github.com/elaine1234)<br/> | [<img src="https://avatars.githubusercontent.com/u/15646325?v=4" width="100px;"/><br/><sub><b>visiky</b></sub>](https://github.com/visiky)<br/> |                  [<img src="https://avatars.githubusercontent.com/u/9443867?v=4" width="100px;"/><br/><sub><b>baizn</b></sub>](https://github.com/baizn)<br/>                  | [<img src="https://avatars.githubusercontent.com/u/10277628?v=4" width="100px;"/><br/><sub><b>terence55</b></sub>](https://github.com/terence55)<br/> |  [<img src="https://avatars.githubusercontent.com/u/2281857?v=4" width="100px;"/><br/><sub><b>budlion</b></sub>](https://github.com/budlion)<br/>   |
-|    [<img src="https://avatars.githubusercontent.com/u/7278711?v=4" width="100px;"/><br/><sub><b>luoxupan</b></sub>](https://github.com/luoxupan)<br/>     |  [<img src="https://avatars.githubusercontent.com/u/6812138?v=4" width="100px;"/><br/><sub><b>Leannechn</b></sub>](https://github.com/Leannechn)<br/>  |
+|     [<img src="https://avatars.githubusercontent.com/u/14918822?v=4" width="100px;"/><br/><sub><b>dengfuping</b></sub>](https://github.com/dengfuping)<br/>     |   [<img src="https://avatars.githubusercontent.com/u/3608471?v=4" width="100px;"/><br/><sub><b>xiaoiver</b></sub>](https://github.com/xiaoiver)<br/>    |     [<img src="https://avatars.githubusercontent.com/u/1264678?v=4" width="100px;"/><br/><sub><b>dxq613</b></sub>](https://github.com/dxq613)<br/>     | [<img src="https://avatars.githubusercontent.com/in/2141?v=4" width="100px;"/><br/><sub><b>dependabot-preview[bot]</b></sub>](https://github.com/apps/dependabot-preview)<br/> |   [<img src="https://avatars.githubusercontent.com/u/4224253?v=4" width="100px;"/><br/><sub><b>zhanba</b></sub>](https://github.com/zhanba)<br/>    |       [<img src="https://avatars.githubusercontent.com/u/507615?v=4" width="100px;"/><br/><sub><b>afc163</b></sub>](https://github.com/afc163)<br/>       |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|     [<img src="https://avatars.githubusercontent.com/u/1947344?v=4" width="100px;"/><br/><sub><b>limichange</b></sub>](https://github.com/limichange)<br/>      |   [<img src="https://avatars.githubusercontent.com/u/23075527?v=4" width="100px;"/><br/><sub><b>entronad</b></sub>](https://github.com/entronad)<br/>   |     [<img src="https://avatars.githubusercontent.com/u/7856674?v=4" width="100px;"/><br/><sub><b>hustcc</b></sub>](https://github.com/hustcc)<br/>     |          [<img src="https://avatars.githubusercontent.com/u/33517362?v=4" width="100px;"/><br/><sub><b>tangying1027</b></sub>](https://github.com/tangying1027)<br/>           |  [<img src="https://avatars.githubusercontent.com/u/1478197?v=4" width="100px;"/><br/><sub><b>zengyue</b></sub>](https://github.com/zengyue)<br/>   |       [<img src="https://avatars.githubusercontent.com/u/6628666?v=4" width="100px;"/><br/><sub><b>simaQ</b></sub>](https://github.com/simaQ)<br/>        |
+|       [<img src="https://avatars.githubusercontent.com/u/1142242?v=4" width="100px;"/><br/><sub><b>lessmost</b></sub>](https://github.com/lessmost)<br/>        |     [<img src="https://avatars.githubusercontent.com/u/15646325?v=4" width="100px;"/><br/><sub><b>visiky</b></sub>](https://github.com/visiky)<br/>     |     [<img src="https://avatars.githubusercontent.com/u/31396322?v=4" width="100px;"/><br/><sub><b>lxfu1</b></sub>](https://github.com/lxfu1)<br/>      |                   [<img src="https://avatars.githubusercontent.com/u/7451866?v=4" width="100px;"/><br/><sub><b>ICMI</b></sub>](https://github.com/ICMI)<br/>                   | [<img src="https://avatars.githubusercontent.com/u/19731097?v=4" width="100px;"/><br/><sub><b>Deturium</b></sub>](https://github.com/Deturium)<br/> | [<img src="https://avatars.githubusercontent.com/u/29593318?v=4" width="100px;"/><br/><sub><b>Yanyan-Wang</b></sub>](https://github.com/Yanyan-Wang)<br/> |
+| [<img src="https://avatars.githubusercontent.com/u/42212176?v=4" width="100px;"/><br/><sub><b>yiiiiiiqianyao</b></sub>](https://github.com/yiiiiiiqianyao)<br/> | [<img src="https://avatars.githubusercontent.com/u/37040897?v=4" width="100px;"/><br/><sub><b>moayuisuda</b></sub>](https://github.com/moayuisuda)<br/> | [<img src="https://avatars.githubusercontent.com/u/8325822?v=4" width="100px;"/><br/><sub><b>elaine1234</b></sub>](https://github.com/elaine1234)<br/> |              [<img src="https://avatars.githubusercontent.com/u/15213473?v=4" width="100px;"/><br/><sub><b>mxz96102</b></sub>](https://github.com/mxz96102)<br/>               |   [<img src="https://avatars.githubusercontent.com/u/12654153?v=4" width="100px;"/><br/><sub><b>DrugsZ</b></sub>](https://github.com/DrugsZ)<br/>   |       [<img src="https://avatars.githubusercontent.com/u/9443867?v=4" width="100px;"/><br/><sub><b>baizn</b></sub>](https://github.com/baizn)<br/>        |
+|      [<img src="https://avatars.githubusercontent.com/u/10277628?v=4" width="100px;"/><br/><sub><b>terence55</b></sub>](https://github.com/terence55)<br/>      |    [<img src="https://avatars.githubusercontent.com/u/56076317?v=4" width="100px;"/><br/><sub><b>tyr1dev</b></sub>](https://github.com/tyr1dev)<br/>    |    [<img src="https://avatars.githubusercontent.com/u/2281857?v=4" width="100px;"/><br/><sub><b>budlion</b></sub>](https://github.com/budlion)<br/>    |               [<img src="https://avatars.githubusercontent.com/u/7278711?v=4" width="100px;"/><br/><sub><b>luoxupan</b></sub>](https://github.com/luoxupan)<br/>               |    [<img src="https://avatars.githubusercontent.com/u/54543761?v=4" width="100px;"/><br/><sub><b>ikxin</b></sub>](https://github.com/ikxin)<br/>    |   [<img src="https://avatars.githubusercontent.com/u/6812138?v=4" width="100px;"/><br/><sub><b>Leannechn</b></sub>](https://github.com/Leannechn)<br/>    |
 
-This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Tue Dec 07 2021 10:00:16 GMT+0800`.
+[<img src="https://avatars.githubusercontent.com/u/10683193?v=4" width="100px;"/><br/><sub><b>dev-itsheng</b></sub>](https://github.com/dev-itsheng)<br/>
+
+This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Wed Jun 21 2023 13:21:24 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->

@@ -1,92 +1,86 @@
-import chai, { expect } from 'chai';
 import {
   FederatedEvent,
   FederatedMouseEvent,
   FederatedPointerEvent,
-} from '@antv/g';
-import chaiAlmost from 'chai-almost';
-import sinonChai from 'sinon-chai';
-
-chai.use(chaiAlmost());
-chai.use(sinonChai);
+} from '../../../packages/g/src';
 
 describe('FederatedEvent', () => {
   it('should init FederatedEvent correctly.', () => {
     const event = new FederatedEvent(null);
 
-    expect(event.name).to.be.undefined;
-    expect(event.type).to.be.undefined;
-    // expect(event.eventPhase).to.be.eqls(0);
-    expect(event.target).to.be.undefined;
-    expect(event.bubbles).to.be.true;
-    expect(event.cancelBubble).to.be.true;
-    expect(event.cancelable).to.be.false;
-    expect(event.currentTarget).to.be.undefined;
-    expect(event.defaultPrevented).to.be.false;
-    expect(event.layerX).to.be.eqls(0);
-    expect(event.layerY).to.be.eqls(0);
-    expect(event.pageX).to.be.eqls(0);
-    expect(event.pageY).to.be.eqls(0);
-    expect(event.x).to.be.eqls(0);
-    expect(event.y).to.be.eqls(0);
-    expect(event.canvasX).to.be.eqls(0);
-    expect(event.canvasY).to.be.eqls(0);
-    expect(event.viewportX).to.be.eqls(0);
-    expect(event.viewportY).to.be.eqls(0);
-    expect(event.composedPath()).to.be.undefined;
-    expect(event.propagationPath).to.be.undefined;
+    expect(event.name).toBeUndefined();
+    expect(event.type).toBeUndefined();
+    // expect(event.eventPhase).toBe(0);
+    expect(event.target).toBeUndefined();
+    expect(event.bubbles).toBeTruthy();
+    expect(event.cancelBubble).toBeTruthy();
+    expect(event.cancelable).toBeFalsy();
+    expect(event.currentTarget).toBeUndefined();
+    expect(event.defaultPrevented).toBeFalsy();
+    expect(event.layerX).toBe(0);
+    expect(event.layerY).toBe(0);
+    expect(event.pageX).toBe(0);
+    expect(event.pageY).toBe(0);
+    expect(event.x).toBe(0);
+    expect(event.y).toBe(0);
+    expect(event.canvasX).toBe(0);
+    expect(event.canvasY).toBe(0);
+    expect(event.viewportX).toBe(0);
+    expect(event.viewportY).toBe(0);
+    expect(event.composedPath()).toBeUndefined();
+    expect(event.propagationPath).toBeUndefined();
 
     event.preventDefault();
-    expect(event.defaultPrevented).to.be.true;
+    expect(event.defaultPrevented).toBeTruthy();
 
     event.stopImmediatePropagation();
-    expect(event.propagationImmediatelyStopped).to.be.true;
+    expect(event.propagationImmediatelyStopped).toBeTruthy();
 
     event.stopPropagation();
-    expect(event.propagationStopped).to.be.true;
+    expect(event.propagationStopped).toBeTruthy();
 
     // deprecated
     event.initEvent();
     event.initUIEvent();
 
-    expect(event.which).to.be.undefined;
-    expect(event.returnValue).to.be.undefined;
-    expect(event.srcElement).to.be.undefined;
-    expect(event.isTrusted).to.be.undefined;
-    expect(event.composed).to.be.false;
+    expect(event.which).toBeUndefined();
+    expect(event.returnValue).toBeUndefined();
+    expect(event.srcElement).toBeUndefined();
+    expect(event.isTrusted).toBeUndefined();
+    expect(event.composed).toBeFalsy();
   });
 
   it('should init FederatedMouseEvent correctly.', () => {
     const event = new FederatedMouseEvent(null);
 
-    expect(event.clientX).to.be.eqls(0);
-    expect(event.clientY).to.be.eqls(0);
-    expect(event.movementX).to.be.eqls(0);
-    expect(event.movementY).to.be.eqls(0);
-    expect(event.offsetX).to.be.eqls(0);
-    expect(event.offsetY).to.be.eqls(0);
-    expect(event.globalX).to.be.eqls(0);
-    expect(event.globalY).to.be.eqls(0);
-    expect(event.screenX).to.be.eqls(0);
-    expect(event.screenY).to.be.eqls(0);
+    expect(event.clientX).toBe(0);
+    expect(event.clientY).toBe(0);
+    expect(event.movementX).toBe(0);
+    expect(event.movementY).toBe(0);
+    expect(event.offsetX).toBe(0);
+    expect(event.offsetY).toBe(0);
+    expect(event.globalX).toBe(0);
+    expect(event.globalY).toBe(0);
+    expect(event.screenX).toBe(0);
+    expect(event.screenY).toBe(0);
 
-    expect(() => event.initMouseEvent()).to.throw();
-    expect(() => event.getModifierState('')).to.throw();
+    expect(() => event.initMouseEvent()).toThrow();
+    expect(() => event.getModifierState('')).toThrow();
   });
 
   it('should init FederatedPointerEvent correctly.', () => {
     const event = new FederatedPointerEvent(null);
-    expect(event.getCoalescedEvents()).to.eqls([]);
+    expect(event.getCoalescedEvents()).toStrictEqual([]);
 
     event.type = 'pointermove';
-    expect(event.getCoalescedEvents()).to.eqls([event]);
+    expect(event.getCoalescedEvents()).toStrictEqual([event]);
 
     event.type = 'mousemove';
-    expect(event.getCoalescedEvents()).to.eqls([event]);
+    expect(event.getCoalescedEvents()).toStrictEqual([event]);
 
     event.type = 'touchmove';
-    expect(event.getCoalescedEvents()).to.eqls([event]);
+    expect(event.getCoalescedEvents()).toStrictEqual([event]);
 
-    expect(() => event.getPredictedEvents()).to.throw();
+    expect(() => event.getPredictedEvents()).toThrow();
   });
 });

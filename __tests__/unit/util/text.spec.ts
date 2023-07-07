@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { toFontString } from '../../../packages/g-lite/src/utils';
 
 describe('Text utils', () => {
@@ -11,7 +10,7 @@ describe('Text utils', () => {
         fontWeight: 'normal',
         fontVariant: 'normal',
       }),
-    ).eqls('normal normal normal 12px sans-serif');
+    ).toBe('normal normal normal 12px sans-serif');
 
     expect(
       toFontString({
@@ -21,7 +20,7 @@ describe('Text utils', () => {
         fontWeight: 'normal',
         fontVariant: 'normal',
       }),
-    ).eqls('normal normal normal 12px sans-serif,"Yahei"');
+    ).toBe('normal normal normal 12px sans-serif,"Yahei"');
 
     expect(
       toFontString({
@@ -31,6 +30,6 @@ describe('Text utils', () => {
         fontWeight: 'normal',
         fontVariant: 'normal',
       }),
-    ).eqls('normal normal normal 12px sans-serif,"Yahei"');
+    ).toBe('normal normal normal 12px sans-serif,"Yahei"');
   });
 });

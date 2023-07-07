@@ -38,6 +38,7 @@ import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
 import { preprocessProgramObj_GLSL } from '../shader/compiler';
 import type { TexturePool } from '../TexturePool';
 import { compareDefines, definedProps, enumToObject } from '../utils/enum';
+import { packUint8ToFloat } from '../utils/compression';
 
 let counter = 1;
 export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -47,7 +48,7 @@ export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
  */
 export enum VertexAttributeBufferIndex {
   MODEL_MATRIX = 0,
-  FILL_STROKE,
+  PACKED_COLOR,
   PACKED_STYLE,
   PICKING_COLOR, // built-in
   POSITION,
@@ -67,8 +68,7 @@ export enum VertexAttributeLocation {
   MODEL_MATRIX1,
   MODEL_MATRIX2,
   MODEL_MATRIX3,
-  COLOR,
-  STROKE_COLOR,
+  PACKED_COLOR, // fill & stroke
   PACKED_STYLE1, // opacity fillOpacity strokeOpacity lineWidth
   PACKED_STYLE2, // visibility anchorX anchorY increasedLineWidthForHitTesting
   PICKING_COLOR,
@@ -139,6 +139,11 @@ export abstract class Instanced {
    * Receiving light e.g. Mesh.
    */
   protected lightReceived = false;
+
+  /**
+   *
+   */
+  protected divisor = 1;
 
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
@@ -263,6 +268,7 @@ export abstract class Instanced {
     const packedFillStroke: number[] = [];
     const packedStyle: number[] = [];
     const packedPicking: number[] = [];
+    const divisor = this.divisor;
 
     // const useNormal = this.material.defines.NORMAL;
 
@@ -281,26 +287,26 @@ export abstract class Instanced {
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (isCSSRGB(fill)) {
         fillColor = [
-          Number(fill.r) / 255,
-          Number(fill.g) / 255,
-          Number(fill.b) / 255,
-          Number(fill.alpha),
+          Number(fill.r),
+          Number(fill.g),
+          Number(fill.b),
+          Number(fill.alpha) * 255,
         ];
       }
       let strokeColor: Tuple4Number = [0, 0, 0, 0];
       if (isCSSRGB(stroke)) {
         strokeColor = [
-          Number(stroke.r) / 255,
-          Number(stroke.g) / 255,
-          Number(stroke.b) / 255,
-          Number(stroke.alpha),
+          Number(stroke.r),
+          Number(stroke.g),
+          Number(stroke.b),
+          Number(stroke.alpha) * 255,
         ];
       }
 
       if (this.clipPathTarget) {
         // account for target's rts
         mat4.copy(modelMatrix, object.getLocalTransform());
-        fillColor = [1, 1, 1, 1];
+        fillColor = [255, 255, 255, 255];
         mat4.mul(
           modelMatrix,
           this.clipPathTarget.getWorldTransform(),
@@ -320,7 +326,12 @@ export abstract class Instanced {
         object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
       packedModelMatrix.push(...modelMatrix);
-      packedFillStroke.push(...fillColor, ...strokeColor);
+      packedFillStroke.push(
+        packUint8ToFloat(fillColor[0], fillColor[1]),
+        packUint8ToFloat(fillColor[2], fillColor[3]),
+        packUint8ToFloat(strokeColor[0], strokeColor[1]),
+        packUint8ToFloat(strokeColor[2], strokeColor[3]),
+      );
       packedStyle.push(
         opacity,
         fillOpacity,
@@ -353,19 +364,19 @@ export abstract class Instanced {
       //         format: Format.F32_RGB,
       //         bufferByteOffset: 4 * 0,
       //         location: Number(NORMAL_MATRIX0),
-      //         divisor: 1,
+      //         divisor
       //       },
       //       {
       //         format: Format.F32_RGB,
       //         bufferByteOffset: 4 * 3,
       //         location: Number(NORMAL_MATRIX1),
-      //         divisor: 1,
+      //         divisor
       //       },
       //       {
       //         format: Format.F32_RGB,
       //         bufferByteOffset: 4 * 6,
       //         location: Number(NORMAL_MATRIX2),
-      //         divisor: 1,
+      //         divisor
       //       },
       //     ],
       //     data: new Float32Array(normalMatrix),
@@ -384,46 +395,40 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.MODEL_MATRIX0,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.MODEL_MATRIX1,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
           location: VertexAttributeLocation.MODEL_MATRIX2,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
           location: VertexAttributeLocation.MODEL_MATRIX3,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedModelMatrix),
     });
 
     this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.FILL_STROKE,
-      byteStride: 4 * 8,
+      bufferIndex: VertexAttributeBufferIndex.PACKED_COLOR,
+      byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.COLOR,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 4,
-          location: VertexAttributeLocation.STROKE_COLOR,
-          divisor: 1,
+          location: VertexAttributeLocation.PACKED_COLOR,
+          divisor,
         },
       ],
       data: new Float32Array(packedFillStroke),
@@ -438,13 +443,13 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PACKED_STYLE1,
-          divisor: 1,
+          divisor,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.PACKED_STYLE2,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedStyle),
@@ -459,7 +464,7 @@ export abstract class Instanced {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.PICKING_COLOR,
-          divisor: 1,
+          divisor,
         },
       ],
       data: new Float32Array(packedPicking),
@@ -711,28 +716,33 @@ export abstract class Instanced {
         let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(fill)) {
           fillColor = [
-            Number(fill.r) / 255,
-            Number(fill.g) / 255,
-            Number(fill.b) / 255,
-            Number(fill.alpha),
+            Number(fill.r),
+            Number(fill.g),
+            Number(fill.b),
+            Number(fill.alpha) * 255,
           ];
         }
         let strokeColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(stroke)) {
           strokeColor = [
-            Number(stroke.r) / 255,
-            Number(stroke.g) / 255,
-            Number(stroke.b) / 255,
-            Number(stroke.alpha),
+            Number(stroke.r),
+            Number(stroke.g),
+            Number(stroke.b),
+            Number(stroke.alpha) * 255,
           ];
         }
 
-        packedFillStroke.push(...fillColor, ...strokeColor);
+        packedFillStroke.push(
+          packUint8ToFloat(fillColor[0], fillColor[1]),
+          packUint8ToFloat(fillColor[2], fillColor[3]),
+          packUint8ToFloat(strokeColor[0], strokeColor[1]),
+          packUint8ToFloat(strokeColor[2], strokeColor[3]),
+        );
       });
 
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.FILL_STROKE,
-        VertexAttributeLocation.COLOR,
+        VertexAttributeBufferIndex.PACKED_COLOR,
+        VertexAttributeLocation.PACKED_COLOR,
         startIndex,
         new Uint8Array(new Float32Array(packedFillStroke).buffer),
       );

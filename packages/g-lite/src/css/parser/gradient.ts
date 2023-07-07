@@ -5,16 +5,19 @@ import type {
   DirectionalNode,
   PositionNode,
 } from '../../utils';
-import { colorStopToString, parseGradient as parse } from '../../utils';
+import {
+  colorStopToString,
+  parseGradient as parse,
+} from '../../utils/gradient';
 import { memoize } from '../../utils/memoize';
+import { getOrCreateKeyword, getOrCreateUnitValue } from '../CSSStyleValuePool';
 import type {
   CSSKeywordValue,
   CSSUnitValue,
   LinearColorStop,
   RadialGradient,
 } from '../cssom';
-import { Odeg, CSSGradientValue, GradientType } from '../cssom';
-import { getOrCreateKeyword, getOrCreateUnitValue } from '../CSSStyleValuePool';
+import { CSSGradientValue, GradientType, Odeg } from '../cssom';
 import type { Pattern } from './color';
 
 const regexLG = /^l\s*\(\s*([\d.]+)\s*\)\s*(.*)/i;

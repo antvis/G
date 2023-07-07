@@ -12,13 +12,19 @@ import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
 // import { pushFXAAPass } from './passes/FXAA';
-import type { Device, SwapChain, Texture, TextureDescriptor } from './platform';
+import {
+  Device,
+  SwapChain,
+  Texture,
+  TextureDescriptor,
+  TransparentBlack,
+  TransparentWhite,
+} from './platform';
 import {
   BlendFactor,
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
-  TransparentBlack,
 } from './platform';
 import type { RGGraphBuilder, RenderHelper } from './render';
 import {
@@ -80,7 +86,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   private enableCapture: boolean;
   private captureOptions: Partial<DataURLOptions>;
-  private capturePromise: Promise<any> | undefined;
+  private capturePromise: Promise<string> | undefined;
   private resolveCapturePromise: (dataURL: string) => void;
 
   getDevice(): Device {
@@ -235,20 +241,26 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
-      // use canvas.background
-      const backgroundColor = parseColor(
-        this.context.config.background,
-      ) as CSSRGB;
-      const clearColor = this.context.config.background
-        ? // use premultipliedAlpha
-          // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
-          colorNewFromRGBA(
-            (Number(backgroundColor.r) / 255) * Number(backgroundColor.alpha),
-            (Number(backgroundColor.g) / 255) * Number(backgroundColor.alpha),
-            (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
-            Number(backgroundColor.alpha),
-          )
-        : TransparentBlack;
+      let clearColor;
+      if (this.context.config.background === 'transparent') {
+        clearColor = TransparentBlack;
+      } else {
+        // use canvas.background
+        const backgroundColor = parseColor(
+          this.context.config.background,
+        ) as CSSRGB;
+
+        clearColor = this.context.config.background
+          ? // use premultipliedAlpha
+            // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
+            colorNewFromRGBA(
+              (Number(backgroundColor.r) / 255) * Number(backgroundColor.alpha),
+              (Number(backgroundColor.g) / 255) * Number(backgroundColor.alpha),
+              (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
+              Number(backgroundColor.alpha),
+            )
+          : TransparentWhite;
+      }
 
       // retrieve at each frame since canvas may resize
       const renderInput = {
@@ -295,7 +307,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // TODO: other post-processing passes
       // FXAA
-      // pushFXAAPass(this.builder, this.renderHelper, renderInput, mainColorTargetID);
+      // pushFXAAPass(
+      //   this.builder,
+      //   this.renderHelper,
+      //   renderInput,
+      //   mainColorTargetID,
+      // );
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(

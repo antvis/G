@@ -1,5 +1,4 @@
-import { Rect } from '@antv/g';
-import { expect } from 'chai';
+import { Rect } from '../../../packages/g/src';
 
 describe('Rect', () => {
   it("should calc Rect's GeometryBounds, RenderBounds, Bounds and LocalBounds correctly", () => {
@@ -12,13 +11,13 @@ describe('Rect', () => {
       },
     });
 
-    expect(rect.matches('[x=0]')).to.be.true;
-    expect(rect.matches('[y=0]')).to.be.true;
-    expect(rect.matches('[width=200]')).to.be.true;
-    expect(rect.matches('[height=200]')).to.be.true;
-    expect(rect.matches('[x=200]')).to.be.false;
+    expect(rect.matches('[x=0]')).toBeTruthy();
+    expect(rect.matches('[y=0]')).toBeTruthy();
+    expect(rect.matches('[width=200]')).toBeTruthy();
+    expect(rect.matches('[height=200]')).toBeTruthy();
+    expect(rect.matches('[x=200]')).toBeFalsy();
 
-    expect(rect.getAttributeNames()).to.eqls([
+    expect(rect.getAttributeNames()).toStrictEqual([
       'anchor',
       'opacity',
       'fillOpacity',
@@ -50,8 +49,8 @@ describe('Rect', () => {
       'height',
       'radius',
     ]);
-    expect(rect.hasAttribute('width')).to.be.true;
-    expect(rect.hasAttributes()).to.be.true;
+    expect(rect.hasAttribute('width')).toBeTruthy();
+    expect(rect.hasAttributes()).toBeTruthy();
 
     let bounds = rect.getBounds();
     let localBounds = rect.getLocalBounds();
@@ -59,26 +58,26 @@ describe('Rect', () => {
     let renderBounds = rect.getRenderBounds();
     let bbox = rect.getBBox();
 
-    expect(bbox.x).to.eqls(0);
-    expect(bbox.y).to.eqls(0);
-    expect(bbox.width).to.eqls(200);
-    expect(bbox.height).to.eqls(200);
+    expect(bbox.x).toBe(0);
+    expect(bbox.y).toBe(0);
+    expect(bbox.width).toBe(200);
+    expect(bbox.height).toBe(200);
 
     if (bounds) {
-      expect(bounds.center).eqls([100, 100, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls([100, 100, 0]);
-      expect(localBounds.halfExtents).eqls([100, 100, 0]);
+      expect(localBounds.center).toStrictEqual([100, 100, 0]);
+      expect(localBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls([100, 100, 0]);
-      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls([100, 100, 0]);
-      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
+      expect(renderBounds.center).toStrictEqual([100, 100, 0]);
+      expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
 
     // model matrix changed
@@ -89,54 +88,54 @@ describe('Rect', () => {
     renderBounds = rect.getRenderBounds();
     bbox = rect.getBBox();
     if (bounds) {
-      expect(bounds.center).eqls([200, 100, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls([200, 100, 0]);
-      expect(localBounds.halfExtents).eqls([100, 100, 0]);
+      expect(localBounds.center).toStrictEqual([200, 100, 0]);
+      expect(localBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls([100, 100, 0]);
-      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls([200, 100, 0]);
-      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
+      expect(renderBounds.center).toStrictEqual([200, 100, 0]);
+      expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
-    expect(bbox.x).to.eqls(100);
-    expect(bbox.y).to.eqls(0);
-    expect(bbox.width).to.eqls(200);
-    expect(bbox.height).to.eqls(200);
+    expect(bbox.x).toBe(100);
+    expect(bbox.y).toBe(0);
+    expect(bbox.width).toBe(200);
+    expect(bbox.height).toBe(200);
 
     // lineWidth
     rect.setAttribute('lineWidth', 10);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([200, 100, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
 
     // radius
     rect.setAttribute('radius', '10 20');
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([200, 100, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
 
     // change anchor from left-top corner to center,
     rect.style.anchor = [0.5, 0.5];
-    expect(rect.getLocalPosition()).eqls([100, 0, 0]);
+    expect(rect.getLocalPosition()).toStrictEqual([100, 0, 0]);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([100, 0, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([100, 0, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     geometryBounds = rect.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls([0, 0, 0]);
-      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
+      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
   });
 
@@ -156,26 +155,26 @@ describe('Rect', () => {
     let renderBounds = rect.getRenderBounds();
     let bbox = rect.getBBox();
 
-    expect(bbox.x).to.eqls(-200);
-    expect(bbox.y).to.eqls(0);
-    expect(bbox.width).to.eqls(200);
-    expect(bbox.height).to.eqls(200);
+    expect(bbox.x).toBe(-200);
+    expect(bbox.y).toBe(0);
+    expect(bbox.width).toBe(200);
+    expect(bbox.height).toBe(200);
 
     if (bounds) {
-      expect(bounds.center).eqls([-100, 100, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([-100, 100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls([-100, 100, 0]);
-      expect(localBounds.halfExtents).eqls([100, 100, 0]);
+      expect(localBounds.center).toStrictEqual([-100, 100, 0]);
+      expect(localBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls([-100, 100, 0]);
-      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
+      expect(geometryBounds.center).toStrictEqual([-100, 100, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls([-100, 100, 0]);
-      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
+      expect(renderBounds.center).toStrictEqual([-100, 100, 0]);
+      expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
 
     // negative height
@@ -185,40 +184,40 @@ describe('Rect', () => {
     geometryBounds = rect.getGeometryBounds();
     renderBounds = rect.getRenderBounds();
     bbox = rect.getBBox();
-    expect(bbox.x).to.eqls(-200);
-    expect(bbox.y).to.eqls(-200);
-    expect(bbox.width).to.eqls(200);
-    expect(bbox.height).to.eqls(200);
+    expect(bbox.x).toBe(-200);
+    expect(bbox.y).toBe(-200);
+    expect(bbox.width).toBe(200);
+    expect(bbox.height).toBe(200);
 
     if (bounds) {
-      expect(bounds.center).eqls([-100, -100, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([-100, -100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (localBounds) {
-      expect(localBounds.center).eqls([-100, -100, 0]);
-      expect(localBounds.halfExtents).eqls([100, 100, 0]);
+      expect(localBounds.center).toStrictEqual([-100, -100, 0]);
+      expect(localBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls([-100, -100, 0]);
-      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
+      expect(geometryBounds.center).toStrictEqual([-100, -100, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (renderBounds) {
-      expect(renderBounds.center).eqls([-100, -100, 0]);
-      expect(renderBounds.halfExtents).eqls([100, 100, 0]);
+      expect(renderBounds.center).toStrictEqual([-100, -100, 0]);
+      expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
 
     // change anchor from left-top corner to center,
     rect.style.anchor = [0.5, 0.5];
-    expect(rect.getLocalPosition()).eqls([0, 0, 0]);
+    expect(rect.getLocalPosition()).toStrictEqual([0, 0, 0]);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).eqls([0, 0, 0]);
-      expect(bounds.halfExtents).eqls([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([0, 0, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     geometryBounds = rect.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).eqls([0, 0, 0]);
-      expect(geometryBounds.halfExtents).eqls([100, 100, 0]);
+      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
   });
 });

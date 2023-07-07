@@ -1,14 +1,6 @@
-import { Canvas, HTML } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Canvas, HTML } from '../../../packages/g/src';
 import { sleep } from '../utils';
-
-chai.use(chaiAlmost(0.0001));
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -50,69 +42,69 @@ describe('HTML', () => {
     await canvas.ready;
     canvas.appendChild(html);
 
-    expect(html.getAttribute('x')).to.be.eqls(100);
-    expect(html.getAttribute('y')).to.be.eqls(100);
-    expect(html.getAttribute('width')).to.be.eqls(100);
-    expect(html.getAttribute('height')).to.be.eqls(100);
+    expect(html.getAttribute('x')).toBe(100);
+    expect(html.getAttribute('y')).toBe(100);
+    expect(html.getAttribute('width')).toBe(100);
+    expect(html.getAttribute('height')).toBe(100);
 
     const $el = html.getDomElement();
-    expect($el.id).to.be.eqls('id');
-    expect($el.getAttribute('name')).to.be.eqls('name');
-    expect($el.className).to.be.eqls('classname');
-    expect($el.style.position).to.be.eqls('absolute');
-    expect($el.style.top).to.be.eqls('0px');
-    expect($el.style.left).to.be.eqls('0px');
-    expect($el.style.width).to.be.eqls('100px');
-    expect($el.style.height).to.be.eqls('100px');
-    expect($el.style.willChange).to.be.eqls('transform');
-    expect($el.style.opacity).to.be.eqls('1');
-    expect($el.style.visibility).to.be.eqls('visible');
-    expect($el.style.pointerEvents).to.be.eqls('auto');
-    expect($el.style.fontFamily).to.be.eqls('sans-serif');
-    expect($el.style.fontSize).to.be.eqls('16px');
-    expect($el.style.transform).to.be.eqls('matrix(1, 0, 0, 1, 100, 100)');
-    expect($el.style.transformOrigin).to.be.eqls('0px 0px');
-    expect($el.style.background).to.be.eqls('transparent');
+    expect($el.id).toBe('id');
+    expect($el.getAttribute('name')).toBe('name');
+    expect($el.className).toBe('classname');
+    expect($el.style.position).toBe('absolute');
+    expect($el.style.top).toBe('0px');
+    expect($el.style.left).toBe('0px');
+    expect($el.style.width).toBe('100px');
+    expect($el.style.height).toBe('100px');
+    expect($el.style.willChange).toBe('transform');
+    expect($el.style.opacity).toBe('1');
+    expect($el.style.visibility).toBe('visible');
+    expect($el.style.pointerEvents).toBe('auto');
+    expect($el.style.fontFamily).toBe('sans-serif');
+    expect($el.style.fontSize).toBe('16px');
+    expect($el.style.transform).toBe('matrix(1, 0, 0, 1, 100, 100)');
+    expect($el.style.transformOrigin).toBe('0px 0px');
+    expect($el.style.background).toBe('transparent');
 
     html.translateLocal(100, 100);
 
     await sleep(500);
-    expect($el.style.transform).to.be.eqls('matrix(1, 0, 0, 1, 200, 200)');
+    expect($el.style.transform).toBe('matrix(1, 0, 0, 1, 200, 200)');
 
     html.scaleLocal(0.5);
 
     await sleep(500);
-    expect($el.style.transform).to.be.eqls('matrix(0.5, 0, 0, 0.5, 200, 200)');
+    expect($el.style.transform).toBe('matrix(0.5, 0, 0, 0.5, 200, 200)');
 
     html.style.fill = 'white';
-    expect($el.style.background).to.be.eqls('white');
+    expect($el.style.background).toBe('white');
 
     html.style.stroke = 'red';
     html.style.lineWidth = 10;
-    expect($el.style.borderColor).to.be.eqls('red');
-    expect($el.style.borderStyle).to.be.eqls('solid');
-    expect($el.style.borderWidth).to.be.eqls('10px');
+    expect($el.style.borderColor).toBe('red');
+    expect($el.style.borderStyle).toBe('solid');
+    expect($el.style.borderWidth).toBe('10px');
 
     html.style.lineDash = [2];
-    expect($el.style.borderStyle).to.be.eqls('dashed');
+    expect($el.style.borderStyle).toBe('dashed');
 
     html.style.zIndex = 10;
-    expect($el.style.zIndex).to.be.eqls('10');
+    expect($el.style.zIndex).toBe('10');
 
-    expect(html.getBoundingClientRect().x).to.be.eqls(208);
-    expect(html.getBoundingClientRect().y).to.be.eqls(208);
+    expect(html.getBoundingClientRect().x).toBe(208);
+    expect(html.getBoundingClientRect().y).toBe(208);
 
-    expect(html.getClientRects()[0].x).to.be.eqls(208);
-    expect(html.getClientRects()[0].y).to.be.eqls(208);
+    expect(html.getClientRects()[0].x).toBe(208);
+    expect(html.getClientRects()[0].y).toBe(208);
 
-    expect(html.getBounds().halfExtents[0]).to.be.eqls(30);
-    expect(html.getBounds().halfExtents[1]).to.be.eqls(30);
-    expect(html.getBounds().center[0]).to.be.eqls(230);
-    expect(html.getBounds().center[1]).to.be.eqls(230);
+    expect(html.getBounds().halfExtents[0]).toBe(30);
+    expect(html.getBounds().halfExtents[1]).toBe(30);
+    expect(html.getBounds().center[0]).toBe(230);
+    expect(html.getBounds().center[1]).toBe(230);
 
-    expect(html.getLocalBounds().halfExtents[0]).to.be.eqls(30);
-    expect(html.getLocalBounds().halfExtents[1]).to.be.eqls(30);
-    expect(html.getLocalBounds().center[0]).to.be.eqls(230);
-    expect(html.getLocalBounds().center[1]).to.be.eqls(230);
+    expect(html.getLocalBounds().halfExtents[0]).toBe(30);
+    expect(html.getLocalBounds().halfExtents[1]).toBe(30);
+    expect(html.getLocalBounds().center[0]).toBe(230);
+    expect(html.getLocalBounds().center[1]).toBe(230);
   });
 });

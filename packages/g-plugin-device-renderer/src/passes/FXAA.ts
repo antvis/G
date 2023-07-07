@@ -45,7 +45,8 @@ export function pushFXAAPass(
     pass.setDebugName('FXAA');
     pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
 
-    const mainColorResolveTextureID = builder.resolveRenderTarget(mainColorTargetID);
+    const mainColorResolveTextureID =
+      builder.resolveRenderTarget(mainColorTargetID);
     pass.attachResolveTexture(mainColorResolveTextureID);
 
     const renderInst = renderHelper.renderInstManager.newRenderInst();
@@ -59,7 +60,12 @@ export function pushFXAAPass(
     // since gl_VertexID is not available in GLSL 100, we need to use a geometry
     const offs = renderInst.allocateUniformBuffer(0, 4);
     const d = renderInst.mapUniformBufferF32(0);
-    fillVec4(d, offs, 1.0 / renderInput.backbufferWidth, 1.0 / renderInput.backbufferHeight);
+    fillVec4(
+      d,
+      offs,
+      1.0 / renderInput.backbufferWidth,
+      1.0 / renderInput.backbufferHeight,
+    );
 
     const fxaaProgram = new FXAAProgram();
     const program = renderHelper.renderCache.createProgram(fxaaProgram);
@@ -81,11 +87,14 @@ export function pushFXAAPass(
         ],
         // rendering a fullscreen triangle instead of quad
         // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
-        data: new Float32Array([-4, -4, 4, -4, 0, 4]),
+        // data: new Float32Array([-4, -4, 4, -4, 0, 4]),
+        data: new Float32Array([-1, -3, -1, 1, 3, -1]),
       });
       geometry.vertexCount = 3;
 
-      inputLayout = renderHelper.getCache().createInputLayout(geometry.inputLayoutDescriptor);
+      inputLayout = renderHelper
+        .getCache()
+        .createInputLayout(geometry.inputLayoutDescriptor);
 
       inputState = renderHelper.getDevice().createInputState(
         inputLayout,
@@ -99,7 +108,9 @@ export function pushFXAAPass(
     }
 
     pass.exec((passRenderer, scope) => {
-      textureMapping[0].texture = scope.getResolveTextureForID(mainColorResolveTextureID);
+      textureMapping[0].texture = scope.getResolveTextureForID(
+        mainColorResolveTextureID,
+      );
       renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
       renderInst.setInputLayoutAndState(inputLayout, inputState);
       renderInst.drawOnPass(renderHelper.renderCache, passRenderer);

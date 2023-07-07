@@ -17,7 +17,9 @@ import Stats from 'stats.js';
 const canvasRenderer = new CanvasRenderer();
 const svgRenderer = new SVGRenderer();
 const webglRenderer = new WebGLRenderer();
-const webgpuRenderer = new WebGPURenderer();
+const webgpuRenderer = new WebGPURenderer({
+  shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+});
 const canvaskitRenderer = new CanvaskitRenderer({
   wasmDir: '/',
   fonts: [

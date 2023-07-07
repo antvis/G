@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-camera-api",
-  "version": "1.0.40",
+  "version": "1.2.2",
   "description": "A simple implementation of Camera API.",
   "keywords": [
     "antv",
@@ -13,11 +13,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antvis/g.git"
+    "url": "git+https://github.com/antvis/g.git",
+    "directory": "packages/g-camera-api"
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "sideEffects": true,
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -29,17 +35,18 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
+    "@antv/g-lite": "workspace:*",
     "@antv/util": "^3.3.1",
-    "gl-matrix": "^3.1.0"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
+    "gl-matrix": "^3.4.3",
+    "tslib": "^2.5.3"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }

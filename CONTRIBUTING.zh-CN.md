@@ -88,7 +88,7 @@ $ git push origin branch-name
 
 示例
 
-```
+```bash
 fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9
 
 Older IEs serialize html uppercased, but IE9 does not...
@@ -106,40 +106,71 @@ BREAKING CHANGE:
 
 查看具体[文档](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit)
 
+## 测试
+
+G 基于 Jest 提供了两部分测试：
+
+-   **单元测试** [`__tests__/unit/`](./__tests__/unit/) 测试纯数据模块或者功能
+-   **集成测试** [`__tests__/integration/`](./__tests__/integration/) 基于 [node-canvas](https://github.com/Automattic/node-canvas)，[jsdom](https://github.com/jsdom/jsdom/) 和 [headless-gl](https://github.com/stackgl/headless-gl) 完成 `@antv/g-canvas`，`@antv/g-svg` 和 `@antv/g-webgl` 三个渲染器的服务端渲染，再进行截图对比
+
 ## 发布管理
 
-G 基于 [semver] 语义化版本号进行发布。
+G 使用 [pnpm workspace](https://pnpm.io/workspaces) 作为 monorepo 方案。各个包之间使用 [workspace 协议](https://pnpm.io/workspaces#workspace-protocol-workspace) 声明依赖版本号。在开发时 pnpm 会完成它们之间的 link，而在发布时会替换成固定的 semver 版本号。以 `@antv/g-plugin-dragndrop` 插件为例：
 
-`master` 分支为当前稳定发布的版本。
+```json
+// package.json
+"dependencies": {
+  "@antv/g-lite": "workspace:*"
+},
 
--   直接从 `master` 切出开发分支
--   所有 API 的废弃都需要在当前的稳定版本上 `deprecate` 提示，并保证在当前的稳定版本上一直兼容到新版本的发布。
+// 发布后被替换成固定版本号
+"dependencies": {
+  "@antv/g-lite": "1.1.0"
+},
+```
 
-### 发布策略
+这样很容易进行版本锁定。
 
-每个大版本都有一个发布经理管理（PM），他/她要做的事情
+### 全自动的语义化线上发布
 
-#### 准备工作：
+参考 [S2 的工程化实践](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY)，我们使用了 [changesets](https://github.com/changesets/changesets) 进行全自动的语义化发布。它可以自动创建 GitHub Releases。
 
--   建立 milestone，确认需求关联 milestone，指派和更新 issues。
+从 next 分支拉出发布分支 release。每个 release 分支上的提交都会触发 CI，更新 version。最后在 next 分支上触发 publish 流程。
 
-#### 发布前：
+```bash
+git commit -m "chore(release): bump version"
+git push
+```
 
--   确认当前 Milestone 所有的 issue 都已关闭或可延期，完成性能测试。
--   发起一个新的 [Release Proposal MR]，按照 [node CHANGELOG] 进行 `History` 的编写，修正文档中与版本相关的内容，commits 可以自动生成。
-    ```bash
-    $ npm run commits
-    ```
--   指定下一个大版本的 PM。
+另外所有 API 的废弃都需要在当前的稳定版本上 `deprecate` 提示，并保证在当前的稳定版本上一直兼容到新版本的发布。
 
-#### 发布时：
+### 如何锁定版本
 
--   将老的稳定版本（master）备份到以当前大版本为名字的分支上（例如 `1.x`），并设置 tag 为 {v}.x`（ v 为当前版本，例如`1.x`）。
--   发布新的稳定版本到 [npm]，并通知上层框架进行更新。
--   `npm publish` 之前，请先阅读[『我是如何发布一个 npm 包的』]。
+在应急、或者测试 beta 版时常常需要锁定某些依赖版本，不同包管理工具锁定版本的方式不同。
 
-[semver]: http://semver.org/lang/zh-CN/
-[release proposal mr]: https://github.com/nodejs/node/pull/4181
-[node changelog]: https://github.com/nodejs/node/blob/master/CHANGELOG.md
-[npm]: http://npmjs.com/
-[『我是如何发布一个 npm 包的』]: https://fengmk2.com/blog/2016/how-i-publish-a-npm-package
+tnpm 使用 `resolutions` 进行依赖覆盖。以 G2 为例，假如想测试一系列 beta 版本效果，可以这样做：
+
+-   在 `dependencies` 中锁定**直接依赖**的版本号
+-   在 `resolutions` 中锁定**间接依赖**的版本号。这样确保 G2 依赖的 `@antv/gui` 也使用同样的版本
+
+```js
+"dependencies": {
+  "@antv/g": "5.17.0-beta.1",
+  "@antv/g-canvas": "1.10.0-beta.1",
+  "@antv/g-plugin-dragndrop": "1.7.0-beta.1",
+},
+"resolutions": {
+  "@antv/g": "5.17.0-beta.1",
+  "@antv/g-canvas": "1.10.0-beta.1",
+  "@antv/g-svg": "1.9.0-beta.1",
+  "@antv/g-plugin-dragndrop": "1.7.0-beta.1",
+  "@antv/g-plugin-rough-canvas-renderer": "1.8.0-beta.1",
+  "@antv/g-plugin-rough-svg-renderer": "1.8.0-beta.1"
+}
+```
+
+其他包管理工具也都有对应的依赖覆盖方式，不再赘述：
+
+-   npm [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides)
+-   yarn [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
+-   pnpm [overrides](https://pnpm.io/package_json#pnpmoverrides)

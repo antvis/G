@@ -271,7 +271,7 @@ export function setAttachmentStateSimple(
     );
   }
 
-  copyAttachmentStateFromSimple(dst.attachmentsState![0], simple);
+  copyAttachmentStateFromSimple(dst.attachmentsState[0], simple);
   return dst;
 }
 

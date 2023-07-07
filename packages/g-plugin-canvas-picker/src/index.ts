@@ -8,6 +8,7 @@ import { isPointInPath as PathPicker } from './Path';
 import { isPointInPath as PolygonPicker } from './Polygon';
 import { isPointInPath as PolylinePicker } from './Polyline';
 import { isPointInPath as RectPicker } from './Rect';
+import { isPointInPath as ImagePicker } from './Image';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-picker';
@@ -23,7 +24,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.PATH]: PathPicker,
       [Shape.TEXT]: trueFunc,
       [Shape.GROUP]: null,
-      [Shape.IMAGE]: trueFunc,
+      [Shape.IMAGE]: ImagePicker,
       [Shape.HTML]: null,
       [Shape.MESH]: null,
     };

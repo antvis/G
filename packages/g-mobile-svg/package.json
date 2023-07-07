@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-svg",
-  "version": "0.8.59",
+  "version": "0.10.2",
   "description": "A renderer implemented by SVG in mobile environment",
   "keywords": [
     "antv",
@@ -16,6 +16,11 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -27,24 +32,24 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g-plugin-mobile-interaction": "^0.7.50",
-    "@antv/g-plugin-svg-picker": "^1.7.51",
-    "@antv/g-plugin-svg-renderer": "^1.8.59",
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-plugin-dragndrop": "workspace:*",
+    "@antv/g-plugin-mobile-interaction": "workspace:*",
+    "@antv/g-plugin-svg-picker": "workspace:*",
+    "@antv/g-plugin-svg-renderer": "workspace:*",
     "@antv/util": "^3.3.1",
-    "tslib": "^2.3.1"
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
-    "@types/gl-matrix": "^2.4.5",
-    "@types/jest": "^25.0.0"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
+    "@types/gl-matrix": "^2.4.5"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48"
+  }
 }

@@ -44,7 +44,7 @@ canvas.addEventListener('click', (e) => {
 canvas.document.defaultView; // canvas
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
+<https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView>
 
 ### documentElement
 
@@ -55,13 +55,13 @@ canvas.document.documentElement; // Group
 canvas.document.documentElement.getBounds(); // 获取整个场景的包围盒
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement
+<https://developer.mozilla.org/en-US/docs/Web/API/Document/documentElement>
 
 ### timeline
 
 默认时间轴，在动画系统中使用。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/timeline
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/timeline>
 
 ### ownerDocument
 
@@ -81,7 +81,7 @@ canvas.document.addEventListener('click', () => {});
 
 虽然继承了 [Node](/zh/api/builtin-objects/node)，但在 Document 上无法调用一些节点操作方法，正如在浏览器中调用 `document.appendChild` 会返回如下错误一样：
 
-```
+```bash
 Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one element on document allowed.
 ```
 
@@ -91,27 +91,27 @@ Uncaught DOMException: Failed to execute 'appendChild' on 'Node': Only one eleme
 
 #### getElementById
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementById
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementById>
 
 #### getElementsByName
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByName
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByName>
 
 #### getElementsByClassName
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByClassName
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByClassName>
 
 #### getElementsByTagName
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByTagName
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByTagName>
 
 #### querySelector
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector>
 
 #### querySelectorAll
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll>
 
 ### createElement
 
@@ -128,7 +128,7 @@ const circle = canvas.document.createElement(Shape.CIRCLE, {
 const circle = new Circle({ style: { r: 100 } });
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+<https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement>
 
 ### createElementNS
 
@@ -138,9 +138,9 @@ https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
 
 当我们想知道画布中某个点上堆叠了多少个图形，除了通过交互事件，还可以通过 API 方式完成拾取。
 
-该方法接受一组 `x, y` 坐标（在 [Canvas 坐标系](/zh/api/canvas#canvas-1)下，如果想使用其他坐标系下的坐标，请使用[转换方法](/zh/api/canvas#转换方法)）为参数，返回拾取结果。
+该方法接受一组 `x, y` 坐标（在 [Canvas 坐标系](/zh/api/canvas/coordinates#canvas)下，如果想使用其他坐标系下的坐标，请使用[转换方法](/zh/api/canvas/coordinates#转换方法)）为参数，返回拾取结果。
 
-在下面的[例子](/zh/examples/canvas#element-from-point)中，我们在 [Canvas 坐标系](/zh/api/canvas#canvas-1)下 `[100, 100]` 放置了一个半径为 `100` 的 [Circle](/zh/api/basic/circle)，在红点处拾取时会返回它：
+在下面的[例子](/zh/examples/canvas/canvas-basic/#element-from-point)中，我们在 [Canvas 坐标系](/zh/api/canvas/coordinates#canvas)下 `[100, 100]` 放置了一个半径为 `100` 的 [Circle](/zh/api/basic/circle)，在红点处拾取时会返回它：
 
 ```js
 const topMostElement = await canvas.document.elementFromPoint(20, 100); // circle1
@@ -161,7 +161,7 @@ await canvas.document.elementFromPoint(0, 0); // canvas.document.documentElement
     3. 图形的 [visibility](/zh/api/basic/display-object#visibility) 属性**会影响**拾取。不可见图形无法拾取。
     4. 图形的 [opacity](/zh/api/basic/display-object#opacity) 属性**不会影响**拾取。即使图形完全透明，依然也会被拾取到。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
+<https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint>
 
 ### elementsFromPoint
 
@@ -169,7 +169,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
 
 该方法同样接受一组 `x, y` 坐标作为参数。
 
-在下面的[例子](/zh/examples/canvas#element-from-point)中，circle2 在 circle1 之上，因此在重叠区域进行拾取两者都会出现在结果数组中，并且 circle2 在前：
+在下面的[例子](/zh/examples/canvas/canvas-basic/#element-from-point)中，circle2 在 circle1 之上，因此在重叠区域进行拾取两者都会出现在结果数组中，并且 circle2 在前：
 
 ```js
 const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2, circle1, document.documentElement]
@@ -179,10 +179,10 @@ const elements = await canvas.document.elementsFromPoint(150, 150); // [circle2,
 
 注意事项：
 
-1. 该返回结果和事件对象上的 [composedPath()](/zh/api/event#composedpath) 的差别是，后者会在返回数组中追加 [Document](/zh/api/builtin-objects/document) 和 [Canvas](/zh/api/canvas) 对象，而前者只到 [画布根节点](/zh/api/canvas#getroot-group) 为止。
+1. 该返回结果和事件对象上的 [composedPath()](/zh/api/event/event-object#composedpath) 的差别是，后者会在返回数组中追加 [Document](/zh/api/builtin-objects/document) 和 [Canvas](/zh/api/canvas) 对象，而前者只到 [画布根节点](/zh/api/canvas/built-in-objects#documentdocumentelement) 为止。
 2. 超出画布视口范围返回空数组。
 
-https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint
+<https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint>
 
 ### elementsFromBBox
 
@@ -193,7 +193,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Document/elementsFromPoint
 
 此类基于包围盒的检测不需要太精确，配合内部 RBush 这样的空间索引，因此速度很快。
 
-该方法为同步方法，接受包围盒描述 `minX, minY, maxX, maxY` 坐标（在 [Canvas 坐标系](/zh/api/canvas#canvas-1)下）：
+该方法为同步方法，接受包围盒描述 `minX, minY, maxX, maxY` 坐标（在 [Canvas 坐标系](/zh/api/canvas/coordinates#canvas)下）：
 
 ```js
 const elements = document.elementsFromBBox(minX, minY, maxX, maxY);

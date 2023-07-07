@@ -19,6 +19,7 @@ import {
 import type GlyphAtlas from './symbol/GlyphAtlas';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
+import { packUint8ToFloat } from '../utils/compression';
 
 enum TextVertexAttributeBufferIndex {
   INSTANCED = VertexAttributeBufferIndex.POSITION + 1,
@@ -152,72 +153,48 @@ export class TextMesh extends Instanced {
     this.geometry.setIndexBuffer(new Uint32Array(indices));
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.INSTANCED,
-      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4 + 4), // 36
-      // frequency: VertexBufferFrequency.PerInstance,
+      byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4), // 32
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.MODEL_MATRIX0,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 4,
           location: VertexAttributeLocation.MODEL_MATRIX1,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 8,
           location: VertexAttributeLocation.MODEL_MATRIX2,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 12,
           location: VertexAttributeLocation.MODEL_MATRIX3,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 16,
-          location: VertexAttributeLocation.COLOR,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
+          location: VertexAttributeLocation.PACKED_COLOR,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 20,
-          location: VertexAttributeLocation.STROKE_COLOR,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
+          location: VertexAttributeLocation.PACKED_STYLE1,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 24,
-          location: VertexAttributeLocation.PACKED_STYLE1,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
+          location: VertexAttributeLocation.PACKED_STYLE2,
         },
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 28,
-          location: VertexAttributeLocation.PACKED_STYLE2,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
-        },
-        {
-          format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 32,
           location: VertexAttributeLocation.PICKING_COLOR,
-          // byteStride: 4 * 4,
-          //          divisor: 1,
         },
       ],
       data: new Float32Array(packed),
@@ -372,20 +349,20 @@ export class TextMesh extends Instanced {
         let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(fill)) {
           fillColor = [
-            Number(fill.r) / 255,
-            Number(fill.g) / 255,
-            Number(fill.b) / 255,
-            Number(fill.alpha),
+            Number(fill.r),
+            Number(fill.g),
+            Number(fill.b),
+            Number(fill.alpha) * 255,
           ];
         }
 
         let strokeColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(stroke)) {
           strokeColor = [
-            Number(stroke.r) / 255,
-            Number(stroke.g) / 255,
-            Number(stroke.b) / 255,
-            Number(stroke.alpha),
+            Number(stroke.r),
+            Number(stroke.g),
+            Number(stroke.b),
+            Number(stroke.alpha) * 255,
           ];
         }
 
@@ -419,27 +396,23 @@ export class TextMesh extends Instanced {
             sliced[i + 14] = modelMatrix[14];
             sliced[i + 15] = modelMatrix[15];
           } else if (name === 'fill') {
-            sliced[i + 16] = fillColor[0];
-            sliced[i + 17] = fillColor[1];
-            sliced[i + 18] = fillColor[2];
-            sliced[i + 19] = fillColor[3];
+            sliced[i + 16] = packUint8ToFloat(fillColor[0], fillColor[1]);
+            sliced[i + 17] = packUint8ToFloat(fillColor[2], fillColor[3]);
           } else if (name === 'stroke') {
-            sliced[i + 20] = strokeColor[0];
-            sliced[i + 21] = strokeColor[1];
-            sliced[i + 22] = strokeColor[2];
-            sliced[i + 23] = strokeColor[3];
+            sliced[i + 18] = packUint8ToFloat(strokeColor[0], strokeColor[1]);
+            sliced[i + 19] = packUint8ToFloat(strokeColor[2], strokeColor[3]);
           }
-          sliced[i + 24] = opacity;
-          sliced[i + 25] = fillOpacity;
-          sliced[i + 26] = strokeOpacity;
-          sliced[i + 27] = lineWidth;
-          sliced[i + 28] = visibility === 'visible' ? 1 : 0;
-          sliced[i + 29] = isBillboard ? 1 : 0;
-          sliced[i + 30] = sizeAttenuation ? 1 : 0;
-          sliced[i + 31] = 0;
-          sliced[i + 32] = encodedPickingColor[0];
-          sliced[i + 33] = encodedPickingColor[1];
-          sliced[i + 34] = encodedPickingColor[2];
+          sliced[i + 20] = opacity;
+          sliced[i + 21] = fillOpacity;
+          sliced[i + 22] = strokeOpacity;
+          sliced[i + 23] = lineWidth;
+          sliced[i + 24] = visibility === 'visible' ? 1 : 0;
+          sliced[i + 25] = isBillboard ? 1 : 0;
+          sliced[i + 26] = sizeAttenuation ? 1 : 0;
+          sliced[i + 27] = 0;
+          sliced[i + 28] = encodedPickingColor[0];
+          sliced[i + 29] = encodedPickingColor[1];
+          sliced[i + 30] = encodedPickingColor[2];
         }
 
         this.geometry.updateVertexBuffer(
@@ -488,20 +461,20 @@ export class TextMesh extends Instanced {
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
       fillColor = [
-        Number(fill.r) / 255,
-        Number(fill.g) / 255,
-        Number(fill.b) / 255,
-        Number(fill.alpha),
+        Number(fill.r),
+        Number(fill.g),
+        Number(fill.b),
+        Number(fill.alpha) * 255,
       ];
     }
 
     let strokeColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(stroke)) {
       strokeColor = [
-        Number(stroke.r) / 255,
-        Number(stroke.g) / 255,
-        Number(stroke.b) / 255,
-        Number(stroke.alpha),
+        Number(stroke.r),
+        Number(stroke.g),
+        Number(stroke.b),
+        Number(stroke.alpha) * 255,
       ];
     }
 
@@ -535,8 +508,10 @@ export class TextMesh extends Instanced {
       temp.push(...modelMatrix);
       const packed: number[] = [
         ...temp,
-        ...fillColor,
-        ...strokeColor,
+        packUint8ToFloat(fillColor[0], fillColor[1]),
+        packUint8ToFloat(fillColor[2], fillColor[3]),
+        packUint8ToFloat(strokeColor[0], strokeColor[1]),
+        packUint8ToFloat(strokeColor[2], strokeColor[3]),
         opacity,
         fillOpacity,
         strokeOpacity,
@@ -548,7 +523,7 @@ export class TextMesh extends Instanced {
         ...encodedPickingColor,
         object.sortable.renderOrder * RENDER_ORDER_SCALE,
       ];
-      // FIXME: instanced
+      // Can't use instanced here since the total number of each Text can be different.
       charPackedBuffer.push(...packed, ...packed, ...packed, ...packed);
 
       // interleaved uv & offsets

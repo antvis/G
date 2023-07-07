@@ -22,7 +22,11 @@ export function isPointInPath(
     defY: y = 0,
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPolygonStyleProps;
-  const [hasFill, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
+  const [hasFill, hasStroke] = isFillOrStrokeAffected(
+    pointerEvents,
+    fill,
+    stroke,
+  );
 
   let isHit = false;
   if (hasStroke || isClipPath) {

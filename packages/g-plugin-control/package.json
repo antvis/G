@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-control",
-  "version": "1.7.53",
+  "version": "1.9.2",
   "description": "A G plugin for orbit control",
   "keywords": [
     "antv",
@@ -16,6 +16,11 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -27,18 +32,18 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
+    "@antv/g-lite": "workspace:*",
     "hammerjs": "^2.0.8",
-    "tslib": "^2.3.1"
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
-    "@types/hammerjs": "^2.0.36",
-    "@types/jest": "^25.0.0"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0"
+    "@types/hammerjs": "^2.0.36"
   },
   "publishConfig": {
     "access": "public"

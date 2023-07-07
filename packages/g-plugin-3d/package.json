@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-3d",
-  "version": "1.7.56",
+  "version": "1.9.2",
   "description": "Provide 3D extension for G",
   "keywords": [
     "antv",
@@ -16,6 +16,11 @@
   },
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "default": "./dist/index.js"
+  },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
@@ -27,27 +32,26 @@
     "README.md"
   ],
   "scripts": {
-    "sync": "tnpm sync"
+    "build": "npm run clean && rollup -c",
+    "clean": "rimraf dist",
+    "sync": "tnpm sync",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/g-shader-components": "^1.7.54",
-    "gl-matrix": "^3.1.0",
-    "tslib": "^2.3.1"
+    "@antv/g-lite": "workspace:*",
+    "@antv/g-plugin-device-renderer": "workspace:*",
+    "@antv/g-shader-components": "workspace:*",
+    "gl-matrix": "^3.4.3",
+    "tslib": "^2.5.3"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
-    "@types/jest": "^25.0.0",
     "glslify-import": "3.1.0",
     "rollup-plugin-glslify": "^1.2.1"
-  },
-  "peerDependencies": {
-    "@antv/g-lite": "^1.0.0",
-    "@antv/g-plugin-device-renderer": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "bf0d57ef10d56f48d6258906281b9edb34bffb48",
   "glslify": {
     "transform": [
       "glslify-import"

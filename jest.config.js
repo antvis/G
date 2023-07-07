@@ -18,6 +18,7 @@ const moduleNameMapper = {
 };
 
 module.exports = {
+  testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
   collectCoverageFrom: ['<rootDir>/packages/g-lite/src/**/*.{ts,tsx}'],
   coveragePathIgnorePatterns: [
@@ -41,25 +42,27 @@ module.exports = {
   testMatch: [
     '<rootDir>/__tests__/unit/**/*/*.spec.+(ts|tsx|js)',
     '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
-    // '<rootDir>/packages/**/*/*.spec.+(ts|tsx|js)'
   ],
   testPathIgnorePatterns: process.env.CI
     ? ['<rootDir>/__tests__/unit/g-gesture']
-    : [],
+    : ['<rootDir>/__tests__/unit/g-gesture'],
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
       isolatedModules: true,
       tsConfig: {
         allowJs: true,
-        target: 'ES2019',
+        target: 'esnext',
+        esModuleInterop: true,
       },
     },
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-  modulePathIgnorePatterns: ['dist', '.fatherrc.ts'],
+  modulePathIgnorePatterns: ['dist'],
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@mapbox)'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|eventemitter3)',
+  ],
 };

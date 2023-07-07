@@ -1,6 +1,6 @@
-import line from './line';
-import { distance } from './util';
+import { pointAt, pointDistance } from './line';
 import type { Point, PointTuple, Segment } from './types';
+import { distance } from './util';
 
 function analyzePoints(points: PointTuple[]) {
   // 计算每段的长度和总的长度
@@ -62,7 +62,7 @@ export function pointAtSegments(points: PointTuple[], t: number): Point | null {
     const currentRatio = seg.length / totalLength;
     if (t >= startRatio && t <= startRatio + currentRatio) {
       const localRatio = (t - startRatio) / currentRatio;
-      point = line.pointAt(from[0], from[1], to[0], to[1], localRatio);
+      point = pointAt(from[0], from[1], to[0], to[1], localRatio);
       break;
     }
     startRatio += currentRatio;
@@ -102,7 +102,14 @@ export function distanceAtSegment(points: PointTuple[], x: number, y: number) {
   for (let i = 0; i < points.length - 1; i++) {
     const point = points[i];
     const nextPoint = points[i + 1];
-    const distance = line.pointDistance(point[0], point[1], nextPoint[0], nextPoint[1], x, y);
+    const distance = pointDistance(
+      point[0],
+      point[1],
+      nextPoint[0],
+      nextPoint[1],
+      x,
+      y,
+    );
     if (distance < minDistance) {
       minDistance = distance;
     }

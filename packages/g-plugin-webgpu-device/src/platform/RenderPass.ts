@@ -1,11 +1,16 @@
-import type {
+import {
   Bindings,
   InputState,
   RenderPass,
   RenderPassDescriptor,
   RenderPipeline,
 } from '@antv/g-plugin-device-renderer';
-import { assert, assertExists } from '@antv/g-plugin-device-renderer';
+import {
+  assert,
+  assertExists,
+  FormatFlags,
+  getFormatFlags,
+} from '@antv/g-plugin-device-renderer';
 import { isNil } from '@antv/util';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
@@ -24,7 +29,9 @@ export class RenderPass_WebGPU implements RenderPass {
   private gpuColorAttachments: GPURenderPassColorAttachment[];
   private gpuDepthStencilAttachment: GPURenderPassDepthStencilAttachment;
   private gfxColorAttachment: (TextureShared_WebGPU | null)[] = [];
+  private gfxColorAttachmentLevel: number[] = [];
   private gfxColorResolveTo: (TextureShared_WebGPU | null)[] = [];
+  private gfxColorResolveToLevel: number[] = [];
   private gfxDepthStencilAttachment: TextureShared_WebGPU | null = null;
   private gfxDepthStencilResolveTo: TextureShared_WebGPU | null = null;
 
@@ -32,7 +39,7 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuColorAttachments = [];
 
     this.gpuDepthStencilAttachment = {
-      view: null!,
+      view: null,
       depthLoadOp: 'load',
       depthStoreOp: 'store',
       stencilLoadOp: 'load',
@@ -45,6 +52,19 @@ export class RenderPass_WebGPU implements RenderPass {
     };
   }
 
+  private getTextureView(
+    target: TextureShared_WebGPU,
+    level: number,
+  ): GPUTextureView {
+    assert(level < target.numLevels);
+    if (target.numLevels === 1) return target.gpuTextureView;
+    else
+      return target.gpuTexture.createView({
+        baseMipLevel: level,
+        mipLevelCount: 1,
+      });
+  }
+
   private setRenderPassDescriptor(descriptor: RenderPassDescriptor): void {
     this.descriptor = descriptor;
 
@@ -55,7 +75,7 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gfxColorResolveTo.length = numColorAttachments;
     for (let i = 0; i < descriptor.colorAttachment.length; i++) {
       let colorAttachment: TextureShared_WebGPU | null = descriptor
-        .colorAttachment[i] as Attachment_WebGPU;
+        .colorAttachment[i] as unknown as Attachment_WebGPU;
       let colorResolveTo: TextureShared_WebGPU | null = descriptor
         .colorResolveTo[i] as Texture_WebGPU;
 
@@ -68,13 +88,19 @@ export class RenderPass_WebGPU implements RenderPass {
       this.gfxColorAttachment[i] = colorAttachment;
       this.gfxColorResolveTo[i] = colorResolveTo;
 
+      this.gfxColorAttachmentLevel[i] = descriptor.colorAttachmentLevel[i];
+      this.gfxColorResolveToLevel[i] = descriptor.colorResolveToLevel[i];
+
       if (colorAttachment !== null) {
         if (this.gpuColorAttachments[i] === undefined) {
           this.gpuColorAttachments[i] = {} as GPURenderPassColorAttachment;
         }
 
         const dstAttachment = this.gpuColorAttachments[i];
-        dstAttachment.view = colorAttachment.gpuTextureView;
+        dstAttachment.view = this.getTextureView(
+          colorAttachment,
+          this.gfxColorAttachmentLevel[i],
+        );
         const clearColor = descriptor.colorClearColor[i];
         if (clearColor === 'load') {
           dstAttachment.loadOp = 'load';
@@ -86,7 +112,10 @@ export class RenderPass_WebGPU implements RenderPass {
         dstAttachment.resolveTarget = undefined;
         if (colorResolveTo !== null) {
           if (colorAttachment.sampleCount > 1) {
-            dstAttachment.resolveTarget = colorResolveTo.gpuTextureView;
+            dstAttachment.resolveTarget = this.getTextureView(
+              colorResolveTo,
+              this.gfxColorResolveToLevel[i],
+            );
           } else {
             dstAttachment.storeOp = 'store';
           }
@@ -101,41 +130,62 @@ export class RenderPass_WebGPU implements RenderPass {
     }
 
     this.gfxDepthStencilAttachment =
-      descriptor.depthStencilAttachment as Attachment_WebGPU;
+      descriptor.depthStencilAttachment as unknown as Attachment_WebGPU;
     this.gfxDepthStencilResolveTo =
       descriptor.depthStencilResolveTo as Texture_WebGPU;
 
     if (descriptor.depthStencilAttachment !== null) {
       const dsAttachment =
-        descriptor.depthStencilAttachment as Attachment_WebGPU;
+        descriptor.depthStencilAttachment as unknown as Attachment_WebGPU;
       const dstAttachment = this.gpuDepthStencilAttachment;
       dstAttachment.view = dsAttachment.gpuTextureView;
 
-      if (descriptor.depthClearValue === 'load') {
-        dstAttachment.depthLoadOp = 'load';
+      const hasDepth = !!(
+        getFormatFlags(dsAttachment.pixelFormat) & FormatFlags.Depth
+      );
+      if (hasDepth) {
+        if (descriptor.depthClearValue === 'load') {
+          dstAttachment.depthLoadOp = 'load';
+        } else {
+          dstAttachment.depthLoadOp = 'clear';
+          dstAttachment.depthClearValue = descriptor.depthClearValue;
+        }
+
+        if (
+          descriptor.depthStencilStore ||
+          this.gfxDepthStencilResolveTo !== null
+        )
+          dstAttachment.depthStoreOp = 'store';
+        else dstAttachment.depthStoreOp = 'discard';
       } else {
-        dstAttachment.depthLoadOp = 'clear';
-        dstAttachment.depthClearValue = descriptor.depthClearValue;
+        dstAttachment.depthLoadOp = undefined;
+        dstAttachment.depthStoreOp = undefined;
       }
 
-      if (descriptor.stencilClearValue === 'load') {
-        dstAttachment.stencilLoadOp = 'load';
+      const hasStencil = !!(
+        getFormatFlags(dsAttachment.pixelFormat) & FormatFlags.Stencil
+      );
+      if (hasStencil) {
+        if (descriptor.stencilClearValue === 'load') {
+          dstAttachment.stencilLoadOp = 'load';
+        } else {
+          dstAttachment.stencilLoadOp = 'clear';
+          dstAttachment.stencilClearValue = descriptor.stencilClearValue;
+        }
+
+        if (
+          descriptor.depthStencilStore ||
+          this.gfxDepthStencilResolveTo !== null
+        )
+          dstAttachment.stencilStoreOp = 'store';
+        else dstAttachment.stencilStoreOp = 'discard';
       } else {
-        dstAttachment.stencilLoadOp = 'clear';
-        dstAttachment.stencilClearValue = descriptor.stencilClearValue;
+        dstAttachment.stencilLoadOp = undefined;
+        dstAttachment.stencilStoreOp = undefined;
       }
-      dstAttachment.depthStoreOp = descriptor.depthStencilStore
-        ? 'store'
-        : 'discard';
-      dstAttachment.stencilStoreOp = descriptor.depthStencilStore
-        ? 'store'
-        : 'discard';
+
       this.gpuRenderPassDescriptor.depthStencilAttachment =
         this.gpuDepthStencilAttachment;
-      if (this.gfxDepthStencilResolveTo !== null) {
-        dstAttachment.depthStoreOp = 'store';
-        dstAttachment.stencilStoreOp = 'store';
-      }
     } else {
       this.gpuRenderPassDescriptor.depthStencilAttachment = undefined;
     }
@@ -255,9 +305,9 @@ export class RenderPass_WebGPU implements RenderPass {
 
   endDebugGroup(): void {
     // FIREFOX MISSING
-    if (this.gpuRenderPassEncoder!.popDebugGroup === undefined) return;
+    if (this.gpuRenderPassEncoder.popDebugGroup === undefined) return;
 
-    this.gpuRenderPassEncoder!.popDebugGroup();
+    this.gpuRenderPassEncoder.popDebugGroup();
   }
 
   finish(): GPUCommandBuffer {
@@ -274,7 +324,12 @@ export class RenderPass_WebGPU implements RenderPass {
         colorResolveTo !== null &&
         colorAttachment.sampleCount === 1
       ) {
-        this.copyAttachment(colorResolveTo, colorAttachment);
+        this.copyAttachment(
+          colorResolveTo,
+          this.gfxColorAttachmentLevel[i],
+          colorAttachment,
+          this.gfxColorResolveToLevel[i],
+        );
       }
     }
 
@@ -287,7 +342,9 @@ export class RenderPass_WebGPU implements RenderPass {
       } else {
         this.copyAttachment(
           this.gfxDepthStencilResolveTo,
+          0,
           this.gfxDepthStencilAttachment,
+          0,
         );
       }
     }
@@ -297,13 +354,21 @@ export class RenderPass_WebGPU implements RenderPass {
 
   private copyAttachment(
     dst: TextureShared_WebGPU,
+    dstLevel: number,
     src: TextureShared_WebGPU,
+    srcLevel: number,
   ): void {
     assert(src.sampleCount === 1);
-    const srcCopy: GPUImageCopyTexture = { texture: src.gpuTexture };
-    const dstCopy: GPUImageCopyTexture = { texture: dst.gpuTexture };
-    assert(src.width === dst.width);
-    assert(src.height === dst.height);
+    const srcCopy: GPUImageCopyTexture = {
+      texture: src.gpuTexture,
+      mipLevel: srcLevel,
+    };
+    const dstCopy: GPUImageCopyTexture = {
+      texture: dst.gpuTexture,
+      mipLevel: dstLevel,
+    };
+    assert(src.width >>> srcLevel === dst.width >>> dstLevel);
+    assert(src.height >>> srcLevel === dst.height >>> dstLevel);
     assert(!!(src.usage & GPUTextureUsage.COPY_SRC));
     assert(!!(dst.usage & GPUTextureUsage.COPY_DST));
     this.commandEncoder.copyTextureToTexture(srcCopy, dstCopy, [

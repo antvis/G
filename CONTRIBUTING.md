@@ -40,7 +40,7 @@ No one can guarantee how much will be remembered about certain PR after some tim
 
 ### Style Guide
 
-Eslint can help to identify styling issues that may exist in your code. Your code is required to pass the test from eslint. Run the test locally by `$ npm run lint`.
+ESLint can help to identify styling issues that may exist in your code. Your code is required to pass the test from eslint. Run the test locally by `$ npm run lint`.
 
 ### Commit Message Format
 
@@ -86,7 +86,7 @@ Feel free to add more content in the body, if you think subject is not self-expl
 
 e.g.
 
-```
+```bash
 fix($compile): [BREAKING_CHANGE] couple of unit tests for IE9
 
 Older IEs serialize html uppercased, but IE9 does not...
@@ -104,35 +104,77 @@ BREAKING CHANGE:
 
 Look at [these files](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit) for more details.
 
-## Release
+## Test
 
-G uses semantic versioning in release process based on [semver].
+G provides a two-part test based on Jest:
 
-### Branch Strategy
+-   **unit test** [`__tests__/unit/`](./__tests__/unit/) Testing pure data modules or functions
+-   **integration test** [`__tests__/integration/`](./__tests__/integration/) Based on [node-canvas](https://github.com/Automattic/node-canvas), [jsdom](https://github.com/jsdom/jsdom/) and [headless-gl](https://github.com/stackgl/headless-gl), we test these 3 renderers `@antv/g-canvas`, `@antv/g-svg` and `@antv/g-webgl` on the serverside. We will compare the generated snapshots with golden images later.
 
-`master` branch is the latest stable version.
+## Publish
 
--   just checkout develop branch from `master`
--   All new features will be added into `master` or `next` branch as well as all bug-fix except security issues. In such way, we can motivate developers to update to the latest stable version.
+G uses [pnpm workspace](https://pnpm.io/workspaces) as the monorepo solution. We use the [workspace protocol](https://pnpm.io/workspaces#workspace-protocol-workspace) to declare dependency version numbers between packages. During development process, pnpm will link packages from workspace while replacing them when publishing. Take `@antv/g-plugin-dragndrop` as an example:
 
-### Release Strategy
+```json
+// package.json
+"dependencies": {
+  "@antv/g-lite": "workspace:*"
+},
 
-In the release of every stable version, there will be a PM who has the following responsibilities in different stages of the release.
+// when publishing...
+"dependencies": {
+  "@antv/g-lite": "1.1.0"
+},
+```
 
-#### Preparation
+This makes it easy to perform version locking.
 
--   Set up milestone. Confirm that request is related to milestone.
+### Fully automated semantic releases
 
-#### Before Release
+Referring to [S2's engineering practices](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY), we use [changesets](https://github.com/changesets/changesets) for fully automated semantic releases. It can automatically create GitHub Releases and automatically associate the release to the corresponding issue.
 
--   Confirm that performance test is passed and all issues in current Milestone are either closed or can be delayed to later versions.
--   Open a new [Release Proposal MR], and write `History` as [node CHANGELOG]. Don't forget to correct content in documentation which is related to the releasing version. Commits can be generated automatically.
-    ```
-    $ npm run commits
-    ```
--   Nominate PM for next stable version.
+There are three release branches:
 
-[semver]: http://semver.org/lang/zh-CN/
-[release proposal mr]: https://github.com/nodejs/node/pull/4181
-[node changelog]: https://github.com/nodejs/node/blob/master/CHANGELOG.md
-[『我是如何发布一个 npm 包的』]: https://fengmk2.com/blog/2016/how-i-publish-a-npm-package
+-   The `next` branch is for the current stable release
+-   The `beta` branch for beta releases
+-   The `alpha` branch for the preview release
+
+Create a new branch `release` from `next`, each PR will trigger CI on `release`. We publish on `next` branch finally.
+
+```bash
+git commit -m "chore(release): bump version"
+git push
+```
+
+In addition, all API deprecations need to be `deprecate` prompted on the current stable version and guaranteed to be compatible on the current stable version until a new version is released.
+
+### How to lock down dependencies
+
+It is often necessary to lock down certain dependencies in case of emergency, or when testing beta versions, and different package management tools lock down versions in different ways.
+
+tnpm uses `resolutions`. Take G2 as an example, if we want to test beta versions:
+
+-   Use `dependencies` to lock down **direct dependencies**.
+-   Use `resolutions` to lock down **indirect dependencies**, which can make sure some dependencies of G2 such as `@antv/gui` using the same beta versions
+
+```js
+"dependencies": {
+  "@antv/g": "5.17.0-beta.1",
+  "@antv/g-canvas": "1.10.0-beta.1",
+  "@antv/g-plugin-dragndrop": "1.7.0-beta.1",
+},
+"resolutions": {
+  "@antv/g": "5.17.0-beta.1",
+  "@antv/g-canvas": "1.10.0-beta.1",
+  "@antv/g-svg": "1.9.0-beta.1",
+  "@antv/g-plugin-dragndrop": "1.7.0-beta.1",
+  "@antv/g-plugin-rough-canvas-renderer": "1.8.0-beta.1",
+  "@antv/g-plugin-rough-svg-renderer": "1.8.0-beta.1"
+}
+```
+
+Other package management tools also have corresponding dependency overrides:
+
+-   npm [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides)
+-   yarn [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
+-   pnpm [overrides](https://pnpm.io/package_json#pnpmoverrides)

@@ -17,6 +17,7 @@ if (window) {
   (window as any).d3Force3d = require('d3-force-3d');
   (window as any).d3SvgAnnotation = require('d3-svg-annotation');
   (window as any).plot = require('@observablehq/plot');
+  (window as any).glMatrix = require('gl-matrix');
   // core
   (window as any).g = require('@antv/g');
   (window as any).gLite = require('@antv/g-lite');

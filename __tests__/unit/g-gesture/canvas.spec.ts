@@ -1,7 +1,7 @@
-import { Canvas, Circle } from '@antv/g';
-import { Renderer } from '@antv/g-mobile-canvas';
-import { createMobileCanvasElement } from '@antv/g-mobile-canvas-element';
-import Gesture from '@antv/g-gesture';
+import Gesture from '../../../packages/g-gesture/src';
+import { createMobileCanvasElement } from '../../../packages/g-mobile-canvas-element/src';
+import { Renderer } from '../../../packages/g-mobile-canvas/src';
+import { Canvas, Circle } from '../../../packages/g/src';
 import { createContext, delay, gestureSimulator } from './util';
 
 const context = createContext();

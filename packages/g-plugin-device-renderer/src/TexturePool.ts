@@ -2,12 +2,14 @@ import {
   CanvasContext,
   CSSGradientValue,
   DisplayObject,
+  isBrowser,
   LinearGradient,
   parsedTransformToMat4,
+  parseTransform,
   Pattern,
   RadialGradient,
+  runtime,
 } from '@antv/g-lite';
-import { isBrowser, runtime, parseTransform } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
 import type { Device, Texture, TextureDescriptor } from './platform';
@@ -78,11 +80,28 @@ export class TexturePool {
 
         if (image) {
           image.onload = () => {
-            this.textureCache[id].setImageData(image);
-            this.textureCache[id].emit(TextureEvent.LOADED);
-            this.context.renderingService.dirtify();
-            if (successCallback) {
-              successCallback(this.textureCache[id]);
+            const onSuccess = (bitmap: ImageBitmap | HTMLImageElement) => {
+              this.textureCache[id].setImageData(bitmap);
+              this.textureCache[id].emit(TextureEvent.LOADED);
+              this.context.renderingService.dirtify();
+              if (successCallback) {
+                successCallback(this.textureCache[id]);
+              }
+            };
+
+            if (runtime.globalThis.createImageBitmap) {
+              runtime.globalThis
+                .createImageBitmap(image)
+                .then((bitmap: ImageBitmap) => onSuccess(bitmap))
+                .catch(() => {
+                  // Unhandled Rejection (InvalidStateError):
+                  // Failed to execute 'createImageBitmap' on 'Window':
+                  // The image element contains an SVG image without intrinsic dimensions,
+                  // and no resize options or crop region are specified.
+                  onSuccess(image);
+                });
+            } else {
+              onSuccess(image);
             }
           };
           image.onerror = () => {};
@@ -171,7 +190,10 @@ export class TexturePool {
 
     // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
     if (transform) {
-      const mat = parsedTransformToMat4(parseTransform(transform));
+      const mat = parsedTransformToMat4(
+        parseTransform(transform),
+        new DisplayObject({}),
+      );
       canvasPattern.setTransform({
         a: mat[0],
         b: mat[1],

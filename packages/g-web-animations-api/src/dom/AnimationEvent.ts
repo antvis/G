@@ -5,7 +5,11 @@ import type { Animation } from './Animation';
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AnimationPlaybackEvent
  */
-export class AnimationEvent extends FederatedEvent implements AnimationPlaybackEvent {
+// @ts-ignore
+export class AnimationEvent
+  extends FederatedEvent
+  implements AnimationPlaybackEvent
+{
   constructor(
     manager: EventService | null,
     target: Animation,

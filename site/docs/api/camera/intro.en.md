@@ -49,7 +49,7 @@ Set the camera projection mode to orthogonal projection `CameraProjectionMode.OR
 
 The method signature is as follows.
 
-```
+```js
 setOrthographic(left: number, right: number,
                 top: number, bottom: number,
                 near: number, far: number)
@@ -79,7 +79,7 @@ Set the camera projection mode to Perspective Projection `CameraProjectionMode.P
 
 The method signature is as follows.
 
-```
+```js
 setPerspective(near: number, far: number, fov: number, aspect: number)
 ```
 
@@ -126,7 +126,7 @@ Fixes the viewpoint `focalPoint` and changes the camera position `position`. Com
 
 Called [OrbitControls](https://threejs.org/#examples/en/controls/OrbitControls) in Three.js.
 
-In this [example](/en/examples/camera/camera-animation#landmark), we control the camera by mouse panning to complete the [pan](/en/api/camera/action#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
+In this [example](/en/examples/camera/camera-animation/#landmark), we control the camera by mouse panning to complete the [pan](/en/api/camera/action#pan) action, as if we were "rotating" the scene around a fixed viewpoint.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*QjQQRLA3w8sAAAAAAAAAAAAAARQnAQ">
 
@@ -138,7 +138,7 @@ G's **Default Camera** has this mode selected.
 
 Called [TrackballControls](https://threejs.org/#examples/en/controls/TrackballControls) in Three.js.
 
-In this [example](/en/examples/camera#landmark), we control the camera via mouse panning to complete the [pan]() action, allowing the camera to "rotate" around a fixed point of view.
+In this [example](/en/examples/camera/camera-animation/#landmark), we control the camera via mouse panning to complete the [pan]() action, allowing the camera to "rotate" around a fixed point of view.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dGgTTKjUrKoAAAAAAAAAAAAAARQnAQ">
 

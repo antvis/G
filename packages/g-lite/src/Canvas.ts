@@ -1,34 +1,39 @@
 import RBush from 'rbush/rbush.js';
-import { runtime } from './global-runtime';
 import type { IRenderer } from './AbstractRenderer';
 import {
-  CameraTrackingMode,
-  CameraType,
   CameraEvent,
   CameraProjectionMode,
+  CameraTrackingMode,
+  CameraType,
 } from './camera';
 import type { RBushNodeAABB } from './components';
 import type { CustomElement } from './display-objects';
-import { DisplayObject } from './display-objects';
+import { DisplayObject } from './display-objects/DisplayObject';
 import type { CanvasContext, Element, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import type { ICanvas } from './dom/interfaces';
+import { runtime } from './global-runtime';
 import { CullingPlugin } from './plugins/CullingPlugin';
 import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { EventPlugin } from './plugins/EventPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
-import { EventService, RenderingService, RenderReason } from './services';
+import { EventService, RenderReason, RenderingService } from './services';
 import type { PointLike } from './shapes';
-import type { Cursor, InteractivePointerEvent, CanvasConfig } from './types';
+import type {
+  CanvasConfig,
+  ClipSpaceNearZ,
+  Cursor,
+  InteractivePointerEvent,
+} from './types';
 import {
+  caf,
   cleanExistedCanvas,
   getHeight,
   getWidth,
   isBrowser,
   raf,
-  caf,
 } from './utils';
 
 export function isCanvas(value: any): value is Canvas {
@@ -227,7 +232,7 @@ export class Canvas extends EventTarget implements ICanvas {
       alwaysTriggerPointerEventOnCanvas,
     });
 
-    this.initDefaultCamera(canvasWidth, canvasHeight);
+    this.initDefaultCamera(canvasWidth, canvasHeight, renderer.clipSpaceNearZ);
 
     this.initRenderer(renderer, true);
   }
@@ -251,9 +256,14 @@ export class Canvas extends EventTarget implements ICanvas {
     };
   }
 
-  private initDefaultCamera(width: number, height: number) {
+  private initDefaultCamera(
+    width: number,
+    height: number,
+    clipSpaceNearZ: ClipSpaceNearZ,
+  ) {
     // set a default ortho camera
     const camera = new runtime.CameraContribution();
+    camera.clipSpaceNearZ = clipSpaceNearZ;
 
     camera
       .setType(CameraType.EXPLORING, CameraTrackingMode.DEFAULT)

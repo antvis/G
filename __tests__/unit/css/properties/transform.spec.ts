@@ -1,6 +1,10 @@
-import { Canvas, Circle, CSS, ParsedTransform } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { expect } from 'chai';
+import { Renderer as CanvasRenderer } from '../../../../packages/g-canvas/src';
+import {
+  Canvas,
+  Circle,
+  CSS,
+  ParsedTransform,
+} from '../../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -40,175 +44,175 @@ describe('CSSPropertyTransform', () => {
     canvas.appendChild(circle);
 
     // attribute
-    expect(circle.getAttribute('transform')).to.be.eqls('translate(10, 10)');
+    expect(circle.getAttribute('transform')).toBe('translate(10, 10)');
 
     // used value
     let used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('translate');
-    expect(used[0].d.length).to.be.eqls(2);
-    expect(used[0].d[0].equals(CSS.px(10))).to.be.true;
-    expect(used[0].d[1].equals(CSS.px(10))).to.be.true;
-    expect(circle.getLocalPosition()).to.be.eqls([20, 20, 0]);
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('translate');
+    expect(used[0].d.length).toBe(2);
+    expect(used[0].d[0].equals(CSS.px(10))).toBeTruthy();
+    expect(used[0].d[1].equals(CSS.px(10))).toBeTruthy();
+    expect(circle.getLocalPosition()).toStrictEqual([20, 20, 0]);
 
     // translateX
     circle.style.transform = 'translateX(20)';
-    expect(circle.getLocalPosition()).to.be.eqls([30, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([30, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('translatex');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.px(20))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('translatex');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.px(20))).toBeTruthy();
 
     // translateY
     circle.style.transform = 'translateY(20)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 30, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 30, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('translatey');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.px(20))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('translatey');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.px(20))).toBeTruthy();
 
     // translateZ
     circle.style.transform = 'translateZ(20)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 20]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 20]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('translatez');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.px(20))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('translatez');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.px(20))).toBeTruthy();
 
     // translate3d
     circle.style.transform = 'translate3d(10, 10px, 10px)';
-    expect(circle.getLocalPosition()).to.be.eqls([20, 20, 10]);
+    expect(circle.getLocalPosition()).toStrictEqual([20, 20, 10]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('translate3d');
-    expect(used[0].d.length).to.be.eqls(3);
-    expect(used[0].d[0].equals(CSS.px(10))).to.be.true;
-    expect(used[0].d[1].equals(CSS.px(10))).to.be.true;
-    expect(used[0].d[2].equals(CSS.px(10))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('translate3d');
+    expect(used[0].d.length).toBe(3);
+    expect(used[0].d[0].equals(CSS.px(10))).toBeTruthy();
+    expect(used[0].d[1].equals(CSS.px(10))).toBeTruthy();
+    expect(used[0].d[2].equals(CSS.px(10))).toBeTruthy();
 
     // scaleX
     circle.style.transform = 'scaleX(2)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('scalex');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.number(2))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('scalex');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
 
     // scaleY
     circle.style.transform = 'scaleY(2)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('scaley');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.number(2))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('scaley');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
 
     // scaleZ
     circle.style.transform = 'scaleZ(2)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('scalez');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.number(2))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('scalez');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
 
     // scale3d
     circle.style.transform = 'scale3d(2,2,2)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('scale3d');
-    expect(used[0].d.length).to.be.eqls(3);
-    expect(used[0].d[0].equals(CSS.number(2))).to.be.true;
-    expect(used[0].d[1].equals(CSS.number(2))).to.be.true;
-    expect(used[0].d[2].equals(CSS.number(2))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('scale3d');
+    expect(used[0].d.length).toBe(3);
+    expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
+    expect(used[0].d[1].equals(CSS.number(2))).toBeTruthy();
+    expect(used[0].d[2].equals(CSS.number(2))).toBeTruthy();
 
     // scale
     circle.style.transform = 'scale(2)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('scale');
-    expect(used[0].d.length).to.be.eqls(2);
-    expect(used[0].d[0].equals(CSS.number(2))).to.be.true;
-    expect(used[0].d[1].equals(CSS.number(2))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('scale');
+    expect(used[0].d.length).toBe(2);
+    expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
+    expect(used[0].d[1].equals(CSS.number(2))).toBeTruthy();
 
     // scale
     circle.style.transform = 'scale(2,3)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('scale');
-    expect(used[0].d.length).to.be.eqls(2);
-    expect(used[0].d[0].equals(CSS.number(2))).to.be.true;
-    expect(used[0].d[1].equals(CSS.number(3))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('scale');
+    expect(used[0].d.length).toBe(2);
+    expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
+    expect(used[0].d[1].equals(CSS.number(3))).toBeTruthy();
 
     // rotate
     circle.style.transform = 'rotate(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotate');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.deg(30))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotate');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
 
     // rotate
     circle.style.transform = 'rotate(1rad)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotate');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.rad(1))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotate');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.rad(1))).toBeTruthy();
 
     // rotate
     circle.style.transform = 'rotate(1turn)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotate');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.turn(1))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotate');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.turn(1))).toBeTruthy();
 
     // rotate
     circle.style.transform = 'rotate(1grad)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotate');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.grad(1))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotate');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.grad(1))).toBeTruthy();
 
     // rotateX
     circle.style.transform = 'rotateX(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotatex');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.deg(30))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotatex');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
 
     // rotateY
     circle.style.transform = 'rotateY(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotatey');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.deg(30))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotatey');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
 
     // rotateZ
     circle.style.transform = 'rotateZ(30deg)';
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
     used = circle.computedStyleMap().get('transform') as ParsedTransform[];
-    expect(used.length).to.be.eqls(1);
-    expect(used[0].t).to.be.eqls('rotatez');
-    expect(used[0].d.length).to.be.eqls(1);
-    expect(used[0].d[0].equals(CSS.deg(30))).to.be.true;
+    expect(used.length).toBe(1);
+    expect(used[0].t).toBe('rotatez');
+    expect(used[0].d.length).toBe(1);
+    expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
   });
 
   it('should apply a series of transforms correctly.', async () => {
@@ -224,8 +228,31 @@ describe('CSSPropertyTransform', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    expect(circle.getLocalPosition()).to.be.eqls([10, 10, 0]);
-    expect(circle.getLocalBounds().center).to.be.eqls([10, 10, 0]);
-    expect(circle.getLocalBounds().halfExtents).to.be.eqls([25, 25, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalBounds().center).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalBounds().halfExtents).toStrictEqual([25, 25, 0]);
+  });
+
+  it("should reset transform with 'none' keyword correctly.", async () => {
+    const circle = new Circle({
+      style: {
+        cx: 10,
+        cy: 10,
+        r: 50,
+        transform: 'translate(10, 10)',
+      },
+    });
+
+    await canvas.ready;
+    canvas.appendChild(circle);
+
+    expect(circle.getLocalPosition()).toStrictEqual([20, 20, 0]);
+    expect(circle.getLocalBounds().center).toStrictEqual([20, 20, 0]);
+    expect(circle.getLocalBounds().halfExtents).toStrictEqual([50, 50, 0]);
+
+    circle.style.transform = 'none';
+    expect(circle.getLocalPosition()).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalBounds().center).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalBounds().halfExtents).toStrictEqual([50, 50, 0]);
   });
 });

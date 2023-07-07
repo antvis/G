@@ -416,7 +416,6 @@ export default defineConfig({
       },
     },
     docsearchOptions: {
-      versionV3: false,
       apiKey: 'c0fb0f71e3b70638cf4756bf128a42e6',
       indexName: 'antv_g',
     },
@@ -431,4 +430,12 @@ export default defineConfig({
   copy: ['static'],
   jsMinifier: 'terser',
   mfsu: false,
+  analytics: {
+    // google analytics 的 key (GA 4)
+    // ga_v2: 'G-abcdefg',
+    // 若你在使用 GA v1 旧版本，请使用 `ga` 来配置
+    ga_v2: 'G-3L8SSDC4X6',
+    // 百度统计的 key
+    // baidu: 'baidu_tongji_key',
+  },
 });

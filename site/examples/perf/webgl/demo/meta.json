@@ -1,0 +1,66 @@
+{
+  "demos": [
+    {
+      "filename": "texts.js",
+      "title": {
+        "zh": "大量文本",
+        "en": "Instanced Text"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*utrOS5D0-d8AAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "rects.js",
+      "title": {
+        "zh": "大量矩形",
+        "en": "Instanced Rect"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*sQH_T5LdKdcAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "images.js",
+      "title": {
+        "zh": "大量图片",
+        "en": "Instanced Image"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*qvDhTaGQXl0AAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "one-command-curve.js",
+      "title": {
+        "zh": "包含一条曲线命令的 Path",
+        "en": "Instanced Simple Path(one-command curve)"
+      }
+    },
+    {
+      "filename": "circle-path.js",
+      "title": {
+        "zh": "大量 Circle Path 和 Text",
+        "en": "Render Circle, Path and Text"
+      }
+    },
+    {
+      "filename": "nodes-8k.js",
+      "title": {
+        "zh": "包含 8k 节点的图",
+        "en": "A large graph with 8k nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*D-57RohPWVgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "nodes-8k-curve-edges.js",
+      "title": {
+        "zh": "包含 8k 节点的图，使用曲线边",
+        "en": "A large graph with 8k nodes"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*PTs5R43dHGIAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "nodes-5w.js",
+      "title": {
+        "zh": "包含 5.5w 节点的图",
+        "en": "A large graph with 5.5w nodes"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dwS2Rb3mq5IAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import type EventEmitter from 'eventemitter3';
+import type { EventEmitter } from 'eventemitter3';
 import type { mat4, vec2, vec3 } from 'gl-matrix';
 import type { TypeEasingFunction } from '..';
 import type { ICanvas } from '../dom';

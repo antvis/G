@@ -21,7 +21,7 @@ order: 50
 -   pointermove
 -   pointercancel
 
-https://developer.mozilla.org/en-US/docs/Web/API/Event/type
+<https://developer.mozilla.org/en-US/docs/Web/API/Event/type>
 
 ### nativeEvent
 
@@ -31,35 +31,35 @@ https://developer.mozilla.org/en-US/docs/Web/API/Event/type
 
 指向 [Canvas](/zh/api/canvas)。
 
-https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view
+<https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/view>
 
 ### altKey
 
 事件触发时是否伴随 `alt` 的按下。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/altKey>
 
 ### metaKey
 
 事件触发时是否伴随 `meta` 的按下。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/metaKey>
 
 ### ctrlKey
 
 事件触发时是否伴随 `ctrl` 的按下。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/ctrlKey>
 
 ### shiftKey
 
 事件触发时是否伴随 `shift` 的按下。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/shiftKey>
 
 ### timeStamp
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp>
 
 事件创建时的时间戳
 
@@ -67,7 +67,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/timeStamp
 
 当前所处的事件阶段。有以下三个枚举值：
 
-```
+```js
 CAPTURING_PHASE = 1;
 AT_TARGET = 2;
 BUBBLING_PHASE = 3;
@@ -89,20 +89,18 @@ circle.addEventListener(
 
 事件对象携带的数据对象。例如在触发 click 时，会带上点击次数。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail
+<https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail>
 
 ### target
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/target>
 
 当前触发事件的 [EventTarget](/zh/api/builtin-objects/event-target)。
 
 在实现事件委托时很有用，例如有这样一个场景，类似 DOM 中的 `ul/li`：
 
-```
-Group(ul)
-    - Rect(li)
-    - Rect(li)
+```js
+Group(ul) - Rect(li) - Rect(li);
 ```
 
 我们可以在 `ul` 上监听事件，当点击每一个 `li` 时都会触发：
@@ -128,7 +126,7 @@ ul.addEventListener(
 
 ### currentTarget
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/currentTarget>
 
 总是指向事件绑定的元素。
 
@@ -181,7 +179,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 ### clientX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX>
 
 在[浏览器坐标系](/zh/api/canvas#client)下，左上角为 `(0, 0)`。G 不会修改原生事件上的该属性，因此两者完全相同：
 
@@ -199,7 +197,7 @@ canvas.client2Viewport({ x: 100, y: 100 }); // Point { x: 0, y: 0 }
 
 ### screenX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/screenX>
 
 在[屏幕坐标系](/zh/api/canvas#screen)下，不考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
 
@@ -210,7 +208,7 @@ e.nativeEvent.screenX;
 
 ### pageX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX>
 
 在[文档坐标系](/zh/api/canvas#page)下，考虑页面滚动。G 不会修改原生事件上的该属性，因此两者完全相同：
 
@@ -221,7 +219,7 @@ e.nativeEvent.pageX;
 
 ### movementX/Y
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
+<https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX>
 
 当前事件和上一个 `mousemove` 事件之间鼠标在水平方向上的移动值。换句话说，这个值是这样计算的: `currentEvent.movementX = currentEvent.screenX - previousEvent.screenX`
 
@@ -235,69 +233,69 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/movementX
 -   mouse 代表 [MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
 -   touch 代表 [TouchEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/TouchEvent)
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType>
 
 ### pointerId
 
 返回一个可以唯一地识别和触摸平面接触的点的值。这个值在这根手指（或触摸笔等）所引发的所有事件中保持一致，直到它离开触摸平面。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId>
 
 ### isPrimary
 
 是否是 primary pointer。在多指触控场景下，代表当前事件由主触点产生。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary>
 
 ### button
 
-标识鼠标事件哪个按键被点击。0 为左键，1 为右键。
+标识鼠标事件哪个按键被点击。0 为左键，1 为鼠标滚轮，2 为右键。
 
-https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+<https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button>
 
 ### buttons
 
-https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+<https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons>
 
 ### width
 
 接触面积宽度。如果原生事件为 MouseEvent，返回 1。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width>
 
 ### height
 
 接触面积高度。如果原生事件为 MouseEvent，返回 1。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height>
 
 ### tiltX
 
 触点与屏幕在 Y-Z 平面上的角度。如果原生事件为 MouseEvent 返回固定值 `0`。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX>
 
 ### tiltY
 
 触点与屏幕在 X-Z 平面上的角度。如果原生事件为 MouseEvent 返回固定值 `0`。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY>
 
 ### pressure
 
 返回对应的手指挤压触摸平面的压力大小，从 `0.0` (没有压力)到 `1.0` (最大压力)的浮点数。如果原生事件为 MouseEvent 返回固定值 `0.5`。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure>
 
 ### tangentialPressure
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure>
 
 ### twist
 
 顺时针旋转角度。如果原生事件为 MouseEvent 返回固定值 `0`。
 
-https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist
+<https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist>
 
 ## WheelEvent 属性
 
@@ -307,7 +305,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/twist
 
 <tag color="blue" text="WheelEvent">WheelEvent</tag>
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent
+<https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent>
 
 滚轮的横向/纵向/Z 轴的滚动量。
 
@@ -319,7 +317,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/WheelEvent
 
 阻止监听同一事件的其他事件监听器被调用，同时阻止冒泡。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopImmediatePropagation>
 
 例如在图形上绑定了多个 click 监听器：
 
@@ -364,13 +362,13 @@ group.on(
 
 阻止捕获和冒泡阶段中当前事件的进一步传播。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/stopPropagation>
 
 与 `stopImmediatePropagation` 的区别是并不会阻止监听同一事件的其他事件监听器被调用。
 
 ### preventDefault
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault>
 
 阻止浏览器默认行为。对于 Passive 事件调用该方法无效，并且会抛出警告。
 
@@ -378,16 +376,14 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Event/preventDefault
 
 ### composedPath
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath
+<https://developer.mozilla.org/zh-CN/docs/Web/API/Event/composedPath>
 
 返回事件路径，是包含 [EventTarget](/zh/api/builtin-objects/event-target) 的数组，类似旧版 G 中的 `propagationPath`。在这个数组中，`event.target` 为数组的第一个元素，[场景图根节点](/zh/api/canvas#入口与根节点)、[Document](/zh/api/canvas#入口与根节点) 和 [Canvas](/zh/api/canvas) 为数组末尾的三个元素。
 
 仍然以类似 DOM `ul/li` 场景为例：
 
-```
-Group(ul)
-    - Rect(li)
-    - Rect(li)
+```js
+Group(ul) - Rect(li) - Rect(li);
 ```
 
 在 `ul` 上监听事件，当点击每一个 `li` 时都会触发，事件传播路径为 `[li1, ul, Group, Document, Canvas]`：

@@ -1,7 +1,13 @@
-import type { IElement } from '../dom';
 import type { DisplayObject } from '../display-objects';
+import type { IElement, IEventTarget, INode } from '../dom';
 import type { CanvasLike } from '../types';
 import { isBrowser } from './canvas';
+
+export function isElement(
+  target: IEventTarget | INode | IElement,
+): target is IElement {
+  return !!(target as IElement).getAttribute;
+}
 
 export function sortedIndex(array: IElement[], value: IElement) {
   let low = 0;

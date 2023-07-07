@@ -1,4 +1,4 @@
-import type { RendererConfig } from '@antv/g-lite';
+import { ClipSpaceNearZ, RendererConfig } from '@antv/g-lite';
 import { AbstractRenderer } from '@antv/g-lite';
 import * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import * as DomInteraction from '@antv/g-plugin-dom-interaction';
@@ -15,6 +15,8 @@ interface WebGPURendererConfig extends RendererConfig {
 }
 
 export class Renderer extends AbstractRenderer {
+  clipSpaceNearZ = ClipSpaceNearZ.ZERO;
+
   constructor(config?: Partial<WebGPURendererConfig>) {
     super(config);
 

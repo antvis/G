@@ -2,8 +2,8 @@ import type {
   Canvas,
   Circle,
   FederatedPointerEvent,
-  Polyline,
   Polygon,
+  Polyline,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';

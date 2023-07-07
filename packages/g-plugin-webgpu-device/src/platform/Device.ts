@@ -206,8 +206,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       device: this.device,
       format: this.swapChainFormat,
       usage: this.swapChainTextureUsage,
-      // @see https://www.w3.org/TR/webgpu/#enumdef-gpucanvascompositingalphamode
-      alphaMode: 'opaque',
+      // @see https://www.w3.org/TR/webgpu/#gpucanvasalphamode
+      // alphaMode: 'opaque',
+      alphaMode: 'premultiplied',
     });
   }
 
@@ -243,6 +244,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.sampleCount = 1;
     texture.gpuTexture = gpuTexture;
     texture.gpuTextureView = gpuTextureView;
+    texture.name = 'Onscreen';
 
     return texture;
   }
@@ -321,8 +323,9 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     }) as unknown as Attachment_WebGPU;
 
     texture.depthOrArrayLayers = 1;
+    // @ts-ignore
     texture.type = ResourceType.RenderTarget;
-    return texture;
+    return texture as unknown as RenderTarget;
   }
 
   createRenderTargetFromTexture(texture: Texture): RenderTarget {

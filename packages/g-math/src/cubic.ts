@@ -1,18 +1,30 @@
-import { distance, isNumberEqual, getBBoxByArray, piMod } from './util';
-import line from './line';
-import { snapLength, nearestPoint } from './bezier';
+import { isNumberEqual } from '@antv/util';
+import { nearestPoint as bezierNearestPoint, snapLength } from './bezier';
+import { pointAt as linePointAt } from './line';
 import type { Point } from './types';
+import { distance, getBBoxByArray, piMod } from './util';
 
 function cubicAt(p0: number, p1: number, p2: number, p3: number, t: number) {
   const onet = 1 - t; // t * t * t 的性能大概是 Math.pow(t, 3) 的三倍
   return (
-    onet * onet * onet * p0 + 3 * p1 * t * onet * onet + 3 * p2 * t * t * onet + p3 * t * t * t
+    onet * onet * onet * p0 +
+    3 * p1 * t * onet * onet +
+    3 * p2 * t * t * onet +
+    p3 * t * t * t
   );
 }
 
-function derivativeAt(p0: number, p1: number, p2: number, p3: number, t: number) {
+function derivativeAt(
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+  t: number,
+) {
   const onet = 1 - t;
-  return 3 * (onet * onet * (p1 - p0) + 2 * onet * t * (p2 - p1) + t * t * (p3 - p2));
+  return (
+    3 * (onet * onet * (p1 - p0) + 2 * onet * t * (p2 - p1) + t * t * (p3 - p2))
+  );
 }
 
 function extrema(p0: number, p1: number, p2: number, p3: number) {
@@ -66,11 +78,11 @@ function divideCubic(
   const xt = cubicAt(x1, x2, x3, x4, t);
   const yt = cubicAt(y1, y2, y3, y4, t);
   // 计算两点之间的差值点
-  const c1 = line.pointAt(x1, y1, x2, y2, t);
-  const c2 = line.pointAt(x2, y2, x3, y3, t);
-  const c3 = line.pointAt(x3, y3, x4, y4, t);
-  const c12 = line.pointAt(c1.x, c1.y, c2.x, c2.y, t);
-  const c23 = line.pointAt(c2.x, c2.y, c3.x, c3.y, t);
+  const c1 = linePointAt(x1, y1, x2, y2, t);
+  const c2 = linePointAt(x2, y2, x3, y3, t);
+  const c3 = linePointAt(x3, y3, x4, y4, t);
+  const c12 = linePointAt(c1.x, c1.y, c2.x, c2.y, t);
+  const c23 = linePointAt(c2.x, c2.y, c3.x, c3.y, t);
   return [
     [x1, y1, c1.x, c1.y, c12.x, c12.y, xt, yt],
     [xt, yt, c23.x, c23.y, c3.x, c3.y, x4, y4],
@@ -93,128 +105,151 @@ function cubicLength(
     return snapLength([x1, x2, x3, x4], [y1, y2, y3, y4]);
   }
   const cubics = divideCubic(x1, y1, x2, y2, x3, y3, x4, y4, 0.5);
-  const left: [number, number, number, number, number, number, number, number, number] = [
-    ...cubics[0],
-    iterationCount - 1,
-  ];
-  const right: [number, number, number, number, number, number, number, number, number] = [
-    ...cubics[1],
-    iterationCount - 1,
-  ];
+  const left: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ] = [...cubics[0], iterationCount - 1];
+  const right: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ] = [...cubics[1], iterationCount - 1];
   return cubicLength(...left) + cubicLength(...right);
 }
 
-export default {
-  extrema,
-  box(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-  ) {
-    const xArr = [x1, x4];
-    const yArr = [y1, y4];
-    const xExtrema = extrema(x1, x2, x3, x4);
-    const yExtrema = extrema(y1, y2, y3, y4);
-    for (let i = 0; i < xExtrema.length; i++) {
-      xArr.push(cubicAt(x1, x2, x3, x4, xExtrema[i]));
-    }
-    for (let i = 0; i < yExtrema.length; i++) {
-      yArr.push(cubicAt(y1, y2, y3, y4, yExtrema[i]));
-    }
-    return getBBoxByArray(xArr, yArr);
-  },
-  length(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-  ) {
-    // 迭代三次，划分成 8 段求长度
-    return cubicLength(x1, y1, x2, y2, x3, y3, x4, y4, 3);
-  },
-  nearestPoint(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-    x0: number,
-    y0: number,
-    length?: number,
-  ) {
-    return nearestPoint([x1, x2, x3, x4], [y1, y2, y3, y4], x0, y0, cubicAt, length);
-  },
-  pointDistance(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-    x0: number,
-    y0: number,
-    length?: number,
-  ) {
-    const point = this.nearestPoint(x1, y1, x2, y2, x3, y3, x4, y4, x0, y0, length);
-    return distance(point.x, point.y, x0, y0);
-  },
-  interpolationAt: cubicAt,
-  pointAt(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-    t: number,
-  ): Point {
-    return {
-      x: cubicAt(x1, x2, x3, x4, t),
-      y: cubicAt(y1, y2, y3, y4, t),
-    };
-  },
-  divide(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-    t: number,
-  ) {
-    return divideCubic(x1, y1, x2, y2, x3, y3, x4, y4, t);
-  },
-  tangentAngle(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    x3: number,
-    y3: number,
-    x4: number,
-    y4: number,
-    t: number,
-  ) {
-    const dx = derivativeAt(x1, x2, x3, x4, t);
-    const dy = derivativeAt(y1, y2, y3, y4, t);
-    return piMod(Math.atan2(dy, dx));
-  },
-};
+export function box(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+) {
+  const xArr = [x1, x4];
+  const yArr = [y1, y4];
+  const xExtrema = extrema(x1, x2, x3, x4);
+  const yExtrema = extrema(y1, y2, y3, y4);
+  for (let i = 0; i < xExtrema.length; i++) {
+    xArr.push(cubicAt(x1, x2, x3, x4, xExtrema[i]));
+  }
+  for (let i = 0; i < yExtrema.length; i++) {
+    yArr.push(cubicAt(y1, y2, y3, y4, yExtrema[i]));
+  }
+  return getBBoxByArray(xArr, yArr);
+}
+
+export function length(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+) {
+  // 迭代三次，划分成 8 段求长度
+  return cubicLength(x1, y1, x2, y2, x3, y3, x4, y4, 3);
+}
+
+export function nearestPoint(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  x0: number,
+  y0: number,
+  length?: number,
+) {
+  return bezierNearestPoint(
+    [x1, x2, x3, x4],
+    [y1, y2, y3, y4],
+    x0,
+    y0,
+    cubicAt,
+    length,
+  );
+}
+
+export function pointDistance(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  x0: number,
+  y0: number,
+  length?: number,
+) {
+  const point = nearestPoint(x1, y1, x2, y2, x3, y3, x4, y4, x0, y0, length);
+  return distance(point.x, point.y, x0, y0);
+}
+
+export function pointAt(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  t: number,
+): Point {
+  return {
+    x: cubicAt(x1, x2, x3, x4, t),
+    y: cubicAt(y1, y2, y3, y4, t),
+  };
+}
+
+export function divide(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  t: number,
+) {
+  return divideCubic(x1, y1, x2, y2, x3, y3, x4, y4, t);
+}
+
+export function tangentAngle(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
+  t: number,
+) {
+  const dx = derivativeAt(x1, x2, x3, x4, t);
+  const dy = derivativeAt(y1, y2, y3, y4, t);
+  return piMod(Math.atan2(dy, dx));
+}

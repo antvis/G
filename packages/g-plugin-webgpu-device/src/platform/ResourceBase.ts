@@ -1,8 +1,15 @@
+import type {
+  Disposable,
+  ResourceBase,
+  ResourceType,
+} from '@antv/g-plugin-device-renderer';
 import EventEmitter from 'eventemitter3';
-import type { Disposable, ResourceBase, ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU } from './interfaces';
 
-export abstract class ResourceBase_WebGPU extends EventEmitter implements ResourceBase, Disposable {
+export abstract class ResourceBase_WebGPU
+  extends EventEmitter
+  implements ResourceBase, Disposable
+{
   type: ResourceType;
 
   id: number;

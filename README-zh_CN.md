@@ -2,26 +2,25 @@
 
 # G
 
-![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next)
+![CI](https://github.com/antvis/g/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/antvis/g/badge.svg?branch=next)](https://coveralls.io/github/antvis/g?branch=next) [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](#badge)
 
-![](https://img.shields.io/badge/language-typescript-blue.svg) ![](https://img.shields.io/badge/license-MIT-000000.svg)
+![TypeScript](https://img.shields.io/badge/language-typescript-blue.svg) ![License](https://img.shields.io/badge/license-MIT-000000.svg)
 
 [![npm package](https://img.shields.io/npm/v/@antv/g)](https://www.npmjs.com/package/@antv/g) [![npm downloads](http://img.shields.io/npm/dm/@antv/g)](https://www.npmjs.com/package/@antv/g) [![Percentage of issues still open](http://isitmaintained.com/badge/open/antvis/g.svg)](http://isitmaintained.com/project/antvis/g 'Percentage of issues still open') [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](https://github.com/antvis/g/pulls)
 
 一款高效易用的可视化渲染引擎。
 
 <p>
-  <a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/ecosystem#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#box2dt"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/plugins#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/3d#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" /></a>
-<a href="https://g-next.antv.vision/zh/examples/3d#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" /></a>
-
+  <a href="https://g.antv.antgroup.com/examples/ecosystem/d3/#d3-force-directed-graph"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PovRRJtsBMIAAAAAAAAAAAAAARQnAQ" alt="D3 force directed graph"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/ecosystem/d3/#d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*h6vDS6eRVFoAAAAAAAAAAAAAARQnAQ" alt="D3 barchart"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/rough/#rough-d3-barchart"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aJaFSrYOLXMAAAAAAAAAAAAAARQnAQ" alt="D3 sketchy barchart"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/yoga/#yoga-text"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*IH1fSJN9fsMAAAAAAAAAAAAAARQnAQ" alt="Yoga plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/physics-engine/#box2d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Qw5OQLGQy_4AAAAAAAAAAAAAARQnAQ" alt="Box2D physics engine plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/rough/#rough"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*d4iiS5_3YVIAAAAAAAAAAAAAARQnAQ" alt="Rough.js plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/canvaskit/#skottie"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_usaTqSm6vYAAAAAAAAAAAAAARQnAQ" alt="Canvaskit plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/plugins/canvaskit/#canvaskit-particles"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*919sR5Oxx_kAAAAAAAAAAAAAARQnAQ" alt="Yoga plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/3d/geometry/#sphere"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" alt="Canvaskit plugin"/></a>
+<a href="https://g.antv.antgroup.com/zh/examples/3d/3d-basic/#force-3d"><img height="160" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*3XFxQKWOeKoAAAAAAAAAAAAAARQnAQ" alt="3D force directed graph"/></a>
 </p>
 
 ## ✨ 特性
@@ -117,13 +116,14 @@ canvas.addEventListener(CanvasEvent.READY, function () {
 
 ## ⌨️ 开发
 
-使用 Yarn 进行开发，启动并预览站点：
+启动并预览示例：
 
 ```bash
-$ git clone git@github.com:antvis/g.git
-$ cd g
-$ yarn install
-$ yarn start
+git clone git@github.com:antvis/g.git
+cd g
+pnpm install
+pnpm build
+pnpm dev
 ```
 
 ### API Spec
@@ -131,7 +131,7 @@ $ yarn start
 在项目根目录下启动开发服务器，例如 `http-server`:
 
 ```bash
-$ http-server -p 9090
+http-server -p 9090
 ```
 
 访问 `localhost:9090/spec/api.html` 即可预览 API Spec。
@@ -141,22 +141,23 @@ $ http-server -p 9090
 构建并运行测试用例：
 
 ```bash
-$ yarn build
-$ yarn test
+pnpm build
+pnpm test
 ```
 
-### 启动站点
+### 启动官网
+
+构建并启动官网：
 
 ```bash
-$ cd ./site
-$ yarn install
-$ cd ../
-$ yarn link-site
+pnpm build
+pnpm link-site
+pnpm start
 ```
 
-## Inspired by
+## 受以下项目启发
 
 -   [Sprite.js](https://github.com/spritejs/spritejs)
 -   [Pixi.js](https://pixijs.com/)
 -   [PlayCanvas](https://playcanvas.com/)
--   [Webkit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)
+-   [WebKit](https://github.com/WebKit/WebKit/blob/main/Source/WebCore)

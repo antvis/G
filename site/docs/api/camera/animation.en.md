@@ -3,7 +3,7 @@ title: Camera animation
 order: 10
 ---
 
-We can record the current position and viewpoint of the camera and save it as a Landmark, and then when the camera parameters change, you can switch to any of the previously saved Landmark at any time, with a smooth switching animation, similar to the camera pan arm on a real set, also called `flyTo` in some applications (e.g. [Mapbox in application](https:/.mapbox.com/mapbox-gl-js/example/flyto/)), [example](/en/examples/camera#landmark).
+We can record the current position and viewpoint of the camera and save it as a Landmark, and then when the camera parameters change, you can switch to any of the previously saved Landmark at any time, with a smooth switching animation, similar to the camera pan arm on a real set, also called `flyTo` in some applications (e.g. [Mapbox in application](https:/.mapbox.com/mapbox-gl-js/example/flyto/)), [example](/en/examples/camera/camera-animation/#landmark2).
 
 ## createLandmark
 
@@ -34,7 +34,7 @@ camera.createLandmark('mark3', {
 
 ## gotoLandmark
 
-Switching to a previously saved Landmark works in both 2D and 3D scenes, [example](/en/examples/camera#landmark2).
+Switching to a previously saved Landmark works in both 2D and 3D scenes, [example](/en/examples/camera/camera-animation/#landmark2).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*EL2XSL5qSQ8AAAAAAAAAAAAAARQnAQ" width="200">
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*o4eKT4ZQfJcAAAAAAAAAAAAAARQnAQ" width="300">

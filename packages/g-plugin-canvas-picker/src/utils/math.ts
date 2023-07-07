@@ -1,10 +1,4 @@
-import { Line as LineUtil } from '@antv/g-math';
-
-export function distance(x1: number, y1: number, x2: number, y2: number) {
-  const dx = x1 - x2;
-  const dy = y1 - y2;
-  return Math.sqrt(dx * dx + dy * dy);
-}
+import { distance, linePointToLine } from '@antv/g-math';
 
 export function inBox(
   minX: number,
@@ -30,8 +24,22 @@ export function inRect(
   // 将四个边看做矩形来检测，比边的检测算法要快
   return (
     inBox(minX - halfWidth, minY - halfWidth, width, lineWidth, x, y) || // 上边
-    inBox(minX + width - halfWidth, minY - halfWidth, lineWidth, height, x, y) || // 右边
-    inBox(minX + halfWidth, minY + height - halfWidth, width, lineWidth, x, y) || // 下边
+    inBox(
+      minX + width - halfWidth,
+      minY - halfWidth,
+      lineWidth,
+      height,
+      x,
+      y,
+    ) || // 右边
+    inBox(
+      minX + halfWidth,
+      minY + height - halfWidth,
+      width,
+      lineWidth,
+      x,
+      y,
+    ) || // 下边
     inBox(minX - halfWidth, minY + halfWidth, lineWidth, height, x, y)
   ); // 左边
 }
@@ -85,7 +93,7 @@ export function inLine(
     return false;
   }
   // 因为已经计算了包围盒，所以仅需要计算到直线的距离即可，可以显著提升性能
-  return LineUtil.pointToLine(x1, y1, x2, y2, x, y) <= lineWidth / 2;
+  return linePointToLine(x1, y1, x2, y2, x, y) <= lineWidth / 2;
 }
 
 export function inPolyline(

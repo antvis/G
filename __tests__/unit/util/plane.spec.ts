@@ -1,38 +1,37 @@
-import { expect } from 'chai';
 import { vec3 } from 'gl-matrix';
 import { Plane } from '../../../packages/g-lite/src';
 
 describe('Plane', () => {
   test('should generate correct p-vertex & n-vertex flag.', () => {
     let plane = new Plane(0, vec3.fromValues(1, 1, 1));
-    expect(plane.pnVertexFlag).to.eqls(0x111);
+    expect(plane.pnVertexFlag).toBe(0x111);
 
     plane = new Plane(0, vec3.fromValues(1, -1, 1));
-    expect(plane.pnVertexFlag).to.eqls(0x101);
+    expect(plane.pnVertexFlag).toBe(0x101);
 
     plane = new Plane(0, vec3.fromValues(1, 1, -1));
-    expect(plane.pnVertexFlag).to.eqls(0x110);
+    expect(plane.pnVertexFlag).toBe(0x110);
 
     plane = new Plane(0, vec3.fromValues(-1, 1, 1));
-    expect(plane.pnVertexFlag).to.eqls(0x011);
+    expect(plane.pnVertexFlag).toBe(0x011);
 
     plane = new Plane(0, vec3.fromValues(-1, -1, 1));
-    expect(plane.pnVertexFlag).to.eqls(0x001);
+    expect(plane.pnVertexFlag).toBe(0x001);
 
     plane = new Plane(0, vec3.fromValues(1, -1, -1));
-    expect(plane.pnVertexFlag).to.eqls(0x100);
+    expect(plane.pnVertexFlag).toBe(0x100);
 
     plane = new Plane(0, vec3.fromValues(-1, 1, -1));
-    expect(plane.pnVertexFlag).to.eqls(0x010);
+    expect(plane.pnVertexFlag).toBe(0x010);
 
     plane = new Plane(0, vec3.fromValues(-1, -1, -1));
-    expect(plane.pnVertexFlag).to.eqls(0x000);
+    expect(plane.pnVertexFlag).toBe(0x000);
   });
 
   test('should calc distance to point.', () => {
     const plane = new Plane(2, vec3.fromValues(0, 1, 0));
 
-    expect(plane.distanceToPoint(vec3.fromValues(0, 10, 0))).to.eqls(8);
+    expect(plane.distanceToPoint(vec3.fromValues(0, 10, 0))).toBe(8);
   });
 
   test('should intersect with a line.', () => {
@@ -45,8 +44,8 @@ describe('Plane', () => {
       intersection,
     );
 
-    expect(intersects).to.true;
-    expect(intersection).to.eqls(vec3.fromValues(1, 2, 0));
+    expect(intersects).toBeTruthy();
+    expect(intersection).toStrictEqual(vec3.fromValues(1, 2, 0));
   });
 
   test('should not intersect with a parallel line.', () => {
@@ -59,7 +58,7 @@ describe('Plane', () => {
       intersection,
     );
 
-    expect(intersects).to.false;
-    expect(intersection).to.eqls(vec3.create());
+    expect(intersects).toBeFalsy();
+    expect(intersection).toStrictEqual(vec3.create());
   });
 });

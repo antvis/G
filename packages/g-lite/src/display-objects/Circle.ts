@@ -1,6 +1,6 @@
-import { runtime } from '..';
 import { PECENTAGE_50 } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';

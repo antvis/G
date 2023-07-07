@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import {
   CSS,
   CSSMathMin,
@@ -13,7 +13,7 @@ describe('CSSMathMin', () => {
 
     min = number.min(CSS.px(2));
     expect(min.toString()).to.eqls('min(2, 2px)');
-    expect(min.getType()).to.be.eqls(CSSStyleValueType.kMinType);
+    expect(min.getType()).toBe(CSSStyleValueType.kMinType);
     expect((min as CSSMathMin).clone().toString()).to.eqls('min(2, 2px)');
   });
 });

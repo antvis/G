@@ -3,9 +3,9 @@ import type {
   DisplayObject,
   ParsedTextStyleProps,
 } from '../../display-objects';
-import { CSSUnitValue, UnitType } from '../cssom';
+import type { GlobalRuntime } from '../../global-runtime';
 import type { CSSProperty } from '../CSSProperty';
-import type { StyleValueRegistry } from '../interfaces';
+import { CSSUnitValue, UnitType } from '../cssom';
 import { mergeNumbers } from '../parser';
 import { parseLengthOrPercentage } from '../parser/dimension';
 
@@ -36,13 +36,15 @@ export class CSSPropertyLengthOrPercentage
     oldParsed: CSSUnitValue,
     computed: CSSUnitValue,
     object: DisplayObject,
-    registry: StyleValueRegistry,
+    runtime: GlobalRuntime,
   ): number {
     if (isNumber(computed)) {
       return computed;
     }
 
     if (CSSUnitValue.isRelativeUnit(computed.unit)) {
+      const registry = runtime.styleValueRegistry;
+
       if (computed.unit === UnitType.kPercentage) {
         // TODO: merge dimensions
         return 0;

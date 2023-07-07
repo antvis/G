@@ -11,13 +11,13 @@ const packages = readdirSync(basePath).filter((name) => {
 // yarn link
 packages.forEach((name) => {
   const packagePath = path.resolve(__dirname, `../packages/${name}`);
-  exec(`cd ${packagePath} && yarn link`);
+  exec(`cd ${packagePath} && pnpm link`);
 });
 
 // link to ./site
 packages.forEach((name) => {
   exec(
-    `cd ${path.resolve(__dirname, '../site')} && yarn link "@antv/${name}"`,
+    `cd ${path.resolve(__dirname, '../site')} && pnpm link "@antv/${name}"`,
     (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);

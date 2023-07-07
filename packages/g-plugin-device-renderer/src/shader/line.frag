@@ -1,19 +1,28 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
-#pragma glslify: import('@antv/g-shader-components/line.both.glsl')
+
+#ifdef INSTANCED
+  #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
+  in vec4 v_Dash;
+#else
+  #pragma glslify: import('@antv/g-shader-components/line.both.glsl')
+#endif
 
 in vec4 v_Distance;
 in vec4 v_Arc;
 in float v_Type;
 in float v_Travel;
+in float v_ScalingFactor;
 
 out vec4 outputColor;
 
-#define COLOR_SCALE 1. / 255.
-
 void main(){
-  if (u_Visible < 0.5) {
-    discard;
-  }
+  #ifdef INSTANCED
+    #pragma glslify: import('@antv/g-shader-components/batch.frag')
+  #else
+    if (u_Visible < 0.5) {
+      discard;
+    }
+  #endif
 
   float alpha = 1.0;
   float lineWidth = v_Distance.w;
@@ -56,16 +65,24 @@ void main(){
     alpha *= max(min(v_Distance.z + 0.5, 1.0), 0.0);
   }
 
+  #ifdef INSTANCED
+    float u_Dash = v_Dash.x;
+    float u_Gap = v_Dash.y;
+    float u_DashOffset = v_Dash.z;
+  #endif
   if (u_Dash + u_Gap > 1.0) {
-    float scalingFactor = sqrt(u_ModelMatrix[0][0] * u_ModelMatrix[0][0] + u_ModelMatrix[0][1] * u_ModelMatrix[0][1] + u_ModelMatrix[0][2] * u_ModelMatrix[0][2]);
-    float travel = mod(v_Travel + u_Gap * scalingFactor * 0.5 + u_DashOffset, u_Dash * scalingFactor + u_Gap * scalingFactor) - (u_Gap * scalingFactor * 0.5);
+    float travel = mod(v_Travel + u_Gap * v_ScalingFactor * 0.5 + u_DashOffset, u_Dash * v_ScalingFactor + u_Gap * v_ScalingFactor) - (u_Gap * v_ScalingFactor * 0.5);
     float left = max(travel - 0.5, -0.5);
-    float right = min(travel + 0.5, u_Gap * scalingFactor + 0.5);
+    float right = min(travel + 0.5, u_Gap * v_ScalingFactor + 0.5);
     alpha *= max(0.0, right - left);
   }
 
   if (u_IsPicking > 0.5) {
-    vec3 pickingColor = COLOR_SCALE * u_PickingColor;
+    #ifdef INSTANCED
+      vec3 pickingColor = u_PickingColor;
+    #else
+      vec3 pickingColor = u_PickingColor / 255.0;
+    #endif
     if (pickingColor.x == 0.0 && pickingColor.y == 0.0 && pickingColor.z == 0.0) {
       discard;
     }

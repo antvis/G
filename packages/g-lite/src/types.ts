@@ -87,6 +87,7 @@ export interface BaseStyleProps {
     | 'visiblepainted'
     // | 'bounding-box'
     | 'all'
+    | 'non-transparent-pixel' // valid only for Image
     | CSSGlobalKeywords;
 
   /**
@@ -329,6 +330,11 @@ export type Cursor =
   | 'nwse-resize'
   | 'zoom-in'
   | 'zoom-out';
+
+export enum ClipSpaceNearZ {
+  ZERO,
+  NEGATIVE_ONE,
+}
 
 export interface RendererConfig {
   /**

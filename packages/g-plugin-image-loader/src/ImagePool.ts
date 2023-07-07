@@ -1,15 +1,14 @@
 import {
+  CanvasConfig,
+  DisplayObject,
+  GradientType,
   LinearGradient,
   Pattern,
   RadialGradient,
-  CanvasConfig,
   Rect,
-} from '@antv/g-lite';
-import {
   UnitType,
   computeLinearGradient,
   computeRadialGradient,
-  GradientType,
   isBrowser,
   parseTransform,
   parsedTransformToMat4,
@@ -63,6 +62,7 @@ export class ImagePool {
 
       if (image) {
         image.onload = () => {
+          this.imageCache[src] = image;
           resolve(image);
         };
         image.onerror = (ev) => {
@@ -70,7 +70,6 @@ export class ImagePool {
         };
         image.crossOrigin = 'Anonymous';
         image.src = src;
-        this.imageCache[src] = image;
       }
     });
   }
@@ -107,7 +106,10 @@ export class ImagePool {
       let mat: mat4;
       // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern/setTransform
       if (transform) {
-        mat = parsedTransformToMat4(parseTransform(transform));
+        mat = parsedTransformToMat4(
+          parseTransform(transform),
+          new DisplayObject({}),
+        );
       } else {
         mat = mat4.identity(mat4.create());
       }

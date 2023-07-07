@@ -1,4 +1,4 @@
-name: DingTalk Release Notify
+name: 🎉 Release Notify
 
 on:
   workflow_dispatch:
@@ -9,10 +9,17 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - uses: visiky/dingtalk-release-notify@main
+      - name: Sleep 10s
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 10s
+
+      - name: Pre Release Notify
+        uses: visiky/dingtalk-release-notify@main
         with:
           DING_TALK_TOKEN: ${{ secrets.DING_TALK_TOKEN}}
-          notify_title: '🎉 G-next 发布 release {release_tag} 🎉'
-          notify_body: '## { title }<hr /> ![](https://gw.alipayobjects.com/zos/antfincdn/9Ivxcn0hFl/Gtoutu.png) <hr /> { body } <hr />'
-          notify_footer: '前往 [**G Releases**]({ release_url }) 查看完整信息.'
+          notify_title: '🎉 G 新版本发布啦 🎉'
+          notify_body: '## { title } <hr /> ![preview](https://gw.alipayobjects.com/zos/antfincdn/9Ivxcn0hFl/Gtoutu.png) <hr /> 看看有哪些更新吧 <hr />'
+          notify_footer: '> 前往 [**AntV/G Releases**](https://github.com/antvis/G/releases/latest) 查看完整更新日志.'
           at_all: false
+          enable_prerelease: true

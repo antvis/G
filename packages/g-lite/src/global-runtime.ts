@@ -1,7 +1,8 @@
+import { Camera } from './camera';
 import type { LayoutRegistry } from './css';
 import type { CSSProperty } from './css/CSSProperty';
-import { PropertySyntax } from './css/interfaces';
 import { DefaultStyleValueRegistry } from './css/StyleValueRegistry';
+import { PropertySyntax } from './css/interfaces';
 import {
   CSSPropertyAngle,
   CSSPropertyClipPath,
@@ -25,7 +26,6 @@ import {
   CSSPropertyZIndex,
 } from './css/properties';
 import type { HTML } from './display-objects';
-import { Camera } from './camera';
 import type {
   GeometryAABBUpdater,
   SceneGraphSelector,
@@ -143,7 +143,9 @@ const getGlobalThis = () => {
   if (typeof window !== 'undefined') return window;
   // @ts-ignore
   if (typeof global !== 'undefined') return global;
-  if (typeof this !== 'undefined') return this;
+  // [!] Error: The 'this' keyword is equivalent to 'undefined' at the top level of an ES module, and has been rewritten
+  // @see https://rollupjs.org/troubleshooting/#error-this-is-undefined
+  // if (typeof this !== 'undefined') return this;
   throw new Error('Unable to locate global `this`');
 };
 
@@ -173,7 +175,7 @@ runtime.textService = new TextService(runtime);
 runtime.geometryUpdaterFactory = geometryUpdaterFactory;
 
 runtime.CSSPropertySyntaxFactory = CSSPropertySyntaxFactory;
-runtime.styleValueRegistry = new DefaultStyleValueRegistry();
+runtime.styleValueRegistry = new DefaultStyleValueRegistry(runtime);
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
 runtime.enableCSSParsing = true;

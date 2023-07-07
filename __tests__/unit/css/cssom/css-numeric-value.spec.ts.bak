@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import {
   BaseType,
   CSSNumericValueType,
@@ -79,17 +79,17 @@ describe('CSSNumericValueType', () => {
     const percent = new CSSUnitValue(10, '%');
     const result = percent.add(length);
 
-    expect(result.toString()).to.be.eqls('calc(10% + 10px)');
-    expect(result.toSum('px', 'percent').toString()).to.be.eqls(
+    expect(result.toString()).toBe('calc(10% + 10px)');
+    expect(result.toSum('px', 'percent').toString()).toBe(
       'calc(10px + 10%)',
     );
-    expect(result.toSum('percent', 'px').toString()).to.be.eqls(
+    expect(result.toSum('percent', 'px').toString()).toBe(
       'calc(10% + 10px)',
     );
 
     expect(() => {
       result.toSum('px');
-    }).to.throw('There were leftover terms that were not converted');
+    }).toThrow('There were leftover terms that were not converted');
   });
 
   it('ApplyingPercentHintMovesPowerAndSetsPercentHint', () => {

@@ -15,7 +15,19 @@ export interface CanvasProps extends CanvasConfig {
 
 export const Canvas = forwardRef<GCanvas, CanvasProps>(
   (
-    { children, classname, role, style, tabIndex, title, renderer, width, height, capture, cursor },
+    {
+      children,
+      classname,
+      role,
+      style,
+      tabIndex,
+      title,
+      renderer,
+      width,
+      height,
+      capture,
+      cursor,
+    },
     ref,
   ) => {
     assertRef(ref);
@@ -40,17 +52,22 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
       canvasRef.current = canvas;
 
       // @ts-ignore
-      container.current = reconcilor.createContainer(canvas as any, 1, false, null);
+      container.current = reconcilor.createContainer(
+        canvas as any,
+        1,
+        false,
+        null,
+      );
 
       return () => {
+        // @ts-ignore
         reconcilor.updateContainer(null, container.current, null);
       };
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useLayoutEffect(() => {
       if (container.current) {
+        // @ts-ignore
         reconcilor.updateContainer(children, container.current, null);
       }
     }, [children]);

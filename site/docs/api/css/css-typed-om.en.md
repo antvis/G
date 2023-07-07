@@ -84,9 +84,9 @@ const percent = new CSSUnitValue(10, '%');
 const result = percent.add(length);
 
 // 字符串表示
-expect(result.toString()).to.be.eqls('calc(10% + 10px)');
-expect(result.toSum('px', 'percent').toString()).to.be.eqls('calc(10px + 10%)');
-expect(result.toSum('percent', 'px').toString()).to.be.eqls('calc(10% + 10px)');
+expect(result.toString()).toBe('calc(10% + 10px)');
+expect(result.toSum('px', 'percent').toString()).toBe('calc(10px + 10%)');
+expect(result.toSum('percent', 'px').toString()).toBe('calc(10% + 10px)');
 ```
 
 https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue
@@ -101,27 +101,27 @@ https://developer.mozilla.org/en-US/docs/Web/API/CSSNumericValue/type
 // <number>
 const number = new CSSUnitValue(10);
 expect(number.type()).to.eqls({
-    length: 0,
-    angle: 0,
-    time: 0,
-    frequency: 0,
-    resolution: 0,
-    flex: 0,
-    percent: 0,
-    percentHint: 'length',
+  length: 0,
+  angle: 0,
+  time: 0,
+  frequency: 0,
+  resolution: 0,
+  flex: 0,
+  percent: 0,
+  percentHint: 'length',
 });
 
 // <length>
 const length = new CSSUnitValue(10, 'px');
 expect(length.type()).to.eqls({
-    length: 1,
-    angle: 0,
-    time: 0,
-    frequency: 0,
-    resolution: 0,
-    flex: 0,
-    percent: 0,
-    percentHint: 'length',
+  length: 1,
+  angle: 0,
+  time: 0,
+  frequency: 0,
+  resolution: 0,
+  flex: 0,
+  percent: 0,
+  percentHint: 'length',
 });
 ```
 
@@ -172,9 +172,9 @@ const length = new CSSUnitValue(10, 'px');
 const percent = new CSSUnitValue(10, '%');
 const result = percent.add(length);
 
-expect(result.toString()).to.be.eqls('calc(10% + 10px)');
-expect(result.toSum('px', 'percent').toString()).to.be.eqls('calc(10px + 10%)');
-expect(result.toSum('percent', 'px').toString()).to.be.eqls('calc(10% + 10px)');
+expect(result.toString()).toBe('calc(10% + 10px)');
+expect(result.toSum('px', 'percent').toString()).toBe('calc(10px + 10%)');
+expect(result.toSum('percent', 'px').toString()).toBe('calc(10% + 10px)');
 ```
 
 ## equals()

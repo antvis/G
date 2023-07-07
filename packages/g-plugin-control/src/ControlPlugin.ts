@@ -1,9 +1,9 @@
 import type {
-  RenderingPluginContext,
-  RenderingPlugin,
-  ICamera,
   CanvasConfig,
   FederatedWheelEvent,
+  ICamera,
+  RenderingPlugin,
+  RenderingPluginContext,
 } from '@antv/g-lite';
 import { runtime } from '@antv/g-lite';
 import Hammer from 'hammerjs';

@@ -208,9 +208,7 @@ export {
   AST_TOKEN_TYPES,
   AST_NODE_TYPES,
   STORAGE_CLASS,
-  GLSLContext,
-  DataType,
   Target,
   DefineValuePlaceholder,
-  KernelBundle,
 };
+export type { GLSLContext, DataType, KernelBundle };

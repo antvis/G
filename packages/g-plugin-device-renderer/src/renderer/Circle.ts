@@ -1,11 +1,15 @@
-import type { CSSRGB, DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
+import type {
+  CSSRGB,
+  DisplayObject,
+  ParsedCircleStyleProps,
+} from '@antv/g-lite';
 import { LineMesh, SDFMesh } from '../meshes';
 import { Batch } from './Batch';
 
 /**
  * Use 2 meshes:
- * * SDF to draw fill
- * * InstancedLine
+ * * SDF to draw fill & simple stroke if needed.
+ * * InstancedLine to draw stroke separately.
  */
 export class CircleRenderer extends Batch {
   meshes = [SDFMesh, LineMesh];
@@ -37,8 +41,13 @@ export class CircleRenderer extends Batch {
 
     const hasFill = fill && !(fill as CSSRGB).isNone;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasDash = lineDash && lineDash.length && lineDash.every((item) => item !== 0);
+    const hasDash =
+      lineDash &&
+      lineDash.length &&
+      lineDash.every((item: number) => item !== 0);
 
-    return !hasFill || (hasStroke && lineWidth > 0 && (strokeOpacity < 1 || hasDash));
+    return (
+      !hasFill || (hasStroke && lineWidth > 0 && (strokeOpacity < 1 || hasDash))
+    );
   }
 }

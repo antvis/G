@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import {
   CSS,
   CSSMathMax,
@@ -13,7 +13,7 @@ describe('CSSMathMax', () => {
 
     max = number.max(CSS.px(2));
     expect(max.toString()).to.eqls('max(2, 2px)');
-    expect(max.getType()).to.be.eqls(CSSStyleValueType.kMaxType);
+    expect(max.getType()).toBe(CSSStyleValueType.kMaxType);
     expect((max as CSSMathMax).clone().toString()).to.eqls('max(2, 2px)');
   });
 });

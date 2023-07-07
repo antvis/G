@@ -58,7 +58,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       y: 100,
       width: 200,
       height: 100,
-      src: 'https://en.js.cx/clipart/soccer-gate.svg',
+      src: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*wLJaQ4EuUSYAAAAAAAAAAAAADmJ7AQ/original',
     },
   });
 
@@ -69,7 +69,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       y: 200,
       width: 100,
       height: 100,
-      src: 'https://en.js.cx/clipart/ball.svg',
+      src: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*StLOQqlKYr0AAAAAAAAAAAAADmJ7AQ/original',
       cursor: 'pointer',
     },
   });

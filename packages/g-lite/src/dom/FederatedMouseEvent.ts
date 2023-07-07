@@ -23,6 +23,7 @@ export class FederatedMouseEvent
   metaKey: boolean;
 
   /** This is currently not implemented in the Federated Events API. */
+  // @ts-ignore
   relatedTarget: DisplayObject | null;
 
   /** Whether the "shift" key was pressed when this mouse event occurred. */
@@ -85,7 +86,10 @@ export class FederatedMouseEvent
   }
 
   getModifierState(key: string): boolean {
-    return 'getModifierState' in this.nativeEvent && this.nativeEvent.getModifierState(key);
+    return (
+      'getModifierState' in this.nativeEvent &&
+      this.nativeEvent.getModifierState(key)
+    );
   }
   initMouseEvent(): void {
     throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);

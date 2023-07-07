@@ -1,18 +1,8 @@
-import type { FederatedPointerEvent } from '@antv/g';
-import { Canvas, CanvasEvent, Circle, Group, runtime } from '@antv/g';
-import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import { Renderer as SVGRenderer } from '@antv/g-svg';
-import chai, { expect } from 'chai';
-// @ts-ignore
-import chaiAlmost from 'chai-almost';
-// @ts-ignore
-import sinon from 'sinon';
-// @ts-ignore
-import sinonChai from 'sinon-chai';
+import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Renderer as SVGRenderer } from '../../packages/g-svg/src';
+import type { FederatedPointerEvent } from '../../packages/g/src';
+import { Canvas, CanvasEvent, Circle, Group } from '../../packages/g/src';
 import { sleep } from './utils';
-
-chai.use(chaiAlmost(0.0001));
-chai.use(sinonChai);
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -37,28 +27,26 @@ describe('Canvas', () => {
     canvas.destroy();
   });
 
-  it('should not trigger CanvasEvent when switching renderer', async () => {
-    const readyCallback = sinon.spy();
-    const beforeDestroyCallback = sinon.spy();
+  it('should not trigger CanvasEvent when switching renderer', () => {
+    const readyCallback = jest.fn();
+    const beforeDestroyCallback = jest.fn();
     canvas.addEventListener(CanvasEvent.READY, readyCallback);
     canvas.addEventListener(CanvasEvent.BEFORE_DESTROY, beforeDestroyCallback);
 
-    await canvas.setRenderer(new SVGRenderer());
+    canvas.setRenderer(new SVGRenderer());
 
-    // @ts-ignore
-    expect(readyCallback).to.have.been.not.called;
-    // @ts-ignore
-    expect(beforeDestroyCallback).to.have.been.not.called;
+    expect(readyCallback).toBeCalledTimes(0);
+    expect(beforeDestroyCallback).toBeCalledTimes(0);
   });
 
   it('should generate correct composed path', (done) => {
     let point = canvas.getClientByPoint(0, 0);
-    expect(point.x).eqls(8);
-    expect(point.y).eqls(8);
+    expect(point.x).toBe(8);
+    expect(point.y).toBe(8);
 
     point = canvas.getPointByClient(8, 8);
-    expect(point.x).eqls(0);
-    expect(point.y).eqls(0);
+    expect(point.x).toBe(0);
+    expect(point.y).toBe(0);
 
     const circle = new Circle({
       style: {
@@ -72,10 +60,9 @@ describe('Canvas', () => {
     canvas.appendChild(circle);
 
     setTimeout(() => {
-      const $canvas = canvas.getContextService().getDomElement();
+      const $canvas = canvas.getContextService().getDomElement()!;
 
       $canvas.dispatchEvent(
-        // @ts-ignore
         new PointerEvent('pointerdown', {
           pointerType: 'mouse',
           clientX: 100,
@@ -88,26 +75,26 @@ describe('Canvas', () => {
 
     const handlePointerDown = (e) => {
       // target
-      expect(e.target).to.be.eqls(circle);
+      expect(e.target).toBe(circle);
       // currentTarget
-      expect(e.currentTarget).to.be.eqls(canvas);
+      expect(e.currentTarget).toBe(canvas);
 
       // composed path
       const path = e.composedPath();
-      expect(path.length).to.be.eqls(4);
-      expect(path[0]).to.be.eqls(circle);
-      expect(path[1]).to.be.eqls(canvas.document.documentElement);
-      expect(path[2]).to.be.eqls(canvas.document);
-      expect(path[3]).to.be.eqls(canvas);
+      expect(path.length).toBe(4);
+      expect(path[0]).toBe(circle);
+      expect(path[1]).toBe(canvas.document.documentElement);
+      expect(path[2]).toBe(canvas.document);
+      expect(path[3]).toBe(canvas);
 
       // pointer type
-      expect(e.pointerType).to.be.eqls('mouse');
+      expect(e.pointerType).toBe('mouse');
 
       // coordinates
-      expect(e.clientX).to.be.eqls(100);
-      expect(e.clientY).to.be.eqls(100);
-      expect(e.screenX).to.be.eqls(200);
-      expect(e.screenY).to.be.eqls(200);
+      expect(e.clientX).toBe(100);
+      expect(e.clientY).toBe(100);
+      expect(e.screenX).toBe(200);
+      expect(e.screenY).toBe(200);
 
       done();
     };
@@ -132,16 +119,16 @@ describe('Canvas', () => {
       'pointerdown',
       (e) => {
         // target
-        expect(e.target).to.be.eqls(canvas.document);
+        expect(e.target).toBe(canvas.document);
         // currentTarget
-        expect(e.currentTarget).to.be.eqls(canvas);
+        expect(e.currentTarget).toBe(canvas);
 
         // composed path
         const path = e.composedPath();
 
-        expect(path.length).to.be.eqls(2);
-        expect(path[0]).to.be.eqls(canvas.document);
-        expect(path[1]).to.be.eqls(canvas);
+        expect(path.length).toBe(2);
+        expect(path[0]).toBe(canvas.document);
+        expect(path[1]).toBe(canvas);
 
         done();
       },
@@ -150,9 +137,8 @@ describe('Canvas', () => {
 
     await sleep(100);
 
-    const $canvas = canvas.getContextService().getDomElement();
+    const $canvas = canvas.getContextService().getDomElement()!;
     $canvas.dispatchEvent(
-      // @ts-ignore
       new PointerEvent('pointerdown', {
         pointerType: 'mouse',
         clientX: 400,
@@ -166,19 +152,18 @@ describe('Canvas', () => {
       'pointermove',
       (e) => {
         // target
-        expect(e.target).to.be.eqls(canvas.document);
+        expect(e.target).toBe(canvas.document);
 
         // composed path
         const path = e.composedPath();
 
-        expect(path.length).to.be.eqls(2);
-        expect(path[0]).to.be.eqls(canvas.document);
-        expect(path[1]).to.be.eqls(canvas);
+        expect(path.length).toBe(2);
+        expect(path[0]).toBe(canvas.document);
+        expect(path[1]).toBe(canvas);
       },
       { once: true },
     );
     $canvas.dispatchEvent(
-      // @ts-ignore
       new PointerEvent('pointermove', {
         pointerType: 'mouse',
         clientX: 2400,
@@ -204,51 +189,49 @@ describe('Canvas', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
+    const $canvas = canvas.getContextService().getDomElement()!;
+    const { top, left } = (
+      $canvas as HTMLCanvasElement
+    ).getBoundingClientRect();
+
     canvas.addEventListener(
       'pointerdown',
-      // @ts-ignore
       (e: FederatedPointerEvent) => {
         // currentTarget
-        expect(e.currentTarget).to.be.eqls(canvas);
+        expect(e.currentTarget).toBe(canvas);
 
         // coordinates
-        expect(e.clientX).to.be.eqls(100);
-        expect(e.clientY).to.be.eqls(100);
-        expect(e.screenX).to.be.eqls(200);
-        expect(e.screenY).to.be.eqls(200);
-        expect(e.viewportX).to.almost.eqls(100 - left);
-        expect(e.viewportY).to.almost.eqls(100 - top);
-        expect(e.canvasX).to.almost.eqls(100 - left);
-        expect(e.canvasY).to.almost.eqls(100 - top);
-        expect(e.x).to.almost.eqls(100 - left);
-        expect(e.y).to.almost.eqls(100 - top);
+        expect(e.clientX).toBe(100);
+        expect(e.clientY).toBe(100);
+        expect(e.screenX).toBe(200);
+        expect(e.screenY).toBe(200);
+        expect(e.viewportX).toBeCloseTo(100 - left);
+        expect(e.viewportY).toBeCloseTo(100 - top);
+        expect(e.canvasX).toBeCloseTo(100 - left);
+        expect(e.canvasY).toBeCloseTo(100 - top);
+        expect(e.x).toBeCloseTo(100 - left);
+        expect(e.y).toBeCloseTo(100 - top);
 
         const viewport = canvas.canvas2Viewport({ x: e.canvasX, y: e.canvasY });
 
-        expect(viewport.x).to.almost.eqls(100 - left);
-        expect(viewport.y).to.almost.eqls(100 - top);
+        expect(viewport.x).toBeCloseTo(100 - left);
+        expect(viewport.y).toBeCloseTo(100 - top);
 
         const { x: canvasX, y: canvasY } = canvas.viewport2Canvas({
           x: e.viewportX,
           y: e.viewportY,
         });
-        expect(canvasX).to.almost.eqls(100 - left);
-        expect(canvasY).to.almost.eqls(100 - top);
+        expect(canvasX).toBeCloseTo(100 - left);
+        expect(canvasY).toBeCloseTo(100 - top);
 
         done();
       },
       { once: true },
     );
 
-    const $canvas = canvas.getContextService().getDomElement();
-    const { top, left } = (
-      $canvas as HTMLCanvasElement
-    ).getBoundingClientRect();
-
     await sleep(100);
 
     $canvas.dispatchEvent(
-      // @ts-ignore
       new PointerEvent('pointerdown', {
         pointerType: 'mouse',
         clientX: 100,
@@ -261,9 +244,9 @@ describe('Canvas', () => {
     await sleep(300);
   });
 
-  it("should acount for camera's position when converting", async (done) => {
+  it("should account for camera's position when converting", async (done) => {
     const camera = canvas.getCamera();
-    const $canvas = canvas.getContextService().getDomElement();
+    const $canvas = canvas.getContextService().getDomElement()!;
     const { top, left } = (
       $canvas as HTMLCanvasElement
     ).getBoundingClientRect();
@@ -282,31 +265,30 @@ describe('Canvas', () => {
 
     canvas.addEventListener(
       'pointerdown',
-      // @ts-ignore
       (e: FederatedPointerEvent) => {
         // coordinates
-        expect(e.clientX).to.be.eqls(100);
-        expect(e.clientY).to.be.eqls(100);
-        expect(e.screenX).to.be.eqls(200);
-        expect(e.screenY).to.be.eqls(200);
-        expect(e.viewportX).to.almost.eqls(100 - left);
-        expect(e.viewportY).to.almost.eqls(100 - top);
-        expect(e.canvasX).to.almost.eqls(200 - left); // canvasX changed
-        expect(e.canvasY).to.almost.eqls(100 - top);
+        expect(e.clientX).toBe(100);
+        expect(e.clientY).toBe(100);
+        expect(e.screenX).toBe(200);
+        expect(e.screenY).toBe(200);
+        expect(e.viewportX).toBeCloseTo(100 - left);
+        expect(e.viewportY).toBeCloseTo(100 - top);
+        expect(e.canvasX).toBeCloseTo(200 - left); // canvasX changed
+        expect(e.canvasY).toBeCloseTo(100 - top);
 
         const { x: viewportX, y: viewportY } = canvas.getPointByClient(
           100,
           100,
         );
-        expect(viewportX).to.almost.eqls(100 - left);
-        expect(viewportY).to.almost.eqls(100 - top);
+        expect(viewportX).toBeCloseTo(100 - left);
+        expect(viewportY).toBeCloseTo(100 - top);
 
         const { x: clientX, y: clientY } = canvas.getClientByPoint(
           viewportX,
           viewportY,
         );
-        expect(clientX).to.almost.eqls(100);
-        expect(clientY).to.almost.eqls(100);
+        expect(clientX).toBeCloseTo(100);
+        expect(clientY).toBeCloseTo(100);
 
         done();
       },
@@ -319,7 +301,6 @@ describe('Canvas', () => {
     await sleep(100);
 
     $canvas.dispatchEvent(
-      // @ts-ignore
       new PointerEvent('pointerdown', {
         pointerType: 'mouse',
         clientX: 100,
@@ -342,10 +323,10 @@ describe('Canvas', () => {
     await canvas.ready;
     canvas.appendChild(group3);
 
-    expect(canvas.document.getElementById('id3')).to.eqls(group3);
-    expect(canvas.document.getElementsByName('group3').length).to.eqls(1);
-    expect(canvas.document.getElementsByClassName('c1').length).to.eqls(1);
-    expect(canvas.document.getElementsByClassName('c2').length).to.eqls(1);
-    expect(canvas.document.getElementsByClassName('c3').length).to.eqls(1);
+    expect(canvas.document.getElementById('id3')).toBe(group3);
+    expect(canvas.document.getElementsByName('group3').length).toBe(1);
+    expect(canvas.document.getElementsByClassName('c1').length).toBe(1);
+    expect(canvas.document.getElementsByClassName('c2').length).toBe(1);
+    expect(canvas.document.getElementsByClassName('c3').length).toBe(1);
   });
 });
