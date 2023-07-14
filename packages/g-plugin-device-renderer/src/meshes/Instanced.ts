@@ -6,7 +6,7 @@ import type {
   Tuple4Number,
 } from '@antv/g-lite';
 import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { LightPool } from '../LightPool';
 import type { Fog } from '../lights';
@@ -80,7 +80,7 @@ export enum VertexAttributeLocation {
 }
 
 /**
- * Instanced mesh
+ * Draw call.
  */
 export abstract class Instanced {
   /**
@@ -141,9 +141,19 @@ export abstract class Instanced {
   protected lightReceived = false;
 
   /**
-   *
+   * Divisor of instanced array.
    */
   protected divisor = 1;
+
+  /**
+   * Account for anchor and merge it into modelMatrix.
+   */
+  protected mergeAnchorIntoModelMatrix = false;
+
+  /**
+   * Create a new instance when exceed.
+   */
+  protected maxInstance = 5000;
 
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
@@ -235,6 +245,10 @@ export abstract class Instanced {
       return true;
     }
 
+    if (this.objects.length >= this.maxInstance) {
+      return false;
+    }
+
     // Path / Polyline could be rendered as Line
     if (
       this.instance.nodeName !== object.nodeName &&
@@ -303,18 +317,18 @@ export abstract class Instanced {
         ];
       }
 
-      if (this.clipPathTarget) {
-        // account for target's rts
-        mat4.copy(modelMatrix, object.getLocalTransform());
-        fillColor = [255, 255, 255, 255];
-        mat4.mul(
-          modelMatrix,
-          this.clipPathTarget.getWorldTransform(),
-          modelMatrix,
-        );
-      } else {
-        mat4.copy(modelMatrix, object.getWorldTransform());
-      }
+      // if (this.clipPathTarget) {
+      //   // account for target's rts
+      //   mat4.copy(modelMatrix, object.getLocalTransform());
+      //   fillColor = [255, 255, 255, 255];
+      //   mat4.mul(
+      //     modelMatrix,
+      //     this.clipPathTarget.getWorldTransform(),
+      //     modelMatrix,
+      //   );
+      // } else {
+      //   mat4.copy(modelMatrix, object.getWorldTransform());
+      // }
       mat4.mul(
         modelViewMatrix,
         this.context.camera.getViewTransform(),
@@ -325,6 +339,30 @@ export abstract class Instanced {
         // @ts-ignore
         object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
+      if (this.mergeAnchorIntoModelMatrix) {
+        const { anchor } = object.parsedStyle as ParsedBaseStyleProps;
+        let translateX = 0;
+        let translateY = 0;
+        let translateZ = 0;
+        const contentBounds = object.getGeometryBounds();
+        if (contentBounds) {
+          const { halfExtents } = contentBounds;
+          translateX = -halfExtents[0] * anchor[0] * 2;
+          translateY = -halfExtents[1] * anchor[1] * 2;
+          translateZ = -halfExtents[2] * (anchor[2] || 0) * 2;
+        }
+
+        mat4.mul(
+          modelMatrix,
+          object.getWorldTransform(), // apply anchor
+          mat4.fromTranslation(
+            modelMatrix,
+            vec3.fromValues(translateX, translateY, translateZ),
+          ),
+        );
+      } else {
+        mat4.copy(modelMatrix, object.getWorldTransform());
+      }
       packedModelMatrix.push(...modelMatrix);
       packedFillStroke.push(
         packUint8ToFloat(fillColor[0], fillColor[1]),
@@ -798,11 +836,32 @@ export abstract class Instanced {
       );
     } else if (name === 'modelMatrix') {
       const packed: number[] = [];
+      const modelMatrix = mat4.create();
       objects.forEach((object) => {
-        const modelMatrix = mat4.copy(
-          mat4.create(),
-          object.getWorldTransform(),
-        );
+        if (this.mergeAnchorIntoModelMatrix) {
+          const { anchor } = object.parsedStyle;
+          let translateX = 0;
+          let translateY = 0;
+          let translateZ = 0;
+          const contentBounds = object.getGeometryBounds();
+          if (contentBounds) {
+            const { halfExtents } = contentBounds;
+            translateX = -halfExtents[0] * anchor[0] * 2;
+            translateY = -halfExtents[1] * anchor[1] * 2;
+            translateZ = -halfExtents[2] * (anchor[2] || 0) * 2;
+          }
+
+          mat4.mul(
+            modelMatrix,
+            object.getWorldTransform(), // apply anchor
+            mat4.fromTranslation(
+              modelMatrix,
+              vec3.fromValues(translateX, translateY, translateZ),
+            ),
+          );
+        } else {
+          mat4.copy(modelMatrix, object.getWorldTransform());
+        }
         packed.push(...modelMatrix);
       });
 
