@@ -308,86 +308,90 @@ export class LineMesh extends Instanced {
     const { pointsBuffer, travelBuffer, instancedCount } =
       updateBuffer(instance);
 
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.PACKED,
-      byteStride: 4 * (3 + 3 + 3 + 3),
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          byteStride: 4 * 3,
-          location: LineVertexAttributeLocation.PREV,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 3,
-          byteStride: 4 * 3,
-          location: LineVertexAttributeLocation.POINT1,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_R,
-          bufferByteOffset: 4 * 5,
-          byteStride: 4 * 3,
-          location: LineVertexAttributeLocation.VERTEX_JOINT,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 6,
-          byteStride: 4 * 3,
-          location: LineVertexAttributeLocation.POINT2,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 9,
-          byteStride: 4 * 3,
-          location: LineVertexAttributeLocation.NEXT,
-          divisor: 1,
-        },
-      ],
-      data: new Float32Array(pointsBuffer),
-    });
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.VERTEX_NUM,
-      byteStride: 4 * 1,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_R,
-          bufferByteOffset: 4 * 0,
-          byteStride: 4 * 1,
-          location: LineVertexAttributeLocation.VERTEX_NUM,
-          divisor: 0,
-        },
-      ],
-      data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
-    });
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.TRAVEL,
-      byteStride: 4 * 1,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_R,
-          bufferByteOffset: 4 * 0,
-          byteStride: 4 * 1,
-          location: LineVertexAttributeLocation.TRAVEL,
-          divisor: 1,
-        },
-      ],
-      data: new Float32Array(travelBuffer),
-    });
+    // Empty path definition will cause WebGL context lost.
+    // @see https://github.com/antvis/G/issues/1417
+    if (pointsBuffer.length) {
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.PACKED,
+        byteStride: 4 * (3 + 3 + 3 + 3),
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 0,
+            byteStride: 4 * 3,
+            location: LineVertexAttributeLocation.PREV,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 3,
+            byteStride: 4 * 3,
+            location: LineVertexAttributeLocation.POINT1,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_R,
+            bufferByteOffset: 4 * 5,
+            byteStride: 4 * 3,
+            location: LineVertexAttributeLocation.VERTEX_JOINT,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 6,
+            byteStride: 4 * 3,
+            location: LineVertexAttributeLocation.POINT2,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 9,
+            byteStride: 4 * 3,
+            location: LineVertexAttributeLocation.NEXT,
+            divisor: 1,
+          },
+        ],
+        data: new Float32Array(pointsBuffer),
+      });
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.VERTEX_NUM,
+        byteStride: 4 * 1,
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_R,
+            bufferByteOffset: 4 * 0,
+            byteStride: 4 * 1,
+            location: LineVertexAttributeLocation.VERTEX_NUM,
+            divisor: 0,
+          },
+        ],
+        data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+      });
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.TRAVEL,
+        byteStride: 4 * 1,
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_R,
+            bufferByteOffset: 4 * 0,
+            byteStride: 4 * 1,
+            location: LineVertexAttributeLocation.TRAVEL,
+            divisor: 1,
+          },
+        ],
+        data: new Float32Array(travelBuffer),
+      });
 
-    this.geometry.vertexCount = 15;
-    this.geometry.instancedCount = instancedCount;
+      this.geometry.vertexCount = 15;
+      this.geometry.instancedCount = instancedCount;
 
-    this.geometry.setIndexBuffer(
-      new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]),
-    );
+      this.geometry.setIndexBuffer(
+        new Uint32Array([0, 2, 1, 0, 3, 2, 4, 6, 5, 4, 7, 6, 4, 7, 8]),
+      );
+    }
   }
 }
 

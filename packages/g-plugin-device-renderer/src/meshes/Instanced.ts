@@ -104,6 +104,7 @@ export abstract class Instanced {
     protected renderHelper: RenderHelper,
     protected texturePool: TexturePool,
     protected lightPool: LightPool,
+    object: DisplayObject,
   ) {}
 
   context: BatchContext;
@@ -150,12 +151,12 @@ export abstract class Instanced {
    */
   protected mergeAnchorIntoModelMatrix = false;
 
-  /**
-   * Create a new instance when exceed.
-   */
-  protected maxInstance = 5000;
-
   protected abstract createMaterial(objects: DisplayObject[]): void;
+
+  /**
+   * Get called when instance created or recreated.
+   */
+  onCreate(object: DisplayObject) {}
 
   get instance() {
     return this.objects[0];
@@ -243,10 +244,6 @@ export abstract class Instanced {
   shouldMerge(object: DisplayObject, index: number): boolean {
     if (!this.instance) {
       return true;
-    }
-
-    if (this.objects.length >= this.maxInstance) {
-      return false;
     }
 
     // Path / Polyline could be rendered as Line

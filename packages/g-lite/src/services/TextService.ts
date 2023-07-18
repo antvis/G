@@ -100,8 +100,8 @@ export class TextService {
     };
 
     const canvas =
-      this.runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context = this.runtime.offscreenCanvas.getOrCreateContext(
+      this.runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
+    const context = this.runtime.offscreenCanvasCreator.getOrCreateContext(
       offscreenCanvas,
       {
         willReadFrequently: true,
@@ -209,7 +209,7 @@ export class TextService {
     // }
 
     const context =
-      this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+      this.runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
     context.font = font;
 
     // no overflowing by default
@@ -354,7 +354,7 @@ export class TextService {
       textOverflow,
     } = parsedStyle;
     const context =
-      this.runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+      this.runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;
 
     let ellipsis = '';

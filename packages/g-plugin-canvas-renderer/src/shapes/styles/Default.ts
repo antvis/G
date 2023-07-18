@@ -206,16 +206,17 @@ export class DefaultRenderer implements StyleRenderer {
       const { width, height } = (pattern.image as Rect).parsedStyle;
       dpr = canvasContext.contextService.getDPR();
       const { offscreenCanvas } = canvasContext.config;
-      $offscreenCanvas = runtime.offscreenCanvas.getOrCreateCanvas(
+      $offscreenCanvas = runtime.offscreenCanvasCreator.getOrCreateCanvas(
         offscreenCanvas,
       ) as HTMLCanvasElement;
 
       $offscreenCanvas.width = width * dpr;
       $offscreenCanvas.height = height * dpr;
 
-      const offscreenCanvasContext = runtime.offscreenCanvas.getOrCreateContext(
-        offscreenCanvas,
-      ) as CanvasRenderingContext2D;
+      const offscreenCanvasContext =
+        runtime.offscreenCanvasCreator.getOrCreateContext(
+          offscreenCanvas,
+        ) as CanvasRenderingContext2D;
 
       const restoreStack = [];
 

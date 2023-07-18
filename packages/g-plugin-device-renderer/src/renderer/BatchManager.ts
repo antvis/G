@@ -13,6 +13,8 @@ import type { Batch } from './Batch';
 
 let stencilRefCounter = 1;
 
+const MAX_INSTANCES_PER_BATCH = 5000;
+
 export type BatchContext = { device: Device } & RenderingPluginContext;
 
 export class BatchManager {
@@ -101,6 +103,7 @@ export class BatchManager {
               (mesh) =>
                 meshTag === mesh.constructor &&
                 mesh.index === i &&
+                mesh.objects.length < MAX_INSTANCES_PER_BATCH &&
                 mesh.shouldMerge(object, i),
             );
             if (
@@ -112,6 +115,7 @@ export class BatchManager {
                 this.texturePool,
                 this.lightPool,
               );
+              existedMesh.onCreate(object);
               existedMesh.renderer = renderer;
               existedMesh.index = i;
               this.meshes.push(existedMesh);
@@ -160,9 +164,8 @@ export class BatchManager {
     newValue: any,
     immediately = false,
   ) {
-    // @ts-ignore
-    const renderable3D = object.renderable3D as Renderable3D;
-    const renderer = this.rendererFactory[object.nodeName];
+    const renderable3D = (object as any).renderable3D as Renderable3D;
+    const renderer = this.rendererFactory[object.nodeName] as Batch;
     if (renderer) {
       renderer.meshes.forEach((meshCtor, i) => {
         const shouldSubmit = renderer.shouldSubmitRenderInst(object, i);
@@ -189,10 +192,12 @@ export class BatchManager {
               (mesh) =>
                 meshCtor === mesh.constructor &&
                 mesh.index === i &&
+                mesh.objects.length < MAX_INSTANCES_PER_BATCH &&
                 mesh.shouldMerge(object, i),
             );
 
             if (!existedMesh) {
+              // @ts-ignore
               existedMesh = new meshCtor(
                 this.renderHelper,
                 this.texturePool,
@@ -201,6 +206,7 @@ export class BatchManager {
               existedMesh.renderer = renderer;
               existedMesh.index = i;
               existedMesh.init(this.context);
+              existedMesh.onCreate(object);
               this.meshes.push(existedMesh);
             } else {
               existedMesh.geometryDirty = true;
@@ -219,32 +225,40 @@ export class BatchManager {
           existedMesh.inited &&
           !existedMesh.geometryDirty
         ) {
-          const objectIdx = existedMesh.objects.indexOf(object);
-          if (immediately) {
-            object.parsedStyle[attributeName] = newValue;
-            existedMesh.updateAttribute(
-              [object],
-              objectIdx,
-              attributeName,
-              newValue,
-            );
-          } else {
-            const patchKey = existedMesh.id + attributeName;
-            if (!this.pendingUpdatePatches[patchKey]) {
-              this.pendingUpdatePatches[patchKey] = {
-                instance: existedMesh,
-                objectIndices: [],
-                name: attributeName,
-                value: newValue,
-              };
-            }
-            if (
-              this.pendingUpdatePatches[patchKey].objectIndices.indexOf(
+          const shouldMerge = existedMesh.shouldMerge(object, i);
+          if (shouldMerge) {
+            const objectIdx = existedMesh.objects.indexOf(object);
+            if (immediately) {
+              object.parsedStyle[attributeName] = newValue;
+              existedMesh.updateAttribute(
+                [object],
                 objectIdx,
-              ) === -1
-            ) {
-              this.pendingUpdatePatches[patchKey].objectIndices.push(objectIdx);
+                attributeName,
+                newValue,
+              );
+            } else {
+              const patchKey = existedMesh.id + attributeName;
+              if (!this.pendingUpdatePatches[patchKey]) {
+                this.pendingUpdatePatches[patchKey] = {
+                  instance: existedMesh,
+                  objectIndices: [],
+                  name: attributeName,
+                  value: newValue,
+                };
+              }
+              if (
+                this.pendingUpdatePatches[patchKey].objectIndices.indexOf(
+                  objectIdx,
+                ) === -1
+              ) {
+                this.pendingUpdatePatches[patchKey].objectIndices.push(
+                  objectIdx,
+                );
+              }
             }
+          } else {
+            existedMesh.geometryDirty = true;
+            existedMesh.onCreate(object);
           }
         }
       });
