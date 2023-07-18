@@ -44,7 +44,7 @@ import {
   TextService,
   TextUpdater,
 } from './services';
-import { Shape } from './types';
+import { CanvasLike, Shape } from './types';
 
 export const runtime: GlobalRuntime = {} as GlobalRuntime;
 
@@ -53,7 +53,8 @@ export interface GlobalRuntime {
   // AnimationTimeline: new (doc: IDocument) => IAnimationTimeline;
   AnimationTimeline: any;
   EasingFunction: (...args: any[]) => (t: number) => number;
-  offscreenCanvas: OffscreenCanvasCreator;
+  offscreenCanvasCreator: OffscreenCanvasCreator;
+  offscreenCanvas: CanvasLike;
   sceneGraphSelector: SceneGraphSelector;
   sceneGraphService: SceneGraphService;
   textService: TextService;
@@ -162,7 +163,7 @@ runtime.AnimationTimeline = null;
 
 runtime.EasingFunction = null;
 
-runtime.offscreenCanvas = new OffscreenCanvasCreator();
+runtime.offscreenCanvasCreator = new OffscreenCanvasCreator();
 
 runtime.nativeHTMLMap = new WeakMap();
 

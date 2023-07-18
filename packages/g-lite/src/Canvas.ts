@@ -184,6 +184,11 @@ export class Canvas extends EventTarget implements ICanvas {
       canvasHeight = height || getHeight(canvas) || canvas.height / dpr;
     }
 
+    // override it in runtime
+    if (offscreenCanvas) {
+      runtime.offscreenCanvas = offscreenCanvas;
+    }
+
     /**
      * implements `Window` interface
      */

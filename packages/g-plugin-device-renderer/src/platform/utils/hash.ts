@@ -191,7 +191,8 @@ export function vertexAttributeDescriptorEquals(
     a.bufferIndex === b.bufferIndex &&
     a.bufferByteOffset === b.bufferByteOffset &&
     a.location === b.location &&
-    a.format === b.format
+    a.format === b.format &&
+    a.divisor === b.divisor
   );
 }
 

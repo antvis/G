@@ -1,4 +1,5 @@
 import type { CanvasLike } from '..';
+import { runtime } from '..';
 
 /**
  * used in following scenes:
@@ -21,8 +22,8 @@ export class OffscreenCanvasCreator {
     }
 
     // user-defined offscreen canvas
-    if (offscreenCanvas) {
-      this.canvas = offscreenCanvas;
+    if (offscreenCanvas || runtime.offscreenCanvas) {
+      this.canvas = offscreenCanvas || runtime.offscreenCanvas;
       this.context = this.canvas.getContext('2d', contextAttributes);
     } else {
       try {
