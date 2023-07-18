@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 1.2.5
+
+### Patch Changes
+
+-   ff2f4585: Return empty object for globalthis.
+-   6fa21f84: Override offscreen canvas in runtime.
+
 ## 1.2.4
 
 ### Patch Changes

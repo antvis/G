@@ -1,5 +1,17 @@
 # @antv/g-plugin-canvas-renderer
 
+## 1.9.5
+
+### Patch Changes
+
+-   ff2f4585: Return empty object for globalthis.
+-   6fa21f84: Override offscreen canvas in runtime.
+-   Updated dependencies [ff2f4585]
+-   Updated dependencies [6fa21f84]
+    -   @antv/g-lite@1.2.5
+    -   @antv/g-plugin-canvas-path-generator@1.3.5
+    -   @antv/g-plugin-image-loader@1.3.5
+
 ## 1.9.4
 
 ### Patch Changes
