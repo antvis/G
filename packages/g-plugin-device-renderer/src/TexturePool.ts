@@ -117,7 +117,7 @@ export class TexturePool {
   }
 
   getOrCreateCanvas() {
-    return runtime.offscreenCanvas.getOrCreateCanvas(
+    return runtime.offscreenCanvasCreator.getOrCreateCanvas(
       this.context.config.offscreenCanvas,
     );
   }
@@ -129,8 +129,9 @@ export class TexturePool {
     const height = halfExtents[1] * 2 || 1;
 
     const { offscreenCanvas } = this.context.config;
-    const canvas = runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context = runtime.offscreenCanvas.getOrCreateContext(
+    const canvas =
+      runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
+    const context = runtime.offscreenCanvasCreator.getOrCreateContext(
       offscreenCanvas,
     ) as CanvasRenderingContext2D;
 
@@ -171,8 +172,10 @@ export class TexturePool {
     const height = halfExtents[1] * 2 || 1;
     const { offscreenCanvas } = this.context.config;
 
-    const canvas = runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context = runtime.offscreenCanvas.getOrCreateContext(offscreenCanvas);
+    const canvas =
+      runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
+    const context =
+      runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
 
     canvas.width = width;
     canvas.height = height;

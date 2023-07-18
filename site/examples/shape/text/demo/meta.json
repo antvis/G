@@ -43,6 +43,13 @@
         "en": "D3 Word Cloud"
       },
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*3WR1RZMQrAQAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "text-single-canvas.js",
+      "title": {
+        "zh": "关闭精确度量",
+        "en": "Text Baseline"
+      }
     }
   ]
 }

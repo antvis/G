@@ -1,5 +1,19 @@
 # @antv/g-mobile-webgl
 
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [ff2f4585]
+-   Updated dependencies [6fa21f84]
+    -   @antv/g-plugin-device-renderer@1.9.5
+    -   @antv/g-lite@1.2.5
+    -   @antv/g-plugin-webgl-device@1.9.5
+    -   @antv/g-plugin-dragndrop@1.8.5
+    -   @antv/g-plugin-html-renderer@1.9.5
+    -   @antv/g-plugin-image-loader@1.3.5
+    -   @antv/g-plugin-mobile-interaction@0.9.5
+
 ## 0.9.4
 
 ### Patch Changes

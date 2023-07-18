@@ -43,11 +43,15 @@ export class InstancedPathMesh extends Instanced {
       const {
         path: { absolutePath },
       } = object.parsedStyle as ParsedPathStyleProps;
-      if (absolutePath.length >= 2 && absolutePath.length <= 5) {
+      if (absolutePath.length >= 2) {
         return true;
       }
     }
     return false;
+  }
+
+  onCreate(object: DisplayObject) {
+    this.segmentNum = this.calcSegmentNum(object);
   }
 
   protected mergeAnchorIntoModelMatrix = true;
@@ -55,21 +59,9 @@ export class InstancedPathMesh extends Instanced {
   private segmentNum = -1;
 
   private calcSegmentNum(object: DisplayObject) {
-    return (
-      object.parsedStyle as ParsedPathStyleProps
-    ).path.absolutePath.reduce((prev, cur) => {
-      let segment = 0;
-      if (cur[0] === 'M') {
-        segment = 0;
-      } else if (cur[0] === 'L') {
-        segment = 1;
-      } else if (cur[0] === 'A' || cur[0] === 'Q' || cur[0] === 'C') {
-        segment = SEGMENT_NUM;
-      } else if (cur[0] === 'Z') {
-        segment = 1;
-      }
-      return prev + segment;
-    }, 0);
+    // FIXME: only need to collect instanced count
+    const { instancedCount } = updateBuffer(object, false, SEGMENT_NUM);
+    return instancedCount;
   }
   /**
    * Paths with the same number of vertices should be merged.
@@ -78,10 +70,6 @@ export class InstancedPathMesh extends Instanced {
     const shouldMerge = super.shouldMerge(object, index);
     if (!shouldMerge) {
       return false;
-    }
-
-    if (this.segmentNum === -1) {
-      this.segmentNum = this.calcSegmentNum(this.instance);
     }
 
     const segmentNum = this.calcSegmentNum(object);
@@ -166,99 +154,101 @@ export class InstancedPathMesh extends Instanced {
       offset += 9;
     });
 
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.PACKED,
-      byteStride: 4 * (3 + 3 + 3 + 3),
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          location: LineVertexAttributeLocation.PREV,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 3,
-          location: LineVertexAttributeLocation.POINT1,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_R,
-          bufferByteOffset: 4 * 5,
-          location: LineVertexAttributeLocation.VERTEX_JOINT,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 6,
-          location: LineVertexAttributeLocation.POINT2,
-          divisor: 1,
-        },
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 9,
-          location: LineVertexAttributeLocation.NEXT,
-          divisor: 1,
-        },
-      ],
-      data: new Float32Array(pointsBuffer),
-    });
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.VERTEX_NUM,
-      byteStride: 4 * 1,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_R,
-          bufferByteOffset: 4 * 0,
-          byteStride: 4 * 1,
-          location: LineVertexAttributeLocation.VERTEX_NUM,
-          divisor: 0,
-        },
-      ],
-      data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
-    });
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.TRAVEL,
-      byteStride: 4 * 1,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_R,
-          bufferByteOffset: 4 * 0,
-          byteStride: 4 * 1,
-          location: LineVertexAttributeLocation.TRAVEL,
-          divisor: 1,
-        },
-      ],
-      data: new Float32Array(travelBuffer),
-    });
+    if (pointsBuffer.length) {
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.PACKED,
+        byteStride: 4 * (3 + 3 + 3 + 3),
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 0,
+            location: LineVertexAttributeLocation.PREV,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 3,
+            location: LineVertexAttributeLocation.POINT1,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_R,
+            bufferByteOffset: 4 * 5,
+            location: LineVertexAttributeLocation.VERTEX_JOINT,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 6,
+            location: LineVertexAttributeLocation.POINT2,
+            divisor: 1,
+          },
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 9,
+            location: LineVertexAttributeLocation.NEXT,
+            divisor: 1,
+          },
+        ],
+        data: new Float32Array(pointsBuffer),
+      });
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.VERTEX_NUM,
+        byteStride: 4 * 1,
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_R,
+            bufferByteOffset: 4 * 0,
+            byteStride: 4 * 1,
+            location: LineVertexAttributeLocation.VERTEX_NUM,
+            divisor: 0,
+          },
+        ],
+        data: new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+      });
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.TRAVEL,
+        byteStride: 4 * 1,
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_R,
+            bufferByteOffset: 4 * 0,
+            byteStride: 4 * 1,
+            location: LineVertexAttributeLocation.TRAVEL,
+            divisor: 1,
+          },
+        ],
+        data: new Float32Array(travelBuffer),
+      });
 
-    // this attribute only changes for each n instance
-    this.divisor = instancedCount / objects.length;
+      // this attribute only changes for each n instance
+      this.divisor = instancedCount / objects.length;
 
-    this.geometry.setVertexBuffer({
-      bufferIndex: LineVertexAttributeBufferIndex.DASH,
-      byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
-      attributes: [
-        {
-          format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 0,
-          location: LineVertexAttributeLocation.DASH,
-          divisor: this.divisor,
-        },
-      ],
-      data: new Float32Array(packedDash),
-    });
+      this.geometry.setVertexBuffer({
+        bufferIndex: LineVertexAttributeBufferIndex.DASH,
+        byteStride: 4 * 4,
+        frequency: VertexBufferFrequency.PerInstance,
+        attributes: [
+          {
+            format: Format.F32_RGBA,
+            bufferByteOffset: 4 * 0,
+            location: LineVertexAttributeLocation.DASH,
+            divisor: this.divisor,
+          },
+        ],
+        data: new Float32Array(packedDash),
+      });
 
-    // use default common attributes
-    super.createGeometry(objects);
+      // use default common attributes
+      super.createGeometry(objects);
 
-    this.geometry.vertexCount = 15;
-    this.geometry.instancedCount = instancedCount;
-    this.geometry.setIndexBuffer(new Uint32Array(indices));
+      this.geometry.vertexCount = 15;
+      this.geometry.instancedCount = instancedCount;
+      this.geometry.setIndexBuffer(new Uint32Array(indices));
+    }
   }
 
   updateAttribute(

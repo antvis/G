@@ -175,7 +175,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath
    */
   private isPointInPath = (displayObject: DisplayObject, position: Point) => {
-    const context = this.runtime.offscreenCanvas.getOrCreateContext(
+    const context = this.runtime.offscreenCanvasCreator.getOrCreateContext(
       this.context.config.offscreenCanvas,
     ) as CanvasRenderingContext2D;
 
