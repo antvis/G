@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.4
+
+### Patch Changes
+
+-   6757ccbd: Return an unprecise bound of HTML before it appending to document.
+
 ## 1.2.3
 
 ### Patch Changes
