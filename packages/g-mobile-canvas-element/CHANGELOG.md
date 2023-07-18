@@ -1,5 +1,12 @@
 # @antv/g-mobile-canvas-element
 
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [6757ccbd]
+    -   @antv/g-lite@1.2.4
+
 ## 0.8.3
 
 ### Patch Changes

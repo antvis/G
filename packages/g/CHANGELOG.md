@@ -1,5 +1,15 @@
 # @antv/g
 
+## 5.18.5
+
+### Patch Changes
+
+-   Updated dependencies [6757ccbd]
+    -   @antv/g-lite@1.2.4
+    -   @antv/g-camera-api@1.2.4
+    -   @antv/g-dom-mutation-observer-api@1.2.4
+    -   @antv/g-web-animations-api@1.2.4
+
 ## 5.18.4
 
 ### Patch Changes
