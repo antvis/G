@@ -20,7 +20,7 @@ import {
 import { arcToCubic } from '@antv/util';
 import earcut from 'earcut';
 import { mat4, vec3 } from 'gl-matrix';
-import { CullMode, Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
@@ -190,8 +190,8 @@ export class LineMesh extends Instanced {
         });
       } else if (name === 'lineDash') {
         this.material.setUniforms({
-          [Uniform.DASH]: lineDash[0] || 0,
-          [Uniform.GAP]: lineDash[1] || 0,
+          [Uniform.DASH]: (lineDash && lineDash[0]) || 0,
+          [Uniform.GAP]: (lineDash && lineDash[1]) || 0,
         });
       } else if (name === 'lineDashOffset') {
         this.material.setUniforms({
@@ -299,7 +299,6 @@ export class LineMesh extends Instanced {
       [Uniform.VISIBLE]: visibility === 'visible' ? 1 : 0,
       [Uniform.Z_INDEX]: instance.sortable.renderOrder * RENDER_ORDER_SCALE,
     });
-    this.material.cullMode = CullMode.None;
   }
 
   createGeometry(objects: DisplayObject[]): void {
