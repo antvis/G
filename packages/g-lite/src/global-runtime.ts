@@ -144,10 +144,10 @@ const getGlobalThis = () => {
   if (typeof window !== 'undefined') return window;
   // @ts-ignore
   if (typeof global !== 'undefined') return global;
+  return {};
   // [!] Error: The 'this' keyword is equivalent to 'undefined' at the top level of an ES module, and has been rewritten
   // @see https://rollupjs.org/troubleshooting/#error-this-is-undefined
   // if (typeof this !== 'undefined') return this;
-  throw new Error('Unable to locate global `this`');
 };
 
 /**
