@@ -1,8 +1,7 @@
 import { mat4 } from 'gl-matrix';
-import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
 import { runtime } from '../global-runtime';
-import { AABB } from '../shapes';
+import { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -16,12 +15,12 @@ export interface HTMLStyleProps extends BaseStyleProps {
 }
 
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
+  x: number;
+  y: number;
   $el: HTMLElement;
   innerHTML: string | HTMLElement;
-  width: CSSUnitValue;
-  height: CSSUnitValue;
+  width: number;
+  height: number;
 }
 
 /**
@@ -63,8 +62,13 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
    * override with $el.getBoundingClientRect
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
    */
-  getBoundingClientRect() {
-    return this.parsedStyle.$el.getBoundingClientRect();
+  getBoundingClientRect(): Rectangle {
+    if (this.parsedStyle.$el) {
+      return this.parsedStyle.$el.getBoundingClientRect();
+    } else {
+      const { x, y, width, height } = this.parsedStyle;
+      return new Rectangle(x, y, width, height);
+    }
   }
 
   getClientRects() {
@@ -78,23 +82,15 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
     const canvasRect = this.ownerDocument?.defaultView
       ?.getContextService()
       .getBoundingClientRect();
-    if (canvasRect) {
-      const minX = clientRect.left - canvasRect.left;
-      const minY = clientRect.top - canvasRect.top;
 
-      const aabb = new AABB();
-      // aabb.setMinMax(
-      //   vec3.fromValues(minX, minY, 0),
-      //   vec3.fromValues(minX + clientRect.width, minY + clientRect.height, 0),
-      // );
-      aabb.setMinMax(
-        [minX, minY, 0],
-        [minX + clientRect.width, minY + clientRect.height, 0],
-      );
-
-      return aabb;
-    }
-    return null;
+    const aabb = new AABB();
+    const minX = clientRect.left - (canvasRect?.left || 0);
+    const minY = clientRect.top - (canvasRect?.top || 0);
+    aabb.setMinMax(
+      [minX, minY, 0],
+      [minX + clientRect.width, minY + clientRect.height, 0],
+    );
+    return aabb;
   }
 
   getLocalBounds() {

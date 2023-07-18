@@ -67,7 +67,7 @@ export class PathRenderer extends Batch {
     }
 
     if (index === 3) {
-      return isOneCommandCurve;
+      return !isLine && isOneCommandCurve;
     }
 
     return true;

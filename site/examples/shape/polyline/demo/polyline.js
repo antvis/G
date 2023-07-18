@@ -33,7 +33,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: canvasRenderer,
+  renderer: webglRenderer,
 });
 
 // create a line
@@ -59,7 +59,8 @@ const polyline = new Polyline({
   style: {
     points,
     stroke: '#1890FF',
-    lineWidth: 2,
+    lineWidth: 20,
+    lineCap: 'round',
     cursor: 'pointer',
   },
 });

@@ -1,5 +1,15 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.4
+
+### Patch Changes
+
+-   6757ccbd: Merge multiple simple paths into a single draw call
+-   6757ccbd: Return an unprecise bound of HTML before it appending to document.
+-   Updated dependencies [6757ccbd]
+    -   @antv/g-lite@1.2.4
+    -   @antv/g-plugin-image-loader@1.3.4
+
 ## 1.9.3
 
 ### Patch Changes

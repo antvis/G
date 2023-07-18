@@ -43,26 +43,50 @@ export class InstancedPathMesh extends Instanced {
       const {
         path: { absolutePath },
       } = object.parsedStyle as ParsedPathStyleProps;
-      if (
-        absolutePath.length === 2 &&
-        absolutePath[0][0] === 'M' &&
-        (absolutePath[1][0] === 'C' ||
-          absolutePath[1][0] === 'A' ||
-          absolutePath[1][0] === 'Q')
-      ) {
+      if (absolutePath.length >= 2 && absolutePath.length <= 5) {
         return true;
       }
     }
     return false;
   }
 
+  protected mergeAnchorIntoModelMatrix = true;
+
+  private segmentNum = -1;
+
+  private calcSegmentNum(object: DisplayObject) {
+    return (
+      object.parsedStyle as ParsedPathStyleProps
+    ).path.absolutePath.reduce((prev, cur) => {
+      let segment = 0;
+      if (cur[0] === 'M') {
+        segment = 0;
+      } else if (cur[0] === 'L') {
+        segment = 1;
+      } else if (cur[0] === 'A' || cur[0] === 'Q' || cur[0] === 'C') {
+        segment = SEGMENT_NUM;
+      } else if (cur[0] === 'Z') {
+        segment = 1;
+      }
+      return prev + segment;
+    }, 0);
+  }
+  /**
+   * Paths with the same number of vertices should be merged.
+   */
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
     if (!shouldMerge) {
       return false;
     }
 
-    return true;
+    if (this.segmentNum === -1) {
+      this.segmentNum = this.calcSegmentNum(this.instance);
+    }
+
+    const segmentNum = this.calcSegmentNum(object);
+
+    return this.segmentNum === segmentNum;
   }
 
   createMaterial(objects: DisplayObject[]): void {

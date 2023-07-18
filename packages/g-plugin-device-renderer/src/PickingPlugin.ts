@@ -90,8 +90,8 @@ export class PickingPlugin implements RenderingPlugin {
 
     renderingService.hooks.pick.tapPromise(
       PickingPlugin.tag,
-      (result: PickingResult) => {
-        throw new Error('Async version is not implemented.');
+      async (result: PickingResult) => {
+        return this.pick(result);
       },
     );
   }

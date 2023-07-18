@@ -17,6 +17,14 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*sQH_T5LdKdcAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "rounded-rects.js",
+      "title": {
+        "zh": "大量圆角矩形",
+        "en": "Instanced Rounded Rect"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*sQH_T5LdKdcAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "images.js",
       "title": {
         "zh": "大量图片",
@@ -29,7 +37,16 @@
       "title": {
         "zh": "包含一条曲线命令的 Path",
         "en": "Instanced Simple Path(one-command curve)"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*CvgZSYvSp3IAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "arrow.js",
+      "title": {
+        "zh": "大量箭头",
+        "en": "Instanced Arrow"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8F-XSbz8EIkAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "circle-path.js",

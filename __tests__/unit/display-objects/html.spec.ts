@@ -107,4 +107,30 @@ describe('HTML', () => {
     expect(html.getLocalBounds().center[0]).toBe(230);
     expect(html.getLocalBounds().center[1]).toBe(230);
   });
+
+  it('should return unprecise bounding box before appending to document.', () => {
+    const html = new HTML({
+      id: 'id',
+      name: 'name',
+      className: 'classname',
+      style: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        innerHTML: '<h1>This is Title</h1>',
+      },
+    });
+
+    // DOM element hasn't been created yet.
+    const $el = html.getDomElement();
+    expect($el).toBe(undefined);
+
+    // Use x/y/width/height defined by user.
+    const bounds = html.getBounds();
+    expect(bounds.halfExtents[0]).toBe(50);
+    expect(bounds.halfExtents[1]).toBe(50);
+    expect(bounds.center[0]).toBe(150);
+    expect(bounds.center[1]).toBe(150);
+  });
 });
