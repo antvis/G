@@ -13,6 +13,9 @@ import {
   VertexAttributeLocation,
 } from './Instanced';
 import { updateBuffer } from './Line';
+import { RenderHelper } from '../render';
+import { TexturePool } from '../TexturePool';
+import { LightPool } from '../LightPool';
 
 enum LineVertexAttributeBufferIndex {
   PACKED = VertexAttributeBufferIndex.POSITION + 1,
@@ -50,7 +53,13 @@ export class InstancedPathMesh extends Instanced {
     return false;
   }
 
-  onCreate(object: DisplayObject) {
+  constructor(
+    protected renderHelper: RenderHelper,
+    protected texturePool: TexturePool,
+    protected lightPool: LightPool,
+    object: DisplayObject,
+  ) {
+    super(renderHelper, texturePool, lightPool, object);
     this.segmentNum = this.calcSegmentNum(object);
   }
 

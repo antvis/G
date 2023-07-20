@@ -11,128 +11,31 @@ const canvas = new Canvas({
   renderer: new Renderer(),
 });
 
-const text1 = new Text({
-  style: {
-    x: 100,
-    y: 100,
-    fill: 'black',
-    text: 'Text1',
-  },
-});
-
-const text2 = new Text({
-  style: {
-    x: 200,
-    y: 100,
-    fill: 'black',
-    text: 'Text2',
-  },
-});
-
-const text3 = new Text({
-  style: {
-    x: 300,
-    y: 100,
-    fill: 'black',
-    text: 'Text3',
-  },
-});
-
-const text4 = new Text({
-  style: {
-    x: 200,
-    y: 200,
-    fill: 'black',
-    text: 'Text3',
-  },
-});
-
-const text5 = new Text({
-  style: {
-    x: 300,
-    y: 200,
-    fill: 'black',
-    text: 'Text3',
-  },
-});
-
 canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(text1);
-  text1.animate(
-    [
-      {
-        opacity: 0,
-        transform: 'translate(0, 0)',
+  for (let i = 0; i < 1000; i++) {
+    const text = new Text({
+      style: {
+        x: Math.random() * 600,
+        y: Math.random() * 500,
+        fontSize: 16,
+        fill: 'black',
+        text: `Text1${i}`,
       },
+    });
+    canvas.appendChild(text);
+
+    text.animate(
+      [
+        { opacity: 0, transform: 'translate(0, 0)' },
+        { opacity: 1, transform: 'translate(100, 0)' },
+      ],
       {
-        opacity: 1,
-        transform: 'translate(100, 0)',
+        duration: 2000,
+        fill: 'both',
+        iterations: Infinity,
       },
-    ],
-    {
-      duration: 2000,
-      fill: 'both',
-      iterations: Infinity,
-    },
-  );
-
-  canvas.appendChild(text2);
-  text2.animate(
-    [
-      { opacity: 0, transform: 'translate(0, 0)' },
-      { opacity: 1, transform: 'translate(100, 0)' },
-    ],
-    {
-      duration: 2000,
-      fill: 'both',
-      iterations: Infinity,
-    },
-  );
-
-  canvas.appendChild(text3);
-  text3.animate(
-    [
-      { opacity: 0, transform: 'translate(0, 0)' },
-      { opacity: 1, transform: 'translate(100, 0)' },
-    ],
-    {
-      duration: 2000,
-      fill: 'both',
-      iterations: Infinity,
-    },
-  );
-
-  canvas.appendChild(text4);
-  text4.animate(
-    [
-      { opacity: 0, transform: 'translate(0, 0)' },
-      { opacity: 1, transform: 'translate(100, 0)' },
-    ],
-    {
-      duration: 2000,
-      fill: 'both',
-      iterations: Infinity,
-    },
-  );
-
-  canvas.appendChild(text5);
-  text5.animate(
-    [
-      { opacity: 0, transform: 'translate(0, 0)' },
-      { opacity: 1, transform: 'translate(100, 0)' },
-    ],
-    {
-      duration: 2000,
-      fill: 'both',
-      iterations: Infinity,
-    },
-  );
-
-  text1.style.fontSize = 32;
-  text2.style.fontSize = 32;
-  text3.style.fontSize = 32;
-  text4.style.fontSize = 32;
-  text5.style.fontSize = 32;
+    );
+  }
 });
 
 // stats

@@ -27,6 +27,13 @@
         "zh": "移动大量节点",
         "en": "Move nodes"
       }
+    },
+    {
+      "filename": "webgl-text.js",
+      "title": {
+        "zh": "在 WebGL 中更新 Text 的位置",
+        "en": "Update position of Text in WebGL"
+      }
     }
   ]
 }

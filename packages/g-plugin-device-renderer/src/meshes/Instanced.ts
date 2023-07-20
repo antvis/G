@@ -153,11 +153,6 @@ export abstract class Instanced {
 
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
-  /**
-   * Get called when instance created or recreated.
-   */
-  onCreate(object: DisplayObject) {}
-
   get instance() {
     return this.objects[0];
   }
