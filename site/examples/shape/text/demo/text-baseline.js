@@ -40,12 +40,12 @@ const text1 = new Text({
     x: 10,
     y: 300,
     fontFamily: 'PingFang SC',
-    text: 'gah',
+    text: 'gah国',
     textBaseline: 'alphabetic',
-    fontSize: 50,
+    fontSize: 24,
     fill: '#1890FF',
-    stroke: '#F04864',
-    lineWidth: 5,
+    // stroke: '#F04864',
+    // lineWidth: 5,
   },
 });
 const html1 = new HTML({
@@ -136,20 +136,20 @@ const bounds4 = new Rect({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(text1);
   canvas.appendChild(bounds1);
+  canvas.appendChild(text1);
   canvas.appendChild(html1);
 
-  canvas.appendChild(text2);
   canvas.appendChild(bounds2);
+  canvas.appendChild(text2);
   canvas.appendChild(html2);
 
-  canvas.appendChild(text3);
   canvas.appendChild(bounds3);
+  canvas.appendChild(text3);
   canvas.appendChild(html3);
 
-  canvas.appendChild(text4);
   canvas.appendChild(bounds4);
+  canvas.appendChild(text4);
   canvas.appendChild(html4);
 
   canvas.appendChild(line);
@@ -231,3 +231,13 @@ rendererFolder
     canvas.setRenderer(renderer);
   });
 rendererFolder.open();
+
+const textFolder = gui.addFolder('text');
+const textConfig = {
+  fontSize: 24,
+};
+textFolder.add(textConfig, 'fontSize', 10, 100).onChange((fontSize) => {
+  [text1, text2, text3, text4].forEach((text) => {
+    text.attr('fontSize', fontSize);
+  });
+});

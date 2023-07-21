@@ -4,7 +4,7 @@ import type {
   Text as TextShape,
   Tuple4Number,
 } from '@antv/g-lite';
-import { isCSSRGB } from '@antv/g-lite';
+import { isCSSRGB, runtime } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -124,6 +124,9 @@ export class TextMesh extends Instanced {
         linePositionY = 0;
       } else if (textBaseline === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
+        if (!runtime.enableCSSParsing) {
+          linePositionY = -height;
+        }
         // linePositionY = -height + fontProperties.ascent;
       } else if (textBaseline === 'ideographic') {
         linePositionY = -height;
@@ -331,7 +334,8 @@ export class TextMesh extends Instanced {
       name === 'opacity' ||
       name === 'lineWidth' ||
       name === 'visibility' ||
-      name === 'pointerEvents'
+      name === 'pointerEvents' ||
+      name === 'isBillboard'
     ) {
       const vertice = this.geometry.vertices[
         TextVertexAttributeBufferIndex.INSTANCED
