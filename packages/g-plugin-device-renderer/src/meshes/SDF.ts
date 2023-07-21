@@ -151,7 +151,8 @@ export class SDFMesh extends Instanced {
       name === 'stroke' ||
       name === 'lineDash' ||
       name === 'strokeOpacity' ||
-      name === 'radius'
+      name === 'radius' ||
+      name === 'isBillboard'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
