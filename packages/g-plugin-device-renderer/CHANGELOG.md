@@ -1,5 +1,25 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.6
+
+### Patch Changes
+
+-   1b0901ba: Make FillMesh instanced to enhance perf.
+-   1b0901ba: ConvertToPath should account for Rect with undefined x/y.
+-   1b0901ba: Make textBaseline in SVG the same with Canvas.
+-   1b0901ba: Add a fixed offset for Text.
+-   1b0901ba: ConvertToPath should be compatible with empty coords.
+-   1b0901ba: Draw 1px sub-pixel line correctly in webgl.
+-   1b0901ba: Enhance perf of Text when fontSize changed in webgl.
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+    -   @antv/g-shader-components@1.8.2
+    -   @antv/g-lite@1.2.6
+    -   @antv/g-plugin-image-loader@1.3.6
+
 ## 1.9.5
 
 ### Patch Changes
