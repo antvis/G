@@ -19,6 +19,14 @@
         "en": "Marker"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "thin-line.js",
+      "title": {
+        "zh": "绘制宽度小于 1px 的线",
+        "en": "Thin Line"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*FNTzSp46rwgAAAAAAAAAAAAADmJ7AQ/original"
     }
   ]
 }

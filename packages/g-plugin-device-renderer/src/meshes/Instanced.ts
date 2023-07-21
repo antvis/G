@@ -151,12 +151,12 @@ export abstract class Instanced {
    */
   protected mergeAnchorIntoModelMatrix = false;
 
-  protected abstract createMaterial(objects: DisplayObject[]): void;
-
   /**
-   * Get called when instance created or recreated.
+   * Create a new batch if the number of instances exceeds.
    */
-  onCreate(object: DisplayObject) {}
+  maxInstances = 5000;
+
+  protected abstract createMaterial(objects: DisplayObject[]): void;
 
   get instance() {
     return this.objects[0];

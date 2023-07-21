@@ -4,7 +4,7 @@ import type {
   Text as TextShape,
   Tuple4Number,
 } from '@antv/g-lite';
-import { isCSSRGB } from '@antv/g-lite';
+import { isCSSRGB, runtime } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -20,6 +20,9 @@ import type GlyphAtlas from './symbol/GlyphAtlas';
 import { BASE_FONT_WIDTH, GlyphManager } from './symbol/GlyphManager';
 import { getGlyphQuads } from './symbol/SymbolQuad';
 import { packUint8ToFloat } from '../utils/compression';
+import { LightPool } from '../LightPool';
+import { TexturePool } from '../TexturePool';
+import { RenderHelper } from '../render';
 
 enum TextVertexAttributeBufferIndex {
   INSTANCED = VertexAttributeBufferIndex.POSITION + 1,
@@ -50,6 +53,34 @@ export class TextMesh extends Instanced {
 
   private tmpMat4 = mat4.create();
 
+  private fontHash: string;
+
+  constructor(
+    protected renderHelper: RenderHelper,
+    protected texturePool: TexturePool,
+    protected lightPool: LightPool,
+    object: DisplayObject,
+  ) {
+    super(renderHelper, texturePool, lightPool, object);
+    this.fontHash = this.calcFontHash(object);
+  }
+
+  private calcFontHash(object: DisplayObject) {
+    const instancedAttributes = [
+      'fontSize',
+      'fontFamily',
+      'fontWeight',
+      'textBaseline',
+      'letterSpacing',
+    ];
+    return (
+      object.parsedStyle.metrics.font +
+      instancedAttributes.reduce((prev, cur) => {
+        return prev + object.parsedStyle[cur];
+      }, '')
+    );
+  }
+
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
 
@@ -61,30 +92,7 @@ export class TextMesh extends Instanced {
       return false;
     }
 
-    const instance = this.instance;
-    const instancedAttributes = [
-      'fontSize',
-      'fontFamily',
-      'fontWeight',
-      'textBaseline',
-      'letterSpacing',
-    ];
-
-    // fontStack & fontSize should be same
-    // if (instance.parsedStyle.fontSize !== object.parsedStyle.fontSize) {
-    //   return false;
-    // }
-
-    if (
-      instance.parsedStyle.metrics.font !== object.parsedStyle.metrics.font ||
-      instancedAttributes.some(
-        (name) => instance.parsedStyle[name] !== object.parsedStyle[name],
-      )
-    ) {
-      return false;
-    }
-
-    return true;
+    return this.fontHash === this.calcFontHash(object);
   }
 
   createGeometry(objects: DisplayObject[]): void {
@@ -116,6 +124,9 @@ export class TextMesh extends Instanced {
         linePositionY = 0;
       } else if (textBaseline === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
+        if (!runtime.enableCSSParsing) {
+          linePositionY = -height;
+        }
         // linePositionY = -height + fontProperties.ascent;
       } else if (textBaseline === 'ideographic') {
         linePositionY = -height;
@@ -307,7 +318,6 @@ export class TextMesh extends Instanced {
       name === 'lineHeight' ||
       name === 'wordWrap' ||
       name === 'textAlign' ||
-      name === 'visibility' ||
       name === 'dx' ||
       name === 'dy'
     ) {
@@ -323,7 +333,9 @@ export class TextMesh extends Instanced {
       name === 'strokeOpacity' ||
       name === 'opacity' ||
       name === 'lineWidth' ||
-      name === 'pointerEvents'
+      name === 'visibility' ||
+      name === 'pointerEvents' ||
+      name === 'isBillboard'
     ) {
       const vertice = this.geometry.vertices[
         TextVertexAttributeBufferIndex.INSTANCED
@@ -370,10 +382,7 @@ export class TextMesh extends Instanced {
           // @ts-ignore
           object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
-        const modelMatrix =
-          name === 'modelMatrix'
-            ? mat4.copy(this.tmpMat4, object.getWorldTransform())
-            : null;
+        const modelMatrix = mat4.copy(this.tmpMat4, object.getWorldTransform());
 
         const [start, end] = this.packedBufferObjectMap.get(object);
         const sliced = vertice.slice(start, end);
@@ -413,6 +422,7 @@ export class TextMesh extends Instanced {
           sliced[i + 28] = encodedPickingColor[0];
           sliced[i + 29] = encodedPickingColor[1];
           sliced[i + 30] = encodedPickingColor[2];
+          // sliced[i + 31] = object.sortable.renderOrder * RENDER_ORDER_SCALE;
         }
 
         this.geometry.updateVertexBuffer(

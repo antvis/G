@@ -854,16 +854,21 @@ export function convertToPath(
   let commands: AbsoluteArray = [] as unknown as AbsoluteArray;
   switch (object.nodeName) {
     case Shape.LINE:
-      const { x1, y1, x2, y2 } = (object as Line).parsedStyle;
+      const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = (object as Line).parsedStyle;
       commands = lineToCommands(x1, y1, x2, y2);
       break;
     case Shape.CIRCLE: {
-      const { r, cx, cy } = (object as Circle).parsedStyle;
+      const { r = 0, cx = 0, cy = 0 } = (object as Circle).parsedStyle;
       commands = ellipseToCommands(r, r, cx, cy);
       break;
     }
     case Shape.ELLIPSE: {
-      const { rx, ry, cx, cy } = (object as Ellipse).parsedStyle;
+      const {
+        rx = 0,
+        ry = 0,
+        cx = 0,
+        cy = 0,
+      } = (object as Ellipse).parsedStyle;
       commands = ellipseToCommands(rx, ry, cx, cy);
       break;
     }
@@ -876,7 +881,13 @@ export function convertToPath(
       );
       break;
     case Shape.RECT:
-      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
+      const {
+        width = 0,
+        height = 0,
+        x = 0,
+        y = 0,
+        radius,
+      } = (object as Rect).parsedStyle;
 
       const hasRadius = radius && radius.some((r) => r !== 0);
       commands = rectToCommands(

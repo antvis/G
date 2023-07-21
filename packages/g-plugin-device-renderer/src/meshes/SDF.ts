@@ -41,19 +41,19 @@ export class SDFMesh extends Instanced {
       return false;
     }
 
-    if (
-      this.needDrawStrokeSeparately(object.parsedStyle) ||
-      this.needDrawStrokeSeparately(this.instance.parsedStyle)
-    ) {
-      return false;
-    }
+    // if (
+    //   this.needDrawStrokeSeparately(object.parsedStyle) ||
+    //   this.needDrawStrokeSeparately(this.instance.parsedStyle)
+    // ) {
+    //   return false;
+    // }
 
-    const { fill: instanceFill } = this.instance
-      .parsedStyle as ParsedBaseStyleProps;
-    const { fill } = object.parsedStyle as ParsedBaseStyleProps;
-    if ((instanceFill as CSSRGB).isNone !== (fill as CSSRGB).isNone) {
-      return false;
-    }
+    // const { fill: instanceFill } = this.instance
+    //   .parsedStyle as ParsedBaseStyleProps;
+    // const { fill } = object.parsedStyle as ParsedBaseStyleProps;
+    // if ((instanceFill as CSSRGB).isNone !== (fill as CSSRGB).isNone) {
+    //   return false;
+    // }
 
     return true;
   }
@@ -71,12 +71,9 @@ export class SDFMesh extends Instanced {
     // use default common attributes
     super.createGeometry(objects);
 
-    const interleaved = [];
     const instanced = [];
-    const indices = [];
     objects.forEach((object, i) => {
       const circle = object as Circle;
-      const offset = i * 4;
       // @ts-ignore
       const { radius } = circle.parsedStyle;
       const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
@@ -88,18 +85,9 @@ export class SDFMesh extends Instanced {
         omitStroke ? 1 : 0,
         circle.parsedStyle.isBillboard ? 1 : 0,
       );
-      interleaved.push(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1);
-      indices.push(
-        0 + offset,
-        2 + offset,
-        1 + offset,
-        0 + offset,
-        3 + offset,
-        2 + offset,
-      );
     });
 
-    this.geometry.setIndexBuffer(new Uint32Array(indices));
+    this.geometry.setIndexBuffer(new Uint32Array([0, 2, 1, 0, 3, 2]));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
@@ -117,7 +105,9 @@ export class SDFMesh extends Instanced {
           location: VertexAttributeLocation.UV,
         },
       ],
-      data: new Float32Array(interleaved),
+      data: new Float32Array([
+        -1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1,
+      ]),
     });
     this.geometry.setVertexBuffer({
       bufferIndex: SDFVertexAttributeBufferIndex.PACKED_STYLE,
@@ -161,7 +151,8 @@ export class SDFMesh extends Instanced {
       name === 'stroke' ||
       name === 'lineDash' ||
       name === 'strokeOpacity' ||
-      name === 'radius'
+      name === 'radius' ||
+      name === 'isBillboard'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {

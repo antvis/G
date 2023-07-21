@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, Circle } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
@@ -20,19 +20,19 @@ const canvas = new Canvas({
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   for (let i = 0; i < 5000; i++) {
-    const rect = new Rect({
+    const circle = new Circle({
       style: {
-        x: Math.random() * 600,
-        y: Math.random() * 500,
-        width: i % 2 === 0 ? 200 : 100,
-        height: 100,
-        fill: '#C6E5FF',
+        cx: Math.random() * 600,
+        cy: Math.random() * 500,
+        r: Math.random() * 100,
         stroke: '#5B8FF9',
         lineWidth: 1,
-        radius: [0, 4, 8, 16],
+        lineDash: i % 2 === 0 ? [10, 10] : [0],
+        fill: 'red',
+        fillOpacity: 0.5,
       },
     });
-    canvas.appendChild(rect);
+    canvas.appendChild(circle);
   }
 });
 
