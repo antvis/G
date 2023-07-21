@@ -4,10 +4,9 @@
 import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import {
-  FillMesh,
+  InstancedFillMesh,
   InstancedLineMesh,
   InstancedPathMesh,
-  LineMesh,
 } from '../meshes';
 import { Batch } from './Batch';
 
@@ -18,35 +17,32 @@ import { Batch } from './Batch';
  * @see https://github.com/antvis/G/issues/1113
  */
 export class PathRenderer extends Batch {
-  meshes = [FillMesh, LineMesh, InstancedLineMesh, InstancedPathMesh];
+  meshes = [InstancedFillMesh, InstancedLineMesh, InstancedPathMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    const { fill, stroke, opacity, strokeOpacity, lineDash, lineWidth } =
+    const { fill, stroke, opacity, strokeOpacity, lineWidth } =
       object.parsedStyle as ParsedBaseStyleProps;
-    const nodeName = object.nodeName;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasDash =
-      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
     const isLine = InstancedLineMesh.isLine(object);
-    const isOneCommandCurve = InstancedPathMesh.isOneCommandCurve(object);
 
     object.renderable.proxyNodeName = isLine ? Shape.LINE : null;
 
     // Polyline don't need fill
     if (
       index === 0 &&
-      (isOneCommandCurve ||
-        object.nodeName === Shape.POLYLINE ||
-        (fill as CSSRGB).isNone)
+      (object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)
     ) {
       return false;
     }
 
-    // stroke mesh
+    // use Line for simple Path
     if (index === 1) {
+      return isLine;
+    }
+
+    if (index === 2) {
       if (
         isLine ||
-        isOneCommandCurve ||
         strokeOpacity === 0 ||
         opacity === 0 ||
         lineWidth === 0 ||
@@ -54,20 +50,7 @@ export class PathRenderer extends Batch {
       ) {
         return false;
       }
-
-      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
-        // @see https://github.com/antvis/g/issues/824
-        return hasDash;
-      }
-    }
-
-    // use Line for simple Path
-    if (index === 2) {
-      return isLine;
-    }
-
-    if (index === 3) {
-      return !isLine && isOneCommandCurve;
+      return true;
     }
 
     return true;

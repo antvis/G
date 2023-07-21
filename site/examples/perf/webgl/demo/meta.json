@@ -1,6 +1,14 @@
 {
   "demos": [
     {
+      "filename": "circle-linedash.js",
+      "title": {
+        "zh": "虚线描边的 Circle",
+        "en": "LineDashed Circle"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*mu59SqFdEtUAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "texts.js",
       "title": {
         "zh": "大量文本",
@@ -23,6 +31,22 @@
         "en": "Instanced Rounded Rect"
       },
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*sQH_T5LdKdcAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "polygons.js",
+      "title": {
+        "zh": "大量多边形",
+        "en": "Instanced Polygons"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Gmd-SZ3GwIkAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "polylines.js",
+      "title": {
+        "zh": "大量折线",
+        "en": "Instanced Polylines"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*MQr5SYtG5OsAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "images.js",

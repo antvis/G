@@ -151,6 +151,11 @@ export abstract class Instanced {
    */
   protected mergeAnchorIntoModelMatrix = false;
 
+  /**
+   * Create a new batch if the number of instances exceeds.
+   */
+  maxInstances = 5000;
+
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
   get instance() {

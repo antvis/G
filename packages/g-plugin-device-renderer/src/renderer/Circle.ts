@@ -3,16 +3,16 @@ import type {
   DisplayObject,
   ParsedCircleStyleProps,
 } from '@antv/g-lite';
-import { LineMesh, SDFMesh } from '../meshes';
+import { InstancedPathMesh, SDFMesh } from '../meshes';
 import { Batch } from './Batch';
 
 /**
  * Use 2 meshes:
  * * SDF to draw fill & simple stroke if needed.
- * * InstancedLine to draw stroke separately.
+ * * InstancedPathMesh to draw stroke separately.
  */
 export class CircleRenderer extends Batch {
-  meshes = [SDFMesh, LineMesh];
+  meshes = [SDFMesh, InstancedPathMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
     if (index === 0) {

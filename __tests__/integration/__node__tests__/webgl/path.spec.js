@@ -131,6 +131,20 @@ describe('Render <Path> with g-webgl', () => {
     });
     canvas.appendChild(path3);
 
+    const path4 = new Path({
+      style: {
+        path: [['M', -6, -6], ['L', 6, -6], ['L', 6, 6], ['L', -6, 6], ['Z']],
+        lineWidth: 0,
+        fill: '#5AD8A6',
+        fillOpacity: 1,
+        stroke: '',
+        visibility: 'visible',
+      },
+    });
+    path4.translate(100, 100);
+    path4.scale(2);
+    canvas.appendChild(path4);
+
     await sleep(200);
 
     const pixels = new Uint8Array(width * height * 4);

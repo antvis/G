@@ -13,11 +13,6 @@ import type { Batch } from './Batch';
 
 let stencilRefCounter = 1;
 
-/**
- * Create a new batch if the number of instances exceeds.
- */
-const MAX_INSTANCES_PER_BATCH = 5000;
-
 export type BatchContext = { device: Device } & RenderingPluginContext;
 
 export class BatchManager {
@@ -107,7 +102,7 @@ export class BatchManager {
               (mesh) =>
                 meshTag === mesh.constructor &&
                 mesh.index === i &&
-                mesh.objects.length < MAX_INSTANCES_PER_BATCH &&
+                mesh.objects.length < mesh.maxInstances &&
                 mesh.shouldMerge(object, i),
             );
             if (
@@ -196,7 +191,7 @@ export class BatchManager {
               (mesh) =>
                 meshCtor === mesh.constructor &&
                 mesh.index === i &&
-                mesh.objects.length < MAX_INSTANCES_PER_BATCH &&
+                mesh.objects.length < mesh.maxInstances &&
                 mesh.shouldMerge(object, i),
             );
 

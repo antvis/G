@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Rect } from '@antv/g';
+import { Canvas, CanvasEvent, Polyline } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
@@ -20,19 +20,37 @@ const canvas = new Canvas({
 
 canvas.addEventListener(CanvasEvent.READY, () => {
   for (let i = 0; i < 5000; i++) {
-    const rect = new Rect({
+    const polyline = new Polyline({
       style: {
-        x: Math.random() * 600,
-        y: Math.random() * 500,
-        width: i % 2 === 0 ? 200 : 100,
-        height: 100,
-        fill: '#C6E5FF',
+        points:
+          i % 2 === 0
+            ? [
+                [200, 100],
+                [400, 100],
+                [
+                  400 + 200 * Math.sin(Math.PI / 6),
+                  100 + 200 * Math.cos(Math.PI / 6),
+                ],
+                [400, 100 + 200 * Math.cos(Math.PI / 6) * 2],
+                [200, 100 + 200 * Math.cos(Math.PI / 6) * 2],
+                [
+                  200 - 200 * Math.sin(Math.PI / 6),
+                  100 + 200 * Math.cos(Math.PI / 6),
+                ],
+              ]
+            : [
+                [200, 100],
+                [400, 100],
+                [400, 300],
+              ],
         stroke: '#5B8FF9',
-        lineWidth: 1,
-        radius: [0, 4, 8, 16],
+        lineWidth: 4,
+        transform: `translate(${Math.random() * 600}, ${
+          Math.random() * 500
+        }) scale(${Math.random()})`,
       },
     });
-    canvas.appendChild(rect);
+    canvas.appendChild(polyline);
   }
 });
 
