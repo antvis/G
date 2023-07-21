@@ -1,5 +1,16 @@
 # @antv/g-image-exporter
 
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+    -   @antv/g-lite@1.2.6
+
 ## 0.7.5
 
 ### Patch Changes
