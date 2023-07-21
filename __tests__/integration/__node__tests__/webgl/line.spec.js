@@ -101,8 +101,14 @@ describe('Render <Line> with g-webgl', () => {
 
     const line7 = line.cloneNode();
     line7.style.stroke = 'linear-gradient(90deg, blue, green 40%, red)';
-    line7.setPosition(150, 0);
+    line7.setPosition(180, 0);
     canvas.appendChild(line7);
+
+    // lineWidth less than 1px
+    const line8 = line.cloneNode();
+    line8.style.lineWidth = 0.5;
+    line8.setPosition(10, 80);
+    canvas.appendChild(line8);
 
     await sleep(200);
 

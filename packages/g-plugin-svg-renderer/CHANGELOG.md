@@ -1,5 +1,19 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.6
+
+### Patch Changes
+
+-   1b0901ba: Make textBaseline in SVG the same with Canvas.
+-   1b0901ba: Add a fixed offset for Text.
+-   1b0901ba: ConvertToPath should be compatible with empty coords.
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+    -   @antv/g-lite@1.2.6
+
 ## 1.10.5
 
 ### Patch Changes

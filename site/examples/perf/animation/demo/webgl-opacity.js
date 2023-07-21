@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Text, runtime } from '@antv/g';
+import { Canvas, CanvasEvent, Rect, runtime } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import Stats from 'stats.js';
 
@@ -12,30 +12,34 @@ const canvas = new Canvas({
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
-  for (let i = 0; i < 1000; i++) {
-    const text = new Text({
-      style: {
-        x: Math.random() * 600,
-        y: Math.random() * 500,
-        fontSize: 16,
-        fill: 'black',
-        text: `Text1${i}`,
-      },
-    });
-    canvas.appendChild(text);
+  const rect1 = new Rect({
+    style: {
+      x: 200,
+      y: 200,
+      width: 200,
+      height: 200,
+      fill: 'blue',
+    },
+  });
 
-    text.animate(
-      [
-        { opacity: 0, transform: 'translate(0, 0)' },
-        { opacity: 1, transform: 'translate(100, 0)' },
-      ],
-      {
-        duration: 2000,
-        fill: 'both',
-        iterations: Infinity,
-      },
-    );
-  }
+  const rect2 = new Rect({
+    style: {
+      x: 250,
+      y: 250,
+      width: 100,
+      height: 100,
+      fill: 'red',
+    },
+  });
+
+  canvas.appendChild(rect1);
+  canvas.appendChild(rect2);
+
+  rect2.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration: 2000,
+    fill: 'both',
+    iterations: Infinity,
+  });
 });
 
 // stats

@@ -1,5 +1,5 @@
 import type { CSSRGB, DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
-import { FillMesh, LineMesh, SDFMesh } from '../meshes';
+import { InstancedFillMesh, InstancedPathMesh, SDFMesh } from '../meshes';
 import { Batch } from './Batch';
 
 /**
@@ -8,7 +8,7 @@ import { Batch } from './Batch';
  * * FillMesh & LineMesh to draw rounded rect with different radius.
  */
 export class RectRenderer extends Batch {
-  meshes = [SDFMesh, FillMesh, LineMesh];
+  meshes = [SDFMesh, InstancedFillMesh, InstancedPathMesh];
 
   shouldSubmitRenderInst(object: DisplayObject, index: number) {
     const { radius } = object.parsedStyle as ParsedRectStyleProps;
