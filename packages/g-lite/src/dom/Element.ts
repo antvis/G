@@ -80,7 +80,6 @@ export class Element<
     renderBoundsDirty: true,
     dirtyRenderBounds: undefined,
     dirty: false,
-    proxyNodeName: undefined,
   };
 
   cullable: Cullable = {

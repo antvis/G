@@ -5,7 +5,7 @@ import type {
 } from '@antv/g-lite';
 import type { Renderable3D } from '../components/Renderable3D';
 import type { LightPool } from '../LightPool';
-import type { Instanced } from '../meshes/Instanced';
+import type { Instanced } from '../drawcalls/Instanced';
 import type { Device } from '../platform';
 import type { RenderInstList, RenderHelper } from '../render';
 import type { TexturePool } from '../TexturePool';
@@ -31,7 +31,7 @@ export class BatchManager {
   /**
    * draw calls
    */
-  private meshes: Instanced[] = [];
+  private drawcalls: Instanced[] = [];
 
   /**
    * update patches which can be merged before rendering
@@ -54,7 +54,7 @@ export class BatchManager {
       this.updatePendingPatches();
     }
 
-    this.meshes.forEach((mesh) => {
+    this.drawcalls.forEach((mesh) => {
       // init rendering service, create geometry & material
       mesh.init(this.context);
 
@@ -89,48 +89,53 @@ export class BatchManager {
   }
 
   add(object: DisplayObject) {
-    // @ts-ignore
-    const renderable3D = object.renderable3D as Renderable3D;
-    if (renderable3D && !renderable3D.meshes.length) {
-      const renderer = this.rendererFactory[object.nodeName];
+    const renderable3D = (object as any).renderable3D as Renderable3D;
+    if (renderable3D && !renderable3D.drawcalls.length) {
+      const renderer = this.rendererFactory[object.nodeName] as Batch;
       if (renderer) {
-        renderer.meshes.forEach((meshTag, i) => {
-          renderable3D.meshes[i] = undefined;
-          const shouldSubmit = renderer.shouldSubmitRenderInst(object, i);
-          if (shouldSubmit) {
-            let existedMesh = this.meshes.find(
-              (mesh) =>
-                meshTag === mesh.constructor &&
-                mesh.index === i &&
-                mesh.objects.length < mesh.maxInstances &&
-                mesh.shouldMerge(object, i),
-            );
-            if (
-              !existedMesh ||
-              existedMesh.key !== object.parsedStyle.batchKey
-            ) {
-              existedMesh = new meshTag(
-                this.renderHelper,
-                this.texturePool,
-                this.lightPool,
-                object,
+        // A complex Path can be splitted into multple sub paths.
+        renderer
+          .getDrawcallCtors(object)
+          .forEach(
+            (
+              drawcallCtor: new (..._: any) => Instanced,
+              i: number,
+              drawcallCtors: (new (..._: any) => Instanced)[],
+            ) => {
+              let existedDrawcall = this.drawcalls.find(
+                (mesh) =>
+                  drawcallCtor === mesh.constructor &&
+                  mesh.index === i &&
+                  mesh.objects.length < mesh.maxInstances &&
+                  mesh.shouldMerge(object, i),
               );
-              existedMesh.renderer = renderer;
-              existedMesh.index = i;
-              this.meshes.push(existedMesh);
+              if (
+                !existedDrawcall ||
+                existedDrawcall.key !== object.parsedStyle.batchKey
+              ) {
+                existedDrawcall = new drawcallCtor(
+                  this.renderHelper,
+                  this.texturePool,
+                  this.lightPool,
+                  object,
+                  drawcallCtors,
+                  i,
+                );
+                existedDrawcall.renderer = renderer;
+                this.drawcalls.push(existedDrawcall);
 
-              if (object.parsedStyle.batchKey) {
-                existedMesh.key = object.parsedStyle.batchKey;
+                if (object.parsedStyle.batchKey) {
+                  existedDrawcall.key = object.parsedStyle.batchKey;
+                }
               }
-            }
 
-            if (existedMesh) {
-              existedMesh.objects.push(object);
-              renderable3D.meshes[i] = existedMesh;
-              existedMesh.geometryDirty = true;
-            }
-          }
-        });
+              if (existedDrawcall) {
+                existedDrawcall.objects.push(object);
+                renderable3D.drawcalls[i] = existedDrawcall;
+                existedDrawcall.geometryDirty = true;
+              }
+            },
+          );
       }
     }
   }
@@ -139,7 +144,7 @@ export class BatchManager {
     // @ts-ignore
     const renderable3D = object.renderable3D as Renderable3D;
     if (renderable3D) {
-      renderable3D.meshes.forEach((mesh) => {
+      renderable3D.drawcalls.forEach((mesh) => {
         if (mesh) {
           // remove from mesh
           const index = mesh.objects.indexOf(object);
@@ -149,11 +154,11 @@ export class BatchManager {
           }
 
           if (mesh.objects.length === 0) {
-            this.meshes.splice(this.meshes.indexOf(mesh), 1);
+            this.drawcalls.splice(this.drawcalls.indexOf(mesh), 1);
           }
         }
       });
-      renderable3D.meshes = [];
+      renderable3D.drawcalls = [];
     }
   }
 
@@ -166,76 +171,81 @@ export class BatchManager {
     const renderable3D = (object as any).renderable3D as Renderable3D;
     const renderer = this.rendererFactory[object.nodeName] as Batch;
     if (renderer) {
-      renderer.meshes.forEach((meshCtor, i) => {
-        const shouldSubmit = renderer.shouldSubmitRenderInst(object, i);
-        let existedMesh = renderable3D.meshes.find(
-          (mesh) => mesh && mesh.index === i && mesh.constructor === meshCtor,
+      const drawcallCtors = renderer.getDrawcallCtors(object);
+      drawcallCtors.forEach((drawcallCtor, i, drawcallCtors) => {
+        let existedDrawcall = renderable3D.drawcalls.find(
+          (mesh) =>
+            mesh && mesh.index === i && mesh.constructor === drawcallCtor,
         );
-        // is this mesh already rendered in current displayobject?
-        if (shouldSubmit !== !!existedMesh) {
-          if (existedMesh) {
+
+        if (!existedDrawcall) {
+          // Clear invalid drawcall.
+          existedDrawcall = renderable3D.drawcalls[i];
+
+          if (existedDrawcall) {
             // remove from mesh
-            existedMesh.objects.splice(existedMesh.objects.indexOf(object), 1);
-            existedMesh.geometryDirty = true;
-
-            if (existedMesh.objects.length === 0) {
-              this.meshes.splice(this.meshes.indexOf(existedMesh), 1);
-            }
-            renderable3D.meshes[renderable3D.meshes.indexOf(existedMesh)] =
-              undefined;
-          }
-
-          if (shouldSubmit) {
-            // clear first
-            existedMesh = this.meshes.find(
-              (mesh) =>
-                meshCtor === mesh.constructor &&
-                mesh.index === i &&
-                mesh.objects.length < mesh.maxInstances &&
-                mesh.shouldMerge(object, i),
+            existedDrawcall.objects.splice(
+              existedDrawcall.objects.indexOf(object),
+              1,
             );
+            existedDrawcall.geometryDirty = true;
 
-            if (!existedMesh) {
-              // @ts-ignore
-              existedMesh = new meshCtor(
-                this.renderHelper,
-                this.texturePool,
-                this.lightPool,
-                object,
-              );
-              existedMesh.renderer = renderer;
-              existedMesh.index = i;
-              existedMesh.init(this.context);
-              this.meshes.push(existedMesh);
-            } else {
-              existedMesh.geometryDirty = true;
+            if (existedDrawcall.objects.length === 0) {
+              this.drawcalls.splice(this.drawcalls.indexOf(existedDrawcall), 1);
             }
-
-            if (existedMesh) {
-              existedMesh.objects.push(object);
-              renderable3D.meshes[i] = existedMesh;
-            }
+            renderable3D.drawcalls[
+              renderable3D.drawcalls.indexOf(existedDrawcall)
+            ] = undefined;
           }
+
+          // We should create a new drawcall from scratch.
+          existedDrawcall = this.drawcalls.find(
+            (mesh) =>
+              drawcallCtor === mesh.constructor &&
+              mesh.index === i &&
+              mesh.objects.length < mesh.maxInstances &&
+              mesh.shouldMerge(object, i),
+          );
+
+          if (!existedDrawcall) {
+            // @ts-ignore
+            existedDrawcall = new drawcallCtor(
+              this.renderHelper,
+              this.texturePool,
+              this.lightPool,
+              object,
+              drawcallCtors,
+              i,
+            );
+            existedDrawcall.renderer = renderer;
+            existedDrawcall.init(this.context);
+            this.drawcalls.push(existedDrawcall);
+          } else {
+            existedDrawcall.geometryDirty = true;
+          }
+
+          existedDrawcall.objects.push(object);
+          renderable3D.drawcalls[i] = existedDrawcall;
         }
 
-        if (shouldSubmit && existedMesh) {
-          if (existedMesh.inited && !existedMesh.geometryDirty) {
-            const shouldMerge = existedMesh.shouldMerge(object, i);
+        if (existedDrawcall) {
+          if (existedDrawcall.inited && !existedDrawcall.geometryDirty) {
+            const shouldMerge = existedDrawcall.shouldMerge(object, i);
             if (shouldMerge) {
-              const objectIdx = existedMesh.objects.indexOf(object);
+              const objectIdx = existedDrawcall.objects.indexOf(object);
               if (immediately) {
                 object.parsedStyle[attributeName] = newValue;
-                existedMesh.updateAttribute(
+                existedDrawcall.updateAttribute(
                   [object],
                   objectIdx,
                   attributeName,
                   newValue,
                 );
               } else {
-                const patchKey = existedMesh.id + attributeName;
+                const patchKey = existedDrawcall.id + attributeName;
                 if (!this.pendingUpdatePatches[patchKey]) {
                   this.pendingUpdatePatches[patchKey] = {
-                    instance: existedMesh,
+                    instance: existedDrawcall,
                     objectIndices: [],
                     name: attributeName,
                     value: newValue,
@@ -255,26 +265,39 @@ export class BatchManager {
               this.remove(object);
               this.add(object);
             }
-          } else {
-            this.remove(object);
-            this.add(object);
           }
         }
       });
+
+      // Clear redundant drawcalls.
+      if (renderable3D.drawcalls.length > drawcallCtors.length) {
+        const drawcallNum = renderable3D.drawcalls.length;
+        for (let i = drawcallNum - 1; i >= drawcallCtors.length; i--) {
+          const existedDrawcall = renderable3D.drawcalls[i];
+
+          // remove from mesh
+          existedDrawcall.objects.splice(
+            existedDrawcall.objects.indexOf(object),
+            1,
+          );
+          existedDrawcall.geometryDirty = true;
+
+          if (existedDrawcall.objects.length === 0) {
+            this.drawcalls.splice(this.drawcalls.indexOf(existedDrawcall), 1);
+          }
+          renderable3D.drawcalls.pop();
+        }
+      }
     }
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
     // @ts-ignore
     const renderable3D = object.renderable3D as Renderable3D;
-    if (renderable3D && renderable3D.meshes.length) {
-      renderable3D.meshes.forEach((mesh) => {
+    if (renderable3D && renderable3D.drawcalls.length) {
+      renderable3D.drawcalls.forEach((mesh) => {
         if (mesh && mesh.inited && !mesh.geometryDirty) {
-          const shouldSubmit = mesh.renderer.shouldSubmitRenderInst(
-            object,
-            mesh.index,
-          );
-          if (shouldSubmit && mesh.inited) {
+          if (mesh.inited) {
             mesh.changeRenderOrder(object, renderOrder);
           }
         }

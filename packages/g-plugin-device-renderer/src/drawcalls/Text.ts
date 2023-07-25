@@ -43,7 +43,7 @@ export enum TextUniform {
   HAS_STROKE = 'u_HasStroke',
 }
 
-export class TextMesh extends Instanced {
+export class TextDrawcall extends Instanced {
   private glyphManager = new GlyphManager();
 
   private packedBufferObjectMap = new WeakMap<
@@ -60,8 +60,10 @@ export class TextMesh extends Instanced {
     protected texturePool: TexturePool,
     protected lightPool: LightPool,
     object: DisplayObject,
+    drawcallCtors: (new (..._: any) => Instanced)[],
+    index: number,
   ) {
-    super(renderHelper, texturePool, lightPool, object);
+    super(renderHelper, texturePool, lightPool, object, drawcallCtors, index);
     this.fontHash = this.calcFontHash(object);
   }
 
@@ -387,30 +389,30 @@ export class TextMesh extends Instanced {
         const [start, end] = this.packedBufferObjectMap.get(object);
         const sliced = vertice.slice(start, end);
         for (let i = 0; i < end - start; i += bytes) {
-          if (name === 'modelMatrix') {
-            sliced[i + 0] = modelMatrix[0];
-            sliced[i + 1] = modelMatrix[1];
-            sliced[i + 2] = modelMatrix[2];
-            sliced[i + 3] = modelMatrix[3];
-            sliced[i + 4] = modelMatrix[4];
-            sliced[i + 5] = modelMatrix[5];
-            sliced[i + 6] = modelMatrix[6];
-            sliced[i + 7] = modelMatrix[7];
-            sliced[i + 8] = modelMatrix[8];
-            sliced[i + 9] = modelMatrix[9];
-            sliced[i + 10] = modelMatrix[10];
-            sliced[i + 11] = modelMatrix[11];
-            sliced[i + 12] = modelMatrix[12];
-            sliced[i + 13] = modelMatrix[13];
-            sliced[i + 14] = modelMatrix[14];
-            sliced[i + 15] = modelMatrix[15];
-          } else if (name === 'fill') {
-            sliced[i + 16] = packUint8ToFloat(fillColor[0], fillColor[1]);
-            sliced[i + 17] = packUint8ToFloat(fillColor[2], fillColor[3]);
-          } else if (name === 'stroke') {
-            sliced[i + 18] = packUint8ToFloat(strokeColor[0], strokeColor[1]);
-            sliced[i + 19] = packUint8ToFloat(strokeColor[2], strokeColor[3]);
-          }
+          // if (name === 'modelMatrix') {
+          sliced[i + 0] = modelMatrix[0];
+          sliced[i + 1] = modelMatrix[1];
+          sliced[i + 2] = modelMatrix[2];
+          sliced[i + 3] = modelMatrix[3];
+          sliced[i + 4] = modelMatrix[4];
+          sliced[i + 5] = modelMatrix[5];
+          sliced[i + 6] = modelMatrix[6];
+          sliced[i + 7] = modelMatrix[7];
+          sliced[i + 8] = modelMatrix[8];
+          sliced[i + 9] = modelMatrix[9];
+          sliced[i + 10] = modelMatrix[10];
+          sliced[i + 11] = modelMatrix[11];
+          sliced[i + 12] = modelMatrix[12];
+          sliced[i + 13] = modelMatrix[13];
+          sliced[i + 14] = modelMatrix[14];
+          sliced[i + 15] = modelMatrix[15];
+          // } else if (name === 'fill') {
+          sliced[i + 16] = packUint8ToFloat(fillColor[0], fillColor[1]);
+          sliced[i + 17] = packUint8ToFloat(fillColor[2], fillColor[3]);
+          // } else if (name === 'stroke') {
+          sliced[i + 18] = packUint8ToFloat(strokeColor[0], strokeColor[1]);
+          sliced[i + 19] = packUint8ToFloat(strokeColor[2], strokeColor[3]);
+          // }
           sliced[i + 20] = opacity;
           sliced[i + 21] = fillOpacity;
           sliced[i + 22] = strokeOpacity;

@@ -27,7 +27,7 @@ export * from './geometries';
 export * from './interfaces';
 export * from './lights';
 export * from './materials';
-export * from './meshes';
+export * from './drawcalls';
 export * from './passes';
 export * from './platform';
 export * from './render';

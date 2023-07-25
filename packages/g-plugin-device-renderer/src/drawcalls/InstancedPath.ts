@@ -30,6 +30,7 @@ import { RenderHelper } from '../render';
 import { TexturePool } from '../TexturePool';
 import { LightPool } from '../LightPool';
 import { bezierCurveTo, quadCurveTo } from '../utils';
+import { InstancedFillDrawcall } from './InstancedFill';
 
 enum LineVertexAttributeBufferIndex {
   PACKED = VertexAttributeBufferIndex.POSITION + 1,
@@ -54,14 +55,27 @@ const SEGMENT_NUM = 12;
 /**
  * Used for Curve only contains 2 commands, e.g. [[M], [C | Q | A]]
  */
-export class InstancedPathMesh extends Instanced {
+export class InstancedPathDrawcall extends Instanced {
+  static calcSubpathNum(object: DisplayObject) {
+    if (object.nodeName === Shape.PATH) {
+      const {
+        path: { absolutePath },
+      } = object.parsedStyle as ParsedPathStyleProps;
+      return absolutePath.filter((d) => d[0] === 'M').length;
+    }
+
+    return 1;
+  }
+
   constructor(
     protected renderHelper: RenderHelper,
     protected texturePool: TexturePool,
     protected lightPool: LightPool,
     object: DisplayObject,
+    drawcallCtors: (new (..._: any) => Instanced)[],
+    index: number,
   ) {
-    super(renderHelper, texturePool, lightPool, object);
+    super(renderHelper, texturePool, lightPool, object, drawcallCtors, index);
     this.segmentNum = this.calcSegmentNum(object);
   }
 
@@ -71,15 +85,35 @@ export class InstancedPathMesh extends Instanced {
 
   private calcSegmentNum(object: DisplayObject) {
     // FIXME: only need to collect instanced count
-    const { instancedCount } = updateBuffer(object, false, SEGMENT_NUM);
+    const { instancedCount } = updateBuffer(
+      object,
+      false,
+      SEGMENT_NUM,
+      this.calcSubpathIndex(object),
+    );
     return instancedCount;
   }
+
+  private calcSubpathIndex(object: DisplayObject) {
+    if (object.nodeName === Shape.PATH) {
+      const fillDrawcallCount = this.drawcallCtors.filter(
+        (ctor) => ctor === InstancedFillDrawcall,
+      ).length;
+      return this.index - fillDrawcallCount;
+    }
+    return 0;
+  }
+
   /**
    * Paths with the same number of vertices should be merged.
    */
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
     if (!shouldMerge) {
+      return false;
+    }
+
+    if (this.index !== index) {
       return false;
     }
 
@@ -110,7 +144,12 @@ export class InstancedPathMesh extends Instanced {
         pointsBuffer: pBuffer,
         travelBuffer: tBuffer,
         instancedCount: count,
-      } = updateBuffer(object, false, SEGMENT_NUM);
+      } = updateBuffer(
+        object,
+        false,
+        SEGMENT_NUM,
+        this.calcSubpathIndex(object),
+      );
 
       const { lineDash, lineDashOffset, isBillboard } = (object as Path)
         .parsedStyle;
@@ -300,7 +339,12 @@ export class InstancedPathMesh extends Instanced {
           pointsBuffer: pBuffer,
           travelBuffer: tBuffer,
           instancedCount: iCount,
-        } = updateBuffer(object, false, SEGMENT_NUM);
+        } = updateBuffer(
+          object,
+          false,
+          SEGMENT_NUM,
+          this.calcSubpathIndex(object),
+        );
         instancedCount = iCount;
 
         // Can't use interleaved buffer here, we should spread them like:
@@ -388,6 +432,7 @@ export function updateBuffer(
   object: DisplayObject,
   needEarcut = false,
   segmentNum?: number,
+  subPathIndex = 0,
 ) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   let { defX, defY } = object.parsedStyle;
@@ -662,10 +707,7 @@ export function updateBuffer(
     });
 
     if (needEarcut) {
-      const pointsBuffer = points.reduce((prev, cur) => {
-        prev.push(...cur);
-        return prev;
-      }, []);
+      const pointsBuffer = points[subPathIndex];
       // use earcut for triangulation
       triangles = earcut(pointsBuffer, [], 2);
       return {
@@ -690,73 +732,60 @@ export function updateBuffer(
     endJoint = JOINT_TYPE.JOINT_CAP_SQUARE;
   }
 
-  let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
-  return points
-    .map((points) => {
-      // const needDash = !isNil(lineDash);
-      let dist = 0;
-      const pointsBuffer: number[] = [];
-      const travelBuffer: number[] = [];
-      for (let i = 0; i < points.length; i += stridePoints) {
-        // calc travel
-        // if (needDash) {
-        if (i > 1) {
-          dist += Math.sqrt(
-            Math.pow(points[i] - points[i - 2], 2) +
-              Math.pow(points[i + 1] - points[i + 1 - 2], 2),
-          );
-        }
-        travelBuffer.push(dist);
-        // } else {
-        //   travelBuffer.push(0);
-        // }
-
-        pointsBuffer[j++] = points[i];
-        pointsBuffer[j++] = points[i + 1];
-        pointsBuffer[j] = jointType;
-        if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
-          pointsBuffer[j] += capType;
-        }
-        if (i + stridePoints * 2 >= points.length) {
-          pointsBuffer[j] += endJoint - jointType;
-        } else if (i + stridePoints >= points.length) {
-          pointsBuffer[j] = 0;
-        }
-        j++;
+  const subPath = points[subPathIndex];
+  {
+    const points = subPath;
+    let j = (Math.round(0 / stridePoints) + 2) * strideFloats;
+    // const needDash = !isNil(lineDash);
+    let dist = 0;
+    const pointsBuffer: number[] = [];
+    const travelBuffer: number[] = [];
+    for (let i = 0; i < points.length; i += stridePoints) {
+      // calc travel
+      // if (needDash) {
+      if (i > 1) {
+        dist += Math.sqrt(
+          Math.pow(points[i] - points[i - 2], 2) +
+            Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+        );
       }
-      pointsBuffer[j++] = points[points.length - 4];
-      pointsBuffer[j++] = points[points.length - 3];
-      pointsBuffer[j++] = 0;
-      pointsBuffer[0] = points[0];
-      pointsBuffer[1] = points[1];
-      pointsBuffer[2] = 0;
-      pointsBuffer[3] = points[2];
-      pointsBuffer[4] = points[3];
-      pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
+      travelBuffer.push(dist);
+      // } else {
+      //   travelBuffer.push(0);
+      // }
 
-      const instancedCount = Math.round(points.length / stridePoints);
+      pointsBuffer[j++] = points[i];
+      pointsBuffer[j++] = points[i + 1];
+      pointsBuffer[j] = jointType;
+      if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
+        pointsBuffer[j] += capType;
+      }
+      if (i + stridePoints * 2 >= points.length) {
+        pointsBuffer[j] += endJoint - jointType;
+      } else if (i + stridePoints >= points.length) {
+        pointsBuffer[j] = 0;
+      }
+      j++;
+    }
+    pointsBuffer[j++] = points[points.length - 4];
+    pointsBuffer[j++] = points[points.length - 3];
+    pointsBuffer[j++] = 0;
+    pointsBuffer[0] = points[0];
+    pointsBuffer[1] = points[1];
+    pointsBuffer[2] = 0;
+    pointsBuffer[3] = points[2];
+    pointsBuffer[4] = points[3];
+    pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
 
-      return {
-        pointsBuffer,
-        travelBuffer,
-        triangles,
-        instancedCount,
-      };
-    })
-    .reduce(
-      (prev, cur) => {
-        prev.pointsBuffer.push(...cur.pointsBuffer);
-        prev.travelBuffer.push(...cur.travelBuffer);
-        prev.instancedCount += cur.instancedCount;
-        return prev;
-      },
-      {
-        pointsBuffer: [],
-        travelBuffer: [],
-        triangles,
-        instancedCount: 0,
-      },
-    );
+    const instancedCount = Math.round(points.length / stridePoints);
+
+    return {
+      pointsBuffer,
+      travelBuffer,
+      triangles,
+      instancedCount,
+    };
+  }
 }
 
 function getJointType(lineJoin: CanvasLineJoin) {
