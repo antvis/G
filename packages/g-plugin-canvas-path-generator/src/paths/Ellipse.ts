@@ -18,6 +18,6 @@ export function generatePath(
     const scaleY = rx > ry ? ry / rx : 1;
     context.save();
     context.scale(scaleX, scaleY);
-    context.arc(0, 0, r, 0, Math.PI * 2);
+    context.arc(r, r, r, 0, Math.PI * 2);
   }
 }
