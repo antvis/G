@@ -11,7 +11,7 @@ import { CanvasEvent, ElementEvent, parseColor } from '@antv/g-lite';
 import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
-// import { pushFXAAPass } from './passes/FXAA';
+import { pushFXAAPass } from './passes/FXAA';
 import {
   Device,
   SwapChain,
@@ -307,12 +307,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       // TODO: other post-processing passes
       // FXAA
-      // pushFXAAPass(
-      //   this.builder,
-      //   this.renderHelper,
-      //   renderInput,
-      //   mainColorTargetID,
-      // );
+      pushFXAAPass(
+        this.builder,
+        this.renderHelper,
+        renderInput,
+        mainColorTargetID,
+      );
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
