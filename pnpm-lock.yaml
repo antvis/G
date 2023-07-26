@@ -8,8 +8,8 @@ importers:
   .:
     devDependencies:
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       '@changesets/cli':
         specifier: ^2.26.2
         version: 2.26.2
@@ -161,8 +161,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -194,8 +194,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -231,8 +231,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       canvaskit-wasm:
         specifier: ^0.34.0
         version: 0.34.0
@@ -250,8 +250,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -306,8 +306,8 @@ importers:
         specifier: workspace:*
         version: link:../g-math
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       d3-color:
         specifier: ^1.4.0
         version: 1.4.0
@@ -343,8 +343,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -352,8 +352,8 @@ importers:
   packages/g-math:
     dependencies:
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -385,8 +385,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-mobile-interaction
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -425,8 +425,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-svg-renderer
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -459,8 +459,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-webgl-device
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -478,8 +478,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -557,8 +557,8 @@ importers:
         specifier: workspace:*
         version: link:../g-math
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -578,8 +578,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-canvas-renderer
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -602,8 +602,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -623,8 +623,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       canvaskit-wasm:
         specifier: ^0.34.0
         version: 0.34.0
@@ -682,8 +682,8 @@ importers:
         specifier: workspace:*
         version: link:../g-shader-components
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       '@webgpu/types':
         specifier: ^0.1.6
         version: 0.1.33
@@ -731,8 +731,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -755,8 +755,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -770,8 +770,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -828,8 +828,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       roughjs:
         specifier: ^4.5.2
         version: 4.5.2
@@ -846,8 +846,8 @@ importers:
         specifier: workspace:*
         version: link:../g-svg
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       roughjs:
         specifier: ^4.5.2
         version: 4.5.2
@@ -873,8 +873,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -891,8 +891,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-device-renderer
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
@@ -909,8 +909,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-device-renderer
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       '@webgpu/types':
         specifier: ^0.1.33
         version: 0.1.33
@@ -942,8 +942,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -967,8 +967,8 @@ importers:
         specifier: workspace:*
         version: link:../g-svg
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1001,8 +1001,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-svg-renderer
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1017,8 +1017,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1066,8 +1066,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-webgl-device
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1100,8 +1100,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-webgpu-device
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       '@webgpu/types':
         specifier: ^0.1.6
         version: 0.1.33
@@ -1122,8 +1122,8 @@ importers:
         specifier: workspace:*
         version: link:../g
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -1171,11 +1171,11 @@ importers:
         specifier: ^1.8.79
         version: link:../packages/react-g
       '@antv/util':
-        specifier: ^3.3.1
-        version: 3.3.1(gl-matrix@3.4.3)
+        specifier: ^3.3.4
+        version: 3.3.4
       '@antv/webgpu-graph':
         specifier: ^1.0.0
-        version: 1.0.0(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu)(gl-matrix@3.4.3)
+        version: 1.0.0(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu)
       '@naoak/workerize-transferable':
         specifier: ^0.1.0
         version: 0.1.0(workerize-loader@2.0.2)
@@ -1565,7 +1565,7 @@ packages:
       '@antv/g-lite': ^1.0.0
     dependencies:
       '@antv/g-lite': 1.2.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       gl-matrix: 3.4.3
     dev: false
 
@@ -1609,7 +1609,7 @@ packages:
     resolution: {integrity: sha512-NxSqvhK62fvm+r/SPM1CP0HdUl2mJarV6mM/l77paCgFaEMpU+1veWdF97N1cUQ8QFOmgaodr5aiZBz0rkn8ag==}
     dependencies:
       '@antv/g-math': 2.0.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       d3-color: 1.4.0
       eventemitter3: 5.0.1
       gl-matrix: 3.4.3
@@ -1627,7 +1627,7 @@ packages:
   /@antv/g-math@2.0.1:
     resolution: {integrity: sha512-Y1DREalYzUMaglD0m6V9s9UxsseXgSmwNA3l9zDHRH1CXDLcvtmrku+DQM9oCgPtbPWV43AdyAYoNT3WLyL/WA==}
     dependencies:
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       gl-matrix: 3.4.3
       tslib: 2.5.3
     dev: false
@@ -1639,7 +1639,7 @@ packages:
       '@antv/g-math': 2.0.1
       '@antv/g-plugin-image-loader': 1.3.1
       '@antv/g-shader-components': 1.8.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       '@webgpu/types': 0.1.33
       earcut: 2.2.3
       eventemitter3: 5.0.1
@@ -1669,7 +1669,7 @@ packages:
     resolution: {integrity: sha512-bk94rLrQ2wclVt2aghWytTr8Ur9a0ImMcf2V2vmoatjD1+/k+EtsF230RcoflVk9MGr4Cn0LqFXVIiPSmckYHw==}
     dependencies:
       '@antv/g-lite': 1.2.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       gl-matrix: 3.4.3
       tslib: 2.5.3
     dev: false
@@ -1678,12 +1678,12 @@ packages:
     resolution: {integrity: sha512-IdrlWjN6vBWjoqSu58ZbeL3Ta8q+Eq+686dMa0yCMCRnVlmym/mcW2JzCCA+IUcaCM39UEiDmyinJs8Ic04X9A==}
     dependencies:
       '@antv/g-lite': 1.2.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       gl-matrix: 3.4.3
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-webgl-device@1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.1)(gl-matrix@3.4.3):
+  /@antv/g-plugin-webgl-device@1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.1):
     resolution: {integrity: sha512-1Bnf+eb5HcK7plBYSBAKQDc+KWW0VZ3paFv8rEfJCnp7nTt4kHH2j9wdjwHztft4eOaxdRH1hdV1Aom05sahqg==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
@@ -1691,11 +1691,9 @@ packages:
     dependencies:
       '@antv/g-lite': link:packages/g-lite
       '@antv/g-plugin-device-renderer': 1.9.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
+      '@antv/util': 3.3.4
       eventemitter3: 4.0.7
       tslib: 2.5.3
-    transitivePeerDependencies:
-      - gl-matrix
     dev: false
 
   /@antv/g-shader-components@1.8.1:
@@ -1712,18 +1710,16 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-web-animations-api@1.0.39(@antv/g-lite@1.2.1)(gl-matrix@3.4.3):
+  /@antv/g-web-animations-api@1.0.39(@antv/g-lite@1.2.1):
     resolution: {integrity: sha512-0QXVzjk8kKrVokxHLLphkJsMPvbhLgcQN8/eVUdPaj+A0Yf6Cpg/hquYaGBBuqzwoMVB0ROUsIvwXgRtoXQONA==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
       '@antv/g-lite': 1.2.1
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
-    transitivePeerDependencies:
-      - gl-matrix
+      '@antv/util': 3.3.4
     dev: false
 
-  /@antv/g-webgl@1.7.74(@antv/g-lite@packages+g-lite)(gl-matrix@3.4.3):
+  /@antv/g-webgl@1.7.74(@antv/g-lite@packages+g-lite):
     resolution: {integrity: sha512-efi5NjuUWcIQt1kxp9kQSPIC9xwVzHbKiXSjrl6SkZ7rXWekBWfPsfnRca0zEzZQ91M90/F0jvdRLe6uXXqrIQ==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
@@ -1733,10 +1729,8 @@ packages:
       '@antv/g-plugin-dom-interaction': 1.9.1
       '@antv/g-plugin-html-renderer': 1.9.1
       '@antv/g-plugin-image-loader': 1.3.1
-      '@antv/g-plugin-webgl-device': 1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.1)(gl-matrix@3.4.3)
-      '@antv/util': 3.3.1(gl-matrix@3.4.3)
-    transitivePeerDependencies:
-      - gl-matrix
+      '@antv/g-plugin-webgl-device': 1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.1)
+      '@antv/util': 3.3.4
     dev: false
 
   /@antv/g-webgpu-core@0.5.6:
@@ -1851,7 +1845,7 @@ packages:
       '@antv/g6-pc': 0.5.2
     dev: false
 
-  /@antv/g@5.16.33(gl-matrix@3.4.3):
+  /@antv/g@5.16.33:
     resolution: {integrity: sha512-11F82JsrXeJZTZSREiaPhnILkzoHqajkebA4fkPQ4XXjpoAcpIEow//NF8LbJOr3c1hogTyDh+aofwFeY+JnMw==}
     dependencies:
       '@antv/g-camera-api': 1.0.40(@antv/g-lite@1.2.1)
@@ -1859,9 +1853,7 @@ packages:
       '@antv/g-css-typed-om-api': 1.0.38(@antv/g-lite@1.2.1)
       '@antv/g-dom-mutation-observer-api': 1.0.38(@antv/g-lite@1.2.1)
       '@antv/g-lite': 1.2.1
-      '@antv/g-web-animations-api': 1.0.39(@antv/g-lite@1.2.1)(gl-matrix@3.4.3)
-    transitivePeerDependencies:
-      - gl-matrix
+      '@antv/g-web-animations-api': 1.0.39(@antv/g-lite@1.2.1)
     dev: false
 
   /@antv/hierarchy@0.6.11:
@@ -1918,28 +1910,25 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/util@3.3.1(gl-matrix@3.4.3):
-    resolution: {integrity: sha512-9p2SLovz4iBo6OsAdV1MU9lShwqCez2CMLCL0voIXNsIDxG2t17l8EN8/hoADCTH5AigC2U3ru9/HdD5YtOiQg==}
-    peerDependencies:
-      gl-matrix: ^3.3.0
+  /@antv/util@3.3.4:
+    resolution: {integrity: sha512-NGRjPCPje8GIC14Ye7sjebamFIjxoZ+mCIqfXz6wD/M6fA9SgJivzmLB3Ry01Wq8PI36oOVv9BwrAGV1JD8vjA==}
     dependencies:
       fast-deep-equal: 3.1.3
       gl-matrix: 3.4.3
       tslib: 2.5.3
 
-  /@antv/webgpu-graph@1.0.0(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu)(gl-matrix@3.4.3):
+  /@antv/webgpu-graph@1.0.0(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu):
     resolution: {integrity: sha512-zE9lyg+uJkOe/1O7EdfOesuqD6svKRhQCNMocpFwA7cka4jdBY5h6iE60FiHNGPza6/Cy7mXVDYuGT/t+8/F1g==}
     dependencies:
-      '@antv/g': 5.16.33(gl-matrix@3.4.3)
+      '@antv/g': 5.16.33
       '@antv/g-plugin-gpgpu': 1.7.50(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu)
-      '@antv/g-webgl': 1.7.74(@antv/g-lite@packages+g-lite)(gl-matrix@3.4.3)
+      '@antv/g-webgl': 1.7.74(@antv/g-lite@packages+g-lite)
       '@types/offscreencanvas': 2019.6.4
       '@webgpu/types': 0.1.33
       tslib: 2.5.3
     transitivePeerDependencies:
       - '@antv/g-lite'
       - '@antv/g-webgpu'
-      - gl-matrix
     dev: false
 
   /@babel/code-frame@7.12.11:

@@ -33,6 +33,14 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*sQH_T5LdKdcAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "lines.js",
+      "title": {
+        "zh": "大量直线",
+        "en": "Instanced Lines"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*GNRuTqpp6BAAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "polygons.js",
       "title": {
         "zh": "大量多边形",

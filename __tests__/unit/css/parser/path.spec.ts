@@ -73,11 +73,11 @@ describe('Property Path', () => {
 
     expect(left).toStrictEqual([
       ['M', 0, 0],
-      ['C', 50, 0, 68.75, 0, 100, 0],
+      ['C', 50, 0, 100, 0, 100, 0],
     ]);
     expect(right).toStrictEqual([
       ['M', 0, 0],
-      ['C', 100, 0, 137.5, 0, 200, 0],
+      ['C', 100, 0, 200, 0, 200, 0],
     ]);
 
     mergePaths(path1, path2);

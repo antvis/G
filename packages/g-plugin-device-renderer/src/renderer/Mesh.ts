@@ -1,5 +1,7 @@
-import { MeshMesh } from '../meshes';
+import { MeshDrawcall } from '../drawcalls';
 import { Batch } from './Batch';
 export class MeshRenderer extends Batch {
-  meshes = [MeshMesh];
+  getDrawcallCtors() {
+    return [MeshDrawcall];
+  }
 }

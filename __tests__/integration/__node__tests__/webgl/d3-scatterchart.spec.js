@@ -9,6 +9,7 @@ const weatherDataset = require('../../data/weather.json');
 // create a renderer, unregister plugin relative to DOM
 const renderer = new Renderer({
   targets: ['webgl1'],
+  enableFXAA: false,
 });
 const domInteractionPlugin = renderer.getPlugin('dom-interaction');
 renderer.unregisterPlugin(domInteractionPlugin);

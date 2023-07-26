@@ -1,19 +1,23 @@
-import { runtime } from '@antv/g-lite';
+import type { GlobalRuntime } from '@antv/g-lite';
 import type { DeviceContribution } from '@antv/g-plugin-device-renderer';
 import init, { glsl_compile } from '../../../rust/pkg/glsl_wgsl_compiler';
 import type { WebGPUDeviceOptions } from './interfaces';
 import { Device_WebGPU } from './platform/Device';
 
 export class WebGPUDeviceContribution implements DeviceContribution {
-  constructor(private pluginOptions: Partial<WebGPUDeviceOptions>) {}
+  constructor(
+    private pluginOptions: Partial<WebGPUDeviceOptions>,
+    private runtime: GlobalRuntime,
+  ) {}
 
   async createSwapChain($canvas: HTMLCanvasElement) {
-    if ((runtime.globalThis.navigator as any).gpu === undefined) return null;
+    if ((this.runtime.globalThis.navigator as any).gpu === undefined)
+      return null;
 
     let adapter = null;
     try {
       adapter = await (
-        runtime.globalThis.navigator as any
+        this.runtime.globalThis.navigator as any
       ).gpu.requestAdapter();
     } catch (e) {
       console.log(e);

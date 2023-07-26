@@ -1,6 +1,7 @@
 import type {
   CanvasContext,
   DisplayObject,
+  GlobalRuntime,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
   ParsedLineStyleProps,
@@ -18,7 +19,7 @@ import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 export class RoughElementLifeCycleContribution
   implements SVGRenderer.ElementLifeCycleContribution
 {
-  constructor(private context: CanvasContext) {}
+  constructor(private context: CanvasContext, private runtime: GlobalRuntime) {}
 
   createElement(
     object: DisplayObject<any, any>,
@@ -96,6 +97,7 @@ export class RoughElementLifeCycleContribution
           $el,
           parsedStyle,
           object as Text,
+          this.runtime,
         );
         break;
       }

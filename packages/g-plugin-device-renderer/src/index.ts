@@ -21,13 +21,17 @@ import {
 } from './renderer';
 import { RenderGraphPlugin } from './RenderGraphPlugin';
 import { TexturePool } from './TexturePool';
-import { RendererParameters, ToneMapping } from './interfaces';
+import {
+  DeviceRendererPluginOptions,
+  RendererParameters,
+  ToneMapping,
+} from './interfaces';
 
 export * from './geometries';
 export * from './interfaces';
 export * from './lights';
 export * from './materials';
-export * from './meshes';
+export * from './drawcalls';
 export * from './passes';
 export * from './platform';
 export * from './render';
@@ -47,12 +51,16 @@ export class Plugin extends AbstractRendererPlugin {
     toneMappingExposure: 1,
   };
 
+  constructor(private options: Partial<DeviceRendererPluginOptions> = {}) {
+    super();
+  }
+
   init(runtime: GlobalRuntime): void {
     runtime.geometryUpdaterFactory[Shape.MESH] = new MeshUpdater();
 
     const renderHelper = new RenderHelper(this.parameters);
     const lightPool = new LightPool();
-    const texturePool = new TexturePool(this.context);
+    const texturePool = new TexturePool(this.context, runtime);
     const pickingIdGenerator = new PickingIdGenerator();
 
     const circleRenderer = new CircleRenderer();
@@ -84,6 +92,7 @@ export class Plugin extends AbstractRendererPlugin {
       lightPool,
       texturePool,
       batchManager,
+      this.options,
     );
     this.addRenderingPlugin(renderGraphPlugin);
     this.addRenderingPlugin(

@@ -3,30 +3,26 @@ import type {
   DisplayObject,
   ParsedCircleStyleProps,
 } from '@antv/g-lite';
-import { InstancedPathMesh, SDFMesh } from '../meshes';
+import { Instanced, InstancedPathDrawcall, SDFDrawcall } from '../drawcalls';
 import { Batch } from './Batch';
 
 /**
  * Use 2 meshes:
  * * SDF to draw fill & simple stroke if needed.
- * * InstancedPathMesh to draw stroke separately.
+ * * InstancedPathDrawcall to draw stroke separately.
  */
 export class CircleRenderer extends Batch {
-  meshes = [SDFMesh, InstancedPathMesh];
-
-  shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    if (index === 0) {
-      const { fill } = object.parsedStyle as ParsedCircleStyleProps;
-      if ((fill as CSSRGB).isNone) {
-        return false;
-      }
+  getDrawcallCtors(object: DisplayObject) {
+    const drawcalls: (typeof Instanced)[] = [];
+    const { fill } = object.parsedStyle as ParsedCircleStyleProps;
+    if (!(fill as CSSRGB).isNone) {
+      drawcalls.push(SDFDrawcall);
+    }
+    if (this.needDrawStrokeSeparately(object)) {
+      drawcalls.push(InstancedPathDrawcall);
     }
 
-    if (index === 1) {
-      return this.needDrawStrokeSeparately(object);
-    }
-
-    return true;
+    return drawcalls;
   }
 
   /**
