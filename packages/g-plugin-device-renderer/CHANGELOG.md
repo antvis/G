@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.8
+
+### Patch Changes
+
+-   06bcc557: Update TextBaseline lazily should work in g-webgl.
+
 ## 1.9.7
 
 ### Patch Changes
