@@ -1,5 +1,21 @@
 # @antv/g-mobile-canvas
 
+## 0.10.7
+
+### Patch Changes
+
+-   70aa0b32: Retrieve runtime from context instead of global.
+-   789bd4c9: Split a path containing multiple segments into subpaths.
+-   Updated dependencies [70aa0b32]
+-   Updated dependencies [789bd4c9]
+    -   @antv/g-plugin-canvas-path-generator@1.3.7
+    -   @antv/g-plugin-canvas-renderer@1.9.7
+    -   @antv/g-plugin-canvas-picker@1.10.7
+    -   @antv/g-plugin-image-loader@1.3.7
+    -   @antv/g-plugin-dragndrop@1.8.7
+    -   @antv/g-lite@1.2.7
+    -   @antv/g-plugin-mobile-interaction@0.9.7
+
 ## 0.10.6
 
 ### Patch Changes

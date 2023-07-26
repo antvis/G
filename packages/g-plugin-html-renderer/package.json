@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-html-renderer",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "A G plugin for rendering HTML",
   "keywords": [
     "antv",
