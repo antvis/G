@@ -3,12 +3,12 @@ import {
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
-} from '../meshes/Instanced';
+} from './Instanced';
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/image.frag';
 import vert from '../shader/image.vert';
 
-export class ImageMesh extends Instanced {
+export class ImageDrawcall extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
 

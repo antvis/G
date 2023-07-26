@@ -1,5 +1,13 @@
 # @antv/react-g
 
+## 1.10.8
+
+### Patch Changes
+
+-   70aa0b32: Retrieve runtime from context instead of global.
+-   789bd4c9: Split a path containing multiple segments into subpaths.
+    -   @antv/g@5.18.8
+
 ## 1.10.7
 
 ### Patch Changes

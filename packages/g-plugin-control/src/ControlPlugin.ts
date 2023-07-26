@@ -5,13 +5,9 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { runtime } from '@antv/g-lite';
 import Hammer from 'hammerjs';
 
 const MOTION_FACTOR = 10;
-// https://gist.github.com/handleman/3c99e754065f647b082f
-const isMac =
-  runtime.globalThis.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
 export class ControlPlugin implements RenderingPlugin {
   static tag = 'Control';
@@ -27,11 +23,13 @@ export class ControlPlugin implements RenderingPlugin {
   private ctrlKey: boolean;
   private shiftKey: boolean;
   private altKey: boolean;
+  private context: RenderingPluginContext;
 
   apply(context: RenderingPluginContext) {
     const { config, camera, renderingService, renderingContext } = context;
     this.canvasConfig = config;
     this.camera = camera;
+    this.context = context;
 
     renderingService.hooks.init.tap(ControlPlugin.tag, () => {
       const root = renderingContext.root.ownerDocument.defaultView;
@@ -66,6 +64,11 @@ export class ControlPlugin implements RenderingPlugin {
   };
 
   private onPanmove = (e: HammerInput) => {
+    // https://gist.github.com/handleman/3c99e754065f647b082f
+    const isMac =
+      this.context.globalThis.navigator.platform.toUpperCase().indexOf('MAC') >=
+      0;
+
     this.ctrlKey = e.srcEvent.ctrlKey;
     if (isMac && e.srcEvent.metaKey) {
       this.ctrlKey = true;

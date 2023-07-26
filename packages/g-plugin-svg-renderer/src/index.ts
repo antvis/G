@@ -1,4 +1,4 @@
-import { AbstractRendererPlugin } from '@antv/g-lite';
+import { AbstractRendererPlugin, GlobalRuntime } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import { ElementSVG } from './components/ElementSVG';
 import { DefaultElementLifeCycleContribution } from './DefaultElementLifeCycleContribution';
@@ -20,28 +20,37 @@ export class Plugin extends AbstractRendererPlugin {
     super();
   }
 
-  init(): void {
+  init(runtime: GlobalRuntime): void {
     const { outputSVGElementId, outputSVGElementName } = this.options;
     const defElementManager = new DefElementManager(this.context);
 
     // default implementation
-    const defaultElementLifeCycleContribution = new DefaultElementLifeCycleContribution(
-      this.context,
-    );
+    const defaultElementLifeCycleContribution =
+      new DefaultElementLifeCycleContribution(this.context, runtime);
     // @ts-ignore
-    this.context.defaultElementLifeCycleContribution = defaultElementLifeCycleContribution;
+    this.context.defaultElementLifeCycleContribution =
+      defaultElementLifeCycleContribution;
 
     // @ts-ignore
-    this.context.SVGElementLifeCycleContribution = defaultElementLifeCycleContribution;
+    this.context.SVGElementLifeCycleContribution =
+      defaultElementLifeCycleContribution;
 
     const SVGRendererPluginOptions: SVGRendererPluginOptions = {
-      outputSVGElementId: !isNil(outputSVGElementId) ? !!outputSVGElementId : true,
-      outputSVGElementName: !isNil(outputSVGElementName) ? !!outputSVGElementName : true,
+      outputSVGElementId: !isNil(outputSVGElementId)
+        ? !!outputSVGElementId
+        : true,
+      outputSVGElementName: !isNil(outputSVGElementName)
+        ? !!outputSVGElementName
+        : true,
     };
 
     this.addRenderingPlugin(
       // @ts-ignore
-      new SVGRendererPlugin(SVGRendererPluginOptions, defElementManager, this.context),
+      new SVGRendererPlugin(
+        SVGRendererPluginOptions,
+        defElementManager,
+        this.context,
+      ),
     );
   }
   destroy(): void {

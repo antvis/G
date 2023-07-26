@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-webgl-device",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "A G plugin implements GPUDevice interface with WebGL API",
   "keywords": [
     "antv",
@@ -41,7 +41,7 @@
   "dependencies": {
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-device-renderer": "workspace:*",
-    "@antv/util": "^3.3.1",
+    "@antv/util": "^3.3.4",
     "eventemitter3": "^5.0.1",
     "tslib": "^2.5.3"
   },

@@ -33,7 +33,7 @@ const SDF_Shape: string[] = [Shape.CIRCLE, Shape.ELLIPSE, Shape.RECT];
  * Use SDF to render 2D shapes, eg. circle, ellipse.
  * Use less triangles(2) and vertices compared with normal triangulation.
  */
-export class SDFMesh extends Instanced {
+export class SDFDrawcall extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
     const shouldMerge = super.shouldMerge(object, index);
 

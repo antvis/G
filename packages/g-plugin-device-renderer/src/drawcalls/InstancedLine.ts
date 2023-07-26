@@ -46,18 +46,32 @@ const LineCap_MAP = {
   square: 3,
 };
 
-export class InstancedLineMesh extends Instanced {
-  static isLine(object: DisplayObject) {
+export class InstancedLineDrawcall extends Instanced {
+  static isLine(object: DisplayObject, subpathIndex: number) {
     if (object.nodeName === Shape.PATH) {
       const {
         path: { absolutePath },
       } = object.parsedStyle as ParsedPathStyleProps;
 
+      let mSegmentCount = 0;
+      let mCommandIndex = 0;
+      for (let i = 0; i < absolutePath.length; i++) {
+        const segment = absolutePath[i];
+        if (segment[0] === 'M') {
+          if (mSegmentCount === subpathIndex) {
+            mCommandIndex = i;
+            break;
+          }
+          mSegmentCount++;
+        }
+      }
+
       // only contains M & L commands
       if (
-        absolutePath.length === 2 &&
-        absolutePath[0][0] === 'M' &&
-        absolutePath[1][0] === 'L'
+        absolutePath[mCommandIndex][0] === 'M' &&
+        absolutePath[mCommandIndex + 1][0] === 'L' &&
+        (absolutePath[mCommandIndex + 2] === undefined ||
+          absolutePath[mCommandIndex + 2][0] === 'M')
       ) {
         return true;
       }
@@ -161,11 +175,23 @@ export class InstancedLineMesh extends Instanced {
           markerStartOffset,
           markerEndOffset,
         } = (object as Path).parsedStyle;
+        let mSegmentCount = 0;
+        let mCommandIndex = 0;
+        for (let i = 0; i < absolutePath.length; i++) {
+          const segment = absolutePath[i];
+          if (segment[0] === 'M') {
+            if (mSegmentCount === this.index) {
+              mCommandIndex = i;
+              break;
+            }
+            mSegmentCount++;
+          }
+        }
         parsedLineStyleProps = {
-          x1: absolutePath[0][1],
-          y1: absolutePath[0][2],
-          x2: absolutePath[1][1],
-          y2: absolutePath[1][2],
+          x1: absolutePath[mCommandIndex][1],
+          y1: absolutePath[mCommandIndex][2],
+          x2: absolutePath[mCommandIndex + 1][1],
+          y2: absolutePath[mCommandIndex + 1][2],
           z1: 0,
           z2: 0,
           defX,
@@ -323,10 +349,7 @@ export class InstancedLineMesh extends Instanced {
         let parsedLineStyleProps: Partial<ParsedLineStyleProps>;
         if (object.nodeName === Shape.LINE) {
           parsedLineStyleProps = (object as Line).parsedStyle;
-        } else if (
-          object.nodeName === Shape.POLYLINE &&
-          object.renderable.proxyNodeName === Shape.LINE
-        ) {
+        } else if (object.nodeName === Shape.POLYLINE) {
           const {
             points: { points },
             defX,
@@ -353,10 +376,7 @@ export class InstancedLineMesh extends Instanced {
             markerStartOffset,
             markerEndOffset,
           };
-        } else if (
-          object.nodeName === Shape.PATH &&
-          object.renderable.proxyNodeName === Shape.LINE
-        ) {
+        } else if (object.nodeName === Shape.PATH) {
           const {
             path: { absolutePath },
             defX,

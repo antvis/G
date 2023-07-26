@@ -17,3 +17,7 @@ export interface RendererParameters {
   toneMapping: ToneMapping;
   toneMappingExposure: number;
 }
+
+export interface DeviceRendererPluginOptions {
+  enableFXAA: boolean;
+}

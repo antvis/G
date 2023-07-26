@@ -1,9 +1,9 @@
-import type { DisplayObject } from '@antv/g-lite';
+import { DisplayObject, Shape } from '@antv/g-lite';
 import {
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
-} from '../meshes/Instanced';
+} from './Instanced';
 import { Format, VertexBufferFrequency } from '../platform';
 import meshFrag from '../shader/mesh.frag';
 import meshVert from '../shader/mesh.vert';
@@ -11,24 +11,48 @@ import { updateBuffer } from './InstancedPath';
 import { RenderHelper } from '../render';
 import { TexturePool } from '../TexturePool';
 import { LightPool } from '../LightPool';
+import { BatchContext } from '../renderer';
 
 const SEGMENT_NUM = 12;
 
-export class InstancedFillMesh extends Instanced {
+export class InstancedFillDrawcall extends Instanced {
   constructor(
     protected renderHelper: RenderHelper,
     protected texturePool: TexturePool,
     protected lightPool: LightPool,
     object: DisplayObject,
+    drawcallCtors: (new (..._: any) => Instanced)[],
+    index: number,
+    context: BatchContext,
   ) {
-    super(renderHelper, texturePool, lightPool, object);
+    super(
+      renderHelper,
+      texturePool,
+      lightPool,
+      object,
+      drawcallCtors,
+      index,
+      context,
+    );
     this.trianglesHash = this.calcSegmentNum(object);
   }
 
   private trianglesHash: [number[], number[]] = [[], []];
   private calcSegmentNum(object: DisplayObject): [number[], number[]] {
-    const { triangles, pointsBuffer } = updateBuffer(object, true, SEGMENT_NUM);
+    const { triangles, pointsBuffer } = updateBuffer(
+      object,
+      true,
+      SEGMENT_NUM,
+      this.calcSubpathIndex(object),
+    );
     return [triangles, pointsBuffer];
+  }
+
+  private calcSubpathIndex(object: DisplayObject) {
+    if (object.nodeName === Shape.PATH) {
+      return this.index;
+    }
+    return 0;
   }
 
   private compareTrianglesHash(hash: [number[], number[]]) {
@@ -54,6 +78,10 @@ export class InstancedFillMesh extends Instanced {
       return false;
     }
 
+    if (this.index !== index) {
+      return false;
+    }
+
     const trianglesHash = this.calcSegmentNum(object);
     return this.compareTrianglesHash(trianglesHash);
   }
@@ -71,6 +99,7 @@ export class InstancedFillMesh extends Instanced {
         object,
         true,
         SEGMENT_NUM,
+        this.calcSubpathIndex(object),
       );
 
       const { halfExtents } = object.getGeometryBounds();

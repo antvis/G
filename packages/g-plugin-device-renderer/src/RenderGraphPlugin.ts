@@ -11,7 +11,7 @@ import { CanvasEvent, ElementEvent, parseColor } from '@antv/g-lite';
 import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
-// import { pushFXAAPass } from './passes/FXAA';
+import { pushFXAAPass } from './passes/FXAA';
 import {
   Device,
   SwapChain,
@@ -37,6 +37,7 @@ import {
 } from './render';
 import type { BatchManager } from './renderer';
 import type { TexturePool } from './TexturePool';
+import { DeviceRendererPluginOptions } from './interfaces';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -62,6 +63,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     private lightPool: LightPool,
     private texturePool: TexturePool,
     private batchManager: BatchManager,
+    private options: Partial<DeviceRendererPluginOptions>,
   ) {}
 
   private device: Device;
@@ -306,13 +308,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
       });
 
       // TODO: other post-processing passes
-      // FXAA
-      // pushFXAAPass(
-      //   this.builder,
-      //   this.renderHelper,
-      //   renderInput,
-      //   mainColorTargetID,
-      // );
+      if (this.options?.enableFXAA) {
+        // FXAA
+        pushFXAAPass(
+          this.builder,
+          this.renderHelper,
+          renderInput,
+          mainColorTargetID,
+        );
+      }
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(

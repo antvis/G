@@ -1,5 +1,4 @@
-import type { DisplayObject } from '@antv/g-lite';
-import { InstancedLineMesh } from '../meshes';
+import { InstancedLineDrawcall } from '../drawcalls';
 import { Batch } from './Batch';
 
 /**
@@ -10,9 +9,7 @@ import { Batch } from './Batch';
  * TODO: joint & cap
  */
 export class LineRenderer extends Batch {
-  meshes = [InstancedLineMesh];
-
-  shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    return true;
+  getDrawcallCtors() {
+    return [InstancedLineDrawcall];
   }
 }

@@ -6,7 +6,6 @@ import {
   MutationEvent,
   RenderingPlugin,
   RenderingPluginContext,
-  runtime,
 } from '@antv/g-lite';
 import {
   CanvasEvent,
@@ -77,7 +76,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
         setTransform(object, $el);
 
-        runtime.nativeHTMLMap.set($el, object);
+        this.context.nativeHTMLMap.set($el, object);
       }
     };
 
@@ -87,7 +86,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const $el = this.getOrCreateEl(object);
         if ($el) {
           $el.remove();
-          runtime.nativeHTMLMap.delete($el);
+          this.context.nativeHTMLMap.delete($el);
         }
 
         // const existedId = this.getId(object);
@@ -257,23 +256,25 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         ] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
         break;
       case 'width':
-        if (runtime.enableCSSParsing) {
+        if (this.context.enableCSSParsing) {
           const width = object.computedStyleMap().get('width');
           $el.style.width = width.toString();
         } else {
           const { width } = object.parsedStyle;
-          $el.style.width = isNumber(width) ? `${width}px` : width.toString();
+          $el.style.width = isNumber(width)
+            ? `${width}px`
+            : (width as string).toString();
         }
         break;
       case 'height':
-        if (runtime.enableCSSParsing) {
+        if (this.context.enableCSSParsing) {
           const height = object.computedStyleMap().get('height');
           $el.style.height = height.toString();
         } else {
           const { height } = object.parsedStyle;
           $el.style.height = isNumber(height)
             ? `${height}px`
-            : height.toString();
+            : (height as string).toString();
         }
         break;
       case 'zIndex':

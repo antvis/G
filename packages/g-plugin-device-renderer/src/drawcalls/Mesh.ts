@@ -2,7 +2,7 @@ import type { DisplayObject } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import type { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
-export class MeshMesh extends Instanced {
+export class MeshDrawcall extends Instanced {
   protected lightReceived = true;
 
   shouldMerge(object: DisplayObject, index: number) {

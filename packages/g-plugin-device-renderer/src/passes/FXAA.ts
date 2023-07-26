@@ -87,8 +87,7 @@ export function pushFXAAPass(
         ],
         // rendering a fullscreen triangle instead of quad
         // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
-        // data: new Float32Array([-4, -4, 4, -4, 0, 4]),
-        data: new Float32Array([-1, -3, -1, 1, 3, -1]),
+        data: new Float32Array([1, 3, -3, -1, 1, -1]),
       });
       geometry.vertexCount = 3;
 

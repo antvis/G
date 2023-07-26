@@ -4,55 +4,53 @@
 import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import {
-  InstancedFillMesh,
-  InstancedLineMesh,
-  InstancedPathMesh,
-} from '../meshes';
+  Instanced,
+  InstancedFillDrawcall,
+  InstancedLineDrawcall,
+  InstancedPathDrawcall,
+} from '../drawcalls';
 import { Batch } from './Batch';
 
 /**
  * Use the following perf enhancements:
- * * Downgrading the "simple" Path / Polyline to {@link InstancedLineMesh}, e.g. 'M 0 0 L 100 0'
- * * Merge the Path into {@link InstancedPathMesh} which contains only one curve command, e.g 'M 0 0 Q 10 10 100 100'
+ * * Downgrading the "simple" Path / Polyline to {@link InstancedLineDrawcall}, e.g. 'M 0 0 L 100 0'
+ * * Merge the Path into {@link InstancedPathDrawcall} which contains only one curve command, e.g 'M 0 0 Q 10 10 100 100'
  * @see https://github.com/antvis/G/issues/1113
  */
 export class PathRenderer extends Batch {
-  meshes = [InstancedFillMesh, InstancedLineMesh, InstancedPathMesh];
+  // meshes = [
+  //   InstancedFillDrawcall ?,
+  //   (InstancedLineDrawcall | InstancedPathDrawcall) *, // sub paths
+  // ];
 
-  shouldSubmitRenderInst(object: DisplayObject, index: number) {
+  getDrawcallCtors(object: DisplayObject) {
     const { fill, stroke, opacity, strokeOpacity, lineWidth } =
       object.parsedStyle as ParsedBaseStyleProps;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const isLine = InstancedLineMesh.isLine(object);
+    const subpathNum = InstancedPathDrawcall.calcSubpathNum(object);
 
-    object.renderable.proxyNodeName = isLine ? Shape.LINE : null;
+    const drawcalls: (typeof Instanced)[] = [];
 
     // Polyline don't need fill
-    if (
-      index === 0 &&
-      (object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)
-    ) {
-      return false;
-    }
-
-    // use Line for simple Path
-    if (index === 1) {
-      return isLine;
-    }
-
-    if (index === 2) {
-      if (
-        isLine ||
-        strokeOpacity === 0 ||
-        opacity === 0 ||
-        lineWidth === 0 ||
-        !hasStroke
-      ) {
-        return false;
+    if (!(object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)) {
+      for (let i = 0; i < subpathNum; i++) {
+        drawcalls.push(InstancedFillDrawcall);
       }
-      return true;
     }
 
-    return true;
+    for (let i = 0; i < subpathNum; i++) {
+      if (
+        !(strokeOpacity === 0 || opacity === 0 || lineWidth === 0 || !hasStroke)
+      ) {
+        const isLine = InstancedLineDrawcall.isLine(object, i);
+        if (isLine) {
+          drawcalls.push(InstancedLineDrawcall);
+        } else {
+          drawcalls.push(InstancedPathDrawcall);
+        }
+      }
+    }
+
+    return drawcalls;
   }
 }

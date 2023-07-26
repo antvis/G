@@ -50,7 +50,7 @@
     "jest-environment-jsdom": "^26.6.2"
   },
   "devDependencies": {
-    "@antv/util": "^3.3.1",
+    "@antv/util": "^3.3.4",
     "@commitlint/cli": "^8.3.6",
     "@commitlint/config-angular": "^9.1.2",
     "@changesets/cli": "^2.26.2",

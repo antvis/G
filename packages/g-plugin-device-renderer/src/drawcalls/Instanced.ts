@@ -95,19 +95,21 @@ export abstract class Instanced {
    */
   key: string;
 
-  /**
-   * index in renderer.meshes
-   */
-  index = -1;
-
   constructor(
     protected renderHelper: RenderHelper,
     protected texturePool: TexturePool,
     protected lightPool: LightPool,
     object: DisplayObject,
+    /**
+     * All drawcall constructors.
+     */
+    protected drawcallCtors: (new (..._: any) => Instanced)[],
+    /**
+     * index in renderer.meshes
+     */
+    public index = -1,
+    public context: BatchContext,
   ) {}
-
-  context: BatchContext;
 
   /**
    * instances
@@ -151,6 +153,8 @@ export abstract class Instanced {
    */
   protected mergeAnchorIntoModelMatrix = false;
 
+  protected checkNodeName = true;
+
   /**
    * Create a new batch if the number of instances exceeds.
    */
@@ -163,13 +167,12 @@ export abstract class Instanced {
   }
 
   inited = false;
-  init(context: BatchContext) {
+  init() {
     if (this.inited) {
       return;
     }
 
     this.renderer.beforeInitMesh(this);
-    this.context = context;
     this.material = new ShaderMaterial(this.context.device);
     this.material.defines = {
       ...enumToObject(VertexAttributeLocation),
@@ -247,12 +250,7 @@ export abstract class Instanced {
     }
 
     // Path / Polyline could be rendered as Line
-    if (
-      this.instance.nodeName !== object.nodeName &&
-      this.instance.nodeName !== object.renderable.proxyNodeName &&
-      this.instance.renderable.proxyNodeName !== object.nodeName &&
-      this.instance.renderable.proxyNodeName !== object.renderable.proxyNodeName
-    ) {
+    if (this.checkNodeName && this.instance.nodeName !== object.nodeName) {
       return false;
     }
 
@@ -698,7 +696,7 @@ export abstract class Instanced {
     renderInst.setProgram(program);
     renderInst.setInputLayoutAndState(inputLayout, this.inputState);
 
-    this.renderer.beforeUploadUBO(renderInst, this, this.index);
+    this.renderer.beforeUploadUBO(renderInst, this);
     // upload uniform buffer object
     this.uploadUBO(renderInst);
 
@@ -1028,7 +1026,6 @@ export abstract class Instanced {
   protected beforeUploadUBO(
     renderInst: RenderInst,
     objects: DisplayObject[],
-    i: number,
   ): void {}
   private uploadUBO(renderInst: RenderInst): void {
     const numUniformBuffers = 1; // Scene UBO

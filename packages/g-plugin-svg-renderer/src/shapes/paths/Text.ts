@@ -1,5 +1,4 @@
-import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
-import { runtime } from '@antv/g-lite';
+import type { GlobalRuntime, ParsedTextStyleProps, Text } from '@antv/g-lite';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { convertHTML } from '../../utils/format';
@@ -18,6 +17,7 @@ export function updateTextElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedTextStyleProps,
   text: Text,
+  runtime: GlobalRuntime,
 ) {
   const {
     lineWidth,

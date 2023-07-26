@@ -1,5 +1,18 @@
 # @antv/g-svg
 
+## 1.10.7
+
+### Patch Changes
+
+-   70aa0b32: Retrieve runtime from context instead of global.
+-   789bd4c9: Split a path containing multiple segments into subpaths.
+-   Updated dependencies [70aa0b32]
+-   Updated dependencies [789bd4c9]
+    -   @antv/g-plugin-svg-renderer@1.10.7
+    -   @antv/g-lite@1.2.7
+    -   @antv/g-plugin-svg-picker@1.9.7
+    -   @antv/g-plugin-dom-interaction@1.9.7
+
 ## 1.10.6
 
 ### Patch Changes

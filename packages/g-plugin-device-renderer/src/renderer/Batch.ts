@@ -1,5 +1,5 @@
 import type { DisplayObject } from '@antv/g-lite';
-import type { Instanced } from '../meshes/Instanced';
+import type { Instanced } from '../drawcalls/Instanced';
 import type { RenderInst } from '../render/RenderInst';
 
 /**
@@ -16,14 +16,11 @@ export abstract class Batch {
    * describe render insts used in this draw call
    * eg. a Polygon with stroke will use 2 renderInsts
    */
-  meshes: (typeof Instanced)[] = [];
+  abstract getDrawcallCtors(object: DisplayObject): (typeof Instanced)[];
+
   private clipPathMeshCreated = false;
 
-  shouldSubmitRenderInst(object: DisplayObject, index: number): boolean {
-    return true;
-  }
-
-  beforeUploadUBO(renderInst: RenderInst, mesh: Instanced, index: number) {}
+  beforeUploadUBO(renderInst: RenderInst, mesh: Instanced) {}
 
   beforeInitMesh(mesh: Instanced) {}
   afterInitMesh(mesh: Instanced) {}

@@ -2,7 +2,7 @@
  * Borrow from https://github.com/mapbox/tiny-sdf
  */
 
-import { CanvasLike, runtime } from '@antv/g-lite';
+import { CanvasLike, GlobalRuntime } from '@antv/g-lite';
 
 const INF = 1e20;
 
@@ -29,7 +29,7 @@ export class TinySDF {
   private gridInner: Float64Array;
   private ctx: CanvasRenderingContext2D;
 
-  constructor(options: TinySDFOptions) {
+  constructor(options: TinySDFOptions, runtime: GlobalRuntime) {
     const {
       fontSize = 24,
       buffer = 3,

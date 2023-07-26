@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-rough-canvas-renderer",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "A G plugin of renderer implementation with rough.js",
   "keywords": [
     "antv",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/util": "^3.3.1",
+    "@antv/util": "^3.3.4",
     "roughjs": "^4.5.2",
     "tslib": "^2.5.3"
   },
