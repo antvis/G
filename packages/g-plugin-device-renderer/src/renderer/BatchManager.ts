@@ -230,44 +230,45 @@ export class BatchManager {
           renderable3D.drawcalls[i] = existedDrawcall;
         }
 
-        if (existedDrawcall) {
-          if (existedDrawcall.inited && !existedDrawcall.geometryDirty) {
-            const shouldMerge = existedDrawcall.shouldMerge(object, i);
-            if (shouldMerge) {
-              const objectIdx = existedDrawcall.objects.indexOf(object);
-              if (immediately) {
-                object.parsedStyle[attributeName] = newValue;
-                existedDrawcall.updateAttribute(
-                  [object],
-                  objectIdx,
-                  attributeName,
-                  newValue,
-                );
-              } else {
-                const patchKey = existedDrawcall.id + attributeName;
-                if (!this.pendingUpdatePatches[patchKey]) {
-                  this.pendingUpdatePatches[patchKey] = {
-                    instance: existedDrawcall,
-                    objectIndices: [],
-                    name: attributeName,
-                    value: newValue,
-                  };
-                }
-                if (
-                  this.pendingUpdatePatches[patchKey].objectIndices.indexOf(
-                    objectIdx,
-                  ) === -1
-                ) {
-                  this.pendingUpdatePatches[patchKey].objectIndices.push(
-                    objectIdx,
-                  );
-                }
-              }
+        if (existedDrawcall.inited && !existedDrawcall.geometryDirty) {
+          const shouldMerge = existedDrawcall.shouldMerge(object, i);
+          if (shouldMerge) {
+            const objectIdx = existedDrawcall.objects.indexOf(object);
+            if (immediately) {
+              object.parsedStyle[attributeName] = newValue;
+              existedDrawcall.updateAttribute(
+                [object],
+                objectIdx,
+                attributeName,
+                newValue,
+              );
             } else {
-              this.remove(object);
-              this.add(object);
+              const patchKey = existedDrawcall.id + attributeName;
+              if (!this.pendingUpdatePatches[patchKey]) {
+                this.pendingUpdatePatches[patchKey] = {
+                  instance: existedDrawcall,
+                  objectIndices: [],
+                  name: attributeName,
+                  value: newValue,
+                };
+              }
+              if (
+                this.pendingUpdatePatches[patchKey].objectIndices.indexOf(
+                  objectIdx,
+                ) === -1
+              ) {
+                this.pendingUpdatePatches[patchKey].objectIndices.push(
+                  objectIdx,
+                );
+              }
             }
+          } else {
+            this.remove(object);
+            this.add(object);
           }
+        } else {
+          this.remove(object);
+          this.add(object);
         }
       });
 
