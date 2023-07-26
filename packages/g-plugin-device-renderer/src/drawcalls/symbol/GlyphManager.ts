@@ -1,4 +1,4 @@
-import { CanvasLike } from '@antv/g-lite';
+import { CanvasLike, GlobalRuntime } from '@antv/g-lite';
 import type { Device, Texture } from '../../platform';
 import { Format, makeTextureDescriptor2D } from '../../platform';
 import { TinySDF } from '../../utils';
@@ -45,6 +45,8 @@ export class GlyphManager {
   private glyphAtlas: GlyphAtlas;
   private glyphMap: Record<string, Record<number, StyleGlyph>> = {};
   private glyphAtlasTexture: Texture;
+
+  constructor(private runtime: GlobalRuntime) {}
 
   getMap() {
     return this.glyphMap;
@@ -191,16 +193,19 @@ export class GlyphManager {
       // 创建 SDF
       sdfGenerator = this.sdfGeneratorCache[fontStack] =
         // TODO: use OffscreenCanvas in TextService
-        new TinySDF({
-          canvas,
-          fontSize,
-          fontFamily,
-          fontWeight,
-          fontStyle,
-          buffer,
-          radius,
-          cutoff,
-        });
+        new TinySDF(
+          {
+            canvas,
+            fontSize,
+            fontFamily,
+            fontWeight,
+            fontStyle,
+            buffer,
+            radius,
+            cutoff,
+          },
+          this.runtime,
+        );
     }
 
     if (!this.textMetricsCache[fontStack]) {

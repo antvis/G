@@ -108,9 +108,8 @@ export abstract class Instanced {
      * index in renderer.meshes
      */
     public index = -1,
+    public context: BatchContext,
   ) {}
-
-  context: BatchContext;
 
   /**
    * instances
@@ -168,13 +167,12 @@ export abstract class Instanced {
   }
 
   inited = false;
-  init(context: BatchContext) {
+  init() {
     if (this.inited) {
       return;
     }
 
     this.renderer.beforeInitMesh(this);
-    this.context = context;
     this.material = new ShaderMaterial(this.context.device);
     this.material.defines = {
       ...enumToObject(VertexAttributeLocation),

@@ -11,6 +11,7 @@ import { updateBuffer } from './InstancedPath';
 import { RenderHelper } from '../render';
 import { TexturePool } from '../TexturePool';
 import { LightPool } from '../LightPool';
+import { BatchContext } from '../renderer';
 
 const SEGMENT_NUM = 12;
 
@@ -22,8 +23,17 @@ export class InstancedFillDrawcall extends Instanced {
     object: DisplayObject,
     drawcallCtors: (new (..._: any) => Instanced)[],
     index: number,
+    context: BatchContext,
   ) {
-    super(renderHelper, texturePool, lightPool, object, drawcallCtors, index);
+    super(
+      renderHelper,
+      texturePool,
+      lightPool,
+      object,
+      drawcallCtors,
+      index,
+      context,
+    );
     this.trianglesHash = this.calcSegmentNum(object);
   }
 

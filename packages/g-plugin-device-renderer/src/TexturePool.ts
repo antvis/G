@@ -2,13 +2,13 @@ import {
   CanvasContext,
   CSSGradientValue,
   DisplayObject,
+  GlobalRuntime,
   isBrowser,
   LinearGradient,
   parsedTransformToMat4,
   parseTransform,
   Pattern,
   RadialGradient,
-  runtime,
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
@@ -28,7 +28,7 @@ export interface GradientParams {
 }
 
 export class TexturePool {
-  constructor(public context: CanvasContext) {}
+  constructor(public context: CanvasContext, private runtime: GlobalRuntime) {}
 
   private textureCache: Record<string, Texture> = {};
 
@@ -89,8 +89,8 @@ export class TexturePool {
               }
             };
 
-            if (runtime.globalThis.createImageBitmap) {
-              runtime.globalThis
+            if (this.runtime.globalThis.createImageBitmap) {
+              this.runtime.globalThis
                 .createImageBitmap(image)
                 .then((bitmap: ImageBitmap) => onSuccess(bitmap))
                 .catch(() => {
@@ -117,7 +117,7 @@ export class TexturePool {
   }
 
   getOrCreateCanvas() {
-    return runtime.offscreenCanvasCreator.getOrCreateCanvas(
+    return this.runtime.offscreenCanvasCreator.getOrCreateCanvas(
       this.context.config.offscreenCanvas,
     );
   }
@@ -130,8 +130,8 @@ export class TexturePool {
 
     const { offscreenCanvas } = this.context.config;
     const canvas =
-      runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
-    const context = runtime.offscreenCanvasCreator.getOrCreateContext(
+      this.runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
+    const context = this.runtime.offscreenCanvasCreator.getOrCreateContext(
       offscreenCanvas,
     ) as CanvasRenderingContext2D;
 
@@ -173,9 +173,9 @@ export class TexturePool {
     const { offscreenCanvas } = this.context.config;
 
     const canvas =
-      runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
+      this.runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
     const context =
-      runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
+      this.runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
 
     canvas.width = width;
     canvas.height = height;

@@ -31,6 +31,7 @@ import { TexturePool } from '../TexturePool';
 import { LightPool } from '../LightPool';
 import { bezierCurveTo, quadCurveTo } from '../utils';
 import { InstancedFillDrawcall } from './InstancedFill';
+import { BatchContext } from '../renderer';
 
 enum LineVertexAttributeBufferIndex {
   PACKED = VertexAttributeBufferIndex.POSITION + 1,
@@ -74,8 +75,17 @@ export class InstancedPathDrawcall extends Instanced {
     object: DisplayObject,
     drawcallCtors: (new (..._: any) => Instanced)[],
     index: number,
+    context: BatchContext,
   ) {
-    super(renderHelper, texturePool, lightPool, object, drawcallCtors, index);
+    super(
+      renderHelper,
+      texturePool,
+      lightPool,
+      object,
+      drawcallCtors,
+      index,
+      context,
+    );
     this.segmentNum = this.calcSegmentNum(object);
   }
 

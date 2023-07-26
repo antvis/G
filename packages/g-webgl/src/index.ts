@@ -14,13 +14,14 @@ interface WebGLRendererConfig extends RendererConfig {
   onContextLost: (e: Event) => void;
   onContextRestored: (e: Event) => void;
   onContextCreationError: (e: Event) => void;
+  enableFXAA: boolean;
 }
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<WebGLRendererConfig>) {
     super(config);
 
-    const deviceRendererPlugin = new DeviceRenderer.Plugin();
+    const deviceRendererPlugin = new DeviceRenderer.Plugin(config);
 
     this.registerPlugin(new ContextRegisterPlugin(deviceRendererPlugin));
     this.registerPlugin(new ImageLoader.Plugin());

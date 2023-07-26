@@ -8,7 +8,6 @@ import {
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
-  runtime,
 } from '@antv/g-lite';
 import {
   ElementEvent,
@@ -466,6 +465,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private updateAttribute(object: DisplayObject, attributes: string[]) {
+    const { enableCSSParsing } = this.context;
     const { document } = this.context.config;
 
     // @ts-ignore
@@ -499,7 +499,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      const computedValue = runtime.enableCSSParsing
+      const computedValue = enableCSSParsing
         ? computedStyle[name]
         : parsedStyle[name];
       const computedValueStr =
@@ -512,7 +512,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       if (
         !usedName ||
         ((nodeName === Shape.GROUP || object.isCustomElement) &&
-          !runtime.enableCSSParsing &&
+          !enableCSSParsing &&
           (inherited || usedName === 'fill' || usedName === 'stroke'))
       ) {
         return;
@@ -552,7 +552,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
             this,
           );
         }
-      } else if (runtime.enableCSSParsing && inherited) {
+      } else if (enableCSSParsing && inherited) {
         // use computed value
         // update `visibility` on <group>
         if (

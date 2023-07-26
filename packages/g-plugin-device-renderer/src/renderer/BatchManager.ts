@@ -56,7 +56,7 @@ export class BatchManager {
 
     this.drawcalls.forEach((mesh) => {
       // init rendering service, create geometry & material
-      mesh.init(this.context);
+      mesh.init();
 
       let objects = mesh.objects;
       if (mesh.clipPathTarget) {
@@ -120,6 +120,7 @@ export class BatchManager {
                   object,
                   drawcallCtors,
                   i,
+                  this.context,
                 );
                 existedDrawcall.renderer = renderer;
                 this.drawcalls.push(existedDrawcall);
@@ -216,9 +217,10 @@ export class BatchManager {
               object,
               drawcallCtors,
               i,
+              this.context,
             );
             existedDrawcall.renderer = renderer;
-            existedDrawcall.init(this.context);
+            existedDrawcall.init();
             this.drawcalls.push(existedDrawcall);
           } else {
             existedDrawcall.geometryDirty = true;

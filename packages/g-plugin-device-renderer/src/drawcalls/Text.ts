@@ -4,7 +4,7 @@ import type {
   Text as TextShape,
   Tuple4Number,
 } from '@antv/g-lite';
-import { isCSSRGB, runtime } from '@antv/g-lite';
+import { isCSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexBufferFrequency } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -23,6 +23,7 @@ import { packUint8ToFloat } from '../utils/compression';
 import { LightPool } from '../LightPool';
 import { TexturePool } from '../TexturePool';
 import { RenderHelper } from '../render';
+import { BatchContext } from '../renderer';
 
 enum TextVertexAttributeBufferIndex {
   INSTANCED = VertexAttributeBufferIndex.POSITION + 1,
@@ -44,7 +45,7 @@ export enum TextUniform {
 }
 
 export class TextDrawcall extends Instanced {
-  private glyphManager = new GlyphManager();
+  private glyphManager: GlyphManager;
 
   private packedBufferObjectMap = new WeakMap<
     DisplayObject,
@@ -62,9 +63,19 @@ export class TextDrawcall extends Instanced {
     object: DisplayObject,
     drawcallCtors: (new (..._: any) => Instanced)[],
     index: number,
+    context: BatchContext,
   ) {
-    super(renderHelper, texturePool, lightPool, object, drawcallCtors, index);
+    super(
+      renderHelper,
+      texturePool,
+      lightPool,
+      object,
+      drawcallCtors,
+      index,
+      context,
+    );
     this.fontHash = this.calcFontHash(object);
+    this.glyphManager = new GlyphManager(this.context);
   }
 
   private calcFontHash(object: DisplayObject) {
@@ -126,7 +137,7 @@ export class TextDrawcall extends Instanced {
         linePositionY = 0;
       } else if (textBaseline === 'alphabetic') {
         linePositionY = -height + lineHeight * 0.25;
-        if (!runtime.enableCSSParsing) {
+        if (!this.context.enableCSSParsing) {
           linePositionY = -height;
         }
         // linePositionY = -height + fontProperties.ascent;
