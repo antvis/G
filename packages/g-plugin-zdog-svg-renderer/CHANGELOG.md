@@ -1,5 +1,17 @@
 # @antv/g-plugin-zdog-svg-renderer
 
+## 1.2.7
+
+### Patch Changes
+
+-   70aa0b32: Retrieve runtime from context instead of global.
+-   789bd4c9: Split a path containing multiple segments into subpaths.
+-   Updated dependencies [70aa0b32]
+-   Updated dependencies [789bd4c9]
+    -   @antv/g-plugin-svg-renderer@1.10.7
+    -   @antv/g-lite@1.2.7
+    -   @antv/g-svg@1.10.7
+
 ## 1.2.6
 
 ### Patch Changes

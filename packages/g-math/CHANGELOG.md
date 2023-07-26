@@ -1,5 +1,12 @@
 # @antv/g-math
 
+## 2.0.2
+
+### Patch Changes
+
+-   70aa0b32: Retrieve runtime from context instead of global.
+-   789bd4c9: Split a path containing multiple segments into subpaths.
+
 ## 2.0.1
 
 ### Patch Changes
