@@ -133,4 +133,51 @@ describe('HTML', () => {
     expect(bounds.center[0]).toBe(150);
     expect(bounds.center[1]).toBe(150);
   });
+
+  it("should override container's style correctly.", async () => {
+    const html = new HTML({
+      id: 'id',
+      name: 'name',
+      className: 'classname',
+      style: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        innerHTML: '<h1>This is Title</h1>',
+        // @ts-ignore
+        fontSize: '12px',
+        textAlign: 'center',
+        color: 'red',
+      },
+    });
+
+    await canvas.ready;
+    canvas.appendChild(html);
+
+    expect(html.getAttribute('x')).toBe(100);
+    expect(html.getAttribute('y')).toBe(100);
+    expect(html.getAttribute('width')).toBe(100);
+    expect(html.getAttribute('height')).toBe(100);
+
+    const $el = html.getDomElement();
+    expect($el.id).toBe('id');
+    expect($el.getAttribute('name')).toBe('name');
+    expect($el.className).toBe('classname');
+    expect($el.style.position).toBe('absolute');
+    expect($el.style.top).toBe('0px');
+
+    // fontSize should be overrided.
+    expect($el.style.fontSize).toBe('12px');
+    expect($el.style.textAlign).toBe('center');
+    expect($el.style.color).toBe('red');
+
+    // update overrided CSS properties.
+    // @ts-ignore
+    html.style.fontSize = '16px';
+    // @ts-ignore
+    html.style.color = 'blue';
+    expect($el.style.fontSize).toBe('16px');
+    expect($el.style.color).toBe('blue');
+  });
 });
