@@ -1,5 +1,12 @@
 # @antv/g-canvaskit
 
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [d64c8b03]
+    -   @antv/g-plugin-html-renderer@1.9.8
+
 ## 0.10.7
 
 ### Patch Changes

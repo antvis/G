@@ -1,5 +1,11 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.8
+
+### Patch Changes
+
+-   d64c8b03: CSS properties will be passed through in HTML.
+
 ## 1.9.7
 
 ### Patch Changes
