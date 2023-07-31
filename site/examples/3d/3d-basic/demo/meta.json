@@ -21,6 +21,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*nKFQQZdL3-IAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "billboard.js",
+      "title": {
+        "zh": "公告牌效果",
+        "en": "Billboard effect"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*V44QR4my8ZwAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "sprite.js",
       "title": {
         "zh": "Sprite",

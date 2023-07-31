@@ -1,5 +1,13 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.9
+
+### Patch Changes
+
+-   d9e769f2: Merge anchor into modelmatrix.
+-   d9e769f2: Fix dash effect in webgl.
+-   d9e769f2: Stop propagation in g-gesture.
+
 ## 1.9.8
 
 ### Patch Changes

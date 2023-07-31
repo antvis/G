@@ -33,9 +33,7 @@ void main() {
   float clampedStrokeWidth = max(strokeWidth, 1.0);
 
   float isBillboard = a_Dash.w;
-  bool isPerspective = isPerspectiveMatrix(u_ProjectionMatrix);
-
-  if (isBillboard > 0.5 && isPerspective) {
+  if (isBillboard > 0.5) {
     // clip space
     vec4 clip0 = project(vec4(a_PointA, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
     vec4 clip1 = project(vec4(a_PointB, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
