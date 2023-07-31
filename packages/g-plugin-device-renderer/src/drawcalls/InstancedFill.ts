@@ -16,6 +16,8 @@ import { BatchContext } from '../renderer';
 const SEGMENT_NUM = 12;
 
 export class InstancedFillDrawcall extends Instanced {
+  protected mergeAnchorIntoModelMatrix = true;
+
   constructor(
     protected renderHelper: RenderHelper,
     protected texturePool: TexturePool,
