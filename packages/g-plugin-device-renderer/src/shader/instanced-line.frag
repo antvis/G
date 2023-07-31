@@ -37,6 +37,6 @@ void main() {
     outputColor.a = outputColor.a
       * blur
       * u_Opacity * u_StrokeOpacity
-      * ceil(mod(v_Dash.x + u_dash_offset, u_dash_array) - (u_dash_array * u_dash_ratio));
+      * (u_dash_array < 1.0 ? (ceil((u_dash_array * u_dash_ratio) - mod(v_Dash.x + u_dash_offset, u_dash_array))) : 1.0);
   }
 }
