@@ -1,5 +1,11 @@
 # @antv/g-gesture
 
+## 2.2.8
+
+### Patch Changes
+
+-   d9e769f2: Stop propagation in g-gesture.
+
 ## 2.2.7
 
 ### Patch Changes
