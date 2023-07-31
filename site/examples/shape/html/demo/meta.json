@@ -11,6 +11,13 @@
         "en": "HTML"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "override-css.js",
+      "title": {
+        "zh": "覆盖容器上的 CSS 属性",
+        "en": "Override CSS properties on container"
+      }
     }
   ]
 }
