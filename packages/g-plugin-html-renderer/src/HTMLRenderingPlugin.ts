@@ -1,6 +1,7 @@
 import {
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   HTML,
   ICamera,
   MutationEvent,
@@ -15,7 +16,7 @@ import {
   isPattern,
   Shape,
 } from '@antv/g-lite';
-import { isNumber, isString } from '@antv/util';
+import { isNil, isNumber, isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
 const HTML_PREFIX = 'g-html-';
@@ -42,7 +43,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     ].join(',')})`;
   }
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const { camera, renderingContext, renderingService } = context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
@@ -65,10 +66,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         this.$camera.appendChild($el);
 
         // apply documentElement's style
-        const { attributes } = object.ownerDocument.documentElement;
-        Object.keys(attributes).forEach((name) => {
-          $el.style[name] = attributes[name];
-        });
+        if (runtime.enableCSSParsing) {
+          const { attributes } = object.ownerDocument.documentElement;
+          Object.keys(attributes).forEach((name) => {
+            $el.style[name] = attributes[name];
+          });
+        }
 
         Object.keys(object.attributes).forEach((name) => {
           this.updateAttribute(name, object as HTML);
@@ -338,6 +341,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const { filter } = object.style;
         $el.style.filter = filter;
         break;
+      default:
+        if (name !== 'x' && name !== 'y') {
+          if (!isNil(object.style[name]) && object.style[name] !== '') {
+            $el.style[name] = object.style[name];
+          }
+        }
     }
   }
 }

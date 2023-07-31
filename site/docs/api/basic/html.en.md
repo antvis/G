@@ -8,7 +8,7 @@ Sometimes we need to add some HUDs to the canvas, e.g. Tooltip. In this case, th
 -   Many native HTML components are difficult to draw, such as some input components: `<input>`, `<select>` etc.
 -   Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape#html).
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
+![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
 HTML content and width are required, where HTML content can be a string or HTMLElement.
 
@@ -126,7 +126,7 @@ Corresponds to the [transform-origin](https://developer.mozilla.org/zh-CN/docs/W
 
 The x-axis coordinate of the top-left vertex of the container in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -136,7 +136,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
 The y-axis coordinate of the top-left vertex of the container in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -166,7 +166,7 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 ### width
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -177,6 +177,28 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | 'auto'                                                               | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+
+### Other CSS Properties
+
+CSS properties will be passthrough and applied directly to the style of the DOM container. In the following [example](/en/examples/shape/html/#override-css), CSS attributes such as `fontSize` `textAlign` `color` will be directly reflected in the style:
+
+```js
+const html = new HTML({
+    style: {
+        x: 200,
+        y: 100,
+        width: 200,
+        height: 200,
+        innerHTML: 'p1',
+        // The followin will override the CSS properties.
+        fontSize: '20px',
+        textAlign: 'center',
+        color: 'red',
+    },
+});
+```
+
+![override CSS properties](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*A5kuQbb3_YUAAAAAAAAAAAAADmJ7AQ/original)
 
 ## Methods
 
