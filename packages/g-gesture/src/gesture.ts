@@ -91,7 +91,6 @@ class Gesture extends EventEmitter {
     } else {
       el.isMutationObserved = true;
       el.on(ElementEvent.MOUNTED, (e) => {
-        e.stopPropagation();
         el.ownerDocument?.defaultView.addEventListener(
           'pointermove',
           // @ts-ignore
@@ -107,7 +106,6 @@ class Gesture extends EventEmitter {
       el.ownerDocument?.defaultView.addEventListener('pointerup', this._end);
     } else {
       el.on(ElementEvent.MOUNTED, (e) => {
-        e.stopPropagation();
         // @ts-ignore
         el.ownerDocument?.defaultView.addEventListener('pointerup', this._end);
       });
