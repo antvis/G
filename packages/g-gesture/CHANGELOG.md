@@ -1,5 +1,11 @@
 # @antv/g-gesture
 
+## 2.2.9
+
+### Patch Changes
+
+-   5d384146: Revert stopPropagation in g-gesture
+
 ## 2.2.8
 
 ### Patch Changes
