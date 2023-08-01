@@ -1,5 +1,12 @@
 # @antv/g-plugin-zdog-svg-renderer
 
+## 1.2.8
+
+### Patch Changes
+
+-   5d384146: Revert stopPropagation in g-gesture
+-   5d384146: Pass global runtime in svg element lifecycle contribution.
+
 ## 1.2.7
 
 ### Patch Changes
