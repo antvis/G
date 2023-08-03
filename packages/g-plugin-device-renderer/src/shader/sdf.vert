@@ -34,6 +34,7 @@ void main() {
 
   bool isBillboard = a_StylePacked3.w > 0.5;
   if (isBillboard) {
+    float rotation = 0.0;
     #pragma glslify: import('@antv/g-shader-components/billboard.vert')
   } else {
     gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);

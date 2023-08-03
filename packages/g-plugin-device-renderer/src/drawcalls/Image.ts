@@ -47,8 +47,14 @@ export class ImageDrawcall extends Instanced {
     const instanced: number[] = [];
     objects.forEach((object, i) => {
       const image = object as ImageShape;
-      const { width, height, z, isBillboard } = image.parsedStyle;
-      instanced.push(width, height, z, isBillboard ? 1 : 0);
+      const { width, height, isBillboard, billboardRotation } =
+        image.parsedStyle;
+      instanced.push(
+        width,
+        height,
+        isBillboard ? 1 : 0,
+        billboardRotation ?? 0,
+      );
     });
 
     this.geometry.setIndexBuffer(new Uint32Array([0, 2, 1, 0, 3, 2]));
@@ -100,8 +106,9 @@ export class ImageDrawcall extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { width, height, z, isBillboard } = image.parsedStyle;
-        packed.push(width, height, z, isBillboard ? 1 : 0);
+        const { width, height, isBillboard, billboardRotation } =
+          image.parsedStyle;
+        packed.push(width, height, isBillboard ? 1 : 0, billboardRotation ?? 0);
       });
 
       this.geometry.updateVertexBuffer(

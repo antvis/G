@@ -369,6 +369,7 @@ export class TextDrawcall extends Instanced {
           lineWidth,
           visibility,
           isBillboard,
+          billboardRotation,
           sizeAttenuation,
         } = object.parsedStyle as ParsedTextStyleProps;
         let fillColor: Tuple4Number = [0, 0, 0, 0];
@@ -431,7 +432,7 @@ export class TextDrawcall extends Instanced {
           sliced[i + 24] = visibility === 'visible' ? 1 : 0;
           sliced[i + 25] = isBillboard ? 1 : 0;
           sliced[i + 26] = sizeAttenuation ? 1 : 0;
-          sliced[i + 27] = 0;
+          sliced[i + 27] = billboardRotation ?? 0;
           sliced[i + 28] = encodedPickingColor[0];
           sliced[i + 29] = encodedPickingColor[1];
           sliced[i + 30] = encodedPickingColor[2];
@@ -479,6 +480,7 @@ export class TextDrawcall extends Instanced {
       lineWidth,
       visibility,
       isBillboard,
+      billboardRotation,
       sizeAttenuation,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
@@ -542,7 +544,7 @@ export class TextDrawcall extends Instanced {
         visibility === 'visible' ? 1 : 0,
         isBillboard ? 1 : 0,
         sizeAttenuation ? 1 : 0,
-        0,
+        billboardRotation ?? 0,
         ...encodedPickingColor,
         object.sortable.renderOrder * RENDER_ORDER_SCALE,
       ];

@@ -6,17 +6,12 @@ import {
   Text,
   Rect,
   Image,
+  CameraType,
   Circle,
   Path,
 } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
-import {
-  MeshPhongMaterial,
-  SphereGeometry,
-  DirectionalLight,
-  Mesh,
-  Plugin as Plugin3D,
-} from '@antv/g-plugin-3d';
+import { DirectionalLight, Plugin as Plugin3D } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
@@ -52,26 +47,41 @@ const canvas = new Canvas({
       height: 20,
       src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       isBillboard: true,
+      billboardRotation: Math.PI / 8,
     },
   });
+  const label = new Text({
+    style: {
+      x: 20,
+      text: '0',
+      fontSize: 12,
+      fill: 'black',
+      isBillboard: true,
+      billboardRotation: Math.PI / 8,
+    },
+  });
+  origin.appendChild(label);
   canvas.appendChild(origin);
 
-  const x = origin.cloneNode();
+  const x = origin.cloneNode(true);
   x.attr({
     x: 300,
   });
+  x.childNodes[0].style.text = 'x';
   canvas.appendChild(x);
 
-  const y = origin.cloneNode();
+  const y = origin.cloneNode(true);
   y.attr({
     y: 100,
   });
+  y.childNodes[0].style.text = 'y';
   canvas.appendChild(y);
 
-  const z = origin.cloneNode();
+  const z = origin.cloneNode(true);
   z.attr({
     z: 100,
   });
+  z.childNodes[0].style.text = 'z';
   canvas.appendChild(z);
 
   const xAxis = new Line({
@@ -129,8 +139,8 @@ const canvas = new Canvas({
   canvas.appendChild(light);
 
   // adjust camera's position
-  // const camera = canvas.getCamera();
-  // camera.setPerspective(0.1, 5000, 90, 400 / 400);
+  const camera = canvas.getCamera();
+  camera.setType(CameraType.ORBITING);
 
   // stats
   const stats = new Stats();

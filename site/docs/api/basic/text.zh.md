@@ -5,7 +5,7 @@ order: 1
 
 提供简单的单行/多行文本排版能力，单行支持水平对齐、字符间距；多行支持显式换行符以及自动换行，垂直对齐。
 
-可以在该 [示例](/zh/examples/shape#text) 中调整以下属性。
+可以在该 [示例](/zh/examples/shape/text/#text) 中调整以下属性。
 
 ## 继承自
 
@@ -51,6 +51,31 @@ order: 1
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+
+## isBillboard
+
+在 3D 场景下是否永远面朝相机，默认为 `false`，也称作“公告牌效果”。
+
+在[示例](/zh/examples/3d/3d-basic#billboard)中，未开启情况下在相机发生旋转时，文本会呈现被压缩的效果：
+
+![disable billboard effect](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*i7kASr_GZhUAAAAAAAAAAAAADmJ7AQ/original)
+
+开启后并不会改变文本的位置，但它会始终面朝相机。这也符合通常 3D 场景下对于文本这类 2D 图形的需求：
+
+![enable billboard effect](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5cNIQ40b4IIAAAAAAAAAAAAADmJ7AQ/original)
+
+## billboardRotation
+
+公告牌模式下的旋转角度，顺时针方向以 radians 为单位。
+
+在[示例](/zh/examples/3d/3d-basic#billboard)中，我们为文本增加一个旋转角度：
+
+```js
+label.style.isBillboard = true;
+label.style.billboardRotation = Math.PI / 8;
+```
+
+![billboard rotation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*v8ngTbgkP-MAAAAAAAAAAAAADmJ7AQ/original)
 
 ## 字体相关
 
@@ -275,7 +300,7 @@ interface Rectangle {
 
 在[示例](/zh/examples/shape#text)中，我们绘制出了多行文本中每一行的包围盒，可以根据包围盒信息实现例如下划线、删除线等高级文本特性：
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
+![getLineBoundingRects](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
 
 ```js
 text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
@@ -313,7 +338,7 @@ text.isOverflowing(); // true
 
 除了系统默认字体，有时我们希望加载第三方字体。
 
-此时可以使用 [Web Font Loader](https://github.com/typekit/webfontloader)，在加载成功的 `active` 回调函数中创建，[示例](/zh/examples/shape#text)：
+此时可以使用 [Web Font Loader](https://github.com/typekit/webfontloader)，在加载成功的 `active` 回调函数中创建，[示例](/zh/examples/shape/text/#web-font-loader)：
 
 ```js
 import WebFont from 'webfontloader';

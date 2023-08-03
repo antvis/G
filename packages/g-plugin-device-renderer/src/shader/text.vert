@@ -26,6 +26,7 @@ void main() {
   vec2 offset = a_Offset * fontScale + bufferOffset;
 
   if (isBillboard) {
+    float rotation =  a_StylePacked2.w;
     #pragma glslify: import('@antv/g-shader-components/billboard.vert')
     v_GammaScale = 1.0;
   } else {

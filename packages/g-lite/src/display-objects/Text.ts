@@ -24,6 +24,11 @@ export interface TextStyleProps extends BaseStyleProps {
   isBillboard?: boolean;
 
   /**
+   * The rotation of the billboard in radians.
+   */
+  billboardRotation?: number;
+
+  /**
    * Whether the size of the sprite is attenuated by the camera depth. (Perspective camera only.)
    */
   sizeAttenuation?: boolean;
@@ -194,6 +199,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   y: number;
   z?: number;
   isBillboard?: boolean;
+  billboardRotation?: number;
   sizeAttenuation?: boolean;
   text: string;
   textAlign?: 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';

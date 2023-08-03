@@ -5,7 +5,7 @@ order: 4
 
 You can refer to the [\<rect\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/rect) element of SVG.
 
-The following [example](/en/examples/shape#rect) defines a rounded rectangle with the top left vertex at `(200, 100)`.
+The following [example](/en/examples/shape/rect/#rect) defines a rounded rectangle with the top left vertex at `(200, 100)`.
 
 ```javascript
 const rect = new Rect({
@@ -40,7 +40,7 @@ The default value is `left top`. For details, see [DisplayObject's transformOrig
 
 The x-axis coordinate of the top-left vertex of the rectangle in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
 The y-axis coordinate of the top-left vertex of the rectangle in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -58,7 +58,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
 ### width
 
-The width of the rectangle. Supports taking **negative numbers** with the effect of reversing along the Y-axis, [example](/en/examples/shape#rect).
+The width of the rectangle. Supports taking **negative numbers** with the effect of reversing along the Y-axis, [example](/en/examples/shape/rect/#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_sVnRJmw7m8AAAAAAAAAAAAAARQnAQ" width="300" alt="negative width of rect">
 
@@ -68,7 +68,7 @@ This is consistent with the Canvas2D API, [see](https://stackoverflow.com/a/1559
 
 We circumvent this problem by using `<path>` instead of `<rect>` for drawing in [g-svg](/en/api/renderer/svg).
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -76,11 +76,11 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 ### height
 
-The height of the rectangle. Supports taking **negative numbers** with the effect of reversing along the X-axis, [example](/en/examples/shape#rect).
+The height of the rectangle. Supports taking **negative numbers** with the effect of reversing along the X-axis, [example](/en/examples/shape/rect/#rect).
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gPkGR56c5QgAAAAAAAAAAAAAARQnAQ" width="300" alt="negative height of rect">
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |

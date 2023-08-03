@@ -20,8 +20,9 @@ void main() {
 
   bool isPerspective = isPerspectiveMatrix(u_ProjectionMatrix);
 
-  bool isBillboard = a_Size.w > 0.5;
+  bool isBillboard = a_Size.z > 0.5;
   if (isBillboard) {
+    float rotation = a_Size.w;
     #pragma glslify: import('@antv/g-shader-components/billboard.vert')
   } else {
     gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);

@@ -9,8 +9,6 @@ scale.y = length(vec3(u_ModelMatrix[1][0], u_ModelMatrix[1][1], u_ModelMatrix[1]
 // }
 
 vec2 alignedPosition = offset * scale;
-
-float rotation = 0.0;
 vec2 rotatedPosition;
 rotatedPosition.x = cos(rotation) * alignedPosition.x - sin(rotation) * alignedPosition.y;
 rotatedPosition.y = sin(rotation) * alignedPosition.x + cos(rotation) * alignedPosition.y;
