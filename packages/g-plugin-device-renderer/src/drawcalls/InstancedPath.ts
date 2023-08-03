@@ -138,7 +138,6 @@ export class InstancedPathDrawcall extends Instanced {
     this.material.defines = {
       ...this.material.defines,
       ...enumToObject(LineVertexAttributeLocation),
-      INSTANCED: true,
     };
   }
 
@@ -175,7 +174,7 @@ export class InstancedPathDrawcall extends Instanced {
 
       // Can't use interleaved buffer here, we should spread them like:
       // | prev - pointA - pointB - next |. This will allocate ~4x buffer memory space.
-      for (let i = 0; i < pBuffer.length - 3 * 3; i += 3) {
+      for (let i = 0; i < pBuffer.length - 3 * 4; i += 4) {
         pointsBuffer.push(
           pBuffer[i],
           pBuffer[i + 1],
@@ -189,6 +188,10 @@ export class InstancedPathDrawcall extends Instanced {
           pBuffer[i + 9],
           pBuffer[i + 10],
           pBuffer[i + 11],
+          pBuffer[i + 12],
+          pBuffer[i + 13],
+          pBuffer[i + 14],
+          pBuffer[i + 15],
         );
       }
 
@@ -217,36 +220,36 @@ export class InstancedPathDrawcall extends Instanced {
     if (pointsBuffer.length) {
       this.geometry.setVertexBuffer({
         bufferIndex: LineVertexAttributeBufferIndex.PACKED,
-        byteStride: 4 * (3 + 3 + 3 + 3),
+        byteStride: 4 * (4 + 4 + 4 + 4),
         frequency: VertexBufferFrequency.PerInstance,
         attributes: [
           {
-            format: Format.F32_RG,
+            format: Format.F32_RGB,
             bufferByteOffset: 4 * 0,
             location: LineVertexAttributeLocation.PREV,
             divisor: 1,
           },
           {
-            format: Format.F32_RG,
-            bufferByteOffset: 4 * 3,
+            format: Format.F32_RGB,
+            bufferByteOffset: 4 * 4,
             location: LineVertexAttributeLocation.POINT1,
             divisor: 1,
           },
           {
             format: Format.F32_R,
-            bufferByteOffset: 4 * 5,
+            bufferByteOffset: 4 * 7,
             location: LineVertexAttributeLocation.VERTEX_JOINT,
             divisor: 1,
           },
           {
-            format: Format.F32_RG,
-            bufferByteOffset: 4 * 6,
+            format: Format.F32_RGB,
+            bufferByteOffset: 4 * 8,
             location: LineVertexAttributeLocation.POINT2,
             divisor: 1,
           },
           {
-            format: Format.F32_RG,
-            bufferByteOffset: 4 * 9,
+            format: Format.F32_RGB,
+            bufferByteOffset: 4 * 12,
             location: LineVertexAttributeLocation.NEXT,
             divisor: 1,
           },
@@ -359,7 +362,7 @@ export class InstancedPathDrawcall extends Instanced {
 
         // Can't use interleaved buffer here, we should spread them like:
         // | prev - pointA - pointB - next |. This will allocate ~4x buffer memory space.
-        for (let i = 0; i < pBuffer.length - 3 * 3; i += 3) {
+        for (let i = 0; i < pBuffer.length - 3 * 4; i += 4) {
           pointsBuffer.push(
             pBuffer[i],
             pBuffer[i + 1],
@@ -373,6 +376,10 @@ export class InstancedPathDrawcall extends Instanced {
             pBuffer[i + 9],
             pBuffer[i + 10],
             pBuffer[i + 11],
+            pBuffer[i + 12],
+            pBuffer[i + 13],
+            pBuffer[i + 14],
+            pBuffer[i + 15],
           );
         }
 
@@ -435,8 +442,8 @@ export enum JOINT_TYPE {
   CAP_BUTT2 = 4 << 5,
 }
 
-const stridePoints = 2;
-const strideFloats = 3;
+const stridePoints = 3;
+const strideFloats = 4;
 
 export function updateBuffer(
   object: DisplayObject,
@@ -496,7 +503,7 @@ export function updateBuffer(
         offsetY = endOffsetY;
       }
 
-      prev.push(cur[0] - defX + offsetX, cur[1] - defY + offsetY);
+      prev.push(cur[0] - defX + offsetX, cur[1] - defY + offsetY, cur[2] || 0);
       return prev;
     }, [] as number[]);
 
@@ -504,7 +511,7 @@ export function updateBuffer(
     if (object.nodeName === Shape.POLYGON) {
       if (needEarcut) {
         // use earcut for triangulation
-        triangles = earcut(points[0], [], 2);
+        triangles = earcut(points[0], [], 3);
         return {
           pointsBuffer: points[0],
           travelBuffer: [],
@@ -512,13 +519,15 @@ export function updateBuffer(
           instancedCount: Math.round(points[0].length / stridePoints),
         };
       } else {
-        points[0].push(points[0][0], points[0][1]);
+        points[0].push(points[0][0], points[0][1], points[0][2] || 0);
         points[0].push(
           ...addTailSegment(
             points[0][0],
             points[0][1],
-            points[0][2],
+            points[0][2] || 0,
             points[0][3],
+            points[0][4],
+            points[0][5] || 0,
           ),
         );
       }
@@ -600,20 +609,23 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[0] - defX + startOffsetX,
             params[1] - defY + startOffsetY,
+            0,
             params[0] - defX,
             params[1] - defY,
+            0,
           );
         } else {
-          points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+          points[mCommandsNum].push(params[0] - defX, params[1] - defY, 0);
         }
       } else if (command === 'L') {
         if (useEndOffset) {
           points[mCommandsNum].push(
             params[0] - defX + endOffsetX,
             params[1] - defY + endOffsetY,
+            0,
           );
         } else {
-          points[mCommandsNum].push(params[0] - defX, params[1] - defY);
+          points[mCommandsNum].push(params[0] - defX, params[1] - defY, 0);
         }
       } else if (command === 'Q') {
         quadCurveTo(
@@ -628,6 +640,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[2] - defX + endOffsetX,
             params[3] - defY + endOffsetY,
+            0,
           );
         }
       } else if (command === 'A') {
@@ -664,6 +677,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[5] - defX + endOffsetX,
             params[6] - defY + endOffsetY,
+            0,
           );
         }
       } else if (command === 'C') {
@@ -681,6 +695,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[4] - defX + endOffsetX,
             params[5] - defY + endOffsetY,
+            0,
           );
         }
       } else if (
@@ -702,6 +717,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             points[mCommandsNum][startPointIndex],
             points[mCommandsNum][startPointIndex + 1],
+            0,
           );
         }
 
@@ -711,6 +727,8 @@ export function updateBuffer(
             points[mCommandsNum][startPointIndex + 1],
             points[mCommandsNum][startPointIndex + 2],
             points[mCommandsNum][startPointIndex + 3],
+            points[mCommandsNum][startPointIndex + 4],
+            points[mCommandsNum][startPointIndex + 5],
           ),
         );
       }
@@ -719,7 +737,7 @@ export function updateBuffer(
     if (needEarcut) {
       const pointsBuffer = points[subPathIndex];
       // use earcut for triangulation
-      triangles = earcut(pointsBuffer, [], 2);
+      triangles = earcut(pointsBuffer, [], 3);
       return {
         pointsBuffer,
         travelBuffer: [],
@@ -766,6 +784,7 @@ export function updateBuffer(
 
       pointsBuffer[j++] = points[i];
       pointsBuffer[j++] = points[i + 1];
+      pointsBuffer[j++] = points[i + 2] || 0;
       pointsBuffer[j] = jointType;
       if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
         pointsBuffer[j] += capType;
@@ -777,15 +796,18 @@ export function updateBuffer(
       }
       j++;
     }
-    pointsBuffer[j++] = points[points.length - 4];
-    pointsBuffer[j++] = points[points.length - 3];
+    pointsBuffer[j++] = points[points.length - 6];
+    pointsBuffer[j++] = points[points.length - 5];
+    pointsBuffer[j++] = points[points.length - 4] || 0;
     pointsBuffer[j++] = 0;
     pointsBuffer[0] = points[0];
     pointsBuffer[1] = points[1];
-    pointsBuffer[2] = 0;
-    pointsBuffer[3] = points[2];
+    pointsBuffer[2] = points[2] || 0;
+    pointsBuffer[3] = 0;
     pointsBuffer[4] = points[3];
-    pointsBuffer[5] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
+    pointsBuffer[5] = points[4];
+    pointsBuffer[6] = points[5] || 0;
+    pointsBuffer[7] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
 
     const instancedCount = Math.round(points.length / stridePoints);
 
@@ -837,10 +859,12 @@ function getCapType(lineCap: CanvasLineCap) {
 function addTailSegment(
   x1: number,
   y1: number,
+  z1: number,
   x2: number = x1,
   y2: number = y1,
+  z2: number = z1,
 ) {
-  const vec = [x2 - x1, y2 - y1];
+  const vec = [x2 - x1, y2 - y1, z2 - z1];
   const length = 0.01;
-  return [x1 + vec[0] * length, y1 + vec[1] * length];
+  return [x1 + vec[0] * length, y1 + vec[1] * length, z1 + vec[2] * length];
 }

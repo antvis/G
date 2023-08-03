@@ -8,6 +8,7 @@ import {
   Image,
   CameraType,
   Circle,
+  Polyline,
   Path,
 } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
@@ -128,6 +129,28 @@ const canvas = new Canvas({
     },
   });
   canvas.appendChild(zAxis);
+
+  const polyline = new Polyline({
+    style: {
+      stroke: '#1890FF',
+      lineWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round',
+      isBillboard: true,
+      points: [
+        [50, 50, 0],
+        [100, 50, 100],
+        [100, 100, 0],
+        [150, 100, 100],
+        [150, 150, 0],
+        [200, 150, 0],
+        [200, 200, 0],
+        [250, 200, 0],
+      ],
+    },
+  });
+  polyline.translate(0, 200);
+  canvas.appendChild(polyline);
 
   // add a directional light into scene
   const light = new DirectionalLight({

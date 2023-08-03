@@ -114,11 +114,11 @@ export class InstancedFillDrawcall extends Instanced {
 
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
-      byteStride: 4 * 2,
+      byteStride: 4 * 3,
       frequency: VertexBufferFrequency.PerVertex,
       attributes: [
         {
-          format: Format.F32_RG,
+          format: Format.F32_RGB,
           bufferByteOffset: 4 * 0,
           location: VertexAttributeLocation.POSITION,
         },
