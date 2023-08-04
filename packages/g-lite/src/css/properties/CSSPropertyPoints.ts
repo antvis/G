@@ -9,12 +9,12 @@ export class CSSPropertyPoints
     Partial<
       CSSProperty<
         {
-          points: [number, number, number?][];
+          points: [number, number][];
           totalLength: number;
           segments: [number, number][];
         },
         {
-          points: [number, number, number?][];
+          points: [number, number][];
           totalLength: number;
           segments: [number, number][];
         }

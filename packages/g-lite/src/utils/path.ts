@@ -786,7 +786,7 @@ function ellipseToCommands(
 }
 
 function polygonToCommands(
-  points: [number, number, number?][],
+  points: ([number, number] | [number, number, number])[],
   closed: boolean,
 ): AbsoluteArray {
   const result = points.map((point, i) => {

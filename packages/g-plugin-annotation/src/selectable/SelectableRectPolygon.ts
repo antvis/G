@@ -176,7 +176,11 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
     ];
     const handleVec = vec2.normalize(
       vec2.create(),
-      vec2.sub(vec2.create(), points.points[0], points.points[3]),
+      vec2.sub(
+        vec2.create(),
+        points.points[0] as [number, number],
+        points.points[3] as [number, number],
+      ),
     );
     this.rotateAnchor.setPosition(
       handleVec[0] * rotateAnchorDistance + midPoint[0],
