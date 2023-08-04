@@ -29,11 +29,12 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*V44QR4my8ZwAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
-      "filename": "sprite.js",
+      "filename": "size-attenuation.js",
       "title": {
-        "zh": "Sprite",
-        "en": "Sprite"
-      }
+        "zh": "开启大小衰减",
+        "en": "Enable size attenuation"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*9SMLQpVThc4AAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "webgpu.js",

@@ -5,7 +5,7 @@ order: 3
 
 You can refer to the [\<ellipse\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/ellipse) element of SVG.
 
-The following [example](/en/examples/shape#ellipse) draws an ellipse with a center of `[100, 100]` and a radius of `100`.
+The following [example](/en/examples/shape/ellipse/#ellipse) draws an ellipse with a center of `[100, 100]` and a radius of `100`.
 
 ```js
 const ellipse = new Ellipse({
@@ -36,7 +36,7 @@ The default value is `center`. For details, see [DisplayObject's transformOrigin
 
 The x-axis coordinates of the center of the circle in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -46,7 +46,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
 
 The y-axis coordinates of the center of the circle in the local coordinate system.
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -56,7 +56,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
 
 Horizontal radius of the ellipse
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rx
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rx>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -66,7 +66,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rx
 
 The vertical radius of the ellipse
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ry
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ry>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |

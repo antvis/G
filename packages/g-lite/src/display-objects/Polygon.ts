@@ -5,7 +5,7 @@ import { Shape } from '../types';
 import { DisplayObject, isDisplayObject } from './DisplayObject';
 
 export interface PolygonStyleProps extends BaseStyleProps {
-  points: [number, number][];
+  points: [number, number, number?][];
   /**
    * marker will be positioned at the first point
    */
@@ -31,7 +31,7 @@ export interface PolygonStyleProps extends BaseStyleProps {
 }
 export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   points: {
-    points: [number, number][];
+    points: [number, number, number?][];
     segments: [number, number][];
     totalLength: number;
   };

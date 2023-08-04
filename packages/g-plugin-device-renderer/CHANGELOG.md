@@ -1,5 +1,19 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.10
+
+### Patch Changes
+
+-   3d4f5da7: Support size attenuation.
+-   3d4f5da7: Polyline should support 3D points.
+-   3d4f5da7: Support rotation when applying billboard effect.
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-shader-components@1.8.3
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-plugin-image-loader@1.3.8
+
 ## 1.9.9
 
 ### Patch Changes

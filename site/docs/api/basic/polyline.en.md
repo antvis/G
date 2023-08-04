@@ -5,7 +5,7 @@ order: 7
 
 You can refer to the [\<polyline\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polyline) element of SVG.
 
-The following [example](/en/examples/shape#polyline) defines a polyline with the following endpoints in order
+The following [example](/en/examples/shape/polyline#polyline) defines a polyline with the following endpoints in order
 
 ```javascript
 const polyline = new Polyline({
@@ -80,7 +80,7 @@ polyline.style.points = [
 ];
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points>
 
 ### markerStart
 
@@ -88,7 +88,7 @@ See the [markerStart](/en/api/basic/line) property of [Line](/en/api/basic/line#
 
 The "start point" is determined by the first point in [points](/en/api/basic/polyline#points).
 
-In this [example](/en/examples/shape#polyline), we have placed an arrow at the start of the line.
+In this [example](/en/examples/shape/polyline#polyline), we have placed an arrow at the start of the line.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jPJnTJ9VANYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -111,7 +111,7 @@ See the [markerEnd](/en/api/basic/line) attribute of [Line](/en/api/basic/line#m
 
 The "end point" is determined by the last point in [points](/en/api/basic/polyline#points).
 
-In this [example](/en/examples/shape#polyline), we have placed an image at the termination point of the line.
+In this [example](/en/examples/shape/polyline#polyline), we have placed an image at the termination point of the line.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aXEMQIPzPVYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -181,7 +181,7 @@ Moves the marker graphic in the direction of the last line segment of the fold. 
 
 Get the length of the polyline.
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
+<https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength>
 
 ### getPoint
 
@@ -210,7 +210,7 @@ The parameters are as follows.
 -   `distance` mandatory, the distance value
 -   `inWorldSpace` optional, indicates if the distance is calculated in the world coordinate system. The default value is `false`.
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+<https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 
 ```js
 polyline.getPointAtLength(100); // Point {x: 300, y: 100}
