@@ -2,6 +2,7 @@
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
+#pragma glslify: billboard = require('@antv/g-shader-components/billboard.vert')
 
 layout(location = POSITION) in vec2 a_Extrude;
 // shape, radius, omitStroke, isBillboard
@@ -35,7 +36,8 @@ void main() {
   bool isBillboard = a_StylePacked3.w > 0.5;
   if (isBillboard) {
     float rotation = 0.0;
-    #pragma glslify: import('@antv/g-shader-components/billboard.vert')
+    bool isSizeAttenuation = false;
+    gl_Position = billboard(offset, rotation, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   } else {
     gl_Position = project(vec4(offset, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   }

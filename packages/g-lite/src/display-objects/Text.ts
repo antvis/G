@@ -31,7 +31,7 @@ export interface TextStyleProps extends BaseStyleProps {
   /**
    * Whether the size of the sprite is attenuated by the camera depth. (Perspective camera only.)
    */
-  sizeAttenuation?: boolean;
+  isSizeAttenuation?: boolean;
 
   text: number | string;
 
@@ -200,7 +200,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   z?: number;
   isBillboard?: boolean;
   billboardRotation?: number;
-  sizeAttenuation?: boolean;
+  isSizeAttenuation?: boolean;
   text: string;
   textAlign?: 'start' | 'center' | 'middle' | 'end' | 'left' | 'right';
   textBaseline?:
@@ -274,8 +274,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             leading: 0,
             dx: '',
             dy: '',
-            isBillboard: false,
-            sizeAttenuation: true,
             ...style,
           }
         : {
@@ -301,8 +299,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             leading: 0,
             dx: 0,
             dy: 0,
-            isBillboard: false,
-            sizeAttenuation: true,
           },
       ...rest,
     });

@@ -14,6 +14,7 @@ export interface ImageStyleProps extends BaseStyleProps {
   height?: number | string;
   isBillboard?: boolean;
   billboardRotation?: number;
+  isSizeAttenuation?: boolean;
 }
 export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   x: number;
@@ -25,6 +26,7 @@ export interface ParsedImageStyleProps extends ParsedBaseStyleProps {
   height?: number;
   isBillboard?: boolean;
   billboardRotation?: number;
+  isSizeAttenuation?: boolean;
 }
 export class Image extends DisplayObject<
   ImageStyleProps,

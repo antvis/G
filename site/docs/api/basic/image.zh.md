@@ -142,3 +142,15 @@ image.style.billboardRotation = Math.PI / 8;
 ```
 
 ![billboard rotation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*v8ngTbgkP-MAAAAAAAAAAAAADmJ7AQ/original)
+
+## isSizeAttenuation
+
+在透视投影下，是否进行尺寸衰减。在透视投影中遵循“近大远小”的视觉效果，如果希望保持大小始终一致不受深度影响，可以开启该选项。
+
+在[示例](/zh/examples/3d/3d-basic#size-attenuation)中，我们为图片开启了尺寸衰减：
+
+```js
+image.style.isSizeAttenuation = true;
+```
+
+![enable size attenuation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*uLDORaJ-snoAAAAAAAAAAAAADmJ7AQ/original)

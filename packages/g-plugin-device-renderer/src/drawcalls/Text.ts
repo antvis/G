@@ -348,7 +348,9 @@ export class TextDrawcall extends Instanced {
       name === 'lineWidth' ||
       name === 'visibility' ||
       name === 'pointerEvents' ||
-      name === 'isBillboard'
+      name === 'isBillboard' ||
+      name === 'billboardRotation' ||
+      name === 'isSizeAttenuation'
     ) {
       const vertice = this.geometry.vertices[
         TextVertexAttributeBufferIndex.INSTANCED
@@ -370,7 +372,7 @@ export class TextDrawcall extends Instanced {
           visibility,
           isBillboard,
           billboardRotation,
-          sizeAttenuation,
+          isSizeAttenuation,
         } = object.parsedStyle as ParsedTextStyleProps;
         let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(fill)) {
@@ -431,7 +433,7 @@ export class TextDrawcall extends Instanced {
           sliced[i + 23] = lineWidth;
           sliced[i + 24] = visibility === 'visible' ? 1 : 0;
           sliced[i + 25] = isBillboard ? 1 : 0;
-          sliced[i + 26] = sizeAttenuation ? 1 : 0;
+          sliced[i + 26] = isSizeAttenuation ? 1 : 0;
           sliced[i + 27] = billboardRotation ?? 0;
           sliced[i + 28] = encodedPickingColor[0];
           sliced[i + 29] = encodedPickingColor[1];
@@ -481,7 +483,7 @@ export class TextDrawcall extends Instanced {
       visibility,
       isBillboard,
       billboardRotation,
-      sizeAttenuation,
+      isSizeAttenuation,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
@@ -543,7 +545,7 @@ export class TextDrawcall extends Instanced {
         lineWidth,
         visibility === 'visible' ? 1 : 0,
         isBillboard ? 1 : 0,
-        sizeAttenuation ? 1 : 0,
+        isSizeAttenuation ? 1 : 0,
         billboardRotation ?? 0,
         ...encodedPickingColor,
         object.sortable.renderOrder * RENDER_ORDER_SCALE,

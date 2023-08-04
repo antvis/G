@@ -141,3 +141,15 @@ image.style.billboardRotation = Math.PI / 8;
 ```
 
 ![billboard rotation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*v8ngTbgkP-MAAAAAAAAAAAAADmJ7AQ/original)
+
+## isSizeAttenuation
+
+Whether or not to apply size attenuation in perspective projection. This option can be turned on if you want to keep the size consistent regardless of depth, following the "near big, far small" visual effect in perspective projection.
+
+In [example](/en/examples/3d/3d-basic#size-attenuation), we enable size attenuation for image:
+
+```js
+image.style.isSizeAttenuation = true;
+```
+
+![enable size attenuation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*uLDORaJ-snoAAAAAAAAAAAAADmJ7AQ/original)

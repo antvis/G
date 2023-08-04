@@ -7,6 +7,15 @@ import {
 import { Format, VertexBufferFrequency } from '../platform';
 import frag from '../shader/image.frag';
 import vert from '../shader/image.vert';
+import { enumToObject } from '../utils';
+
+enum ImageVertexAttributeBufferIndex {
+  PACKED_STYLE = VertexAttributeBufferIndex.POSITION + 1,
+}
+
+enum ImageVertexAttributeLocation {
+  PACKED_STYLE3 = VertexAttributeLocation.MAX,
+}
 
 export class ImageDrawcall extends Instanced {
   shouldMerge(object: DisplayObject, index: number) {
@@ -29,6 +38,7 @@ export class ImageDrawcall extends Instanced {
 
     this.material.defines = {
       ...this.material.defines,
+      ...enumToObject(ImageVertexAttributeLocation),
     };
 
     this.material.vertexShader = vert;
@@ -45,15 +55,22 @@ export class ImageDrawcall extends Instanced {
     super.createGeometry(objects);
 
     const instanced: number[] = [];
+    const packedStyle: number[] = [];
     objects.forEach((object, i) => {
       const image = object as ImageShape;
-      const { width, height, isBillboard, billboardRotation } =
-        image.parsedStyle;
-      instanced.push(
+      const {
         width,
         height,
+        isBillboard,
+        billboardRotation,
+        isSizeAttenuation,
+      } = image.parsedStyle;
+      instanced.push(width, height);
+      packedStyle.push(
         isBillboard ? 1 : 0,
         billboardRotation ?? 0,
+        isSizeAttenuation ? 1 : 0,
+        0,
       );
     });
 
@@ -61,16 +78,30 @@ export class ImageDrawcall extends Instanced {
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
+      byteStride: 4 * 2,
+      frequency: VertexBufferFrequency.PerInstance,
+      attributes: [
+        {
+          format: Format.F32_RG,
+          bufferByteOffset: 4 * 0,
+          location: VertexAttributeLocation.POSITION,
+        },
+      ],
+      data: new Float32Array(instanced),
+    });
+    this.geometry.setVertexBuffer({
+      bufferIndex: ImageVertexAttributeBufferIndex.PACKED_STYLE,
       byteStride: 4 * 4,
       frequency: VertexBufferFrequency.PerInstance,
       attributes: [
         {
           format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.POSITION,
+          location: ImageVertexAttributeLocation.PACKED_STYLE3,
+          divisor: 1,
         },
       ],
-      data: new Float32Array(instanced),
+      data: new Float32Array(packedStyle),
     });
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.UV,
@@ -97,23 +128,41 @@ export class ImageDrawcall extends Instanced {
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
 
-    if (
-      name === 'width' ||
-      name === 'height' ||
-      name === 'z' ||
-      name === 'isBillboard'
-    ) {
+    if (name === 'width' || name === 'height' || name === 'z') {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { width, height, isBillboard, billboardRotation } =
-          image.parsedStyle;
-        packed.push(width, height, isBillboard ? 1 : 0, billboardRotation ?? 0);
+        const { width, height } = image.parsedStyle;
+        packed.push(width, height);
       });
 
       this.geometry.updateVertexBuffer(
         VertexAttributeBufferIndex.POSITION,
         VertexAttributeLocation.POSITION,
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
+      );
+    } else if (
+      name === 'isBillboard' ||
+      name === 'billboardRotation' ||
+      name === 'isSizeAttenuation'
+    ) {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const image = object as ImageShape;
+        const { isBillboard, billboardRotation, isSizeAttenuation } =
+          image.parsedStyle;
+        packed.push(
+          isBillboard ? 1 : 0,
+          billboardRotation ?? 0,
+          isSizeAttenuation ? 1 : 0,
+          0,
+        );
+      });
+
+      this.geometry.updateVertexBuffer(
+        ImageVertexAttributeBufferIndex.PACKED_STYLE,
+        ImageVertexAttributeLocation.PACKED_STYLE3,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
