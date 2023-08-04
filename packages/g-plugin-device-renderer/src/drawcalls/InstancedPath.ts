@@ -773,8 +773,9 @@ export function updateBuffer(
       // if (needDash) {
       if (i > 1) {
         dist += Math.sqrt(
-          Math.pow(points[i] - points[i - 2], 2) +
-            Math.pow(points[i + 1] - points[i + 1 - 2], 2),
+          Math.pow(points[i] - points[i - stridePoints], 2) +
+            Math.pow(points[i + 1] - points[i + 1 - stridePoints], 2) +
+            Math.pow(points[i + 2] - points[i + 2 - stridePoints], 2),
         );
       }
       travelBuffer.push(dist);

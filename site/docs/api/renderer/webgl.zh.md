@@ -110,3 +110,9 @@ const webglRenderer = new WebGLRenderer({
 ### 相机交互
 
 [g-plugin-control](/zh/plugins/control) 为 3D 场景提供相机交互，内部使用 Hammer.js 响应鼠标移动、滚轮事件。根据不同的 [相机类型](/zh/api/camera/intro)，提供不同的交互效果。
+
+## 目前暂不支持的特性
+
+-   filter
+-   clipPath
+-   lineDash 应用 lineJoin，例如开启 `lineJoin: 'round'` 后每个小线段都应该有圆角效果

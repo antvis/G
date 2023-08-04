@@ -51,7 +51,7 @@ const BASELINE_IMAGE_DIR = '/snapshots';
 describe('Render <Ellipse> with g-webgl', () => {
   afterEach(() => {
     canvas.removeChildren();
-    // fs.rmSync(__dirname + RESULT_IMAGE);
+    fs.rmSync(__dirname + RESULT_IMAGE);
   });
 
   afterAll(() => {
