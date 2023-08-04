@@ -1,5 +1,13 @@
 # @antv/g-lite
 
+## 1.2.8
+
+### Patch Changes
+
+-   3d4f5da7: Support size attenuation.
+-   3d4f5da7: Polyline should support 3D points.
+-   3d4f5da7: Support rotation when applying billboard effect.
+
 ## 1.2.7
 
 ### Patch Changes
