@@ -213,15 +213,4 @@ export class SDFDrawcall extends Instanced {
     const hasStrokeOpacity = strokeOpacity < 1;
     return !hasStroke || (hasStroke && (hasLineDash || hasStrokeOpacity));
   }
-
-  private needDrawStrokeSeparately(parsedStyle: ParsedBaseStyleProps) {
-    const { stroke, lineDash, lineWidth, strokeOpacity } = parsedStyle;
-    const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasLineDash =
-      lineDash &&
-      lineDash.length &&
-      lineDash.every((item: number) => item !== 0);
-    const hasStrokeOpacity = strokeOpacity < 1;
-    return hasStroke && lineWidth > 0 && (hasLineDash || hasStrokeOpacity);
-  }
 }

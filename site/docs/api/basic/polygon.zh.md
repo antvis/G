@@ -5,7 +5,7 @@ order: 7
 
 可以参考 SVG 的 [\<polygon\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polygon) 元素。
 
-如下 [示例](/zh/examples/shape#polygon) 定义了一个多边形：
+如下 [示例](/zh/examples/shape/polygon#polygon) 定义了一个多边形：
 
 ```javascript
 const polygon = new Polygon({
@@ -62,7 +62,7 @@ polygon.style.points = [
 ];
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points>
 
 ### markerStart
 
@@ -72,7 +72,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*mXYATLithEUAAAAAAAAAAAAAARQnAQ" alt="polygon end/start overlap" width="400">
 
-在该[示例](/zh/examples/shape#polygon)中，我们在多边形的“起始点”上放置了一个箭头：
+在该[示例](/zh/examples/shape/polygon#polygon)中，我们在多边形的“起始点”上放置了一个箭头：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RRPTRIpZoUIAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
 
@@ -95,7 +95,7 @@ polygon.style.markerStart = arrowMarker;
 
 但和 Polyline 不同的是，由于多边形是**闭合**的，因此 “起始点” 和 “终止点” 的位置是完全重合的。“终止点” 由 [points](/zh/api/basic/polygon#points) 中的第一个点决定。
 
-在该[示例](/zh/examples/shape#polygon)中，我们在多边形的终止点上放置了一个图片：
+在该[示例](/zh/examples/shape/polygon#polygon)中，我们在多边形的终止点上放置了一个图片：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*eZHETJ0B3lkAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
 

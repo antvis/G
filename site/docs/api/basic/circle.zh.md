@@ -5,7 +5,7 @@ order: 2
 
 可以参考 SVG 的 [\<circle\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/circle) 元素。
 
-如下 [示例](/zh/examples/shape#circle) 绘制了一个圆心在 `[100, 100]`，半径为 `100` 的圆：
+如下 [示例](/zh/examples/shape/circle/#circle) 绘制了一个圆心在 `[100, 100]`，半径为 `100` 的圆：
 
 ```js
 const circle = new Circle({
@@ -35,7 +35,7 @@ const circle = new Circle({
 
 圆心在局部坐标系下的 x 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -45,7 +45,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cx
 
 圆心在局部坐标系下的 y 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -55,7 +55,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/cy
 
 圆的半径。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/r
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/r>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |

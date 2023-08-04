@@ -13,8 +13,8 @@ export function quadCurveTo(
   points: number[],
   segmentNum?: number,
 ) {
-  const fromX = points[points.length - 2];
-  const fromY = points[points.length - 1];
+  const fromX = points[points.length - 3];
+  const fromY = points[points.length - 3];
 
   const n =
     segmentNum ??
@@ -36,6 +36,7 @@ export function quadCurveTo(
     points.push(
       xa + (cpX + (toX - cpX) * j - xa) * j,
       ya + (cpY + (toY - cpY) * j - ya) * j,
+      0,
     );
   }
 }
@@ -50,10 +51,10 @@ export function bezierCurveTo(
   points: number[],
   segmentNum?: number,
 ): void {
-  const fromX = points[points.length - 2];
-  const fromY = points[points.length - 1];
+  const fromX = points[points.length - 3];
+  const fromY = points[points.length - 2];
 
-  points.length -= 2;
+  points.length -= 3;
 
   const n =
     segmentNum ??
@@ -70,7 +71,7 @@ export function bezierCurveTo(
   let t2 = 0;
   let t3 = 0;
 
-  points.push(fromX, fromY);
+  points.push(fromX, fromY, 0);
 
   for (let i = 1, j = 0; i <= n; ++i) {
     j = i / n;
@@ -85,6 +86,7 @@ export function bezierCurveTo(
     points.push(
       dt3 * fromX + 3 * dt2 * j * cpX + 3 * dt * t2 * cpX2 + t3 * toX,
       dt3 * fromY + 3 * dt2 * j * cpY + 3 * dt * t2 * cpY2 + t3 * toY,
+      0,
     );
   }
 }

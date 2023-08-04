@@ -5,7 +5,7 @@ order: 4
 
 可以参考 SVG 的 [\<rect\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/rect) 元素。
 
-如下 [示例](/zh/examples/shape#rect) 定义了一个圆角矩形，左上角顶点位置为 `(200, 100)`：
+如下 [示例](/zh/examples/shape/rect/#rect) 定义了一个圆角矩形，左上角顶点位置为 `(200, 100)`：
 
 ```javascript
 const rect = new Rect({
@@ -40,7 +40,7 @@ const rect = new Rect({
 
 局部坐标系下，矩形左上角顶点的 x 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
 局部坐标系下，矩形左上角顶点的 y 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -58,7 +58,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
 ### width
 
-矩形宽度。支持取**负数**，效果为沿 Y 轴反转，[示例](/zh/examples/shape#rect)：
+矩形宽度。支持取**负数**，效果为沿 Y 轴反转，[示例](/zh/examples/shape/rect/#rect)：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_sVnRJmw7m8AAAAAAAAAAAAAARQnAQ" width="300" alt="negative width of rect">
 
@@ -68,7 +68,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
 
 我们在 [g-svg](/zh/api/renderer/svg) 中使用 `<path>` 代替 `<rect>` 绘制规避了这个问题。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -76,11 +76,11 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 ### height
 
-矩形高度。支持取**负数**，效果为沿 X 轴反转，[示例](/zh/examples/shape#rect)：
+矩形高度。支持取**负数**，效果为沿 X 轴反转，[示例](/zh/examples/shape/rect/#rect)：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*gPkGR56c5QgAAAAAAAAAAAAAARQnAQ" width="300" alt="negative height of rect">
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |

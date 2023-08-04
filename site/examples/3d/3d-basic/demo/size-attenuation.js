@@ -7,9 +7,6 @@ import {
   Rect,
   Image,
   CameraType,
-  Circle,
-  Polyline,
-  Path,
 } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import { DirectionalLight, Plugin as Plugin3D } from '@antv/g-plugin-3d';
@@ -48,7 +45,6 @@ const canvas = new Canvas({
       height: 20,
       src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       isBillboard: true,
-      billboardRotation: Math.PI / 8,
     },
   });
   const label = new Text({
@@ -59,6 +55,7 @@ const canvas = new Canvas({
       fill: 'black',
       isBillboard: true,
       billboardRotation: Math.PI / 8,
+      isSizeAttenuation: true,
     },
   });
   origin.appendChild(label);
@@ -130,28 +127,6 @@ const canvas = new Canvas({
   });
   canvas.appendChild(zAxis);
 
-  const polyline = new Polyline({
-    style: {
-      stroke: '#1890FF',
-      lineWidth: 10,
-      lineCap: 'round',
-      lineJoin: 'round',
-      isBillboard: true,
-      points: [
-        [50, 50, 0],
-        [100, 50, 100],
-        [100, 100, 0],
-        [150, 100, 100],
-        [150, 150, 0],
-        [200, 150, 0],
-        [200, 200, 0],
-        [250, 200, 0],
-      ],
-    },
-  });
-  polyline.translate(0, 200);
-  canvas.appendChild(polyline);
-
   // add a directional light into scene
   const light = new DirectionalLight({
     style: {
@@ -163,6 +138,7 @@ const canvas = new Canvas({
 
   // adjust camera's position
   const camera = canvas.getCamera();
+  camera.setPerspective(0.01, 1000, 75, 1);
   camera.setType(CameraType.ORBITING);
 
   // stats
@@ -183,4 +159,21 @@ const canvas = new Canvas({
   // GUI
   const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
+  const folder = gui.addFolder('size attenuation');
+  const config = {
+    textSizeAttenuation: true,
+    imageSizeAttenuation: false,
+  };
+  folder.add(config, 'textSizeAttenuation').onChange((textSizeAttenuation) => {
+    canvas.document.querySelectorAll('text').forEach((text) => {
+      text.style.isSizeAttenuation = textSizeAttenuation;
+    });
+  });
+  folder
+    .add(config, 'imageSizeAttenuation')
+    .onChange((imageSizeAttenuation) => {
+      canvas.document.querySelectorAll('image').forEach((image) => {
+        image.style.isSizeAttenuation = imageSizeAttenuation;
+      });
+    });
 })();

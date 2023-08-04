@@ -3,9 +3,9 @@ title: Path 路径
 order: 8
 ---
 
-使用 Path 可以定义直线、折线、圆弧、贝塞尔曲线等。路径中包含一组命令与参数，这些命令有不同的语义，具体用法可以参考：https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+使用 Path 可以定义直线、折线、圆弧、贝塞尔曲线等。路径中包含一组命令与参数，这些命令有不同的语义，具体用法可以参考：<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths>
 
-如下 [示例](/zh/examples/shape#path) 定义了一条直线，在局部坐标系下从 `[100, 100]` 到 `[200, 200]`：
+如下 [示例](/zh/examples/shape/path#path) 定义了一条直线，在局部坐标系下从 `[100, 100]` 到 `[200, 200]`：
 
 ```javascript
 const line = new Path({
@@ -72,7 +72,7 @@ line.translateLocal(100, 0); // 沿 X 轴平移
 -   字符串形式: `M 100,100 L 200,200`
 -   数组形式: `[ [ 'M', 100, 100 ], [ 'L', 200, 200 ] ]`
 
-https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
+<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path>
 
 ### d
 
@@ -89,7 +89,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/path
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*2Pi6SpcqPwAAAAAAAAAAAAAAARQnAQ" alt="unclosed path marker" width="200"><img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*HEpoQbRiRowAAAAAAAAAAAAAARQnAQ" alt="closed path marker" width="200">
 
-在该[示例](/zh/examples/shape#path)中，我们在 Path 的起始点上放置了一个箭头：
+在该[示例](/zh/examples/shape/path#path)中，我们在 Path 的起始点上放置了一个箭头：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*-ooIS5IePf4AAAAAAAAAAAAAARQnAQ" alt="path start marker" width="400">
 
@@ -115,7 +115,7 @@ path.style.markerStart = arrowMarker;
 -   如果未闭合，可以参考 [Polyline](/zh/api/basic/polyline) 的 [markerEnd](/zh/api/basic/polyline#markerend) 属性。
 -   如果已闭合，可以参考 [Polygon](/zh/api/basic/polygon) 的 [markerEnd](/zh/api/basic/polygon#markerend) 属性。
 
-在该[示例](/zh/examples/shape#path)中，我们在多边形的终止点上放置了一个图片：
+在该[示例](/zh/examples/shape/path#path)中，我们在多边形的终止点上放置了一个图片：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bYtTKQxOrQAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
 
@@ -183,7 +183,7 @@ path.style.markerMid = circleMarker;
 
 获取路径长度。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
+<https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength>
 
 例如获取如下直线的长度：
 
@@ -250,7 +250,7 @@ path.getPoint(0.5); // Point {x: 100, y: 150}
 
 值得注意的是，如果超出取值范围 `[0-1]`，会返回路径头尾的点坐标。对于非法路径，该方法会返回 `Point {x: NaN, y: NaN}`
 
-另外在原路径上应用的，在局部坐标系下的变换也会应用到返回的点上。例如在该[示例](/zh/examples/shape#path)中，路径本身经过了平移和缩放：
+另外在原路径上应用的，在局部坐标系下的变换也会应用到返回的点上。例如在该[示例](/zh/examples/shape/path#path)中，路径本身经过了平移和缩放：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fOKWRIq_IWsAAAAAAAAAAAAAARQnAQ" width="300" alt="get point of a path">
 
@@ -263,7 +263,7 @@ path.getPoint(0.5); // Point {x: 100, y: 150}
 -   `distance` 必填，从起点出发的距离值
 -   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+<https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 
 ```js
 path.getPointAtLength(100); // Point {x: 300, y: 100}

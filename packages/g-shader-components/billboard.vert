@@ -1,20 +1,27 @@
-vec4 mvPosition = u_ViewMatrix * u_ModelMatrix * vec4(0.0, 0.0, u_ZIndex, 1.0);
-vec2 scale;
-scale.x = length(vec3(u_ModelMatrix[0][0], u_ModelMatrix[0][1], u_ModelMatrix[0][2]));
-scale.y = length(vec3(u_ModelMatrix[1][0], u_ModelMatrix[1][1], u_ModelMatrix[1][2]));
+bool isPerspectiveMatrix(mat4 m) {
+  return m[2][3] == -1.0;
+}
 
-// if (sizeAttenuation < 0.5) {
-// bool isPerspective = isPerspectiveMatrix( u_ProjectionMatrix );
-// if ( isPerspective ) scale *= - mvPosition.z;
-// }
+vec4 billboard(vec2 offset, float rotation, bool isSizeAttenuation, mat4 pm, mat4 vm, mat4 mm) {
+  vec4 mvPosition = vm * mm * vec4(0.0, 0.0, 0.0, 1.0);
+  vec2 scale;
+  scale.x = length(vec3(mm[0][0], mm[0][1], mm[0][2]));
+  scale.y = length(vec3(mm[1][0], mm[1][1], mm[1][2]));
 
-vec2 alignedPosition = offset * scale;
+  if (isSizeAttenuation) {
+    bool isPerspective = isPerspectiveMatrix(pm);
+    if (isPerspective) {
+      scale *= -mvPosition.z / 250.0;
+    }
+  }
 
-float rotation = 0.0;
-vec2 rotatedPosition;
-rotatedPosition.x = cos(rotation) * alignedPosition.x - sin(rotation) * alignedPosition.y;
-rotatedPosition.y = sin(rotation) * alignedPosition.x + cos(rotation) * alignedPosition.y;
+  vec2 alignedPosition = offset * scale;
+  vec2 rotatedPosition;
+  rotatedPosition.x = cos(rotation) * alignedPosition.x - sin(rotation) * alignedPosition.y;
+  rotatedPosition.y = sin(rotation) * alignedPosition.x + cos(rotation) * alignedPosition.y;
 
-mvPosition.xy += rotatedPosition;
+  mvPosition.xy += rotatedPosition;
+  return pm * mvPosition;
+}
 
-gl_Position = u_ProjectionMatrix * mvPosition;
+#pragma glslify: export(billboard)

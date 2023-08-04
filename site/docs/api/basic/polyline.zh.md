@@ -5,7 +5,7 @@ order: 7
 
 可以参考 SVG 的 [\<polyline\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polyline) 元素。
 
-如下 [示例](/zh/examples/shape#polyline) 定义了一条折线，各个端点依次为：
+如下 [示例](/zh/examples/shape/polyline#polyline) 定义了一条折线，各个端点依次为：
 
 ```javascript
 const polyline = new Polyline({
@@ -88,7 +88,7 @@ polyline.style.points = [
 
 “起始点” 由 [points](/zh/api/basic/polyline#points) 中的第一个点决定。
 
-在该[示例](/zh/examples/shape#polyline)中，我们在折线的起始点上放置了一个箭头：
+在该[示例](/zh/examples/shape/polyline#polyline)中，我们在折线的起始点上放置了一个箭头：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jPJnTJ9VANYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -111,7 +111,7 @@ polyline.style.markerStart = arrowMarker;
 
 “终止点” 由 [points](/zh/api/basic/polyline#points) 中的最后一个点决定。
 
-在该[示例](/zh/examples/shape#polyline)中，我们在折线的终止点上放置了一个图片：
+在该[示例](/zh/examples/shape/polyline#polyline)中，我们在折线的终止点上放置了一个图片：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*aXEMQIPzPVYAAAAAAAAAAAAAARQnAQ" alt="polyline marker" width="120">
 
@@ -181,7 +181,7 @@ polyline.style.markerMid = circleMarker;
 
 获取折线长度。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
+<https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength>
 
 ### getPoint
 
@@ -210,7 +210,7 @@ export type Point = {
 -   `distance` 必填，从起点出发的距离值
 -   `inWorldSpace` 可选，表示是否在世界坐标系下计算。默认值为 `false`
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+<https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 
 ```js
 polyline.getPointAtLength(100); // Point {x: 300, y: 100}
