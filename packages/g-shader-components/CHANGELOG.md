@@ -1,5 +1,11 @@
 # @antv/g-shader-components
 
+## 1.8.4
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+
 ## 1.8.3
 
 ### Patch Changes

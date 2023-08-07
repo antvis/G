@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.9
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+
 ## 1.2.8
 
 ### Patch Changes
