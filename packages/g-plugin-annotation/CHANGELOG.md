@@ -1,5 +1,13 @@
 # @antv/g-plugin-annotation
 
+## 0.4.9
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+-   Updated dependencies [3856560c]
+    -   @antv/g-lite@1.2.9
+
 ## 0.4.8
 
 ### Patch Changes

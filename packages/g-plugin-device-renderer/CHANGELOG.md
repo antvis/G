@@ -1,5 +1,15 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.11
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+-   Updated dependencies [3856560c]
+    -   @antv/g-shader-components@1.8.4
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-plugin-image-loader@1.3.9
+
 ## 1.9.10
 
 ### Patch Changes

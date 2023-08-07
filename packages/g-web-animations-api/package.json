@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-web-animations-api",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "A simple implementation of Web Animations API.",
   "keywords": [
     "antv",
