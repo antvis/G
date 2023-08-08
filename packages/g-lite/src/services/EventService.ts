@@ -17,6 +17,7 @@ import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
 import { isElement } from '../utils/dom';
+import { clock } from '../utils/event';
 
 type Picker = (position: EventPosition) => IEventTarget | null;
 type TrackingData = {
@@ -200,7 +201,7 @@ export class EventService {
   };
 
   onPointerUp = (from: FederatedPointerEvent) => {
-    const now = performance.now();
+    const now = clock.now();
     const e = this.createPointerEvent(
       from,
       undefined,
@@ -906,7 +907,7 @@ export class EventService {
 
   private copyData(from: FederatedEvent, to: FederatedEvent) {
     to.isTrusted = from.isTrusted;
-    to.timeStamp = performance.now();
+    to.timeStamp = clock.now();
     to.type = from.type;
     to.detail = from.detail;
     to.view = from.view;

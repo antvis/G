@@ -6,7 +6,7 @@ import type { RenderingPlugin, RenderingPluginContext } from '../services';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import type { FormattedPointerEvent, FormattedTouch } from '../utils/event';
-import { MOUSE_POINTER_ID, TOUCH_TO_POINTER } from '../utils/event';
+import { MOUSE_POINTER_ID, TOUCH_TO_POINTER, clock } from '../utils/event';
 
 /**
  * support mouse & touch events
@@ -309,7 +309,7 @@ export class EventPlugin implements RenderingPlugin {
   ): void {
     event.isTrusted = nativeEvent.isTrusted;
     event.srcElement = nativeEvent.srcElement as IEventTarget;
-    event.timeStamp = performance.now();
+    event.timeStamp = clock.now();
     event.type = nativeEvent.type;
 
     event.altKey = nativeEvent.altKey;
