@@ -1,5 +1,14 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.12
+
+### Patch Changes
+
+-   414d08d9: Support multiple canvases in one container.
+-   Updated dependencies [414d08d9]
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-plugin-image-loader@1.3.10
+
 ## 1.9.11
 
 ### Patch Changes

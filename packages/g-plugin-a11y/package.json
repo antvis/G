@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-a11y",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "A G plugin for accessibility",
   "keywords": [
     "antv",
