@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-image-exporter",
-  "version": "0.7.9",
+  "version": "0.7.10",
   "description": "A image exporter for G using DOM API",
   "keywords": [
     "antv",
