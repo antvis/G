@@ -213,6 +213,12 @@ const canvas = new Canvas({
 });
 ```
 
+### supportsMutipleCanvasesInOneContainer
+
+可选。是否支持一个 container 下容纳多个画布，默认为 false。
+
+[示例](/zh/examples/canvas/container/#shared-container)
+
 ## 修改初始化配置
 
 在初始化画布时我们传入了画布尺寸、渲染器等配置，后续可能对它们进行修改，因此我们提供了以下 API。
@@ -221,7 +227,7 @@ const canvas = new Canvas({
 
 有时我们需要在初始化之后调整画布尺寸，传入新的画布宽度和高度。方法签名如下：
 
-```
+```js
 resize(width: number, height: number): void;
 ```
 
@@ -256,7 +262,7 @@ if (tooManyShapes) {
 
 方法签名如下：
 
-```
+```js
 setRenderer(renderer: Renderer): Promise<void>;
 ```
 

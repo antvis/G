@@ -129,7 +129,7 @@ canvas.setCursor('crosshair');
 
 ## Special platform adaptations
 
-On some special runtime platforms (e.g. applets), it is not possible to use global variables like [globalThis](https://developer.mozilla.org/en-US/Web/JavaScript/Reference/Global_Objects/ globalThis), and internally we need to rely on it to create images (`new globalThis.Image()`), determine if a TouchEvent is supported (`'ontouchstart' in globalThis`), and so on. Therefore, users of these particular platforms need to manually pass in the specific creation and determination methods.
+On some special runtime platforms (e.g. applets), it is not possible to use global variables like [globalThis](<https://developer.mozilla.org/en-US/Web/JavaScript/Reference/Global_Objects/> globalThis), and internally we need to rely on it to create images (`new globalThis.Image()`), determine if a TouchEvent is supported (`'ontouchstart' in globalThis`), and so on. Therefore, users of these particular platforms need to manually pass in the specific creation and determination methods.
 
 ### document
 
@@ -207,6 +207,12 @@ const canvas = new Canvas({
 });
 ```
 
+### supportsMutipleCanvasesInOneContainer
+
+Optional. If or not support multiple canvases under one container, default is false.
+
+[Example](/en/examples/canvas/container/#shared-container)
+
 ## Modify the initialization configuration
 
 When initializing the canvas we pass in the canvas size, renderer and other configurations, which may be modified subsequently, so we provide the following API.
@@ -244,7 +250,7 @@ if (tooManyShapes) {
 
 方法签名如下：
 
-```
+```js
 setRenderer(renderer: Renderer): Promise<void>;
 ```
 
