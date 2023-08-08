@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-matterjs",
-  "version": "1.9.8",
+  "version": "1.9.10",
   "description": "A G plugin for matter.js physics engine",
   "keywords": [
     "antv",

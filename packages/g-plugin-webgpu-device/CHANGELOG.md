@@ -1,5 +1,21 @@
 # @antv/g-plugin-webgpu-device
 
+## 1.9.12
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-plugin-device-renderer@1.9.12
+    -   @antv/g-lite@1.2.10
+
+## 1.9.11
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-plugin-device-renderer@1.9.11
+    -   @antv/g-lite@1.2.9
+
 ## 1.9.10
 
 ### Patch Changes

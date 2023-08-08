@@ -9,6 +9,13 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*FfHBTr2ACAkAAAAAAAAAAABkARQnAQ"
     },
     {
+      "filename": "shared-container.js",
+      "title": {
+        "zh": "共享同一个 container",
+        "en": "Multiple canvases share the same container"
+      }
+    },
+    {
       "filename": "user-defined-canvas.js",
       "title": {
         "zh": "使用用户创建的 <canvas>",

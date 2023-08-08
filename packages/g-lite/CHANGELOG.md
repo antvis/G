@@ -1,5 +1,17 @@
 # @antv/g-lite
 
+## 1.2.10
+
+### Patch Changes
+
+-   414d08d9: Support multiple canvases in one container.
+
+## 1.2.9
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+
 ## 1.2.8
 
 ### Patch Changes
