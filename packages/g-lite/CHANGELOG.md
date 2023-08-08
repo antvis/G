@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.11
+
+### Patch Changes
+
+-   d63ea0bf: Add polyfill for performance.now.
+
 ## 1.2.10
 
 ### Patch Changes
