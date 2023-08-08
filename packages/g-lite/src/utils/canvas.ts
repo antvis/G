@@ -16,7 +16,6 @@ export function cleanExistedCanvas(
         : container.id || defaultCanvasIdCounter++;
 
     if (canvasMap[id]) {
-      console.log('destroy...');
       canvasMap[id].destroy();
     }
 
