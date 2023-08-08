@@ -473,6 +473,11 @@ export interface CanvasConfig {
   supportsCSSTransform?: boolean;
 
   /**
+   * One container can have multiple canvases inside.
+   */
+  supportsMutipleCanvasesInOneContainer?: boolean;
+
+  /**
    * 画布宽度
    */
   width?: number;
