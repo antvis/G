@@ -1,5 +1,12 @@
 # @antv/g-webgl
 
+## 1.9.16
+
+### Patch Changes
+
+-   Updated dependencies [ee64c46c]
+    -   @antv/g-plugin-html-renderer@1.9.14
+
 ## 1.9.15
 
 ### Patch Changes
