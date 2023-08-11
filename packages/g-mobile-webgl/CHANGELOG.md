@@ -1,5 +1,12 @@
 # @antv/g-mobile-webgl
 
+## 0.9.16
+
+### Patch Changes
+
+-   Updated dependencies [ee64c46c]
+    -   @antv/g-plugin-html-renderer@1.9.14
+
 ## 0.9.15
 
 ### Patch Changes

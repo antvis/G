@@ -1,5 +1,11 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.14
+
+### Patch Changes
+
+-   ee64c46c: Should allow different HTMLs sharing the same Id.
+
 ## 1.9.13
 
 ### Patch Changes
