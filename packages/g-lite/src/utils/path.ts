@@ -59,7 +59,7 @@ export function removeRedundantMCommand(path: AbsoluteArray) {
           ];
         }
 
-        if (isSamePoint(srcPoint, destPoint)) {
+        if (destPoint && isSamePoint(srcPoint, destPoint)) {
           path.splice(i, 1);
           i--;
         }

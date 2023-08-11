@@ -90,6 +90,15 @@ describe('Property Path', () => {
       ['L', 100, 100],
     ]);
 
+    parsed = parsePath('M 0 0 L 100 100 Z M 0 0 L 0 0');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['L', 100, 100],
+      ['Z'],
+      ['M', 0, 0],
+      ['L', 0, 0],
+    ]);
+
     parsed = parsePath('M 0 0 M 0 0 M 0 0 L 100 100 M 100 100 L 200 200');
     expect(parsed.absolutePath).toStrictEqual([
       ['M', 0, 0],
