@@ -180,4 +180,39 @@ describe('HTML', () => {
     expect($el.style.fontSize).toBe('16px');
     expect($el.style.color).toBe('blue');
   });
+
+  it('should allow different HTMLs sharing the same Id.', async () => {
+    const html1 = new HTML({
+      id: 'id',
+      style: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        innerHTML: '<h1>This is Title</h1>',
+      },
+    });
+    const html2 = new HTML({
+      id: 'id',
+      style: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        innerHTML: '<h1>This is Title</h1>',
+      },
+    });
+
+    await canvas.ready;
+    canvas.appendChild(html1);
+    canvas.appendChild(html2);
+
+    const $el1 = html1.getDomElement();
+    const $el2 = html2.getDomElement();
+    expect($el1.id).toBe('id');
+    expect($el2.id).toBe('id');
+    // unique id
+    expect($el1.dataset.id).toBe('g-html-' + html1.entity);
+    expect($el2.dataset.id).toBe('g-html-' + html2.entity);
+  });
 });
