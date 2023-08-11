@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 1.2.12
+
+### Patch Changes
+
+-   eb61cba4: Add polyfill for performance.now.
+-   eb61cba4: Remove redundant m command when parsing path.
+
 ## 1.2.11
 
 ### Patch Changes
