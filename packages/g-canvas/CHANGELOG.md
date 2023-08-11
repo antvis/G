@@ -1,5 +1,12 @@
 # @antv/g-canvas
 
+## 1.11.14
+
+### Patch Changes
+
+-   Updated dependencies [ee64c46c]
+    -   @antv/g-plugin-html-renderer@1.9.14
+
 ## 1.11.13
 
 ### Patch Changes
