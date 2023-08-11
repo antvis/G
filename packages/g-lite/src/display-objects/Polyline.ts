@@ -31,6 +31,7 @@ export interface PolylineStyleProps extends BaseStyleProps {
    * offset relative to original position
    */
   markerEndOffset?: number;
+  isBillboard?: boolean;
 }
 export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   points: {
@@ -43,6 +44,7 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
+  isBillboard?: boolean;
 }
 
 /**

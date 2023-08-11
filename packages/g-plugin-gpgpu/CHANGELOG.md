@@ -1,5 +1,14 @@
 # @antv/g-plugin-gpgpu
 
+## 1.9.15
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-webgpu@1.9.15
+
 ## 1.9.14
 
 ### Patch Changes
