@@ -91,12 +91,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $el.remove();
           this.context.nativeHTMLMap.delete($el);
         }
-
-        // const existedId = this.getId(object);
-        // const $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
-        // if ($existedElement) {
-        //   this.$camera.removeChild($existedElement);
-        // }
       }
     };
 
@@ -166,10 +160,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     });
   }
 
-  private getId(object: DisplayObject) {
-    return object.id || HTML_PREFIX + object.entity;
-  }
-
   private createCamera(camera: ICamera) {
     const { document: doc, width, height } = this.context.config;
     const $canvas =
@@ -209,15 +199,15 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private getOrCreateEl(object: DisplayObject) {
     const { document: doc } = this.context.config;
-    const existedId = this.getId(object);
-
+    const uniqueHTMLId = `${HTML_PREFIX}${object.entity}`;
     let $existedElement: HTMLElement | null = this.$camera.querySelector(
-      '#' + existedId,
+      `[data-id=${uniqueHTMLId}]`,
     );
     if (!$existedElement) {
       $existedElement = (doc || document).createElement('div');
       object.parsedStyle.$el = $existedElement;
-      $existedElement.id = existedId;
+      $existedElement.id = object.id || uniqueHTMLId;
+      $existedElement.dataset.id = uniqueHTMLId;
 
       if (object.name) {
         $existedElement.setAttribute('name', object.name);
