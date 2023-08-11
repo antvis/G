@@ -39,6 +39,35 @@ export function getOrCalculatePathTotalLength(path: Path) {
   return path.parsedStyle.path.totalLength;
 }
 
+export function removeRedundantMCommand(path: AbsoluteArray) {
+  for (let i = 0; i < path.length; i++) {
+    const prevSegment = path[i - 1];
+    const segment = path[i];
+    const cmd = segment[0];
+    if (cmd === 'M') {
+      if (prevSegment) {
+        const prevCmd = prevSegment[0];
+        const srcPoint = [segment[1], segment[2]];
+        let destPoint: [number, number];
+
+        if (prevCmd === 'L' || prevCmd === 'M') {
+          destPoint = [prevSegment[1], prevSegment[2]];
+        } else if (prevCmd === 'C' || prevCmd === 'A' || prevCmd === 'Q') {
+          destPoint = [
+            prevSegment[prevSegment.length - 2] as number,
+            prevSegment[prevSegment.length - 1] as number,
+          ];
+        }
+
+        if (isSamePoint(srcPoint, destPoint)) {
+          path.splice(i, 1);
+          i--;
+        }
+      }
+    }
+  }
+}
+
 export function hasArcOrBezier(path: AbsoluteArray) {
   let hasArc = false;
   const count = path.length;
