@@ -28,6 +28,7 @@ export interface PolygonStyleProps extends BaseStyleProps {
    */
   markerEndOffset?: number;
   isClosed?: boolean;
+  isBillboard?: boolean;
 }
 export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   points: {
@@ -41,6 +42,7 @@ export interface ParsedPolygonStyleProps extends ParsedBaseStyleProps {
   markerStartOffset?: number;
   markerEndOffset?: number;
   isClosed?: boolean;
+  isBillboard?: boolean;
 }
 
 export class Polygon extends DisplayObject<

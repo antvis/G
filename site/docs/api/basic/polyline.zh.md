@@ -175,6 +175,10 @@ polyline.style.markerMid = circleMarker;
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | -------------------------------------------------------------- |
 | '0'                                                           | -        | 否                                    | 是           | [\<length\>](/zh/api/css/css-properties-values-api#length)     |
 
+### isBillboard
+
+3D 场景中生效，始终朝向屏幕，因此线宽不受透视投影影像。默认值为 `false`。
+
 ## 方法
 
 ### getTotalLength
@@ -223,3 +227,33 @@ polyline.getPointAtLength(100); // Point {x: 300, y: 100}
 ### getEndTangent
 
 获取终点的切向量，形如: `[[10, 10], [20, 20]]`
+
+## 3D Polyline
+
+和 Line 一样，折线也可以定义在三维空间，配合公告牌效果：
+
+```js
+const polyline = new Polyline({
+    style: {
+        stroke: '#1890FF',
+        lineWidth: 10,
+        lineCap: 'round',
+        lineJoin: 'round',
+        isBillboard: true,
+        points: [
+            [50, 50, 0],
+            [100, 50, 100],
+            [100, 100, 0],
+            [150, 100, 100],
+            [150, 150, 0],
+            [200, 150, 0],
+            [200, 200, 0],
+            [250, 200, 0],
+        ],
+    },
+});
+```
+
+[示例](/zh/examples/3d/3d-basic/#billboard)效果如下：
+
+![3D polyline](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*-ZNXQIWU2SkAAAAAAAAAAAAADmJ7AQ/original)
