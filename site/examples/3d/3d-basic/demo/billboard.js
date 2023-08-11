@@ -100,14 +100,12 @@ const canvas = new Canvas({
   });
   canvas.appendChild(xAxis);
 
-  const yAxis = new Line({
+  const yAxis = new Path({
     style: {
-      x1: 200,
-      y1: 200,
-      z1: 0,
-      x2: 200,
-      y2: 100,
-      z2: 0,
+      d: [
+        ['M', 200, 200],
+        ['L', 200, 100],
+      ],
       stroke: 'black',
       lineWidth: 2,
       isBillboard: true,

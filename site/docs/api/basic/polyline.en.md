@@ -175,6 +175,10 @@ Moves the marker graphic in the direction of the last line segment of the fold. 
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
 | '0'                                                                  | -                   | no                                     | yes        | [\<length\>](/en/api/css/css-properties-values-api#length)             |
 
+### isBillboard
+
+Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`.
+
 ## Methods
 
 ### getTotalLength
@@ -223,3 +227,33 @@ Get the tangent vector of the starting point, shaped as : `[[10, 10], [20, 20]]`
 ### getEndTangent
 
 Get the tangent vector of the ending point, shaped as : `[[10, 10], [20, 20]]`
+
+## 3D Polyline
+
+Same as Line, Polyline can also be defined under 3D space:
+
+```js
+const polyline = new Polyline({
+    style: {
+        stroke: '#1890FF',
+        lineWidth: 10,
+        lineCap: 'round',
+        lineJoin: 'round',
+        isBillboard: true,
+        points: [
+            [50, 50, 0],
+            [100, 50, 100],
+            [100, 100, 0],
+            [150, 100, 100],
+            [150, 150, 0],
+            [200, 150, 0],
+            [200, 200, 0],
+            [250, 200, 0],
+        ],
+    },
+});
+```
+
+[Example](/en/examples/3d/3d-basic/#billboard):
+
+![3D polyline](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*-ZNXQIWU2SkAAAAAAAAAAAAADmJ7AQ/original)
