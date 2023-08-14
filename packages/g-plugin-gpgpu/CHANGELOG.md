@@ -1,5 +1,11 @@
 # @antv/g-plugin-gpgpu
 
+## 1.9.17
+
+### Patch Changes
+
+-   @antv/g-webgpu@1.9.17
+
 ## 1.9.16
 
 ### Patch Changes
