@@ -162,7 +162,9 @@ describe('Render D3 linechart with g-svg', () => {
 
     // fs.writeFileSync(
     //   __dirname + RESULT_IMAGE,
-    //   xmlserializer.serializeToString(dom.window.document.getElementById('container').children[0]),
+    //   xmlserializer.serializeToString(
+    //     dom.window.document.getElementById('container').children[0],
+    //   ),
     // );
 
     const snapshot = fs.readFileSync(
