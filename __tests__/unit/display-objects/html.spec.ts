@@ -211,8 +211,5 @@ describe('HTML', () => {
     const $el2 = html2.getDomElement();
     expect($el1.id).toBe('id');
     expect($el2.id).toBe('id');
-    // unique id
-    expect($el1.dataset.id).toBe('g-html-' + html1.entity);
-    expect($el2.dataset.id).toBe('g-html-' + html2.entity);
   });
 });

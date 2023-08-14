@@ -19,7 +19,6 @@ import {
 import { isNil, isNumber, isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
-const HTML_PREFIX = 'g-html-';
 const CANVAS_CAMERA_ID = 'g-canvas-camera';
 
 export class HTMLRenderingPlugin implements RenderingPlugin {
@@ -31,6 +30,11 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
    * wrapper for camera
    */
   private $camera: HTMLDivElement;
+
+  private displayObjectHTMLElementMap = new WeakMap<
+    DisplayObject,
+    HTMLElement
+  >();
 
   private joinTransformMatrix(matrix: mat4) {
     return `matrix(${[
@@ -199,16 +203,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private getOrCreateEl(object: DisplayObject) {
     const { document: doc } = this.context.config;
-    const uniqueHTMLId = `${HTML_PREFIX}${object.entity}`;
-    let $existedElement: HTMLElement | null = this.$camera.querySelector(
-      `[data-id=${uniqueHTMLId}]`,
-    );
+    let $existedElement: HTMLElement | null =
+      this.displayObjectHTMLElementMap.get(object);
+
     if (!$existedElement) {
       $existedElement = (doc || document).createElement('div');
       object.parsedStyle.$el = $existedElement;
-      $existedElement.id = object.id || uniqueHTMLId;
-      $existedElement.dataset.id = uniqueHTMLId;
-
+      this.displayObjectHTMLElementMap.set(object, $existedElement);
+      if (object.id) {
+        $existedElement.id = object.id;
+      }
       if (object.name) {
         $existedElement.setAttribute('name', object.name);
       }
