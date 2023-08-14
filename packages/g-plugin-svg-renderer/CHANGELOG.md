@@ -1,5 +1,11 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.13
+
+### Patch Changes
+
+-   ca03e554: Use user-defined id in HTML #1184.
+
 ## 1.10.12
 
 ### Patch Changes
