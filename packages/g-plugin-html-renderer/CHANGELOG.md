@@ -1,5 +1,12 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.15
+
+### Patch Changes
+
+-   ca03e554: Use user-defined id in HTML #1184.
+-   5d4e8f1d: Remove redundant data-id on HTML.
+
 ## 1.9.14
 
 ### Patch Changes
