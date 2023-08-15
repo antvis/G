@@ -1,5 +1,11 @@
 # @antv/g-plugin-rough-svg-renderer
 
+## 1.9.15
+
+### Patch Changes
+
+-   @antv/g-svg@1.10.14
+
 ## 1.9.14
 
 ### Patch Changes
