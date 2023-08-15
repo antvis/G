@@ -1,5 +1,11 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.14
+
+### Patch Changes
+
+-   c0b9fc49: Move width & height from style to attribute in <foreignObject>.
+
 ## 1.10.13
 
 ### Patch Changes
