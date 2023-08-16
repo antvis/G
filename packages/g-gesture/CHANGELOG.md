@@ -1,5 +1,11 @@
 # @antv/g-gesture
 
+## 2.2.15
+
+### Patch Changes
+
+-   8c8a2729: Revert gesture.
+
 ## 2.2.14
 
 ### Patch Changes
