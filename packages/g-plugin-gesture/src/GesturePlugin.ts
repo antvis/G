@@ -39,6 +39,8 @@ export class GesturePlugin implements RenderingPlugin {
   private lastMovePoint: Point;
   private throttleTimer = 0;
   private emitThrottles: EmitEventObject[] = [];
+  private movingTarget: DisplayObject;
+  private isPanListenerInPath: boolean;
 
   constructor(private options: GesturePluginOptions) {}
 
@@ -50,30 +52,31 @@ export class GesturePlugin implements RenderingPlugin {
 
     const getGestureEventTarget = (target: DisplayObject) => {
       const isDocument = (target as unknown as IDocument) === document;
+
       return isDocument && this.options.isDocumentGestureEnabled
         ? document
-        : target.closest && target.closest('[gestureEnabled=true]');
+        : target;
     };
 
     const handlePointermove = (ev: GestureEvent) => {
       const target = getGestureEventTarget(ev.target as DisplayObject);
-      this._move(ev, target);
+      target && this._move(ev, target);
     };
     const handlePointerdown = (ev: GestureEvent) => {
       const target = getGestureEventTarget(ev.target as DisplayObject);
-      this._start(ev, target);
+      target && this._start(ev, target);
     };
     const handlePointerup = (ev: GestureEvent) => {
       const target = getGestureEventTarget(ev.target as DisplayObject);
-      this._end(ev, target);
+      target && this._end(ev, target);
     };
     const handlePointercancel = (ev: GestureEvent) => {
       const target = getGestureEventTarget(ev.target as DisplayObject);
-      this._cancel(ev, target);
+      target && this._cancel(ev, target);
     };
     const handlePointercanceloutside = (ev: GestureEvent) => {
       const target = getGestureEventTarget(ev.target as DisplayObject);
-      this._end(ev, target);
+      target && this._end(ev, target);
     };
 
     renderingService.hooks.init.tap(GesturePlugin.tag, () => {
@@ -138,9 +141,10 @@ export class GesturePlugin implements RenderingPlugin {
 
         event.type = eventType;
         target.dispatchEvent(event);
-        // this.emit(eventType, event);
+
         this.eventType = eventType;
         this.direction = direction;
+        this.movingTarget = target;
       }, PRESS_DELAY);
       return;
     }
@@ -209,16 +213,20 @@ export class GesturePlugin implements RenderingPlugin {
       // 获取press或者pan的事件类型
       // press 按住滑动, pan表示平移
       // 如果start后立刻move，则触发pan, 如果有停顿，则触发press
-      const eventType = this.getEventType(point);
+      const eventType = this.getEventType(point, target, ev);
       ev.direction = direction;
       ev.deltaX = deltaX;
       ev.deltaY = deltaY;
       ev.points = points;
       this.emitStart(eventType, ev, target);
-
       ev.type = eventType;
-      target.dispatchEvent(ev);
-      // this.emit(eventType, ev);
+
+      if (this.movingTarget) {
+        this.movingTarget.dispatchEvent(ev);
+      } else {
+        target.dispatchEvent(ev);
+      }
+
       return;
     }
 
@@ -242,7 +250,12 @@ export class GesturePlugin implements RenderingPlugin {
       return { x: ev.x, y: ev.y };
     });
     ev.points = points;
-    this.emitEnd(ev, target);
+
+    if (this.movingTarget) {
+      this.emitEnd(ev, this.movingTarget);
+    } else {
+      this.emitEnd(ev, target);
+    }
 
     // 单指
     if (evCache.length === 1) {
@@ -268,7 +281,6 @@ export class GesturePlugin implements RenderingPlugin {
 
             ev.type = 'swipe';
             target.dispatchEvent(ev);
-            // this.emit('swipe', ev);
           }
         }
       }
@@ -297,34 +309,42 @@ export class GesturePlugin implements RenderingPlugin {
       return { x: ev.x, y: ev.y };
     });
     ev.points = points;
-    this.emitEnd(ev, target);
+    if (this.movingTarget) {
+      this.emitEnd(ev, this.movingTarget);
+    } else {
+      this.emitEnd(ev, target);
+    }
     this.evCache = [];
     this.reset();
   };
 
-  private getEventType(point: Point) {
+  private getEventType(point: Point, target, ev) {
     const { eventType, startTime, startPoints } = this;
     if (eventType) {
       return eventType;
     }
+    // move的时候缓存节点，后续move和end都会使用这个target派发事件
+    this.movingTarget = target;
+    // 冒泡路径中是否有pan事件
+    this.isPanListenerInPath = ev.path.some(
+      (ele) => !!ele.emitter?.eventNames()?.includes('pan'),
+    );
     let type: string;
-    // FIXME
-    // const panEventListeners = this._events.pan;
-    // // 如果没有pan事件的监听，默认都是press
-    // if (!panEventListeners) {
-    //   type = 'press';
-    // } else {
-    // 如果有pan事件的处理，press则需要停顿250ms, 且移动距离小于10
-    const now = clock.now();
-    if (
-      now - startTime > PRESS_DELAY &&
-      calcDistance(startPoints[0], point) < 10
-    ) {
+    // 如果没有pan事件的监听，默认都是press
+    if (!this.isPanListenerInPath) {
       type = 'press';
     } else {
-      type = 'pan';
+      // 如果有pan事件的处理，press则需要停顿250ms, 且移动距离小于10
+      const now = clock.now();
+      if (
+        now - startTime > PRESS_DELAY &&
+        calcDistance(startPoints[0], point) < 10
+      ) {
+        type = 'press';
+      } else {
+        type = 'pan';
+      }
     }
-    // }
     this.eventType = type;
     return type;
   }
@@ -346,7 +366,6 @@ export class GesturePlugin implements RenderingPlugin {
     this.enable(type);
     ev.type = `${type}start`;
     target.dispatchEvent(ev);
-    // this.emit(`${type}start`, ev);
   }
 
   // 触发事件
@@ -364,7 +383,6 @@ export class GesturePlugin implements RenderingPlugin {
         if (processEvent[type]) {
           ev.type = type;
           target.dispatchEvent(ev);
-          // this.emit(type, ev);
         }
       }
       // 清空
@@ -379,7 +397,6 @@ export class GesturePlugin implements RenderingPlugin {
     Object.keys(processEvent).forEach((type) => {
       ev.type = `${type}end`;
       target.dispatchEvent(ev);
-      // this.emit(`${type}end`, ev);
       delete processEvent[type];
     });
   }
@@ -413,5 +430,7 @@ export class GesturePlugin implements RenderingPlugin {
     this.prevMovePoint = null;
     this.lastMoveTime = 0;
     this.lastMovePoint = null;
+    this.movingTarget = null;
+    this.isPanListenerInPath = null;
   }
 }

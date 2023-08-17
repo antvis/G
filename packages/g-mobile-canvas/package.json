@@ -45,6 +45,7 @@
     "@antv/g-plugin-dragndrop": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/g-plugin-mobile-interaction": "workspace:*",
+    "@antv/g-plugin-gesture": "workspace:*",
     "@antv/util": "^3.3.4",
     "tslib": "^2.5.3"
   },
