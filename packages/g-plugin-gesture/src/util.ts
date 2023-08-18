@@ -1,5 +1,8 @@
 import type { PointLike as Point } from '@antv/g-lite';
 
+/**
+ * TODO: use clock from g later.
+ */
 export const clock =
   typeof performance === 'object' && performance.now ? performance : Date;
 
