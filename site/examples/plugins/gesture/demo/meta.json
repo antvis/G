@@ -1,0 +1,15 @@
+{
+  "title": {
+    "zh": "手势",
+    "en": "Gesture"
+  },
+  "demos": [
+    {
+      "filename": "press.js",
+      "title": {
+        "zh": "使用 Press 手势",
+        "en": "Use Press Gesture"
+      }
+    }
+  ]
+}

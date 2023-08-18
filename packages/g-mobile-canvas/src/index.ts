@@ -6,6 +6,8 @@ import * as CanvasRenderer from '@antv/g-plugin-canvas-renderer';
 import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
 import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
+import * as GesturePlugin from '@antv/g-plugin-gesture';
+
 import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
@@ -36,14 +38,24 @@ export class Renderer extends AbstractRenderer {
 
     this.registerPlugin(
       new DragDropEvent.Plugin({
-        isDocumentDraggable: isNil(config?.isDocumentDraggable) ? true : config.isDocumentDraggable,
-        isDocumentDroppable: isNil(config?.isDocumentDroppable) ? true : config.isDocumentDroppable,
+        isDocumentDraggable: isNil(config?.isDocumentDraggable)
+          ? true
+          : config.isDocumentDraggable,
+        isDocumentDroppable: isNil(config?.isDocumentDroppable)
+          ? true
+          : config.isDocumentDroppable,
         dragstartDistanceThreshold: isNil(config?.dragstartDistanceThreshold)
           ? 10
           : config.dragstartDistanceThreshold,
         dragstartTimeThreshold: isNil(config?.dragstartTimeThreshold)
           ? 50
           : config.dragstartTimeThreshold,
+      }),
+    );
+
+    this.registerPlugin(
+      new GesturePlugin.Plugin({
+        isDocumentGestureEnabled: true,
       }),
     );
   }

@@ -1,5 +1,18 @@
 # @antv/g-mobile-canvas
 
+## 0.11.0
+
+### Minor Changes
+
+-   d92e6c43: Update minor version.
+
+### Patch Changes
+
+-   cd442df1: Use latest gesture plugin.
+-   Updated dependencies [cd442df1]
+-   Updated dependencies [d92e6c43]
+    -   @antv/g-plugin-gesture@1.1.0
+
 ## 0.10.12
 
 ### Patch Changes
