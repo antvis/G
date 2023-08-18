@@ -4,9 +4,9 @@ If you have any comment or advice, please report your [issue](https://github.com
 
 ## Reporting New Issues
 
--   Please specify what kind of issue it is.
--   Before you report an issue, please search for related issues. Make sure you are not going to open a duplicate issue.
--   Explain your purpose clearly in tags(see **Useful Tags**), title, or content.
+- Please specify what kind of issue it is.
+- Before you report an issue, please search for related issues. Make sure you are not going to open a duplicate issue.
+- Explain your purpose clearly in tags(see **Useful Tags**), title, or content.
 
 AntV group members will confirm the purpose of the issue, replace more accurate tags for it, identify related milestone, and assign developers working on it.
 
@@ -58,14 +58,14 @@ You are encouraged to use [angular commit-message-format](https://github.com/ang
 
 Must be one of the following:
 
--   feat: A new feature
--   fix: A bug fix
--   docs: Documentation-only changes
--   style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
--   refactor: A code change that neither fixes a bug nor adds a feature
--   perf: A code change that improves performance
--   test: Adding missing tests
--   chore: Changes to the build process or auxiliary tools and libraries such as documentation generation
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation-only changes
+- style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- refactor: A code change that neither fixes a bug nor adds a feature
+- perf: A code change that improves performance
+- test: Adding missing tests
+- chore: Changes to the build process or auxiliary tools and libraries such as documentation generation
 
 （2）scope
 
@@ -81,8 +81,8 @@ Feel free to add more content in the body, if you think subject is not self-expl
 
 （5）footer
 
--   **If the commit is a Breaking Change, please note it clearly in this part.**
--   related issues, like `Closes #1, Closes #2, #3`
+- **If the commit is a Breaking Change, please note it clearly in this part.**
+- related issues, like `Closes #1, Closes #2, #3`
 
 e.g.
 
@@ -108,8 +108,8 @@ Look at [these files](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJyg
 
 G provides a two-part test based on Jest:
 
--   **unit test** [`__tests__/unit/`](./__tests__/unit/) Testing pure data modules or functions
--   **integration test** [`__tests__/integration/`](./__tests__/integration/) Based on [node-canvas](https://github.com/Automattic/node-canvas), [jsdom](https://github.com/jsdom/jsdom/) and [headless-gl](https://github.com/stackgl/headless-gl), we test these 3 renderers `@antv/g-canvas`, `@antv/g-svg` and `@antv/g-webgl` on the serverside. We will compare the generated snapshots with golden images later.
+- **unit test** [`__tests__/unit/`](./__tests__/unit/) Testing pure data modules or functions
+- **integration test** [`__tests__/integration/`](./__tests__/integration/) Based on [node-canvas](https://github.com/Automattic/node-canvas), [jsdom](https://github.com/jsdom/jsdom/) and [headless-gl](https://github.com/stackgl/headless-gl), we test these 3 renderers `@antv/g-canvas`, `@antv/g-svg` and `@antv/g-webgl` on the serverside. We will compare the generated snapshots with golden images later.
 
 ## Publish
 
@@ -133,18 +133,17 @@ This makes it easy to perform version locking.
 
 Referring to [S2's engineering practices](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY), we use [changesets](https://github.com/changesets/changesets) for fully automated semantic releases. It can automatically create GitHub Releases and automatically associate the release to the corresponding issue.
 
-There are three release branches:
-
--   The `next` branch is for the current stable release
--   The `beta` branch for beta releases
--   The `alpha` branch for the preview release
-
-Create a new branch `release` from `next`, each PR will trigger CI on `release`. We publish on `next` branch finally.
+1. Create `release` branch from `next`
+2. Checkout dev branch from `release`, run changeset and commit
 
 ```bash
-git commit -m "chore(release): bump version"
-git push
+pnpm run changeset
+git add ./
+git commit -a -m "chore: commit changeset"
 ```
+
+3. Merge dev branch into `release` branch, CI version process will create a `Version Package` PR
+4. Merge `release` into `next` branch
 
 In addition, all API deprecations need to be `deprecate` prompted on the current stable version and guaranteed to be compatible on the current stable version until a new version is released.
 
@@ -154,8 +153,8 @@ It is often necessary to lock down certain dependencies in case of emergency, or
 
 tnpm uses `resolutions`. Take G2 as an example, if we want to test beta versions:
 
--   Use `dependencies` to lock down **direct dependencies**.
--   Use `resolutions` to lock down **indirect dependencies**, which can make sure some dependencies of G2 such as `@antv/gui` using the same beta versions
+- Use `dependencies` to lock down **direct dependencies**.
+- Use `resolutions` to lock down **indirect dependencies**, which can make sure some dependencies of G2 such as `@antv/gui` using the same beta versions
 
 ```js
 "dependencies": {
@@ -175,6 +174,6 @@ tnpm uses `resolutions`. Take G2 as an example, if we want to test beta versions
 
 Other package management tools also have corresponding dependency overrides:
 
--   npm [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides)
--   yarn [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
--   pnpm [overrides](https://pnpm.io/package_json#pnpmoverrides)
+- npm [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides)
+- yarn [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
+- pnpm [overrides](https://pnpm.io/package_json#pnpmoverrides)
