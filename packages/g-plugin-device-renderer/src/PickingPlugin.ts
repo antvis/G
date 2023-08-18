@@ -76,6 +76,7 @@ export class PickingPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(PickingPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      this.pickingIdGenerator.reset();
     });
 
     /**

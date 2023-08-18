@@ -1,5 +1,83 @@
 # @antv/g-webgl
 
+## 1.9.17
+
+### Patch Changes
+
+-   Updated dependencies [ca03e554]
+-   Updated dependencies [5d4e8f1d]
+    -   @antv/g-plugin-html-renderer@1.9.15
+
+## 1.9.16
+
+### Patch Changes
+
+-   Updated dependencies [ee64c46c]
+    -   @antv/g-plugin-html-renderer@1.9.14
+
+## 1.9.15
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-plugin-device-renderer@1.9.14
+    -   @antv/g-plugin-dom-interaction@1.9.12
+    -   @antv/g-plugin-html-renderer@1.9.13
+    -   @antv/g-plugin-image-loader@1.3.12
+    -   @antv/g-plugin-webgl-device@1.9.14
+
+## 1.9.14
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+    -   @antv/g-plugin-device-renderer@1.9.13
+    -   @antv/g-plugin-dom-interaction@1.9.11
+    -   @antv/g-plugin-html-renderer@1.9.12
+    -   @antv/g-plugin-image-loader@1.3.11
+    -   @antv/g-plugin-webgl-device@1.9.13
+
+## 1.9.13
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-plugin-device-renderer@1.9.12
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-plugin-webgl-device@1.9.12
+    -   @antv/g-plugin-dom-interaction@1.9.10
+    -   @antv/g-plugin-html-renderer@1.9.11
+    -   @antv/g-plugin-image-loader@1.3.10
+
+## 1.9.12
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-plugin-device-renderer@1.9.11
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-plugin-webgl-device@1.9.11
+    -   @antv/g-plugin-dom-interaction@1.9.9
+    -   @antv/g-plugin-html-renderer@1.9.10
+    -   @antv/g-plugin-image-loader@1.3.9
+
+## 1.9.11
+
+### Patch Changes
+
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-plugin-device-renderer@1.9.10
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-plugin-webgl-device@1.9.10
+    -   @antv/g-plugin-dom-interaction@1.9.8
+    -   @antv/g-plugin-html-renderer@1.9.9
+    -   @antv/g-plugin-image-loader@1.3.8
+
 ## 1.9.10
 
 ### Patch Changes

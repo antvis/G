@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "1.11.8",
+  "version": "1.11.15",
   "description": "A renderer implemented by Canvas 2D API",
   "keywords": [
     "antv",

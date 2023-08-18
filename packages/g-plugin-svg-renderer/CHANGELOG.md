@@ -1,5 +1,55 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.14
+
+### Patch Changes
+
+-   c0b9fc49: Move width & height from style to attribute in <foreignObject>.
+
+## 1.10.13
+
+### Patch Changes
+
+-   ca03e554: Use user-defined id in HTML #1184.
+
+## 1.10.12
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+
+## 1.10.11
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+
+## 1.10.10
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-lite@1.2.10
+
+## 1.10.9
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-lite@1.2.9
+
+## 1.10.8
+
+### Patch Changes
+
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-lite@1.2.8
+
 ## 1.10.7
 
 ### Patch Changes

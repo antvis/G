@@ -142,6 +142,7 @@ export class InstancedLineDrawcall extends Instanced {
           markerEnd,
           markerStartOffset,
           markerEndOffset,
+          isBillboard,
         } = (object as Polyline).parsedStyle;
         parsedLineStyleProps = {
           x1: points[0][0],
@@ -155,7 +156,7 @@ export class InstancedLineDrawcall extends Instanced {
           lineCap,
           lineDash,
           lineDashOffset,
-          isBillboard: true,
+          isBillboard,
           markerStart,
           markerEnd,
           markerStartOffset,
@@ -174,6 +175,7 @@ export class InstancedLineDrawcall extends Instanced {
           markerEnd,
           markerStartOffset,
           markerEndOffset,
+          isBillboard,
         } = (object as Path).parsedStyle;
         let mSegmentCount = 0;
         let mCommandIndex = 0;
@@ -199,7 +201,7 @@ export class InstancedLineDrawcall extends Instanced {
           lineCap,
           lineDash,
           lineDashOffset,
-          isBillboard: false,
+          isBillboard,
           markerStart,
           markerEnd,
           markerStartOffset,
@@ -359,6 +361,7 @@ export class InstancedLineDrawcall extends Instanced {
             markerEnd,
             markerStartOffset,
             markerEndOffset,
+            isBillboard,
           } = (object as Polyline).parsedStyle;
           parsedLineStyleProps = {
             x1: points[0][0],
@@ -370,7 +373,7 @@ export class InstancedLineDrawcall extends Instanced {
             defX,
             defY,
             lineCap,
-            isBillboard: true,
+            isBillboard,
             markerStart,
             markerEnd,
             markerStartOffset,
@@ -386,6 +389,7 @@ export class InstancedLineDrawcall extends Instanced {
             markerEnd,
             markerStartOffset,
             markerEndOffset,
+            isBillboard,
           } = (object as Path).parsedStyle;
           parsedLineStyleProps = {
             x1: absolutePath[0][1],
@@ -397,7 +401,7 @@ export class InstancedLineDrawcall extends Instanced {
             defX,
             defY,
             lineCap,
-            isBillboard: true,
+            isBillboard,
             markerStart,
             markerEnd,
             markerStartOffset,

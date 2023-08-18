@@ -64,6 +64,9 @@ importers:
       eslint-plugin-jest:
         specifier: 24.3.6
         version: 24.3.6(@typescript-eslint/eslint-plugin@5.48.1)(eslint@7.32.0)(typescript@5.1.3)
+      get-pixels:
+        specifier: 3.3.3
+        version: 3.3.3
       git-contributor:
         specifier: ~1.0.11
         version: 1.0.11
@@ -1190,7 +1193,7 @@ importers:
         version: 3.3.4
       '@antv/webgpu-graph':
         specifier: ^1.0.0
-        version: 1.0.0(@antv/g-lite@1.2.12)(@antv/g-webgpu@1.9.17)
+        version: 1.0.0(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu)
       '@naoak/workerize-transferable':
         specifier: ^0.1.0
         version: 0.1.0(workerize-loader@2.0.2)
@@ -1669,14 +1672,14 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-gpgpu@1.7.50(@antv/g-lite@1.2.12)(@antv/g-webgpu@1.9.17):
+  /@antv/g-plugin-gpgpu@1.7.50(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu):
     resolution: {integrity: sha512-PR9449lG9omTBSHKyYiT4Z8LQtreQScHBX19A168tMwf7Nih5FNCJjFxzp/tLsZi2iY9j6VGk3PRxRAf3zF8AA==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
       '@antv/g-webgpu': ^1.0.1
     dependencies:
-      '@antv/g-lite': 1.2.12
-      '@antv/g-webgpu': 1.9.17
+      '@antv/g-lite': link:packages/g-lite
+      '@antv/g-webgpu': link:packages/g-webgpu
       tslib: 2.5.3
     dev: false
 
@@ -1698,27 +1701,16 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@antv/g-plugin-webgl-device@1.7.54(@antv/g-lite@1.2.12)(@antv/g-plugin-device-renderer@1.9.14):
+  /@antv/g-plugin-webgl-device@1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.14):
     resolution: {integrity: sha512-1Bnf+eb5HcK7plBYSBAKQDc+KWW0VZ3paFv8rEfJCnp7nTt4kHH2j9wdjwHztft4eOaxdRH1hdV1Aom05sahqg==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
       '@antv/g-plugin-device-renderer': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.2.12
+      '@antv/g-lite': link:packages/g-lite
       '@antv/g-plugin-device-renderer': 1.9.14
       '@antv/util': 3.3.4
       eventemitter3: 4.0.7
-      tslib: 2.5.3
-    dev: false
-
-  /@antv/g-plugin-webgpu-device@1.9.14:
-    resolution: {integrity: sha512-3VAA4k23xde02v1//Pn0UxZ2AWDC3KqHbRKn0rscc0c8PCM6gjTYqhA5n7Rzs6MTwS1wxXXHvUN5zNK+b+2oYg==}
-    dependencies:
-      '@antv/g-lite': 1.2.12
-      '@antv/g-plugin-device-renderer': 1.9.14
-      '@antv/util': 3.3.4
-      '@webgpu/types': 0.1.33
-      eventemitter3: 5.0.1
       tslib: 2.5.3
     dev: false
 
@@ -1745,17 +1737,17 @@ packages:
       '@antv/util': 3.3.4
     dev: false
 
-  /@antv/g-webgl@1.7.74(@antv/g-lite@1.2.12):
+  /@antv/g-webgl@1.7.74(@antv/g-lite@packages+g-lite):
     resolution: {integrity: sha512-efi5NjuUWcIQt1kxp9kQSPIC9xwVzHbKiXSjrl6SkZ7rXWekBWfPsfnRca0zEzZQ91M90/F0jvdRLe6uXXqrIQ==}
     peerDependencies:
       '@antv/g-lite': ^1.0.0
     dependencies:
-      '@antv/g-lite': 1.2.12
+      '@antv/g-lite': link:packages/g-lite
       '@antv/g-plugin-device-renderer': 1.9.14
       '@antv/g-plugin-dom-interaction': 1.9.12
       '@antv/g-plugin-html-renderer': 1.9.15
       '@antv/g-plugin-image-loader': 1.3.12
-      '@antv/g-plugin-webgl-device': 1.7.54(@antv/g-lite@1.2.12)(@antv/g-plugin-device-renderer@1.9.14)
+      '@antv/g-plugin-webgl-device': 1.7.54(@antv/g-lite@packages+g-lite)(@antv/g-plugin-device-renderer@1.9.14)
       '@antv/util': 3.3.4
     dev: false
 
@@ -1800,20 +1792,6 @@ packages:
       polyline-normals: 2.0.2
       probe.gl: 3.6.0
       reflect-metadata: 0.1.13
-    dev: false
-
-  /@antv/g-webgpu@1.9.17:
-    resolution: {integrity: sha512-EjI/qcjAmZ/yGXVZ1xspCDFZjZpsLqFH6wv/rQf0yfLdl60rVm5s9+D0bt9QJnCdiJlt6M6dQbcBZXoRoE76vg==}
-    dependencies:
-      '@antv/g-lite': 1.2.12
-      '@antv/g-plugin-device-renderer': 1.9.14
-      '@antv/g-plugin-dom-interaction': 1.9.12
-      '@antv/g-plugin-html-renderer': 1.9.15
-      '@antv/g-plugin-image-loader': 1.3.12
-      '@antv/g-plugin-webgpu-device': 1.9.14
-      '@antv/util': 3.3.4
-      '@webgpu/types': 0.1.33
-      tslib: 2.5.3
     dev: false
 
   /@antv/g6-core@0.5.2:
@@ -1957,12 +1935,12 @@ packages:
       gl-matrix: 3.4.3
       tslib: 2.5.3
 
-  /@antv/webgpu-graph@1.0.0(@antv/g-lite@1.2.12)(@antv/g-webgpu@1.9.17):
+  /@antv/webgpu-graph@1.0.0(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu):
     resolution: {integrity: sha512-zE9lyg+uJkOe/1O7EdfOesuqD6svKRhQCNMocpFwA7cka4jdBY5h6iE60FiHNGPza6/Cy7mXVDYuGT/t+8/F1g==}
     dependencies:
       '@antv/g': 5.16.33
-      '@antv/g-plugin-gpgpu': 1.7.50(@antv/g-lite@1.2.12)(@antv/g-webgpu@1.9.17)
-      '@antv/g-webgl': 1.7.74(@antv/g-lite@1.2.12)
+      '@antv/g-plugin-gpgpu': 1.7.50(@antv/g-lite@packages+g-lite)(@antv/g-webgpu@packages+g-webgpu)
+      '@antv/g-webgl': 1.7.74(@antv/g-lite@packages+g-lite)
       '@types/offscreencanvas': 2019.6.4
       '@webgpu/types': 0.1.33
       tslib: 2.5.3
@@ -7901,6 +7879,12 @@ packages:
       find-pkg: 0.1.2
     dev: true
 
+  /cwise-compiler@1.1.3:
+    resolution: {integrity: sha512-WXlK/m+Di8DMMcCjcWr4i+XzcQra9eCdXIJrgh4TUgh0pIS/yJduLxS9JgefsHJ/YVLdgPtXm9r62W92MvanEQ==}
+    dependencies:
+      uniq: 1.0.1
+    dev: true
+
   /cyclist@1.0.2:
     resolution: {integrity: sha512-0sVXIohTfLqVIW3kb/0n6IiWF3Ifj5nm2XaSrLq2DI6fKIGa2fYAZdk917rUneaeLVpYfFcyXE2ft0fe3remsA==}
     dev: true
@@ -8289,6 +8273,10 @@ packages:
     engines: {node: '>=0.10'}
     dependencies:
       assert-plus: 1.0.0
+    dev: true
+
+  /data-uri-to-buffer@0.0.3:
+    resolution: {integrity: sha512-Cp+jOa8QJef5nXS5hU7M1DWzXPEIoVR3kbV0dQuVGwROZg8bGf1DcCnkmajBTnvghTtSNMUdRrPjgaT6ZQucbw==}
     dev: true
 
   /data-uri-to-buffer@4.0.1:
@@ -10488,6 +10476,22 @@ packages:
     engines: {node: '>=8.0.0'}
     dev: true
 
+  /get-pixels@3.3.3:
+    resolution: {integrity: sha512-5kyGBn90i9tSMUVHTqkgCHsoWoR+/lGbl4yC83Gefyr0HLIhgSWEx/2F/3YgsZ7UpYNuM6pDhDK7zebrUJ5nXg==}
+    dependencies:
+      data-uri-to-buffer: 0.0.3
+      jpeg-js: 0.4.4
+      mime-types: 2.1.35
+      ndarray: 1.0.19
+      ndarray-pack: 1.2.1
+      node-bitmap: 0.0.1
+      omggif: 1.0.10
+      parse-data-uri: 0.2.0
+      pngjs: 3.4.0
+      request: 2.88.2
+      through: 2.3.8
+    dev: true
+
   /get-stdin@7.0.0:
     resolution: {integrity: sha512-zRKcywvrXlXsA0v0i9Io4KDRaAw7+a1ZpjRwl9Wox8PFlVCCHra7E9c4kqXCoCM9nR5tBkaTTZRBoCm60bFqTQ==}
     engines: {node: '>=8'}
@@ -11854,6 +11858,10 @@ packages:
   /inversify@5.1.1:
     resolution: {integrity: sha512-j8grHGDzv1v+8T1sAQ+3boTCntFPfvxLCkNcxB1J8qA0lUN+fAlSyYd+RXKvaPRL4AGyPxViutBEJHNXOyUdFQ==}
     dev: false
+
+  /iota-array@1.0.0:
+    resolution: {integrity: sha512-pZ2xT+LOHckCatGQ3DcG/a+QuEqvoxqkiL7tvE8nn3uuu+f6i1TtpB5/FtWFbxUuVr5PZCx8KskuGatbJDXOWA==}
+    dev: true
 
   /ip@1.1.8:
     resolution: {integrity: sha512-PuExPYUiu6qMBQb4l06ecm6T6ujzhmh+MeJcW9wa89PoAz5pvd4zPgN5WJV104mb6S2T1AwNIAaB70JNrLQWhg==}
@@ -13402,6 +13410,10 @@ packages:
       - supports-color
       - ts-node
       - utf-8-validate
+    dev: true
+
+  /jpeg-js@0.4.4:
+    resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==}
     dev: true
 
   /jquery@3.7.0:
@@ -15245,6 +15257,20 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
+  /ndarray-pack@1.2.1:
+    resolution: {integrity: sha512-51cECUJMT0rUZNQa09EoKsnFeDL4x2dHRT0VR5U2H5ZgEcm95ZDWcMA5JShroXjHOejmAD/fg8+H+OvUnVXz2g==}
+    dependencies:
+      cwise-compiler: 1.1.3
+      ndarray: 1.0.19
+    dev: true
+
+  /ndarray@1.0.19:
+    resolution: {integrity: sha512-B4JHA4vdyZU30ELBw3g7/p9bZupyew5a7tX1Y/gGeF2hafrPaQZhgrGQfsvgfYbgdFZjYwuEcnaobeM/WMW+HQ==}
+    dependencies:
+      iota-array: 1.0.0
+      is-buffer: 1.1.6
+    dev: true
+
   /nearley@2.20.1:
     resolution: {integrity: sha512-+Mc8UaAebFzgV+KpI5n7DasuuQCHA89dmwm7JXw3TV43ukfNQ9DnBH3Mdb2g/I4Fdxc26pwimBWvjIw0UAILSQ==}
     hasBin: true
@@ -15307,6 +15333,11 @@ packages:
 
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+    dev: true
+
+  /node-bitmap@0.0.1:
+    resolution: {integrity: sha512-Jx5lPaaLdIaOsj2mVLWMWulXF6GQVdyLvNSxmiYCvZ8Ma2hfKX0POoR2kgKOqz+oFsRreq0yYZjQ2wjE9VNzCA==}
+    engines: {node: '>=v0.6.5'}
     dev: true
 
   /node-domexception@1.0.0:
@@ -15686,6 +15717,10 @@ packages:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
     dev: true
 
+  /omggif@1.0.10:
+    resolution: {integrity: sha512-LMJTtvgc/nugXj0Vcrrs68Mn2D1r0zf630VNtqtpI1FEO7e+O9FP4gqs9AcnBaSEeoHIPm28u6qgPR0oyEpGSw==}
+    dev: true
+
   /omit-deep@0.3.0:
     resolution: {integrity: sha512-Lbl/Ma59sss2b15DpnWnGmECBRL8cRl/PjPbPMVW+Y8zIQzRrwMaI65Oy6HvxyhYeILVKBJb2LWeG81bj5zbMg==}
     engines: {node: '>=0.10.0'}
@@ -15986,6 +16021,12 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
+  /parse-data-uri@0.2.0:
+    resolution: {integrity: sha512-uOtts8NqDcaCt1rIsO3VFDRsAfgE4c6osG4d9z3l4dCBlxYFzni6Di/oNU270SDrjkfZuUvLZx1rxMyqh46Y9w==}
+    dependencies:
+      data-uri-to-buffer: 0.0.3
+    dev: true
+
   /parse-entities@4.0.1:
     resolution: {integrity: sha512-SWzvYcSJh4d/SGLIOQfZ/CoNv6BTlI6YEQ7Nj82oDVnRpwe/Z/F1EMx42x3JAOwGBlCjeCH0BRJQbQ/opHL17w==}
     dependencies:
@@ -16268,6 +16309,11 @@ packages:
   /pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+    dev: true
+
+  /pngjs@3.4.0:
+    resolution: {integrity: sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==}
+    engines: {node: '>=4.0.0'}
     dev: true
 
   /pngjs@6.0.0:
@@ -20772,6 +20818,10 @@ packages:
       get-value: 2.0.6
       is-extendable: 0.1.1
       set-value: 2.0.1
+    dev: true
+
+  /uniq@1.0.1:
+    resolution: {integrity: sha512-Gw+zz50YNKPDKXs+9d+aKAjVwpjNwqzvNpLigIruT4HA9lMZNdMqs9x07kKHB/L9WRzqp4+DlTU5s4wG2esdoA==}
     dev: true
 
   /unique-filename@1.1.1:

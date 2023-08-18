@@ -1,6 +1,6 @@
 {
   "name": "@antv/g",
-  "version": "5.18.8",
+  "version": "5.18.13",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",

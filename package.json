@@ -71,6 +71,7 @@
     "eslint-plugin-jest": "24.3.6",
     "git-contributor": "~1.0.11",
     "gl": "^6.0.2",
+    "get-pixels": "3.3.3",
     "hammerjs": "^2.0.8",
     "husky": "^7.0.4",
     "is-ci": "2.0.0",

@@ -1,5 +1,56 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.14
+
+### Patch Changes
+
+-   eb61cba4: Remove redundant m command when parsing path.
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-plugin-image-loader@1.3.12
+
+## 1.9.13
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+    -   @antv/g-plugin-image-loader@1.3.11
+
+## 1.9.12
+
+### Patch Changes
+
+-   414d08d9: Support multiple canvases in one container.
+-   Updated dependencies [414d08d9]
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-plugin-image-loader@1.3.10
+
+## 1.9.11
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+-   Updated dependencies [3856560c]
+    -   @antv/g-shader-components@1.8.4
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-plugin-image-loader@1.3.9
+
+## 1.9.10
+
+### Patch Changes
+
+-   3d4f5da7: Support size attenuation.
+-   3d4f5da7: Polyline should support 3D points.
+-   3d4f5da7: Support rotation when applying billboard effect.
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-shader-components@1.8.3
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-plugin-image-loader@1.3.8
+
 ## 1.9.9
 
 ### Patch Changes

@@ -164,13 +164,16 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
+      supportsMutipleCanvasesInOneContainer,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
       isTouchEvent,
       isMouseEvent,
     } = config;
 
-    cleanExistedCanvas(container, this);
+    if (!supportsMutipleCanvasesInOneContainer) {
+      cleanExistedCanvas(container, this);
+    }
 
     let canvasWidth = width;
     let canvasHeight = height;

@@ -5,7 +5,7 @@ order: 7
 
 You can refer to the [\<polygon\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/polygon) element of SVG.
 
-The following [example](/en/examples/shape#polygon) defines a polygon.
+The following [example](/en/examples/shape/polygon#polygon) defines a polygon.
 
 ```javascript
 const polygon = new Polygon({
@@ -62,7 +62,7 @@ polygon.style.points = [
 ];
 ```
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/points>
 
 ### markerStart
 
@@ -72,7 +72,7 @@ But unlike Polyline, since polygons are **closed**, the positions of the "start"
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*mXYATLithEUAAAAAAAAAAAAAARQnAQ" alt="polygon end/start overlap" width="400">
 
-In this [example](/en/examples/shape#polygon), we have placed an arrow at the start of the polygon.
+In this [example](/en/examples/shape/polygon#polygon), we have placed an arrow at the start of the polygon.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*RRPTRIpZoUIAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
 
@@ -95,7 +95,7 @@ See [markerEnd](/en/api/basic/polyline#markerend) property of [Polyline](/en/api
 
 However, unlike Polyline, since polygons are **closed**, the positions of the "start point" and "end point" coincide exactly. The "end point" is determined by the first point in [points](/en/api/basic/polygon#points).
 
-In this [example](/en/examples/shape#polygon), we have placed a picture at the termination point of the polygon.
+In this [example](/en/examples/shape/polygon#polygon), we have placed a picture at the termination point of the polygon.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*eZHETJ0B3lkAAAAAAAAAAAAAARQnAQ" alt="polygon marker" width="200">
 

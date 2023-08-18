@@ -5,7 +5,7 @@ order: 6
 
 You can refer to the [\<line\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line) element of SVG.
 
-The following [example](/en/examples/shape#line) defines a line with two endpoints `[200, 100]` and `[400, 100]`, a line width of 2, and a dashed line.
+The following [example](/en/examples/shape/line/#line) defines a line with two endpoints `[200, 100]` and `[400, 100]`, a line width of 2, and a dashed line.
 
 ```javascript
 const line1 = new Line({
@@ -72,7 +72,7 @@ Default value is `'1'`. See [DisplayObject's lineWidth](/en/api/basic/display-ob
 
 The x-axis coordinate of the first endpoint in the local coordinate system.
 
-https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1
+<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -82,7 +82,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1
 
 The y-axis coordinate of the first endpoint in the local coordinate system.
 
-https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1
+<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -100,7 +100,7 @@ The z-axis coordinate of the first endpoint in the local coordinate system.
 
 The x-axis coordinate of the second endpoint in the local coordinate system.
 
-https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2
+<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -110,7 +110,7 @@ https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2
 
 The y-axis coordinate of the second endpoint in the local coordinate system.
 
-https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2
+<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2>
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -134,7 +134,7 @@ You can refer to the [attribute of the same name](https://developer.mozilla.org/
 
 Add a marker graphic to the "start point" of the line, where the "start point" is the endpoint defined by [x1/y1](/en/api/basic/line#x1).
 
-In the following [example](/en/examples/shape#line), we first created an arrow using [Path](/en/api/basic/path) and then added it to the start of the line with this property.
+In the following [example](/en/examples/shape/line#line), we first created an arrow using [Path](/en/api/basic/path) and then added it to the start of the line with this property.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Ft0URoJ4joYAAAAAAAAAAAAAARQnAQ" width="200" alt="arrowhead">
 
@@ -164,7 +164,7 @@ const arrowLine = new Line({
 
 The marker graphic can be any graphic, and we will place it in the right place and adjust the orientation. When the definition of a line is changed, it will be adjusted automatically as well.
 
-Of course you can also manually adjust its [anchor](/en/api/basic/display-object#anchor), [transformOrigin](/en/api/basic/display-object#transformorigin) and [transform](/en/api/basic/display-object#transform), for example in this [example](/en/examples/shape#line) we rotate [Image](/en/api/basic/image) as a marker graphic, manually rotated by 90 degrees.
+Of course you can also manually adjust its [anchor](/en/api/basic/display-object#anchor), [transformOrigin](/en/api/basic/display-object#transformorigin) and [transform](/en/api/basic/display-object#transform), for example in this [example](/en/examples/shape/line#line) we rotate [Image](/en/api/basic/image) as a marker graphic, manually rotated by 90 degrees.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fWUrQKbwGngAAAAAAAAAAAAAARQnAQ" width="200" alt="image arrowhead">
 
@@ -189,7 +189,7 @@ line.style.markerStart = null;
 
 The relationship between the line and the marker graph in the implementation is parent-child.
 
-```
+```js
 Line
   -> Path(#markerStart)
   -> Path(#markerEnd)
@@ -225,13 +225,13 @@ You can refer to the [attribute of the same name](https://developer.mozilla.org/
 
 Sometimes we want to adjust the position of the marker shape, so we provide the option to increase the offset along the line by a certain amount, positive offset inward and negative offset outward.
 
-In [example](/en/examples/shape#line), we manipulate this property to give the line a "stretch effect".
+In [example](/en/examples/shape/line#line), we manipulate this property to give the line a "stretch effect".
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Uc-wSYP9sYUAAAAAAAAAAAAAARQnAQ">
 
 It is worth noting that while the offset will make the line change visually, it does not affect the [x1/y1/x2/y2](/en/api/basic/line#x1) values of these attributes.
 
-In [example](/en/examples/shape#marker), the endpoints of the line coincide with the center of the circle at both ends, but to avoid the arrows coinciding with the nodes at both ends, they need to be indented a certain distance inward.
+In [example](/en/examples/shape/line#marker), the endpoints of the line coincide with the center of the circle at both ends, but to avoid the arrows coinciding with the nodes at both ends, they need to be indented a certain distance inward.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
 
@@ -253,7 +253,7 @@ Adjusts the position of the marker graphic at the "end point".
 
 Get the length of the line.
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getTotalLength
+<https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getTotalLength>
 
 ```js
 line.getTotalLength(); // 200
@@ -277,7 +277,7 @@ export type Point = {
 };
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+<https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 
 For example, to obtain the coordinates of a point in the local coordinate system on a line at a distance of 100 from the starting point.
 

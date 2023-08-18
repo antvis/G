@@ -6,7 +6,7 @@ order: 9
 Sometimes we need to add some HUDs to the canvas, e.g. Tooltip. In this case, the HTML + CSS presentation has the following advantages over using basic graphics.
 
 -   Many native HTML components are difficult to draw, such as some input components: `<input>`, `<select>` etc.
--   Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape#html).
+-   Some of the HTML native features are difficult to implement, for example, text cannot be selected after drawing it using `g-canvas/webgl`, while it can be if it is displayed in HTML, the following image shows the text selection effect, [example](/en/examples/shape/html#html).
 
 ![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
@@ -91,7 +91,7 @@ Corresponds to the CSS [visibility](https://developer.mozilla.org/zh-CN/docs/Web
 
 Corresponds to the CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) property.
 
-When we implement a requirement like tooltip, we can have mouse events penetrate it, [example](/en/examples/shape#html).
+When we implement a requirement like tooltip, we can have mouse events penetrate it, [example](/en/examples/shape/html#html).
 
 ```js
 const tooltip = new HTML({

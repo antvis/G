@@ -354,10 +354,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       this.renderQueue.forEach((object) => {
-        // @ts-ignore
-        const $el = object.elementSVG?.$el;
-        // @ts-ignore
-        const $groupEl = object.elementSVG?.$groupEl;
+        const $el = ((object as any).elementSVG as ElementSVG)?.$el;
+        const $groupEl = ((object as any).elementSVG as ElementSVG)?.$groupEl;
 
         if ($el && $groupEl) {
           // apply local RTS transformation to <group> wrapper
@@ -405,7 +403,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private getId(object: DisplayObject) {
-    return `${G_SVG_PREFIX}-${object.entity}`;
+    return object.id || `${G_SVG_PREFIX}-${object.entity}`;
   }
 
   private reorderChildren(
@@ -421,8 +419,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const fragment = (doc || document).createDocumentFragment();
       children.forEach((child: DisplayObject) => {
         if (child.isConnected) {
-          // @ts-ignore
-          const $el = child.elementSVG.$groupEl;
+          const $el = ((child as any).elementSVG as ElementSVG).$groupEl;
           if ($el) {
             fragment.appendChild($el);
           }
@@ -447,14 +444,15 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private applyAttributes(object: DisplayObject) {
-    // @ts-ignore
-    const elementSVG = object.elementSVG as ElementSVG;
+    const elementSVG = (object as any).elementSVG as ElementSVG;
     const $el = elementSVG?.$el;
     const $groupEl = elementSVG?.$groupEl;
     if ($el && $groupEl) {
       const { nodeName, attributes } = object;
 
-      $el.setAttribute('fill', 'none');
+      if (nodeName !== Shape.HTML) {
+        $el.setAttribute('fill', 'none');
+      }
       if (nodeName === Shape.IMAGE) {
         $el.setAttribute('preserveAspectRatio', 'none');
       }
@@ -468,8 +466,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const { enableCSSParsing } = this.context;
     const { document } = this.context.config;
 
-    // @ts-ignore
-    const { $el, $groupEl, $hitTestingEl } = object.elementSVG as ElementSVG;
+    const { $el, $groupEl, $hitTestingEl } = (object as any)
+      .elementSVG as ElementSVG;
     const { parsedStyle, computedStyle, nodeName } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
       // @ts-ignore
@@ -509,97 +507,103 @@ export class SVGRendererPlugin implements RenderingPlugin {
       const usedValue = parsedStyle[name];
       const inherited = usedName && !!propertyMetadataCache[name]?.inh;
 
-      if (
-        !usedName ||
-        ((nodeName === Shape.GROUP || object.isCustomElement) &&
-          !enableCSSParsing &&
-          (inherited || usedName === 'fill' || usedName === 'stroke'))
-      ) {
-        return;
-      }
-
       // <foreignObject>
       if (nodeName === Shape.HTML) {
-        if (name === 'lineWidth') {
+        if (name === 'fill') {
+          $el.style.background = usedValue.toString();
+        } else if (name === 'stroke') {
+          $el.style['border-color'] = usedValue.toString();
+          $el.style['border-style'] = 'solid';
+        } else if (name === 'lineWidth') {
           $el.style['border-width'] = `${usedValue || 0}px`;
         } else if (name === 'lineDash') {
           $el.style['border-style'] = 'dashed';
-        }
-      }
-
-      if (name === 'fill') {
-        if (nodeName === Shape.HTML) {
-          $el.style.background = usedValue.toString();
-        } else {
-          this.defElementManager.createOrUpdateGradientAndPattern(
-            object,
-            $el,
-            usedValue,
-            usedName,
-            this,
-          );
-        }
-      } else if (name === 'stroke') {
-        if (nodeName === Shape.HTML) {
-          $el.style['border-color'] = usedValue.toString();
-          $el.style['border-style'] = 'solid';
-        } else {
-          this.defElementManager.createOrUpdateGradientAndPattern(
-            object,
-            $el,
-            usedValue,
-            usedName,
-            this,
-          );
-        }
-      } else if (enableCSSParsing && inherited) {
-        // use computed value
-        // update `visibility` on <group>
-        if (
-          computedValueStr !== 'unset' &&
-          computedValueStr !== DEFAULT_VALUE_MAP[name]
+        } else if (name === 'innerHTML') {
+          this.createOrUpdateInnerHTML(document, $el, usedValue);
+        } else if (name === 'width' || name === 'height' || name === 'class') {
+          // width & height are both required for <foreignObject> and cannot be used as style.
+          $el.setAttribute(name, usedValue.toString());
+        } else if (
+          name !== 'x' &&
+          name !== 'y' &&
+          !isNil(object.style[name]) &&
+          object.style[name] !== ''
         ) {
-          $groupEl?.setAttribute(usedName, formattedValueStr);
-        } else {
-          $groupEl?.removeAttribute(usedName);
-        }
-      } else if (name === 'clipPath') {
-        this.createOrUpdateClipOrTextPath(document, usedValue, object);
-      } else if (name === 'textPath') {
-        this.createOrUpdateClipOrTextPath(document, usedValue, object, true);
-      } else if (
-        name === 'shadowType' ||
-        name === 'shadowColor' ||
-        name === 'shadowBlur' ||
-        name === 'shadowOffsetX' ||
-        name === 'shadowOffsetY'
-      ) {
-        this.defElementManager.createOrUpdateShadow(object, $el, name);
-      } else if (name === 'filter') {
-        this.defElementManager.createOrUpdateFilter(object, $el, usedValue);
-      } else if (name === 'innerHTML') {
-        this.createOrUpdateInnerHTML(document, $el, usedValue);
-      } else if (name === 'anchor') {
-        // text' anchor is controlled by `textAnchor` property
-        if (nodeName !== Shape.TEXT) {
-          this.updateAnchorWithTransform(object);
+          $el.style[name] = object.style[name];
         }
       } else {
-        if (!isNil(computedValue)) {
-          // use computed value so that we can use cascaded effect in SVG
-          // ignore 'unset' and default value
-          [$el, $hitTestingEl].forEach(($el: SVGElement) => {
-            if ($el && usedName) {
-              if (
-                computedValueStr !== 'unset' &&
-                computedValueStr !== DEFAULT_VALUE_MAP[name]
-              ) {
-                $el.setAttribute(usedName, formattedValueStr);
-              } else {
-                $el.removeAttribute(usedName);
+        if (
+          !usedName ||
+          ((nodeName === Shape.GROUP || object.isCustomElement) &&
+            !enableCSSParsing &&
+            (inherited || usedName === 'fill' || usedName === 'stroke'))
+        ) {
+          return;
+        }
+
+        if (name === 'fill') {
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            usedValue,
+            usedName,
+            this,
+          );
+        } else if (name === 'stroke') {
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            usedValue,
+            usedName,
+            this,
+          );
+        } else if (enableCSSParsing && inherited) {
+          // use computed value
+          // update `visibility` on <group>
+          if (
+            computedValueStr !== 'unset' &&
+            computedValueStr !== DEFAULT_VALUE_MAP[name]
+          ) {
+            $groupEl?.setAttribute(usedName, formattedValueStr);
+          } else {
+            $groupEl?.removeAttribute(usedName);
+          }
+        } else if (name === 'clipPath') {
+          this.createOrUpdateClipOrTextPath(document, usedValue, object);
+        } else if (name === 'textPath') {
+          this.createOrUpdateClipOrTextPath(document, usedValue, object, true);
+        } else if (
+          name === 'shadowType' ||
+          name === 'shadowColor' ||
+          name === 'shadowBlur' ||
+          name === 'shadowOffsetX' ||
+          name === 'shadowOffsetY'
+        ) {
+          this.defElementManager.createOrUpdateShadow(object, $el, name);
+        } else if (name === 'filter') {
+          this.defElementManager.createOrUpdateFilter(object, $el, usedValue);
+        } else if (name === 'anchor') {
+          // text' anchor is controlled by `textAnchor` property
+          if (nodeName !== Shape.TEXT) {
+            this.updateAnchorWithTransform(object);
+          }
+        } else {
+          if (!isNil(computedValue)) {
+            // use computed value so that we can use cascaded effect in SVG
+            // ignore 'unset' and default value
+            [$el, $hitTestingEl].forEach(($el: SVGElement) => {
+              if ($el && usedName) {
+                if (
+                  computedValueStr !== 'unset' &&
+                  computedValueStr !== DEFAULT_VALUE_MAP[name]
+                ) {
+                  $el.setAttribute(usedName, formattedValueStr);
+                } else {
+                  $el.removeAttribute(usedName);
+                }
               }
-            }
-          });
+            });
+          }
         }
       }
     });
@@ -633,6 +637,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       }
 
       if (this.pluginOptions.outputSVGElementId) {
+        // use user-defined id first.
         $el.id = this.getId(object);
       }
       if (this.pluginOptions.outputSVGElementName && object.name) {
@@ -644,7 +649,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         !noWrapWithGroup
       ) {
         $groupEl = createSVGElement('g', document);
-        $groupEl.id = $el.id + '-g';
+        // if (this.pluginOptions.outputSVGElementId) {
+        //   $groupEl.id = $el.id + '-g';
+        // }
         $groupEl.appendChild($el);
       } else {
         $groupEl = $el;
@@ -693,8 +700,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     $el: SVGElement,
     $groupEl: SVGElement,
   ) {
-    // @ts-ignore
-    const svgElement = object.elementSVG as ElementSVG;
+    const svgElement = (object as any).elementSVG as ElementSVG;
     let $hitTestingEl = svgElement.$hitTestingEl;
     const increasedLineWidthForHitTesting =
       object.parsedStyle.increasedLineWidthForHitTesting;
@@ -703,11 +709,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     if (increasedLineWidthForHitTesting) {
       if (!$hitTestingEl) {
         $hitTestingEl = $el.cloneNode() as SVGElement;
-
-        if (this.pluginOptions.outputSVGElementId) {
-          // use the entity suffix, so that `g-plugin-svg-picker` can extract
-          $hitTestingEl.id = `${G_SVG_PREFIX}-${object.nodeName}-hittesting-${object.entity}`;
-        }
         // clear attributes like `filter` `font-size`
         ['filter'].forEach((attribute) => {
           $hitTestingEl.removeAttribute(attribute);
@@ -718,6 +719,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $hitTestingEl.setAttribute('stroke', 'transparent');
         $groupEl.appendChild($hitTestingEl);
         svgElement.$hitTestingEl = $hitTestingEl;
+
+        // g-plugin-svg-picker will use this map to find target object
+        this.svgElementMap.set($hitTestingEl, object);
       }
 
       // increase interactive line width
@@ -754,8 +758,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     object: DisplayObject,
     isTextPath = false,
   ) {
-    // @ts-ignore
-    const { $groupEl } = object.elementSVG;
+    const { $groupEl } = (object as any).elementSVG as ElementSVG;
     const PREFIX = isTextPath ? TEXT_PATH_PREFIX : CLIP_PATH_PREFIX;
     const attributeNameCamel = isTextPath ? 'g' : 'clipPath';
     const attributeNameHyphen = isTextPath ? 'text-path' : 'clip-path';
@@ -806,7 +809,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.applyTransform($clipPath, parentInvert);
         }
 
-        $clipPath.id = clipPathId;
+        if (this.pluginOptions.outputSVGElementId) {
+          $clipPath.id = clipPathId;
+        }
         // append it to <defs>
         $def.appendChild($clipPath);
       }
@@ -836,32 +841,32 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
 
-    // @ts-ignore
-    [object.elementSVG?.$el, object.elementSVG?.$hitTestingEl].forEach(
-      ($el: SVGElement) => {
-        if ($el) {
-          const tx = -(anchor[0] * width);
-          const ty = -(anchor[1] * height);
+    [
+      ((object as any).elementSVG as ElementSVG)?.$el,
+      ((object as any).elementSVG as ElementSVG)?.$hitTestingEl,
+    ].forEach(($el: SVGElement) => {
+      if ($el) {
+        const tx = -(anchor[0] * width);
+        const ty = -(anchor[1] * height);
 
-          if (tx !== 0 || ty !== 0) {
-            // apply anchor to element's `transform` property
-            $el.setAttribute(
-              'transform',
-              // can't use percent unit like translate(-50%, -50%)
-              // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-              `translate(${tx},${ty})`,
-            );
-          }
-
-          if (
-            object.nodeName === Shape.CIRCLE ||
-            object.nodeName === Shape.ELLIPSE
-          ) {
-            $el.setAttribute('cx', `${width / 2}`);
-            $el.setAttribute('cy', `${height / 2}`);
-          }
+        if (tx !== 0 || ty !== 0) {
+          // apply anchor to element's `transform` property
+          $el.setAttribute(
+            'transform',
+            // can't use percent unit like translate(-50%, -50%)
+            // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
+            `translate(${tx},${ty})`,
+          );
         }
-      },
-    );
+
+        if (
+          object.nodeName === Shape.CIRCLE ||
+          object.nodeName === Shape.ELLIPSE
+        ) {
+          $el.setAttribute('cx', `${width / 2}`);
+          $el.setAttribute('cy', `${height / 2}`);
+        }
+      }
+    });
   }
 }

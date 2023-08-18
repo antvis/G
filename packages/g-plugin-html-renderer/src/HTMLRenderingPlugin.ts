@@ -19,7 +19,6 @@ import {
 import { isNil, isNumber, isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
-const HTML_PREFIX = 'g-html-';
 const CANVAS_CAMERA_ID = 'g-canvas-camera';
 
 export class HTMLRenderingPlugin implements RenderingPlugin {
@@ -31,6 +30,11 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
    * wrapper for camera
    */
   private $camera: HTMLDivElement;
+
+  private displayObjectHTMLElementMap = new WeakMap<
+    DisplayObject,
+    HTMLElement
+  >();
 
   private joinTransformMatrix(matrix: mat4) {
     return `matrix(${[
@@ -91,12 +95,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $el.remove();
           this.context.nativeHTMLMap.delete($el);
         }
-
-        // const existedId = this.getId(object);
-        // const $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
-        // if ($existedElement) {
-        //   this.$camera.removeChild($existedElement);
-        // }
       }
     };
 
@@ -166,10 +164,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     });
   }
 
-  private getId(object: DisplayObject) {
-    return object.id || HTML_PREFIX + object.entity;
-  }
-
   private createCamera(camera: ICamera) {
     const { document: doc, width, height } = this.context.config;
     const $canvas =
@@ -209,16 +203,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private getOrCreateEl(object: DisplayObject) {
     const { document: doc } = this.context.config;
-    const existedId = this.getId(object);
+    let $existedElement: HTMLElement | null =
+      this.displayObjectHTMLElementMap.get(object);
 
-    let $existedElement: HTMLElement | null = this.$camera.querySelector(
-      '#' + existedId,
-    );
     if (!$existedElement) {
       $existedElement = (doc || document).createElement('div');
       object.parsedStyle.$el = $existedElement;
-      $existedElement.id = existedId;
-
+      this.displayObjectHTMLElementMap.set(object, $existedElement);
+      if (object.id) {
+        $existedElement.id = object.id;
+      }
       if (object.name) {
         $existedElement.setAttribute('name', object.name);
       }

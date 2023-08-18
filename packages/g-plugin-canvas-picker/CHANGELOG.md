@@ -1,5 +1,53 @@
 # @antv/g-plugin-canvas-picker
 
+## 1.10.12
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-plugin-canvas-path-generator@1.3.12
+    -   @antv/g-plugin-canvas-renderer@1.9.12
+
+## 1.10.11
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+    -   @antv/g-plugin-canvas-path-generator@1.3.11
+    -   @antv/g-plugin-canvas-renderer@1.9.11
+
+## 1.10.10
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-plugin-canvas-renderer@1.9.10
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-plugin-canvas-path-generator@1.3.10
+
+## 1.10.9
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-plugin-canvas-path-generator@1.3.9
+    -   @antv/g-plugin-canvas-renderer@1.9.9
+
+## 1.10.8
+
+### Patch Changes
+
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-plugin-canvas-path-generator@1.3.8
+    -   @antv/g-plugin-canvas-renderer@1.9.8
+
 ## 1.10.7
 
 ### Patch Changes

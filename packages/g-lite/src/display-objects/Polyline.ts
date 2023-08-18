@@ -9,7 +9,7 @@ import type { DisplayObject } from './DisplayObject';
 import { Polygon } from './Polygon';
 
 export interface PolylineStyleProps extends BaseStyleProps {
-  points: [number, number][];
+  points: ([number, number] | [number, number, number])[];
   /**
    * marker will be positioned at the first point
    */
@@ -31,10 +31,11 @@ export interface PolylineStyleProps extends BaseStyleProps {
    * offset relative to original position
    */
   markerEndOffset?: number;
+  isBillboard?: boolean;
 }
 export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   points: {
-    points: [number, number][];
+    points: ([number, number] | [number, number, number])[];
     segments: [number, number][];
     totalLength: number;
   };
@@ -43,6 +44,7 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
   markerEndOffset?: number;
+  isBillboard?: boolean;
 }
 
 /**

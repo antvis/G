@@ -1,5 +1,38 @@
 # @antv/g-lite
 
+## 1.2.12
+
+### Patch Changes
+
+-   eb61cba4: Add polyfill for performance.now.
+-   eb61cba4: Remove redundant m command when parsing path.
+
+## 1.2.11
+
+### Patch Changes
+
+-   d63ea0bf: Add polyfill for performance.now.
+
+## 1.2.10
+
+### Patch Changes
+
+-   414d08d9: Support multiple canvases in one container.
+
+## 1.2.9
+
+### Patch Changes
+
+-   3856560c: Fix points type in Polyline & Polygon.
+
+## 1.2.8
+
+### Patch Changes
+
+-   3d4f5da7: Support size attenuation.
+-   3d4f5da7: Polyline should support 3D points.
+-   3d4f5da7: Support rotation when applying billboard effect.
+
 ## 1.2.7
 
 ### Patch Changes

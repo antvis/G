@@ -1,5 +1,79 @@
 # @antv/g-mobile-svg
 
+## 0.10.14
+
+### Patch Changes
+
+-   Updated dependencies [c0b9fc49]
+    -   @antv/g-plugin-svg-renderer@1.10.14
+    -   @antv/g-plugin-svg-picker@1.9.14
+
+## 0.10.13
+
+### Patch Changes
+
+-   Updated dependencies [ca03e554]
+    -   @antv/g-plugin-svg-renderer@1.10.13
+    -   @antv/g-plugin-svg-picker@1.9.13
+
+## 0.10.12
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-plugin-dragndrop@1.8.12
+    -   @antv/g-plugin-mobile-interaction@0.9.12
+    -   @antv/g-plugin-svg-picker@1.9.12
+    -   @antv/g-plugin-svg-renderer@1.10.12
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+    -   @antv/g-plugin-dragndrop@1.8.11
+    -   @antv/g-plugin-mobile-interaction@0.9.11
+    -   @antv/g-plugin-svg-picker@1.9.11
+    -   @antv/g-plugin-svg-renderer@1.10.11
+
+## 0.10.10
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-plugin-dragndrop@1.8.10
+    -   @antv/g-plugin-mobile-interaction@0.9.10
+    -   @antv/g-plugin-svg-picker@1.9.10
+    -   @antv/g-plugin-svg-renderer@1.10.10
+
+## 0.10.9
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-plugin-dragndrop@1.8.9
+    -   @antv/g-plugin-mobile-interaction@0.9.9
+    -   @antv/g-plugin-svg-picker@1.9.9
+    -   @antv/g-plugin-svg-renderer@1.10.9
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-plugin-dragndrop@1.8.8
+    -   @antv/g-plugin-mobile-interaction@0.9.8
+    -   @antv/g-plugin-svg-picker@1.9.8
+    -   @antv/g-plugin-svg-renderer@1.10.8
+
 ## 0.10.7
 
 ### Patch Changes

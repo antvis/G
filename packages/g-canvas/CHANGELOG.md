@@ -1,5 +1,88 @@
 # @antv/g-canvas
 
+## 1.11.15
+
+### Patch Changes
+
+-   Updated dependencies [ca03e554]
+-   Updated dependencies [5d4e8f1d]
+    -   @antv/g-plugin-html-renderer@1.9.15
+
+## 1.11.14
+
+### Patch Changes
+
+-   Updated dependencies [ee64c46c]
+    -   @antv/g-plugin-html-renderer@1.9.14
+
+## 1.11.13
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-plugin-canvas-path-generator@1.3.12
+    -   @antv/g-plugin-canvas-picker@1.10.12
+    -   @antv/g-plugin-canvas-renderer@1.9.12
+    -   @antv/g-plugin-dom-interaction@1.9.12
+    -   @antv/g-plugin-html-renderer@1.9.13
+    -   @antv/g-plugin-image-loader@1.3.12
+
+## 1.11.12
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+    -   @antv/g-plugin-canvas-path-generator@1.3.11
+    -   @antv/g-plugin-canvas-picker@1.10.11
+    -   @antv/g-plugin-canvas-renderer@1.9.11
+    -   @antv/g-plugin-dom-interaction@1.9.11
+    -   @antv/g-plugin-html-renderer@1.9.12
+    -   @antv/g-plugin-image-loader@1.3.11
+
+## 1.11.11
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-plugin-canvas-renderer@1.9.10
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-plugin-canvas-picker@1.10.10
+    -   @antv/g-plugin-canvas-path-generator@1.3.10
+    -   @antv/g-plugin-dom-interaction@1.9.10
+    -   @antv/g-plugin-html-renderer@1.9.11
+    -   @antv/g-plugin-image-loader@1.3.10
+
+## 1.11.10
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-plugin-canvas-path-generator@1.3.9
+    -   @antv/g-plugin-canvas-picker@1.10.9
+    -   @antv/g-plugin-canvas-renderer@1.9.9
+    -   @antv/g-plugin-dom-interaction@1.9.9
+    -   @antv/g-plugin-html-renderer@1.9.10
+    -   @antv/g-plugin-image-loader@1.3.9
+
+## 1.11.9
+
+### Patch Changes
+
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-plugin-canvas-path-generator@1.3.8
+    -   @antv/g-plugin-canvas-picker@1.10.8
+    -   @antv/g-plugin-canvas-renderer@1.9.8
+    -   @antv/g-plugin-dom-interaction@1.9.8
+    -   @antv/g-plugin-html-renderer@1.9.9
+    -   @antv/g-plugin-image-loader@1.3.8
+
 ## 1.11.8
 
 ### Patch Changes

@@ -5,7 +5,7 @@ order: 1
 
 Provides simple single/multi-line text layout capabilities, with single-line support for horizontal alignment and character spacing; multi-line support for explicit line breaks as well as automatic line breaks and vertical alignment.
 
-The following properties can be adjusted in this [example](/en/examples/shape#text).
+The following properties can be adjusted in this [example](/en/examples/shape/text/#text).
 
 ## Inherited from
 
@@ -52,6 +52,43 @@ Both `px` and `em` units are supported, and the default `px` unit when using the
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
+## isBillboard
+
+Whether or not to always face the camera in 3D scenes, defaults to `false`, also known as the "billboard effect".
+
+In [example](/en/examples/3d/3d-basic#billboard), the text is rendered compressed when the camera is rotated without being turned on:
+
+![disable billboard effect](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*i7kASr_GZhUAAAAAAAAAAAAADmJ7AQ/original)
+
+Turning it on doesn't change the position of the text, but it will always face the camera. This is in line with what is usually required for 2D graphics like text in 3D scenes:
+
+![enable billboard effect](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5cNIQ40b4IIAAAAAAAAAAAAADmJ7AQ/original)
+
+## billboardRotation
+
+Rotation angle in billboard mode, clockwise in radians.
+
+In [example](/zh/examples/3d/3d-basic#billboard), we add a rotation angle to the text:
+
+```js
+label.style.isBillboard = true;
+label.style.billboardRotation = Math.PI / 8;
+```
+
+![billboard rotation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*v8ngTbgkP-MAAAAAAAAAAAAADmJ7AQ/original)
+
+## isSizeAttenuation
+
+Whether or not to apply size attenuation in perspective projection. This option can be turned on if you want to keep the size consistent regardless of depth, following the "near big, far small" visual effect in perspective projection.
+
+In [example](/en/examples/3d/3d-basic#size-attenuation), we enable size attenuation for text:
+
+```js
+label.style.isSizeAttenuation = true;
+```
+
+![enable size attenuation](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*9SMLQpVThc4AAAAAAAAAAAAADmJ7AQ/original)
+
 ## Font Related
 
 ### fontFamily
@@ -92,7 +129,7 @@ Corresponds to the [CSS font-style](https://developer.mozilla.org/en-US/docs/Web
 
 Font style, for example, the image below shows the tilted `italic` effect.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ)
+![fontStyle](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ)
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
@@ -104,7 +141,7 @@ Corresponds to the [CSS font-variant](https://developer.mozilla.org/en-US/docs/W
 
 Font style, for example, the following image is the `small-cap` effect.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ)
+![fontVariant](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*DQivSL2Oll0AAAAAAAAAAAAAARQnAQ)
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
@@ -118,11 +155,11 @@ Corresponds to the [Canvas textBaseline](https://developer.mozilla.org/en-US/doc
 
 Alignment in the vertical direction is achieved by `textBaseline`, and the following figure shows the effect of alignment with different values.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g1SQZlEBCAAAAAAAAAAAAAAARQnAQ)
+![textBaseline](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*1g1SQZlEBCAAAAAAAAAAAAAAARQnAQ)
 
 Using the current position of the text as the anchor point, the following figure shows the effect of `top`, `middle` and `bottom` in turn. In addition to single line also applies to multi-line text blocks.
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZJzIQKBhAnUAAAAAAAAAAAAAARQnAQ)
+![textBaseline](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*ZJzIQKBhAnUAAAAAAAAAAAAAARQnAQ)
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
@@ -188,7 +225,7 @@ Corresponds to the [CSS text-overflow](https://developer.mozilla.org/zh-CN/docs/
 The following values are supported.
 
 -   `'clip'` truncates the text directly
--   `'ellipsis'` uses `... ` to indicate the truncated text
+-   `'ellipsis'` uses `...` to indicate the truncated text
 -   Custom strings, using it to indicate the truncated text
 
 Caution.
@@ -203,7 +240,7 @@ Caution.
 
 ### maxLines
 
-Max lines, text overflow will be truncated, need to use with [wordWrap](/en/api/basic/text#wordwrap), [wordWrapWidth](/en/api/basic/text#wordwrapwidth) and [ textOverflow](/en/api/basic/text#textoverflow) are used together.
+Max lines, text overflow will be truncated, need to use with [wordWrap](/en/api/basic/text#wordwrap), [wordWrapWidth](/en/api/basic/text#wordwrapwidth) and [textOverflow](/en/api/basic/text#textoverflow) are used together.
 
 The following figure shows limiting text to be displayed on one line and truncated with an ellipsis after it is exceeded.
 
@@ -250,7 +287,7 @@ interface Rectangle {
 
 In [example](/en/examples/shape#text), we draw the bounding box for each line of the multi-line text, and we can implement advanced text features such as underline and strikethrough based on the bounding box information:
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
+![getLineBoundingRects](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
 
 ```js
 text.getLineBoundingRects().forEach(({ x, y, width, height }) => {
@@ -288,7 +325,7 @@ And only if the content does overflow, i.e. the [textOverflow](/en/api/basic/tex
 
 In addition to the system default fonts, sometimes we want to load third-party fonts.
 
-In this case, you can use [Web Font Loader](https://github.com/typekit/webfontloader), which is created in the `active` callback function when it is loaded successfully, [example](/en/examples/shape#text):
+In this case, you can use [Web Font Loader](https://github.com/typekit/webfontloader), which is created in the `active` callback function when it is loaded successfully, [example](/en/examples/shape/text/#web-font-loader):
 
 ```js
 import WebFont from 'webfontloader';

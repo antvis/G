@@ -1,5 +1,35 @@
 # @antv/react-g
 
+## 1.10.13
+
+### Patch Changes
+
+-   @antv/g@5.18.13
+
+## 1.10.12
+
+### Patch Changes
+
+-   @antv/g@5.18.12
+
+## 1.10.11
+
+### Patch Changes
+
+-   @antv/g@5.18.11
+
+## 1.10.10
+
+### Patch Changes
+
+-   @antv/g@5.18.10
+
+## 1.10.9
+
+### Patch Changes
+
+-   @antv/g@5.18.9
+
 ## 1.10.8
 
 ### Patch Changes

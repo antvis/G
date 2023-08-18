@@ -5,7 +5,7 @@ order: 6
 
 可以参考 SVG 的 [\<line\>](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/line) 元素。
 
-如下 [示例](/zh/examples/shape#line) 定义了一条直线，两个端点分别为 `[200, 100]` 和 `[400, 100]`，线宽为 2，而且是一条虚线：
+如下 [示例](/zh/examples/shape/line/#line) 定义了一条直线，两个端点分别为 `[200, 100]` 和 `[400, 100]`，线宽为 2，而且是一条虚线：
 
 ```javascript
 const line1 = new Line({
@@ -72,7 +72,7 @@ line.getLocalPosition(); // [200, 100]
 
 局部坐标系下，第一个端点的 x 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -82,7 +82,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x1
 
 局部坐标系下，第一个端点的 y 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -100,7 +100,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y1
 
 局部坐标系下，第二个端点的 x 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -110,7 +110,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x2
 
 局部坐标系下，第二个端点的 y 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -134,7 +134,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y2
 
 在直线的 “起始点” 处添加一个标记图形，其中 “起始点” 为 [x1/y1](/zh/api/basic/line#x1) 定义的端点。
 
-在下面的 [示例](/zh/examples/shape#line) 中，我们首先使用 [Path](/zh/api/basic/path) 创建了一个箭头，然后通过该属性把它添加到了直线的起点上：
+在下面的 [示例](/zh/examples/shape/line#line) 中，我们首先使用 [Path](/zh/api/basic/path) 创建了一个箭头，然后通过该属性把它添加到了直线的起点上：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Ft0URoJ4joYAAAAAAAAAAAAAARQnAQ" width="200" alt="arrowhead">
 
@@ -164,7 +164,7 @@ const arrowLine = new Line({
 
 标记图形可以是任意图形，我们会将它放置在合适的位置并调整好朝向。当直线的定义改变时，也会随之自动调整。
 
-当然你也可以手动调整它的 [anchor](/zh/api/basic/display-object#anchor), [transformOrigin](/zh/api/basic/display-object#transformorigin) 和 [transform](/zh/api/basic/display-object#transform)，例如在该 [示例](/zh/examples/shape#line) 中，我们将 [Image](/zh/api/basic/image) 作为标记图形，手动旋转了 90 度：
+当然你也可以手动调整它的 [anchor](/zh/api/basic/display-object#anchor), [transformOrigin](/zh/api/basic/display-object#transformorigin) 和 [transform](/zh/api/basic/display-object#transform)，例如在该 [示例](/zh/examples/shape/line#line) 中，我们将 [Image](/zh/api/basic/image) 作为标记图形，手动旋转了 90 度：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*fWUrQKbwGngAAAAAAAAAAAAAARQnAQ" width="200" alt="image arrowhead">
 
@@ -189,7 +189,7 @@ line.style.markerStart = null;
 
 在实现中直线和标记图形的关系为父子关系：
 
-```
+```js
 Line
   -> Path(#markerStart)
   -> Path(#markerEnd)
@@ -225,13 +225,13 @@ line.childNodes[0].style.stroke = 'red';
 
 有时我们想调整标记图形的位置，为此我们提供了该选项沿直线方向增加一定偏移量，正偏移量向内，负偏移量向外。
 
-在 [示例](/zh/examples/shape#line) 中，我们通过操作该属性让直线实现“伸缩效果”：
+在 [示例](/zh/examples/shape/line#line) 中，我们通过操作该属性让直线实现“伸缩效果”：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*Uc-wSYP9sYUAAAAAAAAAAAAAARQnAQ">
 
 值得注意的是，虽然偏移量会让直线在视觉效果上发生变化，但并不会影响 [x1/y1/x2/y2](/zh/api/basic/line#x1) 这些属性值。
 
-在 [示例](/zh/examples/shape#marker) 中，直线端点与两端的圆心重合，但为了避免箭头与两端的节点重合，需要向内缩进一定距离：
+在 [示例](/zh/examples/shape/line#marker) 中，直线端点与两端的圆心重合，但为了避免箭头与两端的节点重合，需要向内缩进一定距离：
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*X5W_TYz-2SIAAAAAAAAAAAAAARQnAQ" alt="arrow marker" width="200">
 
@@ -253,7 +253,7 @@ line.childNodes[0].style.stroke = 'red';
 
 获取直线长度。
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength
+<https://developer.mozilla.org/zh-CN/docs/Web/API/SVGGeometryElement/getTotalLength>
 
 ```js
 line.getTotalLength(); // 200
@@ -277,7 +277,7 @@ export type Point = {
 };
 ```
 
-https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength
+<https://developer.mozilla.org/en-US/docs/Web/API/SVGGeometryElement/getPointAtLength>
 
 例如获取直线上局部坐标系下从起点出发 100 距离的点坐标：
 

@@ -42,3 +42,6 @@ export interface FormattedTouch extends Touch {
   isNormalized: boolean;
   type: string;
 }
+
+export const clock =
+  typeof performance === 'object' && performance.now ? performance : Date;
