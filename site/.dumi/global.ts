@@ -50,6 +50,7 @@ if (window) {
   ).gPluginZdogSvgRenderer = require('@antv/g-plugin-zdog-svg-renderer');
   (window as any).gPluginSvgRenderer = require('@antv/g-plugin-svg-renderer');
   (window as any).gPluginDragndrop = require('@antv/g-plugin-dragndrop');
+  (window as any).gPluginGesture = require('@antv/g-plugin-gesture');
   (window as any).gPluginA11y = require('@antv/g-plugin-a11y');
   (window as any).gPluginAnnotation = require('@antv/g-plugin-annotation');
   // compiler for GPGPU

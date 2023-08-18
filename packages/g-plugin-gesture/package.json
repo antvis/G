@@ -1,7 +1,7 @@
 {
-  "name": "@antv/g-mobile-canvas",
-  "version": "0.10.12",
-  "description": "A renderer implemented with Canvas2D API in mobile environment",
+  "name": "@antv/g-plugin-gesture",
+  "version": "1.0.0",
+  "description": "A G plugin for Gesture implemented with PointerEvents",
   "keywords": [
     "antv",
     "g"
@@ -39,18 +39,7 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-plugin-canvas-path-generator": "workspace:*",
-    "@antv/g-plugin-canvas-picker": "workspace:*",
-    "@antv/g-plugin-canvas-renderer": "workspace:*",
-    "@antv/g-plugin-dragndrop": "workspace:*",
-    "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/g-plugin-mobile-interaction": "workspace:*",
-    "@antv/g-plugin-gesture": "workspace:*",
-    "@antv/util": "^3.3.4",
     "tslib": "^2.5.3"
-  },
-  "devDependencies": {
-    "@types/gl-matrix": "^2.4.5"
   },
   "publishConfig": {
     "access": "public"
