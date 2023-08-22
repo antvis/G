@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.13
+
+### Patch Changes
+
+-   e90660d2: fix: move 过程中元素移除，重新获取 target
+
 ## 1.2.12
 
 ### Patch Changes

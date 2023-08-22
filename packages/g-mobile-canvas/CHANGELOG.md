@@ -1,5 +1,20 @@
 # @antv/g-mobile-canvas
 
+## 0.11.1
+
+### Patch Changes
+
+-   e90660d2: fix: move 过程中元素移除，重新获取 target
+-   Updated dependencies [e90660d2]
+    -   @antv/g-plugin-gesture@1.1.1
+    -   @antv/g-lite@1.2.13
+    -   @antv/g-plugin-canvas-path-generator@1.3.13
+    -   @antv/g-plugin-canvas-picker@1.10.13
+    -   @antv/g-plugin-canvas-renderer@1.9.13
+    -   @antv/g-plugin-dragndrop@1.8.13
+    -   @antv/g-plugin-image-loader@1.3.13
+    -   @antv/g-plugin-mobile-interaction@0.9.13
+
 ## 0.11.0
 
 ### Minor Changes
