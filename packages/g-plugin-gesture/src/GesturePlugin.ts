@@ -221,11 +221,7 @@ export class GesturePlugin implements RenderingPlugin {
       this.emitStart(eventType, ev, target);
       ev.type = eventType;
 
-      if (this.movingTarget) {
-        this.movingTarget.dispatchEvent(ev);
-      } else {
-        target.dispatchEvent(ev);
-      }
+      this.refreshAndGetTarget(target).dispatchEvent(ev);
 
       return;
     }
@@ -251,11 +247,7 @@ export class GesturePlugin implements RenderingPlugin {
     });
     ev.points = points;
 
-    if (this.movingTarget) {
-      this.emitEnd(ev, this.movingTarget);
-    } else {
-      this.emitEnd(ev, target);
-    }
+    this.emitEnd(ev, this.refreshAndGetTarget(target));
 
     // 单指
     if (evCache.length === 1) {
@@ -309,11 +301,9 @@ export class GesturePlugin implements RenderingPlugin {
       return { x: ev.x, y: ev.y };
     });
     ev.points = points;
-    if (this.movingTarget) {
-      this.emitEnd(ev, this.movingTarget);
-    } else {
-      this.emitEnd(ev, target);
-    }
+
+    this.emitEnd(ev, this.refreshAndGetTarget(target));
+
     this.evCache = [];
     this.reset();
   };
@@ -418,6 +408,16 @@ export class GesturePlugin implements RenderingPlugin {
       clearTimeout(this.pressTimeout);
       this.pressTimeout = null;
     }
+  }
+
+  private refreshAndGetTarget(target) {
+    if (this.movingTarget) {
+      if (this.movingTarget && !this.movingTarget.isConnected) {
+        this.movingTarget = target;
+      }
+      return this.movingTarget;
+    }
+    return target;
   }
 
   private reset() {
