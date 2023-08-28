@@ -9,13 +9,6 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*rWIvR729TqwAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
-      "filename": "gradient-path.js",
-      "title": {
-        "zh": "Gradient",
-        "en": "Gradient"
-      }
-    },
-    {
       "filename": "radial-gradient.js",
       "title": {
         "zh": "Radial Gradient",

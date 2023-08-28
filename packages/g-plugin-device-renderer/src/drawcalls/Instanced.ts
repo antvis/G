@@ -1237,8 +1237,8 @@ export abstract class Instanced {
           'Fill Texture' + this.id,
         );
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
-          wrapS: WrapMode.Repeat,
-          wrapT: WrapMode.Repeat,
+          wrapS: WrapMode.Clamp,
+          wrapT: WrapMode.Clamp,
           minFilter: TexFilterMode.Point,
           magFilter: TexFilterMode.Bilinear,
           mipFilter: MipFilterMode.Linear,

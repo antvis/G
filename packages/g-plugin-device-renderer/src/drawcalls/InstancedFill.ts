@@ -105,7 +105,13 @@ export class InstancedFillDrawcall extends Instanced {
       );
 
       const { halfExtents } = object.getGeometryBounds();
-      const uvBuffer = pBuffer.map((x, i) => x / halfExtents[i % 2] / 2);
+      // pointsBuffer use 3D
+      const uvBuffer = [];
+      pBuffer.forEach((x, i) => {
+        if (i % 3 !== 2) {
+          uvBuffer.push(x / halfExtents[i % 3] / 2);
+        }
+      });
 
       pointsBuffer.push(...pBuffer);
       uvsBuffer.push(...uvBuffer);
