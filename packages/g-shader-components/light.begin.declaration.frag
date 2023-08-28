@@ -8,4 +8,9 @@
     light.direction = normalize(directionalLight.direction);
     light.visible = true;
   }
+
+  vec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {
+    vec3 irradiance = ambientLightColor;
+    return irradiance;
+  }
 #endif

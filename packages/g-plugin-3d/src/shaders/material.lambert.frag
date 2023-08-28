@@ -1,6 +1,6 @@
 #pragma glslify: import('@antv/g-shader-components/common.glsl')
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
-#pragma glslify: import('@antv/g-shader-components/material.phong.glsl')
+#pragma glslify: import('@antv/g-shader-components/material.lambert.glsl')
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
@@ -11,7 +11,7 @@
 #pragma glslify: import('@antv/g-shader-components/wireframe.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/fog.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/light.begin.declaration.frag')
-#pragma glslify: import('@antv/g-shader-components/light.phong.declaration.frag')
+#pragma glslify: import('@antv/g-shader-components/light.lambert.declaration.frag')
 
 in vec3 v_ViewPosition;
 in vec3 v_Normal;
@@ -43,14 +43,12 @@ void main() {
     vec3 totalEmissiveRadiance = u_Emissive;
 
     // calculate lighting accumulation
-    #pragma glslify: import('@antv/g-shader-components/light.phong.frag')
+    #pragma glslify: import('@antv/g-shader-components/light.lambert.frag')
     #pragma glslify: import('@antv/g-shader-components/light.begin.frag')
     #pragma glslify: import('@antv/g-shader-components/light.end.frag')
 
     vec3 outgoingLight = reflectedLight.directDiffuse +
       reflectedLight.indirectDiffuse + 
-      reflectedLight.directSpecular + 
-      reflectedLight.indirectSpecular + 
       totalEmissiveRadiance;
 
     #pragma glslify: import('@antv/g-shader-components/output.frag')

@@ -139,11 +139,6 @@ export abstract class Instanced {
   protected samplerEntries: BindingLayoutSamplerDescriptor[];
 
   /**
-   * Receiving light e.g. Mesh.
-   */
-  protected lightReceived = false;
-
-  /**
    * Divisor of instanced array.
    */
   protected divisor = 1;
@@ -515,10 +510,8 @@ export abstract class Instanced {
 
   applyRenderInst(renderInst: RenderInst, objects: DisplayObject[]) {
     // detect if scene changed, eg. lights & fog
-    const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
-    const useLight = !!lights.length;
 
     if (this.clipPathTarget || this.clipPath) {
       if (this.clipPathTarget) {
@@ -544,10 +537,9 @@ export abstract class Instanced {
     const oldDefines = { ...this.material.defines };
 
     this.material.defines.USE_FOG = useFog;
-    this.material.defines.USE_LIGHT = useLight;
     this.material.defines = {
-      ...this.material.defines,
       ...this.lightPool.getDefines(),
+      ...this.material.defines,
       ...this.renderHelper.getDefines(),
     };
 
@@ -1033,7 +1025,8 @@ export abstract class Instanced {
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
-    const useLight = this.lightReceived && !!lights.length;
+    const useLight = material.defines.USE_LIGHT ?? !!lights.length;
+
     const useWireframe = material.defines.USE_WIREFRAME;
 
     // collect uniforms
