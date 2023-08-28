@@ -20,6 +20,7 @@ import {
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from './Instanced';
+import { InstancedFillDrawcall } from './InstancedFill';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
@@ -115,6 +116,16 @@ export class InstancedLineDrawcall extends Instanced {
     };
   }
 
+  private calcSubpathIndex(object: DisplayObject) {
+    if (object.nodeName === Shape.PATH) {
+      const fillDrawcallCount = this.drawcallCtors.filter(
+        (ctor) => ctor === InstancedFillDrawcall,
+      ).length;
+      return this.index - fillDrawcallCount;
+    }
+    return 0;
+  }
+
   createGeometry(objects: DisplayObject[]): void {
     // use default common attributes
     super.createGeometry(objects);
@@ -179,10 +190,11 @@ export class InstancedLineDrawcall extends Instanced {
         } = (object as Path).parsedStyle;
         let mSegmentCount = 0;
         let mCommandIndex = 0;
+        const index = this.calcSubpathIndex(object);
         for (let i = 0; i < absolutePath.length; i++) {
           const segment = absolutePath[i];
           if (segment[0] === 'M') {
-            if (mSegmentCount === this.index) {
+            if (mSegmentCount === index) {
               mCommandIndex = i;
               break;
             }

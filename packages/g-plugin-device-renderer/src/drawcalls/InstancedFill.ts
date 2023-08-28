@@ -89,12 +89,10 @@ export class InstancedFillDrawcall extends Instanced {
   }
 
   createGeometry(objects: DisplayObject[]): void {
-    // use default common attributes
-    super.createGeometry(objects);
-
     const indices: number[] = [];
     const pointsBuffer: number[] = [];
     const uvsBuffer: number[] = [];
+    let offset = 0;
     objects.forEach((object, i) => {
       // use triangles for Polygon
       const { triangles, pointsBuffer: pBuffer } = updateBuffer(
@@ -104,49 +102,58 @@ export class InstancedFillDrawcall extends Instanced {
         this.calcSubpathIndex(object),
       );
 
-      const { halfExtents } = object.getGeometryBounds();
-      // pointsBuffer use 3D
-      const uvBuffer = [];
-      pBuffer.forEach((x, i) => {
-        if (i % 3 !== 2) {
-          uvBuffer.push(x / halfExtents[i % 3] / 2);
-        }
+      if (triangles.length) {
+        const { halfExtents } = object.getGeometryBounds();
+        // pointsBuffer use 3D
+        const uvBuffer = [];
+        pBuffer.forEach((x, i) => {
+          if (i % 3 !== 2) {
+            uvBuffer.push(x / halfExtents[i % 3] / 2);
+          }
+        });
+
+        offset += pointsBuffer.length / 3;
+
+        pointsBuffer.push(...pBuffer);
+        uvsBuffer.push(...uvBuffer);
+        indices.push(...triangles.map((n) => n + offset));
+      }
+    });
+
+    if (pointsBuffer.length) {
+      // use default common attributes
+      super.createGeometry(objects);
+
+      this.geometry.setVertexBuffer({
+        bufferIndex: VertexAttributeBufferIndex.POSITION,
+        byteStride: 4 * 3,
+        frequency: VertexBufferFrequency.PerVertex,
+        attributes: [
+          {
+            format: Format.F32_RGB,
+            bufferByteOffset: 4 * 0,
+            location: VertexAttributeLocation.POSITION,
+          },
+        ],
+        data: new Float32Array(pointsBuffer),
       });
 
-      pointsBuffer.push(...pBuffer);
-      uvsBuffer.push(...uvBuffer);
-      indices.push(...triangles.map((n) => n + (i * pBuffer.length) / 2));
-    });
-
-    this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.POSITION,
-      byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.PerVertex,
-      attributes: [
-        {
-          format: Format.F32_RGB,
-          bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.POSITION,
-        },
-      ],
-      data: new Float32Array(pointsBuffer),
-    });
-
-    this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.UV,
-      byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
-      attributes: [
-        {
-          format: Format.F32_RG,
-          bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.UV,
-        },
-      ],
-      data: new Float32Array(uvsBuffer),
-    });
-    this.geometry.vertexCount = indices.length / objects.length;
-    this.geometry.setIndexBuffer(new Uint32Array(indices));
+      this.geometry.setVertexBuffer({
+        bufferIndex: VertexAttributeBufferIndex.UV,
+        byteStride: 4 * 2,
+        frequency: VertexBufferFrequency.PerVertex,
+        attributes: [
+          {
+            format: Format.F32_RG,
+            bufferByteOffset: 4 * 0,
+            location: VertexAttributeLocation.UV,
+          },
+        ],
+        data: new Float32Array(uvsBuffer),
+      });
+      this.geometry.vertexCount = indices.length / objects.length;
+      this.geometry.setIndexBuffer(new Uint32Array(indices));
+    }
   }
 
   createMaterial(objects: DisplayObject[]): void {
