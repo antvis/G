@@ -1,7 +1,6 @@
 #pragma glslify: import('@antv/g-shader-components/common.glsl')
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/material.phong.glsl')
-#pragma glslify: import('@antv/g-shader-components/light.both.glsl')
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')

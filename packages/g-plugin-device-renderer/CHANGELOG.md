@@ -1,5 +1,15 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.15
+
+### Patch Changes
+
+-   e5d69c70: Fix gradient path & add more geometry.
+-   Updated dependencies [e5d69c70]
+    -   @antv/g-shader-components@1.8.5
+    -   @antv/g-lite@1.2.13
+    -   @antv/g-plugin-image-loader@1.3.13
+
 ## 1.9.14
 
 ### Patch Changes

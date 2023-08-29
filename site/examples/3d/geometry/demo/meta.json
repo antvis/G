@@ -45,6 +45,30 @@
       "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*C5ZXT7TaG9cAAAAAAAAAAAAADmJ7AQ"
     },
     {
+      "filename": "cylinder.js",
+      "title": {
+        "zh": "圆柱",
+        "en": "Cylinder"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Vx-bSZTGKrIAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "cone.js",
+      "title": {
+        "zh": "圆锥",
+        "en": "Cone"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*4v4GQrGXA_UAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
+      "filename": "capsule.js",
+      "title": {
+        "zh": "胶囊",
+        "en": "Capsule"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5czISLOqEeUAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "buffer-geometry.js",
       "title": {
         "zh": "自定义 Geometry",

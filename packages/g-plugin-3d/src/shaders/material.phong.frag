@@ -1,7 +1,6 @@
 #pragma glslify: import('@antv/g-shader-components/common.glsl')
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 #pragma glslify: import('@antv/g-shader-components/material.phong.glsl')
-#pragma glslify: import('@antv/g-shader-components/light.both.glsl')
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
@@ -11,6 +10,7 @@
 #pragma glslify: import('@antv/g-shader-components/bsdf.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/wireframe.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/fog.declaration.frag')
+#pragma glslify: import('@antv/g-shader-components/light.begin.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/light.phong.declaration.frag')
 
 in vec3 v_ViewPosition;

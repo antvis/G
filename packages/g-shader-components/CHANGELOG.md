@@ -1,5 +1,11 @@
 # @antv/g-shader-components
 
+## 1.8.5
+
+### Patch Changes
+
+-   e5d69c70: Fix gradient path & add more geometry.
+
 ## 1.8.4
 
 ### Patch Changes

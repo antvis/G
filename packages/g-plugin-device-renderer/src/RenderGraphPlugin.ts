@@ -7,7 +7,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { CanvasEvent, ElementEvent, parseColor } from '@antv/g-lite';
+import { CanvasEvent, ElementEvent, Shape, parseColor } from '@antv/g-lite';
 import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
@@ -138,6 +138,19 @@ export class RenderGraphPlugin implements RenderingPlugin {
       } else if (object.nodeName === Fog.tag) {
         this.lightPool.removeFog(object as Fog);
         return;
+      } else if (object.nodeName === Shape.MESH) {
+        if (object.style.geometry?.meshes) {
+          const index = object.style.geometry.meshes.indexOf(object);
+          if (index > -1) {
+            object.style.geometry.meshes.splice(index, 1);
+          }
+        }
+        if (object.style.material?.meshes) {
+          const index = object.style.material.meshes.indexOf(object);
+          if (index > -1) {
+            object.style.material.meshes.splice(index, 1);
+          }
+        }
       }
 
       if (this.swapChain) {
