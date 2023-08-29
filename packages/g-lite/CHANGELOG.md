@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.13
+
+### Patch Changes
+
+-   e5d69c70: Fix gradient path & add more geometry.
+
 ## 1.2.12
 
 ### Patch Changes
