@@ -1,5 +1,13 @@
 # @antv/g-plugin-webgl-device
 
+## 1.9.15
+
+### Patch Changes
+
+-   Updated dependencies [e5d69c70]
+    -   @antv/g-plugin-device-renderer@1.9.15
+    -   @antv/g-lite@1.2.13
+
 ## 1.9.14
 
 ### Patch Changes
