@@ -1,6 +1,9 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.frag')
+#pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
+#pragma glslify: import('@antv/g-shader-components/map.declaration.frag')
+
 in vec4 v_Dash;
 
 in vec4 v_Distance;
@@ -13,6 +16,7 @@ out vec4 outputColor;
 
 void main(){
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
+  #pragma glslify: import('@antv/g-shader-components/map.frag')
 
   float alpha = 1.0;
   float lineWidth = v_Distance.w;
@@ -73,6 +77,10 @@ void main(){
     outputColor = vec4(pickingColor, 1.0);
   } else {
     outputColor = u_StrokeColor;
+    #ifdef USE_MAP
+      outputColor = u_Color;
+    #endif
+
     outputColor.a *= alpha * u_Opacity * u_StrokeOpacity;
   }
 }

@@ -2,10 +2,10 @@ import type { Device } from '@antv/g-plugin-device-renderer';
 import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface TorusGeometryProps {
-  tubeRadius?: number;
-  ringRadius?: number;
-  segments?: number;
-  sides?: number;
+  tubeRadius: number;
+  ringRadius: number;
+  segments: number;
+  sides: number;
 }
 
 export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
@@ -71,7 +71,12 @@ export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
     let i: number;
     let j: number;
 
-    const { tubeRadius = 0.2, ringRadius = 0.3, segments = 30, sides = 20 } = this.props;
+    const {
+      tubeRadius = 0.2,
+      ringRadius = 0.3,
+      segments = 30,
+      sides = 20,
+    } = this.props;
 
     const rc = tubeRadius;
     const rt = ringRadius;
@@ -91,9 +96,13 @@ export class TorusGeometry extends ProceduralGeometry<TorusGeometryProps> {
           Math.sin((2.0 * Math.PI * j) / segments) *
           (rt + rc * Math.cos((2.0 * Math.PI * i) / sides));
 
-        nx = Math.cos((2.0 * Math.PI * j) / segments) * Math.cos((2.0 * Math.PI * i) / sides);
+        nx =
+          Math.cos((2.0 * Math.PI * j) / segments) *
+          Math.cos((2.0 * Math.PI * i) / sides);
         ny = Math.sin((2.0 * Math.PI * i) / sides);
-        nz = Math.sin((2.0 * Math.PI * j) / segments) * Math.cos((2.0 * Math.PI * i) / sides);
+        nz =
+          Math.sin((2.0 * Math.PI * j) / segments) *
+          Math.cos((2.0 * Math.PI * i) / sides);
 
         u = i / sides;
         v = 1.0 - j / segments;

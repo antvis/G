@@ -1,17 +1,15 @@
 import type { Device } from '@antv/g-plugin-device-renderer';
 import { vec3 } from 'gl-matrix';
 import { ProceduralGeometry } from './ProceduralGeometry';
-
-const primitiveUv1Padding = 4.0 / 64;
-const primitiveUv1PaddingScale = 1.0 - primitiveUv1Padding * 2;
+import { primitiveUv1Padding, primitiveUv1PaddingScale } from './util';
 
 export interface CubeGeometryProps {
   height: number;
   width: number;
   depth: number;
-  widthSegments?: number;
-  heightSegments?: number;
-  depthSegments?: number;
+  widthSegments: number;
+  heightSegments: number;
+  depthSegments: number;
 }
 
 export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {

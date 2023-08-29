@@ -2,7 +2,7 @@ import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import {
   MeshPhongMaterial,
-  TorusGeometry,
+  ConeGeometry,
   DirectionalLight,
   Mesh,
   FogType,
@@ -32,24 +32,24 @@ const canvas = new Canvas({
   const plugin = renderer.getPlugin('device-renderer');
   const device = plugin.getDevice();
 
-  const torusGeometry = new TorusGeometry(device, {
-    tubeRadius: 30,
-    ringRadius: 200,
+  const coneGeometry = new ConeGeometry(device, {
+    baseRadius: 100,
+    height: 200,
   });
   const basicMaterial = new MeshPhongMaterial(device);
 
-  const torus = new Mesh({
+  const cone = new Mesh({
     style: {
       x: 300,
       y: 250,
       fill: 'white',
       opacity: 1,
-      geometry: torusGeometry,
+      geometry: coneGeometry,
       material: basicMaterial,
     },
   });
 
-  canvas.appendChild(torus);
+  canvas.appendChild(cone);
 
   // add a directional light into scene
   const light = new DirectionalLight({
@@ -76,52 +76,58 @@ const canvas = new Canvas({
     if (stats) {
       stats.update();
     }
-    torus.setOrigin(0, 0, 0);
-    torus.rotate(0, 0.2, 0);
+    cone.setOrigin(0, 0, 0);
+    cone.rotate(0, 0.2, 0);
   });
 
   // GUI
   const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
 
-  const torusFolder = gui.addFolder('torus');
-  const torusConfig = {
+  const coneFolder = gui.addFolder('cone');
+  const coneConfig = {
     opacity: 1,
     fill: '#fff',
   };
-  torusFolder.add(torusConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
-    torus.style.opacity = opacity;
+  coneFolder.add(coneConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
+    cone.style.opacity = opacity;
   });
-  torusFolder.addColor(torusConfig, 'fill').onChange((color) => {
-    torus.style.fill = color;
+  coneFolder.addColor(coneConfig, 'fill').onChange((color) => {
+    cone.style.fill = color;
   });
-  torusFolder.open();
+  coneFolder.open();
 
   const geometryFolder = gui.addFolder('geometry');
   const geometryConfig = {
-    tubeRadius: 30,
-    ringRadius: 200,
-    segments: 30,
-    sides: 20,
+    baseRadius: 100,
+    peakRadius: 0,
+    height: 200,
+    heightSegments: 5,
+    capSegments: 20,
   };
   geometryFolder
-    .add(geometryConfig, 'tubeRadius', 10, 300)
-    .onChange((tubeRadius) => {
-      torusGeometry.tubeRadius = tubeRadius;
+    .add(geometryConfig, 'baseRadius', 10, 300)
+    .onChange((baseRadius) => {
+      coneGeometry.baseRadius = baseRadius;
     });
   geometryFolder
-    .add(geometryConfig, 'ringRadius', 10, 300)
-    .onChange((ringRadius) => {
-      torusGeometry.ringRadius = ringRadius;
+    .add(geometryConfig, 'peakRadius', 0, 100)
+    .onChange((peakRadius) => {
+      coneGeometry.peakRadius = peakRadius;
     });
-  geometryFolder
-    .add(geometryConfig, 'segments', 2, 30, 1)
-    .onChange((segments) => {
-      torusGeometry.segments = segments;
-    });
-  geometryFolder.add(geometryConfig, 'sides', 2, 30, 1).onChange((sides) => {
-    torusGeometry.sides = sides;
+  geometryFolder.add(geometryConfig, 'height', 10, 300).onChange((height) => {
+    coneGeometry.height = height;
   });
+  geometryFolder
+    .add(geometryConfig, 'heightSegments', 2, 30, 1)
+    .onChange((heightSegments) => {
+      coneGeometry.heightSegments = heightSegments;
+    });
+  geometryFolder
+    .add(geometryConfig, 'capSegments', 2, 30, 1)
+    .onChange((capSegments) => {
+      coneGeometry.capSegments = capSegments;
+    });
   geometryFolder.open();
 
   const materialFolder = gui.addFolder('material');
@@ -135,7 +141,7 @@ const canvas = new Canvas({
     fogEnd: 1000,
   };
   materialFolder.add(materialConfig, 'wireframe').onChange((enable) => {
-    torus.style.material.wireframe = !!enable;
+    cone.style.material.wireframe = !!enable;
   });
   materialFolder
     .add(materialConfig, 'map', [
@@ -145,10 +151,10 @@ const canvas = new Canvas({
     ])
     .onChange((mapURL) => {
       if (mapURL === 'none') {
-        torus.style.material.map = null;
+        cone.style.material.map = null;
       } else {
         const map = plugin.loadTexture(mapURL);
-        torus.style.material.map = map;
+        cone.style.material.map = map;
       }
     });
   const fogTypes = [FogType.NONE, FogType.EXP, FogType.EXP2, FogType.LINEAR];
@@ -156,23 +162,23 @@ const canvas = new Canvas({
     .add(materialConfig, 'fogType', fogTypes)
     .onChange((fogType) => {
       // FogType.NONE
-      torus.style.material.fogType = fogType;
+      cone.style.material.fogType = fogType;
     });
   materialFolder.addColor(materialConfig, 'fogColor').onChange((fogColor) => {
-    torus.style.material.fogColor = fogColor;
+    cone.style.material.fogColor = fogColor;
   });
   materialFolder
     .add(materialConfig, 'fogDensity', 0, 10)
     .onChange((fogDensity) => {
-      torus.style.material.fogDensity = fogDensity;
+      cone.style.material.fogDensity = fogDensity;
     });
   materialFolder
     .add(materialConfig, 'fogStart', 0, 1000)
     .onChange((fogStart) => {
-      torus.style.material.fogStart = fogStart;
+      cone.style.material.fogStart = fogStart;
     });
   materialFolder.add(materialConfig, 'fogEnd', 0, 1000).onChange((fogEnd) => {
-    torus.style.material.fogEnd = fogEnd;
+    cone.style.material.fogEnd = fogEnd;
   });
   materialFolder.open();
 })();

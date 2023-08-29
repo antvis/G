@@ -4,8 +4,8 @@ import { ProceduralGeometry } from './ProceduralGeometry';
 export interface PlaneGeometryProps {
   width: number;
   depth: number;
-  widthSegments?: number;
-  depthSegments?: number;
+  widthSegments: number;
+  depthSegments: number;
 }
 
 export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
@@ -65,7 +65,12 @@ export class PlaneGeometry extends ProceduralGeometry<PlaneGeometryProps> {
     const uvs: number[] = [];
     const indices: number[] = [];
 
-    const { widthSegments = 5, depthSegments = 5, width = 1, depth = 1 } = this.props;
+    const {
+      widthSegments = 5,
+      depthSegments = 5,
+      width = 1,
+      depth = 1,
+    } = this.props;
 
     const he = { x: width / 2, y: depth / 2 };
     const ws = widthSegments;

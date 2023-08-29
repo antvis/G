@@ -70,12 +70,24 @@ export class PickingPlugin implements RenderingPlugin {
         this.pickingIdGenerator.encodePickingColor(pickingId);
     };
 
+    const handleUnmounted = (e: FederatedEvent) => {
+      const object = e.target as DisplayObject;
+
+      // @ts-ignore
+      const renderable3D = object.renderable3D;
+      if (renderable3D) {
+        this.pickingIdGenerator.deleteById(renderable3D.pickingId);
+      }
+    };
+
     renderingService.hooks.init.tap(PickingPlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.addEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
     });
 
     renderingService.hooks.destroy.tap(PickingPlugin.tag, () => {
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
+      canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
       this.pickingIdGenerator.reset();
     });
 

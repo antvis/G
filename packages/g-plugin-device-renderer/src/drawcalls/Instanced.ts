@@ -5,7 +5,7 @@ import type {
   Pattern,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
+import { CSSRGB, isPattern, isCSSRGB, parseColor } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { LightPool } from '../LightPool';
@@ -94,6 +94,11 @@ export abstract class Instanced {
    * e.g. `will-change` property in CSS
    */
   key: string;
+
+  /**
+   * attribute name used for gradient or pattern
+   */
+  gradientAttributeName: 'stroke' | 'fill' = 'fill';
 
   constructor(
     protected renderHelper: RenderHelper,
@@ -1185,11 +1190,11 @@ export abstract class Instanced {
   ): TextureMapping | null {
     const instance = objects[0];
 
-    const fill = (
-      instance.nodeName === Shape.LINE
-        ? instance.parsedStyle.stroke
-        : instance.parsedStyle.fill
-    ) as CSSRGB | CSSGradientValue[] | Pattern;
+    // should account for Line, Path, Polyline and Polyline
+    const fill = instance.parsedStyle[this.gradientAttributeName] as
+      | CSSRGB
+      | CSSGradientValue[]
+      | Pattern;
 
     let texImageSource: string | TexImageSource;
 

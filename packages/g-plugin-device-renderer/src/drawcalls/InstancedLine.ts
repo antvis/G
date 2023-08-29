@@ -21,6 +21,10 @@ import {
   VertexAttributeLocation,
 } from './Instanced';
 import { InstancedFillDrawcall } from './InstancedFill';
+import { RenderHelper } from '../render';
+import { TexturePool } from '../TexturePool';
+import { LightPool } from '../LightPool';
+import { BatchContext } from '../renderer';
 
 export const segmentInstanceGeometry = [
   0, -0.5, 0, 0, 0, 1, -0.5, 1, 1, 0, 1, 0.5, 1, 1, 1, 0, 0.5, 0, 0, 1,
@@ -96,6 +100,27 @@ export class InstancedLineDrawcall extends Instanced {
     }
 
     return false;
+  }
+
+  constructor(
+    protected renderHelper: RenderHelper,
+    protected texturePool: TexturePool,
+    protected lightPool: LightPool,
+    object: DisplayObject,
+    drawcallCtors: (new (..._: any) => Instanced)[],
+    index: number,
+    context: BatchContext,
+  ) {
+    super(
+      renderHelper,
+      texturePool,
+      lightPool,
+      object,
+      drawcallCtors,
+      index,
+      context,
+    );
+    this.gradientAttributeName = 'stroke';
   }
 
   shouldMerge(object: DisplayObject, index: number) {
