@@ -21,7 +21,7 @@ void main() {
   } else {
     outputColor = u_StrokeColor;
     #ifdef USE_MAP
-        outputColor = u_Color;
+      outputColor = u_Color;
     #endif
 
     float blur;

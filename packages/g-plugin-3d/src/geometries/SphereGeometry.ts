@@ -3,8 +3,8 @@ import { ProceduralGeometry } from './ProceduralGeometry';
 
 export interface SphereGeometryProps {
   radius: number;
-  latitudeBands?: number;
-  longitudeBands?: number;
+  latitudeBands: number;
+  longitudeBands: number;
 }
 
 export class SphereGeometry extends ProceduralGeometry<SphereGeometryProps> {

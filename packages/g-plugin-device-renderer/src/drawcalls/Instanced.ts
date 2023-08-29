@@ -5,7 +5,7 @@ import type {
   Pattern,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
+import { CSSRGB, isPattern, isCSSRGB, parseColor } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { LightPool } from '../LightPool';
@@ -95,6 +95,11 @@ export abstract class Instanced {
    */
   key: string;
 
+  /**
+   * attribute name used for gradient or pattern
+   */
+  gradientAttributeName: 'stroke' | 'fill' = 'fill';
+
   constructor(
     protected renderHelper: RenderHelper,
     protected texturePool: TexturePool,
@@ -137,11 +142,6 @@ export abstract class Instanced {
    */
   protected textureMappings: TextureMapping[] = [];
   protected samplerEntries: BindingLayoutSamplerDescriptor[];
-
-  /**
-   * Receiving light e.g. Mesh.
-   */
-  protected lightReceived = false;
 
   /**
    * Divisor of instanced array.
@@ -515,10 +515,8 @@ export abstract class Instanced {
 
   applyRenderInst(renderInst: RenderInst, objects: DisplayObject[]) {
     // detect if scene changed, eg. lights & fog
-    const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
-    const useLight = !!lights.length;
 
     if (this.clipPathTarget || this.clipPath) {
       if (this.clipPathTarget) {
@@ -544,10 +542,9 @@ export abstract class Instanced {
     const oldDefines = { ...this.material.defines };
 
     this.material.defines.USE_FOG = useFog;
-    this.material.defines.USE_LIGHT = useLight;
     this.material.defines = {
-      ...this.material.defines,
       ...this.lightPool.getDefines(),
+      ...this.material.defines,
       ...this.renderHelper.getDefines(),
     };
 
@@ -1033,7 +1030,8 @@ export abstract class Instanced {
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
-    const useLight = this.lightReceived && !!lights.length;
+    const useLight = material.defines.USE_LIGHT ?? !!lights.length;
+
     const useWireframe = material.defines.USE_WIREFRAME;
 
     // collect uniforms
@@ -1192,11 +1190,11 @@ export abstract class Instanced {
   ): TextureMapping | null {
     const instance = objects[0];
 
-    const fill = (
-      instance.nodeName === Shape.LINE
-        ? instance.parsedStyle.stroke
-        : instance.parsedStyle.fill
-    ) as CSSRGB | CSSGradientValue[] | Pattern;
+    // should account for Line, Path, Polyline and Polyline
+    const fill = instance.parsedStyle[this.gradientAttributeName] as
+      | CSSRGB
+      | CSSGradientValue[]
+      | Pattern;
 
     let texImageSource: string | TexImageSource;
 
@@ -1244,8 +1242,8 @@ export abstract class Instanced {
           'Fill Texture' + this.id,
         );
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
-          wrapS: WrapMode.Repeat,
-          wrapT: WrapMode.Repeat,
+          wrapS: WrapMode.Clamp,
+          wrapT: WrapMode.Clamp,
           minFilter: TexFilterMode.Point,
           magFilter: TexFilterMode.Bilinear,
           mipFilter: MipFilterMode.Linear,

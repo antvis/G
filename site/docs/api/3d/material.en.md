@@ -71,7 +71,7 @@ material.cullMode = CullMode.BACK;
 
 ### wireframe
 
-是否绘制 wireframe，常用于直观展示三角面。开启后将额外生成重心坐标，原理详见 https://zhuanlan.zhihu.com/p/48499247。
+是否绘制 wireframe，常用于直观展示三角面。开启后将额外生成重心坐标，原理详见 <https://zhuanlan.zhihu.com/p/48499247>。
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
 
@@ -292,7 +292,7 @@ material.setUniform({
 
 ### MeshBasicMaterial
 
-和 Three.js 保持一致：https://threejs.org/docs/#api/en/materials/MeshBasicMaterial
+和 Three.js 保持一致：<https://threejs.org/docs/#api/en/materials/MeshBasicMaterial>
 
 该材质不受光照影响，从 FragmentShader 可以看出直接使用 fill 定义的颜色或者 map 定义的贴图：
 
@@ -338,11 +338,15 @@ const basicMaterial = new MeshBasicMaterial({
 });
 ```
 
+### MeshLambertMaterial
+
+继承自 MeshBasicMaterial，使用 Lambertian 模型，无高光。
+
 ### MeshPhongMaterial
 
 继承自 MeshBasicMaterial，使用 Blinn-Phong 光照模型。
 
-在多伦多大学的某教学页面上可以看到 Phong 模型的一个基础实现： http://www.cs.toronto.edu/~jacobson/phong-demo/
+在多伦多大学的某教学页面上可以看到 Phong 模型的一个基础实现： <http://www.cs.toronto.edu/~jacobson/phong-demo/>
 
 该模型将直接光照部分“漫反射”、高光与间接光照部分“环境光”累加，得出最终的贡献值。从下图中我们能看到物体表面的法线、光源到物体表面的入射方向，以及人眼（相机）的观察方向都需要考虑。
 
@@ -455,12 +459,12 @@ struct ub_SceneParams {
 // https://github.com/mrdoob/three.js/blob/e1ead8c5c2/src/renderers/shaders/ShaderChunk/alphamap_fragment.glsl.js
 export default /* glsl */ `
 #ifdef USE_ALPHAMAP
-	diffuseColor.a *= texture2D( alphaMap, vUv ).g;
+ diffuseColor.a *= texture2D( alphaMap, vUv ).g;
 #endif
 `;
 ```
 
-好处是无需额外的构建工具 loader/插件，坏处就是丧失了语法高亮，在 Shader 开发时容易犯错。我们希望使用编辑器的高亮以及 Lint，例如配合 VSCode GLSL Lint 插件。因此 shader 需要以 \*.glsl/vert/frag 形式存在，使用时以文本形式引入：
+好处是无需额外的构建工具 loader/插件，坏处就是丧失了语法高亮，在 Shader 开发时容易犯错。我们希望使用编辑器的高亮以及 Lint，例如配合 VS Code GLSL Lint 插件。因此 shader 需要以 \*.glsl/vert/frag 形式存在，使用时以文本形式引入：
 
 ```js
 // 引入文本字符串
@@ -488,14 +492,14 @@ uniform vec4 color;
 
 void main(void) {
   #include<clipPlaneFragment>
-	gbuf_color = color;
+ gbuf_color = color;
 }
 ```
 
 在构建时完成替换可以省掉 compiler 代码，现成的方案是 glslify，但需要配合构建工具，例如：
 
--   webpack https://github.com/glslify/glslify-loader
--   babel https://github.com/onnovisser/babel-plugin-glsl
+-   webpack <https://github.com/glslify/glslify-loader>
+-   babel <https://github.com/onnovisser/babel-plugin-glsl>
 -   rollup rollup-plugin-glslify 我们选择它
 
 ```glsl
@@ -509,7 +513,7 @@ void main() {
 
 但问题是会增大包体积，毕竟共用的 chunk 都内联在每个内置 Shader 字符串中了。
 
-参考 stack.gl 建立的一系列 shader components：https://github.com/glslify/glsl-easings 我们也提供一个 `@antv/g-shader-components` 包提供内置的所有 chunks。
+参考 stack.gl 建立的一系列 shader components：<https://github.com/glslify/glsl-easings> 我们也提供一个 `@antv/g-shader-components` 包提供内置的所有 chunks。
 
 ### Shader 压缩
 

@@ -87,6 +87,7 @@ export class InstancedPathDrawcall extends Instanced {
       context,
     );
     this.segmentNum = this.calcSegmentNum(object);
+    this.gradientAttributeName = 'stroke';
   }
 
   protected mergeAnchorIntoModelMatrix = true;

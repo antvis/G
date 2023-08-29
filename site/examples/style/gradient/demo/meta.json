@@ -9,10 +9,10 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*rWIvR729TqwAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
-      "filename": "gradient-path.js",
+      "filename": "path.js",
       "title": {
-        "zh": "Gradient",
-        "en": "Gradient"
+        "zh": "带渐变的 Path",
+        "en": "Path with gradient"
       }
     },
     {
@@ -20,7 +20,8 @@
       "title": {
         "zh": "Radial Gradient",
         "en": "Radial Gradient"
-      }
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8v8eQ77nS2EAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "inner-shadow.js",

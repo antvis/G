@@ -10,7 +10,10 @@ layout(location = NEXT) in vec3 a_Next;
 layout(location = VERTEX_JOINT) in float a_VertexJoint;
 layout(location = VERTEX_NUM) in float a_VertexNum;
 layout(location = TRAVEL) in float a_Travel;
-
+#ifdef USE_UV
+  layout(location = UV) in vec2 a_Uv;
+  out vec2 v_Uv;
+#endif
 layout(location = DASH) in vec4 a_Dash;
 out vec4 v_Dash;
 
@@ -65,6 +68,8 @@ vec2 project2ScreenSpace(vec3 pos, mat4 u_ModelMatrix) {
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')
+  #pragma glslify: import('@antv/g-shader-components/uv.vert')
+
   v_Dash = a_Dash;
 
   vec2 pointA;

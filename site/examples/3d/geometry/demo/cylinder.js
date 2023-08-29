@@ -2,7 +2,7 @@ import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import {
   MeshPhongMaterial,
-  TorusGeometry,
+  CylinderGeometry,
   DirectionalLight,
   Mesh,
   FogType,
@@ -32,24 +32,24 @@ const canvas = new Canvas({
   const plugin = renderer.getPlugin('device-renderer');
   const device = plugin.getDevice();
 
-  const torusGeometry = new TorusGeometry(device, {
-    tubeRadius: 30,
-    ringRadius: 200,
+  const cylinderGeometry = new CylinderGeometry(device, {
+    radius: 100,
+    height: 200,
   });
   const basicMaterial = new MeshPhongMaterial(device);
 
-  const torus = new Mesh({
+  const cylinder = new Mesh({
     style: {
       x: 300,
       y: 250,
       fill: 'white',
       opacity: 1,
-      geometry: torusGeometry,
+      geometry: cylinderGeometry,
       material: basicMaterial,
     },
   });
 
-  canvas.appendChild(torus);
+  canvas.appendChild(cylinder);
 
   // add a directional light into scene
   const light = new DirectionalLight({
@@ -76,52 +76,52 @@ const canvas = new Canvas({
     if (stats) {
       stats.update();
     }
-    torus.setOrigin(0, 0, 0);
-    torus.rotate(0, 0.2, 0);
+    cylinder.setOrigin(0, 0, 0);
+    cylinder.rotate(0, 0.2, 0);
   });
 
   // GUI
   const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
 
-  const torusFolder = gui.addFolder('torus');
-  const torusConfig = {
+  const cylinderFolder = gui.addFolder('cylinder');
+  const cylinderConfig = {
     opacity: 1,
     fill: '#fff',
   };
-  torusFolder.add(torusConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
-    torus.style.opacity = opacity;
+  cylinderFolder
+    .add(cylinderConfig, 'opacity', 0, 1, 0.1)
+    .onChange((opacity) => {
+      cylinder.style.opacity = opacity;
+    });
+  cylinderFolder.addColor(cylinderConfig, 'fill').onChange((color) => {
+    cylinder.style.fill = color;
   });
-  torusFolder.addColor(torusConfig, 'fill').onChange((color) => {
-    torus.style.fill = color;
-  });
-  torusFolder.open();
+  cylinderFolder.open();
 
   const geometryFolder = gui.addFolder('geometry');
   const geometryConfig = {
-    tubeRadius: 30,
-    ringRadius: 200,
-    segments: 30,
-    sides: 20,
+    radius: 100,
+    height: 200,
+    heightSegments: 5,
+    capSegments: 20,
   };
-  geometryFolder
-    .add(geometryConfig, 'tubeRadius', 10, 300)
-    .onChange((tubeRadius) => {
-      torusGeometry.tubeRadius = tubeRadius;
-    });
-  geometryFolder
-    .add(geometryConfig, 'ringRadius', 10, 300)
-    .onChange((ringRadius) => {
-      torusGeometry.ringRadius = ringRadius;
-    });
-  geometryFolder
-    .add(geometryConfig, 'segments', 2, 30, 1)
-    .onChange((segments) => {
-      torusGeometry.segments = segments;
-    });
-  geometryFolder.add(geometryConfig, 'sides', 2, 30, 1).onChange((sides) => {
-    torusGeometry.sides = sides;
+  geometryFolder.add(geometryConfig, 'radius', 10, 300).onChange((radius) => {
+    cylinderGeometry.radius = radius;
   });
+  geometryFolder.add(geometryConfig, 'height', 10, 300).onChange((height) => {
+    cylinderGeometry.height = height;
+  });
+  geometryFolder
+    .add(geometryConfig, 'heightSegments', 2, 30, 1)
+    .onChange((heightSegments) => {
+      cylinderGeometry.heightSegments = heightSegments;
+    });
+  geometryFolder
+    .add(geometryConfig, 'capSegments', 2, 30, 1)
+    .onChange((capSegments) => {
+      cylinderGeometry.capSegments = capSegments;
+    });
   geometryFolder.open();
 
   const materialFolder = gui.addFolder('material');
@@ -135,7 +135,7 @@ const canvas = new Canvas({
     fogEnd: 1000,
   };
   materialFolder.add(materialConfig, 'wireframe').onChange((enable) => {
-    torus.style.material.wireframe = !!enable;
+    cylinder.style.material.wireframe = !!enable;
   });
   materialFolder
     .add(materialConfig, 'map', [
@@ -145,10 +145,10 @@ const canvas = new Canvas({
     ])
     .onChange((mapURL) => {
       if (mapURL === 'none') {
-        torus.style.material.map = null;
+        cylinder.style.material.map = null;
       } else {
         const map = plugin.loadTexture(mapURL);
-        torus.style.material.map = map;
+        cylinder.style.material.map = map;
       }
     });
   const fogTypes = [FogType.NONE, FogType.EXP, FogType.EXP2, FogType.LINEAR];
@@ -156,23 +156,23 @@ const canvas = new Canvas({
     .add(materialConfig, 'fogType', fogTypes)
     .onChange((fogType) => {
       // FogType.NONE
-      torus.style.material.fogType = fogType;
+      cylinder.style.material.fogType = fogType;
     });
   materialFolder.addColor(materialConfig, 'fogColor').onChange((fogColor) => {
-    torus.style.material.fogColor = fogColor;
+    cylinder.style.material.fogColor = fogColor;
   });
   materialFolder
     .add(materialConfig, 'fogDensity', 0, 10)
     .onChange((fogDensity) => {
-      torus.style.material.fogDensity = fogDensity;
+      cylinder.style.material.fogDensity = fogDensity;
     });
   materialFolder
     .add(materialConfig, 'fogStart', 0, 1000)
     .onChange((fogStart) => {
-      torus.style.material.fogStart = fogStart;
+      cylinder.style.material.fogStart = fogStart;
     });
   materialFolder.add(materialConfig, 'fogEnd', 0, 1000).onChange((fogEnd) => {
-    torus.style.material.fogEnd = fogEnd;
+    cylinder.style.material.fogEnd = fogEnd;
   });
   materialFolder.open();
 })();

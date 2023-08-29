@@ -1,7 +1,7 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import {
-  MeshPhongMaterial,
+  MeshBasicMaterial,
   TorusGeometry,
   DirectionalLight,
   Mesh,
@@ -36,13 +36,13 @@ const canvas = new Canvas({
     tubeRadius: 30,
     ringRadius: 200,
   });
-  const basicMaterial = new MeshPhongMaterial(device);
+  const basicMaterial = new MeshBasicMaterial(device);
 
   const torus = new Mesh({
     style: {
       x: 300,
       y: 250,
-      fill: 'white',
+      fill: '#b0b0b0',
       opacity: 1,
       geometry: torusGeometry,
       material: basicMaterial,
@@ -87,7 +87,7 @@ const canvas = new Canvas({
   const torusFolder = gui.addFolder('torus');
   const torusConfig = {
     opacity: 1,
-    fill: '#fff',
+    fill: '#b0b0b0',
   };
   torusFolder.add(torusConfig, 'opacity', 0, 1, 0.1).onChange((opacity) => {
     torus.style.opacity = opacity;

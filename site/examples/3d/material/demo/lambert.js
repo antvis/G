@@ -1,7 +1,7 @@
 import { Canvas, CanvasEvent } from '@antv/g';
 import { Renderer } from '@antv/g-webgl';
 import {
-  MeshPhongMaterial,
+  MeshLambertMaterial,
   TorusGeometry,
   DirectionalLight,
   Mesh,
@@ -36,7 +36,7 @@ const canvas = new Canvas({
     tubeRadius: 30,
     ringRadius: 200,
   });
-  const basicMaterial = new MeshPhongMaterial(device);
+  const basicMaterial = new MeshLambertMaterial(device);
 
   const torus = new Mesh({
     style: {
