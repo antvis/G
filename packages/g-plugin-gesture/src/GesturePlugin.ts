@@ -162,7 +162,6 @@ export class GesturePlugin implements RenderingPlugin {
 
     const { x, y, pointerId } = ev;
 
-    let isTriggerStart = false;
     // Find this event in the cache and update its record with this event
     for (let i = 0, len = evCache.length; i < len; i++) {
       if (pointerId === evCache[i].pointerId) {
@@ -172,24 +171,8 @@ export class GesturePlugin implements RenderingPlugin {
           y,
           ev,
         };
-        isTriggerStart = true;
         break;
       }
-    }
-
-    // 无触发start事件 需保留startPoints重新触发start
-    if (!isTriggerStart) {
-      const point = { x, y };
-      startPoints.push(point);
-      evCache.push({
-        pointerId,
-        x,
-        y,
-        ev,
-      });
-      // 目前只处理双指
-      this.startDistance = calcDistance(startPoints[0], startPoints[1]);
-      this.center = getCenter(startPoints[0], startPoints[1]);
     }
 
     const point = { x, y };
