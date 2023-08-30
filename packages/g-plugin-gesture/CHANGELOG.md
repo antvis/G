@@ -1,5 +1,11 @@
 # @antv/g-plugin-gesture
 
+## 1.2.0
+
+### Minor Changes
+
+-   3dadec04: Remove added points during move process.
+
 ## 1.1.2
 
 ### Patch Changes
