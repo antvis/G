@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.16
+
+### Patch Changes
+
+-   be1f91bf: Set max instances to infinity in instanced.
+
 ## 1.9.15
 
 ### Patch Changes
