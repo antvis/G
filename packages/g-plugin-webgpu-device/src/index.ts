@@ -1,6 +1,8 @@
 import { AbstractRendererPlugin, GlobalRuntime } from '@antv/g-lite';
 import type { WebGPUDeviceOptions } from './interfaces';
 import { WebGPUDeviceContribution } from './WebGPUDeviceContribution';
+
+export { WebGPUDeviceContribution };
 export class Plugin extends AbstractRendererPlugin {
   name = 'webgpu-device';
   constructor(private options: Partial<WebGPUDeviceOptions> = {}) {

@@ -1,0 +1,22 @@
+{
+  "title": {
+    "zh": "Device API",
+    "en": "Device API"
+  },
+  "demos": [
+    {
+      "filename": "webgl.ts",
+      "title": {
+        "zh": "WebGL Device",
+        "en": "WebGL Device"
+      }
+    },
+    {
+      "filename": "webgpu.ts",
+      "title": {
+        "zh": "WebGPU Device",
+        "en": "WebGPU Device"
+      }
+    }
+  ]
+}

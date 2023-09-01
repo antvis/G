@@ -2,6 +2,8 @@ import { AbstractRendererPlugin } from '@antv/g-lite';
 import type { WebGLRendererPluginOptions } from './interfaces';
 import { WebGLDeviceContribution } from './WebGLDeviceContribution';
 
+export { WebGLDeviceContribution };
+
 export class Plugin extends AbstractRendererPlugin {
   name = 'webgl-device';
   constructor(private options: Partial<WebGLRendererPluginOptions>) {

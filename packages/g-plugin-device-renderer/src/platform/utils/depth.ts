@@ -48,7 +48,10 @@ export function reverseDepthForCompareMode(
   }
 }
 
-export function reverseDepthForClearValue(n: number, isDepthReversed = IsDepthReversed): number {
+export function reverseDepthForClearValue(
+  n: number,
+  isDepthReversed = IsDepthReversed,
+): number {
   if (isDepthReversed) {
     return 1.0 - n;
   } else {
@@ -56,7 +59,10 @@ export function reverseDepthForClearValue(n: number, isDepthReversed = IsDepthRe
   }
 }
 
-export function reverseDepthForDepthOffset(n: number, isDepthReversed = IsDepthReversed): number {
+export function reverseDepthForDepthOffset(
+  n: number,
+  isDepthReversed = IsDepthReversed,
+): number {
   if (isDepthReversed) {
     return -n;
   } else {

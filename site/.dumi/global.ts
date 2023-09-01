@@ -38,6 +38,11 @@ if (window) {
   (window as any).gPluginYoga = require('@antv/g-plugin-yoga');
   (
     window as any
+  ).gPluginDeviceRenderer = require('@antv/g-plugin-device-renderer');
+  (window as any).gPluginWebglDevice = require('@antv/g-plugin-webgl-device');
+  (window as any).gPluginWebgpuDevice = require('@antv/g-plugin-webgpu-device');
+  (
+    window as any
   ).gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-renderer');
   (
     window as any
