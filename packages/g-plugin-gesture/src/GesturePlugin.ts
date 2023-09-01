@@ -39,7 +39,7 @@ export class GesturePlugin implements RenderingPlugin {
   private lastMovePoint: Point;
   private throttleTimer = 0;
   private emitThrottles: EmitEventObject[] = [];
-  private movingTarget: DisplayObject;
+  private movingTarget: IEventTarget;
   private isPanListenerInPath: boolean;
 
   constructor(private options: GesturePluginOptions) {}
@@ -109,12 +109,37 @@ export class GesturePlugin implements RenderingPlugin {
     const { evCache, startPoints } = this;
     if (ev) {
       const { pointerId, x, y } = ev;
+
+      // evcache 已经存在的 pointerId, 做替换
+      const existIdx = evCache.findIndex((item) => pointerId === item.pointerId);
+      if (existIdx !== -1){
+         evCache.splice(existIdx, 1);
+      }
+
+      // evCache 不存在的 pointerId, 添加
       evCache.push({
         pointerId,
         x,
         y,
         ev,
       });
+
+      // @ts-ignore 对齐touches evCache 存在，touches 不存在，移除
+      const evTouches = [...(ev.nativeEvent?.touches || [])];
+      for (let i =  evCache.length - 1; i > -1; i--) {
+        
+        const isInTouches = evTouches.find(touch => {
+          return evCache[i].pointerId === touch.identifier
+        })
+
+        // 在touches中存在
+        if (isInTouches) {
+          continue
+        }
+
+        // 在touches中不存在
+        evCache.splice(i, 1);
+      }
     }
     // 重置 startPoints
     startPoints.length = evCache.length;
@@ -144,6 +169,7 @@ export class GesturePlugin implements RenderingPlugin {
 
         this.eventType = eventType;
         this.direction = direction;
+        
         this.movingTarget = target;
       }, PRESS_DELAY);
       return;
@@ -395,6 +421,7 @@ export class GesturePlugin implements RenderingPlugin {
 
   private refreshAndGetTarget(target) {
     if (this.movingTarget) {
+      // @ts-ignore
       if (this.movingTarget && !this.movingTarget.isConnected) {
         this.movingTarget = target;
       }
