@@ -12,7 +12,7 @@ import type { LightPool } from '../LightPool';
 import type { Fog } from '../lights';
 import type { Material } from '../materials';
 import { MaterialEvent, ShaderMaterial } from '../materials';
-import type { BindingLayoutSamplerDescriptor, InputState } from '../platform';
+import type { BindingLayoutSamplerDescriptor } from '../platform';
 import {
   ChannelWriteMask,
   CompareMode,
@@ -127,7 +127,6 @@ export abstract class Instanced {
   clipPath: DisplayObject;
   clipPathTarget: DisplayObject;
 
-  private inputState: InputState;
   private program: DeviceProgram = new DeviceProgram();
   private programDescriptorSimpleWithOrig?: ProgramDescriptorSimpleWithOrig;
   geometryDirty = true;
@@ -136,7 +135,6 @@ export abstract class Instanced {
    * the same material maybe shared between different canvases
    */
   materialDirty = true;
-  private inputStateDirty = true;
   /**
    * texture mappings
    */
@@ -508,9 +506,6 @@ export abstract class Instanced {
     if (this.geometry) {
       this.geometry.destroy();
     }
-    if (this.inputState) {
-      this.inputState.destroy();
-    }
   }
 
   applyRenderInst(renderInst: RenderInst, objects: DisplayObject[]) {
@@ -637,7 +632,6 @@ export abstract class Instanced {
     if (this.material.geometryDirty) {
       // wireframe 需要额外生成 geometry 重心坐标
       this.geometryDirty = true;
-      this.inputStateDirty = true;
       this.material.geometryDirty = false;
     }
 
@@ -657,7 +651,6 @@ export abstract class Instanced {
       // sync to internal Geometry
       this.geometryDirty = false;
       this.geometry.dirty = false;
-      this.inputStateDirty = true;
     }
 
     // cached input layout
@@ -670,28 +663,16 @@ export abstract class Instanced {
       .createProgramSimple(this.programDescriptorSimpleWithOrig);
 
     const useIndexes = !!this.geometry.indexBuffer;
-    // prevent rebinding VAO too many times
-    if (this.inputStateDirty) {
-      if (this.inputState) {
-        this.inputState.destroy();
-      }
-      this.inputState = this.context.device.createInputState(
-        inputLayout,
-        this.geometry.vertexBuffers.map((buffer) => ({
-          buffer,
-          byteOffset: 0,
-        })),
-        useIndexes
-          ? { buffer: this.geometry.indexBuffer, byteOffset: 0 }
-          : null,
-        program,
-      );
-      this.inputStateDirty = false;
-    }
-
     renderInst.renderPipelineDescriptor.topology = this.geometry.drawMode;
     renderInst.setProgram(program);
-    renderInst.setInputLayoutAndState(inputLayout, this.inputState);
+    renderInst.setVertexInput(
+      inputLayout,
+      this.geometry.vertexBuffers.map((buffer) => ({
+        buffer,
+        byteOffset: 0,
+      })),
+      useIndexes ? { buffer: this.geometry.indexBuffer, byteOffset: 0 } : null,
+    );
 
     this.renderer.beforeUploadUBO(renderInst, this);
     // upload uniform buffer object

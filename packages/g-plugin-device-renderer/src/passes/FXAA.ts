@@ -1,5 +1,5 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout, InputState } from '../platform';
+import type { InputLayout } from '../platform';
 import { Format, VertexBufferFrequency } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
@@ -32,7 +32,6 @@ interface RenderInput {
 
 const textureMapping = nArray(1, () => new TextureMapping());
 let geometry: BufferGeometry;
-let inputState: InputState;
 let inputLayout: InputLayout;
 
 export function pushFXAAPass(
@@ -94,16 +93,6 @@ export function pushFXAAPass(
       inputLayout = renderHelper
         .getCache()
         .createInputLayout(geometry.inputLayoutDescriptor);
-
-      inputState = renderHelper.getDevice().createInputState(
-        inputLayout,
-        geometry.vertexBuffers.map((buffer) => ({
-          buffer,
-          byteOffset: 0,
-        })),
-        null,
-        program,
-      );
     }
 
     pass.exec((passRenderer, scope) => {
@@ -111,7 +100,14 @@ export function pushFXAAPass(
         mainColorResolveTextureID,
       );
       renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
-      renderInst.setInputLayoutAndState(inputLayout, inputState);
+      renderInst.setVertexInput(
+        inputLayout,
+        geometry.vertexBuffers.map((buffer) => ({
+          buffer,
+          byteOffset: 0,
+        })),
+        null,
+      );
       renderInst.drawOnPass(renderHelper.renderCache, passRenderer);
     });
   });

@@ -150,22 +150,19 @@ void main() {
       .getCache()
       .createInputLayout(geometry.inputLayoutDescriptor);
 
-    const inputState = device.createInputState(
-      inputLayout,
-      geometry.vertexBuffers.map((buffer) => ({
-        buffer,
-        byteOffset: 0,
-      })),
-      null,
-      program,
-    );
-
     pass.exec((passRenderer, scope) => {
       // textureMapping[0].texture = scope.getResolveTextureForID(
       //   mainColorResolveTextureID,
       // );
       renderInst.setSamplerBindingsFromTextureMappings([]);
-      renderInst.setInputLayoutAndState(inputLayout, inputState);
+      renderInst.setVertexInput(
+        inputLayout,
+        geometry.vertexBuffers.map((buffer) => ({
+          buffer,
+          byteOffset: 0,
+        })),
+        null,
+      );
       renderInst.drawOnPass(renderHelper.renderCache, passRenderer);
     });
   });

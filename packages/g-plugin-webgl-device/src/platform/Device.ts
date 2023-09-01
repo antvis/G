@@ -5,6 +5,7 @@ import {
   BindingsDescriptor,
   Buffer,
   BufferDescriptor,
+  BufferFrequencyHint,
   ComputePass,
   ComputePipeline,
   ComputePipelineDescriptor,
@@ -14,7 +15,6 @@ import {
   IndexBufferDescriptor,
   InputLayout,
   InputLayoutDescriptor,
-  InputState,
   MegaStateDescriptor,
   PlatformFramebuffer,
   Program,
@@ -75,7 +75,6 @@ import {
 import { Bindings_GL } from './Bindings';
 import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
-import { InputState_GL } from './InputState';
 import type {
   BindingLayoutSamplerDescriptor_GL,
   EXT_texture_compression_rgtc,
@@ -161,7 +160,7 @@ export class Device_GL implements SwapChain, Device {
   private currentDepthStencilResolveTo: Texture_GL | null = null;
   private currentSampleCount = -1;
   private currentPipeline: RenderPipeline_GL;
-  private currentInputState: InputState_GL;
+  private currentIndexBufferByteOffset: number | null = null;
   private currentMegaState: MegaStateDescriptor =
     copyMegaState(defaultMegaState);
   private currentSamplers: (WebGLSampler | null)[] = [];
@@ -194,6 +193,7 @@ export class Device_GL implements SwapChain, Device {
   private fallbackTexture2DArray: WebGLTexture;
   private fallbackTexture3D: WebGLTexture;
   private fallbackTextureCube: WebGLTexture;
+  private fallbackVertexBuffer: Buffer;
 
   // VendorInfo
   readonly platformString: string;
@@ -207,7 +207,8 @@ export class Device_GL implements SwapChain, Device {
 
   private inBlitRenderPass = false;
   private blitRenderPipeline: RenderPipeline;
-  private blitInputState: InputState;
+  private blitInputLayout: InputLayout;
+  private blitVertexBuffer: Buffer;
   private blitBindings: Bindings;
 
   // GLimits
@@ -333,6 +334,11 @@ export class Device_GL implements SwapChain, Device {
       TextureDimension.n2D,
       SamplerFormatKind.Depth,
     );
+    this.fallbackVertexBuffer = this.createBuffer({
+      viewOrSize: 1,
+      usage: BufferUsage.VERTEX,
+      hint: BufferFrequencyHint.Static,
+    });
 
     if (isWebGL2(gl)) {
       // this.fallbackTexture2DArray = this.createFallbackTexture(
@@ -798,24 +804,6 @@ export class Device_GL implements SwapChain, Device {
     });
   }
 
-  createInputState(
-    _inputLayout: InputLayout,
-    vertexBuffers: (VertexBufferDescriptor | null)[],
-    indexBufferBinding: IndexBufferDescriptor | null,
-    program: Program,
-  ): InputState {
-    const inputLayout = _inputLayout as InputLayout_GL;
-
-    return new InputState_GL({
-      id: this.getNextUniqueId(),
-      device: this,
-      inputLayout,
-      vertexBuffers,
-      indexBufferBinding,
-      program: program as Program_GL,
-    });
-  }
-
   createRenderPipeline(descriptor: RenderPipelineDescriptor): RenderPipeline {
     return new RenderPipeline_GL({
       id: this.getNextUniqueId(),
@@ -1082,8 +1070,8 @@ export class Device_GL implements SwapChain, Device {
     } else if (o.type === ResourceType.RenderTarget) {
       const { gl_renderbuffer } = o as RenderTarget_GL;
       if (gl_renderbuffer !== null) assignPlatformName(gl_renderbuffer, name);
-    } else if (o.type === ResourceType.InputState) {
-      assignPlatformName((o as InputState_GL).vao, name);
+    } else if (o.type === ResourceType.InputLayout) {
+      assignPlatformName((o as InputLayout_GL).vao, name);
     }
   }
 
@@ -1974,17 +1962,62 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
-  setInputState(inputState_: InputState | null): void {
-    const inputState = inputState_ as InputState_GL;
-    this.currentInputState = inputState;
-    if (this.currentInputState !== null) {
+  setVertexInput(
+    inputLayout_: InputLayout | null,
+    vertexBuffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
+  ): void {
+    if (inputLayout_ !== null) {
+      assert(this.currentPipeline.inputLayout === inputLayout_);
+      const inputLayout = inputLayout_ as InputLayout_GL;
+
+      this.bindVAO(inputLayout.vao);
+
+      const gl = this.gl;
+      for (let i = 0; i < inputLayout.vertexAttributeDescriptors.length; i++) {
+        const attr = inputLayout.vertexAttributeDescriptors[i];
+
+        // find location by name in WebGL1
+        const location = isWebGL2(gl)
+          ? attr.location
+          : inputLayout.program.attributes[attr.location]?.location;
+
+        const vertexBuffer = vertexBuffers![attr.bufferIndex];
+        if (vertexBuffer === null) continue;
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, getPlatformBuffer(vertexBuffer.buffer));
+
+        const bufferOffset = vertexBuffer.byteOffset + attr.bufferByteOffset;
+        const format = inputLayout.vertexBufferFormats[i];
+
+        const inputLayoutBuffer =
+          inputLayout.vertexBufferDescriptors[attr.bufferIndex]!;
+        gl.vertexAttribPointer(
+          location,
+          format.size,
+          format.type,
+          format.normalized,
+          inputLayoutBuffer.byteStride,
+          bufferOffset,
+        );
+      }
+
       assert(
-        this.currentPipeline.inputLayout === this.currentInputState.inputLayout,
+        (indexBuffer !== null) === (inputLayout.indexBufferFormat !== null),
       );
-      this.bindVAO(this.currentInputState.vao);
+      if (indexBuffer !== null) {
+        const buffer = indexBuffer.buffer as Buffer_GL;
+        assert(buffer.usage === BufferUsage.INDEX);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, getPlatformBuffer(buffer));
+        this.currentIndexBufferByteOffset = indexBuffer.byteOffset;
+      } else {
+        this.currentIndexBufferByteOffset = null;
+      }
     } else {
       assert(this.currentPipeline.inputLayout === null);
+      assert(indexBuffer === null);
       this.bindVAO(null);
+      this.currentIndexBufferByteOffset = 0;
     }
   }
 
@@ -2006,15 +2039,15 @@ export class Device_GL implements SwapChain, Device {
 
   drawIndexed(count: number, firstIndex: number): void {
     const gl = this.gl;
-    const pipeline = this.currentPipeline;
-    const inputState = this.currentInputState;
+    const pipeline = this.currentPipeline,
+      inputLayout = assertExists(pipeline.inputLayout);
     const byteOffset =
-      assertExists(inputState.indexBufferByteOffset) +
-      firstIndex * assertExists(inputState.indexBufferCompByteSize);
+      assertExists(this.currentIndexBufferByteOffset) +
+      firstIndex * inputLayout.indexBufferCompByteSize!;
     gl.drawElements(
       pipeline.drawMode,
       count,
-      assertExists(inputState.indexBufferType),
+      inputLayout.indexBufferType!,
       byteOffset,
     );
     this.debugGroupStatisticsDrawCall();
@@ -2027,16 +2060,16 @@ export class Device_GL implements SwapChain, Device {
     instanceCount: number,
   ): void {
     const gl = this.gl;
-    const pipeline = this.currentPipeline;
-    const inputState = this.currentInputState;
+    const pipeline = this.currentPipeline,
+      inputLayout = assertExists(pipeline.inputLayout);
     const byteOffset =
-      assertExists(inputState.indexBufferByteOffset) +
-      firstIndex * assertExists(inputState.indexBufferCompByteSize);
+      assertExists(this.currentIndexBufferByteOffset) +
+      firstIndex * inputLayout.indexBufferCompByteSize!;
 
     const params: [number, number, number, number, number] = [
       pipeline.drawMode,
       count,
-      assertExists(inputState.indexBufferType),
+      inputLayout.indexBufferType!,
       byteOffset,
       instanceCount,
     ];
@@ -2332,12 +2365,17 @@ export class Device_GL implements SwapChain, Device {
     resolveTo: Texture_GL,
   ) {
     if (!this.blitRenderPipeline) {
-      const vertexBuffer = makeDataBuffer(
+      const program = this.createProgram({
+        ...preprocessProgramObj_GLSL(this, new CopyProgram()),
+        ensurePreprocessed: () => {},
+        associate: () => {},
+      });
+      this.blitVertexBuffer = makeDataBuffer(
         this,
         BufferUsage.VERTEX | BufferUsage.COPY_DST,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
       );
-      const inputLayout = this.createInputLayout({
+      this.blitInputLayout = this.createInputLayout({
         vertexBufferDescriptors: [
           { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
         ],
@@ -2350,21 +2388,11 @@ export class Device_GL implements SwapChain, Device {
           },
         ],
         indexBufferFormat: null,
+        program,
       });
       const bindingLayouts: BindingLayoutDescriptor[] = [
         { numSamplers: 1, numUniformBuffers: 0 },
       ];
-      const program = this.createProgram({
-        ...preprocessProgramObj_GLSL(this, new CopyProgram()),
-        ensurePreprocessed: () => {},
-        associate: () => {},
-      });
-      this.blitInputState = this.createInputState(
-        inputLayout,
-        [{ buffer: vertexBuffer, byteOffset: 0 }],
-        null,
-        program,
-      );
       this.blitRenderPipeline = this.createRenderPipeline({
         topology: PrimitiveTopology.Triangles,
         sampleCount: 1,
@@ -2372,7 +2400,7 @@ export class Device_GL implements SwapChain, Device {
         bindingLayouts,
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
-        inputLayout,
+        inputLayout: this.blitInputLayout,
         // megaStateDescriptor: copyMegaState(defaultMegaState),
         megaStateDescriptor: this.currentMegaState,
       });
@@ -2419,7 +2447,11 @@ export class Device_GL implements SwapChain, Device {
     const { width, height } = this.getCanvas() as HTMLCanvasElement;
     blitRenderPass.setPipeline(this.blitRenderPipeline);
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
-    blitRenderPass.setInputState(this.blitInputState);
+    blitRenderPass.setVertexInput(
+      this.blitInputLayout,
+      [{ buffer: this.blitVertexBuffer, byteOffset: 0 }],
+      null,
+    );
     blitRenderPass.setViewport(0, 0, width, height);
 
     // disable blending for blit

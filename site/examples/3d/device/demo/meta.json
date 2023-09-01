@@ -5,6 +5,20 @@
   },
   "demos": [
     {
+      "filename": "webgl-low.ts",
+      "title": {
+        "zh": "WebGL Device",
+        "en": "WebGL Device"
+      }
+    },
+    {
+      "filename": "webgpu-low.ts",
+      "title": {
+        "zh": "WebGPU Device",
+        "en": "WebGPU Device"
+      }
+    },
+    {
       "filename": "webgl.ts",
       "title": {
         "zh": "WebGL Device",

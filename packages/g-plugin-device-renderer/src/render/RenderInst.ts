@@ -3,13 +3,14 @@ import type {
   BindingLayoutDescriptor,
   BindingsDescriptor,
   Device,
+  IndexBufferDescriptor,
   InputLayout,
-  InputState,
   MegaStateDescriptor,
   Program,
   RenderPass,
   RenderPipelineDescriptor,
   SamplerBinding,
+  VertexBufferDescriptor,
 } from '../platform';
 import { PrimitiveTopology } from '../platform';
 import {
@@ -65,7 +66,8 @@ export class RenderInst {
   private dynamicUniformBufferByteOffsets: number[] = nArray(4, () => 0);
 
   flags: RenderInstFlags = 0;
-  private inputState: InputState | null = null;
+  private vertexBuffers: (VertexBufferDescriptor | null)[] | null = null;
+  private indexBuffer: IndexBufferDescriptor | null = null;
   private drawStart = 0;
   private drawCount = 0;
   private drawInstanceCount = 0;
@@ -92,7 +94,8 @@ export class RenderInst {
   reset(): void {
     this.sortKey = 0;
     this.flags = RenderInstFlags.AllowSkippingIfPipelineNotReady;
-    this.inputState = null;
+    this.vertexBuffers = null;
+    this.indexBuffer = null;
     this.renderPipelineDescriptor.inputLayout = null;
   }
 
@@ -125,12 +128,13 @@ export class RenderInst {
       o.renderPipelineDescriptor.depthStencilAttachmentFormat;
     this.renderPipelineDescriptor.sampleCount =
       o.renderPipelineDescriptor.sampleCount;
-    this.inputState = o.inputState;
     this.uniformBuffer = o.uniformBuffer;
     this.uniforms = [...o.uniforms];
     this.drawCount = o.drawCount;
     this.drawStart = o.drawStart;
     this.drawInstanceCount = o.drawInstanceCount;
+    this.vertexBuffers = o.vertexBuffers;
+    this.indexBuffer = o.indexBuffer;
     this.flags =
       (this.flags & ~RenderInstFlags.InheritedFlags) |
       (o.flags & RenderInstFlags.InheritedFlags);
@@ -153,6 +157,17 @@ export class RenderInst {
     for (let i = 0; i < o.dynamicUniformBufferByteOffsets.length; i++)
       this.dynamicUniformBufferByteOffsets[i] =
         o.dynamicUniformBufferByteOffsets[i];
+  }
+
+  validate(): void {
+    // Validate uniform buffer bindings.
+    for (let i = 0; i < this.bindingDescriptors.length; i++) {
+      const bd = this.bindingDescriptors[i];
+      for (let j = 0; j < bd.bindingLayout.numUniformBuffers; j++)
+        assert(bd.uniformBufferBindings[j].wordCount > 0);
+    }
+
+    assert(this.drawCount > 0);
   }
 
   /**
@@ -184,15 +199,17 @@ export class RenderInst {
   }
 
   /**
-   * Sets both the {@see InputLayout} and {@see InputState} to be used by this render instance.
+   * Sets the vertex input configuration to be used by this render instance.
    * The {@see InputLayout} is used to construct the pipeline as part of the automatic pipeline building
-   * facilities, while {@see InputState} is used for the render.
+   * facilities, while the {@see VertexBufferDescriptor} and {@see IndexBufferDescriptor} is used for the render.
    */
-  setInputLayoutAndState(
+  setVertexInput(
     inputLayout: InputLayout | null,
-    inputState: InputState | null,
+    vertexBuffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
   ): void {
-    this.inputState = inputState;
+    this.vertexBuffers = vertexBuffers;
+    this.indexBuffer = indexBuffer;
     this.renderPipelineDescriptor.inputLayout = inputLayout;
   }
 
@@ -546,7 +563,11 @@ export class RenderInst {
 
     passRenderer.setPipeline(gfxPipeline);
 
-    passRenderer.setInputState(this.inputState);
+    passRenderer.setVertexInput(
+      this.renderPipelineDescriptor.inputLayout,
+      this.vertexBuffers,
+      this.indexBuffer,
+    );
 
     // upload uniforms
     for (

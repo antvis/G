@@ -11,10 +11,8 @@ import type {
   DebugGroup,
   Device,
   DeviceLimits,
-  IndexBufferDescriptor,
   InputLayout,
   InputLayoutDescriptor,
-  InputState,
   Program,
   ProgramDescriptor,
   ProgramDescriptorSimple,
@@ -34,7 +32,6 @@ import type {
   Texture,
   TextureDescriptor,
   VendorInfo,
-  VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -61,7 +58,6 @@ import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
 import { GPUTextureUsage } from './constants';
 import { InputLayout_WebGPU } from './InputLayout';
-import { InputState_WebGPU } from './InputState';
 import type {
   Attachment_WebGPU,
   BindGroupLayout,
@@ -472,21 +468,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       id: this.getNextUniqueId(),
       device: this,
       descriptor,
-    });
-  }
-
-  createInputState(
-    inputLayout: InputLayout,
-    vertexBuffers: (VertexBufferDescriptor | null)[],
-    indexBuffer: IndexBufferDescriptor | null,
-  ): InputState {
-    // InputState is a GL-only thing, as VAOs suck. We emulate it with a VAO-alike here.
-    return new InputState_WebGPU({
-      id: this.getNextUniqueId(),
-      device: this,
-      inputLayout,
-      vertexBuffers,
-      indexBuffer,
     });
   }
 

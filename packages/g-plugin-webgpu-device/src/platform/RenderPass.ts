@@ -1,9 +1,11 @@
 import {
   Bindings,
-  InputState,
+  IndexBufferDescriptor,
+  InputLayout,
   RenderPass,
   RenderPassDescriptor,
   RenderPipeline,
+  VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -11,11 +13,9 @@ import {
   FormatFlags,
   getFormatFlags,
 } from '@antv/g-plugin-device-renderer';
-import { isNil } from '@antv/util';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
 import type { InputLayout_WebGPU } from './InputLayout';
-import type { InputState_WebGPU } from './InputState';
 import type { Attachment_WebGPU, TextureShared_WebGPU } from './interfaces';
 import type { RenderPipeline_WebGPU } from './RenderPipeline';
 import type { Texture_WebGPU } from './Texture';
@@ -218,23 +218,24 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuRenderPassEncoder.setPipeline(gpuRenderPipeline);
   }
 
-  setInputState(inputState_: InputState | null): void {
-    if (inputState_ === null) return;
+  setVertexInput(
+    inputLayout_: InputLayout | null,
+    vertexBuffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
+  ): void {
+    if (inputLayout_ === null) return;
 
-    const inputState = inputState_ as InputState_WebGPU;
-    if (inputState.indexBuffer !== null) {
-      const inputLayout = inputState.inputLayout as InputLayout_WebGPU;
-      const indexBuffer = inputState.indexBuffer;
+    const inputLayout = inputLayout_ as InputLayout_WebGPU;
+    if (indexBuffer !== null)
       this.gpuRenderPassEncoder.setIndexBuffer(
         getPlatformBuffer(indexBuffer.buffer),
         assertExists(inputLayout.indexFormat),
         indexBuffer.byteOffset,
       );
-    }
 
-    for (let i = 0; i < inputState.vertexBuffers.length; i++) {
-      const b = inputState.vertexBuffers[i];
-      if (isNil(b)) continue;
+    for (let i = 0; i < vertexBuffers!.length; i++) {
+      const b = vertexBuffers![i];
+      if (b === null) continue;
       this.gpuRenderPassEncoder.setVertexBuffer(
         i,
         getPlatformBuffer(b.buffer),

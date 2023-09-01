@@ -10,7 +10,6 @@ export enum ResourceType {
   Program,
   Bindings,
   InputLayout,
-  InputState,
   RenderPipeline,
   ComputePipeline,
   Readback,
@@ -55,9 +54,6 @@ export interface Bindings extends ResourceBase {
 }
 export interface InputLayout extends ResourceBase {
   type: ResourceType.InputLayout;
-}
-export interface InputState extends ResourceBase {
-  type: ResourceType.InputState;
 }
 export interface RenderPipeline extends ResourceBase {
   type: ResourceType.RenderPipeline;
@@ -112,7 +108,6 @@ export type Resource =
   | Program
   | Bindings
   | InputLayout
-  | InputState
   | RenderPipeline
   | ComputePipeline
   | Readback;
@@ -266,7 +261,6 @@ export interface VertexAttributeDescriptor {
   format: Format;
   bufferIndex: number;
   bufferByteOffset: number;
-  byteStride?: number;
   divisor?: number;
 }
 
@@ -387,6 +381,10 @@ export interface InputLayoutDescriptor {
   vertexBufferDescriptors: (InputLayoutBufferDescriptor | null)[];
   vertexAttributeDescriptors: VertexAttributeDescriptor[];
   indexBufferFormat: Format | null;
+  /**
+   * Read attributes from linked program.
+   */
+  program: Program;
 }
 
 export interface ChannelBlendState {
@@ -515,7 +513,11 @@ export interface RenderPass {
     bindings: Bindings,
     dynamicByteOffsets: number[],
   ) => void;
-  setInputState: (inputState: InputState | null) => void;
+  setVertexInput: (
+    inputLayout: InputLayout | null,
+    buffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
+  ) => void;
   setStencilRef: (value: number) => void;
 
   // Draw commands.
@@ -585,12 +587,6 @@ export interface Device {
   createInputLayout: (
     inputLayoutDescriptor: InputLayoutDescriptor,
   ) => InputLayout;
-  createInputState: (
-    inputLayout: InputLayout,
-    buffers: (VertexBufferDescriptor | null)[],
-    indexBuffer: IndexBufferDescriptor | null,
-    program?: Program,
-  ) => InputState;
   createRenderPipeline: (
     descriptor: RenderPipelineDescriptor,
   ) => RenderPipeline;

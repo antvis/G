@@ -58,6 +58,7 @@ export class RenderInstList {
   }
 
   submitRenderInst(renderInst: RenderInst): void {
+    renderInst.validate();
     renderInst.flags |= RenderInstFlags.Draw;
     this.insertSorted(renderInst);
   }
@@ -89,19 +90,16 @@ export class RenderInstList {
   drawOnPassRendererNoReset(
     cache: RenderCache,
     passRenderer: RenderPass,
-  ): number {
+  ): void {
     this.ensureSorted();
 
-    let numDrawn = 0;
     if (this.executionOrder === RenderInstExecutionOrder.Forwards) {
       for (let i = 0; i < this.renderInsts.length; i++)
-        if (this.renderInsts[i].drawOnPass(cache, passRenderer)) numDrawn++;
+        this.renderInsts[i].drawOnPass(cache, passRenderer);
     } else {
       for (let i = this.renderInsts.length - 1; i >= 0; i--)
-        if (this.renderInsts[i].drawOnPass(cache, passRenderer)) numDrawn++;
+        this.renderInsts[i].drawOnPass(cache, passRenderer);
     }
-
-    return numDrawn;
   }
 
   reset(): void {

@@ -90,7 +90,8 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
   inputLayoutDescriptor: InputLayoutDescriptor = {
     vertexBufferDescriptors: [],
     vertexAttributeDescriptors: [],
-    indexBufferFormat: Format.U32_R,
+    indexBufferFormat: null,
+    program: null,
   };
 
   vertexCount = 0;
@@ -158,7 +159,6 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
         if (existed) {
           existed.format = format;
           existed.bufferByteOffset = bufferByteOffset;
-          existed.byteStride = byteStride;
           existed.divisor = divisor;
         } else {
           this.inputLayoutDescriptor.vertexAttributeDescriptors.push({
@@ -166,7 +166,6 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
             bufferIndex,
             bufferByteOffset,
             location,
-            byteStride,
             divisor,
           });
         }
