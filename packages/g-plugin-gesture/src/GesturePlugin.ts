@@ -109,12 +109,32 @@ export class GesturePlugin implements RenderingPlugin {
     const { evCache, startPoints } = this;
     if (ev) {
       const { pointerId, x, y } = ev;
+
+      // evcache 已经存在的 pointerId, 做替换
+      const existIdx = evCache.findIndex((item) => pointerId === item.pointerId);
+      if (existIdx !== -1){
+         evCache.splice(existIdx, 1);
+      }
+
+      // evCache 不存在的 pointerId, 添加
       evCache.push({
         pointerId,
         x,
         y,
         ev,
       });
+
+      // 对齐touches evCache 存在，touches 不存在，移除
+      const evTouches = [...ev.nativeEvent.touches];
+      for (let i =  evCache.length - 1; i > -1; i--) {
+        // 在touches中不存在
+        const shouldRemove = evTouches.find(touch => {
+          return touch.identifier !== evCache[i].pointerId
+        })
+        if (shouldRemove) {
+          evCache.splice(i, 1);
+        }
+      }
     }
     // 重置 startPoints
     startPoints.length = evCache.length;
