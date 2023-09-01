@@ -158,7 +158,7 @@ export abstract class Instanced {
   /**
    * Create a new batch if the number of instances exceeds.
    */
-  maxInstances = 5000;
+  maxInstances = Infinity;
 
   protected abstract createMaterial(objects: DisplayObject[]): void;
 
