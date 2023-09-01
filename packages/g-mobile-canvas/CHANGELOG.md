@@ -1,5 +1,12 @@
 # @antv/g-mobile-canvas
 
+## 0.11.4
+
+### Patch Changes
+
+-   Updated dependencies [a2f2de20]
+    -   @antv/g-plugin-gesture@1.2.1
+
 ## 0.11.3
 
 ### Patch Changes
