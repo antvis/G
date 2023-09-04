@@ -1,5 +1,11 @@
 # @antv/g-plugin-gesture
 
+## 1.2.1
+
+### Patch Changes
+
+-   a2f2de20: 修复 touchend 事件不触发导致手势事件异常
+
 ## 1.2.0
 
 ### Minor Changes
