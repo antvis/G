@@ -1,7 +1,7 @@
 import {
   Format,
   ResourceType,
-  VertexBufferFrequency,
+  VertexStepMode,
   assert,
   assertExists,
   getFormatCompByteSize,
@@ -78,7 +78,7 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(vao);
     }
-    device.currentBoundVAO = vao;
+    device['currentBoundVAO'] = vao;
 
     gl.bindBuffer(
       gl.ARRAY_BUFFER,
@@ -95,6 +95,9 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
         ? attr.location
         : (program as Program_GL).attributes[attr.location]?.location;
 
+      const vertexFormat = translateVertexFormat(format);
+      vertexBufferFormats.push(vertexFormat);
+
       if (!isNil(location)) {
         if (isFormatSizedInteger(format)) {
           // See https://groups.google.com/d/msg/angleproject/yQb5DaCzcWg/Ova0E3wcAQAJ for more info.
@@ -102,18 +105,15 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
           // debugger;
         }
 
-        const vertexFormat = translateVertexFormat(format);
         const { size, type, normalized } = vertexFormat;
 
         const inputLayoutBuffer = assertExists(
           vertexBufferDescriptors[bufferIndex],
         );
 
-        vertexBufferFormats.push(vertexFormat);
-
         gl.vertexAttribPointer(location, size, type, normalized, 0, 0);
 
-        if (inputLayoutBuffer.frequency === VertexBufferFrequency.PerInstance) {
+        if (inputLayoutBuffer.stepMode === VertexStepMode.INSTANCE) {
           if (isWebGL2(gl)) {
             // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttribDivisor
             gl.vertexAttribDivisor(location, divisor);
@@ -125,7 +125,7 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
           }
         }
 
-        gl.enableVertexAttribArray(attr.location);
+        gl.enableVertexAttribArray(location);
       }
     }
 
@@ -134,7 +134,7 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(null);
     }
-    device.currentBoundVAO = null;
+    device['currentBoundVAO'] = null;
 
     this.vertexAttributeDescriptors = vertexAttributeDescriptors;
     this.vertexBufferDescriptors = vertexBufferDescriptors;
@@ -148,7 +148,7 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
 
   destroy() {
     super.destroy();
-    if (this.device.currentBoundVAO === this.vao) {
+    if (this.device['currentBoundVAO'] === this.vao) {
       if (isWebGL2(this.device.gl)) {
         this.device.gl.bindVertexArray(null);
         this.device.gl.deleteVertexArray(this.vao);
@@ -156,7 +156,7 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
         this.device.OES_vertex_array_object.bindVertexArrayOES(null);
         this.device.OES_vertex_array_object.deleteVertexArrayOES(this.vao);
       }
-      this.device.currentBoundVAO = null;
+      this.device['currentBoundVAO'] = null;
     }
   }
 }

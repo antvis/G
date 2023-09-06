@@ -316,12 +316,12 @@ export class PickingPlugin implements RenderingPlugin {
           depthWrite: true,
         },
         {
-          rgbBlendMode: BlendMode.Add,
-          rgbBlendSrcFactor: BlendFactor.One,
-          rgbBlendDstFactor: BlendFactor.Zero,
-          alphaBlendMode: BlendMode.Add,
-          alphaBlendSrcFactor: BlendFactor.One,
-          alphaBlendDstFactor: BlendFactor.Zero,
+          rgbBlendMode: BlendMode.ADD,
+          rgbBlendSrcFactor: BlendFactor.ONE,
+          rgbBlendDstFactor: BlendFactor.ZERO,
+          alphaBlendMode: BlendMode.ADD,
+          alphaBlendSrcFactor: BlendFactor.ONE,
+          alphaBlendDstFactor: BlendFactor.ZERO,
         },
       ),
     );

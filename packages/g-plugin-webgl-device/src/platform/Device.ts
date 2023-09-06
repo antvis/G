@@ -19,7 +19,6 @@ import {
   PlatformFramebuffer,
   Program,
   ProgramDescriptor,
-  ProgramDescriptorSimple,
   QueryPool,
   QueryPoolType,
   Readback,
@@ -38,6 +37,7 @@ import {
   TransparentWhite,
   VendorInfo,
   VertexBufferDescriptor,
+  preprocessShader_GLSL,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -63,13 +63,12 @@ import {
   makeDataBuffer,
   nullify,
   prependLineNo,
-  preprocessProgramObj_GLSL,
   PrimitiveTopology,
   ResourceType,
   SamplerFormatKind,
   TextureDimension,
   TextureUsage,
-  VertexBufferFrequency,
+  VertexStepMode,
   ViewportOrigin,
 } from '@antv/g-plugin-device-renderer';
 import { Bindings_GL } from './Bindings';
@@ -105,6 +104,7 @@ import {
   isWebGL2,
 } from './utils';
 import { ComputePass_GL } from './ComputePass';
+import { isNil } from '@antv/util';
 
 // This is a workaround for ANGLE not supporting UBOs greater than 64kb (the limit of D3D).
 // https://bugs.chromium.org/p/angleproject/issues/detail?id=3388
@@ -145,10 +145,10 @@ export class Device_GL implements SwapChain, Device {
 
   // Device
   private currentActiveTexture: GLenum | null = null;
-  currentBoundVAO: WebGLVertexArrayObject | null = null;
+  private currentBoundVAO: WebGLVertexArrayObject | null = null;
   private currentProgram: Program_GL | null = null;
 
-  resourceCreationTracker: ResourceCreationTracker | null = null;
+  private resourceCreationTracker: ResourceCreationTracker | null = null;
   private resourceUniqueId = 0;
 
   // Cached GL driver state
@@ -165,7 +165,7 @@ export class Device_GL implements SwapChain, Device {
     copyMegaState(defaultMegaState);
   private currentSamplers: (WebGLSampler | null)[] = [];
 
-  currentTextures: (WebGLTexture | null)[] = [];
+  private currentTextures: (WebGLTexture | null)[] = [];
 
   private currentUniformBuffers: Buffer[] = [];
   private currentUniformBufferByteOffsets: number[] = [];
@@ -186,7 +186,7 @@ export class Device_GL implements SwapChain, Device {
    * use DRAW_FRAMEBUFFER in WebGL2
    */
   private renderPassDrawFramebuffer: WebGLFramebuffer;
-  readbackFramebuffer: WebGLFramebuffer;
+  private readbackFramebuffer: WebGLFramebuffer;
 
   private fallbackTexture2D: WebGLTexture;
   private fallbackTexture2DDepth: WebGLTexture;
@@ -200,9 +200,8 @@ export class Device_GL implements SwapChain, Device {
   readonly glslVersion: string;
   readonly explicitBindingLocations = false;
   readonly separateSamplerTextures = false;
-  readonly viewportOrigin = ViewportOrigin.LowerLeft;
-  readonly clipSpaceNearZ = ClipSpaceNearZ.NegativeOne;
-
+  readonly viewportOrigin = ViewportOrigin.LOWER_LEFT;
+  readonly clipSpaceNearZ = ClipSpaceNearZ.NEGATIVE_ONE;
   readonly supportMRT: boolean = false;
 
   private inBlitRenderPass = false;
@@ -210,6 +209,7 @@ export class Device_GL implements SwapChain, Device {
   private blitInputLayout: InputLayout;
   private blitVertexBuffer: Buffer;
   private blitBindings: Bindings;
+  private blitProgram: Program_GL;
 
   // GLimits
   /**
@@ -221,6 +221,7 @@ export class Device_GL implements SwapChain, Device {
   supportedSampleCounts: number[] = [];
   maxVertexAttribs: number;
   occlusionQueriesRecommended = false;
+  computeShadersSupported = false;
 
   gl: WebGLRenderingContext | WebGL2RenderingContext;
 
@@ -293,9 +294,9 @@ export class Device_GL implements SwapChain, Device {
         width: 0,
         height: 0,
         depth: 1,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels: 1,
-        usage: TextureUsage.RenderTarget,
+        usage: TextureUsage.RENDER_TARGET,
         pixelFormat:
           this.contextAttributes.alpha === false
             ? Format.U8_RGB_RT
@@ -327,17 +328,17 @@ export class Device_GL implements SwapChain, Device {
     );
 
     this.fallbackTexture2D = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Float,
     );
     this.fallbackTexture2DDepth = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Depth,
     );
     this.fallbackVertexBuffer = this.createBuffer({
       viewOrSize: 1,
       usage: BufferUsage.VERTEX,
-      hint: BufferFrequencyHint.Static,
+      hint: BufferFrequencyHint.STATIC,
     });
 
     if (isWebGL2(gl)) {
@@ -356,10 +357,10 @@ export class Device_GL implements SwapChain, Device {
     }
 
     // Adjust for GL defaults.
-    this.currentMegaState.depthCompare = CompareMode.Less;
+    this.currentMegaState.depthCompare = CompareMode.LESS;
     this.currentMegaState.depthWrite = false;
     this.currentMegaState.attachmentsState[0].channelWriteMask =
-      ChannelWriteMask.AllChannels;
+      ChannelWriteMask.ALL;
 
     // always have depth test enabled.
     gl.enable(gl.DEPTH_TEST);
@@ -376,11 +377,29 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
+  destroy() {
+    if (this.blitBindings) {
+      this.blitBindings.destroy();
+    }
+    if (this.blitInputLayout) {
+      this.blitInputLayout.destroy();
+    }
+    if (this.blitRenderPipeline) {
+      this.blitRenderPipeline.destroy();
+    }
+    if (this.blitVertexBuffer) {
+      this.blitVertexBuffer.destroy();
+    }
+    if (this.blitProgram) {
+      this.blitProgram.destroy();
+    }
+  }
+
   private createFallbackTexture(
     dimension: TextureDimension,
     formatKind: SamplerFormatKind,
   ): WebGLTexture {
-    const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    const depth = dimension === TextureDimension.TEXTURE_CUBE_MAP ? 6 : 1;
     // const supportDepthTexture =
     //   isWebGL2(this.gl) || (!isWebGL2(this.gl) && !!this.WEBGL_depth_texture);
     const pixelFormat =
@@ -391,7 +410,7 @@ export class Device_GL implements SwapChain, Device {
     const texture = this.createTexture({
       dimension,
       pixelFormat,
-      usage: TextureUsage.Sampled,
+      usage: TextureUsage.SAMPLED,
       width: 1,
       height: 1,
       depth,
@@ -521,7 +540,9 @@ export class Device_GL implements SwapChain, Device {
         return GL.SRGB8;
       case Format.U8_RGBA_NORM:
       case Format.U8_RGBA_RT:
-        return isWebGL2(this.gl) ? GL.RGBA8 : GL.RGBA;
+        // WebGL1 only support RGBA4 RGB565 RGB5_A1
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/renderbufferStorage#parameters
+        return isWebGL2(this.gl) ? GL.RGBA8 : GL.RGBA4;
       case Format.U8_RGBA_SRGB:
       case Format.U8_RGBA_RT_SRGB:
         return GL.SRGB8_ALPHA8;
@@ -776,11 +797,25 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createProgram(descriptor: ProgramDescriptor): Program_GL {
-    descriptor.ensurePreprocessed(this.queryVendorInfo());
+    // preprocess GLSL first
+    if (descriptor.vertex.glsl) {
+      descriptor.vertex.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'vert',
+        descriptor.vertex.glsl,
+      );
+    }
+    if (descriptor.fragment.glsl) {
+      descriptor.fragment.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'frag',
+        descriptor.fragment.glsl,
+      );
+    }
     return this.createProgramSimple(descriptor);
   }
 
-  createProgramSimple(descriptor: ProgramDescriptor): Program_GL {
+  private createProgramSimple(descriptor: ProgramDescriptor): Program_GL {
     return new Program_GL({
       id: this.getNextUniqueId(),
       device: this,
@@ -1093,7 +1128,7 @@ export class Device_GL implements SwapChain, Device {
     this.debugGroupStack.pop();
   }
 
-  programPatched(o: Program, descriptor: ProgramDescriptorSimple): void {
+  programPatched(o: Program, descriptor: ProgramDescriptor): void {
     assert(this.shaderDebug);
 
     // const program = o as Program_GL;
@@ -1129,7 +1164,7 @@ export class Device_GL implements SwapChain, Device {
       this.debugGroupStack[i].drawCallCount += count;
   }
 
-  debugGroupStatisticsBufferUpload(count = 1): void {
+  private debugGroupStatisticsBufferUpload(count = 1): void {
     for (let i = this.debugGroupStack.length - 1; i >= 0; i--)
       this.debugGroupStack[i].bufferUploadCount += count;
   }
@@ -1165,17 +1200,14 @@ export class Device_GL implements SwapChain, Device {
       const descriptor = program.descriptor;
 
       if (
-        !this.reportShaderError(
-          program.gl_shader_vert,
-          descriptor.preprocessedVert,
-        )
+        !this.reportShaderError(program.gl_shader_vert, descriptor.vertex.glsl)
       )
         return;
 
       if (
         !this.reportShaderError(
           program.gl_shader_frag,
-          descriptor.preprocessedFrag,
+          descriptor.fragment.glsl,
         )
       )
         return;
@@ -1449,10 +1481,7 @@ export class Device_GL implements SwapChain, Device {
 
     if (this.OES_draw_buffers_indexed !== null) {
       const attachment = this.currentMegaState.attachmentsState[slot];
-      if (
-        attachment &&
-        attachment.channelWriteMask !== ChannelWriteMask.AllChannels
-      ) {
+      if (attachment && attachment.channelWriteMask !== ChannelWriteMask.ALL) {
         this.OES_draw_buffers_indexed.colorMaskiOES(
           slot,
           true,
@@ -1460,16 +1489,13 @@ export class Device_GL implements SwapChain, Device {
           true,
           true,
         );
-        attachment.channelWriteMask = ChannelWriteMask.AllChannels;
+        attachment.channelWriteMask = ChannelWriteMask.ALL;
       }
     } else {
       const attachment = this.currentMegaState.attachmentsState[0];
-      if (
-        attachment &&
-        attachment.channelWriteMask !== ChannelWriteMask.AllChannels
-      ) {
+      if (attachment && attachment.channelWriteMask !== ChannelWriteMask.ALL) {
         gl.colorMask(true, true, true, true);
-        attachment.channelWriteMask = ChannelWriteMask.AllChannels;
+        attachment.channelWriteMask = ChannelWriteMask.ALL;
       }
     }
 
@@ -1656,10 +1682,10 @@ export class Device_GL implements SwapChain, Device {
     ) {
       dbi.colorMaskiOES(
         i,
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Red),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Green),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Blue),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Alpha),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.RED),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.GREEN),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.BLUE),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.ALPHA),
       );
       currentAttachmentState.channelWriteMask =
         newAttachmentState.channelWriteMask;
@@ -1735,10 +1761,10 @@ export class Device_GL implements SwapChain, Device {
       newAttachmentState.channelWriteMask
     ) {
       gl.colorMask(
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Red),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Green),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Blue),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Alpha),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.RED),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.GREEN),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.BLUE),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.ALPHA),
       );
       currentAttachmentState.channelWriteMask =
         newAttachmentState.channelWriteMask;
@@ -1863,17 +1889,17 @@ export class Device_GL implements SwapChain, Device {
     }
 
     if (currentMegaState.cullMode !== newMegaState.cullMode) {
-      if (currentMegaState.cullMode === CullMode.None) {
+      if (currentMegaState.cullMode === CullMode.NONE) {
         gl.enable(gl.CULL_FACE);
-      } else if (newMegaState.cullMode === CullMode.None) {
+      } else if (newMegaState.cullMode === CullMode.NONE) {
         gl.disable(gl.CULL_FACE);
       }
 
-      if (newMegaState.cullMode === CullMode.Back) {
+      if (newMegaState.cullMode === CullMode.BACK) {
         gl.cullFace(gl.BACK);
-      } else if (newMegaState.cullMode === CullMode.Front) {
+      } else if (newMegaState.cullMode === CullMode.FRONT) {
         gl.cullFace(gl.FRONT);
-      } else if (newMegaState.cullMode === CullMode.FrontAndBack) {
+      } else if (newMegaState.cullMode === CullMode.FRONT_AND_BACK) {
         gl.cullFace(gl.FRONT_AND_BACK);
       }
       currentMegaState.cullMode = newMegaState.cullMode;
@@ -1932,7 +1958,7 @@ export class Device_GL implements SwapChain, Device {
       const deviceProgram = program.descriptor;
 
       const uniformBlocks = findall(
-        deviceProgram.preprocessedVert,
+        deviceProgram.vertex.glsl,
         /uniform (\w+) {([^]*?)}/g,
       );
 
@@ -1949,7 +1975,7 @@ export class Device_GL implements SwapChain, Device {
       }
 
       const samplers = findall(
-        deviceProgram.preprocessedVert,
+        deviceProgram.vertex.glsl,
         /^uniform .*sampler\S+ (\w+);\s* \/\/ BINDING=(\d+)$/gm,
       );
       for (let i = 0; i < samplers.length; i++) {
@@ -1980,26 +2006,33 @@ export class Device_GL implements SwapChain, Device {
         // find location by name in WebGL1
         const location = isWebGL2(gl)
           ? attr.location
-          : inputLayout.program.attributes[attr.location]?.location;
+          : inputLayout.program.attributes[i]?.location;
 
-        const vertexBuffer = vertexBuffers![attr.bufferIndex];
-        if (vertexBuffer === null) continue;
+        if (!isNil(location)) {
+          const vertexBuffer = vertexBuffers![attr.bufferIndex];
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, getPlatformBuffer(vertexBuffer.buffer));
+          if (vertexBuffer === null) continue;
 
-        const bufferOffset = vertexBuffer.byteOffset + attr.bufferByteOffset;
-        const format = inputLayout.vertexBufferFormats[i];
+          const format = inputLayout.vertexBufferFormats[i];
 
-        const inputLayoutBuffer =
-          inputLayout.vertexBufferDescriptors[attr.bufferIndex]!;
-        gl.vertexAttribPointer(
-          location,
-          format.size,
-          format.type,
-          format.normalized,
-          inputLayoutBuffer.byteStride,
-          bufferOffset,
-        );
+          gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            getPlatformBuffer(vertexBuffer.buffer),
+          );
+
+          const bufferOffset = vertexBuffer.byteOffset + attr.bufferByteOffset;
+
+          const inputLayoutBuffer =
+            inputLayout.vertexBufferDescriptors[attr.bufferIndex]!;
+          gl.vertexAttribPointer(
+            location,
+            format.size,
+            format.type,
+            format.normalized,
+            inputLayoutBuffer.byteStride,
+            bufferOffset,
+          );
+        }
       }
 
       assert(
@@ -2365,10 +2398,14 @@ export class Device_GL implements SwapChain, Device {
     resolveTo: Texture_GL,
   ) {
     if (!this.blitRenderPipeline) {
-      const program = this.createProgram({
-        ...preprocessProgramObj_GLSL(this, new CopyProgram()),
-        ensurePreprocessed: () => {},
-        associate: () => {},
+      const program = new CopyProgram();
+      this.blitProgram = this.createProgram({
+        vertex: {
+          glsl: program.vert,
+        },
+        fragment: {
+          glsl: program.frag,
+        },
       });
       this.blitVertexBuffer = makeDataBuffer(
         this,
@@ -2377,7 +2414,7 @@ export class Device_GL implements SwapChain, Device {
       );
       this.blitInputLayout = this.createInputLayout({
         vertexBufferDescriptors: [
-          { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
+          { byteStride: 4 * 2, stepMode: VertexStepMode.VERTEX },
         ],
         vertexAttributeDescriptors: [
           {
@@ -2388,15 +2425,15 @@ export class Device_GL implements SwapChain, Device {
           },
         ],
         indexBufferFormat: null,
-        program,
+        program: this.blitProgram,
       });
       const bindingLayouts: BindingLayoutDescriptor[] = [
         { numSamplers: 1, numUniformBuffers: 0 },
       ];
       this.blitRenderPipeline = this.createRenderPipeline({
-        topology: PrimitiveTopology.Triangles,
+        topology: PrimitiveTopology.TRIANGLES,
         sampleCount: 1,
-        program,
+        program: this.blitProgram,
         bindingLayouts,
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
@@ -2418,7 +2455,7 @@ export class Device_GL implements SwapChain, Device {
         uniformBufferBindings: [],
       });
 
-      program.setUniforms({
+      this.blitProgram.setUniforms({
         u_Texture: resolveFrom,
       });
     }
@@ -2431,11 +2468,11 @@ export class Device_GL implements SwapChain, Device {
 
     const blitRenderPass = this.createRenderPass({
       colorAttachment: [resolveFrom],
-      colorResolveToLevel: [0],
+      colorAttachmentLevel: [0],
       colorResolveTo: [resolveTo],
+      colorResolveToLevel: [0],
       colorClearColor: [TransparentWhite],
       colorStore: [true],
-      colorAttachmentLevel: [0],
       depthStencilAttachment: null,
       depthStencilResolveTo: null,
       depthStencilStore: true,

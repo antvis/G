@@ -1,6 +1,7 @@
-import type { Device, ProgramDescriptorSimple, VendorInfo } from '../platform';
+import type { Device, VendorInfo } from '../platform';
 import { ClipSpaceNearZ, ViewportOrigin } from '../platform';
 import { assert } from '../platform/utils';
+import { DeviceProgram } from '../render';
 
 const ES100_REPLACEMENTS: [RegExp, string][] = [
   // In GLSL 1.00 ES these functions are provided by an extension
@@ -11,9 +12,6 @@ const ES100_REPLACEMENTS: [RegExp, string][] = [
   [/\btexture\(/g, 'texture2D('],
   [/\btextureLod\(/g, 'texture2DLodEXT('],
 ];
-
-export type ShaderFeature = 'MRT' | 'PICKING';
-export type ShaderFeatureMap = Partial<Record<ShaderFeature, boolean>>;
 
 function defineStr(k: string, v: string): string {
   return `#define ${k} ${v}`;
@@ -134,7 +132,6 @@ export function preprocessShader_GLSL(
   type: 'vert' | 'frag',
   source: string,
   defines: Record<string, string> | null = null,
-  features: ShaderFeatureMap | null = null,
 ): string {
   const isGLSL100 = vendorInfo.glslVersion === '#version 100';
   // const supportMRT = vendorInfo.supportMRT && !!features.MRT;
@@ -165,10 +162,10 @@ export function preprocessShader_GLSL(
   let rest = lines.filter((line) => !line.startsWith('precision')).join('\n');
   let extraDefines = '';
 
-  if (vendorInfo.viewportOrigin === ViewportOrigin.UpperLeft) {
+  if (vendorInfo.viewportOrigin === ViewportOrigin.UPPER_LEFT) {
     extraDefines += `${defineStr(`VIEWPORT_ORIGIN_TL`, `1`)}\n`;
   }
-  if (vendorInfo.clipSpaceNearZ === ClipSpaceNearZ.Zero) {
+  if (vendorInfo.clipSpaceNearZ === ClipSpaceNearZ.ZERO) {
     extraDefines += `${defineStr(`CLIPSPACE_NEAR_ZERO`, `1`)}\n`;
   }
 
@@ -372,10 +369,11 @@ ${rest}
   return concat;
 }
 
-export interface ProgramDescriptorSimpleWithOrig
-  extends ProgramDescriptorSimple {
+export interface ProgramDescriptorSimpleWithOrig {
   vert: string;
   frag: string;
+  preprocessedVert: string;
+  preprocessedFrag: string;
 }
 
 export function preprocessProgram_GLSL(
@@ -383,46 +381,28 @@ export function preprocessProgram_GLSL(
   vert: string,
   frag: string,
   defines: Record<string, string> | null = null,
-  features: ShaderFeatureMap | null = null,
 ): ProgramDescriptorSimpleWithOrig {
   const preprocessedVert = preprocessShader_GLSL(
     vendorInfo,
     'vert',
     vert,
     defines,
-    features,
   );
   const preprocessedFrag = preprocessShader_GLSL(
     vendorInfo,
     'frag',
     frag,
     defines,
-    features,
   );
   return { vert, frag, preprocessedVert, preprocessedFrag };
 }
 
-export interface ProgramObjBag {
-  both?: string;
-  vert: string;
-  frag: string;
-  defines?: Record<string, string>;
-  features?: ShaderFeatureMap;
-}
-
 export function preprocessProgramObj_GLSL(
   device: Device,
-  obj: ProgramObjBag,
+  obj: DeviceProgram,
 ): ProgramDescriptorSimpleWithOrig {
   const defines = obj.defines !== undefined ? obj.defines : null;
-  const features = obj.features !== undefined ? obj.features : null;
   const vert = obj.both !== undefined ? obj.both + obj.vert : obj.vert;
   const frag = obj.both !== undefined ? obj.both + obj.frag : obj.frag;
-  return preprocessProgram_GLSL(
-    device.queryVendorInfo(),
-    vert,
-    frag,
-    defines,
-    features,
-  );
+  return preprocessProgram_GLSL(device.queryVendorInfo(), vert, frag, defines);
 }

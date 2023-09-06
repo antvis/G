@@ -70,11 +70,11 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         descriptor.pixelFormat,
       );
       this.device.setActiveTexture(gl.TEXTURE0);
-      this.device.currentTextures[0] = null;
+      this.device['currentTextures'][0] = null;
 
       this.preprocessImage();
 
-      if (descriptor.dimension === TextureDimension.n2D) {
+      if (descriptor.dimension === TextureDimension.TEXTURE_2D) {
         gl_target = GL.TEXTURE_2D;
         gl.bindTexture(gl_target, gl_texture);
         if (this.immutable) {
@@ -103,6 +103,11 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
               !device.WEBGL_depth_texture
             ) {
             } else {
+              // if (!isWebGL2(gl)) {
+              //   if (internalformat === GL.RGBA4) {
+              //     internalformat = GL.RGBA;
+              //   }
+              // }
               // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
               gl.texImage2D(
                 gl_target,
@@ -141,7 +146,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         }
 
         assert(descriptor.depth === 1);
-      } else if (descriptor.dimension === TextureDimension.n2DArray) {
+      } else if (descriptor.dimension === TextureDimension.TEXTURE_2D_ARRAY) {
         gl_target = GL.TEXTURE_2D_ARRAY;
         gl.bindTexture(gl_target, gl_texture);
 
@@ -156,7 +161,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
             descriptor.depth,
           );
         }
-      } else if (descriptor.dimension === TextureDimension.n3D) {
+      } else if (descriptor.dimension === TextureDimension.TEXTURE_3D) {
         gl_target = GL.TEXTURE_3D;
         gl.bindTexture(gl_target, gl_texture);
 
@@ -170,7 +175,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
             descriptor.depth,
           );
         }
-      } else if (descriptor.dimension === TextureDimension.Cube) {
+      } else if (descriptor.dimension === TextureDimension.TEXTURE_CUBE_MAP) {
         gl_target = GL.TEXTURE_CUBE_MAP;
         gl.bindTexture(gl_target, gl_texture);
         if (isWebGL2(gl)) {
@@ -201,7 +206,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     const isArray = Array.isArray(data);
 
     this.device.setActiveTexture(gl.TEXTURE0);
-    this.device.currentTextures[0] = null;
+    this.device['currentTextures'][0] = null;
 
     let width: number;
     let height: number;
@@ -302,7 +307,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
 
   private clampNumLevels(descriptor: TextureDescriptor): number {
     if (
-      descriptor.dimension === TextureDimension.n2DArray &&
+      descriptor.dimension === TextureDimension.TEXTURE_2D_ARRAY &&
       descriptor.depth > 1
     ) {
       const typeFlags: FormatTypeFlags = getFormatTypeFlags(

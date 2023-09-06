@@ -4,7 +4,7 @@ import {
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from './Instanced';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import frag from '../shader/image.frag';
 import vert from '../shader/image.vert';
 import { enumToObject } from '../utils';
@@ -79,7 +79,7 @@ export class ImageDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RG,
@@ -92,7 +92,7 @@ export class ImageDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: ImageVertexAttributeBufferIndex.PACKED_STYLE,
       byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGBA,
@@ -106,7 +106,7 @@ export class ImageDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.UV,
       byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,

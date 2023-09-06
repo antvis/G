@@ -5,32 +5,28 @@
   },
   "demos": [
     {
-      "filename": "webgl-low.ts",
+      "filename": "primitive-topology-points.ts",
       "title": {
-        "zh": "WebGL Device",
-        "en": "WebGL Device"
-      }
+        "zh": "绘制点 - GL.POINTS",
+        "en": "GL.POINTS"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*WJU8SpnjjkUAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
-      "filename": "webgpu-low.ts",
+      "filename": "primitive-topology-triangles.ts",
       "title": {
-        "zh": "WebGPU Device",
-        "en": "WebGPU Device"
-      }
+        "zh": "绘制三角形 - GL.TRIANGLES",
+        "en": "GL.TRIANGLES"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JetpQZ--TzQAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
-      "filename": "webgl.ts",
+      "filename": "wgsl.ts",
       "title": {
-        "zh": "WebGL Device",
-        "en": "WebGL Device"
-      }
-    },
-    {
-      "filename": "webgpu.ts",
-      "title": {
-        "zh": "WebGPU Device",
-        "en": "WebGPU Device"
-      }
+        "zh": "直接在 WebGPU 中使用 WGSL 语法",
+        "en": "Use WGSL"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JetpQZ--TzQAAAAAAAAAAAAADmJ7AQ/original"
     }
   ]
 }

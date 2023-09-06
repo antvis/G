@@ -113,14 +113,14 @@ export type Resource =
   | Readback;
 
 export enum CompareMode {
-  Never = GL.NEVER,
-  Less = GL.LESS,
-  Equal = GL.EQUAL,
-  LessEqual = GL.LEQUAL,
-  Greater = GL.GREATER,
-  NotEqual = GL.NOTEQUAL,
-  GreaterEqual = GL.GEQUAL,
-  Always = GL.ALWAYS,
+  NEVER = GL.NEVER,
+  LESS = GL.LESS,
+  EQUAL = GL.EQUAL,
+  LEQUAL = GL.LEQUAL,
+  GREATER = GL.GREATER,
+  NOTEQUAL = GL.NOTEQUAL,
+  GEQUAL = GL.GEQUAL,
+  ALWAYS = GL.ALWAYS,
 }
 
 export enum FrontFaceMode {
@@ -129,51 +129,120 @@ export enum FrontFaceMode {
 }
 
 export enum CullMode {
-  None,
-  Front,
-  Back,
-  FrontAndBack,
+  NONE,
+  FRONT,
+  BACK,
+  FRONT_AND_BACK,
 }
 
+/**
+ * Blend factor RGBA components.
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor
+ */
 export enum BlendFactor {
-  Zero = GL.ZERO,
-  One = GL.ONE,
-  Src = GL.SRC_COLOR,
-  OneMinusSrc = GL.ONE_MINUS_SRC_COLOR,
-  Dst = GL.DST_COLOR,
-  OneMinusDst = GL.ONE_MINUS_DST_COLOR,
-  SrcAlpha = GL.SRC_ALPHA,
-  OneMinusSrcAlpha = GL.ONE_MINUS_SRC_ALPHA,
-  DstAlpha = GL.DST_ALPHA,
-  OneMinusDstAlpha = GL.ONE_MINUS_DST_ALPHA,
+  /**
+   * (0, 0, 0, 0)
+   */
+  ZERO = GL.ZERO,
+  /**
+   * (1, 1, 1, 1)
+   */
+  ONE = GL.ONE,
+  /**
+   * (Rsrc, Gsrc, Bsrc, Asrc)
+   */
+  SRC = GL.SRC_COLOR,
+  /**
+   * (1 - Rsrc, 1 - Gsrc, 1 - Bsrc, 1 - Asrc)
+   */
+  ONE_MINUS_SRC = GL.ONE_MINUS_SRC_COLOR,
+  /**
+   * (Rdst, Gdst, Bdst, Adst)
+   */
+  DST = GL.DST_COLOR,
+  /**
+   * (1 - Rdst, 1 - Gdst, 1 - Bdst, 1 - Adst)
+   */
+  ONE_MINUS_DST = GL.ONE_MINUS_DST_COLOR,
+  /**
+   * (Asrc, Asrc, Asrc, Asrc)
+   */
+  SRC_ALPHA = GL.SRC_ALPHA,
+  /**
+   * (1 - Asrc, 1 - Asrc, 1 - Asrc, 1 - Asrc)
+   */
+  ONE_MINUS_SRC_ALPHA = GL.ONE_MINUS_SRC_ALPHA,
+  /**
+   * (Adst, Adst, Adst, Adst)
+   */
+  DST_ALPHA = GL.DST_ALPHA,
+  /**
+   * (1 - Adst, 1 - Adst, 1 - Adst, 1 - Adst)
+   */
+  ONE_MINUS_DST_ALPHA = GL.ONE_MINUS_DST_ALPHA,
+  /**
+   * (Rconst, Gconst, Bconst, Aconst)
+   */
+  CONST = GL.CONSTANT_COLOR,
+  /**
+   * (1 - Rconst, 1 - Gconst, 1 - Bconst, 1 - Aconst)
+   */
+  ONE_MINUS_CONSTANT = GL.ONE_MINUS_CONSTANT_COLOR,
+  /**
+   * (min(Asrc, 1 - Adst), min(Asrc, 1 - Adst), min(Asrc, 1 - Adst), 1)
+   */
+  SRC_ALPHA_SATURATE = GL.SRC_ALPHA_SATURATE,
 }
 
+/**
+ * Defines the algorithm used to combine source and destination blend factors.
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpublendoperation
+ */
 export enum BlendMode {
-  Add = GL.FUNC_ADD,
-  Subtract = GL.FUNC_SUBTRACT,
-  ReverseSubtract = GL.FUNC_REVERSE_SUBTRACT,
+  /**
+   * RGBAsrc × RGBAsrcFactor + RGBAdst × RGBAdstFactor
+   */
+  ADD = GL.FUNC_ADD,
+  /**
+   * RGBAsrc × RGBAsrcFactor - RGBAdst × RGBAdstFactor
+   */
+  SUBSTRACT = GL.FUNC_SUBTRACT,
+  /**
+   * RGBAdst × RGBAdstFactor - RGBAsrc × RGBAsrcFactor
+   */
+  REVERSE_SUBSTRACT = GL.FUNC_REVERSE_SUBTRACT,
+  // TODO: WebGL 1 should use ext
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/blendEquation#parameters
+  /**
+   * min(RGBAsrc, RGBAdst)
+   */
+  MIN = GL.MIN,
+  /**
+   * max(RGBAsrc, RGBAdst)
+   */
+  MAX = GL.MAX,
 }
 
 export enum WrapMode {
-  Clamp,
-  Repeat,
-  Mirror,
+  CLAMP,
+  REPEAT,
+  MIRROR,
 }
 export enum TexFilterMode {
-  Point,
-  Bilinear,
+  POINT,
+  BILINEAR,
 }
 export enum MipFilterMode {
-  NoMip,
-  Nearest,
-  Linear,
+  NO_MIP,
+  NEAREST,
+  LINEAR,
 }
 export enum PrimitiveTopology {
-  Points,
-  Triangles,
-  TriangleStrip,
-  Lines,
-  LineStrip,
+  POINTS,
+  TRIANGLES,
+  TRIANGLE_STRIP,
+  LINES,
+  LINE_STRIP,
 }
 
 /**
@@ -202,13 +271,16 @@ export enum BufferUsage {
 }
 
 export enum BufferFrequencyHint {
-  Static = 0x01,
-  Dynamic = 0x02,
+  STATIC = 0x01,
+  DYNAMIC = 0x02,
 }
 
-export enum VertexBufferFrequency {
-  PerVertex = 0x01,
-  PerInstance = 0x02,
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpuvertexstepmode
+ */
+export enum VertexStepMode {
+  VERTEX = 0x01,
+  INSTANCE = 0x02,
 }
 
 export enum TextureEvent {
@@ -216,37 +288,39 @@ export enum TextureEvent {
 }
 
 export enum TextureDimension {
-  n2D,
-  n2DArray,
-  n3D,
-  Cube,
+  TEXTURE_2D,
+  TEXTURE_2D_ARRAY,
+  TEXTURE_3D,
+  TEXTURE_CUBE_MAP,
 }
 
 export enum TextureUsage {
-  Sampled = 0x01,
-  RenderTarget = 0x02,
+  SAMPLED = 0x01,
+  RENDER_TARGET = 0x02,
 }
 
 export enum ChannelWriteMask {
-  None = 0x00,
-  Red = 0x01,
-  Green = 0x02,
-  Blue = 0x04,
-  Alpha = 0x08,
-
+  NONE = 0x00,
+  RED = 0x01,
+  GREEN = 0x02,
+  BLUE = 0x04,
+  ALPHA = 0x08,
   RGB = 0x07,
-  AllChannels = 0x0f,
+  ALL = 0x0f,
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpustenciloperation
+ */
 export enum StencilOp {
-  Keep = GL.KEEP,
-  Zero = GL.ZERO,
-  Replace = GL.REPLACE,
-  Invert = GL.INVERT,
-  IncrementClamp = GL.INCR,
-  DecrementClamp = GL.DECR,
-  IncrementWrap = GL.INCR_WRAP,
-  DecrementWrap = GL.DECR_WRAP,
+  KEEP = GL.KEEP,
+  ZERO = GL.ZERO,
+  REPLACE = GL.REPLACE,
+  INVERT = GL.INVERT,
+  INCREMENT_CLAMP = GL.INCR,
+  DECREMENT_CLAMP = GL.DECR,
+  INCREMENT_WRAP = GL.INCR_WRAP,
+  DECREMENT_WRAP = GL.DECR_WRAP,
 }
 
 export interface VertexBufferDescriptor {
@@ -266,7 +340,10 @@ export interface VertexAttributeDescriptor {
 
 export interface InputLayoutBufferDescriptor {
   byteStride: number;
-  frequency: VertexBufferFrequency;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpuvertexbufferlayout-stepmode
+   */
+  stepMode: VertexStepMode;
 }
 
 export interface TextureDescriptor {
@@ -291,9 +368,9 @@ export function makeTextureDescriptor2D(
   height: number,
   numLevels: number,
 ): TextureDescriptor {
-  const dimension = TextureDimension.n2D,
+  const dimension = TextureDimension.TEXTURE_2D,
     depth = 1;
-  const usage = TextureUsage.Sampled;
+  const usage = TextureUsage.SAMPLED;
   return { dimension, pixelFormat, width, height, depth, numLevels, usage };
 }
 
@@ -364,17 +441,29 @@ export interface BindingsDescriptor {
   storageBufferBindings?: BufferBinding[];
 }
 
+/**
+ * Support the following shaderStage: vertex | fragment | compute.
+ */
+export interface ProgramDescriptor {
+  vertex?: {
+    glsl?: string;
+    wgsl?: string;
+  };
+  fragment?: {
+    glsl?: string;
+    wgsl?: string;
+  };
+  compute?: {
+    wgsl: string;
+  };
+}
+
 export interface ProgramDescriptorSimple {
   vert?: string;
   frag?: string;
   preprocessedVert?: string;
   preprocessedFrag?: string;
   preprocessedCompute?: string;
-}
-
-export interface ProgramDescriptor extends ProgramDescriptorSimple {
-  ensurePreprocessed: (vendorInfo: VendorInfo) => void;
-  associate: (device: Device, program: Program) => void;
 }
 
 export interface InputLayoutDescriptor {
@@ -459,6 +548,8 @@ export interface DeviceLimits {
   uniformBufferWordAlignment: number;
   uniformBufferMaxPageWordSize: number;
   readonly supportedSampleCounts: number[];
+  occlusionQueriesRecommended: boolean;
+  computeShadersSupported: boolean;
 }
 
 export interface DebugGroup {
@@ -470,13 +561,13 @@ export interface DebugGroup {
 }
 
 export enum ViewportOrigin {
-  LowerLeft,
-  UpperLeft,
+  LOWER_LEFT,
+  UPPER_LEFT,
 }
 
 export enum ClipSpaceNearZ {
-  NegativeOne,
-  Zero,
+  NEGATIVE_ONE,
+  ZERO,
 }
 
 export interface VendorInfo {
@@ -582,7 +673,6 @@ export interface Device {
   createRenderTarget: (descriptor: RenderTargetDescriptor) => RenderTarget;
   createRenderTargetFromTexture: (texture: Texture) => RenderTarget;
   createProgram: (program: ProgramDescriptor) => Program;
-  createProgramSimple: (program: ProgramDescriptorSimple) => Program;
   createBindings: (bindingsDescriptor: BindingsDescriptor) => Bindings;
   createInputLayout: (
     inputLayoutDescriptor: InputLayoutDescriptor,
@@ -602,6 +692,7 @@ export interface Device {
   beginFrame(): void;
   endFrame(): void;
   submitPass: (pass: RenderPass | ComputePass) => void;
+  destroy(): void;
 
   // Render pipeline compilation control.
   pipelineQueryReady: (o: RenderPipeline) => boolean;
@@ -632,7 +723,7 @@ export interface Device {
   setResourceName: (o: Resource, s: string) => void;
   setResourceLeakCheck: (o: Resource, v: boolean) => void;
   checkForLeaks: () => void;
-  programPatched: (o: Program, descriptor: ProgramDescriptorSimple) => void;
+  programPatched: (o: Program, descriptor: ProgramDescriptor) => void;
   pushDebugGroup: (debugGroup: DebugGroup) => void;
   popDebugGroup: () => void;
 }

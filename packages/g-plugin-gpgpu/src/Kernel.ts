@@ -88,8 +88,10 @@ export class Kernel {
       }
     }
 
-    const program = this.device.createProgramSimple({
-      preprocessedCompute: this.bundle.shaders[target],
+    const program = this.device.createProgram({
+      compute: {
+        wgsl: this.bundle.shaders[target],
+      },
     });
 
     this.computePipeline = this.device.createComputePipeline({

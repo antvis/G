@@ -1,6 +1,6 @@
 import { BufferGeometry } from '../geometries';
 import type { InputLayout, Program } from '../platform';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import { fullscreenMegaState } from '../platform/utils';
 import type { DeviceProgram, TextureMapping, RenderHelper } from '../render';
 import { fillVec4 } from '../render';
@@ -20,7 +20,7 @@ export class PostProcessing {
   protected program: Program;
 
   init() {
-    this.program = this.renderHelper.renderCache.createProgram(
+    this.program = this.renderHelper.renderCache.createProgramSimple(
       this.deviceProgram,
     );
 
@@ -28,7 +28,7 @@ export class PostProcessing {
     this.geometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,

@@ -78,7 +78,7 @@ export class RenderInst {
       inputLayout: null,
       megaStateDescriptor: copyMegaState(defaultMegaState),
       program: null!,
-      topology: PrimitiveTopology.Triangles,
+      topology: PrimitiveTopology.TRIANGLES,
       colorAttachmentFormats: [],
       depthStencilAttachmentFormat: null,
       sampleCount: 1,

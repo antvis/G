@@ -32,14 +32,14 @@ export function reverseDepthForCompareMode(
 ): CompareMode {
   if (isDepthReversed) {
     switch (compareMode) {
-      case CompareMode.Less:
-        return CompareMode.Greater;
-      case CompareMode.LessEqual:
-        return CompareMode.GreaterEqual;
-      case CompareMode.GreaterEqual:
-        return CompareMode.LessEqual;
-      case CompareMode.Greater:
-        return CompareMode.Less;
+      case CompareMode.LESS:
+        return CompareMode.GREATER;
+      case CompareMode.LEQUAL:
+        return CompareMode.GEQUAL;
+      case CompareMode.GEQUAL:
+        return CompareMode.LEQUAL;
+      case CompareMode.GREATER:
+        return CompareMode.LESS;
       default:
         return compareMode;
     }
@@ -77,9 +77,9 @@ export function compareDepthValues(
   isDepthReversed = IsDepthReversed,
 ): boolean {
   op = reverseDepthForCompareMode(op, isDepthReversed);
-  if (op === CompareMode.Less) return a < b;
-  else if (op === CompareMode.LessEqual) return a <= b;
-  else if (op === CompareMode.Greater) return a > b;
-  else if (op === CompareMode.GreaterEqual) return a >= b;
+  if (op === CompareMode.LESS) return a < b;
+  else if (op === CompareMode.LEQUAL) return a <= b;
+  else if (op === CompareMode.GREATER) return a > b;
+  else if (op === CompareMode.GEQUAL) return a >= b;
   else throw new Error('whoops');
 }

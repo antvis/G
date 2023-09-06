@@ -1,6 +1,6 @@
 import { BufferGeometry } from '../geometries';
 import type { InputLayout } from '../platform';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
 import type { RGGraphBuilder } from '../render/interfaces';
@@ -67,7 +67,7 @@ export function pushFXAAPass(
     );
 
     const fxaaProgram = new FXAAProgram();
-    const program = renderHelper.renderCache.createProgram(fxaaProgram);
+    const program = renderHelper.renderCache.createProgramSimple(fxaaProgram);
 
     renderInst.setProgram(program);
 
@@ -76,7 +76,7 @@ export function pushFXAAPass(
       geometry.setVertexBuffer({
         bufferIndex: 0,
         byteStride: 4 * 2,
-        frequency: VertexBufferFrequency.PerVertex,
+        stepMode: VertexStepMode.VERTEX,
         attributes: [
           {
             format: Format.F32_RG,

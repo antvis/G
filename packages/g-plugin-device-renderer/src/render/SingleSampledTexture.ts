@@ -6,10 +6,10 @@ import { assert } from '../platform/utils';
 // Whenever we need to resolve a multi-sampled render target to a single-sampled texture,
 // we record an extra single-sampled texture here.
 export class SingleSampledTexture {
-  readonly dimension = TextureDimension.n2D;
+  readonly dimension = TextureDimension.TEXTURE_2D;
   readonly depth = 1;
   readonly numLevels = 1;
-  readonly usage = TextureUsage.RenderTarget;
+  readonly usage = TextureUsage.RENDER_TARGET;
 
   pixelFormat: Format;
   width = 0;

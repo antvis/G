@@ -4,7 +4,7 @@ import {
   ShaderMaterial,
   BufferGeometry,
   Mesh,
-  VertexBufferFrequency,
+  VertexStepMode,
   Format,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
@@ -14,7 +14,9 @@ import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 
 // create a renderer
-const renderer = new Renderer();
+const renderer = new Renderer({
+  targets: ['webgl1'],
+});
 renderer.registerPlugin(new Plugin3D());
 
 // create a canvas
@@ -40,7 +42,7 @@ const canvas = new Canvas({
   bufferGeometry.setVertexBuffer({
     bufferIndex: VertexAttributeBufferIndex.POSITION,
     byteStride: 4 * 3,
-    frequency: VertexBufferFrequency.PerVertex,
+    stepMode: VertexStepMode.VERTEX,
     attributes: [
       {
         format: Format.F32_RGB,

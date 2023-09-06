@@ -6,7 +6,7 @@ import type { RGRenderTargetDescription } from './RenderTargetDescription';
 export class RGRenderTarget {
   debugName: string;
 
-  readonly dimension = TextureDimension.n2D;
+  readonly dimension = TextureDimension.TEXTURE_2D;
   readonly depth = 1;
   readonly numLevels = 1;
 
@@ -14,7 +14,7 @@ export class RGRenderTarget {
   width = 0;
   height = 0;
   sampleCount = 0;
-  usage: TextureUsage = TextureUsage.RenderTarget;
+  usage: TextureUsage = TextureUsage.RENDER_TARGET;
   immutable = true;
 
   needsClear = true;

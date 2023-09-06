@@ -14,7 +14,9 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
-const renderer = new Renderer();
+const renderer = new Renderer({
+  targets: ['webgl1'],
+});
 renderer.registerPlugin(new Plugin3D());
 renderer.registerPlugin(new PluginControl());
 
@@ -46,8 +48,8 @@ const canvas = new Canvas({
   //   height: 1,
   //   depth: 1,
   //   numLevels: 1,
-  //   dimension: TextureDimension.n2D,
-  //   usage: TextureUsage.Sampled,
+  //   dimension: TextureDimension.TEXTURE_2D,
+  //   usage: TextureUsage.SAMPLED,
   // });
   // // load image
   // const image = new window.Image();

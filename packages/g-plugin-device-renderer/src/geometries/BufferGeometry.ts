@@ -5,7 +5,7 @@ import type {
   Buffer,
   Device,
   InputLayoutDescriptor,
-  VertexBufferFrequency,
+  VertexStepMode,
 } from '../platform';
 import {
   BufferFrequencyHint,
@@ -18,7 +18,7 @@ export function makeDataBuffer(
   device: Device,
   usage: BufferUsage,
   data: ArrayBufferLike,
-  hint = BufferFrequencyHint.Static,
+  hint = BufferFrequencyHint.STATIC,
 ): Buffer {
   const buffer = device.createBuffer({
     viewOrSize: data.byteLength,
@@ -34,7 +34,7 @@ export type IndicesArray = number[] | Int32Array | Uint32Array | Uint16Array;
 export interface GeometryVertexBufferDescriptor {
   bufferIndex: number;
   byteStride: number;
-  frequency: VertexBufferFrequency;
+  stepMode: VertexStepMode;
   attributes: {
     format: Format;
     bufferByteOffset: number;
@@ -68,7 +68,7 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
   /**
    * 绘制模式
    */
-  drawMode: PrimitiveTopology = PrimitiveTopology.Triangles;
+  drawMode: PrimitiveTopology = PrimitiveTopology.TRIANGLES;
 
   /**
    * 存放 Attribute Buffer 列表
@@ -137,15 +137,17 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
 
     this.indices = indices;
 
+    this.inputLayoutDescriptor.indexBufferFormat = Format.U32_R;
+
     return this;
   }
 
   setVertexBuffer(descriptor: GeometryVertexBufferDescriptor) {
-    const { bufferIndex, byteStride, frequency, attributes, data } = descriptor;
+    const { bufferIndex, byteStride, stepMode, attributes, data } = descriptor;
 
     this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex] = {
       byteStride,
-      frequency,
+      stepMode,
     };
 
     this.vertices[bufferIndex] = data;
@@ -181,7 +183,7 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       this.device,
       BufferUsage.VERTEX,
       data.buffer,
-      BufferFrequencyHint.Dynamic,
+      BufferFrequencyHint.DYNAMIC,
     );
     this.vertexBuffers[bufferIndex] = buffer;
 

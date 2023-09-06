@@ -15,7 +15,6 @@ import type {
   InputLayoutDescriptor,
   Program,
   ProgramDescriptor,
-  ProgramDescriptorSimple,
   QueryPool,
   QueryPoolType,
   Readback,
@@ -50,6 +49,7 @@ import {
   ViewportOrigin,
   WrapMode,
   CompareMode,
+  preprocessShader_GLSL,
 } from '@antv/g-plugin-device-renderer';
 import type { glsl_compile as glsl_compile_ } from '../../../../rust/pkg/glsl_wgsl_compiler';
 import { Bindings_WebGPU } from './Bindings';
@@ -108,8 +108,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private fallbackTexture2DArray: Texture_WebGPU;
   private fallbackTexture3D: Texture_WebGPU;
   private fallbackTextureCube: Texture_WebGPU;
-  fallbackSamplerFiltering: Sampler;
-  fallbackSamplerComparison: Sampler;
+  private fallbackSamplerFiltering: Sampler;
+  private fallbackSamplerComparison: Sampler;
   private featureTextureCompressionBC = false;
 
   // VendorInfo
@@ -117,15 +117,15 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   readonly glslVersion = `#version 440`;
   readonly explicitBindingLocations = true;
   readonly separateSamplerTextures = true;
-  readonly viewportOrigin = ViewportOrigin.UpperLeft;
-  readonly clipSpaceNearZ = ClipSpaceNearZ.Zero;
+  readonly viewportOrigin = ViewportOrigin.UPPER_LEFT;
+  readonly clipSpaceNearZ = ClipSpaceNearZ.ZERO;
   readonly supportsSyncPipelineCompilation: boolean = false;
   readonly supportMRT: boolean = true;
 
   device: GPUDevice;
   private canvas: HTMLCanvasElement | OffscreenCanvas;
-  canvasContext: GPUCanvasContext;
-  glsl_compile: typeof glsl_compile_;
+  private canvasContext: GPUCanvasContext;
+  private glsl_compile: typeof glsl_compile_;
 
   constructor(
     adapter: GPUAdapter,
@@ -140,32 +140,32 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     this.glsl_compile = glsl_compile;
 
     this.fallbackTexture2D = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Float,
     );
     this.fallbackTexture2DDepth = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Depth,
     );
     this.fallbackTexture2DArray = this.createFallbackTexture(
-      TextureDimension.n2DArray,
+      TextureDimension.TEXTURE_2D_ARRAY,
       SamplerFormatKind.Float,
     );
     this.fallbackTexture3D = this.createFallbackTexture(
-      TextureDimension.n3D,
+      TextureDimension.TEXTURE_3D,
       SamplerFormatKind.Float,
     );
     this.fallbackTextureCube = this.createFallbackTexture(
-      TextureDimension.Cube,
+      TextureDimension.TEXTURE_CUBE_MAP,
       SamplerFormatKind.Float,
     );
 
     this.fallbackSamplerFiltering = this.createSampler({
-      wrapS: WrapMode.Repeat,
-      wrapT: WrapMode.Repeat,
-      minFilter: TexFilterMode.Point,
-      magFilter: TexFilterMode.Point,
-      mipFilter: MipFilterMode.Nearest,
+      wrapS: WrapMode.REPEAT,
+      wrapT: WrapMode.REPEAT,
+      minFilter: TexFilterMode.POINT,
+      magFilter: TexFilterMode.POINT,
+      mipFilter: MipFilterMode.NEAREST,
     });
     this.setResourceName(
       this.fallbackSamplerFiltering,
@@ -173,12 +173,12 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     );
 
     this.fallbackSamplerComparison = this.createSampler({
-      wrapS: WrapMode.Repeat,
-      wrapT: WrapMode.Repeat,
-      minFilter: TexFilterMode.Point,
-      magFilter: TexFilterMode.Point,
-      mipFilter: MipFilterMode.Nearest,
-      compareMode: CompareMode.Always,
+      wrapS: WrapMode.REPEAT,
+      wrapT: WrapMode.REPEAT,
+      minFilter: TexFilterMode.POINT,
+      magFilter: TexFilterMode.POINT,
+      mipFilter: MipFilterMode.NEAREST,
+      compareMode: CompareMode.ALWAYS,
     });
     this.setResourceName(
       this.fallbackSamplerFiltering,
@@ -208,6 +208,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
+  destroy(): void {}
+
   // SwapChain
   configureSwapChain(width: number, height: number): void {
     if (this.swapChainWidth === width && this.swapChainHeight === height)
@@ -229,7 +231,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         width: this.swapChainWidth,
         height: this.swapChainHeight,
         depth: 0,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels: 1,
         usage: this.swapChainTextureUsage,
       },
@@ -311,10 +313,10 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       device: this,
       descriptor: {
         ...descriptor,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels: 1,
         depth: 1,
-        usage: TextureUsage.RenderTarget,
+        usage: TextureUsage.RENDER_TARGET,
       },
     }) as unknown as Attachment_WebGPU;
 
@@ -347,7 +349,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         width,
         height,
         depth: depthOrArrayLayers,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels,
         usage,
       },
@@ -362,11 +364,22 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   }
 
   createProgram(descriptor: ProgramDescriptor): Program {
-    descriptor.ensurePreprocessed(this);
-    return this.createProgramSimple(descriptor);
-  }
+    // preprocess GLSL first
+    if (descriptor.vertex.glsl) {
+      descriptor.vertex.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'vert',
+        descriptor.vertex.glsl,
+      );
+    }
+    if (descriptor.fragment.glsl) {
+      descriptor.fragment.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'frag',
+        descriptor.fragment.glsl,
+      );
+    }
 
-  createProgramSimple(descriptor: ProgramDescriptorSimple): Program {
     return new Program_WebGPU({
       id: this.getNextUniqueId(),
       device: this,
@@ -425,14 +438,15 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor): Texture {
     const dimension = samplerEntry.dimension,
       formatKind = samplerEntry.formatKind;
-    if (dimension === TextureDimension.n2D)
+    if (dimension === TextureDimension.TEXTURE_2D)
       return formatKind === SamplerFormatKind.Depth
         ? this.fallbackTexture2DDepth
         : this.fallbackTexture2D;
-    else if (dimension === TextureDimension.n2DArray)
+    else if (dimension === TextureDimension.TEXTURE_2D_ARRAY)
       return this.fallbackTexture2DArray;
-    else if (dimension === TextureDimension.n3D) return this.fallbackTexture3D;
-    else if (dimension === TextureDimension.Cube)
+    else if (dimension === TextureDimension.TEXTURE_3D)
+      return this.fallbackTexture3D;
+    else if (dimension === TextureDimension.TEXTURE_CUBE_MAP)
       return this.fallbackTextureCube;
     else throw new Error('whoops');
   }
@@ -441,13 +455,13 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     dimension: TextureDimension,
     formatKind: SamplerFormatKind,
   ): Texture_WebGPU {
-    const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    const depth = dimension === TextureDimension.TEXTURE_CUBE_MAP ? 6 : 1;
     const pixelFormat =
       formatKind === SamplerFormatKind.Float ? Format.U8_RGBA_NORM : Format.D24;
     return this.createTexture({
       dimension,
       pixelFormat,
-      usage: TextureUsage.Sampled,
+      usage: TextureUsage.SAMPLED,
       width: 1,
       height: 1,
       depth,
@@ -666,11 +680,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
-  destroyRenderTarget(o: RenderTarget): void {
-    const attachment = o as unknown as Attachment_WebGPU;
-    attachment.gpuTexture.destroy();
-  }
-
   createRenderPass(renderPassDescriptor: RenderPassDescriptor): RenderPass {
     let pass = this.renderPassPool.pop();
     if (pass === undefined) {
@@ -738,12 +747,16 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   }
 
   queryLimits(): DeviceLimits {
-    // TODO: GPUAdapter.limits
+    // GPUAdapter.limits
     // @see https://www.w3.org/TR/webgpu/#gpu-supportedlimits
     return {
-      uniformBufferMaxPageWordSize: 0x1000,
-      uniformBufferWordAlignment: 0x40,
+      uniformBufferMaxPageWordSize:
+        this.device.limits.maxUniformBufferBindingSize >>> 2,
+      uniformBufferWordAlignment:
+        this.device.limits.minUniformBufferOffsetAlignment >>> 2,
       supportedSampleCounts: [1],
+      occlusionQueriesRecommended: true,
+      computeShadersSupported: true,
     };
   }
 
@@ -771,6 +784,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   }
 
   queryPlatformAvailable(): boolean {
+    // TODO: should listen to lost event
     return true;
   }
 

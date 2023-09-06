@@ -21,7 +21,7 @@ import {
   MipFilterMode,
   StencilOp,
   TexFilterMode,
-  VertexBufferFrequency,
+  VertexStepMode,
   WrapMode,
 } from '../platform';
 import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
@@ -34,8 +34,6 @@ import {
 import type { BatchContext } from '../renderer';
 import type { Batch } from '../renderer/Batch';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
-import type { ProgramDescriptorSimpleWithOrig } from '../shader/compiler';
-import { preprocessProgramObj_GLSL } from '../shader/compiler';
 import type { TexturePool } from '../TexturePool';
 import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 import { packUint8ToFloat } from '../utils/compression';
@@ -128,7 +126,6 @@ export abstract class Instanced {
   clipPathTarget: DisplayObject;
 
   private program: DeviceProgram = new DeviceProgram();
-  private programDescriptorSimpleWithOrig?: ProgramDescriptorSimpleWithOrig;
   geometryDirty = true;
 
   /**
@@ -389,7 +386,7 @@ export abstract class Instanced {
       //   this.bufferGeometry.setVertexBuffer({
       //     bufferIndex: 4,
       //     byteStride: 4 * (3 * 3),
-      //     frequency: VertexBufferFrequency.PerInstance,
+      //     stepMode: VertexStepMode.INSTANCE,
       //     attributes: [
       //       {
       //         format: Format.F32_RGB,
@@ -420,7 +417,7 @@ export abstract class Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.MODEL_MATRIX,
       byteStride: 4 * (4 * 4),
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGBA,
@@ -453,7 +450,7 @@ export abstract class Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.PACKED_COLOR,
       byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGBA,
@@ -468,7 +465,7 @@ export abstract class Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.PACKED_STYLE,
       byteStride: 4 * 8,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGBA,
@@ -489,7 +486,7 @@ export abstract class Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.PICKING_COLOR,
       byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGBA,
@@ -518,13 +515,13 @@ export abstract class Instanced {
         this.material.stencilWrite = true;
         // @see https://open.gl/depthstencils
         this.material.depthWrite = false;
-        this.material.stencilCompare = CompareMode.Always;
-        this.material.stencilPassOp = StencilOp.Replace;
+        this.material.stencilCompare = CompareMode.ALWAYS;
+        this.material.stencilPassOp = StencilOp.REPLACE;
       } else {
         this.material.stencilWrite = false;
         this.material.depthWrite = true;
-        this.material.stencilCompare = CompareMode.Equal;
-        this.material.stencilPassOp = StencilOp.Keep;
+        this.material.stencilCompare = CompareMode.EQUAL;
+        this.material.stencilPassOp = StencilOp.KEEP;
       }
     } else {
       this.material.stencilWrite = false;
@@ -568,11 +565,11 @@ export abstract class Instanced {
             'Material Texture ' + key,
           );
           mapping.sampler = this.renderHelper.getCache().createSampler({
-            wrapS: WrapMode.Clamp,
-            wrapT: WrapMode.Clamp,
-            minFilter: TexFilterMode.Point,
-            magFilter: TexFilterMode.Bilinear,
-            mipFilter: MipFilterMode.Linear,
+            wrapS: WrapMode.CLAMP,
+            wrapT: WrapMode.CLAMP,
+            minFilter: TexFilterMode.POINT,
+            magFilter: TexFilterMode.BILINEAR,
+            mipFilter: MipFilterMode.LINEAR,
             minLOD: 0,
             maxLOD: 0,
           });
@@ -620,11 +617,6 @@ export abstract class Instanced {
       // build shaders
       this.program.vert = this.material.vertexShader;
       this.program.frag = this.material.fragmentShader;
-      // use cached program
-      this.programDescriptorSimpleWithOrig = preprocessProgramObj_GLSL(
-        this.context.device,
-        this.program,
-      );
       this.material.programDirty = false;
       this.materialDirty = false;
     }
@@ -654,13 +646,13 @@ export abstract class Instanced {
     }
 
     // cached input layout
-    const inputLayout = this.renderHelper
-      .getCache()
-      .createInputLayout(this.geometry.inputLayoutDescriptor);
-
     const program = this.renderHelper
       .getCache()
-      .createProgramSimple(this.programDescriptorSimpleWithOrig);
+      .createProgramSimple(this.program);
+    const inputLayout = this.renderHelper.getCache().createInputLayout({
+      ...this.geometry.inputLayoutDescriptor,
+      program,
+    });
 
     const useIndexes = !!this.geometry.indexBuffer;
     renderInst.renderPipelineDescriptor.topology = this.geometry.drawMode;
@@ -947,7 +939,7 @@ export abstract class Instanced {
       //   continue;
       // }
 
-      const { frequency, byteStride } =
+      const { stepMode, byteStride } =
         geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
 
       const descriptor =
@@ -961,7 +953,7 @@ export abstract class Instanced {
         geometry.setVertexBuffer({
           bufferIndex,
           byteStride,
-          frequency,
+          stepMode,
           attributes: [
             {
               format,
@@ -987,7 +979,7 @@ export abstract class Instanced {
     geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.BARYCENTRIC,
       byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RGB,
@@ -1101,8 +1093,8 @@ export abstract class Instanced {
         {
           // should not affect color buffer when drawing stencil
           channelWriteMask: this.material.stencilWrite
-            ? ChannelWriteMask.None
-            : ChannelWriteMask.AllChannels,
+            ? ChannelWriteMask.NONE
+            : ChannelWriteMask.ALL,
           // channelWriteMask: ChannelWriteMask.AllChannels,
           rgbBlendState: {
             ...currentAttachmentsState.rgbBlendState,
@@ -1223,11 +1215,11 @@ export abstract class Instanced {
           'Fill Texture' + this.id,
         );
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
-          wrapS: WrapMode.Clamp,
-          wrapT: WrapMode.Clamp,
-          minFilter: TexFilterMode.Point,
-          magFilter: TexFilterMode.Bilinear,
-          mipFilter: MipFilterMode.Linear,
+          wrapS: WrapMode.CLAMP,
+          wrapT: WrapMode.CLAMP,
+          minFilter: TexFilterMode.POINT,
+          magFilter: TexFilterMode.BILINEAR,
+          mipFilter: MipFilterMode.LINEAR,
           minLOD: 0,
           maxLOD: 0,
         });

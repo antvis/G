@@ -15,7 +15,6 @@ import type {
   RenderPipelineDescriptor,
   Sampler,
   SamplerDescriptor,
-  VendorInfo,
 } from '../platform';
 import { assert } from '../platform/utils';
 import {
@@ -27,6 +26,8 @@ import {
   renderPipelineDescriptorEquals,
   samplerDescriptorEquals,
 } from '../platform/utils/hash';
+import { preprocessProgramObj_GLSL } from '../shader/compiler';
+import { DeviceProgram } from './DeviceProgram';
 import {
   hashCodeNumberFinish,
   hashCodeNumberUpdate,
@@ -133,10 +134,6 @@ function bindingsDescriptorHash(a: BindingsDescriptor): number {
   return hashCodeNumberFinish(hash);
 }
 
-interface ProgramDescriptor extends ProgramDescriptorSimple {
-  ensurePreprocessed: (vendorInfo: VendorInfo) => void;
-}
-
 export class RenderCache {
   device: Device;
 
@@ -195,25 +192,47 @@ export class RenderCache {
     return inputLayout;
   }
 
-  createProgramSimple(
-    programDescriptorSimple: ProgramDescriptorSimple,
-  ): Program {
-    let program = this.programCache.get(programDescriptorSimple);
+  createProgramSimple(deviceProgram: DeviceProgram): Program {
+    const { vert, frag, preprocessedFrag, preprocessedVert } = deviceProgram;
+
+    let program = null;
+    if (preprocessedVert && preprocessedFrag) {
+      program = this.programCache.get({
+        vert,
+        frag,
+        preprocessedFrag,
+        preprocessedVert,
+      });
+    }
+
     if (program === null) {
-      const descriptorCopy = programDescriptorSimpleCopy(
-        programDescriptorSimple,
+      const { preprocessedVert, preprocessedFrag } = preprocessProgramObj_GLSL(
+        this.device,
+        deviceProgram,
       );
-      program = this.device.createProgramSimple(descriptorCopy);
+      deviceProgram.preprocessedVert = preprocessedVert;
+      deviceProgram.preprocessedFrag = preprocessedFrag;
+
+      const descriptorCopy = programDescriptorSimpleCopy(deviceProgram);
+
+      program = this.device['createProgramSimple']({
+        vertex: {
+          glsl: preprocessedVert,
+        },
+        fragment: {
+          glsl: preprocessedFrag,
+        },
+      });
       this.programCache.add(descriptorCopy, program);
     }
 
     return program;
   }
 
-  createProgram(programDescriptor: ProgramDescriptor): Program {
-    programDescriptor.ensurePreprocessed(this.device.queryVendorInfo());
-    return this.createProgramSimple(programDescriptor);
-  }
+  // createProgram(programDescriptor: ProgramDescriptor): Program {
+  //   programDescriptor.ensurePreprocessed(this.device.queryVendorInfo());
+  //   return this.createProgramSimple(programDescriptor);
+  // }
 
   createSampler(descriptor: SamplerDescriptor): Sampler {
     let sampler = this.samplerCache.get(descriptor);

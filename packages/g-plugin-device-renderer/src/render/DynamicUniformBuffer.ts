@@ -114,7 +114,7 @@ export class DynamicUniformBuffer {
         // in bytes length
         viewOrSize: this.currentBufferWordSize * 4,
         usage: BufferUsage.UNIFORM,
-        hint: BufferFrequencyHint.Dynamic,
+        hint: BufferFrequencyHint.DYNAMIC,
       });
     }
 

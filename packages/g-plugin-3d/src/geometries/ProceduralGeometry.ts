@@ -4,7 +4,7 @@ import {
   Format,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
-  VertexBufferFrequency,
+  VertexStepMode,
 } from '@antv/g-plugin-device-renderer';
 import type { Device } from '@antv/g-plugin-device-renderer';
 import { mat4, vec3, vec4 } from 'gl-matrix';
@@ -139,7 +139,7 @@ export abstract class ProceduralGeometry<
     this.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RGB,
@@ -152,7 +152,7 @@ export abstract class ProceduralGeometry<
     this.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.NORMAL,
       byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RGB,
@@ -165,7 +165,7 @@ export abstract class ProceduralGeometry<
     this.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.UV,
       byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,

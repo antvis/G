@@ -1,6 +1,6 @@
 import type {
   Program,
-  ProgramDescriptorSimple,
+  ProgramDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import { ResourceType } from '@antv/g-plugin-device-renderer';
 import type { Device_WebGPU } from './Device';
@@ -9,7 +9,7 @@ import { ResourceBase_WebGPU } from './ResourceBase';
 
 export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
   type: ResourceType.Program = ResourceType.Program;
-  descriptor: ProgramDescriptorSimple;
+  descriptor: ProgramDescriptor;
   vertexStage: GPUProgrammableStage | null = null;
   fragmentStage: GPUProgrammableStage | null = null;
   computeStage: GPUProgrammableStage | null = null;
@@ -21,48 +21,46 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
   }: {
     id: number;
     device: IDevice_WebGPU;
-    descriptor: ProgramDescriptorSimple;
+    descriptor: ProgramDescriptor;
   }) {
     super({ id, device });
 
     this.descriptor = descriptor;
-    if (descriptor.preprocessedVert) {
-      this.vertexStage = this.createShaderStage(
-        descriptor.preprocessedVert,
-        'vertex',
-      );
+    if (descriptor.vertex) {
+      this.vertexStage = this.createShaderStage(descriptor.vertex, 'vertex');
     }
-    if (descriptor.preprocessedFrag) {
+    if (descriptor.fragment) {
       this.fragmentStage = this.createShaderStage(
-        descriptor.preprocessedFrag,
+        descriptor.fragment,
         'fragment',
       );
     }
-    if (descriptor.preprocessedCompute) {
-      // FIXME: Only support WGSL now
-      this.computeStage = this.createShaderStage(
-        descriptor.preprocessedCompute,
-        'compute',
-      );
+    if (descriptor.compute) {
+      // Only support WGSL now
+      this.computeStage = this.createShaderStage(descriptor.compute, 'compute');
     }
   }
 
   private createShaderStage(
-    sourceText: string,
+    shader: {
+      glsl?: string;
+      wgsl?: string;
+    },
     shaderStage: 'vertex' | 'fragment' | 'compute',
   ): GPUProgrammableStage {
     const validationEnabled = false;
 
-    let code = sourceText;
-    if (shaderStage !== 'compute') {
+    // Use user-defined WGSL first.
+    let code = shader.wgsl;
+    if (!code) {
       try {
-        code = (this.device as Device_WebGPU).glsl_compile(
-          sourceText,
+        code = (this.device as Device_WebGPU)['glsl_compile'](
+          shader.glsl,
           shaderStage,
           validationEnabled,
         );
       } catch (e) {
-        console.error(e, sourceText);
+        console.error(e, shader.glsl);
         throw new Error('whoops');
       }
     }

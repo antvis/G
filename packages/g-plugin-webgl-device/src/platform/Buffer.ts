@@ -111,12 +111,17 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
     this.usage = usage;
     this.gl_target = translateBufferUsageToTarget(usage);
 
+    // init data
+    if (!isNumber(viewOrSize)) {
+      this.setSubData(0, new Uint8Array(viewOrSize.buffer));
+    }
+
     if (!isUBO) {
       if (isWebGL2(gl)) {
-        gl.bindVertexArray(this.device.currentBoundVAO);
+        gl.bindVertexArray(this.device['currentBoundVAO']);
       } else {
         device.OES_vertex_array_object.bindVertexArrayOES(
-          this.device.currentBoundVAO,
+          this.device['currentBoundVAO'],
         );
       }
     }
@@ -182,7 +187,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       virtBufferByteOffset += dstPageByteSize;
       physBufferByteOffset = 0;
       srcByteOffset += dstPageByteSize;
-      this.device.debugGroupStatisticsBufferUpload();
+      this.device['debugGroupStatisticsBufferUpload']();
     }
   }
 
