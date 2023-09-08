@@ -404,7 +404,6 @@ export interface BufferBinding {
 export interface SamplerBinding {
   texture: Texture | null;
   sampler: Sampler | null;
-  lateBinding: string | null;
 }
 
 export enum SamplerFormatKind {

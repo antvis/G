@@ -252,12 +252,11 @@ export function samplerBindingCopy(
 ): SamplerBinding {
   const sampler = a.sampler;
   const texture = a.texture;
-  const lateBinding = a.lateBinding;
-  return { sampler, texture, lateBinding };
+  return { sampler, texture };
 }
 
 export function samplerBindingNew(): SamplerBinding {
-  return { sampler: null, texture: null, lateBinding: null };
+  return { sampler: null, texture: null };
 }
 
 export function bufferBindingCopy(a: Readonly<BufferBinding>): BufferBinding {

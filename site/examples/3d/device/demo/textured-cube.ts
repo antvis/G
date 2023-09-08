@@ -13,13 +13,23 @@ import {
   ChannelWriteMask,
   TransparentBlack,
   CompareMode,
+  WrapMode,
+  TexFilterMode,
+  MipFilterMode,
 } from '@antv/g-plugin-device-renderer';
 import * as lil from 'lil-gui';
 import { mat4, vec3 } from 'gl-matrix';
 
 /**
- * @see https://webgpu.github.io/webgpu-samples/samples/instancedCube#main.ts
+ * @see https://webgpu.github.io/webgpu-samples/samples/texturedCube
  */
+
+const deviceContributionWebGL1 = new WebGLDeviceContribution({
+  targets: ['webgl1'],
+  onContextCreationError: () => {},
+  onContextLost: () => {},
+  onContextRestored(e) {},
+});
 const deviceContributionWebGL2 = new WebGLDeviceContribution({
   targets: ['webgl2', 'webgl1'],
   onContextCreationError: () => {},
@@ -63,26 +73,28 @@ async function render(
     vertex: {
       glsl: `
 layout(std140) uniform Uniforms {
-  mat4 u_ModelViewProjectionMatrix[16];
+  mat4 u_ModelViewProjectionMatrix;
 };
 
-layout(location = 0) in vec3 a_Position;
+layout(location = 0) in vec4 a_Position;
+layout(location = 1) in vec2 a_Uv;
 
-out vec4 v_Position;
+out vec2 v_Uv;
 
 void main() {
-  v_Position = vec4(a_Position, 1.0);
-  gl_Position = u_ModelViewProjectionMatrix[gl_InstanceID] * vec4(a_Position, 1.0);
+  v_Uv = a_Uv;
+  gl_Position = u_ModelViewProjectionMatrix * a_Position;
 } 
 `,
     },
     fragment: {
       glsl: `
-in vec4 v_Position;
+uniform sampler2D u_Texture;
+in vec2 v_Uv;
 out vec4 outputColor;
 
 void main() {
-  outputColor = v_Position;
+  outputColor = texture(SAMPLER_2D(u_Texture), v_Uv);
 }
 `,
     },
@@ -121,25 +133,41 @@ void main() {
     1, 0, 1, -1, 1, -1, 1, 0, 1, 0, 1, 1, 0,
   ]);
 
-  const xCount = 4;
-  const yCount = 4;
-  const numInstances = xCount * yCount;
-  const matrixFloatCount = 16; // 4x4 matrix
-  const matrixSize = 4 * matrixFloatCount;
-  const uniformBufferSize = numInstances * matrixSize;
-
   const vertexBuffer = device.createBuffer({
     viewOrSize: cubeVertexArray,
     usage: BufferUsage.VERTEX,
   });
 
   const uniformBuffer = device.createBuffer({
-    viewOrSize: uniformBufferSize, // mat4
+    viewOrSize: 16 * 4, // mat4
     usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
     hint: BufferFrequencyHint.DYNAMIC,
   });
 
-  const bindingLayouts = [{ numSamplers: 0, numUniformBuffers: 1 }];
+  const response = await fetch(
+    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
+  );
+  const imageBitmap = await createImageBitmap(await response.blob());
+  const texture = device.createTexture({
+    pixelFormat: Format.U8_RGBA_NORM,
+    width: imageBitmap.width,
+    height: imageBitmap.height,
+    usage: TextureUsage.SAMPLED,
+    immutable: false,
+  });
+  texture.setImageData(imageBitmap);
+
+  const sampler = device.createSampler({
+    wrapS: WrapMode.CLAMP,
+    wrapT: WrapMode.CLAMP,
+    minFilter: TexFilterMode.POINT,
+    magFilter: TexFilterMode.BILINEAR,
+    mipFilter: MipFilterMode.LINEAR,
+    minLOD: 0,
+    maxLOD: 0,
+  });
+
+  const bindingLayouts = [{ numSamplers: 1, numUniformBuffers: 1 }];
 
   const inputLayout = device.createInputLayout({
     vertexBufferDescriptors: [
@@ -152,8 +180,14 @@ void main() {
       {
         location: 0,
         bufferIndex: 0,
-        bufferByteOffset: 0,
-        format: Format.F32_RGB,
+        bufferByteOffset: cubePositionOffset,
+        format: Format.F32_RGBA,
+      },
+      {
+        location: 1,
+        bufferIndex: 0,
+        bufferByteOffset: cubeUVOffset,
+        format: Format.F32_RG,
       },
     ],
     indexBufferFormat: null,
@@ -196,10 +230,15 @@ void main() {
     uniformBufferBindings: [
       {
         buffer: uniformBuffer,
-        wordCount: matrixFloatCount * numInstances,
+        wordCount: 16,
       },
     ],
-    samplerBindings: [],
+    samplerBindings: [
+      {
+        texture,
+        sampler,
+      },
+    ],
   });
 
   const mainColorRT = device.createRenderTargetFromTexture(
@@ -219,71 +258,36 @@ void main() {
     }),
   );
 
-  const aspect = $canvas.width / $canvas.height;
-  const projectionMatrix = mat4.perspective(
-    mat4.create(),
-    (2 * Math.PI) / 5,
-    aspect,
-    1,
-    100,
-  );
-  const modelMatrices = new Array<mat4>(numInstances);
-  const mvpMatricesData = new Float32Array(matrixFloatCount * numInstances);
-
-  const step = 4.0;
-
-  // Initialize the matrix data for every instance.
-  let m = 0;
-  for (let x = 0; x < xCount; x++) {
-    for (let y = 0; y < yCount; y++) {
-      modelMatrices[m] = mat4.fromTranslation(
-        mat4.create(),
-        vec3.fromValues(
-          step * (x - xCount / 2 + 0.5),
-          step * (y - yCount / 2 + 0.5),
-          0,
-        ),
-      );
-      m++;
-    }
-  }
-
-  const viewMatrix = mat4.fromTranslation(
-    mat4.create(),
-    vec3.fromValues(0, 0, -12),
-  );
-  const tmpMat4 = mat4.create();
-
   let id;
   const frame = () => {
+    const aspect = $canvas.width / $canvas.height;
+    const projectionMatrix = mat4.perspective(
+      mat4.create(),
+      (2 * Math.PI) / 5,
+      aspect,
+      0.1,
+      1000,
+    );
+    const viewMatrix = mat4.identity(mat4.create());
+    const modelViewProjectionMatrix = mat4.create();
+    mat4.translate(viewMatrix, viewMatrix, vec3.fromValues(0, 0, -4));
     const now = Date.now() / 1000;
-
-    let m = 0,
-      i = 0;
-    for (let x = 0; x < xCount; x++) {
-      for (let y = 0; y < yCount; y++) {
-        mat4.rotate(
-          tmpMat4,
-          modelMatrices[i],
-          1,
-          vec3.fromValues(
-            Math.sin((x + 0.5) * now),
-            Math.cos((y + 0.5) * now),
-            0,
-          ),
-        );
-
-        mat4.multiply(tmpMat4, viewMatrix, tmpMat4);
-        mat4.multiply(tmpMat4, projectionMatrix, tmpMat4);
-
-        mvpMatricesData.set(tmpMat4, m);
-
-        i++;
-        m += matrixFloatCount;
-      }
-    }
-
-    uniformBuffer.setSubData(0, new Uint8Array(mvpMatricesData.buffer));
+    mat4.rotate(
+      viewMatrix,
+      viewMatrix,
+      1,
+      vec3.fromValues(Math.sin(now), Math.cos(now), 0),
+    );
+    mat4.multiply(modelViewProjectionMatrix, projectionMatrix, viewMatrix);
+    uniformBuffer.setSubData(
+      0,
+      new Uint8Array((modelViewProjectionMatrix as Float32Array).buffer),
+    );
+    // WebGL1 need this
+    program.setUniformsLegacy({
+      u_ModelViewProjectionMatrix: modelViewProjectionMatrix,
+      u_Texture: texture,
+    });
 
     /**
      * An application should call getCurrentTexture() in the same task that renders to the canvas texture.
@@ -311,7 +315,7 @@ void main() {
     );
     renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
     renderPass.setBindings(0, bindings, [0]);
-    renderPass.draw(cubeVertexCount, numInstances);
+    renderPass.draw(cubeVertexCount);
 
     device.submitPass(renderPass);
     id = requestAnimationFrame(frame);
@@ -331,6 +335,8 @@ void main() {
     pipeline.destroy();
     mainColorRT.destroy();
     mainDepthRT.destroy();
+    texture.destroy();
+    sampler.destroy();
     device.destroy();
 
     // For debug.
@@ -349,7 +355,7 @@ void main() {
     renderer: 'webgl2',
   };
   rendererFolder
-    .add(rendererConfig, 'renderer', ['webgl2', 'webgpu'])
+    .add(rendererConfig, 'renderer', ['webgl1', 'webgl2', 'webgpu'])
     .onChange(async (renderer) => {
       if (disposeCallback) {
         disposeCallback();
@@ -357,7 +363,9 @@ void main() {
         disposeCallback = undefined;
       }
 
-      if (renderer === 'webgl2') {
+      if (renderer === 'webgl1') {
+        disposeCallback = await render(deviceContributionWebGL1);
+      } else if (renderer === 'webgl2') {
         disposeCallback = await render(deviceContributionWebGL2);
       } else if (renderer === 'webgpu') {
         disposeCallback = await render(deviceContributionWebGPU);

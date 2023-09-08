@@ -29,12 +29,20 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*ygJNSJCkAWgAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "textured-cube.ts",
+      "title": {
+        "zh": "贴图的立方体",
+        "en": "Textured cube"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/mdn/huamei_qa8qxu/afts/img/A*xZcvSrlYoE8AAAAAAAAAAAAADmJ7AQ"
+    },
+    {
       "filename": "instanced-cubes.ts",
       "title": {
         "zh": "批量绘制立方体",
         "en": "Instanced cubes"
       },
-      "screenshot": ""
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*OO5nSL6fcB0AAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "msaa.ts",

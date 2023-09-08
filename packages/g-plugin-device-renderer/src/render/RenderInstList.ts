@@ -1,4 +1,4 @@
-import type { RenderPass, SamplerBinding } from '../platform';
+import type { RenderPass } from '../platform';
 import { spliceBisectRight } from '../platform/utils';
 import type { RenderCache } from './RenderCache';
 import type { RenderInst } from './RenderInst';
@@ -62,22 +62,6 @@ export class RenderInstList {
     // renderInst.validate();
     renderInst.flags |= RenderInstFlags.Draw;
     this.insertSorted(renderInst);
-  }
-
-  hasLateSamplerBinding(name: string): boolean {
-    for (let i = 0; i < this.renderInsts.length; i++)
-      if (this.renderInsts[i].hasLateSamplerBinding(name)) {
-        return true;
-      }
-    return false;
-  }
-
-  /**
-   * Resolve sampler bindings for all render insts on this render inst list.
-   */
-  resolveLateSamplerBinding(name: string, binding: SamplerBinding): void {
-    for (let i = 0; i < this.renderInsts.length; i++)
-      this.renderInsts[i].resolveLateSamplerBinding(name, binding);
   }
 
   ensureSorted(): void {

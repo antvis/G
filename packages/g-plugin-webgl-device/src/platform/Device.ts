@@ -2529,7 +2529,6 @@ export class Device_GL implements SwapChain, Device {
           {
             sampler: null,
             texture: resolveFrom.texture,
-            lateBinding: null,
           },
         ],
         uniformBufferBindings: [],

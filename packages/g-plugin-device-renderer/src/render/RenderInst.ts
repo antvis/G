@@ -238,7 +238,6 @@ export class RenderInst {
       this.bindingDescriptors[0].samplerBindings.push({
         sampler: null,
         texture: null,
-        lateBinding: null,
       });
   }
 
@@ -432,62 +431,14 @@ export class RenderInst {
       if (binding === undefined || binding === null) {
         dst.texture = null;
         dst.sampler = null;
-        dst.lateBinding = null;
         continue;
       }
 
       dst.texture = binding.texture;
       dst.sampler = binding.sampler;
-      dst.lateBinding = binding.lateBinding;
     }
   }
 
-  hasLateSamplerBinding(name: string): boolean {
-    for (
-      let i = 0;
-      i < this.bindingDescriptors[0].samplerBindings.length;
-      i++
-    ) {
-      const dst = this.bindingDescriptors[0].samplerBindings[i];
-      if (dst.lateBinding === name) return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Resolve a previously registered "late bound" sampler binding for the given {@param name} to the provided
-   * {@param binding}, as registered through {@see setSamplerBindingsFromTextureMappings}.
-   *
-   * This is intended to be called by high-level code, and is especially helpful when juggling render targets
-   * for framebuffer effects.
-   */
-  resolveLateSamplerBinding(
-    name: string,
-    binding: SamplerBinding | null,
-  ): void {
-    for (
-      let i = 0;
-      i < this.bindingDescriptors[0].samplerBindings.length;
-      i++
-    ) {
-      const dst = this.bindingDescriptors[0].samplerBindings[i];
-      if (dst.lateBinding === name) {
-        if (binding === null) {
-          dst.texture = null;
-          dst.sampler = null;
-        } else {
-          assert(binding.lateBinding === null);
-          dst.texture = binding.texture;
-          if (binding.sampler !== null) {
-            dst.sampler = binding.sampler;
-          }
-        }
-
-        dst.lateBinding = null;
-      }
-    }
-  }
   /**
    * Sets whether this render inst should be skipped if the render pipeline isn't ready.
    *
