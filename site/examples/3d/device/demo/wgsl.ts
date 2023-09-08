@@ -3,17 +3,8 @@ import {
   VertexStepMode,
   Format,
   TransparentWhite,
-  PrimitiveTopology,
   BufferUsage,
   BufferFrequencyHint,
-  FrontFaceMode,
-  CullMode,
-  StencilOp,
-  CompareMode,
-  ChannelWriteMask,
-  BlendMode,
-  BlendFactor,
-  TransparentBlack,
 } from '@antv/g-plugin-device-renderer';
 
 /**
@@ -31,7 +22,7 @@ const deviceContributionWebGPU = new WebGPUDeviceContribution(
   },
 );
 
-const $container = document.getElementById('container');
+const $container = document.getElementById('container')!;
 const $canvasContainer = document.createElement('div');
 $canvasContainer.id = 'canvas';
 $container.appendChild($canvasContainer);
@@ -108,65 +99,24 @@ fn main() -> @location(0) vec4<f32> {
   });
 
   const pipeline = device.createRenderPipeline({
-    bindingLayouts: [],
     inputLayout,
-    megaStateDescriptor: {
-      attachmentsState: [
-        {
-          channelWriteMask: ChannelWriteMask.ALL,
-          rgbBlendState: {
-            blendMode: BlendMode.ADD,
-            blendSrcFactor: BlendFactor.ONE,
-            blendDstFactor: BlendFactor.ZERO,
-          },
-          alphaBlendState: {
-            blendMode: BlendMode.ADD,
-            blendSrcFactor: BlendFactor.ONE,
-            blendDstFactor: BlendFactor.ZERO,
-          },
-        },
-      ],
-      blendConstant: TransparentBlack,
-      depthWrite: false,
-      depthCompare: CompareMode.LEQUAL,
-      stencilCompare: CompareMode.ALWAYS,
-      stencilWrite: false,
-      stencilPassOp: StencilOp.KEEP,
-      stencilRef: 0,
-      cullMode: CullMode.NONE,
-      frontFace: FrontFaceMode.CCW,
-      polygonOffset: false,
-    },
     program,
-    topology: PrimitiveTopology.TRIANGLES,
     colorAttachmentFormats: [Format.U8_RGBA_RT],
-    depthStencilAttachmentFormat: null,
-    sampleCount: 1,
   });
 
   const renderTarget = device.createRenderTarget({
     pixelFormat: Format.U8_RGBA_RT,
     width: $canvas.width,
     height: $canvas.height,
-    sampleCount: 1,
   });
   device.setResourceName(renderTarget, 'Main Render Target');
 
-  // let id;
+  let id;
   const frame = () => {
     const renderPass = device.createRenderPass({
       colorAttachment: [renderTarget],
-      colorAttachmentLevel: [0],
       colorResolveTo: [onscreenTexture],
-      colorResolveToLevel: [0],
       colorClearColor: [TransparentWhite],
-      colorStore: [true],
-      depthStencilAttachment: null,
-      depthStencilResolveTo: null,
-      depthStencilStore: false,
-      depthClearValue: 'load',
-      stencilClearValue: 'load',
-      occlusionQueryPool: null,
     });
 
     renderPass.setPipeline(pipeline);
@@ -175,7 +125,6 @@ fn main() -> @location(0) vec4<f32> {
       [
         {
           buffer: vertexBuffer,
-          byteOffset: 0,
         },
       ],
       null,
@@ -184,16 +133,15 @@ fn main() -> @location(0) vec4<f32> {
     renderPass.draw(3, 0);
 
     device.submitPass(renderPass);
-    // id = requestAnimationFrame(frame);
+    id = requestAnimationFrame(frame);
   };
 
   frame();
 
   return () => {
-    // if (id) {
-    //   cancelAnimationFrame(id);
-    // }
-    swapChain.destroy();
+    if (id) {
+      cancelAnimationFrame(id);
+    }
     program.destroy();
     vertexBuffer.destroy();
     inputLayout.destroy();

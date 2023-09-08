@@ -215,14 +215,17 @@ export class RenderCache {
 
       const descriptorCopy = programDescriptorSimpleCopy(deviceProgram);
 
-      program = this.device['createProgramSimple']({
-        vertex: {
-          glsl: preprocessedVert,
+      program = this.device['createProgramSimple'](
+        {
+          vertex: {
+            glsl: preprocessedVert,
+          },
+          fragment: {
+            glsl: preprocessedFrag,
+          },
         },
-        fragment: {
-          glsl: preprocessedFrag,
-        },
-      });
+        vert,
+      );
       this.programCache.add(descriptorCopy, program);
     }
 

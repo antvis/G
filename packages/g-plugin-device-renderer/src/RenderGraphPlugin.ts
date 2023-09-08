@@ -236,6 +236,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
       this.batchManager.destroy();
+      this.texturePool.destroy();
 
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);

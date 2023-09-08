@@ -58,7 +58,8 @@ export class RenderInstList {
   }
 
   submitRenderInst(renderInst: RenderInst): void {
-    renderInst.validate();
+    // TODO: drawCount = 0
+    // renderInst.validate();
     renderInst.flags |= RenderInstFlags.Draw;
     this.insertSorted(renderInst);
   }

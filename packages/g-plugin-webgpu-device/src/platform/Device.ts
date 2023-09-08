@@ -50,6 +50,9 @@ import {
   WrapMode,
   CompareMode,
   preprocessShader_GLSL,
+  defaultMegaState,
+  PrimitiveTopology,
+  copyMegaState,
 } from '@antv/g-plugin-device-renderer';
 import type { glsl_compile as glsl_compile_ } from '../../../../rust/pkg/glsl_wgsl_compiler';
 import { Bindings_WebGPU } from './Bindings';
@@ -605,9 +608,14 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       fragmentStage = program.fragmentStage;
     if (vertexStage === null || fragmentStage === null) return;
 
-    const layout = this._createPipelineLayout(descriptor.bindingLayouts);
+    descriptor.megaStateDescriptor = {
+      ...copyMegaState(defaultMegaState),
+      ...descriptor.megaStateDescriptor,
+    };
+
+    const layout = this._createPipelineLayout(descriptor.bindingLayouts || []);
     const primitive = translatePrimitiveState(
-      descriptor.topology,
+      descriptor.topology ?? PrimitiveTopology.TRIANGLES,
       descriptor.megaStateDescriptor,
     );
     const targets = translateTargets(

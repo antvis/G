@@ -49,11 +49,19 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
   }) {
     super({ id, device });
 
+    // Default values.
+    descriptor = {
+      dimension: TextureDimension.TEXTURE_2D,
+      depth: 1,
+      numLevels: 1,
+      ...descriptor,
+    };
+
     const gl = this.device.gl;
     let gl_target: GLenum;
     let gl_texture: WebGLTexture;
     const numLevels = this.clampNumLevels(descriptor);
-    this.immutable = !!descriptor.immutable;
+    this.immutable = descriptor.immutable ?? true;
     this.pixelStore = descriptor.pixelStore;
     this.pixelFormat = descriptor.pixelFormat;
     this.formatKind = getFormatSamplerKind(descriptor.pixelFormat);

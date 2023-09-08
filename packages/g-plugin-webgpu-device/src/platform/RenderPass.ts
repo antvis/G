@@ -13,6 +13,7 @@ import {
   FormatFlags,
   getFormatFlags,
 } from '@antv/g-plugin-device-renderer';
+import { isNil } from '@antv/util';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
 import type { InputLayout_WebGPU } from './InputLayout';
@@ -88,8 +89,9 @@ export class RenderPass_WebGPU implements RenderPass {
       this.gfxColorAttachment[i] = colorAttachment;
       this.gfxColorResolveTo[i] = colorResolveTo;
 
-      this.gfxColorAttachmentLevel[i] = descriptor.colorAttachmentLevel[i];
-      this.gfxColorResolveToLevel[i] = descriptor.colorResolveToLevel[i];
+      this.gfxColorAttachmentLevel[i] =
+        descriptor.colorAttachmentLevel?.[i] || 0;
+      this.gfxColorResolveToLevel[i] = descriptor.colorResolveToLevel?.[i] || 0;
 
       if (colorAttachment !== null) {
         if (this.gpuColorAttachments[i] === undefined) {
@@ -101,14 +103,16 @@ export class RenderPass_WebGPU implements RenderPass {
           colorAttachment,
           this.gfxColorAttachmentLevel[i],
         );
-        const clearColor = descriptor.colorClearColor[i];
+        const clearColor = descriptor.colorClearColor?.[i] ?? 'load';
         if (clearColor === 'load') {
           dstAttachment.loadOp = 'load';
         } else {
           dstAttachment.loadOp = 'clear';
           dstAttachment.clearValue = clearColor;
         }
-        dstAttachment.storeOp = descriptor.colorStore[i] ? 'store' : 'discard';
+        dstAttachment.storeOp = descriptor.colorStore?.[i]
+          ? 'store'
+          : 'discard';
         dstAttachment.resolveTarget = undefined;
         if (colorResolveTo !== null) {
           if (colorAttachment.sampleCount > 1) {
@@ -134,7 +138,7 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gfxDepthStencilResolveTo =
       descriptor.depthStencilResolveTo as Texture_WebGPU;
 
-    if (descriptor.depthStencilAttachment !== null) {
+    if (descriptor.depthStencilAttachment) {
       const dsAttachment =
         descriptor.depthStencilAttachment as unknown as Attachment_WebGPU;
       const dstAttachment = this.gpuDepthStencilAttachment;
@@ -190,10 +194,11 @@ export class RenderPass_WebGPU implements RenderPass {
       this.gpuRenderPassDescriptor.depthStencilAttachment = undefined;
     }
 
-    this.gpuRenderPassDescriptor.occlusionQuerySet =
-      descriptor.occlusionQueryPool !== null
-        ? getPlatformQuerySet(descriptor.occlusionQueryPool)
-        : undefined;
+    this.gpuRenderPassDescriptor.occlusionQuerySet = !isNil(
+      descriptor.occlusionQueryPool,
+    )
+      ? getPlatformQuerySet(descriptor.occlusionQueryPool)
+      : undefined;
   }
 
   beginRenderPass(renderPassDescriptor: RenderPassDescriptor): void {
@@ -334,10 +339,7 @@ export class RenderPass_WebGPU implements RenderPass {
       }
     }
 
-    if (
-      this.gfxDepthStencilAttachment !== null &&
-      this.gfxDepthStencilResolveTo !== null
-    ) {
+    if (this.gfxDepthStencilAttachment && this.gfxDepthStencilResolveTo) {
       if (this.gfxDepthStencilAttachment.sampleCount > 1) {
         // TODO(jstpierre): MSAA depth resolve (requires shader)
       } else {

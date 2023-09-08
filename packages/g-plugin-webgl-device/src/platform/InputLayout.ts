@@ -78,7 +78,6 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(vao);
     }
-    device['currentBoundVAO'] = vao;
 
     gl.bindBuffer(
       gl.ARRAY_BUFFER,
@@ -134,7 +133,6 @@ export class InputLayout_GL extends ResourceBase_GL implements InputLayout {
     } else {
       device.OES_vertex_array_object.bindVertexArrayOES(null);
     }
-    device['currentBoundVAO'] = null;
 
     this.vertexAttributeDescriptors = vertexAttributeDescriptors;
     this.vertexBufferDescriptors = vertexBufferDescriptors;

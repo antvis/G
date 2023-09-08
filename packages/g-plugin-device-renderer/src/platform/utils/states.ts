@@ -10,7 +10,7 @@ import {
   ChannelWriteMask,
   CompareMode,
   CullMode,
-  FrontFaceMode,
+  FrontFace,
   SamplerFormatKind,
   StencilOp,
   TextureDimension,
@@ -225,7 +225,7 @@ const defaultBlendState: ChannelBlendState = {
 export const defaultMegaState: MegaStateDescriptor = {
   attachmentsState: [
     {
-      channelWriteMask: ChannelWriteMask.RGB,
+      channelWriteMask: ChannelWriteMask.ALL,
       rgbBlendState: defaultBlendState,
       alphaBlendState: defaultBlendState,
     },
@@ -241,7 +241,7 @@ export const defaultMegaState: MegaStateDescriptor = {
   stencilPassOp: StencilOp.KEEP,
   stencilRef: 0,
   cullMode: CullMode.NONE,
-  frontFace: FrontFaceMode.CCW,
+  frontFace: FrontFace.CCW,
   polygonOffset: false,
 };
 

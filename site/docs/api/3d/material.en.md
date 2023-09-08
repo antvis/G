@@ -105,10 +105,10 @@ export enum CullMode {
 
 ### frontFace
 
-默认使用 `FrontFaceMode.CCW`，即逆时针方向作为正面 winding order：
+默认使用 `FrontFace.CCW`，即逆时针方向作为正面 winding order：
 
 ```js
-export enum FrontFaceMode {
+export enum FrontFace {
   CCW = GL.CCW,
   CW = GL.CW,
 }

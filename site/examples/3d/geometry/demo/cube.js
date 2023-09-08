@@ -14,9 +14,7 @@ import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
 // create a renderer
-const renderer = new Renderer({
-  targets: ['webgl1'],
-});
+const renderer = new Renderer();
 renderer.registerPlugin(new Plugin3D());
 renderer.registerPlugin(new PluginControl());
 

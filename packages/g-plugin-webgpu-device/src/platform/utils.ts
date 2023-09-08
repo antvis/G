@@ -16,7 +16,7 @@ import {
   TextureDimension,
   PrimitiveTopology,
   CullMode,
-  FrontFaceMode,
+  FrontFace,
   BlendFactor,
   BlendMode,
   CompareMode,
@@ -33,6 +33,7 @@ import {
 import type { Buffer_WebGPU } from './Buffer';
 import type { Sampler_WebGPU } from './Sampler';
 import type { QueryPool_WebGPU } from './QueryPool';
+import { isNil } from '@antv/util';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/usage#value
@@ -218,9 +219,9 @@ export function translateCullMode(cullMode: CullMode): GPUCullMode {
 /**
  * @see https://www.w3.org/TR/webgpu/#enumdef-gpufrontface
  */
-export function translateFrontFace(frontFaceMode: FrontFaceMode): GPUFrontFace {
-  if (frontFaceMode === FrontFaceMode.CCW) return 'ccw';
-  else if (frontFaceMode === FrontFaceMode.CW) return 'cw';
+export function translateFrontFace(frontFaceMode: FrontFace): GPUFrontFace {
+  if (frontFaceMode === FrontFace.CCW) return 'ccw';
+  else if (frontFaceMode === FrontFace.CW) return 'cw';
   else throw new Error('whoops');
 }
 
@@ -342,11 +343,11 @@ export function translateDepthStencilState(
   format: Format | null,
   megaStateDescriptor: MegaStateDescriptor,
 ): GPUDepthStencilState | undefined {
-  if (format === null) return undefined;
+  if (isNil(format)) return undefined;
 
   return {
     format: translateTextureFormat(format),
-    depthWriteEnabled: megaStateDescriptor.depthWrite,
+    depthWriteEnabled: !!megaStateDescriptor.depthWrite,
     depthCompare: translateCompareMode(megaStateDescriptor.depthCompare),
     depthBias: megaStateDescriptor.polygonOffset ? 1 : 0,
     depthBiasSlopeScale: megaStateDescriptor.polygonOffset ? 1 : 0,

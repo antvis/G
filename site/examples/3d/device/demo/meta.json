@@ -21,6 +21,14 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JetpQZ--TzQAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "rotating-cube.ts",
+      "title": {
+        "zh": "旋转的立方体",
+        "en": "Rotating cube"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*ygJNSJCkAWgAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "wgsl.ts",
       "title": {
         "zh": "直接在 WebGPU 中使用 WGSL 语法",

@@ -123,7 +123,7 @@ export enum CompareMode {
   ALWAYS = GL.ALWAYS,
 }
 
-export enum FrontFaceMode {
+export enum FrontFace {
   CCW = GL.CCW,
   CW = GL.CW,
 }
@@ -325,7 +325,7 @@ export enum StencilOp {
 
 export interface VertexBufferDescriptor {
   buffer: Buffer;
-  byteOffset: number;
+  byteOffset?: number;
 }
 
 export type IndexBufferDescriptor = VertexBufferDescriptor;
@@ -347,12 +347,12 @@ export interface InputLayoutBufferDescriptor {
 }
 
 export interface TextureDescriptor {
-  dimension: TextureDimension;
+  dimension?: TextureDimension;
   pixelFormat: Format;
   width: number;
   height: number;
-  depth: number;
-  numLevels: number;
+  depth?: number;
+  numLevels?: number;
   usage: TextureUsage;
   immutable?: boolean;
   pixelStore?: Partial<{
@@ -391,7 +391,7 @@ export interface RenderTargetDescriptor {
   pixelFormat: Format;
   width: number;
   height: number;
-  sampleCount: number;
+  sampleCount?: number;
   texture?: Texture;
 }
 
@@ -483,39 +483,39 @@ export interface ChannelBlendState {
 }
 
 export interface AttachmentState {
-  channelWriteMask: ChannelWriteMask;
+  channelWriteMask?: ChannelWriteMask;
   rgbBlendState: ChannelBlendState;
   alphaBlendState: ChannelBlendState;
 }
 
 export interface MegaStateDescriptor {
   attachmentsState: AttachmentState[];
-  blendConstant: Color;
-  depthCompare: CompareMode;
-  depthWrite: boolean;
-  stencilCompare: CompareMode;
-  stencilWrite: boolean;
-  stencilPassOp: StencilOp;
-  stencilRef: number;
-  cullMode: CullMode;
-  frontFace: FrontFaceMode;
-  polygonOffset: boolean;
+  blendConstant?: Color;
+  depthCompare?: CompareMode;
+  depthWrite?: boolean;
+  stencilCompare?: CompareMode;
+  stencilWrite?: boolean;
+  stencilPassOp?: StencilOp;
+  stencilRef?: number;
+  cullMode?: CullMode;
+  frontFace?: FrontFace;
+  polygonOffset?: boolean;
 }
 
 export interface PipelineDescriptor {
-  bindingLayouts: BindingLayoutDescriptor[];
+  bindingLayouts?: BindingLayoutDescriptor[];
   inputLayout: InputLayout | null;
   program: Program;
 }
 
 export interface RenderPipelineDescriptor extends PipelineDescriptor {
-  topology: PrimitiveTopology;
-  megaStateDescriptor: MegaStateDescriptor;
+  topology?: PrimitiveTopology;
+  megaStateDescriptor?: MegaStateDescriptor;
 
   // Attachment data.
   colorAttachmentFormats: (Format | null)[];
-  depthStencilAttachmentFormat: Format | null;
-  sampleCount: number;
+  depthStencilAttachmentFormat?: Format | null;
+  sampleCount?: number;
 }
 
 export type ComputePipelineDescriptor = PipelineDescriptor;
@@ -529,19 +529,17 @@ export interface Color {
 
 export interface RenderPassDescriptor {
   colorAttachment: (RenderTarget | null)[];
-  colorAttachmentLevel: number[];
-  colorClearColor: (Color | 'load')[];
+  colorAttachmentLevel?: number[];
+  colorClearColor?: (Color | 'load')[];
   colorResolveTo: (Texture | null)[];
-  colorResolveToLevel: number[];
-  colorStore: boolean[];
-  depthStencilAttachment: RenderTarget | null;
-  depthStencilResolveTo: Texture | null;
-  depthStencilStore: boolean;
-  depthClearValue: number | 'load';
-  stencilClearValue: number | 'load';
-
-  // Query system.
-  occlusionQueryPool: QueryPool | null;
+  colorResolveToLevel?: number[];
+  colorStore?: boolean[];
+  depthStencilAttachment?: RenderTarget | null;
+  depthStencilResolveTo?: Texture | null;
+  depthStencilStore?: boolean;
+  depthClearValue?: number | 'load';
+  stencilClearValue?: number | 'load';
+  occlusionQueryPool?: QueryPool | null;
 }
 
 export interface DeviceLimits {

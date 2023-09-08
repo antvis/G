@@ -509,7 +509,10 @@ export class Device_GL implements SwapChain, Device {
 
   //#region Device
   // @see https://webgl2fundamentals.org/webgl/lessons/webgl-data-textures.html
-  translateTextureInternalFormat(fmt: Format): GLenum {
+  translateTextureInternalFormat(
+    fmt: Format,
+    isRenderbufferStorage = false,
+  ): GLenum {
     switch (fmt) {
       case Format.ALPHA:
         return GL.ALPHA;
@@ -540,9 +543,15 @@ export class Device_GL implements SwapChain, Device {
         return GL.SRGB8;
       case Format.U8_RGBA_NORM:
       case Format.U8_RGBA_RT:
-        // WebGL1 only support RGBA4 RGB565 RGB5_A1
+        // WebGL1 renderbuffer only support RGBA4 RGB565 RGB5_A1
         // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/renderbufferStorage#parameters
-        return isWebGL2(this.gl) ? GL.RGBA8 : GL.RGBA4;
+        // But texImage2D allows RGBA
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+        return isWebGL2(this.gl)
+          ? GL.RGBA8
+          : isRenderbufferStorage
+          ? GL.RGBA4
+          : GL.RGBA;
       case Format.U8_RGBA_SRGB:
       case Format.U8_RGBA_RT_SRGB:
         return GL.SRGB8_ALPHA8;
@@ -554,16 +563,16 @@ export class Device_GL implements SwapChain, Device {
         return this.EXT_texture_norm16.RG16_EXT;
       case Format.U16_RGBA_NORM:
         return this.EXT_texture_norm16.RGBA16_EXT;
-      // case Format.U16_RGBA_5551:
-      //   return GL.RGB5_A1;
+      case Format.U16_RGBA_5551:
+        return GL.RGB5_A1;
+      case Format.U16_RGB_565:
+        return GL.RGB565;
       case Format.U32_R:
         return GL.R32UI;
       case Format.S8_RGBA_NORM:
         return GL.RGBA8_SNORM;
       case Format.S8_RG_NORM:
         return GL.RG8_SNORM;
-      case Format.U16_RGBA_5551:
-        return GL.UNSIGNED_SHORT_5_5_5_1;
       case Format.BC1:
         return this.WEBGL_compressed_texture_s3tc.COMPRESSED_RGBA_S3TC_DXT1_EXT;
       case Format.BC1_SRGB:
@@ -797,6 +806,7 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createProgram(descriptor: ProgramDescriptor): Program_GL {
+    const rawVertexGLSL = descriptor.vertex?.glsl;
     // preprocess GLSL first
     if (descriptor.vertex.glsl) {
       descriptor.vertex.glsl = preprocessShader_GLSL(
@@ -812,15 +822,22 @@ export class Device_GL implements SwapChain, Device {
         descriptor.fragment.glsl,
       );
     }
-    return this.createProgramSimple(descriptor);
+    return this.createProgramSimple(descriptor, rawVertexGLSL);
   }
 
-  private createProgramSimple(descriptor: ProgramDescriptor): Program_GL {
-    return new Program_GL({
-      id: this.getNextUniqueId(),
-      device: this,
-      descriptor,
-    });
+  private createProgramSimple(
+    descriptor: ProgramDescriptor,
+    rawVertexGLSL: string,
+  ): Program_GL {
+    const program = new Program_GL(
+      {
+        id: this.getNextUniqueId(),
+        device: this,
+        descriptor,
+      },
+      rawVertexGLSL,
+    );
+    return program;
   }
 
   createBindings(descriptor: BindingsDescriptor): Bindings {
@@ -879,9 +896,43 @@ export class Device_GL implements SwapChain, Device {
     });
   }
 
+  private formatRenderPassDescriptor(descriptor: RenderPassDescriptor) {
+    const { colorAttachment } = descriptor;
+
+    descriptor.depthClearValue = descriptor.depthClearValue ?? 'load';
+    descriptor.stencilClearValue = descriptor.stencilClearValue ?? 'load';
+
+    for (let i = 0; i < colorAttachment.length; i++) {
+      if (!descriptor.colorAttachmentLevel) {
+        descriptor.colorAttachmentLevel = [];
+      }
+      descriptor.colorAttachmentLevel[i] =
+        descriptor.colorAttachmentLevel[i] ?? 0;
+
+      if (!descriptor.colorResolveToLevel) {
+        descriptor.colorResolveToLevel = [];
+      }
+      descriptor.colorResolveToLevel[i] =
+        descriptor.colorResolveToLevel[i] ?? 0;
+
+      if (!descriptor.colorClearColor) {
+        descriptor.colorClearColor = [];
+      }
+      descriptor.colorClearColor[i] = descriptor.colorClearColor[i] ?? 'load';
+
+      if (!descriptor.colorStore) {
+        descriptor.colorStore = [];
+      }
+      descriptor.colorStore[i] = descriptor.colorStore[i] ?? false;
+    }
+  }
+
   createRenderPass(descriptor: RenderPassDescriptor): RenderPass {
     assert(this.currentRenderPassDescriptor === null);
     this.currentRenderPassDescriptor = descriptor;
+
+    // Format renderpass descriptor
+    this.formatRenderPassDescriptor(descriptor);
 
     const {
       colorAttachment,
@@ -1332,7 +1383,7 @@ export class Device_GL implements SwapChain, Device {
       }
     }
 
-    if (this.currentDepthStencilAttachment !== null) {
+    if (this.currentDepthStencilAttachment) {
       if (sampleCount === -1) {
         sampleCount = this.currentDepthStencilAttachment.sampleCount;
         width = this.currentDepthStencilAttachment.width;
@@ -1464,7 +1515,7 @@ export class Device_GL implements SwapChain, Device {
     if (this.currentDepthStencilResolveTo !== depthStencilResolveTo) {
       this.currentDepthStencilResolveTo = depthStencilResolveTo as Texture_GL;
 
-      if (depthStencilResolveTo !== null) {
+      if (depthStencilResolveTo) {
         this.resolveDepthStencilAttachmentsChanged = true;
       }
     }
@@ -1511,13 +1562,13 @@ export class Device_GL implements SwapChain, Device {
   }
 
   private setRenderPassParametersClearDepthStencil(
-    depthClearValue: number | 'load',
-    stencilClearValue: number | 'load',
+    depthClearValue: number | 'load' = 'load',
+    stencilClearValue: number | 'load' = 'load',
   ): void {
     const gl = this.gl;
 
     if (depthClearValue !== 'load') {
-      assert(this.currentDepthStencilAttachment !== null);
+      assert(!!this.currentDepthStencilAttachment);
       // GL clears obey the masks... bad API or worst API?
       if (!this.currentMegaState.depthWrite) {
         gl.depthMask(true);
@@ -1531,7 +1582,7 @@ export class Device_GL implements SwapChain, Device {
       }
     }
     if (stencilClearValue !== 'load') {
-      assert(this.currentDepthStencilAttachment !== null);
+      assert(!!this.currentDepthStencilAttachment);
       if (!this.currentMegaState.stencilWrite) {
         gl.enable(gl.STENCIL_TEST);
         gl.stencilMask(0xff);
@@ -1864,12 +1915,12 @@ export class Device_GL implements SwapChain, Device {
       currentMegaState.depthCompare = newMegaState.depthCompare;
     }
 
-    if (currentMegaState.depthWrite !== newMegaState.depthWrite) {
+    if (!!currentMegaState.depthWrite !== !!newMegaState.depthWrite) {
       gl.depthMask(newMegaState.depthWrite);
       currentMegaState.depthWrite = newMegaState.depthWrite;
     }
 
-    if (currentMegaState.stencilWrite !== newMegaState.stencilWrite) {
+    if (!!currentMegaState.stencilWrite !== !!newMegaState.stencilWrite) {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/stencilMask
       gl.stencilMask(newMegaState.stencilWrite ? 0xff : 0x00);
       currentMegaState.stencilWrite = newMegaState.stencilWrite;
@@ -1928,7 +1979,7 @@ export class Device_GL implements SwapChain, Device {
       assert(attachment.pixelFormat === pipeline.colorAttachmentFormats[i]);
     }
 
-    if (this.currentDepthStencilAttachment !== null) {
+    if (this.currentDepthStencilAttachment) {
       assert(
         this.currentDepthStencilAttachment.pixelFormat ===
           pipeline.depthStencilAttachmentFormat,
@@ -2006,7 +2057,7 @@ export class Device_GL implements SwapChain, Device {
         // find location by name in WebGL1
         const location = isWebGL2(gl)
           ? attr.location
-          : inputLayout.program.attributes[i]?.location;
+          : inputLayout.program.attributes[attr.location]?.location;
 
         if (!isNil(location)) {
           const vertexBuffer = vertexBuffers![attr.bufferIndex];
@@ -2020,7 +2071,8 @@ export class Device_GL implements SwapChain, Device {
             getPlatformBuffer(vertexBuffer.buffer),
           );
 
-          const bufferOffset = vertexBuffer.byteOffset + attr.bufferByteOffset;
+          const bufferOffset =
+            (vertexBuffer.byteOffset || 0) + attr.bufferByteOffset;
 
           const inputLayoutBuffer =
             inputLayout.vertexBufferDescriptors[attr.bufferIndex]!;
@@ -2227,7 +2279,7 @@ export class Device_GL implements SwapChain, Device {
           didUnbindDraw = true;
         }
 
-        if (!this.currentRenderPassDescriptor!.colorStore[i]) {
+        if (!this.currentRenderPassDescriptor.colorStore[i]) {
           if (!didBindRead) {
             gl.bindFramebuffer(
               isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
@@ -2259,11 +2311,11 @@ export class Device_GL implements SwapChain, Device {
     this.resolveColorAttachmentsChanged = false;
 
     const depthStencilResolveFrom = this.currentDepthStencilAttachment;
-    if (depthStencilResolveFrom !== null) {
+    if (depthStencilResolveFrom) {
       const depthStencilResolveTo = this.currentDepthStencilResolveTo;
       let didBindRead = false;
 
-      if (depthStencilResolveTo !== null) {
+      if (depthStencilResolveTo) {
         assert(
           depthStencilResolveFrom.width === depthStencilResolveTo.width &&
             depthStencilResolveFrom.height === depthStencilResolveTo.height,
@@ -2367,7 +2419,7 @@ export class Device_GL implements SwapChain, Device {
   }
 
   private applyStencil(): void {
-    if (this.currentStencilRef === null) {
+    if (isNil(this.currentStencilRef)) {
       return;
     }
     this.gl.stencilFunc(
@@ -2438,11 +2490,9 @@ export class Device_GL implements SwapChain, Device {
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
         inputLayout: this.blitInputLayout,
-        // megaStateDescriptor: copyMegaState(defaultMegaState),
-        megaStateDescriptor: this.currentMegaState,
+        megaStateDescriptor: copyMegaState(defaultMegaState),
       });
 
-      // const colorTexture = this.currentColorAttachments[0].texture;
       this.blitBindings = this.createBindings({
         bindingLayout: bindingLayouts[0],
         samplerBindings: [
@@ -2468,17 +2518,8 @@ export class Device_GL implements SwapChain, Device {
 
     const blitRenderPass = this.createRenderPass({
       colorAttachment: [resolveFrom],
-      colorAttachmentLevel: [0],
       colorResolveTo: [resolveTo],
-      colorResolveToLevel: [0],
       colorClearColor: [TransparentWhite],
-      colorStore: [true],
-      depthStencilAttachment: null,
-      depthStencilResolveTo: null,
-      depthStencilStore: true,
-      depthClearValue: 'load',
-      stencilClearValue: 'load',
-      occlusionQueryPool: null,
     });
 
     const { width, height } = this.getCanvas() as HTMLCanvasElement;
@@ -2486,7 +2527,7 @@ export class Device_GL implements SwapChain, Device {
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
     blitRenderPass.setVertexInput(
       this.blitInputLayout,
-      [{ buffer: this.blitVertexBuffer, byteOffset: 0 }],
+      [{ buffer: this.blitVertexBuffer }],
       null,
     );
     blitRenderPass.setViewport(0, 0, width, height);

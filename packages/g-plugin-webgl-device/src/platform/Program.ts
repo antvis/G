@@ -55,15 +55,18 @@ export class Program_GL extends ResourceBase_GL implements Program {
     size: number;
   }[] = [];
 
-  constructor({
-    id,
-    device,
-    descriptor,
-  }: {
-    id: number;
-    device: Device_GL;
-    descriptor: ProgramDescriptor;
-  }) {
+  constructor(
+    {
+      id,
+      device,
+      descriptor,
+    }: {
+      id: number;
+      device: Device_GL;
+      descriptor: ProgramDescriptor;
+    },
+    private rawVertexGLSL: string,
+  ) {
     super({ id, device });
 
     const gl = this.device.gl;
@@ -133,7 +136,8 @@ export class Program_GL extends ResourceBase_GL implements Program {
 
     const defines = getDefines(this.descriptor.vertex.glsl);
     const locations = getAttributeLocations(
-      this.descriptor.vertex.glsl,
+      // Use raw GLSL
+      this.rawVertexGLSL,
       defines,
     );
     for (let index = 0; index < count; index++) {

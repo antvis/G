@@ -7,15 +7,6 @@ import {
   PrimitiveTopology,
   BufferUsage,
   BufferFrequencyHint,
-  FrontFaceMode,
-  CullMode,
-  StencilOp,
-  CompareMode,
-  ChannelWriteMask,
-  BlendMode,
-  BlendFactor,
-  TransparentBlack,
-  TextureDimension,
   TextureUsage,
 } from '@antv/g-plugin-device-renderer';
 import * as lil from 'lil-gui';
@@ -89,7 +80,6 @@ void main() {
     usage: BufferUsage.VERTEX,
     hint: BufferFrequencyHint.DYNAMIC,
   });
-  device.setResourceName(vertexBuffer, 'a_Position');
 
   const inputLayout = device.createInputLayout({
     vertexBufferDescriptors: [
@@ -111,74 +101,26 @@ void main() {
   });
 
   const pipeline = device.createRenderPipeline({
-    bindingLayouts: [],
     inputLayout,
-    megaStateDescriptor: {
-      attachmentsState: [
-        {
-          channelWriteMask: ChannelWriteMask.ALL,
-          rgbBlendState: {
-            blendMode: BlendMode.ADD,
-            blendSrcFactor: BlendFactor.ONE,
-            blendDstFactor: BlendFactor.ZERO,
-          },
-          alphaBlendState: {
-            blendMode: BlendMode.ADD,
-            blendSrcFactor: BlendFactor.ONE,
-            blendDstFactor: BlendFactor.ZERO,
-          },
-        },
-      ],
-      blendConstant: TransparentBlack,
-      depthWrite: false,
-      depthCompare: CompareMode.LEQUAL,
-      stencilCompare: CompareMode.ALWAYS,
-      stencilWrite: false,
-      stencilPassOp: StencilOp.KEEP,
-      stencilRef: 0,
-      cullMode: CullMode.NONE,
-      frontFace: FrontFaceMode.CCW,
-      polygonOffset: false,
-    },
     program,
     topology: PrimitiveTopology.POINTS,
     colorAttachmentFormats: [Format.U8_RGBA_RT],
-    depthStencilAttachmentFormat: null,
-    sampleCount: 1,
   });
 
-  const renderTarget = device.createRenderTarget({
-    pixelFormat: Format.U8_RGBA_RT,
-    width: $canvas.width,
-    height: $canvas.height,
-    sampleCount: 1,
-  });
-  // const texture = device.createTexture({
-  //   pixelFormat: Format.U8_RGBA_RT,
-  //   width: $canvas.width,
-  //   height: $canvas.height,
-  //   depth: 1,
-  //   dimension: TextureDimension.TEXTURE_2D,
-  //   usage: TextureUsage.RENDER_TARGET,
-  //   numLevels: 1,
-  // });
-  // const renderTarget = device.createRenderTargetFromTexture(texture);
-  device.setResourceName(renderTarget, 'Main Render Target');
+  const renderTarget = device.createRenderTargetFromTexture(
+    device.createTexture({
+      pixelFormat: Format.U8_RGBA_RT,
+      width: $canvas.width,
+      height: $canvas.height,
+      usage: TextureUsage.RENDER_TARGET,
+    }),
+  );
 
   const frame = () => {
     const renderPass = device.createRenderPass({
       colorAttachment: [renderTarget],
-      colorAttachmentLevel: [0],
       colorResolveTo: [onscreenTexture],
-      colorResolveToLevel: [0],
       colorClearColor: [TransparentWhite],
-      colorStore: [true],
-      depthStencilAttachment: null,
-      depthStencilResolveTo: null,
-      depthStencilStore: false,
-      depthClearValue: 'load',
-      stencilClearValue: 'load',
-      occlusionQueryPool: null,
     });
 
     renderPass.setPipeline(pipeline);
@@ -187,7 +129,6 @@ void main() {
       [
         {
           buffer: vertexBuffer,
-          byteOffset: 0,
         },
       ],
       null,
@@ -196,13 +137,12 @@ void main() {
     renderPass.draw(3, 0);
 
     device.submitPass(renderPass);
-    // requestAnimationFrame(frame);
+    requestAnimationFrame(frame);
   };
 
   frame();
 
   return () => {
-    swapChain.destroy();
     program.destroy();
     vertexBuffer.destroy();
     inputLayout.destroy();
