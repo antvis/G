@@ -146,22 +146,37 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Float,
     );
+    this.setResourceName(this.fallbackTexture2D, 'Fallback Texture2D');
+
     this.fallbackTexture2DDepth = this.createFallbackTexture(
       TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Depth,
     );
+    this.setResourceName(
+      this.fallbackTexture2DDepth,
+      'Fallback Depth Texture2D',
+    );
+
     this.fallbackTexture2DArray = this.createFallbackTexture(
       TextureDimension.TEXTURE_2D_ARRAY,
       SamplerFormatKind.Float,
     );
+    this.setResourceName(
+      this.fallbackTexture2DArray,
+      'Fallback Texture2DArray',
+    );
+
     this.fallbackTexture3D = this.createFallbackTexture(
       TextureDimension.TEXTURE_3D,
       SamplerFormatKind.Float,
     );
+    this.setResourceName(this.fallbackTexture3D, 'Fallback Texture3D');
+
     this.fallbackTextureCube = this.createFallbackTexture(
       TextureDimension.TEXTURE_CUBE_MAP,
       SamplerFormatKind.Float,
     );
+    this.setResourceName(this.fallbackTextureCube, 'Fallback TextureCube');
 
     this.fallbackSamplerFiltering = this.createSampler({
       wrapS: WrapMode.REPEAT,
@@ -184,8 +199,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       compareMode: CompareMode.ALWAYS,
     });
     this.setResourceName(
-      this.fallbackSamplerFiltering,
-      'Fallback Sampler Filtering',
+      this.fallbackSamplerComparison,
+      'Fallback Sampler Comparison Filtering',
     );
 
     // Firefox doesn't support GPUDevice.features yet...
@@ -246,6 +261,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.gpuTexture = gpuTexture;
     texture.gpuTextureView = gpuTextureView;
     texture.name = 'Onscreen';
+    this.setResourceName(texture, 'Onscreen Texture');
 
     return texture;
   }
@@ -321,6 +337,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         depth: 1,
         usage: TextureUsage.RENDER_TARGET,
       },
+      sampleCount: descriptor.sampleCount,
     }) as unknown as Attachment_WebGPU;
 
     texture.depthOrArrayLayers = 1;
@@ -413,7 +430,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.depthOrArrayLayers = descriptor.depthOrArrayLayers;
     texture.numLevels = mipLevelCount;
     texture.usage = usage;
-    texture.sampleCount = 1;
+    texture.sampleCount = descriptor.sampleCount;
 
     if (!skipCreate) {
       const gpuTexture = this.device.createTexture({
@@ -421,6 +438,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         mipLevelCount,
         format,
         dimension,
+        sampleCount: descriptor.sampleCount,
         usage,
       });
       const gpuTextureView = gpuTexture.createView();
@@ -520,7 +538,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
-  _createBindGroupLayout(
+  private createBindGroupLayout(
     bindingLayout: BindingLayoutDescriptor,
   ): BindGroupLayout {
     let gpuBindGroupLayout = this.bindGroupLayoutCache.get(bindingLayout);
@@ -583,12 +601,15 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   ): GPUPipelineLayout {
     const bindGroupLayouts = bindingLayouts.flatMap(
       (bindingLayout) =>
-        this._createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
+        this.createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
     );
     return this.device.createPipelineLayout({ bindGroupLayouts });
   }
 
-  _createRenderPipeline(renderPipeline: RenderPipeline_WebGPU, async = false) {
+  private createRenderPipelineInternal(
+    renderPipeline: RenderPipeline_WebGPU,
+    async = false,
+  ) {
     // if (this.device.createRenderPipelineAsync === undefined) {
     //   async = false;
     // }
@@ -850,6 +871,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
   pipelineForceReady(o: RenderPipeline): void {
     const renderPipeline = o as RenderPipeline_WebGPU;
-    this._createRenderPipeline(renderPipeline, false);
+    this.createRenderPipelineInternal(renderPipeline, false);
   }
 }

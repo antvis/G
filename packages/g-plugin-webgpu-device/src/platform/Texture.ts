@@ -1,4 +1,4 @@
-import type {
+import {
   Format,
   Texture,
   TextureDescriptor,
@@ -32,24 +32,26 @@ export class Texture_WebGPU
     device,
     descriptor,
     skipCreate,
+    sampleCount,
   }: {
     id: number;
     device: IDevice_WebGPU;
     descriptor: TextureDescriptor;
     skipCreate?: boolean;
+    sampleCount?: number;
   }) {
     super({ id, device });
 
     this.device.createTextureShared(
       {
         pixelFormat: descriptor.pixelFormat,
-        dimension: descriptor.dimension,
+        dimension: descriptor.dimension ?? TextureDimension.TEXTURE_2D,
         width: descriptor.width,
         height: descriptor.height,
         depthOrArrayLayers: descriptor.depth,
-        numLevels: descriptor.numLevels,
+        numLevels: descriptor.numLevels ?? 1,
         usage: descriptor.usage,
-        sampleCount: 1,
+        sampleCount: sampleCount ?? 1,
       },
       this,
       skipCreate,
@@ -91,6 +93,7 @@ export class Texture_WebGPU
   }
 
   destroy() {
+    super.destroy();
     // @see https://www.w3.org/TR/webgpu/#dom-gputexture-destroy
     this.gpuTexture.destroy();
   }

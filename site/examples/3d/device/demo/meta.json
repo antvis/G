@@ -29,6 +29,14 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*ygJNSJCkAWgAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "msaa.ts",
+      "title": {
+        "zh": "MSAA",
+        "en": "MSAA"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*JetpQZ--TzQAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "wgsl.ts",
       "title": {
         "zh": "直接在 WebGPU 中使用 WGSL 语法",

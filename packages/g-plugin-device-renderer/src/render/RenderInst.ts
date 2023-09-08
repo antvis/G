@@ -585,7 +585,7 @@ export class RenderInst {
         uniforms.forEach(({ name, value }) => {
           uniformsMap[name] = value;
         });
-        (this.renderPipelineDescriptor.program as any).setUniforms(uniformsMap);
+        this.renderPipelineDescriptor.program.setUniformsLegacy(uniformsMap);
       });
     }
 

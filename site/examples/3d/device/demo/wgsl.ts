@@ -43,8 +43,6 @@ async function render(deviceContribution: WebGPUDeviceContribution) {
   swapChain.configureSwapChain($canvas.width, $canvas.height);
   const device = swapChain.getDevice();
 
-  const onscreenTexture = swapChain.getOnscreenTexture();
-
   const program = device.createProgram({
     vertex: {
       wgsl: `
@@ -113,6 +111,12 @@ fn main() -> @location(0) vec4<f32> {
 
   let id;
   const frame = () => {
+    /**
+     * An application should call getCurrentTexture() in the same task that renders to the canvas texture.
+     * Otherwise, the texture could get destroyed by these steps before the application is finished rendering to it.
+     */
+    const onscreenTexture = swapChain.getOnscreenTexture();
+
     const renderPass = device.createRenderPass({
       colorAttachment: [renderTarget],
       colorResolveTo: [onscreenTexture],

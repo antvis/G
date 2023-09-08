@@ -23,7 +23,7 @@ const deviceContributionWebGL1 = new WebGLDeviceContribution({
   onContextRestored(e) {},
 });
 const deviceContributionWebGL2 = new WebGLDeviceContribution({
-  targets: ['webgl2'],
+  targets: ['webgl2', 'webgl1'],
   onContextCreationError: () => {},
   onContextLost: () => {},
   onContextRestored(e) {},

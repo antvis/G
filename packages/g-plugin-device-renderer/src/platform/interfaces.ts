@@ -48,6 +48,7 @@ export interface Sampler extends ResourceBase {
 }
 export interface Program extends ResourceBase {
   type: ResourceType.Program;
+  setUniformsLegacy: (uniforms: Record<string, any>) => void;
 }
 export interface Bindings extends ResourceBase {
   type: ResourceType.Bindings;

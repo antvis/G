@@ -2505,7 +2505,7 @@ export class Device_GL implements SwapChain, Device {
         uniformBufferBindings: [],
       });
 
-      this.blitProgram.setUniforms({
+      this.blitProgram.setUniformsLegacy({
         u_Texture: resolveFrom,
       });
     }

@@ -56,14 +56,14 @@ export class ComputePass_WebGPU implements ComputePass {
     );
   }
 
-  public beginDebugGroup(name: string): void {
+  beginDebugGroup(name: string): void {
     // FIREFOX MISSING
     if (this.gpuComputePassEncoder!.pushDebugGroup === undefined) return;
 
     this.gpuComputePassEncoder!.pushDebugGroup(name);
   }
 
-  public endDebugGroup(): void {
+  endDebugGroup(): void {
     // FIREFOX MISSING
     if (this.gpuComputePassEncoder!.popDebugGroup === undefined) return;
 

@@ -101,7 +101,7 @@ export class RenderPass_WebGPU implements RenderPass {
         const dstAttachment = this.gpuColorAttachments[i];
         dstAttachment.view = this.getTextureView(
           colorAttachment,
-          this.gfxColorAttachmentLevel[i],
+          this.gfxColorAttachmentLevel?.[i] || 0,
         );
         const clearColor = descriptor.colorClearColor?.[i] ?? 'load';
         if (clearColor === 'load') {

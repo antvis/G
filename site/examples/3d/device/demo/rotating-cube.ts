@@ -28,7 +28,7 @@ const deviceContributionWebGL1 = new WebGLDeviceContribution({
   onContextRestored(e) {},
 });
 const deviceContributionWebGL2 = new WebGLDeviceContribution({
-  targets: ['webgl2'],
+  targets: ['webgl2', 'webgl1'],
   onContextCreationError: () => {},
   onContextLost: () => {},
   onContextRestored(e) {},
@@ -65,8 +65,6 @@ async function render(
   // TODO: resize
   swapChain.configureSwapChain($canvas.width, $canvas.height);
   const device = swapChain.getDevice();
-
-  const onscreenTexture = swapChain.getOnscreenTexture();
 
   const program = device.createProgram({
     vertex: {
@@ -245,12 +243,18 @@ void main() {
     mat4.multiply(modelViewProjectionMatrix, projectionMatrix, viewMatrix);
     uniformBuffer.setSubData(
       0,
-      new Uint8Array(modelViewProjectionMatrix.buffer),
+      new Uint8Array((modelViewProjectionMatrix as Float32Array).buffer),
     );
-    // @ts-ignore WebGL1 need this
-    program.setUniforms({
+    // WebGL1 need this
+    program.setUniformsLegacy({
       u_ModelViewProjectionMatrix: modelViewProjectionMatrix,
     });
+
+    /**
+     * An application should call getCurrentTexture() in the same task that renders to the canvas texture.
+     * Otherwise, the texture could get destroyed by these steps before the application is finished rendering to it.
+     */
+    const onscreenTexture = swapChain.getOnscreenTexture();
 
     const renderPass = device.createRenderPass({
       colorAttachment: [mainColorRT],

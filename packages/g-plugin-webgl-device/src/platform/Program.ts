@@ -193,7 +193,7 @@ export class Program_GL extends ResourceBase_GL implements Program {
     return shader;
   }
 
-  setUniforms(uniforms: Record<string, any> = {}) {
+  setUniformsLegacy(uniforms: Record<string, any> = {}) {
     const gl = this.device.gl;
 
     if (!isWebGL2(gl)) {

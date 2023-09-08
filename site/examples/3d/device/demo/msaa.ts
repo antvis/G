@@ -6,16 +6,15 @@ import {
   TransparentWhite,
   BufferUsage,
   BufferFrequencyHint,
-  TextureUsage,
 } from '@antv/g-plugin-device-renderer';
 import * as lil from 'lil-gui';
 
-const deviceContributionWebGL1 = new WebGLDeviceContribution({
-  targets: ['webgl1'],
-  onContextCreationError: () => {},
-  onContextLost: () => {},
-  onContextRestored(e) {},
-});
+/**
+ * Use multisampled antialiasing (MSAA).
+ * @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#multisampled-renderbuffers
+ * @see https://webgpu.github.io/webgpu-samples/samples/helloTriangleMSAA#main.ts
+ */
+
 const deviceContributionWebGL2 = new WebGLDeviceContribution({
   targets: ['webgl2', 'webgl1'],
   onContextCreationError: () => {},
@@ -106,16 +105,15 @@ void main() {
     inputLayout,
     program,
     colorAttachmentFormats: [Format.U8_RGBA_RT],
+    sampleCount: 4,
   });
 
-  const renderTarget = device.createRenderTargetFromTexture(
-    device.createTexture({
-      pixelFormat: Format.U8_RGBA_RT,
-      width: $canvas.width,
-      height: $canvas.height,
-      usage: TextureUsage.RENDER_TARGET,
-    }),
-  );
+  const renderTarget = device.createRenderTarget({
+    pixelFormat: Format.U8_RGBA_RT,
+    width: $canvas.width,
+    height: $canvas.height,
+    sampleCount: 4,
+  });
   device.setResourceName(renderTarget, 'Main Render Target');
 
   let id;
@@ -178,7 +176,7 @@ void main() {
     renderer: 'webgl2',
   };
   rendererFolder
-    .add(rendererConfig, 'renderer', ['webgl1', 'webgl2', 'webgpu'])
+    .add(rendererConfig, 'renderer', ['webgl2', 'webgpu'])
     .onChange(async (renderer) => {
       if (disposeCallback) {
         disposeCallback();
@@ -186,9 +184,7 @@ void main() {
         disposeCallback = undefined;
       }
 
-      if (renderer === 'webgl1') {
-        disposeCallback = await render(deviceContributionWebGL1);
-      } else if (renderer === 'webgl2') {
+      if (renderer === 'webgl2') {
         disposeCallback = await render(deviceContributionWebGL2);
       } else if (renderer === 'webgpu') {
         disposeCallback = await render(deviceContributionWebGPU);

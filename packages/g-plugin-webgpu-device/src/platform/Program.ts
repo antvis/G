@@ -41,6 +41,8 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
     }
   }
 
+  setUniformsLegacy(uniforms: Record<string, any> = {}) {}
+
   private createShaderStage(
     shader: {
       glsl?: string;
