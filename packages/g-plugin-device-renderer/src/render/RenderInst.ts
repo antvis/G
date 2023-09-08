@@ -600,17 +600,21 @@ export class RenderInst {
       this.dynamicUniformBufferByteOffsets,
     );
 
-    if (this.drawInstanceCount > 1) {
-      assert(!!(this.flags & RenderInstFlags.Indexed));
-      passRenderer.drawIndexedInstanced(
+    if (this.flags & RenderInstFlags.Indexed) {
+      passRenderer.drawIndexed(
         this.drawCount,
-        this.drawStart,
         this.drawInstanceCount,
+        this.drawStart,
+        0,
+        0,
       );
-    } else if (this.flags & RenderInstFlags.Indexed) {
-      passRenderer.drawIndexed(this.drawCount, this.drawStart);
     } else {
-      passRenderer.draw(this.drawCount, this.drawStart);
+      passRenderer.draw(
+        this.drawCount,
+        this.drawInstanceCount,
+        this.drawStart,
+        0,
+      );
     }
 
     return true;

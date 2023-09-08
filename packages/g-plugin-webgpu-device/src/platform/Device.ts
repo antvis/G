@@ -8,7 +8,6 @@ import type {
   ComputePass,
   ComputePipeline,
   ComputePipelineDescriptor,
-  DebugGroup,
   Device,
   DeviceLimits,
   InputLayout,
@@ -859,10 +858,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   checkForLeaks(): void {}
 
   programPatched(o: Program): void {}
-
-  pushDebugGroup(debugGroup: DebugGroup): void {}
-
-  popDebugGroup(): void {}
 
   pipelineQueryReady(o: RenderPipeline): boolean {
     const renderPipeline = o as RenderPipeline_WebGPU;

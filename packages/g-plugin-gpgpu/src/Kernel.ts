@@ -174,7 +174,7 @@ export class Kernel {
 
     // fixed bind group 0
     computePass.setBindings(0, bindings, []);
-    computePass.dispatch(...dispatchParams);
+    computePass.dispatchWorkgroups(...dispatchParams);
     this.device.submitPass(computePass);
   }
 

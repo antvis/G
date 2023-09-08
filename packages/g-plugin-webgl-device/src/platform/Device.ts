@@ -1171,13 +1171,19 @@ export class Device_GL implements SwapChain, Device {
       this.resourceCreationTracker.checkForLeaks();
   }
 
-  pushDebugGroup(debugGroup: DebugGroup): void {
-    this.debugGroupStack.push(debugGroup);
-  }
+  pushDebugGroup(name: string): void {}
 
-  popDebugGroup(): void {
-    this.debugGroupStack.pop();
-  }
+  popDebugGroup(): void {}
+
+  insertDebugMarker(markerLabel: string) {}
+
+  // pushDebugGroup(debugGroup: DebugGroup): void {
+  //   this.debugGroupStack.push(debugGroup);
+  // }
+
+  // popDebugGroup(): void {
+  //   this.debugGroupStack.pop();
+  // }
 
   programPatched(o: Program, descriptor: ProgramDescriptor): void {
     assert(this.shaderDebug);
@@ -2114,58 +2120,86 @@ export class Device_GL implements SwapChain, Device {
     this.applyStencil();
   }
 
-  draw(count: number, firstVertex: number): void {
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-draw
+   */
+  draw(
+    vertexCount: number,
+    instanceCount?: number,
+    firstVertex?: number,
+    firstInstance?: number,
+  ) {
     const gl = this.gl;
     const pipeline = this.currentPipeline;
-    gl.drawArrays(pipeline.drawMode, firstVertex, count);
-    this.debugGroupStatisticsDrawCall();
-    this.debugGroupStatisticsTriangles(count / 3);
-  }
-
-  drawIndexed(count: number, firstIndex: number): void {
-    const gl = this.gl;
-    const pipeline = this.currentPipeline,
-      inputLayout = assertExists(pipeline.inputLayout);
-    const byteOffset =
-      assertExists(this.currentIndexBufferByteOffset) +
-      firstIndex * inputLayout.indexBufferCompByteSize!;
-    gl.drawElements(
-      pipeline.drawMode,
-      count,
-      inputLayout.indexBufferType!,
-      byteOffset,
-    );
-    this.debugGroupStatisticsDrawCall();
-    this.debugGroupStatisticsTriangles(count / 3);
-  }
-
-  drawIndexedInstanced(
-    count: number,
-    firstIndex: number,
-    instanceCount: number,
-  ): void {
-    const gl = this.gl;
-    const pipeline = this.currentPipeline,
-      inputLayout = assertExists(pipeline.inputLayout);
-    const byteOffset =
-      assertExists(this.currentIndexBufferByteOffset) +
-      firstIndex * inputLayout.indexBufferCompByteSize!;
-
-    const params: [number, number, number, number, number] = [
-      pipeline.drawMode,
-      count,
-      inputLayout.indexBufferType!,
-      byteOffset,
-      instanceCount,
-    ];
-    if (isWebGL2(gl)) {
-      gl.drawElementsInstanced(...params);
+    if (instanceCount) {
+      const params: [number, number, number, number] = [
+        pipeline.drawMode,
+        firstVertex || 0,
+        vertexCount,
+        instanceCount,
+      ];
+      if (isWebGL2(gl)) {
+        gl.drawArraysInstanced(...params);
+      } else {
+        this.ANGLE_instanced_arrays.drawArraysInstancedANGLE(...params);
+      }
     } else {
-      this.ANGLE_instanced_arrays.drawElementsInstancedANGLE(...params);
+      gl.drawArrays(pipeline.drawMode, firstVertex, vertexCount);
     }
 
     this.debugGroupStatisticsDrawCall();
-    this.debugGroupStatisticsTriangles((count / 3) * instanceCount);
+    this.debugGroupStatisticsTriangles(
+      (vertexCount / 3) * Math.max(instanceCount, 1),
+    );
+  }
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindexed
+   */
+  drawIndexed(
+    indexCount: number,
+    instanceCount?: number,
+    firstIndex?: number,
+    baseVertex?: number,
+    firstInstance?: number,
+  ) {
+    const gl = this.gl;
+    const pipeline = this.currentPipeline,
+      inputLayout = assertExists(pipeline.inputLayout);
+    const byteOffset =
+      assertExists(this.currentIndexBufferByteOffset) +
+      firstIndex * inputLayout.indexBufferCompByteSize!;
+    if (instanceCount) {
+      const params: [number, number, number, number, number] = [
+        pipeline.drawMode,
+        indexCount,
+        inputLayout.indexBufferType!,
+        byteOffset,
+        instanceCount,
+      ];
+      if (isWebGL2(gl)) {
+        gl.drawElementsInstanced(...params);
+      } else {
+        this.ANGLE_instanced_arrays.drawElementsInstancedANGLE(...params);
+      }
+    } else {
+      gl.drawElements(
+        pipeline.drawMode,
+        indexCount,
+        inputLayout.indexBufferType!,
+        byteOffset,
+      );
+    }
+
+    this.debugGroupStatisticsDrawCall();
+    this.debugGroupStatisticsTriangles(
+      (indexCount / 3) * Math.max(instanceCount, 1),
+    );
+  }
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
+   */
+  drawIndirect(indirectBuffer: Buffer, indirectOffset: number) {
+    // TODO
   }
 
   beginOcclusionQuery(dstOffs: number): void {
@@ -2185,10 +2219,6 @@ export class Device_GL implements SwapChain, Device {
       gl.endQuery(queryPool.gl_query_type);
     }
   }
-
-  beginDebugGroup(name: string): void {}
-
-  endDebugGroup(): void {}
 
   pipelineQueryReady(o: RenderPipeline): boolean {
     const pipeline = o as RenderPipeline_GL;

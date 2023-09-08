@@ -204,7 +204,11 @@ layout(set = ${set}, binding = ${binding++}) uniform sampler S_${samplerName};
       },
     );
 
+    /**
+     * @see https://github.com/gfx-rs/naga/issues/1994
+     */
     extraDefines += `${defineStr(`gl_VertexID`, `gl_VertexIndex`)}\n`;
+    extraDefines += `${defineStr(`gl_InstanceID`, `gl_InstanceIndex`)}\n`;
   }
 
   if (vendorInfo.separateSamplerTextures) {

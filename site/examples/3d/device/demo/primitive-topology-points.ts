@@ -134,7 +134,7 @@ void main() {
       null,
     );
     renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
-    renderPass.draw(3, 0);
+    renderPass.draw(3);
 
     device.submitPass(renderPass);
     requestAnimationFrame(frame);

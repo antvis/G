@@ -593,7 +593,16 @@ export interface SwapChain {
   getOnscreenTexture: () => Texture;
 }
 
-export interface RenderPass {
+/**
+ * @see https://www.w3.org/TR/webgpu/#debug-markers
+ */
+interface DebugCommandsMixin {
+  pushDebugGroup: (groupLabel: string) => void;
+  popDebugGroup: () => void;
+  insertDebugMarker: (markerLabel: string) => void;
+}
+
+export interface RenderPass extends DebugCommandsMixin {
   // State management.
   setViewport: (x: number, y: number, w: number, h: number) => void;
   setScissor: (x: number, y: number, w: number, h: number) => void;
@@ -611,24 +620,39 @@ export interface RenderPass {
   setStencilRef: (value: number) => void;
 
   // Draw commands.
-  draw: (vertexCount: number, firstVertex: number) => void;
-  drawIndexed: (indexCount: number, firstIndex: number) => void;
-  drawIndexedInstanced: (
-    indexCount: number,
-    firstIndex: number,
-    instanceCount: number,
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-draw
+   */
+  draw: (
+    vertexCount: number,
+    instanceCount?: number,
+    firstVertex?: number,
+    firstInstance?: number,
   ) => void;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindexed
+   */
+  drawIndexed: (
+    indexCount: number,
+    instanceCount?: number,
+    firstIndex?: number,
+    baseVertex?: number,
+    firstInstance?: number,
+  ) => void;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
+   */
+  drawIndirect: (indirectBuffer: Buffer, indirectOffset: number) => void;
 
   // Query system.
   beginOcclusionQuery: (dstOffs: number) => void;
   endOcclusionQuery: (dstOffs: number) => void;
-
-  // Debug.
-  beginDebugGroup: (name: string) => void;
-  endDebugGroup: () => void;
 }
 
-export interface ComputePass {
+/**
+ * @see https://www.w3.org/TR/webgpu/#compute-passes
+ */
+export interface ComputePass extends DebugCommandsMixin {
   setPipeline: (pipeline: ComputePipeline) => void;
   setBindings: (
     bindingLayoutIndex: number,
@@ -636,12 +660,20 @@ export interface ComputePass {
     dynamicByteOffsets: number[],
   ) => void;
   /**
-   * @see https://www.w3.org/TR/webgpu/#compute-pass-encoder-dispatch
+   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroups
    */
-  dispatch: (x: number, y?: number, z?: number) => void;
-  // Debug.
-  beginDebugGroup: (name: string) => void;
-  endDebugGroup: () => void;
+  dispatchWorkgroups: (
+    workgroupCountX: number,
+    workgroupCountY?: number,
+    workgroupCountZ?: number,
+  ) => void;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroupsindirect
+   */
+  dispatchWorkgroupsIndirect: (
+    indirectBuffer: Buffer,
+    indirectOffset: number,
+  ) => void;
 }
 
 export enum QueryPoolType {
@@ -723,6 +755,4 @@ export interface Device {
   setResourceLeakCheck: (o: Resource, v: boolean) => void;
   checkForLeaks: () => void;
   programPatched: (o: Program, descriptor: ProgramDescriptor) => void;
-  pushDebugGroup: (debugGroup: DebugGroup) => void;
-  popDebugGroup: () => void;
 }

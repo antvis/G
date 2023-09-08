@@ -1,5 +1,6 @@
 import {
   Bindings,
+  Buffer,
   IndexBufferDescriptor,
   InputLayout,
   RenderPass,
@@ -272,26 +273,45 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuRenderPassEncoder.setStencilReference(ref);
   }
 
-  draw(vertexCount: number, firstVertex: number): void {
-    this.gpuRenderPassEncoder.draw(vertexCount, 1, firstVertex, 0);
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-draw
+   */
+  draw(
+    vertexCount: number,
+    instanceCount?: number,
+    firstVertex?: number,
+    firstInstance?: number,
+  ) {
+    this.gpuRenderPassEncoder.draw(
+      vertexCount,
+      instanceCount,
+      firstVertex,
+      firstInstance,
+    );
   }
-
-  drawIndexed(indexCount: number, firstIndex: number): void {
-    this.gpuRenderPassEncoder.drawIndexed(indexCount, 1, firstIndex, 0, 0);
-  }
-
-  drawIndexedInstanced(
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindexed
+   */
+  drawIndexed(
     indexCount: number,
-    firstIndex: number,
-    instanceCount: number,
-  ): void {
+    instanceCount?: number,
+    firstIndex?: number,
+    baseVertex?: number,
+    firstInstance?: number,
+  ) {
     this.gpuRenderPassEncoder.drawIndexed(
       indexCount,
       instanceCount,
       firstIndex,
-      0,
-      0,
+      baseVertex,
+      firstInstance,
     );
+  }
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
+   */
+  drawIndirect(indirectBuffer: Buffer, indirectOffset: number) {
+    // TODO
   }
 
   beginOcclusionQuery(dstOffs: number): void {
@@ -302,18 +322,16 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuRenderPassEncoder.endOcclusionQuery();
   }
 
-  beginDebugGroup(name: string): void {
-    // FIREFOX MISSING
-    if (this.gpuRenderPassEncoder.pushDebugGroup === undefined) return;
-
+  pushDebugGroup(name: string): void {
     this.gpuRenderPassEncoder.pushDebugGroup(name);
   }
 
-  endDebugGroup(): void {
-    // FIREFOX MISSING
-    if (this.gpuRenderPassEncoder.popDebugGroup === undefined) return;
-
+  popDebugGroup(): void {
     this.gpuRenderPassEncoder.popDebugGroup();
+  }
+
+  insertDebugMarker(markerLabel: string) {
+    this.gpuRenderPassEncoder.insertDebugMarker(markerLabel);
   }
 
   finish(): GPUCommandBuffer {

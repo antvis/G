@@ -29,6 +29,14 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*ygJNSJCkAWgAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "instanced-cubes.ts",
+      "title": {
+        "zh": "批量绘制立方体",
+        "en": "Instanced cubes"
+      },
+      "screenshot": ""
+    },
+    {
       "filename": "msaa.ts",
       "title": {
         "zh": "MSAA",
