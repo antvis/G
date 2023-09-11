@@ -14,7 +14,11 @@ import {
 } from '@antv/g-plugin-device-renderer';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
-import { getPlatformTexture, isWebGL2 } from './utils';
+import {
+  getPlatformTexture,
+  // isTextureFormatCompressed,
+  isWebGL2,
+} from './utils';
 
 export class Texture_GL extends ResourceBase_GL implements Texture {
   type: ResourceType.Texture = ResourceType.Texture;
@@ -206,19 +210,32 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     this.numLevels = numLevels;
   }
 
-  setImageData(data: TexImageSource | ArrayBufferView[], level: number) {
+  setImageData(
+    levelDatas: (TexImageSource | ArrayBufferView)[],
+    firstMipLevel = 0,
+  ) {
+    // const maxMipLevel = Math.min(
+    //   firstMipLevel + levelDatas.length,
+    //   this.numLevels,
+    // );
+
     const gl = this.device.gl;
     // const isCompressed = isTextureFormatCompressed(this.pixelFormat);
-    // const is3D = this.gl_target === GL.TEXTURE_3D || this.gl_target === GL.TEXTURE_2D_ARRAY;
+    // const is3D =
+    //   this.gl_target === GL.TEXTURE_3D ||
+    //   this.gl_target === GL.TEXTURE_2D_ARRAY;
     // const isCube = this.gl_target === GL.TEXTURE_CUBE_MAP;
-    const isArray = Array.isArray(data);
+    // @ts-ignore
+    const isTypedArray = levelDatas[0].buffer;
 
     this.device.setActiveTexture(gl.TEXTURE0);
     this.device['currentTextures'][0] = null;
 
+    const data = levelDatas[0];
+
     let width: number;
     let height: number;
-    if (isArray) {
+    if (isTypedArray) {
       width = this.width;
       height = this.height;
     } else {
@@ -234,15 +251,28 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     }
 
     gl.bindTexture(this.gl_target, this.gl_texture);
-    // let w = this.width;
-    // let h = this.height;
-    // let d = this.depth;
-    // const maxMipLevel = Math.min(firstMipLevel + levelDatasSize, this.numLevels);
 
     const gl_format = this.device.translateTextureFormat(this.pixelFormat);
     const gl_type = this.device.translateTextureType(this.pixelFormat);
 
     this.preprocessImage();
+
+    // for (let i = 0, levelDatasIdx = 0; i < maxMipLevel; i++) {
+    //   if (i >= firstMipLevel) {
+    //     const levelData = levelDatas[levelDatasIdx++] as Uint8Array;
+    //     const sliceElementSize = levelData.length / this.depth;
+
+    //     if (isCube) {
+
+    //     } else if (is3D) {
+
+    //     } else if (isArray) {
+
+    //     } else {
+
+    //     }
+    //   }
+    // }
 
     if (this.immutable) {
       // must use texSubImage2D instead of texImage2D, since texture is immutable
@@ -258,7 +288,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
         gl_format,
         gl_type,
         // @ts-ignore
-        isArray ? data[0] : data,
+        data,
       );
     } else {
       if (isWebGL2(gl)) {
@@ -274,11 +304,11 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
           gl_format, // TODO: can be different with gl_format
           gl_type,
           // @ts-ignore
-          isArray ? data[0] : data,
+          data,
         );
       } else {
         // WebGL1: upload Array & Image separately
-        if (isArray) {
+        if (isTypedArray) {
           (gl as WebGLRenderingContext).texImage2D(
             this.gl_target,
             0,
@@ -288,7 +318,8 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
             0,
             gl_format,
             gl_type,
-            data[0],
+            // @ts-ignore
+            data,
           );
         } else {
           (gl as WebGLRenderingContext).texImage2D(

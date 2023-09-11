@@ -384,14 +384,14 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
   createProgram(descriptor: ProgramDescriptor): Program {
     // preprocess GLSL first
-    if (descriptor.vertex.glsl) {
+    if (descriptor.vertex?.glsl) {
       descriptor.vertex.glsl = preprocessShader_GLSL(
         this.queryVendorInfo(),
         'vert',
         descriptor.vertex.glsl,
       );
     }
-    if (descriptor.fragment.glsl) {
+    if (descriptor.fragment?.glsl) {
       descriptor.fragment.glsl = preprocessShader_GLSL(
         this.queryVendorInfo(),
         'frag',

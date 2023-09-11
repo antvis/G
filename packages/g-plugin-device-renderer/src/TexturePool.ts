@@ -64,7 +64,7 @@ export class TexturePool {
       }
 
       if (!isString(src)) {
-        texture.setImageData(src);
+        texture.setImageData([src]);
         texture.emit(TextureEvent.LOADED);
         this.context.renderingService.dirtify();
       } else {
@@ -81,7 +81,7 @@ export class TexturePool {
         if (image) {
           image.onload = () => {
             const onSuccess = (bitmap: ImageBitmap | HTMLImageElement) => {
-              this.textureCache[id].setImageData(bitmap);
+              this.textureCache[id].setImageData([bitmap]);
               this.textureCache[id].emit(TextureEvent.LOADED);
               this.context.renderingService.dirtify();
               if (successCallback) {

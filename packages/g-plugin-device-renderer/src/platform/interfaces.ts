@@ -36,7 +36,7 @@ export interface Buffer extends ResourceBase {
 export interface Texture extends ResourceBase {
   type: ResourceType.Texture;
   setImageData: (
-    data: TexImageSource | ArrayBufferView[],
+    data: (TexImageSource | ArrayBufferView)[],
     firstMipLevel?: number,
   ) => void;
 }

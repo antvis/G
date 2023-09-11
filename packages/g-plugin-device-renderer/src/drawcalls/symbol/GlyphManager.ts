@@ -175,7 +175,7 @@ export class GlyphManager {
         },
         immutable: false,
       });
-      this.glyphAtlasTexture.setImageData([data], 0);
+      this.glyphAtlasTexture.setImageData([data]);
     }
   }
 

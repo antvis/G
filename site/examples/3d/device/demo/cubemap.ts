@@ -16,6 +16,7 @@ import {
   WrapMode,
   TexFilterMode,
   MipFilterMode,
+  TextureDimension,
 } from '@antv/g-plugin-device-renderer';
 import * as lil from 'lil-gui';
 import { mat4, vec3 } from 'gl-matrix';
@@ -104,12 +105,12 @@ void main() {
     },
     fragment: {
       glsl: `
-uniform sampler2D u_Texture;
+uniform samplerCube u_Texture;
 in vec2 v_Uv;
 out vec4 outputColor;
 
 void main() {
-  outputColor = texture(SAMPLER_2D(u_Texture), v_Uv);
+  outputColor = texture(SAMPLER_Cube(u_Texture), v_Uv);
 }
 `,
     },
@@ -159,17 +160,29 @@ void main() {
     hint: BufferFrequencyHint.DYNAMIC,
   });
 
-  const imageBitmap = await loadImage(
-    'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*_aqoS73Se3sAAAAAAAAAAAAAARQnAQ',
-  );
+  const imgSrcs = [
+    '/images/posx.jpg',
+    '/images/negx.jpg',
+    '/images/posy.jpg',
+    '/images/negy.jpg',
+    '/images/posz.jpg',
+    '/images/negz.jpg',
+  ];
+  const promises = imgSrcs.map(async (src) => {
+    return loadImage(src);
+  });
+  const imageBitmaps = await Promise.all(promises);
+
   const texture = device.createTexture({
     pixelFormat: Format.U8_RGBA_NORM,
-    width: imageBitmap.width,
-    height: imageBitmap.height,
+    width: imageBitmaps[0].width,
+    height: imageBitmaps[0].height,
+    depth: 6,
+    dimension: TextureDimension.TEXTURE_CUBE_MAP,
     usage: TextureUsage.SAMPLED,
     immutable: false,
   });
-  texture.setImageData([imageBitmap]);
+  texture.setImageData(imageBitmaps);
 
   const sampler = device.createSampler({
     wrapS: WrapMode.CLAMP,
@@ -233,7 +246,10 @@ void main() {
       blendConstant: TransparentBlack,
       depthWrite: true,
       depthCompare: CompareMode.LESS,
-      cullMode: CullMode.BACK,
+      // Since we are seeing from inside of the cube
+      // and we are using the regular cube geomtry data with outward-facing normals,
+      // the cullMode should be 'front' or 'none'.
+      cullMode: CullMode.NONE,
       stencilWrite: false,
     },
   });
@@ -273,26 +289,39 @@ void main() {
   );
 
   let id;
+  const modelMatrix = mat4.fromScaling(
+    mat4.create(),
+    vec3.fromValues(1000, 1000, 1000),
+  );
+  const modelViewProjectionMatrix = mat4.create();
+  const viewMatrix = mat4.identity(mat4.create());
+  const tmpMat4 = mat4.create();
+
   const frame = () => {
     const aspect = $canvas.width / $canvas.height;
     const projectionMatrix = mat4.perspective(
       mat4.create(),
       (2 * Math.PI) / 5,
       aspect,
-      0.1,
-      1000,
-    );
-    const viewMatrix = mat4.identity(mat4.create());
-    const modelViewProjectionMatrix = mat4.create();
-    mat4.translate(viewMatrix, viewMatrix, vec3.fromValues(0, 0, -4));
-    const now = Date.now() / 1000;
-    mat4.rotate(
-      viewMatrix,
-      viewMatrix,
       1,
-      vec3.fromValues(Math.sin(now), Math.cos(now), 0),
+      3000,
     );
-    mat4.multiply(modelViewProjectionMatrix, projectionMatrix, viewMatrix);
+
+    const now = Date.now() / 800;
+
+    mat4.rotate(
+      tmpMat4,
+      viewMatrix,
+      (Math.PI / 10) * Math.sin(now),
+      vec3.fromValues(1, 0, 0),
+    );
+    mat4.rotate(tmpMat4, tmpMat4, now * 0.2, vec3.fromValues(0, 1, 0));
+    mat4.multiply(modelViewProjectionMatrix, tmpMat4, modelMatrix);
+    mat4.multiply(
+      modelViewProjectionMatrix,
+      projectionMatrix,
+      modelViewProjectionMatrix,
+    );
     uniformBuffer.setSubData(
       0,
       new Uint8Array((modelViewProjectionMatrix as Float32Array).buffer),
@@ -329,7 +358,7 @@ void main() {
     );
     renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
     renderPass.setBindings(0, bindings, [0]);
-    renderPass.draw(cubeVertexCount);
+    renderPass.draw(cubeVertexCount, 1, 0, 0);
 
     device.submitPass(renderPass);
     id = requestAnimationFrame(frame);

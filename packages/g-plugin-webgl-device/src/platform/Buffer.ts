@@ -56,7 +56,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       //   numLevels: 1,
       //   immutable: true,
       // });
-      // texture.setImageData([new Uint8Array(4 * depth)], 0);
+      // texture.setImageData([new Uint8Array(4 * depth)]);
 
       // Create later.
       return this;

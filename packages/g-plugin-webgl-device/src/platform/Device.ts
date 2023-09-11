@@ -433,7 +433,7 @@ export class Device_GL implements SwapChain, Device {
     // )
 
     if (formatKind === SamplerFormatKind.Float) {
-      texture.setImageData([new Uint8Array(4 * depth)], 0);
+      texture.setImageData([new Uint8Array(4 * depth)]);
     }
     return getPlatformTexture(texture);
   }
