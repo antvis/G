@@ -21,7 +21,7 @@ pub fn glsl_compile(source: &str, stage: &str, validation_enabled: bool) -> Stri
     }
     .unwrap();
 
-    let mut parser = naga::front::glsl::Parser::default();
+    let mut parser = naga::front::glsl::Frontend::default();
     let module = match parser.parse(
         &naga::front::glsl::Options {
             stage: naga_stage,

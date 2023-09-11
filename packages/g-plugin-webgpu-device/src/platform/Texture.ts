@@ -1,4 +1,4 @@
-import type {
+import {
   Format,
   Texture,
   TextureDescriptor,
@@ -7,8 +7,6 @@ import type {
 import { ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU, TextureShared_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
-
-// @see https://toji.dev/webgpu-best-practices/img-textures
 
 export class Texture_WebGPU
   extends ResourceBase_WebGPU
@@ -32,65 +30,114 @@ export class Texture_WebGPU
     device,
     descriptor,
     skipCreate,
+    sampleCount,
   }: {
     id: number;
     device: IDevice_WebGPU;
     descriptor: TextureDescriptor;
     skipCreate?: boolean;
+    sampleCount?: number;
   }) {
     super({ id, device });
 
     this.device.createTextureShared(
       {
         pixelFormat: descriptor.pixelFormat,
-        dimension: descriptor.dimension,
+        dimension: descriptor.dimension ?? TextureDimension.TEXTURE_2D,
         width: descriptor.width,
         height: descriptor.height,
-        depthOrArrayLayers: descriptor.depth,
-        numLevels: descriptor.numLevels,
+        depthOrArrayLayers: descriptor.depth ?? 1,
+        numLevels: descriptor.numLevels ?? 1,
         usage: descriptor.usage,
-        sampleCount: 1,
+        sampleCount: sampleCount ?? 1,
       },
       this,
       skipCreate,
     );
   }
 
-  setImageData(data: TexImageSource | ArrayBufferView[], level: number) {
-    // @see https://www.w3.org/TR/webgpu/#image-copies
-    // @see https://www.w3.org/TR/webgpu/#dom-gpuqueue-copyexternalimagetotexture
-    // const isArray = Array.isArray(data);
-    // if (!isArray) {
-    //   // if (this.gpuTexture) {
-    //   //   this.gpuTexture.destroy();
-    //   // }
-    //   const textureDescriptor: GPUTextureDescriptor = {
-    //     // Unlike in WebGL, the size of our texture must be set at texture creation time.
-    //     // This means we have to wait until the image is loaded to create the texture, since we won't
-    //     // know the size until then.
-    //     size: { width: data.width, height: data.height },
-    //     format: 'rgba8unorm',
-    //     usage:
-    //       GPUTextureUsage.TEXTURE_BINDING |
-    //       GPUTextureUsage.COPY_DST |
-    //       GPUTextureUsage.RENDER_ATTACHMENT,
-    //   };
-    //   const texture = this.device.device.createTexture(textureDescriptor);
-    //   this.gpuTexture = texture;
-    //   this.gpuTextureView = texture.createView();
-    //   this.width = data.width;
-    //   this.height = data.height;
-    //   this.device.device.queue.copyExternalImageToTexture(
-    //     { source: data },
-    //     { texture },
-    //     textureDescriptor.size,
-    //   );
-    // } else {
-    //   // TODO: support ArrayBufferView[]
-    // }
+  private textureFromImageBitmapOrCanvas(
+    device: GPUDevice,
+    sources: (ImageBitmap | HTMLCanvasElement | OffscreenCanvas)[],
+    depthOrArrayLayers: number,
+  ): [GPUTexture, number, number] {
+    const width = sources[0].width;
+    const height = sources[0].height;
+    const textureDescriptor: GPUTextureDescriptor = {
+      // Unlike in WebGL, the size of our texture must be set at texture creation time.
+      // This means we have to wait until the image is loaded to create the texture, since we won't
+      // know the size until then.
+      size: { width, height, depthOrArrayLayers },
+      format: 'rgba8unorm',
+      usage:
+        GPUTextureUsage.TEXTURE_BINDING |
+        GPUTextureUsage.COPY_DST |
+        GPUTextureUsage.RENDER_ATTACHMENT,
+    };
+    const texture = device.createTexture(textureDescriptor);
+
+    for (let i = 0; i < sources.length; i++) {
+      const source = sources[0];
+      device.queue.copyExternalImageToTexture(
+        { source },
+        { texture, origin: [0, 0, i] },
+        [width, height],
+      );
+    }
+
+    return [texture, width, height];
+  }
+
+  private isImageBitmapOrCanvases(
+    datas: (TexImageSource | ArrayBufferView)[],
+  ): datas is (ImageBitmap | HTMLCanvasElement | OffscreenCanvas)[] {
+    const data = datas[0];
+    return (
+      data instanceof ImageBitmap ||
+      data instanceof HTMLCanvasElement ||
+      data instanceof OffscreenCanvas
+    );
+  }
+
+  private isVideo(
+    datas: (TexImageSource | ArrayBufferView)[],
+  ): datas is HTMLVideoElement[] {
+    const data = datas[0];
+    return data instanceof HTMLVideoElement;
+  }
+
+  /**
+   * @see https://toji.dev/webgpu-best-practices/img-textures
+   */
+  setImageData(datas: (TexImageSource | ArrayBufferView)[], firstMipLevel = 0) {
+    const { device } = this.device;
+    let texture: GPUTexture;
+    let width: number;
+    let height: number;
+
+    if (this.isImageBitmapOrCanvases(datas)) {
+      [texture, width, height] = this.textureFromImageBitmapOrCanvas(
+        device,
+        datas,
+        this.depthOrArrayLayers,
+      );
+    } else if (this.isVideo(datas)) {
+      // @see https://toji.dev/webgpu-best-practices/img-textures#creating-a-texture-from-an-htmlvideoelement-video-tag
+      texture = device.importExternalTexture({
+        source: datas[0],
+      }) as unknown as GPUTexture;
+    } else {
+      // TODO: support ArrayBufferView[]
+    }
+
+    this.width = width;
+    this.height = height;
+    this.gpuTexture = texture;
+    this.gpuTextureView = texture.createView();
   }
 
   destroy() {
+    super.destroy();
     // @see https://www.w3.org/TR/webgpu/#dom-gputexture-destroy
     this.gpuTexture.destroy();
   }

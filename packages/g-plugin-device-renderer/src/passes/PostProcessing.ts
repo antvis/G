@@ -1,6 +1,6 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout, InputState, Program } from '../platform';
-import { Format, VertexBufferFrequency } from '../platform';
+import type { InputLayout, Program } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import { fullscreenMegaState } from '../platform/utils';
 import type { DeviceProgram, TextureMapping, RenderHelper } from '../render';
 import { fillVec4 } from '../render';
@@ -15,19 +15,20 @@ export class PostProcessing {
   protected debugName: string;
 
   protected geometry: BufferGeometry;
-  protected inputState: InputState;
   protected inputLayout: InputLayout;
   protected textureMappings: TextureMapping[] = [];
   protected program: Program;
 
   init() {
-    const program = this.renderHelper.renderCache.createProgram(this.deviceProgram);
+    this.program = this.renderHelper.renderCache.createProgramSimple(
+      this.deviceProgram,
+    );
 
     this.geometry = new BufferGeometry(this.renderHelper.getDevice());
     this.geometry.setVertexBuffer({
       bufferIndex: 0,
       byteStride: 4 * 2,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,
@@ -44,24 +45,19 @@ export class PostProcessing {
     this.inputLayout = this.renderHelper
       .getCache()
       .createInputLayout(this.geometry.inputLayoutDescriptor);
-
-    this.inputState = this.renderHelper.getDevice().createInputState(
-      this.inputLayout,
-      this.geometry.vertexBuffers.map((buffer) => ({
-        buffer,
-        byteOffset: 0,
-      })),
-      null,
-      program,
-    );
   }
 
-  build(builder: RGGraphBuilder, renderInput: RenderInput, mainColorTargetID: number) {
+  build(
+    builder: RGGraphBuilder,
+    renderInput: RenderInput,
+    mainColorTargetID: number,
+  ) {
     builder.pushPass((pass) => {
       pass.setDebugName(this.debugName);
       pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
 
-      const mainColorResolveTextureID = builder.resolveRenderTarget(mainColorTargetID);
+      const mainColorResolveTextureID =
+        builder.resolveRenderTarget(mainColorTargetID);
       pass.attachResolveTexture(mainColorResolveTextureID);
 
       const renderInst = this.renderHelper.renderInstManager.newRenderInst();
@@ -76,14 +72,32 @@ export class PostProcessing {
       // since gl_VertexID is not available in GLSL 100, we need to use a geometry
       const offs = renderInst.allocateUniformBuffer(0, 4);
       const d = renderInst.mapUniformBufferF32(0);
-      fillVec4(d, offs, 1.0 / renderInput.backbufferWidth, 1.0 / renderInput.backbufferHeight);
+      fillVec4(
+        d,
+        offs,
+        1.0 / renderInput.backbufferWidth,
+        1.0 / renderInput.backbufferHeight,
+      );
 
       renderInst.setProgram(this.program);
 
       pass.exec((passRenderer, scope) => {
-        this.textureMappings[0].texture = scope.getResolveTextureForID(mainColorResolveTextureID);
+        this.textureMappings[0].texture = scope.getResolveTextureForID(
+          mainColorResolveTextureID,
+        );
         renderInst.setSamplerBindingsFromTextureMappings(this.textureMappings);
-        renderInst.setInputLayoutAndState(this.inputLayout, this.inputState);
+
+        // this.inputState = this.renderHelper.getDevice().createInput(
+        //   this.inputLayout,
+        //   this.geometry.vertexBuffers.map((buffer) => ({
+        //     buffer,
+        //     byteOffset: 0,
+        //   })),
+        //   null,
+        //   program,
+        // );
+
+        // renderInst.setVertexInput(this.inputLayout, this.inputState);
         renderInst.drawOnPass(this.renderHelper.renderCache, passRenderer);
       });
     });
@@ -92,6 +106,5 @@ export class PostProcessing {
   destroy() {
     this.geometry.destroy();
     this.inputLayout.destroy();
-    this.inputState.destroy();
   }
 }

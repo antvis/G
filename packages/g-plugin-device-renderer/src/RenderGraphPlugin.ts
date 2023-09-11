@@ -235,6 +235,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
+      this.batchManager.destroy();
+      this.texturePool.destroy();
 
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -246,6 +248,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
+
+      this.device.destroy();
+      this.device.checkForLeaks();
     });
 
     /**
@@ -355,12 +360,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
             blendConstant: TransparentBlack,
           },
           {
-            rgbBlendMode: BlendMode.Add,
-            alphaBlendMode: BlendMode.Add,
-            rgbBlendSrcFactor: BlendFactor.SrcAlpha,
-            alphaBlendSrcFactor: BlendFactor.One,
-            rgbBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
-            alphaBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
+            rgbBlendMode: BlendMode.ADD,
+            alphaBlendMode: BlendMode.ADD,
+            rgbBlendSrcFactor: BlendFactor.SRC_ALPHA,
+            alphaBlendSrcFactor: BlendFactor.ONE,
+            rgbBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+            alphaBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
           },
         ),
       );

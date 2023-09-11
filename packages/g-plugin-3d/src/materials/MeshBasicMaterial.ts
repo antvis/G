@@ -62,7 +62,7 @@ export class MeshBasicMaterial<
     super(device, {
       vertexShader: vert,
       fragmentShader: frag,
-      cullMode: CullMode.Back,
+      cullMode: CullMode.BACK,
       ...props,
     });
 

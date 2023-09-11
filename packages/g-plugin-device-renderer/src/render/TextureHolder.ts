@@ -12,7 +12,6 @@ export interface TextureOverride {
   sampler?: Sampler;
   width: number;
   height: number;
-  lateBinding?: string;
 }
 
 export interface TextureBase {
@@ -25,9 +24,6 @@ export class TextureMapping {
   name: string;
   texture: Texture | null = null;
   sampler: Sampler | null = null;
-  lateBinding: string | null = null;
-  // These are not used when binding to samplers, and are conveniences for custom behavior.
-  // TODO(jstpierre): Are any of these really worth anything?
   width = 0;
   height = 0;
   lodBias = 0;
@@ -38,7 +34,6 @@ export class TextureMapping {
   reset(): void {
     this.texture = null;
     this.sampler = null;
-    this.lateBinding = null;
     this.width = 0;
     this.height = 0;
     this.lodBias = 0;
@@ -48,7 +43,6 @@ export class TextureMapping {
   copy(other: TextureMapping): void {
     this.texture = other.texture;
     this.sampler = other.sampler;
-    this.lateBinding = other.lateBinding;
     this.width = other.width;
     this.height = other.height;
     this.lodBias = other.lodBias;

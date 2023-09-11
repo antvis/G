@@ -48,7 +48,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
 
     const buffer = this.device.createBuffer({
       usage: BufferUsage.STORAGE | BufferUsage.MAP_READ | BufferUsage.COPY_DST,
-      hint: BufferFrequencyHint.Static,
+      hint: BufferFrequencyHint.STATIC,
       viewOrSize: size,
     }) as Buffer_WebGPU;
 
@@ -137,7 +137,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
       gpuReadBuffer = this.device.createBuffer({
         usage:
           BufferUsage.STORAGE | BufferUsage.MAP_READ | BufferUsage.COPY_DST,
-        hint: BufferFrequencyHint.Static,
+        hint: BufferFrequencyHint.STATIC,
         viewOrSize: size,
       }) as Buffer_WebGPU;
 

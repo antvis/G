@@ -83,9 +83,9 @@ export function isFormatSizedInteger(fmt: Format): boolean {
 
 export function translateBufferHint(hint: BufferFrequencyHint): GLenum {
   switch (hint) {
-    case BufferFrequencyHint.Static:
+    case BufferFrequencyHint.STATIC:
       return GL.STATIC_DRAW;
-    case BufferFrequencyHint.Dynamic:
+    case BufferFrequencyHint.DYNAMIC:
       return GL.DYNAMIC_DRAW;
   }
 }
@@ -104,15 +104,15 @@ export function translatePrimitiveTopology(
   topology: PrimitiveTopology,
 ): GLenum {
   switch (topology) {
-    case PrimitiveTopology.Triangles:
+    case PrimitiveTopology.TRIANGLES:
       return GL.TRIANGLES;
-    case PrimitiveTopology.Points:
+    case PrimitiveTopology.POINTS:
       return GL.POINTS;
-    case PrimitiveTopology.TriangleStrip:
+    case PrimitiveTopology.TRIANGLE_STRIP:
       return GL.TRIANGLE_STRIP;
-    case PrimitiveTopology.Lines:
+    case PrimitiveTopology.LINES:
       return GL.LINES;
-    case PrimitiveTopology.LineStrip:
+    case PrimitiveTopology.LINE_STRIP:
       return GL.LINE_STRIP;
     default:
       throw new Error('Unknown primitive topology mode');
@@ -185,11 +185,11 @@ export function translateIndexFormat(format: Format): GLenum {
 
 export function translateWrapMode(wrapMode: WrapMode): GLenum {
   switch (wrapMode) {
-    case WrapMode.Clamp:
+    case WrapMode.CLAMP:
       return GL.CLAMP_TO_EDGE;
-    case WrapMode.Repeat:
+    case WrapMode.REPEAT:
       return GL.REPEAT;
-    case WrapMode.Mirror:
+    case WrapMode.MIRROR:
       return GL.MIRRORED_REPEAT;
     default:
       throw new Error('whoops');
@@ -200,25 +200,25 @@ export function translateFilterMode(
   filter: TexFilterMode,
   mipFilter: MipFilterMode,
 ): GLenum {
-  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Bilinear) {
+  if (mipFilter === MipFilterMode.LINEAR && filter === TexFilterMode.BILINEAR) {
     return GL.LINEAR_MIPMAP_LINEAR;
   }
-  if (mipFilter === MipFilterMode.Linear && filter === TexFilterMode.Point) {
+  if (mipFilter === MipFilterMode.LINEAR && filter === TexFilterMode.POINT) {
     return GL.NEAREST_MIPMAP_LINEAR;
   }
   if (
-    mipFilter === MipFilterMode.Nearest &&
-    filter === TexFilterMode.Bilinear
+    mipFilter === MipFilterMode.NEAREST &&
+    filter === TexFilterMode.BILINEAR
   ) {
     return GL.LINEAR_MIPMAP_NEAREST;
   }
-  if (mipFilter === MipFilterMode.Nearest && filter === TexFilterMode.Point) {
+  if (mipFilter === MipFilterMode.NEAREST && filter === TexFilterMode.POINT) {
     return GL.NEAREST_MIPMAP_NEAREST;
   }
-  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Bilinear) {
+  if (mipFilter === MipFilterMode.NO_MIP && filter === TexFilterMode.BILINEAR) {
     return GL.LINEAR;
   }
-  if (mipFilter === MipFilterMode.NoMip && filter === TexFilterMode.Point) {
+  if (mipFilter === MipFilterMode.NO_MIP && filter === TexFilterMode.POINT) {
     return GL.NEAREST;
   }
   throw new Error('Unknown texture filter mode');
@@ -259,9 +259,9 @@ export function findall(haystack: string, needle: RegExp): RegExpExecArray[] {
 
 export function isBlendStateNone(blendState: ChannelBlendState): boolean {
   return (
-    blendState.blendMode == BlendMode.Add &&
-    blendState.blendSrcFactor == BlendFactor.One &&
-    blendState.blendDstFactor === BlendFactor.Zero
+    blendState.blendMode == BlendMode.ADD &&
+    blendState.blendSrcFactor == BlendFactor.ONE &&
+    blendState.blendDstFactor === BlendFactor.ZERO
   );
 }
 
@@ -275,10 +275,12 @@ export function translateQueryPoolType(type: QueryPoolType): GLenum {
 }
 
 export function translateTextureDimension(dimension: TextureDimension): GLenum {
-  if (dimension === TextureDimension.n2D) return GL.TEXTURE_2D;
-  else if (dimension === TextureDimension.n2DArray) return GL.TEXTURE_2D_ARRAY;
-  else if (dimension === TextureDimension.Cube) return GL.TEXTURE_CUBE_MAP;
-  else if (dimension === TextureDimension.n3D) return GL.TEXTURE_3D;
+  if (dimension === TextureDimension.TEXTURE_2D) return GL.TEXTURE_2D;
+  else if (dimension === TextureDimension.TEXTURE_2D_ARRAY)
+    return GL.TEXTURE_2D_ARRAY;
+  else if (dimension === TextureDimension.TEXTURE_CUBE_MAP)
+    return GL.TEXTURE_CUBE_MAP;
+  else if (dimension === TextureDimension.TEXTURE_3D) return GL.TEXTURE_3D;
   else throw new Error('whoops');
 }
 

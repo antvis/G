@@ -46,8 +46,8 @@ const canvas = new Canvas({
   //   height: 1,
   //   depth: 1,
   //   numLevels: 1,
-  //   dimension: TextureDimension.n2D,
-  //   usage: TextureUsage.Sampled,
+  //   dimension: TextureDimension.TEXTURE_2D,
+  //   usage: TextureUsage.SAMPLED,
   // });
   // // load image
   // const image = new window.Image();

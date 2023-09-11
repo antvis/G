@@ -16,11 +16,11 @@ import {
   TextureDimension,
   PrimitiveTopology,
   CullMode,
-  FrontFaceMode,
+  FrontFace,
   BlendFactor,
   BlendMode,
   CompareMode,
-  VertexBufferFrequency,
+  VertexStepMode,
   TextureUsage,
   QueryPoolType,
   SamplerFormatKind,
@@ -33,15 +33,19 @@ import {
 import type { Buffer_WebGPU } from './Buffer';
 import type { Sampler_WebGPU } from './Sampler';
 import type { QueryPool_WebGPU } from './QueryPool';
+import { isNil } from '@antv/util';
 
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/usage#value
+ */
 export function translateTextureUsage(
   usage: TextureUsage,
 ): GPUTextureUsageFlags {
   let gpuUsage: GPUTextureUsageFlags = 0;
 
-  if (usage & TextureUsage.Sampled)
+  if (usage & TextureUsage.SAMPLED)
     gpuUsage |= GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST;
-  if (usage & TextureUsage.RenderTarget)
+  if (usage & TextureUsage.RENDER_TARGET)
     gpuUsage |=
       GPUTextureUsage.RENDER_ATTACHMENT |
       GPUTextureUsage.TEXTURE_BINDING |
@@ -84,10 +88,10 @@ export function translateTextureFormat(format: Format): GPUTextureFormat {
 export function translateTextureDimension(
   dimension: TextureDimension,
 ): GPUTextureDimension {
-  if (dimension === TextureDimension.n2D) return '2d';
-  else if (dimension === TextureDimension.Cube) return '2d';
-  else if (dimension === TextureDimension.n2DArray) return '2d';
-  else if (dimension === TextureDimension.n3D) return '3d';
+  if (dimension === TextureDimension.TEXTURE_2D) return '2d';
+  else if (dimension === TextureDimension.TEXTURE_CUBE_MAP) return '2d';
+  else if (dimension === TextureDimension.TEXTURE_2D_ARRAY) return '2d';
+  else if (dimension === TextureDimension.TEXTURE_3D) return '3d';
   else throw new Error('whoops');
 }
 
@@ -103,22 +107,23 @@ export function translateBufferUsage(usage_: BufferUsage): GPUBufferUsageFlags {
 }
 
 export function translateWrapMode(wrapMode: WrapMode): GPUAddressMode {
-  if (wrapMode === WrapMode.Clamp) return 'clamp-to-edge';
-  else if (wrapMode === WrapMode.Repeat) return 'repeat';
-  else if (wrapMode === WrapMode.Mirror) return 'mirror-repeat';
+  if (wrapMode === WrapMode.CLAMP) return 'clamp-to-edge';
+  else if (wrapMode === WrapMode.REPEAT) return 'repeat';
+  else if (wrapMode === WrapMode.MIRROR) return 'mirror-repeat';
   else throw new Error('whoops');
 }
 
 export function translateMinMagFilter(texFilter: TexFilterMode): GPUFilterMode {
-  if (texFilter === TexFilterMode.Bilinear) return 'linear';
-  else if (texFilter === TexFilterMode.Point) return 'nearest';
+  if (texFilter === TexFilterMode.BILINEAR) return 'linear';
+  else if (texFilter === TexFilterMode.POINT) return 'nearest';
   else throw new Error('whoops');
 }
 
+// @see https://www.w3.org/TR/webgpu/#enumdef-gpumipmapfiltermode
 export function translateMipFilter(mipFilter: MipFilterMode): GPUFilterMode {
-  if (mipFilter === MipFilterMode.Linear) return 'linear';
-  else if (mipFilter === MipFilterMode.Nearest) return 'nearest';
-  else if (mipFilter === MipFilterMode.NoMip) return 'nearest';
+  if (mipFilter === MipFilterMode.LINEAR) return 'linear';
+  else if (mipFilter === MipFilterMode.NEAREST) return 'nearest';
+  else if (mipFilter === MipFilterMode.NO_MIP) return 'nearest';
   else throw new Error('whoops');
 }
 
@@ -143,10 +148,10 @@ export function translateBindGroupSamplerBinding(
 function translateViewDimension(
   dimension: TextureDimension,
 ): GPUTextureViewDimension {
-  if (dimension === TextureDimension.n2D) return '2d';
-  else if (dimension === TextureDimension.n2DArray) return '2d-array';
-  else if (dimension === TextureDimension.n3D) return '3d';
-  else if (dimension === TextureDimension.Cube) return 'cube';
+  if (dimension === TextureDimension.TEXTURE_2D) return '2d';
+  else if (dimension === TextureDimension.TEXTURE_2D_ARRAY) return '2d-array';
+  else if (dimension === TextureDimension.TEXTURE_3D) return '3d';
+  else if (dimension === TextureDimension.TEXTURE_CUBE_MAP) return 'cube';
   else throw new Error('whoops');
 }
 
@@ -179,36 +184,44 @@ export function translateQueryPoolType(type: QueryPoolType): GPUQueryType {
   else throw new Error('whoops');
 }
 
-// @see https://www.w3.org/TR/webgpu/#primitive-state
+/**
+ * @see https://www.w3.org/TR/webgpu/#primitive-state
+ */
 export function translateTopology(
   topology: PrimitiveTopology,
 ): GPUPrimitiveTopology {
   switch (topology) {
-    case PrimitiveTopology.Triangles:
+    case PrimitiveTopology.TRIANGLES:
       return 'triangle-list';
-    case PrimitiveTopology.Points:
+    case PrimitiveTopology.POINTS:
       return 'point-list';
-    case PrimitiveTopology.TriangleStrip:
+    case PrimitiveTopology.TRIANGLE_STRIP:
       return 'triangle-strip';
-    case PrimitiveTopology.Lines:
+    case PrimitiveTopology.LINES:
       return 'line-list';
-    case PrimitiveTopology.LineStrip:
+    case PrimitiveTopology.LINE_STRIP:
       return 'line-strip';
     default:
       throw new Error('Unknown primitive topology mode');
   }
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpucullmode
+ */
 export function translateCullMode(cullMode: CullMode): GPUCullMode {
-  if (cullMode === CullMode.None) return 'none';
-  else if (cullMode === CullMode.Front) return 'front';
-  else if (cullMode === CullMode.Back) return 'back';
+  if (cullMode === CullMode.NONE) return 'none';
+  else if (cullMode === CullMode.FRONT) return 'front';
+  else if (cullMode === CullMode.BACK) return 'back';
   else throw new Error('whoops');
 }
 
-export function translateFrontFace(frontFaceMode: FrontFaceMode): GPUFrontFace {
-  if (frontFaceMode === FrontFaceMode.CCW) return 'ccw';
-  else if (frontFaceMode === FrontFaceMode.CW) return 'cw';
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpufrontface
+ */
+export function translateFrontFace(frontFaceMode: FrontFace): GPUFrontFace {
+  if (frontFaceMode === FrontFace.CCW) return 'ccw';
+  else if (frontFaceMode === FrontFace.CW) return 'cw';
   else throw new Error('whoops');
 }
 
@@ -223,26 +236,39 @@ export function translatePrimitiveState(
   };
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor
+ */
 export function translateBlendFactor(factor: BlendFactor): GPUBlendFactor {
-  if (factor === BlendFactor.Zero) return 'zero';
-  else if (factor === BlendFactor.One) return 'one';
-  else if (factor === BlendFactor.Src) return 'src';
-  else if (factor === BlendFactor.OneMinusSrc) return 'one-minus-src';
-  else if (factor === BlendFactor.Dst) return 'dst';
-  else if (factor === BlendFactor.OneMinusDst) return 'one-minus-dst';
-  else if (factor === BlendFactor.SrcAlpha) return 'src-alpha';
-  else if (factor === BlendFactor.OneMinusSrcAlpha)
+  if (factor === BlendFactor.ZERO) return 'zero';
+  else if (factor === BlendFactor.ONE) return 'one';
+  else if (factor === BlendFactor.SRC) return 'src';
+  else if (factor === BlendFactor.ONE_MINUS_SRC) return 'one-minus-src';
+  else if (factor === BlendFactor.DST) return 'dst';
+  else if (factor === BlendFactor.ONE_MINUS_DST) return 'one-minus-dst';
+  else if (factor === BlendFactor.SRC_ALPHA) return 'src-alpha';
+  else if (factor === BlendFactor.ONE_MINUS_SRC_ALPHA)
     return 'one-minus-src-alpha';
-  else if (factor === BlendFactor.DstAlpha) return 'dst-alpha';
-  else if (factor === BlendFactor.OneMinusDstAlpha)
+  else if (factor === BlendFactor.DST_ALPHA) return 'dst-alpha';
+  else if (factor === BlendFactor.ONE_MINUS_DST_ALPHA)
     return 'one-minus-dst-alpha';
+  else if (factor === BlendFactor.CONST) return 'constant';
+  else if (factor === BlendFactor.ONE_MINUS_CONSTANT)
+    return 'one-minus-constant';
+  else if (factor === BlendFactor.SRC_ALPHA_SATURATE)
+    return 'src-alpha-saturated';
   else throw new Error('whoops');
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpublendoperation
+ */
 export function translateBlendMode(mode: BlendMode): GPUBlendOperation {
-  if (mode === BlendMode.Add) return 'add';
-  else if (mode === BlendMode.Subtract) return 'subtract';
-  else if (mode === BlendMode.ReverseSubtract) return 'reverse-subtract';
+  if (mode === BlendMode.ADD) return 'add';
+  else if (mode === BlendMode.SUBSTRACT) return 'subtract';
+  else if (mode === BlendMode.REVERSE_SUBSTRACT) return 'reverse-subtract';
+  else if (mode === BlendMode.MIN) return 'min';
+  else if (mode === BlendMode.MAX) return 'max';
   else throw new Error('whoops');
 }
 
@@ -256,9 +282,9 @@ function translateBlendComponent(ch: ChannelBlendState): GPUBlendComponent {
 
 function blendComponentIsNil(ch: ChannelBlendState): boolean {
   return (
-    ch.blendMode === BlendMode.Add &&
-    ch.blendSrcFactor === BlendFactor.One &&
-    ch.blendDstFactor === BlendFactor.Zero
+    ch.blendMode === BlendMode.ADD &&
+    ch.blendSrcFactor === BlendFactor.ONE &&
+    ch.blendDstFactor === BlendFactor.ZERO
   );
 }
 
@@ -298,17 +324,18 @@ export function translateTargets(
   });
 }
 
+// @see https://www.w3.org/TR/webgpu/#enumdef-gpucomparefunction
 export function translateCompareMode(
   compareMode: CompareMode,
 ): GPUCompareFunction {
-  if (compareMode === CompareMode.Never) return 'never';
-  else if (compareMode === CompareMode.Less) return 'less';
-  else if (compareMode === CompareMode.Equal) return 'equal';
-  else if (compareMode === CompareMode.LessEqual) return 'less-equal';
-  else if (compareMode === CompareMode.Greater) return 'greater';
-  else if (compareMode === CompareMode.NotEqual) return 'not-equal';
-  else if (compareMode === CompareMode.GreaterEqual) return 'greater-equal';
-  else if (compareMode === CompareMode.Always) return 'always';
+  if (compareMode === CompareMode.NEVER) return 'never';
+  else if (compareMode === CompareMode.LESS) return 'less';
+  else if (compareMode === CompareMode.EQUAL) return 'equal';
+  else if (compareMode === CompareMode.LEQUAL) return 'less-equal';
+  else if (compareMode === CompareMode.GREATER) return 'greater';
+  else if (compareMode === CompareMode.NOTEQUAL) return 'not-equal';
+  else if (compareMode === CompareMode.GEQUAL) return 'greater-equal';
+  else if (compareMode === CompareMode.ALWAYS) return 'always';
   else throw new Error('whoops');
 }
 
@@ -316,11 +343,11 @@ export function translateDepthStencilState(
   format: Format | null,
   megaStateDescriptor: MegaStateDescriptor,
 ): GPUDepthStencilState | undefined {
-  if (format === null) return undefined;
+  if (isNil(format)) return undefined;
 
   return {
     format: translateTextureFormat(format),
-    depthWriteEnabled: megaStateDescriptor.depthWrite,
+    depthWriteEnabled: !!megaStateDescriptor.depthWrite,
     depthCompare: translateCompareMode(megaStateDescriptor.depthCompare),
     depthBias: megaStateDescriptor.polygonOffset ? 1 : 0,
     depthBiasSlopeScale: megaStateDescriptor.polygonOffset ? 1 : 0,
@@ -336,11 +363,11 @@ export function translateIndexFormat(
   else throw new Error('whoops');
 }
 
-export function translateVertexBufferFrequency(
-  frequency: VertexBufferFrequency,
+export function translateVertexStepMode(
+  stepMode: VertexStepMode,
 ): GPUVertexStepMode {
-  if (frequency === VertexBufferFrequency.PerVertex) return 'vertex';
-  else if (frequency === VertexBufferFrequency.PerInstance) return 'instance';
+  if (stepMode === VertexStepMode.VERTEX) return 'vertex';
+  else if (stepMode === VertexStepMode.INSTANCE) return 'instance';
   else throw new Error('whoops');
 }
 

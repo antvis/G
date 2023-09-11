@@ -4,7 +4,7 @@ import {
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from './Instanced';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import meshFrag from '../shader/mesh.frag';
 import meshVert from '../shader/mesh.vert';
 import { updateBuffer } from './InstancedPath';
@@ -127,7 +127,7 @@ export class InstancedFillDrawcall extends Instanced {
       this.geometry.setVertexBuffer({
         bufferIndex: VertexAttributeBufferIndex.POSITION,
         byteStride: 4 * 3,
-        frequency: VertexBufferFrequency.PerVertex,
+        stepMode: VertexStepMode.VERTEX,
         attributes: [
           {
             format: Format.F32_RGB,
@@ -141,7 +141,7 @@ export class InstancedFillDrawcall extends Instanced {
       this.geometry.setVertexBuffer({
         bufferIndex: VertexAttributeBufferIndex.UV,
         byteStride: 4 * 2,
-        frequency: VertexBufferFrequency.PerVertex,
+        stepMode: VertexStepMode.VERTEX,
         attributes: [
           {
             format: Format.F32_RG,

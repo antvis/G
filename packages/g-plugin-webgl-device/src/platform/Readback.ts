@@ -103,7 +103,10 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
       gl.bufferData(gl.PIXEL_PACK_BUFFER, length, gl.STREAM_READ);
       gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 
-      gl.bindFramebuffer(GL.READ_FRAMEBUFFER, this.device.readbackFramebuffer);
+      gl.bindFramebuffer(
+        GL.READ_FRAMEBUFFER,
+        this.device['readbackFramebuffer'],
+      );
       gl.framebufferTexture2D(
         GL.READ_FRAMEBUFFER,
         GL.COLOR_ATTACHMENT0,
@@ -133,7 +136,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
         length,
       );
     } else {
-      gl.bindFramebuffer(GL.FRAMEBUFFER, this.device.readbackFramebuffer);
+      gl.bindFramebuffer(GL.FRAMEBUFFER, this.device['readbackFramebuffer']);
       gl.framebufferTexture2D(
         GL.FRAMEBUFFER,
         GL.COLOR_ATTACHMENT0,
@@ -164,7 +167,7 @@ export class Readback_GL extends ResourceBase_GL implements Readback {
     const texture = t as Texture_GL;
     const gl_type = this.device.translateTextureType(texture.pixelFormat);
 
-    gl.bindFramebuffer(GL.FRAMEBUFFER, this.device.readbackFramebuffer);
+    gl.bindFramebuffer(GL.FRAMEBUFFER, this.device['readbackFramebuffer']);
     gl.framebufferTexture2D(
       GL.FRAMEBUFFER,
       GL.COLOR_ATTACHMENT0,

@@ -1,5 +1,5 @@
 // import { BufferGeometry } from '../geometries';
-// import { Format, InputLayout, InputState, VertexBufferFrequency } from '../platform';
+// import { Format, InputLayout, InputState, VertexStepMode } from '../platform';
 // import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
 // import { RGAttachmentSlot, RGGraphBuilder } from '../render/interfaces';
@@ -54,7 +54,7 @@ export class CopyProgram extends DeviceProgram {
 //     geometry.setVertexBuffer({
 //       bufferIndex: 0,
 //       byteStride: 4 * 2,
-//       frequency: VertexBufferFrequency.PerVertex,
+//       stepMode: VertexStepMode.VERTEX,
 //       attributes: [
 //         {
 //           format: Format.F32_RG,

@@ -36,7 +36,7 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
     const { pipeline, bindingLayout } = descriptor;
     assert(!!pipeline);
 
-    const bindGroupLayout = this.device._createBindGroupLayout(bindingLayout);
+    const bindGroupLayout = this.device['createBindGroupLayout'](bindingLayout);
 
     // entries orders: Storage(read-only storage) Uniform Sampler
     const gpuBindGroupEntries: GPUBindGroupEntry[][] = [[], []];
@@ -83,7 +83,7 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
       const texture =
         binding.texture !== null
           ? binding.texture
-          : this.device.getFallbackTexture(samplerEntry);
+          : this.device['getFallbackTexture'](samplerEntry);
       assert(samplerEntry.dimension === (texture as Texture_WebGPU).dimension);
       assert(
         samplerEntry.formatKind ===
@@ -98,7 +98,7 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
       const sampler =
         binding.sampler !== null
           ? binding.sampler
-          : this.device.getFallbackSampler(samplerEntry);
+          : this.device['getFallbackSampler'](samplerEntry);
       const gpuSampler = getPlatformSampler(sampler);
       gpuBindGroupEntries[1].push({
         binding: numBindings++,
