@@ -1,5 +1,13 @@
 # @antv/g-plugin-gpgpu
 
+## 1.9.20
+
+### Patch Changes
+
+-   c54cc6fb: Antialiasing SDF & Text.
+-   568ec0f4: Export Device API in webgl & webgpu.
+    -   @antv/g-webgpu@1.9.20
+
 ## 1.9.19
 
 ### Patch Changes
