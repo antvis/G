@@ -19,7 +19,6 @@ import type {
   Type,
   UpdatePayload,
 } from './types';
-import { log } from './util/debug';
 
 export const reconcilor = ReactReconciler<
   Type,
