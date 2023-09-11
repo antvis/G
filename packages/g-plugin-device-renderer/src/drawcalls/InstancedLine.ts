@@ -11,7 +11,7 @@ import type {
   ParsedPolylineStyleProps,
 } from '@antv/g-lite';
 import { DisplayObject, Shape, isDisplayObject } from '@antv/g-lite';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';
 import { enumToObject } from '../utils/enum';
@@ -291,7 +291,7 @@ export class InstancedLineDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 5,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGB,
@@ -311,7 +311,7 @@ export class InstancedLineDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: InstancedLineVertexAttributeBufferIndex.POINT,
       byteStride: 4 * (3 + 3),
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGB,
@@ -332,7 +332,7 @@ export class InstancedLineDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: InstancedLineVertexAttributeBufferIndex.CAP,
       byteStride: 4 * 1,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_R,
@@ -346,7 +346,7 @@ export class InstancedLineDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: InstancedLineVertexAttributeBufferIndex.DASH,
       byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RGBA,

@@ -88,8 +88,10 @@ export class Kernel {
       }
     }
 
-    const program = this.device.createProgramSimple({
-      preprocessedCompute: this.bundle.shaders[target],
+    const program = this.device.createProgram({
+      compute: {
+        wgsl: this.bundle.shaders[target],
+      },
     });
 
     this.computePipeline = this.device.createComputePipeline({
@@ -172,7 +174,7 @@ export class Kernel {
 
     // fixed bind group 0
     computePass.setBindings(0, bindings, []);
-    computePass.dispatch(...dispatchParams);
+    computePass.dispatchWorkgroups(...dispatchParams);
     this.device.submitPass(computePass);
   }
 

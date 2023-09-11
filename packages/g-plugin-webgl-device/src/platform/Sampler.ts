@@ -6,10 +6,18 @@ import {
   assert,
   isPowerOfTwo,
 } from '@antv/g-plugin-device-renderer';
-import type { Sampler, SamplerDescriptor } from '@antv/g-plugin-device-renderer';
+import type {
+  Sampler,
+  SamplerDescriptor,
+} from '@antv/g-plugin-device-renderer';
 import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
-import { getPlatformSampler, isWebGL2, translateFilterMode, translateWrapMode } from './utils';
+import {
+  getPlatformSampler,
+  isWebGL2,
+  translateFilterMode,
+  translateWrapMode,
+} from './utils';
 
 /**
  * In WebGL 1 texture image data and sampling information are both stored in texture objects
@@ -36,8 +44,16 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
 
     if (isWebGL2(gl)) {
       const gl_sampler = this.device.ensureResourceExists(gl.createSampler());
-      gl.samplerParameteri(gl_sampler, GL.TEXTURE_WRAP_S, translateWrapMode(descriptor.wrapS));
-      gl.samplerParameteri(gl_sampler, GL.TEXTURE_WRAP_T, translateWrapMode(descriptor.wrapT));
+      gl.samplerParameteri(
+        gl_sampler,
+        GL.TEXTURE_WRAP_S,
+        translateWrapMode(descriptor.wrapS),
+      );
+      gl.samplerParameteri(
+        gl_sampler,
+        GL.TEXTURE_WRAP_T,
+        translateWrapMode(descriptor.wrapT),
+      );
       gl.samplerParameteri(
         gl_sampler,
         GL.TEXTURE_WRAP_R,
@@ -51,7 +67,7 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
       gl.samplerParameteri(
         gl_sampler,
         GL.TEXTURE_MAG_FILTER,
-        translateFilterMode(descriptor.magFilter, MipFilterMode.NoMip),
+        translateFilterMode(descriptor.magFilter, MipFilterMode.NO_MIP),
       );
 
       if (descriptor.minLOD !== undefined) {
@@ -61,16 +77,27 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
         gl.samplerParameterf(gl_sampler, GL.TEXTURE_MAX_LOD, descriptor.maxLOD);
       }
       if (descriptor.compareMode !== undefined) {
-        gl.samplerParameteri(gl_sampler, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
-        gl.samplerParameteri(gl_sampler, gl.TEXTURE_COMPARE_FUNC, descriptor.compareMode);
+        gl.samplerParameteri(
+          gl_sampler,
+          gl.TEXTURE_COMPARE_MODE,
+          gl.COMPARE_REF_TO_TEXTURE,
+        );
+        gl.samplerParameteri(
+          gl_sampler,
+          gl.TEXTURE_COMPARE_FUNC,
+          descriptor.compareMode,
+        );
       }
 
       const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
-      if (maxAnisotropy > 1 && this.device.EXT_texture_filter_anisotropic !== null) {
+      if (
+        maxAnisotropy > 1 &&
+        this.device.EXT_texture_filter_anisotropic !== null
+      ) {
         assert(
-          descriptor.minFilter === TexFilterMode.Bilinear &&
-            descriptor.magFilter === TexFilterMode.Bilinear &&
-            descriptor.mipFilter === MipFilterMode.Linear,
+          descriptor.minFilter === TexFilterMode.BILINEAR &&
+            descriptor.magFilter === TexFilterMode.BILINEAR &&
+            descriptor.mipFilter === MipFilterMode.LINEAR,
         );
         gl.samplerParameterf(
           gl_sampler,
@@ -100,13 +127,21 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
         translateFilterMode(descriptor.minFilter, descriptor.mipFilter),
       );
     }
-    gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, translateWrapMode(descriptor.wrapS));
-    gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, translateWrapMode(descriptor.wrapT));
+    gl.texParameteri(
+      GL.TEXTURE_2D,
+      GL.TEXTURE_WRAP_S,
+      translateWrapMode(descriptor.wrapS),
+    );
+    gl.texParameteri(
+      GL.TEXTURE_2D,
+      GL.TEXTURE_WRAP_T,
+      translateWrapMode(descriptor.wrapT),
+    );
 
     gl.texParameteri(
       gl_target,
       GL.TEXTURE_MAG_FILTER,
-      translateFilterMode(descriptor.magFilter, MipFilterMode.NoMip),
+      translateFilterMode(descriptor.magFilter, MipFilterMode.NO_MIP),
     );
 
     // if (descriptor.minLOD !== undefined) {
@@ -117,11 +152,14 @@ export class Sampler_GL extends ResourceBase_GL implements Sampler {
     // }
 
     const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
-    if (maxAnisotropy > 1 && this.device.EXT_texture_filter_anisotropic !== null) {
+    if (
+      maxAnisotropy > 1 &&
+      this.device.EXT_texture_filter_anisotropic !== null
+    ) {
       assert(
-        descriptor.minFilter === TexFilterMode.Bilinear &&
-          descriptor.magFilter === TexFilterMode.Bilinear &&
-          descriptor.mipFilter === MipFilterMode.Linear,
+        descriptor.minFilter === TexFilterMode.BILINEAR &&
+          descriptor.magFilter === TexFilterMode.BILINEAR &&
+          descriptor.mipFilter === MipFilterMode.LINEAR,
       );
       gl.texParameteri(
         gl_target,

@@ -19,7 +19,6 @@ import type {
   Type,
   UpdatePayload,
 } from './types';
-import { log } from './util/debug';
 
 export const reconcilor = ReactReconciler<
   Type,
@@ -65,7 +64,7 @@ export const reconcilor = ReactReconciler<
     }) as unknown as Element;
     // @ts-ignore
     bindShapeEvent(props, instance);
-    log('createInstance ', type, instance);
+    // log('createInstance ', type, instance);
     // @ts-ignore
     return instance;
   },
@@ -73,7 +72,7 @@ export const reconcilor = ReactReconciler<
     parentInstance: Instance,
     child: Instance | TextInstance,
   ): void {
-    log('appendInitialChild', parentInstance, child);
+    // log('appendInitialChild', parentInstance, child);
     parentInstance.appendChild(child);
   },
   finalizeInitialChildren(
@@ -140,14 +139,14 @@ export const reconcilor = ReactReconciler<
   //     (optional)
   // -------------------
   appendChild(parentInstance: Instance, child: Instance | TextInstance): void {
-    log('appendChild');
+    // log('appendChild');
     parentInstance.appendChild(child);
   },
   appendChildToContainer(
     container: Container,
     child: Instance | TextInstance,
   ): void {
-    log('appendChildToContainer', container, child);
+    // log('appendChildToContainer', container, child);
     container.appendChild(child);
   },
   commitTextUpdate(
@@ -169,7 +168,7 @@ export const reconcilor = ReactReconciler<
     newProps: Props,
     internalInstanceHandle: OpaqueHandle,
   ): void {
-    log('commitUpdate', instance, newProps);
+    // log('commitUpdate', instance, newProps);
     updateProps(instance, newProps, oldProps);
   },
   insertBefore(
@@ -187,7 +186,7 @@ export const reconcilor = ReactReconciler<
     container.insertBefore(child, beforeChild);
   },
   removeChild(parentInstance: Instance, child: Instance | TextInstance): void {
-    log('removeChild', parentInstance, child);
+    // log('removeChild', parentInstance, child);
     parentInstance.removeChild(child);
   },
   removeChildFromContainer(
@@ -353,7 +352,7 @@ reconcilor.injectIntoDevTools({
   rendererPackageName: 'react-g',
   rendererConfig: {
     getInspectorDataForViewTag: (tag: number) => {
-      console.log(tag);
+      // console.log(tag);
     },
   },
 });

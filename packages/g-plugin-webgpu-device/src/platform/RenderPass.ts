@@ -1,9 +1,12 @@
 import {
   Bindings,
-  InputState,
+  Buffer,
+  IndexBufferDescriptor,
+  InputLayout,
   RenderPass,
   RenderPassDescriptor,
   RenderPipeline,
+  VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -15,7 +18,6 @@ import { isNil } from '@antv/util';
 import type { Bindings_WebGPU } from './Bindings';
 import { GPUTextureUsage } from './constants';
 import type { InputLayout_WebGPU } from './InputLayout';
-import type { InputState_WebGPU } from './InputState';
 import type { Attachment_WebGPU, TextureShared_WebGPU } from './interfaces';
 import type { RenderPipeline_WebGPU } from './RenderPipeline';
 import type { Texture_WebGPU } from './Texture';
@@ -88,8 +90,9 @@ export class RenderPass_WebGPU implements RenderPass {
       this.gfxColorAttachment[i] = colorAttachment;
       this.gfxColorResolveTo[i] = colorResolveTo;
 
-      this.gfxColorAttachmentLevel[i] = descriptor.colorAttachmentLevel[i];
-      this.gfxColorResolveToLevel[i] = descriptor.colorResolveToLevel[i];
+      this.gfxColorAttachmentLevel[i] =
+        descriptor.colorAttachmentLevel?.[i] || 0;
+      this.gfxColorResolveToLevel[i] = descriptor.colorResolveToLevel?.[i] || 0;
 
       if (colorAttachment !== null) {
         if (this.gpuColorAttachments[i] === undefined) {
@@ -99,16 +102,18 @@ export class RenderPass_WebGPU implements RenderPass {
         const dstAttachment = this.gpuColorAttachments[i];
         dstAttachment.view = this.getTextureView(
           colorAttachment,
-          this.gfxColorAttachmentLevel[i],
+          this.gfxColorAttachmentLevel?.[i] || 0,
         );
-        const clearColor = descriptor.colorClearColor[i];
+        const clearColor = descriptor.colorClearColor?.[i] ?? 'load';
         if (clearColor === 'load') {
           dstAttachment.loadOp = 'load';
         } else {
           dstAttachment.loadOp = 'clear';
           dstAttachment.clearValue = clearColor;
         }
-        dstAttachment.storeOp = descriptor.colorStore[i] ? 'store' : 'discard';
+        dstAttachment.storeOp = descriptor.colorStore?.[i]
+          ? 'store'
+          : 'discard';
         dstAttachment.resolveTarget = undefined;
         if (colorResolveTo !== null) {
           if (colorAttachment.sampleCount > 1) {
@@ -134,7 +139,7 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gfxDepthStencilResolveTo =
       descriptor.depthStencilResolveTo as Texture_WebGPU;
 
-    if (descriptor.depthStencilAttachment !== null) {
+    if (descriptor.depthStencilAttachment) {
       const dsAttachment =
         descriptor.depthStencilAttachment as unknown as Attachment_WebGPU;
       const dstAttachment = this.gpuDepthStencilAttachment;
@@ -190,10 +195,11 @@ export class RenderPass_WebGPU implements RenderPass {
       this.gpuRenderPassDescriptor.depthStencilAttachment = undefined;
     }
 
-    this.gpuRenderPassDescriptor.occlusionQuerySet =
-      descriptor.occlusionQueryPool !== null
-        ? getPlatformQuerySet(descriptor.occlusionQueryPool)
-        : undefined;
+    this.gpuRenderPassDescriptor.occlusionQuerySet = !isNil(
+      descriptor.occlusionQueryPool,
+    )
+      ? getPlatformQuerySet(descriptor.occlusionQueryPool)
+      : undefined;
   }
 
   beginRenderPass(renderPassDescriptor: RenderPassDescriptor): void {
@@ -218,23 +224,24 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuRenderPassEncoder.setPipeline(gpuRenderPipeline);
   }
 
-  setInputState(inputState_: InputState | null): void {
-    if (inputState_ === null) return;
+  setVertexInput(
+    inputLayout_: InputLayout | null,
+    vertexBuffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
+  ): void {
+    if (inputLayout_ === null) return;
 
-    const inputState = inputState_ as InputState_WebGPU;
-    if (inputState.indexBuffer !== null) {
-      const inputLayout = inputState.inputLayout as InputLayout_WebGPU;
-      const indexBuffer = inputState.indexBuffer;
+    const inputLayout = inputLayout_ as InputLayout_WebGPU;
+    if (indexBuffer !== null)
       this.gpuRenderPassEncoder.setIndexBuffer(
         getPlatformBuffer(indexBuffer.buffer),
         assertExists(inputLayout.indexFormat),
         indexBuffer.byteOffset,
       );
-    }
 
-    for (let i = 0; i < inputState.vertexBuffers.length; i++) {
-      const b = inputState.vertexBuffers[i];
-      if (isNil(b)) continue;
+    for (let i = 0; i < vertexBuffers!.length; i++) {
+      const b = vertexBuffers![i];
+      if (b === null) continue;
       this.gpuRenderPassEncoder.setVertexBuffer(
         i,
         getPlatformBuffer(b.buffer),
@@ -266,26 +273,45 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuRenderPassEncoder.setStencilReference(ref);
   }
 
-  draw(vertexCount: number, firstVertex: number): void {
-    this.gpuRenderPassEncoder.draw(vertexCount, 1, firstVertex, 0);
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-draw
+   */
+  draw(
+    vertexCount: number,
+    instanceCount?: number,
+    firstVertex?: number,
+    firstInstance?: number,
+  ) {
+    this.gpuRenderPassEncoder.draw(
+      vertexCount,
+      instanceCount,
+      firstVertex,
+      firstInstance,
+    );
   }
-
-  drawIndexed(indexCount: number, firstIndex: number): void {
-    this.gpuRenderPassEncoder.drawIndexed(indexCount, 1, firstIndex, 0, 0);
-  }
-
-  drawIndexedInstanced(
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindexed
+   */
+  drawIndexed(
     indexCount: number,
-    firstIndex: number,
-    instanceCount: number,
-  ): void {
+    instanceCount?: number,
+    firstIndex?: number,
+    baseVertex?: number,
+    firstInstance?: number,
+  ) {
     this.gpuRenderPassEncoder.drawIndexed(
       indexCount,
       instanceCount,
       firstIndex,
-      0,
-      0,
+      baseVertex,
+      firstInstance,
     );
+  }
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
+   */
+  drawIndirect(indirectBuffer: Buffer, indirectOffset: number) {
+    // TODO
   }
 
   beginOcclusionQuery(dstOffs: number): void {
@@ -296,18 +322,16 @@ export class RenderPass_WebGPU implements RenderPass {
     this.gpuRenderPassEncoder.endOcclusionQuery();
   }
 
-  beginDebugGroup(name: string): void {
-    // FIREFOX MISSING
-    if (this.gpuRenderPassEncoder.pushDebugGroup === undefined) return;
-
+  pushDebugGroup(name: string): void {
     this.gpuRenderPassEncoder.pushDebugGroup(name);
   }
 
-  endDebugGroup(): void {
-    // FIREFOX MISSING
-    if (this.gpuRenderPassEncoder.popDebugGroup === undefined) return;
-
+  popDebugGroup(): void {
     this.gpuRenderPassEncoder.popDebugGroup();
+  }
+
+  insertDebugMarker(markerLabel: string) {
+    this.gpuRenderPassEncoder.insertDebugMarker(markerLabel);
   }
 
   finish(): GPUCommandBuffer {
@@ -333,10 +357,7 @@ export class RenderPass_WebGPU implements RenderPass {
       }
     }
 
-    if (
-      this.gfxDepthStencilAttachment !== null &&
-      this.gfxDepthStencilResolveTo !== null
-    ) {
+    if (this.gfxDepthStencilAttachment && this.gfxDepthStencilResolveTo) {
       if (this.gfxDepthStencilAttachment.sampleCount > 1) {
         // TODO(jstpierre): MSAA depth resolve (requires shader)
       } else {

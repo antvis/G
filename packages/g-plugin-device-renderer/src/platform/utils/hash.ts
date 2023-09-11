@@ -202,7 +202,7 @@ export function inputLayoutBufferDescriptorEquals(
 ): boolean {
   if (isNil(a)) return isNil(b);
   if (isNil(b)) return false;
-  return a.byteStride === b.byteStride && a.frequency === b.frequency;
+  return a.byteStride === b.byteStride && a.stepMode === b.stepMode;
 }
 
 export function inputLayoutDescriptorEquals(
@@ -226,6 +226,7 @@ export function inputLayoutDescriptorEquals(
     )
   )
     return false;
+  if (!programEquals(a.program, b.program)) return false;
   return true;
 }
 
@@ -251,12 +252,11 @@ export function samplerBindingCopy(
 ): SamplerBinding {
   const sampler = a.sampler;
   const texture = a.texture;
-  const lateBinding = a.lateBinding;
-  return { sampler, texture, lateBinding };
+  return { sampler, texture };
 }
 
 export function samplerBindingNew(): SamplerBinding {
-  return { sampler: null, texture: null, lateBinding: null };
+  return { sampler: null, texture: null };
 }
 
 export function bufferBindingCopy(a: Readonly<BufferBinding>): BufferBinding {
@@ -335,14 +335,12 @@ export function vertexAttributeDescriptorCopy(
   const format = a.format;
   const bufferIndex = a.bufferIndex;
   const bufferByteOffset = a.bufferByteOffset;
-  const byteStride = a.byteStride;
   const divisor = a.divisor;
   return {
     location,
     format,
     bufferIndex,
     bufferByteOffset,
-    byteStride,
     divisor,
   };
 }
@@ -352,8 +350,8 @@ export function inputLayoutBufferDescriptorCopy(
 ): InputLayoutBufferDescriptor | null {
   if (!isNil(a)) {
     const byteStride = a.byteStride;
-    const frequency = a.frequency;
-    return { byteStride, frequency };
+    const stepMode = a.stepMode;
+    return { byteStride, stepMode };
   } else {
     return a;
   }
@@ -371,9 +369,11 @@ export function inputLayoutDescriptorCopy(
     inputLayoutBufferDescriptorCopy,
   );
   const indexBufferFormat = a.indexBufferFormat;
+  const program = a.program;
   return {
     vertexAttributeDescriptors,
     vertexBufferDescriptors,
     indexBufferFormat,
+    program,
   };
 }

@@ -10,7 +10,7 @@ import {
   ChannelWriteMask,
   CompareMode,
   CullMode,
-  FrontFaceMode,
+  FrontFace,
   SamplerFormatKind,
   StencilOp,
   TextureDimension,
@@ -217,15 +217,15 @@ export function copyAttachmentStateFromSimple(
 }
 
 const defaultBlendState: ChannelBlendState = {
-  blendMode: BlendMode.Add,
-  blendSrcFactor: BlendFactor.One,
-  blendDstFactor: BlendFactor.Zero,
+  blendMode: BlendMode.ADD,
+  blendSrcFactor: BlendFactor.ONE,
+  blendDstFactor: BlendFactor.ZERO,
 };
 
 export const defaultMegaState: MegaStateDescriptor = {
   attachmentsState: [
     {
-      channelWriteMask: ChannelWriteMask.RGB,
+      channelWriteMask: ChannelWriteMask.ALL,
       rgbBlendState: defaultBlendState,
       alphaBlendState: defaultBlendState,
     },
@@ -233,15 +233,15 @@ export const defaultMegaState: MegaStateDescriptor = {
 
   blendConstant: colorNewCopy(TransparentBlack),
   depthWrite: true,
-  depthCompare: CompareMode.LessEqual,
+  depthCompare: CompareMode.LEQUAL,
   // depthCompare: reverseDepthForCompareMode(CompareMode.LessEqual),
   // stencilCompare: CompareMode.Never,
-  stencilCompare: CompareMode.Always,
+  stencilCompare: CompareMode.ALWAYS,
   stencilWrite: false,
-  stencilPassOp: StencilOp.Keep,
+  stencilPassOp: StencilOp.KEEP,
   stencilRef: 0,
-  cullMode: CullMode.None,
-  frontFace: FrontFaceMode.CCW,
+  cullMode: CullMode.NONE,
+  frontFace: FrontFace.CCW,
   polygonOffset: false,
 };
 
@@ -255,7 +255,7 @@ export function makeMegaState(
 }
 
 export const fullscreenMegaState = makeMegaState(
-  { depthCompare: CompareMode.Always, depthWrite: false },
+  { depthCompare: CompareMode.ALWAYS, depthWrite: false },
   defaultMegaState,
 );
 
@@ -278,5 +278,5 @@ export function setAttachmentStateSimple(
 export const defaultBindingLayoutSamplerDescriptor: BindingLayoutSamplerDescriptor =
   {
     formatKind: SamplerFormatKind.Float,
-    dimension: TextureDimension.n2D,
+    dimension: TextureDimension.TEXTURE_2D,
   };

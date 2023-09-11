@@ -1,4 +1,4 @@
-import type { RenderPass, SamplerBinding } from '../platform';
+import type { RenderPass } from '../platform';
 import { spliceBisectRight } from '../platform/utils';
 import type { RenderCache } from './RenderCache';
 import type { RenderInst } from './RenderInst';
@@ -58,24 +58,10 @@ export class RenderInstList {
   }
 
   submitRenderInst(renderInst: RenderInst): void {
+    // TODO: drawCount = 0
+    // renderInst.validate();
     renderInst.flags |= RenderInstFlags.Draw;
     this.insertSorted(renderInst);
-  }
-
-  hasLateSamplerBinding(name: string): boolean {
-    for (let i = 0; i < this.renderInsts.length; i++)
-      if (this.renderInsts[i].hasLateSamplerBinding(name)) {
-        return true;
-      }
-    return false;
-  }
-
-  /**
-   * Resolve sampler bindings for all render insts on this render inst list.
-   */
-  resolveLateSamplerBinding(name: string, binding: SamplerBinding): void {
-    for (let i = 0; i < this.renderInsts.length; i++)
-      this.renderInsts[i].resolveLateSamplerBinding(name, binding);
   }
 
   ensureSorted(): void {
@@ -89,19 +75,16 @@ export class RenderInstList {
   drawOnPassRendererNoReset(
     cache: RenderCache,
     passRenderer: RenderPass,
-  ): number {
+  ): void {
     this.ensureSorted();
 
-    let numDrawn = 0;
     if (this.executionOrder === RenderInstExecutionOrder.Forwards) {
       for (let i = 0; i < this.renderInsts.length; i++)
-        if (this.renderInsts[i].drawOnPass(cache, passRenderer)) numDrawn++;
+        this.renderInsts[i].drawOnPass(cache, passRenderer);
     } else {
       for (let i = this.renderInsts.length - 1; i >= 0; i--)
-        if (this.renderInsts[i].drawOnPass(cache, passRenderer)) numDrawn++;
+        this.renderInsts[i].drawOnPass(cache, passRenderer);
     }
-
-    return numDrawn;
   }
 
   reset(): void {

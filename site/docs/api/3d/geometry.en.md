@@ -172,7 +172,7 @@ const mesh = new Mesh({
 bufferGeometry.setVertexBuffer({
     bufferIndex: 1,
     byteStride: 4 * 3,
-    frequency: VertexBufferFrequency.PerVertex,
+    stepMode: VertexStepMode.VERTEX,
     attributes: [
         {
             format: Format.F32_RGB,
@@ -264,7 +264,7 @@ geometry.setIndices(new Uint32Array(indices));
 
 -   bufferIndex 索引
 -   byteStride stride 长度（以 byte 为单位）
--   frequency 支持 vertex 和 instance 两种
+-   stepMode 支持 vertex 和 instance 两种
 -   attributes 支持 interleave，其中每个属性包括：
     -   format 对应 Shader 中的数据类型
     -   bufferByteOffset 在 stride 中的偏移量
@@ -277,7 +277,7 @@ geometry.setIndices(new Uint32Array(indices));
 export interface GeometryVertexBufferDescriptor {
     bufferIndex: number;
     byteStride: number;
-    frequency: VertexBufferFrequency;
+    stepMode: VertexStepMode;
     attributes: Array<{
         format: Format,
         bufferByteOffset: number,
@@ -301,7 +301,7 @@ layout(location = 10) attribute vec3 a_Position;
 geometry.setVertexBuffer({
     bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
     byteStride: 4 * 3,
-    frequency: VertexBufferFrequency.PerVertex,
+    stepMode: VertexStepMode.VERTEX,
     attributes: [
         {
             format: Format.F32_RGB, // 与 vec3 对应

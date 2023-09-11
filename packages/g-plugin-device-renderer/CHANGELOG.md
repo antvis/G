@@ -1,5 +1,12 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.17
+
+### Patch Changes
+
+-   c54cc6fb: Antialiasing SDF & Text.
+-   568ec0f4: Export Device API in webgl & webgpu.
+
 ## 1.9.16
 
 ### Patch Changes

@@ -1,4 +1,5 @@
 import type {
+  Buffer,
   Bindings,
   ComputePass,
   ComputePipeline,
@@ -7,13 +8,16 @@ import type {
 // import type { ComputePipeline_GL } from './ComputePipeline';
 
 export class ComputePass_GL implements ComputePass {
-  beginDebugGroup: (name: string) => void;
-  endDebugGroup: () => void;
-
   /**
    * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatch
    */
-  dispatch(x: number, y?: number, z?: number): void {}
+  dispatchWorkgroups(
+    workgroupCountX: number,
+    workgroupCountY?: number,
+    workgroupCountZ?: number,
+  ) {}
+
+  dispatchWorkgroupsIndirect(indirectBuffer: Buffer, indirectOffset: number) {}
 
   finish() {
     // this.gpuComputePassEncoder.end();
@@ -42,4 +46,8 @@ export class ComputePass_GL implements ComputePass {
     // const bindings = bindings_ as Bindings_WebGPU;
     // this.gpuComputePassEncoder.setBindGroup(bindingLayoutIndex, bindings.gpuBindGroup[0]);
   }
+
+  pushDebugGroup(name: string) {}
+  popDebugGroup() {}
+  insertDebugMarker(markerLabel: string) {}
 }

@@ -5,6 +5,7 @@ import {
   BindingsDescriptor,
   Buffer,
   BufferDescriptor,
+  BufferFrequencyHint,
   ComputePass,
   ComputePipeline,
   ComputePipelineDescriptor,
@@ -14,12 +15,10 @@ import {
   IndexBufferDescriptor,
   InputLayout,
   InputLayoutDescriptor,
-  InputState,
   MegaStateDescriptor,
   PlatformFramebuffer,
   Program,
   ProgramDescriptor,
-  ProgramDescriptorSimple,
   QueryPool,
   QueryPoolType,
   Readback,
@@ -38,6 +37,7 @@ import {
   TransparentWhite,
   VendorInfo,
   VertexBufferDescriptor,
+  preprocessShader_GLSL,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -63,19 +63,17 @@ import {
   makeDataBuffer,
   nullify,
   prependLineNo,
-  preprocessProgramObj_GLSL,
   PrimitiveTopology,
   ResourceType,
   SamplerFormatKind,
   TextureDimension,
   TextureUsage,
-  VertexBufferFrequency,
+  VertexStepMode,
   ViewportOrigin,
 } from '@antv/g-plugin-device-renderer';
 import { Bindings_GL } from './Bindings';
 import { Buffer_GL } from './Buffer';
 import { InputLayout_GL } from './InputLayout';
-import { InputState_GL } from './InputState';
 import type {
   BindingLayoutSamplerDescriptor_GL,
   EXT_texture_compression_rgtc,
@@ -106,6 +104,7 @@ import {
   isWebGL2,
 } from './utils';
 import { ComputePass_GL } from './ComputePass';
+import { isNil } from '@antv/util';
 
 // This is a workaround for ANGLE not supporting UBOs greater than 64kb (the limit of D3D).
 // https://bugs.chromium.org/p/angleproject/issues/detail?id=3388
@@ -146,10 +145,10 @@ export class Device_GL implements SwapChain, Device {
 
   // Device
   private currentActiveTexture: GLenum | null = null;
-  currentBoundVAO: WebGLVertexArrayObject | null = null;
+  private currentBoundVAO: WebGLVertexArrayObject | null = null;
   private currentProgram: Program_GL | null = null;
 
-  resourceCreationTracker: ResourceCreationTracker | null = null;
+  private resourceCreationTracker: ResourceCreationTracker | null = null;
   private resourceUniqueId = 0;
 
   // Cached GL driver state
@@ -161,12 +160,12 @@ export class Device_GL implements SwapChain, Device {
   private currentDepthStencilResolveTo: Texture_GL | null = null;
   private currentSampleCount = -1;
   private currentPipeline: RenderPipeline_GL;
-  private currentInputState: InputState_GL;
+  private currentIndexBufferByteOffset: number | null = null;
   private currentMegaState: MegaStateDescriptor =
     copyMegaState(defaultMegaState);
   private currentSamplers: (WebGLSampler | null)[] = [];
 
-  currentTextures: (WebGLTexture | null)[] = [];
+  private currentTextures: (WebGLTexture | null)[] = [];
 
   private currentUniformBuffers: Buffer[] = [];
   private currentUniformBufferByteOffsets: number[] = [];
@@ -187,28 +186,30 @@ export class Device_GL implements SwapChain, Device {
    * use DRAW_FRAMEBUFFER in WebGL2
    */
   private renderPassDrawFramebuffer: WebGLFramebuffer;
-  readbackFramebuffer: WebGLFramebuffer;
+  private readbackFramebuffer: WebGLFramebuffer;
 
   private fallbackTexture2D: WebGLTexture;
   private fallbackTexture2DDepth: WebGLTexture;
   private fallbackTexture2DArray: WebGLTexture;
   private fallbackTexture3D: WebGLTexture;
   private fallbackTextureCube: WebGLTexture;
+  private fallbackVertexBuffer: Buffer;
 
   // VendorInfo
   readonly platformString: string;
   readonly glslVersion: string;
   readonly explicitBindingLocations = false;
   readonly separateSamplerTextures = false;
-  readonly viewportOrigin = ViewportOrigin.LowerLeft;
-  readonly clipSpaceNearZ = ClipSpaceNearZ.NegativeOne;
-
+  readonly viewportOrigin = ViewportOrigin.LOWER_LEFT;
+  readonly clipSpaceNearZ = ClipSpaceNearZ.NEGATIVE_ONE;
   readonly supportMRT: boolean = false;
 
   private inBlitRenderPass = false;
   private blitRenderPipeline: RenderPipeline;
-  private blitInputState: InputState;
+  private blitInputLayout: InputLayout;
+  private blitVertexBuffer: Buffer;
   private blitBindings: Bindings;
+  private blitProgram: Program_GL;
 
   // GLimits
   /**
@@ -220,6 +221,7 @@ export class Device_GL implements SwapChain, Device {
   supportedSampleCounts: number[] = [];
   maxVertexAttribs: number;
   occlusionQueriesRecommended = false;
+  computeShadersSupported = false;
 
   gl: WebGLRenderingContext | WebGL2RenderingContext;
 
@@ -292,9 +294,9 @@ export class Device_GL implements SwapChain, Device {
         width: 0,
         height: 0,
         depth: 1,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels: 1,
-        usage: TextureUsage.RenderTarget,
+        usage: TextureUsage.RENDER_TARGET,
         pixelFormat:
           this.contextAttributes.alpha === false
             ? Format.U8_RGB_RT
@@ -326,13 +328,18 @@ export class Device_GL implements SwapChain, Device {
     );
 
     this.fallbackTexture2D = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Float,
     );
     this.fallbackTexture2DDepth = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Depth,
     );
+    this.fallbackVertexBuffer = this.createBuffer({
+      viewOrSize: 1,
+      usage: BufferUsage.VERTEX,
+      hint: BufferFrequencyHint.STATIC,
+    });
 
     if (isWebGL2(gl)) {
       // this.fallbackTexture2DArray = this.createFallbackTexture(
@@ -350,10 +357,10 @@ export class Device_GL implements SwapChain, Device {
     }
 
     // Adjust for GL defaults.
-    this.currentMegaState.depthCompare = CompareMode.Less;
+    this.currentMegaState.depthCompare = CompareMode.LESS;
     this.currentMegaState.depthWrite = false;
     this.currentMegaState.attachmentsState[0].channelWriteMask =
-      ChannelWriteMask.AllChannels;
+      ChannelWriteMask.ALL;
 
     // always have depth test enabled.
     gl.enable(gl.DEPTH_TEST);
@@ -370,11 +377,29 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
+  destroy() {
+    if (this.blitBindings) {
+      this.blitBindings.destroy();
+    }
+    if (this.blitInputLayout) {
+      this.blitInputLayout.destroy();
+    }
+    if (this.blitRenderPipeline) {
+      this.blitRenderPipeline.destroy();
+    }
+    if (this.blitVertexBuffer) {
+      this.blitVertexBuffer.destroy();
+    }
+    if (this.blitProgram) {
+      this.blitProgram.destroy();
+    }
+  }
+
   private createFallbackTexture(
     dimension: TextureDimension,
     formatKind: SamplerFormatKind,
   ): WebGLTexture {
-    const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    const depth = dimension === TextureDimension.TEXTURE_CUBE_MAP ? 6 : 1;
     // const supportDepthTexture =
     //   isWebGL2(this.gl) || (!isWebGL2(this.gl) && !!this.WEBGL_depth_texture);
     const pixelFormat =
@@ -385,7 +410,7 @@ export class Device_GL implements SwapChain, Device {
     const texture = this.createTexture({
       dimension,
       pixelFormat,
-      usage: TextureUsage.Sampled,
+      usage: TextureUsage.SAMPLED,
       width: 1,
       height: 1,
       depth,
@@ -408,7 +433,7 @@ export class Device_GL implements SwapChain, Device {
     // )
 
     if (formatKind === SamplerFormatKind.Float) {
-      texture.setImageData([new Uint8Array(4 * depth)], 0);
+      texture.setImageData([new Uint8Array(4 * depth)]);
     }
     return getPlatformTexture(texture);
   }
@@ -484,7 +509,10 @@ export class Device_GL implements SwapChain, Device {
 
   //#region Device
   // @see https://webgl2fundamentals.org/webgl/lessons/webgl-data-textures.html
-  translateTextureInternalFormat(fmt: Format): GLenum {
+  translateTextureInternalFormat(
+    fmt: Format,
+    isRenderbufferStorage = false,
+  ): GLenum {
     switch (fmt) {
       case Format.ALPHA:
         return GL.ALPHA;
@@ -515,7 +543,15 @@ export class Device_GL implements SwapChain, Device {
         return GL.SRGB8;
       case Format.U8_RGBA_NORM:
       case Format.U8_RGBA_RT:
-        return isWebGL2(this.gl) ? GL.RGBA8 : GL.RGBA;
+        // WebGL1 renderbuffer only support RGBA4 RGB565 RGB5_A1
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/renderbufferStorage#parameters
+        // But texImage2D allows RGBA
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+        return isWebGL2(this.gl)
+          ? GL.RGBA8
+          : isRenderbufferStorage
+          ? GL.RGBA4
+          : GL.RGBA;
       case Format.U8_RGBA_SRGB:
       case Format.U8_RGBA_RT_SRGB:
         return GL.SRGB8_ALPHA8;
@@ -527,16 +563,16 @@ export class Device_GL implements SwapChain, Device {
         return this.EXT_texture_norm16.RG16_EXT;
       case Format.U16_RGBA_NORM:
         return this.EXT_texture_norm16.RGBA16_EXT;
-      // case Format.U16_RGBA_5551:
-      //   return GL.RGB5_A1;
+      case Format.U16_RGBA_5551:
+        return GL.RGB5_A1;
+      case Format.U16_RGB_565:
+        return GL.RGB565;
       case Format.U32_R:
         return GL.R32UI;
       case Format.S8_RGBA_NORM:
         return GL.RGBA8_SNORM;
       case Format.S8_RG_NORM:
         return GL.RG8_SNORM;
-      case Format.U16_RGBA_5551:
-        return GL.UNSIGNED_SHORT_5_5_5_1;
       case Format.BC1:
         return this.WEBGL_compressed_texture_s3tc.COMPRESSED_RGBA_S3TC_DXT1_EXT;
       case Format.BC1_SRGB:
@@ -770,16 +806,38 @@ export class Device_GL implements SwapChain, Device {
   }
 
   createProgram(descriptor: ProgramDescriptor): Program_GL {
-    descriptor.ensurePreprocessed(this.queryVendorInfo());
-    return this.createProgramSimple(descriptor);
+    const rawVertexGLSL = descriptor.vertex?.glsl;
+    // preprocess GLSL first
+    if (descriptor.vertex.glsl) {
+      descriptor.vertex.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'vert',
+        descriptor.vertex.glsl,
+      );
+    }
+    if (descriptor.fragment.glsl) {
+      descriptor.fragment.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'frag',
+        descriptor.fragment.glsl,
+      );
+    }
+    return this.createProgramSimple(descriptor, rawVertexGLSL);
   }
 
-  createProgramSimple(descriptor: ProgramDescriptor): Program_GL {
-    return new Program_GL({
-      id: this.getNextUniqueId(),
-      device: this,
-      descriptor,
-    });
+  private createProgramSimple(
+    descriptor: ProgramDescriptor,
+    rawVertexGLSL: string,
+  ): Program_GL {
+    const program = new Program_GL(
+      {
+        id: this.getNextUniqueId(),
+        device: this,
+        descriptor,
+      },
+      rawVertexGLSL,
+    );
+    return program;
   }
 
   createBindings(descriptor: BindingsDescriptor): Bindings {
@@ -795,24 +853,6 @@ export class Device_GL implements SwapChain, Device {
       id: this.getNextUniqueId(),
       device: this,
       descriptor,
-    });
-  }
-
-  createInputState(
-    _inputLayout: InputLayout,
-    vertexBuffers: (VertexBufferDescriptor | null)[],
-    indexBufferBinding: IndexBufferDescriptor | null,
-    program: Program,
-  ): InputState {
-    const inputLayout = _inputLayout as InputLayout_GL;
-
-    return new InputState_GL({
-      id: this.getNextUniqueId(),
-      device: this,
-      inputLayout,
-      vertexBuffers,
-      indexBufferBinding,
-      program: program as Program_GL,
     });
   }
 
@@ -856,9 +896,43 @@ export class Device_GL implements SwapChain, Device {
     });
   }
 
+  private formatRenderPassDescriptor(descriptor: RenderPassDescriptor) {
+    const { colorAttachment } = descriptor;
+
+    descriptor.depthClearValue = descriptor.depthClearValue ?? 'load';
+    descriptor.stencilClearValue = descriptor.stencilClearValue ?? 'load';
+
+    for (let i = 0; i < colorAttachment.length; i++) {
+      if (!descriptor.colorAttachmentLevel) {
+        descriptor.colorAttachmentLevel = [];
+      }
+      descriptor.colorAttachmentLevel[i] =
+        descriptor.colorAttachmentLevel[i] ?? 0;
+
+      if (!descriptor.colorResolveToLevel) {
+        descriptor.colorResolveToLevel = [];
+      }
+      descriptor.colorResolveToLevel[i] =
+        descriptor.colorResolveToLevel[i] ?? 0;
+
+      if (!descriptor.colorClearColor) {
+        descriptor.colorClearColor = [];
+      }
+      descriptor.colorClearColor[i] = descriptor.colorClearColor[i] ?? 'load';
+
+      if (!descriptor.colorStore) {
+        descriptor.colorStore = [];
+      }
+      descriptor.colorStore[i] = descriptor.colorStore[i] ?? false;
+    }
+  }
+
   createRenderPass(descriptor: RenderPassDescriptor): RenderPass {
     assert(this.currentRenderPassDescriptor === null);
     this.currentRenderPassDescriptor = descriptor;
+
+    // Format renderpass descriptor
+    this.formatRenderPassDescriptor(descriptor);
 
     const {
       colorAttachment,
@@ -1082,8 +1156,8 @@ export class Device_GL implements SwapChain, Device {
     } else if (o.type === ResourceType.RenderTarget) {
       const { gl_renderbuffer } = o as RenderTarget_GL;
       if (gl_renderbuffer !== null) assignPlatformName(gl_renderbuffer, name);
-    } else if (o.type === ResourceType.InputState) {
-      assignPlatformName((o as InputState_GL).vao, name);
+    } else if (o.type === ResourceType.InputLayout) {
+      assignPlatformName((o as InputLayout_GL).vao, name);
     }
   }
 
@@ -1097,15 +1171,21 @@ export class Device_GL implements SwapChain, Device {
       this.resourceCreationTracker.checkForLeaks();
   }
 
-  pushDebugGroup(debugGroup: DebugGroup): void {
-    this.debugGroupStack.push(debugGroup);
-  }
+  pushDebugGroup(name: string): void {}
 
-  popDebugGroup(): void {
-    this.debugGroupStack.pop();
-  }
+  popDebugGroup(): void {}
 
-  programPatched(o: Program, descriptor: ProgramDescriptorSimple): void {
+  insertDebugMarker(markerLabel: string) {}
+
+  // pushDebugGroup(debugGroup: DebugGroup): void {
+  //   this.debugGroupStack.push(debugGroup);
+  // }
+
+  // popDebugGroup(): void {
+  //   this.debugGroupStack.pop();
+  // }
+
+  programPatched(o: Program, descriptor: ProgramDescriptor): void {
     assert(this.shaderDebug);
 
     // const program = o as Program_GL;
@@ -1141,7 +1221,7 @@ export class Device_GL implements SwapChain, Device {
       this.debugGroupStack[i].drawCallCount += count;
   }
 
-  debugGroupStatisticsBufferUpload(count = 1): void {
+  private debugGroupStatisticsBufferUpload(count = 1): void {
     for (let i = this.debugGroupStack.length - 1; i >= 0; i--)
       this.debugGroupStack[i].bufferUploadCount += count;
   }
@@ -1177,17 +1257,14 @@ export class Device_GL implements SwapChain, Device {
       const descriptor = program.descriptor;
 
       if (
-        !this.reportShaderError(
-          program.gl_shader_vert,
-          descriptor.preprocessedVert,
-        )
+        !this.reportShaderError(program.gl_shader_vert, descriptor.vertex.glsl)
       )
         return;
 
       if (
         !this.reportShaderError(
           program.gl_shader_frag,
-          descriptor.preprocessedFrag,
+          descriptor.fragment.glsl,
         )
       )
         return;
@@ -1312,7 +1389,7 @@ export class Device_GL implements SwapChain, Device {
       }
     }
 
-    if (this.currentDepthStencilAttachment !== null) {
+    if (this.currentDepthStencilAttachment) {
       if (sampleCount === -1) {
         sampleCount = this.currentDepthStencilAttachment.sampleCount;
         width = this.currentDepthStencilAttachment.width;
@@ -1444,7 +1521,7 @@ export class Device_GL implements SwapChain, Device {
     if (this.currentDepthStencilResolveTo !== depthStencilResolveTo) {
       this.currentDepthStencilResolveTo = depthStencilResolveTo as Texture_GL;
 
-      if (depthStencilResolveTo !== null) {
+      if (depthStencilResolveTo) {
         this.resolveDepthStencilAttachmentsChanged = true;
       }
     }
@@ -1461,10 +1538,7 @@ export class Device_GL implements SwapChain, Device {
 
     if (this.OES_draw_buffers_indexed !== null) {
       const attachment = this.currentMegaState.attachmentsState[slot];
-      if (
-        attachment &&
-        attachment.channelWriteMask !== ChannelWriteMask.AllChannels
-      ) {
+      if (attachment && attachment.channelWriteMask !== ChannelWriteMask.ALL) {
         this.OES_draw_buffers_indexed.colorMaskiOES(
           slot,
           true,
@@ -1472,16 +1546,13 @@ export class Device_GL implements SwapChain, Device {
           true,
           true,
         );
-        attachment.channelWriteMask = ChannelWriteMask.AllChannels;
+        attachment.channelWriteMask = ChannelWriteMask.ALL;
       }
     } else {
       const attachment = this.currentMegaState.attachmentsState[0];
-      if (
-        attachment &&
-        attachment.channelWriteMask !== ChannelWriteMask.AllChannels
-      ) {
+      if (attachment && attachment.channelWriteMask !== ChannelWriteMask.ALL) {
         gl.colorMask(true, true, true, true);
-        attachment.channelWriteMask = ChannelWriteMask.AllChannels;
+        attachment.channelWriteMask = ChannelWriteMask.ALL;
       }
     }
 
@@ -1497,13 +1568,13 @@ export class Device_GL implements SwapChain, Device {
   }
 
   private setRenderPassParametersClearDepthStencil(
-    depthClearValue: number | 'load',
-    stencilClearValue: number | 'load',
+    depthClearValue: number | 'load' = 'load',
+    stencilClearValue: number | 'load' = 'load',
   ): void {
     const gl = this.gl;
 
     if (depthClearValue !== 'load') {
-      assert(this.currentDepthStencilAttachment !== null);
+      assert(!!this.currentDepthStencilAttachment);
       // GL clears obey the masks... bad API or worst API?
       if (!this.currentMegaState.depthWrite) {
         gl.depthMask(true);
@@ -1517,7 +1588,7 @@ export class Device_GL implements SwapChain, Device {
       }
     }
     if (stencilClearValue !== 'load') {
-      assert(this.currentDepthStencilAttachment !== null);
+      assert(!!this.currentDepthStencilAttachment);
       if (!this.currentMegaState.stencilWrite) {
         gl.enable(gl.STENCIL_TEST);
         gl.stencilMask(0xff);
@@ -1668,10 +1739,10 @@ export class Device_GL implements SwapChain, Device {
     ) {
       dbi.colorMaskiOES(
         i,
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Red),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Green),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Blue),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Alpha),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.RED),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.GREEN),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.BLUE),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.ALPHA),
       );
       currentAttachmentState.channelWriteMask =
         newAttachmentState.channelWriteMask;
@@ -1747,10 +1818,10 @@ export class Device_GL implements SwapChain, Device {
       newAttachmentState.channelWriteMask
     ) {
       gl.colorMask(
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Red),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Green),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Blue),
-        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.Alpha),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.RED),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.GREEN),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.BLUE),
+        !!(newAttachmentState.channelWriteMask & ChannelWriteMask.ALPHA),
       );
       currentAttachmentState.channelWriteMask =
         newAttachmentState.channelWriteMask;
@@ -1850,12 +1921,12 @@ export class Device_GL implements SwapChain, Device {
       currentMegaState.depthCompare = newMegaState.depthCompare;
     }
 
-    if (currentMegaState.depthWrite !== newMegaState.depthWrite) {
+    if (!!currentMegaState.depthWrite !== !!newMegaState.depthWrite) {
       gl.depthMask(newMegaState.depthWrite);
       currentMegaState.depthWrite = newMegaState.depthWrite;
     }
 
-    if (currentMegaState.stencilWrite !== newMegaState.stencilWrite) {
+    if (!!currentMegaState.stencilWrite !== !!newMegaState.stencilWrite) {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/stencilMask
       gl.stencilMask(newMegaState.stencilWrite ? 0xff : 0x00);
       currentMegaState.stencilWrite = newMegaState.stencilWrite;
@@ -1875,17 +1946,17 @@ export class Device_GL implements SwapChain, Device {
     }
 
     if (currentMegaState.cullMode !== newMegaState.cullMode) {
-      if (currentMegaState.cullMode === CullMode.None) {
+      if (currentMegaState.cullMode === CullMode.NONE) {
         gl.enable(gl.CULL_FACE);
-      } else if (newMegaState.cullMode === CullMode.None) {
+      } else if (newMegaState.cullMode === CullMode.NONE) {
         gl.disable(gl.CULL_FACE);
       }
 
-      if (newMegaState.cullMode === CullMode.Back) {
+      if (newMegaState.cullMode === CullMode.BACK) {
         gl.cullFace(gl.BACK);
-      } else if (newMegaState.cullMode === CullMode.Front) {
+      } else if (newMegaState.cullMode === CullMode.FRONT) {
         gl.cullFace(gl.FRONT);
-      } else if (newMegaState.cullMode === CullMode.FrontAndBack) {
+      } else if (newMegaState.cullMode === CullMode.FRONT_AND_BACK) {
         gl.cullFace(gl.FRONT_AND_BACK);
       }
       currentMegaState.cullMode = newMegaState.cullMode;
@@ -1914,7 +1985,7 @@ export class Device_GL implements SwapChain, Device {
       assert(attachment.pixelFormat === pipeline.colorAttachmentFormats[i]);
     }
 
-    if (this.currentDepthStencilAttachment !== null) {
+    if (this.currentDepthStencilAttachment) {
       assert(
         this.currentDepthStencilAttachment.pixelFormat ===
           pipeline.depthStencilAttachmentFormat,
@@ -1944,7 +2015,7 @@ export class Device_GL implements SwapChain, Device {
       const deviceProgram = program.descriptor;
 
       const uniformBlocks = findall(
-        deviceProgram.preprocessedVert,
+        deviceProgram.vertex.glsl,
         /uniform (\w+) {([^]*?)}/g,
       );
 
@@ -1961,7 +2032,7 @@ export class Device_GL implements SwapChain, Device {
       }
 
       const samplers = findall(
-        deviceProgram.preprocessedVert,
+        deviceProgram.vertex.glsl,
         /^uniform .*sampler\S+ (\w+);\s* \/\/ BINDING=(\d+)$/gm,
       );
       for (let i = 0; i < samplers.length; i++) {
@@ -1974,17 +2045,70 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
-  setInputState(inputState_: InputState | null): void {
-    const inputState = inputState_ as InputState_GL;
-    this.currentInputState = inputState;
-    if (this.currentInputState !== null) {
+  setVertexInput(
+    inputLayout_: InputLayout | null,
+    vertexBuffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
+  ): void {
+    if (inputLayout_ !== null) {
+      assert(this.currentPipeline.inputLayout === inputLayout_);
+      const inputLayout = inputLayout_ as InputLayout_GL;
+
+      this.bindVAO(inputLayout.vao);
+
+      const gl = this.gl;
+      for (let i = 0; i < inputLayout.vertexAttributeDescriptors.length; i++) {
+        const attr = inputLayout.vertexAttributeDescriptors[i];
+
+        // find location by name in WebGL1
+        const location = isWebGL2(gl)
+          ? attr.location
+          : inputLayout.program.attributes[attr.location]?.location;
+
+        if (!isNil(location)) {
+          const vertexBuffer = vertexBuffers![attr.bufferIndex];
+
+          if (vertexBuffer === null) continue;
+
+          const format = inputLayout.vertexBufferFormats[i];
+
+          gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            getPlatformBuffer(vertexBuffer.buffer),
+          );
+
+          const bufferOffset =
+            (vertexBuffer.byteOffset || 0) + attr.bufferByteOffset;
+
+          const inputLayoutBuffer =
+            inputLayout.vertexBufferDescriptors[attr.bufferIndex]!;
+          gl.vertexAttribPointer(
+            location,
+            format.size,
+            format.type,
+            format.normalized,
+            inputLayoutBuffer.byteStride,
+            bufferOffset,
+          );
+        }
+      }
+
       assert(
-        this.currentPipeline.inputLayout === this.currentInputState.inputLayout,
+        (indexBuffer !== null) === (inputLayout.indexBufferFormat !== null),
       );
-      this.bindVAO(this.currentInputState.vao);
+      if (indexBuffer !== null) {
+        const buffer = indexBuffer.buffer as Buffer_GL;
+        assert(buffer.usage === BufferUsage.INDEX);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, getPlatformBuffer(buffer));
+        this.currentIndexBufferByteOffset = indexBuffer.byteOffset;
+      } else {
+        this.currentIndexBufferByteOffset = null;
+      }
     } else {
       assert(this.currentPipeline.inputLayout === null);
+      assert(indexBuffer === null);
       this.bindVAO(null);
+      this.currentIndexBufferByteOffset = 0;
     }
   }
 
@@ -1996,58 +2120,86 @@ export class Device_GL implements SwapChain, Device {
     this.applyStencil();
   }
 
-  draw(count: number, firstVertex: number): void {
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-draw
+   */
+  draw(
+    vertexCount: number,
+    instanceCount?: number,
+    firstVertex?: number,
+    firstInstance?: number,
+  ) {
     const gl = this.gl;
     const pipeline = this.currentPipeline;
-    gl.drawArrays(pipeline.drawMode, firstVertex, count);
-    this.debugGroupStatisticsDrawCall();
-    this.debugGroupStatisticsTriangles(count / 3);
-  }
-
-  drawIndexed(count: number, firstIndex: number): void {
-    const gl = this.gl;
-    const pipeline = this.currentPipeline;
-    const inputState = this.currentInputState;
-    const byteOffset =
-      assertExists(inputState.indexBufferByteOffset) +
-      firstIndex * assertExists(inputState.indexBufferCompByteSize);
-    gl.drawElements(
-      pipeline.drawMode,
-      count,
-      assertExists(inputState.indexBufferType),
-      byteOffset,
-    );
-    this.debugGroupStatisticsDrawCall();
-    this.debugGroupStatisticsTriangles(count / 3);
-  }
-
-  drawIndexedInstanced(
-    count: number,
-    firstIndex: number,
-    instanceCount: number,
-  ): void {
-    const gl = this.gl;
-    const pipeline = this.currentPipeline;
-    const inputState = this.currentInputState;
-    const byteOffset =
-      assertExists(inputState.indexBufferByteOffset) +
-      firstIndex * assertExists(inputState.indexBufferCompByteSize);
-
-    const params: [number, number, number, number, number] = [
-      pipeline.drawMode,
-      count,
-      assertExists(inputState.indexBufferType),
-      byteOffset,
-      instanceCount,
-    ];
-    if (isWebGL2(gl)) {
-      gl.drawElementsInstanced(...params);
+    if (instanceCount) {
+      const params: [number, number, number, number] = [
+        pipeline.drawMode,
+        firstVertex || 0,
+        vertexCount,
+        instanceCount,
+      ];
+      if (isWebGL2(gl)) {
+        gl.drawArraysInstanced(...params);
+      } else {
+        this.ANGLE_instanced_arrays.drawArraysInstancedANGLE(...params);
+      }
     } else {
-      this.ANGLE_instanced_arrays.drawElementsInstancedANGLE(...params);
+      gl.drawArrays(pipeline.drawMode, firstVertex, vertexCount);
     }
 
     this.debugGroupStatisticsDrawCall();
-    this.debugGroupStatisticsTriangles((count / 3) * instanceCount);
+    this.debugGroupStatisticsTriangles(
+      (vertexCount / 3) * Math.max(instanceCount, 1),
+    );
+  }
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindexed
+   */
+  drawIndexed(
+    indexCount: number,
+    instanceCount?: number,
+    firstIndex?: number,
+    baseVertex?: number,
+    firstInstance?: number,
+  ) {
+    const gl = this.gl;
+    const pipeline = this.currentPipeline,
+      inputLayout = assertExists(pipeline.inputLayout);
+    const byteOffset =
+      assertExists(this.currentIndexBufferByteOffset) +
+      firstIndex * inputLayout.indexBufferCompByteSize!;
+    if (instanceCount) {
+      const params: [number, number, number, number, number] = [
+        pipeline.drawMode,
+        indexCount,
+        inputLayout.indexBufferType!,
+        byteOffset,
+        instanceCount,
+      ];
+      if (isWebGL2(gl)) {
+        gl.drawElementsInstanced(...params);
+      } else {
+        this.ANGLE_instanced_arrays.drawElementsInstancedANGLE(...params);
+      }
+    } else {
+      gl.drawElements(
+        pipeline.drawMode,
+        indexCount,
+        inputLayout.indexBufferType!,
+        byteOffset,
+      );
+    }
+
+    this.debugGroupStatisticsDrawCall();
+    this.debugGroupStatisticsTriangles(
+      (indexCount / 3) * Math.max(instanceCount, 1),
+    );
+  }
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
+   */
+  drawIndirect(indirectBuffer: Buffer, indirectOffset: number) {
+    // TODO
   }
 
   beginOcclusionQuery(dstOffs: number): void {
@@ -2067,10 +2219,6 @@ export class Device_GL implements SwapChain, Device {
       gl.endQuery(queryPool.gl_query_type);
     }
   }
-
-  beginDebugGroup(name: string): void {}
-
-  endDebugGroup(): void {}
 
   pipelineQueryReady(o: RenderPipeline): boolean {
     const pipeline = o as RenderPipeline_GL;
@@ -2161,7 +2309,7 @@ export class Device_GL implements SwapChain, Device {
           didUnbindDraw = true;
         }
 
-        if (!this.currentRenderPassDescriptor!.colorStore[i]) {
+        if (!this.currentRenderPassDescriptor.colorStore[i]) {
           if (!didBindRead) {
             gl.bindFramebuffer(
               isWebGL2(gl) ? GL.READ_FRAMEBUFFER : GL.FRAMEBUFFER,
@@ -2193,11 +2341,11 @@ export class Device_GL implements SwapChain, Device {
     this.resolveColorAttachmentsChanged = false;
 
     const depthStencilResolveFrom = this.currentDepthStencilAttachment;
-    if (depthStencilResolveFrom !== null) {
+    if (depthStencilResolveFrom) {
       const depthStencilResolveTo = this.currentDepthStencilResolveTo;
       let didBindRead = false;
 
-      if (depthStencilResolveTo !== null) {
+      if (depthStencilResolveTo) {
         assert(
           depthStencilResolveFrom.width === depthStencilResolveTo.width &&
             depthStencilResolveFrom.height === depthStencilResolveTo.height,
@@ -2301,7 +2449,7 @@ export class Device_GL implements SwapChain, Device {
   }
 
   private applyStencil(): void {
-    if (this.currentStencilRef === null) {
+    if (isNil(this.currentStencilRef)) {
       return;
     }
     this.gl.stencilFunc(
@@ -2332,14 +2480,23 @@ export class Device_GL implements SwapChain, Device {
     resolveTo: Texture_GL,
   ) {
     if (!this.blitRenderPipeline) {
-      const vertexBuffer = makeDataBuffer(
+      const program = new CopyProgram();
+      this.blitProgram = this.createProgram({
+        vertex: {
+          glsl: program.vert,
+        },
+        fragment: {
+          glsl: program.frag,
+        },
+      });
+      this.blitVertexBuffer = makeDataBuffer(
         this,
         BufferUsage.VERTEX | BufferUsage.COPY_DST,
         new Float32Array([-4, -4, 4, -4, 0, 4]).buffer,
       );
-      const inputLayout = this.createInputLayout({
+      this.blitInputLayout = this.createInputLayout({
         vertexBufferDescriptors: [
-          { byteStride: 4 * 2, frequency: VertexBufferFrequency.PerVertex },
+          { byteStride: 4 * 2, stepMode: VertexStepMode.VERTEX },
         ],
         vertexAttributeDescriptors: [
           {
@@ -2350,47 +2507,34 @@ export class Device_GL implements SwapChain, Device {
           },
         ],
         indexBufferFormat: null,
+        program: this.blitProgram,
       });
       const bindingLayouts: BindingLayoutDescriptor[] = [
         { numSamplers: 1, numUniformBuffers: 0 },
       ];
-      const program = this.createProgram({
-        ...preprocessProgramObj_GLSL(this, new CopyProgram()),
-        ensurePreprocessed: () => {},
-        associate: () => {},
-      });
-      this.blitInputState = this.createInputState(
-        inputLayout,
-        [{ buffer: vertexBuffer, byteOffset: 0 }],
-        null,
-        program,
-      );
       this.blitRenderPipeline = this.createRenderPipeline({
-        topology: PrimitiveTopology.Triangles,
+        topology: PrimitiveTopology.TRIANGLES,
         sampleCount: 1,
-        program,
+        program: this.blitProgram,
         bindingLayouts,
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
-        inputLayout,
-        // megaStateDescriptor: copyMegaState(defaultMegaState),
-        megaStateDescriptor: this.currentMegaState,
+        inputLayout: this.blitInputLayout,
+        megaStateDescriptor: copyMegaState(defaultMegaState),
       });
 
-      // const colorTexture = this.currentColorAttachments[0].texture;
       this.blitBindings = this.createBindings({
         bindingLayout: bindingLayouts[0],
         samplerBindings: [
           {
             sampler: null,
             texture: resolveFrom.texture,
-            lateBinding: null,
           },
         ],
         uniformBufferBindings: [],
       });
 
-      program.setUniforms({
+      this.blitProgram.setUniformsLegacy({
         u_Texture: resolveFrom,
       });
     }
@@ -2403,23 +2547,18 @@ export class Device_GL implements SwapChain, Device {
 
     const blitRenderPass = this.createRenderPass({
       colorAttachment: [resolveFrom],
-      colorResolveToLevel: [0],
       colorResolveTo: [resolveTo],
       colorClearColor: [TransparentWhite],
-      colorStore: [true],
-      colorAttachmentLevel: [0],
-      depthStencilAttachment: null,
-      depthStencilResolveTo: null,
-      depthStencilStore: true,
-      depthClearValue: 'load',
-      stencilClearValue: 'load',
-      occlusionQueryPool: null,
     });
 
     const { width, height } = this.getCanvas() as HTMLCanvasElement;
     blitRenderPass.setPipeline(this.blitRenderPipeline);
     blitRenderPass.setBindings(0, this.blitBindings, [0]);
-    blitRenderPass.setInputState(this.blitInputState);
+    blitRenderPass.setVertexInput(
+      this.blitInputLayout,
+      [{ buffer: this.blitVertexBuffer }],
+      null,
+    );
     blitRenderPass.setViewport(0, 0, width, height);
 
     // disable blending for blit

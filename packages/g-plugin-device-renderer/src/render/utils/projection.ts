@@ -1,14 +1,48 @@
 import { mat4 } from 'gl-matrix';
 import { ClipSpaceNearZ } from '../../platform';
 
-const mtxOpenGLFromD3D = mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, -1, 1);
+const mtxOpenGLFromD3D = mat4.fromValues(
+  1,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  2,
+  0,
+  0,
+  0,
+  -1,
+  1,
+);
 
 // Converts a projection matrix from D3D-style Z range [0, 1] to OpenGL-style Z range [-1, 1]
 function projectionMatrixOpenGLFromD3D(m: mat4): void {
   mat4.mul(m, mtxOpenGLFromD3D, m);
 }
 
-const mtxD3DFromOpenGL = mat4.fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 1);
+const mtxD3DFromOpenGL = mat4.fromValues(
+  1,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0.5,
+  0,
+  0,
+  0,
+  0.5,
+  1,
+);
 
 // Converts a projection matrix from OpenGL-style Z range [-1, 1] to D3D-style Z range [0, 1]
 function projectionMatrixD3DFromOpenGL(m: mat4): void {
@@ -46,6 +80,6 @@ export function projectionMatrixConvertClipSpaceNearZ(
 ): void {
   if (dst === src) return;
 
-  if (dst === ClipSpaceNearZ.NegativeOne) projectionMatrixOpenGLFromD3D(m);
-  else if (dst === ClipSpaceNearZ.Zero) projectionMatrixD3DFromOpenGL(m);
+  if (dst === ClipSpaceNearZ.NEGATIVE_ONE) projectionMatrixOpenGLFromD3D(m);
+  else if (dst === ClipSpaceNearZ.ZERO) projectionMatrixD3DFromOpenGL(m);
 }

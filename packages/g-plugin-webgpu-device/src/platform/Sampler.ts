@@ -36,16 +36,16 @@ export class Sampler_WebGPU extends ResourceBase_WebGPU implements Sampler {
 
     const lodMinClamp = descriptor.minLOD;
     const lodMaxClamp =
-      descriptor.mipFilter === MipFilterMode.NoMip
+      descriptor.mipFilter === MipFilterMode.NO_MIP
         ? descriptor.minLOD
         : descriptor.maxLOD;
 
     const maxAnisotropy = descriptor.maxAnisotropy ?? 1;
     if (maxAnisotropy > 1)
       assert(
-        descriptor.minFilter === TexFilterMode.Bilinear &&
-          descriptor.magFilter === TexFilterMode.Bilinear &&
-          descriptor.mipFilter === MipFilterMode.Linear,
+        descriptor.minFilter === TexFilterMode.BILINEAR &&
+          descriptor.magFilter === TexFilterMode.BILINEAR &&
+          descriptor.mipFilter === MipFilterMode.LINEAR,
       );
 
     this.gpuSampler = this.device.device.createSampler({

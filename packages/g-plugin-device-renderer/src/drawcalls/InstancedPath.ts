@@ -17,7 +17,7 @@ import {
 import { mat4 } from 'gl-matrix';
 import { arcToCubic } from '@antv/util';
 import earcut from 'earcut';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
 import { enumToObject } from '../utils/enum';
@@ -222,7 +222,7 @@ export class InstancedPathDrawcall extends Instanced {
       this.geometry.setVertexBuffer({
         bufferIndex: LineVertexAttributeBufferIndex.PACKED,
         byteStride: 4 * (4 + 4 + 4 + 4),
-        frequency: VertexBufferFrequency.PerInstance,
+        stepMode: VertexStepMode.INSTANCE,
         attributes: [
           {
             format: Format.F32_RGB,
@@ -260,7 +260,7 @@ export class InstancedPathDrawcall extends Instanced {
       this.geometry.setVertexBuffer({
         bufferIndex: LineVertexAttributeBufferIndex.VERTEX_NUM,
         byteStride: 4 * 1,
-        frequency: VertexBufferFrequency.PerInstance,
+        stepMode: VertexStepMode.INSTANCE,
         attributes: [
           {
             format: Format.F32_R,
@@ -275,7 +275,7 @@ export class InstancedPathDrawcall extends Instanced {
       this.geometry.setVertexBuffer({
         bufferIndex: LineVertexAttributeBufferIndex.TRAVEL,
         byteStride: 4 * 1,
-        frequency: VertexBufferFrequency.PerInstance,
+        stepMode: VertexStepMode.INSTANCE,
         attributes: [
           {
             format: Format.F32_R,
@@ -294,7 +294,7 @@ export class InstancedPathDrawcall extends Instanced {
       this.geometry.setVertexBuffer({
         bufferIndex: LineVertexAttributeBufferIndex.DASH,
         byteStride: 4 * 4,
-        frequency: VertexBufferFrequency.PerInstance,
+        stepMode: VertexStepMode.INSTANCE,
         attributes: [
           {
             format: Format.F32_RGBA,

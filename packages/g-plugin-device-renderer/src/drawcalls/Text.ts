@@ -6,7 +6,7 @@ import type {
 } from '@antv/g-lite';
 import { isCSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
-import { CullMode, Format, VertexBufferFrequency } from '../platform';
+import { CullMode, Format, VertexStepMode } from '../platform';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/text.frag';
 import vert from '../shader/text.vert';
@@ -178,7 +178,7 @@ export class TextDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.INSTANCED,
       byteStride: 4 * (4 * 4 + 4 + 4 + 4 + 4), // 32
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RGBA,
@@ -227,7 +227,7 @@ export class TextDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.TEX,
       byteStride: 4 * (2 + 2),
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,
@@ -247,7 +247,7 @@ export class TextDrawcall extends Instanced {
   protected createMaterial(objects: DisplayObject[]): void {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
-    this.material.cullMode = CullMode.Back;
+    this.material.cullMode = CullMode.BACK;
     this.material.defines = {
       ...this.material.defines,
       ...enumToObject(TextVertexAttributeLocation),

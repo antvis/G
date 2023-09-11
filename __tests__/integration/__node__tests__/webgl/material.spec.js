@@ -81,7 +81,7 @@ describe('Render custom material with g-webgl', () => {
     bufferGeometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.PerVertex,
+      frequency: VertexBufferFrequency.VERTEX,
       attributes: [
         {
           format: Format.F32_RGB,

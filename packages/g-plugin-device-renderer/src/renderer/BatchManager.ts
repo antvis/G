@@ -49,6 +49,14 @@ export class BatchManager {
 
   private stencilRefCache: Record<number, number> = {};
 
+  destroy() {
+    this.drawcalls.forEach((drawcall) => {
+      drawcall.destroy();
+    });
+    this.drawcalls = [];
+    this.pendingUpdatePatches = {};
+  }
+
   render(list: RenderInstList, isPicking = false) {
     if (!isPicking) {
       this.updatePendingPatches();
@@ -155,7 +163,13 @@ export class BatchManager {
           }
 
           if (mesh.objects.length === 0) {
-            this.drawcalls.splice(this.drawcalls.indexOf(mesh), 1);
+            const deletedDrawcalls = this.drawcalls.splice(
+              this.drawcalls.indexOf(mesh),
+              1,
+            );
+            deletedDrawcalls.forEach((deletedDrawcall) => {
+              deletedDrawcall.destroy();
+            });
           }
         }
       });

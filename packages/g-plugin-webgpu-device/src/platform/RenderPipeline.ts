@@ -28,7 +28,7 @@ export class RenderPipeline_WebGPU
     super({ id, device });
 
     this.descriptor = descriptor;
-    this.device._createRenderPipeline(this, false);
+    this.device['createRenderPipelineInternal'](this, false);
   }
 
   getBindGroupLayout(index: number) {

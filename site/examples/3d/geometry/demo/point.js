@@ -4,7 +4,7 @@ import {
   PointMaterial,
   BufferGeometry,
   Mesh,
-  VertexBufferFrequency,
+  VertexStepMode,
   Format,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
@@ -46,7 +46,7 @@ const canvas = new Canvas({
   bufferGeometry.setVertexBuffer({
     bufferIndex: VertexAttributeBufferIndex.POSITION,
     byteStride: 4 * 3,
-    frequency: VertexBufferFrequency.PerVertex,
+    stepMode: VertexStepMode.VERTEX,
     attributes: [
       {
         format: Format.F32_RGB,
@@ -63,7 +63,7 @@ const canvas = new Canvas({
   // draw 4 vertices
   bufferGeometry.vertexCount = 4;
   // use GL_POINT instead of GL_TRIANGLES
-  bufferGeometry.drawMode = PrimitiveTopology.Points;
+  bufferGeometry.drawMode = PrimitiveTopology.POINTS;
 
   // load texture with URL
   const map = plugin.loadTexture(

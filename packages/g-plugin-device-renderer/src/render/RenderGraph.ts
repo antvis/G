@@ -572,7 +572,7 @@ export class RenderGraph implements RGGraphBuilder {
     this.currentPass = pass;
 
     const renderPass = this.device.createRenderPass(pass.descriptor);
-    renderPass.beginDebugGroup(pass.debugName);
+    renderPass.pushDebugGroup(pass.debugName);
 
     renderPass.setViewport(
       pass.viewportX,
@@ -583,7 +583,7 @@ export class RenderGraph implements RGGraphBuilder {
 
     if (pass.execFunc !== null) pass.execFunc(renderPass, this);
 
-    renderPass.endDebugGroup();
+    renderPass.popDebugGroup();
     this.device.submitPass(renderPass);
 
     if (pass.postFunc !== null) pass.postFunc(this);

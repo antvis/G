@@ -8,7 +8,7 @@ import type {
   ParsedRectStyleProps,
 } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
-import { Format, VertexBufferFrequency } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';
 import { enumToObject } from '../utils/enum';
@@ -92,7 +92,7 @@ export class SDFDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 4,
-      frequency: VertexBufferFrequency.PerVertex,
+      stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,
@@ -112,7 +112,7 @@ export class SDFDrawcall extends Instanced {
     this.geometry.setVertexBuffer({
       bufferIndex: SDFVertexAttributeBufferIndex.PACKED_STYLE,
       byteStride: 4 * 6,
-      frequency: VertexBufferFrequency.PerInstance,
+      stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RG,

@@ -21,6 +21,7 @@ export enum FormatTypeFlags {
 
   // Special-case packed texture formats.
   U16_PACKED_5551 = 0x61,
+  U16_PACKED_565,
 
   // Depth/stencil texture formats.
   D24 = 0x81,
@@ -215,6 +216,11 @@ export enum Format {
   U16_RGBA_5551 = makeFormat(
     FormatTypeFlags.U16_PACKED_5551,
     FormatCompFlags.RGBA,
+    FormatFlags.Normalized,
+  ),
+  U16_RGB_565 = makeFormat(
+    FormatTypeFlags.U16_PACKED_565,
+    FormatCompFlags.RGB,
     FormatFlags.Normalized,
   ),
 

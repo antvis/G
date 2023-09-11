@@ -7,7 +7,7 @@ import type { IDevice_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
 import {
   translateIndexFormat,
-  translateVertexBufferFrequency,
+  translateVertexStepMode,
   translateVertexFormat,
 } from './utils';
 
@@ -50,7 +50,7 @@ export class InputLayout_WebGPU
           descriptor.vertexBufferDescriptors[attr.bufferIndex],
         );
         const arrayStride = b.byteStride;
-        const stepMode = translateVertexBufferFrequency(b.frequency);
+        const stepMode = translateVertexStepMode(b.stepMode);
         const attributes: GPUVertexAttribute[] = [attribute];
         buffers[attr.bufferIndex] = { arrayStride, stepMode, attributes };
       }

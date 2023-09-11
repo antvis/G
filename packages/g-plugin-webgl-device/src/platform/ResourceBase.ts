@@ -22,16 +22,16 @@ export class ResourceBase_GL
     this.id = id;
     this.device = device;
 
-    if (this.device.resourceCreationTracker !== null) {
-      this.device.resourceCreationTracker.trackResourceCreated(
+    if (this.device['resourceCreationTracker'] !== null) {
+      this.device['resourceCreationTracker'].trackResourceCreated(
         this as unknown as Resource,
       );
     }
   }
 
   destroy() {
-    if (this.device.resourceCreationTracker !== null) {
-      this.device.resourceCreationTracker.trackResourceDestroyed(
+    if (this.device['resourceCreationTracker'] !== null) {
+      this.device['resourceCreationTracker'].trackResourceDestroyed(
         this as unknown as Resource,
       );
     }
