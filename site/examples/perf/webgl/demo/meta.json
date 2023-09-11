@@ -1,6 +1,13 @@
 {
   "demos": [
     {
+      "filename": "circle-zoomin.js",
+      "title": {
+        "zh": "缩放的 Circle",
+        "en": "Zoom in Circle"
+      }
+    },
+    {
       "filename": "circle-linedash.js",
       "title": {
         "zh": "虚线描边的 Circle",
