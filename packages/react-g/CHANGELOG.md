@@ -1,5 +1,12 @@
 # @antv/react-g
 
+## 1.10.15
+
+### Patch Changes
+
+-   c54cc6fb: Antialiasing SDF & Text.
+-   cc629c5f: Remove console.log
+
 ## 1.10.14
 
 ### Patch Changes
