@@ -63,9 +63,6 @@ export class RGRenderTarget {
   }
 
   destroy(): void {
-    if (this.texture !== null) {
-      this.texture.destroy();
-    }
     this.attachment.destroy();
   }
 }
