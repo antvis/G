@@ -250,22 +250,16 @@ export class RenderPass_WebGPU implements RenderPass {
     }
   }
 
-  setBindings(
-    bindingLayoutIndex: number,
-    bindings_: Bindings,
-    dynamicByteOffsets: number[],
-  ): void {
+  setBindings(bindings_: Bindings, dynamicByteOffsets?: number[]): void {
     const bindings = bindings_ as Bindings_WebGPU;
     this.gpuRenderPassEncoder.setBindGroup(
-      bindingLayoutIndex + 0,
+      0,
       bindings.gpuBindGroup[0],
-      dynamicByteOffsets.slice(0, bindings.bindingLayout.numUniformBuffers),
+      dynamicByteOffsets &&
+        dynamicByteOffsets.slice(0, bindings.numUniformBuffers),
     );
     if (bindings.gpuBindGroup[1]) {
-      this.gpuRenderPassEncoder.setBindGroup(
-        bindingLayoutIndex + 1,
-        bindings.gpuBindGroup[1],
-      );
+      this.gpuRenderPassEncoder.setBindGroup(1, bindings.gpuBindGroup[1]);
     }
   }
 

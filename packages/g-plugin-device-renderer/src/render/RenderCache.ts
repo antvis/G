@@ -1,6 +1,5 @@
 import type {
   AttachmentState,
-  BindingLayoutDescriptor,
   Bindings,
   BindingsDescriptor,
   ChannelBlendState,
@@ -57,15 +56,6 @@ function programDescriptorSimpleCopy(
   return { preprocessedVert, preprocessedFrag, vert, frag };
 }
 
-function renderBindingLayoutHash(
-  hash: number,
-  a: BindingLayoutDescriptor,
-): number {
-  hash = hashCodeNumberUpdate(hash, a.numUniformBuffers);
-  hash = hashCodeNumberUpdate(hash, a.numSamplers);
-  return hash;
-}
-
 function blendStateHash(hash: number, a: ChannelBlendState): number {
   hash = hashCodeNumberUpdate(hash, a.blendMode);
   hash = hashCodeNumberUpdate(hash, a.blendSrcFactor);
@@ -108,8 +98,6 @@ function renderPipelineDescriptorHash(a: RenderPipelineDescriptor): number {
   hash = hashCodeNumberUpdate(hash, a.program.id);
   if (a.inputLayout !== null)
     hash = hashCodeNumberUpdate(hash, a.inputLayout.id);
-  for (let i = 0; i < a.bindingLayouts.length; i++)
-    hash = renderBindingLayoutHash(hash, a.bindingLayouts[i]);
   hash = megaStateDescriptorHash(hash, a.megaStateDescriptor);
   for (let i = 0; i < a.colorAttachmentFormats.length; i++)
     hash = hashCodeNumberUpdate(hash, a.colorAttachmentFormats[i] || 0);
@@ -128,7 +116,7 @@ function bindingsDescriptorHash(a: BindingsDescriptor): number {
     const binding = a.uniformBufferBindings[i];
     if (binding !== null && binding.buffer !== null) {
       hash = hashCodeNumberUpdate(hash, binding.buffer.id);
-      hash = hashCodeNumberUpdate(hash, binding.wordCount);
+      hash = hashCodeNumberUpdate(hash, binding.byteLength);
     }
   }
   return hashCodeNumberFinish(hash);

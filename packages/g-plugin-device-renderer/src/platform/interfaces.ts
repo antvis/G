@@ -398,7 +398,7 @@ export interface RenderTargetDescriptor {
 
 export interface BufferBinding {
   buffer: Buffer;
-  wordCount: number;
+  byteLength?: number;
 }
 
 export interface SamplerBinding {
@@ -425,15 +425,7 @@ export interface BindingLayoutStorageDescriptor {
   type: BufferBindingType;
 }
 
-export interface BindingLayoutDescriptor {
-  numUniformBuffers?: number;
-  numSamplers?: number;
-  storageEntries?: BindingLayoutStorageDescriptor[]; // used in compute shader
-  samplerEntries?: BindingLayoutSamplerDescriptor[];
-}
-
 export interface BindingsDescriptor {
-  bindingLayout: BindingLayoutDescriptor;
   // infer from shader module @see https://www.w3.org/TR/webgpu/#dom-gpupipelinebase-getbindgrouplayout
   pipeline?: RenderPipeline | ComputePipeline;
   uniformBufferBindings?: BufferBinding[];
@@ -503,7 +495,6 @@ export interface MegaStateDescriptor {
 }
 
 export interface PipelineDescriptor {
-  bindingLayouts?: BindingLayoutDescriptor[];
   inputLayout: InputLayout | null;
   program: Program;
 }
@@ -606,11 +597,7 @@ export interface RenderPass extends DebugCommandsMixin {
   setViewport: (x: number, y: number, w: number, h: number) => void;
   setScissor: (x: number, y: number, w: number, h: number) => void;
   setPipeline: (pipeline: RenderPipeline) => void;
-  setBindings: (
-    bindingLayoutIndex: number,
-    bindings: Bindings,
-    dynamicByteOffsets: number[],
-  ) => void;
+  setBindings: (bindings: Bindings, dynamicByteOffsets?: number[]) => void;
   setVertexInput: (
     inputLayout: InputLayout | null,
     buffers: (VertexBufferDescriptor | null)[] | null,
@@ -653,11 +640,7 @@ export interface RenderPass extends DebugCommandsMixin {
  */
 export interface ComputePass extends DebugCommandsMixin {
   setPipeline: (pipeline: ComputePipeline) => void;
-  setBindings: (
-    bindingLayoutIndex: number,
-    bindings: Bindings,
-    dynamicByteOffsets: number[],
-  ) => void;
+  setBindings: (bindings: Bindings, dynamicByteOffsets?: number[]) => void;
   /**
    * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroups
    */

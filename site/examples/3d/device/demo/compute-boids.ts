@@ -206,8 +206,6 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
     hint: BufferFrequencyHint.DYNAMIC,
   });
 
-  const bindingLayouts = [{ numSamplers: 0, numUniformBuffers: 1 }];
-
   const inputLayout = device.createInputLayout({
     vertexBufferDescriptors: [
       {
@@ -253,7 +251,6 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
   });
   const computePipeline = device.createComputePipeline({
     inputLayout: null,
-    bindingLayouts: [],
     program: computeProgram,
   });
 
@@ -271,31 +268,20 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
   for (let i = 0; i < 2; ++i) {
     bindings[i] = device.createBindings({
       pipeline: computePipeline,
-      bindingLayout: {
-        numUniformBuffers: 1,
-        storageEntries: [
-          {
-            type: 'storage',
-          },
-          {
-            type: 'storage',
-          },
-        ],
-      },
       uniformBufferBindings: [
         {
           buffer: uniformBuffer,
-          wordCount: 7,
+          byteLength: 7 * 4,
         },
       ],
       storageBufferBindings: [
         {
           buffer: particleBuffers[i],
-          wordCount: initialParticleData.byteLength,
+          byteLength: initialParticleData.byteLength,
         },
         {
           buffer: particleBuffers[(i + 1) % 2],
-          wordCount: initialParticleData.byteLength,
+          byteLength: initialParticleData.byteLength,
         },
       ],
       samplerBindings: [],
@@ -337,7 +323,7 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
 
     const computePass = device.createComputePass();
     computePass.setPipeline(computePipeline);
-    computePass.setBindings(0, bindings[t % 2], [0]);
+    computePass.setBindings(bindings[t % 2]);
     computePass.dispatchWorkgroups(Math.ceil(numParticles / 64));
     device.submitPass(computePass);
 

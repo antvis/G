@@ -67,7 +67,7 @@ export class PostProcessing {
       renderInst.setMegaStateFlags(fullscreenMegaState);
       renderInst.drawPrimitives(3);
 
-      renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
+      renderInst.setBindingLayout({ numUniformBuffers: 1, numSamplers: 1 });
 
       // since gl_VertexID is not available in GLSL 100, we need to use a geometry
       const offs = renderInst.allocateUniformBuffer(0, 4);

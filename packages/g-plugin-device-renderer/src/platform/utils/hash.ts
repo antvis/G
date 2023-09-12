@@ -2,7 +2,6 @@ import { isNil } from '@antv/util';
 import type { Format } from '../format';
 import type {
   AttachmentState,
-  BindingLayoutDescriptor,
   BindingLayoutSamplerDescriptor,
   BindingsDescriptor,
   BufferBinding,
@@ -37,14 +36,7 @@ function bufferBindingEquals(
   a: Readonly<BufferBinding>,
   b: Readonly<BufferBinding>,
 ): boolean {
-  return a.buffer === b.buffer && a.wordCount === b.wordCount;
-}
-
-function bindingLayoutSamplerDescriptorEqual(
-  a: Readonly<BindingLayoutSamplerDescriptor>,
-  b: Readonly<BindingLayoutSamplerDescriptor>,
-): boolean {
-  return a.dimension === b.dimension && a.formatKind === b.formatKind;
+  return a.buffer === b.buffer && a.byteLength === b.byteLength;
 }
 
 function samplerBindingEquals(
@@ -54,26 +46,6 @@ function samplerBindingEquals(
   if (a === null) return b === null;
   if (b === null) return false;
   return a.sampler === b.sampler && a.texture === b.texture;
-}
-
-export function bindingLayoutDescriptorEqual(
-  a: Readonly<BindingLayoutDescriptor>,
-  b: Readonly<BindingLayoutDescriptor>,
-): boolean {
-  if (a.numSamplers !== b.numSamplers) return false;
-  if (a.numUniformBuffers !== b.numUniformBuffers) return false;
-  if ((a.samplerEntries === undefined) !== (b.samplerEntries === undefined))
-    return false;
-  if (
-    a.samplerEntries !== undefined &&
-    !arrayEqual(
-      a.samplerEntries!,
-      b.samplerEntries!,
-      bindingLayoutSamplerDescriptorEqual,
-    )
-  )
-    return false;
-  return true;
 }
 
 export function bindingsDescriptorEquals(
@@ -91,7 +63,6 @@ export function bindingsDescriptorEquals(
     )
   )
     return false;
-  if (!bindingLayoutEquals(a.bindingLayout, b.bindingLayout)) return false;
   return true;
 }
 
@@ -140,16 +111,6 @@ function megaStateDescriptorEquals(
   );
 }
 
-function bindingLayoutEquals(
-  a: Readonly<BindingLayoutDescriptor>,
-  b: Readonly<BindingLayoutDescriptor>,
-): boolean {
-  return (
-    a.numSamplers === b.numSamplers &&
-    a.numUniformBuffers === b.numUniformBuffers
-  );
-}
-
 function programEquals(a: Readonly<Program>, b: Readonly<Program>): boolean {
   return a.id === b.id;
 }
@@ -168,8 +129,7 @@ export function renderPipelineDescriptorEquals(
   if (!megaStateDescriptorEquals(a.megaStateDescriptor, b.megaStateDescriptor))
     return false;
   if (!programEquals(a.program, b.program)) return false;
-  if (!arrayEqual(a.bindingLayouts, b.bindingLayouts, bindingLayoutEquals))
-    return false;
+  return false;
   if (
     !arrayEqual(
       a.colorAttachmentFormats,
@@ -261,21 +221,19 @@ export function samplerBindingNew(): SamplerBinding {
 
 export function bufferBindingCopy(a: Readonly<BufferBinding>): BufferBinding {
   const buffer = a.buffer;
-  const wordCount = a.wordCount;
-  return { buffer, wordCount };
+  const byteLength = a.byteLength;
+  return { buffer, byteLength };
 }
 
 export function bindingsDescriptorCopy(
   a: Readonly<BindingsDescriptor>,
 ): BindingsDescriptor {
-  const bindingLayout = a.bindingLayout;
   const samplerBindings = arrayCopy(a.samplerBindings, samplerBindingCopy);
   const uniformBufferBindings = arrayCopy(
     a.uniformBufferBindings,
     bufferBindingCopy,
   );
   return {
-    bindingLayout,
     samplerBindings,
     uniformBufferBindings,
     pipeline: a.pipeline,
@@ -290,25 +248,9 @@ export function bindingLayoutSamplerDescriptorCopy(
   return { dimension, formatKind };
 }
 
-export function bindingLayoutDescriptorCopy(
-  a: Readonly<BindingLayoutDescriptor>,
-): BindingLayoutDescriptor {
-  const numSamplers = a.numSamplers;
-  const numUniformBuffers = a.numUniformBuffers;
-  const samplerEntries =
-    a.samplerEntries !== undefined
-      ? arrayCopy(a.samplerEntries!, bindingLayoutSamplerDescriptorCopy)
-      : undefined;
-  return { numSamplers, numUniformBuffers, samplerEntries };
-}
-
 export function renderPipelineDescriptorCopy(
   a: Readonly<RenderPipelineDescriptor>,
 ): RenderPipelineDescriptor {
-  const bindingLayouts = arrayCopy(
-    a.bindingLayouts,
-    bindingLayoutDescriptorCopy,
-  );
   const inputLayout = a.inputLayout;
   const program = a.program;
   const topology = a.topology;
@@ -317,7 +259,6 @@ export function renderPipelineDescriptorCopy(
   const depthStencilAttachmentFormat = a.depthStencilAttachmentFormat;
   const sampleCount = a.sampleCount;
   return {
-    bindingLayouts,
     inputLayout,
     megaStateDescriptor,
     program,

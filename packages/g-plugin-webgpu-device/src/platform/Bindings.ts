@@ -1,5 +1,4 @@
 import type {
-  BindingLayoutDescriptor,
   Bindings,
   BindingsDescriptor,
 } from '@antv/g-plugin-device-renderer';
@@ -18,9 +17,9 @@ import { ComputePipeline_WebGPU } from './ComputePipeline';
 export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
   type: ResourceType.Bindings = ResourceType.Bindings;
 
-  bindingLayout: BindingLayoutDescriptor;
   gpuBindGroup: GPUBindGroup[];
   bindGroupLayout: BindGroupLayout;
+  numUniformBuffers: number;
 
   constructor({
     id,
@@ -33,23 +32,25 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
   }) {
     super({ id, device });
 
-    const { pipeline, bindingLayout } = descriptor;
+    const { pipeline } = descriptor;
     assert(!!pipeline);
 
-    const bindGroupLayout = this.device['createBindGroupLayout'](bindingLayout);
+    const { uniformBufferBindings, storageBufferBindings, samplerBindings } =
+      descriptor;
+    this.numUniformBuffers = uniformBufferBindings?.length || 0;
 
     // entries orders: Storage(read-only storage) Uniform Sampler
     const gpuBindGroupEntries: GPUBindGroupEntry[][] = [[], []];
     let numBindings = 0;
 
-    if (bindingLayout.storageEntries) {
-      for (let i = 0; i < bindingLayout.storageEntries.length; i++) {
+    if (storageBufferBindings) {
+      for (let i = 0; i < storageBufferBindings.length; i++) {
         const binding = descriptor.storageBufferBindings[i];
-        assert(binding.wordCount > 0);
+        assert(binding.byteLength > 0);
         const gpuBufferBinding: GPUBufferBinding = {
           buffer: getPlatformBuffer(binding.buffer),
           offset: 0,
-          size: binding.wordCount << 2,
+          size: binding.byteLength,
         };
         gpuBindGroupEntries[0].push({
           binding: numBindings++,
@@ -58,52 +59,55 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
       }
     }
 
-    for (let i = 0; i < bindingLayout.numUniformBuffers; i++) {
-      const binding = descriptor.uniformBufferBindings[i];
-      assert(binding.wordCount > 0);
-      const gpuBufferBinding: GPUBufferBinding = {
-        buffer: getPlatformBuffer(binding.buffer),
-        offset: 0,
-        size: binding.wordCount << 2,
-      };
-      gpuBindGroupEntries[0].push({
-        binding: numBindings++,
-        resource: gpuBufferBinding,
-      });
+    if (uniformBufferBindings) {
+      for (let i = 0; i < uniformBufferBindings.length; i++) {
+        const binding = descriptor.uniformBufferBindings[i];
+        assert(binding.byteLength > 0);
+        const gpuBufferBinding: GPUBufferBinding = {
+          buffer: getPlatformBuffer(binding.buffer),
+          offset: 0,
+          size: binding.byteLength,
+        };
+        gpuBindGroupEntries[0].push({
+          binding: numBindings++,
+          resource: gpuBufferBinding,
+        });
+      }
     }
 
-    numBindings = 0;
-    for (let i = 0; i < bindingLayout.numSamplers; i++) {
-      const samplerEntry =
-        bindingLayout.samplerEntries !== undefined
-          ? bindingLayout.samplerEntries[i]
-          : defaultBindingLayoutSamplerDescriptor;
+    if (samplerBindings) {
+      numBindings = 0;
+      for (let i = 0; i < samplerBindings.length; i++) {
+        const samplerEntry = defaultBindingLayoutSamplerDescriptor;
 
-      const binding = descriptor.samplerBindings[i];
-      const texture =
-        binding.texture !== null
-          ? binding.texture
-          : this.device['getFallbackTexture'](samplerEntry);
-      assert(samplerEntry.dimension === (texture as Texture_WebGPU).dimension);
-      assert(
-        samplerEntry.formatKind ===
-          getFormatSamplerKind((texture as Texture_WebGPU).pixelFormat),
-      );
-      const gpuTextureView = (texture as Texture_WebGPU).gpuTextureView;
-      gpuBindGroupEntries[1].push({
-        binding: numBindings++,
-        resource: gpuTextureView,
-      });
+        const binding = descriptor.samplerBindings[i];
+        const texture =
+          binding.texture !== null
+            ? binding.texture
+            : this.device['getFallbackTexture'](samplerEntry);
+        assert(
+          samplerEntry.dimension === (texture as Texture_WebGPU).dimension,
+        );
+        assert(
+          samplerEntry.formatKind ===
+            getFormatSamplerKind((texture as Texture_WebGPU).pixelFormat),
+        );
+        const gpuTextureView = (texture as Texture_WebGPU).gpuTextureView;
+        gpuBindGroupEntries[1].push({
+          binding: numBindings++,
+          resource: gpuTextureView,
+        });
 
-      const sampler =
-        binding.sampler !== null
-          ? binding.sampler
-          : this.device['getFallbackSampler'](samplerEntry);
-      const gpuSampler = getPlatformSampler(sampler);
-      gpuBindGroupEntries[1].push({
-        binding: numBindings++,
-        resource: gpuSampler,
-      });
+        const sampler =
+          binding.sampler !== null
+            ? binding.sampler
+            : this.device['getFallbackSampler'](samplerEntry);
+        const gpuSampler = getPlatformSampler(sampler);
+        gpuBindGroupEntries[1].push({
+          binding: numBindings++,
+          resource: gpuSampler,
+        });
+      }
     }
 
     this.gpuBindGroup = gpuBindGroupEntries
@@ -115,7 +119,5 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
           entries: gpuBindGroupEntries,
         }),
       );
-    this.bindingLayout = descriptor.bindingLayout;
-    this.bindGroupLayout = bindGroupLayout;
   }
 }
