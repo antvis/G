@@ -153,8 +153,8 @@ export class RenderInst {
       );
       i++
     )
-      tbd.uniformBufferBindings[i].byteLength =
-        o.bindingDescriptors[0].uniformBufferBindings[i].byteLength;
+      tbd.uniformBufferBindings[i].size =
+        o.bindingDescriptors[0].uniformBufferBindings[i].size;
     this.setSamplerBindingsFromTextureMappings(obd.samplerBindings);
     for (let i = 0; i < o.dynamicUniformBufferByteOffsets.length; i++)
       this.dynamicUniformBufferByteOffsets[i] =
@@ -166,7 +166,7 @@ export class RenderInst {
     for (let i = 0; i < this.bindingDescriptors.length; i++) {
       const bd = this.bindingDescriptors[i];
       for (let j = 0; j < bd.uniformBufferBindings?.length; j++)
-        assert(bd.uniformBufferBindings[j].byteLength > 0);
+        assert(bd.uniformBufferBindings[j].size > 0);
     }
 
     assert(this.drawCount > 0);
@@ -230,8 +230,9 @@ export class RenderInst {
       i++
     )
       this.bindingDescriptors[0].uniformBufferBindings.push({
+        binding: 0,
         buffer: null,
-        byteLength: 0,
+        size: 0,
       });
     for (
       let i = this.bindingDescriptors[0].samplerBindings.length;
@@ -355,7 +356,7 @@ export class RenderInst {
       this.uniformBuffer.allocateChunk(wordCount) << 2;
 
     const dst = this.bindingDescriptors[0].uniformBufferBindings[bufferIndex];
-    dst.byteLength = wordCount << 2;
+    dst.size = wordCount << 2;
     return this.getUniformBufferOffset(bufferIndex);
   }
 

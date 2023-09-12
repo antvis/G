@@ -396,14 +396,39 @@ export interface RenderTargetDescriptor {
   texture?: Texture;
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#dictdef-gpubindgroupentry
+ */
 export interface BufferBinding {
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpubindgroupentry-binding
+   * @example
+   * @binding(0) @group(0) var<uniform> params : SimParams;
+   */
+  binding: number;
+  /**
+   * @{Buffer}
+   */
   buffer: Buffer;
-  byteLength?: number;
+  /**
+   * The offset, in bytes, from the beginning of buffer to the beginning of the range exposed to the shader by the buffer binding.
+   * Defaulting to 0
+   * @see https://www.w3.org/TR/webgpu/#dom-gpubufferbinding-offset
+   */
+  offset?: number;
+  /**
+   * The size, in bytes, of the buffer binding. If not provided, specifies the range starting at offset and ending at the end of buffer.
+   * @see https://www.w3.org/TR/webgpu/#dom-gpubufferbinding-size
+   */
+  size?: number;
 }
 
 export interface SamplerBinding {
   texture: Texture | null;
   sampler: Sampler | null;
+  dimension?: TextureDimension;
+  formatKind?: SamplerFormatKind;
+  comparison?: boolean;
 }
 
 export enum SamplerFormatKind {
@@ -411,18 +436,6 @@ export enum SamplerFormatKind {
   Uint,
   Sint,
   Depth,
-}
-
-export type BufferBindingType = 'uniform' | 'storage' | 'read-only-storage';
-
-export interface BindingLayoutSamplerDescriptor {
-  dimension: TextureDimension;
-  formatKind: SamplerFormatKind;
-  comparison?: boolean;
-}
-
-export interface BindingLayoutStorageDescriptor {
-  type: BufferBindingType;
 }
 
 export interface BindingsDescriptor {
@@ -440,13 +453,16 @@ export interface ProgramDescriptor {
   vertex?: {
     glsl?: string;
     wgsl?: string;
+    entryPoint?: string;
   };
   fragment?: {
     glsl?: string;
     wgsl?: string;
+    entryPoint?: string;
   };
   compute?: {
     wgsl: string;
+    entryPoint?: string;
   };
 }
 

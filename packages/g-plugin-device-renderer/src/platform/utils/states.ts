@@ -1,8 +1,8 @@
 import type {
   AttachmentState,
-  BindingLayoutSamplerDescriptor,
   ChannelBlendState,
   MegaStateDescriptor,
+  SamplerBinding,
 } from '../interfaces';
 import {
   BlendFactor,
@@ -275,8 +275,9 @@ export function setAttachmentStateSimple(
   return dst;
 }
 
-export const defaultBindingLayoutSamplerDescriptor: BindingLayoutSamplerDescriptor =
-  {
-    formatKind: SamplerFormatKind.Float,
-    dimension: TextureDimension.TEXTURE_2D,
-  };
+export const defaultBindingLayoutSamplerDescriptor: SamplerBinding = {
+  texture: null,
+  sampler: null,
+  formatKind: SamplerFormatKind.Float,
+  dimension: TextureDimension.TEXTURE_2D,
+};

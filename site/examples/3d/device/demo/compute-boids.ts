@@ -6,10 +6,10 @@ import {
   Buffer,
   Bindings,
   BufferUsage,
-  BufferFrequencyHint,
 } from '@antv/g-plugin-device-renderer';
 
 /**
+ * Use Compute Shader with WebGPU
  * @see https://webgpu.github.io/webgpu-samples/samples/computeBoids#main.ts
  */
 
@@ -48,49 +48,49 @@ async function render(deviceContribution: WebGPUDeviceContribution) {
 
   // create swap chain and get device
   const swapChain = await deviceContribution.createSwapChain($canvas);
-
-  // TODO: resize
   swapChain.configureSwapChain($canvas.width, $canvas.height);
   const device = swapChain.getDevice();
 
-  const program = device.createProgram({
+  const renderProgram = device.createProgram({
     vertex: {
+      entryPoint: 'vert_main',
       wgsl: `
-struct VertexOutput {
-  @builtin(position) position : vec4<f32>,
-  @location(4) color : vec4<f32>,
-}
+  struct VertexOutput {
+    @builtin(position) position : vec4<f32>,
+    @location(4) color : vec4<f32>,
+  }
 
-@vertex
-fn vert_main(
-  @location(0) a_particlePos : vec2<f32>,
-  @location(1) a_particleVel : vec2<f32>,
-  @location(2) a_pos : vec2<f32>
-) -> VertexOutput {
-  let angle = -atan2(a_particleVel.x, a_particleVel.y);
-  let pos = vec2(
-    (a_pos.x * cos(angle)) - (a_pos.y * sin(angle)),
-    (a_pos.x * sin(angle)) + (a_pos.y * cos(angle))
-  );
-  
-  var output : VertexOutput;
-  output.position = vec4(pos + a_particlePos, 0.0, 1.0);
-  output.color = vec4(
-    1.0 - sin(angle + 1.0) - a_particleVel.y,
-    pos.x * 100.0 - a_particleVel.y + 0.1,
-    a_particleVel.x + cos(angle + 0.5),
-    1.0);
-  return output;
-}
-`,
+  @vertex
+  fn vert_main(
+    @location(0) a_particlePos : vec2<f32>,
+    @location(1) a_particleVel : vec2<f32>,
+    @location(2) a_pos : vec2<f32>
+  ) -> VertexOutput {
+    let angle = -atan2(a_particleVel.x, a_particleVel.y);
+    let pos = vec2(
+      (a_pos.x * cos(angle)) - (a_pos.y * sin(angle)),
+      (a_pos.x * sin(angle)) + (a_pos.y * cos(angle))
+    );
+
+    var output : VertexOutput;
+    output.position = vec4(pos + a_particlePos, 0.0, 1.0);
+    output.color = vec4(
+      1.0 - sin(angle + 1.0) - a_particleVel.y,
+      pos.x * 100.0 - a_particleVel.y + 0.1,
+      a_particleVel.x + cos(angle + 0.5),
+      1.0);
+    return output;
+  }
+  `,
     },
     fragment: {
+      entryPoint: 'frag_main',
       wgsl: `
-@fragment
-fn frag_main(@location(4) color : vec4<f32>) -> @location(0) vec4<f32> {
-  return color;
-}
-`,
+  @fragment
+  fn frag_main(@location(4) color : vec4<f32>) -> @location(0) vec4<f32> {
+    return color;
+  }
+  `,
     },
   });
 
@@ -202,8 +202,7 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
 
   const uniformBuffer = device.createBuffer({
     viewOrSize: 7 * Float32Array.BYTES_PER_ELEMENT,
-    usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
-    hint: BufferFrequencyHint.DYNAMIC,
+    usage: BufferUsage.UNIFORM,
   });
 
   const inputLayout = device.createInputLayout({
@@ -241,12 +240,12 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
       },
     ],
     indexBufferFormat: null,
-    program,
+    program: renderProgram,
   });
 
   const renderPipeline = device.createRenderPipeline({
     inputLayout,
-    program,
+    program: renderProgram,
     colorAttachmentFormats: [Format.U8_RGBA_RT],
   });
   const computePipeline = device.createComputePipeline({
@@ -270,21 +269,23 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
       pipeline: computePipeline,
       uniformBufferBindings: [
         {
+          binding: 0,
           buffer: uniformBuffer,
-          byteLength: 7 * 4,
+          size: 7 * Float32Array.BYTES_PER_ELEMENT,
         },
       ],
       storageBufferBindings: [
         {
+          binding: 1,
           buffer: particleBuffers[i],
-          byteLength: initialParticleData.byteLength,
+          size: initialParticleData.byteLength,
         },
         {
+          binding: 2,
           buffer: particleBuffers[(i + 1) % 2],
-          byteLength: initialParticleData.byteLength,
+          size: initialParticleData.byteLength,
         },
       ],
-      samplerBindings: [],
     });
   }
 
@@ -313,43 +314,39 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
   let id;
   let t = 0;
   const frame = () => {
-    // compute
-
-    /**
-     * An application should call getCurrentTexture() in the same task that renders to the canvas texture.
-     * Otherwise, the texture could get destroyed by these steps before the application is finished rendering to it.
-     */
-    const onscreenTexture = swapChain.getOnscreenTexture();
-
     const computePass = device.createComputePass();
     computePass.setPipeline(computePipeline);
     computePass.setBindings(bindings[t % 2]);
     computePass.dispatchWorkgroups(Math.ceil(numParticles / 64));
     device.submitPass(computePass);
 
-    // const renderPass = device.createRenderPass({
-    //   colorAttachment: [renderTarget],
-    //   colorResolveTo: [onscreenTexture],
-    //   colorClearColor: [TransparentWhite],
-    // });
+    /**
+     * An application should call getCurrentTexture() in the same task that renders to the canvas texture.
+     * Otherwise, the texture could get destroyed by these steps before the application is finished rendering to it.
+     */
+    const onscreenTexture = swapChain.getOnscreenTexture();
+    const renderPass = device.createRenderPass({
+      colorAttachment: [renderTarget],
+      colorResolveTo: [onscreenTexture],
+      colorClearColor: [TransparentWhite],
+    });
+    renderPass.setPipeline(renderPipeline);
+    renderPass.setVertexInput(
+      inputLayout,
+      [
+        {
+          buffer: particleBuffers[(t + 1) % 2],
+        },
+        {
+          buffer: spriteVertexBuffer,
+        },
+      ],
+      null,
+    );
+    renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
+    renderPass.draw(3, numParticles);
 
-    // renderPass.setPipeline(renderPipeline);
-    // renderPass.setVertexInput(
-    //   inputLayout,
-    //   [
-    //     {
-    //       buffer: particleBuffers[(t + 1) % 2],
-    //     },
-    //     {
-    //       buffer: spriteVertexBuffer,
-    //     },
-    //   ],
-    //   null,
-    // );
-    // renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
-    // renderPass.draw(3, numParticles);
-
-    // device.submitPass(renderPass);
+    device.submitPass(renderPass);
     ++t;
     id = requestAnimationFrame(frame);
   };
@@ -360,10 +357,14 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
     if (id) {
       cancelAnimationFrame(id);
     }
-    program.destroy();
-    // vertexBuffer.destroy();
+    renderProgram.destroy();
+    computeProgram.destroy();
+    particleBuffers.forEach((buffer) => buffer.destroy());
+    uniformBuffer.destroy();
+    spriteVertexBuffer.destroy();
     inputLayout.destroy();
     renderPipeline.destroy();
+    computePipeline.destroy();
     renderTarget.destroy();
     device.destroy();
 

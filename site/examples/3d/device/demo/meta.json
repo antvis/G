@@ -74,7 +74,7 @@
         "zh": "Cubemap",
         "en": "Cubemap"
       },
-      "screenshot": ""
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*wDWQTacffhsAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "compute-boids.ts",
@@ -82,7 +82,7 @@
         "zh": "使用 Compute Shader 仿真",
         "en": "Use Compute Shader"
       },
-      "screenshot": ""
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Vdg7RJamXoQAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
       "filename": "wgsl.ts",

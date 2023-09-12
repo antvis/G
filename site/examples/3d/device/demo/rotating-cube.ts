@@ -131,7 +131,6 @@ void main() {
   const vertexBuffer = device.createBuffer({
     viewOrSize: cubeVertexArray,
     usage: BufferUsage.VERTEX,
-    // hint: BufferFrequencyHint.DYNAMIC,
   });
 
   const uniformBuffer = device.createBuffer({
@@ -192,8 +191,9 @@ void main() {
     pipeline,
     uniformBufferBindings: [
       {
+        binding: 0,
         buffer: uniformBuffer,
-        byteLength: 16 * 4,
+        size: 16 * 4,
       },
     ],
     samplerBindings: [],

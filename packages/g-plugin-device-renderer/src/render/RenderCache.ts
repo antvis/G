@@ -116,7 +116,9 @@ function bindingsDescriptorHash(a: BindingsDescriptor): number {
     const binding = a.uniformBufferBindings[i];
     if (binding !== null && binding.buffer !== null) {
       hash = hashCodeNumberUpdate(hash, binding.buffer.id);
-      hash = hashCodeNumberUpdate(hash, binding.byteLength);
+      hash = hashCodeNumberUpdate(hash, binding.binding);
+      hash = hashCodeNumberUpdate(hash, binding.offset);
+      hash = hashCodeNumberUpdate(hash, binding.size);
     }
   }
   return hashCodeNumberFinish(hash);

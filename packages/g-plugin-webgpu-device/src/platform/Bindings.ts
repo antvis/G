@@ -43,42 +43,47 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
     const gpuBindGroupEntries: GPUBindGroupEntry[][] = [[], []];
     let numBindings = 0;
 
-    if (storageBufferBindings) {
+    if (storageBufferBindings && storageBufferBindings.length) {
       for (let i = 0; i < storageBufferBindings.length; i++) {
-        const binding = descriptor.storageBufferBindings[i];
-        assert(binding.byteLength > 0);
+        const { binding, size, offset, buffer } =
+          descriptor.storageBufferBindings[i];
+        assert(size > 0);
         const gpuBufferBinding: GPUBufferBinding = {
-          buffer: getPlatformBuffer(binding.buffer),
-          offset: 0,
-          size: binding.byteLength,
+          buffer: getPlatformBuffer(buffer),
+          offset: offset ?? 0,
+          size: size,
         };
         gpuBindGroupEntries[0].push({
-          binding: numBindings++,
+          binding: binding ?? numBindings++,
           resource: gpuBufferBinding,
         });
       }
     }
 
-    if (uniformBufferBindings) {
+    if (uniformBufferBindings && uniformBufferBindings.length) {
       for (let i = 0; i < uniformBufferBindings.length; i++) {
-        const binding = descriptor.uniformBufferBindings[i];
-        assert(binding.byteLength > 0);
+        const { binding, size, offset, buffer } =
+          descriptor.uniformBufferBindings[i];
+        assert(size > 0);
         const gpuBufferBinding: GPUBufferBinding = {
-          buffer: getPlatformBuffer(binding.buffer),
-          offset: 0,
-          size: binding.byteLength,
+          buffer: getPlatformBuffer(buffer),
+          offset: offset ?? 0,
+          size: size,
         };
         gpuBindGroupEntries[0].push({
-          binding: numBindings++,
+          binding: binding ?? numBindings++,
           resource: gpuBufferBinding,
         });
       }
     }
 
-    if (samplerBindings) {
+    if (samplerBindings && samplerBindings.length) {
       numBindings = 0;
       for (let i = 0; i < samplerBindings.length; i++) {
-        const samplerEntry = defaultBindingLayoutSamplerDescriptor;
+        const samplerEntry = {
+          ...defaultBindingLayoutSamplerDescriptor,
+          ...samplerBindings[i],
+        };
 
         const binding = descriptor.samplerBindings[i];
         const texture =

@@ -7,6 +7,7 @@ import {
 import { ResourceType } from '@antv/g-plugin-device-renderer';
 import type { IDevice_WebGPU, TextureShared_WebGPU } from './interfaces';
 import { ResourceBase_WebGPU } from './ResourceBase';
+import { translateTextureViewDimension } from './utils';
 
 export class Texture_WebGPU
   extends ResourceBase_WebGPU
@@ -77,9 +78,8 @@ export class Texture_WebGPU
     const texture = device.createTexture(textureDescriptor);
 
     for (let i = 0; i < sources.length; i++) {
-      const source = sources[0];
       device.queue.copyExternalImageToTexture(
-        { source },
+        { source: sources[i] },
         { texture, origin: [0, 0, i] },
         [width, height],
       );
@@ -133,7 +133,9 @@ export class Texture_WebGPU
     this.width = width;
     this.height = height;
     this.gpuTexture = texture;
-    this.gpuTextureView = texture.createView();
+    this.gpuTextureView = texture.createView({
+      dimension: translateTextureViewDimension(this.dimension),
+    });
   }
 
   destroy() {

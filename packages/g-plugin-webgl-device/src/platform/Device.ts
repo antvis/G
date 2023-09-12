@@ -1618,11 +1618,11 @@ export class Device_GL implements SwapChain, Device {
 
     for (let i = 0; i < uniformBufferBindings.length; i++) {
       const binding = uniformBufferBindings[i];
-      if (binding.byteLength === 0) continue;
+      if (binding.size === 0) continue;
       const index = bindingLayoutTable.firstUniformBuffer + i;
       const buffer = binding.buffer as Buffer_GL;
       const byteOffset = dynamicByteOffsets[i];
-      const byteSize = binding.byteLength;
+      const byteSize = binding.size;
       if (
         buffer !== this.currentUniformBuffers[index] ||
         byteOffset !== this.currentUniformBufferByteOffsets[index] ||

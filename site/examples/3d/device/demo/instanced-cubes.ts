@@ -191,11 +191,11 @@ void main() {
     pipeline,
     uniformBufferBindings: [
       {
+        binding: 0,
         buffer: uniformBuffer,
-        byteLength: matrixSize * numInstances,
+        size: matrixSize * numInstances,
       },
     ],
-    samplerBindings: [],
   });
 
   const mainColorRT = device.createRenderTargetFromTexture(

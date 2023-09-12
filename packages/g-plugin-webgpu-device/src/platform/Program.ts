@@ -41,28 +41,34 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
     }
   }
 
+  /** @hidden */
   setUniformsLegacy(uniforms: Record<string, any> = {}) {}
 
   private createShaderStage(
-    shader: {
+    {
+      glsl,
+      wgsl,
+      entryPoint,
+    }: {
       glsl?: string;
       wgsl?: string;
+      entryPoint?: string;
     },
     shaderStage: 'vertex' | 'fragment' | 'compute',
   ): GPUProgrammableStage {
     const validationEnabled = false;
 
     // Use user-defined WGSL first.
-    let code = shader.wgsl;
+    let code = wgsl;
     if (!code) {
       try {
         code = (this.device as Device_WebGPU)['glsl_compile'](
-          shader.glsl,
+          glsl,
           shaderStage,
           validationEnabled,
         );
       } catch (e) {
-        console.error(e, shader.glsl);
+        console.error(e, glsl);
         throw new Error('whoops');
       }
     }
@@ -84,6 +90,6 @@ export class Program_WebGPU extends ResourceBase_WebGPU implements Program {
     }
     // @see https://www.w3.org/TR/webgpu/#dom-gpudevice-createshadermodule
     const shaderModule = this.device.device.createShaderModule({ code });
-    return { module: shaderModule, entryPoint: 'main' };
+    return { module: shaderModule, entryPoint: entryPoint || 'main' };
   }
 }

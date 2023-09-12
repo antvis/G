@@ -239,8 +239,9 @@ void main() {
     pipeline,
     uniformBufferBindings: [
       {
+        binding: 0,
         buffer: uniformBuffer,
-        byteLength: 16 * 4,
+        size: 16 * 4,
       },
     ],
     samplerBindings: [
@@ -355,7 +356,7 @@ void main() {
 }
 
 (async () => {
-  let disposeCallback = await render(deviceContributionWebGPU);
+  let disposeCallback = await render(deviceContributionWebGL2);
 
   // GUI
   const gui = new lil.GUI({ autoPlace: false });

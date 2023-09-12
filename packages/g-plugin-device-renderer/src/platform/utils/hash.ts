@@ -2,7 +2,6 @@ import { isNil } from '@antv/util';
 import type { Format } from '../format';
 import type {
   AttachmentState,
-  BindingLayoutSamplerDescriptor,
   BindingsDescriptor,
   BufferBinding,
   ChannelBlendState,
@@ -36,7 +35,12 @@ function bufferBindingEquals(
   a: Readonly<BufferBinding>,
   b: Readonly<BufferBinding>,
 ): boolean {
-  return a.buffer === b.buffer && a.byteLength === b.byteLength;
+  return (
+    a.buffer === b.buffer &&
+    a.size === b.size &&
+    a.binding === b.binding &&
+    a.offset === b.offset
+  );
 }
 
 function samplerBindingEquals(
@@ -212,17 +216,18 @@ export function samplerBindingCopy(
 ): SamplerBinding {
   const sampler = a.sampler;
   const texture = a.texture;
-  return { sampler, texture };
-}
-
-export function samplerBindingNew(): SamplerBinding {
-  return { sampler: null, texture: null };
+  const dimension = a.dimension;
+  const formatKind = a.formatKind;
+  const comparison = a.comparison;
+  return { sampler, texture, dimension, formatKind, comparison };
 }
 
 export function bufferBindingCopy(a: Readonly<BufferBinding>): BufferBinding {
   const buffer = a.buffer;
-  const byteLength = a.byteLength;
-  return { buffer, byteLength };
+  const size = a.size;
+  const binding = a.binding;
+  const offset = a.offset;
+  return { binding, buffer, offset, size };
 }
 
 export function bindingsDescriptorCopy(
@@ -238,14 +243,6 @@ export function bindingsDescriptorCopy(
     uniformBufferBindings,
     pipeline: a.pipeline,
   };
-}
-
-export function bindingLayoutSamplerDescriptorCopy(
-  a: Readonly<BindingLayoutSamplerDescriptor>,
-): BindingLayoutSamplerDescriptor {
-  const dimension = a.dimension,
-    formatKind = a.formatKind;
-  return { dimension, formatKind };
 }
 
 export function renderPipelineDescriptorCopy(

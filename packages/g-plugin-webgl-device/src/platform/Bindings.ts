@@ -48,7 +48,7 @@ export class Bindings_GL extends ResourceBase_GL implements Bindings {
 
     const { uniformBufferBindings } = descriptor;
     for (let i = 0; i < uniformBufferBindings?.length; i++) {
-      assert(uniformBufferBindings[i].byteLength > 0);
+      assert(uniformBufferBindings[i].size > 0);
     }
 
     this.uniformBufferBindings = descriptor.uniformBufferBindings;
@@ -73,7 +73,10 @@ export class Bindings_GL extends ResourceBase_GL implements Bindings {
     const bindingSamplerEntries: BindingLayoutSamplerDescriptor_GL[] = [];
 
     for (let j = 0; j < numSamplers; j++) {
-      const samplerEntry = defaultBindingLayoutSamplerDescriptor;
+      const samplerEntry = {
+        ...defaultBindingLayoutSamplerDescriptor,
+        ...this.samplerBindings[j],
+      };
       const { dimension, formatKind } = samplerEntry;
       bindingSamplerEntries.push({
         gl_target: translateTextureDimension(dimension),

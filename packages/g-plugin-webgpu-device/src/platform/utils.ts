@@ -6,7 +6,7 @@ import type {
   AttachmentState,
   ChannelBlendState,
   QueryPool,
-  BindingLayoutSamplerDescriptor,
+  SamplerBinding,
 } from '@antv/g-plugin-device-renderer';
 import {
   BufferUsage,
@@ -95,6 +95,19 @@ export function translateTextureDimension(
   else throw new Error('whoops');
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension
+ */
+export function translateTextureViewDimension(
+  dimension: TextureDimension,
+): GPUTextureViewDimension {
+  if (dimension === TextureDimension.TEXTURE_2D) return '2d';
+  else if (dimension === TextureDimension.TEXTURE_CUBE_MAP) return 'cube';
+  else if (dimension === TextureDimension.TEXTURE_2D_ARRAY) return '2d-array';
+  else if (dimension === TextureDimension.TEXTURE_3D) return '3d';
+  else throw new Error('whoops');
+}
+
 export function translateBufferUsage(usage_: BufferUsage): GPUBufferUsageFlags {
   let usage = 0;
   if (usage_ & BufferUsage.INDEX) usage |= GPUBufferUsage.INDEX;
@@ -134,7 +147,7 @@ function translateSampleType(type: SamplerFormatKind): GPUTextureSampleType {
 }
 
 export function translateBindGroupSamplerBinding(
-  sampler: BindingLayoutSamplerDescriptor,
+  sampler: SamplerBinding,
 ): GPUSamplerBindingLayout {
   if (sampler.formatKind === SamplerFormatKind.Depth && sampler.comparison) {
     return { type: 'comparison' };
@@ -156,7 +169,7 @@ function translateViewDimension(
 }
 
 export function translateBindGroupTextureBinding(
-  sampler: BindingLayoutSamplerDescriptor,
+  sampler: SamplerBinding,
 ): GPUTextureBindingLayout {
   return {
     sampleType: translateSampleType(sampler.formatKind),

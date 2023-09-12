@@ -180,7 +180,7 @@ export function preprocessShader_GLSL(
       .map((key) => defineStr(key, defines[key]))
       .join('\n');
 
-  const precision =
+  let precision =
     lines.find((line) => line.startsWith('precision')) ||
     'precision mediump float;';
   let rest = lines.filter((line) => !line.startsWith('precision')).join('\n');
@@ -243,7 +243,40 @@ layout(set = ${set}, binding = ${
      */
     extraDefines += `${defineStr(`gl_VertexID`, `gl_VertexIndex`)}\n`;
     extraDefines += `${defineStr(`gl_InstanceID`, `gl_InstanceIndex`)}\n`;
+
+    // Workaround for Naga
+    // https://github.com/gfx-rs/naga/issues/1353
+    precision = precision.replace(/^precision (.*) sampler(.*);$/gm, '');
+  } else {
+    let implicitBinding = 0;
+    rest = rest.replace(
+      /^(layout\((.*)\))?\s*uniform sampler(\w+) (.*);/gm,
+      (substr, cap, layout, combinedSamplerType, samplerName) => {
+        let binding = parseBinding(layout);
+        if (binding === null) binding = implicitBinding++;
+
+        return `uniform sampler${combinedSamplerType} ${samplerName}; // BINDING=${binding}`;
+      },
+    );
   }
+
+  rest = rest.replace(
+    /\bPU_SAMPLER_(\w+)\((.*?)\)/g,
+    (substr, combinedSamplerType, samplerName) => {
+      return `SAMPLER_${combinedSamplerType}(P_${samplerName})`;
+    },
+  );
+
+  rest = rest.replace(
+    /\bPF_SAMPLER_(\w+)\((.*?)\)/g,
+    (substr, combinedSamplerType, samplerName) => {
+      return `PP_SAMPLER_${combinedSamplerType}(P_${samplerName})`;
+    },
+  );
+
+  rest = rest.replace(/\bPU_TEXTURE\((.*?)\)/g, (substr, samplerName) => {
+    return `TEXTURE(P_${samplerName})`;
+  });
 
   if (vendorInfo.separateSamplerTextures) {
     rest = rest.replace(

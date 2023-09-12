@@ -17,6 +17,7 @@ import {
   TexFilterMode,
   MipFilterMode,
   TextureDimension,
+  SamplerFormatKind,
 } from '@antv/g-plugin-device-renderer';
 import * as lil from 'lil-gui';
 import { mat4, vec3 } from 'gl-matrix';
@@ -96,9 +97,11 @@ layout(location = 0) in vec4 a_Position;
 layout(location = 1) in vec2 a_Uv;
 
 out vec2 v_Uv;
+out vec4 v_Position;
 
 void main() {
   v_Uv = a_Uv;
+  v_Position = 0.5 * (a_Position + vec4(1.0, 1.0, 1.0, 1.0));
   gl_Position = u_ModelViewProjectionMatrix * a_Position;
 } 
 `,
@@ -107,10 +110,12 @@ void main() {
       glsl: `
 uniform samplerCube u_Texture;
 in vec2 v_Uv;
+in vec4 v_Position;
 out vec4 outputColor;
 
 void main() {
-  outputColor = texture(SAMPLER_Cube(u_Texture), v_Uv);
+  vec3 cubemapVec = v_Position.xyz - vec3(0.5);
+  outputColor = texture(SAMPLER_Cube(u_Texture), cubemapVec);
 }
 `,
     },
@@ -160,18 +165,17 @@ void main() {
     hint: BufferFrequencyHint.DYNAMIC,
   });
 
-  const imgSrcs = [
-    '/images/posx.jpg',
-    '/images/negx.jpg',
-    '/images/posy.jpg',
-    '/images/negy.jpg',
-    '/images/posz.jpg',
-    '/images/negz.jpg',
-  ];
-  const promises = imgSrcs.map(async (src) => {
-    return loadImage(src);
-  });
-  const imageBitmaps = await Promise.all(promises);
+  // The order of the array layers is [+X, -X, +Y, -Y, +Z, -Z]
+  const imageBitmaps = await Promise.all(
+    [
+      '/images/posx.jpg',
+      '/images/negx.jpg',
+      '/images/posy.jpg',
+      '/images/negy.jpg',
+      '/images/posz.jpg',
+      '/images/negz.jpg',
+    ].map(async (src) => loadImage(src)),
+  );
 
   const texture = device.createTexture({
     pixelFormat: Format.U8_RGBA_NORM,
@@ -183,11 +187,12 @@ void main() {
     immutable: false,
   });
   texture.setImageData(imageBitmaps);
+  device.setResourceName(texture, 'Cube map');
 
   const sampler = device.createSampler({
     wrapS: WrapMode.CLAMP,
     wrapT: WrapMode.CLAMP,
-    minFilter: TexFilterMode.POINT,
+    minFilter: TexFilterMode.BILINEAR,
     magFilter: TexFilterMode.BILINEAR,
     mipFilter: MipFilterMode.LINEAR,
     minLOD: 0,
@@ -255,14 +260,17 @@ void main() {
     pipeline,
     uniformBufferBindings: [
       {
+        binding: 0,
         buffer: uniformBuffer,
-        byteLength: 16 * 4,
+        size: 16 * 4,
       },
     ],
     samplerBindings: [
       {
         texture,
         sampler,
+        dimension: TextureDimension.TEXTURE_CUBE_MAP,
+        formatKind: SamplerFormatKind.Float,
       },
     ],
   });

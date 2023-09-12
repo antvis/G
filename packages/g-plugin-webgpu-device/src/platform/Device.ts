@@ -1,5 +1,4 @@
 import type {
-  BindingLayoutSamplerDescriptor,
   Bindings,
   BindingsDescriptor,
   Buffer,
@@ -24,6 +23,7 @@ import type {
   RenderTargetDescriptor,
   Resource,
   Sampler,
+  SamplerBinding,
   SamplerDescriptor,
   SwapChain,
   Texture,
@@ -434,7 +434,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     }
   }
 
-  getFallbackSampler(samplerEntry: BindingLayoutSamplerDescriptor): Sampler {
+  getFallbackSampler(samplerEntry: SamplerBinding): Sampler {
     const formatKind = samplerEntry.formatKind;
     if (formatKind === SamplerFormatKind.Depth && samplerEntry.comparison) {
       return this.fallbackSamplerComparison;
@@ -443,7 +443,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     }
   }
 
-  getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor): Texture {
+  getFallbackTexture(samplerEntry: SamplerBinding): Texture {
     const dimension = samplerEntry.dimension,
       formatKind = samplerEntry.formatKind;
     if (dimension === TextureDimension.TEXTURE_2D)
