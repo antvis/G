@@ -53,7 +53,7 @@ export function pushFXAAPass(
     renderInst.setAllowSkippingIfPipelineNotReady(false);
 
     renderInst.setMegaStateFlags(fullscreenMegaState);
-    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
+    renderInst.setBindingLayout({ numUniformBuffers: 1, numSamplers: 1 });
     renderInst.drawPrimitives(3);
 
     // since gl_VertexID is not available in GLSL 100, we need to use a geometry

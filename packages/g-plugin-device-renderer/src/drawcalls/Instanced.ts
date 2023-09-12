@@ -12,7 +12,6 @@ import type { LightPool } from '../LightPool';
 import type { Fog } from '../lights';
 import type { Material } from '../materials';
 import { MaterialEvent, ShaderMaterial } from '../materials';
-import type { BindingLayoutSamplerDescriptor } from '../platform';
 import {
   ChannelWriteMask,
   CompareMode,
@@ -136,7 +135,6 @@ export abstract class Instanced {
    * texture mappings
    */
   protected textureMappings: TextureMapping[] = [];
-  protected samplerEntries: BindingLayoutSamplerDescriptor[];
 
   /**
    * Divisor of instanced array.
@@ -1117,13 +1115,10 @@ export abstract class Instanced {
       ...materialMegaState,
     });
 
-    renderInst.setBindingLayouts([
-      {
-        numUniformBuffers,
-        numSamplers: this.textureMappings.length,
-        samplerEntries: this.samplerEntries,
-      },
-    ]);
+    renderInst.setBindingLayout({
+      numUniformBuffers,
+      numSamplers: this.textureMappings.length,
+    });
 
     renderInst.setSamplerBindingsFromTextureMappings(this.textureMappings);
   }

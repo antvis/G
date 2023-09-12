@@ -40,7 +40,7 @@ export class Kernel {
   private buffers: {
     name: string;
     buffer: DeviceRenderer.Buffer;
-    wordCount: number;
+    byteLength: number;
     group: number;
     binding: number;
     bindingType: 'uniform' | 'storage' | 'read-only-storage';
@@ -96,7 +96,6 @@ export class Kernel {
 
     this.computePipeline = this.device.createComputePipeline({
       program,
-      bindingLayouts: [],
       inputLayout: null,
     });
   }
@@ -123,7 +122,7 @@ export class Kernel {
       name: '',
       buffer,
       // @ts-ignore
-      wordCount: buffer.size / 4,
+      byteLength: buffer.size,
       binding,
       bindingType: isUniform
         ? 'uniform'
@@ -156,24 +155,24 @@ export class Kernel {
 
     const bindings = this.device.createBindings({
       pipeline: this.computePipeline,
-      bindingLayout: {
-        numUniformBuffers: uniforms.length,
-        storageEntries: storages.map(({ bindingType }) => ({
-          type: bindingType,
-        })),
-      },
-      uniformBufferBindings: uniforms.map(({ buffer, wordCount }) => ({
+      // bindingLayout: {
+      //   numUniformBuffers: uniforms.length,
+      //   storageEntries: storages.map(({ bindingType }) => ({
+      //     type: bindingType,
+      //   })),
+      // },
+      uniformBufferBindings: uniforms.map(({ buffer, byteLength }) => ({
         buffer,
-        wordCount,
+        byteLength,
       })),
-      storageBufferBindings: storages.map(({ buffer, wordCount }) => ({
+      storageBufferBindings: storages.map(({ buffer, byteLength }) => ({
         buffer,
-        wordCount,
+        byteLength,
       })),
     });
 
     // fixed bind group 0
-    computePass.setBindings(0, bindings, []);
+    computePass.setBindings(bindings);
     computePass.dispatchWorkgroups(...dispatchParams);
     this.device.submitPass(computePass);
   }

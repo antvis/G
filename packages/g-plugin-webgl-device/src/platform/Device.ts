@@ -1,6 +1,6 @@
+import { isNil } from '@antv/util';
 import {
   AttachmentState,
-  BindingLayoutDescriptor,
   Bindings,
   BindingsDescriptor,
   Buffer,
@@ -104,7 +104,6 @@ import {
   isWebGL2,
 } from './utils';
 import { ComputePass_GL } from './ComputePass';
-import { isNil } from '@antv/util';
 
 // This is a workaround for ANGLE not supporting UBOs greater than 64kb (the limit of D3D).
 // https://bugs.chromium.org/p/angleproject/issues/detail?id=3388
@@ -1603,23 +1602,13 @@ export class Device_GL implements SwapChain, Device {
     }
   }
 
-  setBindings(
-    bindingLayoutIndex: number,
-    bindings_: Bindings,
-    dynamicByteOffsets: number[],
-  ): void {
+  setBindings(bindings_: Bindings, dynamicByteOffsets: number[] = [0]): void {
     const gl = this.gl;
 
-    assert(
-      bindingLayoutIndex <
-        this.currentPipeline.bindingLayouts.bindingLayoutTables.length,
-    );
-    const bindingLayoutTable =
-      this.currentPipeline.bindingLayouts.bindingLayoutTables[
-        bindingLayoutIndex
-      ];
-
-    const { uniformBufferBindings, samplerBindings } = bindings_ as Bindings_GL;
+    const { uniformBufferBindings, samplerBindings, bindingLayouts } =
+      bindings_ as Bindings_GL;
+    assert(0 < bindingLayouts.bindingLayoutTables.length);
+    const bindingLayoutTable = bindingLayouts.bindingLayoutTables[0];
     // Ignore extra bindings.
     assert(
       uniformBufferBindings.length >= bindingLayoutTable.numUniformBuffers,
@@ -1629,11 +1618,11 @@ export class Device_GL implements SwapChain, Device {
 
     for (let i = 0; i < uniformBufferBindings.length; i++) {
       const binding = uniformBufferBindings[i];
-      if (binding.wordCount === 0) continue;
+      if (binding.byteLength === 0) continue;
       const index = bindingLayoutTable.firstUniformBuffer + i;
       const buffer = binding.buffer as Buffer_GL;
       const byteOffset = dynamicByteOffsets[i];
-      const byteSize = binding.wordCount * 4;
+      const byteSize = binding.byteLength;
       if (
         buffer !== this.currentUniformBuffers[index] ||
         byteOffset !== this.currentUniformBufferByteOffsets[index] ||
@@ -2509,14 +2498,10 @@ export class Device_GL implements SwapChain, Device {
         indexBufferFormat: null,
         program: this.blitProgram,
       });
-      const bindingLayouts: BindingLayoutDescriptor[] = [
-        { numSamplers: 1, numUniformBuffers: 0 },
-      ];
       this.blitRenderPipeline = this.createRenderPipeline({
         topology: PrimitiveTopology.TRIANGLES,
         sampleCount: 1,
         program: this.blitProgram,
-        bindingLayouts,
         colorAttachmentFormats: [Format.U8_RGBA_RT],
         depthStencilAttachmentFormat: null,
         inputLayout: this.blitInputLayout,
@@ -2524,7 +2509,6 @@ export class Device_GL implements SwapChain, Device {
       });
 
       this.blitBindings = this.createBindings({
-        bindingLayout: bindingLayouts[0],
         samplerBindings: [
           {
             sampler: null,
@@ -2553,7 +2537,7 @@ export class Device_GL implements SwapChain, Device {
 
     const { width, height } = this.getCanvas() as HTMLCanvasElement;
     blitRenderPass.setPipeline(this.blitRenderPipeline);
-    blitRenderPass.setBindings(0, this.blitBindings, [0]);
+    blitRenderPass.setBindings(this.blitBindings);
     blitRenderPass.setVertexInput(
       this.blitInputLayout,
       [{ buffer: this.blitVertexBuffer }],

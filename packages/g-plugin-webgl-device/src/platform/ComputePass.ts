@@ -42,7 +42,7 @@ export class ComputePass_GL implements ComputePass {
     // this.gpuComputePassEncoder.setPipeline(gpuComputePipeline);
   }
 
-  setBindings(bindingLayoutIndex: number, bindings_: Bindings): void {
+  setBindings(bindings_: Bindings): void {
     // const bindings = bindings_ as Bindings_WebGPU;
     // this.gpuComputePassEncoder.setBindGroup(bindingLayoutIndex, bindings.gpuBindGroup[0]);
   }

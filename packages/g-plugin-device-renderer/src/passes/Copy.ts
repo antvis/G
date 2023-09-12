@@ -40,7 +40,7 @@ export class CopyProgram extends DeviceProgram {
 //   renderInst.setAllowSkippingIfPipelineNotReady(false);
 
 //   renderInst.setMegaStateFlags(fullscreenMegaState);
-//   renderInst.setBindingLayouts([{ numUniformBuffers: 0, numSamplers: 1 }]);
+//   renderInst.setBindingLayout({ numUniformBuffers: 0, numSamplers: 1 });
 //   renderInst.drawPrimitives(3);
 
 //   const copyProgram = new CopyProgram();

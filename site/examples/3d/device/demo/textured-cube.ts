@@ -51,7 +51,7 @@ const $canvasContainer = document.createElement('div');
 $canvasContainer.id = 'canvas';
 $container.appendChild($canvasContainer);
 
-async function loadImage(url: string) {
+async function loadImage(url: string): Promise<HTMLImageElement | ImageBitmap> {
   if (!!window.createImageBitmap) {
     const response = await fetch(url);
     const imageBitmap = await createImageBitmap(await response.blob());
@@ -181,8 +181,6 @@ void main() {
     maxLOD: 0,
   });
 
-  const bindingLayouts = [{ numSamplers: 1, numUniformBuffers: 1 }];
-
   const inputLayout = device.createInputLayout({
     vertexBufferDescriptors: [
       {
@@ -209,7 +207,6 @@ void main() {
   });
 
   const pipeline = device.createRenderPipeline({
-    bindingLayouts,
     inputLayout,
     program,
     colorAttachmentFormats: [Format.U8_RGBA_RT],
@@ -240,11 +237,10 @@ void main() {
 
   const bindings = device.createBindings({
     pipeline,
-    bindingLayout: bindingLayouts[0],
     uniformBufferBindings: [
       {
         buffer: uniformBuffer,
-        wordCount: 16,
+        byteLength: 16 * 4,
       },
     ],
     samplerBindings: [
@@ -328,7 +324,7 @@ void main() {
       null,
     );
     renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
-    renderPass.setBindings(0, bindings, [0]);
+    renderPass.setBindings(bindings);
     renderPass.draw(cubeVertexCount);
 
     device.submitPass(renderPass);
