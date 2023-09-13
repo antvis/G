@@ -34,6 +34,9 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.1
         version: 11.1.1(rollup@3.25.1)(typescript@5.1.3)
+      '@types/gl':
+        specifier: ^6.0.2
+        version: 6.0.2
       '@types/jest':
         specifier: ^26.0.24
         version: 26.0.24
@@ -4633,6 +4636,10 @@ packages:
 
   /@types/gl-matrix@2.4.5:
     resolution: {integrity: sha512-0L8Mq1+oaIW0oVzGUDbSW+HnTjCNb4CmoIQE5BkoHt/A7x20z0MJ1PnwfH3atty/vbWLGgvJwVu2Mz3SKFiEFw==}
+
+  /@types/gl@6.0.2:
+    resolution: {integrity: sha512-5vlkHzpu25w2zJ6i41rYbglH3sSTvkFPi34J5p/kYhlS3hF31GaDGWif1jSiKSy8+UCuFlejXPya0hkLKIn++A==}
+    dev: true
 
   /@types/graceful-fs@4.1.6:
     resolution: {integrity: sha512-Sig0SNORX9fdW+bQuTEovKj3uHcUL6LQKbCrrqb1X7J6/ReAbhCXRAhc+SMejhLELFj2QcyuxmUooZ4bt5ReSw==}

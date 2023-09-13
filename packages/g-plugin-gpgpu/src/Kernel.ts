@@ -161,14 +161,20 @@ export class Kernel {
       //     type: bindingType,
       //   })),
       // },
-      uniformBufferBindings: uniforms.map(({ buffer, byteLength }) => ({
-        buffer,
-        byteLength,
-      })),
-      storageBufferBindings: storages.map(({ buffer, byteLength }) => ({
-        buffer,
-        byteLength,
-      })),
+      uniformBufferBindings: uniforms.map(
+        ({ buffer, byteLength, binding }) => ({
+          binding,
+          buffer,
+          byteLength,
+        }),
+      ),
+      storageBufferBindings: storages.map(
+        ({ buffer, byteLength, binding }) => ({
+          binding,
+          buffer,
+          byteLength,
+        }),
+      ),
     });
 
     // fixed bind group 0

@@ -6,7 +6,7 @@ const {
   ShaderMaterial,
   BufferGeometry,
   Mesh,
-  VertexBufferFrequency,
+  VertexStepMode,
   Format,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
@@ -81,7 +81,7 @@ describe('Render custom material with g-webgl', () => {
     bufferGeometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.VERTEX,
+      frequency: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RGB,
