@@ -210,8 +210,15 @@ export class RenderPass_WebGPU implements RenderPass {
     );
   }
 
-  setViewport(x: number, y: number, w: number, h: number): void {
-    this.gpuRenderPassEncoder.setViewport(x, y, w, h, 0, 1);
+  setViewport(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    minDepth = 0,
+    maxDepth = 1,
+  ): void {
+    this.gpuRenderPassEncoder.setViewport(x, y, w, h, minDepth, maxDepth);
   }
 
   setScissor(x: number, y: number, w: number, h: number): void {

@@ -410,6 +410,12 @@
 //   let id;
 //   let t = 0;
 //   const frame = () => {
+//     const computePass = device.createComputePass();
+//     computePass.setPipeline(computePipeline);
+//     computePass.setBindings(bindings[t % 2]);
+//     computePass.dispatchWorkgroups(Math.ceil(numParticles / 64));
+//     device.submitPass(computePass);
+
 //     /**
 //      * An application should call getCurrentTexture() in the same task that renders to the canvas texture.
 //      * Otherwise, the texture could get destroyed by these steps before the application is finished rendering to it.
@@ -420,30 +426,21 @@
 //       colorResolveTo: [onscreenTexture],
 //       colorClearColor: [TransparentWhite],
 //     });
-//     renderPass.setPipeline(showTexturePipeline);
-//     // renderPass.setVertexInput(
-//     //   inputLayout,
-//     //   [
-//     //     {
-//     //       buffer: particleBuffers[(t + 1) % 2],
-//     //     },
-//     //     {
-//     //       buffer: spriteVertexBuffer,
-//     //     },
-//     //   ],
-//     //   null,
-//     // );
-//     const kLastViewport = (kViewportGridSize - 1) * kViewportGridStride + 1;
-//     renderPass.setViewport(kLastViewport, kLastViewport, 32, 32);
-//     renderPass.draw(6, 1, 0, 0);
-//     renderPass.setViewport(kLastViewport + 32, kLastViewport, 16, 16);
-//     renderPass.draw(6, 1, 0, 1);
-//     renderPass.setViewport(kLastViewport + 32, kLastViewport + 16, 8, 8);
-//     renderPass.draw(6, 1, 0, 2);
-//     renderPass.setViewport(kLastViewport + 32, kLastViewport + 24, 4, 4);
-//     renderPass.draw(6, 1, 0, 3);
-
-//     pass.setBindGroup(0, showTextureBG);
+//     renderPass.setPipeline(renderPipeline);
+//     renderPass.setVertexInput(
+//       inputLayout,
+//       [
+//         {
+//           buffer: particleBuffers[(t + 1) % 2],
+//         },
+//         {
+//           buffer: spriteVertexBuffer,
+//         },
+//       ],
+//       null,
+//     );
+//     renderPass.setViewport(0, 0, $canvas.width, $canvas.height);
+//     renderPass.draw(3, numParticles);
 
 //     device.submitPass(renderPass);
 //     ++t;

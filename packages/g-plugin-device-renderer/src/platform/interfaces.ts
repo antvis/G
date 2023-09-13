@@ -612,7 +612,20 @@ interface DebugCommandsMixin {
 
 export interface RenderPass extends DebugCommandsMixin {
   // State management.
-  setViewport: (x: number, y: number, w: number, h: number) => void;
+  setViewport: (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    /**
+     * WebGPU only.
+     */
+    minDepth?: number,
+    /**
+     * WebGPU only.
+     */
+    maxDepth?: number,
+  ) => void;
   setScissor: (x: number, y: number, w: number, h: number) => void;
   setPipeline: (pipeline: RenderPipeline) => void;
   setBindings: (bindings: Bindings, dynamicByteOffsets?: number[]) => void;
@@ -644,6 +657,7 @@ export interface RenderPass extends DebugCommandsMixin {
     firstInstance?: number,
   ) => void;
   /**
+   * WebGPU only.
    * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
    */
   drawIndirect: (indirectBuffer: Buffer, indirectOffset: number) => void;

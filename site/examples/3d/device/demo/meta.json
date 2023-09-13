@@ -85,6 +85,14 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Vdg7RJamXoQAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "image-blur.ts",
+      "title": {
+        "zh": "图像处理 - 高斯模糊",
+        "en": "Image Blur"
+      },
+      "screenshot": ""
+    },
+    {
       "filename": "wgsl.ts",
       "title": {
         "zh": "直接在 WebGPU 中使用 WGSL 语法",
