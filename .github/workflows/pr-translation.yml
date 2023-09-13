@@ -1,0 +1,21 @@
+name: PR Translation
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted, dismissed]
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Translate
+        uses: yhosun/pr-translation-action@v1.0.0
+        with:
+          language-1: 'en'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          google-project-id: 'ecstatic-branch-398907'
+          google-credentials: ${{ secrets.GOOGLE_TRANSLATION_API }}
