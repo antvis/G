@@ -173,7 +173,6 @@ export class GlyphManager {
           unpackFlipY: false,
           unpackAlignment: 1,
         },
-        immutable: false,
       });
       this.glyphAtlasTexture.setImageData([data]);
     }

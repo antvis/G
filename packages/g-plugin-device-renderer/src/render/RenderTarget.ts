@@ -15,7 +15,6 @@ export class RGRenderTarget {
   height = 0;
   sampleCount = 0;
   usage: TextureUsage = TextureUsage.RENDER_TARGET;
-  immutable = true;
 
   needsClear = true;
   texture: Texture | null = null;

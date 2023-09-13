@@ -135,7 +135,7 @@ void main() {
 
   const uniformBuffer = device.createBuffer({
     viewOrSize: 16 * 4, // mat4
-    usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
+    usage: BufferUsage.UNIFORM,
     hint: BufferFrequencyHint.DYNAMIC,
   });
 
@@ -196,7 +196,6 @@ void main() {
         size: 16 * 4,
       },
     ],
-    samplerBindings: [],
   });
 
   const mainColorRT = device.createRenderTargetFromTexture(

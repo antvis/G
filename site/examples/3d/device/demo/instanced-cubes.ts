@@ -135,7 +135,7 @@ void main() {
 
   const uniformBuffer = device.createBuffer({
     viewOrSize: uniformBufferSize, // mat4
-    usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
+    usage: BufferUsage.UNIFORM,
     hint: BufferFrequencyHint.DYNAMIC,
   });
 

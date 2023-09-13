@@ -17,7 +17,6 @@ import {
   TexFilterMode,
   MipFilterMode,
   TextureDimension,
-  SamplerFormatKind,
 } from '@antv/g-plugin-device-renderer';
 import * as lil from 'lil-gui';
 import { mat4, vec3 } from 'gl-matrix';
@@ -161,7 +160,7 @@ void main() {
 
   const uniformBuffer = device.createBuffer({
     viewOrSize: 16 * 4, // mat4
-    usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
+    usage: BufferUsage.UNIFORM,
     hint: BufferFrequencyHint.DYNAMIC,
   });
 
@@ -184,7 +183,6 @@ void main() {
     depth: 6,
     dimension: TextureDimension.TEXTURE_CUBE_MAP,
     usage: TextureUsage.SAMPLED,
-    immutable: false,
   });
   texture.setImageData(imageBitmaps);
   device.setResourceName(texture, 'Cube map');
@@ -269,8 +267,6 @@ void main() {
       {
         texture,
         sampler,
-        dimension: TextureDimension.TEXTURE_CUBE_MAP,
-        formatKind: SamplerFormatKind.Float,
       },
     ],
   });
@@ -392,7 +388,7 @@ void main() {
 }
 
 (async () => {
-  let disposeCallback = await render(deviceContributionWebGPU);
+  let disposeCallback = await render(deviceContributionWebGL2);
 
   // GUI
   const gui = new lil.GUI({ autoPlace: false });

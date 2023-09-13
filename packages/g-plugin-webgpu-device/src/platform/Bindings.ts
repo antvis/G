@@ -90,13 +90,12 @@ export class Bindings_WebGPU extends ResourceBase_WebGPU implements Bindings {
           binding.texture !== null
             ? binding.texture
             : this.device['getFallbackTexture'](samplerEntry);
-        assert(
-          samplerEntry.dimension === (texture as Texture_WebGPU).dimension,
+
+        samplerEntry.dimension = (texture as Texture_WebGPU).dimension;
+        samplerEntry.formatKind = getFormatSamplerKind(
+          (texture as Texture_WebGPU).pixelFormat,
         );
-        assert(
-          samplerEntry.formatKind ===
-            getFormatSamplerKind((texture as Texture_WebGPU).pixelFormat),
-        );
+
         const gpuTextureView = (texture as Texture_WebGPU).gpuTextureView;
         gpuBindGroupEntries[1].push({
           binding: numBindings++,

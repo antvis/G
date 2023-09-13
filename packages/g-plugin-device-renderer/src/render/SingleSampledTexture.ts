@@ -17,7 +17,6 @@ export class SingleSampledTexture {
 
   texture: Texture;
   age = 0;
-  immutable = true;
 
   constructor(device: Device, desc: Readonly<RGRenderTargetDescription>) {
     this.pixelFormat = desc.pixelFormat;

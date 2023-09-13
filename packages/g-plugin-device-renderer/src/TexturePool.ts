@@ -55,7 +55,6 @@ export class TexturePool {
         pixelStore: {
           unpackFlipY: false,
         },
-        immutable: false,
         ...descriptor,
       });
 

@@ -37,7 +37,7 @@ export interface Texture extends ResourceBase {
   type: ResourceType.Texture;
   setImageData: (
     data: (TexImageSource | ArrayBufferView)[],
-    firstMipLevel?: number,
+    lod?: number,
   ) => void;
 }
 export interface RenderTarget extends ResourceBase {
@@ -355,7 +355,9 @@ export interface TextureDescriptor {
   depth?: number;
   numLevels?: number;
   usage: TextureUsage;
-  immutable?: boolean;
+  /**
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/pixelStorei
+   */
   pixelStore?: Partial<{
     packAlignment: number;
     unpackAlignment: number;

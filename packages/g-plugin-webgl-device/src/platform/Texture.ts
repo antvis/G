@@ -7,6 +7,7 @@ import {
   Texture,
   TextureDescriptor,
   TextureDimension,
+  TextureUsage,
   assert,
   getFormatSamplerKind,
   getFormatTypeFlags,
@@ -16,6 +17,7 @@ import type { Device_GL } from './Device';
 import { ResourceBase_GL } from './ResourceBase';
 import {
   getPlatformTexture,
+  isTextureFormatCompressed,
   // isTextureFormatCompressed,
   isWebGL2,
 } from './utils';
@@ -65,7 +67,7 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     let gl_target: GLenum;
     let gl_texture: WebGLTexture;
     const numLevels = this.clampNumLevels(descriptor);
-    this.immutable = descriptor.immutable ?? true;
+    this.immutable = descriptor.usage === TextureUsage.RENDER_TARGET;
     this.pixelStore = descriptor.pixelStore;
     this.pixelFormat = descriptor.pixelFormat;
     this.formatKind = getFormatSamplerKind(descriptor.pixelFormat);
@@ -161,43 +163,47 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
       } else if (descriptor.dimension === TextureDimension.TEXTURE_2D_ARRAY) {
         gl_target = GL.TEXTURE_2D_ARRAY;
         gl.bindTexture(gl_target, gl_texture);
-
-        if (isWebGL2(gl)) {
-          // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texStorage3D
-          gl.texStorage3D(
-            gl_target,
-            numLevels,
-            internalformat,
-            descriptor.width,
-            descriptor.height,
-            descriptor.depth,
-          );
+        if (this.immutable) {
+          if (isWebGL2(gl)) {
+            // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texStorage3D
+            gl.texStorage3D(
+              gl_target,
+              numLevels,
+              internalformat,
+              descriptor.width,
+              descriptor.height,
+              descriptor.depth,
+            );
+          }
         }
       } else if (descriptor.dimension === TextureDimension.TEXTURE_3D) {
         gl_target = GL.TEXTURE_3D;
         gl.bindTexture(gl_target, gl_texture);
-
-        if (isWebGL2(gl)) {
-          gl.texStorage3D(
-            gl_target,
-            numLevels,
-            internalformat,
-            descriptor.width,
-            descriptor.height,
-            descriptor.depth,
-          );
+        if (this.immutable) {
+          if (isWebGL2(gl)) {
+            gl.texStorage3D(
+              gl_target,
+              numLevels,
+              internalformat,
+              descriptor.width,
+              descriptor.height,
+              descriptor.depth,
+            );
+          }
         }
       } else if (descriptor.dimension === TextureDimension.TEXTURE_CUBE_MAP) {
         gl_target = GL.TEXTURE_CUBE_MAP;
         gl.bindTexture(gl_target, gl_texture);
-        if (isWebGL2(gl)) {
-          gl.texStorage2D(
-            gl_target,
-            numLevels,
-            internalformat,
-            descriptor.width,
-            descriptor.height,
-          );
+        if (this.immutable) {
+          if (isWebGL2(gl)) {
+            gl.texStorage2D(
+              gl_target,
+              numLevels,
+              internalformat,
+              descriptor.width,
+              descriptor.height,
+            );
+          }
         }
         assert(descriptor.depth === 6);
       } else {
@@ -210,21 +216,13 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
     this.numLevels = numLevels;
   }
 
-  setImageData(
-    levelDatas: (TexImageSource | ArrayBufferView)[],
-    firstMipLevel = 0,
-  ) {
-    // const maxMipLevel = Math.min(
-    //   firstMipLevel + levelDatas.length,
-    //   this.numLevels,
-    // );
-
+  setImageData(levelDatas: (TexImageSource | ArrayBufferView)[], lod = 0) {
     const gl = this.device.gl;
-    // const isCompressed = isTextureFormatCompressed(this.pixelFormat);
+    const isCompressed = isTextureFormatCompressed(this.pixelFormat);
     // const is3D =
     //   this.gl_target === GL.TEXTURE_3D ||
     //   this.gl_target === GL.TEXTURE_2D_ARRAY;
-    // const isCube = this.gl_target === GL.TEXTURE_CUBE_MAP;
+    const isCube = this.gl_target === GL.TEXTURE_CUBE_MAP;
     // @ts-ignore
     const isTypedArray = levelDatas[0].buffer;
 
@@ -257,79 +255,70 @@ export class Texture_GL extends ResourceBase_GL implements Texture {
 
     this.preprocessImage();
 
-    // for (let i = 0, levelDatasIdx = 0; i < maxMipLevel; i++) {
-    //   if (i >= firstMipLevel) {
-    //     const levelData = levelDatas[levelDatasIdx++] as Uint8Array;
-    //     const sliceElementSize = levelData.length / this.depth;
+    for (let z = 0; z < this.depth; z++) {
+      const levelData = levelDatas[z];
+      let gl_target = this.gl_target;
 
-    //     if (isCube) {
+      if (isCube) {
+        gl_target = GL.TEXTURE_CUBE_MAP_POSITIVE_X + (z % 6);
+      }
 
-    //     } else if (is3D) {
-
-    //     } else if (isArray) {
-
-    //     } else {
-
-    //     }
-    //   }
-    // }
-
-    if (this.immutable) {
-      // must use texSubImage2D instead of texImage2D, since texture is immutable
-      // @see https://stackoverflow.com/questions/56123201/unity-plugin-texture-is-immutable?rq=1
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
-      gl.texSubImage2D(
-        this.gl_target,
-        0,
-        0,
-        0,
-        width,
-        height,
-        gl_format,
-        gl_type,
-        // @ts-ignore
-        data,
-      );
-    } else {
-      if (isWebGL2(gl)) {
-        // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
-        gl.texImage2D(
-          this.gl_target,
-          // level,
+      if (this.immutable) {
+        if (isCompressed) {
+          // TODO: gl.compressedTexSubImage2D()
+        }
+        // must use texSubImage2D instead of texImage2D, since texture is immutable
+        // @see https://stackoverflow.com/questions/56123201/unity-plugin-texture-is-immutable?rq=1
+        // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texSubImage2D
+        gl.texSubImage2D(
+          gl_target,
+          lod,
           0,
-          gl_format,
+          0,
           width,
           height,
-          0, // border must be 0
-          gl_format, // TODO: can be different with gl_format
+          gl_format,
           gl_type,
-          // @ts-ignore
-          data,
+          levelData as ArrayBufferView,
         );
       } else {
-        // WebGL1: upload Array & Image separately
-        if (isTypedArray) {
-          (gl as WebGLRenderingContext).texImage2D(
-            this.gl_target,
-            0,
+        if (isWebGL2(gl)) {
+          // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+          gl.texImage2D(
+            gl_target,
+            lod,
             gl_format,
             width,
             height,
-            0,
-            gl_format,
+            0, // border must be 0
+            gl_format, // TODO: can be different with gl_format
             gl_type,
-            // @ts-ignore
-            data,
+            levelData as ArrayBufferView,
           );
         } else {
-          (gl as WebGLRenderingContext).texImage2D(
-            this.gl_target,
-            0,
-            gl_format,
-            gl_format,
-            gl_type,
-            data as TexImageSource,
-          );
+          // WebGL1: upload Array & Image separately
+          if (isTypedArray) {
+            (gl as WebGLRenderingContext).texImage2D(
+              gl_target,
+              lod,
+              gl_format,
+              width,
+              height,
+              0,
+              gl_format,
+              gl_type,
+              levelData as ArrayBufferView,
+            );
+          } else {
+            (gl as WebGLRenderingContext).texImage2D(
+              gl_target,
+              lod,
+              gl_format,
+              gl_format,
+              gl_type,
+              levelData as TexImageSource,
+            );
+          }
         }
       }
     }

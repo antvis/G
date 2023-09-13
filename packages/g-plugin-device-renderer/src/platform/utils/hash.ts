@@ -49,7 +49,13 @@ function samplerBindingEquals(
 ): boolean {
   if (a === null) return b === null;
   if (b === null) return false;
-  return a.sampler === b.sampler && a.texture === b.texture;
+  return (
+    a.sampler === b.sampler &&
+    a.texture === b.texture &&
+    a.dimension === b.dimension &&
+    a.formatKind === b.formatKind &&
+    a.comparison === b.comparison
+  );
 }
 
 export function bindingsDescriptorEquals(

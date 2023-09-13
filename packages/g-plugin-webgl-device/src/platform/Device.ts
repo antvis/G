@@ -37,6 +37,7 @@ import {
   TransparentWhite,
   VendorInfo,
   VertexBufferDescriptor,
+  getFormatSamplerKind,
   preprocessShader_GLSL,
 } from '@antv/g-plugin-device-renderer';
 import {
@@ -414,7 +415,6 @@ export class Device_GL implements SwapChain, Device {
       height: 1,
       depth,
       numLevels: 1,
-      immutable: true,
     });
 
     // this.blackTexture = this.ensureResourceExists(gl.createTexture());
@@ -1653,7 +1653,6 @@ export class Device_GL implements SwapChain, Device {
     for (let i = 0; i < bindingLayoutTable.numSamplers; i++) {
       const binding = samplerBindings[i];
       const samplerIndex = bindingLayoutTable.firstSampler + i;
-      const samplerEntry = bindingLayoutTable.samplerEntries[i];
       const gl_sampler =
         binding !== null && binding.sampler !== null
           ? getPlatformSampler(binding.sampler)
@@ -1672,11 +1671,11 @@ export class Device_GL implements SwapChain, Device {
 
       if (this.currentTextures[samplerIndex] !== gl_texture) {
         this.setActiveTexture(gl.TEXTURE0 + samplerIndex);
+        const { gl_target, width, height, pixelFormat } = assertExists(binding)
+          .texture as Texture_GL;
         if (gl_texture !== null) {
           // update index
           (binding.texture as Texture_GL).textureIndex = samplerIndex;
-          const { gl_target, width, height } = assertExists(binding)
-            .texture as Texture_GL;
           gl.bindTexture(gl_target, gl_texture);
 
           // In WebGL1 set tex's parameters @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texParameter
@@ -1689,13 +1688,13 @@ export class Device_GL implements SwapChain, Device {
           }
 
           this.debugGroupStatisticsTextureBind();
-
-          assert(samplerEntry.gl_target === gl_target);
-          // assert(samplerEntry.formatKind === formatKind);
         } else {
           gl.bindTexture(
-            samplerEntry.gl_target,
-            this.getFallbackTexture(samplerEntry),
+            gl_target,
+            this.getFallbackTexture({
+              gl_target,
+              formatKind: getFormatSamplerKind(pixelFormat),
+            }),
           );
         }
         this.currentTextures[samplerIndex] = gl_texture;

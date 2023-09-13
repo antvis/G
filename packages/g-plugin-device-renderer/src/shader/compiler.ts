@@ -3,15 +3,15 @@ import { ClipSpaceNearZ, ViewportOrigin } from '../platform';
 import { assert } from '../platform/utils';
 import { DeviceProgram } from '../render';
 
-const ES100_REPLACEMENTS: [RegExp, string][] = [
-  // In GLSL 1.00 ES these functions are provided by an extension
-  [/\btexture(2D|2DProj|Cube)Lod\(/g, 'texture$1LodEXT('],
+// const ES100_REPLACEMENTS: [RegExp, string][] = [
+//   // In GLSL 1.00 ES these functions are provided by an extension
+//   [/\btexture(2D|2DProj|Cube)Lod\(/g, 'texture$1LodEXT('],
 
-  // Overloads in GLSL 3.00 map to individual functions. Note that we cannot
-  // differentiate 2D,2DProj,Cube without type analysis so we choose the most common variant.
-  [/\btexture\(/g, 'texture2D('],
-  [/\btextureLod\(/g, 'texture2DLodEXT('],
-];
+//   // Overloads in GLSL 3.00 map to individual functions. Note that we cannot
+//   // differentiate 2D,2DProj,Cube without type analysis so we choose the most common variant.
+//   [/\btexture\(/g, 'texture2D('],
+//   [/\btextureLod\(/g, 'texture2DLodEXT('],
+// ];
 
 function defineStr(k: string, v: string): string {
   return `#define ${k} ${v}`;
@@ -260,41 +260,7 @@ layout(set = ${set}, binding = ${
     );
   }
 
-  rest = rest.replace(
-    /\bPU_SAMPLER_(\w+)\((.*?)\)/g,
-    (substr, combinedSamplerType, samplerName) => {
-      return `SAMPLER_${combinedSamplerType}(P_${samplerName})`;
-    },
-  );
-
-  rest = rest.replace(
-    /\bPF_SAMPLER_(\w+)\((.*?)\)/g,
-    (substr, combinedSamplerType, samplerName) => {
-      return `PP_SAMPLER_${combinedSamplerType}(P_${samplerName})`;
-    },
-  );
-
-  rest = rest.replace(/\bPU_TEXTURE\((.*?)\)/g, (substr, samplerName) => {
-    return `TEXTURE(P_${samplerName})`;
-  });
-
   if (vendorInfo.separateSamplerTextures) {
-    rest = rest.replace(
-      /\bPD_SAMPLER_(\w+)\((.*?)\)/g,
-      (substr, combinedSamplerType, samplerName) => {
-        const [textureType, samplerType] =
-          getSeparateSamplerTypes(combinedSamplerType);
-        return `texture${textureType} T_P_${samplerName}, sampler${samplerType} S_P_${samplerName}`;
-      },
-    );
-
-    rest = rest.replace(
-      /\bPP_SAMPLER_(\w+)\((.*?)\)/g,
-      (substr, combinedSamplerType, samplerName) => {
-        return `T_${samplerName}, S_${samplerName}`;
-      },
-    );
-
     rest = rest.replace(
       /\bSAMPLER_(\w+)\((.*?)\)/g,
       (substr, combinedSamplerType, samplerName) => {
@@ -306,26 +272,22 @@ layout(set = ${set}, binding = ${
       return `T_${samplerName}`;
     });
   } else {
-    rest = rest.replace(
-      /\bPD_SAMPLER_(\w+)\((.*?)\)/g,
-      (substr, combinedSamplerType, samplerName) => {
-        return `sampler${combinedSamplerType} P_${samplerName}`;
-      },
-    );
-
-    rest = rest.replace(
-      /\bPP_SAMPLER_(\w+)\((.*?)\)/g,
-      (substr, combinedSamplerType, samplerName) => {
-        return samplerName;
-      },
-    );
-
+    const samplerNames: [string, string][] = [];
     rest = rest.replace(
       /\bSAMPLER_(\w+)\((.*?)\)/g,
       (substr, combinedSamplerType, samplerName) => {
+        samplerNames.push([samplerName, combinedSamplerType]);
         return samplerName;
       },
     );
+    if (isGLSL100) {
+      samplerNames.forEach(([samplerName, combinedSamplerType]) => {
+        // texture(u_T) -> texture2D(u_T) or textureCube(u_T)
+        rest = rest.replace(new RegExp(`texture\\(${samplerName}`, 'g'), () => {
+          return `texture${combinedSamplerType}(${samplerName}`;
+        });
+      });
+    }
 
     rest = rest.replace(/\bTEXTURE\((.*?)\)/g, (substr, samplerName) => {
       return samplerName;
@@ -452,9 +414,9 @@ ${rest}
     concat = concat.replace(/^\s*layout\((.*)\)/gm, '');
 
     // replace texture with texture2D
-    for (const [pattern, replacement] of ES100_REPLACEMENTS) {
-      concat = concat.replace(pattern, replacement);
-    }
+    // for (const [pattern, replacement] of ES100_REPLACEMENTS) {
+    //   concat = concat.replace(pattern, replacement);
+    // }
   }
 
   return concat;

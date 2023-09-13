@@ -109,7 +109,7 @@ export class Texture_WebGPU
   /**
    * @see https://toji.dev/webgpu-best-practices/img-textures
    */
-  setImageData(datas: (TexImageSource | ArrayBufferView)[], firstMipLevel = 0) {
+  setImageData(datas: (TexImageSource | ArrayBufferView)[], lod = 0) {
     const { device } = this.device;
     let texture: GPUTexture;
     let width: number;
