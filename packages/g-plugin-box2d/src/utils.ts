@@ -1,7 +1,9 @@
 /**
  * @see https://stackoverflow.com/questions/45660743/sort-points-in-counter-clockwise-in-javascript
  */
-export function sortPointsInCCW(pts: [number, number][]): [number, number][] {
+export function sortPointsInCCW(
+  pts: ([number, number] | [number, number, number])[],
+): [number, number][] {
   const points = pts.map(([x, y]) => ({
     x,
     y,

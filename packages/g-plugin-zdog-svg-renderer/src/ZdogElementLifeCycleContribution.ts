@@ -1,6 +1,7 @@
 import type {
   CanvasContext,
   DisplayObject,
+  GlobalRuntime,
   Text,
   // ParsedCircleStyleProps,
   // ParsedEllipseStyleProps,
@@ -16,7 +17,7 @@ import { SVGRenderer } from '@antv/g-svg';
 export class ZdogElementLifeCycleContribution
   implements SVGRenderer.ElementLifeCycleContribution
 {
-  constructor(private context: CanvasContext) {}
+  constructor(private context: CanvasContext, private runtime: GlobalRuntime) {}
 
   createElement(object: DisplayObject<any, any>): SVGElement {
     const { nodeName } = object;
@@ -83,6 +84,7 @@ export class ZdogElementLifeCycleContribution
           $el,
           parsedStyle,
           object as Text,
+          this.runtime,
         );
         break;
       }

@@ -9,6 +9,21 @@
       "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*rWIvR729TqwAAAAAAAAAAAAADmJ7AQ/original"
     },
     {
+      "filename": "path.js",
+      "title": {
+        "zh": "带渐变的 Path",
+        "en": "Path with gradient"
+      }
+    },
+    {
+      "filename": "radial-gradient.js",
+      "title": {
+        "zh": "Radial Gradient",
+        "en": "Radial Gradient"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*8v8eQ77nS2EAAAAAAAAAAAAADmJ7AQ/original"
+    },
+    {
       "filename": "inner-shadow.js",
       "title": {
         "zh": "Inner Shadow",

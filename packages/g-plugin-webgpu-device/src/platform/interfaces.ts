@@ -3,15 +3,8 @@ import type {
   TextureDimension,
   TextureUsage,
   RenderTarget,
-  RenderPipeline,
-  Texture,
-  Sampler,
   Device,
-  BindingLayoutSamplerDescriptor,
-  BindingLayoutDescriptor,
-  Buffer,
 } from '@antv/g-plugin-device-renderer';
-import { BufferDescriptor } from '@antv/g-plugin-device-renderer';
 
 export interface TextureSharedDescriptor {
   dimension: TextureDimension;
@@ -46,22 +39,9 @@ export interface BindGroupLayout {
 
 export interface IDevice_WebGPU extends Device {
   device: GPUDevice;
-  getFallbackSampler: (samplerEntry: BindingLayoutSamplerDescriptor) => Sampler;
-  getFallbackTexture: (samplerEntry: BindingLayoutSamplerDescriptor) => Texture;
-  createBuffer: (descriptor: BufferDescriptor) => Buffer;
   createTextureShared: (
     descriptor: TextureSharedDescriptor,
     texture: TextureShared_WebGPU,
     skipCreate: boolean,
   ) => void;
-  _createRenderPipeline: (
-    renderPipeline: RenderPipeline,
-    async?: boolean,
-  ) => void;
-  _createBindGroupLayout: (
-    bindingLayout: BindingLayoutDescriptor,
-  ) => BindGroupLayout;
-  // ensureRenderPipeline: (renderPipeline: RenderPipeline) => void;
-  // createBindGroupLayout(bindingLayout: Partial<BindingLayoutDescriptor>): BindGroupLayout;
-  // createPipelineLayout(bindingLayouts: BindingLayoutDescriptor[]): GPUPipelineLayout;
 }

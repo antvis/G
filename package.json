@@ -50,7 +50,7 @@
     "jest-environment-jsdom": "^26.6.2"
   },
   "devDependencies": {
-    "@antv/util": "^3.3.1",
+    "@antv/util": "^3.3.4",
     "@commitlint/cli": "^8.3.6",
     "@commitlint/config-angular": "^9.1.2",
     "@changesets/cli": "^2.26.2",
@@ -71,6 +71,7 @@
     "eslint-plugin-jest": "24.3.6",
     "git-contributor": "~1.0.11",
     "gl": "^6.0.2",
+    "get-pixels": "3.3.3",
     "hammerjs": "^2.0.8",
     "husky": "^7.0.4",
     "is-ci": "2.0.0",

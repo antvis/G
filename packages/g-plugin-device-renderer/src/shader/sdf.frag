@@ -4,7 +4,7 @@
 #pragma glslify: import('@antv/g-shader-components/uv.declaration.frag')
 #pragma glslify: import('@antv/g-shader-components/map.declaration.frag')
 
-in vec3 v_Data;
+in vec2 v_Data;
 in vec2 v_Radius;
 in vec4 v_StylePacked3;
 
@@ -23,24 +23,25 @@ void main() {
 
   bool omitStroke = v_StylePacked3.z == 1.0;
 
-  float antialiasblur = v_Data.z;
-  float antialiased_blur = -max(0.0, antialiasblur);
   vec2 r = (v_Radius - (omitStroke ? 0.0 : u_StrokeWidth)) / v_Radius.y;
   float wh = v_Radius.x / v_Radius.y;
+
+  float dist = length(v_Data);
+  float antialiased_blur = -fwidth(dist);
 
   float outer_df;
   float inner_df;
   // 'circle', 'ellipse', 'rect'
   if (shape == 0) {
-    outer_df = sdCircle(v_Data.xy, 1.0);
-    inner_df = sdCircle(v_Data.xy, r.x);
+    outer_df = sdCircle(v_Data, 1.0);
+    inner_df = sdCircle(v_Data, r.x);
   } else if (shape == 1) {
-    outer_df = sdEllipsoidApproximated(v_Data.xy, vec2(wh, 1.0));
-    inner_df = sdEllipsoidApproximated(v_Data.xy, r);
+    outer_df = sdEllipsoidApproximated(v_Data, vec2(wh, 1.0));
+    inner_df = sdEllipsoidApproximated(v_Data, r);
   } else if (shape == 2) {
     bool useRadius = v_StylePacked3.y > epsilon;
-    outer_df = sdRoundedBox(v_Data.xy, vec2(wh, 1.0), useRadius ? (v_StylePacked3.y + u_StrokeWidth / 2.0) / v_Radius.y : 0.0);
-    inner_df = sdRoundedBox(v_Data.xy, r, useRadius ? (v_StylePacked3.y - u_StrokeWidth / 2.0) / v_Radius.y : 0.0);
+    outer_df = sdRoundedBox(v_Data, vec2(wh, 1.0), useRadius ? (v_StylePacked3.y + u_StrokeWidth / 2.0) / v_Radius.y : 0.0);
+    inner_df = sdRoundedBox(v_Data, r, useRadius ? (v_StylePacked3.y - u_StrokeWidth / 2.0) / v_Radius.y : 0.0);
   }
 
   float opacity_t = smoothstep(0.0, antialiased_blur, outer_df);

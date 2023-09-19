@@ -21,10 +21,15 @@ void main() {
   } else {
     outputColor = u_StrokeColor;
     #ifdef USE_MAP
-        outputColor = u_Color;
+      outputColor = u_Color;
     #endif
 
-    float blur = smoothstep(0.0, v_Distance.y, 1.0 - abs(v_Distance.x));
+    float blur;
+    if (v_Distance.y < 1.0) {
+      blur = smoothstep(0.0, v_Distance.y, 1.0 - abs(v_Distance.x));
+    } else {
+      blur = 1.0 / v_Distance.y;
+    }
     float u_dash_offset = v_Dash.y;
     float u_dash_array = v_Dash.z;
     float u_dash_ratio = v_Dash.w;
@@ -32,6 +37,6 @@ void main() {
     outputColor.a = outputColor.a
       * blur
       * u_Opacity * u_StrokeOpacity
-      * ceil(mod(v_Dash.x + u_dash_offset, u_dash_array) - (u_dash_array * u_dash_ratio));
+      * (u_dash_array < 1.0 ? (ceil((u_dash_array * u_dash_ratio) - mod(v_Dash.x + u_dash_offset, u_dash_array))) : 1.0);
   }
 }

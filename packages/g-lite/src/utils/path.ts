@@ -39,6 +39,35 @@ export function getOrCalculatePathTotalLength(path: Path) {
   return path.parsedStyle.path.totalLength;
 }
 
+export function removeRedundantMCommand(path: AbsoluteArray) {
+  for (let i = 0; i < path.length; i++) {
+    const prevSegment = path[i - 1];
+    const segment = path[i];
+    const cmd = segment[0];
+    if (cmd === 'M') {
+      if (prevSegment) {
+        const prevCmd = prevSegment[0];
+        const srcPoint = [segment[1], segment[2]];
+        let destPoint: [number, number];
+
+        if (prevCmd === 'L' || prevCmd === 'M') {
+          destPoint = [prevSegment[1], prevSegment[2]];
+        } else if (prevCmd === 'C' || prevCmd === 'A' || prevCmd === 'Q') {
+          destPoint = [
+            prevSegment[prevSegment.length - 2] as number,
+            prevSegment[prevSegment.length - 1] as number,
+          ];
+        }
+
+        if (destPoint && isSamePoint(srcPoint, destPoint)) {
+          path.splice(i, 1);
+          i--;
+        }
+      }
+    }
+  }
+}
+
 export function hasArcOrBezier(path: AbsoluteArray) {
   let hasArc = false;
   const count = path.length;
@@ -786,7 +815,7 @@ function ellipseToCommands(
 }
 
 function polygonToCommands(
-  points: [number, number][],
+  points: ([number, number] | [number, number, number])[],
   closed: boolean,
 ): AbsoluteArray {
   const result = points.map((point, i) => {
@@ -854,16 +883,21 @@ export function convertToPath(
   let commands: AbsoluteArray = [] as unknown as AbsoluteArray;
   switch (object.nodeName) {
     case Shape.LINE:
-      const { x1, y1, x2, y2 } = (object as Line).parsedStyle;
+      const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = (object as Line).parsedStyle;
       commands = lineToCommands(x1, y1, x2, y2);
       break;
     case Shape.CIRCLE: {
-      const { r, cx, cy } = (object as Circle).parsedStyle;
+      const { r = 0, cx = 0, cy = 0 } = (object as Circle).parsedStyle;
       commands = ellipseToCommands(r, r, cx, cy);
       break;
     }
     case Shape.ELLIPSE: {
-      const { rx, ry, cx, cy } = (object as Ellipse).parsedStyle;
+      const {
+        rx = 0,
+        ry = 0,
+        cx = 0,
+        cy = 0,
+      } = (object as Ellipse).parsedStyle;
       commands = ellipseToCommands(rx, ry, cx, cy);
       break;
     }
@@ -876,7 +910,13 @@ export function convertToPath(
       );
       break;
     case Shape.RECT:
-      const { width, height, x, y, radius } = (object as Rect).parsedStyle;
+      const {
+        width = 0,
+        height = 0,
+        x = 0,
+        y = 0,
+        radius,
+      } = (object as Rect).parsedStyle;
 
       const hasRadius = radius && radius.some((r) => r !== 0);
       commands = rectToCommands(

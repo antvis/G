@@ -10,7 +10,7 @@ import {
   Fog,
   FogType,
   Format,
-  FrontFaceMode,
+  FrontFace,
   GL,
   Light,
   Material,
@@ -24,7 +24,7 @@ import {
   TextureUsage,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
-  VertexBufferFrequency,
+  VertexStepMode,
   WrapMode,
 } from '@antv/g-plugin-device-renderer';
 
@@ -42,7 +42,7 @@ export {
   Fog,
   FogType,
   Format,
-  FrontFaceMode,
+  FrontFace,
   Light,
   Material,
   Mesh,
@@ -56,7 +56,7 @@ export {
   GL,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
-  VertexBufferFrequency,
+  VertexStepMode,
   WrapMode,
 };
 

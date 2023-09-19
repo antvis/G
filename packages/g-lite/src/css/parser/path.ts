@@ -17,6 +17,7 @@ import {
   getPathBBox,
   hasArcOrBezier,
   path2Segments,
+  removeRedundantMCommand,
 } from '../../utils/path';
 
 const internalParsePath = (path: string | PathArray) => {
@@ -46,6 +47,8 @@ const internalParsePath = (path: string | PathArray) => {
     absolutePath = normalizePath('');
     console.error(`[g]: Invalid SVG Path definition: ${path}`);
   }
+
+  removeRedundantMCommand(absolutePath);
 
   const hasArc = hasArcOrBezier(absolutePath);
 

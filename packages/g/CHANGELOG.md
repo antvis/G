@@ -1,5 +1,124 @@
 # @antv/g
 
+## 5.18.14
+
+### Patch Changes
+
+-   Updated dependencies [e5d69c70]
+    -   @antv/g-lite@1.2.13
+    -   @antv/g-camera-api@1.2.13
+    -   @antv/g-dom-mutation-observer-api@1.2.13
+    -   @antv/g-web-animations-api@1.2.13
+
+## 5.18.13
+
+### Patch Changes
+
+-   Updated dependencies [eb61cba4]
+-   Updated dependencies [eb61cba4]
+    -   @antv/g-lite@1.2.12
+    -   @antv/g-camera-api@1.2.12
+    -   @antv/g-dom-mutation-observer-api@1.2.12
+    -   @antv/g-web-animations-api@1.2.12
+
+## 5.18.12
+
+### Patch Changes
+
+-   Updated dependencies [d63ea0bf]
+    -   @antv/g-lite@1.2.11
+    -   @antv/g-camera-api@1.2.11
+    -   @antv/g-dom-mutation-observer-api@1.2.11
+    -   @antv/g-web-animations-api@1.2.11
+
+## 5.18.11
+
+### Patch Changes
+
+-   Updated dependencies [414d08d9]
+    -   @antv/g-lite@1.2.10
+    -   @antv/g-camera-api@1.2.10
+    -   @antv/g-dom-mutation-observer-api@1.2.10
+    -   @antv/g-web-animations-api@1.2.10
+
+## 5.18.10
+
+### Patch Changes
+
+-   Updated dependencies [3856560c]
+    -   @antv/g-lite@1.2.9
+    -   @antv/g-camera-api@1.2.9
+    -   @antv/g-dom-mutation-observer-api@1.2.9
+    -   @antv/g-web-animations-api@1.2.9
+
+## 5.18.9
+
+### Patch Changes
+
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+-   Updated dependencies [3d4f5da7]
+    -   @antv/g-lite@1.2.8
+    -   @antv/g-camera-api@1.2.8
+    -   @antv/g-dom-mutation-observer-api@1.2.8
+    -   @antv/g-web-animations-api@1.2.8
+
+## 5.18.8
+
+### Patch Changes
+
+-   Updated dependencies [70aa0b32]
+-   Updated dependencies [789bd4c9]
+    -   @antv/g-web-animations-api@1.2.7
+    -   @antv/g-camera-api@1.2.7
+    -   @antv/g-lite@1.2.7
+    -   @antv/g-dom-mutation-observer-api@1.2.7
+
+## 5.18.7
+
+### Patch Changes
+
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+-   Updated dependencies [1b0901ba]
+    -   @antv/g-lite@1.2.6
+    -   @antv/g-camera-api@1.2.6
+    -   @antv/g-dom-mutation-observer-api@1.2.6
+    -   @antv/g-web-animations-api@1.2.6
+
+## 5.18.6
+
+### Patch Changes
+
+-   Updated dependencies [ff2f4585]
+-   Updated dependencies [6fa21f84]
+    -   @antv/g-lite@1.2.5
+    -   @antv/g-camera-api@1.2.5
+    -   @antv/g-dom-mutation-observer-api@1.2.5
+    -   @antv/g-web-animations-api@1.2.5
+
+## 5.18.5
+
+### Patch Changes
+
+-   Updated dependencies [6757ccbd]
+    -   @antv/g-lite@1.2.4
+    -   @antv/g-camera-api@1.2.4
+    -   @antv/g-dom-mutation-observer-api@1.2.4
+    -   @antv/g-web-animations-api@1.2.4
+
+## 5.18.4
+
+### Patch Changes
+
+-   Updated dependencies [6cbaae4d]
+    -   @antv/g-lite@1.2.3
+    -   @antv/g-camera-api@1.2.3
+    -   @antv/g-dom-mutation-observer-api@1.2.3
+    -   @antv/g-web-animations-api@1.2.3
+
 ## 5.18.3
 
 ### Patch Changes

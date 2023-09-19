@@ -5,7 +5,7 @@ import {
   align,
 } from '@antv/g-plugin-device-renderer';
 import {
-  assert,
+  // assert,
   BufferUsage,
   ResourceType,
 } from '@antv/g-plugin-device-renderer';
@@ -39,7 +39,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
   }) {
     super({ id, device });
 
-    const { viewOrSize, usage, hint } = descriptor;
+    const { viewOrSize, usage, hint = BufferFrequencyHint.STATIC } = descriptor;
     const { uniformBufferMaxPageByteSize, gl } = device;
 
     const isStorageTexture = usage & BufferUsage.STORAGE;
@@ -56,7 +56,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       //   numLevels: 1,
       //   immutable: true,
       // });
-      // texture.setImageData([new Uint8Array(4 * depth)], 0);
+      // texture.setImageData([new Uint8Array(4 * depth)]);
 
       // Create later.
       return this;
@@ -85,7 +85,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
 
     let pageByteSize: number;
     if (isUBO) {
-      assert(byteSize % uniformBufferMaxPageByteSize === 0);
+      // assert(byteSize % uniformBufferMaxPageByteSize === 0);
       let byteSizeLeft = byteSize;
       while (byteSizeLeft > 0) {
         this.gl_buffer_pages.push(
@@ -111,12 +111,17 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
     this.usage = usage;
     this.gl_target = translateBufferUsageToTarget(usage);
 
+    // init data
+    if (!isNumber(viewOrSize)) {
+      this.setSubData(0, new Uint8Array(viewOrSize.buffer));
+    }
+
     if (!isUBO) {
       if (isWebGL2(gl)) {
-        gl.bindVertexArray(this.device.currentBoundVAO);
+        gl.bindVertexArray(this.device['currentBoundVAO']);
       } else {
         device.OES_vertex_array_object.bindVertexArrayOES(
-          this.device.currentBoundVAO,
+          this.device['currentBoundVAO'],
         );
       }
     }
@@ -130,28 +135,28 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
   ): void {
     const gl = this.device.gl;
     const {
-      gl_target,
-      byteSize: dstByteSize,
+      // gl_target,
+      // byteSize: dstByteSize,
       pageByteSize: dstPageByteSize,
     } = this;
     // Account for setSubData being called with a dstByteOffset that is beyond the end of the buffer.
-    if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
-      // Manually check asserts for speed.
-      if (!(dstByteOffset % dstPageByteSize === 0))
-        throw new Error(
-          `Assert fail: (dstByteOffset [${dstByteOffset}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
-        );
-      if (!(byteSize % dstPageByteSize === 0))
-        throw new Error(
-          `Assert fail: (byteSize [${byteSize}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
-        );
-    }
-    if (!(dstByteOffset + byteSize <= dstByteSize)) {
-      throw new Error(
-        `Assert fail: (dstByteOffset [${dstByteOffset}] + byteSize [${byteSize}]) <= dstByteSize [${dstByteSize}], gl_target ${gl_target}`,
-      );
-      // exceed, need to recreate
-    }
+    // if (isWebGL2(gl) && gl_target === gl.UNIFORM_BUFFER) {
+    //   // Manually check asserts for speed.
+    //   if (!(dstByteOffset % dstPageByteSize === 0))
+    //     throw new Error(
+    //       `Assert fail: (dstByteOffset [${dstByteOffset}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
+    //     );
+    //   if (!(byteSize % dstPageByteSize === 0))
+    //     throw new Error(
+    //       `Assert fail: (byteSize [${byteSize}] % dstPageByteSize [${dstPageByteSize}]) === 0`,
+    //     );
+    // }
+    // if (!(dstByteOffset + byteSize <= dstByteSize)) {
+    //   throw new Error(
+    //     `Assert fail: (dstByteOffset [${dstByteOffset}] + byteSize [${byteSize}]) <= dstByteSize [${dstByteSize}], gl_target ${gl_target}`,
+    //   );
+    //   // exceed, need to recreate
+    // }
 
     const virtBufferByteOffsetEnd = dstByteOffset + byteSize;
     let virtBufferByteOffset = dstByteOffset;
@@ -160,7 +165,12 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindBuffer#parameters
       const target = isWebGL2(gl) ? gl.COPY_WRITE_BUFFER : this.gl_target;
 
-      gl.bindBuffer(target, getPlatformBuffer(this, virtBufferByteOffset));
+      const buffer = getPlatformBuffer(this, virtBufferByteOffset);
+      // @ts-ignore
+      if (buffer.ubo) {
+        return;
+      }
+      gl.bindBuffer(target, buffer);
 
       // only WebGL2 support srcOffset & length
       // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferSubData
@@ -182,7 +192,7 @@ export class Buffer_GL extends ResourceBase_GL implements Buffer {
       virtBufferByteOffset += dstPageByteSize;
       physBufferByteOffset = 0;
       srcByteOffset += dstPageByteSize;
-      this.device.debugGroupStatisticsBufferUpload();
+      this.device['debugGroupStatisticsBufferUpload']();
     }
   }
 

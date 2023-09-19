@@ -49,6 +49,7 @@ export class QueryPool_WebGPU extends ResourceBase_WebGPU implements QueryPool {
   }
 
   destroy(): void {
+    super.destroy();
     this.querySet.destroy();
     this.resolveBuffer.destroy();
     this.cpuBuffer.destroy();

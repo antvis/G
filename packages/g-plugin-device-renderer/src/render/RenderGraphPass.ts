@@ -88,13 +88,6 @@ export class RenderGraphPass implements IRenderGraphPass {
     this.descriptor.occlusionQueryPool = queryPool;
   }
 
-  resolveToExternalTexture(
-    attachmentSlot: RGAttachmentSlot,
-    texture: Texture,
-  ): void {
-    this.resolveTextureOutputExternalTextures[attachmentSlot] = texture;
-  }
-
   exec(func: PassExecFunc): void {
     assert(this.execFunc === null);
     this.execFunc = func;

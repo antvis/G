@@ -8,16 +8,12 @@ import type {
   ComputePass,
   ComputePipeline,
   ComputePipelineDescriptor,
-  DebugGroup,
   Device,
   DeviceLimits,
-  IndexBufferDescriptor,
   InputLayout,
   InputLayoutDescriptor,
-  InputState,
   Program,
   ProgramDescriptor,
-  ProgramDescriptorSimple,
   QueryPool,
   QueryPoolType,
   Readback,
@@ -34,7 +30,6 @@ import type {
   Texture,
   TextureDescriptor,
   VendorInfo,
-  VertexBufferDescriptor,
 } from '@antv/g-plugin-device-renderer';
 import {
   assert,
@@ -53,6 +48,10 @@ import {
   ViewportOrigin,
   WrapMode,
   CompareMode,
+  preprocessShader_GLSL,
+  defaultMegaState,
+  PrimitiveTopology,
+  copyMegaState,
 } from '@antv/g-plugin-device-renderer';
 import type { glsl_compile as glsl_compile_ } from '../../../../rust/pkg/glsl_wgsl_compiler';
 import { Bindings_WebGPU } from './Bindings';
@@ -61,7 +60,6 @@ import { ComputePass_WebGPU } from './ComputePass';
 import { ComputePipeline_WebGPU } from './ComputePipeline';
 import { GPUTextureUsage } from './constants';
 import { InputLayout_WebGPU } from './InputLayout';
-import { InputState_WebGPU } from './InputState';
 import type {
   Attachment_WebGPU,
   BindGroupLayout,
@@ -112,8 +110,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   private fallbackTexture2DArray: Texture_WebGPU;
   private fallbackTexture3D: Texture_WebGPU;
   private fallbackTextureCube: Texture_WebGPU;
-  fallbackSamplerFiltering: Sampler;
-  fallbackSamplerComparison: Sampler;
+  private fallbackSamplerFiltering: Sampler;
+  private fallbackSamplerComparison: Sampler;
   private featureTextureCompressionBC = false;
 
   // VendorInfo
@@ -121,15 +119,15 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   readonly glslVersion = `#version 440`;
   readonly explicitBindingLocations = true;
   readonly separateSamplerTextures = true;
-  readonly viewportOrigin = ViewportOrigin.UpperLeft;
-  readonly clipSpaceNearZ = ClipSpaceNearZ.Zero;
+  readonly viewportOrigin = ViewportOrigin.UPPER_LEFT;
+  readonly clipSpaceNearZ = ClipSpaceNearZ.ZERO;
   readonly supportsSyncPipelineCompilation: boolean = false;
   readonly supportMRT: boolean = true;
 
   device: GPUDevice;
   private canvas: HTMLCanvasElement | OffscreenCanvas;
-  canvasContext: GPUCanvasContext;
-  glsl_compile: typeof glsl_compile_;
+  private canvasContext: GPUCanvasContext;
+  private glsl_compile: typeof glsl_compile_;
 
   constructor(
     adapter: GPUAdapter,
@@ -144,32 +142,47 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     this.glsl_compile = glsl_compile;
 
     this.fallbackTexture2D = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Float,
     );
+    this.setResourceName(this.fallbackTexture2D, 'Fallback Texture2D');
+
     this.fallbackTexture2DDepth = this.createFallbackTexture(
-      TextureDimension.n2D,
+      TextureDimension.TEXTURE_2D,
       SamplerFormatKind.Depth,
     );
-    this.fallbackTexture2DArray = this.createFallbackTexture(
-      TextureDimension.n2DArray,
-      SamplerFormatKind.Float,
-    );
-    this.fallbackTexture3D = this.createFallbackTexture(
-      TextureDimension.n3D,
-      SamplerFormatKind.Float,
-    );
-    this.fallbackTextureCube = this.createFallbackTexture(
-      TextureDimension.Cube,
-      SamplerFormatKind.Float,
+    this.setResourceName(
+      this.fallbackTexture2DDepth,
+      'Fallback Depth Texture2D',
     );
 
+    this.fallbackTexture2DArray = this.createFallbackTexture(
+      TextureDimension.TEXTURE_2D_ARRAY,
+      SamplerFormatKind.Float,
+    );
+    this.setResourceName(
+      this.fallbackTexture2DArray,
+      'Fallback Texture2DArray',
+    );
+
+    this.fallbackTexture3D = this.createFallbackTexture(
+      TextureDimension.TEXTURE_3D,
+      SamplerFormatKind.Float,
+    );
+    this.setResourceName(this.fallbackTexture3D, 'Fallback Texture3D');
+
+    this.fallbackTextureCube = this.createFallbackTexture(
+      TextureDimension.TEXTURE_CUBE_MAP,
+      SamplerFormatKind.Float,
+    );
+    this.setResourceName(this.fallbackTextureCube, 'Fallback TextureCube');
+
     this.fallbackSamplerFiltering = this.createSampler({
-      wrapS: WrapMode.Repeat,
-      wrapT: WrapMode.Repeat,
-      minFilter: TexFilterMode.Point,
-      magFilter: TexFilterMode.Point,
-      mipFilter: MipFilterMode.Nearest,
+      wrapS: WrapMode.REPEAT,
+      wrapT: WrapMode.REPEAT,
+      minFilter: TexFilterMode.POINT,
+      magFilter: TexFilterMode.POINT,
+      mipFilter: MipFilterMode.NEAREST,
     });
     this.setResourceName(
       this.fallbackSamplerFiltering,
@@ -177,16 +190,16 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     );
 
     this.fallbackSamplerComparison = this.createSampler({
-      wrapS: WrapMode.Repeat,
-      wrapT: WrapMode.Repeat,
-      minFilter: TexFilterMode.Point,
-      magFilter: TexFilterMode.Point,
-      mipFilter: MipFilterMode.Nearest,
-      compareMode: CompareMode.Always,
+      wrapS: WrapMode.REPEAT,
+      wrapT: WrapMode.REPEAT,
+      minFilter: TexFilterMode.POINT,
+      magFilter: TexFilterMode.POINT,
+      mipFilter: MipFilterMode.NEAREST,
+      compareMode: CompareMode.ALWAYS,
     });
     this.setResourceName(
-      this.fallbackSamplerFiltering,
-      'Fallback Sampler Filtering',
+      this.fallbackSamplerComparison,
+      'Fallback Sampler Comparison Filtering',
     );
 
     // Firefox doesn't support GPUDevice.features yet...
@@ -212,6 +225,8 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
+  destroy(): void {}
+
   // SwapChain
   configureSwapChain(width: number, height: number): void {
     if (this.swapChainWidth === width && this.swapChainHeight === height)
@@ -233,7 +248,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         width: this.swapChainWidth,
         height: this.swapChainHeight,
         depth: 0,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels: 1,
         usage: this.swapChainTextureUsage,
       },
@@ -245,6 +260,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.gpuTexture = gpuTexture;
     texture.gpuTextureView = gpuTextureView;
     texture.name = 'Onscreen';
+    this.setResourceName(texture, 'Onscreen Texture');
 
     return texture;
   }
@@ -315,11 +331,12 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       device: this,
       descriptor: {
         ...descriptor,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels: 1,
         depth: 1,
-        usage: TextureUsage.RenderTarget,
+        usage: TextureUsage.RENDER_TARGET,
       },
+      sampleCount: descriptor.sampleCount,
     }) as unknown as Attachment_WebGPU;
 
     texture.depthOrArrayLayers = 1;
@@ -351,7 +368,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         width,
         height,
         depth: depthOrArrayLayers,
-        dimension: TextureDimension.n2D,
+        dimension: TextureDimension.TEXTURE_2D,
         numLevels,
         usage,
       },
@@ -366,11 +383,22 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   }
 
   createProgram(descriptor: ProgramDescriptor): Program {
-    descriptor.ensurePreprocessed(this);
-    return this.createProgramSimple(descriptor);
-  }
+    // preprocess GLSL first
+    if (descriptor.vertex?.glsl) {
+      descriptor.vertex.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'vert',
+        descriptor.vertex.glsl,
+      );
+    }
+    if (descriptor.fragment?.glsl) {
+      descriptor.fragment.glsl = preprocessShader_GLSL(
+        this.queryVendorInfo(),
+        'frag',
+        descriptor.fragment.glsl,
+      );
+    }
 
-  createProgramSimple(descriptor: ProgramDescriptorSimple): Program {
     return new Program_WebGPU({
       id: this.getNextUniqueId(),
       device: this,
@@ -401,7 +429,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     texture.depthOrArrayLayers = descriptor.depthOrArrayLayers;
     texture.numLevels = mipLevelCount;
     texture.usage = usage;
-    texture.sampleCount = 1;
+    texture.sampleCount = descriptor.sampleCount;
 
     if (!skipCreate) {
       const gpuTexture = this.device.createTexture({
@@ -409,6 +437,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
         mipLevelCount,
         format,
         dimension,
+        sampleCount: descriptor.sampleCount,
         usage,
       });
       const gpuTextureView = gpuTexture.createView();
@@ -429,14 +458,15 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   getFallbackTexture(samplerEntry: BindingLayoutSamplerDescriptor): Texture {
     const dimension = samplerEntry.dimension,
       formatKind = samplerEntry.formatKind;
-    if (dimension === TextureDimension.n2D)
+    if (dimension === TextureDimension.TEXTURE_2D)
       return formatKind === SamplerFormatKind.Depth
         ? this.fallbackTexture2DDepth
         : this.fallbackTexture2D;
-    else if (dimension === TextureDimension.n2DArray)
+    else if (dimension === TextureDimension.TEXTURE_2D_ARRAY)
       return this.fallbackTexture2DArray;
-    else if (dimension === TextureDimension.n3D) return this.fallbackTexture3D;
-    else if (dimension === TextureDimension.Cube)
+    else if (dimension === TextureDimension.TEXTURE_3D)
+      return this.fallbackTexture3D;
+    else if (dimension === TextureDimension.TEXTURE_CUBE_MAP)
       return this.fallbackTextureCube;
     else throw new Error('whoops');
   }
@@ -445,13 +475,13 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     dimension: TextureDimension,
     formatKind: SamplerFormatKind,
   ): Texture_WebGPU {
-    const depth = dimension === TextureDimension.Cube ? 6 : 1;
+    const depth = dimension === TextureDimension.TEXTURE_CUBE_MAP ? 6 : 1;
     const pixelFormat =
       formatKind === SamplerFormatKind.Float ? Format.U8_RGBA_NORM : Format.D24;
     return this.createTexture({
       dimension,
       pixelFormat,
-      usage: TextureUsage.Sampled,
+      usage: TextureUsage.SAMPLED,
       width: 1,
       height: 1,
       depth,
@@ -472,21 +502,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       id: this.getNextUniqueId(),
       device: this,
       descriptor,
-    });
-  }
-
-  createInputState(
-    inputLayout: InputLayout,
-    vertexBuffers: (VertexBufferDescriptor | null)[],
-    indexBuffer: IndexBufferDescriptor | null,
-  ): InputState {
-    // InputState is a GL-only thing, as VAOs suck. We emulate it with a VAO-alike here.
-    return new InputState_WebGPU({
-      id: this.getNextUniqueId(),
-      device: this,
-      inputLayout,
-      vertexBuffers,
-      indexBuffer,
     });
   }
 
@@ -522,7 +537,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
-  _createBindGroupLayout(
+  private createBindGroupLayout(
     bindingLayout: BindingLayoutDescriptor,
   ): BindGroupLayout {
     let gpuBindGroupLayout = this.bindGroupLayoutCache.get(bindingLayout);
@@ -585,12 +600,15 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   ): GPUPipelineLayout {
     const bindGroupLayouts = bindingLayouts.flatMap(
       (bindingLayout) =>
-        this._createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
+        this.createBindGroupLayout(bindingLayout).gpuBindGroupLayout,
     );
     return this.device.createPipelineLayout({ bindGroupLayouts });
   }
 
-  _createRenderPipeline(renderPipeline: RenderPipeline_WebGPU, async = false) {
+  private createRenderPipelineInternal(
+    renderPipeline: RenderPipeline_WebGPU,
+    async = false,
+  ) {
     // if (this.device.createRenderPipelineAsync === undefined) {
     //   async = false;
     // }
@@ -610,9 +628,14 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
       fragmentStage = program.fragmentStage;
     if (vertexStage === null || fragmentStage === null) return;
 
-    const layout = this._createPipelineLayout(descriptor.bindingLayouts);
+    descriptor.megaStateDescriptor = {
+      ...copyMegaState(defaultMegaState),
+      ...descriptor.megaStateDescriptor,
+    };
+
+    const layout = this._createPipelineLayout(descriptor.bindingLayouts || []);
     const primitive = translatePrimitiveState(
-      descriptor.topology,
+      descriptor.topology ?? PrimitiveTopology.TRIANGLES,
       descriptor.megaStateDescriptor,
     );
     const targets = translateTargets(
@@ -685,11 +708,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
     });
   }
 
-  destroyRenderTarget(o: RenderTarget): void {
-    const attachment = o as unknown as Attachment_WebGPU;
-    attachment.gpuTexture.destroy();
-  }
-
   createRenderPass(renderPassDescriptor: RenderPassDescriptor): RenderPass {
     let pass = this.renderPassPool.pop();
     if (pass === undefined) {
@@ -757,12 +775,16 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   }
 
   queryLimits(): DeviceLimits {
-    // TODO: GPUAdapter.limits
+    // GPUAdapter.limits
     // @see https://www.w3.org/TR/webgpu/#gpu-supportedlimits
     return {
-      uniformBufferMaxPageWordSize: 0x1000,
-      uniformBufferWordAlignment: 0x40,
+      uniformBufferMaxPageWordSize:
+        this.device.limits.maxUniformBufferBindingSize >>> 2,
+      uniformBufferWordAlignment:
+        this.device.limits.minUniformBufferOffsetAlignment >>> 2,
       supportedSampleCounts: [1],
+      occlusionQueriesRecommended: true,
+      computeShadersSupported: true,
     };
   }
 
@@ -790,6 +812,7 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
   }
 
   queryPlatformAvailable(): boolean {
+    // TODO: should listen to lost event
     return true;
   }
 
@@ -836,10 +859,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
   programPatched(o: Program): void {}
 
-  pushDebugGroup(debugGroup: DebugGroup): void {}
-
-  popDebugGroup(): void {}
-
   pipelineQueryReady(o: RenderPipeline): boolean {
     const renderPipeline = o as RenderPipeline_WebGPU;
     return renderPipeline.gpuRenderPipeline !== null;
@@ -847,6 +866,6 @@ export class Device_WebGPU implements SwapChain, IDevice_WebGPU {
 
   pipelineForceReady(o: RenderPipeline): void {
     const renderPipeline = o as RenderPipeline_WebGPU;
-    this._createRenderPipeline(renderPipeline, false);
+    this.createRenderPipelineInternal(renderPipeline, false);
   }
 }

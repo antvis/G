@@ -3,7 +3,6 @@ import type {
   FederatedPointerEvent,
   PointLike as Point,
 } from '@antv/g-lite';
-import { ElementEvent } from '@antv/g-lite';
 import EventEmitter from 'eventemitter3';
 
 const clock =
@@ -85,32 +84,10 @@ class Gesture extends EventEmitter {
 
   private _initEvent() {
     const { el } = this;
-    if (el.isConnected) {
-      // @ts-ignore
-      el.ownerDocument?.defaultView.addEventListener('pointermove', this._move);
-    } else {
-      el.isMutationObserved = true;
-      el.on(ElementEvent.MOUNTED, (e) =>
-        el.ownerDocument?.defaultView.addEventListener(
-          'pointermove',
-          // @ts-ignore
-          this._move,
-        ),
-      );
-    }
 
     el.addEventListener('pointerdown', this._start);
-
-    if (el.isConnected) {
-      // @ts-ignore
-      el.ownerDocument?.defaultView.addEventListener('pointerup', this._end);
-    } else {
-      el.on(ElementEvent.MOUNTED, (e) =>
-        // @ts-ignore
-        el.ownerDocument?.defaultView.addEventListener('pointerup', this._end),
-      );
-    }
-
+    el.addEventListener('pointermove', this._move);
+    el.addEventListener('pointerup', this._end);
     el.addEventListener('pointercancel', this._cancel);
     el.addEventListener('pointerupoutside', this._end);
   }

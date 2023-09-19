@@ -6,9 +6,9 @@ order: 9
 有时我们需要在画布上增加一些 HUD（Head-Up Display），例如 Tooltip。此时用 HTML + CSS 展现相比使用基础图形绘制有以下优势：
 
 -   很多原生 HTML 组件难以绘制，例如一些输入类组件 `<input>` `<select>`
--   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape#html)：
+-   部分 HTML 原生特性难以实现，例如使用 g-canvas/webgl 绘制文本后无法选中，而如果用 HTML 展示文本就可以，下图展示了文本选中效果，[示例](/zh/examples/shape/html#html)：
 
-![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
+![Text selection effect](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*qGIRSaeHsTQAAAAAAAAAAAAAARQnAQ)
 
 HTML 内容以及宽高为必填项，其中 HTML 内容可以为字符串或者 HTMLElement：
 
@@ -91,7 +91,7 @@ canvas.appendChild(html);
 
 对应 CSS [pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events) 属性。
 
-当我们在实现类似 tooltip 这样的需求时，可以让鼠标事件穿透它，[示例](/zh/examples/shape#html)：
+当我们在实现类似 tooltip 这样的需求时，可以让鼠标事件穿透它，[示例](/zh/examples/shape/html#html)：
 
 ```js
 const tooltip = new HTML({
@@ -126,7 +126,7 @@ const tooltip = new HTML({
 
 局部坐标系下，容器左上角顶点的 x 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -136,7 +136,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x
 
 局部坐标系下，容器左上角顶点的 y 轴坐标。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -170,7 +170,7 @@ html.style.innerHTML = '<h1>This is Title</h1>';
 
 容器宽度，默认值为 `'auto'`。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -180,11 +180,33 @@ https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width
 
 容器宽度，默认值为 `'auto'`。
 
-https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height
+<https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
 | [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+
+### 其他 CSS 属性
+
+CSS 属性将被透传并直接应用到 DOM 容器的 style 上，在下面的[示例](/zh/examples/shape/html/#override-css)中，`fontSize` `textAlign` `color` 等 CSS 属性将直接体现在样式上：
+
+```js
+const html = new HTML({
+    style: {
+        x: 200,
+        y: 100,
+        width: 200,
+        height: 200,
+        innerHTML: 'p1',
+        // The followin will override the CSS properties.
+        fontSize: '20px',
+        textAlign: 'center',
+        color: 'red',
+    },
+});
+```
+
+![override CSS properties](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*A5kuQbb3_YUAAAAAAAAAAAAADmJ7AQ/original)
 
 ## 额外方法
 

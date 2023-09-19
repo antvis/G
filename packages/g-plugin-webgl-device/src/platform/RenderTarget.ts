@@ -31,7 +31,7 @@ export class RenderTarget_GL extends ResourceBase_GL implements RenderTarget {
 
     const gl = this.device.gl;
 
-    const { pixelFormat, width, height, sampleCount, texture } = descriptor;
+    const { pixelFormat, width, height, sampleCount = 1, texture } = descriptor;
 
     let useRenderbuffer = false;
     // @see https://blog.tojicode.com/2012/07/using-webgldepthtexture.html
@@ -41,8 +41,8 @@ export class RenderTarget_GL extends ResourceBase_GL implements RenderTarget {
       !isWebGL2(gl) &&
       !device.WEBGL_depth_texture
     ) {
-      // texture.destroy();
-      // texture = null;
+      texture.destroy();
+      this.texture = null;
       useRenderbuffer = true;
     }
 
@@ -54,7 +54,10 @@ export class RenderTarget_GL extends ResourceBase_GL implements RenderTarget {
       );
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.gl_renderbuffer);
 
-      const gl_format = this.device.translateTextureInternalFormat(pixelFormat);
+      const gl_format = this.device.translateTextureInternalFormat(
+        pixelFormat,
+        true,
+      );
 
       if (isWebGL2(gl)) {
         // @see https://github.com/shrekshao/MoveWebGL1EngineToWebGL2/blob/master/Move-a-WebGL-1-Engine-To-WebGL-2-Blog-2.md#multisampled-renderbuffers
@@ -80,6 +83,9 @@ export class RenderTarget_GL extends ResourceBase_GL implements RenderTarget {
     super.destroy();
     if (this.gl_renderbuffer !== null) {
       this.device.gl.deleteRenderbuffer(this.gl_renderbuffer);
+    }
+    if (this.texture) {
+      this.texture.destroy();
     }
   }
 }

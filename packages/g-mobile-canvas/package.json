@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-canvas",
-  "version": "0.10.2",
+  "version": "0.11.4",
   "description": "A renderer implemented with Canvas2D API in mobile environment",
   "keywords": [
     "antv",
@@ -45,7 +45,8 @@
     "@antv/g-plugin-dragndrop": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/g-plugin-mobile-interaction": "workspace:*",
-    "@antv/util": "^3.3.1",
+    "@antv/g-plugin-gesture": "workspace:*",
+    "@antv/util": "^3.3.4",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

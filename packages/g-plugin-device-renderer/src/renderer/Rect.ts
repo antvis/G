@@ -1,38 +1,42 @@
 import type { CSSRGB, DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
-import { FillMesh, LineMesh, SDFMesh } from '../meshes';
+import {
+  Instanced,
+  InstancedFillDrawcall,
+  InstancedPathDrawcall,
+  SDFDrawcall,
+} from '../drawcalls';
 import { Batch } from './Batch';
 
 /**
  * Use 2 meshes:
- * * For simple Rect with fill & simple stroke, we use SDFMesh to draw which has a better performance.
+ * * For simple Rect with fill & simple stroke, we use SDFDrawcall to draw which has a better performance.
  * * FillMesh & LineMesh to draw rounded rect with different radius.
  */
 export class RectRenderer extends Batch {
-  meshes = [SDFMesh, FillMesh, LineMesh];
+  getDrawcallCtors(object: DisplayObject) {
+    const drawcalls: (typeof Instanced)[] = [];
 
-  shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    const { radius } = object.parsedStyle as ParsedRectStyleProps;
+    const { fill, radius } = object.parsedStyle as ParsedRectStyleProps;
     const hasDifferentRadius =
       radius && radius.length && radius.some((r) => r !== radius[0]);
 
-    if (index === 0) {
-      const { fill } = object.parsedStyle as ParsedRectStyleProps;
-      if ((fill as CSSRGB).isNone || hasDifferentRadius) {
-        return false;
-      }
+    if (!((fill as CSSRGB).isNone || hasDifferentRadius)) {
+      drawcalls.push(SDFDrawcall);
     }
 
-    if (index === 1) {
-      return hasDifferentRadius;
+    if (hasDifferentRadius) {
+      drawcalls.push(InstancedFillDrawcall);
     }
 
-    if (index === 2) {
-      return hasDifferentRadius
+    if (
+      hasDifferentRadius
         ? hasDifferentRadius
-        : this.needDrawStrokeSeparately(object);
+        : this.needDrawStrokeSeparately(object)
+    ) {
+      drawcalls.push(InstancedPathDrawcall);
     }
 
-    return true;
+    return drawcalls;
   }
 
   /**

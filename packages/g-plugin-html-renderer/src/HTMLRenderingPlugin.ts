@@ -1,12 +1,12 @@
 import {
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   HTML,
   ICamera,
   MutationEvent,
   RenderingPlugin,
   RenderingPluginContext,
-  runtime,
 } from '@antv/g-lite';
 import {
   CanvasEvent,
@@ -16,10 +16,9 @@ import {
   isPattern,
   Shape,
 } from '@antv/g-lite';
-import { isNumber, isString } from '@antv/util';
+import { isNil, isNumber, isString } from '@antv/util';
 import type { mat4 } from 'gl-matrix';
 
-const HTML_PREFIX = 'g-html-';
 const CANVAS_CAMERA_ID = 'g-canvas-camera';
 
 export class HTMLRenderingPlugin implements RenderingPlugin {
@@ -32,6 +31,11 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
    */
   private $camera: HTMLDivElement;
 
+  private displayObjectHTMLElementMap = new WeakMap<
+    DisplayObject,
+    HTMLElement
+  >();
+
   private joinTransformMatrix(matrix: mat4) {
     return `matrix(${[
       matrix[0],
@@ -43,7 +47,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     ].join(',')})`;
   }
 
-  apply(context: RenderingPluginContext) {
+  apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
     const { camera, renderingContext, renderingService } = context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
@@ -66,10 +70,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         this.$camera.appendChild($el);
 
         // apply documentElement's style
-        const { attributes } = object.ownerDocument.documentElement;
-        Object.keys(attributes).forEach((name) => {
-          $el.style[name] = attributes[name];
-        });
+        if (runtime.enableCSSParsing) {
+          const { attributes } = object.ownerDocument.documentElement;
+          Object.keys(attributes).forEach((name) => {
+            $el.style[name] = attributes[name];
+          });
+        }
 
         Object.keys(object.attributes).forEach((name) => {
           this.updateAttribute(name, object as HTML);
@@ -77,7 +83,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
         setTransform(object, $el);
 
-        runtime.nativeHTMLMap.set($el, object);
+        this.context.nativeHTMLMap.set($el, object);
       }
     };
 
@@ -87,14 +93,8 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const $el = this.getOrCreateEl(object);
         if ($el) {
           $el.remove();
-          runtime.nativeHTMLMap.delete($el);
+          this.context.nativeHTMLMap.delete($el);
         }
-
-        // const existedId = this.getId(object);
-        // const $existedElement: HTMLElement | null = this.$camera.querySelector('#' + existedId);
-        // if ($existedElement) {
-        //   this.$camera.removeChild($existedElement);
-        // }
       }
     };
 
@@ -164,10 +164,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     });
   }
 
-  private getId(object: DisplayObject) {
-    return object.id || HTML_PREFIX + object.entity;
-  }
-
   private createCamera(camera: ICamera) {
     const { document: doc, width, height } = this.context.config;
     const $canvas =
@@ -207,16 +203,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
   private getOrCreateEl(object: DisplayObject) {
     const { document: doc } = this.context.config;
-    const existedId = this.getId(object);
+    let $existedElement: HTMLElement | null =
+      this.displayObjectHTMLElementMap.get(object);
 
-    let $existedElement: HTMLElement | null = this.$camera.querySelector(
-      '#' + existedId,
-    );
     if (!$existedElement) {
       $existedElement = (doc || document).createElement('div');
       object.parsedStyle.$el = $existedElement;
-      $existedElement.id = existedId;
-
+      this.displayObjectHTMLElementMap.set(object, $existedElement);
+      if (object.id) {
+        $existedElement.id = object.id;
+      }
       if (object.name) {
         $existedElement.setAttribute('name', object.name);
       }
@@ -257,23 +253,25 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         ] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
         break;
       case 'width':
-        if (runtime.enableCSSParsing) {
+        if (this.context.enableCSSParsing) {
           const width = object.computedStyleMap().get('width');
           $el.style.width = width.toString();
         } else {
           const { width } = object.parsedStyle;
-          $el.style.width = isNumber(width) ? `${width}px` : width.toString();
+          $el.style.width = isNumber(width)
+            ? `${width}px`
+            : (width as string).toString();
         }
         break;
       case 'height':
-        if (runtime.enableCSSParsing) {
+        if (this.context.enableCSSParsing) {
           const height = object.computedStyleMap().get('height');
           $el.style.height = height.toString();
         } else {
           const { height } = object.parsedStyle;
           $el.style.height = isNumber(height)
             ? `${height}px`
-            : height.toString();
+            : (height as string).toString();
         }
         break;
       case 'zIndex':
@@ -337,6 +335,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const { filter } = object.style;
         $el.style.filter = filter;
         break;
+      default:
+        if (name !== 'x' && name !== 'y') {
+          if (!isNil(object.style[name]) && object.style[name] !== '') {
+            $el.style[name] = object.style[name];
+          }
+        }
     }
   }
 }

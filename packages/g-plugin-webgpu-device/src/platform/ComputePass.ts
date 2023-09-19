@@ -1,9 +1,11 @@
 import type {
+  Buffer,
   Bindings,
   ComputePass,
   ComputePipeline,
 } from '@antv/g-plugin-device-renderer';
 import { assert, assertExists } from '@antv/g-plugin-device-renderer';
+import type { Buffer_WebGPU } from './Buffer';
 import type { Bindings_WebGPU } from './Bindings';
 import type { ComputePipeline_WebGPU } from './ComputePipeline';
 
@@ -13,11 +15,28 @@ export class ComputePass_WebGPU implements ComputePass {
   private gpuComputePassEncoder: GPUComputePassEncoder | null = null;
 
   /**
-   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatch
+   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroups
    */
-  dispatch(x: number, y?: number, z?: number): void {
-    this.gpuComputePassEncoder.dispatchWorkgroups(x, y, z);
-    // TODO: dispatchIndirect read from GPUBuffer
+  dispatchWorkgroups(
+    workgroupCountX: number,
+    workgroupCountY?: number,
+    workgroupCountZ?: number,
+  ): void {
+    this.gpuComputePassEncoder.dispatchWorkgroups(
+      workgroupCountX,
+      workgroupCountY,
+      workgroupCountZ,
+    );
+  }
+
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroupsindirect
+   */
+  dispatchWorkgroupsIndirect(indirectBuffer: Buffer, indirectOffset: number) {
+    this.gpuComputePassEncoder.dispatchWorkgroupsIndirect(
+      (indirectBuffer as Buffer_WebGPU).gpuBuffer,
+      indirectOffset,
+    );
   }
 
   finish() {
@@ -56,17 +75,15 @@ export class ComputePass_WebGPU implements ComputePass {
     );
   }
 
-  public beginDebugGroup(name: string): void {
-    // FIREFOX MISSING
-    if (this.gpuComputePassEncoder!.pushDebugGroup === undefined) return;
-
-    this.gpuComputePassEncoder!.pushDebugGroup(name);
+  pushDebugGroup(name: string): void {
+    this.gpuComputePassEncoder.pushDebugGroup(name);
   }
 
-  public endDebugGroup(): void {
-    // FIREFOX MISSING
-    if (this.gpuComputePassEncoder!.popDebugGroup === undefined) return;
+  popDebugGroup(): void {
+    this.gpuComputePassEncoder.popDebugGroup();
+  }
 
-    this.gpuComputePassEncoder!.popDebugGroup();
+  insertDebugMarker(markerLabel: string) {
+    this.gpuComputePassEncoder.insertDebugMarker(markerLabel);
   }
 }

@@ -140,7 +140,7 @@ canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
 3. 正常使用 [g-canvas](/zh/api/renderer/canvas) 渲染器，通过 G 的 API 创建场景
 4. 使用 [node-canvas](https://github.com/Automattic/node-canvas) 提供的方法（例如 [createPNGStream](https://github.com/Automattic/node-canvas#canvascreatepngstream)）输出结果图片
 
-https://github.com/antvis/g/blob/next/integration/__node__tests__/canvas/circle.spec.js
+<https://github.com/antvis/g/blob/next/integration/>**node**tests\_\_/canvas/circle.spec.js
 
 ```js
 const { createCanvas } = require('canvas');
@@ -176,3 +176,24 @@ const stream = nodeCanvas.createPNGStream();
 stream.pipe(out);
 out.on('finish', () => {});
 ```
+
+## 接管上下文绘制
+
+如果希望在 G 绘制之后使用 [CanvasRenderingContext2D](https://developer.mozilla.org/zh-CN/Web/API/CanvasRenderingContext2D) 继续绘制，可以在 `CanvasEvent.AFTER_RENDER` 时获取上下文，此时 G 已经完成了绘制，但由于在上下文中设置可 transform，在绘制前需要先清除，然后就可以按照 Canvas 原生坐标系进行绘制：
+
+```js
+// 在 G 绘制完接着画
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    // 获取原生 Canvas2DContext
+    const context = canvas.getContextService().getContext();
+
+    // 重置 transform
+    context.resetTransform();
+
+    // 绘制
+    context.fillStyle = 'red';
+    context.fillRect(200, 200, 100, 100);
+});
+```
+
+[示例](https://codesandbox.io/s/zhi-jie-shi-yong-canvas-2d-context-hui-zhi-8ymfg9?file=/index.js)

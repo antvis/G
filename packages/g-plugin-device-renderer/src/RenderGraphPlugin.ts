@@ -7,11 +7,11 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { CanvasEvent, ElementEvent, parseColor } from '@antv/g-lite';
+import { CanvasEvent, ElementEvent, Shape, parseColor } from '@antv/g-lite';
 import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
-// import { pushFXAAPass } from './passes/FXAA';
+import { pushFXAAPass } from './passes/FXAA';
 import {
   Device,
   SwapChain,
@@ -37,6 +37,7 @@ import {
 } from './render';
 import type { BatchManager } from './renderer';
 import type { TexturePool } from './TexturePool';
+import { DeviceRendererPluginOptions } from './interfaces';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -62,6 +63,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     private lightPool: LightPool,
     private texturePool: TexturePool,
     private batchManager: BatchManager,
+    private options: Partial<DeviceRendererPluginOptions>,
   ) {}
 
   private device: Device;
@@ -136,6 +138,19 @@ export class RenderGraphPlugin implements RenderingPlugin {
       } else if (object.nodeName === Fog.tag) {
         this.lightPool.removeFog(object as Fog);
         return;
+      } else if (object.nodeName === Shape.MESH) {
+        if (object.style.geometry?.meshes) {
+          const index = object.style.geometry.meshes.indexOf(object);
+          if (index > -1) {
+            object.style.geometry.meshes.splice(index, 1);
+          }
+        }
+        if (object.style.material?.meshes) {
+          const index = object.style.material.meshes.indexOf(object);
+          if (index > -1) {
+            object.style.material.meshes.splice(index, 1);
+          }
+        }
       }
 
       if (this.swapChain) {
@@ -220,6 +235,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
     renderingService.hooks.destroy.tap(RenderGraphPlugin.tag, () => {
       this.renderHelper.destroy();
+      this.batchManager.destroy();
+      this.texturePool.destroy();
 
       canvas.removeEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.removeEventListener(ElementEvent.UNMOUNTED, handleUnmounted);
@@ -231,6 +248,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
+
+      this.device.destroy();
+      this.device.checkForLeaks();
     });
 
     /**
@@ -306,13 +326,15 @@ export class RenderGraphPlugin implements RenderingPlugin {
       });
 
       // TODO: other post-processing passes
-      // FXAA
-      // pushFXAAPass(
-      //   this.builder,
-      //   this.renderHelper,
-      //   renderInput,
-      //   mainColorTargetID,
-      // );
+      if (this.options?.enableFXAA) {
+        // FXAA
+        pushFXAAPass(
+          this.builder,
+          this.renderHelper,
+          renderInput,
+          mainColorTargetID,
+        );
+      }
 
       // output to screen
       this.builder.resolveRenderTargetToExternalTexture(
@@ -338,12 +360,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
             blendConstant: TransparentBlack,
           },
           {
-            rgbBlendMode: BlendMode.Add,
-            alphaBlendMode: BlendMode.Add,
-            rgbBlendSrcFactor: BlendFactor.SrcAlpha,
-            alphaBlendSrcFactor: BlendFactor.One,
-            rgbBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
-            alphaBlendDstFactor: BlendFactor.OneMinusSrcAlpha,
+            rgbBlendMode: BlendMode.ADD,
+            alphaBlendMode: BlendMode.ADD,
+            rgbBlendSrcFactor: BlendFactor.SRC_ALPHA,
+            alphaBlendSrcFactor: BlendFactor.ONE,
+            rgbBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+            alphaBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
           },
         ),
       );

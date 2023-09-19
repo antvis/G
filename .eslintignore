@@ -6,4 +6,5 @@ dist
 node_modules
 rollup.config.js
 site
+rust
 __tests__

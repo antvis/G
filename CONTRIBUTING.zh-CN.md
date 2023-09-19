@@ -4,9 +4,9 @@
 
 ## 提交 issue
 
--   请确定 issue 的类型。
--   请避免提交重复的 issue，在提交之前搜索现有的 issue。
--   在标签(分类参考**标签分类**), 标题 或者内容中体现明确的意图。
+- 请确定 issue 的类型。
+- 请避免提交重复的 issue，在提交之前搜索现有的 issue。
+- 在标签(分类参考**标签分类**), 标题 或者内容中体现明确的意图。
 
 随后 AntV 负责人会确认 issue 意图，更新合适的标签，关联 milestone，指派开发者。
 
@@ -59,15 +59,15 @@ $ git push origin branch-name
 
 提交 commit 的类型，包括以下几种
 
--   feat: 新功能
--   fix: 修复问题
--   docs: 修改文档
--   style: 修改代码格式，不影响代码逻辑
--   refactor: 重构代码，理论上不影响现有功能
--   perf: 提升性能
--   test: 增加修改测试用例
--   chore: 修改工具相关（包括但不限于文档、代码生成等）
--   deps: 升级依赖
+- feat: 新功能
+- fix: 修复问题
+- docs: 修改文档
+- style: 修改代码格式，不影响代码逻辑
+- refactor: 重构代码，理论上不影响现有功能
+- perf: 提升性能
+- test: 增加修改测试用例
+- chore: 修改工具相关（包括但不限于文档、代码生成等）
+- deps: 升级依赖
 
 （2）scope
 
@@ -83,8 +83,8 @@ $ git push origin branch-name
 
 （5）footer
 
--   **当有非兼容修改(Breaking Change)时必须在这里描述清楚**
--   关联相关 issue，如 `Closes #1, Closes #2, #3`
+- **当有非兼容修改(Breaking Change)时必须在这里描述清楚**
+- 关联相关 issue，如 `Closes #1, Closes #2, #3`
 
 示例
 
@@ -110,8 +110,8 @@ BREAKING CHANGE:
 
 G 基于 Jest 提供了两部分测试：
 
--   **单元测试** [`__tests__/unit/`](./__tests__/unit/) 测试纯数据模块或者功能
--   **集成测试** [`__tests__/integration/`](./__tests__/integration/) 基于 [node-canvas](https://github.com/Automattic/node-canvas)，[jsdom](https://github.com/jsdom/jsdom/) 和 [headless-gl](https://github.com/stackgl/headless-gl) 完成 `@antv/g-canvas`，`@antv/g-svg` 和 `@antv/g-webgl` 三个渲染器的服务端渲染，再进行截图对比
+- **单元测试** [`__tests__/unit/`](./__tests__/unit/) 测试纯数据模块或者功能
+- **集成测试** [`__tests__/integration/`](./__tests__/integration/) 基于 [node-canvas](https://github.com/Automattic/node-canvas)，[jsdom](https://github.com/jsdom/jsdom/) 和 [headless-gl](https://github.com/stackgl/headless-gl) 完成 `@antv/g-canvas`，`@antv/g-svg` 和 `@antv/g-webgl` 三个渲染器的服务端渲染，再进行截图对比
 
 ## 发布管理
 
@@ -135,12 +135,17 @@ G 使用 [pnpm workspace](https://pnpm.io/workspaces) 作为 monorepo 方案。�
 
 参考 [S2 的工程化实践](https://www.yuque.com/antv/vo4vyz/vtowig#HuNvY)，我们使用了 [changesets](https://github.com/changesets/changesets) 进行全自动的语义化发布。它可以自动创建 GitHub Releases。
 
-从 next 分支拉出发布分支 release。每个 release 分支上的提交都会触发 CI，更新 version。最后在 next 分支上触发 publish 流程。
+1. 从 next 分支拉出发布分支 release
+2. 从 release 分支拉出各自的开发分支，开发完成后执行 changeset 并提交：
 
 ```bash
-git commit -m "chore(release): bump version"
-git push
+pnpm run changeset
+git add ./
+git commit -a -m "chore: commit changeset"
 ```
+
+3. 将开发分支合入 release 分支，此时会触发 CI version 流程，自动生成 Version Package 的 PR，将此 PR 合入
+4. 最后将 release 分支合并到 next 分支上，此时会触发 CI release 流程
 
 另外所有 API 的废弃都需要在当前的稳定版本上 `deprecate` 提示，并保证在当前的稳定版本上一直兼容到新版本的发布。
 
@@ -150,8 +155,8 @@ git push
 
 tnpm 使用 `resolutions` 进行依赖覆盖。以 G2 为例，假如想测试一系列 beta 版本效果，可以这样做：
 
--   在 `dependencies` 中锁定**直接依赖**的版本号
--   在 `resolutions` 中锁定**间接依赖**的版本号。这样确保 G2 依赖的 `@antv/gui` 也使用同样的版本
+- 在 `dependencies` 中锁定**直接依赖**的版本号
+- 在 `resolutions` 中锁定**间接依赖**的版本号。这样确保 G2 依赖的 `@antv/gui` 也使用同样的版本
 
 ```js
 "dependencies": {
@@ -171,6 +176,6 @@ tnpm 使用 `resolutions` 进行依赖覆盖。以 G2 为例，假如想测试�
 
 其他包管理工具也都有对应的依赖覆盖方式，不再赘述：
 
--   npm [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides)
--   yarn [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
--   pnpm [overrides](https://pnpm.io/package_json#pnpmoverrides)
+- npm [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides)
+- yarn [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
+- pnpm [overrides](https://pnpm.io/package_json#pnpmoverrides)

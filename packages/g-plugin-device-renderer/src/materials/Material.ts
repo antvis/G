@@ -10,7 +10,7 @@ import type {
   CullMode,
   Device,
   Format,
-  FrontFaceMode,
+  FrontFace,
   StencilOp,
   Texture,
 } from '../platform';
@@ -38,7 +38,7 @@ export interface IMaterial {
   stencilPassOp: StencilOp;
   stencilRef: number;
 
-  frontFace: FrontFaceMode;
+  frontFace: FrontFace;
 
   // @see https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/polygonOffset
   polygonOffset: boolean;

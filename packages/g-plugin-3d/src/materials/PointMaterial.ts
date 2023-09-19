@@ -1,4 +1,8 @@
-import type { IMaterial, Texture, Device } from '@antv/g-plugin-device-renderer';
+import type {
+  IMaterial,
+  Texture,
+  Device,
+} from '@antv/g-plugin-device-renderer';
 import { Material, CullMode } from '@antv/g-plugin-device-renderer';
 import vert from '../shaders/point.vert';
 import frag from '../shaders/point.frag';
@@ -57,7 +61,7 @@ export class PointMaterial<T extends IPointMaterial> extends Material<T> {
     super(device, {
       vertexShader: vert,
       fragmentShader: frag,
-      cullMode: CullMode.Back,
+      cullMode: CullMode.BACK,
       ...props,
     });
 

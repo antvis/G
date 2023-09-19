@@ -1,6 +1,6 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout, InputState } from '../platform';
-import { Format, VertexBufferFrequency } from '../platform';
+import type { InputLayout } from '../platform';
+import { Format, VertexStepMode } from '../platform';
 import { fullscreenMegaState, nArray } from '../platform/utils';
 import { DeviceProgram } from '../render/DeviceProgram';
 import type { RGGraphBuilder } from '../render/interfaces';
@@ -32,7 +32,6 @@ interface RenderInput {
 
 const textureMapping = nArray(1, () => new TextureMapping());
 let geometry: BufferGeometry;
-let inputState: InputState;
 let inputLayout: InputLayout;
 
 export function pushFXAAPass(
@@ -68,7 +67,7 @@ export function pushFXAAPass(
     );
 
     const fxaaProgram = new FXAAProgram();
-    const program = renderHelper.renderCache.createProgram(fxaaProgram);
+    const program = renderHelper.renderCache.createProgramSimple(fxaaProgram);
 
     renderInst.setProgram(program);
 
@@ -77,7 +76,7 @@ export function pushFXAAPass(
       geometry.setVertexBuffer({
         bufferIndex: 0,
         byteStride: 4 * 2,
-        frequency: VertexBufferFrequency.PerVertex,
+        stepMode: VertexStepMode.VERTEX,
         attributes: [
           {
             format: Format.F32_RG,
@@ -87,24 +86,13 @@ export function pushFXAAPass(
         ],
         // rendering a fullscreen triangle instead of quad
         // @see https://www.saschawillems.de/blog/2016/08/13/vulkan-tutorial-on-rendering-a-fullscreen-quad-without-buffers/
-        // data: new Float32Array([-4, -4, 4, -4, 0, 4]),
-        data: new Float32Array([-1, -3, -1, 1, 3, -1]),
+        data: new Float32Array([1, 3, -3, -1, 1, -1]),
       });
       geometry.vertexCount = 3;
 
       inputLayout = renderHelper
         .getCache()
         .createInputLayout(geometry.inputLayoutDescriptor);
-
-      inputState = renderHelper.getDevice().createInputState(
-        inputLayout,
-        geometry.vertexBuffers.map((buffer) => ({
-          buffer,
-          byteOffset: 0,
-        })),
-        null,
-        program,
-      );
     }
 
     pass.exec((passRenderer, scope) => {
@@ -112,7 +100,14 @@ export function pushFXAAPass(
         mainColorResolveTextureID,
       );
       renderInst.setSamplerBindingsFromTextureMappings(textureMapping);
-      renderInst.setInputLayoutAndState(inputLayout, inputState);
+      renderInst.setVertexInput(
+        inputLayout,
+        geometry.vertexBuffers.map((buffer) => ({
+          buffer,
+          byteOffset: 0,
+        })),
+        null,
+      );
       renderInst.drawOnPass(renderHelper.renderCache, passRenderer);
     });
   });

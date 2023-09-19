@@ -59,7 +59,8 @@ const polyline = new Polyline({
   style: {
     points,
     stroke: '#1890FF',
-    lineWidth: 2,
+    lineWidth: 20,
+    lineCap: 'round',
     cursor: 'pointer',
   },
 });

@@ -1,4 +1,4 @@
-import type { Instanced } from '../meshes';
+import type { Instanced } from '../drawcalls';
 
 export class Renderable3D {
   static tag = 'c-renderable-3d';
@@ -7,5 +7,5 @@ export class Renderable3D {
 
   encodedPickingColor: [number, number, number];
 
-  meshes: Instanced[] = [];
+  drawcalls: Instanced[] = [];
 }

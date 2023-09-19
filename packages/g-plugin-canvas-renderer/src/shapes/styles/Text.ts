@@ -1,19 +1,24 @@
 import type {
   CSSRGB,
+  CanvasContext,
   DisplayObject,
+  GlobalRuntime,
   ParsedTextStyleProps,
   Rectangle,
 } from '@antv/g-lite';
-import { runtime } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
+import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
 
 export class TextRenderer implements StyleRenderer {
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedTextStyleProps,
     object: DisplayObject,
+    canvasContext: CanvasContext,
+    plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
   ) {
     const {
       lineWidth,

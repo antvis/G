@@ -2,7 +2,7 @@
  * Borrow from https://github.com/mapbox/tiny-sdf
  */
 
-import { CanvasLike, runtime } from '@antv/g-lite';
+import { CanvasLike, GlobalRuntime } from '@antv/g-lite';
 
 const INF = 1e20;
 
@@ -29,7 +29,7 @@ export class TinySDF {
   private gridInner: Float64Array;
   private ctx: CanvasRenderingContext2D;
 
-  constructor(options: TinySDFOptions) {
+  constructor(options: TinySDFOptions, runtime: GlobalRuntime) {
     const {
       fontSize = 24,
       buffer = 3,
@@ -48,7 +48,7 @@ export class TinySDF {
     // for "halo", and account for some glyphs possibly being larger than their font size
     const size = (this.size = fontSize + buffer * 4);
 
-    const $offscreenCanvas = runtime.offscreenCanvas.getOrCreateCanvas(
+    const $offscreenCanvas = runtime.offscreenCanvasCreator.getOrCreateCanvas(
       canvas,
     ) as HTMLCanvasElement;
 
@@ -58,7 +58,7 @@ export class TinySDF {
     $offscreenCanvas.width = size;
     $offscreenCanvas.height = size;
 
-    const ctx = runtime.offscreenCanvas.getOrCreateContext(canvas, {
+    const ctx = runtime.offscreenCanvasCreator.getOrCreateContext(canvas, {
       willReadFrequently: true,
     }) as CanvasRenderingContext2D;
     this.ctx = ctx;

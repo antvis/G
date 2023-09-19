@@ -1,29 +1,34 @@
 import type { CSSRGB, DisplayObject, ParsedTextStyleProps } from '@antv/g-lite';
-import type { Instanced } from '../meshes';
-import { TextMesh, TextUniform } from '../meshes';
+import type { Instanced } from '../drawcalls';
+import { TextDrawcall, TextUniform } from '../drawcalls';
 import type { RenderInst } from '../render/RenderInst';
 import { Batch } from './Batch';
+import { Renderable3D } from '../components/Renderable3D';
 
 export class TextRenderer extends Batch {
   /**
    * one for fill, one for stroke
    */
-  meshes = [TextMesh, TextMesh];
+  getDrawcallCtors(object: DisplayObject) {
+    const drawcalls: (typeof Instanced)[] = [];
 
-  shouldSubmitRenderInst(object: DisplayObject, index: number) {
     const { stroke, lineWidth } = object.parsedStyle as ParsedTextStyleProps;
     const hasStroke = !!(stroke && !(stroke as CSSRGB).isNone && lineWidth);
 
-    if (!hasStroke && index === 0) {
-      // skip rendering stroke
-      return false;
+    if (hasStroke) {
+      drawcalls.push(TextDrawcall);
     }
-    return true;
+
+    drawcalls.push(TextDrawcall);
+    return drawcalls;
   }
 
-  beforeUploadUBO(renderInst: RenderInst, mesh: Instanced, index: number) {
+  beforeUploadUBO(renderInst: RenderInst, mesh: Instanced) {
+    const drawcallNum = ((mesh.instance as any).renderable3D as Renderable3D)
+      .drawcalls.length;
+
     mesh.material.setUniforms({
-      [TextUniform.HAS_STROKE]: 1 - mesh.index,
+      [TextUniform.HAS_STROKE]: drawcallNum === 1 ? 0 : 1 - mesh.index,
     });
   }
 }

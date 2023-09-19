@@ -164,13 +164,16 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
+      supportsMutipleCanvasesInOneContainer,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
       isTouchEvent,
       isMouseEvent,
     } = config;
 
-    cleanExistedCanvas(container, this);
+    if (!supportsMutipleCanvasesInOneContainer) {
+      cleanExistedCanvas(container, this);
+    }
 
     let canvasWidth = width;
     let canvasHeight = height;
@@ -182,6 +185,11 @@ export class Canvas extends EventTarget implements ICanvas {
       dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
       canvasWidth = width || getWidth(canvas) || canvas.width / dpr;
       canvasHeight = height || getHeight(canvas) || canvas.height / dpr;
+    }
+
+    // override it in runtime
+    if (offscreenCanvas) {
+      runtime.offscreenCanvas = offscreenCanvas;
     }
 
     /**

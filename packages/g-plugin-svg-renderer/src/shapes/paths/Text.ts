@@ -1,5 +1,4 @@
-import type { ParsedTextStyleProps, Text } from '@antv/g-lite';
-import { runtime } from '@antv/g-lite';
+import type { GlobalRuntime, ParsedTextStyleProps, Text } from '@antv/g-lite';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { convertHTML } from '../../utils/format';
@@ -18,6 +17,7 @@ export function updateTextElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedTextStyleProps,
   text: Text,
+  runtime: GlobalRuntime,
 ) {
   const {
     lineWidth,
@@ -63,8 +63,11 @@ export function updateTextElementAttribute(
 
     // Since `text-after-edge` is not a standard property value, we use `dy` instead.
     if (textBaseline === 'bottom' || textBaseline === 'top') {
-      $el.setAttribute('dominant-baseline', 'middle');
-      $el.setAttribute('dy', textBaseline === 'bottom' ? `-0.5em` : '0.5em');
+      $el.setAttribute('dominant-baseline', BASELINE_MAP['middle']);
+      $el.setAttribute(
+        'dy',
+        textBaseline === 'bottom' ? `-${height / 2}px` : `${height / 2}px`,
+      );
     }
 
     // <textPath> only support one line

@@ -60,93 +60,94 @@ cube.style.width = 300;
 
 立方体，[示例](/zh/examples/3d#cube)
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sHGXQpeIYzoAAAAAAAAAAAAAARQnAQ" height='200'/>
+<img alt="cube" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*sHGXQpeIYzoAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-#### width
-
-宽度，必填。
-
-#### height
-
-高度，必填。
-
-#### depth
-
-深度，必填。
-
-#### widthSegments
-
-影响程序化生成，默认值为 1
-
-#### heightSegments
-
-影响程序化生成，默认值为 1
-
-#### depthSegments
-
-影响程序化生成，默认值为 1
+| 属性名         | 说明                       |
+| -------------- | -------------------------- |
+| width          | 宽度，必填                 |
+| height         | 高度，必填                 |
+| depth          | 深度，必填                 |
+| widthSegments  | 影响程序化生成，默认值为 1 |
+| heightSegments | 影响程序化生成，默认值为 1 |
+| depthSegments  | 影响程序化生成，默认值为 1 |
 
 ### SphereGeometry
 
 球体，[示例](/zh/examples/3d#sphere)
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
+<img alt="sphere" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*bsj2S4upLBgAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-#### radius
-
-球半径，必填，默认值为 0.5
-
-#### latitudeBands
-
-默认值为 16
-
-#### longitudeBands
-
-默认值为 16
+| 属性名         | 说明                       |
+| -------------- | -------------------------- |
+| radius         | 球半径，必填，默认值为 0.5 |
+| latitudeBands  | 默认值为 16                |
+| longitudeBands | 默认值为 16                |
 
 ### PlaneGeometry
 
 平面，默认躺在 XZ 平面上，[示例](/zh/examples/3d#plane)
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jN9zQp3RflAAAAAAAAAAAAAAARQnAQ" height='200'/>
+<img alt="plane" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jN9zQp3RflAAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-#### width
-
-必填，宽度
-
-#### depth
-
-必填，深度
-
-#### widthSegments
-
-选填，默认值为 5
-
-#### depthSegments
-
-选填，默认值为 5
+| 属性名        | 说明       |
+| ------------- | ---------- |
+| width         | 宽度       |
+| depth         | 深度       |
+| widthSegments | 默认值为 5 |
+| depthSegments | 默认值为 5 |
 
 ### TorusGeometry
 
 圆环，[示例](/zh/examples/3d#torus)
 
-<img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*So7oT4qDvLkAAAAAAAAAAAAAARQnAQ" height='200'/>
+<img alt="torus" src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*So7oT4qDvLkAAAAAAAAAAAAAARQnAQ" height='200'/>
 
-#### tubeRadius
+| 属性名     | 说明               |
+| ---------- | ------------------ |
+| tubeRadius | 选填，默认值为 0.2 |
+| ringRadius | 选填，默认值为 0.3 |
+| segments   | 选填，默认值为 30  |
+| sides      | 选填，默认值为 20  |
 
-选填，默认值为 0.2
+### CylinderGeometry
 
-#### ringRadius
+圆柱，[示例](/zh/examples/3d#cylinder)
 
-选填，默认值为 0.3
+<img alt="cylinder" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Vx-bSZTGKrIAAAAAAAAAAAAADmJ7AQ/original" height='200'/>
 
-#### segments
+| 属性名         | 说明                               |
+| -------------- | ---------------------------------- |
+| radius         | 圆柱体顶面半径，默认值为 0.5       |
+| height         | 圆柱体高度，默认值为 1             |
+| heightSegments | 圆柱体身体曲面划分数目，默认值为 5 |
+| capSegments    | 圆柱体顶面划分数目，默认值为 20    |
 
-选填，默认值为 30
+### ConeGeometry
 
-#### sides
+圆锥，[示例](/zh/examples/3d#cone)
 
-选填，默认值为 20
+<img alt="cone" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*4v4GQrGXA_UAAAAAAAAAAAAADmJ7AQ/original" height='200'/>
+
+| 属性名         | 说明                               |
+| -------------- | ---------------------------------- |
+| baseRadius     | 圆锥体底面半径，默认值为 0.5       |
+| peakRadius     | 圆锥体顶面半径，默认值为 0         |
+| height         | 圆锥体高度，默认值为 1             |
+| heightSegments | 圆锥体身体曲面划分数目，默认值为 5 |
+| capSegments    | 圆锥体顶面划分数目，默认值为 20    |
+
+### CapsuleGeometry
+
+胶囊，[示例](/zh/examples/3d#capsule)
+
+<img alt="capsule" src="https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*5czISLOqEeUAAAAAAAAAAAAADmJ7AQ/original" height='200'/>
+
+| 属性名         | 说明                             |
+| -------------- | -------------------------------- |
+| radius         | 胶囊半径，默认值为 0.5           |
+| height         | 胶囊高度，默认值为 1             |
+| heightSegments | 胶囊身体曲面划分数目，默认值为 1 |
+| sides          | 胶囊顶面划分数目，默认值为 20    |
 
 ## BufferGeometry
 
@@ -171,7 +172,7 @@ const mesh = new Mesh({
 bufferGeometry.setVertexBuffer({
     bufferIndex: 1,
     byteStride: 4 * 3,
-    frequency: VertexBufferFrequency.PerVertex,
+    stepMode: VertexStepMode.VERTEX,
     attributes: [
         {
             format: Format.F32_RGB,
@@ -263,7 +264,7 @@ geometry.setIndices(new Uint32Array(indices));
 
 -   bufferIndex 索引
 -   byteStride stride 长度（以 byte 为单位）
--   frequency 支持 vertex 和 instance 两种
+-   stepMode 支持 vertex 和 instance 两种
 -   attributes 支持 interleave，其中每个属性包括：
     -   format 对应 Shader 中的数据类型
     -   bufferByteOffset 在 stride 中的偏移量
@@ -276,7 +277,7 @@ geometry.setIndices(new Uint32Array(indices));
 export interface GeometryVertexBufferDescriptor {
     bufferIndex: number;
     byteStride: number;
-    frequency: VertexBufferFrequency;
+    stepMode: VertexStepMode;
     attributes: Array<{
         format: Format,
         bufferByteOffset: number,
@@ -300,7 +301,7 @@ layout(location = 10) attribute vec3 a_Position;
 geometry.setVertexBuffer({
     bufferIndex: ProceduralGeometryAttributeLocation.POSITION,
     byteStride: 4 * 3,
-    frequency: VertexBufferFrequency.PerVertex,
+    stepMode: VertexStepMode.VERTEX,
     attributes: [
         {
             format: Format.F32_RGB, // 与 vec3 对应

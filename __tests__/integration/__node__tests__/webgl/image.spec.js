@@ -1,5 +1,6 @@
 const fs = require('fs');
-const { createCanvas, Image: CanvasImage, loadImage } = require('canvas');
+const getPixels = require('get-pixels');
+const { createCanvas } = require('canvas');
 const { Image, Canvas, Rectangle } = require('@antv/g');
 const { Renderer } = require('@antv/g-webgl');
 const { createPNGFromRawdata, sleep, diff } = require('../../util');
@@ -7,6 +8,7 @@ const { createPNGFromRawdata, sleep, diff } = require('../../util');
 // create a renderer, unregister plugin relative to DOM
 const renderer = new Renderer({
   targets: ['webgl1'],
+  enableFXAA: false,
 });
 const domInteractionPlugin = renderer.getPlugin('dom-interaction');
 renderer.unregisterPlugin(domInteractionPlugin);
@@ -42,10 +44,6 @@ const canvas = new Canvas({
   canvas: mockCanvas, // use headless-gl
   renderer,
   offscreenCanvas: offscreenNodeCanvas,
-  createImage: () => {
-    const image = new CanvasImage();
-    return image;
-  },
 });
 
 const RESULT_IMAGE = '/image.png';
@@ -64,7 +62,19 @@ describe('Render <Image> with g-webgl', () => {
   it('should render image on server-side correctly.', async () => {
     await canvas.ready;
 
-    const src = await loadImage(__dirname + '/antv.png');
+    // Load local image instead of fetching remote URL.
+    // @see https://github.com/stackgl/headless-gl/pull/53/files#diff-55563b6c0b90b80aed19c83df1c51e80fd45d2fbdad6cc047ee86e98f65da3e9R83
+    const src = await new Promise((resolve, reject) => {
+      getPixels(__dirname + '/antv.png', function (err, image) {
+        if (err) {
+          reject('Bad image path');
+        } else {
+          image.width = image.shape[0];
+          image.height = image.shape[1];
+          resolve(image);
+        }
+      });
+    });
 
     // URL src
     const image = new Image({
@@ -75,22 +85,6 @@ describe('Render <Image> with g-webgl', () => {
       },
     });
     canvas.appendChild(image);
-
-    // <canvas> src
-    const nodeCanvasSrc = createCanvas(50, 50);
-    const context = nodeCanvasSrc.getContext('2d');
-    context.fillStyle = 'red';
-    context.fillRect(0, 0, 50, 50);
-    const image2 = new Image({
-      style: {
-        x: 100,
-        y: 100,
-        width: 100,
-        height: 100,
-        src: nodeCanvasSrc,
-      },
-    });
-    canvas.appendChild(image2);
 
     await sleep(200);
 

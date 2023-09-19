@@ -126,7 +126,8 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
       ...props,
     });
 
-    const { specularMap, bumpMap, doubleSide, emissive, shininess, specular } = this;
+    const { specularMap, bumpMap, doubleSide, emissive, shininess, specular } =
+      this;
 
     const emissiveColor = parseColor(emissive) as CSSRGB;
     const specularColor = parseColor(specular) as CSSRGB;
@@ -157,6 +158,7 @@ export class MeshPhongMaterial extends MeshBasicMaterial<IMeshPhongMaterial> {
 
     this.defines = {
       ...this.defines,
+      USE_LIGHT: true,
     };
   }
 }

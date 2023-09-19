@@ -44,7 +44,7 @@ import {
   TextService,
   TextUpdater,
 } from './services';
-import { Shape } from './types';
+import { CanvasLike, Shape } from './types';
 
 export const runtime: GlobalRuntime = {} as GlobalRuntime;
 
@@ -53,7 +53,8 @@ export interface GlobalRuntime {
   // AnimationTimeline: new (doc: IDocument) => IAnimationTimeline;
   AnimationTimeline: any;
   EasingFunction: (...args: any[]) => (t: number) => number;
-  offscreenCanvas: OffscreenCanvasCreator;
+  offscreenCanvasCreator: OffscreenCanvasCreator;
+  offscreenCanvas: CanvasLike;
   sceneGraphSelector: SceneGraphSelector;
   sceneGraphService: SceneGraphService;
   textService: TextService;
@@ -143,10 +144,10 @@ const getGlobalThis = () => {
   if (typeof window !== 'undefined') return window;
   // @ts-ignore
   if (typeof global !== 'undefined') return global;
+  return {};
   // [!] Error: The 'this' keyword is equivalent to 'undefined' at the top level of an ES module, and has been rewritten
   // @see https://rollupjs.org/troubleshooting/#error-this-is-undefined
   // if (typeof this !== 'undefined') return this;
-  throw new Error('Unable to locate global `this`');
 };
 
 /**
@@ -162,7 +163,7 @@ runtime.AnimationTimeline = null;
 
 runtime.EasingFunction = null;
 
-runtime.offscreenCanvas = new OffscreenCanvasCreator();
+runtime.offscreenCanvasCreator = new OffscreenCanvasCreator();
 
 runtime.nativeHTMLMap = new WeakMap();
 

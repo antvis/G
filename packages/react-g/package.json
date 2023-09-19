@@ -1,6 +1,6 @@
 {
   "name": "@antv/react-g",
-  "version": "1.10.3",
+  "version": "1.10.15",
   "description": "react render for @antv/g",
   "keywords": [
     "react",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@antv/g": "workspace:*",
-    "@antv/util": "^3.3.1",
+    "@antv/util": "^3.3.4",
     "gl-matrix": "^3.4.3",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",

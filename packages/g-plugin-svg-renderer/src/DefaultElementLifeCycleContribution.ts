@@ -1,4 +1,9 @@
-import type { CanvasContext, DisplayObject, Text } from '@antv/g-lite';
+import type {
+  CanvasContext,
+  DisplayObject,
+  GlobalRuntime,
+  Text,
+} from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import {
   updateImageElementAttribute,
@@ -97,7 +102,7 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
 export class DefaultElementLifeCycleContribution
   implements ElementLifeCycleContribution
 {
-  constructor(private context: CanvasContext) {}
+  constructor(private context: CanvasContext, private runtime: GlobalRuntime) {}
 
   createElement(
     object: DisplayObject,
@@ -147,7 +152,12 @@ export class DefaultElementLifeCycleContribution
         break;
       }
       case Shape.TEXT: {
-        updateTextElementAttribute($el, parsedStyle, object as Text);
+        updateTextElementAttribute(
+          $el,
+          parsedStyle,
+          object as Text,
+          this.runtime,
+        );
         break;
       }
     }

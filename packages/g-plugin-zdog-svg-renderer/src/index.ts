@@ -1,11 +1,11 @@
-import { AbstractRendererPlugin } from '@antv/g-lite';
+import { AbstractRendererPlugin, GlobalRuntime } from '@antv/g-lite';
 import { ZdogElementLifeCycleContribution } from './ZdogElementLifeCycleContribution';
 import { ZdogRendererPlugin } from './ZdogRendererPlugin';
 export class Plugin extends AbstractRendererPlugin {
   name = 'zdog-svg-renderer';
-  init(): void {
+  init(runtime: GlobalRuntime): void {
     const zdogElementLifeCycleContribution =
-      new ZdogElementLifeCycleContribution(this.context);
+      new ZdogElementLifeCycleContribution(this.context, runtime);
 
     // @ts-ignore
     this.context.SVGElementLifeCycleContribution =

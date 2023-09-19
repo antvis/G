@@ -1,23 +1,21 @@
 #pragma glslify: import('@antv/g-shader-components/scene.both.glsl')
 
-#ifdef INSTANCED
-  #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
-#else
-  #pragma glslify: import('@antv/g-shader-components/line.both.glsl')
-#endif
+#pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
+#pragma glslify: project = require('@antv/g-shader-components/project.vert')
 
-layout(location = PREV) in vec2 a_Prev;
-layout(location = POINT1) in vec2 a_Point1;
-layout(location = POINT2) in vec2 a_Point2;
-layout(location = NEXT) in vec2 a_Next;
+layout(location = PREV) in vec3 a_Prev;
+layout(location = POINT1) in vec3 a_Point1;
+layout(location = POINT2) in vec3 a_Point2;
+layout(location = NEXT) in vec3 a_Next;
 layout(location = VERTEX_JOINT) in float a_VertexJoint;
 layout(location = VERTEX_NUM) in float a_VertexNum;
 layout(location = TRAVEL) in float a_Travel;
-
-#ifdef INSTANCED
-  layout(location = DASH) in vec4 a_Dash;
-  out vec4 v_Dash;
+#ifdef USE_UV
+  layout(location = UV) in vec2 a_Uv;
+  out vec2 v_Uv;
 #endif
+layout(location = DASH) in vec4 a_Dash;
+out vec4 v_Dash;
 
 const float FILL = 1.0;
 const float BEVEL = 4.0;
@@ -32,12 +30,10 @@ const float CAP_SQUARE = 2.0;
 const float CAP_ROUND = 3.0;
 const float CAP_BUTT2 = 4.0;
 
-#ifdef INSTANCED
-  const float u_Expand = 1.0;
-  const float u_MiterLimit = 5.0;
-  const float u_ScaleMode = 1.0;
-  const float u_Alignment = 0.5;
-#endif
+const float u_Expand = 1.0;
+const float u_MiterLimit = 5.0;
+const float u_ScaleMode = 1.0;
+const float u_Alignment = 0.5;
 
 out vec4 v_Distance;
 out vec4 v_Arc;
@@ -65,14 +61,34 @@ vec2 doBisect(
   return dy * bisect;
 }
 
-void main() {
-  #ifdef INSTANCED
-    #pragma glslify: import('@antv/g-shader-components/batch.vert')
-    v_Dash = a_Dash;
-  #endif
+vec2 project2ScreenSpace(vec3 pos, mat4 u_ModelMatrix) {
+  vec4 clip = project(vec4(pos, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  return u_Viewport * (0.5 * clip.xy / clip.w + 0.5);
+}
 
-  vec2 pointA = (u_ModelMatrix * vec4(a_Point1, 0., 1.0)).xy;
-  vec2 pointB = (u_ModelMatrix * vec4(a_Point2, 0., 1.0)).xy;
+void main() {
+  #pragma glslify: import('@antv/g-shader-components/batch.vert')
+  #pragma glslify: import('@antv/g-shader-components/uv.vert')
+
+  v_Dash = a_Dash;
+
+  vec2 pointA;
+  vec2 pointB;
+  vec4 clip0;
+  vec4 clip1;
+
+  float isBillboard = a_Dash.w;
+  if (isBillboard > 0.5) {
+    // clip space
+    clip0 = project(vec4(a_Point1, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+    clip1 = project(vec4(a_Point2, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+    // screen space
+    pointA = project2ScreenSpace(a_Point1, u_ModelMatrix);
+    pointB = project2ScreenSpace(a_Point2, u_ModelMatrix);
+  } else {
+    pointA = (u_ModelMatrix * vec4(a_Point1, 1.0)).xy;
+    pointB = (u_ModelMatrix * vec4(a_Point2, 1.0)).xy;
+  }
 
   vec2 xBasis = pointB - pointA;
   float len = length(xBasis);
@@ -125,12 +141,22 @@ void main() {
     float flag = 0.0;
     float sign2 = 1.0;
     if (a_VertexNum < 0.5 || a_VertexNum > 2.5 && a_VertexNum < 3.5) {
-      next = (u_ModelMatrix * vec4(a_Prev, 0.0, 1.0)).xy;
+      if (isBillboard > 0.5) {
+        next = project2ScreenSpace(a_Prev, u_ModelMatrix);
+      } else {
+        next = (u_ModelMatrix * vec4(a_Prev, 1.0)).xy;
+      }      
+
       base = pointA;
       flag = type - floor(type / 2.0) * 2.0;
       sign2 = -1.0;
     } else {
-      next = (u_ModelMatrix * vec4(a_Next, 0.0, 1.0)).xy;
+      if (isBillboard > 0.5) {
+        next = project2ScreenSpace(a_Next, u_ModelMatrix);
+      } else {
+        next = (u_ModelMatrix * vec4(a_Next, 1.0)).xy;
+      }
+      
       base = pointB;
       if (type >= MITER && type < MITER + 3.5) {
         flag = step(MITER + 1.5, type);
@@ -335,5 +361,10 @@ void main() {
 
   v_ScalingFactor = sqrt(u_ModelMatrix[0][0] * u_ModelMatrix[0][0] + u_ModelMatrix[0][1] * u_ModelMatrix[0][1] + u_ModelMatrix[0][2] * u_ModelMatrix[0][2]);
 
-  gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
+  if (isBillboard > 0.5) {
+    vec4 clip = mix(clip0, clip1, 0.5);
+    gl_Position = vec4(clip.w * (2.0 * pos / u_Viewport - 1.0), clip.z, clip.w);
+  } else {
+    gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, u_ZIndex, 1.0);
+  }
 }

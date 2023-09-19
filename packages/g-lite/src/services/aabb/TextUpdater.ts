@@ -37,9 +37,6 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
     const { text, textAlign, lineWidth, textBaseline, dx, dy } = parsedStyle;
-    const { offscreenCanvas } =
-      object?.ownerDocument?.defaultView?.getConfig() || {};
-
     if (!this.isReadyToMeasure(parsedStyle, object)) {
       parsedStyle.metrics = {
         font: '',
@@ -66,6 +63,8 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       };
     }
 
+    const { offscreenCanvas } =
+      object?.ownerDocument?.defaultView?.getConfig() || {};
     const metrics = this.globalRuntime.textService.measureText(
       text,
       parsedStyle,

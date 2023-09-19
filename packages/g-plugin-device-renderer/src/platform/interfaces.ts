@@ -10,7 +10,6 @@ export enum ResourceType {
   Program,
   Bindings,
   InputLayout,
-  InputState,
   RenderPipeline,
   ComputePipeline,
   Readback,
@@ -37,7 +36,7 @@ export interface Buffer extends ResourceBase {
 export interface Texture extends ResourceBase {
   type: ResourceType.Texture;
   setImageData: (
-    data: TexImageSource | ArrayBufferView[],
+    data: (TexImageSource | ArrayBufferView)[],
     firstMipLevel?: number,
   ) => void;
 }
@@ -49,15 +48,13 @@ export interface Sampler extends ResourceBase {
 }
 export interface Program extends ResourceBase {
   type: ResourceType.Program;
+  setUniformsLegacy: (uniforms: Record<string, any>) => void;
 }
 export interface Bindings extends ResourceBase {
   type: ResourceType.Bindings;
 }
 export interface InputLayout extends ResourceBase {
   type: ResourceType.InputLayout;
-}
-export interface InputState extends ResourceBase {
-  type: ResourceType.InputState;
 }
 export interface RenderPipeline extends ResourceBase {
   type: ResourceType.RenderPipeline;
@@ -81,6 +78,17 @@ export interface Readback extends ResourceBase {
     length?: number,
   ) => Promise<ArrayBufferView>;
 
+  readTextureSync: (
+    t: Texture,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    dst: ArrayBufferView,
+    dstOffset?: number,
+    length?: number,
+  ) => ArrayBufferView;
+
   readBuffer: (
     b: Buffer,
     srcByteOffset?: number,
@@ -101,73 +109,141 @@ export type Resource =
   | Program
   | Bindings
   | InputLayout
-  | InputState
   | RenderPipeline
   | ComputePipeline
   | Readback;
 
 export enum CompareMode {
-  Never = GL.NEVER,
-  Less = GL.LESS,
-  Equal = GL.EQUAL,
-  LessEqual = GL.LEQUAL,
-  Greater = GL.GREATER,
-  NotEqual = GL.NOTEQUAL,
-  GreaterEqual = GL.GEQUAL,
-  Always = GL.ALWAYS,
+  NEVER = GL.NEVER,
+  LESS = GL.LESS,
+  EQUAL = GL.EQUAL,
+  LEQUAL = GL.LEQUAL,
+  GREATER = GL.GREATER,
+  NOTEQUAL = GL.NOTEQUAL,
+  GEQUAL = GL.GEQUAL,
+  ALWAYS = GL.ALWAYS,
 }
 
-export enum FrontFaceMode {
+export enum FrontFace {
   CCW = GL.CCW,
   CW = GL.CW,
 }
 
 export enum CullMode {
-  None,
-  Front,
-  Back,
-  FrontAndBack,
+  NONE,
+  FRONT,
+  BACK,
+  FRONT_AND_BACK,
 }
 
+/**
+ * Blend factor RGBA components.
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor
+ */
 export enum BlendFactor {
-  Zero = GL.ZERO,
-  One = GL.ONE,
-  Src = GL.SRC_COLOR,
-  OneMinusSrc = GL.ONE_MINUS_SRC_COLOR,
-  Dst = GL.DST_COLOR,
-  OneMinusDst = GL.ONE_MINUS_DST_COLOR,
-  SrcAlpha = GL.SRC_ALPHA,
-  OneMinusSrcAlpha = GL.ONE_MINUS_SRC_ALPHA,
-  DstAlpha = GL.DST_ALPHA,
-  OneMinusDstAlpha = GL.ONE_MINUS_DST_ALPHA,
+  /**
+   * (0, 0, 0, 0)
+   */
+  ZERO = GL.ZERO,
+  /**
+   * (1, 1, 1, 1)
+   */
+  ONE = GL.ONE,
+  /**
+   * (Rsrc, Gsrc, Bsrc, Asrc)
+   */
+  SRC = GL.SRC_COLOR,
+  /**
+   * (1 - Rsrc, 1 - Gsrc, 1 - Bsrc, 1 - Asrc)
+   */
+  ONE_MINUS_SRC = GL.ONE_MINUS_SRC_COLOR,
+  /**
+   * (Rdst, Gdst, Bdst, Adst)
+   */
+  DST = GL.DST_COLOR,
+  /**
+   * (1 - Rdst, 1 - Gdst, 1 - Bdst, 1 - Adst)
+   */
+  ONE_MINUS_DST = GL.ONE_MINUS_DST_COLOR,
+  /**
+   * (Asrc, Asrc, Asrc, Asrc)
+   */
+  SRC_ALPHA = GL.SRC_ALPHA,
+  /**
+   * (1 - Asrc, 1 - Asrc, 1 - Asrc, 1 - Asrc)
+   */
+  ONE_MINUS_SRC_ALPHA = GL.ONE_MINUS_SRC_ALPHA,
+  /**
+   * (Adst, Adst, Adst, Adst)
+   */
+  DST_ALPHA = GL.DST_ALPHA,
+  /**
+   * (1 - Adst, 1 - Adst, 1 - Adst, 1 - Adst)
+   */
+  ONE_MINUS_DST_ALPHA = GL.ONE_MINUS_DST_ALPHA,
+  /**
+   * (Rconst, Gconst, Bconst, Aconst)
+   */
+  CONST = GL.CONSTANT_COLOR,
+  /**
+   * (1 - Rconst, 1 - Gconst, 1 - Bconst, 1 - Aconst)
+   */
+  ONE_MINUS_CONSTANT = GL.ONE_MINUS_CONSTANT_COLOR,
+  /**
+   * (min(Asrc, 1 - Adst), min(Asrc, 1 - Adst), min(Asrc, 1 - Adst), 1)
+   */
+  SRC_ALPHA_SATURATE = GL.SRC_ALPHA_SATURATE,
 }
 
+/**
+ * Defines the algorithm used to combine source and destination blend factors.
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpublendoperation
+ */
 export enum BlendMode {
-  Add = GL.FUNC_ADD,
-  Subtract = GL.FUNC_SUBTRACT,
-  ReverseSubtract = GL.FUNC_REVERSE_SUBTRACT,
+  /**
+   * RGBAsrc × RGBAsrcFactor + RGBAdst × RGBAdstFactor
+   */
+  ADD = GL.FUNC_ADD,
+  /**
+   * RGBAsrc × RGBAsrcFactor - RGBAdst × RGBAdstFactor
+   */
+  SUBSTRACT = GL.FUNC_SUBTRACT,
+  /**
+   * RGBAdst × RGBAdstFactor - RGBAsrc × RGBAsrcFactor
+   */
+  REVERSE_SUBSTRACT = GL.FUNC_REVERSE_SUBTRACT,
+  // TODO: WebGL 1 should use ext
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/blendEquation#parameters
+  /**
+   * min(RGBAsrc, RGBAdst)
+   */
+  MIN = GL.MIN,
+  /**
+   * max(RGBAsrc, RGBAdst)
+   */
+  MAX = GL.MAX,
 }
 
 export enum WrapMode {
-  Clamp,
-  Repeat,
-  Mirror,
+  CLAMP,
+  REPEAT,
+  MIRROR,
 }
 export enum TexFilterMode {
-  Point,
-  Bilinear,
+  POINT,
+  BILINEAR,
 }
 export enum MipFilterMode {
-  NoMip,
-  Nearest,
-  Linear,
+  NO_MIP,
+  NEAREST,
+  LINEAR,
 }
 export enum PrimitiveTopology {
-  Points,
-  Triangles,
-  TriangleStrip,
-  Lines,
-  LineStrip,
+  POINTS,
+  TRIANGLES,
+  TRIANGLE_STRIP,
+  LINES,
+  LINE_STRIP,
 }
 
 /**
@@ -196,13 +272,16 @@ export enum BufferUsage {
 }
 
 export enum BufferFrequencyHint {
-  Static = 0x01,
-  Dynamic = 0x02,
+  STATIC = 0x01,
+  DYNAMIC = 0x02,
 }
 
-export enum VertexBufferFrequency {
-  PerVertex = 0x01,
-  PerInstance = 0x02,
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpuvertexstepmode
+ */
+export enum VertexStepMode {
+  VERTEX = 0x01,
+  INSTANCE = 0x02,
 }
 
 export enum TextureEvent {
@@ -210,42 +289,44 @@ export enum TextureEvent {
 }
 
 export enum TextureDimension {
-  n2D,
-  n2DArray,
-  n3D,
-  Cube,
+  TEXTURE_2D,
+  TEXTURE_2D_ARRAY,
+  TEXTURE_3D,
+  TEXTURE_CUBE_MAP,
 }
 
 export enum TextureUsage {
-  Sampled = 0x01,
-  RenderTarget = 0x02,
+  SAMPLED = 0x01,
+  RENDER_TARGET = 0x02,
 }
 
 export enum ChannelWriteMask {
-  None = 0x00,
-  Red = 0x01,
-  Green = 0x02,
-  Blue = 0x04,
-  Alpha = 0x08,
-
+  NONE = 0x00,
+  RED = 0x01,
+  GREEN = 0x02,
+  BLUE = 0x04,
+  ALPHA = 0x08,
   RGB = 0x07,
-  AllChannels = 0x0f,
+  ALL = 0x0f,
 }
 
+/**
+ * @see https://www.w3.org/TR/webgpu/#enumdef-gpustenciloperation
+ */
 export enum StencilOp {
-  Keep = GL.KEEP,
-  Zero = GL.ZERO,
-  Replace = GL.REPLACE,
-  Invert = GL.INVERT,
-  IncrementClamp = GL.INCR,
-  DecrementClamp = GL.DECR,
-  IncrementWrap = GL.INCR_WRAP,
-  DecrementWrap = GL.DECR_WRAP,
+  KEEP = GL.KEEP,
+  ZERO = GL.ZERO,
+  REPLACE = GL.REPLACE,
+  INVERT = GL.INVERT,
+  INCREMENT_CLAMP = GL.INCR,
+  DECREMENT_CLAMP = GL.DECR,
+  INCREMENT_WRAP = GL.INCR_WRAP,
+  DECREMENT_WRAP = GL.DECR_WRAP,
 }
 
 export interface VertexBufferDescriptor {
   buffer: Buffer;
-  byteOffset: number;
+  byteOffset?: number;
 }
 
 export type IndexBufferDescriptor = VertexBufferDescriptor;
@@ -255,22 +336,24 @@ export interface VertexAttributeDescriptor {
   format: Format;
   bufferIndex: number;
   bufferByteOffset: number;
-  byteStride?: number;
   divisor?: number;
 }
 
 export interface InputLayoutBufferDescriptor {
   byteStride: number;
-  frequency: VertexBufferFrequency;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpuvertexbufferlayout-stepmode
+   */
+  stepMode: VertexStepMode;
 }
 
 export interface TextureDescriptor {
-  dimension: TextureDimension;
+  dimension?: TextureDimension;
   pixelFormat: Format;
   width: number;
   height: number;
-  depth: number;
-  numLevels: number;
+  depth?: number;
+  numLevels?: number;
   usage: TextureUsage;
   immutable?: boolean;
   pixelStore?: Partial<{
@@ -286,9 +369,9 @@ export function makeTextureDescriptor2D(
   height: number,
   numLevels: number,
 ): TextureDescriptor {
-  const dimension = TextureDimension.n2D,
+  const dimension = TextureDimension.TEXTURE_2D,
     depth = 1;
-  const usage = TextureUsage.Sampled;
+  const usage = TextureUsage.SAMPLED;
   return { dimension, pixelFormat, width, height, depth, numLevels, usage };
 }
 
@@ -309,7 +392,7 @@ export interface RenderTargetDescriptor {
   pixelFormat: Format;
   width: number;
   height: number;
-  sampleCount: number;
+  sampleCount?: number;
   texture?: Texture;
 }
 
@@ -321,7 +404,6 @@ export interface BufferBinding {
 export interface SamplerBinding {
   texture: Texture | null;
   sampler: Sampler | null;
-  lateBinding: string | null;
 }
 
 export enum SamplerFormatKind {
@@ -359,6 +441,23 @@ export interface BindingsDescriptor {
   storageBufferBindings?: BufferBinding[];
 }
 
+/**
+ * Support the following shaderStage: vertex | fragment | compute.
+ */
+export interface ProgramDescriptor {
+  vertex?: {
+    glsl?: string;
+    wgsl?: string;
+  };
+  fragment?: {
+    glsl?: string;
+    wgsl?: string;
+  };
+  compute?: {
+    wgsl: string;
+  };
+}
+
 export interface ProgramDescriptorSimple {
   vert?: string;
   frag?: string;
@@ -367,15 +466,14 @@ export interface ProgramDescriptorSimple {
   preprocessedCompute?: string;
 }
 
-export interface ProgramDescriptor extends ProgramDescriptorSimple {
-  ensurePreprocessed: (vendorInfo: VendorInfo) => void;
-  associate: (device: Device, program: Program) => void;
-}
-
 export interface InputLayoutDescriptor {
   vertexBufferDescriptors: (InputLayoutBufferDescriptor | null)[];
   vertexAttributeDescriptors: VertexAttributeDescriptor[];
   indexBufferFormat: Format | null;
+  /**
+   * Read attributes from linked program.
+   */
+  program: Program;
 }
 
 export interface ChannelBlendState {
@@ -385,39 +483,39 @@ export interface ChannelBlendState {
 }
 
 export interface AttachmentState {
-  channelWriteMask: ChannelWriteMask;
+  channelWriteMask?: ChannelWriteMask;
   rgbBlendState: ChannelBlendState;
   alphaBlendState: ChannelBlendState;
 }
 
 export interface MegaStateDescriptor {
   attachmentsState: AttachmentState[];
-  blendConstant: Color;
-  depthCompare: CompareMode;
-  depthWrite: boolean;
-  stencilCompare: CompareMode;
-  stencilWrite: boolean;
-  stencilPassOp: StencilOp;
-  stencilRef: number;
-  cullMode: CullMode;
-  frontFace: FrontFaceMode;
-  polygonOffset: boolean;
+  blendConstant?: Color;
+  depthCompare?: CompareMode;
+  depthWrite?: boolean;
+  stencilCompare?: CompareMode;
+  stencilWrite?: boolean;
+  stencilPassOp?: StencilOp;
+  stencilRef?: number;
+  cullMode?: CullMode;
+  frontFace?: FrontFace;
+  polygonOffset?: boolean;
 }
 
 export interface PipelineDescriptor {
-  bindingLayouts: BindingLayoutDescriptor[];
+  bindingLayouts?: BindingLayoutDescriptor[];
   inputLayout: InputLayout | null;
   program: Program;
 }
 
 export interface RenderPipelineDescriptor extends PipelineDescriptor {
-  topology: PrimitiveTopology;
-  megaStateDescriptor: MegaStateDescriptor;
+  topology?: PrimitiveTopology;
+  megaStateDescriptor?: MegaStateDescriptor;
 
   // Attachment data.
   colorAttachmentFormats: (Format | null)[];
-  depthStencilAttachmentFormat: Format | null;
-  sampleCount: number;
+  depthStencilAttachmentFormat?: Format | null;
+  sampleCount?: number;
 }
 
 export type ComputePipelineDescriptor = PipelineDescriptor;
@@ -431,25 +529,25 @@ export interface Color {
 
 export interface RenderPassDescriptor {
   colorAttachment: (RenderTarget | null)[];
-  colorAttachmentLevel: number[];
-  colorClearColor: (Color | 'load')[];
+  colorAttachmentLevel?: number[];
+  colorClearColor?: (Color | 'load')[];
   colorResolveTo: (Texture | null)[];
-  colorResolveToLevel: number[];
-  colorStore: boolean[];
-  depthStencilAttachment: RenderTarget | null;
-  depthStencilResolveTo: Texture | null;
-  depthStencilStore: boolean;
-  depthClearValue: number | 'load';
-  stencilClearValue: number | 'load';
-
-  // Query system.
-  occlusionQueryPool: QueryPool | null;
+  colorResolveToLevel?: number[];
+  colorStore?: boolean[];
+  depthStencilAttachment?: RenderTarget | null;
+  depthStencilResolveTo?: Texture | null;
+  depthStencilStore?: boolean;
+  depthClearValue?: number | 'load';
+  stencilClearValue?: number | 'load';
+  occlusionQueryPool?: QueryPool | null;
 }
 
 export interface DeviceLimits {
   uniformBufferWordAlignment: number;
   uniformBufferMaxPageWordSize: number;
   readonly supportedSampleCounts: number[];
+  occlusionQueriesRecommended: boolean;
+  computeShadersSupported: boolean;
 }
 
 export interface DebugGroup {
@@ -461,13 +559,13 @@ export interface DebugGroup {
 }
 
 export enum ViewportOrigin {
-  LowerLeft,
-  UpperLeft,
+  LOWER_LEFT,
+  UPPER_LEFT,
 }
 
 export enum ClipSpaceNearZ {
-  NegativeOne,
-  Zero,
+  NEGATIVE_ONE,
+  ZERO,
 }
 
 export interface VendorInfo {
@@ -494,7 +592,16 @@ export interface SwapChain {
   getOnscreenTexture: () => Texture;
 }
 
-export interface RenderPass {
+/**
+ * @see https://www.w3.org/TR/webgpu/#debug-markers
+ */
+interface DebugCommandsMixin {
+  pushDebugGroup: (groupLabel: string) => void;
+  popDebugGroup: () => void;
+  insertDebugMarker: (markerLabel: string) => void;
+}
+
+export interface RenderPass extends DebugCommandsMixin {
   // State management.
   setViewport: (x: number, y: number, w: number, h: number) => void;
   setScissor: (x: number, y: number, w: number, h: number) => void;
@@ -504,28 +611,47 @@ export interface RenderPass {
     bindings: Bindings,
     dynamicByteOffsets: number[],
   ) => void;
-  setInputState: (inputState: InputState | null) => void;
+  setVertexInput: (
+    inputLayout: InputLayout | null,
+    buffers: (VertexBufferDescriptor | null)[] | null,
+    indexBuffer: IndexBufferDescriptor | null,
+  ) => void;
   setStencilRef: (value: number) => void;
 
   // Draw commands.
-  draw: (vertexCount: number, firstVertex: number) => void;
-  drawIndexed: (indexCount: number, firstIndex: number) => void;
-  drawIndexedInstanced: (
-    indexCount: number,
-    firstIndex: number,
-    instanceCount: number,
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-draw
+   */
+  draw: (
+    vertexCount: number,
+    instanceCount?: number,
+    firstVertex?: number,
+    firstInstance?: number,
   ) => void;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindexed
+   */
+  drawIndexed: (
+    indexCount: number,
+    instanceCount?: number,
+    firstIndex?: number,
+    baseVertex?: number,
+    firstInstance?: number,
+  ) => void;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpurendercommandsmixin-drawindirect
+   */
+  drawIndirect: (indirectBuffer: Buffer, indirectOffset: number) => void;
 
   // Query system.
   beginOcclusionQuery: (dstOffs: number) => void;
   endOcclusionQuery: (dstOffs: number) => void;
-
-  // Debug.
-  beginDebugGroup: (name: string) => void;
-  endDebugGroup: () => void;
 }
 
-export interface ComputePass {
+/**
+ * @see https://www.w3.org/TR/webgpu/#compute-passes
+ */
+export interface ComputePass extends DebugCommandsMixin {
   setPipeline: (pipeline: ComputePipeline) => void;
   setBindings: (
     bindingLayoutIndex: number,
@@ -533,12 +659,20 @@ export interface ComputePass {
     dynamicByteOffsets: number[],
   ) => void;
   /**
-   * @see https://www.w3.org/TR/webgpu/#compute-pass-encoder-dispatch
+   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroups
    */
-  dispatch: (x: number, y?: number, z?: number) => void;
-  // Debug.
-  beginDebugGroup: (name: string) => void;
-  endDebugGroup: () => void;
+  dispatchWorkgroups: (
+    workgroupCountX: number,
+    workgroupCountY?: number,
+    workgroupCountZ?: number,
+  ) => void;
+  /**
+   * @see https://www.w3.org/TR/webgpu/#dom-gpucomputepassencoder-dispatchworkgroupsindirect
+   */
+  dispatchWorkgroupsIndirect: (
+    indirectBuffer: Buffer,
+    indirectOffset: number,
+  ) => void;
 }
 
 export enum QueryPoolType {
@@ -569,17 +703,10 @@ export interface Device {
   createRenderTarget: (descriptor: RenderTargetDescriptor) => RenderTarget;
   createRenderTargetFromTexture: (texture: Texture) => RenderTarget;
   createProgram: (program: ProgramDescriptor) => Program;
-  createProgramSimple: (program: ProgramDescriptorSimple) => Program;
   createBindings: (bindingsDescriptor: BindingsDescriptor) => Bindings;
   createInputLayout: (
     inputLayoutDescriptor: InputLayoutDescriptor,
   ) => InputLayout;
-  createInputState: (
-    inputLayout: InputLayout,
-    buffers: (VertexBufferDescriptor | null)[],
-    indexBuffer: IndexBufferDescriptor | null,
-    program?: Program,
-  ) => InputState;
   createRenderPipeline: (
     descriptor: RenderPipelineDescriptor,
   ) => RenderPipeline;
@@ -595,6 +722,7 @@ export interface Device {
   beginFrame(): void;
   endFrame(): void;
   submitPass: (pass: RenderPass | ComputePass) => void;
+  destroy(): void;
 
   // Render pipeline compilation control.
   pipelineQueryReady: (o: RenderPipeline) => boolean;
@@ -625,7 +753,5 @@ export interface Device {
   setResourceName: (o: Resource, s: string) => void;
   setResourceLeakCheck: (o: Resource, v: boolean) => void;
   checkForLeaks: () => void;
-  programPatched: (o: Program, descriptor: ProgramDescriptorSimple) => void;
-  pushDebugGroup: (debugGroup: DebugGroup) => void;
-  popDebugGroup: () => void;
+  programPatched: (o: Program, descriptor: ProgramDescriptor) => void;
 }

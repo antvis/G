@@ -28,10 +28,5 @@ void RE_IndirectDiffuse_BlinnPhong(
   reflectedLight.indirectDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );
 }
 
-vec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {
-	vec3 irradiance = ambientLightColor;
-	return irradiance;
-}
-
 #define RE_Direct           RE_Direct_BlinnPhong
 #define RE_IndirectDiffuse  RE_IndirectDiffuse_BlinnPhong

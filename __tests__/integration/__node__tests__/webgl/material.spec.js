@@ -17,6 +17,7 @@ const { createPNGFromRawdata, sleep, diff } = require('../../util');
 // create a renderer, unregister plugin relative to DOM
 const renderer = new Renderer({
   targets: ['webgl1'],
+  enableFXAA: false,
 });
 const domInteractionPlugin = renderer.getPlugin('dom-interaction');
 renderer.unregisterPlugin(domInteractionPlugin);
@@ -80,7 +81,7 @@ describe('Render custom material with g-webgl', () => {
     bufferGeometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
       byteStride: 4 * 3,
-      frequency: VertexBufferFrequency.PerVertex,
+      frequency: VertexBufferFrequency.VERTEX,
       attributes: [
         {
           format: Format.F32_RGB,

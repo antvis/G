@@ -1,8 +1,5 @@
 import { isNil } from '@antv/util';
-import type { VendorInfo } from '../platform';
 import { assert, nullify } from '../platform/utils';
-import type { ShaderFeatureMap } from '../shader/compiler';
-import { preprocessShader_GLSL } from '../shader/compiler';
 
 export class DeviceProgram {
   name = '(unnamed)';
@@ -16,9 +13,6 @@ export class DeviceProgram {
   vert = '';
   frag = '';
   defines: Record<string, string> = {};
-  features: ShaderFeatureMap = {
-    MRT: true,
-  };
 
   definesChanged(): void {
     this.preprocessedVert = '';
@@ -49,24 +43,5 @@ export class DeviceProgram {
     const str = this.getDefineString(name);
     if (str !== null) assert(str === '1');
     return str !== null;
-  }
-
-  ensurePreprocessed(vendorInfo: VendorInfo): void {
-    if (this.preprocessedVert === '') {
-      this.preprocessedVert = preprocessShader_GLSL(
-        vendorInfo,
-        'vert',
-        this.both + this.vert,
-        this.defines,
-        this.features,
-      );
-      this.preprocessedFrag = preprocessShader_GLSL(
-        vendorInfo,
-        'frag',
-        this.both + this.frag,
-        this.defines,
-        this.features,
-      );
-    }
   }
 }

@@ -73,13 +73,68 @@ describe('Property Path', () => {
 
     expect(left).toStrictEqual([
       ['M', 0, 0],
-      ['C', 50, 0, 68.75, 0, 100, 0],
+      ['C', 50, 0, 100, 0, 100, 0],
     ]);
     expect(right).toStrictEqual([
       ['M', 0, 0],
-      ['C', 100, 0, 137.5, 0, 200, 0],
+      ['C', 100, 0, 200, 0, 200, 0],
     ]);
 
     mergePaths(path1, path2);
+  });
+
+  it('should remove redundant M commands correctly.', () => {
+    let parsed = parsePath('M 0 0 M 0 0 M 0 0 L 100 100');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['L', 100, 100],
+    ]);
+
+    parsed = parsePath('M 0 0 L 100 100 Z M 0 0 L 0 0');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['L', 100, 100],
+      ['Z'],
+      ['M', 0, 0],
+      ['L', 0, 0],
+    ]);
+
+    parsed = parsePath('M 0 0 M 0 0 M 0 0 L 100 100 M 100 100 L 200 200');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['L', 100, 100],
+      ['L', 200, 200],
+    ]);
+
+    parsed = parsePath('M 0 0 C 50 0 100 0 100 100 M 100 100 L 200 200');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['C', 50, 0, 100, 0, 100, 100],
+      ['L', 200, 200],
+    ]);
+
+    parsed = parsePath('M 0 0 Q 50 0 100 100 M 100 100 L 200 200');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['Q', 50, 0, 100, 100],
+      ['L', 200, 200],
+    ]);
+
+    parsed = parsePath(
+      'M 0 0 A 50 0 0 0 0 100 100 M 100 100 M 100 100 M 100 100 L 200 200',
+    );
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['A', 50, 0, 0, 0, 0, 100, 100],
+      ['L', 200, 200],
+    ]);
+
+    parsed = parsePath('M 0 0 Q 50 0 100 100 M 200 100 L 200 200');
+    expect(parsed.absolutePath).toStrictEqual([
+      ['M', 0, 0],
+      ['Q', 50, 0, 100, 100],
+      ['M', 200, 100],
+      ['L', 200, 200],
+    ]);
   });
 });

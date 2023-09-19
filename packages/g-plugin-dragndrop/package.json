@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-dragndrop",
-  "version": "1.8.2",
+  "version": "1.8.13",
   "description": "A G plugin for Drag n Drop implemented with PointerEvents",
   "keywords": [
     "antv",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/util": "^3.3.1",
+    "@antv/util": "^3.3.4",
     "tslib": "^2.5.3"
   },
   "publishConfig": {

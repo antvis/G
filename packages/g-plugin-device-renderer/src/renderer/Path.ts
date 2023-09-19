@@ -4,72 +4,53 @@
 import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import {
-  FillMesh,
-  InstancedLineMesh,
-  InstancedPathMesh,
-  LineMesh,
-} from '../meshes';
+  Instanced,
+  InstancedFillDrawcall,
+  InstancedLineDrawcall,
+  InstancedPathDrawcall,
+} from '../drawcalls';
 import { Batch } from './Batch';
 
 /**
  * Use the following perf enhancements:
- * * Downgrading the "simple" Path / Polyline to {@link InstancedLineMesh}, e.g. 'M 0 0 L 100 0'
- * * Merge the Path into {@link InstancedPathMesh} which contains only one curve command, e.g 'M 0 0 Q 10 10 100 100'
+ * * Downgrading the "simple" Path / Polyline to {@link InstancedLineDrawcall}, e.g. 'M 0 0 L 100 0'
+ * * Merge the Path into {@link InstancedPathDrawcall} which contains only one curve command, e.g 'M 0 0 Q 10 10 100 100'
  * @see https://github.com/antvis/G/issues/1113
  */
 export class PathRenderer extends Batch {
-  meshes = [FillMesh, LineMesh, InstancedLineMesh, InstancedPathMesh];
+  // meshes = [
+  //   InstancedFillDrawcall ?,
+  //   (InstancedLineDrawcall | InstancedPathDrawcall) *, // sub paths
+  // ];
 
-  shouldSubmitRenderInst(object: DisplayObject, index: number) {
-    const { fill, stroke, opacity, strokeOpacity, lineDash, lineWidth } =
+  getDrawcallCtors(object: DisplayObject) {
+    const { fill, stroke, opacity, strokeOpacity, lineWidth } =
       object.parsedStyle as ParsedBaseStyleProps;
-    const nodeName = object.nodeName;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
-    const hasDash =
-      lineDash && lineDash.length && lineDash.every((item) => item !== 0);
-    const isLine = InstancedLineMesh.isLine(object);
-    const isOneCommandCurve = InstancedPathMesh.isOneCommandCurve(object);
+    const subpathNum = InstancedPathDrawcall.calcSubpathNum(object);
 
-    object.renderable.proxyNodeName = isLine ? Shape.LINE : null;
+    const drawcalls: (typeof Instanced)[] = [];
 
     // Polyline don't need fill
-    if (
-      index === 0 &&
-      (isOneCommandCurve ||
-        object.nodeName === Shape.POLYLINE ||
-        (fill as CSSRGB).isNone)
-    ) {
-      return false;
+    if (!(object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)) {
+      for (let i = 0; i < subpathNum; i++) {
+        drawcalls.push(InstancedFillDrawcall);
+      }
     }
 
-    // stroke mesh
-    if (index === 1) {
+    for (let i = 0; i < subpathNum; i++) {
       if (
-        isLine ||
-        isOneCommandCurve ||
-        strokeOpacity === 0 ||
-        opacity === 0 ||
-        lineWidth === 0 ||
-        !hasStroke
+        !(strokeOpacity === 0 || opacity === 0 || lineWidth === 0 || !hasStroke)
       ) {
-        return false;
+        const isLine = InstancedLineDrawcall.isLine(object, i);
+        if (isLine) {
+          drawcalls.push(InstancedLineDrawcall);
+        } else {
+          drawcalls.push(InstancedPathDrawcall);
+        }
       }
-
-      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
-        // @see https://github.com/antvis/g/issues/824
-        return hasDash;
-      }
     }
 
-    // use Line for simple Path
-    if (index === 2) {
-      return isLine;
-    }
-
-    if (index === 3) {
-      return isOneCommandCurve;
-    }
-
-    return true;
+    return drawcalls;
   }
 }

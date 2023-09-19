@@ -17,8 +17,9 @@ import type { PointLike } from '../shapes';
 import { Point } from '../shapes';
 import type { Cursor, EventPosition } from '../types';
 import { isElement } from '../utils/dom';
+import { clock } from '../utils/event';
 
-type Picker = (position: EventPosition) => Promise<IEventTarget | null>;
+type Picker = (position: EventPosition) => IEventTarget | null;
 type TrackingData = {
   pressTargetsByButton: Record<number, IEventTarget[]>;
   clicksByButton: Record<
@@ -180,8 +181,8 @@ export class EventService {
     }
   }
 
-  onPointerDown = async (from: FederatedPointerEvent) => {
-    const e = await this.createPointerEvent(from);
+  onPointerDown = (from: FederatedPointerEvent) => {
+    const e = this.createPointerEvent(from);
 
     this.dispatchEvent(e, 'pointerdown');
 
@@ -199,9 +200,9 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerUp = async (from: FederatedPointerEvent) => {
-    const now = performance.now();
-    const e = await this.createPointerEvent(
+  onPointerUp = (from: FederatedPointerEvent) => {
+    const now = clock.now();
+    const e = this.createPointerEvent(
       from,
       undefined,
       undefined,
@@ -307,8 +308,8 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerMove = async (from: FederatedPointerEvent) => {
-    const e = await this.createPointerEvent(
+  onPointerMove = (from: FederatedPointerEvent) => {
+    const e = this.createPointerEvent(
       from,
       undefined,
       undefined,
@@ -325,7 +326,7 @@ export class EventService {
     if (trackingData.overTargets && outTarget !== e.target) {
       // pointerout always occurs on the overTarget when the pointer hovers over another element.
       const outType = from.type === 'mousemove' ? 'mouseout' : 'pointerout';
-      const outEvent = await this.createPointerEvent(
+      const outEvent = this.createPointerEvent(
         from,
         outType,
         outTarget || undefined,
@@ -337,7 +338,7 @@ export class EventService {
       // If the pointer exits overTarget and its descendants, then a pointerleave event is also fired. This event
       // is dispatched to all ancestors that no longer capture the pointer.
       if (!e.composedPath().includes(outTarget!)) {
-        const leaveEvent = await this.createPointerEvent(
+        const leaveEvent = this.createPointerEvent(
           from,
           'pointerleave',
           outTarget || undefined,
@@ -439,7 +440,7 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onPointerOut = async (from: FederatedPointerEvent) => {
+  onPointerOut = (from: FederatedPointerEvent) => {
     const trackingData = this.trackingData(from.pointerId);
 
     if (trackingData.overTargets) {
@@ -448,7 +449,7 @@ export class EventService {
       const outTarget = this.findMountedTarget(trackingData.overTargets);
 
       // pointerout first
-      const outEvent = await this.createPointerEvent(
+      const outEvent = this.createPointerEvent(
         from,
         'pointerout',
         outTarget || undefined,
@@ -459,7 +460,7 @@ export class EventService {
 
       // pointerleave(s) are also dispatched b/c the pointer must've left rootTarget and its descendants to
       // get an upstream pointerout event (upstream events do not know rootTarget has descendants).
-      const leaveEvent = await this.createPointerEvent(
+      const leaveEvent = this.createPointerEvent(
         from,
         'pointerleave',
         outTarget || undefined,
@@ -493,9 +494,9 @@ export class EventService {
     this.cursor = null;
   };
 
-  onPointerOver = async (from: FederatedPointerEvent) => {
+  onPointerOver = (from: FederatedPointerEvent) => {
     const trackingData = this.trackingData(from.pointerId);
-    const e = await this.createPointerEvent(from);
+    const e = this.createPointerEvent(from);
 
     const isMouse = e.pointerType === 'mouse' || e.pointerType === 'pen';
 
@@ -533,12 +534,12 @@ export class EventService {
     this.freeEvent(enterEvent);
   };
 
-  onPointerUpOutside = async (from: FederatedPointerEvent) => {
+  onPointerUpOutside = (from: FederatedPointerEvent) => {
     const trackingData = this.trackingData(from.pointerId);
     const pressTarget = this.findMountedTarget(
       trackingData.pressTargetsByButton[from.button],
     );
-    const e = await this.createPointerEvent(from);
+    const e = this.createPointerEvent(from);
 
     if (pressTarget) {
       let currentTarget: IEventTarget | null = pressTarget;
@@ -568,27 +569,23 @@ export class EventService {
     this.freeEvent(e);
   };
 
-  onWheel = async (from: FederatedWheelEvent) => {
-    // if (!(from instanceof FederatedWheelEvent)) {
-    //   return;
-    // }
-
-    const wheelEvent = await this.createWheelEvent(from);
+  onWheel = (from: FederatedWheelEvent) => {
+    const wheelEvent = this.createWheelEvent(from);
 
     this.dispatchEvent(wheelEvent);
     this.freeEvent(wheelEvent);
   };
 
-  onClick = async (from: FederatedPointerEvent) => {
+  onClick = (from: FederatedPointerEvent) => {
     if (this.context.config.useNativeClickEvent) {
-      const e = await this.createPointerEvent(from);
+      const e = this.createPointerEvent(from);
       this.dispatchEvent(e);
       this.freeEvent(e);
     }
   };
 
-  onPointerCancel = async (from: FederatedPointerEvent) => {
-    const e = await this.createPointerEvent(
+  onPointerCancel = (from: FederatedPointerEvent) => {
+    const e = this.createPointerEvent(
       from,
       undefined,
       undefined,
@@ -683,7 +680,7 @@ export class EventService {
     return propagationPath;
   }
 
-  async hitTest(position: EventPosition): Promise<IEventTarget | null> {
+  hitTest(position: EventPosition): IEventTarget | null {
     const { viewportX, viewportY } = position;
     const { width, height } = this.context.config;
     // outside canvas
@@ -697,7 +694,7 @@ export class EventService {
     }
 
     return (
-      (await this.pickHandler(position)) ||
+      this.pickHandler(position) ||
       this.rootTarget || // return Document
       null
     );
@@ -748,9 +745,9 @@ export class EventService {
     return null;
   }
 
-  private async pickTarget(
+  private pickTarget(
     event: FederatedPointerEvent | FederatedWheelEvent,
-  ): Promise<INode> {
+  ): INode {
     return this.hitTest({
       clientX: event.clientX,
       clientY: event.clientY,
@@ -758,15 +755,15 @@ export class EventService {
       viewportY: event.viewportY,
       x: event.canvasX,
       y: event.canvasY,
-    }) as Promise<INode>;
+    }) as INode;
   }
 
-  private async createPointerEvent(
+  private createPointerEvent(
     from: FederatedPointerEvent,
     type?: string,
     target?: IEventTarget,
     fallbackTarget?: IEventTarget,
-  ): Promise<FederatedPointerEvent> {
+  ): FederatedPointerEvent {
     const event = this.allocateEvent(FederatedPointerEvent);
 
     this.copyPointerData(from, event);
@@ -780,8 +777,7 @@ export class EventService {
     event.target =
       target ??
       (existedHTML ||
-        (this.isNativeEventFromCanvas(event) &&
-          (await this.pickTarget(event))) ||
+        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)) ||
         fallbackTarget);
 
     if (typeof type === 'string') {
@@ -791,9 +787,7 @@ export class EventService {
     return event;
   }
 
-  private async createWheelEvent(
-    from: FederatedWheelEvent,
-  ): Promise<FederatedWheelEvent> {
+  private createWheelEvent(from: FederatedWheelEvent): FederatedWheelEvent {
     const event = this.allocateEvent(FederatedWheelEvent);
 
     this.copyWheelData(from, event);
@@ -805,7 +799,7 @@ export class EventService {
     const existedHTML = this.getExistedHTML(event);
     event.target =
       existedHTML ||
-      (this.isNativeEventFromCanvas(event) && (await this.pickTarget(event)));
+      (this.isNativeEventFromCanvas(event) && this.pickTarget(event));
     return event;
   }
 
@@ -913,7 +907,7 @@ export class EventService {
 
   private copyData(from: FederatedEvent, to: FederatedEvent) {
     to.isTrusted = from.isTrusted;
-    to.timeStamp = performance.now();
+    to.timeStamp = clock.now();
     to.type = from.type;
     to.detail = from.detail;
     to.view = from.view;

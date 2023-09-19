@@ -25,8 +25,9 @@ export function isPointInPath(
 
   if (pointerEvents === 'non-transparent-pixel') {
     const { offscreenCanvas } = renderingPluginContext.config;
-    const canvas = runtime.offscreenCanvas.getOrCreateCanvas(offscreenCanvas);
-    const context = runtime.offscreenCanvas.getOrCreateContext(
+    const canvas =
+      runtime.offscreenCanvasCreator.getOrCreateCanvas(offscreenCanvas);
+    const context = runtime.offscreenCanvasCreator.getOrCreateContext(
       offscreenCanvas,
       {
         willReadFrequently: true,

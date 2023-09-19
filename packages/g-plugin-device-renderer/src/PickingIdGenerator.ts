@@ -14,6 +14,10 @@ export class PickingIdGenerator {
     return this.id2DisplayObjectMap[id];
   }
 
+  deleteById(id: number) {
+    delete this.id2DisplayObjectMap[id];
+  }
+
   reset() {
     this.counter = 0;
     this.id2DisplayObjectMap = {};

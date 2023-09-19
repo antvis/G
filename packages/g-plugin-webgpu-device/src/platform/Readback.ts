@@ -1,3 +1,4 @@
+import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '@antv/g-lite';
 import type { Buffer, Readback, Texture } from '@antv/g-plugin-device-renderer';
 import {
   BufferFrequencyHint,
@@ -47,7 +48,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
 
     const buffer = this.device.createBuffer({
       usage: BufferUsage.STORAGE | BufferUsage.MAP_READ | BufferUsage.COPY_DST,
-      hint: BufferFrequencyHint.Static,
+      hint: BufferFrequencyHint.STATIC,
       viewOrSize: size,
     }) as Buffer_WebGPU;
 
@@ -88,6 +89,19 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
     );
   }
 
+  readTextureSync(
+    t: Texture,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    dst: ArrayBufferView,
+    dstOffset = 0,
+    length = 0,
+  ): ArrayBufferView {
+    throw new Error(ERROR_MSG_METHOD_NOT_IMPLEMENTED);
+  }
+
   readBuffer(
     b: Buffer,
     srcByteOffset = 0,
@@ -123,7 +137,7 @@ export class Readback_WebGPU extends ResourceBase_WebGPU implements Readback {
       gpuReadBuffer = this.device.createBuffer({
         usage:
           BufferUsage.STORAGE | BufferUsage.MAP_READ | BufferUsage.COPY_DST,
-        hint: BufferFrequencyHint.Static,
+        hint: BufferFrequencyHint.STATIC,
         viewOrSize: size,
       }) as Buffer_WebGPU;
 
