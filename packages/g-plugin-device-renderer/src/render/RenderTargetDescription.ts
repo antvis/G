@@ -1,4 +1,4 @@
-import type { Color, Format } from '../platform';
+import type { Color, Format } from '@strawberry-vis/g-device-api';
 
 export class RGRenderTargetDescription {
   width = 0;
@@ -9,7 +9,7 @@ export class RGRenderTargetDescription {
   depthClearValue: number | 'load' = 'load';
   stencilClearValue: number | 'load' = 'load';
 
-  constructor(public pixelFormat: Format) {}
+  constructor(public format: Format) {}
 
   /**
    * Set the dimensions of a render target description.

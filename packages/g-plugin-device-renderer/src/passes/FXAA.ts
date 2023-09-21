@@ -1,7 +1,11 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout } from '../platform';
-import { Format, VertexStepMode } from '../platform';
-import { fullscreenMegaState, nArray } from '../platform/utils';
+import type { InputLayout } from '@strawberry-vis/g-device-api';
+import {
+  Format,
+  VertexStepMode,
+  fullscreenMegaState,
+  nArray,
+} from '@strawberry-vis/g-device-api';
 import { DeviceProgram } from '../render/DeviceProgram';
 import type { RGGraphBuilder } from '../render/interfaces';
 import { RGAttachmentSlot } from '../render/interfaces';

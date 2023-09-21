@@ -1,5 +1,9 @@
-import type { QueryPool, RenderPassDescriptor, Texture } from '../platform';
-import { assert } from '../platform/utils';
+import type {
+  QueryPool,
+  RenderPassDescriptor,
+  Texture,
+} from '@strawberry-vis/g-device-api';
+import { assert } from '@strawberry-vis/g-device-api';
 import type {
   IRenderGraphPass,
   PassExecFunc,

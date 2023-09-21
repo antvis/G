@@ -6,9 +6,8 @@ export default createConfig({
     readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
   ),
   umdName: 'G.GPGPU',
-  external: ['@antv/g-lite', '@antv/g-webgpu'],
+  external: ['@antv/g-lite'],
   globals: {
     '@antv/g-lite': 'window.G',
-    '@antv/g-webgpu': 'window.G.WebGPU',
   },
 });

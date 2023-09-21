@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/g-webgpu": "workspace:*",
+    "@strawberry-vis/g-device-api": "^1.1.1",
     "tslib": "^2.5.3"
   },
   "publishConfig": {

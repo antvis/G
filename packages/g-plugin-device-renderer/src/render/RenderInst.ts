@@ -10,8 +10,7 @@ import type {
   RenderPipelineDescriptor,
   SamplerBinding,
   VertexBufferDescriptor,
-} from '../platform';
-import { PrimitiveTopology } from '../platform';
+} from '@strawberry-vis/g-device-api';
 import {
   assert,
   assertExists,
@@ -20,7 +19,8 @@ import {
   nArray,
   setBitFlagEnabled,
   setMegaStateFlags,
-} from '../platform/utils';
+  PrimitiveTopology,
+} from '@strawberry-vis/g-device-api';
 import type { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import type { RenderCache } from './RenderCache';
 import { fillVec4 } from './utils';
@@ -448,7 +448,7 @@ export class RenderInst {
           : null;
       this.renderPipelineDescriptor.colorAttachmentFormats[i] =
         colorAttachmentDescriptor !== null
-          ? colorAttachmentDescriptor.pixelFormat
+          ? colorAttachmentDescriptor.format
           : null;
       if (colorAttachmentDescriptor !== null) {
         if (sampleCount === -1)
@@ -463,7 +463,7 @@ export class RenderInst {
         : null;
     this.renderPipelineDescriptor.depthStencilAttachmentFormat =
       depthStencilAttachmentDescriptor !== null
-        ? depthStencilAttachmentDescriptor.pixelFormat
+        ? depthStencilAttachmentDescriptor.format
         : null;
     if (depthStencilAttachmentDescriptor !== null) {
       if (sampleCount === -1)
@@ -504,10 +504,13 @@ export class RenderInst {
       let i = 0;
       i < this.bindingDescriptors[0].uniformBufferBindings.length;
       i++
-    )
+    ) {
       this.bindingDescriptors[0].uniformBufferBindings[i].buffer = assertExists(
         this.uniformBuffer.buffer,
       );
+      this.bindingDescriptors[0].uniformBufferBindings[i].offset =
+        this.dynamicUniformBufferByteOffsets[i];
+    }
 
     if ((this.renderPipelineDescriptor.program as any).gl_program) {
       this.uniforms.forEach((uniforms) => {
@@ -524,7 +527,8 @@ export class RenderInst {
       ...this.bindingDescriptors[0],
       pipeline: gfxPipeline,
     });
-    passRenderer.setBindings(gfxBindings, this.dynamicUniformBufferByteOffsets);
+
+    passRenderer.setBindings(gfxBindings);
 
     if (this.flags & RenderInstFlags.Indexed) {
       passRenderer.drawIndexed(

@@ -1,4 +1,10 @@
-import { DeviceRenderer } from '@antv/g-webgpu';
+import type {
+  Device,
+  ComputePipeline,
+  Buffer,
+} from '@strawberry-vis/g-device-api';
+import { BufferUsage } from '@strawberry-vis/g-device-api';
+
 import type { KernelBundle } from './interface';
 import { Target } from './interface';
 
@@ -33,23 +39,20 @@ export class Kernel {
   /**
    * underlying GPU device
    */
-  private device: DeviceRenderer.Device;
+  private device: Device;
 
-  private computePipeline: DeviceRenderer.ComputePipeline;
+  private computePipeline: ComputePipeline;
 
   private buffers: {
     name: string;
-    buffer: DeviceRenderer.Buffer;
+    buffer: Buffer;
     byteLength: number;
     group: number;
     binding: number;
     bindingType: 'uniform' | 'storage' | 'read-only-storage';
   }[] = [];
 
-  constructor(
-    device: DeviceRenderer.Device,
-    { computeShader, bundle }: KernelOptions,
-  ) {
+  constructor(device: Device, { computeShader, bundle }: KernelOptions) {
     this.device = device;
     this.computeShader = computeShader;
     this.bundle = bundle;
@@ -104,12 +107,12 @@ export class Kernel {
    * set or update buffer by binding number,
    * it should match binding declared in compute shader
    */
-  setBinding(binding: number, buffer: DeviceRenderer.Buffer) {
+  setBinding(binding: number, buffer: Buffer) {
     // @ts-ignore
     const { usage } = buffer;
 
-    const isUniform = usage & DeviceRenderer.BufferUsage.UNIFORM;
-    const isWritable = usage & DeviceRenderer.BufferUsage.COPY_SRC;
+    const isUniform = usage & BufferUsage.UNIFORM;
+    const isWritable = usage & BufferUsage.COPY_SRC;
 
     // search by binding
     const existed = this.buffers.find((buffer) => buffer.binding === binding);
@@ -186,7 +189,7 @@ export class Kernel {
   /**
    * readback buffer async
    */
-  async readBuffer(buffer: DeviceRenderer.Buffer): Promise<ArrayBufferView> {
+  async readBuffer(buffer: Buffer): Promise<ArrayBufferView> {
     const readback = this.device.createReadback();
     return readback.readBuffer(buffer);
   }

@@ -1,9 +1,6 @@
-import type {
-  IMaterial,
-  Texture,
-  Device,
-} from '@antv/g-plugin-device-renderer';
-import { Material, CullMode } from '@antv/g-plugin-device-renderer';
+import type { IMaterial } from '@antv/g-plugin-device-renderer';
+import { Material } from '@antv/g-plugin-device-renderer';
+import { Texture, Device, CullMode } from '@strawberry-vis/g-device-api';
 import vert from '../shaders/point.vert';
 import frag from '../shaders/point.frag';
 

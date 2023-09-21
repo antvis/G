@@ -1,5 +1,5 @@
 import { clamp } from '@antv/util';
-import { assert } from '../../platform/utils';
+import { assert } from '@strawberry-vis/g-device-api';
 
 // Suggested values for the "layer" of makeSortKey. These are rough groups, and you can define your own
 // ordering within the rough groups (e.g. you might use BACKGROUND + 1, or BACKGROUND + 2).

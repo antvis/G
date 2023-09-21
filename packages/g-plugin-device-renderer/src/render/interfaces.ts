@@ -1,4 +1,9 @@
-import type { QueryPool, RenderPass, RenderTarget, Texture } from '../platform';
+import type {
+  QueryPool,
+  RenderPass,
+  RenderTarget,
+  Texture,
+} from '@strawberry-vis/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export enum RGAttachmentSlot {

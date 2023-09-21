@@ -6,7 +6,7 @@ import type {
 } from '@antv/g-lite';
 import { isCSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
-import { CullMode, Format, VertexStepMode } from '../platform';
+import { CullMode, Format, VertexStepMode } from '@strawberry-vis/g-device-api';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/text.frag';
 import vert from '../shader/text.vert';
@@ -294,11 +294,11 @@ export class TextDrawcall extends Instanced {
     const vertice = this.geometry.vertices[
       TextVertexAttributeBufferIndex.INSTANCED
     ] as Float32Array;
-    const { byteStride } =
+    const { arrayStride } =
       this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[
         TextVertexAttributeBufferIndex.INSTANCED
       ];
-    const bytes = byteStride / 4;
+    const bytes = arrayStride / 4;
     const [start, end] = this.packedBufferObjectMap.get(object);
     const sliced = vertice.slice(start, end);
     for (let i = 0; i < end - start; i += bytes) {
@@ -355,11 +355,11 @@ export class TextDrawcall extends Instanced {
       const vertice = this.geometry.vertices[
         TextVertexAttributeBufferIndex.INSTANCED
       ] as Float32Array;
-      const { byteStride } =
+      const { arrayStride } =
         this.geometry.inputLayoutDescriptor.vertexBufferDescriptors[
           TextVertexAttributeBufferIndex.INSTANCED
         ];
-      const bytes = byteStride / 4;
+      const bytes = arrayStride / 4;
 
       objects.forEach((object) => {
         const {

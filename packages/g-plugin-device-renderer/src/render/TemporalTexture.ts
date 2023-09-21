@@ -1,5 +1,5 @@
-import type { Device, Texture } from '../platform';
-import { assert } from '../platform/utils';
+import type { Device, Texture } from '@strawberry-vis/g-device-api';
+import { assert } from '@strawberry-vis/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 import { SingleSampledTexture } from './SingleSampledTexture';
 
@@ -11,7 +11,10 @@ export class TemporalTexture {
   private inputTexture: SingleSampledTexture | null = null;
   private outputTexture: SingleSampledTexture | null = null;
 
-  setDescription(device: Device, desc: Readonly<RGRenderTargetDescription>): void {
+  setDescription(
+    device: Device,
+    desc: Readonly<RGRenderTargetDescription>,
+  ): void {
     // Updating the description will happen at the start of the frame,
     // so we need to keep the inputTexture alive (the previous frame's texture),
     // and create a new outputTexture.
@@ -25,7 +28,11 @@ export class TemporalTexture {
 
     assert(this.inputTexture === this.outputTexture);
 
-    if (this.outputTexture !== null && this.outputTexture.matchesDescription(desc)) return;
+    if (
+      this.outputTexture !== null &&
+      this.outputTexture.matchesDescription(desc)
+    )
+      return;
 
     this.outputTexture = new SingleSampledTexture(device, desc);
     if (this.inputTexture === null) this.inputTexture = this.outputTexture;
@@ -40,7 +47,10 @@ export class TemporalTexture {
   }
 
   destroy(): void {
-    if (this.outputTexture !== null && this.outputTexture !== this.inputTexture) {
+    if (
+      this.outputTexture !== null &&
+      this.outputTexture !== this.inputTexture
+    ) {
       this.outputTexture.destroy();
       this.outputTexture = null;
     }
