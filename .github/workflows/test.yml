@@ -36,12 +36,9 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
-
       - name: Cov
         run: |
-          pnpm cov
+          xvfb-run -s "-ac -screen 0 1280x1024x16" pnpm cov
         env:
           CI: true
       - name: Coveralls
