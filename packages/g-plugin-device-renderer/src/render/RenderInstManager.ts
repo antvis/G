@@ -1,5 +1,5 @@
-import type { RenderPass } from '../platform';
-import { assert, assertExists } from '../platform/utils';
+import type { RenderPass } from '@strawberry-vis/g-device-api';
+import { assert, assertExists } from '@strawberry-vis/g-device-api';
 import type { RenderCache } from './RenderCache';
 import type { RenderInst } from './RenderInst';
 import { RenderInstFlags } from './RenderInst';
@@ -24,7 +24,8 @@ export class RenderInstManager {
     const renderInstIndex = this.instPool.allocRenderInstIndex();
     const renderInst = this.instPool.pool[renderInstIndex];
     renderInst.debug = null;
-    if (templateIndex >= 0) renderInst.setFromTemplate(this.templatePool.pool[templateIndex]);
+    if (templateIndex >= 0)
+      renderInst.setFromTemplate(this.templatePool.pool[templateIndex]);
     return renderInst;
   }
 
@@ -62,7 +63,8 @@ export class RenderInstManager {
     const templateIndex = this.templatePool.allocCount - 1;
     const newTemplateIndex = this.templatePool.allocRenderInstIndex();
     const newTemplate = this.templatePool.pool[newTemplateIndex];
-    if (templateIndex >= 0) newTemplate.setFromTemplate(this.templatePool.pool[templateIndex]);
+    if (templateIndex >= 0)
+      newTemplate.setFromTemplate(this.templatePool.pool[templateIndex]);
     newTemplate.flags |= RenderInstFlags.Template;
     return newTemplate;
   }

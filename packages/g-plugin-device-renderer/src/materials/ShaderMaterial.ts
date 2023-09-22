@@ -1,4 +1,4 @@
-import type { Device } from '../platform';
+import type { Device } from '@strawberry-vis/g-device-api';
 import type { IMaterial } from './Material';
 import { Material } from './Material';
 

@@ -19,13 +19,13 @@ import {
   TextureDescriptor,
   TransparentBlack,
   TransparentWhite,
-} from './platform';
+} from '@strawberry-vis/g-device-api';
 import {
   BlendFactor,
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
-} from './platform';
+} from '@strawberry-vis/g-device-api';
 import type { RGGraphBuilder, RenderHelper } from './render';
 import {
   AntialiasingMode,
@@ -352,7 +352,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // Push our outer template, which contains the dynamic UBO bindings...
       const template = this.renderHelper.pushTemplateRenderInst();
       // SceneParams: binding = 0, ObjectParams: binding = 1
-      template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
+      template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
       template.setMegaStateFlags(
         setAttachmentStateSimple(
           {

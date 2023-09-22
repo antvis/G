@@ -1,5 +1,9 @@
-import type { Device, RenderTarget, Texture } from '../platform';
-import { assert, assertExists, fillArray } from '../platform/utils';
+import type {
+  Device,
+  RenderTarget,
+  Texture,
+} from '@strawberry-vis/g-device-api';
+import { assert, assertExists, fillArray } from '@strawberry-vis/g-device-api';
 import type {
   PassSetupFunc,
   RGGraphBuilder,

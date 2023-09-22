@@ -1,4 +1,4 @@
-import type { SwapChain } from './platform';
+import type { SwapChain } from '@strawberry-vis/g-device-api';
 
 export interface DeviceContribution {
   createSwapChain: ($canvas: HTMLCanvasElement) => Promise<SwapChain>;

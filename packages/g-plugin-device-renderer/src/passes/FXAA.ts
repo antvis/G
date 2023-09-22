@@ -1,7 +1,11 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout } from '../platform';
-import { Format, VertexStepMode } from '../platform';
-import { fullscreenMegaState, nArray } from '../platform/utils';
+import type { InputLayout } from '@strawberry-vis/g-device-api';
+import {
+  Format,
+  VertexStepMode,
+  fullscreenMegaState,
+  nArray,
+} from '@strawberry-vis/g-device-api';
 import { DeviceProgram } from '../render/DeviceProgram';
 import type { RGGraphBuilder } from '../render/interfaces';
 import { RGAttachmentSlot } from '../render/interfaces';
@@ -53,7 +57,7 @@ export function pushFXAAPass(
     renderInst.setAllowSkippingIfPipelineNotReady(false);
 
     renderInst.setMegaStateFlags(fullscreenMegaState);
-    renderInst.setBindingLayouts([{ numUniformBuffers: 1, numSamplers: 1 }]);
+    renderInst.setBindingLayout({ numUniformBuffers: 1, numSamplers: 1 });
     renderInst.drawPrimitives(3);
 
     // since gl_VertexID is not available in GLSL 100, we need to use a geometry

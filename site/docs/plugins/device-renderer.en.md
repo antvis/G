@@ -257,7 +257,6 @@ export interface TextureDescriptor {
     depth: number;
     numLevels: number;
     usage: TextureUsage;
-    immutable?: boolean;
     pixelStore?: Partial<{
         packAlignment: number,
         unpackAlignment: number,

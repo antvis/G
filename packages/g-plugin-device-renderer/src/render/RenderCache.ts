@@ -1,6 +1,5 @@
 import type {
   AttachmentState,
-  BindingLayoutDescriptor,
   Bindings,
   BindingsDescriptor,
   ChannelBlendState,
@@ -15,9 +14,9 @@ import type {
   RenderPipelineDescriptor,
   Sampler,
   SamplerDescriptor,
-} from '../platform';
-import { assert } from '../platform/utils';
+} from '@strawberry-vis/g-device-api';
 import {
+  assert,
   bindingsDescriptorCopy,
   bindingsDescriptorEquals,
   inputLayoutDescriptorCopy,
@@ -25,8 +24,9 @@ import {
   renderPipelineDescriptorCopy,
   renderPipelineDescriptorEquals,
   samplerDescriptorEquals,
-} from '../platform/utils/hash';
-import { preprocessProgramObj_GLSL } from '../shader/compiler';
+  preprocessProgram_GLSL,
+  ProgramDescriptorSimpleWithOrig,
+} from '@strawberry-vis/g-device-api';
 import { DeviceProgram } from './DeviceProgram';
 import {
   hashCodeNumberFinish,
@@ -34,6 +34,16 @@ import {
   HashMap,
   nullHashFunc,
 } from './HashMap';
+
+function preprocessProgramObj_GLSL(
+  device: Device,
+  obj: DeviceProgram,
+): ProgramDescriptorSimpleWithOrig {
+  const defines = obj.defines !== undefined ? obj.defines : null;
+  const vert = obj.both !== undefined ? obj.both + obj.vert : obj.vert;
+  const frag = obj.both !== undefined ? obj.both + obj.frag : obj.frag;
+  return preprocessProgram_GLSL(device.queryVendorInfo(), vert, frag, defines);
+}
 
 function programDescriptorSimpleEquals(
   a: ProgramDescriptorSimple,
@@ -55,15 +65,6 @@ function programDescriptorSimpleCopy(
   const vert = a.vert;
   const frag = a.frag;
   return { preprocessedVert, preprocessedFrag, vert, frag };
-}
-
-function renderBindingLayoutHash(
-  hash: number,
-  a: BindingLayoutDescriptor,
-): number {
-  hash = hashCodeNumberUpdate(hash, a.numUniformBuffers);
-  hash = hashCodeNumberUpdate(hash, a.numSamplers);
-  return hash;
 }
 
 function blendStateHash(hash: number, a: ChannelBlendState): number {
@@ -108,8 +109,6 @@ function renderPipelineDescriptorHash(a: RenderPipelineDescriptor): number {
   hash = hashCodeNumberUpdate(hash, a.program.id);
   if (a.inputLayout !== null)
     hash = hashCodeNumberUpdate(hash, a.inputLayout.id);
-  for (let i = 0; i < a.bindingLayouts.length; i++)
-    hash = renderBindingLayoutHash(hash, a.bindingLayouts[i]);
   hash = megaStateDescriptorHash(hash, a.megaStateDescriptor);
   for (let i = 0; i < a.colorAttachmentFormats.length; i++)
     hash = hashCodeNumberUpdate(hash, a.colorAttachmentFormats[i] || 0);
@@ -128,7 +127,9 @@ function bindingsDescriptorHash(a: BindingsDescriptor): number {
     const binding = a.uniformBufferBindings[i];
     if (binding !== null && binding.buffer !== null) {
       hash = hashCodeNumberUpdate(hash, binding.buffer.id);
-      hash = hashCodeNumberUpdate(hash, binding.wordCount);
+      hash = hashCodeNumberUpdate(hash, binding.binding);
+      hash = hashCodeNumberUpdate(hash, binding.offset);
+      hash = hashCodeNumberUpdate(hash, binding.size);
     }
   }
   return hashCodeNumberFinish(hash);
@@ -183,6 +184,9 @@ export class RenderCache {
   }
 
   createInputLayout(descriptor: InputLayoutDescriptor): InputLayout {
+    // remove hollows
+    descriptor.vertexBufferDescriptors =
+      descriptor.vertexBufferDescriptors.filter((d) => !!d);
     let inputLayout = this.inputLayoutsCache.get(descriptor);
     if (inputLayout === null) {
       const descriptorCopy = inputLayoutDescriptorCopy(descriptor);
@@ -195,7 +199,7 @@ export class RenderCache {
   createProgramSimple(deviceProgram: DeviceProgram): Program {
     const { vert, frag, preprocessedFrag, preprocessedVert } = deviceProgram;
 
-    let program = null;
+    let program: Program = null;
     if (preprocessedVert && preprocessedFrag) {
       program = this.programCache.get({
         vert,
@@ -231,11 +235,6 @@ export class RenderCache {
 
     return program;
   }
-
-  // createProgram(programDescriptor: ProgramDescriptor): Program {
-  //   programDescriptor.ensurePreprocessed(this.device.queryVendorInfo());
-  //   return this.createProgramSimple(programDescriptor);
-  // }
 
   createSampler(descriptor: SamplerDescriptor): Sampler {
     let sampler = this.samplerCache.get(descriptor);

@@ -43,8 +43,8 @@
     "@antv/g-plugin-dom-interaction": "workspace:*",
     "@antv/g-plugin-html-renderer": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/g-plugin-webgl-device": "workspace:*",
     "@antv/util": "^3.3.4",
+    "@strawberry-vis/g-device-api": "^1.1.1",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

@@ -39,8 +39,6 @@ if (window) {
   (
     window as any
   ).gPluginDeviceRenderer = require('@antv/g-plugin-device-renderer');
-  (window as any).gPluginWebglDevice = require('@antv/g-plugin-webgl-device');
-  (window as any).gPluginWebgpuDevice = require('@antv/g-plugin-webgpu-device');
   (
     window as any
   ).gPluginRoughCanvasRenderer = require('@antv/g-plugin-rough-canvas-renderer');
@@ -74,30 +72,6 @@ if (window) {
   (window as any).webfontloader = require('webfontloader');
 
   require('../css/demo.css');
-
-  // // origin trial for WebGPU
-  // // @see https://developer.chrome.com/origintrials/#/trials/my
-  // // @see https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md#16-can-i-provide-tokens-by-running-script
-  // const tokenElement1 = document.createElement('meta');
-  // tokenElement1.httpEquiv = 'origin-trial';
-  // tokenElement1.content =
-  //   // https://localhost:8000
-  //   'AoSdEiPBm19CVIF6skKpsmzQmAdKAC1oCV6NS2P12Xjtk1da77EZnrm8wSk1ymIsarjl7xHkMQChky3cDi7RdA0AAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjkxNzExOTk5fQ==';
-  // document.head.appendChild(tokenElement1);
-
-  // const tokenElement2 = document.createElement('meta');
-  // tokenElement2.httpEquiv = 'origin-trial';
-  // tokenElement2.content =
-  //   // https://g-next.antv.vision
-  //   'Aiq1IshZRuOKWEmA9h5liGM4kZYradTjzi0PiIizN0S2MSVpsY3GZxIBYOM3MkbIaEbY4kZTo/2AhRMCbZKDKAwAAABleyJvcmlnaW4iOiJodHRwczovL2ctbmV4dC5hbnR2LnZpc2lvbjo0NDMiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjkxNzExOTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=';
-  // document.head.appendChild(tokenElement2);
-
-  // const tokenElement3 = document.createElement('meta');
-  // tokenElement3.httpEquiv = 'origin-trial';
-  // tokenElement3.content =
-  //   // https://g.antv.antgroup.com
-  //   'Au/LZbSWTC8hhagDyjnu46PChWcCITqE8iS8sTPw9teCa7ptAToyP2KrKls8qN09QjjZSgYsGudQesarc0PxaAcAAABTeyJvcmlnaW4iOiJodHRwczovL2cuYW50di5hbnRncm91cC5jb206NDQzIiwiZmVhdHVyZSI6IldlYkdQVSIsImV4cGlyeSI6MTY5MTcxMTk5OX0=';
-  // document.head.appendChild(tokenElement3);
 }
 
 if (

@@ -1,6 +1,6 @@
 import { CanvasLike, GlobalRuntime } from '@antv/g-lite';
-import type { Device, Texture } from '../../platform';
-import { Format, makeTextureDescriptor2D } from '../../platform';
+import type { Device, Texture } from '@strawberry-vis/g-device-api';
+import { Format, makeTextureDescriptor2D } from '@strawberry-vis/g-device-api';
 import { TinySDF } from '../../utils';
 import type { StyleGlyph } from './AlphaImage';
 import { AlphaImage } from './AlphaImage';
@@ -173,7 +173,6 @@ export class GlyphManager {
           unpackFlipY: false,
           unpackAlignment: 1,
         },
-        immutable: false,
       });
       this.glyphAtlasTexture.setImageData([data]);
     }
