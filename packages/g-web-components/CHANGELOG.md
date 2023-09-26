@@ -1,5 +1,12 @@
 # @antv/g-web-components
 
+## 1.9.21
+
+### Patch Changes
+
+-   Updated dependencies [83195bb7]
+    -   @antv/g-webgl@1.9.21
+
 ## 1.9.20
 
 ### Patch Changes
