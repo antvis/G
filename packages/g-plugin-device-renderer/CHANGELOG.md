@@ -1,5 +1,12 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.18
+
+### Patch Changes
+
+-   83195bb7: Use @antv/g-device-api.
+-   769480aa: Remove immutable param from Texture.
+
 ## 1.9.17
 
 ### Patch Changes

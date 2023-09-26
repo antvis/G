@@ -1,5 +1,14 @@
 # @antv/g-plugin-3d
 
+## 1.9.18
+
+### Patch Changes
+
+-   83195bb7: Use @antv/g-device-api.
+-   Updated dependencies [83195bb7]
+-   Updated dependencies [769480aa]
+    -   @antv/g-plugin-device-renderer@1.9.18
+
 ## 1.9.17
 
 ### Patch Changes
