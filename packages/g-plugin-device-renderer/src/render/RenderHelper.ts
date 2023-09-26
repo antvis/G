@@ -1,5 +1,5 @@
 import { RendererParameters, ToneMapping } from '../interfaces';
-import type { Device } from '@strawberry-vis/g-device-api';
+import type { Device } from '@antv/g-device-api';
 import { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import { RenderCache } from './RenderCache';
 import { RenderGraph } from './RenderGraph';

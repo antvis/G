@@ -41,7 +41,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-device-renderer": "workspace:*",
     "@antv/g-shader-components": "workspace:*",
-    "@strawberry-vis/g-device-api": "^1.1.1",
+    "@antv/g-device-api": "^1.2.2",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

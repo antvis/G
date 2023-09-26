@@ -1,9 +1,5 @@
-import { Canvas, CanvasEvent } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 import * as lil from 'lil-gui';
-
-const { BufferUsage } = DeviceRenderer;
 
 /**
  * ported from https://web.dev/gpu-compute/
@@ -13,26 +9,19 @@ const { BufferUsage } = DeviceRenderer;
 
 const WORKGROUP_SIZE_X = 8;
 const WORKGROUP_SIZE_Y = 8;
+const $canvas = document.createElement('canvas');
 
-// use WebGPU
-const renderer = new Renderer();
-renderer.registerPlugin(new Plugin());
+(async () => {
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+  });
 
-// create a canvas
-const $wrapper = document.getElementById('container');
-const canvas = new Canvas({
-  container: $wrapper,
-  width: 1,
-  height: 1,
-  renderer,
-});
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
 
-canvas.addEventListener(CanvasEvent.READY, () => {
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
-
-  const kernel = new Kernel(device, {
-    computeShader: `
+  const program = device.createProgram({
+    compute: {
+      wgsl: `
   struct Matrix {
     size : vec2<f32>,
     numbers: array<f32>,
@@ -63,18 +52,19 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   
     let index = resultCell.y + resultCell.x * u32(secondMatrix.size.y);
     resultMatrix.numbers[index] = result;
-  }`,
+  }
+      `,
+    },
   });
 
-  calc(
-    kernel,
-    device,
-    new Float32Array([2 /* rows */, 4 /* columns */, 1, 2, 3, 4, 5, 6, 7, 8]),
-    new Float32Array([4 /* rows */, 2 /* columns */, 1, 2, 3, 4, 5, 6, 7, 8]),
-  );
+  const pipeline = device.createComputePipeline({
+    inputLayout: null,
+    program,
+  });
 
   // GUI
   const gui = new lil.GUI({ autoPlace: false });
+  const $wrapper = document.getElementById('container');
   $wrapper.appendChild(gui.domElement);
   const folder = gui.addFolder('matrix size');
   const config = {
@@ -87,116 +77,136 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const second = new Float32Array(
       [size, size].concat(new Array(size * size).fill(Math.random())),
     );
-    calc(kernel, device, first, second);
+    calc(first, second);
   });
   folder.open();
-});
 
-const cpuMultiplication = (firstMatrix, secondMatrix, $div) => {
-  const startTime = window.performance.now();
+  const cpuMultiplication = (firstMatrix, secondMatrix, $div) => {
+    const startTime = window.performance.now();
 
-  const x = firstMatrix[0];
-  const z = firstMatrix[1];
-  const y = secondMatrix[1];
+    const x = firstMatrix[0];
+    const z = firstMatrix[1];
+    const y = secondMatrix[1];
 
-  const resultMatrix = new Float32Array(firstMatrix[0] * secondMatrix[1]);
+    const resultMatrix = new Float32Array(firstMatrix[0] * secondMatrix[1]);
 
-  let productRow = Array.apply(null, new Array(y)).map(
-    Number.prototype.valueOf,
-    0,
-  );
-  let product = new Array(x);
-  for (let p = 0; p < x; p++) {
-    product[p] = productRow.slice();
-  }
-  for (let i = 0; i < x; i++) {
-    for (let j = 0; j < y; j++) {
-      for (let k = 0; k < z; k++) {
-        product[i][j] += firstMatrix[i * x + k] * secondMatrix[k * y + j];
+    let productRow = Array.apply(null, new Array(y)).map(
+      Number.prototype.valueOf,
+      0,
+    );
+    let product = new Array(x);
+    for (let p = 0; p < x; p++) {
+      product[p] = productRow.slice();
+    }
+    for (let i = 0; i < x; i++) {
+      for (let j = 0; j < y; j++) {
+        for (let k = 0; k < z; k++) {
+          product[i][j] += firstMatrix[i * x + k] * secondMatrix[k * y + j];
+        }
       }
     }
-  }
 
-  const elapsed = window.performance.now() - startTime;
-  setCPUTimeElapsed(elapsed, $div);
+    const elapsed = window.performance.now() - startTime;
+    setCPUTimeElapsed(elapsed, $div);
 
-  return elapsed;
-};
+    return elapsed;
+  };
 
-const gpuMultiplication = async (
-  kernel,
-  device,
-  firstMatrix,
-  secondMatrix,
-  $div,
-) => {
-  let startTime = window.performance.now();
-  const x = Math.ceil(firstMatrix[0] / WORKGROUP_SIZE_X); // X dimension of the grid of workgroups to dispatch.
-  const y = Math.ceil(secondMatrix[1] / WORKGROUP_SIZE_Y); // Y dimension of the grid of workgroups to dispatch.
-  const resultMatrixBufferSize = 2 + firstMatrix[0] * secondMatrix[1];
-  const resultMatrix = new Float32Array(resultMatrixBufferSize);
+  const gpuMultiplication = async (firstMatrix, secondMatrix, $div) => {
+    let startTime = window.performance.now();
+    const x = Math.ceil(firstMatrix[0] / WORKGROUP_SIZE_X); // X dimension of the grid of workgroups to dispatch.
+    const y = Math.ceil(secondMatrix[1] / WORKGROUP_SIZE_Y); // Y dimension of the grid of workgroups to dispatch.
+    const resultMatrixBufferSize = 2 + firstMatrix[0] * secondMatrix[1];
+    const resultMatrix = new Float32Array(resultMatrixBufferSize);
 
-  const firstMatrixBuffer = device.createBuffer({
-    usage: BufferUsage.STORAGE,
-    viewOrSize: firstMatrix,
-  });
-  const secondMatrixBuffer = device.createBuffer({
-    usage: BufferUsage.STORAGE,
-    viewOrSize: secondMatrix,
-  });
-  const resultBuffer = device.createBuffer({
-    usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
-    viewOrSize: resultMatrix,
-  });
-  const readback = device.createReadback();
+    const firstMatrixBuffer = device.createBuffer({
+      usage: BufferUsage.STORAGE,
+      viewOrSize: firstMatrix,
+    });
+    const secondMatrixBuffer = device.createBuffer({
+      usage: BufferUsage.STORAGE,
+      viewOrSize: secondMatrix,
+    });
+    const resultBuffer = device.createBuffer({
+      usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
+      viewOrSize: resultMatrix,
+    });
+    const readback = device.createReadback();
 
-  kernel.setBinding(0, firstMatrixBuffer);
-  kernel.setBinding(1, secondMatrixBuffer);
-  kernel.setBinding(2, resultBuffer);
-  kernel.dispatch(x, y);
+    console.log(secondMatrix);
 
-  await readback.readBuffer(resultBuffer);
-  const elapsed = window.performance.now() - startTime;
+    const bindings = device.createBindings({
+      pipeline,
+      storageBufferBindings: [
+        {
+          binding: 0,
+          buffer: firstMatrixBuffer,
+        },
+        {
+          binding: 1,
+          buffer: secondMatrixBuffer,
+        },
+        {
+          binding: 2,
+          buffer: resultBuffer,
+        },
+      ],
+    });
 
-  setGPUTimeElapsed(elapsed, $div);
+    const computePass = device.createComputePass();
+    computePass.setPipeline(pipeline);
+    computePass.setBindings(bindings);
+    computePass.dispatchWorkgroups(x, y);
+    device.submitPass(computePass);
 
-  // output
-  console.log(resultMatrix);
-  return elapsed;
-};
+    await readback.readBuffer(resultBuffer);
+    const elapsed = window.performance.now() - startTime;
 
-const calc = async (kernel, device, firstMatrix, secondMatrix) => {
-  const $div = document.createElement('div');
-  $div.textContent = `Matrix size: ${firstMatrix[0]} * ${firstMatrix[1]}`;
-  $wrapper.appendChild($div);
+    setGPUTimeElapsed(elapsed, $div);
 
-  const cpuTimeElapsed = cpuMultiplication(firstMatrix, secondMatrix, $div);
-  const gpuTimeElapsed = await gpuMultiplication(
-    kernel,
-    device,
-    firstMatrix,
-    secondMatrix,
-    $div,
+    // output
+    console.log(resultMatrix);
+    return elapsed;
+  };
+
+  const calc = async (firstMatrix, secondMatrix) => {
+    const $div = document.createElement('div');
+    $div.textContent = `Matrix size: ${firstMatrix[0]} * ${firstMatrix[1]}`;
+    $wrapper.appendChild($div);
+
+    const cpuTimeElapsed = cpuMultiplication(firstMatrix, secondMatrix, $div);
+    const gpuTimeElapsed = await gpuMultiplication(
+      firstMatrix,
+      secondMatrix,
+      $div,
+    );
+    const speedUp = Number.parseFloat(cpuTimeElapsed / gpuTimeElapsed).toFixed(
+      1,
+    );
+
+    const $speedUp = document.createElement('div');
+    $speedUp.textContent = `SpeedUp: ${speedUp}x`;
+    $speedUp.style = 'font-weight: bold; margin-bottom: 16px;';
+    $wrapper.appendChild($speedUp);
+  };
+
+  const setCPUTimeElapsed = (time, $div) => {
+    const $cpu = document.createElement('div');
+    $cpu.textContent = `CPU Time Elapsed: ${Number.parseFloat(time).toFixed(
+      2,
+    )}ms`;
+    $div.appendChild($cpu);
+  };
+  const setGPUTimeElapsed = (time, $div) => {
+    const $gpu = document.createElement('div');
+    $gpu.textContent = `GPU Time Elapsed: ${Number.parseFloat(time).toFixed(
+      2,
+    )}ms`;
+    $div.appendChild($gpu);
+  };
+
+  calc(
+    new Float32Array([2 /* rows */, 4 /* columns */, 1, 2, 3, 4, 5, 6, 7, 8]),
+    new Float32Array([4 /* rows */, 2 /* columns */, 1, 2, 3, 4, 5, 6, 7, 8]),
   );
-  const speedUp = Number.parseFloat(cpuTimeElapsed / gpuTimeElapsed).toFixed(1);
-
-  const $speedUp = document.createElement('div');
-  $speedUp.textContent = `SpeedUp: ${speedUp}x`;
-  $speedUp.style = 'font-weight: bold; margin-bottom: 16px;';
-  $wrapper.appendChild($speedUp);
-};
-
-const setCPUTimeElapsed = (time, $div) => {
-  const $cpu = document.createElement('div');
-  $cpu.textContent = `CPU Time Elapsed: ${Number.parseFloat(time).toFixed(
-    2,
-  )}ms`;
-  $div.appendChild($cpu);
-};
-const setGPUTimeElapsed = (time, $div) => {
-  const $gpu = document.createElement('div');
-  $gpu.textContent = `GPU Time Elapsed: ${Number.parseFloat(time).toFixed(
-    2,
-  )}ms`;
-  $div.appendChild($gpu);
-};
+})();

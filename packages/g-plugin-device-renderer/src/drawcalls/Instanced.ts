@@ -22,7 +22,7 @@ import {
   FilterMode,
   VertexStepMode,
   AddressMode,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
 import {
   DeviceProgram,

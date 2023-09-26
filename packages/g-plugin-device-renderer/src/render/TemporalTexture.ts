@@ -1,5 +1,5 @@
-import type { Device, Texture } from '@strawberry-vis/g-device-api';
-import { assert } from '@strawberry-vis/g-device-api';
+import type { Device, Texture } from '@antv/g-device-api';
+import { assert } from '@antv/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 import { SingleSampledTexture } from './SingleSampledTexture';
 

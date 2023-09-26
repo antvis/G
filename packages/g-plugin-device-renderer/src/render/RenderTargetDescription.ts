@@ -1,4 +1,4 @@
-import type { Color, Format } from '@strawberry-vis/g-device-api';
+import type { Color, Format } from '@antv/g-device-api';
 
 export class RGRenderTargetDescription {
   width = 0;

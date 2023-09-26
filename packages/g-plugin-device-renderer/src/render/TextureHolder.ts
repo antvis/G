@@ -1,4 +1,4 @@
-import type { Sampler, Texture } from '@strawberry-vis/g-device-api';
+import type { Sampler, Texture } from '@antv/g-device-api';
 
 export interface ViewerTexture {
   name: string;

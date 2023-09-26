@@ -1,14 +1,5 @@
-import type {
-  Device,
-  Format,
-  RenderTarget,
-  Texture,
-} from '@strawberry-vis/g-device-api';
-import {
-  assert,
-  TextureDimension,
-  TextureUsage,
-} from '@strawberry-vis/g-device-api';
+import type { Device, Format, RenderTarget, Texture } from '@antv/g-device-api';
+import { assert, TextureDimension, TextureUsage } from '@antv/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export class RGRenderTarget {

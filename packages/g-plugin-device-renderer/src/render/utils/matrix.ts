@@ -1,7 +1,7 @@
 // Helpers to fill vertex buffers.
 import type { ReadonlyVec3, ReadonlyVec4, ReadonlyMat4 } from 'gl-matrix';
 // import { ReadonlyMat2d } from 'gl-matrix';
-import type { Color } from '@strawberry-vis/g-device-api';
+import type { Color } from '@antv/g-device-api';
 
 export function fillVec3v(
   d: Float32Array,

@@ -1,5 +1,5 @@
-import type { RenderPass } from '@strawberry-vis/g-device-api';
-import { spliceBisectRight } from '@strawberry-vis/g-device-api';
+import type { RenderPass } from '@antv/g-device-api';
+import { spliceBisectRight } from '@antv/g-device-api';
 import type { RenderCache } from './RenderCache';
 import type { RenderInst } from './RenderInst';
 import { RenderInstFlags } from './RenderInst';

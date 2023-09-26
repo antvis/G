@@ -6,7 +6,7 @@ import type {
 } from '@antv/g-lite';
 import { isCSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
-import { CullMode, Format, VertexStepMode } from '@strawberry-vis/g-device-api';
+import { CullMode, Format, VertexStepMode } from '@antv/g-device-api';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/text.frag';
 import vert from '../shader/text.vert';

@@ -1,5 +1,5 @@
-import type { RenderPass } from '@strawberry-vis/g-device-api';
-import { assert, assertExists } from '@strawberry-vis/g-device-api';
+import type { RenderPass } from '@antv/g-device-api';
+import { assert, assertExists } from '@antv/g-device-api';
 import type { RenderCache } from './RenderCache';
 import type { RenderInst } from './RenderInst';
 import { RenderInstFlags } from './RenderInst';

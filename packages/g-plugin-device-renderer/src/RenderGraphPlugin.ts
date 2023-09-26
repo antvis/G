@@ -19,13 +19,13 @@ import {
   TextureDescriptor,
   TransparentBlack,
   TransparentWhite,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import {
   BlendFactor,
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import type { RGGraphBuilder, RenderHelper } from './render';
 import {
   AntialiasingMode,

@@ -1,9 +1,5 @@
-import type { Device, Format, Texture } from '@strawberry-vis/g-device-api';
-import {
-  assert,
-  TextureDimension,
-  TextureUsage,
-} from '@strawberry-vis/g-device-api';
+import type { Device, Format, Texture } from '@antv/g-device-api';
+import { assert, TextureDimension, TextureUsage } from '@antv/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 // Whenever we need to resolve a multi-sampled render target to a single-sampled texture,

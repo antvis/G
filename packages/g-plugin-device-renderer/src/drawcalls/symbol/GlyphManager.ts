@@ -1,6 +1,6 @@
 import { CanvasLike, GlobalRuntime } from '@antv/g-lite';
-import type { Device, Texture } from '@strawberry-vis/g-device-api';
-import { Format, makeTextureDescriptor2D } from '@strawberry-vis/g-device-api';
+import type { Device, Texture } from '@antv/g-device-api';
+import { Format, makeTextureDescriptor2D } from '@antv/g-device-api';
 import { TinySDF } from '../../utils';
 import type { StyleGlyph } from './AlphaImage';
 import { AlphaImage } from './AlphaImage';

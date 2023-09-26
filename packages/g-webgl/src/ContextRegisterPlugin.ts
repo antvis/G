@@ -1,7 +1,7 @@
 import { AbstractRendererPlugin } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { WebGLContextService } from './WebGLContextService';
-import { WebGLDeviceContribution } from '@strawberry-vis/g-device-api';
+import { WebGLDeviceContribution } from '@antv/g-device-api';
 import { WebGLRendererConfig } from '.';
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {

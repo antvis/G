@@ -6,7 +6,7 @@ import { Mesh } from './Mesh';
 import { MeshUpdater } from './MeshUpdater';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
-import type { Texture, TextureDescriptor } from '@strawberry-vis/g-device-api';
+import type { Texture, TextureDescriptor } from '@antv/g-device-api';
 import { RenderHelper } from './render/RenderHelper';
 import {
   Batch,

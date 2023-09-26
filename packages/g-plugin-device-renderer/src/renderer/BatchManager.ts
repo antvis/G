@@ -3,7 +3,7 @@ import type {
   RenderingPluginContext,
   Shape,
 } from '@antv/g-lite';
-import type { Device } from '@strawberry-vis/g-device-api';
+import type { Device } from '@antv/g-device-api';
 import type { Renderable3D } from '../components/Renderable3D';
 import type { LightPool } from '../LightPool';
 import type { Instanced } from '../drawcalls/Instanced';

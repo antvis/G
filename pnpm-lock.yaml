@@ -446,6 +446,9 @@ importers:
 
   packages/g-mobile-webgl:
     dependencies:
+      '@antv/g-device-api':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -467,9 +470,6 @@ importers:
       '@antv/util':
         specifier: ^3.3.4
         version: 3.3.4
-      '@strawberry-vis/g-device-api':
-        specifier: ^1.1.1
-        version: 1.1.1
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -495,6 +495,9 @@ importers:
 
   packages/g-plugin-3d:
     dependencies:
+      '@antv/g-device-api':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -504,9 +507,6 @@ importers:
       '@antv/g-shader-components':
         specifier: workspace:*
         version: link:../g-shader-components
-      '@strawberry-vis/g-device-api':
-        specifier: ^1.1.1
-        version: 1.1.1
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -681,6 +681,9 @@ importers:
 
   packages/g-plugin-device-renderer:
     dependencies:
+      '@antv/g-device-api':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -696,9 +699,6 @@ importers:
       '@antv/util':
         specifier: ^3.3.4
         version: 3.3.4
-      '@strawberry-vis/g-device-api':
-        specifier: ^1.1.1
-        version: 1.1.1
       '@webgpu/types':
         specifier: ^0.1.6
         version: 0.1.33
@@ -757,18 +757,6 @@ importers:
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
-      tslib:
-        specifier: ^2.5.3
-        version: 2.5.3
-
-  packages/g-plugin-gpgpu:
-    dependencies:
-      '@antv/g-lite':
-        specifier: workspace:*
-        version: link:../g-lite
-      '@strawberry-vis/g-device-api':
-        specifier: ^1.1.1
-        version: 1.1.1
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1032,6 +1020,9 @@ importers:
 
   packages/g-webgl:
     dependencies:
+      '@antv/g-device-api':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1050,9 +1041,6 @@ importers:
       '@antv/util':
         specifier: ^3.3.4
         version: 3.3.4
-      '@strawberry-vis/g-device-api':
-        specifier: ^1.1.1
-        version: 1.1.1
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1066,6 +1054,9 @@ importers:
 
   packages/g-webgpu:
     dependencies:
+      '@antv/g-device-api':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1084,9 +1075,6 @@ importers:
       '@antv/util':
         specifier: ^3.3.4
         version: 3.3.4
-      '@strawberry-vis/g-device-api':
-        specifier: ^1.1.1
-        version: 1.1.1
       '@webgpu/types':
         specifier: ^0.1.6
         version: 0.1.33
@@ -1143,6 +1131,9 @@ importers:
       '@antv/g-components':
         specifier: ^1.9.1
         version: link:../packages/g-components
+      '@antv/g-device-api':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@antv/g-lite':
         specifier: ^1.2.12
         version: link:../packages/g-lite
@@ -1607,6 +1598,16 @@ packages:
       '@antv/matrix-util': 3.1.0-beta.3
       '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
+      gl-matrix: 3.4.3
+      tslib: 2.6.2
+    dev: false
+
+  /@antv/g-device-api@1.2.2:
+    resolution: {integrity: sha512-JLcQT7uFvg0sV9x8CsUyHYtH8RqK4Gxsn02jsZxVkvcCYJzIvMo2ptLUhFye6ADgE+X22xniBUfCEZh/KvUazQ==}
+    dependencies:
+      '@antv/util': 3.3.4
+      '@webgpu/types': 0.1.34
+      eventemitter3: 5.0.1
       gl-matrix: 3.4.3
       tslib: 2.6.2
     dev: false
@@ -5557,16 +5558,6 @@ packages:
   /@stackblitz/sdk@1.9.0:
     resolution: {integrity: sha512-3m6C7f8pnR5KXys/Hqx2x6ylnpqOak6HtnZI6T5keEO0yT+E4Spkw37VEbdwuC+2oxmjdgq6YZEgiKX7hM1GmQ==}
     dev: true
-
-  /@strawberry-vis/g-device-api@1.1.1:
-    resolution: {integrity: sha512-RlyLX23KmOzAcma0rhYfvcWRD41TxpRyFRQUfqN5QY06yKaSvxn1iF9x2wlurjLBCiJvMXJBlndRaUuUFYp3Dw==}
-    dependencies:
-      '@antv/util': 3.3.4
-      '@webgpu/types': 0.1.34
-      eventemitter3: 5.0.1
-      gl-matrix: 3.4.3
-      tslib: 2.6.2
-    dev: false
 
   /@stylelint/postcss-css-in-js@0.38.0(postcss-syntax@0.36.2)(postcss@8.4.24):
     resolution: {integrity: sha512-XOz5CAe49kS95p5yRd+DAIWDojTjfmyAQ4bbDlXMdbZTQ5t0ThjSLvWI6JI2uiS7MFurVBkZ6zUqcimzcLTBoQ==}

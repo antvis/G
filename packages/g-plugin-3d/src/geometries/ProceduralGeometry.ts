@@ -4,8 +4,8 @@ import {
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from '@antv/g-plugin-device-renderer';
-import type { Device } from '@strawberry-vis/g-device-api';
-import { Format, VertexStepMode } from '@strawberry-vis/g-device-api';
+import type { Device } from '@antv/g-device-api';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import { mat4, vec3, vec4 } from 'gl-matrix';
 
 export interface Topology {

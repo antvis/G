@@ -14,7 +14,7 @@ import type {
   RenderPipelineDescriptor,
   Sampler,
   SamplerDescriptor,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import {
   assert,
   bindingsDescriptorCopy,
@@ -26,7 +26,7 @@ import {
   samplerDescriptorEquals,
   preprocessProgram_GLSL,
   ProgramDescriptorSimpleWithOrig,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import { DeviceProgram } from './DeviceProgram';
 import {
   hashCodeNumberFinish,
@@ -95,8 +95,14 @@ function megaStateDescriptorHash(hash: number, a: MegaStateDescriptor): number {
   hash = colorHash(hash, a.blendConstant);
   hash = hashCodeNumberUpdate(hash, a.depthCompare);
   hash = hashCodeNumberUpdate(hash, a.depthWrite ? 1 : 0);
-  hash = hashCodeNumberUpdate(hash, a.stencilCompare);
-  hash = hashCodeNumberUpdate(hash, a.stencilPassOp);
+  hash = hashCodeNumberUpdate(hash, a.stencilFront?.compare);
+  hash = hashCodeNumberUpdate(hash, a.stencilFront?.passOp);
+  hash = hashCodeNumberUpdate(hash, a.stencilFront?.failOp);
+  hash = hashCodeNumberUpdate(hash, a.stencilFront?.depthFailOp);
+  hash = hashCodeNumberUpdate(hash, a.stencilBack?.compare);
+  hash = hashCodeNumberUpdate(hash, a.stencilBack?.passOp);
+  hash = hashCodeNumberUpdate(hash, a.stencilBack?.failOp);
+  hash = hashCodeNumberUpdate(hash, a.stencilBack?.depthFailOp);
   hash = hashCodeNumberUpdate(hash, a.stencilWrite ? 1 : 0);
   hash = hashCodeNumberUpdate(hash, a.cullMode);
   hash = hashCodeNumberUpdate(hash, a.frontFace ? 1 : 0);

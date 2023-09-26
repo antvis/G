@@ -1,7 +1,7 @@
 import { AbstractRendererPlugin } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { WebGPUContextService } from './WebGPUContextService';
-import { WebGPUDeviceContribution } from '@strawberry-vis/g-device-api';
+import { WebGPUDeviceContribution } from '@antv/g-device-api';
 import { WebGPURendererConfig } from '.';
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {

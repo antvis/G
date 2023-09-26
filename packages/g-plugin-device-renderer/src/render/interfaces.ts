@@ -3,7 +3,7 @@ import type {
   RenderPass,
   RenderTarget,
   Texture,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export enum RGAttachmentSlot {

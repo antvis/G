@@ -10,7 +10,7 @@ import type {
   RenderPipelineDescriptor,
   SamplerBinding,
   VertexBufferDescriptor,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import {
   assert,
   assertExists,
@@ -20,7 +20,7 @@ import {
   setBitFlagEnabled,
   setMegaStateFlags,
   PrimitiveTopology,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import type { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import type { RenderCache } from './RenderCache';
 import { fillVec4 } from './utils';

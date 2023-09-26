@@ -1,5 +1,5 @@
 import { isNil } from '@antv/util';
-import { assert, nullify } from '@strawberry-vis/g-device-api';
+import { assert, nullify } from '@antv/g-device-api';
 
 export class DeviceProgram {
   name = '(unnamed)';

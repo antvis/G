@@ -28,7 +28,7 @@ import {
   TextureUsage,
   VertexStepMode,
   AddressMode,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 
 export * from './geometries';
 export * from './lights';

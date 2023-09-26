@@ -1,9 +1,5 @@
-import type {
-  Device,
-  RenderTarget,
-  Texture,
-} from '@strawberry-vis/g-device-api';
-import { assert, assertExists, fillArray } from '@strawberry-vis/g-device-api';
+import type { Device, RenderTarget, Texture } from '@antv/g-device-api';
+import { assert, assertExists, fillArray } from '@antv/g-device-api';
 import type {
   PassSetupFunc,
   RGGraphBuilder,

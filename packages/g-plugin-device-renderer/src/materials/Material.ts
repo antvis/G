@@ -13,13 +13,13 @@ import type {
   FrontFace,
   StencilOp,
   Texture,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import {
   TextureEvent,
   copyMegaState,
   defaultMegaState,
   getUniforms,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 
 export interface IMaterial {
   cullMode: CullMode;

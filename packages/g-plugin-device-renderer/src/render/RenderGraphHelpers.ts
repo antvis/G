@@ -1,10 +1,10 @@
-import type { Color } from '@strawberry-vis/g-device-api';
+import type { Color } from '@antv/g-device-api';
 import {
   Format,
   colorNewFromRGBA,
   OpaqueBlack,
   OpaqueWhite,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 // import { reverseDepthForClearValue } from '../platform/utils';
 import { RGAttachmentSlot } from './interfaces';
 import { RGRenderTargetDescription } from './RenderTargetDescription';

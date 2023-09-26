@@ -6,13 +6,13 @@ import type {
   Device,
   InputLayoutDescriptor,
   VertexStepMode,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import {
   BufferFrequencyHint,
   BufferUsage,
   Format,
   PrimitiveTopology,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 
 export function makeDataBuffer(
   device: Device,

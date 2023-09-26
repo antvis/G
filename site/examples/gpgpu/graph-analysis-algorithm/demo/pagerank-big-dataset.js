@@ -1,9 +1,7 @@
-import { Canvas } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 import { Algorithm } from '@antv/g6';
 
-const { BufferUsage } = DeviceRenderer;
+const $canvas = document.createElement('canvas');
 
 /**
  * Pagerank with power method, ported from CUDA
@@ -78,23 +76,12 @@ const calculateInGPU = async (V, From, To) => {
   const eps = 0.000001;
   let maxIteration = 1000;
 
-  // use WebGPU
-  const renderer = new Renderer();
-  renderer.registerPlugin(new Plugin());
-
-  // create a canvas
-  const canvas = new Canvas({
-    container: $wrapper,
-    width: CANVAS_SIZE,
-    height: CANVAS_SIZE,
-    renderer,
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
   });
 
-  // wait for canvas' services ready
-  await canvas.ready;
-
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
   const n = V.length;
   const graph = new Float32Array(new Array(n * n).fill((1 - d) / n));
   const r = new Float32Array(new Array(n).fill(1 / n));
@@ -119,8 +106,9 @@ const calculateInGPU = async (V, From, To) => {
     }
   }
 
-  const storeKernel = new Kernel(device, {
-    computeShader: `
+  const storeProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<f32>,
 };
@@ -137,10 +125,16 @@ fn main(
     r_last.data[index] = r.data[index];
   }
 }`,
+    },
+  });
+  const storePipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: storeProgram,
   });
 
-  const matmulKernel = new Kernel(device, {
-    computeShader: `
+  const matmulProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<f32>,
 };
@@ -163,10 +157,16 @@ fn main(
   }
 }
     `,
+    },
+  });
+  const matmulPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: matmulProgram,
   });
 
-  const rankDiffKernel = new Kernel(device, {
-    computeShader: `
+  const rankDiffProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<f32>,
 };
@@ -184,6 +184,11 @@ fn main(
   }
 }    
     `,
+    },
+  });
+  const rankDiffPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: rankDiffProgram,
   });
 
   const rBuffer = device.createBuffer({
@@ -199,24 +204,72 @@ fn main(
     viewOrSize: new Float32Array(graph),
   });
 
+  const storeBindings = device.createBindings({
+    pipeline: storePipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: rBuffer,
+      },
+      {
+        binding: 1,
+        buffer: rLastBuffer,
+      },
+    ],
+  });
+  const matmulBindings = device.createBindings({
+    pipeline: matmulPipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: graphBuffer,
+      },
+      {
+        binding: 1,
+        buffer: rBuffer,
+      },
+      {
+        binding: 2,
+        buffer: rLastBuffer,
+      },
+    ],
+  });
+  const rankDiffBindings = device.createBindings({
+    pipeline: rankDiffPipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: rBuffer,
+      },
+      {
+        binding: 1,
+        buffer: rLastBuffer,
+      },
+    ],
+  });
+
   const readback = device.createReadback();
-
-  storeKernel.setBinding(0, rBuffer);
-  storeKernel.setBinding(1, rLastBuffer);
-
-  matmulKernel.setBinding(0, graphBuffer);
-  matmulKernel.setBinding(1, rBuffer);
-  matmulKernel.setBinding(2, rLastBuffer);
-
-  rankDiffKernel.setBinding(0, rBuffer);
-  rankDiffKernel.setBinding(1, rLastBuffer);
 
   const grids = Math.ceil(V.length / (BLOCKS * BLOCK_SIZE));
 
   while (maxIteration--) {
-    storeKernel.dispatch(grids, 1);
-    matmulKernel.dispatch(grids, 1);
-    rankDiffKernel.dispatch(grids, 1);
+    const storeComputePass = device.createComputePass();
+    storeComputePass.setPipeline(storePipeline);
+    storeComputePass.setBindings(storeBindings);
+    storeComputePass.dispatchWorkgroups(1, 1);
+    device.submitPass(storeComputePass);
+
+    const matmulComputePass = device.createComputePass();
+    matmulComputePass.setPipeline(matmulPipeline);
+    matmulComputePass.setBindings(matmulBindings);
+    matmulComputePass.dispatchWorkgroups(1, 1);
+    device.submitPass(matmulComputePass);
+
+    const rankDiffComputePass = device.createComputePass();
+    rankDiffComputePass.setPipeline(rankDiffPipeline);
+    rankDiffComputePass.setBindings(rankDiffBindings);
+    rankDiffComputePass.dispatchWorkgroups(1, 1);
+    device.submitPass(rankDiffComputePass);
 
     const last = await readback.readBuffer(rLastBuffer);
     const result = last.reduce((prev, cur) => prev + cur, 0);

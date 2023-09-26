@@ -11,7 +11,7 @@ import type {
   ParsedPolylineStyleProps,
 } from '@antv/g-lite';
 import { DisplayObject, Shape, isDisplayObject } from '@antv/g-lite';
-import { Format, VertexStepMode } from '@strawberry-vis/g-device-api';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/instanced-line.frag';
 import vert from '../shader/instanced-line.vert';
 import { enumToObject } from '../utils/enum';

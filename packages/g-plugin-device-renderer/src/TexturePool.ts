@@ -12,17 +12,13 @@ import {
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
-import type {
-  Device,
-  Texture,
-  TextureDescriptor,
-} from '@strawberry-vis/g-device-api';
+import type { Device, Texture, TextureDescriptor } from '@antv/g-device-api';
 import {
   Format,
   TextureDimension,
   TextureEvent,
   TextureUsage,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 
 export interface GradientParams {
   width: number;

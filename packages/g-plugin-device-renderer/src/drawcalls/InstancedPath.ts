@@ -17,7 +17,7 @@ import {
 import { mat4 } from 'gl-matrix';
 import { arcToCubic } from '@antv/util';
 import earcut from 'earcut';
-import { Format, VertexStepMode } from '@strawberry-vis/g-device-api';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
 import { enumToObject } from '../utils/enum';

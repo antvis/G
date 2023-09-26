@@ -1,11 +1,11 @@
-import type { Device, Buffer } from '@strawberry-vis/g-device-api';
+import type { Device, Buffer } from '@antv/g-device-api';
 import {
   BufferUsage,
   BufferFrequencyHint,
   alignNonPowerOfTwo,
   assert,
   assertExists,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 
 // This is a very basic linear allocator. We allocate offsets in-order.
 export class DynamicUniformBuffer {

@@ -1,4 +1,4 @@
-import type { Device } from '@strawberry-vis/g-device-api';
+import type { Device } from '@antv/g-device-api';
 import { ProceduralGeometry } from './ProceduralGeometry';
 import { createConeData } from './util';
 

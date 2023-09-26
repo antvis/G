@@ -1,35 +1,24 @@
-import { Canvas, CanvasEvent } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
-
-const { BufferUsage } = DeviceRenderer;
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 
 /**
  * ported from Tint
  * @see https://dawn.googlesource.com/tint/+/f9d19719fd500668e1f74d98e881073baeaf03ff/test/intrinsics/gen/atomicSub/051100.wgsl
  */
 
-const CANVAS_SIZE = 1;
 const $canvas = document.createElement('canvas');
 
-// use WebGPU
-const renderer = new Renderer();
-renderer.registerPlugin(new Plugin());
+(async () => {
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+  });
 
-// create a canvas
-const canvas = new Canvas({
-  canvas: $canvas,
-  width: CANVAS_SIZE,
-  height: CANVAS_SIZE,
-  renderer,
-});
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
 
-canvas.addEventListener(CanvasEvent.READY, () => {
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
-
-  const kernel = new Kernel(device, {
-    computeShader: `
+  const program = device.createProgram({
+    compute: {
+      wgsl: `
+      
 struct Buffer {
   data: array<i32>,
 };
@@ -57,7 +46,9 @@ fn main(
   input.data[index] = input.data[index] + params.k;
 
   atomicSub(&output.data[index], 1);
-}`,
+}
+      `,
+    },
   });
 
   const inputBuffer = device.createBuffer({
@@ -72,24 +63,54 @@ fn main(
     usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST,
     viewOrSize: new Int32Array([1, 0, 0, 0]),
   });
-  const readback = device.createReadback();
 
-  kernel.setBinding(0, inputBuffer);
-  kernel.setBinding(1, outputBuffer);
-  kernel.setBinding(2, uniformBuffer);
+  const pipeline = device.createComputePipeline({
+    inputLayout: null,
+    program,
+  });
+  const bindings = device.createBindings({
+    pipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: inputBuffer,
+      },
+      {
+        binding: 1,
+        buffer: outputBuffer,
+      },
+    ],
+    uniformBufferBindings: [
+      {
+        binding: 2,
+        buffer: uniformBuffer,
+        size: 4 * 4,
+      },
+    ],
+  });
+
+  const computePass = device.createComputePass();
+  computePass.setPipeline(pipeline);
+  computePass.setBindings(bindings);
 
   for (let i = 0; i < 100; i++) {
-    uniformBuffer.setSubData(0, new Int32Array([2, 0, 0, 0]));
-    kernel.dispatch(1, 1);
+    uniformBuffer.setSubData(
+      0,
+      new Uint8Array(new Int32Array([2, 0, 0, 0]).buffer),
+    );
+    computePass.dispatchWorkgroups(1);
 
-    uniformBuffer.setSubData(0, new Int32Array([-2, 0, 0, 0]));
-    kernel.dispatch(1, 1);
+    uniformBuffer.setSubData(
+      0,
+      new Uint8Array(new Int32Array([-2, 0, 0, 0]).buffer),
+    );
+    computePass.dispatchWorkgroups(1);
   }
 
-  (async () => {
-    const input = await readback.readBuffer(inputBuffer);
-    const output = await readback.readBuffer(outputBuffer);
+  device.submitPass(computePass);
 
-    console.log(input, output);
-  })();
-});
+  const readback = device.createReadback();
+  const input = await readback.readBuffer(inputBuffer);
+  const output = await readback.readBuffer(outputBuffer);
+  console.log(input, output);
+})();

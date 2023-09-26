@@ -13,7 +13,7 @@ import {
   BlendMode,
   setAttachmentStateSimple,
   TransparentBlack,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import type { RenderHelper } from './render';
 import {
   AntialiasingMode,

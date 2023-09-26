@@ -1,11 +1,11 @@
 import { BufferGeometry } from '../geometries';
-import type { InputLayout } from '@strawberry-vis/g-device-api';
+import type { InputLayout } from '@antv/g-device-api';
 import {
   Format,
   VertexStepMode,
   fullscreenMegaState,
   nArray,
-} from '@strawberry-vis/g-device-api';
+} from '@antv/g-device-api';
 import { DeviceProgram } from '../render/DeviceProgram';
 import type { RGGraphBuilder } from '../render/interfaces';
 import { RGAttachmentSlot } from '../render/interfaces';

@@ -31,7 +31,6 @@ if (window) {
   (window as any).gPluginCssSelect = require('@antv/g-plugin-css-select');
   (window as any).gPlugin3d = require('@antv/g-plugin-3d');
   (window as any).gPluginControl = require('@antv/g-plugin-control');
-  (window as any).gPluginGpgpu = require('@antv/g-plugin-gpgpu');
   (window as any).gPluginPhysx = require('@antv/g-plugin-physx');
   (window as any).gPluginBox2d = require('@antv/g-plugin-box2d');
   (window as any).gPluginMatterjs = require('@antv/g-plugin-matterjs');
@@ -57,6 +56,7 @@ if (window) {
   (window as any).gPluginA11y = require('@antv/g-plugin-a11y');
   (window as any).gPluginAnnotation = require('@antv/g-plugin-annotation');
   // compiler for GPGPU
+  (window as any).gDeviceApi = require('@antv/g-device-api');
   (window as any).webgpuGraph = require('@antv/webgpu-graph');
   (window as any).gComponents = require('@antv/g-components');
   (window as any).gWebComponents = require('@antv/g-web-components');
