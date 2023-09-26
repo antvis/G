@@ -6,13 +6,13 @@ import type {
   Device,
   InputLayoutDescriptor,
   VertexStepMode,
-} from '../platform';
+} from '@antv/g-device-api';
 import {
   BufferFrequencyHint,
   BufferUsage,
   Format,
   PrimitiveTopology,
-} from '../platform';
+} from '@antv/g-device-api';
 
 export function makeDataBuffer(
   device: Device,
@@ -65,31 +65,18 @@ export enum GeometryEvent {
  * just hold descriptors of buffers & indices, won't use underlying GPU resources
  */
 export class BufferGeometry<GeometryProps = any> extends EventEmitter {
-  /**
-   * 绘制模式
-   */
   drawMode: PrimitiveTopology = PrimitiveTopology.TRIANGLES;
 
-  /**
-   * 存放 Attribute Buffer 列表
-   */
   vertexBuffers: Buffer[] = [];
 
   vertices: ArrayBufferView[] = [];
 
-  /**
-   * 存放 Index Buffer
-   */
   indexBuffer: Buffer;
 
-  /**
-   * 索引数组
-   */
   indices: IndicesArray;
 
   inputLayoutDescriptor: InputLayoutDescriptor = {
     vertexBufferDescriptors: [],
-    vertexAttributeDescriptors: [],
     indexBufferFormat: null,
     program: null,
   };
@@ -146,28 +133,29 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     const { bufferIndex, byteStride, stepMode, attributes, data } = descriptor;
 
     this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex] = {
-      byteStride,
+      arrayStride: byteStride,
       stepMode,
+      attributes: [],
     };
 
     this.vertices[bufferIndex] = data;
 
     attributes.forEach(
       ({ format, bufferByteOffset, location, divisor, byteStride }) => {
-        const existed =
-          this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
-            (e) => e.bufferIndex === bufferIndex && e.location === location,
-          );
+        const existed = this.inputLayoutDescriptor.vertexBufferDescriptors[
+          bufferIndex
+        ].attributes.find((e) => e.shaderLocation === location);
         if (existed) {
           existed.format = format;
-          existed.bufferByteOffset = bufferByteOffset;
+          existed.offset = bufferByteOffset;
           existed.divisor = divisor;
         } else {
-          this.inputLayoutDescriptor.vertexAttributeDescriptors.push({
+          this.inputLayoutDescriptor.vertexBufferDescriptors[
+            bufferIndex
+          ].attributes.push({
             format,
-            bufferIndex,
-            bufferByteOffset,
-            location,
+            offset: bufferByteOffset,
+            shaderLocation: location,
             divisor,
           });
         }
@@ -200,18 +188,17 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     index: number,
     data: Uint8Array,
   ) {
-    const { byteStride } =
+    const { arrayStride } =
       this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex];
 
-    const descriptor =
-      this.inputLayoutDescriptor.vertexAttributeDescriptors.find(
-        (d) => d.location === location,
-      );
+    const descriptor = this.inputLayoutDescriptor.vertexBufferDescriptors[
+      bufferIndex
+    ].attributes.find((d) => d.shaderLocation === location);
 
     if (descriptor) {
       const vertexBuffer = this.getVertexBuffer(bufferIndex);
-      const offset = index * byteStride;
-      vertexBuffer.setSubData(descriptor.bufferByteOffset + offset, data);
+      const offset = index * arrayStride;
+      vertexBuffer.setSubData(descriptor.offset + offset, data);
 
       // TODO: update vertices
       // this.vertices[bufferIndex] = data;
@@ -243,7 +230,6 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
       this.indexBuffer.destroy();
     }
 
-    this.inputLayoutDescriptor.vertexAttributeDescriptors = [];
     this.inputLayoutDescriptor.vertexBufferDescriptors = [];
 
     this.indexBuffer = undefined;

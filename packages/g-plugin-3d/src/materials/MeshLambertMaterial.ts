@@ -1,6 +1,6 @@
 import type { CSSRGB } from '@antv/g-lite';
 import { parseColor } from '@antv/g-lite';
-import type { Device, Texture } from '@antv/g-plugin-device-renderer';
+import type { Device, Texture } from '@antv/g-device-api';
 import frag from '../shaders/material.lambert.frag';
 import vert from '../shaders/material.lambert.vert';
 import type { IMeshBasicMaterial } from './MeshBasicMaterial';

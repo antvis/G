@@ -1,32 +1,34 @@
 import { AbstractRendererPlugin } from '@antv/g-lite';
 import {
-  BlendFactor,
-  BlendMode,
-  BufferFrequencyHint,
   BufferGeometry,
-  ChannelWriteMask,
-  CompareMode,
-  CullMode,
   Fog,
   FogType,
-  Format,
-  FrontFace,
-  GL,
   Light,
   Material,
   Mesh,
-  MipFilterMode,
+  ShaderMaterial,
+  VertexAttributeBufferIndex,
+  VertexAttributeLocation,
+} from '@antv/g-plugin-device-renderer';
+import {
+  BlendFactor,
+  BlendMode,
+  BufferFrequencyHint,
+  ChannelWriteMask,
+  CompareFunction,
+  CullMode,
+  Format,
+  FrontFace,
+  GL,
+  MipmapFilterMode,
   PrimitiveTopology,
   SamplerFormatKind,
-  ShaderMaterial,
   StencilOp,
   TextureDimension,
   TextureUsage,
-  VertexAttributeBufferIndex,
-  VertexAttributeLocation,
   VertexStepMode,
-  WrapMode,
-} from '@antv/g-plugin-device-renderer';
+  AddressMode,
+} from '@antv/g-device-api';
 
 export * from './geometries';
 export * from './lights';
@@ -37,7 +39,7 @@ export {
   BufferFrequencyHint,
   BufferGeometry,
   ChannelWriteMask,
-  CompareMode,
+  CompareFunction,
   CullMode,
   Fog,
   FogType,
@@ -46,7 +48,7 @@ export {
   Light,
   Material,
   Mesh,
-  MipFilterMode,
+  MipmapFilterMode,
   PrimitiveTopology,
   SamplerFormatKind,
   ShaderMaterial,
@@ -57,7 +59,7 @@ export {
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
   VertexStepMode,
-  WrapMode,
+  AddressMode,
 };
 
 export class Plugin extends AbstractRendererPlugin {

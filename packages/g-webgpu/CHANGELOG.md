@@ -1,5 +1,14 @@
 # @antv/g-webgpu
 
+## 1.9.21
+
+### Patch Changes
+
+-   83195bb7: Use @antv/g-device-api.
+-   Updated dependencies [83195bb7]
+-   Updated dependencies [769480aa]
+    -   @antv/g-plugin-device-renderer@1.9.18
+
 ## 1.9.20
 
 ### Patch Changes

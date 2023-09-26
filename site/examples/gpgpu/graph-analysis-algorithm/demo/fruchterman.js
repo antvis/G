@@ -1,9 +1,6 @@
 import { Canvas, CanvasEvent, Circle, Line } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
-import { DeviceRenderer, Renderer as WebGPURenderer } from '@antv/g-webgpu';
-
-const { BufferUsage } = DeviceRenderer;
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 
 /**
  * ported from https://nblintao.github.io/ParaGraphL/
@@ -16,26 +13,21 @@ const { BufferUsage } = DeviceRenderer;
 const MAX_ITERATION = 1000;
 const CANVAS_SIZE = 600;
 
-// use WebGPU
-const renderer = new WebGPURenderer();
-renderer.registerPlugin(new Plugin());
-
 // create a canvas
 const $wrapper = document.getElementById('container');
 const $text = document.createElement('div');
 $text.textContent =
   'Please open the devtools, the shortest paths will be printed in console.';
 $wrapper.appendChild($text);
-
-const canvas = new Canvas({
-  container: $wrapper,
-  width: 1,
-  height: 1,
-  renderer,
-});
+const $canvas = document.createElement('canvas');
 
 (async () => {
-  await canvas.ready;
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+  });
+
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
 
   // @see https://g6.antv.vision/en/examples/net/forceDirected/#basicForceDirected
   const data = await (
@@ -61,10 +53,9 @@ const canvas = new Canvas({
   const k2 = area / (nodes.length + 1);
   const k = Math.sqrt(k2);
 
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
-  const kernel = new Kernel(device, {
-    computeShader: `
+  const program = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -177,6 +168,7 @@ fn main(
     }
   }
 }`,
+    },
   });
 
   const readback = device.createReadback();
@@ -206,18 +198,52 @@ fn main(
     ]),
   });
 
-  kernel.setBinding(0, edgesBuffer);
-  kernel.setBinding(1, indicesBuffer);
-  kernel.setBinding(2, positionsBuffer);
-  kernel.setBinding(3, paramBuffer);
+  const pipeline = device.createComputePipeline({
+    inputLayout: null,
+    program,
+  });
+
+  const bindings = device.createBindings({
+    pipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: edgesBuffer,
+      },
+      {
+        binding: 1,
+        buffer: indicesBuffer,
+      },
+      {
+        binding: 2,
+        buffer: positionsBuffer,
+      },
+    ],
+    uniformBufferBindings: [
+      {
+        binding: 3,
+        buffer: paramBuffer,
+        size: 8 * 4,
+      },
+    ],
+  });
+
+  const computePass = device.createComputePass();
+  computePass.setPipeline(pipeline);
+  computePass.setBindings(bindings);
 
   for (let i = 0; i < MAX_ITERATION; i++) {
-    kernel.dispatch(nodeNum, 1);
+    computePass.dispatchWorkgroups(nodeNum, 1);
 
     // update uniform
-    maxDisplace *= 0.99;
-    paramBuffer.setSubData(5 * 4, new Float32Array([maxDisplace]));
+    maxDisplace *= 0.99999;
+    paramBuffer.setSubData(
+      5 * 4,
+      new Uint8Array(new Float32Array([maxDisplace]).buffer),
+    );
   }
+
+  device.submitPass(computePass);
 
   const result = await readback.readBuffer(positionsBuffer);
 

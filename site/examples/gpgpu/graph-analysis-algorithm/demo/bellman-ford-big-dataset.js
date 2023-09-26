@@ -1,9 +1,5 @@
-import { Canvas } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 import { Algorithm } from '@antv/g6';
-
-const { BufferUsage } = DeviceRenderer;
 
 /**
  * SSSP(Bellman-Ford) ported from CUDA,
@@ -18,6 +14,7 @@ const { BufferUsage } = DeviceRenderer;
  * @see https://github.com/sengorajkumar/gpu_graph_algorithms/tree/master/input
  */
 
+const $canvas = document.createElement('canvas');
 const $wrapper = document.getElementById('container');
 (async () => {
   // load & parse CSV datasets, which use Compressed Sparse Row (CSR) for adjacency list
@@ -91,25 +88,16 @@ const calculateInGPU = async (V, E, I, W) => {
   const CANVAS_SIZE = 1;
   const MAX_DISTANCE = 1000000;
 
-  // use WebGPU
-  const renderer = new Renderer();
-  renderer.registerPlugin(new Plugin());
-
-  // create a canvas
-  const canvas = new Canvas({
-    container: $wrapper,
-    width: CANVAS_SIZE,
-    height: CANVAS_SIZE,
-    renderer,
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
   });
 
-  // wait for canvas' services ready
-  await canvas.ready;
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
 
-  const relaxKernel = new Kernel(device, {
-    computeShader: `
+  const relaxProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -144,10 +132,16 @@ fn main(
     }
   }
 }`,
+    },
+  });
+  const relaxPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: relaxProgram,
   });
 
-  const updateDistanceKernel = new Kernel(device, {
-    computeShader: `
+  const updateDistanceProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -168,10 +162,16 @@ fn main(
   }
 }
     `,
+    },
+  });
+  const updateDistancePipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: updateDistanceProgram,
   });
 
-  const updatePredKernel = new Kernel(device, {
-    computeShader: `
+  const updatePredProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -205,6 +205,11 @@ fn main(
   }
 }    
     `,
+    },
+  });
+  const updatePredPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: updatePredProgram,
   });
 
   const VBuffer = device.createBuffer({
@@ -225,7 +230,6 @@ fn main(
   });
   const DOutBuffer = device.createBuffer({
     usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
-    // since we want to find all paths for Node 0, set the first element to 0
     viewOrSize: new Int32Array([
       0,
       ...new Array(V.length - 1).fill(MAX_DISTANCE),
@@ -238,8 +242,6 @@ fn main(
       ...new Array(V.length - 1).fill(MAX_DISTANCE),
     ]),
   });
-
-  // store predecessors
   const POutBuffer = device.createBuffer({
     usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
     viewOrSize: new Int32Array([
@@ -247,31 +249,96 @@ fn main(
       ...new Array(V.length - 1).fill(MAX_DISTANCE),
     ]),
   });
+  const relaxBindings = device.createBindings({
+    pipeline: relaxPipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: EBuffer,
+      },
+      {
+        binding: 1,
+        buffer: IBuffer,
+      },
+      {
+        binding: 2,
+        buffer: WBuffer,
+      },
+      {
+        binding: 3,
+        buffer: DOutBuffer,
+      },
+      {
+        binding: 4,
+        buffer: DiOutBuffer,
+      },
+    ],
+  });
+  const updateDistanceBindings = device.createBindings({
+    pipeline: updateDistancePipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: DOutBuffer,
+      },
+      {
+        binding: 1,
+        buffer: DiOutBuffer,
+      },
+    ],
+  });
+  const updatePredBindings = device.createBindings({
+    pipeline: updatePredPipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: VBuffer,
+      },
+      {
+        binding: 1,
+        buffer: EBuffer,
+      },
+      {
+        binding: 2,
+        buffer: IBuffer,
+      },
+      {
+        binding: 3,
+        buffer: WBuffer,
+      },
+      {
+        binding: 4,
+        buffer: DOutBuffer,
+      },
+      {
+        binding: 5,
+        buffer: POutBuffer,
+      },
+    ],
+  });
+
   const readback = device.createReadback();
 
-  relaxKernel.setBinding(0, EBuffer);
-  relaxKernel.setBinding(1, IBuffer);
-  relaxKernel.setBinding(2, WBuffer);
-  relaxKernel.setBinding(3, DOutBuffer);
-  relaxKernel.setBinding(4, DiOutBuffer);
-
-  updateDistanceKernel.setBinding(0, DOutBuffer);
-  updateDistanceKernel.setBinding(1, DiOutBuffer);
-
-  updatePredKernel.setBinding(0, VBuffer);
-  updatePredKernel.setBinding(1, EBuffer);
-  updatePredKernel.setBinding(2, IBuffer);
-  updatePredKernel.setBinding(3, WBuffer);
-  updatePredKernel.setBinding(4, DOutBuffer);
-  updatePredKernel.setBinding(5, POutBuffer);
-
-  const grids = Math.ceil(V.length / (BLOCKS * BLOCK_SIZE));
   for (let i = 1; i < V.length; i++) {
-    relaxKernel.dispatch(grids, 1);
-    updateDistanceKernel.dispatch(grids, 1);
-  }
-  updatePredKernel.dispatch(grids, 1);
+    const relaxComputePass = device.createComputePass();
+    relaxComputePass.setPipeline(relaxPipeline);
+    relaxComputePass.setBindings(relaxBindings);
+    relaxComputePass.dispatchWorkgroups(1, 1);
+    device.submitPass(relaxComputePass);
 
+    const updateDistancePass = device.createComputePass();
+    updateDistancePass.setPipeline(updateDistancePipeline);
+    updateDistancePass.setBindings(updateDistanceBindings);
+    updateDistancePass.dispatchWorkgroups(1, 1);
+    device.submitPass(updateDistancePass);
+  }
+  const updatePredPass = device.createComputePass();
+  updatePredPass.setPipeline(updatePredPipeline);
+  updatePredPass.setBindings(updatePredBindings);
+  updatePredPass.dispatchWorkgroups(1, 1);
+  device.submitPass(updatePredPass);
+
+  // result
   const out = await readback.readBuffer(DiOutBuffer);
   const predecessor = await readback.readBuffer(POutBuffer);
 

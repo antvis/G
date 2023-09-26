@@ -12,13 +12,13 @@ import {
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isString } from '@antv/util';
-import type { Device, Texture, TextureDescriptor } from './platform';
+import type { Device, Texture, TextureDescriptor } from '@antv/g-device-api';
 import {
   Format,
   TextureDimension,
   TextureEvent,
   TextureUsage,
-} from './platform';
+} from '@antv/g-device-api';
 
 export interface GradientParams {
   width: number;
@@ -45,17 +45,16 @@ export class TexturePool {
 
     if (!id || !this.textureCache[id]) {
       texture = device.createTexture({
-        pixelFormat: Format.U8_RGBA_NORM,
+        format: Format.U8_RGBA_NORM,
         width: 1,
         height: 1,
-        depth: 1,
-        numLevels: 1,
+        depthOrArrayLayers: 1,
+        mipLevelCount: 1,
         dimension: TextureDimension.TEXTURE_2D,
         usage: TextureUsage.SAMPLED,
         pixelStore: {
           unpackFlipY: false,
         },
-        immutable: false,
         ...descriptor,
       });
 

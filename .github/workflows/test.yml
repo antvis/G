@@ -5,15 +5,7 @@ on: [pull_request]
 jobs:
   test:
     name: Test
-    # jest-electron 需要 macOS 环境, 但是 免费用户 并发有限制, 容易排队 https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-    # runs-on: macos-latest # (目前 macos-latest 对应的是 Big Sur 11, macos-12 对应  Monterey 12)
-    # macOS 3-core CPU, 其他 2-core CPU
-    runs-on: macos-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    strategy:
-      matrix:
-        node-version: [16]
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -27,11 +19,16 @@ jobs:
         with:
           version: 7
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
           cache: 'pnpm'
+
+      - name: Install headless-gl dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mesa-utils xvfb libgl1-mesa-dri libglapi-mesa libosmesa6
 
       - name: Install dependencies
         run: pnpm install
@@ -39,12 +36,9 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
-
       - name: Cov
         run: |
-          pnpm cov
+          xvfb-run -s "-ac -screen 0 1280x1024x16" pnpm cov
         env:
           CI: true
       - name: Coveralls

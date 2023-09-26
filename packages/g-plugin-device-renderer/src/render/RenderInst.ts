@@ -1,6 +1,5 @@
 import { isNumber } from '@antv/util';
 import type {
-  BindingLayoutDescriptor,
   BindingsDescriptor,
   Device,
   IndexBufferDescriptor,
@@ -11,8 +10,7 @@ import type {
   RenderPipelineDescriptor,
   SamplerBinding,
   VertexBufferDescriptor,
-} from '../platform';
-import { PrimitiveTopology } from '../platform';
+} from '@antv/g-device-api';
 import {
   assert,
   assertExists,
@@ -21,7 +19,8 @@ import {
   nArray,
   setBitFlagEnabled,
   setMegaStateFlags,
-} from '../platform/utils';
+  PrimitiveTopology,
+} from '@antv/g-device-api';
 import type { DynamicUniformBuffer } from './DynamicUniformBuffer';
 import type { RenderCache } from './RenderCache';
 import { fillVec4 } from './utils';
@@ -74,7 +73,6 @@ export class RenderInst {
 
   constructor() {
     this.renderPipelineDescriptor = {
-      bindingLayouts: [],
       inputLayout: null,
       megaStateDescriptor: copyMegaState(defaultMegaState),
       program: null!,
@@ -141,7 +139,11 @@ export class RenderInst {
     this.sortKey = o.sortKey;
     const tbd = this.bindingDescriptors[0],
       obd = o.bindingDescriptors[0];
-    if (obd.bindingLayout !== null) this.setBindingLayout(obd.bindingLayout);
+    this.setBindingLayout({
+      numSamplers: obd.samplerBindings?.length,
+      numUniformBuffers: obd.uniformBufferBindings?.length,
+    });
+
     for (
       let i = 0;
       i <
@@ -151,8 +153,8 @@ export class RenderInst {
       );
       i++
     )
-      tbd.uniformBufferBindings[i].wordCount =
-        o.bindingDescriptors[0].uniformBufferBindings[i].wordCount;
+      tbd.uniformBufferBindings[i].size =
+        o.bindingDescriptors[0].uniformBufferBindings[i].size;
     this.setSamplerBindingsFromTextureMappings(obd.samplerBindings);
     for (let i = 0; i < o.dynamicUniformBufferByteOffsets.length; i++)
       this.dynamicUniformBufferByteOffsets[i] =
@@ -163,8 +165,8 @@ export class RenderInst {
     // Validate uniform buffer bindings.
     for (let i = 0; i < this.bindingDescriptors.length; i++) {
       const bd = this.bindingDescriptors[i];
-      for (let j = 0; j < bd.bindingLayout.numUniformBuffers; j++)
-        assert(bd.uniformBufferBindings[j].wordCount > 0);
+      for (let j = 0; j < bd.uniformBufferBindings?.length; j++)
+        assert(bd.uniformBufferBindings[j].size > 0);
     }
 
     assert(this.drawCount > 0);
@@ -213,13 +215,14 @@ export class RenderInst {
     this.renderPipelineDescriptor.inputLayout = inputLayout;
   }
 
-  private setBindingLayout(bindingLayout: BindingLayoutDescriptor): void {
+  setBindingLayout(bindingLayout: {
+    numUniformBuffers: number;
+    numSamplers: number;
+  }): void {
     assert(
       bindingLayout.numUniformBuffers <
         this.dynamicUniformBufferByteOffsets.length,
     );
-    this.renderPipelineDescriptor.bindingLayouts[0] = bindingLayout;
-    this.bindingDescriptors[0].bindingLayout = bindingLayout;
 
     for (
       let i = this.bindingDescriptors[0].uniformBufferBindings.length;
@@ -227,8 +230,9 @@ export class RenderInst {
       i++
     )
       this.bindingDescriptors[0].uniformBufferBindings.push({
+        binding: 0,
         buffer: null,
-        wordCount: 0,
+        size: 0,
       });
     for (
       let i = this.bindingDescriptors[0].samplerBindings.length;
@@ -239,15 +243,6 @@ export class RenderInst {
         sampler: null,
         texture: null,
       });
-  }
-
-  /**
-   * Sets the {@see BindingLayoutDescriptor}s that this render inst will render with.
-   */
-  setBindingLayouts(bindingLayouts: BindingLayoutDescriptor[]): void {
-    assert(bindingLayouts.length <= this.bindingDescriptors.length);
-    assert(bindingLayouts.length === 1);
-    this.setBindingLayout(bindingLayouts[0]);
   }
 
   drawIndexes(indexCount: number, indexStart = 0): void {
@@ -354,14 +349,14 @@ export class RenderInst {
    */
   allocateUniformBuffer(bufferIndex: number, wordCount: number): number {
     assert(
-      this.bindingDescriptors[0].bindingLayout.numUniformBuffers <
+      this.bindingDescriptors[0].uniformBufferBindings?.length <
         this.dynamicUniformBufferByteOffsets.length,
     );
     this.dynamicUniformBufferByteOffsets[bufferIndex] =
       this.uniformBuffer.allocateChunk(wordCount) << 2;
 
     const dst = this.bindingDescriptors[0].uniformBufferBindings[bufferIndex];
-    dst.wordCount = wordCount;
+    dst.size = wordCount << 2;
     return this.getUniformBufferOffset(bufferIndex);
   }
 
@@ -372,22 +367,6 @@ export class RenderInst {
   getUniformBufferOffset(bufferIndex: number) {
     const wordOffset = this.dynamicUniformBufferByteOffsets[bufferIndex] >>> 2;
     return wordOffset;
-  }
-
-  /**
-   * Directly sets the uniform buffer assigned to the buffer slot at index {@param bufferIndex}
-   * to be {@param wordOffset}. Use this if you have already allocated a uniform buffer chunk through
-   * some other means and wish to directly assign it to this render inst.
-   */
-  setUniformBufferOffset(
-    bufferIndex: number,
-    wordOffset: number,
-    wordCount: number,
-  ): void {
-    this.dynamicUniformBufferByteOffsets[bufferIndex] = wordOffset << 2;
-
-    const dst = this.bindingDescriptors[0].uniformBufferBindings[bufferIndex];
-    dst.wordCount = wordCount;
   }
 
   /**
@@ -469,7 +448,7 @@ export class RenderInst {
           : null;
       this.renderPipelineDescriptor.colorAttachmentFormats[i] =
         colorAttachmentDescriptor !== null
-          ? colorAttachmentDescriptor.pixelFormat
+          ? colorAttachmentDescriptor.format
           : null;
       if (colorAttachmentDescriptor !== null) {
         if (sampleCount === -1)
@@ -484,7 +463,7 @@ export class RenderInst {
         : null;
     this.renderPipelineDescriptor.depthStencilAttachmentFormat =
       depthStencilAttachmentDescriptor !== null
-        ? depthStencilAttachmentDescriptor.pixelFormat
+        ? depthStencilAttachmentDescriptor.format
         : null;
     if (depthStencilAttachmentDescriptor !== null) {
       if (sampleCount === -1)
@@ -525,10 +504,13 @@ export class RenderInst {
       let i = 0;
       i < this.bindingDescriptors[0].uniformBufferBindings.length;
       i++
-    )
+    ) {
       this.bindingDescriptors[0].uniformBufferBindings[i].buffer = assertExists(
         this.uniformBuffer.buffer,
       );
+      this.bindingDescriptors[0].uniformBufferBindings[i].offset =
+        this.dynamicUniformBufferByteOffsets[i];
+    }
 
     if ((this.renderPipelineDescriptor.program as any).gl_program) {
       this.uniforms.forEach((uniforms) => {
@@ -545,11 +527,8 @@ export class RenderInst {
       ...this.bindingDescriptors[0],
       pipeline: gfxPipeline,
     });
-    passRenderer.setBindings(
-      0,
-      gfxBindings,
-      this.dynamicUniformBufferByteOffsets,
-    );
+
+    passRenderer.setBindings(gfxBindings);
 
     if (this.flags & RenderInstFlags.Indexed) {
       passRenderer.drawIndexed(

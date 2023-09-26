@@ -5,17 +5,16 @@ import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
 import * as DomInteraction from '@antv/g-plugin-mobile-interaction';
-import * as WebGLDevice from '@antv/g-plugin-webgl-device';
 import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
-export { DomInteraction, DeviceRenderer, WebGLDevice, HTMLRenderer };
+export { DomInteraction, DeviceRenderer, HTMLRenderer };
 
-interface WebGLRendererConfig extends RendererConfig {
+export interface WebGLRendererConfig extends RendererConfig {
   targets: ('webgl1' | 'webgl2')[];
 }
 
-type MobileWebglRenderConfig = Partial<
+export type MobileWebglRenderConfig = Partial<
   WebGLRendererConfig & {
     isDocumentDraggable: boolean;
     isDocumentDroppable: boolean;
@@ -30,26 +29,21 @@ export class Renderer extends AbstractRenderer {
 
     const deviceRendererPlugin = new DeviceRenderer.Plugin();
 
-    this.registerPlugin(new ContextRegisterPlugin(deviceRendererPlugin));
-    this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(
-      new WebGLDevice.Plugin(
-        config?.targets
-          ? {
-              targets: config.targets,
-            }
-          : {
-              targets: ['webgl2', 'webgl1'],
-            },
-      ),
+      new ContextRegisterPlugin(deviceRendererPlugin, config),
     );
+    this.registerPlugin(new ImageLoader.Plugin());
     this.registerPlugin(deviceRendererPlugin);
     this.registerPlugin(new DomInteraction.Plugin());
     this.registerPlugin(new HTMLRenderer.Plugin());
     this.registerPlugin(
       new DragDropEvent.Plugin({
-        isDocumentDraggable: isNil(config?.isDocumentDraggable) ? true : config.isDocumentDraggable,
-        isDocumentDroppable: isNil(config?.isDocumentDroppable) ? true : config.isDocumentDroppable,
+        isDocumentDraggable: isNil(config?.isDocumentDraggable)
+          ? true
+          : config.isDocumentDraggable,
+        isDocumentDroppable: isNil(config?.isDocumentDroppable)
+          ? true
+          : config.isDocumentDroppable,
         dragstartDistanceThreshold: isNil(config?.dragstartDistanceThreshold)
           ? 10
           : config.dragstartDistanceThreshold,

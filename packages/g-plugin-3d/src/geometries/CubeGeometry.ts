@@ -1,4 +1,4 @@
-import type { Device } from '@antv/g-plugin-device-renderer';
+import type { Device } from '@antv/g-device-api';
 import { vec3 } from 'gl-matrix';
 import { ProceduralGeometry } from './ProceduralGeometry';
 import { primitiveUv1Padding, primitiveUv1PaddingScale } from './util';

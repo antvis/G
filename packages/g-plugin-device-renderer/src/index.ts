@@ -6,7 +6,7 @@ import { Mesh } from './Mesh';
 import { MeshUpdater } from './MeshUpdater';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
-import type { Texture, TextureDescriptor } from './platform';
+import type { Texture, TextureDescriptor } from '@antv/g-device-api';
 import { RenderHelper } from './render/RenderHelper';
 import {
   Batch,
@@ -33,9 +33,7 @@ export * from './lights';
 export * from './materials';
 export * from './drawcalls';
 export * from './passes';
-export * from './platform';
 export * from './render';
-export * from './shader/compiler';
 export * from './utils';
 export { Renderable3D, Batch, TexturePool, RenderGraphPlugin, Mesh };
 

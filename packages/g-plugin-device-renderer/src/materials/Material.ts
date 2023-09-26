@@ -6,17 +6,20 @@ import type {
   BlendFactor,
   BlendMode,
   Color,
-  CompareMode,
+  CompareFunction,
   CullMode,
   Device,
   Format,
   FrontFace,
   StencilOp,
   Texture,
-} from '../platform';
-import { TextureEvent } from '../platform';
-import { copyMegaState, defaultMegaState } from '../platform/utils';
-import { getUniforms } from '../shader/compiler';
+} from '@antv/g-device-api';
+import {
+  TextureEvent,
+  copyMegaState,
+  defaultMegaState,
+  getUniforms,
+} from '@antv/g-device-api';
 
 export interface IMaterial {
   cullMode: CullMode;
@@ -29,11 +32,11 @@ export interface IMaterial {
   blendSrcAlpha: BlendFactor;
   blendDstAlpha: BlendFactor;
 
-  depthCompare: CompareMode;
+  depthCompare: CompareFunction;
   depthTest: boolean;
   depthWrite: boolean;
 
-  stencilCompare: CompareMode;
+  stencilCompare: CompareFunction;
   stencilWrite: boolean;
   stencilPassOp: StencilOp;
   stencilRef: number;

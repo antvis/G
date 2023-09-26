@@ -4,7 +4,7 @@ import {
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from './Instanced';
-import { Format, VertexStepMode } from '../platform';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/image.frag';
 import vert from '../shader/image.vert';
 import { enumToObject } from '../utils';
