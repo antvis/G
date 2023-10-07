@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.19
+
+### Patch Changes
+
+-   7c3543dd: Check marker's parentNode should not be null.
+
 ## 1.9.18
 
 ### Patch Changes

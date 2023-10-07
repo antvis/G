@@ -1,5 +1,11 @@
 # @antv/g-web-components
 
+## 1.9.22
+
+### Patch Changes
+
+-   @antv/g-webgl@1.9.22
+
 ## 1.9.21
 
 ### Patch Changes
