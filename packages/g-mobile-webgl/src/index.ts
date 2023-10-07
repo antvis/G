@@ -5,6 +5,7 @@ import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
 import * as DomInteraction from '@antv/g-plugin-mobile-interaction';
+import * as GesturePlugin from '@antv/g-plugin-gesture';
 import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
@@ -50,6 +51,12 @@ export class Renderer extends AbstractRenderer {
         dragstartTimeThreshold: isNil(config?.dragstartTimeThreshold)
           ? 50
           : config.dragstartTimeThreshold,
+      }),
+    );
+
+    this.registerPlugin(
+      new GesturePlugin.Plugin({
+        isDocumentGestureEnabled: true,
       }),
     );
   }
