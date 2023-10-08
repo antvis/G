@@ -40,6 +40,7 @@
   "dependencies": {
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-dragndrop": "workspace:*",
+    "@antv/g-plugin-gesture": "workspace:*",
     "@antv/g-plugin-mobile-interaction": "workspace:*",
     "@antv/g-plugin-svg-picker": "workspace:*",
     "@antv/g-plugin-svg-renderer": "workspace:*",
