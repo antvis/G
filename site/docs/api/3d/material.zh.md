@@ -139,13 +139,10 @@ export enum CompareMode {
 
 是否开启模版测试，默认不开启。
 
-### stencilCompare
+### stencilFront & stencilBack
 
-默认使用 `CompareMode.Never`，枚举值同 `depthCompare`。
-
-### stencilPassOp
-
-默认使用 `StencilOp.Keep`，支持以下枚举值：
+-   compare 默认使用 `CompareMode.Never`，枚举值同 `depthCompare`。
+-   passOp 默认使用 `StencilOp.Keep`，支持以下枚举值：
 
 ```js
 export enum StencilOp {
