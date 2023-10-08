@@ -682,7 +682,7 @@ export class EventService {
 
   hitTest(position: EventPosition): IEventTarget | null {
     const { viewportX, viewportY } = position;
-    const { width, height } = this.context.config;
+    const { width, height, disableHitTesting } = this.context.config;
     // outside canvas
     if (
       viewportX < 0 ||
@@ -694,7 +694,7 @@ export class EventService {
     }
 
     return (
-      this.pickHandler(position) ||
+      (!disableHitTesting && this.pickHandler(position)) ||
       this.rootTarget || // return Document
       null
     );

@@ -1,5 +1,12 @@
 # @antv/g-plugin-image-loader
 
+## 1.3.14
+
+### Patch Changes
+
+-   Updated dependencies [5e0de3dd]
+    -   @antv/g-lite@1.2.14
+
 ## 1.3.13
 
 ### Patch Changes

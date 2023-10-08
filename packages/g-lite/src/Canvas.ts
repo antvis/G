@@ -15,7 +15,6 @@ import { CustomElementRegistry } from './dom/CustomElementRegistry';
 import type { ICanvas } from './dom/interfaces';
 import { runtime } from './global-runtime';
 import { CullingPlugin } from './plugins/CullingPlugin';
-import { DirtyCheckPlugin } from './plugins/DirtyCheckPlugin';
 import { EventPlugin } from './plugins/EventPlugin';
 import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
@@ -506,7 +505,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.context.renderingPlugins.push(
       new EventPlugin(),
       new PrepareRendererPlugin(),
-      new DirtyCheckPlugin(),
+      // new DirtyCheckPlugin(),
       new CullingPlugin([new FrustumCullingStrategy()]),
     );
 

@@ -468,6 +468,16 @@ export interface CanvasConfig {
   alwaysTriggerPointerEventOnCanvas?: boolean;
 
   /**
+   * Enable event service
+   */
+  disableHitTesting?: boolean;
+
+  /**
+   * Skip triggering hooks.beforeRender/render/afterRender
+   */
+  disableRenderHooks?: boolean;
+
+  /**
    * Should we account for CSS Transform applied on container?
    */
   supportsCSSTransform?: boolean;
