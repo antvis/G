@@ -1,5 +1,11 @@
 # @antv/g-mobile-webgl
 
+## 0.9.23
+
+### Patch Changes
+
+-   ef3ef11b: Use gesture plugin in mobile SVG & WebGL renderers.
+
 ## 0.9.22
 
 ### Patch Changes
