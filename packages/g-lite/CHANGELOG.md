@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.14
+
+### Patch Changes
+
+-   5e0de3dd: Add disableRenderHooks switch for WebGL renderer.
+
 ## 1.2.13
 
 ### Patch Changes

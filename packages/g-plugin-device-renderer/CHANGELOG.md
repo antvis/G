@@ -1,5 +1,14 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.21
+
+### Patch Changes
+
+-   5e0de3dd: Add disableRenderHooks switch for WebGL renderer.
+-   Updated dependencies [5e0de3dd]
+    -   @antv/g-lite@1.2.14
+    -   @antv/g-plugin-image-loader@1.3.14
+
 ## 1.9.20
 
 ### Patch Changes
