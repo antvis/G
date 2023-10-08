@@ -11,7 +11,7 @@ import type {
   Device,
   Format,
   FrontFace,
-  StencilOp,
+  StencilFaceState,
   Texture,
 } from '@antv/g-device-api';
 import {
@@ -36,9 +36,10 @@ export interface IMaterial {
   depthTest: boolean;
   depthWrite: boolean;
 
-  stencilCompare: CompareFunction;
+  stencilFront: Partial<StencilFaceState>;
+  stencilBack: Partial<StencilFaceState>;
+
   stencilWrite: boolean;
-  stencilPassOp: StencilOp;
   stencilRef: number;
 
   frontFace: FrontFace;
@@ -194,23 +195,23 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
     this.props.depthWrite = value;
   }
 
-  get stencilCompare() {
-    return this.props.stencilCompare;
+  get stencilFront() {
+    return this.props.stencilFront;
   }
-  set stencilCompare(value) {
-    this.props.stencilCompare = value;
+  set stencilFront(value) {
+    this.props.stencilFront = value;
+  }
+  get stencilBack() {
+    return this.props.stencilBack;
+  }
+  set stencilBack(value) {
+    this.props.stencilBack = value;
   }
   get stencilWrite() {
     return this.props.stencilWrite;
   }
   set stencilWrite(value) {
     this.props.stencilWrite = value;
-  }
-  get stencilPassOp() {
-    return this.props.stencilPassOp;
-  }
-  set stencilPassOp(value) {
-    this.props.stencilPassOp = value;
   }
   get stencilRef() {
     return this.props.stencilRef;
@@ -319,9 +320,9 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
       cullMode,
       depthCompare,
       depthWrite,
-      stencilCompare,
+      stencilFront,
+      stencilBack,
       stencilWrite,
-      stencilPassOp,
       frontFace,
       polygonOffset,
       attachmentsState,
@@ -335,9 +336,9 @@ export abstract class Material<T extends IMaterial = any> extends EventEmitter {
       depthTest: true,
       depthCompare,
       depthWrite,
-      stencilCompare,
+      stencilFront,
+      stencilBack,
       stencilWrite,
-      stencilPassOp,
       frontFace,
       polygonOffset,
       attachmentsState,
