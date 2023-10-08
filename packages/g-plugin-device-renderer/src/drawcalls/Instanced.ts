@@ -512,13 +512,25 @@ export abstract class Instanced {
         this.material.stencilWrite = true;
         // @see https://open.gl/depthstencils
         this.material.depthWrite = false;
-        this.material.stencilCompare = CompareFunction.ALWAYS;
-        this.material.stencilPassOp = StencilOp.REPLACE;
+        this.material.stencilFront = {
+          compare: CompareFunction.ALWAYS,
+          passOp: StencilOp.REPLACE,
+        };
+        this.material.stencilBack = {
+          compare: CompareFunction.ALWAYS,
+          passOp: StencilOp.REPLACE,
+        };
       } else {
         this.material.stencilWrite = false;
         this.material.depthWrite = true;
-        this.material.stencilCompare = CompareFunction.EQUAL;
-        this.material.stencilPassOp = StencilOp.KEEP;
+        this.material.stencilFront = {
+          compare: CompareFunction.EQUAL,
+          passOp: StencilOp.KEEP,
+        };
+        this.material.stencilBack = {
+          compare: CompareFunction.EQUAL,
+          passOp: StencilOp.KEEP,
+        };
       }
     } else {
       this.material.stencilWrite = false;
@@ -1046,9 +1058,9 @@ export abstract class Instanced {
     const {
       depthCompare,
       depthWrite,
-      stencilCompare,
+      stencilFront,
+      stencilBack,
       stencilWrite,
-      stencilPassOp,
       stencilRef,
       cullMode,
       frontFace,
@@ -1066,9 +1078,9 @@ export abstract class Instanced {
       blendConstant,
       depthCompare,
       depthWrite,
-      stencilCompare,
+      stencilFront,
+      stencilBack,
       stencilWrite,
-      stencilPassOp,
       stencilRef,
       cullMode,
       frontFace,

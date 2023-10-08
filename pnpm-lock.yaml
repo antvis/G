@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 overrides:
   jest-environment-jsdom: ^26.6.2
 
@@ -454,8 +450,8 @@ importers:
   packages/g-mobile-webgl:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.3.0
+        version: 1.3.0
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -506,8 +502,8 @@ importers:
   packages/g-plugin-3d:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.3.0
+        version: 1.3.0
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -692,8 +688,8 @@ importers:
   packages/g-plugin-device-renderer:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.3.0
+        version: 1.3.0
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1031,8 +1027,8 @@ importers:
   packages/g-webgl:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.3.0
+        version: 1.3.0
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1065,8 +1061,8 @@ importers:
   packages/g-webgpu:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.3.0
+        version: 1.3.0
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1142,8 +1138,8 @@ importers:
         specifier: ^1.9.1
         version: link:../packages/g-components
       '@antv/g-device-api':
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.3.0
+        version: 1.3.0
       '@antv/g-lite':
         specifier: ^1.2.12
         version: link:../packages/g-lite
@@ -1612,8 +1608,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@antv/g-device-api@1.2.2:
-    resolution: {integrity: sha512-JLcQT7uFvg0sV9x8CsUyHYtH8RqK4Gxsn02jsZxVkvcCYJzIvMo2ptLUhFye6ADgE+X22xniBUfCEZh/KvUazQ==}
+  /@antv/g-device-api@1.3.0:
+    resolution: {integrity: sha512-zBDLuxEV1LuEAFnAQOGfFwawuXQh6FzcoFCq+V+W3/vPS5Vm/N52AxjQ2ZmqI0Vqh3MtYHz+jM+Yv4ouZMTcHA==}
     dependencies:
       '@antv/util': 3.3.4
       '@webgpu/types': 0.1.34
@@ -24010,3 +24006,7 @@ packages:
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
