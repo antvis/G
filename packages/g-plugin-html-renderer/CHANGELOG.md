@@ -1,5 +1,12 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.17
+
+### Patch Changes
+
+-   Updated dependencies [5e0de3dd]
+    -   @antv/g-lite@1.2.14
+
 ## 1.9.16
 
 ### Patch Changes

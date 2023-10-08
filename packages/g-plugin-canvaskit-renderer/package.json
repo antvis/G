@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvaskit-renderer",
-  "version": "1.3.13",
+  "version": "1.3.14",
   "description": "A G plugin of renderer implementation with CanvasKit",
   "keywords": [
     "antv",
