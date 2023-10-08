@@ -460,10 +460,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const max = aabb.getMax();
     // expand the rectangle a bit to avoid artifacts
     // @see https://www.yuque.com/antv/ou292n/bi8nix#ExvCu
-    const minX = Math.floor(min[0]);
-    const minY = Math.floor(min[1]);
-    const maxX = Math.ceil(max[0]);
-    const maxY = Math.ceil(max[1]);
+    const padding = 2;
+    const minX = Math.floor(min[0]) - padding;
+    const minY = Math.floor(min[1]) - padding;
+    const maxX = Math.ceil(max[0]) + padding;
+    const maxY = Math.ceil(max[1]) + padding;
     const width = maxX - minX;
     const height = maxY - minY;
 
