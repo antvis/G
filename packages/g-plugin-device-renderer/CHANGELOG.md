@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.20
+
+### Patch Changes
+
+-   e8490c95: Use stencil front & back in latest device api.
+
 ## 1.9.19
 
 ### Patch Changes

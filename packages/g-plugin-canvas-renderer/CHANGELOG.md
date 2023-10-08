@@ -1,5 +1,11 @@
 # @antv/g-plugin-canvas-renderer
 
+## 1.9.14
+
+### Patch Changes
+
+-   e8490c95: Expand dirty rectangle by 2px.
+
 ## 1.9.13
 
 ### Patch Changes
