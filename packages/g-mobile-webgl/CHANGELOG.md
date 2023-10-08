@@ -1,5 +1,13 @@
 # @antv/g-mobile-webgl
 
+## 0.9.24
+
+### Patch Changes
+
+-   e8490c95: Use stencil front & back in latest device api.
+-   Updated dependencies [e8490c95]
+    -   @antv/g-plugin-device-renderer@1.9.20
+
 ## 0.9.23
 
 ### Patch Changes

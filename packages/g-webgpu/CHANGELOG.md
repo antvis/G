@@ -1,5 +1,13 @@
 # @antv/g-webgpu
 
+## 1.9.23
+
+### Patch Changes
+
+-   e8490c95: Use stencil front & back in latest device api.
+-   Updated dependencies [e8490c95]
+    -   @antv/g-plugin-device-renderer@1.9.20
+
 ## 1.9.22
 
 ### Patch Changes
