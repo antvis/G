@@ -4,6 +4,7 @@ import * as DragDropEvent from '@antv/g-plugin-dragndrop';
 import * as MobileInteraction from '@antv/g-plugin-mobile-interaction';
 import * as SVGPicker from '@antv/g-plugin-svg-picker';
 import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
+import * as GesturePlugin from '@antv/g-plugin-gesture';
 import { isNil } from '@antv/util';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
@@ -27,14 +28,24 @@ export class Renderer extends AbstractRenderer {
     this.registerPlugin(new SVGPicker.Plugin());
     this.registerPlugin(
       new DragDropEvent.Plugin({
-        isDocumentDraggable: isNil(config?.isDocumentDraggable) ? true : config.isDocumentDraggable,
-        isDocumentDroppable: isNil(config?.isDocumentDroppable) ? true : config.isDocumentDroppable,
+        isDocumentDraggable: isNil(config?.isDocumentDraggable)
+          ? true
+          : config.isDocumentDraggable,
+        isDocumentDroppable: isNil(config?.isDocumentDroppable)
+          ? true
+          : config.isDocumentDroppable,
         dragstartDistanceThreshold: isNil(config?.dragstartDistanceThreshold)
           ? 10
           : config.dragstartDistanceThreshold,
         dragstartTimeThreshold: isNil(config?.dragstartTimeThreshold)
           ? 50
           : config.dragstartTimeThreshold,
+      }),
+    );
+
+    this.registerPlugin(
+      new GesturePlugin.Plugin({
+        isDocumentGestureEnabled: true,
       }),
     );
   }

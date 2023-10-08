@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-webgl",
-  "version": "0.9.22",
+  "version": "0.9.23",
   "description": "A renderer implemented by WebGL1/2 in mobile environment",
   "keywords": [
     "antv",
@@ -41,6 +41,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-device-renderer": "workspace:*",
     "@antv/g-plugin-dragndrop": "workspace:*",
+    "@antv/g-plugin-gesture": "workspace:*",
     "@antv/g-plugin-html-renderer": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/g-plugin-mobile-interaction": "workspace:*",
