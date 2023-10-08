@@ -105,8 +105,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     this.context = context;
-    const { renderingService, renderingContext } = context;
+    const { renderingService, renderingContext, config } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
+    config.disableRenderHooks = true;
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -251,6 +252,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       this.device.destroy();
       this.device.checkForLeaks();
+
+      config.disableRenderHooks = false;
     });
 
     /**
