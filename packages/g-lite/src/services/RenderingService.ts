@@ -176,7 +176,14 @@ export class RenderingService {
       renderingContext.dirtyRectangleRenderingDisabled =
         this.disableDirtyRectangleRendering();
 
-      if (!canvasConfig.disableRenderHooks) {
+      const onlyCameraChanged =
+        renderingContext.renderReasons.size === 1 &&
+        renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED);
+      const shouldTriggerRenderHooks =
+        !canvasConfig.disableRenderHooks ||
+        !(canvasConfig.disableRenderHooks && onlyCameraChanged);
+
+      if (shouldTriggerRenderHooks) {
         this.renderDisplayObject(
           renderingContext.root,
           canvasConfig,
@@ -186,7 +193,7 @@ export class RenderingService {
 
       this.hooks.beginFrame.call();
 
-      if (!canvasConfig.disableRenderHooks) {
+      if (shouldTriggerRenderHooks) {
         renderingContext.renderListCurrentFrame.forEach((object) => {
           this.hooks.beforeRender.call(object);
           this.hooks.render.call(object);
