@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.15
+
+### Patch Changes
+
+-   f109d836: Skip triggering render hooks when camera changed only.
+
 ## 1.2.14
 
 ### Patch Changes

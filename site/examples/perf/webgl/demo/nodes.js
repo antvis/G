@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle, Line, Text, runtime } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, Line, Group, runtime } from '@antv/g';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 import { Plugin } from '@antv/g-plugin-dragndrop';
 import Stats from 'stats.js';
@@ -10,8 +10,8 @@ import Stats from 'stats.js';
 
 runtime.enableCSSParsing = false;
 
-const NODE_NUM = 50000;
-const EDGE_NUM = 50000;
+const NODE_NUM = 5000;
+const EDGE_NUM = 5000;
 
 const webglRenderer = new WebGLRenderer();
 webglRenderer.registerPlugin(
@@ -25,7 +25,7 @@ webglRenderer.registerPlugin(
 
 const canvas = new Canvas({
   container: 'container',
-  width: 600,
+  width: 500,
   height: 500,
   renderer: webglRenderer,
 });
@@ -46,20 +46,60 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   ];
   let num = Math.floor(Math.sqrt(NODE_NUM) + 0.5);
 
+  const g1 = new Group({
+    style: {
+      zIndex: 2,
+    },
+  });
+  const g2 = new Group({
+    style: {
+      zIndex: 1,
+    },
+  });
+
   const sourceMap = new WeakMap();
   const targetMap = new WeakMap();
   for (let i = 0; i < NODE_NUM; i++) {
+    const fill = colors[Math.floor(Math.random() * colors.length) || 0];
     const circle = new Circle({
       style: {
-        cx: (i % num) * 10,
-        cy: Math.floor(i / num) * 10,
-        fill: colors[Math.floor(Math.random() * colors.length) || 0],
+        // cx: (i % num) * 10,
+        // cy: Math.floor(i / num) * 10,
+        cx: Math.random() * 500,
+        cy: Math.random() * 500,
+        fill,
         r: 4,
+        // draggable: true
       },
     });
     nodes.push(circle);
     sourceMap.set(circle, []);
+    targetMap.set(circle, []);
+
+    circle.addEventListener('mouseenter', () => {
+      circle.style.fill = 'red';
+    });
+    circle.addEventListener('mouseleave', () => {
+      circle.style.fill = fill;
+    });
+
+    // const text = new Text({
+    //   style: {
+    //     x: 0,
+    //     y: 4,
+    //     text: `${i}`,
+    //     textBaseline: "middle",
+    //     textAlign: "center",
+    //     fontSize: 4,
+    //     fill: "black"
+    //   }
+    // });
+    // circle.appendChild(text);
   }
+
+  nodes.forEach((node) => {
+    g1.appendChild(node);
+  });
 
   for (let i = 0; i < EDGE_NUM; i++) {
     const source = nodes[Math.floor(Math.random() * NODE_NUM)];
@@ -76,16 +116,22 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     });
 
     const sourceEdges = sourceMap.get(source);
-    // sourceEdges.push(line);
+    sourceEdges.push(line);
     const targetEdges = targetMap.get(target);
-    // targetEdges.push(line);
+    targetEdges.push(line);
 
-    canvas.appendChild(line);
+    g2.appendChild(line);
+
+    // line.addEventListener("mouseenter", () => {
+    //   line.style.stroke = "red";
+    // });
+    // line.addEventListener("mouseleave", () => {
+    //   line.style.stroke = "grey";
+    // });
   }
 
-  nodes.forEach((circle) => {
-    canvas.appendChild(circle);
-  });
+  canvas.appendChild(g1);
+  canvas.appendChild(g2);
 
   // stats
   const stats = new Stats();
@@ -126,8 +172,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   }
 
   canvas.addEventListener('dragstart', function (e) {
-    canvas.getConfig().disableHitTesting = true;
-
     if (e.target === canvas.document) {
     } else {
       const [x, y] = e.target.getPosition();
@@ -144,10 +188,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       moveAt(e.target, e.canvasX, e.canvasY);
     }
   });
-  canvas.addEventListener('dragend', function (e) {
-    console.log('dragend...');
-    canvas.getConfig().disableHitTesting = false;
-  });
 
   // handle mouse wheel event
   const bindWheelHandler = () => {
@@ -161,8 +201,6 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       .addEventListener(
         'wheel',
         (e) => {
-          canvas.getConfig().disableHitTesting = false;
-
           e.preventDefault();
           let zoom;
           if (e.deltaY < 0) {
