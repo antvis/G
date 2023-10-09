@@ -1,5 +1,12 @@
 # @antv/g-plugin-control
 
+## 1.9.15
+
+### Patch Changes
+
+-   Updated dependencies [f109d836]
+    -   @antv/g-lite@1.2.15
+
 ## 1.9.14
 
 ### Patch Changes
