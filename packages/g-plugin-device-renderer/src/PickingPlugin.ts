@@ -13,7 +13,7 @@ import {
   BlendMode,
   setAttachmentStateSimple,
   TransparentBlack,
-} from './platform';
+} from '@antv/g-device-api';
 import type { RenderHelper } from './render';
 import {
   AntialiasingMode,
@@ -309,7 +309,7 @@ export class PickingPlugin implements RenderingPlugin {
     // Push our outer template, which contains the dynamic UBO bindings...
     const template = this.renderHelper.pushTemplateRenderInst();
     // SceneParams: binding = 0, ObjectParams: binding = 1
-    template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
+    template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
     template.setMegaStateFlags(
       setAttachmentStateSimple(
         {

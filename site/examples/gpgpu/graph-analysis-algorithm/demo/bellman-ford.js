@@ -1,9 +1,5 @@
-import { Canvas, CanvasEvent } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 import { Algorithm } from '@antv/g6';
-
-const { BufferUsage } = DeviceRenderer;
 
 /**
  * SSSP(Bellman-Ford) ported from CUDA
@@ -25,7 +21,6 @@ const W = [9, 4, 10, 2, 3, 2, 11, 2, 2];
 const BLOCK_SIZE = 1;
 const BLOCKS = 5;
 
-const CANVAS_SIZE = 1;
 const MAX_DISTANCE = 10000;
 
 const $wrapper = document.getElementById('container');
@@ -34,23 +29,19 @@ $text.textContent =
   'Please open the devtools, the shortest paths will be printed in console.';
 $wrapper.appendChild($text);
 
-// use WebGPU
-const renderer = new Renderer();
-renderer.registerPlugin(new Plugin());
+const $canvas = document.createElement('canvas');
 
-// create a canvas
-const canvas = new Canvas({
-  container: $wrapper,
-  width: CANVAS_SIZE,
-  height: CANVAS_SIZE,
-  renderer,
-});
+(async () => {
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+  });
 
-canvas.addEventListener(CanvasEvent.READY, () => {
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
-  const kernel = new Kernel(device, {
-    computeShader: `
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
+
+  const relaxProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -85,10 +76,16 @@ fn main(
     }
   }
 }`,
+    },
+  });
+  const relaxPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: relaxProgram,
   });
 
-  const updateDistanceKernel = new Kernel(device, {
-    computeShader: `
+  const updateDistanceProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -109,10 +106,16 @@ fn main(
   }
 }
     `,
+    },
+  });
+  const updateDistancePipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: updateDistanceProgram,
   });
 
-  const updatePredKernel = new Kernel(device, {
-    computeShader: `
+  const updatePredProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<i32>,
 };
@@ -146,17 +149,13 @@ fn main(
   }
 }    
     `,
+    },
+  });
+  const updatePredPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: updatePredProgram,
   });
 
-  calcShortestPath(device, kernel, updateDistanceKernel, updatePredKernel);
-});
-
-const calcShortestPath = async (
-  device,
-  relaxKernel,
-  updateDistanceKernel,
-  updatePredKernel,
-) => {
   const VBuffer = device.createBuffer({
     usage: BufferUsage.STORAGE,
     viewOrSize: new Int32Array(V),
@@ -194,47 +193,115 @@ const calcShortestPath = async (
       ...new Array(V.length - 1).fill(MAX_DISTANCE),
     ]),
   });
-  const readback = device.createReadback();
+  const relaxBindings = device.createBindings({
+    pipeline: relaxPipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: EBuffer,
+      },
+      {
+        binding: 1,
+        buffer: IBuffer,
+      },
+      {
+        binding: 2,
+        buffer: WBuffer,
+      },
+      {
+        binding: 3,
+        buffer: DOutBuffer,
+      },
+      {
+        binding: 4,
+        buffer: DiOutBuffer,
+      },
+    ],
+  });
+  const updateDistanceBindings = device.createBindings({
+    pipeline: updateDistancePipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: DOutBuffer,
+      },
+      {
+        binding: 1,
+        buffer: DiOutBuffer,
+      },
+    ],
+  });
+  const updatePredBindings = device.createBindings({
+    pipeline: updatePredPipeline,
+    storageBufferBindings: [
+      {
+        binding: 0,
+        buffer: VBuffer,
+      },
+      {
+        binding: 1,
+        buffer: EBuffer,
+      },
+      {
+        binding: 2,
+        buffer: IBuffer,
+      },
+      {
+        binding: 3,
+        buffer: WBuffer,
+      },
+      {
+        binding: 4,
+        buffer: DOutBuffer,
+      },
+      {
+        binding: 5,
+        buffer: POutBuffer,
+      },
+    ],
+  });
 
-  relaxKernel.setBinding(0, EBuffer);
-  relaxKernel.setBinding(1, IBuffer);
-  relaxKernel.setBinding(2, WBuffer);
-  relaxKernel.setBinding(3, DOutBuffer);
-  relaxKernel.setBinding(4, DiOutBuffer);
+  const calcShortestPath = async () => {
+    const readback = device.createReadback();
+    const startTime = window.performance.now();
 
-  updateDistanceKernel.setBinding(0, DOutBuffer);
-  updateDistanceKernel.setBinding(1, DiOutBuffer);
+    for (let i = 1; i < V.length; i++) {
+      const relaxComputePass = device.createComputePass();
+      relaxComputePass.setPipeline(relaxPipeline);
+      relaxComputePass.setBindings(relaxBindings);
+      relaxComputePass.dispatchWorkgroups(1, 1);
+      device.submitPass(relaxComputePass);
 
-  updatePredKernel.setBinding(0, VBuffer);
-  updatePredKernel.setBinding(1, EBuffer);
-  updatePredKernel.setBinding(2, IBuffer);
-  updatePredKernel.setBinding(3, WBuffer);
-  updatePredKernel.setBinding(4, DOutBuffer);
-  updatePredKernel.setBinding(5, POutBuffer);
+      const updateDistancePass = device.createComputePass();
+      updateDistancePass.setPipeline(updateDistancePipeline);
+      updateDistancePass.setBindings(updateDistanceBindings);
+      updateDistancePass.dispatchWorkgroups(1, 1);
+      device.submitPass(updateDistancePass);
+    }
+    const updatePredPass = device.createComputePass();
+    updatePredPass.setPipeline(updatePredPipeline);
+    updatePredPass.setBindings(updatePredBindings);
+    updatePredPass.dispatchWorkgroups(1, 1);
+    device.submitPass(updatePredPass);
 
-  const startTime = window.performance.now();
+    // result
+    const out = await readback.readBuffer(DiOutBuffer);
+    const predecessor = await readback.readBuffer(POutBuffer);
 
-  for (let i = 1; i < V.length; i++) {
-    relaxKernel.dispatch(1, 1);
-    updateDistanceKernel.dispatch(1, 1);
-  }
-  updatePredKernel.dispatch(1, 1);
+    const labels = ['A', 'B', 'C', 'D', 'E'];
+    for (let i = 0; i < V.length; i++) {
+      console.log(
+        `from ${labels[0]} to ${labels[i]} = ${out[i]}, predecessor = ${
+          labels[predecessor[i]]
+        }`,
+      );
+    }
 
-  // result
-  const out = await readback.readBuffer(DiOutBuffer);
-  const predecessor = await readback.readBuffer(POutBuffer);
+    console.log(`GPU Time Elapsed: ${window.performance.now() - startTime}ms`);
+  };
 
-  const labels = ['A', 'B', 'C', 'D', 'E'];
-  for (let i = 0; i < V.length; i++) {
-    console.log(
-      `from ${labels[0]} to ${labels[i]} = ${out[i]}, predecessor = ${
-        labels[predecessor[i]]
-      }`,
-    );
-  }
-
-  console.log(`GPU Time Elapsed: ${window.performance.now() - startTime}ms`);
-};
+  calcShortestPath();
+})();
 
 const { findShortestPath } = Algorithm;
 const data = {

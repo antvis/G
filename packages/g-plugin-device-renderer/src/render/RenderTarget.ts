@@ -1,21 +1,19 @@
-import type { Device, Format, RenderTarget, Texture } from '../platform';
-import { TextureDimension, TextureUsage } from '../platform';
-import { assert } from '../platform/utils';
+import type { Device, Format, RenderTarget, Texture } from '@antv/g-device-api';
+import { assert, TextureDimension, TextureUsage } from '@antv/g-device-api';
 import type { RGRenderTargetDescription } from './RenderTargetDescription';
 
 export class RGRenderTarget {
   debugName: string;
 
   readonly dimension = TextureDimension.TEXTURE_2D;
-  readonly depth = 1;
-  readonly numLevels = 1;
+  readonly depthOrArrayLayers = 1;
+  readonly mipLevelCount = 1;
 
-  pixelFormat: Format;
+  format: Format;
   width = 0;
   height = 0;
   sampleCount = 0;
   usage: TextureUsage = TextureUsage.RENDER_TARGET;
-  immutable = true;
 
   needsClear = true;
   texture: Texture | null = null;
@@ -23,7 +21,7 @@ export class RGRenderTarget {
   age = 0;
 
   constructor(device: Device, desc: Readonly<RGRenderTargetDescription>) {
-    this.pixelFormat = desc.pixelFormat;
+    this.format = desc.format;
     this.width = desc.width;
     this.height = desc.height;
     this.sampleCount = desc.sampleCount;
@@ -50,7 +48,7 @@ export class RGRenderTarget {
 
   matchesDescription(desc: Readonly<RGRenderTargetDescription>): boolean {
     return (
-      this.pixelFormat === desc.pixelFormat &&
+      this.format === desc.format &&
       this.width === desc.width &&
       this.height === desc.height &&
       this.sampleCount === desc.sampleCount

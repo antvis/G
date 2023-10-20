@@ -8,7 +8,7 @@ import type {
   ParsedRectStyleProps,
 } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
-import { Format, VertexStepMode } from '../platform';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';
 import { enumToObject } from '../utils/enum';

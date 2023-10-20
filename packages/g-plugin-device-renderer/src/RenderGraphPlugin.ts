@@ -19,13 +19,13 @@ import {
   TextureDescriptor,
   TransparentBlack,
   TransparentWhite,
-} from './platform';
+} from '@antv/g-device-api';
 import {
   BlendFactor,
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
-} from './platform';
+} from '@antv/g-device-api';
 import type { RGGraphBuilder, RenderHelper } from './render';
 import {
   AntialiasingMode,
@@ -105,8 +105,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
   apply(context: RenderingPluginContext) {
     this.context = context;
-    const { renderingService, renderingContext } = context;
+    const { renderingService, renderingContext, config } = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
+    config.disableRenderHooks = true;
 
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
@@ -251,6 +252,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
       this.device.destroy();
       this.device.checkForLeaks();
+
+      config.disableRenderHooks = false;
     });
 
     /**
@@ -352,7 +355,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       // Push our outer template, which contains the dynamic UBO bindings...
       const template = this.renderHelper.pushTemplateRenderInst();
       // SceneParams: binding = 0, ObjectParams: binding = 1
-      template.setBindingLayouts([{ numUniformBuffers: 2, numSamplers: 0 }]);
+      template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
       template.setMegaStateFlags(
         setAttachmentStateSimple(
           {

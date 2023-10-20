@@ -12,18 +12,17 @@ import type { LightPool } from '../LightPool';
 import type { Fog } from '../lights';
 import type { Material } from '../materials';
 import { MaterialEvent, ShaderMaterial } from '../materials';
-import type { BindingLayoutSamplerDescriptor } from '../platform';
 import {
   ChannelWriteMask,
-  CompareMode,
+  CompareFunction,
   Format,
   makeTextureDescriptor2D,
-  MipFilterMode,
+  MipmapFilterMode,
   StencilOp,
-  TexFilterMode,
+  FilterMode,
   VertexStepMode,
-  WrapMode,
-} from '../platform';
+  AddressMode,
+} from '@antv/g-device-api';
 import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
 import {
   DeviceProgram,
@@ -127,7 +126,6 @@ export abstract class Instanced {
 
   private program: DeviceProgram = new DeviceProgram();
   geometryDirty = true;
-
   /**
    * the same material maybe shared between different canvases
    */
@@ -136,7 +134,6 @@ export abstract class Instanced {
    * texture mappings
    */
   protected textureMappings: TextureMapping[] = [];
-  protected samplerEntries: BindingLayoutSamplerDescriptor[];
 
   /**
    * Divisor of instanced array.
@@ -515,13 +512,25 @@ export abstract class Instanced {
         this.material.stencilWrite = true;
         // @see https://open.gl/depthstencils
         this.material.depthWrite = false;
-        this.material.stencilCompare = CompareMode.ALWAYS;
-        this.material.stencilPassOp = StencilOp.REPLACE;
+        this.material.stencilFront = {
+          compare: CompareFunction.ALWAYS,
+          passOp: StencilOp.REPLACE,
+        };
+        this.material.stencilBack = {
+          compare: CompareFunction.ALWAYS,
+          passOp: StencilOp.REPLACE,
+        };
       } else {
         this.material.stencilWrite = false;
         this.material.depthWrite = true;
-        this.material.stencilCompare = CompareMode.EQUAL;
-        this.material.stencilPassOp = StencilOp.KEEP;
+        this.material.stencilFront = {
+          compare: CompareFunction.EQUAL,
+          passOp: StencilOp.KEEP,
+        };
+        this.material.stencilBack = {
+          compare: CompareFunction.EQUAL,
+          passOp: StencilOp.KEEP,
+        };
       }
     } else {
       this.material.stencilWrite = false;
@@ -565,13 +574,13 @@ export abstract class Instanced {
             'Material Texture ' + key,
           );
           mapping.sampler = this.renderHelper.getCache().createSampler({
-            wrapS: WrapMode.CLAMP,
-            wrapT: WrapMode.CLAMP,
-            minFilter: TexFilterMode.POINT,
-            magFilter: TexFilterMode.BILINEAR,
-            mipFilter: MipFilterMode.LINEAR,
-            minLOD: 0,
-            maxLOD: 0,
+            addressModeU: AddressMode.CLAMP_TO_EDGE,
+            addressModeV: AddressMode.CLAMP_TO_EDGE,
+            minFilter: FilterMode.POINT,
+            magFilter: FilterMode.BILINEAR,
+            mipmapFilter: MipmapFilterMode.LINEAR,
+            lodMinClamp: 0,
+            lodMaxClamp: 0,
           });
 
           this.textureMappings.push(mapping);
@@ -659,11 +668,13 @@ export abstract class Instanced {
     renderInst.setProgram(program);
     renderInst.setVertexInput(
       inputLayout,
-      this.geometry.vertexBuffers.map((buffer) => ({
-        buffer,
-        byteOffset: 0,
-      })),
-      useIndexes ? { buffer: this.geometry.indexBuffer, byteOffset: 0 } : null,
+      this.geometry.vertexBuffers
+        .filter((b) => !!b)
+        .map((buffer) => ({
+          buffer,
+          byteOffset: 0,
+        })),
+      useIndexes ? { buffer: this.geometry.indexBuffer, offset: 0 } : null,
     );
 
     this.renderer.beforeUploadUBO(renderInst, this);
@@ -893,43 +904,36 @@ export abstract class Instanced {
     // need generate barycentric coordinates
     const indices = geometry.indices;
     const indiceNum = geometry.indices.length;
-
     const originalVertexBuffers = geometry.vertices.map((buffer) => {
       // @ts-ignore
       return buffer.slice();
     }) as ArrayBufferView[];
-
     for (
       let i = VertexAttributeBufferIndex.PICKING_COLOR;
       i < geometry.vertexBuffers.length;
       i++
     ) {
-      const { byteStride } =
+      const { arrayStride } =
         geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
-      geometry.vertices[i] = new Float32Array((byteStride / 4) * indiceNum);
+      geometry.vertices[i] = new Float32Array((arrayStride / 4) * indiceNum);
     }
-
     // reallocate attribute data
     let cursor = 0;
     const uniqueIndices = new Uint32Array(indiceNum);
     for (let i = 0; i < indiceNum; i++) {
       const ii = indices[i];
-
       for (let j = 1; j < geometry.vertices.length; j++) {
-        const { byteStride } =
+        const { arrayStride } =
           geometry.inputLayoutDescriptor.vertexBufferDescriptors[j];
-        const size = byteStride / 4;
-
+        const size = arrayStride / 4;
         for (let k = 0; k < size; k++) {
           geometry.vertices[j][cursor * size + k] =
             originalVertexBuffers[j][ii * size + k];
         }
       }
-
       uniqueIndices[i] = cursor;
       cursor++;
     }
-
     for (
       let i = VertexAttributeBufferIndex.PICKING_COLOR + 1;
       i < geometry.vertexBuffers.length;
@@ -938,21 +942,20 @@ export abstract class Instanced {
       // if (i === 3) {
       //   continue;
       // }
-
-      const { stepMode, byteStride } =
+      const { stepMode, arrayStride } =
         geometry.inputLayoutDescriptor.vertexBufferDescriptors[i];
-
       const descriptor =
-        geometry.inputLayoutDescriptor.vertexAttributeDescriptors.find(
-          ({ bufferIndex }) => bufferIndex === i,
-        );
+        geometry.inputLayoutDescriptor.vertexBufferDescriptors[i].attributes[0];
       if (descriptor) {
-        const { location, bufferIndex, bufferByteOffset, format, divisor } =
-          descriptor;
-
+        const {
+          shaderLocation: location,
+          offset: bufferByteOffset,
+          format,
+          divisor,
+        } = descriptor;
         geometry.setVertexBuffer({
-          bufferIndex,
-          byteStride,
+          bufferIndex: i,
+          byteStride: arrayStride,
           stepMode,
           attributes: [
             {
@@ -966,7 +969,6 @@ export abstract class Instanced {
         });
       }
     }
-
     // create barycentric attributes
     const barycentricBuffer = new Float32Array(indiceNum * 3);
     for (let i = 0; i < indiceNum; ) {
@@ -1056,9 +1058,9 @@ export abstract class Instanced {
     const {
       depthCompare,
       depthWrite,
-      stencilCompare,
+      stencilFront,
+      stencilBack,
       stencilWrite,
-      stencilPassOp,
       stencilRef,
       cullMode,
       frontFace,
@@ -1076,9 +1078,9 @@ export abstract class Instanced {
       blendConstant,
       depthCompare,
       depthWrite,
-      stencilCompare,
+      stencilFront,
+      stencilBack,
       stencilWrite,
-      stencilPassOp,
       stencilRef,
       cullMode,
       frontFace,
@@ -1117,13 +1119,10 @@ export abstract class Instanced {
       ...materialMegaState,
     });
 
-    renderInst.setBindingLayouts([
-      {
-        numUniformBuffers,
-        numSamplers: this.textureMappings.length,
-        samplerEntries: this.samplerEntries,
-      },
-    ]);
+    renderInst.setBindingLayout({
+      numUniformBuffers,
+      numSamplers: this.textureMappings.length,
+    });
 
     renderInst.setSamplerBindingsFromTextureMappings(this.textureMappings);
   }
@@ -1215,13 +1214,13 @@ export abstract class Instanced {
           'Fill Texture' + this.id,
         );
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
-          wrapS: WrapMode.CLAMP,
-          wrapT: WrapMode.CLAMP,
-          minFilter: TexFilterMode.POINT,
-          magFilter: TexFilterMode.BILINEAR,
-          mipFilter: MipFilterMode.LINEAR,
-          minLOD: 0,
-          maxLOD: 0,
+          addressModeU: AddressMode.CLAMP_TO_EDGE,
+          addressModeV: AddressMode.CLAMP_TO_EDGE,
+          minFilter: FilterMode.POINT,
+          magFilter: FilterMode.BILINEAR,
+          mipmapFilter: MipmapFilterMode.LINEAR,
+          lodMinClamp: 0,
+          lodMaxClamp: 0,
         });
 
         return fillMapping;

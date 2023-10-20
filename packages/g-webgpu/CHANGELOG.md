@@ -1,5 +1,51 @@
 # @antv/g-webgpu
 
+## 1.9.25
+
+### Patch Changes
+
+-   Updated dependencies [f109d836]
+    -   @antv/g-lite@1.2.15
+    -   @antv/g-plugin-device-renderer@1.9.22
+    -   @antv/g-plugin-dom-interaction@1.9.15
+    -   @antv/g-plugin-html-renderer@1.9.18
+    -   @antv/g-plugin-image-loader@1.3.15
+
+## 1.9.24
+
+### Patch Changes
+
+-   Updated dependencies [5e0de3dd]
+    -   @antv/g-plugin-device-renderer@1.9.21
+    -   @antv/g-lite@1.2.14
+    -   @antv/g-plugin-dom-interaction@1.9.14
+    -   @antv/g-plugin-html-renderer@1.9.17
+    -   @antv/g-plugin-image-loader@1.3.14
+
+## 1.9.23
+
+### Patch Changes
+
+-   e8490c95: Use stencil front & back in latest device api.
+-   Updated dependencies [e8490c95]
+    -   @antv/g-plugin-device-renderer@1.9.20
+
+## 1.9.22
+
+### Patch Changes
+
+-   Updated dependencies [7c3543dd]
+    -   @antv/g-plugin-device-renderer@1.9.19
+
+## 1.9.21
+
+### Patch Changes
+
+-   83195bb7: Use @antv/g-device-api.
+-   Updated dependencies [83195bb7]
+-   Updated dependencies [769480aa]
+    -   @antv/g-plugin-device-renderer@1.9.18
+
 ## 1.9.20
 
 ### Patch Changes

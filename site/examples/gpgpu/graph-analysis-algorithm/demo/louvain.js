@@ -1,9 +1,4 @@
-// import { Canvas, CanvasEvent } from '@antv/g';
-// import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-// import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
 import { Algorithm } from '@antv/g6';
-
-// const { BufferUsage } = DeviceRenderer;
 
 /**
  * Implementing Louvain Clustering Algorithms in CUDA

@@ -17,7 +17,7 @@ import {
 import { mat4 } from 'gl-matrix';
 import { arcToCubic } from '@antv/util';
 import earcut from 'earcut';
-import { Format, VertexStepMode } from '../platform';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
 import { enumToObject } from '../utils/enum';
@@ -569,7 +569,12 @@ export function updateBuffer(
     let x: number;
     let y: number;
 
-    if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
+    if (
+      markerStart &&
+      markerStart.parentNode &&
+      isDisplayObject(markerStart) &&
+      markerStartOffset
+    ) {
       const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
@@ -579,7 +584,12 @@ export function updateBuffer(
       startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
     }
 
-    if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
+    if (
+      markerEnd &&
+      markerEnd.parentNode &&
+      isDisplayObject(markerEnd) &&
+      markerEndOffset
+    ) {
       const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];

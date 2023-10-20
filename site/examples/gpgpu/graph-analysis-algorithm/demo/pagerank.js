@@ -1,9 +1,7 @@
-import { Canvas, CanvasEvent } from '@antv/g';
-import { Kernel, Plugin } from '@antv/g-plugin-gpgpu';
-import { DeviceRenderer, Renderer } from '@antv/g-webgpu';
+import { WebGPUDeviceContribution, BufferUsage } from '@antv/g-device-api';
 import { Algorithm } from '@antv/g6';
 
-const { BufferUsage } = DeviceRenderer;
+const $canvas = document.createElement('canvas');
 
 /**
  * Pagerank with power method, ported from CUDA
@@ -26,31 +24,23 @@ const To = [1, 2, 2, 3, 4, 3, 4, 1, 3];
 const BLOCK_SIZE = 1;
 const BLOCKS = 5;
 
-const CANVAS_SIZE = 1;
-
 const $wrapper = document.getElementById('container');
 const $text = document.createElement('div');
 $text.textContent =
   'Please open the devtools, the top nodes will be printed in console.';
 $wrapper.appendChild($text);
 
-// use WebGPU
-const renderer = new Renderer();
-renderer.registerPlugin(new Plugin());
+(async () => {
+  const deviceContributionWebGPU = new WebGPUDeviceContribution({
+    shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+  });
 
-// create a canvas
-const canvas = new Canvas({
-  container: $wrapper,
-  width: CANVAS_SIZE,
-  height: CANVAS_SIZE,
-  renderer,
-});
+  const swapChain = await deviceContributionWebGPU.createSwapChain($canvas);
+  const device = swapChain.getDevice();
 
-canvas.addEventListener(CanvasEvent.READY, () => {
-  const plugin = renderer.getPlugin('device-renderer');
-  const device = plugin.getDevice();
-  const storeKernel = new Kernel(device, {
-    computeShader: `
+  const storeProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<f32>,
 };
@@ -67,10 +57,16 @@ fn main(
     r_last.data[index] = r.data[index];
   }
 }`,
+    },
+  });
+  const storePipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: storeProgram,
   });
 
-  const matmulKernel = new Kernel(device, {
-    computeShader: `
+  const matmulProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<f32>,
 };
@@ -93,10 +89,16 @@ fn main(
   }
 }
     `,
+    },
+  });
+  const matmulPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: matmulProgram,
   });
 
-  const rankDiffKernel = new Kernel(device, {
-    computeShader: `
+  const rankDiffProgram = device.createProgram({
+    compute: {
+      wgsl: `
 struct Buffer {
   data: array<f32>,
 };
@@ -114,88 +116,134 @@ fn main(
   }
 }    
     `,
+    },
+  });
+  const rankDiffPipeline = device.createComputePipeline({
+    inputLayout: null,
+    program: rankDiffProgram,
   });
 
-  pageRankGPU(device, storeKernel, matmulKernel, rankDiffKernel);
-});
+  const pageRankGPU = async () => {
+    const d = 0.85;
+    const eps = 0.000001;
+    let maxIteration = 1000;
+    const n = V.length;
+    const graph = new Float32Array(new Array(n * n).fill((1 - d) / n));
+    const r = new Float32Array(new Array(n).fill(1 / n));
 
-const pageRankGPU = async (
-  device,
-  storeKernel,
-  matmulKernel,
-  rankDiffKernel,
-) => {
-  const d = 0.85;
-  const eps = 0.000001;
-  let maxIteration = 1000;
-  const n = V.length;
-  const graph = new Float32Array(new Array(n * n).fill((1 - d) / n));
-  const r = new Float32Array(new Array(n).fill(1 / n));
+    From.forEach((from, i) => {
+      graph[To[i] * n + from] += d * 1.0;
+    });
 
-  From.forEach((from, i) => {
-    graph[To[i] * n + from] += d * 1.0;
-  });
+    for (let j = 0; j < n; j++) {
+      let sum = 0.0;
 
-  for (let j = 0; j < n; j++) {
-    let sum = 0.0;
+      for (let i = 0; i < n; ++i) {
+        sum += graph[i * n + j];
+      }
 
-    for (let i = 0; i < n; ++i) {
-      sum += graph[i * n + j];
-    }
-
-    for (let i = 0; i < n; ++i) {
-      if (sum != 0.0) {
-        graph[i * n + j] /= sum;
-      } else {
-        graph[i * n + j] = 1 / n;
+      for (let i = 0; i < n; ++i) {
+        if (sum != 0.0) {
+          graph[i * n + j] /= sum;
+        } else {
+          graph[i * n + j] = 1 / n;
+        }
       }
     }
-  }
 
-  const rBuffer = device.createBuffer({
-    usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
-    viewOrSize: new Float32Array(r),
-  });
-  const rLastBuffer = device.createBuffer({
-    usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
-    viewOrSize: new Float32Array(n),
-  });
-  const graphBuffer = device.createBuffer({
-    usage: BufferUsage.STORAGE,
-    viewOrSize: new Float32Array(graph),
-  });
+    const rBuffer = device.createBuffer({
+      usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
+      viewOrSize: new Float32Array(r),
+    });
+    const rLastBuffer = device.createBuffer({
+      usage: BufferUsage.STORAGE | BufferUsage.COPY_SRC,
+      viewOrSize: new Float32Array(n),
+    });
+    const graphBuffer = device.createBuffer({
+      usage: BufferUsage.STORAGE,
+      viewOrSize: new Float32Array(graph),
+    });
 
-  const readback = device.createReadback();
+    const storeBindings = device.createBindings({
+      pipeline: storePipeline,
+      storageBufferBindings: [
+        {
+          binding: 0,
+          buffer: rBuffer,
+        },
+        {
+          binding: 1,
+          buffer: rLastBuffer,
+        },
+      ],
+    });
+    const matmulBindings = device.createBindings({
+      pipeline: matmulPipeline,
+      storageBufferBindings: [
+        {
+          binding: 0,
+          buffer: graphBuffer,
+        },
+        {
+          binding: 1,
+          buffer: rBuffer,
+        },
+        {
+          binding: 2,
+          buffer: rLastBuffer,
+        },
+      ],
+    });
+    const rankDiffBindings = device.createBindings({
+      pipeline: rankDiffPipeline,
+      storageBufferBindings: [
+        {
+          binding: 0,
+          buffer: rBuffer,
+        },
+        {
+          binding: 1,
+          buffer: rLastBuffer,
+        },
+      ],
+    });
 
-  storeKernel.setBinding(0, rBuffer);
-  storeKernel.setBinding(1, rLastBuffer);
+    const readback = device.createReadback();
 
-  matmulKernel.setBinding(0, graphBuffer);
-  matmulKernel.setBinding(1, rBuffer);
-  matmulKernel.setBinding(2, rLastBuffer);
+    const startTime = window.performance.now();
+    while (maxIteration--) {
+      const storeComputePass = device.createComputePass();
+      storeComputePass.setPipeline(storePipeline);
+      storeComputePass.setBindings(storeBindings);
+      storeComputePass.dispatchWorkgroups(1, 1);
+      device.submitPass(storeComputePass);
 
-  rankDiffKernel.setBinding(0, rBuffer);
-  rankDiffKernel.setBinding(1, rLastBuffer);
+      const matmulComputePass = device.createComputePass();
+      matmulComputePass.setPipeline(matmulPipeline);
+      matmulComputePass.setBindings(matmulBindings);
+      matmulComputePass.dispatchWorkgroups(1, 1);
+      device.submitPass(matmulComputePass);
 
-  const startTime = window.performance.now();
-  while (maxIteration--) {
-    storeKernel.dispatch(1, 1);
+      const rankDiffComputePass = device.createComputePass();
+      rankDiffComputePass.setPipeline(rankDiffPipeline);
+      rankDiffComputePass.setBindings(rankDiffBindings);
+      rankDiffComputePass.dispatchWorkgroups(1, 1);
+      device.submitPass(rankDiffComputePass);
 
-    matmulKernel.dispatch(1, 1);
-
-    rankDiffKernel.dispatch(1, 1);
-
-    const last = await readback.readBuffer(rLastBuffer);
-    const result = last.reduce((prev, cur) => prev + cur, 0);
-    if (result < eps) {
-      const out = await readback.readBuffer(rBuffer);
-      console.log(out);
-      break;
+      const last = await readback.readBuffer(rLastBuffer);
+      const result = last.reduce((prev, cur) => prev + cur, 0);
+      if (result < eps) {
+        const out = await readback.readBuffer(rBuffer);
+        console.log(out);
+        break;
+      }
     }
-  }
 
-  console.log(`GPU Time Elapsed: ${window.performance.now() - startTime}ms`);
-};
+    console.log(`GPU Time Elapsed: ${window.performance.now() - startTime}ms`);
+  };
+
+  pageRankGPU();
+})();
 
 const { pageRank } = Algorithm;
 const data = {

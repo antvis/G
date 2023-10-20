@@ -1,5 +1,35 @@
 # @antv/g-mobile-svg
 
+## 0.10.18
+
+### Patch Changes
+
+-   Updated dependencies [f109d836]
+    -   @antv/g-lite@1.2.15
+    -   @antv/g-plugin-dragndrop@1.8.15
+    -   @antv/g-plugin-gesture@1.2.3
+    -   @antv/g-plugin-mobile-interaction@0.9.15
+    -   @antv/g-plugin-svg-picker@1.9.17
+    -   @antv/g-plugin-svg-renderer@1.10.17
+
+## 0.10.17
+
+### Patch Changes
+
+-   Updated dependencies [5e0de3dd]
+    -   @antv/g-lite@1.2.14
+    -   @antv/g-plugin-dragndrop@1.8.14
+    -   @antv/g-plugin-gesture@1.2.2
+    -   @antv/g-plugin-mobile-interaction@0.9.14
+    -   @antv/g-plugin-svg-picker@1.9.16
+    -   @antv/g-plugin-svg-renderer@1.10.16
+
+## 0.10.16
+
+### Patch Changes
+
+-   ef3ef11b: Use gesture plugin in mobile SVG & WebGL renderers.
+
 ## 0.10.15
 
 ### Patch Changes

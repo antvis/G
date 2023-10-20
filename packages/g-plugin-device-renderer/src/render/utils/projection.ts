@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import { ClipSpaceNearZ } from '../../platform';
+import { ClipSpaceNearZ } from '@antv/g-device-api';
 
 const mtxOpenGLFromD3D = mat4.fromValues(
   1,

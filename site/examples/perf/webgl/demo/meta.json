@@ -117,6 +117,14 @@
         "en": "A large graph with 5.5w nodes"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*dwS2Rb3mq5IAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "nodes.js",
+      "title": {
+        "zh": "大量直线",
+        "en": "Instanced Lines"
+      },
+      "screenshot": "https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*GNRuTqpp6BAAAAAAAAAAAAAADmJ7AQ/original"
     }
   ]
 }

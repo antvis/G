@@ -1,4 +1,4 @@
-import type { Device } from '@antv/g-plugin-device-renderer';
+import type { Device } from '@antv/g-device-api';
 import { ProceduralGeometry } from './ProceduralGeometry';
 import { createConeData } from './util';
 

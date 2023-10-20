@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@antv/g-components": "^1.9.1",
+    "@antv/g-device-api": "^1.3.0",
     "@antv/g-lite": "^1.2.12",
     "@antv/g-mobile-webgl": "^0.9.1",
     "@antv/g-plugin-a11y": "^0.6.7",

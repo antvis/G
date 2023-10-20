@@ -3,10 +3,10 @@ import type {
   RenderingPluginContext,
   Shape,
 } from '@antv/g-lite';
+import type { Device } from '@antv/g-device-api';
 import type { Renderable3D } from '../components/Renderable3D';
 import type { LightPool } from '../LightPool';
 import type { Instanced } from '../drawcalls/Instanced';
-import type { Device } from '../platform';
 import type { RenderInstList, RenderHelper } from '../render';
 import type { TexturePool } from '../TexturePool';
 import type { Batch } from './Batch';

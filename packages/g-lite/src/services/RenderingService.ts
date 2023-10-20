@@ -172,19 +172,34 @@ export class RenderingService {
     this.globalRuntime.sceneGraphService.triggerPendingEvents();
 
     if (renderingContext.renderReasons.size && this.inited) {
-      this.renderDisplayObject(
-        renderingContext.root,
-        canvasConfig,
-        renderingContext,
-      );
+      // @ts-ignore
+      renderingContext.dirtyRectangleRenderingDisabled =
+        this.disableDirtyRectangleRendering();
+
+      const onlyCameraChanged =
+        renderingContext.renderReasons.size === 1 &&
+        renderingContext.renderReasons.has(RenderReason.CAMERA_CHANGED);
+      const shouldTriggerRenderHooks =
+        !canvasConfig.disableRenderHooks ||
+        !(canvasConfig.disableRenderHooks && onlyCameraChanged);
+
+      if (shouldTriggerRenderHooks) {
+        this.renderDisplayObject(
+          renderingContext.root,
+          canvasConfig,
+          renderingContext,
+        );
+      }
 
       this.hooks.beginFrame.call();
 
-      renderingContext.renderListCurrentFrame.forEach((object) => {
-        this.hooks.beforeRender.call(object);
-        this.hooks.render.call(object);
-        this.hooks.afterRender.call(object);
-      });
+      if (shouldTriggerRenderHooks) {
+        renderingContext.renderListCurrentFrame.forEach((object) => {
+          this.hooks.beforeRender.call(object);
+          this.hooks.render.call(object);
+          this.hooks.afterRender.call(object);
+        });
+      }
 
       this.hooks.endFrame.call();
       renderingContext.renderListCurrentFrame = [];
@@ -212,9 +227,14 @@ export class RenderingService {
     // TODO: relayout
 
     // dirtycheck first
+    const renderable = displayObject.renderable;
     const objectChanged = enableDirtyCheck
-      ? this.hooks.dirtycheck.call(displayObject)
+      ? // @ts-ignore
+        renderable.dirty || renderingContext.dirtyRectangleRenderingDisabled
+        ? displayObject
+        : null
       : displayObject;
+
     if (objectChanged) {
       const objectToRender = enableCulling
         ? this.hooks.cull.call(objectChanged, this.context.camera)
