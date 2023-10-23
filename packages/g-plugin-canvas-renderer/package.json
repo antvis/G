@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-renderer",
-  "version": "1.9.16",
+  "version": "1.9.17",
   "description": "A G plugin of renderer implementation with Canvas2D API",
   "keywords": [
     "antv",

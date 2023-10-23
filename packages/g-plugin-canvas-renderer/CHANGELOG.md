@@ -1,5 +1,11 @@
 # @antv/g-plugin-canvas-renderer
 
+## 1.9.17
+
+### Patch Changes
+
+-   c6f9a9e1: fix: 小程序不存在 Node 对象
+
 ## 1.9.16
 
 ### Patch Changes
