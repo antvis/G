@@ -1,5 +1,13 @@
 # @antv/g-canvaskit
 
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [c6f9a9e1]
+    -   @antv/g-plugin-canvaskit-renderer@1.3.16
+    -   @antv/g-plugin-canvas-picker@1.10.17
+
 ## 0.10.19
 
 ### Patch Changes
