@@ -1,5 +1,11 @@
 # @antv/g-plugin-canvaskit-renderer
 
+## 1.3.16
+
+### Patch Changes
+
+-   c6f9a9e1: fix: 小程序不存在 Node 对象
+
 ## 1.3.15
 
 ### Patch Changes
