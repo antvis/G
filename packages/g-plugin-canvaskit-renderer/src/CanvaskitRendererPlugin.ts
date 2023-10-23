@@ -28,6 +28,7 @@ import {
   parseTransform,
   parsedTransformToMat4,
   rad2deg,
+  Node,
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil, isString } from '@antv/util';

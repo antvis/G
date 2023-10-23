@@ -17,6 +17,7 @@ import {
   CustomEvent,
   ElementEvent,
   Shape,
+  Node,
 } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { isNil } from '@antv/util';
