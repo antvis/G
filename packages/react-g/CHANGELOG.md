@@ -1,5 +1,11 @@
 # @antv/react-g
 
+## 1.10.18
+
+### Patch Changes
+
+-   @antv/g@5.18.17
+
 ## 1.10.17
 
 ### Patch Changes

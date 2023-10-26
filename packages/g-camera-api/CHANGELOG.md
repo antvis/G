@@ -1,5 +1,11 @@
 # @antv/g-camera-api
 
+## 1.2.16
+
+### Patch Changes
+
+-   d2ed3d6d: Add onframe param in gotoLandmark.
+
 ## 1.2.15
 
 ### Patch Changes
