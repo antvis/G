@@ -1,5 +1,12 @@
 # @antv/g
 
+## 5.18.17
+
+### Patch Changes
+
+-   Updated dependencies [d2ed3d6d]
+    -   @antv/g-camera-api@1.2.16
+
 ## 5.18.16
 
 ### Patch Changes

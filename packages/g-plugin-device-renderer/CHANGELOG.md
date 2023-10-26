@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.23
+
+### Patch Changes
+
+-   d2ed3d6d: Add onframe param in gotoLandmark.
+
 ## 1.9.22
 
 ### Patch Changes
