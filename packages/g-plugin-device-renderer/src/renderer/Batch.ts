@@ -5,7 +5,7 @@ import type { RenderInst } from '../render/RenderInst';
 /**
  * render order start from 0, our default camera's Z is 500
  */
-export const RENDER_ORDER_SCALE = 1 / 200;
+export const RENDER_ORDER_SCALE = 500 / 1000000;
 
 /**
  * A container for multiple display objects with the same `style`,

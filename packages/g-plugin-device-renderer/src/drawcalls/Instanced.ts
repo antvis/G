@@ -711,6 +711,10 @@ export abstract class Instanced {
     name: string,
     value: any,
   ) {
+    if (objects.length === 0) {
+      return;
+    }
+
     const stylePacked = [
       'opacity',
       'fillOpacity',
