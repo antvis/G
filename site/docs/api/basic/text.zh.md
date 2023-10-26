@@ -310,7 +310,7 @@ interface Rectangle {
 }
 ```
 
-在[示例](/zh/examples/shape#text)中，我们绘制出了多行文本中每一行的包围盒，可以根据包围盒信息实现例如下划线、删除线等高级文本特性：
+在[示例](/zh/examples/shape/text#text)中，我们绘制出了多行文本中每一行的包围盒，可以根据包围盒信息实现例如下划线、删除线等高级文本特性：
 
 ![getLineBoundingRects](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
 
