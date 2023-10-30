@@ -24,6 +24,13 @@
         "zh": "ReactG",
         "en": "ReactG"
       }
+    },
+    {
+      "filename": "react-g-render.js",
+      "title": {
+        "zh": "ReactG 渲染到任意 G 的图形",
+        "en": "ReactG render to any element from G"
+      }
     }
   ]
 }
