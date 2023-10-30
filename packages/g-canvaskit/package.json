@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvaskit",
-  "version": "0.10.20",
+  "version": "0.10.21",
   "description": "A renderer implemented by CanvasKit",
   "keywords": [
     "antv",
