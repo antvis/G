@@ -156,13 +156,14 @@ export class Polygon extends DisplayObject<
       markerEnd,
       markerStartOffset,
       markerEndOffset,
-      points: { points },
+      points: P,
       defX,
       defY,
     } = this.parsedStyle;
+    const { points } = P || {};
     const marker = isStart ? markerStart : markerEnd;
 
-    if (!marker || !isDisplayObject(marker)) {
+    if (!marker || !isDisplayObject(marker) || !points) {
       return;
     }
 
@@ -208,11 +209,8 @@ export class Polygon extends DisplayObject<
   }
 
   private placeMarkerMid(marker: DisplayObject) {
-    const {
-      points: { points },
-      defX,
-      defY,
-    } = this.parsedStyle;
+    const { points: P, defX, defY } = this.parsedStyle;
+    const { points } = P || {};
 
     // clear all existed markers
     this.markerMidList.forEach((marker) => {
@@ -220,7 +218,7 @@ export class Polygon extends DisplayObject<
     });
     this.markerMidList = [];
 
-    if (marker && isDisplayObject(marker)) {
+    if (marker && isDisplayObject(marker) && points) {
       for (
         let i = 1;
         i < (this.parsedStyle.isClosed ? points.length : points.length - 1);

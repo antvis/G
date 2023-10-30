@@ -1,5 +1,5 @@
 import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
-import { Canvas, Group, Text } from '../../../packages/g/src';
+import { Canvas, Group, Rect, Text } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -249,4 +249,33 @@ describe('Text', () => {
     text.style.wordWrap = false;
     expect(text.isOverflowing()).toBe(false);
   });
+
+  // it.only('should calc global bounds correctly', async () => {
+  //   await canvas.ready;
+
+  //   const group = new Group();
+  //   const rect = new Rect({
+  //     style: {
+  //       width: 50,
+  //       height: 50,
+  //       stroke: 'black',
+  //       lineWidth: 2,
+  //       fill: 'red',
+  //     },
+  //   });
+  //   const text = new Text({
+  //     style: {
+  //       text: '这是测试文本This is text',
+  //       fontSize: 60,
+  //       fill: '#1890FF',
+  //     },
+  //   });
+
+  //   rect.appendChild(text);
+
+  //   group.appendChild(rect);
+  //   canvas.appendChild(group);
+
+  //   console.log(text);
+  // });
 });

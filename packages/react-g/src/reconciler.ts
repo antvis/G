@@ -58,8 +58,10 @@ export const reconcilor = ReactReconciler<
     hostContext: HostContext,
     internalInstanceHandle: OpaqueHandle,
   ): Instance {
-    const canvas = rootContainerInstance as unknown as Canvas;
-    const instance = canvas.document.createElement(type, {
+    const instance = (
+      (rootContainerInstance as unknown as Canvas).document ||
+      rootContainerInstance.ownerDocument
+    ).createElement(type, {
       style: props,
     }) as unknown as Element;
     // @ts-ignore

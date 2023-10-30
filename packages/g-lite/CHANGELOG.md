@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.16
+
+### Patch Changes
+
+-   7e3dbd76: Removing points attribute from polyline & polygon won't throw error now.
+
 ## 1.2.15
 
 ### Patch Changes
