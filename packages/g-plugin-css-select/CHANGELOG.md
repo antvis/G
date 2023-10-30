@@ -1,5 +1,12 @@
 # @antv/g-plugin-css-select
 
+## 1.9.16
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+
 ## 1.9.15
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @antv/react-g
 
+## 1.10.19
+
+### Patch Changes
+
+-   08d08128: Use ownerDocument to createElement later in element.
+    -   @antv/g@5.18.18
+
 ## 1.10.18
 
 ### Patch Changes
