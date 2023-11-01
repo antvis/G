@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.17
+
+### Patch Changes
+
+-   51b42d06: Use correct position when insertBefore.
+
 ## 1.2.16
 
 ### Patch Changes
