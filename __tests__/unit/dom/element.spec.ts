@@ -130,6 +130,64 @@ describe('DOM Element API', () => {
     expect(group1.lastChild).toBe(group3);
   });
 
+  it('should insertBefore correctly', () => {
+    const group1 = new Element();
+    const group2 = new Element();
+    const group3 = new Element();
+    const group4 = new Element();
+    const group5 = new Element();
+
+    // 2, 4, 3
+    group1.append(group2, group3);
+    group1.insertBefore(group4, group3);
+    expect(group1.childNodes.length).toBe(3);
+    expect(group1.firstChild).toBe(group2);
+    expect(group1.childNodes[1]).toBe(group4);
+    expect(group1.lastChild).toBe(group3);
+    group1.removeChildren();
+    expect(group1.childNodes.length).toBe(0);
+
+    // 4, 2, 3
+    group1.append(group2, group3);
+    group1.insertBefore(group4, group2);
+    expect(group1.childNodes.length).toBe(3);
+    expect(group1.firstChild).toBe(group4);
+    expect(group1.childNodes[1]).toBe(group2);
+    expect(group1.lastChild).toBe(group3);
+    group1.removeChildren();
+    expect(group1.childNodes.length).toBe(0);
+
+    // 2, 3, 4 -> 2, 4, 3
+    group1.append(group2, group3, group4);
+    group1.insertBefore(group4, group3);
+    expect(group1.childNodes.length).toBe(3);
+    expect(group1.firstChild).toBe(group2);
+    expect(group1.childNodes[1]).toBe(group4);
+    expect(group1.lastChild).toBe(group3);
+    group1.removeChildren();
+    expect(group1.childNodes.length).toBe(0);
+
+    // 2, 3, 4
+    group1.append(group2, group3);
+    group1.insertBefore(group4, null);
+    expect(group1.childNodes.length).toBe(3);
+    expect(group1.firstChild).toBe(group2);
+    expect(group1.childNodes[1]).toBe(group3);
+    expect(group1.lastChild).toBe(group4);
+    group1.removeChildren();
+    expect(group1.childNodes.length).toBe(0);
+
+    // 2, 3, 4
+    group1.append(group2, group3);
+    group1.insertBefore(group4, group5); // non-existed node
+    expect(group1.childNodes.length).toBe(3);
+    expect(group1.firstChild).toBe(group2);
+    expect(group1.childNodes[1]).toBe(group3);
+    expect(group1.lastChild).toBe(group4);
+    group1.removeChildren();
+    expect(group1.childNodes.length).toBe(0);
+  });
+
   it('should replaceWith correctly', () => {
     const group1 = new Element();
     const group2 = new Element();
