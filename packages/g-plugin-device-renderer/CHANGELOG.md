@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.26
+
+### Patch Changes
+
+-   a5adc20f: Check buffer descriptor before updating vertex buffer.
+
 ## 1.9.25
 
 ### Patch Changes
