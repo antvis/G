@@ -19,8 +19,13 @@ import { createSVGElement } from '../../utils/dom';
 import { FILTER_PREFIX } from './Filter';
 
 export const PATTERN_PREFIX = 'g-pattern-';
-const cacheKey2IDMap: Record<string, string> = {};
+let cacheKey2IDMap: Record<string, string> = {};
 let counter = 0;
+
+export function resetPatternCounter() {
+  counter = 0;
+  cacheKey2IDMap = {};
+}
 
 export function createOrUpdateGradientAndPattern(
   document: Document,
