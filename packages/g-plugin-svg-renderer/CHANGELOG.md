@@ -1,5 +1,11 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.20
+
+### Patch Changes
+
+-   a5adc20f: Reset pattern counter in svg renderer when destroyed.
+
 ## 1.10.19
 
 ### Patch Changes
