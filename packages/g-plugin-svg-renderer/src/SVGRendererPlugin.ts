@@ -703,8 +703,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
   ) {
     const svgElement = (object as any).elementSVG as ElementSVG;
     let $hitTestingEl = svgElement.$hitTestingEl;
-    const increasedLineWidthForHitTesting =
-      object.parsedStyle.increasedLineWidthForHitTesting;
+    const increasedLineWidthForHitTesting = Number(
+      object.parsedStyle.increasedLineWidthForHitTesting,
+    );
 
     // account for hitArea
     if (increasedLineWidthForHitTesting) {

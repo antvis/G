@@ -1,5 +1,11 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.21
+
+### Patch Changes
+
+-   6ce927fa: Avoid generating redundant dom structure for document element.
+
 ## 1.10.20
 
 ### Patch Changes
