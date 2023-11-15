@@ -80,10 +80,11 @@ export class SDFDrawcall extends Instanced {
       const size = this.getSize(object.parsedStyle, circle.nodeName);
       instanced.push(
         ...size,
+        circle.parsedStyle.isBillboard ? 1 : 0,
+        circle.parsedStyle.isSizeAttenuation ? 1 : 0,
         SDF_Shape.indexOf(circle.nodeName),
         (radius && radius[0]) || 0,
         omitStroke ? 1 : 0,
-        circle.parsedStyle.isBillboard ? 1 : 0,
       );
     });
 
@@ -111,18 +112,18 @@ export class SDFDrawcall extends Instanced {
     });
     this.geometry.setVertexBuffer({
       bufferIndex: SDFVertexAttributeBufferIndex.PACKED_STYLE,
-      byteStride: 4 * 6,
+      byteStride: 4 * 7,
       stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
-          format: Format.F32_RG,
+          format: Format.F32_RGBA,
           bufferByteOffset: 4 * 0,
           location: SDFVertexAttributeLocation.SIZE,
           divisor: 1,
         },
         {
-          format: Format.F32_RGBA,
-          bufferByteOffset: 4 * 2,
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 4,
           location: SDFVertexAttributeLocation.PACKED_STYLE3,
           divisor: 1,
         },
@@ -152,7 +153,8 @@ export class SDFDrawcall extends Instanced {
       name === 'lineDash' ||
       name === 'strokeOpacity' ||
       name === 'radius' ||
-      name === 'isBillboard'
+      name === 'isBillboard' ||
+      name === 'isSizeAttenuation'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
@@ -166,10 +168,11 @@ export class SDFDrawcall extends Instanced {
         const size = [halfWidth, halfHeight];
         packed.push(
           ...size,
+          circle.parsedStyle.isBillboard ? 1 : 0,
+          circle.parsedStyle.isSizeAttenuation ? 1 : 0,
           SDF_Shape.indexOf(object.nodeName),
           (object.parsedStyle.radius && object.parsedStyle.radius[0]) || 0,
           omitStroke ? 1 : 0,
-          circle.parsedStyle.isBillboard ? 1 : 0,
         );
       });
       this.geometry.updateVertexBuffer(

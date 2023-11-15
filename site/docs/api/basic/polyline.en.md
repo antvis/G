@@ -239,7 +239,6 @@ const polyline = new Polyline({
         lineWidth: 10,
         lineCap: 'round',
         lineJoin: 'round',
-        isBillboard: true,
         points: [
             [50, 50, 0],
             [100, 50, 100],
@@ -254,6 +253,6 @@ const polyline = new Polyline({
 });
 ```
 
-[Example](/en/examples/3d/3d-basic/#billboard):
-
 ![3D polyline](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*-ZNXQIWU2SkAAAAAAAAAAAAADmJ7AQ/original)
+
+[Example](/en/examples/3d/3d-basic/#billboard)

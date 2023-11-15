@@ -8,6 +8,7 @@ in vec4 v_Dash;
 in vec2 v_Distance;
 
 out vec4 outputColor;
+float epsilon = 0.000001;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
@@ -38,5 +39,9 @@ void main() {
       * blur
       * u_Opacity * u_StrokeOpacity
       * (u_dash_array < 1.0 ? (ceil((u_dash_array * u_dash_ratio) - mod(v_Dash.x + u_dash_offset, u_dash_array))) : 1.0);
+
+    if (outputColor.a < epsilon) {
+      discard;
+    }
   }
 }

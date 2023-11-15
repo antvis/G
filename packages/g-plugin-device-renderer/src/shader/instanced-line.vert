@@ -16,10 +16,6 @@ layout(location = DASH) in vec4 a_Dash;
 out vec4 v_Dash;
 out vec2 v_Distance;
 
-bool isPerspectiveMatrix(mat4 m) {
-  return m[ 2 ][ 3 ] == - 1.0;
-}
-
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.vert')
   #pragma glslify: import('@antv/g-shader-components/uv.vert')
@@ -32,9 +28,8 @@ void main() {
   }
   float clampedStrokeWidth = max(strokeWidth, 1.0);
 
-  float isBillboard = a_Dash.w;
-  if (isBillboard > 0.5) {
-    // clip space
+  bool isSizeAttenuation = a_Dash.w > 0.5;
+  if (isSizeAttenuation) {
     vec4 clip0 = project(vec4(a_PointA, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
     vec4 clip1 = project(vec4(a_PointB, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
     // screen space

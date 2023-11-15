@@ -15,7 +15,7 @@ import {
   convertToPath,
 } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
-import { arcToCubic } from '@antv/util';
+import { arcToCubic, isNil } from '@antv/util';
 import earcut from 'earcut';
 import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/line.frag';
@@ -32,6 +32,7 @@ import { LightPool } from '../LightPool';
 import { bezierCurveTo, quadCurveTo } from '../utils';
 import { InstancedFillDrawcall } from './InstancedFill';
 import { BatchContext } from '../renderer';
+import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 
 enum LineVertexAttributeBufferIndex {
   PACKED = VertexAttributeBufferIndex.POSITION + 1,
@@ -52,6 +53,22 @@ enum LineVertexAttributeLocation {
 }
 
 const SEGMENT_NUM = 12;
+
+function packBoolean(a: boolean, b: boolean, c: boolean) {
+  return (a ? 1 : 0) * 4 + (b ? 1 : 0) * 2 + (c ? 1 : 0);
+}
+
+function is3DPolyline(object: DisplayObject) {
+  const isPolyline = object.nodeName === Shape.POLYLINE;
+  if (!isPolyline) {
+    return false;
+  }
+  // Polyline supports 3 dimensions so that each point is shaped like [x, y, z].
+  const polylineControlPoints = (object as Polyline).parsedStyle.points.points;
+  const length = polylineControlPoints.length;
+
+  return length && !isNil(polylineControlPoints[0][2]);
+}
 
 /**
  * Used for Curve only contains 2 commands, e.g. [[M], [C | Q | A]]
@@ -161,14 +178,15 @@ export class InstancedPathDrawcall extends Instanced {
         this.calcSubpathIndex(object),
       );
 
-      const { lineDash, lineDashOffset, isBillboard } = (object as Path)
-        .parsedStyle;
+      const { lineDash, lineDashOffset, isBillboard, isSizeAttenuation } = (
+        object as Path
+      ).parsedStyle;
 
       packedDash.push(
         (lineDash && lineDash[0]) || 0, // DASH
         (lineDash && lineDash[1]) || 0, // GAP
         lineDashOffset || 0,
-        isBillboard ? 1 : 0,
+        packBoolean(isBillboard, isSizeAttenuation, is3DPolyline(object)),
       );
 
       instancedCount += count;
@@ -290,7 +308,6 @@ export class InstancedPathDrawcall extends Instanced {
 
       // this attribute only changes for each n instance
       this.divisor = instancedCount / objects.length;
-
       this.geometry.setVertexBuffer({
         bufferIndex: LineVertexAttributeBufferIndex.DASH,
         byteStride: 4 * 4,
@@ -402,24 +419,26 @@ export class InstancedPathDrawcall extends Instanced {
     } else if (
       name === 'lineDashOffset' ||
       name === 'lineDash' ||
-      name === 'isBillboard'
+      name === 'isBillboard' ||
+      name === 'isSizeAttenuation'
     ) {
       const packedDash: number[] = [];
       objects.forEach((object) => {
-        const { lineDash, lineDashOffset, isBillboard } = (object as Path)
-          .parsedStyle;
+        const { lineDash, lineDashOffset, isBillboard, isSizeAttenuation } = (
+          object as Path
+        ).parsedStyle;
 
         packedDash.push(
           (lineDash && lineDash[0]) || 0, // DASH
           (lineDash && lineDash[1]) || 0, // GAP
           lineDashOffset || 0,
-          isBillboard ? 1 : 0,
+          packBoolean(isBillboard, isSizeAttenuation, is3DPolyline(object)),
         );
       });
 
       this.geometry.updateVertexBuffer(
         LineVertexAttributeBufferIndex.DASH,
-        LineVertexAttributeBufferIndex.DASH,
+        LineVertexAttributeLocation.DASH,
         startIndex,
         new Uint8Array(new Float32Array(packedDash).buffer),
       );
@@ -453,6 +472,7 @@ export function updateBuffer(
   subPathIndex = 0,
 ) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
+  const zIndex = object.sortable.renderOrder * RENDER_ORDER_SCALE;
   let { defX, defY } = object.parsedStyle;
   const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
     object.parsedStyle as ParsedLineStyleProps;
@@ -493,6 +513,7 @@ export function updateBuffer(
       endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
     }
 
+    const isPolyline = object.nodeName === Shape.POLYLINE;
     points[0] = polylineControlPoints.reduce((prev, cur, i) => {
       let offsetX = 0;
       let offsetY = 0;
@@ -504,7 +525,11 @@ export function updateBuffer(
         offsetY = endOffsetY;
       }
 
-      prev.push(cur[0] - defX + offsetX, cur[1] - defY + offsetY, cur[2] || 0);
+      prev.push(
+        cur[0] - defX + offsetX,
+        cur[1] - defY + offsetY,
+        isPolyline ? cur[2] || 0 : zIndex,
+      );
       return prev;
     }, [] as number[]);
 
@@ -520,15 +545,15 @@ export function updateBuffer(
           instancedCount: Math.round(points[0].length / stridePoints),
         };
       } else {
-        points[0].push(points[0][0], points[0][1], points[0][2] || 0);
+        points[0].push(points[0][0], points[0][1], points[0][2] || zIndex);
         points[0].push(
           ...addTailSegment(
             points[0][0],
             points[0][1],
-            points[0][2] || 0,
+            points[0][2] || zIndex,
             points[0][3],
             points[0][4],
-            points[0][5] || 0,
+            points[0][5] || zIndex,
           ),
         );
       }
@@ -620,23 +645,23 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[0] - defX + startOffsetX,
             params[1] - defY + startOffsetY,
-            0,
+            zIndex,
             params[0] - defX,
             params[1] - defY,
-            0,
+            zIndex,
           );
         } else {
-          points[mCommandsNum].push(params[0] - defX, params[1] - defY, 0);
+          points[mCommandsNum].push(params[0] - defX, params[1] - defY, zIndex);
         }
       } else if (command === 'L') {
         if (useEndOffset) {
           points[mCommandsNum].push(
             params[0] - defX + endOffsetX,
             params[1] - defY + endOffsetY,
-            0,
+            zIndex,
           );
         } else {
-          points[mCommandsNum].push(params[0] - defX, params[1] - defY, 0);
+          points[mCommandsNum].push(params[0] - defX, params[1] - defY, zIndex);
         }
       } else if (command === 'Q') {
         quadCurveTo(
@@ -651,7 +676,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[2] - defX + endOffsetX,
             params[3] - defY + endOffsetY,
-            0,
+            zIndex,
           );
         }
       } else if (command === 'A') {
@@ -688,7 +713,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[5] - defX + endOffsetX,
             params[6] - defY + endOffsetY,
-            0,
+            zIndex,
           );
         }
       } else if (command === 'C') {
@@ -706,7 +731,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             params[4] - defX + endOffsetX,
             params[5] - defY + endOffsetY,
-            0,
+            zIndex,
           );
         }
       } else if (
@@ -728,7 +753,7 @@ export function updateBuffer(
           points[mCommandsNum].push(
             points[mCommandsNum][startPointIndex],
             points[mCommandsNum][startPointIndex + 1],
-            0,
+            zIndex,
           );
         }
 
@@ -810,15 +835,15 @@ export function updateBuffer(
     }
     pointsBuffer[j++] = points[points.length - 6];
     pointsBuffer[j++] = points[points.length - 5];
-    pointsBuffer[j++] = points[points.length - 4] || 0;
+    pointsBuffer[j++] = points[points.length - 4] || zIndex;
     pointsBuffer[j++] = 0;
     pointsBuffer[0] = points[0];
     pointsBuffer[1] = points[1];
-    pointsBuffer[2] = points[2] || 0;
+    pointsBuffer[2] = points[2] || zIndex;
     pointsBuffer[3] = 0;
     pointsBuffer[4] = points[3];
     pointsBuffer[5] = points[4];
-    pointsBuffer[6] = points[5] || 0;
+    pointsBuffer[6] = points[5] || zIndex;
     pointsBuffer[7] = capType === JOINT_TYPE.CAP_ROUND ? capType : 0;
 
     const instancedCount = Math.round(points.length / stridePoints);

@@ -5,7 +5,7 @@
   },
   "demos": [
     {
-      "filename": "Zdog.js",
+      "filename": "zdog.js",
       "title": {
         "zh": "使用 Zdog 渲染",
         "en": "Use Zdog"

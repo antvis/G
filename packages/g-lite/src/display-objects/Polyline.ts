@@ -31,7 +31,14 @@ export interface PolylineStyleProps extends BaseStyleProps {
    * offset relative to original position
    */
   markerEndOffset?: number;
+  /**
+   * Whether the circle is billboard.
+   */
   isBillboard?: boolean;
+  /**
+   * Whether the circle is size attenuation.
+   */
+  isSizeAttenuation?: boolean;
 }
 export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
   points: {

@@ -8,6 +8,7 @@ uniform sampler2D u_SDFMap;
 #define SDF_PX 8.0
 
 out vec4 outputColor;
+float epsilon = 0.000001;
 
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
@@ -36,7 +37,7 @@ void main() {
     outputColor = vec4(u_PickingColor, 1.0);
   } else {
 
-    if (opacity < 0.001) {
+    if (opacity < epsilon) {
       discard;
     }
 
