@@ -1,5 +1,13 @@
 # @antv/g-plugin-rough-svg-renderer
 
+## 1.9.24
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-svg@1.10.23
+
 ## 1.9.23
 
 ### Patch Changes

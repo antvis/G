@@ -1,5 +1,14 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.28
+
+### Patch Changes
+
+-   6492cdf1: Path should not downgrade to line when billboard enabled.
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-image-loader@1.3.19
+
 ## 1.9.27
 
 ### Patch Changes
