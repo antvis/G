@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.29
+
+### Patch Changes
+
+-   951bef39: Cancel downgrading to Line.
+
 ## 1.9.28
 
 ### Patch Changes
