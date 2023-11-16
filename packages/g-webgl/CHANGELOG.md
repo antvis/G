@@ -1,5 +1,18 @@
 # @antv/g-webgl
 
+## 1.9.30
+
+### Patch Changes
+
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-plugin-image-loader@1.3.18
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-device-renderer@1.9.27
+    -   @antv/g-plugin-dom-interaction@1.9.18
+    -   @antv/g-plugin-html-renderer@1.9.21
+
 ## 1.9.29
 
 ### Patch Changes

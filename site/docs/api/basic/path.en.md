@@ -63,6 +63,14 @@ Default value is `'1'`. See [DisplayObject's lineWidth](/en/api/basic/display-ob
 
 Default value is `'4'`. See [DisplayObject's miterLimit](/en/api/basic/display-object#miterLimit)
 
+### isBillboard
+
+Effective in 3D scenes, always facing the screen, so the line width is not affected by the perspective projection image. The default value is `false`.
+
+### isSizeAttenuation
+
+When isBillboard is enabled, whether or not to apply size attenuation in perspective projection. This option can be turned on if you want to keep the size consistent regardless of depth, following the "near big, far small" visual effect in perspective projection.
+
 ## Additional Properties
 
 ### path

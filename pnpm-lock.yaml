@@ -450,8 +450,8 @@ importers:
   packages/g-mobile-webgl:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.6
+        version: 1.3.6
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -502,8 +502,8 @@ importers:
   packages/g-plugin-3d:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.6
+        version: 1.3.6
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -688,8 +688,8 @@ importers:
   packages/g-plugin-device-renderer:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.6
+        version: 1.3.6
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1027,8 +1027,8 @@ importers:
   packages/g-webgl:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.6
+        version: 1.3.6
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1061,8 +1061,8 @@ importers:
   packages/g-webgpu:
     dependencies:
       '@antv/g-device-api':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.6
+        version: 1.3.6
       '@antv/g-lite':
         specifier: workspace:*
         version: link:../g-lite
@@ -1138,8 +1138,8 @@ importers:
         specifier: ^1.9.1
         version: link:../packages/g-components
       '@antv/g-device-api':
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.3.6
+        version: 1.3.6
       '@antv/g-lite':
         specifier: ^1.2.12
         version: link:../packages/g-lite
@@ -1608,8 +1608,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@antv/g-device-api@1.3.0:
-    resolution: {integrity: sha512-zBDLuxEV1LuEAFnAQOGfFwawuXQh6FzcoFCq+V+W3/vPS5Vm/N52AxjQ2ZmqI0Vqh3MtYHz+jM+Yv4ouZMTcHA==}
+  /@antv/g-device-api@1.3.6:
+    resolution: {integrity: sha512-x1h2vPKZxQZwDi6RYfFyvvGcK9iLq6qNccsgBhVp7+tUrMumL8CntoASzSQCnj6CqzDuxz1dzSXrTq/PXMFprA==}
     dependencies:
       '@antv/util': 3.3.4
       '@webgpu/types': 0.1.34

@@ -5,6 +5,8 @@ import {
   Line,
   Text,
   Rect,
+  Polyline,
+  Path,
   Image,
   CameraType,
 } from '@antv/g';
@@ -45,6 +47,7 @@ const canvas = new Canvas({
       height: 20,
       src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   const label = new Text({
@@ -93,6 +96,7 @@ const canvas = new Canvas({
       stroke: 'black',
       lineWidth: 2,
       isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   canvas.appendChild(xAxis);
@@ -108,6 +112,7 @@ const canvas = new Canvas({
       stroke: 'black',
       lineWidth: 2,
       isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   canvas.appendChild(yAxis);
@@ -123,9 +128,85 @@ const canvas = new Canvas({
       stroke: 'black',
       lineWidth: 2,
       isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   canvas.appendChild(zAxis);
+
+  const path = new Path({
+    style: {
+      path: [
+        ['M', 57.06339097770921, -18.541019662496844],
+        ['L', 13.225168176580645, -18.202882373436317],
+        ['L', 3.67394039744206e-15, -60],
+        ['L', -13.225168176580643, -18.202882373436317],
+        ['L', -57.06339097770921, -18.54101966249685],
+        ['L', -21.398771616640953, 6.952882373436324],
+        ['L', -35.267115137548394, 48.54101966249684],
+        ['L', -4.133182947122317e-15, 22.5],
+        ['L', 35.26711513754837, 48.54101966249685],
+        ['L', 21.398771616640953, 6.952882373436322],
+        ['Z'],
+      ],
+      stroke: '#1890FF',
+      lineWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round',
+      isBillboard: true,
+      isSizeAttenuation: true,
+      cursor: 'pointer',
+    },
+  });
+  path.translate(100, 100, 0);
+  canvas.appendChild(path);
+
+  const polyline3D = new Polyline({
+    style: {
+      stroke: '#1890FF',
+      lineWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round',
+      points: [
+        [50, 50, 0],
+        [100, 50, 100],
+        [100, 100, 0],
+        [150, 100, 100],
+        [150, 150, 0],
+        [200, 150, 0],
+        [200, 200, 0],
+        [250, 200, 0],
+      ],
+      cursor: 'pointer',
+      isBillboard: true,
+      isSizeAttenuation: true,
+    },
+  });
+  polyline3D.translate(0, 200);
+  canvas.appendChild(polyline3D);
+
+  const polyline2D = new Polyline({
+    style: {
+      stroke: '#1890FF',
+      lineWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round',
+      points: [
+        [50, 50],
+        [100, 50],
+        [100, 100],
+        [150, 100],
+        [150, 150],
+        [200, 150],
+        [200, 200],
+        [250, 200],
+      ],
+      cursor: 'pointer',
+      isBillboard: true,
+      isSizeAttenuation: true,
+    },
+  });
+  polyline2D.translate(200, 200);
+  canvas.appendChild(polyline2D);
 
   // add a directional light into scene
   const light = new DirectionalLight({
@@ -159,21 +240,90 @@ const canvas = new Canvas({
   // GUI
   const gui = new lil.GUI({ autoPlace: false });
   $wrapper.appendChild(gui.domElement);
-  const folder = gui.addFolder('size attenuation');
-  const config = {
-    textSizeAttenuation: true,
-    imageSizeAttenuation: false,
+  const textFolder = gui.addFolder('text');
+  const textConfig = {
+    isBillboard: true,
+    isSizeAttenuation: true,
   };
-  folder.add(config, 'textSizeAttenuation').onChange((textSizeAttenuation) => {
+  const imageFolder = gui.addFolder('image');
+  const imageConfig = {
+    isBillboard: true,
+    isSizeAttenuation: true,
+  };
+  const pathFolder = gui.addFolder('path');
+  const pathConfig = {
+    isBillboard: true,
+    isSizeAttenuation: true,
+  };
+  const polyline2DFolder = gui.addFolder('polyline2D');
+  const polyline2DConfig = {
+    isBillboard: true,
+    isSizeAttenuation: true,
+  };
+  const polyline3DFolder = gui.addFolder('polyline3D');
+  const polyline3DConfig = {
+    isBillboard: true,
+    isSizeAttenuation: true,
+  };
+
+  textFolder.add(textConfig, 'isBillboard').onChange((isBillboard) => {
     canvas.document.querySelectorAll('text').forEach((text) => {
-      text.style.isSizeAttenuation = textSizeAttenuation;
+      text.style.isBillboard = isBillboard;
     });
   });
-  folder
-    .add(config, 'imageSizeAttenuation')
-    .onChange((imageSizeAttenuation) => {
-      canvas.document.querySelectorAll('image').forEach((image) => {
-        image.style.isSizeAttenuation = imageSizeAttenuation;
+  textFolder
+    .add(textConfig, 'isSizeAttenuation')
+    .onChange((isSizeAttenuation) => {
+      canvas.document.querySelectorAll('text').forEach((text) => {
+        text.style.isSizeAttenuation = isSizeAttenuation;
       });
+    });
+
+  imageFolder.add(imageConfig, 'isBillboard').onChange((isBillboard) => {
+    canvas.document.querySelectorAll('image').forEach((image) => {
+      image.style.isBillboard = isBillboard;
+    });
+  });
+  imageFolder
+    .add(imageConfig, 'isSizeAttenuation')
+    .onChange((isSizeAttenuation) => {
+      canvas.document.querySelectorAll('image').forEach((image) => {
+        image.style.isSizeAttenuation = isSizeAttenuation;
+      });
+    });
+
+  pathFolder.add(pathConfig, 'isBillboard').onChange((isBillboard) => {
+    canvas.document.querySelectorAll('path').forEach((path) => {
+      path.style.isBillboard = isBillboard;
+    });
+  });
+  pathFolder
+    .add(pathConfig, 'isSizeAttenuation')
+    .onChange((isSizeAttenuation) => {
+      canvas.document.querySelectorAll('path').forEach((path) => {
+        path.style.isSizeAttenuation = isSizeAttenuation;
+      });
+    });
+
+  polyline2DFolder
+    .add(polyline2DConfig, 'isBillboard')
+    .onChange((isBillboard) => {
+      polyline2D.style.isBillboard = isBillboard;
+    });
+  polyline2DFolder
+    .add(polyline2DConfig, 'isSizeAttenuation')
+    .onChange((isSizeAttenuation) => {
+      polyline2D.style.isSizeAttenuation = isSizeAttenuation;
+    });
+
+  polyline3DFolder
+    .add(polyline3DConfig, 'isBillboard')
+    .onChange((isBillboard) => {
+      polyline3D.style.isBillboard = isBillboard;
+    });
+  polyline3DFolder
+    .add(polyline3DConfig, 'isSizeAttenuation')
+    .onChange((isSizeAttenuation) => {
+      polyline3D.style.isSizeAttenuation = isSizeAttenuation;
     });
 })();

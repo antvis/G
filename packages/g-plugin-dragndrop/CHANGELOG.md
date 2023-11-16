@@ -1,5 +1,13 @@
 # @antv/g-plugin-dragndrop
 
+## 1.8.18
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+
 ## 1.8.17
 
 ### Patch Changes

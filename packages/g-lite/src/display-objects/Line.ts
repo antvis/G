@@ -7,13 +7,38 @@ import { Shape } from '../types';
 import { DisplayObject, isDisplayObject } from './DisplayObject';
 
 export interface LineStyleProps extends BaseStyleProps {
+  /**
+   * X coordinate of the start of the line.
+   */
   x1: number;
+  /**
+   * Y coordinate of the start of the line.
+   */
   y1: number;
+  /**
+   * X coordinate of the end of the line.
+   */
   x2: number;
+  /**
+   * Y coordinate of the end of the line.
+   */
   y2: number;
+  /**
+   * Z coordinate of the start of the line.
+   */
   z1?: number;
+  /**
+   * Z coordinate of the end of the line.
+   */
   z2?: number;
+  /**
+   * Whether the line is billboard.
+   */
   isBillboard?: boolean;
+  /**
+   * Whether the line is size attenuation.
+   */
+  isSizeAttenuation?: boolean;
   /**
    * marker will be positioned at x1/y1
    */
@@ -44,6 +69,7 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   defX: number;
   defY: number;
   isBillboard?: boolean;
+  isSizeAttenuation?: boolean;
   markerStart?: DisplayObject | null;
   markerEnd?: DisplayObject | null;
   markerStartOffset?: number;
@@ -70,7 +96,6 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
         y2: 0,
         z1: 0,
         z2: 0,
-        isBillboard: false,
         ...style,
       },
       ...rest,

@@ -359,7 +359,7 @@ export class PickingPlugin implements RenderingPlugin {
       },
       {
         name: SceneUniform.VIEWPORT,
-        value: [canvasWidth, canvasHeight],
+        value: [width, height],
       },
       {
         name: SceneUniform.IS_ORTHO,

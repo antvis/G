@@ -6,6 +6,8 @@
 
 out vec4 outputColor;
 
+float epsilon = 0.000001;
+
 void main() {
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')
@@ -23,5 +25,9 @@ void main() {
   } else {
     outputColor = u_Color;
     outputColor.a = outputColor.a * u_Opacity;
+
+    if (outputColor.a < epsilon) {
+      discard;
+    }
   }
 }
