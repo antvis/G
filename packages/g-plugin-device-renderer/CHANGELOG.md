@@ -1,5 +1,15 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.27
+
+### Patch Changes
+
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-plugin-image-loader@1.3.18
+    -   @antv/g-lite@1.2.18
+
 ## 1.9.26
 
 ### Patch Changes

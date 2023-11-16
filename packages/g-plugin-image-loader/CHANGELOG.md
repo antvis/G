@@ -1,5 +1,14 @@
 # @antv/g-plugin-image-loader
 
+## 1.3.18
+
+### Patch Changes
+
+-   4fdee19f: Keep aspect ration in image.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+
 ## 1.3.17
 
 ### Patch Changes

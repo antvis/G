@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-webgl",
-  "version": "0.9.30",
+  "version": "0.9.31",
   "description": "A renderer implemented by WebGL1/2 in mobile environment",
   "keywords": [
     "antv",
