@@ -1,5 +1,16 @@
 # @antv/g-webgpu
 
+## 1.9.31
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-plugin-device-renderer@1.9.28
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-dom-interaction@1.9.19
+    -   @antv/g-plugin-html-renderer@1.9.22
+    -   @antv/g-plugin-image-loader@1.3.19
+
 ## 1.9.30
 
 ### Patch Changes

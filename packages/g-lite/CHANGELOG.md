@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.19
+
+### Patch Changes
+
+-   6492cdf1: Path should not downgrade to line when billboard enabled.
+
 ## 1.2.18
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @antv/g-plugin-matterjs
 
+## 1.9.19
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+
 ## 1.9.18
 
 ### Patch Changes
