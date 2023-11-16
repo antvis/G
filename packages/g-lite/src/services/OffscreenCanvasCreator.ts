@@ -24,19 +24,28 @@ export class OffscreenCanvasCreator {
     // user-defined offscreen canvas
     if (offscreenCanvas || runtime.offscreenCanvas) {
       this.canvas = offscreenCanvas || runtime.offscreenCanvas;
-      this.context = this.canvas.getContext('2d', contextAttributes);
+      this.context = this.canvas.getContext('2d', {
+        willReadFrequently: true,
+        ...contextAttributes,
+      });
     } else {
       try {
         // OffscreenCanvas2D measureText can be up to 40% faster.
         this.canvas = new window.OffscreenCanvas(0, 0) as unknown as CanvasLike;
-        this.context = this.canvas.getContext('2d', contextAttributes);
+        this.context = this.canvas.getContext('2d', {
+          willReadFrequently: true,
+          ...contextAttributes,
+        });
         if (!this.context || !this.context.measureText) {
           this.canvas = document.createElement('canvas');
           this.context = this.canvas.getContext('2d');
         }
       } catch (ex) {
         this.canvas = document.createElement('canvas');
-        this.context = this.canvas.getContext('2d', contextAttributes);
+        this.context = this.canvas.getContext('2d', {
+          willReadFrequently: true,
+          ...contextAttributes,
+        });
       }
     }
 

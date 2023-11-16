@@ -1,5 +1,12 @@
 # @antv/g-gesture
 
+## 2.2.22
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+
 ## 2.2.21
 
 ### Patch Changes

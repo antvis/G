@@ -1,7 +1,7 @@
 /**
  * @see https://www.khronos.org/assets/uploads/developers/presentations/Crazy_Panda_How_to_draw_lines_in_WebGL.pdf
  */
-import type { CSSRGB, DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import type { CSSRGB, DisplayObject, ParsedPathStyleProps } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import {
   Instanced,
@@ -24,8 +24,8 @@ export class PathRenderer extends Batch {
   // ];
 
   getDrawcallCtors(object: DisplayObject) {
-    const { fill, stroke, opacity, strokeOpacity, lineWidth } =
-      object.parsedStyle as ParsedBaseStyleProps;
+    const { fill, stroke, opacity, strokeOpacity, lineWidth, isBillboard } =
+      object.parsedStyle as ParsedPathStyleProps;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
     const subpathNum = InstancedPathDrawcall.calcSubpathNum(object);
 
@@ -43,7 +43,7 @@ export class PathRenderer extends Batch {
         !(strokeOpacity === 0 || opacity === 0 || lineWidth === 0 || !hasStroke)
       ) {
         const isLine = InstancedLineDrawcall.isLine(object, i);
-        if (isLine) {
+        if (!isBillboard && isLine) {
           drawcalls.push(InstancedLineDrawcall);
         } else {
           drawcalls.push(InstancedPathDrawcall);
