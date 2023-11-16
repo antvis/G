@@ -28,16 +28,16 @@ export class ImagePool {
 
   constructor(private canvasConfig: Partial<CanvasConfig>) {}
 
-  getImageSync(src: string, callback?: () => void) {
+  getImageSync(src: string, callback?: (img: HTMLImageElement) => void) {
     if (!this.imageCache[src]) {
-      this.getOrCreateImage(src).then(() => {
+      this.getOrCreateImage(src).then((img) => {
         if (callback) {
-          callback();
+          callback(img);
         }
       });
     } else {
       if (callback) {
-        callback();
+        callback(this.imageCache[src]);
       }
     }
 

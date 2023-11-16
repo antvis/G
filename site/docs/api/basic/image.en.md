@@ -117,6 +117,20 @@ Image height.
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
+### keepAspectRatio
+
+Whether to keep aspect ratio, when enabled we can only provide height or width, the missing item will be calculated according to raw ratio. [Example](/en/examples/shape/image#image-keep-aspect-ratio)
+
+```ts
+const image = new Image({
+    style: {
+        width: 200,
+        keepAspectRatio: true,
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
+});
+```
+
 ### isBillboard
 
 Whether or not to always face the camera in 3D scenes, defaults to `false`, also known as the "billboard effect".

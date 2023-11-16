@@ -11,6 +11,14 @@
         "en": "Image"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OIAmRpwhNWYAAAAAAAAAAABkARQnAQ"
+    },
+    {
+      "filename": "image-keep-aspect-ratio.js",
+      "title": {
+        "zh": "使用保持宽高比",
+        "en": "Keep aspect ratio"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*OIAmRpwhNWYAAAAAAAAAAABkARQnAQ"
     }
   ]
 }
