@@ -192,6 +192,8 @@ const canvas = new Canvas({
         ['Z'],
       ],
       stroke: '#1890FF',
+      fill: '#1890FF',
+      fillOpacity: 0.5,
       lineWidth: 10,
       lineCap: 'round',
       lineJoin: 'round',
