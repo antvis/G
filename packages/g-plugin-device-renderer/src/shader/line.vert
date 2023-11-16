@@ -2,6 +2,7 @@
 
 #pragma glslify: import('@antv/g-shader-components/batch.declaration.vert')
 #pragma glslify: project = require('@antv/g-shader-components/project.vert')
+#pragma glslify: billboard = require('@antv/g-shader-components/billboard.vert')
 
 layout(location = PREV) in vec3 a_Prev;
 layout(location = POINT1) in vec3 a_Point1;
@@ -61,8 +62,7 @@ vec2 doBisect(
   return dy * bisect;
 }
 
-vec2 project2ScreenSpace(vec3 pos, mat4 u_ModelMatrix) {
-  vec4 clip = project(vec4(pos, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+vec2 clip2ScreenSpace(vec4 clip) {
   return u_Viewport * (0.5 * clip.xy / clip.w + 0.5);
 }
 
@@ -77,14 +77,27 @@ void main() {
   vec4 clip0;
   vec4 clip1;
 
-  float isBillboard = a_Dash.w;
-  if (isBillboard > 0.5) {
-    // clip space
+  float compressed = a_Dash.w;
+  float is_billboard = floor(compressed / 4.0);
+  compressed -= is_billboard * 4.0;
+  float is_size_attenuation = floor(compressed / 2.0);
+  compressed -= is_size_attenuation * 2.0;
+  float is_3d_polyline = compressed;
+
+  bool isBillboard = is_billboard > 0.5;
+  bool isSizeAttenuation = is_size_attenuation > 0.5;
+  bool is3DPolyline = is_3d_polyline > 0.5;
+  if (isBillboard) {
+    clip0 = billboard(a_Point1.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+    clip1 = billboard(a_Point2.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+  } else if (is3DPolyline) {
     clip0 = project(vec4(a_Point1, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
     clip1 = project(vec4(a_Point2, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
-    // screen space
-    pointA = project2ScreenSpace(a_Point1, u_ModelMatrix);
-    pointB = project2ScreenSpace(a_Point2, u_ModelMatrix);
+  }
+
+  if (isBillboard || is3DPolyline) {
+    pointA = clip2ScreenSpace(clip0);
+    pointB = clip2ScreenSpace(clip1);
   } else {
     pointA = (u_ModelMatrix * vec4(a_Point1, 1.0)).xy;
     pointB = (u_ModelMatrix * vec4(a_Point2, 1.0)).xy;
@@ -141,18 +154,22 @@ void main() {
     float flag = 0.0;
     float sign2 = 1.0;
     if (a_VertexNum < 0.5 || a_VertexNum > 2.5 && a_VertexNum < 3.5) {
-      if (isBillboard > 0.5) {
-        next = project2ScreenSpace(a_Prev, u_ModelMatrix);
+      if (isBillboard) {
+        next = clip2ScreenSpace(billboard(a_Prev.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
+      } else if (is3DPolyline) {
+        next = clip2ScreenSpace(project(vec4(a_Prev, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
       } else {
         next = (u_ModelMatrix * vec4(a_Prev, 1.0)).xy;
-      }      
+      }
 
       base = pointA;
       flag = type - floor(type / 2.0) * 2.0;
       sign2 = -1.0;
     } else {
-      if (isBillboard > 0.5) {
-        next = project2ScreenSpace(a_Next, u_ModelMatrix);
+      if (isBillboard) {
+        next = clip2ScreenSpace(billboard(a_Next.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
+      } else if (is3DPolyline) {
+        next = clip2ScreenSpace(project(vec4(a_Next, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
       } else {
         next = (u_ModelMatrix * vec4(a_Next, 1.0)).xy;
       }
@@ -361,7 +378,7 @@ void main() {
 
   v_ScalingFactor = sqrt(u_ModelMatrix[0][0] * u_ModelMatrix[0][0] + u_ModelMatrix[0][1] * u_ModelMatrix[0][1] + u_ModelMatrix[0][2] * u_ModelMatrix[0][2]);
 
-  if (isBillboard > 0.5) {
+  if (isBillboard || is3DPolyline) {
     vec4 clip = mix(clip0, clip1, 0.5);
     gl_Position = vec4(clip.w * (2.0 * pos / u_Viewport - 1.0), clip.z, clip.w);
   } else {

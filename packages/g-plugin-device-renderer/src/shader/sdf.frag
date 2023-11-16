@@ -6,9 +6,10 @@
 
 in vec2 v_Data;
 in vec2 v_Radius;
-in vec4 v_StylePacked3;
+in vec3 v_StylePacked3;
 
 out vec4 outputColor;
+float epsilon = 0.000001;
 
 #pragma glslify: sdCircle = require('@antv/g-shader-components/sdf.circle.glsl')
 #pragma glslify: sdEllipsoidApproximated = require('@antv/g-shader-components/sdf.ellipse.glsl')
@@ -16,7 +17,6 @@ out vec4 outputColor;
 
 void main() {
   int shape = int(floor(v_StylePacked3.x + 0.5));
-  float epsilon = 0.000001;
 
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
   #pragma glslify: import('@antv/g-shader-components/map.frag')

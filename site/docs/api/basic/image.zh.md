@@ -118,6 +118,20 @@ img.onload = () => {
 | ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
+### keepAspectRatio
+
+保持宽高比。开启后，只需要传入宽高任意一项，加载完成后根据原始图片的宽高比计算缺失项。[示例](/zh/examples/shape/image#image-keep-aspect-ratio)
+
+```ts
+const image = new Image({
+    style: {
+        width: 200,
+        keepAspectRatio: true,
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    },
+});
+```
+
 ### isBillboard
 
 在 3D 场景下是否永远面朝相机，默认为 `false`，也称作“公告牌效果”。
