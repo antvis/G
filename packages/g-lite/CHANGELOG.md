@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 1.2.18
+
+### Patch Changes
+
+-   4fdee19f: Keep aspect ration in image.
+-   4fdee19f: Fix picking error when isBillboard enabled.
+
 ## 1.2.17
 
 ### Patch Changes

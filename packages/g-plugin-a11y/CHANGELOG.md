@@ -1,5 +1,13 @@
 # @antv/g-plugin-a11y
 
+## 0.6.18
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+
 ## 0.6.17
 
 ### Patch Changes

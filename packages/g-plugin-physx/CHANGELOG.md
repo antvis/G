@@ -1,5 +1,13 @@
 # @antv/g-plugin-physx
 
+## 1.9.18
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+
 ## 1.9.17
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.22
+
+### Patch Changes
+
+-   4fdee19f: Avoid generating redundant dom structure for document element.
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+
 ## 1.10.21
 
 ### Patch Changes
