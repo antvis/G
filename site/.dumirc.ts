@@ -15,6 +15,7 @@ export default defineConfig({
     description: 'A flexible rendering engine for visualization.',
     defaultLanguage: 'zh', // 默认语言
     isAntVSite: false, // 是否是 AntV 的大官网
+    footerTheme: 'light', // 白色 底部主题
     versions: {
       // 历史版本以及切换下拉菜单
       [version]: 'https://g.antv.antgroup.com',
@@ -23,16 +24,20 @@ export default defineConfig({
     siteUrl: 'https://g.antv.antgroup.com',
     githubUrl: 'https://github.com/antvis/g',
     detail: {
+      engine: {
+        zh: 'G',
+        en: 'G',
+      },
       title: {
-        zh: 'G 一个灵活的可视化渲染引擎',
-        en: 'G: A flexible rendering engine for visualization.',
+        zh: 'G·一个灵活的可视化渲染引擎',
+        en: 'G·A flexible rendering engine for visualization.',
       },
       description: {
         zh: '为上层提供稳定一致的渲染和通用计算能力',
         en: 'G is dedicated to provide consistent and high performance 2D / 3D graphics rendering capabilities for upper layer products.',
       },
       image:
-        'https://gw.alipayobjects.com/mdn/rms_d314dd/afts/img/A*f_gcSbpq-6kAAAAAAAAAAABkARQnAQ',
+        'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*OlhnTbTFWooAAAAAAAAAAAAADmJ7AQ/original',
       buttons: [
         {
           text: {
