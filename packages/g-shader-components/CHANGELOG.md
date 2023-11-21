@@ -1,5 +1,11 @@
 # @antv/g-shader-components
 
+## 1.8.6
+
+### Patch Changes
+
+-   1c1c40a0: Rendering circle & ellipse correctly in WebGPU.
+
 ## 1.8.5
 
 ### Patch Changes

@@ -150,14 +150,13 @@ pnpm build
 pnpm test
 ```
 
-### Start site
+### Run demos
 
-Preview our site:
+Preview our dev demos:
 
 ```bash
 pnpm build
-pnpm link-site
-pnpm start
+pnpm dev
 ```
 
 ## Inspired by

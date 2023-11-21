@@ -2,11 +2,8 @@ import {
   MeshBasicMaterial,
   CubeGeometry,
   Mesh,
-  Format,
-  TextureDimension,
-  TextureUsage,
   Plugin as Plugin3D,
-} from '../../../packages/g-plugin-3d/esm';
+} from '../../../packages/g-plugin-3d';
 import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
 
 export async function cube(context) {
