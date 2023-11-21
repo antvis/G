@@ -1,6 +1,5 @@
 packages:
   - 'packages/*'
-  - 'site'
   - '!packages/g-devtool'
   - '!packages/g-css-layout-api'
   - '!packages/g-layout-blocklike'
