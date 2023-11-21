@@ -36,6 +36,7 @@
     "@antv/g-plugin-3d": "latest",
     "@antv/g-plugin-control": "latest",
     "@antv/g-plugin-gpgpu": "latest",
+    "@antv/g-plugin-gesture": "latest",
     "@antv/g-plugin-physx": "latest",
     "@antv/g-plugin-box2d": "latest",
     "@antv/g-plugin-matterjs": "latest",
