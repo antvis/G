@@ -38,6 +38,10 @@ export default defineConfig({
       },
       image:
         'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*OlhnTbTFWooAAAAAAAAAAAAADmJ7AQ/original',
+      imageStyle: {
+        marginLeft: '70px',
+        marginTop: '75px',
+      },
       buttons: [
         {
           text: {
