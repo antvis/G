@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-site",
-  "private": true,
+  "version": "5.18.21",
   "description": "G sites deployed on gh-pages",
   "keywords": [
     "g",
@@ -18,10 +18,11 @@
   "license": "ISC",
   "author": "https://github.com/orgs/antvis/people",
   "scripts": {
-    "build-bak": "dumi build",
-    "site:build": "dumi build && cp ../spec/api.html public",
-    "site:dev": "dumi dev",
-    "start": "npm run site:dev"
+    "start": "dumi dev",
+    "build": "dumi build",
+    "analyze": "ANALYZE=1 dumi build",
+    "deploy": "gh-pages -d dist",
+    "preview": "dumi preview"
   },
   "dependencies": {
     "@antv/g": "latest",
@@ -66,7 +67,7 @@
     "d3-cloud": "^1.2.5",
     "d3-force-3d": "^3.0.3",
     "d3-svg-annotation": "^2.5.0",
-    "gh-pages": "^3.2.3",
+    "gh-pages": "^4.0.0",
     "gl-matrix": "^3.4.3",
     "hammer-touchemulator": "^0.0.2",
     "hammerjs": "^2.0.8",
