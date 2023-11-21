@@ -1,7 +1,7 @@
 #ifdef USE_LIGHT
   void getDirectionalLightInfo(
-    const in DirectionalLight directionalLight, 
-    const in GeometricContext geometry,
+    DirectionalLight directionalLight, 
+    GeometricContext geometry,
     out IncidentLight light
   ) {
     light.color = directionalLight.color * directionalLight.intensity;
@@ -9,7 +9,7 @@
     light.visible = true;
   }
 
-  vec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {
+  vec3 getAmbientLightIrradiance( vec3 ambientLightColor ) {
     vec3 irradiance = ambientLightColor;
     return irradiance;
   }

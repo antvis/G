@@ -1,11 +1,11 @@
-vec3 BRDF_Lambert(const in vec3 diffuseColor) {
+vec3 BRDF_Lambert(vec3 diffuseColor) {
   return RECIPROCAL_PI * diffuseColor;
 }
 
 vec3 F_Schlick(
-  const in vec3 f0,
-  const in float f90,
-  const in float dotVH
+  vec3 f0,
+  float f90,
+  float dotVH
 ) {
   // Original approximation by Christophe Schlick '94
   // float fresnel = pow( 1.0 - dotVH, 5.0 );
@@ -16,24 +16,24 @@ vec3 F_Schlick(
   return f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );
 }
 
-float G_BlinnPhong_Implicit( /* const in float dotNL, const in float dotNV */ ) {
+float G_BlinnPhong_Implicit( /* float dotNL, float dotNV */ ) {
   // geometry term is (n dot l)(n dot v) / 4(n dot l)(n dot v)
   return 0.25;
 }
 
 float D_BlinnPhong(
-  const in float shininess,
-  const in float dotNH
+  float shininess,
+  float dotNH
 ) {
   return RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );
 }
 
 vec3 BRDF_BlinnPhong(
-  const in vec3 lightDir,
-  const in vec3 viewDir,
-  const in vec3 normal,
-  const in vec3 specularColor,
-  const in float shininess
+  vec3 lightDir,
+  vec3 viewDir,
+  vec3 normal,
+  vec3 specularColor,
+  float shininess
 ) {
   vec3 halfDir = normalize( lightDir + viewDir );
 
