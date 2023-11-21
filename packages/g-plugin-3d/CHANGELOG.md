@@ -1,5 +1,14 @@
 # @antv/g-plugin-3d
 
+## 1.9.30
+
+### Patch Changes
+
+-   1c1c40a0: Rendering circle & ellipse correctly in WebGPU.
+-   Updated dependencies [1c1c40a0]
+    -   @antv/g-plugin-device-renderer@1.9.30
+    -   @antv/g-shader-components@1.8.6
+
 ## 1.9.29
 
 ### Patch Changes
