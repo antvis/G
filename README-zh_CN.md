@@ -145,14 +145,13 @@ pnpm build
 pnpm test
 ```
 
-### 启动官网
+### 启动开发示例
 
-构建并启动官网：
+构建并启动 vite 示例：
 
 ```bash
 pnpm build
-pnpm link-site
-pnpm start
+pnpm dev
 ```
 
 ## 受以下项目启发

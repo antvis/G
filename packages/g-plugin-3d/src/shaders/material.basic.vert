@@ -17,6 +17,9 @@ layout(location = POSITION) in vec3 a_Position;
 #endif
 
 void main() {
+  // WGSL will remove unused uniforms.
+  float a = u_Placeholder.x;
+
   #pragma glslify: import('@antv/g-shader-components/batch.vert')
 
   gl_Position = project(vec4(a_Position, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);

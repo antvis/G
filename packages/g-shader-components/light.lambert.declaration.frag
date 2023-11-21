@@ -4,9 +4,9 @@ struct LambertMaterial {
 };
 
 void RE_Direct_Lambert(
-  const in IncidentLight directLight,
-  const in GeometricContext geometry,
-  const in LambertMaterial material,
+  IncidentLight directLight,
+  GeometricContext geometry,
+  LambertMaterial material,
   inout ReflectedLight reflectedLight
 ) {
   float dotNL = saturate(dot(geometry.normal, directLight.direction));
@@ -16,9 +16,9 @@ void RE_Direct_Lambert(
 }
 
 void RE_IndirectDiffuse_Lambert(
-  const in vec3 irradiance,
-  const in GeometricContext geometry,
-  const in LambertMaterial material,
+  vec3 irradiance,
+  GeometricContext geometry,
+  LambertMaterial material,
   inout ReflectedLight reflectedLight
 ) {
   reflectedLight.indirectDiffuse += irradiance * BRDF_Lambert(material.diffuseColor);

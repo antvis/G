@@ -1,0 +1,56 @@
+import {
+  MeshPhongMaterial,
+  TorusGeometry,
+  DirectionalLight,
+  Mesh,
+  Plugin as Plugin3D,
+} from '../../../packages/g-plugin-3d';
+import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
+
+export async function torus(context) {
+  const { canvas, renderer } = context;
+
+  renderer.registerPlugin(new Plugin3D());
+  renderer.registerPlugin(new PluginControl());
+
+  // wait for canvas' initialization complete
+  await canvas.ready;
+
+  // use GPU device
+  const plugin = renderer.getPlugin('device-renderer');
+  const device = plugin.getDevice();
+
+  const torusGeometry = new TorusGeometry(device, {
+    tubeRadius: 30,
+    ringRadius: 200,
+  });
+  const basicMaterial = new MeshPhongMaterial(device, {
+    wireframe: true,
+  });
+
+  const torus = new Mesh({
+    style: {
+      x: 300,
+      y: 250,
+      fill: 'white',
+      opacity: 1,
+      geometry: torusGeometry,
+      material: basicMaterial,
+    },
+  });
+
+  canvas.appendChild(torus);
+
+  // add a directional light into scene
+  const light = new DirectionalLight({
+    style: {
+      fill: 'white',
+      direction: [-1, 0, 1],
+      intensity: 3,
+    },
+  });
+  canvas.appendChild(light);
+
+  const camera = canvas.getCamera();
+  camera.setPosition(300, 0, 500);
+}
