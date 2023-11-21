@@ -63,7 +63,7 @@
     "webfontloader": "1.6.28"
   },
   "devDependencies": {
-    "@antv/dumi-theme-antv": "^0.3.18",
+    "@antv/dumi-theme-antv": "^0.4.1",
     "dumi": "^2.2.1",
     "workerize-loader": "^2.0.2"
   }
