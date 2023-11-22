@@ -5,3 +5,4 @@ export { image } from './image';
 export { imageNonTransparentPixel } from './image-non-transparent-pixel';
 export { line } from './line';
 export { polyline } from './polyline';
+export { path } from './path';
