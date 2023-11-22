@@ -1,5 +1,13 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.31
+
+### Patch Changes
+
+-   7f4c858c: Convert quadratic curve to sample points correctly.
+-   Updated dependencies [7f4c858c]
+    -   @antv/g-shader-components@1.8.7
+
 ## 1.9.30
 
 ### Patch Changes
