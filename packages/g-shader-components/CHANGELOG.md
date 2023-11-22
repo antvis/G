@@ -1,5 +1,11 @@
 # @antv/g-shader-components
 
+## 1.8.7
+
+### Patch Changes
+
+-   7f4c858c: Convert quadratic curve to sample points correctly.
+
 ## 1.8.6
 
 ### Patch Changes

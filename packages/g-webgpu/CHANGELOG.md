@@ -1,5 +1,12 @@
 # @antv/g-webgpu
 
+## 1.9.34
+
+### Patch Changes
+
+-   Updated dependencies [7f4c858c]
+    -   @antv/g-plugin-device-renderer@1.9.31
+
 ## 1.9.33
 
 ### Patch Changes
