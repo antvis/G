@@ -43,6 +43,5 @@ jobs:
         with:
           name: snapshots
           path: |
-            __tests__/integration/snapshots/**/*/*-actual.*
-            __tests__/integration/snapshots/**/*/*-diff.*
+            __tests__/integration/snapshots/**/*/*.*
           retention-days: 1
