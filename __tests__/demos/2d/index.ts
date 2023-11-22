@@ -5,4 +5,6 @@ export { image } from './image';
 export { imageNonTransparentPixel } from './image-non-transparent-pixel';
 export { line } from './line';
 export { polyline } from './polyline';
+export { polygon } from './polygon';
 export { path } from './path';
+export { text } from './text';
