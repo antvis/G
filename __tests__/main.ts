@@ -130,7 +130,7 @@ function createOption(key) {
   const option = document.createElement('option');
   option.value = key;
   option.textContent = key;
-  if (key === 'webgpu') {
+  if (key === 'webgl') {
     option.selected = true;
   }
   return option;

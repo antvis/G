@@ -14,7 +14,7 @@ export function quadCurveTo(
   segmentNum?: number,
 ) {
   const fromX = points[points.length - 3];
-  const fromY = points[points.length - 3];
+  const fromY = points[points.length - 2];
 
   const n =
     segmentNum ??
