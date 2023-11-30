@@ -1,6 +1,6 @@
 import { chromium, devices } from 'playwright';
-import './useSnapshotMatchers';
-import { sleep } from './sleep';
+import './utils/useSnapshotMatchers';
+import { sleep } from './utils/sleep';
 
 export function generateCanvasTestCase(
   renderer: 'canvas' | 'svg' | 'webgl',

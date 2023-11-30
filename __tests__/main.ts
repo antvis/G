@@ -130,7 +130,7 @@ function createOption(key) {
   const option = document.createElement('option');
   option.value = key;
   option.textContent = key;
-  if (key === (window['DEFAULT_RENDERER'] || 'webgl')) {
+  if (key === (window['DEFAULT_RENDERER'] || 'svg')) {
     option.selected = true;
   }
   return option;
