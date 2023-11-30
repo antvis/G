@@ -38,6 +38,7 @@ jobs:
         run: pnpm test:serverside
 
       - name: Upload snapshots to GitHub Actions Artifacts
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: snapshots
