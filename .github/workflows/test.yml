@@ -35,7 +35,7 @@ jobs:
         run: pnpm build
 
       - name: Test
-        run: pnpm test:serverside
+        run: pnpm test
 
       - name: Upload snapshots to GitHub Actions Artifacts
         if: always()

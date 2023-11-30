@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../../packages/g-svg/src';
 import { Canvas, Circle, CSS, CSSUnitValue } from '../../../../packages/g/src';
 import { sleep } from '../../utils';
 

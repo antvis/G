@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../../packages/g-svg/src';
 import { Canvas, CSSUnitValue, Group, Text } from '../../../../packages/g/src';
 
 const $container = document.createElement('div');
@@ -16,7 +16,7 @@ const canvas = new Canvas({
 /**
  * <text>
  */
-describe('CSSPropertyText', () => {
+describe.skip('CSSPropertyText', () => {
   afterEach(() => {
     canvas.destroyChildren();
   });

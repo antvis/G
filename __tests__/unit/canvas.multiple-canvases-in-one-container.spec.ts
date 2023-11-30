@@ -1,5 +1,5 @@
 import { Canvas } from '../../packages/g/src';
-import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-svg/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';

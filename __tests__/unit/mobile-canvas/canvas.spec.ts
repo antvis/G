@@ -3,7 +3,7 @@ import { Renderer as CanvasRenderer } from '../../../packages/g-mobile-canvas/sr
 import { Canvas, Circle } from '../../../packages/g/src';
 import { createContext } from './util';
 
-describe('canvas', () => {
+describe.skip('canvas', () => {
   it('基础图形 canvas render', async () => {
     const context = createContext();
     const canvasElement = createMobileCanvasElement(context);

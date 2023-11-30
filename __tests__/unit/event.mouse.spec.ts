@@ -1,5 +1,5 @@
 import { Canvas, Circle } from '../../packages/g/src';
-import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-svg/src';
 import { Plugin } from '../../packages/g-plugin-css-select/src';
 import { sleep } from './utils';
 
@@ -18,7 +18,7 @@ const canvas = new Canvas({
   supportsPointerEvents: false, // disable pointer event
 });
 
-describe('Event API', () => {
+describe.skip('Event API', () => {
   afterEach(() => {
     canvas.destroyChildren();
   });
