@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import {
   Canvas,
   Circle,
@@ -110,7 +110,7 @@ describe('Event API', () => {
     expect(destroyCallbackSpy).toHaveBeenCalled();
   });
 
-  it('should emit attribute-changed event correctly', async (done) => {
+  it('should emit attribute-changed event correctly', async () => {
     const circle = new Circle({
       style: {
         r: 10,
@@ -133,42 +133,44 @@ describe('Event API', () => {
     circle.style.r = 20;
     expect(attributeChangedCallback).toHaveBeenCalled();
 
-    const attributeModifiedCallback = function (e: MutationEvent) {
-      // @see https://github.com/antvis/g/issues/929
-      expect(this).toBe(e.currentTarget);
-      expect(circle).toBe(e.target);
-      expect(e.type).toBe(ElementEvent.ATTR_MODIFIED);
-      expect(e.attrChange).toBe(MutationEvent.MODIFICATION);
-      expect(e.attrName).toBe('r');
-      expect(e.prevValue).toBe(20);
-      expect(e.newValue).toBe(30);
-      expect(e.prevParsedValue).toBe(20);
-      expect(e.newParsedValue).toBe(30);
+    await new Promise((resolve) => {
+      const attributeModifiedCallback = function (e: MutationEvent) {
+        // @see https://github.com/antvis/g/issues/929
+        expect(this).toBe(e.currentTarget);
+        expect(circle).toBe(e.target);
+        expect(e.type).toBe(ElementEvent.ATTR_MODIFIED);
+        expect(e.attrChange).toBe(MutationEvent.MODIFICATION);
+        expect(e.attrName).toBe('r');
+        expect(e.prevValue).toBe(20);
+        expect(e.newValue).toBe(30);
+        expect(e.prevParsedValue).toBe(20);
+        expect(e.newParsedValue).toBe(30);
 
-      done();
-    };
-    canvas.addEventListener(
-      ElementEvent.ATTR_MODIFIED,
-      attributeModifiedCallback,
-    );
+        resolve(undefined);
+      };
+      canvas.addEventListener(
+        ElementEvent.ATTR_MODIFIED,
+        attributeModifiedCallback,
+      );
 
-    // use mutation observer
-    const config = { attributes: true, childList: true, subtree: true };
-    const observer = new MutationObserver((mutationsList, observer) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'attributes') {
-          expect(mutation.target).toBe(circle);
-          expect(mutation.attributeName).toBe('r');
-          expect(mutation.attributeNamespace).toBe('g');
-          expect(mutation.oldValue).toBeNull();
+      // use mutation observer
+      const config = { attributes: true, childList: true, subtree: true };
+      const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+          if (mutation.type === 'attributes') {
+            expect(mutation.target).toBe(circle);
+            expect(mutation.attributeName).toBe('r');
+            expect(mutation.attributeNamespace).toBe('g');
+            expect(mutation.oldValue).toBeNull();
+          }
         }
-      }
-    });
-    observer.observe(circle, config);
+      });
+      observer.observe(circle, config);
 
-    // trigger attribute changed
-    circle.attr('r', 30);
-    expect(attributeChangedCallback).toHaveBeenCalled();
+      // trigger attribute changed
+      circle.attr('r', 30);
+      expect(attributeChangedCallback).toHaveBeenCalled();
+    });
   });
 
   it('should emit destroy event correctly', async () => {

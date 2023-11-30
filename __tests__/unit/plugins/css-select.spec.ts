@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import { Plugin } from '../../../packages/g-plugin-css-select/src';
 import { Canvas, Circle, Group } from '../../../packages/g/src';
 
@@ -101,11 +101,11 @@ describe('CSS Select Plugin', () => {
 
     expect(solarSystem.querySelectorAll('[xx=4]')).toStrictEqual([]);
 
-    expect(renderer.getPlugins().length).toBe(8);
+    expect(renderer.getPlugins().length).toBe(5);
     renderer.unregisterPlugin(plugin);
-    expect(renderer.getPlugins().length).toBe(7);
+    expect(renderer.getPlugins().length).toBe(4);
 
     renderer.unregisterPlugin(plugin);
-    expect(renderer.getPlugins().length).toBe(7);
+    expect(renderer.getPlugins().length).toBe(4);
   });
 });

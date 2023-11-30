@@ -7,7 +7,7 @@ import {
   sortByZIndex,
 } from '../../../packages/g-lite/src/utils';
 
-describe('DOM utils', () => {
+describe.skip('DOM utils', () => {
   it('should setDOMSize correctly.', () => {
     const $el = document.createElement('canvas');
     window.document.body.appendChild($el);

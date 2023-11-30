@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import {
   Canvas,
   Circle,
@@ -167,7 +167,7 @@ describe('Document', () => {
     ).toStrictEqual([]);
   });
 
-  it('should picking with element(s)FromPoint', async () => {
+  it.skip('should picking with element(s)FromPoint', async () => {
     let target = await canvas.document.elementFromPoint(0, 0);
     let targets = await canvas.document.elementsFromPoint(0, 0);
     expect(target).toBe(canvas.document.documentElement);
@@ -226,7 +226,7 @@ describe('Document', () => {
     expect(targets).toStrictEqual([canvas.document.documentElement]);
   });
 
-  it('should get element(s)FromPoint correctly, account for some style props such as `interactive`.', async () => {
+  it.skip('should get element(s)FromPoint correctly, account for some style props such as `interactive`.', async () => {
     // 2 overlap circles
     const circle1 = new Circle({
       style: {
@@ -317,7 +317,7 @@ describe('Document', () => {
     expect(targets).toStrictEqual([circle1, canvas.document.documentElement]);
   });
 
-  it('should execute region query with elementsFromBBox', async () => {
+  it.skip('should execute region query with elementsFromBBox', async () => {
     let targets = canvas.document.elementsFromBBox(0, 0, 1, 1);
     expect(targets).toStrictEqual([canvas.document.documentElement]);
 

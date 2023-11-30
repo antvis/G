@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import { Canvas, Circle, IAnimation } from '../../../packages/g/src';
 import { sleep } from '../utils';
 
@@ -51,30 +51,33 @@ describe('Animation Cancel Event', () => {
     canvas.destroy();
   });
 
-  it('should trigger oncancel callback correctly', async (done) => {
+  it('should trigger oncancel callback correctly', async () => {
     const computedTiming = animation.effect.getComputedTiming();
 
     expect(canvas.document.timeline.currentTime).toBe(0);
     expect(animation.currentTime).toBe(0);
     expect(animation.playState).toBe('running');
 
-    animation.oncancel = (ev) => {
-      // According to https://w3c.github.io/csswg-drafts/web-animations-1/#canceling-an-animation-section
-      // currentTime should be null.
-      expect(ev.currentTime).toBe(null);
-      expect(animation.playState).toBe('idle');
+    await new Promise((resolve) => {
+      animation.oncancel = (ev) => {
+        // According to https://w3c.github.io/csswg-drafts/web-animations-1/#canceling-an-animation-section
+        // currentTime should be null.
+        expect(ev.currentTime).toBe(null);
+        expect(animation.playState).toBe('idle');
 
-      expect(computedTiming.endTime).toBe(4000);
-      expect(computedTiming.activeDuration).toBe(4000);
-      // not running
-      expect(computedTiming.progress).toBe(null);
-      expect(computedTiming.currentIteration).toBe(null);
+        expect(computedTiming.endTime).toBe(4000);
+        expect(computedTiming.activeDuration).toBe(4000);
+        // not running
+        expect(computedTiming.progress).toBe(null);
+        expect(computedTiming.currentIteration).toBe(null);
 
-      done();
-    };
+        resolve(undefined);
+      };
+
+      animation.cancel();
+    });
 
     await sleep(100);
-    animation.cancel();
   });
 
   // it('should reject finished promise when cancelled', async (done) => {
@@ -93,29 +96,34 @@ describe('Animation Cancel Event', () => {
   //   animation.cancel();
   // });
 
-  it('should not trigger onfinish callback when cancelled', async (done) => {
-    animation.oncancel = (ev) => {
-      expect(true).toBeTruthy();
-      done();
-    };
+  it('should not trigger onfinish callback when cancelled', async () => {
+    await new Promise((resolve) => {
+      animation.oncancel = (ev) => {
+        expect(true).toBeTruthy();
+        resolve(undefined);
+      };
 
-    animation.onfinish = () => {
-      expect(true).toBeFalsy();
-    };
+      animation.onfinish = () => {
+        expect(true).toBeFalsy();
+      };
+
+      animation.cancel();
+    });
 
     await sleep(100);
-    animation.cancel();
   });
 
-  it('oncancel must not fire when animation finishes', async (done) => {
-    animation.oncancel = (ev) => {
-      expect(true).toBeFalsy();
-    };
+  it('oncancel must not fire when animation finishes', async () => {
+    await new Promise((resolve) => {
+      animation.oncancel = (ev) => {
+        expect(true).toBeFalsy();
+      };
 
-    animation.onfinish = () => {
-      expect(true).toBeTruthy();
-      done();
-    };
+      animation.onfinish = () => {
+        expect(true).toBeTruthy();
+        resolve(undefined);
+      };
+    });
 
     await sleep(3000);
   });

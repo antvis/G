@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix';
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import { AdvancedCamera, Canvas } from '../../../packages/g/src';
 import { sleep } from '../utils';
 

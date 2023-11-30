@@ -2,42 +2,42 @@
 title: Web Animations API
 order: -4
 redirect_from:
-    - /en/api/animation
+  - /en/api/animation
 ---
 
 Referring to the [Web Animations API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Animations_API), we add animation capabilities to each DisplayObject.
 
 Currently we support Keyframe based animations, where the user needs to define a series of keyframes, each of which can contain parameters such as transformation attributes, frame offsets, easing functions, etc. G internally interpolates the values of each attribute at the current time and applies them to the target graphics (as shown below). In addition, the transformation of some special attributes will bring special animation effects, for example:
 
--   Using `offsetDistance` in [path animation](/en/api/animation/waapi#path-animation)
--   Using `lineDashOffset` in [marching ant animation](/en/api/animation/waapi#marching-ant-animation)
--   Using `lineDash` in [stroke animation](/en/api/animation/waapi#stroke-animation)
--   Using `path` in [morphing animation](/en/api/animation/waapi#morping)
+- Using `offsetDistance` in [path animation](/en/api/animation/waapi#path-animation)
+- Using `lineDashOffset` in [marching ant animation](/en/api/animation/waapi#marching-ant-animation)
+- Using `lineDash` in [stroke animation](/en/api/animation/waapi#stroke-animation)
+- Using `path` in [morphing animation](/en/api/animation/waapi#morping)
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*kF2uS4gpDh0AAAAAAAAAAAAAARQnAQ)
 
 For transition effects, we currently support:
 
--   Tween, such as `linear`, `cubic-bezier` and custom easing function.
--   Spring, an effect based on real physical springs.
+- Tween, such as `linear`, `cubic-bezier` and custom easing function.
+- Spring, an effect based on real physical springs.
 
 Let's start with a Keyframe animation, implementing a [ScaleIn](https://animista.net/play/entrances/scale-in) animation [example](/en/examples/animation#lifecycle).
 
 ```js
 const scaleInCenter = circle.animate(
-    [
-        {
-            transform: 'scale(0)',
-        },
-        {
-            transform: 'scale(1)',
-        },
-    ],
+  [
     {
-        duration: 500,
-        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-        fill: 'both',
+      transform: 'scale(0)',
     },
+    {
+      transform: 'scale(1)',
+    },
+  ],
+  {
+    duration: 500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    fill: 'both',
+  },
 );
 ```
 
@@ -45,15 +45,15 @@ Developers familiar with CSS Transform/Animation will be familiar with it. Its C
 
 ```css
 .scale-in-center {
-    animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: scale-in-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 @keyframes scale-in-center {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 ```
 
@@ -91,19 +91,19 @@ The most common is to declare the properties to be transformed in the keyframes,
 
 ```js
 circle.animate(
-    [
-        {
-            // from
-            opacity: 0,
-            fill: '#fff',
-        },
-        {
-            // to
-            opacity: 1,
-            fill: '#000',
-        },
-    ],
-    2000,
+  [
+    {
+      // from
+      opacity: 0,
+      fill: '#fff',
+    },
+    {
+      // to
+      opacity: 1,
+      fill: '#000',
+    },
+  ],
+  2000,
 );
 ```
 
@@ -113,14 +113,14 @@ The elements in the keyframes array are [Keyframe](/en/api/animation/waapi#keyfr
 
 `options` supports two types.
 
--   [EffectTiming](/en/api/animation/waapi#effecttiming)
--   `number` is equivalent to `{ duration }`
+- [EffectTiming](/en/api/animation/waapi#effecttiming)
+- `number` is equivalent to `{ duration }`
 
 Therefore the following two ways of writing are equivalent.
 
 ```js
 circle.animate(keyframes, {
-    duration: 100,
+  duration: 100,
 });
 circle.animate(keyframes, 100);
 ```
@@ -166,10 +166,10 @@ Returns the running state of the animation. The state is changed when some manua
 
 https://developer.mozilla.org/en-US/docs/Web/API/Animation/playState
 
--   `'idle'` Animation is in an unready state.
--   `'running'` Animation is running.
--   `'paused'` Animation is paused.
--   `'finished'` Animation is finished.
+- `'idle'` Animation is in an unready state.
+- `'running'` Animation is running.
+- `'paused'` Animation is paused.
+- `'finished'` Animation is finished.
 
 #### pending
 
@@ -183,8 +183,8 @@ Returns a Promise that resolves when the animation is ready to start. https://de
 
 ```js
 animation.ready.then(() => {
-    animation.playState; // running
-    canvas.timeline.currentTime;
+  animation.playState; // running
+  canvas.timeline.currentTime;
 });
 ```
 
@@ -198,9 +198,9 @@ For example, if we want the graph to remove itself after all animations have fin
 
 ```js
 Promise.all(circle.getAnimations().map((animation) => animation.finished)).then(
-    () => {
-        return circle.remove();
-    },
+  () => {
+    return circle.remove();
+  },
 );
 ```
 
@@ -208,30 +208,30 @@ Or to complete a set of sequential animations, such as having a circle move firs
 
 ```js
 (async () => {
-    // 向右移动 100px
-    const moveRight = circle.animate(
-        [
-            {
-                transform: 'translate(0)',
-            },
-            {
-                transform: 'translate(100px)',
-            },
-        ],
-        {
-            duration: 1000,
-            easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-            fill: 'both',
-        },
-    );
-    // 等待动画完成
-    await moveRight.finished;
+  // 向右移动 100px
+  const moveRight = circle.animate(
+    [
+      {
+        transform: 'translate(0)',
+      },
+      {
+        transform: 'translate(100px)',
+      },
+    ],
+    {
+      duration: 1000,
+      easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+      fill: 'both',
+    },
+  );
+  // 等待动画完成
+  await moveRight.finished;
 
-    // 完成后向下移动
-    const moveDown = circle
-        .animate
-        //... 省略
-        ();
+  // 完成后向下移动
+  const moveDown = circle
+    .animate
+    //... 省略
+    ();
 })();
 ```
 
@@ -243,16 +243,16 @@ https://developer.mozilla.org/en-US/docs/Web/API/Animation/onfinish
 
 ```js
 animation.onfinish = function (e) {
-    e.target; // animation
-    e.target.playState; // 'finished'
+  e.target; // animation
+  e.target.playState; // 'finished'
 };
 ```
 
 The event object in the callback function is [AnimationPlaybackEvent](https://developer.mozilla.org/en-US/docs/Web/API/AnimationPlaybackEvent), which is special in that it cannot be bubbled and cannot call some methods on the object some of the methods on the object, the useful properties are as follows.
 
--   `target` Returns the animation object.
--   `currentTime`
--   `timelineTime`
+- `target` Returns the animation object.
+- `currentTime`
+- `timelineTime`
 
 #### onframe
 
@@ -260,8 +260,8 @@ Called for animations that are running, at the end of each frame, when the prope
 
 ```js
 animation.onframe = function (e) {
-    e.target; // animation
-    e.target.playState; // 'running'
+  e.target; // animation
+  e.target.playState; // 'running'
 };
 ```
 
@@ -355,7 +355,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target
 
 ```js
 const animation = circle.animate({
-    // ...
+  // ...
 });
 
 animation.effect.target; // circle
@@ -376,8 +376,8 @@ timing.ease = 'linear';
 
 Returns a [ComputedEffectTiming](/en/api/animation/waapi#effecttiming) object, which differs from [EffectTiming](/en/api/animation/waapi#effecttiming) in that the former takes some literal quantities of the latter and returns.
 
--   `duration` Returns 0 when `duration` is 'auto'.
--   `fill` Returns 'none' if 'auto'.
+- `duration` Returns 0 when `duration` is 'auto'.
+- `fill` Returns 'none' if 'auto'.
 
 https://developer.mozilla.org/en-US/docs/Web/API/AnimationEffect/getComputedTiming
 
@@ -435,33 +435,33 @@ For custom properties, you can [register them in the style system](/en/api/css/c
 
 where transform is consistent with [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform) and supports the following property values:
 
--   Scaling, unitless
-    -   scale(x, y)
-    -   scaleX(x)
-    -   scaleY(x)
-    -   scaleZ(z)
-    -   scale3d(x, y, z)
--   Panning, 0 can be used without units, unitless is treated as px, the percentage is relative to the current graph enclosing the box
-    -   translate(0, 0) translate(0, 30px) translate(100%, 100%)
-    -   translateX(0)
-    -   translateY(0)
-    -   translateZ(0)
-    -   translate3d(0, 0, 0)
--   Rotation, support for deg, rad and turn
-    -   rotate(0.5turn) rotate(30deg) rotate(1rad)
--   Stretch, support for deg, rad and turn
-    -   skew(ax, ay)
-    -   skewX(a)
-    -   skewY(a)
--   matrix
-    -   matrix(a,b,c,d,tx,ty) Available from [CSS matrix definition](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix)
-    -   matrix3d() Complete matrix definition with 16 elements
--   none
+- Scaling, unitless
+  - scale(x, y)
+  - scaleX(x)
+  - scaleY(x)
+  - scaleZ(z)
+  - scale3d(x, y, z)
+- Panning, 0 can be used without units, unitless is treated as px, the percentage is relative to the current graph enclosing the box
+  - translate(0, 0) translate(0, 30px) translate(100%, 100%)
+  - translateX(0)
+  - translateY(0)
+  - translateZ(0)
+  - translate3d(0, 0, 0)
+- Rotation, support for deg, rad and turn
+  - rotate(0.5turn) rotate(30deg) rotate(1rad)
+- Stretch, support for deg, rad and turn
+  - skew(ax, ay)
+  - skewX(a)
+  - skewY(a)
+- matrix
+  - matrix(a,b,c,d,tx,ty) Available from [CSS matrix definition](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix)
+  - matrix3d() Complete matrix definition with 16 elements
+- none
 
 ⚠️ The following values are not supported at this time.
 
--   `calc()` e.g. `translate(calc(100% + 10px))`
--   `perspective`
+- `calc()` e.g. `translate(calc(100% + 10px))`
+- `perspective`
 
 ### offset
 
@@ -487,12 +487,12 @@ The easing function between adjacent keyframes can be specified by `easing`.
 
 ```js
 circle.animate(
-    [
-        { opacity: 1, easing: 'ease-out' },
-        { opacity: 0.1, easing: 'ease-in' },
-        { opacity: 0 },
-    ],
-    2000,
+  [
+    { opacity: 1, easing: 'ease-out' },
+    { opacity: 0.1, easing: 'ease-in' },
+    { opacity: 0 },
+  ],
+  2000,
 );
 ```
 
@@ -504,8 +504,8 @@ Some common animation effects, such as fadeIn, etc., can be found in https://git
 
 ```js
 export default {
-    keyframes: [{ opacity: 0 }, { opacity: 1 }],
-    animationOptions: { duration: 1000, fill: 'both' },
+  keyframes: [{ opacity: 0 }, { opacity: 1 }],
+  animationOptions: { duration: 1000, fill: 'both' },
 };
 ```
 
@@ -547,10 +547,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/direction
 
 The following values can be taken.
 
--   `'normal'` In each iteration, the animation runs from the start frame to the end frame.
--   `'reverse'` In each iteration, the animation runs from the end frame to the start frame.
--   `'alternate'` Change the direction at the end of each iteration, e.g. first iteration from front to back, second iteration from back to front.
--   `'alternate-reverse'` Change the direction at the end of each iteration, e.g. back to front for the first iteration and front to back for the second iteration.
+- `'normal'` In each iteration, the animation runs from the start frame to the end frame.
+- `'reverse'` In each iteration, the animation runs from the end frame to the start frame.
+- `'alternate'` Change the direction at the end of each iteration, e.g. first iteration from front to back, second iteration from back to front.
+- `'alternate-reverse'` Change the direction at the end of each iteration, e.g. back to front for the first iteration and front to back for the second iteration.
 
 ### duration
 
@@ -601,30 +601,17 @@ In addition, you can also customize functions like cubic Bezier curves with `cub
 
 When the above built-in easing functions cannot be satisfied, you can manually pass in a custom function via `easingFunction`.
 
-### easingFunction
+You can also register custom easing function via `EasingFunctions` like this:
 
-Custom jogging function. In the vast majority of cases there is no need to use this property, and the built-in jogging functions are basically sufficient.
+````ts
+import { EasingFunctions } from '@antv/g';
 
-**type**： `Function`
+EasingFunctions['my-easing'] = (t: number) => t;
 
-**default value**：`null`
-
-**required**：`false`
-
-But if you want to, for example, implement a step effect manually, [example](/en/examples/animation#easing) (select the custom easing function).
-
-```js
-const count = 4;
-const pos = 0;
-timing.easingFunction = (x) => {
-    if (x >= 1) {
-        return 1;
-    }
-    const stepSize = 1 / count;
-    x += pos * stepSize;
-    return x - (x % stepSize);
-};
-```
+circle.animate([{ opacity: 0 }, { opacity: 1 }], {
+  duration: 500,
+  easing: 'my-easing',
+});
 
 ### endDelay
 
@@ -649,16 +636,16 @@ const animation = circle.animate(
         easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
     },
 );
-```
+````
 
 ### fill
 
 This property specifies how the graph will be displayed when the animation is in a non-running state (e.g. before the animation starts, after it ends). The following values are supported.
 
--   `'auto/none'` default value, This means that the animation will not affect the presentation of the graphics before the first frame starts and after the last frame ends. For example, after the animation finishes the graphics will return to their pre-animation state, and if a delay is set the effect of the first frame will not be applied during the delay.
--   `'forwards'` Stop after the animation is completed and does not return to the initial state.
--   `'backwards'` Apply the first frame effect before the animation starts.
--   `'both'` For the combination of `'forwards'` and `'backwards'`.
+- `'auto/none'` default value, This means that the animation will not affect the presentation of the graphics before the first frame starts and after the last frame ends. For example, after the animation finishes the graphics will return to their pre-animation state, and if a delay is set the effect of the first frame will not be applied during the delay.
+- `'forwards'` Stop after the animation is completed and does not return to the initial state.
+- `'backwards'` Apply the first frame effect before the animation starts.
+- `'both'` For the combination of `'forwards'` and `'backwards'`.
 
 https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill
 
@@ -666,20 +653,20 @@ For example, we want the graph to stop at the end state after the scaling animat
 
 ```js
 const animation = circle.animate(
-    [
-        {
-            transform: 'scale(1)',
-            fill: '#1890FF',
-            stroke: '#F04864',
-            opacity: 1,
-        },
-        { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
-    ],
+  [
     {
-        duration: 1500,
-        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-        fill: 'both',
+      transform: 'scale(1)',
+      fill: '#1890FF',
+      stroke: '#F04864',
+      opacity: 1,
     },
+    { transform: 'scale(2)', fill: 'red', stroke: '#1890FF', opacity: 0.8 },
+  ],
+  {
+    duration: 1500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    fill: 'both',
+  },
 );
 ```
 
@@ -739,7 +726,7 @@ In this [example](/en/examples/animation#lifecycle), we print the progress value
 
 ```js
 animation.onframe = (e) => {
-    console.log(e.target.effect.getComputedTiming().progress);
+  console.log(e.target.effect.getComputedTiming().progress);
 };
 ```
 
@@ -769,12 +756,12 @@ So how do you implement this non-jogging effect using CSS Animation or WAAPI? Th
 
 ```js
 const animation = image.animate(
-    [{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
-    {
-        duration: 1500,
-        iterations: Infinity,
-        easing: 'spring',
-    },
+  [{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
+  {
+    duration: 1500,
+    iterations: Infinity,
+    easing: 'spring',
+  },
 );
 ```
 
@@ -784,16 +771,16 @@ Moving graphics along a path is a common requirement, and is accomplished in CSS
 
 ```css
 #motion-demo {
-    animation: move 3000ms infinite alternate ease-in-out;
-    offset-path: path('M20,20 C20,100 200,0 200,100');
+  animation: move 3000ms infinite alternate ease-in-out;
+  offset-path: path('M20,20 C20,100 200,0 200,100');
 }
 @keyframes move {
-    0% {
-        offset-distance: 0%;
-    }
-    100% {
-        offset-distance: 100%;
-    }
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
 }
 ```
 
@@ -801,25 +788,25 @@ First create a motion path by offsetPath, currently support [Line](/en/api/basic
 
 ```js
 const circle = new Circle({
-    style: {
-        offsetPath: new Line({
-            // Create motion tracks
-            style: {
-                // There is no need to set other drawing properties that are not related to trajectories
-                x1: 100,
-                y1: 100,
-                x2: 300,
-                y2: 100,
-            },
-        }),
-        r: 10,
-    },
+  style: {
+    offsetPath: new Line({
+      // Create motion tracks
+      style: {
+        // There is no need to set other drawing properties that are not related to trajectories
+        x1: 100,
+        y1: 100,
+        x2: 300,
+        y2: 100,
+      },
+    }),
+    r: 10,
+  },
 });
 
 circle.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-    duration: 3000,
-    easing: 'ease-in-out',
-    iterations: Infinity,
+  duration: 3000,
+  easing: 'ease-in-out',
+  iterations: Infinity,
 });
 ```
 
@@ -835,13 +822,13 @@ The [lineDashOffset](/en/api/basic/display-object#linedashoffset) property is us
 
 ```js
 const circle = new Circle({
-    style: {
-        lineDash: [10, 10],
-    },
+  style: {
+    lineDash: [10, 10],
+  },
 });
 circle.animate([{ lineDashOffset: -20 }, { lineDashOffset: 0 }], {
-    duration: 500,
-    iterations: Infinity,
+  duration: 500,
+  iterations: Infinity,
 });
 ```
 
@@ -856,10 +843,10 @@ A common animation effect is to show the stroke from nothing to something. The [
 ```js
 const length = path.getTotalLength();
 path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
-    duration: 3500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    iterations: Infinity,
-    direction: 'alternate',
+  duration: 3500,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  iterations: Infinity,
+  direction: 'alternate',
 });
 ```
 
@@ -871,10 +858,10 @@ path.animate([{ lineDash: [0, length] }, { lineDash: [length, 0] }], {
 
 Examples of morping animation can be found in many SVG-related libraries, such as
 
--   [Paper.js](http://paperjs.org/)
--   [Kute.js](https://thednp.github.io/kute.js/) provides [Morph](https://thednp.github.io/kute.js/svgMorph.html) and [CubicMorph](https://thednp.github.io/kute.js/svgCubicMorph.html).
--   [Snap.svg](http://snapsvg.io/)
--   GreenSocks provides [MorphSVGPlugin](https://greensock.com/docs/v2/Plugins/MorphSVGPlugin)
+- [Paper.js](http://paperjs.org/)
+- [Kute.js](https://thednp.github.io/kute.js/) provides [Morph](https://thednp.github.io/kute.js/svgMorph.html) and [CubicMorph](https://thednp.github.io/kute.js/svgCubicMorph.html).
+- [Snap.svg](http://snapsvg.io/)
+- GreenSocks provides [MorphSVGPlugin](https://greensock.com/docs/v2/Plugins/MorphSVGPlugin)
 
 The above partial library will require that the path definitions before and after the transformation contain the same segments, otherwise interpolation is not possible.
 
@@ -883,15 +870,15 @@ G refers to [CubicMorph](https://thednp.github.io/kute.js/svgCubicMorph.html) in
 ```js
 const path1 = 'M 0,40 ...';
 const path2 = [
-    ['M', 100, 100],
-    ['L', 200, 200],
+  ['M', 100, 100],
+  ['L', 200, 200],
 ];
 
 path.animate([{ path: path1 }, { path: path2 }], {
-    duration: 2500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    iterations: Infinity,
-    direction: 'alternate',
+  duration: 2500,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  iterations: Infinity,
+  direction: 'alternate',
 });
 ```
 
@@ -907,16 +894,16 @@ Since only the path attribute can be transformed, for other base shapes such as 
 import { Circle, convertToPath } from '@antv/g';
 
 const circle = new Circle({
-    style: {
-        cx: 50,
-        cy: 50,
-        r: 50,
-    },
+  style: {
+    cx: 50,
+    cy: 50,
+    r: 50,
+  },
 });
 const circlePath = convertToPath(circle); // get path definition
 
 path.animate([{ path: originalPath }, { path: circlePath }], {
-    duration: 2500,
+  duration: 2500,
 });
 ```
 
@@ -928,9 +915,9 @@ Note that the transformation of these base shapes affects the final generated pa
 
 ```js
 const starPath = new Path({
-    style: {
-        path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
-    },
+  style: {
+    path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
+  },
 });
 starPath.scale(0.2); // do scaling first
 const pathString = convertToPath(starPath); // then do conversion
@@ -942,15 +929,15 @@ We do not support more than two sets of keyframes for the time being in the shap
 
 ```js
 path.animate(
-    [
-        // wrong. use 3 keyframes
-        { path: path1 },
-        { path: path2 },
-        { path: path3 },
-    ],
-    {
-        duration: 2500,
-    },
+  [
+    // wrong. use 3 keyframes
+    { path: path1 },
+    { path: path2 },
+    { path: path3 },
+  ],
+  {
+    duration: 2500,
+  },
 );
 ```
 
@@ -958,15 +945,15 @@ For continuous changes between multiple paths, it can be split into multiple Ani
 
 ```js
 const animation1 = path.animate([{ path: path1 }, { path: path2 }], {
-    duration: 1250,
-    fill: 'both',
+  duration: 1250,
+  fill: 'both',
 });
 
 animation1.finished.then(() => {
-    path.animate([{ path: path2 }, { path: path3 }], {
-        duration: 1250,
-        fill: 'both',
-    });
+  path.animate([{ path: path2 }, { path: path3 }], {
+    duration: 1250,
+    fill: 'both',
+  });
 });
 ```
 
