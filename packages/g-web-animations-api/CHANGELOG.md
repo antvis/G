@@ -1,5 +1,11 @@
 # @antv/g-web-animations-api
 
+## 1.2.20
+
+### Patch Changes
+
+-   d0900821: Allow registering custom easing function.
+
 ## 1.2.19
 
 ### Patch Changes

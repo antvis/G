@@ -17,7 +17,7 @@ order: 4
 
 继承了 `AbstractRenderer` 之后，在构造函数中可以选取一系列已有的插件，使用 [registerPlugin()](/zh/api/renderer/renderer#registerplugin) 进行注册，例如使用 Canvas2D API 定义路径的 [g-plugin-canvas-path-generator](/zh/plugins/canvas-path-generator)，使用 Canvas2D API 进行拾取的 [g-plugin-canvas-picker](/zh/plugins/canvas-picker)。
 
-https://github.com/antvis/G/blob/next/packages/g-canvas/src/index.ts
+https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts
 
 ```js
 import type { RendererConfig } from '@antv/g';
@@ -31,20 +31,20 @@ import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {
-    constructor(config?: Partial<RendererConfig>) {
-        super(config);
+  constructor(config?: Partial<RendererConfig>) {
+    super(config);
 
-        // register Canvas2DContext
-        this.registerPlugin(new ContextRegisterPlugin());
+    // register Canvas2DContext
+    this.registerPlugin(new ContextRegisterPlugin());
 
-        // register other built-in plugins
-        this.registerPlugin(new ImageLoader.Plugin());
-        this.registerPlugin(new CanvasPathGenerator.Plugin());
-        this.registerPlugin(new CanvasRenderer.Plugin());
-        this.registerPlugin(new DomInteraction.Plugin());
-        this.registerPlugin(new CanvasPicker.Plugin());
-        this.registerPlugin(new HTMLRenderer.Plugin());
-    }
+    // register other built-in plugins
+    this.registerPlugin(new ImageLoader.Plugin());
+    this.registerPlugin(new CanvasPathGenerator.Plugin());
+    this.registerPlugin(new CanvasRenderer.Plugin());
+    this.registerPlugin(new DomInteraction.Plugin());
+    this.registerPlugin(new CanvasPicker.Plugin());
+    this.registerPlugin(new HTMLRenderer.Plugin());
+  }
 }
 ```
 
@@ -59,20 +59,20 @@ import { AbstractRendererPlugin, Module } from '@antv/g';
 import { Canvas2DContextService } from './Canvas2DContextService';
 
 const containerModule = Module((register) => {
-    /**
-     * implements ContextService
-     */
-    register(Canvas2DContextService);
+  /**
+   * implements ContextService
+   */
+  register(Canvas2DContextService);
 });
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
-    name = 'canvas-context-register';
-    init(): void {
-        this.container.load(containerModule, true);
-    }
-    destroy(): void {
-        this.container.unload(containerModule);
-    }
+  name = 'canvas-context-register';
+  init(): void {
+    this.container.load(containerModule, true);
+  }
+  destroy(): void {
+    this.container.unload(containerModule);
+  }
 }
 ```
 
@@ -87,22 +87,22 @@ import { ContextService, inject, singleton } from '@antv/g';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService
-    implements ContextService<CanvasRenderingContext2D> {}
+  implements ContextService<CanvasRenderingContext2D> {}
 ```
 
 `ContextService` 接口定义如下：
 
 ```js
 export interface ContextService<Context> {
-    init: () => Promise<void>;
-    destroy: () => void;
-    getContext: () => Context | null;
-    getDomElement: () => CanvasLike | null;
-    getDPR: () => number;
-    getBoundingClientRect: () => DOMRect | undefined;
-    resize: (width: number, height: number) => void;
-    applyCursorStyle: (cursor: string) => void;
-    toDataURL: (options: Partial<DataURLOptions>) => Promise<string>;
+  init: () => Promise<void>;
+  destroy: () => void;
+  getContext: () => Context | null;
+  getDomElement: () => CanvasLike | null;
+  getDPR: () => number;
+  getBoundingClientRect: () => DOMRect | undefined;
+  resize: (width: number, height: number) => void;
+  applyCursorStyle: (cursor: string) => void;
+  toDataURL: (options: Partial<DataURLOptions>) => Promise<string>;
 }
 ```
 
@@ -140,15 +140,15 @@ async init() {
 
 返回自定义渲染上下文，不同的渲染器返回不同的对象，例如：
 
--   [g-canvas](/zh/api/renderer/canvas) 返回 `CanvasRenderingContext2D`
--   [g-svg](/zh/api/renderer/svg) 返回 `SVGElement`
--   [g-webgl](/zh/api/renderer/webgl) 返回一个复杂对象 `WebGLRenderingContext`
+- [g-canvas](/zh/api/renderer/canvas) 返回 `CanvasRenderingContext2D`
+- [g-svg](/zh/api/renderer/svg) 返回 `SVGElement`
+- [g-webgl](/zh/api/renderer/webgl) 返回一个复杂对象 `WebGLRenderingContext`
 
 ```js
 interface WebGLRenderingContext {
-    engine: RenderingEngine;
-    camera: Camera;
-    view: IView;
+  engine: RenderingEngine;
+  camera: Camera;
+  view: IView;
 }
 ```
 
@@ -174,7 +174,7 @@ interface WebGLRenderingContext {
 
 不同的渲染环境实现起来难度自然也不同，例如 [g-canvas](/zh/api/renderer/canvas) 中可以使用原生 [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/HTMLCanvasElement/toDataURL) 方法
 
-https://github.com/antvis/G/blob/next/packages/g-canvas/src/Canvas2DContextService.ts#L107-L110
+https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110
 
 ```js
 async toDataURL(options: Partial<DataURLOptions> = {}) {

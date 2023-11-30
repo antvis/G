@@ -1,5 +1,5 @@
 import { PathArray, isNumberEqual } from '@antv/util';
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import {
   CSS,
   Canvas,

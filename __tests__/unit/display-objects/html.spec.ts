@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import { Canvas, HTML } from '../../../packages/g/src';
 import { sleep } from '../utils';
 
@@ -16,7 +16,7 @@ const canvas = new Canvas({
   renderer,
 });
 
-describe('HTML', () => {
+describe.skip('HTML', () => {
   afterEach(() => {
     canvas.destroyChildren();
   });

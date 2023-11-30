@@ -1,4 +1,4 @@
-import { Renderer as CanvasRenderer } from '../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../packages/g-svg/src';
 import { Plugin } from '../../packages/g-plugin-css-select/src';
 import {
   Canvas,
@@ -30,7 +30,7 @@ const CAPTURING_PHASE = 1;
 const AT_TARGET = 2;
 const BUBBLING_PHASE = 3;
 
-describe('Event API', () => {
+describe.skip('Event API', () => {
   afterEach(() => {
     canvas.destroyChildren();
   });

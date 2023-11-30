@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix';
 import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import {
   AdvancedCamera,
   CameraProjectionMode,
