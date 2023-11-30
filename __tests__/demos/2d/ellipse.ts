@@ -27,47 +27,47 @@ export async function ellipse(context) {
   ellipse3.setPosition(60, 20);
   canvas.appendChild(ellipse3);
 
-  // // none fill
-  // const ellipse4 = ellipse2.cloneNode();
-  // ellipse4.style.fill = 'none';
-  // ellipse4.setPosition(80, 20);
-  // canvas.appendChild(ellipse4);
+  // none fill
+  const ellipse4 = ellipse2.cloneNode();
+  ellipse4.style.fill = 'none';
+  ellipse4.setPosition(80, 20);
+  canvas.appendChild(ellipse4);
 
-  // // dashed
-  // const ellipse5 = ellipse2.cloneNode();
-  // ellipse5.style.lineDash = [2, 2];
-  // ellipse5.setPosition(100, 20);
-  // canvas.appendChild(ellipse5);
+  // dashed
+  const ellipse5 = ellipse2.cloneNode();
+  ellipse5.style.lineDash = [2, 2];
+  ellipse5.setPosition(100, 20);
+  canvas.appendChild(ellipse5);
 
-  // // dashed with offset
-  // const ellipse6 = ellipse2.cloneNode();
-  // ellipse6.style.lineDash = [2, 2];
-  // ellipse6.style.lineDashOffset = 2;
-  // ellipse6.setPosition(120, 20);
-  // canvas.appendChild(ellipse6);
+  // dashed with offset
+  const ellipse6 = ellipse2.cloneNode();
+  ellipse6.style.lineDash = [2, 2];
+  ellipse6.style.lineDashOffset = 2;
+  ellipse6.setPosition(120, 20);
+  canvas.appendChild(ellipse6);
 
-  // const ellipse7 = ellipse1.cloneNode();
-  // ellipse7.style.opacity = 0.5;
-  // ellipse7.setPosition(140, 20);
-  // canvas.appendChild(ellipse7);
+  const ellipse7 = ellipse1.cloneNode();
+  ellipse7.style.opacity = 0.5;
+  ellipse7.setPosition(140, 20);
+  canvas.appendChild(ellipse7);
 
-  // // with shadow
-  // const ellipse8 = ellipse1.cloneNode();
-  // ellipse8.style.shadowBlur = 10;
-  // ellipse8.style.shadowColor = 'blue';
-  // ellipse8.setPosition(20, 60);
-  // canvas.appendChild(ellipse8);
+  // with shadow
+  const ellipse8 = ellipse1.cloneNode();
+  ellipse8.style.shadowBlur = 10;
+  ellipse8.style.shadowColor = 'blue';
+  ellipse8.setPosition(20, 60);
+  canvas.appendChild(ellipse8);
 
-  // // with gradient
-  // const ellipse9 = ellipse1.cloneNode();
-  // ellipse9.style.fill = 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
-  // ellipse9.setPosition(60, 60);
-  // canvas.appendChild(ellipse9);
+  // with gradient
+  const ellipse9 = ellipse1.cloneNode();
+  ellipse9.style.fill = 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff';
+  ellipse9.setPosition(60, 60);
+  canvas.appendChild(ellipse9);
 
-  // const ellipse10 = ellipse1.cloneNode();
-  // ellipse10.style.fill = 'r(0.5, 0.5, 1) 0:#ffffff 1:#1890ff';
-  // ellipse10.setPosition(100, 60);
-  // canvas.appendChild(ellipse10);
+  const ellipse10 = ellipse1.cloneNode();
+  ellipse10.style.fill = 'r(0.5, 0.5, 1) 0:#ffffff 1:#1890ff';
+  ellipse10.setPosition(100, 60);
+  canvas.appendChild(ellipse10);
 
   // transform
   const ellipse11 = ellipse1.cloneNode();

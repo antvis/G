@@ -1,10 +1,10 @@
-import { Polyline } from '../../../packages/g';
+import { Polygon } from '../../../packages/g';
 
-export async function polyline(context) {
+export async function polygon(context) {
   const { canvas } = context;
   await canvas.ready;
 
-  const polyline = new Polyline({
+  const polygon = new Polygon({
     style: {
       points: [
         [10, 10],
@@ -15,31 +15,31 @@ export async function polyline(context) {
       lineWidth: 6,
     },
   });
-  canvas.appendChild(polyline);
+  canvas.appendChild(polygon);
 
   // dashed
-  const polyline2 = polyline.cloneNode();
+  const polyline2 = polygon.cloneNode();
   polyline2.style.lineDash = [2];
   polyline2.translate(30, 0);
   canvas.appendChild(polyline2);
 
   // lineCap
-  const polyline3 = polyline.cloneNode();
+  const polyline3 = polygon.cloneNode();
   polyline3.style.lineCap = 'round';
   polyline3.translate(60, 0);
   canvas.appendChild(polyline3);
-  const polyline4 = polyline.cloneNode();
+  const polyline4 = polygon.cloneNode();
   polyline4.style.lineCap = 'square';
   polyline4.translate(90, 0);
   canvas.appendChild(polyline4);
 
   // lineJoin
-  const polyline5 = polyline.cloneNode();
+  const polyline5 = polygon.cloneNode();
   polyline5.style.lineJoin = 'round';
   polyline5.translate(120, 0);
   canvas.appendChild(polyline5);
 
-  const polyline6 = polyline.cloneNode();
+  const polyline6 = polygon.cloneNode();
   polyline6.style.lineJoin = 'miter'; // "bevel" | "miter" | "round";
   polyline6.translate(150, 0);
   canvas.appendChild(polyline6);

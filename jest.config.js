@@ -36,9 +36,7 @@ module.exports = {
   //     statements: 80,
   //   },
   // },
-
-  runner: 'jest-electron/runner',
-  testEnvironment: 'jest-electron/environment',
+  testEnvironment: 'jsdom',
   testMatch: [
     '<rootDir>/__tests__/unit/**/*/*.spec.+(ts|tsx|js)',
     '<rootDir>/__tests__/unit/*.spec.+(ts|tsx|js)',
@@ -47,22 +45,23 @@ module.exports = {
     ? ['<rootDir>/__tests__/unit/g-gesture']
     : ['<rootDir>/__tests__/unit/g-gesture'],
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-      tsConfig: {
-        allowJs: true,
-        target: 'esnext',
-        esModuleInterop: true,
+  transform: {
+    '^.+\\.[tj]s$': [
+      'ts-jest',
+      {
+        isolatedModules: true,
+        tsconfig: {
+          allowJs: true,
+          target: 'esnext',
+          esModuleInterop: true,
+        },
       },
-    },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   modulePathIgnorePatterns: ['dist'],
-  transform: {
-    '^.+\\.[tj]s$': 'ts-jest',
-  },
   transformIgnorePatterns: [
-    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|eventemitter3)',
+    // @see https://stackoverflow.com/a/69179139
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
   ],
 };

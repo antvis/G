@@ -25,10 +25,8 @@ jobs:
           node-version: 16
           cache: 'pnpm'
 
-      - name: Install headless-gl dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mesa-utils xvfb libgl1-mesa-dri libglapi-mesa libosmesa6
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
       - name: Install dependencies
         run: pnpm install
@@ -36,12 +34,14 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Cov
-        run: |
-          xvfb-run -s "-ac -screen 0 1280x1024x16" pnpm cov
-        env:
-          CI: true
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+      - name: Test
+        run: pnpm test:serverside
+
+      - name: Upload snapshots to GitHub Actions Artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: snapshots
+          path: |
+            __tests__/integration/snapshots/**/*/*-actual.png
+          retention-days: 1

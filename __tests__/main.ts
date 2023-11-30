@@ -130,7 +130,7 @@ function createOption(key) {
   const option = document.createElement('option');
   option.value = key;
   option.textContent = key;
-  if (key === 'webgl') {
+  if (key === (window['DEFAULT_RENDERER'] || 'svg')) {
     option.selected = true;
   }
   return option;
@@ -172,8 +172,8 @@ function createSpecRender(object) {
       const $div = document.createElement('div');
       canvas = new Canvas({
         container: $div,
-        width: 640,
-        height: 640,
+        width: window['CANVAS_WIDTH'] || 640,
+        height: window['CANVAS_HEIGHT'] || 640,
         renderer,
       });
 
