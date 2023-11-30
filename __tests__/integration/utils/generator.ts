@@ -1,8 +1,9 @@
 import { chromium, devices } from 'playwright';
-import './utils/useSnapshotMatchers';
-import { sleep } from './utils/sleep';
+import './useSnapshotMatchers';
+import { sleep } from './sleep';
 
 export function generateCanvasTestCase(
+  renderer: 'canvas' | 'svg' | 'webgl',
   namespace: string,
   tests: Record<string, any>,
   params?: Partial<{
@@ -23,7 +24,7 @@ export function generateCanvasTestCase(
 
       await page.addInitScript(() => {
         window['USE_PLAYWRIGHT'] = 1;
-        window['DEFAULT_RENDERER'] = 'canvas';
+        window['DEFAULT_RENDERER'] = renderer;
         window['CANVAS_WIDTH'] = width;
         window['CANVAS_HEIGHT'] = height;
       });
@@ -35,9 +36,11 @@ export function generateCanvasTestCase(
       await sleep(300);
 
       // Chart already rendered, capture into buffer.
-      const buffer = await page.locator('canvas').screenshot();
+      const buffer = await page
+        .locator(renderer === 'svg' ? 'svg' : 'canvas')
+        .screenshot();
 
-      const dir = `${__dirname}/snapshots/${namespace}/canvas`;
+      const dir = `${__dirname}/snapshots/${namespace}/${renderer}`;
       try {
         const maxError = 0;
         expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
