@@ -22,12 +22,19 @@ export function generateCanvasTestCase(
       const context = await browser.newContext(devices['Desktop Chrome']);
       const page = await context.newPage();
 
-      await page.addInitScript(() => {
-        window['USE_PLAYWRIGHT'] = 1;
-        window['DEFAULT_RENDERER'] = renderer;
-        window['CANVAS_WIDTH'] = width;
-        window['CANVAS_HEIGHT'] = height;
-      });
+      await page.addInitScript(
+        ({ renderer, width, height }) => {
+          window['USE_PLAYWRIGHT'] = 1;
+          window['DEFAULT_RENDERER'] = renderer;
+          window['CANVAS_WIDTH'] = width;
+          window['CANVAS_HEIGHT'] = height;
+        },
+        {
+          renderer,
+          width,
+          height,
+        },
+      );
 
       // Go to test page served by vite devServer.
       const url = `http://localhost:${globalThis.PORT}/?name=${namespace}-${key}`;
