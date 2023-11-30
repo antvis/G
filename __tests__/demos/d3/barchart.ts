@@ -5,7 +5,7 @@ export async function barchart(context) {
   const { canvas } = context;
   await canvas.ready;
 
-  const drawBars = async () => {
+  const drawBars = () => {
     // 1. Access data
     const dataset = weatherDataset;
     const metricAccessor = (d) => d.humidity;

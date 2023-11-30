@@ -31,7 +31,7 @@ describe('SVG Snapshot', () => {
       const dir = `${__dirname}/snapshots/${namespace}/svg`;
       try {
         const maxError = 0;
-        await expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
+        expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
       } finally {
         await context.close();
         await browser.close();

@@ -4,7 +4,7 @@ import './utils/useSnapshotMatchers';
 import { sleep } from './utils/sleep';
 
 const namespace = '2d';
-describe('Canvas Snapshot', () => {
+describe('WebGL Snapshot', () => {
   Object.keys(basic2d).forEach((key) => {
     it(key, async () => {
       // Setup
@@ -16,7 +16,7 @@ describe('Canvas Snapshot', () => {
 
       await page.addInitScript(() => {
         window['USE_PLAYWRIGHT'] = 1;
-        window['DEFAULT_RENDERER'] = 'canvas';
+        window['DEFAULT_RENDERER'] = 'webgl';
       });
 
       // Go to test page served by vite devServer.
@@ -28,10 +28,10 @@ describe('Canvas Snapshot', () => {
       // Chart already rendered, capture into buffer.
       const buffer = await page.locator('canvas').screenshot();
 
-      const dir = `${__dirname}/snapshots/${namespace}/canvas`;
+      const dir = `${__dirname}/snapshots/${namespace}/webgl`;
       try {
         const maxError = 0;
-        await expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
+        expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
       } finally {
         await context.close();
         await browser.close();

@@ -46,12 +46,12 @@ function diff(
 }
 
 // @see https://jestjs.io/docs/26.x/expect#expectextendmatchers
-export async function toMatchCanvasSnapshot(
+export function toMatchCanvasSnapshot(
   buffer: Buffer,
   dir: string,
   name: string,
   options: ToMatchCanvasSnapshotOptions = {},
-): Promise<{ message: () => string; pass: boolean }> {
+): { message: () => string; pass: boolean } {
   const { maxError = 0 } = options;
   const namePath = path.join(dir, name);
   const actualPath = path.join(dir, `${name}-actual.png`);

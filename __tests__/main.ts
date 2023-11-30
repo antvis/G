@@ -172,8 +172,8 @@ function createSpecRender(object) {
       const $div = document.createElement('div');
       canvas = new Canvas({
         container: $div,
-        width: 320,
-        height: 320,
+        width: window['CANVAS_WIDTH'] || 640,
+        height: window['CANVAS_HEIGHT'] || 640,
         renderer,
       });
 

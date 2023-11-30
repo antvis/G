@@ -1,11 +1,18 @@
 import { chromium, devices } from 'playwright';
-import * as basic2d from '../demos/2d';
 import './utils/useSnapshotMatchers';
 import { sleep } from './utils/sleep';
 
-const namespace = '2d';
-describe('WebGL Snapshot', () => {
-  Object.keys(basic2d).forEach((key) => {
+export function generateCanvasTestCase(
+  namespace: string,
+  tests: Record<string, any>,
+  params?: Partial<{
+    width: number;
+    height: number;
+  }>,
+) {
+  const { width = 320, height = 320 } = params || {};
+
+  Object.keys(tests).forEach((key) => {
     it(key, async () => {
       // Setup
       const browser = await chromium.launch({
@@ -16,7 +23,9 @@ describe('WebGL Snapshot', () => {
 
       await page.addInitScript(() => {
         window['USE_PLAYWRIGHT'] = 1;
-        window['DEFAULT_RENDERER'] = 'webgl';
+        window['DEFAULT_RENDERER'] = 'canvas';
+        window['CANVAS_WIDTH'] = width;
+        window['CANVAS_HEIGHT'] = height;
       });
 
       // Go to test page served by vite devServer.
@@ -28,14 +37,14 @@ describe('WebGL Snapshot', () => {
       // Chart already rendered, capture into buffer.
       const buffer = await page.locator('canvas').screenshot();
 
-      const dir = `${__dirname}/snapshots/${namespace}/webgl`;
+      const dir = `${__dirname}/snapshots/${namespace}/canvas`;
       try {
         const maxError = 0;
-        await expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
+        expect(buffer).toMatchCanvasSnapshot(dir, key, { maxError });
       } finally {
         await context.close();
         await browser.close();
       }
     });
   });
-});
+}
