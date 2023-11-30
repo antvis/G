@@ -11,7 +11,7 @@ export function generateCanvasTestCase(
     height: number;
   }>,
 ) {
-  const { width = 320, height = 320 } = params || {};
+  const { width = 640, height = 640 } = params || {};
 
   Object.keys(tests).forEach((key) => {
     it(key, async () => {
