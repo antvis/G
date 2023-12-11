@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.20
+
+### Patch Changes
+
+-   ce11b242: Setup native html map per canvas instead of global singleton.
+
 ## 1.2.19
 
 ### Patch Changes
