@@ -1,5 +1,12 @@
 # @antv/g-components
 
+## 1.9.20
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+
 ## 1.9.19
 
 ### Patch Changes

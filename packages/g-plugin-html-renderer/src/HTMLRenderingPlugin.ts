@@ -51,6 +51,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const { camera, renderingContext, renderingService } = context;
     this.context = context;
     const canvas = renderingContext.root.ownerDocument.defaultView;
+    const { nativeHTMLMap } = canvas.context.eventService;
 
     const setTransform = (object: HTML, $el: HTMLElement) => {
       $el.style.transform = this.joinTransformMatrix(
@@ -83,7 +84,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
         setTransform(object, $el);
 
-        this.context.nativeHTMLMap.set($el, object);
+        nativeHTMLMap.set($el, object);
       }
     };
 
@@ -93,7 +94,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const $el = this.getOrCreateEl(object);
         if ($el) {
           $el.remove();
-          this.context.nativeHTMLMap.delete($el);
+          nativeHTMLMap.delete($el);
         }
       }
     };
