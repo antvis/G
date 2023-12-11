@@ -49,6 +49,11 @@ export class EventService {
 
   private emitter = new EventEmitter();
 
+  /**
+   * Store HTML elements in current canvas.
+   */
+  nativeHTMLMap = new WeakMap<HTMLElement, HTML>();
+
   cursor: Cursor | null = 'default';
 
   private mappingTable: Record<
@@ -735,7 +740,7 @@ export class EventService {
   private getExistedHTML(event: FederatedEvent): HTML {
     if (event.nativeEvent.composedPath) {
       for (const eventTarget of event.nativeEvent.composedPath() as HTMLElement[]) {
-        const existed = this.globalRuntime.nativeHTMLMap.get(eventTarget);
+        const existed = this.nativeHTMLMap.get(eventTarget);
         if (existed) {
           return existed;
         }
