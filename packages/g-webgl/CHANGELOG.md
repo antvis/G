@@ -1,5 +1,16 @@
 # @antv/g-webgl
 
+## 1.9.35
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-plugin-html-renderer@1.9.23
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-device-renderer@1.9.32
+    -   @antv/g-plugin-dom-interaction@1.9.20
+    -   @antv/g-plugin-image-loader@1.3.20
+
 ## 1.9.34
 
 ### Patch Changes

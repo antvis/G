@@ -1,5 +1,13 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.23
+
+### Patch Changes
+
+-   ce11b242: Setup native html map per canvas instead of global singleton.
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+
 ## 1.9.22
 
 ### Patch Changes

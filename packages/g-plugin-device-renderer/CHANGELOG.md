@@ -1,5 +1,13 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.32
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-image-loader@1.3.20
+
 ## 1.9.31
 
 ### Patch Changes
