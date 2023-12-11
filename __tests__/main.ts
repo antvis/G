@@ -12,6 +12,7 @@ import * as animation from './demos/animation';
 import * as d3 from './demos/d3';
 import * as plugin from './demos/plugin';
 import * as hammerjs from './demos/hammerjs';
+import * as bugfix from './demos/bugfix';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -20,6 +21,7 @@ const tests = {
   ...createSpecRender(namespace(d3, 'd3')),
   ...createSpecRender(namespace(plugin, 'plugin')),
   ...createSpecRender(namespace(hammerjs, 'hammerjs')),
+  ...createSpecRender(namespace(bugfix, 'bugfix')),
 };
 
 const renderers = {
@@ -130,7 +132,7 @@ function createOption(key) {
   const option = document.createElement('option');
   option.value = key;
   option.textContent = key;
-  if (key === (window['DEFAULT_RENDERER'] || 'svg')) {
+  if (key === (window['DEFAULT_RENDERER'] || 'canvas')) {
     option.selected = true;
   }
   return option;
@@ -180,7 +182,7 @@ function createSpecRender(object) {
       // @ts-ignore
       window.__g_instances__ = [canvas];
 
-      await generate({ canvas, renderer });
+      await generate({ canvas, renderer, container: $div });
 
       container.append($div);
     };
