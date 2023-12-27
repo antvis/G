@@ -1,5 +1,68 @@
 # @antv/g-plugin-zdog-svg-renderer
 
+## 1.2.25
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-svg-renderer@1.10.24
+    -   @antv/g-svg@1.10.24
+
+## 1.2.24
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-svg-renderer@1.10.23
+    -   @antv/g-svg@1.10.23
+
+## 1.2.23
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-svg-renderer@1.10.22
+    -   @antv/g-svg@1.10.22
+
+## 1.2.22
+
+### Patch Changes
+
+-   Updated dependencies [6ce927fa]
+    -   @antv/g-plugin-svg-renderer@1.10.21
+    -   @antv/g-svg@1.10.21
+
+## 1.2.21
+
+### Patch Changes
+
+-   Updated dependencies [a5adc20f]
+    -   @antv/g-plugin-svg-renderer@1.10.20
+    -   @antv/g-svg@1.10.20
+
+## 1.2.20
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-svg-renderer@1.10.19
+    -   @antv/g-svg@1.10.19
+
+## 1.2.19
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-svg-renderer@1.10.18
+    -   @antv/g-svg@1.10.18
+
 ## 1.2.18
 
 ### Patch Changes

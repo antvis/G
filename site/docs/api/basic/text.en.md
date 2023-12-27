@@ -285,7 +285,7 @@ interface Rectangle {
 }
 ```
 
-In [example](/en/examples/shape#text), we draw the bounding box for each line of the multi-line text, and we can implement advanced text features such as underline and strikethrough based on the bounding box information:
+In [example](/en/examples/shape/text#text), we draw the bounding box for each line of the multi-line text, and we can implement advanced text features such as underline and strikethrough based on the bounding box information:
 
 ![getLineBoundingRects](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*4bL1QaVJ40MAAAAAAAAAAAAAARQnAQ)
 

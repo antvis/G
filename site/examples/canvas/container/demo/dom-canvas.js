@@ -1,4 +1,4 @@
-import { Canvas, CanvasEvent, Circle } from '@antv/g';
+import { Canvas, CanvasEvent, Circle, HTML } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 import { Renderer as SVGRenderer } from '@antv/g-svg';
 import { Renderer as WebGLRenderer } from '@antv/g-webgl';
@@ -52,6 +52,20 @@ canvas1.addEventListener(CanvasEvent.READY, () => {
   circle1.addEventListener('mouseleave', () => {
     circle1.attr('fill', '#1890FF');
   });
+
+  canvas1.appendChild(
+    new HTML({
+      id: 'html1',
+      style: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        innerHTML: 'canvas1',
+        // pointerEvents: 'none',
+      },
+    }),
+  );
 });
 
 canvas2.addEventListener(CanvasEvent.READY, () => {
@@ -74,6 +88,20 @@ canvas2.addEventListener(CanvasEvent.READY, () => {
   circle2.addEventListener('mouseleave', () => {
     circle2.attr('fill', '#1890FF');
   });
+
+  // canvas2.appendChild(
+  //   new HTML({
+  //     id: 'html2',
+  //     style: {
+  //       x: 100,
+  //       y: 100,
+  //       width: 100,
+  //       height: 100,
+  //       innerHTML: 'canvas2',
+  //       pointerEvents: 'none',
+  //     },
+  //   }),
+  // );
 });
 
 // stats

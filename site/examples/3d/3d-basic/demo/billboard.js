@@ -95,7 +95,7 @@ const canvas = new Canvas({
       z2: 0,
       stroke: 'black',
       lineWidth: 2,
-      isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   canvas.appendChild(xAxis);
@@ -108,7 +108,7 @@ const canvas = new Canvas({
       ],
       stroke: 'black',
       lineWidth: 2,
-      isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   canvas.appendChild(yAxis);
@@ -123,18 +123,17 @@ const canvas = new Canvas({
       z2: 100,
       stroke: 'black',
       lineWidth: 2,
-      isBillboard: true,
+      isSizeAttenuation: true,
     },
   });
   canvas.appendChild(zAxis);
 
-  const polyline = new Polyline({
+  const polyline3D = new Polyline({
     style: {
       stroke: '#1890FF',
       lineWidth: 10,
       lineCap: 'round',
       lineJoin: 'round',
-      isBillboard: true,
       points: [
         [50, 50, 0],
         [100, 50, 100],
@@ -145,10 +144,65 @@ const canvas = new Canvas({
         [200, 200, 0],
         [250, 200, 0],
       ],
+      cursor: 'pointer',
+      isBillboard: true,
     },
   });
-  polyline.translate(0, 200);
-  canvas.appendChild(polyline);
+  polyline3D.translate(0, 200);
+  canvas.appendChild(polyline3D);
+
+  const circle = new Circle({
+    style: {
+      cx: 200,
+      cy: 200,
+      r: 50,
+      fill: 'red',
+      isBillboard: true,
+      cursor: 'pointer',
+    },
+  });
+  canvas.appendChild(circle);
+
+  const rect = new Rect({
+    style: {
+      x: 100,
+      y: 100,
+      width: 10,
+      height: 10,
+      fill: 'red',
+      isBillboard: true,
+      cursor: 'pointer',
+    },
+  });
+  canvas.appendChild(rect);
+
+  const path = new Path({
+    style: {
+      path: [
+        ['M', 57.06339097770921, -18.541019662496844],
+        ['L', 13.225168176580645, -18.202882373436317],
+        ['L', 3.67394039744206e-15, -60],
+        ['L', -13.225168176580643, -18.202882373436317],
+        ['L', -57.06339097770921, -18.54101966249685],
+        ['L', -21.398771616640953, 6.952882373436324],
+        ['L', -35.267115137548394, 48.54101966249684],
+        ['L', -4.133182947122317e-15, 22.5],
+        ['L', 35.26711513754837, 48.54101966249685],
+        ['L', 21.398771616640953, 6.952882373436322],
+        ['Z'],
+      ],
+      stroke: '#1890FF',
+      fill: '#1890FF',
+      fillOpacity: 0.5,
+      lineWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round',
+      isBillboard: true,
+      cursor: 'pointer',
+    },
+  });
+  path.translate(100, 100, 0);
+  canvas.appendChild(path);
 
   // add a directional light into scene
   const light = new DirectionalLight({

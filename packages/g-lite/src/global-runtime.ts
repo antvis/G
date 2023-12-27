@@ -25,7 +25,6 @@ import {
   CSSPropertyTransformOrigin,
   CSSPropertyZIndex,
 } from './css/properties';
-import type { HTML } from './display-objects';
 import type {
   GeometryAABBUpdater,
   SceneGraphSelector,
@@ -67,7 +66,6 @@ export interface GlobalRuntime {
   >;
   globalThis: any;
   enableCSSParsing: boolean;
-  nativeHTMLMap: WeakMap<HTMLElement, HTML>;
 
   /**
    * Enable using dataset property.
@@ -164,8 +162,6 @@ runtime.AnimationTimeline = null;
 runtime.EasingFunction = null;
 
 runtime.offscreenCanvasCreator = new OffscreenCanvasCreator();
-
-runtime.nativeHTMLMap = new WeakMap();
 
 runtime.sceneGraphSelector = new DefaultSceneGraphSelector();
 

@@ -198,6 +198,7 @@ export class AdvancedCamera extends Camera {
           easing: string;
           easingFunction: TypeEasingFunction;
           duration: number;
+          onframe: (t: number) => void;
           onfinish: () => void;
         }> = {},
   ) {
@@ -210,6 +211,7 @@ export class AdvancedCamera extends Camera {
         duration = 100,
         easingFunction = undefined,
         onfinish = undefined,
+        onframe = undefined,
       } = isNumber(options) ? { duration: options } : options;
       const epsilon = 0.01;
 
@@ -284,6 +286,9 @@ export class AdvancedCamera extends Camera {
         this.triggerUpdate();
 
         if (elapsed < duration) {
+          if (onframe) {
+            onframe(t);
+          }
           this.landmarkAnimationID = this.canvas.requestAnimationFrame(animate);
         }
       };

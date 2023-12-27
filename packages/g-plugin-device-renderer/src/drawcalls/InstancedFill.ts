@@ -12,8 +12,17 @@ import { RenderHelper } from '../render';
 import { TexturePool } from '../TexturePool';
 import { LightPool } from '../LightPool';
 import { BatchContext } from '../renderer';
+import { enumToObject } from '../utils';
 
 const SEGMENT_NUM = 12;
+
+enum FillVertexAttributeBufferIndex {
+  PACKED_STYLE = VertexAttributeBufferIndex.POSITION + 1,
+}
+
+enum FillVertexAttributeLocation {
+  PACKED_STYLE3 = VertexAttributeLocation.MAX,
+}
 
 export class InstancedFillDrawcall extends Instanced {
   protected mergeAnchorIntoModelMatrix = true;
@@ -124,6 +133,18 @@ export class InstancedFillDrawcall extends Instanced {
       // use default common attributes
       super.createGeometry(objects);
 
+      const packedStyle: number[] = [];
+      objects.forEach((object) => {
+        const { isBillboard, billboardRotation, isSizeAttenuation } =
+          object.parsedStyle;
+        packedStyle.push(
+          isBillboard ? 1 : 0,
+          billboardRotation ?? 0,
+          isSizeAttenuation ? 1 : 0,
+          0,
+        );
+      });
+
       this.geometry.setVertexBuffer({
         bufferIndex: VertexAttributeBufferIndex.POSITION,
         byteStride: 4 * 3,
@@ -137,7 +158,20 @@ export class InstancedFillDrawcall extends Instanced {
         ],
         data: new Float32Array(pointsBuffer),
       });
-
+      this.geometry.setVertexBuffer({
+        bufferIndex: FillVertexAttributeBufferIndex.PACKED_STYLE,
+        byteStride: 4 * 4,
+        stepMode: VertexStepMode.INSTANCE,
+        attributes: [
+          {
+            format: Format.F32_RGBA,
+            bufferByteOffset: 4 * 0,
+            location: FillVertexAttributeLocation.PACKED_STYLE3,
+            divisor: 1,
+          },
+        ],
+        data: new Float32Array(packedStyle),
+      });
       this.geometry.setVertexBuffer({
         bufferIndex: VertexAttributeBufferIndex.UV,
         byteStride: 4 * 2,
@@ -161,6 +195,7 @@ export class InstancedFillDrawcall extends Instanced {
     this.material.fragmentShader = meshFrag;
     this.material.defines = {
       ...this.material.defines,
+      ...enumToObject(FillVertexAttributeLocation),
       INSTANCED: true,
     };
   }
@@ -174,5 +209,30 @@ export class InstancedFillDrawcall extends Instanced {
     super.updateAttribute(objects, startIndex, name, value);
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
+
+    if (
+      name === 'isBillboard' ||
+      name === 'billboardRotation' ||
+      name === 'isSizeAttenuation'
+    ) {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const { isBillboard, billboardRotation, isSizeAttenuation } =
+          object.parsedStyle;
+        packed.push(
+          isBillboard ? 1 : 0,
+          billboardRotation ?? 0,
+          isSizeAttenuation ? 1 : 0,
+          0,
+        );
+      });
+
+      this.geometry.updateVertexBuffer(
+        FillVertexAttributeBufferIndex.PACKED_STYLE,
+        FillVertexAttributeLocation.PACKED_STYLE3,
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
+      );
+    }
   }
 }

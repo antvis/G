@@ -1,5 +1,107 @@
 # @antv/g-mobile-webgl
 
+## 0.9.36
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-plugin-html-renderer@1.9.23
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-device-renderer@1.9.32
+    -   @antv/g-plugin-dragndrop@1.8.20
+    -   @antv/g-plugin-gesture@1.2.8
+    -   @antv/g-plugin-image-loader@1.3.20
+    -   @antv/g-plugin-mobile-interaction@0.9.20
+
+## 0.9.35
+
+### Patch Changes
+
+-   Updated dependencies [7f4c858c]
+    -   @antv/g-plugin-device-renderer@1.9.31
+
+## 0.9.34
+
+### Patch Changes
+
+-   Updated dependencies [1c1c40a0]
+    -   @antv/g-plugin-device-renderer@1.9.30
+
+## 0.9.33
+
+### Patch Changes
+
+-   Updated dependencies [951bef39]
+    -   @antv/g-plugin-device-renderer@1.9.29
+
+## 0.9.32
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-plugin-device-renderer@1.9.28
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-dragndrop@1.8.19
+    -   @antv/g-plugin-gesture@1.2.7
+    -   @antv/g-plugin-html-renderer@1.9.22
+    -   @antv/g-plugin-image-loader@1.3.19
+    -   @antv/g-plugin-mobile-interaction@0.9.19
+
+## 0.9.31
+
+### Patch Changes
+
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-plugin-image-loader@1.3.18
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-device-renderer@1.9.27
+    -   @antv/g-plugin-dragndrop@1.8.18
+    -   @antv/g-plugin-gesture@1.2.6
+    -   @antv/g-plugin-html-renderer@1.9.21
+    -   @antv/g-plugin-mobile-interaction@0.9.18
+
+## 0.9.30
+
+### Patch Changes
+
+-   Updated dependencies [a5adc20f]
+    -   @antv/g-plugin-device-renderer@1.9.26
+
+## 0.9.29
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-device-renderer@1.9.25
+    -   @antv/g-plugin-dragndrop@1.8.17
+    -   @antv/g-plugin-gesture@1.2.5
+    -   @antv/g-plugin-html-renderer@1.9.20
+    -   @antv/g-plugin-image-loader@1.3.17
+    -   @antv/g-plugin-mobile-interaction@0.9.17
+
+## 0.9.28
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-device-renderer@1.9.24
+    -   @antv/g-plugin-dragndrop@1.8.16
+    -   @antv/g-plugin-gesture@1.2.4
+    -   @antv/g-plugin-html-renderer@1.9.19
+    -   @antv/g-plugin-image-loader@1.3.16
+    -   @antv/g-plugin-mobile-interaction@0.9.16
+
+## 0.9.27
+
+### Patch Changes
+
+-   Updated dependencies [d2ed3d6d]
+    -   @antv/g-plugin-device-renderer@1.9.23
+
 ## 0.9.26
 
 ### Patch Changes

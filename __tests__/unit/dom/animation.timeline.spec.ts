@@ -1,5 +1,5 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
-import { Canvas, Circle } from '../../../packages/g/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
+import { Canvas, Circle, EasingFunctions } from '../../../packages/g/src';
 import { sleep } from '../utils';
 
 const $container = document.createElement('div');
@@ -85,5 +85,37 @@ describe('Animation Timeline', () => {
     };
 
     await sleep(1000);
+  });
+
+  it('should register custom easing function correctly', async () => {
+    EasingFunctions['my-easing'] = (t: number) => t;
+
+    const circle = new Circle({
+      id: 'circle',
+      style: {
+        fill: 'rgb(239, 244, 255)',
+        fillOpacity: 1,
+        lineWidth: 1,
+        opacity: 1,
+        r: 50,
+        stroke: 'rgb(95, 149, 255)',
+        strokeOpacity: 1,
+        cursor: 'pointer',
+      },
+    });
+    circle.setPosition(300, 200);
+
+    await canvas.ready;
+    canvas.appendChild(circle);
+
+    const animation = circle.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 500,
+      easing: 'my-easing',
+    })!;
+
+    animation.pause();
+    animation.currentTime = 250;
+
+    expect(circle.style.opacity).toBe('0.5');
   });
 });

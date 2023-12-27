@@ -1,5 +1,36 @@
 # @antv/g-lite
 
+## 1.2.20
+
+### Patch Changes
+
+-   ce11b242: Setup native html map per canvas instead of global singleton.
+
+## 1.2.19
+
+### Patch Changes
+
+-   6492cdf1: Path should not downgrade to line when billboard enabled.
+
+## 1.2.18
+
+### Patch Changes
+
+-   4fdee19f: Keep aspect ration in image.
+-   4fdee19f: Fix picking error when isBillboard enabled.
+
+## 1.2.17
+
+### Patch Changes
+
+-   51b42d06: Use correct position when insertBefore.
+
+## 1.2.16
+
+### Patch Changes
+
+-   7e3dbd76: Removing points attribute from polyline & polygon won't throw error now.
+
 ## 1.2.15
 
 ### Patch Changes

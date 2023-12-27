@@ -173,6 +173,10 @@ export class RenderCache {
     let bindings = this.bindingsCache.get(descriptor);
     if (bindings === null) {
       const descriptorCopy = bindingsDescriptorCopy(descriptor);
+
+      descriptorCopy.uniformBufferBindings =
+        descriptorCopy.uniformBufferBindings.filter(({ size }) => size > 0);
+
       bindings = this.device.createBindings(descriptorCopy);
       this.bindingsCache.add(descriptorCopy, bindings);
     }
@@ -183,6 +187,8 @@ export class RenderCache {
     let renderPipeline = this.renderPipelinesCache.get(descriptor);
     if (renderPipeline === null) {
       const descriptorCopy = renderPipelineDescriptorCopy(descriptor);
+      descriptorCopy.colorAttachmentFormats =
+        descriptorCopy.colorAttachmentFormats.filter((f) => f);
       renderPipeline = this.device.createRenderPipeline(descriptorCopy);
       this.renderPipelinesCache.add(descriptorCopy, renderPipeline);
     }

@@ -188,8 +188,12 @@ export class BufferGeometry<GeometryProps = any> extends EventEmitter {
     index: number,
     data: Uint8Array,
   ) {
-    const { arrayStride } =
+    const bufferDescriptor =
       this.inputLayoutDescriptor.vertexBufferDescriptors[bufferIndex];
+    if (!bufferDescriptor) {
+      return;
+    }
+    const { arrayStride } = bufferDescriptor;
 
     const descriptor = this.inputLayoutDescriptor.vertexBufferDescriptors[
       bufferIndex

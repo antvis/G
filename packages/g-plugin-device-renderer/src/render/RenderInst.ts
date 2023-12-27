@@ -230,7 +230,7 @@ export class RenderInst {
       i++
     )
       this.bindingDescriptors[0].uniformBufferBindings.push({
-        binding: 0,
+        binding: i,
         buffer: null,
         size: 0,
       });

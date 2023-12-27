@@ -1,5 +1,87 @@
 # @antv/g-web-components
 
+## 1.9.36
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-canvas@1.11.25
+    -   @antv/g-webgl@1.9.35
+
+## 1.9.35
+
+### Patch Changes
+
+-   @antv/g-webgl@1.9.34
+
+## 1.9.34
+
+### Patch Changes
+
+-   @antv/g-webgl@1.9.33
+
+## 1.9.33
+
+### Patch Changes
+
+-   @antv/g-webgl@1.9.32
+
+## 1.9.32
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-webgl@1.9.31
+    -   @antv/g-canvas@1.11.24
+
+## 1.9.31
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-webgl@1.9.30
+    -   @antv/g-canvas@1.11.23
+
+## 1.9.30
+
+### Patch Changes
+
+-   @antv/g-webgl@1.9.29
+
+## 1.9.29
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-canvas@1.11.22
+    -   @antv/g-webgl@1.9.28
+
+## 1.9.28
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-canvas@1.11.21
+    -   @antv/g-webgl@1.9.27
+
+## 1.9.27
+
+### Patch Changes
+
+-   @antv/g-webgl@1.9.26
+
+## 1.9.26
+
+### Patch Changes
+
+-   @antv/g-canvas@1.11.20
+
 ## 1.9.25
 
 ### Patch Changes

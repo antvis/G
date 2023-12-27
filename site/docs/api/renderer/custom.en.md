@@ -17,7 +17,7 @@ Here we will take [g-canvas](/en/api/renderer/canvas) as an example to show how 
 
 After inheriting `AbstractRenderer`, you can select a set of existing plugins in the constructor and register them using [registerPlugin()](/en/api/renderer/renderer#registerplugin), for example using the Canvas2D API g-plugin-canvas-path-generator](/en/plugins/canvas-path-generator) for path definition, [g-plugin-canvas-picker](/en/plugins/canvas-path-generator) for pickup using Canvas2D API, [g-plugin-canvas-picker](/en/ plugins/canvas-picker).
 
-https://github.com/antvis/G/blob/next/packages/g-canvas/src/index.ts
+https://github.com/antvis/G/blob/next/packages/g-svg/src/index.ts
 
 ```js
 import type { RendererConfig } from '@antv/g';
@@ -31,20 +31,20 @@ import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
 
 export class Renderer extends AbstractRenderer {
-    constructor(config?: Partial<RendererConfig>) {
-        super(config);
+  constructor(config?: Partial<RendererConfig>) {
+    super(config);
 
-        // register Canvas2DContext
-        this.registerPlugin(new ContextRegisterPlugin());
+    // register Canvas2DContext
+    this.registerPlugin(new ContextRegisterPlugin());
 
-        // register other built-in plugins
-        this.registerPlugin(new ImageLoader.Plugin());
-        this.registerPlugin(new CanvasPathGenerator.Plugin());
-        this.registerPlugin(new CanvasRenderer.Plugin());
-        this.registerPlugin(new DomInteraction.Plugin());
-        this.registerPlugin(new CanvasPicker.Plugin());
-        this.registerPlugin(new HTMLRenderer.Plugin());
-    }
+    // register other built-in plugins
+    this.registerPlugin(new ImageLoader.Plugin());
+    this.registerPlugin(new CanvasPathGenerator.Plugin());
+    this.registerPlugin(new CanvasRenderer.Plugin());
+    this.registerPlugin(new DomInteraction.Plugin());
+    this.registerPlugin(new CanvasPicker.Plugin());
+    this.registerPlugin(new HTMLRenderer.Plugin());
+  }
 }
 ```
 
@@ -59,20 +59,20 @@ import { AbstractRendererPlugin, Module } from '@antv/g';
 import { Canvas2DContextService } from './Canvas2DContextService';
 
 const containerModule = Module((register) => {
-    /**
-     * implements ContextService
-     */
-    register(Canvas2DContextService);
+  /**
+   * implements ContextService
+   */
+  register(Canvas2DContextService);
 });
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
-    name = 'canvas-context-register';
-    init(): void {
-        this.container.load(containerModule, true);
-    }
-    destroy(): void {
-        this.container.unload(containerModule);
-    }
+  name = 'canvas-context-register';
+  init(): void {
+    this.container.load(containerModule, true);
+  }
+  destroy(): void {
+    this.container.unload(containerModule);
+  }
 }
 ```
 
@@ -87,22 +87,22 @@ import { ContextService, inject, singleton } from '@antv/g';
 
 @singleton({ token: ContextService })
 export class Canvas2DContextService
-    implements ContextService<CanvasRenderingContext2D> {}
+  implements ContextService<CanvasRenderingContext2D> {}
 ```
 
 The `ContextService` interface is defined as follows.
 
 ```js
 export interface ContextService<Context> {
-    init: () => Promise<void>;
-    destroy: () => void;
-    getContext: () => Context | null;
-    getDomElement: () => CanvasLike | null;
-    getDPR: () => number;
-    getBoundingClientRect: () => DOMRect | undefined;
-    resize: (width: number, height: number) => void;
-    applyCursorStyle: (cursor: string) => void;
-    toDataURL: (options: Partial<DataURLOptions>) => Promise<string>;
+  init: () => Promise<void>;
+  destroy: () => void;
+  getContext: () => Context | null;
+  getDomElement: () => CanvasLike | null;
+  getDPR: () => number;
+  getBoundingClientRect: () => DOMRect | undefined;
+  resize: (width: number, height: number) => void;
+  applyCursorStyle: (cursor: string) => void;
+  toDataURL: (options: Partial<DataURLOptions>) => Promise<string>;
 }
 ```
 
@@ -140,15 +140,15 @@ During runtime, sometimes the initialized [canvas size](/en/api/canvas#width--he
 
 Returns a custom rendering context, with different renderers returning different objects, e.g.
 
--   [g-canvas](/en/api/renderer/canvas) will return `CanvasRenderingContext2D`
--   [g-svg](/en/api/renderer/svg) will return `SVGElement`
--   [g-webgl](/en/api/renderer/webgl) will return a complex object `WebGLRenderingContext`
+- [g-canvas](/en/api/renderer/canvas) will return `CanvasRenderingContext2D`
+- [g-svg](/en/api/renderer/svg) will return `SVGElement`
+- [g-webgl](/en/api/renderer/webgl) will return a complex object `WebGLRenderingContext`
 
 ```js
 interface WebGLRenderingContext {
-    engine: RenderingEngine;
-    camera: Camera;
-    view: IView;
+  engine: RenderingEngine;
+  camera: Camera;
+  view: IView;
 }
 ```
 
@@ -174,7 +174,7 @@ When implementing requirements like [export-image](/en/guide/advanced-topics/ima
 
 Different rendering contexts naturally have different difficulties to implement, for example, native [toDataURL](https://developer.mozilla.org/zh-CN/Web/API/) can be used in [g-canvas](/en/api/renderer/canvas) HTMLCanvasElement/toDataURL) method.
 
-https://github.com/antvis/G/blob/next/packages/g-canvas/src/Canvas2DContextService.ts#L107-L110
+https://github.com/antvis/G/blob/next/packages/g-svg/src/Canvas2DContextService.ts#L107-L110
 
 ```js
 async toDataURL(options: Partial<DataURLOptions> = {}) {

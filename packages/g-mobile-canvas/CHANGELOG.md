@@ -1,5 +1,84 @@
 # @antv/g-mobile-canvas
 
+## 0.11.13
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-canvas-path-generator@1.3.20
+    -   @antv/g-plugin-canvas-picker@1.10.22
+    -   @antv/g-plugin-canvas-renderer@1.9.22
+    -   @antv/g-plugin-dragndrop@1.8.20
+    -   @antv/g-plugin-gesture@1.2.8
+    -   @antv/g-plugin-image-loader@1.3.20
+    -   @antv/g-plugin-mobile-interaction@0.9.20
+
+## 0.11.12
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-canvas-path-generator@1.3.19
+    -   @antv/g-plugin-canvas-picker@1.10.21
+    -   @antv/g-plugin-canvas-renderer@1.9.21
+    -   @antv/g-plugin-dragndrop@1.8.19
+    -   @antv/g-plugin-gesture@1.2.7
+    -   @antv/g-plugin-image-loader@1.3.19
+    -   @antv/g-plugin-mobile-interaction@0.9.19
+
+## 0.11.11
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-plugin-image-loader@1.3.18
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-canvas-renderer@1.9.20
+    -   @antv/g-plugin-canvas-path-generator@1.3.18
+    -   @antv/g-plugin-canvas-picker@1.10.20
+    -   @antv/g-plugin-dragndrop@1.8.18
+    -   @antv/g-plugin-gesture@1.2.6
+    -   @antv/g-plugin-mobile-interaction@0.9.18
+
+## 0.11.10
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-canvas-path-generator@1.3.17
+    -   @antv/g-plugin-canvas-picker@1.10.19
+    -   @antv/g-plugin-canvas-renderer@1.9.19
+    -   @antv/g-plugin-dragndrop@1.8.17
+    -   @antv/g-plugin-gesture@1.2.5
+    -   @antv/g-plugin-image-loader@1.3.17
+    -   @antv/g-plugin-mobile-interaction@0.9.17
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-canvas-path-generator@1.3.16
+    -   @antv/g-plugin-canvas-picker@1.10.18
+    -   @antv/g-plugin-canvas-renderer@1.9.18
+    -   @antv/g-plugin-dragndrop@1.8.16
+    -   @antv/g-plugin-gesture@1.2.4
+    -   @antv/g-plugin-image-loader@1.3.16
+    -   @antv/g-plugin-mobile-interaction@0.9.16
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [c6f9a9e1]
+    -   @antv/g-plugin-canvas-renderer@1.9.17
+    -   @antv/g-plugin-canvas-picker@1.10.17
+
 ## 0.11.7
 
 ### Patch Changes

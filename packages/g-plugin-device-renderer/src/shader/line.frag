@@ -13,6 +13,7 @@ in float v_Travel;
 in float v_ScalingFactor;
 
 out vec4 outputColor;
+float epsilon = 0.000001;
 
 void main(){
   #pragma glslify: import('@antv/g-shader-components/batch.frag')
@@ -82,5 +83,8 @@ void main(){
     #endif
 
     outputColor.a *= alpha * u_Opacity * u_StrokeOpacity;
+    if (outputColor.a < epsilon) {
+      discard;
+    }
   }
 }

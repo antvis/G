@@ -234,8 +234,16 @@ export class Element<
     if (!refChild) {
       this.appendChild(newChild);
     } else {
+      if (newChild.parentElement) {
+        newChild.parentElement.removeChild(newChild);
+      }
+
       const index = this.childNodes.indexOf(refChild as IChildNode);
-      this.appendChild(newChild, index - 1);
+      if (index === -1) {
+        this.appendChild(newChild);
+      } else {
+        this.appendChild(newChild, index);
+      }
     }
     return newChild;
   }

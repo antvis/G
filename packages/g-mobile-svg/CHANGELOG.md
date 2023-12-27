@@ -1,5 +1,83 @@
 # @antv/g-mobile-svg
 
+## 0.10.25
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-dragndrop@1.8.20
+    -   @antv/g-plugin-gesture@1.2.8
+    -   @antv/g-plugin-mobile-interaction@0.9.20
+    -   @antv/g-plugin-svg-picker@1.9.24
+    -   @antv/g-plugin-svg-renderer@1.10.24
+
+## 0.10.24
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-dragndrop@1.8.19
+    -   @antv/g-plugin-gesture@1.2.7
+    -   @antv/g-plugin-mobile-interaction@0.9.19
+    -   @antv/g-plugin-svg-picker@1.9.23
+    -   @antv/g-plugin-svg-renderer@1.10.23
+
+## 0.10.23
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-svg-renderer@1.10.22
+    -   @antv/g-plugin-dragndrop@1.8.18
+    -   @antv/g-plugin-gesture@1.2.6
+    -   @antv/g-plugin-mobile-interaction@0.9.18
+    -   @antv/g-plugin-svg-picker@1.9.22
+
+## 0.10.22
+
+### Patch Changes
+
+-   Updated dependencies [6ce927fa]
+    -   @antv/g-plugin-svg-renderer@1.10.21
+    -   @antv/g-plugin-svg-picker@1.9.21
+
+## 0.10.21
+
+### Patch Changes
+
+-   Updated dependencies [a5adc20f]
+    -   @antv/g-plugin-svg-renderer@1.10.20
+    -   @antv/g-plugin-svg-picker@1.9.20
+
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-dragndrop@1.8.17
+    -   @antv/g-plugin-gesture@1.2.5
+    -   @antv/g-plugin-mobile-interaction@0.9.17
+    -   @antv/g-plugin-svg-picker@1.9.19
+    -   @antv/g-plugin-svg-renderer@1.10.19
+
+## 0.10.19
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-dragndrop@1.8.16
+    -   @antv/g-plugin-gesture@1.2.4
+    -   @antv/g-plugin-mobile-interaction@0.9.16
+    -   @antv/g-plugin-svg-picker@1.9.18
+    -   @antv/g-plugin-svg-renderer@1.10.18
+
 ## 0.10.18
 
 ### Patch Changes

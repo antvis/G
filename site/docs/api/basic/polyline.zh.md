@@ -230,7 +230,7 @@ polyline.getPointAtLength(100); // Point {x: 300, y: 100}
 
 ## 3D Polyline
 
-和 Line 一样，折线也可以定义在三维空间，配合公告牌效果：
+和 Line 一样，折线也可以定义在三维空间：
 
 ```js
 const polyline = new Polyline({
@@ -239,7 +239,6 @@ const polyline = new Polyline({
         lineWidth: 10,
         lineCap: 'round',
         lineJoin: 'round',
-        isBillboard: true,
         points: [
             [50, 50, 0],
             [100, 50, 100],
@@ -254,6 +253,8 @@ const polyline = new Polyline({
 });
 ```
 
-[示例](/zh/examples/3d/3d-basic/#billboard)效果如下：
+效果如下：
 
 ![3D polyline](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*-ZNXQIWU2SkAAAAAAAAAAAAADmJ7AQ/original)
+
+但如果应用了公告牌效果，3D 效果将消失[示例](/zh/examples/3d/3d-basic/#billboard)。

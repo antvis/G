@@ -41,7 +41,14 @@ export interface PathStyleProps extends BaseStyleProps {
    */
   markerEndOffset?: number;
 
+  /**
+   * Whether the circle is billboard.
+   */
   isBillboard?: boolean;
+  /**
+   * Whether the circle is size attenuation.
+   */
+  isSizeAttenuation?: boolean;
 }
 
 export interface PathSegmentBBox {
@@ -108,6 +115,7 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   markerStartOffset?: number;
   markerEndOffset?: number;
   isBillboard?: boolean;
+  isSizeAttenuation?: boolean;
 }
 export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   private markerStartAngle = 0;

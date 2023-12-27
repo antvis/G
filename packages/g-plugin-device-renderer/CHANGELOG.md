@@ -1,5 +1,82 @@
 # @antv/g-plugin-device-renderer
 
+## 1.9.32
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-image-loader@1.3.20
+
+## 1.9.31
+
+### Patch Changes
+
+-   7f4c858c: Convert quadratic curve to sample points correctly.
+-   Updated dependencies [7f4c858c]
+    -   @antv/g-shader-components@1.8.7
+
+## 1.9.30
+
+### Patch Changes
+
+-   1c1c40a0: Rendering circle & ellipse correctly in WebGPU.
+-   Updated dependencies [1c1c40a0]
+    -   @antv/g-shader-components@1.8.6
+
+## 1.9.29
+
+### Patch Changes
+
+-   951bef39: Cancel downgrading to Line.
+
+## 1.9.28
+
+### Patch Changes
+
+-   6492cdf1: Path should not downgrade to line when billboard enabled.
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-image-loader@1.3.19
+
+## 1.9.27
+
+### Patch Changes
+
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-plugin-image-loader@1.3.18
+    -   @antv/g-lite@1.2.18
+
+## 1.9.26
+
+### Patch Changes
+
+-   a5adc20f: Check buffer descriptor before updating vertex buffer.
+
+## 1.9.25
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-image-loader@1.3.17
+
+## 1.9.24
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-image-loader@1.3.16
+
+## 1.9.23
+
+### Patch Changes
+
+-   d2ed3d6d: Add onframe param in gotoLandmark.
+
 ## 1.9.22
 
 ### Patch Changes

@@ -1,5 +1,97 @@
 # @antv/g-webgpu
 
+## 1.9.35
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-plugin-html-renderer@1.9.23
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-device-renderer@1.9.32
+    -   @antv/g-plugin-dom-interaction@1.9.20
+    -   @antv/g-plugin-image-loader@1.3.20
+
+## 1.9.34
+
+### Patch Changes
+
+-   Updated dependencies [7f4c858c]
+    -   @antv/g-plugin-device-renderer@1.9.31
+
+## 1.9.33
+
+### Patch Changes
+
+-   Updated dependencies [1c1c40a0]
+    -   @antv/g-plugin-device-renderer@1.9.30
+
+## 1.9.32
+
+### Patch Changes
+
+-   Updated dependencies [951bef39]
+    -   @antv/g-plugin-device-renderer@1.9.29
+
+## 1.9.31
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-plugin-device-renderer@1.9.28
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-dom-interaction@1.9.19
+    -   @antv/g-plugin-html-renderer@1.9.22
+    -   @antv/g-plugin-image-loader@1.3.19
+
+## 1.9.30
+
+### Patch Changes
+
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-plugin-image-loader@1.3.18
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-device-renderer@1.9.27
+    -   @antv/g-plugin-dom-interaction@1.9.18
+    -   @antv/g-plugin-html-renderer@1.9.21
+
+## 1.9.29
+
+### Patch Changes
+
+-   Updated dependencies [a5adc20f]
+    -   @antv/g-plugin-device-renderer@1.9.26
+
+## 1.9.28
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-device-renderer@1.9.25
+    -   @antv/g-plugin-dom-interaction@1.9.17
+    -   @antv/g-plugin-html-renderer@1.9.20
+    -   @antv/g-plugin-image-loader@1.3.17
+
+## 1.9.27
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-device-renderer@1.9.24
+    -   @antv/g-plugin-dom-interaction@1.9.16
+    -   @antv/g-plugin-html-renderer@1.9.19
+    -   @antv/g-plugin-image-loader@1.3.16
+
+## 1.9.26
+
+### Patch Changes
+
+-   Updated dependencies [d2ed3d6d]
+    -   @antv/g-plugin-device-renderer@1.9.23
+
 ## 1.9.25
 
 ### Patch Changes

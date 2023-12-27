@@ -24,27 +24,27 @@ const moduleNameMapper = {
 module.exports = {
   testTimeout: 100000,
   moduleNameMapper: moduleNameMapper,
-  testMatch: [
-    '<rootDir>/__tests__/integration/__node__tests__/**/*/*.spec.+(ts|tsx|js)',
-  ],
-  preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-      tsconfig: {
-        allowJs: true,
-        target: 'esnext',
-        esModuleInterop: true,
+  testMatch: ['<rootDir>/__tests__/integration/*.spec.+(ts|tsx|js)'],
+  transform: {
+    '^.+\\.[tj]s$': [
+      'ts-jest',
+      {
+        isolatedModules: true,
+        tsconfig: {
+          allowJs: true,
+          target: 'esnext',
+          esModuleInterop: true,
+        },
       },
-    },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   modulePathIgnorePatterns: ['dist'],
-  transform: {
-    '^.+\\.[tj]s$': 'ts-jest',
-  },
   transformIgnorePatterns: [
     // @see https://stackoverflow.com/a/69179139
     '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
   ],
+  globalSetup: './scripts/jest/setup.js',
+  globalTeardown: './scripts/jest/teardown.js',
+  testEnvironment: './scripts/jest/environment.js',
 };

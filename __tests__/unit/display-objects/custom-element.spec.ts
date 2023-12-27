@@ -1,6 +1,6 @@
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas/src';
+import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import type { DisplayObjectConfig } from '../../../packages/g/src';
-import { Canvas, Circle, CustomElement, Text } from '../../../packages/g/src';
+import { Canvas, Circle, CustomElement } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
 $container.id = 'container';
@@ -47,14 +47,14 @@ describe('CustomElement', () => {
           id: 'circle',
           style: { r: options.style?.size || 0, fill: 'red' },
         });
-        const text = new Text({
-          style: {
-            text: 'A',
-            fill: 'red',
-          },
-        });
+        // const text = new Text({
+        //   style: {
+        //     text: 'A',
+        //     fill: 'red',
+        //   },
+        // });
 
-        circle.appendChild(text);
+        // circle.appendChild(text);
         this.appendChild(circle);
       }
       connectedCallback() {

@@ -1,5 +1,55 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.10.24
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+
+## 1.10.23
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+
+## 1.10.22
+
+### Patch Changes
+
+-   4fdee19f: Avoid generating redundant dom structure for document element.
+-   4fdee19f: Fix picking error when isBillboard enabled.
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+
+## 1.10.21
+
+### Patch Changes
+
+-   6ce927fa: Avoid generating redundant dom structure for document element.
+
+## 1.10.20
+
+### Patch Changes
+
+-   a5adc20f: Reset pattern counter in svg renderer when destroyed.
+
+## 1.10.19
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+
+## 1.10.18
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+
 ## 1.10.17
 
 ### Patch Changes

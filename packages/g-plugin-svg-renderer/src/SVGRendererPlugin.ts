@@ -19,7 +19,7 @@ import {
 import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
 import { ElementSVG } from './components/ElementSVG';
-import type { DefElementManager } from './shapes/defs';
+import { resetPatternCounter, type DefElementManager } from './shapes/defs';
 import type { SVGRendererPluginOptions } from './interfaces';
 import { createSVGElement } from './utils/dom';
 import { numberToLongString } from './utils/format';
@@ -317,6 +317,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleGeometryBoundsChanged,
       );
+      resetPatternCounter();
     });
 
     renderingService.hooks.render.tap(
@@ -702,8 +703,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
   ) {
     const svgElement = (object as any).elementSVG as ElementSVG;
     let $hitTestingEl = svgElement.$hitTestingEl;
-    const increasedLineWidthForHitTesting =
-      object.parsedStyle.increasedLineWidthForHitTesting;
+    const increasedLineWidthForHitTesting = Number(
+      object.parsedStyle.increasedLineWidthForHitTesting,
+    );
 
     // account for hitArea
     if (increasedLineWidthForHitTesting) {

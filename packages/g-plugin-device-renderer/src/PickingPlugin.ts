@@ -269,14 +269,17 @@ export class PickingPlugin implements RenderingPlugin {
 
         camera.setEnableUpdate(true);
 
-        const pickedColors = readback.readTextureSync(
-          texture,
-          0,
-          0,
-          width,
-          height,
-          new Uint8Array(width * height * 4),
-        ) as Uint8Array;
+        let pickedColors: Uint8Array;
+        try {
+          pickedColors = readback.readTextureSync(
+            texture,
+            0,
+            0,
+            width,
+            height,
+            new Uint8Array(width * height * 4),
+          ) as Uint8Array;
+        } catch (e) {}
 
         let pickedFeatureIdx = -1;
 
@@ -359,7 +362,7 @@ export class PickingPlugin implements RenderingPlugin {
       },
       {
         name: SceneUniform.VIEWPORT,
-        value: [canvasWidth, canvasHeight],
+        value: [width, height],
       },
       {
         name: SceneUniform.IS_ORTHO,

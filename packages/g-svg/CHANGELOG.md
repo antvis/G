@@ -1,5 +1,73 @@
 # @antv/g-svg
 
+## 1.10.24
+
+### Patch Changes
+
+-   Updated dependencies [ce11b242]
+    -   @antv/g-lite@1.2.20
+    -   @antv/g-plugin-dom-interaction@1.9.20
+    -   @antv/g-plugin-svg-picker@1.9.24
+    -   @antv/g-plugin-svg-renderer@1.10.24
+
+## 1.10.23
+
+### Patch Changes
+
+-   Updated dependencies [6492cdf1]
+    -   @antv/g-lite@1.2.19
+    -   @antv/g-plugin-dom-interaction@1.9.19
+    -   @antv/g-plugin-svg-picker@1.9.23
+    -   @antv/g-plugin-svg-renderer@1.10.23
+
+## 1.10.22
+
+### Patch Changes
+
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+-   Updated dependencies [4fdee19f]
+    -   @antv/g-lite@1.2.18
+    -   @antv/g-plugin-svg-renderer@1.10.22
+    -   @antv/g-plugin-dom-interaction@1.9.18
+    -   @antv/g-plugin-svg-picker@1.9.22
+
+## 1.10.21
+
+### Patch Changes
+
+-   Updated dependencies [6ce927fa]
+    -   @antv/g-plugin-svg-renderer@1.10.21
+    -   @antv/g-plugin-svg-picker@1.9.21
+
+## 1.10.20
+
+### Patch Changes
+
+-   Updated dependencies [a5adc20f]
+    -   @antv/g-plugin-svg-renderer@1.10.20
+    -   @antv/g-plugin-svg-picker@1.9.20
+
+## 1.10.19
+
+### Patch Changes
+
+-   Updated dependencies [51b42d06]
+    -   @antv/g-lite@1.2.17
+    -   @antv/g-plugin-dom-interaction@1.9.17
+    -   @antv/g-plugin-svg-picker@1.9.19
+    -   @antv/g-plugin-svg-renderer@1.10.19
+
+## 1.10.18
+
+### Patch Changes
+
+-   Updated dependencies [7e3dbd76]
+    -   @antv/g-lite@1.2.16
+    -   @antv/g-plugin-dom-interaction@1.9.16
+    -   @antv/g-plugin-svg-picker@1.9.18
+    -   @antv/g-plugin-svg-renderer@1.10.18
+
 ## 1.10.17
 
 ### Patch Changes

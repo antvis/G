@@ -179,6 +179,8 @@ export class InstancedLineDrawcall extends Instanced {
           markerStartOffset,
           markerEndOffset,
           isBillboard,
+          // @ts-ignore
+          isSizeAttenuation,
         } = (object as Polyline).parsedStyle;
         parsedLineStyleProps = {
           x1: points[0][0],
@@ -193,6 +195,7 @@ export class InstancedLineDrawcall extends Instanced {
           lineDash,
           lineDashOffset,
           isBillboard,
+          isSizeAttenuation,
           markerStart,
           markerEnd,
           markerStartOffset,
@@ -212,6 +215,7 @@ export class InstancedLineDrawcall extends Instanced {
           markerStartOffset,
           markerEndOffset,
           isBillboard,
+          isSizeAttenuation,
         } = (object as Path).parsedStyle;
         let mSegmentCount = 0;
         let mCommandIndex = 0;
@@ -239,6 +243,7 @@ export class InstancedLineDrawcall extends Instanced {
           lineDash,
           lineDashOffset,
           isBillboard,
+          isSizeAttenuation,
           markerStart,
           markerEnd,
           markerStartOffset,
@@ -247,8 +252,19 @@ export class InstancedLineDrawcall extends Instanced {
         totalLength = (object as Path).getTotalLength();
       }
 
-      const { x1, y1, x2, y2, z1, z2, defX, defY, lineCap, isBillboard } =
-        parsedLineStyleProps;
+      const {
+        x1,
+        y1,
+        x2,
+        y2,
+        z1,
+        z2,
+        defX,
+        defY,
+        lineCap,
+        isBillboard,
+        isSizeAttenuation,
+      } = parsedLineStyleProps;
 
       const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
         this.calcOffset(parsedLineStyleProps);
@@ -263,8 +279,8 @@ export class InstancedLineDrawcall extends Instanced {
         dashOffset,
         dashSegmentPercent,
         dashRatioInEachSegment,
-        // isBillboard
-        isBillboard ? 1 : 0,
+        // isSizeAttenuation
+        isBillboard || isSizeAttenuation ? 1 : 0,
       );
 
       interleaved.push(
@@ -399,6 +415,8 @@ export class InstancedLineDrawcall extends Instanced {
             markerStartOffset,
             markerEndOffset,
             isBillboard,
+            // @ts-ignore
+            isSizeAttenuation,
           } = (object as Polyline).parsedStyle;
           parsedLineStyleProps = {
             x1: points[0][0],
@@ -410,6 +428,7 @@ export class InstancedLineDrawcall extends Instanced {
             defX,
             defY,
             lineCap,
+            isSizeAttenuation,
             isBillboard,
             markerStart,
             markerEnd,
@@ -427,6 +446,7 @@ export class InstancedLineDrawcall extends Instanced {
             markerStartOffset,
             markerEndOffset,
             isBillboard,
+            isSizeAttenuation,
           } = (object as Path).parsedStyle;
           parsedLineStyleProps = {
             x1: absolutePath[0][1],
@@ -439,6 +459,7 @@ export class InstancedLineDrawcall extends Instanced {
             defY,
             lineCap,
             isBillboard,
+            isSizeAttenuation,
             markerStart,
             markerEnd,
             markerStartOffset,
@@ -468,6 +489,7 @@ export class InstancedLineDrawcall extends Instanced {
     } else if (
       name === 'lineDashOffset' ||
       name === 'lineDash' ||
+      name === 'isSizeAttenuation' ||
       name === 'isBillboard'
     ) {
       const packed: number[] = [];
@@ -479,8 +501,10 @@ export class InstancedLineDrawcall extends Instanced {
         packed.push(
           dashOffset,
           dashSegmentPercent,
-          dashRatioInEachSegment, // isBillboard
-          object.parsedStyle.isBillboard ? 1 : 0,
+          dashRatioInEachSegment,
+          object.parsedStyle.isBillboard || object.parsedStyle.isSizeAttenuation
+            ? 1
+            : 0, // isSizeAttenuation
         );
       });
 

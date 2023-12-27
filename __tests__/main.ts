@@ -1,15 +1,18 @@
 import { Canvas } from '../packages/g';
 import { Renderer as CanvasRenderer } from '../packages/g-canvas';
-import { Plugin as DragAndDropPlugin } from '../packages/g-plugin-dragndrop';
+import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
 import { Renderer as SVGRenderer } from '../packages/g-svg';
-// WebGL need to be built with rollup first.
+// WebGL & WebGPU renderer need to be built with rollup first.
 import { Renderer as WebGLRenderer } from '../packages/g-webgl';
+import { Renderer as WebGPURenderer } from '../packages/g-webgpu';
+import { Plugin as DragAndDropPlugin } from '../packages/g-plugin-dragndrop';
 import * as basic2d from './demos/2d';
 import * as basic3d from './demos/3d';
 import * as animation from './demos/animation';
 import * as d3 from './demos/d3';
 import * as plugin from './demos/plugin';
 import * as hammerjs from './demos/hammerjs';
+import * as bugfix from './demos/bugfix';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -18,12 +21,15 @@ const tests = {
   ...createSpecRender(namespace(d3, 'd3')),
   ...createSpecRender(namespace(plugin, 'plugin')),
   ...createSpecRender(namespace(hammerjs, 'hammerjs')),
+  ...createSpecRender(namespace(bugfix, 'bugfix')),
 };
 
 const renderers = {
   canvas: CanvasRenderer,
   svg: SVGRenderer,
+  canvaskit: CanvaskitRenderer,
   webgl: WebGLRenderer,
+  webgpu: WebGPURenderer,
 };
 const app = document.getElementById('app') as HTMLElement;
 let currentContainer = document.createElement('div');
@@ -126,6 +132,9 @@ function createOption(key) {
   const option = document.createElement('option');
   option.value = key;
   option.textContent = key;
+  if (key === (window['DEFAULT_RENDERER'] || 'canvas')) {
+    option.selected = true;
+  }
   return option;
 }
 
@@ -141,7 +150,23 @@ function createSpecRender(object) {
       // Select render is necessary for spec tests.
       selectRenderer.style.display = 'inline';
 
-      const renderer = new renderers[selectRenderer.value]();
+      const renderer = new renderers[selectRenderer.value]({
+        // Used for WebGL renderer
+        wasmDir: '/',
+        fonts: [
+          {
+            name: 'Roboto',
+            url: '/Roboto-Regular.ttf',
+          },
+          {
+            name: 'sans-serif',
+            url: 'https://mdn.alipayobjects.com/huamei_qa8qxu/afts/file/A*064aSK2LUPEAAAAAAAAAAAAADmJ7AQ/NotoSansCJKsc-VF.ttf',
+          },
+        ],
+        // Used for WebGPU renderer
+        shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+      });
+
       renderer.registerPlugin(
         new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }),
       );
@@ -149,15 +174,15 @@ function createSpecRender(object) {
       const $div = document.createElement('div');
       canvas = new Canvas({
         container: $div,
-        width: 640,
-        height: 640,
+        width: window['CANVAS_WIDTH'] || 640,
+        height: window['CANVAS_HEIGHT'] || 640,
         renderer,
       });
 
       // @ts-ignore
       window.__g_instances__ = [canvas];
 
-      await generate({ canvas, renderer });
+      await generate({ canvas, renderer, container: $div });
 
       container.append($div);
     };

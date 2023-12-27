@@ -77,6 +77,31 @@ describe('Polyline', () => {
     expect(polyline.getTotalLength()).toBe(750);
   });
 
+  it('should remove points attribute correctly', () => {
+    const polyline = new Polyline({
+      style: {
+        points: [
+          [50, 50],
+          [100, 50],
+          [100, 100],
+        ],
+        lineWidth: 10,
+      },
+    });
+    let bounds = polyline.getBounds();
+    if (bounds) {
+      expect(bounds.center).toStrictEqual([75, 75, 0]);
+      expect(bounds.halfExtents).toStrictEqual([25, 25, 0]);
+    }
+
+    polyline.removeAttribute('points');
+    bounds = polyline.getBounds();
+    if (bounds) {
+      expect(bounds.center).toStrictEqual([0, 0, 0]);
+      expect(bounds.halfExtents).toStrictEqual([0, 0, 0]);
+    }
+  });
+
   it('should getPoint at ratio correctly', () => {
     const polyline = new Polyline({
       style: {
