@@ -8,10 +8,13 @@ import {
   convertPercentUnit,
   mergeDimensions,
   parseAngle,
+  parseAngleUnmemoize,
   parseLength,
+  parseLengthUnmemoize,
   parseLengthOrPercentage,
+  parseLengthOrPercentageUnmemoize,
 } from './dimension';
-import { parseNumber } from './numeric';
+import { parseNumber, parseNumberUnmemoize } from './numeric';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -147,6 +150,70 @@ export function parseTransform(string: string): ParsedTransform[] {
           N: parseNumber,
           T: parseLengthOrPercentage,
           L: parseLength,
+        }[type.toUpperCase()](arg);
+      }
+      if (parsedArg === undefined) {
+        return [];
+      }
+      parsedArgs.push(parsedArg);
+    }
+    result.push({ t: functionName, d: parsedArgs }); // { t: scale, d: [1, 2] }
+
+    if (transformRegExp.lastIndex === string.length) {
+      return result;
+    }
+  }
+
+  return [];
+}
+export function parseTransformUnmemoize(string: string): ParsedTransform[] {
+  string = (string || 'none').toLowerCase().trim();
+  if (string === 'none') {
+    return [];
+  }
+  const transformRegExp = /\s*(\w+)\(([^)]*)\)/g;
+  const result: ParsedTransform[] = [];
+  let match;
+  let prevLastIndex = 0;
+  while ((match = transformRegExp.exec(string))) {
+    if (match.index !== prevLastIndex) {
+      return [];
+    }
+    prevLastIndex = match.index + match[0].length;
+    const functionName = match[1] as TransformType; // scale
+    const functionData = transformFunctions[functionName]; // scale(1, 2)
+    if (!functionData) {
+      // invalid, eg. scale()
+      return [];
+    }
+    const args = match[2].split(','); // 1,2
+    const argTypes = functionData[0]; // Nn
+    if (argTypes.length < args.length) {
+      // scale(N, n)
+      return [];
+    }
+
+    const parsedArgs: CSSUnitValue[] = [];
+    for (let i = 0; i < argTypes.length; i++) {
+      const arg = args[i];
+      const type = argTypes[i];
+      let parsedArg;
+      if (!arg) {
+        // @ts-ignore
+        parsedArg = {
+          a: Odeg,
+          n: parsedArgs[0],
+          t: Opx,
+        }[type];
+      } else {
+        // @ts-ignore
+        parsedArg = {
+          A: (s: string) => {
+            return s.trim() === '0' ? Odeg : parseAngleUnmemoize(s);
+          },
+          N: parseNumberUnmemoize,
+          T: parseLengthOrPercentageUnmemoize,
+          L: parseLengthUnmemoize,
         }[type.toUpperCase()](arg);
       }
       if (parsedArg === undefined) {

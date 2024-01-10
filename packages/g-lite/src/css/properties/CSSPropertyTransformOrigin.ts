@@ -1,6 +1,9 @@
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
-import { parseTransformOrigin } from '../parser/transform-origin';
+import {
+  parseTransformOrigin,
+  parseTransformOriginUnmemoize,
+} from '../parser/transform-origin';
 
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin
@@ -8,10 +11,13 @@ import { parseTransformOrigin } from '../parser/transform-origin';
  * [10px, 10px] [10%, 10%]
  */
 export class CSSPropertyTransformOrigin
-  implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>>
+  implements
+    Partial<
+      CSSProperty<[CSSUnitValue, CSSUnitValue], [CSSUnitValue, CSSUnitValue]>
+    >
 {
   parser = parseTransformOrigin;
-
+  parserUnmemoize = parseTransformOriginUnmemoize;
   // calculator(
   //   name: string,
   //   oldParsed: [CSSUnitValue, CSSUnitValue],

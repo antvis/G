@@ -59,17 +59,19 @@ export function parseDimension(
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length
  * length with only absolute unit, eg. 1px
  */
-export const parseLength = memoize((css: string) => {
+export const parseLengthUnmemoize = (css: string) => {
   return parseDimension(new RegExp('px', 'g'), css);
-});
+};
+export const parseLength = memoize(parseLengthUnmemoize);
 
 /**
  * <percentage>
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/percentage
  */
-export const parserPercentage = memoize((css: string) => {
+export const parserPercentageUnmemoize = (css: string) => {
   return parseDimension(new RegExp('%', 'g'), css);
-});
+};
+export const parserPercentage = memoize(parserPercentageUnmemoize);
 
 /**
  * length with absolute or relative unit,
@@ -77,14 +79,7 @@ export const parserPercentage = memoize((css: string) => {
  *
  * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/length-percentage
  */
-// export const parseLengthOrPercentage = memoize((css: string): CSSUnitValue => {
-//   if (isNumber(css) || isFinite(Number(css))) {
-//     return getOrCreateUnitValue(Number(css), 'px');
-//   }
-//   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
-// });
-
-export const parseLengthOrPercentage = (css: string): CSSUnitValue => {
+export const parseLengthOrPercentageUnmemoize = (css: string): CSSUnitValue => {
   if (isNumber(css) || isFinite(Number(css))) {
     // Number(css) is NaN
     return getOrCreateUnitValue(Number(css) || 0, 'px');
@@ -92,13 +87,17 @@ export const parseLengthOrPercentage = (css: string): CSSUnitValue => {
   }
   return parseDimension(new RegExp('px|%|em|rem', 'g'), css) as CSSUnitValue;
 };
+export const parseLengthOrPercentage = memoize(
+  parseLengthOrPercentageUnmemoize,
+);
 
-export const parseAngle = memoize((css: string): CSSUnitValue => {
+export const parseAngleUnmemoize = (css: string): CSSUnitValue => {
   return parseDimension(
     new RegExp('deg|rad|grad|turn', 'g'),
     css,
   ) as CSSUnitValue;
-});
+};
+export const parseAngle = memoize(parseAngleUnmemoize);
 
 /**
  * merge CSSUnitValue
@@ -209,6 +208,21 @@ export function parseDimensionArray(
   } else {
     // [1, '2px', 3]
     return string.map((segment) => parseLengthOrPercentage(segment.toString()));
+  }
+}
+export function parseDimensionArrayUnmemoize(
+  string: string | (string | number)[],
+): CSSUnitValue[] {
+  if (isString(string)) {
+    // "1px 2px 3px"
+    return string
+      .split(' ')
+      .map((segment) => parseLengthOrPercentageUnmemoize(segment));
+  } else {
+    // [1, '2px', 3]
+    return string.map((segment) =>
+      parseLengthOrPercentageUnmemoize(segment.toString()),
+    );
   }
 }
 

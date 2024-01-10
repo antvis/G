@@ -1,7 +1,10 @@
 import { isString } from '@antv/util';
 import type { CSSUnitValue } from '../cssom';
 import { getOrCreateUnitValue } from '../CSSStyleValuePool';
-import { parseLengthOrPercentage } from './dimension';
+import {
+  parseLengthOrPercentage,
+  parseLengthOrPercentageUnmemoize,
+} from './dimension';
 import { memoize } from '../../utils/memoize';
 
 /**
@@ -48,6 +51,46 @@ export const parseTransformOrigin = memoize(
     }
   },
 );
+export const parseTransformOriginUnmemoize = (
+  value: string | number[],
+): [CSSUnitValue, CSSUnitValue] => {
+  if (isString(value)) {
+    if (value === 'text-anchor') {
+      return [getOrCreateUnitValue(0, 'px'), getOrCreateUnitValue(0, 'px')];
+    }
+
+    const values = value.split(' ');
+    if (values.length === 1) {
+      if (values[0] === 'top' || values[0] === 'bottom') {
+        // 'top' -> 'center top'
+        values[1] = values[0];
+        values[0] = 'center';
+      } else {
+        // '50px' -> '50px center'
+        values[1] = 'center';
+      }
+    }
+
+    if (values.length !== 2) {
+      return null;
+    }
+
+    // eg. center bottom
+    return [
+      parseLengthOrPercentageUnmemoize(
+        convertKeyword2Percent(values[0]),
+      ) as CSSUnitValue,
+      parseLengthOrPercentageUnmemoize(
+        convertKeyword2Percent(values[1]),
+      ) as CSSUnitValue,
+    ];
+  } else {
+    return [
+      getOrCreateUnitValue(value[0] || 0, 'px'),
+      getOrCreateUnitValue(value[1] || 0, 'px'),
+    ];
+  }
+};
 
 function convertKeyword2Percent(keyword: string) {
   if (keyword === 'center') {

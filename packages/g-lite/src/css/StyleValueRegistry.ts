@@ -689,6 +689,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       skipParse: false,
       forceUpdateGeometry: false,
       usedAttributes: [],
+      memoize: true,
     },
   ) {
     if (!this.runtime.enableCSSParsing) {
@@ -932,6 +933,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       skipParse,
       forceUpdateGeometry,
       usedAttributes,
+      memoize,
     } = options;
 
     let needUpdateGeometry = forceUpdateGeometry;
@@ -953,6 +955,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           name as string,
           object.attributes[name],
           object,
+          memoize,
         );
       });
     }
@@ -997,6 +1000,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           name as string,
           object.computedStyle[name],
           object,
+          memoize,
         );
       }
     });
@@ -1041,6 +1045,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     name: string,
     value: any,
     object: DisplayObject,
+    memoized: boolean,
   ): CSSStyleValue {
     const metadata = propertyMetadataCache[name];
 
@@ -1061,9 +1066,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         if (keywords && keywords.indexOf(value) > -1) {
           // computed = new CSSKeywordValue(value);
           computed = getOrCreateKeyword(value);
-        } else if (handler && handler.parser) {
-          // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
-          computed = handler.parser(value, object);
+        } else if (handler) {
+          if (!memoized && handler.parserUnmemoize) {
+            computed = handler.parserUnmemoize(value, object);
+          } else if (handler.parser) {
+            // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
+            computed = handler.parser(value, object);
+          }
         }
       }
     }
@@ -1078,6 +1087,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     name: string,
     computed: CSSStyleValue,
     object: DisplayObject,
+    memoized: boolean,
   ) {
     const metadata = propertyMetadataCache[name];
     const isDocumentElement = object.id === 'g-root';
@@ -1110,6 +1120,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
                 ? defaultValue(object.nodeName)
                 : defaultValue,
               object,
+              memoized,
             );
           }
         } else if (value === 'inherit') {
