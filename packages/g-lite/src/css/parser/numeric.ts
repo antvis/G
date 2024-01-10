@@ -16,7 +16,7 @@ export function numberToString(x: number) {
  * * 0 -> CSSUnitValue(0)
  * * '2' -> CSSUnitValue(2)
  */
-export const parseNumber = memoize((string: string | number): CSSUnitValue => {
+export const parseNumberUnmemoize = (string: string | number): CSSUnitValue => {
   if (typeof string === 'number') {
     return getOrCreateUnitValue(string);
   }
@@ -25,13 +25,23 @@ export const parseNumber = memoize((string: string | number): CSSUnitValue => {
   } else {
     return getOrCreateUnitValue(0);
   }
-});
+};
+export const parseNumber = memoize(parseNumberUnmemoize);
 
 /**
  * separate string to array
  * eg.
  * * [0.5, 0.5] -> [CSSUnitValue, CSSUnitValue]
  */
+export const parseNumberListUnmemoize = (
+  string: string | number[],
+): CSSUnitValue[] => {
+  if (isString(string)) {
+    return string.split(' ').map(parseNumberUnmemoize);
+  } else {
+    return string.map(parseNumberUnmemoize);
+  }
+};
 export const parseNumberList = memoize(
   (string: string | number[]): CSSUnitValue[] => {
     if (isString(string)) {
