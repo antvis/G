@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.21
+
+### Patch Changes
+
+-   5f5cf270: Disable memoize during interpolation to avoid OOM.
+
 ## 1.2.20
 
 ### Patch Changes
