@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-svg",
-  "version": "1.10.24",
+  "version": "1.10.25",
   "description": "A renderer implemented by SVG",
   "keywords": [
     "antv",

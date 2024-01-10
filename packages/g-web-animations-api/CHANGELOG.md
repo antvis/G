@@ -1,5 +1,13 @@
 # @antv/g-web-animations-api
 
+## 1.2.22
+
+### Patch Changes
+
+-   5f5cf270: Disable memoize during interpolation to avoid OOM.
+-   Updated dependencies [5f5cf270]
+    -   @antv/g-lite@1.2.21
+
 ## 1.2.21
 
 ### Patch Changes

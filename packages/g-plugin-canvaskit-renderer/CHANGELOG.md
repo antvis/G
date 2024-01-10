@@ -1,5 +1,13 @@
 # @antv/g-plugin-canvaskit-renderer
 
+## 1.3.22
+
+### Patch Changes
+
+-   Updated dependencies [5f5cf270]
+    -   @antv/g-lite@1.2.21
+    -   @antv/g-plugin-image-loader@1.3.21
+
 ## 1.3.21
 
 ### Patch Changes
