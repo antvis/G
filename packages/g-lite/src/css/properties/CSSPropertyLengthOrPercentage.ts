@@ -7,7 +7,10 @@ import type { GlobalRuntime } from '../../global-runtime';
 import type { CSSProperty } from '../CSSProperty';
 import { CSSUnitValue, UnitType } from '../cssom';
 import { mergeNumbers } from '../parser';
-import { parseLengthOrPercentage } from '../parser/dimension';
+import {
+  parseLengthOrPercentage,
+  parseLengthOrPercentageUnmemoize,
+} from '../parser/dimension';
 
 function getFontSize(object: DisplayObject): number {
   const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
@@ -21,6 +24,7 @@ export class CSSPropertyLengthOrPercentage
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {
   parser = parseLengthOrPercentage;
+  parserUnmemoize = parseLengthOrPercentageUnmemoize;
   parserWithCSSDisabled = null;
 
   mixer = mergeNumbers;

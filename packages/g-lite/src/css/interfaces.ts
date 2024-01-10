@@ -131,6 +131,7 @@ export interface PropertyParseOptions {
   skipParse: boolean;
   forceUpdateGeometry: boolean;
   usedAttributes: string[];
+  memoize: boolean;
 }
 
 export interface StyleValueRegistry {
@@ -150,11 +151,13 @@ export interface StyleValueRegistry {
     name: string,
     value: any,
     object: DisplayObject,
+    memoized: boolean,
   ) => CSSStyleValue;
   computeProperty: (
     name: string,
     computed: CSSStyleValue,
     object: DisplayObject,
+    memoized: boolean,
   ) => any;
 }
 

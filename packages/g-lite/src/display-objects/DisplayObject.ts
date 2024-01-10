@@ -393,6 +393,7 @@ export class DisplayObject<
     name: Key,
     value: StyleProps[Key],
     force = false,
+    memoize = true,
   ) {
     const attributeName = formatAttributeName(name as string) as Key;
     // ignore undefined value
@@ -401,7 +402,7 @@ export class DisplayObject<
     }
 
     if (force || value !== this.attributes[attributeName]) {
-      this.internalSetAttribute(attributeName, value);
+      this.internalSetAttribute(attributeName, value, { memoize });
       super.setAttribute(attributeName, value);
     }
   }

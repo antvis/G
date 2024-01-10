@@ -12,6 +12,7 @@ import * as animation from './demos/animation';
 import * as d3 from './demos/d3';
 import * as plugin from './demos/plugin';
 import * as hammerjs from './demos/hammerjs';
+import * as lottie from './demos/lottie';
 import * as bugfix from './demos/bugfix';
 
 const tests = {
@@ -21,6 +22,7 @@ const tests = {
   ...createSpecRender(namespace(d3, 'd3')),
   ...createSpecRender(namespace(plugin, 'plugin')),
   ...createSpecRender(namespace(hammerjs, 'hammerjs')),
+  ...createSpecRender(namespace(lottie, 'lottie')),
   ...createSpecRender(namespace(bugfix, 'bugfix')),
 };
 

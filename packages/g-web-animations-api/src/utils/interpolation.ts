@@ -44,6 +44,8 @@ export function convertEffectInput(
           target.setAttribute(
             interpolation.property,
             interpolation.interpolation(scaledLocalTime),
+            false,
+            false, // disable memoize
           );
 
           // if (interpolation.property === 'visibility') {
@@ -206,22 +208,26 @@ function propertyInterpolation(
           property,
           left,
           target as DisplayObject,
+          false, // disable memoize
         );
         const computedRight = runtime.styleValueRegistry.parseProperty(
           property,
           right,
           target as DisplayObject,
+          false,
         );
 
         usedLeft = runtime.styleValueRegistry.computeProperty(
           property,
           computedLeft,
           target as DisplayObject,
+          false,
         );
         usedRight = runtime.styleValueRegistry.computeProperty(
           property,
           computedRight,
           target as DisplayObject,
+          false,
         );
       } else {
         const parser = propertyHandler.parserWithCSSDisabled;

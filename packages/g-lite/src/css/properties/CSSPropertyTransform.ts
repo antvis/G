@@ -4,7 +4,11 @@ import { parsedTransformToMat4 } from '../../utils';
 import { CSSKeywordValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import type { ParsedTransform } from '../parser/transform';
-import { mergeTransforms, parseTransform } from '../parser/transform';
+import {
+  mergeTransforms,
+  parseTransform,
+  parseTransformUnmemoize,
+} from '../parser/transform';
 
 /**
  * @see /zh/docs/api/animation#支持变换的属性
@@ -43,7 +47,8 @@ export class CSSPropertyTransform
     >
 {
   parser = parseTransform;
-  parserWithCSSDisabled = parseTransform;
+  parserUnmemoize = parseTransformUnmemoize;
+  parserWithCSSDisabled = parseTransformUnmemoize;
 
   calculator(
     name: string,
