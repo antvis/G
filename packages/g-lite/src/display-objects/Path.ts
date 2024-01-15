@@ -216,14 +216,8 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   }
 
   private transformMarker(isStart: boolean) {
-    const {
-      markerStart,
-      markerEnd,
-      markerStartOffset,
-      markerEndOffset,
-      defX,
-      defY,
-    } = this.parsedStyle;
+    const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+      this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
     if (!marker || !isDisplayObject(marker)) {
@@ -240,16 +234,16 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
 
     if (isStart) {
       const [p1, p2] = this.getStartTangent();
-      ox = p2[0] - defX;
-      oy = p2[1] - defY;
+      ox = p2[0];
+      oy = p2[1];
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
       offset = markerStartOffset || 0;
       originalAngle = this.markerStartAngle;
     } else {
       const [p1, p2] = this.getEndTangent();
-      ox = p2[0] - defX;
-      oy = p2[1] - defY;
+      ox = p2[0];
+      oy = p2[1];
       x = p1[0] - p2[0];
       y = p1[1] - p2[1];
       offset = markerEndOffset || 0;
@@ -268,8 +262,6 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   private placeMarkerMid(marker: DisplayObject) {
     const {
       path: { segments },
-      defX,
-      defY,
     } = this.parsedStyle;
     // clear all existed markers
     this.markerMidList.forEach((marker) => {
@@ -281,7 +273,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
         const cloned = i === 1 ? marker : marker.cloneNode(true);
         this.markerMidList.push(cloned);
         this.appendChild(cloned);
-        cloned.setLocalPosition(ox - defX, oy - defY);
+        cloned.setLocalPosition(ox, oy);
         // TODO: orient of marker
       }
     }
@@ -301,15 +293,13 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    */
   getPointAtLength(distance: number, inWorldSpace = false): Point {
     const {
-      defX,
-      defY,
       path: { absolutePath },
     } = this.parsedStyle;
     const { x, y } = getPointAtLength(absolutePath, distance);
 
     const transformed = vec3.transformMat4(
       vec3.create(),
-      vec3.fromValues(x - defX, y - defY, 0),
+      vec3.fromValues(x, y, 0),
       inWorldSpace ? this.getWorldTransform() : this.getLocalTransform(),
     );
 

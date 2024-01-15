@@ -5,7 +5,6 @@ export * from './CSSPropertyFilter';
 export * from './CSSPropertyLengthOrPercentage';
 export * from './CSSPropertyLengthOrPercentage12';
 export * from './CSSPropertyLengthOrPercentage14';
-export * from './CSSPropertyLocalPosition';
 export * from './CSSPropertyMarker';
 export * from './CSSPropertyNumber';
 export * from './CSSPropertyOffsetDistance';

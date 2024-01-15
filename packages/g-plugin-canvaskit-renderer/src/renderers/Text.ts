@@ -60,6 +60,8 @@ export class TextRenderer implements RendererContribution {
       // opacity,
       wordWrap,
       wordWrapWidth,
+      x,
+      y,
       dx,
       dy,
       // @ts-ignore
@@ -304,7 +306,7 @@ export class TextRenderer implements RendererContribution {
         linePositionY = 0;
       }
 
-      canvas.drawParagraph(paragraph, offsetX + dx, linePositionY + dy);
+      canvas.drawParagraph(paragraph, offsetX + x + dx, linePositionY + y + dy);
 
       paragraph.delete();
       builder.delete();

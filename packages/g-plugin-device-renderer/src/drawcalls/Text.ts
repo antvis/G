@@ -116,33 +116,38 @@ export class TextDrawcall extends Instanced {
     const fontScale = BASE_FONT_WIDTH / fontSize;
 
     const indices = [];
+    const positions = [];
     const uvOffsets = [];
     const packed = [];
     let indicesOff = 0;
     objects.forEach((object) => {
-      const { metrics, dx, dy } = object.parsedStyle as ParsedTextStyleProps;
+      const {
+        metrics,
+        dx = 0,
+        dy = 0,
+      } = object.parsedStyle as ParsedTextStyleProps;
       const { font, lines, height, lineHeight } = metrics;
 
       // account for dx & dy
-      const offsetX = dx || 0;
-      const offsetY = dy || 0;
+      const offsetX = dx;
+      const offsetY = dy;
 
       let linePositionY = 0;
       // handle vertical text baseline
       if (textBaseline === 'middle') {
-        linePositionY = -height / 2;
+        linePositionY += -height / 2;
       } else if (textBaseline === 'bottom') {
-        linePositionY = -height;
+        linePositionY += -height;
       } else if (textBaseline === 'top' || textBaseline === 'hanging') {
-        linePositionY = 0;
+        linePositionY += 0;
       } else if (textBaseline === 'alphabetic') {
-        linePositionY = -height + lineHeight * 0.25;
+        linePositionY += -height + lineHeight * 0.25;
         if (!this.context.enableCSSParsing) {
-          linePositionY = -height;
+          linePositionY += -height;
         }
         // linePositionY = -height + fontProperties.ascent;
       } else if (textBaseline === 'ideographic') {
-        linePositionY = -height;
+        linePositionY += -height;
       }
 
       const glyphAtlas = this.glyphManager.getAtlas();
@@ -150,6 +155,7 @@ export class TextDrawcall extends Instanced {
         indicesOffset,
         indexBuffer,
         charUVOffsetBuffer,
+        charPositionsBuffer,
         charPackedBuffer,
       } = this.buildTextBuffers({
         object,
@@ -170,6 +176,7 @@ export class TextDrawcall extends Instanced {
       this.packedBufferObjectMap.set(object, [start, end]);
 
       uvOffsets.push(...charUVOffsetBuffer);
+      positions.push(...charPositionsBuffer);
       indices.push(...indexBuffer);
     });
 
@@ -224,6 +231,19 @@ export class TextDrawcall extends Instanced {
       data: new Float32Array(packed),
     });
 
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
+      byteStride: 4 * 3,
+      stepMode: VertexStepMode.VERTEX,
+      attributes: [
+        {
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 0,
+          location: VertexAttributeLocation.POSITION,
+        },
+      ],
+      data: new Float32Array(positions),
+    });
     this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.TEX,
       byteStride: 4 * (2 + 2),
@@ -331,6 +351,8 @@ export class TextDrawcall extends Instanced {
       name === 'lineHeight' ||
       name === 'wordWrap' ||
       name === 'textAlign' ||
+      name === 'x' ||
+      name === 'y' ||
       name === 'dx' ||
       name === 'dy'
     ) {
@@ -484,6 +506,9 @@ export class TextDrawcall extends Instanced {
       isBillboard,
       billboardRotation,
       isSizeAttenuation,
+      x,
+      y,
+      z = 0,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
@@ -513,6 +538,7 @@ export class TextDrawcall extends Instanced {
 
     const charPackedBuffer: number[] = [];
     const charUVOffsetBuffer: number[] = [];
+    const charPositionsBuffer: number[] = [];
     const indexBuffer: number[] = [];
 
     let i = indicesOffset;
@@ -573,6 +599,7 @@ export class TextDrawcall extends Instanced {
         quad.bl.x,
         quad.bl.y,
       );
+      charPositionsBuffer.push(x, y, z, x, y, z, x, y, z, x, y, z);
 
       indexBuffer.push(0 + i, 2 + i, 1 + i);
       indexBuffer.push(2 + i, 0 + i, 3 + i);
@@ -582,6 +609,7 @@ export class TextDrawcall extends Instanced {
     return {
       indexBuffer,
       charUVOffsetBuffer,
+      charPositionsBuffer,
       charPackedBuffer,
       indicesOffset: i,
     };

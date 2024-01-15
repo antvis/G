@@ -2,7 +2,6 @@ import type {
   DisplayObject,
   FederatedEvent,
   MutationEvent,
-  ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedLineStyleProps,
   ParsedPolygonStyleProps,
@@ -48,11 +47,13 @@ export class MatterJSPlugin implements RenderingPlugin {
           const bounds = displayObject.getBounds();
 
           if (!AABB.isEmpty(bounds)) {
-            const { anchor } =
-              displayObject.parsedStyle as ParsedBaseStyleProps;
-            const { halfExtents } = bounds;
-            const x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
-            const y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
+            // const { anchor } =
+            //   displayObject.parsedStyle as ParsedBaseStyleProps;
+            // const { halfExtents } = bounds;
+            // const x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
+            // const y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
+            const x = body.position.x;
+            const y = body.position.y;
             const angle = body.angle;
 
             displayObject.setPosition(x, y);
@@ -92,6 +93,10 @@ export class MatterJSPlugin implements RenderingPlugin {
       if (body) {
         const geometryAttributes = [
           'points',
+          'x',
+          'y',
+          'cx',
+          'cy',
           'r',
           'width',
           'height',
@@ -220,22 +225,21 @@ export class MatterJSPlugin implements RenderingPlugin {
       frictionAir = 0.01,
       frictionStatic = 0.5,
       density = 0.001,
-      anchor,
+      // anchor,
       velocity = [0, 0],
       angularVelocity = 0,
     } = parsedStyle;
     const bounds = target.getBounds();
 
     if (!AABB.isEmpty(bounds)) {
-      const { halfExtents } = bounds;
       // RTS in worldspace
       const [x, y] = target.getPosition();
       const angle = target.getEulerAngles();
       const config = {
         angle: deg2rad(angle),
         position: {
-          x: x + (1 - anchor[0] * 2) * halfExtents[0],
-          y: y + (1 - anchor[1] * 2) * halfExtents[1],
+          x,
+          y,
         },
         isStatic: rigid === 'static',
         // @see https://brm.io/matter-js/docs/classes/Body.html#property_restitution
@@ -252,10 +256,10 @@ export class MatterJSPlugin implements RenderingPlugin {
 
       let body: Body;
       if (nodeName === Shape.LINE) {
-        const { x1, y1, x2, y2, defX, defY, lineWidth } =
+        const { x1, y1, x2, y2, lineWidth } =
           parsedStyle as ParsedLineStyleProps;
-        const p1 = vec2.fromValues(x1 - defX, y1 - defY);
-        const p2 = vec2.fromValues(x2 - defX, y2 - defY);
+        const p1 = vec2.fromValues(x1, y1);
+        const p2 = vec2.fromValues(x2, y2);
         const basis = vec2.sub(vec2.create(), p2, p1);
         const normal = vec2.normalize(
           vec2.create(),
@@ -299,9 +303,9 @@ export class MatterJSPlugin implements RenderingPlugin {
           config,
         );
       } else if (nodeName === Shape.POLYLINE) {
-        //   const { points, defX, defY } = parsedStyle as ParsedBaseStyleProps;
+        //   const { points } = parsedStyle as ParsedBaseStyleProps;
         //   const pointsInCCW = sortPointsInCCW(points.points);
-        //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x - defX, y - defY));
+        //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x , y ));
         //   const prev = pointsInCCW[0];
         //   const next = pointsInCCW[pointsInCCW.length - 1];
         //   const eps = 0.1;
@@ -311,27 +315,25 @@ export class MatterJSPlugin implements RenderingPlugin {
         //     false,
         //     vertices[0],
         //     vertices[vertices.length - 1],
-        //     // new b2Vec2(prev[0] - defX + eps, prev[1] - defY),
-        //     // new b2Vec2(next[0] - defX + eps, next[1] - defY),
+        //     // new b2Vec2(prev[0]  + eps, prev[1] ),
+        //     // new b2Vec2(next[0]  + eps, next[1] ),
         //   );
       } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
-        const { width, height } = parsedStyle as ParsedRectStyleProps;
+        const { x, y, width, height } = parsedStyle as ParsedRectStyleProps;
         // matterjs set origin to center of rectangle
         target.style.transformOrigin = 'center center';
         // target.style.origin = [ / 2,  / 2];
-        body = Bodies.rectangle(0, 0, width, height, config);
+        body = Bodies.rectangle(x, y, width, height, config);
       } else if (nodeName === Shape.CIRCLE) {
-        const { r } = parsedStyle as ParsedCircleStyleProps;
+        const { cx, cy, r } = parsedStyle as ParsedCircleStyleProps;
         // matter.js also use polygon inside
-        body = Bodies.circle(0, 0, r, config);
+        body = Bodies.circle(cx, cy, r, config);
       } else if (nodeName === Shape.ELLIPSE) {
         // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
       } else if (nodeName === Shape.POLYGON) {
         // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon
-        const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
-        const pts = sortPointsInCCW(
-          points.points.map(([x, y]) => [x - defX, y - defY]),
-        );
+        const { points } = parsedStyle as ParsedPolygonStyleProps;
+        const pts = sortPointsInCCW(points.points.map(([x, y]) => [x, y]));
         target.style.transformOrigin = 'center center';
         body = Bodies.fromVertices(
           0,

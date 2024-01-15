@@ -12,7 +12,7 @@ export class ImageRenderer implements StyleRenderer {
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
   ) {
-    const { width, height, img, shadowColor, shadowBlur } = parsedStyle;
+    const { x, y, width, height, img, shadowColor, shadowBlur } = parsedStyle;
 
     let image: HTMLImageElement;
     let iw = width;
@@ -34,7 +34,7 @@ export class ImageRenderer implements StyleRenderer {
       // node-canvas will throw the following err:
       // Error: Image given has not completed loading
       try {
-        context.drawImage(image, 0, 0, iw, ih);
+        context.drawImage(image, x, y, iw, ih);
       } catch (e) {}
     }
   }

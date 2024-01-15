@@ -99,8 +99,6 @@ export class Polyline extends Polygon {
 
   getPoint(ratio: number, inWorldSpace = false): Point {
     const {
-      defX,
-      defY,
       points: { points, segments },
     } = this.parsedStyle;
 
@@ -123,7 +121,7 @@ export class Polyline extends Polygon {
 
     const transformed = vec3.transformMat4(
       vec3.create(),
-      vec3.fromValues(x - defX, y - defY, 0),
+      vec3.fromValues(x, y, 0),
       inWorldSpace ? this.getWorldTransform() : this.getLocalTransform(),
     );
 

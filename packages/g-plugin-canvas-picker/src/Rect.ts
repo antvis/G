@@ -24,6 +24,8 @@ export function isPointInPath(
     stroke,
     lineWidth,
     increasedLineWidthForHitTesting,
+    x,
+    y,
     width,
     height,
     pointerEvents,
@@ -46,8 +48,8 @@ export function isPointInPath(
     // 同时填充和带有边框
     if ((hasFill && hasStroke) || isClipPath) {
       return inBox(
-        0 - halfWidth,
-        0 - halfWidth,
+        x - halfWidth,
+        y - halfWidth,
         width + halfWidth,
         height + halfWidth,
         position.x,
@@ -56,12 +58,12 @@ export function isPointInPath(
     }
     // 仅填充
     if (hasFill) {
-      return inBox(0, 0, width, height, position.x, position.y);
+      return inBox(x, y, width, height, position.x, position.y);
     }
     if (hasStroke) {
       return inRect(
-        0,
-        0,
+        x,
+        y,
         width,
         height,
         lineWidthForHitTesting,
@@ -73,8 +75,8 @@ export function isPointInPath(
     let isHit = false;
     if (hasStroke || isClipPath) {
       isHit = inRectWithRadius(
-        0,
-        0,
+        x,
+        y,
         width,
         height,
         radius.map((r) =>

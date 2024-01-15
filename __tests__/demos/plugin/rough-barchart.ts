@@ -6,11 +6,7 @@ import weatherDataset from '../../integration/data/weather.json';
 import * as d3 from 'd3';
 
 export async function roughBarchart(context) {
-  const { canvas, renderer } = context;
-
-  renderer.registerPlugin(new PluginCSSSelect());
-  renderer.registerPlugin(new PluginRoughCanvasRenderer());
-  renderer.registerPlugin(new PluginRoughSVGRenderer());
+  const { canvas } = context;
 
   await canvas.ready;
 
@@ -158,3 +154,12 @@ export async function roughBarchart(context) {
       .style('text-transform', 'capitalize');
   };
 }
+
+roughBarchart.initRenderer = (renderer, type) => {
+  renderer.registerPlugin(new PluginCSSSelect());
+  if (type === 'canvas') {
+    renderer.registerPlugin(new PluginRoughCanvasRenderer());
+  } else if (type === 'svg') {
+    renderer.registerPlugin(new PluginRoughSVGRenderer());
+  }
+};

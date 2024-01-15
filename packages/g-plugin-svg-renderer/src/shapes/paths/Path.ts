@@ -5,15 +5,8 @@ export function updatePathElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedPathStyleProps,
 ) {
-  const {
-    path,
-    defX = 0,
-    defY = 0,
-    markerStart,
-    markerEnd,
-    markerStartOffset,
-    markerEndOffset,
-  } = parsedStyle;
+  const { path, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+    parsedStyle;
 
   let startOffsetX = 0;
   let startOffsetY = 0;
@@ -46,8 +39,6 @@ export function updatePathElementAttribute(
     'd',
     translatePathToString(
       path.absolutePath,
-      defX,
-      defY,
       startOffsetX,
       startOffsetY,
       endOffsetX,

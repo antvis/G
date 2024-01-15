@@ -277,11 +277,6 @@ export interface ParsedBaseStyleProps
   lineWidth?: number;
   increasedLineWidthForHitTesting?: number;
   /**
-   * x according to definition, eg. Line's x1/x2, Polyline's points
-   */
-  defX?: number;
-  defY?: number;
-  /**
    * offset relative to initial definition
    */
   offsetX?: number;

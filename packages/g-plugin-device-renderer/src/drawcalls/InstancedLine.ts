@@ -169,8 +169,6 @@ export class InstancedLineDrawcall extends Instanced {
       } else if (object.nodeName === Shape.POLYLINE) {
         const {
           points: { points },
-          defX,
-          defY,
           lineCap,
           lineDash,
           lineDashOffset,
@@ -189,8 +187,6 @@ export class InstancedLineDrawcall extends Instanced {
           y2: points[points.length - 1][1],
           z1: 0,
           z2: 0,
-          defX,
-          defY,
           lineCap,
           lineDash,
           lineDashOffset,
@@ -205,8 +201,6 @@ export class InstancedLineDrawcall extends Instanced {
       } else if (object.nodeName === Shape.PATH) {
         const {
           path: { absolutePath },
-          defX,
-          defY,
           lineCap,
           lineDash,
           lineDashOffset,
@@ -237,8 +231,6 @@ export class InstancedLineDrawcall extends Instanced {
           y2: absolutePath[mCommandIndex + 1][2],
           z1: 0,
           z2: 0,
-          defX,
-          defY,
           lineCap,
           lineDash,
           lineDashOffset,
@@ -259,8 +251,6 @@ export class InstancedLineDrawcall extends Instanced {
         y2,
         z1,
         z2,
-        defX,
-        defY,
         lineCap,
         isBillboard,
         isSizeAttenuation,
@@ -284,11 +274,11 @@ export class InstancedLineDrawcall extends Instanced {
       );
 
       interleaved.push(
-        x1 - defX + startOffsetX,
-        y1 - defY + startOffsetY,
+        x1 + startOffsetX,
+        y1 + startOffsetY,
         z1,
-        x2 - defX + endOffsetX,
-        y2 - defY + endOffsetY,
+        x2 + endOffsetX,
+        y2 + endOffsetY,
         z2,
       );
       indices.push(
@@ -407,8 +397,6 @@ export class InstancedLineDrawcall extends Instanced {
         } else if (object.nodeName === Shape.POLYLINE) {
           const {
             points: { points },
-            defX,
-            defY,
             lineCap,
             markerStart,
             markerEnd,
@@ -425,8 +413,6 @@ export class InstancedLineDrawcall extends Instanced {
             y2: points[points.length - 1][1],
             z1: 0,
             z2: 0,
-            defX,
-            defY,
             lineCap,
             isSizeAttenuation,
             isBillboard,
@@ -438,8 +424,6 @@ export class InstancedLineDrawcall extends Instanced {
         } else if (object.nodeName === Shape.PATH) {
           const {
             path: { absolutePath },
-            defX,
-            defY,
             lineCap,
             markerStart,
             markerEnd,
@@ -455,8 +439,6 @@ export class InstancedLineDrawcall extends Instanced {
             y2: absolutePath[1][2],
             z1: 0,
             z2: 0,
-            defX,
-            defY,
             lineCap,
             isBillboard,
             isSizeAttenuation,
@@ -467,15 +449,15 @@ export class InstancedLineDrawcall extends Instanced {
           };
         }
 
-        const { x1, y1, x2, y2, z1, z2, defX, defY } = parsedLineStyleProps;
+        const { x1, y1, x2, y2, z1, z2 } = parsedLineStyleProps;
         const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
           this.calcOffset(parsedLineStyleProps);
         packed.push(
-          x1 - defX + startOffsetX,
-          y1 - defY + startOffsetY,
+          x1 + startOffsetX,
+          y1 + startOffsetY,
           z1,
-          x2 - defX + endOffsetX,
-          y2 - defY + endOffsetY,
+          x2 + endOffsetX,
+          y2 + endOffsetY,
           z2,
         );
       });

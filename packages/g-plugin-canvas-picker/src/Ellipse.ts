@@ -21,6 +21,8 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
+    cx,
+    cy,
     rx,
     ry,
     fill,
@@ -39,8 +41,8 @@ export function isPointInPath(
 
   const halfLineWith =
     ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
-  const squareX = (x - rx) * (x - rx);
-  const squareY = (y - ry) * (y - ry);
+  const squareX = (x - cx) * (x - cx);
+  const squareY = (y - cy) * (y - cy);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
   if ((hasFill && hasStroke) || isClipPath) {
     return (

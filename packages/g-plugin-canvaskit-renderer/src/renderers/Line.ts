@@ -14,8 +14,6 @@ export class LineRenderer implements RendererContribution {
     const {
       shadowOffsetX,
       shadowOffsetY,
-      defX,
-      defY,
       x1,
       y1,
       x2,
@@ -53,20 +51,20 @@ export class LineRenderer implements RendererContribution {
 
     if (shadowStrokePaint) {
       canvas.drawLine(
-        x1 - defX + (shadowOffsetX || 0) / 2 + startOffsetX,
-        y1 - defY + (shadowOffsetY || 0) / 2 + startOffsetY,
-        x2 - defX + (shadowOffsetX || 0) / 2 + endOffsetX,
-        y2 - defY + (shadowOffsetY || 0) / 2 + endOffsetY,
+        x1 + (shadowOffsetX || 0) / 2 + startOffsetX,
+        y1 + (shadowOffsetY || 0) / 2 + startOffsetY,
+        x2 + (shadowOffsetX || 0) / 2 + endOffsetX,
+        y2 + (shadowOffsetY || 0) / 2 + endOffsetY,
         shadowStrokePaint,
       );
     }
 
     if (strokePaint) {
       canvas.drawLine(
-        x1 - defX + startOffsetX,
-        y1 - defY + startOffsetY,
-        x2 - defX + endOffsetX,
-        y2 - defY + endOffsetY,
+        x1 + startOffsetX,
+        y1 + startOffsetY,
+        x2 + endOffsetX,
+        y2 + endOffsetY,
         strokePaint,
       );
     }

@@ -36,6 +36,8 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   clipPath: 'clip-path',
   textPath: 'text-path',
   r: 'r',
+  cx: 'cx',
+  cy: 'cy',
   rx: 'rx',
   ry: 'ry',
   width: 'width',
@@ -524,12 +526,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         } else if (name === 'width' || name === 'height' || name === 'class') {
           // width & height are both required for <foreignObject> and cannot be used as style.
           $el.setAttribute(name, usedValue.toString());
-        } else if (
-          name !== 'x' &&
-          name !== 'y' &&
-          !isNil(object.style[name]) &&
-          object.style[name] !== ''
-        ) {
+        } else if (!isNil(object.style[name]) && object.style[name] !== '') {
           $el.style[name] = object.style[name];
         }
       } else {
@@ -842,7 +839,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
     const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-
     [
       ((object as any).elementSVG as ElementSVG)?.$el,
       ((object as any).elementSVG as ElementSVG)?.$hitTestingEl,
@@ -850,7 +846,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
       if ($el) {
         const tx = -(anchor[0] * width);
         const ty = -(anchor[1] * height);
-
         if (tx !== 0 || ty !== 0) {
           // apply anchor to element's `transform` property
           $el.setAttribute(
@@ -860,14 +855,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
             `translate(${tx},${ty})`,
           );
         }
-
-        if (
-          object.nodeName === Shape.CIRCLE ||
-          object.nodeName === Shape.ELLIPSE
-        ) {
-          $el.setAttribute('cx', `${width / 2}`);
-          $el.setAttribute('cy', `${height / 2}`);
-        }
+        // if (
+        //   object.nodeName === Shape.CIRCLE ||
+        //   object.nodeName === Shape.ELLIPSE
+        // ) {
+        //   $el.setAttribute('cx', `${width / 2}`);
+        //   $el.setAttribute('cy', `${height / 2}`);
+        // }
       }
     });
   }

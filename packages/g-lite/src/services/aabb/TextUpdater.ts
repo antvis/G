@@ -36,7 +36,8 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   }
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
-    const { text, textAlign, lineWidth, textBaseline, dx, dy } = parsedStyle;
+    const { text, textAlign, lineWidth, textBaseline, dx, dy, x, y } =
+      parsedStyle;
     if (!this.isReadyToMeasure(parsedStyle, object)) {
       parsedStyle.metrics = {
         font: '',
@@ -54,12 +55,10 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
         lineMetrics: [],
       };
       return {
-        width: 0,
-        height: 0,
-        x: 0,
-        y: 0,
-        offsetX: 0,
-        offsetY: 0,
+        hwidth: 0,
+        hheight: 0,
+        cx: 0,
+        cy: 0,
       };
     }
 
@@ -74,33 +73,30 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
 
     const { width, height, lineHeight, fontProperties } = metrics;
 
-    // anchor is left-top by default
-    const halfExtents = [width / 2, height / 2, 0];
+    const hwidth = width / 2;
+    const hheight = height / 2;
 
     // default 'left'
-    let anchor: [number, number] = [0, 1];
-    let lineXOffset = 0;
+    let lineXOffset = x + hwidth;
     if (textAlign === 'center' || textAlign === 'middle') {
-      lineXOffset = lineWidth / 2;
-      anchor = [0.5, 1];
+      lineXOffset += lineWidth / 2 - hwidth;
     } else if (textAlign === 'right' || textAlign === 'end') {
-      lineXOffset = lineWidth;
-      anchor = [1, 1];
+      lineXOffset += lineWidth - hwidth * 2;
     }
 
-    let lineYOffset = 0;
+    let lineYOffset = y - hheight;
     if (textBaseline === 'middle') {
       // eslint-disable-next-line prefer-destructuring
-      lineYOffset = halfExtents[1];
+      lineYOffset += hheight;
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
-      lineYOffset = halfExtents[1] * 2;
+      lineYOffset += hheight * 2;
     } else if (textBaseline === 'alphabetic') {
       // prevent calling getImageData for ascent metrics
-      lineYOffset = this.globalRuntime.enableCSSParsing
+      lineYOffset += this.globalRuntime.enableCSSParsing
         ? lineHeight - fontProperties.ascent
         : 0;
     } else if (textBaseline === 'bottom' || textBaseline === 'ideographic') {
-      lineYOffset = 0;
+      lineYOffset += 0;
     }
     // TODO: ideographic & bottom
 
@@ -111,14 +107,11 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       lineYOffset += dy;
     }
 
-    // update anchor
-    parsedStyle.anchor = [anchor[0], anchor[1], 0];
-
     return {
-      width: halfExtents[0] * 2,
-      height: halfExtents[1] * 2,
-      offsetX: lineXOffset,
-      offsetY: lineYOffset,
+      cx: lineXOffset,
+      cy: lineYOffset,
+      hwidth,
+      hheight,
     };
   }
 }

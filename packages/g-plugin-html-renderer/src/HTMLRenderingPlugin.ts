@@ -224,8 +224,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       // use absolute position
       $existedElement.style.position = 'absolute';
       // @see https://github.com/antvis/G/issues/1150
-      $existedElement.style.left = `0px`;
-      $existedElement.style.top = `0px`;
       $existedElement.style['will-change'] = 'transform';
       $existedElement.style.transform = this.joinTransformMatrix(
         object.getWorldTransform(),
@@ -246,6 +244,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
           $el.innerHTML = '';
           $el.appendChild(innerHTML);
         }
+        break;
+      case 'x':
+        $el.style.left = `${object.parsedStyle.x}px`;
+        break;
+      case 'y':
+        $el.style.top = `${object.parsedStyle.y}px`;
         break;
       case 'transformOrigin':
         const { transformOrigin } = object.parsedStyle;
@@ -337,10 +341,8 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style.filter = filter;
         break;
       default:
-        if (name !== 'x' && name !== 'y') {
-          if (!isNil(object.style[name]) && object.style[name] !== '') {
-            $el.style[name] = object.style[name];
-          }
+        if (!isNil(object.style[name]) && object.style[name] !== '') {
+          $el.style[name] = object.style[name];
         }
     }
   }

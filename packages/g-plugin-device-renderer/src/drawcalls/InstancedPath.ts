@@ -107,7 +107,7 @@ export class InstancedPathDrawcall extends Instanced {
     this.gradientAttributeName = 'stroke';
   }
 
-  protected mergeAnchorIntoModelMatrix = true;
+  // protected mergeAnchorIntoModelMatrix = true;
 
   private segmentNum = -1;
 
@@ -473,7 +473,8 @@ export function updateBuffer(
 ) {
   const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   const zIndex = object.sortable.renderOrder * RENDER_ORDER_SCALE;
-  let { defX, defY } = object.parsedStyle;
+  let defX = 0;
+  let defY = 0;
   const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
     object.parsedStyle as ParsedLineStyleProps;
 
@@ -526,8 +527,8 @@ export function updateBuffer(
       }
 
       prev.push(
-        cur[0] - defX + offsetX,
-        cur[1] - defY + offsetY,
+        cur[0] + offsetX,
+        cur[1] + offsetY,
         isPolyline ? cur[2] || 0 : zIndex,
       );
       return prev;
@@ -567,8 +568,6 @@ export function updateBuffer(
     let path: ParsedPathStyleProps['path'];
     if (object.nodeName !== Shape.PATH) {
       path = parsePath(convertToPath(object, mat4.identity(mat4.create())));
-      defX = path.rect.x;
-      defY = path.rect.y;
 
       // support negative width/height of Rect
       if (object.nodeName === Shape.RECT) {

@@ -27,8 +27,6 @@ export class PolylineRenderer implements RendererContribution {
       shadowOffsetX,
       shadowOffsetY,
       points: { points },
-      defX,
-      defY,
       markerStart,
       markerEnd,
       markerStartOffset,
@@ -72,7 +70,7 @@ export class PolylineRenderer implements RendererContribution {
           offsetX = endOffsetX;
           offsetY = endOffsetY;
         }
-        return [x - defX + offsetX, y - defY + offsetY];
+        return [x + offsetX, y + offsetY];
       })
       .reduce<number[]>((prev, cur) => prev.concat(cur), []);
 

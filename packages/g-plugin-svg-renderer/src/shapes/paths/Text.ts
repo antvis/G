@@ -21,6 +21,8 @@ export function updateTextElementAttribute(
 ) {
   const {
     lineWidth,
+    x = 0,
+    y = 0,
     dx,
     dy,
     textPath,
@@ -55,6 +57,12 @@ export function updateTextElementAttribute(
   }
   if (styleCSSText) {
     $el.setAttribute('style', styleCSSText);
+  }
+  if (x !== 0) {
+    $el.setAttribute('x', `${x}`);
+  }
+  if (y !== 0) {
+    $el.setAttribute('y', `${y}`);
   }
 
   if (lineNum === 1) {
@@ -111,7 +119,7 @@ export function updateTextElementAttribute(
         } else {
           dy = lineHeight;
         }
-        return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(
+        return `<tspan x=${x} dx="${dx}" dy="${dy}">${convertHTML(
           line,
         )}</tspan>`;
       })

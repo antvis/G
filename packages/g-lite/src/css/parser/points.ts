@@ -40,13 +40,8 @@ export function parsePoints(
     }
   });
 
-  const minX = Math.min(...points.map((point) => point[0]));
-  const minY = Math.min(...points.map((point) => point[1]));
-
-  if (object) {
-    object.parsedStyle.defX = minX;
-    object.parsedStyle.defY = minY;
-  }
+  // const minX = Math.min(...points.map((point) => point[0]));
+  // const minY = Math.min(...points.map((point) => point[1]));
 
   return {
     points,

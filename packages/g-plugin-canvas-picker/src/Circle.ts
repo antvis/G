@@ -13,6 +13,8 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
+    cx,
+    cy,
     r,
     fill,
     stroke,
@@ -22,7 +24,7 @@ export function isPointInPath(
   } = displayObject.parsedStyle as ParsedCircleStyleProps;
   const halfLineWidth =
     ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
-  const absDistance = distance(r, r, position.x, position.y);
+  const absDistance = distance(cx, cy, position.x, position.y);
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,

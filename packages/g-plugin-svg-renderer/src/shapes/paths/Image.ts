@@ -1,11 +1,14 @@
 import type { ParsedImageStyleProps } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
-export function updateImageElementAttribute($el: SVGElement, parsedStyle: ParsedImageStyleProps) {
-  const { img = '', width, height } = parsedStyle;
+export function updateImageElementAttribute(
+  $el: SVGElement,
+  parsedStyle: ParsedImageStyleProps,
+) {
+  const { img = '', x, y, width, height } = parsedStyle;
 
-  $el.setAttribute('x', '0');
-  $el.setAttribute('y', '0');
+  $el.setAttribute('x', `${x}`);
+  $el.setAttribute('y', `${y}`);
 
   if (isString(img)) {
     $el.setAttribute('href', img);

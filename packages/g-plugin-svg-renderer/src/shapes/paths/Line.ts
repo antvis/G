@@ -10,8 +10,6 @@ export function updateLineElementAttribute(
     y1,
     x2,
     y2,
-    defX = 0,
-    defY = 0,
     markerStart,
     markerEnd,
     markerStartOffset,
@@ -44,8 +42,8 @@ export function updateLineElementAttribute(
   }
 
   // @see https://github.com/antvis/g/issues/1038
-  $el.setAttribute('x1', `${x1 - defX + startOffsetX}`);
-  $el.setAttribute('y1', `${y1 - defY + startOffsetY}`);
-  $el.setAttribute('x2', `${x2 - defX + endOffsetX}`);
-  $el.setAttribute('y2', `${y2 - defY + endOffsetY}`);
+  $el.setAttribute('x1', `${x1 + startOffsetX}`);
+  $el.setAttribute('y1', `${y1 + startOffsetY}`);
+  $el.setAttribute('x2', `${x2 + endOffsetX}`);
+  $el.setAttribute('y2', `${y2 + endOffsetY}`);
 }

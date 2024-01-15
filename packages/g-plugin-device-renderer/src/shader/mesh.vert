@@ -19,7 +19,7 @@ void main() {
   if (isBillboard) {
     float rotation = a_StylePacked3.y;
     bool isSizeAttenuation = a_StylePacked3.z > 0.5;
-    gl_Position = billboard(a_Position.xy, rotation, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+    gl_Position = billboard(a_Position.xy, rotation, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, vec3(0.0));
   } else {
     gl_Position = project(vec4(a_Position.xy, u_ZIndex, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
   }

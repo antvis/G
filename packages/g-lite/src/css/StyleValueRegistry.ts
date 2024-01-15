@@ -33,6 +33,7 @@ import {
   convertPercentUnit,
   parseDimensionArrayFormat,
 } from './parser/dimension';
+import { GeometryAABBUpdater } from '..';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 
@@ -313,9 +314,9 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     n: 'anchor',
     p: 99,
     d: (nodeName: string) => {
-      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
-        return '0.5 0.5';
-      }
+      // if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
+      //   return '0.5 0.5';
+      // }
       return '0 0';
     },
     l: true,
@@ -759,9 +760,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           // @ts-ignore
           attributes.path,
         );
-
-        object.parsedStyle.defX = object.parsedStyle.path.rect.x;
-        object.parsedStyle.defY = object.parsedStyle.path.rect.y;
       }
       // Text
       if (attributes.textTransform) {
@@ -850,46 +848,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         );
       }
 
-      if (
-        // Circle & Ellipse
-        ((object.nodeName === Shape.CIRCLE ||
-          object.nodeName === Shape.ELLIPSE) &&
-          // @ts-ignore
-          (!isNil(attributes.cx) ||
-            // @ts-ignore
-            !isNil(attributes.cy))) ||
-        ((object.nodeName === Shape.RECT ||
-          object.nodeName === Shape.IMAGE ||
-          object.nodeName === Shape.GROUP ||
-          object.nodeName === Shape.HTML ||
-          object.nodeName === Shape.TEXT ||
-          object.nodeName === Shape.MESH) &&
-          // @ts-ignore
-          (!isNil(attributes.x) ||
-            // @ts-ignore
-            !isNil(attributes.y) ||
-            // @ts-ignore
-            !isNil(attributes.z))) ||
-        // Line
-        (object.nodeName === Shape.LINE &&
-          // @ts-ignore
-          (!isNil(attributes.x1) ||
-            // @ts-ignore
-            !isNil(attributes.y1) ||
-            // @ts-ignore
-            !isNil(attributes.z1) ||
-            // @ts-ignore
-            !isNil(attributes.x2) ||
-            // @ts-ignore
-            !isNil(attributes.y2) ||
-            // @ts-ignore
-            !isNil(attributes.z2)))
-      ) {
-        this.runtime.CSSPropertySyntaxFactory['<coordinate>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
       if (!isNil(attributes.zIndex)) {
         this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
           object,
@@ -1252,7 +1210,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    */
   private updateGeometry(object: DisplayObject) {
     const { nodeName } = object;
-    const geometryUpdater = this.runtime.geometryUpdaterFactory[nodeName];
+    const geometryUpdater = this.runtime.geometryUpdaterFactory[
+      nodeName
+    ] as GeometryAABBUpdater;
     if (geometryUpdater) {
       const geometry = object.geometry;
       if (!geometry.contentBounds) {
@@ -1261,23 +1221,20 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!geometry.renderBounds) {
         geometry.renderBounds = new AABB();
       }
-
       const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
-
       const {
-        width,
-        height,
-        depth = 0,
-        offsetX = 0,
-        offsetY = 0,
-        offsetZ = 0,
+        cx,
+        cy,
+        cz = 0,
+        hwidth,
+        hheight,
+        hdepth = 0,
       } = geometryUpdater.update(parsedStyle, object);
-
       // init with content box
       const halfExtents: Tuple3Number = [
-        Math.abs(width) / 2,
-        Math.abs(height) / 2,
-        depth / 2,
+        Math.abs(hwidth),
+        Math.abs(hheight),
+        hdepth,
       ];
       // const halfExtents = vec3.set(
       //   tmpVec3a,
@@ -1285,7 +1242,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       //   Math.abs(height) / 2,
       //   depth / 2,
       // );
-
       // anchor is center by default, don't account for lineWidth here
       const {
         stroke,
@@ -1299,31 +1255,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         filter = [],
         transformOrigin,
       } = parsedStyle as ParsedBaseStyleProps;
-      let anchor = parsedStyle.anchor;
-
+      // let anchor = parsedStyle.anchor;
       // <Text> use textAlign & textBaseline instead of anchor
-      if (nodeName === Shape.TEXT) {
-        delete parsedStyle.anchor;
-      } else if (nodeName === Shape.MESH) {
-        parsedStyle.anchor[2] = 0.5;
-      }
-
-      const center: Tuple3Number = [
-        ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
-        ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
-        (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
-      ];
-
-      // const center = vec3.set(
-      //   tmpVec3b,
-      //   ((1 - ((anchor && anchor[0]) || 0) * 2) * width) / 2 + offsetX,
-      //   ((1 - ((anchor && anchor[1]) || 0) * 2) * height) / 2 + offsetY,
-      //   (1 - ((anchor && anchor[2]) || 0) * 2) * halfExtents[2] + offsetZ,
-      // );
-
+      // if (nodeName === Shape.TEXT) {
+      //   delete parsedStyle.anchor;
+      // } else if (nodeName === Shape.MESH) {
+      //   parsedStyle.anchor[2] = 0.5;
+      // }
+      const center: Tuple3Number = [cx, cy, cz];
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
-
       // @see https://github.molgen.mpg.de/git-mirror/cairo/blob/master/src/cairo-stroke-style.c#L97..L128
       const expansion =
         nodeName === Shape.POLYLINE ||
@@ -1334,11 +1275,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // if (lineCap?.value === 'square') {
       //   expansion = Math.SQRT1_2;
       // }
-
       // if (lineJoin?.value === 'miter' && expansion < Math.SQRT2 * miterLimit) {
       //   expansion = Math.SQRT1_2 * miterLimit;
       // }
-
       // append border only if stroke existed
       const hasStroke = stroke && !(stroke as CSSRGB).isNone;
       if (hasStroke) {
@@ -1347,10 +1286,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           expansion;
         // halfExtents[0] += halfLineWidth[0];
         // halfExtents[1] += halfLineWidth[1];
-
         halfExtents[0] += halfLineWidth;
         halfExtents[1] += halfLineWidth;
-
         // vec3.add(
         //   halfExtents,
         //   halfExtents,
@@ -1358,11 +1295,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         // );
       }
       geometry.renderBounds.update(center, halfExtents);
-
       // account for shadow, only support constant value now
       if (shadowColor && shadowType && shadowType !== 'inner') {
         const { min, max } = geometry.renderBounds;
-
         const { shadowBlur, shadowOffsetX, shadowOffsetY } =
           parsedStyle as ParsedBaseStyleProps;
         const shadowBlurInPixels = shadowBlur || 0;
@@ -1377,10 +1312,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         max[0] = Math.max(max[0], shadowRight);
         min[1] = Math.min(min[1], shadowTop);
         max[1] = Math.max(max[1], shadowBottom);
-
         geometry.renderBounds.setMinMax(min, max);
       }
-
       // account for filter, eg. blur(5px), drop-shadow()
       (filter as ParsedFilterStyleProperty[]).forEach(({ name, params }) => {
         if (name === 'blur') {
@@ -1392,17 +1325,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
               geometry.renderBounds.halfExtents,
               [blurRadius, blurRadius, 0],
             ),
-            // vec3.add(
-            //   geometry.renderBounds.halfExtents,
-            //   geometry.renderBounds.halfExtents,
-            //   vec3.fromValues(blurRadius, blurRadius, 0),
-            // ),
           );
         } else if (name === 'drop-shadow') {
           const shadowOffsetX = params[0].value;
           const shadowOffsetY = params[1].value;
           const shadowBlur = params[2].value;
-
           const { min, max } = geometry.renderBounds;
           const shadowLeft = min[0] - shadowBlur + shadowOffsetX;
           const shadowRight = max[0] + shadowBlur + shadowOffsetX;
@@ -1412,46 +1339,31 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           max[0] = Math.max(max[0], shadowRight);
           min[1] = Math.min(min[1], shadowTop);
           max[1] = Math.max(max[1], shadowBottom);
-
           geometry.renderBounds.setMinMax(min, max);
         }
       });
-
-      anchor = parsedStyle.anchor;
-
       // if (nodeName === Shape.RECT) {
       // account for negative width / height of Rect
       // @see https://github.com/antvis/g/issues/957
-      const flipY = width < 0;
-      const flipX = height < 0;
+      const flipY = hwidth < 0;
+      const flipX = hheight < 0;
       // } else {
-
       // }
-
       // set transform origin
-      let usedOriginXValue =
+      const usedOriginXValue =
         (flipY ? -1 : 1) *
         (transformOrigin
           ? convertPercentUnit(transformOrigin[0], 0, object)
           : 0);
-      let usedOriginYValue =
+      const usedOriginYValue =
         (flipX ? -1 : 1) *
         (transformOrigin
           ? convertPercentUnit(transformOrigin[1], 1, object)
           : 0);
-      usedOriginXValue =
-        usedOriginXValue -
-        (flipY ? -1 : 1) *
-          ((anchor && anchor[0]) || 0) *
-          geometry.contentBounds.halfExtents[0] *
-          2;
-      usedOriginYValue =
-        usedOriginYValue -
-        (flipX ? -1 : 1) *
-          ((anchor && anchor[1]) || 0) *
-          geometry.contentBounds.halfExtents[1] *
-          2;
-      object.setOrigin(usedOriginXValue, usedOriginYValue);
+      object.setOrigin(
+        cx - hwidth + usedOriginXValue,
+        cy - hheight + usedOriginYValue,
+      );
 
       // FIXME setOrigin may have already dirtified to root.
       this.runtime.sceneGraphService.dirtifyToRoot(object);

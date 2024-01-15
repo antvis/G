@@ -13,7 +13,9 @@ import * as d3 from './demos/d3';
 import * as plugin from './demos/plugin';
 import * as hammerjs from './demos/hammerjs';
 import * as lottie from './demos/lottie';
+import * as perf from './demos/perf';
 import * as bugfix from './demos/bugfix';
+import * as event from './demos/event';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -24,6 +26,8 @@ const tests = {
   ...createSpecRender(namespace(hammerjs, 'hammerjs')),
   ...createSpecRender(namespace(lottie, 'lottie')),
   ...createSpecRender(namespace(bugfix, 'bugfix')),
+  ...createSpecRender(namespace(perf, 'perf')),
+  ...createSpecRender(namespace(event, 'event')),
 };
 
 const renderers = {
@@ -52,7 +56,11 @@ selectChart.style.margin = '1em';
 renderOptions();
 selectChart.onchange = () => {
   const { value } = selectChart;
-  history.pushState({ value }, '', `?name=${value}`);
+  history.pushState(
+    { value },
+    '',
+    `?name=${value}&renderer=${selectRenderer.value}`,
+  );
   plot();
 };
 document.onkeydown = (event) => {
@@ -86,6 +94,12 @@ const selectRenderer = document.createElement('select');
 selectRenderer.style.margin = '1em';
 selectRenderer.append(...Object.keys(renderers).map(createOption));
 selectRenderer.onchange = () => {
+  const { value } = selectRenderer;
+  history.pushState(
+    { value },
+    '',
+    `?name=${selectChart.value}&renderer=${value}`,
+  );
   plot();
 };
 
@@ -111,7 +125,12 @@ addEventListener('popstate', (event) => {
 
 // @ts-ignore
 const initialValue = new URL(location).searchParams.get('name') as string;
+// @ts-ignore
+const initialRenderer = new URL(location).searchParams.get(
+  'renderer',
+) as string;
 if (tests[initialValue]) selectChart.value = initialValue;
+if (renderers[initialRenderer]) selectRenderer.value = initialRenderer;
 app.append(selectChart);
 app.append(searchInput);
 app.append(selectRenderer);
@@ -168,6 +187,10 @@ function createSpecRender(object) {
         // Used for WebGPU renderer
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
       });
+
+      if (generate.initRenderer) {
+        generate.initRenderer(renderer, selectRenderer.value);
+      }
 
       renderer.registerPlugin(
         new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }),

@@ -13,8 +13,8 @@ import { parseGradient } from './gradient';
  */
 export interface Pattern {
   image: string | CanvasImageSource | Rect;
-  repetition: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
-  transform: string;
+  repetition?: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
+  transform?: string;
 }
 
 export function isCSSGradientValue(object: any): object is CSSGradientValue {

@@ -2,16 +2,7 @@ import { Circle, Image, Line, Polygon, Rect } from '../../../packages/g';
 import { Plugin as PluginMatterjs } from '../../../packages/g-plugin-matterjs';
 
 export async function matterjs(context) {
-  const { canvas, renderer } = context;
-
-  renderer.registerPlugin(
-    new PluginMatterjs({
-      debug: true, // 开启 debug 模式，将物理引擎世界也渲染出来
-      debugContainer: document.getElementById('app')!,
-      debugCanvasWidth: 600,
-      debugCanvasHeight: 500,
-    }),
-  );
+  const { canvas } = context;
 
   await canvas.ready;
 
@@ -144,3 +135,14 @@ export async function matterjs(context) {
   });
   canvas.appendChild(image);
 }
+
+matterjs.initRenderer = (renderer, type) => {
+  renderer.registerPlugin(
+    new PluginMatterjs({
+      debug: true, // 开启 debug 模式，将物理引擎世界也渲染出来
+      debugContainer: document.getElementById('app')!,
+      debugCanvasWidth: 640,
+      debugCanvasHeight: 640,
+    }),
+  );
+};

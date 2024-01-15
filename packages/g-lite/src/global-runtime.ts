@@ -11,7 +11,6 @@ import {
   CSSPropertyLengthOrPercentage,
   CSSPropertyLengthOrPercentage12,
   CSSPropertyLengthOrPercentage14,
-  CSSPropertyLocalPosition,
   CSSPropertyMarker,
   CSSPropertyNumber,
   CSSPropertyOffsetDistance,
@@ -121,7 +120,7 @@ const CSSPropertySyntaxFactory: Record<
       new CSSPropertyLengthOrPercentage12(),
     [PropertySyntax.LENGTH_PERCENTAGE_14]:
       new CSSPropertyLengthOrPercentage14(),
-    [PropertySyntax.COORDINATE]: new CSSPropertyLocalPosition(),
+    [PropertySyntax.COORDINATE]: new CSSPropertyLengthOrPercentage(),
     [PropertySyntax.OFFSET_DISTANCE]: new CSSPropertyOffsetDistance(),
     [PropertySyntax.OPACITY_VALUE]: new CSSPropertyOpacity(),
     [PropertySyntax.PATH]: new CSSPropertyPath(),

@@ -43,6 +43,11 @@ export class Circle extends DisplayObject<
   CircleStyleProps,
   ParsedCircleStyleProps
 > {
+  // constructor(options: DisplayObjectConfig<CircleStyleProps> = {}) {
+  //   super(options);
+
+  //   this.nodeName = Shape.CIRCLE;
+  // }
   constructor({ style, ...rest }: DisplayObjectConfig<CircleStyleProps> = {}) {
     super({
       type: Shape.CIRCLE,
@@ -57,7 +62,7 @@ export class Circle extends DisplayObject<
             ...style,
           },
       initialParsedStyle: {
-        anchor: [0.5, 0.5],
+        // anchor: [0.5, 0.5],
         transformOrigin: runtime.enableCSSParsing
           ? null
           : [PECENTAGE_50, PECENTAGE_50],

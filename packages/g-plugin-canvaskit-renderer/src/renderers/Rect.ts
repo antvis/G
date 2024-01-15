@@ -1,6 +1,9 @@
 import type { DisplayObject, ParsedRectStyleProps } from '@antv/g-lite';
 import { clamp } from '@antv/util';
-import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import type {
+  RendererContribution,
+  RendererContributionContext,
+} from '../interfaces';
 
 /**
  * should account for round rect(RRect)
@@ -12,8 +15,14 @@ import type { RendererContribution, RendererContributionContext } from '../inter
  */
 export class RectRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
-    const { canvas, strokePaint, fillPaint, shadowFillPaint, shadowStrokePaint } = context;
-    const { width, height, radius, shadowOffsetX, shadowOffsetY } =
+    const {
+      canvas,
+      strokePaint,
+      fillPaint,
+      shadowFillPaint,
+      shadowStrokePaint,
+    } = context;
+    const { x, y, width, height, radius, shadowOffsetX, shadowOffsetY } =
       object.parsedStyle as ParsedRectStyleProps;
 
     const [r1, r2, r3, r4] = radius.map((r) =>
@@ -49,14 +58,27 @@ export class RectRenderer implements RendererContribution {
       blr = r3;
     }
 
-    const rrect = [0, 0, width, height, tlr, tlr, trr, trr, brr, brr, blr, blr];
+    const rrect = [
+      x,
+      y,
+      x + width,
+      y + height,
+      tlr,
+      tlr,
+      trr,
+      trr,
+      brr,
+      brr,
+      blr,
+      blr,
+    ];
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawRRect(
         [
-          (shadowOffsetX || 0) / 2,
-          (shadowOffsetY || 0) / 2,
-          width + (shadowOffsetX || 0) / 2,
-          height + (shadowOffsetY || 0) / 2,
+          x + (shadowOffsetX || 0) / 2,
+          y + (shadowOffsetY || 0) / 2,
+          x + width + (shadowOffsetX || 0) / 2,
+          y + height + (shadowOffsetY || 0) / 2,
           tlr,
           tlr,
           trr,

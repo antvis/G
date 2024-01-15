@@ -16,8 +16,6 @@ export function isPointInPath(
     lineWidth,
     increasedLineWidthForHitTesting,
     points,
-    defX: x = 0,
-    defY: y = 0,
     pointerEvents,
     fill,
     stroke,
@@ -31,8 +29,8 @@ export function isPointInPath(
   return inPolyline(
     points.points,
     (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
-    position.x + x,
-    position.y + y,
+    position.x,
+    position.y,
     false,
   );
 }

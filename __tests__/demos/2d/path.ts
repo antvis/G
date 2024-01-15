@@ -62,7 +62,7 @@ export async function path(context) {
   });
   canvas.appendChild(path2);
   path2.scale(0.2);
-  path2.translateLocal(-100, 20);
+  path2.translateLocal(0, 20);
 
   // Bezier
   const path3 = new Path({

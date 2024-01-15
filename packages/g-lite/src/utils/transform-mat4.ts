@@ -9,11 +9,8 @@ export function parsedTransformToMat4(
   transform: ParsedTransform[],
   object: DisplayObject,
 ): mat4 {
-  const defX = object.parsedStyle.defX || 0;
-  const defY = object.parsedStyle.defY || 0;
   // reset transform
   object.resetLocalTransform();
-  object.setLocalPosition(defX, defY);
 
   transform.forEach((parsed) => {
     const { t, d } = parsed;
@@ -89,32 +86,11 @@ export function parsedTransformToMat4(
     } else if (t === 'matrix') {
       const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
       object.setLocalTransform(
-        mat4.set(
-          tmpMat4,
-          a,
-          b,
-          0,
-          0,
-          c,
-          dd,
-          0,
-          0,
-          0,
-          0,
-          1,
-          0,
-          tx + defX,
-          ty + defY,
-          0,
-          1,
-        ),
+        mat4.set(tmpMat4, a, b, 0, 0, c, dd, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1),
       );
     } else if (t === 'matrix3d') {
       // @ts-ignore
       mat4.set(tmpMat4, ...d.map((s) => s.value));
-
-      tmpMat4[12] += defX;
-      tmpMat4[13] += defY;
       object.setLocalTransform(tmpMat4);
     }
   });

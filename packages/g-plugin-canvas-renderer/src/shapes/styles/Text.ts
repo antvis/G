@@ -33,6 +33,8 @@ export class TextRenderer implements StyleRenderer {
       strokeOpacity,
       opacity,
       metrics,
+      x = 0,
+      y = 0,
       dx,
       dy,
       shadowColor,
@@ -59,22 +61,22 @@ export class TextRenderer implements StyleRenderer {
       context.miterLimit = miterLimit;
     }
 
-    let linePositionY = 0;
+    let linePositionY = y;
     // handle vertical text baseline
     if (textBaseline === 'middle') {
-      linePositionY = -height / 2 - lineHeight / 2;
+      linePositionY += -height / 2 - lineHeight / 2;
     } else if (
       textBaseline === 'bottom' ||
       textBaseline === 'alphabetic' ||
       textBaseline === 'ideographic'
     ) {
-      linePositionY = -height;
+      linePositionY += -height;
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
-      linePositionY = -lineHeight;
+      linePositionY += -lineHeight;
     }
 
     // account for dx & dy
-    const offsetX = dx || 0;
+    const offsetX = x + (dx || 0);
     linePositionY += dy || 0;
 
     if (lines.length === 1) {

@@ -26,7 +26,7 @@ export class ImageRenderer implements RendererContribution {
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
     const { canvas } = context;
-    const { width, height, img, fillOpacity, opacity } =
+    const { x, y, width, height, img, fillOpacity, opacity } =
       object.parsedStyle as ParsedImageStyleProps;
 
     let image: HTMLImageElement;
@@ -56,7 +56,7 @@ export class ImageRenderer implements RendererContribution {
       );
 
       const srcRect = CanvasKit.XYWHRect(0, 0, image.width, image.height);
-      const destRect = CanvasKit.XYWHRect(0, 0, iw, ih);
+      const destRect = CanvasKit.XYWHRect(x, y, iw, ih);
 
       const fillPaint = new CanvasKit.Paint();
       fillPaint.setAntiAlias(true);

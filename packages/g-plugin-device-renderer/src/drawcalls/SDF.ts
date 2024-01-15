@@ -24,6 +24,7 @@ enum SDFVertexAttributeBufferIndex {
 
 enum SDFVertexAttributeLocation {
   PACKED_STYLE3 = VertexAttributeLocation.MAX,
+  EXTRUDE,
   SIZE,
 }
 
@@ -72,12 +73,14 @@ export class SDFDrawcall extends Instanced {
     super.createGeometry(objects);
 
     const instanced = [];
+    const positions = [];
     objects.forEach((object, i) => {
       const circle = object as Circle;
       // @ts-ignore
       const { radius } = circle.parsedStyle;
       const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
       const size = this.getSize(object.parsedStyle, circle.nodeName);
+      const position = this.getPosition(object.parsedStyle, circle.nodeName);
       instanced.push(
         ...size,
         circle.parsedStyle.isBillboard ? 1 : 0,
@@ -86,19 +89,20 @@ export class SDFDrawcall extends Instanced {
         (radius && radius[0]) || 0,
         omitStroke ? 1 : 0,
       );
+      positions.push(...position);
     });
 
     this.geometry.setIndexBuffer(new Uint32Array([0, 2, 1, 0, 3, 2]));
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
-      bufferIndex: VertexAttributeBufferIndex.POSITION,
+      bufferIndex: VertexAttributeBufferIndex.UV,
       byteStride: 4 * 4,
       stepMode: VertexStepMode.VERTEX,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.POSITION,
+          location: SDFVertexAttributeLocation.EXTRUDE,
         },
         {
           format: Format.F32_RG,
@@ -109,6 +113,19 @@ export class SDFDrawcall extends Instanced {
       data: new Float32Array([
         -1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, 1, 0, 1,
       ]),
+    });
+    this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
+      byteStride: 4 * 3,
+      stepMode: VertexStepMode.INSTANCE,
+      attributes: [
+        {
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 0,
+          location: VertexAttributeLocation.POSITION,
+        },
+      ],
+      data: new Float32Array(positions),
     });
     this.geometry.setVertexBuffer({
       bufferIndex: SDFVertexAttributeBufferIndex.PACKED_STYLE,
@@ -181,7 +198,37 @@ export class SDFDrawcall extends Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
+    } else if (name === 'cx' || name === 'cy' || name === 'x' || name === 'y') {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const [x, y] = this.getPosition(object.parsedStyle, object.nodeName);
+        packed.push(x, y);
+      });
+      this.geometry.updateVertexBuffer(
+        VertexAttributeBufferIndex.POSITION,
+        VertexAttributeLocation.POSITION,
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
+      );
     }
+  }
+
+  private getPosition(
+    parsed:
+      | ParsedCircleStyleProps
+      | ParsedEllipseStyleProps
+      | ParsedRectStyleProps,
+    tagName: string,
+  ) {
+    let size: [number, number, number] = [0, 0, 0];
+    if (tagName === Shape.CIRCLE || tagName === Shape.ELLIPSE) {
+      const { cx, cy, cz = 0 } = parsed as ParsedCircleStyleProps;
+      size = [cx, cy, cz];
+    } else if (tagName === Shape.RECT) {
+      const { x, y, z = 0 } = parsed as ParsedRectStyleProps;
+      size = [x, y, z];
+    }
+    return size;
   }
 
   private getSize(
