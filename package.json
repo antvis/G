@@ -27,6 +27,7 @@
     "test:serverside": "jest --config jest.node.config.js",
     "changeset": "changeset",
     "version": "changeset version",
+    "prerelease": "changeset pre enter next",
     "release": "changeset publish",
     "wasm": "wasm-pack build ./rust --target web",
     "watch": "pnpm --parallel -r run watch"

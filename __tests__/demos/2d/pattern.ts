@@ -1,4 +1,4 @@
-import { CanvasEvent, Circle, Rect, Group, HTML } from '../../../packages/g';
+import { Rect, HTML } from '../../../packages/g';
 import SimplexNoise from 'simplex-noise';
 
 /**
@@ -23,7 +23,7 @@ export async function pattern({ canvas }) {
       fill: {
         image:
           'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*jgjxQ57sACsAAAAAAAAAAAAAARQnAQ',
-        repetition: 'repeat',
+        repetition: 'no-repeat',
       },
     },
   });

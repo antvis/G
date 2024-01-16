@@ -201,10 +201,9 @@ function create$Pattern(
   $pattern.id = patternId;
   $def.appendChild($pattern);
 
-  $pattern.setAttribute('x', '0');
-  $pattern.setAttribute('y', '0');
-
-  const { halfExtents } = object.getGeometryBounds();
+  const { halfExtents, min } = object.getGeometryBounds();
+  $pattern.setAttribute('x', `${min[0]}`);
+  $pattern.setAttribute('y', `${min[1]}`);
 
   // There is no equivalent to CSS no-repeat for SVG patterns
   // @see https://stackoverflow.com/a/33481956
@@ -320,6 +319,12 @@ function createOrUpdatePattern(
         // apply local RTS transformation to <group> wrapper
         // account for anchor
         const localTransform = object.getLocalTransform();
+        // const { min } = object.getGeometryBounds();
+        // const transform = mat4.translate(mat4.create(), localTransform, [
+        //   min[0],
+        //   min[1],
+        //   0,
+        // ]);
         plugin.applyTransform(svgElement.$groupEl, localTransform);
       });
 
@@ -341,6 +346,7 @@ function createOrUpdateGradient(
   const bounds = object.getGeometryBounds();
   const width = (bounds && bounds.halfExtents[0] * 2) || 0;
   const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+  const min = (bounds && bounds.min) || [0, 0];
 
   const gradientId = generateCacheKey(parsedColor, { width, height });
   let $existed = $def.querySelector(`#${gradientId}`);
@@ -375,7 +381,12 @@ function createOrUpdateGradient(
 
   if (parsedColor.type === GradientType.LinearGradient) {
     const { angle } = parsedColor.value as LinearGradient;
-    const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
+    const { x1, y1, x2, y2 } = computeLinearGradient(
+      [min[0], min[1]],
+      width,
+      height,
+      angle,
+    );
 
     $existed.setAttribute('x1', `${x1}`);
     $existed.setAttribute('y1', `${y1}`);
@@ -385,7 +396,14 @@ function createOrUpdateGradient(
     // $existed.setAttribute('gradientTransform', `rotate(${angle})`);
   } else {
     const { cx, cy, size } = parsedColor.value as RadialGradient;
-    const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
+    const { x, y, r } = computeRadialGradient(
+      [min[0], min[1]],
+      width,
+      height,
+      cx,
+      cy,
+      size,
+    );
 
     $existed.setAttribute('cx', `${x}`);
     $existed.setAttribute('cy', `${y}`);

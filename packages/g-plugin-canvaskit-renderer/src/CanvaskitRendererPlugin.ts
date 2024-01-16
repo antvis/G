@@ -366,13 +366,14 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           mat = mat4.identity(mat4.create());
         }
 
+        const { min } = object.getGeometryBounds();
         const pattern = decoded.makeShaderCubic(tx, ty, 1 / 3, 1 / 3, [
           mat[0],
           mat[4],
-          mat[12],
+          mat[12] + min[0],
           mat[1],
           mat[5],
-          mat[13],
+          mat[13] + min[1],
           0,
           0,
           1,
@@ -389,6 +390,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+    const min = (bounds && bounds.min) || [0, 0];
 
     if (stroke.type === GradientType.LinearGradient) {
       // @see https://fiddle.skia.org/c/@GradientShader_MakeLinear
@@ -407,7 +409,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(c.alpha),
         );
       });
-      const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
+      const { x1, y1, x2, y2 } = computeLinearGradient(
+        [min[0], min[1]],
+        width,
+        height,
+        angle,
+      );
       const gradient = CanvasKit.Shader.MakeLinearGradient(
         [x1, y1],
         [x2, y2],
@@ -418,7 +425,14 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       return gradient;
     } else if (stroke.type === GradientType.RadialGradient) {
       const { cx, cy, steps, size } = stroke.value as RadialGradient;
-      const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
+      const { x, y, r } = computeRadialGradient(
+        [min[0], min[1]],
+        width,
+        height,
+        cx,
+        cy,
+        size,
+      );
       const pos: number[] = [];
       const colors: Float32Array[] = [];
       steps.forEach(({ offset, color }) => {

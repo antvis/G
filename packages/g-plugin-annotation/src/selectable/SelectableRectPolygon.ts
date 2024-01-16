@@ -204,11 +204,10 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const { defX, defY } = this.mask.parsedStyle;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
-        movingX: dx + defX,
-        movingY: dy + defY,
+        movingX: dx,
+        movingY: dy,
         dx,
         dy,
       }),
@@ -237,15 +236,10 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const { defX, defY } = this.mask.parsedStyle;
-
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
         const selectable = this.plugin.getOrCreateSelectableUI(selected);
-        selectable.triggerMovingEvent(
-          canvasX - shiftX - defX,
-          canvasY - shiftY - defY,
-        );
+        selectable.triggerMovingEvent(canvasX - shiftX, canvasY - shiftY);
       });
     };
 
@@ -253,9 +247,8 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        const { defX, defY } = this.mask.parsedStyle;
-        shiftX = e.canvasX - defX;
-        shiftY = e.canvasY - defY;
+        shiftX = e.canvasX;
+        shiftY = e.canvasY;
 
         moveAt(e.canvasX, e.canvasY);
       }

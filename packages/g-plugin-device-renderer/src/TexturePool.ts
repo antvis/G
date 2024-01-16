@@ -150,6 +150,7 @@ export class TexturePool {
           ...(g.value as LinearGradient & RadialGradient),
           width,
           height,
+          min: [0, 0],
         },
         context,
       );

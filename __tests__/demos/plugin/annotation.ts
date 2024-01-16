@@ -9,29 +9,10 @@ import {
 } from '../../../packages/g';
 import { Plugin as PluginDragndrop } from '../../../packages/g-plugin-dragndrop';
 import { Plugin as PluginAnnotation } from '../../../packages/g-plugin-annotation';
+
+let annotationPlugin;
 export async function annotation(context) {
-  const { canvas, renderer } = context;
-
-  renderer.registerPlugin(
-    new PluginDragndrop({
-      dragstartDistanceThreshold: 10,
-      dragstartTimeThreshold: 100,
-    }),
-  );
-
-  const annotationPlugin = new PluginAnnotation({
-    enableDeleteTargetWithShortcuts: true,
-    enableAutoSwitchDrawingMode: true,
-    selectableStyle: {
-      selectionFill: 'rgba(24,144,255,0.15)',
-      selectionStroke: '#1890FF',
-      selectionStrokeWidth: 2.5,
-      anchorFill: '#1890FF',
-      anchorStroke: '#1890FF',
-    },
-  });
-
-  renderer.registerPlugin(annotationPlugin);
+  const { canvas } = context;
 
   await canvas.ready;
 
@@ -190,3 +171,26 @@ export async function annotation(context) {
     console.log('draw:cancel', toolstate);
   });
 }
+
+annotation.initRenderer = (renderer) => {
+  renderer.registerPlugin(
+    new PluginDragndrop({
+      dragstartDistanceThreshold: 10,
+      dragstartTimeThreshold: 100,
+    }),
+  );
+
+  annotationPlugin = new PluginAnnotation({
+    enableDeleteTargetWithShortcuts: true,
+    enableAutoSwitchDrawingMode: true,
+    selectableStyle: {
+      selectionFill: 'rgba(24,144,255,0.15)',
+      selectionStroke: '#1890FF',
+      selectionStrokeWidth: 2.5,
+      anchorFill: '#1890FF',
+      anchorStroke: '#1890FF',
+    },
+  });
+
+  renderer.registerPlugin(annotationPlugin);
+};

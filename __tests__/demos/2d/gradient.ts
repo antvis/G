@@ -11,6 +11,7 @@ export async function gradient(context) {
       width: 200,
       height: 100,
       fill: 'linear-gradient(0deg, blue, green 40%, red)',
+      // transform: 'translate(50, 50)',
     },
   });
 
@@ -24,6 +25,7 @@ export async function gradient(context) {
       fill: `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
               linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
               linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`,
+      // transform: 'translate(50, 250)',
     },
   });
 
@@ -35,6 +37,7 @@ export async function gradient(context) {
       width: 200,
       height: 100,
       fill: 'radial-gradient(circle at center, red, blue, green 100%)',
+      // transform: 'translate(350, 50)',
     },
   });
 
@@ -46,6 +49,7 @@ export async function gradient(context) {
       width: 200,
       height: 100,
       fill: 'radial-gradient(red 50%, blue 50%)',
+      // transform: 'translate(350, 250)',
     },
   });
 

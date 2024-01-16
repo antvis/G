@@ -11,3 +11,4 @@ export { gradient } from './gradient';
 export { transform } from './transform';
 export { clipPath } from './clippath';
 export { pattern } from './pattern';
+export { pattern2 } from './pattern2';
