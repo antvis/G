@@ -872,7 +872,6 @@ function rectToCommands(
 /**
  * convert object to path, should account for:
  * * transform & origin
- * * anchor
  * * lineWidth
  */
 export function convertToPath(

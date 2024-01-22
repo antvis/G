@@ -16,7 +16,6 @@ describe('Circle', () => {
     expect(circle.matches('[cx=200]')).toBeFalsy();
 
     expect(circle.getAttributeNames()).toStrictEqual([
-      'anchor',
       'opacity',
       'fillOpacity',
       'strokeOpacity',
@@ -68,7 +67,7 @@ describe('Circle', () => {
       expect(localBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (renderBounds) {
@@ -95,33 +94,6 @@ describe('Circle', () => {
     if (bounds) {
       expect(bounds.center).toStrictEqual([200, 100, 0]);
       expect(bounds.halfExtents).toStrictEqual([10, 10, 0]);
-    }
-
-    // change anchor from center to left-top corner, r = 10
-    circle.style.anchor = [0, 0];
-    expect(circle.getLocalPosition()).toStrictEqual([200, 100, 0]);
-    bounds = circle.getBounds();
-    if (bounds) {
-      expect(bounds.center).toStrictEqual([210, 110, 0]);
-      expect(bounds.halfExtents).toStrictEqual([10, 10, 0]);
-    }
-    geometryBounds = circle.getGeometryBounds();
-    if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([10, 10, 0]);
-      expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
-    }
-
-    circle.style.anchor = [1, 1];
-    expect(circle.getLocalPosition()).toStrictEqual([200, 100, 0]);
-    bounds = circle.getBounds();
-    if (bounds) {
-      expect(bounds.center).toStrictEqual([190, 90, 0]);
-      expect(bounds.halfExtents).toStrictEqual([10, 10, 0]);
-    }
-    geometryBounds = circle.getGeometryBounds();
-    if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([-10, -10, 0]);
-      expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
     }
 
     // ignore undefined
@@ -154,7 +126,6 @@ describe('Circle', () => {
     });
 
     expect(circle.getAttributeNames()).toStrictEqual([
-      'anchor',
       'opacity',
       'fillOpacity',
       'strokeOpacity',
@@ -184,8 +155,6 @@ describe('Circle', () => {
       'r',
     ]);
 
-    expect(circle.getAttribute('anchor')).toBe('');
-    expect(circle.parsedStyle.anchor).toStrictEqual([0.5, 0.5]);
     expect(circle.getAttribute('opacity')).toBe('');
     expect(circle.parsedStyle.opacity).toBeUndefined();
     expect(circle.getAttribute('fillOpacity')).toBe('');
@@ -232,10 +201,6 @@ describe('Circle', () => {
     expect(circle.getAttribute('r')).toBe(100);
     expect(circle.parsedStyle.r).toBe(100);
 
-    // update anchor
-    circle.style.anchor = '0 0';
-    expect(circle.getAttribute('anchor')).toBe('0 0');
-    expect(circle.parsedStyle.anchor).toStrictEqual([0, 0]);
     // update fill
     circle.style.fill = 'red';
     expect(circle.getAttribute('fill')).toBe('red');
@@ -255,8 +220,6 @@ describe('Circle', () => {
       circle.setAttribute(attributeName, '');
     });
 
-    expect(circle.getAttribute('anchor')).toBe('');
-    expect(circle.parsedStyle.anchor).toStrictEqual([0.5, 0.5]);
     expect(circle.getAttribute('opacity')).toBe('');
     expect(circle.parsedStyle.opacity).toBeUndefined();
     expect(circle.getAttribute('fillOpacity')).toBe('');

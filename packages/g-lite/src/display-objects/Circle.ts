@@ -62,7 +62,6 @@ export class Circle extends DisplayObject<
             ...style,
           },
       initialParsedStyle: {
-        // anchor: [0.5, 0.5],
         transformOrigin: runtime.enableCSSParsing
           ? null
           : [PECENTAGE_50, PECENTAGE_50],

@@ -12,7 +12,15 @@ export class ImageRenderer implements StyleRenderer {
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
   ) {
-    const { x, y, width, height, img, shadowColor, shadowBlur } = parsedStyle;
+    const {
+      x = 0,
+      y = 0,
+      width,
+      height,
+      img,
+      shadowColor,
+      shadowBlur,
+    } = parsedStyle;
 
     let image: HTMLImageElement;
     let iw = width;

@@ -7,7 +7,7 @@ export class CircleUpdater
   implements GeometryAABBUpdater<ParsedCircleStyleProps>
 {
   update(parsedStyle: ParsedCircleStyleProps, object: Circle) {
-    const { cx, cy, r } = parsedStyle;
+    const { cx = 0, cy = 0, r = 0 } = parsedStyle;
 
     return {
       cx,

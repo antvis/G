@@ -6,15 +6,11 @@ import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface GroupStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
   width?: number | string;
   height?: number | string;
 }
 
 export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
   width?: CSSUnitValue;
   height?: CSSUnitValue;
 }
@@ -35,8 +31,6 @@ export class Group extends DisplayObject {
       type: Shape.GROUP,
       style: runtime.enableCSSParsing
         ? {
-            x: '',
-            y: '',
             width: '',
             height: '',
             ...style,

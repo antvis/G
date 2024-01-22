@@ -1,5 +1,18 @@
 # @antv/g-plugin-canvas-renderer
 
+## 1.10.0-next.0
+
+### Minor Changes
+
+-   X/y won't affect transform now.
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-plugin-image-loader@1.4.0-next.0
+    -   @antv/g-lite@1.3.0-next.0
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.0
+
 ## 1.9.23
 
 ### Patch Changes

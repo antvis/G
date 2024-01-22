@@ -47,11 +47,6 @@ export class MatterJSPlugin implements RenderingPlugin {
           const bounds = displayObject.getBounds();
 
           if (!AABB.isEmpty(bounds)) {
-            // const { anchor } =
-            //   displayObject.parsedStyle as ParsedBaseStyleProps;
-            // const { halfExtents } = bounds;
-            // const x = body.position.x - (1 - anchor[0] * 2) * halfExtents[0];
-            // const y = body.position.y - (1 - anchor[1] * 2) * halfExtents[1];
             const x = body.position.x;
             const y = body.position.y;
             const angle = body.angle;

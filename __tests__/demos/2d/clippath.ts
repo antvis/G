@@ -1,4 +1,5 @@
 import { Circle, Rect, Path, Group } from '../../../packages/g';
+import { Sector } from '../../../packages/g-components';
 
 export async function clipPath(context) {
   const { canvas } = context;
@@ -50,7 +51,6 @@ export async function clipPath(context) {
       stroke: 'black',
       lineWidth: 2,
       path: 'M 10,10 L -10,0 L 10,-10 Z',
-      anchor: [0.5, 0.5],
     },
   });
 
@@ -69,9 +69,6 @@ export async function clipPath(context) {
 
   canvas.appendChild(g);
 
-  // g.style.x = 200;
-  // g.style.y = 200;
-
   clipPathCircle.animate(
     [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
     {
@@ -79,4 +76,59 @@ export async function clipPath(context) {
       iterations: Infinity,
     },
   );
+
+  {
+    const sector = new Sector({
+      style: {
+        x: 350,
+        y: 100,
+        lineWidth: 1,
+        sr: 100,
+        startAngle: -90,
+        fill: 'yellow',
+        opacity: 0.5,
+      },
+    });
+    const group = new Group({
+      style: {
+        clipPath: sector,
+      },
+    });
+    const circle1 = new Circle({
+      style: {
+        fill: 'red',
+        cx: 300,
+        cy: 100,
+        r: 20,
+      },
+    });
+    const circle2 = new Circle({
+      style: {
+        fill: 'red',
+        cx: 350,
+        cy: 100,
+        r: 20,
+      },
+    });
+    canvas.appendChild(group);
+    group.appendChild(circle1);
+    group.appendChild(circle2);
+    canvas.appendChild(sector);
+
+    sector.animate(
+      [
+        {
+          endAngle: -90,
+        },
+        {
+          endAngle: 270,
+        },
+      ],
+      {
+        duration: 1000,
+        iterations: Infinity,
+        fill: 'both',
+      },
+    );
+  }
 }

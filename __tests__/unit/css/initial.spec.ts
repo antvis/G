@@ -147,7 +147,6 @@ describe('StyleValueRegistry initialization', () => {
     expect(circle.getAttribute('lineCap')).toBe('');
     expect(circle.getAttribute('transform')).toBe('');
     expect(circle.getAttribute('transformOrigin')).toBe('');
-    expect(circle.getAttribute('anchor')).toBe('');
 
     /**
      * computed values
@@ -199,9 +198,6 @@ describe('StyleValueRegistry initialization', () => {
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
     expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
     expect(transformOrigin.value).toBe('unset');
-    const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor instanceof CSSKeywordValue).toBeTruthy();
-    expect(anchor.value).toBe('unset');
     expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
@@ -229,10 +225,6 @@ describe('StyleValueRegistry initialization', () => {
     expect(
       parsedStyle.transformOrigin![1].equals(CSS.percent(50)),
     ).toBeTruthy();
-    // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).toBe(2);
-    expect(parsedStyle.anchor![0]).toBe(0.5);
-    expect(parsedStyle.anchor![1]).toBe(0.5);
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.opacity).toBeUndefined();
     expect(parsedStyle.fillOpacity).toBeUndefined();
@@ -340,9 +332,6 @@ describe('StyleValueRegistry initialization', () => {
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
     expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
     expect(transformOrigin.value).toBe('unset');
-    const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor instanceof CSSKeywordValue).toBeTruthy();
-    expect(anchor.value).toBe('unset');
     expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
@@ -376,10 +365,6 @@ describe('StyleValueRegistry initialization', () => {
     expect(
       parsedStyle.transformOrigin![1].equals(CSS.percent(50)),
     ).toBeTruthy();
-    // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).toBe(2);
-    expect(parsedStyle.anchor![0]).toBe(0.5);
-    expect(parsedStyle.anchor![1]).toBe(0.5);
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.visibility).toBeUndefined();
     expect(parsedStyle.lineCap).toBeUndefined();
@@ -460,8 +445,6 @@ describe('StyleValueRegistry initialization', () => {
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
     expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
     expect(transformOrigin.value).toBe('unset');
-    const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor.value).toBe('unset');
     expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
@@ -490,10 +473,6 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.transformOrigin!.length).toBe(2);
     expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).toBeTruthy();
     expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).toBeTruthy();
-    // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).toBe(2);
-    expect(parsedStyle.anchor![0]).toBe(0);
-    expect(parsedStyle.anchor![1]).toBe(0);
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.opacity).toBeUndefined();
     expect(parsedStyle.fillOpacity).toBeUndefined();
@@ -573,8 +552,6 @@ describe('StyleValueRegistry initialization', () => {
     const transformOrigin = styleMap.get('transformOrigin') as CSSKeywordValue;
     expect(transformOrigin instanceof CSSKeywordValue).toBeTruthy();
     expect(transformOrigin.value).toBe('unset');
-    const anchor = styleMap.get('anchor') as CSSKeywordValue;
-    expect(anchor.value).toBe('unset');
     expect(styleMap.get('xxxx')).toBeUndefined();
 
     /**
@@ -601,10 +578,6 @@ describe('StyleValueRegistry initialization', () => {
     expect(parsedStyle.transformOrigin!.length).toBe(2);
     expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).toBeTruthy();
     expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).toBeTruthy();
-    // [x, y] -> [x, y, z]
-    expect(parsedStyle.anchor!.length).toBe(2);
-    expect(parsedStyle.anchor![0]).toBe(0);
-    expect(parsedStyle.anchor![1]).toBe(0);
     // these inheritable props should get re-calculated after appended to document
     expect(parsedStyle.opacity).toBeUndefined();
     expect(parsedStyle.fillOpacity).toBeUndefined();

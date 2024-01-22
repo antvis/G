@@ -74,8 +74,7 @@ describe('CustomElement', () => {
     const a = new ElementA({ style: { size: 10 } });
     a.setPosition(100, 100);
 
-    a.style.x = 50;
-    a.style.y = 50;
+    a.style.transform = 'translate(50, 50)';
     expect(a.getLocalPosition()).toStrictEqual([50, 50, 0]);
 
     expect(a.style.size).toBe(10);

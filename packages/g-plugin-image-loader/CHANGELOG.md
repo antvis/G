@@ -1,5 +1,16 @@
 # @antv/g-plugin-image-loader
 
+## 1.4.0-next.0
+
+### Minor Changes
+
+-   X/y won't affect transform now.
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.0
+
 ## 1.3.21
 
 ### Patch Changes

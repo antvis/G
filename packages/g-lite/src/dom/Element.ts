@@ -508,7 +508,6 @@ export class Element<
     ICSSStyleDeclaration<StyleProps>;
   computedStyle: any = runtime.enableCSSParsing
     ? {
-        anchor: unsetKeywordValue,
         opacity: unsetKeywordValue,
         fillOpacity: unsetKeywordValue,
         strokeOpacity: unsetKeywordValue,

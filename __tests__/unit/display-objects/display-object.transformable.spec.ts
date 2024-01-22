@@ -219,7 +219,7 @@ describe('Mixin Transformable', () => {
       },
     });
 
-    expect(circle.getLocalPosition()).toStrictEqual([200, 200, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([100, 100, 0]);
   });
 
   it('should apply transform(matrix) attribute correctly', () => {
@@ -232,7 +232,7 @@ describe('Mixin Transformable', () => {
       },
     });
 
-    expect(circle.getLocalPosition()).toStrictEqual([200, 100, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([100, 0, 0]);
   });
 
   it('should apply transform(matrix3d) attribute correctly', () => {
@@ -245,6 +245,6 @@ describe('Mixin Transformable', () => {
       },
     });
 
-    expect(circle.getLocalPosition()).toStrictEqual([200, 100, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([100, 0, 0]);
   });
 });

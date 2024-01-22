@@ -3,7 +3,6 @@ import type {
   DisplayObject,
   FederatedEvent,
   MutationEvent,
-  ParsedBaseStyleProps,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -553,20 +552,13 @@ export class YogaPlugin implements RenderingPlugin {
     );
     if (isInFlexContainer) {
       const layout = node.getComputedLayout();
-      let { top, left } = layout;
+      const { top, left } = layout;
       const { width, height } = layout;
       // update size, only Rect & Image can be updated
       object.style.yogaUpdatingFlag = true;
       object.style.width = width;
       object.style.height = height;
       object.style.yogaUpdatingFlag = false;
-
-      const { anchor } = object.parsedStyle as ParsedBaseStyleProps;
-      if (anchor) {
-        // calculate local position instead of modify origin directly
-        left += anchor[0] * width;
-        top += anchor[1] * height;
-      }
 
       if (object.nodeName === Shape.TEXT) {
         object.style.textBaseline = 'top';

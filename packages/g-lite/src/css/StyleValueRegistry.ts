@@ -311,33 +311,23 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     syntax: PropertySyntax.TRANSFORM_ORIGIN,
   },
   {
-    n: 'anchor',
-    p: 99,
-    d: (nodeName: string) => {
-      // if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
-      //   return '0.5 0.5';
-      // }
-      return '0 0';
-    },
-    l: true,
-    syntax: PropertySyntax.LENGTH_PERCENTAGE_12,
-  },
-  // <circle> & <ellipse>
-  {
     n: 'cx',
     int: true,
+    l: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
     n: 'cy',
     int: true,
+    l: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
   {
     n: 'cz',
     int: true,
+    l: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
@@ -367,6 +357,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     // x in local space
     n: 'x',
     int: true,
+    l: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
@@ -374,6 +365,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     // y in local space
     n: 'y',
     int: true,
+    l: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
@@ -381,6 +373,7 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
     // z in local space
     n: 'z',
     int: true,
+    l: true,
     d: '0',
     syntax: PropertySyntax.COORDINATE,
   },
@@ -789,13 +782,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           this.runtime,
         );
       }
-      if (attributes.anchor) {
-        object.parsedStyle.anchor = parseDimensionArrayFormat(
-          // @ts-ignorex
-          attributes.anchor,
-          2,
-        );
-      }
       if (attributes.transform) {
         object.parsedStyle.transform = parseTransform(attributes.transform);
       }
@@ -850,20 +836,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       if (!isNil(attributes.zIndex)) {
         this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
-      // @ts-ignore
-      if (attributes.path) {
-        this.runtime.CSSPropertySyntaxFactory['<path>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
-      // @ts-ignore
-      if (attributes.points) {
-        this.runtime.CSSPropertySyntaxFactory['<list-of-points>'].postProcessor(
           object,
           attributeNames,
         );
@@ -925,7 +897,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     // points 50
     // text 50
     // textTransform 51
-    // anchor 99
     // transform 100
     // transformOrigin 100
     if (usedAttributes?.length) {
@@ -940,7 +911,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     //   'points',
     //   'text',
     //   'textTransform',
-    //   'anchor',
     //   'transform',
     //   'transformOrigin',
     // ].forEach((name) => {
@@ -1223,11 +1193,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
       const {
-        cx,
-        cy,
+        cx = 0,
+        cy = 0,
         cz = 0,
-        hwidth,
-        hheight,
+        hwidth = 0,
+        hheight = 0,
         hdepth = 0,
       } = geometryUpdater.update(parsedStyle, object);
       // init with content box
@@ -1255,13 +1225,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         filter = [],
         transformOrigin,
       } = parsedStyle as ParsedBaseStyleProps;
-      // let anchor = parsedStyle.anchor;
-      // <Text> use textAlign & textBaseline instead of anchor
-      // if (nodeName === Shape.TEXT) {
-      //   delete parsedStyle.anchor;
-      // } else if (nodeName === Shape.MESH) {
-      //   parsedStyle.anchor[2] = 0.5;
-      // }
       const center: Tuple3Number = [cx, cy, cz];
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);

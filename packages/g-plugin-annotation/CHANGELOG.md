@@ -1,5 +1,16 @@
 # @antv/g-plugin-annotation
 
+## 0.5.0-next.0
+
+### Minor Changes
+
+-   X/y won't affect transform now.
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.0
+
 ## 0.4.21
 
 ### Patch Changes

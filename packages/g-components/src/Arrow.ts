@@ -321,16 +321,17 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
   private createDefaultArrowHead() {
     const { stroke, lineWidth } = this.attributes;
     const { sin, cos, PI } = Math;
+    const width = 10 * cos(PI / 6);
     return new Path({
       style: {
         // draw an angle '<'
-        path: `M${10 * cos(PI / 6)},${10 * sin(PI / 6)} L0,0 L${
-          10 * cos(PI / 6)
+        path: `M${width / 2},${10 * sin(PI / 6)} L-${width / 2},0 L${
+          width / 2
         },-${10 * sin(PI / 6)}`,
         stroke,
         lineWidth,
         transformOrigin: 'center',
-        anchor: [0.5, 0.5], // set anchor to center
+        // anchor: [0.5, 0.5], // set anchor to center
       },
     });
   }

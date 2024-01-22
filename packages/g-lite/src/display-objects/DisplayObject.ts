@@ -46,7 +46,6 @@ const mutationEvent: MutationEvent = new MutationEvent(
 );
 
 const DEFAULT_STYLE_PROPS = {
-  anchor: '',
   opacity: '',
   fillOpacity: '',
   strokeOpacity: '',
@@ -74,7 +73,6 @@ const DEFAULT_STYLE_PROPS = {
 };
 
 const DEFAULT_PARSED_STYLE_PROPS = {
-  anchor: [0, 0],
   fill: noneColor,
   stroke: noneColor,
   transform: [],

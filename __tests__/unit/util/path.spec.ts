@@ -96,7 +96,7 @@ describe('Path utils', () => {
 
     // ignore all local transformation
     expect(convertToPath(line, mat4.identity(mat4.create()))).toBe(
-      'M0,0L0,100',
+      'M100,0L100,100',
     );
   });
 

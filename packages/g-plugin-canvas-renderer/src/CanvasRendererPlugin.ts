@@ -563,36 +563,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     object: DisplayObject,
     matrix?: mat4,
   ) {
-    let tx = 0;
-    let ty = 0;
-    const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-    const anchorX = (anchor && anchor[0]) || 0;
-    const anchorY = (anchor && anchor[1]) || 0;
-    if (anchorX !== 0 || anchorY !== 0) {
-      // const bounds = object.getGeometryBounds();
-      const bounds = object.geometry.contentBounds;
-      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-      tx = -(anchorX * width);
-      ty = -(anchorY * height);
-    }
-
     // apply clip shape's RTS
     if (matrix) {
       mat4.copy(this.tmpMat4, object.getLocalTransform());
-      this.vec3a[0] = tx;
-      this.vec3a[1] = ty;
-      this.vec3a[2] = 0;
-      mat4.translate(this.tmpMat4, this.tmpMat4, this.vec3a);
       mat4.multiply(this.tmpMat4, matrix, this.tmpMat4);
       mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
     } else {
       // apply RTS transformation in world space
       mat4.copy(this.tmpMat4, object.getWorldTransform());
-      this.vec3a[0] = tx;
-      this.vec3a[1] = ty;
-      this.vec3a[2] = 0;
-      mat4.translate(this.tmpMat4, this.tmpMat4, this.vec3a);
       mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
     }
 

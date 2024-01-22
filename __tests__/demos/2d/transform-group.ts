@@ -1,6 +1,12 @@
-import { CanvasEvent, Circle, Rect, Path, Group } from '../../../packages/g';
+import {
+  CanvasEvent,
+  Circle,
+  Rect,
+  Path,
+  Group,
+} from '../../../packages/g/dist';
 
-export async function transform(context) {
+export async function transformGroup(context) {
   const { canvas } = context;
   await canvas.ready;
 

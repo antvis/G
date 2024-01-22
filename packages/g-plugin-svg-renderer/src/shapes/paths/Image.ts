@@ -5,7 +5,7 @@ export function updateImageElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedImageStyleProps,
 ) {
-  const { img = '', x, y, width, height } = parsedStyle;
+  const { img = '', x = 0, y = 0, width, height } = parsedStyle;
 
   $el.setAttribute('x', `${x}`);
   $el.setAttribute('y', `${y}`);

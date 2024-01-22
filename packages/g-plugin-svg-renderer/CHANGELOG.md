@@ -1,5 +1,16 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.11.0-next.0
+
+### Minor Changes
+
+-   X/y won't affect transform now.
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.0
+
 ## 1.10.25
 
 ### Patch Changes

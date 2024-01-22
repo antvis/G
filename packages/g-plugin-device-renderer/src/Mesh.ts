@@ -37,7 +37,6 @@ export class Mesh<GeometryProps = any> extends DisplayObject<
         y: '',
         z: '',
         lineWidth: 0,
-        anchor: [0.5, 0.5, 0.5],
         ...style,
       },
       ...rest,

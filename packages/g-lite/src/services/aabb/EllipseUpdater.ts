@@ -8,7 +8,7 @@ export class EllipseUpdater
   implements GeometryAABBUpdater<ParsedEllipseStyleProps>
 {
   update(parsedStyle: ParsedEllipseStyleProps, object: Ellipse) {
-    const { cx, cy, rx, ry } = parsedStyle;
+    const { cx = 0, cy = 0, rx = 0, ry = 0 } = parsedStyle;
 
     return {
       cx,

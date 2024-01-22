@@ -1,5 +1,17 @@
 # @antv/g-plugin-canvaskit-renderer
 
+## 1.4.0-next.0
+
+### Minor Changes
+
+-   X/y won't affect transform now.
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-plugin-image-loader@1.4.0-next.0
+    -   @antv/g-lite@1.3.0-next.0
+
 ## 1.3.22
 
 ### Patch Changes

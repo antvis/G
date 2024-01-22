@@ -52,5 +52,5 @@
     "@antv/g-webgpu": "1.9.36",
     "@antv/react-g": "1.10.25"
   },
-  "changesets": []
+  "changesets": ["wicked-hairs-rescue"]
 }

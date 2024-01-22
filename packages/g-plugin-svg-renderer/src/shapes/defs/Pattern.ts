@@ -317,14 +317,7 @@ function createOrUpdatePattern(
         const svgElement = object.elementSVG;
 
         // apply local RTS transformation to <group> wrapper
-        // account for anchor
         const localTransform = object.getLocalTransform();
-        // const { min } = object.getGeometryBounds();
-        // const transform = mat4.translate(mat4.create(), localTransform, [
-        //   min[0],
-        //   min[1],
-        //   0,
-        // ]);
         plugin.applyTransform(svgElement.$groupEl, localTransform);
       });
 

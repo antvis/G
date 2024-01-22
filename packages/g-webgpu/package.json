@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "1.9.36",
+  "version": "1.9.37-next.0",
   "description": "A renderer implemented by WebGPU",
   "keywords": [
     "antv",

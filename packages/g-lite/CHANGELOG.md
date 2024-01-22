@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.3.0-next.0
+
+### Minor Changes
+
+-   X/y won't affect transform now.
+
 ## 1.2.21
 
 ### Patch Changes

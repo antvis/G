@@ -1,8 +1,32 @@
-import { Circle } from '../../../packages/g';
+import { Circle, Group } from '../../../packages/g';
 
 export async function circle(context) {
   const { canvas } = context;
   await canvas.ready;
+
+  for (let i = 0; i < 1000; i++) {
+    const group = new Group();
+    const circle = new Circle({
+      style: {
+        cx: Math.random() * 600,
+        cy: Math.random() * 500,
+        r: 20 + Math.random() * 10,
+        fill: '#1890FF',
+        stroke: '#F04864',
+        lineWidth: 4,
+      },
+    });
+    group.appendChild(circle);
+    canvas.appendChild(group);
+
+    circle.on('mouseenter', () => {
+      circle.attr('fill', '#2FC25B');
+    });
+
+    circle.on('mouseleave', () => {
+      circle.attr('fill', '#1890FF');
+    });
+  }
 
   // fill
   const circle1 = new Circle({

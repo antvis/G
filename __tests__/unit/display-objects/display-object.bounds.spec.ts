@@ -24,7 +24,7 @@ describe('DisplayObject Bounds API', () => {
       expect(localBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     if (renderBounds) {
@@ -45,7 +45,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -68,7 +68,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -92,7 +92,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -117,7 +117,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -141,7 +141,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -164,7 +164,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -186,7 +186,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -204,7 +204,7 @@ describe('DisplayObject Bounds API', () => {
     }
     geometryBounds = circle.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([10, 10, 0]);
     }
     renderBounds = circle.getRenderBounds();
@@ -258,19 +258,11 @@ describe('DisplayObject Bounds API', () => {
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
 
-    // modify anchor
-    rect.style.anchor = [0.5, 0.5];
-    bounds = rect.getBounds();
-    if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
-      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
-    }
-
     // use clipPath
     const clipPath = new Circle({
       style: {
-        cx: 100,
-        cy: 100,
+        cx: 200,
+        cy: 200,
         r: 20,
       },
     });
@@ -278,17 +270,17 @@ describe('DisplayObject Bounds API', () => {
     rect.style.clipPath = clipPath;
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getLocalBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getRenderBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([20, 20, 0]);
     }
 
@@ -296,17 +288,17 @@ describe('DisplayObject Bounds API', () => {
     clipPath.style.r = 40;
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getLocalBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getRenderBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([40, 40, 0]);
     }
 
@@ -314,17 +306,17 @@ describe('DisplayObject Bounds API', () => {
     clipPath.style.transform = 'scale(0.5)';
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getLocalBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getRenderBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([20, 20, 0]);
     }
 
@@ -332,17 +324,17 @@ describe('DisplayObject Bounds API', () => {
     clipPath.scale(2);
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getLocalBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getRenderBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([40, 40, 0]);
     }
 
@@ -350,17 +342,17 @@ describe('DisplayObject Bounds API', () => {
     rect.style.clipPath = null;
     bounds = rect.getBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getLocalBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
     bounds = rect.getRenderBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 100, 0]);
+      expect(bounds.center).toStrictEqual([200, 200, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
   });
@@ -444,7 +436,7 @@ describe('DisplayObject Bounds API', () => {
       expect(bounds.halfExtents).toStrictEqual([200, 200, 0]);
     }
     geometryBounds = circle.getGeometryBounds();
-    expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
+    expect(geometryBounds.center).toStrictEqual([100, 100, 0]);
     expect(geometryBounds.halfExtents).toStrictEqual([200, 200, 0]);
     renderBounds = circle.getRenderBounds();
     if (renderBounds) {

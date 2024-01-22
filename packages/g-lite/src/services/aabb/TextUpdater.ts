@@ -36,8 +36,16 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   }
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
-    const { text, textAlign, lineWidth, textBaseline, dx, dy, x, y } =
-      parsedStyle;
+    const {
+      text,
+      textAlign,
+      lineWidth,
+      textBaseline,
+      dx,
+      dy,
+      x = 0,
+      y = 0,
+    } = parsedStyle;
     if (!this.isReadyToMeasure(parsedStyle, object)) {
       parsedStyle.metrics = {
         font: '',

@@ -1,4 +1,3 @@
-import type { vec2, vec3 } from 'gl-matrix';
 import type { IRenderer } from './AbstractRenderer';
 import type {
   CSSGlobalKeywords,
@@ -60,12 +59,6 @@ export interface BaseStyleProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
    */
   transformOrigin?: string;
-
-  /**
-   * how do we define the 'position' of a shape?
-   * eg. the default anchor of a Rect is top-left, we can change it to its' center [0.5, 0.5].
-   */
-  anchor?: vec2 | vec3 | string;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility
@@ -245,7 +238,6 @@ export interface BaseStyleProps {
 export interface ParsedBaseStyleProps
   extends Omit<
     BaseStyleProps,
-    | 'anchor'
     | 'fill'
     | 'stroke'
     | 'lineWidth'
@@ -270,7 +262,6 @@ export interface ParsedBaseStyleProps
   stroke?: CSSRGB | CSSGradientValue[] | Pattern;
   lineDash?: [number, number];
 
-  anchor?: [number, number, number];
   transform: ParsedTransform[];
   transformOrigin?: [CSSUnitValue, CSSUnitValue, CSSUnitValue];
 
