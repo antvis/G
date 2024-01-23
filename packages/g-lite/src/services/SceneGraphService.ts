@@ -12,7 +12,7 @@ import type {
   IParentNode,
 } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
-import { GlobalRuntime } from '../global-runtime';
+import { GlobalRuntime, runtime } from '../global-runtime';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
@@ -92,7 +92,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const sortable = (parent as unknown as Element).sortable;
     if (
       sortable?.sorted?.length ||
-      (child as unknown as Element).style?.zIndex
+      (child as unknown as Element).parsedStyle.zIndex
     ) {
       if (sortable.dirtyChildren.indexOf(child) === -1) {
         sortable.dirtyChildren.push(child);
@@ -804,6 +804,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
+
+    if (geometry.dirty) {
+      runtime.styleValueRegistry.updateGeometry(element as DisplayObject);
+    }
+
     const bounds = render
       ? geometry.renderBounds
       : geometry.contentBounds || null;

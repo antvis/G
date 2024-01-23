@@ -36,7 +36,7 @@ export class Ellipse extends DisplayObject<
             ry: '',
             ...style,
           }
-        : { ...style },
+        : style,
       initialParsedStyle: {
         transformOrigin: runtime.enableCSSParsing
           ? null

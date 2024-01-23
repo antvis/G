@@ -58,9 +58,7 @@ export class Circle extends DisplayObject<
             r: '',
             ...style,
           }
-        : {
-            ...style,
-          },
+        : style,
       initialParsedStyle: {
         transformOrigin: runtime.enableCSSParsing
           ? null

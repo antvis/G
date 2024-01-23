@@ -68,6 +68,10 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
+  constructor() {
+    super();
+  }
+
   /**
    * Unique id.
    */
@@ -116,6 +120,7 @@ export class Element<
   geometry: Geometry = {
     contentBounds: undefined,
     renderBounds: undefined,
+    dirty: true,
   };
 
   rBushNode: RBushNode = {

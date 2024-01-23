@@ -853,7 +853,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
 
       if (needUpdateGeometry) {
-        this.updateGeometry(object);
+        object.geometry.dirty = true;
       }
       return;
     }
@@ -940,9 +940,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     // update geometry
     if (needUpdateGeometry) {
-      // object.geometry.dirty = true;
-      // runtime.sceneGraphService.dirtifyToRoot(object);
-      this.updateGeometry(object);
+      object.geometry.dirty = true;
     }
 
     attributeNames.forEach((name) => {
@@ -1178,7 +1176,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
    * update geometry when relative props changed,
    * eg. r of Circle, width/height of Rect
    */
-  private updateGeometry(object: DisplayObject) {
+  updateGeometry(object: DisplayObject) {
     const { nodeName } = object;
     const geometryUpdater = this.runtime.geometryUpdaterFactory[
       nodeName

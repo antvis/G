@@ -176,9 +176,6 @@ export class DisplayObject<
     // eg. group.get('name')
     this.config = config;
 
-    // compatible with G 3.0
-    // this.config.interactive = this.config.capture ?? this.config.interactive;
-
     // init scene graph node
     this.id = this.config.id || '';
     this.name = this.config.name || '';
@@ -186,24 +183,6 @@ export class DisplayObject<
       this.className = this.config.className || this.config.class;
     }
     this.nodeName = this.config.type || Shape.GROUP;
-
-    // // compatible with G 3.0
-    // this.config.style =
-    //   this.config.style || this.config.attrs || ({} as StyleProps);
-    // // Object.assign(this.config.style, this.config.attrs);
-    // // this.config.style = {
-    // //   // ...DEFAULT_STYLE_PROPS,
-    // //   ...this.config.style,
-    // //   ...this.config.attrs,
-    // // };
-    // if (this.config.visible != null) {
-    //   this.config.style.visibility =
-    //     this.config.visible === false ? 'hidden' : 'visible';
-    // }
-    // if (this.config.interactive != null) {
-    //   this.config.style.pointerEvents =
-    //     this.config.interactive === false ? 'none' : 'auto';
-    // }
 
     // merge parsed value
     Object.assign(
