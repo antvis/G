@@ -19,6 +19,8 @@ export function updateTextElementAttribute(
   text: Text,
   runtime: GlobalRuntime,
 ) {
+  // Trigger text geometry calculation.
+  text.getBounds();
   const {
     lineWidth,
     x = 0,

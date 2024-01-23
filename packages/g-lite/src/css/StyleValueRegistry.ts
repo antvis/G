@@ -854,6 +854,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       if (needUpdateGeometry) {
         object.geometry.dirty = true;
+        // FIXME setOrigin may have already dirtified to root.
+        this.runtime.sceneGraphService.dirtifyToRoot(object);
       }
       return;
     }
@@ -941,6 +943,8 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     // update geometry
     if (needUpdateGeometry) {
       object.geometry.dirty = true;
+      // FIXME setOrigin may have already dirtified to root.
+      this.runtime.sceneGraphService.dirtifyToRoot(object);
     }
 
     attributeNames.forEach((name) => {
@@ -1303,6 +1307,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           geometry.renderBounds.setMinMax(min, max);
         }
       });
+
+      object.geometry.dirty = false;
+
       // if (nodeName === Shape.RECT) {
       // account for negative width / height of Rect
       // @see https://github.com/antvis/g/issues/957
@@ -1325,9 +1332,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         cx - hwidth + usedOriginXValue,
         cy - hheight + usedOriginYValue,
       );
-
-      // FIXME setOrigin may have already dirtified to root.
-      this.runtime.sceneGraphService.dirtifyToRoot(object);
     }
   }
 

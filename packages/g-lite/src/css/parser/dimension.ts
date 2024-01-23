@@ -261,8 +261,7 @@ export function convertPercentUnit(
     const bounds =
       target.nodeName === Shape.GROUP
         ? target.getLocalBounds()
-        : // : target.getGeometryBounds();
-          target.geometry.contentBounds;
+        : target.getGeometryBounds();
     return (valueWithUnit.value / 100) * bounds.halfExtents[vec3Index] * 2;
   }
   return 0;

@@ -79,6 +79,9 @@ export class TextDrawcall extends Instanced {
   }
 
   private calcFontHash(object: DisplayObject) {
+    // Trigger text geometry calculation.
+    object.getBounds();
+
     const instancedAttributes = [
       'fontSize',
       'fontFamily',
