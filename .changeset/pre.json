@@ -52,5 +52,10 @@
     "@antv/g-webgpu": "1.9.36",
     "@antv/react-g": "1.10.25"
   },
-  "changesets": ["modern-kiwis-suffer", "wicked-hairs-rescue"]
+  "changesets": [
+    "modern-kiwis-suffer",
+    "popular-gorillas-cheer",
+    "wicked-hairs-rescue",
+    "yellow-fishes-give"
+  ]
 }

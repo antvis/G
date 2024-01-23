@@ -1,5 +1,15 @@
 # @antv/g-plugin-svg-renderer
 
+## 1.11.0-next.2
+
+### Patch Changes
+
+-   8efc380a5: x/y in rect can be omitted.
+-   614e15671: Transform can only be affected with the attribute.
+-   Updated dependencies [8efc380a5]
+-   Updated dependencies [614e15671]
+    -   @antv/g-lite@1.3.0-next.2
+
 ## 1.11.0-next.1
 
 ### Patch Changes

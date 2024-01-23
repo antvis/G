@@ -1,5 +1,18 @@
 # @antv/g
 
+## 5.18.25-next.2
+
+### Patch Changes
+
+-   8efc380a5: x/y in rect can be omitted.
+-   614e15671: Transform can only be affected with the attribute.
+-   Updated dependencies [8efc380a5]
+-   Updated dependencies [614e15671]
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.2
+    -   @antv/g-web-animations-api@1.2.23-next.2
+    -   @antv/g-camera-api@1.2.23-next.2
+    -   @antv/g-lite@1.3.0-next.2
+
 ## 5.18.25-next.1
 
 ### Patch Changes
