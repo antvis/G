@@ -5,7 +5,7 @@ export function updateRectElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedRectStyleProps,
 ) {
-  const { radius, x, y, width, height } = parsedStyle;
+  const { radius, x = 0, y = 0, width, height } = parsedStyle;
 
   // CSSKeyword: auto
   if (!isFinite(width) || !isFinite(height)) {

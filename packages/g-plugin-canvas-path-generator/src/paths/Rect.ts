@@ -5,7 +5,7 @@ export function generatePath(
   context: CanvasRenderingContext2D,
   parsedStyle: ParsedRectStyleProps,
 ) {
-  const { x, y, radius, width, height } = parsedStyle;
+  const { x = 0, y = 0, radius, width, height } = parsedStyle;
 
   const w = width;
   const h = height;
