@@ -506,8 +506,8 @@ export class TextDrawcall extends Instanced {
       isBillboard,
       billboardRotation,
       isSizeAttenuation,
-      x,
-      y,
+      x = 0,
+      y = 0,
       z = 0,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];

@@ -20,8 +20,13 @@ export function isPointInPath(
   renderingPluginContext: RenderingPluginContext,
   runtime: GlobalRuntime,
 ): boolean {
-  const { pointerEvents, x, y, width, height } =
-    displayObject.parsedStyle as ParsedImageStyleProps;
+  const {
+    pointerEvents,
+    x = 0,
+    y = 0,
+    width,
+    height,
+  } = displayObject.parsedStyle as ParsedImageStyleProps;
 
   if (pointerEvents === 'non-transparent-pixel') {
     const { offscreenCanvas } = renderingPluginContext.config;

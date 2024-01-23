@@ -22,10 +22,10 @@ export function isPointInPath(
     radius,
     fill,
     stroke,
-    lineWidth,
-    increasedLineWidthForHitTesting,
-    x,
-    y,
+    lineWidth = 0,
+    increasedLineWidthForHitTesting = 0,
+    x = 0,
+    y = 0,
     width,
     height,
     pointerEvents,
@@ -39,8 +39,7 @@ export function isPointInPath(
 
   const hasRadius = radius && radius.some((r) => r !== 0);
 
-  const lineWidthForHitTesting =
-    (lineWidth || 0) + (increasedLineWidthForHitTesting || 0);
+  const lineWidthForHitTesting = lineWidth + increasedLineWidthForHitTesting;
 
   // 无圆角时的策略
   if (!hasRadius) {

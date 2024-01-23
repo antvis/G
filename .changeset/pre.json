@@ -53,6 +53,7 @@
     "@antv/react-g": "1.10.25"
   },
   "changesets": [
+    "brown-students-nail",
     "modern-kiwis-suffer",
     "popular-gorillas-cheer",
     "wicked-hairs-rescue",

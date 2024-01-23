@@ -1,5 +1,16 @@
 # @antv/g-svg
 
+## 1.10.26-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.3
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.3
+    -   @antv/g-plugin-svg-picker@1.9.26-next.3
+    -   @antv/g-lite@1.3.0-next.3
+
 ## 1.10.26-next.2
 
 ### Patch Changes

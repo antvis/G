@@ -13,8 +13,8 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 0,
+    increasedLineWidthForHitTesting = 0,
     points,
     pointerEvents,
     fill,
@@ -28,7 +28,7 @@ export function isPointInPath(
 
   return inPolyline(
     points.points,
-    (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
+    lineWidth + increasedLineWidthForHitTesting,
     position.x,
     position.y,
     false,

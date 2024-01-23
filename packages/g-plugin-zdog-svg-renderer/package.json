@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-zdog-svg-renderer",
-  "version": "1.2.27-next.2",
+  "version": "1.2.27-next.3",
   "description": "A G plugin of renderer implementation with Zdog",
   "keywords": [
     "antv",

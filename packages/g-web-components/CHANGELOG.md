@@ -1,5 +1,15 @@
 # @antv/g-web-components
 
+## 1.9.38-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-canvas@1.11.27-next.3
+    -   @antv/g-webgl@1.9.37-next.3
+    -   @antv/g-lite@1.3.0-next.3
+
 ## 1.9.38-next.2
 
 ### Patch Changes

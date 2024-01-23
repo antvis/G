@@ -222,10 +222,10 @@ export class SDFDrawcall extends Instanced {
   ) {
     let size: [number, number, number] = [0, 0, 0];
     if (tagName === Shape.CIRCLE || tagName === Shape.ELLIPSE) {
-      const { cx, cy, cz = 0 } = parsed as ParsedCircleStyleProps;
+      const { cx = 0, cy = 0, cz = 0 } = parsed as ParsedCircleStyleProps;
       size = [cx, cy, cz];
     } else if (tagName === Shape.RECT) {
-      const { x, y, z = 0 } = parsed as ParsedRectStyleProps;
+      const { x = 0, y = 0, z = 0 } = parsed as ParsedRectStyleProps;
       size = [x, y, z];
     }
     return size;

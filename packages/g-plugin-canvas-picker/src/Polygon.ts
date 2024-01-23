@@ -15,8 +15,8 @@ export function isPointInPath(
   const {
     stroke,
     fill,
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 0,
+    increasedLineWidthForHitTesting = 0,
     points,
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPolygonStyleProps;
@@ -30,7 +30,7 @@ export function isPointInPath(
   if (hasStroke || isClipPath) {
     isHit = inPolyline(
       points.points,
-      (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
+      lineWidth + increasedLineWidthForHitTesting,
       position.x,
       position.y,
       true,

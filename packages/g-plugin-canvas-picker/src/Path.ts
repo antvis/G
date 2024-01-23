@@ -157,8 +157,8 @@ export function isPointInPath(
   runtime: GlobalRuntime,
 ): boolean {
   const {
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 0,
+    increasedLineWidthForHitTesting = 0,
     stroke,
     fill,
     path,
@@ -191,7 +191,7 @@ export function isPointInPath(
   } else if (hasStroke || isClipPath) {
     isHit = isPointInStroke(
       segments,
-      (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
+      lineWidth + increasedLineWidthForHitTesting,
       position.x,
       position.y,
       totalLength,

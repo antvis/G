@@ -1,5 +1,13 @@
 # @antv/react-g
 
+## 1.10.26-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g@5.18.25-next.3
+
 ## 1.10.26-next.2
 
 ### Patch Changes

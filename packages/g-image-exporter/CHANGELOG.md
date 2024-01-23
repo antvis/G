@@ -1,5 +1,13 @@
 # @antv/g-image-exporter
 
+## 0.7.22-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-lite@1.3.0-next.3
+
 ## 0.7.22-next.2
 
 ### Patch Changes

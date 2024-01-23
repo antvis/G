@@ -92,8 +92,8 @@ export class ImageDrawcall extends Instanced {
     objects.forEach((object, i) => {
       const image = object as ImageShape;
       const {
-        x,
-        y,
+        x = 0,
+        y = 0,
         z = 0,
         width,
         height,
@@ -182,7 +182,7 @@ export class ImageDrawcall extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { x, y, z } = image.parsedStyle;
+        const { x = 0, y = 0, z = 0 } = image.parsedStyle;
         packed.push(x, y, z);
       });
 

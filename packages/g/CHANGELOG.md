@@ -1,5 +1,16 @@
 # @antv/g
 
+## 5.18.25-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.3
+    -   @antv/g-web-animations-api@1.2.23-next.3
+    -   @antv/g-camera-api@1.2.23-next.3
+    -   @antv/g-lite@1.3.0-next.3
+
 ## 5.18.25-next.2
 
 ### Patch Changes
