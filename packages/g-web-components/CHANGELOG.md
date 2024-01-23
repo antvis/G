@@ -1,5 +1,15 @@
 # @antv/g-web-components
 
+## 1.9.38-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.1
+    -   @antv/g-webgl@1.9.37-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 1.9.38-next.0
 
 ### Patch Changes

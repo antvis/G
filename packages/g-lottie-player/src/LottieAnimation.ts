@@ -161,11 +161,11 @@ export class LottieAnimation {
 
       displayObject = new Rect({
         style: {
-          x: cx,
-          y: cy,
+          x: cx - width / 2,
+          y: cy - height / 2,
           width,
           height,
-          anchor: [0.5, 0.5], // position means the center of the rectangle
+          // anchor: [0.5, 0.5], // position means the center of the rectangle
           radius: r,
           transformOrigin: `${anchorX - cx + width / 2}px ${
             anchorY - cy + height / 2

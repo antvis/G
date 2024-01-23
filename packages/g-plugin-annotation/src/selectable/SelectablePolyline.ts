@@ -39,6 +39,8 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         cursor: 'move',
       },
     });
+    // @ts-ignore
+    this.mask.style.originalPoints = points;
     this.appendChild(this.mask);
 
     points.forEach((_, i) => {
@@ -75,8 +77,6 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
     const anchor = new Circle({
       style: {
-        cx: 0,
-        cy: 0,
         r: anchorSize,
         stroke: anchorStroke,
         fill: anchorFill,
@@ -180,10 +180,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
   moveMask(dx: number, dy: number) {
     // change definition of polyline
-    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
-      x + dx,
-      y + dy,
-    ]);
+    // @ts-ignore
+    this.mask.style.points = [...this.mask.style.pointsStartDragging].map(
+      ([x, y]) => [x + dx, y + dy],
+    );
 
     // re-position anchors in canvas coordinates
     this.repositionAnchors();
@@ -214,7 +214,8 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
       const anchor = this.anchors[i];
-      anchor.setPosition(point);
+      anchor.style.cx = point[0];
+      anchor.style.cy = point[1];
 
       if (this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
         const midAnchors = this.midAnchors[i];
@@ -259,6 +260,8 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       if (target === this.mask) {
         shiftX = e.canvasX;
         shiftY = e.canvasY;
+        // @ts-ignore
+        this.mask.style.pointsStartDragging = this.mask.style.points;
 
         moveAt(e.canvasX, e.canvasY);
       } else if (midAnchorIndexInDrag > -1) {

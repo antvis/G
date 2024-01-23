@@ -1,12 +1,8 @@
-import type {
-  Cursor,
-  DisplayObject,
-  FederatedEvent,
-  ParsedBaseStyleProps,
-} from '@antv/g-lite';
+import type { Cursor, DisplayObject, FederatedEvent } from '@antv/g-lite';
 import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
+import { vec3 } from 'gl-matrix';
 
 interface Control {
   x: number;
@@ -57,16 +53,47 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       target,
     } = this.style;
 
+    const { center, halfExtents } = target.getGeometryBounds();
     this.mask = new Rect({
       style: {
-        width: 0,
-        height: 0,
+        x: center[0] - halfExtents[0],
+        y: center[1] - halfExtents[1],
+        width: halfExtents[0] * 2,
+        height: halfExtents[1] * 2,
         draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
       },
     });
+    const transform = target.getWorldTransform();
+    this.setLocalTransform(transform);
 
     this.appendChild(this.mask);
+
+    const tl = vec3.fromValues(
+      center[0] - halfExtents[0],
+      center[1] - halfExtents[1],
+      0,
+    );
+    const tr = vec3.fromValues(
+      center[0] + halfExtents[0],
+      center[1] - halfExtents[1],
+      0,
+    );
+    const br = vec3.fromValues(
+      center[0] + halfExtents[0],
+      center[1] + halfExtents[1],
+      0,
+    );
+    const bl = vec3.fromValues(
+      center[0] - halfExtents[0],
+      center[1] + halfExtents[1],
+      0,
+    );
+
+    vec3.transformMat4(tl, tl, transform);
+    vec3.transformMat4(tr, tr, transform);
+    vec3.transformMat4(br, br, transform);
+    vec3.transformMat4(bl, bl, transform);
 
     this.tlAnchor = new Circle({
       style: {
@@ -75,16 +102,24 @@ export class SelectableRect extends AbstractSelectable<Rect> {
         draggable: true,
       },
     });
+    this.tlAnchor.style.cx = tl[0];
+    this.tlAnchor.style.cy = tl[1];
 
     this.trAnchor = this.tlAnchor.cloneNode();
     // TODO: adjust orient according to rotation
     this.trAnchor.style.cursor = 'nesw-resize';
+    this.trAnchor.style.cx = tr[0];
+    this.trAnchor.style.cy = tr[1];
 
     this.brAnchor = this.tlAnchor.cloneNode();
     this.brAnchor.style.cursor = 'nwse-resize';
+    this.brAnchor.style.cx = br[0];
+    this.brAnchor.style.cy = br[1];
 
     this.blAnchor = this.tlAnchor.cloneNode();
     this.blAnchor.style.cursor = 'nesw-resize';
+    this.blAnchor.style.cx = bl[0];
+    this.blAnchor.style.cy = bl[1];
 
     this.anchors = [this.tlAnchor, this.trAnchor, this.brAnchor, this.blAnchor];
 
@@ -93,29 +128,13 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     this.mask.appendChild(this.brAnchor);
     this.mask.appendChild(this.blAnchor);
 
-    const { halfExtents } = target.getGeometryBounds();
-    const width = halfExtents[0] * 2;
-    const height = halfExtents[1] * 2;
-    const transform = target.getWorldTransform();
-
-    // account for origin object's anchor such as Circle and Ellipse
-    const { anchor } = target.parsedStyle as ParsedBaseStyleProps;
-    this.mask.translateLocal(-anchor[0] * width, -anchor[1] * height);
-
     // resize according to target
-    this.mask.style.width = width;
-    this.mask.style.height = height;
     this.mask.style.fill = selectionFill;
     this.mask.style.stroke = selectionStroke;
     this.mask.style.fillOpacity = selectionFillOpacity;
     this.mask.style.strokeOpacity = selectionStrokeOpacity;
     this.mask.style.lineWidth = selectionStrokeWidth;
     this.mask.style.lineDash = selectionLineDash;
-
-    // position anchors
-    this.trAnchor.setLocalPosition(width, 0);
-    this.blAnchor.setLocalPosition(0, height);
-    this.brAnchor.setLocalPosition(width, height);
 
     // set anchors' style
     this.anchors.forEach((anchor, i) => {
@@ -135,9 +154,6 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       ) as Cursor;
     });
 
-    // TODO: UI should not be scaled
-    this.setLocalTransform(transform);
-
     this.bindEventListeners();
   }
 
@@ -146,15 +162,32 @@ export class SelectableRect extends AbstractSelectable<Rect> {
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
-    this.translate(dx, dy);
+    const maskX = this.mask.parsedStyle.x + dx;
+    const maskY = this.mask.parsedStyle.y + dy;
+    const maskWidth = Number(this.mask.style.width);
+    const maskHeight = Number(this.mask.style.height);
+
+    this.mask.style.x = maskX;
+    this.mask.style.y = maskY;
+
+    // re-position anchors
+    this.tlAnchor.style.cx = maskX;
+    this.tlAnchor.style.cy = maskY;
+    this.trAnchor.style.cx = maskX + maskWidth;
+    this.trAnchor.style.cy = maskY;
+    this.blAnchor.style.cx = maskX;
+    this.blAnchor.style.cy = maskY + maskHeight;
+    this.brAnchor.style.cx = maskX + maskWidth;
+    this.brAnchor.style.cy = maskY + maskHeight;
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const [ox, oy] = this.getPosition();
+    const maskX = this.mask.parsedStyle.x;
+    const maskY = this.mask.parsedStyle.y;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
-        movingX: ox + dx,
-        movingY: oy + dy,
+        movingX: maskX + dx,
+        movingY: maskY + dy,
         dx,
         dy,
       }),
@@ -162,12 +195,11 @@ export class SelectableRect extends AbstractSelectable<Rect> {
   }
 
   triggerMovedEvent() {
-    const [x, y] = this.getPosition();
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVED, {
         rect: {
-          x,
-          y,
+          x: this.mask.parsedStyle.x,
+          y: this.mask.parsedStyle.y,
         },
       }),
     );
@@ -185,9 +217,9 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const [ox, oy] = this.getPosition();
-      const dx = canvasX - shiftX - ox;
-      const dy = canvasY - shiftY - oy;
+      const { x, y } = this.mask.parsedStyle;
+      const dx = canvasX - shiftX - x;
+      const dy = canvasY - shiftY - y;
 
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
@@ -200,7 +232,7 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        const [x, y] = this.getPosition();
+        const { x, y } = this.mask.parsedStyle;
         shiftX = e.canvasX - x;
         shiftY = e.canvasY - y;
 
@@ -222,7 +254,8 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       const originMaskHeight = Number(this.mask.style.height);
 
       // position in canvas coordinates
-      const [ox, oy] = this.getPosition();
+      const ox = this.mask.parsedStyle.x;
+      const oy = this.mask.parsedStyle.y;
       // const angles = this.getEulerAngles();
 
       if (target === this.mask) {
@@ -268,13 +301,18 @@ export class SelectableRect extends AbstractSelectable<Rect> {
         // resize mask
         this.mask.style.width = maskWidth;
         this.mask.style.height = maskHeight;
-        this.setPosition(maskX, maskY);
+        this.mask.style.x = maskX;
+        this.mask.style.y = maskY;
 
         // re-position anchors
-        this.tlAnchor.setLocalPosition(0, 0);
-        this.trAnchor.setLocalPosition(maskWidth, 0);
-        this.blAnchor.setLocalPosition(0, maskHeight);
-        this.brAnchor.setLocalPosition(maskWidth, maskHeight);
+        this.tlAnchor.style.cx = maskX;
+        this.tlAnchor.style.cy = maskY;
+        this.trAnchor.style.cx = maskX + maskWidth;
+        this.trAnchor.style.cy = maskY;
+        this.blAnchor.style.cx = maskX;
+        this.blAnchor.style.cy = maskY + maskHeight;
+        this.brAnchor.style.cx = maskX + maskWidth;
+        this.brAnchor.style.cy = maskY + maskHeight;
       }
     });
 

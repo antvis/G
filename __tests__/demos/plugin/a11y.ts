@@ -1,34 +1,22 @@
-import { runtime } from '../../../packages/g';
-import { Plugin as PluginRoughCanvasRenderer } from '../../../packages/g-plugin-rough-canvas-renderer';
-import { Plugin as PluginRoughSVGRenderer } from '../../../packages/g-plugin-rough-svg-renderer';
-import { Plugin as PluginCSSSelect } from '../../../packages/g-plugin-css-select';
-import WebFont from 'webfontloader';
-import weatherDataset from '../../integration/data/weather.json';
+import { Plugin } from '../../../packages/g-plugin-a11y';
 import * as d3 from 'd3';
 
-runtime.enableCSSParsing = true;
-export async function roughBarchart(context) {
+export async function a11y(context) {
   const { canvas } = context;
-  await canvas.ready;
 
-  WebFont.load({
-    google: {
-      families: ['Gaegu'],
-    },
-    active: () => {
-      drawBars();
-    },
-  });
+  await canvas.ready;
 
   const drawBars = async () => {
     // 1. Access data
-    const dataset = weatherDataset;
+    const dataset = await d3.json(
+      'https://gw.alipayobjects.com/os/bmw-prod/8e7cfeb6-28e5-4e78-8d16-c08468360f5f.json',
+    );
     const metricAccessor = (d) => d.humidity;
     const yAccessor = (d) => d.length;
 
     // 2. Create chart dimensions
     const width = 600;
-    let dimensions: any = {
+    let dimensions = {
       width: width,
       height: width * 0.6,
       margin: {
@@ -37,6 +25,8 @@ export async function roughBarchart(context) {
         bottom: 50,
         left: 50,
       },
+      boundedWidth: 0,
+      boundedHeight: 0,
     };
     dimensions.boundedWidth =
       dimensions.width - dimensions.margin.left - dimensions.margin.right;
@@ -110,8 +100,8 @@ export async function roughBarchart(context) {
       .text(yAccessor)
       .attr('fill', 'darkgrey')
       .style('text-anchor', 'middle')
-      .style('font-family', 'Gaegu')
-      .style('font-size', '12px');
+      .style('font-size', '12px')
+      .style('font-family', 'sans-serif');
 
     const mean = d3.mean(dataset, metricAccessor);
     const meanLine = bounds
@@ -130,7 +120,6 @@ export async function roughBarchart(context) {
       .attr('y', -20)
       .text('mean')
       .attr('fill', 'maroon')
-      .style('font-family', 'Gaegu')
       .style('font-size', '12px')
       .style('text-anchor', 'middle');
 
@@ -141,7 +130,6 @@ export async function roughBarchart(context) {
       .append('g')
       .call(xAxisGenerator)
       .attr('transform', `translateY(${dimensions.boundedHeight}px)`)
-      .style('font-family', 'Gaegu')
       .attr('fill', 'black');
 
     const xAxisLabel = xAxis
@@ -149,18 +137,18 @@ export async function roughBarchart(context) {
       .attr('x', dimensions.boundedWidth / 2)
       .attr('y', dimensions.margin.bottom - 10)
       .attr('fill', 'black')
-      .style('font-family', 'Gaegu')
       .style('font-size', '10px')
       .text('Humidity')
       .style('text-transform', 'capitalize');
   };
+
+  drawBars();
 }
 
-roughBarchart.initRenderer = (renderer, type) => {
-  renderer.registerPlugin(new PluginCSSSelect());
-  if (type === 'canvas') {
-    renderer.registerPlugin(new PluginRoughCanvasRenderer());
-  } else if (type === 'svg') {
-    renderer.registerPlugin(new PluginRoughSVGRenderer());
-  }
+a11y.initRenderer = (renderer) => {
+  renderer.registerPlugin(
+    new Plugin({
+      enableExtractingText: true,
+    }),
+  );
 };

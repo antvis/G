@@ -1,9 +1,4 @@
-import type {
-  Cursor,
-  DisplayObject,
-  FederatedEvent,
-  ParsedBaseStyleProps,
-} from '@antv/g-lite';
+import type { Cursor, DisplayObject, FederatedEvent } from '@antv/g-lite';
 import { Circle, CustomEvent, rad2deg, Rect, Image } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
@@ -61,23 +56,26 @@ export class SelectableImage extends AbstractSelectable<Rect> {
 
     this.mask = new Rect({
       style: {
+        x: target.style.x,
+        y: target.style.y,
         width: 0,
         height: 0,
         draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
       },
     });
+
     this.image = target.cloneNode();
     // @ts-ignore
     this.image.attr({
-      x: 0,
-      y: 0,
       selectable: false,
       visibility: 'unset',
+      transform: 'none',
     });
 
     this.appendChild(this.mask);
     this.mask.appendChild(this.image);
+    const transform = target.getWorldTransform();
 
     this.tlAnchor = new Circle({
       style: {
@@ -86,16 +84,25 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         draggable: true,
       },
     });
+    const { x, y, width, height } = target.parsedStyle;
+    this.tlAnchor.style.cx = x;
+    this.tlAnchor.style.cy = y;
 
     this.trAnchor = this.tlAnchor.cloneNode();
     // TODO: adjust orient according to rotation
     this.trAnchor.style.cursor = 'nesw-resize';
+    this.trAnchor.style.cx = x + width;
+    this.trAnchor.style.cy = y;
 
     this.brAnchor = this.tlAnchor.cloneNode();
     this.brAnchor.style.cursor = 'nwse-resize';
+    this.brAnchor.style.cx = x + width;
+    this.brAnchor.style.cy = y + height;
 
     this.blAnchor = this.tlAnchor.cloneNode();
     this.blAnchor.style.cursor = 'nesw-resize';
+    this.blAnchor.style.cx = x;
+    this.blAnchor.style.cy = y + height;
 
     this.anchors = [this.tlAnchor, this.trAnchor, this.brAnchor, this.blAnchor];
 
@@ -103,15 +110,6 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     this.mask.appendChild(this.trAnchor);
     this.mask.appendChild(this.brAnchor);
     this.mask.appendChild(this.blAnchor);
-
-    const { halfExtents } = target.getGeometryBounds();
-    const width = halfExtents[0] * 2;
-    const height = halfExtents[1] * 2;
-    const transform = target.getWorldTransform();
-
-    // account for origin object's anchor such as Circle and Ellipse
-    const { anchor } = target.parsedStyle as ParsedBaseStyleProps;
-    this.mask.translateLocal(-anchor[0] * width, -anchor[1] * height);
 
     // resize according to target
     this.mask.style.width = width;
@@ -125,11 +123,6 @@ export class SelectableImage extends AbstractSelectable<Rect> {
 
     this.image.style.width = width;
     this.image.style.height = height;
-
-    // position anchors
-    this.trAnchor.setLocalPosition(width, 0);
-    this.blAnchor.setLocalPosition(0, height);
-    this.brAnchor.setLocalPosition(width, height);
 
     // set anchors' style
     this.anchors.forEach((anchor, i) => {
@@ -160,15 +153,34 @@ export class SelectableImage extends AbstractSelectable<Rect> {
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
-    this.translate(dx, dy);
+    const maskX = this.mask.parsedStyle.x + dx;
+    const maskY = this.mask.parsedStyle.y + dy;
+    const maskWidth = Number(this.mask.style.width);
+    const maskHeight = Number(this.mask.style.height);
+
+    this.mask.style.x = maskX;
+    this.mask.style.y = maskY;
+    this.image.style.x = maskX;
+    this.image.style.y = maskY;
+
+    // re-position anchors
+    this.tlAnchor.style.cx = maskX;
+    this.tlAnchor.style.cy = maskY;
+    this.trAnchor.style.cx = maskX + maskWidth;
+    this.trAnchor.style.cy = maskY;
+    this.blAnchor.style.cx = maskX;
+    this.blAnchor.style.cy = maskY + maskHeight;
+    this.brAnchor.style.cx = maskX + maskWidth;
+    this.brAnchor.style.cy = maskY + maskHeight;
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const [ox, oy] = this.getPosition();
+    const maskX = this.mask.parsedStyle.x;
+    const maskY = this.mask.parsedStyle.y;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
-        movingX: ox + dx,
-        movingY: oy + dy,
+        movingX: maskX + dx,
+        movingY: maskY + dy,
         dx,
         dy,
       }),
@@ -176,12 +188,11 @@ export class SelectableImage extends AbstractSelectable<Rect> {
   }
 
   triggerMovedEvent() {
-    const [x, y] = this.getPosition();
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVED, {
         rect: {
-          x,
-          y,
+          x: this.mask.parsedStyle.x,
+          y: this.mask.parsedStyle.y,
         },
       }),
     );
@@ -201,9 +212,9 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const [ox, oy] = this.getPosition();
-      const dx = canvasX - shiftX - ox;
-      const dy = canvasY - shiftY - oy;
+      const { x, y } = this.mask.parsedStyle;
+      const dx = canvasX - shiftX - x;
+      const dy = canvasY - shiftY - y;
 
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
@@ -216,7 +227,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        const [x, y] = this.getPosition();
+        const { x, y } = this.mask.parsedStyle;
         shiftX = e.canvasX - x;
         shiftY = e.canvasY - y;
 
@@ -238,7 +249,8 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       const originMaskHeight = Number(this.mask.style.height);
 
       // position in canvas coordinates
-      const [ox, oy] = this.getPosition();
+      const ox = this.mask.parsedStyle.x;
+      const oy = this.mask.parsedStyle.y;
 
       if (target === this.mask) {
         moveAt(canvasX, canvasY);
@@ -304,15 +316,22 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         // resize mask
         this.mask.style.width = maskWidth;
         this.mask.style.height = maskHeight;
-        this.setPosition(maskX, maskY);
+        this.mask.style.x = maskX;
+        this.mask.style.y = maskY;
         this.image.style.width = maskWidth;
         this.image.style.height = maskHeight;
+        this.image.style.x = maskX;
+        this.image.style.y = maskY;
 
         // re-position anchors
-        this.tlAnchor.setLocalPosition(0, 0);
-        this.trAnchor.setLocalPosition(maskWidth, 0);
-        this.blAnchor.setLocalPosition(0, maskHeight);
-        this.brAnchor.setLocalPosition(maskWidth, maskHeight);
+        this.tlAnchor.style.cx = maskX;
+        this.tlAnchor.style.cy = maskY;
+        this.trAnchor.style.cx = maskX + maskWidth;
+        this.trAnchor.style.cy = maskY;
+        this.blAnchor.style.cx = maskX;
+        this.blAnchor.style.cy = maskY + maskHeight;
+        this.brAnchor.style.cx = maskX + maskWidth;
+        this.brAnchor.style.cy = maskY + maskHeight;
       }
     });
 

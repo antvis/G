@@ -629,8 +629,8 @@ export class Element<
   setAttribute<Key extends keyof StyleProps>(
     attributeName: Key,
     value: StyleProps[Key],
-
-    force = false,
+    force?: boolean,
+    memoize?: boolean,
   ) {
     this.attributes[attributeName] = value;
   }

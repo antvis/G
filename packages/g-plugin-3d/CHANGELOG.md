@@ -1,5 +1,14 @@
 # @antv/g-plugin-3d
 
+## 1.9.34-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 1.9.34-next.0
 
 ### Patch Changes

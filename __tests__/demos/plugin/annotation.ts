@@ -7,12 +7,11 @@ import {
   Polyline,
   Polygon,
 } from '../../../packages/g';
-import { Plugin as PluginDragndrop } from '../../../packages/g-plugin-dragndrop';
 import { Plugin as PluginAnnotation } from '../../../packages/g-plugin-annotation';
 
 let annotationPlugin;
 export async function annotation(context) {
-  const { canvas } = context;
+  const { canvas, gui } = context;
 
   await canvas.ready;
 
@@ -51,6 +50,7 @@ export async function annotation(context) {
       // transform: 'scale(0.5) rotate(30deg)',
       // @ts-ignore
       selectable: true,
+      // transform: 'translate(100, 0)',
     },
   });
   image.addEventListener('selected', () => {
@@ -101,12 +101,31 @@ export async function annotation(context) {
     },
   });
 
+  const polygon = new Polygon({
+    style: {
+      points: [
+        [100, 100],
+        [300, 100],
+        [300, 300],
+        [100, 300],
+      ],
+      lineWidth: 10,
+      stroke: 'red',
+      // @ts-ignore
+      selectable: true,
+      // @ts-ignore
+      selectableUI: 'rect',
+      // transform: 'translate(100, 0)',
+    },
+  });
+
   canvas.appendChild(circle);
   canvas.appendChild(ellipse);
   canvas.appendChild(image);
   canvas.appendChild(rect);
   canvas.appendChild(line);
   canvas.appendChild(polyline);
+  canvas.appendChild(polygon);
 
   annotationPlugin.setDrawingMode(true);
   annotationPlugin.setDrawer('rect');
@@ -144,13 +163,12 @@ export async function annotation(context) {
       });
       canvas.appendChild(polygon);
     } else if (type === 'rect') {
-      const rect = new Rect({
+      const rect = new Polygon({
         style: {
           ...brush,
-          x: path[0].x,
-          y: path[0].y,
-          width: path[2].x - path[0].x,
-          height: path[2].y - path[0].y,
+          // @ts-ignore
+          selectableUI: 'rect',
+          points: path.map(({ x, y }) => [x, y]),
         },
       });
       canvas.appendChild(rect);
@@ -170,25 +188,353 @@ export async function annotation(context) {
   annotationPlugin.addEventListener('draw:cancel', (toolstate) => {
     console.log('draw:cancel', toolstate);
   });
+
+  const selectableFolder = gui.addFolder('selectable');
+  const selectableConfig = {
+    selectionFill: 'rgba(24,144,255,0.15)',
+    selectionFillOpacity: 1,
+    selectionStroke: '#1890FF',
+    selectionStrokeOpacity: 1,
+    selectionStrokeWidth: 2.5,
+    selectionLineDash: 0,
+    anchorFill: '#1890FF',
+    anchorFillOpacity: 1,
+    anchorStroke: '#1890FF',
+    anchorStrokeOpacity: 1,
+    anchorStrokeWidth: 1,
+    anchorSize: 6,
+    selectedAnchorFill: '#1890FF',
+    allowVertexAdditionAndDeletion: true,
+    allowTargetRotation: true,
+  };
+  selectableFolder
+    .addColor(selectableConfig, 'selectionFill')
+    .onChange((selectionFill) => {
+      annotationPlugin.updateSelectableStyle({
+        selectionFill,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'selectionFillOpacity', 0, 1)
+    .onChange((selectionFillOpacity) => {
+      annotationPlugin.updateSelectableStyle({
+        selectionFillOpacity,
+      });
+    });
+  selectableFolder
+    .addColor(selectableConfig, 'selectionStroke')
+    .onChange((selectionStroke) => {
+      annotationPlugin.updateSelectableStyle({
+        selectionStroke,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'selectionStrokeOpacity', 0, 1)
+    .onChange((selectionStrokeOpacity) => {
+      annotationPlugin.updateSelectableStyle({
+        selectionStrokeOpacity,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'selectionStrokeWidth', 1, 20)
+    .onChange((selectionStrokeWidth) => {
+      annotationPlugin.updateSelectableStyle({
+        selectionStrokeWidth,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'selectionLineDash', 0, 20)
+    .onChange((selectionLineDash) => {
+      annotationPlugin.updateSelectableStyle({
+        selectionLineDash,
+      });
+    });
+  selectableFolder
+    .addColor(selectableConfig, 'anchorFill')
+    .onChange((anchorFill) => {
+      annotationPlugin.updateSelectableStyle({
+        anchorFill,
+      });
+    });
+  selectableFolder
+    .addColor(selectableConfig, 'anchorStroke')
+    .onChange((anchorStroke) => {
+      annotationPlugin.updateSelectableStyle({
+        anchorStroke,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'anchorSize', 5, 20)
+    .onChange((anchorSize) => {
+      annotationPlugin.updateSelectableStyle({
+        anchorSize,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'anchorStrokeWidth', 1, 20)
+    .onChange((anchorStrokeWidth) => {
+      annotationPlugin.updateSelectableStyle({
+        anchorStrokeWidth,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'anchorFillOpacity', 0, 1)
+    .onChange((anchorFillOpacity) => {
+      annotationPlugin.updateSelectableStyle({
+        anchorFillOpacity,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'anchorStrokeOpacity', 0, 1)
+    .onChange((anchorStrokeOpacity) => {
+      annotationPlugin.updateSelectableStyle({
+        anchorStrokeOpacity,
+      });
+    });
+  selectableFolder
+    .addColor(selectableConfig, 'selectedAnchorFill')
+    .onChange((selectedAnchorFill) => {
+      annotationPlugin.updateSelectableStyle({
+        selectedAnchorFill,
+      });
+    });
+  selectableFolder
+    .add(selectableConfig, 'allowVertexAdditionAndDeletion')
+    .onChange((allowed) => {
+      annotationPlugin.allowVertexAdditionAndDeletion(allowed);
+    });
+  selectableFolder
+    .add(selectableConfig, 'allowTargetRotation')
+    .onChange((allowed) => {
+      annotationPlugin.allowTargetRotation(allowed);
+    });
+  selectableFolder.open();
+
+  const drawerFolder = gui.addFolder('drawer');
+  const drawerConfig = {
+    rectStroke: '#FAAD14',
+    rectStrokeWidth: 2.5,
+    rectLineDash: 6,
+    polylineVertexFill: '#FFFFFF',
+    polylineVertexSize: 6,
+    polylineVertexStroke: '#FAAD14',
+    polylineVertexStrokeWidth: 2,
+    polylineActiveVertexFill: '#FAAD14',
+    polylineActiveVertexSize: 6,
+    polylineActiveVertexStroke: '#FAAD14',
+    polylineActiveVertexStrokeWidth: 4,
+    polylineSegmentStroke: '#FAAD14',
+    polylineActiveSegmentStroke: '#FAAD14',
+  };
+  drawerFolder.addColor(drawerConfig, 'rectStroke').onChange((rectStroke) => {
+    annotationPlugin.updateDrawerStyle({
+      rectStroke,
+    });
+  });
+  drawerFolder
+    .add(drawerConfig, 'rectStrokeWidth', 0, 10)
+    .onChange((rectStrokeWidth) => {
+      annotationPlugin.updateDrawerStyle({
+        rectStrokeWidth,
+      });
+    });
+  drawerFolder
+    .add(drawerConfig, 'rectLineDash', 0, 10)
+    .onChange((rectLineDash) => {
+      annotationPlugin.updateDrawerStyle({
+        rectLineDash,
+      });
+    });
+  drawerFolder
+    .addColor(drawerConfig, 'polylineVertexFill')
+    .onChange((polylineVertexFill) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineVertexFill,
+      });
+    });
+  drawerFolder
+    .addColor(drawerConfig, 'polylineVertexStroke')
+    .onChange((polylineVertexStroke) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineVertexStroke,
+      });
+    });
+  drawerFolder
+    .add(drawerConfig, 'polylineVertexSize', 0, 10)
+    .onChange((polylineVertexSize) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineVertexSize,
+      });
+    });
+  drawerFolder
+    .add(drawerConfig, 'polylineVertexStrokeWidth', 0, 10)
+    .onChange((polylineVertexStrokeWidth) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineVertexStrokeWidth,
+      });
+    });
+  drawerFolder
+    .addColor(drawerConfig, 'polylineSegmentStroke')
+    .onChange((polylineSegmentStroke) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineSegmentStroke,
+      });
+    });
+
+  drawerFolder
+    .addColor(drawerConfig, 'polylineActiveVertexFill')
+    .onChange((polylineActiveVertexFill) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineActiveVertexFill,
+      });
+    });
+  drawerFolder
+    .addColor(drawerConfig, 'polylineActiveVertexStroke')
+    .onChange((polylineActiveVertexStroke) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineActiveVertexStroke,
+      });
+    });
+  drawerFolder
+    .add(drawerConfig, 'polylineActiveVertexSize', 0, 10)
+    .onChange((polylineActiveVertexSize) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineActiveVertexSize,
+      });
+    });
+  drawerFolder
+    .add(drawerConfig, 'polylineActiveVertexStrokeWidth', 0, 10)
+    .onChange((polylineActiveVertexStrokeWidth) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineActiveVertexStrokeWidth,
+      });
+    });
+  drawerFolder
+    .addColor(drawerConfig, 'polylineActiveSegmentStroke')
+    .onChange((polylineActiveSegmentStroke) => {
+      annotationPlugin.updateDrawerStyle({
+        polylineActiveSegmentStroke,
+      });
+    });
+  drawerFolder.close();
+
+  const apiFolder = gui.addFolder('API');
+  const apiConfig = {
+    setDrawingMode: true,
+    setDrawer: 'rect',
+    selectDisplayObject: 'none',
+    deselectDisplayObject: 'none',
+    getSelectedDisplayObjects: () => {
+      console.log(annotationPlugin.getSelectedDisplayObjects());
+    },
+    removeImage: () => {
+      image.remove();
+    },
+  };
+  apiFolder.add(apiConfig, 'setDrawingMode').onChange((enable) => {
+    annotationPlugin.setDrawingMode(enable);
+  });
+  apiFolder
+    .add(apiConfig, 'setDrawer', ['rect', 'polyline', 'polygon', 'circle'])
+    .onChange((drawer) => {
+      annotationPlugin.setDrawer(drawer);
+    });
+  apiFolder
+    .add(apiConfig, 'selectDisplayObject', [
+      'rect',
+      'image',
+      'circle',
+      'ellipse',
+      'line',
+      'polyline',
+      'none',
+    ])
+    .onChange((shape) => {
+      let target;
+      if (shape === 'rect') {
+        target = rect;
+      } else if (shape === 'image') {
+        target = image;
+      } else if (shape === 'circle') {
+        target = circle;
+      } else if (shape === 'ellipse') {
+        target = ellipse;
+      } else if (shape === 'line') {
+        target = line;
+      } else if (shape === 'polyline') {
+        target = polyline;
+      }
+      annotationPlugin.selectDisplayObject(target);
+    });
+
+  apiFolder
+    .add(apiConfig, 'deselectDisplayObject', [
+      'rect',
+      'image',
+      'circle',
+      'ellipse',
+      'line',
+      'polyline',
+      'none',
+    ])
+    .onChange((shape) => {
+      let target;
+      if (shape === 'rect') {
+        target = rect;
+      } else if (shape === 'image') {
+        target = image;
+      } else if (shape === 'circle') {
+        target = circle;
+      } else if (shape === 'ellipse') {
+        target = ellipse;
+      } else if (shape === 'line') {
+        target = line;
+      } else if (shape === 'polyline') {
+        target = polyline;
+      }
+      annotationPlugin.deselectDisplayObject(target);
+    });
+
+  apiFolder.add(apiConfig, 'getSelectedDisplayObjects');
+  apiFolder.add(apiConfig, 'removeImage');
+  apiFolder.open();
+
+  const camera = canvas.getCamera();
+  const cameraFolder = gui.addFolder('camera actions');
+  const cameraConfig = {
+    panX: 0,
+    panY: 0,
+    zoom: 1,
+    roll: 0,
+  };
+  cameraFolder.add(cameraConfig, 'zoom', 0.1, 10).onChange((zoom) => {
+    camera.setZoom(zoom);
+  });
+  cameraFolder.add(cameraConfig, 'roll', -90, 90).onChange((roll) => {
+    camera.rotate(0, 0, roll);
+  });
+  cameraFolder.open();
 }
 
 annotation.initRenderer = (renderer) => {
-  renderer.registerPlugin(
-    new PluginDragndrop({
-      dragstartDistanceThreshold: 10,
-      dragstartTimeThreshold: 100,
-    }),
-  );
-
   annotationPlugin = new PluginAnnotation({
     enableDeleteTargetWithShortcuts: true,
+    enableDeleteAnchorsWithShortcuts: true,
     enableAutoSwitchDrawingMode: true,
+    enableDisplayMidAnchors: true,
+    enableRotateAnchor: true,
     selectableStyle: {
       selectionFill: 'rgba(24,144,255,0.15)',
       selectionStroke: '#1890FF',
       selectionStrokeWidth: 2.5,
       anchorFill: '#1890FF',
       anchorStroke: '#1890FF',
+      selectedAnchorSize: 10,
+      selectedAnchorFill: 'red',
+      selectedAnchorStroke: 'blue',
+      selectedAnchorStrokeWidth: 10,
+      selectedAnchorStrokeOpacity: 0.6,
+      midAnchorFillOpacity: 0.6,
     },
   });
 

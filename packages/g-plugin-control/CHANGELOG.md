@@ -1,5 +1,13 @@
 # @antv/g-plugin-control
 
+## 1.9.22-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 1.9.22-next.0
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @antv/g-plugin-zdog-svg-renderer
 
+## 1.2.27-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.1
+    -   @antv/g-lite@1.3.0-next.1
+    -   @antv/g-svg@1.10.26-next.1
+
 ## 1.2.27-next.0
 
 ### Patch Changes

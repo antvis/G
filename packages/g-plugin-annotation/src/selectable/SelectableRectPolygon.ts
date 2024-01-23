@@ -71,6 +71,8 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
         cursor: 'move',
       },
     });
+    // @ts-ignore
+    this.mask.style.originalPoints = points;
     this.appendChild(this.mask);
 
     this.tlAnchor = new Circle({
@@ -136,8 +138,6 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
 
       this.rotateAnchor = new Circle({
         style: {
-          cx: 0,
-          cy: 0,
           r: anchorSize,
           stroke: anchorStroke,
           fill: anchorFill,
@@ -166,7 +166,8 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
     const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
       const anchor = this.anchors[i];
-      anchor.setPosition(point);
+      anchor.style.cx = point[0];
+      anchor.style.cy = point[1];
     });
 
     // mid point of upper edge
@@ -182,10 +183,10 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
         points.points[3] as [number, number],
       ),
     );
-    this.rotateAnchor.setPosition(
-      handleVec[0] * rotateAnchorDistance + midPoint[0],
-      handleVec[1] * rotateAnchorDistance + midPoint[1],
-    );
+    this.rotateAnchor.style.cx =
+      handleVec[0] * rotateAnchorDistance + midPoint[0];
+    this.rotateAnchor.style.cy =
+      handleVec[1] * rotateAnchorDistance + midPoint[1];
   }
 
   deleteSelectedAnchors(): void {}
@@ -193,11 +194,10 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
-    // change definition of polyline
-    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
-      x + dx,
-      y + dy,
-    ]);
+    // @ts-ignore
+    this.mask.style.points = [...this.mask.style.pointsStartDragging].map(
+      ([x, y]) => [x + dx, y + dy],
+    );
 
     // re-position anchors in canvas coordinates
     this.repositionAnchors();
@@ -249,6 +249,8 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
       if (target === this.mask) {
         shiftX = e.canvasX;
         shiftY = e.canvasY;
+        // @ts-ignore
+        this.mask.style.pointsStartDragging = this.mask.style.points;
 
         moveAt(e.canvasX, e.canvasY);
       }
@@ -350,7 +352,7 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
       } else if (target === this.rotateAnchor) {
         const { x: ox, y: oy } = lineIntersect(tl, br, tr, bl);
 
-        const [rx, ry] = this.rotateAnchor.getPosition();
+        const { cx: rx, cy: ry } = this.rotateAnchor.parsedStyle;
         const v1 = [rx - ox, ry - oy];
         const v2 = [canvasX - ox, canvasY - oy];
         // @see https://www.mathworks.com/matlabcentral/answers/180131-how-can-i-find-the-angle-between-two-vectors-including-directional-information

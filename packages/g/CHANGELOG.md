@@ -1,5 +1,16 @@
 # @antv/g
 
+## 5.18.25-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.1
+    -   @antv/g-web-animations-api@1.2.23-next.1
+    -   @antv/g-camera-api@1.2.23-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 5.18.25-next.0
 
 ### Patch Changes

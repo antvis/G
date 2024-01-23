@@ -1,5 +1,19 @@
 # @antv/g-canvas
 
+## 1.11.27-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.1
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.1
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.1
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.1
+    -   @antv/g-plugin-html-renderer@1.9.25-next.1
+    -   @antv/g-plugin-image-loader@1.4.0-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 1.11.27-next.0
 
 ### Patch Changes

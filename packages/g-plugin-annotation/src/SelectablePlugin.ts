@@ -541,8 +541,8 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (target.nodeName === Shape.ELLIPSE) {
         const { x, y, width, height } = rect;
         target.attr({
-          cx: x,
-          cy: y,
+          cx: x + width / 2,
+          cy: y + height / 2,
           rx: width / 2,
           ry: height / 2,
         });
@@ -583,8 +583,8 @@ export class SelectablePlugin implements RenderingPlugin {
         });
       } else if (target.nodeName === Shape.ELLIPSE) {
         target.attr({
-          cx: rect.x,
-          cy: rect.y,
+          cx: rect.x + target.parsedStyle.rx,
+          cy: rect.y + target.parsedStyle.ry,
         });
       } else if (target.nodeName === Shape.LINE) {
         const [[x1, y1], [x2, y2]] = polyline.points;

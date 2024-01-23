@@ -1,5 +1,13 @@
 # @antv/g-mobile-canvas-element
 
+## 0.8.22-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 0.8.22-next.0
 
 ### Patch Changes

@@ -62,6 +62,7 @@ export async function sphere(context) {
       x: 300,
       y: 250,
       z: 0,
+      transformOrigin: 'center',
       fill: '#1890FF',
       opacity: 1,
       geometry: sphereGeometry,
@@ -98,7 +99,6 @@ export async function sphere(context) {
   canvas.appendChild(ambientLight);
 
   canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-    sphere.setOrigin(0, 0, 0);
     sphere.rotate(0, 0.2, 0);
   });
 }

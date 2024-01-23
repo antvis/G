@@ -331,7 +331,6 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
         stroke,
         lineWidth,
         transformOrigin: 'center',
-        // anchor: [0.5, 0.5], // set anchor to center
       },
     });
   }

@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.3.0-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+
 ## 1.3.0-next.0
 
 ### Minor Changes

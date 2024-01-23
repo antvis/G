@@ -73,13 +73,14 @@ export async function matterjs(context) {
   const circle = new Circle({
     style: {
       fill: '#1890FF',
-      r: 50,
+      r: 100,
       // @ts-ignore
       rigid: 'dynamic',
       density: 0.1,
       restitution: 0.5,
       cx: 300,
       cy: 0,
+      transform: 'scale(0.5)',
     },
   });
   canvas.appendChild(circle);

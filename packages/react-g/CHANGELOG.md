@@ -1,5 +1,13 @@
 # @antv/react-g
 
+## 1.10.26-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.1
+
 ## 1.10.26-next.0
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.25-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 1.9.25-next.0
 
 ### Patch Changes

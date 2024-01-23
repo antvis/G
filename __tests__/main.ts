@@ -1,3 +1,4 @@
+import * as lil from 'lil-gui';
 import { Canvas } from '../packages/g';
 import { Renderer as CanvasRenderer } from '../packages/g-canvas';
 import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
@@ -208,7 +209,11 @@ function createSpecRender(object) {
       // @ts-ignore
       window.__g_instances__ = [canvas];
 
-      await generate({ canvas, renderer, container: $div });
+      // GUI
+      const gui = new lil.GUI({ autoPlace: false });
+      $div.appendChild(gui.domElement);
+
+      await generate({ canvas, renderer, container: $div, gui });
 
       container.append($div);
     };

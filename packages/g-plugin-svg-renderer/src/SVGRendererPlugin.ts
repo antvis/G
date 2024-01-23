@@ -40,6 +40,8 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   cy: 'cy',
   rx: 'rx',
   ry: 'ry',
+  x: 'x',
+  y: 'y',
   width: 'width',
   height: 'height',
   lineCap: 'stroke-linecap',

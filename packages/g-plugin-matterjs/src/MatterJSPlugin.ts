@@ -2,10 +2,8 @@ import type {
   DisplayObject,
   FederatedEvent,
   MutationEvent,
-  ParsedCircleStyleProps,
   ParsedLineStyleProps,
   ParsedPolygonStyleProps,
-  ParsedRectStyleProps,
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
@@ -42,17 +40,26 @@ export class MatterJSPlugin implements RenderingPlugin {
         if (this.bodies.size) {
           Engine.update(this.engine, 1000 * timeStep);
         }
-
         this.bodies.forEach(({ body, displayObject }) => {
           const bounds = displayObject.getBounds();
-
+          const { nodeName } = displayObject;
           if (!AABB.isEmpty(bounds)) {
+            // position in world space
             const x = body.position.x;
             const y = body.position.y;
             const angle = body.angle;
 
-            displayObject.setPosition(x, y);
+            if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
+              displayObject.style.x = x - bounds.halfExtents[0];
+              displayObject.style.y = y - bounds.halfExtents[1];
+            } else if (nodeName === Shape.CIRCLE) {
+              displayObject.style.cx = x;
+              displayObject.style.cy = y;
+            } else if (nodeName === Shape.POLYGON) {
+            }
+
             displayObject.setEulerAngles(rad2deg(angle));
+            // displayObject.setPosition(x, y);
           }
         });
       }
@@ -228,13 +235,21 @@ export class MatterJSPlugin implements RenderingPlugin {
 
     if (!AABB.isEmpty(bounds)) {
       // RTS in worldspace
-      const [x, y] = target.getPosition();
+      const bounds = target.getBounds();
+      const aabb = new AABB();
+      aabb.update(bounds.center, bounds.halfExtents);
+      // TODO:
+      // target.getPosition();
+      // target.getScale();
+      // aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
+      const { center, halfExtents } = aabb;
+
       const angle = target.getEulerAngles();
       const config = {
         angle: deg2rad(angle),
         position: {
-          x,
-          y,
+          x: center[0],
+          y: center[1],
         },
         isStatic: rigid === 'static',
         // @see https://brm.io/matter-js/docs/classes/Body.html#property_restitution
@@ -314,16 +329,21 @@ export class MatterJSPlugin implements RenderingPlugin {
         //     // new b2Vec2(next[0]  + eps, next[1] ),
         //   );
       } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
-        const { x, y, width, height } = parsedStyle as ParsedRectStyleProps;
         // matterjs set origin to center of rectangle
         target.style.transformOrigin = 'center center';
         // target.style.origin = [ / 2,  / 2];
-        body = Bodies.rectangle(x, y, width, height, config);
+        body = Bodies.rectangle(
+          0,
+          0,
+          halfExtents[0] * 2,
+          halfExtents[1] * 2,
+          config,
+        );
       } else if (nodeName === Shape.CIRCLE) {
-        const { cx, cy, r } = parsedStyle as ParsedCircleStyleProps;
         // matter.js also use polygon inside
-        body = Bodies.circle(cx, cy, r, config);
+        body = Bodies.circle(0, 0, halfExtents[0], config);
       } else if (nodeName === Shape.ELLIPSE) {
+        // @see https://stackoverflow.com/questions/70491667/matter-js-how-to-draw-an-ellipse
         // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
       } else if (nodeName === Shape.POLYGON) {
         // @see https://brm.io/matter-js/docs/classes/Bodies.html#method_polygon

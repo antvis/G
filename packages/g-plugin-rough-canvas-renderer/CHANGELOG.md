@@ -1,5 +1,14 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 1.9.27-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
 ## 1.9.27-next.0
 
 ### Patch Changes

@@ -126,8 +126,8 @@ export class RoughElementLifeCycleContribution
       case Shape.ELLIPSE: {
         const { cx, cy, rx, ry } = parsedStyle as ParsedEllipseStyleProps;
         $roughG = roughSVG.ellipse(
-          cx - rx,
-          cy - ry,
+          cx,
+          cy,
           rx * 2,
           ry * 2,
           generateRoughOptions(object),
