@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.3.0-next.4
+
+### Patch Changes
+
+-   Test.
+
 ## 1.3.0-next.3
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @antv/g-mobile-canvas-element
 
+## 0.8.22-next.4
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.4
+
 ## 0.8.22-next.3
 
 ### Patch Changes

@@ -224,11 +224,8 @@ export class Element<
       this.ownerDocument.defaultView.mountChildren(child);
     }
 
-    // @ts-ignore
-    if (child.isMutationObserved) {
-      insertedEvent.relatedNode = this as IElement;
-      child.dispatchEvent(insertedEvent);
-    }
+    insertedEvent.relatedNode = this as IElement;
+    child.dispatchEvent(insertedEvent);
 
     return child;
   }
