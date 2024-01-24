@@ -10,6 +10,8 @@ export { text } from './text';
 export { gradient } from './gradient';
 export { transform } from './transform';
 export { transformText } from './transform-text';
+export { transformOrigin } from './transform-origin';
+export { transformSkew } from './transform-skew';
 export { clipPath } from './clippath';
 export { customElement } from './custom-element';
 export { marker } from './marker';
