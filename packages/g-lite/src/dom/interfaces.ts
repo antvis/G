@@ -387,6 +387,7 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
     attributeName: Key,
     value: StyleProps[Key],
     force?: boolean,
+    memoize?: boolean,
   ) => void;
 
   /**

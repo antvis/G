@@ -1,5 +1,31 @@
 # @antv/g-webgl
 
+## 1.9.37-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.6
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.6
+    -   @antv/g-plugin-html-renderer@1.9.25-next.6
+    -   @antv/g-plugin-image-loader@1.4.0-next.6
+    -   @antv/g-lite@1.3.0-next.6
+
+## 1.9.37-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.5
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.5
+    -   @antv/g-plugin-html-renderer@1.9.25-next.5
+    -   @antv/g-plugin-image-loader@1.4.0-next.5
+    -   @antv/g-lite@1.3.0-next.5
+
 ## 1.9.37-next.4
 
 ### Patch Changes

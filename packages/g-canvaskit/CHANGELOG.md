@@ -1,5 +1,35 @@
 # @antv/g-canvaskit
 
+## 0.10.27-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.6
+    -   @antv/g-plugin-canvaskit-renderer@1.4.0-next.6
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.6
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.6
+    -   @antv/g-plugin-html-renderer@1.9.25-next.6
+    -   @antv/g-plugin-image-loader@1.4.0-next.6
+    -   @antv/g-lite@1.3.0-next.6
+
+## 0.10.27-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.5
+    -   @antv/g-plugin-canvaskit-renderer@1.4.0-next.5
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.5
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.5
+    -   @antv/g-plugin-html-renderer@1.9.25-next.5
+    -   @antv/g-plugin-image-loader@1.4.0-next.5
+    -   @antv/g-lite@1.3.0-next.5
+
 ## 0.10.27-next.4
 
 ### Patch Changes

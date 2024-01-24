@@ -12,8 +12,7 @@ import {
   min,
   mod,
 } from '@antv/util';
-import type { mat4 } from 'gl-matrix';
-import { vec3 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import type {
   Circle,
   Ellipse,

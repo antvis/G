@@ -1,5 +1,25 @@
 # @antv/g-plugin-3d
 
+## 1.9.34-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.6
+    -   @antv/g-lite@1.3.0-next.6
+
+## 1.9.34-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.5
+    -   @antv/g-lite@1.3.0-next.5
+
 ## 1.9.34-next.4
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @antv/g-plugin-zdog-svg-renderer
 
+## 1.2.27-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.6
+    -   @antv/g-lite@1.3.0-next.6
+    -   @antv/g-svg@1.10.26-next.6
+
+## 1.2.27-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.5
+    -   @antv/g-lite@1.3.0-next.5
+    -   @antv/g-svg@1.10.26-next.5
+
 ## 1.2.27-next.4
 
 ### Patch Changes

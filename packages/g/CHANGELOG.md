@@ -1,5 +1,29 @@
 # @antv/g
 
+## 5.18.25-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.6
+    -   @antv/g-web-animations-api@1.2.23-next.6
+    -   @antv/g-camera-api@1.2.23-next.6
+    -   @antv/g-lite@1.3.0-next.6
+
+## 5.18.25-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.5
+    -   @antv/g-web-animations-api@1.2.23-next.5
+    -   @antv/g-camera-api@1.2.23-next.5
+    -   @antv/g-lite@1.3.0-next.5
+
 ## 5.18.25-next.4
 
 ### Patch Changes

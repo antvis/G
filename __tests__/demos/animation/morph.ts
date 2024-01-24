@@ -37,196 +37,250 @@ export async function morph(context) {
   const path2Str = convertToPath(path2);
   const pathA = new Path({
     style: {
-      path: path1Str,
+      // path: path1Str,
+      path: [
+        ['M', 100, 249.992648056013],
+        [
+          'C',
+          100,
+          274.9889720840195,
+          100,
+          299.985296112026,
+          100,
+          299.985296112026,
+        ],
+        [
+          'C',
+          124.9963240280065,
+          299.9934168443623,
+          149.9992312116507,
+          300,
+          150.007351943987,
+          300,
+        ],
+        [
+          'C',
+          150.0154726763233,
+          324.9963240280065,
+          150.022055831961,
+          349.98606490037525,
+          150.022055831961,
+          349.97794416803896,
+        ],
+        [
+          'C',
+          175.0183798599675,
+          349.96982343570266,
+          200.0081207323363,
+          349.96324028006495,
+          200,
+          349.96324028006495,
+        ],
+        // [
+        //   'C',
+        //   75.01025912763122,
+        //   249.977944168039,
+        //   100,
+        //   249.9845273236767,
+        //   100,
+        //   249.992648056013,
+        // ],
+      ],
+
       stroke: '#F04864',
     },
   });
   canvas.appendChild(pathA);
-  pathA.animate([{ d: path1Str }, { d: path2Str }], {
-    duration: 2500,
-    easing: 'ease',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+  // pathA.animate([{ d: path1Str }, { d: path2Str }], {
+  //   duration: 2500,
+  //   easing: 'ease',
+  //   iterations: Infinity,
+  //   direction: 'alternate',
+  // });
 
-  /**
-   * Path -> Line
-   */
-  const line = new Line({
-    style: {
-      x1: 100,
-      y1: 0,
-      x2: 100,
-      y2: 100,
-      transform: 'translate(0, 100px)',
-    },
-  });
-  const linePathStr = convertToPath(line);
-  const pathB = new Path({
-    style: {
-      path: path1Str,
-      stroke: '#F04864',
-    },
-  });
-  canvas.appendChild(pathB);
-  pathB.animate([{ path: path1Str }, { path: linePathStr }], {
-    duration: 2500,
-    easing: 'ease',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+  // /**
+  //  * Path -> Line
+  //  */
+  // const line = new Line({
+  //   style: {
+  //     x1: 100,
+  //     y1: 0,
+  //     x2: 100,
+  //     y2: 100,
+  //     transform: 'translate(0, 100px)',
+  //   },
+  // });
+  // const linePathStr = convertToPath(line);
+  // const pathB = new Path({
+  //   style: {
+  //     path: path1Str,
+  //     stroke: '#F04864',
+  //   },
+  // });
+  // canvas.appendChild(pathB);
+  // pathB.animate([{ path: path1Str }, { path: linePathStr }], {
+  //   duration: 2500,
+  //   easing: 'ease',
+  //   iterations: Infinity,
+  //   direction: 'alternate',
+  // });
 
-  /**
-   * Path -> Circle
-   */
-  const circle = new Circle({
-    style: {
-      cx: 100,
-      cy: 100,
-      r: 50,
-    },
-  });
-  circle.scale(2);
-  const circlePathStr = convertToPath(circle);
-  const pathC = new Path({
-    style: {
-      path: path1Str,
-      stroke: '#F04864',
-    },
-  });
-  canvas.appendChild(pathC);
-  pathC.animate([{ d: path1Str }, { d: circlePathStr }], {
-    duration: 2500,
-    easing: 'ease',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+  // /**
+  //  * Path -> Circle
+  //  */
+  // const circle = new Circle({
+  //   style: {
+  //     cx: 100,
+  //     cy: 100,
+  //     r: 50,
+  //   },
+  // });
+  // circle.scale(2);
+  // const circlePathStr = convertToPath(circle);
+  // const pathC = new Path({
+  //   style: {
+  //     path: path1Str,
+  //     stroke: '#F04864',
+  //   },
+  // });
+  // canvas.appendChild(pathC);
+  // pathC.animate([{ d: path1Str }, { d: circlePathStr }], {
+  //   duration: 2500,
+  //   easing: 'ease',
+  //   iterations: Infinity,
+  //   direction: 'alternate',
+  // });
 
-  /**
-   * Circle -> Polyline
-   */
-  const polylinePathStr = convertToPath(
-    new Polyline({
-      style: {
-        points: [
-          [50, 50],
-          [100, 50],
-          [100, 100],
-          [150, 100],
-          [150, 150],
-          [200, 150],
-        ],
-        transform: 'translate(0, 200)',
-      },
-    }),
-  );
-  const pathD = new Path({
-    style: {
-      path: circlePathStr,
-      stroke: '#F04864',
-    },
-  });
-  canvas.appendChild(pathD);
-  pathD.animate([{ path: circlePathStr }, { path: polylinePathStr }], {
-    duration: 2500,
-    easing: 'ease',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+  // /**
+  //  * Circle -> Polyline
+  //  */
+  // const polylinePathStr = convertToPath(
+  //   new Polyline({
+  //     style: {
+  //       points: [
+  //         [50, 50],
+  //         [100, 50],
+  //         [100, 100],
+  //         [150, 100],
+  //         [150, 150],
+  //         [200, 150],
+  //       ],
+  //       transform: 'translate(0, 200)',
+  //     },
+  //   }),
+  // );
+  // const pathD = new Path({
+  //   style: {
+  //     path: circlePathStr,
+  //     stroke: '#F04864',
+  //   },
+  // });
+  // canvas.appendChild(pathD);
 
-  /**
-   * Path -> Polygon
-   */
-  const polygonPathStr = convertToPath(
-    new Polygon({
-      style: {
-        points: [
-          [0, 0],
-          [50, 50],
-          [50, 100],
-        ],
-        transform: 'translate(0, 300px)',
-      },
-    }),
-  );
-  const pathE = new Path({
-    style: {
-      path: path1Str,
-      stroke: '#F04864',
-    },
-  });
-  canvas.appendChild(pathE);
-  pathE.animate([{ path: path1Str }, { path: polygonPathStr }], {
-    duration: 2500,
-    easing: 'ease',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+  // console.log(polylinePathStr);
+  // pathD.animate(
+  //   [{ path: circlePathStr }, { path: polylinePathStr }],
+  //   {
+  //     duration: 2500,
+  //     easing: 'ease',
+  //     iterations: Infinity,
+  //     direction: 'alternate',
+  //   },
+  // );
 
-  /**
-   * Rect -> Circle
-   */
-  const rectPathStr = convertToPath(
-    new Rect({
-      style: {
-        x: 300,
-        y: 200,
-        width: 200,
-        height: 100,
-        transformOrigin: 'center',
-      },
-    }),
-  );
-  const pathF = new Path({
-    style: {
-      path: rectPathStr,
-      stroke: '#F04864',
-      fill: '',
-      opacity: 0.5,
-      lineWidth: 10,
-    },
-  });
-  canvas.appendChild(pathF);
-  pathF.animate(
-    [
-      { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
-      { path: circlePathStr, stroke: 'blue', fill: '#F04864' },
-    ],
-    {
-      duration: 2500,
-      easing: 'ease',
-      iterations: Infinity,
-      direction: 'alternate',
-    },
-  );
+  // /**
+  //  * Path -> Polygon
+  //  */
+  // const polygonPathStr = convertToPath(
+  //   new Polygon({
+  //     style: {
+  //       points: [
+  //         [0, 0],
+  //         [50, 50],
+  //         [50, 100],
+  //       ],
+  //       transform: 'translate(0, 300px)',
+  //     },
+  //   }),
+  // );
+  // const pathE = new Path({
+  //   style: {
+  //     path: path1Str,
+  //     stroke: '#F04864',
+  //   },
+  // });
+  // canvas.appendChild(pathE);
+  // pathE.animate([{ path: path1Str }, { path: polygonPathStr }], {
+  //   duration: 2500,
+  //   easing: 'ease',
+  //   iterations: Infinity,
+  //   direction: 'alternate',
+  // });
 
-  /**
-   * Rect -> Path
-   */
-  const starPath = new Path({
-    style: {
-      path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
-    },
-  });
-  starPath.scale(0.2);
-  starPath.translate(200, 200);
-  const pathG = new Path({
-    style: {
-      path: rectPathStr,
-      lineWidth: 2,
-    },
-  });
-  canvas.appendChild(pathG);
-  pathG.animate(
-    [
-      { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
-      { path: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
-    ],
-    {
-      duration: 2500,
-      easing: 'ease',
-      iterations: Infinity,
-      direction: 'alternate',
-    },
-  );
+  // /**
+  //  * Rect -> Circle
+  //  */
+  // const rectPathStr = convertToPath(
+  //   new Rect({
+  //     style: {
+  //       x: 300,
+  //       y: 200,
+  //       width: 200,
+  //       height: 100,
+  //       transformOrigin: 'center',
+  //     },
+  //   }),
+  // );
+  // const pathF = new Path({
+  //   style: {
+  //     path: rectPathStr,
+  //     stroke: '#F04864',
+  //     fill: '',
+  //     opacity: 0.5,
+  //     lineWidth: 10,
+  //   },
+  // });
+  // canvas.appendChild(pathF);
+  // pathF.animate(
+  //   [
+  //     { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
+  //     { path: circlePathStr, stroke: 'blue', fill: '#F04864' },
+  //   ],
+  //   {
+  //     duration: 2500,
+  //     easing: 'ease',
+  //     iterations: Infinity,
+  //     direction: 'alternate',
+  //   },
+  // );
+
+  // /**
+  //  * Rect -> Path
+  //  */
+  // const starPath = new Path({
+  //   style: {
+  //     path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
+  //   },
+  // });
+  // starPath.scale(0.2);
+  // starPath.translate(200, 200);
+  // const pathG = new Path({
+  //   style: {
+  //     path: rectPathStr,
+  //     lineWidth: 2,
+  //   },
+  // });
+  // canvas.appendChild(pathG);
+  // pathG.animate(
+  //   [
+  //     { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
+  //     { path: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
+  //   ],
+  //   {
+  //     duration: 2500,
+  //     easing: 'ease',
+  //     iterations: Infinity,
+  //     direction: 'alternate',
+  //   },
+  // );
 }
