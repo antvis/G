@@ -1,5 +1,29 @@
 # @antv/react-g
 
+## 1.10.26-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.9
+
+## 1.10.26-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.8
+
+## 1.10.26-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.7
+
 ## 1.10.26-next.6
 
 ### Patch Changes

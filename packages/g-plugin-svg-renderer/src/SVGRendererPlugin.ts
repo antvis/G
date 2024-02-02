@@ -104,6 +104,7 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   fontSize: 'inherit',
   fontFamily: 'inherit',
   pointerEvents: 'auto',
+  transform: 'matrix(1,0,0,1,0,0)',
 };
 
 export type GradientParams = LinearGradient | RadialGradient;
@@ -435,16 +436,16 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   applyTransform($el: SVGElement, rts: mat4) {
-    // use proper precision avoiding too long string in `transform`
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    $el.setAttribute(
-      'transform',
-      `matrix(${numberToLongString(rts[0])},${numberToLongString(
-        rts[1],
-      )},${numberToLongString(rts[4])},${numberToLongString(
-        rts[5],
-      )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`,
-    );
+    const matrix = `matrix(${numberToLongString(rts[0])},${numberToLongString(
+      rts[1],
+    )},${numberToLongString(rts[4])},${numberToLongString(
+      rts[5],
+    )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`;
+    if (matrix !== DEFAULT_VALUE_MAP.transform) {
+      // use proper precision avoiding too long string in `transform`
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+      $el.setAttribute('transform', matrix);
+    }
   }
 
   private applyAttributes(object: DisplayObject) {

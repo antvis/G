@@ -12,6 +12,7 @@ export async function clipPath(context) {
       cy: 150,
       r: 35,
       fill: 'blue',
+      transformOrigin: 'center',
     },
   });
 

@@ -1,5 +1,29 @@
 # @antv/g-plugin-gesture
 
+## 1.2.10-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.9
+
+## 1.2.10-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.8
+
+## 1.2.10-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.7
+
 ## 1.2.10-next.6
 
 ### Patch Changes

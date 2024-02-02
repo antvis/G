@@ -1,10 +1,4 @@
-import {
-  CanvasEvent,
-  Circle,
-  Rect,
-  Path,
-  Group,
-} from '../../../packages/g/dist';
+import { CanvasEvent, Circle, Rect, Path, Group } from '../../../packages/g';
 
 export async function transformGroup(context) {
   const { canvas } = context;
@@ -47,6 +41,12 @@ solarSystem
 
   const solarSystem = new Group({
     id: 'solarSystem',
+    style: {
+      x: 0,
+      y: 100,
+      width: 200,
+      height: 100,
+    },
   });
   const earthOrbit = new Group({
     id: 'earthOrbit',

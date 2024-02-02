@@ -297,16 +297,17 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   {
     n: 'transformOrigin',
     p: 100,
-    // int: true,
-    d: (nodeName: string) => {
-      if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
-        return 'center';
-      }
-      if (nodeName === Shape.TEXT) {
-        return 'text-anchor';
-      }
-      return 'left top';
-    },
+    d: '0 0',
+    // // int: true,
+    // d: (nodeName: string) => {
+    //   if (nodeName === Shape.CIRCLE || nodeName === Shape.ELLIPSE) {
+    //     return 'center';
+    //   }
+    //   if (nodeName === Shape.TEXT) {
+    //     return 'text-anchor';
+    //   }
+    //   return 'left top';
+    // },
     l: true,
     syntax: PropertySyntax.TRANSFORM_ORIGIN,
   },
@@ -1310,28 +1311,24 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       object.geometry.dirty = false;
 
-      // if (nodeName === Shape.RECT) {
-      // account for negative width / height of Rect
       // @see https://github.com/antvis/g/issues/957
       const flipY = hwidth < 0;
       const flipX = hheight < 0;
-      // } else {
-      // }
       // set transform origin
       const usedOriginXValue =
         (flipY ? -1 : 1) *
         (transformOrigin
-          ? convertPercentUnit(transformOrigin[0], 0, object)
+          ? convertPercentUnit(transformOrigin[0], 0, object, true)
           : 0);
       const usedOriginYValue =
         (flipX ? -1 : 1) *
         (transformOrigin
-          ? convertPercentUnit(transformOrigin[1], 1, object)
+          ? convertPercentUnit(transformOrigin[1], 1, object, true)
           : 0);
-      object.setOrigin(
-        cx - hwidth + usedOriginXValue,
-        cy - hheight + usedOriginYValue,
-      );
+
+      if (usedOriginXValue || usedOriginYValue) {
+        object.setOrigin(usedOriginXValue, usedOriginYValue);
+      }
     }
   }
 

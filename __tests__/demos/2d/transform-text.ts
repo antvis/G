@@ -24,6 +24,7 @@ export async function transformText(context) {
       text: 'Hello World',
       fill: 'red',
       transform: 'rotate(90deg)',
+      transformOrigin: 'left bottom',
     },
   });
   canvas.appendChild(text);
@@ -48,7 +49,7 @@ export async function transformText(context) {
       text: 'Hello World',
       fill: 'red',
       transform: 'rotate(45deg)',
-      // transformOrigin: '0 20',
+      transformOrigin: 'left bottom',
     },
   });
   canvas.appendChild(text3);
@@ -102,4 +103,54 @@ export async function transformText(context) {
     },
   });
   canvas.appendChild(text6);
+
+  const circle3 = new Circle({
+    style: {
+      cx: 500,
+      cy: 100,
+      r: 5,
+      fill: 'green',
+    },
+  });
+  canvas.appendChild(circle3);
+  const text7 = new Text({
+    style: {
+      x: 500,
+      y: 100,
+      fontSize: 20,
+      text: 'Hello World',
+      fill: 'red',
+      textAlign: 'right',
+      textBaseline: 'middle',
+    },
+  });
+  canvas.appendChild(text7);
+  const text8 = new Text({
+    style: {
+      x: 500,
+      y: 100,
+      fontSize: 20,
+      text: 'Hello World',
+      fill: 'red',
+      textAlign: 'right',
+      textBaseline: 'middle',
+      transform: 'rotate(45deg)',
+      transformOrigin: 'right center',
+    },
+  });
+  canvas.appendChild(text8);
+  const text9 = new Text({
+    style: {
+      x: 500,
+      y: 100,
+      fontSize: 20,
+      text: 'Hello World',
+      fill: 'red',
+      textAlign: 'right',
+      textBaseline: 'middle',
+      transform: 'rotate(90deg)',
+      transformOrigin: 'right center',
+    },
+  });
+  canvas.appendChild(text9);
 }

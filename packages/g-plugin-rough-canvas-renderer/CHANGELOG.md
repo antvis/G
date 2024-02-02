@@ -1,5 +1,32 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 1.9.27-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.9
+    -   @antv/g-lite@1.3.0-next.9
+
+## 1.9.27-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.8
+    -   @antv/g-lite@1.3.0-next.8
+
+## 1.9.27-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.7
+    -   @antv/g-lite@1.3.0-next.7
+
 ## 1.9.27-next.6
 
 ### Patch Changes

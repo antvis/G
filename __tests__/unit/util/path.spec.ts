@@ -86,7 +86,7 @@ describe('Path utils', () => {
 
     // scale line
     line.scale(0.5);
-    expect(convertToPath(line)).toBe('M200,100L200,150');
+    expect(convertToPath(line)).toBe('M150,100L150,150');
 
     line.scale(2);
     expect(convertToPath(line)).toBe('M200,100L200,200');

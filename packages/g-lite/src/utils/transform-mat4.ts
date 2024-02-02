@@ -102,6 +102,8 @@ export function parsedTransformToMat4(
       mat4.mul(m, m, tmpMat2);
     });
     object.setLocalTransform(m);
+  } else {
+    object.resetLocalTransform();
   }
 
   return object.getLocalTransform();

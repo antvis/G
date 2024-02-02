@@ -71,9 +71,7 @@ export async function ellipse(context) {
 
   // transform
   const ellipse11 = ellipse1.cloneNode();
-  ellipse11.style.cx = 0;
-  ellipse11.style.cy = 0;
-  ellipse11.style.transformOrigin = '0 0';
-  ellipse11.style.transform = 'scale(2) translate(140, 100)';
+  ellipse11.style.transformOrigin = 'center';
+  ellipse11.style.transform = 'translate(140, 100) scale(2)';
   canvas.appendChild(ellipse11);
 }

@@ -250,11 +250,8 @@ export function convertPercentUnit(
   valueWithUnit: CSSUnitValue,
   vec3Index: number,
   target: DisplayObject,
+  useMin = false,
 ): number {
-  if (valueWithUnit.value === 0) {
-    return 0;
-  }
-
   if (valueWithUnit.unit === UnitType.kPixels) {
     return Number(valueWithUnit.value);
   } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
@@ -262,7 +259,10 @@ export function convertPercentUnit(
       target.nodeName === Shape.GROUP
         ? target.getLocalBounds()
         : target.getGeometryBounds();
-    return (valueWithUnit.value / 100) * bounds.halfExtents[vec3Index] * 2;
+    return (
+      (useMin ? bounds.min[vec3Index] : 0) +
+      (valueWithUnit.value / 100) * bounds.halfExtents[vec3Index] * 2
+    );
   }
   return 0;
 }

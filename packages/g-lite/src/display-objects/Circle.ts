@@ -1,6 +1,4 @@
-import { PECENTAGE_50 } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
-import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -43,28 +41,9 @@ export class Circle extends DisplayObject<
   CircleStyleProps,
   ParsedCircleStyleProps
 > {
-  // constructor(options: DisplayObjectConfig<CircleStyleProps> = {}) {
-  //   super(options);
+  constructor(options: DisplayObjectConfig<CircleStyleProps> = {}) {
+    super(options);
 
-  //   this.nodeName = Shape.CIRCLE;
-  // }
-  constructor({ style, ...rest }: DisplayObjectConfig<CircleStyleProps> = {}) {
-    super({
-      type: Shape.CIRCLE,
-      style: runtime.enableCSSParsing
-        ? {
-            cx: '',
-            cy: '',
-            r: '',
-            ...style,
-          }
-        : style,
-      initialParsedStyle: {
-        transformOrigin: runtime.enableCSSParsing
-          ? null
-          : [PECENTAGE_50, PECENTAGE_50],
-      },
-      ...rest,
-    });
+    this.nodeName = Shape.CIRCLE;
   }
 }

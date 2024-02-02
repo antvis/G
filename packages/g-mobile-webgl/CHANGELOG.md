@@ -1,5 +1,47 @@
 # @antv/g-mobile-webgl
 
+## 0.9.38-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.9
+    -   @antv/g-plugin-device-renderer@1.10.0-next.9
+    -   @antv/g-plugin-html-renderer@1.9.25-next.9
+    -   @antv/g-plugin-image-loader@1.4.0-next.9
+    -   @antv/g-plugin-dragndrop@1.8.22-next.9
+    -   @antv/g-plugin-gesture@1.2.10-next.9
+    -   @antv/g-lite@1.3.0-next.9
+
+## 0.9.38-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.8
+    -   @antv/g-plugin-device-renderer@1.10.0-next.8
+    -   @antv/g-plugin-html-renderer@1.9.25-next.8
+    -   @antv/g-plugin-image-loader@1.4.0-next.8
+    -   @antv/g-plugin-dragndrop@1.8.22-next.8
+    -   @antv/g-plugin-gesture@1.2.10-next.8
+    -   @antv/g-lite@1.3.0-next.8
+
+## 0.9.38-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.7
+    -   @antv/g-plugin-device-renderer@1.10.0-next.7
+    -   @antv/g-plugin-html-renderer@1.9.25-next.7
+    -   @antv/g-plugin-image-loader@1.4.0-next.7
+    -   @antv/g-plugin-dragndrop@1.8.22-next.7
+    -   @antv/g-plugin-gesture@1.2.10-next.7
+    -   @antv/g-lite@1.3.0-next.7
+
 ## 0.9.38-next.6
 
 ### Patch Changes

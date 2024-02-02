@@ -96,7 +96,7 @@ function convertKeyword2Percent(keyword: string) {
   if (keyword === 'center') {
     return '50%';
   } else if (keyword === 'left' || keyword === 'top') {
-    return '0';
+    return '0%';
   } else if (keyword === 'right' || keyword === 'bottom') {
     return '100%';
   }

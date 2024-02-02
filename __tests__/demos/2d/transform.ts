@@ -15,29 +15,34 @@ export async function transform(context) {
   });
   canvas.appendChild(circle1);
 
+  const group = new Group({
+    style: {
+      transform: 'translate(100, 100)',
+    },
+  });
   const circle2 = new Circle({
     style: {
-      cx: 100,
-      cy: 100,
       r: 50,
       fill: 'red',
     },
   });
-  canvas.appendChild(circle2);
+  group.appendChild(circle2);
+  group.scale(0.5);
+  canvas.appendChild(group);
 
   /**
-solarSystem
-   |    |
-   |   sun
-   |
- earthOrbit
-   |    |
-   |  earth
-   |
-  moonOrbit
-      |
-     moon
- */
+  solarSystem
+     |    |
+     |   sun
+     |
+   earthOrbit
+     |    |
+     |  earth
+     |
+    moonOrbit
+        |
+       moon
+   */
 
   const solarSystem = new Group({
     id: 'solarSystem',

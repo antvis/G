@@ -1,5 +1,38 @@
 # @antv/g
 
+## 5.18.25-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.9
+    -   @antv/g-web-animations-api@1.2.23-next.9
+    -   @antv/g-camera-api@1.2.23-next.9
+    -   @antv/g-lite@1.3.0-next.9
+
+## 5.18.25-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.8
+    -   @antv/g-web-animations-api@1.2.23-next.8
+    -   @antv/g-camera-api@1.2.23-next.8
+    -   @antv/g-lite@1.3.0-next.8
+
+## 5.18.25-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.7
+    -   @antv/g-web-animations-api@1.2.23-next.7
+    -   @antv/g-camera-api@1.2.23-next.7
+    -   @antv/g-lite@1.3.0-next.7
+
 ## 5.18.25-next.6
 
 ### Patch Changes

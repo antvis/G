@@ -228,8 +228,8 @@ describe('CSSPropertyTransform', () => {
     await canvas.ready;
     canvas.appendChild(circle);
 
-    expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
-    expect(circle.getLocalBounds().center).toStrictEqual([10, 10, 0]);
+    expect(circle.getLocalPosition()).toStrictEqual([-5, -5, 0]);
+    expect(circle.getLocalBounds().center).toStrictEqual([5, 5, 0]);
     expect(circle.getLocalBounds().halfExtents).toStrictEqual([25, 25, 0]);
   });
 

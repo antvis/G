@@ -78,6 +78,8 @@ export async function circle(context) {
 
   // transform
   const circle11 = circle1.cloneNode();
-  circle11.style.transform = 'scale(2) translate(130, 50)';
+  circle11.style.transformOrigin = 'center';
+  circle11.style.transform = 'translate(130, 50) scale(2)';
+  console.log(circle11, circle11.getOrigin());
   canvas.appendChild(circle11);
 }

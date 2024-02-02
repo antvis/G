@@ -1,5 +1,29 @@
 # @antv/g-mobile-canvas-element
 
+## 0.8.22-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.9
+
+## 0.8.22-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.8
+
+## 0.8.22-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.7
+
 ## 0.8.22-next.6
 
 ### Patch Changes
