@@ -1,5 +1,15 @@
 # @antv/g-web-components
 
+## 1.9.38-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.10
+    -   @antv/g-webgl@1.9.37-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 1.9.38-next.9
 
 ### Patch Changes

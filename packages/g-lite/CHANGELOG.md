@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.3.0-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+
 ## 1.3.0-next.9
 
 ### Patch Changes

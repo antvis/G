@@ -1,5 +1,18 @@
 # @antv/g-mobile-svg
 
+## 0.10.27-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.10
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.10
+    -   @antv/g-plugin-svg-picker@1.9.26-next.10
+    -   @antv/g-plugin-dragndrop@1.8.22-next.10
+    -   @antv/g-plugin-gesture@1.2.10-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 0.10.27-next.9
 
 ### Patch Changes

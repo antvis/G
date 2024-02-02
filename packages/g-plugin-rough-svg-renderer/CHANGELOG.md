@@ -1,5 +1,14 @@
 # @antv/g-plugin-rough-svg-renderer
 
+## 1.9.27-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.10
+    -   @antv/g-svg@1.10.26-next.10
+
 ## 1.9.27-next.9
 
 ### Patch Changes

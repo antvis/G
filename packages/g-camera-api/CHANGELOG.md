@@ -1,5 +1,13 @@
 # @antv/g-camera-api
 
+## 1.2.23-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 1.2.23-next.9
 
 ### Patch Changes

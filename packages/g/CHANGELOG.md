@@ -1,5 +1,16 @@
 # @antv/g
 
+## 5.18.25-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.10
+    -   @antv/g-web-animations-api@1.2.23-next.10
+    -   @antv/g-camera-api@1.2.23-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 5.18.25-next.9
 
 ### Patch Changes

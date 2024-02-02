@@ -1,5 +1,13 @@
 # @antv/react-g
 
+## 1.10.26-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.10
+
 ## 1.10.26-next.9
 
 ### Patch Changes

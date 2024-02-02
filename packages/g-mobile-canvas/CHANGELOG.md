@@ -1,5 +1,20 @@
 # @antv/g-mobile-canvas
 
+## 0.11.15-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.10
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.10
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.10
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.10
+    -   @antv/g-plugin-image-loader@1.4.0-next.10
+    -   @antv/g-plugin-dragndrop@1.8.22-next.10
+    -   @antv/g-plugin-gesture@1.2.10-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 0.11.15-next.9
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @antv/g-plugin-svg-picker
 
+## 1.9.26-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 1.9.26-next.9
 
 ### Patch Changes

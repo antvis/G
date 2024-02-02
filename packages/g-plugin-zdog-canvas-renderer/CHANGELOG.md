@@ -1,5 +1,14 @@
 # @antv/g-plugin-zdog-canvas-renderer
 
+## 1.2.27-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 1.2.27-next.9
 
 ### Patch Changes

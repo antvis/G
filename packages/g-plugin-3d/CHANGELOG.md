@@ -1,5 +1,14 @@
 # @antv/g-plugin-3d
 
+## 1.9.34-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
 ## 1.9.34-next.9
 
 ### Patch Changes
