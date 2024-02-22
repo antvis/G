@@ -1,45 +1,15 @@
-import {
-  CanvasEvent,
-  Path,
-  Circle,
-  Line,
-  Rect,
-  Image,
-} from '../../../packages/g';
+import { Path, Circle, Line, Rect, Image } from '../../../packages/g';
 
 export async function marker(context) {
-  const { canvas, container } = context;
+  const { canvas } = context;
   await canvas.ready;
-
-  // display dirty rectangle
-  const $dirtyRectangle = document.createElement('div');
-  $dirtyRectangle.style.cssText = `
-  position: absolute;
-  pointer-events: none;
-  background: rgba(255, 0, 0, 0.5);
-  `;
-  container.appendChild($dirtyRectangle);
-
-  canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
-    const { dirtyRect } = e.detail;
-    const { x, y, width, height } = dirtyRect;
-    const dpr = window.devicePixelRatio;
-
-    console.log(x, y, width, height);
-
-    // convert from canvas coords to viewport
-    $dirtyRectangle.style.left = `${x / dpr}px`;
-    $dirtyRectangle.style.top = `${y / dpr}px`;
-    $dirtyRectangle.style.width = `${width / dpr}px`;
-    $dirtyRectangle.style.height = `${height / dpr}px`;
-  });
 
   /**
    * Arrow with triangle marker
    */
   const arrowMarker = new Path({
     style: {
-      path: 'M 10,10 L -10,0 L 10,-10 Z',
+      d: 'M 10,10 L -10,0 L 10,-10 Z',
       stroke: '#1890FF',
       transformOrigin: 'center',
     },

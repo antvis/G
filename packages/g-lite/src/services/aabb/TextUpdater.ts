@@ -3,7 +3,7 @@ import type {
   DisplayObject,
   ParsedTextStyleProps,
 } from '../../display-objects';
-import { GlobalRuntime } from '../../global-runtime';
+import { GlobalRuntime, runtime } from '../../global-runtime';
 import type { GeometryAABBUpdater } from './interfaces';
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   constructor(private globalRuntime: GlobalRuntime) {}
@@ -23,29 +23,30 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       lineWidth,
     } = parsedStyle;
 
-    return (
-      text &&
-      fontSize &&
-      fontStyle &&
-      fontWeight &&
-      fontVariant &&
-      textAlign &&
-      textBaseline &&
-      !isNil(lineWidth)
-    );
+    return runtime.enableCSSParsing
+      ? text &&
+          fontSize &&
+          fontStyle &&
+          fontWeight &&
+          fontVariant &&
+          textAlign &&
+          textBaseline &&
+          !isNil(lineWidth)
+      : text;
   }
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
     const {
       text,
-      textAlign,
-      lineWidth,
-      textBaseline,
-      dx,
-      dy,
+      textAlign = 'start',
+      lineWidth = 1,
+      textBaseline = 'alphabetic',
+      dx = 0,
+      dy = 0,
       x = 0,
       y = 0,
     } = parsedStyle;
+
     if (!this.isReadyToMeasure(parsedStyle, object)) {
       parsedStyle.metrics = {
         font: '',

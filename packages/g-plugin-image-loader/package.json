@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-image-loader",
-  "version": "1.4.0-next.10",
+  "version": "1.4.0-next.13",
   "description": "A G plugin for loading image",
   "keywords": [
     "antv",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

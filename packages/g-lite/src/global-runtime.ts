@@ -77,6 +77,13 @@ export interface GlobalRuntime {
    * circle.style.r = 100;
    */
   enableStyleSyntax: boolean;
+
+  /**
+   * Enable using dash-cased attribute.
+   * @example
+   * circle.setAttribute('stroke-width', '2');
+   */
+  enableAttributeDashCased: boolean;
 }
 
 /**
@@ -178,3 +185,4 @@ runtime.globalThis = getGlobalThis();
 runtime.enableCSSParsing = true;
 runtime.enableDataset = false;
 runtime.enableStyleSyntax = true;
+runtime.enableAttributeDashCased = false;

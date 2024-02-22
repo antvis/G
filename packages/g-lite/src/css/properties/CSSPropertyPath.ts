@@ -7,9 +7,7 @@ import { mergePaths, parsePath } from '../parser/path';
 
 export class CSSPropertyPath
   implements
-    Partial<
-      CSSProperty<ParsedPathStyleProps['path'], ParsedPathStyleProps['path']>
-    >
+    Partial<CSSProperty<ParsedPathStyleProps['d'], ParsedPathStyleProps['d']>>
 {
   /**
    * path2Curve
@@ -19,8 +17,8 @@ export class CSSPropertyPath
 
   calculator(
     name: string,
-    oldParsed: ParsedPathStyleProps['path'],
-    parsed: ParsedPathStyleProps['path'],
+    oldParsed: ParsedPathStyleProps['d'],
+    parsed: ParsedPathStyleProps['d'],
   ) {
     // unset
     if (parsed instanceof CSSKeywordValue && parsed.value === 'unset') {
@@ -35,6 +33,8 @@ export class CSSPropertyPath
         rect: new Rectangle(0, 0, 0, 0),
       };
     }
+
+    console.log('parsed', parsed);
     return parsed;
   }
 

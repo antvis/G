@@ -1,5 +1,41 @@
 # @antv/g-webgl
 
+## 1.9.37-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.13
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.13
+    -   @antv/g-plugin-html-renderer@1.9.25-next.13
+    -   @antv/g-plugin-image-loader@1.4.0-next.13
+    -   @antv/g-lite@1.3.0-next.13
+
+## 1.9.37-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.12
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.12
+    -   @antv/g-plugin-html-renderer@1.9.25-next.12
+    -   @antv/g-plugin-image-loader@1.4.0-next.12
+    -   @antv/g-lite@1.3.0-next.12
+
+## 1.9.37-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.11
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.11
+    -   @antv/g-plugin-html-renderer@1.9.25-next.11
+    -   @antv/g-plugin-image-loader@1.4.0-next.11
+    -   @antv/g-lite@1.3.0-next.11
+
 ## 1.9.37-next.10
 
 ### Patch Changes

@@ -32,6 +32,10 @@ export function isDisplayObject(value: any): value is DisplayObject {
   return !!(value as DisplayObject)?.nodeName;
 }
 
+const Proxy: ProxyConstructor = runtime.globalThis.Proxy
+  ? runtime.globalThis.Proxy
+  : function () {};
+
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
 const mutationEvent: MutationEvent = new MutationEvent(
@@ -82,20 +86,20 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   miterLimit: 10,
 };
 
-const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
-  ...DEFAULT_PARSED_STYLE_PROPS,
-  opacity: 1,
-  fillOpacity: 1,
-  strokeOpacity: 1,
-  visibility: 'visible',
-  pointerEvents: 'auto',
-  lineWidth: 1,
-  lineCap: 'butt',
-  lineJoin: 'miter',
-  increasedLineWidthForHitTesting: 0,
-  fillRule: 'nonzero',
-  // TODO: transformOrigin
-};
+// const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
+//   ...DEFAULT_PARSED_STYLE_PROPS,
+//   opacity: 1,
+//   fillOpacity: 1,
+//   strokeOpacity: 1,
+//   visibility: 'visible',
+//   pointerEvents: 'auto',
+//   lineWidth: 1,
+//   lineCap: 'butt',
+//   lineJoin: 'miter',
+//   increasedLineWidthForHitTesting: 0,
+//   fillRule: 'nonzero',
+//   // TODO: transformOrigin
+// };
 
 const INHERITABLE_BASE_STYLE_PROPS = [
   'opacity',
@@ -184,24 +188,23 @@ export class DisplayObject<
     }
     this.nodeName = this.config.type || Shape.GROUP;
 
-    // merge parsed value
-    Object.assign(
-      this.parsedStyle,
-      runtime.enableCSSParsing
-        ? DEFAULT_PARSED_STYLE_PROPS
-        : DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
-      this.config.initialParsedStyle,
-    );
-
     if (runtime.enableCSSParsing) {
       Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
+      Object.assign(
+        this.parsedStyle,
+        DEFAULT_PARSED_STYLE_PROPS,
+        this.config.initialParsedStyle,
+      );
+    } else if (this.config.initialParsedStyle) {
+      Object.assign(
+        this.parsedStyle,
+        // DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
+        this.config.initialParsedStyle,
+      );
     }
 
     // start to process attributes
     this.initAttributes(this.config.style);
-    const Proxy: ProxyConstructor = runtime.globalThis.Proxy
-      ? runtime.globalThis.Proxy
-      : function () {};
 
     if (runtime.enableDataset) {
       this.dataset = new Proxy<any>(
@@ -351,10 +354,14 @@ export class DisplayObject<
     }
 
     // account for FCP, process properties as less as possible
-    const formattedAttributes = {};
-    for (const name in attributes) {
-      const attributeName = formatAttributeName(name);
-      formattedAttributes[attributeName] = attributes[name];
+    let formattedAttributes = attributes;
+    if (runtime.enableAttributeDashCased) {
+      // @ts-ignore
+      formattedAttributes = {};
+      for (const name in attributes) {
+        const attributeName = formatAttributeName(name);
+        formattedAttributes[attributeName] = attributes[name];
+      }
     }
     runtime.styleValueRegistry.processProperties(
       this,
@@ -372,15 +379,17 @@ export class DisplayObject<
     force = false,
     memoize = true,
   ) {
-    const attributeName = formatAttributeName(name as string) as Key;
+    if (runtime.enableAttributeDashCased) {
+      name = formatAttributeName(name as string) as Key;
+    }
     // ignore undefined value
     if (isUndefined(value)) {
       return;
     }
 
-    if (force || value !== this.attributes[attributeName]) {
-      this.internalSetAttribute(attributeName, value, { memoize });
-      super.setAttribute(attributeName, value);
+    if (force || value !== this.attributes[name]) {
+      this.internalSetAttribute(name, value, { memoize });
+      super.setAttribute(name, value);
     }
   }
 
@@ -692,7 +701,9 @@ export class DisplayObject<
    * shortcut for Used value of `visibility`
    */
   isVisible() {
-    return this.parsedStyle?.visibility === 'visible';
+    return runtime.enableCSSParsing
+      ? this.parsedStyle?.visibility === 'visible'
+      : this.parsedStyle?.visibility !== 'hidden';
   }
 
   get interactive() {
@@ -914,22 +925,6 @@ export class DisplayObject<
   add<T extends IChildNode>(child: T, index?: number): T {
     return this.appendChild(child, index);
   }
-
-  /**
-   * Use `this.style.clipPath` instead.
-   * @deprecated
-   */
-  setClip(clipPath: DisplayObject | null) {
-    this.style.clipPath = clipPath;
-  }
-
-  /**
-   * Use `this.style.clipPath` instead.
-   * @deprecated
-   */
-  getClip = function () {
-    return this.style.clipPath || null;
-  };
 
   /**
    * @deprecated

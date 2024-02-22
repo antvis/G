@@ -1,4 +1,6 @@
-import { Circle } from '../../../packages/g';
+import { Circle, runtime } from '../../../packages/g';
+
+runtime.enableCSSParsing = false;
 
 export async function circle(context) {
   const { canvas } = context;
@@ -16,7 +18,7 @@ export async function circle(context) {
 
   const circle2 = circle1.cloneNode();
   circle2.style.stroke = 'green';
-  circle2.style.lineWidth = '2px';
+  circle2.style.lineWidth = 2;
   circle2.style.transform = 'translate(20px, 0)';
   canvas.appendChild(circle2);
 
@@ -80,6 +82,5 @@ export async function circle(context) {
   const circle11 = circle1.cloneNode();
   circle11.style.transformOrigin = 'center';
   circle11.style.transform = 'translate(130, 50) scale(2)';
-  console.log(circle11, circle11.getOrigin());
   canvas.appendChild(circle11);
 }

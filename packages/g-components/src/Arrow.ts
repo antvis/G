@@ -325,9 +325,9 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
     return new Path({
       style: {
         // draw an angle '<'
-        path: `M${width / 2},${10 * sin(PI / 6)} L-${width / 2},0 L${
-          width / 2
-        },-${10 * sin(PI / 6)}`,
+        d: `M${width / 2},${10 * sin(PI / 6)} L-${width / 2},0 L${width / 2},-${
+          10 * sin(PI / 6)
+        }`,
         stroke,
         lineWidth,
         transformOrigin: 'center',

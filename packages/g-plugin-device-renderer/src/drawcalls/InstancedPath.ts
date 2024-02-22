@@ -77,7 +77,7 @@ export class InstancedPathDrawcall extends Instanced {
   static calcSubpathNum(object: DisplayObject) {
     if (object.nodeName === Shape.PATH) {
       const {
-        path: { absolutePath },
+        d: { absolutePath },
       } = object.parsedStyle as ParsedPathStyleProps;
       return absolutePath.filter((d) => d[0] === 'M').length;
     }
@@ -565,7 +565,7 @@ export function updateBuffer(
     object.nodeName === Shape.ELLIPSE ||
     object.nodeName === Shape.RECT
   ) {
-    let path: ParsedPathStyleProps['path'];
+    let path: ParsedPathStyleProps['d'];
     if (object.nodeName !== Shape.PATH) {
       path = parsePath(convertToPath(object, mat4.identity(mat4.create())));
 
@@ -580,7 +580,7 @@ export function updateBuffer(
         }
       }
     } else {
-      path = object.parsedStyle.path;
+      path = object.parsedStyle.d;
     }
     const { absolutePath, segments } = path;
 

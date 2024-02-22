@@ -1,5 +1,29 @@
 # @antv/g-plugin-dragndrop
 
+## 1.8.22-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.13
+
+## 1.8.22-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.12
+
+## 1.8.22-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.11
+
 ## 1.8.22-next.10
 
 ### Patch Changes

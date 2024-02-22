@@ -7,10 +7,7 @@ import {
   Polygon,
   Rect,
   convertToPath,
-  runtime,
 } from '../../../packages/g';
-
-runtime.enableCSSParsing = false;
 
 export async function convert2Path(context) {
   const { canvas } = context;

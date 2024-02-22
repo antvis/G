@@ -17,7 +17,7 @@ export async function ellipse(context) {
 
   const ellipse2 = ellipse1.cloneNode();
   ellipse2.style.stroke = 'green';
-  ellipse2.style.lineWidth = '2px';
+  ellipse2.style.lineWidth = 2;
   ellipse2.setPosition(20, 0);
   canvas.appendChild(ellipse2);
 

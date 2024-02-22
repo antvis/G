@@ -4,7 +4,7 @@ import {
   forceManyBody,
   forceCenter,
 } from 'd3-force-3d';
-import { runtime, Line, Text, Rect, Image, Circle } from '../../../packages/g';
+import { Line, Text, Rect, Image, Circle } from '../../../packages/g';
 import {
   SphereGeometry,
   MeshPhongMaterial,
@@ -1605,8 +1605,6 @@ export async function force(context) {
 
   // wait for canvas' initialization complete
   await canvas.ready;
-
-  runtime.enableCSSParsing = false;
 
   // start 3d force simulation
   const simulation = forceSimulation(dataset.nodes, 3)

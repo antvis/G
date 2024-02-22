@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvaskit-renderer",
-  "version": "1.4.0-next.10",
+  "version": "1.4.0-next.13",
   "description": "A G plugin of renderer implementation with CanvasKit",
   "keywords": [
     "antv",
@@ -41,7 +41,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-math": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "canvaskit-wasm": "^0.34.0",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"

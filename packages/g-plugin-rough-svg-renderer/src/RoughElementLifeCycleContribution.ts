@@ -117,14 +117,19 @@ export class RoughElementLifeCycleContribution
 
     switch (nodeName) {
       case Shape.CIRCLE: {
-        const { cx, cy, r } = parsedStyle as ParsedCircleStyleProps;
+        const { cx = 0, cy = 0, r } = parsedStyle as ParsedCircleStyleProps;
         // rough.js use diameter instead of radius
         // @see https://github.com/rough-stuff/rough/wiki#circle-x-y-diameter--options
         $roughG = roughSVG.circle(cx, cy, r * 2, generateRoughOptions(object));
         break;
       }
       case Shape.ELLIPSE: {
-        const { cx, cy, rx, ry } = parsedStyle as ParsedEllipseStyleProps;
+        const {
+          cx = 0,
+          cy = 0,
+          rx,
+          ry,
+        } = parsedStyle as ParsedEllipseStyleProps;
         $roughG = roughSVG.ellipse(
           cx,
           cy,
@@ -135,7 +140,12 @@ export class RoughElementLifeCycleContribution
         break;
       }
       case Shape.RECT: {
-        const { x, y, width, height } = parsedStyle as ParsedRectStyleProps;
+        const {
+          x = 0,
+          y = 0,
+          width,
+          height,
+        } = parsedStyle as ParsedRectStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
         $roughG = roughSVG.rectangle(
           x,
@@ -147,7 +157,12 @@ export class RoughElementLifeCycleContribution
         break;
       }
       case Shape.LINE: {
-        const { x1, y1, x2, y2 } = parsedStyle as ParsedLineStyleProps;
+        const {
+          x1 = 0,
+          y1 = 0,
+          x2 = 0,
+          y2 = 0,
+        } = parsedStyle as ParsedLineStyleProps;
         // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
         $roughG = roughSVG.line(x1, y1, x2, y2, generateRoughOptions(object));
         break;
@@ -171,9 +186,9 @@ export class RoughElementLifeCycleContribution
         break;
       }
       case Shape.PATH: {
-        const { path } = parsedStyle as ParsedPathStyleProps;
+        const { d } = parsedStyle as ParsedPathStyleProps;
         $roughG = roughSVG.path(
-          translatePathToString(path.absolutePath),
+          translatePathToString(d.absolutePath),
           generateRoughOptions(object),
         );
         break;

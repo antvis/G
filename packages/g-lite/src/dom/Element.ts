@@ -33,16 +33,16 @@ export function resetEntityCounter() {
   entityCounter = 0;
 }
 
-const insertedEvent = new MutationEvent(
-  ElementEvent.INSERTED,
-  null,
-  '',
-  '',
-  '',
-  0,
-  '',
-  '',
-);
+// const insertedEvent = new MutationEvent(
+//   ElementEvent.INSERTED,
+//   null,
+//   '',
+//   '',
+//   '',
+//   0,
+//   '',
+//   '',
+// );
 const removedEvent = new MutationEvent(
   ElementEvent.REMOVED,
   null,
@@ -229,8 +229,8 @@ export class Element<
       this.ownerDocument.defaultView.mountChildren(child);
     }
 
-    insertedEvent.relatedNode = this as IElement;
-    child.dispatchEvent(insertedEvent);
+    // insertedEvent.relatedNode = this as IElement;
+    // child.dispatchEvent(insertedEvent);
 
     return child;
   }
@@ -592,8 +592,10 @@ export class Element<
 
     let value = this.attributes[name];
     if (value === undefined) {
-      const attributeName = formatAttributeName(name as string);
-      value = this.attributes[attributeName];
+      if (runtime.enableAttributeDashCased) {
+        const attributeName = formatAttributeName(name as string);
+        value = this.attributes[attributeName];
+      }
 
       // if the given attribute does not exist, the value returned will either be null or ""
       return runtime.enableCSSParsing ? (isNil(value) ? null : value) : value;

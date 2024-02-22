@@ -243,7 +243,6 @@ export interface ParsedBaseStyleProps
     | 'lineWidth'
     | 'increasedLineWidthForHitTesting'
     | 'lineDash'
-    | 'path'
     | 'points'
     | 'shadowColor'
     | 'transform'

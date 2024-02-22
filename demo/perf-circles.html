@@ -47,6 +47,7 @@
     <script>
       const { Circle, Canvas, runtime } = window.G;
 
+      const timeStart = performance.now();
       // disable CSS Parsing
       runtime.enableCSSParsing = false;
 
@@ -61,21 +62,25 @@
         renderer: canvasRenderer,
       });
 
-      canvas.addEventListener('ready', () => {
-        for (let i = 0; i < 10000; i++) {
-          const circle = new Circle({
-            style: {
-              cx: Math.random() * 600,
-              cy: Math.random() * 500,
-              r: 10,
-              fill: '#1890FF',
-              stroke: '#F04864',
-              lineWidth: 4,
-            },
-          });
-          canvas.appendChild(circle);
-        }
+      canvas.addEventListener('rerender', () => {
+        console.log('time:', performance.now() - timeStart);
       });
+
+      // canvas.addEventListener('ready', () => {
+      for (let i = 0; i < 30000; i++) {
+        const circle = new Circle({
+          style: {
+            cx: Math.random() * 600,
+            cy: Math.random() * 500,
+            r: 10,
+            fill: '#1890FF',
+            stroke: '#F04864',
+            lineWidth: 4,
+          },
+        });
+        canvas.appendChild(circle);
+      }
+      // });
     </script>
   </body>
 </html>

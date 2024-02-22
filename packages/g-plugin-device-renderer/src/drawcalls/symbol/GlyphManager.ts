@@ -48,6 +48,12 @@ export class GlyphManager {
 
   constructor(private runtime: GlobalRuntime) {}
 
+  destroy() {
+    if (this.glyphAtlasTexture) {
+      this.glyphAtlasTexture.destroy();
+    }
+  }
+
   getMap() {
     return this.glyphMap;
   }

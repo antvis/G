@@ -446,11 +446,10 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
   // Path
   {
-    n: 'path',
+    n: 'd',
     int: true,
     l: true,
     d: '',
-    a: ['d'],
     syntax: PropertySyntax.PATH,
     p: 50,
   },
@@ -743,16 +742,16 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
       // Path
       // @ts-ignore
-      if (attributes.path === '') {
-        object.parsedStyle.path = {
+      if (attributes.d === '') {
+        object.parsedStyle.d = {
           ...EMPTY_PARSED_PATH,
         };
       }
       // @ts-ignore
-      if (attributes.path) {
-        object.parsedStyle.path = parsePath(
+      if (attributes.d) {
+        object.parsedStyle.d = parsePath(
           // @ts-ignore
-          attributes.path,
+          attributes.d,
         );
       }
       // Text
@@ -852,120 +851,131 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           attributeNames,
         );
       }
+      if (attributes.transformOrigin) {
+        this.runtime.CSSPropertySyntaxFactory[
+          '<transform-origin>'
+        ].postProcessor(object, attributeNames);
+      }
 
       if (needUpdateGeometry) {
         object.geometry.dirty = true;
-        // FIXME setOrigin may have already dirtified to root.
-        this.runtime.sceneGraphService.dirtifyToRoot(object);
+        object.renderable.boundsDirty = true;
+        object.renderable.renderBoundsDirty = true;
+
+        if (!options.forceUpdateGeometry) {
+          this.runtime.sceneGraphService.dirtifyToRoot(object);
+        }
       }
-      return;
-    }
+    } else {
+      const {
+        skipUpdateAttribute,
+        skipParse,
+        forceUpdateGeometry,
+        usedAttributes,
+        memoize,
+      } = options;
 
-    const {
-      skipUpdateAttribute,
-      skipParse,
-      forceUpdateGeometry,
-      usedAttributes,
-      memoize,
-    } = options;
+      let needUpdateGeometry = forceUpdateGeometry;
+      let attributeNames = Object.keys(attributes);
 
-    let needUpdateGeometry = forceUpdateGeometry;
-    let attributeNames = Object.keys(attributes);
+      attributeNames.forEach((attributeName) => {
+        if (!skipUpdateAttribute) {
+          object.attributes[attributeName] = attributes[attributeName];
+        }
 
-    attributeNames.forEach((attributeName) => {
-      if (!skipUpdateAttribute) {
-        object.attributes[attributeName] = attributes[attributeName];
-      }
-
-      if (!needUpdateGeometry && propertyMetadataCache[attributeName]?.l) {
-        needUpdateGeometry = true;
-      }
-    });
-
-    if (!skipParse) {
-      attributeNames.forEach((name) => {
-        object.computedStyle[name] = this.parseProperty(
-          name as string,
-          object.attributes[name],
-          object,
-          memoize,
-        );
-      });
-    }
-
-    // let hasUnresolvedProperties = false;
-
-    // parse according to priority
-    // path 50
-    // points 50
-    // text 50
-    // textTransform 51
-    // transform 100
-    // transformOrigin 100
-    if (usedAttributes?.length) {
-      // uniqueAttributeSet.clear();
-      attributeNames = Array.from(
-        new Set(attributeNames.concat(usedAttributes)),
-      );
-    }
-
-    // [
-    //   'path',
-    //   'points',
-    //   'text',
-    //   'textTransform',
-    //   'transform',
-    //   'transformOrigin',
-    // ].forEach((name) => {
-    //   const index = attributeNames.indexOf(name);
-    //   if (index > -1) {
-    //     attributeNames.splice(index, 1);
-    //     attributeNames.push(name);
-    //   }
-    // });
-
-    attributeNames.forEach((name) => {
-      // some style props maybe deleted after parsing such as `anchor` in Text
-      if (name in object.computedStyle) {
-        object.parsedStyle[name] = this.computeProperty(
-          name as string,
-          object.computedStyle[name],
-          object,
-          memoize,
-        );
-      }
-    });
-
-    // if (hasUnresolvedProperties) {
-    //   this.dirty = true;
-    //   return;
-    // }
-
-    // update geometry
-    if (needUpdateGeometry) {
-      object.geometry.dirty = true;
-      // FIXME setOrigin may have already dirtified to root.
-      this.runtime.sceneGraphService.dirtifyToRoot(object);
-    }
-
-    attributeNames.forEach((name) => {
-      if (name in object.parsedStyle) {
-        this.postProcessProperty(name as string, object, attributeNames);
-      }
-    });
-
-    if (this.runtime.enableCSSParsing && object.children.length) {
-      attributeNames.forEach((name) => {
-        if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
-          // update children's inheritable
-          object.children.forEach((child: DisplayObject) => {
-            child.internalSetAttribute(name, null, {
-              skipUpdateAttribute: true,
-              skipParse: true,
-            });
-          });
+        if (!needUpdateGeometry && propertyMetadataCache[attributeName]?.l) {
+          needUpdateGeometry = true;
         }
       });
+
+      if (!skipParse) {
+        attributeNames.forEach((name) => {
+          object.computedStyle[name] = this.parseProperty(
+            name as string,
+            object.attributes[name],
+            object,
+            memoize,
+          );
+        });
+      }
+
+      // let hasUnresolvedProperties = false;
+
+      // parse according to priority
+      // path 50
+      // points 50
+      // text 50
+      // textTransform 51
+      // transform 100
+      // transformOrigin 100
+      if (usedAttributes?.length) {
+        // uniqueAttributeSet.clear();
+        attributeNames = Array.from(
+          new Set(attributeNames.concat(usedAttributes)),
+        );
+      }
+
+      // [
+      //   'path',
+      //   'points',
+      //   'text',
+      //   'textTransform',
+      //   'transform',
+      //   'transformOrigin',
+      // ].forEach((name) => {
+      //   const index = attributeNames.indexOf(name);
+      //   if (index > -1) {
+      //     attributeNames.splice(index, 1);
+      //     attributeNames.push(name);
+      //   }
+      // });
+
+      attributeNames.forEach((name) => {
+        // some style props maybe deleted after parsing such as `anchor` in Text
+        if (name in object.computedStyle) {
+          object.parsedStyle[name] = this.computeProperty(
+            name as string,
+            object.computedStyle[name],
+            object,
+            memoize,
+          );
+        }
+      });
+
+      // if (hasUnresolvedProperties) {
+      //   this.dirty = true;
+      //   return;
+      // }
+
+      // update geometry
+      if (needUpdateGeometry) {
+        object.geometry.dirty = true;
+        object.renderable.boundsDirty = true;
+        object.renderable.renderBoundsDirty = true;
+        if (!options.forceUpdateGeometry) {
+          this.runtime.sceneGraphService.dirtifyToRoot(object);
+        }
+      }
+
+      attributeNames.forEach((name) => {
+        if (name in object.parsedStyle) {
+          this.postProcessProperty(name as string, object, attributeNames);
+        }
+      });
+
+      if (this.runtime.enableCSSParsing && object.children.length) {
+        attributeNames.forEach((name) => {
+          if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
+            // update children's inheritable
+            object.children.forEach((child: DisplayObject) => {
+              child.internalSetAttribute(name, null, {
+                skipUpdateAttribute: true,
+                skipParse: true,
+              });
+            });
+          }
+        });
+      }
     }
   }
 
@@ -1218,11 +1228,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // anchor is center by default, don't account for lineWidth here
       const {
         stroke,
-        lineWidth,
+        lineWidth = 1,
         // lineCap,
         // lineJoin,
         // miterLimit,
-        increasedLineWidthForHitTesting,
+        increasedLineWidthForHitTesting = 0,
         shadowType,
         shadowColor,
         filter = [],

@@ -27,7 +27,7 @@ export class ImageDrawcall extends Instanced {
       return false;
     }
 
-    if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
+    if (this.instance.parsedStyle.src !== object.parsedStyle.src) {
       return false;
     }
 
@@ -49,7 +49,7 @@ export class ImageDrawcall extends Instanced {
 
   createMaterial(objects: DisplayObject[]): void {
     const instance = objects[0];
-    const { img } = instance.parsedStyle;
+    const { src } = instance.parsedStyle;
 
     this.material.defines = {
       ...this.material.defines,
@@ -61,7 +61,7 @@ export class ImageDrawcall extends Instanced {
 
     const map = this.texturePool.getOrCreateTexture(
       this.context.device,
-      img,
+      src,
       undefined,
       // (texture, image) => {
       //   const { width, height } = image;
@@ -230,7 +230,7 @@ export class ImageDrawcall extends Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'img') {
+    } else if (name === 'src') {
       const map = this.texturePool.getOrCreateTexture(
         this.context.device,
         value,

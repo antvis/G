@@ -1,8 +1,6 @@
 import { Circle } from '../../../packages/g';
 import { Plugin as PluginRoughCanvasRenderer } from '../../../packages/g-plugin-rough-canvas-renderer';
 import { Plugin as PluginRoughSVGRenderer } from '../../../packages/g-plugin-rough-svg-renderer';
-
-// runtime.enableCSSParsing = false;
 export async function roughParams(context) {
   const { canvas, gui } = context;
   await canvas.ready;

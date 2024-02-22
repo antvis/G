@@ -1,5 +1,5 @@
 import * as lil from 'lil-gui';
-import { Canvas } from '../packages/g';
+import { Canvas, CanvasEvent } from '../packages/g';
 import { Renderer as CanvasRenderer } from '../packages/g-canvas';
 import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
 import { Renderer as SVGRenderer } from '../packages/g-svg';
@@ -187,6 +187,7 @@ function createSpecRender(object) {
         ],
         // Used for WebGPU renderer
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+        // enableDirtyRectangleRendering: false,
         // enableDirtyRectangleRenderingDebug: true,
       });
 
@@ -214,6 +215,31 @@ function createSpecRender(object) {
       $div.appendChild(gui.domElement);
 
       await generate({ canvas, renderer, container: $div, gui });
+
+      if (
+        selectRenderer.value === 'canvas' &&
+        renderer.getConfig().enableDirtyRectangleRendering &&
+        renderer.getConfig().enableDirtyRectangleRenderingDebug
+      ) {
+        // display dirty rectangle
+        const $dirtyRectangle = document.createElement('div');
+        $dirtyRectangle.style.cssText = `
+        position: absolute;
+        pointer-events: none;
+        background: rgba(255, 0, 0, 0.5);
+        `;
+        $div.appendChild($dirtyRectangle);
+        canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
+          const { dirtyRect } = e.detail;
+          const { x, y, width, height } = dirtyRect;
+          const dpr = window.devicePixelRatio;
+          // convert from canvas coords to viewport
+          $dirtyRectangle.style.left = `${x / dpr}px`;
+          $dirtyRectangle.style.top = `${y / dpr}px`;
+          $dirtyRectangle.style.width = `${width / dpr}px`;
+          $dirtyRectangle.style.height = `${height / dpr}px`;
+        });
+      }
 
       container.append($div);
     };

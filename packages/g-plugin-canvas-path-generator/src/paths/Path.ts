@@ -7,7 +7,7 @@ export function generatePath(
 ) {
   const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
     parsedStyle;
-  const { absolutePath, segments } = parsedStyle.path;
+  const { absolutePath, segments } = parsedStyle.d;
 
   let startOffsetX = 0;
   let startOffsetY = 0;

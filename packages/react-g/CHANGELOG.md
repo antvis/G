@@ -1,5 +1,29 @@
 # @antv/react-g
 
+## 1.10.26-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.13
+
+## 1.10.26-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.12
+
+## 1.10.26-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.11
+
 ## 1.10.26-next.10
 
 ### Patch Changes

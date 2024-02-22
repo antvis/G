@@ -13,15 +13,16 @@ export async function rotate(context) {
       height: 60,
       stroke: '#F04864',
       lineWidth: 4,
-      transformOrigin: 'center',
+      transformOrigin: 'center', // or '230 230'
     },
   });
 
   canvas.appendChild(circle);
   circle.animate(
     [
-      { x: 200, transform: 'rotate(0)' },
-      { x: 400, transform: 'rotate(360)' },
+      // We can't animate the attribute `x` here since it will affect transform origin.
+      { transform: 'translateX(0) rotate(0)' },
+      { transform: 'translateX(200) rotate(360)' },
     ],
     {
       duration: 1500,

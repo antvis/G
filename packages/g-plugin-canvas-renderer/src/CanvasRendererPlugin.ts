@@ -61,6 +61,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private restoreStack: DisplayObject[] = [];
 
+  private clearFullScreenLastFrame = false;
   private clearFullScreen = false;
 
   /**
@@ -155,6 +156,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const ratio = rendered / total;
 
       this.clearFullScreen =
+        this.clearFullScreenLastFrame ||
         renderingService.disableDirtyRectangleRendering() ||
         (rendered > dirtyObjectNumThreshold &&
           ratio > dirtyObjectRatioThreshold);
@@ -191,7 +193,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
         // if (object.renderable.) {
         // if we did a full screen rendering last frame
-        this.saveDirtyAABB(object);
+        // this.saveDirtyAABB(object);
         // }
       }
 
@@ -205,18 +207,25 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
+      // Skip rendering.
+      if (renderingContext.root.childNodes.length === 0) {
+        this.clearFullScreenLastFrame = true;
+        return;
+      }
+
+      this.clearFullScreenLastFrame = false;
+
       const context = contextService.getContext();
       // clear & clip dirty rectangle
       const dpr = contextService.getDPR();
       mat4.fromScaling(this.dprMatrix, [dpr, dpr, 1]);
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
-      // if (this.clearFullScreen) {
       if (this.clearFullScreen) {
-        // console.log('canvas renderer fcp...');
+        // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
         renderByZIndex(renderingContext.root, context);
       } else {
-        // console.log('canvas renderer next...');
+        // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),

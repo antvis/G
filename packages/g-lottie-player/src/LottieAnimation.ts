@@ -466,16 +466,16 @@ export class LottieAnimation {
                     !isNil(visibilityStartOffset) &&
                     !isNil(visibilityEndOffset)
                   ) {
-                    child.style.visibility = 'hidden';
+                    child.hide();
                     animation.onframe = () => {
                       const { progress } = animation.effect.getComputedTiming();
                       if (
                         progress >= visibilityStartOffset &&
                         progress < visibilityEndOffset
                       ) {
-                        child.style.visibility = 'visible';
+                        child.show();
                       } else {
-                        child.style.visibility = 'hidden';
+                        child.hide();
                       }
                     };
                   }

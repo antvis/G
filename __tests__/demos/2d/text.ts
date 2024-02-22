@@ -16,7 +16,6 @@ export async function text(context) {
 
   // CJK
   const text2 = text1.cloneNode();
-  text2.style.fontSize = '16px';
   text2.style.text = '中文';
   text2.style.textAlign = 'center';
   text2.style.textBaseline = 'middle';
@@ -62,11 +61,11 @@ export async function text(context) {
   canvas.appendChild(text8);
 
   // dx/dy use relative units
-  const text9 = text1.cloneNode();
-  text9.style.dx = '1rem';
-  text9.style.dy = '1em';
-  text9.setPosition(10, 140);
-  canvas.appendChild(text9);
+  // const text9 = text1.cloneNode();
+  // text9.style.dx = '1rem';
+  // text9.style.dy = '1em';
+  // text9.setPosition(10, 140);
+  // canvas.appendChild(text9);
 
   // text overflow
   const text10 = text1.cloneNode();

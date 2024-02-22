@@ -17,7 +17,7 @@ export async function rect(context) {
 
   const rect2 = rect1.cloneNode();
   rect2.style.stroke = 'green';
-  rect2.style.lineWidth = '2px';
+  rect2.style.lineWidth = 2;
   rect2.translate(30, 0);
   canvas.appendChild(rect2);
 

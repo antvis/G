@@ -22,11 +22,11 @@ export function updateTextElementAttribute(
   // Trigger text geometry calculation.
   text.getBounds();
   const {
-    lineWidth,
+    lineWidth = 1,
     x = 0,
     y = 0,
-    dx,
-    dy,
+    dx = 0,
+    dy = 0,
     textPath,
     textPathSide = 'left',
     textPathStartOffset = 0,
@@ -35,7 +35,7 @@ export function updateTextElementAttribute(
     textDecorationStyle = '',
     metrics,
   } = parsedStyle;
-  let { textBaseline } = parsedStyle;
+  let { textBaseline = 'alphabetic' } = parsedStyle;
 
   if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
     textBaseline = 'bottom';

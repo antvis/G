@@ -23,7 +23,7 @@ export async function clipPath(context) {
       width: 45,
       height: 45,
       stroke: 'white',
-      strokeWidth: 2,
+      lineWidth: 2,
       fill: 'red',
       clipPath: clipPathCircle,
       cursor: 'pointer',
@@ -51,7 +51,7 @@ export async function clipPath(context) {
     style: {
       stroke: 'black',
       lineWidth: 2,
-      path: 'M 10,10 L -10,0 L 10,-10 Z',
+      d: 'M 10,10 L -10,0 L 10,-10 Z',
     },
   });
 

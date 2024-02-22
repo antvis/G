@@ -8,7 +8,7 @@ export class RectRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedRectStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { x, y, width, height } = parsedStyle as ParsedRectStyleProps;
+    const { x = 0, y = 0, width, height } = parsedStyle as ParsedRectStyleProps;
     // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
     // @ts-ignore
     context.roughCanvas.rectangle(

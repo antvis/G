@@ -26,7 +26,7 @@ export async function transformOrigin(context) {
         x2: 100,
         y2: 200,
         stroke: 'rebeccapurple',
-        strokeWidth: 2,
+        lineWidth: 2,
       },
     });
     const line2 = new Line({
@@ -36,7 +36,7 @@ export async function transformOrigin(context) {
         x2: 200,
         y2: 100,
         stroke: 'rebeccapurple',
-        strokeWidth: 2,
+        lineWidth: 2,
       },
     });
     const circle2 = new Circle({
@@ -54,7 +54,7 @@ export async function transformOrigin(context) {
         x2: 100,
         y2: 175,
         stroke: 'rebeccapurple',
-        strokeWidth: 1.5,
+        lineWidth: 1.5,
       },
     });
     const line4 = new Line({
@@ -64,7 +64,7 @@ export async function transformOrigin(context) {
         x2: 175,
         y2: 100,
         stroke: 'rebeccapurple',
-        strokeWidth: 1.5,
+        lineWidth: 1.5,
       },
     });
     const circle3 = new Circle({
@@ -82,7 +82,7 @@ export async function transformOrigin(context) {
         x2: 100,
         y2: 150,
         stroke: 'rebeccapurple',
-        strokeWidth: 1,
+        lineWidth: 1,
       },
     });
     const line6 = new Line({
@@ -92,7 +92,7 @@ export async function transformOrigin(context) {
         x2: 150,
         y2: 100,
         stroke: 'rebeccapurple',
-        strokeWidth: 1,
+        lineWidth: 1,
       },
     });
     const circle4 = new Circle({
@@ -110,7 +110,7 @@ export async function transformOrigin(context) {
         x2: 100,
         y2: 125,
         stroke: 'rebeccapurple',
-        strokeWidth: 0.5,
+        lineWidth: 0.5,
       },
     });
     const line8 = new Line({
@@ -120,7 +120,7 @@ export async function transformOrigin(context) {
         x2: 125,
         y2: 100,
         stroke: 'rebeccapurple',
-        strokeWidth: 0.5,
+        lineWidth: 0.5,
       },
     });
     canvas.appendChild(circle1);
@@ -161,7 +161,7 @@ export async function transformOrigin(context) {
         x2: 100,
         y2: 200,
         stroke: 'rebeccapurple',
-        strokeWidth: 2,
+        lineWidth: 2,
       },
     });
     const line2 = new Line({
@@ -171,7 +171,7 @@ export async function transformOrigin(context) {
         x2: 200,
         y2: 100,
         stroke: 'rebeccapurple',
-        strokeWidth: 2,
+        lineWidth: 2,
       },
     });
     const group1 = new Group();
@@ -225,7 +225,7 @@ export async function transformOrigin(context) {
         x2: 100,
         y2: 200,
         stroke: 'rebeccapurple',
-        strokeWidth: 2,
+        lineWidth: 2,
       },
     });
     const line2 = new Line({
@@ -235,7 +235,7 @@ export async function transformOrigin(context) {
         x2: 200,
         y2: 100,
         stroke: 'rebeccapurple',
-        strokeWidth: 2,
+        lineWidth: 2,
       },
     });
     const group1 = new Group();

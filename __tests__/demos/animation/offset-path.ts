@@ -39,7 +39,7 @@ export async function offsetPath(context) {
 
   const offsetPathPath = new Path({
     style: {
-      path:
+      d:
         'M 100,300' +
         'l 50,-25' +
         'a25,25 -30 0,1 50,-25' +

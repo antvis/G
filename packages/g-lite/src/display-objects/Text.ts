@@ -280,26 +280,26 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
             fill: 'black',
             ...style,
           },
-      initialParsedStyle: runtime.enableCSSParsing
-        ? {}
-        : {
-            x: 0,
-            y: 0,
-            fontSize: 16,
-            fontFamily: 'sans-serif',
-            fontStyle: 'normal',
-            fontWeight: 'normal',
-            fontVariant: 'normal',
-            lineHeight: 0,
-            letterSpacing: 0,
-            textBaseline: 'alphabetic',
-            textAlign: 'start',
-            wordWrap: false,
-            wordWrapWidth: 0,
-            leading: 0,
-            dx: 0,
-            dy: 0,
-          },
+      // initialParsedStyle: runtime.enableCSSParsing
+      //   ? {}
+      //   : {
+      //       x: 0,
+      //       y: 0,
+      //       fontSize: 16,
+      //       fontFamily: 'sans-serif',
+      //       fontStyle: 'normal',
+      //       fontWeight: 'normal',
+      //       fontVariant: 'normal',
+      //       lineHeight: 0,
+      //       letterSpacing: 0,
+      //       textBaseline: 'alphabetic',
+      //       textAlign: 'start',
+      //       wordWrap: false,
+      //       wordWrapWidth: 0,
+      //       leading: 0,
+      //       dx: 0,
+      //       dy: 0,
+      //     },
       ...rest,
     });
   }

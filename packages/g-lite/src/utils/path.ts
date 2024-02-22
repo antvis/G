@@ -30,12 +30,12 @@ import { Shape } from '../types';
 import { deg2rad } from './math';
 
 export function getOrCalculatePathTotalLength(path: Path) {
-  if (path.parsedStyle.path.totalLength === 0) {
-    path.parsedStyle.path.totalLength = getTotalLength(
-      path.parsedStyle.path.absolutePath,
+  if (path.parsedStyle.d.totalLength === 0) {
+    path.parsedStyle.d.totalLength = getTotalLength(
+      path.parsedStyle.d.absolutePath,
     );
   }
-  return path.parsedStyle.path.totalLength;
+  return path.parsedStyle.d.totalLength;
 }
 
 export function removeRedundantMCommand(path: AbsoluteArray) {
@@ -928,7 +928,7 @@ export function convertToPath(
       );
       break;
     case Shape.PATH:
-      const { absolutePath } = (object as Path).parsedStyle.path;
+      const { absolutePath } = (object as Path).parsedStyle.d;
       commands = [...absolutePath];
       break;
   }

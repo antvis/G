@@ -161,11 +161,11 @@ export function isPointInPath(
     increasedLineWidthForHitTesting = 0,
     stroke,
     fill,
-    path,
+    d,
     pointerEvents,
   } = displayObject.parsedStyle as ParsedPathStyleProps;
 
-  const { segments, hasArc, polylines, polygons } = path;
+  const { segments, hasArc, polylines, polygons } = d;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,
     // Only a closed path can be filled.

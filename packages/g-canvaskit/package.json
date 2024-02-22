@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvaskit",
-  "version": "0.10.27-next.10",
+  "version": "0.10.27-next.13",
   "description": "A renderer implemented by CanvasKit",
   "keywords": [
     "antv",
@@ -48,7 +48,7 @@
     "@antv/g-plugin-dom-interaction": "workspace:*",
     "@antv/g-plugin-html-renderer": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "canvaskit-wasm": "^0.34.0",
     "tslib": "^2.5.3"
   },

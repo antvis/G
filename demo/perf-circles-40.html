@@ -29,11 +29,13 @@
   <body>
     <div id="container"></div>
     <script
-      src="https://unpkg.com/@antv/g-canvas@0.5.13/dist/g.min.js"
+      src="https://unpkg.com/@antv/g-canvas@0.5.15-alpha.1/dist/g.min.js"
       type="application/javascript"
     ></script>
     <script>
       const { Canvas } = window.G;
+
+      const timeStart = performance.now();
 
       // create a canvas
       const canvas = new Canvas({
@@ -41,10 +43,13 @@
         width: 600,
         height: 500,
       });
+      canvas.on('afterdraw', () => {
+        console.log('time cost: ', performance.now() - timeStart);
+      });
 
       const group = canvas.addGroup();
 
-      for (let i = 0; i < 10000; i++) {
+      for (let i = 0; i < 30000; i++) {
         group.addShape('circle', {
           attrs: {
             x: Math.random() * 600,

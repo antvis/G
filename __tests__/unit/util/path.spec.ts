@@ -128,14 +128,14 @@ describe('Path utils', () => {
   it('should convert Path to Path string correctly', () => {
     const path = new Path({
       style: {
-        path: 'M0,0L0,100L100,100',
+        d: 'M0,0L0,100L100,100',
       },
     });
     expect(convertToPath(path)).toBe('M0,0L0,100L100,100');
 
     const path2 = new Path({
       style: {
-        path: 'M0,0L0,100L100,100Z',
+        d: 'M0,0L0,100L100,100Z',
       },
     });
     expect(convertToPath(path2)).toBe('M0,0L0,100L100,100Z');

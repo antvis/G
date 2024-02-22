@@ -17,7 +17,7 @@ export class ImageRenderer implements StyleRenderer {
       y = 0,
       width,
       height,
-      img,
+      src,
       shadowColor,
       shadowBlur,
     } = parsedStyle;
@@ -26,13 +26,13 @@ export class ImageRenderer implements StyleRenderer {
     let iw = width;
     let ih = height;
 
-    if (isString(img)) {
+    if (isString(src)) {
       // image has been loaded in `mounted` hook
-      image = this.imagePool.getImageSync(img);
+      image = this.imagePool.getImageSync(src);
     } else {
-      iw ||= img.width;
-      ih ||= img.height;
-      image = img;
+      iw ||= src.width;
+      ih ||= src.height;
+      image = src;
     }
 
     if (image) {

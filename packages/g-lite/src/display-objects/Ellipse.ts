@@ -28,24 +28,4 @@ export class Ellipse extends DisplayObject<
 
     this.nodeName = Shape.ELLIPSE;
   }
-  // constructor({ style, ...rest }: DisplayObjectConfig<EllipseStyleProps> = {}) {
-  //   super({
-  //     type: Shape.ELLIPSE,
-  //     style: runtime.enableCSSParsing
-  //       ? {
-  //           cx: '',
-  //           cy: '',
-  //           rx: '',
-  //           ry: '',
-  //           ...style,
-  //         }
-  //       : style,
-  //     initialParsedStyle: {
-  //       transformOrigin: runtime.enableCSSParsing
-  //         ? null
-  //         : [PECENTAGE_50, PECENTAGE_50],
-  //     },
-  //     ...rest,
-  //   });
-  // }
 }

@@ -1,5 +1,29 @@
 # @antv/g-gesture
 
+## 2.2.25-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.13
+
+## 2.2.25-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.12
+
+## 2.2.25-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.11
+
 ## 2.2.25-next.10
 
 ### Patch Changes

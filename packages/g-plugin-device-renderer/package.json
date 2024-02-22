@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-device-renderer",
-  "version": "1.10.0-next.10",
+  "version": "1.10.0-next.13",
   "description": "A G plugin of renderer implementation with GPUDevice",
   "keywords": [
     "antv",
@@ -42,7 +42,7 @@
     "@antv/g-math": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/g-shader-components": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "@antv/g-device-api": "^1.3.6",
     "@webgpu/types": "^0.1.6",
     "earcut": "^2.2.3",

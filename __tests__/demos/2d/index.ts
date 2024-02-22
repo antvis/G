@@ -3,6 +3,7 @@ export { ellipse } from './ellipse';
 export { rect } from './rect';
 export { image } from './image';
 export { line } from './line';
+export { html } from './html';
 export { polyline } from './polyline';
 export { polygon } from './polygon';
 export { path } from './path';

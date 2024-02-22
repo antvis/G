@@ -6,7 +6,6 @@ import WebFont from 'webfontloader';
 import weatherDataset from '../../integration/data/weather.json';
 import * as d3 from 'd3';
 
-runtime.enableCSSParsing = true;
 export async function roughBarchart(context) {
   const { canvas } = context;
   await canvas.ready;

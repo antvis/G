@@ -17,7 +17,6 @@ import { DisplayObject, isDisplayObject } from './DisplayObject';
 import { EMPTY_PARSED_PATH } from './constants';
 
 export interface PathStyleProps extends BaseStyleProps {
-  path?: string | PathArray;
   d?: string | PathArray;
   /**
    * marker will be positioned at the first point
@@ -89,17 +88,7 @@ export interface PathArcParams {
   sweepFlag: number;
 }
 export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
-  path: {
-    absolutePath: AbsoluteArray;
-    hasArc: boolean;
-    segments: PathSegment[];
-    polygons: [number, number][][];
-    polylines: [number, number][][];
-    curve: CurveArray;
-    totalLength: number;
-    rect: Rectangle;
-  };
-  d?: {
+  d: {
     absolutePath: AbsoluteArray;
     hasArc: boolean;
     segments: PathSegment[];
@@ -131,7 +120,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
       type: Shape.PATH,
       style: runtime.enableCSSParsing
         ? {
-            path: '',
+            d: '',
             miterLimit: '',
             ...style,
           }
@@ -142,7 +131,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
         ? null
         : {
             miterLimit: 4,
-            path: {
+            d: {
               ...EMPTY_PARSED_PATH,
             },
           },
@@ -176,7 +165,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
     prevParsedValue: ParsedPathStyleProps[Key],
     newParsedValue: ParsedPathStyleProps[Key],
   ) {
-    if (attrName === 'path') {
+    if (attrName === 'd') {
       // recalc markers
       this.transformMarker(true);
       this.transformMarker(false);
@@ -261,7 +250,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
 
   private placeMarkerMid(marker: DisplayObject) {
     const {
-      path: { segments },
+      d: { segments },
     } = this.parsedStyle;
     // clear all existed markers
     this.markerMidList.forEach((marker) => {
@@ -293,7 +282,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    */
   getPointAtLength(distance: number, inWorldSpace = false): Point {
     const {
-      path: { absolutePath },
+      d: { absolutePath },
     } = this.parsedStyle;
     const { x, y } = getPointAtLength(absolutePath, distance);
 
@@ -321,7 +310,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Get start tangent vector
    */
   getStartTangent(): number[][] {
-    const segments = this.parsedStyle.path.segments;
+    const segments = this.parsedStyle.d.segments;
     let result: number[][] = [];
     if (segments.length > 1) {
       const startPoint = segments[0].currentPoint;
@@ -343,7 +332,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Get end tangent vector
    */
   getEndTangent(): number[][] {
-    const segments = this.parsedStyle.path.segments;
+    const segments = this.parsedStyle.d.segments;
     const length = segments.length;
     let result: number[][] = [];
     if (length > 1) {

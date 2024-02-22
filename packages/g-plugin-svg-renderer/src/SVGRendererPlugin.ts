@@ -441,6 +441,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
     )},${numberToLongString(rts[4])},${numberToLongString(
       rts[5],
     )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`;
+
+    $el.removeAttribute('transform');
     if (matrix !== DEFAULT_VALUE_MAP.transform) {
       // use proper precision avoiding too long string in `transform`
       // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations

@@ -10,7 +10,7 @@ export async function image(context) {
       y: 0,
       width: 200,
       height: 200,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
   });
   canvas.appendChild(image1);
@@ -22,7 +22,7 @@ export async function image(context) {
       y: 100,
       width: 100,
       keepAspectRatio: true,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       cursor: 'pointer',
     },
   });

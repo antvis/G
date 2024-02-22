@@ -15,7 +15,7 @@ export class CircleRenderer extends Batch {
   getDrawcallCtors(object: DisplayObject) {
     const drawcalls: (typeof Instanced)[] = [];
     const { fill } = object.parsedStyle as ParsedCircleStyleProps;
-    if (!(fill as CSSRGB).isNone) {
+    if (fill && !(fill as CSSRGB).isNone) {
       drawcalls.push(SDFDrawcall);
     }
     if (this.needDrawStrokeSeparately(object)) {

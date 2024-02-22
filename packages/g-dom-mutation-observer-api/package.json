@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-dom-mutation-observer-api",
-  "version": "1.2.22-next.10",
+  "version": "1.2.22-next.13",
   "description": "A simple implementation of DOM MutationObserver API.",
   "keywords": [
     "antv",

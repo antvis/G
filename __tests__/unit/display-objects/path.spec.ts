@@ -6,7 +6,7 @@ describe('Path', () => {
     // use empty string
     const path = new Path({
       style: {
-        path: '',
+        d: '',
         lineWidth: 10,
       },
     });
@@ -33,7 +33,7 @@ describe('Path', () => {
 
     const path = new Path({
       style: {
-        path: pathArray,
+        d: pathArray,
         lineWidth: 10,
       },
     });
@@ -97,7 +97,7 @@ describe('Path', () => {
 
     const path = new Path({
       style: {
-        path: pathArray,
+        d: pathArray,
         lineWidth: 10,
       },
     });
@@ -133,7 +133,7 @@ describe('Path', () => {
 
     const path = new Path({
       style: {
-        path: pathArray,
+        d: pathArray,
         lineWidth: 10,
       },
     });
@@ -174,7 +174,7 @@ describe('Path', () => {
 
     const path = new Path({
       style: {
-        path: pathArray,
+        d: pathArray,
         lineWidth: 10,
       },
     });
@@ -208,7 +208,7 @@ describe('Path', () => {
 
     const path = new Path({
       style: {
-        path: pathArray,
+        d: pathArray,
         lineWidth: 10,
       },
     });

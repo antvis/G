@@ -34,7 +34,7 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
   [Shape.CIRCLE]: ['cx', 'cy', 'r'],
   [Shape.ELLIPSE]: ['cx', 'cy', 'rx', 'ry'],
   [Shape.RECT]: ['x', 'y', 'width', 'height', 'radius'],
-  [Shape.IMAGE]: ['x', 'y', 'img', 'width', 'height'],
+  [Shape.IMAGE]: ['x', 'y', 'src', 'width', 'height'],
   [Shape.LINE]: [
     'x1',
     'y1',
@@ -62,7 +62,7 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
     'markerEndOffset',
   ],
   [Shape.PATH]: [
-    'path',
+    'd',
     'markerStart',
     'markerEnd',
     'markerMid',

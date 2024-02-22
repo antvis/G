@@ -1,5 +1,4 @@
 import {
-  runtime,
   CanvasEvent,
   Circle,
   convertToPath,
@@ -16,8 +15,6 @@ import {
 import { Plugin as PluginRoughCanvasRenderer } from '../../../packages/g-plugin-rough-canvas-renderer';
 import { Plugin as PluginRoughSVGRenderer } from '../../../packages/g-plugin-rough-svg-renderer';
 import WebFont from 'webfontloader';
-
-// runtime.enableCSSParsing = false;
 export async function roughShapes(context) {
   const { canvas } = context;
   await canvas.ready;
@@ -79,11 +76,18 @@ export async function roughShapes(context) {
   earthOrbit.appendChild(moonOrbit);
   moonOrbit.appendChild(moon);
 
-  solarSystem.setPosition(300, 250);
-  earthOrbit.translate(100, 0);
-  moonOrbit.translate(100, 0);
+  // solarSystem.setPosition(300, 250);
+  // earthOrbit.translate(100, 0);
+  // moonOrbit.translate(100, 0);
+  solarSystem.style.transform = 'translate(300, 250)';
+  earthOrbit.style.transform = 'translate(100, 0)';
+  moonOrbit.style.transform = 'translate(100, 0)';
 
   canvas.appendChild(solarSystem);
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    solarSystem.rotateLocal(1);
+    earthOrbit.rotateLocal(2);
+  });
 
   /**
    * Ellipse
@@ -196,14 +200,14 @@ export async function roughShapes(context) {
   );
   const starPath = new Path({
     style: {
-      path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
+      d: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
     },
   });
   starPath.translate(200, 0);
   starPath.scale(0.2);
   const pathG = new Path({
     style: {
-      path: rectPath,
+      d: rectPath,
       lineWidth: 2,
       cursor: 'pointer',
     },
@@ -211,8 +215,8 @@ export async function roughShapes(context) {
   canvas.appendChild(pathG);
   pathG.animate(
     [
-      { path: rectPath, stroke: '#F04864', fill: 'blue' },
-      { path: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
+      { d: rectPath, stroke: '#F04864', fill: 'blue' },
+      { d: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
     ],
     {
       duration: 2500,
@@ -254,15 +258,10 @@ export async function roughShapes(context) {
       y: 130,
       width: 100,
       height: 100,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
   });
   canvas.appendChild(image);
-
-  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-    solarSystem.rotateLocal(1);
-    earthOrbit.rotateLocal(2);
-  });
 }
 
 roughShapes.initRenderer = (renderer, type) => {

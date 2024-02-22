@@ -8,19 +8,19 @@ import type {
 import type { GeometryAABBUpdater } from './interfaces';
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
-    const { x = 0, y = 0, img, width = 0, height = 0 } = parsedStyle;
+    const { x = 0, y = 0, src, width = 0, height = 0 } = parsedStyle;
 
     let contentWidth = width;
     let contentHeight = height;
 
     // resize with HTMLImageElement's size
-    if (img && !isString(img)) {
+    if (src && !isString(src)) {
       if (!contentWidth) {
-        contentWidth = img.width;
+        contentWidth = src.width;
         parsedStyle.width = contentWidth;
       }
       if (!contentHeight) {
-        contentHeight = img.height;
+        contentHeight = src.height;
         parsedStyle.height = contentHeight;
       }
     }

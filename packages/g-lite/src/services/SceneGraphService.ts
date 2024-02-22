@@ -159,6 +159,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   getOrigin(element: INode) {
+    (element as Element).getGeometryBounds();
     return (element as Element).transformable.origin;
   }
 

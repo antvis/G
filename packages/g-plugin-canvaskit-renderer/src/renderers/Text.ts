@@ -129,8 +129,7 @@ export class TextRenderer implements RendererContribution {
 
     if (alongPath) {
       const skPath = new CanvasKit.Path();
-      const { path: parsedPath } =
-        alongPath.parsedStyle as ParsedPathStyleProps;
+      const { d: parsedPath } = alongPath.parsedStyle as ParsedPathStyleProps;
       const { absolutePath, segments } = parsedPath;
       for (let i = 0; i < absolutePath.length; i++) {
         const params = absolutePath[i]; // eg. M 100 200

@@ -5,50 +5,45 @@ export function updateImageElementAttribute(
   $el: SVGElement,
   parsedStyle: ParsedImageStyleProps,
 ) {
-  const { img = '', x = 0, y = 0, width, height } = parsedStyle;
+  const { src = '', x = 0, y = 0, width, height } = parsedStyle;
 
   $el.setAttribute('x', `${x}`);
   $el.setAttribute('y', `${y}`);
 
-  if (isString(img)) {
-    $el.setAttribute('href', img);
-  } else if (img instanceof Image) {
+  if (isString(src)) {
+    $el.setAttribute('href', src);
+  } else if (src instanceof Image) {
     if (!width) {
-      $el.setAttribute('width', `${img.width}`);
-      // TODO: set renderable.boundsDirty
-      // this.attr('width', img.width);
+      $el.setAttribute('width', `${src.width}`);
     }
     if (!height) {
-      $el.setAttribute('height', `${img.height}`);
-      // this.attr('height', img.height);
+      $el.setAttribute('height', `${src.height}`);
     }
-    $el.setAttribute('href', img.src);
+    $el.setAttribute('href', src.src);
   } else if (
     // @ts-ignore
-    img instanceof HTMLElement &&
-    isString((img as HTMLElement).nodeName) &&
-    (img as HTMLElement).nodeName.toUpperCase() === 'CANVAS'
+    src instanceof HTMLElement &&
+    isString((src as HTMLElement).nodeName) &&
+    (src as HTMLElement).nodeName.toUpperCase() === 'CANVAS'
   ) {
-    $el.setAttribute('href', (img as HTMLCanvasElement).toDataURL());
+    $el.setAttribute('href', (src as HTMLCanvasElement).toDataURL());
     // @ts-ignore
-  } else if (img instanceof ImageData) {
+  } else if (src instanceof ImageData) {
     const canvas = document.createElement('canvas') as HTMLCanvasElement;
     // @ts-ignore
-    canvas.setAttribute('width', `${img.width}`);
+    canvas.setAttribute('width', `${src.width}`);
     // @ts-ignore
-    canvas.setAttribute('height', `${img.height}`);
+    canvas.setAttribute('height', `${src.height}`);
     const context = canvas.getContext('2d');
     if (context) {
-      context.putImageData(img, 0, 0);
+      context.putImageData(src, 0, 0);
       if (!width) {
         // @ts-ignore
-        $el.setAttribute('width', `${img.width}`);
-        // this.attr('width', img.width);
+        $el.setAttribute('width', `${src.width}`);
       }
       if (!height) {
         // @ts-ignore
-        $el.setAttribute('height', `${img.height}`);
-        // this.attr('height', img.height);
+        $el.setAttribute('height', `${src.height}`);
       }
       $el.setAttribute('href', canvas.toDataURL());
     }

@@ -1,7 +1,5 @@
 import { Circle, Text, runtime } from '../../../packages/g';
 
-runtime.enableCSSParsing = false;
-
 export async function transformText(context) {
   const { canvas } = context;
   await canvas.ready;

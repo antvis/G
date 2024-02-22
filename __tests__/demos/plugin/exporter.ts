@@ -6,8 +6,6 @@ export async function exporter(context) {
   const { canvas, gui } = context;
   await canvas.ready;
 
-  runtime.enableCSSParsing = true;
-
   const exporter = new ImageExporter({
     canvas,
     defaultFilename: 'test',

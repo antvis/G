@@ -59,7 +59,7 @@ export async function gradient(context) {
       y1: 180,
       x2: 250,
       y2: 180,
-      strokeWidth: 10,
+      lineWidth: 10,
       stroke: 'linear-gradient(0deg, blue, green 40%, red)',
     },
   });
@@ -69,7 +69,7 @@ export async function gradient(context) {
       y1: 180,
       x2: 550,
       y2: 180,
-      strokeWidth: 10,
+      lineWidth: 10,
       stroke: 'radial-gradient(circle at center, red, blue, green 100%)',
     },
   });

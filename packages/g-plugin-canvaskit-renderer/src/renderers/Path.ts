@@ -20,7 +20,7 @@ import type {
 export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
   const skPath = new CanvasKit.Path();
 
-  const { path, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+  const { d, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
     object.parsedStyle as ParsedPathStyleProps;
 
   let startOffsetX = 0;
@@ -51,7 +51,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
     endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
-  const { absolutePath, segments } = path;
+  const { absolutePath, segments } = d;
 
   for (let i = 0; i < absolutePath.length; i++) {
     const params = absolutePath[i]; // eg. M 100 200

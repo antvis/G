@@ -113,7 +113,11 @@ export class TextDrawcall extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing } = object.parsedStyle;
+    const {
+      textBaseline = 'alphabetic',
+      fontSize = 16,
+      letterSpacing = 0,
+    } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize;
@@ -134,6 +138,8 @@ export class TextDrawcall extends Instanced {
       // account for dx & dy
       const offsetX = dx;
       const offsetY = dy;
+
+      console.log(textBaseline);
 
       let linePositionY = 0;
       // handle vertical text baseline
@@ -278,10 +284,10 @@ export class TextDrawcall extends Instanced {
 
     const object = this.instance as TextShape;
     const {
-      fontSize,
-      fontFamily = '',
-      fontWeight = '',
-      fontStyle,
+      fontSize = 16,
+      fontFamily = 'sans-serif',
+      fontWeight = 'normal',
+      fontStyle = 'normal',
       metrics,
     } = object.parsedStyle as ParsedTextStyleProps;
     const { font } = metrics;
@@ -390,10 +396,10 @@ export class TextDrawcall extends Instanced {
         const {
           fill,
           stroke,
-          opacity,
-          fillOpacity,
-          strokeOpacity,
-          lineWidth,
+          opacity = 1,
+          fillOpacity = 1,
+          strokeOpacity = 1,
+          lineWidth = 1,
           visibility,
           isBillboard,
           billboardRotation,
@@ -456,7 +462,7 @@ export class TextDrawcall extends Instanced {
           sliced[i + 21] = fillOpacity;
           sliced[i + 22] = strokeOpacity;
           sliced[i + 23] = lineWidth;
-          sliced[i + 24] = visibility === 'visible' ? 1 : 0;
+          sliced[i + 24] = visibility !== 'hidden' ? 1 : 0;
           sliced[i + 25] = isBillboard ? 1 : 0;
           sliced[i + 26] = isSizeAttenuation ? 1 : 0;
           sliced[i + 27] = billboardRotation ?? 0;
@@ -498,13 +504,13 @@ export class TextDrawcall extends Instanced {
     indicesOffset: number;
   }) {
     const {
-      textAlign,
+      textAlign = 'start',
       fill,
       stroke,
-      opacity,
-      fillOpacity,
-      strokeOpacity,
-      lineWidth,
+      opacity = 1,
+      fillOpacity = 1,
+      strokeOpacity = 1,
+      lineWidth = 1,
       visibility,
       isBillboard,
       billboardRotation,
@@ -572,7 +578,7 @@ export class TextDrawcall extends Instanced {
         fillOpacity,
         strokeOpacity,
         lineWidth,
-        visibility === 'visible' ? 1 : 0,
+        visibility !== 'hidden' ? 1 : 0,
         isBillboard ? 1 : 0,
         isSizeAttenuation ? 1 : 0,
         billboardRotation ?? 0,
@@ -616,5 +622,10 @@ export class TextDrawcall extends Instanced {
       charPackedBuffer,
       indicesOffset: i,
     };
+  }
+
+  destroy() {
+    super.destroy();
+    this.glyphManager.destroy();
   }
 }

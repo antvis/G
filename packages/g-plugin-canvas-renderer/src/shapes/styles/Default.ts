@@ -30,11 +30,11 @@ export class DefaultRenderer implements StyleRenderer {
     const {
       fill,
       fillRule,
-      opacity,
-      fillOpacity,
+      opacity = 1,
+      fillOpacity = 1,
       stroke,
-      strokeOpacity,
-      lineWidth,
+      strokeOpacity = 1,
+      lineWidth = 1,
       lineCap,
       lineJoin,
       shadowType,
@@ -46,7 +46,7 @@ export class DefaultRenderer implements StyleRenderer {
     const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
     const hasStroke =
       !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth > 0;
-    const isFillTransparent = (fill as CSSRGB).alpha === 0;
+    const isFillTransparent = (fill as CSSRGB)?.alpha === 0;
     const hasFilter = !!(filter && filter.length);
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
     const nodeName = object.nodeName;

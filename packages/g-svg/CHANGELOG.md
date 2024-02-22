@@ -1,5 +1,38 @@
 # @antv/g-svg
 
+## 1.10.26-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.13
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.13
+    -   @antv/g-plugin-svg-picker@1.9.26-next.13
+    -   @antv/g-lite@1.3.0-next.13
+
+## 1.10.26-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.12
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.12
+    -   @antv/g-plugin-svg-picker@1.9.26-next.12
+    -   @antv/g-lite@1.3.0-next.12
+
+## 1.10.26-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.11
+    -   @antv/g-plugin-svg-renderer@1.11.0-next.11
+    -   @antv/g-plugin-svg-picker@1.9.26-next.11
+    -   @antv/g-lite@1.3.0-next.11
+
 ## 1.10.26-next.10
 
 ### Patch Changes

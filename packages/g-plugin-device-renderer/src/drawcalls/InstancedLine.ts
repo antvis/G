@@ -55,7 +55,7 @@ export class InstancedLineDrawcall extends Instanced {
   static isLine(object: DisplayObject, subpathIndex: number) {
     if (object.nodeName === Shape.PATH) {
       const {
-        path: { absolutePath },
+        d: { absolutePath },
       } = object.parsedStyle as ParsedPathStyleProps;
 
       let mSegmentCount = 0;
@@ -200,7 +200,7 @@ export class InstancedLineDrawcall extends Instanced {
         totalLength = (object as Polyline).getTotalLength();
       } else if (object.nodeName === Shape.PATH) {
         const {
-          path: { absolutePath },
+          d: { absolutePath },
           lineCap,
           lineDash,
           lineDashOffset,
@@ -387,7 +387,7 @@ export class InstancedLineDrawcall extends Instanced {
       name === 'markerStart' ||
       name === 'markerEnd' ||
       name === 'points' ||
-      name === 'path'
+      name === 'd'
     ) {
       const packed: number[] = [];
       objects.forEach((object) => {
@@ -423,7 +423,7 @@ export class InstancedLineDrawcall extends Instanced {
           };
         } else if (object.nodeName === Shape.PATH) {
           const {
-            path: { absolutePath },
+            d: { absolutePath },
             lineCap,
             markerStart,
             markerEnd,

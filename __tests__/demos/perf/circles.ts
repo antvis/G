@@ -1,10 +1,12 @@
 import { runtime, Circle } from '../../../packages/g';
 
 export async function circles(context) {
-  runtime.enableCSSParsing = false;
-
   const { canvas, container } = context;
   await canvas.ready;
+
+  canvas.addEventListener('rerender', () => {
+    console.log('rerender');
+  });
 
   for (let i = 0; i < 10000; i++) {
     const circle = new Circle({
@@ -20,16 +22,16 @@ export async function circles(context) {
     canvas.appendChild(circle);
   }
 
-  canvas.appendChild(
-    new Circle({
-      style: {
-        cx: 320,
-        cy: 320,
-        r: 100,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-      },
-    }),
-  );
+  // canvas.appendChild(
+  //   new Circle({
+  //     style: {
+  //       cx: 320,
+  //       cy: 320,
+  //       r: 100,
+  //       fill: '#1890FF',
+  //       stroke: '#F04864',
+  //       lineWidth: 4,
+  //     },
+  //   }),
+  // );
 }

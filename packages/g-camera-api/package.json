@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-camera-api",
-  "version": "1.2.23-next.10",
+  "version": "1.2.23-next.13",
   "description": "A simple implementation of Camera API.",
   "keywords": [
     "antv",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@antv/g-lite": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

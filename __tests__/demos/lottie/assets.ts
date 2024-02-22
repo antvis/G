@@ -12,17 +12,17 @@ export async function assets(context) {
   const wrapper1 = animation1.render(canvas);
   wrapper1.scale(0.5);
 
-  const data2 = await d3.json('/lottie/data4.json');
-  const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
-  const wrapper2 = animation2.render(canvas);
-  wrapper2.scale(0.5);
-  wrapper2.translate(300, 0);
+  // const data2 = await d3.json('/lottie/data4.json');
+  // const animation2 = loadAnimation(data2, { loop: true, autoplay: true });
+  // const wrapper2 = animation2.render(canvas);
+  // wrapper2.scale(0.5);
+  // wrapper2.translate(300, 0);
 
-  const data3 = await d3.json('/lottie/data3.json');
-  const animation3 = loadAnimation(data3, { loop: true, autoplay: true });
-  const wrapper3 = animation3.render(canvas);
-  wrapper3.scale(0.5);
-  wrapper3.translate(300, 200);
+  // const data3 = await d3.json('/lottie/data3.json');
+  // const animation3 = loadAnimation(data3, { loop: true, autoplay: true });
+  // const wrapper3 = animation3.render(canvas);
+  // wrapper3.scale(0.5);
+  // wrapper3.translate(300, 200);
 
   //   const flower = await d3.json('/lottie/flower.json');
   //   const flowerAnimation = loadAnimation(flower, { loop: true, autoplay: true });
@@ -30,17 +30,17 @@ export async function assets(context) {
   //   wrapper4.scale(0.5);
   //   wrapper4.translate(100, 200);
 
-  const pointer = await d3.json('/lottie/pointer.json');
-  pointerAnimation = loadAnimation(pointer, { loop: false, autoplay: false });
-  const wrapper = pointerAnimation.render(canvas);
-  wrapper.scale(0.5);
-  wrapper.translate(0, 200);
+  // const pointer = await d3.json('/lottie/pointer.json');
+  // pointerAnimation = loadAnimation(pointer, { loop: false, autoplay: false });
+  // const wrapper = pointerAnimation.render(canvas);
+  // wrapper.scale(0.5);
+  // wrapper.translate(0, 200);
 
-  console.log(
-    pointerAnimation.fps(),
-    pointerAnimation.getDuration(false),
-    pointerAnimation.getDuration(true),
-  );
+  // console.log(
+  //   pointerAnimation.fps(),
+  //   pointerAnimation.getDuration(false),
+  //   pointerAnimation.getDuration(true),
+  // );
 
   const controlFolder = gui.addFolder('control');
   const controlConfig = {

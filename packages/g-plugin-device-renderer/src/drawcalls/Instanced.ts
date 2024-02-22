@@ -208,6 +208,10 @@ export abstract class Instanced {
     const source = o1.parsedStyle[name];
     const target = o2.parsedStyle[name];
 
+    if (!source && !target) {
+      return true;
+    }
+
     // constant color value
     if (isCSSRGB(source) && isCSSRGB(target)) {
       return true;
@@ -283,12 +287,12 @@ export abstract class Instanced {
       const {
         fill,
         stroke,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
+        opacity = 1,
+        fillOpacity = 1,
+        strokeOpacity = 1,
+        lineWidth = 1,
         visibility,
-        increasedLineWidthForHitTesting,
+        increasedLineWidthForHitTesting = 0,
       } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (isCSSRGB(fill)) {
@@ -353,10 +357,10 @@ export abstract class Instanced {
         fillOpacity,
         strokeOpacity,
         lineWidth,
-        visibility === 'visible' ? 1 : 0,
+        visibility !== 'hidden' ? 1 : 0,
         anchorOffset,
         anchorOffset,
-        increasedLineWidthForHitTesting || 0,
+        increasedLineWidthForHitTesting,
       );
       packedPicking.push(
         ...encodedPickingColor,
@@ -491,6 +495,12 @@ export abstract class Instanced {
     if (this.geometry) {
       this.geometry.destroy();
     }
+    // if (this.textureMappings) {
+    //   this.textureMappings.forEach((mapping) => {
+    //     mapping.texture.destroy();
+    //   });
+    //   this.textureMappings = [];
+    // }
   }
 
   applyRenderInst(renderInst: RenderInst, objects: DisplayObject[]) {
@@ -796,7 +806,7 @@ export abstract class Instanced {
           fillOpacity,
           strokeOpacity,
           lineWidth,
-          visibility === 'visible' ? 1 : 0,
+          visibility !== 'hidden' ? 1 : 0,
           anchorOffset,
           anchorOffset,
           increasedLineWidthForHitTesting || 0,

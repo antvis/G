@@ -12,9 +12,6 @@ import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
 export async function sphere(context) {
   const { canvas, renderer } = context;
 
-  renderer.registerPlugin(new Plugin3D());
-  renderer.registerPlugin(new PluginControl());
-
   // wait for canvas' initialization complete
   await canvas.ready;
 
@@ -43,6 +40,7 @@ export async function sphere(context) {
   });
   // create a material with Phong lighting model
   const basicMaterial = new MeshPhongMaterial(device, {
+    wireframe: true,
     map,
     specular: 'white',
     specularMap,
@@ -59,8 +57,8 @@ export async function sphere(context) {
   // create a mesh
   const sphere = new Mesh({
     style: {
-      x: 300,
-      y: 250,
+      x: 320,
+      y: 320,
       z: 0,
       transformOrigin: 'center',
       fill: '#1890FF',
@@ -102,3 +100,10 @@ export async function sphere(context) {
     sphere.rotate(0, 0.2, 0);
   });
 }
+
+sphere.initRenderer = (renderer, type) => {
+  if (type === 'webgl' || type === 'webgpu') {
+    renderer.registerPlugin(new Plugin3D());
+    renderer.registerPlugin(new PluginControl());
+  }
+};

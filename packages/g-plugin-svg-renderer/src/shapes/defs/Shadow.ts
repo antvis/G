@@ -15,8 +15,13 @@ export function createOrUpdateShadow(
   $el: SVGElement,
   name: string,
 ) {
-  const { shadowType, shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY } =
-    object.parsedStyle as ParsedBaseStyleProps;
+  const {
+    shadowType = 'outer',
+    shadowBlur,
+    shadowColor,
+    shadowOffsetX,
+    shadowOffsetY,
+  } = object.parsedStyle as ParsedBaseStyleProps;
 
   const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
   const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;
@@ -53,7 +58,10 @@ export function createOrUpdateShadow(
       $feDropShadow.setAttribute('flood-color', shadowColor.toString());
       $existedFilter.appendChild($feDropShadow);
     } else if (shadowType === 'inner') {
-      const $feComponentTransfer = createSVGElement('feComponentTransfer', document);
+      const $feComponentTransfer = createSVGElement(
+        'feComponentTransfer',
+        document,
+      );
       $feComponentTransfer.setAttribute('in', 'SourceAlpha');
       const $feFuncA = createSVGElement('feFuncA', document);
       $feFuncA.setAttribute('type', 'table');
@@ -103,7 +111,8 @@ export function createOrUpdateShadow(
   }
 
   if (shadowType === 'inner') {
-    const $feGaussianBlur = $existedFilter.children[1] as SVGFEGaussianBlurElement;
+    const $feGaussianBlur = $existedFilter
+      .children[1] as SVGFEGaussianBlurElement;
     const $feOffset = $existedFilter.children[2] as SVGFEOffsetElement;
     const $feFlood = $existedFilter.children[3] as SVGFEFloodElement;
     if (name === 'shadowColor') {
