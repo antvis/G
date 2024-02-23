@@ -16,7 +16,10 @@ export class Renderer extends AbstractRenderer {
   clipSpaceNearZ = ClipSpaceNearZ.ZERO;
 
   constructor(config?: Partial<WebGPURendererConfig>) {
-    super(config);
+    super({
+      enableSizeAttenuation: false,
+      ...config,
+    });
 
     const deviceRendererPlugin = new DeviceRenderer.Plugin();
     this.registerPlugin(

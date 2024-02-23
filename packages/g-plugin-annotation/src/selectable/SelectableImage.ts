@@ -65,6 +65,13 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         height: 0,
         draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
+        isSizeAttenuation: true,
+        fill: selectionFill,
+        stroke: selectionStroke,
+        fillOpacity: selectionFillOpacity,
+        strokeOpacity: selectionStrokeOpacity,
+        lineWidth: selectionStrokeWidth,
+        lineDash: selectionLineDash,
       },
     });
     this.image = target.cloneNode();
@@ -81,9 +88,15 @@ export class SelectableImage extends AbstractSelectable<Rect> {
 
     this.tlAnchor = new Circle({
       style: {
-        r: 10,
+        r: anchorSize,
         cursor: 'nwse-resize',
         draggable: true,
+        isSizeAttenuation: true,
+        stroke: anchorStroke,
+        fill: anchorFill,
+        fillOpacity: anchorFillOpacity,
+        strokeOpacity: anchorStrokeOpacity,
+        strokeWidth: anchorStrokeWidth,
       },
     });
 
@@ -116,13 +129,6 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     // resize according to target
     this.mask.style.width = width;
     this.mask.style.height = height;
-    this.mask.style.fill = selectionFill;
-    this.mask.style.stroke = selectionStroke;
-    this.mask.style.fillOpacity = selectionFillOpacity;
-    this.mask.style.strokeOpacity = selectionStrokeOpacity;
-    this.mask.style.lineWidth = selectionStrokeWidth;
-    this.mask.style.lineDash = selectionLineDash;
-
     this.image.style.width = width;
     this.image.style.height = height;
 
@@ -136,13 +142,6 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       if (target.style.anchorsVisibility === 'hidden') {
         anchor.style.visibility = 'hidden';
       }
-
-      anchor.style.stroke = anchorStroke;
-      anchor.style.fill = anchorFill;
-      anchor.style.fillOpacity = anchorFillOpacity;
-      anchor.style.strokeOpacity = anchorStrokeOpacity;
-      anchor.style.strokeWidth = anchorStrokeWidth;
-      anchor.style.r = anchorSize;
       anchor.style.cursor = this.scaleCursorStyleHandler(
         controls[i],
         target,

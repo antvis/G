@@ -77,6 +77,8 @@ export interface GlobalRuntime {
    * circle.style.r = 100;
    */
   enableStyleSyntax: boolean;
+
+  enableSizeAttenuation: boolean;
 }
 
 /**
@@ -178,3 +180,4 @@ runtime.globalThis = getGlobalThis();
 runtime.enableCSSParsing = true;
 runtime.enableDataset = false;
 runtime.enableStyleSyntax = true;
+runtime.enableSizeAttenuation = false;

@@ -1,4 +1,4 @@
-import type { PointLike } from '@antv/g-lite';
+import type { PointLike, PolygonStyleProps } from '@antv/g-lite';
 import { Polygon, definedProps } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DASH_LINE_STYLE, DEFAULT_STYLE } from '../constants/style';
@@ -46,7 +46,7 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
     context.brushRect = brushRect;
   }
 
-  brushRect.attr({
+  const rectStyle: PolygonStyleProps = {
     points: [
       [tl.x, tl.y],
       [tr.x, tr.y],
@@ -60,8 +60,14 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
       fillOpacity: rectFillOpacity,
       stroke: rectStroke,
       strokeOpacity: rectStrokeOpacity,
-      strokeWidth: rectStrokeWidth,
+      lineWidth: rectStrokeWidth,
       lineDash: rectLineDash,
     }),
-  });
+  };
+
+  const zoom = context.canvas.getCamera().getZoom();
+  // @ts-ignore
+  rectStyle.lineWidth /= zoom;
+
+  brushRect.attr(rectStyle);
 };

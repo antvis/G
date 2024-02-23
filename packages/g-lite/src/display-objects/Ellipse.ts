@@ -12,6 +12,7 @@ export interface EllipseStyleProps extends BaseStyleProps {
   rx: number | string;
   ry: number | string;
   isBillboard?: boolean;
+  isSizeAttenuation?: boolean;
 }
 export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
   cx: number;
@@ -20,6 +21,7 @@ export interface ParsedEllipseStyleProps extends ParsedBaseStyleProps {
   rx: number;
   ry: number;
   isBillboard?: boolean;
+  isSizeAttenuation?: boolean;
 }
 export class Ellipse extends DisplayObject<
   EllipseStyleProps,

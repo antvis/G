@@ -11,6 +11,7 @@ export interface RectStyleProps extends BaseStyleProps {
   width: number | string;
   height: number | string;
   isBillboard?: boolean;
+  isSizeAttenuation?: boolean;
   /**
    * top-left, top-right, bottom-right, bottom-left
    */
@@ -24,6 +25,7 @@ export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
   width: number;
   height: number;
   isBillboard?: boolean;
+  isSizeAttenuation?: boolean;
   radius?: [number, number, number, number];
 }
 

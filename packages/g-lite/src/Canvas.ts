@@ -20,11 +20,11 @@ import { FrustumCullingStrategy } from './plugins/FrustumCullingStrategy';
 import { PrepareRendererPlugin } from './plugins/PrepareRendererPlugin';
 import { EventService, RenderReason, RenderingService } from './services';
 import type { PointLike } from './shapes';
-import type {
-  CanvasConfig,
-  ClipSpaceNearZ,
-  Cursor,
-  InteractivePointerEvent,
+import {
+  type CanvasConfig,
+  type ClipSpaceNearZ,
+  type Cursor,
+  type InteractivePointerEvent,
 } from './types';
 import {
   caf,
@@ -293,10 +293,24 @@ export class Canvas extends EventTarget implements ICanvas {
       this.context.renderingContext.renderReasons.add(
         RenderReason.CAMERA_CHANGED,
       );
+
+      if (
+        runtime.enableSizeAttenuation &&
+        this.getConfig().renderer.getConfig().enableSizeAttenuation
+      ) {
+        this.updateSizeAttenuation();
+      }
     });
 
     // bind camera
     this.context.camera = camera;
+  }
+
+  private updateSizeAttenuation() {
+    const zoom = this.getCamera().getZoom();
+    this.document.documentElement.forEach((node: DisplayObject) => {
+      runtime.styleValueRegistry.updateSizeAttenuation(node, zoom);
+    });
   }
 
   getConfig() {
