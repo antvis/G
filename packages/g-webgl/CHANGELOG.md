@@ -1,5 +1,17 @@
 # @antv/g-webgl
 
+## 1.9.37
+
+### Patch Changes
+
+-   11d23f39: Support size attenuation.
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-plugin-device-renderer@1.9.34
+    -   @antv/g-plugin-dom-interaction@1.9.22
+    -   @antv/g-plugin-html-renderer@1.9.25
+    -   @antv/g-plugin-image-loader@1.3.22
+
 ## 1.9.36
 
 ### Patch Changes
