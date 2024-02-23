@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-device-renderer",
-  "version": "1.9.33",
+  "version": "1.9.34",
   "description": "A G plugin of renderer implementation with GPUDevice",
   "keywords": [
     "antv",

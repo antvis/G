@@ -1,5 +1,13 @@
 # @antv/g-plugin-annotation
 
+## 0.4.22
+
+### Patch Changes
+
+-   11d23f39: Support size attenuation.
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+
 ## 0.4.21
 
 ### Patch Changes

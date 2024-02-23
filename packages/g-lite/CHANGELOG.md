@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.22
+
+### Patch Changes
+
+-   11d23f39: Support size attenuation.
+
 ## 1.2.21
 
 ### Patch Changes

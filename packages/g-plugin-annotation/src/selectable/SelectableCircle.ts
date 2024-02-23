@@ -18,27 +18,27 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
     } = this.style;
 
     const { cx, cy, r } = target.parsedStyle;
+    const zoom = this.ownerDocument.defaultView.getCamera().getZoom();
 
     this.mask = new Circle({
       style: {
         cx,
         cy,
-        r,
+        r: r * zoom,
         draggable: target.style.maskDraggable === false ? false : true,
         increasedLineWidthForHitTesting:
           this.plugin.annotationPluginOptions.selectableStyle
             .maskIncreasedLineWidthForHitTesting,
         cursor: 'move',
+        isSizeAttenuation: true,
+        lineWidth: selectionStrokeWidth,
+        fill: selectionFill,
+        stroke: selectionStroke,
+        fillOpacity: selectionFillOpacity,
+        strokeOpacity: selectionStrokeOpacity,
       },
     });
     this.appendChild(this.mask);
-
-    // resize according to target
-    this.mask.style.fill = selectionFill;
-    this.mask.style.stroke = selectionStroke;
-    this.mask.style.fillOpacity = selectionFillOpacity;
-    this.mask.style.strokeOpacity = selectionStrokeOpacity;
-    this.mask.style.lineWidth = selectionStrokeWidth;
 
     this.bindEventListeners();
   }

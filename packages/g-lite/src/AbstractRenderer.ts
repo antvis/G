@@ -86,6 +86,7 @@ export class AbstractRenderer implements IRenderer {
        */
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
+      enableSizeAttenuation: true,
       ...config,
     };
   }

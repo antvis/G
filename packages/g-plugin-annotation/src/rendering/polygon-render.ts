@@ -29,6 +29,7 @@ const renderDrawingLine = (context, anno: DrawerState) => {
     polyline = new Polyline({
       style: {
         points: [],
+        isSizeAttenuation: true,
         ...DASH_LINE_STYLE,
         ...definedProps({
           stroke: polylineActiveSegmentStroke,
