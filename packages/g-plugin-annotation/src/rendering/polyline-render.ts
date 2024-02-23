@@ -7,7 +7,9 @@ import { renderDrawPoints } from './drawPoint-render';
 
 const renderDrawingLine = (context: AnnotationPlugin, anno: DrawerState) => {
   const total = anno.path.length;
-  const drawingPoints = [anno.path[total - 2], anno.path[total - 1]].filter((point) => !!point);
+  const drawingPoints = [anno.path[total - 2], anno.path[total - 1]].filter(
+    (point) => !!point,
+  );
 
   let polyline = context.polylineLastSegment;
   if (drawingPoints.length < 2) {
@@ -27,6 +29,7 @@ const renderDrawingLine = (context: AnnotationPlugin, anno: DrawerState) => {
     polyline = new Polyline({
       style: {
         points: [],
+        isSizeAttenuation: true,
         ...DASH_LINE_STYLE,
         ...definedProps({
           stroke: polylineActiveSegmentStroke,
@@ -46,7 +49,10 @@ const renderDrawingLine = (context: AnnotationPlugin, anno: DrawerState) => {
     visibility: 'visible',
   });
 };
-export const renderPolyline = (context: AnnotationPlugin, anno: DrawerState) => {
+export const renderPolyline = (
+  context: AnnotationPlugin,
+  anno: DrawerState,
+) => {
   renderDrawPoints(context, anno);
   renderDrawLine(context, anno);
   renderDrawingLine(context, anno);

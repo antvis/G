@@ -136,6 +136,7 @@ export interface PropertyParseOptions {
 
 export interface StyleValueRegistry {
   recalc: (displayObject: DisplayObject) => void;
+  updateSizeAttenuation: (displayObject: DisplayObject, zoom: number) => void;
   registerMetadata: (metadata: PropertyMetadata) => void;
   unregisterMetadata: (name: string) => void;
   getPropertySyntax: (syntax: string) => CSSProperty<any, any>;

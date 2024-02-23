@@ -18,7 +18,10 @@ export interface WebGLRendererConfig extends RendererConfig {
 
 export class Renderer extends AbstractRenderer {
   constructor(config?: Partial<WebGLRendererConfig>) {
-    super(config);
+    super({
+      enableSizeAttenuation: false,
+      ...config,
+    });
 
     const deviceRendererPlugin = new DeviceRenderer.Plugin(config);
 

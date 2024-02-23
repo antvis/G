@@ -3,7 +3,10 @@ import type { AnnotationPlugin } from '../AnnotationPlugin';
 import { DRAW_LINE_STYLE } from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
 
-export const renderDrawLine = (context: AnnotationPlugin, anno: DrawerState) => {
+export const renderDrawLine = (
+  context: AnnotationPlugin,
+  anno: DrawerState,
+) => {
   const drawPoints = anno.path.slice(0, anno.path.length - 1);
 
   let polyline = context.savedPolyline;
@@ -14,13 +17,17 @@ export const renderDrawLine = (context: AnnotationPlugin, anno: DrawerState) => 
     return;
   }
 
-  const { polylineSegmentStroke, polylineSegmentStrokeWidth, polylineSegmentLineDash } =
-    context.annotationPluginOptions.drawerStyle;
+  const {
+    polylineSegmentStroke,
+    polylineSegmentStrokeWidth,
+    polylineSegmentLineDash,
+  } = context.annotationPluginOptions.drawerStyle;
 
   if (!polyline) {
     polyline = new Polyline({
       style: {
         points: [],
+        isSizeAttenuation: true,
         ...DRAW_LINE_STYLE,
         ...definedProps({
           stroke: polylineSegmentStroke,

@@ -69,15 +69,24 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
         points,
         draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
+        isSizeAttenuation: true,
+        fill: selectionFill,
+        stroke: selectionStroke,
+        fillOpacity: selectionFillOpacity,
+        strokeOpacity: selectionStrokeOpacity,
+        lineWidth: selectionStrokeWidth,
+        lineDash: selectionLineDash,
       },
     });
     this.appendChild(this.mask);
 
     this.tlAnchor = new Circle({
       style: {
-        r: 10,
+        r: anchorSize,
         cursor: 'nwse-resize',
         draggable: true,
+        isSizeAttenuation: true,
+        lineWidth: anchorStrokeWidth,
       },
     });
 
@@ -98,14 +107,6 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
     this.mask.appendChild(this.brAnchor);
     this.mask.appendChild(this.blAnchor);
 
-    // resize according to target
-    this.mask.style.fill = selectionFill;
-    this.mask.style.stroke = selectionStroke;
-    this.mask.style.fillOpacity = selectionFillOpacity;
-    this.mask.style.strokeOpacity = selectionStrokeOpacity;
-    this.mask.style.lineWidth = selectionStrokeWidth;
-    this.mask.style.lineDash = selectionLineDash;
-
     // set anchors' style
     this.anchors.forEach((anchor, i) => {
       if (target.style.anchorsVisibility === 'hidden') {
@@ -116,8 +117,6 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
       anchor.style.fill = anchorFill;
       anchor.style.fillOpacity = anchorFillOpacity;
       anchor.style.strokeOpacity = anchorStrokeOpacity;
-      anchor.style.strokeWidth = anchorStrokeWidth;
-      anchor.style.r = anchorSize;
       anchor.style.cursor = this.scaleCursorStyleHandler(
         controls[i],
         target,
@@ -147,6 +146,7 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
           draggable: true,
           visibility:
             target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+          isSizeAttenuation: true,
         },
       });
       this.mask.appendChild(this.rotateAnchor);

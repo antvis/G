@@ -37,6 +37,12 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
           this.plugin.annotationPluginOptions.selectableStyle
             .maskIncreasedLineWidthForHitTesting,
         cursor: 'move',
+        isSizeAttenuation: true,
+        fill: selectionFill,
+        stroke: selectionStroke,
+        fillOpacity: selectionFillOpacity,
+        strokeOpacity: selectionStrokeOpacity,
+        lineWidth: selectionStrokeWidth,
       },
     });
     this.appendChild(this.mask);
@@ -52,13 +58,6 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     });
 
     this.repositionAnchors();
-
-    // resize according to target
-    this.mask.style.fill = selectionFill;
-    this.mask.style.stroke = selectionStroke;
-    this.mask.style.fillOpacity = selectionFillOpacity;
-    this.mask.style.strokeOpacity = selectionStrokeOpacity;
-    this.mask.style.lineWidth = selectionStrokeWidth;
 
     this.bindEventListeners();
   }
@@ -86,6 +85,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         draggable: true,
         visibility:
           target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+        isSizeAttenuation: true,
       },
     });
     this.anchors.push(anchor);
@@ -128,6 +128,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         draggable: true,
         visibility:
           target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+        isSizeAttenuation: true,
       },
     });
     this.midAnchors.push(midAnchor);
@@ -279,6 +280,8 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
           e.canvasY,
         ]);
         this.mask.style.points = originPoints;
+
+        this.plugin.getOrCreateSelectableUI(this.style.target);
       }
     });
     this.addEventListener('drag', (e: FederatedEvent) => {
