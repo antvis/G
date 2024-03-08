@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "description": "A canvas library which providing 2d",
   "main": "lib/index.js",
   "module": "esm/index.js",
