@@ -318,7 +318,7 @@ abstract class Container extends Element implements IContainer {
   }
 
   getChildren(): IElement[] {
-    return this.get('children') as IElement[];
+    return (this.get('children') || []) as IElement[];
   }
 
   sort() {
