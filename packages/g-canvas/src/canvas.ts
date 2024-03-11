@@ -222,7 +222,6 @@ class Canvas extends AbstractCanvas {
           this._drawAll();
         }
         this.set('drawFrame', null);
-        this.emit('afterdraw');
       });
       this.set('drawFrame', drawFrame);
     }
