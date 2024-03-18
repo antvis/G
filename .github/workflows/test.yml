@@ -26,7 +26,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install
 
       - name: Install dependencies
         run: pnpm install
