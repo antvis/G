@@ -1,5 +1,10 @@
 import { isString } from '@antv/util';
-import type { Group, Image, ParsedImageStyleProps, Rect } from '../../display-objects';
+import type {
+  Group,
+  Image,
+  ParsedImageStyleProps,
+  Rect,
+} from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
