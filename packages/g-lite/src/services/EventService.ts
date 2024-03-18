@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
-import type { CanvasContext, GlobalRuntime } from '..';
+import type { CanvasContext, GlobalRuntime, InteractivePointerEvent } from '..';
 import type { HTML } from '../display-objects';
 import type { FederatedEvent } from '../dom/FederatedEvent';
 import { FederatedMouseEvent } from '../dom/FederatedMouseEvent';
@@ -709,10 +709,16 @@ export class EventService {
    * whether the native event trigger came from Canvas,
    * should account for HTML shape
    */
-  private isNativeEventFromCanvas(event: FederatedEvent) {
-    const $el = this.context.contextService.getDomElement();
-
-    const target = event.nativeEvent?.target;
+  isNativeEventFromCanvas(
+    $el: HTMLCanvasElement,
+    nativeEvent: InteractivePointerEvent,
+  ) {
+    let target = nativeEvent?.target as Element;
+    // Get event target inside a web component.
+    // @see https://stackoverflow.com/questions/57963312/get-event-target-inside-a-web-component
+    if (target?.shadowRoot) {
+      target = nativeEvent.composedPath()[0] as Element;
+    }
 
     if (target) {
       // from <canvas>
@@ -726,8 +732,8 @@ export class EventService {
       }
     }
 
-    if (event.nativeEvent.composedPath) {
-      return event.nativeEvent.composedPath().indexOf($el as EventTarget) > -1;
+    if (nativeEvent?.composedPath) {
+      return nativeEvent.composedPath().indexOf($el as EventTarget) > -1;
     }
 
     // account for Touch
@@ -779,10 +785,13 @@ export class EventService {
     event.originalEvent = from;
 
     const existedHTML = this.getExistedHTML(event);
+    const $el =
+      this.context.contextService.getDomElement() as HTMLCanvasElement;
     event.target =
       target ??
       (existedHTML ||
-        (this.isNativeEventFromCanvas(event) && this.pickTarget(event)) ||
+        (this.isNativeEventFromCanvas($el, event.nativeEvent) &&
+          this.pickTarget(event)) ||
         fallbackTarget);
 
     if (typeof type === 'string') {
@@ -802,9 +811,13 @@ export class EventService {
     event.nativeEvent = from.nativeEvent;
     event.originalEvent = from;
     const existedHTML = this.getExistedHTML(event);
+
+    const $el =
+      this.context.contextService.getDomElement() as HTMLCanvasElement;
     event.target =
       existedHTML ||
-      (this.isNativeEventFromCanvas(event) && this.pickTarget(event));
+      (this.isNativeEventFromCanvas($el, event.nativeEvent) &&
+        this.pickTarget(event));
     return event;
   }
 

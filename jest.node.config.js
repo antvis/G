@@ -47,4 +47,5 @@ module.exports = {
   globalSetup: './scripts/jest/setup.js',
   globalTeardown: './scripts/jest/teardown.js',
   testEnvironment: './scripts/jest/environment.js',
+  testPathIgnorePatterns: ['<rootDir>/__tests__/main.ts'],
 };
