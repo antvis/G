@@ -25,11 +25,11 @@ jobs:
           node-version: 16
           cache: 'pnpm'
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
       - name: Install dependencies
         run: pnpm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
       - name: Build
         run: pnpm build
