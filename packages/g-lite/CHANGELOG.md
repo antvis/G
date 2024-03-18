@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.23
+
+### Patch Changes
+
+-   1d25bf84: ClipPath should be copied first before calculate intersection bounds.
+
 ## 1.2.22
 
 ### Patch Changes
