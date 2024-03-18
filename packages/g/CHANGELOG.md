@@ -1,5 +1,82 @@
 # @antv/g
 
+## 5.18.25-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.20
+    -   @antv/g-web-animations-api@1.2.23-next.20
+    -   @antv/g-camera-api@1.2.23-next.20
+    -   @antv/g-lite@1.3.0-next.20
+
+## 5.18.25-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.19
+    -   @antv/g-web-animations-api@1.2.23-next.19
+    -   @antv/g-camera-api@1.2.23-next.19
+    -   @antv/g-lite@1.3.0-next.19
+
+## 5.18.25-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.18
+    -   @antv/g-web-animations-api@1.2.23-next.18
+    -   @antv/g-camera-api@1.2.23-next.18
+    -   @antv/g-lite@1.3.0-next.18
+
+## 5.18.25-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.17
+    -   @antv/g-web-animations-api@1.2.23-next.17
+    -   @antv/g-camera-api@1.2.23-next.17
+    -   @antv/g-lite@1.3.0-next.17
+
+## 5.18.25-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.16
+    -   @antv/g-web-animations-api@1.2.23-next.16
+    -   @antv/g-camera-api@1.2.23-next.16
+    -   @antv/g-lite@1.3.0-next.16
+
+## 5.18.25-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.15
+    -   @antv/g-web-animations-api@1.2.23-next.15
+    -   @antv/g-camera-api@1.2.23-next.15
+    -   @antv/g-lite@1.3.0-next.15
+
+## 5.18.25-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.14
+    -   @antv/g-web-animations-api@1.2.23-next.14
+    -   @antv/g-camera-api@1.2.23-next.14
+    -   @antv/g-lite@1.3.0-next.14
+
 ## 5.18.25-next.13
 
 ### Patch Changes

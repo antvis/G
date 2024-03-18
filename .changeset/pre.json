@@ -53,20 +53,27 @@
     "@antv/react-g": "1.10.25"
   },
   "changesets": [
+    "breezy-parents-impress",
     "brown-students-nail",
+    "chatty-tips-retire",
     "fast-meals-care",
+    "few-zebras-poke",
     "four-roses-shop",
     "hip-beers-own",
     "lazy-boats-remain",
     "modern-kiwis-suffer",
+    "nice-years-sleep",
     "popular-gorillas-cheer",
+    "proud-chefs-drop",
     "rare-moose-agree",
     "rare-rivers-wonder",
     "shy-seas-tickle",
     "stale-doors-give",
+    "ten-eagles-allow",
     "thin-toys-fly",
     "two-sheep-smile",
     "wicked-hairs-rescue",
+    "wild-onions-fail",
     "yellow-crabs-own",
     "yellow-fishes-give"
   ]

@@ -18,9 +18,9 @@ export function isPointInPath(
     r,
     fill,
     stroke,
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedCircleStyleProps;
   const halfLineWidth = (lineWidth + increasedLineWidthForHitTesting) / 2;
   const absDistance = distance(cx, cy, position.x, position.y);

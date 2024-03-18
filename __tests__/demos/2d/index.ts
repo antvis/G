@@ -18,3 +18,5 @@ export { customElement } from './custom-element';
 export { marker } from './marker';
 export { pattern } from './pattern';
 export { pattern2 } from './pattern2';
+export { zIndex } from './z-index';
+export { getPoint } from './get-point';

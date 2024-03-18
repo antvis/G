@@ -113,11 +113,8 @@ export class TextDrawcall extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const {
-      textBaseline = 'alphabetic',
-      fontSize = 16,
-      letterSpacing = 0,
-    } = object.parsedStyle;
+    const { fontSize = 16, letterSpacing = 0 } = object.parsedStyle;
+    let { textBaseline = 'alphabetic' } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize;
@@ -139,7 +136,9 @@ export class TextDrawcall extends Instanced {
       const offsetX = dx;
       const offsetY = dy;
 
-      console.log(textBaseline);
+      if (!this.context.enableCSSParsing && textBaseline === 'alphabetic') {
+        textBaseline = 'bottom';
+      }
 
       let linePositionY = 0;
       // handle vertical text baseline
@@ -151,10 +150,6 @@ export class TextDrawcall extends Instanced {
         linePositionY += 0;
       } else if (textBaseline === 'alphabetic') {
         linePositionY += -height + lineHeight * 0.25;
-        if (!this.context.enableCSSParsing) {
-          linePositionY += -height;
-        }
-        // linePositionY = -height + fontProperties.ascent;
       } else if (textBaseline === 'ideographic') {
         linePositionY += -height;
       }

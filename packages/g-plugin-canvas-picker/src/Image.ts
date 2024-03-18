@@ -21,7 +21,7 @@ export function isPointInPath(
   runtime: GlobalRuntime,
 ): boolean {
   const {
-    pointerEvents,
+    pointerEvents = 'auto',
     x = 0,
     y = 0,
     width,

@@ -794,12 +794,12 @@ export abstract class Instanced {
           : 0;
       objects.forEach((object) => {
         const {
-          opacity,
-          fillOpacity,
-          strokeOpacity,
-          lineWidth,
+          opacity = 1,
+          fillOpacity = 1,
+          strokeOpacity = 1,
+          lineWidth = 1,
           visibility,
-          increasedLineWidthForHitTesting,
+          increasedLineWidthForHitTesting = 0,
         } = object.parsedStyle as ParsedBaseStyleProps;
         packed.push(
           opacity,
@@ -809,7 +809,7 @@ export abstract class Instanced {
           visibility !== 'hidden' ? 1 : 0,
           anchorOffset,
           anchorOffset,
-          increasedLineWidthForHitTesting || 0,
+          increasedLineWidthForHitTesting,
         );
       });
 

@@ -1,5 +1,47 @@
 # @antv/g-math
 
+## 2.0.3-next.6
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.5
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.4
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.3
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.2
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.1
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.0
+
+### Patch Changes
+
+-   Test.
+
 ## 2.0.2
 
 ### Patch Changes

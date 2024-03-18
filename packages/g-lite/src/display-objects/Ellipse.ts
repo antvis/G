@@ -24,8 +24,9 @@ export class Ellipse extends DisplayObject<
   ParsedEllipseStyleProps
 > {
   constructor(options: DisplayObjectConfig<EllipseStyleProps> = {}) {
-    super(options);
-
-    this.nodeName = Shape.ELLIPSE;
+    super({
+      type: Shape.ELLIPSE,
+      ...options,
+    });
   }
 }

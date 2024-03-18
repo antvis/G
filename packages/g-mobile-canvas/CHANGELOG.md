@@ -1,5 +1,110 @@
 # @antv/g-mobile-canvas
 
+## 0.11.15-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.20
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.20
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.20
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.20
+    -   @antv/g-plugin-image-loader@1.4.0-next.20
+    -   @antv/g-plugin-dragndrop@1.8.22-next.20
+    -   @antv/g-plugin-gesture@1.2.10-next.20
+    -   @antv/g-lite@1.3.0-next.20
+
+## 0.11.15-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.19
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.19
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.19
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.19
+    -   @antv/g-plugin-image-loader@1.4.0-next.19
+    -   @antv/g-plugin-dragndrop@1.8.22-next.19
+    -   @antv/g-plugin-gesture@1.2.10-next.19
+    -   @antv/g-lite@1.3.0-next.19
+
+## 0.11.15-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.18
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.18
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.18
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.18
+    -   @antv/g-plugin-image-loader@1.4.0-next.18
+    -   @antv/g-plugin-dragndrop@1.8.22-next.18
+    -   @antv/g-plugin-gesture@1.2.10-next.18
+    -   @antv/g-lite@1.3.0-next.18
+
+## 0.11.15-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.17
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.17
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.17
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.17
+    -   @antv/g-plugin-image-loader@1.4.0-next.17
+    -   @antv/g-plugin-dragndrop@1.8.22-next.17
+    -   @antv/g-plugin-gesture@1.2.10-next.17
+    -   @antv/g-lite@1.3.0-next.17
+
+## 0.11.15-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.16
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.16
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.16
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.16
+    -   @antv/g-plugin-image-loader@1.4.0-next.16
+    -   @antv/g-plugin-dragndrop@1.8.22-next.16
+    -   @antv/g-plugin-gesture@1.2.10-next.16
+    -   @antv/g-lite@1.3.0-next.16
+
+## 0.11.15-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.15
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.15
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.15
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.15
+    -   @antv/g-plugin-image-loader@1.4.0-next.15
+    -   @antv/g-plugin-dragndrop@1.8.22-next.15
+    -   @antv/g-plugin-gesture@1.2.10-next.15
+    -   @antv/g-lite@1.3.0-next.15
+
+## 0.11.15-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-canvas-path-generator@1.3.22-next.14
+    -   @antv/g-plugin-mobile-interaction@0.9.22-next.14
+    -   @antv/g-plugin-canvas-renderer@1.10.0-next.14
+    -   @antv/g-plugin-canvas-picker@1.10.24-next.14
+    -   @antv/g-plugin-image-loader@1.4.0-next.14
+    -   @antv/g-plugin-dragndrop@1.8.22-next.14
+    -   @antv/g-plugin-gesture@1.2.10-next.14
+    -   @antv/g-lite@1.3.0-next.14
+
 ## 0.11.15-next.13
 
 ### Patch Changes

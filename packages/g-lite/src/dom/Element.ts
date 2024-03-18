@@ -33,16 +33,16 @@ export function resetEntityCounter() {
   entityCounter = 0;
 }
 
-// const insertedEvent = new MutationEvent(
-//   ElementEvent.INSERTED,
-//   null,
-//   '',
-//   '',
-//   '',
-//   0,
-//   '',
-//   '',
-// );
+const insertedEvent = new MutationEvent(
+  ElementEvent.INSERTED,
+  null,
+  '',
+  '',
+  '',
+  0,
+  '',
+  '',
+);
 const removedEvent = new MutationEvent(
   ElementEvent.REMOVED,
   null,
@@ -229,8 +229,11 @@ export class Element<
       this.ownerDocument.defaultView.mountChildren(child);
     }
 
-    // insertedEvent.relatedNode = this as IElement;
-    // child.dispatchEvent(insertedEvent);
+    // @ts-ignore
+    if (this.isMutationObserved) {
+      insertedEvent.relatedNode = this as IElement;
+      child.dispatchEvent(insertedEvent);
+    }
 
     return child;
   }

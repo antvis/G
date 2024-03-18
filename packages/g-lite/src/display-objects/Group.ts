@@ -26,9 +26,10 @@ export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
  */
 export class Group extends DisplayObject {
   constructor(options: DisplayObjectConfig<GroupStyleProps> = {}) {
-    super(options);
-
-    this.nodeName = Shape.GROUP;
+    super({
+      type: Shape.GROUP,
+      ...options,
+    });
   }
 
   // constructor({ style, ...rest }: DisplayObjectConfig<GroupStyleProps> = {}) {

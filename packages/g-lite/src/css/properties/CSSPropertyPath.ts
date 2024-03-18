@@ -34,7 +34,6 @@ export class CSSPropertyPath
       };
     }
 
-    console.log('parsed', parsed);
     return parsed;
   }
 

@@ -5,6 +5,8 @@ import type { DisplayObject } from '../display-objects';
 import type { FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
+import { raf } from '../utils';
+import { AABB } from '../shapes';
 
 export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
@@ -17,6 +19,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
   private isFirstTimeRendering = true;
   private syncing = false;
+
+  isFirstTimeRenderingFinished = false;
 
   apply(context: RenderingPluginContext) {
     const { renderingService, renderingContext, rBushRoot } = context;
@@ -101,12 +105,15 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       this.toSync.clear();
     });
 
+    const ric =
+      runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       if (this.isFirstTimeRendering) {
         this.isFirstTimeRendering = false;
         this.syncing = true;
-        requestIdleCallback(() => {
+        ric(() => {
           this.syncRTree(true);
+          this.isFirstTimeRenderingFinished = true;
         });
       } else {
         this.syncRTree();
@@ -137,6 +144,19 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
         const renderBounds = node.getRenderBounds();
         if (renderBounds) {
+          const renderable = node.renderable;
+
+          if (force) {
+            if (!renderable.dirtyRenderBounds) {
+              renderable.dirtyRenderBounds = new AABB();
+            }
+            // save last dirty aabb
+            renderable.dirtyRenderBounds.update(
+              renderBounds.center,
+              renderBounds.halfExtents,
+            );
+          }
+
           const [minX, minY] = renderBounds.getMin();
           const [maxX, maxY] = renderBounds.getMax();
 

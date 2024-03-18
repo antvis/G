@@ -1,6 +1,4 @@
-import { Circle, runtime } from '../../../packages/g';
-
-runtime.enableCSSParsing = false;
+import { Circle } from '../../../packages/g';
 
 export async function circle(context) {
   const { canvas } = context;

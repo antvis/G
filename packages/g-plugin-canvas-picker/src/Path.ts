@@ -157,12 +157,12 @@ export function isPointInPath(
   runtime: GlobalRuntime,
 ): boolean {
   const {
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     stroke,
     fill,
     d,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedPathStyleProps;
 
   const { segments, hasArc, polylines, polygons } = d;

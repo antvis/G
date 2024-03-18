@@ -1,5 +1,61 @@
 # @antv/g-plugin-a11y
 
+## 0.6.22-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.20
+
+## 0.6.22-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.19
+
+## 0.6.22-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.18
+
+## 0.6.22-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.17
+
+## 0.6.22-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.16
+
+## 0.6.22-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.15
+
+## 0.6.22-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.14
+
 ## 0.6.22-next.13
 
 ### Patch Changes

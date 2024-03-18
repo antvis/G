@@ -84,6 +84,8 @@ export async function morph(context) {
       cx: 100,
       cy: 100,
       r: 50,
+      // transformOrigin: '100 100',
+      transformOrigin: 'center',
     },
   });
   circle.scale(2);

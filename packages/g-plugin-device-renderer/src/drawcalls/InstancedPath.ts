@@ -355,6 +355,7 @@ export class InstancedPathDrawcall extends Instanced {
       name === 'y2' ||
       name === 'points' ||
       name === 'path' ||
+      name === 'd' ||
       name === 'lineJoin' ||
       name === 'lineCap' ||
       name === 'markerStartOffset' ||

@@ -1,4 +1,4 @@
-import { linePointAt } from '@antv/g-math';
+import { lineLength, linePointAt } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { runtime } from '../global-runtime';
@@ -7,6 +7,7 @@ import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import type { DisplayObject } from './DisplayObject';
 import { Polygon } from './Polygon';
+import { getOrCalculatePolylineTotalLength } from '../utils';
 
 export interface PolylineStyleProps extends BaseStyleProps {
   points: ([number, number] | [number, number, number])[];
@@ -90,7 +91,7 @@ export class Polyline extends Polygon {
   }
 
   getTotalLength() {
-    return this.parsedStyle.points.totalLength;
+    return getOrCalculatePolylineTotalLength(this);
   }
 
   getPointAtLength(distance: number, inWorldSpace = false): Point {
@@ -99,12 +100,34 @@ export class Polyline extends Polygon {
 
   getPoint(ratio: number, inWorldSpace = false): Point {
     const {
-      points: { points, segments },
+      points: { points },
     } = this.parsedStyle;
+
+    if (this.parsedStyle.points.segments.length === 0) {
+      const segments: [number, number][] = [];
+      let tempLength = 0;
+      let segmentT: [number, number];
+      let segmentL: number;
+
+      const totalLength = this.getTotalLength();
+
+      points.forEach((p, i) => {
+        if (points[i + 1]) {
+          segmentT = [0, 0];
+          segmentT[0] = tempLength / totalLength;
+          segmentL = lineLength(p[0], p[1], points[i + 1][0], points[i + 1][1]);
+          tempLength += segmentL;
+          segmentT[1] = tempLength / totalLength;
+          segments.push(segmentT);
+        }
+      });
+
+      this.parsedStyle.points.segments = segments;
+    }
 
     let subt = 0;
     let index = 0;
-    segments.forEach((v, i) => {
+    this.parsedStyle.points.segments.forEach((v, i) => {
       if (ratio >= v[0] && ratio <= v[1]) {
         subt = (ratio - v[0]) / (v[1] - v[0]);
         index = i;

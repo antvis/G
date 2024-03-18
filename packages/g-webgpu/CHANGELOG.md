@@ -1,5 +1,89 @@
 # @antv/g-webgpu
 
+## 1.9.37-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.20
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.20
+    -   @antv/g-plugin-html-renderer@1.9.25-next.20
+    -   @antv/g-plugin-image-loader@1.4.0-next.20
+    -   @antv/g-lite@1.3.0-next.20
+
+## 1.9.37-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.19
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.19
+    -   @antv/g-plugin-html-renderer@1.9.25-next.19
+    -   @antv/g-plugin-image-loader@1.4.0-next.19
+    -   @antv/g-lite@1.3.0-next.19
+
+## 1.9.37-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.18
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.18
+    -   @antv/g-plugin-html-renderer@1.9.25-next.18
+    -   @antv/g-plugin-image-loader@1.4.0-next.18
+    -   @antv/g-lite@1.3.0-next.18
+
+## 1.9.37-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.17
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.17
+    -   @antv/g-plugin-html-renderer@1.9.25-next.17
+    -   @antv/g-plugin-image-loader@1.4.0-next.17
+    -   @antv/g-lite@1.3.0-next.17
+
+## 1.9.37-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.16
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.16
+    -   @antv/g-plugin-html-renderer@1.9.25-next.16
+    -   @antv/g-plugin-image-loader@1.4.0-next.16
+    -   @antv/g-lite@1.3.0-next.16
+
+## 1.9.37-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.15
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.15
+    -   @antv/g-plugin-html-renderer@1.9.25-next.15
+    -   @antv/g-plugin-image-loader@1.4.0-next.15
+    -   @antv/g-lite@1.3.0-next.15
+
+## 1.9.37-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-plugin-device-renderer@1.10.0-next.14
+    -   @antv/g-plugin-dom-interaction@1.9.22-next.14
+    -   @antv/g-plugin-html-renderer@1.9.25-next.14
+    -   @antv/g-plugin-image-loader@1.4.0-next.14
+    -   @antv/g-lite@1.3.0-next.14
+
 ## 1.9.37-next.13
 
 ### Patch Changes

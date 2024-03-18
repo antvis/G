@@ -28,9 +28,10 @@ export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
 
 export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
   constructor(options: DisplayObjectConfig<RectStyleProps> = {}) {
-    super(options);
-
-    this.nodeName = Shape.RECT;
+    super({
+      type: Shape.RECT,
+      ...options,
+    });
   }
 
   // constructor({ style, ...rest }: DisplayObjectConfig<RectStyleProps> = {}) {

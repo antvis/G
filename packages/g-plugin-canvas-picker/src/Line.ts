@@ -17,9 +17,9 @@ export function isPointInPath(
     y1,
     x2,
     y2,
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
-    pointerEvents,
+    pointerEvents = 'auto',
     fill,
     stroke,
   } = displayObject.parsedStyle as ParsedLineStyleProps;

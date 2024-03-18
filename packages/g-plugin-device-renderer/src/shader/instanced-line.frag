@@ -36,7 +36,7 @@ void main() {
     float u_dash_ratio = v_Dash.w;
 
     outputColor.a = outputColor.a
-      * blur
+      * max(blur, 0.5)
       * u_Opacity * u_StrokeOpacity
       * (u_dash_array < 1.0 ? (ceil((u_dash_array * u_dash_ratio) - mod(v_Dash.x + u_dash_offset, u_dash_array))) : 1.0);
 

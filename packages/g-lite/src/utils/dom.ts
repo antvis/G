@@ -25,8 +25,8 @@ export function sortedIndex(array: IElement[], value: IElement) {
 }
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
-  const zIndex1 = Number(o1.parsedStyle.zIndex);
-  const zIndex2 = Number(o2.parsedStyle.zIndex);
+  const zIndex1 = Number(o1.parsedStyle.zIndex || 0);
+  const zIndex2 = Number(o2.parsedStyle.zIndex || 0);
   if (zIndex1 === zIndex2) {
     const parent = o1.parentNode;
     if (parent) {

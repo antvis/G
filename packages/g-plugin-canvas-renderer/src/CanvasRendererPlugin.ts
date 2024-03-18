@@ -157,6 +157,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       this.clearFullScreen =
         this.clearFullScreenLastFrame ||
+        // @ts-ignore
+        !canvas.context.renderingPlugins[1]?.isFirstTimeRenderingFinished ||
         renderingService.disableDirtyRectangleRendering() ||
         (rendered > dirtyObjectNumThreshold &&
           ratio > dirtyObjectRatioThreshold);
@@ -190,11 +192,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.restoreStack,
           runtime,
         );
-
-        // if (object.renderable.) {
-        // if we did a full screen rendering last frame
-        // this.saveDirtyAABB(object);
-        // }
       }
 
       const sorted = object.sortable.sorted || object.childNodes;

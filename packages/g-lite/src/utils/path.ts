@@ -2,7 +2,7 @@
  * implements morph animation with cubic splitting
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
-import { arcBox, cubicBox, quadBox } from '@antv/g-math';
+import { arcBox, cubicBox, polylineLength, quadBox } from '@antv/g-math';
 import type { AbsoluteArray, ASegment } from '@antv/util';
 import {
   clamp,
@@ -36,6 +36,15 @@ export function getOrCalculatePathTotalLength(path: Path) {
     );
   }
   return path.parsedStyle.d.totalLength;
+}
+
+export function getOrCalculatePolylineTotalLength(polyline: Polyline) {
+  if (polyline.parsedStyle.points.totalLength === 0) {
+    polyline.parsedStyle.points.totalLength = polylineLength(
+      polyline.parsedStyle.points.points as [number, number][],
+    );
+  }
+  return polyline.parsedStyle.points.totalLength;
 }
 
 export function removeRedundantMCommand(path: AbsoluteArray) {

@@ -14,6 +14,7 @@ function createSkewMatrix(skewMatrix: mat4, skewX: number, skewY: number) {
   return skewMatrix;
 }
 
+const SCALE_EPSILON = 0.00001;
 const tmpMat1 = mat4.create();
 const tmpMat2 = mat4.create();
 export function parsedTransformToMat4(
@@ -26,19 +27,23 @@ export function parsedTransformToMat4(
       const { t, d } = parsed;
       if (t === 'scale') {
         // scale(1) scale(1, 1)
-        const newScale = d?.map((s) => s.value) || [1, 1];
+        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [
+          1, 1,
+        ];
         mat4.fromScaling(tmpMat2, [newScale[0], newScale[1], 1]);
       } else if (t === 'scalex') {
-        const newScale = d?.map((s) => s.value) || [1];
+        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
         mat4.fromScaling(tmpMat2, [newScale[0], 1, 1]);
       } else if (t === 'scaley') {
-        const newScale = d?.map((s) => s.value) || [1];
+        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
         mat4.fromScaling(tmpMat2, [1, newScale[0], 1]);
       } else if (t === 'scalez') {
-        const newScale = d?.map((s) => s.value) || [1];
+        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
         mat4.fromScaling(tmpMat2, [1, 1, newScale[0]]);
       } else if (t === 'scale3d') {
-        const newScale = d?.map((s) => s.value) || [1, 1, 1];
+        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [
+          1, 1, 1,
+        ];
         mat4.fromScaling(tmpMat2, [newScale[0], newScale[1], newScale[2]]);
       } else if (t === 'translate') {
         const newTranslation = d || [Opx, Opx];

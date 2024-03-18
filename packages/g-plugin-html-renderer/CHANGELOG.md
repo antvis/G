@@ -1,5 +1,61 @@
 # @antv/g-plugin-html-renderer
 
+## 1.9.25-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.20
+
+## 1.9.25-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.19
+
+## 1.9.25-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.18
+
+## 1.9.25-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.17
+
+## 1.9.25-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.16
+
+## 1.9.25-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.15
+
+## 1.9.25-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.14
+
 ## 1.9.25-next.13
 
 ### Patch Changes

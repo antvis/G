@@ -1,5 +1,61 @@
 # @antv/react-g
 
+## 1.10.26-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.20
+
+## 1.10.26-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.19
+
+## 1.10.26-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.18
+
+## 1.10.26-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.17
+
+## 1.10.26-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.16
+
+## 1.10.26-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.15
+
+## 1.10.26-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g@5.18.25-next.14
+
 ## 1.10.26-next.13
 
 ### Patch Changes

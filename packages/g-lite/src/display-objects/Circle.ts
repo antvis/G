@@ -42,8 +42,9 @@ export class Circle extends DisplayObject<
   ParsedCircleStyleProps
 > {
   constructor(options: DisplayObjectConfig<CircleStyleProps> = {}) {
-    super(options);
-
-    this.nodeName = Shape.CIRCLE;
+    super({
+      type: Shape.CIRCLE,
+      ...options,
+    });
   }
 }

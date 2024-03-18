@@ -27,9 +27,9 @@ export function isPointInPath(
     ry,
     fill,
     stroke,
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedEllipseStyleProps;
 
   const { x, y } = position;

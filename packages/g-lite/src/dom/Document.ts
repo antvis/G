@@ -149,7 +149,7 @@ export class Document extends Node implements IDocument {
 
     const hitTestList: DisplayObject[] = [];
     rBushNodes.forEach(({ displayObject }) => {
-      const { pointerEvents } =
+      const { pointerEvents = 'auto' } =
         displayObject.parsedStyle as ParsedBaseStyleProps;
 
       // account for `visibility`

@@ -15,10 +15,10 @@ export function isPointInPath(
   const {
     stroke,
     fill,
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     points,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedPolygonStyleProps;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,

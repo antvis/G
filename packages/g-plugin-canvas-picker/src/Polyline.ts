@@ -13,10 +13,10 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     points,
-    pointerEvents,
+    pointerEvents = 'auto',
     fill,
     stroke,
   } = displayObject.parsedStyle as ParsedPolylineStyleProps;

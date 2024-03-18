@@ -1,5 +1,5 @@
 import * as lil from 'lil-gui';
-import { Canvas, CanvasEvent } from '../packages/g';
+import { Canvas, CanvasEvent, runtime } from '../packages/g';
 import { Renderer as CanvasRenderer } from '../packages/g-canvas';
 import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
 import { Renderer as SVGRenderer } from '../packages/g-svg';
@@ -171,6 +171,8 @@ function createSpecRender(object) {
     return async (container) => {
       // Select render is necessary for spec tests.
       selectRenderer.style.display = 'inline';
+
+      runtime.enableCSSParsing = false;
 
       const renderer = new renderers[selectRenderer.value]({
         // Used for WebGL renderer

@@ -22,13 +22,13 @@ export function isPointInPath(
     radius,
     fill,
     stroke,
-    lineWidth = 0,
+    lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     x = 0,
     y = 0,
     width,
     height,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedRectStyleProps;
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(

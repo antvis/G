@@ -288,7 +288,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style.visibility = visibility;
         break;
       case 'pointerEvents':
-        const { pointerEvents } = object.parsedStyle;
+        const { pointerEvents = 'auto' } = object.parsedStyle;
         $el.style.pointerEvents = pointerEvents;
         break;
       case 'opacity':

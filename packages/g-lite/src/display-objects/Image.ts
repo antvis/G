@@ -44,9 +44,10 @@ export class Image extends DisplayObject<
   ParsedImageStyleProps
 > {
   constructor(options: DisplayObjectConfig<ImageStyleProps> = {}) {
-    super(options);
-
-    this.nodeName = Shape.IMAGE;
+    super({
+      type: Shape.IMAGE,
+      ...options,
+    });
   }
 
   // constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps> = {}) {

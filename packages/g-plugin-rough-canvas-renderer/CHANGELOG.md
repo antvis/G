@@ -1,5 +1,68 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 1.9.27-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.20
+    -   @antv/g-lite@1.3.0-next.20
+
+## 1.9.27-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.19
+    -   @antv/g-lite@1.3.0-next.19
+
+## 1.9.27-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.18
+    -   @antv/g-lite@1.3.0-next.18
+
+## 1.9.27-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.17
+    -   @antv/g-lite@1.3.0-next.17
+
+## 1.9.27-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.16
+    -   @antv/g-lite@1.3.0-next.16
+
+## 1.9.27-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.15
+    -   @antv/g-lite@1.3.0-next.15
+
+## 1.9.27-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.14
+    -   @antv/g-lite@1.3.0-next.14
+
 ## 1.9.27-next.13
 
 ### Patch Changes
