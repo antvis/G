@@ -40,7 +40,7 @@ export class SVGPickerPlugin implements RenderingPlugin {
 
   private pick(
     svgElementMap: WeakMap<SVGElement, DisplayObject>,
-    doc: Document,
+    doc: Document | ShadowRoot,
     result: PickingResult,
   ) {
     const {
@@ -55,14 +55,18 @@ export class SVGPickerPlugin implements RenderingPlugin {
         clientX,
         clientY,
       )) {
-        const target = svgElementMap.get(element as SVGElement);
-        // don't need to account for `visibility` since DOM API already does
-        if (target && target.isInteractive()) {
-          targets.push(target);
+        if (element.shadowRoot && element.shadowRoot !== doc) {
+          return this.pick(svgElementMap, element.shadowRoot, result);
+        } else {
+          const target = svgElementMap.get(element as SVGElement);
+          // don't need to account for `visibility` since DOM API already does
+          if (target && target.isInteractive()) {
+            targets.push(target);
 
-          if (topmost) {
-            result.picked = targets;
-            return result;
+            if (topmost) {
+              result.picked = targets;
+              return result;
+            }
           }
         }
       }
