@@ -1,5 +1,5 @@
 import * as lil from 'lil-gui';
-import { Canvas, CanvasEvent } from '../packages/g';
+import { runtime, Canvas, CanvasEvent } from '../packages/g';
 import { Renderer as CanvasRenderer } from '../packages/g-canvas';
 import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
 import { Renderer as SVGRenderer } from '../packages/g-svg';
@@ -15,6 +15,8 @@ import * as plugin from './demos/plugin';
 import * as hammerjs from './demos/hammerjs';
 import * as lottie from './demos/lottie';
 import * as bugfix from './demos/bugfix';
+
+runtime.enableCSSParsing = false;
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
