@@ -214,6 +214,7 @@ class Canvas extends AbstractCanvas {
   // 触发绘制
   _startDraw() {
     let drawFrame = this.get('drawFrame');
+    let drawFrameCallback = this.get('drawFrameCallback');
     if (!drawFrame) {
       drawFrame = requestAnimationFrame(() => {
         if (this.get('localRefresh')) {
@@ -222,6 +223,9 @@ class Canvas extends AbstractCanvas {
           this._drawAll();
         }
         this.set('drawFrame', null);
+        if (drawFrameCallback) {
+          drawFrameCallback();
+        }
       });
       this.set('drawFrame', drawFrame);
     }
