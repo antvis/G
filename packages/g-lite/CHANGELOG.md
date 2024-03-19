@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 1.2.24
+
+### Patch Changes
+
+-   10397c19: Support shadowRoot when picking.
+
 ## 1.2.23
 
 ### Patch Changes

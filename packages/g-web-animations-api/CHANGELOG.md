@@ -1,5 +1,12 @@
 # @antv/g-web-animations-api
 
+## 1.2.25
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+
 ## 1.2.24
 
 ### Patch Changes

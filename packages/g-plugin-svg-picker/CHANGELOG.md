@@ -1,5 +1,14 @@
 # @antv/g-plugin-svg-picker
 
+## 1.9.28
+
+### Patch Changes
+
+-   10397c19: Support shadowRoot when picking.
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-plugin-svg-renderer@1.10.28
+
 ## 1.9.27
 
 ### Patch Changes
