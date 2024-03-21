@@ -34,10 +34,10 @@ export class LoadImagePlugin implements RenderingPlugin {
       const object = e.target as Image;
       const { nodeName, attributes } = object;
       if (nodeName === Shape.IMAGE) {
-        const { img, keepAspectRatio } = attributes;
+        const { src, keepAspectRatio } = attributes;
 
-        if (isString(img)) {
-          imagePool.getImageSync(img, ({ width, height }) => {
+        if (isString(src)) {
+          imagePool.getImageSync(src, ({ width, height }) => {
             if (keepAspectRatio) {
               calculateWithAspectRatio(object, width, height);
             }
@@ -55,7 +55,7 @@ export class LoadImagePlugin implements RenderingPlugin {
       const { attrName, newValue } = e;
 
       if (object.nodeName === Shape.IMAGE) {
-        if (attrName === 'img') {
+        if (attrName === 'src') {
           if (isString(newValue)) {
             imagePool.getOrCreateImage(newValue).then(({ width, height }) => {
               if (object.attributes.keepAspectRatio) {

@@ -12,19 +12,27 @@ export class ImageRenderer implements StyleRenderer {
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
   ) {
-    const { width, height, img, shadowColor, shadowBlur } = parsedStyle;
+    const {
+      x = 0,
+      y = 0,
+      width,
+      height,
+      src,
+      shadowColor,
+      shadowBlur,
+    } = parsedStyle;
 
     let image: HTMLImageElement;
     let iw = width;
     let ih = height;
 
-    if (isString(img)) {
+    if (isString(src)) {
       // image has been loaded in `mounted` hook
-      image = this.imagePool.getImageSync(img);
+      image = this.imagePool.getImageSync(src);
     } else {
-      iw ||= img.width;
-      ih ||= img.height;
-      image = img;
+      iw ||= src.width;
+      ih ||= src.height;
+      image = src;
     }
 
     if (image) {
@@ -34,7 +42,7 @@ export class ImageRenderer implements StyleRenderer {
       // node-canvas will throw the following err:
       // Error: Image given has not completed loading
       try {
-        context.drawImage(image, 0, 0, iw, ih);
+        context.drawImage(image, x, y, iw, ih);
       } catch (e) {}
     }
   }

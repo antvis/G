@@ -157,17 +157,15 @@ export function isPointInPath(
   runtime: GlobalRuntime,
 ): boolean {
   const {
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 1,
+    increasedLineWidthForHitTesting = 0,
     stroke,
     fill,
-    defX: x = 0,
-    defY: y = 0,
-    path,
-    pointerEvents,
+    d,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedPathStyleProps;
 
-  const { segments, hasArc, polylines, polygons } = path;
+  const { segments, hasArc, polylines, polygons } = d;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,
     // Only a closed path can be filled.
@@ -186,16 +184,16 @@ export function isPointInPath(
     } else {
       // 提取出来的多边形包含闭合的和非闭合的，在这里统一按照多边形处理
       isHit =
-        inPolygons(polygons, position.x + x, position.y + y) ||
-        inPolygons(polylines, position.x + x, position.y + y);
+        inPolygons(polygons, position.x, position.y) ||
+        inPolygons(polylines, position.x, position.y);
     }
     return isHit;
   } else if (hasStroke || isClipPath) {
     isHit = isPointInStroke(
       segments,
-      (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
-      position.x + x,
-      position.y + y,
+      lineWidth + increasedLineWidthForHitTesting,
+      position.x,
+      position.y,
       totalLength,
     );
   }

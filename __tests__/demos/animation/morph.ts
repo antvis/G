@@ -37,7 +37,7 @@ export async function morph(context) {
   const path2Str = convertToPath(path2);
   const pathA = new Path({
     style: {
-      path: path1Str,
+      d: path1Str,
       stroke: '#F04864',
     },
   });
@@ -64,12 +64,12 @@ export async function morph(context) {
   const linePathStr = convertToPath(line);
   const pathB = new Path({
     style: {
-      path: path1Str,
+      d: path1Str,
       stroke: '#F04864',
     },
   });
   canvas.appendChild(pathB);
-  pathB.animate([{ path: path1Str }, { path: linePathStr }], {
+  pathB.animate([{ d: path1Str }, { d: linePathStr }], {
     duration: 2500,
     easing: 'ease',
     iterations: Infinity,
@@ -84,13 +84,15 @@ export async function morph(context) {
       cx: 100,
       cy: 100,
       r: 50,
+      // transformOrigin: '100 100',
+      transformOrigin: 'center',
     },
   });
   circle.scale(2);
   const circlePathStr = convertToPath(circle);
   const pathC = new Path({
     style: {
-      path: path1Str,
+      d: path1Str,
       stroke: '#F04864',
     },
   });
@@ -122,12 +124,13 @@ export async function morph(context) {
   );
   const pathD = new Path({
     style: {
-      path: circlePathStr,
+      d: circlePathStr,
       stroke: '#F04864',
     },
   });
   canvas.appendChild(pathD);
-  pathD.animate([{ path: circlePathStr }, { path: polylinePathStr }], {
+
+  pathD.animate([{ d: circlePathStr }, { d: polylinePathStr }], {
     duration: 2500,
     easing: 'ease',
     iterations: Infinity,
@@ -151,12 +154,12 @@ export async function morph(context) {
   );
   const pathE = new Path({
     style: {
-      path: path1Str,
+      d: path1Str,
       stroke: '#F04864',
     },
   });
   canvas.appendChild(pathE);
-  pathE.animate([{ path: path1Str }, { path: polygonPathStr }], {
+  pathE.animate([{ d: path1Str }, { d: polygonPathStr }], {
     duration: 2500,
     easing: 'ease',
     iterations: Infinity,
@@ -179,7 +182,7 @@ export async function morph(context) {
   );
   const pathF = new Path({
     style: {
-      path: rectPathStr,
+      d: rectPathStr,
       stroke: '#F04864',
       fill: '',
       opacity: 0.5,
@@ -189,8 +192,8 @@ export async function morph(context) {
   canvas.appendChild(pathF);
   pathF.animate(
     [
-      { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
-      { path: circlePathStr, stroke: 'blue', fill: '#F04864' },
+      { d: rectPathStr, stroke: '#F04864', fill: 'blue' },
+      { d: circlePathStr, stroke: 'blue', fill: '#F04864' },
     ],
     {
       duration: 2500,
@@ -205,22 +208,22 @@ export async function morph(context) {
    */
   const starPath = new Path({
     style: {
-      path: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
+      d: 'M301.113,12.011l99.25,179.996l201.864,38.778L461.706,380.808l25.508,203.958l-186.101-87.287L115.01,584.766l25.507-203.958L0,230.785l201.86-38.778L301.113,12.011',
     },
   });
   starPath.scale(0.2);
   starPath.translate(200, 200);
   const pathG = new Path({
     style: {
-      path: rectPathStr,
+      d: rectPathStr,
       lineWidth: 2,
     },
   });
   canvas.appendChild(pathG);
   pathG.animate(
     [
-      { path: rectPathStr, stroke: '#F04864', fill: 'blue' },
-      { path: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
+      { d: rectPathStr, stroke: '#F04864', fill: 'blue' },
+      { d: convertToPath(starPath), stroke: 'blue', fill: '#F04864' },
     ],
     {
       duration: 2500,

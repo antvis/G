@@ -159,8 +159,6 @@ export class Polygon extends DisplayObject<
       markerStartOffset,
       markerEndOffset,
       points: P,
-      defX,
-      defY,
     } = this.parsedStyle;
     const { points } = P || {};
     const marker = isStart ? markerStart : markerEnd;
@@ -177,8 +175,8 @@ export class Polygon extends DisplayObject<
     let offset: number;
     let originalAngle: number;
 
-    ox = points[0][0] - defX;
-    oy = points[0][1] - defY;
+    ox = points[0][0];
+    oy = points[0][1];
 
     if (isStart) {
       x = points[1][0] - points[0][0];
@@ -189,8 +187,8 @@ export class Polygon extends DisplayObject<
       const { length } = points;
 
       if (!this.parsedStyle.isClosed) {
-        ox = points[length - 1][0] - defX;
-        oy = points[length - 1][1] - defY;
+        ox = points[length - 1][0];
+        oy = points[length - 1][1];
         x = points[length - 2][0] - points[length - 1][0];
         y = points[length - 2][1] - points[length - 1][1];
       } else {
@@ -211,7 +209,7 @@ export class Polygon extends DisplayObject<
   }
 
   private placeMarkerMid(marker: DisplayObject) {
-    const { points: P, defX, defY } = this.parsedStyle;
+    const { points: P } = this.parsedStyle;
     const { points } = P || {};
 
     // clear all existed markers
@@ -226,8 +224,8 @@ export class Polygon extends DisplayObject<
         i < (this.parsedStyle.isClosed ? points.length : points.length - 1);
         i++
       ) {
-        const ox = points[i][0] - defX;
-        const oy = points[i][1] - defY;
+        const ox = points[i][0];
+        const oy = points[i][1];
 
         const cloned = i === 1 ? marker : marker.cloneNode(true);
         this.markerMidList.push(cloned);

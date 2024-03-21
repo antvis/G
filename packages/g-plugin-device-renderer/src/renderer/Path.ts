@@ -32,7 +32,7 @@ export class PathRenderer extends Batch {
     const drawcalls: (typeof Instanced)[] = [];
 
     // Polyline don't need fill
-    if (!(object.nodeName === Shape.POLYLINE || (fill as CSSRGB).isNone)) {
+    if (!(object.nodeName === Shape.POLYLINE || (fill as CSSRGB)?.isNone)) {
       for (let i = 0; i < subpathNum; i++) {
         drawcalls.push(InstancedFillDrawcall);
       }

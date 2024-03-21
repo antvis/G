@@ -1,5 +1,175 @@
 # @antv/g-gesture
 
+## 2.2.25-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.20
+
+## 2.2.25-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.19
+
+## 2.2.25-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.18
+
+## 2.2.25-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.17
+
+## 2.2.25-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.16
+
+## 2.2.25-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.15
+
+## 2.2.25-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.14
+
+## 2.2.25-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.13
+
+## 2.2.25-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.12
+
+## 2.2.25-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.11
+
+## 2.2.25-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.10
+
+## 2.2.25-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.9
+
+## 2.2.25-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.8
+
+## 2.2.25-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.7
+
+## 2.2.25-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.6
+
+## 2.2.25-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.5
+
+## 2.2.25-next.4
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.4
+
+## 2.2.25-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-lite@1.3.0-next.3
+
+## 2.2.25-next.2
+
+### Patch Changes
+
+-   8efc380a5: x/y in rect can be omitted.
+-   614e15671: Transform can only be affected with the attribute.
+-   Updated dependencies [8efc380a5]
+-   Updated dependencies [614e15671]
+    -   @antv/g-lite@1.3.0-next.2
+
+## 2.2.25-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.1
+
+## 2.2.25-next.0
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.0
 ## 2.2.27
 
 ### Patch Changes

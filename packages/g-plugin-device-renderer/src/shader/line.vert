@@ -88,8 +88,8 @@ void main() {
   bool isSizeAttenuation = is_size_attenuation > 0.5;
   bool is3DPolyline = is_3d_polyline > 0.5;
   if (isBillboard) {
-    clip0 = billboard(a_Point1.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
-    clip1 = billboard(a_Point2.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
+    clip0 = billboard(a_Point1.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, vec3(0.0));
+    clip1 = billboard(a_Point2.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, vec3(0.0));
   } else if (is3DPolyline) {
     clip0 = project(vec4(a_Point1, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
     clip1 = project(vec4(a_Point2, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix);
@@ -155,7 +155,7 @@ void main() {
     float sign2 = 1.0;
     if (a_VertexNum < 0.5 || a_VertexNum > 2.5 && a_VertexNum < 3.5) {
       if (isBillboard) {
-        next = clip2ScreenSpace(billboard(a_Prev.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
+        next = clip2ScreenSpace(billboard(a_Prev.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, vec3(0.0)));
       } else if (is3DPolyline) {
         next = clip2ScreenSpace(project(vec4(a_Prev, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
       } else {
@@ -167,7 +167,7 @@ void main() {
       sign2 = -1.0;
     } else {
       if (isBillboard) {
-        next = clip2ScreenSpace(billboard(a_Next.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
+        next = clip2ScreenSpace(billboard(a_Next.xy, 0.0, isSizeAttenuation, u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, vec3(0.0)));
       } else if (is3DPolyline) {
         next = clip2ScreenSpace(project(vec4(a_Next, 1.0), u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix));
       } else {

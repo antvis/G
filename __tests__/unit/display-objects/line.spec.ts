@@ -13,7 +13,7 @@ describe('Line', () => {
     });
 
     // get local position
-    expect(line.getLocalPosition()).toStrictEqual([200, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     // get length
     expect(line.getTotalLength()).toBe(200);
@@ -26,7 +26,7 @@ describe('Line', () => {
     }
     let geometryBounds = line.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([100, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([300, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 0, 0]);
     }
 
@@ -39,14 +39,14 @@ describe('Line', () => {
     }
     geometryBounds = line.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([100, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([300, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 0, 0]);
     }
 
     // change x1/x2, move right
     line.style.x1 += 100;
     line.style.x2 += 100;
-    expect(line.getLocalPosition()).toStrictEqual([300, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([0, 0, 0]);
     expect(line.getTotalLength()).toStrictEqual(200);
     bounds = line.getBounds();
     if (bounds) {
@@ -55,7 +55,20 @@ describe('Line', () => {
     }
     geometryBounds = line.getGeometryBounds();
     if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([100, 0, 0]);
+      expect(geometryBounds.center).toStrictEqual([400, 100, 0]);
+      expect(geometryBounds.halfExtents).toStrictEqual([100, 0, 0]);
+    }
+
+    line.style.transform = 'translate(100, 0)';
+    expect(line.getLocalPosition()).toStrictEqual([100, 0, 0]);
+    bounds = line.getBounds();
+    if (bounds) {
+      expect(bounds.center).toStrictEqual([500, 100, 0]);
+      expect(bounds.halfExtents).toStrictEqual([100, 0, 0]);
+    }
+    geometryBounds = line.getGeometryBounds();
+    if (geometryBounds) {
+      expect(geometryBounds.center).toStrictEqual([400, 100, 0]);
       expect(geometryBounds.halfExtents).toStrictEqual([100, 0, 0]);
     }
   });
@@ -71,16 +84,16 @@ describe('Line', () => {
       },
     });
 
-    expect(line.getLocalPosition()).toStrictEqual([200, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     // move right 100px
     line.translate(100, 0);
-    expect(line.getLocalPosition()).toStrictEqual([300, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([100, 0, 0]);
 
     // change x1 now, should reset x/y
     line.style.x1 += 100;
     line.style.x2 += 100;
-    expect(line.getLocalPosition()).toStrictEqual([300, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([100, 0, 0]);
   });
 
   it('should create a 3D line', () => {
@@ -96,10 +109,10 @@ describe('Line', () => {
       },
     });
 
-    expect(line.getLocalPosition()).toStrictEqual([200, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     line.style.z1! -= 200;
-    expect(line.getLocalPosition()).toStrictEqual([200, 100, 0]);
+    expect(line.getLocalPosition()).toStrictEqual([0, 0, 0]);
   });
 
   it('should getPoint at ratio correctly', () => {

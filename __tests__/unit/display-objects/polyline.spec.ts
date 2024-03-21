@@ -29,7 +29,7 @@ describe('Polyline', () => {
     });
 
     // get local position, left top corner
-    expect(polyline.getLocalPosition()).toStrictEqual([50, 50, 0]);
+    expect(polyline.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     // get length
     expect(polyline.getTotalLength()).toBe(750);
@@ -68,10 +68,10 @@ describe('Polyline', () => {
     // should override x/y when points changed
     newPoints[0] = [50, 50];
     polyline.style.points = newPoints;
-    expect(polyline.getLocalPosition()).toStrictEqual([50, 50, 0]);
+    expect(polyline.getLocalPosition()).toStrictEqual([100, 0, 0]);
     bounds = polyline.getBounds();
     if (bounds) {
-      expect(bounds.center).toStrictEqual([250, 225, 0]);
+      expect(bounds.center).toStrictEqual([350, 225, 0]);
       expect(bounds.halfExtents).toStrictEqual([200, 175, 0]);
     }
     expect(polyline.getTotalLength()).toBe(750);

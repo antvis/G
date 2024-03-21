@@ -58,7 +58,7 @@
     "@antv/g-pattern": "latest",
     "@antv/react-g": "latest",
     "@antv/g6": "^4.5.2",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "@naoak/workerize-transferable": "^0.1.0",
     "@observablehq/plot": "0.5.2",
     "@types/gl-matrix": "^2.4.5",

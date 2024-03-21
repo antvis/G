@@ -67,6 +67,14 @@ color: transparent !important;
           this.removeEl(text);
         }
         break;
+      case 'x':
+        const { x } = text.parsedStyle;
+        $el.style.left = `${x}px`;
+        break;
+      case 'y':
+        const { y } = text.parsedStyle;
+        $el.style.top = `${y}px`;
+        break;
       case 'modelMatrix':
       case 'transformOrigin':
       case 'textAlign':

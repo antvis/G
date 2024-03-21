@@ -6,3 +6,4 @@ export { PathUpdater } from './PathUpdater';
 export { PolylineUpdater } from './PolylineUpdater';
 export { RectUpdater } from './RectUpdater';
 export { TextUpdater } from './TextUpdater';
+export { GroupUpdater } from './GroupUpdater';

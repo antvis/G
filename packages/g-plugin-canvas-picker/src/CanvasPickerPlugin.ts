@@ -148,11 +148,6 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         invertWorldMat,
       );
 
-      // account for anchor
-      const { halfExtents } = displayObject.getGeometryBounds();
-      const { anchor } = displayObject.parsedStyle as ParsedBaseStyleProps;
-      localPosition[0] += ((anchor && anchor[0]) || 0) * halfExtents[0] * 2;
-      localPosition[1] += ((anchor && anchor[1]) || 0) * halfExtents[1] * 2;
       if (
         pick(
           displayObject,

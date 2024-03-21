@@ -12,8 +12,13 @@ const genericFontFamilies = [
 const stringRegExp = /([\"\'])[^\'\"]+\1/;
 
 export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
-  const { fontSize, fontFamily, fontStyle, fontVariant, fontWeight } =
-    attributes;
+  const {
+    fontSize = 16,
+    fontFamily = 'sans-serif',
+    fontStyle = 'normal',
+    fontVariant = 'normal',
+    fontWeight = 'normal',
+  } = attributes;
 
   // build canvas api font setting from individual components. Convert a numeric this.fontSize to px
   // const fontSizeString: string = isNumber(fontSize) ? `${fontSize}px` : fontSize.toString();

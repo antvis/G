@@ -22,11 +22,13 @@ export function isPointInPath(
     radius,
     fill,
     stroke,
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 1,
+    increasedLineWidthForHitTesting = 0,
+    x = 0,
+    y = 0,
     width,
     height,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedRectStyleProps;
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
@@ -37,8 +39,7 @@ export function isPointInPath(
 
   const hasRadius = radius && radius.some((r) => r !== 0);
 
-  const lineWidthForHitTesting =
-    (lineWidth || 0) + (increasedLineWidthForHitTesting || 0);
+  const lineWidthForHitTesting = lineWidth + increasedLineWidthForHitTesting;
 
   // 无圆角时的策略
   if (!hasRadius) {
@@ -46,8 +47,8 @@ export function isPointInPath(
     // 同时填充和带有边框
     if ((hasFill && hasStroke) || isClipPath) {
       return inBox(
-        0 - halfWidth,
-        0 - halfWidth,
+        x - halfWidth,
+        y - halfWidth,
         width + halfWidth,
         height + halfWidth,
         position.x,
@@ -56,12 +57,12 @@ export function isPointInPath(
     }
     // 仅填充
     if (hasFill) {
-      return inBox(0, 0, width, height, position.x, position.y);
+      return inBox(x, y, width, height, position.x, position.y);
     }
     if (hasStroke) {
       return inRect(
-        0,
-        0,
+        x,
+        y,
         width,
         height,
         lineWidthForHitTesting,
@@ -73,8 +74,8 @@ export function isPointInPath(
     let isHit = false;
     if (hasStroke || isClipPath) {
       isHit = inRectWithRadius(
-        0,
-        0,
+        x,
+        y,
         width,
         height,
         radius.map((r) =>

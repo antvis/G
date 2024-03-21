@@ -41,7 +41,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-math": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "canvaskit-wasm": "^0.34.0",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"

@@ -10,8 +10,6 @@ export function generatePath(
     y1,
     x2,
     y2,
-    defX = 0,
-    defY = 0,
     markerStart,
     markerEnd,
     markerStartOffset,
@@ -43,6 +41,6 @@ export function generatePath(
     endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
-  context.moveTo(x1 - defX + startOffsetX, y1 - defY + startOffsetY);
-  context.lineTo(x2 - defX + endOffsetX, y2 - defY + endOffsetY);
+  context.moveTo(x1 + startOffsetX, y1 + startOffsetY);
+  context.lineTo(x2 + endOffsetX, y2 + endOffsetY);
 }

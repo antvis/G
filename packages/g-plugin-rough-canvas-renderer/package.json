@@ -40,7 +40,7 @@
   "dependencies": {
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "roughjs": "^4.5.2",
     "tslib": "^2.5.3"
   },

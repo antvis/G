@@ -46,7 +46,7 @@
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/g-plugin-mobile-interaction": "workspace:*",
     "@antv/g-plugin-gesture": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

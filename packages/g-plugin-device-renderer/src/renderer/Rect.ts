@@ -20,7 +20,7 @@ export class RectRenderer extends Batch {
     const hasDifferentRadius =
       radius && radius.length && radius.some((r) => r !== radius[0]);
 
-    if (!((fill as CSSRGB).isNone || hasDifferentRadius)) {
+    if (!((fill as CSSRGB)?.isNone || hasDifferentRadius)) {
       drawcalls.push(SDFDrawcall);
     }
 

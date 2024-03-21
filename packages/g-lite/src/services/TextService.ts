@@ -177,13 +177,13 @@ export class TextService {
     offscreenCanvas: CanvasLike,
   ): TextMetrics {
     const {
-      fontSize,
-      wordWrap,
+      fontSize = 16,
+      wordWrap = false,
       lineHeight: strokeHeight,
-      lineWidth,
-      textBaseline,
-      textAlign,
-      letterSpacing,
+      lineWidth = 1,
+      textBaseline = 'alphabetic',
+      textAlign = 'start',
+      letterSpacing = 0,
       textPath,
       textPathSide,
       textPathStartOffset,
@@ -349,7 +349,7 @@ export class TextService {
   ): string {
     const {
       wordWrapWidth = 0,
-      letterSpacing,
+      letterSpacing = 0,
       maxLines = Infinity,
       textOverflow,
     } = parsedStyle;

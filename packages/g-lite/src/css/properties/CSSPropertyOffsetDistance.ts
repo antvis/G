@@ -1,5 +1,5 @@
-import type { DisplayObject } from '../../display-objects';
 import { Shape } from '../../types';
+import type { DisplayObject } from '../../display-objects';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import {
@@ -39,8 +39,6 @@ export class CSSPropertyOffsetDistance
       // set position in world space
       const point = offsetPath.getPoint(offsetDistance);
       if (point) {
-        object.parsedStyle.defX = point.x;
-        object.parsedStyle.defY = point.y;
         object.setLocalPosition(point.x, point.y);
       }
     }

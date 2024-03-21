@@ -18,36 +18,35 @@ describe('Rect', () => {
     expect(rect.matches('[x=200]')).toBeFalsy();
 
     expect(rect.getAttributeNames()).toStrictEqual([
-      'anchor',
-      'opacity',
-      'fillOpacity',
-      'strokeOpacity',
-      'fill',
-      'stroke',
-      'transform',
-      'transformOrigin',
-      'visibility',
-      'pointerEvents',
-      'lineWidth',
-      'lineCap',
-      'lineJoin',
-      'increasedLineWidthForHitTesting',
-      'fontSize',
-      'fontFamily',
-      'fontStyle',
-      'fontWeight',
-      'fontVariant',
-      'textAlign',
-      'textBaseline',
-      'textTransform',
-      'zIndex',
-      'filter',
-      'shadowType',
+      // 'opacity',
+      // 'fillOpacity',
+      // 'strokeOpacity',
+      // 'fill',
+      // 'stroke',
+      // 'transform',
+      // 'transformOrigin',
+      // 'visibility',
+      // 'pointerEvents',
+      // 'lineWidth',
+      // 'lineCap',
+      // 'lineJoin',
+      // 'increasedLineWidthForHitTesting',
+      // 'fontSize',
+      // 'fontFamily',
+      // 'fontStyle',
+      // 'fontWeight',
+      // 'fontVariant',
+      // 'textAlign',
+      // 'textBaseline',
+      // 'textTransform',
+      // 'zIndex',
+      // 'filter',
+      // 'shadowType',
       'x',
       'y',
       'width',
       'height',
-      'radius',
+      // 'radius',
     ]);
     expect(rect.hasAttribute('width')).toBeTruthy();
     expect(rect.hasAttributes()).toBeTruthy();
@@ -123,20 +122,6 @@ describe('Rect', () => {
       expect(bounds.center).toStrictEqual([200, 100, 0]);
       expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
-
-    // change anchor from left-top corner to center,
-    rect.style.anchor = [0.5, 0.5];
-    expect(rect.getLocalPosition()).toStrictEqual([100, 0, 0]);
-    bounds = rect.getBounds();
-    if (bounds) {
-      expect(bounds.center).toStrictEqual([100, 0, 0]);
-      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
-    }
-    geometryBounds = rect.getGeometryBounds();
-    if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
-      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
-    }
   });
 
   it("should support Rect's negative width & height", () => {
@@ -204,20 +189,6 @@ describe('Rect', () => {
     if (renderBounds) {
       expect(renderBounds.center).toStrictEqual([-100, -100, 0]);
       expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
-    }
-
-    // change anchor from left-top corner to center,
-    rect.style.anchor = [0.5, 0.5];
-    expect(rect.getLocalPosition()).toStrictEqual([0, 0, 0]);
-    bounds = rect.getBounds();
-    if (bounds) {
-      expect(bounds.center).toStrictEqual([0, 0, 0]);
-      expect(bounds.halfExtents).toStrictEqual([100, 100, 0]);
-    }
-    geometryBounds = rect.getGeometryBounds();
-    if (geometryBounds) {
-      expect(geometryBounds.center).toStrictEqual([0, 0, 0]);
-      expect(geometryBounds.halfExtents).toStrictEqual([100, 100, 0]);
     }
   });
 });

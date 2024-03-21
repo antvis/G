@@ -41,7 +41,7 @@
     "@antv/g-lite": "workspace:*",
     "@antv/g-plugin-svg-renderer": "workspace:*",
     "@antv/g-svg": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "tslib": "^2.5.3",
     "zdog": "^1.1.3"
   },

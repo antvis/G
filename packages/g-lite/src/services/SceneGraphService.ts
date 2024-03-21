@@ -12,7 +12,7 @@ import type {
   IParentNode,
 } from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
-import { GlobalRuntime } from '../global-runtime';
+import { GlobalRuntime, runtime } from '../global-runtime';
 import { AABB, Rectangle } from '../shapes';
 import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
@@ -92,7 +92,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const sortable = (parent as unknown as Element).sortable;
     if (
       sortable?.sorted?.length ||
-      (child as unknown as Element).style?.zIndex
+      (child as unknown as Element).parsedStyle.zIndex
     ) {
       if (sortable.dirtyChildren.indexOf(child) === -1) {
         sortable.dirtyChildren.push(child);
@@ -159,6 +159,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   getOrigin(element: INode) {
+    (element as Element).getGeometryBounds();
     return (element as Element).transformable.origin;
   }
 
@@ -197,7 +198,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   rotate = (() => {
     const parentInvertRotation = quat.create();
-    return (element: INode, degrees: vec3 | number, y = 0, z = 0) => {
+    return (
+      element: INode,
+      degrees: vec3 | number,
+      y = 0,
+      z = 0,
+      dirtify = true,
+    ) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -221,7 +228,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
         quat.multiply(transform.localRotation, rotation, rot);
         quat.normalize(transform.localRotation, transform.localRotation);
 
-        this.dirtifyLocal(element, transform);
+        if (dirtify) {
+          this.dirtifyLocal(element, transform);
+        }
       }
     };
   })();
@@ -232,7 +241,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   rotateLocal = (() => {
     const rotation = quat.create();
-    return (element: INode, degrees: vec3 | number, y = 0, z = 0) => {
+    return (
+      element: INode,
+      degrees: vec3 | number,
+      y = 0,
+      z = 0,
+      dirtify = true,
+    ) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -240,7 +255,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
       quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
       quat.mul(transform.localRotation, transform.localRotation, rotation);
 
-      this.dirtifyLocal(element, transform);
+      if (dirtify) {
+        this.dirtifyLocal(element, transform);
+      }
     };
   })();
 
@@ -250,7 +267,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
   setEulerAngles = (() => {
     const invParentRot = quat.create();
 
-    return (element: INode, degrees: vec3 | number, y = 0, z = 0) => {
+    return (
+      element: INode,
+      degrees: vec3 | number,
+      y = 0,
+      z = 0,
+      dirtify = true,
+    ) => {
       if (typeof degrees === 'number') {
         degrees = vec3.fromValues(degrees, y, z);
       }
@@ -277,7 +300,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
           invParentRot,
         );
 
-        this.dirtifyLocal(element, transform);
+        if (dirtify) {
+          this.dirtifyLocal(element, transform);
+        }
       }
     };
   })();
@@ -285,13 +310,21 @@ export class DefaultSceneGraphService implements SceneGraphService {
   /**
    * set euler angles(degrees) in local space
    */
-  setLocalEulerAngles(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+  setLocalEulerAngles(
+    element: INode,
+    degrees: vec3 | number,
+    y = 0,
+    z = 0,
+    dirtify = true,
+  ) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
     const transform = (element as Element).transformable;
     quat.fromEuler(transform.localRotation, degrees[0], degrees[1], degrees[2]);
-    this.dirtifyLocal(element, transform);
+    if (dirtify) {
+      this.dirtifyLocal(element, transform);
+    }
   }
 
   /**
@@ -304,7 +337,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * ```
    */
   translateLocal = (() => {
-    return (element: INode, translation: vec3 | number, y = 0, z = 0) => {
+    return (
+      element: INode,
+      translation: vec3 | number,
+      y = 0,
+      z = 0,
+      dirtify = true,
+    ) => {
       if (typeof translation === 'number') {
         translation = vec3.fromValues(translation, y, z);
       }
@@ -315,7 +354,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
       vec3.transformQuat(translation, translation, transform.localRotation);
       vec3.add(transform.localPosition, transform.localPosition, translation);
 
-      this.dirtifyLocal(element, transform);
+      if (dirtify) {
+        this.dirtifyLocal(element, transform);
+      }
     };
   })();
 
@@ -329,7 +370,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const parentInvertMatrix = mat4.create();
     const tmpPosition = vec3.create();
 
-    return (element: INode, position: vec3 | vec2) => {
+    return (element: INode, position: vec3 | vec2, dirtify = true) => {
       const transform = (element as Element).transformable;
 
       tmpPosition[0] = position[0];
@@ -358,7 +399,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
         );
       }
 
-      this.dirtifyLocal(element, transform);
+      if (dirtify) {
+        this.dirtifyLocal(element, transform);
+      }
     };
   })();
 
@@ -368,7 +411,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
   setLocalPosition = (() => {
     const tmpPosition = vec3.create();
 
-    return (element: INode, position: vec3 | vec2) => {
+    return (element: INode, position: vec3 | vec2, dirtify = true) => {
       const transform = (element as Element).transformable;
 
       tmpPosition[0] = position[0];
@@ -380,24 +423,28 @@ export class DefaultSceneGraphService implements SceneGraphService {
       }
 
       vec3.copy(transform.localPosition, tmpPosition);
-      this.dirtifyLocal(element, transform);
+      if (dirtify) {
+        this.dirtifyLocal(element, transform);
+      }
     };
   })();
 
   /**
    * scale in local space
    */
-  scaleLocal(element: INode, scaling: vec3 | vec2) {
+  scaleLocal(element: INode, scaling: vec3 | vec2, dirtify = true) {
     const transform = (element as Element).transformable;
     vec3.multiply(
       transform.localScale,
       transform.localScale,
       vec3.fromValues(scaling[0], scaling[1], scaling[2] || 1),
     );
-    this.dirtifyLocal(element, transform);
+    if (dirtify) {
+      this.dirtifyLocal(element, transform);
+    }
   }
 
-  setLocalScale(element: INode, scaling: vec3 | vec2) {
+  setLocalScale(element: INode, scaling: vec3 | vec2, dirtify = true) {
     const transform = (element as Element).transformable;
     const updatedScaling = vec3.fromValues(
       scaling[0],
@@ -410,7 +457,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     vec3.copy(transform.localScale, updatedScaling);
-    this.dirtifyLocal(element, transform);
+    if (dirtify) {
+      this.dirtifyLocal(element, transform);
+    }
   }
 
   /**
@@ -430,7 +479,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const tmpVec3 = vec3.create();
     const tr = vec3.create();
 
-    return (element: INode, translation: vec3 | number, y = 0, z = 0) => {
+    return (
+      element: INode,
+      translation: vec3 | number,
+      y = 0,
+      z = 0,
+      dirtify = true,
+    ) => {
       if (typeof translation === 'number') {
         translation = vec3.set(tmpVec3, translation, y, z);
       }
@@ -440,7 +495,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       vec3.add(tr, this.getPosition(element), translation);
 
-      this.setPosition(element, tr);
+      this.setPosition(element, tr, dirtify);
     };
   })();
 
@@ -452,6 +507,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       y?: number,
       z?: number,
       w?: number,
+      dirtify = true,
     ) => {
       const transform = (element as Element).transformable;
       if (typeof rotation === 'number') {
@@ -471,7 +527,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
         quat.multiply(transform.localRotation, parentInvertRotation, rotation);
         quat.normalize(transform.localRotation, transform.localRotation);
 
-        this.dirtifyLocal(element, transform);
+        if (dirtify) {
+          this.dirtifyLocal(element, transform);
+        }
       }
     };
   };
@@ -482,13 +540,16 @@ export class DefaultSceneGraphService implements SceneGraphService {
     y?: number,
     z?: number,
     w?: number,
+    dirtify = true,
   ) {
     if (typeof rotation === 'number') {
       rotation = quat.fromValues(rotation, y, z, w);
     }
     const transform = (element as Element).transformable;
     quat.copy(transform.localRotation, rotation);
-    this.dirtifyLocal(element, transform);
+    if (dirtify) {
+      this.dirtifyLocal(element, transform);
+    }
   }
 
   setLocalSkew(element: INode, skew: vec2 | number, y?: number) {
@@ -772,9 +833,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const t = mat4.getTranslation(vec3.create(), transform);
     const r = mat4.getRotation(quat.create(), transform);
     const s = mat4.getScaling(vec3.create(), transform);
-    this.setLocalScale(element, s);
-    this.setLocalPosition(element, t);
-    this.setLocalRotation(element, r);
+    this.setLocalScale(element, s, false);
+    this.setLocalPosition(element, t, false);
+    this.setLocalRotation(element, r, undefined, undefined, undefined, false);
+    this.dirtifyLocal(element, (element as Element).transformable);
   }
 
   resetLocalTransform(element: INode) {
@@ -804,6 +866,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getGeometryBounds(element: INode, render = false): AABB {
     const geometry = (element as Element).geometry;
+
+    if (geometry.dirty) {
+      runtime.styleValueRegistry.updateGeometry(element as DisplayObject);
+    }
+
     const bounds = render
       ? geometry.renderBounds
       : geometry.contentBounds || null;

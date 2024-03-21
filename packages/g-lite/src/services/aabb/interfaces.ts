@@ -5,11 +5,11 @@ export interface GeometryAABBUpdater<T extends ParsedBaseStyleProps = any> {
     parsedStyle: T,
     object: DisplayObject,
   ) => {
-    width: number;
-    height: number;
-    depth?: number;
-    offsetX?: number;
-    offsetY?: number;
-    offsetZ?: number;
+    cx: number;
+    cy: number;
+    cz?: number;
+    hwidth: number;
+    hheight: number;
+    hdepth?: number;
   };
 }

@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@antv/g": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "gl-matrix": "^3.4.3",
     "react-reconciler": "^0.26.2",
     "scheduler": "^0.20.2",

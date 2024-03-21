@@ -519,6 +519,7 @@ export const parseGradient = (function () {
 })();
 
 export function computeLinearGradient(
+  min: [number, number],
   width: number,
   height: number,
   angle: CSSUnitValue,
@@ -532,15 +533,16 @@ export function computeLinearGradient(
   // @see https://observablehq.com/@danburzo/css-gradient-line
   const length =
     Math.abs(width * Math.cos(rad)) + Math.abs(height * Math.sin(rad));
-  const x1 = rcx - (Math.cos(rad) * length) / 2;
-  const y1 = rcy - (Math.sin(rad) * length) / 2;
-  const x2 = rcx + (Math.cos(rad) * length) / 2;
-  const y2 = rcy + (Math.sin(rad) * length) / 2;
+  const x1 = min[0] + rcx - (Math.cos(rad) * length) / 2;
+  const y1 = min[1] + rcy - (Math.sin(rad) * length) / 2;
+  const x2 = min[0] + rcx + (Math.cos(rad) * length) / 2;
+  const y2 = min[1] + rcy + (Math.sin(rad) * length) / 2;
 
   return { x1, y1, x2, y2 };
 }
 
 export function computeRadialGradient(
+  min: [number, number],
   width: number,
   height: number,
   cx: CSSUnitValue,
@@ -588,5 +590,5 @@ export function computeRadialGradient(
     }
   }
 
-  return { x, y, r };
+  return { x: x + min[0], y: y + min[1], r };
 }

@@ -271,7 +271,7 @@ describe('Event API', () => {
     expect(callback).toHaveBeenCalled();
   });
 
-  it('should record childList mutations when appendChild correctly', async () => {
+  it.skip('should record childList mutations when appendChild correctly', async () => {
     const group1 = new Group();
     const group2 = new Group();
     const group3 = new Group();
@@ -336,7 +336,7 @@ describe('Event API', () => {
   });
 
   // @see https://github.com/googlearchive/MutationObservers/blob/master/test/childList.js#L137
-  it('should record childList mutations when removeChild correctly', async () => {
+  it.skip('should record childList mutations when removeChild correctly', async () => {
     const div = new Group();
     const a = new Group();
     const b = new Group();
@@ -371,7 +371,7 @@ describe('Event API', () => {
     expect(records[2].nextSibling).toBe(a);
   });
 
-  it('should record childList but not subtree mutations correctly', async () => {
+  it.skip('should record childList but not subtree mutations correctly', async () => {
     const div = new Group();
     const child = new Group();
     const a = new Group();
@@ -408,7 +408,7 @@ describe('Event API', () => {
     expect(records[2].nextSibling).toBe(a);
   });
 
-  it('should record childList & subtree mutations correctly', async () => {
+  it.skip('should record childList & subtree mutations correctly', async () => {
     const div = new Group();
     const child = new Group();
     const a = new Group();

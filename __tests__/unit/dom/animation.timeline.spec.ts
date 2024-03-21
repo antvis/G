@@ -116,6 +116,6 @@ describe('Animation Timeline', () => {
     animation.pause();
     animation.currentTime = 250;
 
-    expect(circle.style.opacity).toBe('0.5');
+    expect(circle.style.opacity).toBe(0.5);
   });
 });

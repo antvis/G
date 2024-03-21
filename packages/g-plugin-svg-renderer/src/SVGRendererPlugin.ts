@@ -36,8 +36,12 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   clipPath: 'clip-path',
   textPath: 'text-path',
   r: 'r',
+  cx: 'cx',
+  cy: 'cy',
   rx: 'rx',
   ry: 'ry',
+  x: 'x',
+  y: 'y',
   width: 'width',
   height: 'height',
   lineCap: 'stroke-linecap',
@@ -60,7 +64,6 @@ export const SVG_ATTR_MAP: Record<string, string> = {
   // style: 'style',
   preserveAspectRatio: 'preserveAspectRatio',
   visibility: 'visibility',
-  anchor: 'anchor',
   shadowColor: 'flood-color',
   shadowBlur: 'stdDeviation',
   shadowOffsetX: 'dx',
@@ -101,6 +104,7 @@ export const DEFAULT_VALUE_MAP: Record<string, string> = {
   fontSize: 'inherit',
   fontFamily: 'inherit',
   pointerEvents: 'auto',
+  transform: 'matrix(1,0,0,1,0,0)',
 };
 
 export type GradientParams = LinearGradient | RadialGradient;
@@ -432,16 +436,18 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   applyTransform($el: SVGElement, rts: mat4) {
-    // use proper precision avoiding too long string in `transform`
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
-    $el.setAttribute(
-      'transform',
-      `matrix(${numberToLongString(rts[0])},${numberToLongString(
-        rts[1],
-      )},${numberToLongString(rts[4])},${numberToLongString(
-        rts[5],
-      )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`,
-    );
+    const matrix = `matrix(${numberToLongString(rts[0])},${numberToLongString(
+      rts[1],
+    )},${numberToLongString(rts[4])},${numberToLongString(
+      rts[5],
+    )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`;
+
+    $el.removeAttribute('transform');
+    if (matrix !== DEFAULT_VALUE_MAP.transform) {
+      // use proper precision avoiding too long string in `transform`
+      // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+      $el.setAttribute('transform', matrix);
+    }
   }
 
   private applyAttributes(object: DisplayObject) {
@@ -488,9 +494,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
             $el,
             this.svgElementMap,
           );
-          if (object.nodeName !== Shape.TEXT) {
-            this.updateAnchorWithTransform(object);
-          }
         }
       });
     }
@@ -498,6 +501,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
+      // console.log(name, usedName, computedStyle, parsedStyle);
       const computedValue = enableCSSParsing
         ? computedStyle[name]
         : parsedStyle[name];
@@ -524,12 +528,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         } else if (name === 'width' || name === 'height' || name === 'class') {
           // width & height are both required for <foreignObject> and cannot be used as style.
           $el.setAttribute(name, usedValue.toString());
-        } else if (
-          name !== 'x' &&
-          name !== 'y' &&
-          !isNil(object.style[name]) &&
-          object.style[name] !== ''
-        ) {
+        } else if (!isNil(object.style[name]) && object.style[name] !== '') {
           $el.style[name] = object.style[name];
         }
       } else {
@@ -583,11 +582,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.defElementManager.createOrUpdateShadow(object, $el, name);
         } else if (name === 'filter') {
           this.defElementManager.createOrUpdateFilter(object, $el, usedValue);
-        } else if (name === 'anchor') {
-          // text' anchor is controlled by `textAnchor` property
-          if (nodeName !== Shape.TEXT) {
-            this.updateAnchorWithTransform(object);
-          }
         } else {
           if (!isNil(computedValue)) {
             // use computed value so that we can use cascaded effect in SVG
@@ -832,43 +826,5 @@ export class SVGRendererPlugin implements RenderingPlugin {
         $groupEl.removeAttribute(attributeNameHyphen);
       }
     }
-  }
-
-  /**
-   * the origin is bounding box's top left corner
-   */
-  private updateAnchorWithTransform(object: DisplayObject) {
-    const bounds = object.getGeometryBounds();
-    const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-    const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-    const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-
-    [
-      ((object as any).elementSVG as ElementSVG)?.$el,
-      ((object as any).elementSVG as ElementSVG)?.$hitTestingEl,
-    ].forEach(($el: SVGElement) => {
-      if ($el) {
-        const tx = -(anchor[0] * width);
-        const ty = -(anchor[1] * height);
-
-        if (tx !== 0 || ty !== 0) {
-          // apply anchor to element's `transform` property
-          $el.setAttribute(
-            'transform',
-            // can't use percent unit like translate(-50%, -50%)
-            // @see https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/transform#translate
-            `translate(${tx},${ty})`,
-          );
-        }
-
-        if (
-          object.nodeName === Shape.CIRCLE ||
-          object.nodeName === Shape.ELLIPSE
-        ) {
-          $el.setAttribute('cx', `${width / 2}`);
-          $el.setAttribute('cy', `${height / 2}`);
-        }
-      }
-    });
   }
 }

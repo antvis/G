@@ -1,5 +1,196 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 1.9.27-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.20
+    -   @antv/g-lite@1.3.0-next.20
+
+## 1.9.27-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.19
+    -   @antv/g-lite@1.3.0-next.19
+
+## 1.9.27-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.18
+    -   @antv/g-lite@1.3.0-next.18
+
+## 1.9.27-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.17
+    -   @antv/g-lite@1.3.0-next.17
+
+## 1.9.27-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.16
+    -   @antv/g-lite@1.3.0-next.16
+
+## 1.9.27-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.15
+    -   @antv/g-lite@1.3.0-next.15
+
+## 1.9.27-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.14
+    -   @antv/g-lite@1.3.0-next.14
+
+## 1.9.27-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.13
+    -   @antv/g-lite@1.3.0-next.13
+
+## 1.9.27-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.12
+    -   @antv/g-lite@1.3.0-next.12
+
+## 1.9.27-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.11
+    -   @antv/g-lite@1.3.0-next.11
+
+## 1.9.27-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
+## 1.9.27-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.9
+    -   @antv/g-lite@1.3.0-next.9
+
+## 1.9.27-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.8
+    -   @antv/g-lite@1.3.0-next.8
+
+## 1.9.27-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.7
+    -   @antv/g-lite@1.3.0-next.7
+
+## 1.9.27-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.6
+    -   @antv/g-lite@1.3.0-next.6
+
+## 1.9.27-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.5
+    -   @antv/g-lite@1.3.0-next.5
+
+## 1.9.27-next.4
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.4
+    -   @antv/g-lite@1.3.0-next.4
+
+## 1.9.27-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-canvas@1.11.27-next.3
+    -   @antv/g-lite@1.3.0-next.3
+
+## 1.9.27-next.2
+
+### Patch Changes
+
+-   8efc380a5: x/y in rect can be omitted.
+-   614e15671: Transform can only be affected with the attribute.
+-   Updated dependencies [8efc380a5]
+-   Updated dependencies [614e15671]
+    -   @antv/g-canvas@1.11.27-next.2
+    -   @antv/g-lite@1.3.0-next.2
+
+## 1.9.27-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-canvas@1.11.27-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
+## 1.9.27-next.0
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.0
+    -   @antv/g-canvas@1.11.27-next.0
 ## 1.9.29
 
 ### Patch Changes

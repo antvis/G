@@ -1,5 +1,238 @@
 # @antv/g
 
+## 5.18.25-next.20
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.20
+    -   @antv/g-web-animations-api@1.2.23-next.20
+    -   @antv/g-camera-api@1.2.23-next.20
+    -   @antv/g-lite@1.3.0-next.20
+
+## 5.18.25-next.19
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.19
+    -   @antv/g-web-animations-api@1.2.23-next.19
+    -   @antv/g-camera-api@1.2.23-next.19
+    -   @antv/g-lite@1.3.0-next.19
+
+## 5.18.25-next.18
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.18
+    -   @antv/g-web-animations-api@1.2.23-next.18
+    -   @antv/g-camera-api@1.2.23-next.18
+    -   @antv/g-lite@1.3.0-next.18
+
+## 5.18.25-next.17
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.17
+    -   @antv/g-web-animations-api@1.2.23-next.17
+    -   @antv/g-camera-api@1.2.23-next.17
+    -   @antv/g-lite@1.3.0-next.17
+
+## 5.18.25-next.16
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.16
+    -   @antv/g-web-animations-api@1.2.23-next.16
+    -   @antv/g-camera-api@1.2.23-next.16
+    -   @antv/g-lite@1.3.0-next.16
+
+## 5.18.25-next.15
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.15
+    -   @antv/g-web-animations-api@1.2.23-next.15
+    -   @antv/g-camera-api@1.2.23-next.15
+    -   @antv/g-lite@1.3.0-next.15
+
+## 5.18.25-next.14
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.14
+    -   @antv/g-web-animations-api@1.2.23-next.14
+    -   @antv/g-camera-api@1.2.23-next.14
+    -   @antv/g-lite@1.3.0-next.14
+
+## 5.18.25-next.13
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.13
+    -   @antv/g-web-animations-api@1.2.23-next.13
+    -   @antv/g-camera-api@1.2.23-next.13
+    -   @antv/g-lite@1.3.0-next.13
+
+## 5.18.25-next.12
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.12
+    -   @antv/g-web-animations-api@1.2.23-next.12
+    -   @antv/g-camera-api@1.2.23-next.12
+    -   @antv/g-lite@1.3.0-next.12
+
+## 5.18.25-next.11
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.11
+    -   @antv/g-web-animations-api@1.2.23-next.11
+    -   @antv/g-camera-api@1.2.23-next.11
+    -   @antv/g-lite@1.3.0-next.11
+
+## 5.18.25-next.10
+
+### Patch Changes
+
+-   Transform origin should be relative to geometry bounds when using percentage unit.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.10
+    -   @antv/g-web-animations-api@1.2.23-next.10
+    -   @antv/g-camera-api@1.2.23-next.10
+    -   @antv/g-lite@1.3.0-next.10
+
+## 5.18.25-next.9
+
+### Patch Changes
+
+-   Group geometry updater.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.9
+    -   @antv/g-web-animations-api@1.2.23-next.9
+    -   @antv/g-camera-api@1.2.23-next.9
+    -   @antv/g-lite@1.3.0-next.9
+
+## 5.18.25-next.8
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.8
+    -   @antv/g-web-animations-api@1.2.23-next.8
+    -   @antv/g-camera-api@1.2.23-next.8
+    -   @antv/g-lite@1.3.0-next.8
+
+## 5.18.25-next.7
+
+### Patch Changes
+
+-   Refactor transform.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.7
+    -   @antv/g-web-animations-api@1.2.23-next.7
+    -   @antv/g-camera-api@1.2.23-next.7
+    -   @antv/g-lite@1.3.0-next.7
+
+## 5.18.25-next.6
+
+### Patch Changes
+
+-   Lazy calculate geometry.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.6
+    -   @antv/g-web-animations-api@1.2.23-next.6
+    -   @antv/g-camera-api@1.2.23-next.6
+    -   @antv/g-lite@1.3.0-next.6
+
+## 5.18.25-next.5
+
+### Patch Changes
+
+-   142a21f55: Insert event will trigger by default.
+-   Lazy calculate geometry.
+-   Updated dependencies [142a21f55]
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.5
+    -   @antv/g-web-animations-api@1.2.23-next.5
+    -   @antv/g-camera-api@1.2.23-next.5
+    -   @antv/g-lite@1.3.0-next.5
+
+## 5.18.25-next.4
+
+### Patch Changes
+
+-   Test.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.4
+    -   @antv/g-web-animations-api@1.2.23-next.4
+    -   @antv/g-camera-api@1.2.23-next.4
+    -   @antv/g-lite@1.3.0-next.4
+
+## 5.18.25-next.3
+
+### Patch Changes
+
+-   e4c1645ae: Test.
+-   Updated dependencies [e4c1645ae]
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.3
+    -   @antv/g-web-animations-api@1.2.23-next.3
+    -   @antv/g-camera-api@1.2.23-next.3
+    -   @antv/g-lite@1.3.0-next.3
+
+## 5.18.25-next.2
+
+### Patch Changes
+
+-   8efc380a5: x/y in rect can be omitted.
+-   614e15671: Transform can only be affected with the attribute.
+-   Updated dependencies [8efc380a5]
+-   Updated dependencies [614e15671]
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.2
+    -   @antv/g-web-animations-api@1.2.23-next.2
+    -   @antv/g-camera-api@1.2.23-next.2
+    -   @antv/g-lite@1.3.0-next.2
+
+## 5.18.25-next.1
+
+### Patch Changes
+
+-   Remove anchor attribute and modify geometry bounds calculation.
+-   Updated dependencies
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.1
+    -   @antv/g-web-animations-api@1.2.23-next.1
+    -   @antv/g-camera-api@1.2.23-next.1
+    -   @antv/g-lite@1.3.0-next.1
+
+## 5.18.25-next.0
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @antv/g-lite@1.3.0-next.0
+    -   @antv/g-camera-api@1.2.23-next.0
+    -   @antv/g-dom-mutation-observer-api@1.2.22-next.0
+    -   @antv/g-web-animations-api@1.2.23-next.0
 ## 5.18.27
 
 ### Patch Changes

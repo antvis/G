@@ -1,4 +1,6 @@
-import type { CSSUnitValue } from '../cssom';
+import { DisplayObject } from '../../display-objects';
+import { ParsedBaseStyleProps } from '../../types';
+import { UnitType, type CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import {
   parseTransformOrigin,
@@ -18,15 +20,17 @@ export class CSSPropertyTransformOrigin
 {
   parser = parseTransformOrigin;
   parserUnmemoize = parseTransformOriginUnmemoize;
-  // calculator(
-  //   name: string,
-  //   oldParsed: [CSSUnitValue, CSSUnitValue],
-  //   parsed: [CSSUnitValue, CSSUnitValue],
-  //   object: DisplayObject,
-  // ): [number, number] {
-  //   console.log(object, parsed);
 
-  //   return [parsed[0].value, parsed[1].value];
-  //   // return [convertPercentUnit(parsed[0], 0, object), convertPercentUnit(parsed[1], 1, object)];
-  // }
+  postProcessor(object: DisplayObject) {
+    const { transformOrigin } = object.parsedStyle as ParsedBaseStyleProps;
+    if (
+      transformOrigin[0].unit === UnitType.kPixels &&
+      transformOrigin[1].unit === UnitType.kPixels
+    ) {
+      object.setOrigin(transformOrigin[0].value, transformOrigin[1].value);
+    } else {
+      // Relative to geometry bounds, calculate later.
+      object.getGeometryBounds();
+    }
+  }
 }

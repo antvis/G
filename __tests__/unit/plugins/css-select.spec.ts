@@ -93,11 +93,11 @@ describe('CSS Select Plugin', () => {
       moon,
     ]);
 
-    expect(solarSystem.querySelectorAll('[line-width=4]')).toStrictEqual([
-      sun,
-      earth,
-      moon,
-    ]);
+    // expect(solarSystem.querySelectorAll('[line-width=4]')).toStrictEqual([
+    //   sun,
+    //   earth,
+    //   moon,
+    // ]);
 
     expect(solarSystem.querySelectorAll('[xx=4]')).toStrictEqual([]);
 

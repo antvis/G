@@ -6,6 +6,7 @@ import {
   Pattern,
   RadialGradient,
   Rect,
+  Tuple3Number,
   UnitType,
   computeLinearGradient,
   computeRadialGradient,
@@ -19,6 +20,10 @@ import { mat4 } from 'gl-matrix';
 export type GradientParams = (LinearGradient & RadialGradient) & {
   width: number;
   height: number;
+  /**
+   * Top-left corner
+   */
+  min: [number, number];
   type: GradientType;
 };
 export class ImagePool {
@@ -79,6 +84,7 @@ export class ImagePool {
     context: CanvasRenderingContext2D,
     $offscreenCanvas: HTMLCanvasElement,
     dpr: number,
+    min: Tuple3Number,
     callback: () => void,
   ) {
     const patternKey = this.generatePatternKey(pattern);
@@ -123,8 +129,8 @@ export class ImagePool {
         b: mat[1],
         c: mat[4],
         d: mat[5],
-        e: mat[12],
-        f: mat[13],
+        e: mat[12] + min[0],
+        f: mat[13] + min[1],
       });
     }
 
@@ -140,7 +146,7 @@ export class ImagePool {
     context: CanvasRenderingContext2D,
   ) {
     const key = this.generateGradientKey(params);
-    const { type, steps, width, height, angle, cx, cy, size } = params;
+    const { type, steps, min, width, height, angle, cx, cy, size } = params;
 
     if (this.gradientCache[key]) {
       return this.gradientCache[key];
@@ -148,11 +154,11 @@ export class ImagePool {
 
     let gradient: CanvasGradient | null = null;
     if (type === GradientType.LinearGradient) {
-      const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
+      const { x1, y1, x2, y2 } = computeLinearGradient(min, width, height, angle);
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
       gradient = context.createLinearGradient(x1, y1, x2, y2);
     } else if (type === GradientType.RadialGradient) {
-      const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
+      const { x, y, r } = computeRadialGradient(min, width, height, cx, cy, size);
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
       gradient = context.createRadialGradient(x, y, 0, x, y, r);
     }
@@ -171,10 +177,10 @@ export class ImagePool {
   }
 
   private generateGradientKey(params: GradientParams): string {
-    const { type, width, height, steps, angle, cx, cy, size } = params;
+    const { type, min, width, height, steps, angle, cx, cy, size } = params;
     return `gradient-${type}-${angle?.toString() || 0}-${cx?.toString() || 0}-${
       cy?.toString() || 0
-    }-${size?.toString() || 0}-${width}-${height}-${steps
+    }-${size?.toString() || 0}-${min[0]}-${min[1]}-${width}-${height}-${steps
       .map(({ offset, color }) => `${offset}${color}`)
       .join('-')}`;
   }

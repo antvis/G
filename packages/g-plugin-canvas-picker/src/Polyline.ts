@@ -13,12 +13,10 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 1,
+    increasedLineWidthForHitTesting = 0,
     points,
-    defX: x = 0,
-    defY: y = 0,
-    pointerEvents,
+    pointerEvents = 'auto',
     fill,
     stroke,
   } = displayObject.parsedStyle as ParsedPolylineStyleProps;
@@ -30,9 +28,9 @@ export function isPointInPath(
 
   return inPolyline(
     points.points,
-    (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
-    position.x + x,
-    position.y + y,
+    lineWidth + increasedLineWidthForHitTesting,
+    position.x,
+    position.y,
     false,
   );
 }

@@ -58,6 +58,9 @@ importers:
       d3:
         specifier: ^7.8.5
         version: 7.8.5
+      d3-force-3d:
+        specifier: ^3.0.3
+        version: 3.0.3
       eslint:
         specifier: ^7.32.0
         version: 7.32.0
@@ -94,6 +97,9 @@ importers:
       jsdom:
         specifier: ^19.0.0
         version: 19.0.0
+      lil-gui:
+        specifier: ^0.16.0
+        version: 0.16.0
       limit-size:
         specifier: ^0.1.4
         version: 0.1.4
@@ -111,7 +117,7 @@ importers:
         version: 5.3.0
       playwright:
         specifier: latest
-        version: 1.40.0
+        version: 1.40.1
       pngjs:
         specifier: ^6.0.0
         version: 6.0.0
@@ -133,6 +139,9 @@ importers:
       rollup-plugin-visualizer:
         specifier: ^5.9.2
         version: 5.9.2(rollup@3.29.4)
+      simplex-noise:
+        specifier: ^3.0.0
+        version: 3.0.0
       sinon:
         specifier: ^11.1.2
         version: 11.1.2
@@ -170,8 +179,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -203,8 +212,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -240,8 +249,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       canvaskit-wasm:
         specifier: ^0.34.0
         version: 0.34.0
@@ -259,8 +268,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -315,8 +324,8 @@ importers:
         specifier: workspace:*
         version: link:../g-math
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       d3-color:
         specifier: ^1.4.0
         version: 1.4.0
@@ -352,8 +361,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -361,8 +370,8 @@ importers:
   packages/g-math:
     dependencies:
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -397,8 +406,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-mobile-interaction
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -440,8 +449,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-svg-renderer
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -477,8 +486,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-mobile-interaction
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -496,8 +505,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -578,8 +587,8 @@ importers:
         specifier: workspace:*
         version: link:../g-math
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -599,8 +608,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-canvas-renderer
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -623,8 +632,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -644,8 +653,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       canvaskit-wasm:
         specifier: ^0.34.0
         version: 0.34.0
@@ -706,8 +715,8 @@ importers:
         specifier: workspace:*
         version: link:../g-shader-components
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       '@webgpu/types':
         specifier: ^0.1.6
         version: 0.1.33
@@ -755,8 +764,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -776,8 +785,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -791,8 +800,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -849,8 +858,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       roughjs:
         specifier: ^4.5.2
         version: 4.5.2
@@ -867,8 +876,8 @@ importers:
         specifier: workspace:*
         version: link:../g-svg
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       roughjs:
         specifier: ^4.5.2
         version: 4.5.2
@@ -894,8 +903,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -924,8 +933,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -949,8 +958,8 @@ importers:
         specifier: workspace:*
         version: link:../g-svg
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -983,8 +992,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-svg-renderer
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -999,8 +1008,8 @@ importers:
         specifier: workspace:*
         version: link:../g-lite
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1048,8 +1057,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       tslib:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1082,8 +1091,8 @@ importers:
         specifier: workspace:*
         version: link:../g-plugin-image-loader
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       '@webgpu/types':
         specifier: ^0.1.6
         version: 0.1.33
@@ -1104,8 +1113,8 @@ importers:
         specifier: workspace:*
         version: link:../g
       '@antv/util':
-        specifier: ^3.3.4
-        version: 3.3.4
+        specifier: ^3.3.5
+        version: 3.3.5
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
@@ -1156,14 +1165,6 @@ packages:
       '@antv/util': 3.3.5
       '@webgpu/types': 0.1.34
       eventemitter3: 5.0.1
-      gl-matrix: 3.4.3
-      tslib: 2.6.2
-    dev: false
-
-  /@antv/util@3.3.4:
-    resolution: {integrity: sha512-NGRjPCPje8GIC14Ye7sjebamFIjxoZ+mCIqfXz6wD/M6fA9SgJivzmLB3Ry01Wq8PI36oOVv9BwrAGV1JD8vjA==}
-    dependencies:
-      fast-deep-equal: 3.1.3
       gl-matrix: 3.4.3
       tslib: 2.6.2
     dev: false
@@ -3763,6 +3764,10 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /d3-binarytree@0.2.2:
+    resolution: {integrity: sha512-TmgSEKWO4lSjX26Rk77hbTdiF3TQ1v5LqL+cmSz6/5RiSxmq6+e6qHE6X/KwrsIESekhEReH63X5yM8dvXaT7A==}
+    dev: true
+
   /d3-brush@3.0.0:
     resolution: {integrity: sha512-ALnjWlVYkXsVIGlOsuWH1+3udkYFI48Ljihfnh8FZPF2QS9o+PzGLBslO0PjzVoHLZ2KCVgAM8NVkXPJB2aNnQ==}
     engines: {node: '>=12'}
@@ -3839,6 +3844,17 @@ packages:
       d3-dsv: 3.0.1
     dev: true
 
+  /d3-force-3d@3.0.3:
+    resolution: {integrity: sha512-8HGTbw6y35UYManGCPU4+b9/PGgnyjzRq80DRsp7zFsRl0leVz2pzwx18dwkPe4rDxTOEpM4BuWQ2krbVaGQQA==}
+    engines: {node: '>=12'}
+    dependencies:
+      d3-binarytree: 0.2.2
+      d3-dispatch: 3.0.1
+      d3-octree: 0.2.2
+      d3-quadtree: 3.0.1
+      d3-timer: 3.0.1
+    dev: true
+
   /d3-force@3.0.0:
     resolution: {integrity: sha512-zxV/SsA+U4yte8051P4ECydjD/S+qeYtnaIyAs9tgHCqfguma/aAQDjo85A9Z6EKhBirHRJHXIgJUlffT4wdLg==}
     engines: {node: '>=12'}
@@ -3870,6 +3886,10 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       d3-color: 3.1.0
+    dev: true
+
+  /d3-octree@0.2.2:
+    resolution: {integrity: sha512-ysk9uSPAhZVb0Gq4GXzghl/Yqxu80dHrq55I53qaIMdGB65+0UfO84sr4Fci2JHumcgh6H4WE0r8LwxPagkE+g==}
     dev: true
 
   /d3-path@3.1.0:
@@ -6671,6 +6691,10 @@ packages:
       type-check: 0.4.0
     dev: true
 
+  /lil-gui@0.16.0:
+    resolution: {integrity: sha512-wDySFozDfOed8UymoMprgQ+xuEZhbOP9h6cagszu/gIRpGjfoo8lHPYXXJN5OluHoM1Z4Y2ac0FJhiMQC5Ac0Q==}
+    dev: true
+
   /limit-size@0.1.4:
     resolution: {integrity: sha512-SZd3ydWUOMV69OxNs9XERPe9RIwry3joLHcRaN1ps/FkEuPiPeIEMFraqR4KbQNqrmnD3AllrnmpePtu5K3BgQ==}
     hasBin: true
@@ -7552,18 +7576,18 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /playwright-core@1.40.0:
-    resolution: {integrity: sha512-fvKewVJpGeca8t0ipM56jkVSU6Eo0RmFvQ/MaCQNDYm+sdvKkMBBWTE1FdeMqIdumRaXXjZChWHvIzCGM/tA/Q==}
+  /playwright-core@1.40.1:
+    resolution: {integrity: sha512-+hkOycxPiV534c4HhpfX6yrlawqVUzITRKwHAmYfmsVreltEl6fAZJ3DPfLMOODw0H3s1Itd6MDCWmP1fl/QvQ==}
     engines: {node: '>=16'}
     hasBin: true
     dev: true
 
-  /playwright@1.40.0:
-    resolution: {integrity: sha512-gyHAgQjiDf1m34Xpwzaqb76KgfzYrhK7iih+2IzcOCoZWr/8ZqmdBw+t0RU85ZmfJMgtgAiNtBQ/KS2325INXw==}
+  /playwright@1.40.1:
+    resolution: {integrity: sha512-2eHI7IioIpQ0bS1Ovg/HszsN/XKNwEG1kbzSDDmADpclKc7CyqkHw7Mg2JCz/bbCxg25QUPcjksoMW7JcIFQmw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright-core: 1.40.0
+      playwright-core: 1.40.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
@@ -8326,6 +8350,10 @@ packages:
 
   /signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+    dev: true
+
+  /simplex-noise@3.0.0:
+    resolution: {integrity: sha512-sZP1EvUpRW/f3wjeSWUs94Xp4+S46oLGNiqkaROM92m3FvFm5ymJFMg67LcHpqikI8isXJlN/sE1Cfpe86xp0w==}
     dev: true
 
   /sinon@11.1.2:

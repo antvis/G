@@ -5,7 +5,7 @@ import type {
   Pattern,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB, isPattern, isCSSRGB, parseColor } from '@antv/g-lite';
+import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { LightPool } from '../LightPool';
@@ -36,6 +36,7 @@ import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import type { TexturePool } from '../TexturePool';
 import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 import { packUint8ToFloat } from '../utils/compression';
+import { ParsedMeshStyleProps } from '../Mesh';
 
 let counter = 1;
 export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -143,7 +144,7 @@ export abstract class Instanced {
   /**
    * Account for anchor and merge it into modelMatrix.
    */
-  protected mergeAnchorIntoModelMatrix = false;
+  protected mergeXYZIntoModelMatrix = false;
 
   protected checkNodeName = true;
 
@@ -206,6 +207,10 @@ export abstract class Instanced {
     // can't be merged if gradients & pattern used
     const source = o1.parsedStyle[name];
     const target = o2.parsedStyle[name];
+
+    if (!source && !target) {
+      return true;
+    }
 
     // constant color value
     if (isCSSRGB(source) && isCSSRGB(target)) {
@@ -270,6 +275,11 @@ export abstract class Instanced {
     const packedStyle: number[] = [];
     const packedPicking: number[] = [];
     const divisor = this.divisor;
+    const anchorOffset =
+      objects[0]?.nodeName === Shape.CIRCLE ||
+      objects[0]?.nodeName === Shape.ELLIPSE
+        ? 0.5
+        : 0;
 
     // const useNormal = this.material.defines.NORMAL;
 
@@ -277,13 +287,12 @@ export abstract class Instanced {
       const {
         fill,
         stroke,
-        opacity,
-        fillOpacity,
-        strokeOpacity,
-        lineWidth,
-        anchor,
+        opacity = 1,
+        fillOpacity = 1,
+        strokeOpacity = 1,
+        lineWidth = 1,
         visibility,
-        increasedLineWidthForHitTesting,
+        increasedLineWidthForHitTesting = 0,
       } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (isCSSRGB(fill)) {
@@ -326,26 +335,12 @@ export abstract class Instanced {
         // @ts-ignore
         object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
-      if (this.mergeAnchorIntoModelMatrix) {
-        const { anchor } = object.parsedStyle as ParsedBaseStyleProps;
-        let translateX = 0;
-        let translateY = 0;
-        let translateZ = 0;
-        const contentBounds = object.getGeometryBounds();
-        if (contentBounds) {
-          const { halfExtents } = contentBounds;
-          translateX = -halfExtents[0] * anchor[0] * 2;
-          translateY = -halfExtents[1] * anchor[1] * 2;
-          translateZ = -halfExtents[2] * (anchor[2] || 0) * 2;
-        }
-
+      if (this.mergeXYZIntoModelMatrix) {
+        const { x, y, z } = object.parsedStyle as ParsedMeshStyleProps;
         mat4.mul(
           modelMatrix,
           object.getWorldTransform(), // apply anchor
-          mat4.fromTranslation(
-            modelMatrix,
-            vec3.fromValues(translateX, translateY, translateZ),
-          ),
+          mat4.fromTranslation(modelMatrix, vec3.fromValues(x, y, z)),
         );
       } else {
         mat4.copy(modelMatrix, object.getWorldTransform());
@@ -362,10 +357,10 @@ export abstract class Instanced {
         fillOpacity,
         strokeOpacity,
         lineWidth,
-        visibility === 'visible' ? 1 : 0,
-        anchor[0],
-        anchor[1],
-        increasedLineWidthForHitTesting || 0,
+        visibility !== 'hidden' ? 1 : 0,
+        anchorOffset,
+        anchorOffset,
+        increasedLineWidthForHitTesting,
       );
       packedPicking.push(
         ...encodedPickingColor,
@@ -500,6 +495,12 @@ export abstract class Instanced {
     if (this.geometry) {
       this.geometry.destroy();
     }
+    // if (this.textureMappings) {
+    //   this.textureMappings.forEach((mapping) => {
+    //     mapping.texture.destroy();
+    //   });
+    //   this.textureMappings = [];
+    // }
   }
 
   applyRenderInst(renderInst: RenderInst, objects: DisplayObject[]) {
@@ -786,25 +787,29 @@ export abstract class Instanced {
       }
     } else if (stylePacked.indexOf(name) > -1) {
       const packed: number[] = [];
+      const anchorOffset =
+        objects[0]?.nodeName === Shape.CIRCLE ||
+        objects[0]?.nodeName === Shape.ELLIPSE
+          ? 0.5
+          : 0;
       objects.forEach((object) => {
         const {
-          opacity,
-          fillOpacity,
-          strokeOpacity,
-          lineWidth,
+          opacity = 1,
+          fillOpacity = 1,
+          strokeOpacity = 1,
+          lineWidth = 1,
           visibility,
-          anchor,
-          increasedLineWidthForHitTesting,
+          increasedLineWidthForHitTesting = 0,
         } = object.parsedStyle as ParsedBaseStyleProps;
         packed.push(
           opacity,
           fillOpacity,
           strokeOpacity,
           lineWidth,
-          visibility === 'visible' ? 1 : 0,
-          anchor[0],
-          anchor[1],
-          increasedLineWidthForHitTesting || 0,
+          visibility !== 'hidden' ? 1 : 0,
+          anchorOffset,
+          anchorOffset,
+          increasedLineWidthForHitTesting,
         );
       });
 
@@ -814,30 +819,20 @@ export abstract class Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'modelMatrix') {
+    } else if (
+      name === 'modelMatrix' ||
+      (this.mergeXYZIntoModelMatrix &&
+        (name === 'x' || name === 'y' || name === 'z'))
+    ) {
       const packed: number[] = [];
       const modelMatrix = mat4.create();
       objects.forEach((object) => {
-        if (this.mergeAnchorIntoModelMatrix) {
-          const { anchor } = object.parsedStyle;
-          let translateX = 0;
-          let translateY = 0;
-          let translateZ = 0;
-          const contentBounds = object.getGeometryBounds();
-          if (contentBounds) {
-            const { halfExtents } = contentBounds;
-            translateX = -halfExtents[0] * anchor[0] * 2;
-            translateY = -halfExtents[1] * anchor[1] * 2;
-            translateZ = -halfExtents[2] * (anchor[2] || 0) * 2;
-          }
-
+        if (this.mergeXYZIntoModelMatrix) {
+          const { x, y, z } = object.parsedStyle as ParsedMeshStyleProps;
           mat4.mul(
             modelMatrix,
             object.getWorldTransform(), // apply anchor
-            mat4.fromTranslation(
-              modelMatrix,
-              vec3.fromValues(translateX, translateY, translateZ),
-            ),
+            mat4.fromTranslation(modelMatrix, vec3.fromValues(x, y, z)),
           );
         } else {
           mat4.copy(modelMatrix, object.getWorldTransform());

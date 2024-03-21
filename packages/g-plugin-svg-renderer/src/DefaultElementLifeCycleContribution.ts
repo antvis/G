@@ -31,10 +31,10 @@ export const SHAPE2TAGS: Record<Shape | string, string> = {
 };
 
 export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
-  [Shape.CIRCLE]: ['r'],
-  [Shape.ELLIPSE]: ['rx', 'ry'],
-  [Shape.RECT]: ['width', 'height', 'radius'],
-  [Shape.IMAGE]: ['img', 'width', 'height'],
+  [Shape.CIRCLE]: ['cx', 'cy', 'r'],
+  [Shape.ELLIPSE]: ['cx', 'cy', 'rx', 'ry'],
+  [Shape.RECT]: ['x', 'y', 'width', 'height', 'radius'],
+  [Shape.IMAGE]: ['x', 'y', 'src', 'width', 'height'],
   [Shape.LINE]: [
     'x1',
     'y1',
@@ -62,7 +62,7 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
     'markerEndOffset',
   ],
   [Shape.PATH]: [
-    'path',
+    'd',
     'markerStart',
     'markerEnd',
     'markerMid',

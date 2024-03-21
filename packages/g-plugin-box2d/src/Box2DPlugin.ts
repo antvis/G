@@ -253,8 +253,7 @@ export class Box2DPlugin implements RenderingPlugin {
       | Box2D.b2PolygonShape
       | Box2D.b2ChainShape;
     if (nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2, defX, defY } =
-        parsedStyle as ParsedLineStyleProps;
+      const { x1, y1, x2, y2 } = parsedStyle as ParsedLineStyleProps;
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md39
       shape = new b2EdgeShape();
       const points = sortPointsInCCW([
@@ -263,14 +262,14 @@ export class Box2DPlugin implements RenderingPlugin {
       ]);
       // @ts-ignore
       shape.SetTwoSided(
-        new b2Vec2(points[0][0] - defX, points[0][1] - defY),
-        new b2Vec2(points[1][0] - defX, points[1][1] - defY),
+        new b2Vec2(points[0][0], points[0][1]),
+        new b2Vec2(points[1][0], points[1][1]),
       );
     } else if (nodeName === Shape.POLYLINE) {
-      const { points, defX, defY } = parsedStyle as ParsedPolylineStyleProps;
+      const { points } = parsedStyle as ParsedPolylineStyleProps;
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(
-        ([x, y]) => new b2Vec2(x - defX, y - defY),
+        ([x, y]) => new b2Vec2(x, y),
       );
       // const prev = pointsInCCW[0];
       // const next = pointsInCCW[pointsInCCW.length - 1];
@@ -281,8 +280,8 @@ export class Box2DPlugin implements RenderingPlugin {
         false,
         vertices[0],
         vertices[vertices.length - 1],
-        // new b2Vec2(prev[0] - defX + eps, prev[1] - defY),
-        // new b2Vec2(next[0] - defX + eps, next[1] - defY),
+        // new b2Vec2(prev[0]  + eps, prev[1] ),
+        // new b2Vec2(next[0]  + eps, next[1] ),
       );
     } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
       const { width, height } = parsedStyle as ParsedRectStyleProps;
@@ -303,11 +302,11 @@ export class Box2DPlugin implements RenderingPlugin {
     } else if (nodeName === Shape.ELLIPSE) {
       // @see https://stackoverflow.com/questions/10032756/how-to-create-ellipse-shapes-in-box2d
     } else if (nodeName === Shape.POLYGON) {
-      const { points, defX, defY } = parsedStyle as ParsedPolygonStyleProps;
+      const { points } = parsedStyle as ParsedPolygonStyleProps;
 
       const pointsInCCW = sortPointsInCCW(points.points);
       const vertices: Box2D.b2Vec2[] = pointsInCCW.map(
-        ([x, y]) => new b2Vec2(x - defX, y - defY),
+        ([x, y]) => new b2Vec2(x, y),
       );
       shape = createPolygonShape(this.Box2D, vertices);
     } else if (nodeName === Shape.PATH) {

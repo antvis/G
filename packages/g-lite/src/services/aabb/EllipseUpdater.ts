@@ -1,16 +1,20 @@
-import type { Ellipse, ParsedEllipseStyleProps } from '../../display-objects/Ellipse';
+import type {
+  Ellipse,
+  ParsedEllipseStyleProps,
+} from '../../display-objects/Ellipse';
 import type { GeometryAABBUpdater } from './interfaces';
 
-export class EllipseUpdater implements GeometryAABBUpdater<ParsedEllipseStyleProps> {
+export class EllipseUpdater
+  implements GeometryAABBUpdater<ParsedEllipseStyleProps>
+{
   update(parsedStyle: ParsedEllipseStyleProps, object: Ellipse) {
-    const { rx, ry } = parsedStyle;
-
-    const width = rx * 2;
-    const height = ry * 2;
+    const { cx = 0, cy = 0, rx = 0, ry = 0 } = parsedStyle;
 
     return {
-      width,
-      height,
+      cx,
+      cy,
+      hwidth: rx,
+      hheight: ry,
     };
   }
 }

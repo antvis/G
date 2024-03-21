@@ -1,20 +1,15 @@
 import type { CSSUnitValue } from '../css';
 import type { DisplayObjectConfig } from '../dom';
-import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface GroupStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
   width?: number | string;
   height?: number | string;
 }
 
 export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
   width?: CSSUnitValue;
   height?: CSSUnitValue;
 }
@@ -30,21 +25,26 @@ export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
   </g>
  */
 export class Group extends DisplayObject {
-  constructor({ style, ...rest }: DisplayObjectConfig<GroupStyleProps> = {}) {
+  constructor(options: DisplayObjectConfig<GroupStyleProps> = {}) {
     super({
       type: Shape.GROUP,
-      style: runtime.enableCSSParsing
-        ? {
-            x: '',
-            y: '',
-            width: '',
-            height: '',
-            ...style,
-          }
-        : {
-            ...style,
-          },
-      ...rest,
+      ...options,
     });
   }
+
+  // constructor({ style, ...rest }: DisplayObjectConfig<GroupStyleProps> = {}) {
+  //   super({
+  //     type: Shape.GROUP,
+  //     style: runtime.enableCSSParsing
+  //       ? {
+  //           width: '',
+  //           height: '',
+  //           ...style,
+  //         }
+  //       : {
+  //           ...style,
+  //         },
+  //     ...rest,
+  //   });
+  // }
 }

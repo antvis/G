@@ -17,15 +17,21 @@ export class PolylineUpdater
 
       const width = maxX - minX;
       const height = maxY - minY;
+      const hwidth = width / 2;
+      const hheight = height / 2;
 
       return {
-        width,
-        height,
+        cx: minX + hwidth,
+        cy: minY + hheight,
+        hwidth,
+        hheight,
       };
     }
     return {
-      width: 0,
-      height: 0,
+      cx: 0,
+      cy: 0,
+      hwidth: 0,
+      hheight: 0,
     };
   }
 }

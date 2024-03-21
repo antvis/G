@@ -20,15 +20,8 @@ import type {
 export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
   const skPath = new CanvasKit.Path();
 
-  const {
-    defX,
-    defY,
-    path,
-    markerStart,
-    markerEnd,
-    markerStartOffset,
-    markerEndOffset,
-  } = object.parsedStyle as ParsedPathStyleProps;
+  const { d, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
+    object.parsedStyle as ParsedPathStyleProps;
 
   let startOffsetX = 0;
   let startOffsetY = 0;
@@ -58,7 +51,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
     endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
   }
 
-  const { absolutePath, segments } = path;
+  const { absolutePath, segments } = d;
 
   for (let i = 0; i < absolutePath.length; i++) {
     const params = absolutePath[i]; // eg. M 100 200
@@ -76,54 +69,37 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
       case 'M':
         // Use start marker offset
         if (useStartOffset) {
-          skPath.moveTo(
-            params[1] - defX + startOffsetX,
-            params[2] - defY + startOffsetY,
-          );
-          skPath.lineTo(params[1] - defX, params[2] - defY);
+          skPath.moveTo(params[1] + startOffsetX, params[2] + startOffsetY);
+          skPath.lineTo(params[1], params[2]);
         } else {
-          skPath.moveTo(params[1] - defX, params[2] - defY);
+          skPath.moveTo(params[1], params[2]);
         }
         break;
       case 'L':
         if (useEndOffset) {
-          skPath.lineTo(
-            params[1] - defX + endOffsetX,
-            params[2] - defY + endOffsetY,
-          );
+          skPath.lineTo(params[1] + endOffsetX, params[2] + endOffsetY);
         } else {
-          skPath.lineTo(params[1] - defX, params[2] - defY);
+          skPath.lineTo(params[1], params[2]);
         }
         break;
       case 'Q':
-        skPath.quadTo(
-          params[1] - defX,
-          params[2] - defY,
-          params[3] - defX,
-          params[4] - defY,
-        );
+        skPath.quadTo(params[1], params[2], params[3], params[4]);
         if (useEndOffset) {
-          skPath.lineTo(
-            params[3] - defX + endOffsetX,
-            params[4] - defY + endOffsetY,
-          );
+          skPath.lineTo(params[3] + endOffsetX, params[4] + endOffsetY);
         }
         break;
       case 'C':
         skPath.cubicTo(
-          params[1] - defX,
-          params[2] - defY,
-          params[3] - defX,
-          params[4] - defY,
-          params[5] - defX,
-          params[6] - defY,
+          params[1],
+          params[2],
+          params[3],
+          params[4],
+          params[5],
+          params[6],
         );
 
         if (useEndOffset) {
-          skPath.lineTo(
-            params[5] - defX + endOffsetX,
-            params[6] - defY + endOffsetY,
-          );
+          skPath.lineTo(params[5] + endOffsetX, params[6] + endOffsetY);
         }
         break;
       case 'A': {
@@ -136,15 +112,12 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
           params[3],
           !largeArcFlag, // useSmallArc
           !!(1 - sweepFlag),
-          params[6] - defX,
-          params[7] - defY,
+          params[6],
+          params[7],
         );
 
         if (useEndOffset) {
-          skPath.lineTo(
-            params[6] - defX + endOffsetX,
-            params[7] - defY + endOffsetY,
-          );
+          skPath.lineTo(params[6] + endOffsetX, params[7] + endOffsetY);
         }
         break;
       }

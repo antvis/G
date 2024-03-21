@@ -12,10 +12,14 @@ export class LineUpdater implements GeometryAABBUpdater<ParsedLineStyleProps> {
 
     const width = maxX - minX;
     const height = maxY - minY;
+    const hwidth = width / 2;
+    const hheight = height / 2;
 
     return {
-      width,
-      height,
+      cx: minX + hwidth,
+      cy: minY + hheight,
+      hwidth,
+      hheight,
     };
   }
 }

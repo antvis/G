@@ -25,7 +25,7 @@ enum FillVertexAttributeLocation {
 }
 
 export class InstancedFillDrawcall extends Instanced {
-  protected mergeAnchorIntoModelMatrix = true;
+  // protected mergeAnchorIntoModelMatrix = true;
 
   constructor(
     protected renderHelper: RenderHelper,

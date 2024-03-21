@@ -19,10 +19,14 @@ export function updateTextElementAttribute(
   text: Text,
   runtime: GlobalRuntime,
 ) {
+  // Trigger text geometry calculation.
+  text.getBounds();
   const {
-    lineWidth,
-    dx,
-    dy,
+    lineWidth = 1,
+    x = 0,
+    y = 0,
+    dx = 0,
+    dy = 0,
     textPath,
     textPathSide = 'left',
     textPathStartOffset = 0,
@@ -31,7 +35,7 @@ export function updateTextElementAttribute(
     textDecorationStyle = '',
     metrics,
   } = parsedStyle;
-  let { textBaseline } = parsedStyle;
+  let { textBaseline = 'alphabetic' } = parsedStyle;
 
   if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
     textBaseline = 'bottom';
@@ -55,6 +59,12 @@ export function updateTextElementAttribute(
   }
   if (styleCSSText) {
     $el.setAttribute('style', styleCSSText);
+  }
+  if (x !== 0) {
+    $el.setAttribute('x', `${x}`);
+  }
+  if (y !== 0) {
+    $el.setAttribute('y', `${y}`);
   }
 
   if (lineNum === 1) {
@@ -111,7 +121,7 @@ export function updateTextElementAttribute(
         } else {
           dy = lineHeight;
         }
-        return `<tspan x="0" dx="${dx}" dy="${dy}">${convertHTML(
+        return `<tspan x=${x} dx="${dx}" dy="${dy}">${convertHTML(
           line,
         )}</tspan>`;
       })

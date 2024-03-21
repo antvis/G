@@ -162,7 +162,7 @@ export class Sector extends Path {
       sr0 ? sr0 : 0,
       radius ? radius : [0, 0, 0, 0],
     );
-    super.setAttribute('path', path);
+    super.setAttribute('d', path);
   }
 
   private createPath(

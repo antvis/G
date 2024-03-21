@@ -1,4 +1,5 @@
-import { runtime, Canvas, CanvasEvent } from '../packages/g';
+import * as lil from 'lil-gui';
+import { Canvas, CanvasEvent, runtime } from '../packages/g';
 import { Renderer as CanvasRenderer } from '../packages/g-canvas';
 import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
 import { Renderer as SVGRenderer } from '../packages/g-svg';
@@ -13,9 +14,9 @@ import * as d3 from './demos/d3';
 import * as plugin from './demos/plugin';
 import * as hammerjs from './demos/hammerjs';
 import * as lottie from './demos/lottie';
+import * as perf from './demos/perf';
 import * as bugfix from './demos/bugfix';
-
-runtime.enableCSSParsing = false;
+import * as event from './demos/event';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -26,6 +27,8 @@ const tests = {
   ...createSpecRender(namespace(hammerjs, 'hammerjs')),
   ...createSpecRender(namespace(lottie, 'lottie')),
   ...createSpecRender(namespace(bugfix, 'bugfix')),
+  ...createSpecRender(namespace(perf, 'perf')),
+  ...createSpecRender(namespace(event, 'event')),
 };
 
 const renderers = {
@@ -169,6 +172,8 @@ function createSpecRender(object) {
       // Select render is necessary for spec tests.
       selectRenderer.style.display = 'inline';
 
+      runtime.enableCSSParsing = false;
+
       const renderer = new renderers[selectRenderer.value]({
         // Used for WebGL renderer
         wasmDir: '/',
@@ -208,10 +213,35 @@ function createSpecRender(object) {
       window.__g_instances__ = [canvas];
 
       // GUI
-      // const gui = new lil.GUI({ autoPlace: false });
-      // $div.appendChild(gui.domElement);
+      const gui = new lil.GUI({ autoPlace: false });
+      $div.appendChild(gui.domElement);
 
-      await generate({ canvas, renderer, container: $div });
+      await generate({ canvas, renderer, container: $div, gui });
+
+      if (
+        selectRenderer.value === 'canvas' &&
+        renderer.getConfig().enableDirtyRectangleRendering &&
+        renderer.getConfig().enableDirtyRectangleRenderingDebug
+      ) {
+        // display dirty rectangle
+        const $dirtyRectangle = document.createElement('div');
+        $dirtyRectangle.style.cssText = `
+        position: absolute;
+        pointer-events: none;
+        background: rgba(255, 0, 0, 0.5);
+        `;
+        $div.appendChild($dirtyRectangle);
+        canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
+          const { dirtyRect } = e.detail;
+          const { x, y, width, height } = dirtyRect;
+          const dpr = window.devicePixelRatio;
+          // convert from canvas coords to viewport
+          $dirtyRectangle.style.left = `${x / dpr}px`;
+          $dirtyRectangle.style.top = `${y / dpr}px`;
+          $dirtyRectangle.style.width = `${width / dpr}px`;
+          $dirtyRectangle.style.height = `${height / dpr}px`;
+        });
+      }
 
       if (
         selectRenderer.value === 'canvas' &&

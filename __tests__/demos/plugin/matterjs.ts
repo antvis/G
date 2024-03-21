@@ -2,16 +2,7 @@ import { Circle, Image, Line, Polygon, Rect } from '../../../packages/g';
 import { Plugin as PluginMatterjs } from '../../../packages/g-plugin-matterjs';
 
 export async function matterjs(context) {
-  const { canvas, renderer } = context;
-
-  renderer.registerPlugin(
-    new PluginMatterjs({
-      debug: true, // 开启 debug 模式，将物理引擎世界也渲染出来
-      debugContainer: document.getElementById('app')!,
-      debugCanvasWidth: 600,
-      debugCanvasHeight: 500,
-    }),
-  );
+  const { canvas } = context;
 
   await canvas.ready;
 
@@ -82,13 +73,14 @@ export async function matterjs(context) {
   const circle = new Circle({
     style: {
       fill: '#1890FF',
-      r: 50,
+      r: 100,
       // @ts-ignore
       rigid: 'dynamic',
       density: 0.1,
       restitution: 0.5,
       cx: 300,
       cy: 0,
+      transform: 'scale(0.5)',
     },
   });
   canvas.appendChild(circle);
@@ -136,7 +128,7 @@ export async function matterjs(context) {
       y: 100,
       width: 80,
       height: 80,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       // @ts-ignore
       rigid: 'dynamic',
       density: 10,
@@ -144,3 +136,14 @@ export async function matterjs(context) {
   });
   canvas.appendChild(image);
 }
+
+matterjs.initRenderer = (renderer, type) => {
+  renderer.registerPlugin(
+    new PluginMatterjs({
+      debug: true, // 开启 debug 模式，将物理引擎世界也渲染出来
+      debugContainer: document.getElementById('app')!,
+      debugCanvasWidth: 640,
+      debugCanvasHeight: 640,
+    }),
+  );
+};

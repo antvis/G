@@ -9,10 +9,10 @@ export class PathRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedPathStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { path, defX = 0, defY = 0 } = parsedStyle as ParsedPathStyleProps;
+    const { d } = parsedStyle as ParsedPathStyleProps;
     // @ts-ignore
     context.roughCanvas.path(
-      translatePathToString(path.absolutePath, defX, defY),
+      translatePathToString(d.absolutePath),
       generateRoughOptions(object),
     );
   }

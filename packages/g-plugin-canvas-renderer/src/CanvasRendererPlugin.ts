@@ -61,6 +61,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
    */
   private restoreStack: DisplayObject[] = [];
 
+  private clearFullScreenLastFrame = false;
   private clearFullScreen = false;
 
   /**
@@ -155,6 +156,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       const ratio = rendered / total;
 
       this.clearFullScreen =
+        this.clearFullScreenLastFrame ||
+        // @ts-ignore
+        !canvas.context.renderingPlugins[1]?.isFirstTimeRenderingFinished ||
         renderingService.disableDirtyRectangleRendering() ||
         (rendered > dirtyObjectNumThreshold &&
           ratio > dirtyObjectRatioThreshold);
@@ -188,11 +192,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.restoreStack,
           runtime,
         );
-
-        // if (object.renderable.) {
-        // if we did a full screen rendering last frame
-        this.saveDirtyAABB(object);
-        // }
       }
 
       const sorted = object.sortable.sorted || object.childNodes;
@@ -205,18 +204,25 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
+      // Skip rendering.
+      if (renderingContext.root.childNodes.length === 0) {
+        this.clearFullScreenLastFrame = true;
+        return;
+      }
+
+      this.clearFullScreenLastFrame = false;
+
       const context = contextService.getContext();
       // clear & clip dirty rectangle
       const dpr = contextService.getDPR();
       mat4.fromScaling(this.dprMatrix, [dpr, dpr, 1]);
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
-      // if (this.clearFullScreen) {
       if (this.clearFullScreen) {
-        // console.log('canvas renderer fcp...');
+        // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
         renderByZIndex(renderingContext.root, context);
       } else {
-        // console.log('canvas renderer next...');
+        // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),
@@ -563,36 +569,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     object: DisplayObject,
     matrix?: mat4,
   ) {
-    let tx = 0;
-    let ty = 0;
-    const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-    const anchorX = (anchor && anchor[0]) || 0;
-    const anchorY = (anchor && anchor[1]) || 0;
-    if (anchorX !== 0 || anchorY !== 0) {
-      // const bounds = object.getGeometryBounds();
-      const bounds = object.geometry.contentBounds;
-      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-      tx = -(anchorX * width);
-      ty = -(anchorY * height);
-    }
-
     // apply clip shape's RTS
     if (matrix) {
       mat4.copy(this.tmpMat4, object.getLocalTransform());
-      this.vec3a[0] = tx;
-      this.vec3a[1] = ty;
-      this.vec3a[2] = 0;
-      mat4.translate(this.tmpMat4, this.tmpMat4, this.vec3a);
       mat4.multiply(this.tmpMat4, matrix, this.tmpMat4);
       mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
     } else {
       // apply RTS transformation in world space
       mat4.copy(this.tmpMat4, object.getWorldTransform());
-      this.vec3a[0] = tx;
-      this.vec3a[1] = ty;
-      this.vec3a[2] = 0;
-      mat4.translate(this.tmpMat4, this.tmpMat4, this.vec3a);
       mat4.multiply(this.tmpMat4, this.vpMatrix, this.tmpMat4);
     }
 
