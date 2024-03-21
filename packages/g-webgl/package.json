@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "1.9.39",
+  "version": "2.0.0",
   "description": "A renderer implemented by WebGL1/2",
   "keywords": [
     "antv",
