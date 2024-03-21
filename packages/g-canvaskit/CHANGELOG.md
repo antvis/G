@@ -296,6 +296,44 @@
     -   @antv/g-plugin-canvas-path-generator@1.3.22-next.0
     -   @antv/g-plugin-dom-interaction@1.9.22-next.0
     -   @antv/g-plugin-html-renderer@1.9.25-next.0
+## 0.10.29
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-plugin-canvas-path-generator@1.3.24
+    -   @antv/g-plugin-canvas-picker@1.10.26
+    -   @antv/g-plugin-canvaskit-renderer@1.3.25
+    -   @antv/g-plugin-dom-interaction@1.9.24
+    -   @antv/g-plugin-html-renderer@1.9.27
+    -   @antv/g-plugin-image-loader@1.3.24
+
+## 0.10.28
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+    -   @antv/g-plugin-canvas-path-generator@1.3.23
+    -   @antv/g-plugin-canvas-picker@1.10.25
+    -   @antv/g-plugin-canvaskit-renderer@1.3.24
+    -   @antv/g-plugin-dom-interaction@1.9.23
+    -   @antv/g-plugin-html-renderer@1.9.26
+    -   @antv/g-plugin-image-loader@1.3.23
+
+## 0.10.27
+
+### Patch Changes
+
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-plugin-canvas-path-generator@1.3.22
+    -   @antv/g-plugin-canvas-picker@1.10.24
+    -   @antv/g-plugin-canvaskit-renderer@1.3.23
+    -   @antv/g-plugin-dom-interaction@1.9.22
+    -   @antv/g-plugin-html-renderer@1.9.25
+    -   @antv/g-plugin-image-loader@1.3.22
 
 ## 0.10.26
 

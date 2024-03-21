@@ -10,6 +10,7 @@ export const renderCircle = (context: AnnotationPlugin, anno: DrawerState) => {
   if (!pointCircle) {
     pointCircle = new Circle({
       style: {
+        isSizeAttenuation: true,
         ...EDIT_POINT_STYLE,
       },
       className: anno.id,

@@ -6,10 +6,13 @@ import {
   Line,
   Polyline,
   Polygon,
+  runtime,
 } from '../../../packages/g';
 import { Plugin as PluginAnnotation } from '../../../packages/g-plugin-annotation';
 
 let annotationPlugin;
+
+runtime.enableSizeAttenuation = true;
 export async function annotation(context) {
   const { canvas, gui } = context;
 
@@ -151,6 +154,7 @@ export async function annotation(context) {
         style: {
           ...brush,
           points: path.map(({ x, y }) => [x, y]),
+          isSizeAttenuation: true,
         },
       });
       canvas.appendChild(polyline);
@@ -159,6 +163,7 @@ export async function annotation(context) {
         style: {
           ...brush,
           points: path.map(({ x, y }) => [x, y]),
+          isSizeAttenuation: true,
         },
       });
       canvas.appendChild(polygon);
@@ -169,6 +174,7 @@ export async function annotation(context) {
           // @ts-ignore
           selectableUI: 'rect',
           points: path.map(({ x, y }) => [x, y]),
+          isSizeAttenuation: true,
         },
       });
       canvas.appendChild(rect);
@@ -179,6 +185,8 @@ export async function annotation(context) {
           cx: path[0].x,
           cy: path[0].y,
           r: 20,
+          lineWidth: 5,
+          isSizeAttenuation: true,
         },
       });
       canvas.appendChild(circle);
@@ -522,6 +530,7 @@ annotation.initRenderer = (renderer) => {
     enableDeleteAnchorsWithShortcuts: true,
     enableAutoSwitchDrawingMode: true,
     enableDisplayMidAnchors: true,
+    enableSizeAttenuation: true,
     enableRotateAnchor: true,
     selectableStyle: {
       selectionFill: 'rgba(24,144,255,0.15)',

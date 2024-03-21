@@ -1,11 +1,18 @@
-import { Circle, definedProps } from '@antv/g-lite';
+import { Circle, CircleStyleProps, definedProps } from '@antv/g-lite';
 import type { AnnotationPlugin } from '../AnnotationPlugin';
-import { ACTIVE_DRAWPOINT_STYLE, NORMAL_DRAWPOINT_STYLE } from '../constants/style';
+import {
+  ACTIVE_DRAWPOINT_STYLE,
+  NORMAL_DRAWPOINT_STYLE,
+} from '../constants/style';
 import type { DrawerState } from '../interface/drawer';
 
-export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) => {
+export const renderDrawPoints = (
+  context: AnnotationPlugin,
+  anno: DrawerState,
+) => {
   const points = anno.path.slice(0, anno.path.length - 1);
   const length = points.length;
+  const zoom = context.canvas.getCamera().getZoom();
 
   const {
     polylineVertexFill,
@@ -28,13 +35,14 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
   }
 
   points.forEach((point, index) => {
-    const styles = index === length - 1 ? ACTIVE_DRAWPOINT_STYLE : NORMAL_DRAWPOINT_STYLE;
+    const styles =
+      index === length - 1 ? ACTIVE_DRAWPOINT_STYLE : NORMAL_DRAWPOINT_STYLE;
     const overrideStyles =
       index === length - 1
         ? {
             fill: polylineActiveVertexFill,
             fillOpacity: polylineActiveVertexFillOpacity,
-            r: polylineActiveVertexSize,
+            r: polylineActiveVertexSize as number,
             stroke: polylineActiveVertexStroke,
             strokeOpacity: polylineActiveVertexStrokeOpacity,
             strokeWidth: polylineActiveVertexStrokeWidth,
@@ -42,7 +50,7 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
         : {
             fill: polylineVertexFill,
             fillOpacity: polylineVertexFillOpacity,
-            r: polylineVertexSize,
+            r: polylineVertexSize as number,
             stroke: polylineVertexStroke,
             strokeOpacity: polylineVertexStrokeOpacity,
             strokeWidth: polylineVertexStrokeWidth,
@@ -56,6 +64,9 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
           cy: 0,
           r: 0,
           cursor: 'pointer',
+          isSizeAttenuation: true,
+          ...styles,
+          ...definedProps(overrideStyles),
         },
         className: anno.id,
         id: `${anno.id}-circle-${index}`,
@@ -75,12 +86,19 @@ export const renderDrawPoints = (context: AnnotationPlugin, anno: DrawerState) =
       // });
     }
 
-    circle.attr({
+    const circleStyle: CircleStyleProps = {
       cx: point.x,
       cy: point.y,
       visibility: 'visible',
       ...styles,
       ...definedProps(overrideStyles),
-    });
+    };
+
+    // @ts-ignore
+    circleStyle.r /= zoom;
+    // @ts-ignore
+    circleStyle.lineWidth /= zoom;
+
+    circle.attr(circleStyle);
   });
 };

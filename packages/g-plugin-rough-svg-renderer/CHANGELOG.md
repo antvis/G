@@ -191,6 +191,29 @@
 -   Updated dependencies
     -   @antv/g-lite@1.3.0-next.0
     -   @antv/g-svg@1.10.26-next.0
+## 1.9.29
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-svg@1.10.28
+
+## 1.9.28
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+    -   @antv/g-svg@1.10.27
+
+## 1.9.27
+
+### Patch Changes
+
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-svg@1.10.26
 
 ## 1.9.26
 

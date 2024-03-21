@@ -58,6 +58,13 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const handleMounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
 
+      if (runtime.enableSizeAttenuation) {
+        runtime.styleValueRegistry.updateSizeAttenuation(
+          object,
+          canvas.getCamera().getZoom(),
+        );
+      }
+
       if (runtime.enableCSSParsing) {
         // recalc style values
         runtime.styleValueRegistry.recalc(object);

@@ -30,6 +30,12 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
           this.plugin.annotationPluginOptions.selectableStyle
             .maskIncreasedLineWidthForHitTesting,
         cursor: 'move',
+        isSizeAttenuation: true,
+        fill: selectionFill,
+        stroke: selectionStroke,
+        fillOpacity: selectionFillOpacity,
+        strokeOpacity: selectionStrokeOpacity,
+        lineWidth: selectionStrokeWidth,
       },
     });
     // @ts-ignore
@@ -42,13 +48,6 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
     });
 
     this.repositionAnchors();
-
-    // resize according to target
-    this.mask.style.fill = selectionFill;
-    this.mask.style.stroke = selectionStroke;
-    this.mask.style.fillOpacity = selectionFillOpacity;
-    this.mask.style.strokeOpacity = selectionStrokeOpacity;
-    this.mask.style.lineWidth = selectionStrokeWidth;
 
     this.bindEventListeners();
   }
@@ -74,6 +73,7 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
         draggable: true,
         visibility:
           target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+        isSizeAttenuation: true,
       },
     });
     this.anchors.push(anchor);
@@ -116,6 +116,7 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
         draggable: true,
         visibility:
           target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+        isSizeAttenuation: true,
       },
     });
     this.midAnchors.push(midAnchor);

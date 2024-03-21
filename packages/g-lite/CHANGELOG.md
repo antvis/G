@@ -141,6 +141,23 @@
 ### Minor Changes
 
 -   X/y won't affect transform now.
+## 1.2.24
+
+### Patch Changes
+
+-   10397c19: Support shadowRoot when picking.
+
+## 1.2.23
+
+### Patch Changes
+
+-   1d25bf84: ClipPath should be copied first before calculate intersection bounds.
+
+## 1.2.22
+
+### Patch Changes
+
+-   11d23f39: Support size attenuation.
 
 ## 1.2.21
 

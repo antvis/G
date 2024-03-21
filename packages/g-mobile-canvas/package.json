@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-mobile-canvas",
-  "version": "0.11.15-next.20",
+  "version": "0.11.17",
   "description": "A renderer implemented with Canvas2D API in mobile environment",
   "keywords": [
     "antv",

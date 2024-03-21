@@ -1342,6 +1342,33 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
   }
 
+  updateSizeAttenuation(node: DisplayObject, zoom: number) {
+    if (node.style.isSizeAttenuation) {
+      if (!node.style.rawLineWidth) {
+        node.style.rawLineWidth = node.style.lineWidth;
+      }
+      node.style.lineWidth = node.style.rawLineWidth / zoom;
+
+      if (node.nodeName === Shape.CIRCLE) {
+        if (!node.style.rawR) {
+          node.style.rawR = node.style.r;
+        }
+        node.style.r = node.style.rawR / zoom;
+      }
+    } else {
+      if (node.style.rawLineWidth) {
+        node.style.lineWidth = node.style.rawLineWidth;
+        delete node.style.rawLineWidth;
+      }
+      if (node.nodeName === Shape.CIRCLE) {
+        if (node.style.rawR) {
+          node.style.r = node.style.rawR;
+          delete node.style.rawR;
+        }
+      }
+    }
+  }
+
   private isPropertyInheritable(name: string) {
     const metadata = propertyMetadataCache[name];
     if (!metadata) {

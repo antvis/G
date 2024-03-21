@@ -84,6 +84,7 @@ export interface GlobalRuntime {
    * circle.setAttribute('stroke-width', '2');
    */
   enableAttributeDashCased: boolean;
+  enableSizeAttenuation: boolean;
 }
 
 /**
@@ -186,3 +187,4 @@ runtime.enableCSSParsing = false;
 runtime.enableDataset = false;
 runtime.enableStyleSyntax = true;
 runtime.enableAttributeDashCased = false;
+runtime.enableSizeAttenuation = false;

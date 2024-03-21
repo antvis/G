@@ -254,6 +254,39 @@
     -   @antv/g-lite@1.3.0-next.0
     -   @antv/g-plugin-dom-interaction@1.9.22-next.0
     -   @antv/g-plugin-html-renderer@1.9.25-next.0
+## 1.9.39
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-plugin-device-renderer@1.9.36
+    -   @antv/g-plugin-dom-interaction@1.9.24
+    -   @antv/g-plugin-html-renderer@1.9.27
+    -   @antv/g-plugin-image-loader@1.3.24
+
+## 1.9.38
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+    -   @antv/g-plugin-device-renderer@1.9.35
+    -   @antv/g-plugin-dom-interaction@1.9.23
+    -   @antv/g-plugin-html-renderer@1.9.26
+    -   @antv/g-plugin-image-loader@1.3.23
+
+## 1.9.37
+
+### Patch Changes
+
+-   11d23f39: Support size attenuation.
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-plugin-device-renderer@1.9.34
+    -   @antv/g-plugin-dom-interaction@1.9.22
+    -   @antv/g-plugin-html-renderer@1.9.25
+    -   @antv/g-plugin-image-loader@1.3.22
 
 ## 1.9.36
 

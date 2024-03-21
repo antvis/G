@@ -174,6 +174,27 @@
 
 -   Updated dependencies
     -   @antv/g-lite@1.3.0-next.0
+## 0.4.24
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+
+## 0.4.23
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+
+## 0.4.22
+
+### Patch Changes
+
+-   11d23f39: Support size attenuation.
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
 
 ## 0.4.21
 

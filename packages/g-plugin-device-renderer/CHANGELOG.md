@@ -202,6 +202,29 @@
 -   Updated dependencies
     -   @antv/g-plugin-image-loader@1.4.0-next.0
     -   @antv/g-lite@1.3.0-next.0
+## 1.9.36
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-plugin-image-loader@1.3.24
+
+## 1.9.35
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+    -   @antv/g-plugin-image-loader@1.3.23
+
+## 1.9.34
+
+### Patch Changes
+
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-plugin-image-loader@1.3.22
 
 ## 1.9.33
 

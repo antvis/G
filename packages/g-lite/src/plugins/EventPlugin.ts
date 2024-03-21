@@ -94,20 +94,12 @@ export class EventPlugin implements RenderingPlugin {
         const $element =
           this.context.contextService.getDomElement() as HTMLCanvasElement;
 
-        let outside = 'outside';
-        try {
-          outside =
-            $element &&
-            nativeEvent.target &&
-            nativeEvent.target !== $element &&
-            $element.contains &&
-            !$element.contains(nativeEvent.target as Node)
-              ? 'outside'
-              : '';
-        } catch (e) {
-          // nativeEvent.target maybe not Node, such as Window
-          // @see https://github.com/antvis/G/issues/1235
-        }
+        const isNativeEventFromCanvas =
+          this.context.eventService.isNativeEventFromCanvas(
+            $element,
+            nativeEvent,
+          );
+        const outside = !isNativeEventFromCanvas ? 'outside' : '';
         const normalizedEvents = this.normalizeToPointerEvent(
           nativeEvent,
           canvas,

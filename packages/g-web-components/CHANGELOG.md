@@ -212,6 +212,32 @@
     -   @antv/g-lite@1.3.0-next.0
     -   @antv/g-canvas@1.11.27-next.0
     -   @antv/g-webgl@1.9.37-next.0
+## 1.9.40
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-canvas@1.11.29
+    -   @antv/g-webgl@1.9.39
+
+## 1.9.39
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+    -   @antv/g-canvas@1.11.28
+    -   @antv/g-webgl@1.9.38
+
+## 1.9.38
+
+### Patch Changes
+
+-   Updated dependencies [11d23f39]
+    -   @antv/g-webgl@1.9.37
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-canvas@1.11.27
 
 ## 1.9.37
 

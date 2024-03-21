@@ -169,6 +169,23 @@
 ### Patch Changes
 
 -   @antv/g@5.18.25-next.0
+## 1.10.28
+
+### Patch Changes
+
+-   @antv/g@5.18.27
+
+## 1.10.27
+
+### Patch Changes
+
+-   @antv/g@5.18.26
+
+## 1.10.26
+
+### Patch Changes
+
+-   @antv/g@5.18.25
 
 ## 1.10.25
 

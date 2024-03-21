@@ -190,12 +190,11 @@ export class SelectablePlugin implements RenderingPlugin {
       }
     }
 
-    this.updateMidAnchorsVisibility(
-      this.selectableMap[object.entity] as AbstractSelectable<any>,
-    );
-    this.updateRotateAnchorVisibility(
-      this.selectableMap[object.entity] as AbstractSelectable<any>,
-    );
+    const selectable = this.selectableMap[
+      object.entity
+    ] as AbstractSelectable<any>;
+    this.updateMidAnchorsVisibility(selectable);
+    this.updateRotateAnchorVisibility(selectable);
 
     return this.selectableMap[object.entity];
   }

@@ -347,6 +347,11 @@ export interface RendererConfig {
    */
   enableAutoRendering: boolean;
 
+  /**
+   * Canvas / SVG / Canvaskit should listen to camera changed events, while WebGL / WebGPU will apply this effect in shader.
+   */
+  enableSizeAttenuation: boolean;
+
   // plugins:
 }
 

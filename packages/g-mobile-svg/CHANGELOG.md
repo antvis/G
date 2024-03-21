@@ -275,6 +275,41 @@
     -   @antv/g-plugin-dragndrop@1.8.22-next.0
     -   @antv/g-plugin-gesture@1.2.10-next.0
     -   @antv/g-plugin-mobile-interaction@0.9.22-next.0
+## 0.10.29
+
+### Patch Changes
+
+-   Updated dependencies [10397c19]
+    -   @antv/g-plugin-svg-picker@1.9.28
+    -   @antv/g-lite@1.2.24
+    -   @antv/g-plugin-dragndrop@1.8.24
+    -   @antv/g-plugin-gesture@1.2.12
+    -   @antv/g-plugin-mobile-interaction@0.9.24
+    -   @antv/g-plugin-svg-renderer@1.10.28
+
+## 0.10.28
+
+### Patch Changes
+
+-   Updated dependencies [1d25bf84]
+    -   @antv/g-lite@1.2.23
+    -   @antv/g-plugin-dragndrop@1.8.23
+    -   @antv/g-plugin-gesture@1.2.11
+    -   @antv/g-plugin-mobile-interaction@0.9.23
+    -   @antv/g-plugin-svg-picker@1.9.27
+    -   @antv/g-plugin-svg-renderer@1.10.27
+
+## 0.10.27
+
+### Patch Changes
+
+-   Updated dependencies [11d23f39]
+    -   @antv/g-lite@1.2.22
+    -   @antv/g-plugin-dragndrop@1.8.22
+    -   @antv/g-plugin-gesture@1.2.10
+    -   @antv/g-plugin-mobile-interaction@0.9.22
+    -   @antv/g-plugin-svg-picker@1.9.26
+    -   @antv/g-plugin-svg-renderer@1.10.26
 
 ## 0.10.26
 

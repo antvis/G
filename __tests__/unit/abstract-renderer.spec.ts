@@ -10,6 +10,7 @@ describe('Abstract renderer', () => {
       enableCulling: false,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
+      enableSizeAttenuation: true,
     });
 
     renderer.setConfig({ enableAutoRendering: false });
@@ -19,6 +20,7 @@ describe('Abstract renderer', () => {
       enableCulling: false,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
+      enableSizeAttenuation: true,
     });
 
     expect(renderer.getPlugins().length).toBe(0);

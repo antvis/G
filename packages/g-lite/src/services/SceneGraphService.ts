@@ -916,6 +916,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
       }
     });
 
+    if (!aabb) {
+      aabb = new AABB();
+    }
+
     if (render) {
       // FIXME: account for clip path
       const clipped = findClosestClipPathTarget(element as DisplayObject);
@@ -923,28 +927,18 @@ export class DefaultSceneGraphService implements SceneGraphService {
         // use bounds under world space
         const clipPathBounds = clipped.parsedStyle.clipPath.getBounds(render);
         if (!aabb) {
-          aabb = clipPathBounds;
+          aabb.update(clipPathBounds.center, clipPathBounds.halfExtents);
         } else if (clipPathBounds) {
           aabb = clipPathBounds.intersection(aabb);
         }
       }
     }
 
-    if (!aabb) {
-      aabb = new AABB();
-    }
-
-    if (aabb) {
-      if (render) {
-        renderable.renderBounds = aabb;
-      } else {
-        renderable.bounds = aabb;
-      }
-    }
-
     if (render) {
+      renderable.renderBounds = aabb;
       renderable.renderBoundsDirty = false;
     } else {
+      renderable.bounds = aabb;
       renderable.boundsDirty = false;
     }
 

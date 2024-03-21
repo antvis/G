@@ -62,6 +62,13 @@ export class SelectableRect extends AbstractSelectable<Rect> {
         height: halfExtents[1] * 2,
         draggable: target.style.maskDraggable === false ? false : true,
         cursor: 'move',
+        isSizeAttenuation: true,
+        fill: selectionFill,
+        stroke: selectionStroke,
+        fillOpacity: selectionFillOpacity,
+        strokeOpacity: selectionStrokeOpacity,
+        lineWidth: selectionStrokeWidth,
+        lineDash: selectionLineDash,
       },
     });
     const transform = target.getWorldTransform();
@@ -97,9 +104,15 @@ export class SelectableRect extends AbstractSelectable<Rect> {
 
     this.tlAnchor = new Circle({
       style: {
-        r: 10,
+        r: anchorSize,
         cursor: 'nwse-resize',
         draggable: true,
+        isSizeAttenuation: true,
+        stroke: anchorStroke,
+        fill: anchorFill,
+        fillOpacity: anchorFillOpacity,
+        strokeOpacity: anchorStrokeOpacity,
+        lineWidth: anchorStrokeWidth,
       },
     });
     this.tlAnchor.style.cx = tl[0];
@@ -141,13 +154,6 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       if (target.style.anchorsVisibility === 'hidden') {
         anchor.style.visibility = 'hidden';
       }
-
-      anchor.style.stroke = anchorStroke;
-      anchor.style.fill = anchorFill;
-      anchor.style.fillOpacity = anchorFillOpacity;
-      anchor.style.strokeOpacity = anchorStrokeOpacity;
-      anchor.style.strokeWidth = anchorStrokeWidth;
-      anchor.style.r = anchorSize;
       anchor.style.cursor = this.scaleCursorStyleHandler(
         controls[i],
         target,
