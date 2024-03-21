@@ -5,7 +5,11 @@ import { memoize } from '../../utils/memoize';
 import type { Tuple4Number } from '../../types';
 import type { CSSGradientValue } from '../cssom';
 import { CSSRGB } from '../cssom';
-import { getOrCreateRGBA, transparentColor } from '../CSSStyleValuePool';
+import {
+  getOrCreateRGBA,
+  noneColor,
+  transparentColor,
+} from '../CSSStyleValuePool';
 import { parseGradient } from './gradient';
 
 /**
@@ -58,6 +62,8 @@ export const parseColor = memoize(
     } else if (colorStr === 'currentColor') {
       // @see https://github.com/adobe-webplatform/Snap.svg/issues/526
       colorStr = 'black';
+    } else if (colorStr === 'none') {
+      return noneColor;
     }
 
     // support CSS gradient syntax

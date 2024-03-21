@@ -62,7 +62,7 @@ export async function pattern({ canvas }) {
   noiseCanvas.height = height;
   const context = noiseCanvas.getContext('2d')!;
   const image = context.createImageData(width, height);
-  const noise = new SimplexNoise();
+  const noise = new SimplexNoise(10);
   for (let z = 0, y = 0, i = 0; y < height; ++y) {
     for (let x = 0; x < width; ++x, i += 4) {
       image.data[i + 3] = (noise.noise2D(x / 64, y / 64) + 1) * 128;

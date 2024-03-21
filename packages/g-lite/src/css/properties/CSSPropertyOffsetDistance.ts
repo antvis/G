@@ -1,5 +1,5 @@
-import { Shape } from '../..';
-import { DisplayObject } from '../../display-objects';
+import { Shape } from '../../types';
+import type { DisplayObject } from '../../display-objects';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import {

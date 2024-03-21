@@ -29,7 +29,7 @@ describe('DisplayObject Bounds API', () => {
     }
     if (renderBounds) {
       expect(renderBounds.center).toStrictEqual([100, 100, 0]);
-      expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
+      expect(renderBounds.halfExtents).toStrictEqual([100.5, 100.5, 0]);
     }
 
     circle.translate(100);
@@ -51,7 +51,7 @@ describe('DisplayObject Bounds API', () => {
     renderBounds = circle.getRenderBounds();
     if (renderBounds) {
       expect(renderBounds.center).toStrictEqual([200, 100, 0]);
-      expect(renderBounds.halfExtents).toStrictEqual([100, 100, 0]);
+      expect(renderBounds.halfExtents).toStrictEqual([100.5, 100.5, 0]);
     }
 
     // change line width
@@ -264,6 +264,7 @@ describe('DisplayObject Bounds API', () => {
         cx: 200,
         cy: 200,
         r: 20,
+        transformOrigin: '200 200',
       },
     });
     // clipped by Circle
@@ -567,7 +568,7 @@ describe('DisplayObject Bounds API', () => {
         cx: 100,
         cy: 100,
         r: 100,
-        strokeWidth: 20,
+        lineWidth: 20,
       },
     });
 

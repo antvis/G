@@ -70,13 +70,13 @@ export async function clipPath(context) {
 
   canvas.appendChild(g);
 
-  clipPathCircle.animate(
-    [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
-    {
-      duration: 1500,
-      iterations: Infinity,
-    },
-  );
+  // clipPathCircle.animate(
+  //   [{ transform: 'scale(1)' }, { transform: 'scale(2)' }],
+  //   {
+  //     duration: 1500,
+  //     iterations: Infinity,
+  //   },
+  // );
 
   {
     const sector = new Sector({
@@ -88,6 +88,7 @@ export async function clipPath(context) {
         startAngle: -90,
         fill: 'yellow',
         opacity: 0.5,
+        endAngle: -270,
       },
     });
     const group = new Group({
@@ -116,20 +117,20 @@ export async function clipPath(context) {
     group.appendChild(circle2);
     canvas.appendChild(sector);
 
-    sector.animate(
-      [
-        {
-          endAngle: -90,
-        },
-        {
-          endAngle: 270,
-        },
-      ],
-      {
-        duration: 1000,
-        iterations: Infinity,
-        fill: 'both',
-      },
-    );
+    // sector.animate(
+    //   [
+    //     {
+    //       endAngle: -90,
+    //     },
+    //     {
+    //       endAngle: 270,
+    //     },
+    //   ],
+    //   {
+    //     duration: 1000,
+    //     iterations: Infinity,
+    //     fill: 'both',
+    //   },
+    // );
   }
 }

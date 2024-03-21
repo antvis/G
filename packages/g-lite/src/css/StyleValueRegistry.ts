@@ -1,4 +1,4 @@
-import { isNil } from '@antv/util';
+import { isNil, isUndefined } from '@antv/util';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
 import type { GlobalRuntime } from '../global-runtime';
@@ -764,7 +764,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           null,
         );
       }
-      if (attributes.clipPath) {
+      if (!isUndefined(attributes.clipPath)) {
         this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
           'clipPath',
           oldClipPath,
@@ -1233,7 +1233,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         // lineJoin,
         // miterLimit,
         increasedLineWidthForHitTesting = 0,
-        shadowType,
+        shadowType = 'outer',
         shadowColor,
         filter = [],
         transformOrigin,

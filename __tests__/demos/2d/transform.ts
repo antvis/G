@@ -94,10 +94,10 @@ export async function transform(context) {
 
   canvas.appendChild(solarSystem);
 
-  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-    solarSystem.rotateLocal(1);
-    earthOrbit.rotateLocal(2);
-  });
+  // canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+  //   solarSystem.rotateLocal(1);
+  //   earthOrbit.rotateLocal(2);
+  // });
 
   const rect = new Rect({
     style: {

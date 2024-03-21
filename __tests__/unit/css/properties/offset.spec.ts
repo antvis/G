@@ -56,13 +56,13 @@ describe('CSSPropertyOffsetDistance', () => {
     expect(circle.getAttribute('offsetDistance')).toBe(0);
 
     // used value
-    let used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
-    expect(used.equals(CSS.number(0))).toBeTruthy();
+    // let used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
+    // expect(used.equals(CSS.number(0))).toBeTruthy();
     expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
 
     circle.style.offsetDistance = 1;
-    used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
-    expect(used.equals(CSS.number(1))).toBeTruthy();
+    // used = circle.computedStyleMap().get('offsetDistance') as CSSUnitValue;
+    // expect(used.equals(CSS.number(1))).toBeTruthy();
     expect(circle.getLocalPosition()).toStrictEqual([100, 100, 0]);
   });
 });

@@ -1,5 +1,5 @@
 import type { CanvasLike } from '..';
-import { runtime } from '..';
+import { runtime } from '../global-runtime';
 
 /**
  * used in following scenes:

@@ -172,7 +172,7 @@ describe('DisplayObject Node API', () => {
     expect(group3.getParent()).toBe(group2);
     expect(group4.getFirst()).toBeNull();
     expect(group4.getLast()).toBeNull();
-    expect(group1.getAttribute('class')).toBe(null);
+    expect(group1.getAttribute('class')).toBeUndefined();
     expect(group1.className).toBe('');
     expect(group1.classList).toStrictEqual([]);
     expect(group2.className).toBe('c1 c2');
@@ -194,7 +194,7 @@ describe('DisplayObject Node API', () => {
     expect(group3.classList).toStrictEqual([]);
 
     group3.removeAttribute('class');
-    expect(group3.getAttribute('class')).toBeNull();
+    expect(group3.getAttribute('class')).toBeUndefined();
 
     // search in scene graph
     expect(
@@ -335,7 +335,7 @@ describe('DisplayObject Node API', () => {
     expect(group.style.getPropertyValue('width')).toBe(2);
 
     group.style.removeProperty('width');
-    expect(group.style.getPropertyValue('width')).toBeNull();
+    expect(group.style.getPropertyValue('width')).toBeUndefined();
   });
 
   it('should (deep) cloneNode correctly', () => {
