@@ -1347,13 +1347,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!node.style.rawLineWidth) {
         node.style.rawLineWidth = node.style.lineWidth;
       }
-      node.style.lineWidth = node.style.rawLineWidth / zoom;
+      node.style.lineWidth = (node.style.rawLineWidth || 1) / zoom;
 
       if (node.nodeName === Shape.CIRCLE) {
         if (!node.style.rawR) {
           node.style.rawR = node.style.r;
         }
-        node.style.r = node.style.rawR / zoom;
+        node.style.r = (node.style.rawR || 1) / zoom;
       }
     } else {
       if (node.style.rawLineWidth) {

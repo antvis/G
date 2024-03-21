@@ -31,7 +31,7 @@ export const renderDrawLine = (
         ...DRAW_LINE_STYLE,
         ...definedProps({
           stroke: polylineSegmentStroke,
-          strokeWidth: polylineSegmentStrokeWidth,
+          lineWidth: polylineSegmentStrokeWidth,
           lineDash: polylineSegmentLineDash,
         }),
       },

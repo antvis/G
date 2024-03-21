@@ -93,7 +93,7 @@ export class SelectablePlugin implements RenderingPlugin {
   selectDisplayObject(displayObject: DisplayObject, skipEvent = false) {
     const selectable = this.getOrCreateSelectableUI(displayObject);
     if (selectable && this.selected.indexOf(displayObject) === -1) {
-      selectable.style.visibility = 'visible';
+      selectable.show();
       this.selected.push(displayObject);
 
       if (!skipEvent) {
@@ -118,7 +118,7 @@ export class SelectablePlugin implements RenderingPlugin {
           selectable.deselectAnchor(anchor);
         });
 
-        selectable.style.visibility = 'hidden';
+        selectable.hide();
       }
       this.selected.splice(index, 1);
       displayObject.dispatchEvent(new CustomEvent(SelectableEvent.DESELECTED));
@@ -217,14 +217,16 @@ export class SelectablePlugin implements RenderingPlugin {
 
   private updateMidAnchorsVisibility(selectable: AbstractSelectable<any>) {
     selectable?.midAnchors.forEach((midAnchor) => {
-      midAnchor.style.visibility = this.midAnchorsVisible ? 'unset' : 'hidden';
+      midAnchor.style.visibility = this.midAnchorsVisible
+        ? 'visible'
+        : 'hidden';
     });
   }
 
   private updateRotateAnchorVisibility(selectable: AbstractSelectable<any>) {
     if (selectable?.rotateAnchor) {
       selectable.rotateAnchor.style.visibility = this.rotateAnchorVisible
-        ? 'unset'
+        ? 'visible'
         : 'hidden';
     }
   }

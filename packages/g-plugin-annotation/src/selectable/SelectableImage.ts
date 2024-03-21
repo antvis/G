@@ -76,7 +76,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     // @ts-ignore
     this.image.attr({
       selectable: false,
-      visibility: 'unset',
+      // visibility: 'visible',
       transform: 'none',
     });
 
@@ -94,7 +94,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         fill: anchorFill,
         fillOpacity: anchorFillOpacity,
         strokeOpacity: anchorStrokeOpacity,
-        strokeWidth: anchorStrokeWidth,
+        lineWidth: anchorStrokeWidth,
       },
     });
     const { x, y, width, height } = target.parsedStyle;

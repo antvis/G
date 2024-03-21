@@ -128,7 +128,7 @@ export async function matterjs(context) {
       y: 100,
       width: 80,
       height: 80,
-      img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+      src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
       // @ts-ignore
       rigid: 'dynamic',
       density: 10,

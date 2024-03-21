@@ -70,6 +70,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       anchorStroke,
       anchorFillOpacity,
       anchorStrokeOpacity,
+      anchorStrokeWidth,
       anchorSize,
       target,
     } = this.style;
@@ -84,8 +85,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         cursor: 'move',
         draggable: true,
         visibility:
-          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'visible',
         isSizeAttenuation: true,
+        lineWidth: anchorStrokeWidth,
       },
     });
     this.anchors.push(anchor);
@@ -112,6 +114,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       midAnchorFillOpacity,
       midAnchorStrokeOpacity,
       midAnchorSize,
+      midAnchorStrokeWidth,
       target,
     } = this.style;
 
@@ -127,8 +130,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         cursor: 'move',
         draggable: true,
         visibility:
-          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'visible',
         isSizeAttenuation: true,
+        lineWidth: midAnchorStrokeWidth,
       },
     });
     this.midAnchors.push(midAnchor);

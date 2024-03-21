@@ -18,8 +18,6 @@ import * as perf from './demos/perf';
 import * as bugfix from './demos/bugfix';
 import * as event from './demos/event';
 
-runtime.enableCSSParsing = false;
-
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
   ...createSpecRender(namespace(basic3d, '3d')),

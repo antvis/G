@@ -140,7 +140,7 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       fill: anchorFill,
       stroke: anchorStroke,
       strokeOpacity: anchorStrokeOpacity,
-      strokeWidth: anchorStrokeWidth,
+      lineWidth: anchorStrokeWidth,
       fillOpacity: anchorFillOpacity,
       r: anchorSize,
     });
@@ -162,7 +162,7 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       fill: anchorFill,
       stroke: anchorStroke,
       strokeOpacity: anchorStrokeOpacity,
-      strokeWidth: anchorStrokeWidth,
+      lineWidth: anchorStrokeWidth,
       fillOpacity: anchorFillOpacity,
       r: anchorSize,
     });
@@ -221,10 +221,12 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       }
     } else if (name === 'anchorStrokeWidth') {
       this.anchors.forEach((anchor) => {
-        anchor.style.strokeWidth = newValue;
+        anchor.style.lineWidth = newValue;
       });
       if (this.rotateAnchor) {
-        this.rotateAnchor.style.strokeWidth = newValue;
+        this.rotateAnchor.style.lineWidth = newValue;
+
+        console.log(newValue, this.rotateAnchor);
       }
     } else if (name === 'anchorStroke') {
       this.anchors.forEach((anchor) => {
@@ -260,7 +262,7 @@ export abstract class AbstractSelectable<MaskType extends DisplayObject>
       });
     } else if (name === 'selectedAnchorStrokeWidth') {
       this.selectedAnchors.forEach((anchor) => {
-        anchor.style.strokeWidth = newValue;
+        anchor.style.lineWidth = newValue;
       });
     } else if (name === 'selectedAnchorStroke') {
       this.selectedAnchors.forEach((anchor) => {

@@ -132,6 +132,7 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
         anchorFillOpacity,
         anchorStrokeOpacity,
         anchorSize,
+        anchorStrokeWidth,
         target,
       } = this.style;
 
@@ -145,8 +146,9 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
           cursor: 'move',
           draggable: true,
           visibility:
-            target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+            target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'visible',
           isSizeAttenuation: true,
+          lineWidth: anchorStrokeWidth,
         },
       });
       this.mask.appendChild(this.rotateAnchor);
