@@ -12,9 +12,10 @@ import { Plugin as PluginAnnotation } from '../../../packages/g-plugin-annotatio
 
 let annotationPlugin;
 
-runtime.enableSizeAttenuation = true;
 export async function annotation(context) {
   const { canvas, gui } = context;
+
+  runtime.enableSizeAttenuation = true;
 
   await canvas.ready;
 
@@ -145,7 +146,7 @@ export async function annotation(context) {
     // use any brush you preferred
     const brush = {
       stroke: 'black',
-      strokeWidth: 10,
+      lineWidth: 10,
       selectable: true,
     };
 

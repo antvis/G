@@ -9,9 +9,6 @@ import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
 export async function cube(context) {
   const { canvas, renderer } = context;
 
-  renderer.registerPlugin(new Plugin3D());
-  renderer.registerPlugin(new PluginControl());
-
   // wait for canvas' initialization complete
   await canvas.ready;
 
@@ -47,3 +44,10 @@ export async function cube(context) {
 
   canvas.appendChild(cube);
 }
+
+cube.initRenderer = (renderer, type) => {
+  if (type === 'webgl' || type === 'webgpu') {
+    renderer.registerPlugin(new Plugin3D());
+    renderer.registerPlugin(new PluginControl());
+  }
+};

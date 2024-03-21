@@ -45,7 +45,7 @@ export const renderDrawPoints = (
             r: polylineActiveVertexSize as number,
             stroke: polylineActiveVertexStroke,
             strokeOpacity: polylineActiveVertexStrokeOpacity,
-            strokeWidth: polylineActiveVertexStrokeWidth,
+            lineWidth: polylineActiveVertexStrokeWidth,
           }
         : {
             fill: polylineVertexFill,
@@ -53,7 +53,7 @@ export const renderDrawPoints = (
             r: polylineVertexSize as number,
             stroke: polylineVertexStroke,
             strokeOpacity: polylineVertexStrokeOpacity,
-            strokeWidth: polylineVertexStrokeWidth,
+            lineWidth: polylineVertexStrokeWidth,
           };
 
     let circle = context.polylineControlPoints[index];

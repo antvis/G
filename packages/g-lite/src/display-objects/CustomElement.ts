@@ -2,10 +2,7 @@ import type { DisplayObjectConfig } from '../dom';
 import { runtime } from '../global-runtime';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
-export interface BaseCustomElementStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
-}
+export interface BaseCustomElementStyleProps extends BaseStyleProps {}
 
 /**
  * shadow root
@@ -29,8 +26,6 @@ export abstract class CustomElement<
     super({
       style: runtime.enableCSSParsing
         ? {
-            x: '',
-            y: '',
             ...style,
           }
         : {

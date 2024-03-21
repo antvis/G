@@ -7,8 +7,6 @@ export function updatePolylineElementAttribute(
 ) {
   const {
     points: { points },
-    defX = 0,
-    defY = 0,
     markerStart,
     markerStartOffset,
     markerEnd,
@@ -55,7 +53,7 @@ export function updatePolylineElementAttribute(
             offsetX = endOffsetX;
             offsetY = endOffsetY;
           }
-          return `${point[0] - defX + offsetX},${point[1] - defY + offsetY}`;
+          return `${point[0] + offsetX},${point[1] + offsetY}`;
         })
         .join(' '),
     );

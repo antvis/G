@@ -2,7 +2,7 @@ import type { CSSRGB } from '../css';
 import type { ParsedBaseStyleProps } from '../types';
 
 export function isFillOrStrokeAffected(
-  pointerEvents: ParsedBaseStyleProps['pointerEvents'],
+  pointerEvents: ParsedBaseStyleProps['pointerEvents'] = 'auto',
   fill: ParsedBaseStyleProps['fill'],
   stroke: ParsedBaseStyleProps['stroke'],
 ): [boolean, boolean] {

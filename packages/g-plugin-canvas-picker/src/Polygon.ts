@@ -15,12 +15,10 @@ export function isPointInPath(
   const {
     stroke,
     fill,
-    lineWidth,
-    increasedLineWidthForHitTesting,
+    lineWidth = 1,
+    increasedLineWidthForHitTesting = 0,
     points,
-    defX: x = 0,
-    defY: y = 0,
-    pointerEvents,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedPolygonStyleProps;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,
@@ -32,14 +30,14 @@ export function isPointInPath(
   if (hasStroke || isClipPath) {
     isHit = inPolyline(
       points.points,
-      (lineWidth || 0) + (increasedLineWidthForHitTesting || 0),
-      position.x + x,
-      position.y + y,
+      lineWidth + increasedLineWidthForHitTesting,
+      position.x,
+      position.y,
       true,
     );
   }
   if (!isHit && (hasFill || isClipPath)) {
-    isHit = inPolygon(points.points, position.x + x, position.y + y);
+    isHit = inPolygon(points.points, position.x, position.y);
   }
   return isHit;
 }

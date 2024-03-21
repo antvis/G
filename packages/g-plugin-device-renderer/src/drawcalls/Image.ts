@@ -11,10 +11,12 @@ import { enumToObject } from '../utils';
 
 enum ImageVertexAttributeBufferIndex {
   PACKED_STYLE = VertexAttributeBufferIndex.POSITION + 1,
+  SIZE = VertexAttributeBufferIndex.MAX,
 }
 
 enum ImageVertexAttributeLocation {
   PACKED_STYLE3 = VertexAttributeLocation.MAX,
+  SIZE,
 }
 
 export class ImageDrawcall extends Instanced {
@@ -25,16 +27,29 @@ export class ImageDrawcall extends Instanced {
       return false;
     }
 
-    if (this.instance.parsedStyle.img !== object.parsedStyle.img) {
+    if (this.instance.parsedStyle.src !== object.parsedStyle.src) {
       return false;
     }
 
     return true;
   }
 
+  // private calculateWithAspectRatio(
+  //   object: Image,
+  //   imageWidth: number,
+  //   imageHeight: number,
+  // ) {
+  //   const { width, height } = object.parsedStyle;
+  //   // if (width && !height) {
+  //   //   object.setAttribute('height', (imageHeight / imageWidth) * width);
+  //   // } else if (!width && height) {
+  //   //   object.setAttribute('width', (imageWidth / imageHeight) * height);
+  //   // }
+  // }
+
   createMaterial(objects: DisplayObject[]): void {
     const instance = objects[0];
-    const { img } = instance.parsedStyle;
+    const { src } = instance.parsedStyle;
 
     this.material.defines = {
       ...this.material.defines,
@@ -44,7 +59,24 @@ export class ImageDrawcall extends Instanced {
     this.material.vertexShader = vert;
     this.material.fragmentShader = frag;
 
-    const map = this.texturePool.getOrCreateTexture(this.context.device, img);
+    const map = this.texturePool.getOrCreateTexture(
+      this.context.device,
+      src,
+      undefined,
+      // (texture, image) => {
+      //   const { width, height } = image;
+      //   objects.forEach((object) => {
+      //     const image = object as ImageShape;
+      //     const { keepAspectRatio } = image.parsedStyle;
+      //     if (keepAspectRatio) {
+      //       this.calculateWithAspectRatio(object, width, height);
+      //       // set dirty rectangle flag
+      //       object.renderable.dirty = true;
+      //       this.context.renderingService.dirtify();
+      //     }
+      //   });
+      // },
+    );
     this.material.setUniforms({
       u_Map: map,
     });
@@ -54,18 +86,23 @@ export class ImageDrawcall extends Instanced {
     // use default common attributes
     super.createGeometry(objects);
 
-    const instanced: number[] = [];
+    const positions: number[] = [];
+    const sizes: number[] = [];
     const packedStyle: number[] = [];
     objects.forEach((object, i) => {
       const image = object as ImageShape;
       const {
+        x = 0,
+        y = 0,
+        z = 0,
         width,
         height,
         isBillboard,
         billboardRotation,
         isSizeAttenuation,
       } = image.parsedStyle;
-      instanced.push(width, height);
+      positions.push(x, y, z);
+      sizes.push(width, height);
       packedStyle.push(
         isBillboard ? 1 : 0,
         billboardRotation ?? 0,
@@ -78,16 +115,29 @@ export class ImageDrawcall extends Instanced {
     this.geometry.vertexCount = 6;
     this.geometry.setVertexBuffer({
       bufferIndex: VertexAttributeBufferIndex.POSITION,
+      byteStride: 4 * 3,
+      stepMode: VertexStepMode.INSTANCE,
+      attributes: [
+        {
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 0,
+          location: VertexAttributeLocation.POSITION,
+        },
+      ],
+      data: new Float32Array(positions),
+    });
+    this.geometry.setVertexBuffer({
+      bufferIndex: ImageVertexAttributeBufferIndex.SIZE,
       byteStride: 4 * 2,
       stepMode: VertexStepMode.INSTANCE,
       attributes: [
         {
           format: Format.F32_RG,
           bufferByteOffset: 4 * 0,
-          location: VertexAttributeLocation.POSITION,
+          location: ImageVertexAttributeLocation.SIZE,
         },
       ],
-      data: new Float32Array(instanced),
+      data: new Float32Array(sizes),
     });
     this.geometry.setVertexBuffer({
       bufferIndex: ImageVertexAttributeBufferIndex.PACKED_STYLE,
@@ -128,7 +178,21 @@ export class ImageDrawcall extends Instanced {
 
     this.updateBatchedAttribute(objects, startIndex, name, value);
 
-    if (name === 'width' || name === 'height' || name === 'z') {
+    if (name === 'x' || name === 'y' || name === 'z') {
+      const packed: number[] = [];
+      objects.forEach((object) => {
+        const image = object as ImageShape;
+        const { x = 0, y = 0, z = 0 } = image.parsedStyle;
+        packed.push(x, y, z);
+      });
+
+      this.geometry.updateVertexBuffer(
+        VertexAttributeBufferIndex.POSITION,
+        VertexAttributeLocation.POSITION,
+        startIndex,
+        new Uint8Array(new Float32Array(packed).buffer),
+      );
+    } else if (name === 'width' || name === 'height') {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
@@ -137,8 +201,8 @@ export class ImageDrawcall extends Instanced {
       });
 
       this.geometry.updateVertexBuffer(
-        VertexAttributeBufferIndex.POSITION,
-        VertexAttributeLocation.POSITION,
+        ImageVertexAttributeBufferIndex.SIZE,
+        ImageVertexAttributeLocation.SIZE,
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
@@ -166,7 +230,7 @@ export class ImageDrawcall extends Instanced {
         startIndex,
         new Uint8Array(new Float32Array(packed).buffer),
       );
-    } else if (name === 'img') {
+    } else if (name === 'src') {
       const map = this.texturePool.getOrCreateTexture(
         this.context.device,
         value,

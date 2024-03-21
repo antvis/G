@@ -1,5 +1,63 @@
 # @antv/g-math
 
+## 3.0.0
+
+### Major Changes
+
+-   424711bd: Use G6.0.
+
+### Patch Changes
+
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+
+## 2.0.3-next.6
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.5
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.4
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.3
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.2
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.1
+
+### Patch Changes
+
+-   Test.
+
+## 2.0.3-next.0
+
+### Patch Changes
+
+-   Test.
+
 ## 2.0.2
 
 ### Patch Changes

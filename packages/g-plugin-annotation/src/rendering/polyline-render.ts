@@ -33,7 +33,7 @@ const renderDrawingLine = (context: AnnotationPlugin, anno: DrawerState) => {
         ...DASH_LINE_STYLE,
         ...definedProps({
           stroke: polylineActiveSegmentStroke,
-          strokeWidth: polylineActiveSegmentStrokeWidth,
+          lineWidth: polylineActiveSegmentStrokeWidth,
           lineDash: polylineActiveSegmentLineDash,
         }),
       },

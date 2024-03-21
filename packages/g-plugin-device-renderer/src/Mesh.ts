@@ -1,6 +1,5 @@
 import type {
   BaseStyleProps,
-  CSSUnitValue,
   DisplayObjectConfig,
   ParsedBaseStyleProps,
 } from '@antv/g-lite';
@@ -17,9 +16,9 @@ export interface MeshStyleProps extends BaseStyleProps {
 }
 
 export interface ParsedMeshStyleProps extends ParsedBaseStyleProps {
-  x: CSSUnitValue;
-  y: CSSUnitValue;
-  z: CSSUnitValue;
+  x: number;
+  y: number;
+  z: number;
   geometry: BufferGeometry;
   material: Material;
 }
@@ -38,7 +37,6 @@ export class Mesh<GeometryProps = any> extends DisplayObject<
         y: '',
         z: '',
         lineWidth: 0,
-        anchor: [0.5, 0.5, 0.5],
         ...style,
       },
       ...rest,

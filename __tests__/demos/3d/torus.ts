@@ -10,9 +10,6 @@ import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
 export async function torus(context) {
   const { canvas, renderer } = context;
 
-  renderer.registerPlugin(new Plugin3D());
-  renderer.registerPlugin(new PluginControl());
-
   // wait for canvas' initialization complete
   await canvas.ready;
 
@@ -54,3 +51,10 @@ export async function torus(context) {
   const camera = canvas.getCamera();
   camera.setPosition(300, 0, 500);
 }
+
+torus.initRenderer = (renderer, type) => {
+  if (type === 'webgl' || type === 'webgpu') {
+    renderer.registerPlugin(new Plugin3D());
+    renderer.registerPlugin(new PluginControl());
+  }
+};

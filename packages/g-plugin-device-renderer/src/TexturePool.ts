@@ -36,7 +36,10 @@ export class TexturePool {
     device: Device,
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,
-    successCallback?: (t: Texture) => void,
+    successCallback?: (
+      t: Texture,
+      image: ImageBitmap | HTMLImageElement,
+    ) => void,
   ): Texture {
     // use Image URL or src as cache key
     // @ts-ignore
@@ -84,7 +87,7 @@ export class TexturePool {
               this.textureCache[id].emit(TextureEvent.LOADED);
               this.context.renderingService.dirtify();
               if (successCallback) {
-                successCallback(this.textureCache[id]);
+                successCallback(this.textureCache[id], bitmap);
               }
             };
 
@@ -147,6 +150,7 @@ export class TexturePool {
           ...(g.value as LinearGradient & RadialGradient),
           width,
           height,
+          min: [0, 0],
         },
         context,
       );

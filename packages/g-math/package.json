@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-math",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Geometry util",
   "keywords": [
     "antv",
@@ -38,7 +38,7 @@
     "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

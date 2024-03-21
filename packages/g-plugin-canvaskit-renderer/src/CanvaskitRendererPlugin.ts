@@ -42,7 +42,7 @@ import type {
   Particles,
   TextureSource,
 } from 'canvaskit-wasm';
-import { mat3, mat4, quat, vec3 } from 'gl-matrix';
+import { mat4, quat, vec3 } from 'gl-matrix';
 import type { FontLoader } from './FontLoader';
 import type {
   CanvasKitContext,
@@ -366,13 +366,14 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           mat = mat4.identity(mat4.create());
         }
 
+        const { min } = object.getGeometryBounds();
         const pattern = decoded.makeShaderCubic(tx, ty, 1 / 3, 1 / 3, [
           mat[0],
           mat[4],
-          mat[12],
+          mat[12] + min[0],
           mat[1],
           mat[5],
-          mat[13],
+          mat[13] + min[1],
           0,
           0,
           1,
@@ -389,6 +390,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const bounds = object.getGeometryBounds();
     const width = (bounds && bounds.halfExtents[0] * 2) || 0;
     const height = (bounds && bounds.halfExtents[1] * 2) || 0;
+    const min = (bounds && bounds.min) || [0, 0];
 
     if (stroke.type === GradientType.LinearGradient) {
       // @see https://fiddle.skia.org/c/@GradientShader_MakeLinear
@@ -407,7 +409,12 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           Number(c.alpha),
         );
       });
-      const { x1, y1, x2, y2 } = computeLinearGradient(width, height, angle);
+      const { x1, y1, x2, y2 } = computeLinearGradient(
+        [min[0], min[1]],
+        width,
+        height,
+        angle,
+      );
       const gradient = CanvasKit.Shader.MakeLinearGradient(
         [x1, y1],
         [x2, y2],
@@ -418,7 +425,14 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       return gradient;
     } else if (stroke.type === GradientType.RadialGradient) {
       const { cx, cy, steps, size } = stroke.value as RadialGradient;
-      const { x, y, r } = computeRadialGradient(width, height, cx, cy, size);
+      const { x, y, r } = computeRadialGradient(
+        [min[0], min[1]],
+        width,
+        height,
+        cx,
+        cy,
+        size,
+      );
       const pos: number[] = [];
       const colors: Float32Array[] = [];
       steps.forEach(({ offset, color }) => {
@@ -528,15 +542,6 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
       const m = fromRotationTranslationScale(rot, tx, ty, sx, sy);
 
-      const bounds = clipPath.getGeometryBounds();
-      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-      const { anchor } = (clipPath.parsedStyle || {}) as ParsedBaseStyleProps;
-      const translateX = -(((anchor && anchor[0]) || 0) * width);
-      const translateY = -(((anchor && anchor[1]) || 0) * height);
-
-      mat3.translate(m, m, [translateX, translateY]);
-
       skPath.transform([m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]]);
       // CanvasKit only support clip Path now.
       canvas.clipPath(skPath, CanvasKit.ClipOp.Intersect, true);
@@ -559,19 +564,6 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       canvas.skew(ax, ay);
       canvas.rotate(rot, 0, 0);
       canvas.scale(sx, sy);
-
-      const bounds = object.getGeometryBounds();
-      const width = (bounds && bounds.halfExtents[0] * 2) || 0;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 0;
-      const { anchor } = (object.parsedStyle || {}) as ParsedBaseStyleProps;
-
-      const translateX = -(((anchor && anchor[0]) || 0) * width);
-      const translateY = -(((anchor && anchor[1]) || 0) * height);
-      if (translateX !== 0 || translateY !== 0) {
-        // apply anchor, use true size, not include stroke,
-        // eg. bounds = true size + half lineWidth
-        canvas.translate(translateX, translateY);
-      }
 
       const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
       const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;

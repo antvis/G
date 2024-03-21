@@ -3,7 +3,7 @@ import { DisplayObject } from '@antv/g-lite';
 import type { RenderInstUniform } from '../render';
 
 export interface LightProps extends BaseStyleProps {
-  intensity: number;
+  intensity?: number;
 }
 export abstract class Light extends DisplayObject<LightProps> {
   static tag = 'light';

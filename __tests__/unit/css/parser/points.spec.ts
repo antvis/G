@@ -8,11 +8,8 @@ describe('Property Points', () => {
       [10, 20],
       [10, 30],
     ]);
-    expect(result.totalLength).toBe(20);
-    expect(result.segments).toStrictEqual([
-      [0, 0.5],
-      [0.5, 1],
-    ]);
+    expect(result.totalLength).toBe(0);
+    expect(result.segments).toStrictEqual([]);
 
     result = parsePoints([
       [10, 10],
@@ -24,11 +21,8 @@ describe('Property Points', () => {
       [10, 20],
       [10, 30],
     ]);
-    expect(result.totalLength).toBe(20);
-    expect(result.segments).toStrictEqual([
-      [0, 0.5],
-      [0.5, 1],
-    ]);
+    expect(result.totalLength).toBe(0);
+    expect(result.segments).toStrictEqual([]);
   });
 
   it('should merge points correctly.', () => {

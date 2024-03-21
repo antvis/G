@@ -60,6 +60,8 @@ export class TextRenderer implements RendererContribution {
       // opacity,
       wordWrap,
       wordWrapWidth,
+      x,
+      y,
       dx,
       dy,
       // @ts-ignore
@@ -127,8 +129,7 @@ export class TextRenderer implements RendererContribution {
 
     if (alongPath) {
       const skPath = new CanvasKit.Path();
-      const { path: parsedPath } =
-        alongPath.parsedStyle as ParsedPathStyleProps;
+      const { d: parsedPath } = alongPath.parsedStyle as ParsedPathStyleProps;
       const { absolutePath, segments } = parsedPath;
       for (let i = 0; i < absolutePath.length; i++) {
         const params = absolutePath[i]; // eg. M 100 200
@@ -304,7 +305,7 @@ export class TextRenderer implements RendererContribution {
         linePositionY = 0;
       }
 
-      canvas.drawParagraph(paragraph, offsetX + dx, linePositionY + dy);
+      canvas.drawParagraph(paragraph, offsetX + x + dx, linePositionY + y + dy);
 
       paragraph.delete();
       builder.delete();

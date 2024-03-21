@@ -68,6 +68,10 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
+  constructor() {
+    super();
+  }
+
   /**
    * Unique id.
    */
@@ -116,6 +120,7 @@ export class Element<
   geometry: Geometry = {
     contentBounds: undefined,
     renderBounds: undefined,
+    dirty: true,
   };
 
   rBushNode: RBushNode = {
@@ -224,8 +229,11 @@ export class Element<
       this.ownerDocument.defaultView.mountChildren(child);
     }
 
-    insertedEvent.relatedNode = this as IElement;
-    child.dispatchEvent(insertedEvent);
+    // @ts-ignore
+    if (this.isMutationObserved) {
+      insertedEvent.relatedNode = this as IElement;
+      child.dispatchEvent(insertedEvent);
+    }
 
     return child;
   }
@@ -505,7 +513,6 @@ export class Element<
     ICSSStyleDeclaration<StyleProps>;
   computedStyle: any = runtime.enableCSSParsing
     ? {
-        anchor: unsetKeywordValue,
         opacity: unsetKeywordValue,
         fillOpacity: unsetKeywordValue,
         strokeOpacity: unsetKeywordValue,
@@ -588,8 +595,10 @@ export class Element<
 
     let value = this.attributes[name];
     if (value === undefined) {
-      const attributeName = formatAttributeName(name as string);
-      value = this.attributes[attributeName];
+      if (runtime.enableAttributeDashCased) {
+        const attributeName = formatAttributeName(name as string);
+        value = this.attributes[attributeName];
+      }
 
       // if the given attribute does not exist, the value returned will either be null or ""
       return runtime.enableCSSParsing ? (isNil(value) ? null : value) : value;
@@ -627,8 +636,8 @@ export class Element<
   setAttribute<Key extends keyof StyleProps>(
     attributeName: Key,
     value: StyleProps[Key],
-
-    force = false,
+    force?: boolean,
+    memoize?: boolean,
   ) {
     this.attributes[attributeName] = value;
   }

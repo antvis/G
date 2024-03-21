@@ -13,7 +13,7 @@ export interface ArrowStyleProps extends PathStyleProps {
 }
 
 const DEFAULT_ARROW_SIZE = 16;
-export class Arrow extends Component<ArrowStyleProps, {}> {
+export class Arrow extends Component<ArrowStyleProps, any> {
   startRef: React.MutableRefObject<DisplayObject | null>;
   endRef: React.MutableRefObject<DisplayObject | null>;
   bodyRef: React.MutableRefObject<G.Path | null>;
@@ -37,8 +37,10 @@ export class Arrow extends Component<ArrowStyleProps, {}> {
   setHeadTransform() {
     const { startHead, endHead } = this.props;
 
-    if (startHead) this.transformArrowHead(this.startRef.current as DisplayObject, true);
-    if (endHead) this.transformArrowHead(this.endRef.current as DisplayObject, false);
+    if (startHead)
+      this.transformArrowHead(this.startRef.current as DisplayObject, true);
+    if (endHead)
+      this.transformArrowHead(this.endRef.current as DisplayObject, false);
   }
 
   componentDidMount() {
@@ -55,8 +57,14 @@ export class Arrow extends Component<ArrowStyleProps, {}> {
     return (
       <Group>
         <Path {...others} ref={this.bodyRef} />
-        {startHead && <Group ref={this.startRef}>{this.getArrowHead(startHead, true)}</Group>}
-        {endHead && <Group ref={this.endRef}>{this.getArrowHead(endHead, false)}</Group>}
+        {startHead && (
+          <Group ref={this.startRef}>
+            {this.getArrowHead(startHead, true)}
+          </Group>
+        )}
+        {endHead && (
+          <Group ref={this.endRef}>{this.getArrowHead(endHead, false)}</Group>
+        )}
       </Group>
     );
   }
@@ -94,9 +102,11 @@ export class Arrow extends Component<ArrowStyleProps, {}> {
         {...others}
         lineDash={undefined}
         fill={this.props.stroke}
-        path={`M-${DEFAULT_ARROW_SIZE * cos(PI / 6)},${DEFAULT_ARROW_SIZE * sin(PI / 6)} L0,0 L-${
-          DEFAULT_ARROW_SIZE * cos(PI / 6)
-        },-${DEFAULT_ARROW_SIZE * sin(PI / 6)} Z`}
+        d={`M-${DEFAULT_ARROW_SIZE * cos(PI / 6)},${
+          DEFAULT_ARROW_SIZE * sin(PI / 6)
+        } L0,0 L-${DEFAULT_ARROW_SIZE * cos(PI / 6)},-${
+          DEFAULT_ARROW_SIZE * sin(PI / 6)
+        } Z`}
       />
     );
   }

@@ -1,5 +1,11 @@
 # @antv/g-shader-components
 
+## 2.0.0
+
+### Major Changes
+
+-   424711bd: Use G6.0.
+
 ## 1.8.7
 
 ### Patch Changes

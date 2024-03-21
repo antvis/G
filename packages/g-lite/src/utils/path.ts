@@ -2,7 +2,7 @@
  * implements morph animation with cubic splitting
  * @see http://thednp.github.io/kute.js/svgCubicMorph.html
  */
-import { arcBox, cubicBox, quadBox } from '@antv/g-math';
+import { arcBox, cubicBox, polylineLength, quadBox } from '@antv/g-math';
 import type { AbsoluteArray, ASegment } from '@antv/util';
 import {
   clamp,
@@ -12,8 +12,7 @@ import {
   min,
   mod,
 } from '@antv/util';
-import type { mat4 } from 'gl-matrix';
-import { vec3 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import type {
   Circle,
   Ellipse,
@@ -31,12 +30,21 @@ import { Shape } from '../types';
 import { deg2rad } from './math';
 
 export function getOrCalculatePathTotalLength(path: Path) {
-  if (path.parsedStyle.path.totalLength === 0) {
-    path.parsedStyle.path.totalLength = getTotalLength(
-      path.parsedStyle.path.absolutePath,
+  if (path.parsedStyle.d.totalLength === 0) {
+    path.parsedStyle.d.totalLength = getTotalLength(
+      path.parsedStyle.d.absolutePath,
     );
   }
-  return path.parsedStyle.path.totalLength;
+  return path.parsedStyle.d.totalLength;
+}
+
+export function getOrCalculatePolylineTotalLength(polyline: Polyline) {
+  if (polyline.parsedStyle.points.totalLength === 0) {
+    polyline.parsedStyle.points.totalLength = polylineLength(
+      polyline.parsedStyle.points.points as [number, number][],
+    );
+  }
+  return polyline.parsedStyle.points.totalLength;
 }
 
 export function removeRedundantMCommand(path: AbsoluteArray) {
@@ -733,11 +741,10 @@ function commandsToPathString(
   object: Circle | Ellipse | Rect | Line | Polyline | Polygon | Path,
   transform?: mat4,
 ) {
-  const { defX = 0, defY = 0 } = object.parsedStyle;
   return commands.reduce((prev, cur) => {
     let path = '';
     if (cur[0] === 'M' || cur[0] === 'L') {
-      const p = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
+      const p = vec3.fromValues(cur[1], cur[2], 0);
 
       if (transform) {
         vec3.transformMat4(p, p, transform);
@@ -747,9 +754,9 @@ function commandsToPathString(
     } else if (cur[0] === 'Z') {
       path = cur[0];
     } else if (cur[0] === 'C') {
-      const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
-      const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
-      const p3 = vec3.fromValues(cur[5] - defX, cur[6] - defY, 0);
+      const p1 = vec3.fromValues(cur[1], cur[2], 0);
+      const p2 = vec3.fromValues(cur[3], cur[4], 0);
+      const p3 = vec3.fromValues(cur[5], cur[6], 0);
 
       if (transform) {
         vec3.transformMat4(p1, p1, transform);
@@ -759,14 +766,14 @@ function commandsToPathString(
 
       path = `${cur[0]}${p1[0]},${p1[1]},${p2[0]},${p2[1]},${p3[0]},${p3[1]}`;
     } else if (cur[0] === 'A') {
-      const c = vec3.fromValues(cur[6] - defX, cur[7] - defY, 0);
+      const c = vec3.fromValues(cur[6], cur[7], 0);
       if (transform) {
         vec3.transformMat4(c, c, transform);
       }
       path = `${cur[0]}${cur[1]},${cur[2]},${cur[3]},${cur[4]},${cur[5]},${c[0]},${c[1]}`;
     } else if (cur[0] === 'Q') {
-      const p1 = vec3.fromValues(cur[1] - defX, cur[2] - defY, 0);
-      const p2 = vec3.fromValues(cur[3] - defX, cur[4] - defY, 0);
+      const p1 = vec3.fromValues(cur[1], cur[2], 0);
+      const p2 = vec3.fromValues(cur[3], cur[4], 0);
       if (transform) {
         vec3.transformMat4(p1, p1, transform);
         vec3.transformMat4(p2, p2, transform);
@@ -873,7 +880,6 @@ function rectToCommands(
 /**
  * convert object to path, should account for:
  * * transform & origin
- * * anchor
  * * lineWidth
  */
 export function convertToPath(
@@ -931,7 +937,7 @@ export function convertToPath(
       );
       break;
     case Shape.PATH:
-      const { absolutePath } = (object as Path).parsedStyle.path;
+      const { absolutePath } = (object as Path).parsedStyle.d;
       commands = [...absolutePath];
       break;
   }
@@ -943,8 +949,6 @@ export function convertToPath(
 
 export function translatePathToString(
   absolutePath: AbsoluteArray,
-  defX: number,
-  defY: number,
   startOffsetX = 0,
   startOffsetY = 0,
   endOffsetX = 0,
@@ -967,47 +971,35 @@ export function translatePathToString(
         case 'M':
           // Use start marker offset
           if (useStartOffset) {
-            return `M ${params[1] - defX + startOffsetX},${
-              params[2] - defY + startOffsetY
-            } L ${params[1] - defX},${params[2] - defY}`;
+            return `M ${params[1] + startOffsetX},${
+              params[2] + startOffsetY
+            } L ${params[1]},${params[2]}`;
           } else {
-            return `M ${params[1] - defX},${params[2] - defY}`;
+            return `M ${params[1]},${params[2]}`;
           }
         case 'L':
-          return `L ${params[1] - defX + (useEndOffset ? endOffsetX : 0)},${
-            params[2] - defY + (useEndOffset ? endOffsetY : 0)
+          return `L ${params[1] + (useEndOffset ? endOffsetX : 0)},${
+            params[2] + (useEndOffset ? endOffsetY : 0)
           }`;
         case 'Q':
           return (
-            `Q ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${
-              params[4] - defY
-            }` +
+            `Q ${params[1]} ${params[2]},${params[3]} ${params[4]}` +
             (useEndOffset
-              ? ` L ${params[3] - defX + endOffsetX},${
-                  params[4] - defY + endOffsetY
-                }`
+              ? ` L ${params[3] + endOffsetX},${params[4] + endOffsetY}`
               : '')
           );
         case 'C':
           return (
-            `C ${params[1] - defX} ${params[2] - defY},${params[3] - defX} ${
-              params[4] - defY
-            },${params[5] - defX} ${params[6] - defY}` +
+            `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5]} ${params[6]}` +
             (useEndOffset
-              ? ` L ${params[5] - defX + endOffsetX},${
-                  params[6] - defY + endOffsetY
-                }`
+              ? ` L ${params[5] + endOffsetX},${params[6] + endOffsetY}`
               : '')
           );
         case 'A':
           return (
-            `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${
-              params[5]
-            } ${params[6] - defX} ${params[7] - defY}` +
+            `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6]} ${params[7]}` +
             (useEndOffset
-              ? ` L ${params[6] - defX + endOffsetX},${
-                  params[7] - defY + endOffsetY
-                }`
+              ? ` L ${params[6] + endOffsetX},${params[7] + endOffsetY}`
               : '')
           );
         case 'Z':

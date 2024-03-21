@@ -66,8 +66,6 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
   y2: number;
   z1?: number;
   z2?: number;
-  defX: number;
-  defY: number;
   isBillboard?: boolean;
   isSizeAttenuation?: boolean;
   markerStart?: DisplayObject | null;
@@ -170,8 +168,6 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
       x2,
       y1,
       y2,
-      defX,
-      defY,
     } = this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
@@ -188,15 +184,15 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
     let originalAngle: number;
 
     if (isStart) {
-      ox = x1 - defX;
-      oy = y1 - defY;
+      ox = x1;
+      oy = y1;
       x = x2 - x1;
       y = y2 - y1;
       offset = markerStartOffset || 0;
       originalAngle = this.markerStartAngle;
     } else {
-      ox = x2 - defX;
-      oy = y2 - defY;
+      ox = x2;
+      oy = y2;
       x = x1 - x2;
       y = y1 - y2;
       offset = markerEndOffset || 0;
@@ -214,12 +210,12 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
   getPoint(ratio: number, inWorldSpace = false): Point {
     // TODO: account for z1/z2 in 3D line
-    const { x1, y1, x2, y2, defX, defY } = this.parsedStyle;
+    const { x1, y1, x2, y2 } = this.parsedStyle;
     const { x, y } = linePointAt(x1, y1, x2, y2, ratio);
 
     const transformed = vec3.transformMat4(
       vec3.create(),
-      vec3.fromValues(x - defX, y - defY, 0),
+      vec3.fromValues(x, y, 0),
       inWorldSpace ? this.getWorldTransform() : this.getLocalTransform(),
     );
 

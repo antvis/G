@@ -45,6 +45,8 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         lineWidth: selectionStrokeWidth,
       },
     });
+    // @ts-ignore
+    this.mask.style.originalPoints = points;
     this.appendChild(this.mask);
 
     points.forEach((_, i) => {
@@ -68,14 +70,13 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       anchorStroke,
       anchorFillOpacity,
       anchorStrokeOpacity,
+      anchorStrokeWidth,
       anchorSize,
       target,
     } = this.style;
 
     const anchor = new Circle({
       style: {
-        cx: 0,
-        cy: 0,
         r: anchorSize,
         stroke: anchorStroke,
         fill: anchorFill,
@@ -84,8 +85,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         cursor: 'move',
         draggable: true,
         visibility:
-          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'visible',
         isSizeAttenuation: true,
+        lineWidth: anchorStrokeWidth,
       },
     });
     this.anchors.push(anchor);
@@ -112,6 +114,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       midAnchorFillOpacity,
       midAnchorStrokeOpacity,
       midAnchorSize,
+      midAnchorStrokeWidth,
       target,
     } = this.style;
 
@@ -127,8 +130,9 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
         cursor: 'move',
         draggable: true,
         visibility:
-          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'unset',
+          target.style.anchorsVisibility === 'hidden' ? 'hidden' : 'visible',
         isSizeAttenuation: true,
+        lineWidth: midAnchorStrokeWidth,
       },
     });
     this.midAnchors.push(midAnchor);
@@ -181,21 +185,20 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
   moveMask(dx: number, dy: number) {
     // change definition of polyline
-    this.mask.style.points = [...this.mask.style.points].map(([x, y]) => [
-      x + dx,
-      y + dy,
-    ]);
+    // @ts-ignore
+    this.mask.style.points = [...this.mask.style.pointsStartDragging].map(
+      ([x, y]) => [x + dx, y + dy],
+    );
 
     // re-position anchors in canvas coordinates
     this.repositionAnchors();
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const { defX, defY } = this.mask.parsedStyle;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
-        movingX: dx + defX,
-        movingY: dy + defY,
+        movingX: dx,
+        movingY: dy,
         dx,
         dy,
       }),
@@ -216,7 +219,8 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     const { points } = this.mask.parsedStyle;
     points.points.forEach((point, i) => {
       const anchor = this.anchors[i];
-      anchor.setPosition(point);
+      anchor.style.cx = point[0];
+      anchor.style.cy = point[1];
 
       if (this.plugin.annotationPluginOptions.enableDisplayMidAnchors) {
         const midAnchors = this.midAnchors[i];
@@ -240,15 +244,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const { defX, defY } = this.mask.parsedStyle;
-
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
         const selectable = this.plugin.getOrCreateSelectableUI(selected);
-        selectable.triggerMovingEvent(
-          canvasX - shiftX - defX,
-          canvasY - shiftY - defY,
-        );
+        selectable.triggerMovingEvent(canvasX - shiftX, canvasY - shiftY);
       });
     };
 
@@ -264,9 +263,10 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
       midAnchorIndexInDrag = this.midAnchors.indexOf(target);
 
       if (target === this.mask) {
-        const { defX, defY } = this.mask.parsedStyle;
-        shiftX = e.canvasX - defX;
-        shiftY = e.canvasY - defY;
+        shiftX = e.canvasX;
+        shiftY = e.canvasY;
+        // @ts-ignore
+        this.mask.style.pointsStartDragging = this.mask.style.points;
 
         moveAt(e.canvasX, e.canvasY);
       } else if (midAnchorIndexInDrag > -1) {

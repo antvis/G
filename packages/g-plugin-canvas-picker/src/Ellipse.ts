@@ -21,13 +21,15 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
+    cx = 0,
+    cy = 0,
     rx,
     ry,
     fill,
     stroke,
-    lineWidth,
-    increasedLineWidthForHitTesting,
-    pointerEvents,
+    lineWidth = 1,
+    increasedLineWidthForHitTesting = 0,
+    pointerEvents = 'auto',
   } = displayObject.parsedStyle as ParsedEllipseStyleProps;
 
   const { x, y } = position;
@@ -37,10 +39,9 @@ export function isPointInPath(
     stroke,
   );
 
-  const halfLineWith =
-    ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) / 2;
-  const squareX = (x - rx) * (x - rx);
-  const squareY = (y - ry) * (y - ry);
+  const halfLineWith = (lineWidth + increasedLineWidthForHitTesting) / 2;
+  const squareX = (x - cx) * (x - cx);
+  const squareY = (y - cy) * (y - cy);
   // 使用椭圆的公式： x*x/rx*rx + y*y/ry*ry = 1;
   if ((hasFill && hasStroke) || isClipPath) {
     return (

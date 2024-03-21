@@ -20,19 +20,23 @@ export class TextRenderer implements StyleRenderer {
     plugin: CanvasRendererPlugin,
     runtime: GlobalRuntime,
   ) {
+    // Trigger text geometry calculation.
+    object.getBounds();
     const {
-      lineWidth,
-      textAlign,
-      textBaseline,
-      lineJoin,
-      miterLimit,
-      letterSpacing,
+      lineWidth = 1,
+      textAlign = 'start',
+      textBaseline = 'alphabetic',
+      lineJoin = 'miter',
+      miterLimit = 10,
+      letterSpacing = 0,
       stroke,
       fill,
-      fillOpacity,
-      strokeOpacity,
-      opacity,
+      fillOpacity = 1,
+      strokeOpacity = 1,
+      opacity = 1,
       metrics,
+      x = 0,
+      y = 0,
       dx,
       dy,
       shadowColor,
@@ -59,22 +63,22 @@ export class TextRenderer implements StyleRenderer {
       context.miterLimit = miterLimit;
     }
 
-    let linePositionY = 0;
+    let linePositionY = y;
     // handle vertical text baseline
     if (textBaseline === 'middle') {
-      linePositionY = -height / 2 - lineHeight / 2;
+      linePositionY += -height / 2 - lineHeight / 2;
     } else if (
       textBaseline === 'bottom' ||
       textBaseline === 'alphabetic' ||
       textBaseline === 'ideographic'
     ) {
-      linePositionY = -height;
+      linePositionY += -height;
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
-      linePositionY = -lineHeight;
+      linePositionY += -lineHeight;
     }
 
     // account for dx & dy
-    const offsetX = dx || 0;
+    const offsetX = x + (dx || 0);
     linePositionY += dy || 0;
 
     if (lines.length === 1) {

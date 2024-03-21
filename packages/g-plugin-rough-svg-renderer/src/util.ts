@@ -57,11 +57,11 @@ export function generateRoughOptions(object: DisplayObject) {
   const {
     fill,
     stroke,
-    fillOpacity,
-    strokeOpacity,
+    fillOpacity = 1,
+    strokeOpacity = 1,
     bowing,
     roughness,
-    lineWidth,
+    lineWidth = 1,
     seed,
     fillStyle,
     fillWeight,
@@ -89,8 +89,8 @@ export function generateRoughOptions(object: DisplayObject) {
     // If seed is not defined, or set to 0, no seed is used when computing random values.
     // @see https://github.com/rough-stuff/rough/wiki#seed
     seed: seed || object.entity,
-    fill: mergeOpacity(fill, fillOpacity),
-    stroke: mergeOpacity(stroke, strokeOpacity),
+    fill: fill && mergeOpacity(fill, fillOpacity),
+    stroke: stroke && mergeOpacity(stroke, strokeOpacity),
     strokeWidth: lineWidth === 0 ? MIN_STROKE_WIDTH : lineWidth,
     fillStyle,
     fillWeight,

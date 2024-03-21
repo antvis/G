@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-canvas",
-  "version": "1.11.29",
+  "version": "2.0.0",
   "description": "A renderer implemented by Canvas 2D API",
   "keywords": [
     "antv",
@@ -48,7 +48,7 @@
     "@antv/g-plugin-dom-interaction": "workspace:*",
     "@antv/g-plugin-html-renderer": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

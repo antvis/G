@@ -93,7 +93,7 @@ export class SelectablePlugin implements RenderingPlugin {
   selectDisplayObject(displayObject: DisplayObject, skipEvent = false) {
     const selectable = this.getOrCreateSelectableUI(displayObject);
     if (selectable && this.selected.indexOf(displayObject) === -1) {
-      selectable.style.visibility = 'visible';
+      selectable.show();
       this.selected.push(displayObject);
 
       if (!skipEvent) {
@@ -118,7 +118,7 @@ export class SelectablePlugin implements RenderingPlugin {
           selectable.deselectAnchor(anchor);
         });
 
-        selectable.style.visibility = 'hidden';
+        selectable.hide();
       }
       this.selected.splice(index, 1);
       displayObject.dispatchEvent(new CustomEvent(SelectableEvent.DESELECTED));
@@ -217,14 +217,16 @@ export class SelectablePlugin implements RenderingPlugin {
 
   private updateMidAnchorsVisibility(selectable: AbstractSelectable<any>) {
     selectable?.midAnchors.forEach((midAnchor) => {
-      midAnchor.style.visibility = this.midAnchorsVisible ? 'unset' : 'hidden';
+      midAnchor.style.visibility = this.midAnchorsVisible
+        ? 'visible'
+        : 'hidden';
     });
   }
 
   private updateRotateAnchorVisibility(selectable: AbstractSelectable<any>) {
     if (selectable?.rotateAnchor) {
       selectable.rotateAnchor.style.visibility = this.rotateAnchorVisible
-        ? 'unset'
+        ? 'visible'
         : 'hidden';
     }
   }
@@ -540,8 +542,8 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (target.nodeName === Shape.ELLIPSE) {
         const { x, y, width, height } = rect;
         target.attr({
-          cx: x,
-          cy: y,
+          cx: x + width / 2,
+          cy: y + height / 2,
           rx: width / 2,
           ry: height / 2,
         });
@@ -582,8 +584,8 @@ export class SelectablePlugin implements RenderingPlugin {
         });
       } else if (target.nodeName === Shape.ELLIPSE) {
         target.attr({
-          cx: rect.x,
-          cy: rect.y,
+          cx: rect.x + target.parsedStyle.rx,
+          cy: rect.y + target.parsedStyle.ry,
         });
       } else if (target.nodeName === Shape.LINE) {
         const [[x1, y1], [x2, y2]] = polyline.points;

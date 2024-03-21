@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-picker",
-  "version": "1.10.26",
+  "version": "2.0.0",
   "description": "A G plugin for picking in canvas",
   "keywords": [
     "antv",
@@ -42,7 +42,7 @@
     "@antv/g-math": "workspace:*",
     "@antv/g-plugin-canvas-path-generator": "workspace:*",
     "@antv/g-plugin-canvas-renderer": "workspace:*",
-    "@antv/util": "^3.3.4",
+    "@antv/util": "^3.3.5",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

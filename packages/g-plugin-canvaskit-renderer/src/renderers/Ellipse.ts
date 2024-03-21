@@ -1,5 +1,8 @@
 import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g-lite';
-import type { RendererContribution, RendererContributionContext } from '../interfaces';
+import type {
+  RendererContribution,
+  RendererContributionContext,
+} from '../interfaces';
 
 /**
  * @see https://fiddle.skia.org/c/@Canvas_drawOval
@@ -8,26 +11,33 @@ import type { RendererContribution, RendererContributionContext } from '../inter
  */
 export class EllipseRenderer implements RendererContribution {
   render(object: DisplayObject, context: RendererContributionContext) {
-    const { canvas, strokePaint, fillPaint, shadowFillPaint, shadowStrokePaint } = context;
-    const { rx, ry, shadowOffsetX, shadowOffsetY } = object.parsedStyle as ParsedEllipseStyleProps;
+    const {
+      canvas,
+      strokePaint,
+      fillPaint,
+      shadowFillPaint,
+      shadowStrokePaint,
+    } = context;
+    const { cx, cy, rx, ry, shadowOffsetX, shadowOffsetY } =
+      object.parsedStyle as ParsedEllipseStyleProps;
 
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawOval(
         [
-          shadowOffsetX || 0,
-          shadowOffsetY || 0,
-          rx * 2 + (shadowOffsetX || 0) / 2,
-          ry * 2 + (shadowOffsetY || 0) / 2,
+          cx - rx + (shadowOffsetX || 0),
+          cy - ry + (shadowOffsetY || 0),
+          cx + rx + (shadowOffsetX || 0),
+          cy + ry + (shadowOffsetY || 0),
         ],
         shadowFillPaint || shadowStrokePaint,
       );
     }
 
     if (fillPaint) {
-      canvas.drawOval([0, 0, rx * 2, ry * 2], fillPaint);
+      canvas.drawOval([cx - rx, cy - ry, cx + rx, cy + ry], fillPaint);
     }
     if (strokePaint) {
-      canvas.drawOval([0, 0, rx * 2, ry * 2], strokePaint);
+      canvas.drawOval([cx - rx, cy - ry, cx + rx, cy + ry], strokePaint);
     }
   }
 }

@@ -26,16 +26,16 @@ describe('Mixin Visible', () => {
 
   it('should hide/show itself correctly', async () => {
     const group = new Group();
-    expect(group.style.visibility).toBe('');
-    expect(group.isVisible()).toBeFalsy();
+    expect(group.style.visibility).toBeUndefined();
+    expect(group.isVisible()).toBeTruthy();
 
     await canvas.ready;
     // append to canvas
     canvas.appendChild(group);
 
     // inherit from document.documentElement
-    expect(group.parsedStyle.visibility.toString()).toBe('visible');
-    expect(group.style.visibility).toBe('');
+    expect(group.parsedStyle.visibility).toBeUndefined();
+    expect(group.style.visibility).toBeUndefined();
     expect(group.isVisible()).toBeTruthy();
 
     // hide itself
@@ -55,9 +55,9 @@ describe('Mixin Visible', () => {
     group.appendChild(child1);
     group.appendChild(child2);
 
-    expect(group.style.visibility).toBe('');
-    expect(child1.style.visibility).toBe('');
-    expect(child2.style.visibility).toBe('');
+    expect(group.style.visibility).toBeUndefined();
+    expect(child1.style.visibility).toBeUndefined();
+    expect(child2.style.visibility).toBeUndefined();
 
     await canvas.ready;
     // append to document
@@ -71,16 +71,16 @@ describe('Mixin Visible', () => {
     // hide parent group
     group.hide();
     expect(group.style.visibility).toBe('hidden');
-    expect(child1.style.visibility).toBe('');
-    expect(child2.style.visibility).toBe('');
+    expect(child1.style.visibility).toBe('hidden');
+    expect(child2.style.visibility).toBe('hidden');
     expect(group.isVisible()).toBeFalsy();
     expect(child1.isVisible()).toBeFalsy();
     expect(child2.isVisible()).toBeFalsy();
 
     group.show();
     expect(group.style.visibility).toBe('visible');
-    expect(child1.style.visibility).toBe('');
-    expect(child2.style.visibility).toBe('');
+    expect(child1.style.visibility).toBe('visible');
+    expect(child2.style.visibility).toBe('visible');
     expect(group.isVisible()).toBeTruthy();
     expect(child1.isVisible()).toBeTruthy();
     expect(child2.isVisible()).toBeTruthy();
@@ -99,10 +99,15 @@ describe('Mixin Visible', () => {
     group.appendChild(child1);
     group.appendChild(child2);
 
-    expect(root.style.visibility).toBe('');
-    expect(group.style.visibility).toBe('');
+    expect(root.style.visibility).toBeUndefined();
+    expect(group.style.visibility).toBeUndefined();
     expect(child1.style.visibility).toBe('hidden');
-    expect(child2.style.visibility).toBe('');
+    expect(child2.style.visibility).toBeUndefined();
+
+    // expect(root.style.visibility).toBe('');
+    // expect(group.style.visibility).toBe('');
+    // expect(child1.style.visibility).toBe('hidden');
+    // expect(child2.style.visibility).toBe('');
 
     await canvas.ready;
     // append to document
@@ -117,9 +122,9 @@ describe('Mixin Visible', () => {
     // hide parent group
     root.hide();
     expect(root.style.visibility).toBe('hidden');
-    expect(group.style.visibility).toBe('');
+    expect(group.style.visibility).toBe('hidden');
     expect(child1.style.visibility).toBe('hidden');
-    expect(child2.style.visibility).toBe('');
+    expect(child2.style.visibility).toBe('hidden');
     expect(root.isVisible()).toBeFalsy();
     expect(group.isVisible()).toBeFalsy();
     expect(child1.isVisible()).toBeFalsy();
@@ -127,12 +132,12 @@ describe('Mixin Visible', () => {
 
     root.show();
     expect(root.style.visibility).toBe('visible');
-    expect(group.style.visibility).toBe('');
-    expect(child1.style.visibility).toBe('hidden');
-    expect(child2.style.visibility).toBe('');
+    expect(group.style.visibility).toBe('visible');
+    expect(child1.style.visibility).toBe('visible');
+    expect(child2.style.visibility).toBe('visible');
     expect(root.isVisible()).toBeTruthy();
     expect(group.isVisible()).toBeTruthy();
-    expect(child1.isVisible()).toBeFalsy();
+    expect(child1.isVisible()).toBeTruthy();
     expect(child2.isVisible()).toBeTruthy();
 
     child2.hide();

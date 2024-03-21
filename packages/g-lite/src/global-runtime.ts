@@ -11,7 +11,6 @@ import {
   CSSPropertyLengthOrPercentage,
   CSSPropertyLengthOrPercentage12,
   CSSPropertyLengthOrPercentage14,
-  CSSPropertyLocalPosition,
   CSSPropertyMarker,
   CSSPropertyNumber,
   CSSPropertyOffsetDistance,
@@ -35,6 +34,7 @@ import {
   DefaultSceneGraphSelector,
   DefaultSceneGraphService,
   EllipseUpdater,
+  GroupUpdater,
   LineUpdater,
   OffscreenCanvasCreator,
   PathUpdater,
@@ -78,6 +78,12 @@ export interface GlobalRuntime {
    */
   enableStyleSyntax: boolean;
 
+  /**
+   * Enable using dash-cased attribute.
+   * @example
+   * circle.setAttribute('stroke-width', '2');
+   */
+  enableAttributeDashCased: boolean;
   enableSizeAttenuation: boolean;
 }
 
@@ -92,7 +98,7 @@ const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>> = (() => {
     [Shape.ELLIPSE]: new EllipseUpdater(),
     [Shape.RECT]: rectUpdater,
     [Shape.IMAGE]: rectUpdater,
-    [Shape.GROUP]: rectUpdater,
+    [Shape.GROUP]: new GroupUpdater(),
     [Shape.LINE]: new LineUpdater(),
     [Shape.TEXT]: new TextUpdater(runtime),
     [Shape.POLYLINE]: polylineUpdater,
@@ -123,7 +129,7 @@ const CSSPropertySyntaxFactory: Record<
       new CSSPropertyLengthOrPercentage12(),
     [PropertySyntax.LENGTH_PERCENTAGE_14]:
       new CSSPropertyLengthOrPercentage14(),
-    [PropertySyntax.COORDINATE]: new CSSPropertyLocalPosition(),
+    [PropertySyntax.COORDINATE]: new CSSPropertyLengthOrPercentage(),
     [PropertySyntax.OFFSET_DISTANCE]: new CSSPropertyOffsetDistance(),
     [PropertySyntax.OPACITY_VALUE]: new CSSPropertyOpacity(),
     [PropertySyntax.PATH]: new CSSPropertyPath(),
@@ -177,7 +183,8 @@ runtime.CSSPropertySyntaxFactory = CSSPropertySyntaxFactory;
 runtime.styleValueRegistry = new DefaultStyleValueRegistry(runtime);
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
-runtime.enableCSSParsing = true;
+runtime.enableCSSParsing = false;
 runtime.enableDataset = false;
 runtime.enableStyleSyntax = true;
+runtime.enableAttributeDashCased = false;
 runtime.enableSizeAttenuation = false;

@@ -79,6 +79,9 @@ export class TextDrawcall extends Instanced {
   }
 
   private calcFontHash(object: DisplayObject) {
+    // Trigger text geometry calculation.
+    object.getBounds();
+
     const instancedAttributes = [
       'fontSize',
       'fontFamily',
@@ -110,39 +113,45 @@ export class TextDrawcall extends Instanced {
 
   createGeometry(objects: DisplayObject[]): void {
     const object = this.instance as TextShape;
-    const { textBaseline, fontSize, letterSpacing } = object.parsedStyle;
+    const { fontSize = 16, letterSpacing = 0 } = object.parsedStyle;
+    let { textBaseline = 'alphabetic' } = object.parsedStyle;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize;
 
     const indices = [];
+    const positions = [];
     const uvOffsets = [];
     const packed = [];
     let indicesOff = 0;
     objects.forEach((object) => {
-      const { metrics, dx, dy } = object.parsedStyle as ParsedTextStyleProps;
+      const {
+        metrics,
+        dx = 0,
+        dy = 0,
+      } = object.parsedStyle as ParsedTextStyleProps;
       const { font, lines, height, lineHeight } = metrics;
 
       // account for dx & dy
-      const offsetX = dx || 0;
-      const offsetY = dy || 0;
+      const offsetX = dx;
+      const offsetY = dy;
+
+      if (!this.context.enableCSSParsing && textBaseline === 'alphabetic') {
+        textBaseline = 'bottom';
+      }
 
       let linePositionY = 0;
       // handle vertical text baseline
       if (textBaseline === 'middle') {
-        linePositionY = -height / 2;
+        linePositionY += -height / 2;
       } else if (textBaseline === 'bottom') {
-        linePositionY = -height;
+        linePositionY += -height;
       } else if (textBaseline === 'top' || textBaseline === 'hanging') {
-        linePositionY = 0;
+        linePositionY += 0;
       } else if (textBaseline === 'alphabetic') {
-        linePositionY = -height + lineHeight * 0.25;
-        if (!this.context.enableCSSParsing) {
-          linePositionY = -height;
-        }
-        // linePositionY = -height + fontProperties.ascent;
+        linePositionY += -height + lineHeight * 0.25;
       } else if (textBaseline === 'ideographic') {
-        linePositionY = -height;
+        linePositionY += -height;
       }
 
       const glyphAtlas = this.glyphManager.getAtlas();
@@ -150,6 +159,7 @@ export class TextDrawcall extends Instanced {
         indicesOffset,
         indexBuffer,
         charUVOffsetBuffer,
+        charPositionsBuffer,
         charPackedBuffer,
       } = this.buildTextBuffers({
         object,
@@ -170,6 +180,7 @@ export class TextDrawcall extends Instanced {
       this.packedBufferObjectMap.set(object, [start, end]);
 
       uvOffsets.push(...charUVOffsetBuffer);
+      positions.push(...charPositionsBuffer);
       indices.push(...indexBuffer);
     });
 
@@ -225,6 +236,19 @@ export class TextDrawcall extends Instanced {
     });
 
     this.geometry.setVertexBuffer({
+      bufferIndex: VertexAttributeBufferIndex.POSITION,
+      byteStride: 4 * 3,
+      stepMode: VertexStepMode.VERTEX,
+      attributes: [
+        {
+          format: Format.F32_RGB,
+          bufferByteOffset: 4 * 0,
+          location: VertexAttributeLocation.POSITION,
+        },
+      ],
+      data: new Float32Array(positions),
+    });
+    this.geometry.setVertexBuffer({
       bufferIndex: TextVertexAttributeBufferIndex.TEX,
       byteStride: 4 * (2 + 2),
       stepMode: VertexStepMode.VERTEX,
@@ -255,10 +279,10 @@ export class TextDrawcall extends Instanced {
 
     const object = this.instance as TextShape;
     const {
-      fontSize,
-      fontFamily = '',
-      fontWeight = '',
-      fontStyle,
+      fontSize = 16,
+      fontFamily = 'sans-serif',
+      fontWeight = 'normal',
+      fontStyle = 'normal',
       metrics,
     } = object.parsedStyle as ParsedTextStyleProps;
     const { font } = metrics;
@@ -331,6 +355,8 @@ export class TextDrawcall extends Instanced {
       name === 'lineHeight' ||
       name === 'wordWrap' ||
       name === 'textAlign' ||
+      name === 'x' ||
+      name === 'y' ||
       name === 'dx' ||
       name === 'dy'
     ) {
@@ -365,10 +391,10 @@ export class TextDrawcall extends Instanced {
         const {
           fill,
           stroke,
-          opacity,
-          fillOpacity,
-          strokeOpacity,
-          lineWidth,
+          opacity = 1,
+          fillOpacity = 1,
+          strokeOpacity = 1,
+          lineWidth = 1,
           visibility,
           isBillboard,
           billboardRotation,
@@ -431,7 +457,7 @@ export class TextDrawcall extends Instanced {
           sliced[i + 21] = fillOpacity;
           sliced[i + 22] = strokeOpacity;
           sliced[i + 23] = lineWidth;
-          sliced[i + 24] = visibility === 'visible' ? 1 : 0;
+          sliced[i + 24] = visibility !== 'hidden' ? 1 : 0;
           sliced[i + 25] = isBillboard ? 1 : 0;
           sliced[i + 26] = isSizeAttenuation ? 1 : 0;
           sliced[i + 27] = billboardRotation ?? 0;
@@ -473,17 +499,20 @@ export class TextDrawcall extends Instanced {
     indicesOffset: number;
   }) {
     const {
-      textAlign,
+      textAlign = 'start',
       fill,
       stroke,
-      opacity,
-      fillOpacity,
-      strokeOpacity,
-      lineWidth,
+      opacity = 1,
+      fillOpacity = 1,
+      strokeOpacity = 1,
+      lineWidth = 1,
       visibility,
       isBillboard,
       billboardRotation,
       isSizeAttenuation,
+      x = 0,
+      y = 0,
+      z = 0,
     } = object.parsedStyle as ParsedTextStyleProps;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
@@ -513,6 +542,7 @@ export class TextDrawcall extends Instanced {
 
     const charPackedBuffer: number[] = [];
     const charUVOffsetBuffer: number[] = [];
+    const charPositionsBuffer: number[] = [];
     const indexBuffer: number[] = [];
 
     let i = indicesOffset;
@@ -543,7 +573,7 @@ export class TextDrawcall extends Instanced {
         fillOpacity,
         strokeOpacity,
         lineWidth,
-        visibility === 'visible' ? 1 : 0,
+        visibility !== 'hidden' ? 1 : 0,
         isBillboard ? 1 : 0,
         isSizeAttenuation ? 1 : 0,
         billboardRotation ?? 0,
@@ -573,6 +603,7 @@ export class TextDrawcall extends Instanced {
         quad.bl.x,
         quad.bl.y,
       );
+      charPositionsBuffer.push(x, y, z, x, y, z, x, y, z, x, y, z);
 
       indexBuffer.push(0 + i, 2 + i, 1 + i);
       indexBuffer.push(2 + i, 0 + i, 3 + i);
@@ -582,8 +613,14 @@ export class TextDrawcall extends Instanced {
     return {
       indexBuffer,
       charUVOffsetBuffer,
+      charPositionsBuffer,
       charPackedBuffer,
       indicesOffset: i,
     };
+  }
+
+  destroy() {
+    super.destroy();
+    this.glyphManager.destroy();
   }
 }
