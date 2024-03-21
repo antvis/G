@@ -1,5 +1,62 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 2.0.0
+
+### Major Changes
+
+-   424711bd: Use G6.0.
+
+### Patch Changes
+
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Insert event will trigger by default.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Transform origin should be relative to geometry bounds when using percentage unit.
+-   424711bd: Lazy calculate geometry.
+-   424711bd: Remove anchor attribute and modify geometry bounds calculation.
+-   424711bd: Test.
+-   424711bd: x/y in rect can be omitted.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Group geometry updater.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Test.
+-   424711bd: Refactor transform.
+-   424711bd: Test.
+-   424711bd: Lazy calculate geometry.
+-   424711bd: Transform can only be affected with the attribute.
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+-   Updated dependencies [424711bd]
+    -   @antv/g-canvas@2.0.0
+    -   @antv/g-lite@2.0.0
+
 ## 1.9.27-next.20
 
 ### Patch Changes
@@ -191,6 +248,7 @@
 -   Updated dependencies
     -   @antv/g-lite@1.3.0-next.0
     -   @antv/g-canvas@1.11.27-next.0
+
 ## 1.9.29
 
 ### Patch Changes

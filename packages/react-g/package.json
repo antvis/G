@@ -1,6 +1,6 @@
 {
   "name": "@antv/react-g",
-  "version": "1.10.28",
+  "version": "2.0.0",
   "description": "react render for @antv/g",
   "keywords": [
     "react",
