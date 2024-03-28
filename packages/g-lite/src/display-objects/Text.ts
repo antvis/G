@@ -314,6 +314,7 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement
    */
   getComputedTextLength(): number {
+    this.getGeometryBounds();
     return this.parsedStyle.metrics?.maxLineWidth || 0;
   }
 
@@ -342,10 +343,12 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   // }
 
   getLineBoundingRects() {
+    this.getGeometryBounds();
     return this.parsedStyle.metrics?.lineMetrics || [];
   }
 
   isOverflowing() {
+    this.getGeometryBounds();
     return !!this.parsedStyle.isOverflowing;
   }
 }
