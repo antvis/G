@@ -1,5 +1,13 @@
 # @antv/g-mobile-svg
 
+## 1.0.2
+
+### Patch Changes
+
+-   Updated dependencies [6009d6f2]
+    -   @antv/g-plugin-svg-renderer@2.0.2
+    -   @antv/g-plugin-svg-picker@2.0.2
+
 ## 1.0.1
 
 ### Patch Changes
