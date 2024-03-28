@@ -37,9 +37,7 @@ export function convertEffectInput(
           const localDuration =
             interpolation.endOffset - interpolation.startOffset;
           const scaledLocalTime =
-            localDuration === 0
-              ? 0
-              : interpolation.easingFunction(offsetFraction / localDuration);
+            localDuration === 0 ? 0 : offsetFraction / localDuration;
           // apply updated attribute
           target.setAttribute(
             interpolation.property,

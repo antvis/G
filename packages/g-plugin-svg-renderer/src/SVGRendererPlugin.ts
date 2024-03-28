@@ -442,11 +442,13 @@ export class SVGRendererPlugin implements RenderingPlugin {
       rts[5],
     )},${numberToLongString(rts[12])},${numberToLongString(rts[13])})`;
 
-    $el.removeAttribute('transform');
-    if (matrix !== DEFAULT_VALUE_MAP.transform) {
+    if (matrix !== $el.getAttribute('transform')) {
       // use proper precision avoiding too long string in `transform`
       // @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
       $el.setAttribute('transform', matrix);
+    }
+    if (matrix === DEFAULT_VALUE_MAP.transform) {
+      $el.removeAttribute('transform');
     }
   }
 

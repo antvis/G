@@ -1,5 +1,11 @@
 # @antv/g-web-animations-api
 
+## 2.0.2
+
+### Patch Changes
+
+-   6009d6f2: Scaled local time should not be interpolated with easing function.
+
 ## 2.0.1
 
 ### Patch Changes

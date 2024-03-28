@@ -118,4 +118,41 @@ describe('Animation Timeline', () => {
 
     expect(circle.style.opacity).toBe(0.5);
   });
+
+  it('should use cubic-bezier correctly', async () => {
+    const circle = new Circle({
+      id: 'circle',
+      style: {
+        r: 100,
+      },
+    });
+
+    await canvas.ready;
+    canvas.appendChild(circle);
+
+    const animation = circle.animate([{ r: 0 }, { r: 100 }], {
+      duration: 500,
+      easing: 'cubic-bezier(0.05, 0.21, 0.26, 1.31)',
+      fill: 'forwards',
+    })!;
+
+    animation.pause();
+    animation.currentTime = 0;
+    expect(circle.style.r).toBe(0);
+
+    animation.currentTime = 250;
+    expect(circle.style.r).toBeCloseTo(98.24289047791895);
+
+    animation.currentTime = 275;
+    expect(circle.style.r).toBeCloseTo(100.96325609464722);
+
+    animation.currentTime = 400;
+    expect(circle.style.r).toBeCloseTo(105.24435426047445);
+
+    animation.currentTime = 450;
+    expect(circle.style.r).toBeCloseTo(103.43753135054527);
+
+    animation.currentTime = 500;
+    expect(circle.style.r).toBe(100);
+  });
 });
