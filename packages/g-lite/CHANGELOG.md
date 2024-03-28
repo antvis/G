@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.1
+
+### Patch Changes
+
+-   acabbcb0: Update Text's geometry before getting computed length.
+
 ## 2.0.0
 
 ### Major Changes
