@@ -1,5 +1,14 @@
 # @antv/g-plugin-rough-svg-renderer
 
+## 2.0.1
+
+### Patch Changes
+
+-   acabbcb0: Set default fill & stroke to 'none' in rough.js.
+-   Updated dependencies [acabbcb0]
+    -   @antv/g-lite@2.0.1
+    -   @antv/g-svg@2.0.1
+
 ## 2.0.0
 
 ### Major Changes
