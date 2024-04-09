@@ -1,5 +1,11 @@
 # @antv/g-plugin-a11y
 
+## 1.0.2
+
+### Patch Changes
+
+-   cd5197e3: Set dx/dy default value in a11y plugin.
+
 ## 1.0.1
 
 ### Patch Changes
