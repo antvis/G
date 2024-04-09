@@ -1,5 +1,11 @@
 # @antv/g-plugin-rough-svg-renderer
 
+## 2.0.3
+
+### Patch Changes
+
+-   cd5197e3: Should keep fill empty when undefined.
+
 ## 2.0.2
 
 ### Patch Changes
