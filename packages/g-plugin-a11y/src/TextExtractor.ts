@@ -81,8 +81,13 @@ color: transparent !important;
       case 'textBaseline':
       case 'dx':
       case 'dy':
-        const { transformOrigin, textAlign, textBaseline, dx, dy } =
-          text.parsedStyle as ParsedTextStyleProps;
+        const {
+          transformOrigin,
+          textAlign,
+          textBaseline,
+          dx = 0,
+          dy = 0,
+        } = text.parsedStyle as ParsedTextStyleProps;
         $el.style['transform-origin'] = `${
           (transformOrigin && transformOrigin[0].value) || 0
         } ${(transformOrigin && transformOrigin[1].value) || 0}`;
