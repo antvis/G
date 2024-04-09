@@ -89,7 +89,7 @@ export function generateRoughOptions(object: DisplayObject) {
     // If seed is not defined, or set to 0, no seed is used when computing random values.
     // @see https://github.com/rough-stuff/rough/wiki#seed
     seed: seed || object.entity,
-    fill: fill ? mergeOpacity(fill, fillOpacity) : 'none',
+    fill: fill ? mergeOpacity(fill, fillOpacity) : undefined,
     stroke: stroke ? mergeOpacity(stroke, strokeOpacity) : 'none',
     strokeWidth: lineWidth === 0 ? MIN_STROKE_WIDTH : lineWidth,
     fillStyle,

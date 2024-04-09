@@ -64,7 +64,7 @@ export function generateRoughOptions(object: DisplayObject) {
     bowing,
     roughness,
     seed: seed || object.entity,
-    fill: fill ? mergeOpacity(fill, fillOpacity) : 'none',
+    fill: fill ? mergeOpacity(fill, fillOpacity) : undefined,
     stroke: stroke ? mergeOpacity(stroke, strokeOpacity) : 'none',
     strokeWidth: lineWidth === 0 ? MIN_STROKE_WIDTH : lineWidth,
     fillStyle,
