@@ -5,8 +5,11 @@ import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
+import { WebXRManager } from './WebXRManager';
 
 export { DomInteraction, DeviceRenderer, HTMLRenderer };
+export { ARButton } from './ARButton';
+export { WebXRManager } from './WebXRManager';
 
 export interface WebGLRendererConfig extends RendererConfig {
   targets: ('webgl1' | 'webgl2')[];
@@ -17,6 +20,8 @@ export interface WebGLRendererConfig extends RendererConfig {
 }
 
 export class Renderer extends AbstractRenderer {
+  xr: WebXRManager;
+
   constructor(config?: Partial<WebGLRendererConfig>) {
     super({
       enableSizeAttenuation: false,
@@ -24,6 +29,7 @@ export class Renderer extends AbstractRenderer {
     });
 
     const deviceRendererPlugin = new DeviceRenderer.Plugin(config);
+    this.xr = new WebXRManager(deviceRendererPlugin);
 
     this.registerPlugin(
       new ContextRegisterPlugin(deviceRendererPlugin, config),

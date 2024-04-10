@@ -114,6 +114,10 @@ export class Plugin extends AbstractRendererPlugin {
     return this.getRenderGraphPlugin().getDevice();
   }
 
+  getSwapChain() {
+    return this.getRenderGraphPlugin().getSwapChain();
+  }
+
   loadTexture(
     src: string | TexImageSource,
     descriptor?: TextureDescriptor,

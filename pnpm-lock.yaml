@@ -742,6 +742,9 @@ importers:
       '@types/offscreencanvas':
         specifier: ^2019.6.4
         version: 2019.6.4
+      '@types/webxr':
+        specifier: 0.5.5
+        version: 0.5.5
       glslify-import:
         specifier: 3.1.0
         version: 3.1.0
@@ -1069,6 +1072,9 @@ importers:
       '@types/offscreencanvas':
         specifier: ^2019.6.4
         version: 2019.6.4
+      '@types/webxr':
+        specifier: 0.5.5
+        version: 0.5.5
 
   packages/g-webgpu:
     dependencies:
@@ -2631,6 +2637,10 @@ packages:
 
   /@types/tough-cookie@4.0.5:
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
+    dev: true
+
+  /@types/webxr@0.5.5:
+    resolution: {integrity: sha512-HVOsSRTQYx3zpVl0c0FBmmmcY/60BkQLzVnpE9M1aG4f2Z0aKlBWfj4XZ2zr++XNBfkQWYcwhGlmuu44RJPDqg==}
     dev: true
 
   /@types/yargs-parser@21.0.3:

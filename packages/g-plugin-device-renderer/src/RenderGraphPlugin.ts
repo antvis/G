@@ -8,24 +8,25 @@ import type {
   RenderingPluginContext,
 } from '@antv/g-lite';
 import { CanvasEvent, ElementEvent, Shape, parseColor } from '@antv/g-lite';
-import { Renderable3D } from './components/Renderable3D';
-import type { LightPool } from './LightPool';
-import { Fog, Light } from './lights';
-import { pushFXAAPass } from './passes/FXAA';
-import {
+import type {
+  Color,
   Device,
   SwapChain,
   Texture,
   TextureDescriptor,
-  TransparentBlack,
-  TransparentWhite,
 } from '@antv/g-device-api';
 import {
   BlendFactor,
   BlendMode,
   colorNewFromRGBA,
   setAttachmentStateSimple,
+  TransparentBlack,
+  TransparentWhite,
 } from '@antv/g-device-api';
+import { Renderable3D } from './components/Renderable3D';
+import type { LightPool } from './LightPool';
+import { Fog, Light } from './lights';
+import { pushFXAAPass } from './passes/FXAA';
 import type { RGGraphBuilder, RenderHelper } from './render';
 import {
   AntialiasingMode,
@@ -264,7 +265,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
       const renderInstManager = this.renderHelper.renderInstManager;
       this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
-      let clearColor;
+      let clearColor: Color;
       if (this.context.config.background === 'transparent') {
         clearColor = TransparentBlack;
       } else {
