@@ -54,6 +54,7 @@
     "@rollup/plugin-wasm": "^5.1.2",
     "@types/earcut": "^2.1.1",
     "@types/offscreencanvas": "^2019.6.4",
+    "@types/webxr": "0.5.5",
     "glslify-import": "3.1.0",
     "rollup-plugin-glslify": "^1.2.1"
   },
