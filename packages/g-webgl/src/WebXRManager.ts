@@ -39,6 +39,9 @@ export class WebXRManager {
         this.referenceSpace = await session.requestReferenceSpace(
           this.referenceSpaceType,
         );
+
+        // @ts-ignore
+        session.referenceSpace = this.referenceSpace;
       }
 
       canvas.requestAnimationFrame =

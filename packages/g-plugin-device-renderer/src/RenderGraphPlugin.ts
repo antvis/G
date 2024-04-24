@@ -260,175 +260,240 @@ export class RenderGraphPlugin implements RenderingPlugin {
     /**
      * build frame graph at the beginning of each frame
      */
-    renderingService.hooks.beginFrame.tap(RenderGraphPlugin.tag, () => {
-      const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
-      const renderInstManager = this.renderHelper.renderInstManager;
-      this.builder = this.renderHelper.renderGraph.newGraphBuilder();
+    renderingService.hooks.beginFrame.tap(
+      RenderGraphPlugin.tag,
+      (frame: XRFrame) => {
+        const session = frame?.session;
+        // const { width, height } = this.context.config;
+        if (session) {
+          // const camera = this.context.camera;
+          // Assumed to be a XRWebGLLayer for now.
+          let layer = session.renderState.baseLayer;
+          if (!layer) {
+            layer = session.renderState.layers![0] as XRWebGLLayer;
+          } else {
+            // Bind the graphics framebuffer to the baseLayer's framebuffer.
+            // Only baseLayer has framebuffer and we need to bind it, even if it is null (for inline sessions).
+            // gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
+          }
 
-      let clearColor: Color;
-      if (this.context.config.background === 'transparent') {
-        clearColor = TransparentBlack;
-      } else {
-        // use canvas.background
-        const backgroundColor = parseColor(
-          this.context.config.background,
-        ) as CSSRGB;
-
-        clearColor = this.context.config.background
-          ? // use premultipliedAlpha
-            // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
-            colorNewFromRGBA(
-              (Number(backgroundColor.r) / 255) * Number(backgroundColor.alpha),
-              (Number(backgroundColor.g) / 255) * Number(backgroundColor.alpha),
-              (Number(backgroundColor.b) / 255) * Number(backgroundColor.alpha),
-              Number(backgroundColor.alpha),
-            )
-          : TransparentWhite;
-      }
-
-      // retrieve at each frame since canvas may resize
-      const renderInput = {
-        backbufferWidth: canvas.width,
-        backbufferHeight: canvas.height,
-        antialiasingMode: AntialiasingMode.None,
-      };
-      // create main Color RT
-      const mainRenderDesc = makeBackbufferDescSimple(
-        RGAttachmentSlot.Color0,
-        renderInput,
-        makeAttachmentClearDescriptor(clearColor),
-      );
-      // create main Depth RT
-      const mainDepthDesc = makeBackbufferDescSimple(
-        RGAttachmentSlot.DepthStencil,
-        renderInput,
-        opaqueWhiteFullClearRenderPassDescriptor,
-      );
-      const mainColorTargetID = this.builder.createRenderTargetID(
-        mainRenderDesc,
-        'Main Color',
-      );
-      const mainDepthTargetID = this.builder.createRenderTargetID(
-        mainDepthDesc,
-        'Main Depth',
-      );
-
-      // main render pass
-      this.builder.pushPass((pass) => {
-        pass.setDebugName('Main Render Pass');
-        pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
-        pass.attachRenderTargetID(
-          RGAttachmentSlot.DepthStencil,
-          mainDepthTargetID,
-        );
-        pass.exec((passRenderer) => {
-          this.renderLists.world.drawOnPassRenderer(
-            renderInstManager.renderCache,
-            passRenderer,
+          this.swapChain.configureSwapChain(
+            layer.framebufferWidth,
+            layer.framebufferHeight,
+            layer.framebuffer,
           );
-        });
-      });
 
-      // TODO: other post-processing passes
-      if (this.options?.enableFXAA) {
-        // FXAA
-        pushFXAAPass(
-          this.builder,
-          this.renderHelper,
+          // @ts-ignore
+          const referenceSpace = session.referenceSpace as XRReferenceSpace;
+          // Retrieve the pose of the device.
+          // XRFrame.getViewerPose can return null while the session attempts to establish tracking.
+          const pose = frame.getViewerPose(referenceSpace);
+          if (pose) {
+            // const p = pose.transform.position;
+            // In mobile AR, we only have one view.
+            // const view = pose.views[0];
+            // const viewport = session.renderState.baseLayer!.getViewport(view)!;
+            // Use the view's transform matrix and projection matrix
+            // const viewMatrix = mat4.invert(mat4.create(), view.transform.matrix);
+            // const cameraMatrix = view.transform.matrix;
+            // const projectionMatrix = view.projectionMatrix;
+            // @ts-ignore
+            // camera.setProjectionMatrix(projectionMatrix);
+            // camera.setViewOffset(
+            //   camera.getView().fullWidth,
+            //   camera.getView().fullHeight,
+            //   0,
+            //   0,
+            //   viewport.width,
+            //   viewport.height,
+            // );
+            // camera.setMatrix(cameraMatrix);
+            // console.log(viewport, camera.getView());
+          }
+        }
+
+        const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
+        const renderInstManager = this.renderHelper.renderInstManager;
+        this.builder = this.renderHelper.renderGraph.newGraphBuilder();
+
+        let clearColor: Color;
+        if (this.context.config.background === 'transparent') {
+          clearColor = TransparentBlack;
+        } else {
+          // use canvas.background
+          const backgroundColor = parseColor(
+            this.context.config.background,
+          ) as CSSRGB;
+
+          clearColor = this.context.config.background
+            ? // use premultipliedAlpha
+              // @see https://canvatechblog.com/alpha-blending-and-webgl-99feb392779e
+              colorNewFromRGBA(
+                (Number(backgroundColor.r) / 255) *
+                  Number(backgroundColor.alpha),
+                (Number(backgroundColor.g) / 255) *
+                  Number(backgroundColor.alpha),
+                (Number(backgroundColor.b) / 255) *
+                  Number(backgroundColor.alpha),
+                Number(backgroundColor.alpha),
+              )
+            : TransparentWhite;
+        }
+
+        // retrieve at each frame since canvas may resize
+        const renderInput = {
+          backbufferWidth: canvas.width,
+          backbufferHeight: canvas.height,
+          antialiasingMode: AntialiasingMode.None,
+        };
+        // create main Color RT
+        const mainRenderDesc = makeBackbufferDescSimple(
+          RGAttachmentSlot.Color0,
           renderInput,
-          mainColorTargetID,
+          makeAttachmentClearDescriptor(clearColor),
         );
-      }
+        // create main Depth RT
+        const mainDepthDesc = makeBackbufferDescSimple(
+          RGAttachmentSlot.DepthStencil,
+          renderInput,
+          opaqueWhiteFullClearRenderPassDescriptor,
+        );
+        const mainColorTargetID = this.builder.createRenderTargetID(
+          mainRenderDesc,
+          'Main Color',
+        );
+        const mainDepthTargetID = this.builder.createRenderTargetID(
+          mainDepthDesc,
+          'Main Depth',
+        );
 
-      // output to screen
-      this.builder.resolveRenderTargetToExternalTexture(
-        mainColorTargetID,
-        this.swapChain.getOnscreenTexture(),
-      );
-    });
+        // main render pass
+        this.builder.pushPass((pass) => {
+          pass.setDebugName('Main Render Pass');
+          pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
+          pass.attachRenderTargetID(
+            RGAttachmentSlot.DepthStencil,
+            mainDepthTargetID,
+          );
+          pass.exec((passRenderer) => {
+            this.renderLists.world.drawOnPassRenderer(
+              renderInstManager.renderCache,
+              passRenderer,
+            );
+          });
+        });
 
-    renderingService.hooks.endFrame.tap(RenderGraphPlugin.tag, () => {
-      const renderInstManager = this.renderHelper.renderInstManager;
+        // TODO: other post-processing passes
+        if (this.options?.enableFXAA) {
+          // FXAA
+          pushFXAAPass(
+            this.builder,
+            this.renderHelper,
+            renderInput,
+            mainColorTargetID,
+          );
+        }
 
-      // TODO: time for GPU Animation
-      // const timeInMilliseconds = window.performance.now();
+        // output to screen
+        this.builder.resolveRenderTargetToExternalTexture(
+          mainColorTargetID,
+          this.swapChain.getOnscreenTexture(),
+        );
+      },
+    );
 
-      // Push our outer template, which contains the dynamic UBO bindings...
-      const template = this.renderHelper.pushTemplateRenderInst();
-      // SceneParams: binding = 0, ObjectParams: binding = 1
-      template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
-      template.setMegaStateFlags(
-        setAttachmentStateSimple(
+    renderingService.hooks.endFrame.tap(
+      RenderGraphPlugin.tag,
+      (frame: XRFrame) => {
+        const renderInstManager = this.renderHelper.renderInstManager;
+
+        // TODO: time for GPU Animation
+        // const timeInMilliseconds = window.performance.now();
+
+        // Push our outer template, which contains the dynamic UBO bindings...
+        const template = this.renderHelper.pushTemplateRenderInst();
+        // SceneParams: binding = 0, ObjectParams: binding = 1
+        template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
+        template.setMegaStateFlags(
+          setAttachmentStateSimple(
+            {
+              depthWrite: true,
+              blendConstant: TransparentBlack,
+            },
+            {
+              rgbBlendMode: BlendMode.ADD,
+              alphaBlendMode: BlendMode.ADD,
+              rgbBlendSrcFactor: BlendFactor.SRC_ALPHA,
+              alphaBlendSrcFactor: BlendFactor.ONE,
+              rgbBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+              alphaBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+            },
+          ),
+        );
+
+        // Update Scene Params
+        const { width, height } = this.context.config;
+        const camera = this.context.camera;
+
+        // console.log(
+        //   camera.getPerspective(),
+        //   camera.getViewTransform(),
+        //   camera.getPosition(),
+        // );
+
+        template.setUniforms(SceneUniformBufferIndex, [
           {
-            depthWrite: true,
-            blendConstant: TransparentBlack,
+            name: SceneUniform.PROJECTION_MATRIX,
+            value: camera.getPerspective(),
           },
           {
-            rgbBlendMode: BlendMode.ADD,
-            alphaBlendMode: BlendMode.ADD,
-            rgbBlendSrcFactor: BlendFactor.SRC_ALPHA,
-            alphaBlendSrcFactor: BlendFactor.ONE,
-            rgbBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
-            alphaBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+            name: SceneUniform.VIEW_MATRIX,
+            value: camera.getViewTransform(),
           },
-        ),
-      );
+          {
+            name: SceneUniform.CAMERA_POSITION,
+            value: camera.getPosition(),
+          },
+          {
+            name: SceneUniform.DEVICE_PIXEL_RATIO,
+            value: this.context.contextService.getDPR(),
+          },
+          {
+            name: SceneUniform.VIEWPORT,
+            value: [width, height],
+          },
+          {
+            name: SceneUniform.IS_ORTHO,
+            value: camera.isOrtho() ? 1 : 0,
+          },
+          {
+            name: SceneUniform.IS_PICKING,
+            value: 0,
+          },
+        ]);
 
-      // Update Scene Params
-      const { width, height } = this.context.config;
-      const camera = this.context.camera;
-      template.setUniforms(SceneUniformBufferIndex, [
-        {
-          name: SceneUniform.PROJECTION_MATRIX,
-          value: camera.getPerspective(),
-        },
-        {
-          name: SceneUniform.VIEW_MATRIX,
-          value: camera.getViewTransform(),
-        },
-        {
-          name: SceneUniform.CAMERA_POSITION,
-          value: camera.getPosition(),
-        },
-        {
-          name: SceneUniform.DEVICE_PIXEL_RATIO,
-          value: this.context.contextService.getDPR(),
-        },
-        {
-          name: SceneUniform.VIEWPORT,
-          value: [width, height],
-        },
-        {
-          name: SceneUniform.IS_ORTHO,
-          value: camera.isOrtho() ? 1 : 0,
-        },
-        {
-          name: SceneUniform.IS_PICKING,
-          value: 0,
-        },
-      ]);
+        this.batchManager.render(this.renderLists.world);
 
-      this.batchManager.render(this.renderLists.world);
+        renderInstManager.popTemplateRenderInst();
 
-      renderInstManager.popTemplateRenderInst();
+        this.renderHelper.prepareToRender();
+        this.renderHelper.renderGraph.execute();
 
-      this.renderHelper.prepareToRender();
-      this.renderHelper.renderGraph.execute();
+        renderInstManager.resetRenderInsts();
 
-      renderInstManager.resetRenderInsts();
-
-      // capture here since we don't preserve drawing buffer
-      if (this.enableCapture && this.resolveCapturePromise) {
-        const { type, encoderOptions } = this.captureOptions;
-        const dataURL = (
-          this.context.contextService.getDomElement() as HTMLCanvasElement
-        ).toDataURL(type, encoderOptions);
-        this.resolveCapturePromise(dataURL);
-        this.enableCapture = false;
-        this.captureOptions = undefined;
-        this.resolveCapturePromise = undefined;
-      }
-    });
+        // capture here since we don't preserve drawing buffer
+        if (this.enableCapture && this.resolveCapturePromise) {
+          const { type, encoderOptions } = this.captureOptions;
+          const dataURL = (
+            this.context.contextService.getDomElement() as HTMLCanvasElement
+          ).toDataURL(type, encoderOptions);
+          this.resolveCapturePromise(dataURL);
+          this.enableCapture = false;
+          this.captureOptions = undefined;
+          this.resolveCapturePromise = undefined;
+        }
+      },
+    );
   }
 
   /**

@@ -46,9 +46,11 @@ export async function ar(context) {
 
   canvas.appendChild(cube);
 
-  //   canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-  //     cube.rotate(1, 0, 0);
-  //   });
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    cube.rotate(1, 0, 0);
+  });
+
+  canvas.getConfig().disableHitTesting = true;
 
   const $button = ARButton.createButton(canvas, renderer, {});
   container.appendChild($button);

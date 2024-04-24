@@ -481,11 +481,11 @@ export class Canvas extends EventTarget implements ICanvas {
     this.document.documentElement.destroyChildren();
   }
 
-  render() {
+  render(frame?: XRFrame) {
     this.dispatchEvent(beforeRenderEvent);
 
     const renderingService = this.getRenderingService();
-    renderingService.render(this.getConfig(), () => {
+    renderingService.render(this.getConfig(), frame, () => {
       // trigger actual rerender event
       // @see https://github.com/antvis/G/issues/1268
       this.dispatchEvent(rerenderEvent);
@@ -495,11 +495,11 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   private run() {
-    const tick = () => {
-      this.render();
+    const tick = (time: number, frame?: XRFrame) => {
+      this.render(frame);
       this.frameId = this.requestAnimationFrame(tick);
     };
-    tick();
+    tick(0);
   }
 
   private initRenderer(renderer: IRenderer, firstContentfullPaint = false) {

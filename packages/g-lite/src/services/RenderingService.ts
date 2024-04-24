@@ -84,7 +84,7 @@ export class RenderingService {
     /**
      * called at beginning of each frame, won't get called if nothing to re-render
      */
-    beginFrame: new SyncHook<[]>(),
+    beginFrame: new SyncHook<[XRFrame]>(),
     /**
      * called before every dirty object get rendered
      */
@@ -97,7 +97,7 @@ export class RenderingService {
      * called after every dirty object get rendered
      */
     afterRender: new SyncHook<[DisplayObject]>(),
-    endFrame: new SyncHook<[]>(),
+    endFrame: new SyncHook<[XRFrame]>(),
     destroy: new SyncHook<[]>(),
     /**
      * use async but faster method such as GPU-based picking in `g-plugin-device-renderer`
@@ -161,7 +161,11 @@ export class RenderingService {
     );
   }
 
-  render(canvasConfig: Partial<CanvasConfig>, rerenderCallback: () => void) {
+  render(
+    canvasConfig: Partial<CanvasConfig>,
+    frame: XRFrame,
+    rerenderCallback: () => void,
+  ) {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
@@ -191,7 +195,7 @@ export class RenderingService {
         );
       }
 
-      this.hooks.beginFrame.call();
+      this.hooks.beginFrame.call(frame);
 
       if (shouldTriggerRenderHooks) {
         renderingContext.renderListCurrentFrame.forEach((object) => {
@@ -201,7 +205,7 @@ export class RenderingService {
         });
       }
 
-      this.hooks.endFrame.call();
+      this.hooks.endFrame.call(frame);
       renderingContext.renderListCurrentFrame = [];
       renderingContext.renderReasons.clear();
 
