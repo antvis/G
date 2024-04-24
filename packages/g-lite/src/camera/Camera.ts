@@ -305,6 +305,13 @@ export class Camera implements ICamera {
     return this;
   }
 
+  /**
+   * Set projection matrix manually.
+   */
+  setProjectionMatrix(matrix: mat4) {
+    this.projectionMatrix = matrix;
+  }
+
   setFov(fov: number) {
     this.setPerspective(this.near, this.far, fov, this.aspect);
     return this;

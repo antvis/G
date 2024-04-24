@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgl",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A renderer implemented by WebGL1/2",
   "keywords": [
     "antv",
@@ -49,7 +49,8 @@
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.5",
-    "@types/offscreencanvas": "^2019.6.4"
+    "@types/offscreencanvas": "^2019.6.4",
+    "@types/webxr": "0.5.5"
   },
   "publishConfig": {
     "access": "public"

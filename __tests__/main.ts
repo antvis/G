@@ -189,6 +189,7 @@ function createSpecRender(object) {
         ],
         // Used for WebGPU renderer
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
+        // enableAutoRendering: false,
         // enableDirtyRectangleRendering: false,
         // enableDirtyRectangleRenderingDebug: true,
       });
