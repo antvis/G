@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.2
+
+### Patch Changes
+
+-   2948b0f8: Pass webxr frame on each tick when rendering.
+
 ## 2.0.1
 
 ### Patch Changes
