@@ -1,5 +1,14 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.2
+
+### Patch Changes
+
+-   2948b0f8: Pass webxr frame on each tick when rendering.
+-   Updated dependencies [2948b0f8]
+    -   @antv/g-lite@2.0.2
+    -   @antv/g-plugin-image-loader@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes
