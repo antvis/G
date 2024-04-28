@@ -11,6 +11,8 @@ import { ARButton, DeviceRenderer } from '../../../packages/g-webgl';
 export async function ar(context) {
   const { canvas, renderer, container } = context;
 
+  //   renderer.getConfig().enableDirtyCheck = false;
+
   // wait for canvas' initialization complete
   await canvas.ready;
 
@@ -52,7 +54,7 @@ export async function ar(context) {
   canvas.appendChild(cube);
 
   canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-    cube.rotate(1, 0, 0);
+    cube.rotate(0, 0, 0);
   });
 
   canvas.getConfig().disableHitTesting = true;
