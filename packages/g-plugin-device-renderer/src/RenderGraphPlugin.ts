@@ -300,7 +300,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
             // @ts-ignore
             const cameraMatrix = mat4.fromValues(...view.transform.matrix);
             cameraMatrix[12] *= width;
-            cameraMatrix[13] *= height;
+            cameraMatrix[13] *= -height;
             cameraMatrix[14] *= 500;
 
             cameraMatrix[12] += width / 2;

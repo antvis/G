@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.4
+
+### Patch Changes
+
+-   0a1855c0: FlipY in webar.
+
 ## 2.0.3
 
 ### Patch Changes
