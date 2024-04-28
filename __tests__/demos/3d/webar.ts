@@ -27,6 +27,10 @@ export async function ar(context) {
     width: 200,
     height: 200,
     depth: 200,
+
+    // width: 1,
+    // height: 1,
+    // depth: 1,
   });
   const basicMaterial = new MeshBasicMaterial(device, {
     // wireframe: true,
@@ -42,6 +46,7 @@ export async function ar(context) {
     },
   });
 
+  // cube.setOrigin(300, 250, 200);
   cube.setPosition(300, 250, 200);
 
   canvas.appendChild(cube);

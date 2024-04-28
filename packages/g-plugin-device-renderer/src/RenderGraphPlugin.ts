@@ -39,6 +39,7 @@ import {
 import type { BatchManager } from './renderer';
 import type { TexturePool } from './TexturePool';
 import { DeviceRendererPluginOptions } from './interfaces';
+import { mat4 } from 'gl-matrix';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -257,6 +258,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       config.disableRenderHooks = false;
     });
 
+    // let usedViewport: XRViewport | undefined;
+
     /**
      * build frame graph at the beginning of each frame
      */
@@ -264,9 +267,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
       RenderGraphPlugin.tag,
       (frame: XRFrame) => {
         const session = frame?.session;
-        // const { width, height } = this.context.config;
+        const { width, height } = this.context.config;
         if (session) {
-          // const camera = this.context.camera;
+          const camera = this.context.camera;
           // Assumed to be a XRWebGLLayer for now.
           let layer = session.renderState.baseLayer;
           if (!layer) {
@@ -291,24 +294,26 @@ export class RenderGraphPlugin implements RenderingPlugin {
           if (pose) {
             // const p = pose.transform.position;
             // In mobile AR, we only have one view.
-            // const view = pose.views[0];
+            const view = pose.views[0];
             // const viewport = session.renderState.baseLayer!.getViewport(view)!;
-            // Use the view's transform matrix and projection matrix
-            // const viewMatrix = mat4.invert(mat4.create(), view.transform.matrix);
-            // const cameraMatrix = view.transform.matrix;
-            // const projectionMatrix = view.projectionMatrix;
+            // usedViewport = viewport;
             // @ts-ignore
-            // camera.setProjectionMatrix(projectionMatrix);
-            // camera.setViewOffset(
-            //   camera.getView().fullWidth,
-            //   camera.getView().fullHeight,
-            //   0,
-            //   0,
-            //   viewport.width,
-            //   viewport.height,
-            // );
-            // camera.setMatrix(cameraMatrix);
-            // console.log(viewport, camera.getView());
+            const cameraMatrix = mat4.fromValues(...view.transform.matrix);
+            cameraMatrix[12] *= width;
+            cameraMatrix[13] *= height;
+            cameraMatrix[14] *= 500;
+
+            cameraMatrix[12] += width / 2;
+            cameraMatrix[13] += height / 2;
+            cameraMatrix[14] += 500 / 2;
+
+            // @ts-ignore
+            const projectionMatrix = mat4.fromValues(...view.projectionMatrix);
+            mat4.scale(projectionMatrix, projectionMatrix, [1, -1, 1]); // flipY
+
+            // @ts-ignore
+            camera.setProjectionMatrix(projectionMatrix);
+            camera.setMatrix(cameraMatrix);
           }
         }
 
@@ -370,6 +375,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
         // main render pass
         this.builder.pushPass((pass) => {
           pass.setDebugName('Main Render Pass');
+          // if (usedViewport) {
+          //   const { x, y, width: vw, height: vh } = usedViewport;
+          //   // pass.setViewport(x, y, vw / width / 2, vh / height / 2);
+          //   console.log(x, y, vw, vh, width, height);
+          // }
           pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
           pass.attachRenderTargetID(
             RGAttachmentSlot.DepthStencil,
@@ -434,13 +444,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
         // Update Scene Params
         const { width, height } = this.context.config;
         const camera = this.context.camera;
-
-        // console.log(
-        //   camera.getPerspective(),
-        //   camera.getViewTransform(),
-        //   camera.getPosition(),
-        // );
-
         template.setUniforms(SceneUniformBufferIndex, [
           {
             name: SceneUniform.PROJECTION_MATRIX,
