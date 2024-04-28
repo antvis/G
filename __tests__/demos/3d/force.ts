@@ -4,7 +4,14 @@ import {
   forceManyBody,
   forceCenter,
 } from 'd3-force-3d';
-import { Line, Text, Rect, Image, Circle } from '../../../packages/g';
+import {
+  Line,
+  Text,
+  Rect,
+  Image,
+  Circle,
+  CanvasEvent,
+} from '../../../packages/g';
 import {
   SphereGeometry,
   MeshPhongMaterial,
@@ -13,6 +20,7 @@ import {
   Plugin as Plugin3D,
 } from '../../../packages/g-plugin-3d';
 import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
+import { ARButton, DeviceRenderer } from '../../../packages/g-webgl';
 
 // https://bl.ocks.org/vasturiano/f59675656258d3f490e9faa40828c0e7
 const dataset = {
@@ -1601,7 +1609,7 @@ const dataset = {
 };
 
 export async function force(context) {
-  const { canvas, renderer } = context;
+  const { canvas, renderer, container } = context;
 
   // wait for canvas' initialization complete
   await canvas.ready;
@@ -1655,9 +1663,9 @@ export async function force(context) {
     // create a mesh
     const sphere = new Mesh({
       style: {
-        x: node.x + 300,
-        y: node.y + 250,
-        z: node.z,
+        // x: node.x + 300,
+        // y: node.y + 250,
+        // z: node.z,
         fill,
         opacity: 1,
         geometry: sphereGeometry,
@@ -1665,6 +1673,7 @@ export async function force(context) {
         cursor: 'pointer',
       },
     });
+    sphere.setPosition(node.x + 300, node.y + 250, node.z);
     canvas.appendChild(sphere);
 
     sphere.addEventListener('mouseenter', () => {
@@ -1758,7 +1767,17 @@ export async function force(context) {
 
   // adjust camera's position
   const camera = canvas.getCamera();
-  camera.setPerspective(0.1, 5000, 45, 600 / 500);
+  camera.setPerspective(0.1, 5000, 45, 640 / 640);
+
+  canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+    canvas.document.documentElement.setOrigin(320, 320, 0);
+    canvas.document.documentElement.rotate(0, 0.1, 0);
+  });
+
+  canvas.getConfig().disableHitTesting = true;
+
+  const $button = ARButton.createButton(canvas, renderer, {});
+  container.appendChild($button);
 }
 
 force.initRenderer = (renderer) => {

@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.3
+
+### Patch Changes
+
+-   30c8eb0f: Sync projection & view matrix from webxr session.
+
 ## 2.0.2
 
 ### Patch Changes
