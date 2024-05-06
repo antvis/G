@@ -1,5 +1,12 @@
 # @antv/g-lottie-player
 
+## 1.0.3
+
+### Patch Changes
+
+-   Updated dependencies [36521463]
+    -   @antv/g-lite@2.0.3
+
 ## 1.0.2
 
 ### Patch Changes
