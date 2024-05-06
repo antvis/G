@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.3
+
+### Patch Changes
+
+-   36521463: Correct mouse position even when scaling the container using CSS.
+
 ## 2.0.2
 
 ### Patch Changes

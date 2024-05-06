@@ -1,9 +1,8 @@
-import { isNil, isUndefined } from '@antv/util';
+import { isUndefined } from '@antv/util';
 import type { FederatedMouseEvent, ICanvas, IEventTarget } from '../dom';
 import { FederatedPointerEvent } from '../dom/FederatedPointerEvent';
 import { FederatedWheelEvent } from '../dom/FederatedWheelEvent';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
-import { Point } from '../shapes';
 import type { Cursor, EventPosition, InteractivePointerEvent } from '../types';
 import type { FormattedPointerEvent, FormattedTouch } from '../utils/event';
 import { MOUSE_POINTER_ID, TOUCH_TO_POINTER, clock } from '../utils/event';
@@ -195,32 +194,6 @@ export class EventPlugin implements RenderingPlugin {
     this.setCursor(this.context.eventService.cursor);
   };
 
-  private getViewportXY(nativeEvent: PointerEvent | WheelEvent) {
-    let x: number;
-    let y: number;
-    /**
-     * Should account for CSS Transform applied on container.
-     * @see https://github.com/antvis/G/issues/1161
-     * @see https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/offsetX
-     */
-    const { offsetX, offsetY, clientX, clientY } = nativeEvent;
-    if (
-      this.context.config.supportsCSSTransform &&
-      !isNil(offsetX) &&
-      !isNil(offsetY)
-    ) {
-      x = offsetX;
-      y = offsetY;
-    } else {
-      const point = this.context.eventService.client2Viewport(
-        new Point(clientX, clientY),
-      );
-      x = point.x;
-      y = point.y;
-    }
-    return { x, y };
-  }
-
   private bootstrapEvent(
     event: FederatedPointerEvent,
     normalizedEvent: PointerEvent,
@@ -243,7 +216,10 @@ export class EventPlugin implements RenderingPlugin {
     event.twist = normalizedEvent.twist;
     this.transferMouseData(event, normalizedEvent);
 
-    const { x, y } = this.getViewportXY(normalizedEvent);
+    const { x, y } = this.context.eventService.client2Viewport({
+      x: normalizedEvent.clientX,
+      y: normalizedEvent.clientY,
+    });
     event.viewport.x = x;
     event.viewport.y = y;
     const { x: canvasX, y: canvasY } =
@@ -276,7 +252,10 @@ export class EventPlugin implements RenderingPlugin {
     event.deltaY = nativeEvent.deltaY;
     event.deltaZ = nativeEvent.deltaZ;
 
-    const { x, y } = this.getViewportXY(nativeEvent);
+    const { x, y } = this.context.eventService.client2Viewport({
+      x: nativeEvent.clientX,
+      y: nativeEvent.clientY,
+    });
     event.viewport.x = x;
     event.viewport.y = y;
     const { x: canvasX, y: canvasY } =
