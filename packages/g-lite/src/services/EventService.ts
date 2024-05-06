@@ -94,14 +94,44 @@ export class EventService {
     this.eventPool.clear();
   }
 
-  client2Viewport(client: PointLike): PointLike {
+  private getScale() {
     const bbox = this.context.contextService.getBoundingClientRect();
-    return new Point(client.x - (bbox?.left || 0), client.y - (bbox?.top || 0));
+    let scaleX = 1;
+    let scaleY = 1;
+    const $el =
+      this.context.contextService.getDomElement() as HTMLCanvasElement;
+    if ($el && bbox) {
+      const { offsetWidth, offsetHeight } = $el;
+      scaleX = bbox.width / offsetWidth;
+      scaleY = bbox.height / offsetHeight;
+    }
+    return {
+      scaleX,
+      scaleY,
+      bbox,
+    };
+  }
+
+  /**
+   * Should account for CSS Transform applied on container.
+   * @see https://github.com/antvis/G/issues/1161
+   * @see https://github.com/antvis/G/issues/1677
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/offsetX
+   */
+  client2Viewport(client: PointLike): PointLike {
+    const { scaleX, scaleY, bbox } = this.getScale();
+    return new Point(
+      (client.x - (bbox?.left || 0)) / scaleX,
+      (client.y - (bbox?.top || 0)) / scaleY,
+    );
   }
 
   viewport2Client(canvas: PointLike): PointLike {
-    const bbox = this.context.contextService.getBoundingClientRect();
-    return new Point(canvas.x + (bbox?.left || 0), canvas.y + (bbox?.top || 0));
+    const { scaleX, scaleY, bbox } = this.getScale();
+    return new Point(
+      (canvas.x + (bbox?.left || 0)) * scaleX,
+      (canvas.y + (bbox?.top || 0)) * scaleY,
+    );
   }
 
   viewport2Canvas({ x, y }: PointLike): PointLike {

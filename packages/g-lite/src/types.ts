@@ -468,7 +468,8 @@ export interface CanvasConfig {
   disableRenderHooks?: boolean;
 
   /**
-   * Should we account for CSS Transform applied on container?
+   * Should we account for CSS Transform applied on container? Enabled by default.
+   * @deprecated
    */
   supportsCSSTransform?: boolean;
 
