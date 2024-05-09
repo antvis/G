@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.4
+
+### Patch Changes
+
+-   5dfc52e3: Make sure offset widht & height existed.
+
 ## 2.0.3
 
 ### Patch Changes
