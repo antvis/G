@@ -102,8 +102,10 @@ export class EventService {
       this.context.contextService.getDomElement() as HTMLCanvasElement;
     if ($el && bbox) {
       const { offsetWidth, offsetHeight } = $el;
-      scaleX = bbox.width / offsetWidth;
-      scaleY = bbox.height / offsetHeight;
+      if (offsetWidth && offsetHeight) {
+        scaleX = bbox.width / offsetWidth;
+        scaleY = bbox.height / offsetHeight;
+      }
     }
     return {
       scaleX,
