@@ -191,7 +191,7 @@ function createSpecRender(object) {
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
         // enableAutoRendering: false,
         // enableDirtyRectangleRendering: false,
-        // enableDirtyRectangleRenderingDebug: true,
+        enableDirtyRectangleRenderingDebug: true,
       });
 
       if (generate.initRenderer) {
@@ -218,31 +218,6 @@ function createSpecRender(object) {
       $div.appendChild(gui.domElement);
 
       await generate({ canvas, renderer, container: $div, gui });
-
-      if (
-        selectRenderer.value === 'canvas' &&
-        renderer.getConfig().enableDirtyRectangleRendering &&
-        renderer.getConfig().enableDirtyRectangleRenderingDebug
-      ) {
-        // display dirty rectangle
-        const $dirtyRectangle = document.createElement('div');
-        $dirtyRectangle.style.cssText = `
-        position: absolute;
-        pointer-events: none;
-        background: rgba(255, 0, 0, 0.5);
-        `;
-        $div.appendChild($dirtyRectangle);
-        canvas.addEventListener(CanvasEvent.DIRTY_RECTANGLE, (e) => {
-          const { dirtyRect } = e.detail;
-          const { x, y, width, height } = dirtyRect;
-          const dpr = window.devicePixelRatio;
-          // convert from canvas coords to viewport
-          $dirtyRectangle.style.left = `${x / dpr}px`;
-          $dirtyRectangle.style.top = `${y / dpr}px`;
-          $dirtyRectangle.style.width = `${width / dpr}px`;
-          $dirtyRectangle.style.height = `${height / dpr}px`;
-        });
-      }
 
       if (
         selectRenderer.value === 'canvas' &&

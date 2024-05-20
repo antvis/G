@@ -39,7 +39,7 @@ import {
 import type { BatchManager } from './renderer';
 import type { TexturePool } from './TexturePool';
 import { DeviceRendererPluginOptions } from './interfaces';
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -92,6 +92,14 @@ export class RenderGraphPlugin implements RenderingPlugin {
   private captureOptions: Partial<DataURLOptions>;
   private capturePromise: Promise<string> | undefined;
   private resolveCapturePromise: (dataURL: string) => void;
+
+  private cameras: {
+    viewport: XRViewport;
+    projectionMatrix: mat4;
+    viewMatrix: mat4;
+    cameraPosition: vec3;
+    isOrtho: boolean;
+  }[] = [];
 
   getDevice(): Device {
     return this.device;
@@ -258,8 +266,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
       config.disableRenderHooks = false;
     });
 
-    // let usedViewport: XRViewport | undefined;
-
     /**
      * build frame graph at the beginning of each frame
      */
@@ -269,7 +275,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
         const session = frame?.session;
         const { width, height } = this.context.config;
         if (session) {
-          const camera = this.context.camera;
           // Assumed to be a XRWebGLLayer for now.
           let layer = session.renderState.baseLayer;
           if (!layer) {
@@ -292,29 +297,60 @@ export class RenderGraphPlugin implements RenderingPlugin {
           // XRFrame.getViewerPose can return null while the session attempts to establish tracking.
           const pose = frame.getViewerPose(referenceSpace);
           if (pose) {
-            // const p = pose.transform.position;
             // In mobile AR, we only have one view.
-            const view = pose.views[0];
-            // const viewport = session.renderState.baseLayer!.getViewport(view)!;
-            // usedViewport = viewport;
-            // @ts-ignore
-            const cameraMatrix = mat4.fromValues(...view.transform.matrix);
-            cameraMatrix[12] *= width;
-            cameraMatrix[13] *= -height;
-            cameraMatrix[14] *= 500;
+            pose.views.forEach((view, i) => {
+              const viewport =
+                session.renderState.baseLayer!.getViewport(view)!;
 
-            cameraMatrix[12] += width / 2;
-            cameraMatrix[13] += height / 2;
-            cameraMatrix[14] += 500 / 2;
+              // @ts-ignore
+              const cameraMatrix = mat4.fromValues(...view.transform.matrix);
+              cameraMatrix[12] *= width;
+              cameraMatrix[13] *= -height;
+              cameraMatrix[14] *= 500;
 
-            // @ts-ignore
-            const projectionMatrix = mat4.fromValues(...view.projectionMatrix);
-            mat4.scale(projectionMatrix, projectionMatrix, [1, -1, 1]); // flipY
+              cameraMatrix[12] += width / 2;
+              cameraMatrix[13] += height / 2;
+              cameraMatrix[14] += 500 / 2;
 
-            // @ts-ignore
-            camera.setProjectionMatrix(projectionMatrix);
-            camera.setMatrix(cameraMatrix);
+              // Use this matrix without modification or decomposition
+              // @see https://immersive-web.github.io/webxr/#dom-xrview-projectionmatrix
+              const projectionMatrix = mat4.fromValues(
+                // @ts-ignore
+                ...view.projectionMatrix,
+              );
+              // mat4.scale(projectionMatrix, projectionMatrix, [1, -1, 1]); // flipY
+
+              const { x, y, z } = pose.transform.position;
+              this.cameras[i] = {
+                viewport: {
+                  x: viewport.x / layer.framebufferWidth,
+                  y: viewport.y / layer.framebufferHeight,
+                  width: viewport.width / layer.framebufferWidth,
+                  height: viewport.height / layer.framebufferHeight,
+                },
+                projectionMatrix,
+                viewMatrix: mat4.invert(mat4.create(), cameraMatrix),
+                cameraPosition: [x, y, z],
+                isOrtho: false,
+              };
+            });
           }
+        } else {
+          const camera = this.context.camera;
+          this.cameras = [
+            {
+              viewport: {
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 1,
+              },
+              projectionMatrix: camera.getPerspective(),
+              viewMatrix: camera.getViewTransform(),
+              cameraPosition: camera.getPosition(),
+              isOrtho: camera.isOrtho(),
+            },
+          ];
         }
 
         const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
@@ -372,24 +408,26 @@ export class RenderGraphPlugin implements RenderingPlugin {
           'Main Depth',
         );
 
-        // main render pass
-        this.builder.pushPass((pass) => {
-          pass.setDebugName('Main Render Pass');
-          // if (usedViewport) {
-          //   const { x, y, width: vw, height: vh } = usedViewport;
-          //   // pass.setViewport(x, y, vw / width / 2, vh / height / 2);
-          //   console.log(x, y, vw, vh, width, height);
-          // }
-          pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
-          pass.attachRenderTargetID(
-            RGAttachmentSlot.DepthStencil,
-            mainDepthTargetID,
-          );
-          pass.exec((passRenderer) => {
-            this.renderLists.world.drawOnPassRenderer(
-              renderInstManager.renderCache,
-              passRenderer,
+        this.cameras.forEach(({ viewport }) => {
+          // main render pass
+          this.builder.pushPass((pass) => {
+            pass.setDebugName('Main Render Pass');
+            const { x, y, width, height } = viewport;
+            pass.setViewport(x, y, width, height);
+            pass.attachRenderTargetID(
+              RGAttachmentSlot.Color0,
+              mainColorTargetID,
             );
+            pass.attachRenderTargetID(
+              RGAttachmentSlot.DepthStencil,
+              mainDepthTargetID,
+            );
+            pass.exec((passRenderer) => {
+              this.renderLists.world.drawOnPassRenderer(
+                renderInstManager.renderCache,
+                passRenderer,
+              );
+            });
           });
         });
 
@@ -416,68 +454,74 @@ export class RenderGraphPlugin implements RenderingPlugin {
       RenderGraphPlugin.tag,
       (frame: XRFrame) => {
         const renderInstManager = this.renderHelper.renderInstManager;
-
-        // TODO: time for GPU Animation
-        // const timeInMilliseconds = window.performance.now();
-
-        // Push our outer template, which contains the dynamic UBO bindings...
-        const template = this.renderHelper.pushTemplateRenderInst();
-        // SceneParams: binding = 0, ObjectParams: binding = 1
-        template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
-        template.setMegaStateFlags(
-          setAttachmentStateSimple(
-            {
-              depthWrite: true,
-              blendConstant: TransparentBlack,
-            },
-            {
-              rgbBlendMode: BlendMode.ADD,
-              alphaBlendMode: BlendMode.ADD,
-              rgbBlendSrcFactor: BlendFactor.SRC_ALPHA,
-              alphaBlendSrcFactor: BlendFactor.ONE,
-              rgbBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
-              alphaBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
-            },
-          ),
-        );
-
-        // Update Scene Params
         const { width, height } = this.context.config;
-        const camera = this.context.camera;
-        template.setUniforms(SceneUniformBufferIndex, [
-          {
-            name: SceneUniform.PROJECTION_MATRIX,
-            value: camera.getPerspective(),
-          },
-          {
-            name: SceneUniform.VIEW_MATRIX,
-            value: camera.getViewTransform(),
-          },
-          {
-            name: SceneUniform.CAMERA_POSITION,
-            value: camera.getPosition(),
-          },
-          {
-            name: SceneUniform.DEVICE_PIXEL_RATIO,
-            value: this.context.contextService.getDPR(),
-          },
-          {
-            name: SceneUniform.VIEWPORT,
-            value: [width, height],
-          },
-          {
-            name: SceneUniform.IS_ORTHO,
-            value: camera.isOrtho() ? 1 : 0,
-          },
-          {
-            name: SceneUniform.IS_PICKING,
-            value: 0,
-          },
-        ]);
+        this.cameras.forEach(
+          ({
+            viewport,
+            cameraPosition,
+            viewMatrix,
+            projectionMatrix,
+            isOrtho,
+          }) => {
+            const { width: normalizedW, height: normalizedH } = viewport;
 
-        this.batchManager.render(this.renderLists.world);
+            // Push our outer template, which contains the dynamic UBO bindings...
+            const template = this.renderHelper.pushTemplateRenderInst();
+            // SceneParams: binding = 0, ObjectParams: binding = 1
+            template.setBindingLayout({ numUniformBuffers: 2, numSamplers: 0 });
+            template.setMegaStateFlags(
+              setAttachmentStateSimple(
+                {
+                  depthWrite: true,
+                  blendConstant: TransparentBlack,
+                },
+                {
+                  rgbBlendMode: BlendMode.ADD,
+                  alphaBlendMode: BlendMode.ADD,
+                  rgbBlendSrcFactor: BlendFactor.SRC_ALPHA,
+                  alphaBlendSrcFactor: BlendFactor.ONE,
+                  rgbBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+                  alphaBlendDstFactor: BlendFactor.ONE_MINUS_SRC_ALPHA,
+                },
+              ),
+            );
 
-        renderInstManager.popTemplateRenderInst();
+            template.setUniforms(SceneUniformBufferIndex, [
+              {
+                name: SceneUniform.PROJECTION_MATRIX,
+                value: projectionMatrix,
+              },
+              {
+                name: SceneUniform.VIEW_MATRIX,
+                value: viewMatrix,
+              },
+              {
+                name: SceneUniform.CAMERA_POSITION,
+                value: cameraPosition,
+              },
+              {
+                name: SceneUniform.DEVICE_PIXEL_RATIO,
+                value: this.context.contextService.getDPR(),
+              },
+              {
+                name: SceneUniform.VIEWPORT,
+                value: [width * normalizedW, height * normalizedH],
+              },
+              {
+                name: SceneUniform.IS_ORTHO,
+                value: isOrtho ? 1 : 0,
+              },
+              {
+                name: SceneUniform.IS_PICKING,
+                value: 0,
+              },
+            ]);
+
+            this.batchManager.render(this.renderLists.world);
+
+            renderInstManager.popTemplateRenderInst();
+          },
+        );
 
         this.renderHelper.prepareToRender();
         this.renderHelper.renderGraph.execute();

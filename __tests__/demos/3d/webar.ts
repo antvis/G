@@ -49,12 +49,14 @@ export async function ar(context) {
   });
 
   // cube.setOrigin(300, 250, 200);
-  cube.setPosition(300, 250, 200);
+  cube.setPosition(300, 250, -200);
 
   canvas.appendChild(cube);
 
+  // Called every time a XRSession requests that a new frame be drawn.
+  // @see https://github.com/immersive-web/webxr-samples/blob/main/immersive-ar-session.html#L173
   canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-    cube.rotate(0, 0, 0);
+    cube.rotate(0, 0.2, 0);
   });
 
   canvas.getConfig().disableHitTesting = true;
