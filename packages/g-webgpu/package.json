@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-webgpu",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "A renderer implemented by WebGPU",
   "keywords": [
     "antv",
@@ -43,7 +43,7 @@
     "@antv/g-plugin-dom-interaction": "workspace:*",
     "@antv/g-plugin-html-renderer": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
-    "@antv/g-device-api": "^1.3.6",
+    "@antv/g-device-api": "^1.6.10",
     "@antv/util": "^3.3.5",
     "@webgpu/types": "^0.1.6",
     "tslib": "^2.5.3"

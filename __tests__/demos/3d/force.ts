@@ -1642,6 +1642,7 @@ export async function force(context) {
   const material = new MeshPhongMaterial(device, {
     shininess: 30,
   });
+  // material.polygonOffset = true;
 
   // @see https://antv.vision/en/docs/specification/language/palette#%E5%88%86%E7%B1%BB%E8%89%B2%E6%9D%BF
   const colorPalette = [
@@ -1683,78 +1684,78 @@ export async function force(context) {
       sphere.style.fill = fill;
     });
 
-    const icon = new Image({
-      style: {
-        x: node.x + 310,
-        y: node.y + 250,
-        z: node.z - 1,
-        width: 10,
-        height: 10,
-        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-        isBillboard: true,
-      },
-    });
-    canvas.appendChild(icon);
+    // const icon = new Image({
+    //   style: {
+    //     x: node.x + 310,
+    //     y: node.y + 250,
+    //     z: node.z - 1,
+    //     width: 10,
+    //     height: 10,
+    //     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    //     isBillboard: true,
+    //   },
+    // });
+    // canvas.appendChild(icon);
 
-    const circle = new Circle({
-      style: {
-        cx: node.x + 310,
-        cy: node.y + 250,
-        cz: node.z - 2,
-        r: 2.5,
-        fill: 'red',
-        isBillboard: true,
-      },
-    });
-    canvas.appendChild(circle);
+    // const circle = new Circle({
+    //   style: {
+    //     cx: node.x + 310,
+    //     cy: node.y + 250,
+    //     cz: node.z - 2,
+    //     r: 2.5,
+    //     fill: 'red',
+    //     isBillboard: true,
+    //   },
+    // });
+    // canvas.appendChild(circle);
 
-    const label = new Text({
-      style: {
-        x: node.x + 310,
-        y: node.y + 250,
-        z: node.z + 1,
-        fontFamily: 'sans-serif',
-        text: node.id,
-        fontSize: 6,
-        fill: 'black',
-        isBillboard: true,
-      },
-    });
+    // const label = new Text({
+    //   style: {
+    //     x: node.x + 310,
+    //     y: node.y + 250,
+    //     z: node.z + 1,
+    //     fontFamily: 'sans-serif',
+    //     text: node.id,
+    //     fontSize: 6,
+    //     fill: 'black',
+    //     isBillboard: true,
+    //   },
+    // });
 
-    const rect = new Rect({
-      style: {
-        x: node.x + 310,
-        y: node.y + 250,
-        z: node.z,
-        width: label.getBBox().width,
-        height: 8,
-        fill: 'grey',
-        isBillboard: true,
-        fillOpacity: 0.6,
-      },
-    });
-    canvas.appendChild(rect);
-    canvas.appendChild(label);
+    // const rect = new Rect({
+    //   style: {
+    //     x: node.x + 310,
+    //     y: node.y + 250,
+    //     z: node.z,
+    //     width: label.getBBox().width,
+    //     height: 8,
+    //     fill: 'grey',
+    //     isBillboard: true,
+    //     fillOpacity: 0.6,
+    //   },
+    // });
+    // canvas.appendChild(rect);
+    // canvas.appendChild(label);
   });
 
-  dataset.links.forEach((edge) => {
-    const { source, target } = edge;
-    const line = new Line({
-      style: {
-        x1: source.x + 300,
-        y1: source.y + 250,
-        z1: source.z,
-        x2: target.x + 300,
-        y2: target.y + 250,
-        z2: target.z,
-        stroke: 'black',
-        lineWidth: 2,
-        opacity: 0.5,
-        isBillboard: true, // 始终面向屏幕
-      },
-    });
-    canvas.appendChild(line);
-  });
+  // dataset.links.forEach((edge) => {
+  //   const { source, target } = edge;
+  //   const line = new Line({
+  //     style: {
+  //       x1: source.x + 300,
+  //       y1: source.y + 250,
+  //       z1: source.z,
+  //       x2: target.x + 300,
+  //       y2: target.y + 250,
+  //       z2: target.z,
+  //       stroke: 'black',
+  //       lineWidth: 2,
+  //       opacity: 0.5,
+  //       isBillboard: true, // 始终面向屏幕
+  //     },
+  //   });
+  //   canvas.appendChild(line);
+  // });
 
   // add a directional light into scene
   const light = new DirectionalLight({
