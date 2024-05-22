@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.7
+
+### Patch Changes
+
+-   6dd79bc4: Support multiple viewport.
+
 ## 2.0.6
 
 ### Patch Changes
