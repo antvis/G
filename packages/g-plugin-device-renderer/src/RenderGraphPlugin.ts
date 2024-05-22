@@ -93,6 +93,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
   private capturePromise: Promise<string> | undefined;
   private resolveCapturePromise: (dataURL: string) => void;
 
+  /**
+   * An array of sub cameras used in VR scenes.
+   * @see https://threejs.org/docs/#api/en/cameras/ArrayCamera
+   */
   private cameras: {
     viewport: XRViewport;
     projectionMatrix: mat4;
@@ -305,11 +309,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
               // @ts-ignore
               const cameraMatrix = mat4.fromValues(...view.transform.matrix);
               cameraMatrix[12] *= width;
-              cameraMatrix[13] *= -height;
+              cameraMatrix[13] *= height;
               cameraMatrix[14] *= 500;
 
               cameraMatrix[12] += width / 2;
-              cameraMatrix[13] += height / 2;
+              cameraMatrix[13] -= height / 2;
               cameraMatrix[14] += 500 / 2;
 
               // Use this matrix without modification or decomposition
@@ -320,7 +324,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
               );
               // mat4.scale(projectionMatrix, projectionMatrix, [1, -1, 1]); // flipY
 
-              const { x, y, z } = pose.transform.position;
+              const viewMatrix = mat4.invert(mat4.create(), cameraMatrix);
+              mat4.scale(viewMatrix, viewMatrix, vec3.fromValues(1, -1, 1));
+
+              // @see https://github.com/immersive-web/webxr-samples/blob/main/js/render/core/renderer.js#L651
+              const { x, y, z } = view.transform.position;
               this.cameras[i] = {
                 viewport: {
                   x: viewport.x / layer.framebufferWidth,
@@ -329,7 +337,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
                   height: viewport.height / layer.framebufferHeight,
                 },
                 projectionMatrix,
-                viewMatrix: mat4.invert(mat4.create(), cameraMatrix),
+                viewMatrix,
                 cameraPosition: [x, y, z],
                 isOrtho: false,
               };
@@ -408,21 +416,36 @@ export class RenderGraphPlugin implements RenderingPlugin {
           'Main Depth',
         );
 
-        this.cameras.forEach(({ viewport }) => {
-          // main render pass
-          this.builder.pushPass((pass) => {
-            pass.setDebugName('Main Render Pass');
-            const { x, y, width, height } = viewport;
-            pass.setViewport(x, y, width, height);
-            pass.attachRenderTargetID(
-              RGAttachmentSlot.Color0,
-              mainColorTargetID,
-            );
-            pass.attachRenderTargetID(
-              RGAttachmentSlot.DepthStencil,
-              mainDepthTargetID,
-            );
-            pass.exec((passRenderer) => {
+        // main render pass
+        this.builder.pushPass((pass) => {
+          pass.setDebugName('Main Render Pass');
+          pass.attachRenderTargetID(RGAttachmentSlot.Color0, mainColorTargetID);
+          pass.attachRenderTargetID(
+            RGAttachmentSlot.DepthStencil,
+            mainDepthTargetID,
+          );
+
+          pass.exec((passRenderer, scope) => {
+            this.cameras.forEach(({ viewport }) => {
+              const { x, y, width, height } = viewport;
+
+              const { viewportW, viewportH } = scope['currentPass'];
+
+              // @see https://github.com/immersive-web/webxr-samples/blob/main/js/render/core/renderer.js#L757
+              passRenderer.setViewport(
+                x * viewportW,
+                y * viewportH,
+                width * viewportW,
+                height * viewportH,
+              );
+
+              // console.log(
+              //   x * viewportW,
+              //   y * viewportH,
+              //   width * viewportW,
+              //   height * viewportH,
+              // );
+
               this.renderLists.world.drawOnPassRenderer(
                 renderInstManager.renderCache,
                 passRenderer,
