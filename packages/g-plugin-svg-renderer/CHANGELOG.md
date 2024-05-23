@@ -1,5 +1,11 @@
 # @antv/g-plugin-svg-renderer
 
+## 2.0.7
+
+### Patch Changes
+
+-   a4d7c7e0: Support gradient text in canvas & svg renderer.
+
 ## 2.0.6
 
 ### Patch Changes
