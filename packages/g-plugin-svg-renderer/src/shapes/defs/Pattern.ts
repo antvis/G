@@ -107,15 +107,15 @@ function generateCacheKey(
       type === GradientType.RadialGradient
     ) {
       // @ts-ignore
-      const { type, width, height, steps, angle, cx, cy, size } = {
+      const { type, x, y, width, height, steps, angle, cx, cy, size } = {
         ...value,
         ...options,
       };
-      cacheKey = `gradient-${type}-${angle?.toString() || 0}-${
-        cx?.toString() || 0
-      }-${cy?.toString() || 0}-${
-        size?.toString() || 0
-      }-${width}-${height}-${steps
+      cacheKey = `gradient-${type}-${x?.toString() || 0}-${
+        y?.toString() || 0
+      }-${angle?.toString() || 0}-${cx?.toString() || 0}-${
+        cy?.toString() || 0
+      }-${size?.toString() || 0}-${width}-${height}-${steps
         .map(({ offset, color }) => `${offset}${color}`)
         .join('-')}`;
     }
@@ -341,7 +341,12 @@ function createOrUpdateGradient(
   const height = (bounds && bounds.halfExtents[1] * 2) || 0;
   const min = (bounds && bounds.min) || [0, 0];
 
-  const gradientId = generateCacheKey(parsedColor, { width, height });
+  const gradientId = generateCacheKey(parsedColor, {
+    x: min[0],
+    y: min[1],
+    width,
+    height,
+  });
   let $existed = $def.querySelector(`#${gradientId}`);
 
   if (!$existed) {
