@@ -67,7 +67,7 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, hasShadow);
       }
 
-      this.fill(
+      applyFill(
         context,
         object,
         fill,
@@ -75,6 +75,7 @@ export class DefaultRenderer implements StyleRenderer {
         canvasContext,
         plugin,
         runtime,
+        this.imagePool,
       );
 
       if (!shouldDrawShadowWithStroke) {
@@ -104,13 +105,29 @@ export class DefaultRenderer implements StyleRenderer {
         setShadowAndFilter(object, context, true);
 
         if (isInnerShadow) {
-          this.stroke(context, object, stroke, canvasContext, plugin, runtime);
+          applyStroke(
+            context,
+            object,
+            stroke,
+            canvasContext,
+            plugin,
+            runtime,
+            this.imagePool,
+          );
           context.globalCompositeOperation = 'source-over';
           this.clearShadowAndFilter(context, hasFilter, true);
         }
       }
 
-      this.stroke(context, object, stroke, canvasContext, plugin, runtime);
+      applyStroke(
+        context,
+        object,
+        stroke,
+        canvasContext,
+        plugin,
+        runtime,
+        this.imagePool,
+      );
     }
   }
 
@@ -132,155 +149,6 @@ export class DefaultRenderer implements StyleRenderer {
           oldFilter.replace(/drop-shadow\([^)]*\)/, '').trim() || 'none';
       }
     }
-  }
-
-  private fill(
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-    fill: CSSRGB | CSSGradientValue[] | Pattern,
-    fillRule: 'nonzero' | 'evenodd',
-    canvasContext: CanvasContext,
-    plugin: CanvasRendererPlugin,
-    runtime: GlobalRuntime,
-  ) {
-    if (Array.isArray(fill)) {
-      fill.forEach((gradient) => {
-        context.fillStyle = this.getColor(gradient, object, context);
-
-        fillRule ? context.fill(fillRule) : context.fill();
-      });
-    } else {
-      if (isPattern(fill)) {
-        context.fillStyle = this.getPattern(
-          fill,
-          object,
-          context,
-          canvasContext,
-          plugin,
-          runtime,
-        );
-      }
-      fillRule ? context.fill(fillRule) : context.fill();
-    }
-  }
-
-  private stroke(
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-    stroke: CSSRGB | CSSGradientValue[] | Pattern,
-    canvasContext: CanvasContext,
-    plugin: CanvasRendererPlugin,
-    runtime: GlobalRuntime,
-  ) {
-    if (Array.isArray(stroke)) {
-      stroke.forEach((gradient) => {
-        context.strokeStyle = this.getColor(gradient, object, context);
-        context.stroke();
-      });
-    } else {
-      if (isPattern(stroke)) {
-        context.strokeStyle = this.getPattern(
-          stroke,
-          object,
-          context,
-          canvasContext,
-          plugin,
-          runtime,
-        );
-      }
-      context.stroke();
-    }
-  }
-
-  private getPattern(
-    pattern: Pattern,
-    object: DisplayObject,
-    context: CanvasRenderingContext2D,
-    canvasContext: CanvasContext,
-    plugin: CanvasRendererPlugin,
-    runtime: GlobalRuntime,
-  ): CanvasPattern {
-    let $offscreenCanvas: HTMLCanvasElement;
-    let dpr: number;
-    if ((pattern.image as Rect).nodeName === 'rect') {
-      const { width, height } = (pattern.image as Rect).parsedStyle;
-      dpr = canvasContext.contextService.getDPR();
-      const { offscreenCanvas } = canvasContext.config;
-      $offscreenCanvas = runtime.offscreenCanvasCreator.getOrCreateCanvas(
-        offscreenCanvas,
-      ) as HTMLCanvasElement;
-
-      $offscreenCanvas.width = width * dpr;
-      $offscreenCanvas.height = height * dpr;
-
-      const offscreenCanvasContext =
-        runtime.offscreenCanvasCreator.getOrCreateContext(
-          offscreenCanvas,
-        ) as CanvasRenderingContext2D;
-
-      const restoreStack = [];
-
-      // offscreenCanvasContext.scale(1 / dpr, 1 / dpr);
-
-      (pattern.image as Rect).forEach((object: DisplayObject) => {
-        plugin.renderDisplayObject(
-          object,
-          offscreenCanvasContext,
-          canvasContext,
-          restoreStack,
-          runtime,
-        );
-      });
-
-      restoreStack.forEach(() => {
-        offscreenCanvasContext.restore();
-      });
-    }
-
-    const canvasPattern = this.imagePool.getOrCreatePatternSync(
-      pattern,
-      context,
-      $offscreenCanvas,
-      dpr,
-      object.getGeometryBounds().min,
-      () => {
-        // set dirty rectangle flag
-        object.renderable.dirty = true;
-        canvasContext.renderingService.dirtify();
-      },
-    );
-
-    return canvasPattern;
-  }
-
-  private getColor(
-    parsedColor: CSSGradientValue,
-    object: DisplayObject,
-    context: CanvasRenderingContext2D,
-  ) {
-    let color: CanvasGradient | string;
-
-    if (
-      parsedColor.type === GradientType.LinearGradient ||
-      parsedColor.type === GradientType.RadialGradient
-    ) {
-      const bounds = object.getGeometryBounds();
-      const width = (bounds && bounds.halfExtents[0] * 2) || 1;
-      const height = (bounds && bounds.halfExtents[1] * 2) || 1;
-      const min = (bounds && bounds.min) || [0, 0];
-      color = this.imagePool.getOrCreateGradient(
-        {
-          type: parsedColor.type,
-          ...(parsedColor.value as LinearGradient & RadialGradient),
-          min: min as [number, number],
-          width,
-          height,
-        },
-        context,
-      );
-    }
-
-    return color;
   }
 }
 
@@ -305,5 +173,160 @@ export function setShadowAndFilter(
     context.shadowBlur = shadowBlur || 0;
     context.shadowOffsetX = shadowOffsetX || 0;
     context.shadowOffsetY = shadowOffsetY || 0;
+  }
+}
+
+export function getPattern(
+  pattern: Pattern,
+  object: DisplayObject,
+  context: CanvasRenderingContext2D,
+  canvasContext: CanvasContext,
+  plugin: CanvasRendererPlugin,
+  runtime: GlobalRuntime,
+  imagePool: ImagePool,
+): CanvasPattern {
+  let $offscreenCanvas: HTMLCanvasElement;
+  let dpr: number;
+  if ((pattern.image as Rect).nodeName === 'rect') {
+    const { width, height } = (pattern.image as Rect).parsedStyle;
+    dpr = canvasContext.contextService.getDPR();
+    const { offscreenCanvas } = canvasContext.config;
+    $offscreenCanvas = runtime.offscreenCanvasCreator.getOrCreateCanvas(
+      offscreenCanvas,
+    ) as HTMLCanvasElement;
+
+    $offscreenCanvas.width = width * dpr;
+    $offscreenCanvas.height = height * dpr;
+
+    const offscreenCanvasContext =
+      runtime.offscreenCanvasCreator.getOrCreateContext(
+        offscreenCanvas,
+      ) as CanvasRenderingContext2D;
+
+    const restoreStack = [];
+
+    // offscreenCanvasContext.scale(1 / dpr, 1 / dpr);
+
+    (pattern.image as Rect).forEach((object: DisplayObject) => {
+      plugin.renderDisplayObject(
+        object,
+        offscreenCanvasContext,
+        canvasContext,
+        restoreStack,
+        runtime,
+      );
+    });
+
+    restoreStack.forEach(() => {
+      offscreenCanvasContext.restore();
+    });
+  }
+
+  const canvasPattern = imagePool.getOrCreatePatternSync(
+    pattern,
+    context,
+    $offscreenCanvas,
+    dpr,
+    object.getGeometryBounds().min,
+    () => {
+      // set dirty rectangle flag
+      object.renderable.dirty = true;
+      canvasContext.renderingService.dirtify();
+    },
+  );
+
+  return canvasPattern;
+}
+
+export function getColor(
+  parsedColor: CSSGradientValue,
+  object: DisplayObject,
+  context: CanvasRenderingContext2D,
+  imagePool: ImagePool,
+) {
+  let color: CanvasGradient | string;
+
+  if (
+    parsedColor.type === GradientType.LinearGradient ||
+    parsedColor.type === GradientType.RadialGradient
+  ) {
+    const bounds = object.getGeometryBounds();
+    const width = (bounds && bounds.halfExtents[0] * 2) || 1;
+    const height = (bounds && bounds.halfExtents[1] * 2) || 1;
+    const min = (bounds && bounds.min) || [0, 0];
+    color = imagePool.getOrCreateGradient(
+      {
+        type: parsedColor.type,
+        ...(parsedColor.value as LinearGradient & RadialGradient),
+        min: min as [number, number],
+        width,
+        height,
+      },
+      context,
+    );
+  }
+
+  return color;
+}
+
+export function applyFill(
+  context: CanvasRenderingContext2D,
+  object: DisplayObject,
+  fill: CSSRGB | CSSGradientValue[] | Pattern,
+  fillRule: 'nonzero' | 'evenodd',
+  canvasContext: CanvasContext,
+  plugin: CanvasRendererPlugin,
+  runtime: GlobalRuntime,
+  imagePool: ImagePool,
+) {
+  if (Array.isArray(fill)) {
+    fill.forEach((gradient) => {
+      context.fillStyle = getColor(gradient, object, context, imagePool);
+
+      fillRule ? context.fill(fillRule) : context.fill();
+    });
+  } else {
+    if (isPattern(fill)) {
+      context.fillStyle = getPattern(
+        fill,
+        object,
+        context,
+        canvasContext,
+        plugin,
+        runtime,
+        imagePool,
+      );
+    }
+    fillRule ? context.fill(fillRule) : context.fill();
+  }
+}
+
+export function applyStroke(
+  context: CanvasRenderingContext2D,
+  object: DisplayObject,
+  stroke: CSSRGB | CSSGradientValue[] | Pattern,
+  canvasContext: CanvasContext,
+  plugin: CanvasRendererPlugin,
+  runtime: GlobalRuntime,
+  imagePool: ImagePool,
+) {
+  if (Array.isArray(stroke)) {
+    stroke.forEach((gradient) => {
+      context.strokeStyle = getColor(gradient, object, context, imagePool);
+      context.stroke();
+    });
+  } else {
+    if (isPattern(stroke)) {
+      context.strokeStyle = getPattern(
+        stroke,
+        object,
+        context,
+        canvasContext,
+        plugin,
+        runtime,
+        imagePool,
+      );
+    }
+    context.stroke();
   }
 }

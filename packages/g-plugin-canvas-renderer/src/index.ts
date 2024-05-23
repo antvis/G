@@ -35,7 +35,7 @@ export class Plugin extends AbstractRendererPlugin<{
       [Shape.ELLIPSE]: defaultRenderer,
       [Shape.RECT]: defaultRenderer,
       [Shape.IMAGE]: new ImageRenderer(imagePool),
-      [Shape.TEXT]: new TextRenderer(),
+      [Shape.TEXT]: new TextRenderer(imagePool),
       [Shape.LINE]: defaultRenderer,
       [Shape.POLYLINE]: defaultRenderer,
       [Shape.POLYGON]: defaultRenderer,
@@ -48,7 +48,9 @@ export class Plugin extends AbstractRendererPlugin<{
     this.context.defaultStyleRendererFactory = defaultStyleRendererFactory;
     this.context.styleRendererFactory = defaultStyleRendererFactory;
 
-    this.addRenderingPlugin(new CanvasRendererPlugin(canvasRendererPluginOptions));
+    this.addRenderingPlugin(
+      new CanvasRendererPlugin(canvasRendererPluginOptions),
+    );
   }
   destroy(): void {
     this.removeAllRenderingPlugins();
