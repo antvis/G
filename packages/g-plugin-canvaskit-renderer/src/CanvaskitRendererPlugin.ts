@@ -565,9 +565,9 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       canvas.rotate(rot, 0, 0);
       canvas.scale(sx, sy);
 
-      const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
-      const hasStroke = !isNil(stroke) && !(stroke as CSSRGB).isNone;
-      const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
+      const hasFill = fill && !(fill as CSSRGB).isNone;
+      const hasStroke = stroke && !(stroke as CSSRGB).isNone;
+      const hasShadow = shadowColor && shadowBlur > 0;
 
       let fillPaint: Paint = null;
       let strokePaint: Paint = null;

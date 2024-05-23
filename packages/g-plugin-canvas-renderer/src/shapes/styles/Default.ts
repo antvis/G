@@ -43,9 +43,9 @@ export class DefaultRenderer implements StyleRenderer {
       filter,
       miterLimit,
     } = parsedStyle;
-    const hasFill = !isNil(fill) && !(fill as CSSRGB).isNone;
-    const hasStroke =
-      !isNil(stroke) && !(stroke as CSSRGB).isNone && lineWidth > 0;
+    const hasFill = fill && !(fill as CSSRGB).isNone;
+    const hasStroke = stroke && !(stroke as CSSRGB).isNone && lineWidth > 0;
+
     const isFillTransparent = (fill as CSSRGB)?.alpha === 0;
     const hasFilter = !!(filter && filter.length);
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
