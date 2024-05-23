@@ -6,6 +6,12 @@ const packages = readdirSync(basePath).filter((name) => {
   return lstatSync(path.join(basePath, name)).isDirectory();
 });
 
+// Installing third-party modules by tnpm or cnpm will name modules with underscore as prefix.
+// In this case _{module} is also necessary.
+const esm = ['internmap', 'd3-*', 'lodash-es']
+  .map((d) => `_${d}|${d}`)
+  .join('|');
+
 // @see https://blog.ah.technology/a-guide-through-the-wild-wild-west-of-setting-up-a-mono-repo-part-2-adding-jest-with-a-breeze-16e08596f0de
 const moduleNameMapper = {
   ...packages.reduce(
@@ -40,12 +46,8 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   modulePathIgnorePatterns: ['dist'],
-  transformIgnorePatterns: [
-    // @see https://stackoverflow.com/a/69179139
-    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
-  ],
   globalSetup: './scripts/jest/setup.js',
   globalTeardown: './scripts/jest/teardown.js',
   testEnvironment: './scripts/jest/environment.js',
-  testPathIgnorePatterns: ['<rootDir>/__tests__/main.ts'],
+  transformIgnorePatterns: [`<rootDir>/node_modules/(?!(?:.pnpm/)?(${esm}))`],
 };
