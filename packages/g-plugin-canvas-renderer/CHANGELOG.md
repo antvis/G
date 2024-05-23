@@ -1,5 +1,12 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.0.6
+
+### Patch Changes
+
+-   a4d7c7e0: Support gradient text in canvas & svg renderer.
+-   a4d7c7e0: Render correctly in canvas when stroke is emtpy.
+
 ## 2.0.5
 
 ### Patch Changes
