@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.5
+
+### Patch Changes
+
+-   335558a7: Update d3-color to latest version avoiding vulnerable packages.
+
 ## 2.0.4
 
 ### Patch Changes
