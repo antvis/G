@@ -278,12 +278,14 @@ export function applyFill(
   plugin: CanvasRendererPlugin,
   runtime: GlobalRuntime,
   imagePool: ImagePool,
+  skipFill = false,
 ) {
   if (Array.isArray(fill)) {
     fill.forEach((gradient) => {
       context.fillStyle = getColor(gradient, object, context, imagePool);
-
-      fillRule ? context.fill(fillRule) : context.fill();
+      if (!skipFill) {
+        fillRule ? context.fill(fillRule) : context.fill();
+      }
     });
   } else {
     if (isPattern(fill)) {
@@ -297,7 +299,9 @@ export function applyFill(
         imagePool,
       );
     }
-    fillRule ? context.fill(fillRule) : context.fill();
+    if (!skipFill) {
+      fillRule ? context.fill(fillRule) : context.fill();
+    }
   }
 }
 
@@ -309,11 +313,14 @@ export function applyStroke(
   plugin: CanvasRendererPlugin,
   runtime: GlobalRuntime,
   imagePool: ImagePool,
+  skipStroke = false,
 ) {
   if (Array.isArray(stroke)) {
     stroke.forEach((gradient) => {
       context.strokeStyle = getColor(gradient, object, context, imagePool);
-      context.stroke();
+      if (!skipStroke) {
+        context.stroke();
+      }
     });
   } else {
     if (isPattern(stroke)) {
@@ -327,6 +334,8 @@ export function applyStroke(
         imagePool,
       );
     }
-    context.stroke();
+    if (!skipStroke) {
+      context.stroke();
+    }
   }
 }

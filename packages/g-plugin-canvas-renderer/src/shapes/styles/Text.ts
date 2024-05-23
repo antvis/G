@@ -285,6 +285,7 @@ export class TextRenderer implements StyleRenderer {
       plugin,
       runtime,
       this.imagePool,
+      true,
     );
 
     let currentGlobalAlpha: number;
@@ -319,6 +320,7 @@ export class TextRenderer implements StyleRenderer {
       plugin,
       runtime,
       this.imagePool,
+      true,
     );
 
     let currentGlobalAlpha: number;

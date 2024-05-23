@@ -1,4 +1,4 @@
-import { Circle, Text, runtime } from '../../../packages/g';
+import { Circle, Text } from '../../../packages/g';
 
 export async function transformText(context) {
   const { canvas } = context;
