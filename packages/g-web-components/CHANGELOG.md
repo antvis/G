@@ -1,5 +1,11 @@
 # @antv/g-web-components
 
+## 2.0.9
+
+### Patch Changes
+
+-   @antv/g-canvas@2.0.6
+
 ## 2.0.8
 
 ### Patch Changes
