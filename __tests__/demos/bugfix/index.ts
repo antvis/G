@@ -5,3 +5,4 @@ export { dirty } from './dirty';
 export { image } from './1636';
 export { shadowroot_offset } from './1677';
 export { gradient_text } from './1572';
+export { zoom } from './1667';

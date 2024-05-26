@@ -76,7 +76,11 @@ export class RenderGraphPlugin implements RenderingPlugin {
     /**
      * used in main forward rendering pass
      */
-    world: new RenderInstList(),
+    leftEye: new RenderInstList(),
+    /**
+     * right eye in VR session.
+     */
+    rightEye: new RenderInstList(),
     /**
      * used in picking pass, should disable blending
      */
@@ -426,7 +430,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
           );
 
           pass.exec((passRenderer, scope) => {
-            this.cameras.forEach(({ viewport }) => {
+            this.cameras.forEach(({ viewport }, i) => {
               const { x, y, width, height } = viewport;
 
               const { viewportW, viewportH } = scope['currentPass'];
@@ -439,17 +443,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
                 height * viewportH,
               );
 
-              // console.log(
-              //   x * viewportW,
-              //   y * viewportH,
-              //   width * viewportW,
-              //   height * viewportH,
-              // );
-
-              this.renderLists.world.drawOnPassRenderer(
-                renderInstManager.renderCache,
-                passRenderer,
-              );
+              (i === 0
+                ? this.renderLists.leftEye
+                : this.renderLists.rightEye
+              ).drawOnPassRenderer(renderInstManager.renderCache, passRenderer);
             });
           });
         });
@@ -479,13 +476,10 @@ export class RenderGraphPlugin implements RenderingPlugin {
         const renderInstManager = this.renderHelper.renderInstManager;
         const { width, height } = this.context.config;
         this.cameras.forEach(
-          ({
-            viewport,
-            cameraPosition,
-            viewMatrix,
-            projectionMatrix,
-            isOrtho,
-          }) => {
+          (
+            { viewport, cameraPosition, viewMatrix, projectionMatrix, isOrtho },
+            i,
+          ) => {
             const { width: normalizedW, height: normalizedH } = viewport;
 
             // Push our outer template, which contains the dynamic UBO bindings...
@@ -540,7 +534,9 @@ export class RenderGraphPlugin implements RenderingPlugin {
               },
             ]);
 
-            this.batchManager.render(this.renderLists.world);
+            this.batchManager.render(
+              i === 0 ? this.renderLists.leftEye : this.renderLists.rightEye,
+            );
 
             renderInstManager.popTemplateRenderInst();
           },
