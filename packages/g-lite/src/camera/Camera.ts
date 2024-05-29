@@ -275,6 +275,8 @@ export class Camera implements ICamera {
    * 计算 MV 矩阵，为相机矩阵的逆矩阵
    */
   getViewTransform(): mat4 {
+    // mat4.scale(this.matrix, this.matrix, vec3.fromValues(1, -1, 1));
+
     return mat4.invert(mat4.create(), this.matrix);
   }
 
@@ -496,17 +498,11 @@ export class Camera implements ICamera {
       this.projectionMatrix,
       left,
       left + width,
-      top,
       top - height,
+      top,
       near,
       this.far,
       this.clipSpaceNearZ === ClipSpaceNearZ.ZERO,
-    );
-    // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
-    mat4.scale(
-      this.projectionMatrix,
-      this.projectionMatrix,
-      vec3.fromValues(1, -1, 1),
     );
 
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
@@ -554,17 +550,12 @@ export class Camera implements ICamera {
     }
 
     if (this.clipSpaceNearZ === ClipSpaceNearZ.NEGATIVE_ONE) {
-      mat4.ortho(this.projectionMatrix, left, right, bottom, top, near, far);
+      // FlipY with switching bottom & top.
+      // @see https://stackoverflow.com/a/4886656
+      mat4.ortho(this.projectionMatrix, left, right, top, bottom, near, far);
     } else {
-      mat4.orthoZO(this.projectionMatrix, left, right, bottom, top, near, far);
+      mat4.orthoZO(this.projectionMatrix, left, right, top, bottom, near, far);
     }
-
-    // flipY since the origin of OpenGL/WebGL is bottom-left compared with top-left in Canvas2D
-    mat4.scale(
-      this.projectionMatrix,
-      this.projectionMatrix,
-      vec3.fromValues(1, -1, 1),
-    );
 
     mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
 

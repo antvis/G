@@ -57,9 +57,7 @@ export async function sphere(context) {
   // create a mesh
   const sphere = new Mesh({
     style: {
-      x: 320,
-      y: 320,
-      z: 0,
+      transform: `translate3d(320, 320, 0)`,
       transformOrigin: 'center',
       fill: '#1890FF',
       opacity: 1,

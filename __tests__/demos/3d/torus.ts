@@ -27,8 +27,7 @@ export async function torus(context) {
 
   const torus = new Mesh({
     style: {
-      x: 300,
-      y: 250,
+      transform: `translate3d(320, 250, 0)`,
       fill: 'white',
       opacity: 1,
       geometry: torusGeometry,
