@@ -1,5 +1,12 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.9
+
+### Patch Changes
+
+-   83b9bbcb: Support left and right eyes in ar session.
+-   83b9bbcb: Support hit testing in webxr.
+
 ## 2.0.8
 
 ### Patch Changes

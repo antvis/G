@@ -1709,18 +1709,18 @@ export async function force(context) {
     // });
     // canvas.appendChild(circle);
 
-    // const label = new Text({
-    //   style: {
-    //     x: node.x + 310,
-    //     y: node.y + 250,
-    //     z: node.z + 1,
-    //     fontFamily: 'sans-serif',
-    //     text: node.id,
-    //     fontSize: 6,
-    //     fill: 'black',
-    //     isBillboard: true,
-    //   },
-    // });
+    const label = new Text({
+      style: {
+        x: node.x + 310,
+        y: node.y + 250,
+        z: node.z + 1,
+        fontFamily: 'sans-serif',
+        text: node.id,
+        fontSize: 6,
+        fill: 'black',
+        isBillboard: true,
+      },
+    });
 
     // const rect = new Rect({
     //   style: {
@@ -1735,27 +1735,27 @@ export async function force(context) {
     //   },
     // });
     // canvas.appendChild(rect);
-    // canvas.appendChild(label);
+    canvas.appendChild(label);
   });
 
-  // dataset.links.forEach((edge) => {
-  //   const { source, target } = edge;
-  //   const line = new Line({
-  //     style: {
-  //       x1: source.x + 300,
-  //       y1: source.y + 250,
-  //       z1: source.z,
-  //       x2: target.x + 300,
-  //       y2: target.y + 250,
-  //       z2: target.z,
-  //       stroke: 'black',
-  //       lineWidth: 2,
-  //       opacity: 0.5,
-  //       isBillboard: true, // 始终面向屏幕
-  //     },
-  //   });
-  //   canvas.appendChild(line);
-  // });
+  dataset.links.forEach((edge) => {
+    const { source, target } = edge;
+    const line = new Line({
+      style: {
+        x1: source.x + 300,
+        y1: source.y + 250,
+        z1: source.z,
+        x2: target.x + 300,
+        y2: target.y + 250,
+        z2: target.z,
+        stroke: 'black',
+        lineWidth: 2,
+        opacity: 0.5,
+        isBillboard: true, // 始终面向屏幕
+      },
+    });
+    canvas.appendChild(line);
+  });
 
   // add a directional light into scene
   const light = new DirectionalLight({
@@ -1777,7 +1777,10 @@ export async function force(context) {
 
   canvas.getConfig().disableHitTesting = true;
 
-  const $button = ARButton.createButton(canvas, renderer, {});
+  const $button = ARButton.createButton(canvas, renderer, {
+    // @see https://github.com/immersive-web/webxr-samples/blob/main/hit-test.html
+    requiredFeatures: ['local', 'hit-test'],
+  });
   container.appendChild($button);
 }
 

@@ -27,7 +27,7 @@ export async function image(context) {
         y: 0,
         width: 100,
         height: 100,
-        img,
+        src: img,
       },
     });
     const image2 = new Image({
@@ -36,7 +36,7 @@ export async function image(context) {
         y: 0,
         width: 100,
         height: 100,
-        img,
+        src: img,
       },
     });
     group.appendChild(image);

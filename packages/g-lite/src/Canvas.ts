@@ -482,6 +482,11 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render(frame?: XRFrame) {
+    if (frame) {
+      beforeRenderEvent.detail = frame;
+      afterRenderEvent.detail = frame;
+    }
+
     this.dispatchEvent(beforeRenderEvent);
 
     const renderingService = this.getRenderingService();

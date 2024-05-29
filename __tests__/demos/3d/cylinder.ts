@@ -27,8 +27,7 @@ export async function cylinder(context) {
 
   const cylinder = new Mesh({
     style: {
-      x: 300,
-      y: 250,
+      transform: `translate3d(300, 250, 0)`,
       fill: 'white',
       opacity: 1,
       geometry: cylinderGeometry,
