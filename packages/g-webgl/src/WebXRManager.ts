@@ -1,11 +1,14 @@
 import { Canvas } from '@antv/g-lite';
 import { DeviceRenderer } from '.';
+import { WebXRController } from './WebXRController';
 
 export class WebXRManager {
   private session: XRSession;
   private referenceSpaceType: XRReferenceSpaceType;
   private referenceSpace: XRReferenceSpace;
   private glBaseLayer: XRWebGLLayer;
+  private controllers: WebXRController[] = [];
+  private controllerInputSources: XRInputSource[] = [];
 
   constructor(private plugin: DeviceRenderer.Plugin) {}
 
@@ -21,8 +24,14 @@ export class WebXRManager {
         await gl.makeXRCompatible();
       }
 
-      // session.addEventListener('select', this.onSessionEvent);
+      session.addEventListener('select', this.onSessionEvent);
+      session.addEventListener('selectstart', this.onSessionEvent);
+      session.addEventListener('selectend', this.onSessionEvent);
+      session.addEventListener('squeeze', this.onSessionEvent);
+      session.addEventListener('squeezestart', this.onSessionEvent);
+      session.addEventListener('squeezeend', this.onSessionEvent);
       session.addEventListener('end', this.onSessionEnd);
+      session.addEventListener('inputsourceschange', this.onInputSourcesChange);
 
       if (session.renderState.layers === undefined) {
         const layerInit = {
@@ -46,45 +55,6 @@ export class WebXRManager {
 
       canvas.requestAnimationFrame =
         session.requestAnimationFrame.bind(session);
-
-      // const onXRFrame: XRFrameRequestCallback = (time, frame) => {
-      //   // Assumed to be a XRWebGLLayer for now.
-      //   let layer = session.renderState.baseLayer;
-      //   if (!layer) {
-      //     layer = session.renderState.layers![0] as XRWebGLLayer;
-      //   } else {
-      //     // Bind the graphics framebuffer to the baseLayer's framebuffer.
-      //     // Only baseLayer has framebuffer and we need to bind it, even if it is null (for inline sessions).
-      //     // gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
-      //   }
-
-      //   swapChain.configureSwapChain(
-      //     layer.framebufferWidth,
-      //     layer.framebufferHeight,
-      //     layer.framebuffer,
-      //   );
-
-      //   // Retrieve the pose of the device.
-      //   // XRFrame.getViewerPose can return null while the session attempts to establish tracking.
-      //   const pose = frame.getViewerPose(this.referenceSpace);
-      //   if (pose) {
-      //     const p = pose.transform.position;
-
-      //     // In mobile AR, we only have one view.
-      //     const view = pose.views[0];
-      //     const viewport = session.renderState.baseLayer!.getViewport(view)!;
-
-      //     // Use the view's transform matrix and projection matrix
-      //     // const viewMatrix = mat4.invert(mat4.create(), view.transform.matrix);
-      //     const viewMatrix = view.transform.inverse.matrix;
-      //     const projectionMatrix = view.projectionMatrix;
-      //   }
-
-      //   // Queue up the next draw request.
-      //   session.requestAnimationFrame(onXRFrame);
-      // };
-
-      // session.requestAnimationFrame(onXRFrame);
     }
   }
 
@@ -92,7 +62,121 @@ export class WebXRManager {
     this.referenceSpaceType = referenceSpaceType;
   }
 
+  getSession() {
+    return this.session;
+  }
+
+  getReferenceSpace() {
+    return this.referenceSpace;
+  }
+
+  private getOrCreateController(index: number) {
+    let controller = this.controllers[index];
+    if (controller === undefined) {
+      controller = new WebXRController();
+      this.controllers[index] = controller;
+    }
+    return controller;
+  }
+
+  getController(index: number) {
+    return this.getOrCreateController(index).getTargetRaySpace();
+  }
+
+  // getControllerGrip(index: number) {
+  //   return this.getOrCreateController(index).getGripSpace();
+  // }
+
+  // getHand(index: number) {
+  //   return this.getOrCreateController(index).getHandSpace();
+  // }
+
   private onSessionEnd = () => {
+    this.session.removeEventListener('select', this.onSessionEvent);
+    this.session.removeEventListener('selectstart', this.onSessionEvent);
+    this.session.removeEventListener('selectend', this.onSessionEvent);
+    this.session.removeEventListener('squeeze', this.onSessionEvent);
+    this.session.removeEventListener('squeezestart', this.onSessionEvent);
+    this.session.removeEventListener('squeezeend', this.onSessionEvent);
     this.session.removeEventListener('end', this.onSessionEnd);
+    this.session.removeEventListener(
+      'inputsourceschange',
+      this.onInputSourcesChange,
+    );
+
+    for (let i = 0; i < this.controllers.length; i++) {
+      const inputSource = this.controllerInputSources[i];
+      if (inputSource === null) continue;
+      this.controllerInputSources[i] = null;
+      this.controllers[i].disconnect(inputSource);
+    }
+  };
+
+  private onSessionEvent = (event: XRInputSourceEvent) => {
+    const controllerIndex = this.controllerInputSources.indexOf(
+      event.inputSource,
+    );
+
+    if (controllerIndex === -1) {
+      return;
+    }
+
+    const controller = this.controllers[controllerIndex];
+
+    if (controller !== undefined) {
+      controller.update(
+        event.inputSource,
+        event.frame,
+        // @ts-ignore
+        this.session.referenceSpace,
+      );
+      controller.dispatchEvent({ type: event.type, data: event.inputSource });
+    }
+  };
+
+  private onInputSourcesChange = (event: XRInputSourceChangeEvent) => {
+    // Notify disconnected
+    for (let i = 0; i < event.removed.length; i++) {
+      const inputSource = event.removed[i];
+      const index = this.controllerInputSources.indexOf(inputSource);
+
+      if (index >= 0) {
+        this.controllerInputSources[index] = null;
+        this.controllers[index].disconnect(inputSource);
+      }
+    }
+
+    // Notify connected
+    for (let i = 0; i < event.added.length; i++) {
+      const inputSource = event.added[i];
+
+      let controllerIndex = this.controllerInputSources.indexOf(inputSource);
+
+      if (controllerIndex === -1) {
+        // Assign input source a controller that currently has no input source
+
+        for (let i = 0; i < this.controllers.length; i++) {
+          if (i >= this.controllerInputSources.length) {
+            this.controllerInputSources.push(inputSource);
+            controllerIndex = i;
+            break;
+          } else if (this.controllerInputSources[i] === null) {
+            this.controllerInputSources[i] = inputSource;
+            controllerIndex = i;
+            break;
+          }
+        }
+
+        // If all controllers do currently receive input we ignore new ones
+
+        if (controllerIndex === -1) break;
+      }
+
+      const controller = this.controllers[controllerIndex];
+
+      if (controller) {
+        controller.connect(inputSource);
+      }
+    }
   };
 }

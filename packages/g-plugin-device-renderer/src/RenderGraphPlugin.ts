@@ -326,7 +326,6 @@ export class RenderGraphPlugin implements RenderingPlugin {
                 // @ts-ignore
                 ...view.projectionMatrix,
               );
-              // mat4.scale(projectionMatrix, projectionMatrix, [1, -1, 1]); // flipY
 
               const viewMatrix = mat4.invert(mat4.create(), cameraMatrix);
               mat4.scale(viewMatrix, viewMatrix, vec3.fromValues(1, -1, 1));
