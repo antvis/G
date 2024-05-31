@@ -1,5 +1,12 @@
 # @antv/g-webgpu
 
+## 2.0.10
+
+### Patch Changes
+
+-   Updated dependencies [756ba5d3]
+    -   @antv/g-plugin-html-renderer@2.0.6
+
 ## 2.0.9
 
 ### Patch Changes
