@@ -73,9 +73,8 @@ const line3 = new Line({
 
 const arrowMarker = new Path({
   style: {
-    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    d: 'M 10,10 L -10,0 L 10,-10 Z',
     stroke: '#1890FF',
-    anchor: '0.5 0.5',
     transformOrigin: 'center',
   },
 });
@@ -87,12 +86,13 @@ const circleMarker = new Circle({
 });
 const imageMarker = new Image({
   style: {
+    x: -25,
+    y: -25,
     width: 50,
     height: 50,
-    anchor: [0.5, 0.5],
     transformOrigin: 'center',
     transform: 'rotate(90deg)',
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   },
 });
 
@@ -301,13 +301,11 @@ lineFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 200,
-  localPositionY: 100,
+  localPositionX: 0,
+  localPositionY: 0,
   localScale: 1,
   localEulerAngles: 0,
   transformOrigin: 'left top',
-  anchorX: 0,
-  anchorY: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -342,12 +340,6 @@ transformFolder
   .onChange((localEulerAngles) => {
     line1.setLocalEulerAngles(localEulerAngles);
   });
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  line1.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  line1.style.anchor = [transformConfig.anchorX, anchorY];
-});
 transformFolder.close();
 
 const markerFolder = gui.addFolder('marker');

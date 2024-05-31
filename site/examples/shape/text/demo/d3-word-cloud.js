@@ -44,7 +44,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: webglRenderer,
+  renderer: canvasRenderer,
 });
 
 canvas.addEventListener(CanvasEvent.READY, () => {
@@ -61,8 +61,9 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   function draw(words) {
     const wrapper = new Group({
       style: {
-        x: layout.size()[0] / 2,
-        y: layout.size()[1] / 2,
+        transform: `translate(${layout.size()[0] / 2}, ${
+          layout.size()[1] / 2
+        })`,
       },
     });
     canvas.appendChild(wrapper);

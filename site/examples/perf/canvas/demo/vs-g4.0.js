@@ -41,7 +41,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   for (let i = 0; i < nodesNum; i++) {
     canvas.appendChild(
       new Circle({
-        attrs: {
+        style: {
           fill: '#C6E5FF',
           stroke: '#5B8FF9',
           r: 2,

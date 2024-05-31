@@ -506,8 +506,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       fill,
       stroke,
       lineWidth,
-      lineCap,
-      lineJoin,
+      lineCap = 'butt',
+      lineJoin = 'miter',
       lineDash,
       lineDashOffset,
       miterLimit,
@@ -633,18 +633,21 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
           }
 
           strokePaint.setStrokeWidth(lineWidth);
+
           const STROKE_CAP_MAP = {
             butt: CanvasKit.StrokeCap.Butt,
             round: CanvasKit.StrokeCap.Round,
             square: CanvasKit.StrokeCap.Square,
           };
           strokePaint.setStrokeCap(STROKE_CAP_MAP[lineCap]);
+
           const STROKE_JOIN_MAP = {
             bevel: CanvasKit.StrokeJoin.Bevel,
             round: CanvasKit.StrokeJoin.Round,
             miter: CanvasKit.StrokeJoin.Miter,
           };
           strokePaint.setStrokeJoin(STROKE_JOIN_MAP[lineJoin]);
+
           if (!isNil(miterLimit)) {
             strokePaint.setStrokeMiter(miterLimit);
           }

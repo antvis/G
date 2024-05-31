@@ -225,13 +225,11 @@ circleFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 300,
-  localPositionY: 200,
+  localPositionX: 0,
+  localPositionY: 0,
   localScale: 1,
   localEulerAngles: 0,
-  transformOrigin: 'center',
-  anchorX: 0.5,
-  anchorY: 0.5,
+  transformOrigin: 'left top',
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -266,10 +264,4 @@ transformFolder
   .onChange((localEulerAngles) => {
     circle.setLocalEulerAngles(localEulerAngles);
   });
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  circle.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  circle.style.anchor = [transformConfig.anchorX, anchorY];
-});
 transformFolder.open();

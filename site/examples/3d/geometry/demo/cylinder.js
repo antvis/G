@@ -40,15 +40,13 @@ const canvas = new Canvas({
 
   const cylinder = new Mesh({
     style: {
-      x: 300,
-      y: 250,
       fill: 'white',
       opacity: 1,
       geometry: cylinderGeometry,
       material: basicMaterial,
     },
   });
-
+  cylinder.setPosition(300, 250);
   canvas.appendChild(cylinder);
 
   // add a directional light into scene

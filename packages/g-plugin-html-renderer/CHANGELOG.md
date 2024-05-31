@@ -1,5 +1,11 @@
 # @antv/g-plugin-html-renderer
 
+## 2.0.6
+
+### Patch Changes
+
+-   756ba5d3: Use a wrapper as parent of camera in html renderer.
+
 ## 2.0.5
 
 ### Patch Changes

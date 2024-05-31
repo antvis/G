@@ -7,8 +7,6 @@ import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
-runtime.enableCSSParsing = false;
-
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();
@@ -43,7 +41,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       fill: '#5B8FF9',
       stroke: '#5B8FF9',
       fillOpacity: 0.95,
-      path: 'M51.3636360168457,0L282.5,0L282.5,405L51.3636360168457,405Z',
+      d: 'M51.3636360168457,0L282.5,0L282.5,405L51.3636360168457,405Z',
     },
   });
   group.appendChild(path);
@@ -51,7 +49,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   path.animate(
     [
       {
-        path: 'M51.3636360168457,0L282.5,0L282.5,405L51.3636360168457,405Z',
+        d: 'M51.3636360168457,0L282.5,0L282.5,405L51.3636360168457,405Z',
         fill: '#5B8FF9',
         stroke: '#5B8FF9',
         fillOpacity: 0.95,
@@ -59,7 +57,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
         opacity: 1,
       },
       {
-        path: 'M73.37662506103516,0L271.4934997558594,0L271.4934997558594,395L73.37662506103516,395Z',
+        d: 'M73.37662506103516,0L271.4934997558594,0L271.4934997558594,395L73.37662506103516,395Z',
         fill: '#5B8FF9',
         stroke: '#5B8FF9',
         fillOpacity: 0.95,
@@ -78,14 +76,14 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       fill: '#5AD8A6',
       stroke: '#5AD8A6',
       fillOpacity: 0.95,
-      path: 'M290,0L527.272705078125,0L527.272705078125,420L290,420Z',
+      d: 'M290,0L527.272705078125,0L527.272705078125,420L290,420Z',
     },
   });
   group.appendChild(path2);
   path2.animate(
     [
       {
-        path: 'M290,0L527.272705078125,0L527.272705078125,420L290,420Z',
+        d: 'M290,0L527.272705078125,0L527.272705078125,420L290,420Z',
         fill: '#5B8FF9',
         stroke: '#5B8FF9',
         fillOpacity: 0.95,
@@ -93,7 +91,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
         opacity: 1,
       },
       {
-        path: 'M301.2987060546875,32.30769348144531L504.6753234863281,32.30769348144531L504.6753234863281,420L301.2987060546875,420Z',
+        d: 'M301.2987060546875,32.30769348144531L504.6753234863281,32.30769348144531L504.6753234863281,420L301.2987060546875,420Z',
         fill: '#5AD8A6',
         stroke: '#5AD8A6',
         fillOpacity: 0.95,

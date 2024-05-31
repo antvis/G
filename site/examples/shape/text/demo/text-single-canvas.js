@@ -8,10 +8,7 @@ import {
   runtime,
 } from '@antv/g';
 import { Renderer as CanvasRenderer } from '@antv/g-canvas';
-import * as lil from 'lil-gui';
 import Stats from 'stats.js';
-
-runtime.enableCSSParsing = false;
 
 // create a renderer
 const canvasRenderer = new CanvasRenderer();

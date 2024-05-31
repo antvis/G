@@ -1,5 +1,14 @@
 # @antv/g-canvaskit
 
+## 1.0.7
+
+### Patch Changes
+
+-   Updated dependencies [756ba5d3]
+-   Updated dependencies [756ba5d3]
+    -   @antv/g-plugin-html-renderer@2.0.6
+    -   @antv/g-plugin-canvaskit-renderer@2.0.6
+
 ## 1.0.6
 
 ### Patch Changes

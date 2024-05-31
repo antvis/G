@@ -2,18 +2,18 @@
 title: DisplayObject
 order: 0
 redirect_from:
-    - /en/api/basic
+  - /en/api/basic
 ---
 
 DisplayObject is the base class of all graph like [Group](/en/api/basic/group), [Circle](/en/api/basic/circle), [Text](/en/api/basic/text) etc.
 
 We tried to make it as compatible as possible with [DOM Element](https://developer.mozilla.org/en-US/docs/Web/API/Element), which in addition to reducing learning costs, allows us to take advantage of the existing Web ecosystem by disguising ourselves as a DOM Element, e.g.
 
--   Using CSS selectors for [advanced queries](/en/plugins/css-select).
--   Using Hammer.js for [gesture](/en/api/event#直接使用-hammerjs)
--   Using Interact.js for [Drag'n'Drop and Resize](/en/api/event#直接使用-interactjs)
--   [Taking over D3's rendering implementation](/en/guide/diving-deeper/d3)
--   [Taking over Observable Plot's rendering implementation](/en/guide/diving-deeper/plot)
+- Using CSS selectors for [advanced queries](/en/plugins/css-select).
+- Using Hammer.js for [gesture](/en/api/event#直接使用-hammerjs)
+- Using Interact.js for [Drag'n'Drop and Resize](/en/api/event#直接使用-interactjs)
+- [Taking over D3's rendering implementation](/en/guide/diving-deeper/d3)
+- [Taking over Observable Plot's rendering implementation](/en/guide/diving-deeper/plot)
 
 ## Inherited from
 
@@ -27,10 +27,10 @@ Globally unique identifier, can be queried by [getElementById](/en/api/display-o
 
 ```js
 const circle = new Circle({
-    id: 'my-circle-id',
-    style: {
-        r: 10,
-    },
+  id: 'my-circle-id',
+  style: {
+    r: 10,
+  },
 });
 circle.id; // 'my-circle-id'
 canvas.getElementById('my-circle-id'); // circle
@@ -44,10 +44,10 @@ Graph name, not required to be globally unique, can be queried by [getElementsBy
 
 ```js
 const circle = new Circle({
-    name: 'my-circle-name',
-    style: {
-        r: 10,
-    },
+  name: 'my-circle-name',
+  style: {
+    r: 10,
+  },
 });
 circle.name; // 'my-circle-name'
 canvas.getElementsByName('my-circle-name'); // [circle]
@@ -61,10 +61,10 @@ The class name owned by the graphic, which can be used to get/set the class name
 
 ```js
 const circle = new Circle({
-    className: 'my-circle-classname',
-    style: {
-        r: 10,
-    },
+  className: 'my-circle-classname',
+  style: {
+    r: 10,
+  },
 });
 circle.className; // 'my-circle-classname'
 canvas.getElementsByClassName('my-circle-classname'); // [circle]
@@ -88,8 +88,8 @@ Finally, you can also use `class` as an alias when setting.
 
 ```js
 const group = new Group({
-    class: 'my-classname',
-    // className: 'my-classname'
+  class: 'my-classname',
+  // className: 'my-classname'
 });
 
 group.setAttribute('class', 'my-classname');
@@ -106,10 +106,10 @@ For example, we don't want the following circle to respond to the mouse `mouseen
 
 ```js
 const circle = new Circle({
-    interactive: false,
-    style: {
-        r: 100,
-    },
+  interactive: false,
+  style: {
+    r: 100,
+  },
 });
 
 // or
@@ -128,17 +128,17 @@ The drawing properties are set by `style` and usually contain **generic properti
 
 ```javascript
 const rect = new Rect({
-    style: {
-        // or using attrs
-        x: 200,
-        y: 100,
-        fill: '#1890FF',
-        stroke: '#F04864',
-        lineWidth: 4,
-        width: 300,
-        height: 200,
-        radius: 8,
-    },
+  style: {
+    // or using attrs
+    x: 200,
+    y: 100,
+    fill: '#1890FF',
+    stroke: '#F04864',
+    lineWidth: 4,
+    width: 300,
+    height: 200,
+    radius: 8,
+  },
 });
 ```
 
@@ -146,8 +146,8 @@ Property names can also be hyphenated, so the following writeups are fully equiv
 
 ```js
 const rect = new Rect({
-    'line-width': 4,
-    // lineWidth: 4,
+  'line-width': 4,
+  // lineWidth: 4,
 });
 
 rect.style.lineWidth = 4;
@@ -160,83 +160,43 @@ rect.style.setProperty('line-width', 4);
 
 The initial position of the drawing in the local coordinate system is described by different properties depending on the type of drawing, and can be reset later by [setLocalPosition](/en/api/display-object#panning).
 
-The geometric meaning of "position" is also different for different shapes, e.g.
-
--   Using [cx/cy](/en/api/basic/circle#cx) for [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse).
--   [Group](/en/api/group) [Rect](/en/api/rect)，[Image](/en/api/image) 为左上角顶点位置，使用 [x/y](/en/api/basic/rect#x)
--   [Text](/en/api/basic/text) 为文本锚点位置
--   [Line](/en/api/basic/line)，[Polyline](/en/api/polyline)，[Polygon](/en/api/polygon)，[Path](/en/api/path) 为包围盒左上角顶点位置
-
-Sometimes we need to change the geometric meaning of this `position`, for example to set the center of Rect instead of the top left corner as the `anchor`, we can use [anchor](/en/api/display-object#anchor) to set it to `[0.5, 0.5]`. Note that the coordinates of the graph in the local coordinate system do not change before and after the modification.
-
-For example, we define a circle with a radius of 100, and since the anchor defaults to `[0.5, 0.5]`, we get the coordinates of the circle in the local coordinate system as `[100, 100]`, i.e., the location of the center of the circle.
-
 ```js
 const circle = new Cirle({
-    style: {
-        cx: 100,
-        cy: 100,
-        r: 100,
-    },
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 100,
+  },
 });
-circle.getLocalPosition(); // [100, 100]，此时为圆心所在位置
+circle.getLocalPosition(); // [0, 0]
 ```
-
-If we change the anchor point to `[0, 0]`, the position of the circle in the local coordinate system remains the same, `[100, 100]`, except that this coordinate is no longer the center of the circle, but the upper left corner of the enclosing box of the circle, so that visually the circle is shifted down to the right by a distance of `[100, 100]`.
-
-```js
-circle.style.anchor = [0, 0];
-circle.getLocalPosition(); // [100, 100]，此时为圆包围盒左上角位置
-```
-
-#### anchor
-
-The position of the origin (anchor) of the graph, based on [Geometry Bounds](/en/api/basic/display-object#enclosing-box), is defined in the range `[0, 0] ~ [1, 1]`, where `[0, 0]` represents the upper-left corner of Geometry Bounds and `[1, 1]` represents the lower right corner.
-
-The default anchor points for different shapes are as follows, [example](/en/examples/shape#rect).
-
--   The center of [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse) is `[0.5, 0.5]`
--   The top left corner of [Rect](/en/api/rect), [Image](/en/api/image), [Line](/en/api/basic/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path) is `[0, 0]`.
--   We should always use [textBaseline](/en/api/basic/text#textbaseline) and [textAlign](/en/api/basic/text#textalign) to set the anchor of [Text](/en/api/basic/text).
--   Since [Group](/en/api/basic/text) has no geometry bounds, so its anchor is `[0, 0]`.
-
-In addition to using arrays, you can also use space-separated array strings, so the following two ways of writing them are equivalent.
-
-```js
-circle.style.anchor = [0.5, 0.5];
-circle.style.anchor = '0.5 0.5';
-```
-
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| `'0 0'`                                                              | all                 | no                                     | no         | `<array>`                                                              |
 
 #### transform
 
 We provide shortcuts for transformations in local coordinate systems, while keeping in line with [CSS Transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform), supporting the following [transform-function transformations function](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function).
 
--   Scaling
-    -   scale(x, y)
-    -   scaleX(x)
-    -   scaleY(x)
-    -   scaleZ(z)
-    -   scale3d(x, y, z)
--   Translation, 0 can be used without units, unitless is treated as px, the percentage is relative to the current graph bounding box
-    -   translate(0, 0) translate(0, 30px) translate(100%, 100%)
-    -   translateX(0)
-    -   translateY(0)
-    -   translateZ(0)
-    -   translate3d(0, 0, 0)
--   Rotation, support for deg rad turn, these angular units
-    -   rotate(0.5turn) rotate(30deg) rotate(1rad)
--   Stretch, support deg rad turn these angular units
-    -   skew(ax, ay)
-    -   skewX(a)
-    -   skewY(a)
--   Matrix
-    -   matrix()
-    -   matrix3d()
--   none
+- Scaling
+  - scale(x, y)
+  - scaleX(x)
+  - scaleY(x)
+  - scaleZ(z)
+  - scale3d(x, y, z)
+- Translation, 0 can be used without units, unitless is treated as px, the percentage is relative to the current graph bounding box
+  - translate(0, 0) translate(0, 30px) translate(100%, 100%)
+  - translateX(0)
+  - translateY(0)
+  - translateZ(0)
+  - translate3d(0, 0, 0)
+- Rotation, support for deg rad turn, these angular units
+  - rotate(0.5turn) rotate(30deg) rotate(1rad)
+- Stretch, support deg rad turn these angular units
+  - skew(ax, ay)
+  - skewX(a)
+  - skewY(a)
+- Matrix
+  - matrix()
+  - matrix3d()
+- none
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
@@ -247,26 +207,26 @@ Since the transformation is performed in a local coordinate system, the followin
 ```js
 // Using transform
 const circle = new Circle({
-    style: {
-        transform: 'translate(100px, 100px)',
-        r: 100,
-    },
+  style: {
+    transform: 'translate(100px, 100px)',
+    r: 100,
+  },
 });
 
 // or set cx/cy directly
 const circle = new Circle({
-    style: {
-        cx: 100,
-        cy: 100,
-        r: 100,
-    },
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 100,
+  },
 });
 
 // or using transform functions
 const circle = new Circle({
-    style: {
-        r: 100,
-    },
+  style: {
+    r: 100,
+  },
 });
 circle.translateLocal(100, 100);
 ```
@@ -277,13 +237,13 @@ Rotation and scaling centers, also called transform origin, are defined relative
 
 Similar to CSS [transform-origin](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-origin), the following string writing is supported, separated by spaces.
 
--   One value
-    -   Length in px, e.g. 10px
-    -   Length in %, e.g. 50%
-    -   The keywords left, center, right, top, bottom are expressed as percentages, e.g. left equals 0%, center equals 50%.
--   Two values
-    -   The first is the length in px or %, or one of the left, center, or right keywords
-    -   The second is the length in px or %, or one of the top, center, or bottom keywords
+- One value
+  - Length in px, e.g. 10px
+  - Length in %, e.g. 50%
+  - The keywords left, center, right, top, bottom are expressed as percentages, e.g. left equals 0%, center equals 50%.
+- Two values
+  - The first is the length in px or %, or one of the left, center, or right keywords
+  - The second is the length in px or %, or one of the top, center, or bottom keywords
 
 Therefore the following write-ups are equivalent.
 
@@ -296,12 +256,6 @@ circle.style.transformOrigin = '0 100px'; // The distance to the left edge of th
 ```
 
 ⚠️ Writing with three values is not supported at the moment.
-
-As with [anchor](/en/api/basic/display-object#anchor), the default value varies from graph to graph.
-
--   `'center'` in [Circle](/en/api/basic/circle) and [Ellipse](/en/api/ellipse).
--   `'left top'` in [Group](/en/api/basic/text), [Rect](/en/api/rect)，[Image](/en/api/image), [Line](/en/api/basic/line), [Polyline](/en/api/polyline), [Polygon](/en/api/polygon) and [Path](/en/api/path).
--   [Text](/en/api/basic/text) 为文本锚点位置，应该使用 [textBaseline](http://localhost:8000/en/api/basic/text#textbaseline) 与 [textAlign](/en/api/basic/text#textalign) 这两个属性设置，因此设置此属性无效
 
 | [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
@@ -352,8 +306,8 @@ circle.style.fill = 'rgb(255, 0, 0)';
 
 This attribute is a presentation attribute defining the algorithm to use to determine the inside part of a shape.
 
--   `'nonzero'` Default https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#nonzero
--   `'evenodd'` https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#evenodd
+- `'nonzero'` Default https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#nonzero
+- `'evenodd'` https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule#evenodd
 
 This [example](/en/examples/shape#polygon) shows the fill effects of `'nonzero'` and `'evenodd'` in order.
 
@@ -387,18 +341,6 @@ circle.style.stroke = 'rgb(255, 0, 0)';
 | -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ---------------------------------------------------------------------- |
 | 'none'                                                               | all                 | no                                     | yes        | [\<paint\>](/en/api/css/css-properties-values-api#paint)               |
 
-#### strokeWidth
-
-Alias of [lineWidth](/en/api/basic/display-object#linewidth), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-width).
-
-#### strokeDasharray
-
-Alias of [lineDash](/en/api/basic/display-object#linedash), and [SVG attribute name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/ stroke-dasharray) to be consistent.
-
-#### strokeDashoffset
-
-Alias of [lineDashOffset](/en/api/basic/display-object#linedash), and [SVG Attribute Name](https://developer.mozilla.org/zh-CN/docs/Web/SVG/ Attribute/stroke-dashoffset) to be consistent.
-
 #### lineWidth
 
 The width of the stroke. Unlike the familiar [CSS box model](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing), half of the width of the border is inside the graphic and half is outside the graphic. For example, the width of the enclosing box for the circle below is: `r + lineWidth / 2 = 110`
@@ -421,9 +363,9 @@ circle.style.lineWidth = '1px';
 
 Endpoint style, supporting the following values.
 
--   'butt' Default value. The end of the line segment ends in a square.
--   'round' The line segment ends in a circle.
--   'square' The line segment ends in a square, but adds a rectangular area with the same width as the line segment and half the height of the line segment's thickness.
+- 'butt' Default value. The end of the line segment ends in a square.
+- 'round' The line segment ends in a circle.
+- 'square' The line segment ends in a square, but adds a rectangular area with the same width as the line segment and half the height of the line segment's thickness.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap
 
@@ -431,9 +373,9 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCa
 
 Supporting the following values.
 
--   'miter' Default. An additional diamond-shaped area is formed by extending the outer edges of the connected sections so that they intersect at a point. The effect of this setting can be seen with the [miterLimit](/en/api/basic/display-object#miterlimit) property.
--   'round' Draws the shape of the corner by filling an additional, circular sector with the center of the circle at the end of the connected section. The radius of the rounded corner is the width of the line segment.
--   'bevel' An additional triangular-base area is filled in at the end of the connected sections, each with its own separate rectangular corner.
+- 'miter' Default. An additional diamond-shaped area is formed by extending the outer edges of the connected sections so that they intersect at a point. The effect of this setting can be seen with the [miterLimit](/en/api/basic/display-object#miterlimit) property.
+- 'round' Draws the shape of the corner by filling an additional, circular sector with the center of the circle at the end of the connected section. The radius of the rounded corner is the width of the line segment.
+- 'bevel' An additional triangular-base area is filled in at the end of the connected sections, each with its own separate rectangular corner.
 
 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin
 
@@ -489,8 +431,8 @@ Finally, shadows can have a very big impact on rendering performance.
 
 We currently support two kinds of shadow.
 
--   `'outer'` Outer Shading, which is also the default value for this property. The shadow appears on the outside of the drawing fill or stroke.
--   `'inner'` Internal shading. As the name implies the shadows are inside the graph, as shown in the figure below.
+- `'outer'` Outer Shading, which is also the default value for this property. The shadow appears on the outside of the drawing fill or stroke.
+- `'inner'` Internal shading. As the name implies the shadows are inside the graph, as shown in the figure below.
 
 <img src="https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*0uHfQa00ZeYAAAAAAAAAAAAAARQnAQ" width="200" alt="inner shadow">
 
@@ -530,10 +472,10 @@ Vertical offset, e.g. a negative number moves the shadow up, a positive number d
 
 Filters can perform some processing on the generated image, such as blurring, highlighting, boosting contrast, etc. The following implementations are available on the web side.
 
--   CSS Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/filter
--   Canvas Filter: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
--   SVG Filter: https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
--   Post Processing in WebGL.
+- CSS Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+- Canvas Filter: https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter
+- SVG Filter: https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/filter
+- Post Processing in WebGL.
 
 Referring to the CSS Filter syntax, we support applying one or more filter effects to a shape, [example](/en/examples/shape#filter).
 
@@ -546,10 +488,10 @@ circle.style.filter = 'blur(5px) brightness(0.4)'; // Stackable
 
 Filters can currently be used in the g-canvas/svg/webgl renderer with the following caveats.
 
--   Due to poor Canvas Filter support, mainly [Safari does not support](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter), filters are not displayed properly in Safari using g-canvas
--   g-canvas and g-svg differ slightly in some filter effects
--   Can be applied to all base graphs and Groups
--   This property does not support animation at this time
+- Due to poor Canvas Filter support, mainly [Safari does not support](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter), filters are not displayed properly in Safari using g-canvas
+- g-canvas and g-svg differ slightly in some filter effects
+- Can be applied to all base graphs and Groups
+- This property does not support animation at this time
 
 #### blur
 
@@ -582,10 +524,10 @@ The following figure shows the bright effects of 0 100% and 200% in order, [exam
 
 To display the shadows under the image, you can set the shadow color, offset and blur effect by passing in the following parameters in order.
 
--   offset-x Describes the horizontal offset distance of the shadow in px
--   offset-y Describes the vertical offset distance of the shadow in px
--   blur-radius The larger the value, the more ambiguous it is, in px, no negative numbers allowed
--   color
+- offset-x Describes the horizontal offset distance of the shadow in px
+- offset-y Describes the vertical offset distance of the shadow in px
+- blur-radius The larger the value, the more ambiguous it is, in px, no negative numbers allowed
+- color
 
 The shading does not affect the size of the geometry bounding box of the graph.
 
@@ -759,19 +701,19 @@ For example, if we want to create a picture that is cropped into a circle, so th
 
 ```js
 const image = new Image({
-    style: {
-        x: 0,
-        y: 0,
-        width: 200,
-        height: 200,
-        clipPath: new Circle({
-            style: {
-                cx: 100,
-                cy: 100,
-                r: 50,
-            },
-        }),
-    },
+  style: {
+    x: 0,
+    y: 0,
+    width: 200,
+    height: 200,
+    clipPath: new Circle({
+      style: {
+        cx: 100,
+        cy: 100,
+        r: 50,
+      },
+    }),
+  },
 });
 ```
 
@@ -779,27 +721,27 @@ It is also possible to set the cropping area after creating the drawing, so the 
 
 ```js
 const image = new Image({
-    style: {
-        //...
-    },
+  style: {
+    //...
+  },
 });
 
 image.style.clipPath = new Circle({
-    style: {
-        cx: 100,
-        cy: 100,
-        r: 50,
-    },
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 50,
+  },
 });
 // or
 image.setClip(
-    new Circle({
-        style: {
-            cx: 100,
-            cy: 100,
-            r: 50,
-        },
-    }),
+  new Circle({
+    style: {
+      cx: 100,
+      cy: 100,
+      r: 50,
+    },
+  }),
 );
 ```
 
@@ -820,11 +762,11 @@ The crop area graphic itself is also supported to modify the property, and affec
 ```js
 // Apply animation to clipped areas
 clipPathCircle.animate(
-    [{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
-    {
-        duration: 1500,
-        iterations: Infinity,
-    },
+  [{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
+  {
+    duration: 1500,
+    iterations: Infinity,
+  },
 );
 ```
 
@@ -836,27 +778,27 @@ In [path-animation](/en/api/animation/waapi#path-animation), we can use `offsetP
 
 ```js
 const circle = new Circle({
-    style: {
-        offsetPath: new Line({
-            style: {
-                // There is no need to set other drawing properties that are not related to trajectories
-                x1: 100,
-                y1: 100,
-                x2: 300,
-                y2: 100,
-            },
-        }),
-        r: 10,
-    },
+  style: {
+    offsetPath: new Line({
+      style: {
+        // There is no need to set other drawing properties that are not related to trajectories
+        x1: 100,
+        y1: 100,
+        x2: 300,
+        y2: 100,
+      },
+    }),
+    r: 10,
+  },
 });
 
 const animation = circle.animate(
-    [{ offsetDistance: 0 }, { offsetDistance: 1 }],
-    {
-        duration: 3000,
-        easing: 'ease-in-out',
-        iterations: Infinity,
-    },
+  [{ offsetDistance: 0 }, { offsetDistance: 1 }],
+  {
+    duration: 3000,
+    easing: 'ease-in-out',
+    iterations: Infinity,
+  },
 );
 ```
 
@@ -880,10 +822,10 @@ The values supported by the `cursor` property can be found at https://developer.
 
 ```js
 const circle = new Circle({
-    style: {
-        //...
-        cursor: 'pointer',
-    },
+  style: {
+    //...
+    cursor: 'pointer',
+  },
 });
 ```
 
@@ -897,25 +839,25 @@ To set how the graph responds to interaction events, see. https://developer.mozi
 
 简而言之，[fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) 和 [visibility](/en/api/basic/display-object#visibility) 都可以独立或组合影响拾取判定行为。目前支持以下关键词：
 
--   `'auto'` Default value, equivalent to `'visiblepainted'`.
--   `'none'` Will never be the target of a response event.
--   `'visiblepainted'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible.
-    -   Trigger while [fill](/en/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/api/basic/display-object#stroke) takes a value other than `'none'` when triggered in the drawing stroke area.
--   `'visiblefill'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [fill](/en/api/basic/display-object#fill).
--   `'visiblestroke'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [stroke](/en/api/basic/display-object#stroke).
--   `'visible'` The following conditions are met before the event is responded to.
-    -   [visibility](/en/api/basic/display-object#visibility) takes `'visible'`.
-    -   Triggered in drawing fill or stroke area, not affected by [fill](/en/api/basic/display-object#fill) and [stroke](/en/api/basic/display-object#stroke) values.
--   `'painted'` The following conditions are met before the event is responded to.
-    -   Trigger while [fill](/en/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/api/basic/display-object#stroke) takes a value other than `'none'` when the drawing stroke area is triggered. Not affected by the value of [visibility](/en/api/basic/display-object#visibility).
--   `'fill'` The following conditions are met before the event is responded to.
-    -   Triggered in graphics fill area, not affected by [fill](/en/api/basic/display-object#fill) and [visibility](/en/api/basic/display-object#visibility) values.
--   `'stroke'` The following conditions are met before the event is responded to.
-    -   Triggered in graphics fill area, not affected by [stroke](/en/api/basic/display-object#stroke) and [visibility](/en/api/basic/display-object#visibility) values.
--   `'all'` The events are responded to whenever the fill and stroke areas of the drawing are entered. So it will not be affected by [fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) [visibility](/en/api/ basic/display-object#visibility) is affected by the value of
+- `'auto'` Default value, equivalent to `'visiblepainted'`.
+- `'none'` Will never be the target of a response event.
+- `'visiblepainted'` The following conditions are met before the event is responded to.
+  - [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible.
+  - Trigger while [fill](/en/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/api/basic/display-object#stroke) takes a value other than `'none'` when triggered in the drawing stroke area.
+- `'visiblefill'` The following conditions are met before the event is responded to.
+  - [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [fill](/en/api/basic/display-object#fill).
+- `'visiblestroke'` The following conditions are met before the event is responded to.
+  - [visibility](/en/api/basic/display-object#visibility) takes `'visible'` which means the graph is visible an not affected by the value of [stroke](/en/api/basic/display-object#stroke).
+- `'visible'` The following conditions are met before the event is responded to.
+  - [visibility](/en/api/basic/display-object#visibility) takes `'visible'`.
+  - Triggered in drawing fill or stroke area, not affected by [fill](/en/api/basic/display-object#fill) and [stroke](/en/api/basic/display-object#stroke) values.
+- `'painted'` The following conditions are met before the event is responded to.
+  - Trigger while [fill](/en/api/basic/display-object#fill) takes a value other than `'none'` in the graphics fill area. Or [stroke](/en/api/basic/display-object#stroke) takes a value other than `'none'` when the drawing stroke area is triggered. Not affected by the value of [visibility](/en/api/basic/display-object#visibility).
+- `'fill'` The following conditions are met before the event is responded to.
+  - Triggered in graphics fill area, not affected by [fill](/en/api/basic/display-object#fill) and [visibility](/en/api/basic/display-object#visibility) values.
+- `'stroke'` The following conditions are met before the event is responded to.
+  - Triggered in graphics fill area, not affected by [stroke](/en/api/basic/display-object#stroke) and [visibility](/en/api/basic/display-object#visibility) values.
+- `'all'` The events are responded to whenever the fill and stroke areas of the drawing are entered. So it will not be affected by [fill](/en/api/basic/display-object#fill) [stroke](/en/api/basic/display-object#stroke) [visibility](/en/api/ basic/display-object#visibility) is affected by the value of
 
 In this [example](/en/examples/shape#circle), we set the property to `stroke`, so the filled area will not respond to events.
 
@@ -1030,7 +972,7 @@ In 2D scenes, stretching can be performed to distort each point on an element in
 
 ### Set the scaling and rotation center
 
-Besides using the [transformOrigin](/en/api/basic/display-object#transformorigin) property, you can also manually calculate the offset relative to the [anchor](/en/api/basic/display-object#anchor) position and then reset the transform center by `setOrigin`.
+Using the [transformOrigin](/en/api/basic/display-object#transformorigin) property, you can also use `setOrigin`.
 
 | method name | parameters                                                                                       | return value | remarks                                                             |
 | ----------- | ------------------------------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------- |
@@ -1039,35 +981,33 @@ Besides using the [transformOrigin](/en/api/basic/display-object#transformorigin
 
 Set the center of scaling and rotation in the local coordinate system, [example](/en/examples/scenegraph#origin).
 
-The value is the offset relative to [anchor](/en/api/basic/display-object#anchor), the default value is `[0, 0]`, so that is the anchor position.
+The default value is `[0, 0]`.
 
 In the following example, we have placed a circle with a radius of 100 at `[100, 100]`.
 
 ```js
 const circle = new Circle({
-    style: {
-        cx: 100,
-        cy: 100,
-        r: 100,
-    },
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 100,
+  },
 });
 ```
 
-If we want the circle to be scaled with the center of the circle as the center of transformation, since the anchor point is the center of the circle at this point, the position of the anchor point in the world coordinate system remains the same before and after scaling, and it is the enclosing box that changes.
+If we want the circle to be scaled with the center of the circle as the center of transformation, and it is the enclosing box that changes.
+
+```js
+circle.setOrigin(100, 100);
+circle.scale(0.5);
+circle.getBounds(); // { center: [100, 100], halfExtents: [50, 50] }
+```
+
+But if we want the circle to be scaled by its own upper left corner of the bounding box:
 
 ```js
 circle.setOrigin(0, 0);
 circle.scale(0.5);
-circle.getPosition(); // [100, 100]
-circle.getBounds(); // { center: [100, 100], halfExtents: [50, 50] }
-```
-
-But if we want the circle to be scaled by its own upper left corner of the bounding box, i.e. shifted by `[-100, -100]` with respect to the current anchor point (the center of the circle). After scaling, the anchor point is also shifted, and the circle's position in the world coordinate system comes to `[50, 50]`. Similarly, the center point of the enclosing box is shifted by.
-
-```js
-circle.setOrigin(-100, -100);
-circle.scale(0.5);
-circle.getPosition(); // [50, 50]
 circle.getBounds(); // { center: [50, 50], halfExtents: [50, 50] }
 ```
 
@@ -1075,11 +1015,11 @@ In the following [example](/en/examples/scenegraph#origin), we have created a re
 
 ```js
 const rect = new Rect({
-    id: 'rect',
-    style: {
-        width: 300,
-        height: 200,
-    },
+  id: 'rect',
+  style: {
+    width: 300,
+    height: 200,
+  },
 });
 rect.setOrigin(150, 100); // Set the rotation and scaling center to the center point of its own bounding box
 ```
@@ -1088,14 +1028,14 @@ For example, if we want to modify the transformation center of a circle to the u
 
 ```js
 const circle = new Circle({
-    style: {
-        cx: 100,
-        cy: 100,
-        r: 100,
-    },
+  style: {
+    cx: 100,
+    cy: 100,
+    r: 100,
+  },
 });
 
-circle.setOrigin(-100, -100); // Offset relative to anchor point (center of circle) [-100, -100]
+circle.setOrigin(0, 0);
 // or
 circle.style.transformOrigin = 'left top';
 // or
@@ -1116,13 +1056,13 @@ Gets the geometric bouding box of the base drawing, which is independent of othe
 
 ```js
 const circle = new Circle({
-    style: {
-        cx: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
-        cy: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
-        r: 100,
-        lineWidth: 20, // Style properties do not affect Geometry Bounds
-        shadowBlur: 10, // Style properties do not affect Geometry Bounds
-    },
+  style: {
+    cx: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
+    cy: 100, // Coordinates in the local coordinate system do not affect Geometry Bounds
+    r: 100,
+    lineWidth: 20, // Style properties do not affect Geometry Bounds
+    shadowBlur: 10, // Style properties do not affect Geometry Bounds
+  },
 });
 circle.getGeometryBounds(); // { center: [0, 0], halfExtents: [100, 100] }
 ```
@@ -1140,11 +1080,11 @@ This should be the most common way of calculating the Geometry Bounds of itself 
 
 ```js
 const circle = new Circle({
-    style: {
-        cx: 100, // Applying transformations in the world coordinate system
-        cy: 100,
-        r: 100,
-    },
+  style: {
+    cx: 100, // Applying transformations in the world coordinate system
+    cy: 100,
+    r: 100,
+  },
 });
 circle.getBounds(); // { center: [100, 100], halfExtents: [100, 100] }
 ```
@@ -1155,12 +1095,12 @@ Merge the Render Bounds of itself and its children in the world coordinate syste
 
 ```js
 const circle = new Circle({
-    style: {
-        cx: 100, // Applying transformations in the world coordinate system
-        cy: 100,
-        r: 100,
-        lineWidth: 20,
-    },
+  style: {
+    cx: 100, // Applying transformations in the world coordinate system
+    cy: 100,
+    r: 100,
+    lineWidth: 20,
+  },
 });
 // r + lineWidth / 2
 circle.getRenderBounds(); // { center: [100, 100], halfExtents: [110, 110] }
@@ -1176,12 +1116,12 @@ Compatible with [SVG method of the same name](https://developer.mozilla.org/en-U
 
 ```js
 interface DOMRect {
-    top: number;
-    left: number;
-    right: number;
-    bottom: number;
-    width: number;
-    height: number;
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
 }
 ```
 
@@ -1317,15 +1257,15 @@ clonedCircle.getPosition(); // [10, 20]
 
 Caveats:
 
--   Deep copy support, i.e. itself and the whole subtree
--   The cloned node does not retain the parent-child relationship of the original node and needs to be added to the canvas using `appendChild` before it will be rendered
--   Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original drawing are not copied
+- Deep copy support, i.e. itself and the whole subtree
+- The cloned node does not retain the parent-child relationship of the original node and needs to be added to the canvas using `appendChild` before it will be rendered
+- Consistent with the [DOM API](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes), event listeners on the original drawing are not copied
 
 In this [example](/en/examples/scenegraph#clone), we demonstrate the above features.
 
--   The style properties of the original node can be changed at any time, and the copy obtained will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
--   However, since no event listeners will be copied, only the original node can be dragged
--   In non-deep copy mode, Text (Drag me Text) is not copied as a child of Circle
+- The style properties of the original node can be changed at any time, and the copy obtained will be up-to-date, and the new node will also need to be added to the scene graph before it will be rendered
+- However, since no event listeners will be copied, only the original node can be dragged
+- In non-deep copy mode, Text (Drag me Text) is not copied as a child of Circle
 
 ![](https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*PwEYSI_ijPEAAAAAAAAAAAAAARQnAQ)
 
@@ -1340,19 +1280,19 @@ In this [example](/en/examples/scenegraph#clone), we demonstrate the above featu
 
 ⚠️ Compatible with [HTMLElement Style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style):
 
--   style.[getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue)
--   style.[setProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty)
--   style.[removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
+- style.[getPropertyValue](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/getPropertyValue)
+- style.[setProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty)
+- style.[removeProperty](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/removeProperty)
 
 The following usage equivalents.
 
 ```js
 const circle = new Circle({
-    style: {
-        // or using attrs
-        r: 10,
-        fill: 'red',
-    },
+  style: {
+    // or using attrs
+    r: 10,
+    fill: 'red',
+  },
 });
 
 // get attribute value
@@ -1381,8 +1321,8 @@ Note that currently, when using [animation](/en/api/animation/waapi), we also co
 
 ```js
 animation.onframe = () => {
-    rect.style.width; // '100px'
-    rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
+  rect.style.width; // '100px'
+  rect.parsedStyle.width; // CSSUnitValue { unit: 'px', value: 100 }
 };
 ```
 
@@ -1451,18 +1391,18 @@ In addition to interactive events such as click and mouseenter, we also provide 
 import { ElementEvent, MutationEvent } from '@antv/g';
 
 child.on(ElementEvent.INSERTED, (e: MutationEvent) => {
-    e.target; // child
-    e.relatedNode; // parent
+  e.target; // child
+  e.relatedNode; // parent
 });
 child.on(ElementEvent.REMOVED, (e) => {
-    e.target; // child
-    e.relatedNode; // parent
+  e.target; // child
+  e.relatedNode; // parent
 });
 child.on(ElementEvent.ATTR_MODIFIED, (e) => {
-    e.target; // child
-    e.attrName;
-    e.prevValue;
-    e.newValue;
+  e.target; // child
+  e.attrName;
+  e.prevValue;
+  e.newValue;
 });
 
 parent.appendChild(child);
@@ -1470,12 +1410,12 @@ parent.appendChild(child);
 
 We currently support the following scenario map related events.
 
--   `INSERTED` Triggered when added as a child node
--   `REMOVED` Triggered when removed as a child node
--   `MOUNTED` Triggered when first entering the canvas
--   `UNMOUNTED` Triggered when removed from the canvas
--   `ATTR_MODIFIED` Triggered when modifying properties
--   `DESTROY` Triggered on destruction
+- `INSERTED` Triggered when added as a child node
+- `REMOVED` Triggered when removed as a child node
+- `MOUNTED` Triggered when first entering the canvas
+- `UNMOUNTED` Triggered when removed from the canvas
+- `ATTR_MODIFIED` Triggered when modifying properties
+- `DESTROY` Triggered on destruction
 
 ## Animation
 
@@ -1483,19 +1423,19 @@ Referring to the Web Animations API, you can use animate to complete the keyfram
 
 ```js
 circle.animate(
-    [
-        {
-            transform: 'scale(0)',
-        },
-        {
-            transform: 'scale(1)',
-        },
-    ],
+  [
     {
-        duration: 500,
-        easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-        iterations: Infinity,
+      transform: 'scale(0)',
     },
+    {
+      transform: 'scale(1)',
+    },
+  ],
+  {
+    duration: 500,
+    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+    iterations: Infinity,
+  },
 );
 ```
 

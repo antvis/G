@@ -29,7 +29,7 @@ const canvas = new Canvas({
 const path = new Path({
   style: {
     d: 'M33.6,51S44.36,31.65,48.15,18,64.38,7.42,66.62,18s10.6,33.6,13.15,33.1',
-    transform: 'scale(3) translate(200, 100)',
+    transform: 'scale(3)',
     lineWidth: 1,
     stroke: '#54BECC',
     fill: 'linear-gradient(-90deg, rgba(178, 230, 181, 0), rgba(178, 230, 181, 0.6) 14%, rgba(166, 221, 179, 0.82) 23%, rgba(101, 171, 170, 0.9) 67%, rgb(23, 80, 157))',

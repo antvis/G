@@ -113,8 +113,6 @@ const polygonConfig = {
   lineWidth: 2,
   fillOpacity: 1,
   strokeOpacity: 1,
-  anchorX: 0,
-  anchorY: 0,
   lineDash: 0,
   lineDashOffset: 0,
   increasedLineWidthForHitTesting: 0,
@@ -213,13 +211,11 @@ polygonFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 100,
-  localPositionY: 100,
+  localPositionX: 0,
+  localPositionY: 0,
   localScale: 1,
   localEulerAngles: 0,
   transformOrigin: 'left top',
-  anchorX: 0,
-  anchorY: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -254,10 +250,4 @@ transformFolder
   .onChange((localEulerAngles) => {
     polygon.setLocalEulerAngles(localEulerAngles);
   });
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  polygon.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  polygon.style.anchor = [transformConfig.anchorX, anchorY];
-});
 transformFolder.close();

@@ -218,13 +218,11 @@ lineFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 50,
-  localPositionY: 50,
+  localPositionX: 0,
+  localPositionY: 0,
   localScale: 1,
   localEulerAngles: 0,
   transformOrigin: 'left top',
-  anchorX: 0,
-  anchorY: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -259,10 +257,4 @@ transformFolder
   .onChange((localEulerAngles) => {
     polyline.setLocalEulerAngles(localEulerAngles);
   });
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  polyline.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  polyline.style.anchor = [transformConfig.anchorX, anchorY];
-});
 transformFolder.close();
