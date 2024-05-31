@@ -42,7 +42,7 @@ const image = new Image({
     y: 100,
     width: 200,
     keepAspectRatio: true,
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     cursor: 'pointer',
     pointerEvents: 'pixels',
   },
@@ -158,16 +158,14 @@ imageFolder.open();
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 200,
-  localPositionY: 100,
+  localPositionX: 0,
+  localPositionY: 0,
   localScaleX: 1,
   localScaleY: 1,
   localEulerAngles: 0,
   skewX: 0,
   skewY: 0,
   transformOrigin: 'left top',
-  anchorX: 0,
-  anchorY: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -224,11 +222,5 @@ transformFolder.add(transformConfig, 'skewY', -180, 180).onChange((skewY) => {
     transformConfig.skewX * (Math.PI / 180),
     skewY * (Math.PI / 180),
   );
-});
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  image.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  image.style.anchor = [transformConfig.anchorX, anchorY];
 });
 transformFolder.open();

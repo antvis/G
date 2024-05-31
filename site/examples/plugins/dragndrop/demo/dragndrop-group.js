@@ -59,8 +59,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const node1 = new Circle({
     style: {
       r: 50,
-      cx: -50,
-      cy: -50,
+      transform: 'translate(100, 150)',
       fill: 'blue',
       cursor: 'move',
     },
@@ -79,9 +78,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
   const draggableGroup2 = draggableGroup1.cloneNode(true);
   const node2 = draggableGroup2.childNodes[0];
-  node2.style.cx = 50;
-  node2.style.cy = 50;
-  node2.children[0].style.text = 'node2';
+  (node2.style.transform = 'translate(200, 250)'),
+    (node2.children[0].style.text = 'node2');
 
   const droppableGroup1 = new Group({
     style: {

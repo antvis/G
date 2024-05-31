@@ -87,7 +87,7 @@ const App = function MusicViz() {
       const planeMaterial = new MeshBasicMaterial(device, {
         wireframe: true,
         wireframeColor: 'purple',
-        cullMode: CullMode.None,
+        cullMode: CullMode.NONE,
       });
       const basicMaterial = new MeshBasicMaterial(device, {
         wireframe: true,
@@ -96,38 +96,35 @@ const App = function MusicViz() {
 
       const sphere = new Mesh({
         style: {
-          x: 300,
-          y: 200,
           fill: '#120f6c',
           opacity: 1,
           geometry: sphereGeometry,
           material: basicMaterial,
         },
       });
+      sphere.setPosition(300, 200);
       canvas.appendChild(sphere);
 
       const ground = new Mesh({
         style: {
-          x: 300,
-          y: 250,
           fill: '#120f6c',
           opacity: 1,
           geometry: groundGeometry,
           material: planeMaterial,
         },
       });
+      ground.setPosition(300, 250);
       canvas.appendChild(ground);
 
       const sky = new Mesh({
         style: {
-          x: 300,
-          y: 0,
           fill: 'white',
           opacity: 1,
           geometry: skyGeometry,
           material: planeMaterial,
         },
       });
+      sky.setPosition(300, 0);
       canvas.appendChild(sky);
 
       canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
@@ -142,7 +139,10 @@ const App = function MusicViz() {
           analyser.getByteFrequencyData(dataArray);
 
           const lowerHalfArray = dataArray.slice(0, dataArray.length / 2 - 1);
-          const upperHalfArray = dataArray.slice(dataArray.length / 2 - 1, dataArray.length - 1);
+          const upperHalfArray = dataArray.slice(
+            dataArray.length / 2 - 1,
+            dataArray.length - 1,
+          );
 
           const overallAvg = avg(dataArray);
           const lowerMax = max(lowerHalfArray);
@@ -176,7 +176,10 @@ const App = function MusicViz() {
 
           const amp = 2;
           const time = window.performance.now();
-          const distance = noise.noise2D(x + time * 0.003, z + time * 0.001) * distortionFr * amp;
+          const distance =
+            noise.noise2D(x + time * 0.003, z + time * 0.001) *
+            distortionFr *
+            amp;
           positions[i + 1] = distance;
         }
 
@@ -259,7 +262,12 @@ const App = function MusicViz() {
   return (
     <>
       <label htmlFor="file">
-        <input type="file" id="file" accept="audio/*" onChange={handleFileChanged} />
+        <input
+          type="file"
+          id="file"
+          accept="audio/*"
+          onChange={handleFileChanged}
+        />
       </label>
       <audio id="audio" controls ref={audioRef}></audio>
 

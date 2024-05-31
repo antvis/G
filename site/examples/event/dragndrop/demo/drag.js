@@ -68,8 +68,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     moveAt(event.canvasX, event.canvasY);
 
     function moveAt(canvasX, canvasY) {
-      ball.style.x = canvasX - shiftX + 'px';
-      ball.style.y = canvasY - shiftY + 'px';
+      ball.style.x = canvasX - shiftX;
+      ball.style.y = canvasY - shiftY;
     }
 
     async function onMouseMove(event) {

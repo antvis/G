@@ -33,10 +33,10 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const y = Math.random() * 500;
     const path = canvas.appendChild(
       new Path({
-        attrs: {
+        style: {
           fill: '#C6E5FF',
           stroke: '#5B8FF9',
-          path: `M${54.4462133232839 + x},${-6.41757177038063 + y} L${
+          d: `M${54.4462133232839 + x},${-6.41757177038063 + y} L${
             61.3765714868427 + x
           },${6.41757177038063 + y} M${61.3765714868427 + x},${
             6.41757177038063 + y

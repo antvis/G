@@ -107,8 +107,6 @@ const circleConfig = {
   lineWidth: 4,
   fillOpacity: 1,
   strokeOpacity: 1,
-  anchorX: 0.5,
-  anchorY: 0.5,
 };
 circleFolder.add(circleConfig, 'r', 50, 200).onChange((radius) => {
   circle.style.r = radius;
@@ -130,12 +128,6 @@ circleFolder
   .onChange((opacity) => {
     circle.attr('strokeOpacity', opacity);
   });
-circleFolder.add(circleConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  circle.attr('anchor', [anchorX, circleConfig.anchorY]);
-});
-circleFolder.add(circleConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  circle.attr('anchor', [circleConfig.anchorX, anchorY]);
-});
 
 const blurFolder = gui.addFolder('blur');
 const blurConfig = {

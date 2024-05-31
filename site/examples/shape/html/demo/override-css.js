@@ -7,8 +7,6 @@ import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
-runtime.enableCSSParsing = false;
-
 // create a renderer
 const canvasRenderer = new CanvasRenderer();
 const webglRenderer = new WebGLRenderer();

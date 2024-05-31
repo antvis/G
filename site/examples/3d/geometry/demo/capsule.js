@@ -40,15 +40,13 @@ const canvas = new Canvas({
 
   const capsule = new Mesh({
     style: {
-      x: 300,
-      y: 250,
       fill: 'white',
       opacity: 1,
       geometry: capsuleGeometry,
       material: basicMaterial,
     },
   });
-
+  capsule.setPosition(300, 250);
   canvas.appendChild(capsule);
 
   // add a directional light into scene

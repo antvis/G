@@ -26,8 +26,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const y = Math.random() * 500;
     canvas.appendChild(
       new Path({
-        attrs: {
-          path: [
+        style: {
+          d: [
             ['M', x, y],
             ['L', x + Math.random() * 100, y + Math.random() * 50],
           ],
@@ -44,7 +44,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     const y = Math.random() * 500;
     canvas.appendChild(
       new Circle({
-        attrs: {
+        style: {
           fill: '#C6E5FF',
           stroke: '#5B8FF9',
           r: 2,
@@ -56,7 +56,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
     );
     canvas.appendChild(
       new Text({
-        attrs: {
+        style: {
           text: 'ccc',
           x,
           y,

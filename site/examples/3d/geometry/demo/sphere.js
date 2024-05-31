@@ -72,15 +72,13 @@ const canvas = new Canvas({
   // create a mesh
   const sphere = new Mesh({
     style: {
-      x: 300,
-      y: 250,
-      z: 0,
       fill: '#1890FF',
       opacity: 1,
       geometry: sphereGeometry,
       material: basicMaterial,
     },
   });
+  sphere.setPosition(300, 250, 0);
   canvas.appendChild(sphere);
 
   // const cloudMesh = new Mesh({

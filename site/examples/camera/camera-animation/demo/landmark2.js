@@ -61,7 +61,8 @@ const circle1 = new Circle({
   },
 });
 const circle2 = circle1.cloneNode();
-circle2.setPosition(400, 400);
+circle2.style.cx = 400;
+circle2.style.cy = 400;
 circle2.style.fill = 'green';
 
 canvas.addEventListener(CanvasEvent.READY, () => {

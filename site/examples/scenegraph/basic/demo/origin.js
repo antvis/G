@@ -51,6 +51,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       cy: 100,
       r: 100,
       fill: '#1890FF',
+      transformOrigin: 'center',
     },
   });
   canvas.appendChild(circle);
@@ -64,11 +65,12 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const circleOrigin = new Circle({
     id: 'circleOrigin',
     style: {
+      cx: 100,
+      cy: 100,
       r: 10,
       fill: '#F04864',
     },
   });
-  circleOrigin.setPosition(100, 100);
   canvas.appendChild(circleOrigin);
 
   /**
@@ -127,6 +129,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   const text = new Text({
     id: 'rotated-text',
     style: {
+      transform: 'translate(100, 400)',
       fontFamily: 'PingFang SC',
       text: 'Lorem ipsum',
       fontSize: 32,
@@ -137,16 +140,15 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       // textBaseline: 'middle',
     },
   });
-  text.setPosition(100, 400);
   canvas.appendChild(text);
   const textOrigin = new Circle({
     id: 'textOrigin',
     style: {
       r: 10,
       fill: '#F04864',
+      transform: 'translate(100, 400)',
     },
   });
-  textOrigin.setPosition(100, 400);
   canvas.appendChild(textOrigin);
 
   /**
@@ -165,18 +167,22 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       points,
       stroke: '#1890FF',
       lineWidth: 2,
+      transform: 'translate(300, 300)',
+      transformOrigin: 'left top',
     },
   });
   canvas.appendChild(polyline);
-  polyline.setPosition(300, 300);
+
   const polylineOrigin = new Circle({
     id: 'polyline-origin',
     style: {
+      cx: 50,
+      cy: 50,
+      transform: 'translate(300, 300)',
       r: 10,
       fill: '#F04864',
     },
   });
-  polylineOrigin.setPosition(300, 300);
   canvas.appendChild(polylineOrigin);
 
   // stats
@@ -249,14 +255,13 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
       // get calculated origin
       const [ox, oy] = circle.getOrigin();
-      const x = 100;
-      const y = 100;
 
-      circleOrigin.setPosition(x + ox, y + oy);
+      circleOrigin.style.cx = ox;
+      circleOrigin.style.cy = oy;
 
       // update dat.gui
-      circleConfig.transformOriginX = ox + x;
-      circleConfig.transformOriginY = oy + y;
+      circleConfig.transformOriginX = ox;
+      circleConfig.transformOriginY = oy;
     });
   circleFolder
     .add(circleConfig, 'transformOriginX', -200, 200)
@@ -264,9 +269,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       circle.style.transformOrigin = `${tx} ${circleConfig.transformOriginY}`;
 
       const [ox, oy] = circle.getOrigin();
-      const x = 100;
-      const y = 100;
-      circleOrigin.setPosition(x + ox, y + oy);
+      circleOrigin.style.cx = ox;
+      circleOrigin.style.cy = oy;
     })
     .listen();
   circleFolder
@@ -275,9 +279,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       circle.style.transformOrigin = `${circleConfig.transformOriginX}px ${ty}px`;
 
       const [ox, oy] = circle.getOrigin();
-      const x = 100;
-      const y = 100;
-      circleOrigin.setPosition(x + ox, y + oy);
+      circleOrigin.style.cx = ox;
+      circleOrigin.style.cy = oy;
     })
     .listen();
   circleFolder.open();
@@ -302,13 +305,13 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
       // get calculated origin
       const [ox, oy, oz] = text.getOrigin();
-      const [x, y, z] = text.getPosition(); // left top corner of Bounds
 
-      textOrigin.setPosition(x + ox, y + oy, z + oz);
+      textOrigin.style.cx = ox;
+      textOrigin.style.cy = oy;
 
       // update dat.gui
-      textConfig.transformOriginX = ox + x;
-      textConfig.transformOriginY = oy + y;
+      textConfig.transformOriginX = ox;
+      textConfig.transformOriginY = oy;
     });
   textFolder
     .add(textConfig, 'transformOriginX', -200, 200)
@@ -316,8 +319,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       text.style.transformOrigin = `${tx} ${textConfig.transformOriginY}`;
 
       const [ox, oy] = text.getOrigin();
-      const [lx, ly] = text.getPosition();
-      textOrigin.setPosition(lx + ox, ly + oy);
+      textOrigin.style.cx = ox;
+      textOrigin.style.cy = oy;
     })
     .listen();
   textFolder
@@ -326,8 +329,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       text.style.transformOrigin = `${textConfig.transformOriginX}px ${ty}px`;
 
       const [ox, oy] = text.getOrigin();
-      const [lx, ly] = text.getPosition();
-      textOrigin.setPosition(lx + ox, ly + oy);
+      textOrigin.style.cx = ox;
+      textOrigin.style.cy = oy;
     })
     .listen();
   textFolder.open();
@@ -405,8 +408,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
   const polylineFolder = gui.addFolder('polyline');
   const polylineConfig = {
-    transformOriginX: 0,
-    transformOriginY: 0,
+    transformOriginX: 50,
+    transformOriginY: 50,
     transformOrigin: 'left top',
   };
   polylineFolder
@@ -423,11 +426,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
 
       // get calculated origin
       const [ox, oy] = polyline.getOrigin();
-      const x = 300;
-      const y = 300;
-
-      // set origin's position
-      polylineOrigin.setPosition(x + ox, y + oy);
+      polylineOrigin.style.cx = ox;
+      polylineOrigin.style.cy = oy;
 
       // update dat.gui
       polylineConfig.transformOriginX = ox;
@@ -439,9 +439,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       polyline.style.transformOrigin = `${tx} ${polylineConfig.transformOriginY}`;
 
       const [ox, oy] = polyline.getOrigin();
-      const x = 300;
-      const y = 300;
-      polylineOrigin.setPosition(x + ox, y + oy);
+      polylineOrigin.style.cx = ox;
+      polylineOrigin.style.cy = oy;
     })
     .listen();
   polylineFolder
@@ -450,9 +449,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
       polyline.style.transformOrigin = `${polylineConfig.transformOriginX}px ${ty}px`;
 
       const [ox, oy] = polyline.getOrigin();
-      const x = 300;
-      const y = 300;
-      polylineOrigin.setPosition(x + ox, y + oy);
+      polylineOrigin.style.cx = ox;
+      polylineOrigin.style.cy = oy;
     })
     .listen();
   polylineFolder.open();

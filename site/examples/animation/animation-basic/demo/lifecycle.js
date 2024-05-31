@@ -44,6 +44,7 @@ const circle = new Circle({
     fill: '#1890FF',
     stroke: '#F04864',
     lineWidth: 4,
+    transformOrigin: 'center',
   },
 });
 

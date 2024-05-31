@@ -16,8 +16,6 @@ import { Plugin as PluginControl } from '@antv/g-plugin-control';
 import * as lil from 'lil-gui';
 import Stats from 'stats.js';
 
-runtime.enableCSSParsing = false;
-
 // create a renderer
 const renderer = new Renderer();
 renderer.registerPlugin(new Plugin3D());
@@ -52,13 +50,13 @@ const canvas = new Canvas({
   });
   const label = new Text({
     style: {
-      x: 20,
+      x: 200,
+      y: 200,
       text: '0',
       fontSize: 12,
       fill: 'black',
       isBillboard: true,
       billboardRotation: Math.PI / 8,
-      isSizeAttenuation: true,
     },
   });
   origin.appendChild(label);
@@ -69,6 +67,7 @@ const canvas = new Canvas({
     x: 300,
   });
   x.childNodes[0].style.text = 'x';
+  x.childNodes[0].style.x = 300;
   canvas.appendChild(x);
 
   const y = origin.cloneNode(true);
@@ -76,6 +75,7 @@ const canvas = new Canvas({
     y: 100,
   });
   y.childNodes[0].style.text = 'y';
+  y.childNodes[0].style.y = 100;
   canvas.appendChild(y);
 
   const z = origin.cloneNode(true);
@@ -83,6 +83,7 @@ const canvas = new Canvas({
     z: 100,
   });
   z.childNodes[0].style.text = 'z';
+  z.childNodes[0].style.z = 100;
   canvas.appendChild(z);
 
   const xAxis = new Line({

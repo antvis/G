@@ -31,7 +31,7 @@ const path = new Path({
     lineJoin: 'round',
     stroke: '#54BECC',
     cursor: 'pointer',
-    path:
+    d:
       'M 100,300' +
       'l 50,-25' +
       'a25,25 -30 0,1 50,-25' +
@@ -49,9 +49,8 @@ const path = new Path({
 
 const arrowMarker = new Path({
   style: {
-    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    d: 'M 10,10 L -10,0 L 10,-10 Z',
     stroke: '#1890FF',
-    anchor: '0.5 0.5',
     transformOrigin: 'center',
   },
 });

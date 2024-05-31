@@ -253,13 +253,11 @@ rectFolder.open();
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 200,
-  localPositionY: 100,
+  localPositionX: 0,
+  localPositionY: 0,
   localScale: 1,
   localEulerAngles: 0,
   transformOrigin: 'left top',
-  anchorX: 0,
-  anchorY: 0,
 };
 transformFolder
   .add(transformConfig, 'transformOrigin', [
@@ -294,10 +292,4 @@ transformFolder
   .onChange((localEulerAngles) => {
     rect.setLocalEulerAngles(localEulerAngles);
   });
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  rect.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  rect.style.anchor = [transformConfig.anchorX, anchorY];
-});
 transformFolder.open();
