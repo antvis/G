@@ -23,7 +23,7 @@ const canvas = new Canvas({
   container: 'container',
   width: 600,
   height: 500,
-  renderer: webglRenderer,
+  renderer: canvasRenderer,
 });
 
 const path = new Path({

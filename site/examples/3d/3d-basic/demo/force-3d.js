@@ -1679,9 +1679,6 @@ const canvas = new Canvas({
     // create a mesh
     const sphere = new Mesh({
       style: {
-        x: node.x + 300,
-        y: node.y + 250,
-        z: node.z,
         fill,
         opacity: 1,
         geometry: sphereGeometry,
@@ -1689,6 +1686,7 @@ const canvas = new Canvas({
         cursor: 'pointer',
       },
     });
+    sphere.setPosition(node.x + 300, node.y + 250, node.z);
     canvas.appendChild(sphere);
 
     sphere.addEventListener('mouseenter', () => {

@@ -313,13 +313,11 @@ layoutFolder
 
 const transformFolder = gui.addFolder('transform');
 const transformConfig = {
-  localPositionX: 100,
-  localPositionY: 300,
+  localPositionX: 0,
+  localPositionY: 0,
   localScale: 1,
   localEulerAngles: 0,
   transformOrigin: 'left top',
-  anchorX: 0,
-  anchorY: 0,
   dx: 0,
   dy: 0,
 };
@@ -356,15 +354,6 @@ transformFolder
   .onChange((localEulerAngles) => {
     text.setLocalEulerAngles(localEulerAngles);
   });
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  text.style.anchor = [anchorX, transformConfig.anchorY];
-});
-transformFolder.add(transformConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  text.style.anchor = [transformConfig.anchorX, anchorY];
-});
-transformFolder.add(transformConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  text.style.anchor = [anchorX, transformConfig.anchorY];
-});
 transformFolder.add(transformConfig, 'dx', -100, 100).onChange((dx) => {
   text.style.dx = dx;
 });

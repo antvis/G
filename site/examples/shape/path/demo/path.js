@@ -36,7 +36,7 @@ function getCirclePath(cx, cy, rx, ry) {
 
 const circlePath = new Path({
   style: {
-    path: getCirclePath(200, 0, 100, 100),
+    d: getCirclePath(200, 0, 100, 100),
     lineWidth: 10,
     stroke: '#54BECC',
     fill: '#F04864',
@@ -102,8 +102,6 @@ const circleConfig = {
   lineWidth: 1,
   lineDash: 0,
   lineDashOffset: 0,
-  anchorX: 0,
-  anchorY: 0,
   shadowColor: '#fff',
   shadowBlur: 0,
   shadowOffsetX: 0,
@@ -112,8 +110,7 @@ const circleConfig = {
   visibility: 'visible',
 };
 circleFolder.add(circleConfig, 'r', 0, 200).onChange((r) => {
-  circlePath.style.path = getCirclePath(0, 0, r, r);
-  circlePath.setPosition(100, 300);
+  circlePath.style.d = getCirclePath(200, 0, r, r);
 });
 circleFolder.add(circleConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
   circlePath.style.lineWidth = lineWidth;
@@ -126,12 +123,6 @@ circleFolder
   .onChange((lineDashOffset) => {
     circlePath.style.lineDashOffset = lineDashOffset;
   });
-circleFolder.add(circleConfig, 'anchorX', 0, 1).onChange((anchorX) => {
-  circlePath.style.anchor = [anchorX, circleConfig.anchorY];
-});
-circleFolder.add(circleConfig, 'anchorY', 0, 1).onChange((anchorY) => {
-  circlePath.style.anchor = [circleConfig.anchorX, anchorY];
-});
 circleFolder.addColor(circleConfig, 'shadowColor').onChange((color) => {
   circlePath.attr('shadowColor', color);
 });

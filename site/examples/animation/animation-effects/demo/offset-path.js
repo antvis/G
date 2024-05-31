@@ -70,7 +70,7 @@ const offsetPathPolyline = new Polyline({
 
 const offsetPathPath = new Path({
   style: {
-    path:
+    d:
       'M 100,300' +
       'l 50,-25' +
       'a25,25 -30 0,1 50,-25' +
@@ -88,8 +88,8 @@ const offsetPathPath = new Path({
 
 const circle1 = new Circle({
   style: {
-    cx: 200,
-    cy: 200,
+    cx: 0,
+    cy: 0,
     r: 60,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -99,8 +99,8 @@ const circle1 = new Circle({
 });
 const circle2 = new Circle({
   style: {
-    cx: 200,
-    cy: 200,
+    cx: 0,
+    cy: 0,
     r: 10,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -110,8 +110,8 @@ const circle2 = new Circle({
 });
 const circle3 = new Circle({
   style: {
-    cx: 200,
-    cy: 300,
+    cx: 0,
+    cy: 0,
     r: 60,
     fill: '#1890FF',
     stroke: '#F04864',
@@ -121,31 +121,30 @@ const circle3 = new Circle({
 });
 
 let animation;
-canvas.addEventListener(CanvasEvent.READY, () => {
-  canvas.appendChild(offsetPathPolyline);
-  canvas.appendChild(circle1);
-  canvas.appendChild(circle2);
-  canvas.appendChild(circle3);
 
-  circle1.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-    duration: 2500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
-  animation = circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-    duration: 3500,
-    easing: 'linear',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+canvas.appendChild(offsetPathPolyline);
+canvas.appendChild(circle1);
+canvas.appendChild(circle2);
+canvas.appendChild(circle3);
 
-  circle3.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
-    duration: 4500,
-    easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
-    iterations: Infinity,
-    direction: 'alternate',
-  });
+circle1.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+  duration: 2500,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  iterations: Infinity,
+  direction: 'alternate',
+});
+animation = circle2.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+  duration: 3500,
+  easing: 'linear',
+  iterations: Infinity,
+  direction: 'alternate',
+});
+
+circle3.animate([{ offsetDistance: 0 }, { offsetDistance: 1 }], {
+  duration: 4500,
+  easing: 'cubic-bezier(0.250, 0.460, 0.450, 0.940)',
+  iterations: Infinity,
+  direction: 'alternate',
 });
 
 // stats

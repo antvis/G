@@ -82,7 +82,7 @@ const image = new Image({
   style: {
     width: 100,
     height: 100,
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     cursor: 'pointer',
   },
 });
@@ -116,7 +116,7 @@ const polyline = new Polyline({
 });
 const path = new Path({
   style: {
-    path:
+    d:
       'M 100,300' +
       'l 50,-25' +
       'a25,25 -30 0,1 50,-25' +
@@ -201,7 +201,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   polyline.rotate(20);
   canvas.appendChild(polyline);
 
-  path.setPosition(160, 200);
+  path.translate(60, 100);
   path.rotate(20);
   path.scale(0.5);
   canvas.appendChild(path);

@@ -53,7 +53,8 @@ const canvas = new Canvas({
   });
   const label = new Text({
     style: {
-      x: 20,
+      x: 200,
+      y: 200,
       text: '0',
       fontSize: 12,
       fill: 'black',
@@ -69,6 +70,7 @@ const canvas = new Canvas({
     x: 300,
   });
   x.childNodes[0].style.text = 'x';
+  x.childNodes[0].style.x = 300;
   canvas.appendChild(x);
 
   const y = origin.cloneNode(true);
@@ -76,6 +78,7 @@ const canvas = new Canvas({
     y: 100,
   });
   y.childNodes[0].style.text = 'y';
+  y.childNodes[0].style.y = 100;
   canvas.appendChild(y);
 
   const z = origin.cloneNode(true);
@@ -83,6 +86,7 @@ const canvas = new Canvas({
     z: 100,
   });
   z.childNodes[0].style.text = 'z';
+  z.childNodes[0].style.z = 100;
   canvas.appendChild(z);
 
   const xAxis = new Line({
@@ -178,7 +182,7 @@ const canvas = new Canvas({
 
   const path = new Path({
     style: {
-      path: [
+      d: [
         ['M', 57.06339097770921, -18.541019662496844],
         ['L', 13.225168176580645, -18.202882373436317],
         ['L', 3.67394039744206e-15, -60],

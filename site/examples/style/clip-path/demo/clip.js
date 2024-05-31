@@ -31,6 +31,7 @@ const clipPathCircle = new Circle({
     cy: 150,
     r: 35,
     fill: 'blue',
+    transformOrigin: 'center',
   },
 });
 
@@ -69,8 +70,7 @@ const clipPath = new Path({
   style: {
     stroke: 'black',
     lineWidth: 2,
-    path: 'M 10,10 L -10,0 L 10,-10 Z',
-    anchor: [0.5, 0.5],
+    d: 'M 10,10 L -10,0 L 10,-10 Z',
   },
 });
 
@@ -87,8 +87,7 @@ const g = new Group();
 canvas.addEventListener(CanvasEvent.READY, () => {
   const group = new Group({
     style: {
-      x: 100,
-      y: 100,
+      transform: `translate(100, 100)`,
     },
   });
   g.appendChild(clipPathCircle);

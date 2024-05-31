@@ -92,8 +92,8 @@ const rect = new Rect({
 });
 const text = new Text({
   style: {
-    x: 150,
-    y: 50,
+    x: 350,
+    y: 250,
     text: 'Hover me!',
     fontSize: 22,
     fill: '#000',
@@ -229,8 +229,6 @@ const lineConfig = {
   stroke: '#1890FF',
   lineWidth: 2,
   strokeOpacity: 1,
-  anchorX: 0,
-  anchorY: 0,
   x1: 200,
   y1: 100,
   x2: 400,
@@ -260,12 +258,6 @@ lineFolder.add(lineConfig, 'lineWidth', 1, 20).onChange((lineWidth) => {
 });
 lineFolder.add(lineConfig, 'strokeOpacity', 0, 1, 0.1).onChange((opacity) => {
   line.style.strokeOpacity = opacity;
-});
-lineFolder.add(lineConfig, 'anchorX', 0, 1, 0.1).onChange((anchorX) => {
-  line.attr('anchor', [anchorX, lineConfig.anchorY]);
-});
-lineFolder.add(lineConfig, 'anchorY', 0, 1, 0.1).onChange((anchorY) => {
-  line.attr('anchor', [lineConfig.anchorX, anchorY]);
 });
 lineFolder.open();
 

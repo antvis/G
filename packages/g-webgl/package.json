@@ -45,6 +45,7 @@
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/util": "^3.3.5",
     "@antv/g-device-api": "^1.6.10",
+    "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

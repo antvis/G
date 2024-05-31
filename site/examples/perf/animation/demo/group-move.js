@@ -27,7 +27,7 @@ const groups = Array(1000)
   .fill(1)
   .map(() => {
     const text = new Text({
-      attrs: {
+      style: {
         x: 100,
         y: 100,
         fontFamily: 'PingFang SC',
@@ -39,14 +39,14 @@ const groups = Array(1000)
       },
     });
     const circle = new Circle({
-      attrs: {
+      style: {
         r: 20,
         fill: '#000',
       },
     });
     const path = new Path({
-      attrs: {
-        path: [
+      style: {
+        d: [
           ['M', 0, 0],
           ['L', 100, 100],
         ],

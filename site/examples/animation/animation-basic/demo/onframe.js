@@ -83,8 +83,7 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   );
   animation.onframe = () => {
     // use parsed value here
-    circle2.setLocalPosition(rect.parsedStyle.width, 20);
-    // circle2.setLocalPosition(Number(`${rect.style.width}`.replace('px', '')), 20);
+    circle2.style.cx = rect.parsedStyle.width;
   };
 });
 

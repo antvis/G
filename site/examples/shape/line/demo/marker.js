@@ -49,9 +49,8 @@ const canvas = new Canvas({
  */
 const arrowMarker = new Path({
   style: {
-    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    d: 'M 10,10 L -10,0 L 10,-10 Z',
     stroke: '#1890FF',
-    anchor: '0.5 0.5',
     transformOrigin: 'center',
   },
 });
@@ -89,10 +88,11 @@ const arrow1 = new Line({
  */
 const rectMarker = new Rect({
   style: {
+    x: -10,
+    y: -10,
     width: 20,
     height: 20,
     fill: '#F6BD16',
-    anchor: '0.5 0.5',
     transformOrigin: 'center',
   },
 });
@@ -122,10 +122,11 @@ const arrow2 = new Line({
  */
 const imageMarker = new Image({
   style: {
+    x: -25,
+    y: -25,
     width: 50,
     height: 50,
     src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-    anchor: '0.5 0.5',
     transformOrigin: 'center',
     transform: 'rotate(90deg)',
   },
@@ -169,7 +170,8 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   function moveAt(target, canvasX, canvasY) {
     const newPosX = canvasX - shiftX;
     const newPosY = canvasY - shiftY;
-    target.setPosition(newPosX, newPosY);
+    target.style.cx = newPosX;
+    target.style.cy = newPosY;
 
     // re-define arrow
     if (target.id === 'handle1') {
@@ -194,9 +196,9 @@ canvas.addEventListener(CanvasEvent.READY, () => {
   }
 
   canvas.addEventListener('dragstart', function (e) {
-    const [x, y] = e.target.getPosition();
-    shiftX = e.canvasX - x;
-    shiftY = e.canvasY - y;
+    const { cx, cy } = e.target.style;
+    shiftX = e.canvasX - cx;
+    shiftY = e.canvasY - cy;
 
     moveAt(e.target, e.canvasX, e.canvasY);
   });

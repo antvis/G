@@ -78,14 +78,14 @@ const mountain1 = new Path({
     shadowColor: 'rgba(124,94,44,0.5)',
     shadowBlur: 50,
     // @see https://g-next.antv.vision/zh/docs/api/basic/display-object#%E8%A3%81%E5%89%AA
-    clipPath: new Rect({
-      style: {
-        y: -10,
-        x: -10,
-        width: 60,
-        height: 51,
-      },
-    }),
+    // clipPath: new Rect({
+    //   style: {
+    //     y: -10,
+    //     x: -10,
+    //     width: 60,
+    //     height: 51,
+    //   },
+    // }),
   },
 });
 

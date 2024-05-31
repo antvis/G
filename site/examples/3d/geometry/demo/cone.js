@@ -40,15 +40,13 @@ const canvas = new Canvas({
 
   const cone = new Mesh({
     style: {
-      x: 300,
-      y: 250,
       fill: 'white',
       opacity: 1,
       geometry: coneGeometry,
       material: basicMaterial,
     },
   });
-
+  cone.setPosition(300, 250);
   canvas.appendChild(cone);
 
   // add a directional light into scene

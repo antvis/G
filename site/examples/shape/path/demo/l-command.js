@@ -27,7 +27,7 @@ const canvas = new Canvas({
 
 const line = new Path({
   style: {
-    path: [
+    d: [
       ['M', 100, 100],
       ['L', 200, 100],
     ],
@@ -38,7 +38,7 @@ const line = new Path({
 
 const polyline = new Path({
   style: {
-    path: [
+    d: [
       ['M', 57.06339097770921, -18.541019662496844],
       ['L', 13.225168176580645, -18.202882373436317],
       ['L', 3.67394039744206e-15, -60],

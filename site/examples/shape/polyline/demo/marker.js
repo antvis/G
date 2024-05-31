@@ -66,9 +66,8 @@ const polyline = new Polyline({
 
 const arrowMarker = new Path({
   style: {
-    path: 'M 10,10 L -10,0 L 10,-10 Z',
+    d: 'M 10,10 L -10,0 L 10,-10 Z',
     stroke: '#1890FF',
-    anchor: '0.5 0.5',
     transformOrigin: 'center',
   },
 });
@@ -80,12 +79,13 @@ const circleMarker = new Circle({
 });
 const imageMarker = new Image({
   style: {
+    x: -25,
+    y: -25,
     width: 50,
     height: 50,
-    anchor: [0.5, 0.5],
     transformOrigin: 'center',
     transform: 'rotate(90deg)',
-    img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+    src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
   },
 });
 
