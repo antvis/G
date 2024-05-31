@@ -1,5 +1,13 @@
 # @antv/g-webgl
 
+## 2.0.10
+
+### Patch Changes
+
+-   756ba5d3: Update deps.
+-   Updated dependencies [756ba5d3]
+    -   @antv/g-plugin-html-renderer@2.0.6
+
 ## 2.0.9
 
 ### Patch Changes
