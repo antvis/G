@@ -340,6 +340,7 @@ export class MatterJSPlugin implements RenderingPlugin {
           config,
         );
       } else if (nodeName === Shape.CIRCLE) {
+        target.style.transformOrigin = 'center center';
         // matter.js also use polygon inside
         body = Bodies.circle(0, 0, halfExtents[0], config);
       } else if (nodeName === Shape.ELLIPSE) {
