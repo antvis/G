@@ -1,7 +1,9 @@
-import { Circle, Group, Rect, Text } from '../../../packages/g';
+import { runtime, Circle, Group, Rect, Text } from '../../../packages/g';
 import { Plugin as PluginYoga } from '../../../packages/g-plugin-yoga';
 
 export async function yogaText(context) {
+  runtime.enableCSSParsing = true;
+
   const { canvas, gui } = context;
   await canvas.ready;
 

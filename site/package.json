@@ -89,7 +89,7 @@
   },
   "devDependencies": {
     "@antv/dumi-theme-antv": "^0.5.1",
-    "dumi": "^2.2.1",
+    "dumi": "~2.2.1",
     "workerize-loader": "^2.0.2"
   }
 }
