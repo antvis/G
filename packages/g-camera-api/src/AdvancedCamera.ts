@@ -252,7 +252,7 @@ export class AdvancedCamera extends Camera {
         }
         const elapsed = timestamp - timeStart;
 
-        if (elapsed > duration) {
+        if (elapsed >= duration) {
           endAnimation();
           return;
         }
