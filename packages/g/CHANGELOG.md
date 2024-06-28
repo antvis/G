@@ -1,5 +1,12 @@
 # @antv/g
 
+## 6.0.7
+
+### Patch Changes
+
+-   Updated dependencies [8831a372]
+    -   @antv/g-camera-api@2.0.6
+
 ## 6.0.6
 
 ### Patch Changes

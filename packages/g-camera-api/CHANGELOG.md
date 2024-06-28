@@ -1,5 +1,11 @@
 # @antv/g-camera-api
 
+## 2.0.6
+
+### Patch Changes
+
+-   8831a372: fix onfinish
+
 ## 2.0.5
 
 ### Patch Changes
