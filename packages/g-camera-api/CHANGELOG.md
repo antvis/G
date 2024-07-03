@@ -1,5 +1,11 @@
 # @antv/g-camera-api
 
+## 2.0.8
+
+### Patch Changes
+
+-   a098d3ef: fix goto landmark
+
 ## 2.0.7
 
 ### Patch Changes

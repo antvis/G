@@ -8,3 +8,4 @@ export { annotation } from './annotation';
 export { exporter } from './exporter';
 // export { yogaText } from './yoga-text';
 export { a11y } from './a11y';
+export { camera } from './camera';
