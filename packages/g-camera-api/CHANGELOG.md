@@ -1,5 +1,11 @@
 # @antv/g-camera-api
 
+## 2.0.7
+
+### Patch Changes
+
+-   publish g-camera-api
+
 ## 2.0.6
 
 ### Patch Changes
