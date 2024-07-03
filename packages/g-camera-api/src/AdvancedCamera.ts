@@ -215,14 +215,6 @@ export class AdvancedCamera extends Camera {
       } = isNumber(options) ? { duration: options } : options;
       const epsilon = 0.01;
 
-      if (duration === 0) {
-        this.syncFromLandmark(landmark);
-        if (onfinish) {
-          onfinish();
-        }
-        return;
-      }
-
       // cancel ongoing animation
       this.cancelLandmarkAnimation();
 
@@ -234,17 +226,17 @@ export class AdvancedCamera extends Camera {
       const easingFunc = easingFunction || runtime.EasingFunction(easing);
 
       let timeStart: number | undefined;
-      const endAnimation = () => {
+      const end = () => {
         this.setFocalPoint(destFocalPoint);
         this.setPosition(destPosition);
         this.setRoll(destRoll);
         this.setZoom(destZoom);
         this.computeMatrix();
         this.triggerUpdate();
-        if (onfinish) {
-          onfinish();
-        }
+        onfinish?.();
       };
+
+      if (duration === 0) return end();
 
       const animate = (timestamp: number) => {
         if (timeStart === undefined) {
@@ -253,7 +245,7 @@ export class AdvancedCamera extends Camera {
         const elapsed = timestamp - timeStart;
 
         if (elapsed >= duration) {
-          endAnimation();
+          end();
           return;
         }
         // use the same ease function in animation system
@@ -278,46 +270,20 @@ export class AdvancedCamera extends Camera {
           vec3.dist(interFocalPoint, destFocalPoint) +
           vec3.dist(interPosition, destPosition);
         if (dist <= epsilon && destZoom == undefined && destRoll == undefined) {
-          endAnimation();
-          return;
+          return end();
         }
 
         this.computeMatrix();
         this.triggerUpdate();
 
         if (elapsed < duration) {
-          if (onframe) {
-            onframe(t);
-          }
+          onframe?.(t);
           this.landmarkAnimationID = this.canvas.requestAnimationFrame(animate);
         }
       };
 
       this.canvas.requestAnimationFrame(animate);
     }
-  }
-
-  private syncFromLandmark(landmark: Landmark) {
-    this.matrix = mat4.copy(this.matrix, landmark.matrix);
-    this.right = vec3.copy(this.right, landmark.right);
-    this.up = vec3.copy(this.up, landmark.up);
-    this.forward = vec3.copy(this.forward, landmark.forward);
-    this.position = vec3.copy(this.position, landmark.position);
-    this.focalPoint = vec3.copy(this.focalPoint, landmark.focalPoint);
-    this.distanceVector = vec3.copy(
-      this.distanceVector,
-      landmark.distanceVector,
-    );
-
-    this.azimuth = landmark.azimuth;
-    this.elevation = landmark.elevation;
-    this.roll = landmark.roll;
-    this.relAzimuth = landmark.relAzimuth;
-    this.relElevation = landmark.relElevation;
-    this.relRoll = landmark.relRoll;
-    this.dollyingStep = landmark.dollyingStep;
-    this.distance = landmark.distance;
-    this.zoom = landmark.zoom;
   }
 
   /**
