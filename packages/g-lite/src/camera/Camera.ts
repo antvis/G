@@ -467,7 +467,11 @@ export class Camera implements ICamera {
     const dx = vec3.dot(dvec, this.right) / vec3.length(this.right);
     const dy = vec3.dot(dvec, this.up) / vec3.length(this.up);
 
-    this.pan(-dx, -dy);
+    const [px, py] = this.getPosition();
+    const [fx, fy] = this.getFocalPoint();
+
+    this.setPosition(px - dx, py - dy);
+    this.setFocalPoint(fx - dx, fy - dy);
 
     return this;
   }
