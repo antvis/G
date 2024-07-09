@@ -17,6 +17,7 @@ import * as lottie from './demos/lottie';
 import * as perf from './demos/perf';
 import * as bugfix from './demos/bugfix';
 import * as event from './demos/event';
+import * as camera from './demos/camera';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -29,6 +30,7 @@ const tests = {
   ...createSpecRender(namespace(bugfix, 'bugfix')),
   ...createSpecRender(namespace(perf, 'perf')),
   ...createSpecRender(namespace(event, 'event')),
+  ...createSpecRender(namespace(camera, 'camera')),
 };
 
 const renderers = {
