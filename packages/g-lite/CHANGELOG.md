@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.6
+
+### Patch Changes
+
+-   a950bbc7: publish g-lite
+
 ## 2.0.5
 
 ### Patch Changes
