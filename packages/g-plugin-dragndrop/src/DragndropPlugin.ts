@@ -64,7 +64,7 @@ export class DragndropPlugin implements RenderingPlugin {
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragstart_event
             event.type = 'dragstart';
 
-            draggableEventTarget.dispatchEvent(event);
+            target.dispatchEvent(event);
             dragstartTriggered = true;
           }
 
@@ -102,14 +102,14 @@ export class DragndropPlugin implements RenderingPlugin {
                 // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event
                 event.type = 'dragleave';
                 event.target = currentDroppable;
-                currentDroppable.dispatchEvent(event);
+                target.dispatchEvent(event);
               }
 
               if (droppableBelow) {
                 // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragleave_event
                 event.type = 'dragenter';
                 event.target = droppableBelow;
-                droppableBelow.dispatchEvent(event);
+                target.dispatchEvent(event);
               }
 
               currentDroppable = droppableBelow;
@@ -118,7 +118,7 @@ export class DragndropPlugin implements RenderingPlugin {
                 // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragover_event
                 event.type = 'dragover';
                 event.target = currentDroppable;
-                currentDroppable.dispatchEvent(event);
+                target.dispatchEvent(event);
               }
             }
           }
@@ -146,12 +146,12 @@ export class DragndropPlugin implements RenderingPlugin {
               // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/drop_event
               event.type = 'drop';
               event.target = currentDroppable;
-              currentDroppable.dispatchEvent(event);
+              target.dispatchEvent(event);
             }
 
             // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/dragend_event
             event.type = 'dragend';
-            draggableEventTarget.dispatchEvent(event);
+            target.dispatchEvent(event);
 
             dragstartTriggered = false;
           }
