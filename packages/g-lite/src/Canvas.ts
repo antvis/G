@@ -570,11 +570,12 @@ export class Canvas extends EventTarget implements ICanvas {
         } else {
           this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
         }
-        if (this.readyPromise) {
-          this.resolveReadyPromise();
-        }
       } else {
         this.dispatchEvent(new CustomEvent(CanvasEvent.RENDERER_CHANGED));
+      }
+
+      if (this.readyPromise) {
+        this.resolveReadyPromise();
       }
 
       if (!firstContentfullPaint) {
