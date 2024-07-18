@@ -18,6 +18,7 @@ import * as perf from './demos/perf';
 import * as bugfix from './demos/bugfix';
 import * as event from './demos/event';
 import * as camera from './demos/camera';
+import * as canvasCase from './demos/canvas';
 
 const tests = {
   ...createSpecRender(namespace(basic2d, '2d')),
@@ -31,6 +32,7 @@ const tests = {
   ...createSpecRender(namespace(perf, 'perf')),
   ...createSpecRender(namespace(event, 'event')),
   ...createSpecRender(namespace(camera, 'camera')),
+  ...createSpecRender(namespace(canvasCase, 'canvas')),
 };
 
 const renderers = {
