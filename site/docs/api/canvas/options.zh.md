@@ -193,6 +193,10 @@ $wrapper.style.transform = 'scale(1.1)';
 
 可选。判断一个原生事件是否是 MouseEvent，接受原生事件作为参数，返回判定结果。
 
+### dblClickSpeed
+
+可选。数值类型，判断两次连续点击是否触发双击事件 [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) 的速度，默认为 200 ms。
+
 ### offscreenCanvas
 
 可选。返回一个 `HTMLCanvasElement | OffscreenCanvas` 或类似对象。用于生成一个离屏的 Canvas2D 上下文，目前它使用在以下场景：

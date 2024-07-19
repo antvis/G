@@ -311,11 +311,13 @@ export class EventService {
         };
       }
 
+      const canvas =
+        this.context.renderingContext.root.ownerDocument.defaultView;
       const clickHistory = trackingData.clicksByButton[from.button];
 
       if (
         clickHistory.target === clickEvent.target &&
-        now - clickHistory.timeStamp < 200
+        now - clickHistory.timeStamp < canvas.dblClickSpeed
       ) {
         ++clickHistory.clickCount;
       } else {
