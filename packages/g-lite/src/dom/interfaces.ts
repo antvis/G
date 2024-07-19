@@ -556,6 +556,7 @@ export interface ICanvas extends IEventTarget {
   supportsPointerEvents: boolean;
   isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
+  dblClickSpeed?: number;
 
   render: () => void;
   destroy: (destroyScenegraph?: boolean) => void;

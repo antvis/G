@@ -188,6 +188,10 @@ Optional. Determines if a native event is a TouchEvent, accepts the native event
 
 Optional. Determines if a native event is a MouseEvent, accepts the native event as parameter, and returns the result.
 
+### dblClickSpeed
+
+Optional. Numeric type, determines whether two consecutive clicks trigger a double-click event [dblclick](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event) , the default is 200 ms.
+
 ### offscreenCanvas
 
 Optional. Returns an `HTMLCanvasElement | OffscreenCanvas` or similar object. Used to generate an offscreen Canvas2D context, it is currently used in the following scenarios.

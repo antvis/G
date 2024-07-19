@@ -121,6 +121,11 @@ export class Canvas extends EventTarget implements ICanvas {
   isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
 
   /**
+   * double click speed (ms), default is 200ms
+   */
+  dblClickSpeed?: CanvasConfig['dblClickSpeed'];
+
+  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
    */
   Element = DisplayObject;
@@ -168,6 +173,7 @@ export class Canvas extends EventTarget implements ICanvas {
       alwaysTriggerPointerEventOnCanvas,
       isTouchEvent,
       isMouseEvent,
+      dblClickSpeed,
     } = config;
 
     if (!supportsMutipleCanvasesInOneContainer) {
@@ -221,6 +227,8 @@ export class Canvas extends EventTarget implements ICanvas {
         (event instanceof runtime.globalThis.MouseEvent &&
           (!this.supportsPointerEvents ||
             !(event instanceof runtime.globalThis.PointerEvent))));
+
+    this.dblClickSpeed = dblClickSpeed ?? 200;
 
     this.initRenderingContext({
       container,

@@ -447,6 +447,8 @@ export interface CanvasConfig {
   supportsTouchEvents?: boolean;
   isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
+  dblClickSpeed?: number;
+
   /**
    * Listen to native click event instead of mocking with pointerup & down events.
    */
