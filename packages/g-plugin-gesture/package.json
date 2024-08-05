@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-gesture",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "A G plugin for Gesture implemented with PointerEvents",
   "keywords": [
     "antv",
