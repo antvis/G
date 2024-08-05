@@ -1,5 +1,16 @@
 # @antv/g-webgpu
 
+## 2.0.13
+
+### Patch Changes
+
+-   Updated dependencies [8832fb08]
+    -   @antv/g-lite@2.0.8
+    -   @antv/g-plugin-device-renderer@2.0.12
+    -   @antv/g-plugin-dom-interaction@2.0.8
+    -   @antv/g-plugin-html-renderer@2.0.9
+    -   @antv/g-plugin-image-loader@2.0.8
+
 ## 2.0.12
 
 ### Patch Changes

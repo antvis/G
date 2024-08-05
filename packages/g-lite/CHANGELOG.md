@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.8
+
+### Patch Changes
+
+-   8832fb08: fix: HTML element bounding box calculation logic (#1743)
+
 ## 2.0.7
 
 ### Patch Changes
