@@ -64,7 +64,15 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
    */
   getBoundingClientRect(): Rectangle {
     if (this.parsedStyle.$el) {
-      return this.parsedStyle.$el.getBoundingClientRect();
+      const cameraMatrix = this.ownerDocument.defaultView
+        .getCamera()
+        .getOrthoMatrix();
+      const bBox = this.parsedStyle.$el.getBoundingClientRect();
+
+      return Rectangle.applyTransform(
+        bBox,
+        mat4.invert(mat4.create(), cameraMatrix),
+      );
     } else {
       const { x, y, width, height } = this.parsedStyle;
       return new Rectangle(x, y, width, height);
