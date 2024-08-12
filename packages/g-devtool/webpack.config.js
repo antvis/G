@@ -4,6 +4,7 @@ module.exports = {
   entry: {
     index: './ui/index.js',
   },
+  mode: 'development',
   output: {
     path: path.resolve(__dirname, 'devtools/ui'),
     filename: 'ui.js',
