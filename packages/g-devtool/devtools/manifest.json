@@ -5,11 +5,7 @@
   "devtools_page": "g_devtools.html",
   "minimum_chrome_version": "49",
   "manifest_version": 2,
-  "permissions": [
-    "file:///*",
-    "http://*/*",
-    "https://*/*"
-  ],
+  "permissions": ["file:///*", "http://*/*", "https://*/*"],
   "icons": {
     "16": "icons/16.png",
     "32": "icons/32.png",
@@ -18,6 +14,6 @@
   },
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": [ "main.html", "panel.html", "script/backend.js"],
+  "web_accessible_resources": ["main.html", "panel.html", "script/backend.js"],
   "browser_action": {}
 }
