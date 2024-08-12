@@ -15,10 +15,10 @@ var executeScriptInInspectWindow = function (script) {
   });
 };
 
-// execute function in anynomous code block
-var executeFuntionInInspectWindow = function (func, args) {
+// execute function in anonymous code block
+var executeFunctionInInspectWindow = function (func, args) {
   return executeScriptInInspectWindow(
-    `(${func.toString()}).apply(window, ${JSON.stringify(args)})`
+    `(${func.toString()}).apply(window, ${JSON.stringify(args)})`,
   );
 };
 
@@ -81,9 +81,9 @@ function getGlobalInstances() {
     }
 
     gmap[ga.hash] = instance;
-    ga.id = instance.id || instance.get("id");
-    ga.name = instance.name || instance.get("name");
-    ga.type = instance.get("type") || instance.nodeName || "group";
+    ga.id = instance.id || instance.get('id');
+    ga.name = instance.name || instance.get('name');
+    ga.type = instance.get('type') || instance.nodeName || 'group';
     return ga;
   }
 
@@ -91,13 +91,13 @@ function getGlobalInstances() {
     gInfo = instances.map(function (instance) {
       var hash = instance.hash || Math.random().toString(16).slice(-8);
       var ga = {
-        type: "renderer",
-        name: "renderer",
-        nodeName: "renderer",
+        type: 'renderer',
+        name: 'renderer',
+        nodeName: 'renderer',
         hash: hash,
         children: getCanvasRootGroup(instance).map((e) => getGInstance(e)),
         memory: window.performance.memory.usedJSHeapSize,
-        fps: window.__g_fps_value
+        fps: window.__g_fps_value,
       };
       instance.hash = ga.hash;
       gmap[ga.hash] = instance;
@@ -115,18 +115,18 @@ function checkCanvasByHash(hash) {
 }
 
 function createBoxUsingId(bbox, id, color) {
-  var el = document.createElement("div");
+  var el = document.createElement('div');
   window[id] = el;
-  el.classList.add("g_devtool_rect");
+  el.classList.add('g_devtool_rect');
   document.body.appendChild(el);
-  el.style.position = "absolute";
+  el.style.position = 'absolute';
   el.style.width = `${bbox.width}px`;
   el.style.height = `${bbox.height}px`;
   el.style.top = `${bbox.top}px`;
   el.style.left = `${bbox.left}px`;
-  el.style.background = color || "rgba(135, 59, 244, 0.5)";
-  el.style.border = "2px dashed rgb(135, 59, 244)";
-  el.style.boxSizing = "border-box";
+  el.style.background = color || 'rgba(135, 59, 244, 0.5)';
+  el.style.border = '2px dashed rgb(135, 59, 244)';
+  el.style.boxSizing = 'border-box';
 }
 
 function removeBoxUsingId(id) {
@@ -136,7 +136,7 @@ function removeBoxUsingId(id) {
 }
 
 function removeAllBox() {
-  var elements = document.getElementsByClassName("g_devtool_rect");
+  var elements = document.getElementsByClassName('g_devtool_rect');
   [].forEach.apply(elements, [
     function (e) {
       e.remove();
@@ -144,7 +144,7 @@ function removeAllBox() {
   ]);
 }
 
-function getElemetBBoxByHash(hash) {
+function getElementBBoxByHash(hash) {
   var targetEl = window.__g_instances__.globalMap[hash];
   if (targetEl.getBoundingClientRect) {
     return targetEl.getBoundingClientRect();
@@ -172,8 +172,8 @@ function setGElementByHash(hash) {
 
 function consoleElementByHash(hash, desc) {
   window.console.log(
-    desc || "<Click To Expand>",
-    window.__g_instances__.globalMap[hash]
+    desc || '<Click To Expand>',
+    window.__g_instances__.globalMap[hash],
   );
 }
 
@@ -182,35 +182,35 @@ function consoleElementByHash(hash, desc) {
 //
 
 function setRect(bbox, id, color) {
-  executeFuntionInInspectWindow(removeBoxUsingId, [id]).finally(() => {
-    executeFuntionInInspectWindow(createBoxUsingId, [bbox, id, color]);
+  executeFunctionInInspectWindow(removeBoxUsingId, [id]).finally(() => {
+    executeFunctionInInspectWindow(createBoxUsingId, [bbox, id, color]);
   });
 }
 
 function cleanRect(id) {
-  executeFuntionInInspectWindow(removeBoxUsingId, [id]);
+  executeFunctionInInspectWindow(removeBoxUsingId, [id]);
 }
 
 function showRect(hash, id, color) {
-  executeFuntionInInspectWindow(getElemetBBoxByHash, [hash]).then((bbox) => {
+  executeFunctionInInspectWindow(getElementBBoxByHash, [hash]).then((bbox) => {
     setRect(bbox, id, color);
   });
 }
 
 function cleanAllRect() {
-  executeFuntionInInspectWindow(removeAllBox);
+  executeFunctionInInspectWindow(removeAllBox);
 }
 
 function getAttrs(hash) {
   if (hash) {
-    executeFuntionInInspectWindow(setGElementByHash, [hash]);
-    return executeFuntionInInspectWindow(getElementAttrByHash, [hash]);
+    executeFunctionInInspectWindow(setGElementByHash, [hash]);
+    return executeFunctionInInspectWindow(getElementAttrByHash, [hash]);
   }
-  return executeFuntionInInspectWindow(setGElementByHash, []);
+  return executeFunctionInInspectWindow(setGElementByHash, []);
 }
 
 function updateAttrs(hash, name, attrs) {
-  return executeFuntionInInspectWindow(setElementAttrByHash, [
+  return executeFunctionInInspectWindow(setElementAttrByHash, [
     hash,
     name,
     attrs,
@@ -218,30 +218,30 @@ function updateAttrs(hash, name, attrs) {
 }
 
 function consoleEl(hash, desc) {
-  return executeFuntionInInspectWindow(consoleElementByHash, [hash, desc]);
+  return executeFunctionInInspectWindow(consoleElementByHash, [hash, desc]);
 }
 
 function checkCanvasAlive(hash) {
-  return executeFuntionInInspectWindow(checkCanvasByHash, [hash]).then(
+  return executeFunctionInInspectWindow(checkCanvasByHash, [hash]).then(
     (res) => {
       if (res) {
         return true;
       } else {
         return false;
       }
-    }
+    },
   );
 }
 
 function getNowCanvasData() {
-  return executeFuntionInInspectWindow(getGlobalInstances);
+  return executeFunctionInInspectWindow(getGlobalInstances);
 }
 function startFPSMonitor() {
-  return executeFuntionInInspectWindow(doFPSThings);
+  return executeFunctionInInspectWindow(doFPSThings);
 }
 
 getNowCanvasData().then(function (data) {
-  const container = document.getElementById("container");
+  const container = document.getElementById('container');
   mount(data, container, {
     showRect,
     getAttrs,
@@ -251,8 +251,8 @@ getNowCanvasData().then(function (data) {
     checkCanvasAlive,
     getNowCanvasData,
     cleanAllRect,
-    startFPSMonitor
+    startFPSMonitor,
   });
 });
 
-startFPSMonitor()
+startFPSMonitor();
