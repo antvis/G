@@ -176,6 +176,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         '#' + cameraId,
       );
       if (!$existedCamera) {
+        // fix @see https://github.com/antvis/G/issues/1702
+        const $cameraContainer = (doc || document).createElement('div');
+        // HTML elements should not overflow with canvas @see https://github.com/antvis/G/issues/1163
+        $cameraContainer.style.overflow = 'hidden';
+        $cameraContainer.style.pointerEvents = 'none';
+        $cameraContainer.style.position = 'absolute';
+        $cameraContainer.style.left = `0px`;
+        $cameraContainer.style.top = `0px`;
+        $cameraContainer.style.width = `${width || 0}px`;
+        $cameraContainer.style.height = `${height || 0}px`;
+
         const $camera = (doc || document).createElement('div');
         $existedCamera = $camera;
         $camera.id = cameraId;
@@ -188,13 +199,12 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $camera.style.transform = this.joinTransformMatrix(
           camera.getOrthoMatrix(),
         );
-        // HTML elements should not overflow with canvas @see https://github.com/antvis/G/issues/1163
-        $camera.style.overflow = 'hidden';
         $camera.style.pointerEvents = 'none';
-        $camera.style.width = `${width || 0}px`;
-        $camera.style.height = `${height || 0}px`;
+        $camera.style.width = `100%`;
+        $camera.style.height = `100%`;
 
-        $container.appendChild($camera);
+        $cameraContainer.appendChild($camera);
+        $container.appendChild($cameraContainer);
       }
 
       return $existedCamera;
