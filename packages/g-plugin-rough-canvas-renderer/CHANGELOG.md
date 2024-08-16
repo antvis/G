@@ -1,5 +1,11 @@
 # @antv/g-plugin-rough-canvas-renderer
 
+## 2.0.12
+
+### Patch Changes
+
+-   @antv/g-canvas@2.0.11
+
 ## 2.0.11
 
 ### Patch Changes
