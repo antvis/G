@@ -1,5 +1,11 @@
 # @antv/g-plugin-html-renderer
 
+## 2.0.10
+
+### Patch Changes
+
+-   bc655835: fix: HTML canvas does not match the canvas range after the camera is applied (#1702)
+
 ## 2.0.9
 
 ### Patch Changes
