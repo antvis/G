@@ -20,7 +20,7 @@ import type {
   UpdatePayload,
 } from './types';
 
-export const reconcilor = ReactReconciler<
+export const reconciler = ReactReconciler<
   Type,
   Props,
   Container,
@@ -346,7 +346,7 @@ export const reconcilor = ReactReconciler<
   ): void {},
 });
 
-reconcilor.injectIntoDevTools({
+reconciler.injectIntoDevTools({
   // findFiberByHostInstance: () => {},
   // @ts-ignore
   bundleType: process.env.NODE_ENV !== 'production' ? 1 : 0,
@@ -376,7 +376,7 @@ export const render = (
 ) => {
   const container =
     TargetContainerWeakMap.get(target) ||
-    reconcilor.createContainer(target as any, 1, false, null);
+    reconciler.createContainer(target as any, 1, false, null);
   TargetContainerWeakMap.set(target, container);
-  reconcilor.updateContainer(component, container, null, callback);
+  reconciler.updateContainer(component, container, null, callback);
 };
