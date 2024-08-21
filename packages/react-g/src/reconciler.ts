@@ -1,6 +1,6 @@
 import type { Canvas, Element } from '@antv/g';
 import React from 'react';
-import type { OpaqueHandle } from 'react-reconciler';
+import type { OpaqueHandle, OpaqueRoot } from 'react-reconciler';
 import ReactReconciler from 'react-reconciler';
 import { unstable_now as now } from 'scheduler';
 import { bindShapeEvent, updateProps } from './processProps';
@@ -359,6 +359,8 @@ reconcilor.injectIntoDevTools({
   },
 });
 
+const TargetContainerWeakMap = new WeakMap<Element | Canvas, OpaqueRoot>();
+
 /**
  * render react-g component to target g element
  * 将react-g组件渲染到任意的g实例（Canvas/Group/Shape）中
@@ -372,7 +374,9 @@ export const render = (
   target: Element | Canvas,
   callback?: (() => void) | null,
 ) => {
-  // @ts-ignore
-  const container = reconcilor.createContainer(target as any, 1, false, null);
+  const container =
+    TargetContainerWeakMap.get(target) ||
+    reconcilor.createContainer(target as any, 1, false, null);
+  TargetContainerWeakMap.set(target, container);
   reconcilor.updateContainer(component, container, null, callback);
 };
