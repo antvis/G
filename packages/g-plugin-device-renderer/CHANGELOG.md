@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.13
+
+### Patch Changes
+
+-   3fb2553d: fix: the logic boundary condition judgment of text element attribute update is missing (#1755)
+
 ## 2.0.12
 
 ### Patch Changes
