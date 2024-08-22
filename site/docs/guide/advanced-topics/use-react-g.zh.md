@@ -3,7 +3,7 @@ title: 使用 React 定义图形
 order: 5
 ---
 
-react 通过 `react-reconcilor` 提供了自定义 render 的能力，`react-g` 便是一个 react 到 g 的 render。
+react 通过 `react-reconciler` 提供了自定义 render 的能力，`react-g` 便是一个 react 到 g 的 render。
 
 `react-g` 目前处于实验状态，欢迎试用和反馈。
 
