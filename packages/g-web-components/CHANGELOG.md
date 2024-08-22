@@ -1,5 +1,11 @@
 # @antv/g-web-components
 
+## 2.0.16
+
+### Patch Changes
+
+-   @antv/g-webgl@2.0.15
+
 ## 2.0.15
 
 ### Patch Changes

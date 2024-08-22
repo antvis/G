@@ -1,5 +1,11 @@
 # @antv/react-g
 
+## 2.0.13
+
+### Patch Changes
+
+-   950db94d: fix: react-g rerender (#1757)
+
 ## 2.0.12
 
 ### Patch Changes
