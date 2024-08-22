@@ -342,6 +342,11 @@ export class TextDrawcall extends Instanced {
     name: string,
     value: any,
   ): void {
+    // fix https://github.com/antvis/G/issues/1755
+    if (objects.length === 0) {
+      return;
+    }
+
     if (
       name === 'text' ||
       name === 'fontFamily' ||

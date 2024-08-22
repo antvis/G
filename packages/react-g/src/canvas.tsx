@@ -2,7 +2,7 @@ import type { CanvasConfig } from '@antv/g';
 import { Canvas as GCanvas } from '@antv/g';
 import React, { forwardRef, useLayoutEffect, useRef } from 'react';
 import type { FiberRoot } from 'react-reconciler';
-import { reconcilor } from './reconciler';
+import { reconciler } from './reconciler';
 import { assertRef } from './util';
 
 export interface CanvasProps extends CanvasConfig {
@@ -52,7 +52,7 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
       canvasRef.current = canvas;
 
       // @ts-ignore
-      container.current = reconcilor.createContainer(
+      container.current = reconciler.createContainer(
         canvas as any,
         1,
         false,
@@ -61,14 +61,14 @@ export const Canvas = forwardRef<GCanvas, CanvasProps>(
 
       return () => {
         // @ts-ignore
-        reconcilor.updateContainer(null, container.current, null);
+        reconciler.updateContainer(null, container.current, null);
       };
     }, []);
 
     useLayoutEffect(() => {
       if (container.current) {
         // @ts-ignore
-        reconcilor.updateContainer(children, container.current, null);
+        reconciler.updateContainer(children, container.current, null);
       }
     }, [children]);
 
