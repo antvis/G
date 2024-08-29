@@ -14,12 +14,15 @@
         padding: 0;
       }
 
-      html,
       body {
         height: 100vh;
+        padding: 111px 0 0 111px;
+        /* padding: 100px 0 0 100px; */
       }
 
       #container {
+        /* border: 1px solid #ddd; */
+        background-color: #ddd;
         width: 100%;
         height: 100%;
       }
@@ -29,16 +32,14 @@
   <body>
     <div id="container"></div>
     <script
-      src="../packages/g/dist/index.umd.min.js"
+      src="../../packages/g/dist/index.umd.min.js"
       type="application/javascript"
     ></script>
     <script
-      src="../packages/g-canvas/dist/index.umd.min.js"
+      src="../../packages/g-canvas/dist/index.umd.min.js"
       type="application/javascript"
     ></script>
-    <script src="../packages/g-plugin-control/dist/index.umd.min.js"></script>
-    <!-- <script src="../packages/g-svg/dist/index.umd.min.js" type="application/javascript"></script>
-    <script src="../packages/g-webgl/dist/index.umd.min.js" type="application/javascript"></script> -->
+    <script src="../../packages/g-plugin-control/dist/index.umd.min.js"></script>
     <script>
       console.log(window.G);
       const { Circle, CanvasEvent, Canvas, HTML } = window.G;
@@ -50,8 +51,8 @@
       // create a canvas
       const canvas = new Canvas({
         container: 'container',
-        width: 800,
-        height: 800,
+        width: 600,
+        height: 600,
         renderer: canvasRenderer,
       });
 
@@ -61,6 +62,9 @@
           cy: 200,
           r: 50,
           fill: 'red',
+          transform: 'translate(120px, 120px) scale(2)',
+          transformOrigin: 'center center',
+          // transformOrigin: '200px 200px',
         },
       });
 
@@ -72,12 +76,21 @@
           height: 100,
           innerHTML:
             '<h1 style="width: 100px; height: 100px;">This is Title</h1>',
+          transform: 'translate(120px, 120px) scale(2)',
+          transformOrigin: 'center center',
+          // transformOrigin: '50px 50px',
         },
       });
 
       canvas.addEventListener(CanvasEvent.READY, () => {
         canvas.appendChild(circle);
         canvas.appendChild(html);
+
+        // console.log(
+        //   'transform',
+        //   circle.getWorldTransform(),
+        //   html.getWorldTransform(),
+        // );
 
         console.log('canvas.getCamera()', canvas.getCamera(), circle, html);
         console.log(
