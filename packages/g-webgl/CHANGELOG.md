@@ -1,5 +1,16 @@
 # @antv/g-webgl
 
+## 2.0.16
+
+### Patch Changes
+
+-   Updated dependencies [fcd04674]
+    -   @antv/g-plugin-html-renderer@2.0.11
+    -   @antv/g-lite@2.0.9
+    -   @antv/g-plugin-device-renderer@2.0.14
+    -   @antv/g-plugin-dom-interaction@2.0.9
+    -   @antv/g-plugin-image-loader@2.0.9
+
 ## 2.0.15
 
 ### Patch Changes

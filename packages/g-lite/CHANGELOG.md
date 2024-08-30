@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.9
+
+### Patch Changes
+
+-   fcd04674: fix: html element's `getBounds` logic exception (#1743)
+
 ## 2.0.8
 
 ### Patch Changes
