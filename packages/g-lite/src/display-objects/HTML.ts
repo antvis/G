@@ -1,7 +1,7 @@
 import { mat4 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
 import { runtime } from '../global-runtime';
-import { AABB, Rectangle } from '../shapes';
+import { AABB } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
@@ -61,45 +61,39 @@ export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
   /**
    * override with $el.getBoundingClientRect
    * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect
+   *
+   * ! The calculation logic of the html element should be consistent with that of the canvas element
    */
-  getBoundingClientRect(): Rectangle {
-    if (this.parsedStyle.$el) {
-      const cameraMatrix = this.ownerDocument.defaultView
-        .getCamera()
-        .getOrthoMatrix();
-      const bBox = this.parsedStyle.$el.getBoundingClientRect();
-
-      return Rectangle.applyTransform(
-        bBox,
-        mat4.invert(mat4.create(), cameraMatrix),
-      );
-    } else {
-      const { x, y, width, height } = this.parsedStyle;
-      return new Rectangle(x, y, width, height);
-    }
-  }
+  // getBoundingClientRect(): Rectangle {
+  //   if (this.parsedStyle.$el) {
+  //     return this.parsedStyle.$el.getBoundingClientRect();
+  //   } else {
+  //     const { x, y, width, height } = this.parsedStyle;
+  //     return new Rectangle(x, y, width, height);
+  //   }
+  // }
 
   getClientRects() {
     return [this.getBoundingClientRect()];
   }
 
-  getBounds() {
-    const clientRect = this.getBoundingClientRect();
-    // calc context's offset
-    // @ts-ignore
-    const canvasRect = this.ownerDocument?.defaultView
-      ?.getContextService()
-      .getBoundingClientRect();
+  // getBounds() {
+  //   const clientRect = this.getBoundingClientRect();
+  //   // calc context's offset
+  //   // @ts-ignore
+  //   const canvasRect = this.ownerDocument?.defaultView
+  //     ?.getContextService()
+  //     .getBoundingClientRect();
 
-    const aabb = new AABB();
-    const minX = clientRect.left - (canvasRect?.left || 0);
-    const minY = clientRect.top - (canvasRect?.top || 0);
-    aabb.setMinMax(
-      [minX, minY, 0],
-      [minX + clientRect.width, minY + clientRect.height, 0],
-    );
-    return aabb;
-  }
+  //   const aabb = new AABB();
+  //   const minX = clientRect.left - (canvasRect?.left || 0);
+  //   const minY = clientRect.top - (canvasRect?.top || 0);
+  //   aabb.setMinMax(
+  //     [minX, minY, 0],
+  //     [minX + clientRect.width, minY + clientRect.height, 0],
+  //   );
+  //   return aabb;
+  // }
 
   getLocalBounds() {
     if (this.parentNode) {

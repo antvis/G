@@ -1,5 +1,13 @@
 # @antv/g-plugin-html-renderer
 
+## 2.0.11
+
+### Patch Changes
+
+-   fcd04674: fix: html element's `getBounds` logic exception (#1743)
+-   Updated dependencies [fcd04674]
+    -   @antv/g-lite@2.0.9
+
 ## 2.0.10
 
 ### Patch Changes

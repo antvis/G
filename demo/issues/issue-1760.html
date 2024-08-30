@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,user-scalable=no,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>issue-1760</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100vh;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script
+      src="../../packages/g/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../../packages/g-canvas/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script type="module">
+      // @see https://github.com/antvis/G/issues/1760
+      const { Canvas, Path, Line, Canvas2D } = window.G;
+
+      const canvasRenderer = new Canvas2D.Renderer();
+
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      const arrowMarker = new Path({
+        style: {
+          d: 'M 10,10 L -10,0 L 10,-10 Z',
+          stroke: '#1890FF',
+          transformOrigin: 'center',
+        },
+      });
+
+      const path = new Path({
+        style: {
+          lineWidth: 1,
+          stroke: '#54BECC',
+          // d: 'M 0,40 L 100,100',
+          d: 'M 10,100 L 100,100',
+          markerStart: arrowMarker,
+          markerStartOffset: 30,
+          markerEnd: arrowMarker,
+          markerEndOffset: 30,
+        },
+      });
+
+      const line = new Line({
+        style: {
+          x1: 10,
+          y1: 150,
+          x2: 100,
+          y2: 150,
+          lineWidth: 1,
+          stroke: '#54BECC',
+          markerStart: arrowMarker,
+          markerStartOffset: 30,
+          markerEnd: arrowMarker,
+          markerEndOffset: 30,
+        },
+      });
+
+      canvas.appendChild(path);
+      canvas.appendChild(line);
+    </script>
+  </body>
+</html>

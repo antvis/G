@@ -54,7 +54,6 @@ export function generatePath(
         // Use start marker offset
         if (useStartOffset) {
           context.moveTo(params[1] + startOffsetX, params[2] + startOffsetY);
-          context.lineTo(params[1], params[2]);
         } else {
           context.moveTo(params[1], params[2]);
         }

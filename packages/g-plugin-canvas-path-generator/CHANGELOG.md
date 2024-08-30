@@ -1,5 +1,13 @@
 # @antv/g-plugin-canvas-path-generator
 
+## 2.0.9
+
+### Patch Changes
+
+-   5e4a1d69: fix: `path` elements are drawn incorrectly after using `markerStartOffset` (#1760)
+-   Updated dependencies [fcd04674]
+    -   @antv/g-lite@2.0.9
+
 ## 2.0.8
 
 ### Patch Changes
