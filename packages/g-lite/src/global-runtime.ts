@@ -42,6 +42,7 @@ import {
   RectUpdater,
   TextService,
   TextUpdater,
+  HTMLUpdater,
 } from './services';
 import { CanvasLike, Shape } from './types';
 
@@ -104,7 +105,7 @@ const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>> = (() => {
     [Shape.POLYLINE]: polylineUpdater,
     [Shape.POLYGON]: polylineUpdater,
     [Shape.PATH]: new PathUpdater(),
-    [Shape.HTML]: null,
+    [Shape.HTML]: new HTMLUpdater(),
     [Shape.MESH]: null,
   };
 })();

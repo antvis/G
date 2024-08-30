@@ -17,7 +17,7 @@ import {
   Shape,
 } from '@antv/g-lite';
 import { isNil, isNumber, isString } from '@antv/util';
-import type { mat4 } from 'gl-matrix';
+import type { mat4, vec3 } from 'gl-matrix';
 
 const CANVAS_CAMERA_ID = 'g-canvas-camera';
 
@@ -36,14 +36,17 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     HTMLElement
   >();
 
-  private joinTransformMatrix(matrix: mat4) {
+  /**
+   * ! The reason for adding `offset` is that the `transform-origin` coordinate system of DOM is the local coordinate system of the element, while the `transform-origin` coordinate system of canvas drawing is the local coordinate system of the element's parent element. At the same time, the `transform` attribute value of the DOM element does not include `transform-origin`.
+   */
+  private joinTransformMatrix(matrix: mat4, offset: vec3 = [0, 0, 0]) {
     return `matrix(${[
       matrix[0],
       matrix[1],
       matrix[4],
       matrix[5],
-      matrix[12],
-      matrix[13],
+      matrix[12] + offset[0],
+      matrix[13] + offset[1],
     ].join(',')})`;
   }
 
@@ -56,6 +59,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const setTransform = (object: HTML, $el: HTMLElement) => {
       $el.style.transform = this.joinTransformMatrix(
         object.getWorldTransform(),
+        object.getOrigin(),
       );
     };
 
@@ -118,8 +122,8 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const handleCanvasResize = () => {
       if (this.$camera) {
         const { width, height } = this.context.config;
-        this.$camera.style.width = `${width || 0}px`;
-        this.$camera.style.height = `${height || 0}px`;
+        this.$camera.parentElement.style.width = `${width || 0}px`;
+        this.$camera.parentElement.style.height = `${height || 0}px`;
       }
     };
 
@@ -237,6 +241,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
       $existedElement.style['will-change'] = 'transform';
       $existedElement.style.transform = this.joinTransformMatrix(
         object.getWorldTransform(),
+        object.getOrigin(),
       );
     }
 
@@ -263,9 +268,11 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         break;
       case 'transformOrigin':
         const { transformOrigin } = object.parsedStyle;
-        $el.style[
-          'transform-origin'
-        ] = `${transformOrigin[0].value} ${transformOrigin[1].value}`;
+        $el.style['transform-origin'] = `${transformOrigin[0].buildCSSText(
+          null,
+          null,
+          '',
+        )} ${transformOrigin[1].buildCSSText(null, null, '')}`;
         break;
       case 'width':
         if (this.context.enableCSSParsing) {
