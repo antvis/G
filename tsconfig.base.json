@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "./",
+    "rootDir": ".",
+    "outDir": ".",
     "module": "ESNext",
     "target": "es5",
     "jsx": "react",
@@ -8,7 +9,6 @@
     "experimentalDecorators": true,
     "declaration": true,
     "sourceMap": true,
-    "sourceRoot": ".",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
