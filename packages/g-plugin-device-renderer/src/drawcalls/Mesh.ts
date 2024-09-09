@@ -30,6 +30,10 @@ export class MeshDrawcall extends Instanced {
     name: string,
     value: any,
   ): void {
+    if (objects.length === 0) {
+      return;
+    }
+
     super.updateAttribute(objects, startIndex, name, value);
     this.updateBatchedAttribute(objects, startIndex, name, value);
   }

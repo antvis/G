@@ -878,6 +878,16 @@ export abstract class Instanced {
         this.geometryDirty = true;
       }
     }
+
+    // fix https://github.com/antvis/G/issues/1768
+    if (this.geometryDirty === true && this.objects.length !== 0) {
+      if (this.geometry) {
+        this.geometry.destroy();
+      }
+      this.createGeometry(this.objects);
+
+      this.geometryDirty = false;
+    }
   }
 
   changeRenderOrder(object: DisplayObject, renderOrder: number) {
