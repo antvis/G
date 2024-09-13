@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,user-scalable=no,initial-scale=1,shrink-to-fit=no"
+    />
+    <title>issue-1749</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        height: 100vh;
+        padding: 100px;
+      }
+
+      #container {
+        /* border: 1px solid #ddd; */
+        background-color: #ddd;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script
+      src="../../packages/g/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script
+      src="../../packages/g-canvas/dist/index.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const { Canvas, CanvasEvent, Rect, Text, Path, Canvas2D } = window.G;
+
+      const canvasRenderer = new Canvas2D.Renderer();
+
+      const canvas = new Canvas({
+        container: 'container',
+        width: 600,
+        height: 500,
+        renderer: canvasRenderer,
+      });
+
+      const test = (shape, property) => {
+        shape.addEventListener('pointerenter', () => {
+          shape.style[property] = 'red';
+        });
+        shape.addEventListener('pointerleave', () => {
+          shape.style[property] = 'black';
+        });
+      };
+
+      const text = new Text({
+        style: {
+          text: 'test123213',
+          fontSize: 20,
+          x: 300,
+          y: 100,
+          anchor: '0.5 0.5',
+          transform: 'rotate(45)',
+        },
+      });
+
+      const path = new Path({
+        style: {
+          d: 'M 100,100 L 150,100 L 150,150 Z',
+          fill: 'black',
+          transform: 'rotate(45)',
+        },
+      });
+
+      test(text, 'fill');
+      test(path, 'fill');
+
+      canvas.addEventListener(CanvasEvent.READY, () => {
+        canvas.appendChild(text);
+        canvas.appendChild(path);
+
+        const { x, y, width, height } = text.getBBox();
+        const rect = new Rect({
+          style: {
+            x,
+            y,
+            width,
+            height,
+            stroke: 'black',
+            // transform: 'rotate(45)',
+          },
+        });
+        test(rect, 'stroke');
+
+        canvas.appendChild(rect);
+      });
+    </script>
+  </body>
+</html>
