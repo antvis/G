@@ -9,11 +9,11 @@ import { isPointInPath as PolygonPicker } from './Polygon';
 import { isPointInPath as PolylinePicker } from './Polyline';
 import { isPointInPath as RectPicker } from './Rect';
 import { isPointInPath as ImagePicker } from './Image';
+import { isPointInPath as TextPicker } from './Text';
 
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-picker';
   init(): void {
-    const trueFunc = () => true;
     const pointInPathPickerFactory: Record<Shape, PointInPathPicker<any>> = {
       [Shape.CIRCLE]: CirclePicker,
       [Shape.ELLIPSE]: EllipsePicker,
@@ -22,7 +22,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.POLYLINE]: PolylinePicker,
       [Shape.POLYGON]: PolygonPicker,
       [Shape.PATH]: PathPicker,
-      [Shape.TEXT]: trueFunc,
+      [Shape.TEXT]: TextPicker,
       [Shape.GROUP]: null,
       [Shape.IMAGE]: ImagePicker,
       [Shape.HTML]: null,
