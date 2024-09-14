@@ -1,5 +1,11 @@
 # @antv/g-plugin-canvas-picker
 
+## 2.0.11
+
+### Patch Changes
+
+-   681327ee: feat: added support for picking rotated text (#1749)
+
 ## 2.0.10
 
 ### Patch Changes
