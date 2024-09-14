@@ -17,12 +17,12 @@ jobs:
 
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 9
 
-      - name: Use Node.js 16
+      - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: 16 # semantic-release 需要 >= 16 的 Node.js 环境
+          node-version: 20 # semantic-release 需要 >= 16 的 Node.js 环境
           cache: 'pnpm'
 
       - name: Install dependencies

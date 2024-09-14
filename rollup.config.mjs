@@ -2,6 +2,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import { builtinModules } from 'module';
 
 export function createConfig({
@@ -17,8 +18,9 @@ export function createConfig({
       mainFields: ['module', 'browser', 'main'],
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs'],
     }),
-    commonjs(),
+    commonjs({ sourceMap: true }),
     typescript({ sourceMap: true }),
+    sourcemaps(),
   ];
 
   return [
@@ -60,6 +62,7 @@ export function createConfig({
       plugins: [
         ...sharedPlugins,
         terser({
+          sourceMap: true,
           compress: {
             pure_getters: true,
             unsafe: true,

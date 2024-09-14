@@ -347,6 +347,8 @@ export class TextDrawcall extends Instanced {
       return;
     }
 
+    super.updateAttribute(objects, startIndex, name, value);
+
     if (
       name === 'text' ||
       name === 'fontFamily' ||
