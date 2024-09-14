@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.15
+
+### Patch Changes
+
+-   61ef85b2: fix: webgl renderer has logical exception when updating attributes (#1768)
+
 ## 2.0.14
 
 ### Patch Changes
