@@ -6,7 +6,6 @@
   },
   "license": "MIT",
   "author": "xiaoiver",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "demo": "http-server -c-1 -o ./demo/",
