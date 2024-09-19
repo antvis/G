@@ -1,4 +1,4 @@
-import { Ellipse } from '../../../packages/g';
+import { Ellipse } from '@antv/g';
 
 export async function ellipse(context) {
   const { canvas } = context;

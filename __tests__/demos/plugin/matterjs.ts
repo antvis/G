@@ -1,5 +1,5 @@
-import { Circle, Image, Line, Polygon, Rect } from '../../../packages/g';
-import { Plugin as PluginMatterjs } from '../../../packages/g-plugin-matterjs';
+import { Circle, Image, Line, Polygon, Rect } from '@antv/g';
+import { Plugin as PluginMatterjs } from '@antv/g-plugin-matterjs';
 
 export async function matterjs(context) {
   const { canvas } = context;

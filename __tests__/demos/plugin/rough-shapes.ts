@@ -11,9 +11,9 @@ import {
   Polyline,
   Rect,
   Text,
-} from '../../../packages/g';
-import { Plugin as PluginRoughCanvasRenderer } from '../../../packages/g-plugin-rough-canvas-renderer';
-import { Plugin as PluginRoughSVGRenderer } from '../../../packages/g-plugin-rough-svg-renderer';
+} from '@antv/g';
+import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
+import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
 import WebFont from 'webfontloader';
 export async function roughShapes(context) {
   const { canvas } = context;

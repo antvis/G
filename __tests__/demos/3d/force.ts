@@ -4,23 +4,16 @@ import {
   forceManyBody,
   forceCenter,
 } from 'd3-force-3d';
-import {
-  Line,
-  Text,
-  Rect,
-  Image,
-  Circle,
-  CanvasEvent,
-} from '../../../packages/g';
+import { Line, Text, Rect, Image, Circle, CanvasEvent } from '@antv/g';
 import {
   SphereGeometry,
   MeshPhongMaterial,
   DirectionalLight,
   Mesh,
   Plugin as Plugin3D,
-} from '../../../packages/g-plugin-3d';
-import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
-import { ARButton, DeviceRenderer } from '../../../packages/g-webgl';
+} from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
+import { ARButton, DeviceRenderer } from '@antv/g-webgl';
 
 // https://bl.ocks.org/vasturiano/f59675656258d3f490e9faa40828c0e7
 const dataset = {

@@ -1,12 +1,12 @@
-import { CanvasEvent } from '../../../packages/g';
+import { CanvasEvent } from '@antv/g';
 import {
   MeshBasicMaterial,
   CubeGeometry,
   Mesh,
   Plugin as Plugin3D,
-} from '../../../packages/g-plugin-3d';
-import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
-import { ARButton, DeviceRenderer } from '../../../packages/g-webgl';
+} from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
+import { ARButton, DeviceRenderer } from '@antv/g-webgl';
 
 export async function ar(context) {
   const { canvas, renderer, container } = context;

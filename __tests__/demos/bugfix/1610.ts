@@ -1,5 +1,5 @@
-import { Canvas, Circle, HTML } from '../../../packages/g';
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas';
+import { Canvas, Circle, HTML } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
 
 export async function html(context) {
   const { canvas, container } = context;

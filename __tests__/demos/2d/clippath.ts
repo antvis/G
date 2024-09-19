@@ -1,5 +1,5 @@
-import { Circle, Rect, Path, Group } from '../../../packages/g';
-import { Sector } from '../../../packages/g-components';
+import { Circle, Rect, Path, Group } from '@antv/g';
+import { Sector } from '@antv/g-components';
 
 export async function clipPath(context) {
   const { canvas } = context;

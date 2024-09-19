@@ -1,4 +1,4 @@
-import { CanvasEvent, Circle, Rect, Path, Group } from '../../../packages/g';
+import { CanvasEvent, Circle, Rect, Path, Group } from '@antv/g';
 
 export async function transform(context) {
   const { canvas } = context;

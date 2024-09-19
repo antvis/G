@@ -1,5 +1,5 @@
-import { Canvas, Circle } from '../../../packages/g';
-import { Renderer } from '../../../packages/g-canvas';
+import { Canvas, Circle } from '@antv/g';
+import { Renderer } from '@antv/g-canvas';
 
 export async function shadowroot_offset(context) {
   const { container } = context;

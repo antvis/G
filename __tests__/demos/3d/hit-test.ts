@@ -1,4 +1,4 @@
-import { CanvasEvent, Canvas } from '../../../packages/g';
+import { CanvasEvent, Canvas } from '@antv/g';
 import {
   CubeGeometry,
   CylinderGeometry,
@@ -7,8 +7,8 @@ import {
   DirectionalLight,
   Mesh,
   Plugin as Plugin3D,
-} from '../../../packages/g-plugin-3d';
-import { ARButton, Renderer } from '../../../packages/g-webgl';
+} from '@antv/g-plugin-3d';
+import { ARButton, Renderer } from '@antv/g-webgl';
 
 /**
  * @see https://github.com/immersive-web/webxr-samples/blob/main/hit-test.html

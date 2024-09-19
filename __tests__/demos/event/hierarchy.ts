@@ -1,4 +1,4 @@
-import { Circle, Path } from '../../../packages/g';
+import { Circle, Path } from '@antv/g';
 
 export async function hierarchy(context) {
   const { canvas } = context;

@@ -1,4 +1,4 @@
-import { Path } from '../../../packages/g';
+import { Path } from '@antv/g';
 
 export async function lineDash(context) {
   const { canvas } = context;

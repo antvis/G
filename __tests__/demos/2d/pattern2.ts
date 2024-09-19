@@ -1,5 +1,5 @@
-import { Circle, Rect } from '../../../packages/g';
-import { dots, lines } from '../../../packages/g-pattern';
+import { Circle, Rect } from '@antv/g';
+import { dots, lines } from '@antv/g-pattern';
 import * as d3 from 'd3';
 
 export async function pattern2(context) {

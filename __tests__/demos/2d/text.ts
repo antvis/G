@@ -1,4 +1,4 @@
-import { Text, Group } from '../../../packages/g';
+import { Text, Group } from '@antv/g';
 
 export async function text(context) {
   const { canvas } = context;

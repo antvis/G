@@ -7,7 +7,7 @@ import {
   Polygon,
   Rect,
   convertToPath,
-} from '../../../packages/g';
+} from '@antv/g';
 
 export async function convert2Path(context) {
   const { canvas } = context;

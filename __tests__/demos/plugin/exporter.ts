@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
-import { HTML, Rectangle, runtime } from '../../../packages/g';
-import { ImageExporter } from '../../../packages/g-image-exporter';
+import { HTML, Rectangle, runtime } from '@antv/g';
+import { ImageExporter } from '@antv/g-image-exporter';
 
 export async function exporter(context) {
   const { canvas, gui } = context;

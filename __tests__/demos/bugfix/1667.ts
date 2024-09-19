@@ -1,4 +1,4 @@
-import { Image, Line, Polyline, Rect, Path } from '../../../packages/g';
+import { Image, Line, Polyline, Rect, Path } from '@antv/g';
 
 export async function zoom(context) {
   const { canvas } = context;

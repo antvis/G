@@ -1,4 +1,4 @@
-import { Plugin } from '../../../packages/g-plugin-a11y';
+import { Plugin } from '@antv/g-plugin-a11y';
 import * as d3 from 'd3';
 
 export async function a11y(context) {

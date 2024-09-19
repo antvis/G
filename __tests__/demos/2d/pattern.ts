@@ -1,4 +1,4 @@
-import { Rect, HTML } from '../../../packages/g';
+import { Rect, HTML } from '@antv/g';
 import SimplexNoise from 'simplex-noise';
 
 /**

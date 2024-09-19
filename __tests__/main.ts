@@ -1,12 +1,12 @@
 import * as lil from 'lil-gui';
-import { Canvas, CanvasEvent, runtime } from '../packages/g';
-import { Renderer as CanvasRenderer } from '../packages/g-canvas';
-import { Renderer as CanvaskitRenderer } from '../packages/g-canvaskit';
-import { Renderer as SVGRenderer } from '../packages/g-svg';
+import { Canvas, CanvasEvent, runtime } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as CanvaskitRenderer } from '@antv/g-canvaskit';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
 // WebGL & WebGPU renderer need to be built with rollup first.
-import { Renderer as WebGLRenderer } from '../packages/g-webgl';
-import { Renderer as WebGPURenderer } from '../packages/g-webgpu';
-import { Plugin as DragAndDropPlugin } from '../packages/g-plugin-dragndrop';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
+import { Renderer as WebGPURenderer } from '@antv/g-webgpu';
+import { Plugin as DragAndDropPlugin } from '@antv/g-plugin-dragndrop';
 import * as basic2d from './demos/2d';
 import * as basic3d from './demos/3d';
 import * as animation from './demos/animation';
@@ -61,11 +61,7 @@ selectChart.style.margin = '1em';
 renderOptions();
 selectChart.onchange = () => {
   const { value } = selectChart;
-  history.pushState(
-    { value },
-    '',
-    `?name=${value}&renderer=${selectRenderer.value}`,
-  );
+  history.pushState({ value }, '', `?name=${value}&renderer=${selectRenderer.value}`);
   plot();
 };
 document.onkeydown = (event) => {
@@ -100,11 +96,7 @@ selectRenderer.style.margin = '1em';
 selectRenderer.append(...Object.keys(renderers).map(createOption));
 selectRenderer.onchange = () => {
   const { value } = selectRenderer;
-  history.pushState(
-    { value },
-    '',
-    `?name=${selectChart.value}&renderer=${value}`,
-  );
+  history.pushState({ value }, '', `?name=${selectChart.value}&renderer=${value}`);
   plot();
 };
 
@@ -131,9 +123,7 @@ addEventListener('popstate', (event) => {
 // @ts-ignore
 const initialValue = new URL(location).searchParams.get('name') as string;
 // @ts-ignore
-const initialRenderer = new URL(location).searchParams.get(
-  'renderer',
-) as string;
+const initialRenderer = new URL(location).searchParams.get('renderer') as string;
 if (tests[initialValue]) selectChart.value = initialValue;
 if (renderers[initialRenderer]) selectRenderer.value = initialRenderer;
 app.append(selectChart);
@@ -151,7 +141,7 @@ async function plot() {
   currentContainer = document.createElement('div');
   app.append(currentContainer);
   const render = tests[selectChart.value];
-  render(currentContainer);
+  render?.(currentContainer);
 }
 
 function createOption(key) {
@@ -165,9 +155,7 @@ function createOption(key) {
 }
 
 function namespace(object, name) {
-  return Object.fromEntries(
-    Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]),
-  );
+  return Object.fromEntries(Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]));
 }
 
 function createSpecRender(object) {
@@ -202,9 +190,7 @@ function createSpecRender(object) {
         generate.initRenderer(renderer, selectRenderer.value);
       }
 
-      renderer.registerPlugin(
-        new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }),
-      );
+      renderer.registerPlugin(new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }));
 
       const $div = document.createElement('div');
       canvas = new Canvas({
@@ -251,7 +237,5 @@ function createSpecRender(object) {
       container.append($div);
     };
   };
-  return Object.fromEntries(
-    Object.entries(object).map(([key, value]) => [key, specRender(value)]),
-  );
+  return Object.fromEntries(Object.entries(object).map(([key, value]) => [key, specRender(value)]));
 }

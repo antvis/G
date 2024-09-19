@@ -1,4 +1,4 @@
-import { loadAnimation } from '../../../packages/g-lottie-player';
+import { loadAnimation } from '@antv/g-lottie-player';
 import * as d3 from 'd3';
 
 export async function assets(context) {
