@@ -2,12 +2,16 @@ import path from 'path';
 import process from 'process';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
-import glsl from 'vite-plugin-glsl';
+import glslify from 'rollup-plugin-glslify';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const resolve = (dir) => {
-  return path.resolve(__dirname, path.join('./packages/', dir, process.env.CI ? 'dist/index.esm.js' : 'src'));
+const resolve = (packageName) => {
+  return path.resolve(__dirname, path.join('./packages/', packageName, process.env.CI ? 'dist/index.esm.js' : 'src'));
 };
 
 export default defineConfig({
@@ -17,7 +21,23 @@ export default defineConfig({
     open: '/',
   },
   publicDir: 'static',
-  plugins: process.env.CI ? [] : [glsl()],
+  plugins: process.env.CI
+    ? []
+    : [
+        // ! keep same to rollup config
+        glslify({
+          // disable compressing shader
+          // @see https://github.com/antvis/g/issues/832
+          compress: false,
+        }),
+        nodeResolve({
+          mainFields: ['module', 'browser', 'main'],
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs'],
+        }),
+        commonjs({ sourceMap: true }),
+        typescript({ sourceMap: true }),
+        sourcemaps(),
+      ],
   resolve: {
     alias: {
       '@antv/g': resolve('g'),
