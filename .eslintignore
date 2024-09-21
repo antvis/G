@@ -8,3 +8,4 @@ rollup.config.js
 site
 rust
 __tests__
+scripts

@@ -1,4 +1,4 @@
-import { Circle, Path, Line, Polyline } from '../../../packages/g';
+import { Circle, Path, Line, Polyline } from '@antv/g';
 
 export async function offsetPath(context) {
   const { canvas } = context;

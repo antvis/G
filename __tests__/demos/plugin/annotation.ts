@@ -7,8 +7,8 @@ import {
   Polyline,
   Polygon,
   runtime,
-} from '../../../packages/g';
-import { Plugin as PluginAnnotation } from '../../../packages/g-plugin-annotation';
+} from '@antv/g';
+import { Plugin as PluginAnnotation } from '@antv/g-plugin-annotation';
 
 let annotationPlugin;
 

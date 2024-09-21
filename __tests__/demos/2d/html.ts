@@ -1,4 +1,4 @@
-import { HTML, Line, Rect, Text, CustomElement } from '../../../packages/g';
+import { HTML, Line, Rect, Text, CustomElement } from '@antv/g';
 
 export async function html(context) {
   const { canvas } = context;

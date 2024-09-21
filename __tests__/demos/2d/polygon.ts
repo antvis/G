@@ -1,4 +1,4 @@
-import { Polygon } from '../../../packages/g';
+import { Polygon } from '@antv/g';
 
 export async function polygon(context) {
   const { canvas } = context;

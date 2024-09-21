@@ -1,4 +1,4 @@
-import { Polyline } from '../../../packages/g';
+import { Polyline } from '@antv/g';
 
 export async function polyline(context) {
   const { canvas } = context;

@@ -1,5 +1,5 @@
-import { runtime, Circle, Group, Rect, Text } from '../../../packages/g';
-import { Plugin as PluginYoga } from '../../../packages/g-plugin-yoga';
+import { runtime, Circle, Group, Rect, Text } from '@antv/g';
+import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
 
 export async function yogaText(context) {
   runtime.enableCSSParsing = true;

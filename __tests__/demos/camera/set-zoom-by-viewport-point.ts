@@ -1,5 +1,5 @@
-import { Circle } from '../../../packages/g';
-import type { Camera, FederatedWheelEvent } from '../../../packages/g';
+import { Circle } from '@antv/g';
+import type { Camera, FederatedWheelEvent } from '@antv/g';
 
 export async function setZoomByViewportPoint(context) {
   const { canvas } = context;

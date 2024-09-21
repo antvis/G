@@ -1,4 +1,4 @@
-import { Circle, Text } from '../../../packages/g';
+import { Circle, Text } from '@antv/g';
 import Hammer from 'hammerjs';
 
 export async function gesture(context) {

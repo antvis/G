@@ -1,4 +1,4 @@
-import { Image } from '../../../packages/g';
+import { Image } from '@antv/g';
 
 export async function imageNonTransparentPixel(context) {
   const { canvas } = context;

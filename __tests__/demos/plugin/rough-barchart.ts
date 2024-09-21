@@ -1,7 +1,7 @@
-import { runtime } from '../../../packages/g';
-import { Plugin as PluginRoughCanvasRenderer } from '../../../packages/g-plugin-rough-canvas-renderer';
-import { Plugin as PluginRoughSVGRenderer } from '../../../packages/g-plugin-rough-svg-renderer';
-import { Plugin as PluginCSSSelect } from '../../../packages/g-plugin-css-select';
+import { runtime } from '@antv/g';
+import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
+import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
+import { Plugin as PluginCSSSelect } from '@antv/g-plugin-css-select';
 import WebFont from 'webfontloader';
 import weatherDataset from '../../integration/data/weather.json';
 import * as d3 from 'd3';

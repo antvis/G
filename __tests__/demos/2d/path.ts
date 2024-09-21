@@ -1,4 +1,4 @@
-import { Path, Rect, Group } from '../../../packages/g';
+import { Path, Rect, Group } from '@antv/g';
 
 export async function path(context) {
   const { canvas } = context;

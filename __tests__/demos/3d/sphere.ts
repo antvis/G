@@ -1,4 +1,4 @@
-import { CanvasEvent } from '../../../packages/g';
+import { CanvasEvent } from '@antv/g';
 import {
   MeshPhongMaterial,
   SphereGeometry,
@@ -6,8 +6,8 @@ import {
   Plugin as Plugin3D,
   DirectionalLight,
   AmbientLight,
-} from '../../../packages/g-plugin-3d';
-import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
+} from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
 
 export async function sphere(context) {
   const { canvas, renderer } = context;

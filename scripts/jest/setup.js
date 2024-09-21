@@ -8,7 +8,7 @@ module.exports = async function (_globalConfig, _projectConfig) {
   const port = await portfinder.getPortPromise();
   // @see https://vitejs.dev/guide/api-javascript.html#createserver
   const server = await createServer({
-    configFile: './vite.config.js',
+    configFile: './vite.config.mjs',
     server: {
       port,
       open: false,
