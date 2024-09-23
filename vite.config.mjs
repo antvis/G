@@ -1,6 +1,6 @@
 import path from 'path';
 import process from 'process';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, URL } from 'url';
 import { defineConfig } from 'vite';
 import glslify from 'rollup-plugin-glslify';
 import commonjs from '@rollup/plugin-commonjs';
@@ -8,7 +8,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const resolve = (packageName) => {
   return path.resolve(__dirname, path.join('./packages/', packageName, process.env.CI ? 'dist/index.esm.js' : 'src'));

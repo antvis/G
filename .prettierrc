@@ -4,6 +4,6 @@
   "trailingComma": "all",
   "bracketSpacing": true,
   "arrowParens": "always",
-  "printWidth": 120,
+  "printWidth": 80,
   "proseWrap": "never"
 }
