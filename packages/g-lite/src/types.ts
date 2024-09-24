@@ -37,7 +37,42 @@ export interface EventPosition {
   x: number;
   y: number;
 }
-
+export type Transform = (
+  | ['scale', number, number]
+  | ['scaleX', number]
+  | ['scaleY', number]
+  | ['scaleZ', number]
+  | ['scale3d', number, number, number]
+  | ['translate', number, number]
+  | ['translateX', number]
+  | ['translateY', number]
+  | ['translateZ', number]
+  | ['translate3d', number, number, number]
+  | ['rotate', number]
+  | ['skew', number, number]
+  | ['skewX', number]
+  | ['skewY', number]
+  | ['matrix', number, number, number, number, number, number]
+  | [
+      'matrix3d',
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ]
+)[];
 export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
 export type TextOverflow = 'clip' | 'ellipsis' | string;
 export type TextDecorationLine = string | 'none';
@@ -53,7 +88,7 @@ export interface BaseStyleProps {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
    */
-  transform?: string;
+  transform?: string | Transform;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin

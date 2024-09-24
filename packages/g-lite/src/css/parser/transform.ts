@@ -15,6 +15,7 @@ import {
   parseLengthOrPercentageUnmemoize,
 } from './dimension';
 import { parseNumber, parseNumberUnmemoize } from './numeric';
+import type { Transform } from '../../types';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -46,6 +47,7 @@ type CastFunction =
   | ((contents: (number | PatternElement)[]) => PatternElement[]);
 
 const _ = null;
+const TRANSFORM_REGEXP = /\s*(\w+)\(([^)]*)\)/g;
 function cast(pattern: PatternElement[]) {
   return function (contents: PatternElement[]) {
     let i = 0;
@@ -97,21 +99,45 @@ const transformFunctions: Record<
   translate3d: ['TTL', id],
 };
 
+function parseArrayTransform(transform: Transform): ParsedTransform[] {
+  const result: ParsedTransform[] = [];
+  const length = transform.length;
+
+  for (let i = 0; i < length; i++) {
+    const item = transform[i];
+    const name = item[0];
+    const args = item.slice(1);
+    const functionData = transformFunctions[name];
+    if (!functionData) {
+      return [];
+    }
+    const parsedArgs = args.map(getOrCreateUnitValue);
+    result.push({ t: name, d: parsedArgs });
+  }
+
+  return result;
+}
+
 /**
  * none
  * scale(1) scale(1, 2)
  * scaleX(1)
  */
-export function parseTransform(string: string): ParsedTransform[] {
-  string = (string || 'none').toLowerCase().trim();
-  if (string === 'none') {
+export function parseTransform(
+  transform: string | Transform,
+): ParsedTransform[] {
+  if (Array.isArray(transform)) {
+    return parseArrayTransform(transform);
+  }
+
+  transform = (transform || 'none').toLowerCase().trim();
+  if (transform === 'none') {
     return [];
   }
-  const transformRegExp = /\s*(\w+)\(([^)]*)\)/g;
   const result: ParsedTransform[] = [];
   let match;
   let prevLastIndex = 0;
-  while ((match = transformRegExp.exec(string))) {
+  while ((match = TRANSFORM_REGEXP.exec(transform))) {
     if (match.index !== prevLastIndex) {
       return [];
     }
@@ -159,23 +185,28 @@ export function parseTransform(string: string): ParsedTransform[] {
     }
     result.push({ t: functionName, d: parsedArgs }); // { t: scale, d: [1, 2] }
 
-    if (transformRegExp.lastIndex === string.length) {
+    if (TRANSFORM_REGEXP.lastIndex === transform.length) {
       return result;
     }
   }
 
   return [];
 }
-export function parseTransformUnmemoize(string: string): ParsedTransform[] {
-  string = (string || 'none').toLowerCase().trim();
-  if (string === 'none') {
+export function parseTransformUnmemoize(
+  transform: string | Transform,
+): ParsedTransform[] {
+  if (Array.isArray(transform)) {
+    return parseArrayTransform(transform);
+  }
+
+  transform = (transform || 'none').toLowerCase().trim();
+  if (transform === 'none') {
     return [];
   }
-  const transformRegExp = /\s*(\w+)\(([^)]*)\)/g;
   const result: ParsedTransform[] = [];
   let match;
   let prevLastIndex = 0;
-  while ((match = transformRegExp.exec(string))) {
+  while ((match = TRANSFORM_REGEXP.exec(transform))) {
     if (match.index !== prevLastIndex) {
       return [];
     }
@@ -223,7 +254,7 @@ export function parseTransformUnmemoize(string: string): ParsedTransform[] {
     }
     result.push({ t: functionName, d: parsedArgs }); // { t: scale, d: [1, 2] }
 
-    if (transformRegExp.lastIndex === string.length) {
+    if (TRANSFORM_REGEXP.lastIndex === transform.length) {
       return result;
     }
   }
