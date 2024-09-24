@@ -4,5 +4,5 @@
     "moduleResolution": "node",
     "lib": ["ESNext", "DOM"]
   },
-  "extends": "../../tsconfig.json"
+  "extends": "../tsconfig.json"
 }
