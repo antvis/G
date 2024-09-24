@@ -1,5 +1,6 @@
 import { isNil } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import type { ReadonlyVec3 } from 'gl-matrix';
 import { SortReason, Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
@@ -35,6 +36,28 @@ const reparentEvent = new MutationEvent(
   '',
   '',
 );
+
+const EPSILON = 0.000001;
+
+/**
+ * an optimized version of gl-matrix's equals
+ */
+function equals(a: ReadonlyVec3, b: ReadonlyVec3): boolean {
+  const a0 = a[0],
+    a1 = a[1],
+    a2 = a[2];
+  const b0 = b[0],
+    b1 = b[1],
+    b2 = b[2];
+
+  if (a0 === b0 && a1 === b1 && a2 === b2) return true;
+
+  return (
+    Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+    Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+    Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2))
+  );
+}
 
 /**
  * update transform in scene graph
@@ -348,7 +371,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         translation = vec3.fromValues(translation, y, z);
       }
       const transform = (element as Element).transformable;
-      if (vec3.equals(translation, vec3.create())) {
+      if (equals(translation, vec3.create())) {
         return;
       }
       vec3.transformQuat(translation, translation, transform.localRotation);
@@ -377,7 +400,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       tmpPosition[1] = position[1];
       tmpPosition[2] = position[2] || 0;
 
-      if (vec3.equals(this.getPosition(element), tmpPosition)) {
+      if (equals(this.getPosition(element), tmpPosition)) {
         return;
       }
 
@@ -418,7 +441,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       tmpPosition[1] = position[1];
       tmpPosition[2] = position[2] || 0;
 
-      if (vec3.equals(transform.localPosition, tmpPosition)) {
+      if (equals(transform.localPosition, tmpPosition)) {
         return;
       }
 
@@ -452,7 +475,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       scaling[2] || transform.localScale[2],
     );
 
-    if (vec3.equals(updatedScaling, transform.localScale)) {
+    if (equals(updatedScaling, transform.localScale)) {
       return;
     }
 
@@ -489,7 +512,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       if (typeof translation === 'number') {
         translation = vec3.set(tmpVec3, translation, y, z);
       }
-      if (vec3.equals(translation, zeroVec3)) {
+      if (equals(translation, zeroVec3)) {
         return;
       }
 
