@@ -338,7 +338,8 @@ export class PickingPlugin implements RenderingPlugin {
       canvasWidth * dpr,
       canvasHeight * dpr,
       x,
-      y,
+      // fix https://github.com/antvis/G/issues/1747
+      canvasHeight * dpr - y,
       width,
       height,
     );
