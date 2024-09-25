@@ -15,7 +15,7 @@ import {
   parseLengthOrPercentageUnmemoize,
 } from './dimension';
 import { parseNumber, parseNumberUnmemoize } from './numeric';
-import type { Transform } from '../../types';
+import type { TransformArray } from '../../types';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -99,7 +99,7 @@ const transformFunctions: Record<
   translate3d: ['TTL', id],
 };
 
-function parseArrayTransform(transform: Transform): ParsedTransform[] {
+function parseArrayTransform(transform: TransformArray): ParsedTransform[] {
   const result: ParsedTransform[] = [];
   const length = transform.length;
 
@@ -124,7 +124,7 @@ function parseArrayTransform(transform: Transform): ParsedTransform[] {
  * scaleX(1)
  */
 export function parseTransform(
-  transform: string | Transform,
+  transform: string | TransformArray,
 ): ParsedTransform[] {
   if (Array.isArray(transform)) {
     return parseArrayTransform(transform);
@@ -193,7 +193,7 @@ export function parseTransform(
   return [];
 }
 export function parseTransformUnmemoize(
-  transform: string | Transform,
+  transform: string | TransformArray,
 ): ParsedTransform[] {
   if (Array.isArray(transform)) {
     return parseArrayTransform(transform);
