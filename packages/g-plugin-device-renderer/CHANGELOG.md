@@ -1,5 +1,11 @@
 # @antv/g-plugin-device-renderer
 
+## 2.0.16
+
+### Patch Changes
+
+-   2ae661cb: fix: wrong y coordinate when picking with webgl (#1747)
+
 ## 2.0.15
 
 ### Patch Changes
