@@ -61,7 +61,13 @@ export class Canvas2DContextService
     }
 
     this.context = this.$canvas.getContext('2d');
+
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
+
+    const rendererConfig = this.canvasConfig.renderer.getConfig();
+    if (rendererConfig.imageSmoothingEnabled !== undefined) {
+      this.context.imageSmoothingEnabled = rendererConfig.imageSmoothingEnabled;
+    }
   }
 
   getContext() {
@@ -114,6 +120,8 @@ export class Canvas2DContextService
     }
 
     this.renderingContext.renderReasons.add(RenderReason.CAMERA_CHANGED);
+
+    this.$canvas.getContext('2d').imageSmoothingEnabled = false;
   }
 
   applyCursorStyle(cursor: string) {

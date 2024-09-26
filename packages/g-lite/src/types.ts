@@ -411,6 +411,21 @@ export interface RendererConfig {
    */
   enableSizeAttenuation: boolean;
 
+  /**
+   * enable image smoothing, default is true.
+   * only available in Canvas2D.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/imageSmoothingEnabled
+   */
+  imageSmoothingEnabled: boolean;
+
+  /**
+   * image smoothing quality, default is 'high'.
+   * only available in Canvas2D.
+   * need to enable imageSmoothingEnabled first.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/imageSmoothingQuality
+   */
+  imageSmoothingQuality: ImageSmoothingQuality;
+
   // plugins:
 }
 
