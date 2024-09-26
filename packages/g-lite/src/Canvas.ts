@@ -564,13 +564,13 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private initRenderingService(
     renderer: IRenderer,
-    firstContentfullPaint = false,
+    firstContentfulPaint = false,
     async = false,
   ) {
     this.context.renderingService.init(() => {
       this.inited = true;
 
-      if (firstContentfullPaint) {
+      if (firstContentfulPaint) {
         if (async) {
           this.requestAnimationFrame(() => {
             this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
@@ -586,7 +586,7 @@ export class Canvas extends EventTarget implements ICanvas {
         this.resolveReadyPromise();
       }
 
-      if (!firstContentfullPaint) {
+      if (!firstContentfulPaint) {
         this.getRoot().forEach((node) => {
           const renderable = (node as Element).renderable;
           if (renderable) {
