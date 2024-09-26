@@ -65,7 +65,7 @@ function equals(a: ReadonlyVec3, b: ReadonlyVec3): boolean {
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 export class DefaultSceneGraphService implements SceneGraphService {
-  private pendingEvents = [];
+  private pendingEvents: [INode, { affectChildren: boolean }][] = [];
   private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
 
   constructor(private runtime: GlobalRuntime) {}
@@ -602,37 +602,48 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.dirtifyToRoot(element, true);
   }
 
-  triggerPendingEvents() {
-    const set = new Set<number>();
+  eventEntitySet = new Set<number>();
 
-    const trigger = (element, detail) => {
-      if (element.isConnected && !set.has(element.entity)) {
-        this.boundsChangedEvent.detail = detail;
-        this.boundsChangedEvent.target = element;
-        if (element.isMutationObserved) {
-          element.dispatchEvent(this.boundsChangedEvent);
-        } else {
-          element.ownerDocument.defaultView.dispatchEvent(
-            this.boundsChangedEvent,
-            true,
-          );
-        }
-        set.add(element.entity);
-      }
-    };
-
-    this.pendingEvents.forEach(([element, detail]) => {
-      if (detail.affectChildren) {
-        element.forEach((e) => {
-          trigger(e, detail);
-        });
+  triggerEvent(element, detail) {
+    if (element.isConnected && !this.eventEntitySet.has(element.entity)) {
+      this.boundsChangedEvent.detail = detail;
+      this.boundsChangedEvent.target = element;
+      if (element.isMutationObserved) {
+        element.dispatchEvent(this.boundsChangedEvent);
       } else {
-        trigger(element, detail);
+        element.ownerDocument.defaultView.dispatchEvent(
+          this.boundsChangedEvent,
+          true,
+        );
       }
-    });
+      this.eventEntitySet.add(element.entity);
+    }
+  }
+
+  triggerPendingEvents(root: DisplayObject) {
+    if (root) {
+      root.forEach((e) => {
+        this.triggerEvent(e, { affectChildren: true });
+      });
+    } else {
+      const events = this.pendingEvents;
+      const length = events.length;
+
+      for (let i = 0; i < length; i++) {
+        const [element, detail] = events[i];
+        if (detail.affectChildren) {
+          element.forEach((e) => {
+            this.triggerEvent(e, detail);
+          });
+        } else {
+          this.triggerEvent(element, detail);
+        }
+      }
+    }
+
+    this.eventEntitySet.clear();
 
     this.clearPendingEvents();
-    set.clear();
   }
 
   clearPendingEvents() {
@@ -853,9 +864,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   setLocalTransform(element: INode, transform: mat4) {
-    const t = mat4.getTranslation(vec3.create(), transform);
-    const r = mat4.getRotation(quat.create(), transform);
-    const s = mat4.getScaling(vec3.create(), transform);
+    const t = mat4.getTranslation([0, 0, 0], transform);
+    const r = mat4.getRotation([0, 0, 0, 1], transform);
+    const s = mat4.getScaling([0, 0, 0], transform);
     this.setLocalScale(element, s, false);
     this.setLocalPosition(element, t, false);
     this.setLocalRotation(element, r, undefined, undefined, undefined, false);

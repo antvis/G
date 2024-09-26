@@ -17,7 +17,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
    */
   private toSync = new Set<DisplayObject>();
 
-  private isFirstTimeRendering = true;
   private syncing = false;
 
   isFirstTimeRenderingFinished = false;
@@ -115,8 +114,10 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const ric =
       runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
-      if (this.isFirstTimeRendering) {
-        this.isFirstTimeRendering = false;
+      const frame = context.renderingService.frame;
+      if (frame === 1) {
+        // skip
+      } else if (frame === 2) {
         this.syncing = true;
         ric(() => {
           this.syncRTree(true);
@@ -138,57 +139,56 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     // bounds changed, need re-inserting its children
     const bulk: RBushNodeAABB[] = [];
 
-    Array.from(this.toSync)
-      // some objects may be removed since last frame
-      .filter((object) => object.isConnected)
-      .forEach((node: DisplayObject) => {
-        const rBushNode = node.rBushNode;
+    this.toSync.forEach((node) => {
+      if (node.isConnected) return;
 
-        // clear dirty node
-        if (rBushNode && rBushNode.aabb) {
-          this.rBush.remove(rBushNode.aabb);
+      const rBushNode = node.rBushNode;
+
+      // clear dirty node
+      if (rBushNode?.aabb) {
+        this.rBush.remove(rBushNode.aabb);
+      }
+
+      const renderBounds = node.getRenderBounds();
+      if (renderBounds) {
+        const renderable = node.renderable;
+
+        if (force) {
+          if (!renderable.dirtyRenderBounds) {
+            renderable.dirtyRenderBounds = new AABB();
+          }
+          // save last dirty aabb
+          renderable.dirtyRenderBounds.update(
+            renderBounds.center,
+            renderBounds.halfExtents,
+          );
         }
 
-        const renderBounds = node.getRenderBounds();
-        if (renderBounds) {
-          const renderable = node.renderable;
+        const [minX, minY] = renderBounds.getMin();
+        const [maxX, maxY] = renderBounds.getMax();
 
-          if (force) {
-            if (!renderable.dirtyRenderBounds) {
-              renderable.dirtyRenderBounds = new AABB();
-            }
-            // save last dirty aabb
-            renderable.dirtyRenderBounds.update(
-              renderBounds.center,
-              renderBounds.halfExtents,
-            );
-          }
-
-          const [minX, minY] = renderBounds.getMin();
-          const [maxX, maxY] = renderBounds.getMax();
-
-          if (!rBushNode.aabb) {
-            rBushNode.aabb = {} as RBushNodeAABB;
-          }
-          rBushNode.aabb.displayObject = node;
-          rBushNode.aabb.minX = minX;
-          rBushNode.aabb.minY = minY;
-          rBushNode.aabb.maxX = maxX;
-          rBushNode.aabb.maxY = maxY;
+        if (!rBushNode.aabb) {
+          rBushNode.aabb = {} as RBushNodeAABB;
         }
+        rBushNode.aabb.displayObject = node;
+        rBushNode.aabb.minX = minX;
+        rBushNode.aabb.minY = minY;
+        rBushNode.aabb.maxX = maxX;
+        rBushNode.aabb.maxY = maxY;
+      }
 
-        if (rBushNode.aabb) {
-          // TODO: NaN occurs when width/height of Rect is 0
-          if (
-            !isNaN(rBushNode.aabb.maxX) &&
-            !isNaN(rBushNode.aabb.maxX) &&
-            !isNaN(rBushNode.aabb.minX) &&
-            !isNaN(rBushNode.aabb.minY)
-          ) {
-            bulk.push(rBushNode.aabb);
-          }
+      if (rBushNode.aabb) {
+        // TODO: NaN occurs when width/height of Rect is 0
+        if (
+          !isNaN(rBushNode.aabb.maxX) &&
+          !isNaN(rBushNode.aabb.maxX) &&
+          !isNaN(rBushNode.aabb.minX) &&
+          !isNaN(rBushNode.aabb.minY)
+        ) {
+          bulk.push(rBushNode.aabb);
         }
-      });
+      }
+    });
 
     // use bulk inserting, which is ~2-3 times faster
     // @see https://github.com/mourner/rbush#bulk-inserting-data

@@ -65,6 +65,13 @@ export class RenderingService {
     rendered: 0,
   };
 
+  /**
+   * frame counter
+   * - 1 - init root container
+   * - 2 - user first frame
+   */
+  frame = 0;
+
   private zIndexCounter = 0;
 
   hooks = {
@@ -169,12 +176,17 @@ export class RenderingService {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
+    this.frame++;
 
     const { renderingContext } = this.context;
 
     this.globalRuntime.sceneGraphService.syncHierarchy(renderingContext.root);
-    this.globalRuntime.sceneGraphService.triggerPendingEvents();
 
+    if (this.frame > 2) {
+      this.globalRuntime.sceneGraphService.triggerPendingEvents(
+        this.frame === 3 ? renderingContext.root : undefined,
+      );
+    }
     if (renderingContext.renderReasons.size && this.inited) {
       // @ts-ignore
       renderingContext.dirtyRectangleRenderingDisabled =

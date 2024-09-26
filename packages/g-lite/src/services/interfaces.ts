@@ -5,7 +5,7 @@ import type { AABB, Rectangle } from '../shapes';
 import type { DisplayObject } from '../display-objects';
 
 export interface SceneGraphService {
-  triggerPendingEvents: () => void;
+  triggerPendingEvents: (root: DisplayObject) => void;
   clearPendingEvents: () => void;
   updateDisplayObjectDependency: (
     name: string,
