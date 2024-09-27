@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.10
+
+### Patch Changes
+
+-   update version
+
 ## 2.0.9
 
 ### Patch Changes
