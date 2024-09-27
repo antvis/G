@@ -147,9 +147,9 @@ function formatTransform(transform: string) {
       const { t, d } = parsed;
       if (t === 'translate') {
         return `translate(${d[0].value} ${d[1].value})`;
-      } else if (t === 'translatex') {
+      } else if (t === 'translateX') {
         return `translate(${d[0].value} 0)`;
-      } else if (t === 'translatey') {
+      } else if (t === 'translateY') {
         return `translate(0 ${d[0].value})`;
       } else if (t === 'rotate') {
         return `rotate(${d[0].value})`;
@@ -157,19 +157,19 @@ function formatTransform(transform: string) {
         // scale(1) scale(1, 1)
         const newScale = d?.map((s) => s.value) || [1, 1];
         return `scale(${newScale[0]}, ${newScale[1]})`;
-      } else if (t === 'scalex') {
+      } else if (t === 'scaleX') {
         const newScale = d?.map((s) => s.value) || [1];
         return `scale(${newScale[0]}, 1)`;
-      } else if (t === 'scaley') {
+      } else if (t === 'scaleY') {
         const newScale = d?.map((s) => s.value) || [1];
         return `scale(1, ${newScale[0]})`;
       } else if (t === 'skew') {
         const newSkew = d?.map((s) => s.value) || [0, 0];
         return `skewX(${newSkew[0]}) skewY(${newSkew[1]})`;
-      } else if (t === 'skewx') {
+      } else if (t === 'skewZ') {
         const newSkew = d?.map((s) => s.value) || [0];
         return `skewX(${newSkew[0]})`;
-      } else if (t === 'skewy') {
+      } else if (t === 'skewY') {
         const newSkew = d?.map((s) => s.value) || [0];
         return `skewY(${newSkew[0]})`;
       } else if (t === 'matrix') {

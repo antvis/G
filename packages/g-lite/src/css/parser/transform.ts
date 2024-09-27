@@ -27,19 +27,19 @@ type TransformType =
   | 'matrix'
   | 'matrix3d'
   | 'rotate'
-  | 'rotatex'
-  | 'rotatey'
-  | 'rotatez'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
   | 'rotate3d'
   | 'scale'
-  | 'scalex'
-  | 'scaley'
-  | 'scalez'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
   | 'scale3d'
   | 'translate'
-  | 'translatex'
-  | 'translatey'
-  | 'translatez'
+  | 'translateX'
+  | 'translateY'
+  | 'translateZ'
   | 'translate3d';
 type PatternElement = string | number | null | CSSUnitValue;
 type CastFunction =
@@ -71,31 +71,31 @@ const transformFunctions: Record<
   matrix: ['NNNNNN', [_, _, 0, 0, _, _, 0, 0, 0, 0, 1, 0, _, _, 0, 1], id],
   matrix3d: ['NNNNNNNNNNNNNNNN', id],
   rotate: ['A'],
-  rotatex: ['A'],
-  rotatey: ['A'],
-  rotatez: ['A'],
+  rotateX: ['A'],
+  rotateY: ['A'],
+  rotateZ: ['A'],
   rotate3d: ['NNNA'],
   perspective: ['L'],
   scale: ['Nn', cast([_, _, new CSSUnitValue(1)]), id],
-  scalex: [
+  scaleX: [
     'N',
     cast([_, new CSSUnitValue(1), new CSSUnitValue(1)]),
     cast([_, new CSSUnitValue(1)]),
   ],
-  scaley: [
+  scaleY: [
     'N',
     cast([new CSSUnitValue(1), _, new CSSUnitValue(1)]),
     cast([new CSSUnitValue(1), _]),
   ],
-  scalez: ['N', cast([new CSSUnitValue(1), new CSSUnitValue(1), _])],
+  scaleZ: ['N', cast([new CSSUnitValue(1), new CSSUnitValue(1), _])],
   scale3d: ['NNN', id],
   skew: ['Aa', null, id],
-  skewx: ['A', null, cast([_, Odeg])],
-  skewy: ['A', null, cast([Odeg, _])],
+  skewX: ['A', null, cast([_, Odeg])],
+  skewY: ['A', null, cast([Odeg, _])],
   translate: ['Tt', cast([_, _, Opx]), id],
-  translatex: ['T', cast([_, Opx, Opx]), cast([_, Opx])],
-  translatey: ['T', cast([Opx, _, Opx]), cast([Opx, _])],
-  translatez: ['L', cast([Opx, Opx, _])],
+  translateX: ['T', cast([_, Opx, Opx]), cast([_, Opx])],
+  translateY: ['T', cast([Opx, _, Opx]), cast([Opx, _])],
+  translateZ: ['L', cast([Opx, Opx, _])],
   translate3d: ['TTL', id],
 };
 
@@ -111,7 +111,7 @@ function parseArrayTransform(transform: TransformArray): ParsedTransform[] {
     if (!functionData) {
       return [];
     }
-    const parsedArgs = args.map(getOrCreateUnitValue);
+    const parsedArgs = args.map((value) => getOrCreateUnitValue(value));
     result.push({ t: name, d: parsedArgs });
   }
 
@@ -130,7 +130,7 @@ export function parseTransform(
     return parseArrayTransform(transform);
   }
 
-  transform = (transform || 'none').toLowerCase().trim();
+  transform = (transform || 'none').trim();
   if (transform === 'none') {
     return [];
   }
@@ -200,7 +200,7 @@ export function parseTransformUnmemoize(
     return parseArrayTransform(transform);
   }
 
-  transform = (transform || 'none').toLowerCase().trim();
+  transform = (transform || 'none').trim();
   if (transform === 'none') {
     return [];
   }
@@ -269,7 +269,7 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
   let z: number;
   let angle: number;
   switch (item.t) {
-    case 'rotatex':
+    case 'rotateX':
       angle = deg2rad(convertAngleUnit(item.d[0]));
       return [
         1,
@@ -289,7 +289,7 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
         0,
         1,
       ];
-    case 'rotatey':
+    case 'rotateY':
       angle = deg2rad(convertAngleUnit(item.d[0]));
       return [
         Math.cos(angle),
@@ -310,7 +310,7 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
         1,
       ];
     case 'rotate':
-    case 'rotatez':
+    case 'rotateZ':
       angle = deg2rad(convertAngleUnit(item.d[0]));
       return [
         Math.cos(angle),
@@ -391,11 +391,11 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
         0,
         1,
       ];
-    case 'scalex':
+    case 'scaleX':
       return [item.d[0].value, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    case 'scaley':
+    case 'scaleY':
       return [1, 0, 0, 0, 0, item.d[0].value, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    case 'scalez':
+    case 'scaleZ':
       return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, item.d[0].value, 0, 0, 0, 0, 1];
     case 'scale3d':
       return [
@@ -437,10 +437,10 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
         0,
         1,
       ];
-    case 'skewx':
+    case 'skewX':
       angle = deg2rad(convertAngleUnit(item.d[0]));
       return [1, 0, 0, 0, Math.tan(angle), 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    case 'skewy':
+    case 'skewY':
       angle = deg2rad(convertAngleUnit(item.d[0]));
       return [1, Math.tan(angle), 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     case 'translate':
@@ -448,13 +448,13 @@ export function convertItemToMatrix(item: ParsedTransform): number[] {
       x = convertPercentUnit(item.d[0], 0, null) || 0;
       y = convertPercentUnit(item.d[1], 0, null) || 0;
       return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, 0, 1];
-    case 'translatex':
+    case 'translateX':
       x = convertPercentUnit(item.d[0], 0, null) || 0;
       return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, 0, 0, 1];
-    case 'translatey':
+    case 'translateY':
       y = convertPercentUnit(item.d[0], 0, null) || 0;
       return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, y, 0, 1];
-    case 'translatez':
+    case 'translateZ':
       z = convertPercentUnit(item.d[0], 0, null) || 0;
       return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, z, 1];
     case 'translate3d':
@@ -736,14 +736,14 @@ function quat(fromQ: number[], toQ: number[], f: number): number[] {
   return quat;
 }
 
-// scalex/y/z -> scale
+// scaleX/Y/Z -> scale
 function typeTo2D(type: string) {
-  return type.replace(/[xy]/, '');
+  return type.replace(/[XY]/, '');
 }
 
-// scalex/y/z -> scale3d
+// scaleX/Y/Z -> scale3d
 function typeTo3D(type: string) {
-  return type.replace(/(x|y|z|3d)?$/, '3d');
+  return type.replace(/(X|Y|Z|3d)?$/, '3d');
 }
 
 const isMatrixOrPerspective = function (lt: string, rt: string) {

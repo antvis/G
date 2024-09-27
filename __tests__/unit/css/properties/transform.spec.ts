@@ -60,7 +60,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([20, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('translatex');
+  //   expect(used[0].t).toBe('translateX');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.px(20))).toBeTruthy();
 
@@ -69,7 +69,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 20, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('translatey');
+  //   expect(used[0].t).toBe('translateY');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.px(20))).toBeTruthy();
 
@@ -78,7 +78,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 20]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('translatez');
+  //   expect(used[0].t).toBe('translateZ');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.px(20))).toBeTruthy();
 
@@ -98,7 +98,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('scalex');
+  //   expect(used[0].t).toBe('scaleX');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
 
@@ -107,7 +107,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('scaley');
+  //   expect(used[0].t).toBe('scaleY');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
 
@@ -116,7 +116,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('scalez');
+  //   expect(used[0].t).toBe('scaleZ');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.number(2))).toBeTruthy();
 
@@ -192,7 +192,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('rotatex');
+  //   expect(used[0].t).toBe('rotateX');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
 
@@ -201,7 +201,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('rotatey');
+  //   expect(used[0].t).toBe('rotateY');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
 
@@ -210,7 +210,7 @@ describe('CSSPropertyTransform', () => {
   //   expect(circle.getLocalPosition()).toStrictEqual([0, 0, 0]);
   //   used = circle.computedStyleMap().get('transform') as ParsedTransform[];
   //   expect(used.length).toBe(1);
-  //   expect(used[0].t).toBe('rotatez');
+  //   expect(used[0].t).toBe('rotateZ');
   //   expect(used[0].d.length).toBe(1);
   //   expect(used[0].d[0].equals(CSS.deg(30))).toBeTruthy();
   // });

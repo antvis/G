@@ -22,13 +22,13 @@ describe('Property Transform', () => {
     expect(result[1].d[0].toString()).toBe('3');
     expect(result[1].d[1].toString()).toBe('-4');
 
-    expect(result[2].t).toBe('scalex');
+    expect(result[2].t).toBe('scaleX');
     expect(result[2].d[0].toString()).toBe('5');
 
-    expect(result[3].t).toBe('scaley');
+    expect(result[3].t).toBe('scaleY');
     expect(result[3].d[0].toString()).toBe('-1');
 
-    expect(result[4].t).toBe('scalez');
+    expect(result[4].t).toBe('scaleZ');
     expect(result[4].d[0].toString()).toBe('-3');
 
     result = parseTransform('scale3d(-2, 0, 7)');
@@ -46,11 +46,11 @@ describe('Property Transform', () => {
     expect(result[0].d[0].toString()).toBe('10deg');
     expect(result[1].t).toBe('rotate');
     expect(result[1].d[0].toString()).toBe('1turn');
-    expect(result[2].t).toBe('rotatex');
+    expect(result[2].t).toBe('rotateX');
     expect(result[2].d[0].toString()).toBe('0deg');
-    expect(result[3].t).toBe('rotatey');
+    expect(result[3].t).toBe('rotateY');
     expect(result[3].d[0].toString()).toBe('1.5rad');
-    expect(result[4].t).toBe('rotatez');
+    expect(result[4].t).toBe('rotateZ');
     expect(result[4].d[0].toString()).toBe('50grad');
     expect(result[5].t).toBe('rotate3d');
     expect(result[5].d[0].toString()).toBe('0');
@@ -68,25 +68,25 @@ describe('Property Transform', () => {
     expect(result[1].d[0].toString()).toBe('0px');
 
     result = parseTransform('translateX(10px) translateX(20%) translateX(0)');
-    expect(result[0].t).toBe('translatex');
+    expect(result[0].t).toBe('translateX');
     expect(result[0].d[0].toString()).toBe('10px');
-    expect(result[1].t).toBe('translatex');
+    expect(result[1].t).toBe('translateX');
     expect(result[1].d[0].toString()).toBe('20%');
-    expect(result[2].t).toBe('translatex');
+    expect(result[2].t).toBe('translateX');
     expect(result[2].d[0].toString()).toBe('0px');
 
     result = parseTransform('translateY(10px) translateY(20%) translateY(0)');
-    expect(result[0].t).toBe('translatey');
+    expect(result[0].t).toBe('translateY');
     expect(result[0].d[0].toString()).toBe('10px');
-    expect(result[1].t).toBe('translatey');
+    expect(result[1].t).toBe('translateY');
     expect(result[1].d[0].toString()).toBe('20%');
-    expect(result[2].t).toBe('translatey');
+    expect(result[2].t).toBe('translateY');
     expect(result[2].d[0].toString()).toBe('0px');
 
     result = parseTransform('translateZ(10px) translateZ(0)');
-    expect(result[0].t).toBe('translatez');
+    expect(result[0].t).toBe('translateZ');
     expect(result[0].d[0].toString()).toBe('10px');
-    expect(result[1].t).toBe('translatez');
+    expect(result[1].t).toBe('translateZ');
     expect(result[1].d[0].toString()).toBe('0px');
 
     result = parseTransform(
@@ -200,7 +200,7 @@ describe('Property Transform', () => {
     expect(result).toStrictEqual([
       {
         d: [CSS.rad(0.312)],
-        t: 'skewx',
+        t: 'skewX',
       },
     ]);
 
@@ -208,7 +208,7 @@ describe('Property Transform', () => {
     expect(result).toStrictEqual([
       {
         d: [CSS.rad(0.312)],
-        t: 'skewy',
+        t: 'skewY',
       },
     ]);
   });
@@ -224,10 +224,10 @@ describe('Property Transform', () => {
     expect(format([[1, 2]])).toBe('scale(1,2)');
   });
 
-  it('should merge transforms(scalex & scaley) correctly', () => {
+  it('should merge transforms(scaleX & scaleY) correctly', () => {
     const [left, right, format] = mergeTransforms(
-      [{ t: 'scalex', d: [new CSSUnitValue(2)] }],
-      [{ t: 'scaley', d: [new CSSUnitValue(3)] }],
+      [{ t: 'scaleX', d: [new CSSUnitValue(2)] }],
+      [{ t: 'scaleY', d: [new CSSUnitValue(3)] }],
       null,
     );
     expect(left).toStrictEqual([[2, 1]]);
@@ -235,10 +235,10 @@ describe('Property Transform', () => {
     expect(format([[1, 2]])).toBe('scale(1,2)');
   });
 
-  it('should merge transforms(scale & scaley) correctly', () => {
+  it('should merge transforms(scale & scaleY) correctly', () => {
     const [left, right, format] = mergeTransforms(
       [{ t: 'scale', d: [new CSSUnitValue(1), new CSSUnitValue(2)] }],
-      [{ t: 'scaley', d: [new CSSUnitValue(3)] }],
+      [{ t: 'scaleY', d: [new CSSUnitValue(3)] }],
       null,
     );
     expect(left).toStrictEqual([[1, 2]]);
@@ -246,10 +246,10 @@ describe('Property Transform', () => {
     expect(format([[1, 2]])).toBe('scale(1,2)');
   });
 
-  it('should merge transforms(scale & scaley) correctly', () => {
+  it('should merge transforms(scale & scaleY) correctly', () => {
     const [left, right, format] = mergeTransforms(
       [{ t: 'scale', d: [new CSSUnitValue(0.0001), new CSSUnitValue(1)] }],
-      [{ t: 'scaley', d: [new CSSUnitValue(1)] }],
+      [{ t: 'scaleY', d: [new CSSUnitValue(1)] }],
       null,
     );
     expect(left).toStrictEqual([[0.0001, 1]]);
@@ -257,15 +257,15 @@ describe('Property Transform', () => {
     expect(format([[0.0001, 1]])).toBe('scale(0.0001,1)');
   });
 
-  it('should merge transforms(translatex) correctly', () => {
+  it('should merge transforms(translateX) correctly', () => {
     const [left, right, format] = mergeTransforms(
-      [{ t: 'translatex', d: [new CSSUnitValue(1, 'px')] }],
-      [{ t: 'translatex', d: [new CSSUnitValue(10, 'px')] }],
+      [{ t: 'translateX', d: [new CSSUnitValue(1, 'px')] }],
+      [{ t: 'translateX', d: [new CSSUnitValue(10, 'px')] }],
       null,
     );
     expect(left).toStrictEqual([[1]]);
     expect(right).toStrictEqual([[10]]);
-    expect(format([[10]])).toBe('translatex(10px)');
+    expect(format([[10]])).toBe('translateX(10px)');
   });
 
   it('should merge transforms(translate) correctly', () => {
@@ -347,39 +347,39 @@ describe('Property Transform', () => {
       [
         {
           d: [CSS.deg(15)],
-          t: 'skewx',
+          t: 'skewX',
         },
       ],
       [
         {
           d: [CSS.deg(30)],
-          t: 'skewx',
+          t: 'skewX',
         },
       ],
       null,
     );
     expect(left).toStrictEqual([[15]]);
     expect(right).toStrictEqual([[30]]);
-    expect(format([[20]])).toBe('skewx(20deg)');
+    expect(format([[20]])).toBe('skewX(20deg)');
 
     [left, right, format] = mergeTransforms(
       [
         {
           d: [CSS.deg(15)],
-          t: 'skewy',
+          t: 'skewY',
         },
       ],
       [
         {
           d: [CSS.deg(30)],
-          t: 'skewy',
+          t: 'skewY',
         },
       ],
       null,
     );
     expect(left).toStrictEqual([[15]]);
     expect(right).toStrictEqual([[30]]);
-    expect(format([[20]])).toBe('skewy(20deg)');
+    expect(format([[20]])).toBe('skewY(20deg)');
 
     [left, right, format] = mergeTransforms(
       [
@@ -391,7 +391,7 @@ describe('Property Transform', () => {
       [
         {
           d: [CSS.deg(30)],
-          t: 'skewy',
+          t: 'skewY',
         },
       ],
       null,
@@ -410,7 +410,7 @@ describe('Property Transform', () => {
       [
         {
           d: [CSS.deg(30)],
-          t: 'skewx',
+          t: 'skewX',
         },
       ],
       null,
@@ -424,14 +424,14 @@ describe('Property Transform', () => {
     const [left, right, format] = mergeTransforms(
       [
         {
-          t: 'translatey',
+          t: 'translateY',
           d: [new CSSUnitValue(0, 'px')],
         },
         { t: 'scale', d: [new CSSUnitValue(0.7), new CSSUnitValue(0.7)] },
       ],
       [
         {
-          t: 'translatey',
+          t: 'translateY',
           d: [new CSSUnitValue(0, 'px')],
         },
       ],
@@ -464,7 +464,7 @@ describe('Property Transform', () => {
       ],
       [
         {
-          t: 'translatey',
+          t: 'translateY',
           d: [new CSSUnitValue(0, 'px')],
         },
       ],

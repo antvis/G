@@ -31,13 +31,13 @@ export function parsedTransformToMat4(
           1, 1,
         ];
         mat4.fromScaling(tmpMat2, [newScale[0], newScale[1], 1]);
-      } else if (t === 'scalex') {
+      } else if (t === 'scaleX') {
         const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
         mat4.fromScaling(tmpMat2, [newScale[0], 1, 1]);
-      } else if (t === 'scaley') {
+      } else if (t === 'scaleY') {
         const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
         mat4.fromScaling(tmpMat2, [1, newScale[0], 1]);
-      } else if (t === 'scalez') {
+      } else if (t === 'scaleZ') {
         const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
         mat4.fromScaling(tmpMat2, [1, 1, newScale[0]]);
       } else if (t === 'scale3d') {
@@ -52,13 +52,13 @@ export function parsedTransformToMat4(
           newTranslation[1].value,
           0,
         ]);
-      } else if (t === 'translatex') {
+      } else if (t === 'translateX') {
         const newTranslation = d || [Opx];
         mat4.fromTranslation(tmpMat2, [newTranslation[0].value, 0, 0]);
-      } else if (t === 'translatey') {
+      } else if (t === 'translateY') {
         const newTranslation = d || [Opx];
         mat4.fromTranslation(tmpMat2, [0, newTranslation[0].value, 0]);
-      } else if (t === 'translatez') {
+      } else if (t === 'translateZ') {
         const newTranslation = d || [Opx];
         mat4.fromTranslation(tmpMat2, [0, 0, newTranslation[0].value]);
       } else if (t === 'translate3d') {
@@ -71,13 +71,13 @@ export function parsedTransformToMat4(
       } else if (t === 'rotate') {
         const newAngles = d || [Odeg];
         mat4.fromZRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotatex') {
+      } else if (t === 'rotateX') {
         const newAngles = d || [Odeg];
         mat4.fromXRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotatey') {
+      } else if (t === 'rotateY') {
         const newAngles = d || [Odeg];
         mat4.fromYRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotatez') {
+      } else if (t === 'rotateZ') {
         const newAngles = d || [Odeg];
         mat4.fromZRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
       } else if (t === 'rotate3d') {
@@ -90,10 +90,10 @@ export function parsedTransformToMat4(
       } else if (t === 'skew') {
         const newSkew = d?.map((s) => s.value) || [0, 0];
         createSkewMatrix(tmpMat2, deg2rad(newSkew[0]), deg2rad(newSkew[1]));
-      } else if (t === 'skewx') {
+      } else if (t === 'skewX') {
         const newSkew = d?.map((s) => s.value) || [0];
         createSkewMatrix(tmpMat2, deg2rad(newSkew[0]), 0);
-      } else if (t === 'skewy') {
+      } else if (t === 'skewY') {
         const newSkew = d?.map((s) => s.value) || [0];
         createSkewMatrix(tmpMat2, 0, deg2rad(newSkew[0]));
       } else if (t === 'matrix') {
