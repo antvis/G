@@ -121,6 +121,204 @@ describe('Property Transform', () => {
     expect(result[2].d[1].toString()).toBe('-100px');
   });
 
+  it('parse empty transform array', () => {
+    expect(parseTransform([])).toStrictEqual([]);
+  });
+
+  it('parse scale transform array', () => {
+    const scale = parseTransform([
+      ['scale', -2],
+      ['scale', 3, -4],
+      ['scaleX', 5],
+      ['scaleY', -1],
+      ['scaleZ', -3],
+      ['scale3d', -2, 0, 7],
+    ]);
+    expect(scale[0].t).toBe('scale');
+    expect(scale[0].d[0].value).toBe(-2);
+    expect(scale[0].d[1].value).toBe(-2); // default value sy is sx
+    expect(scale[1].t).toBe('scale');
+    expect(scale[1].d[0].value).toBe(3);
+    expect(scale[1].d[1].value).toBe(-4);
+    expect(scale[2].t).toBe('scaleX');
+    expect(scale[2].d[0].value).toBe(5);
+    expect(scale[3].t).toBe('scaleY');
+    expect(scale[3].d[0].value).toBe(-1);
+    expect(scale[4].t).toBe('scaleZ');
+    expect(scale[4].d[0].value).toBe(-3);
+    expect(scale[5].t).toBe('scale3d');
+    expect(scale[5].d[0].value).toBe(-2);
+    expect(scale[5].d[1].value).toBe(0);
+    expect(scale[5].d[2].value).toBe(7);
+
+    const scale3d = parseTransform([['scale3d', -2, 0, 7]]);
+
+    expect(scale3d[0].t).toBe('scale3d');
+    expect(scale3d[0].d[0].value).toBe(-2);
+    expect(scale3d[0].d[1].value).toBe(0);
+    expect(scale3d[0].d[2].value).toBe(7);
+  });
+
+  it('parse rotate transform array', () => {
+    const rotate = parseTransform([
+      ['rotate', 10],
+      ['rotate', 1],
+      ['rotateX', 0],
+      ['rotateY', 1.5],
+      ['rotateZ', 50],
+      ['rotate3d', 0, 0, 1, 0],
+    ]);
+
+    expect(rotate[0].t).toBe('rotate');
+    expect(rotate[0].d[0].value).toBe(10);
+    expect(rotate[1].t).toBe('rotate');
+    expect(rotate[1].d[0].value).toBe(1);
+    expect(rotate[2].t).toBe('rotateX');
+    expect(rotate[2].d[0].value).toBe(0);
+    expect(rotate[3].t).toBe('rotateY');
+    expect(rotate[3].d[0].value).toBe(1.5);
+    expect(rotate[4].t).toBe('rotateZ');
+    expect(rotate[4].d[0].value).toBe(50);
+    expect(rotate[5].t).toBe('rotate3d');
+    expect(rotate[5].d[0].value).toBe(0);
+    expect(rotate[5].d[1].value).toBe(0);
+    expect(rotate[5].d[2].value).toBe(1);
+    expect(rotate[5].d[3].value).toBe(0);
+
+    const rotate3d = parseTransform([['rotate3d', 0, 0, 1, 0]]);
+    expect(rotate3d[0].t).toBe('rotate3d');
+    expect(rotate3d[0].d[0].value).toBe(0);
+    expect(rotate3d[0].d[1].value).toBe(0);
+    expect(rotate3d[0].d[2].value).toBe(1);
+    expect(rotate3d[0].d[3].value).toBe(0);
+  });
+
+  it('parse translate transform array', () => {
+    const translate = parseTransform([
+      ['translate', 20, 30],
+      ['translate', 10],
+      ['translateX', 10],
+      ['translateX', 20],
+      ['translateX', 0],
+      ['translateY', 10],
+      ['translateY', 20],
+      ['translateY', 0],
+      ['translateZ', 10],
+      ['translateZ', 0],
+      ['translate3d', 10, 20, 30],
+      ['translate3d', 0, 40, 0],
+      ['translate3d', 50, 0, 60],
+    ]);
+
+    expect(translate[0].t).toBe('translate');
+    expect(translate[0].d[0].value).toBe(20);
+    expect(translate[0].d[1].value).toBe(30);
+    expect(translate[1].t).toBe('translate');
+    expect(translate[1].d[0].value).toBe(10);
+    expect(translate[1].d[1].value).toBe(0); // default value is 0
+    expect(translate[2].t).toBe('translateX');
+    expect(translate[2].d[0].value).toBe(10);
+    expect(translate[3].t).toBe('translateX');
+    expect(translate[3].d[0].value).toBe(20);
+    expect(translate[4].t).toBe('translateX');
+    expect(translate[4].d[0].value).toBe(0);
+    expect(translate[5].t).toBe('translateY');
+    expect(translate[5].d[0].value).toBe(10);
+    expect(translate[6].t).toBe('translateY');
+    expect(translate[6].d[0].value).toBe(20);
+    expect(translate[7].t).toBe('translateY');
+    expect(translate[7].d[0].value).toBe(0);
+    expect(translate[8].t).toBe('translateZ');
+    expect(translate[8].d[0].value).toBe(10);
+    expect(translate[9].t).toBe('translateZ');
+    expect(translate[9].d[0].value).toBe(0);
+    expect(translate[10].t).toBe('translate3d');
+    expect(translate[10].d[0].value).toBe(10);
+    expect(translate[10].d[1].value).toBe(20);
+    expect(translate[10].d[2].value).toBe(30);
+    expect(translate[11].t).toBe('translate3d');
+    expect(translate[11].d[0].value).toBe(0);
+    expect(translate[11].d[1].value).toBe(40);
+    expect(translate[11].d[2].value).toBe(0);
+    expect(translate[12].t).toBe('translate3d');
+    expect(translate[12].d[0].value).toBe(50);
+    expect(translate[12].d[1].value).toBe(0);
+    expect(translate[12].d[2].value).toBe(60);
+  });
+
+  it('parse skew transform array', () => {
+    const skew = parseTransform([
+      ['skew', 15],
+      ['skew', 0],
+      ['skew', -0.06, 18],
+      ['skew', 0.312],
+      ['skewX', 0.312],
+      ['skewY', 0.312],
+    ]);
+
+    expect(skew[0].t).toBe('skew');
+    expect(skew[0].d[0].value).toBe(15);
+    expect(skew[0].d[1].value).toBe(0); // default value is 0
+    expect(skew[1].t).toBe('skew');
+    expect(skew[1].d[0].value).toBe(0);
+    expect(skew[1].d[1].value).toBe(0);
+    expect(skew[2].t).toBe('skew');
+    expect(skew[2].d[0].value).toBe(-0.06);
+    expect(skew[2].d[1].value).toBe(18);
+    expect(skew[3].t).toBe('skew');
+    expect(skew[3].d[0].value).toBe(0.312);
+    expect(skew[3].d[1].value).toBe(0);
+    expect(skew[4].t).toBe('skewX');
+    expect(skew[4].d[0].value).toBe(0.312);
+    expect(skew[5].t).toBe('skewY');
+    expect(skew[5].d[0].value).toBe(0.312);
+  });
+
+  it('parse matrix transform array', () => {
+    // prettier-ignore
+    const matrix = parseTransform([
+      [
+        'matrix', 
+         1,  2, 
+        -1,  1, 
+        80, 80
+      ],
+      [
+        'matrix3d',
+        1,      2, -1,   1,
+        80,    80,  0,   0,
+        0,      0,  0,   0,
+        -50, -100,  0, 1.1,
+      ],
+    ]);
+
+    expect(matrix[0].t).toBe('matrix');
+    expect(matrix[0].d[0].value).toBe(1);
+    expect(matrix[0].d[1].value).toBe(2);
+    expect(matrix[0].d[2].value).toBe(-1);
+    expect(matrix[0].d[3].value).toBe(1);
+    expect(matrix[0].d[4].value).toBe(80);
+    expect(matrix[0].d[5].value).toBe(80);
+
+    expect(matrix[1].t).toBe('matrix3d');
+    expect(matrix[1].d[0].value).toBe(1);
+    expect(matrix[1].d[1].value).toBe(2);
+    expect(matrix[1].d[2].value).toBe(-1);
+    expect(matrix[1].d[3].value).toBe(1);
+    expect(matrix[1].d[4].value).toBe(80);
+    expect(matrix[1].d[5].value).toBe(80);
+    expect(matrix[1].d[6].value).toBe(0);
+    expect(matrix[1].d[7].value).toBe(0);
+    expect(matrix[1].d[8].value).toBe(0);
+    expect(matrix[1].d[9].value).toBe(0);
+    expect(matrix[1].d[10].value).toBe(0);
+    expect(matrix[1].d[11].value).toBe(0);
+    expect(matrix[1].d[12].value).toBe(-50);
+    expect(matrix[1].d[13].value).toBe(-100);
+    expect(matrix[1].d[14].value).toBe(0);
+    expect(matrix[1].d[15].value).toBe(1.1);
+  });
+
   it('should parse matrix correctly.', () => {
     let result = parseTransform('matrix(1, 2, -1, 1, 80, 80)');
     expect(result).toStrictEqual([

@@ -106,11 +106,16 @@ function parseArrayTransform(transform: TransformArray): ParsedTransform[] {
   for (let i = 0; i < length; i++) {
     const item = transform[i];
     const name = item[0];
-    const args = item.slice(1);
-    const functionData = transformFunctions[name];
-    if (!functionData) {
-      return [];
+    const args = item.slice(1) as number[];
+    // infer default value
+    if (name === 'translate' || name === 'skew') {
+      if (args.length === 1) args.push(0);
+    } else if (name === 'scale') {
+      if (args.length === 1) args.push(args[0]);
     }
+
+    const functionData = transformFunctions[name];
+    if (!functionData) return [];
     const parsedArgs = args.map((value) => getOrCreateUnitValue(value));
     result.push({ t: name, d: parsedArgs });
   }
