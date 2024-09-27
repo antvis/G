@@ -1,4 +1,4 @@
-import { Rect } from '../../../packages/g';
+import { Rect } from '@antv/g';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewX

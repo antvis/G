@@ -1,4 +1,4 @@
-import { Rect, HTML, Line } from '../../../packages/g';
+import { Rect, HTML, Line } from '@antv/g';
 
 export async function gradient(context) {
   const { canvas } = context;

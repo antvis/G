@@ -1,4 +1,4 @@
-import { Path, Polyline, Circle } from '../../../packages/g';
+import { Path, Polyline, Circle } from '@antv/g';
 
 export async function getPoint(context) {
   const { canvas, gui } = context;

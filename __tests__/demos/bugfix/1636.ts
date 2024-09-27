@@ -1,4 +1,4 @@
-import { Image, Group, Rect } from '../../../packages/g';
+import { Image, Group, Rect } from '@antv/g';
 
 export async function image(context) {
   const { canvas } = context;

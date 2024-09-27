@@ -1,5 +1,5 @@
-import { Circle } from '../../../packages/g';
-import { Plugin as PluginDragndrop } from '../../../packages/g-plugin-dragndrop';
+import { Circle } from '@antv/g';
+import { Plugin as PluginDragndrop } from '@antv/g-plugin-dragndrop';
 export async function dragndropPerf(context) {
   const { canvas, renderer } = context;
 

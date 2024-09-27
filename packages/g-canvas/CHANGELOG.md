@@ -1,5 +1,14 @@
 # @antv/g-canvas
 
+## 2.0.14
+
+### Patch Changes
+
+-   update version
+-   Updated dependencies
+    -   @antv/g-lite@2.0.10
+    -   @antv/g-plugin-canvas-renderer@2.0.11
+
 ## 2.0.13
 
 ### Patch Changes

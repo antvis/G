@@ -1,4 +1,4 @@
-import { Rect } from '../../../packages/g';
+import { Rect } from '@antv/g';
 
 export async function rect(context) {
   const { canvas } = context;

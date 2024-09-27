@@ -1,4 +1,4 @@
-import { Circle, Line, Group } from '../../../packages/g';
+import { Circle, Line, Group } from '@antv/g';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform-origin

@@ -1,4 +1,4 @@
-import { Line } from '../../../packages/g';
+import { Line } from '@antv/g';
 
 export async function line(context) {
   const { canvas } = context;

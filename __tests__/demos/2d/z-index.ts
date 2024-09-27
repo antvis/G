@@ -1,4 +1,4 @@
-import { Rect, Text } from '../../../packages/g';
+import { Rect, Text } from '@antv/g';
 
 export async function zIndex(context) {
   const { canvas, gui } = context;

@@ -1,4 +1,4 @@
-import { Circle, Group, Text } from '../../../packages/g';
+import { Circle, Group, Text } from '@antv/g';
 
 /**
  * ported from https://github.com/wellyshen/use-web-animations/tree/master/src/animations

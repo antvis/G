@@ -1,5 +1,12 @@
 # @antv/g-webgl
 
+## 2.0.18
+
+### Patch Changes
+
+-   Updated dependencies [2ae661cb]
+    -   @antv/g-plugin-device-renderer@2.0.16
+
 ## 2.0.17
 
 ### Patch Changes

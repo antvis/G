@@ -1,4 +1,4 @@
-import { Text, Rect } from '../../../packages/g';
+import { Text, Rect } from '@antv/g';
 
 export async function gradient_text(context) {
   const { canvas } = context;

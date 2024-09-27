@@ -1,6 +1,6 @@
-import { Circle } from '../../../packages/g';
-import { Plugin as PluginRoughCanvasRenderer } from '../../../packages/g-plugin-rough-canvas-renderer';
-import { Plugin as PluginRoughSVGRenderer } from '../../../packages/g-plugin-rough-svg-renderer';
+import { Circle } from '@antv/g';
+import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
+import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
 export async function roughParams(context) {
   const { canvas, gui } = context;
   await canvas.ready;

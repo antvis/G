@@ -3,8 +3,8 @@ import {
   CubeGeometry,
   Mesh,
   Plugin as Plugin3D,
-} from '../../../packages/g-plugin-3d';
-import { Plugin as PluginControl } from '../../../packages/g-plugin-control';
+} from '@antv/g-plugin-3d';
+import { Plugin as PluginControl } from '@antv/g-plugin-control';
 
 export async function cube(context) {
   const { canvas, renderer } = context;

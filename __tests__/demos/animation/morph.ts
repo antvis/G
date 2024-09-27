@@ -6,7 +6,7 @@ import {
   Polygon,
   Rect,
   convertToPath,
-} from '../../../packages/g';
+} from '@antv/g';
 
 export async function morph(context) {
   const { canvas } = context;

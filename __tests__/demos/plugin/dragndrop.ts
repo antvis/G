@@ -1,5 +1,5 @@
-import { Image, Text } from '../../../packages/g';
-import { Plugin as PluginDragndrop } from '../../../packages/g-plugin-dragndrop';
+import { Image, Text } from '@antv/g';
+import { Plugin as PluginDragndrop } from '@antv/g-plugin-dragndrop';
 export async function dragndrop(context) {
   const { canvas, renderer } = context;
 

@@ -1,4 +1,4 @@
-import { Circle } from '../../../packages/g';
+import { Circle } from '@antv/g';
 
 export async function circle(context) {
   const { canvas } = context;

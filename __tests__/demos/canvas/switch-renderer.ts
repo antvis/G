@@ -1,7 +1,7 @@
-import { Circle } from '../../../packages/g';
-import { Renderer as CanvasRenderer } from '../../../packages/g-canvas';
-import { Renderer as SVGRenderer } from '../../../packages/g-svg';
-import { Renderer as WebGLRenderer } from '../../../packages/g-webgl';
+import { Circle } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import { Renderer as SVGRenderer } from '@antv/g-svg';
+import { Renderer as WebGLRenderer } from '@antv/g-webgl';
 
 export async function switchRenderer(context) {
   const { canvas, gui } = context;

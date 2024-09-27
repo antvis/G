@@ -1,4 +1,4 @@
-import { Circle, Text } from '../../../packages/g';
+import { Circle, Text } from '@antv/g';
 
 export async function dblClick(context) {
   const { canvas } = context;
