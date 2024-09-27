@@ -4,7 +4,7 @@ import {
   forceManyBody,
   forceCenter,
 } from 'd3-force-3d';
-import { Line, Text, Rect, Image, Circle, CanvasEvent } from '@antv/g';
+import { Line, Text, CanvasEvent } from '@antv/g';
 import {
   SphereGeometry,
   MeshPhongMaterial,
@@ -13,7 +13,7 @@ import {
   Plugin as Plugin3D,
 } from '@antv/g-plugin-3d';
 import { Plugin as PluginControl } from '@antv/g-plugin-control';
-import { ARButton, DeviceRenderer } from '@antv/g-webgl';
+import { ARButton } from '@antv/g-webgl';
 
 // https://bl.ocks.org/vasturiano/f59675656258d3f490e9faa40828c0e7
 const dataset = {
