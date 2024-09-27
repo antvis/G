@@ -1,4 +1,4 @@
-import { Canvas, Path } from '@antv/g';
+import { Path } from '@antv/g';
 
 export async function transform_path(context) {
   const { canvas, container } = context;

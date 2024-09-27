@@ -1,4 +1,3 @@
-import { runtime } from '@antv/g';
 import { Plugin as PluginRoughCanvasRenderer } from '@antv/g-plugin-rough-canvas-renderer';
 import { Plugin as PluginRoughSVGRenderer } from '@antv/g-plugin-rough-svg-renderer';
 import { Plugin as PluginCSSSelect } from '@antv/g-plugin-css-select';
@@ -37,10 +36,8 @@ export async function roughBarchart(context) {
         left: 50,
       },
     };
-    dimensions.boundedWidth =
-      dimensions.width - dimensions.margin.left - dimensions.margin.right;
-    dimensions.boundedHeight =
-      dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+    dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
+    dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
     // 3. Draw canvas
     const wrapper = d3.select(
@@ -49,10 +46,7 @@ export async function roughBarchart(context) {
 
     const bounds = wrapper
       .append('g')
-      .style(
-        'transform',
-        `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`,
-      );
+      .style('transform', `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`);
 
     // 4. Create scales
 
@@ -62,11 +56,7 @@ export async function roughBarchart(context) {
       .range([0, dimensions.boundedWidth])
       .nice();
 
-    const binsGenerator = d3
-      .bin()
-      .domain(xScale.domain())
-      .value(metricAccessor)
-      .thresholds(12);
+    const binsGenerator = d3.bin().domain(xScale.domain()).value(metricAccessor).thresholds(12);
 
     const bins = binsGenerator(dataset);
 
@@ -78,20 +68,14 @@ export async function roughBarchart(context) {
 
     // 5. Draw data
     const binsGroup = bounds.append('g');
-    const binGroups = binsGroup
-      .selectAll('g')
-      .data(bins)
-      .join('g')
-      .attr('class', 'bin');
+    const binGroups = binsGroup.selectAll('g').data(bins).join('g').attr('class', 'bin');
 
     const barPadding = 1;
     const barRects = binGroups
       .append('rect')
       .attr('x', (d) => xScale(d.x0) + barPadding / 2)
       .attr('y', (d) => yScale(yAccessor(d)))
-      .attr('width', (d) =>
-        d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]),
-      )
+      .attr('width', (d) => d3.max([0, xScale(d.x1) - xScale(d.x0) - barPadding]))
       .attr('height', (d) => dimensions.boundedHeight - yScale(yAccessor(d)))
       .attr('fill', 'cornflowerblue')
       .on('mouseenter', function (e) {

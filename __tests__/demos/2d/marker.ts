@@ -1,4 +1,4 @@
-import { Path, Circle, Line, Rect, Image } from '@antv/g';
+import { Path, Circle, Line } from '@antv/g';
 
 export async function marker(context) {
   const { canvas } = context;
