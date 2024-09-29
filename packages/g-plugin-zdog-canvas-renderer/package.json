@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-zdog-canvas-renderer",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "description": "A G plugin of renderer implementation with Zdog",
   "keywords": [
     "antv",

@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.0.11
+
+### Patch Changes
+
+-   05adafa1: chore: fix dependency version information
+
 ## 2.0.10
 
 ### Patch Changes
