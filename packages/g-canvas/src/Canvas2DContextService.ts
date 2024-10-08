@@ -6,6 +6,7 @@ import type {
   GlobalRuntime,
   CanvasConfig,
   ContextService,
+  RendererConfig,
 } from '@antv/g-lite';
 import { RenderReason, isBrowser, setDOMSize } from '@antv/g-lite';
 import { isString } from '@antv/util';
@@ -64,10 +65,10 @@ export class Canvas2DContextService
 
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
 
-    const rendererConfig = this.canvasConfig.renderer.getConfig();
-    if (rendererConfig.imageSmoothingEnabled !== undefined) {
-      this.context.imageSmoothingEnabled = rendererConfig.imageSmoothingEnabled;
-    }
+    applyCanvasImageSmoothingConfig(
+      this.context,
+      this.canvasConfig.renderer.getConfig(),
+    );
   }
 
   getContext() {
@@ -120,8 +121,6 @@ export class Canvas2DContextService
     }
 
     this.renderingContext.renderReasons.add(RenderReason.CAMERA_CHANGED);
-
-    this.$canvas.getContext('2d').imageSmoothingEnabled = false;
   }
 
   applyCursorStyle(cursor: string) {
@@ -136,5 +135,18 @@ export class Canvas2DContextService
       type,
       encoderOptions,
     );
+  }
+}
+
+function applyCanvasImageSmoothingConfig(
+  context: CanvasRenderingContext2D,
+  config: RendererConfig,
+) {
+  const { imageSmoothingEnabled, imageSmoothingQuality } = config;
+  if (imageSmoothingEnabled !== undefined) {
+    context.imageSmoothingEnabled = imageSmoothingEnabled;
+  }
+  if (imageSmoothingQuality !== undefined) {
+    context.imageSmoothingQuality = imageSmoothingQuality;
   }
 }

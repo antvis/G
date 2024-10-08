@@ -212,6 +212,7 @@ export function parseTransformUnmemoize(
   const result: ParsedTransform[] = [];
   let match;
   let prevLastIndex = 0;
+  TRANSFORM_REGEXP.lastIndex = 0;
   while ((match = TRANSFORM_REGEXP.exec(transform))) {
     if (match.index !== prevLastIndex) {
       return [];
