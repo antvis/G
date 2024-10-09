@@ -140,7 +140,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     const bulk: RBushNodeAABB[] = [];
 
     this.toSync.forEach((node) => {
-      if (node.isConnected) return;
+      if (!node.isConnected) return;
 
       const rBushNode = node.rBushNode;
 
