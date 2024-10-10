@@ -5,7 +5,8 @@ import { mat3, mat4, vec3, vec4 } from 'gl-matrix';
 export function getAngle(angle?: number) {
   if (angle === undefined) {
     return 0;
-  } else if (angle > 360 || angle < -360) {
+  }
+  if (angle > 360 || angle < -360) {
     return angle % 360;
   }
   return angle;
@@ -43,7 +44,7 @@ export function rad2deg(rad: number) {
 
 const GRAD_DEG = 0.9; // 360 / 400;
 export function grad2deg(grads: number) {
-  grads = grads % 400;
+  grads %= 400;
   if (grads < 0) {
     grads += 400;
   }
@@ -104,7 +105,7 @@ function getEulerFromQuat(out: vec3, quat: quat) {
     out[1] = 2 * Math.atan2(y, x);
     out[2] = 0;
   } else if (test < -0.499995 * unit) {
-    //TODO: Use glmatrix.EPSILON
+    // TODO: Use glmatrix.EPSILON
     // singularity at the south pole
     out[0] = -HALF_PI;
     out[1] = 2 * Math.atan2(y, x);
@@ -155,9 +156,8 @@ function getEulerFromMat4(out: vec3, m: mat4) {
 export function getEuler(out: vec3, quat: quat | mat4): vec3 {
   if (quat.length === 16) {
     return getEulerFromMat4(out, quat as mat4);
-  } else {
-    return getEulerFromQuat(out, quat as quat);
   }
+  return getEulerFromQuat(out, quat as quat);
 }
 
 export function fromRotationTranslationScale(
@@ -303,7 +303,7 @@ export function decomposeMat4(
   perspective: vec4,
   quaternion: vec4,
 ) {
-  //normalize, if not possible then bail out early
+  // normalize, if not possible then bail out early
   if (!normalize(tmp, matrix)) return false;
 
   // perspectiveMatrix is used to solve for perspective, but it also provides
@@ -319,13 +319,13 @@ export function decomposeMat4(
   // decompose, so we'll bail early. Constant taken from SkMatrix44::invert.
   if (Math.abs(mat4.determinant(perspectiveMatrix)) < 1e-8) return false;
 
-  const a03 = tmp[3],
-    a13 = tmp[7],
-    a23 = tmp[11],
-    a30 = tmp[12],
-    a31 = tmp[13],
-    a32 = tmp[14],
-    a33 = tmp[15];
+  const a03 = tmp[3];
+  const a13 = tmp[7];
+  const a23 = tmp[11];
+  const a30 = tmp[12];
+  const a31 = tmp[13];
+  const a32 = tmp[14];
+  const a33 = tmp[15];
 
   // First, isolate perspective.
   if (a03 !== 0 || a13 !== 0 || a23 !== 0) {
@@ -341,10 +341,10 @@ export function decomposeMat4(
     if (!ret) return false;
     mat4.transpose(perspectiveMatrix, perspectiveMatrix);
 
-    //multiply by transposed inverse perspective matrix, into perspective vec4
+    // multiply by transposed inverse perspective matrix, into perspective vec4
     vec4.transformMat4(perspective, tmpVec4, perspectiveMatrix);
   } else {
-    //no perspective
+    // no perspective
     perspective[0] = perspective[1] = perspective[2] = 0;
     perspective[3] = 1;
   }
@@ -420,7 +420,7 @@ function normalize(out: mat4, mat: mat4) {
   return true;
 }
 
-//gets upper-left of a 4x4 matrix into a 3x3 of vectors
+// gets upper-left of a 4x4 matrix into a 3x3 of vectors
 function mat3from4(out: mat3, mat4x4: mat4) {
   out[0][0] = mat4x4[0];
   out[0][1] = mat4x4[1];

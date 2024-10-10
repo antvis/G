@@ -19,7 +19,6 @@ import type {
 } from './interfaces';
 import { PropertySyntax } from './interfaces';
 import {
-  ParsedFilterStyleProperty,
   parseColor,
   parseFilter,
   parsePath,
@@ -852,7 +851,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       nodeName
     ] as GeometryAABBUpdater;
     if (geometryUpdater) {
-      const geometry = object.geometry;
+      const { geometry } = object;
       if (!geometry.contentBounds) {
         geometry.contentBounds = new AABB();
       }
@@ -886,7 +885,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         shadowColor,
         filter = [],
         transformOrigin,
-      } = parsedStyle as ParsedBaseStyleProps;
+      } = parsedStyle;
       const center: Tuple3Number = [cx, cy, cz];
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
@@ -910,8 +909,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // account for shadow, only support constant value now
       if (shadowColor && shadowType && shadowType !== 'inner') {
         const { min, max } = geometry.renderBounds;
-        const { shadowBlur, shadowOffsetX, shadowOffsetY } =
-          parsedStyle as ParsedBaseStyleProps;
+        const { shadowBlur, shadowOffsetX, shadowOffsetY } = parsedStyle;
         const shadowBlurInPixels = shadowBlur || 0;
         const shadowOffsetXInPixels = shadowOffsetX || 0;
         const shadowOffsetYInPixels = shadowOffsetY || 0;
@@ -927,9 +925,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         geometry.renderBounds.setMinMax(min, max);
       }
       // account for filter, eg. blur(5px), drop-shadow()
-      (filter as ParsedFilterStyleProperty[]).forEach(({ name, params }) => {
+      filter.forEach(({ name, params }) => {
         if (name === 'blur') {
-          const blurRadius = params[0].value as number;
+          const blurRadius = params[0].value;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
             vec3.add(

@@ -2,8 +2,11 @@ import {
   DisplayObject,
   FederatedEvent,
   ParsedPolylineStyleProps,
+  Circle,
+  CustomEvent,
+  Polyline,
+  Shape,
 } from '@antv/g-lite';
-import { Circle, CustomEvent, Polyline, Shape } from '@antv/g-lite';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
 
@@ -32,7 +35,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
     this.mask = new Polyline({
       style: {
         points,
-        draggable: target.style.maskDraggable === false ? false : true,
+        draggable: target.style.maskDraggable !== false,
         increasedLineWidthForHitTesting:
           this.plugin.annotationPluginOptions.selectableStyle
             .maskIncreasedLineWidthForHitTesting,
@@ -146,7 +149,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
   destroy(): void {}
 
   deleteSelectedAnchors() {
-    const target = this.style.target;
+    const { target } = this.style;
 
     const points = this.mask.style.points.slice();
     this.selectedAnchors.forEach((anchor) => {

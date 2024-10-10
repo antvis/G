@@ -13,6 +13,7 @@ export class AsyncSeriesWaterfallHook<T, R> {
       for (let i = 0; i < this.callbacks.length - 1; i++) {
         const callback = this.callbacks[i];
         // @ts-ignore
+        // eslint-disable-next-line no-await-in-loop
         result = await callback(result);
       }
 

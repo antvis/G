@@ -52,7 +52,7 @@ export class ControlPlugin implements RenderingPlugin {
       this.hammertime.off('panend', this.onPanend);
       this.hammertime.off('pinch', this.onPinch);
 
-      const root = renderingContext.root;
+      const { root } = renderingContext;
       root.removeEventListener('wheel', this.onMousewheel);
     });
   }

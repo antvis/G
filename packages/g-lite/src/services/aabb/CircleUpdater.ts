@@ -3,6 +3,7 @@ import type {
   ParsedCircleStyleProps,
 } from '../../display-objects/Circle';
 import type { GeometryAABBUpdater } from './interfaces';
+
 export class CircleUpdater
   implements GeometryAABBUpdater<ParsedCircleStyleProps>
 {

@@ -85,7 +85,7 @@ export function generatePath(
         }
         break;
       case 'A': {
-        const arcParams = segments[i].arcParams;
+        const { arcParams } = segments[i];
         const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } =
           arcParams;
         // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse

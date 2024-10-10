@@ -226,7 +226,8 @@ export class RenderingService {
     // TODO: relayout
 
     // dirtycheck first
-    const renderable = displayObject.renderable;
+    const { renderable } = displayObject;
+    // eslint-disable-next-line no-nested-ternary
     const objectChanged = enableDirtyCheck
       ? // @ts-ignore
         renderable.dirty || renderingContext.dirtyRectangleRenderingDisabled
@@ -251,7 +252,7 @@ export class RenderingService {
     this.stats.total++;
 
     // sort is very expensive, use cached result if possible
-    const sortable = displayObject.sortable;
+    const { sortable } = displayObject;
     if (sortable.dirty) {
       this.sort(displayObject, sortable);
       sortable.dirty = false;
@@ -281,16 +282,14 @@ export class RenderingService {
           if (index >= 0) {
             sortable.sorted.splice(index, 1);
           }
+        } else if (sortable.sorted.length === 0) {
+          sortable.sorted.push(child);
         } else {
-          if (sortable.sorted.length === 0) {
-            sortable.sorted.push(child);
-          } else {
-            const index = sortedIndex(
-              sortable.sorted as IElement[],
-              child as IElement,
-            );
-            sortable.sorted.splice(index, 0, child);
-          }
+          const index = sortedIndex(
+            sortable.sorted as IElement[],
+            child as IElement,
+          );
+          sortable.sorted.splice(index, 0, child);
         }
       });
     } else {

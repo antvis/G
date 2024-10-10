@@ -27,7 +27,24 @@ export class Frustum {
    */
   public extractFromVPMatrix(projectionMatrix: mat4) {
     // @ts-ignore
-    const [m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15] = projectionMatrix;
+    const [
+      m0,
+      m1,
+      m2,
+      m3,
+      m4,
+      m5,
+      m6,
+      m7,
+      m8,
+      m9,
+      m10,
+      m11,
+      m12,
+      m13,
+      m14,
+      m15,
+    ] = projectionMatrix;
 
     // right
     vec3.set(this.planes[0].normal, m3 - m0, m7 - m4, m11 - m8);

@@ -28,7 +28,10 @@ export interface GradientParams {
 }
 
 export class TexturePool {
-  constructor(public context: CanvasContext, private runtime: GlobalRuntime) {}
+  constructor(
+    public context: CanvasContext,
+    private runtime: GlobalRuntime,
+  ) {}
 
   private textureCache: Record<string, Texture> = {};
 

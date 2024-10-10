@@ -2,6 +2,7 @@ import type { DisplayObject } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
 import type { Mesh } from '../Mesh';
 import { Instanced } from './Instanced';
+
 export class MeshDrawcall extends Instanced {
   protected mergeXYZIntoModelMatrix = false;
 

@@ -43,7 +43,7 @@ export class ImageRenderer implements StyleRenderer {
       // Error: Image given has not completed loading
       try {
         context.drawImage(image, x, y, iw, ih);
-      } catch (e) {}
+      } catch {}
     }
   }
 }

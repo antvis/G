@@ -20,12 +20,12 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
 
     const { points: parsedPoints } =
       target.parsedStyle as ParsedPolygonStyleProps;
-    const points = parsedPoints.points;
+    const { points } = parsedPoints;
 
     this.mask = new Polygon({
       style: {
         points,
-        draggable: target.style.maskDraggable === false ? false : true,
+        draggable: target.style.maskDraggable !== false,
         increasedLineWidthForHitTesting:
           this.plugin.annotationPluginOptions.selectableStyle
             .maskIncreasedLineWidthForHitTesting,
@@ -130,7 +130,7 @@ export class SelectablePolygon extends AbstractSelectable<Polygon> {
   destroy(): void {}
 
   deleteSelectedAnchors() {
-    const target = this.style.target;
+    const { target } = this.style;
 
     const points = this.mask.style.points.slice();
     this.selectedAnchors.forEach((anchor) => {

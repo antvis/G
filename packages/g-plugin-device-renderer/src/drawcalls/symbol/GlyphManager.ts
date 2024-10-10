@@ -81,11 +81,12 @@ export class GlyphManager {
     let y = offsetY;
 
     const justify =
+      // eslint-disable-next-line no-nested-ternary
       textAlign === 'right' || textAlign === 'end'
         ? 1
         : textAlign === 'left' || textAlign === 'start'
-        ? 0
-        : 0.5;
+          ? 0
+          : 0.5;
 
     lines.forEach((line) => {
       const lineStartIndex = positionedGlyphs.length;
@@ -109,7 +110,7 @@ export class GlyphManager {
 
       const lineWidth = x - letterSpacing;
       for (let i = lineStartIndex; i < positionedGlyphs.length; i++) {
-        positionedGlyphs[i].x = positionedGlyphs[i].x - justify * lineWidth;
+        positionedGlyphs[i].x -= justify * lineWidth;
       }
 
       x = 0;

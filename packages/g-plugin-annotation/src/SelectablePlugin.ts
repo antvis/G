@@ -450,14 +450,20 @@ export class SelectablePlugin implements RenderingPlugin {
             const bboxB = b.getBBox();
             if (sortDirection === 'lr') {
               return bboxA.x - bboxB.x;
-            } else if (sortDirection === 'rl') {
+            }
+            if (sortDirection === 'rl') {
               return bboxB.x + bboxB.width - (bboxA.x + bboxA.width);
-            } else if (sortDirection === 'tb') {
+            }
+            if (sortDirection === 'tb') {
               return bboxA.y - bboxB.y;
-            } else if (sortDirection === 'bt') {
+            }
+            if (sortDirection === 'bt') {
               return bboxB.y + bboxB.height - (bboxA.y + bboxA.height);
             }
+
+            return null;
           })
+          .filter((item) => item !== null)
           .forEach((selected) => {
             this.selectDisplayObject(selected);
           });
@@ -503,9 +509,7 @@ export class SelectablePlugin implements RenderingPlugin {
       } else if (e.shiftKey) {
         const selectable = e
           .composedPath()
-          .find(
-            (el) => el instanceof AbstractSelectable,
-          ) as AbstractSelectable<any>;
+          .find((el) => el instanceof AbstractSelectable);
         if (selectable) {
           const { target } = selectable.style;
           // if already selected, deselect it
@@ -685,14 +689,12 @@ export class SelectablePlugin implements RenderingPlugin {
               ) {
                 selectable.deleteSelectedAnchors();
               }
-            } else {
-              if (
-                this.annotationPluginOptions.enableDeleteTargetWithShortcuts
-              ) {
-                target.dispatchEvent(new CustomEvent(SelectableEvent.DELETED));
-                this.deselectDisplayObject(target);
-                target.destroy();
-              }
+            } else if (
+              this.annotationPluginOptions.enableDeleteTargetWithShortcuts
+            ) {
+              target.dispatchEvent(new CustomEvent(SelectableEvent.DELETED));
+              this.deselectDisplayObject(target);
+              target.destroy();
             }
           }
         });

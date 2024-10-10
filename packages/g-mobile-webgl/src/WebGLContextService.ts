@@ -72,9 +72,9 @@ export class WebGLContextService
     // @ts-ignore 使用style功能判断不使用类型判断更准确
     if (canvasDOM.style) {
       // @ts-ignore
-      canvasDOM.style.width = width + 'px';
+      canvasDOM.style.width = `${width}px`;
       // @ts-ignore
-      canvasDOM.style.height = height + 'px';
+      canvasDOM.style.height = `${height}px`;
     }
 
     if (isCanvasElement(canvasDOM)) {

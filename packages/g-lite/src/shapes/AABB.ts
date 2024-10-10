@@ -229,28 +229,33 @@ export class AABB {
     if (plane.pnVertexFlag === 0x111) {
       return copyVec3([0, 0, 0], this.min) as Tuple3Number;
       // return vec3.copy(vec3.create(), this.min);
-    } else if (plane.pnVertexFlag === 0x110) {
+    }
+    if (plane.pnVertexFlag === 0x110) {
       return [this.min[0], this.min[1], this.max[2]];
       // return vec3.fromValues(this.min[0], this.min[1], this.max[2]);
-    } else if (plane.pnVertexFlag === 0x101) {
+    }
+    if (plane.pnVertexFlag === 0x101) {
       return [this.min[0], this.max[1], this.min[2]];
       // return vec3.fromValues(this.min[0], this.max[1], this.min[2]);
-    } else if (plane.pnVertexFlag === 0x100) {
+    }
+    if (plane.pnVertexFlag === 0x100) {
       return [this.min[0], this.max[1], this.max[2]];
       // return vec3.fromValues(this.min[0], this.max[1], this.max[2]);
-    } else if (plane.pnVertexFlag === 0x011) {
+    }
+    if (plane.pnVertexFlag === 0x011) {
       return [this.max[0], this.min[1], this.min[2]];
       // return vec3.fromValues(this.max[0], this.min[1], this.min[2]);
-    } else if (plane.pnVertexFlag === 0x010) {
+    }
+    if (plane.pnVertexFlag === 0x010) {
       return [this.max[0], this.min[1], this.max[2]];
       // return vec3.fromValues(this.max[0], this.min[1], this.max[2]);
-    } else if (plane.pnVertexFlag === 0x001) {
+    }
+    if (plane.pnVertexFlag === 0x001) {
       return [this.max[0], this.max[1], this.min[2]];
       // return vec3.fromValues(this.max[0], this.max[1], this.min[2]);
-    } else {
-      return [this.max[0], this.max[1], this.max[2]];
-      // return vec3.fromValues(this.max[0], this.max[1], this.max[2]);
     }
+    return [this.max[0], this.max[1], this.max[2]];
+    // return vec3.fromValues(this.max[0], this.max[1], this.max[2]);
   }
 
   /**
@@ -261,27 +266,32 @@ export class AABB {
     if (plane.pnVertexFlag === 0x111) {
       return copyVec3([0, 0, 0], this.max) as Tuple3Number;
       // return vec3.copy(vec3.create(), this.max);
-    } else if (plane.pnVertexFlag === 0x110) {
+    }
+    if (plane.pnVertexFlag === 0x110) {
       return [this.max[0], this.max[1], this.min[2]];
       // return vec3.fromValues(this.max[0], this.max[1], this.min[2]);
-    } else if (plane.pnVertexFlag === 0x101) {
+    }
+    if (plane.pnVertexFlag === 0x101) {
       return [this.max[0], this.min[1], this.max[2]];
       // return vec3.fromValues(this.max[0], this.min[1], this.max[2]);
-    } else if (plane.pnVertexFlag === 0x100) {
+    }
+    if (plane.pnVertexFlag === 0x100) {
       return [this.max[0], this.min[1], this.min[2]];
       // return vec3.fromValues(this.max[0], this.min[1], this.min[2]);
-    } else if (plane.pnVertexFlag === 0x011) {
+    }
+    if (plane.pnVertexFlag === 0x011) {
       return [this.min[0], this.max[1], this.max[2]];
       // return vec3.fromValues(this.min[0], this.max[1], this.max[2]);
-    } else if (plane.pnVertexFlag === 0x010) {
+    }
+    if (plane.pnVertexFlag === 0x010) {
       return [this.min[0], this.max[1], this.min[2]];
       // return vec3.fromValues(this.min[0], this.max[1], this.min[2]);
-    } else if (plane.pnVertexFlag === 0x001) {
+    }
+    if (plane.pnVertexFlag === 0x001) {
       return [this.min[0], this.min[1], this.max[2]];
       // return vec3.fromValues(this.min[0], this.min[1], this.max[2]);
-    } else {
-      return [this.min[0], this.min[1], this.min[2]];
-      // return vec3.fromValues(this.min[0], this.min[1], this.min[2]);
     }
+    return [this.min[0], this.min[1], this.min[2]];
+    // return vec3.fromValues(this.min[0], this.min[1], this.min[2]);
   }
 }

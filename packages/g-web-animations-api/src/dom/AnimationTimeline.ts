@@ -1,8 +1,16 @@
-import type { IDocument, IAnimationTimeline, IElement, IAnimation } from '@antv/g-lite';
+import type {
+  IDocument,
+  IAnimationTimeline,
+  IElement,
+  IAnimation,
+} from '@antv/g-lite';
 import { Animation } from './Animation';
 import { KeyframeEffect } from './KeyframeEffect';
 
-export function compareAnimations(leftAnimation: IAnimation, rightAnimation: IAnimation) {
+export function compareAnimations(
+  leftAnimation: IAnimation,
+  rightAnimation: IAnimation,
+) {
   return Number(leftAnimation.id) - Number(rightAnimation.id);
 }
 
@@ -48,7 +56,7 @@ export class AnimationTimeline implements IAnimationTimeline {
   play(
     target: IElement,
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | KeyframeAnimationOptions | undefined,
+    options?: number | KeyframeAnimationOptions,
   ): Animation {
     const effect = new KeyframeEffect(target, keyframes, options);
     const animation = new Animation(effect, this);
@@ -74,7 +82,11 @@ export class AnimationTimeline implements IAnimationTimeline {
     animations.sort(compareAnimations);
 
     // clear inactive animations
-    const inactiveAnimations = this.tick(Number(this.currentTime), false, animations.slice())[1];
+    const inactiveAnimations = this.tick(
+      Number(this.currentTime),
+      false,
+      animations.slice(),
+    )[1];
     inactiveAnimations.forEach((animation) => {
       const index = this.animations.indexOf(animation);
       if (index !== -1) {
@@ -105,15 +117,19 @@ export class AnimationTimeline implements IAnimationTimeline {
   }
 
   private updateAnimationsPromises() {
-    this.animationsWithPromises = this.animationsWithPromises.filter((animation) => {
-      return animation.updatePromises();
-    });
+    this.animationsWithPromises = this.animationsWithPromises.filter(
+      (animation) => {
+        return animation.updatePromises();
+      },
+    );
   }
 
   private discardAnimations() {
     this.updateAnimationsPromises();
     this.animations = this.animations.filter((animation) => {
-      return animation.playState !== 'finished' && animation.playState !== 'idle';
+      return (
+        animation.playState !== 'finished' && animation.playState !== 'idle'
+      );
     });
   }
 
@@ -149,7 +165,9 @@ export class AnimationTimeline implements IAnimationTimeline {
   private rAF(f: (x: number) => void) {
     const id = this.rafId++;
     if (this.rafCallbacks.length === 0) {
-      this.frameId = this.document.defaultView.requestAnimationFrame(this.processRafCallbacks);
+      this.frameId = this.document.defaultView.requestAnimationFrame(
+        this.processRafCallbacks,
+      );
     }
     this.rafCallbacks.push([id, f]);
     return id;

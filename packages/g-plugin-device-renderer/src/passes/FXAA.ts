@@ -1,4 +1,3 @@
-import { BufferGeometry } from '../geometries';
 import type { InputLayout } from '@antv/g-device-api';
 import {
   Format,
@@ -6,6 +5,7 @@ import {
   fullscreenMegaState,
   nArray,
 } from '@antv/g-device-api';
+import { BufferGeometry } from '../geometries';
 import { DeviceProgram } from '../render/DeviceProgram';
 import type { RGGraphBuilder } from '../render/interfaces';
 import { RGAttachmentSlot } from '../render/interfaces';

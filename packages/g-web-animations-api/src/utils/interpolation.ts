@@ -161,7 +161,6 @@ function makeInterpolations(
 const InterpolationFactory = (
   from: Interpolatable,
   to: Interpolatable,
-  // eslint-disable-next-line @typescript-eslint/ban-types
   convertToString: Function,
 ) => {
   return (f: number) => {
@@ -252,5 +251,5 @@ function interpolate(
     }
     return r;
   }
-  throw new Error('Mismatched interpolation arguments ' + from + ':' + to);
+  throw new Error(`Mismatched interpolation arguments ${from}:${to}`);
 }

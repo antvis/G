@@ -111,9 +111,11 @@ export class GesturePlugin implements RenderingPlugin {
       const { pointerId, x, y } = ev;
 
       // evcache 已经存在的 pointerId, 做替换
-      const existIdx = evCache.findIndex((item) => pointerId === item.pointerId);
-      if (existIdx !== -1){
-         evCache.splice(existIdx, 1);
+      const existIdx = evCache.findIndex(
+        (item) => pointerId === item.pointerId,
+      );
+      if (existIdx !== -1) {
+        evCache.splice(existIdx, 1);
       }
 
       // evCache 不存在的 pointerId, 添加
@@ -126,15 +128,14 @@ export class GesturePlugin implements RenderingPlugin {
 
       // @ts-ignore 对齐touches evCache 存在，touches 不存在，移除
       const evTouches = [...(ev.nativeEvent?.touches || [])];
-      for (let i =  evCache.length - 1; i > -1; i--) {
-        
-        const isInTouches = evTouches.find(touch => {
-          return evCache[i].pointerId === touch.identifier
-        })
+      for (let i = evCache.length - 1; i > -1; i--) {
+        const isInTouches = evTouches.find((touch) => {
+          return evCache[i].pointerId === touch.identifier;
+        });
 
         // 在touches中存在
         if (isInTouches) {
-          continue
+          continue;
         }
 
         // 在touches中不存在
@@ -169,7 +170,7 @@ export class GesturePlugin implements RenderingPlugin {
 
         this.eventType = eventType;
         this.direction = direction;
-        
+
         this.movingTarget = target;
       }, PRESS_DELAY);
       return;
@@ -262,7 +263,7 @@ export class GesturePlugin implements RenderingPlugin {
     if (evCache.length === 1) {
       // swipe事件处理, 在end之后触发
       const now = clock.now();
-      const lastMoveTime = this.lastMoveTime;
+      const { lastMoveTime } = this;
       // 做这个判断是为了最后一次touchmove后到end前，是否还有一个停顿的过程
       // 100 是拍的一个值，理论这个值会很短，一般不卡顿的话在10ms以内
       if (now - lastMoveTime < 100) {
@@ -392,7 +393,7 @@ export class GesturePlugin implements RenderingPlugin {
 
   // 触发end事件
   private emitEnd(ev: GestureEvent, target: IEventTarget) {
-    const processEvent = this.processEvent;
+    const { processEvent } = this;
     Object.keys(processEvent).forEach((type) => {
       ev.type = `${type}end`;
       target.dispatchEvent(ev);

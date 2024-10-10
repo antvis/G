@@ -59,7 +59,7 @@ export class PhysXPlugin implements RenderingPlugin {
     const canvas = renderingContext.root.ownerDocument.defaultView;
 
     const handleMounted = (e: FederatedEvent) => {
-      const PhysX = this.PhysX;
+      const { PhysX } = this;
       const target = e.target as DisplayObject;
 
       if (PhysX) {
@@ -68,7 +68,7 @@ export class PhysXPlugin implements RenderingPlugin {
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
-      const PhysX = this.PhysX;
+      const { PhysX } = this;
       const target = e.target as DisplayObject;
 
       if (PhysX) {
@@ -126,60 +126,58 @@ export class PhysXPlugin implements RenderingPlugin {
   ): Promise<void> {
     if ((<any>window).PHYSX) {
       return await (<any>window).PHYSX();
-    } else {
-      const scriptPromise = new Promise((resolve) => {
-        const script = document.createElement('script');
-        document.body.appendChild(script);
-        script.async = true;
-        script.onload = resolve;
+    }
+    const scriptPromise = new Promise((resolve) => {
+      const script = document.createElement('script');
+      document.body.appendChild(script);
+      script.async = true;
+      script.onload = resolve;
 
-        const supported = (() => {
-          try {
-            if (
-              typeof WebAssembly === 'object' &&
-              typeof WebAssembly.instantiate === 'function'
-            ) {
-              const module = new WebAssembly.Module(
-                Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00),
+      const supported = (() => {
+        try {
+          if (
+            typeof WebAssembly === 'object' &&
+            typeof WebAssembly.instantiate === 'function'
+          ) {
+            const module = new WebAssembly.Module(
+              Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00),
+            );
+            if (module instanceof WebAssembly.Module)
+              return (
+                new WebAssembly.Instance(module) instanceof WebAssembly.Instance
               );
-              if (module instanceof WebAssembly.Module)
-                return (
-                  new WebAssembly.Instance(module) instanceof
-                  WebAssembly.Instance
-                );
-            }
-          } catch (e) {}
-          return false;
-        })();
-        if (runtimeMode == PhysXRuntimeMode.Auto) {
-          if (supported) {
-            runtimeMode = PhysXRuntimeMode.WebAssembly;
-          } else {
-            runtimeMode = PhysXRuntimeMode.JavaScript;
           }
+        } catch {}
+        return false;
+      })();
+      if (runtimeMode === PhysXRuntimeMode.Auto) {
+        if (supported) {
+          runtimeMode = PhysXRuntimeMode.WebAssembly;
+        } else {
+          runtimeMode = PhysXRuntimeMode.JavaScript;
         }
+      }
 
-        if (runtimeMode == PhysXRuntimeMode.JavaScript) {
-          script.src =
-            'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/1.0.0-alpha.4/libs/physx.release.js.js';
-        } else if (runtimeMode == PhysXRuntimeMode.WebAssembly) {
-          script.src =
-            'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/1.0.0-alpha.4/libs/physx.release.js';
-        }
-      });
+      if (runtimeMode === PhysXRuntimeMode.JavaScript) {
+        script.src =
+          'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/1.0.0-alpha.4/libs/physx.release.js.js';
+      } else if (runtimeMode === PhysXRuntimeMode.WebAssembly) {
+        script.src =
+          'https://gw.alipayobjects.com/os/lib/oasis-engine/physics-physx/1.0.0-alpha.4/libs/physx.release.js';
+      }
+    });
 
-      return new Promise((resolve) => {
-        scriptPromise.then(() => {
-          (<any>window).PHYSX().then((PHYSX: any) => {
-            resolve(PHYSX);
-          });
+    return new Promise((resolve) => {
+      scriptPromise.then(() => {
+        (<any>window).PHYSX().then((PHYSX: any) => {
+          resolve(PHYSX);
         });
       });
-    }
+    });
   }
 
   private createScene() {
-    const PhysX = this.PhysX;
+    const { PhysX } = this;
     const version = PhysX.PX_PHYSICS_VERSION;
     const defaultErrorCallback = new PhysX.PxDefaultErrorCallback();
     const allocator = new PhysX.PxDefaultAllocator();
@@ -232,7 +230,7 @@ export class PhysXPlugin implements RenderingPlugin {
     if (!AABB.isEmpty(bounds) && target.parsedStyle.rigid) {
       const { halfExtents } = bounds;
 
-      const PhysX = this.PhysX;
+      const { PhysX } = this;
       const pos = target.getPosition();
       const rotation = quat.normalize(quat.create(), target.getRotation());
 

@@ -12,8 +12,7 @@ import {
   isCanvas,
   isDisplayObject,
 } from '@antv/g-lite';
-import { isNil, PathArray } from '@antv/util';
-import { path2String } from '@antv/util';
+import { isNil, PathArray, path2String } from '@antv/util';
 // import { mat4, quat, vec3 } from 'gl-matrix';
 import type {
   CustomElementOption,
@@ -396,7 +395,7 @@ export class LottieAnimation {
             Omit<KeyframeAnimation, 'keyframes'>,
           ][] = [];
 
-          keyframeAnimation.map(
+          keyframeAnimation.forEach(
             ({ delay = 0, duration, easing, keyframes }) => {
               const formattedKeyframes = keyframes.map((keyframe) =>
                 definedProps(keyframe),
@@ -485,6 +484,8 @@ export class LottieAnimation {
                   }
                   return animation;
                 }
+
+                return null;
               })
               .filter((animation) => !!animation),
           );
@@ -543,21 +544,20 @@ export class LottieAnimation {
       // TODO: transforms with different easing functions will conflict
 
       if ('scaleX' in keyframe) {
-        keyframe.transform =
-          (keyframe.transform || '') +
-          ` scaleX(${keyframe.scaleX === 0 ? eps : keyframe.scaleX})`;
+        keyframe.transform = `${
+          keyframe.transform || ''
+        } scaleX(${keyframe.scaleX === 0 ? eps : keyframe.scaleX})`;
         delete keyframe.scaleX;
       }
       if ('scaleY' in keyframe) {
-        keyframe.transform =
-          (keyframe.transform || '') +
-          ` scaleY(${keyframe.scaleY === 0 ? eps : keyframe.scaleY})`;
+        keyframe.transform = `${
+          keyframe.transform || ''
+        } scaleY(${keyframe.scaleY === 0 ? eps : keyframe.scaleY})`;
         delete keyframe.scaleY;
       }
 
       if ('rotation' in keyframe) {
-        keyframe.transform =
-          (keyframe.transform || '') + ` rotate(${keyframe.rotation}deg)`;
+        keyframe.transform = `${keyframe.transform || ''} rotate(${keyframe.rotation}deg)`;
         delete keyframe.rotation;
       }
 
@@ -568,13 +568,11 @@ export class LottieAnimation {
       // }
 
       if ('x' in keyframe) {
-        keyframe.transform =
-          (keyframe.transform || '') + ` translateX(${keyframe.x}px)`;
+        keyframe.transform = `${keyframe.transform || ''} translateX(${keyframe.x}px)`;
         delete keyframe.x;
       }
       if ('y' in keyframe) {
-        keyframe.transform =
-          (keyframe.transform || '') + ` translateY(${keyframe.y}px)`;
+        keyframe.transform = `${keyframe.transform || ''} translateY(${keyframe.y}px)`;
         delete keyframe.y;
       }
 

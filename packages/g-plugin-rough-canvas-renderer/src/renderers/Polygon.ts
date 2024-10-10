@@ -8,7 +8,7 @@ export class PolygonRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedPolygonStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { points } = parsedStyle as ParsedPolygonStyleProps;
+    const { points } = parsedStyle;
     // @see https://github.com/rough-stuff/rough/wiki#polygon-vertices--options
     // @ts-ignore
     context.roughCanvas.polygon(

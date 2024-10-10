@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import type { Device, RenderTarget, Texture } from '@antv/g-device-api';
 import { assert, assertExists, fillArray } from '@antv/g-device-api';
 import type {
@@ -35,7 +36,7 @@ export class RenderGraph implements RGGraphBuilder {
   // For scope callbacks.
   private currentPass: RenderGraphPass | null = null;
 
-  //#region Resource Creation & Caching
+  // #region Resource Creation & Caching
   renderTargetDeadPool: RGRenderTarget[] = [];
   private singleSampledTextureDeadPool: SingleSampledTexture[] = [];
 
@@ -76,9 +77,9 @@ export class RenderGraph implements RGGraphBuilder {
     // Allocate a new resolve texture.
     return new SingleSampledTexture(this.device, desc);
   }
-  //#endregion
+  // #endregion
 
-  //#region Graph Builder
+  // #region Graph Builder
   private currentGraph: GraphImpl | null = null;
 
   beginGraphBuilder() {
@@ -193,9 +194,9 @@ export class RenderGraph implements RGGraphBuilder {
       this.currentGraph.renderTargetDescriptions[renderTargetID],
     );
   }
-  //#endregion
+  // #endregion
 
-  //#region Scheduling
+  // #region Scheduling
   private renderTargetOutputCount: number[] = [];
   private renderTargetResolveCount: number[] = [];
   private resolveTextureUseCount: number[] = [];
@@ -272,7 +273,7 @@ export class RenderGraph implements RGGraphBuilder {
       // This was the last reference to this RT -- steal it from the alive list, and put it back into the pool.
       renderTarget.needsClear = true;
 
-      delete this.renderTargetAliveForID[renderTargetID];
+      this.renderTargetAliveForID.splice(renderTargetID, 1);
       this.renderTargetDeadPool.push(renderTarget);
     }
 
@@ -308,10 +309,9 @@ export class RenderGraph implements RGGraphBuilder {
       }
 
       return singleSampledTexture.texture;
-    } else {
-      // The resolved texture belonging to this RT is backed by our render target.
-      return assertExists(renderTarget.texture);
     }
+    // The resolved texture belonging to this RT is backed by our render target.
+    return assertExists(renderTarget.texture);
   }
 
   private determineResolveParam(
@@ -372,7 +372,7 @@ export class RenderGraph implements RGGraphBuilder {
           this.device.setResourceName(
             this.singleSampledTextureForResolveTextureID[resolveTextureOutputID]
               .texture,
-            renderTarget.debugName + ` (Resolve ${resolveTextureOutputID})`,
+            `${renderTarget.debugName} (Resolve ${resolveTextureOutputID})`,
           );
         }
 
@@ -564,9 +564,9 @@ export class RenderGraph implements RGGraphBuilder {
     this.renderTargetOutputCount.length = 0;
     this.resolveTextureUseCount.length = 0;
   }
-  //#endregion
+  // #endregion
 
-  //#region Execution
+  // #region Execution
   private execPass(pass: RenderGraphPass): void {
     assert(this.currentPass === null);
     this.currentPass = pass;
@@ -612,9 +612,9 @@ export class RenderGraph implements RGGraphBuilder {
   getDebug(): RGGraphBuilderDebug {
     return this;
   }
-  //#endregion
+  // #endregion
 
-  //#region GfxrGraphBuilderDebug
+  // #region GfxrGraphBuilderDebug
   getPasses(): RenderGraphPass[] {
     return this.currentGraph.passes;
   }
@@ -624,15 +624,15 @@ export class RenderGraph implements RGGraphBuilder {
   }
 
   getPassRenderTargetID(pass: RenderGraphPass, slot: RGAttachmentSlot): number {
-    return (pass as RenderGraphPass).renderTargetIDs[slot];
+    return pass.renderTargetIDs[slot];
   }
 
   getRenderTargetIDDebugName(renderTargetID: number): string {
     return this.currentGraph.renderTargetDebugNames[renderTargetID];
   }
-  //#endregion
+  // #endregion
 
-  //#region GfxrPassScope
+  // #region GfxrPassScope
   getResolveTextureForID(resolveTextureID: number): Texture {
     const currentGraphPass = this.currentPass;
     const i = currentGraphPass.resolveTextureInputIDs.indexOf(resolveTextureID);
@@ -653,7 +653,7 @@ export class RenderGraph implements RGGraphBuilder {
     if (!renderTarget) return null;
     return renderTarget.texture;
   }
-  //#endregion
+  // #endregion
 
   newGraphBuilder(): RGGraphBuilder {
     this.beginGraphBuilder();

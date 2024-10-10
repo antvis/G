@@ -31,20 +31,20 @@ export function makeTiming(
         if (typeof timing[property] === 'number' || property === 'duration') {
           if (
             typeof timingInput[property] !== 'number' ||
-            isNaN(timingInput[property] as number)
+            isNaN(timingInput[property])
           ) {
             return;
           }
         }
         if (
           property === 'fill' &&
-          fills.indexOf(timingInput[property]!) === -1
+          fills.indexOf(timingInput[property]) === -1
         ) {
           return;
         }
         if (
           property === 'direction' &&
-          directions.indexOf(timingInput[property]!) === -1
+          directions.indexOf(timingInput[property]) === -1
         ) {
           return;
         }
@@ -129,22 +129,26 @@ export class KeyframeEffect implements IKeyframeEffect {
     );
 
     // 不支持 proxy 时降级成 this.timing
-    const Proxy: ProxyConstructor = runtime.globalThis.Proxy;
+    const { Proxy } = runtime.globalThis;
     this.computedTiming = Proxy
       ? new Proxy<AnimationEffectTiming>(this.timing, {
           get: (target, prop) => {
             if (prop === 'duration') {
               return target.duration === 'auto' ? 0 : target.duration;
-            } else if (prop === 'fill') {
+            }
+            if (prop === 'fill') {
               return target.fill === 'auto' ? 'none' : target.fill;
-            } else if (prop === 'localTime') {
+            }
+            if (prop === 'localTime') {
               return (this.animation && this.animation.currentTime) || null;
-            } else if (prop === 'currentIteration') {
+            }
+            if (prop === 'currentIteration') {
               if (!this.animation || this.animation.playState !== 'running') {
                 return null;
               }
               return target.currentIteration || 0;
-            } else if (prop === 'progress') {
+            }
+            if (prop === 'progress') {
               if (!this.animation || this.animation.playState !== 'running') {
                 return null;
               }

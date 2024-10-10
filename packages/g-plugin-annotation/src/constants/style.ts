@@ -69,7 +69,7 @@ export const DEFAULT_AREA_HOVER_STYLE = {
   fillOpacity: 0.15,
 };
 
-//polyline
+// polyline
 export const DEFAULT_LINE_STYLE: BaseStyleProps = {
   lineWidth: 2,
   stroke: '#1890FF',

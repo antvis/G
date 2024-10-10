@@ -7,11 +7,6 @@ import type {
 } from '@antv/g-lite';
 import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
-import { BufferGeometry, GeometryEvent } from '../geometries';
-import type { LightPool } from '../LightPool';
-import type { Fog } from '../lights';
-import type { Material } from '../materials';
-import { MaterialEvent, ShaderMaterial } from '../materials';
 import {
   ChannelWriteMask,
   CompareFunction,
@@ -23,6 +18,11 @@ import {
   VertexStepMode,
   AddressMode,
 } from '@antv/g-device-api';
+import { BufferGeometry, GeometryEvent } from '../geometries';
+import type { LightPool } from '../LightPool';
+import type { Fog } from '../lights';
+import type { Material } from '../materials';
+import { MaterialEvent, ShaderMaterial } from '../materials';
 import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
 import {
   DeviceProgram,
@@ -274,7 +274,7 @@ export abstract class Instanced {
     const packedFillStroke: number[] = [];
     const packedStyle: number[] = [];
     const packedPicking: number[] = [];
-    const divisor = this.divisor;
+    const { divisor } = this;
     const anchorOffset =
       objects[0]?.nodeName === Shape.CIRCLE ||
       objects[0]?.nodeName === Shape.ELLIPSE
@@ -572,7 +572,7 @@ export abstract class Instanced {
           mapping.texture = this.material.textures[key];
           this.context.device.setResourceName(
             mapping.texture,
-            'Material Texture ' + key,
+            `Material Texture ${key}`,
           );
           mapping.sampler = this.renderHelper.getCache().createSampler({
             addressModeU: AddressMode.CLAMP_TO_EDGE,
@@ -911,7 +911,7 @@ export abstract class Instanced {
 
   private generateWireframe(geometry: BufferGeometry) {
     // need generate barycentric coordinates
-    const indices = geometry.indices;
+    const { indices } = geometry;
     const indiceNum = geometry.indices.length;
     const originalVertexBuffers = geometry.vertices.map((buffer) => {
       // @ts-ignore
@@ -1010,7 +1010,7 @@ export abstract class Instanced {
   ): void {}
   private uploadUBO(renderInst: RenderInst): void {
     const numUniformBuffers = 1; // Scene UBO
-    const material = this.material;
+    const { material } = this;
     const lights = this.lightPool.getAllLights();
     const fog = this.lightPool.getFog();
     const useFog = !!fog;
@@ -1191,7 +1191,7 @@ export abstract class Instanced {
         });
       } else if (isPattern(fill)) {
         this.program.setDefineBool('USE_PATTERN', true);
-        this.texturePool.getOrCreatePattern(fill as Pattern, instance, () => {
+        this.texturePool.getOrCreatePattern(fill, instance, () => {
           // need re-render
           objects.forEach((object) => {
             object.renderable.dirty = true;
@@ -1220,7 +1220,7 @@ export abstract class Instanced {
         });
         this.context.device.setResourceName(
           fillMapping.texture,
-          'Fill Texture' + this.id,
+          `Fill Texture${this.id}`,
         );
         fillMapping.sampler = this.renderHelper.getCache().createSampler({
           addressModeU: AddressMode.CLAMP_TO_EDGE,

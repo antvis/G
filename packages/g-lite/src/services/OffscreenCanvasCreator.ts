@@ -40,7 +40,7 @@ export class OffscreenCanvasCreator {
           this.canvas = document.createElement('canvas');
           this.context = this.canvas.getContext('2d');
         }
-      } catch (ex) {
+      } catch {
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d', {
           willReadFrequently: true,

@@ -8,7 +8,7 @@ export class PolylineRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedPolylineStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { points } = parsedStyle as ParsedPolylineStyleProps;
+    const { points } = parsedStyle;
     // @see https://github.com/rough-stuff/rough/wiki#linearpath-points--options
     // @ts-ignore
     context.roughCanvas.linearPath(

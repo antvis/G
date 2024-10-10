@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import type { DisplayObject, IElement } from '@antv/g-lite';
 import { ElementEvent, MutationEvent, runtime } from '@antv/g-lite';
 import { MutationRecord } from './MutationRecord';
@@ -15,8 +16,8 @@ export class Registration {
   ) {}
 
   enqueue(record: MutationRecord) {
-    const records = this.observer.records;
-    const length = records.length;
+    const { records } = this.observer;
+    const { length } = records;
 
     // There are cases where we replace the last record with the new record.
     // For example if the record represents the same mutation we need to use
@@ -41,7 +42,7 @@ export class Registration {
   }
 
   private addListeners_(node: IElement) {
-    const options = this.options;
+    const { options } = this;
     if (options.attributes)
       node.addEventListener(ElementEvent.ATTR_MODIFIED, this, true);
 
@@ -59,7 +60,7 @@ export class Registration {
   }
 
   removeListeners_(node: IElement) {
-    const options = this.options;
+    const { options } = this;
     if (options.attributes)
       node.removeEventListener(ElementEvent.ATTR_MODIFIED, this, true);
 
@@ -92,7 +93,7 @@ export class Registration {
   // }
 
   removeTransientObservers() {
-    const transientObservedNodes = this.transientObservedNodes;
+    const { transientObservedNodes } = this;
     this.transientObservedNodes = [];
 
     transientObservedNodes.forEach(function (node) {
@@ -130,7 +131,7 @@ export class Registration {
         target = e.target as IElement;
 
         // 1.
-        record = getRecord('attributes', target as IElement);
+        record = getRecord('attributes', target);
         record.attributeName = name;
         record.attributeNamespace = namespace;
 
@@ -138,29 +139,25 @@ export class Registration {
         const oldValue =
           e.attrChange === MutationEvent.ADDITION ? null : e.prevValue;
 
-        forEachAncestorAndObserverEnqueueRecord(
-          target as IElement,
-          (options) => {
-            // 3.1, 4.2
-            if (!options.attributes) return;
+        forEachAncestorAndObserverEnqueueRecord(target, (options) => {
+          // 3.1, 4.2
+          if (!options.attributes) return;
 
-            // 3.2, 4.3
-            if (
-              options.attributeFilter &&
-              options.attributeFilter.length &&
-              options.attributeFilter.indexOf(name) === -1 &&
-              options.attributeFilter.indexOf(namespace) === -1
-            ) {
-              return;
-            }
-            // 3.3, 4.4
-            if (options.attributeOldValue)
-              return getRecordWithOldValue(oldValue);
+          // 3.2, 4.3
+          if (
+            options.attributeFilter &&
+            options.attributeFilter.length &&
+            options.attributeFilter.indexOf(name) === -1 &&
+            options.attributeFilter.indexOf(namespace) === -1
+          ) {
+            return;
+          }
+          // 3.3, 4.4
+          if (options.attributeOldValue) return getRecordWithOldValue(oldValue);
 
-            // 3.4, 4.5
-            return record;
-          },
-        );
+          // 3.4, 4.5
+          return record;
+        });
 
         break;
 
@@ -205,26 +202,23 @@ export class Registration {
           addedNodes = [];
           removedNodes = [changedNode];
         }
-        const previousSibling = changedNode.previousSibling;
-        const nextSibling = changedNode.nextSibling;
+        const { previousSibling } = changedNode;
+        const { nextSibling } = changedNode;
 
         // 1.
-        record = getRecord('childList', target as IElement);
+        record = getRecord('childList', target);
         record.addedNodes = addedNodes;
         record.removedNodes = removedNodes;
         record.previousSibling = previousSibling as IElement;
         record.nextSibling = nextSibling as IElement;
 
-        forEachAncestorAndObserverEnqueueRecord(
-          target as IElement,
-          function (options) {
-            // 2.1, 3.2
-            if (!options.childList) return;
+        forEachAncestorAndObserverEnqueueRecord(target, function (options) {
+          // 2.1, 3.2
+          if (!options.childList) return;
 
-            // 2.2, 3.3
-            return record;
-          },
-        );
+          // 2.2, 3.3
+          return record;
+        });
     }
 
     clearRecords();
@@ -392,7 +386,7 @@ function forEachAncestorAndObserverEnqueueRecord(target: IElement, callback) {
     if (registrations) {
       for (let j = 0; j < registrations.length; j++) {
         const registration = registrations[j];
-        const options = registration.options;
+        const { options } = registration;
 
         // Only target ignores subtree.
         if (node !== target && !options.subtree) continue;

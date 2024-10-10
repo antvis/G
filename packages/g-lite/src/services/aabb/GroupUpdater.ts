@@ -1,5 +1,6 @@
 import type { Group, ParsedImageStyleProps } from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
+
 export class GroupUpdater
   implements GeometryAABBUpdater<ParsedImageStyleProps>
 {

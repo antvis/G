@@ -3,6 +3,7 @@ import type { DisplayObject } from '../../display-objects';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import { clampedMergeNumbers } from '../parser/numeric';
+
 export class CSSPropertyOffsetDistance
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {

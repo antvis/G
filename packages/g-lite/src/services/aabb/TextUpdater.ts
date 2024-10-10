@@ -4,6 +4,7 @@ import type {
 } from '../../display-objects';
 import { GlobalRuntime } from '../../global-runtime';
 import type { GeometryAABBUpdater } from './interfaces';
+
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   constructor(private globalRuntime: GlobalRuntime) {}
 

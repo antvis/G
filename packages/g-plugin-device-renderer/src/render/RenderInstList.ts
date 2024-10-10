@@ -67,7 +67,7 @@ export class RenderInstList {
   ensureSorted(): void {
     if (this.usePostSort) {
       if (this.renderInsts.length !== 0)
-        this.renderInsts.sort(this.compareFunction!);
+        this.renderInsts.sort(this.compareFunction);
       this.usePostSort = false;
     }
   }

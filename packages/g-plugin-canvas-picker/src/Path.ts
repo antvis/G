@@ -188,7 +188,8 @@ export function isPointInPath(
         inPolygons(polylines, position.x, position.y);
     }
     return isHit;
-  } else if (hasStroke || isClipPath) {
+  }
+  if (hasStroke || isClipPath) {
     isHit = isPointInStroke(
       segments,
       lineWidth + increasedLineWidthForHitTesting,

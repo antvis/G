@@ -1,10 +1,10 @@
 import { DisplayObject, Shape } from '@antv/g-lite';
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import {
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from './Instanced';
-import { Format, VertexStepMode } from '@antv/g-device-api';
 import meshFrag from '../shader/mesh.frag';
 import meshVert from '../shader/mesh.vert';
 import { updateBuffer } from './InstancedPath';

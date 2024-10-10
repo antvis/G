@@ -77,19 +77,18 @@ export function createOrUpdateGradientAndPattern(
       );
       $el?.setAttribute(name, `url(#${gradientId})`);
       return gradientId;
-    } else {
-      // @see https://stackoverflow.com/questions/20671502/can-i-blend-gradients-in-svg
-      const filterId = createOrUpdateMultiGradient(
-        document,
-        object,
-        $def,
-        $el,
-        parsedColor,
-      );
-      $el?.setAttribute('filter', `url(#${filterId})`);
-      $el?.setAttribute('fill', 'black');
-      return filterId;
     }
+    // @see https://stackoverflow.com/questions/20671502/can-i-blend-gradients-in-svg
+    const filterId = createOrUpdateMultiGradient(
+      document,
+      object,
+      $def,
+      $el,
+      parsedColor,
+    );
+    $el?.setAttribute('filter', `url(#${filterId})`);
+    $el?.setAttribute('fill', 'black');
+    return filterId;
   }
 
   return '';
@@ -132,7 +131,7 @@ function generateCacheKey(
 
   if (cacheKey) {
     if (!cacheKey2IDMap[cacheKey]) {
-      cacheKey2IDMap[cacheKey] = PATTERN_PREFIX + `${counter++}`;
+      cacheKey2IDMap[cacheKey] = `${PATTERN_PREFIX}${counter++}`;
     }
   }
 
@@ -147,36 +146,49 @@ function formatTransform(transform: string) {
       const { t, d } = parsed;
       if (t === 'translate') {
         return `translate(${d[0].value} ${d[1].value})`;
-      } else if (t === 'translateX') {
+      }
+      if (t === 'translateX') {
         return `translate(${d[0].value} 0)`;
-      } else if (t === 'translateY') {
+      }
+      if (t === 'translateY') {
         return `translate(0 ${d[0].value})`;
-      } else if (t === 'rotate') {
+      }
+      if (t === 'rotate') {
         return `rotate(${d[0].value})`;
-      } else if (t === 'scale') {
+      }
+      if (t === 'scale') {
         // scale(1) scale(1, 1)
         const newScale = d?.map((s) => s.value) || [1, 1];
         return `scale(${newScale[0]}, ${newScale[1]})`;
-      } else if (t === 'scaleX') {
+      }
+      if (t === 'scaleX') {
         const newScale = d?.map((s) => s.value) || [1];
         return `scale(${newScale[0]}, 1)`;
-      } else if (t === 'scaleY') {
+      }
+      if (t === 'scaleY') {
         const newScale = d?.map((s) => s.value) || [1];
         return `scale(1, ${newScale[0]})`;
-      } else if (t === 'skew') {
+      }
+      if (t === 'skew') {
         const newSkew = d?.map((s) => s.value) || [0, 0];
         return `skewX(${newSkew[0]}) skewY(${newSkew[1]})`;
-      } else if (t === 'skewZ') {
+      }
+      if (t === 'skewZ') {
         const newSkew = d?.map((s) => s.value) || [0];
         return `skewX(${newSkew[0]})`;
-      } else if (t === 'skewY') {
+      }
+      if (t === 'skewY') {
         const newSkew = d?.map((s) => s.value) || [0];
         return `skewY(${newSkew[0]})`;
-      } else if (t === 'matrix') {
+      }
+      if (t === 'matrix') {
         const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
         return `matrix(${a} ${b} ${c} ${dd} ${tx} ${ty})`;
       }
+
+      return null;
     })
+    .filter((item) => item !== null)
     .join(' ');
 }
 
@@ -239,15 +251,13 @@ function createOrUpdatePattern(
     let imageURL = '';
     if (isString(image)) {
       imageURL = image;
-    } else {
-      if (isBrowser) {
-        if (image instanceof HTMLImageElement) {
-          imageURL = image.src;
-        } else if (image instanceof HTMLCanvasElement) {
-          imageURL = image.toDataURL();
-        } else if (image instanceof HTMLVideoElement) {
-          // won't support
-        }
+    } else if (isBrowser) {
+      if (image instanceof HTMLImageElement) {
+        imageURL = image.src;
+      } else if (image instanceof HTMLCanvasElement) {
+        imageURL = image.toDataURL();
+      } else if (image instanceof HTMLVideoElement) {
+        // won't support
       }
     }
 
@@ -418,7 +428,7 @@ function createOrUpdateMultiGradient(
   $el: SVGElement,
   gradients: CSSGradientValue[],
 ) {
-  const filterId = FILTER_PREFIX + object.entity + '-gradient';
+  const filterId = `${FILTER_PREFIX + object.entity}-gradient`;
   let $existed = $def.querySelector(`#${filterId}`);
   if (!$existed) {
     $existed = createSVGElement('filter', document) as SVGFilterElement;
@@ -454,7 +464,7 @@ function createOrUpdateMultiGradient(
       gradient,
     );
 
-    const rectId = gradientId + '_rect';
+    const rectId = `${gradientId}_rect`;
     const $rect = createSVGElement('rect', document) as SVGRectElement;
     $rect.setAttribute('x', '0');
     $rect.setAttribute('y', '0');

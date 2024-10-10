@@ -1,5 +1,6 @@
 import type { LayoutObject } from './LayoutObject';
 import { PropertyName } from './types';
+
 export interface LayoutEdgesFactory {
   (options: LayoutEdgesOptions): LayoutEdges;
 }
@@ -30,16 +31,22 @@ export class LayoutEdges {
 
     const borderTopWidth = styleMap.get(PropertyName.PADDING_TOP)?.value ?? 0;
     const borderRightWidth = styleMap.get(PropertyName.PADDING_END)?.value ?? 0;
-    const borderBottomWidth = styleMap.get(PropertyName.PADDING_BOTTOM)?.value ?? 0;
-    const borderLeftWidth = styleMap.get(PropertyName.PADDING_START)?.value ?? 0;
+    const borderBottomWidth =
+      styleMap.get(PropertyName.PADDING_BOTTOM)?.value ?? 0;
+    const borderLeftWidth =
+      styleMap.get(PropertyName.PADDING_START)?.value ?? 0;
 
     const paddingTopWidth = styleMap.get(PropertyName.PADDING_TOP)?.value ?? 0;
-    const paddingRightWidth = styleMap.get(PropertyName.PADDING_END)?.value ?? 0;
-    const paddingBottomWidth = styleMap.get(PropertyName.PADDING_BOTTOM)?.value ?? 0;
-    const paddingLeftWidth = styleMap.get(PropertyName.PADDING_START)?.value ?? 0;
+    const paddingRightWidth =
+      styleMap.get(PropertyName.PADDING_END)?.value ?? 0;
+    const paddingBottomWidth =
+      styleMap.get(PropertyName.PADDING_BOTTOM)?.value ?? 0;
+    const paddingLeftWidth =
+      styleMap.get(PropertyName.PADDING_START)?.value ?? 0;
 
     this.blockStart = borderTopWidth + SCROLLBAR_SIZES[0] + paddingTopWidth;
-    this.inlineStart = borderRightWidth + SCROLLBAR_SIZES[1] + paddingRightWidth;
+    this.inlineStart =
+      borderRightWidth + SCROLLBAR_SIZES[1] + paddingRightWidth;
     this.blockEnd = borderBottomWidth + SCROLLBAR_SIZES[2] + paddingBottomWidth;
     this.inlineEnd = borderLeftWidth + SCROLLBAR_SIZES[3] + paddingLeftWidth;
 

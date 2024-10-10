@@ -23,7 +23,9 @@ export class SVGContextService implements ContextService<SVGElement> {
     const { container, document: doc } = this.canvasConfig;
 
     // create container
-    this.$container = isString(container) ? (doc || document).getElementById(container) : container;
+    this.$container = isString(container)
+      ? (doc || document).getElementById(container)
+      : container;
     if (this.$container) {
       if (!this.$container.style.position) {
         this.$container.style.position = 'relative';

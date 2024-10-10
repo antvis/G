@@ -23,6 +23,7 @@ import {
   TransparentBlack,
   TransparentWhite,
 } from '@antv/g-device-api';
+import { mat4, vec3 } from 'gl-matrix';
 import { Renderable3D } from './components/Renderable3D';
 import type { LightPool } from './LightPool';
 import { Fog, Light } from './lights';
@@ -39,7 +40,6 @@ import {
 import type { BatchManager } from './renderer';
 import type { TexturePool } from './TexturePool';
 import { DeviceRendererPluginOptions } from './interfaces';
-import { mat4, vec3 } from 'gl-matrix';
 
 // scene uniform block index
 export const SceneUniformBufferIndex = 0;
@@ -134,7 +134,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
       if (object.nodeName === Light.tag) {
         this.lightPool.addLight(object as unknown as Light);
         return;
-      } else if (object.nodeName === Fog.tag) {
+      }
+      if (object.nodeName === Fog.tag) {
         this.lightPool.addFog(object as Fog);
         return;
       }
@@ -154,10 +155,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
       if (object.nodeName === Light.tag) {
         this.lightPool.removeLight(object as unknown as Light);
         return;
-      } else if (object.nodeName === Fog.tag) {
+      }
+      if (object.nodeName === Fog.tag) {
         this.lightPool.removeFog(object as Fog);
         return;
-      } else if (object.nodeName === Shape.MESH) {
+      }
+      if (object.nodeName === Shape.MESH) {
         if (object.style.geometry?.meshes) {
           const index = object.style.geometry.meshes.indexOf(object);
           if (index > -1) {
@@ -238,9 +241,8 @@ export class RenderGraphPlugin implements RenderingPlugin {
 
         // create swap chain and get device
         // @ts-ignore
-        this.swapChain = await this.context.deviceContribution.createSwapChain(
-          $canvas,
-        );
+        this.swapChain =
+          await this.context.deviceContribution.createSwapChain($canvas);
         this.device = this.swapChain.getDevice();
         this.renderHelper.setDevice(this.device);
         this.renderHelper.renderInstManager.disableSimpleMode();
@@ -352,7 +354,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
             });
           }
         } else {
-          const camera = this.context.camera;
+          const { camera } = this.context;
           this.cameras = [
             {
               viewport: {
@@ -370,7 +372,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
         }
 
         const canvas = this.swapChain.getCanvas() as HTMLCanvasElement;
-        const renderInstManager = this.renderHelper.renderInstManager;
+        const { renderInstManager } = this.renderHelper;
         this.builder = this.renderHelper.renderGraph.newGraphBuilder();
 
         let clearColor: Color;
@@ -437,7 +439,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
             this.cameras.forEach(({ viewport }, i) => {
               const { x, y, width, height } = viewport;
 
-              const { viewportW, viewportH } = scope['currentPass'];
+              const { viewportW, viewportH } = scope.currentPass;
 
               // @see https://github.com/immersive-web/webxr-samples/blob/main/js/render/core/renderer.js#L757
               passRenderer.setViewport(
@@ -477,7 +479,7 @@ export class RenderGraphPlugin implements RenderingPlugin {
     renderingService.hooks.endFrame.tap(
       RenderGraphPlugin.tag,
       (frame: XRFrame) => {
-        const renderInstManager = this.renderHelper.renderInstManager;
+        const { renderInstManager } = this.renderHelper;
         const { width, height } = this.context.config;
         this.cameras.forEach(
           (

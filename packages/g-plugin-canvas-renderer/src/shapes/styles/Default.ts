@@ -9,8 +9,10 @@ import {
   Pattern,
   RadialGradient,
   Rect,
+  GradientType,
+  isPattern,
+  Shape,
 } from '@antv/g-lite';
-import { GradientType, isPattern, Shape } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
@@ -49,7 +51,7 @@ export class DefaultRenderer implements StyleRenderer {
     const isFillTransparent = (fill as CSSRGB)?.alpha === 0;
     const hasFilter = !!(filter && filter.length);
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
-    const nodeName = object.nodeName;
+    const { nodeName } = object;
     const isInnerShadow = shadowType === 'inner';
     const shouldDrawShadowWithStroke =
       hasStroke &&
