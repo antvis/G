@@ -50,10 +50,6 @@ export abstract class Node extends EventTarget implements INode {
     return !!(target as INode).childNodes;
   }
 
-  constructor() {
-    super();
-  }
-
   shadow = false;
   /**
    * points to canvas.document
