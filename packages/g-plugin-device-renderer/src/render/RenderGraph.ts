@@ -273,7 +273,7 @@ export class RenderGraph implements RGGraphBuilder {
       // This was the last reference to this RT -- steal it from the alive list, and put it back into the pool.
       renderTarget.needsClear = true;
 
-      this.renderTargetAliveForID.splice(renderTargetID, 1);
+      this.renderTargetAliveForID[renderTargetID] = undefined;
       this.renderTargetDeadPool.push(renderTarget);
     }
 
