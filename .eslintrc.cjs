@@ -1,0 +1,75 @@
+// see docs: https://eslint.org/docs/user-guide/configuring
+
+module.exports = {
+  ignorePatterns: [
+    'node_modules',
+    //
+    '.commitlintrc.cjs',
+    '.eslintrc.cjs',
+    '.lintstagedrc.mjs',
+    'babel.config.mjs',
+    'rollup.config.mjs',
+    'vite.config.mjs',
+    //
+    'packages/g-devtool',
+    'packages/g-webgpu-compiler',
+    'packages/site',
+    //
+    'build',
+    'coverage',
+    'esm',
+    'lib',
+    'dist',
+    'rust',
+    '__tests__',
+    'scripts',
+  ],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'airbnb-base',
+    'airbnb-typescript/base',
+    'plugin:prettier/recommended',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json',
+  },
+  plugins: ['eslint-plugin-tsdoc', 'jest'],
+  root: true,
+  env: {
+    node: true,
+    browser: true,
+    'jest/globals': true,
+  },
+  rules: {
+    'no-fallthrough': 0,
+    'no-empty': 0,
+    'no-param-reassign': 0,
+    'no-redeclare': 'off',
+    'no-useless-escape': 'off',
+    'no-case-declarations': 'off',
+    'no-constant-condition': 'off',
+    'import/prefer-default-export': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-shadow': 0,
+    '@typescript-eslint/no-parameter-properties': 0,
+    '@typescript-eslint/ban-ts-comment': 0,
+    '@typescript-eslint/no-empty-function': 0,
+    '@typescript-eslint/no-invalid-this': 0,
+    '@typescript-eslint/no-use-before-define': [
+      'error',
+      { functions: false, classes: false },
+    ],
+    '@typescript-eslint/no-redeclare': ['error'],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { args: 'none', ignoreRestSiblings: true },
+    ],
+    '@typescript-eslint/lines-between-class-members': 'off',
+    '@typescript-eslint/no-throw-literal': 'off',
+    'tsdoc/syntax': 'warn',
+  },
+  globals: { G: true, window: true, document: true, module: true },
+};
