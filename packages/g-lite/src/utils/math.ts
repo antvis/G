@@ -1,49 +1,6 @@
 import { isNumber } from '@antv/util';
 import type { quat, vec2 } from 'gl-matrix';
 import { mat3, mat4, vec3, vec4 } from 'gl-matrix';
-import { Tuple3Number } from '../types';
-
-export function copyVec3(a: Tuple3Number, b: Tuple3Number) {
-  a[0] = b[0];
-  a[1] = b[1];
-  a[2] = b[2];
-  return a;
-}
-
-export function subVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
-  o[0] = a[0] - b[0];
-  o[1] = a[1] - b[1];
-  o[2] = a[2] - b[2];
-  return o;
-}
-
-export function addVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
-  o[0] = a[0] + b[0];
-  o[1] = a[1] + b[1];
-  o[2] = a[2] + b[2];
-  return o;
-}
-
-export function scaleVec3(o: Tuple3Number, a: Tuple3Number, b: number) {
-  o[0] = a[0] * b;
-  o[1] = a[1] * b;
-  o[2] = a[2] * b;
-  return o;
-}
-
-export function maxVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
-  o[0] = Math.max(a[0], b[0]);
-  o[1] = Math.max(a[1], b[1]);
-  o[2] = Math.max(a[2], b[2]);
-  return o;
-}
-
-export function minVec3(o: Tuple3Number, a: Tuple3Number, b: Tuple3Number) {
-  o[0] = Math.min(a[0], b[0]);
-  o[1] = Math.min(a[1], b[1]);
-  o[2] = Math.min(a[2], b[2]);
-  return o;
-}
 
 export function getAngle(angle?: number) {
   if (angle === undefined) {
@@ -54,32 +11,41 @@ export function getAngle(angle?: number) {
   return angle;
 }
 
-export function createVec3(x: number | vec2 | vec3 | vec4, y = 0, z = 0) {
+const $vec3 = vec3.create();
+export function createVec3(
+  x: number | vec2 | vec3 | vec4,
+  y = 0,
+  z = 0,
+  clone = true,
+) {
   if (Array.isArray(x) && x.length === 3) {
-    return vec3.clone(x);
+    return clone ? vec3.clone(x) : vec3.copy($vec3, x);
   }
 
   if (isNumber(x)) {
-    return vec3.fromValues(x, y, z);
+    return vec3.set($vec3, x, y, z);
   }
 
-  return vec3.fromValues(x[0], x[1] || y, x[2] || z);
+  return vec3.set($vec3, x[0], x[1] || y, x[2] || z);
 }
 
+const DEG_RAD = Math.PI / 180;
 export function deg2rad(deg: number) {
-  return deg * (Math.PI / 180);
+  return deg * DEG_RAD;
 }
 
+const RAD_DEG = 180 / Math.PI;
 export function rad2deg(rad: number) {
-  return rad * (180 / Math.PI);
+  return rad * RAD_DEG;
 }
 
+const GRAD_DEG = 0.9; // 360 / 400;
 export function grad2deg(grads: number) {
   grads = grads % 400;
   if (grads < 0) {
     grads += 400;
   }
-  return (grads / 400) * 360;
+  return grads * GRAD_DEG;
 }
 
 export function deg2turn(deg: number) {
@@ -117,6 +83,7 @@ export function getRotationInRadians(mat: mat3): number {
   return Math.atan2(mat[1], mat[4]);
 }
 
+const HALF_PI = Math.PI / 2;
 function getEulerFromQuat(out: vec3, quat: quat) {
   const x = quat[0];
   const y = quat[1];
@@ -131,13 +98,13 @@ function getEulerFromQuat(out: vec3, quat: quat) {
   if (test > 0.499995 * unit) {
     // TODO: Use glmatrix.EPSILON
     // singularity at the north pole
-    out[0] = Math.PI / 2;
+    out[0] = HALF_PI;
     out[1] = 2 * Math.atan2(y, x);
     out[2] = 0;
   } else if (test < -0.499995 * unit) {
     //TODO: Use glmatrix.EPSILON
     // singularity at the south pole
-    out[0] = -Math.PI / 2;
+    out[0] = -HALF_PI;
     out[1] = 2 * Math.atan2(y, x);
     out[2] = 0;
   } else {
@@ -152,14 +119,13 @@ function getEulerFromQuat(out: vec3, quat: quat) {
 function getEulerFromMat4(out: vec3, m: mat4) {
   let x: number;
   let z: number;
-  const halfPi = Math.PI * 0.5;
 
   const [sx, sy, sz] = mat4.getScaling(vec3.create(), m);
 
   const y = Math.asin(-m[2] / sx);
 
-  if (y < halfPi) {
-    if (y > -halfPi) {
+  if (y < HALF_PI) {
+    if (y > -HALF_PI) {
       x = Math.atan2(m[6] / sy, m[10] / sz);
       z = Math.atan2(m[1] / sx, m[0] / sx);
     } else {
@@ -224,21 +190,26 @@ export function makePerspective(
   far: number,
   zero = false,
 ) {
-  const x = (2 * near) / (right - left);
-  const y = (2 * near) / (top - bottom);
+  const twoNear = 2 * near;
+  const rightMinusLeft = right - left;
+  const topMinusBottom = top - bottom;
+  const x = twoNear / rightMinusLeft;
+  const y = twoNear / topMinusBottom;
 
-  const a = (right + left) / (right - left);
-  const b = (top + bottom) / (top - bottom);
+  const a = (right + left) / rightMinusLeft;
+  const b = (top + bottom) / topMinusBottom;
 
   let c: number;
   let d: number;
 
+  const farMinusNear = far - near;
+  const farMulNear = far * near;
   if (zero) {
-    c = -far / (far - near);
-    d = (-far * near) / (far - near);
+    c = -far / farMinusNear;
+    d = -farMulNear / farMinusNear;
   } else {
-    c = -(far + near) / (far - near);
-    d = (-2 * far * near) / (far - near);
+    c = -(far + near) / farMinusNear;
+    d = (-2 * farMulNear) / farMinusNear;
   }
 
   out[0] = x;
@@ -283,12 +254,14 @@ export function decompose(mat: mat3) {
 
   // Renormalize matrix to remove scale.
   if (scalingX) {
-    row0x *= 1 / scalingX;
-    row0y *= 1 / scalingX;
+    const invScalingX = 1 / scalingX;
+    row0x *= invScalingX;
+    row0y *= invScalingX;
   }
   if (scalingY) {
-    row1x *= 1 / scalingY;
-    row1y *= 1 / scalingY;
+    const invScalingY = 1 / scalingY;
+    row1x *= invScalingY;
+    row1y *= invScalingY;
   }
 
   // Compute rotation and renormalize matrix.
