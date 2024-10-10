@@ -1,5 +1,4 @@
 import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
-import type { PathGenerator } from './interfaces';
 import {
   CirclePath,
   EllipsePath,
@@ -13,7 +12,7 @@ import {
 export class Plugin extends AbstractRendererPlugin {
   name = 'canvas-path-generator';
   init(): void {
-    const pathGeneratorFactory: Record<Shape, PathGenerator<any>> = {
+    this.context.pathGeneratorFactory = {
       [Shape.CIRCLE]: CirclePath,
       [Shape.ELLIPSE]: EllipsePath,
       [Shape.RECT]: RectPath,
@@ -27,12 +26,8 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.HTML]: undefined,
       [Shape.MESH]: undefined,
     };
-
-    // @ts-ignore
-    this.context.pathGeneratorFactory = pathGeneratorFactory;
   }
   destroy(): void {
-    // @ts-ignore
     delete this.context.pathGeneratorFactory;
   }
 }
