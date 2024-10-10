@@ -38,6 +38,27 @@ export interface EventPosition {
   y: number;
 }
 
+export type TransformType =
+  | 'matrix'
+  | 'matrix3d'
+  | 'rotate'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
+  | 'rotate3d'
+  | 'scale'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
+  | 'scale3d'
+  | 'skew'
+  | 'skewX'
+  | 'skewY'
+  | 'translate'
+  | 'translateX'
+  | 'translateY'
+  | 'translateZ'
+  | 'translate3d';
 export type TransformScale = ['scale', number, number?];
 export type TransformScaleX = ['scaleX', number];
 export type TransformScaleY = ['scaleY', number];
@@ -392,11 +413,6 @@ export interface RendererConfig {
    * enable dirty rectangle rendering
    */
   enableDirtyRectangleRendering: boolean;
-
-  /**
-   * enable debugging dirty rectangle, Canvas will trigger CanvasEvent.DIRTY_RECTANGLE
-   */
-  enableDirtyRectangleRenderingDebug: boolean;
 
   /**
    * enable auto rendering

@@ -15,7 +15,7 @@ import {
   parseLengthOrPercentageUnmemoize,
 } from './dimension';
 import { parseNumber, parseNumberUnmemoize } from './numeric';
-import type { TransformArray } from '../../types';
+import type { TransformArray, TransformType } from '../../types';
 
 // eg. { t: 'scale', d: [CSSUnitValue(1), CSSUnitValue(2)] }
 export interface ParsedTransform {
@@ -23,24 +23,6 @@ export interface ParsedTransform {
   d: CSSUnitValue[];
 }
 
-type TransformType =
-  | 'matrix'
-  | 'matrix3d'
-  | 'rotate'
-  | 'rotateX'
-  | 'rotateY'
-  | 'rotateZ'
-  | 'rotate3d'
-  | 'scale'
-  | 'scaleX'
-  | 'scaleY'
-  | 'scaleZ'
-  | 'scale3d'
-  | 'translate'
-  | 'translateX'
-  | 'translateY'
-  | 'translateZ'
-  | 'translate3d';
 type PatternElement = string | number | null | CSSUnitValue;
 type CastFunction =
   | ((string: string) => string)
