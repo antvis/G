@@ -1021,6 +1021,8 @@ export class EventService {
     // hack EventEmitter, stops if the `propagationImmediatelyStopped` flag is set
     // @ts-ignore
     const emitter = e.currentTarget.emitter;
+    if (!emitter) return;
+
     // @ts-ignore
     const listeners = (emitter._events as EmitterListeners)[type];
 

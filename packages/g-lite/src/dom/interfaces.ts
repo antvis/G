@@ -66,38 +66,40 @@ export enum ElementEvent {
 }
 
 export interface IEventTarget {
-  // emitter: EventEmitter;
-
-  // on: (
-  //   type: string,
-  //   listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
-  //   options?: boolean | AddEventListenerOptions,
-  // ) => void;
-  addEventListener: (
+  addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions,
-  ) => void;
-
-  // off: (
-  //   type: string,
-  //   listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
-  //   options?: boolean | AddEventListenerOptions,
-  // ) => void;
-  removeEventListener: (
+  ): void;
+  addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions,
-  ) => void;
-  // removeAllEventListeners: () => void;
+    options: AddEventListenerOptions,
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    useCapture: boolean,
+  ): void;
+
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options: AddEventListenerOptions,
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    useCapture: boolean,
+  ): void;
 
   dispatchEvent: <T extends FederatedEvent>(
     e: T,
     skipPropagate?: boolean,
   ) => boolean;
-
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  // emit: (eventName: string, object: object) => void;
 }
 
 export interface INode extends IEventTarget {
