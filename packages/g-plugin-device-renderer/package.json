@@ -17,33 +17,36 @@
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "exports": {
-    "types": "./dist/index.d.ts",
+    "types": "./types/index.d.ts",
     "import": "./dist/index.esm.js",
     "default": "./dist/index.js"
   },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "package.json",
     "dist",
+    "types",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && rollup -c",
+    "build:types": "tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run clean && npm run build:types && rollup -c",
     "clean": "rimraf dist",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
   },
   "dependencies": {
+    "@antv/g-device-api": "^1.6.10",
     "@antv/g-lite": "workspace:*",
     "@antv/g-math": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/g-shader-components": "workspace:*",
     "@antv/util": "^3.3.5",
-    "@antv/g-device-api": "^1.6.10",
+    "@babel/runtime": "^7.25.6",
     "@webgpu/types": "^0.1.6",
     "earcut": "^2.2.3",
     "eventemitter3": "^5.0.1",
