@@ -56,7 +56,7 @@ export class WebXRController {
     // let gripPose = null;
     // let handPose = null;
 
-    const targetRay = this.targetRay;
+    const { targetRay } = this;
     // const grip = this._grip;
     // const hand = this._hand;
 

@@ -21,7 +21,6 @@ import type {
 } from './interfaces';
 import { PropertySyntax } from './interfaces';
 import {
-  ParsedFilterStyleProperty,
   parseColor,
   parseFilter,
   parsePath,
@@ -891,7 +890,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!skipParse) {
         attributeNames.forEach((name) => {
           object.computedStyle[name] = this.parseProperty(
-            name as string,
+            name,
             object.attributes[name],
             object,
             memoize,
@@ -934,7 +933,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         // some style props maybe deleted after parsing such as `anchor` in Text
         if (name in object.computedStyle) {
           object.parsedStyle[name] = this.computeProperty(
-            name as string,
+            name,
             object.computedStyle[name],
             object,
             memoize,
@@ -959,7 +958,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
       attributeNames.forEach((name) => {
         if (name in object.parsedStyle) {
-          this.postProcessProperty(name as string, object, attributeNames);
+          this.postProcessProperty(name, object, attributeNames);
         }
       });
 
@@ -998,22 +997,20 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     if (value === 'unset' || value === 'initial' || value === 'inherit') {
       // computed = new CSSKeywordValue(value);
       computed = getOrCreateKeyword(value);
-    } else {
-      if (metadata) {
-        const { k: keywords, syntax } = metadata;
-        const handler = syntax && this.getPropertySyntax(syntax);
+    } else if (metadata) {
+      const { k: keywords, syntax } = metadata;
+      const handler = syntax && this.getPropertySyntax(syntax);
 
-        // use keywords
-        if (keywords && keywords.indexOf(value) > -1) {
-          // computed = new CSSKeywordValue(value);
-          computed = getOrCreateKeyword(value);
-        } else if (handler) {
-          if (!memoized && handler.parserUnmemoize) {
-            computed = handler.parserUnmemoize(value, object);
-          } else if (handler.parser) {
-            // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
-            computed = handler.parser(value, object);
-          }
+      // use keywords
+      if (keywords && keywords.indexOf(value) > -1) {
+        // computed = new CSSKeywordValue(value);
+        computed = getOrCreateKeyword(value);
+      } else if (handler) {
+        if (!memoized && handler.parserUnmemoize) {
+          computed = handler.parserUnmemoize(value, object);
+        } else if (handler.parser) {
+          // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
+          computed = handler.parser(value, object);
         }
       }
     }
@@ -1039,7 +1036,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     if (metadata) {
       const { syntax, inh: inherited, d: defaultValue } = metadata;
       if (computed instanceof CSSKeywordValue) {
-        let value = computed.value;
+        let { value } = computed;
 
         /**
          * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/unset
@@ -1074,10 +1071,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
             // object.parsedStyle[name] = resolved;
             // return false;
             return resolved;
-          } else {
-            this.addUnresolveProperty(object, name);
-            return;
           }
+          this.addUnresolveProperty(object, name);
+          return;
         }
       }
 
@@ -1170,8 +1166,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         return usedValue;
       }
     }
-
-    return;
   }
 
   recalc(object: DisplayObject) {
@@ -1197,7 +1191,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       nodeName
     ] as GeometryAABBUpdater;
     if (geometryUpdater) {
-      const geometry = object.geometry;
+      const { geometry } = object;
       if (!geometry.contentBounds) {
         geometry.contentBounds = new AABB();
       }
@@ -1237,7 +1231,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         shadowColor,
         filter = [],
         transformOrigin,
-      } = parsedStyle as ParsedBaseStyleProps;
+      } = parsedStyle;
       const center: Tuple3Number = [cx, cy, cz];
       // update geometry's AABB
       geometry.contentBounds.update(center, halfExtents);
@@ -1274,8 +1268,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       // account for shadow, only support constant value now
       if (shadowColor && shadowType && shadowType !== 'inner') {
         const { min, max } = geometry.renderBounds;
-        const { shadowBlur, shadowOffsetX, shadowOffsetY } =
-          parsedStyle as ParsedBaseStyleProps;
+        const { shadowBlur, shadowOffsetX, shadowOffsetY } = parsedStyle;
         const shadowBlurInPixels = shadowBlur || 0;
         const shadowOffsetXInPixels = shadowOffsetX || 0;
         const shadowOffsetYInPixels = shadowOffsetY || 0;
@@ -1291,9 +1284,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         geometry.renderBounds.setMinMax(min, max);
       }
       // account for filter, eg. blur(5px), drop-shadow()
-      (filter as ParsedFilterStyleProperty[]).forEach(({ name, params }) => {
+      filter.forEach(({ name, params }) => {
         if (name === 'blur') {
-          const blurRadius = params[0].value as number;
+          const blurRadius = params[0].value;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
             addVec3(

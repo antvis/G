@@ -1,4 +1,5 @@
 import type { AsArray } from './Hook';
+
 export class SyncWaterfallHook<T, R> {
   private callbacks: ((...args: AsArray<T>) => R)[] = [];
 
@@ -11,7 +12,7 @@ export class SyncWaterfallHook<T, R> {
       /* eslint-disable-next-line prefer-rest-params */
       const argsArr = arguments;
       /* eslint-disable-next-line prefer-spread */
-      let result: R = this.callbacks[0].apply(void 0, argsArr);
+      let result: R = this.callbacks[0].apply(undefined, argsArr);
       for (let i = 0; i < this.callbacks.length - 1; i++) {
         const callback = this.callbacks[i];
         // @ts-ignore

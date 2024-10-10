@@ -1,4 +1,9 @@
-import type { CanvasKit, FontMgr, Typeface, TypefaceFontProvider } from 'canvaskit-wasm';
+import type {
+  CanvasKit,
+  FontMgr,
+  Typeface,
+  TypefaceFontProvider,
+} from 'canvaskit-wasm';
 
 // const cdn = 'https://storage.googleapis.com/skia-cdn/misc/';
 

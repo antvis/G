@@ -1,7 +1,7 @@
 import { AbstractRendererPlugin } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
-import { WebGLContextService } from './WebGLContextService';
 import { WebGLDeviceContribution } from '@antv/g-device-api';
+import { WebGLContextService } from './WebGLContextService';
 import { WebGLRendererConfig } from '.';
 
 export class ContextRegisterPlugin extends AbstractRendererPlugin {
@@ -17,7 +17,7 @@ export class ContextRegisterPlugin extends AbstractRendererPlugin {
   init(): void {
     this.context.ContextService = WebGLContextService;
     this.context.deviceRendererPlugin = this.rendererPlugin;
-    const config = this.config;
+    const { config } = this;
     this.context.deviceContribution = new WebGLDeviceContribution({
       ...(config?.targets
         ? {

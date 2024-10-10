@@ -4,6 +4,7 @@ import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as SVGPicker from '@antv/g-plugin-svg-picker';
 import * as SVGRenderer from '@antv/g-plugin-svg-renderer';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
+
 export { DomInteraction, SVGPicker, SVGRenderer };
 
 export interface SVGRendererConfig extends RendererConfig {

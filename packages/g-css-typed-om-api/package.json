@@ -21,10 +21,11 @@
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "package.json",
     "dist",
+    "types",
     "LICENSE",
     "README.md"
   ],

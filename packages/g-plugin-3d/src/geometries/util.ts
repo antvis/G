@@ -12,17 +12,19 @@ export function createConeData(
   roundedCaps: boolean,
 ) {
   // Variable declarations
-  let i: number,
-    j: number,
-    x: number,
-    y: number,
-    z: number,
-    u: number,
-    v: number;
+  let i: number;
+  let j: number;
+  let x: number;
+  let y: number;
+  let z: number;
+  let u: number;
+  let v: number;
   const pos = vec3.create();
   const bottomToTop = vec3.create();
   const norm = vec3.create();
-  let top: vec3, bottom: vec3, tangent: vec3;
+  let top: vec3;
+  let bottom: vec3;
+  let tangent: vec3;
 
   const positions: number[] = [];
   const normals: number[] = [];
@@ -30,9 +32,16 @@ export function createConeData(
   const uvs1: number[] = [];
   const indices: number[] = [];
 
-  let theta: number, cosTheta: number, sinTheta: number;
-  let phi: number, sinPhi: number, cosPhi: number;
-  let first: number, second: number, third: number, fourth: number;
+  let theta: number;
+  let cosTheta: number;
+  let sinTheta: number;
+  let phi: number;
+  let sinPhi: number;
+  let cosPhi: number;
+  let first: number;
+  let second: number;
+  let third: number;
+  let fourth: number;
   let offset: number;
 
   // Define the body of the cone/cylinder
@@ -89,7 +98,8 @@ export function createConeData(
   }
 
   if (roundedCaps) {
-    let lat: number, lon: number;
+    let lat: number;
+    let lon: number;
     const latitudeBands = Math.floor(capSegments / 2);
     const longitudeBands = capSegments;
     const capOffset = height / 2;
@@ -250,10 +260,10 @@ export function createConeData(
   }
 
   return {
-    positions: positions,
-    normals: normals,
-    uvs: uvs,
-    uvs1: uvs1,
-    indices: indices,
+    positions,
+    normals,
+    uvs,
+    uvs1,
+    indices,
   };
 }

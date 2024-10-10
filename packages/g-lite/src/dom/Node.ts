@@ -50,10 +50,6 @@ export abstract class Node extends EventTarget implements INode {
     return !!(target as INode).childNodes;
   }
 
-  constructor() {
-    super();
-  }
-
   shadow = false;
   /**
    * points to canvas.document
@@ -288,20 +284,17 @@ export abstract class Node extends EventTarget implements INode {
           if (shorterHierarchy === node1Hierarchy) {
             // Other is before this
             return Node.DOCUMENT_POSITION_PRECEDING;
-          } else {
-            // This is before other
-            return Node.DOCUMENT_POSITION_FOLLOWING;
           }
-        } else {
-          // Longer is before shorter
-          if (longerHierarchy === node1Hierarchy) {
-            // Other is before this
-            return Node.DOCUMENT_POSITION_PRECEDING;
-          } else {
-            // Other is after this
-            return Node.DOCUMENT_POSITION_FOLLOWING;
-          }
+          // This is before other
+          return Node.DOCUMENT_POSITION_FOLLOWING;
         }
+        // Longer is before shorter
+        if (longerHierarchy === node1Hierarchy) {
+          // Other is before this
+          return Node.DOCUMENT_POSITION_PRECEDING;
+        }
+        // Other is after this
+        return Node.DOCUMENT_POSITION_FOLLOWING;
       }
     }
 

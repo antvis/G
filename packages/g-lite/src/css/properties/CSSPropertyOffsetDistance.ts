@@ -7,6 +7,7 @@ import {
   parseNumber,
   parseNumberUnmemoize,
 } from '../parser/numeric';
+
 export class CSSPropertyOffsetDistance
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {

@@ -1,4 +1,5 @@
 import type { LayoutContext } from './LayoutContext';
+
 export interface LayoutFragmentFactory<T = void> {
   (options: LayoutFragmentOptions<T>): LayoutFragment<T>;
 }

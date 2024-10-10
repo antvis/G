@@ -1,7 +1,7 @@
 import { Path, deg2rad, CSS, PropertySyntax } from '@antv/g-lite';
 import { isNumberEqual, PathArray } from '@antv/util';
 
-const PI = Math.PI;
+const { PI } = Math;
 const PI2 = PI * 2;
 const mathSin = Math.sin;
 const mathCos = Math.cos;
@@ -158,9 +158,9 @@ export class Sector extends Path {
       y,
       startAngle ? deg2rad(startAngle) : 0,
       endAngle ? deg2rad(endAngle) : Math.PI * 2,
-      sr ? sr : 0,
-      sr0 ? sr0 : 0,
-      radius ? radius : [0, 0, 0, 0],
+      sr || 0,
+      sr0 || 0,
+      radius || [0, 0, 0, 0],
     );
     super.setAttribute('d', path);
   }
@@ -526,6 +526,6 @@ export class Sector extends Path {
     }
     sectorPathCommands.push(['Z']);
 
-    return sectorPathCommands as PathArray;
+    return sectorPathCommands;
   }
 }

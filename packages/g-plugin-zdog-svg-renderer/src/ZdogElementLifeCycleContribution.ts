@@ -17,7 +17,10 @@ import { SVGRenderer } from '@antv/g-svg';
 export class ZdogElementLifeCycleContribution
   implements SVGRenderer.ElementLifeCycleContribution
 {
-  constructor(private context: CanvasContext, private runtime: GlobalRuntime) {}
+  constructor(
+    private context: CanvasContext,
+    private runtime: GlobalRuntime,
+  ) {}
 
   createElement(object: DisplayObject<any, any>): SVGElement {
     const { nodeName } = object;

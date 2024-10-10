@@ -102,6 +102,7 @@ function toColorString(val: number | number[]) {
 }
 
 function getMultiDimensionValue(val: number | number[], dimIndex?: number) {
+  // eslint-disable-next-line no-nested-ternary
   return val != null
     ? typeof val === 'number'
       ? val
@@ -150,7 +151,6 @@ function getMultiDimensionEasingBezierString(
   ) {
     return `cubic-bezier(${bezierEasing.join(',')})`;
   }
-  return;
 }
 
 /**
@@ -207,10 +207,10 @@ function parseKeyframe(
       if (startVal) {
         setVal(initialKeyframe, startVal);
       }
-      out.keyframes!.push(initialKeyframe);
+      out.keyframes.push(initialKeyframe);
     }
 
-    out.keyframes!.push(outKeyframe);
+    out.keyframes.push(outKeyframe);
 
     if (isDiscrete && nextKf) {
       // Use two keyframe to simulate the discrete animation.
@@ -221,7 +221,7 @@ function parseKeyframe(
         ),
       };
       setVal(extraKeyframe, startVal);
-      out.keyframes!.push(extraKeyframe);
+      out.keyframes.push(extraKeyframe);
     }
 
     prevKf = kf;
@@ -519,7 +519,8 @@ function parseGradient(
 
     // @see https://g-next.antv.vision/zh/docs/api/css/css-properties-values-api#linear-gradient
     return `linear-gradient(${angle}deg, ${joinColorStops(colorStops)})`;
-  } else if (shape.t === Lottie.GradientType.Radial) {
+  }
+  if (shape.t === Lottie.GradientType.Radial) {
     // TODO: highlight length & angle (h & a)
     // Highlight Length, as a percentage between s and e
     // Highlight Angle, relative to the direction from s to e
@@ -532,10 +533,9 @@ function parseGradient(
     return `radial-gradient(circle ${size}px at ${shape.s.k[0] as number}px ${
       shape.s.k[1] as number
     }px, ${joinColorStops(colorStops)})`;
-  } else {
-    // Invalid gradient
-    return '#000';
   }
+  // Invalid gradient
+  return '#000';
 }
 function parseFill(
   fl: Lottie.FillShape | Lottie.GradientFillShape,
@@ -547,12 +547,10 @@ function parseFill(
   // Color
   if (isGradientFillOrStroke(fl)) {
     attrs.style.fill = parseGradient(fl);
-  } else {
-    if (isMultiDimensionalValue(fl.c)) {
-      attrs.style.fill = toColorString(fl.c.k);
-    } else if (isMultiDimensionalKeyframedValue(fl.c)) {
-      parseColorOffsetKeyframe(fl.c.k, 'style', 'fill', animations, context);
-    }
+  } else if (isMultiDimensionalValue(fl.c)) {
+    attrs.style.fill = toColorString(fl.c.k);
+  } else if (isMultiDimensionalKeyframedValue(fl.c)) {
+    parseColorOffsetKeyframe(fl.c.k, 'style', 'fill', animations, context);
   }
 
   // FillRule @see https://lottiefiles.github.io/lottie-docs/constants/#fillrule
@@ -581,12 +579,10 @@ function parseStroke(
   // Color
   if (isGradientFillOrStroke(st)) {
     attrs.style.stroke = parseGradient(st);
-  } else {
-    if (isMultiDimensionalValue(st.c)) {
-      attrs.style.stroke = toColorString(st.c.k);
-    } else if (isMultiDimensionalKeyframedValue(st.c)) {
-      parseColorOffsetKeyframe(st.c.k, 'style', 'stroke', animations, context);
-    }
+  } else if (isMultiDimensionalValue(st.c)) {
+    attrs.style.stroke = toColorString(st.c.k);
+  } else if (isMultiDimensionalKeyframedValue(st.c)) {
+    parseColorOffsetKeyframe(st.c.k, 'style', 'stroke', animations, context);
   }
 
   // Opacity
@@ -1151,7 +1147,7 @@ function parseLayers(
           ...attrs,
         };
         if (maskKeyframeAnimations.length) {
-          layerGroup.clipPath!.keyframeAnimation = maskKeyframeAnimations;
+          layerGroup.clipPath.keyframeAnimation = maskKeyframeAnimations;
         }
       }
 
@@ -1180,7 +1176,7 @@ function parseLayers(
 
   // Build hierarchy
   return elements.filter((el) => {
-    const parentLayer = layerIndexMap.get(el.extra?.layerParent as any);
+    const parentLayer = layerIndexMap.get(el.extra?.layerParent);
     if (parentLayer) {
       parentLayer.children?.push(el);
       return false;
@@ -1212,6 +1208,7 @@ export function parse(
   context.version = data.v;
   context.autoplay = !!autoplay;
   context.fill = fill;
+  // eslint-disable-next-line no-nested-ternary
   context.iterations = isNumber(loop) ? loop : loop ? Infinity : 1;
   // @see https://lottiefiles.github.io/lottie-docs/assets/
   data.assets?.forEach((asset) => {

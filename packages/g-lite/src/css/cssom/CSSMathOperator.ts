@@ -28,6 +28,8 @@ export enum CSSMathOperator {
 
 export function isComparison(op: CSSMathOperator) {
   return (
-    op === CSSMathOperator.kMin || op === CSSMathOperator.kMax || op === CSSMathOperator.kClamp
+    op === CSSMathOperator.kMin ||
+    op === CSSMathOperator.kMax ||
+    op === CSSMathOperator.kClamp
   );
 }

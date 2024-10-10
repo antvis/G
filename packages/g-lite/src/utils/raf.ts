@@ -4,20 +4,21 @@
  * http://paulirish.com/2011/requestanimationframe-for-smart-animating/
  * http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
  * https://github.com/Financial-Times/polyfill-library/blob/master/polyfills/requestAnimationFrame/polyfill.js
- **/
+ * */
 
 let uId = 1;
 const uniqueId = () => uId++;
 
 // We use `self` instead of `window` for `WebWorker` support.
 export const root: any =
-  typeof self === 'object' && self.self == self
+  // eslint-disable-next-line no-nested-ternary
+  typeof self === 'object' && self.self === self
     ? self
     : // @ts-ignore
-    typeof global === 'object' && global.global == global
-    ? // @ts-ignore
-      global
-    : {};
+      typeof global === 'object' && global.global === global
+      ? // @ts-ignore
+        global
+      : {};
 
 const nowOffset = Date.now();
 
@@ -41,7 +42,7 @@ let lastTime = Date.now();
 
 const polyfillRaf = (callback: (...args: any[]) => any) => {
   if (typeof callback !== 'function') {
-    throw new TypeError(callback + ' is not a function');
+    throw new TypeError(`${callback} is not a function`);
   }
 
   const currentTime = Date.now();
@@ -79,25 +80,25 @@ const getRequestAnimationFrame = (
   vp: string | void,
 ): TRequestAnimationFrame => {
   if (typeof vp !== 'string') return polyfillRaf;
-  if (vp === '') return root['requestAnimationFrame'];
-  return root[vp + 'RequestAnimationFrame'];
+  if (vp === '') return root.requestAnimationFrame;
+  return root[`${vp}RequestAnimationFrame`];
 };
 
 const getCancelAnimationFrame = (vp: string | void): TCancelAnimationFrame => {
   if (typeof vp !== 'string') return polyfillCaf;
-  if (vp === '') return root['cancelAnimationFrame'];
+  if (vp === '') return root.cancelAnimationFrame;
   return (
-    root[vp + 'CancelAnimationFrame'] ||
-    root[vp + 'CancelRequestAnimationFrame']
+    root[`${vp}CancelAnimationFrame`] ||
+    root[`${vp}CancelRequestAnimationFrame`]
   );
 };
 
 const find = (arr: any[], predicate: (...args: any[]) => any) => {
   let i = 0;
-  while (arr[i] !== void 0) {
+  while (arr[i] !== undefined) {
     if (predicate(arr[i])) return arr[i];
 
-    i = i + 1;
+    i += 1;
   }
 };
 

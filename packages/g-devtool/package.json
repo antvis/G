@@ -11,6 +11,8 @@
     "sync": "tnpm sync"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@antv/g-devtool": "link:",
     "antd": "^4.18.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.2",

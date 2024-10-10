@@ -8,7 +8,7 @@ export function generatePath(
   const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
     parsedStyle;
   const { points } = parsedStyle.points;
-  const length = points.length;
+  const { length } = points;
 
   const x1 = points[0][0];
   const y1 = points[0][1];

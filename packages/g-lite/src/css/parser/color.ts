@@ -59,7 +59,8 @@ export const parseColor = memoize(
     if (colorStr === 'transparent') {
       // transparent black
       return transparentColor;
-    } else if (colorStr === 'currentColor') {
+    }
+    if (colorStr === 'currentColor') {
       // @see https://github.com/adobe-webplatform/Snap.svg/issues/526
       colorStr = 'black';
     } else if (colorStr === 'none') {

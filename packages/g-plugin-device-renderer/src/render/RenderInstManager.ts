@@ -10,7 +10,7 @@ export class RenderInstManager {
   instPool = new RenderInstPool();
   templatePool = new RenderInstPool();
   simpleRenderInstList: RenderInstList | null = new RenderInstList();
-  currentRenderInstList: RenderInstList = this.simpleRenderInstList!;
+  currentRenderInstList: RenderInstList = this.simpleRenderInstList;
 
   constructor(public renderCache: RenderCache) {}
 

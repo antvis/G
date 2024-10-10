@@ -47,8 +47,8 @@ class CanvasElement implements CanvasLike {
   }
 
   getBoundingClientRect() {
-    const width = this.width;
-    const height = this.height;
+    const { width } = this;
+    const { height } = this;
     // 默认都处理成可视窗口的顶部位置
     return {
       top: 0,
@@ -120,7 +120,7 @@ function supportEventListener(canvas: HTMLCanvasElement) {
       support = true;
     });
     canvas.dispatchEvent(new Event('eventTest'));
-  } catch (error) {
+  } catch {
     support = false;
   }
   return support;

@@ -219,10 +219,10 @@ export class CubeGeometry extends ProceduralGeometry<CubeGeometryProps> {
     generateFace(sides.LEFT, ds, hs);
 
     return {
-      indices: indices,
-      positions: positions,
-      normals: normals,
-      uvs: uvs,
+      indices,
+      positions,
+      normals,
+      uvs,
       uv1s: uvs1,
     };
   }

@@ -6,12 +6,15 @@ import glslify from 'rollup-plugin-glslify';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
-import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const __CI__ = process.env.CI;
 
 const resolve = (packageName) => {
-  return path.resolve(__dirname, path.join('./packages/', packageName, process.env.CI ? 'dist/index.esm.js' : 'src'));
+  return path.resolve(
+    __dirname,
+    path.join('./packages/', packageName, __CI__ ? 'dist/index.esm.js' : 'src'),
+  );
 };
 
 export default defineConfig({
@@ -21,7 +24,7 @@ export default defineConfig({
     open: '/',
   },
   publicDir: 'static',
-  plugins: process.env.CI
+  plugins: __CI__
     ? []
     : [
         // ! keep same to rollup config
@@ -36,7 +39,6 @@ export default defineConfig({
         }),
         commonjs({ sourceMap: true }),
         typescript({ sourceMap: true }),
-        sourcemaps(),
       ],
   resolve: {
     alias: {
@@ -45,30 +47,44 @@ export default defineConfig({
       '@antv/g-plugin-matterjs': resolve('g-plugin-matterjs'),
       '@antv/g-camera-api': resolve('g-camera-api'),
       '@antv/g-pattern': resolve('g-pattern'),
-      '@antv/g-plugin-mobile-interaction': resolve('g-plugin-mobile-interaction'),
+      '@antv/g-plugin-mobile-interaction': resolve(
+        'g-plugin-mobile-interaction',
+      ),
       '@antv/g-canvas': resolve('g-canvas'),
       '@antv/g-plugin-3d': resolve('g-plugin-3d'),
       '@antv/g-plugin-physx': resolve('g-plugin-physx'),
       '@antv/g-canvaskit': resolve('g-canvaskit'),
       '@antv/g-plugin-a11y': resolve('g-plugin-a11y'),
-      '@antv/g-plugin-rough-canvas-renderer': resolve('g-plugin-rough-canvas-renderer'),
+      '@antv/g-plugin-rough-canvas-renderer': resolve(
+        'g-plugin-rough-canvas-renderer',
+      ),
       '@antv/g-components': resolve('g-components'),
       '@antv/g-plugin-annotation': resolve('g-plugin-annotation'),
-      '@antv/g-plugin-rough-svg-renderer': resolve('g-plugin-rough-svg-renderer'),
+      '@antv/g-plugin-rough-svg-renderer': resolve(
+        'g-plugin-rough-svg-renderer',
+      ),
       '@antv/g-css-layout-api': resolve('g-css-layout-api'),
       '@antv/g-plugin-box2d': resolve('g-plugin-box2d'),
       '@antv/g-plugin-svg-picker': resolve('g-plugin-svg-picker'),
       '@antv/g-css-typed-om-api': resolve('g-css-typed-om-api'),
-      '@antv/g-plugin-canvas-path-generator': resolve('g-plugin-canvas-path-generator'),
+      '@antv/g-plugin-canvas-path-generator': resolve(
+        'g-plugin-canvas-path-generator',
+      ),
       '@antv/g-plugin-svg-renderer': resolve('g-plugin-svg-renderer'),
       '@antv/g-devtool': resolve('g-devtool'),
       '@antv/g-plugin-canvas-picker': resolve('g-plugin-canvas-picker'),
       '@antv/g-plugin-yoga': resolve('g-plugin-yoga'),
-      '@antv/g-dom-mutation-observer-api': resolve('g-dom-mutation-observer-api'),
+      '@antv/g-dom-mutation-observer-api': resolve(
+        'g-dom-mutation-observer-api',
+      ),
       '@antv/g-plugin-canvas-renderer': resolve('g-plugin-canvas-renderer'),
-      '@antv/g-plugin-zdog-canvas-renderer': resolve('g-plugin-zdog-canvas-renderer'),
+      '@antv/g-plugin-zdog-canvas-renderer': resolve(
+        'g-plugin-zdog-canvas-renderer',
+      ),
       '@antv/g-gesture': resolve('g-gesture'),
-      '@antv/g-plugin-canvaskit-renderer': resolve('g-plugin-canvaskit-renderer'),
+      '@antv/g-plugin-canvaskit-renderer': resolve(
+        'g-plugin-canvaskit-renderer',
+      ),
       '@antv/g-plugin-zdog-svg-renderer': resolve('g-plugin-zdog-svg-renderer'),
       '@antv/g-image-exporter': resolve('g-image-exporter'),
       '@antv/g-plugin-control': resolve('g-plugin-control'),

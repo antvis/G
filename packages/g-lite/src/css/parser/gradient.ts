@@ -26,7 +26,7 @@ const regexPR = /^p\s*\(\s*([axyn])\s*\)\s*(.*)/i;
 const regexColorStop = /[\d.]+:(#[^\s]+|[^\)]+\))/gi;
 
 function spaceColorStops(colorStops: ColorStop[]) {
-  const length = colorStops.length;
+  const { length } = colorStops;
   colorStops[length - 1].length = colorStops[length - 1].length ?? {
     type: '%',
     value: '100',
@@ -159,7 +159,8 @@ export const parseGradient = memoize((colorStr: string) => {
             : Odeg,
           steps,
         });
-      } else if (type === 'radial-gradient') {
+      }
+      if (type === 'radial-gradient') {
         if (!orientation) {
           orientation = [
             {
@@ -195,6 +196,8 @@ export const parseGradient = memoize((colorStr: string) => {
         // } else if (type === 'repeating-linear-gradient') {
         // } else if (type === 'repeating-radial-gradient') {
       }
+
+      return undefined;
     });
   }
 
@@ -220,7 +223,7 @@ export const parseGradient = memoize((colorStr: string) => {
       const parsedRadialGradient = parseRadialGradient(colorStr);
       if (parsedRadialGradient) {
         if (isString(parsedRadialGradient)) {
-          colorStr = parsedRadialGradient as string;
+          colorStr = parsedRadialGradient;
         } else {
           return [
             new CSSGradientValue(

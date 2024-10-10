@@ -6,7 +6,7 @@ import type { DrawerState } from '../interface/drawer';
 export const renderCircle = (context: AnnotationPlugin, anno: DrawerState) => {
   const { path } = anno;
 
-  let pointCircle = context.pointCircle;
+  let { pointCircle } = context;
   if (!pointCircle) {
     pointCircle = new Circle({
       style: {

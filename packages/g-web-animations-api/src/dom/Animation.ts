@@ -61,13 +61,9 @@ export class Animation implements IAnimation {
 
   private readyPromise: Promise<any> | undefined;
   private finishedPromise: Promise<any> | undefined;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   private resolveReadyPromise: Function;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   private rejectReadyPromise: Function;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   private resolveFinishedPromise: Function;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   private rejectFinishedPromise: Function;
 
   /**
@@ -265,7 +261,7 @@ export class Animation implements IAnimation {
    * resolve/reject ready/finished Promise according to current state
    */
   updatePromises() {
-    const oldPlayState = this.oldPlayState;
+    const { oldPlayState } = this;
     const newPlayState = this.pending ? 'pending' : this.playState;
     if (this.readyPromise && newPlayState !== oldPlayState) {
       if (newPlayState === 'idle') {

@@ -39,7 +39,7 @@ export class PolygonRenderer implements RendererContribution {
       markerEndOffset,
     } = object.parsedStyle as ParsedPolygonStyleProps;
 
-    const length = points.length;
+    const { length } = points;
     let startOffsetX = 0;
     let startOffsetY = 0;
     let endOffsetX = 0;

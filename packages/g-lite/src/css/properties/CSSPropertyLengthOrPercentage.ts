@@ -52,20 +52,21 @@ export class CSSPropertyLengthOrPercentage
       if (computed.unit === UnitType.kPercentage) {
         // TODO: merge dimensions
         return 0;
-      } else if (computed.unit === UnitType.kEms) {
+      }
+      if (computed.unit === UnitType.kEms) {
         if (object.parentNode) {
           let fontSize = getFontSize(object.parentNode as DisplayObject);
           if (fontSize) {
             fontSize *= computed.value;
             return fontSize;
-          } else {
-            registry.addUnresolveProperty(object, name);
           }
+          registry.addUnresolveProperty(object, name);
         } else {
           registry.addUnresolveProperty(object, name);
         }
         return 0;
-      } else if (computed.unit === UnitType.kRems) {
+      }
+      if (computed.unit === UnitType.kRems) {
         if (object?.ownerDocument?.documentElement) {
           let fontSize = getFontSize(
             object.ownerDocument.documentElement as DisplayObject,
@@ -74,9 +75,8 @@ export class CSSPropertyLengthOrPercentage
           if (fontSize) {
             fontSize *= computed.value;
             return fontSize;
-          } else {
-            registry.addUnresolveProperty(object, name);
           }
+          registry.addUnresolveProperty(object, name);
         } else {
           registry.addUnresolveProperty(object, name);
         }

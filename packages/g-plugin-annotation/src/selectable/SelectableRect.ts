@@ -1,8 +1,8 @@
 import type { Cursor, DisplayObject, FederatedEvent } from '@antv/g-lite';
 import { Circle, CustomEvent, rad2deg, Rect } from '@antv/g-lite';
+import { vec3 } from 'gl-matrix';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
-import { vec3 } from 'gl-matrix';
 
 interface Control {
   x: number;
@@ -60,7 +60,7 @@ export class SelectableRect extends AbstractSelectable<Rect> {
         y: center[1] - halfExtents[1],
         width: halfExtents[0] * 2,
         height: halfExtents[1] * 2,
-        draggable: target.style.maskDraggable === false ? false : true,
+        draggable: target.style.maskDraggable !== false,
         cursor: 'move',
         isSizeAttenuation: true,
         fill: selectionFill,
@@ -443,8 +443,8 @@ export class SelectableRect extends AbstractSelectable<Rect> {
     by: string,
     scaleProportionally: boolean,
   ) {
-    const lockX = object.style.lockScalingX,
-      lockY = object.style.lockScalingY;
+    const lockX = object.style.lockScalingX;
+    const lockY = object.style.lockScalingY;
     if (lockX && lockY) {
       return true;
     }
@@ -473,6 +473,6 @@ export class SelectableRect extends AbstractSelectable<Rect> {
       return notAllowed;
     }
     const n = this.findCornerQuadrant(object, control);
-    return scaleMap[n] + '-resize';
+    return `${scaleMap[n]}-resize`;
   }
 }

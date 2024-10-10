@@ -66,7 +66,7 @@ export class BatchManager {
       // init rendering service, create geometry & material
       mesh.init();
 
-      let objects = mesh.objects;
+      let { objects } = mesh;
       if (mesh.clipPathTarget) {
         objects = [mesh.clipPath];
       }
@@ -106,13 +106,13 @@ export class BatchManager {
           .getDrawcallCtors(object)
           .forEach(
             (
-              drawcallCtor: new (..._: any) => Instanced,
+              DrawCallCtor: new (..._: any) => Instanced,
               i: number,
               drawcallCtors: (new (..._: any) => Instanced)[],
             ) => {
               let existedDrawcall = this.drawcalls.find(
                 (mesh) =>
-                  drawcallCtor === mesh.constructor &&
+                  DrawCallCtor === mesh.constructor &&
                   mesh.index === i &&
                   mesh.objects.length < mesh.maxInstances &&
                   mesh.shouldMerge(object, i),
@@ -121,7 +121,7 @@ export class BatchManager {
                 !existedDrawcall ||
                 existedDrawcall.key !== object.parsedStyle.batchKey
               ) {
-                existedDrawcall = new drawcallCtor(
+                existedDrawcall = new DrawCallCtor(
                   this.renderHelper,
                   this.texturePool,
                   this.lightPool,
@@ -187,10 +187,10 @@ export class BatchManager {
     const renderer = this.rendererFactory[object.nodeName] as Batch;
     if (renderer) {
       const drawcallCtors = renderer.getDrawcallCtors(object);
-      drawcallCtors.forEach((drawcallCtor, i, drawcallCtors) => {
+      drawcallCtors.forEach((DrawCallCtor, i, drawcallCtors) => {
         let existedDrawcall = renderable3D.drawcalls.find(
           (mesh) =>
-            mesh && mesh.index === i && mesh.constructor === drawcallCtor,
+            mesh && mesh.index === i && mesh.constructor === DrawCallCtor,
         );
 
         if (!existedDrawcall) {
@@ -216,7 +216,7 @@ export class BatchManager {
           // We should create a new drawcall from scratch.
           existedDrawcall = this.drawcalls.find(
             (mesh) =>
-              drawcallCtor === mesh.constructor &&
+              DrawCallCtor === mesh.constructor &&
               mesh.index === i &&
               mesh.objects.length < mesh.maxInstances &&
               mesh.shouldMerge(object, i),
@@ -224,7 +224,7 @@ export class BatchManager {
 
           if (!existedDrawcall) {
             // @ts-ignore
-            existedDrawcall = new drawcallCtor(
+            existedDrawcall = new DrawCallCtor(
               this.renderHelper,
               this.texturePool,
               this.lightPool,

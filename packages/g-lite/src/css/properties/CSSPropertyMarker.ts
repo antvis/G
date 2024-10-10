@@ -2,7 +2,9 @@ import type { DisplayObject } from '../../display-objects';
 import { CSSKeywordValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 
-export class CSSPropertyMarker implements Partial<CSSProperty<DisplayObject, DisplayObject>> {
+export class CSSPropertyMarker
+  implements Partial<CSSProperty<DisplayObject, DisplayObject>>
+{
   calculator(
     name: string,
     oldMarker: DisplayObject,

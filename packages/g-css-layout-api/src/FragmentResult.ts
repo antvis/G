@@ -1,6 +1,7 @@
 import type { LayoutContext } from './LayoutContext';
 import type { LayoutFragment } from './LayoutFragment';
 import type { LayoutObject } from './LayoutObject';
+
 export interface FragmentResultFactory {
   (options: FragmentResultOptions): FragmentResult;
 }

@@ -36,7 +36,10 @@ export class CustomElementRegistry {
     this.define(Shape.HTML, HTML);
   }
 
-  define<T extends DisplayObject>(name: string, constructor: new (...args: any[]) => T) {
+  define<T extends DisplayObject>(
+    name: string,
+    constructor: new (...args: any[]) => T,
+  ) {
     this.registry[name] = constructor;
   }
 

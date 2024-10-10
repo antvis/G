@@ -16,22 +16,22 @@ export type TypeColor = string | number | (string | number)[];
 export type TypeRGBAFunction = (color: TypeColor) => number[];
 
 /**
-  Easing Functions from anime.js, they are tried and true, so, its better to use them instead of other alternatives 
+  Easing Functions from anime.js, they are tried and true, so, its better to use them instead of other alternatives
 */
-const Quad: TypeEasingFunction = (t) => Math.pow(t, 2);
-const Cubic: TypeEasingFunction = (t) => Math.pow(t, 3);
-const Quart: TypeEasingFunction = (t) => Math.pow(t, 4);
-const Quint: TypeEasingFunction = (t) => Math.pow(t, 5);
-const Expo: TypeEasingFunction = (t) => Math.pow(t, 6);
+const Quad: TypeEasingFunction = (t) => t ** 2;
+const Cubic: TypeEasingFunction = (t) => t ** 3;
+const Quart: TypeEasingFunction = (t) => t ** 4;
+const Quint: TypeEasingFunction = (t) => t ** 5;
+const Expo: TypeEasingFunction = (t) => t ** 6;
 const Sine: TypeEasingFunction = (t) => 1 - Math.cos((t * Math.PI) / 2);
 const Circ: TypeEasingFunction = (t) => 1 - Math.sqrt(1 - t * t);
 const Back: TypeEasingFunction = (t) => t * t * (3 * t - 2);
 
 const Bounce: TypeEasingFunction = (t) => {
-  let pow2: number,
-    b = 4;
-  while (t < ((pow2 = Math.pow(2, --b)) - 1) / 11) {}
-  return 1 / Math.pow(4, 3 - b) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
+  let pow2: number;
+  let b = 4;
+  while (t < ((pow2 = 2 ** --b) - 1) / 11) {}
+  return 1 / 4 ** (3 - b) - 7.5625 * ((pow2 * 3 - 2) / 22 - t) ** 2;
 };
 
 const Elastic: TypeEasingFunction = (t, params: (string | number)[] = []) => {
@@ -41,8 +41,10 @@ const Elastic: TypeEasingFunction = (t, params: (string | number)[] = []) => {
   if (t === 0 || t === 1) return t;
   return (
     -a *
-    Math.pow(2, 10 * (t - 1)) *
-    Math.sin(((t - 1 - (p / (Math.PI * 2)) * Math.asin(1 / a)) * (Math.PI * 2)) / p)
+    2 ** (10 * (t - 1)) *
+    Math.sin(
+      ((t - 1 - (p / (Math.PI * 2)) * Math.asin(1 / a)) * (Math.PI * 2)) / p,
+    )
   );
 };
 
@@ -67,7 +69,8 @@ const Spring: TypeEasingFunction = (
   let progress = duration ? (duration * t) / 1000 : t;
   if (zeta < 1) {
     progress =
-      Math.exp(-progress * zeta * w0) * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
+      Math.exp(-progress * zeta * w0) *
+      (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
   } else {
     progress = (a + b * progress) * Math.exp(-progress * w0);
   }
@@ -132,13 +135,13 @@ const Spring: TypeEasingFunction = (
 //   return duration;
 // };
 
-/** 
-  These Easing Functions are based off of the Sozi Project's easing functions 
+/**
+  These Easing Functions are based off of the Sozi Project's easing functions
   https://github.com/sozi-projects/Sozi/blob/d72e44ebd580dc7579d1e177406ad41e632f961d/src/js/player/Timing.js
 */
 const Steps: TypeEasingFunction = (t: number, params = []) => {
   const [steps = 10, type] = params as [number, string];
-  const trunc = type == 'start' ? Math.ceil : Math.floor;
+  const trunc = type === 'start' ? Math.ceil : Math.floor;
   return trunc(clamp(t, 0, 1) * steps) / steps;
 };
 
@@ -153,13 +156,16 @@ const easein: TypeEasingFunction = bezier(0.42, 0.0, 1.0, 1.0);
 
 /** Converts easing functions to their `out`counter parts */
 const EaseOut = (ease: TypeEasingFunction): TypeEasingFunction => {
-  return (t, params = [], duration?: number) => 1 - ease(1 - t, params, duration);
+  return (t, params = [], duration?: number) =>
+    1 - ease(1 - t, params, duration);
 };
 
 /** Converts easing functions to their `in-out` counter parts */
 const EaseInOut = (ease: TypeEasingFunction): TypeEasingFunction => {
   return (t, params = [], duration?: number) =>
-    t < 0.5 ? ease(t * 2, params, duration) / 2 : 1 - ease(t * -2 + 2, params, duration) / 2;
+    t < 0.5
+      ? ease(t * 2, params, duration) / 2
+      : 1 - ease(t * -2 + 2, params, duration) / 2;
 };
 
 /** Converts easing functions to their `out-in` counter parts */

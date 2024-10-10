@@ -76,7 +76,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      const rBushNode = object.rBushNode;
+      const { rBushNode } = object;
       if (rBushNode.aabb) {
         this.rBush.remove(rBushNode.aabb);
       }
@@ -142,7 +142,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       // some objects may be removed since last frame
       .filter((object) => object.isConnected)
       .forEach((node: DisplayObject) => {
-        const rBushNode = node.rBushNode;
+        const { rBushNode } = node;
 
         // clear dirty node
         if (rBushNode && rBushNode.aabb) {
@@ -151,7 +151,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
         const renderBounds = node.getRenderBounds();
         if (renderBounds) {
-          const renderable = node.renderable;
+          const { renderable } = node;
 
           if (force) {
             if (!renderable.dirtyRenderBounds) {

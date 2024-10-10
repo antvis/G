@@ -15,7 +15,7 @@ export class WebXRManager {
   async setSession(canvas: Canvas, session: XRSession) {
     if (session) {
       this.session = session;
-      const gl = this.plugin.getDevice()['gl'] as WebGL2RenderingContext;
+      const gl = this.plugin.getDevice().gl as WebGL2RenderingContext;
       // const swapChain = this.plugin.getSwapChain();
       const attributes = gl.getContextAttributes();
 

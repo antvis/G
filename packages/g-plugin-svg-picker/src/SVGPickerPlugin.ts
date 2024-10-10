@@ -57,22 +57,21 @@ export class SVGPickerPlugin implements RenderingPlugin {
       )) {
         if (element.shadowRoot && element.shadowRoot !== doc) {
           return this.pick(svgElementMap, element.shadowRoot, result);
-        } else {
-          const target = svgElementMap.get(element as SVGElement);
-          // don't need to account for `visibility` since DOM API already does
-          if (target && target.isInteractive()) {
-            targets.push(target);
+        }
+        const target = svgElementMap.get(element as SVGElement);
+        // don't need to account for `visibility` since DOM API already does
+        if (target && target.isInteractive()) {
+          targets.push(target);
 
-            if (topmost) {
-              result.picked = targets;
-              return result;
-            }
+          if (topmost) {
+            result.picked = targets;
+            return result;
           }
         }
       }
 
       result.picked = targets;
-    } catch (e) {
+    } catch {
       result.picked = [];
     }
     return result;

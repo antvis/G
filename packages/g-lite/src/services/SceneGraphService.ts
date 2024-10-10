@@ -18,7 +18,7 @@ import { findClosestClipPathTarget } from '../utils';
 import type { SceneGraphService } from './interfaces';
 
 function markRenderableDirty(e: Element) {
-  const renderable = e.renderable;
+  const { renderable } = e;
   if (renderable) {
     renderable.renderBoundsDirty = true;
     renderable.boundsDirty = true;
@@ -89,7 +89,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     // parent needs re-sort
-    const sortable = (parent as unknown as Element).sortable;
+    const { sortable } = parent as unknown as Element;
     if (
       sortable?.sorted?.length ||
       (child as unknown as Element).parsedStyle.zIndex
@@ -131,7 +131,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       // }
 
       // parent needs re-sort
-      const sortable = (child.parentNode as Element).sortable;
+      const { sortable } = child.parentNode as Element;
       // if (sortable) {
       if (
         sortable?.sorted?.length ||
@@ -856,16 +856,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
       const aabb = existedAABB || new AABB();
       aabb.setFromTransformedAABB(bounds, this.getWorldTransform(element));
       return aabb;
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
    * won't account for children
    */
   getGeometryBounds(element: INode, render = false): AABB {
-    const geometry = (element as Element).geometry;
+    const { geometry } = element as Element;
 
     if (geometry.dirty) {
       runtime.styleValueRegistry.updateGeometry(element as DisplayObject);
@@ -882,7 +881,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * account for children in world space
    */
   getBounds(element: INode, render = false): AABB {
-    const renderable = (element as Element).renderable;
+    const { renderable } = element as Element;
 
     if (!renderable.boundsDirty && !render && renderable.bounds) {
       return renderable.bounds;
@@ -1010,7 +1009,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         }
       });
 
-      const renderable = (element as Element).renderable;
+      const { renderable } = element as Element;
       if (renderable) {
         renderable.renderBoundsDirty = true;
         renderable.boundsDirty = true;

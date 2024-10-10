@@ -34,11 +34,9 @@ export function sortPointsInCCW(
     let ang = Math.atan2(point.y - center.y, point.x - center.x);
     if (!startAng) {
       startAng = ang;
-    } else {
-      if (ang < startAng) {
-        // ensure that all points are clockwise of the start point
-        ang += Math.PI * 2;
-      }
+    } else if (ang < startAng) {
+      // ensure that all points are clockwise of the start point
+      ang += Math.PI * 2;
     }
     point.angle = ang; // add the angle to the point
   });
@@ -56,6 +54,7 @@ export function createPolygonShape(
   box2D: typeof Box2D & EmscriptenModule,
   vertices: Box2D.b2Vec2[],
 ): Box2D.b2PolygonShape {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { _malloc, b2Vec2, b2PolygonShape, HEAPF32, wrapPointer } = box2D;
   const shape = new b2PolygonShape();
   const buffer = _malloc(vertices.length * 8);
@@ -77,6 +76,7 @@ export function createChainShape(
   prev?: Box2D.b2Vec2,
   next?: Box2D.b2Vec2,
 ): Box2D.b2ChainShape {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { _malloc, b2Vec2, b2ChainShape, HEAPF32, wrapPointer } = box2D;
   const shape = new b2ChainShape();
   const buffer = _malloc(vertices.length * 8);

@@ -73,7 +73,7 @@ export function updateTextElementAttribute(
 
     // Since `text-after-edge` is not a standard property value, we use `dy` instead.
     if (textBaseline === 'bottom' || textBaseline === 'top') {
-      $el.setAttribute('dominant-baseline', BASELINE_MAP['middle']);
+      $el.setAttribute('dominant-baseline', BASELINE_MAP.middle);
       $el.setAttribute(
         'dy',
         textBaseline === 'bottom' ? `-${height / 2}px` : `${height / 2}px`,

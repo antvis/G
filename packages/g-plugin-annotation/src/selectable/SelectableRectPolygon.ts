@@ -4,11 +4,13 @@ import {
   FederatedEvent,
   ParsedPolygonStyleProps,
   Polygon,
+  Circle,
+  CustomEvent,
+  rad2deg,
 } from '@antv/g-lite';
-import { Circle, CustomEvent, rad2deg } from '@antv/g-lite';
+import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { SelectableEvent } from '../constants/enum';
 import { AbstractSelectable } from './AbstractSelectable';
-import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { getABC, getFootOfPerpendicular, lineIntersect } from '../utils/drawer';
 
 interface Control {
@@ -62,12 +64,12 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
 
     const { points: parsedPoints } =
       target.parsedStyle as ParsedPolygonStyleProps;
-    const points = parsedPoints.points;
+    const { points } = parsedPoints;
 
     this.mask = new Polygon({
       style: {
         points,
-        draggable: target.style.maskDraggable === false ? false : true,
+        draggable: target.style.maskDraggable !== false,
         cursor: 'move',
         isSizeAttenuation: true,
         fill: selectionFill,
@@ -434,8 +436,8 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
     by: string,
     scaleProportionally: boolean,
   ) {
-    const lockX = object.style.lockScalingX,
-      lockY = object.style.lockScalingY;
+    const lockX = object.style.lockScalingX;
+    const lockY = object.style.lockScalingY;
     if (lockX && lockY) {
       return true;
     }
@@ -464,6 +466,6 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
       return notAllowed;
     }
     const n = this.findCornerQuadrant(object, control);
-    return scaleMap[n] + '-resize';
+    return `${scaleMap[n]}-resize`;
   }
 }

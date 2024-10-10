@@ -59,6 +59,7 @@ export class Layout extends AbstractLayoutDefinition {
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
       // @ts-ignore
+      // eslint-disable-next-line no-await-in-loop
       let childFragment = await child.layoutNextFragment({
         availableInlineSize,
       });
@@ -66,7 +67,8 @@ export class Layout extends AbstractLayoutDefinition {
       const rightMargin = child.styleMap.get('margin-right')?.value || 0;
       const topMargin = child.styleMap.get('margin-top')?.value || 0;
       const bottomMargin = child.styleMap.get('margin-bottom')?.value || 0;
-      const childInlineSize = childFragment.inlineSize + leftMargin + rightMargin;
+      const childInlineSize =
+        childFragment.inlineSize + leftMargin + rightMargin;
       // If there’s not enough room left on this row, start a new row and
       // layout the current child again.
       if (childInlineSize > availableInlineSize && !isRepeatAttempt) {
@@ -82,6 +84,7 @@ export class Layout extends AbstractLayoutDefinition {
         // If the second attempt failed as well, the child is wider than the
         // there’s room. In that case, force it to be laid out at max width.
         // @ts-ignore
+        // eslint-disable-next-line no-await-in-loop
         childFragment = await child.layoutNextFragment({
           fixedInlineSize: availableInlineSize - leftMargin - rightMargin,
         });

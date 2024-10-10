@@ -36,16 +36,16 @@ export const makeQuerablePromise = <T>(promise: Promise<T>) => {
     },
   ) as any as PromiseStatus<T>;
 
-  (result as PromiseStatus<T>).isFulfilled = () => {
+  result.isFulfilled = () => {
     return isFulfilled;
   };
-  (result as PromiseStatus<T>).isPending = () => {
+  result.isPending = () => {
     return isPending;
   };
-  (result as PromiseStatus<T>).isRejected = () => {
+  result.isRejected = () => {
     return isRejected;
   };
-  (result as PromiseStatus<T>).getFullFilledValue = () => {
+  result.getFullFilledValue = () => {
     return fullFilledValue;
   };
   return result;

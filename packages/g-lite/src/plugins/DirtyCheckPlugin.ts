@@ -17,16 +17,15 @@ export class DirtyCheckPlugin implements RenderingPlugin {
       DirtyCheckPlugin.tag,
       (object: DisplayObject | null) => {
         if (object) {
-          const renderable = object.renderable;
+          const { renderable } = object;
           const isDirty =
             renderable.dirty ||
             renderingService.disableDirtyRectangleRendering();
 
           if (isDirty) {
             return object;
-          } else {
-            return null;
           }
+          return null;
         }
 
         return object;

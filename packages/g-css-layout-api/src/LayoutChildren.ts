@@ -45,7 +45,9 @@ export class LayoutChildren {
     // }
 
     if (this.layoutContext.mode === LayoutTaskType.IntrinsicSizes) {
-      throw new Error('Not Supported: cant call layoutNextFragment in intrinsicSizes');
+      throw new Error(
+        'Not Supported: cant call layoutNextFragment in intrinsicSizes',
+      );
     }
     const deferred = new Deferred<LayoutFragment>();
     this.layoutContext.appendWorkTask({

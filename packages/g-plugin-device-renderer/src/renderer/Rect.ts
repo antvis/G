@@ -28,11 +28,7 @@ export class RectRenderer extends Batch {
       drawcalls.push(InstancedFillDrawcall);
     }
 
-    if (
-      hasDifferentRadius
-        ? hasDifferentRadius
-        : this.needDrawStrokeSeparately(object)
-    ) {
+    if (hasDifferentRadius || this.needDrawStrokeSeparately(object)) {
       drawcalls.push(InstancedPathDrawcall);
     }
 
