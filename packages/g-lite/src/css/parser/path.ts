@@ -43,7 +43,7 @@ const internalParsePath = (path: string | PathArray) => {
   let absolutePath: AbsoluteArray;
   try {
     absolutePath = normalizePath(path);
-  } catch (e) {
+  } catch {
     absolutePath = normalizePath('');
     console.error(`[g]: Invalid SVG Path definition: ${path}`);
   }

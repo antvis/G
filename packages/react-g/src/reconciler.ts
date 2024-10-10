@@ -35,7 +35,7 @@ export const reconciler = ReactReconciler<
   TimeoutHandle,
   NoTimeout
 >({
-  getPublicInstance(instance: Instance | TextInstance): PublicInstance {
+  getPublicInstance(instance: Instance): PublicInstance {
     return instance;
   },
   getRootHostContext(rootContainerInstance: Container): HostContext {},
@@ -70,10 +70,7 @@ export const reconciler = ReactReconciler<
     // @ts-ignore
     return instance;
   },
-  appendInitialChild(
-    parentInstance: Instance,
-    child: Instance | TextInstance,
-  ): void {
+  appendInitialChild(parentInstance: Instance, child: Instance): void {
     // log('appendInitialChild', parentInstance, child);
     parentInstance.appendChild(child);
   },
@@ -121,8 +118,8 @@ export const reconciler = ReactReconciler<
   scheduleTimeout(
     handler: (...args: any[]) => void,
     timeout: number,
-  ): TimeoutHandle | NoTimeout {},
-  cancelTimeout(handle: TimeoutHandle | NoTimeout): void {},
+  ): TimeoutHandle {},
+  cancelTimeout(handle: TimeoutHandle): void {},
   noTimeout: undefined,
 
   now,
@@ -140,14 +137,11 @@ export const reconciler = ReactReconciler<
   //      Mutation
   //     (optional)
   // -------------------
-  appendChild(parentInstance: Instance, child: Instance | TextInstance): void {
+  appendChild(parentInstance: Instance, child: Instance): void {
     // log('appendChild');
     parentInstance.appendChild(child);
   },
-  appendChildToContainer(
-    container: Container,
-    child: Instance | TextInstance,
-  ): void {
+  appendChildToContainer(container: Container, child: Instance): void {
     // log('appendChildToContainer', container, child);
     container.appendChild(child);
   },
@@ -175,26 +169,23 @@ export const reconciler = ReactReconciler<
   },
   insertBefore(
     parentInstance: Instance,
-    child: Instance | TextInstance,
-    beforeChild: Instance | TextInstance,
+    child: Instance,
+    beforeChild: Instance,
   ): void {
     parentInstance.insertBefore(child, beforeChild);
   },
   insertInContainerBefore(
     container: Container,
-    child: Instance | TextInstance,
-    beforeChild: Instance | TextInstance,
+    child: Instance,
+    beforeChild: Instance,
   ): void {
     container.insertBefore(child, beforeChild);
   },
-  removeChild(parentInstance: Instance, child: Instance | TextInstance): void {
+  removeChild(parentInstance: Instance, child: Instance): void {
     // log('removeChild', parentInstance, child);
     parentInstance.removeChild(child);
   },
-  removeChildFromContainer(
-    container: Container,
-    child: Instance | TextInstance,
-  ): void {
+  removeChildFromContainer(container: Container, child: Instance): void {
     container.removeChild(child);
   },
   resetTextContent(instance: Instance): void {},
@@ -248,10 +239,7 @@ export const reconciler = ReactReconciler<
 
   createContainerChildSet(container: Container): ChildSet {},
 
-  appendChildToContainerChildSet(
-    childSet: ChildSet,
-    child: Instance | TextInstance,
-  ): void {},
+  appendChildToContainerChildSet(childSet: ChildSet, child: Instance): void {},
   finalizeContainerChildren(
     container: Container,
     newChildren: ChildSet,
@@ -280,10 +268,10 @@ export const reconciler = ReactReconciler<
     return null;
   },
   getNextHydratableSibling(
-    instance: Instance | TextInstance | HydratableInstance,
+    instance: Instance | HydratableInstance,
   ): null | HydratableInstance {},
   getFirstHydratableChild(
-    parentInstance: Instance | Container,
+    parentInstance: Instance,
   ): null | HydratableInstance {},
   hydrateInstance(
     instance: Instance,
@@ -314,13 +302,13 @@ export const reconciler = ReactReconciler<
   ): void {},
   didNotHydrateContainerInstance(
     parentContainer: Container,
-    instance: Instance | TextInstance,
+    instance: Instance,
   ): void {},
   didNotHydrateInstance(
     parentType: Type,
     parentProps: Props,
     parentInstance: Instance,
-    instance: Instance | TextInstance,
+    instance: Instance,
   ): void {},
   didNotFindHydratableContainerInstance(
     parentContainer: Container,

@@ -11,7 +11,7 @@ export const renderDrawPoints = (
   anno: DrawerState,
 ) => {
   const points = anno.path.slice(0, anno.path.length - 1);
-  const length = points.length;
+  const { length } = points;
   const zoom = context.canvas.getCamera().getZoom();
 
   const {

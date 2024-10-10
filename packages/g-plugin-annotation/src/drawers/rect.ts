@@ -54,12 +54,12 @@ export class RectDrawer extends BaseDrawer {
     }
     this.isDrawing = true;
     this.start = {
-      canvas: Object.assign({}, e.canvas),
-      viewport: Object.assign({}, e.viewport),
+      canvas: { ...e.canvas },
+      viewport: { ...e.viewport },
     };
     this.end = {
-      canvas: Object.assign({}, e.canvas),
-      viewport: Object.assign({}, e.viewport),
+      canvas: { ...e.canvas },
+      viewport: { ...e.viewport },
     };
     this.id = uuidv4();
     this.emit(DrawerEvent.START, this.state);
@@ -68,8 +68,8 @@ export class RectDrawer extends BaseDrawer {
   onMouseMove(e: FederatedEvent) {
     if (!this.isDrawing) return;
     this.end = {
-      canvas: Object.assign({}, e.canvas),
-      viewport: Object.assign({}, e.viewport),
+      canvas: { ...e.canvas },
+      viewport: { ...e.viewport },
     };
     this.emit(DrawerEvent.MODIFIED, this.state);
   }

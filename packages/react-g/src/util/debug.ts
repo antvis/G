@@ -4,4 +4,4 @@
 // localStorage.debug = '__disable_debug';
 
 // export const log = debug('react-g');
-export const log = console.log;
+export const { log } = console;

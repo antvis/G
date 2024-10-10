@@ -7,6 +7,7 @@ import {
   parseAngle,
   parseAngleUnmemoize,
 } from '../parser/dimension';
+
 export class CSSPropertyAngle
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {

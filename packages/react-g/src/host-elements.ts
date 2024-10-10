@@ -39,15 +39,29 @@ export function ElementOf<Element, Prop, T extends string>(
   return type as any;
 }
 
-export const Circle = ElementOf<GCircle, CircleStyleProps, Shape.CIRCLE>(Shape.CIRCLE);
-export const Ellipse = ElementOf<GEllipse, EllipseStyleProps, Shape.ELLIPSE>(Shape.ELLIPSE);
-export const Group = ElementOf<GGroup, BaseStyleProps, Shape.GROUP>(Shape.GROUP);
+export const Circle = ElementOf<GCircle, CircleStyleProps, Shape.CIRCLE>(
+  Shape.CIRCLE,
+);
+export const Ellipse = ElementOf<GEllipse, EllipseStyleProps, Shape.ELLIPSE>(
+  Shape.ELLIPSE,
+);
+export const Group = ElementOf<GGroup, BaseStyleProps, Shape.GROUP>(
+  Shape.GROUP,
+);
 export const HTML = ElementOf<GHTML, HTMLStyleProps, Shape.HTML>(Shape.HTML);
-export const Image = ElementOf<GImage, ImageStyleProps, Shape.IMAGE>(Shape.IMAGE);
+export const Image = ElementOf<GImage, ImageStyleProps, Shape.IMAGE>(
+  Shape.IMAGE,
+);
 export const Line = ElementOf<GLine, LineStyleProps, Shape.LINE>(Shape.LINE);
 export const Path = ElementOf<GPath, PathStyleProps, Shape.PATH>(Shape.PATH);
-export const Polygon = ElementOf<GPolygon, PolygonStyleProps, Shape.POLYGON>(Shape.POLYGON);
-export const Polyline = ElementOf<GPolyline, PolylineStyleProps, Shape.POLYLINE>(Shape.POLYLINE);
+export const Polygon = ElementOf<GPolygon, PolygonStyleProps, Shape.POLYGON>(
+  Shape.POLYGON,
+);
+export const Polyline = ElementOf<
+  GPolyline,
+  PolylineStyleProps,
+  Shape.POLYLINE
+>(Shape.POLYLINE);
 export const Rect = ElementOf<GRect, RectStyleProps, Shape.RECT>(Shape.RECT);
 export const Text = ElementOf<GText, TextStyleProps, Shape.TEXT>(Shape.TEXT);
 export * from './components';

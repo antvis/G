@@ -1,5 +1,6 @@
 import type { ParsedPathStyleProps } from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
+
 export class PathUpdater implements GeometryAABBUpdater<ParsedPathStyleProps> {
   update(parsedStyle: ParsedPathStyleProps) {
     const { d } = parsedStyle;

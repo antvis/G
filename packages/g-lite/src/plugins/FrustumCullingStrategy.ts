@@ -25,7 +25,7 @@ export class FrustumCullingStrategy implements CullingStrategyContribution {
   isVisible(camera: ICamera, object: DisplayObject) {
     // return true;
 
-    const cullable = object.cullable;
+    const { cullable } = object;
     if (!cullable.enable) {
       return true;
     }

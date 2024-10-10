@@ -38,11 +38,10 @@ export function getFootOfPerpendicular(
 
   if (Math.abs(A * p.x + B * p.y + C) < 1e-13) {
     return { x: p.x, y: p.y };
-  } else {
-    const newX = (B * B * p.x - A * B * p.y - A * C) / (A * A + B * B);
-    const newY = (-A * B * p.x + A * A * p.y - B * C) / (A * A + B * B);
-    return { x: newX, y: newY };
   }
+  const newX = (B * B * p.x - A * B * p.y - A * C) / (A * A + B * B);
+  const newY = (-A * B * p.x + A * A * p.y - B * C) / (A * A + B * B);
+  return { x: newX, y: newY };
 }
 
 export function lineIntersect(
@@ -52,7 +51,7 @@ export function lineIntersect(
   p4: PointLike,
 ) {
   const denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
-  if (denom == 0) {
+  if (denom === 0) {
     return null;
   }
   const ua =

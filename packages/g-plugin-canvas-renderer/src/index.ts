@@ -26,7 +26,7 @@ export class Plugin extends AbstractRendererPlugin<{
     };
 
     // @ts-ignore
-    const imagePool = this.context.imagePool;
+    const { imagePool } = this.context;
 
     const defaultRenderer = new DefaultRenderer(imagePool);
 

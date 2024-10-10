@@ -1,5 +1,7 @@
 // @see https://github.com/antvis/G/issues/1239
+// eslint-disable-next-line import/extensions
 import RBush from 'rbush/rbush.js';
+
 export * from './AbstractRenderer';
 export * from './Canvas';
 export * from './camera';

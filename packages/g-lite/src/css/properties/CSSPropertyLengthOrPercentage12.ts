@@ -13,7 +13,8 @@ import { parseDimensionArray } from '../parser/dimension';
  * rect.style.lineDash = '10 10';
  */
 export class CSSPropertyLengthOrPercentage12
-  implements Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [number, number]>>
+  implements
+    Partial<CSSProperty<[CSSUnitValue, CSSUnitValue], [number, number]>>
 {
   parser(radius: string | number | number[]) {
     const parsed = parseDimensionArray(isNumber(radius) ? [radius] : radius);

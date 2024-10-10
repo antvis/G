@@ -45,9 +45,9 @@ export class MatterJSPlugin implements RenderingPlugin {
           const { nodeName } = displayObject;
           if (!AABB.isEmpty(bounds)) {
             // position in world space
-            const x = body.position.x;
-            const y = body.position.y;
-            const angle = body.angle;
+            const { x } = body.position;
+            const { y } = body.position;
+            const { angle } = body;
 
             if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
               displayObject.style.x = x - bounds.halfExtents[0];

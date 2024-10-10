@@ -73,11 +73,14 @@ export class AriaManager {
    */
   private createOverlay() {
     const { document: doc } = this.context.config;
-    const $domElement = this.context.contextService.getDomElement() as HTMLCanvasElement;
+    const $domElement =
+      this.context.contextService.getDomElement() as HTMLCanvasElement;
     const $parentElement = $domElement.parentNode;
 
     if ($parentElement) {
-      let div = $parentElement.querySelector<HTMLDivElement>(`#${CLASSNAME_PREFIX}-mask`);
+      let div = $parentElement.querySelector<HTMLDivElement>(
+        `#${CLASSNAME_PREFIX}-mask`,
+      );
       if (!div) {
         div = (doc || document).createElement('div');
       }
@@ -97,7 +100,8 @@ export class AriaManager {
 
   private createExitAnchor() {
     const { document: doc } = this.context.config;
-    const $domElement = this.context.contextService.getDomElement() as HTMLCanvasElement;
+    const $domElement =
+      this.context.contextService.getDomElement() as HTMLCanvasElement;
     const $parentElement = $domElement.parentNode;
 
     if ($parentElement) {
@@ -196,8 +200,9 @@ export class AriaManager {
     const { containerAriaLabel } = this.a11yPluginOptions;
 
     // make Canvas' container accessible
-    const $container = (this.context.contextService.getDomElement() as HTMLCanvasElement)
-      .parentElement as HTMLDivElement;
+    const $container = (
+      this.context.contextService.getDomElement() as HTMLCanvasElement
+    ).parentElement as HTMLDivElement;
     if ($container) {
       $container.setAttribute('role', 'region');
       $container.setAttribute('aria-hidden', 'false');
@@ -219,8 +224,9 @@ export class AriaManager {
   }
 
   deactivate() {
-    const $container = (this.context.contextService.getDomElement() as HTMLCanvasElement)
-      .parentElement as HTMLDivElement;
+    const $container = (
+      this.context.contextService.getDomElement() as HTMLCanvasElement
+    ).parentElement as HTMLDivElement;
     if ($container) {
       $container.removeAttribute('role');
       $container.removeAttribute('aria-hidden');

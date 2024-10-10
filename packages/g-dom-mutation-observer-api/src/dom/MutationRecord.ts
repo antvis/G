@@ -20,5 +20,8 @@ export class MutationRecord {
   oldValue: string = null;
   previousSibling: IElement = null;
   removedNodes: IElement[] = [];
-  constructor(public type: MutationRecordType, public target: IElement) {}
+  constructor(
+    public type: MutationRecordType,
+    public target: IElement,
+  ) {}
 }

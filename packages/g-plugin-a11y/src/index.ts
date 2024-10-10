@@ -21,7 +21,9 @@ export class Plugin extends AbstractRendererPlugin {
     const textExtractor = new TextExtractor(this.context);
     const ariaManager = new AriaManager(this.context, a11yPluginOptions);
 
-    this.addRenderingPlugin(new A11yPlugin(a11yPluginOptions, textExtractor, ariaManager));
+    this.addRenderingPlugin(
+      new A11yPlugin(a11yPluginOptions, textExtractor, ariaManager),
+    );
   }
   destroy(): void {
     this.removeAllRenderingPlugins();

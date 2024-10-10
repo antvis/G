@@ -8,7 +8,7 @@ export class CircleRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedCircleStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { r, lineWidth, fill } = parsedStyle as ParsedCircleStyleProps;
+    const { r, lineWidth, fill } = parsedStyle;
 
     new Ellipse({
       addTo: context.scene,

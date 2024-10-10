@@ -17,7 +17,11 @@ export const bindShapeEvent = (newProps: Props, instance: Instance) => {
   });
 };
 
-export const updateProps = (instance: Instance, newProps: Props, oldProps: Props = {}) => {
+export const updateProps = (
+  instance: Instance,
+  newProps: Props,
+  oldProps: Props = {},
+) => {
   // don't use zIndex
   if (!zIndexWarningShowed && 'zIndex' in newProps) {
     console.warn(Z_INDEX_WARNING);

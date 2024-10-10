@@ -62,7 +62,7 @@ export class Mesh<GeometryProps = any> extends DisplayObject<
     super.destroy();
 
     // detach from geometry
-    let meshes = this.style.geometry.meshes;
+    let { meshes } = this.style.geometry;
     let index = meshes.indexOf(this);
     meshes.splice(index, 1);
 

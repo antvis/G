@@ -50,13 +50,13 @@ export function setSortKeyProgramKey(
 ): number {
   const isTransparent = !!((sortKey >>> 31) & 1);
   if (isTransparent) return sortKey;
-  else return ((sortKey & 0xff0000ff) | ((programKey & 0xffff) << 8)) >>> 0;
+  return ((sortKey & 0xff0000ff) | ((programKey & 0xffff) << 8)) >>> 0;
 }
 
 export function setSortKeyBias(sortKey: number, bias: number): number {
   const isTransparent = !!((sortKey >>> 31) & 1);
   if (isTransparent) return ((sortKey & 0xffffff00) | (bias & 0xff)) >>> 0;
-  else return sortKey;
+  return sortKey;
 }
 
 export function makeSortKeyOpaque(layer: number, programKey: number): number {
@@ -85,7 +85,7 @@ export function setSortKeyTranslucentDepth(
 
 export function makeSortKey(layer: RendererLayer, programKey = 0): number {
   if (layer & RendererLayer.TRANSLUCENT) return makeSortKeyTranslucent(layer);
-  else return makeSortKeyOpaque(layer, programKey);
+  return makeSortKeyOpaque(layer, programKey);
 }
 
 export function setSortKeyDepthKey(sortKey: number, depthKey: number): number {
@@ -110,7 +110,6 @@ export function setSortKeyDepth(
 export function getSortKeyDepth(sortKey: number): number {
   const isTranslucent = !!((sortKey >>> 31) & 1);
   if (isTranslucent) return (sortKey >>> 8) & 0xffff;
-  else {
-    return ((sortKey >>> 8) & 0xfffc) | (sortKey & 0x03);
-  }
+
+  return ((sortKey >>> 8) & 0xfffc) | (sortKey & 0x03);
 }

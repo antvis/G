@@ -179,7 +179,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
     } else if (attrName === 'markerStart') {
       if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerStartAngle = 0;
-        (prevParsedValue as DisplayObject).remove();
+        prevParsedValue.remove();
       }
 
       // CSSKeyword 'unset'
@@ -191,7 +191,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
     } else if (attrName === 'markerEnd') {
       if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerEndAngle = 0;
-        (prevParsedValue as DisplayObject).remove();
+        prevParsedValue.remove();
       }
 
       if (newParsedValue && isDisplayObject(newParsedValue)) {
@@ -310,7 +310,7 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Get start tangent vector
    */
   getStartTangent(): number[][] {
-    const segments = this.parsedStyle.d.segments;
+    const { segments } = this.parsedStyle.d;
     let result: number[][] = [];
     if (segments.length > 1) {
       const startPoint = segments[0].currentPoint;
@@ -332,8 +332,8 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
    * Get end tangent vector
    */
   getEndTangent(): number[][] {
-    const segments = this.parsedStyle.d.segments;
-    const length = segments.length;
+    const { segments } = this.parsedStyle.d;
+    const { length } = segments;
     let result: number[][] = [];
     if (length > 1) {
       const startPoint = segments[length - 2].currentPoint;

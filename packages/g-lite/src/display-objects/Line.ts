@@ -135,7 +135,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
     } else if (attrName === 'markerStart') {
       if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerStartAngle = 0;
-        (prevParsedValue as DisplayObject).remove();
+        prevParsedValue.remove();
       }
 
       // CSSKeyword 'unset'
@@ -147,7 +147,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
     } else if (attrName === 'markerEnd') {
       if (prevParsedValue && isDisplayObject(prevParsedValue)) {
         this.markerEndAngle = 0;
-        (prevParsedValue as DisplayObject).remove();
+        prevParsedValue.remove();
       }
 
       if (newParsedValue && isDisplayObject(newParsedValue)) {

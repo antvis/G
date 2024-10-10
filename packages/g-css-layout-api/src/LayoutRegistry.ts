@@ -1,5 +1,6 @@
 import type { LayoutRegistry } from '@antv/g-lite';
 import type { LayoutDefinitionCtor } from './LayoutDefinition';
+
 export class DefaultLayoutRegistry implements LayoutRegistry {
   // 系统保留的布局名称，外部用户不能使用
   // private static reservedLayout = ['relative', 'absolute', 'fixed', 'flex', 'dagre', 'autolayout'];
@@ -24,7 +25,7 @@ export class DefaultLayoutRegistry implements LayoutRegistry {
     if (!this.hasLayout(name)) {
       throw new Error(`invalid layout property: ${name}`);
     }
-    return this.registry.get(name)!;
+    return this.registry.get(name);
   }
 
   updateLayout(name: string, layout: LayoutDefinitionCtor) {

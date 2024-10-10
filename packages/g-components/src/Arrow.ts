@@ -240,7 +240,7 @@ export class Arrow extends CustomElement<ArrowStyleProps> {
       y1 = isStart ? _y2 : _y1;
       y2 = isStart ? _y1 : _y2;
     } else if (bodyType === Shape.POLYLINE) {
-      const points = (this.body as Polyline).attributes.points;
+      const { points } = (this.body as Polyline).attributes;
       const { length } = points;
       x1 = isStart ? points[1][0] : points[length - 2][0];
       y1 = isStart ? points[1][1] : points[length - 2][1];

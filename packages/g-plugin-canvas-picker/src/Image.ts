@@ -4,9 +4,9 @@ import {
   Point,
   ImageStyleProps,
   Shape,
+  RenderingPluginContext,
+  GlobalRuntime,
 } from '@antv/g-lite';
-import { RenderingPluginContext } from '@antv/g-lite';
-import { GlobalRuntime } from '@antv/g-lite';
 import { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 
 export function isPointInPath(

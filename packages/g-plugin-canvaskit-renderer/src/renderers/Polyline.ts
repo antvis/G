@@ -33,7 +33,7 @@ export class PolylineRenderer implements RendererContribution {
       markerEndOffset,
     } = object.parsedStyle as ParsedPolylineStyleProps;
 
-    const length = points.length;
+    const { length } = points;
     let startOffsetX = 0;
     let startOffsetY = 0;
     let endOffsetX = 0;

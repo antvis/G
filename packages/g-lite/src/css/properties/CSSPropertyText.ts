@@ -2,7 +2,9 @@ import type { DisplayObject } from '../../display-objects';
 import { CSSKeywordValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 
-export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | string, string>> {
+export class CSSPropertyText
+  implements Partial<CSSProperty<CSSKeywordValue | string, string>>
+{
   calculator(
     name: string,
     oldParsed: CSSKeywordValue | string,
@@ -12,9 +14,8 @@ export class CSSPropertyText implements Partial<CSSProperty<CSSKeywordValue | st
     if (parsed instanceof CSSKeywordValue) {
       if (parsed.value === 'unset') {
         return '';
-      } else {
-        return parsed.value;
       }
+      return parsed.value;
     }
 
     // allow number as valid text content

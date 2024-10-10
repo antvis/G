@@ -199,39 +199,39 @@ function createDropShadow(
   $filter: SVGElement,
   params: CSSUnitValue[],
 ) {
-  const shadowOffsetX = params[0].value as number;
-  const shadowOffsetY = params[1].value as number;
-  const shadowBlur = params[2].value as number;
+  const shadowOffsetX = params[0].value;
+  const shadowOffsetY = params[1].value;
+  const shadowBlur = params[2].value;
   // @ts-ignore
   const shadowColor = params[3].formatted as string;
   const $feGaussianBlur = createSVGElement('feGaussianBlur', document);
   $feGaussianBlur.setAttribute('in', 'SourceAlpha');
   $feGaussianBlur.setAttribute('stdDeviation', `${shadowBlur}`);
-  $filter!.appendChild($feGaussianBlur);
+  $filter.appendChild($feGaussianBlur);
 
   const $feOffset = createSVGElement('feOffset', document);
   $feOffset.setAttribute('dx', `${shadowOffsetX}`);
   $feOffset.setAttribute('dy', `${shadowOffsetY}`);
   $feOffset.setAttribute('result', 'offsetblur');
-  $filter!.appendChild($feOffset);
+  $filter.appendChild($feOffset);
 
   const $feFlood = createSVGElement('feFlood', document);
   $feFlood.setAttribute('flood-color', shadowColor);
-  $filter!.appendChild($feFlood);
+  $filter.appendChild($feFlood);
 
   const $feComposite = createSVGElement('feComposite', document);
   $feComposite.setAttribute('in2', 'offsetblur');
   $feComposite.setAttribute('operator', 'in');
-  $filter!.appendChild($feComposite);
+  $filter.appendChild($feComposite);
 
   const $feMerge = createSVGElement('feMerge', document);
-  $filter!.appendChild($feMerge);
+  $filter.appendChild($feMerge);
 
   const $feMergeNode1 = createSVGElement('feMergeNode', document);
   const $feMergeNode2 = createSVGElement('feMergeNode', document);
   $feMergeNode2.setAttribute('in', 'SourceGraphic');
-  $feMerge!.appendChild($feMergeNode1);
-  $feMerge!.appendChild($feMergeNode2);
+  $feMerge.appendChild($feMergeNode1);
+  $feMerge.appendChild($feMergeNode2);
 }
 
 function createFeColorMatrix(

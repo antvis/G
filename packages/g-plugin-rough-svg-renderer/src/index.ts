@@ -1,6 +1,7 @@
 import { AbstractRendererPlugin, GlobalRuntime } from '@antv/g-lite';
 import { RoughElementLifeCycleContribution } from './RoughElementLifeCycleContribution';
 import { RoughRendererPlugin } from './RoughRendererPlugin';
+
 export class Plugin extends AbstractRendererPlugin {
   name = 'rough-svg-renderer';
   init(runtime: GlobalRuntime): void {

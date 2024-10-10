@@ -68,10 +68,6 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
-  constructor() {
-    super();
-  }
-
   /**
    * Unique id.
    */
@@ -391,7 +387,7 @@ export class Element<
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
       nodes.forEach((node, i) =>
-        this.parentNode?.appendChild(node!, index + i + 1),
+        this.parentNode?.appendChild(node, index + i + 1),
       );
     }
   }
@@ -403,7 +399,7 @@ export class Element<
     if (this.parentNode) {
       const index = this.parentNode.childNodes.indexOf(this);
       const [first, ...rest] = nodes;
-      this.parentNode.appendChild(first!, index);
+      this.parentNode.appendChild(first, index);
       (first as IChildNode).after(...rest);
     }
   }
@@ -601,10 +597,10 @@ export class Element<
       }
 
       // if the given attribute does not exist, the value returned will either be null or ""
+      // eslint-disable-next-line no-nested-ternary
       return runtime.enableCSSParsing ? (isNil(value) ? null : value) : value;
-    } else {
-      return value;
     }
+    return value;
   }
 
   /**

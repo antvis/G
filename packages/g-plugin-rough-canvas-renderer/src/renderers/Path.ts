@@ -9,7 +9,7 @@ export class PathRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedPathStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { d } = parsedStyle as ParsedPathStyleProps;
+    const { d } = parsedStyle;
     // @ts-ignore
     context.roughCanvas.path(
       translatePathToString(d.absolutePath),

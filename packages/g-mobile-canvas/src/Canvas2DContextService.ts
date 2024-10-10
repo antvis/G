@@ -47,8 +47,8 @@ export class Canvas2DContextService
   }
 
   getBoundingClientRect() {
-    if ((this.$canvas as HTMLCanvasElement).getBoundingClientRect) {
-      return (this.$canvas as HTMLCanvasElement).getBoundingClientRect();
+    if (this.$canvas.getBoundingClientRect) {
+      return this.$canvas.getBoundingClientRect();
     }
   }
 
@@ -65,8 +65,8 @@ export class Canvas2DContextService
 
     // 浏览器环境设置style样式
     if (canvasDOM.style) {
-      canvasDOM.style.width = width + 'px';
-      canvasDOM.style.height = height + 'px';
+      canvasDOM.style.width = `${width}px`;
+      canvasDOM.style.height = `${height}px`;
     }
 
     if (isCanvasElement(canvasDOM)) {
@@ -85,9 +85,6 @@ export class Canvas2DContextService
 
   async toDataURL(options: Partial<DataURLOptions>) {
     const { type, encoderOptions } = options;
-    return (this.context.canvas as HTMLCanvasElement).toDataURL(
-      type,
-      encoderOptions,
-    );
+    return this.context.canvas.toDataURL(type, encoderOptions);
   }
 }

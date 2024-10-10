@@ -1,9 +1,4 @@
-import type {
-  CanvasContext,
-  ParsedPathStyleProps,
-  Path,
-  ContextService,
-} from '@antv/g-lite';
+import type { CanvasContext, Path, ContextService } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 import { mat3 } from 'gl-matrix';
 import type { CanvasKit } from 'canvaskit-wasm';
@@ -21,7 +16,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
   const skPath = new CanvasKit.Path();
 
   const { d, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    object.parsedStyle as ParsedPathStyleProps;
+    object.parsedStyle;
 
   let startOffsetX = 0;
   let startOffsetY = 0;
@@ -103,7 +98,7 @@ export function generateSkPath(CanvasKit: CanvasKit, object: Path) {
         }
         break;
       case 'A': {
-        const arcParams = segments[i].arcParams;
+        const { arcParams } = segments[i];
         const { rx, ry, sweepFlag } = arcParams;
         const largeArcFlag = params[4];
         skPath.arcToRotated(
@@ -150,8 +145,7 @@ export class PathRenderer implements RendererContribution {
       shadowStrokePaint,
     } = context;
 
-    const { shadowOffsetX, shadowOffsetY } =
-      object.parsedStyle as ParsedPathStyleProps;
+    const { shadowOffsetX, shadowOffsetY } = object.parsedStyle;
 
     const skPath = generateSkPath(CanvasKit, object);
 

@@ -63,6 +63,7 @@ export class EventTarget implements IEventTarget {
     }
 
     type = capture ? `${type}capture` : type;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     listener = isFunction(listener) ? listener : listener.handleEvent;
 
     // compatible with G 3.0
@@ -115,6 +116,7 @@ export class EventTarget implements IEventTarget {
     const context = isFunction(listener) ? undefined : listener;
 
     type = capture ? `${type}capture` : type;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     listener = isFunction(listener) ? listener : listener?.handleEvent;
 
     this.emitter.off(type, listener, context);
@@ -125,7 +127,6 @@ export class EventTarget implements IEventTarget {
    * @deprecated
    * @alias dispatchEvent
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
   emit(eventName: string, object: object) {
     this.dispatchEvent(new CustomEvent(eventName, object));
   }

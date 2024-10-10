@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 // Jenkins One-at-a-Time hash from http://www.burtleburtle.net/bob/hash/doobs.html
 export function hashCodeNumberUpdate(hash: number, v: number): number {
   hash += v;
@@ -30,10 +31,14 @@ class HashBucket<K, V> {
 export class HashMap<K, V> {
   buckets = new Map<number, HashBucket<K, V>>();
 
-  constructor(private keyEqualFunc: EqualFunc<K>, private keyHashFunc: HashFunc<K>) {}
+  constructor(
+    private keyEqualFunc: EqualFunc<K>,
+    private keyHashFunc: HashFunc<K>,
+  ) {}
 
   private findBucketIndex(bucket: HashBucket<K, V>, k: K): number {
-    for (let i = 0; i < bucket.keys.length; i++) if (this.keyEqualFunc(k, bucket.keys[i])) return i;
+    for (let i = 0; i < bucket.keys.length; i++)
+      if (this.keyEqualFunc(k, bucket.keys[i])) return i;
     return -1;
   }
 
@@ -52,8 +57,9 @@ export class HashMap<K, V> {
 
   add(k: K, v: V): void {
     const bw = this.keyHashFunc(k);
-    if (this.buckets.get(bw) === undefined) this.buckets.set(bw, new HashBucket<K, V>());
-    const bucket = this.buckets.get(bw)!;
+    if (this.buckets.get(bw) === undefined)
+      this.buckets.set(bw, new HashBucket<K, V>());
+    const bucket = this.buckets.get(bw);
     bucket.keys.push(k);
     bucket.values.push(v);
   }
@@ -79,6 +85,7 @@ export class HashMap<K, V> {
 
   *values(): IterableIterator<V> {
     for (const bucket of this.buckets.values())
-      for (let j = bucket.values.length - 1; j >= 0; j--) yield bucket.values[j];
+      for (let j = bucket.values.length - 1; j >= 0; j--)
+        yield bucket.values[j];
   }
 }

@@ -43,12 +43,11 @@ export const parseTransformOrigin = memoize(
           convertKeyword2Percent(values[1]),
         ) as CSSUnitValue,
       ];
-    } else {
-      return [
-        getOrCreateUnitValue(value[0] || 0, 'px'),
-        getOrCreateUnitValue(value[1] || 0, 'px'),
-      ];
     }
+    return [
+      getOrCreateUnitValue(value[0] || 0, 'px'),
+      getOrCreateUnitValue(value[1] || 0, 'px'),
+    ];
   },
 );
 export const parseTransformOriginUnmemoize = (
@@ -77,27 +76,24 @@ export const parseTransformOriginUnmemoize = (
 
     // eg. center bottom
     return [
-      parseLengthOrPercentageUnmemoize(
-        convertKeyword2Percent(values[0]),
-      ) as CSSUnitValue,
-      parseLengthOrPercentageUnmemoize(
-        convertKeyword2Percent(values[1]),
-      ) as CSSUnitValue,
-    ];
-  } else {
-    return [
-      getOrCreateUnitValue(value[0] || 0, 'px'),
-      getOrCreateUnitValue(value[1] || 0, 'px'),
+      parseLengthOrPercentageUnmemoize(convertKeyword2Percent(values[0])),
+      parseLengthOrPercentageUnmemoize(convertKeyword2Percent(values[1])),
     ];
   }
+  return [
+    getOrCreateUnitValue(value[0] || 0, 'px'),
+    getOrCreateUnitValue(value[1] || 0, 'px'),
+  ];
 };
 
 function convertKeyword2Percent(keyword: string) {
   if (keyword === 'center') {
     return '50%';
-  } else if (keyword === 'left' || keyword === 'top') {
+  }
+  if (keyword === 'left' || keyword === 'top') {
     return '0%';
-  } else if (keyword === 'right' || keyword === 'bottom') {
+  }
+  if (keyword === 'right' || keyword === 'bottom') {
     return '100%';
   }
   return keyword;

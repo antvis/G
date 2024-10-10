@@ -376,7 +376,7 @@ export class EventService {
 
       // If the pointer exits overTarget and its descendants, then a pointerleave event is also fired. This event
       // is dispatched to all ancestors that no longer capture the pointer.
-      if (!e.composedPath().includes(outTarget!)) {
+      if (!e.composedPath().includes(outTarget)) {
         const leaveEvent = this.createPointerEvent(
           from,
           'pointerleave',
@@ -1020,7 +1020,7 @@ export class EventService {
   private notifyListeners(e: FederatedEvent, type: string) {
     // hack EventEmitter, stops if the `propagationImmediatelyStopped` flag is set
     // @ts-ignore
-    const emitter = e.currentTarget.emitter;
+    const { emitter } = e.currentTarget;
     // @ts-ignore
     const listeners = (emitter._events as EmitterListeners)[type];
 

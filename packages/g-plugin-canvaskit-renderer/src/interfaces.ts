@@ -13,7 +13,10 @@ export interface RendererContributionContext {
   shadowStrokePaint: Paint;
 }
 export interface RendererContribution {
-  render: (displayObject: DisplayObject, context: RendererContributionContext) => void;
+  render: (
+    displayObject: DisplayObject,
+    context: RendererContributionContext,
+  ) => void;
 }
 
 export interface CanvaskitRendererPluginOptions {

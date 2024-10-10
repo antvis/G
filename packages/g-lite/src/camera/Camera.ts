@@ -449,7 +449,7 @@ export class Camera implements ICamera {
       y: viewportPoint[1],
     });
 
-    const roll = this.roll;
+    const { roll } = this;
 
     this.rotate(0, 0, -roll);
     this.setPosition(ox, oy);
@@ -489,8 +489,8 @@ export class Camera implements ICamera {
     let left = -0.5 * width;
 
     if (this.view?.enabled) {
-      const fullWidth = this.view.fullWidth;
-      const fullHeight = this.view.fullHeight;
+      const { fullWidth } = this.view;
+      const { fullHeight } = this.view;
 
       left += (this.view.offsetX * width) / fullWidth;
       top -= (this.view.offsetY * height) / fullHeight;
@@ -609,8 +609,8 @@ export class Camera implements ICamera {
     if (this.trackingMode === CameraTrackingMode.CINEMATIC) {
       const d = vec3.subtract(vec3.create(), this.focalPoint, this.position);
       x = d[0];
-      y = d[1] as number;
-      z = d[2] as number;
+      y = d[1];
+      z = d[2];
       const r = vec3.length(d);
       const el = rad2deg(Math.asin(y / r));
       const az = 90 + rad2deg(Math.atan2(z, x));
@@ -876,14 +876,12 @@ export class Camera implements ICamera {
     if (this.type === CameraType.TRACKING) {
       this.elevation = rad2deg(Math.asin(y / r));
       this.azimuth = rad2deg(Math.atan2(-x, -z));
+    } else if (this.rotateWorld) {
+      this.elevation = rad2deg(Math.asin(y / r));
+      this.azimuth = rad2deg(Math.atan2(-x, -z));
     } else {
-      if (this.rotateWorld) {
-        this.elevation = rad2deg(Math.asin(y / r));
-        this.azimuth = rad2deg(Math.atan2(-x, -z));
-      } else {
-        this.elevation = -rad2deg(Math.asin(y / r));
-        this.azimuth = -rad2deg(Math.atan2(-x, -z));
-      }
+      this.elevation = -rad2deg(Math.asin(y / r));
+      this.azimuth = -rad2deg(Math.atan2(-x, -z));
     }
   }
 
@@ -933,7 +931,7 @@ export class Camera implements ICamera {
       return;
     }
 
-    const position = this.position;
+    const { position } = this;
     const rotZ = quat.setAxisAngle(
       quat.create(),
       [0, 0, 1],

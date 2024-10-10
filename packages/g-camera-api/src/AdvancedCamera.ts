@@ -269,7 +269,11 @@ export class AdvancedCamera extends Camera {
         const dist =
           vec3.dist(interFocalPoint, destFocalPoint) +
           vec3.dist(interPosition, destPosition);
-        if (dist <= epsilon && destZoom == undefined && destRoll == undefined) {
+        if (
+          dist <= epsilon &&
+          destZoom === undefined &&
+          destRoll === undefined
+        ) {
           return end();
         }
 

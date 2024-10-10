@@ -19,7 +19,10 @@ import { generateRoughOptions, SUPPORTED_ROUGH_OPTIONS } from './util';
 export class RoughElementLifeCycleContribution
   implements SVGRenderer.ElementLifeCycleContribution
 {
-  constructor(private context: CanvasContext, private runtime: GlobalRuntime) {}
+  constructor(
+    private context: CanvasContext,
+    private runtime: GlobalRuntime,
+  ) {}
 
   createElement(
     object: DisplayObject<any, any>,

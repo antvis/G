@@ -9,10 +9,10 @@ import {
   Pattern,
 } from '@antv/g-lite';
 import { isNil } from '@antv/util';
+import { ImagePool } from '@antv/g-plugin-image-loader';
 import { applyFill, applyStroke, setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
 import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
-import { ImagePool } from '@antv/g-plugin-image-loader';
 
 export class TextRenderer implements StyleRenderer {
   constructor(private imagePool: ImagePool) {}
@@ -47,7 +47,7 @@ export class TextRenderer implements StyleRenderer {
       dy,
       shadowColor,
       shadowBlur,
-    } = parsedStyle as ParsedTextStyleProps;
+    } = parsedStyle;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 

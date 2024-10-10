@@ -154,12 +154,12 @@ export class CSSUnitValue extends CSSStyleValue {
       case UnitType.kSeconds:
       // case UnitType.kHertz:
       // case UnitType.kKilohertz:
-      case UnitType.kTurns: // case UnitType.kContainerMax: { // case UnitType.kContainerMin: // case UnitType.kContainerBlockSize: // case UnitType.kContainerInlineSize: // case UnitType.kContainerHeight: // case UnitType.kContainerWidth: // case UnitType.kDynamicViewportMax: // case UnitType.kDynamicViewportMin: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
-      {
+      case UnitType.kTurns: {
+        // case UnitType.kContainerMax: { // case UnitType.kContainerMin: // case UnitType.kContainerBlockSize: // case UnitType.kContainerInlineSize: // case UnitType.kContainerHeight: // case UnitType.kContainerWidth: // case UnitType.kDynamicViewportMax: // case UnitType.kDynamicViewportMin: // case UnitType.kDynamicViewportBlockSize: // case UnitType.kDynamicViewportInlineSize: // case UnitType.kDynamicViewportHeight: // case UnitType.kDynamicViewportWidth: // case UnitType.kLargeViewportMax: // case UnitType.kLargeViewportMin: // case UnitType.kLargeViewportBlockSize: // case UnitType.kLargeViewportInlineSize: // case UnitType.kLargeViewportHeight: // case UnitType.kLargeViewportWidth: // case UnitType.kSmallViewportMax: // case UnitType.kSmallViewportMin: // case UnitType.kSmallViewportBlockSize: // case UnitType.kSmallViewportInlineSize: // case UnitType.kSmallViewportHeight: // case UnitType.kSmallViewportWidth: // case UnitType.kViewportMax: // case UnitType.kViewportMin: // case UnitType.kViewportBlockSize: // case UnitType.kViewportInlineSize: // case UnitType.kViewportHeight: // case UnitType.kViewportWidth: // case UnitType.kFraction:
         const kMinInteger = -999999;
         const kMaxInteger = 999999;
 
-        const value = this.value;
+        const { value } = this;
         const unit = unitTypeToString(this.unit);
         if (value < kMinInteger || value > kMaxInteger) {
           const unit = unitTypeToString(this.unit);

@@ -7,8 +7,6 @@ import {
   MutationEvent,
   RenderingPlugin,
   RenderingPluginContext,
-} from '@antv/g-lite';
-import {
   CanvasEvent,
   RenderReason,
   isCSSRGB,
@@ -83,7 +81,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         }
 
         Object.keys(object.attributes).forEach((name) => {
-          this.updateAttribute(name, object as HTML);
+          this.updateAttribute(name, object);
         });
 
         setTransform(object, $el);
@@ -177,7 +175,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     if ($container) {
       const cameraId = CANVAS_CAMERA_ID;
       let $existedCamera = $container.querySelector<HTMLDivElement>(
-        '#' + cameraId,
+        `#${cameraId}`,
       );
       if (!$existedCamera) {
         // fix @see https://github.com/antvis/G/issues/1702

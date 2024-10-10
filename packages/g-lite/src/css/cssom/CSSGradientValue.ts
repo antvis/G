@@ -27,7 +27,10 @@ export enum GradientType {
 }
 
 export class CSSGradientValue extends CSSStyleValue {
-  constructor(public type: GradientType, public value: LinearGradient | RadialGradient) {
+  constructor(
+    public type: GradientType,
+    public value: LinearGradient | RadialGradient,
+  ) {
     super();
   }
 

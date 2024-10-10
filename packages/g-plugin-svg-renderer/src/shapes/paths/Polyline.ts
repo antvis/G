@@ -12,7 +12,7 @@ export function updatePolylineElementAttribute(
     markerEnd,
     markerEndOffset,
   } = parsedStyle;
-  const length = points.length;
+  const { length } = points;
 
   if (points && length >= 2) {
     let startOffsetX = 0;

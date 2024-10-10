@@ -102,7 +102,10 @@ export const SHAPE_UPDATE_DEPS: Record<Shape | string, string[]> = {
 export class DefaultElementLifeCycleContribution
   implements ElementLifeCycleContribution
 {
-  constructor(private context: CanvasContext, private runtime: GlobalRuntime) {}
+  constructor(
+    private context: CanvasContext,
+    private runtime: GlobalRuntime,
+  ) {}
 
   createElement(
     object: DisplayObject,

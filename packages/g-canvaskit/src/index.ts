@@ -7,6 +7,7 @@ import * as DomInteraction from '@antv/g-plugin-dom-interaction';
 import * as HTMLRenderer from '@antv/g-plugin-html-renderer';
 import * as ImageLoader from '@antv/g-plugin-image-loader';
 import { ContextRegisterPlugin } from './ContextRegisterPlugin';
+
 export * from './CanvasKitContextService';
 export {
   CanvasPathGenerator,
@@ -36,7 +37,8 @@ export class Renderer extends AbstractRenderer {
     // register Canvas2DContext
     this.registerPlugin(
       new ContextRegisterPlugin({
-        wasmDir: config?.wasmDir || 'https://unpkg.com/canvaskit-wasm@0.34.0/bin/',
+        wasmDir:
+          config?.wasmDir || 'https://unpkg.com/canvaskit-wasm@0.34.0/bin/',
         canvaskitRendererPlugin,
       }),
     );

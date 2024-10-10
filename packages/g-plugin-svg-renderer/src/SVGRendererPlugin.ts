@@ -8,8 +8,6 @@ import {
   RenderingPlugin,
   RenderingPluginContext,
   ContextService,
-} from '@antv/g-lite';
-import {
   ElementEvent,
   propertyMetadataCache,
   RenderReason,
@@ -262,11 +260,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
       if (clipPath) {
         const parentInvert = mat4.invert(
           mat4.create(),
-          (object as DisplayObject).getWorldTransform(),
+          object.getWorldTransform(),
         );
 
-        const clipPathId =
-          CLIP_PATH_PREFIX + clipPath.entity + '-' + object.entity;
+        const clipPathId = `${CLIP_PATH_PREFIX + clipPath.entity}-${object.entity}`;
         const $def = this.defElementManager.getDefElement();
         const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
         if ($existed) {
@@ -283,7 +280,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
 
       const $svg = (
         this.context.contextService as ContextService<SVGElement>
-      ).getContext()!;
+      ).getContext();
       if (background) {
         $svg.style.background = background;
       }
@@ -584,23 +581,21 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.defElementManager.createOrUpdateShadow(object, $el, name);
         } else if (name === 'filter') {
           this.defElementManager.createOrUpdateFilter(object, $el, usedValue);
-        } else {
-          if (!isNil(computedValue)) {
-            // use computed value so that we can use cascaded effect in SVG
-            // ignore 'unset' and default value
-            [$el, $hitTestingEl].forEach(($el: SVGElement) => {
-              if ($el && usedName) {
-                if (
-                  computedValueStr !== 'unset' &&
-                  computedValueStr !== DEFAULT_VALUE_MAP[name]
-                ) {
-                  $el.setAttribute(usedName, formattedValueStr);
-                } else {
-                  $el.removeAttribute(usedName);
-                }
+        } else if (!isNil(computedValue)) {
+          // use computed value so that we can use cascaded effect in SVG
+          // ignore 'unset' and default value
+          [$el, $hitTestingEl].forEach(($el: SVGElement) => {
+            if ($el && usedName) {
+              if (
+                computedValueStr !== 'unset' &&
+                computedValueStr !== DEFAULT_VALUE_MAP[name]
+              ) {
+                $el.setAttribute(usedName, formattedValueStr);
+              } else {
+                $el.removeAttribute(usedName);
               }
-            });
-          }
+            }
+          });
         }
       }
     });
@@ -698,7 +693,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     $groupEl: SVGElement,
   ) {
     const svgElement = (object as any).elementSVG as ElementSVG;
-    let $hitTestingEl = svgElement.$hitTestingEl;
+    let { $hitTestingEl } = svgElement;
     const increasedLineWidthForHitTesting = Number(
       object.parsedStyle.increasedLineWidthForHitTesting,
     );
@@ -727,11 +722,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         'stroke-width',
         `${increasedLineWidthForHitTesting + object.parsedStyle.lineWidth}`,
       );
-    } else {
-      if ($hitTestingEl) {
-        $groupEl.removeChild($hitTestingEl);
-        svgElement.$hitTestingEl = null;
-      }
+    } else if ($hitTestingEl) {
+      $groupEl.removeChild($hitTestingEl);
+      svgElement.$hitTestingEl = null;
     }
   }
 
@@ -762,7 +755,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const attributeNameHyphen = isTextPath ? 'text-path' : 'clip-path';
 
     if (clipPath) {
-      const clipPathId = PREFIX + clipPath.entity + '-' + object.entity;
+      const clipPathId = `${PREFIX + clipPath.entity}-${object.entity}`;
       const $def = this.defElementManager.getDefElement();
 
       const existed = $def.querySelector(`#${clipPathId}`);
@@ -802,7 +795,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
           this.applyTransform($use, clipPath.getWorldTransform());
           const parentInvert = mat4.invert(
             mat4.create(),
-            (object as DisplayObject).getWorldTransform(),
+            object.getWorldTransform(),
           );
           this.applyTransform($clipPath, parentInvert);
         }
@@ -822,11 +815,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
         // @see https://github.com/antvis/g/issues/961
         $groupEl.setAttribute(attributeNameHyphen, `url(#${clipPathId})`);
       }
-    } else {
-      if (!isTextPath) {
-        // remove clip path
-        $groupEl.removeAttribute(attributeNameHyphen);
-      }
+    } else if (!isTextPath) {
+      // remove clip path
+      $groupEl.removeAttribute(attributeNameHyphen);
     }
   }
 }

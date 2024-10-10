@@ -167,8 +167,8 @@ export class ImageExporter {
 
       // account for IE
       // @see https://stackoverflow.com/a/41434373
-      if ((runtime.globalThis.navigator as any).msSaveBlob) {
-        (runtime.globalThis.navigator as any).msSaveBlob(blobObj, fileName);
+      if (runtime.globalThis.navigator.msSaveBlob) {
+        runtime.globalThis.navigator.msSaveBlob(blobObj, fileName);
       } else {
         link.addEventListener('click', () => {
           link.download = fileName;

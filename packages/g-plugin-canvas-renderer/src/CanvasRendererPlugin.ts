@@ -99,7 +99,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       // remove r-bush node
       // @ts-ignore
-      const rBushNode = object.rBushNode;
+      const { rBushNode } = object;
 
       if (rBushNode.aabb) {
         // save removed aabbs for dirty-rectangle rendering later
@@ -110,7 +110,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const handleCulled = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
       // @ts-ignore
-      const rBushNode = object.rBushNode;
+      const { rBushNode } = object;
 
       if (rBushNode.aabb) {
         // save removed aabbs for dirty-rectangle rendering later
@@ -379,7 +379,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     restoreStack: DisplayObject[],
     runtime: GlobalRuntime,
   ) {
-    const nodeName = object.nodeName;
+    const { nodeName } = object;
 
     // console.log('canvas render:', object);
 
@@ -514,7 +514,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   }
 
   private saveDirtyAABB(object: DisplayObject) {
-    const renderable = object.renderable;
+    const { renderable } = object;
     if (!renderable.dirtyRenderBounds) {
       renderable.dirtyRenderBounds = new AABB();
     }

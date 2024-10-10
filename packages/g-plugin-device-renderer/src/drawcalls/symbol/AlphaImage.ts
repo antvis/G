@@ -123,10 +123,19 @@ export class AlphaImage {
   }
 
   clone() {
-    return new AlphaImage({ width: this.width, height: this.height }, new Uint8Array(this.data));
+    return new AlphaImage(
+      { width: this.width, height: this.height },
+      new Uint8Array(this.data),
+    );
   }
 
-  static copy(srcImg: AlphaImage, dstImg: AlphaImage, srcPt: Point, dstPt: Point, size: Size) {
+  static copy(
+    srcImg: AlphaImage,
+    dstImg: AlphaImage,
+    srcPt: Point,
+    dstPt: Point,
+    size: Size,
+  ) {
     copyImage(srcImg, dstImg, srcPt, dstPt, size, 1);
   }
 }

@@ -17,7 +17,7 @@ const getGParents = (el: GElement) => {
 const getJSONValue = (val: any) => {
   try {
     return JSON.parse(val);
-  } catch (e) {
+  } catch {
     return val;
   }
 };
@@ -32,10 +32,13 @@ export abstract class BaseShape extends GElement {
   getAttrsData() {
     const attriubutes = Array.from(this.attributes);
 
-    return attriubutes.reduce((o, a) => {
-      o[a.nodeName] = getJSONValue(a.nodeValue);
-      return o;
-    }, {} as Record<string, any>);
+    return attriubutes.reduce(
+      (o, a) => {
+        o[a.nodeName] = getJSONValue(a.nodeValue);
+        return o;
+      },
+      {} as Record<string, any>,
+    );
   }
 
   attributeChangedCallback(name: string, last: any, val: any) {
