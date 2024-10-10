@@ -503,7 +503,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      // console.log(name, usedName, computedStyle, parsedStyle);
       const computedValue = enableCSSParsing
         ? computedStyle[name]
         : parsedStyle[name];

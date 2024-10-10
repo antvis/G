@@ -12,7 +12,7 @@ import {
 } from '@antv/g-lite';
 import { GradientType, isPattern, Shape } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
-import { isNil } from '@antv/util';
+import { isNil, isNumber, isString } from '@antv/util';
 import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
 import type { StyleRenderer } from './interfaces';
 
@@ -86,15 +86,15 @@ export class DefaultRenderer implements StyleRenderer {
     if (hasStroke) {
       context.globalAlpha = opacity * strokeOpacity;
       context.lineWidth = lineWidth;
-      if (!isNil(miterLimit)) {
+      if (isNumber(miterLimit)) {
         context.miterLimit = miterLimit;
       }
 
-      if (!isNil(lineCap)) {
+      if (isString(lineCap)) {
         context.lineCap = lineCap;
       }
 
-      if (!isNil(lineJoin)) {
+      if (isString(lineJoin)) {
         context.lineJoin = lineJoin;
       }
 

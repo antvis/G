@@ -1,26 +1,19 @@
 import type {
+  CanvasContext,
+  ContextService,
   CSSRGB,
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   ParsedBaseStyleProps,
+  RBush,
   RBushNodeAABB,
   RenderingPlugin,
-  RBush,
   RenderingPluginContext,
-  ContextService,
-  CanvasContext,
-  GlobalRuntime,
 } from '@antv/g-lite';
-import {
-  AABB,
-  CanvasEvent,
-  CustomEvent,
-  ElementEvent,
-  Shape,
-  Node,
-} from '@antv/g-lite';
+import { AABB, ElementEvent, Node, Shape } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
-import { isNil } from '@antv/util';
+import { isNil, isNumber } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
 import type { CanvasRendererPluginOptions } from './interfaces';
 
@@ -196,10 +189,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       const sorted = object.sortable.sorted || object.childNodes;
 
-      // should account for z-index
-      sorted.forEach((child: DisplayObject) => {
-        renderByZIndex(child, context);
-      });
+      const length = sorted.length;
+      for (let i = 0; i < length; i++) {
+        renderByZIndex(sorted[i] as DisplayObject, context);
+      }
     };
 
     // render at the end of frame
@@ -290,22 +283,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.vpMatrix[13],
         );
 
-        // draw dirty rectangle
-        const { enableDirtyRectangleRenderingDebug } =
-          config.renderer.getConfig();
-        if (enableDirtyRectangleRenderingDebug) {
-          canvas.dispatchEvent(
-            new CustomEvent(CanvasEvent.DIRTY_RECTANGLE, {
-              dirtyRect: {
-                x: ix,
-                y: iy,
-                width: iwidth,
-                height: iheight,
-              },
-            }),
-          );
-        }
-
         // search objects intersect with dirty rectangle
         const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
 
@@ -329,20 +306,23 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.restore();
 
         // save dirty AABBs in last frame
-        this.renderQueue.forEach((object) => {
-          this.saveDirtyAABB(object);
-        });
+        const $length2 = this.renderQueue.length;
+        for (let i = 0; i < $length2; i++) {
+          this.saveDirtyAABB(this.renderQueue[i]);
+        }
 
         // clear queue
-        this.renderQueue = [];
+        this.renderQueue.length = 0;
       }
 
       // pop restore stack, eg. root -> parent -> child
-      this.restoreStack.forEach(() => {
+      const $length3 = this.restoreStack.length;
+      for (let i = 0; i < $length3; i++) {
         context.restore();
-      });
+      }
+
       // clear restore stack
-      this.restoreStack = [];
+      this.restoreStack.length = 0;
     });
 
     renderingService.hooks.render.tap(
@@ -380,10 +360,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     runtime: GlobalRuntime,
   ) {
     const nodeName = object.nodeName;
-
-    // console.log('canvas render:', object);
-
-    // restore to its ancestor
 
     const parent = restoreStack[restoreStack.length - 1];
     if (
@@ -543,11 +519,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-    if (!isNil(lineDashOffset)) {
+    if (isNumber(lineDashOffset)) {
       context.lineDashOffset = lineDashOffset;
     }
 
-    if (!isNil(opacity)) {
+    if (isNumber(opacity)) {
       context.globalAlpha *= opacity;
     }
 
