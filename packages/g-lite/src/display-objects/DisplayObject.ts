@@ -1,7 +1,6 @@
 import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import type { PropertyParseOptions } from '../css';
 import { noneColor } from '../css/CSSStyleValuePool';
 import type {
   DisplayObjectConfig,
@@ -20,6 +19,7 @@ import { Shape } from '../types';
 import {
   createVec3,
   decompose,
+  formatAttributes,
   formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
@@ -86,21 +86,6 @@ const DEFAULT_PARSED_STYLE_PROPS = {
   miterLimit: 10,
 };
 
-// const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
-//   ...DEFAULT_PARSED_STYLE_PROPS,
-//   opacity: 1,
-//   fillOpacity: 1,
-//   strokeOpacity: 1,
-//   visibility: 'visible',
-//   pointerEvents: 'auto',
-//   lineWidth: 1,
-//   lineCap: 'butt',
-//   lineJoin: 'miter',
-//   increasedLineWidthForHitTesting: 0,
-//   fillRule: 'nonzero',
-//   // TODO: transformOrigin
-// };
-
 const INHERITABLE_BASE_STYLE_PROPS = [
   'opacity',
   'fillOpacity',
@@ -127,6 +112,9 @@ const INHERITABLE_STYLE_PROPS = [
 ];
 
 const DATASET_PREFIX = 'data-';
+
+const $vec3 = vec3.create();
+const $quat = quat.create();
 
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
@@ -181,12 +169,12 @@ export class DisplayObject<
     this.config = config;
 
     // init scene graph node
-    this.id = this.config.id || '';
-    this.name = this.config.name || '';
-    if (this.config.className || this.config.class) {
-      this.className = this.config.className || this.config.class;
+    this.id = config.id || '';
+    this.name = config.name || '';
+    if (config.className || config.class) {
+      this.className = config.className || config.class;
     }
-    this.nodeName = this.config.type || Shape.GROUP;
+    this.nodeName = config.type || Shape.GROUP;
 
     if (runtime.enableCSSParsing) {
       Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
@@ -195,16 +183,12 @@ export class DisplayObject<
         DEFAULT_PARSED_STYLE_PROPS,
         this.config.initialParsedStyle,
       );
-    } else if (this.config.initialParsedStyle) {
-      Object.assign(
-        this.parsedStyle,
-        // DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
-        this.config.initialParsedStyle,
-      );
+    } else if (config.initialParsedStyle) {
+      Object.assign(this.parsedStyle, config.initialParsedStyle);
     }
 
     // start to process attributes
-    this.initAttributes(this.config.style);
+    this.initAttributes(config.style);
 
     if (runtime.enableDataset) {
       this.dataset = new Proxy<any>(
@@ -337,40 +321,21 @@ export class DisplayObject<
   }
 
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
-    const renderable = this.renderable;
-
-    const options = {
-      forceUpdateGeometry: true,
-      // usedAttributes:
-      //   // only Group / Text should account for text relative props
-      //   this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
-      //     ? INHERITABLE_STYLE_PROPS
-      //     : INHERITABLE_BASE_STYLE_PROPS,
-    };
-
-    if (runtime.enableCSSParsing) {
-      // @ts-ignore
-      options.usedAttributes = INHERITABLE_STYLE_PROPS;
-    }
-
     // account for FCP, process properties as less as possible
-    let formattedAttributes = attributes;
-    if (runtime.enableAttributeDashCased) {
-      // @ts-ignore
-      formattedAttributes = {};
-      for (const name in attributes) {
-        const attributeName = formatAttributeName(name);
-        formattedAttributes[attributeName] = attributes[name];
-      }
-    }
     runtime.styleValueRegistry.processProperties(
       this,
-      formattedAttributes,
-      options,
+      runtime.enableAttributeDashCased
+        ? formatAttributes(attributes)
+        : attributes,
+      undefined,
+      undefined,
+      true,
+      runtime.enableCSSParsing ? INHERITABLE_STYLE_PROPS : undefined,
+      undefined,
     );
 
     // redraw at next frame
-    renderable.dirty = true;
+    this.renderable.dirty = true;
   }
 
   setAttribute<Key extends keyof StyleProps>(
@@ -386,9 +351,16 @@ export class DisplayObject<
     if (isUndefined(value)) {
       return;
     }
-
     if (force || value !== this.attributes[name]) {
-      this.internalSetAttribute(name, value, { memoize });
+      this.internalSetAttribute(
+        name,
+        value,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        memoize,
+      );
       super.setAttribute(name, value);
     }
   }
@@ -399,7 +371,11 @@ export class DisplayObject<
   internalSetAttribute<Key extends keyof StyleProps>(
     name: Key,
     value: StyleProps[Key],
-    parseOptions: Partial<PropertyParseOptions> = {},
+    skipUpdateAttribute?: boolean,
+    skipParse?: boolean,
+    forceUpdateGeometry?: boolean,
+    usedAttributes?: string[],
+    memoize?: boolean,
   ) {
     const renderable = this.renderable;
 
@@ -411,7 +387,11 @@ export class DisplayObject<
       {
         [name]: value,
       },
-      parseOptions,
+      skipUpdateAttribute,
+      skipParse,
+      forceUpdateGeometry,
+      usedAttributes,
+      memoize,
     );
 
     // redraw at next frame
@@ -463,7 +443,10 @@ export class DisplayObject<
   }
 
   setOrigin(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setOrigin(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -475,7 +458,10 @@ export class DisplayObject<
    * set position in world space
    */
   setPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setPosition(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -485,7 +471,7 @@ export class DisplayObject<
   setLocalPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.setLocalPosition(
       this,
-      createVec3(position, y, z),
+      createVec3(position, y, z, false),
     );
     return this;
   }
@@ -494,7 +480,10 @@ export class DisplayObject<
    * translate in world space
    */
   translate(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.translate(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translate(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -502,7 +491,10 @@ export class DisplayObject<
    * translate in local space
    */
   translateLocal(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translateLocal(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -529,7 +521,7 @@ export class DisplayObject<
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
-      scaling = createVec3(scaling, y, z);
+      scaling = createVec3(scaling, y, z, false);
     }
     runtime.sceneGraphService.scaleLocal(this, scaling);
     return this;
@@ -542,7 +534,7 @@ export class DisplayObject<
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
-      scaling = createVec3(scaling, y, z);
+      scaling = createVec3(scaling, y, z, false);
     }
 
     runtime.sceneGraphService.setLocalScale(this, scaling);
@@ -568,7 +560,7 @@ export class DisplayObject<
    */
   getEulerAngles() {
     const [, , ez] = getEuler(
-      vec3.create(),
+      $vec3,
       runtime.sceneGraphService.getWorldTransform(this),
     );
     return rad2deg(ez);
@@ -579,7 +571,7 @@ export class DisplayObject<
    */
   getLocalEulerAngles() {
     const [, , ez] = getEuler(
-      vec3.create(),
+      $vec3,
       runtime.sceneGraphService.getLocalRotation(this),
     );
     return rad2deg(ez);
@@ -804,10 +796,10 @@ export class DisplayObject<
    */
   getMatrix(transformMat4?: mat4): mat3 {
     const transform = transformMat4 || this.getWorldTransform();
-    const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
-    const [sx, sy] = mat4.getScaling(vec3.create(), transform);
-    const rotation = mat4.getRotation(quat.create(), transform);
-    const [eux, , euz] = getEuler(vec3.create(), rotation);
+    const [tx, ty] = mat4.getTranslation($vec3, transform);
+    const [sx, sy] = mat4.getScaling($vec3, transform);
+    const rotation = mat4.getRotation($quat, transform);
+    const [eux, , euz] = getEuler($vec3, rotation);
     // gimbal lock at 90 degrees
     return fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
   }
