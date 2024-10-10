@@ -1,7 +1,9 @@
-import { isNil, isUndefined } from '@antv/util';
+import { isFunction, isNil, isNumber, isUndefined } from '@antv/util';
+import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
 import type { GlobalRuntime } from '../global-runtime';
+import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
 import type {
   BaseStyleProps,
@@ -9,16 +11,11 @@ import type {
   Tuple3Number,
 } from '../types';
 import { Shape } from '../types';
-import { isFunction } from '../utils/assert';
-import { addVec3 } from '../utils/math';
+import { assign } from '../utils';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
-import type {
-  PropertyMetadata,
-  PropertyParseOptions,
-  StyleValueRegistry,
-} from './interfaces';
+import type { PropertyMetadata, StyleValueRegistry } from './interfaces';
 import { PropertySyntax } from './interfaces';
 import {
   ParsedFilterStyleProperty,
@@ -33,7 +30,6 @@ import {
   convertPercentUnit,
   parseDimensionArrayFormat,
 } from './parser/dimension';
-import { GeometryAABBUpdater } from '..';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 
@@ -625,11 +621,6 @@ const GEOMETRY_ATTRIBUTE_NAMES = BUILT_IN_PROPERTIES.filter((n) => !!n.l).map(
 
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
 const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
-// const uniqueAttributeSet = new Set<string>();
-
-// const tmpVec3a = vec3.create();
-// const tmpVec3b = vec3.create();
-// const tmpVec3c = vec3.create();
 
 const isPropertyResolved = (object: DisplayObject, name: string) => {
   const properties = unresolvedProperties.get(object);
@@ -678,94 +669,97 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
   processProperties(
     object: DisplayObject,
     attributes: BaseStyleProps,
-    options: Partial<PropertyParseOptions> = {
-      skipUpdateAttribute: false,
-      skipParse: false,
-      forceUpdateGeometry: false,
-      usedAttributes: [],
-      memoize: true,
-    },
+    skipUpdateAttribute = false,
+    skipParse = false,
+    forceUpdateGeometry = false,
+    usedAttributes: string[] | undefined = undefined,
+    memoize = true,
   ) {
+    const needParseStyle = object.nodeName !== Shape.GROUP;
+
     if (!this.runtime.enableCSSParsing) {
-      Object.assign(object.attributes, attributes);
-      const attributeNames = Object.keys(attributes);
+      assign(object.attributes, attributes);
 
       // clipPath
       const oldClipPath = object.parsedStyle.clipPath;
       const oldOffsetPath = object.parsedStyle.offsetPath;
 
-      object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+      assign(object.parsedStyle, attributes);
 
-      let needUpdateGeometry = !!options.forceUpdateGeometry;
+      let needUpdateGeometry = !!forceUpdateGeometry;
       if (!needUpdateGeometry) {
-        for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
-          if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
-            needUpdateGeometry = true;
-            break;
-          }
+        if (GEOMETRY_ATTRIBUTE_NAMES.some((name) => name in attributes)) {
+          needUpdateGeometry = true;
         }
       }
 
-      if (attributes.fill) {
-        object.parsedStyle.fill = parseColor(attributes.fill);
-      }
-      if (attributes.stroke) {
-        object.parsedStyle.stroke = parseColor(attributes.stroke);
-      }
-      if (attributes.shadowColor) {
-        object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
-      }
-      if (attributes.filter) {
-        object.parsedStyle.filter = parseFilter(attributes.filter);
-      }
-      // Rect
-      // @ts-ignore
-      if (!isNil(attributes.radius)) {
+      if (needParseStyle) {
+        if (attributes.fill) {
+          object.parsedStyle.fill = parseColor(attributes.fill);
+        }
+        if (attributes.stroke) {
+          object.parsedStyle.stroke = parseColor(attributes.stroke);
+        }
+        if (attributes.shadowColor) {
+          object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
+        }
+        if (attributes.filter) {
+          object.parsedStyle.filter = parseFilter(attributes.filter);
+        }
+        // Rect
         // @ts-ignore
-        object.parsedStyle.radius = parseDimensionArrayFormat(
+        if (!isNil(attributes.radius)) {
           // @ts-ignore
-          attributes.radius,
-          4,
-        );
-      }
-      // Polyline
-      if (!isNil(attributes.lineDash)) {
-        object.parsedStyle.lineDash = parseDimensionArrayFormat(
-          attributes.lineDash,
-          2,
-        );
-      }
-      // @ts-ignore
-      if (attributes.points) {
+          object.parsedStyle.radius = parseDimensionArrayFormat(
+            // @ts-ignore
+            attributes.radius,
+            4,
+          );
+        }
+        // Polyline
+        if (!isNil(attributes.lineDash)) {
+          object.parsedStyle.lineDash = parseDimensionArrayFormat(
+            attributes.lineDash,
+            2,
+          );
+        }
         // @ts-ignore
-        object.parsedStyle.points = parsePoints(attributes.points, object);
-      }
-      // Path
-      // @ts-ignore
-      if (attributes.d === '') {
-        object.parsedStyle.d = {
-          ...EMPTY_PARSED_PATH,
-        };
-      }
-      // @ts-ignore
-      if (attributes.d) {
-        object.parsedStyle.d = parsePath(
+        if (attributes.points) {
           // @ts-ignore
-          attributes.d,
-        );
+          object.parsedStyle.points = parsePoints(attributes.points, object);
+        }
+        // Path
+        // @ts-ignore
+        if (attributes.d === '') {
+          object.parsedStyle.d = {
+            ...EMPTY_PARSED_PATH,
+          };
+        }
+        // @ts-ignore
+        if (attributes.d) {
+          object.parsedStyle.d = parsePath(
+            // @ts-ignore
+            attributes.d,
+          );
+        }
+        // Text
+        if (attributes.textTransform) {
+          this.runtime.CSSPropertySyntaxFactory[
+            PropertySyntax.TEXT_TRANSFORM
+          ].calculator(
+            null,
+            null,
+            { value: attributes.textTransform },
+            object,
+            null,
+          );
+        }
       }
-      // Text
-      if (attributes.textTransform) {
-        this.runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
-          null,
-          null,
-          { value: attributes.textTransform },
-          object,
-          null,
-        );
-      }
+
       if (!isUndefined(attributes.clipPath)) {
-        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+        this.runtime.CSSPropertySyntaxFactory[
+          PropertySyntax.DEFINED_PATH
+        ].calculator(
           'clipPath',
           oldClipPath,
           attributes.clipPath,
@@ -773,8 +767,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           this.runtime,
         );
       }
-      if (attributes.offsetPath) {
-        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+      if (needParseStyle && attributes.offsetPath) {
+        this.runtime.CSSPropertySyntaxFactory[
+          PropertySyntax.DEFINED_PATH
+        ].calculator(
           'offsetPath',
           oldOffsetPath,
           attributes.offsetPath,
@@ -790,71 +786,73 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           attributes.transformOrigin,
         );
       }
-      // Marker
-      // @ts-ignore
-      if (attributes.markerStart) {
-        object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          null,
-          // @ts-ignore
-          attributes.markerStart,
-          // @ts-ignore
-          attributes.markerStart,
-          null,
-          null,
-        );
-      }
-      // @ts-ignore
-      if (attributes.markerEnd) {
-        object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          null,
-          // @ts-ignore
-          attributes.markerEnd,
-          // @ts-ignore
-          attributes.markerEnd,
-          null,
-          null,
-        );
-      }
-      // @ts-ignore
-      if (attributes.markerMid) {
-        object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          '',
-          // @ts-ignore
-          attributes.markerMid,
-          // @ts-ignore
-          attributes.markerMid,
-          null,
-          null,
-        );
+      if (isNumber(attributes.zIndex)) {
+        this.runtime.CSSPropertySyntaxFactory[
+          PropertySyntax.Z_INDEX
+        ].postProcessor(object);
       }
 
-      if (!isNil(attributes.zIndex)) {
-        this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
-          object,
-          attributeNames,
-        );
+      if (needParseStyle) {
+        // Marker
+        // @ts-ignore
+        if (attributes.markerStart) {
+          object.parsedStyle.markerStart =
+            this.runtime.CSSPropertySyntaxFactory[
+              PropertySyntax.MARKER
+            ].calculator(
+              null,
+              // @ts-ignore
+              attributes.markerStart,
+              // @ts-ignore
+              attributes.markerStart,
+              null,
+              null,
+            );
+        }
+        // @ts-ignore
+        if (attributes.markerEnd) {
+          object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
+            PropertySyntax.MARKER
+          ].calculator(
+            null,
+            // @ts-ignore
+            attributes.markerEnd,
+            // @ts-ignore
+            attributes.markerEnd,
+            null,
+            null,
+          );
+        }
+        // @ts-ignore
+        if (attributes.markerMid) {
+          object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
+            PropertySyntax.MARKER
+          ].calculator(
+            '',
+            // @ts-ignore
+            attributes.markerMid,
+            // @ts-ignore
+            attributes.markerMid,
+            null,
+            null,
+          );
+        }
+        if (isNumber(attributes.offsetDistance)) {
+          this.runtime.CSSPropertySyntaxFactory[
+            PropertySyntax.OFFSET_DISTANCE
+          ].postProcessor(object);
+        }
       }
-      if (!isNil(attributes.offsetDistance)) {
-        this.runtime.CSSPropertySyntaxFactory[
-          '<offset-distance>'
-        ].postProcessor(object, attributeNames);
-      }
+
       if (attributes.transform) {
-        this.runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
-          object,
-          attributeNames,
-        );
+        this.runtime.CSSPropertySyntaxFactory[
+          PropertySyntax.TRANSFORM
+        ].postProcessor(object);
       }
       if (attributes.transformOrigin) {
         this.runtime.CSSPropertySyntaxFactory[
-          '<transform-origin>'
-        ].postProcessor(object, attributeNames);
+          PropertySyntax.TRANSFORM_ORIGIN
+        ].postProcessor(object);
       }
 
       if (needUpdateGeometry) {
@@ -862,19 +860,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         object.renderable.boundsDirty = true;
         object.renderable.renderBoundsDirty = true;
 
-        if (!options.forceUpdateGeometry) {
+        if (!forceUpdateGeometry) {
           this.runtime.sceneGraphService.dirtifyToRoot(object);
         }
       }
     } else {
-      const {
-        skipUpdateAttribute,
-        skipParse,
-        forceUpdateGeometry,
-        usedAttributes,
-        memoize,
-      } = options;
-
       let needUpdateGeometry = forceUpdateGeometry;
       let attributeNames = Object.keys(attributes);
 
@@ -915,21 +905,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         );
       }
 
-      // [
-      //   'path',
-      //   'points',
-      //   'text',
-      //   'textTransform',
-      //   'transform',
-      //   'transformOrigin',
-      // ].forEach((name) => {
-      //   const index = attributeNames.indexOf(name);
-      //   if (index > -1) {
-      //     attributeNames.splice(index, 1);
-      //     attributeNames.push(name);
-      //   }
-      // });
-
       attributeNames.forEach((name) => {
         // some style props maybe deleted after parsing such as `anchor` in Text
         if (name in object.computedStyle) {
@@ -942,17 +917,12 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         }
       });
 
-      // if (hasUnresolvedProperties) {
-      //   this.dirty = true;
-      //   return;
-      // }
-
       // update geometry
       if (needUpdateGeometry) {
         object.geometry.dirty = true;
         object.renderable.boundsDirty = true;
         object.renderable.renderBoundsDirty = true;
-        if (!options.forceUpdateGeometry) {
+        if (!forceUpdateGeometry) {
           this.runtime.sceneGraphService.dirtifyToRoot(object);
         }
       }
@@ -968,10 +938,15 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
             // update children's inheritable
             object.children.forEach((child: DisplayObject) => {
-              child.internalSetAttribute(name, null, {
-                skipUpdateAttribute: true,
-                skipParse: true,
-              });
+              child.internalSetAttribute(
+                name,
+                null,
+                true,
+                true,
+                undefined,
+                undefined,
+                undefined,
+              );
             });
           }
         });
@@ -1099,8 +1074,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     }
 
-    // object.parsedStyle[name] = used;
-    // return false;
     return used;
   }
 
@@ -1160,13 +1133,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           return;
         }
 
-        // else if (
-        //   usedValue instanceof CSSUnitValue &&
-        //   CSSUnitValue.isRelativeUnit(usedValue.unit)
-        // ) {
-        //   return false;
-        // }
-
         return usedValue;
       }
     }
@@ -1219,12 +1185,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         Math.abs(hheight),
         hdepth,
       ];
-      // const halfExtents = vec3.set(
-      //   tmpVec3a,
-      //   Math.abs(width) / 2,
-      //   Math.abs(height) / 2,
-      //   depth / 2,
-      // );
       // anchor is center by default, don't account for lineWidth here
       const {
         stroke,
@@ -1248,27 +1208,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         nodeName === Shape.PATH
           ? Math.SQRT2
           : 0.5;
-      // if (lineCap?.value === 'square') {
-      //   expansion = Math.SQRT1_2;
-      // }
-      // if (lineJoin?.value === 'miter' && expansion < Math.SQRT2 * miterLimit) {
-      //   expansion = Math.SQRT1_2 * miterLimit;
-      // }
       // append border only if stroke existed
       const hasStroke = stroke && !(stroke as CSSRGB).isNone;
       if (hasStroke) {
         const halfLineWidth =
           ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) *
           expansion;
-        // halfExtents[0] += halfLineWidth[0];
-        // halfExtents[1] += halfLineWidth[1];
         halfExtents[0] += halfLineWidth;
         halfExtents[1] += halfLineWidth;
-        // vec3.add(
-        //   halfExtents,
-        //   halfExtents,
-        //   vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
-        // );
       }
       geometry.renderBounds.update(center, halfExtents);
       // account for shadow, only support constant value now
@@ -1296,11 +1243,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           const blurRadius = params[0].value as number;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
-            addVec3(
+            vec3.add(
               geometry.renderBounds.halfExtents,
               geometry.renderBounds.halfExtents,
               [blurRadius, blurRadius, 0],
-            ),
+            ) as Tuple3Number,
           );
         } else if (name === 'drop-shadow') {
           const shadowOffsetX = params[0].value;
