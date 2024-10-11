@@ -23,10 +23,12 @@ export function createVec3(
   }
 
   if (isNumber(x)) {
-    return vec3.set($vec3, x, y, z);
+    return clone ? vec3.fromValues(x, y, z) : vec3.set($vec3, x, y, z);
   }
 
-  return vec3.set($vec3, x[0], x[1] || y, x[2] || z);
+  return clone
+    ? vec3.fromValues(x[0], x[1] || y, x[2] || z)
+    : vec3.set($vec3, x[0], x[1] || y, x[2] || z);
 }
 
 const DEG_RAD = Math.PI / 180;
