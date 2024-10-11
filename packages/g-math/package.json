@@ -38,7 +38,7 @@
     "watch": "rollup -c -w"
   },
   "dependencies": {
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

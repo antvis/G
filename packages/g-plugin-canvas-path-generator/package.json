@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-path-generator",
-  "version": "2.0.10",
+  "version": "2.0.10-alpha.1",
   "description": "A G plugin of path generator with Canvas2D API",
   "keywords": [
     "antv",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@antv/g-lite": "workspace:*",
     "@antv/g-math": "workspace:*",
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "tslib": "^2.5.3"
   },
   "publishConfig": {

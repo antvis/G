@@ -47,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "@changesets/cli": "^2.26.2",
     "@commitlint/cli": "^8.3.6",
     "@commitlint/config-angular": "^9.1.2",
