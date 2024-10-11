@@ -61,7 +61,11 @@ selectChart.style.margin = '1em';
 renderOptions();
 selectChart.onchange = () => {
   const { value } = selectChart;
-  history.pushState({ value }, '', `?name=${value}&renderer=${selectRenderer.value}`);
+  history.pushState(
+    { value },
+    '',
+    `?name=${value}&renderer=${selectRenderer.value}`,
+  );
   plot();
 };
 document.onkeydown = (event) => {
@@ -96,7 +100,11 @@ selectRenderer.style.margin = '1em';
 selectRenderer.append(...Object.keys(renderers).map(createOption));
 selectRenderer.onchange = () => {
   const { value } = selectRenderer;
-  history.pushState({ value }, '', `?name=${selectChart.value}&renderer=${value}`);
+  history.pushState(
+    { value },
+    '',
+    `?name=${selectChart.value}&renderer=${value}`,
+  );
   plot();
 };
 
@@ -123,7 +131,9 @@ addEventListener('popstate', (event) => {
 // @ts-ignore
 const initialValue = new URL(location).searchParams.get('name') as string;
 // @ts-ignore
-const initialRenderer = new URL(location).searchParams.get('renderer') as string;
+const initialRenderer = new URL(location).searchParams.get(
+  'renderer',
+) as string;
 if (tests[initialValue]) selectChart.value = initialValue;
 if (renderers[initialRenderer]) selectRenderer.value = initialRenderer;
 app.append(selectChart);
@@ -155,7 +165,9 @@ function createOption(key) {
 }
 
 function namespace(object, name) {
-  return Object.fromEntries(Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]));
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]),
+  );
 }
 
 function createSpecRender(object) {
@@ -183,14 +195,16 @@ function createSpecRender(object) {
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
         // enableAutoRendering: false,
         // enableDirtyRectangleRendering: false,
-        // enableDirtyRectangleRenderingDebug: true,
+        imageSmoothingEnabled: false,
       });
 
       if (generate.initRenderer) {
         generate.initRenderer(renderer, selectRenderer.value);
       }
 
-      renderer.registerPlugin(new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }));
+      renderer.registerPlugin(
+        new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }),
+      );
 
       const $div = document.createElement('div');
       canvas = new Canvas({
@@ -211,8 +225,7 @@ function createSpecRender(object) {
 
       if (
         selectRenderer.value === 'canvas' &&
-        renderer.getConfig().enableDirtyRectangleRendering &&
-        renderer.getConfig().enableDirtyRectangleRenderingDebug
+        renderer.getConfig().enableDirtyRectangleRendering
       ) {
         // display dirty rectangle
         const $dirtyRectangle = document.createElement('div');
@@ -237,5 +250,7 @@ function createSpecRender(object) {
       container.append($div);
     };
   };
-  return Object.fromEntries(Object.entries(object).map(([key, value]) => [key, specRender(value)]));
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [key, specRender(value)]),
+  );
 }
