@@ -195,7 +195,7 @@ function createSpecRender(object) {
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
         // enableAutoRendering: false,
         // enableDirtyRectangleRendering: false,
-        imageSmoothingEnabled: false,
+        // imageSmoothingEnabled: false,
       });
 
       if (generate.initRenderer) {
