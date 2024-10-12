@@ -568,6 +568,12 @@ export interface CanvasConfig {
   supportsMutipleCanvasesInOneContainer?: boolean;
 
   /**
+   * 如果当前实例化 Canvas 所用容器已存在 Canvas 实例，执行快速清理
+   * * 该过程不会触发事件，而是直接释放资源
+   */
+  fastCleanExistingCanvas?: boolean;
+
+  /**
    * 画布宽度
    */
   width?: number;

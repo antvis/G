@@ -168,6 +168,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
+      fastCleanExistingCanvas,
       supportsMutipleCanvasesInOneContainer,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
@@ -177,7 +178,7 @@ export class Canvas extends EventTarget implements ICanvas {
     } = config;
 
     if (!supportsMutipleCanvasesInOneContainer) {
-      cleanExistedCanvas(container, this);
+      cleanExistedCanvas(container, this, fastCleanExistingCanvas);
     }
 
     let canvasWidth = width;
@@ -245,6 +246,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsCSSTransform,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
+      fastCleanExistingCanvas,
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight, renderer.clipSpaceNearZ);
@@ -384,7 +386,10 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
    */
-  destroy(cleanUp = true, skipTriggerEvent = false) {
+  destroy(cleanUp = true, skipTriggerEvent?: boolean) {
+    if (skipTriggerEvent === undefined)
+      skipTriggerEvent = this.getConfig().fastCleanExistingCanvas;
+
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
@@ -649,11 +654,13 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     if (this.inited) {
-      if (parent.isMutationObserved) {
-        parent.dispatchEvent(unmountedEvent);
-      } else {
-        unmountedEvent.target = parent;
-        this.dispatchEvent(unmountedEvent, true);
+      if (!this.getConfig().fastCleanExistingCanvas) {
+        if (parent.isMutationObserved) {
+          parent.dispatchEvent(unmountedEvent);
+        } else {
+          unmountedEvent.target = parent;
+          this.dispatchEvent(unmountedEvent, true);
+        }
       }
 
       // skip document.documentElement

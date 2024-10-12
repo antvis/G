@@ -8,6 +8,7 @@ let defaultCanvasIdCounter = 0;
 export function cleanExistedCanvas(
   container: string | HTMLElement,
   canvas: Canvas,
+  fast: boolean,
 ) {
   if (container) {
     const id =
@@ -16,7 +17,7 @@ export function cleanExistedCanvas(
         : container.id || defaultCanvasIdCounter++;
 
     if (canvasMap[id]) {
-      canvasMap[id].destroy();
+      canvasMap[id].destroy(true, !!fast);
     }
 
     canvasMap[id] = canvas;
