@@ -1,5 +1,4 @@
 export * from './assert';
-export * from './assign';
 export * from './canvas';
 export * from './dom';
 export * from './error';

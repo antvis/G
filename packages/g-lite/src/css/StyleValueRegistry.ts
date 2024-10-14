@@ -11,7 +11,6 @@ import type {
   Tuple3Number,
 } from '../types';
 import { Shape } from '../types';
-import { assign } from '../utils';
 import { getOrCreateKeyword } from './CSSStyleValuePool';
 import type { CSSRGB, CSSStyleValue } from './cssom';
 import { CSSKeywordValue } from './cssom';
@@ -678,13 +677,13 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const needParseStyle = object.nodeName !== Shape.GROUP;
 
     if (!this.runtime.enableCSSParsing) {
-      assign(object.attributes, attributes);
+      Object.assign(object.attributes, attributes);
 
       // clipPath
       const oldClipPath = object.parsedStyle.clipPath;
       const oldOffsetPath = object.parsedStyle.offsetPath;
 
-      assign(object.parsedStyle, attributes);
+      Object.assign(object.parsedStyle, attributes);
 
       let needUpdateGeometry = !!forceUpdateGeometry;
       if (!needUpdateGeometry) {
