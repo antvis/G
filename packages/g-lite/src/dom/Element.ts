@@ -80,6 +80,7 @@ export class Element<
     renderBoundsDirty: true,
     dirtyRenderBounds: undefined,
     dirty: false,
+    rendered: false,
   };
 
   cullable: Cullable = {
@@ -93,6 +94,7 @@ export class Element<
     dirtyFlag: false,
     localDirtyFlag: false,
     frozen: false,
+    computed: false,
     localPosition: [0, 0, 0],
     localRotation: [0, 0, 0, 1],
     localScale: [1, 1, 1],
@@ -220,7 +222,6 @@ export class Element<
     }
 
     runtime.sceneGraphService.attach(child, this, index);
-
     if (this.ownerDocument?.defaultView) {
       this.ownerDocument.defaultView.mountChildren(child);
     }

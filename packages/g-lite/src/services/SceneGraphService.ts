@@ -153,10 +153,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
       sortable.dirtyReason = SortReason.ADDED;
     }
 
-    // this.updateGraphDepth(child);
-
     const transform = (child as unknown as Element).transformable;
-    if (transform) {
+    // @ts-ignore
+    if (child?.renderable.rendered && transform) {
       this.dirtifyWorld(child, transform);
     }
 
@@ -234,7 +233,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
   /**
    * rotate in world space
    */
-  rotate(element: INode, degrees: vec3 | number, y = 0, z = 0, dirtify = true) {
+  rotate(element: INode, degrees: vec3 | number, y = 0, z = 0) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
@@ -258,9 +257,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       quat.multiply(transform.localRotation, rotation, rot);
       quat.normalize(transform.localRotation, transform.localRotation);
 
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
+      this.dirtifyLocal(element, transform);
     }
   }
 
@@ -268,13 +265,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * rotate in local space
    * @see @see https://docs.microsoft.com/en-us/windows/win32/api/directxmath/nf-directxmath-xmquaternionrotationrollpitchyaw
    */
-  rotateLocal(
-    element: INode,
-    degrees: vec3 | number,
-    y = 0,
-    z = 0,
-    dirtify = true,
-  ) {
+  rotateLocal(element: INode, degrees: vec3 | number, y = 0, z = 0) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
@@ -282,21 +273,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
     quat.fromEuler($rotateLocal, degrees[0], degrees[1], degrees[2]);
     quat.mul(transform.localRotation, transform.localRotation, $rotateLocal);
 
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
+    this.dirtifyLocal(element, transform);
   }
 
   /**
    * set euler angles(degrees) in world space
    */
-  setEulerAngles(
-    element: INode,
-    degrees: vec3 | number,
-    y = 0,
-    z = 0,
-    dirtify = true,
-  ) {
+  setEulerAngles(element: INode, degrees: vec3 | number, y = 0, z = 0) {
     if (typeof degrees === 'number') {
       degrees = vec3.fromValues(degrees, y, z);
     }
@@ -326,9 +309,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
         $setEulerAngles_InvParentRot,
       );
 
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
+      this.dirtifyLocal(element, transform);
     }
   }
 
@@ -361,13 +342,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * translateLocal(vec3(x, y, z))
    * ```
    */
-  translateLocal(
-    element: INode,
-    translation: vec3 | number,
-    y = 0,
-    z = 0,
-    dirtify = true,
-  ) {
+  translateLocal(element: INode, translation: vec3 | number, y = 0, z = 0) {
     if (typeof translation === 'number') {
       translation = vec3.fromValues(translation, y, z);
     }
@@ -377,9 +352,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     vec3.transformQuat(translation, translation, transform.localRotation);
     vec3.add(transform.localPosition, transform.localPosition, translation);
 
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
+    this.dirtifyLocal(element, transform);
   }
 
   /**
@@ -388,7 +361,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * 对应 g 原版的 move/moveTo
    * @see https://github.com/antvis/g/blob/master/packages/g-base/src/abstract/element.ts#L684-L689
    */
-  setPosition(element: INode, position: vec3 | vec2, dirtify = true) {
+  setPosition(element: INode, position: vec3 | vec2) {
     const transform = (element as Element).transformable;
 
     $setPosition_1[0] = position[0];
@@ -423,9 +396,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       );
     }
 
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
+    this.dirtifyLocal(element, transform);
   }
 
   /**
@@ -451,16 +422,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
   /**
    * scale in local space
    */
-  scaleLocal(element: INode, scaling: vec3 | vec2, dirtify = true) {
+  scaleLocal(element: INode, scaling: vec3 | vec2) {
     const transform = (element as Element).transformable;
     vec3.multiply(
       transform.localScale,
       transform.localScale,
       vec3.set($vec3, scaling[0], scaling[1], scaling[2] ?? 1),
     );
-    if (dirtify) {
-      this.dirtifyLocal(element, transform);
-    }
+    this.dirtifyLocal(element, transform);
   }
 
   setLocalScale(element: INode, scaling: vec3 | vec2, dirtify = true) {
@@ -495,13 +464,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * 对应 g 原版的 translate 2D
    * @see https://github.com/antvis/g/blob/master/packages/g-base/src/abstract/element.ts#L665-L676
    */
-  translate(
-    element: INode,
-    translation: vec3 | number,
-    y = 0,
-    z = 0,
-    dirtify = true,
-  ) {
+  translate(element: INode, translation: vec3 | number, y = 0, z = 0) {
     if (typeof translation === 'number') {
       translation = vec3.set($vec3, translation, y, z);
     }
@@ -509,7 +472,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     vec3.add($vec3, this.getPosition(element), translation);
 
-    this.setPosition(element, $vec3, dirtify);
+    this.setPosition(element, $vec3);
   }
 
   setRotation(
@@ -518,7 +481,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
     y?: number,
     z?: number,
     w?: number,
-    dirtify = true,
   ) {
     const transform = (element as Element).transformable;
     if (typeof rotation === 'number') {
@@ -538,9 +500,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       quat.multiply(transform.localRotation, $quat, rotation);
       quat.normalize(transform.localRotation, transform.localRotation);
 
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
+      this.dirtifyLocal(element, transform);
     }
   }
 
@@ -562,21 +522,57 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
   }
 
-  setLocalSkew(element: INode, skew: vec2 | number, y?: number) {
+  setLocalSkew(
+    element: INode,
+    skew: vec2 | number,
+    y?: number,
+    dirtify = true,
+  ) {
     if (typeof skew === 'number') {
       skew = vec2.set($vec2, skew, y);
     }
     const transform = (element as Element).transformable;
     vec2.copy(transform.localSkew, skew);
-    this.dirtifyLocal(element, transform);
+    if (dirtify) {
+      this.dirtifyLocal(element, transform);
+    }
   }
 
   dirtifyLocal(element: INode, transform: Transform) {
+    // 会在首屏渲染前统一标记
+    // 或者在调用 API 获取属性时标记
+    if ((element as Element).renderable.rendered) return;
+
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
         this.dirtifyWorld(element, transform);
       }
+    }
+  }
+
+  /**
+   * 将个场景图标记为 dirty。用于优化首屏性能，首屏渲染前的 appendChild 操作不会单独标记 dirty，而是等到首屏渲染时一次性标记
+   */
+  dirtifyEntireSceneGraph(element: INode) {
+    const transform = (element as Element).transformable;
+    if (transform) {
+      transform.frozen = false;
+      transform.dirtyFlag = true;
+      transform.localDirtyFlag = true;
+    }
+    const renderable = (element as Element).renderable;
+    if (renderable) {
+      renderable.renderBoundsDirty = true;
+      renderable.boundsDirty = true;
+      renderable.dirty = true;
+    }
+
+    if (!this.pendingEvents.has(element)) this.pendingEvents.set(element, true);
+
+    const length = element.childNodes.length;
+    for (let i = 0; i < length; i++) {
+      this.dirtifyEntireSceneGraph(element.childNodes[i]);
     }
   }
 
@@ -756,8 +752,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
     element: INode,
     transform: Transform = (element as Element).transformable,
   ) {
-    if (!transform.localDirtyFlag && !transform.dirtyFlag) {
-      return transform.worldTransform;
+    const rendered = (element as Element).renderable.rendered;
+    const { computed, localDirtyFlag, dirtyFlag, worldTransform } = transform;
+
+    if (!localDirtyFlag && !dirtyFlag) {
+      if (rendered || computed) return worldTransform;
     }
 
     if (element.parentNode && (element.parentNode as Element).transformable) {
@@ -766,7 +765,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     this.sync(element, transform);
 
-    return transform.worldTransform;
+    transform.computed = true;
+    return worldTransform;
   }
 
   getLocalPosition(element: INode) {
@@ -886,10 +886,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   resetLocalTransform(element: INode) {
-    this.setLocalScale(element, $vec3One);
-    this.setLocalPosition(element, $vec3Zero);
-    this.setLocalEulerAngles(element, $vec3Zero);
-    this.setLocalSkew(element, $vec2Zero);
+    this.setLocalScale(element, $vec3One, false);
+    this.setLocalPosition(element, $vec3Zero, false);
+    this.setLocalEulerAngles(element, $vec3Zero, undefined, undefined, false);
+    this.setLocalSkew(element, $vec2Zero, undefined, false);
+    this.dirtifyLocal(element, (element as Element).transformable);
   }
 
   private getTransformedGeometryBounds(
@@ -929,13 +930,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getBounds(element: INode, render = false): AABB {
     const renderable = (element as Element).renderable;
+    const { boundsDirty, bounds, renderBoundsDirty, renderBounds, rendered } =
+      renderable || {};
 
-    if (!renderable.boundsDirty && !render && renderable.bounds) {
-      return renderable.bounds;
+    if (rendered && !boundsDirty && !render && bounds) {
+      return bounds;
     }
 
-    if (!renderable.renderBoundsDirty && render && renderable.renderBounds) {
-      return renderable.renderBounds;
+    if (rendered && !renderBoundsDirty && render && renderBounds) {
+      return renderBounds;
     }
 
     // reuse existed if possible
@@ -1084,12 +1087,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   private sync(element: INode, transform: Transform) {
-    if (transform.localDirtyFlag) {
+    const force = !(element as Element).renderable.rendered;
+
+    if (force || transform.localDirtyFlag) {
       this.calcLocalTransform(transform);
       transform.localDirtyFlag = false;
     }
 
-    if (transform.dirtyFlag) {
+    if (force || transform.dirtyFlag) {
       const parent = element.parentNode;
       const parentTransform = parent && (parent as Element).transformable;
       if (parent === null || !parentTransform) {
@@ -1108,6 +1113,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
   }
 
+  /**
+   * 解冻所有父节点，在下次关键帧时重新计算变换矩阵
+   */
   private unfreezeParentToRoot(child: INode) {
     let p = child.parentNode;
     while (p) {

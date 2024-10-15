@@ -50,7 +50,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         p = p.parentElement as DisplayObject;
       }
 
-      // this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
       renderingService.dirtify();
     };
 
@@ -69,7 +68,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         runtime.styleValueRegistry.recalc(object);
       }
 
-      runtime.sceneGraphService.dirtifyToRoot(object);
+      if (object.renderable.rendered)
+        runtime.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
     };
 
@@ -115,17 +115,16 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       runtime.globalThis.requestIdleCallback ?? raf.bind(runtime.globalThis);
     renderingService.hooks.endFrame.tap(PrepareRendererPlugin.tag, () => {
       const frame = context.renderingService.frame;
-      if (frame === 1) {
-        // skip
-      } else if (frame === 2) {
+      if (frame === 2) {
         this.syncing = true;
         ric(() => {
           this.syncRTree(true);
           this.isFirstTimeRenderingFinished = true;
         });
-      } else {
+      } else if (frame > 2) {
         this.syncRTree();
       }
+      this.toSync.forEach((node) => (node.renderable.rendered = true));
     });
   }
 
@@ -145,7 +144,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
       const rBushNode = node.rBushNode;
 
       // clear dirty node
-      if (rBushNode?.aabb) {
+      if (rBushNode.aabb) {
         this.rBush.remove(rBushNode.aabb);
       }
 

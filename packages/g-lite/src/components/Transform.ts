@@ -8,6 +8,10 @@ export interface Transform {
   localDirtyFlag: boolean;
 
   frozen: boolean;
+  /**
+   * 在首屏渲染前进行过预计算（通常是在首屏渲染前调用了 getBounds API）
+   */
+  computed: boolean;
 
   /**
    * local space RTS

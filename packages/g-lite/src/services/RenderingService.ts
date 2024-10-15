@@ -179,6 +179,12 @@ export class RenderingService {
     this.frame++;
 
     const { renderingContext } = this.context;
+    if (this.frame === 2) {
+      // @ts-expect-error private method
+      this.globalRuntime.sceneGraphService.dirtifyEntireSceneGraph(
+        renderingContext.root,
+      );
+    }
 
     this.globalRuntime.sceneGraphService.syncHierarchy(renderingContext.root);
 
