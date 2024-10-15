@@ -325,7 +325,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
     });
 
     renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects) => {
-      this.renderQueue.push(...objects);
+      const $length = objects.length;
+      for (let i = 0; i < $length; i++) {
+        this.renderQueue.push(objects[i]);
+      }
     });
 
     renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {

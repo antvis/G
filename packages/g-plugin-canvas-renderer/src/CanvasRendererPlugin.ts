@@ -304,7 +304,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (objects) => {
       if (!this.clearFullScreen) {
         // render at the end of frame
-        this.renderQueue.push(...objects);
+        const $length = objects.length;
+        for (let i = 0; i < $length; i++) {
+          this.renderQueue.push(objects[i]);
+        }
       }
     });
   }
