@@ -66,7 +66,7 @@ const $vec3Zero = vec3.create();
 /** do not modify this objects */
 const $vec3One = vec3.fromValues(1, 1, 1);
 /** do not modify this objects */
-const $mat4Zero = mat4.create();
+const $mat4Identity = mat4.create();
 
 /** shared objects */
 const $vec2 = vec2.create();
@@ -760,7 +760,10 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     if (element.parentNode && (element.parentNode as Element).transformable) {
-      this.getWorldTransform(element.parentNode);
+      const { dirtyFlag, localDirtyFlag } = (element.parentNode as Element)
+        .transformable;
+      if (dirtyFlag || localDirtyFlag)
+        this.getWorldTransform(element.parentNode);
     }
 
     this.sync(element, transform);
@@ -999,7 +1002,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getLocalBounds(element: INode): AABB {
     if (element.parentNode) {
-      let parentInvert = $mat4Zero;
+      let parentInvert = $mat4Identity;
 
       if ((element.parentNode as Element).transformable) {
         parentInvert = mat4.invert(

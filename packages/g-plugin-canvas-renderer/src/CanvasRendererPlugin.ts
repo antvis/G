@@ -173,28 +173,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     });
 
-    const renderByZIndex = (
-      object: DisplayObject,
-      context: CanvasRenderingContext2D,
-    ) => {
-      if (object.isVisible() && !object.isCulled()) {
-        this.renderDisplayObject(
-          object,
-          context,
-          this.context,
-          this.restoreStack,
-          runtime,
-        );
-      }
-
-      const sorted = object.sortable.sorted || object.childNodes;
-
-      const length = sorted.length;
-      for (let i = 0; i < length; i++) {
-        renderByZIndex(sorted[i] as DisplayObject, context);
-      }
-    };
-
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       // Skip rendering.
@@ -212,10 +190,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
-        // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
-        renderByZIndex(renderingContext.root, context);
+        this.renderSceneGraph(renderingContext.root, context, runtime);
       } else {
-        // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),
@@ -233,7 +209,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.removedRBushNodeAABBs = [];
 
         if (AABB.isEmpty(dirtyRenderBounds)) {
-          this.renderQueue = [];
+          this.renderQueue.length = 0;
           return;
         }
 
@@ -325,15 +301,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.restoreStack.length = 0;
     });
 
-    renderingService.hooks.render.tap(
-      CanvasRendererPlugin.tag,
-      (object: DisplayObject) => {
-        if (!this.clearFullScreen) {
-          // render at the end of frame
-          this.renderQueue.push(object);
-        }
-      },
-    );
+    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (objects) => {
+      if (!this.clearFullScreen) {
+        // render at the end of frame
+        this.renderQueue.push(...objects);
+      }
+    });
   }
 
   private clearRect(
@@ -349,6 +322,29 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     if (background) {
       context.fillStyle = background;
       context.fillRect(x, y, width, height);
+    }
+  }
+
+  private renderSceneGraph(
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    runtime: GlobalRuntime,
+  ) {
+    if (object.isVisible() && !object.isCulled()) {
+      this.renderDisplayObject(
+        object,
+        context,
+        this.context,
+        this.restoreStack,
+        runtime,
+      );
+    }
+
+    const sorted = object.sortable.sorted || object.childNodes;
+
+    const length = sorted.length;
+    for (let i = 0; i < length; i++) {
+      this.renderSceneGraph(sorted[i] as DisplayObject, context, runtime);
     }
   }
 
