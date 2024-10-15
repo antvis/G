@@ -768,7 +768,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     this.sync(element, transform);
 
-    transform.computed = true;
     return worldTransform;
   }
 
@@ -1114,6 +1113,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       transform.dirtyFlag = false;
     }
+
+    transform.computed = true;
   }
 
   /**
