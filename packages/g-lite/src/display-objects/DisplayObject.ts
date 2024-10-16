@@ -22,7 +22,6 @@ import {
   formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
-  kebabize,
   rad2deg,
 } from '../utils';
 import type { CustomElement } from './CustomElement';
@@ -47,8 +46,6 @@ const mutationEvent: MutationEvent = new MutationEvent(
   null,
   null,
 );
-
-const DATASET_PREFIX = 'data-';
 
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
@@ -120,30 +117,6 @@ export class DisplayObject<
 
     // start to process attributes
     this.initAttributes(this.config.style);
-
-    if (runtime.enableDataset) {
-      this.dataset = new Proxy<any>(
-        {},
-        {
-          get: (target, name: string) => {
-            const formattedName = `${DATASET_PREFIX}${kebabize(name)}`;
-            if (target[formattedName] !== undefined) {
-              return target[formattedName];
-            }
-            return this.getAttribute(formattedName as keyof StyleProps);
-          },
-          set: (_, prop, value) => {
-            this.setAttribute(
-              `${DATASET_PREFIX}${kebabize(
-                prop as string,
-              )}` as keyof StyleProps,
-              value,
-            );
-            return true;
-          },
-        },
-      );
-    }
 
     if (runtime.enableStyleSyntax) {
       this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
