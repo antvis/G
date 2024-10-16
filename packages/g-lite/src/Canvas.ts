@@ -404,9 +404,9 @@ export class Canvas extends EventTarget implements ICanvas {
     const root = this.getRoot();
     this.unmountChildren(root);
 
-    if (cleanUp && !fastCleanExistingCanvas) {
+    if (cleanUp) {
       // destroy Document
-      this.document.destroy();
+      if (!fastCleanExistingCanvas) this.document.destroy();
       this.getEventService().destroy();
     }
 
