@@ -387,8 +387,9 @@ export class Canvas extends EventTarget implements ICanvas {
    * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
    */
   destroy(cleanUp = true, skipTriggerEvent?: boolean) {
+    const { fastCleanExistingCanvas } = this.getConfig();
     if (skipTriggerEvent === undefined)
-      skipTriggerEvent = this.getConfig().fastCleanExistingCanvas;
+      skipTriggerEvent = fastCleanExistingCanvas;
 
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
@@ -403,7 +404,7 @@ export class Canvas extends EventTarget implements ICanvas {
     const root = this.getRoot();
     this.unmountChildren(root);
 
-    if (cleanUp) {
+    if (cleanUp && !fastCleanExistingCanvas) {
       // destroy Document
       this.document.destroy();
       this.getEventService().destroy();
