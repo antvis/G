@@ -134,8 +134,8 @@ export class Canvas extends EventTarget implements ICanvas {
    * rAF in auto rendering
    */
   private frameId?: number;
-
   private inited = false;
+  private destroyed = false;
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
 
@@ -168,6 +168,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
+      fastCleanExistingCanvas,
       supportsMutipleCanvasesInOneContainer,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
@@ -177,7 +178,7 @@ export class Canvas extends EventTarget implements ICanvas {
     } = config;
 
     if (!supportsMutipleCanvasesInOneContainer) {
-      cleanExistedCanvas(container, this);
+      cleanExistedCanvas(container, this, fastCleanExistingCanvas);
     }
 
     let canvasWidth = width;
@@ -245,6 +246,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsCSSTransform,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
+      fastCleanExistingCanvas,
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight, renderer.clipSpaceNearZ);
@@ -384,7 +386,11 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
    */
-  destroy(cleanUp = true, skipTriggerEvent = false) {
+  destroy(cleanUp = true, skipTriggerEvent?: boolean) {
+    const { fastCleanExistingCanvas } = this.getConfig();
+    if (skipTriggerEvent === undefined)
+      skipTriggerEvent = fastCleanExistingCanvas;
+
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
@@ -400,7 +406,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
     if (cleanUp) {
       // destroy Document
-      this.document.destroy();
+      if (!fastCleanExistingCanvas) this.document.destroy();
       this.getEventService().destroy();
     }
 
@@ -415,6 +421,8 @@ export class Canvas extends EventTarget implements ICanvas {
       this.context.rBushRoot = null;
       this.context.renderingContext.root = null;
     }
+
+    this.destroyed = true;
 
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
@@ -509,6 +517,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private run() {
     const tick = (time: number, frame?: XRFrame) => {
+      if (this.destroyed) return this.cancelAnimationFrame(this.frameId);
       this.render(frame);
       this.frameId = this.requestAnimationFrame(tick);
     };
@@ -564,13 +573,13 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private initRenderingService(
     renderer: IRenderer,
-    firstContentfullPaint = false,
+    firstContentfulPaint = false,
     async = false,
   ) {
     this.context.renderingService.init(() => {
       this.inited = true;
 
-      if (firstContentfullPaint) {
+      if (firstContentfulPaint) {
         if (async) {
           this.requestAnimationFrame(() => {
             this.dispatchEvent(new CustomEvent(CanvasEvent.READY));
@@ -586,7 +595,7 @@ export class Canvas extends EventTarget implements ICanvas {
         this.resolveReadyPromise();
       }
 
-      if (!firstContentfullPaint) {
+      if (!firstContentfulPaint) {
         this.getRoot().forEach((node) => {
           const renderable = (node as Element).renderable;
           if (renderable) {
@@ -649,11 +658,13 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     if (this.inited) {
-      if (parent.isMutationObserved) {
-        parent.dispatchEvent(unmountedEvent);
-      } else {
-        unmountedEvent.target = parent;
-        this.dispatchEvent(unmountedEvent, true);
+      if (!this.getConfig().fastCleanExistingCanvas) {
+        if (parent.isMutationObserved) {
+          parent.dispatchEvent(unmountedEvent);
+        } else {
+          unmountedEvent.target = parent;
+          this.dispatchEvent(unmountedEvent, true);
+        }
       }
 
       // skip document.documentElement

@@ -68,10 +68,6 @@ export class Element<
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
 {
-  constructor() {
-    super();
-  }
-
   /**
    * Unique id.
    */
@@ -84,6 +80,7 @@ export class Element<
     renderBoundsDirty: true,
     dirtyRenderBounds: undefined,
     dirty: false,
+    rendered: false,
   };
 
   cullable: Cullable = {
@@ -97,6 +94,7 @@ export class Element<
     dirtyFlag: false,
     localDirtyFlag: false,
     frozen: false,
+    computed: false,
     localPosition: [0, 0, 0],
     localRotation: [0, 0, 0, 1],
     localScale: [1, 1, 1],
@@ -224,7 +222,6 @@ export class Element<
     }
 
     runtime.sceneGraphService.attach(child, this, index);
-
     if (this.ownerDocument?.defaultView) {
       this.ownerDocument.defaultView.mountChildren(child);
     }
@@ -462,7 +459,7 @@ export class Element<
     this.remove();
 
     // remove event listeners
-    this.emitter.removeAllListeners();
+    this.emitter?.removeAllListeners();
 
     this.destroyed = true;
   }
@@ -538,31 +535,12 @@ export class Element<
         filter: unsetKeywordValue,
         shadowType: unsetKeywordValue,
       }
-    : null;
+    : {};
 
   /**
    * Renderers will use these used values.
    */
-  parsedStyle: ParsedStyleProps = {
-    // opacity: '',
-    // fillOpacity: '',
-    // strokeOpacity: '',
-    // transformOrigin: '',
-    // visibility: '',
-    // pointerEvents: '',
-    // lineWidth: '',
-    // lineCap: '',
-    // lineJoin: '',
-    // increasedLineWidthForHitTesting: '',
-    // fontSize: '',
-    // fontFamily: '',
-    // fontStyle: '',
-    // fontWeight: '',
-    // fontVariant: '',
-    // textAlign: '',
-    // textBaseline: '',
-    // textTransform: '',
-  } as ParsedStyleProps;
+  parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap

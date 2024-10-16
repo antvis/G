@@ -38,6 +38,83 @@ export interface EventPosition {
   y: number;
 }
 
+export type TransformType =
+  | 'matrix'
+  | 'matrix3d'
+  | 'rotate'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
+  | 'rotate3d'
+  | 'scale'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
+  | 'scale3d'
+  | 'skew'
+  | 'skewX'
+  | 'skewY'
+  | 'translate'
+  | 'translateX'
+  | 'translateY'
+  | 'translateZ'
+  | 'translate3d';
+export type TransformScale = ['scale', number, number?];
+export type TransformScaleX = ['scaleX', number];
+export type TransformScaleY = ['scaleY', number];
+export type TransformScaleZ = ['scaleZ', number];
+export type TransformScale3d = ['scale3d', number, number, number];
+export type TransformTranslate = ['translate', number, number?];
+export type TransformTranslateX = ['translateX', number];
+export type TransformTranslateY = ['translateY', number];
+export type TransformTranslateZ = ['translateZ', number];
+export type TransformTranslate3d = ['translate3d', number, number, number];
+export type TransformRotate = ['rotate', number];
+export type TransformRotateX = ['rotateX', number];
+export type TransformRotateY = ['rotateY', number];
+export type TransformRotateZ = ['rotateZ', number];
+export type TransformRotate3d = ['rotate3d', number, number, number, number?];
+export type TransformSkew = ['skew', number, number?];
+export type TransformSkewX = ['skewX', number];
+export type TransformSkewY = ['skewY', number];
+// prettier-ignore
+export type TransformMatrix = [
+  'matrix',
+  number, number, // a, b
+  number, number, // c, d
+  number, number, // tx, ty
+];
+// prettier-ignore
+export type TransformMatrix3d = [
+  'matrix3d',
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+];
+
+export type TransformArray = (
+  | TransformScale
+  | TransformScaleX
+  | TransformScaleY
+  | TransformScaleZ
+  | TransformScale3d
+  | TransformTranslate
+  | TransformTranslateX
+  | TransformTranslateY
+  | TransformTranslateZ
+  | TransformTranslate3d
+  | TransformRotate
+  | TransformRotateX
+  | TransformRotateY
+  | TransformRotateZ
+  | TransformRotate3d
+  | TransformSkew
+  | TransformSkewX
+  | TransformSkewY
+  | TransformMatrix
+  | TransformMatrix3d
+)[];
 export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
 export type TextOverflow = 'clip' | 'ellipsis' | string;
 export type TextDecorationLine = string | 'none';
@@ -53,7 +130,7 @@ export interface BaseStyleProps {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
    */
-  transform?: string;
+  transform?: string | TransformArray;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
@@ -338,11 +415,6 @@ export interface RendererConfig {
   enableDirtyRectangleRendering: boolean;
 
   /**
-   * enable debugging dirty rectangle, Canvas will trigger CanvasEvent.DIRTY_RECTANGLE
-   */
-  enableDirtyRectangleRenderingDebug: boolean;
-
-  /**
    * enable auto rendering
    */
   enableAutoRendering: boolean;
@@ -351,6 +423,21 @@ export interface RendererConfig {
    * Canvas / SVG / Canvaskit should listen to camera changed events, while WebGL / WebGPU will apply this effect in shader.
    */
   enableSizeAttenuation: boolean;
+
+  /**
+   * enable image smoothing, default is true.
+   * only available in Canvas2D.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/imageSmoothingEnabled
+   */
+  imageSmoothingEnabled: boolean;
+
+  /**
+   * image smoothing quality, default is 'high'.
+   * only available in Canvas2D.
+   * need to enable imageSmoothingEnabled first.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/imageSmoothingQuality
+   */
+  imageSmoothingQuality: ImageSmoothingQuality;
 
   // plugins:
 }
@@ -479,6 +566,12 @@ export interface CanvasConfig {
    * One container can have multiple canvases inside.
    */
   supportsMutipleCanvasesInOneContainer?: boolean;
+
+  /**
+   * 如果当前实例化 Canvas 所用容器已存在 Canvas 实例，执行快速清理
+   * * 该过程不会触发事件，而是直接释放资源
+   */
+  fastCleanExistingCanvas?: boolean;
 
   /**
    * 画布宽度

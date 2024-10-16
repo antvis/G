@@ -126,14 +126,6 @@ export interface PropertyMetadata {
   syntax?: string;
 }
 
-export interface PropertyParseOptions {
-  skipUpdateAttribute: boolean;
-  skipParse: boolean;
-  forceUpdateGeometry: boolean;
-  usedAttributes: string[];
-  memoize: boolean;
-}
-
 export interface StyleValueRegistry {
   recalc: (displayObject: DisplayObject) => void;
   updateSizeAttenuation: (displayObject: DisplayObject, zoom: number) => void;
@@ -145,7 +137,11 @@ export interface StyleValueRegistry {
   processProperties: (
     object: DisplayObject,
     attributes: BaseStyleProps,
-    options?: Partial<PropertyParseOptions>,
+    skipUpdateAttribute?: boolean,
+    skipParse?: boolean,
+    forceUpdateGeometry?: boolean,
+    usedAttributes?: string[],
+    memoize?: boolean,
   ) => void;
 
   parseProperty: (

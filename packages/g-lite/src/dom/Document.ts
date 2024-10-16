@@ -1,13 +1,13 @@
-import { runtime } from '../global-runtime';
+import { isFunction } from '@antv/util';
 import { BUILT_IN_PROPERTIES } from '../css';
-import { Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects';
+import { Group, Text } from '../display-objects';
+import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   ERROR_MSG_USE_DOCUMENT_ELEMENT,
-  isFunction,
 } from '../utils';
 import type {
   DisplayObjectConfig,

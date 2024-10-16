@@ -1,12 +1,12 @@
-import { Circle } from '@antv/g';
+import { Circle, runtime } from '@antv/g';
+
+runtime.enableCSSParsing = false;
 
 export async function circles(context) {
-  const { canvas, container } = context;
+  const { canvas } = context;
   await canvas.ready;
 
-  canvas.addEventListener('rerender', () => {
-    console.log('rerender');
-  });
+  console.time('render');
 
   for (let i = 0; i < 10000; i++) {
     const circle = new Circle({
@@ -22,16 +22,11 @@ export async function circles(context) {
     canvas.appendChild(circle);
   }
 
-  // canvas.appendChild(
-  //   new Circle({
-  //     style: {
-  //       cx: 320,
-  //       cy: 320,
-  //       r: 100,
-  //       fill: '#1890FF',
-  //       stroke: '#F04864',
-  //       lineWidth: 4,
-  //     },
-  //   }),
-  // );
+  canvas.addEventListener(
+    'rerender',
+    () => {
+      console.timeEnd('render');
+    },
+    { once: true },
+  );
 }

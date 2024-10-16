@@ -324,12 +324,12 @@ export class SVGRendererPlugin implements RenderingPlugin {
       resetPatternCounter();
     });
 
-    renderingService.hooks.render.tap(
-      SVGRendererPlugin.tag,
-      (object: DisplayObject) => {
-        this.renderQueue.push(object);
-      },
-    );
+    renderingService.hooks.render.tap(SVGRendererPlugin.tag, (objects) => {
+      const $length = objects.length;
+      for (let i = 0; i < $length; i++) {
+        this.renderQueue.push(objects[i]);
+      }
+    });
 
     renderingService.hooks.beginFrame.tap(SVGRendererPlugin.tag, () => {
       const { document: doc } = this.context.config;
@@ -503,7 +503,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      // console.log(name, usedName, computedStyle, parsedStyle);
       const computedValue = enableCSSParsing
         ? computedStyle[name]
         : parsedStyle[name];

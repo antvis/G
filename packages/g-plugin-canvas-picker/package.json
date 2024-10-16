@@ -42,7 +42,7 @@
     "@antv/g-math": "workspace:*",
     "@antv/g-plugin-canvas-path-generator": "workspace:*",
     "@antv/g-plugin-canvas-renderer": "workspace:*",
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

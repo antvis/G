@@ -6,6 +6,7 @@ import type {
   GlobalRuntime,
   CanvasConfig,
   ContextService,
+  RendererConfig,
 } from '@antv/g-lite';
 import { RenderReason, isBrowser, setDOMSize } from '@antv/g-lite';
 import { isString } from '@antv/util';
@@ -61,7 +62,13 @@ export class Canvas2DContextService
     }
 
     this.context = this.$canvas.getContext('2d');
+
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
+
+    applyCanvasImageSmoothingConfig(
+      this.context,
+      this.canvasConfig.renderer.getConfig(),
+    );
   }
 
   getContext() {
@@ -128,5 +135,18 @@ export class Canvas2DContextService
       type,
       encoderOptions,
     );
+  }
+}
+
+function applyCanvasImageSmoothingConfig(
+  context: CanvasRenderingContext2D,
+  config: RendererConfig,
+) {
+  const { imageSmoothingEnabled, imageSmoothingQuality } = config;
+  if (imageSmoothingEnabled !== undefined) {
+    context.imageSmoothingEnabled = imageSmoothingEnabled;
+  }
+  if (imageSmoothingQuality !== undefined) {
+    context.imageSmoothingQuality = imageSmoothingQuality;
   }
 }

@@ -3,10 +3,6 @@ import { Point } from '../shapes/Point';
 import { ERROR_MSG_METHOD_NOT_IMPLEMENTED } from '../utils';
 import type { IEventTarget } from './interfaces';
 
-export function isFederatedEvent(value: any): value is FederatedEvent {
-  return !!(value as FederatedEvent).type;
-}
-
 /**
  * An DOM-compatible synthetic event implementation that is "forwarded" on behalf of an original
  * FederatedEvent or native Event.

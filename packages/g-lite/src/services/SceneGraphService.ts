@@ -1,5 +1,6 @@
-import { isNil } from '@antv/util';
+import { isNumber } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
+import type { ReadonlyVec3 } from 'gl-matrix';
 import { SortReason, Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
 import type { Element } from '../dom';
@@ -36,13 +37,65 @@ const reparentEvent = new MutationEvent(
   '',
 );
 
+const EPSILON = 0.000001;
+
+/**
+ * an optimized version of gl-matrix's equals
+ */
+function equals(a: ReadonlyVec3, b: ReadonlyVec3): boolean {
+  const a0 = a[0],
+    a1 = a[1],
+    a2 = a[2];
+  const b0 = b[0],
+    b1 = b[1],
+    b2 = b[2];
+
+  if (a0 === b0 && a1 === b1 && a2 === b2) return true;
+
+  return (
+    Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+    Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+    Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2))
+  );
+}
+// Object pooling
+/** do not modify this objects */
+const $vec2Zero = vec2.create();
+/** do not modify this objects */
+const $vec3Zero = vec3.create();
+/** do not modify this objects */
+const $vec3One = vec3.fromValues(1, 1, 1);
+/** do not modify this objects */
+const $mat4Identity = mat4.create();
+
+/** shared objects */
+const $vec2 = vec2.create();
+/** shared objects */
+const $vec3 = vec3.create();
+/** shared objects */
+const $mat4 = mat4.create();
+/** shared objects */
+const $quat = quat.create();
+
+const $setLocalTransform_1 = vec3.create();
+const $setLocalTransform_2 = quat.create();
+const $setLocalTransform_3 = vec3.create();
+const $setLocalPosition = vec3.create();
+const $setPosition_1 = vec3.create();
+const $setPosition_ParentInvertMatrix = mat4.create();
+const $setEulerAngles_InvParentRot = quat.create();
+const $rotateLocal = quat.create();
+const $rotate_ParentInvertRotation = quat.create();
+
+const $triggerPendingEvents_detail = { affectChildren: true };
+
 /**
  * update transform in scene graph
  *
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 export class DefaultSceneGraphService implements SceneGraphService {
-  private pendingEvents = [];
+  private pendingEvents = new Map<INode, boolean>();
   private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
 
   constructor(private runtime: GlobalRuntime) {}
@@ -78,14 +131,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
 
     child.parentNode = parent;
-    if (!isNil(index)) {
-      child.parentNode.childNodes.splice(
-        index,
-        0,
-        child as unknown as INode & IChildNode,
-      );
+
+    if (isNumber(index)) {
+      parent.childNodes.splice(index, 0, child as unknown as IChildNode);
     } else {
-      child.parentNode.childNodes.push(child as unknown as INode & IChildNode);
+      parent.childNodes.push(child as unknown as IChildNode);
     }
 
     // parent needs re-sort
@@ -97,16 +147,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
       if (sortable.dirtyChildren.indexOf(child) === -1) {
         sortable.dirtyChildren.push(child);
       }
-      // if (sortable) {
+
       // only child has z-Index
       sortable.dirty = true;
       sortable.dirtyReason = SortReason.ADDED;
     }
 
-    // this.updateGraphDepth(child);
-
     const transform = (child as unknown as Element).transformable;
-    if (transform) {
+    // @ts-ignore
+    if (child?.renderable.rendered && transform) {
       this.dirtifyWorld(child, transform);
     }
 
@@ -122,17 +171,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
   detach<C extends INode>(child: C) {
     if (child.parentNode) {
       const transform = (child as unknown as Element).transformable;
-      // if (transform) {
-      //   const worldTransform = this.getWorldTransform(child, transform);
-      //   mat4.getScaling(transform.localScale, worldTransform);
-      //   mat4.getTranslation(transform.localPosition, worldTransform);
-      //   mat4.getRotation(transform.localRotation, worldTransform);
-      //   transform.localDirtyFlag = true;
-      // }
-
       // parent needs re-sort
       const sortable = (child.parentNode as Element).sortable;
-      // if (sortable) {
       if (
         sortable?.sorted?.length ||
         (child as unknown as Element).style?.zIndex
@@ -183,9 +223,6 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     const originVec = transform.origin;
 
-    // const delta = vec3.subtract(vec3.create(), origin, originVec);
-    // vec3.add(transform.localPosition, transform.localPosition, delta);
-
     // update origin
     originVec[0] = origin[0];
     originVec[1] = origin[1];
@@ -196,116 +233,85 @@ export class DefaultSceneGraphService implements SceneGraphService {
   /**
    * rotate in world space
    */
-  rotate = (() => {
-    const parentInvertRotation = quat.create();
-    return (
-      element: INode,
-      degrees: vec3 | number,
-      y = 0,
-      z = 0,
-      dirtify = true,
-    ) => {
-      if (typeof degrees === 'number') {
-        degrees = vec3.fromValues(degrees, y, z);
-      }
+  rotate(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
+    }
 
-      const transform = (element as Element).transformable;
+    const transform = (element as Element).transformable;
 
-      if (
-        element.parentNode === null ||
-        !(element.parentNode as Element).transformable
-      ) {
-        this.rotateLocal(element, degrees);
-      } else {
-        const rotation = quat.create();
-        quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
-        const rot = this.getRotation(element);
-        const parentRot = this.getRotation(element.parentNode);
+    if (
+      element.parentNode === null ||
+      !(element.parentNode as Element).transformable
+    ) {
+      this.rotateLocal(element, degrees);
+    } else {
+      const rotation = $quat;
+      quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
+      const rot = this.getRotation(element);
+      const parentRot = this.getRotation(element.parentNode);
 
-        quat.copy(parentInvertRotation, parentRot);
-        quat.invert(parentInvertRotation, parentInvertRotation);
-        quat.multiply(rotation, parentInvertRotation, rotation);
-        quat.multiply(transform.localRotation, rotation, rot);
-        quat.normalize(transform.localRotation, transform.localRotation);
+      quat.copy($rotate_ParentInvertRotation, parentRot);
+      quat.invert($rotate_ParentInvertRotation, $rotate_ParentInvertRotation);
+      quat.multiply(rotation, $rotate_ParentInvertRotation, rotation);
+      quat.multiply(transform.localRotation, rotation, rot);
+      quat.normalize(transform.localRotation, transform.localRotation);
 
-        if (dirtify) {
-          this.dirtifyLocal(element, transform);
-        }
-      }
-    };
-  })();
+      this.dirtifyLocal(element, transform);
+    }
+  }
 
   /**
    * rotate in local space
    * @see @see https://docs.microsoft.com/en-us/windows/win32/api/directxmath/nf-directxmath-xmquaternionrotationrollpitchyaw
    */
-  rotateLocal = (() => {
-    const rotation = quat.create();
-    return (
-      element: INode,
-      degrees: vec3 | number,
-      y = 0,
-      z = 0,
-      dirtify = true,
-    ) => {
-      if (typeof degrees === 'number') {
-        degrees = vec3.fromValues(degrees, y, z);
-      }
-      const transform = (element as Element).transformable;
-      quat.fromEuler(rotation, degrees[0], degrees[1], degrees[2]);
-      quat.mul(transform.localRotation, transform.localRotation, rotation);
+  rotateLocal(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
+    }
+    const transform = (element as Element).transformable;
+    quat.fromEuler($rotateLocal, degrees[0], degrees[1], degrees[2]);
+    quat.mul(transform.localRotation, transform.localRotation, $rotateLocal);
 
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
-    };
-  })();
+    this.dirtifyLocal(element, transform);
+  }
 
   /**
    * set euler angles(degrees) in world space
    */
-  setEulerAngles = (() => {
-    const invParentRot = quat.create();
+  setEulerAngles(element: INode, degrees: vec3 | number, y = 0, z = 0) {
+    if (typeof degrees === 'number') {
+      degrees = vec3.fromValues(degrees, y, z);
+    }
 
-    return (
-      element: INode,
-      degrees: vec3 | number,
-      y = 0,
-      z = 0,
-      dirtify = true,
-    ) => {
-      if (typeof degrees === 'number') {
-        degrees = vec3.fromValues(degrees, y, z);
-      }
+    const transform = (element as Element).transformable;
 
-      const transform = (element as Element).transformable;
+    if (
+      element.parentNode === null ||
+      !(element.parentNode as Element).transformable
+    ) {
+      this.setLocalEulerAngles(element, degrees);
+    } else {
+      quat.fromEuler(
+        transform.localRotation,
+        degrees[0],
+        degrees[1],
+        degrees[2],
+      );
+      const parentRotation = this.getRotation(element.parentNode);
+      quat.copy(
+        $setEulerAngles_InvParentRot,
+        quat.invert($quat, parentRotation),
+      );
+      quat.mul(
+        transform.localRotation,
+        transform.localRotation,
+        $setEulerAngles_InvParentRot,
+      );
 
-      if (
-        element.parentNode === null ||
-        !(element.parentNode as Element).transformable
-      ) {
-        this.setLocalEulerAngles(element, degrees);
-      } else {
-        quat.fromEuler(
-          transform.localRotation,
-          degrees[0],
-          degrees[1],
-          degrees[2],
-        );
-        const parentRotation = this.getRotation(element.parentNode);
-        quat.copy(invParentRot, quat.invert(quat.create(), parentRotation));
-        quat.mul(
-          transform.localRotation,
-          transform.localRotation,
-          invParentRot,
-        );
-
-        if (dirtify) {
-          this.dirtifyLocal(element, transform);
-        }
-      }
-    };
-  })();
+      this.dirtifyLocal(element, transform);
+    }
+  }
 
   /**
    * set euler angles(degrees) in local space
@@ -336,29 +342,18 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * translateLocal(vec3(x, y, z))
    * ```
    */
-  translateLocal = (() => {
-    return (
-      element: INode,
-      translation: vec3 | number,
-      y = 0,
-      z = 0,
-      dirtify = true,
-    ) => {
-      if (typeof translation === 'number') {
-        translation = vec3.fromValues(translation, y, z);
-      }
-      const transform = (element as Element).transformable;
-      if (vec3.equals(translation, vec3.create())) {
-        return;
-      }
-      vec3.transformQuat(translation, translation, transform.localRotation);
-      vec3.add(transform.localPosition, transform.localPosition, translation);
+  translateLocal(element: INode, translation: vec3 | number, y = 0, z = 0) {
+    if (typeof translation === 'number') {
+      translation = vec3.fromValues(translation, y, z);
+    }
+    const transform = (element as Element).transformable;
+    if (equals(translation, $vec3Zero)) return;
 
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
-    };
-  })();
+    vec3.transformQuat(translation, translation, transform.localRotation);
+    vec3.add(transform.localPosition, transform.localPosition, translation);
+
+    this.dirtifyLocal(element, transform);
+  }
 
   /**
    * move to position in world space
@@ -366,97 +361,92 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * 对应 g 原版的 move/moveTo
    * @see https://github.com/antvis/g/blob/master/packages/g-base/src/abstract/element.ts#L684-L689
    */
-  setPosition = (() => {
-    const parentInvertMatrix = mat4.create();
-    const tmpPosition = vec3.create();
+  setPosition(element: INode, position: vec3 | vec2) {
+    const transform = (element as Element).transformable;
 
-    return (element: INode, position: vec3 | vec2, dirtify = true) => {
-      const transform = (element as Element).transformable;
+    $setPosition_1[0] = position[0];
+    $setPosition_1[1] = position[1];
+    $setPosition_1[2] = position[2] ?? 0;
 
-      tmpPosition[0] = position[0];
-      tmpPosition[1] = position[1];
-      tmpPosition[2] = position[2] || 0;
+    if (equals(this.getPosition(element), $setPosition_1)) {
+      return;
+    }
 
-      if (vec3.equals(this.getPosition(element), tmpPosition)) {
-        return;
-      }
+    vec3.copy(transform.position, $setPosition_1);
 
-      vec3.copy(transform.position, tmpPosition);
+    if (
+      element.parentNode === null ||
+      !(element.parentNode as Element).transformable
+    ) {
+      vec3.copy(transform.localPosition, $setPosition_1);
+    } else {
+      const parentTransform = (element.parentNode as Element).transformable;
+      mat4.copy(
+        $setPosition_ParentInvertMatrix,
+        parentTransform.worldTransform,
+      );
+      mat4.invert(
+        $setPosition_ParentInvertMatrix,
+        $setPosition_ParentInvertMatrix,
+      );
+      vec3.transformMat4(
+        transform.localPosition,
+        $setPosition_1,
+        $setPosition_ParentInvertMatrix,
+      );
+    }
 
-      if (
-        element.parentNode === null ||
-        !(element.parentNode as Element).transformable
-      ) {
-        vec3.copy(transform.localPosition, tmpPosition);
-      } else {
-        const parentTransform = (element.parentNode as Element).transformable;
-        mat4.copy(parentInvertMatrix, parentTransform.worldTransform);
-        mat4.invert(parentInvertMatrix, parentInvertMatrix);
-        vec3.transformMat4(
-          transform.localPosition,
-          tmpPosition,
-          parentInvertMatrix,
-        );
-      }
-
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
-    };
-  })();
+    this.dirtifyLocal(element, transform);
+  }
 
   /**
    * move to position in local space
    */
-  setLocalPosition = (() => {
-    const tmpPosition = vec3.create();
-
-    return (element: INode, position: vec3 | vec2, dirtify = true) => {
-      const transform = (element as Element).transformable;
-
-      tmpPosition[0] = position[0];
-      tmpPosition[1] = position[1];
-      tmpPosition[2] = position[2] || 0;
-
-      if (vec3.equals(transform.localPosition, tmpPosition)) {
-        return;
-      }
-
-      vec3.copy(transform.localPosition, tmpPosition);
-      if (dirtify) {
-        this.dirtifyLocal(element, transform);
-      }
-    };
-  })();
-
-  /**
-   * scale in local space
-   */
-  scaleLocal(element: INode, scaling: vec3 | vec2, dirtify = true) {
+  setLocalPosition(element: INode, position: vec3 | vec2, dirtify = true) {
     const transform = (element as Element).transformable;
-    vec3.multiply(
-      transform.localScale,
-      transform.localScale,
-      vec3.fromValues(scaling[0], scaling[1], scaling[2] || 1),
-    );
+
+    $setLocalPosition[0] = position[0];
+    $setLocalPosition[1] = position[1];
+    $setLocalPosition[2] = position[2] ?? 0;
+
+    if (equals(transform.localPosition, $setLocalPosition)) {
+      return;
+    }
+
+    vec3.copy(transform.localPosition, $setLocalPosition);
     if (dirtify) {
       this.dirtifyLocal(element, transform);
     }
   }
 
+  /**
+   * scale in local space
+   */
+  scaleLocal(element: INode, scaling: vec3 | vec2) {
+    const transform = (element as Element).transformable;
+    vec3.multiply(
+      transform.localScale,
+      transform.localScale,
+      vec3.set($vec3, scaling[0], scaling[1], scaling[2] ?? 1),
+    );
+    this.dirtifyLocal(element, transform);
+  }
+
   setLocalScale(element: INode, scaling: vec3 | vec2, dirtify = true) {
     const transform = (element as Element).transformable;
-    const updatedScaling = vec3.fromValues(
+
+    vec3.set(
+      $vec3,
       scaling[0],
       scaling[1],
-      scaling[2] || transform.localScale[2],
+      scaling[2] ?? transform.localScale[2],
     );
 
-    if (vec3.equals(updatedScaling, transform.localScale)) {
+    if (equals($vec3, transform.localScale)) {
       return;
     }
 
-    vec3.copy(transform.localScale, updatedScaling);
+    vec3.copy(transform.localScale, $vec3);
     if (dirtify) {
       this.dirtifyLocal(element, transform);
     }
@@ -474,65 +464,45 @@ export class DefaultSceneGraphService implements SceneGraphService {
    * 对应 g 原版的 translate 2D
    * @see https://github.com/antvis/g/blob/master/packages/g-base/src/abstract/element.ts#L665-L676
    */
-  translate = (() => {
-    const zeroVec3 = vec3.create();
-    const tmpVec3 = vec3.create();
-    const tr = vec3.create();
+  translate(element: INode, translation: vec3 | number, y = 0, z = 0) {
+    if (typeof translation === 'number') {
+      translation = vec3.set($vec3, translation, y, z);
+    }
+    if (equals(translation, $vec3Zero)) return;
 
-    return (
-      element: INode,
-      translation: vec3 | number,
-      y = 0,
-      z = 0,
-      dirtify = true,
-    ) => {
-      if (typeof translation === 'number') {
-        translation = vec3.set(tmpVec3, translation, y, z);
-      }
-      if (vec3.equals(translation, zeroVec3)) {
-        return;
-      }
+    vec3.add($vec3, this.getPosition(element), translation);
 
-      vec3.add(tr, this.getPosition(element), translation);
+    this.setPosition(element, $vec3);
+  }
 
-      this.setPosition(element, tr, dirtify);
-    };
-  })();
+  setRotation(
+    element: INode,
+    rotation: quat | number,
+    y?: number,
+    z?: number,
+    w?: number,
+  ) {
+    const transform = (element as Element).transformable;
+    if (typeof rotation === 'number') {
+      rotation = quat.fromValues(rotation, y, z, w);
+    }
 
-  setRotation = () => {
-    const parentInvertRotation = quat.create();
-    return (
-      element: INode,
-      rotation: quat | number,
-      y?: number,
-      z?: number,
-      w?: number,
-      dirtify = true,
-    ) => {
-      const transform = (element as Element).transformable;
-      if (typeof rotation === 'number') {
-        rotation = quat.fromValues(rotation, y, z, w);
-      }
+    if (
+      element.parentNode === null ||
+      !(element.parentNode as Element).transformable
+    ) {
+      this.setLocalRotation(element, rotation);
+    } else {
+      const parentRot = this.getRotation(element.parentNode);
 
-      if (
-        element.parentNode === null ||
-        !(element.parentNode as Element).transformable
-      ) {
-        this.setLocalRotation(element, rotation);
-      } else {
-        const parentRot = this.getRotation(element.parentNode);
+      quat.copy($quat, parentRot);
+      quat.invert($quat, $quat);
+      quat.multiply(transform.localRotation, $quat, rotation);
+      quat.normalize(transform.localRotation, transform.localRotation);
 
-        quat.copy(parentInvertRotation, parentRot);
-        quat.invert(parentInvertRotation, parentInvertRotation);
-        quat.multiply(transform.localRotation, parentInvertRotation, rotation);
-        quat.normalize(transform.localRotation, transform.localRotation);
-
-        if (dirtify) {
-          this.dirtifyLocal(element, transform);
-        }
-      }
-    };
-  };
+      this.dirtifyLocal(element, transform);
+    }
+  }
 
   setLocalRotation(
     element: INode,
@@ -543,7 +513,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     dirtify = true,
   ) {
     if (typeof rotation === 'number') {
-      rotation = quat.fromValues(rotation, y, z, w);
+      rotation = quat.set($quat, rotation, y, z, w);
     }
     const transform = (element as Element).transformable;
     quat.copy(transform.localRotation, rotation);
@@ -552,21 +522,57 @@ export class DefaultSceneGraphService implements SceneGraphService {
     }
   }
 
-  setLocalSkew(element: INode, skew: vec2 | number, y?: number) {
+  setLocalSkew(
+    element: INode,
+    skew: vec2 | number,
+    y?: number,
+    dirtify = true,
+  ) {
     if (typeof skew === 'number') {
-      skew = vec2.fromValues(skew, y);
+      skew = vec2.set($vec2, skew, y);
     }
     const transform = (element as Element).transformable;
     vec2.copy(transform.localSkew, skew);
-    this.dirtifyLocal(element, transform);
+    if (dirtify) {
+      this.dirtifyLocal(element, transform);
+    }
   }
 
   dirtifyLocal(element: INode, transform: Transform) {
+    // 会在首屏渲染前统一标记
+    // 或者在调用 API 获取属性时标记
+    if ((element as Element).renderable.rendered) return;
+
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
         this.dirtifyWorld(element, transform);
       }
+    }
+  }
+
+  /**
+   * 将个场景图标记为 dirty。用于优化首屏性能，首屏渲染前的 appendChild 操作不会单独标记 dirty，而是等到首屏渲染时一次性标记
+   */
+  dirtifyEntireSceneGraph(element: INode) {
+    const transform = (element as Element).transformable;
+    if (transform) {
+      transform.frozen = false;
+      transform.dirtyFlag = true;
+      transform.localDirtyFlag = true;
+    }
+    const renderable = (element as Element).renderable;
+    if (renderable) {
+      renderable.renderBoundsDirty = true;
+      renderable.boundsDirty = true;
+      renderable.dirty = true;
+    }
+
+    if (!this.pendingEvents.has(element)) this.pendingEvents.set(element, true);
+
+    const length = element.childNodes.length;
+    for (let i = 0; i < length; i++) {
+      this.dirtifyEntireSceneGraph(element.childNodes[i]);
     }
   }
 
@@ -579,41 +585,50 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.dirtifyToRoot(element, true);
   }
 
-  triggerPendingEvents() {
-    const set = new Set<number>();
+  eventEntitySet = new Set<number>();
 
-    const trigger = (element, detail) => {
-      if (element.isConnected && !set.has(element.entity)) {
-        this.boundsChangedEvent.detail = detail;
-        this.boundsChangedEvent.target = element;
-        if (element.isMutationObserved) {
-          element.dispatchEvent(this.boundsChangedEvent);
-        } else {
-          element.ownerDocument.defaultView.dispatchEvent(
-            this.boundsChangedEvent,
-            true,
-          );
-        }
-        set.add(element.entity);
-      }
-    };
-
-    this.pendingEvents.forEach(([element, detail]) => {
-      if (detail.affectChildren) {
-        element.forEach((e) => {
-          trigger(e, detail);
-        });
+  triggerEvent(element, detail) {
+    if (element.isConnected && !this.eventEntitySet.has(element.entity)) {
+      this.boundsChangedEvent.detail = detail;
+      this.boundsChangedEvent.target = element;
+      if (element.isMutationObserved) {
+        element.dispatchEvent(this.boundsChangedEvent);
       } else {
-        trigger(element, detail);
+        element.ownerDocument.defaultView.dispatchEvent(
+          this.boundsChangedEvent,
+          true,
+        );
       }
-    });
+      this.eventEntitySet.add(element.entity);
+    }
+  }
+
+  triggerPendingEvents(root: DisplayObject) {
+    if (root) {
+      $triggerPendingEvents_detail.affectChildren = true;
+      root.forEach((e) => {
+        this.triggerEvent(e, $triggerPendingEvents_detail);
+      });
+    } else {
+      this.pendingEvents.forEach((affectChildren, element) => {
+        $triggerPendingEvents_detail.affectChildren = affectChildren;
+        if (affectChildren) {
+          element.forEach((e) => {
+            this.triggerEvent(e, $triggerPendingEvents_detail);
+          });
+        } else {
+          this.triggerEvent(element, $triggerPendingEvents_detail);
+        }
+      });
+    }
+
+    this.eventEntitySet.clear();
 
     this.clearPendingEvents();
-    set.clear();
   }
 
   clearPendingEvents() {
-    this.pendingEvents = [];
+    this.pendingEvents.clear();
   }
 
   dirtifyToRoot(element: INode, affectChildren = false) {
@@ -621,6 +636,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     // only need to re-render itself
     if ((p as Element).renderable) {
+      if (!(p as Element).renderable.rendered) return;
+
       (p as Element).renderable.dirty = true;
     }
 
@@ -638,8 +655,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
     // inform dependencies
     this.informDependentDisplayObjects(element as DisplayObject);
 
-    // reuse the same custom event
-    this.pendingEvents.push([element, { affectChildren }]);
+    if (affectChildren || !this.pendingEvents.has(element)) {
+      this.pendingEvents.set(element, affectChildren);
+    }
   }
 
   private displayObjectDependencyMap: WeakMap<
@@ -736,17 +754,23 @@ export class DefaultSceneGraphService implements SceneGraphService {
     element: INode,
     transform: Transform = (element as Element).transformable,
   ) {
-    if (!transform.localDirtyFlag && !transform.dirtyFlag) {
-      return transform.worldTransform;
+    const rendered = (element as Element).renderable.rendered;
+    const { computed, localDirtyFlag, dirtyFlag, worldTransform } = transform;
+
+    if (!localDirtyFlag && !dirtyFlag) {
+      if (rendered || computed) return worldTransform;
     }
 
     if (element.parentNode && (element.parentNode as Element).transformable) {
-      this.getWorldTransform(element.parentNode);
+      const { dirtyFlag, localDirtyFlag } = (element.parentNode as Element)
+        .transformable;
+      if (dirtyFlag || localDirtyFlag)
+        this.getWorldTransform(element.parentNode);
     }
 
     this.sync(element, transform);
 
-    return transform.worldTransform;
+    return worldTransform;
   }
 
   getLocalPosition(element: INode) {
@@ -765,60 +789,86 @@ export class DefaultSceneGraphService implements SceneGraphService {
     return (element as Element).transformable.localSkew;
   }
 
-  private calcLocalTransform = (() => {
-    const tmpMat = mat4.create();
-    const tmpPosition = vec3.create();
-    const tmpQuat = quat.fromValues(0, 0, 0, 1);
+  private calcLocalTransform(transform: Transform) {
+    const hasSkew =
+      transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0;
 
-    return (transform: Transform) => {
-      const hasSkew =
-        transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0;
+    if (hasSkew) {
+      mat4.fromRotationTranslationScaleOrigin(
+        transform.localTransform,
+        transform.localRotation,
+        transform.localPosition,
+        vec3.fromValues(1, 1, 1),
+        transform.origin,
+      );
 
-      if (hasSkew) {
-        mat4.fromRotationTranslationScaleOrigin(
-          transform.localTransform,
-          transform.localRotation,
-          transform.localPosition,
-          vec3.fromValues(1, 1, 1),
-          transform.origin,
-        );
-
-        // apply skew2D
-        if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
-          const tmpMat4 = mat4.identity(tmpMat);
-          tmpMat4[4] = Math.tan(transform.localSkew[0]);
-          tmpMat4[1] = Math.tan(transform.localSkew[1]);
-          mat4.multiply(
-            transform.localTransform,
-            transform.localTransform,
-            tmpMat4,
-          );
-        }
-
-        const scaling = mat4.fromRotationTranslationScaleOrigin(
-          tmpMat,
-          tmpQuat,
-          tmpPosition,
-          transform.localScale,
-          transform.origin,
-        );
+      // apply skew2D
+      if (transform.localSkew[0] !== 0 || transform.localSkew[1] !== 0) {
+        mat4.identity($mat4);
+        $mat4[4] = Math.tan(transform.localSkew[0]);
+        $mat4[1] = Math.tan(transform.localSkew[1]);
         mat4.multiply(
           transform.localTransform,
           transform.localTransform,
-          scaling,
+          $mat4,
         );
+      }
+
+      const scaling = mat4.fromRotationTranslationScaleOrigin(
+        $mat4,
+        quat.set($quat, 0, 0, 0, 1),
+        vec3.set($vec3, 1, 1, 1),
+        transform.localScale,
+        transform.origin,
+      );
+      mat4.multiply(
+        transform.localTransform,
+        transform.localTransform,
+        scaling,
+      );
+    } else {
+      const {
+        localTransform,
+        localPosition,
+        localRotation,
+        localScale,
+        origin,
+      } = transform;
+
+      const hasPosition =
+        localPosition[0] !== 0 ||
+        localPosition[1] !== 0 ||
+        localPosition[2] !== 0;
+
+      const hasRotation =
+        localRotation[3] !== 1 ||
+        localRotation[0] !== 0 ||
+        localRotation[1] !== 0 ||
+        localRotation[2] !== 0;
+
+      const hasScale =
+        localScale[0] !== 1 || localScale[1] !== 1 || localScale[2] !== 1;
+
+      const hasOrigin = origin[0] !== 0 || origin[1] !== 0 || origin[2] !== 0;
+
+      if (!hasRotation && !hasScale && !hasOrigin) {
+        if (hasPosition) {
+          mat4.fromTranslation(localTransform, localPosition);
+        } else {
+          mat4.identity(localTransform);
+        }
       } else {
         // @see https://github.com/mattdesl/css-mat4/blob/master/index.js
         mat4.fromRotationTranslationScaleOrigin(
-          transform.localTransform,
-          transform.localRotation,
-          transform.localPosition,
-          transform.localScale,
-          transform.origin,
+          localTransform,
+          localRotation,
+          localPosition,
+          localScale,
+          origin,
         );
       }
-    };
-  })();
+    }
+  }
 
   getLocalTransform(element: INode) {
     const transform = (element as Element).transformable;
@@ -830,9 +880,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   setLocalTransform(element: INode, transform: mat4) {
-    const t = mat4.getTranslation(vec3.create(), transform);
-    const r = mat4.getRotation(quat.create(), transform);
-    const s = mat4.getScaling(vec3.create(), transform);
+    const t = mat4.getTranslation($setLocalTransform_1, transform);
+    const r = mat4.getRotation($setLocalTransform_2, transform);
+    const s = mat4.getScaling($setLocalTransform_3, transform);
     this.setLocalScale(element, s, false);
     this.setLocalPosition(element, t, false);
     this.setLocalRotation(element, r, undefined, undefined, undefined, false);
@@ -840,10 +890,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   resetLocalTransform(element: INode) {
-    this.setLocalScale(element, [1, 1, 1]);
-    this.setLocalPosition(element, [0, 0, 0]);
-    this.setLocalEulerAngles(element, [0, 0, 0]);
-    this.setLocalSkew(element, [0, 0]);
+    this.setLocalScale(element, $vec3One, false);
+    this.setLocalPosition(element, $vec3Zero, false);
+    this.setLocalEulerAngles(element, $vec3Zero, undefined, undefined, false);
+    this.setLocalSkew(element, $vec2Zero, undefined, false);
+    this.dirtifyLocal(element, (element as Element).transformable);
   }
 
   private getTransformedGeometryBounds(
@@ -883,13 +934,15 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getBounds(element: INode, render = false): AABB {
     const renderable = (element as Element).renderable;
+    const { boundsDirty, bounds, renderBoundsDirty, renderBounds, rendered } =
+      renderable || {};
 
-    if (!renderable.boundsDirty && !render && renderable.bounds) {
-      return renderable.bounds;
+    if (rendered && !boundsDirty && !render && bounds) {
+      return bounds;
     }
 
-    if (!renderable.renderBoundsDirty && render && renderable.renderBounds) {
-      return renderable.renderBounds;
+    if (rendered && !renderBoundsDirty && render && renderBounds) {
+      return renderBounds;
     }
 
     // reuse existed if possible
@@ -950,10 +1003,11 @@ export class DefaultSceneGraphService implements SceneGraphService {
    */
   getLocalBounds(element: INode): AABB {
     if (element.parentNode) {
-      let parentInvert = mat4.create();
+      let parentInvert = $mat4Identity;
+
       if ((element.parentNode as Element).transformable) {
         parentInvert = mat4.invert(
-          mat4.create(),
+          $mat4,
           this.getWorldTransform(element.parentNode),
         );
       }
@@ -1037,12 +1091,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   private sync(element: INode, transform: Transform) {
-    if (transform.localDirtyFlag) {
+    const force = !(element as Element).renderable.rendered;
+
+    if (force || transform.localDirtyFlag) {
       this.calcLocalTransform(transform);
       transform.localDirtyFlag = false;
     }
 
-    if (transform.dirtyFlag) {
+    if (force || transform.dirtyFlag) {
       const parent = element.parentNode;
       const parentTransform = parent && (parent as Element).transformable;
       if (parent === null || !parentTransform) {
@@ -1059,8 +1115,13 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
       transform.dirtyFlag = false;
     }
+
+    transform.computed = true;
   }
 
+  /**
+   * 解冻所有父节点，在下次关键帧时重新计算变换矩阵
+   */
   private unfreezeParentToRoot(child: INode) {
     let p = child.parentNode;
     while (p) {

@@ -40,7 +40,7 @@
   "dependencies": {
     "@antv/g-canvas": "workspace:*",
     "@antv/g-lite": "workspace:*",
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "tslib": "^2.5.3",
     "zdog": "^1.1.3"
   },

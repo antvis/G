@@ -4,23 +4,12 @@ import {
 } from '../../../packages/g-lite/src/display-objects';
 import {
   DCHECK,
-  DCHECK_EQ,
-  DCHECK_NE,
   definedProps,
   formatAttributeName,
-  isFunction,
   isSymbol,
 } from '../../../packages/g-lite/src/utils';
 
 describe('Assert utils', () => {
-  it('should check isFunction correctly', () => {
-    expect(isFunction(undefined)).toBeFalsy();
-    expect(isFunction(null)).toBeFalsy();
-    expect(isFunction('')).toBeFalsy();
-    expect(isFunction(() => {})).toBeTruthy();
-    expect(isFunction(async () => {})).toBeTruthy();
-  });
-
   it('should check isSymbol correctly', () => {
     expect(isSymbol(undefined)).toBeFalsy();
     expect(isSymbol(null)).toBeFalsy();
@@ -42,10 +31,6 @@ describe('Assert utils', () => {
   it('should assert correctly', () => {
     expect(() => DCHECK(true)).not.toThrow();
     expect(() => DCHECK(false)).toThrow();
-    expect(() => DCHECK_EQ(1, 1)).not.toThrow();
-    expect(() => DCHECK_EQ(1, 2)).toThrow();
-    expect(() => DCHECK_NE(1, 1)).toThrow();
-    expect(() => DCHECK_NE(1, 2)).not.toThrow();
   });
 
   it('should definedProps correctly', () => {

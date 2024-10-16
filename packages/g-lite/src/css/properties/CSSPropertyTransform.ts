@@ -1,5 +1,4 @@
 import type { DisplayObject } from '../../display-objects';
-import type { ParsedBaseStyleProps } from '../../types';
 import { parsedTransformToMat4 } from '../../utils';
 import { CSSKeywordValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
@@ -66,7 +65,6 @@ export class CSSPropertyTransform
   mixer = mergeTransforms;
 
   postProcessor(object: DisplayObject) {
-    const { transform } = object.parsedStyle as ParsedBaseStyleProps;
-    parsedTransformToMat4(transform, object);
+    parsedTransformToMat4(object.parsedStyle.transform, object);
   }
 }

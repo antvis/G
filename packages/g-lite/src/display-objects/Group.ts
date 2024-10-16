@@ -31,20 +31,4 @@ export class Group extends DisplayObject {
       ...options,
     });
   }
-
-  // constructor({ style, ...rest }: DisplayObjectConfig<GroupStyleProps> = {}) {
-  //   super({
-  //     type: Shape.GROUP,
-  //     style: runtime.enableCSSParsing
-  //       ? {
-  //           width: '',
-  //           height: '',
-  //           ...style,
-  //         }
-  //       : {
-  //           ...style,
-  //         },
-  //     ...rest,
-  //   });
-  // }
 }

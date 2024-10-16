@@ -1,15 +1,16 @@
 import type { mat4 } from 'gl-matrix';
-// import { vec3 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { Tuple3Number } from '../types';
-import {
-  addVec3,
-  copyVec3,
-  maxVec3,
-  minVec3,
-  scaleVec3,
-  subVec3,
-} from '../utils/math';
 import type { Plane } from './Plane';
+
+const {
+  add: addVec3,
+  copy: copyVec3,
+  max: maxVec3,
+  min: minVec3,
+  scale: scaleVec3,
+  sub: subVec3,
+} = vec3;
 
 /**
  * Axis-Aligned Bounding Box
@@ -26,39 +27,20 @@ export class AABB {
     );
   }
 
-  center: Tuple3Number = [0, 0, 0];
-  halfExtents: Tuple3Number = [0, 0, 0];
-  min: Tuple3Number = [0, 0, 0];
-  max: Tuple3Number = [0, 0, 0];
+  center = vec3.create() as Tuple3Number;
+  halfExtents = vec3.create() as Tuple3Number;
 
-  // center: vec3 = vec3.create();
-
-  // halfExtents: vec3 = vec3.create();
-
-  // min: vec3 = vec3.create();
-  // max: vec3 = vec3.create();
+  min = vec3.create() as Tuple3Number;
+  max = vec3.create() as Tuple3Number;
 
   update(center: Tuple3Number, halfExtents: Tuple3Number) {
     copyVec3(this.center, center);
     copyVec3(this.halfExtents, halfExtents);
     subVec3(this.min, this.center, this.halfExtents);
     addVec3(this.max, this.center, this.halfExtents);
-    // vec3.copy(this.center, center);
-    // vec3.copy(this.halfExtents, halfExtents);
-    // vec3.sub(this.min, this.center, this.halfExtents);
-    // vec3.add(this.max, this.center, this.halfExtents);
   }
 
   setMinMax(min: Tuple3Number, max: Tuple3Number) {
-    // vec3.add(this.center, max, min);
-    // vec3.scale(this.center, this.center, 0.5);
-
-    // vec3.sub(this.halfExtents, max, min);
-    // vec3.scale(this.halfExtents, this.halfExtents, 0.5);
-
-    // vec3.copy(this.min, min);
-    // vec3.copy(this.max, max);
-
     addVec3(this.center, max, min);
     scaleVec3(this.center, this.center, 0.5);
     subVec3(this.halfExtents, max, min);
@@ -68,11 +50,11 @@ export class AABB {
   }
 
   getMin() {
-    return this.min;
+    return this.min as Tuple3Number;
   }
 
   getMax() {
-    return this.max;
+    return this.max as Tuple3Number;
   }
 
   add(aabb: AABB) {
@@ -225,28 +207,20 @@ export class AABB {
     }
 
     const intersection = new AABB();
-    // const min = vec3.max(vec3.create(), this.getMin(), aabb.getMin());
-    // const max = vec3.min(vec3.create(), this.getMax(), aabb.getMax());
-    const min = maxVec3([0, 0, 0], this.getMin(), aabb.getMin());
-    const max = minVec3([0, 0, 0], this.getMax(), aabb.getMax());
+    const min = maxVec3(
+      [0, 0, 0],
+      this.getMin(),
+      aabb.getMin(),
+    ) as Tuple3Number;
+    const max = minVec3(
+      [0, 0, 0],
+      this.getMax(),
+      aabb.getMax(),
+    ) as Tuple3Number;
     intersection.setMinMax(min, max);
 
     return intersection;
   }
-
-  // containsPoint(point: vec3) {
-  //   const min = this.getMin();
-  //   const max = this.getMax();
-
-  //   return !(
-  //     point[0] < min[0] ||
-  //     point[0] > max[0] ||
-  //     point[1] < min[1] ||
-  //     point[1] > max[1] ||
-  //     point[2] < min[2] ||
-  //     point[2] > max[2]
-  //   );
-  // }
 
   /**
    * get n-vertex
@@ -254,7 +228,7 @@ export class AABB {
    */
   getNegativeFarPoint(plane: Plane): Tuple3Number {
     if (plane.pnVertexFlag === 0x111) {
-      return copyVec3([0, 0, 0], this.min);
+      return copyVec3([0, 0, 0], this.min) as Tuple3Number;
       // return vec3.copy(vec3.create(), this.min);
     } else if (plane.pnVertexFlag === 0x110) {
       return [this.min[0], this.min[1], this.max[2]];
@@ -286,7 +260,7 @@ export class AABB {
    */
   getPositiveFarPoint(plane: Plane): Tuple3Number {
     if (plane.pnVertexFlag === 0x111) {
-      return copyVec3([0, 0, 0], this.max);
+      return copyVec3([0, 0, 0], this.max) as Tuple3Number;
       // return vec3.copy(vec3.create(), this.max);
     } else if (plane.pnVertexFlag === 0x110) {
       return [this.max[0], this.max[1], this.min[2]];

@@ -22,6 +22,8 @@ export class Plugin extends AbstractRendererPlugin<{
     const canvasRendererPluginOptions: CanvasRendererPluginOptions = {
       dirtyObjectNumThreshold: 500,
       dirtyObjectRatioThreshold: 0.8,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
       ...this.options,
     };
 

@@ -44,7 +44,7 @@
     "@antv/g-plugin-mobile-interaction": "workspace:*",
     "@antv/g-plugin-svg-picker": "workspace:*",
     "@antv/g-plugin-svg-renderer": "workspace:*",
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "tslib": "^2.5.3"
   },
   "devDependencies": {

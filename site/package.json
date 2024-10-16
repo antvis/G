@@ -59,7 +59,7 @@
     "@antv/g-webgpu": "latest",
     "@antv/g6": "^4.5.2",
     "@antv/react-g": "latest",
-    "@antv/util": "^3.3.5",
+    "@antv/util": "^3.3.10",
     "@antv/webgpu-graph": "latest",
     "@naoak/workerize-transferable": "^0.1.0",
     "@observablehq/plot": "0.5.2",

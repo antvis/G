@@ -5,8 +5,12 @@ export function generatePath(
   context: CanvasRenderingContext2D,
   parsedStyle: ParsedPathStyleProps,
 ) {
-  const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    parsedStyle;
+  const {
+    markerStart,
+    markerEnd,
+    markerStartOffset = 0,
+    markerEndOffset = 0,
+  } = parsedStyle;
   const { absolutePath, segments } = parsedStyle.d;
 
   let startOffsetX = 0;
@@ -14,37 +18,35 @@ export function generatePath(
   let endOffsetX = 0;
   let endOffsetY = 0;
 
-  let rad = 0;
-  let x: number;
-  let y: number;
+  if (isDisplayObject(markerStart) && markerStartOffset) {
+    const [[p10, p11], [p20, p21]] = (
+      markerStart.parentNode as Path
+    ).getStartTangent();
 
-  if (markerStart && isDisplayObject(markerStart) && markerStartOffset) {
-    const [p1, p2] = (markerStart.parentNode as Path).getStartTangent();
-    x = p1[0] - p2[0];
-    y = p1[1] - p2[1];
-
-    rad = Math.atan2(y, x);
-    startOffsetX = Math.cos(rad) * (markerStartOffset || 0);
-    startOffsetY = Math.sin(rad) * (markerStartOffset || 0);
+    const rad = Math.atan2(p11 - p21, p10 - p20);
+    startOffsetX = Math.cos(rad) * markerStartOffset;
+    startOffsetY = Math.sin(rad) * markerStartOffset;
   }
 
-  if (markerEnd && isDisplayObject(markerEnd) && markerEndOffset) {
-    const [p1, p2] = (markerEnd.parentNode as Path).getEndTangent();
-    x = p1[0] - p2[0];
-    y = p1[1] - p2[1];
-    rad = Math.atan2(y, x);
-    endOffsetX = Math.cos(rad) * (markerEndOffset || 0);
-    endOffsetY = Math.sin(rad) * (markerEndOffset || 0);
+  if (isDisplayObject(markerEnd) && markerEndOffset) {
+    const [[p10, p11], [p20, p21]] = (
+      markerEnd.parentNode as Path
+    ).getEndTangent();
+    const rad = Math.atan2(p11 - p21, p10 - p20);
+    endOffsetX = Math.cos(rad) * markerEndOffset;
+    endOffsetY = Math.sin(rad) * markerEndOffset;
   }
 
-  for (let i = 0; i < absolutePath.length; i++) {
+  const length = absolutePath.length;
+  const lengthMinusOne = length - 1;
+  for (let i = 0; i < length; i++) {
     const params = absolutePath[i];
     const command = params[0];
     const nextSegment = absolutePath[i + 1];
     const useStartOffset =
       i === 0 && (startOffsetX !== 0 || startOffsetY !== 0);
     const useEndOffset =
-      (i === absolutePath.length - 1 ||
+      (i === lengthMinusOne ||
         (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
       endOffsetX !== 0 &&
       endOffsetY !== 0;
@@ -102,9 +104,17 @@ export function generatePath(
           );
         } else {
           // @see https://stackoverflow.com/a/47494351
-          const r = rx > ry ? rx : ry;
-          const scaleX = rx > ry ? 1 : rx / ry;
-          const scaleY = rx > ry ? ry / rx : 1;
+          let r, scaleX, scaleY;
+          if (rx > ry) {
+            r = rx;
+            scaleX = 1;
+            scaleY = ry / rx;
+          } else {
+            r = ry;
+            scaleX = rx / ry;
+            scaleY = 1;
+          }
+
           context.translate(cx, cy);
           context.rotate(xRotation);
           context.scale(scaleX, scaleY);

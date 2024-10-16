@@ -85,8 +85,9 @@ export class AbstractRenderer implements IRenderer {
        * enable dirty rectangle rendering by default
        */
       enableDirtyRectangleRendering: true,
-      enableDirtyRectangleRenderingDebug: false,
       enableSizeAttenuation: true,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
       ...config,
     };
   }

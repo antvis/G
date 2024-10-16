@@ -61,7 +61,11 @@ selectChart.style.margin = '1em';
 renderOptions();
 selectChart.onchange = () => {
   const { value } = selectChart;
-  history.pushState({ value }, '', `?name=${value}&renderer=${selectRenderer.value}`);
+  history.pushState(
+    { value },
+    '',
+    `?name=${value}&renderer=${selectRenderer.value}`,
+  );
   plot();
 };
 document.onkeydown = (event) => {
@@ -96,7 +100,11 @@ selectRenderer.style.margin = '1em';
 selectRenderer.append(...Object.keys(renderers).map(createOption));
 selectRenderer.onchange = () => {
   const { value } = selectRenderer;
-  history.pushState({ value }, '', `?name=${selectChart.value}&renderer=${value}`);
+  history.pushState(
+    { value },
+    '',
+    `?name=${selectChart.value}&renderer=${value}`,
+  );
   plot();
 };
 
@@ -107,6 +115,13 @@ searchInput.placeholder = 'Search test case';
 searchInput.onkeyup = () => {
   const { value } = searchInput;
   renderOptions(value);
+};
+
+// Render button
+const renderBtn = document.createElement('button');
+renderBtn.textContent = 'Render';
+renderBtn.onclick = () => {
+  if (selectChart.value) plot();
 };
 
 // Span for tips.
@@ -123,19 +138,22 @@ addEventListener('popstate', (event) => {
 // @ts-ignore
 const initialValue = new URL(location).searchParams.get('name') as string;
 // @ts-ignore
-const initialRenderer = new URL(location).searchParams.get('renderer') as string;
+const initialRenderer = new URL(location).searchParams.get(
+  'renderer',
+) as string;
 if (tests[initialValue]) selectChart.value = initialValue;
 if (renderers[initialRenderer]) selectRenderer.value = initialRenderer;
 app.append(selectChart);
 app.append(searchInput);
 app.append(selectRenderer);
 app.append(span);
+app.append(renderBtn);
 plot();
 
 async function plot() {
   if (currentContainer) {
     currentContainer.remove();
-    if (canvas) canvas.destroy();
+    if (canvas) canvas.destroy(true, true);
     if (prevAfter) prevAfter();
   }
   currentContainer = document.createElement('div');
@@ -155,7 +173,9 @@ function createOption(key) {
 }
 
 function namespace(object, name) {
-  return Object.fromEntries(Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]));
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [`${name}-${key}`, value]),
+  );
 }
 
 function createSpecRender(object) {
@@ -183,20 +203,23 @@ function createSpecRender(object) {
         shaderCompilerPath: '/glsl_wgsl_compiler_bg.wasm',
         // enableAutoRendering: false,
         // enableDirtyRectangleRendering: false,
-        // enableDirtyRectangleRenderingDebug: true,
+        // imageSmoothingEnabled: false,
       });
 
       if (generate.initRenderer) {
         generate.initRenderer(renderer, selectRenderer.value);
       }
 
-      renderer.registerPlugin(new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }));
+      renderer.registerPlugin(
+        new DragAndDropPlugin({ dragstartDistanceThreshold: 1 }),
+      );
 
       const $div = document.createElement('div');
       canvas = new Canvas({
         container: $div,
         width: window['CANVAS_WIDTH'] || 640,
         height: window['CANVAS_HEIGHT'] || 640,
+        fastCleanExistingCanvas: true,
         renderer,
       });
 
@@ -211,8 +234,7 @@ function createSpecRender(object) {
 
       if (
         selectRenderer.value === 'canvas' &&
-        renderer.getConfig().enableDirtyRectangleRendering &&
-        renderer.getConfig().enableDirtyRectangleRenderingDebug
+        renderer.getConfig().enableDirtyRectangleRendering
       ) {
         // display dirty rectangle
         const $dirtyRectangle = document.createElement('div');
@@ -237,5 +259,7 @@ function createSpecRender(object) {
       container.append($div);
     };
   };
-  return Object.fromEntries(Object.entries(object).map(([key, value]) => [key, specRender(value)]));
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [key, specRender(value)]),
+  );
 }

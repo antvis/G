@@ -35,23 +35,4 @@ export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
       ...options,
     });
   }
-
-  // constructor({ style, ...rest }: DisplayObjectConfig<RectStyleProps> = {}) {
-  //   super({
-  //     type: Shape.RECT,
-  //     style: runtime.enableCSSParsing
-  //       ? {
-  //           x: '',
-  //           y: '',
-  //           width: '',
-  //           height: '',
-  //           radius: '',
-  //           ...style,
-  //         }
-  //       : {
-  //           ...style,
-  //         },
-  //     ...rest,
-  //   });
-  // }
 }

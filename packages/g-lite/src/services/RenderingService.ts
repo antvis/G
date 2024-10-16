@@ -65,6 +65,13 @@ export class RenderingService {
     rendered: 0,
   };
 
+  /**
+   * frame counter
+   * - 1 - init root container
+   * - 2 - user first frame
+   */
+  frame = 0;
+
   private zIndexCounter = 0;
 
   hooks = {
@@ -88,15 +95,15 @@ export class RenderingService {
     /**
      * called before every dirty object get rendered
      */
-    beforeRender: new SyncHook<[DisplayObject]>(),
+    beforeRender: new SyncHook<[DisplayObject[]]>(),
     /**
      * called when every dirty object rendering even it's culled
      */
-    render: new SyncHook<[DisplayObject]>(),
+    render: new SyncHook<[DisplayObject[]]>(),
     /**
      * called after every dirty object get rendered
      */
-    afterRender: new SyncHook<[DisplayObject]>(),
+    afterRender: new SyncHook<[DisplayObject[]]>(),
     endFrame: new SyncHook<[XRFrame]>(),
     destroy: new SyncHook<[]>(),
     /**
@@ -169,12 +176,23 @@ export class RenderingService {
     this.stats.total = 0;
     this.stats.rendered = 0;
     this.zIndexCounter = 0;
+    this.frame++;
 
     const { renderingContext } = this.context;
+    if (this.frame === 2) {
+      // @ts-expect-error private method
+      this.globalRuntime.sceneGraphService.dirtifyEntireSceneGraph(
+        renderingContext.root,
+      );
+    }
 
     this.globalRuntime.sceneGraphService.syncHierarchy(renderingContext.root);
-    this.globalRuntime.sceneGraphService.triggerPendingEvents();
 
+    if (this.frame > 2) {
+      this.globalRuntime.sceneGraphService.triggerPendingEvents(
+        this.frame === 3 ? renderingContext.root : undefined,
+      );
+    }
     if (renderingContext.renderReasons.size && this.inited) {
       // @ts-ignore
       renderingContext.dirtyRectangleRenderingDisabled =
@@ -198,21 +216,18 @@ export class RenderingService {
       this.hooks.beginFrame.call(frame);
 
       if (shouldTriggerRenderHooks) {
-        renderingContext.renderListCurrentFrame.forEach((object) => {
-          this.hooks.beforeRender.call(object);
-          this.hooks.render.call(object);
-          this.hooks.afterRender.call(object);
-        });
+        const objects = renderingContext.renderListCurrentFrame;
+        this.hooks.beforeRender.call(objects);
+        this.hooks.render.call(objects);
+        this.hooks.afterRender.call(objects);
       }
 
       this.hooks.endFrame.call(frame);
-      renderingContext.renderListCurrentFrame = [];
+      renderingContext.renderListCurrentFrame.length = 0;
       renderingContext.renderReasons.clear();
 
       rerenderCallback();
     }
-
-    // console.log('stats', this.stats);
   }
 
   private renderDisplayObject(
@@ -265,11 +280,15 @@ export class RenderingService {
     }
 
     // recursive rendering its children
-    (sortable.sorted || displayObject.childNodes).forEach(
-      (child: DisplayObject) => {
-        this.renderDisplayObject(child, canvasConfig, renderingContext);
-      },
-    );
+    const nodes = sortable.sorted || displayObject.childNodes;
+    const length = nodes.length;
+    for (let i = 0; i < length; i++) {
+      this.renderDisplayObject(
+        nodes[i] as DisplayObject,
+        canvasConfig,
+        renderingContext,
+      );
+    }
   }
 
   private sort(displayObject: DisplayObject, sortable: Sortable) {

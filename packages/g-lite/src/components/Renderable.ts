@@ -26,4 +26,9 @@ export interface Renderable {
    * dirty rectangle flag
    */
   dirty: boolean;
+
+  /**
+   * 是否完成渲染
+   */
+  rendered: boolean;
 }

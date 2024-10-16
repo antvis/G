@@ -9,8 +9,9 @@ describe('Abstract renderer', () => {
       enableDirtyCheck: true,
       enableCulling: false,
       enableDirtyRectangleRendering: true,
-      enableDirtyRectangleRenderingDebug: false,
       enableSizeAttenuation: true,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
     });
 
     renderer.setConfig({ enableAutoRendering: false });
@@ -19,8 +20,9 @@ describe('Abstract renderer', () => {
       enableDirtyCheck: true,
       enableCulling: false,
       enableDirtyRectangleRendering: true,
-      enableDirtyRectangleRenderingDebug: false,
       enableSizeAttenuation: true,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
     });
 
     expect(renderer.getPlugins().length).toBe(0);

@@ -1,14 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import {
-  Circle,
-  Ellipse,
-  Line,
-  Path,
-  Polygon,
-  Polyline,
-  Rect,
-  convertToPath,
-} from '../../../packages/g-lite/src';
+import { Circle, Ellipse, Line, Path, Polygon, Polyline, Rect, convertToPath } from '../../../packages/g-lite/src';
 
 describe('Path utils', () => {
   it('should convert Circle to Path string correctly', () => {
@@ -18,7 +9,7 @@ describe('Path utils', () => {
       },
     });
     expect(convertToPath(circle)).toBe(
-      'M-100,0C-100,-55.22847366333008,-55.22847366333008,-100,0,-100C55.22847366333008,-100,100,-55.22847366333008,100,0C100,55.22847366333008,55.22847366333008,100,0,100C-55.22847366333008,100,-100,55.22847366333008,-100,0Z',
+      'M-100,0C-100,-55.22847498307936,-55.22847498307936,-100,0,-100C55.22847498307936,-100,100,-55.22847498307936,100,0C100,55.22847498307936,55.22847498307936,100,0,100C-55.22847498307936,100,-100,55.22847498307936,-100,0Z',
     );
   });
 
@@ -30,7 +21,7 @@ describe('Path utils', () => {
       },
     });
     expect(convertToPath(ellipse)).toBe(
-      'M-100,0C-100,-55.22847366333008,-55.22847366333008,-100,0,-100C55.22847366333008,-100,100,-55.22847366333008,100,0C100,55.22847366333008,55.22847366333008,100,0,100C-55.22847366333008,100,-100,55.22847366333008,-100,0Z',
+      'M-100,0C-100,-55.22847498307936,-55.22847498307936,-100,0,-100C55.22847498307936,-100,100,-55.22847498307936,100,0C100,55.22847498307936,55.22847498307936,100,0,100C-55.22847498307936,100,-100,55.22847498307936,-100,0Z',
     );
   });
 
@@ -95,9 +86,7 @@ describe('Path utils', () => {
     expect(convertToPath(line)).toBe('M200,100L200,200');
 
     // ignore all local transformation
-    expect(convertToPath(line, mat4.identity(mat4.create()))).toBe(
-      'M100,0L100,100',
-    );
+    expect(convertToPath(line, mat4.identity(mat4.create()))).toBe('M100,0L100,100');
   });
 
   it('should convert Polyline to Path string correctly', () => {

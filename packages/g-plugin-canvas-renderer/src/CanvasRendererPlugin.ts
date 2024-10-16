@@ -1,26 +1,19 @@
 import type {
+  CanvasContext,
+  ContextService,
   CSSRGB,
   DisplayObject,
   FederatedEvent,
+  GlobalRuntime,
   ParsedBaseStyleProps,
+  RBush,
   RBushNodeAABB,
   RenderingPlugin,
-  RBush,
   RenderingPluginContext,
-  ContextService,
-  CanvasContext,
-  GlobalRuntime,
 } from '@antv/g-lite';
-import {
-  AABB,
-  CanvasEvent,
-  CustomEvent,
-  ElementEvent,
-  Shape,
-  Node,
-} from '@antv/g-lite';
+import { AABB, ElementEvent, Node, Shape } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
-import { isNil } from '@antv/util';
+import { isNil, isNumber } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
 import type { CanvasRendererPluginOptions } from './interfaces';
 
@@ -180,28 +173,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     });
 
-    const renderByZIndex = (
-      object: DisplayObject,
-      context: CanvasRenderingContext2D,
-    ) => {
-      if (object.isVisible() && !object.isCulled()) {
-        this.renderDisplayObject(
-          object,
-          context,
-          this.context,
-          this.restoreStack,
-          runtime,
-        );
-      }
-
-      const sorted = object.sortable.sorted || object.childNodes;
-
-      // should account for z-index
-      sorted.forEach((child: DisplayObject) => {
-        renderByZIndex(child, context);
-      });
-    };
-
     // render at the end of frame
     renderingService.hooks.endFrame.tap(CanvasRendererPlugin.tag, () => {
       // Skip rendering.
@@ -219,10 +190,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
-        // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
-        renderByZIndex(renderingContext.root, context);
+        this.renderSceneGraph(renderingContext.root, context, runtime);
       } else {
-        // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
         const dirtyRenderBounds = this.safeMergeAABB(
           this.mergeDirtyAABBs(this.renderQueue),
@@ -240,7 +209,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         this.removedRBushNodeAABBs = [];
 
         if (AABB.isEmpty(dirtyRenderBounds)) {
-          this.renderQueue = [];
+          this.renderQueue.length = 0;
           return;
         }
 
@@ -290,22 +259,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           this.vpMatrix[13],
         );
 
-        // draw dirty rectangle
-        const { enableDirtyRectangleRenderingDebug } =
-          config.renderer.getConfig();
-        if (enableDirtyRectangleRenderingDebug) {
-          canvas.dispatchEvent(
-            new CustomEvent(CanvasEvent.DIRTY_RECTANGLE, {
-              dirtyRect: {
-                x: ix,
-                y: iy,
-                width: iwidth,
-                height: iheight,
-              },
-            }),
-          );
-        }
-
         // search objects intersect with dirty rectangle
         const dirtyObjects = this.searchDirtyObjects(dirtyRenderBounds);
 
@@ -329,31 +282,34 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         context.restore();
 
         // save dirty AABBs in last frame
-        this.renderQueue.forEach((object) => {
-          this.saveDirtyAABB(object);
-        });
+        const $length2 = this.renderQueue.length;
+        for (let i = 0; i < $length2; i++) {
+          this.saveDirtyAABB(this.renderQueue[i]);
+        }
 
         // clear queue
-        this.renderQueue = [];
+        this.renderQueue.length = 0;
       }
 
       // pop restore stack, eg. root -> parent -> child
-      this.restoreStack.forEach(() => {
+      const $length3 = this.restoreStack.length;
+      for (let i = 0; i < $length3; i++) {
         context.restore();
-      });
+      }
+
       // clear restore stack
-      this.restoreStack = [];
+      this.restoreStack.length = 0;
     });
 
-    renderingService.hooks.render.tap(
-      CanvasRendererPlugin.tag,
-      (object: DisplayObject) => {
-        if (!this.clearFullScreen) {
-          // render at the end of frame
-          this.renderQueue.push(object);
+    renderingService.hooks.render.tap(CanvasRendererPlugin.tag, (objects) => {
+      if (!this.clearFullScreen) {
+        // render at the end of frame
+        const $length = objects.length;
+        for (let i = 0; i < $length; i++) {
+          this.renderQueue.push(objects[i]);
         }
-      },
-    );
+      }
+    });
   }
 
   private clearRect(
@@ -372,6 +328,29 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
+  private renderSceneGraph(
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    runtime: GlobalRuntime,
+  ) {
+    if (object.isVisible() && !object.isCulled()) {
+      this.renderDisplayObject(
+        object,
+        context,
+        this.context,
+        this.restoreStack,
+        runtime,
+      );
+    }
+
+    const sorted = object.sortable.sorted || object.childNodes;
+
+    const length = sorted.length;
+    for (let i = 0; i < length; i++) {
+      this.renderSceneGraph(sorted[i] as DisplayObject, context, runtime);
+    }
+  }
+
   renderDisplayObject(
     object: DisplayObject,
     context: CanvasRenderingContext2D,
@@ -380,10 +359,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     runtime: GlobalRuntime,
   ) {
     const nodeName = object.nodeName;
-
-    // console.log('canvas render:', object);
-
-    // restore to its ancestor
 
     const parent = restoreStack[restoreStack.length - 1];
     if (
@@ -543,11 +518,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
 
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-    if (!isNil(lineDashOffset)) {
+    if (isNumber(lineDashOffset)) {
       context.lineDashOffset = lineDashOffset;
     }
 
-    if (!isNil(opacity)) {
+    if (isNumber(opacity)) {
       context.globalAlpha *= opacity;
     }
 
