@@ -636,6 +636,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
     // only need to re-render itself
     if ((p as Element).renderable) {
+      if (!(p as Element).renderable.rendered) return;
+
       (p as Element).renderable.dirty = true;
     }
 
