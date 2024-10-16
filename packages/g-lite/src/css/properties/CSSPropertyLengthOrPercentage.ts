@@ -47,8 +47,6 @@ export class CSSPropertyLengthOrPercentage
     }
 
     if (CSSUnitValue.isRelativeUnit(computed.unit)) {
-      const registry = runtime.styleValueRegistry;
-
       if (computed.unit === UnitType.kPercentage) {
         // TODO: merge dimensions
         return 0;
@@ -58,11 +56,7 @@ export class CSSPropertyLengthOrPercentage
           if (fontSize) {
             fontSize *= computed.value;
             return fontSize;
-          } else {
-            registry.addUnresolveProperty(object, name);
           }
-        } else {
-          registry.addUnresolveProperty(object, name);
         }
         return 0;
       } else if (computed.unit === UnitType.kRems) {
@@ -74,11 +68,7 @@ export class CSSPropertyLengthOrPercentage
           if (fontSize) {
             fontSize *= computed.value;
             return fontSize;
-          } else {
-            registry.addUnresolveProperty(object, name);
           }
-        } else {
-          registry.addUnresolveProperty(object, name);
         }
         return 0;
       }
