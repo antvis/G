@@ -19,7 +19,6 @@ import { Shape } from '../types';
 import {
   createVec3,
   decompose,
-  formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
   rad2deg,
@@ -164,14 +163,6 @@ export class DisplayObject<
     this.getAnimations().forEach((animation) => {
       animation.cancel();
     });
-
-    // FIXME
-    // this.renderable = null;
-    // this.cullable = null;
-    // this.transformable = null;
-    // this.rBushNode = null;
-    // this.geometry = null;
-    // this.sortable = null;
   }
 
   cloneNode(
@@ -225,35 +216,14 @@ export class DisplayObject<
   }
 
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
-    const renderable = this.renderable;
-
     const options = {
       forceUpdateGeometry: true,
-      // usedAttributes:
-      //   // only Group / Text should account for text relative props
-      //   this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
-      //     ? INHERITABLE_STYLE_PROPS
-      //     : INHERITABLE_BASE_STYLE_PROPS,
     };
 
-    // account for FCP, process properties as less as possible
-    let formattedAttributes = attributes;
-    if (runtime.enableAttributeDashCased) {
-      // @ts-ignore
-      formattedAttributes = {};
-      for (const name in attributes) {
-        const attributeName = formatAttributeName(name);
-        formattedAttributes[attributeName] = attributes[name];
-      }
-    }
-    runtime.styleValueRegistry.processProperties(
-      this,
-      formattedAttributes,
-      options,
-    );
+    runtime.styleValueRegistry.processProperties(this, attributes, options);
 
     // redraw at next frame
-    renderable.dirty = true;
+    this.renderable.dirty = true;
   }
 
   setAttribute<Key extends keyof StyleProps>(
@@ -262,9 +232,6 @@ export class DisplayObject<
     force = false,
     memoize = true,
   ) {
-    if (runtime.enableAttributeDashCased) {
-      name = formatAttributeName(name as string) as Key;
-    }
     // ignore undefined value
     if (isUndefined(value)) {
       return;

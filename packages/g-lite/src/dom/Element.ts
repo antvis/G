@@ -10,7 +10,7 @@ import { Strategy } from '../components';
 import { runtime } from '../global-runtime';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { formatAttributeName, isSymbol } from '../utils/assert';
+import { isSymbol } from '../utils/assert';
 import {
   ERROR_MSG_APPEND_DESTROYED_ELEMENT,
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
@@ -564,13 +564,8 @@ export class Element<
       return undefined;
     }
 
-    let value = this.attributes[name];
+    const value = this.attributes[name];
     if (value === undefined) {
-      if (runtime.enableAttributeDashCased) {
-        const attributeName = formatAttributeName(name as string);
-        value = this.attributes[attributeName];
-      }
-
       // if the given attribute does not exist, the value returned will either be null or ""
       return value;
     } else {

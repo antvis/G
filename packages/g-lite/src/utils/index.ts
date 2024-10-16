@@ -9,7 +9,6 @@ export * from './memoize';
 export * from './path';
 export * from './pointer-events';
 export * from './raf';
-export * from './string';
 export * from './tapable';
 export * from './text';
 export * from './transform-mat4';

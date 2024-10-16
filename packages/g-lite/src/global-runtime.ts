@@ -72,12 +72,6 @@ export interface GlobalRuntime {
    */
   enableStyleSyntax: boolean;
 
-  /**
-   * Enable using dash-cased attribute.
-   * @example
-   * circle.setAttribute('stroke-width', '2');
-   */
-  enableAttributeDashCased: boolean;
   enableSizeAttenuation: boolean;
 }
 
@@ -178,5 +172,4 @@ runtime.styleValueRegistry = new DefaultStyleValueRegistry(runtime);
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
 runtime.enableStyleSyntax = true;
-runtime.enableAttributeDashCased = false;
 runtime.enableSizeAttenuation = false;

@@ -1,6 +1,3 @@
-import { memoize } from './memoize';
-import { camelCase } from './string';
-
 export function DCHECK(bool: boolean) {
   if (!bool) {
     throw new Error();
@@ -30,28 +27,3 @@ export function isSymbol(value: any): value is symbol {
 
 export const definedProps = (obj: Record<string, unknown>) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
-
-const FORMAT_ATTR_MAP = {
-  d: {
-    alias: 'path',
-  },
-  strokeDasharray: {
-    alias: 'lineDash',
-  },
-  strokeWidth: {
-    alias: 'lineWidth',
-  },
-  textAnchor: {
-    alias: 'textAlign',
-  },
-  src: {
-    alias: 'img',
-  },
-};
-
-export const formatAttributeName = memoize((name: string) => {
-  let attributeName = camelCase(name);
-  const map = FORMAT_ATTR_MAP[attributeName];
-  attributeName = map?.alias || attributeName;
-  return attributeName;
-});
