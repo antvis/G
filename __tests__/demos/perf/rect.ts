@@ -15,8 +15,7 @@ export async function rects(context: { canvas: Canvas }) {
   for (let i = 0; i < 10_0000; i++) {
     const group = new Group({
       style: {
-        // transform: [['translate', Math.random() * 640, Math.random() * 640]],
-        transform: `translate(${Math.random() * 640}, ${Math.random() * 640})`,
+        transform: [['translate', Math.random() * 640, Math.random() * 640]],
       },
     });
 

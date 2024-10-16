@@ -38,6 +38,83 @@ export interface EventPosition {
   y: number;
 }
 
+export type TransformType =
+  | 'matrix'
+  | 'matrix3d'
+  | 'rotate'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
+  | 'rotate3d'
+  | 'scale'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
+  | 'scale3d'
+  | 'skew'
+  | 'skewX'
+  | 'skewY'
+  | 'translate'
+  | 'translateX'
+  | 'translateY'
+  | 'translateZ'
+  | 'translate3d';
+export type TransformScale = ['scale', number, number?];
+export type TransformScaleX = ['scaleX', number];
+export type TransformScaleY = ['scaleY', number];
+export type TransformScaleZ = ['scaleZ', number];
+export type TransformScale3d = ['scale3d', number, number, number];
+export type TransformTranslate = ['translate', number, number?];
+export type TransformTranslateX = ['translateX', number];
+export type TransformTranslateY = ['translateY', number];
+export type TransformTranslateZ = ['translateZ', number];
+export type TransformTranslate3d = ['translate3d', number, number, number];
+export type TransformRotate = ['rotate', number];
+export type TransformRotateX = ['rotateX', number];
+export type TransformRotateY = ['rotateY', number];
+export type TransformRotateZ = ['rotateZ', number];
+export type TransformRotate3d = ['rotate3d', number, number, number, number?];
+export type TransformSkew = ['skew', number, number?];
+export type TransformSkewX = ['skewX', number];
+export type TransformSkewY = ['skewY', number];
+// prettier-ignore
+export type TransformMatrix = [
+  'matrix',
+  number, number, // a, b
+  number, number, // c, d
+  number, number, // tx, ty
+];
+// prettier-ignore
+export type TransformMatrix3d = [
+  'matrix3d',
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+];
+
+export type TransformArray = (
+  | TransformScale
+  | TransformScaleX
+  | TransformScaleY
+  | TransformScaleZ
+  | TransformScale3d
+  | TransformTranslate
+  | TransformTranslateX
+  | TransformTranslateY
+  | TransformTranslateZ
+  | TransformTranslate3d
+  | TransformRotate
+  | TransformRotateX
+  | TransformRotateY
+  | TransformRotateZ
+  | TransformRotate3d
+  | TransformSkew
+  | TransformSkewX
+  | TransformSkewY
+  | TransformMatrix
+  | TransformMatrix3d
+)[];
 export type TextTransform = 'capitalize' | 'uppercase' | 'lowercase' | 'none';
 export type TextOverflow = 'clip' | 'ellipsis' | string;
 export type TextDecorationLine = string | 'none';
@@ -53,7 +130,7 @@ export interface BaseStyleProps {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform
    */
-  transform?: string;
+  transform?: string | TransformArray;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
