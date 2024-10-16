@@ -134,8 +134,8 @@ export class Canvas extends EventTarget implements ICanvas {
    * rAF in auto rendering
    */
   private frameId?: number;
-
   private inited = false;
+  private destroyed = false;
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
 
@@ -422,6 +422,8 @@ export class Canvas extends EventTarget implements ICanvas {
       this.context.renderingContext.root = null;
     }
 
+    this.destroyed = true;
+
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
     }
@@ -515,6 +517,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private run() {
     const tick = (time: number, frame?: XRFrame) => {
+      if (this.destroyed) return this.cancelAnimationFrame(this.frameId);
       this.render(frame);
       this.frameId = this.requestAnimationFrame(tick);
     };
