@@ -66,7 +66,6 @@ export interface GlobalRuntime {
     Partial<CSSProperty<any, any>>
   >;
   globalThis: any;
-  enableCSSParsing: boolean;
 
   /**
    * Enable using dataset property.
@@ -184,7 +183,6 @@ runtime.CSSPropertySyntaxFactory = CSSPropertySyntaxFactory;
 runtime.styleValueRegistry = new DefaultStyleValueRegistry(runtime);
 runtime.layoutRegistry = null;
 runtime.globalThis = getGlobalThis();
-runtime.enableCSSParsing = false;
 runtime.enableDataset = false;
 runtime.enableStyleSyntax = true;
 runtime.enableAttributeDashCased = false;

@@ -2,7 +2,6 @@ import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { PropertyParseOptions } from '../css';
-import { noneColor } from '../css/CSSStyleValuePool';
 import type {
   DisplayObjectConfig,
   IAnimation,
@@ -48,83 +47,6 @@ const mutationEvent: MutationEvent = new MutationEvent(
   null,
   null,
 );
-
-const DEFAULT_STYLE_PROPS = {
-  opacity: '',
-  fillOpacity: '',
-  strokeOpacity: '',
-  fill: '',
-  stroke: '',
-  transform: '',
-  transformOrigin: '',
-  visibility: '',
-  pointerEvents: '',
-  lineWidth: '',
-  lineCap: '',
-  lineJoin: '',
-  increasedLineWidthForHitTesting: '',
-  fontSize: '',
-  fontFamily: '',
-  fontStyle: '',
-  fontWeight: '',
-  fontVariant: '',
-  textAlign: '',
-  textBaseline: '',
-  textTransform: '',
-  zIndex: '',
-  filter: '',
-  shadowType: '',
-};
-
-const DEFAULT_PARSED_STYLE_PROPS = {
-  fill: noneColor,
-  stroke: noneColor,
-  transform: [],
-  zIndex: 0,
-  filter: [],
-  shadowType: 'outer',
-  miterLimit: 10,
-};
-
-// const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
-//   ...DEFAULT_PARSED_STYLE_PROPS,
-//   opacity: 1,
-//   fillOpacity: 1,
-//   strokeOpacity: 1,
-//   visibility: 'visible',
-//   pointerEvents: 'auto',
-//   lineWidth: 1,
-//   lineCap: 'butt',
-//   lineJoin: 'miter',
-//   increasedLineWidthForHitTesting: 0,
-//   fillRule: 'nonzero',
-//   // TODO: transformOrigin
-// };
-
-const INHERITABLE_BASE_STYLE_PROPS = [
-  'opacity',
-  'fillOpacity',
-  'strokeOpacity',
-  'transformOrigin',
-  'visibility',
-  'pointerEvents',
-  'lineWidth',
-  'lineCap',
-  'lineJoin',
-  'increasedLineWidthForHitTesting',
-];
-
-const INHERITABLE_STYLE_PROPS = [
-  ...INHERITABLE_BASE_STYLE_PROPS,
-  'fontSize',
-  'fontFamily',
-  'fontStyle',
-  'fontWeight',
-  'fontVariant',
-  'textAlign',
-  'textBaseline',
-  'textTransform',
-];
 
 const DATASET_PREFIX = 'data-';
 
@@ -188,14 +110,7 @@ export class DisplayObject<
     }
     this.nodeName = this.config.type || Shape.GROUP;
 
-    if (runtime.enableCSSParsing) {
-      Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
-      Object.assign(
-        this.parsedStyle,
-        DEFAULT_PARSED_STYLE_PROPS,
-        this.config.initialParsedStyle,
-      );
-    } else if (this.config.initialParsedStyle) {
+    if (this.config.initialParsedStyle) {
       Object.assign(
         this.parsedStyle,
         // DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
@@ -347,11 +262,6 @@ export class DisplayObject<
       //     ? INHERITABLE_STYLE_PROPS
       //     : INHERITABLE_BASE_STYLE_PROPS,
     };
-
-    if (runtime.enableCSSParsing) {
-      // @ts-ignore
-      options.usedAttributes = INHERITABLE_STYLE_PROPS;
-    }
 
     // account for FCP, process properties as less as possible
     let formattedAttributes = attributes;
@@ -701,9 +611,7 @@ export class DisplayObject<
    * shortcut for Used value of `visibility`
    */
   isVisible() {
-    return runtime.enableCSSParsing
-      ? this.parsedStyle?.visibility === 'visible'
-      : this.parsedStyle?.visibility !== 'hidden';
+    return this.parsedStyle?.visibility !== 'hidden';
   }
 
   get interactive() {
@@ -847,13 +755,9 @@ export class DisplayObject<
    * @deprecated
    */
   show() {
-    if (runtime.enableCSSParsing) {
-      this.style.visibility = 'visible';
-    } else {
-      this.forEach((object: DisplayObject) => {
-        object.style.visibility = 'visible';
-      });
-    }
+    this.forEach((object: DisplayObject) => {
+      object.style.visibility = 'visible';
+    });
   }
 
   /**
@@ -861,13 +765,9 @@ export class DisplayObject<
    * @deprecated
    */
   hide() {
-    if (runtime.enableCSSParsing) {
-      this.style.visibility = 'hidden';
-    } else {
-      this.forEach((object: DisplayObject) => {
-        object.style.visibility = 'hidden';
-      });
-    }
+    this.forEach((object: DisplayObject) => {
+      object.style.visibility = 'hidden';
+    });
   }
 
   /**

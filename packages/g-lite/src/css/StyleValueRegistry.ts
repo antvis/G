@@ -686,295 +686,185 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       memoize: true,
     },
   ) {
-    if (!this.runtime.enableCSSParsing) {
-      Object.assign(object.attributes, attributes);
-      const attributeNames = Object.keys(attributes);
+    Object.assign(object.attributes, attributes);
+    const attributeNames = Object.keys(attributes);
 
-      // clipPath
-      const oldClipPath = object.parsedStyle.clipPath;
-      const oldOffsetPath = object.parsedStyle.offsetPath;
+    // clipPath
+    const oldClipPath = object.parsedStyle.clipPath;
+    const oldOffsetPath = object.parsedStyle.offsetPath;
 
-      object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+    object.parsedStyle = Object.assign(object.parsedStyle, attributes);
 
-      let needUpdateGeometry = !!options.forceUpdateGeometry;
-      if (!needUpdateGeometry) {
-        for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
-          if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
-            needUpdateGeometry = true;
-            break;
-          }
-        }
-      }
-
-      if (attributes.fill) {
-        object.parsedStyle.fill = parseColor(attributes.fill);
-      }
-      if (attributes.stroke) {
-        object.parsedStyle.stroke = parseColor(attributes.stroke);
-      }
-      if (attributes.shadowColor) {
-        object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
-      }
-      if (attributes.filter) {
-        object.parsedStyle.filter = parseFilter(attributes.filter);
-      }
-      // Rect
-      // @ts-ignore
-      if (!isNil(attributes.radius)) {
-        // @ts-ignore
-        object.parsedStyle.radius = parseDimensionArrayFormat(
-          // @ts-ignore
-          attributes.radius,
-          4,
-        );
-      }
-      // Polyline
-      if (!isNil(attributes.lineDash)) {
-        object.parsedStyle.lineDash = parseDimensionArrayFormat(
-          attributes.lineDash,
-          2,
-        );
-      }
-      // @ts-ignore
-      if (attributes.points) {
-        // @ts-ignore
-        object.parsedStyle.points = parsePoints(attributes.points, object);
-      }
-      // Path
-      // @ts-ignore
-      if (attributes.d === '') {
-        object.parsedStyle.d = {
-          ...EMPTY_PARSED_PATH,
-        };
-      }
-      // @ts-ignore
-      if (attributes.d) {
-        object.parsedStyle.d = parsePath(
-          // @ts-ignore
-          attributes.d,
-        );
-      }
-      // Text
-      if (attributes.textTransform) {
-        this.runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
-          null,
-          null,
-          { value: attributes.textTransform },
-          object,
-          null,
-        );
-      }
-      if (!isUndefined(attributes.clipPath)) {
-        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
-          'clipPath',
-          oldClipPath,
-          attributes.clipPath,
-          object,
-          this.runtime,
-        );
-      }
-      if (attributes.offsetPath) {
-        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
-          'offsetPath',
-          oldOffsetPath,
-          attributes.offsetPath,
-          object,
-          this.runtime,
-        );
-      }
-      if (attributes.transform) {
-        object.parsedStyle.transform = parseTransform(attributes.transform);
-      }
-      if (attributes.transformOrigin) {
-        object.parsedStyle.transformOrigin = parseTransformOrigin(
-          attributes.transformOrigin,
-        );
-      }
-      // Marker
-      // @ts-ignore
-      if (attributes.markerStart) {
-        object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          null,
-          // @ts-ignore
-          attributes.markerStart,
-          // @ts-ignore
-          attributes.markerStart,
-          null,
-          null,
-        );
-      }
-      // @ts-ignore
-      if (attributes.markerEnd) {
-        object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          null,
-          // @ts-ignore
-          attributes.markerEnd,
-          // @ts-ignore
-          attributes.markerEnd,
-          null,
-          null,
-        );
-      }
-      // @ts-ignore
-      if (attributes.markerMid) {
-        object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          '',
-          // @ts-ignore
-          attributes.markerMid,
-          // @ts-ignore
-          attributes.markerMid,
-          null,
-          null,
-        );
-      }
-
-      if (!isNil(attributes.zIndex)) {
-        this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
-      if (!isNil(attributes.offsetDistance)) {
-        this.runtime.CSSPropertySyntaxFactory[
-          '<offset-distance>'
-        ].postProcessor(object, attributeNames);
-      }
-      if (attributes.transform) {
-        this.runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
-      if (attributes.transformOrigin) {
-        this.runtime.CSSPropertySyntaxFactory[
-          '<transform-origin>'
-        ].postProcessor(object, attributeNames);
-      }
-
-      if (needUpdateGeometry) {
-        object.geometry.dirty = true;
-        object.renderable.boundsDirty = true;
-        object.renderable.renderBoundsDirty = true;
-
-        if (!options.forceUpdateGeometry) {
-          this.runtime.sceneGraphService.dirtifyToRoot(object);
-        }
-      }
-    } else {
-      const {
-        skipUpdateAttribute,
-        skipParse,
-        forceUpdateGeometry,
-        usedAttributes,
-        memoize,
-      } = options;
-
-      let needUpdateGeometry = forceUpdateGeometry;
-      let attributeNames = Object.keys(attributes);
-
-      attributeNames.forEach((attributeName) => {
-        if (!skipUpdateAttribute) {
-          object.attributes[attributeName] = attributes[attributeName];
-        }
-
-        if (!needUpdateGeometry && propertyMetadataCache[attributeName]?.l) {
+    let needUpdateGeometry = !!options.forceUpdateGeometry;
+    if (!needUpdateGeometry) {
+      for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
+        if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
           needUpdateGeometry = true;
-        }
-      });
-
-      if (!skipParse) {
-        attributeNames.forEach((name) => {
-          object.computedStyle[name] = this.parseProperty(
-            name as string,
-            object.attributes[name],
-            object,
-            memoize,
-          );
-        });
-      }
-
-      // let hasUnresolvedProperties = false;
-
-      // parse according to priority
-      // path 50
-      // points 50
-      // text 50
-      // textTransform 51
-      // transform 100
-      // transformOrigin 100
-      if (usedAttributes?.length) {
-        // uniqueAttributeSet.clear();
-        attributeNames = Array.from(
-          new Set(attributeNames.concat(usedAttributes)),
-        );
-      }
-
-      // [
-      //   'path',
-      //   'points',
-      //   'text',
-      //   'textTransform',
-      //   'transform',
-      //   'transformOrigin',
-      // ].forEach((name) => {
-      //   const index = attributeNames.indexOf(name);
-      //   if (index > -1) {
-      //     attributeNames.splice(index, 1);
-      //     attributeNames.push(name);
-      //   }
-      // });
-
-      attributeNames.forEach((name) => {
-        // some style props maybe deleted after parsing such as `anchor` in Text
-        if (name in object.computedStyle) {
-          object.parsedStyle[name] = this.computeProperty(
-            name as string,
-            object.computedStyle[name],
-            object,
-            memoize,
-          );
-        }
-      });
-
-      // if (hasUnresolvedProperties) {
-      //   this.dirty = true;
-      //   return;
-      // }
-
-      // update geometry
-      if (needUpdateGeometry) {
-        object.geometry.dirty = true;
-        object.renderable.boundsDirty = true;
-        object.renderable.renderBoundsDirty = true;
-        if (!options.forceUpdateGeometry) {
-          this.runtime.sceneGraphService.dirtifyToRoot(object);
+          break;
         }
       }
+    }
 
-      attributeNames.forEach((name) => {
-        if (name in object.parsedStyle) {
-          this.postProcessProperty(name as string, object, attributeNames);
-        }
-      });
+    if (attributes.fill) {
+      object.parsedStyle.fill = parseColor(attributes.fill);
+    }
+    if (attributes.stroke) {
+      object.parsedStyle.stroke = parseColor(attributes.stroke);
+    }
+    if (attributes.shadowColor) {
+      object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
+    }
+    if (attributes.filter) {
+      object.parsedStyle.filter = parseFilter(attributes.filter);
+    }
+    // Rect
+    // @ts-ignore
+    if (!isNil(attributes.radius)) {
+      // @ts-ignore
+      object.parsedStyle.radius = parseDimensionArrayFormat(
+        // @ts-ignore
+        attributes.radius,
+        4,
+      );
+    }
+    // Polyline
+    if (!isNil(attributes.lineDash)) {
+      object.parsedStyle.lineDash = parseDimensionArrayFormat(
+        attributes.lineDash,
+        2,
+      );
+    }
+    // @ts-ignore
+    if (attributes.points) {
+      // @ts-ignore
+      object.parsedStyle.points = parsePoints(attributes.points, object);
+    }
+    // Path
+    // @ts-ignore
+    if (attributes.d === '') {
+      object.parsedStyle.d = {
+        ...EMPTY_PARSED_PATH,
+      };
+    }
+    // @ts-ignore
+    if (attributes.d) {
+      object.parsedStyle.d = parsePath(
+        // @ts-ignore
+        attributes.d,
+      );
+    }
+    // Text
+    if (attributes.textTransform) {
+      this.runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
+        null,
+        null,
+        { value: attributes.textTransform },
+        object,
+        null,
+      );
+    }
+    if (!isUndefined(attributes.clipPath)) {
+      this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+        'clipPath',
+        oldClipPath,
+        attributes.clipPath,
+        object,
+        this.runtime,
+      );
+    }
+    if (attributes.offsetPath) {
+      this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+        'offsetPath',
+        oldOffsetPath,
+        attributes.offsetPath,
+        object,
+        this.runtime,
+      );
+    }
+    if (attributes.transform) {
+      object.parsedStyle.transform = parseTransform(attributes.transform);
+    }
+    if (attributes.transformOrigin) {
+      object.parsedStyle.transformOrigin = parseTransformOrigin(
+        attributes.transformOrigin,
+      );
+    }
+    // Marker
+    // @ts-ignore
+    if (attributes.markerStart) {
+      object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
+        '<marker>'
+      ].calculator(
+        null,
+        // @ts-ignore
+        attributes.markerStart,
+        // @ts-ignore
+        attributes.markerStart,
+        null,
+        null,
+      );
+    }
+    // @ts-ignore
+    if (attributes.markerEnd) {
+      object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
+        '<marker>'
+      ].calculator(
+        null,
+        // @ts-ignore
+        attributes.markerEnd,
+        // @ts-ignore
+        attributes.markerEnd,
+        null,
+        null,
+      );
+    }
+    // @ts-ignore
+    if (attributes.markerMid) {
+      object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
+        '<marker>'
+      ].calculator(
+        '',
+        // @ts-ignore
+        attributes.markerMid,
+        // @ts-ignore
+        attributes.markerMid,
+        null,
+        null,
+      );
+    }
 
-      if (this.runtime.enableCSSParsing && object.children.length) {
-        attributeNames.forEach((name) => {
-          if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
-            // update children's inheritable
-            object.children.forEach((child: DisplayObject) => {
-              child.internalSetAttribute(name, null, {
-                skipUpdateAttribute: true,
-                skipParse: true,
-              });
-            });
-          }
-        });
+    if (!isNil(attributes.zIndex)) {
+      this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
+        object,
+        attributeNames,
+      );
+    }
+    if (!isNil(attributes.offsetDistance)) {
+      this.runtime.CSSPropertySyntaxFactory['<offset-distance>'].postProcessor(
+        object,
+        attributeNames,
+      );
+    }
+    if (attributes.transform) {
+      this.runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
+        object,
+        attributeNames,
+      );
+    }
+    if (attributes.transformOrigin) {
+      this.runtime.CSSPropertySyntaxFactory['<transform-origin>'].postProcessor(
+        object,
+        attributeNames,
+      );
+    }
+
+    if (needUpdateGeometry) {
+      object.geometry.dirty = true;
+      object.renderable.boundsDirty = true;
+      object.renderable.renderBoundsDirty = true;
+
+      if (!options.forceUpdateGeometry) {
+        this.runtime.sceneGraphService.dirtifyToRoot(object);
       }
     }
   }

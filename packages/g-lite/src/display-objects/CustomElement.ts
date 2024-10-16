@@ -1,5 +1,4 @@
 import type { DisplayObjectConfig } from '../dom';
-import { runtime } from '../global-runtime';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
 export interface BaseCustomElementStyleProps extends BaseStyleProps {}
@@ -24,13 +23,7 @@ export abstract class CustomElement<
     ...rest
   }: DisplayObjectConfig<CustomElementStyleProps> = {}) {
     super({
-      style: runtime.enableCSSParsing
-        ? {
-            ...style,
-          }
-        : {
-            ...style,
-          },
+      style,
       ...rest,
     });
   }

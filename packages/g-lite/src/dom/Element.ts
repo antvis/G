@@ -1,4 +1,3 @@
-import { isNil } from '@antv/util';
 import type {
   Cullable,
   Geometry,
@@ -8,7 +7,6 @@ import type {
   Transform,
 } from '../components';
 import { Strategy } from '../components';
-import { unsetKeywordValue } from '../css/CSSStyleValuePool';
 import { runtime } from '../global-runtime';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -511,34 +509,7 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
-  computedStyle: any = runtime.enableCSSParsing
-    ? {
-        opacity: unsetKeywordValue,
-        fillOpacity: unsetKeywordValue,
-        strokeOpacity: unsetKeywordValue,
-        fill: unsetKeywordValue,
-        stroke: unsetKeywordValue,
-        transform: unsetKeywordValue,
-        transformOrigin: unsetKeywordValue,
-        visibility: unsetKeywordValue,
-        pointerEvents: unsetKeywordValue,
-        lineWidth: unsetKeywordValue,
-        lineCap: unsetKeywordValue,
-        lineJoin: unsetKeywordValue,
-        increasedLineWidthForHitTesting: unsetKeywordValue,
-        fontSize: unsetKeywordValue,
-        fontFamily: unsetKeywordValue,
-        fontStyle: unsetKeywordValue,
-        fontWeight: unsetKeywordValue,
-        fontVariant: unsetKeywordValue,
-        textAlign: unsetKeywordValue,
-        textBaseline: unsetKeywordValue,
-        textTransform: unsetKeywordValue,
-        zIndex: unsetKeywordValue,
-        filter: unsetKeywordValue,
-        shadowType: unsetKeywordValue,
-      }
-    : null;
+  computedStyle = {};
 
   /**
    * Renderers will use these used values.
@@ -590,7 +561,7 @@ export class Element<
   getAttribute(name: keyof StyleProps) {
     // @see https://github.com/antvis/G/issues/1267
     if (isSymbol(name)) {
-      return runtime.enableCSSParsing ? null : undefined;
+      return undefined;
     }
 
     let value = this.attributes[name];
@@ -601,7 +572,7 @@ export class Element<
       }
 
       // if the given attribute does not exist, the value returned will either be null or ""
-      return runtime.enableCSSParsing ? (isNil(value) ? null : value) : value;
+      return value;
     } else {
       return value;
     }

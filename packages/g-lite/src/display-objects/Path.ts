@@ -7,7 +7,6 @@ import type {
 import { getPointAtLength } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
-import { runtime } from '../global-runtime';
 import { Point } from '../shapes';
 import { Rectangle } from '../shapes/Rectangle';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
@@ -118,23 +117,13 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<PathStyleProps> = {}) {
     super({
       type: Shape.PATH,
-      style: runtime.enableCSSParsing
-        ? {
-            d: '',
-            miterLimit: '',
-            ...style,
-          }
-        : {
-            ...style,
-          },
-      initialParsedStyle: runtime.enableCSSParsing
-        ? null
-        : {
-            miterLimit: 4,
-            d: {
-              ...EMPTY_PARSED_PATH,
-            },
-          },
+      style,
+      initialParsedStyle: {
+        miterLimit: 4,
+        d: {
+          ...EMPTY_PARSED_PATH,
+        },
+      },
       ...rest,
     });
 

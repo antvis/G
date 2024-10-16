@@ -65,11 +65,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         );
       }
 
-      if (runtime.enableCSSParsing) {
-        // recalc style values
-        runtime.styleValueRegistry.recalc(object);
-      }
-
       runtime.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
     };

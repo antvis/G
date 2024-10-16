@@ -2,8 +2,6 @@ import { runtime, Circle, Group, Rect, Text } from '@antv/g';
 import { Plugin as PluginYoga } from '@antv/g-plugin-yoga';
 
 export async function yogaText(context) {
-  runtime.enableCSSParsing = true;
-
   const { canvas, gui } = context;
   await canvas.ready;
 

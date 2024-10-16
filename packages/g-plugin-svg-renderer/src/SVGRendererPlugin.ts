@@ -472,12 +472,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private updateAttribute(object: DisplayObject, attributes: string[]) {
-    const { enableCSSParsing } = this.context;
     const { document } = this.context.config;
 
-    const { $el, $groupEl, $hitTestingEl } = (object as any)
-      .elementSVG as ElementSVG;
-    const { parsedStyle, computedStyle, nodeName } = object;
+    const { $el, $hitTestingEl } = (object as any).elementSVG as ElementSVG;
+    const { parsedStyle, nodeName } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
       // @ts-ignore
       this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(
@@ -503,10 +501,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      // console.log(name, usedName, computedStyle, parsedStyle);
-      const computedValue = enableCSSParsing
-        ? computedStyle[name]
-        : parsedStyle[name];
+      const computedValue = parsedStyle[name];
       const computedValueStr =
         !isNil(computedValue) && computedValue.toString();
       const formattedValueStr =
@@ -537,7 +532,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (
           !usedName ||
           ((nodeName === Shape.GROUP || object.isCustomElement) &&
-            !enableCSSParsing &&
             (inherited || usedName === 'fill' || usedName === 'stroke'))
         ) {
           return;
@@ -559,17 +553,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
             usedName,
             this,
           );
-        } else if (enableCSSParsing && inherited) {
-          // use computed value
-          // update `visibility` on <group>
-          if (
-            computedValueStr !== 'unset' &&
-            computedValueStr !== DEFAULT_VALUE_MAP[name]
-          ) {
-            $groupEl?.setAttribute(usedName, formattedValueStr);
-          } else {
-            $groupEl?.removeAttribute(usedName);
-          }
         } else if (name === 'clipPath') {
           this.createOrUpdateClipOrTextPath(document, usedValue, object);
         } else if (name === 'textPath') {

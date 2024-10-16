@@ -1,8 +1,6 @@
 import { Rect, Group, runtime } from '@antv/g';
 import type { Canvas } from '@antv/g';
 
-runtime.enableCSSParsing = false;
-
 export async function rects(context: { canvas: Canvas }) {
   const { canvas } = context;
 
