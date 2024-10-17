@@ -558,6 +558,11 @@ export interface CanvasConfig {
   supportsMutipleCanvasesInOneContainer?: boolean;
 
   /**
+   * 销毁画布时是否执行清理操作
+   */
+  cleanUpOnDestroy?: boolean;
+
+  /**
    * 画布宽度
    */
   width?: number;

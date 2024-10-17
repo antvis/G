@@ -136,6 +136,7 @@ export class Canvas extends EventTarget implements ICanvas {
   private frameId?: number;
 
   private inited = false;
+  private destroyed = false;
   private readyPromise: Promise<any> | undefined;
   private resolveReadyPromise: () => void;
 
@@ -168,6 +169,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
+      cleanUpOnDestroy = true,
       supportsMutipleCanvasesInOneContainer,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
@@ -177,7 +179,7 @@ export class Canvas extends EventTarget implements ICanvas {
     } = config;
 
     if (!supportsMutipleCanvasesInOneContainer) {
-      cleanExistedCanvas(container, this);
+      cleanExistedCanvas(container, this, cleanUpOnDestroy);
     }
 
     let canvasWidth = width;
@@ -244,6 +246,7 @@ export class Canvas extends EventTarget implements ICanvas {
       document,
       supportsCSSTransform,
       useNativeClickEvent,
+      cleanUpOnDestroy,
       alwaysTriggerPointerEventOnCanvas,
     });
 
@@ -384,7 +387,10 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
    */
-  destroy(cleanUp = true, skipTriggerEvent = false) {
+  destroy(cleanUp = true, skipTriggerEvent?: boolean) {
+    if (skipTriggerEvent === undefined)
+      skipTriggerEvent = this.getConfig().fastCleanExistingCanvas;
+
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
@@ -419,6 +425,20 @@ export class Canvas extends EventTarget implements ICanvas {
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
     }
+
+    const clearEventRetain = (event: CustomEvent) => {
+      event.currentTarget = null;
+      event.manager = null;
+      event.target = null;
+    };
+
+    clearEventRetain(mountedEvent);
+    clearEventRetain(unmountedEvent);
+    clearEventRetain(beforeRenderEvent);
+    clearEventRetain(rerenderEvent);
+    clearEventRetain(afterRenderEvent);
+
+    this.destroyed = true;
   }
 
   /**
@@ -509,6 +529,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
   private run() {
     const tick = (time: number, frame?: XRFrame) => {
+      if (this.destroyed) return this.cancelAnimationFrame(this.frameId);
       this.render(frame);
       this.frameId = this.requestAnimationFrame(tick);
     };
@@ -649,11 +670,13 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     if (this.inited) {
-      if (parent.isMutationObserved) {
-        parent.dispatchEvent(unmountedEvent);
-      } else {
-        unmountedEvent.target = parent;
-        this.dispatchEvent(unmountedEvent, true);
+      if (!this.getConfig().cleanUpOnDestroy) {
+        if (parent.isMutationObserved) {
+          parent.dispatchEvent(unmountedEvent);
+        } else {
+          unmountedEvent.target = parent;
+          this.dispatchEvent(unmountedEvent, true);
+        }
       }
 
       // skip document.documentElement

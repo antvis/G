@@ -117,6 +117,13 @@ searchInput.onkeyup = () => {
   renderOptions(value);
 };
 
+// Render button
+const renderBtn = document.createElement('button');
+renderBtn.textContent = 'Render';
+renderBtn.onclick = () => {
+  if (selectChart.value) plot();
+};
+
 // Span for tips.
 const span = document.createElement('span');
 span.textContent = 'Press left or right to view more.';
@@ -140,12 +147,13 @@ app.append(selectChart);
 app.append(searchInput);
 app.append(selectRenderer);
 app.append(span);
+app.append(renderBtn);
 plot();
 
 async function plot() {
   if (currentContainer) {
     currentContainer.remove();
-    if (canvas) canvas.destroy();
+    if (canvas) canvas.destroy(false, true);
     if (prevAfter) prevAfter();
   }
   currentContainer = document.createElement('div');
@@ -209,6 +217,7 @@ function createSpecRender(object) {
         container: $div,
         width: window['CANVAS_WIDTH'] || 640,
         height: window['CANVAS_HEIGHT'] || 640,
+        cleanUpOnDestroy: false,
         renderer,
       });
 
