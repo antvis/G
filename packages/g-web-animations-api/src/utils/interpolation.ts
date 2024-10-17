@@ -180,25 +180,13 @@ function propertyInterpolation(
 ) {
   const metadata = propertyMetadataCache[property];
 
-  // discrete step
-  // if (property === 'visibility') {
-  //   return function (t: number) {
-  //     if (t === 0) return left;
-  //     if (t === 1) return right;
-
-  //     debugger;
-
-  //     return t < 0.5 ? left : right;
-  //   };
-  // }
-
   if (metadata && metadata.syntax && metadata.int) {
     const propertyHandler = runtime.styleValueRegistry.getPropertySyntax(
       metadata.syntax,
     );
 
     if (propertyHandler) {
-      const parser = propertyHandler.parserWithCSSDisabled;
+      const parser = propertyHandler.parser;
       const usedLeft = parser ? parser(left, target) : left;
       const usedRight = parser ? parser(right, target) : right;
 

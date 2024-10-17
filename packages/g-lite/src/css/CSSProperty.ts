@@ -41,17 +41,7 @@ export interface CSSProperty<Parsed, Used> {
    * '10px' -> CSS.px(10)
    * '180deg' -> CSS.deg(180)
    */
-  parser: CSSPropertyParser<Parsed>;
-
-  /**
-   * Don't use memoize, eg. during animation.
-   */
-  parserUnmemoize: CSSPropertyParser<Parsed>;
-
-  /**
-   * Ignore CSS syntax.
-   */
-  parserWithCSSDisabled: CSSPropertyParser<Parsed>;
+  parser?: CSSPropertyParser<Parsed>;
 
   /**
    * convert parsed value to used value.
