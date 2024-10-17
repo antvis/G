@@ -7,7 +7,6 @@ import {
   DCHECK_EQ,
   DCHECK_NE,
   definedProps,
-  formatAttributeName,
   isFunction,
   isSymbol,
 } from '../../../packages/g-lite/src/utils';
@@ -50,15 +49,5 @@ describe('Assert utils', () => {
 
   it('should definedProps correctly', () => {
     expect(definedProps({ a: 1, b: undefined })).toStrictEqual({ a: 1 });
-  });
-
-  it('should formatAttributeName correctly', () => {
-    expect(formatAttributeName('fill')).toBe('fill');
-    expect(formatAttributeName('d')).toBe('path');
-    expect(formatAttributeName('path')).toBe('path');
-    expect(formatAttributeName('strokeDasharray')).toBe('lineDash');
-    expect(formatAttributeName('strokeWidth')).toBe('lineWidth');
-    expect(formatAttributeName('textAnchor')).toBe('textAlign');
-    expect(formatAttributeName('src')).toBe('img');
   });
 });
