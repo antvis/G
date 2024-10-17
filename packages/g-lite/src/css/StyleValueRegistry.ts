@@ -1,9 +1,9 @@
 import { isNil, isUndefined } from '@antv/util';
 import { vec3 } from 'gl-matrix';
-import { GeometryAABBUpdater } from '..';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
 import type { GlobalRuntime } from '../global-runtime';
+import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
 import type {
   BaseStyleProps,
@@ -660,22 +660,20 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     },
   ) {
     Object.assign(object.attributes, attributes);
-    const attributeNames = Object.keys(attributes);
 
     // clipPath
     const oldClipPath = object.parsedStyle.clipPath;
     const oldOffsetPath = object.parsedStyle.offsetPath;
 
-    object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+    Object.assign(object.parsedStyle, attributes);
 
     let needUpdateGeometry = !!options.forceUpdateGeometry;
-    if (!needUpdateGeometry) {
-      for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
-        if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
-          needUpdateGeometry = true;
-          break;
-        }
-      }
+
+    if (
+      !needUpdateGeometry &&
+      GEOMETRY_ATTRIBUTE_NAMES.some((name) => name in attributes)
+    ) {
+      needUpdateGeometry = true;
     }
 
     if (attributes.fill) {
@@ -728,7 +726,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
     // Text
     if (attributes.textTransform) {
-      this.runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.TEXT_TRANSFORM
+      ].calculator(
         null,
         null,
         { value: attributes.textTransform },
@@ -737,7 +737,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
     if (!isUndefined(attributes.clipPath)) {
-      this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.DEFINED_PATH
+      ].calculator(
         'clipPath',
         oldClipPath,
         attributes.clipPath,
@@ -746,7 +748,9 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
     if (attributes.offsetPath) {
-      this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.DEFINED_PATH
+      ].calculator(
         'offsetPath',
         oldOffsetPath,
         attributes.offsetPath,
@@ -766,7 +770,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     // @ts-ignore
     if (attributes.markerStart) {
       object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
-        '<marker>'
+        PropertySyntax.MARKER
       ].calculator(
         null,
         // @ts-ignore
@@ -780,7 +784,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     // @ts-ignore
     if (attributes.markerEnd) {
       object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
-        '<marker>'
+        PropertySyntax.MARKER
       ].calculator(
         null,
         // @ts-ignore
@@ -794,7 +798,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     // @ts-ignore
     if (attributes.markerMid) {
       object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
-        '<marker>'
+        PropertySyntax.MARKER
       ].calculator(
         '',
         // @ts-ignore
@@ -807,28 +811,24 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
 
     if (!isNil(attributes.zIndex)) {
-      this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
-        object,
-        attributeNames,
-      );
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.Z_INDEX
+      ].postProcessor(object);
     }
     if (!isNil(attributes.offsetDistance)) {
-      this.runtime.CSSPropertySyntaxFactory['<offset-distance>'].postProcessor(
-        object,
-        attributeNames,
-      );
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.OFFSET_DISTANCE
+      ].postProcessor(object);
     }
     if (attributes.transform) {
-      this.runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
-        object,
-        attributeNames,
-      );
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.TRANSFORM
+      ].postProcessor(object);
     }
     if (attributes.transformOrigin) {
-      this.runtime.CSSPropertySyntaxFactory['<transform-origin>'].postProcessor(
-        object,
-        attributeNames,
-      );
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.TRANSFORM_ORIGIN
+      ].postProcessor(object);
     }
 
     if (needUpdateGeometry) {

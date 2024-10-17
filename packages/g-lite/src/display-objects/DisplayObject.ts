@@ -46,6 +46,9 @@ const mutationEvent: MutationEvent = new MutationEvent(
   null,
 );
 
+const $vec3 = vec3.create();
+const $quat = quat.create();
+
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
  *
@@ -82,15 +85,6 @@ export class DisplayObject<
    */
   private activeAnimations: IAnimation[] = [];
 
-  /**
-   * Use data-* attribute.
-   * @see https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
-   * @example
-   * group.dataset.prop1 = 1;
-   * group.getAttribute('data-prop1'); // 1
-   */
-  dataset: any;
-
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
 
@@ -99,23 +93,19 @@ export class DisplayObject<
     this.config = config;
 
     // init scene graph node
-    this.id = this.config.id || '';
-    this.name = this.config.name || '';
-    if (this.config.className || this.config.class) {
-      this.className = this.config.className || this.config.class;
+    this.id = config.id || '';
+    this.name = config.name || '';
+    if (config.className || config.class) {
+      this.className = config.className || config.class;
     }
-    this.nodeName = this.config.type || Shape.GROUP;
+    this.nodeName = config.type || Shape.GROUP;
 
-    if (this.config.initialParsedStyle) {
-      Object.assign(
-        this.parsedStyle,
-        // DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
-        this.config.initialParsedStyle,
-      );
+    if (config.initialParsedStyle) {
+      Object.assign(this.parsedStyle, config.initialParsedStyle);
     }
 
     // start to process attributes
-    this.initAttributes(this.config.style);
+    this.initAttributes(config.style);
 
     if (runtime.enableStyleSyntax) {
       this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
@@ -313,7 +303,10 @@ export class DisplayObject<
   }
 
   setOrigin(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setOrigin(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -325,7 +318,10 @@ export class DisplayObject<
    * set position in world space
    */
   setPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setPosition(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -335,7 +331,7 @@ export class DisplayObject<
   setLocalPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.setLocalPosition(
       this,
-      createVec3(position, y, z),
+      createVec3(position, y, z, false),
     );
     return this;
   }
@@ -344,7 +340,10 @@ export class DisplayObject<
    * translate in world space
    */
   translate(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.translate(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translate(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -352,7 +351,10 @@ export class DisplayObject<
    * translate in local space
    */
   translateLocal(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translateLocal(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -379,7 +381,7 @@ export class DisplayObject<
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
-      scaling = createVec3(scaling, y, z);
+      scaling = createVec3(scaling, y, z, false);
     }
     runtime.sceneGraphService.scaleLocal(this, scaling);
     return this;
@@ -392,7 +394,7 @@ export class DisplayObject<
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
-      scaling = createVec3(scaling, y, z);
+      scaling = createVec3(scaling, y, z, false);
     }
 
     runtime.sceneGraphService.setLocalScale(this, scaling);
@@ -418,7 +420,7 @@ export class DisplayObject<
    */
   getEulerAngles() {
     const [, , ez] = getEuler(
-      vec3.create(),
+      $vec3,
       runtime.sceneGraphService.getWorldTransform(this),
     );
     return rad2deg(ez);
@@ -429,7 +431,7 @@ export class DisplayObject<
    */
   getLocalEulerAngles() {
     const [, , ez] = getEuler(
-      vec3.create(),
+      $vec3,
       runtime.sceneGraphService.getLocalRotation(this),
     );
     return rad2deg(ez);
@@ -652,10 +654,10 @@ export class DisplayObject<
    */
   getMatrix(transformMat4?: mat4): mat3 {
     const transform = transformMat4 || this.getWorldTransform();
-    const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
-    const [sx, sy] = mat4.getScaling(vec3.create(), transform);
-    const rotation = mat4.getRotation(quat.create(), transform);
-    const [eux, , euz] = getEuler(vec3.create(), rotation);
+    const [tx, ty] = mat4.getTranslation($vec3, transform);
+    const [sx, sy] = mat4.getScaling($vec3, transform);
+    const rotation = mat4.getRotation($quat, transform);
+    const [eux, , euz] = getEuler($vec3, rotation);
     // gimbal lock at 90 degrees
     return fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
   }

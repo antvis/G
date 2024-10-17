@@ -61,5 +61,5 @@ export interface CSSProperty<Parsed, Used> {
   /**
    * eg. update local position after x/y/z caculated
    */
-  postProcessor: (object: IElement, attributes: string[]) => void;
+  postProcessor: (object: IElement) => void;
 }
