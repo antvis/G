@@ -1,4 +1,3 @@
-import { DCHECK } from '../../utils/assert';
 import {
   canonicalUnitTypeForCategory,
   conversionToCanonicalUnitsScaleFactor,
@@ -18,7 +17,6 @@ const formatInfinityOrNaN = (number: number, suffix = '') => {
     if (number > 0) result = 'infinity';
     else result = '-infinity';
   } else {
-    DCHECK(Number.isNaN(number));
     result = 'NaN';
   }
   return (result += suffix);

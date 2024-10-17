@@ -10,7 +10,6 @@ import { Strategy } from '../components';
 import { runtime } from '../global-runtime';
 import type { AABB, Rectangle } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { isSymbol } from '../utils/assert';
 import {
   ERROR_MSG_APPEND_DESTROYED_ELEMENT,
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
@@ -560,7 +559,7 @@ export class Element<
    */
   getAttribute(name: keyof StyleProps) {
     // @see https://github.com/antvis/G/issues/1267
-    if (isSymbol(name)) {
+    if (typeof name === 'symbol') {
       return undefined;
     }
 

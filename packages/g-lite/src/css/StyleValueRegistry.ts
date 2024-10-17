@@ -1,4 +1,5 @@
 import { isNil, isUndefined } from '@antv/util';
+import { vec3 } from 'gl-matrix';
 import { GeometryAABBUpdater } from '..';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
@@ -10,7 +11,6 @@ import type {
   Tuple3Number,
 } from '../types';
 import { Shape } from '../types';
-import { addVec3 } from '../utils/math';
 import type { CSSRGB } from './cssom';
 import type {
   PropertyMetadata,
@@ -932,11 +932,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           const blurRadius = params[0].value as number;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
-            addVec3(
+            vec3.add(
               geometry.renderBounds.halfExtents,
               geometry.renderBounds.halfExtents,
               [blurRadius, blurRadius, 0],
-            ),
+            ) as Tuple3Number,
           );
         } else if (name === 'drop-shadow') {
           const shadowOffsetX = params[0].value;
