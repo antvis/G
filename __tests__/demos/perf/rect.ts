@@ -1,4 +1,4 @@
-import { Rect, Group, runtime } from '@antv/g';
+import { Rect, Group, Fragment } from '@antv/g';
 import type { Canvas } from '@antv/g';
 
 export async function rects(context: { canvas: Canvas }) {
@@ -6,18 +6,22 @@ export async function rects(context: { canvas: Canvas }) {
 
   await canvas.ready;
 
-  const group1 = new Group({});
-  const group2 = group1.appendChild(new Group({}));
-  canvas.appendChild(group2);
+  const group1 = canvas.appendChild(new Group({ id: 'group1' }));
+  const group2 = group1.appendChild(new Group({ id: 'group2' }));
 
   console.time('render');
 
+  const fragment = new Fragment();
+
   for (let i = 0; i < 10_0000; i++) {
-    const group = new Group({
-      style: {
-        transform: [['translate', Math.random() * 640, Math.random() * 640]],
-      },
-    });
+    const group = fragment.appendChild(
+      new Group({
+        id: `group-${i}`,
+        style: {
+          transform: [['translate', Math.random() * 640, Math.random() * 640]],
+        },
+      }),
+    );
 
     group.appendChild(
       new Rect({
@@ -30,9 +34,9 @@ export async function rects(context: { canvas: Canvas }) {
         },
       }),
     );
-
-    group2.appendChild(group);
   }
+
+  group2.appendChild(fragment);
 
   canvas.addEventListener(
     'rerender',

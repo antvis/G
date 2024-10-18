@@ -234,45 +234,50 @@ export class SVGRendererPlugin implements RenderingPlugin {
     };
 
     const handleGeometryBoundsChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      // @ts-ignore
-      const $el = object.elementSVG?.$el;
+      const target = e.target as DisplayObject;
 
-      const { fill, stroke, clipPath } =
-        object.parsedStyle as ParsedBaseStyleProps;
+      const nodes =
+        target.nodeName === Shape.FRAGMENT ? target.childNodes : [target];
+      nodes.forEach((object: DisplayObject) => {
+        // @ts-ignore
+        const $el = object.elementSVG?.$el;
 
-      if (fill && !isCSSRGB(fill)) {
-        this.defElementManager.createOrUpdateGradientAndPattern(
-          object,
-          $el,
-          fill,
-          'fill',
-          this,
-        );
-      }
-      if (stroke && !isCSSRGB(stroke)) {
-        this.defElementManager.createOrUpdateGradientAndPattern(
-          object,
-          $el,
-          stroke,
-          'stroke',
-          this,
-        );
-      }
-      if (clipPath) {
-        const parentInvert = mat4.invert(
-          mat4.create(),
-          (object as DisplayObject).getWorldTransform(),
-        );
+        const { fill, stroke, clipPath } =
+          object.parsedStyle as ParsedBaseStyleProps;
 
-        const clipPathId =
-          CLIP_PATH_PREFIX + clipPath.entity + '-' + object.entity;
-        const $def = this.defElementManager.getDefElement();
-        const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
-        if ($existed) {
-          this.applyTransform($existed, parentInvert);
+        if (fill && !isCSSRGB(fill)) {
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            fill,
+            'fill',
+            this,
+          );
         }
-      }
+        if (stroke && !isCSSRGB(stroke)) {
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            stroke,
+            'stroke',
+            this,
+          );
+        }
+        if (clipPath) {
+          const parentInvert = mat4.invert(
+            mat4.create(),
+            (object as DisplayObject).getWorldTransform(),
+          );
+
+          const clipPathId =
+            CLIP_PATH_PREFIX + clipPath.entity + '-' + object.entity;
+          const $def = this.defElementManager.getDefElement();
+          const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
+          if ($existed) {
+            this.applyTransform($existed, parentInvert);
+          }
+        }
+      });
     };
 
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
@@ -358,6 +363,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.applyTransform(this.$camera, this.context.camera.getOrthoMatrix());
       }
 
+      // debugger;
       this.renderQueue.forEach((object) => {
         const $el = ((object as any).elementSVG as ElementSVG)?.$el;
         const $groupEl = ((object as any).elementSVG as ElementSVG)?.$groupEl;

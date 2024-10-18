@@ -3,6 +3,7 @@ export * from './canvas';
 export * from './dom';
 export * from './error';
 export * from './event';
+export * from './fragment';
 export * from './gradient';
 export * from './math';
 export * from './memoize';

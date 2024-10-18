@@ -14,6 +14,7 @@ import type { DisplayObject } from './display-objects';
 
 export enum Shape {
   GROUP = 'g',
+  FRAGMENT = 'fragment',
   CIRCLE = 'circle',
   ELLIPSE = 'ellipse',
   IMAGE = 'image',

@@ -365,13 +365,20 @@ export abstract class Node extends EventTarget implements INode {
     return temp;
   }
 
+  /**
+   * iterate current node and its descendants
+   * @param callback - callback to execute for each node, return false to break
+   * @param assigned - whether to iterate assigned nodes
+   */
   forEach(callback: (o: INode) => void | boolean, assigned = false) {
-    if (!callback(this)) {
-      (assigned ? this.childNodes.slice() : this.childNodes).forEach(
-        (child) => {
-          child.forEach(callback);
-        },
-      );
+    const result = callback(this);
+
+    if (result !== false) {
+      const nodes = assigned ? this.childNodes.slice() : this.childNodes;
+      const length = nodes.length;
+      for (let i = 0; i < length; i++) {
+        nodes[i].forEach(callback);
+      }
     }
   }
 }

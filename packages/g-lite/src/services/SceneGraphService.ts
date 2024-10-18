@@ -1,20 +1,15 @@
-import { isNil } from '@antv/util';
+import { isNumber } from '@antv/util';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { SortReason, Transform } from '../components';
 import type { CustomElement, DisplayObject } from '../display-objects';
-import type { Element } from '../dom';
+import type { Element, IChildNode, IElement, INode, IParentNode } from '../dom';
 import { CustomEvent } from '../dom/CustomEvent';
-import { MutationEvent } from '../dom/MutationEvent';
-import type {
-  IChildNode,
-  IElement,
-  INode,
-  IParentNode,
-} from '../dom/interfaces';
 import { ElementEvent } from '../dom/interfaces';
+import { MutationEvent } from '../dom/MutationEvent';
 import { GlobalRuntime, runtime } from '../global-runtime';
 import { AABB, Rectangle } from '../shapes';
-import { findClosestClipPathTarget } from '../utils';
+import { Shape } from '../types';
+import { findClosestClipPathTarget, isInFragment } from '../utils';
 import type { SceneGraphService } from './interfaces';
 
 function markRenderableDirty(e: Element) {
@@ -42,7 +37,8 @@ const reparentEvent = new MutationEvent(
  * @see https://community.khronos.org/t/scene-graphs/50542/7
  */
 export class DefaultSceneGraphService implements SceneGraphService {
-  private pendingEvents = [];
+  // target -> affectChildren
+  private pendingEvents = new Map<DisplayObject, boolean>();
   private boundsChangedEvent = new CustomEvent(ElementEvent.BOUNDS_CHANGED);
 
   constructor(private runtime: GlobalRuntime) {}
@@ -77,15 +73,25 @@ export class DefaultSceneGraphService implements SceneGraphService {
       this.detach(child);
     }
 
+    const isChildFragment = child.nodeName === Shape.FRAGMENT;
+    const isAttachToFragment = isInFragment(parent);
+
     child.parentNode = parent;
-    if (!isNil(index)) {
-      child.parentNode.childNodes.splice(
-        index,
-        0,
-        child as unknown as INode & IChildNode,
-      );
+
+    const nodes = isChildFragment
+      ? (child.childNodes as DisplayObject[])
+      : [child];
+
+    if (isNumber(index)) {
+      nodes.forEach((node) => {
+        parent.childNodes.splice(index, 0, node);
+        node.parentNode = parent;
+      });
     } else {
-      child.parentNode.childNodes.push(child as unknown as INode & IChildNode);
+      nodes.forEach((node) => {
+        parent.childNodes.push(node);
+        node.parentNode = parent;
+      });
     }
 
     // parent needs re-sort
@@ -103,15 +109,14 @@ export class DefaultSceneGraphService implements SceneGraphService {
       sortable.dirtyReason = SortReason.ADDED;
     }
 
-    // this.updateGraphDepth(child);
+    if (isAttachToFragment) return;
 
-    const transform = (child as unknown as Element).transformable;
-    if (transform) {
-      this.dirtifyWorld(child, transform);
-    }
-
-    if (transform.frozen) {
-      this.unfreezeParentToRoot(child);
+    if (isChildFragment) this.dirtifyFragment(child);
+    else {
+      const transform = (child as unknown as Element).transformable;
+      if (transform) {
+        this.dirtifyWorld(child, transform);
+      }
     }
 
     if (detached) {
@@ -562,6 +567,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   dirtifyLocal(element: INode, transform: Transform) {
+    if (isInFragment(element)) return;
+
     if (!transform.localDirtyFlag) {
       transform.localDirtyFlag = true;
       if (!transform.dirtyFlag) {
@@ -579,11 +586,48 @@ export class DefaultSceneGraphService implements SceneGraphService {
     this.dirtifyToRoot(element, true);
   }
 
-  triggerPendingEvents() {
-    const set = new Set<number>();
+  dirtifyFragment(element: INode) {
+    const transform = (element as Element).transformable;
+    if (transform) {
+      transform.frozen = false;
+      transform.dirtyFlag = true;
+      transform.localDirtyFlag = true;
+    }
+    const renderable = (element as Element).renderable;
+    if (renderable) {
+      renderable.renderBoundsDirty = true;
+      renderable.boundsDirty = true;
+      renderable.dirty = true;
+    }
 
-    const trigger = (element, detail) => {
-      if (element.isConnected && !set.has(element.entity)) {
+    const length = element.childNodes.length;
+    for (let i = 0; i < length; i++) {
+      this.dirtifyFragment(element.childNodes[i]);
+    }
+
+    if (element.nodeName === Shape.FRAGMENT) {
+      this.pendingEvents.set(element as DisplayObject, false);
+    }
+  }
+
+  triggerPendingEvents() {
+    const triggered = new Set<DisplayObject>();
+    const skipped = new Set<DisplayObject>();
+
+    this.pendingEvents.forEach((_, element) => {
+      if (element.nodeName === Shape.FRAGMENT) {
+        element.forEach((e) => {
+          if (e !== element) skipped.add(e as DisplayObject);
+        });
+      }
+    });
+
+    const trigger = (element: DisplayObject, detail) => {
+      if (
+        element.isConnected &&
+        !triggered.has(element) &&
+        !skipped.has(element)
+      ) {
         this.boundsChangedEvent.detail = detail;
         this.boundsChangedEvent.target = element;
         if (element.isMutationObserved) {
@@ -594,26 +638,26 @@ export class DefaultSceneGraphService implements SceneGraphService {
             true,
           );
         }
-        set.add(element.entity);
+
+        triggered.add(element);
       }
     };
 
-    this.pendingEvents.forEach(([element, detail]) => {
-      if (detail.affectChildren) {
-        element.forEach((e) => {
+    this.pendingEvents.forEach((affectChildren, element) => {
+      const detail = { affectChildren };
+      if (affectChildren) {
+        element.forEach((e: DisplayObject) => {
           trigger(e, detail);
         });
-      } else {
-        trigger(element, detail);
-      }
+      } else trigger(element, detail);
     });
-
+    triggered.clear();
+    skipped.clear();
     this.clearPendingEvents();
-    set.clear();
   }
 
   clearPendingEvents() {
-    this.pendingEvents = [];
+    this.pendingEvents.clear();
   }
 
   dirtifyToRoot(element: INode, affectChildren = false) {
@@ -635,11 +679,9 @@ export class DefaultSceneGraphService implements SceneGraphService {
       });
     }
 
-    // inform dependencies
     this.informDependentDisplayObjects(element as DisplayObject);
 
-    // reuse the same custom event
-    this.pendingEvents.push([element, { affectChildren }]);
+    this.pendingEvents.set(element as DisplayObject, affectChildren);
   }
 
   private displayObjectDependencyMap: WeakMap<

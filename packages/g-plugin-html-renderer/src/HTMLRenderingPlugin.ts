@@ -105,10 +105,15 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
     const handleBoundsChanged = (e: MutationEvent) => {
       const object = e.target as HTML;
-      if (object.nodeName === Shape.HTML) {
-        const $el = this.getOrCreateEl(object);
-        setTransform(object, $el);
-      }
+      const nodes =
+        object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+
+      nodes.forEach((node: HTML) => {
+        if (node.nodeName === Shape.HTML) {
+          const $el = this.getOrCreateEl(node);
+          setTransform(node, $el);
+        }
+      });
     };
 
     const handleCanvasResize = () => {

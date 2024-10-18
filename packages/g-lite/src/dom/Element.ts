@@ -9,7 +9,12 @@ import type {
 import { Strategy } from '../components';
 import { runtime } from '../global-runtime';
 import type { AABB, Rectangle } from '../shapes';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
+import {
+  Shape,
+  type BaseStyleProps,
+  type ParsedBaseStyleProps,
+} from '../types';
+import { isInFragment } from '../utils';
 import {
   ERROR_MSG_APPEND_DESTROYED_ELEMENT,
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
@@ -223,7 +228,11 @@ export class Element<
     runtime.sceneGraphService.attach(child, this, index);
 
     if (this.ownerDocument?.defaultView) {
-      this.ownerDocument.defaultView.mountChildren(child);
+      if (!isInFragment(this) && child.nodeName === Shape.FRAGMENT) {
+        this.ownerDocument.defaultView.mountFragment(child);
+      } else {
+        this.ownerDocument.defaultView.mountChildren(child);
+      }
     }
 
     // @ts-ignore
@@ -365,9 +374,9 @@ export class Element<
     this.forEach((object) => {
       if (object !== this && filter(object as E)) {
         target = object as E;
-        return true;
+        return false;
       }
-      return false;
+      return true;
     });
     return target;
   }

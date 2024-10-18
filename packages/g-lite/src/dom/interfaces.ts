@@ -566,6 +566,7 @@ export interface ICanvas extends IEventTarget {
 
   mountChildren: (parent: INode) => void;
   unmountChildren: (parent: INode) => void;
+  mountFragment: (fragment: INode) => void;
 
   getConfig: () => Partial<CanvasConfig>;
   getCamera: () => ICamera;

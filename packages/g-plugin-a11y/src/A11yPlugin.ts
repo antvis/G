@@ -62,9 +62,14 @@ export class A11yPlugin implements RenderingPlugin {
     const handleBoundsChanged = (e: MutationEvent) => {
       const object = e.target as DisplayObject;
       if (enableExtractingText && !this.isSVG()) {
-        if (object.nodeName === Shape.TEXT) {
-          this.textExtractor.updateAttribute('modelMatrix', object as Text);
-        }
+        const nodes =
+          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+
+        nodes.forEach((node: DisplayObject) => {
+          if (node.nodeName === Shape.TEXT) {
+            this.textExtractor.updateAttribute('modelMatrix', node as Text);
+          }
+        });
       }
     };
 
