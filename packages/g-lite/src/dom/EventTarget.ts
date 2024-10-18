@@ -1,17 +1,16 @@
-import { isBoolean, isFunction, isObject } from '@antv/util';
+import { isBoolean, isFunction } from '@antv/util';
 import EventEmitter from 'eventemitter3';
 import { CustomEvent } from './CustomEvent';
-import { FederatedEvent, isFederatedEvent } from './FederatedEvent';
+import { FederatedEvent } from './FederatedEvent';
 import type {
   EventListenerOrEventListenerObject,
   ICanvas,
   IDocument,
-  IElement,
   IEventTarget,
   INode,
 } from './interfaces';
 
-const DELEGATION_SPLITTER = ':';
+const CANVAS_CACHE = new WeakMap<IEventTarget, ICanvas>();
 
 /**
  * Objects that can receive events and may have listeners for them.
@@ -45,42 +44,19 @@ export class EventTarget implements IEventTarget {
     listener: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
   ) {
-    const capture =
-      (isBoolean(options) && options) || (isObject(options) && options.capture);
-    const once = isObject(options) && options.once;
-    const context = isFunction(listener) ? undefined : listener;
+    let capture = false;
+    let once = false;
 
-    // compatible with G 3.0
-    // support using delegate name in event type, eg. 'node:click'
-    let useDelegatedName = false;
-    let delegatedName = '';
-    if (type.indexOf(DELEGATION_SPLITTER) > -1) {
-      const [name, eventType] = type.split(DELEGATION_SPLITTER);
-      type = eventType;
-      delegatedName = name;
-      useDelegatedName = true;
-    }
+    if (isBoolean(options)) capture = options;
+    else if (options) ({ capture = false, once = false } = options);
 
-    type = capture ? `${type}capture` : type;
+    if (capture) type += 'capture';
     listener = isFunction(listener) ? listener : listener.handleEvent;
 
-    // compatible with G 3.0
-    if (useDelegatedName) {
-      const originListener = listener;
-      listener = (...args) => {
-        if ((args[0].target as IElement)?.name !== delegatedName) {
-          return;
-        }
-        // @ts-ignore
-        originListener(...args);
-      };
-    }
+    const context = isFunction(listener) ? undefined : listener;
 
-    if (once) {
-      this.emitter.once(type, listener, context);
-    } else {
-      this.emitter.on(type, listener, context);
-    }
+    if (once) this.emitter.once(type, listener, context);
+    else this.emitter.on(type, listener, context);
 
     return this;
   }
@@ -101,23 +77,24 @@ export class EventTarget implements IEventTarget {
     }
     return this;
   }
+
   removeAllEventListeners() {
-    this.emitter.removeAllListeners();
+    this.emitter?.removeAllListeners();
   }
+
   removeEventListener(
     type: string,
     listener?: EventListenerOrEventListenerObject | ((...args: any[]) => void),
     options?: boolean | AddEventListenerOptions,
   ) {
-    const capture =
-      (isBoolean(options) && options) || (isObject(options) && options.capture);
+    if (!this.emitter) return this;
+
+    const capture = isBoolean(options) ? options : options?.capture;
+    if (capture) type += 'capture';
+    listener = isFunction(listener) ? listener : listener?.handleEvent;
     const context = isFunction(listener) ? undefined : listener;
 
-    type = capture ? `${type}capture` : type;
-    listener = isFunction(listener) ? listener : listener?.handleEvent;
-
     this.emitter.off(type, listener, context);
-
     return this;
   }
   /**
@@ -135,38 +112,30 @@ export class EventTarget implements IEventTarget {
     e: T,
     skipPropagate = false,
   ): boolean {
-    if (!isFederatedEvent(e)) {
-      throw new Error(
-        'DisplayObject cannot propagate events outside of the Federated Events API',
-      );
+    let canvas: ICanvas = CANVAS_CACHE.get(this);
+
+    if (!canvas) {
+      // @ts-expect-error document may be defined in inherited class
+      if (this.document) canvas = this as unknown as ICanvas;
+      // @ts-expect-error defaultView may be defined in inherited class
+      else if (this.defaultView)
+        canvas = (this as unknown as IDocument).defaultView;
+      else canvas = (this as unknown as INode).ownerDocument?.defaultView;
+
+      if (canvas) CANVAS_CACHE.set(this, canvas);
     }
 
-    // should account for Element / Document / Canvas
-    let canvas: ICanvas;
-    // @ts-ignore
-    if (this.document) {
-      canvas = this as unknown as ICanvas;
-      // @ts-ignore
-    } else if (this.defaultView) {
-      canvas = (this as unknown as IDocument).defaultView;
-    } else {
-      canvas = (this as unknown as INode).ownerDocument?.defaultView;
-    }
-
-    // assign event manager
     if (canvas) {
-      e.manager = canvas.getEventService() || null;
-      if (!e.manager) {
-        return false;
-      }
+      e.manager = canvas.getEventService();
+      if (!e.manager) return false;
 
       e.defaultPrevented = false;
-      e.path = [];
+      if (e.path) e.path.length = 0;
+      // @ts-ignore
+      else e.page = [];
 
-      if (!skipPropagate) {
-        e.target = this;
-      }
-      e.manager?.dispatchEvent(e, e.type, skipPropagate);
+      if (!skipPropagate) e.target = this;
+      e.manager.dispatchEvent(e, e.type, skipPropagate);
     }
 
     return !e.defaultPrevented;
