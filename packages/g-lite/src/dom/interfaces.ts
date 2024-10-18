@@ -177,7 +177,7 @@ export interface INode extends IEventTarget {
   /**
    * Traverse in sub tree.
    */
-  forEach: (callback: (o: INode) => void | boolean, assigned?: boolean) => void;
+  forEach: (callback: (o: INode) => void | boolean) => void;
   /**
    * Returns whether node has children.
    */
