@@ -100,6 +100,11 @@ export class DOMInteractionPlugin implements RenderingPlugin {
       $el.removeEventListener('pointerleave', onPointerOut, true);
       $el.removeEventListener('pointerover', onPointerOver, true);
       runtime.globalThis.removeEventListener('pointerup', onPointerUp, true);
+      runtime.globalThis.removeEventListener(
+        'pointercancel',
+        onPointerCancel,
+        true,
+      );
     };
 
     const removeTouchEventListener = ($el: HTMLElement) => {

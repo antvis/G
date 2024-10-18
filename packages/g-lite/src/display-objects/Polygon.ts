@@ -1,5 +1,4 @@
 import type { DisplayObjectConfig } from '../dom';
-import { runtime } from '../global-runtime';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import { DisplayObject, isDisplayObject } from './DisplayObject';
@@ -62,27 +61,16 @@ export class Polygon extends DisplayObject<
   constructor({ style, ...rest }: DisplayObjectConfig<PolygonStyleProps> = {}) {
     super({
       type: Shape.POLYGON,
-      style: runtime.enableCSSParsing
-        ? {
-            points: '',
-            miterLimit: '',
-            isClosed: true,
-            ...style,
-          }
-        : {
-            ...style,
-          },
-      initialParsedStyle: runtime.enableCSSParsing
-        ? null
-        : {
-            points: {
-              points: [],
-              totalLength: 0,
-              segments: [],
-            },
-            miterLimit: 4,
-            isClosed: true,
-          },
+      style,
+      initialParsedStyle: {
+        points: {
+          points: [],
+          totalLength: 0,
+          segments: [],
+        },
+        miterLimit: 4,
+        isClosed: true,
+      },
       ...rest,
     });
 

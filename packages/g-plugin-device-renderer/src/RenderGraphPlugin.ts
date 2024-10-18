@@ -205,7 +205,12 @@ export class RenderGraphPlugin implements RenderingPlugin {
     const handleBoundsChanged = (e: MutationEvent) => {
       if (this.swapChain) {
         const object = e.target as DisplayObject;
-        this.batchManager.updateAttribute(object, 'modelMatrix', null);
+        const nodes =
+          object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+
+        nodes.forEach((node: DisplayObject) => {
+          this.batchManager.updateAttribute(node, 'modelMatrix', null);
+        });
       }
     };
 

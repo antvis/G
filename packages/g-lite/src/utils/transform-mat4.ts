@@ -1,8 +1,9 @@
 import { mat4 } from 'gl-matrix';
-import { Odeg, Opx } from '../css/cssom';
 import { ParsedTransform, convertAngleUnit } from '../css/parser';
 import type { DisplayObject } from '../display-objects/DisplayObject';
 import { deg2rad } from './math';
+import type { CSSUnitValue } from '../css/cssom';
+import type { TransformType } from '../types';
 
 function createSkewMatrix(skewMatrix: mat4, skewX: number, skewY: number) {
   // Create an identity matrix
@@ -14,98 +15,114 @@ function createSkewMatrix(skewMatrix: mat4, skewX: number, skewY: number) {
   return skewMatrix;
 }
 
-const SCALE_EPSILON = 0.00001;
-const tmpMat1 = mat4.create();
-const tmpMat2 = mat4.create();
+const $mat4_1 = mat4.create();
+const $mat4_2 = mat4.create();
+
+const parser: Record<TransformType, (d: CSSUnitValue[]) => void> = {
+  scale: (d: CSSUnitValue[]) => {
+    mat4.fromScaling($mat4_1, [d[0].value, d[1].value, 1]);
+  },
+  scaleX: (d: CSSUnitValue[]) => {
+    mat4.fromScaling($mat4_1, [d[0].value, 1, 1]);
+  },
+  scaleY: (d: CSSUnitValue[]) => {
+    mat4.fromScaling($mat4_1, [1, d[0].value, 1]);
+  },
+  scaleZ: (d: CSSUnitValue[]) => {
+    mat4.fromScaling($mat4_1, [1, 1, d[0].value]);
+  },
+  scale3d: (d: CSSUnitValue[]) => {
+    mat4.fromScaling($mat4_1, [d[0].value, d[1].value, d[2].value]);
+  },
+  translate: (d: CSSUnitValue[]) => {
+    mat4.fromTranslation($mat4_1, [d[0].value, d[1].value, 0]);
+  },
+  translateX: (d: CSSUnitValue[]) => {
+    mat4.fromTranslation($mat4_1, [d[0].value, 0, 0]);
+  },
+  translateY: (d: CSSUnitValue[]) => {
+    mat4.fromTranslation($mat4_1, [0, d[0].value, 0]);
+  },
+  translateZ: (d: CSSUnitValue[]) => {
+    mat4.fromTranslation($mat4_1, [0, 0, d[0].value]);
+  },
+  translate3d: (d: CSSUnitValue[]) => {
+    mat4.fromTranslation($mat4_1, [d[0].value, d[1].value, d[2].value]);
+  },
+  rotate: (d: CSSUnitValue[]) => {
+    mat4.fromZRotation($mat4_1, deg2rad(convertAngleUnit(d[0])));
+  },
+  rotateX: (d: CSSUnitValue[]) => {
+    mat4.fromXRotation($mat4_1, deg2rad(convertAngleUnit(d[0])));
+  },
+  rotateY: (d: CSSUnitValue[]) => {
+    mat4.fromYRotation($mat4_1, deg2rad(convertAngleUnit(d[0])));
+  },
+  rotateZ: (d: CSSUnitValue[]) => {
+    mat4.fromZRotation($mat4_1, deg2rad(convertAngleUnit(d[0])));
+  },
+  rotate3d: (d: CSSUnitValue[]) => {
+    mat4.fromRotation($mat4_1, deg2rad(convertAngleUnit(d[3])), [
+      d[0].value,
+      d[1].value,
+      d[2].value,
+    ]);
+  },
+  skew: (d: CSSUnitValue[]) => {
+    createSkewMatrix($mat4_1, deg2rad(d[0].value), deg2rad(d[1].value));
+  },
+  skewX: (d: CSSUnitValue[]) => {
+    createSkewMatrix($mat4_1, deg2rad(d[0].value), 0);
+  },
+  skewY: (d: CSSUnitValue[]) => {
+    createSkewMatrix($mat4_1, 0, deg2rad(d[0].value));
+  },
+  matrix: (d: CSSUnitValue[]) => {
+    // prettier-ignore
+    mat4.set(
+      $mat4_1,
+      d[0].value, d[1].value, 0, 0,
+      d[2].value, d[3].value, 0, 0,
+      0,                   0, 1, 0,
+      d[4].value, d[5].value, 0, 1,
+    );
+  },
+  matrix3d: (d: CSSUnitValue[]) => {
+    // @ts-ignore
+    mat4.set($mat4_1, ...d.map((s) => s.value));
+  },
+};
+
+const optimizer: {
+  [key in TransformType]?: (object: DisplayObject, d: CSSUnitValue[]) => void;
+} = {
+  translate: (object: DisplayObject, d: CSSUnitValue[]) => {
+    object.setLocalPosition([d[0].value, d[1].value]);
+  },
+  translate3d: (object: DisplayObject, d: CSSUnitValue[]) => {
+    object.setLocalPosition([d[0].value, d[1].value, d[2].value]);
+  },
+};
+
 export function parsedTransformToMat4(
   transform: ParsedTransform[],
   object: DisplayObject,
 ): mat4 {
   if (transform.length) {
-    const m = mat4.identity(tmpMat1);
-    transform.forEach((parsed) => {
-      const { t, d } = parsed;
-      if (t === 'scale') {
-        // scale(1) scale(1, 1)
-        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [
-          1, 1,
-        ];
-        mat4.fromScaling(tmpMat2, [newScale[0], newScale[1], 1]);
-      } else if (t === 'scalex') {
-        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
-        mat4.fromScaling(tmpMat2, [newScale[0], 1, 1]);
-      } else if (t === 'scaley') {
-        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
-        mat4.fromScaling(tmpMat2, [1, newScale[0], 1]);
-      } else if (t === 'scalez') {
-        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [1];
-        mat4.fromScaling(tmpMat2, [1, 1, newScale[0]]);
-      } else if (t === 'scale3d') {
-        const newScale = d?.map((s) => Math.max(s.value, SCALE_EPSILON)) || [
-          1, 1, 1,
-        ];
-        mat4.fromScaling(tmpMat2, [newScale[0], newScale[1], newScale[2]]);
-      } else if (t === 'translate') {
-        const newTranslation = d || [Opx, Opx];
-        mat4.fromTranslation(tmpMat2, [
-          newTranslation[0].value,
-          newTranslation[1].value,
-          0,
-        ]);
-      } else if (t === 'translatex') {
-        const newTranslation = d || [Opx];
-        mat4.fromTranslation(tmpMat2, [newTranslation[0].value, 0, 0]);
-      } else if (t === 'translatey') {
-        const newTranslation = d || [Opx];
-        mat4.fromTranslation(tmpMat2, [0, newTranslation[0].value, 0]);
-      } else if (t === 'translatez') {
-        const newTranslation = d || [Opx];
-        mat4.fromTranslation(tmpMat2, [0, 0, newTranslation[0].value]);
-      } else if (t === 'translate3d') {
-        const newTranslation = d || [Opx, Opx, Opx];
-        mat4.fromTranslation(tmpMat2, [
-          newTranslation[0].value,
-          newTranslation[1].value,
-          newTranslation[2].value,
-        ]);
-      } else if (t === 'rotate') {
-        const newAngles = d || [Odeg];
-        mat4.fromZRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotatex') {
-        const newAngles = d || [Odeg];
-        mat4.fromXRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotatey') {
-        const newAngles = d || [Odeg];
-        mat4.fromYRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotatez') {
-        const newAngles = d || [Odeg];
-        mat4.fromZRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[0])));
-      } else if (t === 'rotate3d') {
-        const newAngles = d || [Opx, Opx, Opx, Odeg];
-        mat4.fromRotation(tmpMat2, deg2rad(convertAngleUnit(newAngles[3])), [
-          newAngles[0].value,
-          newAngles[1].value,
-          newAngles[2].value,
-        ]);
-      } else if (t === 'skew') {
-        const newSkew = d?.map((s) => s.value) || [0, 0];
-        createSkewMatrix(tmpMat2, deg2rad(newSkew[0]), deg2rad(newSkew[1]));
-      } else if (t === 'skewx') {
-        const newSkew = d?.map((s) => s.value) || [0];
-        createSkewMatrix(tmpMat2, deg2rad(newSkew[0]), 0);
-      } else if (t === 'skewy') {
-        const newSkew = d?.map((s) => s.value) || [0];
-        createSkewMatrix(tmpMat2, 0, deg2rad(newSkew[0]));
-      } else if (t === 'matrix') {
-        const [a, b, c, dd, tx, ty] = d.map((s) => s.value);
-        mat4.set(tmpMat2, a, b, 0, 0, c, dd, 0, 0, 0, 0, 1, 0, tx, ty, 0, 1);
-      } else if (t === 'matrix3d') {
-        // @ts-ignore
-        mat4.set(tmpMat2, ...d.map((s) => s.value));
+    if (transform.length === 1 && optimizer[transform[0].t]) {
+      optimizer[transform[0].t](object, transform[0].d);
+      return;
+    }
+    const m = mat4.identity($mat4_2);
+    for (let i = 0; i < transform.length; i++) {
+      const { t, d } = transform[i];
+      const p = parser[t];
+      if (p) {
+        p(d);
+        mat4.mul(m, m, $mat4_1);
       }
+    }
 
-      mat4.mul(m, m, tmpMat2);
-    });
     object.setLocalTransform(m);
   } else {
     object.resetLocalTransform();

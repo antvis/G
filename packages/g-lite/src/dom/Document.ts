@@ -7,7 +7,6 @@ import { Shape } from '../types';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
   ERROR_MSG_USE_DOCUMENT_ELEMENT,
-  isFunction,
 } from '../utils';
 import type {
   DisplayObjectConfig,
@@ -18,6 +17,7 @@ import type {
   INode,
 } from './interfaces';
 import { Node } from './Node';
+import { isFunction } from '@antv/util';
 
 /**
  * the entry of DOM tree

@@ -37,7 +37,7 @@ export function updateTextElementAttribute(
   } = parsedStyle;
   let { textBaseline = 'alphabetic' } = parsedStyle;
 
-  if (!runtime.enableCSSParsing && textBaseline === 'alphabetic') {
+  if (textBaseline === 'alphabetic') {
     textBaseline = 'bottom';
   }
 
@@ -113,7 +113,6 @@ export function updateTextElementAttribute(
             dy = 0;
           } else if (
             textBaseline === 'bottom' ||
-            textBaseline === 'alphabetic' ||
             textBaseline === 'ideographic'
           ) {
             dy = -lineHeight * (lineNum - 1);

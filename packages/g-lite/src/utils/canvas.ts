@@ -1,25 +1,23 @@
 import type { Canvas } from '../Canvas';
 
-const canvasMap: Record<string, Canvas> = {};
-let defaultCanvasIdCounter = 0;
+const CANVAS_Map = new WeakMap<Element, Canvas>();
+
 /**
  * destroy existed canvas with the same id
  */
 export function cleanExistedCanvas(
   container: string | HTMLElement,
   canvas: Canvas,
+  cleanUp?: boolean,
 ) {
   if (container) {
-    const id =
+    const $dom =
       typeof container === 'string'
-        ? container
-        : container.id || defaultCanvasIdCounter++;
+        ? document.getElementById(container)
+        : container;
 
-    if (canvasMap[id]) {
-      canvasMap[id].destroy();
-    }
-
-    canvasMap[id] = canvas;
+    if (CANVAS_Map.has($dom)) CANVAS_Map.get($dom).destroy(cleanUp);
+    else CANVAS_Map.set($dom, canvas);
   }
 }
 

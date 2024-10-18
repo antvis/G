@@ -177,7 +177,7 @@ export interface INode extends IEventTarget {
   /**
    * Traverse in sub tree.
    */
-  forEach: (callback: (o: INode) => void | boolean, assigned?: boolean) => void;
+  forEach: (callback: (o: INode) => void | boolean) => void;
   /**
    * Returns whether node has children.
    */
@@ -566,6 +566,7 @@ export interface ICanvas extends IEventTarget {
 
   mountChildren: (parent: INode) => void;
   unmountChildren: (parent: INode) => void;
+  mountFragment: (fragment: INode) => void;
 
   getConfig: () => Partial<CanvasConfig>;
   getCamera: () => ICamera;

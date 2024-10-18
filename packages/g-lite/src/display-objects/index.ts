@@ -2,6 +2,7 @@ export * from './Circle';
 export * from './CustomElement';
 export * from './DisplayObject';
 export * from './Ellipse';
+export * from './Fragment';
 export * from './Group';
 export * from './HTML';
 export * from './Image';

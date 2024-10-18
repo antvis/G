@@ -1,8 +1,6 @@
-import { isNumber } from '@antv/util';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import { mergeNumberLists } from '../parser';
-import { parseDimensionArray } from '../parser/dimension';
 
 /**
  * used in rounded rect
@@ -21,24 +19,6 @@ export class CSSPropertyLengthOrPercentage14
       >
     >
 {
-  parser(radius: string | number | number[]) {
-    const parsed = parseDimensionArray(isNumber(radius) ? [radius] : radius);
-
-    let formatted: [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue];
-    // format to Tuple<CSSUnitValue>
-    if (parsed.length === 1) {
-      formatted = [parsed[0], parsed[0], parsed[0], parsed[0]];
-    } else if (parsed.length === 2) {
-      formatted = [parsed[0], parsed[1], parsed[0], parsed[1]];
-    } else if (parsed.length === 3) {
-      formatted = [parsed[0], parsed[1], parsed[2], parsed[1]];
-    } else {
-      formatted = [parsed[0], parsed[1], parsed[2], parsed[3]];
-    }
-
-    return formatted;
-  }
-
   calculator(
     name: string,
     oldParsed: [CSSUnitValue, CSSUnitValue, CSSUnitValue, CSSUnitValue],

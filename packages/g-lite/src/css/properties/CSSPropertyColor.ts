@@ -16,7 +16,6 @@ export class CSSPropertyColor
     >
 {
   parser = parseColor;
-  parserWithCSSDisabled = parseColor;
   calculator(
     name: string,
     oldParsed: CSSRGB | CSSGradientValue[] | CSSKeywordValue | Pattern,

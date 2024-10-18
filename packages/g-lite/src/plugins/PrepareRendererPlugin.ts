@@ -1,7 +1,7 @@
 import type RBush from 'rbush';
 import { runtime } from '../global-runtime';
 import type { RBushNodeAABB } from '../components';
-import type { DisplayObject } from '../display-objects';
+import { DisplayObject } from '../display-objects';
 import type { FederatedEvent } from '../dom';
 import { ElementEvent } from '../dom';
 import type { RenderingPlugin, RenderingPluginContext } from '../services';
@@ -12,10 +12,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
   static tag = 'Prepare';
   private rBush: RBush<RBushNodeAABB>;
 
-  /**
-   * sync to RBush later
-   */
-  private toSync = new Set<DisplayObject>();
+  private syncTasks = new Map<DisplayObject, boolean>();
 
   private isFirstTimeRendering = true;
   private syncing = false;
@@ -35,23 +32,8 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     };
 
     const handleBoundsChanged = (e: FederatedEvent) => {
-      const { affectChildren } = e.detail;
-      const object = e.target as DisplayObject;
-      if (affectChildren) {
-        object.forEach((node: DisplayObject) => {
-          this.toSync.add(node);
-        });
-      }
+      this.syncTasks.set(e.target as DisplayObject, e.detail.affectChildren);
 
-      let p = object;
-      while (p) {
-        if (p.renderable) {
-          this.toSync.add(p);
-        }
-        p = p.parentElement as DisplayObject;
-      }
-
-      // this.pushToSync(e.composedPath().slice(0, -2) as DisplayObject[]);
       renderingService.dirtify();
     };
 
@@ -64,14 +46,6 @@ export class PrepareRendererPlugin implements RenderingPlugin {
           canvas.getCamera().getZoom(),
         );
       }
-
-      if (runtime.enableCSSParsing) {
-        // recalc style values
-        runtime.styleValueRegistry.recalc(object);
-      }
-
-      runtime.sceneGraphService.dirtifyToRoot(object);
-      renderingService.dirtify();
     };
 
     const handleUnmounted = (e: FederatedEvent) => {
@@ -81,7 +55,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         this.rBush.remove(rBushNode.aabb);
       }
 
-      this.toSync.delete(object);
+      this.syncTasks.delete(object);
 
       runtime.sceneGraphService.dirtifyToRoot(object);
       renderingService.dirtify();
@@ -108,8 +82,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
         ElementEvent.BOUNDS_CHANGED,
         handleBoundsChanged,
       );
-
-      this.toSync.clear();
+      this.syncTasks.clear();
     });
 
     const ric =
@@ -128,8 +101,57 @@ export class PrepareRendererPlugin implements RenderingPlugin {
     });
   }
 
+  private syncNode(node: DisplayObject, force = false) {
+    if (!node.isConnected) return;
+
+    const rBushNode = node.rBushNode;
+
+    // clear dirty node
+    if (rBushNode.aabb) this.rBush.remove(rBushNode.aabb);
+
+    const renderBounds = node.getRenderBounds();
+    if (renderBounds) {
+      const renderable = node.renderable;
+
+      if (force) {
+        if (!renderable.dirtyRenderBounds) {
+          renderable.dirtyRenderBounds = new AABB();
+        }
+        // save last dirty aabb
+        renderable.dirtyRenderBounds.update(
+          renderBounds.center,
+          renderBounds.halfExtents,
+        );
+      }
+
+      const [minX, minY] = renderBounds.getMin();
+      const [maxX, maxY] = renderBounds.getMax();
+
+      if (!rBushNode.aabb) {
+        rBushNode.aabb = {} as RBushNodeAABB;
+      }
+      rBushNode.aabb.displayObject = node;
+      rBushNode.aabb.minX = minX;
+      rBushNode.aabb.minY = minY;
+      rBushNode.aabb.maxX = maxX;
+      rBushNode.aabb.maxY = maxY;
+    }
+
+    if (rBushNode.aabb) {
+      // TODO: NaN occurs when width/height of Rect is 0
+      if (
+        !isNaN(rBushNode.aabb.maxX) &&
+        !isNaN(rBushNode.aabb.maxX) &&
+        !isNaN(rBushNode.aabb.minX) &&
+        !isNaN(rBushNode.aabb.minY)
+      ) {
+        return rBushNode.aabb;
+      }
+    }
+  }
+
   private syncRTree(force = false) {
-    if (!force && (this.syncing || this.toSync.size === 0)) {
+    if (!force && (this.syncing || this.syncTasks.size === 0)) {
       return;
     }
 
@@ -137,65 +159,35 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     // bounds changed, need re-inserting its children
     const bulk: RBushNodeAABB[] = [];
+    const synced = new Set<DisplayObject>();
 
-    Array.from(this.toSync)
-      // some objects may be removed since last frame
-      .filter((object) => object.isConnected)
-      .forEach((node: DisplayObject) => {
-        const rBushNode = node.rBushNode;
-
-        // clear dirty node
-        if (rBushNode && rBushNode.aabb) {
-          this.rBush.remove(rBushNode.aabb);
+    const sync = (node: DisplayObject) => {
+      if (!synced.has(node) && node.renderable) {
+        const aabb = this.syncNode(node, force);
+        if (aabb) {
+          bulk.push(aabb);
+          synced.add(node);
         }
+      }
+    };
 
-        const renderBounds = node.getRenderBounds();
-        if (renderBounds) {
-          const renderable = node.renderable;
+    this.syncTasks.forEach((affectChildren, node) => {
+      if (affectChildren) {
+        node.forEach(sync);
+      }
 
-          if (force) {
-            if (!renderable.dirtyRenderBounds) {
-              renderable.dirtyRenderBounds = new AABB();
-            }
-            // save last dirty aabb
-            renderable.dirtyRenderBounds.update(
-              renderBounds.center,
-              renderBounds.halfExtents,
-            );
-          }
-
-          const [minX, minY] = renderBounds.getMin();
-          const [maxX, maxY] = renderBounds.getMax();
-
-          if (!rBushNode.aabb) {
-            rBushNode.aabb = {} as RBushNodeAABB;
-          }
-          rBushNode.aabb.displayObject = node;
-          rBushNode.aabb.minX = minX;
-          rBushNode.aabb.minY = minY;
-          rBushNode.aabb.maxX = maxX;
-          rBushNode.aabb.maxY = maxY;
-        }
-
-        if (rBushNode.aabb) {
-          // TODO: NaN occurs when width/height of Rect is 0
-          if (
-            !isNaN(rBushNode.aabb.maxX) &&
-            !isNaN(rBushNode.aabb.maxX) &&
-            !isNaN(rBushNode.aabb.minX) &&
-            !isNaN(rBushNode.aabb.minY)
-          ) {
-            bulk.push(rBushNode.aabb);
-          }
-        }
-      });
+      let parent = node;
+      while (parent) {
+        sync(parent);
+        parent = parent.parentElement as DisplayObject;
+      }
+    });
 
     // use bulk inserting, which is ~2-3 times faster
     // @see https://github.com/mourner/rbush#bulk-inserting-data
     this.rBush.load(bulk);
 
     bulk.length = 0;
-    this.toSync.clear();
     this.syncing = false;
   }
 }

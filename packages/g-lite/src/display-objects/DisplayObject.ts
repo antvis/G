@@ -2,7 +2,6 @@ import { isNil, isObject, isUndefined } from '@antv/util';
 import type { mat3, vec2 } from 'gl-matrix';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import type { PropertyParseOptions } from '../css';
-import { noneColor } from '../css/CSSStyleValuePool';
 import type {
   DisplayObjectConfig,
   IAnimation,
@@ -20,10 +19,8 @@ import { Shape } from '../types';
 import {
   createVec3,
   decompose,
-  formatAttributeName,
   fromRotationTranslationScale,
   getEuler,
-  kebabize,
   rad2deg,
 } from '../utils';
 import type { CustomElement } from './CustomElement';
@@ -49,84 +46,8 @@ const mutationEvent: MutationEvent = new MutationEvent(
   null,
 );
 
-const DEFAULT_STYLE_PROPS = {
-  opacity: '',
-  fillOpacity: '',
-  strokeOpacity: '',
-  fill: '',
-  stroke: '',
-  transform: '',
-  transformOrigin: '',
-  visibility: '',
-  pointerEvents: '',
-  lineWidth: '',
-  lineCap: '',
-  lineJoin: '',
-  increasedLineWidthForHitTesting: '',
-  fontSize: '',
-  fontFamily: '',
-  fontStyle: '',
-  fontWeight: '',
-  fontVariant: '',
-  textAlign: '',
-  textBaseline: '',
-  textTransform: '',
-  zIndex: '',
-  filter: '',
-  shadowType: '',
-};
-
-const DEFAULT_PARSED_STYLE_PROPS = {
-  fill: noneColor,
-  stroke: noneColor,
-  transform: [],
-  zIndex: 0,
-  filter: [],
-  shadowType: 'outer',
-  miterLimit: 10,
-};
-
-// const DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED = {
-//   ...DEFAULT_PARSED_STYLE_PROPS,
-//   opacity: 1,
-//   fillOpacity: 1,
-//   strokeOpacity: 1,
-//   visibility: 'visible',
-//   pointerEvents: 'auto',
-//   lineWidth: 1,
-//   lineCap: 'butt',
-//   lineJoin: 'miter',
-//   increasedLineWidthForHitTesting: 0,
-//   fillRule: 'nonzero',
-//   // TODO: transformOrigin
-// };
-
-const INHERITABLE_BASE_STYLE_PROPS = [
-  'opacity',
-  'fillOpacity',
-  'strokeOpacity',
-  'transformOrigin',
-  'visibility',
-  'pointerEvents',
-  'lineWidth',
-  'lineCap',
-  'lineJoin',
-  'increasedLineWidthForHitTesting',
-];
-
-const INHERITABLE_STYLE_PROPS = [
-  ...INHERITABLE_BASE_STYLE_PROPS,
-  'fontSize',
-  'fontFamily',
-  'fontStyle',
-  'fontWeight',
-  'fontVariant',
-  'textAlign',
-  'textBaseline',
-  'textTransform',
-];
-
-const DATASET_PREFIX = 'data-';
+const $vec3 = vec3.create();
+const $quat = quat.create();
 
 /**
  * prototype chains: DisplayObject -> Element -> Node -> EventTarget
@@ -164,15 +85,6 @@ export class DisplayObject<
    */
   private activeAnimations: IAnimation[] = [];
 
-  /**
-   * Use data-* attribute.
-   * @see https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
-   * @example
-   * group.dataset.prop1 = 1;
-   * group.getAttribute('data-prop1'); // 1
-   */
-  dataset: any;
-
   constructor(config: DisplayObjectConfig<StyleProps>) {
     super();
 
@@ -181,54 +93,19 @@ export class DisplayObject<
     this.config = config;
 
     // init scene graph node
-    this.id = this.config.id || '';
-    this.name = this.config.name || '';
-    if (this.config.className || this.config.class) {
-      this.className = this.config.className || this.config.class;
+    this.id = config.id || '';
+    this.name = config.name || '';
+    if (config.className || config.class) {
+      this.className = config.className || config.class;
     }
-    this.nodeName = this.config.type || Shape.GROUP;
+    this.nodeName = config.type || Shape.GROUP;
 
-    if (runtime.enableCSSParsing) {
-      Object.assign(this.attributes, DEFAULT_STYLE_PROPS);
-      Object.assign(
-        this.parsedStyle,
-        DEFAULT_PARSED_STYLE_PROPS,
-        this.config.initialParsedStyle,
-      );
-    } else if (this.config.initialParsedStyle) {
-      Object.assign(
-        this.parsedStyle,
-        // DEFAULT_PARSED_STYLE_PROPS_CSS_DISABLED,
-        this.config.initialParsedStyle,
-      );
+    if (config.initialParsedStyle) {
+      Object.assign(this.parsedStyle, config.initialParsedStyle);
     }
 
     // start to process attributes
-    this.initAttributes(this.config.style);
-
-    if (runtime.enableDataset) {
-      this.dataset = new Proxy<any>(
-        {},
-        {
-          get: (target, name: string) => {
-            const formattedName = `${DATASET_PREFIX}${kebabize(name)}`;
-            if (target[formattedName] !== undefined) {
-              return target[formattedName];
-            }
-            return this.getAttribute(formattedName as keyof StyleProps);
-          },
-          set: (_, prop, value) => {
-            this.setAttribute(
-              `${DATASET_PREFIX}${kebabize(
-                prop as string,
-              )}` as keyof StyleProps,
-              value,
-            );
-            return true;
-          },
-        },
-      );
-    }
+    this.initAttributes(config.style);
 
     if (runtime.enableStyleSyntax) {
       this.style = new Proxy<StyleProps & ICSSStyleDeclaration<StyleProps>>(
@@ -276,14 +153,6 @@ export class DisplayObject<
     this.getAnimations().forEach((animation) => {
       animation.cancel();
     });
-
-    // FIXME
-    // this.renderable = null;
-    // this.cullable = null;
-    // this.transformable = null;
-    // this.rBushNode = null;
-    // this.geometry = null;
-    // this.sortable = null;
   }
 
   cloneNode(
@@ -337,40 +206,14 @@ export class DisplayObject<
   }
 
   private initAttributes(attributes: StyleProps = {} as StyleProps) {
-    const renderable = this.renderable;
-
     const options = {
       forceUpdateGeometry: true,
-      // usedAttributes:
-      //   // only Group / Text should account for text relative props
-      //   this.tagName === Shape.GROUP || this.tagName === Shape.TEXT
-      //     ? INHERITABLE_STYLE_PROPS
-      //     : INHERITABLE_BASE_STYLE_PROPS,
     };
 
-    if (runtime.enableCSSParsing) {
-      // @ts-ignore
-      options.usedAttributes = INHERITABLE_STYLE_PROPS;
-    }
-
-    // account for FCP, process properties as less as possible
-    let formattedAttributes = attributes;
-    if (runtime.enableAttributeDashCased) {
-      // @ts-ignore
-      formattedAttributes = {};
-      for (const name in attributes) {
-        const attributeName = formatAttributeName(name);
-        formattedAttributes[attributeName] = attributes[name];
-      }
-    }
-    runtime.styleValueRegistry.processProperties(
-      this,
-      formattedAttributes,
-      options,
-    );
+    runtime.styleValueRegistry.processProperties(this, attributes, options);
 
     // redraw at next frame
-    renderable.dirty = true;
+    this.renderable.dirty = true;
   }
 
   setAttribute<Key extends keyof StyleProps>(
@@ -379,9 +222,6 @@ export class DisplayObject<
     force = false,
     memoize = true,
   ) {
-    if (runtime.enableAttributeDashCased) {
-      name = formatAttributeName(name as string) as Key;
-    }
     // ignore undefined value
     if (isUndefined(value)) {
       return;
@@ -463,7 +303,10 @@ export class DisplayObject<
   }
 
   setOrigin(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.setOrigin(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setOrigin(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -475,7 +318,10 @@ export class DisplayObject<
    * set position in world space
    */
   setPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.setPosition(this, createVec3(position, y, z));
+    runtime.sceneGraphService.setPosition(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -485,7 +331,7 @@ export class DisplayObject<
   setLocalPosition(position: vec3 | vec2 | number, y = 0, z = 0) {
     runtime.sceneGraphService.setLocalPosition(
       this,
-      createVec3(position, y, z),
+      createVec3(position, y, z, false),
     );
     return this;
   }
@@ -494,7 +340,10 @@ export class DisplayObject<
    * translate in world space
    */
   translate(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.translate(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translate(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -502,7 +351,10 @@ export class DisplayObject<
    * translate in local space
    */
   translateLocal(position: vec3 | vec2 | number, y = 0, z = 0) {
-    runtime.sceneGraphService.translateLocal(this, createVec3(position, y, z));
+    runtime.sceneGraphService.translateLocal(
+      this,
+      createVec3(position, y, z, false),
+    );
     return this;
   }
 
@@ -529,7 +381,7 @@ export class DisplayObject<
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
-      scaling = createVec3(scaling, y, z);
+      scaling = createVec3(scaling, y, z, false);
     }
     runtime.sceneGraphService.scaleLocal(this, scaling);
     return this;
@@ -542,7 +394,7 @@ export class DisplayObject<
     if (typeof scaling === 'number') {
       y = y || scaling;
       z = z || scaling;
-      scaling = createVec3(scaling, y, z);
+      scaling = createVec3(scaling, y, z, false);
     }
 
     runtime.sceneGraphService.setLocalScale(this, scaling);
@@ -568,7 +420,7 @@ export class DisplayObject<
    */
   getEulerAngles() {
     const [, , ez] = getEuler(
-      vec3.create(),
+      $vec3,
       runtime.sceneGraphService.getWorldTransform(this),
     );
     return rad2deg(ez);
@@ -579,7 +431,7 @@ export class DisplayObject<
    */
   getLocalEulerAngles() {
     const [, , ez] = getEuler(
-      vec3.create(),
+      $vec3,
       runtime.sceneGraphService.getLocalRotation(this),
     );
     return rad2deg(ez);
@@ -701,9 +553,7 @@ export class DisplayObject<
    * shortcut for Used value of `visibility`
    */
   isVisible() {
-    return runtime.enableCSSParsing
-      ? this.parsedStyle?.visibility === 'visible'
-      : this.parsedStyle?.visibility !== 'hidden';
+    return this.parsedStyle?.visibility !== 'hidden';
   }
 
   get interactive() {
@@ -804,10 +654,10 @@ export class DisplayObject<
    */
   getMatrix(transformMat4?: mat4): mat3 {
     const transform = transformMat4 || this.getWorldTransform();
-    const [tx, ty] = mat4.getTranslation(vec3.create(), transform);
-    const [sx, sy] = mat4.getScaling(vec3.create(), transform);
-    const rotation = mat4.getRotation(quat.create(), transform);
-    const [eux, , euz] = getEuler(vec3.create(), rotation);
+    const [tx, ty] = mat4.getTranslation($vec3, transform);
+    const [sx, sy] = mat4.getScaling($vec3, transform);
+    const rotation = mat4.getRotation($quat, transform);
+    const [eux, , euz] = getEuler($vec3, rotation);
     // gimbal lock at 90 degrees
     return fromRotationTranslationScale(eux || euz, tx, ty, sx, sy);
   }
@@ -847,13 +697,9 @@ export class DisplayObject<
    * @deprecated
    */
   show() {
-    if (runtime.enableCSSParsing) {
-      this.style.visibility = 'visible';
-    } else {
-      this.forEach((object: DisplayObject) => {
-        object.style.visibility = 'visible';
-      });
-    }
+    this.forEach((object: DisplayObject) => {
+      object.style.visibility = 'visible';
+    });
   }
 
   /**
@@ -861,13 +707,9 @@ export class DisplayObject<
    * @deprecated
    */
   hide() {
-    if (runtime.enableCSSParsing) {
-      this.style.visibility = 'hidden';
-    } else {
-      this.forEach((object: DisplayObject) => {
-        object.style.visibility = 'hidden';
-      });
-    }
+    this.forEach((object: DisplayObject) => {
+      object.style.visibility = 'hidden';
+    });
   }
 
   /**

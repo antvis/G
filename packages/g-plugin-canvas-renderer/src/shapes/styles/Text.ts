@@ -56,11 +56,7 @@ export class TextRenderer implements StyleRenderer {
     context.textAlign = textAlign === 'middle' ? 'center' : textAlign;
 
     let formattedTextBaseline = textBaseline;
-    if (
-      // formattedTextBaseline === 'bottom' ||
-      !runtime.enableCSSParsing &&
-      formattedTextBaseline === 'alphabetic'
-    ) {
+    if (formattedTextBaseline === 'alphabetic') {
       formattedTextBaseline = 'bottom';
     }
 
