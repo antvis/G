@@ -222,11 +222,6 @@ export class RenderingService {
   ) {
     const { enableDirtyCheck, enableCulling } =
       canvasConfig.renderer.getConfig();
-    // recalc style values
-
-    if (this.globalRuntime.enableCSSParsing) {
-      this.globalRuntime.styleValueRegistry.recalc(displayObject);
-    }
 
     // TODO: relayout
 

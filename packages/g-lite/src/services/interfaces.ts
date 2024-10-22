@@ -15,6 +15,7 @@ export interface SceneGraphService {
   ) => void;
   informDependentDisplayObjects: (object: DisplayObject) => void;
   dirtifyToRoot: (element: INode, affectChildren?: boolean) => void;
+  dirtifyLocal: (element: INode, transform: Transform) => void;
   matches: <T extends IElement>(query: string, root: T) => boolean;
   querySelector: <R extends IElement, T extends IElement>(
     query: string,
@@ -38,9 +39,17 @@ export interface SceneGraphService {
     z?: number,
   ) => void;
   setPosition: (element: INode, position: vec3 | vec2) => void;
-  setLocalPosition: (element: INode, position: vec3 | vec2) => void;
+  setLocalPosition: (
+    element: INode,
+    position: vec3 | vec2,
+    dirtify?: boolean,
+  ) => void;
   scaleLocal: (element: INode, scaling: vec3 | vec2) => void;
-  setLocalScale: (element: INode, scaling: vec3 | vec2) => void;
+  setLocalScale: (
+    element: INode,
+    scaling: vec3 | vec2,
+    dirtify?: boolean,
+  ) => void;
   getLocalScale: (element: INode) => vec3;
   getScale: (element: INode) => vec3;
   getLocalSkew: (element: INode) => vec2;
@@ -58,7 +67,12 @@ export interface SceneGraphService {
   ) => void;
   getPosition: (element: INode) => vec3;
   getLocalPosition: (element: INode) => vec3;
-  setLocalSkew: (element: INode, skew: vec2 | number, y?: number) => void;
+  setLocalSkew: (
+    element: INode,
+    skew: vec2 | number,
+    y?: number,
+    dirtify?: boolean,
+  ) => void;
   setEulerAngles: (
     element: INode,
     degrees: vec3 | number,
@@ -70,6 +84,7 @@ export interface SceneGraphService {
     degrees: vec3 | number,
     y?: number,
     z?: number,
+    dirtify?: boolean,
   ) => void;
   rotateLocal: (
     element: INode,
@@ -97,6 +112,7 @@ export interface SceneGraphService {
     y?: number,
     z?: number,
     w?: number,
+    dirtify?: boolean,
   ) => void;
   getLocalRotation: (element: INode) => quat;
   getWorldTransform: (element: INode, transform?: Transform) => mat4;

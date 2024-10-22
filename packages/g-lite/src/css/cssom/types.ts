@@ -90,14 +90,6 @@ export enum UnitCategory {
   kUOther,
 }
 
-export enum ValueRange {
-  kAll,
-  kNonNegative,
-  kInteger,
-  kNonNegativeInteger,
-  kPositiveInteger,
-}
-
 export enum Nested {
   kYes,
   kNo,

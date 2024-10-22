@@ -1,4 +1,5 @@
 import { CSSStyleValue, CSSStyleValueType } from './CSSStyleValue';
+import { CSSNumberish } from './CSSNumericValue';
 
 /**
  * @see https://drafts.css-houdini.org/css-typed-om-1/#dom-csscolorvalue-colorspace
@@ -22,15 +23,6 @@ export abstract class CSSColorValue extends CSSStyleValue {
   getType() {
     return CSSStyleValueType.kColorType;
   }
-
-  // buildCSSText(n: Nested, p: ParenLess, result: string): string {
-  //   let text = '';
-  //   if (this.colorSpace === 'rgb') {
-  //     text = `rgba(${this.channels.join(',')},${this.alpha})`;
-  //   }
-
-  //   return (result += text);
-  // }
 
   /**
    * @see https://drafts.css-houdini.org/css-typed-om-1/#dom-csscolorvalue-to

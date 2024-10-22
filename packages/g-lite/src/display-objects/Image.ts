@@ -49,23 +49,4 @@ export class Image extends DisplayObject<
       ...options,
     });
   }
-
-  // constructor({ style, ...rest }: DisplayObjectConfig<ImageStyleProps> = {}) {
-  //   super({
-  //     type: Shape.IMAGE,
-  //     style: runtime.enableCSSParsing
-  //       ? {
-  //           x: '',
-  //           y: '',
-  //           img: '',
-  //           width: '',
-  //           height: '',
-  //           ...style,
-  //         }
-  //       : {
-  //           ...style,
-  //         },
-  //     ...rest,
-  //   });
-  // }
 }

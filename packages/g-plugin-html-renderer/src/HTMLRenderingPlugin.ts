@@ -74,14 +74,6 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         const $el = this.getOrCreateEl(object);
         this.$camera.appendChild($el);
 
-        // apply documentElement's style
-        if (runtime.enableCSSParsing) {
-          const { attributes } = object.ownerDocument.documentElement;
-          Object.keys(attributes).forEach((name) => {
-            $el.style[name] = attributes[name];
-          });
-        }
-
         Object.keys(object.attributes).forEach((name) => {
           this.updateAttribute(name, object as HTML);
         });
@@ -113,10 +105,15 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
 
     const handleBoundsChanged = (e: MutationEvent) => {
       const object = e.target as HTML;
-      if (object.nodeName === Shape.HTML) {
-        const $el = this.getOrCreateEl(object);
-        setTransform(object, $el);
-      }
+      const nodes =
+        object.nodeName === Shape.FRAGMENT ? object.childNodes : [object];
+
+      nodes.forEach((node: HTML) => {
+        if (node.nodeName === Shape.HTML) {
+          const $el = this.getOrCreateEl(node);
+          setTransform(node, $el);
+        }
+      });
     };
 
     const handleCanvasResize = () => {
@@ -275,26 +272,16 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         )} ${transformOrigin[1].buildCSSText(null, null, '')}`;
         break;
       case 'width':
-        if (this.context.enableCSSParsing) {
-          const width = object.computedStyleMap().get('width');
-          $el.style.width = width.toString();
-        } else {
-          const { width } = object.parsedStyle;
-          $el.style.width = isNumber(width)
-            ? `${width}px`
-            : (width as string).toString();
-        }
+        const { width } = object.parsedStyle;
+        $el.style.width = isNumber(width)
+          ? `${width}px`
+          : (width as string).toString();
         break;
       case 'height':
-        if (this.context.enableCSSParsing) {
-          const height = object.computedStyleMap().get('height');
-          $el.style.height = height.toString();
-        } else {
-          const { height } = object.parsedStyle;
-          $el.style.height = isNumber(height)
-            ? `${height}px`
-            : (height as string).toString();
-        }
+        const { height } = object.parsedStyle;
+        $el.style.height = isNumber(height)
+          ? `${height}px`
+          : (height as string).toString();
         break;
       case 'zIndex':
         const { zIndex } = object.parsedStyle;

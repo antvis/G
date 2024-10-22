@@ -1,6 +1,5 @@
 import { CSSGlobalKeywords, CSSRGB } from '../css';
 import type { DisplayObjectConfig } from '../dom/interfaces';
-import { runtime } from '../global-runtime';
 import type { TextMetrics } from '../services';
 import type {
   BaseStyleProps,
@@ -251,64 +250,13 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
   constructor({ style, ...rest }: DisplayObjectConfig<TextStyleProps> = {}) {
     super({
       type: Shape.TEXT,
-      style: runtime.enableCSSParsing
-        ? {
-            x: '',
-            y: '',
-            text: '',
-            fontSize: '',
-            fontFamily: '',
-            fontStyle: '',
-            fontWeight: '',
-            fontVariant: '',
-            textAlign: '',
-            textBaseline: '',
-            textTransform: '',
-            fill: 'black',
-            letterSpacing: '',
-            lineHeight: '',
-            miterLimit: '',
-            // whiteSpace: 'pre',
-            wordWrap: false,
-            wordWrapWidth: 0,
-            leading: 0,
-            dx: '',
-            dy: '',
-            ...style,
-          }
-        : {
-            fill: 'black',
-            ...style,
-          },
-      // initialParsedStyle: runtime.enableCSSParsing
-      //   ? {}
-      //   : {
-      //       x: 0,
-      //       y: 0,
-      //       fontSize: 16,
-      //       fontFamily: 'sans-serif',
-      //       fontStyle: 'normal',
-      //       fontWeight: 'normal',
-      //       fontVariant: 'normal',
-      //       lineHeight: 0,
-      //       letterSpacing: 0,
-      //       textBaseline: 'alphabetic',
-      //       textAlign: 'start',
-      //       wordWrap: false,
-      //       wordWrapWidth: 0,
-      //       leading: 0,
-      //       dx: 0,
-      //       dy: 0,
-      //     },
+      style: {
+        fill: 'black',
+        ...style,
+      },
       ...rest,
     });
   }
-
-  // lengthAdjust: SVGAnimatedEnumeration;
-  // textLength: SVGAnimatedLength;
-  // getCharNumAtPosition(point?: DOMPointInit): number {
-  //   throw new Error('Method not implemented.');
-  // }
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement
@@ -317,30 +265,6 @@ export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
     this.getGeometryBounds();
     return this.parsedStyle.metrics?.maxLineWidth || 0;
   }
-
-  // getEndPositionOfChar(charnum: number): DOMPoint {
-  //   throw new Error('Method not implemented.');
-  // }
-  // getExtentOfChar(charnum: number): DOMRect {
-  //   throw new Error('Method not implemented.');
-  // }
-  // getNumberOfChars(): number {
-  //   throw new Error('Method not implemented.');
-  // }
-  // getRotationOfChar(charnum: number): number {
-  //   throw new Error('Method not implemented.');
-  // }
-  // getStartPositionOfChar(charnum: number): DOMPoint {
-  //   throw new Error('Method not implemented.');
-  // }
-
-  // getSubStringLength(charnum: number, nchars: number): number {
-  //   throw new Error('Method not implemented.');
-  // }
-
-  // selectSubString(charnum: number, nchars: number): void {
-  //   throw new Error('Method not implemented.');
-  // }
 
   getLineBoundingRects() {
     this.getGeometryBounds();

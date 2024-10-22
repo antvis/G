@@ -234,45 +234,50 @@ export class SVGRendererPlugin implements RenderingPlugin {
     };
 
     const handleGeometryBoundsChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      // @ts-ignore
-      const $el = object.elementSVG?.$el;
+      const target = e.target as DisplayObject;
 
-      const { fill, stroke, clipPath } =
-        object.parsedStyle as ParsedBaseStyleProps;
+      const nodes =
+        target.nodeName === Shape.FRAGMENT ? target.childNodes : [target];
+      nodes.forEach((object: DisplayObject) => {
+        // @ts-ignore
+        const $el = object.elementSVG?.$el;
 
-      if (fill && !isCSSRGB(fill)) {
-        this.defElementManager.createOrUpdateGradientAndPattern(
-          object,
-          $el,
-          fill,
-          'fill',
-          this,
-        );
-      }
-      if (stroke && !isCSSRGB(stroke)) {
-        this.defElementManager.createOrUpdateGradientAndPattern(
-          object,
-          $el,
-          stroke,
-          'stroke',
-          this,
-        );
-      }
-      if (clipPath) {
-        const parentInvert = mat4.invert(
-          mat4.create(),
-          (object as DisplayObject).getWorldTransform(),
-        );
+        const { fill, stroke, clipPath } =
+          object.parsedStyle as ParsedBaseStyleProps;
 
-        const clipPathId =
-          CLIP_PATH_PREFIX + clipPath.entity + '-' + object.entity;
-        const $def = this.defElementManager.getDefElement();
-        const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
-        if ($existed) {
-          this.applyTransform($existed, parentInvert);
+        if (fill && !isCSSRGB(fill)) {
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            fill,
+            'fill',
+            this,
+          );
         }
-      }
+        if (stroke && !isCSSRGB(stroke)) {
+          this.defElementManager.createOrUpdateGradientAndPattern(
+            object,
+            $el,
+            stroke,
+            'stroke',
+            this,
+          );
+        }
+        if (clipPath) {
+          const parentInvert = mat4.invert(
+            mat4.create(),
+            (object as DisplayObject).getWorldTransform(),
+          );
+
+          const clipPathId =
+            CLIP_PATH_PREFIX + clipPath.entity + '-' + object.entity;
+          const $def = this.defElementManager.getDefElement();
+          const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
+          if ($existed) {
+            this.applyTransform($existed, parentInvert);
+          }
+        }
+      });
     };
 
     renderingService.hooks.init.tap(SVGRendererPlugin.tag, () => {
@@ -472,12 +477,10 @@ export class SVGRendererPlugin implements RenderingPlugin {
   }
 
   private updateAttribute(object: DisplayObject, attributes: string[]) {
-    const { enableCSSParsing } = this.context;
     const { document } = this.context.config;
 
-    const { $el, $groupEl, $hitTestingEl } = (object as any)
-      .elementSVG as ElementSVG;
-    const { parsedStyle, computedStyle, nodeName } = object;
+    const { $el, $hitTestingEl } = (object as any).elementSVG as ElementSVG;
+    const { parsedStyle, nodeName } = object;
     const shouldUpdateElementAttribute = attributes.some((name) =>
       // @ts-ignore
       this.context.SVGElementLifeCycleContribution.shouldUpdateElementAttribute(
@@ -503,10 +506,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      // console.log(name, usedName, computedStyle, parsedStyle);
-      const computedValue = enableCSSParsing
-        ? computedStyle[name]
-        : parsedStyle[name];
+      const computedValue = parsedStyle[name];
       const computedValueStr =
         !isNil(computedValue) && computedValue.toString();
       const formattedValueStr =
@@ -537,7 +537,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         if (
           !usedName ||
           ((nodeName === Shape.GROUP || object.isCustomElement) &&
-            !enableCSSParsing &&
             (inherited || usedName === 'fill' || usedName === 'stroke'))
         ) {
           return;
@@ -559,17 +558,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
             usedName,
             this,
           );
-        } else if (enableCSSParsing && inherited) {
-          // use computed value
-          // update `visibility` on <group>
-          if (
-            computedValueStr !== 'unset' &&
-            computedValueStr !== DEFAULT_VALUE_MAP[name]
-          ) {
-            $groupEl?.setAttribute(usedName, formattedValueStr);
-          } else {
-            $groupEl?.removeAttribute(usedName);
-          }
         } else if (name === 'clipPath') {
           this.createOrUpdateClipOrTextPath(document, usedValue, object);
         } else if (name === 'textPath') {
