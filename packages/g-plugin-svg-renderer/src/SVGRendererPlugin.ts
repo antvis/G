@@ -363,7 +363,6 @@ export class SVGRendererPlugin implements RenderingPlugin {
         this.applyTransform(this.$camera, this.context.camera.getOrthoMatrix());
       }
 
-      // debugger;
       this.renderQueue.forEach((object) => {
         const $el = ((object as any).elementSVG as ElementSVG)?.$el;
         const $groupEl = ((object as any).elementSVG as ElementSVG)?.$groupEl;

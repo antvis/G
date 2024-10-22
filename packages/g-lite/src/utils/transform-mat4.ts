@@ -1,9 +1,10 @@
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
+import type { CSSUnitValue } from '../css/cssom';
 import { ParsedTransform, convertAngleUnit } from '../css/parser';
 import type { DisplayObject } from '../display-objects/DisplayObject';
-import { deg2rad } from './math';
-import type { CSSUnitValue } from '../css/cssom';
+import { runtime } from '../global-runtime';
 import type { TransformType } from '../types';
+import { deg2rad } from './math';
 
 function createSkewMatrix(skewMatrix: mat4, skewX: number, skewY: number) {
   // Create an identity matrix
@@ -93,14 +94,26 @@ const parser: Record<TransformType, (d: CSSUnitValue[]) => void> = {
   },
 };
 
+const $vec3One = vec3.fromValues(1, 1, 1);
+const $vec3Zero = vec3.create();
 const optimizer: {
   [key in TransformType]?: (object: DisplayObject, d: CSSUnitValue[]) => void;
 } = {
   translate: (object: DisplayObject, d: CSSUnitValue[]) => {
-    object.setLocalPosition([d[0].value, d[1].value]);
-  },
-  translate3d: (object: DisplayObject, d: CSSUnitValue[]) => {
-    object.setLocalPosition([d[0].value, d[1].value, d[2].value]);
+    runtime.sceneGraphService.setLocalScale(object, $vec3One, false);
+    runtime.sceneGraphService.setLocalEulerAngles(
+      object,
+      $vec3Zero,
+      undefined,
+      undefined,
+      false,
+    );
+    runtime.sceneGraphService.setLocalPosition(
+      object,
+      [d[0].value, d[1].value, 0],
+      false,
+    );
+    runtime.sceneGraphService.dirtifyLocal(object, object.transformable);
   },
 };
 
