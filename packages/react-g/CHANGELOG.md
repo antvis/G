@@ -1,5 +1,12 @@
 # @antv/react-g
 
+## 2.0.16
+
+### Patch Changes
+
+-   Updated dependencies [b09ec805]
+    -   @antv/g@6.1.0
+
 ## 2.0.15
 
 ### Patch Changes
