@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
 
     "rootDir": "${configDir}/src",
     "outDir": "${configDir}/dist",
@@ -20,7 +20,7 @@
     "importHelpers": true,
 
     "declaration": true,
-    "declarationMap": false,
+    "declarationMap": true,
     "declarationDir": "${configDir}/types",
     // "emitDeclarationOnly": true,
 
@@ -31,5 +31,5 @@
     "skipLibCheck": true
   },
   "include": ["${configDir}/src/**/*"],
-  "exclude": ["dist", "node_modules", "test/types"]
+  "exclude": []
 }

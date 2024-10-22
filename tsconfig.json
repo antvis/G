@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+
     "rootDir": ".",
+
+    "jsx": "react",
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "jsx": "react",
+
     "skipLibCheck": true,
-    "types": ["node"],
+
     "paths": {
       "@antv/g": ["./packages/g/src"],
       "@antv/g-mobile-webgl": ["./packages/g-mobile-webgl/src"],
@@ -86,5 +90,6 @@
       "@antv/g-plugin-image-loader": ["./packages/g-plugin-image-loader/src"]
     }
   },
-  "include": ["packages/*/src/**/*"]
+  "include": ["packages/*/src/**/*", "__tests__/**/*"],
+  "exclude": []
 }

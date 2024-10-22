@@ -1,6 +1,7 @@
 import path from 'path';
 import process from 'process';
 import { fileURLToPath, URL } from 'url';
+import { exec } from 'child_process';
 import { defineConfig } from 'vite';
 import glslify from 'rollup-plugin-glslify';
 import commonjs from '@rollup/plugin-commonjs';
@@ -38,7 +39,8 @@ export default defineConfig({
           extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs'],
         }),
         commonjs({ sourceMap: true }),
-        typescript({ sourceMap: true }),
+        typescript({ sourceMap: true, noCheck: true }),
+        buildTypesPlugin(),
       ],
   resolve: {
     alias: {
@@ -112,3 +114,45 @@ export default defineConfig({
     },
   },
 });
+
+function buildTypesPlugin() {
+  return {
+    name: 'build-types-plugin',
+    /**
+     * @see https://vite.dev/guide/api-plugin.html#handlehotupdate
+     */
+    handleHotUpdate({ file }) {
+      const relativePath = path.relative(__dirname, file);
+      const packagePath = relativePath.startsWith('packages/')
+        ? relativePath.split('/').slice(0, 2).join('/')
+        : null;
+
+      if (!packagePath) {
+        return;
+      }
+
+      exec(
+        `cd ${packagePath} && npm run build:types`,
+        (error, stdout, stderr) => {
+          const date = new Date();
+          const hours = date.getHours().toString().padStart(2, '0');
+          const minutes = date.getMinutes().toString().padStart(2, '0');
+          const seconds = date.getSeconds().toString().padStart(2, '0');
+
+          if (error) {
+            console.error(
+              `\x1b[90m${hours}:${minutes}:${seconds} [build:types]: ${error}`,
+              '\x1b[0m',
+            );
+            return;
+          }
+
+          console.log(
+            `\x1b[90m${hours}:${minutes}:${seconds} [build:types] success`,
+            '\x1b[0m',
+          );
+        },
+      );
+    },
+  };
+}
