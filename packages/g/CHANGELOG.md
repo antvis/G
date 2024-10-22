@@ -1,5 +1,19 @@
 # @antv/g
 
+## 6.1.0
+
+### Minor Changes
+
+-   b09ec805: optimize performance
+
+### Patch Changes
+
+-   Updated dependencies [b09ec805]
+    -   @antv/g-web-animations-api@2.1.0
+    -   @antv/g-lite@2.1.0
+    -   @antv/g-camera-api@2.0.14
+    -   @antv/g-dom-mutation-observer-api@2.0.11
+
 ## 6.0.14
 
 ### Patch Changes

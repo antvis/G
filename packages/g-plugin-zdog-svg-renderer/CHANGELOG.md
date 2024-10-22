@@ -1,5 +1,14 @@
 # @antv/g-plugin-zdog-svg-renderer
 
+## 2.0.13
+
+### Patch Changes
+
+-   Updated dependencies [b09ec805]
+    -   @antv/g-plugin-svg-renderer@2.1.0
+    -   @antv/g-lite@2.1.0
+    -   @antv/g-svg@2.0.13
+
 ## 2.0.12
 
 ### Patch Changes

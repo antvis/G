@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-lite",
-  "version": "2.0.11",
+  "version": "2.1.0",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",

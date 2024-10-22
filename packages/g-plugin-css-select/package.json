@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-css-select",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "A G plugin for using CSS select syntax in query selector",
   "keywords": [
     "antv",
