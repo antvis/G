@@ -230,47 +230,6 @@ describe('Event API', () => {
     li1.emit('build', { prop1: 'xx' });
   });
 
-  it('should compatible with G 3.0 in delegation correctly', async () => {
-    const ul = new Group({
-      id: 'ul',
-    });
-    const li1 = new Rect({
-      id: 'li1',
-      name: 'test-name',
-      style: {
-        x: 200,
-        y: 100,
-        width: 300,
-        height: 100,
-        fill: '#1890FF',
-      },
-    });
-    const li2 = new Rect({
-      id: 'li2',
-      name: 'test-name2',
-      style: {
-        x: 200,
-        y: 300,
-        width: 300,
-        height: 100,
-        fill: '#1890FF',
-      },
-    });
-
-    await canvas.ready;
-    canvas.appendChild(ul);
-    ul.appendChild(li1);
-    ul.appendChild(li2);
-
-    const callback = jest.fn();
-    ul.addEventListener('test-name:click', callback);
-    li2.emit('click', {});
-    expect(callback).not.toHaveBeenCalled();
-
-    li1.emit('click', {});
-    expect(callback).toHaveBeenCalled();
-  });
-
   it.skip('should record childList mutations when appendChild correctly', async () => {
     const group1 = new Group();
     const group2 = new Group();

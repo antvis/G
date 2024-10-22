@@ -2,13 +2,10 @@ import { SortReason } from '../../components';
 import type { DisplayObject } from '../../display-objects';
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
-import { parseNumber, parseNumberUnmemoize } from '../parser/numeric';
 
 export class CSSPropertyZIndex
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {
-  parser = parseNumber;
-  parserUnmemoize = parseNumberUnmemoize;
   calculator(
     name: string,
     oldParsed: CSSUnitValue,

@@ -1,5 +1,4 @@
 import type {
-  DisplayObject,
   IAnimationEffectTiming,
   IElement,
   Interpolatable,
@@ -167,7 +166,7 @@ const InterpolationFactory = (
 ) => {
   return (f: number) => {
     const interpolated = interpolate(from, to, f);
-    return !runtime.enableCSSParsing && isNumber(interpolated)
+    return isNumber(interpolated)
       ? interpolated
       : convertToString(interpolated);
   };
@@ -181,57 +180,15 @@ function propertyInterpolation(
 ) {
   const metadata = propertyMetadataCache[property];
 
-  // discrete step
-  // if (property === 'visibility') {
-  //   return function (t: number) {
-  //     if (t === 0) return left;
-  //     if (t === 1) return right;
-
-  //     debugger;
-
-  //     return t < 0.5 ? left : right;
-  //   };
-  // }
-
   if (metadata && metadata.syntax && metadata.int) {
     const propertyHandler = runtime.styleValueRegistry.getPropertySyntax(
       metadata.syntax,
     );
 
     if (propertyHandler) {
-      let usedLeft;
-      let usedRight;
-      if (runtime.enableCSSParsing) {
-        const computedLeft = runtime.styleValueRegistry.parseProperty(
-          property,
-          left,
-          target as DisplayObject,
-          false, // disable memoize
-        );
-        const computedRight = runtime.styleValueRegistry.parseProperty(
-          property,
-          right,
-          target as DisplayObject,
-          false,
-        );
-
-        usedLeft = runtime.styleValueRegistry.computeProperty(
-          property,
-          computedLeft,
-          target as DisplayObject,
-          false,
-        );
-        usedRight = runtime.styleValueRegistry.computeProperty(
-          property,
-          computedRight,
-          target as DisplayObject,
-          false,
-        );
-      } else {
-        const parser = propertyHandler.parserWithCSSDisabled;
-        usedLeft = parser ? parser(left, target) : left;
-        usedRight = parser ? parser(right, target) : right;
-      }
+      const parser = propertyHandler.parser;
+      const usedLeft = parser ? parser(left, target) : left;
+      const usedRight = parser ? parser(right, target) : right;
 
       // merger [left, right, n2string()]
       const interpolationArgs = propertyHandler.mixer(

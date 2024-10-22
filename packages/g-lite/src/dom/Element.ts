@@ -1,4 +1,3 @@
-import { isNil } from '@antv/util';
 import type {
   Cullable,
   Geometry,
@@ -8,11 +7,14 @@ import type {
   Transform,
 } from '../components';
 import { Strategy } from '../components';
-import { unsetKeywordValue } from '../css/CSSStyleValuePool';
 import { runtime } from '../global-runtime';
 import type { AABB, Rectangle } from '../shapes';
-import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
-import { formatAttributeName, isSymbol } from '../utils/assert';
+import {
+  Shape,
+  type BaseStyleProps,
+  type ParsedBaseStyleProps,
+} from '../types';
+import { isInFragment } from '../utils';
 import {
   ERROR_MSG_APPEND_DESTROYED_ELEMENT,
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
@@ -226,7 +228,11 @@ export class Element<
     runtime.sceneGraphService.attach(child, this, index);
 
     if (this.ownerDocument?.defaultView) {
-      this.ownerDocument.defaultView.mountChildren(child);
+      if (!isInFragment(this) && child.nodeName === Shape.FRAGMENT) {
+        this.ownerDocument.defaultView.mountFragment(child);
+      } else {
+        this.ownerDocument.defaultView.mountChildren(child);
+      }
     }
 
     // @ts-ignore
@@ -368,9 +374,9 @@ export class Element<
     this.forEach((object) => {
       if (object !== this && filter(object as E)) {
         target = object as E;
-        return true;
+        return false;
       }
-      return false;
+      return true;
     });
     return target;
   }
@@ -511,34 +517,7 @@ export class Element<
    */
   style: StyleProps & ICSSStyleDeclaration<StyleProps> = {} as StyleProps &
     ICSSStyleDeclaration<StyleProps>;
-  computedStyle: any = runtime.enableCSSParsing
-    ? {
-        opacity: unsetKeywordValue,
-        fillOpacity: unsetKeywordValue,
-        strokeOpacity: unsetKeywordValue,
-        fill: unsetKeywordValue,
-        stroke: unsetKeywordValue,
-        transform: unsetKeywordValue,
-        transformOrigin: unsetKeywordValue,
-        visibility: unsetKeywordValue,
-        pointerEvents: unsetKeywordValue,
-        lineWidth: unsetKeywordValue,
-        lineCap: unsetKeywordValue,
-        lineJoin: unsetKeywordValue,
-        increasedLineWidthForHitTesting: unsetKeywordValue,
-        fontSize: unsetKeywordValue,
-        fontFamily: unsetKeywordValue,
-        fontStyle: unsetKeywordValue,
-        fontWeight: unsetKeywordValue,
-        fontVariant: unsetKeywordValue,
-        textAlign: unsetKeywordValue,
-        textBaseline: unsetKeywordValue,
-        textTransform: unsetKeywordValue,
-        zIndex: unsetKeywordValue,
-        filter: unsetKeywordValue,
-        shadowType: unsetKeywordValue,
-      }
-    : null;
+  computedStyle = {};
 
   /**
    * Renderers will use these used values.
@@ -589,19 +568,14 @@ export class Element<
    */
   getAttribute(name: keyof StyleProps) {
     // @see https://github.com/antvis/G/issues/1267
-    if (isSymbol(name)) {
-      return runtime.enableCSSParsing ? null : undefined;
+    if (typeof name === 'symbol') {
+      return undefined;
     }
 
-    let value = this.attributes[name];
+    const value = this.attributes[name];
     if (value === undefined) {
-      if (runtime.enableAttributeDashCased) {
-        const attributeName = formatAttributeName(name as string);
-        value = this.attributes[attributeName];
-      }
-
       // if the given attribute does not exist, the value returned will either be null or ""
-      return runtime.enableCSSParsing ? (isNil(value) ? null : value) : value;
+      return value;
     } else {
       return value;
     }

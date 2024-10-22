@@ -1,10 +1,6 @@
 import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
-import {
-  clampedMergeNumbers,
-  parseNumber,
-  parseNumberUnmemoize,
-} from '../parser/numeric';
+import { clampedMergeNumbers } from '../parser/numeric';
 
 /**
  * opacity
@@ -12,10 +8,6 @@ import {
 export class CSSPropertyOpacity
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {
-  parser = parseNumber;
-  parserUnmemoize = parseNumberUnmemoize;
-  parserWithCSSDisabled = null;
-
   calculator(
     name: string,
     oldParsed: CSSUnitValue,

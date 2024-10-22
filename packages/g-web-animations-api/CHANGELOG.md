@@ -1,5 +1,16 @@
 # @antv/g-web-animations-api
 
+## 2.1.0
+
+### Minor Changes
+
+-   b09ec805: optimize performance
+
+### Patch Changes
+
+-   Updated dependencies [b09ec805]
+    -   @antv/g-lite@2.1.0
+
 ## 2.0.11
 
 ### Patch Changes

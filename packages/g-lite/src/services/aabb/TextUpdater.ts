@@ -1,9 +1,8 @@
-import { isNil } from '@antv/util';
 import type {
   DisplayObject,
   ParsedTextStyleProps,
 } from '../../display-objects';
-import { GlobalRuntime, runtime } from '../../global-runtime';
+import { GlobalRuntime } from '../../global-runtime';
 import type { GeometryAABBUpdater } from './interfaces';
 export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
   constructor(private globalRuntime: GlobalRuntime) {}
@@ -12,27 +11,9 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     parsedStyle: ParsedTextStyleProps,
     object: DisplayObject,
   ) {
-    const {
-      text,
-      textAlign,
-      textBaseline,
-      fontSize,
-      fontStyle,
-      fontWeight,
-      fontVariant,
-      lineWidth,
-    } = parsedStyle;
+    const { text } = parsedStyle;
 
-    return runtime.enableCSSParsing
-      ? text &&
-          fontSize &&
-          fontStyle &&
-          fontWeight &&
-          fontVariant &&
-          textAlign &&
-          textBaseline &&
-          !isNil(lineWidth)
-      : text;
+    return text;
   }
 
   update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
@@ -80,7 +61,7 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     );
     parsedStyle.metrics = metrics;
 
-    const { width, height, lineHeight, fontProperties } = metrics;
+    const { width, height } = metrics;
 
     const hwidth = width / 2;
     const hheight = height / 2;
@@ -95,15 +76,11 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
 
     let lineYOffset = y - hheight;
     if (textBaseline === 'middle') {
-      // eslint-disable-next-line prefer-destructuring
       lineYOffset += hheight;
     } else if (textBaseline === 'top' || textBaseline === 'hanging') {
       lineYOffset += hheight * 2;
     } else if (textBaseline === 'alphabetic') {
-      // prevent calling getImageData for ascent metrics
-      lineYOffset += this.globalRuntime.enableCSSParsing
-        ? lineHeight - fontProperties.ascent
-        : 0;
+      // alphabetic has been removed in the latest version, will be treated as bottom
     } else if (textBaseline === 'bottom' || textBaseline === 'ideographic') {
       lineYOffset += 0;
     }

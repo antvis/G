@@ -32,6 +32,7 @@ import {
   getHeight,
   getWidth,
   isBrowser,
+  isInFragment,
   raf,
 } from './utils';
 
@@ -168,6 +169,7 @@ export class Canvas extends EventTarget implements ICanvas {
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
+      cleanUpOnDestroy = true,
       supportsMutipleCanvasesInOneContainer,
       useNativeClickEvent,
       alwaysTriggerPointerEventOnCanvas,
@@ -177,7 +179,7 @@ export class Canvas extends EventTarget implements ICanvas {
     } = config;
 
     if (!supportsMutipleCanvasesInOneContainer) {
-      cleanExistedCanvas(container, this);
+      cleanExistedCanvas(container, this, cleanUpOnDestroy);
     }
 
     let canvasWidth = width;
@@ -244,6 +246,7 @@ export class Canvas extends EventTarget implements ICanvas {
       document,
       supportsCSSTransform,
       useNativeClickEvent,
+      cleanUpOnDestroy,
       alwaysTriggerPointerEventOnCanvas,
     });
 
@@ -384,7 +387,10 @@ export class Canvas extends EventTarget implements ICanvas {
   /**
    * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
    */
-  destroy(cleanUp = true, skipTriggerEvent = false) {
+  destroy(cleanUp = true, skipTriggerEvent?: boolean) {
+    if (skipTriggerEvent === undefined)
+      skipTriggerEvent = this.getConfig().fastCleanExistingCanvas;
+
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
@@ -419,6 +425,20 @@ export class Canvas extends EventTarget implements ICanvas {
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
     }
+
+    const clearEventRetain = (event: CustomEvent) => {
+      event.currentTarget = null;
+      event.manager = null;
+      event.target = null;
+    };
+
+    clearEventRetain(mountedEvent);
+    clearEventRetain(unmountedEvent);
+    clearEventRetain(beforeRenderEvent);
+    clearEventRetain(rerenderEvent);
+    clearEventRetain(afterRenderEvent);
+
+    this.cancelAnimationFrame(this.frameId);
   }
 
   /**
@@ -671,38 +691,47 @@ export class Canvas extends EventTarget implements ICanvas {
     }
   }
 
-  mountChildren(parent: DisplayObject) {
+  mountChildren(
+    child: DisplayObject,
+    skipTriggerEvent: boolean = isInFragment(child),
+  ) {
     if (this.inited) {
-      if (!parent.isConnected) {
-        parent.ownerDocument = this.document;
-        parent.isConnected = true;
+      if (!child.isConnected) {
+        child.ownerDocument = this.document;
+        child.isConnected = true;
 
-        if (parent.isMutationObserved) {
-          parent.dispatchEvent(mountedEvent);
-        } else {
-          mountedEvent.target = parent;
-          this.dispatchEvent(mountedEvent, true);
+        if (!skipTriggerEvent) {
+          if (child.isMutationObserved) {
+            child.dispatchEvent(mountedEvent);
+          } else {
+            mountedEvent.target = child;
+            this.dispatchEvent(mountedEvent, true);
+          }
         }
       }
     } else {
       console.warn(
         "[g]: You are trying to call `canvas.appendChild` before canvas' initialization finished. You can either await `canvas.ready` or listen to `CanvasEvent.READY` manually.",
         'appended child: ',
-        parent.nodeName,
+        child.nodeName,
       );
     }
 
     // recursively mount children
-    parent.childNodes.forEach((child: DisplayObject) => {
-      this.mountChildren(child);
+    child.childNodes.forEach((c: DisplayObject) => {
+      this.mountChildren(c, skipTriggerEvent);
     });
 
     // trigger after mounted
-    if (parent.isCustomElement) {
-      if ((parent as CustomElement<any>).connectedCallback) {
-        (parent as CustomElement<any>).connectedCallback();
+    if (child.isCustomElement) {
+      if ((child as CustomElement<any>).connectedCallback) {
+        (child as CustomElement<any>).connectedCallback();
       }
     }
+  }
+
+  mountFragment(child: DisplayObject) {
+    this.mountChildren(child, false);
   }
 
   client2Viewport(client: PointLike): PointLike {

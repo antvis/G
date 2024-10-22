@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.1.0
+
+### Minor Changes
+
+-   b09ec805: optimize performance
+
 ## 2.0.11
 
 ### Patch Changes

@@ -1,14 +1,9 @@
 import type { DisplayObject } from '../../display-objects';
-import type { ParsedBaseStyleProps } from '../../types';
 import { parsedTransformToMat4 } from '../../utils';
 import { CSSKeywordValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import type { ParsedTransform } from '../parser/transform';
-import {
-  mergeTransforms,
-  parseTransform,
-  parseTransformUnmemoize,
-} from '../parser/transform';
+import { mergeTransforms, parseTransformUnmemoize } from '../parser/transform';
 
 /**
  * @see /zh/docs/api/animation#支持变换的属性
@@ -46,9 +41,7 @@ export class CSSPropertyTransform
       CSSProperty<CSSKeywordValue | ParsedTransform[], ParsedTransform[]>
     >
 {
-  parser = parseTransform;
-  parserUnmemoize = parseTransformUnmemoize;
-  parserWithCSSDisabled = parseTransformUnmemoize;
+  parser = parseTransformUnmemoize;
 
   calculator(
     name: string,
@@ -66,7 +59,6 @@ export class CSSPropertyTransform
   mixer = mergeTransforms;
 
   postProcessor(object: DisplayObject) {
-    const { transform } = object.parsedStyle as ParsedBaseStyleProps;
-    parsedTransformToMat4(transform, object);
+    parsedTransformToMat4(object.parsedStyle.transform, object);
   }
 }

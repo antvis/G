@@ -194,19 +194,12 @@ export class TextService {
 
     const font = toFontString(parsedStyle);
 
-    // if (runtime.enableCSSParsing) {
     const fontProperties = this.measureFont(font, offscreenCanvas);
     // fallback in case UA disallow canvas data extraction
-    // (toDataURI, getImageData functions)
     if (fontProperties.fontSize === 0) {
       fontProperties.fontSize = fontSize;
       fontProperties.ascent = fontSize;
     }
-    // } else {
-    //   fontProperties = {
-    //     fontSize,
-    //   };
-    // }
 
     const context =
       this.runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);

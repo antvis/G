@@ -1,7 +1,6 @@
 import { lineLength, linePointAt } from '@antv/g-math';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObjectConfig } from '../dom';
-import { runtime } from '../global-runtime';
 import { Point } from '../shapes';
 import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
@@ -65,27 +64,16 @@ export class Polyline extends Polygon {
   }: DisplayObjectConfig<PolylineStyleProps> = {}) {
     super({
       type: Shape.POLYLINE,
-      style: runtime.enableCSSParsing
-        ? {
-            points: '',
-            miterLimit: '',
-            isClosed: false,
-            ...style,
-          }
-        : {
-            ...style,
-          },
-      initialParsedStyle: runtime.enableCSSParsing
-        ? null
-        : {
-            points: {
-              points: [],
-              totalLength: 0,
-              segments: [],
-            },
-            miterLimit: 4,
-            isClosed: false,
-          },
+      style,
+      initialParsedStyle: {
+        points: {
+          points: [],
+          totalLength: 0,
+          segments: [],
+        },
+        miterLimit: 4,
+        isClosed: false,
+      },
       ...rest,
     });
   }

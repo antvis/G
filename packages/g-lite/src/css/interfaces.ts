@@ -1,6 +1,5 @@
 import type { BaseStyleProps } from '..';
 import type { DisplayObject } from '../display-objects';
-import type { CSSStyleValue } from './cssom';
 import type { CSSProperty } from './CSSProperty';
 
 /**
@@ -135,31 +134,14 @@ export interface PropertyParseOptions {
 }
 
 export interface StyleValueRegistry {
-  recalc: (displayObject: DisplayObject) => void;
   updateSizeAttenuation: (displayObject: DisplayObject, zoom: number) => void;
   registerMetadata: (metadata: PropertyMetadata) => void;
-  unregisterMetadata: (name: string) => void;
   getPropertySyntax: (syntax: string) => CSSProperty<any, any>;
-  addUnresolveProperty: (object: DisplayObject, name: string) => void;
-
   processProperties: (
     object: DisplayObject,
     attributes: BaseStyleProps,
     options?: Partial<PropertyParseOptions>,
   ) => void;
-
-  parseProperty: (
-    name: string,
-    value: any,
-    object: DisplayObject,
-    memoized: boolean,
-  ) => CSSStyleValue;
-  computeProperty: (
-    name: string,
-    computed: CSSStyleValue,
-    object: DisplayObject,
-    memoized: boolean,
-  ) => any;
 }
 
 export interface LayoutRegistry {

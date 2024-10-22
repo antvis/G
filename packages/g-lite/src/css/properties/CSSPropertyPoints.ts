@@ -1,5 +1,5 @@
 import type { CSSProperty } from '../CSSProperty';
-import { parsePoints, mergePoints } from '../parser/points';
+import { mergePoints } from '../parser/points';
 
 export class CSSPropertyPoints
   implements
@@ -18,7 +18,5 @@ export class CSSPropertyPoints
       >
     >
 {
-  parser = parsePoints;
-
   mixer = mergePoints;
 }

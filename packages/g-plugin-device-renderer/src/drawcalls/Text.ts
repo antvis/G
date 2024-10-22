@@ -136,7 +136,7 @@ export class TextDrawcall extends Instanced {
       const offsetX = dx;
       const offsetY = dy;
 
-      if (!this.context.enableCSSParsing && textBaseline === 'alphabetic') {
+      if (textBaseline === 'alphabetic') {
         textBaseline = 'bottom';
       }
 
@@ -148,8 +148,6 @@ export class TextDrawcall extends Instanced {
         linePositionY += -height;
       } else if (textBaseline === 'top' || textBaseline === 'hanging') {
         linePositionY += 0;
-      } else if (textBaseline === 'alphabetic') {
-        linePositionY += -height + lineHeight * 0.25;
       } else if (textBaseline === 'ideographic') {
         linePositionY += -height;
       }

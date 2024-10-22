@@ -1,7 +1,9 @@
 import { isNil, isUndefined } from '@antv/util';
+import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
 import type { GlobalRuntime } from '../global-runtime';
+import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
 import type {
   BaseStyleProps,
@@ -9,11 +11,7 @@ import type {
   Tuple3Number,
 } from '../types';
 import { Shape } from '../types';
-import { isFunction } from '../utils/assert';
-import { addVec3 } from '../utils/math';
-import { getOrCreateKeyword } from './CSSStyleValuePool';
-import type { CSSRGB, CSSStyleValue } from './cssom';
-import { CSSKeywordValue } from './cssom';
+import type { CSSRGB } from './cssom';
 import type {
   PropertyMetadata,
   PropertyParseOptions,
@@ -33,7 +31,6 @@ import {
   convertPercentUnit,
   parseDimensionArrayFormat,
 } from './parser/dimension';
-import { GeometryAABBUpdater } from '..';
 
 export type CSSGlobalKeywords = 'unset' | 'initial' | 'inherit' | '';
 
@@ -624,28 +621,8 @@ const GEOMETRY_ATTRIBUTE_NAMES = BUILT_IN_PROPERTIES.filter((n) => !!n.l).map(
 );
 
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
-const unresolvedProperties: WeakMap<DisplayObject, string[]> = new WeakMap();
-// const uniqueAttributeSet = new Set<string>();
-
-// const tmpVec3a = vec3.create();
-// const tmpVec3b = vec3.create();
-// const tmpVec3c = vec3.create();
-
-const isPropertyResolved = (object: DisplayObject, name: string) => {
-  const properties = unresolvedProperties.get(object);
-  if (!properties || properties.length === 0) {
-    return true;
-  }
-
-  return properties.includes(name);
-};
 
 export class DefaultStyleValueRegistry implements StyleValueRegistry {
-  /**
-   * need recalc later
-   */
-  // dirty = false;
-
   constructor(private runtime: GlobalRuntime) {
     BUILT_IN_PROPERTIES.forEach((property) => {
       this.registerMetadata(property);
@@ -656,10 +633,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     [metadata.n, ...(metadata.a || [])].forEach((name) => {
       propertyMetadataCache[name] = metadata;
     });
-  }
-
-  unregisterMetadata(name: string) {
-    delete propertyMetadataCache[name];
   }
 
   getPropertySyntax(syntax: string) {
@@ -686,504 +659,186 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       memoize: true,
     },
   ) {
-    if (!this.runtime.enableCSSParsing) {
-      Object.assign(object.attributes, attributes);
-      const attributeNames = Object.keys(attributes);
+    Object.assign(object.attributes, attributes);
 
-      // clipPath
-      const oldClipPath = object.parsedStyle.clipPath;
-      const oldOffsetPath = object.parsedStyle.offsetPath;
+    // clipPath
+    const oldClipPath = object.parsedStyle.clipPath;
+    const oldOffsetPath = object.parsedStyle.offsetPath;
 
-      object.parsedStyle = Object.assign(object.parsedStyle, attributes);
+    Object.assign(object.parsedStyle, attributes);
 
-      let needUpdateGeometry = !!options.forceUpdateGeometry;
-      if (!needUpdateGeometry) {
-        for (let i = 0; i < GEOMETRY_ATTRIBUTE_NAMES.length; i++) {
-          if (GEOMETRY_ATTRIBUTE_NAMES[i] in attributes) {
-            needUpdateGeometry = true;
-            break;
-          }
-        }
-      }
+    let needUpdateGeometry = !!options.forceUpdateGeometry;
 
-      if (attributes.fill) {
-        object.parsedStyle.fill = parseColor(attributes.fill);
-      }
-      if (attributes.stroke) {
-        object.parsedStyle.stroke = parseColor(attributes.stroke);
-      }
-      if (attributes.shadowColor) {
-        object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
-      }
-      if (attributes.filter) {
-        object.parsedStyle.filter = parseFilter(attributes.filter);
-      }
-      // Rect
+    if (
+      !needUpdateGeometry &&
+      GEOMETRY_ATTRIBUTE_NAMES.some((name) => name in attributes)
+    ) {
+      needUpdateGeometry = true;
+    }
+
+    if (attributes.fill) {
+      object.parsedStyle.fill = parseColor(attributes.fill);
+    }
+    if (attributes.stroke) {
+      object.parsedStyle.stroke = parseColor(attributes.stroke);
+    }
+    if (attributes.shadowColor) {
+      object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
+    }
+    if (attributes.filter) {
+      object.parsedStyle.filter = parseFilter(attributes.filter);
+    }
+    // Rect
+    // @ts-ignore
+    if (!isNil(attributes.radius)) {
       // @ts-ignore
-      if (!isNil(attributes.radius)) {
+      object.parsedStyle.radius = parseDimensionArrayFormat(
         // @ts-ignore
-        object.parsedStyle.radius = parseDimensionArrayFormat(
-          // @ts-ignore
-          attributes.radius,
-          4,
-        );
-      }
-      // Polyline
-      if (!isNil(attributes.lineDash)) {
-        object.parsedStyle.lineDash = parseDimensionArrayFormat(
-          attributes.lineDash,
-          2,
-        );
-      }
+        attributes.radius,
+        4,
+      );
+    }
+    // Polyline
+    if (!isNil(attributes.lineDash)) {
+      object.parsedStyle.lineDash = parseDimensionArrayFormat(
+        attributes.lineDash,
+        2,
+      );
+    }
+    // @ts-ignore
+    if (attributes.points) {
       // @ts-ignore
-      if (attributes.points) {
+      object.parsedStyle.points = parsePoints(attributes.points, object);
+    }
+    // Path
+    // @ts-ignore
+    if (attributes.d === '') {
+      object.parsedStyle.d = {
+        ...EMPTY_PARSED_PATH,
+      };
+    }
+    // @ts-ignore
+    if (attributes.d) {
+      object.parsedStyle.d = parsePath(
         // @ts-ignore
-        object.parsedStyle.points = parsePoints(attributes.points, object);
-      }
-      // Path
-      // @ts-ignore
-      if (attributes.d === '') {
-        object.parsedStyle.d = {
-          ...EMPTY_PARSED_PATH,
-        };
-      }
-      // @ts-ignore
-      if (attributes.d) {
-        object.parsedStyle.d = parsePath(
-          // @ts-ignore
-          attributes.d,
-        );
-      }
-      // Text
-      if (attributes.textTransform) {
-        this.runtime.CSSPropertySyntaxFactory['<text-transform>'].calculator(
-          null,
-          null,
-          { value: attributes.textTransform },
-          object,
-          null,
-        );
-      }
-      if (!isUndefined(attributes.clipPath)) {
-        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
-          'clipPath',
-          oldClipPath,
-          attributes.clipPath,
-          object,
-          this.runtime,
-        );
-      }
-      if (attributes.offsetPath) {
-        this.runtime.CSSPropertySyntaxFactory['<defined-path>'].calculator(
-          'offsetPath',
-          oldOffsetPath,
-          attributes.offsetPath,
-          object,
-          this.runtime,
-        );
-      }
-      if (attributes.transform) {
-        object.parsedStyle.transform = parseTransform(attributes.transform);
-      }
-      if (attributes.transformOrigin) {
-        object.parsedStyle.transformOrigin = parseTransformOrigin(
-          attributes.transformOrigin,
-        );
-      }
-      // Marker
-      // @ts-ignore
-      if (attributes.markerStart) {
-        object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          null,
-          // @ts-ignore
-          attributes.markerStart,
-          // @ts-ignore
-          attributes.markerStart,
-          null,
-          null,
-        );
-      }
-      // @ts-ignore
-      if (attributes.markerEnd) {
-        object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          null,
-          // @ts-ignore
-          attributes.markerEnd,
-          // @ts-ignore
-          attributes.markerEnd,
-          null,
-          null,
-        );
-      }
-      // @ts-ignore
-      if (attributes.markerMid) {
-        object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
-          '<marker>'
-        ].calculator(
-          '',
-          // @ts-ignore
-          attributes.markerMid,
-          // @ts-ignore
-          attributes.markerMid,
-          null,
-          null,
-        );
-      }
-
-      if (!isNil(attributes.zIndex)) {
-        this.runtime.CSSPropertySyntaxFactory['<z-index>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
-      if (!isNil(attributes.offsetDistance)) {
-        this.runtime.CSSPropertySyntaxFactory[
-          '<offset-distance>'
-        ].postProcessor(object, attributeNames);
-      }
-      if (attributes.transform) {
-        this.runtime.CSSPropertySyntaxFactory['<transform>'].postProcessor(
-          object,
-          attributeNames,
-        );
-      }
-      if (attributes.transformOrigin) {
-        this.runtime.CSSPropertySyntaxFactory[
-          '<transform-origin>'
-        ].postProcessor(object, attributeNames);
-      }
-
-      if (needUpdateGeometry) {
-        object.geometry.dirty = true;
-        object.renderable.boundsDirty = true;
-        object.renderable.renderBoundsDirty = true;
-
-        if (!options.forceUpdateGeometry) {
-          this.runtime.sceneGraphService.dirtifyToRoot(object);
-        }
-      }
-    } else {
-      const {
-        skipUpdateAttribute,
-        skipParse,
-        forceUpdateGeometry,
-        usedAttributes,
-        memoize,
-      } = options;
-
-      let needUpdateGeometry = forceUpdateGeometry;
-      let attributeNames = Object.keys(attributes);
-
-      attributeNames.forEach((attributeName) => {
-        if (!skipUpdateAttribute) {
-          object.attributes[attributeName] = attributes[attributeName];
-        }
-
-        if (!needUpdateGeometry && propertyMetadataCache[attributeName]?.l) {
-          needUpdateGeometry = true;
-        }
-      });
-
-      if (!skipParse) {
-        attributeNames.forEach((name) => {
-          object.computedStyle[name] = this.parseProperty(
-            name as string,
-            object.attributes[name],
-            object,
-            memoize,
-          );
-        });
-      }
-
-      // let hasUnresolvedProperties = false;
-
-      // parse according to priority
-      // path 50
-      // points 50
-      // text 50
-      // textTransform 51
-      // transform 100
-      // transformOrigin 100
-      if (usedAttributes?.length) {
-        // uniqueAttributeSet.clear();
-        attributeNames = Array.from(
-          new Set(attributeNames.concat(usedAttributes)),
-        );
-      }
-
-      // [
-      //   'path',
-      //   'points',
-      //   'text',
-      //   'textTransform',
-      //   'transform',
-      //   'transformOrigin',
-      // ].forEach((name) => {
-      //   const index = attributeNames.indexOf(name);
-      //   if (index > -1) {
-      //     attributeNames.splice(index, 1);
-      //     attributeNames.push(name);
-      //   }
-      // });
-
-      attributeNames.forEach((name) => {
-        // some style props maybe deleted after parsing such as `anchor` in Text
-        if (name in object.computedStyle) {
-          object.parsedStyle[name] = this.computeProperty(
-            name as string,
-            object.computedStyle[name],
-            object,
-            memoize,
-          );
-        }
-      });
-
-      // if (hasUnresolvedProperties) {
-      //   this.dirty = true;
-      //   return;
-      // }
-
-      // update geometry
-      if (needUpdateGeometry) {
-        object.geometry.dirty = true;
-        object.renderable.boundsDirty = true;
-        object.renderable.renderBoundsDirty = true;
-        if (!options.forceUpdateGeometry) {
-          this.runtime.sceneGraphService.dirtifyToRoot(object);
-        }
-      }
-
-      attributeNames.forEach((name) => {
-        if (name in object.parsedStyle) {
-          this.postProcessProperty(name as string, object, attributeNames);
-        }
-      });
-
-      if (this.runtime.enableCSSParsing && object.children.length) {
-        attributeNames.forEach((name) => {
-          if (name in object.parsedStyle && this.isPropertyInheritable(name)) {
-            // update children's inheritable
-            object.children.forEach((child: DisplayObject) => {
-              child.internalSetAttribute(name, null, {
-                skipUpdateAttribute: true,
-                skipParse: true,
-              });
-            });
-          }
-        });
-      }
+        attributes.d,
+      );
     }
-  }
-
-  /**
-   * string -> parsed value
-   */
-  parseProperty(
-    name: string,
-    value: any,
-    object: DisplayObject,
-    memoized: boolean,
-  ): CSSStyleValue {
-    const metadata = propertyMetadataCache[name];
-
-    let computed: CSSStyleValue = value;
-    if (value === '' || isNil(value)) {
-      value = 'unset';
+    // Text
+    if (attributes.textTransform) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.TEXT_TRANSFORM
+      ].calculator(
+        null,
+        null,
+        { value: attributes.textTransform },
+        object,
+        null,
+      );
+    }
+    if (!isUndefined(attributes.clipPath)) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.DEFINED_PATH
+      ].calculator(
+        'clipPath',
+        oldClipPath,
+        attributes.clipPath,
+        object,
+        this.runtime,
+      );
+    }
+    if (attributes.offsetPath) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.DEFINED_PATH
+      ].calculator(
+        'offsetPath',
+        oldOffsetPath,
+        attributes.offsetPath,
+        object,
+        this.runtime,
+      );
+    }
+    if (attributes.transform) {
+      object.parsedStyle.transform = parseTransform(attributes.transform);
+    }
+    if (attributes.transformOrigin) {
+      object.parsedStyle.transformOrigin = parseTransformOrigin(
+        attributes.transformOrigin,
+      );
+    }
+    // Marker
+    // @ts-ignore
+    if (attributes.markerStart) {
+      object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.MARKER
+      ].calculator(
+        null,
+        // @ts-ignore
+        attributes.markerStart,
+        // @ts-ignore
+        attributes.markerStart,
+        null,
+        null,
+      );
+    }
+    // @ts-ignore
+    if (attributes.markerEnd) {
+      object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.MARKER
+      ].calculator(
+        null,
+        // @ts-ignore
+        attributes.markerEnd,
+        // @ts-ignore
+        attributes.markerEnd,
+        null,
+        null,
+      );
+    }
+    // @ts-ignore
+    if (attributes.markerMid) {
+      object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.MARKER
+      ].calculator(
+        '',
+        // @ts-ignore
+        attributes.markerMid,
+        // @ts-ignore
+        attributes.markerMid,
+        null,
+        null,
+      );
     }
 
-    if (value === 'unset' || value === 'initial' || value === 'inherit') {
-      // computed = new CSSKeywordValue(value);
-      computed = getOrCreateKeyword(value);
-    } else {
-      if (metadata) {
-        const { k: keywords, syntax } = metadata;
-        const handler = syntax && this.getPropertySyntax(syntax);
+    if (!isNil(attributes.zIndex)) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.Z_INDEX
+      ].postProcessor(object);
+    }
+    if (!isNil(attributes.offsetDistance)) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.OFFSET_DISTANCE
+      ].postProcessor(object);
+    }
+    if (attributes.transform) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.TRANSFORM
+      ].postProcessor(object);
+    }
+    if (attributes.transformOrigin) {
+      this.runtime.CSSPropertySyntaxFactory[
+        PropertySyntax.TRANSFORM_ORIGIN
+      ].postProcessor(object);
+    }
 
-        // use keywords
-        if (keywords && keywords.indexOf(value) > -1) {
-          // computed = new CSSKeywordValue(value);
-          computed = getOrCreateKeyword(value);
-        } else if (handler) {
-          if (!memoized && handler.parserUnmemoize) {
-            computed = handler.parserUnmemoize(value, object);
-          } else if (handler.parser) {
-            // try to parse it to CSSStyleValue, eg. '10px' -> CSS.px(10)
-            computed = handler.parser(value, object);
-          }
-        }
+    if (needUpdateGeometry) {
+      object.geometry.dirty = true;
+      object.renderable.boundsDirty = true;
+      object.renderable.renderBoundsDirty = true;
+
+      if (!options.forceUpdateGeometry) {
+        this.runtime.sceneGraphService.dirtifyToRoot(object);
       }
-    }
-
-    return computed;
-  }
-
-  /**
-   * computed value -> used value
-   */
-  computeProperty(
-    name: string,
-    computed: CSSStyleValue,
-    object: DisplayObject,
-    memoized: boolean,
-  ) {
-    const metadata = propertyMetadataCache[name];
-    const isDocumentElement = object.id === 'g-root';
-
-    // let used: CSSStyleValue = computed instanceof CSSStyleValue ? computed.clone() : computed;
-    let used: any = computed;
-
-    if (metadata) {
-      const { syntax, inh: inherited, d: defaultValue } = metadata;
-      if (computed instanceof CSSKeywordValue) {
-        let value = computed.value;
-
-        /**
-         * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/unset
-         */
-        if (value === 'unset') {
-          if (inherited && !isDocumentElement) {
-            value = 'inherit';
-          } else {
-            value = 'initial';
-          }
-        }
-
-        if (value === 'initial') {
-          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/initial
-          if (!isNil(defaultValue)) {
-            computed = this.parseProperty(
-              name,
-              isFunction(defaultValue)
-                ? defaultValue(object.nodeName)
-                : defaultValue,
-              object,
-              memoized,
-            );
-          }
-        } else if (value === 'inherit') {
-          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/inherit
-          // behave like `inherit`
-          const resolved = this.tryToResolveProperty(object, name, {
-            inherited: true,
-          });
-          if (!isNil(resolved)) {
-            // object.parsedStyle[name] = resolved;
-            // return false;
-            return resolved;
-          } else {
-            this.addUnresolveProperty(object, name);
-            return;
-          }
-        }
-      }
-
-      const handler = syntax && this.getPropertySyntax(syntax);
-      if (handler && handler.calculator) {
-        // convert computed value to used value
-        const oldParsedValue = object.parsedStyle[name];
-        used = handler.calculator(
-          name,
-          oldParsedValue,
-          computed,
-          object,
-          this.runtime,
-        );
-      } else if (computed instanceof CSSKeywordValue) {
-        used = computed.value;
-      } else {
-        used = computed;
-      }
-    }
-
-    // object.parsedStyle[name] = used;
-    // return false;
-    return used;
-  }
-
-  postProcessProperty(
-    name: string,
-    object: DisplayObject,
-    attributes: string[],
-  ) {
-    const metadata = propertyMetadataCache[name];
-
-    if (metadata && metadata.syntax) {
-      const handler =
-        metadata.syntax && this.getPropertySyntax(metadata.syntax);
-      const propertyHandler = handler;
-
-      if (propertyHandler && propertyHandler.postProcessor) {
-        propertyHandler.postProcessor(object, attributes);
-      }
-    }
-  }
-
-  /**
-   * resolve later
-   */
-  addUnresolveProperty(object: DisplayObject, name: string) {
-    let properties = unresolvedProperties.get(object);
-    if (!properties) {
-      unresolvedProperties.set(object, []);
-      properties = unresolvedProperties.get(object);
-    }
-
-    if (properties.indexOf(name) === -1) {
-      properties.push(name);
-    }
-  }
-
-  tryToResolveProperty(
-    object: DisplayObject,
-    name: string,
-    options: { inherited?: boolean } = {},
-  ) {
-    const { inherited } = options;
-
-    if (inherited) {
-      if (
-        object.parentElement &&
-        isPropertyResolved(object.parentElement as DisplayObject, name)
-      ) {
-        // const computedValue = object.parentElement.computedStyle[name];
-        const usedValue = object.parentElement.parsedStyle[name];
-        if (
-          // usedValue instanceof CSSKeywordValue &&
-          usedValue === 'unset' ||
-          usedValue === 'initial' ||
-          usedValue === 'inherit'
-        ) {
-          return;
-        }
-
-        // else if (
-        //   usedValue instanceof CSSUnitValue &&
-        //   CSSUnitValue.isRelativeUnit(usedValue.unit)
-        // ) {
-        //   return false;
-        // }
-
-        return usedValue;
-      }
-    }
-
-    return;
-  }
-
-  recalc(object: DisplayObject) {
-    const properties = unresolvedProperties.get(object);
-    if (properties && properties.length) {
-      const attributes = {};
-      properties.forEach((property) => {
-        attributes[property] = object.attributes[property];
-      });
-
-      this.processProperties(object, attributes);
-      unresolvedProperties.delete(object);
     }
   }
 
@@ -1219,12 +874,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         Math.abs(hheight),
         hdepth,
       ];
-      // const halfExtents = vec3.set(
-      //   tmpVec3a,
-      //   Math.abs(width) / 2,
-      //   Math.abs(height) / 2,
-      //   depth / 2,
-      // );
       // anchor is center by default, don't account for lineWidth here
       const {
         stroke,
@@ -1248,27 +897,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         nodeName === Shape.PATH
           ? Math.SQRT2
           : 0.5;
-      // if (lineCap?.value === 'square') {
-      //   expansion = Math.SQRT1_2;
-      // }
-      // if (lineJoin?.value === 'miter' && expansion < Math.SQRT2 * miterLimit) {
-      //   expansion = Math.SQRT1_2 * miterLimit;
-      // }
       // append border only if stroke existed
       const hasStroke = stroke && !(stroke as CSSRGB).isNone;
       if (hasStroke) {
         const halfLineWidth =
           ((lineWidth || 0) + (increasedLineWidthForHitTesting || 0)) *
           expansion;
-        // halfExtents[0] += halfLineWidth[0];
-        // halfExtents[1] += halfLineWidth[1];
         halfExtents[0] += halfLineWidth;
         halfExtents[1] += halfLineWidth;
-        // vec3.add(
-        //   halfExtents,
-        //   halfExtents,
-        //   vec3.set(tmpVec3c, halfLineWidth, halfLineWidth, 0),
-        // );
       }
       geometry.renderBounds.update(center, halfExtents);
       // account for shadow, only support constant value now
@@ -1296,11 +932,11 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           const blurRadius = params[0].value as number;
           geometry.renderBounds.update(
             geometry.renderBounds.center,
-            addVec3(
+            vec3.add(
               geometry.renderBounds.halfExtents,
               geometry.renderBounds.halfExtents,
               [blurRadius, blurRadius, 0],
-            ),
+            ) as Tuple3Number,
           );
         } else if (name === 'drop-shadow') {
           const shadowOffsetX = params[0].value;
@@ -1367,14 +1003,5 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         }
       }
     }
-  }
-
-  private isPropertyInheritable(name: string) {
-    const metadata = propertyMetadataCache[name];
-    if (!metadata) {
-      return false;
-    }
-
-    return metadata.inh;
   }
 }
