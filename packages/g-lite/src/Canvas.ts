@@ -671,13 +671,11 @@ export class Canvas extends EventTarget implements ICanvas {
     });
 
     if (this.inited) {
-      if (!this.getConfig().cleanUpOnDestroy) {
-        if (parent.isMutationObserved) {
-          parent.dispatchEvent(unmountedEvent);
-        } else {
-          unmountedEvent.target = parent;
-          this.dispatchEvent(unmountedEvent, true);
-        }
+      if (parent.isMutationObserved) {
+        parent.dispatchEvent(unmountedEvent);
+      } else {
+        unmountedEvent.target = parent;
+        this.dispatchEvent(unmountedEvent, true);
       }
 
       // skip document.documentElement
