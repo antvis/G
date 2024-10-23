@@ -158,24 +158,23 @@ export class ARButton {
         .catch(showARNotAllowed);
 
       return button;
-    } else {
-      const message = document.createElement('a');
-
-      if (window.isSecureContext === false) {
-        message.href = document.location.href.replace(/^http:/, 'https:');
-        message.innerHTML = 'WEBXR NEEDS HTTPS'; // TODO Improve message
-      } else {
-        message.href = 'https://immersiveweb.dev/';
-        message.innerHTML = 'WEBXR NOT AVAILABLE';
-      }
-
-      message.style.left = 'calc(50% - 90px)';
-      message.style.width = '180px';
-      message.style.textDecoration = 'none';
-
-      stylizeElement(message);
-
-      return message;
     }
+    const message = document.createElement('a');
+
+    if (window.isSecureContext === false) {
+      message.href = document.location.href.replace(/^http:/, 'https:');
+      message.innerHTML = 'WEBXR NEEDS HTTPS'; // TODO Improve message
+    } else {
+      message.href = 'https://immersiveweb.dev/';
+      message.innerHTML = 'WEBXR NOT AVAILABLE';
+    }
+
+    message.style.left = 'calc(50% - 90px)';
+    message.style.width = '180px';
+    message.style.textDecoration = 'none';
+
+    stylizeElement(message);
+
+    return message;
   }
 }

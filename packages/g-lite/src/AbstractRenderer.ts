@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import type { CanvasContext } from './dom';
 import { GlobalRuntime } from './global-runtime';
 import type { RenderingPlugin } from './services';

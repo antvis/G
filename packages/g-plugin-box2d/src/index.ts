@@ -25,7 +25,11 @@ export class Plugin extends AbstractRendererPlugin {
     this.removeAllRenderingPlugins();
   }
 
-  applyForce(object: DisplayObject, force: [number, number], point: [number, number]) {
+  applyForce(
+    object: DisplayObject,
+    force: [number, number],
+    point: [number, number],
+  ) {
     this.plugins[0].applyForce(object, force, point);
   }
 }

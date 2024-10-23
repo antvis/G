@@ -8,7 +8,7 @@ import {
 } from '@antv/g-lite';
 import { PathArray, isNumberEqual } from '@antv/util';
 
-const PI = Math.PI;
+const { PI } = Math;
 const PI2 = PI * 2;
 const mathSin = Math.sin;
 const mathCos = Math.cos;
@@ -200,9 +200,9 @@ export class Sector extends CustomElement<SectorStyleProps> {
       sy,
       startAngle ? deg2rad(startAngle) : 0,
       endAngle ? deg2rad(endAngle) : Math.PI * 2,
-      sr ? sr : 0,
-      sr0 ? sr0 : 0,
-      sradius ? sradius : [0, 0, 0, 0],
+      sr || 0,
+      sr0 || 0,
+      sradius || [0, 0, 0, 0],
     );
 
     this.path.style.d = path;
@@ -569,6 +569,6 @@ export class Sector extends CustomElement<SectorStyleProps> {
     }
     sectorPathCommands.push(['Z']);
 
-    return sectorPathCommands as PathArray;
+    return sectorPathCommands;
   }
 }

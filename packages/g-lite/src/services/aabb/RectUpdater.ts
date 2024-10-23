@@ -6,6 +6,7 @@ import type {
   Rect,
 } from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
+
 export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
   update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
     const { x = 0, y = 0, src, width = 0, height = 0 } = parsedStyle;

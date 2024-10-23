@@ -23,20 +23,14 @@ function step(count: number, pos: number) {
 
 const numberString = '\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*';
 const cubicBezierRe = new RegExp(
-  'cubic-bezier\\(' +
-    numberString +
-    ',' +
-    numberString +
-    ',' +
-    numberString +
-    ',' +
-    numberString +
-    '\\)',
+  `cubic-bezier\\(${numberString},${numberString},${numberString},${numberString}\\)`,
 );
 const step1Re = /steps\(\s*(\d+)\s*\)/;
 const step2Re = /steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/;
 
-export function parseEasingFunction(normalizedEasing: string): (t: number) => number {
+export function parseEasingFunction(
+  normalizedEasing: string,
+): (t: number) => number {
   const cubicData = cubicBezierRe.exec(normalizedEasing);
   if (cubicData) {
     // @ts-ignore
@@ -49,7 +43,10 @@ export function parseEasingFunction(normalizedEasing: string): (t: number) => nu
   const step2Data = step2Re.exec(normalizedEasing);
   if (step2Data) {
     // @ts-ignore
-    return step(Number(step2Data[1]), { start: Start, middle: Middle, end: End }[step2Data[2]]);
+    return step(
+      Number(step2Data[1]),
+      { start: Start, middle: Middle, end: End }[step2Data[2]],
+    );
   }
   return getEasingFunction(normalizedEasing);
 }
@@ -70,7 +67,10 @@ function repeatedDuration(timing: EffectTiming): number {
   //   timing.duration = 0;
   // }
 
-  return (timing.duration === 'auto' ? 0 : Number(timing.duration)) * (timing.iterations ?? 1);
+  return (
+    (timing.duration === 'auto' ? 0 : Number(timing.duration)) *
+    (timing.iterations ?? 1)
+  );
 }
 
 const PhaseNone = 0;
@@ -88,11 +88,14 @@ function calculatePhase(
     return PhaseNone;
   }
 
-  const endTime = timing.endTime;
+  const { endTime } = timing;
   if (localTime < Math.min(timing.delay, endTime)) {
     return PhaseBefore;
   }
-  if (localTime >= Math.min(timing.delay + activeDuration + timing.endDelay, endTime)) {
+  if (
+    localTime >=
+    Math.min(timing.delay + activeDuration + timing.endDelay, endTime)
+  ) {
     return PhaseAfter;
   }
 
@@ -308,7 +311,7 @@ export const EasingKeys = Object.keys(EASINGS);
 /**
  * Converts users input into a usable easing function string
  */
-export const getEase = (ease: keyof typeof EASINGS | string = 'ease'): string => {
+export const getEase = (ease: keyof typeof EASINGS = 'ease'): string => {
   // Convert camelCase strings into dashed strings, then Remove the "ease-" keyword
   const search = convertToDash(ease).replace(/^ease-/, '');
   return EASINGS[search] || ease;

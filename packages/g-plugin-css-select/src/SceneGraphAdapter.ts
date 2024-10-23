@@ -23,7 +23,8 @@ export class SceneGraphAdapter implements Adapter<IElement, IElement> {
   getAttributeValue(node: IElement, name: string): string | undefined {
     if (name === 'id') {
       return node.id;
-    } else if (name === 'class') {
+    }
+    if (name === 'class') {
       return node.className;
     }
     return (node.getAttribute && `${node.getAttribute(name)}`) || '';

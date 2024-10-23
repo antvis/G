@@ -119,10 +119,8 @@ export function box(
       if (startAngle < xAngle && xAngle < endAngle) {
         xs.push(xAngle);
       }
-    } else {
-      if (endAngle < xAngle && xAngle < startAngle) {
-        xs.push(xAngle);
-      }
+    } else if (endAngle < xAngle && xAngle < startAngle) {
+      xs.push(xAngle);
     }
   }
 
@@ -146,10 +144,8 @@ export function box(
       if (startAngle < yAngle && yAngle < endAngle) {
         ys.push(yAngle);
       }
-    } else {
-      if (endAngle < yAngle && yAngle < startAngle) {
-        ys.push(yAngle);
-      }
+    } else if (endAngle < yAngle && yAngle < startAngle) {
+      ys.push(yAngle);
     }
   }
 

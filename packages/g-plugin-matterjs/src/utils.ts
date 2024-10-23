@@ -32,11 +32,9 @@ export function sortPointsInCCW(pts: [number, number][]): [number, number][] {
     let ang = Math.atan2(point.y - center.y, point.x - center.x);
     if (!startAng) {
       startAng = ang;
-    } else {
-      if (ang < startAng) {
-        // ensure that all points are clockwise of the start point
-        ang += Math.PI * 2;
-      }
+    } else if (ang < startAng) {
+      // ensure that all points are clockwise of the start point
+      ang += Math.PI * 2;
     }
     point.angle = ang; // add the angle to the point
   });

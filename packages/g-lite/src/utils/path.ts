@@ -104,7 +104,7 @@ export function extractPolygons(pathArray: AbsoluteArray) {
         polylines.push(points);
         points = []; // 创建新的点
       }
-      points.push([params[1] as number, params[2] as number]);
+      points.push([params[1], params[2]]);
     } else if (cmd === 'Z') {
       if (points.length) {
         // 存在点
@@ -113,7 +113,7 @@ export function extractPolygons(pathArray: AbsoluteArray) {
       }
       // 如果不存在点，同时 'Z'，则说明是错误，不处理
     } else {
-      points.push([params[1] as number, params[2] as number]);
+      points.push([params[1], params[2]]);
     }
   }
   // 说明 points 未放入 polygons 或者 polyline
@@ -163,7 +163,7 @@ export function getPathBBox(segments: any[], lineWidth: number) {
         );
         break;
       case 'A':
-        const arcParams = segment.arcParams;
+        const { arcParams } = segment;
         box = arcBox(
           arcParams.cx,
           arcParams.cy,
@@ -220,17 +220,17 @@ export function getPathBBox(segments: any[], lineWidth: number) {
     let extra;
     if (currentPoint[0] === minX) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      minX = minX - extra.xExtra;
+      minX -= extra.xExtra;
     } else if (currentPoint[0] === maxX) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      maxX = maxX + extra.xExtra;
+      maxX += extra.xExtra;
     }
     if (currentPoint[1] === minY) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      minY = minY - extra.yExtra;
+      minY -= extra.yExtra;
     } else if (currentPoint[1] === maxY) {
       extra = getExtraFromSegmentWithAngle(segment, lineWidth);
-      maxY = maxY + extra.yExtra;
+      maxY += extra.yExtra;
     }
   }
   return {
@@ -244,14 +244,12 @@ export function getPathBBox(segments: any[], lineWidth: number) {
 function getExtraFromSegmentWithAngle(segment, lineWidth: number) {
   const { prePoint, currentPoint, nextPoint } = segment;
   const currentAndPre =
-    Math.pow(currentPoint[0] - prePoint[0], 2) +
-    Math.pow(currentPoint[1] - prePoint[1], 2);
+    (currentPoint[0] - prePoint[0]) ** 2 + (currentPoint[1] - prePoint[1]) ** 2;
   const currentAndNext =
-    Math.pow(currentPoint[0] - nextPoint[0], 2) +
-    Math.pow(currentPoint[1] - nextPoint[1], 2);
+    (currentPoint[0] - nextPoint[0]) ** 2 +
+    (currentPoint[1] - nextPoint[1]) ** 2;
   const preAndNext =
-    Math.pow(prePoint[0] - nextPoint[0], 2) +
-    Math.pow(prePoint[1] - nextPoint[1], 2);
+    (prePoint[0] - nextPoint[0]) ** 2 + (prePoint[1] - nextPoint[1]) ** 2;
   // 以 currentPoint 为顶点的夹角
   const currentAngle = Math.acos(
     (currentAndPre + currentAndNext - preAndNext) /
@@ -305,10 +303,7 @@ function toSymmetry(point: number[], center: number[]) {
 
 const angleBetween = (v0: PointLike, v1: PointLike) => {
   const p = v0.x * v1.x + v0.y * v1.y;
-  const n = Math.sqrt(
-    (Math.pow(v0.x, 2) + Math.pow(v0.y, 2)) *
-      (Math.pow(v1.x, 2) + Math.pow(v1.y, 2)),
-  );
+  const n = Math.sqrt((v0.x ** 2 + v0.y ** 2) * (v1.x ** 2 + v1.y ** 2));
   const sign = v0.x * v1.y - v0.y * v1.x < 0 ? -1 : 1;
   const angle = sign * Math.acos(p / n);
 
@@ -344,7 +339,7 @@ const pointOnEllipticalArc = (
 
   // If rx = 0 or ry = 0 then this arc is treated as a straight line segment joining the endpoints.
   if (rx === 0 || ry === 0) {
-    //return this.pointOnLine(p0, p1, t);
+    // return this.pointOnLine(p0, p1, t);
     return { x: 0, y: 0, ellipticalArcAngle: 0 }; // Check if angle is correct
   }
 
@@ -363,21 +358,19 @@ const pointOnEllipticalArc = (
   };
   // Ensure radii are large enough
   const radiiCheck =
-    Math.pow(transformedPoint.x, 2) / Math.pow(rx, 2) +
-    Math.pow(transformedPoint.y, 2) / Math.pow(ry, 2);
+    transformedPoint.x ** 2 / rx ** 2 + transformedPoint.y ** 2 / ry ** 2;
   if (radiiCheck > 1) {
-    rx = Math.sqrt(radiiCheck) * rx;
-    ry = Math.sqrt(radiiCheck) * ry;
+    rx *= Math.sqrt(radiiCheck);
+    ry *= Math.sqrt(radiiCheck);
   }
 
   // Step #2: Compute transformedCenter
   const cSquareNumerator =
-    Math.pow(rx, 2) * Math.pow(ry, 2) -
-    Math.pow(rx, 2) * Math.pow(transformedPoint.y, 2) -
-    Math.pow(ry, 2) * Math.pow(transformedPoint.x, 2);
+    rx ** 2 * ry ** 2 -
+    rx ** 2 * transformedPoint.y ** 2 -
+    ry ** 2 * transformedPoint.x ** 2;
   const cSquareRootDenom =
-    Math.pow(rx, 2) * Math.pow(transformedPoint.y, 2) +
-    Math.pow(ry, 2) * Math.pow(transformedPoint.x, 2);
+    rx ** 2 * transformedPoint.y ** 2 + ry ** 2 * transformedPoint.x ** 2;
   let cRadicand = cSquareNumerator / cSquareRootDenom;
   // Make sure this never drops below zero because of precision
   cRadicand = cRadicand < 0 ? 0 : cRadicand;
@@ -717,10 +710,10 @@ function getArcParams(
     dTheta = 0;
   }
   if (sweepFlag === 0 && dTheta > 0) {
-    dTheta = dTheta - 2 * Math.PI;
+    dTheta -= 2 * Math.PI;
   }
   if (sweepFlag === 1 && dTheta < 0) {
-    dTheta = dTheta + 2 * Math.PI;
+    dTheta += 2 * Math.PI;
   }
   return {
     cx,
@@ -974,40 +967,38 @@ export function translatePathToString(
             return `M ${params[1] + startOffsetX},${
               params[2] + startOffsetY
             } L ${params[1]},${params[2]}`;
-          } else {
-            return `M ${params[1]},${params[2]}`;
           }
+          return `M ${params[1]},${params[2]}`;
+
         case 'L':
           return `L ${params[1] + (useEndOffset ? endOffsetX : 0)},${
             params[2] + (useEndOffset ? endOffsetY : 0)
           }`;
         case 'Q':
-          return (
-            `Q ${params[1]} ${params[2]},${params[3]} ${params[4]}` +
-            (useEndOffset
+          return `Q ${params[1]} ${params[2]},${params[3]} ${params[4]}${
+            useEndOffset
               ? ` L ${params[3] + endOffsetX},${params[4] + endOffsetY}`
-              : '')
-          );
+              : ''
+          }`;
         case 'C':
-          return (
-            `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5]} ${params[6]}` +
-            (useEndOffset
+          return `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5]} ${params[6]}${
+            useEndOffset
               ? ` L ${params[5] + endOffsetX},${params[6] + endOffsetY}`
-              : '')
-          );
+              : ''
+          }`;
         case 'A':
-          return (
-            `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6]} ${params[7]}` +
-            (useEndOffset
+          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6]} ${params[7]}${
+            useEndOffset
               ? ` L ${params[6] + endOffsetX},${params[7] + endOffsetY}`
-              : '')
-          );
+              : ''
+          }`;
         case 'Z':
           return 'Z';
         default:
-          break;
+          return null;
       }
     })
+    .filter((item) => item !== null)
     .join(' ');
   if (~newValue.indexOf('NaN')) {
     return '';

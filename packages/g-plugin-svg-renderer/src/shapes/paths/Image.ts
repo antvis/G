@@ -29,7 +29,7 @@ export function updateImageElementAttribute(
     $el.setAttribute('href', (src as HTMLCanvasElement).toDataURL());
     // @ts-ignore
   } else if (src instanceof ImageData) {
-    const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    const canvas = document.createElement('canvas');
     // @ts-ignore
     canvas.setAttribute('width', `${src.width}`);
     // @ts-ignore

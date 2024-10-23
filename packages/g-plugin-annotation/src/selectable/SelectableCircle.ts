@@ -25,7 +25,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
         cx,
         cy,
         r: r * zoom,
-        draggable: target.style.maskDraggable === false ? false : true,
+        draggable: target.style.maskDraggable !== false,
         increasedLineWidthForHitTesting:
           this.plugin.annotationPluginOptions.selectableStyle
             .maskIncreasedLineWidthForHitTesting,

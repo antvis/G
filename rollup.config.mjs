@@ -1,10 +1,37 @@
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import terser from '@rollup/plugin-terser';
+import babel from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
-import sourcemaps from 'rollup-plugin-sourcemaps';
+import terser from '@rollup/plugin-terser';
+import replace from '@rollup/plugin-replace';
+// import strip from '@rollup/plugin-strip';
+import filesize from 'rollup-plugin-filesize';
+// import { visualizer } from 'rollup-plugin-visualizer';
 import { builtinModules } from 'module';
+import process from 'node:process';
+import path from 'node:path';
+// import { URL, fileURLToPath } from 'node:url';
+// import fse from 'fs-extra';
+import babelConfig from './babel.config.mjs';
 
+// const WORKING_DIRECTORY = fileURLToPath(new URL('.', import.meta.url));
+const __DEV__ = String(process.env.NODE_ENV).trim() === 'development';
+const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.es6', '.es', '.mjs'];
+const buildBanner = (pkg) => {
+  // see docs: https://github.com/terser/terser#keeping-copyright-notices-or-other-comments
+  return `/*!
+ * ${pkg.name}
+ * @description ${pkg.description}
+ * @version ${pkg.version}
+ * @date ${new Date().toLocaleString()}
+ * @author AntVis
+ * @docs https://g.antv.antgroup.com/
+ */`;
+};
+
+/**
+ * @return {import('rollup').RollupOptions}
+ */
 export function createConfig({
   pkg,
   external = [],
@@ -12,63 +39,106 @@ export function createConfig({
   globals = {},
   plugins = [],
 }) {
-  const sharedPlugins = [
-    ...plugins,
-    nodeResolve({
-      mainFields: ['module', 'browser', 'main'],
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs'],
-    }),
-    commonjs({ sourceMap: true }),
-    typescript({ sourceMap: true }),
-    sourcemaps(),
-  ];
+  const enableSourceMap = true;
+  const banner = buildBanner(pkg);
+  const sharedConfig = {
+    watch: {
+      include: 'src/**',
+    },
+    onwarn: (warning, warn) => {
+      if (warning.code === 'CIRCULAR_DEPENDENCY') {
+        return;
+      }
+      warn(warning);
+    },
+    strictDeprecations: true,
+    input: 'src/index.ts',
+    plugins: [
+      nodeResolve({
+        mainFields: ['module', 'browser', 'main'],
+        extensions: EXTENSIONS,
+      }),
+      babel({
+        ...babelConfig,
+        babelrc: false,
+        exclude: [/\/node_modules\//],
+        extensions: EXTENSIONS,
+        babelHelpers: 'runtime',
+      }),
+      commonjs({ sourceMap: true }),
+      replace({
+        preventAssignment: true,
+        values: {
+          'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+          __DEV__,
+        },
+        sourceMap: enableSourceMap,
+      }),
+      ...plugins,
+      // typescript({ sourceMap: enableSourceMap }),
+      // strip({
+      //   include: ['src/**/*.(ts|tsx|js|jsx|mjs)'],
+      //   sourceMap: enableSourceMap,
+      // }),
+      filesize(),
+    ],
+  };
 
   return [
     {
-      input: 'src/index.ts',
-      external: Object.keys(pkg.dependencies || {})
-        .concat(Object.keys(pkg.peerDependencies || {}))
-        .concat(builtinModules),
-      // onwarn: (warning) => {
-      //   throw Object.assign(new Error(), warning);
-      // },
-      strictDeprecations: true,
+      ...sharedConfig,
       output: [
         {
           format: 'cjs',
           file: pkg.main,
           exports: 'named',
-          // footer: 'module.exports = Object.assign(exports.default, exports);',
-          sourcemap: true,
+          banner,
+          sourcemap: enableSourceMap,
         },
         {
           format: 'es',
           file: pkg.module,
-          sourcemap: true,
+          banner,
+          sourcemap: enableSourceMap,
         },
       ],
-      plugins: sharedPlugins,
+      external: [
+        /@babel\/runtime/,
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.peerDependencies || {}),
+        ...builtinModules,
+        ...external,
+      ],
     },
     {
-      input: 'src/index.ts',
+      ...sharedConfig,
       output: {
         format: 'umd',
         file: pkg.unpkg,
         name: umdName,
         globals,
-        sourcemap: true,
+        banner,
+        sourcemap: enableSourceMap,
+        plugins: [
+          // visualizer({
+          //   sourcemap: sourceMap,
+          //   open: true,
+          //   gzipSize: true,
+          //   brotliSize: false,
+          // }),
+        ],
       },
       external,
       plugins: [
-        ...sharedPlugins,
+        ...sharedConfig.plugins,
         terser({
-          sourceMap: true,
           compress: {
             pure_getters: true,
             unsafe: true,
             unsafe_comps: true,
             warnings: false,
           },
+          sourceMap: enableSourceMap,
         }),
       ],
     },

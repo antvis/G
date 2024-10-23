@@ -548,16 +548,16 @@ export const composeMatrix = (function () {
 
   function is2D(m) {
     return (
-      m[0][2] == 0 &&
-      m[0][3] == 0 &&
-      m[1][2] == 0 &&
-      m[1][3] == 0 &&
-      m[2][0] == 0 &&
-      m[2][1] == 0 &&
-      m[2][2] == 1 &&
-      m[2][3] == 0 &&
-      m[3][2] == 0 &&
-      m[3][3] == 1
+      m[0][2] === 0 &&
+      m[0][3] === 0 &&
+      m[1][2] === 0 &&
+      m[1][3] === 0 &&
+      m[2][0] === 0 &&
+      m[2][1] === 0 &&
+      m[2][2] === 1 &&
+      m[2][3] === 0 &&
+      m[3][2] === 0 &&
+      m[3][3] === 1
     );
   }
 
@@ -579,10 +579,10 @@ export const composeMatrix = (function () {
       }
     }
 
-    const x = quat[0],
-      y = quat[1],
-      z = quat[2],
-      w = quat[3];
+    const x = quat[0];
+    const y = quat[1];
+    const z = quat[2];
+    const w = quat[3];
 
     const rotMatrix = [
       [1, 0, 0, 0],
@@ -889,7 +889,7 @@ export function mergeTransforms(
           ) {
             types[i][0] = 'matrix';
           }
-          return types[i][0] + '(' + stringifiedArgs + ')';
+          return `${types[i][0]}(${stringifiedArgs})`;
         })
         .join(' ');
     },

@@ -42,9 +42,16 @@ export class LayoutEngine {
    * @param rootPageConstraints layout constraints
    * @returns
    */
-  async computeLayout(rootNode: LayoutObject, rootPageConstraints: LayoutConstraints) {
+  async computeLayout(
+    rootNode: LayoutObject,
+    rootPageConstraints: LayoutConstraints,
+  ) {
     await this.determineIntrinsicSizes(rootNode, rootNode.children);
-    await this.calculateLayout(rootNode, rootNode.children, rootPageConstraints);
+    await this.calculateLayout(
+      rootNode,
+      rootNode.children,
+      rootPageConstraints,
+    );
   }
 
   /**
@@ -66,7 +73,10 @@ export class LayoutEngine {
    * @param node current layout object
    * @param childNodes children of the current node
    */
-  protected async determineIntrinsicSizes(node: LayoutObject, childNodes: LayoutObject[]) {
+  protected async determineIntrinsicSizes(
+    node: LayoutObject,
+    childNodes: LayoutObject[],
+  ) {
     const layoutName = this.getLayoutDefinitionName(node);
     await this.invokeIntrinsicSizesCallback(layoutName, node, childNodes);
   }
@@ -78,7 +88,9 @@ export class LayoutEngine {
   ) {
     const LayoutDef = this.layoutRegistry.getLayout(layoutName);
     const layoutInstance = new LayoutDef();
-    const context = this.layoutContextFactory({ mode: LayoutTaskType.IntrinsicSizes });
+    const context = this.layoutContextFactory({
+      mode: LayoutTaskType.IntrinsicSizes,
+    });
     const { inputProperties = [] } = LayoutDef;
     const children: LayoutChildren[] = [];
 
@@ -111,7 +123,12 @@ export class LayoutEngine {
     layoutConstraints: LayoutConstraints,
   ) {
     const layoutName = this.getLayoutDefinitionName(node);
-    await this.invokeLayoutCallback(layoutName, node, childNodes, layoutConstraints);
+    await this.invokeLayoutCallback(
+      layoutName,
+      node,
+      childNodes,
+      layoutConstraints,
+    );
   }
 
   protected async invokeLayoutCallback(
@@ -139,7 +156,12 @@ export class LayoutEngine {
 
     // TODO compare to cache ( children styleMap layoutConstraints )
 
-    const value = layoutInstance.layout(children, edges, layoutConstraints, styleMap);
+    const value = layoutInstance.layout(
+      children,
+      edges,
+      layoutConstraints,
+      styleMap,
+    );
     const generator = this.runWorkQueue(value, context.workQueue);
     generator.next();
     await delay();

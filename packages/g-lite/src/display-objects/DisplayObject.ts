@@ -241,7 +241,7 @@ export class DisplayObject<
     value: StyleProps[Key],
     parseOptions: Partial<PropertyParseOptions> = {},
   ) {
-    const renderable = this.renderable;
+    const { renderable } = this;
 
     const oldValue = this.attributes[name];
     const oldParsedValue = this.parsedStyle[name as string];
@@ -278,7 +278,7 @@ export class DisplayObject<
       (this as unknown as CustomElement<any>).attributeChangedCallback
     ) {
       (this as unknown as CustomElement<any>).attributeChangedCallback(
-        name as Key,
+        name,
         oldValue,
         value,
         oldParsedValue,
@@ -537,7 +537,7 @@ export class DisplayObject<
    */
   animate(
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | KeyframeAnimationOptions | undefined,
+    options?: number | KeyframeAnimationOptions,
   ): IAnimation | null {
     const timeline = this.ownerDocument?.timeline;
 

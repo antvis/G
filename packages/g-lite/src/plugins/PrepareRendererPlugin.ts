@@ -50,7 +50,7 @@ export class PrepareRendererPlugin implements RenderingPlugin {
 
     const handleUnmounted = (e: FederatedEvent) => {
       const object = e.target as DisplayObject;
-      const rBushNode = object.rBushNode;
+      const { rBushNode } = object;
       if (rBushNode.aabb) {
         this.rBush.remove(rBushNode.aabb);
       }

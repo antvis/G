@@ -96,7 +96,6 @@ export interface IEventTarget {
     skipPropagate?: boolean,
   ) => boolean;
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
   // emit: (eventName: string, object: object) => void;
 }
 
@@ -411,7 +410,7 @@ export interface IAnimationTimeline {
   play: (
     target: IElement,
     keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-    options?: number | KeyframeAnimationOptions | undefined,
+    options?: number | KeyframeAnimationOptions,
   ) => IAnimation;
   restart: () => boolean;
   getAnimations: () => IAnimation[];

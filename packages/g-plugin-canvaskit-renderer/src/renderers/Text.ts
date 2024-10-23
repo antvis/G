@@ -34,7 +34,10 @@ import { color2CanvaskitColor } from '../util';
  * @see https://github.com/flutter/flutter/issues/76248
  */
 export class TextRenderer implements RendererContribution {
-  constructor(private context: CanvasContext, private fontLoader: FontLoader) {}
+  constructor(
+    private context: CanvasContext,
+    private fontLoader: FontLoader,
+  ) {}
 
   render(object: DisplayObject, context: RendererContributionContext) {
     const { CanvasKit } = (
@@ -156,7 +159,7 @@ export class TextRenderer implements RendererContribution {
             );
             break;
           case 'A': {
-            const arcParams = segments[i].arcParams;
+            const { arcParams } = segments[i];
             const { rx, ry, sweepFlag } = arcParams;
             const largeArcFlag = params[4];
             skPath.arcToRotated(
@@ -228,7 +231,7 @@ export class TextRenderer implements RendererContribution {
           decorationStyle: DECORATION_STYLE_MAP[decorationStyle || 'solid'],
           fontFamilies: loadedFontFamilies,
           fontFeatures,
-          fontSize: fontSize,
+          fontSize,
           fontStyle: {
             weight: {
               value: Number(fontWeight),
@@ -242,7 +245,7 @@ export class TextRenderer implements RendererContribution {
           ),
           heightMultiplier,
           halfLeading,
-          letterSpacing: letterSpacing,
+          letterSpacing,
           // locale?: string;
           shadows: (shadows || []).map(({ color, offset, blurRadius }) => {
             return {

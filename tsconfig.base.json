@@ -1,23 +1,35 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+
     "rootDir": "${configDir}/src",
     "outDir": "${configDir}/dist",
-    "module": "ESNext",
-    "target": "es5",
+
     "jsx": "react",
+    "module": "ESNext",
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "declaration": true,
-    "sourceMap": true,
+
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "pretty": true,
     "lib": ["dom", "esnext"],
-    "skipLibCheck": true,
     "resolveJsonModule": true,
     "downlevelIteration": true,
-    "importHelpers": true
+    "importHelpers": true,
+
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "${configDir}/types",
+    // "emitDeclarationOnly": true,
+
+    "sourceMap": true,
+    "removeComments": false,
+
+    "typeRoots": ["node_modules/@types"],
+    "skipLibCheck": true
   },
-  "exclude": ["dist", "node_modules", "test/types"]
+  "include": ["${configDir}/src/**/*"],
+  "exclude": []
 }

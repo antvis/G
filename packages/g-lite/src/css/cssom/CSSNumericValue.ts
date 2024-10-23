@@ -133,7 +133,7 @@ export class CSSUnitValue extends CSSStyleValue {
         const kMinInteger = -999999;
         const kMaxInteger = 999999;
 
-        const value = this.value;
+        const { value } = this;
         const unit = unitTypeToString(this.unit);
         if (value < kMinInteger || value > kMaxInteger) {
           const unit = unitTypeToString(this.unit);

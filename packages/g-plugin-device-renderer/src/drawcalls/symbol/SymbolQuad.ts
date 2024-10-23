@@ -32,7 +32,7 @@ export function getGlyphQuads(
     const glyph = glyphPositions && glyphPositions[positionedGlyph.glyph];
     if (!glyph) continue;
 
-    const rect = glyph.rect;
+    const { rect } = glyph;
     if (!rect) continue;
 
     // The rects have an addditional buffer that is not included in their size.
@@ -47,8 +47,12 @@ export function getGlyphQuads(
     const builtInOffset = [positionedGlyph.x + halfAdvance, positionedGlyph.y];
 
     const x1 =
-      (glyph.metrics.left - rectBuffer) * positionedGlyph.scale - halfAdvance + builtInOffset[0];
-    const y1 = (-glyph.metrics.top - rectBuffer) * positionedGlyph.scale + builtInOffset[1];
+      (glyph.metrics.left - rectBuffer) * positionedGlyph.scale -
+      halfAdvance +
+      builtInOffset[0];
+    const y1 =
+      (-glyph.metrics.top - rectBuffer) * positionedGlyph.scale +
+      builtInOffset[1];
     const x2 = x1 + rect.w * positionedGlyph.scale;
     const y2 = y1 + rect.h * positionedGlyph.scale;
 

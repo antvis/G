@@ -40,10 +40,8 @@ export class ImagePool {
           callback(img);
         }
       });
-    } else {
-      if (callback) {
-        callback(this.imageCache[src]);
-      }
+    } else if (callback) {
+      callback(this.imageCache[src]);
     }
 
     return this.imageCache[src];
@@ -154,11 +152,23 @@ export class ImagePool {
 
     let gradient: CanvasGradient | null = null;
     if (type === GradientType.LinearGradient) {
-      const { x1, y1, x2, y2 } = computeLinearGradient(min, width, height, angle);
+      const { x1, y1, x2, y2 } = computeLinearGradient(
+        min,
+        width,
+        height,
+        angle,
+      );
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
       gradient = context.createLinearGradient(x1, y1, x2, y2);
     } else if (type === GradientType.RadialGradient) {
-      const { x, y, r } = computeRadialGradient(min, width, height, cx, cy, size);
+      const { x, y, r } = computeRadialGradient(
+        min,
+        width,
+        height,
+        cx,
+        cy,
+        size,
+      );
       // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
       gradient = context.createRadialGradient(x, y, 0, x, y, r);
     }
@@ -190,7 +200,8 @@ export class ImagePool {
     // only generate cache for Image
     if (isString(image)) {
       return `pattern-${image}-${repetition}`;
-    } else if ((image as Rect).nodeName === 'rect') {
+    }
+    if ((image as Rect).nodeName === 'rect') {
       return `pattern-${(image as Rect).entity}-${repetition}`;
     }
   }

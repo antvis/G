@@ -65,7 +65,7 @@ function is3DPolyline(object: DisplayObject) {
   }
   // Polyline supports 3 dimensions so that each point is shaped like [x, y, z].
   const polylineControlPoints = (object as Polyline).parsedStyle.points.points;
-  const length = polylineControlPoints.length;
+  const { length } = polylineControlPoints;
 
   return length && !isNil(polylineControlPoints[0][2]);
 }
@@ -489,7 +489,7 @@ export function updateBuffer(
   if (object.nodeName === Shape.POLYLINE || object.nodeName === Shape.POLYGON) {
     const polylineControlPoints = (object as Polyline).parsedStyle.points
       .points;
-    const length = polylineControlPoints.length;
+    const { length } = polylineControlPoints;
     let startOffsetX = 0;
     let startOffsetY = 0;
     let endOffsetX = 0;
@@ -550,19 +550,18 @@ export function updateBuffer(
           triangles,
           instancedCount: Math.round(points[0].length / stridePoints),
         };
-      } else {
-        points[0].push(points[0][0], points[0][1], points[0][2] || zIndex);
-        points[0].push(
-          ...addTailSegment(
-            points[0][0],
-            points[0][1],
-            points[0][2] || zIndex,
-            points[0][3],
-            points[0][4],
-            points[0][5] || zIndex,
-          ),
-        );
       }
+      points[0].push(points[0][0], points[0][1], points[0][2] || zIndex);
+      points[0].push(
+        ...addTailSegment(
+          points[0][0],
+          points[0][1],
+          points[0][2] || zIndex,
+          points[0][3],
+          points[0][4],
+          points[0][5] || zIndex,
+        ),
+      );
     }
   } else if (
     object.nodeName === Shape.PATH ||
@@ -813,9 +812,9 @@ export function updateBuffer(
       // if (needDash) {
       if (i > 1) {
         dist += Math.sqrt(
-          Math.pow(points[i] - points[i - stridePoints], 2) +
-            Math.pow(points[i + 1] - points[i + 1 - stridePoints], 2) +
-            Math.pow(points[i + 2] - points[i + 2 - stridePoints], 2),
+          (points[i] - points[i - stridePoints]) ** 2 +
+            (points[i + 1] - points[i + 1 - stridePoints]) ** 2 +
+            (points[i + 2] - points[i + 2 - stridePoints]) ** 2,
         );
       }
       travelBuffer.push(dist);
@@ -827,7 +826,7 @@ export function updateBuffer(
       pointsBuffer[j++] = points[i + 1];
       pointsBuffer[j++] = points[i + 2] || 0;
       pointsBuffer[j] = jointType;
-      if (i == 0 && capType !== JOINT_TYPE.CAP_ROUND) {
+      if (i === 0 && capType !== JOINT_TYPE.CAP_ROUND) {
         pointsBuffer[j] += capType;
       }
       if (i + stridePoints * 2 >= points.length) {

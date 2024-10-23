@@ -39,6 +39,7 @@ export interface DrawerStyle {
   polylineActiveSegmentLineDash: BaseStyleProps['lineDash'];
 }
 
+// eslint-disable-next-line import/export
 export interface DrawerState {
   type: DrawerType;
   id: string;
@@ -50,6 +51,7 @@ export interface Point {
   y: number;
 }
 export type DrawerPath = Point[];
+// eslint-disable-next-line import/export
 export interface DrawerState {
   type: DrawerType;
   isDrawing: boolean;

@@ -65,7 +65,7 @@ export interface TextStyleProps extends BaseStyleProps {
    * It can be clipped, display an ellipsis ('…'), or display a custom string.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
    */
-  textOverflow?: TextOverflow | string;
+  textOverflow?: TextOverflow;
 
   /**
    * Borrow from CanvasKit ParagraphStyle.
@@ -221,7 +221,7 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   wordWrap?: boolean;
   wordWrapWidth?: number;
   maxLines?: number;
-  textOverflow?: TextOverflow | string;
+  textOverflow?: TextOverflow;
   isOverflowing?: boolean;
   textPath?: Path;
   textDecorationLine?: TextDecorationLine;

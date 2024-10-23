@@ -137,8 +137,8 @@ export class RenderInst {
       (this.flags & ~RenderInstFlags.InheritedFlags) |
       (o.flags & RenderInstFlags.InheritedFlags);
     this.sortKey = o.sortKey;
-    const tbd = this.bindingDescriptors[0],
-      obd = o.bindingDescriptors[0];
+    const tbd = this.bindingDescriptors[0];
+    const obd = o.bindingDescriptors[0];
     this.setBindingLayout({
       numSamplers: obd.samplerBindings?.length,
       numUniformBuffers: obd.uniformBufferBindings?.length,
@@ -444,7 +444,7 @@ export class RenderInst {
     for (let i = 0; i < passDescriptor.colorAttachment.length; i++) {
       const colorAttachmentDescriptor =
         passDescriptor.colorAttachment[i] !== null
-          ? device.queryRenderTarget(passDescriptor.colorAttachment[i]!)
+          ? device.queryRenderTarget(passDescriptor.colorAttachment[i])
           : null;
       this.renderPipelineDescriptor.colorAttachmentFormats[i] =
         colorAttachmentDescriptor !== null
@@ -468,7 +468,7 @@ export class RenderInst {
     if (depthStencilAttachmentDescriptor !== null) {
       if (sampleCount === -1)
         sampleCount = depthStencilAttachmentDescriptor.sampleCount;
-      else assert(sampleCount == depthStencilAttachmentDescriptor.sampleCount);
+      else assert(sampleCount === depthStencilAttachmentDescriptor.sampleCount);
     }
 
     assert(sampleCount > 0);
@@ -476,7 +476,7 @@ export class RenderInst {
   }
 
   drawOnPass(cache: RenderCache, passRenderer: RenderPass): boolean {
-    const device = cache.device;
+    const { device } = cache;
     this.setAttachmentFormatsFromRenderPass(device, passRenderer);
 
     const gfxPipeline = cache.createRenderPipeline(

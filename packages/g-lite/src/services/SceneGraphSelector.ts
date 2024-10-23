@@ -1,5 +1,6 @@
 import { isNil } from '@antv/util';
 import type { IElement } from '../dom/interfaces';
+
 export interface SceneGraphSelector {
   selectOne: <R extends IElement, T extends IElement>(
     query: string,
@@ -35,13 +36,15 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
           (node?.classList || []).indexOf(this.getIdOrClassname(query)) > -1
         );
       });
-    } else if (query.startsWith('#')) {
+    }
+    if (query.startsWith('#')) {
       // getElementById('id')
       return root.find((node) => {
         // return !node.shadow && node.id === query.substring(1);
         return node.id === this.getIdOrClassname(query);
       });
-    } else if (query.startsWith('[')) {
+    }
+    if (query.startsWith('[')) {
       const { name, value } = this.getAttribute(query);
       if (name) {
         // getElementByName();
@@ -52,15 +55,13 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
               ? node.name === value
               : this.attributeToString(node, name) === value),
         );
-      } else {
-        return null;
       }
-    } else {
-      // getElementsByTag('circle');
-      return root.find(
-        (node) => (root as unknown as T) !== node && node.nodeName === query,
-      );
+      return null;
     }
+    // getElementsByTag('circle');
+    return root.find(
+      (node) => (root as unknown as T) !== node && node.nodeName === query,
+    );
   }
 
   selectAll<R extends IElement, T extends IElement>(
@@ -76,13 +77,15 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
           (root as unknown as T) !== node &&
           (node?.classList || []).indexOf(this.getIdOrClassname(query)) > -1,
       );
-    } else if (query.startsWith('#')) {
+    }
+    if (query.startsWith('#')) {
       return root.findAll(
         (node) =>
           (root as unknown as T) !== node &&
           node.id === this.getIdOrClassname(query),
       );
-    } else if (query.startsWith('[')) {
+    }
+    if (query.startsWith('[')) {
       const { name, value } = this.getAttribute(query);
       if (name) {
         // getElementsByName();
@@ -93,31 +96,30 @@ export class DefaultSceneGraphSelector implements SceneGraphSelector {
               ? node.name === value
               : this.attributeToString(node, name) === value),
         );
-      } else {
-        return [];
       }
-    } else {
-      // getElementsByTag('circle');
-      return root.findAll(
-        (node) => (root as unknown as T) !== node && node.nodeName === query,
-      );
+      return [];
     }
+    // getElementsByTag('circle');
+    return root.findAll(
+      (node) => (root as unknown as T) !== node && node.nodeName === query,
+    );
   }
 
   is<T extends IElement>(query: string, node: T): boolean {
     // a simple `matches` implementation
     if (query.startsWith('.')) {
       return node.className === this.getIdOrClassname(query);
-    } else if (query.startsWith('#')) {
+    }
+    if (query.startsWith('#')) {
       return node.id === this.getIdOrClassname(query);
-    } else if (query.startsWith('[')) {
+    }
+    if (query.startsWith('[')) {
       const { name, value } = this.getAttribute(query);
       return name === 'name'
         ? node.name === value
         : this.attributeToString(node, name) === value;
-    } else {
-      return node.nodeName === query;
     }
+    return node.nodeName === query;
   }
 
   private getIdOrClassname(query: string): string {

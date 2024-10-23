@@ -109,17 +109,15 @@ export class CanvasPickerPlugin implements RenderingPlugin {
             if (topmost) {
               result.picked = [displayObject];
               return result;
-            } else {
-              pickedDisplayObjects.push(displayObject);
             }
+            pickedDisplayObjects.push(displayObject);
           }
         } else {
           if (topmost) {
             result.picked = [displayObject];
             return result;
-          } else {
-            pickedDisplayObjects.push(displayObject);
           }
+          pickedDisplayObjects.push(displayObject);
         }
       }
     }

@@ -1,4 +1,5 @@
 // @see https://github.com/antvis/G/issues/1382
+// eslint-disable-next-line import/extensions
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 import { GCanvasElement } from './GCanvas';
 import { registerGWebComponent } from './register';

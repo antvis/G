@@ -22,9 +22,8 @@ export const parseNumberUnmemoize = (string: string | number): CSSUnitValue => {
   }
   if (/^\s*[-+]?(\d*\.)?\d+\s*$/.test(string)) {
     return getOrCreateUnitValue(Number(string));
-  } else {
-    return getOrCreateUnitValue(0);
   }
+  return getOrCreateUnitValue(0);
 };
 export const parseNumber = memoize(parseNumberUnmemoize);
 
@@ -38,17 +37,15 @@ export const parseNumberListUnmemoize = (
 ): CSSUnitValue[] => {
   if (isString(string)) {
     return string.split(' ').map(parseNumberUnmemoize);
-  } else {
-    return string.map(parseNumberUnmemoize);
   }
+  return string.map(parseNumberUnmemoize);
 };
 export const parseNumberList = memoize(
   (string: string | number[]): CSSUnitValue[] => {
     if (isString(string)) {
       return string.split(' ').map(parseNumber);
-    } else {
-      return string.map(parseNumber);
     }
+    return string.map(parseNumber);
   },
 );
 

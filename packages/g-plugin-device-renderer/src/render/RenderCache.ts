@@ -60,10 +60,10 @@ function programDescriptorSimpleEquals(
 function programDescriptorSimpleCopy(
   a: ProgramDescriptorSimple,
 ): ProgramDescriptorSimple {
-  const preprocessedVert = a.preprocessedVert;
-  const preprocessedFrag = a.preprocessedFrag;
-  const vert = a.vert;
-  const frag = a.frag;
+  const { preprocessedVert } = a;
+  const { preprocessedFrag } = a;
+  const { vert } = a;
+  const { frag } = a;
   return { preprocessedVert, preprocessedFrag, vert, frag };
 }
 
@@ -231,7 +231,7 @@ export class RenderCache {
 
       const descriptorCopy = programDescriptorSimpleCopy(deviceProgram);
 
-      program = this.device['createProgramSimple'](
+      program = this.device.createProgramSimple(
         {
           vertex: {
             glsl: preprocessedVert,

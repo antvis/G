@@ -282,7 +282,7 @@ export class TextDrawcall extends Instanced {
       fontWeight = 'normal',
       fontStyle = 'normal',
       metrics,
-    } = object.parsedStyle as ParsedTextStyleProps;
+    } = object.parsedStyle;
     const { font } = metrics;
     const allText = objects.map((object) => object.parsedStyle.text).join('');
 
