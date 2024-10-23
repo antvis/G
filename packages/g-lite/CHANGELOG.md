@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.1.2
+
+### Patch Changes
+
+-   fc61bc17: fix: build target
+
 ## 2.1.1
 
 ### Patch Changes

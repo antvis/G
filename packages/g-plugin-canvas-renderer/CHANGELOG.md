@@ -1,5 +1,15 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.1.2
+
+### Patch Changes
+
+-   fc61bc17: fix: build target
+-   Updated dependencies [fc61bc17]
+    -   @antv/g-plugin-image-loader@2.0.13
+    -   @antv/g-lite@2.1.2
+    -   @antv/g-plugin-canvas-path-generator@2.0.13
+
 ## 2.1.1
 
 ### Patch Changes
