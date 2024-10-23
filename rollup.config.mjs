@@ -4,17 +4,17 @@ import babel from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
-import strip from '@rollup/plugin-strip';
+// import strip from '@rollup/plugin-strip';
 import filesize from 'rollup-plugin-filesize';
-import { visualizer } from 'rollup-plugin-visualizer';
+// import { visualizer } from 'rollup-plugin-visualizer';
 import { builtinModules } from 'module';
 import process from 'node:process';
 import path from 'node:path';
-import { URL, fileURLToPath } from 'node:url';
-import fse from 'fs-extra';
+// import { URL, fileURLToPath } from 'node:url';
+// import fse from 'fs-extra';
 import babelConfig from './babel.config.mjs';
 
-const WORKING_DIRECTORY = fileURLToPath(new URL('.', import.meta.url));
+// const WORKING_DIRECTORY = fileURLToPath(new URL('.', import.meta.url));
 const __DEV__ = String(process.env.NODE_ENV).trim() === 'development';
 const EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.es6', '.es', '.mjs'];
 const buildBanner = (pkg) => {

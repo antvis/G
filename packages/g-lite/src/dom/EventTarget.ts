@@ -51,6 +51,7 @@ export class EventTarget implements IEventTarget {
     else if (options) ({ capture = false, once = false } = options);
 
     if (capture) type += 'capture';
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     listener = isFunction(listener) ? listener : listener.handleEvent;
 
     const context = isFunction(listener) ? undefined : listener;
@@ -91,6 +92,7 @@ export class EventTarget implements IEventTarget {
 
     const capture = isBoolean(options) ? options : options?.capture;
     if (capture) type += 'capture';
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     listener = isFunction(listener) ? listener : listener?.handleEvent;
     const context = isFunction(listener) ? undefined : listener;
 

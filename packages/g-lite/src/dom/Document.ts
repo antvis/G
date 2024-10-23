@@ -1,3 +1,4 @@
+import { isFunction } from '@antv/util';
 import { runtime } from '../global-runtime';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text } from '../display-objects';
@@ -17,7 +18,6 @@ import type {
   INode,
 } from './interfaces';
 import { Node } from './Node';
-import { isFunction } from '@antv/util';
 
 /**
  * the entry of DOM tree
