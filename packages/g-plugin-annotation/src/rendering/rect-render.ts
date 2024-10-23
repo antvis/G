@@ -32,7 +32,7 @@ export const renderRect = (context: AnnotationPlugin, anno: DrawerState) => {
 
   const [tl, tr, br, bl] = path;
 
-  let brushRect = context.brushRect;
+  let { brushRect } = context;
   if (!brushRect) {
     brushRect = new Polygon({
       id: anno.id,

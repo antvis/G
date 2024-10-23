@@ -1,5 +1,6 @@
 import { AbstractRendererPlugin } from '@antv/g-lite';
 import { DOMInteractionPlugin } from './DOMInteractionPlugin';
+
 export class Plugin extends AbstractRendererPlugin {
   name = 'dom-interaction';
 

@@ -151,13 +151,14 @@ export function colorStopToString(colorStop: ColorStop) {
   const { type, value } = colorStop;
   if (type === 'hex') {
     return `#${value}`;
-  } else if (type === 'literal') {
-    return value;
-  } else if (type === 'rgb') {
-    return `rgb(${value.join(',')})`;
-  } else {
-    return `rgba(${value.join(',')})`;
   }
+  if (type === 'literal') {
+    return value;
+  }
+  if (type === 'rgb') {
+    return `rgb(${value.join(',')})`;
+  }
+  return `rgba(${value.join(',')})`;
 }
 
 export const parseGradient = (function () {
@@ -192,7 +193,7 @@ export const parseGradient = (function () {
   let input = '';
 
   function error(msg: string) {
-    throw new Error(input + ': ' + msg);
+    throw new Error(`${input}: ${msg}`);
   }
 
   function getAST() {
@@ -254,7 +255,7 @@ export const parseGradient = (function () {
 
       return {
         type: gradientType,
-        orientation: orientation,
+        orientation,
         colorStops: matchListing(matchColorStop),
       };
     });
@@ -291,9 +292,9 @@ export const parseGradient = (function () {
   }
 
   function matchListRadialOrientations() {
-    let radialOrientations,
-      radialOrientation = matchRadialOrientation(),
-      lookaheadCache;
+    let radialOrientations;
+    let radialOrientation = matchRadialOrientation();
+    let lookaheadCache;
 
     if (radialOrientation) {
       radialOrientations = [];
@@ -488,7 +489,7 @@ export const parseGradient = (function () {
     const captures = scan(pattern);
     if (captures) {
       return {
-        type: type,
+        type,
         value: captures[captureIndex],
       };
     }

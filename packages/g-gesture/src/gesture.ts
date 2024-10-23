@@ -238,7 +238,7 @@ class Gesture extends EventEmitter {
     if (evCache.length === 1) {
       // swipe事件处理, 在end之后触发
       const now = clock.now();
-      const lastMoveTime = this.lastMoveTime;
+      const { lastMoveTime } = this;
       // 做这个判断是为了最后一次touchmove后到end前，是否还有一个停顿的过程
       // 100 是拍的一个值，理论这个值会很短，一般不卡顿的话在10ms以内
       if (now - lastMoveTime < 100) {
@@ -360,7 +360,7 @@ class Gesture extends EventEmitter {
 
   // 触发end事件
   private emitEnd(ev: GestureEvent) {
-    const processEvent = this.processEvent;
+    const { processEvent } = this;
     Object.keys(processEvent).forEach((type) => {
       this.emit(`${type}end`, ev);
       delete processEvent[type];

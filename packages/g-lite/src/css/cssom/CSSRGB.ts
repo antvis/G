@@ -26,6 +26,6 @@ export class CSSRGB extends CSSColorValue {
   }
 
   buildCSSText(n: Nested, p: ParenLess, result: string): string {
-    return result + `rgba(${this.r},${this.g},${this.b},${this.alpha})`;
+    return `${result}rgba(${this.r},${this.g},${this.b},${this.alpha})`;
   }
 }

@@ -3,6 +3,7 @@ import type { CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 import { mergeNumbers } from '../parser';
 import { convertAngleUnit } from '../parser/dimension';
+
 export class CSSPropertyAngle
   implements Partial<CSSProperty<CSSUnitValue, number>>
 {

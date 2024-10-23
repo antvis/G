@@ -1,12 +1,12 @@
 import type { DataURLOptions, GlobalRuntime } from '@antv/g-lite';
 import { Shape, AbstractRendererPlugin } from '@antv/g-lite';
+import type { Texture, TextureDescriptor } from '@antv/g-device-api';
 import { Renderable3D } from './components/Renderable3D';
 import { LightPool } from './LightPool';
 import { Mesh } from './Mesh';
 import { MeshUpdater } from './MeshUpdater';
 import { PickingIdGenerator } from './PickingIdGenerator';
 import { PickingPlugin } from './PickingPlugin';
-import type { Texture, TextureDescriptor } from '@antv/g-device-api';
 import { RenderHelper } from './render/RenderHelper';
 import {
   Batch,

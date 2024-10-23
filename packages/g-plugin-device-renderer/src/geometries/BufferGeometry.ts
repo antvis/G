@@ -1,6 +1,5 @@
 import { AABB } from '@antv/g-lite';
 import EventEmitter from 'eventemitter3';
-import type { Mesh } from '../Mesh';
 import type {
   Buffer,
   Device,
@@ -13,6 +12,7 @@ import {
   Format,
   PrimitiveTopology,
 } from '@antv/g-device-api';
+import type { Mesh } from '../Mesh';
 
 export function makeDataBuffer(
   device: Device,

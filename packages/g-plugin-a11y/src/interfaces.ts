@@ -1,4 +1,5 @@
 import type { DisplayObject } from '@antv/g-lite';
+
 export interface A11yPluginOptions {
   /**
    * Make text contents in canvas searchable.

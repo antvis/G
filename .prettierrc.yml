@@ -1,0 +1,10 @@
+# see docs: https://prettier.io/docs/en/configuration.html
+
+semi: true
+singleQuote: true
+trailingComma: 'all'
+bracketSpacing: true
+arrowParens: 'always'
+printWidth: 80
+proseWrap: 'never'
+endOfLine: 'auto'

@@ -60,7 +60,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         y: target.style.y,
         width: 0,
         height: 0,
-        draggable: target.style.maskDraggable === false ? false : true,
+        draggable: target.style.maskDraggable !== false,
         cursor: 'move',
         isSizeAttenuation: true,
         fill: selectionFill,
@@ -381,8 +381,8 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     by: string,
     scaleProportionally: boolean,
   ) {
-    const lockX = object.style.lockScalingX,
-      lockY = object.style.lockScalingY;
+    const lockX = object.style.lockScalingX;
+    const lockY = object.style.lockScalingY;
     if (lockX && lockY) {
       return true;
     }
@@ -411,6 +411,6 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       return notAllowed;
     }
     const n = this.findCornerQuadrant(object, control);
-    return scaleMap[n] + '-resize';
+    return `${scaleMap[n]}-resize`;
   }
 }

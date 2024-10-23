@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/extensions
 import RBush from 'rbush/rbush.js';
 import type { IRenderer } from './AbstractRenderer';
 import {
@@ -166,6 +167,7 @@ export class Canvas extends EventTarget implements ICanvas {
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
+      enableLargeImageOptimization,
       supportsPointerEvents,
       supportsTouchEvents,
       supportsCSSTransform,
@@ -243,6 +245,7 @@ export class Canvas extends EventTarget implements ICanvas {
       cursor: cursor || ('default' as Cursor),
       background: background || 'transparent',
       createImage,
+      enableLargeImageOptimization,
       document,
       supportsCSSTransform,
       useNativeClickEvent,
@@ -459,7 +462,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getContextService().resize(width, height);
 
     // resize camera
-    const camera = this.context.camera;
+    const { camera } = this.context;
     const projectionMode = camera.getProjectionMode();
     camera
       .setPosition(width / 2, height / 2, DEFAULT_CAMERA_Z)
@@ -608,7 +611,7 @@ export class Canvas extends EventTarget implements ICanvas {
 
       if (!firstContentfullPaint) {
         this.getRoot().forEach((node) => {
-          const renderable = (node as Element).renderable;
+          const { renderable } = node as Element;
           if (renderable) {
             renderable.renderBoundsDirty = true;
             renderable.boundsDirty = true;
@@ -649,7 +652,7 @@ export class Canvas extends EventTarget implements ICanvas {
     this.destroy(false, true);
 
     // destroy all plugins, reverse will mutate origin array
-    [...oldRenderer?.getPlugins()].reverse().forEach((plugin) => {
+    [...(oldRenderer?.getPlugins() || [])].reverse().forEach((plugin) => {
       plugin.destroy(runtime);
     });
 

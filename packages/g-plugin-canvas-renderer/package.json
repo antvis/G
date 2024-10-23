@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-renderer",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A G plugin of renderer implementation with Canvas2D API",
   "keywords": [
     "antv",
@@ -17,22 +17,24 @@
   "license": "MIT",
   "author": "https://github.com/orgs/antvis/people",
   "exports": {
-    "types": "./dist/index.d.ts",
+    "types": "./types/index.d.ts",
     "import": "./dist/index.esm.js",
     "default": "./dist/index.js"
   },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "package.json",
     "dist",
+    "types",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && rollup -c",
+    "build:types": "tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run clean && npm run build:types && rollup -c",
     "clean": "rimraf dist",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
@@ -43,6 +45,7 @@
     "@antv/g-plugin-canvas-path-generator": "workspace:*",
     "@antv/g-plugin-image-loader": "workspace:*",
     "@antv/util": "^3.3.5",
+    "@babel/runtime": "^7.25.6",
     "gl-matrix": "^3.4.3",
     "tslib": "^2.5.3"
   },

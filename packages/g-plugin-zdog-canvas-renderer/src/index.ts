@@ -14,8 +14,7 @@ export class Plugin extends AbstractRendererPlugin {
   name = 'rough-canvas-renderer';
   init(): void {
     // @ts-ignore
-    const defaultStyleRendererFactory =
-      this.context.defaultStyleRendererFactory;
+    const { defaultStyleRendererFactory } = this.context;
 
     // @ts-ignore
     this.context.styleRendererFactory = {

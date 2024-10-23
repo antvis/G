@@ -39,9 +39,9 @@ export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
     ) {
       fontFamily = `"${fontFamily}"`;
     }
-    (fontFamilies as string[])[i] = fontFamily;
+    fontFamilies[i] = fontFamily;
   }
-  return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSizeString} ${(
-    fontFamilies as string[]
-  ).join(',')}`;
+  return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSizeString} ${fontFamilies.join(
+    ',',
+  )}`;
 }

@@ -8,7 +8,11 @@ export class TextShape extends BaseShape {
     const observer = new MutationObserver(() => {
       this.gElement?.setAttribute('text', this.innerText);
     });
-    observer.observe(this, { characterData: true, childList: true, characterDataOldValue: true });
+    observer.observe(this, {
+      characterData: true,
+      childList: true,
+      characterDataOldValue: true,
+    });
   }
 
   getElementInstance() {

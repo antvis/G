@@ -75,9 +75,7 @@ export class ZdogRendererPlugin implements RenderingPlugin {
       this.scene.updateGraph();
 
       // render to <camera>
-      const $camera = $svg.querySelector(
-        `#${G_SVG_PREFIX}-camera`,
-      ) as SVGSVGElement;
+      const $camera = $svg.querySelector(`#${G_SVG_PREFIX}-camera`);
       while ($camera.firstChild) {
         $camera.removeChild($camera.firstChild);
       }

@@ -136,7 +136,9 @@ function convertPathsToAbsoluteValues(path) {
 }
 
 function checkVersion(minimum, animVersionString) {
-  const animVersion = animVersionString ? animVersionString.split('.') : [100, 100, 100];
+  const animVersion = animVersionString
+    ? animVersionString.split('.')
+    : [100, 100, 100];
   if (minimum[0] > animVersion[0]) {
     return true;
   }

@@ -1,6 +1,6 @@
-import { Text, Path, Rect } from '@antv/g';
+import { Canvas, Text, Path, Rect } from '@antv/g';
 
-export async function test_pick(context) {
+export async function test_pick(context: { canvas: Canvas }) {
   const { canvas } = context;
   await canvas.ready;
 
@@ -20,7 +20,8 @@ export async function test_pick(context) {
       x: 300,
       y: 300,
       cursor: 'pointer',
-      // transform: 'rotate(45)',
+      transform: 'rotate(45)',
+      transformOrigin: 'center',
     },
   });
   console.log(text.getBounds());
@@ -38,7 +39,7 @@ export async function test_pick(context) {
   test(path, 'fill');
 
   canvas.appendChild(text);
-  // canvas.appendChild(path);
+  canvas.appendChild(path);
 
   const { x, y, width, height } = text.getBBox();
   const rect = new Rect({
@@ -54,5 +55,5 @@ export async function test_pick(context) {
   });
   test(rect, 'stroke');
 
-  // canvas.appendChild(rect);
+  canvas.appendChild(rect);
 }

@@ -30,7 +30,8 @@ export function parseDimension(
   if (isFinite(Number(string))) {
     if ('px'.search(unitRegExp) >= 0) {
       return getOrCreateUnitValue(Number(string), 'px');
-    } else if ('deg'.search(unitRegExp) >= 0) {
+    }
+    if ('deg'.search(unitRegExp) >= 0) {
       return getOrCreateUnitValue(Number(string), 'deg');
     }
   }
@@ -38,15 +39,15 @@ export function parseDimension(
   const matchedUnits: Unit[] = [];
   string = string.replace(unitRegExp, (match: string) => {
     matchedUnits.push(match as Unit);
-    return 'U' + match;
+    return `U${match}`;
   });
-  const taggedUnitRegExp = 'U(' + unitRegExp.source + ')';
+  const taggedUnitRegExp = `U(${unitRegExp.source})`;
 
   return matchedUnits.map((unit) =>
     getOrCreateUnitValue(
       Number(
         string
-          .replace(new RegExp('U' + unit, 'g'), '')
+          .replace(new RegExp(`U${unit}`, 'g'), '')
           .replace(new RegExp(taggedUnitRegExp, 'g'), '*0'),
       ),
       unit,
@@ -126,20 +127,16 @@ export function mergeDimensions(
     leftValue = leftCanonicalUnitValue.value;
     rightValue = rightCanonicalUnitValue.value;
     unit = unitTypeToString(left.unit);
-  } else {
-    // format '%' to 'px'
-    if (CSSUnitValue.isLength(left.unit) || CSSUnitValue.isLength(right.unit)) {
-      leftValue = convertPercentUnit(left, index, target as DisplayObject);
-      rightValue = convertPercentUnit(right, index, target as DisplayObject);
-      unit = 'px';
-    }
   }
-  // // format 'rad' 'turn' to 'deg'
-  // if (CSSUnitValue.isAngle(left.unit) || CSSUnitValue.isAngle(right.unit)) {
-  //   leftValue = convertAngleUnit(left);
-  //   rightValue = convertAngleUnit(right);
-  //   unit = 'deg';
-  // }
+  // format '%' to 'px'
+  else if (
+    CSSUnitValue.isLength(left.unit) ||
+    CSSUnitValue.isLength(right.unit)
+  ) {
+    leftValue = convertPercentUnit(left, index, target as DisplayObject);
+    rightValue = convertPercentUnit(right, index, target as DisplayObject);
+    unit = 'px';
+  }
 
   return [
     leftValue,
@@ -161,6 +158,8 @@ export function convertAngleUnit(value: CSSUnitValue) {
     deg = rad2deg(Number(value.value));
   } else if (value.unit === UnitType.kTurns) {
     deg = turn2deg(Number(value.value));
+  } else if (value.value) {
+    deg = value.value;
   }
   return deg;
 }
@@ -183,20 +182,19 @@ export function parseDimensionArrayFormat(
   if (size === 2) {
     if (parsed.length === 1) {
       return [parsed[0], parsed[0]];
-    } else {
-      return [parsed[0], parsed[1]];
     }
-  } else {
-    if (parsed.length === 1) {
-      return [parsed[0], parsed[0], parsed[0], parsed[0]];
-    } else if (parsed.length === 2) {
-      return [parsed[0], parsed[1], parsed[0], parsed[1]];
-    } else if (parsed.length === 3) {
-      return [parsed[0], parsed[1], parsed[2], parsed[1]];
-    } else {
-      return [parsed[0], parsed[1], parsed[2], parsed[3]];
-    }
+    return [parsed[0], parsed[1]];
   }
+  if (parsed.length === 1) {
+    return [parsed[0], parsed[0], parsed[0], parsed[0]];
+  }
+  if (parsed.length === 2) {
+    return [parsed[0], parsed[1], parsed[0], parsed[1]];
+  }
+  if (parsed.length === 3) {
+    return [parsed[0], parsed[1], parsed[2], parsed[1]];
+  }
+  return [parsed[0], parsed[1], parsed[2], parsed[3]];
 }
 
 export function parseDimensionArray(
@@ -205,10 +203,9 @@ export function parseDimensionArray(
   if (isString(string)) {
     // "1px 2px 3px"
     return string.split(' ').map((segment) => parseLengthOrPercentage(segment));
-  } else {
-    // [1, '2px', 3]
-    return string.map((segment) => parseLengthOrPercentage(segment.toString()));
   }
+  // [1, '2px', 3]
+  return string.map((segment) => parseLengthOrPercentage(segment.toString()));
 }
 export function parseDimensionArrayUnmemoize(
   string: string | (string | number)[],
@@ -218,12 +215,11 @@ export function parseDimensionArrayUnmemoize(
     return string
       .split(' ')
       .map((segment) => parseLengthOrPercentageUnmemoize(segment));
-  } else {
-    // [1, '2px', 3]
-    return string.map((segment) =>
-      parseLengthOrPercentageUnmemoize(segment.toString()),
-    );
   }
+  // [1, '2px', 3]
+  return string.map((segment) =>
+    parseLengthOrPercentageUnmemoize(segment.toString()),
+  );
 }
 
 // export function mergeDimensionList(
@@ -254,7 +250,8 @@ export function convertPercentUnit(
 ): number {
   if (valueWithUnit.unit === UnitType.kPixels) {
     return Number(valueWithUnit.value);
-  } else if (valueWithUnit.unit === UnitType.kPercentage && target) {
+  }
+  if (valueWithUnit.unit === UnitType.kPercentage && target) {
     const bounds =
       target.nodeName === Shape.GROUP
         ? target.getLocalBounds()

@@ -2,7 +2,7 @@ import { FederatedEvent } from './FederatedEvent';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events
- * 
+ *
  * @example
   const event = new CustomEvent('build', { detail: { prop1: 'xx' } });
   circle.addEventListener('build', (e) => {
@@ -13,7 +13,6 @@ import { FederatedEvent } from './FederatedEvent';
   circle.dispatchEvent(event);
  */
 export class CustomEvent extends FederatedEvent {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   constructor(eventName: string, object?: object) {
     super(null);
 

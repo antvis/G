@@ -7,7 +7,7 @@ export function memoize(func: any, resolver?: (...args: any[]) => any) {
   }
   const memoized = function (...args) {
     const key = resolver ? resolver.apply(this, args) : args[0];
-    const cache = memoized.cache;
+    const { cache } = memoized;
 
     if (cache.has(key)) {
       return cache.get(key);

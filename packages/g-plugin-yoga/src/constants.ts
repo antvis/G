@@ -51,7 +51,12 @@ export namespace YogaConstants {
     WINDOW_SIZE = 'window',
   }
 
-  export const YogaEdges = [yoga.EDGE_TOP, yoga.EDGE_RIGHT, yoga.EDGE_BOTTOM, yoga.EDGE_LEFT];
+  export const YogaEdges = [
+    yoga.EDGE_TOP,
+    yoga.EDGE_RIGHT,
+    yoga.EDGE_BOTTOM,
+    yoga.EDGE_LEFT,
+  ];
 
   export interface ComputedLayout {
     left: number;

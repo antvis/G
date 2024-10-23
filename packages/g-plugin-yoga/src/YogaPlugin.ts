@@ -93,7 +93,7 @@ export class YogaPlugin implements RenderingPlugin {
      */
     const handleUnmounted = (e: FederatedEvent) => {
       const target = e.target as DisplayObject;
-      const node = this.nodes[(target as DisplayObject).entity];
+      const node = this.nodes[target.entity];
       if (node) {
         Yoga.Node.destroy(node);
         delete this.nodes[target.entity];

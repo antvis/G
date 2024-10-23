@@ -1,4 +1,5 @@
 import type { DisplayObject } from '@antv/g-lite';
+
 export class PickingIdGenerator {
   private counter = 0;
 

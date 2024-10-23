@@ -1,3 +1,4 @@
+import { isFunction } from '@antv/util';
 import { runtime } from '../global-runtime';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text } from '../display-objects';
@@ -17,7 +18,6 @@ import type {
   INode,
 } from './interfaces';
 import { Node } from './Node';
-import { isFunction } from '@antv/util';
 
 /**
  * the entry of DOM tree
@@ -33,7 +33,7 @@ export class Document extends Node implements IDocument {
     // create timeline
     try {
       this.timeline = new runtime.AnimationTimeline(this);
-    } catch (e) {}
+    } catch {}
 
     /**
      * for inherited properties, the initial value is used on the root element only,
@@ -132,7 +132,7 @@ export class Document extends Node implements IDocument {
     try {
       this.documentElement.destroyChildren();
       this.timeline.destroy();
-    } catch (e) {}
+    } catch {}
   }
 
   /**

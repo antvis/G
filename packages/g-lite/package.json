@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-lite",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A core module for rendering engine implements DOM API.",
   "keywords": [
     "antv",
@@ -20,22 +20,24 @@
   "author": "https://github.com/orgs/antvis/people",
   "sideEffects": true,
   "exports": {
-    "types": "./dist/index.d.ts",
+    "types": "./types/index.d.ts",
     "import": "./dist/index.esm.js",
     "default": "./dist/index.js"
   },
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.min.js",
   "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "package.json",
     "dist",
+    "types",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && rollup -c",
+    "build:types": "tsc --emitDeclarationOnly --noCheck",
+    "build": "npm run clean && npm run build:types && rollup -c",
     "clean": "rimraf dist",
     "sync": "tnpm sync",
     "watch": "rollup -c -w"
@@ -43,6 +45,7 @@
   "dependencies": {
     "@antv/g-math": "workspace:*",
     "@antv/util": "^3.3.5",
+    "@babel/runtime": "^7.25.6",
     "d3-color": "^3.1.0",
     "eventemitter3": "^5.0.1",
     "gl-matrix": "^3.4.3",

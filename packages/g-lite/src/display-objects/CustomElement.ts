@@ -1,6 +1,7 @@
 import type { DisplayObjectConfig } from '../dom';
 import type { BaseStyleProps } from '../types';
 import { DisplayObject } from './DisplayObject';
+
 export interface BaseCustomElementStyleProps extends BaseStyleProps {}
 
 /**

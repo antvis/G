@@ -1,7 +1,6 @@
 import type { Tuple4Number } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import EventEmitter from 'eventemitter3';
-import type { Mesh } from '../Mesh';
 import type {
   BlendFactor,
   BlendMode,
@@ -20,6 +19,7 @@ import {
   defaultMegaState,
   getUniforms,
 } from '@antv/g-device-api';
+import type { Mesh } from '../Mesh';
 
 export interface IMaterial {
   cullMode: CullMode;

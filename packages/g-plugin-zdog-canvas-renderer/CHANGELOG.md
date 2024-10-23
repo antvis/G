@@ -1,5 +1,14 @@
 # @antv/g-plugin-zdog-canvas-renderer
 
+## 2.0.16
+
+### Patch Changes
+
+-   Updated dependencies [aed1e752]
+-   Updated dependencies [133b88be]
+    -   @antv/g-lite@2.1.1
+    -   @antv/g-canvas@2.0.17
+
 ## 2.0.15
 
 ### Patch Changes

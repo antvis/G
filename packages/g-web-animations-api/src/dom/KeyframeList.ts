@@ -57,7 +57,9 @@ function convertToArrayForm(effectInput: PropertyIndexedKeyframes) {
   }
 
   normalizedEffectInput.sort(function (a, b) {
-    return ((a.computedOffset as number) || 0) - ((b.computedOffset as number) || 0);
+    return (
+      ((a.computedOffset as number) || 0) - ((b.computedOffset as number) || 0)
+    );
   });
   return normalizedEffectInput;
 }
@@ -88,7 +90,8 @@ export function normalizeKeyframes(
       if (member === 'offset') {
         if (memberValue !== null) {
           memberValue = Number(memberValue);
-          if (!isFinite(memberValue)) throw new Error('Keyframe offsets must be numbers.');
+          if (!isFinite(memberValue))
+            throw new Error('Keyframe offsets must be numbers.');
           if (memberValue < 0 || memberValue > 1)
             throw new Error('Keyframe offsets must be between 0 and 1.');
           keyframe.computedOffset = memberValue;
@@ -96,7 +99,11 @@ export function normalizeKeyframes(
       } else if (member === 'composite') {
         // TODO: Support add & accumulate in KeyframeEffect.composite
         // @see https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite
-        if (['replace', 'add', 'accumulate', 'auto'].indexOf(memberValue as string) === -1) {
+        if (
+          ['replace', 'add', 'accumulate', 'auto'].indexOf(
+            memberValue as string,
+          ) === -1
+        ) {
           throw new Error(`${memberValue} compositing is not supported`);
         }
       } else if (member === 'easing') {
@@ -126,10 +133,12 @@ export function normalizeKeyframes(
   let everyFrameHasOffset = true;
   let previousOffset = -Infinity;
   for (let i = 0; i < keyframes.length; i++) {
-    const offset = keyframes[i].offset;
+    const { offset } = keyframes[i];
     if (!isNil(offset)) {
       if (offset < previousOffset) {
-        throw new TypeError('Keyframes are not loosely sorted by offset. Sort or specify offsets.');
+        throw new TypeError(
+          'Keyframes are not loosely sorted by offset. Sort or specify offsets.',
+        );
       }
       previousOffset = offset;
     } else {
@@ -142,8 +151,10 @@ export function normalizeKeyframes(
   });
 
   function spaceKeyframes() {
-    const length = keyframes.length;
-    keyframes[length - 1].computedOffset = Number(keyframes[length - 1].offset ?? 1);
+    const { length } = keyframes;
+    keyframes[length - 1].computedOffset = Number(
+      keyframes[length - 1].offset ?? 1,
+    );
     if (length > 1) {
       keyframes[0].computedOffset = Number(keyframes[0].offset ?? 0);
     }
@@ -155,7 +166,8 @@ export function normalizeKeyframes(
       if (!isNil(offset) && !isNil(previousOffset)) {
         for (let j = 1; j < i - previousIndex; j++)
           keyframes[previousIndex + j].computedOffset =
-            previousOffset + ((Number(offset) - previousOffset) * j) / (i - previousIndex);
+            previousOffset +
+            ((Number(offset) - previousOffset) * j) / (i - previousIndex);
         previousIndex = i;
         previousOffset = Number(offset);
       }

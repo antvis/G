@@ -320,12 +320,17 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     let src: TextureSource;
     if (isString(image)) {
-      // @ts-ignore
-      src = (this.context.imagePool as ImagePool).getImageSync(image, () => {
-        // set dirty rectangle flag
-        object.renderable.dirty = true;
-        this.context.renderingService.dirtify();
-      });
+      const imageCache = (this.context.imagePool as ImagePool).getImageSync(
+        image,
+        object,
+        () => {
+          // set dirty rectangle flag
+          object.renderable.dirty = true;
+          this.context.renderingService.dirtify();
+        },
+      );
+
+      src = imageCache?.img;
     } else if ((image as Rect).nodeName === 'rect') {
       // image.forEach((object: DisplayObject) => {
       // });
@@ -423,7 +428,8 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
         CanvasKit.TileMode.Mirror,
       );
       return gradient;
-    } else if (stroke.type === GradientType.RadialGradient) {
+    }
+    if (stroke.type === GradientType.RadialGradient) {
       const { cx, cy, steps, size } = stroke.value as RadialGradient;
       const { x, y, r } = computeRadialGradient(
         [min[0], min[1]],

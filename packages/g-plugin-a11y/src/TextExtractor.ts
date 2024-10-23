@@ -1,4 +1,4 @@
-import type { CanvasContext, ParsedTextStyleProps, Text } from '@antv/g-lite';
+import type { CanvasContext, Text } from '@antv/g-lite';
 
 const CLASSNAME_PREFIX = 'g-a11y-text-extractor';
 
@@ -87,7 +87,7 @@ color: transparent !important;
           textBaseline,
           dx = 0,
           dy = 0,
-        } = text.parsedStyle as ParsedTextStyleProps;
+        } = text.parsedStyle;
         $el.style['transform-origin'] = `${
           (transformOrigin && transformOrigin[0].value) || 0
         } ${(transformOrigin && transformOrigin[1].value) || 0}`;

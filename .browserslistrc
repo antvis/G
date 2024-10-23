@@ -1,0 +1,7 @@
+# docs: https://github.com/browserslist/browserslist
+# see https://browsersl.ist/#q=defaults
+
+defaults
+partially supports es6-module
+iOS >= 10
+ChromeAndroid >= 49

@@ -7,13 +7,13 @@ import type {
 } from '@antv/g-lite';
 import { ElementEvent, Rectangle } from '@antv/g-lite';
 import { clamp } from '@antv/util';
-import type { PickingIdGenerator } from './PickingIdGenerator';
 import {
   BlendFactor,
   BlendMode,
   setAttachmentStateSimple,
   TransparentBlack,
 } from '@antv/g-device-api';
+import type { PickingIdGenerator } from './PickingIdGenerator';
 import type { RenderHelper } from './render';
 import {
   AntialiasingMode,
@@ -62,7 +62,7 @@ export class PickingPlugin implements RenderingPlugin {
       }
 
       // @ts-ignore
-      const renderable3D = object.renderable3D;
+      const { renderable3D } = object;
       // generate picking id for later use
       const pickingId = this.pickingIdGenerator.getId(object);
       renderable3D.pickingId = pickingId;
@@ -74,7 +74,7 @@ export class PickingPlugin implements RenderingPlugin {
       const object = e.target as DisplayObject;
 
       // @ts-ignore
-      const renderable3D = object.renderable3D;
+      const { renderable3D } = object;
       if (renderable3D) {
         this.pickingIdGenerator.deleteById(renderable3D.pickingId);
       }
@@ -191,10 +191,10 @@ export class PickingPlugin implements RenderingPlugin {
     const device = this.renderGraphPlugin.getDevice();
     const renderLists = this.renderGraphPlugin.getRenderLists();
 
-    const renderInstManager = this.renderHelper.renderInstManager;
+    const { renderInstManager } = this.renderHelper;
     const builder = this.renderHelper.renderGraph.newGraphBuilder();
     const clearColor = TransparentBlack;
-    const camera = this.context.camera;
+    const { camera } = this.context;
 
     // retrieve at each frame since canvas may resize
     const { x, y, width, height } = rect;
@@ -279,7 +279,7 @@ export class PickingPlugin implements RenderingPlugin {
             height,
             new Uint8Array(width * height * 4),
           ) as Uint8Array;
-        } catch (e) {}
+        } catch {}
 
         let pickedFeatureIdx = -1;
 
