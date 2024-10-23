@@ -516,6 +516,26 @@ export interface CanvasConfig {
    * replace `new window.Image()`
    */
   createImage?: (src: string) => HTMLImageElement;
+  /**
+   * Optimize rendering performance for high-resolution large images
+   */
+  enableLargeImageOptimization?:
+    | boolean
+    | {
+        /**
+         * Downsampling rate threshold, [0.01, 0.5], represents the ratio of reducing the image.
+         * For example, 0.3 means reducing the original image to 0.3 times of the original.
+         *
+         * default 0.5
+         */
+        downSamplingRateThreshold?: number;
+        /**
+         * The maximum size of the downsampled image, with equal width and height.
+         *
+         * default 2048
+         */
+        maxDownSampledImageSize?: number;
+      };
 
   /**
    * limits query

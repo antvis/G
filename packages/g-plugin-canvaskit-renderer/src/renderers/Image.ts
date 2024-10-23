@@ -5,7 +5,6 @@ import type {
   ContextService,
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
-import { isString } from '@antv/util';
 import type {
   CanvasKitContext,
   RendererContribution,
@@ -29,21 +28,18 @@ export class ImageRenderer implements RendererContribution {
     const { x, y, width, height, src, fillOpacity, opacity } =
       object.parsedStyle as ParsedImageStyleProps;
 
-    let image: HTMLImageElement;
+    const imageCache = (this.context.imagePool as ImagePool).getImageSync(
+      src,
+      object,
+    );
+    const image = imageCache?.img;
     let iw = width;
     let ih = height;
 
-    if (isString(src)) {
-      // image has been loaded in `mounted` hook
-      // @ts-ignore
-      image = (this.context.imagePool as ImagePool).getImageSync(src);
-    } else {
-      iw ||= src.width;
-      ih ||= src.height;
-      image = src;
-    }
-
     if (image) {
+      iw ||= image.width;
+      ih ||= image.height;
+
       const decoded = surface.makeImageFromTextureSource(
         image,
         // {
