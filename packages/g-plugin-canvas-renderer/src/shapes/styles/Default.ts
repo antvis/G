@@ -225,6 +225,7 @@ export function getPattern(
   }
 
   const canvasPattern = imagePool.getOrCreatePatternSync(
+    object,
     pattern,
     context,
     $offscreenCanvas,

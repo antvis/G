@@ -189,8 +189,12 @@ export class TexturePool {
     let src: CanvasImageSource;
     // Image URL
     if (isString(image)) {
-      // @ts-ignore
-      src = this.context.imagePool.getImageSync(image, callback);
+      const imageCache = (this.context.imagePool as ImagePool).getImageSync(
+        image,
+        instance,
+        callback,
+      );
+      src = imageCache?.img;
     } else {
       src = image as CanvasImageSource;
     }

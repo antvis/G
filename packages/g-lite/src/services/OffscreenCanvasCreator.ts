@@ -13,6 +13,25 @@ export class OffscreenCanvasCreator {
   private canvas: CanvasLike;
   private context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
+  /**
+   * @returns new canvas instance
+   */
+  static createCanvas(): HTMLCanvasElement | OffscreenCanvas | null {
+    try {
+      return new window.OffscreenCanvas(0, 0);
+    } catch {
+      //
+    }
+
+    try {
+      return document.createElement('canvas');
+    } catch {
+      //
+    }
+
+    return null;
+  }
+
   getOrCreateCanvas(
     offscreenCanvas: CanvasLike,
     contextAttributes?: CanvasRenderingContext2DSettings,

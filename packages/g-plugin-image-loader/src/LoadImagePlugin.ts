@@ -1,5 +1,4 @@
 import type {
-  DisplayObject,
   FederatedEvent,
   Image,
   MutationEvent,
@@ -37,7 +36,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         const { src, keepAspectRatio } = attributes;
 
         if (isString(src)) {
-          imagePool.getImageSync(src, ({ width, height }) => {
+          imagePool.getImageSync(src, object, ({ img: { width, height } }) => {
             if (keepAspectRatio) {
               calculateWithAspectRatio(object, width, height);
             }
@@ -51,25 +50,44 @@ export class LoadImagePlugin implements RenderingPlugin {
     };
 
     const handleAttributeChanged = (e: MutationEvent) => {
-      const object = e.target as DisplayObject;
-      const { attrName, newValue } = e;
+      const object = e.target as Image;
+      const { attrName, prevValue, newValue } = e;
 
-      if (object.nodeName === Shape.IMAGE) {
-        if (attrName === 'src') {
-          if (isString(newValue)) {
-            imagePool.getOrCreateImage(newValue).then(({ width, height }) => {
-              if (object.attributes.keepAspectRatio) {
-                calculateWithAspectRatio(object, width, height);
-              }
+      if (object.nodeName !== Shape.IMAGE || attrName !== 'src') {
+        return;
+      }
 
-              // set dirty rectangle flag
-              object.renderable.dirty = true;
-              renderingService.dirtify();
-            });
-          }
-        }
+      if (prevValue !== newValue) {
+        imagePool.releaseImage(prevValue as Image['attributes']['src'], object);
+      }
+
+      if (isString(newValue)) {
+        imagePool
+          .getOrCreateImage(newValue, object)
+          .then(({ img: { width, height } }) => {
+            if (object.attributes.keepAspectRatio) {
+              calculateWithAspectRatio(object, width, height);
+            }
+
+            // set dirty rectangle flag
+            object.renderable.dirty = true;
+            renderingService.dirtify();
+          })
+          .catch(() => {
+            //
+          });
       }
     };
+
+    function handleDestroy(e: FederatedEvent) {
+      const object = e.target as Image;
+
+      if (object.nodeName !== Shape.IMAGE) {
+        return;
+      }
+
+      imagePool.releaseImageRef(object);
+    }
 
     renderingService.hooks.init.tap(LoadImagePlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
@@ -77,6 +95,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      canvas.addEventListener(ElementEvent.DESTROY, handleDestroy);
     });
 
     renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
@@ -85,6 +104,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      canvas.removeEventListener(ElementEvent.DESTROY, handleDestroy);
     });
   }
 }
