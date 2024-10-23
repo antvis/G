@@ -1,5 +1,12 @@
 # @antv/g-lite
 
+## 2.1.1
+
+### Patch Changes
+
+-   aed1e752: perf: optimize large image rendering performance
+-   133b88be: fix angle value parse
+
 ## 2.1.0
 
 ### Minor Changes
