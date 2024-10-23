@@ -1,5 +1,16 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.1.1
+
+### Patch Changes
+
+-   aed1e752: perf: optimize large image rendering performance
+-   Updated dependencies [aed1e752]
+-   Updated dependencies [133b88be]
+    -   @antv/g-plugin-image-loader@2.0.12
+    -   @antv/g-lite@2.1.1
+    -   @antv/g-plugin-canvas-path-generator@2.0.12
+
 ## 2.1.0
 
 ### Minor Changes
