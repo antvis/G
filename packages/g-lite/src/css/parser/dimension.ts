@@ -134,12 +134,6 @@ export function mergeDimensions(
       unit = 'px';
     }
   }
-  // // format 'rad' 'turn' to 'deg'
-  // if (CSSUnitValue.isAngle(left.unit) || CSSUnitValue.isAngle(right.unit)) {
-  //   leftValue = convertAngleUnit(left);
-  //   rightValue = convertAngleUnit(right);
-  //   unit = 'deg';
-  // }
 
   return [
     leftValue,
@@ -161,6 +155,8 @@ export function convertAngleUnit(value: CSSUnitValue) {
     deg = rad2deg(Number(value.value));
   } else if (value.unit === UnitType.kTurns) {
     deg = turn2deg(Number(value.value));
+  } else if (value.value) {
+    deg = value.value;
   }
   return deg;
 }
