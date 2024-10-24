@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.1.3
+
+### Patch Changes
+
+-   e10b8679: fix canvas cannot destroy
+
 ## 2.1.2
 
 ### Patch Changes
