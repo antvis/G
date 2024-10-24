@@ -15,9 +15,8 @@ export function cleanExistedCanvas(
       typeof container === 'string'
         ? document.getElementById(container)
         : container;
-
     if (CANVAS_Map.has($dom)) CANVAS_Map.get($dom).destroy(cleanUp);
-    else CANVAS_Map.set($dom, canvas);
+    CANVAS_Map.set($dom, canvas);
   }
 }
 
