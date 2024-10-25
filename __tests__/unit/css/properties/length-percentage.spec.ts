@@ -1,5 +1,5 @@
 import { Renderer as CanvasRenderer } from '../../../../packages/g-svg/src';
-import { Canvas, Circle, CSS, CSSUnitValue } from '../../../../packages/g/src';
+import { Canvas, Circle, getParsedStyle } from '../../../../packages/g/src';
 import { sleep } from '../../utils';
 
 const $container = document.createElement('div');
@@ -52,23 +52,23 @@ describe('CSSPropertyLengthOrPercentage', () => {
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.equals(CSS.px(30))).toBeTruthy();
 
-    circle.style.cx = '20px';
-    expect(circle.getAttribute('cx')).toBe('20px');
+    // circle.style.cx = '20px';
+    // expect(circle.getAttribute('cx')).toBe('20px');
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.equals(CSS.px(20))).toBeTruthy();
 
-    circle.style.cx = '50%';
-    expect(circle.getAttribute('cx')).toBe('50%');
+    // circle.style.cx = '50%';
+    // expect(circle.getAttribute('cx')).toBe('50%');
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.equals(CSS.percent(50))).toBeTruthy();
 
-    circle.style.cx = '0';
-    expect(circle.getAttribute('cx')).toBe('0');
+    circle.style.cx = 0;
+    expect(circle.getAttribute('cx')).toBe(0);
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.equals(CSS.px(0))).toBeTruthy();
 
-    circle.style.cx = '0.2px';
-    expect(circle.getAttribute('cx')).toBe('0.2px');
+    // circle.style.cx = '0.2px';
+    // expect(circle.getAttribute('cx')).toBe('0.2px');
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.equals(CSS.px(0.2))).toBeTruthy();
 
@@ -76,11 +76,11 @@ describe('CSSPropertyLengthOrPercentage', () => {
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.equals(CSS.px(0.2))).toBeTruthy();
 
-    circle.style.cx = null;
-    expect(circle.getAttribute('cx')).toBeNull();
+    // circle.style.cx = null;
+    // expect(circle.getAttribute('cx')).toBeNull();
     // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // expect(computed.toString()).toBe('unset');
-    expect(circle.parsedStyle.cx).toBeNull();
+    // expect(getParsedStyle(circle, 'cx')).toBeNull();
 
     circle.animate(
       [
@@ -100,13 +100,13 @@ describe('CSSPropertyLengthOrPercentage', () => {
     // expect(circle.getAttribute('cx')).toBe('1em');
     // // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // // expect(computed.equals(CSS.em(1))).toBeTruthy();
-    // expect(circle.parsedStyle.cx).toBe(16);
+    // expect(getParsedStyle(circle, "cx")).toBe(16);
 
     // // rem
     // circle.style.cx = '2rem';
     // expect(circle.getAttribute('cx')).toBe('2rem');
     // // computed = circle.computedStyleMap().get('cx') as CSSUnitValue;
     // // expect(computed.equals(CSS.rem(2))).toBeTruthy();
-    // expect(circle.parsedStyle.cx).toBe(32);
+    // expect(getParsedStyle(circle, "cx")).toBe(32);
   });
 });

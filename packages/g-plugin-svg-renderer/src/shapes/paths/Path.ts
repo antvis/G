@@ -1,12 +1,9 @@
-import type { ParsedPathStyleProps, Path } from '@antv/g-lite';
+import type { Path } from '@antv/g-lite';
 import { isDisplayObject, translatePathToString } from '@antv/g-lite';
 
-export function updatePathElementAttribute(
-  $el: SVGElement,
-  parsedStyle: ParsedPathStyleProps,
-) {
-  const { d, markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    parsedStyle;
+export function updatePathElementAttribute($el: SVGElement, object: Path) {
+  const { markerStartOffset, markerEndOffset } = object.attributes;
+  const { d, markerStart, markerEnd } = object.parsedStyle;
 
   let startOffsetX = 0;
   let startOffsetY = 0;

@@ -56,11 +56,11 @@ color: transparent !important;
     const $el = this.getOrCreateEl(text);
     switch (name) {
       case 'text':
-        const { text: textContent } = text.parsedStyle;
+        const { text: textContent } = text.attributes;
         $el.textContent = textContent;
         break;
       case 'visibility':
-        const { visibility } = text.parsedStyle;
+        const { visibility } = text.attributes;
         if (visibility === 'visible') {
           this.getOrCreateEl(text);
         } else {
@@ -68,11 +68,11 @@ color: transparent !important;
         }
         break;
       case 'x':
-        const { x } = text.parsedStyle;
+        const { x } = text.attributes;
         $el.style.left = `${x}px`;
         break;
       case 'y':
-        const { y } = text.parsedStyle;
+        const { y } = text.attributes;
         $el.style.top = `${y}px`;
         break;
       case 'modelMatrix':
@@ -81,13 +81,8 @@ color: transparent !important;
       case 'textBaseline':
       case 'dx':
       case 'dy':
-        const {
-          transformOrigin,
-          textAlign,
-          textBaseline,
-          dx = 0,
-          dy = 0,
-        } = text.parsedStyle;
+        const { textAlign, textBaseline, dx = 0, dy = 0 } = text.attributes;
+        const { transformOrigin } = text.parsedStyle;
         $el.style['transform-origin'] = `${
           (transformOrigin && transformOrigin[0].value) || 0
         } ${(transformOrigin && transformOrigin[1].value) || 0}`;
@@ -114,11 +109,11 @@ color: transparent !important;
         $el.style.transform = `translate(${dx}px,${dy}px) translate(${offsetX},${offsetY}) matrix3d(${worldTransform.toString()})`;
         break;
       case 'fontSize':
-        const { fontSize = 0 } = text.parsedStyle;
+        const { fontSize = 0 } = text.attributes;
         $el.style.fontSize = `${fontSize}px`;
         break;
       case 'fontFamily':
-        const { fontFamily } = text.parsedStyle;
+        const { fontFamily } = text.attributes;
         $el.style.fontFamily = fontFamily;
         break;
     }

@@ -7,9 +7,10 @@ import type {
 } from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
 
-export class RectUpdater implements GeometryAABBUpdater<ParsedImageStyleProps> {
-  update(parsedStyle: ParsedImageStyleProps, object: Image | Rect | Group) {
-    const { x = 0, y = 0, src, width = 0, height = 0 } = parsedStyle;
+export class RectUpdater implements GeometryAABBUpdater {
+  update(object: Image | Rect | Group) {
+    const { x = 0, y = 0, src, width = 0, height = 0 } = object.attributes;
+    const parsedStyle = object.parsedStyle as ParsedImageStyleProps;
 
     let contentWidth = width;
     let contentHeight = height;

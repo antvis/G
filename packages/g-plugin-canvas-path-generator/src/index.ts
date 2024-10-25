@@ -26,6 +26,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.IMAGE]: undefined,
       [Shape.HTML]: undefined,
       [Shape.MESH]: undefined,
+      [Shape.FRAGMENT]: undefined,
     };
 
     // @ts-ignore

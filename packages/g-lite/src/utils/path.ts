@@ -882,21 +882,16 @@ export function convertToPath(
   let commands: AbsoluteArray = [] as unknown as AbsoluteArray;
   switch (object.nodeName) {
     case Shape.LINE:
-      const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = (object as Line).parsedStyle;
+      const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = (object as Line).attributes;
       commands = lineToCommands(x1, y1, x2, y2);
       break;
     case Shape.CIRCLE: {
-      const { r = 0, cx = 0, cy = 0 } = (object as Circle).parsedStyle;
+      const { r = 0, cx = 0, cy = 0 } = (object as Circle).attributes;
       commands = ellipseToCommands(r, r, cx, cy);
       break;
     }
     case Shape.ELLIPSE: {
-      const {
-        rx = 0,
-        ry = 0,
-        cx = 0,
-        cy = 0,
-      } = (object as Ellipse).parsedStyle;
+      const { rx = 0, ry = 0, cx = 0, cy = 0 } = (object as Ellipse).attributes;
       commands = ellipseToCommands(rx, ry, cx, cy);
       break;
     }
@@ -914,8 +909,8 @@ export function convertToPath(
         height = 0,
         x = 0,
         y = 0,
-        radius,
-      } = (object as Rect).parsedStyle;
+      } = (object as Rect).attributes;
+      const { radius } = (object as Rect).parsedStyle;
 
       const hasRadius = radius && radius.some((r) => r !== 0);
       commands = rectToCommands(
@@ -981,13 +976,17 @@ export function translatePathToString(
               : ''
           }`;
         case 'C':
-          return `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5]} ${params[6]}${
+          return `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${
+            params[5]
+          } ${params[6]}${
             useEndOffset
               ? ` L ${params[5] + endOffsetX},${params[6] + endOffsetY}`
               : ''
           }`;
         case 'A':
-          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6]} ${params[7]}${
+          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${
+            params[5]
+          } ${params[6]} ${params[7]}${
             useEndOffset
               ? ` L ${params[6] + endOffsetX},${params[7] + endOffsetY}`
               : ''

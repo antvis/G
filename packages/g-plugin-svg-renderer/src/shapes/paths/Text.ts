@@ -1,4 +1,4 @@
-import type { GlobalRuntime, ParsedTextStyleProps, Text } from '@antv/g-lite';
+import type { GlobalRuntime, Text } from '@antv/g-lite';
 import { TEXT_PATH_PREFIX } from '../../SVGRendererPlugin';
 import { createSVGElement } from '../../utils/dom';
 import { convertHTML } from '../../utils/format';
@@ -15,7 +15,6 @@ const BASELINE_MAP: Record<string, string> = {
 
 export function updateTextElementAttribute(
   $el: SVGElement,
-  parsedStyle: ParsedTextStyleProps,
   text: Text,
   runtime: GlobalRuntime,
 ) {
@@ -33,9 +32,9 @@ export function updateTextElementAttribute(
     textDecorationLine = '',
     textDecorationColor = '',
     textDecorationStyle = '',
-    metrics,
-  } = parsedStyle;
-  let { textBaseline = 'alphabetic' } = parsedStyle;
+  } = text.attributes;
+  const { metrics } = text.parsedStyle;
+  let { textBaseline = 'alphabetic' } = text.attributes;
 
   if (textBaseline === 'alphabetic') {
     textBaseline = 'bottom';

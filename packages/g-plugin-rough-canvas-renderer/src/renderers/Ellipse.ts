@@ -8,7 +8,7 @@ export class EllipseRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedEllipseStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { cx = 0, cy = 0, rx, ry } = parsedStyle;
+    const { cx = 0, cy = 0, rx, ry } = object.attributes;
     // @ts-ignore
     context.roughCanvas.ellipse(
       cx,

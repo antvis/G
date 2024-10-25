@@ -13,3 +13,4 @@ export * from './raf';
 export * from './tapable';
 export * from './text';
 export * from './transform-mat4';
+export * from './style';

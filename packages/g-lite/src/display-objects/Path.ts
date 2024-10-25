@@ -194,8 +194,8 @@ export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
   }
 
   private transformMarker(isStart: boolean) {
-    const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-      this.parsedStyle;
+    const { markerStartOffset, markerEndOffset } = this.attributes;
+    const { markerStart, markerEnd } = this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
     if (!marker || !isDisplayObject(marker)) {

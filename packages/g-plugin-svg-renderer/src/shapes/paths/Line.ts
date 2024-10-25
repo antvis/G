@@ -1,20 +1,10 @@
-import type { ParsedLineStyleProps } from '@antv/g-lite';
+import type { Line } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 
-export function updateLineElementAttribute(
-  $el: SVGElement,
-  parsedStyle: ParsedLineStyleProps,
-) {
-  const {
-    x1,
-    y1,
-    x2,
-    y2,
-    markerStart,
-    markerEnd,
-    markerStartOffset,
-    markerEndOffset,
-  } = parsedStyle;
+export function updateLineElementAttribute($el: SVGElement, object: Line) {
+  const { x1, y1, x2, y2, markerStartOffset, markerEndOffset } =
+    object.attributes;
+  const { markerStart, markerEnd } = object.parsedStyle;
 
   let startOffsetX = 0;
   let startOffsetY = 0;

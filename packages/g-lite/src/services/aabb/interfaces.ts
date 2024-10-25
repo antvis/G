@@ -1,11 +1,7 @@
 import type { DisplayObject } from '../../display-objects/DisplayObject';
-import type { ParsedBaseStyleProps } from '../../types';
 
-export interface GeometryAABBUpdater<T extends ParsedBaseStyleProps = any> {
-  update: (
-    parsedStyle: T,
-    object: DisplayObject,
-  ) => {
+export interface GeometryAABBUpdater<T extends DisplayObject = DisplayObject> {
+  update: (object: T) => {
     cx: number;
     cy: number;
     cz?: number;

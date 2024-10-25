@@ -119,7 +119,7 @@ export class BatchManager {
               );
               if (
                 !existedDrawcall ||
-                existedDrawcall.key !== object.parsedStyle.batchKey
+                existedDrawcall.key !== object.attributes.batchKey
               ) {
                 existedDrawcall = new DrawCallCtor(
                   this.renderHelper,
@@ -133,8 +133,8 @@ export class BatchManager {
                 existedDrawcall.renderer = renderer;
                 this.drawcalls.push(existedDrawcall);
 
-                if (object.parsedStyle.batchKey) {
-                  existedDrawcall.key = object.parsedStyle.batchKey;
+                if (object.attributes.batchKey) {
+                  existedDrawcall.key = object.attributes.batchKey;
                 }
               }
 

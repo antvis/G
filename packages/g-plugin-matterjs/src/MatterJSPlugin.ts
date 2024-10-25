@@ -2,7 +2,6 @@ import type {
   DisplayObject,
   FederatedEvent,
   MutationEvent,
-  ParsedLineStyleProps,
   ParsedPolygonStyleProps,
   RenderingPlugin,
   RenderingPluginContext,
@@ -219,7 +218,7 @@ export class MatterJSPlugin implements RenderingPlugin {
   }
 
   private addActor(target: DisplayObject) {
-    const { nodeName, parsedStyle } = target;
+    const { nodeName, attributes, parsedStyle } = target;
     const {
       rigid,
       restitution = 0,
@@ -230,7 +229,7 @@ export class MatterJSPlugin implements RenderingPlugin {
       // anchor,
       velocity = [0, 0],
       angularVelocity = 0,
-    } = parsedStyle;
+    } = attributes;
     const bounds = target.getBounds();
 
     if (!AABB.isEmpty(bounds)) {
@@ -266,8 +265,7 @@ export class MatterJSPlugin implements RenderingPlugin {
 
       let body: Body;
       if (nodeName === Shape.LINE) {
-        const { x1, y1, x2, y2, lineWidth } =
-          parsedStyle as ParsedLineStyleProps;
+        const { x1, y1, x2, y2, lineWidth } = attributes;
         const p1 = vec2.fromValues(x1, y1);
         const p2 = vec2.fromValues(x2, y2);
         const basis = vec2.sub(vec2.create(), p2, p1);
@@ -313,21 +311,6 @@ export class MatterJSPlugin implements RenderingPlugin {
           config,
         );
       } else if (nodeName === Shape.POLYLINE) {
-        //   const { points } = parsedStyle as ParsedBaseStyleProps;
-        //   const pointsInCCW = sortPointsInCCW(points.points);
-        //   const vertices: Box2D.b2Vec2[] = pointsInCCW.map(([x, y]) => new b2Vec2(x , y ));
-        //   const prev = pointsInCCW[0];
-        //   const next = pointsInCCW[pointsInCCW.length - 1];
-        //   const eps = 0.1;
-        //   shape = createChainShape(
-        //     this.Box2D,
-        //     vertices,
-        //     false,
-        //     vertices[0],
-        //     vertices[vertices.length - 1],
-        //     // new b2Vec2(prev[0]  + eps, prev[1] ),
-        //     // new b2Vec2(next[0]  + eps, next[1] ),
-        //   );
       } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
         // matterjs set origin to center of rectangle
         target.style.transformOrigin = 'center center';

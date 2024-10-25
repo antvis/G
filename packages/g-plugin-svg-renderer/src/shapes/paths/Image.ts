@@ -1,11 +1,8 @@
-import type { ParsedImageStyleProps } from '@antv/g-lite';
+import type { Image as GImage } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
-export function updateImageElementAttribute(
-  $el: SVGElement,
-  parsedStyle: ParsedImageStyleProps,
-) {
-  const { src = '', x = 0, y = 0, width, height } = parsedStyle;
+export function updateImageElementAttribute($el: SVGElement, object: GImage) {
+  const { src = '', x = 0, y = 0, width, height } = object.attributes;
 
   $el.setAttribute('x', `${x}`);
   $el.setAttribute('y', `${y}`);

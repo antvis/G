@@ -320,6 +320,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
 
     let src: TextureSource;
     if (isString(image)) {
+      // @ts-ignore
       const imageCache = (this.context.imagePool as ImagePool).getImageSync(
         image,
         object,
@@ -509,21 +510,20 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
     const renderer = this.rendererContributionFactory[object.nodeName];
 
     const {
-      fill,
-      stroke,
       lineWidth,
       lineCap = 'butt',
       lineJoin = 'miter',
       lineDash,
       lineDashOffset,
-      miterLimit,
       opacity,
       fillOpacity,
       strokeOpacity,
       shadowBlur,
       shadowColor,
       clipPath,
-    } = object.parsedStyle as ParsedBaseStyleProps;
+    } = object.attributes;
+    const { fill, stroke, miterLimit } =
+      object.parsedStyle as ParsedBaseStyleProps;
 
     // apply clipPath
     if (clipPath) {

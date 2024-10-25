@@ -588,8 +588,8 @@ export class SelectablePlugin implements RenderingPlugin {
         });
       } else if (target.nodeName === Shape.ELLIPSE) {
         target.attr({
-          cx: rect.x + target.parsedStyle.rx,
-          cy: rect.y + target.parsedStyle.ry,
+          cx: rect.x + target.attributes.rx,
+          cy: rect.y + target.attributes.ry,
         });
       } else if (target.nodeName === Shape.LINE) {
         const [[x1, y1], [x2, y2]] = polyline.points;

@@ -12,8 +12,8 @@ export class TextRenderer extends Batch {
   getDrawcallCtors(object: DisplayObject) {
     const drawcalls: (typeof Instanced)[] = [];
 
-    const { stroke, lineWidth = 1 } =
-      object.parsedStyle as ParsedTextStyleProps;
+    const { lineWidth = 1 } = object.attributes;
+    const { stroke } = object.parsedStyle as ParsedTextStyleProps;
     const hasStroke = !!(stroke && !(stroke as CSSRGB).isNone && lineWidth);
 
     if (hasStroke) {

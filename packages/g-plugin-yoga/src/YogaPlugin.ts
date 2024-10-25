@@ -424,7 +424,7 @@ export class YogaPlugin implements RenderingPlugin {
   }
 
   private isFlex(object: DisplayObject) {
-    return object?.parsedStyle?.display === 'flex';
+    return object?.attributes?.display === 'flex';
   }
 
   private setDefaultValues(node: YogaNode) {

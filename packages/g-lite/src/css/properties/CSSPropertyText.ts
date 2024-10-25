@@ -23,6 +23,6 @@ export class CSSPropertyText
   }
 
   postProcessor(object: DisplayObject) {
-    object.nodeValue = `${object.parsedStyle.text}` || '';
+    object.nodeValue = `${object.attributes.text}` || '';
   }
 }

@@ -9,7 +9,7 @@ import { CSSUnitValue, UnitType } from '../cssom';
 import { mergeNumbers } from '../parser';
 
 function getFontSize(object: DisplayObject): number {
-  const { fontSize } = object.parsedStyle as ParsedTextStyleProps;
+  const { fontSize } = object.attributes as ParsedTextStyleProps;
   return isNil(fontSize) ? null : fontSize;
 }
 

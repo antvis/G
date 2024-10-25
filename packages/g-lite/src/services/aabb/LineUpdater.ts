@@ -1,9 +1,9 @@
-import type { ParsedLineStyleProps } from '../../display-objects/Line';
+import type { Line } from '../../display-objects/Line';
 import type { GeometryAABBUpdater } from './interfaces';
 
-export class LineUpdater implements GeometryAABBUpdater<ParsedLineStyleProps> {
-  update(parsedStyle: ParsedLineStyleProps) {
-    const { x1, y1, x2, y2 } = parsedStyle;
+export class LineUpdater implements GeometryAABBUpdater {
+  update(object: Line) {
+    const { x1, y1, x2, y2 } = object.attributes;
 
     const minX = Math.min(x1, x2);
     const maxX = Math.max(x1, x2);

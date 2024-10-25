@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g-lite';
 import type {
   RendererContribution,
   RendererContributionContext,
@@ -13,8 +13,7 @@ export class CircleRenderer implements RendererContribution {
       shadowFillPaint,
       shadowStrokePaint,
     } = context;
-    const { cx, cy, r, shadowOffsetX, shadowOffsetY } =
-      object.parsedStyle as ParsedCircleStyleProps;
+    const { cx, cy, r, shadowOffsetX, shadowOffsetY } = object.attributes;
 
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawCircle(

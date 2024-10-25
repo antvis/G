@@ -15,8 +15,8 @@ export class MeshDrawcall extends Instanced {
 
     if (this.instance.nodeName === Shape.MESH) {
       if (
-        this.instance.parsedStyle.material !== object.parsedStyle.material ||
-        this.instance.parsedStyle.geometry !== object.parsedStyle.geometry
+        this.instance.attributes.material !== object.attributes.material ||
+        this.instance.attributes.geometry !== object.attributes.geometry
       ) {
         return false;
       }
@@ -40,13 +40,13 @@ export class MeshDrawcall extends Instanced {
   }
 
   createMaterial(objects: DisplayObject[]): void {
-    const { material } = (this.instance as Mesh).parsedStyle;
+    const { material } = (this.instance as Mesh).attributes;
     this.material = material;
     this.observeMaterialChanged();
   }
 
   createGeometry(objects: DisplayObject[]): void {
-    const { geometry } = (this.instance as Mesh).parsedStyle;
+    const { geometry } = (this.instance as Mesh).attributes;
     this.geometry = geometry;
 
     // use default common attributes

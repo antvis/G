@@ -1,9 +1,9 @@
-import type { ParsedBaseStyleProps } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g-lite';
 
 /**
  * generate path in local space
  */
-export type PathGenerator<T extends ParsedBaseStyleProps> = (
+export type PathGenerator<T extends DisplayObject> = (
   context: CanvasRenderingContext2D,
-  attributes: T,
+  object: T,
 ) => void;

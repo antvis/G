@@ -141,13 +141,8 @@ export class Polygon extends DisplayObject<
   }
 
   private transformMarker(isStart: boolean) {
-    const {
-      markerStart,
-      markerEnd,
-      markerStartOffset,
-      markerEndOffset,
-      points: P,
-    } = this.parsedStyle;
+    const { markerStartOffset, markerEndOffset } = this.attributes;
+    const { markerStart, markerEnd, points: P, isClosed } = this.parsedStyle;
     const { points } = P || {};
     const marker = isStart ? markerStart : markerEnd;
 
@@ -174,7 +169,7 @@ export class Polygon extends DisplayObject<
     } else {
       const { length } = points;
 
-      if (!this.parsedStyle.isClosed) {
+      if (!isClosed) {
         ox = points[length - 1][0];
         oy = points[length - 1][1];
         x = points[length - 2][0] - points[length - 1][0];
@@ -197,7 +192,7 @@ export class Polygon extends DisplayObject<
   }
 
   private placeMarkerMid(marker: DisplayObject) {
-    const { points: P } = this.parsedStyle;
+    const { isClosed, points: P } = this.parsedStyle;
     const { points } = P || {};
 
     // clear all existed markers
@@ -207,11 +202,7 @@ export class Polygon extends DisplayObject<
     this.markerMidList = [];
 
     if (marker && isDisplayObject(marker) && points) {
-      for (
-        let i = 1;
-        i < (this.parsedStyle.isClosed ? points.length : points.length - 1);
-        i++
-      ) {
+      for (let i = 1; i < (isClosed ? points.length : points.length - 1); i++) {
         const ox = points[i][0];
         const oy = points[i][1];
 

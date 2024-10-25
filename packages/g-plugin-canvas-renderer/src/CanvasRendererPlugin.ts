@@ -399,9 +399,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     // @ts-ignore
     const styleRenderer = this.context.styleRendererFactory[nodeName];
     const generatePath = this.pathGeneratorFactory[nodeName];
-
     // clip path
-    const { clipPath } = object.parsedStyle as ParsedBaseStyleProps;
+    const { clipPath } = object.attributes;
     if (clipPath) {
       this.applyWorldTransform(context, clipPath);
 
@@ -414,7 +413,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         restoreStack.push(object);
 
         context.beginPath();
-        generatePath(context, clipPath.parsedStyle);
+        generatePath(context, clipPath);
         context.closePath();
         context.clip();
       }
@@ -433,7 +432,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     if (generatePath) {
       context.beginPath();
-      generatePath(context, object.parsedStyle);
+      generatePath(context, object);
       if (
         object.nodeName !== Shape.LINE &&
         object.nodeName !== Shape.PATH &&
@@ -535,8 +534,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     context: CanvasRenderingContext2D,
     object: DisplayObject,
   ) {
-    const { stroke, fill, opacity, lineDash, lineDashOffset } =
-      object.parsedStyle as ParsedBaseStyleProps;
+    const { opacity, lineDash, lineDashOffset } = object.attributes;
+    const { stroke, fill } = object.parsedStyle as ParsedBaseStyleProps;
     // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
     if (lineDash) {
       context.setLineDash(lineDash);

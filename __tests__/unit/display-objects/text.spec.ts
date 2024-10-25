@@ -1,6 +1,5 @@
-import { vec3 } from 'gl-matrix';
 import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
-import { Canvas, Text } from '../../../packages/g/src';
+import { Canvas, getParsedStyle, Text } from '../../../packages/g/src';
 import { OffscreenCanvasContext } from '../offscreenCanvasContext';
 
 const $container = document.createElement('div');
@@ -35,11 +34,11 @@ describe('Text', () => {
   it('should allow number as valid content', () => {
     const text = new Text({
       style: {
-        text: 1,
+        text: '1',
       },
     });
-    expect(text.style.text).toBe(1);
-    expect(text.parsedStyle.text).toBe(1);
+    expect(text.style.text).toBe('1');
+    expect(getParsedStyle(text, 'text')).toBe('1');
   });
 
   it('should calc global bounds correctly', () => {
@@ -64,7 +63,7 @@ describe('Text', () => {
 
     // parse font size with unit
     // text.style.fontSize = '40px';
-    // expect(text.parsedStyle.fontSize).toBe(40);
+    // expect(getParsedStyle(text, "fontSize")).toBe(40);
 
     // expect(text.nodeValue).toBe('这是测试文本This is text');
     // expect(text.textContent).toBe('这是测试文本This is text');

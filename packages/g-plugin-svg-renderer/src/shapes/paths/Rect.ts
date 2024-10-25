@@ -1,11 +1,9 @@
-import type { ParsedRectStyleProps } from '@antv/g-lite';
+import type { Rect } from '@antv/g-lite';
 import { clamp } from '@antv/util';
 
-export function updateRectElementAttribute(
-  $el: SVGElement,
-  parsedStyle: ParsedRectStyleProps,
-) {
-  const { radius, x = 0, y = 0, width, height } = parsedStyle;
+export function updateRectElementAttribute($el: SVGElement, object: Rect) {
+  const { x = 0, y = 0, width, height } = object.attributes;
+  const { radius } = object.parsedStyle;
 
   // CSSKeyword: auto
   if (!isFinite(width) || !isFinite(height)) {

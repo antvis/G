@@ -19,9 +19,6 @@ export function isPointInPath(
   runtime: GlobalRuntime,
 ): boolean {
   const {
-    radius,
-    fill,
-    stroke,
     lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     x = 0,
@@ -29,7 +26,9 @@ export function isPointInPath(
     width,
     height,
     pointerEvents = 'auto',
-  } = displayObject.parsedStyle as ParsedRectStyleProps;
+  } = displayObject.attributes;
+  const { radius, fill, stroke } =
+    displayObject.parsedStyle as ParsedRectStyleProps;
 
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,

@@ -159,16 +159,9 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
   }
 
   private transformMarker(isStart: boolean) {
-    const {
-      markerStart,
-      markerEnd,
-      markerStartOffset,
-      markerEndOffset,
-      x1,
-      x2,
-      y1,
-      y2,
-    } = this.parsedStyle;
+    const { markerStartOffset, markerEndOffset, x1, x2, y1, y2 } =
+      this.attributes;
+    const { markerStart, markerEnd } = this.parsedStyle;
     const marker = isStart ? markerStart : markerEnd;
 
     if (!marker || !isDisplayObject(marker)) {
@@ -210,7 +203,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
   getPoint(ratio: number, inWorldSpace = false): Point {
     // TODO: account for z1/z2 in 3D line
-    const { x1, y1, x2, y2 } = this.parsedStyle;
+    const { x1, y1, x2, y2 } = this.attributes;
     const { x, y } = linePointAt(x1, y1, x2, y2, ratio);
 
     const transformed = vec3.transformMat4(
@@ -229,7 +222,7 @@ export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
 
   getTotalLength() {
     // TODO: account for z1/z2 in 3D line
-    const { x1, y1, x2, y2 } = this.parsedStyle;
+    const { x1, y1, x2, y2 } = this.attributes;
     return lineLength(x1, y1, x2, y2);
   }
 }

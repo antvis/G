@@ -13,13 +13,12 @@ export function isPointInPath(
   isClipPath: boolean,
 ): boolean {
   const {
-    stroke,
-    fill,
     lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
-    points,
     pointerEvents = 'auto',
-  } = displayObject.parsedStyle as ParsedPolygonStyleProps;
+  } = displayObject.attributes;
+  const { stroke, fill, points } =
+    displayObject.parsedStyle as ParsedPolygonStyleProps;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(
     pointerEvents,
     fill,

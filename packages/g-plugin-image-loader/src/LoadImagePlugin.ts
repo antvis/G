@@ -5,7 +5,7 @@ import type {
   RenderingPlugin,
   RenderingPluginContext,
 } from '@antv/g-lite';
-import { ElementEvent, Shape } from '@antv/g-lite';
+import { ElementEvent, Shape, getParsedStyle } from '@antv/g-lite';
 import { isString } from '@antv/util';
 import { ImagePool } from './ImagePool';
 
@@ -21,7 +21,8 @@ export class LoadImagePlugin implements RenderingPlugin {
       imageWidth: number,
       imageHeight: number,
     ) => {
-      const { width, height } = object.parsedStyle;
+      const width = getParsedStyle(object, 'width');
+      const height = getParsedStyle(object, 'height');
       if (width && !height) {
         object.setAttribute('height', (imageHeight / imageWidth) * width);
       } else if (!width && height) {

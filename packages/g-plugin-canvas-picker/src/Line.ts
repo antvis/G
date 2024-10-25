@@ -20,9 +20,8 @@ export function isPointInPath(
     lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     pointerEvents = 'auto',
-    fill,
-    stroke,
-  } = displayObject.parsedStyle as ParsedLineStyleProps;
+  } = displayObject.attributes;
+  const { fill, stroke } = displayObject.parsedStyle as ParsedLineStyleProps;
 
   const [, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 

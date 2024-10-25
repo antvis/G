@@ -307,7 +307,10 @@ function createOrUpdatePattern(
     }
 
     if ((image as Rect).nodeName === 'rect') {
-      const { width, height } = (image as Rect).parsedStyle;
+      const {
+        width = (image as Rect).attributes.width,
+        height = (image as Rect).attributes.height,
+      } = (image as Rect).parsedStyle;
 
       const $pattern = create$Pattern(
         document,

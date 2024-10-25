@@ -1,5 +1,5 @@
 import { CanvasLike, GlobalRuntime } from '..';
-import type { ParsedTextStyleProps } from '../display-objects';
+import type { Text } from '../display-objects';
 import { Rectangle } from '../shapes';
 import { toFontString } from '../utils';
 
@@ -73,6 +73,10 @@ const regexCannotStart = new RegExp(
 const regexCannotEnd = new RegExp(
   `${regexCannotEndZhCn.source}|${regexCannotEndZhTw.source}|${regexCannotEndJaJp.source}|${regexCannotEndKoKr.source}`,
 );
+
+const getTextOf = (object: Text) => {
+  return object.parsedStyle.text || object.attributes.text || '';
+};
 
 /**
  * Borrow from pixi/packages/text/src/TextMetrics.ts
@@ -171,11 +175,8 @@ export class TextService {
     return properties;
   }
 
-  measureText(
-    text: string,
-    parsedStyle: ParsedTextStyleProps,
-    offscreenCanvas: CanvasLike,
-  ): TextMetrics {
+  measureText(object: Text, offscreenCanvas: CanvasLike): TextMetrics {
+    const text = getTextOf(object);
     const {
       fontSize = 16,
       wordWrap = false,
@@ -187,12 +188,10 @@ export class TextService {
       textPath,
       textPathSide,
       textPathStartOffset,
-      // dropShadow = 0,
-      // dropShadowDistance = 0,
       leading = 0,
-    } = parsedStyle;
+    } = object.attributes;
 
-    const font = toFontString(parsedStyle);
+    const font = toFontString(object.attributes);
 
     const fontProperties = this.measureFont(font, offscreenCanvas);
     // fallback in case UA disallow canvas data extraction
@@ -206,10 +205,8 @@ export class TextService {
     context.font = font;
 
     // no overflowing by default
-    parsedStyle.isOverflowing = false;
-    const outputText = wordWrap
-      ? this.wordWrap(text, parsedStyle, offscreenCanvas)
-      : text;
+    object.parsedStyle.isOverflowing = false;
+    const outputText = wordWrap ? this.wordWrap(object, offscreenCanvas) : text;
 
     const lines = outputText.split(/(?:\r\n|\r|\n)/);
     const lineWidths = new Array<number>(lines.length);
@@ -335,17 +332,15 @@ export class TextService {
 
   private setGraphemeOnPath() {}
 
-  private wordWrap(
-    text: string,
-    parsedStyle: ParsedTextStyleProps,
-    offscreenCanvas: CanvasLike,
-  ): string {
+  private wordWrap(object: Text, offscreenCanvas: CanvasLike): string {
+    const text = getTextOf(object);
     const {
       wordWrapWidth = 0,
       letterSpacing = 0,
       maxLines = Infinity,
       textOverflow,
-    } = parsedStyle;
+    } = object.attributes;
+    const parsedStyle = object.parsedStyle;
     const context =
       this.runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
     const maxWidth = wordWrapWidth + letterSpacing;

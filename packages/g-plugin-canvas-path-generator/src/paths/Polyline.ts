@@ -1,13 +1,16 @@
-import type { ParsedPolylineStyleProps } from '@antv/g-lite';
+import type { Polyline } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 
 export function generatePath(
   context: CanvasRenderingContext2D,
-  parsedStyle: ParsedPolylineStyleProps,
+  polyline: Polyline,
 ) {
-  const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    parsedStyle;
-  const { points } = parsedStyle.points;
+  const { markerStartOffset, markerEndOffset } = polyline.attributes;
+  const {
+    markerStart,
+    markerEnd,
+    points: { points },
+  } = polyline.parsedStyle;
   const { length } = points;
 
   const x1 = points[0][0];

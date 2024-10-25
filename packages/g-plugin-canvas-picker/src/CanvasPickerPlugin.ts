@@ -1,13 +1,12 @@
 import type {
   BaseStyleProps,
   DisplayObject,
-  ParsedBaseStyleProps,
+  GlobalRuntime,
+  IDocument,
   PickingResult,
   RenderingPlugin,
-  Shape,
-  IDocument,
   RenderingPluginContext,
-  GlobalRuntime,
+  Shape,
 } from '@antv/g-lite';
 import { findClosestClipPathTarget, Point } from '@antv/g-lite';
 import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
@@ -98,7 +97,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         // should look up in the ancestor node
         const clipped = findClosestClipPathTarget(displayObject);
         if (clipped) {
-          const { clipPath } = clipped.parsedStyle as ParsedBaseStyleProps;
+          const { clipPath } = clipped.attributes;
           const isHitClipPath = this.isHit(
             clipPath,
             position,
@@ -176,7 +175,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
       this.context.pathGeneratorFactory[displayObject.nodeName];
     if (generatePath) {
       context.beginPath();
-      generatePath(context, displayObject.parsedStyle);
+      generatePath(context, displayObject);
       context.closePath();
     }
 

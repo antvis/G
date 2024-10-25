@@ -1,11 +1,9 @@
-import type { ParsedRectStyleProps } from '@antv/g-lite';
+import type { Rect } from '@antv/g-lite';
 import { clamp } from '@antv/util';
 
-export function generatePath(
-  context: CanvasRenderingContext2D,
-  parsedStyle: ParsedRectStyleProps,
-) {
-  const { x = 0, y = 0, radius, width, height } = parsedStyle;
+export function generatePath(context: CanvasRenderingContext2D, rect: Rect) {
+  const { x = 0, y = 0, width, height } = rect.attributes;
+  const { radius } = rect.parsedStyle;
 
   const w = width;
   const h = height;

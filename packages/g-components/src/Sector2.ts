@@ -151,7 +151,9 @@ export class Sector extends Path {
 
   private updatePath() {
     // @ts-ignore
-    const { x, y, startAngle, endAngle, sr, sr0, radius } = this.parsedStyle;
+    const { x, y, startAngle, endAngle, sr, sr0 } = this.attributes;
+    // @ts-ignore
+    const { radius } = this.parsedStyle;
 
     const path = this.createPath(
       x,

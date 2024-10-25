@@ -32,22 +32,24 @@ export class TextRenderer implements StyleRenderer {
       textAlign = 'start',
       textBaseline = 'alphabetic',
       lineJoin = 'miter',
-      miterLimit = 10,
       letterSpacing = 0,
-      stroke,
-      fill,
       fillRule,
       fillOpacity = 1,
       strokeOpacity = 1,
       opacity = 1,
-      metrics,
       x = 0,
       y = 0,
       dx,
       dy,
-      shadowColor,
       shadowBlur,
-    } = parsedStyle;
+    } = object.attributes;
+    const {
+      stroke,
+      fill,
+      metrics,
+      shadowColor,
+      miterLimit = 10,
+    } = object.parsedStyle;
 
     const { font, lines, height, lineHeight, lineMetrics } = metrics;
 

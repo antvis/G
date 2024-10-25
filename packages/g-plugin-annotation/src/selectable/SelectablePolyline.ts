@@ -23,7 +23,7 @@ export class SelectablePolyline extends AbstractSelectable<Polyline> {
 
     let points = [];
     if (target.nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2 } = target.parsedStyle;
+      const { x1, y1, x2, y2 } = target.attributes;
       points.push([x1, y1]);
       points.push([x2, y2]);
     } else if (target.nodeName === Shape.POLYLINE) {

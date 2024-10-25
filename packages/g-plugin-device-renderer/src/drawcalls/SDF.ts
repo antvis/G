@@ -1,14 +1,13 @@
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import type {
   Circle,
   CSSRGB,
   DisplayObject,
-  ParsedBaseStyleProps,
   ParsedCircleStyleProps,
   ParsedEllipseStyleProps,
   ParsedRectStyleProps,
 } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
-import { Format, VertexStepMode } from '@antv/g-device-api';
 import frag from '../shader/sdf.frag';
 import vert from '../shader/sdf.vert';
 import { enumToObject } from '../utils/enum';
@@ -42,20 +41,6 @@ export class SDFDrawcall extends Instanced {
       return false;
     }
 
-    // if (
-    //   this.needDrawStrokeSeparately(object.parsedStyle) ||
-    //   this.needDrawStrokeSeparately(this.instance.parsedStyle)
-    // ) {
-    //   return false;
-    // }
-
-    // const { fill: instanceFill } = this.instance
-    //   .parsedStyle as ParsedBaseStyleProps;
-    // const { fill } = object.parsedStyle as ParsedBaseStyleProps;
-    // if ((instanceFill as CSSRGB).isNone !== (fill as CSSRGB).isNone) {
-    //   return false;
-    // }
-
     return true;
   }
 
@@ -78,13 +63,13 @@ export class SDFDrawcall extends Instanced {
       const circle = object as Circle;
       // @ts-ignore
       const { radius } = circle.parsedStyle;
-      const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
-      const size = this.getSize(object.parsedStyle, circle.nodeName);
-      const position = this.getPosition(object.parsedStyle, circle.nodeName);
+      const omitStroke = this.shouldOmitStroke(circle);
+      const size = this.getSize(object);
+      const position = this.getPosition(object);
       instanced.push(
         ...size,
-        circle.parsedStyle.isBillboard ? 1 : 0,
-        circle.parsedStyle.isSizeAttenuation ? 1 : 0,
+        circle.attributes.isBillboard ? 1 : 0,
+        circle.attributes.isSizeAttenuation ? 1 : 0,
         SDF_Shape.indexOf(circle.nodeName),
         (radius && radius[0]) || 0,
         omitStroke ? 1 : 0,
@@ -180,17 +165,14 @@ export class SDFDrawcall extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const circle = object as Circle;
-        const omitStroke = this.shouldOmitStroke(circle.parsedStyle);
+        const omitStroke = this.shouldOmitStroke(circle);
 
-        const [halfWidth, halfHeight] = this.getSize(
-          object.parsedStyle,
-          object.nodeName,
-        );
+        const [halfWidth, halfHeight] = this.getSize(object);
         const size = [halfWidth, halfHeight];
         packed.push(
           ...size,
-          circle.parsedStyle.isBillboard ? 1 : 0,
-          circle.parsedStyle.isSizeAttenuation ? 1 : 0,
+          circle.attributes.isBillboard ? 1 : 0,
+          circle.attributes.isSizeAttenuation ? 1 : 0,
           SDF_Shape.indexOf(object.nodeName),
           (object.parsedStyle.radius && object.parsedStyle.radius[0]) || 0,
           omitStroke ? 1 : 0,
@@ -205,7 +187,7 @@ export class SDFDrawcall extends Instanced {
     } else if (name === 'cx' || name === 'cy' || name === 'x' || name === 'y') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const [x, y] = this.getPosition(object.parsedStyle, object.nodeName);
+        const [x, y] = this.getPosition(object);
         packed.push(x, y);
       });
       this.geometry.updateVertexBuffer(
@@ -217,48 +199,44 @@ export class SDFDrawcall extends Instanced {
     }
   }
 
-  private getPosition(
-    parsed:
-      | ParsedCircleStyleProps
-      | ParsedEllipseStyleProps
-      | ParsedRectStyleProps,
-    tagName: string,
-  ) {
+  private getPosition(object: DisplayObject) {
+    const tagName = object.nodeName;
     let size: [number, number, number] = [0, 0, 0];
     if (tagName === Shape.CIRCLE || tagName === Shape.ELLIPSE) {
-      const { cx = 0, cy = 0, cz = 0 } = parsed as ParsedCircleStyleProps;
+      const {
+        cx = 0,
+        cy = 0,
+        cz = 0,
+      } = object.attributes as ParsedCircleStyleProps;
       size = [cx, cy, cz];
     } else if (tagName === Shape.RECT) {
-      const { x = 0, y = 0, z = 0 } = parsed as ParsedRectStyleProps;
+      const { x = 0, y = 0, z = 0 } = object.attributes as ParsedRectStyleProps;
       size = [x, y, z];
     }
     return size;
   }
 
-  private getSize(
-    parsed:
-      | ParsedCircleStyleProps
-      | ParsedEllipseStyleProps
-      | ParsedRectStyleProps,
-    tagName: string,
-  ) {
+  private getSize(object: DisplayObject) {
+    const tagName = object.nodeName;
+
     let size: [number, number] = [0, 0];
     if (tagName === Shape.CIRCLE) {
-      const { r } = parsed as ParsedCircleStyleProps;
+      const { r } = object.attributes as ParsedCircleStyleProps;
       size = [r, r];
     } else if (tagName === Shape.ELLIPSE) {
-      const { rx, ry } = parsed as ParsedEllipseStyleProps;
+      const { rx, ry } = object.attributes as ParsedEllipseStyleProps;
       size = [rx, ry];
     } else if (tagName === Shape.RECT) {
-      const { width, height } = parsed as ParsedRectStyleProps;
+      const { width, height } = object.attributes as ParsedRectStyleProps;
       size = [width / 2, height / 2];
     }
 
     return size;
   }
 
-  private shouldOmitStroke(parsedStyle: ParsedBaseStyleProps) {
-    const { lineDash, stroke, strokeOpacity } = parsedStyle;
+  private shouldOmitStroke(object: DisplayObject) {
+    const { lineDash, strokeOpacity } = object.attributes;
+    const { stroke } = object.parsedStyle;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
     const hasLineDash =
       lineDash &&

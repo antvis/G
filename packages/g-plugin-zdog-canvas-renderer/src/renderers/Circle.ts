@@ -1,14 +1,15 @@
 import type { CanvasRenderer } from '@antv/g-canvas';
-import type { DisplayObject, ParsedCircleStyleProps } from '@antv/g-lite';
+import type { Circle, ParsedCircleStyleProps } from '@antv/g-lite';
 import { Anchor, Ellipse } from 'zdog';
 
 export class CircleRenderer implements CanvasRenderer.StyleRenderer {
   render(
     context: CanvasRenderingContext2D & { scene: Anchor },
     parsedStyle: ParsedCircleStyleProps,
-    object: DisplayObject<any, any>,
+    object: Circle,
   ) {
-    const { r, lineWidth, fill } = parsedStyle;
+    const { r, lineWidth } = object.attributes;
+    const { fill } = parsedStyle;
 
     new Ellipse({
       addTo: context.scene,

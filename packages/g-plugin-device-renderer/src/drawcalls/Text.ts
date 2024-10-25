@@ -1,10 +1,9 @@
 import type {
   DisplayObject,
-  ParsedTextStyleProps,
   Text as TextShape,
   Tuple4Number,
 } from '@antv/g-lite';
-import { isCSSRGB } from '@antv/g-lite';
+import { getParsedStyle, isCSSRGB } from '@antv/g-lite';
 import { mat4 } from 'gl-matrix';
 import { CullMode, Format, VertexStepMode } from '@antv/g-device-api';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
@@ -92,7 +91,7 @@ export class TextDrawcall extends Instanced {
     return (
       object.parsedStyle.metrics.font +
       instancedAttributes.reduce((prev, cur) => {
-        return prev + object.parsedStyle[cur];
+        return prev + object.attributes[cur];
       }, '')
     );
   }
@@ -111,10 +110,10 @@ export class TextDrawcall extends Instanced {
     return this.fontHash === this.calcFontHash(object);
   }
 
-  createGeometry(objects: DisplayObject[]): void {
+  createGeometry(objects: TextShape[]): void {
     const object = this.instance as TextShape;
-    const { fontSize = 16, letterSpacing = 0 } = object.parsedStyle;
-    let { textBaseline = 'alphabetic' } = object.parsedStyle;
+    const { fontSize = 16, letterSpacing = 0 } = object.attributes;
+    let { textBaseline = 'alphabetic' } = object.attributes;
 
     // scale current font size to base(24)
     const fontScale = BASE_FONT_WIDTH / fontSize;
@@ -125,11 +124,8 @@ export class TextDrawcall extends Instanced {
     const packed = [];
     let indicesOff = 0;
     objects.forEach((object) => {
-      const {
-        metrics,
-        dx = 0,
-        dy = 0,
-      } = object.parsedStyle as ParsedTextStyleProps;
+      const { dx = 0, dy = 0 } = object.attributes;
+      const { metrics } = object.parsedStyle;
       const { font, lines, height, lineHeight } = metrics;
 
       // account for dx & dy
@@ -281,10 +277,12 @@ export class TextDrawcall extends Instanced {
       fontFamily = 'sans-serif',
       fontWeight = 'normal',
       fontStyle = 'normal',
-      metrics,
-    } = object.parsedStyle;
+    } = object.attributes;
+    const { metrics } = object.parsedStyle;
     const { font } = metrics;
-    const allText = objects.map((object) => object.parsedStyle.text).join('');
+    const allText = objects
+      .map((object) => getParsedStyle(object, 'text'))
+      .join('');
 
     this.glyphManager.generateAtlas(
       this.texturePool.context.config.offscreenCanvas,
@@ -392,10 +390,8 @@ export class TextDrawcall extends Instanced {
         ];
       const bytes = arrayStride / 4;
 
-      objects.forEach((object) => {
+      objects.forEach((object: TextShape) => {
         const {
-          fill,
-          stroke,
           opacity = 1,
           fillOpacity = 1,
           strokeOpacity = 1,
@@ -404,7 +400,8 @@ export class TextDrawcall extends Instanced {
           isBillboard,
           billboardRotation,
           isSizeAttenuation,
-        } = object.parsedStyle as ParsedTextStyleProps;
+        } = object.attributes;
+        const { fill, stroke } = object.parsedStyle;
         let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(fill)) {
           fillColor = [
@@ -493,7 +490,7 @@ export class TextDrawcall extends Instanced {
     glyphAtlas,
     indicesOffset,
   }: {
-    object: DisplayObject;
+    object: TextShape;
     lines: string[];
     fontStack: string;
     lineHeight: number;
@@ -505,8 +502,6 @@ export class TextDrawcall extends Instanced {
   }) {
     const {
       textAlign = 'start',
-      fill,
-      stroke,
       opacity = 1,
       fillOpacity = 1,
       strokeOpacity = 1,
@@ -518,7 +513,8 @@ export class TextDrawcall extends Instanced {
       x = 0,
       y = 0,
       z = 0,
-    } = object.parsedStyle as ParsedTextStyleProps;
+    } = object.attributes;
+    const { fill, stroke } = object.parsedStyle;
     let fillColor: Tuple4Number = [0, 0, 0, 0];
     if (isCSSRGB(fill)) {
       fillColor = [
@@ -555,6 +551,7 @@ export class TextDrawcall extends Instanced {
       lines,
       fontStack,
       lineHeight,
+      // @ts-ignore
       textAlign,
       letterSpacing,
       offsetX,

@@ -4,11 +4,11 @@ import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface RectStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
+  x?: number;
+  y?: number;
   z?: number;
-  width: number | string;
-  height: number | string;
+  width: number;
+  height: number;
   isBillboard?: boolean;
   isSizeAttenuation?: boolean;
   /**

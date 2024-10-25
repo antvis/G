@@ -240,8 +240,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
         // @ts-ignore
         const $el = object.elementSVG?.$el;
 
-        const { fill, stroke, clipPath } =
-          object.parsedStyle as ParsedBaseStyleProps;
+        const { clipPath } = object.attributes;
+        const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
 
         if (fill && !isCSSRGB(fill)) {
           this.defElementManager.createOrUpdateGradientAndPattern(
@@ -267,7 +267,9 @@ export class SVGRendererPlugin implements RenderingPlugin {
             object.getWorldTransform(),
           );
 
-          const clipPathId = `${CLIP_PATH_PREFIX + clipPath.entity}-${object.entity}`;
+          const clipPathId = `${CLIP_PATH_PREFIX + clipPath.entity}-${
+            object.entity
+          }`;
           const $def = this.defElementManager.getDefElement();
           const $existed = $def.querySelector<SVGElement>(`#${clipPathId}`);
           if ($existed) {
@@ -503,12 +505,14 @@ export class SVGRendererPlugin implements RenderingPlugin {
     // update common attributes
     attributes.forEach((name) => {
       const usedName = SVG_ATTR_MAP[name];
-      const computedValue = parsedStyle[name];
+      const attrValue = object.attributes[name];
+      const parsedValue = parsedStyle[name] ?? attrValue;
+      const computedValue = parsedValue;
       const computedValueStr =
         !isNil(computedValue) && computedValue.toString();
       const formattedValueStr =
         FORMAT_VALUE_MAP[name]?.[computedValueStr] || computedValueStr;
-      const usedValue = parsedStyle[name];
+      const usedValue = parsedValue;
       const inherited = usedName && !!propertyMetadataCache[name]?.inh;
 
       // <foreignObject>
@@ -683,7 +687,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
     const svgElement = (object as any).elementSVG as ElementSVG;
     let { $hitTestingEl } = svgElement;
     const increasedLineWidthForHitTesting = Number(
-      object.parsedStyle.increasedLineWidthForHitTesting,
+      object.attributes.increasedLineWidthForHitTesting,
     );
 
     // account for hitArea
@@ -708,7 +712,7 @@ export class SVGRendererPlugin implements RenderingPlugin {
       // increase interactive line width
       $hitTestingEl.setAttribute(
         'stroke-width',
-        `${increasedLineWidthForHitTesting + object.parsedStyle.lineWidth}`,
+        `${increasedLineWidthForHitTesting + object.attributes.lineWidth}`,
       );
     } else if ($hitTestingEl) {
       $groupEl.removeChild($hitTestingEl);

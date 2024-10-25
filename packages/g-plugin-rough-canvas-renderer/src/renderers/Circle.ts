@@ -8,7 +8,7 @@ export class CircleRenderer implements CanvasRenderer.StyleRenderer {
     parsedStyle: ParsedCircleStyleProps,
     object: DisplayObject<any, any>,
   ) {
-    const { cx = 0, cy = 0, r } = parsedStyle;
+    const { cx = 0, cy = 0, r } = object.attributes;
     // rough.js use diameter instead of radius
     // @see https://github.com/rough-stuff/rough/wiki#circle-x-y-diameter--options
     // @ts-ignore

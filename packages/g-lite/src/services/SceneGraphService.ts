@@ -129,7 +129,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const { sortable } = parent as unknown as Element;
     if (
       sortable?.sorted?.length ||
-      (child as unknown as Element).parsedStyle.zIndex
+      (child as unknown as Element).attributes.zIndex
     ) {
       if (sortable.dirtyChildren.indexOf(child) === -1) {
         sortable.dirtyChildren.push(child);
@@ -171,7 +171,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       // if (sortable) {
       if (
         sortable?.sorted?.length ||
-        (child as unknown as Element).style?.zIndex
+        (child as unknown as Element).attributes?.zIndex
       ) {
         if (sortable.dirtyChildren.indexOf(child) === -1) {
           sortable.dirtyChildren.push(child);
@@ -964,7 +964,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
       const clipped = findClosestClipPathTarget(element as DisplayObject);
       if (clipped) {
         // use bounds under world space
-        const clipPathBounds = clipped.parsedStyle.clipPath.getBounds(render);
+        const clipPathBounds = clipped.attributes.clipPath.getBounds(render);
         if (!aabb) {
           aabb.update(clipPathBounds.center, clipPathBounds.halfExtents);
         } else if (clipPathBounds) {

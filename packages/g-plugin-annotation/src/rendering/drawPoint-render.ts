@@ -42,7 +42,7 @@ export const renderDrawPoints = (
         ? {
             fill: polylineActiveVertexFill,
             fillOpacity: polylineActiveVertexFillOpacity,
-            r: polylineActiveVertexSize as number,
+            r: polylineActiveVertexSize,
             stroke: polylineActiveVertexStroke,
             strokeOpacity: polylineActiveVertexStrokeOpacity,
             lineWidth: polylineActiveVertexStrokeWidth,
@@ -50,7 +50,7 @@ export const renderDrawPoints = (
         : {
             fill: polylineVertexFill,
             fillOpacity: polylineVertexFillOpacity,
-            r: polylineVertexSize as number,
+            r: polylineVertexSize,
             stroke: polylineVertexStroke,
             strokeOpacity: polylineVertexStrokeOpacity,
             lineWidth: polylineVertexStrokeWidth,

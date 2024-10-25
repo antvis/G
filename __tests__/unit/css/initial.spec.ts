@@ -2,14 +2,13 @@ import { Renderer as CanvasRenderer } from '../../../packages/g-svg/src';
 import {
   Canvas,
   Circle,
-  CSS,
   CSSKeywordValue,
   CSSRGB,
-  CSSUnitValue,
   Ellipse,
   Image,
   Rect,
   Text,
+  getParsedStyle,
 } from '../../../packages/g/src';
 
 const $container = document.createElement('div');
@@ -72,7 +71,7 @@ describe('StyleValueRegistry initialization', () => {
     // computed value
     // expect((styleMap.get('visibility') as string).toString()).toBe('hidden');
     // used value
-    // expect(documentElement.parsedStyle.visibility.toString()).toBe('hidden');
+    // expect(getParsedStyle(documentElement, "visibility").toString()).toBe('hidden');
 
     documentElement.style.visibility = 'unset';
     expect(documentElement.style.visibility).toBe('unset');
@@ -80,7 +79,7 @@ describe('StyleValueRegistry initialization', () => {
     // styleMap = documentElement.computedStyleMap();
     // expect((styleMap.get('visibility') as string).toString()).toBe('unset');
     // used value
-    // expect(documentElement.parsedStyle.visibility.toString()).toBe('visible');
+    // expect(getParsedStyle(documentElement, "visibility").toString()).toBe('visible');
 
     // disable pointerEvents
     documentElement.style.pointerEvents = 'none';
@@ -89,7 +88,9 @@ describe('StyleValueRegistry initialization', () => {
     // computed value
     // expect((styleMap.get('pointerEvents') as string).toString()).toBe('none');
     // used value
-    expect(documentElement.parsedStyle.pointerEvents.toString()).toBe('none');
+    expect(getParsedStyle(documentElement, 'pointerEvents').toString()).toBe(
+      'none',
+    );
 
     // enable pointerEvents
     documentElement.style.pointerEvents = 'auto';
@@ -98,7 +99,9 @@ describe('StyleValueRegistry initialization', () => {
     // computed value
     // expect((styleMap.get('pointerEvents') as string).toString()).toBe('auto');
     // used value
-    expect(documentElement.parsedStyle.pointerEvents.toString()).toBe('auto');
+    expect(getParsedStyle(documentElement, 'pointerEvents').toString()).toBe(
+      'auto',
+    );
   });
 
   it('should parse & compute CSS properties for Circle correctly.', async () => {
@@ -204,38 +207,37 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
-    let parsedStyle = circle.parsedStyle;
-    expect(parsedStyle.cx).toBe(200);
-    expect(parsedStyle.cy).toBe(200);
-    expect(parsedStyle.cz).toBeUndefined();
-    expect(parsedStyle.r).toBe(100);
-    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
-    expect((parsedStyle.fill as CSSRGB).r).toBe(255);
-    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).toBe(1);
-    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
-    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
-    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
-    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(1);
-    // expect(parsedStyle.transformOrigin!.length).toBe(2);
+    expect(getParsedStyle(circle, 'cx')).toBe(200);
+    expect(getParsedStyle(circle, 'cy')).toBe(200);
+    expect(getParsedStyle(circle, 'cz')).toBeUndefined();
+    expect(getParsedStyle(circle, 'r')).toBe(100);
+    expect(getParsedStyle(circle, 'fill') instanceof CSSRGB).toBeTruthy();
+    expect((getParsedStyle(circle, 'fill') as CSSRGB).r).toBe(255);
+    expect((getParsedStyle(circle, 'fill') as CSSRGB).g).toBe(0);
+    expect((getParsedStyle(circle, 'fill') as CSSRGB).b).toBe(0);
+    expect((getParsedStyle(circle, 'fill') as CSSRGB).alpha).toBe(1);
+    expect(getParsedStyle(circle, 'stroke') instanceof CSSRGB).toBeTruthy();
+    expect((getParsedStyle(circle, 'stroke') as CSSRGB).r).toBe(0);
+    expect((getParsedStyle(circle, 'stroke') as CSSRGB).g).toBe(0);
+    expect((getParsedStyle(circle, 'stroke') as CSSRGB).b).toBe(0);
+    expect((getParsedStyle(circle, 'stroke') as CSSRGB).alpha).toBe(1);
+    // expect(getParsedStyle(circle, "transformOrigin")!.length).toBe(2);
     // expect(
-    //   parsedStyle.transformOrigin![0].equals(CSS.percent(50)),
+    //   getParsedStyle(circle, "transformOrigin")![0].equals(CSS.percent(50)),
     // ).toBeTruthy();
     // expect(
-    //   parsedStyle.transformOrigin![1].equals(CSS.percent(50)),
+    //   getParsedStyle(circle, "transformOrigin")![1].equals(CSS.percent(50)),
     // ).toBeTruthy();
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.opacity).toBeUndefined();
-    expect(parsedStyle.fillOpacity).toBeUndefined();
-    expect(parsedStyle.lineCap).toBeUndefined();
-    expect(parsedStyle.lineJoin).toBeUndefined();
-    expect(parsedStyle.strokeOpacity).toBeUndefined();
-    expect(parsedStyle.visibility).toBeUndefined();
-    expect(parsedStyle.pointerEvents).toBeUndefined();
+    expect(getParsedStyle(circle, 'opacity')).toBeUndefined();
+    expect(getParsedStyle(circle, 'fillOpacity')).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineCap')).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineJoin')).toBeUndefined();
+    expect(getParsedStyle(circle, 'strokeOpacity')).toBeUndefined();
+    expect(getParsedStyle(circle, 'visibility')).toBeUndefined();
+    expect(getParsedStyle(circle, 'pointerEvents')).toBeUndefined();
     // @ts-ignore
-    expect(parsedStyle.xxxxx).toBeUndefined();
+    expect(getParsedStyle(circle, 'xxxxx')).toBeUndefined();
 
     await canvas.ready;
     /**
@@ -245,12 +247,12 @@ describe('StyleValueRegistry initialization', () => {
 
     // parsedStyle = circle.parsedStyle;
     // // inherit from document.documentElement
-    // expect(parsedStyle.fillOpacity).toBe(1);
-    // expect(parsedStyle.strokeOpacity).toBe(1);
-    // expect(parsedStyle.lineCap).toBe('butt');
-    // expect(parsedStyle.lineJoin).toBe('miter');
-    // expect(parsedStyle.visibility).toBe('visible');
-    // expect(parsedStyle.pointerEvents).toBe('auto');
+    // expect(getParsedStyle(circle, "fillOpacity")).toBe(1);
+    // expect(getParsedStyle(circle, "strokeOpacity")).toBe(1);
+    // expect(getParsedStyle(circle, "lineCap")).toBe('butt');
+    // expect(getParsedStyle(circle, "lineJoin")).toBe('miter');
+    // expect(getParsedStyle(circle, "visibility")).toBe('visible');
+    // expect(getParsedStyle(circle, "pointerEvents")).toBe('auto');
   });
 
   it('should parse & compute CSS properties for Ellipse correctly.', () => {
@@ -338,40 +340,39 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
-    const parsedStyle = ellipse.parsedStyle;
-    expect(parsedStyle.cx).toBeUndefined();
-    expect(parsedStyle.cy).toBeUndefined();
-    expect(parsedStyle.rx).toBe(200);
-    expect(parsedStyle.ry).toBe(100);
+    expect(getParsedStyle(ellipse, 'cx')).toBeUndefined();
+    expect(getParsedStyle(ellipse, 'cy')).toBeUndefined();
+    expect(getParsedStyle(ellipse, 'rx')).toBe(200);
+    expect(getParsedStyle(ellipse, 'ry')).toBe(100);
     // 'transparent'
-    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
-    expect((parsedStyle.fill as CSSRGB).r).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).isNone).toBeFalsy();
+    expect(getParsedStyle(ellipse, 'fill') instanceof CSSRGB).toBeTruthy();
+    expect((getParsedStyle(ellipse, 'fill') as CSSRGB).r).toBe(0);
+    expect((getParsedStyle(ellipse, 'fill') as CSSRGB).g).toBe(0);
+    expect((getParsedStyle(ellipse, 'fill') as CSSRGB).b).toBe(0);
+    expect((getParsedStyle(ellipse, 'fill') as CSSRGB).alpha).toBe(0);
+    expect((getParsedStyle(ellipse, 'fill') as CSSRGB).isNone).toBeFalsy();
     // 'none'
-    // expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
-    // expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).isNone).toBeTruthy();
-    expect(parsedStyle.opacity).toBe(0.5);
-    expect(parsedStyle.fillOpacity).toBe(0.5);
-    // expect(parsedStyle.transformOrigin!.length).toBe(2);
+    // expect(getParsedStyle(ellipse, "stroke") instanceof CSSRGB).toBeTruthy();
+    // expect((getParsedStyle(ellipse, "stroke") as CSSRGB).r).toBe(0);
+    // expect((getParsedStyle(ellipse, "stroke") as CSSRGB).g).toBe(0);
+    // expect((getParsedStyle(ellipse, "stroke") as CSSRGB).b).toBe(0);
+    // expect((getParsedStyle(ellipse, "stroke") as CSSRGB).alpha).toBe(0);
+    // expect((getParsedStyle(ellipse, "stroke") as CSSRGB).isNone).toBeTruthy();
+    expect(getParsedStyle(ellipse, 'opacity')).toBe(0.5);
+    expect(getParsedStyle(ellipse, 'fillOpacity')).toBe(0.5);
+    // expect(getParsedStyle(ellipse, "transformOrigin")!.length).toBe(2);
     // expect(
-    //   parsedStyle.transformOrigin![0].equals(CSS.percent(50)),
+    //   getParsedStyle(ellipse, "transformOrigin")![0].equals(CSS.percent(50)),
     // ).toBeTruthy();
     // expect(
-    //   parsedStyle.transformOrigin![1].equals(CSS.percent(50)),
+    //   getParsedStyle(ellipse, "transformOrigin")![1].equals(CSS.percent(50)),
     // ).toBeTruthy();
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.visibility).toBeUndefined();
-    expect(parsedStyle.lineCap).toBeUndefined();
-    expect(parsedStyle.lineJoin).toBe('bevel');
+    expect(getParsedStyle(ellipse, 'visibility')).toBeUndefined();
+    expect(getParsedStyle(ellipse, 'lineCap')).toBeUndefined();
+    expect(getParsedStyle(ellipse, 'lineJoin')).toBe('bevel');
     // @ts-ignore
-    expect(parsedStyle.xxxxx).toBeUndefined();
+    expect(getParsedStyle(ellipse, 'xxxxx')).toBeUndefined();
   });
 
   it('should parse & compute CSS properties for Rect correctly.', async () => {
@@ -451,36 +452,35 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
-    const parsedStyle = rect.parsedStyle;
-    expect(parsedStyle.x).toBeUndefined();
-    expect(parsedStyle.y).toBeUndefined();
-    // expect(parsedStyle.z.equals(CSS.px(0))).toBeTruthy();
-    expect(parsedStyle.width).toBe(200);
-    expect(parsedStyle.height).toBe(100);
-    // expect(parsedStyle.radius![0]).toBe(0);
-    // expect(parsedStyle.radius![1]).toBe(0);
-    // expect(parsedStyle.radius![2]).toBe(0);
-    // expect(parsedStyle.radius![3]).toBe(0);
-    // expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
-    // expect((parsedStyle.fill as CSSRGB).r).toBe(0);
-    // expect((parsedStyle.fill as CSSRGB).g).toBe(0);
-    // expect((parsedStyle.fill as CSSRGB).b).toBe(0);
-    // expect((parsedStyle.fill as CSSRGB).alpha).toBe(0);
-    // expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
-    // expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
-    // expect(parsedStyle.transformOrigin!.length).toBe(2);
-    // expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).toBeTruthy();
-    // expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).toBeTruthy();
+    expect(getParsedStyle(rect, 'x')).toBeUndefined();
+    expect(getParsedStyle(rect, 'y')).toBeUndefined();
+    // expect(getParsedStyle(rect, "z").equals(CSS.px(0))).toBeTruthy();
+    expect(getParsedStyle(rect, 'width')).toBe(200);
+    expect(getParsedStyle(rect, 'height')).toBe(100);
+    // expect(getParsedStyle(rect, "radius")![0]).toBe(0);
+    // expect(getParsedStyle(rect, "radius")![1]).toBe(0);
+    // expect(getParsedStyle(rect, "radius")![2]).toBe(0);
+    // expect(getParsedStyle(rect, "radius")![3]).toBe(0);
+    // expect(getParsedStyle(rect, "fill") instanceof CSSRGB).toBeTruthy();
+    // expect((getParsedStyle(rect, "fill") as CSSRGB).r).toBe(0);
+    // expect((getParsedStyle(rect, "fill") as CSSRGB).g).toBe(0);
+    // expect((getParsedStyle(rect, "fill") as CSSRGB).b).toBe(0);
+    // expect((getParsedStyle(rect, "fill") as CSSRGB).alpha).toBe(0);
+    // expect(getParsedStyle(rect, "stroke") instanceof CSSRGB).toBeTruthy();
+    // expect((getParsedStyle(rect, "stroke") as CSSRGB).r).toBe(0);
+    // expect((getParsedStyle(rect, "stroke") as CSSRGB).g).toBe(0);
+    // expect((getParsedStyle(rect, "stroke") as CSSRGB).b).toBe(0);
+    // expect((getParsedStyle(rect, "stroke") as CSSRGB).alpha).toBe(0);
+    // expect(getParsedStyle(rect, "transformOrigin")!.length).toBe(2);
+    // expect(getParsedStyle(rect, "transformOrigin")![0].equals(CSS.px(0))).toBeTruthy();
+    // expect(getParsedStyle(rect, "transformOrigin")![1].equals(CSS.px(0))).toBeTruthy();
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.opacity).toBeUndefined();
-    expect(parsedStyle.fillOpacity).toBeUndefined();
-    expect(parsedStyle.strokeOpacity).toBeUndefined();
-    //  expect(parsedStyle.visibility).toBeUndefined();
+    expect(getParsedStyle(rect, 'opacity')).toBeUndefined();
+    expect(getParsedStyle(rect, 'fillOpacity')).toBeUndefined();
+    expect(getParsedStyle(rect, 'strokeOpacity')).toBeUndefined();
+    //  expect(getParsedStyle(rect, "visibility")).toBeUndefined();
     // @ts-ignore
-    expect(parsedStyle.xxxxx).toBeUndefined();
+    expect(getParsedStyle(rect, 'xxxxx')).toBeUndefined();
 
     await canvas.ready;
     /**
@@ -489,12 +489,12 @@ describe('StyleValueRegistry initialization', () => {
     canvas.appendChild(rect);
 
     // inherit from document.documentElement
-    // expect(parsedStyle.lineWidth).toBeUndefined();
-    // expect(parsedStyle.fillOpacity).toBe(1);
-    // expect(parsedStyle.strokeOpacity).toBe(1);
-    // expect(parsedStyle.lineCap).toBe('butt');
-    // expect(parsedStyle.lineJoin).toBe('miter');
-    // expect(parsedStyle.pointerEvents).toBe('auto');
+    // expect(getParsedStyle(rect, "lineWidth")).toBeUndefined();
+    // expect(getParsedStyle(rect, "fillOpacity")).toBe(1);
+    // expect(getParsedStyle(rect, "strokeOpacity")).toBe(1);
+    // expect(getParsedStyle(rect, "lineCap")).toBe('butt');
+    // expect(getParsedStyle(rect, "lineJoin")).toBe('miter');
+    // expect(getParsedStyle(rect, "pointerEvents")).toBe('auto');
   });
 
   it('should parse & compute CSS properties for Image correctly.', () => {
@@ -558,33 +558,32 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * parsed values, will be used in internal renderers such as `g-canvas`
      */
-    const parsedStyle = image.parsedStyle;
-    expect(parsedStyle.src).toBe('url');
-    expect(parsedStyle.x).toBeUndefined();
-    expect(parsedStyle.y).toBeUndefined();
-    // expect(parsedStyle.z.equals(CSS.px(0))).toBeTruthy();
-    expect(parsedStyle.width).toBe(200);
-    expect(parsedStyle.height).toBe(100);
-    // expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
-    // expect((parsedStyle.fill as CSSRGB).r).toBe(0);
-    // expect((parsedStyle.fill as CSSRGB).g).toBe(0);
-    // expect((parsedStyle.fill as CSSRGB).b).toBe(0);
-    // expect((parsedStyle.fill as CSSRGB).alpha).toBe(0);
-    // expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
-    // expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
-    // expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
-    expect(parsedStyle.visibility).toBe('visible');
-    // expect(parsedStyle.transformOrigin!.length).toBe(2);
-    // expect(parsedStyle.transformOrigin![0].equals(CSS.px(0))).toBeTruthy();
-    // expect(parsedStyle.transformOrigin![1].equals(CSS.px(0))).toBeTruthy();
+    expect(getParsedStyle(image, 'src')).toBe('url');
+    expect(getParsedStyle(image, 'x')).toBeUndefined();
+    expect(getParsedStyle(image, 'y')).toBeUndefined();
+    // expect(getParsedStyle(image, "z").equals(CSS.px(0))).toBeTruthy();
+    expect(getParsedStyle(image, 'width')).toBe(200);
+    expect(getParsedStyle(image, 'height')).toBe(100);
+    // expect(getParsedStyle(image, "fill") instanceof CSSRGB).toBeTruthy();
+    // expect((getParsedStyle(image, "fill") as CSSRGB).r).toBe(0);
+    // expect((getParsedStyle(image, "fill") as CSSRGB).g).toBe(0);
+    // expect((getParsedStyle(image, "fill") as CSSRGB).b).toBe(0);
+    // expect((getParsedStyle(image, "fill") as CSSRGB).alpha).toBe(0);
+    // expect(getParsedStyle(image, "stroke") instanceof CSSRGB).toBeTruthy();
+    // expect((getParsedStyle(image, "stroke") as CSSRGB).r).toBe(0);
+    // expect((getParsedStyle(image, "stroke") as CSSRGB).g).toBe(0);
+    // expect((getParsedStyle(image, "stroke") as CSSRGB).b).toBe(0);
+    // expect((getParsedStyle(image, "stroke") as CSSRGB).alpha).toBe(0);
+    expect(getParsedStyle(image, 'visibility')).toBe('visible');
+    // expect(getParsedStyle(image, "transformOrigin")!.length).toBe(2);
+    // expect(getParsedStyle(image, "transformOrigin")![0].equals(CSS.px(0))).toBeTruthy();
+    // expect(getParsedStyle(image, "transformOrigin")![1].equals(CSS.px(0))).toBeTruthy();
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.opacity).toBeUndefined();
-    expect(parsedStyle.fillOpacity).toBeUndefined();
-    expect(parsedStyle.strokeOpacity).toBeUndefined();
+    expect(getParsedStyle(image, 'opacity')).toBeUndefined();
+    expect(getParsedStyle(image, 'fillOpacity')).toBeUndefined();
+    expect(getParsedStyle(image, 'strokeOpacity')).toBeUndefined();
     // @ts-ignore
-    expect(parsedStyle.xxxxx).toBeUndefined();
+    expect(getParsedStyle(image, 'xxxxx')).toBeUndefined();
   });
 
   it.skip('should parse & compute CSS properties for Text correctly.', async () => {
@@ -646,28 +645,27 @@ describe('StyleValueRegistry initialization', () => {
     /**
      * used values
      */
-    let parsedStyle = text.parsedStyle;
-    expect(parsedStyle.fill instanceof CSSRGB).toBeTruthy();
-    expect((parsedStyle.fill as CSSRGB).r).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).g).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).b).toBe(0);
-    expect((parsedStyle.fill as CSSRGB).alpha).toBe(1);
-    expect(parsedStyle.stroke instanceof CSSRGB).toBeTruthy();
-    expect((parsedStyle.stroke as CSSRGB).r).toBe(0);
-    expect((parsedStyle.stroke as CSSRGB).g).toBe(0);
-    expect((parsedStyle.stroke as CSSRGB).b).toBe(0);
-    expect((parsedStyle.stroke as CSSRGB).alpha).toBe(0);
+    expect(getParsedStyle(text, 'fill') instanceof CSSRGB).toBeTruthy();
+    expect((getParsedStyle(text, 'fill') as CSSRGB).r).toBe(0);
+    expect((getParsedStyle(text, 'fill') as CSSRGB).g).toBe(0);
+    expect((getParsedStyle(text, 'fill') as CSSRGB).b).toBe(0);
+    expect((getParsedStyle(text, 'fill') as CSSRGB).alpha).toBe(1);
+    expect(getParsedStyle(text, 'stroke') instanceof CSSRGB).toBeTruthy();
+    expect((getParsedStyle(text, 'stroke') as CSSRGB).r).toBe(0);
+    expect((getParsedStyle(text, 'stroke') as CSSRGB).g).toBe(0);
+    expect((getParsedStyle(text, 'stroke') as CSSRGB).b).toBe(0);
+    expect((getParsedStyle(text, 'stroke') as CSSRGB).alpha).toBe(0);
     // these inheritable props should get re-calculated after appended to document
-    expect(parsedStyle.fillOpacity).toBeUndefined();
-    expect(parsedStyle.strokeOpacity).toBeUndefined();
-    expect(parsedStyle.lineCap).toBeUndefined();
-    expect(parsedStyle.lineJoin).toBeUndefined();
-    expect(parsedStyle.visibility).toBeUndefined();
-    expect(parsedStyle.fontWeight).toBeUndefined();
-    expect(parsedStyle.fontStyle).toBeUndefined();
-    expect(parsedStyle.fontVariant).toBeUndefined();
-    expect(parsedStyle.textAlign).toBeUndefined();
-    expect(parsedStyle.textBaseline).toBeUndefined();
+    expect(getParsedStyle(text, 'fillOpacity')).toBeUndefined();
+    expect(getParsedStyle(text, 'strokeOpacity')).toBeUndefined();
+    expect(getParsedStyle(text, 'lineCap')).toBeUndefined();
+    expect(getParsedStyle(text, 'lineJoin')).toBeUndefined();
+    expect(getParsedStyle(text, 'visibility')).toBeUndefined();
+    expect(getParsedStyle(text, 'fontWeight')).toBeUndefined();
+    expect(getParsedStyle(text, 'fontStyle')).toBeUndefined();
+    expect(getParsedStyle(text, 'fontVariant')).toBeUndefined();
+    expect(getParsedStyle(text, 'textAlign')).toBeUndefined();
+    expect(getParsedStyle(text, 'textBaseline')).toBeUndefined();
 
     await canvas.ready;
     /**
@@ -675,21 +673,20 @@ describe('StyleValueRegistry initialization', () => {
      */
     canvas.appendChild(text);
 
-    parsedStyle = text.parsedStyle;
     // inherit from document.documentElement
-    expect(parsedStyle.fillOpacity).toBe(1);
-    expect(parsedStyle.strokeOpacity).toBe(1);
-    expect(parsedStyle.lineCap).toBe('butt');
-    expect(parsedStyle.lineJoin).toBe('miter');
-    expect(parsedStyle.visibility).toBe('visible');
-    expect(parsedStyle.text).toBe('hello');
-    expect(parsedStyle.fontFamily).toBe('PingFang SC');
-    expect(parsedStyle.fontSize).toBe(16);
-    expect(parsedStyle.fontWeight).toBe('normal');
-    expect(parsedStyle.fontVariant).toBe('normal');
-    expect(parsedStyle.fontStyle).toBe('normal');
-    expect(parsedStyle.textAlign).toBe('start');
-    expect(parsedStyle.textBaseline).toBe('alphabetic');
-    expect(parsedStyle.textTransform).toBe('none');
+    expect(getParsedStyle(text, 'fillOpacity')).toBe(1);
+    expect(getParsedStyle(text, 'strokeOpacity')).toBe(1);
+    expect(getParsedStyle(text, 'lineCap')).toBe('butt');
+    expect(getParsedStyle(text, 'lineJoin')).toBe('miter');
+    expect(getParsedStyle(text, 'visibility')).toBe('visible');
+    expect(getParsedStyle(text, 'text')).toBe('hello');
+    expect(getParsedStyle(text, 'fontFamily')).toBe('PingFang SC');
+    expect(getParsedStyle(text, 'fontSize')).toBe(16);
+    expect(getParsedStyle(text, 'fontWeight')).toBe('normal');
+    expect(getParsedStyle(text, 'fontVariant')).toBe('normal');
+    expect(getParsedStyle(text, 'fontStyle')).toBe('normal');
+    expect(getParsedStyle(text, 'textAlign')).toBe('start');
+    expect(getParsedStyle(text, 'textBaseline')).toBe('alphabetic');
+    expect(getParsedStyle(text, 'textTransform')).toBe('none');
   });
 });

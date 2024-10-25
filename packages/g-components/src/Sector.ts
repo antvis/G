@@ -193,7 +193,8 @@ export class Sector extends CustomElement<SectorStyleProps> {
   }
 
   private updatePath() {
-    const { sx, sy, startAngle, endAngle, sr, sr0, sradius } = this.parsedStyle;
+    const { sx, sy, startAngle, endAngle, sr, sr0 } = this.attributes;
+    const { sradius } = this.parsedStyle;
 
     const path = this.createPath(
       sx,

@@ -1,11 +1,11 @@
 import {
   DisplayObject,
-  ParsedImageStyleProps,
-  Point,
-  ImageStyleProps,
-  Shape,
-  RenderingPluginContext,
   GlobalRuntime,
+  ImageStyleProps,
+  Point,
+  RenderingPluginContext,
+  Shape,
+  getParsedStyle,
 } from '@antv/g-lite';
 import { StyleRenderer } from '@antv/g-plugin-canvas-renderer';
 
@@ -20,13 +20,9 @@ export function isPointInPath(
   renderingPluginContext: RenderingPluginContext,
   runtime: GlobalRuntime,
 ): boolean {
-  const {
-    pointerEvents = 'auto',
-    x = 0,
-    y = 0,
-    width,
-    height,
-  } = displayObject.parsedStyle as ParsedImageStyleProps;
+  const { x = 0, y = 0, pointerEvents = 'auto' } = displayObject.attributes;
+  const width = getParsedStyle(displayObject, 'width') as number;
+  const height = getParsedStyle(displayObject, 'height') as number;
 
   if (pointerEvents === 'non-transparent-pixel') {
     const { offscreenCanvas } = renderingPluginContext.config;

@@ -1,20 +1,10 @@
-import type { ParsedLineStyleProps } from '@antv/g-lite';
+import type { Line } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 
-export function generatePath(
-  context: CanvasRenderingContext2D,
-  parsedStyle: ParsedLineStyleProps,
-) {
-  const {
-    x1,
-    y1,
-    x2,
-    y2,
-    markerStart,
-    markerEnd,
-    markerStartOffset,
-    markerEndOffset,
-  } = parsedStyle;
+export function generatePath(context: CanvasRenderingContext2D, line: Line) {
+  const { x1, y1, x2, y2, markerStartOffset, markerEndOffset } =
+    line.attributes;
+  const { markerStart, markerEnd } = line.parsedStyle;
 
   let startOffsetX = 0;
   let startOffsetY = 0;

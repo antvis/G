@@ -2,37 +2,37 @@
  * Instanced line which has a  better performance.
  * @see https://www.yuque.com/antv/ou292n/gg1gh5
  */
+import { Format, VertexStepMode } from '@antv/g-device-api';
 import {
   DisplayObject,
+  ParsedLineStyleProps,
   ParsedPathStyleProps,
   Path,
-  Shape,
-  ParsedBaseStyleProps,
-  ParsedLineStyleProps,
   Polyline,
+  Shape,
+  convertToPath,
+  getParsedStyle,
   isDisplayObject,
   parsePath,
-  convertToPath,
 } from '@antv/g-lite';
-import { mat4 } from 'gl-matrix';
 import { arcToCubic, isNil } from '@antv/util';
 import earcut from 'earcut';
-import { Format, VertexStepMode } from '@antv/g-device-api';
+import { mat4 } from 'gl-matrix';
+import { LightPool } from '../LightPool';
+import { RenderHelper } from '../render';
+import { BatchContext } from '../renderer';
+import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import frag from '../shader/line.frag';
 import vert from '../shader/line.vert';
+import { TexturePool } from '../TexturePool';
+import { bezierCurveTo, quadCurveTo } from '../utils';
 import { enumToObject } from '../utils/enum';
 import {
   Instanced,
   VertexAttributeBufferIndex,
   VertexAttributeLocation,
 } from './Instanced';
-import { RenderHelper } from '../render';
-import { TexturePool } from '../TexturePool';
-import { LightPool } from '../LightPool';
-import { bezierCurveTo, quadCurveTo } from '../utils';
 import { InstancedFillDrawcall } from './InstancedFill';
-import { BatchContext } from '../renderer';
-import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 
 enum LineVertexAttributeBufferIndex {
   PACKED = VertexAttributeBufferIndex.POSITION + 1,
@@ -178,9 +178,9 @@ export class InstancedPathDrawcall extends Instanced {
         this.calcSubpathIndex(object),
       );
 
-      const { lineDash, lineDashOffset, isBillboard, isSizeAttenuation } = (
-        object as Path
-      ).parsedStyle;
+      const { lineDashOffset, isBillboard, isSizeAttenuation } =
+        object.attributes;
+      const { lineDash } = (object as Path).parsedStyle;
 
       packedDash.push(
         (lineDash && lineDash[0]) || 0, // DASH
@@ -429,9 +429,9 @@ export class InstancedPathDrawcall extends Instanced {
     ) {
       const packedDash: number[] = [];
       objects.forEach((object) => {
-        const { lineDash, lineDashOffset, isBillboard, isSizeAttenuation } = (
-          object as Path
-        ).parsedStyle;
+        const { lineDashOffset, isBillboard, isSizeAttenuation } =
+          object.attributes;
+        const { lineDash } = (object as Path).parsedStyle;
 
         packedDash.push(
           (lineDash && lineDash[0]) || 0, // DASH
@@ -476,12 +476,12 @@ export function updateBuffer(
   segmentNum?: number,
   subPathIndex = 0,
 ) {
-  const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
+  const { lineCap, lineJoin } = object.attributes;
   const zIndex = object.sortable.renderOrder * RENDER_ORDER_SCALE;
   let defX = 0;
   let defY = 0;
-  const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    object.parsedStyle as ParsedLineStyleProps;
+  const { markerStartOffset, markerEndOffset } = object.attributes;
+  const { markerStart, markerEnd } = object.parsedStyle as ParsedLineStyleProps;
 
   const points: number[][] = [];
   let triangles: number[] = [];
@@ -575,7 +575,8 @@ export function updateBuffer(
 
       // support negative width/height of Rect
       if (object.nodeName === Shape.RECT) {
-        const { width, height } = object.parsedStyle;
+        const width = getParsedStyle(object, 'width');
+        const height = getParsedStyle(object, 'height');
         if (width < 0) {
           defX += path.rect.width;
         }

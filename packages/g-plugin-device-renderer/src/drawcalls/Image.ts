@@ -1,4 +1,8 @@
-import type { DisplayObject, Image as ImageShape } from '@antv/g-lite';
+import {
+  getParsedStyle,
+  type DisplayObject,
+  type Image as ImageShape,
+} from '@antv/g-lite';
 import { Format, VertexStepMode } from '@antv/g-device-api';
 import {
   Instanced,
@@ -27,29 +31,16 @@ export class ImageDrawcall extends Instanced {
       return false;
     }
 
-    if (this.instance.parsedStyle.src !== object.parsedStyle.src) {
+    if (this.instance.attributes.src !== object.attributes.src) {
       return false;
     }
 
     return true;
   }
 
-  // private calculateWithAspectRatio(
-  //   object: Image,
-  //   imageWidth: number,
-  //   imageHeight: number,
-  // ) {
-  //   const { width, height } = object.parsedStyle;
-  //   // if (width && !height) {
-  //   //   object.setAttribute('height', (imageHeight / imageWidth) * width);
-  //   // } else if (!width && height) {
-  //   //   object.setAttribute('width', (imageWidth / imageHeight) * height);
-  //   // }
-  // }
-
   createMaterial(objects: DisplayObject[]): void {
     const instance = objects[0];
-    const { src } = instance.parsedStyle;
+    const { src } = instance.attributes;
 
     this.material.defines = {
       ...this.material.defines,
@@ -63,19 +54,6 @@ export class ImageDrawcall extends Instanced {
       this.context.device,
       src,
       undefined,
-      // (texture, image) => {
-      //   const { width, height } = image;
-      //   objects.forEach((object) => {
-      //     const image = object as ImageShape;
-      //     const { keepAspectRatio } = image.parsedStyle;
-      //     if (keepAspectRatio) {
-      //       this.calculateWithAspectRatio(object, width, height);
-      //       // set dirty rectangle flag
-      //       object.renderable.dirty = true;
-      //       this.context.renderingService.dirtify();
-      //     }
-      //   });
-      // },
     );
     this.material.setUniforms({
       u_Map: map,
@@ -95,12 +73,12 @@ export class ImageDrawcall extends Instanced {
         x = 0,
         y = 0,
         z = 0,
-        width,
-        height,
         isBillboard,
         billboardRotation,
         isSizeAttenuation,
-      } = image.parsedStyle;
+      } = image.attributes;
+      const width = getParsedStyle(image, 'width');
+      const height = getParsedStyle(image, 'height');
       positions.push(x, y, z);
       sizes.push(width, height);
       packedStyle.push(
@@ -186,7 +164,7 @@ export class ImageDrawcall extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { x = 0, y = 0, z = 0 } = image.parsedStyle;
+        const { x = 0, y = 0, z = 0 } = image.attributes;
         packed.push(x, y, z);
       });
 
@@ -200,7 +178,8 @@ export class ImageDrawcall extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const image = object as ImageShape;
-        const { width, height } = image.parsedStyle;
+        const width = getParsedStyle(image, 'width');
+        const height = getParsedStyle(image, 'height');
         packed.push(width, height);
       });
 
@@ -219,7 +198,7 @@ export class ImageDrawcall extends Instanced {
       objects.forEach((object) => {
         const image = object as ImageShape;
         const { isBillboard, billboardRotation, isSizeAttenuation } =
-          image.parsedStyle;
+          image.attributes;
         packed.push(
           isBillboard ? 1 : 0,
           billboardRotation ?? 0,

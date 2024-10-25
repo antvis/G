@@ -1,9 +1,5 @@
-import type {
-  CanvasContext,
-  DisplayObject,
-  ParsedImageStyleProps,
-  ContextService,
-} from '@antv/g-lite';
+import type { CanvasContext, ContextService, Image } from '@antv/g-lite';
+import { getParsedStyle } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import type {
   CanvasKitContext,
@@ -20,14 +16,15 @@ import type {
 export class ImageRenderer implements RendererContribution {
   constructor(private context: CanvasContext) {}
 
-  render(object: DisplayObject, context: RendererContributionContext) {
+  render(object: Image, context: RendererContributionContext) {
     const { surface, CanvasKit } = (
       this.context.contextService as ContextService<CanvasKitContext>
     ).getContext();
     const { canvas } = context;
-    const { x, y, width, height, src, fillOpacity, opacity } =
-      object.parsedStyle as ParsedImageStyleProps;
-
+    const width = getParsedStyle(object, 'width', 0);
+    const height = getParsedStyle(object, 'height', 0);
+    const { x, y, src, fillOpacity, opacity } = object.parsedStyle;
+    // @ts-ignore
     const imageCache = (this.context.imagePool as ImagePool).getImageSync(
       src,
       object,

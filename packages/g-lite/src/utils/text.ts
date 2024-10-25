@@ -1,5 +1,5 @@
 import { isNumber } from '@antv/util';
-import type { ParsedTextStyleProps } from '../display-objects/Text';
+import type { TextStyleProps } from '../display-objects/Text';
 
 const genericFontFamilies = [
   'serif',
@@ -11,7 +11,7 @@ const genericFontFamilies = [
 ];
 const stringRegExp = /([\"\'])[^\'\"]+\1/;
 
-export function toFontString(attributes: Partial<ParsedTextStyleProps>) {
+export function toFontString(attributes: Partial<TextStyleProps>) {
   const {
     fontSize = 16,
     fontFamily = 'sans-serif',

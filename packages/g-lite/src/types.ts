@@ -186,11 +186,11 @@ export interface BaseStyleProps {
 
   stroke?: ColorType | Pattern;
   /** 描边透明度 */
-  strokeOpacity?: number | string;
+  strokeOpacity?: number;
   /** 填充颜色 */
   fill?: ColorType | Pattern;
   /** 填充透明度 */
-  fillOpacity?: number | string;
+  fillOpacity?: number;
 
   /**
    * The fill-rule attribute is a presentation attribute defining the algorithm to use to determine the inside part of a shape.
@@ -199,23 +199,23 @@ export interface BaseStyleProps {
   fillRule?: 'nonzero' | 'evenodd';
 
   /** 整体透明度 */
-  opacity?: number | string;
+  opacity?: number;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width
    */
-  strokeWidth?: string | number;
+  strokeWidth?: number;
 
   /**
    * alias if strokeWidth
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineWidth
    */
-  lineWidth?: string | number;
+  lineWidth?: number;
 
   /**
    * increased line width when hitting test
    */
-  increasedLineWidthForHitTesting?: string | number;
+  increasedLineWidthForHitTesting?: number;
   /**
    * 交互区域
    */

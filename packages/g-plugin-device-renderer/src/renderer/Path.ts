@@ -24,8 +24,8 @@ export class PathRenderer extends Batch {
   // ];
 
   getDrawcallCtors(object: DisplayObject) {
-    const { fill, stroke, opacity, strokeOpacity, lineWidth } =
-      object.parsedStyle as ParsedPathStyleProps;
+    const { opacity, strokeOpacity, lineWidth } = object.attributes;
+    const { fill, stroke } = object.parsedStyle as ParsedPathStyleProps;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;
     const subpathNum = InstancedPathDrawcall.calcSubpathNum(object);
 

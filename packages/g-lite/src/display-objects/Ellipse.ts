@@ -4,11 +4,11 @@ import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface EllipseStyleProps extends BaseStyleProps {
-  cx?: number | string;
-  cy?: number | string;
-  cz?: number | string;
-  rx: number | string;
-  ry: number | string;
+  cx?: number;
+  cy?: number;
+  cz?: number;
+  rx: number;
+  ry: number;
   isBillboard?: boolean;
   isSizeAttenuation?: boolean;
 }

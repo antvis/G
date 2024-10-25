@@ -4,12 +4,12 @@ import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface ImageStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
+  x?: number;
+  y?: number;
   z?: number;
   src?: string | HTMLImageElement;
-  width?: number | string;
-  height?: number | string;
+  width?: number;
+  height?: number;
   /**
    * Whether the circle is billboard.
    */

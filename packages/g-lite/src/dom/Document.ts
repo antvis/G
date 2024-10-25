@@ -150,7 +150,7 @@ export class Document extends Node implements IDocument {
     const hitTestList: DisplayObject[] = [];
     rBushNodes.forEach(({ displayObject }) => {
       const { pointerEvents = 'auto' } =
-        displayObject.parsedStyle as ParsedBaseStyleProps;
+        displayObject.attributes as ParsedBaseStyleProps;
 
       // account for `visibility`
       // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events

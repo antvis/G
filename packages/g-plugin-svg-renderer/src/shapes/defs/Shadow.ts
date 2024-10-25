@@ -18,10 +18,10 @@ export function createOrUpdateShadow(
   const {
     shadowType = 'outer',
     shadowBlur,
-    shadowColor,
     shadowOffsetX,
     shadowOffsetY,
-  } = object.parsedStyle as ParsedBaseStyleProps;
+  } = object.attributes;
+  const { shadowColor } = object.parsedStyle as ParsedBaseStyleProps;
 
   const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
   const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;

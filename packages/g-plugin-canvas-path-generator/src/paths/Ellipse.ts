@@ -1,10 +1,10 @@
-import type { ParsedEllipseStyleProps } from '@antv/g-lite';
+import type { Ellipse } from '@antv/g-lite';
 
 export function generatePath(
   context: CanvasRenderingContext2D,
-  parsedStyle: ParsedEllipseStyleProps,
+  ellipse: Ellipse,
 ) {
-  const { cx = 0, cy = 0, rx, ry } = parsedStyle;
+  const { cx = 0, cy = 0, rx, ry } = ellipse.attributes;
 
   // @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse
   if (context.ellipse) {

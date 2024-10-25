@@ -15,11 +15,10 @@ export function isPointInPath(
   const {
     lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
-    points,
     pointerEvents = 'auto',
-    fill,
-    stroke,
-  } = displayObject.parsedStyle as ParsedPolylineStyleProps;
+  } = displayObject.attributes;
+  const { points, fill, stroke } =
+    displayObject.parsedStyle as ParsedPolylineStyleProps;
   const [, hasStroke] = isFillOrStrokeAffected(pointerEvents, fill, stroke);
 
   if ((!hasStroke && !isClipPath) || !lineWidth) {

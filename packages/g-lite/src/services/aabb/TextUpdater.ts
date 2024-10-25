@@ -1,25 +1,17 @@
-import type {
-  DisplayObject,
-  ParsedTextStyleProps,
-} from '../../display-objects';
+import type { DisplayObject, Text } from '../../display-objects';
 import { GlobalRuntime } from '../../global-runtime';
+import { getParsedStyle } from '../../utils/style';
 import type { GeometryAABBUpdater } from './interfaces';
 
-export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
+export class TextUpdater implements GeometryAABBUpdater {
   constructor(private globalRuntime: GlobalRuntime) {}
 
-  private isReadyToMeasure(
-    parsedStyle: ParsedTextStyleProps,
-    object: DisplayObject,
-  ) {
-    const { text } = parsedStyle;
-
-    return text;
+  private isReadyToMeasure(object: DisplayObject) {
+    return getParsedStyle(object, 'text');
   }
 
-  update(parsedStyle: ParsedTextStyleProps, object: DisplayObject) {
+  update(object: Text) {
     const {
-      text,
       textAlign = 'start',
       lineWidth = 1,
       textBaseline = 'alphabetic',
@@ -27,10 +19,10 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
       dy = 0,
       x = 0,
       y = 0,
-    } = parsedStyle;
+    } = object.attributes;
 
-    if (!this.isReadyToMeasure(parsedStyle, object)) {
-      parsedStyle.metrics = {
+    if (!this.isReadyToMeasure(object)) {
+      object.parsedStyle.metrics = {
         font: '',
         width: 0,
         height: 0,
@@ -56,11 +48,10 @@ export class TextUpdater implements GeometryAABBUpdater<ParsedTextStyleProps> {
     const { offscreenCanvas } =
       object?.ownerDocument?.defaultView?.getConfig() || {};
     const metrics = this.globalRuntime.textService.measureText(
-      text,
-      parsedStyle,
+      object,
       offscreenCanvas,
     );
-    parsedStyle.metrics = metrics;
+    object.parsedStyle.metrics = metrics;
 
     const { width, height } = metrics;
 

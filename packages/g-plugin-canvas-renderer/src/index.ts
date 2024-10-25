@@ -43,6 +43,7 @@ export class Plugin extends AbstractRendererPlugin<{
       [Shape.GROUP]: undefined,
       [Shape.HTML]: undefined,
       [Shape.MESH]: undefined,
+      [Shape.FRAGMENT]: undefined,
     };
 
     this.context.defaultStyleRendererFactory = defaultStyleRendererFactory;

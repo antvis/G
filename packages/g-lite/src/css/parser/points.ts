@@ -8,9 +8,10 @@ import type { DisplayObject } from '../..';
  * points="100,10 250,150 200,110"
  */
 export function parsePoints(
-  pointsOrStr: string | [number, number][],
+  pointsOrStr?: string | [number, number][],
   object?: DisplayObject,
 ) {
+  if (!pointsOrStr) return undefined;
   let points: [number, number][];
   if (isString(pointsOrStr)) {
     points = pointsOrStr.split(' ').map((pointStr) => {

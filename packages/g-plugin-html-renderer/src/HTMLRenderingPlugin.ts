@@ -247,7 +247,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
     const $el = this.getOrCreateEl(object);
     switch (name) {
       case 'innerHTML':
-        const { innerHTML } = object.parsedStyle;
+        const { innerHTML } = object.attributes;
         if (isString(innerHTML)) {
           $el.innerHTML = innerHTML;
         } else {
@@ -256,10 +256,10 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         }
         break;
       case 'x':
-        $el.style.left = `${object.parsedStyle.x}px`;
+        $el.style.left = `${object.attributes.x}px`;
         break;
       case 'y':
-        $el.style.top = `${object.parsedStyle.y}px`;
+        $el.style.top = `${object.attributes.y}px`;
         break;
       case 'transformOrigin':
         const { transformOrigin } = object.parsedStyle;
@@ -270,13 +270,13 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         )} ${transformOrigin[1].buildCSSText(null, null, '')}`;
         break;
       case 'width':
-        const { width } = object.parsedStyle;
+        const { width } = object.attributes;
         $el.style.width = isNumber(width)
           ? `${width}px`
           : (width as string).toString();
         break;
       case 'height':
-        const { height } = object.parsedStyle;
+        const { height } = object.attributes;
         $el.style.height = isNumber(height)
           ? `${height}px`
           : (height as string).toString();
@@ -286,15 +286,15 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style['z-index'] = `${zIndex}`;
         break;
       case 'visibility':
-        const { visibility } = object.parsedStyle;
+        const { visibility } = object.attributes;
         $el.style.visibility = visibility;
         break;
       case 'pointerEvents':
-        const { pointerEvents = 'auto' } = object.parsedStyle;
+        const { pointerEvents = 'auto' } = object.attributes;
         $el.style.pointerEvents = pointerEvents;
         break;
       case 'opacity':
-        const { opacity } = object.parsedStyle;
+        const { opacity } = object.attributes;
         $el.style.opacity = `${opacity}`;
         break;
       case 'fill':
@@ -332,7 +332,7 @@ export class HTMLRenderingPlugin implements RenderingPlugin {
         $el.style['border-style'] = 'solid';
         break;
       case 'lineWidth':
-        const { lineWidth } = object.parsedStyle;
+        const { lineWidth } = object.attributes;
         $el.style['border-width'] = `${lineWidth || 0}px`;
         break;
       case 'lineDash':

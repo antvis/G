@@ -33,7 +33,8 @@ export class DirectionalLight extends Light {
   }
 
   uploadUBO(uniforms: RenderInstUniform[], index: number) {
-    const { fill, direction, intensity } = this.parsedStyle;
+    const { fill } = this.parsedStyle;
+    const { direction, intensity } = this.attributes as DirectionalLightProps;
 
     if (isCSSRGB(fill)) {
       const fillColor = [

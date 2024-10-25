@@ -356,7 +356,7 @@ export class SelectableRectPolygon extends AbstractSelectable<Polygon> {
       } else if (target === this.rotateAnchor) {
         const { x: ox, y: oy } = lineIntersect(tl, br, tr, bl);
 
-        const { cx: rx, cy: ry } = this.rotateAnchor.parsedStyle;
+        const { cx: rx, cy: ry } = this.rotateAnchor.attributes;
         const v1 = [rx - ox, ry - oy];
         const v2 = [canvasX - ox, canvasY - oy];
         // @see https://www.mathworks.com/matlabcentral/answers/180131-how-can-i-find-the-angle-between-two-vectors-including-directional-information

@@ -71,7 +71,7 @@ export interface SelectableStyle {
    */
   anchorFill: string;
   anchorStroke: string;
-  anchorSize: string | number;
+  anchorSize: number;
   anchorFillOpacity: number;
   anchorStrokeOpacity: number;
   anchorStrokeWidth: number;
@@ -81,7 +81,7 @@ export interface SelectableStyle {
    */
   selectedAnchorFill: string;
   selectedAnchorStroke: string;
-  selectedAnchorSize: string | number;
+  selectedAnchorSize: number;
   selectedAnchorFillOpacity: number;
   selectedAnchorStrokeOpacity: number;
   selectedAnchorStrokeWidth: number;
@@ -91,7 +91,7 @@ export interface SelectableStyle {
    */
   midAnchorFill: string;
   midAnchorStroke: string;
-  midAnchorSize: string | number;
+  midAnchorSize: number;
   midAnchorFillOpacity: number;
   midAnchorStrokeOpacity: number;
   midAnchorStrokeWidth: number;

@@ -9,6 +9,7 @@ import type {
   Polyline,
   ParsedPathStyleProps,
   ParsedPolylineStyleProps,
+  ParsedBaseStyleProps,
 } from '@antv/g-lite';
 import { DisplayObject, Shape, isDisplayObject } from '@antv/g-lite';
 import { Format, VertexStepMode } from '@antv/g-device-api';
@@ -164,21 +165,27 @@ export class InstancedLineDrawcall extends Instanced {
       let parsedLineStyleProps: Partial<ParsedLineStyleProps>;
       let totalLength: number;
       if (object.nodeName === Shape.LINE) {
-        parsedLineStyleProps = (object as Line).parsedStyle;
+        parsedLineStyleProps = Object.assign(
+          {} as ParsedLineStyleProps,
+          object.attributes,
+          object.parsedStyle,
+        );
         totalLength = (object as Line).getTotalLength();
       } else if (object.nodeName === Shape.POLYLINE) {
         const {
-          points: { points },
           lineCap,
-          lineDash,
           lineDashOffset,
-          markerStart,
-          markerEnd,
           markerStartOffset,
           markerEndOffset,
           isBillboard,
           // @ts-ignore
           isSizeAttenuation,
+        } = (object as Polyline).attributes;
+        const {
+          points: { points },
+          lineDash,
+          markerStart,
+          markerEnd,
         } = (object as Polyline).parsedStyle;
         parsedLineStyleProps = {
           x1: points[0][0],
@@ -200,16 +207,18 @@ export class InstancedLineDrawcall extends Instanced {
         totalLength = (object as Polyline).getTotalLength();
       } else if (object.nodeName === Shape.PATH) {
         const {
-          d: { absolutePath },
           lineCap,
-          lineDash,
           lineDashOffset,
-          markerStart,
-          markerEnd,
           markerStartOffset,
           markerEndOffset,
           isBillboard,
           isSizeAttenuation,
+        } = (object as Polyline).attributes;
+        const {
+          d: { absolutePath },
+          lineDash,
+          markerStart,
+          markerEnd,
         } = (object as Path).parsedStyle;
         let mSegmentCount = 0;
         let mCommandIndex = 0;
@@ -259,7 +268,11 @@ export class InstancedLineDrawcall extends Instanced {
       const { startOffsetX, startOffsetY, endOffsetX, endOffsetY } =
         this.calcOffset(parsedLineStyleProps);
       const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } =
-        this.calcDash(parsedLineStyleProps, totalLength);
+        this.calcDash(
+          parsedLineStyleProps.lineDash,
+          parsedLineStyleProps.lineDashOffset,
+          totalLength,
+        );
 
       packedCap.push(
         // caps
@@ -397,18 +410,24 @@ export class InstancedLineDrawcall extends Instanced {
       objects.forEach((object) => {
         let parsedLineStyleProps: Partial<ParsedLineStyleProps>;
         if (object.nodeName === Shape.LINE) {
-          parsedLineStyleProps = (object as Line).parsedStyle;
+          parsedLineStyleProps = Object.assign(
+            {} as ParsedLineStyleProps,
+            object.attributes,
+            object.parsedStyle,
+          );
         } else if (object.nodeName === Shape.POLYLINE) {
           const {
-            points: { points },
             lineCap,
-            markerStart,
-            markerEnd,
             markerStartOffset,
             markerEndOffset,
             isBillboard,
             // @ts-ignore
             isSizeAttenuation,
+          } = (object as Polyline).attributes;
+          const {
+            points: { points },
+            markerStart,
+            markerEnd,
           } = (object as Polyline).parsedStyle;
           parsedLineStyleProps = {
             x1: points[0][0],
@@ -427,14 +446,16 @@ export class InstancedLineDrawcall extends Instanced {
           };
         } else if (object.nodeName === Shape.PATH) {
           const {
-            d: { absolutePath },
             lineCap,
-            markerStart,
-            markerEnd,
             markerStartOffset,
             markerEndOffset,
             isBillboard,
             isSizeAttenuation,
+          } = object.attributes;
+          const {
+            d: { absolutePath },
+            markerStart,
+            markerEnd,
           } = (object as Path).parsedStyle;
           parsedLineStyleProps = {
             x1: absolutePath[0][1],
@@ -483,12 +504,16 @@ export class InstancedLineDrawcall extends Instanced {
         const totalLength = (object as Line).getTotalLength();
 
         const { dashOffset, dashSegmentPercent, dashRatioInEachSegment } =
-          this.calcDash(object.parsedStyle, totalLength);
+          this.calcDash(
+            object.parsedStyle.lineDash,
+            object.attributes.lineDashOffset,
+            totalLength,
+          );
         packed.push(
           dashOffset,
           dashSegmentPercent,
           dashRatioInEachSegment,
-          object.parsedStyle.isBillboard || object.parsedStyle.isSizeAttenuation
+          object.attributes.isBillboard || object.attributes.isSizeAttenuation
             ? 1
             : 0, // isSizeAttenuation
         );
@@ -503,7 +528,7 @@ export class InstancedLineDrawcall extends Instanced {
     } else if (name === 'lineCap') {
       const packed: number[] = [];
       objects.forEach((object) => {
-        const { lineCap } = object.parsedStyle;
+        const { lineCap } = object.attributes;
         packed.push(LineCap_MAP[lineCap]);
       });
       this.geometry.updateVertexBuffer(
@@ -561,10 +586,10 @@ export class InstancedLineDrawcall extends Instanced {
   }
 
   private calcDash(
-    parsedLineStyle: Partial<ParsedLineStyleProps>,
+    lineDash: ParsedBaseStyleProps['lineDash'],
+    lineDashOffset: number,
     totalLength: number,
   ) {
-    const { lineDash, lineDashOffset } = parsedLineStyle;
     let dashOffset = 0;
     let dashSegmentPercent = 1;
     let dashRatioInEachSegment = 0;

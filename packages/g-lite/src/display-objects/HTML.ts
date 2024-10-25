@@ -6,11 +6,11 @@ import { Shape } from '../types';
 import { DisplayObject } from './DisplayObject';
 
 export interface HTMLStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
+  x?: number;
+  y?: number;
   innerHTML: string | HTMLElement;
-  width?: number | string;
-  height?: number | string;
+  width?: number;
+  height?: number;
 }
 
 export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {

@@ -58,7 +58,7 @@ export interface GlobalRuntime {
   sceneGraphSelector: SceneGraphSelector;
   sceneGraphService: SceneGraphService;
   textService: TextService;
-  geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>>;
+  geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater>;
   styleValueRegistry: DefaultStyleValueRegistry;
   layoutRegistry: LayoutRegistry;
   CSSPropertySyntaxFactory: Record<
@@ -78,7 +78,7 @@ export interface GlobalRuntime {
 /**
  * Replace with IoC container
  */
-const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>> = (() => {
+const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater> = (() => {
   const rectUpdater = new RectUpdater();
   const polylineUpdater = new PolylineUpdater();
   return {
@@ -94,6 +94,7 @@ const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>> = (() => {
     [Shape.PATH]: new PathUpdater(),
     [Shape.HTML]: new HTMLUpdater(),
     [Shape.MESH]: null,
+    [Shape.FRAGMENT]: null,
   };
 })();
 

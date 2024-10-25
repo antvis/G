@@ -1,17 +1,16 @@
-import type { ParsedPolylineStyleProps } from '@antv/g-lite';
+import type { Polyline } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 
 export function updatePolylineElementAttribute(
   $el: SVGElement,
-  parsedStyle: ParsedPolylineStyleProps,
+  object: Polyline,
 ) {
+  const { markerStartOffset, markerEndOffset } = object.attributes;
   const {
     points: { points },
     markerStart,
-    markerStartOffset,
     markerEnd,
-    markerEndOffset,
-  } = parsedStyle;
+  } = object.parsedStyle;
   const { length } = points;
 
   if (points && length >= 2) {

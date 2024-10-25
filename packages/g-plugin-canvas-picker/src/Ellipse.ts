@@ -25,12 +25,11 @@ export function isPointInPath(
     cy = 0,
     rx,
     ry,
-    fill,
-    stroke,
     lineWidth = 1,
     increasedLineWidthForHitTesting = 0,
     pointerEvents = 'auto',
-  } = displayObject.parsedStyle as ParsedEllipseStyleProps;
+  } = displayObject.attributes;
+  const { fill, stroke } = displayObject.parsedStyle as ParsedEllipseStyleProps;
 
   const { x, y } = position;
   const [hasFill, hasStroke] = isFillOrStrokeAffected(

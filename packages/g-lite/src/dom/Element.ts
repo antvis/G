@@ -518,26 +518,7 @@ export class Element<
   /**
    * Renderers will use these used values.
    */
-  parsedStyle: ParsedStyleProps = {
-    // opacity: '',
-    // fillOpacity: '',
-    // strokeOpacity: '',
-    // transformOrigin: '',
-    // visibility: '',
-    // pointerEvents: '',
-    // lineWidth: '',
-    // lineCap: '',
-    // lineJoin: '',
-    // increasedLineWidthForHitTesting: '',
-    // fontSize: '',
-    // fontFamily: '',
-    // fontStyle: '',
-    // fontWeight: '',
-    // fontVariant: '',
-    // textAlign: '',
-    // textBaseline: '',
-    // textTransform: '',
-  } as ParsedStyleProps;
+  parsedStyle: ParsedStyleProps = {} as ParsedStyleProps;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/computedStyleMap

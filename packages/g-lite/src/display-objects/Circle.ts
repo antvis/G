@@ -7,19 +7,19 @@ export interface CircleStyleProps extends BaseStyleProps {
   /**
    * X coordinate of the center of the circle.
    */
-  cx?: number | string | null;
+  cx?: number;
   /**
    * Y coordinate of the center of the circle.
    */
-  cy?: number | string | null;
+  cy?: number;
   /**
    * Z coordinate of the center of the circle.
    */
-  cz?: number | string | null;
+  cz?: number;
   /**
    * Radius of the circle.
    */
-  r: number | string | null;
+  r: number;
   /**
    * Whether the circle is billboard.
    */

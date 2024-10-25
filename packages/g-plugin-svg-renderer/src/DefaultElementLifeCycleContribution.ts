@@ -2,6 +2,9 @@ import type {
   CanvasContext,
   DisplayObject,
   GlobalRuntime,
+  Line,
+  Path,
+  Polyline,
   Text,
 } from '@antv/g-lite';
 import { Shape } from '@antv/g-lite';
@@ -130,37 +133,32 @@ export class DefaultElementLifeCycleContribution
   updateElementAttribute(object: DisplayObject) {
     // @ts-ignore
     const { $el } = object.elementSVG as ElementSVG;
-    const { nodeName, parsedStyle } = object;
+    const { nodeName } = object;
 
     switch (nodeName) {
       case Shape.IMAGE: {
-        updateImageElementAttribute($el, parsedStyle);
+        updateImageElementAttribute($el, object);
         break;
       }
       case Shape.RECT: {
-        updateRectElementAttribute($el, parsedStyle);
+        updateRectElementAttribute($el, object);
         break;
       }
       case Shape.LINE: {
-        updateLineElementAttribute($el, parsedStyle);
+        updateLineElementAttribute($el, object as Line);
         break;
       }
       case Shape.POLYGON:
       case Shape.POLYLINE: {
-        updatePolylineElementAttribute($el, parsedStyle);
+        updatePolylineElementAttribute($el, object as Polyline);
         break;
       }
       case Shape.PATH: {
-        updatePathElementAttribute($el, parsedStyle);
+        updatePathElementAttribute($el, object as Path);
         break;
       }
       case Shape.TEXT: {
-        updateTextElementAttribute(
-          $el,
-          parsedStyle,
-          object as Text,
-          this.runtime,
-        );
+        updateTextElementAttribute($el, object as Text, this.runtime);
         break;
       }
     }

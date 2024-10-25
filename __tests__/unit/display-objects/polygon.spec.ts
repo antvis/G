@@ -39,12 +39,21 @@ describe('Polygon', () => {
       [0, 100],
     ];
 
+    const s = circle.cloneNode();
+    s.id = 'start';
+
+    const m = circle.cloneNode();
+    m.className = 'middle';
+
+    const e = circle.cloneNode();
+    e.id = 'end';
+
     const polygon = new Polygon({
       style: {
         points,
-        markerStart: circle,
-        markerEnd: circle,
-        markerMid: circle,
+        markerStart: s,
+        markerMid: m,
+        markerEnd: e,
       },
     });
     expect(polygon.childNodes.length).toBe(5);

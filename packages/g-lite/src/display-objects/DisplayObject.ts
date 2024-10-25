@@ -21,6 +21,7 @@ import {
   decompose,
   fromRotationTranslationScale,
   getEuler,
+  getParsedStyle,
   rad2deg,
 } from '../utils';
 import type { CustomElement } from './CustomElement';
@@ -244,7 +245,7 @@ export class DisplayObject<
     const { renderable } = this;
 
     const oldValue = this.attributes[name];
-    const oldParsedValue = this.parsedStyle[name as string];
+    const oldParsedValue = this.parsedStyle[name as string] ?? oldValue;
 
     runtime.styleValueRegistry.processProperties(
       this,
@@ -257,7 +258,7 @@ export class DisplayObject<
     // redraw at next frame
     renderable.dirty = true;
 
-    const newParsedValue = this.parsedStyle[name as string];
+    const newParsedValue = getParsedStyle(this, name as any);
     if (this.isConnected) {
       mutationEvent.relatedNode = this as IElement;
       mutationEvent.prevValue = oldValue;
@@ -553,7 +554,7 @@ export class DisplayObject<
    * shortcut for Used value of `visibility`
    */
   isVisible() {
-    return this.parsedStyle?.visibility !== 'hidden';
+    return this.attributes?.visibility !== 'hidden';
   }
 
   get interactive() {
@@ -564,7 +565,7 @@ export class DisplayObject<
   }
 
   isInteractive() {
-    return this.parsedStyle?.pointerEvents !== 'none';
+    return this.attributes?.pointerEvents !== 'none';
   }
 
   isCulled() {

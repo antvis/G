@@ -12,6 +12,7 @@ import {
   GradientType,
   isPattern,
   Shape,
+  getParsedStyle,
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
@@ -30,21 +31,18 @@ export class DefaultRenderer implements StyleRenderer {
     runtime: GlobalRuntime,
   ) {
     const {
-      fill,
       fillRule,
       opacity = 1,
       fillOpacity = 1,
-      stroke,
       strokeOpacity = 1,
       lineWidth = 1,
       lineCap,
       lineJoin,
       shadowType,
-      shadowColor,
       shadowBlur,
-      filter,
-      miterLimit,
-    } = parsedStyle;
+    } = object.attributes;
+    const { fill, stroke, shadowColor, filter, miterLimit } =
+      object.parsedStyle;
     const hasFill = fill && !(fill as CSSRGB).isNone;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone && lineWidth > 0;
 
@@ -162,8 +160,8 @@ export function setShadowAndFilter(
   context: CanvasRenderingContext2D,
   hasShadow: boolean,
 ) {
-  const { filter, shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY } =
-    object.parsedStyle as ParsedBaseStyleProps;
+  const { shadowBlur, shadowOffsetX, shadowOffsetY } = object.attributes;
+  const { filter, shadowColor } = object.parsedStyle as ParsedBaseStyleProps;
 
   if (filter && filter.length) {
     // use raw filter string
@@ -190,7 +188,9 @@ export function getPattern(
   let $offscreenCanvas: HTMLCanvasElement;
   let dpr: number;
   if ((pattern.image as Rect).nodeName === 'rect') {
-    const { width, height } = (pattern.image as Rect).parsedStyle;
+    const width = getParsedStyle(pattern.image as Rect, 'width', 0);
+    const height = getParsedStyle(pattern.image as Rect, 'height', 0);
+
     dpr = canvasContext.contextService.getDPR();
     const { offscreenCanvas } = canvasContext.config;
     $offscreenCanvas = runtime.offscreenCanvasCreator.getOrCreateCanvas(

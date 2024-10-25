@@ -2,13 +2,9 @@ import type {
   CanvasContext,
   DisplayObject,
   GlobalRuntime,
-  ParsedCircleStyleProps,
-  ParsedEllipseStyleProps,
-  ParsedLineStyleProps,
   ParsedPathStyleProps,
   ParsedPolygonStyleProps,
   ParsedPolylineStyleProps,
-  ParsedRectStyleProps,
   Text,
 } from '@antv/g-lite';
 import { Shape, translatePathToString } from '@antv/g-lite';
@@ -72,7 +68,7 @@ export class RoughElementLifeCycleContribution
     $el: SVGElement,
     svgElementMap: WeakMap<SVGElement, DisplayObject>,
   ) {
-    const { nodeName, parsedStyle } = object;
+    const { nodeName } = object;
     switch (nodeName) {
       case Shape.CIRCLE:
       case Shape.ELLIPSE:
@@ -92,13 +88,12 @@ export class RoughElementLifeCycleContribution
         break;
       }
       case Shape.IMAGE: {
-        SVGRenderer.updateImageElementAttribute($el, parsedStyle);
+        SVGRenderer.updateImageElementAttribute($el, object);
         break;
       }
       case Shape.TEXT: {
         SVGRenderer.updateTextElementAttribute(
           $el,
-          parsedStyle,
           object as Text,
           this.runtime,
         );
@@ -120,19 +115,14 @@ export class RoughElementLifeCycleContribution
 
     switch (nodeName) {
       case Shape.CIRCLE: {
-        const { cx = 0, cy = 0, r } = parsedStyle as ParsedCircleStyleProps;
+        const { cx = 0, cy = 0, r } = object.attributes;
         // rough.js use diameter instead of radius
         // @see https://github.com/rough-stuff/rough/wiki#circle-x-y-diameter--options
         $roughG = roughSVG.circle(cx, cy, r * 2, generateRoughOptions(object));
         break;
       }
       case Shape.ELLIPSE: {
-        const {
-          cx = 0,
-          cy = 0,
-          rx,
-          ry,
-        } = parsedStyle as ParsedEllipseStyleProps;
+        const { cx = 0, cy = 0, rx, ry } = object.attributes;
         $roughG = roughSVG.ellipse(
           cx,
           cy,
@@ -143,12 +133,7 @@ export class RoughElementLifeCycleContribution
         break;
       }
       case Shape.RECT: {
-        const {
-          x = 0,
-          y = 0,
-          width,
-          height,
-        } = parsedStyle as ParsedRectStyleProps;
+        const { x = 0, y = 0, width, height } = object.attributes;
         // @see https://github.com/rough-stuff/rough/wiki#rectangle-x-y-width-height--options
         $roughG = roughSVG.rectangle(
           x,
@@ -160,12 +145,7 @@ export class RoughElementLifeCycleContribution
         break;
       }
       case Shape.LINE: {
-        const {
-          x1 = 0,
-          y1 = 0,
-          x2 = 0,
-          y2 = 0,
-        } = parsedStyle as ParsedLineStyleProps;
+        const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = object.attributes;
         // @see https://github.com/rough-stuff/rough/wiki#line-x1-y1-x2-y2--options
         $roughG = roughSVG.line(x1, y1, x2, y2, generateRoughOptions(object));
         break;

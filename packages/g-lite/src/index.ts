@@ -65,5 +65,6 @@ export {
   setDOMSize,
   translatePathToString,
   turn2deg,
+  getParsedStyle,
 } from './utils';
 export { RBush };

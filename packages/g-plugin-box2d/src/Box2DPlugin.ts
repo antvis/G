@@ -245,7 +245,7 @@ export class Box2DPlugin implements RenderingPlugin {
       b2BodyDef,
       b2_dynamicBody,
     } = this.Box2D;
-    const { nodeName, parsedStyle } = target;
+    const { nodeName, parsedStyle, attributes } = target;
 
     let shape:
       | Box2D.b2EdgeShape
@@ -253,7 +253,7 @@ export class Box2DPlugin implements RenderingPlugin {
       | Box2D.b2PolygonShape
       | Box2D.b2ChainShape;
     if (nodeName === Shape.LINE) {
-      const { x1, y1, x2, y2 } = parsedStyle as ParsedLineStyleProps;
+      const { x1, y1, x2, y2 } = attributes as ParsedLineStyleProps;
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md39
       shape = new b2EdgeShape();
       const points = sortPointsInCCW([
@@ -284,7 +284,7 @@ export class Box2DPlugin implements RenderingPlugin {
         // new b2Vec2(next[0]  + eps, next[1] ),
       );
     } else if (nodeName === Shape.RECT || nodeName === Shape.IMAGE) {
-      const { width, height } = parsedStyle as ParsedRectStyleProps;
+      const { width, height } = attributes as ParsedRectStyleProps;
       shape = new b2PolygonShape();
       // @see https://box2d.org/documentation/classb2_polygon_shape.html#af80eb52027ffe85dd4d0a3110eae9d1b
       // @ts-ignore
@@ -296,7 +296,7 @@ export class Box2DPlugin implements RenderingPlugin {
       );
     } else if (nodeName === Shape.CIRCLE) {
       // @see https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html#autotoc_md37
-      const { r } = parsedStyle as ParsedCircleStyleProps;
+      const { r } = attributes as ParsedCircleStyleProps;
       shape = new b2CircleShape();
       shape.set_m_radius(r);
     } else if (nodeName === Shape.ELLIPSE) {
@@ -330,7 +330,7 @@ export class Box2DPlugin implements RenderingPlugin {
         bullet = false,
         friction,
         restitution,
-      } = target.parsedStyle;
+      } = target.attributes;
 
       if (rigid === 'static') {
         bodyDef = new b2BodyDef();

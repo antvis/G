@@ -13,9 +13,9 @@ import { DisplayObject } from './DisplayObject';
 import type { Path } from './Path';
 
 export interface TextStyleProps extends BaseStyleProps {
-  x?: number | string;
-  y?: number | string;
-  z?: number | string;
+  x?: number;
+  y?: number;
+  z?: number;
 
   /**
    * Always face the camera.
@@ -32,7 +32,7 @@ export interface TextStyleProps extends BaseStyleProps {
    */
   isSizeAttenuation?: boolean;
 
-  text: number | string;
+  text: string;
 
   /**
    * The text-align property sets the horizontal alignment of the inline-level content.
@@ -87,7 +87,7 @@ export interface TextStyleProps extends BaseStyleProps {
    * The startOffset attribute defines an offset from the start of the path for the initial current text position along the path after converting the path to the \<textPath\> element's coordinate system.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/startOffset
    */
-  textPathStartOffset?: number | string;
+  textPathStartOffset?: number;
 
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-line
@@ -114,7 +114,7 @@ export interface TextStyleProps extends BaseStyleProps {
    * The font-size property sets the size of the font.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
    */
-  fontSize?: number | string;
+  fontSize?: number;
 
   /**
    * The font-family property specifies a prioritized list of one or more font family names and/or generic family names for the selected element.
@@ -144,13 +144,13 @@ export interface TextStyleProps extends BaseStyleProps {
    * The line-height property sets the height of a line box.
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/line-height
    */
-  lineHeight?: number | string;
+  lineHeight?: number;
 
   /**
    * It specifies the spacing between letters when drawing text.
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/letterSpacing
    */
-  letterSpacing?: number | string;
+  letterSpacing?: number;
 
   /**
    * The white-space property sets how white space inside an element is handled.
@@ -185,13 +185,13 @@ export interface TextStyleProps extends BaseStyleProps {
    * The dx attribute indicates a shift along the x-axis on the position of an element or its content.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dx
    */
-  dx?: number | string;
+  dx?: number;
 
   /**
    * The dy attribute indicates a shift along the y-axis on the position of an element or its content.
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dy
    */
-  dy?: number | string;
+  dy?: number;
 }
 export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   x: number;

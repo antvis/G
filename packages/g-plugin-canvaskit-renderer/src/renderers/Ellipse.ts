@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedEllipseStyleProps } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g-lite';
 import type {
   RendererContribution,
   RendererContributionContext,
@@ -18,8 +18,7 @@ export class EllipseRenderer implements RendererContribution {
       shadowFillPaint,
       shadowStrokePaint,
     } = context;
-    const { cx, cy, rx, ry, shadowOffsetX, shadowOffsetY } =
-      object.parsedStyle as ParsedEllipseStyleProps;
+    const { cx, cy, rx, ry, shadowOffsetX, shadowOffsetY } = object.attributes;
 
     if (shadowFillPaint || shadowStrokePaint) {
       canvas.drawOval(

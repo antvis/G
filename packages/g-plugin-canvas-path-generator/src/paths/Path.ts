@@ -1,13 +1,11 @@
-import type { ParsedPathStyleProps, Path } from '@antv/g-lite';
+import type { Path } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 
-export function generatePath(
-  context: CanvasRenderingContext2D,
-  parsedStyle: ParsedPathStyleProps,
-) {
-  const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    parsedStyle;
-  const { absolutePath, segments } = parsedStyle.d;
+export function generatePath(context: CanvasRenderingContext2D, path: Path) {
+  const { markerStartOffset, markerEndOffset } = path.attributes;
+  const { d } = path.parsedStyle;
+  const { markerStart, markerEnd } = path.parsedStyle;
+  const { absolutePath, segments } = d;
 
   let startOffsetX = 0;
   let startOffsetY = 0;

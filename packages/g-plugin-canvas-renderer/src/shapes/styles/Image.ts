@@ -1,17 +1,17 @@
-import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
+import type { DisplayObject, Image, ParsedImageStyleProps } from '@antv/g-lite';
+import { getParsedStyle } from '@antv/g-lite';
 import { ImagePool, type ImageCache } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
+import { calculateOverlapRect, transformRect } from '../../utils/math';
 import { setShadowAndFilter } from './Default';
 import type { StyleRenderer } from './interfaces';
-import { transformRect, calculateOverlapRect } from '../../utils/math';
 
 export class ImageRenderer implements StyleRenderer {
   constructor(private imagePool: ImagePool) {}
 
   static renderFull(
     context: CanvasRenderingContext2D,
-    parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
     data: {
       image: HTMLImageElement;
@@ -29,7 +29,6 @@ export class ImageRenderer implements StyleRenderer {
 
   #renderDownSampled(
     context: CanvasRenderingContext2D,
-    parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
     data: {
       src: string | HTMLImageElement;
@@ -65,7 +64,6 @@ export class ImageRenderer implements StyleRenderer {
 
   #renderTile(
     context: CanvasRenderingContext2D,
-    parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
     data: {
       src: string | HTMLImageElement;
@@ -141,17 +139,12 @@ export class ImageRenderer implements StyleRenderer {
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
-    object: DisplayObject,
+    object: Image,
   ) {
-    const {
-      x = 0,
-      y = 0,
-      width,
-      height,
-      src,
-      shadowColor,
-      shadowBlur,
-    } = parsedStyle;
+    const { x = 0, y = 0, src, shadowBlur } = object.attributes;
+    const { shadowColor } = object.parsedStyle;
+    const width = getParsedStyle(object, 'width');
+    const height = getParsedStyle(object, 'height');
 
     const imageCache = this.imagePool.getImageSync(src, object);
     const image = imageCache?.img;
@@ -198,7 +191,7 @@ export class ImageRenderer implements StyleRenderer {
         !object.ownerDocument.defaultView.getConfig()
           .enableLargeImageOptimization
       ) {
-        ImageRenderer.renderFull(context, parsedStyle, object, {
+        ImageRenderer.renderFull(context, object, {
           image,
           drawRect: [x, y, iw, ih],
         });
@@ -209,7 +202,7 @@ export class ImageRenderer implements StyleRenderer {
       const sizeOfOrigin = imageRect[2] / imageCache.size[0];
 
       if (sizeOfOrigin < (imageCache.downSamplingRate || 0.5)) {
-        this.#renderDownSampled(context, parsedStyle, object, {
+        this.#renderDownSampled(context, object, {
           src,
           imageCache,
           drawRect: [x, y, iw, ih],
@@ -219,7 +212,7 @@ export class ImageRenderer implements StyleRenderer {
       }
 
       if (!ImagePool.isSupportTile) {
-        ImageRenderer.renderFull(context, parsedStyle, object, {
+        ImageRenderer.renderFull(context, object, {
           image,
           drawRect: [x, y, iw, ih],
         });
@@ -227,7 +220,7 @@ export class ImageRenderer implements StyleRenderer {
         return;
       }
 
-      this.#renderTile(context, parsedStyle, object, {
+      this.#renderTile(context, object, {
         src,
         imageCache,
         imageRect,

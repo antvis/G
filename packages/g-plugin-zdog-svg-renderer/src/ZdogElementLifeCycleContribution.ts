@@ -59,7 +59,7 @@ export class ZdogElementLifeCycleContribution
   }
 
   updateElementAttribute(object: DisplayObject<any, any>, $el: SVGElement) {
-    const { nodeName, parsedStyle } = object;
+    const { nodeName } = object;
     switch (nodeName) {
       case Shape.CIRCLE:
       case Shape.ELLIPSE:
@@ -79,13 +79,12 @@ export class ZdogElementLifeCycleContribution
         break;
       }
       case Shape.IMAGE: {
-        SVGRenderer.updateImageElementAttribute($el, parsedStyle);
+        SVGRenderer.updateImageElementAttribute($el, object);
         break;
       }
       case Shape.TEXT: {
         SVGRenderer.updateTextElementAttribute(
           $el,
-          parsedStyle,
           object as Text,
           this.runtime,
         );

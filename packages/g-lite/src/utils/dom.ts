@@ -25,8 +25,8 @@ export function sortedIndex(array: IElement[], value: IElement) {
 }
 
 export function sortByZIndex(o1: IElement, o2: IElement) {
-  const zIndex1 = Number(o1.parsedStyle.zIndex || 0);
-  const zIndex2 = Number(o2.parsedStyle.zIndex || 0);
+  const zIndex1 = Number(o1.attributes.zIndex || 0);
+  const zIndex2 = Number(o2.attributes.zIndex || 0);
   if (zIndex1 === zIndex2) {
     const parent = o1.parentNode;
     if (parent) {
@@ -42,7 +42,7 @@ export function findClosestClipPathTarget(
 ): DisplayObject {
   let el = object;
   do {
-    const clipPath = el.parsedStyle?.clipPath;
+    const clipPath = el.attributes?.clipPath;
     if (clipPath) return el;
     el = el.parentElement as DisplayObject;
   } while (el !== null);

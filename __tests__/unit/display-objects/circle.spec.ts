@@ -1,4 +1,4 @@
-import { Circle, CSS, CSSRGB } from '../../../packages/g/src';
+import { Circle, CSS, CSSRGB, getParsedStyle } from '../../../packages/g/src';
 
 describe('Circle', () => {
   it("should calc Circle's GeometryBounds, RenderBounds, Bounds and LocalBounds correctly", () => {
@@ -156,55 +156,57 @@ describe('Circle', () => {
     ]);
 
     // expect(circle.getAttribute('opacity')).toBe('');
-    expect(circle.parsedStyle.opacity).toBeUndefined();
+    expect(getParsedStyle(circle, 'opacity')).toBeUndefined();
     // expect(circle.getAttribute('fillOpacity')).toBe('');
-    expect(circle.parsedStyle.fillOpacity).toBeUndefined();
+    expect(getParsedStyle(circle, 'fillOpacity')).toBeUndefined();
     // expect(circle.getAttribute('strokeOpacity')).toBe('');
-    expect(circle.parsedStyle.strokeOpacity).toBeUndefined();
+    expect(getParsedStyle(circle, 'strokeOpacity')).toBeUndefined();
     // expect(circle.getAttribute('fill')).toBe('');
-    // expect(circle.parsedStyle.fill?.toString()).toStrictEqual(
+    // expect(getParsedStyle(circle, "fill")?.toString()).toStrictEqual(
     //   new CSSRGB(0, 0, 0, 0, true).toString(),
     // ); // transparent
     // expect(circle.getAttribute('stroke')).toBe('');
-    // expect(circle.parsedStyle.stroke?.toString()).toStrictEqual(
+    // expect(getParsedStyle(circle, "stroke")?.toString()).toStrictEqual(
     //   new CSSRGB(0, 0, 0, 0, true).toString(),
     // ); // transparent
     // expect(circle.getAttribute('transform')).toBe('');
-    // expect(circle.parsedStyle.transform).toStrictEqual([]);
+    // expect(getParsedStyle(circle, "transform")).toStrictEqual([]);
     // expect(circle.getAttribute('transformOrigin')).toBe('');
-    // expect(circle.parsedStyle.transformOrigin).toStrictEqual([
+    // expect(getParsedStyle(circle, "transformOrigin")).toStrictEqual([
     //   CSS.percent(50),
     //   CSS.percent(50),
     // ]);
     // expect(circle.getAttribute('visibility')).toBe('');
-    expect(circle.parsedStyle.visibility).toBeUndefined();
+    expect(getParsedStyle(circle, 'visibility')).toBeUndefined();
     // expect(circle.getAttribute('pointerEvents')).toBe('');
-    expect(circle.parsedStyle.pointerEvents).toBeUndefined();
+    expect(getParsedStyle(circle, 'pointerEvents')).toBeUndefined();
     // expect(circle.getAttribute('lineWidth')).toBe('');
-    expect(circle.parsedStyle.lineWidth).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineWidth')).toBeUndefined();
     // expect(circle.getAttribute('lineJoin')).toBe('');
-    expect(circle.parsedStyle.lineJoin).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineJoin')).toBeUndefined();
     // expect(circle.getAttribute('lineCap')).toBe('');
-    expect(circle.parsedStyle.lineCap).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineCap')).toBeUndefined();
     // expect(circle.getAttribute('increasedLineWidthForHitTesting')).toBe('');
-    expect(circle.parsedStyle.increasedLineWidthForHitTesting).toBeUndefined();
+    expect(
+      getParsedStyle(circle, 'increasedLineWidthForHitTesting'),
+    ).toBeUndefined();
     // @ts-ignore
     // expect(circle.getAttribute('fontSize')).toBe('');
     // @ts-ignore
-    expect(circle.parsedStyle.fontSize).toBeUndefined();
+    expect(getParsedStyle(circle, 'fontSize')).toBeUndefined();
     // expect(circle.getAttribute('zIndex')).toBe('');
-    // expect(circle.parsedStyle.zIndex).toBe(0);
+    // expect(getParsedStyle(circle, "zIndex")).toBe(0);
     // expect(circle.getAttribute('cx')).toBe(100);
-    expect(circle.parsedStyle.cx).toBe(100);
+    expect(getParsedStyle(circle, 'cx')).toBe(100);
     // expect(circle.getAttribute('cy')).toBe(100);
-    expect(circle.parsedStyle.cy).toBe(100);
+    expect(getParsedStyle(circle, 'cy')).toBe(100);
     // expect(circle.getAttribute('r')).toBe(100);
-    expect(circle.parsedStyle.r).toBe(100);
+    expect(getParsedStyle(circle, 'r')).toBe(100);
 
     // update fill
     circle.style.fill = 'red';
     expect(circle.getAttribute('fill')).toBe('red');
-    expect(circle.parsedStyle.fill?.toString()).toBe(
+    expect(getParsedStyle(circle, 'fill')?.toString()).toBe(
       new CSSRGB(255, 0, 0).toString(),
     );
     // update transform
@@ -221,43 +223,43 @@ describe('Circle', () => {
     });
 
     // expect(circle.getAttribute('opacity')).toBe('');
-    expect(circle.parsedStyle.opacity).toBeUndefined();
+    expect(getParsedStyle(circle, 'opacity')).toBeUndefined();
     // expect(circle.getAttribute('fillOpacity')).toBe('');
-    expect(circle.parsedStyle.fillOpacity).toBeUndefined();
+    expect(getParsedStyle(circle, 'fillOpacity')).toBeUndefined();
     // expect(circle.getAttribute('strokeOpacity')).toBe('');
-    expect(circle.parsedStyle.strokeOpacity).toBeUndefined();
+    expect(getParsedStyle(circle, 'strokeOpacity')).toBeUndefined();
     // expect(circle.getAttribute('fill')).toBe('');
-    // expect(circle.parsedStyle.fill?.toString()).toBe(
+    // expect(getParsedStyle(circle, "fill")?.toString()).toBe(
     //   new CSSRGB(0, 0, 0, 0, true).toString(),
     // ); // transparent
     // expect(circle.getAttribute('stroke')).toBe('');
-    // expect(circle.parsedStyle.stroke?.toString()).toBe(
+    // expect(getParsedStyle(circle, "stroke")?.toString()).toBe(
     //   new CSSRGB(0, 0, 0, 0, true).toString(),
     // ); // transparent
     // expect(circle.getAttribute('transform')).toBe('');
-    // expect(circle.parsedStyle.transform).toStrictEqual([]);
+    // expect(getParsedStyle(circle, "transform")).toStrictEqual([]);
     // expect(circle.getAttribute('transformOrigin')).toBe('');
-    // expect(circle.parsedStyle.transformOrigin).toStrictEqual([
+    // expect(getParsedStyle(circle, "transformOrigin")).toStrictEqual([
     //   CSS.percent(50),
     //   CSS.percent(50),
     // ]);
     // expect(circle.getAttribute('visibility')).toBe('');
-    expect(circle.parsedStyle.visibility).toBeUndefined();
+    expect(getParsedStyle(circle, 'visibility')).toBeUndefined();
     // expect(circle.getAttribute('pointerEvents')).toBe('');
-    expect(circle.parsedStyle.pointerEvents).toBeUndefined();
+    expect(getParsedStyle(circle, 'pointerEvents')).toBeUndefined();
     // expect(circle.getAttribute('lineWidth')).toBe('');
-    expect(circle.parsedStyle.lineWidth).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineWidth')).toBeUndefined();
     // expect(circle.getAttribute('lineJoin')).toBe('');
-    expect(circle.parsedStyle.lineJoin).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineJoin')).toBeUndefined();
     // expect(circle.getAttribute('lineCap')).toBe('');
-    expect(circle.parsedStyle.lineCap).toBeUndefined();
+    expect(getParsedStyle(circle, 'lineCap')).toBeUndefined();
     // expect(circle.getAttribute('zIndex')).toBe('');
-    // expect(circle.parsedStyle.zIndex).toBe(0);
+    // expect(getParsedStyle(circle, "zIndex")).toBe(0);
     // // expect(circle.getAttribute('cx')).toBe('');
-    // expect(circle.parsedStyle.cx).toBe(0);
+    // expect(getParsedStyle(circle, "cx")).toBe(0);
     // // expect(circle.getAttribute('cy')).toBe('');
-    // expect(circle.parsedStyle.cy).toBe(0);
+    // expect(getParsedStyle(circle, "cy")).toBe(0);
     // // expect(circle.getAttribute('r')).toBe('');
-    // expect(circle.parsedStyle.r).toBe(0);
+    // expect(getParsedStyle(circle, "r")).toBe(0);
   });
 });

@@ -97,7 +97,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
         lineWidth: anchorStrokeWidth,
       },
     });
-    const { x, y, width, height } = target.parsedStyle;
+    const { x, y, width, height } = target.attributes;
     this.tlAnchor.style.cx = x;
     this.tlAnchor.style.cy = y;
 
@@ -152,8 +152,8 @@ export class SelectableImage extends AbstractSelectable<Rect> {
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
-    const maskX = this.mask.parsedStyle.x + dx;
-    const maskY = this.mask.parsedStyle.y + dy;
+    const maskX = this.mask.attributes.x + dx;
+    const maskY = this.mask.attributes.y + dy;
     const maskWidth = Number(this.mask.style.width);
     const maskHeight = Number(this.mask.style.height);
 
@@ -174,8 +174,8 @@ export class SelectableImage extends AbstractSelectable<Rect> {
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const maskX = this.mask.parsedStyle.x;
-    const maskY = this.mask.parsedStyle.y;
+    const maskX = this.mask.attributes.x;
+    const maskY = this.mask.attributes.y;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
         movingX: maskX + dx,
@@ -190,8 +190,8 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVED, {
         rect: {
-          x: this.mask.parsedStyle.x,
-          y: this.mask.parsedStyle.y,
+          x: this.mask.attributes.x,
+          y: this.mask.attributes.y,
         },
       }),
     );
@@ -211,7 +211,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const { x, y } = this.mask.parsedStyle;
+      const { x, y } = this.mask.attributes;
       const dx = canvasX - shiftX - x;
       const dy = canvasY - shiftY - y;
 
@@ -226,7 +226,7 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        const { x, y } = this.mask.parsedStyle;
+        const { x, y } = this.mask.attributes;
         shiftX = e.canvasX - x;
         shiftY = e.canvasY - y;
 
@@ -248,8 +248,8 @@ export class SelectableImage extends AbstractSelectable<Rect> {
       const originMaskHeight = Number(this.mask.style.height);
 
       // position in canvas coordinates
-      const ox = this.mask.parsedStyle.x;
-      const oy = this.mask.parsedStyle.y;
+      const ox = this.mask.attributes.x;
+      const oy = this.mask.attributes.y;
 
       if (target === this.mask) {
         moveAt(canvasX, canvasY);

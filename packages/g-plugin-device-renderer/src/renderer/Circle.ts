@@ -32,8 +32,8 @@ export class CircleRenderer extends Batch {
    * 3. stroke is not 'none'
    */
   private needDrawStrokeSeparately(object: DisplayObject) {
-    const { fill, stroke, lineDash, lineWidth, strokeOpacity } =
-      object.parsedStyle as ParsedCircleStyleProps;
+    const { lineDash, lineWidth, strokeOpacity } = object.attributes;
+    const { fill, stroke } = object.parsedStyle as ParsedCircleStyleProps;
 
     const hasFill = fill && !(fill as CSSRGB).isNone;
     const hasStroke = stroke && !(stroke as CSSRGB).isNone;

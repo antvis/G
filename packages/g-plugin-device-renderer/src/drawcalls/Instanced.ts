@@ -1,29 +1,37 @@
+import {
+  AddressMode,
+  ChannelWriteMask,
+  CompareFunction,
+  FilterMode,
+  Format,
+  makeTextureDescriptor2D,
+  MipmapFilterMode,
+  StencilOp,
+  VertexStepMode,
+} from '@antv/g-device-api';
 import type {
+  BaseStyleProps,
   CSSGradientValue,
   DisplayObject,
   ParsedBaseStyleProps,
   Pattern,
   Tuple4Number,
 } from '@antv/g-lite';
-import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
-import { mat4, vec3 } from 'gl-matrix';
 import {
-  ChannelWriteMask,
-  CompareFunction,
-  Format,
-  makeTextureDescriptor2D,
-  MipmapFilterMode,
-  StencilOp,
-  FilterMode,
-  VertexStepMode,
-  AddressMode,
-} from '@antv/g-device-api';
+  CSSRGB,
+  getParsedStyle,
+  isCSSRGB,
+  isPattern,
+  parseColor,
+  Shape,
+} from '@antv/g-lite';
+import { mat4, vec3 } from 'gl-matrix';
 import { BufferGeometry, GeometryEvent } from '../geometries';
 import type { LightPool } from '../LightPool';
 import type { Fog } from '../lights';
 import type { Material } from '../materials';
 import { MaterialEvent, ShaderMaterial } from '../materials';
-import type { RenderInst, RenderInstUniform, RenderHelper } from '../render';
+import type { RenderHelper, RenderInst, RenderInstUniform } from '../render';
 import {
   DeviceProgram,
   makeSortKeyOpaque,
@@ -34,9 +42,8 @@ import type { BatchContext } from '../renderer';
 import type { Batch } from '../renderer/Batch';
 import { RENDER_ORDER_SCALE } from '../renderer/Batch';
 import type { TexturePool } from '../TexturePool';
-import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 import { packUint8ToFloat } from '../utils/compression';
-import { ParsedMeshStyleProps } from '../Mesh';
+import { compareDefines, definedProps, enumToObject } from '../utils/enum';
 
 let counter = 1;
 export const FILL_TEXTURE_MAPPING = 'FillTextureMapping';
@@ -205,8 +212,8 @@ export abstract class Instanced {
   private shouldMergeColor(o1: DisplayObject, o2: DisplayObject, name: string) {
     // c1: CSSRGB | CSSGradientValue[] | Pattern, c2: CSSRGB | CSSGradientValue[] | Pattern
     // can't be merged if gradients & pattern used
-    const source = o1.parsedStyle[name];
-    const target = o2.parsedStyle[name];
+    const source = getParsedStyle(o1, name);
+    const target = getParsedStyle(o2, name);
 
     if (!source && !target) {
       return true;
@@ -285,15 +292,14 @@ export abstract class Instanced {
 
     objects.forEach((object) => {
       const {
-        fill,
-        stroke,
         opacity = 1,
         fillOpacity = 1,
         strokeOpacity = 1,
         lineWidth = 1,
         visibility,
         increasedLineWidthForHitTesting = 0,
-      } = object.parsedStyle as ParsedBaseStyleProps;
+      } = object.attributes as BaseStyleProps;
+      const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (isCSSRGB(fill)) {
         fillColor = [
@@ -313,18 +319,6 @@ export abstract class Instanced {
         ];
       }
 
-      // if (this.clipPathTarget) {
-      //   // account for target's rts
-      //   mat4.copy(modelMatrix, object.getLocalTransform());
-      //   fillColor = [255, 255, 255, 255];
-      //   mat4.mul(
-      //     modelMatrix,
-      //     this.clipPathTarget.getWorldTransform(),
-      //     modelMatrix,
-      //   );
-      // } else {
-      //   mat4.copy(modelMatrix, object.getWorldTransform());
-      // }
       mat4.mul(
         modelViewMatrix,
         this.context.camera.getViewTransform(),
@@ -336,7 +330,7 @@ export abstract class Instanced {
         object.renderable3D?.encodedPickingColor) || [0, 0, 0];
 
       if (this.mergeXYZIntoModelMatrix) {
-        const { x, y, z } = object.parsedStyle as ParsedMeshStyleProps;
+        const { x, y, z } = object.attributes;
         mat4.mul(
           modelMatrix,
           object.getWorldTransform(), // apply anchor
@@ -800,7 +794,7 @@ export abstract class Instanced {
           lineWidth = 1,
           visibility,
           increasedLineWidthForHitTesting = 0,
-        } = object.parsedStyle as ParsedBaseStyleProps;
+        } = object.attributes as BaseStyleProps;
         packed.push(
           opacity,
           fillOpacity,
@@ -828,7 +822,7 @@ export abstract class Instanced {
       const modelMatrix = mat4.create();
       objects.forEach((object) => {
         if (this.mergeXYZIntoModelMatrix) {
-          const { x, y, z } = object.parsedStyle as ParsedMeshStyleProps;
+          const { x, y, z } = object.attributes;
           mat4.mul(
             modelMatrix,
             object.getWorldTransform(), // apply anchor
@@ -1137,7 +1131,8 @@ export abstract class Instanced {
   }
 
   private uploadFog(uniforms: RenderInstUniform[], fog: Fog) {
-    const { type, fill, start, end, density } = fog.parsedStyle;
+    const { type, start, end, density } = fog.attributes;
+    const { fill } = fog.parsedStyle;
 
     if (isCSSRGB(fill)) {
       const fillColor = [

@@ -18,7 +18,7 @@ export class CSSPropertyOffsetDistance
   mixer = clampedMergeNumbers(0, 1);
 
   postProcessor(object: DisplayObject) {
-    const { offsetPath, offsetDistance } = object.parsedStyle;
+    const { offsetPath, offsetDistance } = object.attributes;
     if (!offsetPath) {
       return;
     }

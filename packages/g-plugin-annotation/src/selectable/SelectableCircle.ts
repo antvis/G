@@ -17,7 +17,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
       target,
     } = this.style;
 
-    const { cx, cy, r } = target.parsedStyle;
+    const { cx, cy, r } = target.attributes;
     const zoom = this.ownerDocument.defaultView.getCamera().getZoom();
 
     this.mask = new Circle({
@@ -48,7 +48,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
   destroy(): void {}
 
   moveMask(dx: number, dy: number) {
-    const { cx, cy } = this.mask.parsedStyle;
+    const { cx, cy } = this.mask.attributes;
     this.mask.attr({
       cx: cx + dx,
       cy: cy + dy,
@@ -56,7 +56,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
   }
 
   triggerMovingEvent(dx: number, dy: number) {
-    const { cx, cy } = this.mask.parsedStyle;
+    const { cx, cy } = this.mask.attributes;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVING, {
         movingX: dx + cx,
@@ -68,7 +68,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
   }
 
   triggerMovedEvent() {
-    const { cx, cy } = this.mask.parsedStyle;
+    const { cx, cy } = this.mask.attributes;
     this.style.target.dispatchEvent(
       new CustomEvent(SelectableEvent.MOVED, {
         circle: {
@@ -85,7 +85,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
     let shiftX = 0;
     let shiftY = 0;
     const moveAt = (canvasX: number, canvasY: number) => {
-      const { cx, cy } = this.mask.parsedStyle;
+      const { cx, cy } = this.mask.attributes;
 
       // account for multi-selection
       this.plugin.selected.forEach((selected) => {
@@ -101,7 +101,7 @@ export class SelectableCircle extends AbstractSelectable<Circle> {
       const target = e.target as DisplayObject;
 
       if (target === this.mask) {
-        const { cx, cy } = this.mask.parsedStyle;
+        const { cx, cy } = this.mask.attributes;
         shiftX = e.canvasX - cx;
         shiftY = e.canvasY - cy;
 

@@ -6,6 +6,7 @@ import {
   RenderingPlugin,
   RenderingPluginContext,
   ParsedCircleStyleProps,
+  CircleStyleProps,
 } from '@antv/g-lite';
 import { G_SVG_PREFIX } from '@antv/g-plugin-svg-renderer';
 import { Anchor, Ellipse, Group } from 'zdog';
@@ -33,8 +34,9 @@ export class ZdogRendererPlugin implements RenderingPlugin {
           break;
         }
         case Shape.CIRCLE: {
-          const { cx, cy, r, lineWidth, fill } =
-            parsedStyle as ParsedCircleStyleProps;
+          const { cx, cy, r, lineWidth } =
+            object.attributes as CircleStyleProps;
+          const { fill } = parsedStyle as ParsedCircleStyleProps;
           zdogShape = new Ellipse({
             diameter: 2 * r,
             stroke: lineWidth,
@@ -80,6 +82,7 @@ export class ZdogRendererPlugin implements RenderingPlugin {
         $camera.removeChild($camera.firstChild);
       }
 
+      // @ts-ignore
       this.scene.renderGraphSvg($camera);
     });
 

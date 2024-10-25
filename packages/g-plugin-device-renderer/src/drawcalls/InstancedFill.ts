@@ -136,7 +136,7 @@ export class InstancedFillDrawcall extends Instanced {
       const packedStyle: number[] = [];
       objects.forEach((object) => {
         const { isBillboard, billboardRotation, isSizeAttenuation } =
-          object.parsedStyle;
+          object.attributes;
         packedStyle.push(
           isBillboard ? 1 : 0,
           billboardRotation ?? 0,
@@ -222,7 +222,7 @@ export class InstancedFillDrawcall extends Instanced {
       const packed: number[] = [];
       objects.forEach((object) => {
         const { isBillboard, billboardRotation, isSizeAttenuation } =
-          object.parsedStyle;
+          object.attributes;
         packed.push(
           isBillboard ? 1 : 0,
           billboardRotation ?? 0,

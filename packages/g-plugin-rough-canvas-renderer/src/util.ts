@@ -32,8 +32,6 @@ const MIN_STROKE_WIDTH = 0.1;
 
 export function generateRoughOptions(object: DisplayObject) {
   const {
-    fill,
-    stroke,
     fillOpacity = 1,
     strokeOpacity = 1,
     lineWidth = 1,
@@ -57,7 +55,8 @@ export function generateRoughOptions(object: DisplayObject) {
     dashGap,
     zigzagOffset,
     preserveVertices,
-  } = object.parsedStyle as ParsedBaseStyleProps & Options;
+  } = object.attributes;
+  const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps & Options;
 
   // @see https://github.com/rough-stuff/rough/wiki#options
   const options: Options = {

@@ -1,13 +1,16 @@
-import type { ParsedPolygonStyleProps } from '@antv/g-lite';
+import type { Polygon } from '@antv/g-lite';
 import { isDisplayObject } from '@antv/g-lite';
 
 export function generatePath(
   context: CanvasRenderingContext2D,
-  parsedStyle: ParsedPolygonStyleProps,
+  polygon: Polygon,
 ) {
-  const { markerStart, markerEnd, markerStartOffset, markerEndOffset } =
-    parsedStyle;
-  const { points } = parsedStyle.points;
+  const { markerStartOffset, markerEndOffset } = polygon.attributes;
+  const {
+    markerStart,
+    markerEnd,
+    points: { points },
+  } = polygon.parsedStyle;
   const { length } = points;
 
   const x1 = points[0][0];

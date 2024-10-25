@@ -76,6 +76,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.MESH]: new MeshRenderer(),
       [Shape.GROUP]: undefined,
       [Shape.HTML]: undefined,
+      [Shape.FRAGMENT]: undefined,
     };
 
     const batchManager = new BatchManager(

@@ -1,14 +1,11 @@
 import { isArray } from '@antv/util';
-import type { ParsedPolylineStyleProps } from '../../display-objects';
+import type { Polyline } from '../../display-objects';
 import type { GeometryAABBUpdater } from './interfaces';
 
-export class PolylineUpdater
-  implements GeometryAABBUpdater<ParsedPolylineStyleProps>
-{
-  update(parsedStyle: ParsedPolylineStyleProps) {
-    if (parsedStyle.points && isArray(parsedStyle.points.points)) {
-      const { points } = parsedStyle.points;
-
+export class PolylineUpdater implements GeometryAABBUpdater {
+  update(object: Polyline) {
+    const points = object.parsedStyle?.points?.points;
+    if (points && isArray(points)) {
       // FIXME: account for miter lineJoin
       const minX = Math.min(...points.map((point) => point[0]));
       const maxX = Math.max(...points.map((point) => point[0]));
