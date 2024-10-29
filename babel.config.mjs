@@ -1,6 +1,11 @@
 // See https://babeljs.io/docs/en/configuration
 
 export default {
+  /**
+   * @see https://babeljs.io/docs/options#targets
+   * default is es5
+   */
+  // targets: '',
   assumptions: {
     privateFieldsAsProperties: true,
     setPublicClassFields: true,

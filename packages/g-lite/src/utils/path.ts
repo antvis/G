@@ -964,9 +964,7 @@ export function translatePathToString(
         case 'M':
           // Use start marker offset
           if (useStartOffset) {
-            return `M ${params[1] + startOffsetX},${
-              params[2] + startOffsetY
-            } L ${params[1]},${params[2]}`;
+            return `M ${params[1] + startOffsetX},${params[2] + startOffsetY}`;
           }
           return `M ${params[1]},${params[2]}`;
 
