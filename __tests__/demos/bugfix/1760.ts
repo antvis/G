@@ -3,6 +3,7 @@ import { Canvas, Path, Line } from '@antv/g';
 /**
  * @see https://github.com/antvis/G/issues/1760
  * @see https://github.com/antvis/G/issues/1790
+ * @see https://github.com/antvis/G/pull/1808
  */
 export async function issue_1760(context: { canvas: Canvas }) {
   const { canvas } = context;
@@ -15,16 +16,27 @@ export async function issue_1760(context: { canvas: Canvas }) {
       transformOrigin: 'center',
     },
   });
+  const arrowMarker1 = new Path({
+    style: {
+      d: 'M 10,10 L -10,0 L 10,-10 Z',
+      stroke: '#ff90FF',
+      transformOrigin: 'center',
+    },
+  });
 
   const path = new Path({
     style: {
       lineWidth: 1,
       stroke: '#54BECC',
       // d: 'M 0,40 L 100,100',
-      d: 'M 10,100 L 100,100',
+      // d: 'M 10,100 L 100,100',
+      d: 'M 10,100 Q 100,100 150,150',
+      // d: 'M 10,100 C 100,100 150,150 180,200',
+      // d: 'M 10,100 A 30 50 0 0 1 162.55 162.45',
+      // d: 'M 10,100 A 30 50 0 0 0 162.55 162.45',
       markerStart: arrowMarker,
       markerStartOffset: 30,
-      markerEnd: arrowMarker,
+      markerEnd: arrowMarker1,
       markerEndOffset: 30,
     },
   });
