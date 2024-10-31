@@ -46,7 +46,7 @@ const renderers = {
 };
 const app = document.getElementById('app') as HTMLElement;
 let currentContainer = document.createElement('div');
-let canvas;
+let canvas: Canvas;
 let prevAfter;
 const normalizeName = (name: string) => name.replace(/-/g, '').toLowerCase();
 const renderOptions = (keyword = '') => {
@@ -59,7 +59,7 @@ const renderOptions = (keyword = '') => {
 
 // Select for chart.
 const selectChart = document.createElement('select') as HTMLSelectElement;
-selectChart.style.margin = '1em 1em 1em 96px';
+selectChart.style.margin = '1em 1em 1em 120px';
 renderOptions();
 selectChart.onchange = () => {
   const { value } = selectChart;
@@ -239,7 +239,18 @@ function createSpecRender(object) {
       const gui = new lil.GUI({ autoPlace: false });
       $div.appendChild(gui.domElement);
 
-      await generate({ canvas, renderer, container: $div, gui });
+      // @see https://github.com/Darsain/fpsmeter/wiki/Options
+      const fpsMeter = new window.FPSMeter({
+        theme: 'light',
+        heat: 1,
+        graph: 1,
+      });
+
+      await generate({ canvas, renderer, container: $div, gui, fpsMeter });
+
+      canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+        fpsMeter.tick();
+      });
 
       // canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
       //   stats.update();

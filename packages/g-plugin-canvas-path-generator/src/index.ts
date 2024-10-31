@@ -10,7 +10,9 @@ import {
   RectPath,
 } from './paths';
 
-export class Plugin extends AbstractRendererPlugin {
+export class Plugin extends AbstractRendererPlugin<{
+  pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
+}> {
   name = 'canvas-path-generator';
   init(): void {
     const pathGeneratorFactory: Record<Shape, PathGenerator<any>> = {
@@ -26,6 +28,7 @@ export class Plugin extends AbstractRendererPlugin {
       [Shape.IMAGE]: undefined,
       [Shape.HTML]: undefined,
       [Shape.MESH]: undefined,
+      [Shape.FRAGMENT]: undefined,
     };
 
     // @ts-ignore

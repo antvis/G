@@ -1,9 +1,12 @@
 import { AbstractRendererPlugin, Shape } from '@antv/g-lite';
+import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { CanvasRendererPlugin } from './CanvasRendererPlugin';
-import type { StyleRenderer } from './shapes/styles';
-import { DefaultRenderer } from './shapes/styles/Default';
-import { ImageRenderer } from './shapes/styles/Image';
-import { TextRenderer } from './shapes/styles/Text';
+import {
+  type StyleRenderer,
+  DefaultRenderer,
+  TextRenderer,
+  ImageRenderer,
+} from './shapes/styles';
 import type { CanvasRendererPluginOptions } from './interfaces';
 
 export * from './shapes/styles';
@@ -11,6 +14,7 @@ export * from './shapes/styles';
 export class Plugin extends AbstractRendererPlugin<{
   defaultStyleRendererFactory: Record<Shape, StyleRenderer>;
   styleRendererFactory: Record<Shape, StyleRenderer>;
+  pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
 }> {
   name = 'canvas-renderer';
 
@@ -43,6 +47,7 @@ export class Plugin extends AbstractRendererPlugin<{
       [Shape.GROUP]: undefined,
       [Shape.HTML]: undefined,
       [Shape.MESH]: undefined,
+      [Shape.FRAGMENT]: undefined,
     };
 
     this.context.defaultStyleRendererFactory = defaultStyleRendererFactory;

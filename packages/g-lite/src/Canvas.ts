@@ -398,9 +398,7 @@ export class Canvas extends EventTarget implements ICanvas {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
     if (this.frameId) {
-      const cancelRAF =
-        this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
-      cancelRAF(this.frameId);
+      this.cancelAnimationFrame(this.frameId);
     }
 
     // unmount all children
@@ -440,8 +438,6 @@ export class Canvas extends EventTarget implements ICanvas {
     clearEventRetain(beforeRenderEvent);
     clearEventRetain(rerenderEvent);
     clearEventRetain(afterRenderEvent);
-
-    this.cancelAnimationFrame(this.frameId);
   }
 
   /**

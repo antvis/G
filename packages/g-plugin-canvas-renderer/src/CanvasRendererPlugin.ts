@@ -19,10 +19,10 @@ import {
   Shape,
   Node,
 } from '@antv/g-lite';
-import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
 import { isNil } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
 import type { CanvasRendererPluginOptions } from './interfaces';
+import type { Plugin } from '.';
 
 interface Rect {
   x: number;
@@ -39,9 +39,9 @@ interface Rect {
 export class CanvasRendererPlugin implements RenderingPlugin {
   static tag = 'CanvasRenderer';
 
-  private context: RenderingPluginContext;
+  private context: Plugin['context'];
 
-  private pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
+  private pathGeneratorFactory: Plugin['context']['pathGeneratorFactory'];
 
   /**
    * RBush used in dirty rectangle rendering
@@ -76,7 +76,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private vec3d = vec3.create();
 
   apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
-    this.context = context;
+    this.context = context as unknown as Plugin['context'];
 
     const {
       config,
@@ -86,9 +86,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       rBushRoot,
       // @ts-ignore
       pathGeneratorFactory,
-    } = context;
+    } = this.context;
+
+    config.renderer.getConfig().enableDirtyCheck = false;
+    config.renderer.getConfig().enableDirtyRectangleRendering = false;
+
     this.rBush = rBushRoot;
     this.pathGeneratorFactory = pathGeneratorFactory;
+
     const contextService =
       context.contextService as ContextService<CanvasRenderingContext2D>;
 
@@ -164,9 +169,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           ratio > dirtyObjectRatioThreshold);
 
       if (context) {
-        context.resetTransform
-          ? context.resetTransform()
-          : context.setTransform(1, 0, 0, 1, 0, 0);
+        if (typeof context.resetTransform === 'function') {
+          context.resetTransform();
+        } else {
+          context.setTransform(1, 0, 0, 1, 0, 0);
+        }
+
         if (this.clearFullScreen) {
           this.clearRect(
             context,
@@ -180,26 +188,37 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     });
 
+    /**
+     * render objects by z-index
+     *
+     * - The level of the child node will be affected by the level of the parent node
+     */
     const renderByZIndex = (
       object: DisplayObject,
       context: CanvasRenderingContext2D,
     ) => {
-      if (object.isVisible() && !object.isCulled()) {
-        this.renderDisplayObject(
-          object,
-          context,
-          this.context,
-          this.restoreStack,
-          runtime,
-        );
+      const stack = [object];
+
+      while (stack.length > 0) {
+        const currentObject = stack.pop();
+
+        if (currentObject.isVisible() && !currentObject.isCulled()) {
+          this.renderDisplayObject(
+            currentObject,
+            context,
+            this.context,
+            this.restoreStack,
+            runtime,
+          );
+        }
+
+        const objects =
+          currentObject.sortable.sorted || currentObject.childNodes;
+        // should account for z-index
+        for (let i = objects.length - 1; i >= 0; i--) {
+          stack.push(objects[i] as unknown as DisplayObject);
+        }
       }
-
-      const sorted = object.sortable.sorted || object.childNodes;
-
-      // should account for z-index
-      sorted.forEach((child: DisplayObject) => {
-        renderByZIndex(child, context);
-      });
     };
 
     // render at the end of frame
@@ -219,8 +238,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
+        // console.time('renderByZIndex');
         // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
         renderByZIndex(renderingContext.root, context);
+        // console.timeEnd('renderByZIndex');
       } else {
         // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
@@ -380,8 +401,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     runtime: GlobalRuntime,
   ) {
     const { nodeName } = object;
-
-    // console.log('canvas render:', object);
 
     // restore to its ancestor
 
