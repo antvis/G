@@ -959,41 +959,34 @@ export function translatePathToString(
             (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
         endOffsetX !== 0 &&
         endOffsetY !== 0;
+      const [startOffsetXTemp, startOffsetYTemp] = useStartOffset
+        ? [startOffsetX, startOffsetY]
+        : [0, 0];
+      const [endOffsetXTemp, endOffsetYTemp] = useEndOffset
+        ? [endOffsetX, endOffsetY]
+        : [0, 0];
 
       switch (command) {
         case 'M':
-          // Use start marker offset
-          if (useStartOffset) {
-            return `M ${params[1] + startOffsetX},${
-              params[2] + startOffsetY
-            } L ${params[1]},${params[2]}`;
-          }
-          return `M ${params[1]},${params[2]}`;
+          return `M ${params[1] + startOffsetXTemp},${params[2] + startOffsetYTemp}`;
 
         case 'L':
-          return `L ${params[1] + (useEndOffset ? endOffsetX : 0)},${
-            params[2] + (useEndOffset ? endOffsetY : 0)
+          return `L ${params[1] + endOffsetXTemp},${
+            params[2] + endOffsetYTemp
           }`;
+
         case 'Q':
-          return `Q ${params[1]} ${params[2]},${params[3]} ${params[4]}${
-            useEndOffset
-              ? ` L ${params[3] + endOffsetX},${params[4] + endOffsetY}`
-              : ''
-          }`;
+          return `Q ${params[1]} ${params[2]},${params[3] + endOffsetXTemp} ${params[4] + endOffsetYTemp}`;
+
         case 'C':
-          return `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5]} ${params[6]}${
-            useEndOffset
-              ? ` L ${params[5] + endOffsetX},${params[6] + endOffsetY}`
-              : ''
-          }`;
+          return `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5] + endOffsetXTemp} ${params[6] + endOffsetYTemp}`;
+
         case 'A':
-          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6]} ${params[7]}${
-            useEndOffset
-              ? ` L ${params[6] + endOffsetX},${params[7] + endOffsetY}`
-              : ''
-          }`;
+          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6] + endOffsetXTemp} ${params[7] + endOffsetYTemp}`;
+
         case 'Z':
           return 'Z';
+
         default:
           return null;
       }
