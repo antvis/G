@@ -430,6 +430,13 @@ export interface RendererConfig {
    */
   enableSizeAttenuation: boolean;
 
+  /**
+   * Enable rendering optimization
+   *
+   * @default false
+   */
+  enableRenderingOptimization: boolean;
+
   // plugins:
 }
 
@@ -545,6 +552,10 @@ export interface CanvasConfig {
   supportsTouchEvents?: boolean;
   isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
+
+  /**
+   * double click speed (ms), default is 200ms
+   */
   dblClickSpeed?: number;
 
   /**

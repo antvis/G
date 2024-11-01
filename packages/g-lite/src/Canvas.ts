@@ -122,9 +122,6 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
 
-  /**
-   * double click speed (ms), default is 200ms
-   */
   dblClickSpeed?: CanvasConfig['dblClickSpeed'];
 
   /**

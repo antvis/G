@@ -134,10 +134,13 @@ export class RenderingService {
       this.inited = true;
       callback();
     } else {
-      this.hooks.initAsync.promise().then(() => {
-        this.inited = true;
-        callback();
-      });
+      this.hooks.initAsync
+        .promise()
+        .then(() => {
+          this.inited = true;
+          callback();
+        })
+        .catch((err) => {});
     }
   }
 

@@ -15,7 +15,10 @@ import {
 } from '@antv/g-lite';
 import type { ImagePool } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
-import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
+import {
+  CanvasRendererPlugin,
+  type RenderState,
+} from '../../CanvasRendererPlugin';
 import type { StyleRenderer } from './interfaces';
 
 export class DefaultRenderer implements StyleRenderer {
@@ -51,7 +54,7 @@ export class DefaultRenderer implements StyleRenderer {
     const isFillTransparent = (fill as CSSRGB)?.alpha === 0;
     const hasFilter = !!(filter && filter.length);
     const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
-    const { nodeName } = object;
+    const nodeName = object.nodeName as Shape;
     const isInnerShadow = shadowType === 'inner';
     const shouldDrawShadowWithStroke =
       hasStroke &&
@@ -205,7 +208,7 @@ export function getPattern(
         offscreenCanvas,
       ) as CanvasRenderingContext2D;
 
-    const restoreStack = [];
+    const renderState: RenderState = { restoreStack: [], prevObject: null };
 
     // offscreenCanvasContext.scale(1 / dpr, 1 / dpr);
 
@@ -214,12 +217,12 @@ export function getPattern(
         object,
         offscreenCanvasContext,
         canvasContext,
-        restoreStack,
+        renderState,
         runtime,
       );
     });
 
-    restoreStack.forEach(() => {
+    renderState.restoreStack.forEach(() => {
       offscreenCanvasContext.restore();
     });
   }

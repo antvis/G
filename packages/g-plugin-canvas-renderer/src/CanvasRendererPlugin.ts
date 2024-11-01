@@ -31,6 +31,11 @@ interface Rect {
   height: number;
 }
 
+export interface RenderState {
+  restoreStack: DisplayObject[];
+  prevObject: DisplayObject;
+}
+
 /**
  * support 2 modes in rendering:
  * * immediate
@@ -56,10 +61,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private renderQueue: DisplayObject[] = [];
 
-  /**
-   * This stack is only used by clipPath for now.
-   */
-  private restoreStack: DisplayObject[] = [];
+  #renderState: RenderState = { restoreStack: [], prevObject: null };
 
   private clearFullScreenLastFrame = false;
   private clearFullScreen = false;
@@ -87,6 +89,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       // @ts-ignore
       pathGeneratorFactory,
     } = this.context;
+    let enableRenderingOptimization =
+      config.renderer.getConfig().enableRenderingOptimization;
 
     config.renderer.getConfig().enableDirtyCheck = false;
     config.renderer.getConfig().enableDirtyRectangleRendering = false;
@@ -146,7 +150,10 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       canvas.removeEventListener(ElementEvent.CULLED, handleCulled);
       this.renderQueue = [];
       this.removedRBushNodeAABBs = [];
-      this.restoreStack = [];
+      this.#renderState = {
+        restoreStack: [],
+        prevObject: null,
+      };
     });
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
@@ -203,13 +210,23 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         const currentObject = stack.pop();
 
         if (currentObject.isVisible() && !currentObject.isCulled()) {
-          this.renderDisplayObject(
-            currentObject,
-            context,
-            this.context,
-            this.restoreStack,
-            runtime,
-          );
+          if (enableRenderingOptimization) {
+            this.renderDisplayObjectOptimized(
+              currentObject,
+              context,
+              this.context,
+              this.#renderState,
+              runtime,
+            );
+          } else {
+            this.renderDisplayObject(
+              currentObject,
+              context,
+              this.context,
+              this.#renderState,
+              runtime,
+            );
+          }
         }
 
         const objects =
@@ -229,6 +246,14 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         return;
       }
 
+      enableRenderingOptimization =
+        config.renderer.getConfig().enableRenderingOptimization;
+
+      // init
+      this.#renderState = {
+        restoreStack: [],
+        prevObject: null,
+      };
       this.clearFullScreenLastFrame = false;
 
       const context = contextService.getContext();
@@ -239,8 +264,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
       if (this.clearFullScreen) {
         // console.time('renderByZIndex');
-        // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
-        renderByZIndex(renderingContext.root, context);
+        if (enableRenderingOptimization) {
+          // context.save();
+          renderByZIndex(renderingContext.root, context);
+          // context.restore();
+        } else {
+          renderByZIndex(renderingContext.root, context);
+        }
         // console.timeEnd('renderByZIndex');
       } else {
         // console.log('canvas renderer next...', this.renderQueue);
@@ -341,7 +371,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
                 object,
                 context,
                 this.context,
-                this.restoreStack,
+                this.#renderState,
                 runtime,
               );
             }
@@ -359,11 +389,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
 
       // pop restore stack, eg. root -> parent -> child
-      this.restoreStack.forEach(() => {
+      this.#renderState.restoreStack.forEach(() => {
         context.restore();
       });
       // clear restore stack
-      this.restoreStack = [];
+      this.#renderState.restoreStack = [];
     });
 
     renderingService.hooks.render.tap(
@@ -393,18 +423,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
-  renderDisplayObject(
+  renderDisplayObjectOptimized(
     object: DisplayObject,
     context: CanvasRenderingContext2D,
     canvasContext: CanvasContext,
-    restoreStack: DisplayObject[],
+    renderState: RenderState,
     runtime: GlobalRuntime,
   ) {
-    const { nodeName } = object;
+    const nodeName = object.nodeName as Shape;
 
-    // restore to its ancestor
-
-    const parent = restoreStack[restoreStack.length - 1];
+    const parent =
+      renderState.restoreStack[renderState.restoreStack.length - 1];
     if (
       parent &&
       !(
@@ -412,7 +441,115 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       )
     ) {
       context.restore();
-      restoreStack.pop();
+      renderState.restoreStack.pop();
+    }
+
+    // @ts-ignore
+    const styleRenderer = this.context.styleRendererFactory[nodeName];
+    const generatePath = this.pathGeneratorFactory[nodeName];
+
+    // clip path
+    const { clipPath } = object.parsedStyle as ParsedBaseStyleProps;
+    if (clipPath) {
+      if (
+        !renderState.prevObject ||
+        !mat4.exactEquals(
+          clipPath.getWorldTransform(),
+          renderState.prevObject.getWorldTransform(),
+        )
+      ) {
+        this.applyWorldTransform(context, clipPath);
+        renderState.prevObject = clipPath;
+      }
+
+      // generate path in local space
+      const generatePath =
+        this.pathGeneratorFactory[clipPath.nodeName as Shape];
+      if (generatePath) {
+        context.save();
+
+        // save clip
+        renderState.restoreStack.push(object);
+
+        context.beginPath();
+        generatePath(context, clipPath.parsedStyle);
+        context.closePath();
+        context.clip();
+      }
+    }
+
+    // fill & stroke
+
+    if (styleRenderer) {
+      if (
+        !renderState.prevObject ||
+        !mat4.exactEquals(
+          object.getWorldTransform(),
+          renderState.prevObject.getWorldTransform(),
+        )
+      ) {
+        this.applyWorldTransform(context, object);
+        renderState.prevObject = object;
+      }
+
+      context.save();
+
+      // apply attributes to context
+      this.applyAttributesToContext(context, object);
+    }
+
+    if (generatePath) {
+      context.beginPath();
+      generatePath(context, object.parsedStyle);
+      if (
+        nodeName !== Shape.LINE &&
+        nodeName !== Shape.PATH &&
+        nodeName !== Shape.POLYLINE
+      ) {
+        context.closePath();
+      }
+    }
+
+    // fill & stroke
+    if (styleRenderer) {
+      styleRenderer.render(
+        context,
+        object.parsedStyle,
+        object,
+        canvasContext,
+        this,
+        runtime,
+      );
+
+      // restore applied attributes, eg. shadowBlur shadowColor...
+      context.restore();
+    }
+
+    // finish rendering, clear dirty flag
+    object.renderable.dirty = false;
+  }
+
+  renderDisplayObject(
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    canvasContext: CanvasContext,
+    renderState: RenderState,
+    runtime: GlobalRuntime,
+  ) {
+    const nodeName = object.nodeName as Shape;
+
+    // restore to its ancestor
+
+    const parent =
+      renderState.restoreStack[renderState.restoreStack.length - 1];
+    if (
+      parent &&
+      !(
+        object.compareDocumentPosition(parent) & Node.DOCUMENT_POSITION_CONTAINS
+      )
+    ) {
+      context.restore();
+      renderState.restoreStack.pop();
     }
 
     // @ts-ignore
@@ -425,12 +562,13 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       this.applyWorldTransform(context, clipPath);
 
       // generate path in local space
-      const generatePath = this.pathGeneratorFactory[clipPath.nodeName];
+      const generatePath =
+        this.pathGeneratorFactory[clipPath.nodeName as Shape];
       if (generatePath) {
         context.save();
 
         // save clip
-        restoreStack.push(object);
+        renderState.restoreStack.push(object);
 
         context.beginPath();
         generatePath(context, clipPath.parsedStyle);
@@ -454,9 +592,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.beginPath();
       generatePath(context, object.parsedStyle);
       if (
-        object.nodeName !== Shape.LINE &&
-        object.nodeName !== Shape.PATH &&
-        object.nodeName !== Shape.POLYLINE
+        nodeName !== Shape.LINE &&
+        nodeName !== Shape.PATH &&
+        nodeName !== Shape.POLYLINE
       ) {
         context.closePath();
       }

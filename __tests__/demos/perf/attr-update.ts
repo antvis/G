@@ -1,8 +1,9 @@
+import * as lil from 'lil-gui';
 import { Rect, Group, CanvasEvent } from '@antv/g';
 import type { Canvas } from '@antv/g';
 
-export async function attrUpdate(context: { canvas: Canvas }) {
-  const { canvas } = context;
+export async function attrUpdate(context: { canvas: Canvas; gui: lil.GUI }) {
+  const { canvas, gui } = context;
   console.log(canvas);
 
   await canvas.ready;
@@ -85,4 +86,20 @@ export async function attrUpdate(context: { canvas: Canvas }) {
     },
     { once: true },
   );
+
+  // GUI
+  canvas.getConfig().renderer.getConfig().enableRenderingOptimization = true;
+
+  gui
+    .add(
+      {
+        enableRenderingOptimization: canvas.getConfig().renderer.getConfig()
+          .enableRenderingOptimization,
+      },
+      'enableRenderingOptimization',
+    )
+    .onChange((result) => {
+      canvas.getConfig().renderer.getConfig().enableRenderingOptimization =
+        result;
+    });
 }

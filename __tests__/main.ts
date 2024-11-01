@@ -1,4 +1,4 @@
-// import Stats from 'stats.js';
+import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 import '@antv/g-camera-api';
 import { Canvas, CanvasEvent, runtime } from '@antv/g';
@@ -59,7 +59,7 @@ const renderOptions = (keyword = '') => {
 
 // Select for chart.
 const selectChart = document.createElement('select') as HTMLSelectElement;
-selectChart.style.margin = '1em 1em 1em 120px';
+selectChart.style.margin = '1em 1em 1em 96px';
 renderOptions();
 selectChart.onchange = () => {
   const { value } = selectChart;
@@ -227,34 +227,23 @@ function createSpecRender(object) {
       window.__g_instances__ = [canvas];
 
       // stats
-      // const stats = new Stats();
-      // stats.showPanel(0);
-      // const $stats = stats.dom;
-      // $stats.style.position = 'absolute';
-      // $stats.style.left = '4px';
-      // $stats.style.top = '4px';
-      // app.appendChild($stats);
+      const stats = new Stats();
+      stats.showPanel(0);
+      const $stats = stats.dom;
+      $stats.style.position = 'fixed';
+      $stats.style.left = '2px';
+      $stats.style.top = '2px';
+      // document.body.appendChild($stats);
 
       // GUI
       const gui = new lil.GUI({ autoPlace: false });
       $div.appendChild(gui.domElement);
 
-      // @see https://github.com/Darsain/fpsmeter/wiki/Options
-      const fpsMeter = new window.FPSMeter({
-        theme: 'light',
-        heat: 1,
-        graph: 1,
-      });
-
-      await generate({ canvas, renderer, container: $div, gui, fpsMeter });
+      await generate({ canvas, renderer, container: $div, gui });
 
       canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-        fpsMeter.tick();
+        stats.update();
       });
-
-      // canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-      //   stats.update();
-      // });
 
       if (
         selectRenderer.value === 'canvas' &&
