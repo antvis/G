@@ -1,5 +1,13 @@
 # @antv/g-plugin-canvas-path-generator
 
+## 2.0.15
+
+### Patch Changes
+
+-   4aa12e8c: fix: `markerStartOffset`/`markerEndOffset` of the path in the svg/canvas renderer is drawn abnormally
+-   Updated dependencies [4aa12e8c]
+    -   @antv/g-lite@2.1.4
+
 ## 2.0.14
 
 ### Patch Changes
