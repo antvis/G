@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "types": ["jest"],
-    "moduleResolution": "node",
-    "lib": ["ESNext", "DOM"]
-  },
-  "extends": "../tsconfig.json"
-}
