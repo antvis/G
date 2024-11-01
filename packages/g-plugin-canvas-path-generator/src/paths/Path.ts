@@ -48,28 +48,31 @@ export function generatePath(
         (nextSegment && (nextSegment[0] === 'M' || nextSegment[0] === 'Z'))) &&
       endOffsetX !== 0 &&
       endOffsetY !== 0;
+    const [startOffsetXTemp, startOffsetYTemp] = useStartOffset
+      ? [startOffsetX, startOffsetY]
+      : [0, 0];
+    const [endOffsetXTemp, endOffsetYTemp] = useEndOffset
+      ? [endOffsetX, endOffsetY]
+      : [0, 0];
 
     switch (command) {
       case 'M':
         // Use start marker offset
-        if (useStartOffset) {
-          context.moveTo(params[1] + startOffsetX, params[2] + startOffsetY);
-        } else {
-          context.moveTo(params[1], params[2]);
-        }
+        context.moveTo(
+          params[1] + startOffsetXTemp,
+          params[2] + startOffsetYTemp,
+        );
         break;
       case 'L':
-        if (useEndOffset) {
-          context.lineTo(params[1] + endOffsetX, params[2] + endOffsetY);
-        } else {
-          context.lineTo(params[1], params[2]);
-        }
+        context.lineTo(params[1] + endOffsetXTemp, params[2] + endOffsetYTemp);
         break;
       case 'Q':
-        context.quadraticCurveTo(params[1], params[2], params[3], params[4]);
-        if (useEndOffset) {
-          context.lineTo(params[3] + endOffsetX, params[4] + endOffsetY);
-        }
+        context.quadraticCurveTo(
+          params[1],
+          params[2],
+          params[3] + endOffsetXTemp,
+          params[4] + endOffsetYTemp,
+        );
         break;
       case 'C':
         context.bezierCurveTo(
@@ -77,14 +80,12 @@ export function generatePath(
           params[2],
           params[3],
           params[4],
-          params[5],
-          params[6],
+          params[5] + endOffsetXTemp,
+          params[6] + endOffsetYTemp,
         );
-        if (useEndOffset) {
-          context.lineTo(params[5] + endOffsetX, params[6] + endOffsetY);
-        }
         break;
       case 'A': {
+        // FIXME startOffset / endOffset
         const { arcParams } = segments[i];
         const { cx, cy, rx, ry, startAngle, endAngle, xRotation, sweepFlag } =
           arcParams;

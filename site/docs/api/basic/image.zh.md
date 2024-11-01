@@ -14,7 +14,7 @@ const image = new Image({
         y: 100,
         width: 200,
         height: 200,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 ```
@@ -29,6 +29,12 @@ const image = new Image({
     },
 });
 ```
+
+:::warning{title=大尺寸图片}
+
+对于大尺寸图片，如果遇到性能问题，可以尝试打开 [`enableLargeImageOptimization`](../canvas/options.zh.md#enablelargeimageoptimization) 配置。
+
+:::
 
 ## 继承自
 
@@ -50,9 +56,9 @@ const image = new Image({
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -60,22 +66,25 @@ const image = new Image({
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
-### img
+### src
 
-图片来源，支持以下两种：
+图片来源，支持以下类型：
 
--   图片地址字符串，加载成功后展示
--   自行创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象，在 `onload` 回调中创建 G Image，示例如下：
+-   `string` 图片链接地址
+-   `HTMLImageElement` 创建 [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) 对象实例，在 `onload` 回调中创建 G Image 对象，示例如下：
+
+<br />
 
 ```js
 import { Image as GImage, Canvas } from '@antv/g';
 
 let image;
 const img = new Image();
+
 img.src =
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ';
 img.crossOrigin = 'Anonymous';
@@ -87,16 +96,12 @@ img.onload = () => {
             y: 100,
             width: 200,
             height: 200,
-            img, // 传入 Image 对象
+            src: img, // 传入 Image 对象
         },
     });
     canvas.appendChild(image);
 };
 ```
-
-### src
-
-该属性为 [img](/zh/api/basic/image) 的别名。
 
 ### width
 
@@ -104,9 +109,9 @@ img.onload = () => {
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -114,9 +119,9 @@ img.onload = () => {
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value)                                                                |
-| ------------------------------------------------------------- | -------- | ------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                           | -        | 否                                    | 是           | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
+| [初始值](/zh/api/css/css-properties-values-api#initial-value) | 适用元素 | [是否可继承](/zh/api/css/inheritance) | 是否支持动画 | [计算值](/zh/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | 否 | 是 | [\<percentage\>](/zh/api/css/css-properties-values-api#percentage) [\<length\>](/zh/api/css/css-properties-values-api#length) |
 
 ### keepAspectRatio
 

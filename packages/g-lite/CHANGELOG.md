@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.1.4
+
+### Patch Changes
+
+-   4aa12e8c: fix: `markerStartOffset`/`markerEndOffset` of the path in the svg/canvas renderer is drawn abnormally
+
 ## 2.1.3
 
 ### Patch Changes

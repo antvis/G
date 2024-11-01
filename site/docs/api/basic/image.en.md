@@ -14,7 +14,7 @@ const image = new Image({
         y: 100,
         width: 200,
         height: 200,
-        img: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+        src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
     },
 });
 ```
@@ -29,6 +29,12 @@ const image = new Image({
     },
 });
 ```
+
+:::warning{title=Large-size-image}
+
+If you encounter performance issues with large images, try turning on the [`enableLargeImageOptimization`](../canvas/options.en.md#enablelargeimageoptimization) configuration.
+
+:::
 
 ## Inherited from
 
@@ -50,9 +56,9 @@ The x-axis coordinates of the top-left vertex of the image in the local coordina
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/x>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### y
 
@@ -60,22 +66,25 @@ The y-axis coordinates of the top-left vertex of the image in the local coordina
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/y>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
-### img
+### src
 
 Image sources, supports the following types:
 
--   Image address string, displayed after successful loading
--   Create your own [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) object to create a G Image in the `onload` callback, as shown in the following example.
+-   `string` Image address string, displayed after successful loading
+-   `HTMLImageElement` Create your own [Image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image) object to create a G Image in the `onload` callback, as shown in the following example.
+
+<br />
 
 ```js
 import { Image as GImage, Canvas } from '@antv/g';
 
 let image;
 const img = new Image();
+
 img.src =
     'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ';
 img.crossOrigin = 'Anonymous';
@@ -86,16 +95,12 @@ img.onload = () => {
             y: 100,
             width: 200,
             height: 200,
-            img,
+            src: img,
         },
     });
     canvas.appendChild(image);
 };
 ```
-
-### src
-
-This attribute is an alias for [img](/en/api/basic/image).
 
 ### width
 
@@ -103,9 +108,9 @@ Image width.
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/width>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### height
 
@@ -113,9 +118,9 @@ Image height.
 
 <https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/height>
 
-| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value)                                                        |
-| -------------------------------------------------------------------- | ------------------- | -------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| '0'                                                                  | -                   | no                                     | yes        | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
+| [Initial value](/en/api/css/css-properties-values-api#initial-value) | Applicable elements | [Inheritable](/en/api/css/inheritance) | Animatable | [Computed value](/en/api/css/css-properties-values-api#computed-value) |
+| --- | --- | --- | --- | --- |
+| '0' | - | no | yes | [\<percentage\>](/en/api/css/css-properties-values-api#percentage) [\<length\>](/en/api/css/css-properties-values-api#length) |
 
 ### keepAspectRatio
 

@@ -1,29 +1,36 @@
-import { Canvas, Image as GImage } from '@antv/g';
+import { Canvas, CanvasEvent, Image } from '@antv/g';
+import { Renderer as CanvasRenderer } from '@antv/g-canvas';
+import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 
-export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
-  const { canvas, gui } = context;
-  await canvas.ready;
-  console.log(canvas);
+const canvasRenderer = new CanvasRenderer();
 
-  let image = new GImage({
+// create a canvas
+const canvas = new Canvas({
+  container: 'container',
+  width: 600,
+  height: 500,
+  renderer: canvasRenderer,
+});
+
+canvas.addEventListener(CanvasEvent.READY, () => {
+  const image = new Image({
     style: {
       x: 0,
       y: 0,
-      // width: 100,
-      // height: 400,
-      // src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-      // src: 'http://mmtcdp.stable.alipay.net/cto_designhubcore/afts/img/g1a5QYkvbcMAAAAAAAAAAAAADgLVAQBr/original',
+      // 16151/6971, 11.4MB
       src: 'https://mdn.alipayobjects.com/huamei_fr7vu1/afts/img/A*SqloToP7R9QAAAAAAAAAAAAADkn0AQ/original',
     },
   });
+
   canvas.appendChild(image);
 
   // ---
-  const $dom = canvas.getContextService().getDomElement() as HTMLCanvasElement;
+  const $dom = canvas.getContextService().getDomElement();
   let currentZoom = 1;
   let isDragging = false;
-  let lastX, lastY;
+  let lastX;
+  let lastY;
 
   $dom.style.border = '1px solid gray';
 
@@ -61,14 +68,29 @@ export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
   });
 
   // ---
+});
 
-  // GUI
-  gui
-    .add(
-      { enableLargeImageOptimization: false },
-      'enableLargeImageOptimization',
-    )
-    .onChange((result) => {
-      canvas.context.config.enableLargeImageOptimization = result;
-    });
-}
+// stats
+const stats = new Stats();
+stats.showPanel(0);
+const $stats = stats.dom;
+$stats.style.position = 'absolute';
+$stats.style.left = '0px';
+$stats.style.top = '0px';
+const $wrapper = document.getElementById('container');
+$wrapper.appendChild($stats);
+canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+  if (stats) {
+    stats.update();
+  }
+});
+
+// GUI
+const gui = new lil.GUI({ autoPlace: false });
+$wrapper.appendChild(gui.domElement);
+const canvasConfig = {
+  enableLargeImageOptimization: false,
+};
+gui.add(canvasConfig, 'enableLargeImageOptimization').onChange((result) => {
+  canvas.context.config.enableLargeImageOptimization = result;
+});
