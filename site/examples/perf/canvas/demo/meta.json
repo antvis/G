@@ -1,6 +1,13 @@
 {
   "demos": [
     {
+      "filename": "large-image-rendering.js",
+      "title": {
+        "zh": "g-canvas 渲染高分辨率大图优化",
+        "en": "Rendering large images optimization with g-canvas"
+      }
+    },
+    {
       "filename": "canvas-circle-path.js",
       "title": {
         "zh": "g-canvas 渲染 Circle 和 Path",

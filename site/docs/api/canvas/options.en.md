@@ -159,6 +159,18 @@ const canvas = new Canvas({
 });
 ```
 
+### enableLargeImageOptimization <Badge>6.1.1</Badge>
+
+`boolean`
+
+Optional, default is `false`. Enable high-resolution large image rendering and interactive optimization, through downsampling and slice rendering strategy, large images with hundreds of millions of pixels can also be rendered and interacted smoothly.
+
+:::warning{title=Limit}
+
+Currently only implemented in the native Canvas renderer.
+
+:::
+
 ### supportsCSSTransform
 
 Optional. 是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
@@ -188,9 +200,11 @@ Optional. Determines if a native event is a TouchEvent, accepts the native event
 
 Optional. Determines if a native event is a MouseEvent, accepts the native event as parameter, and returns the result.
 
-### dblClickSpeed
+### dblClickSpeed <Badge>6.0.12</Badge>
 
-Optional. Numeric type, determines whether two consecutive clicks trigger a double-click event [dblclick](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event) , the default is 200 ms.
+`number`
+
+Optional, default is 200ms. Numeric type, determines whether two consecutive clicks trigger a double-click event [dblclick](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event) .
 
 ### offscreenCanvas
 

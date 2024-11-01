@@ -166,6 +166,18 @@ const canvas = new Canvas({
 });
 ```
 
+### enableLargeImageOptimization <Badge>6.1.1</Badge>
+
+`boolean`
+
+可选，默认为 `false`。开启高分辨率大图渲染与交互优化，通过降采样与切片渲染策略使得上亿像素的大图也能流畅渲染和交互。
+
+:::warning{title=限制}
+
+目前仅在原生 Canvas 渲染器中实现。
+
+:::
+
 ### supportsCSSTransform
 
 可选。是否支持在容器上应用 CSS Transform 的情况下确保交互事件坐标转换正确。
@@ -193,9 +205,11 @@ $wrapper.style.transform = 'scale(1.1)';
 
 可选。判断一个原生事件是否是 MouseEvent，接受原生事件作为参数，返回判定结果。
 
-### dblClickSpeed
+### dblClickSpeed <Badge>6.0.12</Badge>
 
-可选。数值类型，判断两次连续点击是否触发双击事件 [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) 的速度，默认为 200 ms。
+`number`
+
+可选，默认为 200ms。判断两次连续点击是否触发双击事件 [dblclick](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/dblclick_event) 的速度。
 
 ### offscreenCanvas
 

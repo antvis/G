@@ -90,6 +90,6 @@
       "@antv/g-plugin-image-loader": ["./packages/g-plugin-image-loader/src"]
     }
   },
-  "include": ["packages/*/src/**/*", "__tests__/**/*"],
+  "include": ["packages/*/src/**/*", "__tests__/**/*", "site/**/*"],
   "exclude": []
 }
