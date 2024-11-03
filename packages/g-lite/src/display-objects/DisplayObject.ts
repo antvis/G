@@ -275,11 +275,8 @@ export class DisplayObject<
       }
     }
 
-    if (
-      ((this.isCustomElement && this.isConnected) || !this.isCustomElement) &&
-      (this as unknown as CustomElement<any>).attributeChangedCallback
-    ) {
-      (this as unknown as CustomElement<any>).attributeChangedCallback(
+    if ((this.isCustomElement && this.isConnected) || !this.isCustomElement) {
+      (this as unknown as CustomElement<any>)?.attributeChangedCallback?.(
         name,
         oldValue,
         value,

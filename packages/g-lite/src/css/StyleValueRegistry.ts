@@ -611,8 +611,8 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
-const GEOMETRY_ATTRIBUTE_NAMES = BUILT_IN_PROPERTIES.filter((n) => !!n.l).map(
-  (n) => n.n,
+const GEOMETRY_ATTRIBUTE_NAMES = new Set(
+  BUILT_IN_PROPERTIES.filter((n) => !!n.l).map((n) => n.n),
 );
 
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
@@ -662,22 +662,14 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     Object.assign(object.parsedStyle, attributes);
 
-    // object.geometry.dirty = true;
-    // object.renderable.boundsDirty = true;
-    // object.renderable.renderBoundsDirty = true;
-
-    // if (!options.forceUpdateGeometry) {
-    //   this.runtime.sceneGraphService.dirtifyToRoot(object);
-    // }
-
-    // return;
-
     let needUpdateGeometry = !!options.forceUpdateGeometry;
-    if (
-      !needUpdateGeometry &&
-      GEOMETRY_ATTRIBUTE_NAMES.some((name) => name in attributes)
-    ) {
-      needUpdateGeometry = true;
+    if (!needUpdateGeometry) {
+      for (const i in attributes) {
+        if (GEOMETRY_ATTRIBUTE_NAMES.has(i)) {
+          needUpdateGeometry = true;
+          break;
+        }
+      }
     }
 
     if (attributes.fill) {
