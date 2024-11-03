@@ -689,36 +689,38 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   informDependentDisplayObjects(object: DisplayObject) {
     const dependencyMap = this.displayObjectDependencyMap.get(object);
-    if (dependencyMap) {
-      Object.keys(dependencyMap).forEach((name) => {
-        dependencyMap[name].forEach((target) => {
-          this.dirtifyToRoot(target, true);
-
-          target.dispatchEvent(
-            new MutationEvent(
-              ElementEvent.ATTR_MODIFIED,
-              target as IElement,
-              this,
-              this,
-              name,
-              MutationEvent.MODIFICATION,
-              this,
-              this,
-            ),
-          );
-
-          if (target.isCustomElement && target.isConnected) {
-            if ((target as CustomElement<any>).attributeChangedCallback) {
-              (target as CustomElement<any>).attributeChangedCallback(
-                name,
-                this,
-                this,
-              );
-            }
-          }
-        });
-      });
+    if (!dependencyMap) {
+      return;
     }
+
+    Object.keys(dependencyMap).forEach((name) => {
+      dependencyMap[name].forEach((target) => {
+        this.dirtifyToRoot(target, true);
+
+        target.dispatchEvent(
+          new MutationEvent(
+            ElementEvent.ATTR_MODIFIED,
+            target as IElement,
+            this,
+            this,
+            name,
+            MutationEvent.MODIFICATION,
+            this,
+            this,
+          ),
+        );
+
+        if (target.isCustomElement && target.isConnected) {
+          if ((target as CustomElement<any>).attributeChangedCallback) {
+            (target as CustomElement<any>).attributeChangedCallback(
+              name,
+              this,
+              this,
+            );
+          }
+        }
+      });
+    });
   }
 
   getPosition(element: INode) {

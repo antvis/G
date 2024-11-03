@@ -1,14 +1,19 @@
-import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
+import type {
+  DisplayObject,
+  ParsedImageStyleProps,
+  GlobalRuntime,
+} from '@antv/g-lite';
 import { ImagePool, type ImageCache } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
-import { setShadowAndFilter } from './Default';
-import type { StyleRenderer } from './interfaces';
 import { transformRect, calculateOverlapRect } from '../../utils/math';
+import { DefaultRenderer, setShadowAndFilter } from './Default';
+import {
+  CanvasRendererPlugin,
+  type RenderState,
+} from '../../CanvasRendererPlugin';
 
-export class ImageRenderer implements StyleRenderer {
-  constructor(private imagePool: ImagePool) {}
-
+export class ImageRenderer extends DefaultRenderer {
   static renderFull(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
@@ -234,5 +239,17 @@ export class ImageRenderer implements StyleRenderer {
         drawRect,
       });
     } catch {}
+  }
+
+  // ---
+
+  drawToContext(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    renderState: RenderState,
+    plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
+  ) {
+    this.render(context, object.parsedStyle as ParsedImageStyleProps, object);
   }
 }

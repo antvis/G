@@ -68,8 +68,8 @@ const $quat = quat.create();
  * * attributeChanged
  */
 export class DisplayObject<
-  StyleProps extends BaseStyleProps = any,
-  ParsedStyleProps extends ParsedBaseStyleProps = any,
+  StyleProps extends BaseStyleProps = BaseStyleProps,
+  ParsedStyleProps extends ParsedBaseStyleProps = ParsedBaseStyleProps,
 > extends Element<StyleProps, ParsedStyleProps> {
   /**
    * contains style props in constructor's params, eg. fill, stroke...
@@ -256,6 +256,8 @@ export class DisplayObject<
 
     // redraw at next frame
     renderable.dirty = true;
+
+    // return;
 
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {

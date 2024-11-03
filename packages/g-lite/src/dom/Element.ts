@@ -64,8 +64,8 @@ const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
  * * Animation
  */
 export class Element<
-    StyleProps extends BaseStyleProps = any,
-    ParsedStyleProps extends ParsedBaseStyleProps = any,
+    StyleProps extends BaseStyleProps = BaseStyleProps,
+    ParsedStyleProps extends ParsedBaseStyleProps = ParsedBaseStyleProps,
   >
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>

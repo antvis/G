@@ -44,11 +44,11 @@ export function isCSSRGB(object: any): object is CSSRGB {
  * @see https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/parser/CSSParser.cpp#L97
  */
 export const parseColor = memoize(
-  (colorStr: string): CSSRGB | CSSGradientValue[] | Pattern => {
+  (colorStr: string | Pattern): CSSRGB | CSSGradientValue[] | Pattern => {
     if (isPattern(colorStr)) {
       return {
         repetition: 'repeat',
-        ...(colorStr as Pattern),
+        ...colorStr,
       };
     }
 
