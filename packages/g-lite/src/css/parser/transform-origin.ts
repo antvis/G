@@ -33,12 +33,8 @@ export const parseTransformOrigin = memoize(
 
       // eg. center bottom
       return [
-        parseLengthOrPercentage(
-          convertKeyword2Percent(values[0]),
-        ) as CSSUnitValue,
-        parseLengthOrPercentage(
-          convertKeyword2Percent(values[1]),
-        ) as CSSUnitValue,
+        parseLengthOrPercentage(convertKeyword2Percent(values[0])),
+        parseLengthOrPercentage(convertKeyword2Percent(values[1])),
       ];
     }
     return [

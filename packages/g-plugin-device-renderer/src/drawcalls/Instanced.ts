@@ -1,10 +1,4 @@
-import type {
-  CSSGradientValue,
-  DisplayObject,
-  ParsedBaseStyleProps,
-  Pattern,
-  Tuple4Number,
-} from '@antv/g-lite';
+import type { DisplayObject, Tuple4Number } from '@antv/g-lite';
 import { CSSRGB, isPattern, isCSSRGB, parseColor, Shape } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
 import {
@@ -293,7 +287,7 @@ export abstract class Instanced {
         lineWidth = 1,
         visibility,
         increasedLineWidthForHitTesting = 0,
-      } = object.parsedStyle as ParsedBaseStyleProps;
+      } = object.parsedStyle;
       let fillColor: Tuple4Number = [0, 0, 0, 0];
       if (isCSSRGB(fill)) {
         fillColor = [
@@ -730,7 +724,7 @@ export abstract class Instanced {
       const packedFillStroke: number[] = [];
 
       objects.forEach((object) => {
-        const { fill, stroke } = object.parsedStyle as ParsedBaseStyleProps;
+        const { fill, stroke } = object.parsedStyle;
 
         let fillColor: Tuple4Number = [0, 0, 0, 0];
         if (isCSSRGB(fill)) {
@@ -800,7 +794,7 @@ export abstract class Instanced {
           lineWidth = 1,
           visibility,
           increasedLineWidthForHitTesting = 0,
-        } = object.parsedStyle as ParsedBaseStyleProps;
+        } = object.parsedStyle;
         packed.push(
           opacity,
           fillOpacity,
@@ -1172,10 +1166,7 @@ export abstract class Instanced {
     const instance = objects[0];
 
     // should account for Line, Path, Polyline and Polyline
-    const fill = instance.parsedStyle[this.gradientAttributeName] as
-      | CSSRGB
-      | CSSGradientValue[]
-      | Pattern;
+    const fill = instance.parsedStyle[this.gradientAttributeName];
 
     let texImageSource: string | TexImageSource;
 

@@ -5,11 +5,7 @@ import { EMPTY_PARSED_PATH } from '../display-objects/constants';
 import type { GlobalRuntime } from '../global-runtime';
 import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
-import type {
-  BaseStyleProps,
-  ParsedBaseStyleProps,
-  Tuple3Number,
-} from '../types';
+import type { BaseStyleProps, Tuple3Number } from '../types';
 import { Shape } from '../types';
 import type { CSSRGB } from './cssom';
 import type {
@@ -666,8 +662,17 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
 
     Object.assign(object.parsedStyle, attributes);
 
-    let needUpdateGeometry = !!options.forceUpdateGeometry;
+    // object.geometry.dirty = true;
+    // object.renderable.boundsDirty = true;
+    // object.renderable.renderBoundsDirty = true;
 
+    // if (!options.forceUpdateGeometry) {
+    //   this.runtime.sceneGraphService.dirtifyToRoot(object);
+    // }
+
+    // return;
+
+    let needUpdateGeometry = !!options.forceUpdateGeometry;
     if (
       !needUpdateGeometry &&
       GEOMETRY_ATTRIBUTE_NAMES.some((name) => name in attributes)
@@ -858,7 +863,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!geometry.renderBounds) {
         geometry.renderBounds = new AABB();
       }
-      const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
+      const parsedStyle = object.parsedStyle;
       const {
         cx = 0,
         cy = 0,
