@@ -1,5 +1,17 @@
 # @antv/g-plugin-device-renderer
 
+## 2.2.0
+
+### Minor Changes
+
+-   a3e07c16: perf: optimize canvas renderer performance
+
+### Patch Changes
+
+-   Updated dependencies [a3e07c16]
+    -   @antv/g-plugin-image-loader@2.1.0
+    -   @antv/g-lite@2.2.0
+
 ## 2.1.4
 
 ### Patch Changes

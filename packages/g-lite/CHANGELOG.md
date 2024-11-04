@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.0
+
+### Minor Changes
+
+-   a3e07c16: perf: optimize canvas renderer performance
+
 ## 2.1.4
 
 ### Patch Changes
