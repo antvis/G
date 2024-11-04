@@ -1,5 +1,17 @@
 # @antv/g-mobile-svg
 
+## 1.0.18
+
+### Patch Changes
+
+-   Updated dependencies [a3e07c16]
+    -   @antv/g-plugin-svg-renderer@2.2.0
+    -   @antv/g-lite@2.2.0
+    -   @antv/g-plugin-svg-picker@2.0.18
+    -   @antv/g-plugin-dragndrop@2.0.16
+    -   @antv/g-plugin-gesture@2.0.16
+    -   @antv/g-plugin-mobile-interaction@1.0.16
+
 ## 1.0.17
 
 ### Patch Changes
