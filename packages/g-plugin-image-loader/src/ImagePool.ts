@@ -14,6 +14,7 @@ import {
   parsedTransformToMat4,
   Image,
   OffscreenCanvasCreator,
+  ElementEvent,
   type CanvasContext,
   type GlobalRuntime,
 } from '@antv/g-lite';
@@ -31,6 +32,18 @@ export interface ImageCache extends Partial<SliceResult> {
 }
 
 const IMAGE_CACHE = new RefCountCache<ImageCache, DisplayObject>();
+IMAGE_CACHE.onRefAdded = function onRefAdded(
+  this: RefCountCache<ImageCache, DisplayObject>,
+  ref,
+) {
+  ref.addEventListener(
+    ElementEvent.DESTROY,
+    () => {
+      this.releaseRef(ref);
+    },
+    { once: true },
+  );
+};
 
 export type GradientParams = (LinearGradient & RadialGradient) & {
   width: number;
@@ -44,7 +57,6 @@ export type GradientParams = (LinearGradient & RadialGradient) & {
 
 export class ImagePool {
   static isSupportTile = !!OffscreenCanvasCreator.createCanvas();
-  private imageCache: Record<string, HTMLImageElement> = {};
   private gradientCache: Record<string, CanvasGradient> = {};
   private patternCache: Record<string, CanvasPattern> = {};
 

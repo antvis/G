@@ -35,7 +35,7 @@ const Proxy: ProxyConstructor = runtime.globalThis.Proxy
 
 type ConstructorTypeOf<T> = new (...args: any[]) => T;
 
-const mutationEvent: MutationEvent = new MutationEvent(
+export const attrModifiedEvent: MutationEvent = new MutationEvent(
   ElementEvent.ATTR_MODIFIED,
   null,
   null,
@@ -247,7 +247,7 @@ export class DisplayObject<
     const oldParsedValue = this.parsedStyle[name as string];
 
     runtime.styleValueRegistry.processProperties(
-      this,
+      this as unknown as DisplayObject,
       {
         [name]: value,
       },
@@ -257,26 +257,24 @@ export class DisplayObject<
     // redraw at next frame
     renderable.dirty = true;
 
-    // return;
-
     const newParsedValue = this.parsedStyle[name as string];
     if (this.isConnected) {
-      mutationEvent.relatedNode = this as IElement;
-      mutationEvent.prevValue = oldValue;
-      mutationEvent.newValue = value;
-      mutationEvent.attrName = name as string;
-      mutationEvent.prevParsedValue = oldParsedValue;
-      mutationEvent.newParsedValue = newParsedValue;
+      attrModifiedEvent.relatedNode = this as IElement;
+      attrModifiedEvent.prevValue = oldValue;
+      attrModifiedEvent.newValue = value;
+      attrModifiedEvent.attrName = name as string;
+      attrModifiedEvent.prevParsedValue = oldParsedValue;
+      attrModifiedEvent.newParsedValue = newParsedValue;
       if (this.isMutationObserved) {
-        this.dispatchEvent(mutationEvent);
+        this.dispatchEvent(attrModifiedEvent);
       } else {
-        mutationEvent.target = this;
-        this.ownerDocument.defaultView.dispatchEvent(mutationEvent, true);
+        attrModifiedEvent.target = this;
+        this.ownerDocument.defaultView.dispatchEvent(attrModifiedEvent, true);
       }
     }
 
     if ((this.isCustomElement && this.isConnected) || !this.isCustomElement) {
-      (this as unknown as CustomElement<any>)?.attributeChangedCallback?.(
+      (this as unknown as CustomElement<any>).attributeChangedCallback?.(
         name,
         oldValue,
         value,
