@@ -1,5 +1,18 @@
 # @antv/g-plugin-canvas-picker
 
+## 2.1.0
+
+### Minor Changes
+
+-   a3e07c16: perf: optimize canvas renderer performance
+
+### Patch Changes
+
+-   Updated dependencies [a3e07c16]
+    -   @antv/g-plugin-canvas-path-generator@2.1.0
+    -   @antv/g-plugin-canvas-renderer@2.2.0
+    -   @antv/g-lite@2.2.0
+
 ## 2.0.17
 
 ### Patch Changes
