@@ -270,9 +270,9 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       if (this.clearFullScreen) {
         // console.time('renderByZIndex');
         if (enableRenderingOptimization) {
-          // context.save();
+          context.save();
           renderByZIndex(renderingContext.root, context);
-          // context.restore();
+          context.restore();
         } else {
           renderByZIndex(renderingContext.root, context);
         }
