@@ -277,6 +277,8 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           renderByZIndex(renderingContext.root, context);
         }
         // console.timeEnd('renderByZIndex');
+
+        this.removedRBushNodeAABBs = [];
       } else {
         // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
