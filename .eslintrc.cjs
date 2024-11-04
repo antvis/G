@@ -107,7 +107,6 @@ module.exports = {
       { functions: false, classes: false },
     ],
     '@typescript-eslint/no-redeclare': ['error'],
-    '@typescript-eslint/no-this-alias': ['error', { allowedNames: ['self'] }],
     '@typescript-eslint/restrict-template-expressions': 'warn',
     '@typescript-eslint/return-await': 'warn',
     '@typescript-eslint/default-param-last': 'warn',

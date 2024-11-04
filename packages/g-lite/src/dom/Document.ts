@@ -3,7 +3,7 @@ import { runtime } from '../global-runtime';
 import { BUILT_IN_PROPERTIES } from '../css';
 import { Group, Text } from '../display-objects';
 import type { DisplayObject } from '../display-objects';
-import type { BaseStyleProps } from '../types';
+import type { BaseStyleProps, ParsedBaseStyleProps } from '../types';
 import { Shape } from '../types';
 import {
   ERROR_MSG_METHOD_NOT_IMPLEMENTED,
@@ -149,7 +149,8 @@ export class Document extends Node implements IDocument {
 
     const hitTestList: DisplayObject[] = [];
     rBushNodes.forEach(({ displayObject }) => {
-      const { pointerEvents = 'auto' } = displayObject.parsedStyle;
+      const { pointerEvents = 'auto' } =
+        displayObject.parsedStyle as ParsedBaseStyleProps;
 
       // account for `visibility`
       // @see https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events

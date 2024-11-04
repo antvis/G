@@ -137,10 +137,6 @@ export class EventTarget implements IEventTarget {
 
       if (!skipPropagate) e.target = this;
       e.manager.dispatchEvent(e, e.type, skipPropagate);
-    } else {
-      // HACK Fixed the issue that after an element leaves the DOM tree, there is no associated canvas,
-      // which causes the removed and destroy events to not be triggered
-      this.emitter.emit(e.type, e);
     }
 
     return !e.defaultPrevented;

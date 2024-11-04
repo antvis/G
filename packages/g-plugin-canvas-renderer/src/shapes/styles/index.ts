@@ -1,13 +1,10 @@
-import { DefaultRenderer } from './Default';
-
 export * from './interfaces';
-export { DefaultRenderer };
-export { DefaultRenderer as RectRenderer };
-export { DefaultRenderer as CircleRenderer };
-export { DefaultRenderer as LineRenderer };
-export { DefaultRenderer as PolylineRenderer };
-export { DefaultRenderer as PolygonRenderer };
-export { DefaultRenderer as PathRenderer };
-export { DefaultRenderer as EllipseRenderer };
-export { ImageRenderer } from './Image';
-export { TextRenderer } from './Text';
+export * from './Image';
+export * from './Text';
+export * from './Rect';
+export * from './Circle';
+export * from './Ellipse';
+export * from './Line';
+export * from './Polyline';
+export * from './Polygon';
+export * from './Path';

@@ -4,34 +4,9 @@ import type {
   GlobalRuntime,
   ParsedBaseStyleProps,
 } from '@antv/g-lite';
-import {
-  CanvasRendererPlugin,
-  type RenderState,
-} from '../../CanvasRendererPlugin';
+import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
 
 export interface StyleRenderer {
-  applyStyleToContext: (
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-    forceUpdate: boolean,
-    renderState: RenderState,
-  ) => void;
-
-  drawToContext: (
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-    renderState: RenderState,
-    plugin: CanvasRendererPlugin,
-    runtime: GlobalRuntime,
-  ) => void;
-
-  // ---
-
-  applyAttributesToContext: (
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-  ) => void;
-
   render: (
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedBaseStyleProps,

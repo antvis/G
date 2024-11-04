@@ -5,7 +5,11 @@ import { EMPTY_PARSED_PATH } from '../display-objects/constants';
 import type { GlobalRuntime } from '../global-runtime';
 import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
-import type { BaseStyleProps, Tuple3Number } from '../types';
+import type {
+  BaseStyleProps,
+  ParsedBaseStyleProps,
+  Tuple3Number,
+} from '../types';
 import { Shape } from '../types';
 import type { CSSRGB } from './cssom';
 import type {
@@ -611,8 +615,8 @@ export const BUILT_IN_PROPERTIES: PropertyMetadata[] = [
   },
 ];
 
-const GEOMETRY_ATTRIBUTE_NAMES = new Set(
-  BUILT_IN_PROPERTIES.filter((n) => !!n.l).map((n) => n.n),
+const GEOMETRY_ATTRIBUTE_NAMES = BUILT_IN_PROPERTIES.filter((n) => !!n.l).map(
+  (n) => n.n,
 );
 
 export const propertyMetadataCache: Record<string, PropertyMetadata> = {};
@@ -663,13 +667,12 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     Object.assign(object.parsedStyle, attributes);
 
     let needUpdateGeometry = !!options.forceUpdateGeometry;
-    if (!needUpdateGeometry) {
-      for (const i in attributes) {
-        if (GEOMETRY_ATTRIBUTE_NAMES.has(i)) {
-          needUpdateGeometry = true;
-          break;
-        }
-      }
+
+    if (
+      !needUpdateGeometry &&
+      GEOMETRY_ATTRIBUTE_NAMES.some((name) => name in attributes)
+    ) {
+      needUpdateGeometry = true;
     }
 
     if (attributes.fill) {
@@ -855,7 +858,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       if (!geometry.renderBounds) {
         geometry.renderBounds = new AABB();
       }
-      const parsedStyle = object.parsedStyle;
+      const parsedStyle = object.parsedStyle as ParsedBaseStyleProps;
       const {
         cx = 0,
         cy = 0,

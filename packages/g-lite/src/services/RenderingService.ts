@@ -134,13 +134,10 @@ export class RenderingService {
       this.inited = true;
       callback();
     } else {
-      this.hooks.initAsync
-        .promise()
-        .then(() => {
-          this.inited = true;
-          callback();
-        })
-        .catch((err) => {});
+      this.hooks.initAsync.promise().then(() => {
+        this.inited = true;
+        callback();
+      });
     }
   }
 
@@ -223,62 +220,52 @@ export class RenderingService {
     canvasConfig: Partial<CanvasConfig>,
     renderingContext: RenderingContext,
   ) {
-    const self = this;
     const { enableDirtyCheck, enableCulling } =
       canvasConfig.renderer.getConfig();
 
-    function internalRenderSingleDisplayObject(object: DisplayObject) {
-      // TODO: relayout
+    // TODO: relayout
 
-      // dirtycheck first
-      const { renderable, sortable } = object;
-      // eslint-disable-next-line no-nested-ternary
-      const objectChanged = enableDirtyCheck
-        ? // @ts-ignore
-          renderable.dirty || renderingContext.dirtyRectangleRenderingDisabled
-          ? object
-          : null
-        : object;
+    // dirtycheck first
+    const { renderable } = displayObject;
+    // eslint-disable-next-line no-nested-ternary
+    const objectChanged = enableDirtyCheck
+      ? // @ts-ignore
+        renderable.dirty || renderingContext.dirtyRectangleRenderingDisabled
+        ? displayObject
+        : null
+      : displayObject;
 
-      if (objectChanged) {
-        const objectToRender = enableCulling
-          ? self.hooks.cull.call(objectChanged, self.context.camera)
-          : objectChanged;
+    if (objectChanged) {
+      const objectToRender = enableCulling
+        ? this.hooks.cull.call(objectChanged, this.context.camera)
+        : objectChanged;
 
-        if (objectToRender) {
-          self.stats.rendered += 1;
-          renderingContext.renderListCurrentFrame.push(objectToRender);
-        }
-      }
-
-      renderable.dirty = false;
-      sortable.renderOrder = self.zIndexCounter;
-
-      self.zIndexCounter += 1;
-      self.stats.total += 1;
-
-      // sort is very expensive, use cached result if possible
-      if (sortable.dirty) {
-        self.sort(object, sortable);
-        sortable.dirty = false;
-        sortable.dirtyChildren = [];
-        sortable.dirtyReason = undefined;
+      if (objectToRender) {
+        this.stats.rendered++;
+        renderingContext.renderListCurrentFrame.push(objectToRender);
       }
     }
 
-    const stack = [displayObject];
+    displayObject.renderable.dirty = false;
+    displayObject.sortable.renderOrder = this.zIndexCounter++;
 
-    while (stack.length > 0) {
-      const currentObject = stack.pop();
+    this.stats.total++;
 
-      internalRenderSingleDisplayObject(currentObject);
-
-      // recursive rendering its children
-      const objects = currentObject.sortable.sorted || currentObject.childNodes;
-      for (let i = objects.length - 1; i >= 0; i--) {
-        stack.push(objects[i] as unknown as DisplayObject);
-      }
+    // sort is very expensive, use cached result if possible
+    const { sortable } = displayObject;
+    if (sortable.dirty) {
+      this.sort(displayObject, sortable);
+      sortable.dirty = false;
+      sortable.dirtyChildren = [];
+      sortable.dirtyReason = undefined;
     }
+
+    // recursive rendering its children
+    (sortable.sorted || displayObject.childNodes).forEach(
+      (child: DisplayObject) => {
+        this.renderDisplayObject(child, canvasConfig, renderingContext);
+      },
+    );
   }
 
   private sort(displayObject: DisplayObject, sortable: Sortable) {

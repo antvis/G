@@ -4,7 +4,6 @@ import type {
   MutationEvent,
   RenderingPlugin,
   RenderingPluginContext,
-  DisplayObject,
 } from '@antv/g-lite';
 import { ElementEvent, Shape } from '@antv/g-lite';
 import { isString } from '@antv/util';
@@ -37,19 +36,15 @@ export class LoadImagePlugin implements RenderingPlugin {
         const { src, keepAspectRatio } = attributes;
 
         if (isString(src)) {
-          imagePool.getImageSync(
-            src,
-            object as DisplayObject,
-            ({ img: { width, height } }) => {
-              if (keepAspectRatio) {
-                calculateWithAspectRatio(object, width, height);
-              }
+          imagePool.getImageSync(src, object, ({ img: { width, height } }) => {
+            if (keepAspectRatio) {
+              calculateWithAspectRatio(object, width, height);
+            }
 
-              // set dirty rectangle flag
-              object.renderable.dirty = true;
-              renderingService.dirtify();
-            },
-          );
+            // set dirty rectangle flag
+            object.renderable.dirty = true;
+            renderingService.dirtify();
+          });
         }
       }
     };
@@ -63,15 +58,12 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
 
       if (prevValue !== newValue) {
-        imagePool.releaseImage(
-          prevValue as Image['attributes']['src'],
-          object as DisplayObject,
-        );
+        imagePool.releaseImage(prevValue as Image['attributes']['src'], object);
       }
 
       if (isString(newValue)) {
         imagePool
-          .getOrCreateImage(newValue, object as DisplayObject)
+          .getOrCreateImage(newValue, object)
           .then(({ img: { width, height } }) => {
             if (object.attributes.keepAspectRatio) {
               calculateWithAspectRatio(object, width, height);
@@ -87,12 +79,23 @@ export class LoadImagePlugin implements RenderingPlugin {
       }
     };
 
+    function handleDestroy(e: FederatedEvent) {
+      const object = e.target as Image;
+
+      if (object.nodeName !== Shape.IMAGE) {
+        return;
+      }
+
+      imagePool.releaseImageRef(object);
+    }
+
     renderingService.hooks.init.tap(LoadImagePlugin.tag, () => {
       canvas.addEventListener(ElementEvent.MOUNTED, handleMounted);
       canvas.addEventListener(
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      canvas.addEventListener(ElementEvent.DESTROY, handleDestroy);
     });
 
     renderingService.hooks.destroy.tap(LoadImagePlugin.tag, () => {
@@ -101,6 +104,7 @@ export class LoadImagePlugin implements RenderingPlugin {
         ElementEvent.ATTR_MODIFIED,
         handleAttributeChanged,
       );
+      canvas.removeEventListener(ElementEvent.DESTROY, handleDestroy);
     });
   }
 }

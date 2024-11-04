@@ -1,19 +1,14 @@
-import type {
-  DisplayObject,
-  ParsedImageStyleProps,
-  GlobalRuntime,
-} from '@antv/g-lite';
+import type { DisplayObject, ParsedImageStyleProps } from '@antv/g-lite';
 import { ImagePool, type ImageCache } from '@antv/g-plugin-image-loader';
 import { isNil } from '@antv/util';
 import { mat4 } from 'gl-matrix';
+import { setShadowAndFilter } from './Default';
+import type { StyleRenderer } from './interfaces';
 import { transformRect, calculateOverlapRect } from '../../utils/math';
-import { DefaultRenderer, setShadowAndFilter } from './Default';
-import {
-  CanvasRendererPlugin,
-  type RenderState,
-} from '../../CanvasRendererPlugin';
 
-export class ImageRenderer extends DefaultRenderer {
+export class ImageRenderer implements StyleRenderer {
+  constructor(private imagePool: ImagePool) {}
+
   static renderFull(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
@@ -32,7 +27,7 @@ export class ImageRenderer extends DefaultRenderer {
     );
   }
 
-  private renderDownSampled(
+  #renderDownSampled(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
@@ -68,7 +63,7 @@ export class ImageRenderer extends DefaultRenderer {
     );
   }
 
-  renderTile(
+  #renderTile(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
@@ -214,7 +209,7 @@ export class ImageRenderer extends DefaultRenderer {
       const sizeOfOrigin = imageRect[2] / imageCache.size[0];
 
       if (sizeOfOrigin < (imageCache.downSamplingRate || 0.5)) {
-        this.renderDownSampled(context, parsedStyle, object, {
+        this.#renderDownSampled(context, parsedStyle, object, {
           src,
           imageCache,
           drawRect: [x, y, iw, ih],
@@ -232,24 +227,12 @@ export class ImageRenderer extends DefaultRenderer {
         return;
       }
 
-      this.renderTile(context, parsedStyle, object, {
+      this.#renderTile(context, parsedStyle, object, {
         src,
         imageCache,
         imageRect,
         drawRect,
       });
     } catch {}
-  }
-
-  // ---
-
-  drawToContext(
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-    renderState: RenderState,
-    plugin: CanvasRendererPlugin,
-    runtime: GlobalRuntime,
-  ) {
-    this.render(context, object.parsedStyle as ParsedImageStyleProps, object);
   }
 }

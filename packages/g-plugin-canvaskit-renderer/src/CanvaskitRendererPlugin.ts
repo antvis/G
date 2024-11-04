@@ -8,6 +8,7 @@ import {
   GradientType,
   ICamera,
   LinearGradient,
+  ParsedBaseStyleProps,
   Path,
   Pattern,
   RadialGradient,
@@ -522,7 +523,7 @@ export class CanvaskitRendererPlugin implements RenderingPlugin {
       shadowBlur,
       shadowColor,
       clipPath,
-    } = object.parsedStyle;
+    } = object.parsedStyle as ParsedBaseStyleProps;
 
     // apply clipPath
     if (clipPath) {

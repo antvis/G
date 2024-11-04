@@ -1,14 +1,7 @@
 {
   "demos": [
     {
-      "filename": "canvas-rendering-optimization.js",
-      "title": {
-        "zh": "g-canvas 渲染优化",
-        "en": "Rendering-optimization with g-canvas"
-      }
-    },
-    {
-      "filename": "canvas-large-image-rendering.js",
+      "filename": "large-image-rendering.js",
       "title": {
         "zh": "g-canvas 渲染高分辨率大图优化",
         "en": "Rendering large images optimization with g-canvas"

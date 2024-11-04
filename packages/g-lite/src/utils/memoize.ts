@@ -1,14 +1,10 @@
-export function memoize<F = (...args: unknown[]) => unknown>(
-  func: F,
-  resolver?: (...args: any[]) => any,
-) {
+export function memoize(func: any, resolver?: (...args: any[]) => any) {
   if (
     typeof func !== 'function' ||
     (resolver != null && typeof resolver !== 'function')
   ) {
     throw new TypeError('Expected a function');
   }
-
   const memoized = function (...args) {
     const key = resolver ? resolver.apply(this, args) : args[0];
     const { cache } = memoized;
@@ -21,8 +17,7 @@ export function memoize<F = (...args: unknown[]) => unknown>(
     return result;
   };
   memoized.cache = new (memoize.Cache || Map)();
-
-  return memoized as F;
+  return memoized;
 }
 
 memoize.Cache = Map;

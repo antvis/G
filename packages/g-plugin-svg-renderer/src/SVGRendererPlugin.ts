@@ -3,6 +3,7 @@ import {
   FederatedEvent,
   LinearGradient,
   MutationEvent,
+  ParsedBaseStyleProps,
   RadialGradient,
   RenderingPlugin,
   RenderingPluginContext,
@@ -239,7 +240,8 @@ export class SVGRendererPlugin implements RenderingPlugin {
         // @ts-ignore
         const $el = object.elementSVG?.$el;
 
-        const { fill, stroke, clipPath } = object.parsedStyle;
+        const { fill, stroke, clipPath } =
+          object.parsedStyle as ParsedBaseStyleProps;
 
         if (fill && !isCSSRGB(fill)) {
           this.defElementManager.createOrUpdateGradientAndPattern(

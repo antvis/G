@@ -1,4 +1,5 @@
 import { DisplayObject } from '../../display-objects';
+import { ParsedBaseStyleProps } from '../../types';
 import { UnitType, type CSSUnitValue } from '../cssom';
 import type { CSSProperty } from '../CSSProperty';
 
@@ -14,7 +15,7 @@ export class CSSPropertyTransformOrigin
     >
 {
   postProcessor(object: DisplayObject) {
-    const { transformOrigin } = object.parsedStyle;
+    const { transformOrigin } = object.parsedStyle as ParsedBaseStyleProps;
     if (
       transformOrigin[0].unit === UnitType.kPixels &&
       transformOrigin[1].unit === UnitType.kPixels

@@ -7,6 +7,7 @@ import {
   ParsedPathStyleProps,
   Path,
   Shape,
+  ParsedBaseStyleProps,
   ParsedLineStyleProps,
   Polyline,
   isDisplayObject,
@@ -475,7 +476,7 @@ export function updateBuffer(
   segmentNum?: number,
   subPathIndex = 0,
 ) {
-  const { lineCap, lineJoin } = object.parsedStyle;
+  const { lineCap, lineJoin } = object.parsedStyle as ParsedBaseStyleProps;
   const zIndex = object.sortable.renderOrder * RENDER_ORDER_SCALE;
   let defX = 0;
   let defY = 0;
