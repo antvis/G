@@ -1,7 +1,6 @@
 import type {
   BaseStyleProps,
   DisplayObject,
-  ParsedBaseStyleProps,
   PickingResult,
   RenderingPlugin,
   Shape,
@@ -98,7 +97,7 @@ export class CanvasPickerPlugin implements RenderingPlugin {
         // should look up in the ancestor node
         const clipped = findClosestClipPathTarget(displayObject);
         if (clipped) {
-          const { clipPath } = clipped.parsedStyle as ParsedBaseStyleProps;
+          const { clipPath } = clipped.parsedStyle;
           const isHitClipPath = this.isHit(
             clipPath,
             position,

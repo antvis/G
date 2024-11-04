@@ -35,7 +35,7 @@ export function resetEntityCounter() {
   entityCounter = 0;
 }
 
-const insertedEvent = new MutationEvent(
+export const insertedEvent = new MutationEvent(
   ElementEvent.INSERTED,
   null,
   '',
@@ -45,7 +45,7 @@ const insertedEvent = new MutationEvent(
   '',
   '',
 );
-const removedEvent = new MutationEvent(
+export const removedEvent = new MutationEvent(
   ElementEvent.REMOVED,
   null,
   '',
@@ -55,7 +55,7 @@ const removedEvent = new MutationEvent(
   '',
   '',
 );
-const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
+export const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
 
 /**
  * Has following capabilities:
@@ -64,8 +64,8 @@ const destroyEvent = new CustomEvent(ElementEvent.DESTROY);
  * * Animation
  */
 export class Element<
-    StyleProps extends BaseStyleProps = any,
-    ParsedStyleProps extends ParsedBaseStyleProps = any,
+    StyleProps extends BaseStyleProps = BaseStyleProps,
+    ParsedStyleProps extends ParsedBaseStyleProps = ParsedBaseStyleProps,
   >
   extends Node
   implements IElement<StyleProps, ParsedStyleProps>
@@ -295,7 +295,7 @@ export class Element<
   destroyChildren() {
     for (let i = this.childNodes.length - 1; i >= 0; i--) {
       const child = this.childNodes[i] as this;
-      if (child.childNodes.length) {
+      if (child.childNodes.length > 0) {
         child.destroyChildren();
       }
       child.destroy();

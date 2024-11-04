@@ -583,38 +583,35 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   triggerPendingEvents() {
     const triggered = new Set<DisplayObject>();
-    const skipped = new Set<DisplayObject>();
-
-    this.pendingEvents.forEach((_, element) => {
-      if (element.nodeName === Shape.FRAGMENT) {
-        element.forEach((e) => {
-          if (e !== element) skipped.add(e as DisplayObject);
-        });
-      }
-    });
 
     const trigger = (element: DisplayObject, detail) => {
       if (
-        element.isConnected &&
-        !triggered.has(element) &&
-        !skipped.has(element)
+        !element.isConnected ||
+        triggered.has(element) ||
+        (element.nodeName as Shape) === Shape.FRAGMENT
       ) {
-        this.boundsChangedEvent.detail = detail;
-        this.boundsChangedEvent.target = element;
-        if (element.isMutationObserved) {
-          element.dispatchEvent(this.boundsChangedEvent);
-        } else {
-          element.ownerDocument.defaultView.dispatchEvent(
-            this.boundsChangedEvent,
-            true,
-          );
-        }
-
-        triggered.add(element);
+        return;
       }
+
+      this.boundsChangedEvent.detail = detail;
+      this.boundsChangedEvent.target = element;
+      if (element.isMutationObserved) {
+        element.dispatchEvent(this.boundsChangedEvent);
+      } else {
+        element.ownerDocument.defaultView.dispatchEvent(
+          this.boundsChangedEvent,
+          true,
+        );
+      }
+
+      triggered.add(element);
     };
 
     this.pendingEvents.forEach((affectChildren, element) => {
+      if ((element.nodeName as Shape) === Shape.FRAGMENT) {
+        return;
+      }
+
       $triggerPendingEvents_detail.affectChildren = affectChildren;
       if (affectChildren) {
         element.forEach((e: DisplayObject) => {
@@ -622,8 +619,8 @@ export class DefaultSceneGraphService implements SceneGraphService {
         });
       } else trigger(element, $triggerPendingEvents_detail);
     });
+
     triggered.clear();
-    skipped.clear();
     this.clearPendingEvents();
   }
 
@@ -689,36 +686,38 @@ export class DefaultSceneGraphService implements SceneGraphService {
 
   informDependentDisplayObjects(object: DisplayObject) {
     const dependencyMap = this.displayObjectDependencyMap.get(object);
-    if (dependencyMap) {
-      Object.keys(dependencyMap).forEach((name) => {
-        dependencyMap[name].forEach((target) => {
-          this.dirtifyToRoot(target, true);
-
-          target.dispatchEvent(
-            new MutationEvent(
-              ElementEvent.ATTR_MODIFIED,
-              target as IElement,
-              this,
-              this,
-              name,
-              MutationEvent.MODIFICATION,
-              this,
-              this,
-            ),
-          );
-
-          if (target.isCustomElement && target.isConnected) {
-            if ((target as CustomElement<any>).attributeChangedCallback) {
-              (target as CustomElement<any>).attributeChangedCallback(
-                name,
-                this,
-                this,
-              );
-            }
-          }
-        });
-      });
+    if (!dependencyMap) {
+      return;
     }
+
+    Object.keys(dependencyMap).forEach((name) => {
+      dependencyMap[name].forEach((target) => {
+        this.dirtifyToRoot(target, true);
+
+        target.dispatchEvent(
+          new MutationEvent(
+            ElementEvent.ATTR_MODIFIED,
+            target as IElement,
+            this,
+            this,
+            name,
+            MutationEvent.MODIFICATION,
+            this,
+            this,
+          ),
+        );
+
+        if (target.isCustomElement && target.isConnected) {
+          if ((target as CustomElement<any>).attributeChangedCallback) {
+            (target as CustomElement<any>).attributeChangedCallback(
+              name,
+              this,
+              this,
+            );
+          }
+        }
+      });
+    });
   }
 
   getPosition(element: INode) {

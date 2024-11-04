@@ -1,8 +1,6 @@
 import type {
-  CSSRGB,
   DisplayObject,
   FederatedEvent,
-  ParsedBaseStyleProps,
   RBushNodeAABB,
   RenderingPlugin,
   RBush,
@@ -19,16 +17,21 @@ import {
   Shape,
   Node,
 } from '@antv/g-lite';
-import type { PathGenerator } from '@antv/g-plugin-canvas-path-generator';
-import { isNil } from '@antv/util';
 import { mat4, vec3 } from 'gl-matrix';
 import type { CanvasRendererPluginOptions } from './interfaces';
+import type { Plugin } from '.';
 
 interface Rect {
   x: number;
   y: number;
   width: number;
   height: number;
+}
+
+export interface RenderState {
+  restoreStack: DisplayObject[];
+  prevObject: DisplayObject;
+  currentContext: Map<keyof CanvasRenderingContext2D | 'lineDash', unknown>;
 }
 
 /**
@@ -39,9 +42,9 @@ interface Rect {
 export class CanvasRendererPlugin implements RenderingPlugin {
   static tag = 'CanvasRenderer';
 
-  private context: RenderingPluginContext;
+  private context: Plugin['context'];
 
-  private pathGeneratorFactory: Record<Shape, PathGenerator<any>>;
+  private pathGeneratorFactory: Plugin['context']['pathGeneratorFactory'];
 
   /**
    * RBush used in dirty rectangle rendering
@@ -56,10 +59,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
   private renderQueue: DisplayObject[] = [];
 
-  /**
-   * This stack is only used by clipPath for now.
-   */
-  private restoreStack: DisplayObject[] = [];
+  #renderState: RenderState = {
+    restoreStack: [],
+    prevObject: null,
+    currentContext: new Map(),
+  };
 
   private clearFullScreenLastFrame = false;
   private clearFullScreen = false;
@@ -76,7 +80,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
   private vec3d = vec3.create();
 
   apply(context: RenderingPluginContext, runtime: GlobalRuntime) {
-    this.context = context;
+    this.context = context as unknown as Plugin['context'];
 
     const {
       config,
@@ -86,9 +90,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       rBushRoot,
       // @ts-ignore
       pathGeneratorFactory,
-    } = context;
+    } = this.context;
+    let enableRenderingOptimization =
+      config.renderer.getConfig().enableRenderingOptimization;
+
+    config.renderer.getConfig().enableDirtyCheck = false;
+    config.renderer.getConfig().enableDirtyRectangleRendering = false;
+
     this.rBush = rBushRoot;
     this.pathGeneratorFactory = pathGeneratorFactory;
+
     const contextService =
       context.contextService as ContextService<CanvasRenderingContext2D>;
 
@@ -141,7 +152,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       canvas.removeEventListener(ElementEvent.CULLED, handleCulled);
       this.renderQueue = [];
       this.removedRBushNodeAABBs = [];
-      this.restoreStack = [];
+      this.#renderState = {
+        restoreStack: [],
+        prevObject: null,
+        currentContext: null,
+      };
     });
 
     renderingService.hooks.beginFrame.tap(CanvasRendererPlugin.tag, () => {
@@ -164,9 +179,12 @@ export class CanvasRendererPlugin implements RenderingPlugin {
           ratio > dirtyObjectRatioThreshold);
 
       if (context) {
-        context.resetTransform
-          ? context.resetTransform()
-          : context.setTransform(1, 0, 0, 1, 0, 0);
+        if (typeof context.resetTransform === 'function') {
+          context.resetTransform();
+        } else {
+          context.setTransform(1, 0, 0, 1, 0, 0);
+        }
+
         if (this.clearFullScreen) {
           this.clearRect(
             context,
@@ -180,26 +198,47 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
     });
 
+    /**
+     * render objects by z-index
+     *
+     * - The level of the child node will be affected by the level of the parent node
+     */
     const renderByZIndex = (
       object: DisplayObject,
       context: CanvasRenderingContext2D,
     ) => {
-      if (object.isVisible() && !object.isCulled()) {
-        this.renderDisplayObject(
-          object,
-          context,
-          this.context,
-          this.restoreStack,
-          runtime,
-        );
+      const stack = [object];
+
+      while (stack.length > 0) {
+        const currentObject = stack.pop();
+
+        if (currentObject.isVisible() && !currentObject.isCulled()) {
+          if (enableRenderingOptimization) {
+            this.renderDisplayObjectOptimized(
+              currentObject,
+              context,
+              this.context,
+              this.#renderState,
+              runtime,
+            );
+          } else {
+            this.renderDisplayObject(
+              currentObject,
+              context,
+              this.context,
+              this.#renderState,
+              runtime,
+            );
+          }
+        }
+
+        const objects =
+          currentObject.sortable.sorted || currentObject.childNodes;
+        // should account for z-index
+        for (let i = objects.length - 1; i >= 0; i--) {
+          stack.push(objects[i] as unknown as DisplayObject);
+        }
       }
-
-      const sorted = object.sortable.sorted || object.childNodes;
-
-      // should account for z-index
-      sorted.forEach((child: DisplayObject) => {
-        renderByZIndex(child, context);
-      });
     };
 
     // render at the end of frame
@@ -210,6 +249,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         return;
       }
 
+      enableRenderingOptimization =
+        config.renderer.getConfig().enableRenderingOptimization;
+
+      // init
+      this.#renderState = {
+        restoreStack: [],
+        prevObject: null,
+        currentContext: this.#renderState.currentContext,
+      };
+      this.#renderState.currentContext.clear();
       this.clearFullScreenLastFrame = false;
 
       const context = contextService.getContext();
@@ -219,8 +268,17 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       mat4.multiply(this.vpMatrix, this.dprMatrix, camera.getOrthoMatrix());
 
       if (this.clearFullScreen) {
-        // console.log('canvas renderer fcp...', renderingContext.root.childNodes);
-        renderByZIndex(renderingContext.root, context);
+        // console.time('renderByZIndex');
+        if (enableRenderingOptimization) {
+          context.save();
+          renderByZIndex(renderingContext.root, context);
+          context.restore();
+        } else {
+          renderByZIndex(renderingContext.root, context);
+        }
+        // console.timeEnd('renderByZIndex');
+
+        this.removedRBushNodeAABBs = [];
       } else {
         // console.log('canvas renderer next...', this.renderQueue);
         // merge removed AABB
@@ -320,7 +378,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
                 object,
                 context,
                 this.context,
-                this.restoreStack,
+                this.#renderState,
                 runtime,
               );
             }
@@ -338,11 +396,11 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       }
 
       // pop restore stack, eg. root -> parent -> child
-      this.restoreStack.forEach(() => {
+      this.#renderState.restoreStack.forEach(() => {
         context.restore();
       });
       // clear restore stack
-      this.restoreStack = [];
+      this.#renderState.restoreStack = [];
     });
 
     renderingService.hooks.render.tap(
@@ -372,20 +430,132 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     }
   }
 
+  renderDisplayObjectOptimized(
+    object: DisplayObject,
+    context: CanvasRenderingContext2D,
+    canvasContext: CanvasContext,
+    renderState: RenderState,
+    runtime: GlobalRuntime,
+  ) {
+    const nodeName = object.nodeName as Shape;
+    let updateTransform = false;
+    let clipDraw = false;
+
+    // @ts-ignore
+    const styleRenderer = this.context.styleRendererFactory[nodeName];
+    const generatePath = this.pathGeneratorFactory[nodeName];
+
+    // clip path
+    const { clipPath } = object.parsedStyle;
+    if (clipPath) {
+      updateTransform =
+        !renderState.prevObject ||
+        !mat4.exactEquals(
+          clipPath.getWorldTransform(),
+          renderState.prevObject.getWorldTransform(),
+        );
+
+      if (updateTransform) {
+        this.applyWorldTransform(context, clipPath);
+        renderState.prevObject = null;
+      }
+
+      // generate path in local space
+      const generatePath =
+        this.pathGeneratorFactory[clipPath.nodeName as Shape];
+      if (generatePath) {
+        context.save();
+        clipDraw = true;
+
+        context.beginPath();
+        generatePath(context, clipPath.parsedStyle);
+        context.closePath();
+        context.clip();
+      }
+    }
+
+    // fill & stroke
+
+    if (styleRenderer) {
+      updateTransform =
+        !renderState.prevObject ||
+        !mat4.exactEquals(
+          object.getWorldTransform(),
+          renderState.prevObject.getWorldTransform(),
+        );
+
+      if (updateTransform) {
+        this.applyWorldTransform(context, object);
+      }
+
+      let forceUpdateStyle = !renderState.prevObject;
+      if (!forceUpdateStyle) {
+        const prevNodeName = renderState.prevObject.nodeName as Shape;
+
+        if (nodeName === Shape.TEXT) {
+          forceUpdateStyle = prevNodeName !== Shape.TEXT;
+        } else if (nodeName === Shape.IMAGE) {
+          forceUpdateStyle = prevNodeName !== Shape.IMAGE;
+        } else {
+          forceUpdateStyle =
+            prevNodeName === Shape.TEXT || prevNodeName === Shape.IMAGE;
+        }
+      }
+
+      styleRenderer.applyStyleToContext(
+        context,
+        object,
+        forceUpdateStyle,
+        renderState,
+      );
+
+      renderState.prevObject = object;
+    }
+
+    if (generatePath) {
+      context.beginPath();
+      generatePath(context, object.parsedStyle);
+      if (
+        nodeName !== Shape.LINE &&
+        nodeName !== Shape.PATH &&
+        nodeName !== Shape.POLYLINE
+      ) {
+        context.closePath();
+      }
+    }
+
+    // fill & stroke
+    if (styleRenderer) {
+      styleRenderer.drawToContext(
+        context,
+        object,
+        this.#renderState,
+        this,
+        runtime,
+      );
+    }
+
+    if (clipDraw) {
+      context.restore();
+    }
+
+    // finish rendering, clear dirty flag
+    object.renderable.dirty = false;
+  }
+
   renderDisplayObject(
     object: DisplayObject,
     context: CanvasRenderingContext2D,
     canvasContext: CanvasContext,
-    restoreStack: DisplayObject[],
+    renderState: RenderState,
     runtime: GlobalRuntime,
   ) {
-    const { nodeName } = object;
-
-    // console.log('canvas render:', object);
+    const nodeName = object.nodeName as Shape;
 
     // restore to its ancestor
 
-    const parent = restoreStack[restoreStack.length - 1];
+    const parent =
+      renderState.restoreStack[renderState.restoreStack.length - 1];
     if (
       parent &&
       !(
@@ -393,7 +563,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       )
     ) {
       context.restore();
-      restoreStack.pop();
+      renderState.restoreStack.pop();
     }
 
     // @ts-ignore
@@ -401,17 +571,18 @@ export class CanvasRendererPlugin implements RenderingPlugin {
     const generatePath = this.pathGeneratorFactory[nodeName];
 
     // clip path
-    const { clipPath } = object.parsedStyle as ParsedBaseStyleProps;
+    const { clipPath } = object.parsedStyle;
     if (clipPath) {
       this.applyWorldTransform(context, clipPath);
 
       // generate path in local space
-      const generatePath = this.pathGeneratorFactory[clipPath.nodeName];
+      const generatePath =
+        this.pathGeneratorFactory[clipPath.nodeName as Shape];
       if (generatePath) {
         context.save();
 
         // save clip
-        restoreStack.push(object);
+        renderState.restoreStack.push(object);
 
         context.beginPath();
         generatePath(context, clipPath.parsedStyle);
@@ -428,16 +599,16 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.save();
 
       // apply attributes to context
-      this.applyAttributesToContext(context, object);
+      styleRenderer.applyAttributesToContext(context, object);
     }
 
     if (generatePath) {
       context.beginPath();
       generatePath(context, object.parsedStyle);
       if (
-        object.nodeName !== Shape.LINE &&
-        object.nodeName !== Shape.PATH &&
-        object.nodeName !== Shape.POLYLINE
+        nodeName !== Shape.LINE &&
+        nodeName !== Shape.PATH &&
+        nodeName !== Shape.POLYLINE
       ) {
         context.closePath();
       }
@@ -525,42 +696,6 @@ export class CanvasRendererPlugin implements RenderingPlugin {
         renderBounds.center,
         renderBounds.halfExtents,
       );
-    }
-  }
-
-  /**
-   * TODO: batch the same global attributes
-   */
-  private applyAttributesToContext(
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-  ) {
-    const { stroke, fill, opacity, lineDash, lineDashOffset } =
-      object.parsedStyle as ParsedBaseStyleProps;
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
-    if (lineDash) {
-      context.setLineDash(lineDash);
-    }
-
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-    if (!isNil(lineDashOffset)) {
-      context.lineDashOffset = lineDashOffset;
-    }
-
-    if (!isNil(opacity)) {
-      context.globalAlpha *= opacity;
-    }
-
-    if (
-      !isNil(stroke) &&
-      !Array.isArray(stroke) &&
-      !(stroke as CSSRGB).isNone
-    ) {
-      context.strokeStyle = object.attributes.stroke;
-    }
-
-    if (!isNil(fill) && !Array.isArray(fill) && !(fill as CSSRGB).isNone) {
-      context.fillStyle = object.attributes.fill;
     }
   }
 

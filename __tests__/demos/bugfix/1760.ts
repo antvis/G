@@ -3,7 +3,7 @@ import { Canvas, Path, Line } from '@antv/g';
 /**
  * @see https://github.com/antvis/G/issues/1760
  * @see https://github.com/antvis/G/issues/1790
- * @see https://github.com/antvis/G/pull/1808
+ * @see https://github.com/antvis/G/pull/1809
  */
 export async function issue_1760(context: { canvas: Canvas }) {
   const { canvas } = context;

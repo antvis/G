@@ -1,4 +1,4 @@
-import type { DisplayObject, ParsedBaseStyleProps } from '@antv/g-lite';
+import type { DisplayObject } from '@antv/g-lite';
 import { isNil } from '@antv/util';
 import { createSVGElement } from '../../utils/dom';
 
@@ -21,7 +21,7 @@ export function createOrUpdateShadow(
     shadowColor,
     shadowOffsetX,
     shadowOffsetY,
-  } = object.parsedStyle as ParsedBaseStyleProps;
+  } = object.parsedStyle;
 
   const hasShadow = !isNil(shadowColor) && shadowBlur > 0;
   const shadowId = FILTER_DROPSHADOW_PREFIX + object.entity;

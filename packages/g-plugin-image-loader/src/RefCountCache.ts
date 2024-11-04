@@ -4,6 +4,8 @@ export class RefCountCache<CacheValue, CounterValue> {
     { value: CacheValue; counter: Set<CounterValue> }
   >();
 
+  onRefAdded(ref: CounterValue) {}
+
   has(key: string) {
     return this.#cacheStore.has(key);
   }
@@ -17,6 +19,7 @@ export class RefCountCache<CacheValue, CounterValue> {
       value: item,
       counter: new Set([ref]),
     });
+    this.onRefAdded(ref);
 
     return true;
   }
@@ -27,7 +30,10 @@ export class RefCountCache<CacheValue, CounterValue> {
       return null;
     }
 
-    cacheItem.counter.add(ref);
+    if (!cacheItem.counter.has(ref)) {
+      cacheItem.counter.add(ref);
+      this.onRefAdded(ref);
+    }
 
     return cacheItem.value;
   }
@@ -39,7 +45,10 @@ export class RefCountCache<CacheValue, CounterValue> {
     }
 
     cacheItem.value = { ...cacheItem.value, ...value };
-    cacheItem.counter.add(ref);
+    if (!cacheItem.counter.has(ref)) {
+      cacheItem.counter.add(ref);
+      this.onRefAdded(ref);
+    }
 
     return true;
   }

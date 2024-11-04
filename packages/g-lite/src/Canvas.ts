@@ -9,7 +9,16 @@ import {
 } from './camera';
 import type { RBushNodeAABB } from './components';
 import type { CustomElement } from './display-objects';
-import { DisplayObject } from './display-objects/DisplayObject';
+import type { MutationEvent } from './dom/MutationEvent';
+import {
+  DisplayObject,
+  attrModifiedEvent as attrModifiedEventCache,
+} from './display-objects/DisplayObject';
+import {
+  insertedEvent as insertedEventCache,
+  removedEvent as removedEventCache,
+  destroyEvent as destroyEventCache,
+} from './dom/Element';
 import type { CanvasContext, Element, IChildNode } from './dom';
 import { CustomEvent, Document, ElementEvent, EventTarget } from './dom';
 import { CustomElementRegistry } from './dom/CustomElementRegistry';
@@ -122,9 +131,6 @@ export class Canvas extends EventTarget implements ICanvas {
    */
   isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
 
-  /**
-   * double click speed (ms), default is 200ms
-   */
   dblClickSpeed?: CanvasConfig['dblClickSpeed'];
 
   /**
@@ -398,9 +404,7 @@ export class Canvas extends EventTarget implements ICanvas {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
     if (this.frameId) {
-      const cancelRAF =
-        this.getConfig().cancelAnimationFrame || cancelAnimationFrame;
-      cancelRAF(this.frameId);
+      this.cancelAnimationFrame(this.frameId);
     }
 
     // unmount all children
@@ -429,10 +433,11 @@ export class Canvas extends EventTarget implements ICanvas {
       this.dispatchEvent(new CustomEvent(CanvasEvent.AFTER_DESTROY));
     }
 
-    const clearEventRetain = (event: CustomEvent) => {
+    const clearEventRetain = (event: CustomEvent | MutationEvent) => {
       event.currentTarget = null;
       event.manager = null;
       event.target = null;
+      (event as MutationEvent).relatedNode = null;
     };
 
     clearEventRetain(mountedEvent);
@@ -440,8 +445,10 @@ export class Canvas extends EventTarget implements ICanvas {
     clearEventRetain(beforeRenderEvent);
     clearEventRetain(rerenderEvent);
     clearEventRetain(afterRenderEvent);
-
-    this.cancelAnimationFrame(this.frameId);
+    clearEventRetain(attrModifiedEventCache);
+    clearEventRetain(insertedEventCache);
+    clearEventRetain(removedEventCache);
+    clearEventRetain(destroyEventCache);
   }
 
   /**

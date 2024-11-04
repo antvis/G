@@ -430,6 +430,19 @@ export interface RendererConfig {
    */
   enableSizeAttenuation: boolean;
 
+  /**
+   * Enable rendering optimization
+   *
+   * After rendering optimization is enabled, the rendering of each element in each frame will not have
+   * an independent canvas context state, but the state consistency is maintained by caching,
+   * because the save() and restore() of the canvas context state are expensive.
+   *
+   * ! Errors may occur due to manual maintenance of the canvas context state consistency
+   *
+   * @default false
+   */
+  enableRenderingOptimization: boolean;
+
   // plugins:
 }
 
@@ -545,6 +558,10 @@ export interface CanvasConfig {
   supportsTouchEvents?: boolean;
   isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
   isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
+
+  /**
+   * double click speed (ms), default is 200ms
+   */
   dblClickSpeed?: number;
 
   /**

@@ -9,14 +9,18 @@ import {
   Pattern,
 } from '@antv/g-lite';
 import { isNil } from '@antv/util';
-import { ImagePool } from '@antv/g-plugin-image-loader';
-import { applyFill, applyStroke, setShadowAndFilter } from './Default';
-import type { StyleRenderer } from './interfaces';
-import { CanvasRendererPlugin } from '../../CanvasRendererPlugin';
+import {
+  DefaultRenderer,
+  applyFill,
+  applyStroke,
+  setShadowAndFilter,
+} from './Default';
+import {
+  CanvasRendererPlugin,
+  type RenderState,
+} from '../../CanvasRendererPlugin';
 
-export class TextRenderer implements StyleRenderer {
-  constructor(private imagePool: ImagePool) {}
-
+export class TextRenderer extends DefaultRenderer {
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedTextStyleProps,
@@ -329,5 +333,24 @@ export class TextRenderer implements StyleRenderer {
     if (applyOpacity) {
       context.globalAlpha = currentGlobalAlpha;
     }
+  }
+
+  // ---
+
+  drawToContext(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+    renderState: RenderState,
+    plugin: CanvasRendererPlugin,
+    runtime: GlobalRuntime,
+  ) {
+    this.render(
+      context,
+      object.parsedStyle as ParsedTextStyleProps,
+      object,
+      object.ownerDocument.defaultView.context,
+      plugin,
+      runtime,
+    );
   }
 }

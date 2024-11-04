@@ -1,4 +1,4 @@
-// import Stats from 'stats.js';
+import Stats from 'stats.js';
 import * as lil from 'lil-gui';
 import '@antv/g-camera-api';
 import { Canvas, CanvasEvent, runtime } from '@antv/g';
@@ -46,7 +46,7 @@ const renderers = {
 };
 const app = document.getElementById('app') as HTMLElement;
 let currentContainer = document.createElement('div');
-let canvas;
+let canvas: Canvas;
 let prevAfter;
 const normalizeName = (name: string) => name.replace(/-/g, '').toLowerCase();
 const renderOptions = (keyword = '') => {
@@ -227,13 +227,13 @@ function createSpecRender(object) {
       window.__g_instances__ = [canvas];
 
       // stats
-      // const stats = new Stats();
-      // stats.showPanel(0);
-      // const $stats = stats.dom;
-      // $stats.style.position = 'absolute';
-      // $stats.style.left = '4px';
-      // $stats.style.top = '4px';
-      // app.appendChild($stats);
+      const stats = new Stats();
+      stats.showPanel(0);
+      const $stats = stats.dom;
+      $stats.style.position = 'fixed';
+      $stats.style.left = '2px';
+      $stats.style.top = '2px';
+      // document.body.appendChild($stats);
 
       // GUI
       const gui = new lil.GUI({ autoPlace: false });
@@ -241,9 +241,9 @@ function createSpecRender(object) {
 
       await generate({ canvas, renderer, container: $div, gui });
 
-      // canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
-      //   stats.update();
-      // });
+      canvas.addEventListener(CanvasEvent.AFTER_RENDER, () => {
+        stats.update();
+      });
 
       if (
         selectRenderer.value === 'canvas' &&
