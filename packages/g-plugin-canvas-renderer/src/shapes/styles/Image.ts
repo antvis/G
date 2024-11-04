@@ -32,7 +32,7 @@ export class ImageRenderer extends DefaultRenderer {
     );
   }
 
-  #renderDownSampled(
+  private renderDownSampled(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
@@ -68,7 +68,7 @@ export class ImageRenderer extends DefaultRenderer {
     );
   }
 
-  #renderTile(
+  renderTile(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedImageStyleProps,
     object: DisplayObject,
@@ -214,7 +214,7 @@ export class ImageRenderer extends DefaultRenderer {
       const sizeOfOrigin = imageRect[2] / imageCache.size[0];
 
       if (sizeOfOrigin < (imageCache.downSamplingRate || 0.5)) {
-        this.#renderDownSampled(context, parsedStyle, object, {
+        this.renderDownSampled(context, parsedStyle, object, {
           src,
           imageCache,
           drawRect: [x, y, iw, ih],
@@ -232,7 +232,7 @@ export class ImageRenderer extends DefaultRenderer {
         return;
       }
 
-      this.#renderTile(context, parsedStyle, object, {
+      this.renderTile(context, parsedStyle, object, {
         src,
         imageCache,
         imageRect,

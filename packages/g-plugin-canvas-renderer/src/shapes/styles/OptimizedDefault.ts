@@ -96,7 +96,7 @@ export class OptimizedDefaultRenderer implements StyleRenderer {
   ) {}
 
   // #region common style
-  #applyCommonStyleToContext(
+  private applyCommonStyleToContext(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
     forceUpdate: boolean,
@@ -135,7 +135,7 @@ export class OptimizedDefaultRenderer implements StyleRenderer {
   // #endregion common style
 
   // #region stroke/fill style
-  #applyStrokeFillStyleToContext(
+  private applyStrokeFillStyleToContext(
     context: CanvasRenderingContext2D,
     object: DisplayObject,
     forceUpdate: boolean,
@@ -244,12 +244,12 @@ export class OptimizedDefaultRenderer implements StyleRenderer {
   ) {
     const nodeName = object.nodeName as Shape;
 
-    this.#applyCommonStyleToContext(context, object, forceUpdate, renderState);
+    this.applyCommonStyleToContext(context, object, forceUpdate, renderState);
 
     if (nodeName === Shape.IMAGE) {
       //
     } else {
-      this.#applyStrokeFillStyleToContext(
+      this.applyStrokeFillStyleToContext(
         context,
         object,
         forceUpdate,

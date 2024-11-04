@@ -433,6 +433,12 @@ export interface RendererConfig {
   /**
    * Enable rendering optimization
    *
+   * After rendering optimization is enabled, the rendering of each element in each frame will not have
+   * an independent canvas context state, but the state consistency is maintained by caching,
+   * because the save() and restore() of the canvas context state are expensive.
+   *
+   * ! Errors may occur due to manual maintenance of the canvas context state consistency
+   *
    * @default false
    */
   enableRenderingOptimization: boolean;
