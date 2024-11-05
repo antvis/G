@@ -216,7 +216,6 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   fontVariant?: 'normal' | 'small-caps' | string;
   lineHeight?: number;
   letterSpacing?: number;
-  // whiteSpace?: 'pre';
   leading?: number;
   wordWrap?: boolean;
   wordWrapWidth?: number;
@@ -229,8 +228,6 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
   textDecorationStyle?: TextDecorationStyle | string;
   textPathSide?: 'left' | 'right';
   textPathStartOffset?: number;
-  // dropShadow?: boolean;
-  // dropShadowDistance?: number;
   metrics?: TextMetrics;
   dx?: number;
   dy?: number;
@@ -240,6 +237,41 @@ export interface ParsedTextStyleProps extends ParsedBaseStyleProps {
  * <text> @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextElement
  */
 export class Text extends DisplayObject<TextStyleProps, ParsedTextStyleProps> {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'x',
+    'y',
+    'z',
+    'isBillboard',
+    'billboardRotation',
+    'isSizeAttenuation',
+    'text',
+    'textAlign',
+    'textBaseline',
+    'fontStyle',
+    'fontSize',
+    'fontFamily',
+    'fontWeight',
+    'fontVariant',
+    'lineHeight',
+    'letterSpacing',
+    'leading',
+    'wordWrap',
+    'wordWrapWidth',
+    'maxLines',
+    'textOverflow',
+    'isOverflowing',
+    'textPath',
+    'textDecorationLine',
+    'textDecorationColor',
+    'textDecorationStyle',
+    'textPathSide',
+    'textPathStartOffset',
+    'metrics',
+    'dx',
+    'dy',
+  ]);
+
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGTextContentElement#constants
    */

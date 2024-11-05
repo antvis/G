@@ -6,6 +6,11 @@ export interface LightProps extends BaseStyleProps {
   intensity?: number;
 }
 export abstract class Light extends DisplayObject<LightProps> {
+  static PARSED_STYLE_LIST = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'intensity',
+  ]);
+
   static tag = 'light';
 
   abstract define: string;

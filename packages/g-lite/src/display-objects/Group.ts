@@ -25,6 +25,12 @@ export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
   </g>
  */
 export class Group extends DisplayObject {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'width',
+    'height',
+  ]);
+
   constructor(options: DisplayObjectConfig<GroupStyleProps> = {}) {
     super({
       type: Shape.GROUP,

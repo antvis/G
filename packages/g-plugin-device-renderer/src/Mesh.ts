@@ -26,6 +26,15 @@ export interface ParsedMeshStyleProps extends ParsedBaseStyleProps {
 export class Mesh<GeometryProps = any> extends DisplayObject<
   GeometryProps & MeshStyleProps
 > {
+  static PARSED_STYLE_LIST = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'x',
+    'y',
+    'z',
+    'geometry',
+    'material',
+  ]);
+
   constructor({
     style,
     ...rest

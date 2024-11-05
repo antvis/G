@@ -43,6 +43,20 @@ export class Image extends DisplayObject<
   ImageStyleProps,
   ParsedImageStyleProps
 > {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'x',
+    'y',
+    'z',
+    'src',
+    'width',
+    'height',
+    'isBillboard',
+    'billboardRotation',
+    'isSizeAttenuation',
+    'keepAspectRatio',
+  ]);
+
   constructor(options: DisplayObjectConfig<ImageStyleProps> = {}) {
     super({
       type: Shape.IMAGE,

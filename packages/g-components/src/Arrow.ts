@@ -44,6 +44,19 @@ export interface ArrowStyleProps extends BaseStyleProps {
 export class Arrow extends CustomElement<ArrowStyleProps> {
   static tag = 'arrow';
 
+  static PARSED_STYLE_LIST = new Set([
+    ...CustomElement.PARSED_STYLE_LIST,
+    'body',
+    'startHead',
+    'endHead',
+    'startHeadOffset',
+    'endHeadOffset',
+    'stroke',
+    'lineWidth',
+    'opacity',
+    'strokeOpacity',
+  ]);
+
   private body: Line | Path | Polyline;
   private startHead?: DisplayObject;
   private endHead?: DisplayObject;
