@@ -1,4 +1,4 @@
-import { Canvas, Image as GImage } from '@antv/g';
+import { Canvas, Group, Image as GImage } from '@antv/g';
 import * as lil from 'lil-gui';
 
 export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
@@ -6,6 +6,7 @@ export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
   await canvas.ready;
   console.log(canvas);
 
+  const group = new Group();
   let image = new GImage({
     style: {
       x: 0,
@@ -17,7 +18,9 @@ export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
       src: 'https://mdn.alipayobjects.com/huamei_fr7vu1/afts/img/A*SqloToP7R9QAAAAAAAAAAAAADkn0AQ/original',
     },
   });
-  canvas.appendChild(image);
+
+  group.appendChild(image);
+  canvas.appendChild(group);
 
   // ---
   const $dom = canvas.getContextService().getDomElement() as HTMLCanvasElement;
