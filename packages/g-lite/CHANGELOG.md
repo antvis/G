@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.1
+
+### Patch Changes
+
+-   939663c2: fix: when an element is destroyed, its child elements are not destroyed
+
 ## 2.2.0
 
 ### Minor Changes
