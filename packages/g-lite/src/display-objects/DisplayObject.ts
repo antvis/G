@@ -68,8 +68,8 @@ const $quat = quat.create();
  * * attributeChanged
  */
 export class DisplayObject<
-  StyleProps extends BaseStyleProps = BaseStyleProps,
-  ParsedStyleProps extends ParsedBaseStyleProps = ParsedBaseStyleProps,
+  StyleProps extends BaseStyleProps = any,
+  ParsedStyleProps extends ParsedBaseStyleProps = any,
 > extends Element<StyleProps, ParsedStyleProps> {
   /**
    * contains style props in constructor's params, eg. fill, stroke...

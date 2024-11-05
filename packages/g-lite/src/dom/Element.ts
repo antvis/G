@@ -457,6 +457,9 @@ export class Element<
    */
   destroyed = false;
   destroy() {
+    // fix https://github.com/antvis/G/issues/1813
+    this.destroyChildren();
+
     // destroy itself before remove
     this.dispatchEvent(destroyEvent);
 

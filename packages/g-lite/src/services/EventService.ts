@@ -1019,7 +1019,6 @@ export class EventService {
 
   private notifyListeners(e: FederatedEvent, type: string) {
     // hack EventEmitter, stops if the `propagationImmediatelyStopped` flag is set
-    // @ts-ignore
     const { emitter } = e.currentTarget;
     // @ts-ignore
     const listeners = (emitter._events as EmitterListeners)[type];
