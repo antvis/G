@@ -661,7 +661,6 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const oldOffsetPath = object.parsedStyle.offsetPath;
 
     assignParsedStyle(object, attributes);
-    // Object.assign(object.parsedStyle, attributes);
 
     let needUpdateGeometry = !!options.forceUpdateGeometry;
     if (!needUpdateGeometry) {
