@@ -1,5 +1,12 @@
 # @antv/g-plugin-yoga
 
+## 2.0.18
+
+### Patch Changes
+
+-   Updated dependencies [0b639b81]
+    -   @antv/g-lite@2.2.2
+
 ## 2.0.17
 
 ### Patch Changes
