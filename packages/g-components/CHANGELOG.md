@@ -1,5 +1,13 @@
 # @antv/g-components
 
+## 2.0.18
+
+### Patch Changes
+
+-   0b639b81: optimize massive attrs clone
+-   Updated dependencies [0b639b81]
+    -   @antv/g-lite@2.2.2
+
 ## 2.0.17
 
 ### Patch Changes

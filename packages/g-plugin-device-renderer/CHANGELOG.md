@@ -1,5 +1,14 @@
 # @antv/g-plugin-device-renderer
 
+## 2.2.2
+
+### Patch Changes
+
+-   0b639b81: optimize massive attrs clone
+-   Updated dependencies [0b639b81]
+    -   @antv/g-lite@2.2.2
+    -   @antv/g-plugin-image-loader@2.1.2
+
 ## 2.2.1
 
 ### Patch Changes
