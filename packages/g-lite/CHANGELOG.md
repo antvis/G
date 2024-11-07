@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.2
+
+### Patch Changes
+
+-   0b639b81: optimize massive attrs clone
+
 ## 2.2.1
 
 ### Patch Changes

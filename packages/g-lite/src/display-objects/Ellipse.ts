@@ -25,6 +25,17 @@ export class Ellipse extends DisplayObject<
   EllipseStyleProps,
   ParsedEllipseStyleProps
 > {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'cx',
+    'cy',
+    'cz',
+    'rx',
+    'ry',
+    'isBillboard',
+    'isSizeAttenuation',
+  ]);
+
   constructor(options: DisplayObjectConfig<EllipseStyleProps> = {}) {
     super({
       type: Shape.ELLIPSE,

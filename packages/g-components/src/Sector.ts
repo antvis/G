@@ -154,6 +154,17 @@ export interface SectorStyleProps extends BaseStyleProps {
 }
 
 export class Sector extends CustomElement<SectorStyleProps> {
+  static PARSED_STYLE_LIST = new Set([
+    ...CustomElement.PARSED_STYLE_LIST,
+    'startAngle',
+    'endAngle',
+    'sr',
+    'sr0',
+    'sradius',
+    'sx',
+    'sy',
+  ]);
+
   static tag = 'sector';
 
   private path: Path;

@@ -27,6 +27,16 @@ export interface ParsedHTMLStyleProps extends ParsedBaseStyleProps {
  * @see https://github.com/pmndrs/drei#html
  */
 export class HTML extends DisplayObject<HTMLStyleProps, ParsedHTMLStyleProps> {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'x',
+    'y',
+    '$el',
+    'innerHTML',
+    'width',
+    'height',
+  ]);
+
   constructor({ style, ...rest }: DisplayObjectConfig<HTMLStyleProps> = {}) {
     super({
       type: Shape.HTML,

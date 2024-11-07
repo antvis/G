@@ -106,6 +106,18 @@ export interface ParsedPathStyleProps extends ParsedBaseStyleProps {
   isSizeAttenuation?: boolean;
 }
 export class Path extends DisplayObject<PathStyleProps, ParsedPathStyleProps> {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'd',
+    'markerStart',
+    'markerMid',
+    'markerEnd',
+    'markerStartOffset',
+    'markerEndOffset',
+    'isBillboard',
+    'isSizeAttenuation',
+  ]);
+
   private markerStartAngle = 0;
   private markerEndAngle = 0;
 

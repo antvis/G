@@ -29,6 +29,18 @@ export interface ParsedRectStyleProps extends ParsedBaseStyleProps {
 }
 
 export class Rect extends DisplayObject<RectStyleProps, ParsedRectStyleProps> {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'x',
+    'y',
+    'z',
+    'width',
+    'height',
+    'isBillboard',
+    'isSizeAttenuation',
+    'radius',
+  ]);
+
   constructor(options: DisplayObjectConfig<RectStyleProps> = {}) {
     super({
       type: Shape.RECT,

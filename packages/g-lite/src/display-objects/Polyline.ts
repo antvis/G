@@ -58,6 +58,17 @@ export interface ParsedPolylineStyleProps extends ParsedBaseStyleProps {
  * Polyline inherits the marker-related capabilities of Polygon.
  */
 export class Polyline extends Polygon {
+  static PARSED_STYLE_LIST = new Set([
+    ...Polygon.PARSED_STYLE_LIST,
+    'points',
+    'markerStart',
+    'markerMid',
+    'markerEnd',
+    'markerStartOffset',
+    'markerEndOffset',
+    'isBillboard',
+  ]);
+
   constructor({
     style,
     ...rest

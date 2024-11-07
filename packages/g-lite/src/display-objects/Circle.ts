@@ -41,6 +41,16 @@ export class Circle extends DisplayObject<
   CircleStyleProps,
   ParsedCircleStyleProps
 > {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'cx',
+    'cy',
+    'cz',
+    'r',
+    'isBillboard',
+    'isSizeAttenuation',
+  ]);
+
   constructor(options: DisplayObjectConfig<CircleStyleProps> = {}) {
     super({
       type: Shape.CIRCLE,

@@ -2,7 +2,7 @@ import { isNil, isUndefined } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
-import type { GlobalRuntime } from '../global-runtime';
+import { runtime, type GlobalRuntime } from '../global-runtime';
 import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, Tuple3Number } from '../types';
@@ -660,7 +660,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     const oldClipPath = object.parsedStyle.clipPath;
     const oldOffsetPath = object.parsedStyle.offsetPath;
 
-    Object.assign(object.parsedStyle, attributes);
+    assignParsedStyle(object, attributes);
 
     let needUpdateGeometry = !!options.forceUpdateGeometry;
     if (!needUpdateGeometry) {
@@ -997,6 +997,23 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
           delete node.style.rawR;
         }
       }
+    }
+  }
+}
+
+function assignParsedStyle(
+  object: DisplayObject,
+  attributes: Record<string, any>,
+) {
+  if (!runtime.enableMassiveParsedStyleAssignOptimization) {
+    Object.assign(object.parsedStyle, attributes);
+    return;
+  }
+
+  const list = (object.constructor as typeof DisplayObject).PARSED_STYLE_LIST;
+  for (const key in attributes) {
+    if (list.has(key)) {
+      object.parsedStyle[key] = attributes[key];
     }
   }
 }

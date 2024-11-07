@@ -50,6 +50,19 @@ export class Polygon extends DisplayObject<
   PolygonStyleProps,
   ParsedPolygonStyleProps
 > {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'points',
+    'markerStart',
+    'markerMid',
+    'markerEnd',
+    'markerStartOffset',
+    'markerEndOffset',
+    'isClosed',
+    'isBillboard',
+    'isSizeAttenuation',
+  ]);
+
   private markerStartAngle = 0;
   private markerEndAngle = 0;
 

@@ -73,6 +73,12 @@ export interface GlobalRuntime {
   enableStyleSyntax: boolean;
 
   enableSizeAttenuation: boolean;
+
+  /**
+   * Only clone properties that are listed in the `PARSED_STYLE_LIST` of the display object.
+   * default false
+   */
+  enableMassiveParsedStyleAssignOptimization?: boolean;
 }
 
 /**
@@ -82,6 +88,7 @@ const geometryUpdaterFactory: Record<Shape, GeometryAABBUpdater<any>> = (() => {
   const rectUpdater = new RectUpdater();
   const polylineUpdater = new PolylineUpdater();
   return {
+    [Shape.FRAGMENT]: null,
     [Shape.CIRCLE]: new CircleUpdater(),
     [Shape.ELLIPSE]: new EllipseUpdater(),
     [Shape.RECT]: rectUpdater,
