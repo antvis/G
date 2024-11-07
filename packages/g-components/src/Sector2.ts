@@ -137,6 +137,17 @@ function computeArcSweep(startAngle: number, endAngle: number) {
 }
 
 export class Sector extends Path {
+  static PARSED_STYLE_LIST = new Set([
+    ...Path.PARSED_STYLE_LIST,
+    'x',
+    'y',
+    'sr',
+    'sr0',
+    'radius',
+    'startAngle',
+    'endAngle',
+  ]);
+
   // parsedStyle: any;
   constructor(config) {
     super(config);

@@ -81,6 +81,22 @@ export interface ParsedLineStyleProps extends ParsedBaseStyleProps {
  * Also support for using marker.
  */
 export class Line extends DisplayObject<LineStyleProps, ParsedLineStyleProps> {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'x1',
+    'y1',
+    'x2',
+    'y2',
+    'z1',
+    'z2',
+    'isBillboard',
+    'isSizeAttenuation',
+    'markerStart',
+    'markerEnd',
+    'markerStartOffset',
+    'markerEndOffset',
+  ]);
+
   private markerStartAngle = 0;
   private markerEndAngle = 0;
 

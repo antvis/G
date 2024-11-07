@@ -17,6 +17,14 @@ export interface FogProps extends BaseStyleProps {
   end: number;
 }
 export class Fog extends DisplayObject<FogProps> {
+  static PARSED_STYLE_LIST = new Set([
+    ...DisplayObject.PARSED_STYLE_LIST,
+    'type',
+    'density',
+    'start',
+    'end',
+  ]);
+
   static tag = 'fog';
 
   constructor({ style, ...rest }: DisplayObjectConfig<FogProps> = {}) {
