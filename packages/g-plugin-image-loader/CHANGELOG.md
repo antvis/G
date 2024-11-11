@@ -1,5 +1,11 @@
 # @antv/g-plugin-image-loader
 
+## 2.1.3
+
+### Patch Changes
+
+-   92b43d13: fix: when image src is an image instance, rendering will not be triggered by default
+
 ## 2.1.2
 
 ### Patch Changes

@@ -36,21 +36,19 @@ export class LoadImagePlugin implements RenderingPlugin {
       if (nodeName === Shape.IMAGE) {
         const { src, keepAspectRatio } = attributes;
 
-        if (isString(src)) {
-          imagePool.getImageSync(
-            src,
-            object as DisplayObject,
-            ({ img: { width, height } }) => {
-              if (keepAspectRatio) {
-                calculateWithAspectRatio(object, width, height);
-              }
+        imagePool.getImageSync(
+          src,
+          object as DisplayObject,
+          ({ img: { width, height } }) => {
+            if (keepAspectRatio) {
+              calculateWithAspectRatio(object, width, height);
+            }
 
-              // set dirty rectangle flag
-              object.renderable.dirty = true;
-              renderingService.dirtify();
-            },
-          );
-        }
+            // set dirty rectangle flag
+            object.renderable.dirty = true;
+            renderingService.dirtify();
+          },
+        );
       }
     };
 
