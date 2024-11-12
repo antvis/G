@@ -27,11 +27,6 @@ export interface StyleRenderer {
 
   // ---
 
-  applyAttributesToContext: (
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-  ) => void;
-
   render: (
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedBaseStyleProps,
