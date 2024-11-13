@@ -1,5 +1,12 @@
 # @antv/g-plugin-image-loader
 
+## 2.1.4
+
+### Patch Changes
+
+-   abebed9e: fix: the size of an unloaded Image is 0
+-   1de86a88: refactor: iterator forEach method now has compatibility
+
 ## 2.1.3
 
 ### Patch Changes
