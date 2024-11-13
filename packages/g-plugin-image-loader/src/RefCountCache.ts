@@ -1,5 +1,5 @@
 export class RefCountCache<CacheValue, CounterValue> {
-  #cacheStore = new Map<
+  private cacheStore = new Map<
     string,
     { value: CacheValue; counter: Set<CounterValue> }
   >();
@@ -7,15 +7,15 @@ export class RefCountCache<CacheValue, CounterValue> {
   onRefAdded(ref: CounterValue) {}
 
   has(key: string) {
-    return this.#cacheStore.has(key);
+    return this.cacheStore.has(key);
   }
 
   put(key: string, item: CacheValue, ref: CounterValue) {
-    if (this.#cacheStore.has(key)) {
+    if (this.cacheStore.has(key)) {
       return false;
     }
 
-    this.#cacheStore.set(key, {
+    this.cacheStore.set(key, {
       value: item,
       counter: new Set([ref]),
     });
@@ -25,7 +25,7 @@ export class RefCountCache<CacheValue, CounterValue> {
   }
 
   get(key: string, ref: CounterValue) {
-    const cacheItem = this.#cacheStore.get(key);
+    const cacheItem = this.cacheStore.get(key);
     if (!cacheItem) {
       return null;
     }
@@ -39,7 +39,7 @@ export class RefCountCache<CacheValue, CounterValue> {
   }
 
   update(key: string, value: CacheValue, ref: CounterValue) {
-    const cacheItem = this.#cacheStore.get(key);
+    const cacheItem = this.cacheStore.get(key);
     if (!cacheItem) {
       return false;
     }
@@ -54,7 +54,7 @@ export class RefCountCache<CacheValue, CounterValue> {
   }
 
   release(key: string, ref: CounterValue) {
-    const cacheItem = this.#cacheStore.get(key);
+    const cacheItem = this.cacheStore.get(key);
     if (!cacheItem) {
       return false;
     }
@@ -62,23 +62,23 @@ export class RefCountCache<CacheValue, CounterValue> {
     cacheItem.counter.delete(ref);
 
     if (cacheItem.counter.size <= 0) {
-      this.#cacheStore.delete(key);
+      this.cacheStore.delete(key);
     }
 
     return true;
   }
 
   releaseRef(ref: CounterValue) {
-    this.#cacheStore.keys().forEach((key) => {
+    Array.from(this.cacheStore.keys()).forEach((key) => {
       this.release(key, ref);
     });
   }
 
   getSize() {
-    return this.#cacheStore.size;
+    return this.cacheStore.size;
   }
 
   clear() {
-    this.#cacheStore.clear();
+    this.cacheStore.clear();
   }
 }

@@ -16,39 +16,6 @@ import { OptimizedDefaultRenderer, DEFAULT_STYLE } from './OptimizedDefault';
 import { getColor, getPattern } from './helper';
 
 export class DefaultRenderer extends OptimizedDefaultRenderer {
-  applyAttributesToContext(
-    context: CanvasRenderingContext2D,
-    object: DisplayObject,
-  ) {
-    const { stroke, fill, opacity, lineDash, lineDashOffset } =
-      object.parsedStyle;
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
-    if (lineDash) {
-      context.setLineDash(lineDash);
-    }
-
-    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
-    if (!isNil(lineDashOffset)) {
-      context.lineDashOffset = lineDashOffset;
-    }
-
-    if (!isNil(opacity)) {
-      context.globalAlpha *= opacity;
-    }
-
-    if (
-      !isNil(stroke) &&
-      !Array.isArray(stroke) &&
-      !(stroke as CSSRGB).isNone
-    ) {
-      context.strokeStyle = object.attributes.stroke as string;
-    }
-
-    if (!isNil(fill) && !Array.isArray(fill) && !(fill as CSSRGB).isNone) {
-      context.fillStyle = object.attributes.fill as string;
-    }
-  }
-
   render(
     context: CanvasRenderingContext2D,
     parsedStyle: ParsedBaseStyleProps,
