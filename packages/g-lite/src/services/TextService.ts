@@ -333,8 +333,6 @@ export class TextService {
     }
   }
 
-  private setGraphemeOnPath() {}
-
   private wordWrap(
     text: string,
     parsedStyle: ParsedTextStyleProps,
@@ -374,6 +372,31 @@ export class TextService {
       return prev + calcWidth(cur);
     }, 0);
 
+    function appendEllipsis(lineIndex: number) {
+      // If there is not enough space to display the string itself, it is clipped.
+      // @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
+      if (ellipsisWidth <= 0 || ellipsisWidth > maxWidth) {
+        return;
+      }
+
+      // Backspace from line's end.
+      const currentLineLength = lines[lineIndex].length;
+      let lastLineWidth = 0;
+      let lastLineIndex = currentLineLength;
+      for (let i = 0; i < currentLineLength; i++) {
+        const width = calcWidth(lines[lineIndex][i]);
+        if (lastLineWidth + width + ellipsisWidth > maxWidth) {
+          lastLineIndex = i;
+          break;
+        }
+
+        lastLineWidth += width;
+      }
+
+      lines[lineIndex] =
+        (lines[lineIndex] || '').slice(0, lastLineIndex) + ellipsis;
+    }
+
     const chars = Array.from(text);
     for (let i = 0; i < chars.length; i++) {
       const char = chars[i];
@@ -388,6 +411,9 @@ export class TextService {
         // exceed maxLines, break immediately
         if (currentIndex >= maxLines) {
           parsedStyle.isOverflowing = true;
+
+          appendEllipsis(currentIndex - 1);
+
           break;
         }
 
@@ -400,26 +426,7 @@ export class TextService {
         if (currentIndex + 1 >= maxLines) {
           parsedStyle.isOverflowing = true;
 
-          // If there is not enough space to display the string itself, it is clipped.
-          // @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
-          if (ellipsisWidth > 0 && ellipsisWidth <= maxWidth) {
-            // Backspace from line's end.
-            const currentLineLength = lines[currentIndex].length;
-            let lastLineWidth = 0;
-            let lastLineIndex = currentLineLength;
-            for (let i = 0; i < currentLineLength; i++) {
-              const width = calcWidth(lines[currentIndex][i]);
-              if (lastLineWidth + width + ellipsisWidth > maxWidth) {
-                lastLineIndex = i;
-                break;
-              }
-
-              lastLineWidth += width;
-            }
-
-            lines[currentIndex] =
-              (lines[currentIndex] || '').slice(0, lastLineIndex) + ellipsis;
-          }
+          appendEllipsis(currentIndex);
 
           break;
         }
