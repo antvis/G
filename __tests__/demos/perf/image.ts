@@ -7,19 +7,49 @@ export async function image(context: { canvas: Canvas; gui: lil.GUI }) {
   console.log(canvas);
 
   const group = new Group();
+
+  // let image = new GImage({
+  //   style: {
+  //     x: 0,
+  //     y: 0,
+  //     // width: 100,
+  //     // height: 400,
+  //     // src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
+  //     // src: 'http://mmtcdp.stable.alipay.net/cto_designhubcore/afts/img/g1a5QYkvbcMAAAAAAAAAAAAADgLVAQBr/original',
+  //     src: 'https://mdn.alipayobjects.com/huamei_fr7vu1/afts/img/A*SqloToP7R9QAAAAAAAAAAAAADkn0AQ/original',
+  //     // src: 'https://freepngimg.com/download/svg/animal/10081.svg',
+  //   },
+  // });
+
+  // group.appendChild(image);
+
+  const img = new Image();
+  img.onload = () => {
+    console.log('onload', img.complete);
+    // let image = new GImage({
+    //   style: {
+    //     x: 0,
+    //     y: 0,
+    //     src: img,
+    //   },
+    // });
+    // group.appendChild(image);
+  };
+
   let image = new GImage({
     style: {
       x: 0,
       y: 0,
-      // width: 100,
-      // height: 400,
-      // src: 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ',
-      // src: 'http://mmtcdp.stable.alipay.net/cto_designhubcore/afts/img/g1a5QYkvbcMAAAAAAAAAAAAADgLVAQBr/original',
-      src: 'https://mdn.alipayobjects.com/huamei_fr7vu1/afts/img/A*SqloToP7R9QAAAAAAAAAAAAADkn0AQ/original',
+      src: img,
     },
   });
-
   group.appendChild(image);
+
+  // img.src = 'https://freepngimg.com/download/svg/animal/10081.svg';
+  img.src =
+    // 'https://gw.alipayobjects.com/mdn/rms_6ae20b/afts/img/A*N4ZMS7gHsUIAAAAAAAAAAABkARQnAQ';
+    'https://mdn.alipayobjects.com/huamei_fr7vu1/afts/img/A*SqloToP7R9QAAAAAAAAAAAAADkn0AQ/original';
+
   canvas.appendChild(group);
 
   // ---

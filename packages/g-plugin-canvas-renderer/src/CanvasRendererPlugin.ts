@@ -8,6 +8,8 @@ import type {
   ContextService,
   CanvasContext,
   GlobalRuntime,
+  CSSRGB,
+  ParsedBaseStyleProps,
 } from '@antv/g-lite';
 import {
   AABB,
@@ -18,6 +20,7 @@ import {
   Node,
 } from '@antv/g-lite';
 import { mat4, vec3 } from 'gl-matrix';
+import { isNil } from '@antv/util';
 import type { CanvasRendererPluginOptions } from './interfaces';
 import type { Plugin } from '.';
 
@@ -599,7 +602,7 @@ export class CanvasRendererPlugin implements RenderingPlugin {
       context.save();
 
       // apply attributes to context
-      styleRenderer.applyAttributesToContext(context, object);
+      this.applyAttributesToContext(context, object);
     }
 
     if (generatePath) {
@@ -631,6 +634,39 @@ export class CanvasRendererPlugin implements RenderingPlugin {
 
     // finish rendering, clear dirty flag
     object.renderable.dirty = false;
+  }
+
+  applyAttributesToContext(
+    context: CanvasRenderingContext2D,
+    object: DisplayObject,
+  ) {
+    const { stroke, fill, opacity, lineDash, lineDashOffset } =
+      object.parsedStyle as ParsedBaseStyleProps;
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
+    if (lineDash) {
+      context.setLineDash(lineDash);
+    }
+
+    // @see https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+    if (!isNil(lineDashOffset)) {
+      context.lineDashOffset = lineDashOffset;
+    }
+
+    if (!isNil(opacity)) {
+      context.globalAlpha *= opacity;
+    }
+
+    if (
+      !isNil(stroke) &&
+      !Array.isArray(stroke) &&
+      !(stroke as CSSRGB).isNone
+    ) {
+      context.strokeStyle = object.attributes.stroke as string;
+    }
+
+    if (!isNil(fill) && !Array.isArray(fill) && !(fill as CSSRGB).isNone) {
+      context.fillStyle = object.attributes.fill as string;
+    }
   }
 
   private convertAABB2Rect(aabb: AABB): Rect {

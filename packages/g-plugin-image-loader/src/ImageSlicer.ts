@@ -60,6 +60,7 @@ export class ImageSlicer {
     image: HTMLImageElement,
     sliceWidth: number,
     sliceHeight: number,
+    rerender: () => void,
     overlap = 0,
     api = ImageSlicer.api,
   ) {
@@ -123,6 +124,8 @@ export class ImageSlicer {
             tileY: row,
             data: sliceCanvas,
           };
+
+          rerender();
         });
       }
     }

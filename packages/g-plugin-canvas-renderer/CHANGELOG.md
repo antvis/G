@@ -1,5 +1,14 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.2.4
+
+### Patch Changes
+
+-   1de86a88: fix: rough canvas rendering error
+-   Updated dependencies [abebed9e]
+-   Updated dependencies [1de86a88]
+    -   @antv/g-plugin-image-loader@2.1.4
+
 ## 2.2.3
 
 ### Patch Changes

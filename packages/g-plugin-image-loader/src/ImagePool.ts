@@ -118,6 +118,10 @@ export class ImagePool {
 
       return new Promise((resolve, reject) => {
         imageCache.img.addEventListener('load', () => {
+          imageCache.size = [
+            imageCache.img.naturalWidth || imageCache.img.width,
+            imageCache.img.naturalHeight || imageCache.img.height,
+          ];
           imageCache.tileSize = calculateImageTileSize(imageCache.img);
           resolve(imageCache);
         });
@@ -223,6 +227,7 @@ export class ImagePool {
   async createImageTiles(
     src: Image['attributes']['src'],
     tiles: [number, number][],
+    rerender: () => void,
     ref: DisplayObject,
   ): Promise<ImageCache> {
     const imageCache = await this.getOrCreateImage(src, ref);
@@ -241,6 +246,7 @@ export class ImagePool {
         imageCache.img,
         imageCache.tileSize[0],
         imageCache.tileSize[0],
+        rerender,
       ),
     };
 
