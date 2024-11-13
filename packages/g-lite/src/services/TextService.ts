@@ -412,7 +412,9 @@ export class TextService {
         if (currentIndex >= maxLines) {
           parsedStyle.isOverflowing = true;
 
-          appendEllipsis(currentIndex - 1);
+          if (i < chars.length - 1) {
+            appendEllipsis(currentIndex - 1);
+          }
 
           break;
         }
