@@ -49,6 +49,7 @@ export class ImageRenderer extends DefaultRenderer {
         .createDownSampledImage(src, object)
         .then((res) => {
           // rerender
+          // object.dirty();
           object.renderable.dirty = true;
           object.ownerDocument.defaultView.context.renderingService.dirtify();
         })
@@ -87,12 +88,17 @@ export class ImageRenderer extends DefaultRenderer {
 
     if (!imageCache?.gridSize) {
       this.imagePool
-        .createImageTiles(src, [], object)
-        .then(() => {
-          // rerender
-          object.renderable.dirty = true;
-          object.ownerDocument.defaultView.context.renderingService.dirtify();
-        })
+        .createImageTiles(
+          src,
+          [],
+          () => {
+            // rerender
+            // object.dirty();
+            object.renderable.dirty = true;
+            object.ownerDocument.defaultView.context.renderingService.dirtify();
+          },
+          object,
+        )
         .catch(() => {
           //
         });
