@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.3
+
+### Patch Changes
+
+-   ad11268d: fix: ellipses are not displayed when the text contains line breaks
+
 ## 2.2.2
 
 ### Patch Changes
