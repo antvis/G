@@ -12,6 +12,8 @@ export interface DirectionalLightProps extends LightProps {
 }
 
 export class DirectionalLight extends Light {
+  static PARSED_STYLE_LIST = new Set([...Light.PARSED_STYLE_LIST, 'direction']);
+
   define = 'NUM_DIR_LIGHTS';
   order = 10;
 
