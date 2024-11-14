@@ -8,3 +8,4 @@ export { gradient_text } from './1572';
 export { zoom } from './1667';
 export { test_pick } from './1747';
 export { issue_1760 } from './1760';
+export { textWordWrap } from './textWordWrap';
