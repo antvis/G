@@ -187,9 +187,12 @@ export class RenderCache {
     let renderPipeline = this.renderPipelinesCache.get(descriptor);
     if (renderPipeline === null) {
       const descriptorCopy = renderPipelineDescriptorCopy(descriptor);
-      descriptorCopy.colorAttachmentFormats =
-        descriptorCopy.colorAttachmentFormats.filter((f) => f);
-      renderPipeline = this.device.createRenderPipeline(descriptorCopy);
+      renderPipeline = this.device.createRenderPipeline({
+        ...descriptorCopy,
+        colorAttachmentFormats: descriptor.colorAttachmentFormats.filter(
+          (f) => f,
+        ),
+      });
       this.renderPipelinesCache.add(descriptorCopy, renderPipeline);
     }
     return renderPipeline;
