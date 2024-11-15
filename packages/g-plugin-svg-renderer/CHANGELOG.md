@@ -1,5 +1,12 @@
 # @antv/g-plugin-svg-renderer
 
+## 2.2.4
+
+### Patch Changes
+
+-   Updated dependencies [252427f5]
+    -   @antv/g-lite@2.2.4
+
 ## 2.2.3
 
 ### Patch Changes

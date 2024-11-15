@@ -1,5 +1,14 @@
 # @antv/g-plugin-3d
 
+## 2.0.29
+
+### Patch Changes
+
+-   f3fe467c: fix directional light error
+-   Updated dependencies [252427f5]
+    -   @antv/g-lite@2.2.4
+    -   @antv/g-plugin-device-renderer@2.2.6
+
 ## 2.0.28
 
 ### Patch Changes

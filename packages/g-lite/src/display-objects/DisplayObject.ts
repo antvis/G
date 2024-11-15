@@ -227,10 +227,7 @@ export class DisplayObject<
     const cloned = new (this.constructor as ConstructorTypeOf<DisplayObject>)({
       // copy id & name
       // @see https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode#notes
-      id: this.id,
-      name: this.name,
-      className: this.name,
-      interactive: this.interactive,
+      ...this.config,
       style: clonedStyle,
     });
 
