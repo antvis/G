@@ -1,5 +1,14 @@
 # @antv/g-plugin-canvas-picker
 
+## 2.1.6
+
+### Patch Changes
+
+-   Updated dependencies [252427f5]
+    -   @antv/g-lite@2.2.4
+    -   @antv/g-plugin-canvas-path-generator@2.1.4
+    -   @antv/g-plugin-canvas-renderer@2.2.6
+
 ## 2.1.5
 
 ### Patch Changes

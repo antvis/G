@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-box2d",
-  "version": "2.0.19",
+  "version": "2.0.20",
   "description": "A G plugin for Box2D",
   "keywords": [
     "antv",
