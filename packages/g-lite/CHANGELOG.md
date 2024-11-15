@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.4
+
+### Patch Changes
+
+-   252427f5: cloneNode copy complete config
+
 ## 2.2.3
 
 ### Patch Changes
