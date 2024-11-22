@@ -115,7 +115,7 @@
     "tinybench": "^3.0.3",
     "ts-jest": "^29.1.1",
     "typescript": "^5.6.2",
-    "vite": "^3.2.7",
+    "vite": "^4.5.5",
     "webfontloader": "^1.6.28"
   },
   "limit-size": [
