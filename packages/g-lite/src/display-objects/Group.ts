@@ -26,9 +26,18 @@ export interface ParsedGroupStyleProps extends ParsedBaseStyleProps {
  */
 export class Group extends DisplayObject {
   static PARSED_STYLE_LIST: Set<string> = new Set([
-    ...DisplayObject.PARSED_STYLE_LIST,
-    'width',
-    'height',
+    'class',
+    'className',
+    'clipPath',
+    'cursor',
+    'draggable',
+    'droppable',
+    'opacity',
+    'pointerEvents',
+    'transform',
+    'transformOrigin',
+    'zIndex',
+    'visibility',
   ]);
 
   constructor(options: DisplayObjectConfig<GroupStyleProps> = {}) {
