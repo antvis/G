@@ -2,7 +2,7 @@ import { isNil, isUndefined } from '@antv/util';
 import { vec3 } from 'gl-matrix';
 import type { DisplayObject } from '../display-objects';
 import { EMPTY_PARSED_PATH } from '../display-objects/constants';
-import { runtime, type GlobalRuntime } from '../global-runtime';
+import type { GlobalRuntime } from '../global-runtime';
 import { GeometryAABBUpdater } from '../services';
 import { AABB } from '../shapes';
 import type { BaseStyleProps, Tuple3Number } from '../types';
@@ -1007,11 +1007,6 @@ function assignParsedStyle(
   object: DisplayObject,
   attributes: Record<string, any>,
 ) {
-  if (!runtime.enableMassiveParsedStyleAssignOptimization) {
-    Object.assign(object.parsedStyle, attributes);
-    return;
-  }
-
   const list = getParsedStyleListOf(object);
   for (const key in attributes) {
     if (list.has(key)) {

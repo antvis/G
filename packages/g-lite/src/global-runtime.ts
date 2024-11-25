@@ -73,12 +73,6 @@ export interface GlobalRuntime {
   enableStyleSyntax: boolean;
 
   enableSizeAttenuation: boolean;
-
-  /**
-   * Only clone properties that are listed in the `PARSED_STYLE_LIST` of the display object.
-   * default false
-   */
-  enableMassiveParsedStyleAssignOptimization?: boolean;
 }
 
 /**

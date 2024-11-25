@@ -3,8 +3,6 @@ import { Group, Path, Rect, runtime } from '@antv/g';
 export async function group_with_stroke(context) {
   const { canvas } = context;
 
-  runtime.enableMassiveParsedStyleAssignOptimization = true;
-
   await canvas.ready;
 
   const group = new Group({
