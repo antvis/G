@@ -1,5 +1,12 @@
 # @antv/g-dom-mutation-observer-api
 
+## 2.0.21
+
+### Patch Changes
+
+-   Updated dependencies [a2b137e]
+    -   @antv/g-lite@2.2.5
+
 ## 2.0.20
 
 ### Patch Changes

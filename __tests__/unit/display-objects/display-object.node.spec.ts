@@ -213,7 +213,7 @@ describe('DisplayObject Node API', () => {
       group1.find(() => {
         return true;
       }),
-    ).toBe(group4);
+    ).toBe(group2);
 
     expect(
       group1.findAll(() => {

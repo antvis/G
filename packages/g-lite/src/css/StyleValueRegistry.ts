@@ -672,21 +672,23 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       }
     }
 
-    if (attributes.fill) {
+    const list = getParsedStyleListOf(object);
+
+    if (list.has('fill') && attributes.fill) {
       object.parsedStyle.fill = parseColor(attributes.fill);
     }
-    if (attributes.stroke) {
+    if (list.has('stroke') && attributes.stroke) {
       object.parsedStyle.stroke = parseColor(attributes.stroke);
     }
-    if (attributes.shadowColor) {
+    if (list.has('shadowColor') && attributes.shadowColor) {
       object.parsedStyle.shadowColor = parseColor(attributes.shadowColor);
     }
-    if (attributes.filter) {
+    if (list.has('filter') && attributes.filter) {
       object.parsedStyle.filter = parseFilter(attributes.filter);
     }
     // Rect
     // @ts-ignore
-    if (!isNil(attributes.radius)) {
+    if (list.has('radius') && !isNil(attributes.radius)) {
       // @ts-ignore
       object.parsedStyle.radius = parseDimensionArrayFormat(
         // @ts-ignore
@@ -695,33 +697,33 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
     // Polyline
-    if (!isNil(attributes.lineDash)) {
+    if (list.has('lineDash') && !isNil(attributes.lineDash)) {
       object.parsedStyle.lineDash = parseDimensionArrayFormat(
         attributes.lineDash,
         2,
       );
     }
     // @ts-ignore
-    if (attributes.points) {
+    if (list.has('points') && attributes.points) {
       // @ts-ignore
       object.parsedStyle.points = parsePoints(attributes.points, object);
     }
     // Path
     // @ts-ignore
-    if (attributes.d === '') {
+    if (list.has('d') && attributes.d === '') {
       object.parsedStyle.d = {
         ...EMPTY_PARSED_PATH,
       };
     }
     // @ts-ignore
-    if (attributes.d) {
+    if (list.has('d') && attributes.d) {
       object.parsedStyle.d = parsePath(
         // @ts-ignore
         attributes.d,
       );
     }
     // Text
-    if (attributes.textTransform) {
+    if (list.has('textTransform') && attributes.textTransform) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.TEXT_TRANSFORM
       ].calculator(
@@ -732,7 +734,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         null,
       );
     }
-    if (!isUndefined(attributes.clipPath)) {
+    if (list.has('clipPath') && !isUndefined(attributes.clipPath)) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.DEFINED_PATH
       ].calculator(
@@ -743,7 +745,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         this.runtime,
       );
     }
-    if (attributes.offsetPath) {
+    if (list.has('offsetPath') && attributes.offsetPath) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.DEFINED_PATH
       ].calculator(
@@ -754,17 +756,17 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
         this.runtime,
       );
     }
-    if (attributes.transform) {
+    if (list.has('transform') && attributes.transform) {
       object.parsedStyle.transform = parseTransform(attributes.transform);
     }
-    if (attributes.transformOrigin) {
+    if (list.has('transformOrigin') && attributes.transformOrigin) {
       object.parsedStyle.transformOrigin = parseTransformOrigin(
         attributes.transformOrigin,
       );
     }
     // Marker
     // @ts-ignore
-    if (attributes.markerStart) {
+    if (list.has('markerStart') && attributes.markerStart) {
       object.parsedStyle.markerStart = this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.MARKER
       ].calculator(
@@ -778,7 +780,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
     // @ts-ignore
-    if (attributes.markerEnd) {
+    if (list.has('markerEnd') && attributes.markerEnd) {
       object.parsedStyle.markerEnd = this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.MARKER
       ].calculator(
@@ -792,7 +794,7 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
     // @ts-ignore
-    if (attributes.markerMid) {
+    if (list.has('markerMid') && attributes.markerMid) {
       object.parsedStyle.markerMid = this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.MARKER
       ].calculator(
@@ -806,22 +808,22 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
       );
     }
 
-    if (!isNil(attributes.zIndex)) {
+    if (list.has('zIndex') && !isNil(attributes.zIndex)) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.Z_INDEX
       ].postProcessor(object);
     }
-    if (!isNil(attributes.offsetDistance)) {
+    if (list.has('offsetDistance') && !isNil(attributes.offsetDistance)) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.OFFSET_DISTANCE
       ].postProcessor(object);
     }
-    if (attributes.transform) {
+    if (list.has('transform') && attributes.transform) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.TRANSFORM
       ].postProcessor(object);
     }
-    if (attributes.transformOrigin) {
+    if (list.has('transformOrigin') && attributes.transformOrigin) {
       this.runtime.CSSPropertySyntaxFactory[
         PropertySyntax.TRANSFORM_ORIGIN
       ].postProcessor(object);
@@ -1010,10 +1012,14 @@ function assignParsedStyle(
     return;
   }
 
-  const list = (object.constructor as typeof DisplayObject).PARSED_STYLE_LIST;
+  const list = getParsedStyleListOf(object);
   for (const key in attributes) {
     if (list.has(key)) {
       object.parsedStyle[key] = attributes[key];
     }
   }
+}
+
+function getParsedStyleListOf(object: DisplayObject) {
+  return (object.constructor as typeof DisplayObject).PARSED_STYLE_LIST;
 }

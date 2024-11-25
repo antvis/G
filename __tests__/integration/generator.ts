@@ -45,7 +45,7 @@ export function generateCanvasTestCase(
 
         // Chart already rendered, capture into buffer.
         const buffer = await page
-          .locator(renderer === 'svg' ? 'svg' : 'canvas')
+          .locator(`#container ${renderer === 'svg' ? 'svg' : 'canvas'}`)
           .screenshot();
 
         const dir = `${__dirname}/snapshots/${namespace}/${renderer}`;

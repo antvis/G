@@ -19,8 +19,10 @@ describe('Abstract renderer', () => {
       enableAutoRendering: false,
       enableDirtyCheck: true,
       enableCulling: false,
+      enableRenderingOptimization: false,
       enableDirtyRectangleRendering: true,
       enableDirtyRectangleRenderingDebug: false,
+      enableRenderingOptimization: false,
       enableSizeAttenuation: true,
     });
 
