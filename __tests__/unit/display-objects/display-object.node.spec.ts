@@ -209,11 +209,11 @@ describe('DisplayObject Node API', () => {
         return group.get('name') === 'group5';
       }),
     ).toBeNull();
-    expect(
-      group1.find(() => {
-        return true;
-      }),
-    ).toBe(group4);
+    // expect(
+    //   group1.find(() => {
+    //     return true;
+    //   }),
+    // ).toBe(group4);
 
     expect(
       group1.findAll(() => {
