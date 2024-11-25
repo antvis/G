@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.6
+
+### Patch Changes
+
+-   4fa49f3: set enableMassiveParsedStyleAssignOptimization to default
+
 ## 2.2.5
 
 ### Patch Changes
