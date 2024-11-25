@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.5
+
+### Patch Changes
+
+-   a2b137e: fix: fix incorrect bounds calculate when pass stroke and lineWidth to group
+
 ## 2.2.4
 
 ### Patch Changes
