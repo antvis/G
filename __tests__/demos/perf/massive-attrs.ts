@@ -3,8 +3,6 @@ import { Rect, runtime } from '@antv/g';
 export async function massiveAttrs(context) {
   const { canvas, gui } = context;
 
-  runtime.enableMassiveParsedStyleAssignOptimization = true;
-
   await canvas.ready;
 
   console.time('massiveAttrs');
