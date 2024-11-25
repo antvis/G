@@ -155,10 +155,11 @@ plot();
 async function plot() {
   if (currentContainer) {
     currentContainer.remove();
-    if (canvas) canvas.destroy(false, true);
+    if (canvas) canvas.destroy();
     if (prevAfter) prevAfter();
   }
   currentContainer = document.createElement('div');
+  currentContainer.id = 'container';
   app.append(currentContainer);
   const render = tests[selectChart.value];
   render?.(currentContainer);
@@ -233,7 +234,7 @@ function createSpecRender(object) {
       $stats.style.position = 'fixed';
       $stats.style.left = '2px';
       $stats.style.top = '2px';
-      // document.body.appendChild($stats);
+      document.body.appendChild($stats);
 
       // GUI
       const gui = new lil.GUI({ autoPlace: false });
