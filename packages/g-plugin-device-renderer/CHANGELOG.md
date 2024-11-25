@@ -1,5 +1,14 @@
 # @antv/g-plugin-device-renderer
 
+## 2.2.7
+
+### Patch Changes
+
+-   6167ea0: fix: fixed the issue where RenderCache could not cache RenderPipeline
+-   Updated dependencies [a2b137e]
+    -   @antv/g-lite@2.2.5
+    -   @antv/g-plugin-image-loader@2.1.7
+
 ## 2.2.6
 
 ### Patch Changes
