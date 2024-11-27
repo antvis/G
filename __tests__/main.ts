@@ -155,7 +155,7 @@ plot();
 async function plot() {
   if (currentContainer) {
     currentContainer.remove();
-    if (canvas) canvas.destroy();
+    if (canvas) canvas.destroy(false);
     if (prevAfter) prevAfter();
   }
   currentContainer = document.createElement('div');
