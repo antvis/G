@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-svg-renderer",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "A G plugin of renderer implementation with SVG",
   "keywords": [
     "antv",
