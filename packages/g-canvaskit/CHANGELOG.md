@@ -1,5 +1,18 @@
 # @antv/g-canvaskit
 
+## 1.0.30
+
+### Patch Changes
+
+-   Updated dependencies [1fb7ecc]
+    -   @antv/g-lite@2.2.8
+    -   @antv/g-plugin-canvas-path-generator@2.1.8
+    -   @antv/g-plugin-canvas-picker@2.1.10
+    -   @antv/g-plugin-canvaskit-renderer@2.1.10
+    -   @antv/g-plugin-dom-interaction@2.1.13
+    -   @antv/g-plugin-html-renderer@2.1.13
+    -   @antv/g-plugin-image-loader@2.1.10
+
 ## 1.0.29
 
 ### Patch Changes

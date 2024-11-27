@@ -11,6 +11,21 @@ export interface BaseCustomElementStyleProps extends BaseStyleProps {}
 export abstract class CustomElement<
   CustomElementStyleProps,
 > extends DisplayObject<CustomElementStyleProps & BaseCustomElementStyleProps> {
+  static PARSED_STYLE_LIST: Set<string> = new Set([
+    'class',
+    'className',
+    'clipPath',
+    'cursor',
+    'draggable',
+    'droppable',
+    'opacity',
+    'pointerEvents',
+    'transform',
+    'transformOrigin',
+    'zIndex',
+    'visibility',
+  ]);
+
   isCustomElement = true;
 
   // private shadowNodes: DisplayObject[] = [];
