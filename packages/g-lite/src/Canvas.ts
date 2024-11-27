@@ -394,12 +394,10 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   /**
-   * `cleanUp` means clean all the internal services of Canvas which happens when calling `canvas.destroy()`.
+   * @param cleanUp - whether to clean up all the internal services of Canvas
+   * @param skipTriggerEvent - whether to skip trigger destroy event
    */
   destroy(cleanUp = true, skipTriggerEvent?: boolean) {
-    if (skipTriggerEvent === undefined)
-      skipTriggerEvent = this.getConfig().fastCleanExistingCanvas;
-
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }
@@ -409,9 +407,9 @@ export class Canvas extends EventTarget implements ICanvas {
 
     // unmount all children
     const root = this.getRoot();
-    this.unmountChildren(root);
 
     if (cleanUp) {
+      this.unmountChildren(root);
       // destroy Document
       this.document.destroy();
       this.getEventService().destroy();
@@ -421,8 +419,8 @@ export class Canvas extends EventTarget implements ICanvas {
     this.getRenderingService().destroy();
     this.getContextService().destroy();
 
-    // clear root after renderservice destroyed
-    if (cleanUp && this.context.rBushRoot) {
+    // clear root after render service destroyed
+    if (this.context.rBushRoot) {
       // clear rbush
       this.context.rBushRoot.clear();
       this.context.rBushRoot = null;
