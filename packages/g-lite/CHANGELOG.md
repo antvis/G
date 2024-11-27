@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.6
+
+### Patch Changes
+
+-   8159c66: refactor: adjust destroy clean-up logic
+
 ## 2.2.5
 
 ### Patch Changes

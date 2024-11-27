@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-canvas-picker",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "description": "A G plugin for picking in canvas",
   "keywords": [
     "antv",
