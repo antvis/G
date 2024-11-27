@@ -1,5 +1,12 @@
 # @antv/g-camera-api
 
+## 2.0.28
+
+### Patch Changes
+
+-   Updated dependencies [840bf90]
+    -   @antv/g-lite@2.2.9
+
 ## 2.0.27
 
 ### Patch Changes
