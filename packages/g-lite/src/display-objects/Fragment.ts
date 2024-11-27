@@ -11,6 +11,8 @@ import { DisplayObject } from './DisplayObject';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
  */
 export class Fragment extends DisplayObject {
+  static PARSED_STYLE_LIST = new Set<string>(['class', 'className']);
+
   constructor() {
     super({ type: Shape.FRAGMENT });
   }
