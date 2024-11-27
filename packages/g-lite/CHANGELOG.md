@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.8
+
+### Patch Changes
+
+-   1fb7ecc: fix: fix custom element with stroke may cause bounds error
+
 ## 2.2.7
 
 ### Patch Changes
