@@ -1,11 +1,13 @@
-import { Group, Path, Rect, runtime } from '@antv/g';
+import { Group, Path, Rect, runtime, CustomElement } from '@antv/g';
 
 export async function group_with_stroke(context) {
   const { canvas } = context;
 
   await canvas.ready;
 
-  const group = new Group({
+  class CustomGroup extends CustomElement<any> {}
+
+  const group = new CustomGroup({
     style: {
       stroke: 'red',
       lineWidth: 6,
@@ -28,24 +30,37 @@ export async function group_with_stroke(context) {
 
   canvas.appendChild(group);
 
-  const bounds = group.getRenderBounds();
+  let rect;
 
-  const {
-    min: [minX, minY],
-    max: [maxX, maxY],
-  } = bounds;
-  const width = maxX - minX;
-  const height = maxY - minY;
-  const rect = new Rect({
-    style: {
+  const upsert = () => {
+    const {
+      min: [minX, minY],
+      max: [maxX, maxY],
+    } = group.getRenderBounds();
+    const width = maxX - minX;
+    const height = maxY - minY;
+    const style = {
       x: minX,
       y: minY,
       width,
       height,
       fill: 'green',
       fillOpacity: 0.1,
-    },
-  });
+      zIndex: -1,
+    };
 
-  canvas.appendChild(rect);
+    if (!rect) {
+      rect = new Rect({ style });
+      canvas.appendChild(rect);
+    } else {
+      rect.attr(style);
+    }
+  };
+
+  upsert();
+
+  Object.assign(window, {
+    upsert,
+    group,
+  });
 }
