@@ -423,8 +423,6 @@ export class Canvas extends EventTarget implements ICanvas {
     if (this.context.rBushRoot) {
       // clear rbush
       this.context.rBushRoot.clear();
-      this.context.rBushRoot = null;
-      this.context.renderingContext.root = null;
     }
 
     if (!skipTriggerEvent) {
