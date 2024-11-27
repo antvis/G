@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.7
+
+### Patch Changes
+
+-   f486a46: refactor: adjust destroy clean-up logic
+
 ## 2.2.6
 
 ### Patch Changes
