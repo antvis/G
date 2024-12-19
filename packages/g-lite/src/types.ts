@@ -11,6 +11,7 @@ import type {
   Pattern,
 } from './css/parser';
 import type { DisplayObject } from './display-objects';
+import type { IWindow } from './dom/interfaces';
 
 export enum Shape {
   GROUP = 'g',
@@ -488,47 +489,46 @@ export interface CanvasLike extends EventTarget {
     ) => void);
 }
 
-export interface CanvasConfig {
+export interface CanvasConfig extends Partial<Omit<IWindow, 'customElements'>> {
+  /**
+   * When the renderer is initialized, a `<canvas>/<svg>` element is automatically
+   * created inside the container DOM element.
+   */
+  container?: string | HTMLElement;
+  /**
+   * When this parameter is passed, the `container` parameter will be ignored.
+   *
+   * - support OffscreenCanvas
+   */
+  canvas?: CanvasLike;
   /**
    * Renderer
+   *
+   * @see https://g.antv.antgroup.com/api/renderer/intro
    */
   renderer: IRenderer;
 
   /**
-   * document.getElementById(container);
+   * 画布宽度
    */
-  container?: string | HTMLElement;
+  width?: number;
+  /**
+   * 画布高度
+   */
+  height?: number;
+  /**
+   * 画布背景色
+   */
+  background?: ColorType;
+  /**
+   * cursor style
+   */
+  cursor?: Cursor;
 
   /**
-   * support OffscreenCanvas
+   * One container can have multiple canvases inside.
    */
-  canvas?: CanvasLike;
-
-  /**
-   * used in JSDOM
-   */
-  document?: Document;
-
-  /**
-   * used in text measurement & texture generation
-   */
-  offscreenCanvas?: CanvasLike;
-
-  /**
-   * window.devicePixelRatio
-   */
-  devicePixelRatio?: number;
-
-  /**
-   * rAF
-   */
-  requestAnimationFrame?: (callback: FrameRequestCallback) => number;
-  cancelAnimationFrame?: (id: number) => void;
-
-  /**
-   * replace `new window.Image()`
-   */
-  createImage?: (src: string) => HTMLImageElement;
+  supportsMutipleCanvasesInOneContainer?: boolean;
   /**
    * Optimize rendering performance for high-resolution large images
    */
@@ -551,20 +551,6 @@ export interface CanvasConfig {
       };
 
   /**
-   * limits query
-   */
-  supportsPointerEvents?: boolean;
-  // supportMouseEvent?: () => boolean;
-  supportsTouchEvents?: boolean;
-  isTouchEvent?: (event: InteractivePointerEvent) => event is TouchEvent;
-  isMouseEvent?: (event: InteractivePointerEvent) => event is MouseEvent;
-
-  /**
-   * double click speed (ms), default is 200ms
-   */
-  dblClickSpeed?: number;
-
-  /**
    * Listen to native click event instead of mocking with pointerup & down events.
    */
   useNativeClickEvent?: boolean;
@@ -585,41 +571,28 @@ export interface CanvasConfig {
   disableRenderHooks?: boolean;
 
   /**
-   * Should we account for CSS Transform applied on container? Enabled by default.
-   * @deprecated
-   */
-  supportsCSSTransform?: boolean;
-
-  /**
-   * One container can have multiple canvases inside.
-   */
-  supportsMutipleCanvasesInOneContainer?: boolean;
-
-  /**
    * 销毁画布时是否执行清理操作
    */
   cleanUpOnDestroy?: boolean;
 
   /**
-   * 画布宽度
+   * used in JSDOM
    */
-  width?: number;
+  document?: Document;
   /**
-   * 画布高度
+   * used in text measurement & texture generation
    */
-  height?: number;
-
+  offscreenCanvas?: CanvasLike;
   /**
-   * 画布背景色
+   * replace `new window.Image()`
    */
-  background?: ColorType;
-
+  createImage?: () => HTMLImageElement;
   /**
-   * 画布的 cursor 样式
+   * double click speed (ms)
+   *
+   * - default is 200ms
    */
-  cursor?: Cursor;
-
-  [key: string]: any;
+  dblClickSpeed?: number;
 }
 
 /**

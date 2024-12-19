@@ -1,4 +1,3 @@
-import EventEmitter from 'eventemitter3';
 import { mat4, vec3 } from 'gl-matrix';
 import type { CanvasContext, GlobalRuntime, InteractivePointerEvent } from '..';
 import type { HTML } from '../display-objects';
@@ -47,8 +46,6 @@ export class EventService {
 
   private rootTarget: IEventTarget;
 
-  private emitter = new EventEmitter();
-
   /**
    * Store HTML elements in current canvas.
    */
@@ -88,7 +85,6 @@ export class EventService {
   }
 
   destroy() {
-    this.emitter.removeAllListeners();
     this.mappingTable = {};
     this.mappingState = {};
     this.eventPool.clear();
@@ -317,7 +313,7 @@ export class EventService {
 
       if (
         clickHistory.target === clickEvent.target &&
-        now - clickHistory.timeStamp < canvas.dblClickSpeed
+        now - clickHistory.timeStamp < canvas.getConfig().dblClickSpeed
       ) {
         ++clickHistory.clickCount;
       } else {
@@ -650,8 +646,6 @@ export class EventService {
       e.currentTarget = canvas;
       this.notifyListeners(e, type);
     }
-
-    this.emitter.emit(type || e.type, e);
   }
 
   propagate(e: FederatedEvent, type?: string) {

@@ -7,7 +7,7 @@ import type {
   CanvasConfig,
   ContextService,
 } from '@antv/g-lite';
-import { RenderReason, isBrowser, setDOMSize } from '@antv/g-lite';
+import { RenderReason, setDOMSize } from '@antv/g-lite';
 import { isString } from '@antv/util';
 
 export class Canvas2DContextService
@@ -92,11 +92,7 @@ export class Canvas2DContextService
   }
 
   resize(width: number, height: number) {
-    const { devicePixelRatio } = this.canvasConfig;
-
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+    const { devicePixelRatio: dpr } = this.canvasConfig;
     this.dpr = dpr;
 
     if (this.$canvas) {

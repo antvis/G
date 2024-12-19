@@ -23,7 +23,6 @@ export async function shadowroot_offset(context) {
         width: 500,
         height: 500,
         renderer: new Renderer(),
-        supportsCSSTransform: true,
       });
 
       const circle = new Circle({

@@ -133,6 +133,24 @@ canvas = new Canvas({
 canvas.setCursor('crosshair');
 ```
 
+## supportsMutipleCanvasesInOneContainer
+
+可选。是否支持一个 container 下容纳多个画布，默认为 false。
+
+[示例](/zh/examples/canvas/container/#shared-container)
+
+## enableLargeImageOptimization <Badge>6.1.1</Badge>
+
+`boolean`
+
+可选，默认为 `false`。开启高分辨率大图渲染与交互优化，通过降采样与切片渲染策略使得上亿像素的大图也能流畅渲染和交互。
+
+:::warning{title=限制}
+
+目前仅在原生 Canvas 渲染器中实现。
+
+:::
+
 ## 特殊运行平台适配
 
 在一些特殊的运行平台（例如小程序）上，无法正常使用类似 [globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) 这样的全局变量，而在内部我们又需要依靠它创建图片（`new globalThis.Image()`）、判断是否支持 TouchEvent（`'ontouchstart' in globalThis`）等。因此需要这些特殊平台的使用者手动传入特有的创建以及判断方式。
@@ -165,18 +183,6 @@ const canvas = new Canvas({
     createImage: () => canvas.createImage(),
 });
 ```
-
-### enableLargeImageOptimization <Badge>6.1.1</Badge>
-
-`boolean`
-
-可选，默认为 `false`。开启高分辨率大图渲染与交互优化，通过降采样与切片渲染策略使得上亿像素的大图也能流畅渲染和交互。
-
-:::warning{title=限制}
-
-目前仅在原生 Canvas 渲染器中实现。
-
-:::
 
 ### supportsCSSTransform
 
@@ -230,12 +236,6 @@ const canvas = new Canvas({
     },
 });
 ```
-
-### supportsMutipleCanvasesInOneContainer
-
-可选。是否支持一个 container 下容纳多个画布，默认为 false。
-
-[示例](/zh/examples/canvas/container/#shared-container)
 
 ## 修改初始化配置
 

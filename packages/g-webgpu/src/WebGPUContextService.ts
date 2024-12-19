@@ -6,7 +6,7 @@ import type {
   CanvasConfig,
   ContextService,
 } from '@antv/g-lite';
-import { isBrowser, setDOMSize } from '@antv/g-lite';
+import { setDOMSize } from '@antv/g-lite';
 import type * as DeviceRenderer from '@antv/g-plugin-device-renderer';
 import { isString } from '@antv/util';
 
@@ -85,9 +85,7 @@ export class WebGPUContextService implements ContextService<GPUCanvasContext> {
 
   resize(width: number, height: number) {
     // use user-defined dpr first
-    const { devicePixelRatio } = this.canvasConfig;
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+    const { devicePixelRatio: dpr } = this.canvasConfig;
     this.dpr = dpr;
 
     if (this.$canvas) {

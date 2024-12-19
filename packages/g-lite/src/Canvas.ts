@@ -82,61 +82,30 @@ const afterRenderEvent = new CustomEvent(CanvasEvent.AFTER_RENDER);
  * * `window.devicePixelRatio`
  *
  * prototype chains: Canvas(Window) -> EventTarget
+ *
+ * @docs https://g.antv.antgroup.com/api/canvas/intro
  */
 export class Canvas extends EventTarget implements ICanvas {
+  // #region environment
+  customElements: ICanvas['customElements'];
+  devicePixelRatio: ICanvas['devicePixelRatio'];
+  requestAnimationFrame: ICanvas['requestAnimationFrame'];
+  cancelAnimationFrame: ICanvas['cancelAnimationFrame'];
+  supportsTouchEvents: ICanvas['supportsTouchEvents'];
+  supportsPointerEvents: ICanvas['supportsPointerEvents'];
+  isTouchEvent: ICanvas['isTouchEvent'];
+  isMouseEvent: ICanvas['isMouseEvent'];
+
   /**
    * window.document
    */
   document: Document;
 
   /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry
-   */
-  customElements: CustomElementRegistry;
-
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-   */
-  requestAnimationFrame: (callback: FrameRequestCallback) => number;
-
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
-   */
-  cancelAnimationFrame: (handle: number) => void;
-
-  /**
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
-   */
-  devicePixelRatio: number;
-
-  /**
-   * whether the runtime supports PointerEvent?
-   * if not, the event system won't trigger pointer events like `pointerdown`
-   */
-  supportsPointerEvents: boolean;
-
-  /**
-   * whether the runtime supports TouchEvent?
-   * if not, the event system won't trigger touch events like `touchstart`
-   */
-  supportsTouchEvents: boolean;
-
-  /**
-   * is this native event a TouchEvent?
-   */
-  isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
-
-  /**
-   * is this native event a MouseEvent?
-   */
-  isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
-
-  dblClickSpeed?: CanvasConfig['dblClickSpeed'];
-
-  /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element
    */
   Element = DisplayObject;
+  // #endregion environment
 
   /**
    * rAF in auto rendering
@@ -152,73 +121,48 @@ export class Canvas extends EventTarget implements ICanvas {
   constructor(config: CanvasConfig) {
     super();
 
-    // create document
-    this.document = new Document();
-    this.document.defaultView = this;
-
-    // create registry of custom elements
-    this.customElements = new CustomElementRegistry();
-
     const {
       container,
       canvas,
-      offscreenCanvas,
+      renderer,
       width,
       height,
-      devicePixelRatio,
-      renderer,
       background,
       cursor,
-      document,
+      supportsMutipleCanvasesInOneContainer,
+      cleanUpOnDestroy = true,
+      offscreenCanvas,
+      devicePixelRatio,
       requestAnimationFrame,
       cancelAnimationFrame,
       createImage,
-      enableLargeImageOptimization,
-      supportsPointerEvents,
       supportsTouchEvents,
-      supportsCSSTransform,
-      cleanUpOnDestroy = true,
-      supportsMutipleCanvasesInOneContainer,
-      useNativeClickEvent,
-      alwaysTriggerPointerEventOnCanvas,
+      supportsPointerEvents,
       isTouchEvent,
       isMouseEvent,
       dblClickSpeed,
     } = config;
-
-    if (!supportsMutipleCanvasesInOneContainer) {
-      cleanExistedCanvas(container, this, cleanUpOnDestroy);
-    }
-
     let canvasWidth = width;
     let canvasHeight = height;
-    let dpr = devicePixelRatio;
+    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
+    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
+
     // use user-defined <canvas> or OffscreenCanvas
     if (canvas) {
       // infer width & height with dpr
-      dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-      dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
       canvasWidth = width || getWidth(canvas) || canvas.width / dpr;
       canvasHeight = height || getHeight(canvas) || canvas.height / dpr;
-    }
-
-    // override it in runtime
-    if (offscreenCanvas) {
-      runtime.offscreenCanvas = offscreenCanvas;
     }
 
     /**
      * implements `Window` interface
      */
+    this.customElements = new CustomElementRegistry();
     this.devicePixelRatio = dpr;
     this.requestAnimationFrame =
-      requestAnimationFrame ?? raf.bind(runtime.globalThis);
+      requestAnimationFrame ?? (raf.bind(runtime.globalThis) as typeof raf);
     this.cancelAnimationFrame =
-      cancelAnimationFrame ?? caf.bind(runtime.globalThis);
-
-    /**
-     * limits query
-     */
+      cancelAnimationFrame ?? (caf.bind(runtime.globalThis) as typeof caf);
     // the following feature-detect from hammer.js
     // @see https://github.com/hammerjs/hammer.js/blob/master/src/inputjs/input-consts.js#L5
     this.supportsTouchEvents =
@@ -238,25 +182,35 @@ export class Canvas extends EventTarget implements ICanvas {
           (!this.supportsPointerEvents ||
             !(event instanceof runtime.globalThis.PointerEvent))));
 
-    this.dblClickSpeed = dblClickSpeed ?? 200;
+    // override it in runtime
+    if (offscreenCanvas) {
+      runtime.offscreenCanvas = offscreenCanvas;
+    }
+
+    // create document
+    this.document = new Document();
+    this.document.defaultView = this;
+
+    if (!supportsMutipleCanvasesInOneContainer) {
+      cleanExistedCanvas(container, this, cleanUpOnDestroy);
+    }
 
     this.initRenderingContext({
-      container,
-      canvas,
+      ...config,
       width: canvasWidth,
       height: canvasHeight,
-      renderer,
-      offscreenCanvas,
-      devicePixelRatio: dpr,
-      cursor: cursor || ('default' as Cursor),
-      background: background || 'transparent',
-      createImage,
-      enableLargeImageOptimization,
-      document,
-      supportsCSSTransform,
-      useNativeClickEvent,
+      background: background ?? 'transparent',
+      cursor: cursor ?? ('default' as Cursor),
       cleanUpOnDestroy,
-      alwaysTriggerPointerEventOnCanvas,
+      devicePixelRatio: dpr,
+      requestAnimationFrame: this.requestAnimationFrame,
+      cancelAnimationFrame: this.cancelAnimationFrame,
+      supportsTouchEvents: this.supportsTouchEvents,
+      supportsPointerEvents: this.supportsPointerEvents,
+      isTouchEvent: this.isTouchEvent,
+      isMouseEvent: this.isMouseEvent,
+      dblClickSpeed: dblClickSpeed ?? 200,
+      createImage: createImage ?? (() => new window.Image()),
     });
 
     this.initDefaultCamera(canvasWidth, canvasHeight, renderer.clipSpaceNearZ);
@@ -516,6 +470,7 @@ export class Canvas extends EventTarget implements ICanvas {
   }
 
   render(frame?: XRFrame) {
+    // console.log('render ----------------------');
     if (frame) {
       beforeRenderEvent.detail = frame;
       afterRenderEvent.detail = frame;
@@ -582,9 +537,14 @@ export class Canvas extends EventTarget implements ICanvas {
       this.context.contextService.init();
       this.initRenderingService(renderer, firstContentfullPaint, true);
     } else {
-      this.context.contextService.initAsync().then(() => {
-        this.initRenderingService(renderer, firstContentfullPaint);
-      });
+      this.context.contextService
+        .initAsync()
+        .then(() => {
+          this.initRenderingService(renderer, firstContentfullPaint);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }
 

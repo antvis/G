@@ -3,7 +3,6 @@ import {
   CSSGradientValue,
   DisplayObject,
   GlobalRuntime,
-  isBrowser,
   LinearGradient,
   parsedTransformToMat4,
   parseTransform,
@@ -74,14 +73,7 @@ export class TexturePool {
         this.context.renderingService.dirtify();
       } else {
         // @see https://github.com/antvis/g/issues/938
-        const { createImage } = this.context.config;
-
-        let image: HTMLImageElement;
-        if (createImage) {
-          image = createImage(src);
-        } else if (isBrowser) {
-          image = new window.Image();
-        }
+        const image = this.context.config.createImage();
 
         if (image) {
           image.onload = () => {
