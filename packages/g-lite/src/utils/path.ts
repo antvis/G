@@ -982,7 +982,11 @@ export function translatePathToString(
           return `C ${params[1]} ${params[2]},${params[3]} ${params[4]},${params[5] + endOffsetXTemp} ${params[6] + endOffsetYTemp}`;
 
         case 'A':
-          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6] + endOffsetXTemp} ${params[7] + endOffsetYTemp}`;
+          return `A ${params[1]} ${params[2]} ${params[3]} ${params[4]} ${params[5]} ${params[6]} ${params[7]}${
+            useEndOffset
+              ? ` L ${params[6] + endOffsetX},${params[7] + endOffsetY}`
+              : ''
+          }`;
 
         case 'Z':
           return 'Z';
