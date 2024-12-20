@@ -34,7 +34,7 @@ export function createOrUpdateGradientAndPattern(
   $el: SVGElement,
   parsedColor: CSSGradientValue[] | CSSRGB | Pattern,
   name: string,
-  createImage: (url: string) => HTMLImageElement,
+  createImage: () => HTMLImageElement,
   plugin: SVGRendererPlugin,
 ) {
   // eg. clipPath don't have fill/stroke
@@ -240,7 +240,7 @@ function createOrUpdatePattern(
   $def: SVGDefsElement,
   object: DisplayObject,
   pattern: Pattern,
-  createImage: (url: string) => HTMLImageElement,
+  createImage: () => HTMLImageElement,
   plugin: SVGRendererPlugin,
 ) {
   const patternId = generateCacheKey(pattern);
@@ -267,12 +267,8 @@ function createOrUpdatePattern(
       // @see https://stackoverflow.com/a/13379007
       $image.setAttribute('href', imageURL);
 
-      let img: HTMLImageElement;
-      if (createImage) {
-        img = createImage(imageURL);
-      } else if (isBrowser) {
-        img = new window.Image();
-      }
+      const img = createImage();
+
       if (!imageURL.match(/^data:/i)) {
         img.crossOrigin = 'Anonymous';
         $image.setAttribute('crossorigin', 'anonymous');

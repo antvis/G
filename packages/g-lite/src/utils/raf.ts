@@ -73,18 +73,17 @@ const polyfillCaf = (id: number) => {
 
 const vendorPrefixes = ['', 'webkit', 'moz', 'ms', 'o'];
 
-type TRequestAnimationFrame = (callback: (...args: any[]) => any) => number;
-type TCancelAnimationFrame = (id: number) => void;
-
 const getRequestAnimationFrame = (
   vp: string | void,
-): TRequestAnimationFrame => {
+): typeof requestAnimationFrame => {
   if (typeof vp !== 'string') return polyfillRaf;
   if (vp === '') return root.requestAnimationFrame;
   return root[`${vp}RequestAnimationFrame`];
 };
 
-const getCancelAnimationFrame = (vp: string | void): TCancelAnimationFrame => {
+const getCancelAnimationFrame = (
+  vp: string | void,
+): typeof cancelAnimationFrame => {
   if (typeof vp !== 'string') return polyfillCaf;
   if (vp === '') return root.cancelAnimationFrame;
   return (
@@ -104,8 +103,8 @@ const find = (arr: any[], predicate: (...args: any[]) => any) => {
 
 const vp = find(vendorPrefixes, (vp: string) => !!getRequestAnimationFrame(vp));
 
-export const raf: TRequestAnimationFrame = getRequestAnimationFrame(vp);
-export const caf: TCancelAnimationFrame = getCancelAnimationFrame(vp);
+export const raf = getRequestAnimationFrame(vp);
+export const caf = getCancelAnimationFrame(vp);
 
 root.requestAnimationFrame = raf;
 root.cancelAnimationFrame = caf;

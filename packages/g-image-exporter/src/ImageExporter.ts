@@ -188,16 +188,9 @@ export class ImageExporter {
   }
 
   private getOrCreateImage(src: string): Promise<HTMLImageElement> {
-    // @see https://github.com/antvis/g/issues/938
-    const { createImage } = this.options.canvas.getConfig();
-
     return new Promise((resolve, reject) => {
-      let image: HTMLImageElement;
-      if (createImage) {
-        image = createImage(src);
-      } else if (isBrowser) {
-        image = new window.Image();
-      }
+      // @see https://github.com/antvis/g/issues/938
+      const image = this.options.canvas.getConfig().createImage();
 
       if (image) {
         image.onload = () => {

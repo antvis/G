@@ -6,7 +6,7 @@ import type {
   CanvasConfig,
   ContextService,
 } from '@antv/g-lite';
-import { isBrowser, setDOMSize } from '@antv/g-lite';
+import { setDOMSize } from '@antv/g-lite';
 import type * as CanvaskitRenderer from '@antv/g-plugin-canvaskit-renderer';
 import type { CanvasKitContext } from '@antv/g-plugin-canvaskit-renderer';
 import { isString } from '@antv/util';
@@ -40,7 +40,7 @@ export class CanvasKitContextService
   }
 
   async initAsync() {
-    const { container, canvas, devicePixelRatio } = this.canvasConfig;
+    const { container, canvas, devicePixelRatio: dpr } = this.canvasConfig;
 
     if (canvas) {
       this.$canvas = canvas;
@@ -71,9 +71,6 @@ export class CanvasKitContextService
       }
     }
 
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
     this.resize(this.canvasConfig.width, this.canvasConfig.height);
 

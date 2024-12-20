@@ -358,10 +358,6 @@ export abstract class Node extends EventTarget implements INode {
     return temp;
   }
 
-  /**
-   * iterate current node and its descendants
-   * @param callback - callback to execute for each node, return false to break
-   */
   forEach(callback: (o: INode) => void | boolean) {
     const stack: INode[] = [this];
 

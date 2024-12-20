@@ -9,7 +9,6 @@ import {
   UnitType,
   computeLinearGradient,
   computeRadialGradient,
-  isBrowser,
   parseTransform,
   parsedTransformToMat4,
   Image,
@@ -132,16 +131,9 @@ export class ImagePool {
       });
     }
 
-    // @see https://github.com/antvis/g/issues/938
-    const { createImage } = this.context.config;
-
     return new Promise((resolve, reject) => {
-      let image: HTMLImageElement;
-      if (createImage) {
-        image = createImage(imageSource);
-      } else if (isBrowser) {
-        image = new window.Image();
-      }
+      // @see https://github.com/antvis/g/issues/938
+      const image = this.context.config.createImage();
 
       if (image) {
         const imageCache: ImageCache = {

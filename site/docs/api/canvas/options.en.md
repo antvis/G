@@ -127,6 +127,24 @@ canvas = new Canvas({
 canvas.setCursor('crosshair');
 ```
 
+## supportsMutipleCanvasesInOneContainer
+
+Optional. If or not support multiple canvases under one container, default is false.
+
+[Example](/en/examples/canvas/container/#shared-container)
+
+## enableLargeImageOptimization <Badge>6.1.1</Badge>
+
+`boolean`
+
+Optional, default is `false`. Enable high-resolution large image rendering and interactive optimization, through downsampling and slice rendering strategy, large images with hundreds of millions of pixels can also be rendered and interacted smoothly.
+
+:::warning{title=Limit}
+
+Currently only implemented in the native Canvas renderer.
+
+:::
+
 ## Special platform adaptations
 
 On some special runtime platforms (e.g. applets), it is not possible to use global variables like [globalThis](<https://developer.mozilla.org/en-US/Web/JavaScript/Reference/Global_Objects/> globalThis), and internally we need to rely on it to create images (`new globalThis.Image()`), determine if a TouchEvent is supported (`'ontouchstart' in globalThis`), and so on. Therefore, users of these particular platforms need to manually pass in the specific creation and determination methods.
@@ -158,18 +176,6 @@ const canvas = new Canvas({
     createImage: () => canvas.createImage(),
 });
 ```
-
-### enableLargeImageOptimization <Badge>6.1.1</Badge>
-
-`boolean`
-
-Optional, default is `false`. Enable high-resolution large image rendering and interactive optimization, through downsampling and slice rendering strategy, large images with hundreds of millions of pixels can also be rendered and interacted smoothly.
-
-:::warning{title=Limit}
-
-Currently only implemented in the native Canvas renderer.
-
-:::
 
 ### supportsCSSTransform
 
@@ -224,12 +230,6 @@ const canvas = new Canvas({
     },
 });
 ```
-
-### supportsMutipleCanvasesInOneContainer
-
-Optional. If or not support multiple canvases under one container, default is false.
-
-[Example](/en/examples/canvas/container/#shared-container)
 
 ## Modify the initialization configuration
 

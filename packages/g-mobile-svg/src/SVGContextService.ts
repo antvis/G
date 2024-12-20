@@ -19,8 +19,12 @@ export class SVGContextService implements ContextService<SVGElement> {
     this.canvasConfig = context.config;
   }
 
-  async init() {
-    const { container, document: doc } = this.canvasConfig;
+  init() {
+    const {
+      container,
+      document: doc,
+      devicePixelRatio: dpr,
+    } = this.canvasConfig;
 
     // create container
     this.$container = isString(container)
@@ -39,8 +43,6 @@ export class SVGContextService implements ContextService<SVGElement> {
       this.$namespace = $namespace;
     }
 
-    let dpr = window.devicePixelRatio || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
   }
 

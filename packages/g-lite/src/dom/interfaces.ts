@@ -30,10 +30,7 @@ import type { FederatedEvent } from './FederatedEvent';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
  */
 export enum ElementEvent {
-  REPARENT = 'reparent',
-
-  DESTROY = 'destroy',
-
+  // --- @see https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent
   /**
    * @see https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMAttrModified
    */
@@ -46,26 +43,32 @@ export enum ElementEvent {
   INSERTED = 'DOMNodeInserted',
 
   /**
+   * @see https://www.w3.org/TR/DOM-Level-3-Events/#domnodeinsertedintodocument
+   */
+  MOUNTED = 'DOMNodeInsertedIntoDocument',
+
+  /**
    * it is being removed
    * @see https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMNodeRemoved
    */
   REMOVED = 'removed',
 
   /**
-   * @see https://www.w3.org/TR/DOM-Level-3-Events/#domnodeinsertedintodocument
-   */
-  MOUNTED = 'DOMNodeInsertedIntoDocument',
-
-  /**
    * @see https://www.w3.org/TR/DOM-Level-3-Events/#domnoderemovedfromdocument
    */
   UNMOUNTED = 'DOMNodeRemovedFromDocument',
+  // ---
+
+  REPARENT = 'reparent',
+
+  DESTROY = 'destroy',
 
   BOUNDS_CHANGED = 'bounds-changed',
 
   CULLED = 'culled',
 }
 
+// #region EventTarget
 export interface IEventTarget {
   emitter: EventEmitter;
 
@@ -92,14 +95,33 @@ export interface IEventTarget {
   ) => void;
   // removeAllEventListeners: () => void;
 
+  /**
+   * @param skipPropagate - The default value is `false`. If true, the event is only triggered globally (note that the global is not the object itself), skipping the event propagation process. In addition, if the object has been removed from the global, the event is only triggered on the object itself.
+   * @param dispatchToSelf - The default value is `false`. If true, the event will be triggered on the object itself.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
+   */
   dispatchEvent: <T extends FederatedEvent>(
     e: T,
     skipPropagate?: boolean,
+    dispatchToSelf?: boolean,
   ) => boolean;
 
   // emit: (eventName: string, object: object) => void;
 }
 
+interface EventListener {
+  (evt: FederatedEvent): void;
+}
+interface EventListenerObject {
+  handleEvent(object: FederatedEvent): void;
+}
+
+export type EventListenerOrEventListenerObject =
+  | EventListener
+  | EventListenerObject;
+
+// #region Node
 export interface INode extends IEventTarget {
   shadow: boolean;
   /**
@@ -175,7 +197,8 @@ export interface INode extends IEventTarget {
    */
   getAncestor: (n: number) => INode | null;
   /**
-   * Traverse in sub tree.
+   * iterate current node and its descendants
+   * @param callback - callback to execute for each node, return false to break
    */
   forEach: (callback: (o: INode) => void | boolean) => void;
   /**
@@ -327,6 +350,7 @@ export interface DisplayObjectConfig<StyleProps> {
   interactive?: boolean;
 }
 
+// #region Element
 export interface IElement<StyleProps = any, ParsedStyleProps = any>
   extends INode,
     IChildNode,
@@ -405,6 +429,7 @@ export interface IElement<StyleProps = any, ParsedStyleProps = any>
   hasAttribute: (qualifiedName: string) => boolean;
 }
 
+// #region AnimationTimeline
 export interface IAnimationTimeline {
   currentTime: number | null;
   destroy: () => void;
@@ -474,6 +499,7 @@ export interface IKeyframeEffect {
   updateTiming: (timing?: OptionalEffectTiming) => void;
 }
 
+// #region Document
 export interface IDocument extends INode, IParentNode {
   /**
    * Returns the Window object of the active document.
@@ -509,6 +535,7 @@ export interface IDocument extends INode, IParentNode {
   ) => DisplayObject[];
 }
 
+// #region CSSStyleDeclaration
 /**
  * @see https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleDeclaration
  */
@@ -526,7 +553,7 @@ export interface ICSSStyleDeclaration<StyleProps> {
 }
 
 export interface CanvasContext {
-  config: Partial<CanvasConfig>;
+  config: CanvasConfig;
   camera: ICamera;
 
   /**
@@ -544,29 +571,40 @@ export interface CanvasContext {
   renderingPlugins: RenderingPlugin[];
 }
 
-export interface ICanvas extends IEventTarget {
-  document: IDocument;
+// #region Canvas
+export interface IWindow {
+  /** https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry */
   customElements: CustomElementRegistry;
-
+  /** https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio */
   devicePixelRatio: number;
-  requestAnimationFrame: (callback: FrameRequestCallback) => number;
-  cancelAnimationFrame: (handle: number) => void;
-
+  /** https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/requestAnimationFrame  */
+  requestAnimationFrame: typeof requestAnimationFrame;
+  /** https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/cancelAnimationFrame */
+  cancelAnimationFrame: typeof cancelAnimationFrame;
+  /**
+   * whether the runtime supports TouchEvent?
+   * if not, the event system won't trigger touch events like `touchstart`
+   */
   supportsTouchEvents: boolean;
+  /**
+   * whether the runtime supports PointerEvent?
+   * if not, the event system won't trigger pointer events like `pointerdown`
+   */
   supportsPointerEvents: boolean;
+  /**
+   * is this native event a TouchEvent?
+   */
+
   isTouchEvent: (event: InteractivePointerEvent) => event is TouchEvent;
+  /**
+   * is this native event a MouseEvent?
+   */
   isMouseEvent: (event: InteractivePointerEvent) => event is MouseEvent;
-  dblClickSpeed?: number;
+}
 
-  render: () => void;
-  destroy: (destroyScenegraph?: boolean) => void;
-  resize: (width: number, height: number) => void;
-
+export interface ICanvas extends IWindow, IEventTarget {
+  document: IDocument;
   context: CanvasContext;
-
-  mountChildren: (parent: INode) => void;
-  unmountChildren: (parent: INode) => void;
-  mountFragment: (fragment: INode) => void;
 
   getConfig: () => Partial<CanvasConfig>;
   getCamera: () => ICamera;
@@ -574,19 +612,16 @@ export interface ICanvas extends IEventTarget {
   getRenderingService: () => RenderingService;
   getEventService: () => EventService;
 
+  mountChildren: (parent: INode) => void;
+  unmountChildren: (parent: INode) => void;
+  mountFragment: (fragment: INode) => void;
+
   client2Viewport: (client: PointLike) => PointLike;
   viewport2Client: (viewport: PointLike) => PointLike;
   canvas2Viewport: (canvas: PointLike) => PointLike;
   viewport2Canvas: (viewport: PointLike) => PointLike;
-}
 
-interface EventListener {
-  (evt: FederatedEvent): void;
+  render: () => void;
+  destroy: (destroyScenegraph?: boolean) => void;
+  resize: (width: number, height: number) => void;
 }
-interface EventListenerObject {
-  handleEvent(object: FederatedEvent): void;
-}
-
-export type EventListenerOrEventListenerObject =
-  | EventListener
-  | EventListenerObject;
