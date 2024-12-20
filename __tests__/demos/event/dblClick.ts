@@ -1,11 +1,11 @@
-import { Circle, Text } from '@antv/g';
+import { Circle, Text, Canvas } from '@antv/g';
 
-export async function dblClick(context) {
+export async function dblClick(context: { canvas: Canvas }) {
   const { canvas } = context;
   await canvas.ready;
 
   let DELAY = 200;
-  canvas.dblClickSpeed = DELAY;
+  canvas.getConfig().dblClickSpeed = DELAY;
 
   const circle0 = new Circle({
     style: {
@@ -43,7 +43,7 @@ export async function dblClick(context) {
 
   circle0.addEventListener('mouseenter', () => {
     DELAY = 200;
-    canvas.dblClickSpeed = DELAY;
+    canvas.getConfig().dblClickSpeed = DELAY;
 
     text0.attr({ text: `current dblclick delay: ${DELAY}ms` });
     text1.attr({
@@ -52,7 +52,7 @@ export async function dblClick(context) {
   });
   circle1.addEventListener('mouseenter', () => {
     DELAY = 500;
-    canvas.dblClickSpeed = DELAY;
+    canvas.getConfig().dblClickSpeed = DELAY;
 
     text0.attr({ text: `current dblclick delay: ${DELAY}ms` });
     text1.attr({
@@ -61,7 +61,7 @@ export async function dblClick(context) {
   });
   circle2.addEventListener('mouseenter', () => {
     DELAY = 1000;
-    canvas.dblClickSpeed = DELAY;
+    canvas.getConfig().dblClickSpeed = DELAY;
 
     text0.attr({ text: `current dblclick delay: ${DELAY}ms` });
     text1.attr({

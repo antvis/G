@@ -166,7 +166,7 @@ export function convertAngleUnit(value: CSSUnitValue) {
 
 export function parseDimensionArrayFormat(
   string: string | number | (string | number)[],
-  size: number,
+  size?: 2 | 4 | 'even',
 ): number[] {
   let parsed: number[];
 
@@ -185,16 +185,22 @@ export function parseDimensionArrayFormat(
     }
     return [parsed[0], parsed[1]];
   }
-  if (parsed.length === 1) {
-    return [parsed[0], parsed[0], parsed[0], parsed[0]];
+  if (size === 4) {
+    if (parsed.length === 1) {
+      return [parsed[0], parsed[0], parsed[0], parsed[0]];
+    }
+    if (parsed.length === 2) {
+      return [parsed[0], parsed[1], parsed[0], parsed[1]];
+    }
+    if (parsed.length === 3) {
+      return [parsed[0], parsed[1], parsed[2], parsed[1]];
+    }
+    return [parsed[0], parsed[1], parsed[2], parsed[3]];
   }
-  if (parsed.length === 2) {
-    return [parsed[0], parsed[1], parsed[0], parsed[1]];
+  if (size === 'even' && parsed.length % 2 === 1) {
+    return [...parsed, ...parsed];
   }
-  if (parsed.length === 3) {
-    return [parsed[0], parsed[1], parsed[2], parsed[1]];
-  }
-  return [parsed[0], parsed[1], parsed[2], parsed[3]];
+  return parsed;
 }
 
 export function parseDimensionArray(

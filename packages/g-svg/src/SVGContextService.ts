@@ -6,7 +6,7 @@ import type {
   ContextService,
   DisplayObject,
 } from '@antv/g-lite';
-import { isBrowser, propertyMetadataCache } from '@antv/g-lite';
+import { propertyMetadataCache } from '@antv/g-lite';
 import { createSVGElement } from '@antv/g-plugin-svg-renderer';
 import { isString } from '@antv/util';
 
@@ -22,7 +22,11 @@ export class SVGContextService implements ContextService<SVGElement> {
   }
 
   init() {
-    const { container, document: doc, devicePixelRatio } = this.canvasConfig;
+    const {
+      container,
+      document: doc,
+      devicePixelRatio: dpr,
+    } = this.canvasConfig;
 
     // create container
     this.$container = isString(container)
@@ -41,9 +45,6 @@ export class SVGContextService implements ContextService<SVGElement> {
       this.$namespace = $namespace;
     }
 
-    // use user-defined dpr first
-    let dpr = devicePixelRatio || (isBrowser && window.devicePixelRatio) || 1;
-    dpr = dpr >= 1 ? Math.ceil(dpr) : 1;
     this.dpr = dpr;
   }
 

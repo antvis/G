@@ -380,7 +380,7 @@ export class TextService {
       }
 
       // Backspace from line's end.
-      const currentLineLength = lines[lineIndex].length;
+      const currentLineLength = lines[lineIndex] ? lines[lineIndex].length : 0;
       let lastLineWidth = 0;
       let lastLineIndex = currentLineLength;
       for (let i = 0; i < currentLineLength; i++) {

@@ -698,9 +698,10 @@ export class DefaultStyleValueRegistry implements StyleValueRegistry {
     }
     // Polyline
     if (list.has('lineDash') && !isNil(attributes.lineDash)) {
+      // dom标准自动转化奇数长度数组,webgl需要手动处理
       object.parsedStyle.lineDash = parseDimensionArrayFormat(
         attributes.lineDash,
-        2,
+        'even',
       );
     }
     // @ts-ignore
