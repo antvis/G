@@ -1,5 +1,14 @@
 # @antv/g-lite
 
+## 2.2.10
+
+### Patch Changes
+
+-   244d6dd: refactor: reduce global redundant code
+-   9ebc16b: fix: svg path element A command drawing abnormality
+-   2d71558: fix: rendering error when line break appears at the beginning of text
+-   fad9325: feat: `lineDash` supports more than two parameters
+
 ## 2.2.9
 
 ### Patch Changes

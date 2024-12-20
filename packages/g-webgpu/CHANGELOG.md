@@ -1,5 +1,20 @@
 # @antv/g-webgpu
 
+## 2.0.37
+
+### Patch Changes
+
+-   244d6dd: refactor: reduce global redundant code
+-   Updated dependencies [244d6dd]
+-   Updated dependencies [9ebc16b]
+-   Updated dependencies [2d71558]
+-   Updated dependencies [fad9325]
+    -   @antv/g-plugin-device-renderer@2.2.12
+    -   @antv/g-plugin-image-loader@2.1.12
+    -   @antv/g-lite@2.2.10
+    -   @antv/g-plugin-dom-interaction@2.1.15
+    -   @antv/g-plugin-html-renderer@2.1.15
+
 ## 2.0.36
 
 ### Patch Changes

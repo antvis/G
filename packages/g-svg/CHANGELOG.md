@@ -1,5 +1,19 @@
 # @antv/g-svg
 
+## 2.0.28
+
+### Patch Changes
+
+-   244d6dd: refactor: reduce global redundant code
+-   Updated dependencies [244d6dd]
+-   Updated dependencies [9ebc16b]
+-   Updated dependencies [2d71558]
+-   Updated dependencies [fad9325]
+    -   @antv/g-plugin-svg-renderer@2.2.10
+    -   @antv/g-lite@2.2.10
+    -   @antv/g-plugin-svg-picker@2.0.28
+    -   @antv/g-plugin-dom-interaction@2.1.15
+
 ## 2.0.27
 
 ### Patch Changes

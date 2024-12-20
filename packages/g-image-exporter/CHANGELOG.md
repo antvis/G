@@ -1,5 +1,16 @@
 # @antv/g-image-exporter
 
+## 1.0.26
+
+### Patch Changes
+
+-   244d6dd: refactor: reduce global redundant code
+-   Updated dependencies [244d6dd]
+-   Updated dependencies [9ebc16b]
+-   Updated dependencies [2d71558]
+-   Updated dependencies [fad9325]
+    -   @antv/g-lite@2.2.10
+
 ## 1.0.25
 
 ### Patch Changes
