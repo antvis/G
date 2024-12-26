@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.11
+
+### Patch Changes
+
+-   1d13497: fix: the text wrapping position is not accurate
+
 ## 2.2.10
 
 ### Patch Changes

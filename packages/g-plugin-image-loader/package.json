@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-plugin-image-loader",
-  "version": "2.1.12",
+  "version": "2.1.13",
   "description": "A G plugin for loading image",
   "keywords": [
     "antv",
