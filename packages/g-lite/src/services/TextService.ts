@@ -355,87 +355,131 @@ export class TextService {
       ellipsis = textOverflow;
     }
 
+    const chars = Array.from(text);
     let lines: string[] = [];
-    let currentIndex = 0;
-    let currentWidth = 0;
+    let currentLineIndex = 0;
+    let currentLineWidth = 0;
 
     const cache: { [key in string]: number } = {};
-    const calcWidth = (char: string): number => {
+    const calcWidth = (txt: string): number => {
       return this.getFromCache(
-        char,
+        txt,
         letterSpacing,
         cache,
         context as CanvasRenderingContext2D,
       );
     };
-    const ellipsisWidth = Array.from(ellipsis).reduce((prev, cur) => {
-      return prev + calcWidth(cur);
-    }, 0);
+    const ellipsisWidth = calcWidth(ellipsis);
 
-    function appendEllipsis(lineIndex: number) {
+    /**
+     * Find text fragments that will take up as much of the given line width as possible when rendered.
+     *
+     * @see https://github.com/antvis/G/issues/1833
+     *
+     * @param txt - Current line of text
+     * @param textCharIndex - The index of the last character of the current line in the entire text
+     */
+    function findCharIndexClosestWidthThreshold(
+      txt: string,
+      textCharIndex: number,
+      widthThreshold: number,
+    ) {
+      while (
+        calcWidth(txt) < widthThreshold &&
+        textCharIndex < chars.length - 1
+      ) {
+        textCharIndex += 1;
+        txt += chars[textCharIndex];
+      }
+      while (calcWidth(txt) > widthThreshold) {
+        textCharIndex -= 1;
+        txt = txt.slice(0, -1);
+      }
+
+      return {
+        txt,
+        textCharIndex,
+      };
+    }
+
+    function appendEllipsis(lineIndex: number, textCharIndex: number) {
       // If there is not enough space to display the string itself, it is clipped.
       // @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow#values
       if (ellipsisWidth <= 0 || ellipsisWidth > maxWidth) {
         return;
       }
 
-      // Backspace from line's end.
-      const currentLineLength = lines[lineIndex] ? lines[lineIndex].length : 0;
-      let lastLineWidth = 0;
-      let lastLineIndex = currentLineLength;
-      for (let i = 0; i < currentLineLength; i++) {
-        const width = calcWidth(lines[lineIndex][i]);
-        if (lastLineWidth + width + ellipsisWidth > maxWidth) {
-          lastLineIndex = i;
-          break;
-        }
+      if (!lines[lineIndex]) {
+        lines[lineIndex] = ellipsis;
 
-        lastLineWidth += width;
+        return;
       }
 
-      lines[lineIndex] =
-        (lines[lineIndex] || '').slice(0, lastLineIndex) + ellipsis;
+      const result = findCharIndexClosestWidthThreshold(
+        lines[lineIndex],
+        textCharIndex,
+        maxWidth - ellipsisWidth,
+      );
+
+      lines[lineIndex] = result.txt + ellipsis;
     }
 
-    const chars = Array.from(text);
     for (let i = 0; i < chars.length; i++) {
-      const char = chars[i];
-
-      const prevChar = text[i - 1];
-      const nextChar = text[i + 1];
-      const charWidth = calcWidth(char);
+      let char = chars[i];
+      let prevChar = chars[i - 1];
+      let nextChar = chars[i + 1];
+      let charWidth = calcWidth(char);
 
       if (this.isNewline(char)) {
-        currentIndex++;
-
         // exceed maxLines, break immediately
-        if (currentIndex >= maxLines) {
+        if (currentLineIndex + 1 >= maxLines) {
           parsedStyle.isOverflowing = true;
 
           if (i < chars.length - 1) {
-            appendEllipsis(currentIndex - 1);
+            appendEllipsis(currentLineIndex, i);
           }
 
           break;
         }
 
-        currentWidth = 0;
-        lines[currentIndex] = '';
+        currentLineIndex += 1;
+        currentLineWidth = 0;
+        lines[currentLineIndex] = '';
+
         continue;
       }
 
-      if (currentWidth > 0 && currentWidth + charWidth > maxWidth) {
-        if (currentIndex + 1 >= maxLines) {
+      if (currentLineWidth > 0 && currentLineWidth + charWidth > maxWidth) {
+        const result = findCharIndexClosestWidthThreshold(
+          lines[currentLineIndex],
+          i,
+          maxWidth,
+        );
+        if (result.textCharIndex !== i) {
+          lines[currentLineIndex] = result.txt;
+
+          if (result.textCharIndex === chars.length - 1) {
+            break;
+          }
+
+          i = result.textCharIndex;
+          char = chars[i];
+          prevChar = chars[i - 1];
+          nextChar = chars[i + 1];
+          charWidth = calcWidth(char);
+        }
+
+        if (currentLineIndex + 1 >= maxLines) {
           parsedStyle.isOverflowing = true;
 
-          appendEllipsis(currentIndex);
+          appendEllipsis(currentLineIndex, i);
 
           break;
         }
 
-        currentIndex++;
-        currentWidth = 0;
-        lines[currentIndex] = '';
+        currentLineIndex += 1;
+        currentLineWidth = 0;
+        lines[currentLineIndex] = '';
 
         if (this.isBreakingSpace(char)) {
           continue;
@@ -443,20 +487,20 @@ export class TextService {
 
         if (!this.canBreakInLastChar(char)) {
           lines = this.trimToBreakable(lines);
-          currentWidth = this.sumTextWidthByCache(
-            lines[currentIndex] || '',
+          currentLineWidth = this.sumTextWidthByCache(
+            lines[currentLineIndex] || '',
             cache,
           );
         }
 
         if (this.shouldBreakByKinsokuShorui(char, nextChar)) {
           lines = this.trimByKinsokuShorui(lines);
-          currentWidth += calcWidth(prevChar || '');
+          currentLineWidth += calcWidth(prevChar || '');
         }
       }
 
-      currentWidth += charWidth;
-      lines[currentIndex] = (lines[currentIndex] || '') + char;
+      currentLineWidth += charWidth;
+      lines[currentLineIndex] = (lines[currentLineIndex] || '') + char;
     }
 
     return lines.join('\n');
@@ -554,7 +598,9 @@ export class TextService {
     let width = cache[key];
     if (typeof width !== 'number') {
       const spacing = key.length * letterSpacing;
-      width = context.measureText(key).width + spacing;
+      const metrics = context.measureText(key);
+
+      width = metrics.width + spacing;
       cache[key] = width;
     }
     return width;

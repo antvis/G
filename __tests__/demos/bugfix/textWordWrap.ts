@@ -1,5 +1,9 @@
 import { Canvas, Text, Rect } from '@antv/g';
+import * as tinybench from 'tinybench';
 
+/**
+ * @link https://github.com/antvis/G/issues/1833
+ */
 export async function textWordWrap(context: { canvas: Canvas }) {
   const { canvas } = context;
   await canvas.ready;
@@ -105,4 +109,44 @@ export async function textWordWrap(context: { canvas: Canvas }) {
   canvas.appendChild(rect1);
   canvas.appendChild(text2);
   canvas.appendChild(rect2);
+
+  // benchmark
+  // ----------
+  const bench = new tinybench.Bench({
+    name: 'canvas text benchmark',
+    time: 100,
+  });
+
+  const canvasEl = document.createElement('canvas');
+  const testText = 'Hello, World!';
+  bench.add('Measure the entire text at once', async () => {
+    canvasEl.getContext('2d').measureText(testText);
+  });
+  bench.add('Character-by-character measurement', async () => {
+    const ctx = canvasEl.getContext('2d');
+    Array.from(testText).forEach((char) => {
+      ctx.measureText(char);
+    });
+  });
+
+  const testText1 =
+    'In G, text line break detection is currently done by iteratively measuring the width of each character and then adding them up to determine whether a line break is needed. External users may configure wordWrapWidth by directly measuring the width of the entire text. The two different text measurement methods will lead to visual inconsistencies.';
+  bench.add('(long txt) Measure the entire text at once', async () => {
+    canvasEl.getContext('2d').measureText(testText1);
+  });
+  bench.add('(long txt) Character-by-character measurement', async () => {
+    const ctx = canvasEl.getContext('2d');
+    Array.from(testText1).forEach((char) => {
+      ctx.measureText(char);
+    });
+  });
+
+  await bench.run();
+
+  console.log(bench.name);
+  console.table(bench.table());
+  console.log(bench.results);
+  console.log(bench.tasks);
+
+  // ----------
 }
