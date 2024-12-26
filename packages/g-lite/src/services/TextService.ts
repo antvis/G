@@ -204,7 +204,6 @@ export class TextService {
     const context =
       this.runtime.offscreenCanvasCreator.getOrCreateContext(offscreenCanvas);
     context.font = font;
-    console.log(font);
 
     // no overflowing by default
     parsedStyle.isOverflowing = false;
