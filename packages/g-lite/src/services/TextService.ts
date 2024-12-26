@@ -391,7 +391,7 @@ export class TextService {
         textCharIndex += 1;
         txt += chars[textCharIndex];
       }
-      while (calcWidth(txt) > widthThreshold) {
+      while (calcWidth(txt) > widthThreshold && textCharIndex > 0) {
         textCharIndex -= 1;
         txt = txt.slice(0, -1);
       }
@@ -436,7 +436,7 @@ export class TextService {
           parsedStyle.isOverflowing = true;
 
           if (i < chars.length - 1) {
-            appendEllipsis(currentLineIndex, i);
+            appendEllipsis(currentLineIndex, i - 1);
           }
 
           break;
@@ -452,17 +452,17 @@ export class TextService {
       if (currentLineWidth > 0 && currentLineWidth + charWidth > maxWidth) {
         const result = findCharIndexClosestWidthThreshold(
           lines[currentLineIndex],
-          i,
+          i - 1,
           maxWidth,
         );
-        if (result.textCharIndex !== i) {
+        if (result.textCharIndex !== i - 1) {
           lines[currentLineIndex] = result.txt;
 
           if (result.textCharIndex === chars.length - 1) {
             break;
           }
 
-          i = result.textCharIndex;
+          i = result.textCharIndex + 1;
           char = chars[i];
           prevChar = chars[i - 1];
           nextChar = chars[i + 1];
@@ -472,7 +472,7 @@ export class TextService {
         if (currentLineIndex + 1 >= maxLines) {
           parsedStyle.isOverflowing = true;
 
-          appendEllipsis(currentLineIndex, i);
+          appendEllipsis(currentLineIndex, i - 1);
 
           break;
         }

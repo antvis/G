@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.12
+
+### Patch Changes
+
+-   d5e7a9f: fix: text wrapping boundary cases
+
 ## 2.2.11
 
 ### Patch Changes
