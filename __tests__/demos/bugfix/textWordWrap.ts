@@ -83,14 +83,14 @@ export async function textWordWrap(context: { canvas: Canvas }) {
       fontSize: 12,
       fontWeight: 'normal',
       linkTextFill: '#326EF4',
-      maxLines: 3,
+      maxLines: 1,
       opacity: 1,
       text: '哈哈哈哈\n哈哈哈哈\n哈哈哈哈\n',
       // textAlign: 'right',
       textBaseline: 'top',
       textOverflow: 'ellipsis',
       wordWrap: true,
-      wordWrapWidth: 84,
+      wordWrapWidth: 30,
     },
   });
   const rect2 = new Rect({

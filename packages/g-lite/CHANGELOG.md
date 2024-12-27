@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.13
+
+### Patch Changes
+
+-   1424824: fix: line break position does not take into account newline characters
+
 ## 2.2.12
 
 ### Patch Changes
