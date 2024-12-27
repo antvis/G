@@ -338,6 +338,7 @@ export class TextService {
     parsedStyle: ParsedTextStyleProps,
     offscreenCanvas: CanvasLike,
   ): string {
+    const self = this;
     const {
       wordWrapWidth = 0,
       letterSpacing = 0,
@@ -388,6 +389,9 @@ export class TextService {
         calcWidth(txt) < widthThreshold &&
         textCharIndex < chars.length - 1
       ) {
+        if (self.isNewline(chars[textCharIndex + 1])) {
+          break;
+        }
         textCharIndex += 1;
         txt += chars[textCharIndex];
       }
