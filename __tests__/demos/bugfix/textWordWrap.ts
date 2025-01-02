@@ -90,7 +90,7 @@ export async function textWordWrap(context: { canvas: Canvas }) {
       textBaseline: 'top',
       textOverflow: 'ellipsis',
       wordWrap: true,
-      wordWrapWidth: 30,
+      wordWrapWidth: 84,
     },
   });
   const rect2 = new Rect({
@@ -103,12 +103,43 @@ export async function textWordWrap(context: { canvas: Canvas }) {
     },
   });
 
+  const text3 = new Text({
+    style: {
+      x: 300,
+      y: 300,
+      wordWrap: true,
+      wordWrapWidth: 2,
+      maxLines: 5,
+      textOverflow: 'ellipsis',
+      fontFamily: 'Roboto, PingFangSC, Microsoft YaHei, Arial, sans-serif',
+      fontSize: 12,
+      fontWeight: 700,
+      fill: '#000000',
+      opacity: 1,
+      textAlign: 'center',
+      textBaseline: 'middle',
+      linkTextFill: '#326EF4',
+      text: '千亿数据',
+    },
+  });
+  const rect3 = new Rect({
+    style: {
+      x: text3.style.x,
+      y: text3.style.y,
+      width: text3.style.wordWrapWidth,
+      height: +text3.style.fontSize * text3.style.maxLines,
+      stroke: '#000000',
+    },
+  });
+
   canvas.appendChild(text0);
   canvas.appendChild(rect0);
   canvas.appendChild(text1);
   canvas.appendChild(rect1);
   canvas.appendChild(text2);
   canvas.appendChild(rect2);
+  canvas.appendChild(text3);
+  canvas.appendChild(rect3);
 
   // benchmark
   // ----------

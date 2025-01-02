@@ -360,6 +360,7 @@ export class TextService {
     let lines: string[] = [];
     let currentLineIndex = 0;
     let currentLineWidth = 0;
+    let prevLineLastCharIndex = 0;
 
     const cache: { [key in string]: number } = {};
     const calcWidth = (txt: string): number => {
@@ -377,32 +378,37 @@ export class TextService {
      *
      * @see https://github.com/antvis/G/issues/1833
      *
-     * @param txt - Current line of text
-     * @param textCharIndex - The index of the last character of the current line in the entire text
+     * @param lineTxt - Current line of text
+     * @param txtLastCharIndex - The index of the last character of the current line in the entire text
+     * @param txtStartCharIndex - The index of the start character of the current line in the entire text
      */
     function findCharIndexClosestWidthThreshold(
-      txt: string,
-      textCharIndex: number,
+      lineTxt: string,
+      txtLastCharIndex: number,
+      txtStartCharIndex: number,
       widthThreshold: number,
     ) {
       while (
-        calcWidth(txt) < widthThreshold &&
-        textCharIndex < chars.length - 1
+        calcWidth(lineTxt) < widthThreshold &&
+        txtLastCharIndex < chars.length - 1
       ) {
-        if (self.isNewline(chars[textCharIndex + 1])) {
+        if (self.isNewline(chars[txtLastCharIndex + 1])) {
           break;
         }
-        textCharIndex += 1;
-        txt += chars[textCharIndex];
+        txtLastCharIndex += 1;
+        lineTxt += chars[txtLastCharIndex];
       }
-      while (calcWidth(txt) > widthThreshold && textCharIndex > 0) {
-        textCharIndex -= 1;
-        txt = txt.slice(0, -1);
+      while (
+        calcWidth(lineTxt) > widthThreshold &&
+        txtLastCharIndex > txtStartCharIndex
+      ) {
+        txtLastCharIndex -= 1;
+        lineTxt = lineTxt.slice(0, -1);
       }
 
       return {
-        txt,
-        textCharIndex,
+        lineTxt,
+        txtLastCharIndex,
       };
     }
 
@@ -422,10 +428,11 @@ export class TextService {
       const result = findCharIndexClosestWidthThreshold(
         lines[lineIndex],
         textCharIndex,
+        prevLineLastCharIndex + 1,
         maxWidth - ellipsisWidth,
       );
 
-      lines[lineIndex] = result.txt + ellipsis;
+      lines[lineIndex] = result.lineTxt + ellipsis;
     }
 
     for (let i = 0; i < chars.length; i++) {
@@ -446,6 +453,7 @@ export class TextService {
           break;
         }
 
+        prevLineLastCharIndex = i - 1;
         currentLineIndex += 1;
         currentLineWidth = 0;
         lines[currentLineIndex] = '';
@@ -457,16 +465,17 @@ export class TextService {
         const result = findCharIndexClosestWidthThreshold(
           lines[currentLineIndex],
           i - 1,
+          prevLineLastCharIndex + 1,
           maxWidth,
         );
-        if (result.textCharIndex !== i - 1) {
-          lines[currentLineIndex] = result.txt;
+        if (result.txtLastCharIndex !== i - 1) {
+          lines[currentLineIndex] = result.lineTxt;
 
-          if (result.textCharIndex === chars.length - 1) {
+          if (result.txtLastCharIndex === chars.length - 1) {
             break;
           }
 
-          i = result.textCharIndex + 1;
+          i = result.txtLastCharIndex + 1;
           char = chars[i];
           prevChar = chars[i - 1];
           nextChar = chars[i + 1];
@@ -481,6 +490,7 @@ export class TextService {
           break;
         }
 
+        prevLineLastCharIndex = i - 1;
         currentLineIndex += 1;
         currentLineWidth = 0;
         lines[currentLineIndex] = '';
