@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.14
+
+### Patch Changes
+
+-   9d6fd39: fix: multi-line text wrapping exception
+
 ## 2.2.13
 
 ### Patch Changes
