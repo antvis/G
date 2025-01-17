@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.15
+
+### Patch Changes
+
+-   6417631: fix: memory leak caused by function cache
+
 ## 2.2.14
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @antv/react-g
 
+## 2.0.36
+
+### Patch Changes
+
+-   @antv/g@6.1.20
+
 ## 2.0.35
 
 ### Patch Changes
