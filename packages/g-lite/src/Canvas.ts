@@ -44,6 +44,7 @@ import {
   isBrowser,
   isInFragment,
   raf,
+  memoize,
 } from './utils';
 
 export function isCanvas(value: any): value is Canvas {
@@ -352,6 +353,8 @@ export class Canvas extends EventTarget implements ICanvas {
    * @param skipTriggerEvent - whether to skip trigger destroy event
    */
   destroy(cleanUp = true, skipTriggerEvent?: boolean) {
+    memoize.clearCache();
+
     if (!skipTriggerEvent) {
       this.dispatchEvent(new CustomEvent(CanvasEvent.BEFORE_DESTROY));
     }

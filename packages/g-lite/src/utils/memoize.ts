@@ -21,8 +21,15 @@ export function memoize<F = (...args: unknown[]) => unknown>(
     return result;
   };
   memoized.cache = new (memoize.Cache || Map)();
+  memoize.cacheList.push(memoized.cache);
 
   return memoized as F;
 }
 
 memoize.Cache = Map;
+memoize.cacheList = [];
+memoize.clearCache = () => {
+  memoize.cacheList.forEach((cache) =>
+    (cache as unknown as Map<unknown, unknown>).clear(),
+  );
+};
