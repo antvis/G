@@ -503,7 +503,7 @@ export class TextService {
           lines = this.trimToBreakable(lines);
           currentLineWidth = this.sumTextWidthByCache(
             lines[currentLineIndex] || '',
-            cache,
+            calcWidth,
           );
         }
 
@@ -588,11 +588,10 @@ export class TextService {
 
   private sumTextWidthByCache(
     text: string,
-    cache: { [key in string]: number },
+    calcWidthWithCache: (txt: string) => number,
   ) {
     return text.split('').reduce((sum: number, c) => {
-      if (!cache[c]) throw Error('cannot count the word without cache');
-      return sum + cache[c];
+      return sum + calcWidthWithCache(c);
     }, 0);
   }
 

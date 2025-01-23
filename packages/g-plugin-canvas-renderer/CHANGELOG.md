@@ -1,5 +1,14 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.2.18
+
+### Patch Changes
+
+-   Updated dependencies [284b6cb]
+    -   @antv/g-lite@2.2.16
+    -   @antv/g-plugin-canvas-path-generator@2.1.16
+    -   @antv/g-plugin-image-loader@2.1.18
+
 ## 2.2.17
 
 ### Patch Changes

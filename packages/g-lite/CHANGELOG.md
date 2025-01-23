@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.16
+
+### Patch Changes
+
+-   284b6cb: fix: abnormal word breaking in text
+
 ## 2.2.15
 
 ### Patch Changes

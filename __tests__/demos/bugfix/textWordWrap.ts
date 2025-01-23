@@ -132,6 +132,37 @@ export async function textWordWrap(context: { canvas: Canvas }) {
     },
   });
 
+  const text4 = new Text({
+    style: {
+      x: 100,
+      y: 400,
+      wordWrap: true,
+      wordWrapWidth: 2210,
+      maxLines: 10,
+      textOverflow: 'ellipsis',
+      fontFamily:
+        'Roboto, PingFangSC, BlinkMacSystemFont, Microsoft YaHei, Arial, sans-serif',
+      fontSize: 12,
+      fontWeight: 700,
+      fill: '#000000',
+      opacity: 1,
+      textAlign: 'center',
+      textBaseline: 'middle',
+      linkTextFill: '#326EF4',
+      text: '{"acodeList":"[4419, 4413]","roadList":"[122702094, 121224203, 122702115, 98717265, 122702113, 98718278, 98718270, 98718271, 124670851, 98719406, 122702114, 98719557, 121323912, 122702093, 98718269]","高低标准标签":"高普","isFilter":"否","质量标准":"模型类","标准编号":"","客户标签":"","高速误报率":"","普通路误报率":"","cityName":"东莞市","adcode":"441302","hfc":"3","errorOriginLabel":"虚拟"}',
+    },
+  });
+  console.log(text4);
+  const rect4 = new Rect({
+    style: {
+      x: text4.style.x,
+      y: text4.style.y,
+      width: text4.style.wordWrapWidth,
+      height: +text4.style.fontSize * text4.style.maxLines,
+      stroke: '#000000',
+    },
+  });
+
   canvas.appendChild(text0);
   canvas.appendChild(rect0);
   canvas.appendChild(text1);
@@ -140,6 +171,8 @@ export async function textWordWrap(context: { canvas: Canvas }) {
   canvas.appendChild(rect2);
   canvas.appendChild(text3);
   canvas.appendChild(rect3);
+  canvas.appendChild(text4);
+  canvas.appendChild(rect4);
 
   // benchmark
   // ----------
