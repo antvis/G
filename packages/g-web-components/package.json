@@ -1,6 +1,6 @@
 {
   "name": "@antv/g-web-components",
-  "version": "2.0.43",
+  "version": "2.0.44",
   "description": "A declarative usage for G implemented with WebComponents",
   "keywords": [
     "antv",
