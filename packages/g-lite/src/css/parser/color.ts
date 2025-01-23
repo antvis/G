@@ -1,5 +1,5 @@
 import { clamp, isNil } from '@antv/util';
-import * as d3 from 'd3-color';
+import * as d3 from '@antv/vendor/d3-color';
 import { Rect } from '../..';
 import { memoize } from '../../utils/memoize';
 import type { Tuple4Number } from '../../types';

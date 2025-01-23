@@ -45,8 +45,8 @@
   "dependencies": {
     "@antv/g-math": "workspace:*",
     "@antv/util": "^3.3.5",
+    "@antv/vendor": "^1.0.3",
     "@babel/runtime": "^7.25.6",
-    "d3-color": "^3.1.0",
     "eventemitter3": "^5.0.1",
     "gl-matrix": "^3.4.3",
     "rbush": "^3.0.1",
