@@ -149,7 +149,7 @@ export async function textWordWrap(context: { canvas: Canvas }) {
       textAlign: 'center',
       textBaseline: 'middle',
       linkTextFill: '#326EF4',
-      text: '{"acodeList":"[4419, 4413]","roadList":"[122702094, 121224203, 122702115, 98717265, 122702113, 98718278, 98718270, 98718271, 124670851, 98719406, 122702114, 98719557, 121323912, 122702093, 98718269]","高低标准标签":"高普","isFilter":"否","质量标准":"模型类","标准编号":"","客户标签":"","高速误报率":"","普通路误报率":"","cityName":"东莞市","adcode":"441302","hfc":"3","errorOriginLabel":"虚拟"}',
+      text: '{"courseId":"C12345","courseName":{"chinese":"Python 数据科学入门","english":"Introduction to Python Data Science"},"instructor":{"name":"张教授","title":"数据科学教授","introduction":"张教授是知名的数据科学家，拥有多年的教学经验。He has a deep understanding of Python programming and data analysis."},"description":"本课程旨在帮助学员从零基础开始学习 Python 编程，掌握数据分析的基本技能。通过本课程，您将能够使用 Python 进行数据清洗、探索性数据分析、机器学习等。This course is designed to help learners start from scratch and learn Python programming and master the basic skills of data analysis.","curriculum":[{"module":"Python 基础","topics":["变量与数据类型","控制流","函数"]},{"module":"NumPy 和 Pandas","topics":["NumPy 数组操作","Pandas 数据框","数据清洗"]},{"module":"数据可视化","topics":["Matplotlib","Seaborn","数据可视化案例"]}],"duration":"12周","price":999,"ratings":[{"rating":4.5,"comment":"课程内容丰富，老师讲得很清楚。The course content is comprehensive and the teacher explains very clearly."},{"rating":5,"comment":"非常适合初学者入门，强烈推荐！Highly recommended for beginners!"}],"enrollment":500}',
     },
   });
   console.log(text4);
