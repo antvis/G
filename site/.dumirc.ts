@@ -62,14 +62,14 @@ export default defineConfig({
     },
     navs: [
       {
-        slug: 'docs/guide',
+        slug: 'docs/guide/getting-started',
         title: {
           zh: '教程',
           en: 'Tutorials',
         },
       },
       {
-        slug: 'docs/api',
+        slug: 'docs/api/canvas/intro',
         title: {
           zh: 'API',
           en: 'API',
@@ -83,7 +83,7 @@ export default defineConfig({
         },
       },
       {
-        slug: 'docs/plugins',
+        slug: 'docs/plugins/intro',
         title: {
           zh: '插件',
           en: 'Plugins',
