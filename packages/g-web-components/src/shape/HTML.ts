@@ -5,18 +5,25 @@ import { BaseShape } from './BaseShape';
 export class HTMLShape extends BaseShape {
   connectedCallback(): void {
     super.connectedCallback();
-    const observer = new MutationObserver(() => {
-      const egl = this.gElement as any;
+
+    function updateHTML(shape: HTMLShape) {
+      const egl = shape.gElement as any;
       const targetEl = egl?.getDomElement();
       if (targetEl) {
-        targetEl.innerHTML = this.innerHTML;
+        targetEl.innerHTML = shape.innerHTML;
       }
+    }
+
+    const observer = new MutationObserver(() => {
+      updateHTML(this);
     });
     observer.observe(this, {
       characterData: true,
       childList: true,
       characterDataOldValue: true,
     });
+
+    updateHTML(this);
   }
   getElementInstance() {
     const shape = new HTML({

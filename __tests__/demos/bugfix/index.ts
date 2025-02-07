@@ -8,6 +8,8 @@ export { gradient_text } from './1572';
 export { zoom } from './1667';
 export { test_pick } from './1747';
 export { issue_1760 } from './1760';
+export { issue_1176 } from './1176';
+export { issue_1882 } from './1882';
 export { textWordWrap } from './textWordWrap';
 export { group_with_stroke } from './group-with-stroke';
 export { switchRenderer } from './switch-renderer';
