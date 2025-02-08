@@ -1,5 +1,11 @@
 # @antv/g-web-components
 
+## 2.0.45
+
+### Patch Changes
+
+-   3bb1714: fix: web-components element rendering exception
+
 ## 2.0.44
 
 ### Patch Changes
