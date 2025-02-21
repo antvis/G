@@ -85,8 +85,8 @@ export class ImagePool {
       .then((cache) => {
         callback?.(cache);
       })
-      .catch(() => {
-        //
+      .catch((reason) => {
+        console.error(reason);
       });
 
     return null;
