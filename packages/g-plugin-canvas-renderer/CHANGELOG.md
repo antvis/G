@@ -1,5 +1,13 @@
 # @antv/g-plugin-canvas-renderer
 
+## 2.2.19
+
+### Patch Changes
+
+-   cc62be4: fix: image element rendering triggers an exception
+-   Updated dependencies [cc62be4]
+    -   @antv/g-plugin-image-loader@2.1.19
+
 ## 2.2.18
 
 ### Patch Changes
