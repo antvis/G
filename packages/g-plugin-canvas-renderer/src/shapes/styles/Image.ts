@@ -47,14 +47,19 @@ export class ImageRenderer extends DefaultRenderer {
     if (!imageCache.downSampled) {
       this.imagePool
         .createDownSampledImage(src, object)
-        .then((res) => {
+        .then(() => {
+          // be removed from dom tree
+          if (!object.ownerDocument) {
+            return;
+          }
+
           // rerender
           // object.dirty();
           object.renderable.dirty = true;
           object.ownerDocument.defaultView.context.renderingService.dirtify();
         })
-        .catch(() => {
-          //
+        .catch((reason) => {
+          console.error(reason);
         });
 
       return;
@@ -92,6 +97,11 @@ export class ImageRenderer extends DefaultRenderer {
           src,
           [],
           () => {
+            // be removed from dom tree
+            if (!object.ownerDocument) {
+              return;
+            }
+
             // rerender
             // object.dirty();
             object.renderable.dirty = true;
@@ -99,8 +109,8 @@ export class ImageRenderer extends DefaultRenderer {
           },
           object,
         )
-        .catch(() => {
-          //
+        .catch((reason) => {
+          console.error(reason);
         });
 
       return;
@@ -244,7 +254,9 @@ export class ImageRenderer extends DefaultRenderer {
         imageRect,
         drawRect,
       });
-    } catch {}
+    } catch {
+      // expected error
+    }
   }
 
   // ---
