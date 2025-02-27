@@ -49,6 +49,7 @@ module.exports = {
     'import/no-cycle': 'warn',
     'import/no-duplicates': 'warn',
     'class-methods-use-this': 'warn',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-plusplus': [
       'warn',
       {
