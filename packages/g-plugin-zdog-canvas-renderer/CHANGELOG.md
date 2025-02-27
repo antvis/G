@@ -1,5 +1,11 @@
 # @antv/g-plugin-zdog-canvas-renderer
 
+## 2.0.39
+
+### Patch Changes
+
+-   @antv/g-canvas@2.0.40
+
 ## 2.0.38
 
 ### Patch Changes

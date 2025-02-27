@@ -1,5 +1,11 @@
 # @antv/g-plugin-image-loader
 
+## 2.1.19
+
+### Patch Changes
+
+-   cc62be4: fix: image element rendering triggers an exception
+
 ## 2.1.18
 
 ### Patch Changes
