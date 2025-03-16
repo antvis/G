@@ -11,6 +11,7 @@ export { issue_1760 } from './1760';
 export { issue_1176 } from './1176';
 export { issue_1882 } from './1882';
 export { issue_1906 } from './1906';
+export { issue_1911 } from './1911';
 export { textWordWrap } from './textWordWrap';
 export { group_with_stroke } from './group-with-stroke';
 export { switchRenderer } from './switch-renderer';
