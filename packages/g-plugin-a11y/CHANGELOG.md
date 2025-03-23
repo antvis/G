@@ -1,5 +1,11 @@
 # @antv/g-plugin-a11y
 
+## 1.1.22
+
+### Patch Changes
+
+-   ae62b41: fix: add pointerEvents none
+
 ## 1.1.21
 
 ### Patch Changes
