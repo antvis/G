@@ -1,5 +1,11 @@
 # @antv/g-plugin-svg-renderer
 
+## 2.2.17
+
+### Patch Changes
+
+-   ae62b41: fix: set dx dy when textBaseline change to middle
+
 ## 2.2.16
 
 ### Patch Changes

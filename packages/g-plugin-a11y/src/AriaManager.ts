@@ -91,6 +91,7 @@ export class AriaManager {
       div.style.top = `${DIV_TOUCH_POS_X}px`;
       div.style.left = `${DIV_TOUCH_POS_Y}px`;
       div.style.zIndex = DIV_TOUCH_ZINDEX.toString();
+      div.style.pointerEvents = 'none';
 
       this.$container = div;
       this.$container.id = `${CLASSNAME_PREFIX}-mask`;
