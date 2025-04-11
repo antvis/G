@@ -129,6 +129,7 @@ export class DefaultSceneGraphService implements SceneGraphService {
     const { sortable } = parent as unknown as Element;
     if (
       sortable?.sorted?.length ||
+      sortable.dirty ||
       (child as unknown as Element).parsedStyle.zIndex
     ) {
       if (sortable.dirtyChildren.indexOf(child) === -1) {
@@ -156,42 +157,44 @@ export class DefaultSceneGraphService implements SceneGraphService {
   }
 
   detach<C extends INode>(child: C) {
-    if (child.parentNode) {
-      const transform = (child as unknown as Element).transformable;
-      // if (transform) {
-      //   const worldTransform = this.getWorldTransform(child, transform);
-      //   mat4.getScaling(transform.localScale, worldTransform);
-      //   mat4.getTranslation(transform.localPosition, worldTransform);
-      //   mat4.getRotation(transform.localRotation, worldTransform);
-      //   transform.localDirtyFlag = true;
-      // }
-
-      // parent needs re-sort
-      const { sortable } = child.parentNode as Element;
-      // if (sortable) {
-      if (
-        sortable?.sorted?.length ||
-        (child as unknown as Element).style?.zIndex
-      ) {
-        if (sortable.dirtyChildren.indexOf(child) === -1) {
-          sortable.dirtyChildren.push(child);
-        }
-        sortable.dirty = true;
-        sortable.dirtyReason = SortReason.REMOVED;
-      }
-
-      const index = child.parentNode.childNodes.indexOf(
-        child as unknown as IChildNode & INode,
-      );
-      if (index > -1) {
-        child.parentNode.childNodes.splice(index, 1);
-      }
-
-      if (transform) {
-        this.dirtifyWorld(child, transform);
-      }
-      child.parentNode = null;
+    if (!child.parentNode) {
+      return;
     }
+
+    const transform = (child as unknown as Element).transformable;
+    // if (transform) {
+    //   const worldTransform = this.getWorldTransform(child, transform);
+    //   mat4.getScaling(transform.localScale, worldTransform);
+    //   mat4.getTranslation(transform.localPosition, worldTransform);
+    //   mat4.getRotation(transform.localRotation, worldTransform);
+    //   transform.localDirtyFlag = true;
+    // }
+
+    // parent needs re-sort
+    const { sortable } = child.parentNode as Element;
+    // if (sortable) {
+    if (
+      sortable?.sorted?.length ||
+      (child as unknown as Element).style?.zIndex
+    ) {
+      if (sortable.dirtyChildren.indexOf(child) === -1) {
+        sortable.dirtyChildren.push(child);
+      }
+      sortable.dirty = true;
+      sortable.dirtyReason = SortReason.REMOVED;
+    }
+
+    const index = child.parentNode.childNodes.indexOf(
+      child as unknown as IChildNode & INode,
+    );
+    if (index > -1) {
+      child.parentNode.childNodes.splice(index, 1);
+    }
+
+    if (transform) {
+      this.dirtifyWorld(child, transform);
+    }
+    child.parentNode = null;
   }
 
   getOrigin(element: INode) {

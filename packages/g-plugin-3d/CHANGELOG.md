@@ -1,5 +1,13 @@
 # @antv/g-plugin-3d
 
+## 2.0.43
+
+### Patch Changes
+
+-   Updated dependencies [802cf7d]
+    -   @antv/g-lite@2.2.17
+    -   @antv/g-plugin-device-renderer@2.2.20
+
 ## 2.0.42
 
 ### Patch Changes

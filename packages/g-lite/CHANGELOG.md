@@ -1,5 +1,11 @@
 # @antv/g-lite
 
+## 2.2.17
+
+### Patch Changes
+
+-   802cf7d: fix: element z-index sorting rendering abnormality
+
 ## 2.2.16
 
 ### Patch Changes
